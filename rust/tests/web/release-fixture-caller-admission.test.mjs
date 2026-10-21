@@ -1,7 +1,8 @@
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { validateCallerAdmission, observeCallerAdmission } from '../../../scripts/release-fixture-caller-admission.mjs';
+import { validateCallerAdmission, observeCallerAdmission, requireNonterminalFixtureRun } from '../../../scripts/release-fixture-caller-admission.mjs';
 import { validateDiagnosticDescendant } from '../../../scripts/release-fixture-lease-diagnostics.mjs';
 
 const context = Object.freeze({repository: 'owner/repo', run: '123', attempt: '2', eventHead: 'a'.repeat(40)});
@@ -154,7 +155,7 @@ test('queued aggregate requires authentic matching admitted group without execut
  for(const mutate of [
   x=>x[0].body.conclusion='success',
   x=>delete x[0].body.conclusion,
-  x=>x[0].body.status='waiting',
+  x=>x[0].body.status='unrecognized',
   x=>x[2].body.group_members[0].status='queued',
   x=>x[2].body.group_members[0].job_id=43,
   x=>x[2].observedAt='2026-10-11T00:00:06Z'
@@ -236,4 +237,47 @@ test('all three admitted queued phases retain strict group identity and reject p
       const changed=structuredClone(values);mutate(changed);assert.throws(()=>validateCallerAdmission(...changed,context));
     }
   }
+});
+
+
+test('documented nonterminal aggregate states retain null conclusion and never confer execution authority',()=>{
+ for(const status of ['queued','in_progress','requested','waiting','pending']){
+  const values=syntheticSnapshots();values[0].body.status=status;
+  assert.equal(requireNonterminalFixtureRun(values[0].body),true);
+  const admission=validateCallerAdmission(...values,context);
+  assert.equal(admission.executingLeaseProof,false);assert.equal(admission.productionAuthority,false);
+  for(const conclusion of ['success','failure','cancelled','neutral',undefined]){
+   const changed=structuredClone(values);changed[0].body.conclusion=conclusion;
+   assert.throws(()=>validateCallerAdmission(...changed,context));
+  }
+ }
+ for(const status of ['completed','success','unknown','',null,undefined]){
+  assert.throws(()=>requireNonterminalFixtureRun({status,conclusion:null}));
+ }
+});
+
+test('captured cbd pending aggregate is nonterminal while stale prior-phase membership remains no final proof',()=>{
+ const raw=readFileSync(new URL('../fixtures/release-fixture-pending-aggregate-cbd3.json',import.meta.url));
+ assert.equal(createHash('sha256').update(raw).digest('hex'),'35ec856b7ddc20966680c05c00eca67246f2e6d44ff5000a72363b2fea1b2b25');
+ const capture=JSON.parse(raw),[group,jobs,physical,run]=capture.snapshots;
+ assert(capture.snapshots.every(value=>value.status===200));
+ assert.equal(run.body.id,39617489419);assert.equal(run.body.head_sha,capture.context.eventHead);
+ assert.equal(String(run.body.run_attempt),capture.context.attempt);
+ assert.equal(run.body.status,'pending');assert.equal(run.body.conclusion,null);
+ assert.equal(requireNonterminalFixtureRun(run.body),true);
+ const child=jobs.body.jobs.find(value=>value.id===physical.body.id);assert(child);
+ assert.equal(child.id,119288808781);assert.equal(child.status,'in_progress');assert.equal(physical.body.status,'in_progress');
+ assert.equal(child.head_sha,run.body.head_sha);assert.equal(child.run_attempt,run.body.run_attempt);
+ const times=capture.snapshots.map(value=>Date.parse(value.observedAt));
+ assert.deepEqual(times,[Date.parse('2026-10-21T14:46:33.607Z'),Date.parse('2026-10-21T14:46:34.097Z'),
+  Date.parse('2026-10-21T14:46:34.368Z'),Date.parse('2026-10-21T14:46:34.655Z')]);
+ assert.ok(Math.max(...times)-Math.min(...times)<5000);
+ // This initial group still named the prior consumer; no later final-group snapshot was captured.
+ const active=group.body.group_members.find(value=>value.status==='in_progress');
+ assert.equal(active.job_id,119287510771);assert.notEqual(active.job_id,child.id);
+ // Runner facts were redacted. This capture establishes aggregate classification only.
+ assert.throws(()=>validateDiagnosticDescendant(physical,{...capture.context,id:child.id,name:child.name,runnerName:'unproven'}));
+ for(const change of [x=>x.status='completed',x=>x.status='unknown',x=>x.conclusion='success']){
+  const changed=structuredClone(run.body);change(changed);assert.throws(()=>requireNonterminalFixtureRun(changed));
+ }
 });

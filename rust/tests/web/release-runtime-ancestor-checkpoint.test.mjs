@@ -80,3 +80,20 @@ test('permanent API refusals never repeat; healthy pending can advance under the
  const unavailable=await pollFixtureObservation(async()=>{calls++;throw Error('transient');},{deadline:100,now:()=>0,wait:async()=>{}});
  assert.equal(calls,3);assert.equal(unavailable.observation,'Unknown');
 });
+
+
+test('synthetic full physical checkpoint accepts pending aggregate without promoting a pending child or member',async()=>{
+ for(const status of ['queued','in_progress','requested','waiting','pending']){
+  const runSnapshot=structuredClone(run);runSnapshot.body.status=status;
+  const result=await observe({runSnapshot});assert.ifError(result.error);
+  assert.equal(result.result.observation,'VerifiedPrivateFixtureMatchedExecutionCheckpoint');
+  assert.equal(result.result.productionAuthority,false);
+ }
+ const runSnapshot=structuredClone(run);runSnapshot.body.status='pending';
+ const queued=await observe({runSnapshot,jobs:[{...job,status:'queued'}]});assert.ok(queued.error);
+ const ancestor=structuredClone(state);ancestor.body.group_members[0].status='pending';
+ assert.ok((await observe({runSnapshot,ancestor})).error);
+ for(const change of [x=>x.body.conclusion='success',x=>x.body.status='completed',x=>x.body.status='unrecognized']){
+  const changed=structuredClone(runSnapshot);change(changed);assert.ok((await observe({runSnapshot:changed})).error);
+ }
+});

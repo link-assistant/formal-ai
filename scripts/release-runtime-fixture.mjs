@@ -1,5 +1,5 @@
 import { collectLeaseDiagnostics, validateDiagnosticDescendant } from './release-fixture-lease-diagnostics.mjs';
-import { observeCallerAdmission, requireFixtureDescendantName } from './release-fixture-caller-admission.mjs';
+import { observeCallerAdmission, requireFixtureDescendantName, requireNonterminalFixtureRun } from './release-fixture-caller-admission.mjs';
 import { requireExactCurrentGroupMember } from './staged-caller-authority.mjs';
 // Harmless GitHub runtime fixture: text tar only, scoped GET requests and private fixture lease.
 // It deliberately never invokes the production transfer CLI, compiler, package or release authority.
@@ -149,8 +149,7 @@ export async function observeActiveAncestor({ get, context, name, label, snapsho
   assert.equal(String(run.body.run_attempt), context.attempt);
   assert.equal(run.body.head_sha, context.eventHead);
   assert.equal(run.body.path, '.github/workflows/release-runtime-fixture.yml');
-  assert.ok(['queued', 'in_progress'].includes(run.body.status), 'nonterminal aggregate run required');
-  assert.equal(run.body.conclusion, null);
+  requireNonterminalFixtureRun(run.body);
   const group = await observe(base + '/concurrency_groups/' + encodeURIComponent(name));
   requireExactCurrentGroupMember({ ...context, head: context.eventHead, runnerName }, descendantName, name, group, jobs);
   const times = [jobs, physical, run, group].map(value => Date.parse(value.observedAt));
