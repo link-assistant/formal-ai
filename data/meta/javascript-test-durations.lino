@@ -7,8 +7,10 @@ javascript-test-durations
   recorded 2026-10-08
   unit seconds
   regenerate "node experiments/formal_ai_subagent/ci-durations.mjs --javascript-files --write"
+  # Observed C8 job 119455743251; 9/15 uniquely mapped top-level/literal-declared cases; PARTIAL LOWER BOUND; remaining/dynamic cases unmeasured.
+  # Full log SHA256 4acb75fe395d862a6d2926b5acb2c66d414cfa93d9f3604e1d30e82646d939dc; serial shared-shard sum, not isolated wall time.
   test "rust/tests/web/meta-reasoner.test.mjs"
-    seconds 67.5
+    seconds 228.313424172
   test "rust/tests/web/issue-1021-behaviour-range.test.mjs"
     seconds 51.6
   test "rust/tests/web/pull-request-1188-workspace-search.test.mjs"
@@ -60,8 +62,10 @@ javascript-test-durations
     seconds 2.5
   test "rust/tests/web/issue-1155-read-validation.test.mjs"
     seconds 2.2
+  # Observed C8 job 119455743251; 7/8 uniquely mapped top-level/literal-declared cases; PARTIAL LOWER BOUND; remaining/dynamic cases unmeasured.
+  # Full log SHA256 4acb75fe395d862a6d2926b5acb2c66d414cfa93d9f3604e1d30e82646d939dc; serial shared-shard sum, not isolated wall time.
   test "rust/tests/web/issue-991-how-to-synthesis.test.mjs"
-    seconds 2.2
+    seconds 24.953674573
   test "rust/tests/web/server.test.mjs"
     seconds 2.1
   test "rust/tests/web/server-dreaming-learning.test.mjs"
@@ -430,3 +434,27 @@ javascript-test-durations
   # Full log SHA256 6f213a6e1531e1c21ee79d7d886b9832810a79a9a7b8ef8b069e7dd5aa877644; 1 source-qualified passing cases.
   test "rust/tests/web/provenance-logical-memory-capture.test.mjs"
     seconds 46.811771825
+  # Observed C8 job 119455743251; 2/2 uniquely mapped top-level/literal-declared cases; complete literal case set.
+  # Full log SHA256 4acb75fe395d862a6d2926b5acb2c66d414cfa93d9f3604e1d30e82646d939dc; serial shared-shard sum, not isolated wall time.
+  test "rust/tests/web/issue-1069-greeting-seed-ladder.test.mjs"
+    seconds 20.405721056
+  # Observed C8 job 119455743251; 6/6 uniquely mapped top-level/literal-declared cases; PARTIAL LOWER BOUND; remaining/dynamic cases unmeasured.
+  # Full log SHA256 4acb75fe395d862a6d2926b5acb2c66d414cfa93d9f3604e1d30e82646d939dc; serial shared-shard sum, not isolated wall time.
+  test "rust/tests/web/issue-1185-production-repair-bridge.test.mjs"
+    seconds 29.578186959
+  # Observed C8 job 119455743251; 9/11 uniquely mapped top-level/literal-declared cases; PARTIAL LOWER BOUND; remaining/dynamic cases unmeasured.
+  # Full log SHA256 4acb75fe395d862a6d2926b5acb2c66d414cfa93d9f3604e1d30e82646d939dc; serial shared-shard sum, not isolated wall time.
+  test "rust/tests/web/ladder-document-delivery.test.mjs"
+    seconds 22.510821882
+  # Observed ff7 job 119393021615; 10/10 uniquely mapped top-level/literal-declared cases; complete literal case set.
+  # Full log SHA256 6f213a6e1531e1c21ee79d7d886b9832810a79a9a7b8ef8b069e7dd5aa877644; serial shared-shard sum, not isolated wall time.
+  test "rust/tests/web/compiled-skill-packages.test.mjs"
+    seconds 34.175987682
+  # Observed ff7 job 119393021615; 10/10 uniquely mapped top-level/literal-declared cases; complete literal case set.
+  # Full log SHA256 6f213a6e1531e1c21ee79d7d886b9832810a79a9a7b8ef8b069e7dd5aa877644; serial shared-shard sum, not isolated wall time.
+  test "rust/tests/web/literal-obligation-transaction.test.mjs"
+    seconds 24.365887748
+  # Observed ff7 job 119393021615; 14/31 uniquely mapped top-level/literal-declared cases; PARTIAL LOWER BOUND; remaining/dynamic cases unmeasured.
+  # Full log SHA256 6f213a6e1531e1c21ee79d7d886b9832810a79a9a7b8ef8b069e7dd5aa877644; serial shared-shard sum, not isolated wall time.
+  test "rust/tests/web/pull-request-1188-fix-gaps.test.mjs"
+    seconds 39.74918837

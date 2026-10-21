@@ -279,3 +279,23 @@ test('observed provenance suites start early on separate exact-partition shards'
   assert.equal(shards[fullShard][0], full);
   assert.deepEqual(planShards([...files].reverse(), 8, secondsOf).shards, shards);
 });
+
+
+test('observed partial meta-reasoner cost starts on its own heavy shard without dropping the unknown tail', () => {
+  const directory = join(ROOT, 'rust/tests/web');
+  const files = readdirSync(directory).filter(name => name.endsWith('.test.mjs'))
+    .map(name => 'rust/tests/web/' + name).sort();
+  const recorded = parseTestDurations(readFileSync(join(ROOT, 'data/meta/javascript-test-durations.lino'), 'utf8'));
+  const secondsOf = durationLookup(recorded);
+  const reasoner = 'rust/tests/web/meta-reasoner.test.mjs';
+  const heavy = ['full-provenance-cli', 'fresh-planner-recomputation', 'issue-1165-production-research']
+    .map(name => 'rust/tests/web/' + name + '.test.mjs');
+  assert(secondsOf(reasoner) > secondsOf('rust/tests/web/r1175-routing-probes.test.mjs'));
+  const {shards} = planShards(files, 8, secondsOf);
+  assert.deepEqual(partitionProblems(files, shards), {missing: [], repeated: [], extra: []});
+  assert(isLongestFirst(shards, secondsOf));
+  const reasonerShard = shards.findIndex(shard => shard.includes(reasoner));
+  assert.equal(shards[reasonerShard][0], reasoner);
+  for (const file of heavy) assert.notEqual(reasonerShard, shards.findIndex(shard => shard.includes(file)));
+  assert.deepEqual(planShards([...files].reverse(), 8, secondsOf).shards, shards);
+});
