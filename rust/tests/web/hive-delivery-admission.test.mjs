@@ -837,3 +837,33 @@ test('Hive workflow job environments use only contexts available before runner a
   const invalid = {jobs: {example: {env: {FILE: "${{ format('{0}/claim.json', runner.temp) }}"}}}};
   assert.deepEqual(jobEnvironmentContextProblems(invalid), ['example.FILE']);
 });
+
+test('hash-bound public task metadata admits without duplicating body bytes in knowledge data', () => {
+  const body = 'Independent original task requirements.\n';
+  const entry = {issueUrl:'https://github.com/public/task/issues/1',
+    pullRequestUrl:'https://github.com/public/task/pull/2',branch:'issue-1-original',
+    bodySha256:createHash('sha256').update(body).digest('hex')};
+  const manifest = {schema:'formal-ai-issue-1364-client-replay-inputs/v1',clients:{codex:entry}};
+  const manifestBytes = Buffer.from(JSON.stringify(manifest));
+  const value = {manifest,manifestBytes,inputHash:createHash('sha256').update(manifestBytes).digest('hex'),
+    tool:'codex',evidence:{issueUrl:entry.issueUrl,pullRequestUrl:entry.pullRequestUrl},
+    repository:'public/task',branch:entry.branch};
+  assert.equal(requireHistoricalTask(value),entry);
+  for (const invalid of [null,'','NOT-A-DIGEST','A'.repeat(64)]) {
+    const candidate = structuredClone(value);candidate.manifest.clients.codex.bodySha256 = invalid;
+    candidate.manifestBytes = Buffer.from(JSON.stringify(candidate.manifest));
+    candidate.inputHash = createHash('sha256').update(candidate.manifestBytes).digest('hex');
+    assert.throws(() => requireHistoricalTask(candidate), {code:'ERR_ASSERTION'});
+  }
+});
+test('published replay coordinates bind the original issue fixture without a second stored body', async () => {
+  const {readFileSync} = await import('node:fs');
+  const manifest = JSON.parse(readFileSync(new URL('../../../data/benchmarks/issue-1364-client-replay-inputs.json',import.meta.url),'utf8'));
+  const issues = JSON.parse(readFileSync(new URL('../fixtures/issue-1364-hello-world-issues.json',import.meta.url),'utf8'));
+  assert.equal(Object.keys(manifest.clients).length,3);
+  for (const entry of Object.values(manifest.clients)) {
+    assert.equal(Object.hasOwn(entry,'body'),false);
+    const matches = issues.filter(issue => issue.html_url === entry.issueUrl);assert.equal(matches.length,1);
+    assert.equal(createHash('sha256').update(matches[0].body).digest('hex'),entry.bodySha256);
+  }
+});

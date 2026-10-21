@@ -22,7 +22,8 @@ export function requireReplayTask(inputs, tool, issue, pullRequest) {
   assert.equal(inputs.schema, 'formal-ai-issue-1364-client-replay-inputs/v1');
   assert(Object.hasOwn(inputs.clients, tool));
   const task = inputs.clients[tool];
-  assert.equal(contentDigest(task.body), task.bodySha256);
+  assert.match(task.bodySha256 ?? '', /^[a-f0-9]{64}$/u);
+  if (Object.hasOwn(task, 'body')) assert.equal(contentDigest(task.body), task.bodySha256);
   assert.equal(issue.html_url, task.issueUrl);
   assert.equal(contentDigest(issue.body), task.bodySha256, 'historical issue requirements changed');
   assert.equal(pullRequest.html_url, task.pullRequestUrl);

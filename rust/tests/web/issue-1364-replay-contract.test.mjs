@@ -175,3 +175,16 @@ test('tracked inventory refuses current-task internal client evidence while pres
     fs.rmSync(directory, {recursive: true, force: true});
   }
 });
+
+test('hash-only task metadata still requires the exact freshly observed public issue body', () => {
+  const body = 'Independent original public task.\n';
+  const task = {issueUrl:'https://github.com/public/task/issues/1',
+    pullRequestUrl:'https://github.com/public/task/pull/2',branch:'issue-1-original',bodySha256:contentDigest(body)};
+  const inputs = {schema:'formal-ai-issue-1364-client-replay-inputs/v1',clients:{codex:task}};
+  const issue = {html_url:task.issueUrl,body};
+  const pr = {html_url:task.pullRequestUrl,state:'open',head:{ref:task.branch,sha:'a'.repeat(40)},base:{ref:'main'}};
+  assert.equal(requireReplayTask(inputs,'codex',issue,pr),task);
+  assert.throws(() => requireReplayTask(inputs,'codex',{...issue,body:body+'changed'},pr), {code:'ERR_ASSERTION'});
+  assert.throws(() => requireReplayTask(inputs,'codex',{...issue,body:''},pr), {code:'ERR_ASSERTION'});
+  assert.throws(() => requireReplayTask(inputs,'codex',{...issue,html_url:task.issueUrl+'0'},pr), {code:'ERR_ASSERTION'});
+});

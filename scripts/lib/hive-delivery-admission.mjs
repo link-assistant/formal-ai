@@ -262,7 +262,10 @@ export function requireHistoricalTask({
   assert.equal(createHash('sha256').update(manifestBytes).digest('hex'), inputHash, 'canonical input byte identity');
   const entry = manifest.clients[tool];
   assert.ok(entry);
-  assert.equal(createHash('sha256').update(entry.body).digest('hex'), entry.bodySha256, 'exact public task body');
+  assert.match(entry.bodySha256 ?? '', /^[a-f0-9]{64}$/u, 'trusted public task body identity');
+  if (Object.hasOwn(entry, 'body')) {
+    assert.equal(createHash('sha256').update(entry.body).digest('hex'), entry.bodySha256, 'exact public task body');
+  }
   const issue = /^https:\/\/github\.com\/([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+)\/issues\/([1-9]\d*)$/u.exec(entry.issueUrl);
   const pull = /^https:\/\/github\.com\/([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+)\/pull\/([1-9]\d*)$/u.exec(entry.pullRequestUrl);
   assert.ok(issue && pull);
