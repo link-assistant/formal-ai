@@ -299,3 +299,22 @@ test('observed partial meta-reasoner cost starts on its own heavy shard without 
   for (const file of heavy) assert.notEqual(reasonerShard, shards.findIndex(shard => shard.includes(file)));
   assert.deepEqual(planShards([...files].reverse(), 8, secondsOf).shards, shards);
 });
+
+
+test('observed behavior-range parent suites start separately without counting nested cases twice', () => {
+  const files = readdirSync(join(ROOT, 'rust/tests/web')).filter(name => name.endsWith('.test.mjs'))
+    .map(name => 'rust/tests/web/' + name).sort();
+  const recorded = parseTestDurations(readFileSync(join(ROOT, 'data/meta/javascript-test-durations.lino'), 'utf8'));
+  const secondsOf = durationLookup(recorded);
+  const behavior = 'rust/tests/web/issue-1021-behaviour-range.test.mjs';
+  const heavy = ['full-provenance-cli', 'fresh-planner-recomputation', 'issue-1165-production-research', 'meta-reasoner']
+    .map(name => 'rust/tests/web/' + name + '.test.mjs');
+  assert(secondsOf(behavior) > secondsOf('rust/tests/web/r1175-routing-probes.test.mjs'));
+  const {shards} = planShards(files, 8, secondsOf);
+  assert.deepEqual(partitionProblems(files, shards), {missing: [], repeated: [], extra: []});
+  assert(isLongestFirst(shards, secondsOf));
+  const selected = shards.findIndex(shard => shard.includes(behavior));
+  assert.equal(shards[selected][0], behavior);
+  for (const file of heavy) assert.notEqual(selected, shards.findIndex(shard => shard.includes(file)));
+  assert.deepEqual(planShards([...files].reverse(), 8, secondsOf).shards, shards);
+});
