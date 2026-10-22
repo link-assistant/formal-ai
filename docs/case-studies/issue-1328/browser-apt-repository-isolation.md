@@ -29,6 +29,16 @@ APT helpers in its immutable workflow protocol. The existing setup/job deadlines
 Playwright arguments, signature checks, package/Worker checks and E2E oracles
 remain in force. There is no additional attempt or ignored signature failure.
 
+The first PR #1399 CI run also caught the Pages command edit in the deployed
+release caller differing from its retained source projection. Apply the identical
+command edit to the retained original source and use
+`buildStagedReleaseProjection` to regenerate the caller, bindings and coverage
+packet. Only the actual whole-source hash changes in those records; all original
+release operations, operation digests and output transfers remain identical.
+The staged publication workflow remains byte-exact. Verify the result with
+`node scripts/generate-staged-release.mjs --check-deployed` and the deployed
+authority compiler. Keep the strict source/projection comparisons in place.
+
 `browser-ubuntu-apt-isolation.test.mjs` reproduces the captured failure with the
 original privilege boundary, then verifies successful isolated update/install,
 byte-exact source preservation, original browser arguments and home directory,
