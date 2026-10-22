@@ -108,6 +108,49 @@ fn solve_commit_payload_is_accepted_by_the_canonical_attribution_parser() {
     let _ = fs::remove_dir_all(root);
 }
 
+/// A real authoring run must leave its native harness completion intact: child
+/// Git output cannot bypass capture and corrupt another concurrent test's line.
+#[test]
+#[cfg(unix)]
+fn authoring_commit_display_preserves_native_harness_framing() {
+    use std::process::Command;
+    use std::time::Duration;
+
+    let module = module_path!()
+        .split_once("::")
+        .expect("the test module includes its crate name")
+        .1;
+    let name =
+        format!("{module}::the_live_authoring_loop_lands_a_commit_the_canonical_parser_accepts");
+    let mut command =
+        Command::new(std::env::current_exe().expect("current native test executable"));
+    command
+        .args(["--exact", "--color", "never", "--test-threads", "1", &name])
+        .env_remove("RUST_TEST_NOCAPTURE");
+    let output = formal_ai::bounded_process::command_output(
+        command,
+        Duration::from_secs(30),
+        1024 * 1024,
+        64 * 1024,
+    )
+    .expect("the original authoring fixture completes with bounded captured output");
+    assert!(
+        output.status.success(),
+        "original authoring fixture failed: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let stdout = String::from_utf8(output.stdout).expect("native harness UTF-8 output");
+    let completion = format!("test {name} ... ok");
+    assert!(
+        stdout.lines().any(|line| line == completion),
+        "authoring output corrupted the exact completion line:\n{stdout}"
+    );
+    assert!(
+        !stdout.contains("Formal-AI-Session:"),
+        "the Git display bypassed native test capture:\n{stdout}"
+    );
+}
+
 /// Plan 03 L13, second half: the live authoring loop (`src/authoring_loop.rs`,
 /// reached through the reduced `scripts/author-change-with-formal-ai.sh`
 /// wrapper) lands the same attributable commit payload — and a hosted model is

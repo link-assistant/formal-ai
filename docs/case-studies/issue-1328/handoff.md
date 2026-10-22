@@ -888,3 +888,16 @@ exclude credentials and query strings. Pure JavaScript controls use tiny fake
 payloads; a separate integration control exercises the installed nested downloader
 in hosted packaging. Neither replaces successful actual packaging, release or
 the three original released-client deliveries.
+
+On `8b2df74a1c74d5d0977854acd063a73a11894468`, the Linux ARM64 desktop job
+passed its installed-downloader controls and actual cached Electron packaging.
+The next actual blocker was [coverage shard 22](https://github.com/link-assistant/formal-ai/actions/runs/39699421816/job/119572291769):
+the live authoring fixture inherited Git's stdout, which split another test's
+libtest result line. Its batch exited successfully but lacked one exact
+completion. Capture the bounded display subprocess before printing through
+Rust's test-aware output, including lossy display of non-UTF-8 Git messages;
+display decoding must not introduce an error after a successful commit. Keep
+the coverage parser strict. The child-harness regression runs the original
+authoring fixture and requires an intact exact completion with no leaked
+commit trailers. Local JavaScript controls reproduce the refusal, while native
+execution and complete next-head CI remain required before merge.

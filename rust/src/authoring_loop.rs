@@ -621,7 +621,18 @@ impl<'a> AuthoringRun<'a> {
             "-1",
             "--format=%h %s%n%b",
         ]);
-        let _ = crate::bounded_process::command_status(log_command, Duration::from_secs(30))?;
+        // Capture the display command before printing: inherited child stdout
+        // bypasses libtest's capture and can split another test's result line.
+        let log = crate::bounded_process::command_output(
+            log_command,
+            Duration::from_secs(30),
+            1024 * 1024,
+            64 * 1024,
+        )?;
+        let stdout = String::from_utf8_lossy(&log.stdout);
+        let stderr = String::from_utf8_lossy(&log.stderr);
+        print!("{stdout}");
+        eprint!("{stderr}");
         self.committed = true;
         self.commit_message = commit_message;
         Ok(StageStatus::Requested)

@@ -67,6 +67,15 @@ checksum network request during packaging. Sanitized request diagnostics retain
 status, phase and attempt without credentials, query strings or unknown paths.
 Hosted packaging and public-download acceptance remain required.
 
+The next coverage failure exposed inherited Git output splitting a concurrent
+Rust test's completion line. The authoring loop now captures its bounded
+commit-display subprocess and prints through Rust's capture-aware output path.
+Coverage still requires every selected test's exact completion; a successful
+summary or a bare `ok` cannot replace missing evidence. A real child-harness
+regression exercises the original authoring fixture, while a JavaScript replay
+preserves the recorded corruption as a refusal case. Native execution remains
+required in CI.
+
 The live concurrency qualification remains unproven. The strict final in run
 39617489419 on cbd30d768fe4fd8f77ed6e782960e91d9b8284e8 returned Unknown
 because the aggregate run was pending. Its source classification repair passed
