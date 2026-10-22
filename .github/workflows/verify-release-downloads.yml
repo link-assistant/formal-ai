@@ -166,7 +166,7 @@ jobs:
       - name: Install browser test harness without build hooks
         run: npm ci --ignore-scripts --no-audit --no-fund --prefix _source/vscode
       - name: Install test browser without compiling the product
-        run: node _source/vscode/node_modules/playwright/cli.js install chromium --with-deps
+        run: bash scripts/with-ubuntu-apt-sources.sh node _source/vscode/node_modules/playwright/cli.js install chromium --with-deps
       - name: Verify original engine bindings and fresh public package in a real Worker
         env:
           GH_TOKEN: ${{ github.token }}

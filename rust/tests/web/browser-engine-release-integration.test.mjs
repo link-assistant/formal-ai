@@ -11,14 +11,13 @@ import { RELEASE_PROTOCOL_FILES } from '../../../scripts/release-protocol.mjs';
 const YAML = createRequire(import.meta.url)('yaml');
 const original = JSON.parse(readFileSync(new URL('./browser-engine-original-operations.json', import.meta.url), 'utf8'));
 const workflow = YAML.parse(readFileSync(new URL('../../../.github/workflows/publish-engine.yml', import.meta.url), 'utf8'));
-test('browser system dependencies select the shared immutable official mirror before unchanged Playwright setup',()=>{
+test('browser dependency isolation is immutable and remains inside the original setup deadline',()=>{
   const step=workflow.jobs.package.steps.find(value=>value.name==='Prepare locked browser smoke dependencies');
   assert.equal(step['timeout-minutes'],5);
-  const helper='node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" setup sudo bash "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/prepare-ubuntu-apt-mirror.sh"';
-  const playwright='node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" setup node vscode/node_modules/playwright/cli.js install chromium --with-deps';
-  assert(step.run.includes(helper));assert(step.run.includes(playwright));
-  assert(step.run.indexOf(helper)<step.run.indexOf(playwright));
+  const playwright='node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" setup bash "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/with-ubuntu-apt-sources.sh" node vscode/node_modules/playwright/cli.js install chromium --with-deps';
+  assert(step.run.includes(playwright));
   assert(RELEASE_PROTOCOL_FILES.engine.includes('scripts/prepare-ubuntu-apt-mirror.sh'));
+  assert(RELEASE_PROTOCOL_FILES.engine.includes('scripts/with-ubuntu-apt-sources.sh'));
   assert.doesNotMatch(step.run,/allow-unauthenticated|trusted=yes|no-check-certificate/u);
 });
 const environment = {

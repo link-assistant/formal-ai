@@ -91,7 +91,7 @@ jobs:
         continue-on-error: true
         run: |
           cd rust/tests/e2e
-          npx playwright install-deps chromium
+          bash ../../../scripts/with-ubuntu-apt-sources.sh npx playwright install-deps chromium
       - name: Install Playwright browsers
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 10
