@@ -3726,3 +3726,54 @@ remote:
 [2026-10-22T11:36:48.579Z] [INFO]    Solve resume mode:   "/home/box/.nvm/versions/node/v26.12.0/bin/node" "/home/box/.bun/bin/solve" "https://github.com/link-assistant/formal-ai/issues/1395" --resume "ses_e9c9aeb7cffed1QDUASMvGMeLX" --tool "agent" --model "formal-ai" --working-directory "/tmp/gh-issue-solver-1792668865706"
 [2026-10-22T11:36:48.580Z] [INFO] 
 [2026-10-22T11:36:48.582Z] [INFO] 🔍 Development log finalize: issue #1395, PR #1397, branch issue-1395-0adc4f6fac27, session ses_e9c9aeb7cffed1QDUASMvGMeLX, log slice from byte 0
+[2026-10-22T11:36:48.824Z] [INFO] 🧾 Development log artifacts written to dev/log/issues/1395/pulls/1397/sessions/ses_e9c9aeb7cffed1QDUASMvGMeLX (log bytes 0-463796)
+[2026-10-22T11:36:48.826Z] [INFO] 🧾 Development log artifacts written to ./dev/log/issues/1395/pulls/1397
+[2026-10-22T11:36:49.490Z] [STDOUT] [issue-1395-0adc4f6fac27 f9bb00fed] Add development log for issue #1395 PR #1397
+ 2 files changed, 3748 insertions(+)
+ create mode 100644 dev/log/issues/1395/pulls/1397/sessions/ses_e9c9aeb7cffed1QDUASMvGMeLX/metadata.json
+ create mode 100644 dev/log/issues/1395/pulls/1397/sessions/ses_e9c9aeb7cffed1QDUASMvGMeLX/solve.log
+[2026-10-22T11:36:49.494Z] [INFO] ✅ Development log committed
+[2026-10-22T11:36:50.896Z] [STDERR] To https://github.com/link-assistant/formal-ai.git
+   bb8368d2b..f9bb00fed  issue-1395-0adc4f6fac27 -> issue-1395-0adc4f6fac27
+[2026-10-22T11:36:50.901Z] [INFO] ✅ Development log pushed
+[2026-10-22T11:36:50.903Z] [INFO] 🔍 Checking if AI created any comments during session (--auto-attach-solution-summary)...
+[2026-10-22T11:36:51.187Z] [INFO] 📝 No AI comments detected, attaching working session summary...
+[2026-10-22T11:36:52.812Z] [INFO] ✅ Working session summary attached to pr #1397 (id=6339782108)
+[2026-10-22T11:36:52.816Z] [INFO] 
+[2026-10-22T11:36:52.816Z] [INFO] 🔍 Searching for created pull requests or comments...
+[2026-10-22T11:36:53.032Z] [INFO]   ℹ️  Integration token cannot read the authenticated user; matching comments written by the app
+[2026-10-22T11:36:53.035Z] [INFO] 
+[2026-10-22T11:36:53.035Z] [INFO] 🔍 Checking for pull requests from branch issue-1395-0adc4f6fac27...
+[2026-10-22T11:36:53.449Z] [INFO]   ✅ Found pull request #1397: "[WIP] Users shaming how our web version is working"
+[2026-10-22T11:36:54.556Z] [INFO]   📝 Removing [WIP] prefix from PR title...
+[2026-10-22T11:36:56.596Z] [STDOUT] https://github.com/link-assistant/formal-ai/pull/1397
+[2026-10-22T11:36:56.597Z] [INFO]   ✅ Updated PR title to: "Users shaming how our web version is working"
+[2026-10-22T11:36:56.599Z] [INFO]   📝 Updating PR description to remove placeholder text...
+[2026-10-22T11:36:57.728Z] [STDOUT] Users shaming how our web version is working
+[2026-10-22T11:36:57.733Z] [STDERR] [use-m] use('fs') joined an in-flight load (alias fs-v-latest)
+[2026-10-22T11:37:00.120Z] [STDOUT] https://github.com/link-assistant/formal-ai/pull/1397
+[2026-10-22T11:37:00.124Z] [INFO]   ✅ Updated PR description with solution summary
+[2026-10-22T11:37:01.898Z] [INFO] ⚠️  Could not read this run's comments, so it is not judged as finished without changes
+[2026-10-22T11:37:02.832Z] [STDOUT] {"isDraft":true,"state":"OPEN"}
+[2026-10-22T11:37:02.834Z] [INFO]    🔍 PR #1397 draft state: isDraft=true, state=OPEN
+[2026-10-22T11:37:02.836Z] [INFO] 📝 Converting PR: To ready for review (solution draft verified)...
+[2026-10-22T11:37:03.770Z] [STDERR] ✓ Pull request link-assistant/formal-ai#1397 is marked as "ready for review"
+[2026-10-22T11:37:03.774Z] [INFO] ✅ PR converted: Now in ready for review
+[2026-10-22T11:37:03.775Z] [INFO] 
+[2026-10-22T11:37:03.775Z] [INFO] 📎 Uploading solution draft log to Pull Request...
+[2026-10-22T11:37:03.777Z] [STDERR] [use-m] use('fs') joined an in-flight load (alias fs-v-latest)
+[2026-10-22T11:37:03.806Z] [INFO] 📈 Resource usage (log upload start, 456KB log):
+[2026-10-22T11:37:03.806Z] [INFO]    CPU load: 2.11 2.06 1.17 (4 CPUs)
+[2026-10-22T11:37:03.806Z] [INFO]    Memory: 14.3 GB available / 15.6 GB total (1.3 GB used)
+[2026-10-22T11:37:03.806Z] [INFO]    Process RSS: 205 MB, V8 heap: 53 MB used of 4.1 GB limit (1.3%)
+[2026-10-22T11:37:03.806Z] [INFO]    Disk (/): 74.0 GB available / 144.3 GB total (48.7% used)
+[2026-10-22T11:37:03.806Z] [INFO]    Agent snapshot stores (/home/box/.local/share/link-assistant-agent): 1 store(s), 13 MB
+[2026-10-22T11:37:03.806Z] [INFO]    Container memory (cgroup v2): 3.4 GB used of no limit of its own, peak 3.6 GB; processes killed by the OOM killer so far: 0
+[2026-10-22T11:37:03.806Z] [INFO] 📈 [RESOURCES] phase=log_upload_start ts=2026-10-22T11%3A37%3A03.786Z load1=2.11 load5=2.06 load15=1.17 cpuCount=4 memTotalBytes=16760344576 memAvailableBytes=15316320256 memUsedBytes=1444024320 processRssBytes=214749184 processHeapUsedBytes=55116896 processHeapTotalBytes=106921984 processExternalBytes=7560260 processHeapLimitBytes=4395630592 processHeapUsedPercent=1.2539019111458583 diskPath=%2F diskTotalBytes=154894188544 diskAvailableBytes=79452487680 diskUsedBytes=75424923648 diskUsedPercent=48.69448257355016 mem=14.3%20GB%20available%20%2F%2015.6%20GB%20total heap=53%20MB%20used%20of%204.1%20GB%20limit%20(1.3%25) disk=74.0%20GB%20available%20%2F%20144.3%20GB%20total agentStatePath=%2Fhome%2Fbox%2F.local%2Fshare%2Flink-assistant-agent agentStoreCount=1 agentStoreBytes=13205962 cgroupVersion=2 cgroupMemLimitBytes=null cgroupMemCurrentBytes=3698241536 cgroupMemPeakBytes=3874992128 cgroupOomEvents=0 cgroupOomKills=0
+[2026-10-22T11:37:03.810Z] [STDERR] [use-m] use('https') loading (alias https-v-latest)
+[2026-10-22T11:37:03.812Z] [STDERR] [use-m] use('https') loaded in 1ms
+[2026-10-22T11:37:04.006Z] [INFO]   🤖 Model info fetched for comment
+[2026-10-22T11:37:04.009Z] [INFO]   ⏭️  Log is 456KB — skipping inline comment construction, the log goes straight to gh-upload-log
+[2026-10-22T11:37:04.011Z] [INFO]   📁 Log file too large for inline comment (456KB), using gh-upload-log
+[2026-10-22T11:37:04.012Z] [INFO]   📎 Uploading log using gh-upload-log...
+[2026-10-22T11:37:04.384Z] [INFO]   🔍 Repository visibility: public, log upload will be public
