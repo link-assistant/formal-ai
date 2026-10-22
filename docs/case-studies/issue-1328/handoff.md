@@ -1089,3 +1089,30 @@ than a false closing claim. Released-client acceptance remains unfinished.
 The compiler and production gates themselves need no further change for this
 description failure. The next ordinary source update records these PR/debt
 links and lets CI check the corrected description without a manual rerun.
+
+
+### Public release and read-only admission follow-up
+
+[Release v0.355.1](https://github.com/link-assistant/formal-ai/releases/tag/v0.355.1)
+is public. Its crate publication, registry-content audit, installed-crate
+smoke test, full/slim GHCR images and Docker Hub mirror passed their actual
+hosted steps. Installer, signing, public-download and remaining surface
+verification still require their own results. The original released three-client
+and all-eleven issue-1364 acceptance is not established by those release steps.
+
+The subsequent [admission failure](https://github.com/link-assistant/formal-ai/actions/runs/39790340888/job/119864406820)
+happened before client execution: the fourth GitHub CLI read exited 1 with an
+empty response and completed cleanup. Preserve its full 28,367-byte log, SHA256
+`6eede8918b85174d2a35779480b1a5dcc0ace05c3451563487e4a66dba19fdfd`.
+The exact cause of the suppressed 29-byte diagnostic remains unknown.
+
+Batch one unchanged clean REST-read retry and privacy-safe attempt diagnostics
+into PR 1394. Keep the original global request, byte and time limits; GraphQL,
+known denials, partial bodies and uncertain processes stay unretried. A second
+failure stops without client effects. The
+[critical scope](critical-delivery-scope.md#bounded-read-only-github-admission-recovery)
+records the precise policy and evidence limits. The preceding head's green CI
+cannot accept this additional change: require fresh current-head results
+before the normal merge. This manual repair has zero autonomous Formal AI
+authorship credit. Continue monitoring actual release consumers and the original
+three task repositories; do not close issue 1364 prematurely.

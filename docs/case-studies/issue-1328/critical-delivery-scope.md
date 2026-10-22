@@ -231,3 +231,32 @@ nonempty-memory precondition; it does not fix arbitrary-prompt latency.
 Resolve that debt through bounded stage profiling and an unchanged-deadline
 regression for the original seed prompts. Actual current-head hosted reset
 acceptance remains required.
+
+
+## Bounded read-only GitHub admission recovery
+
+The [released-source admission job](https://github.com/link-assistant/formal-ai/actions/runs/39790340888/job/119864406820)
+on `368d34ffa0c2632db480cf99b4207b1145b5f25a` failed at its fourth API read,
+while listing pull requests associated with the trigger commit. The GitHub CLI
+exited with status 1, no response bytes and 29 diagnostic bytes; cleanup
+completed, with no signal or timeout. No client task ran. Retain the complete
+28,367-byte log, SHA256
+`6eede8918b85174d2a35779480b1a5dcc0ace05c3451563487e4a66dba19fdfd`.
+The suppressed diagnostic prevents assigning an exact transport, HTTP or
+authentication cause; do not infer a global outage or a client defect.
+
+An unchanged owned REST read may repeat once after a clean, empty-response CLI
+exit 1, excluding known HTTP 4xx denials. Both physical requests share the
+existing 150-second admission deadline, 20-second request bound, 512-request
+budget and response/aggregate byte limits. GraphQL, partial responses,
+timeouts, interrupted processes, spawn errors and incomplete cleanup never
+retry. A second failure stops admission. Existing source, complete-CI and
+client-effect authorization remains fail-closed.
+
+Report the operation family, request identity hash, physical attempt, status,
+HTTP status when present, byte counts and output digests for recovered as well
+as fatal failures. Recognize the colon in standard GitHub CLI HTTP errors.
+Never echo raw arguments, response bodies or diagnostics. Offline controls
+cover the actual selector path, stale-source refusal, recovery and repeated
+failure bounds; they do not reproduce the suppressed diagnostic or establish
+live transport recovery. Keep that distinction in hosted acceptance evidence.
