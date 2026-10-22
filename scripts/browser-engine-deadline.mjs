@@ -26,14 +26,24 @@ export function deadlineArguments(seconds,argumentsList) {
   assert(argumentsList.every(value=>typeof value==='string'&&!value.includes('\0')));
   return ['--signal=TERM','--kill-after=5s',seconds+'s',...argumentsList];
 }
-export function runBoundedOperation(mode,argumentsList,{environment=process.env,run=spawnSync,now=Date.now()}={}) {
+export function runBoundedOperation(mode,argumentsList,{
+  environment=process.env,run=spawnSync,now=Date.now(),log=record=>console.error(JSON.stringify(record)),
+}={}) {
   assert(['build','setup','prepare','pack','publish','cold'].includes(mode));
   const bytes=readFileSync(join(environment.RUNNER_TEMP,'browser-engine-job-clock.json'));
   assert.match(environment.ENGINE_CLOCK_SHA256??'',/^[a-f0-9]{64}$/u,'source-owned first-step clock digest required');
   assert.equal(createHash('sha256').update(bytes).digest('hex'),environment.ENGINE_CLOCK_SHA256,'first-step clock bytes changed');
   const clock=JSON.parse(bytes);
   const seconds=Math.min(remainingSeconds(clock,environment,now),mode==='cold'?ENGINE_COLD_SECONDS:['setup','build'].includes(mode)?295:1195);
-  const result=run('timeout',deadlineArguments(seconds,argumentsList),{stdio:'inherit',env:environment});
+  const bounded=deadlineArguments(seconds,argumentsList);
+  const program=['npm','node','bun','rustup'].includes(argumentsList[0])?argumentsList[0]:'other';
+  const operation={schema:'browser-engine-operation/v1',mode,program,deadlineSeconds:seconds};
+  const started=performance.now();
+  // Record only the phase and outcome, never command arguments or environment.
+  log({...operation,event:'started'});
+  const result=run('timeout',bounded,{stdio:'inherit',env:environment});
+  log({...operation,event:'finished',status:result.status??null,signal:result.signal??null,
+    spawnError:Boolean(result.error),elapsedMilliseconds:Math.round(performance.now()-started)});
   if(result.error)throw result.error;
   assert.equal(result.signal,null,'bounded process interrupted');
   assert(Number.isInteger(result.status),'bounded process has no exit status');return result.status;

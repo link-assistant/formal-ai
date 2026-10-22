@@ -901,3 +901,16 @@ the coverage parser strict. The child-harness regression runs the original
 authoring fixture and requires an intact exact completion with no leaked
 commit trailers. Local JavaScript controls reproduce the refusal, while native
 execution and complete next-head CI remain required before merge.
+
+The next browser-engine package job stalled inside locked `npm ci`, before
+Playwright started, until the existing 295-second setup deadline. The log does
+not identify its request. npm's default five-minute request timeout exceeded
+that outer limit. Install requests now have a shorter timeout and one bounded
+retry, with timing output and operation phase/exit/elapsed records. Keep locked
+installation and disabled lifecycle scripts; do not retry the whole install or
+increase the setup/job limits. The exact remote setup must still succeed in CI.
+
+CodeQL also identified two assertion diagnostics that printed the session-ID
+evidence. Both marker assertions remain intact, while their failure messages
+are now static and do not disclose session contents. Actual CodeQL and native
+test success on the next head remain required.

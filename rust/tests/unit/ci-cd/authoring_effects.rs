@@ -228,11 +228,11 @@ fn the_evidence_keeps_the_framed_events_and_never_the_raw_stream() {
     let session_id = fs::read_to_string(evidence.join("session-id.txt")).unwrap();
     assert!(
         session_id.contains("formal-ai session ses_authoringfixture"),
-        "{session_id}"
+        "session evidence must contain the fixture session marker"
     );
     assert!(
         session_id.contains("formal-ai model formal-ai/"),
-        "{session_id}"
+        "session evidence must contain the Formal AI model marker"
     );
     for entry in fs::read_dir(&evidence).unwrap() {
         let name = entry.unwrap().file_name();
