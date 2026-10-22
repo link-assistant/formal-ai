@@ -85,6 +85,17 @@ killed_at_deadline=124
 # without bringing the gate any closer to giving up.
 outage_seconds=0
 
+# Retain a live diagnostic channel while per-lock tool output stays isolated.
+# Only validated inventory names and static tool names enter these records.
+exec 3>&2
+audit_metadata() {
+  local phase="$1" lock="$2" tool="$3" attempt="$4" status="$5" elapsed="$6"
+  case "$tool" in bun|npm) ;; *) tool=unknown ;; esac
+  if [[ ! "$lock" =~ ^[A-Za-z0-9_./-]+$ ]]; then lock=redacted-lock; fi
+  printf 'audit-attempt phase=%s tool=%s lock=%s attempt=%s status=%s elapsedSeconds=%s\n' \
+    "$phase" "$tool" "$lock" "$attempt" "$status" "$elapsed" >&3
+}
+
 audit_with_retry() {
   local lock="$1"
   shift
@@ -107,7 +118,9 @@ registry that is not answering -- re-run once it does." >&2
 
     began=$SECONDS
     status=0
-    output="$(timeout "$deadline" "$@" 2>&1)" || status=$?
+    audit_metadata start "$lock" "$1" "$attempt" pending 0
+    output="$(timeout "$deadline" "$@" 2>&1 3>&-)" || status=$?
+    audit_metadata finish "$lock" "$1" "$attempt" "$status" "$((SECONDS - began))"
     printf '%s\n' "$output"
     [ "$status" -eq 0 ] && return 0
     outage_seconds=$((outage_seconds + SECONDS - began))
@@ -197,5 +210,9 @@ queue_locks() {
 }
 
 queue_locks "bun.lock" bun audit --audit-level=moderate
-queue_locks "package-lock.json" npm audit --package-lock-only --audit-level=moderate
+# npm's default request timeout can outlast the outer attempt. Bound each
+# request; the existing outer loop owns recovery and still requires a verdict.
+# Bun retains its 180s process bound: its unanswered transport cause is unknown.
+queue_locks "package-lock.json" npm audit --package-lock-only --audit-level=moderate \
+  --fetch-timeout=30000 --fetch-retries=0
 wait_for_audits

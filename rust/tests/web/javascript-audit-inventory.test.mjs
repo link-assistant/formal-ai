@@ -17,10 +17,21 @@ function audit(mode,failures,attempts) {
 set -eu
 log="$FAKE_AUDIT_CALLS.$(printf '%s' "$PWD" | tr -c 'A-Za-z0-9' '_')"
 printf '%s\\n' "$*" >> "$log"
+case "$(basename "$0")" in
+  npm)
+    [ "$*" = 'audit --package-lock-only --audit-level=moderate --fetch-timeout=30000 --fetch-retries=0' ] || {
+      echo 'unexpected npm audit request policy' >&2; exit 64;
+    } ;;
+  bun)
+    [ "$*" = 'audit --audit-level=moderate' ] || {
+      echo 'unexpected Bun audit arguments' >&2; exit 64;
+    } ;;
+esac
 if [ "$(wc -l < "$log")" -le "$FAKE_AUDIT_FAILURES" ]; then
   case "$FAKE_AUDIT_MODE" in
     advisory) echo '1 vulnerability found (1 moderate)'; exit 1 ;;
     npm-outage) echo 'npm error audit endpoint returned an error' >&2; exit 1 ;;
+    request-timeout) echo 'npm error code ETIMEDOUT' >&2; exit 1 ;;
     *) echo 'error: POST https://registry.npmjs.org/-/npm/v1/security/advisories/bulk - 503' >&2; exit 1 ;;
   esac
 fi
@@ -60,6 +71,25 @@ test('an advisory ends each committed lockfile audit on the first attempt',()=>{
 test('exhausting unanswered attempts refuses every committed lockfile',()=>{
   const result=audit('outage',99,2);assert.notEqual(result.status,0);
   assert(result.calls.every(count=>count===2));
+  for(const lock of inventory)assert(result.stderr.includes(
+    `::error title=advisory registry unreachable for ${lock}::`));
+});
+
+test('request timeouts recover only after every lock receives a real verdict',()=>{
+  const result=audit('request-timeout',2,3);
+  assert.equal(result.status,0,result.stdout+result.stderr);
+  assert(result.calls.every(count=>count===3));
+  const records=result.stderr.split('\n').filter(line=>line.startsWith('audit-attempt '));
+  assert.equal(records.length,inventory.length*6);
+  for(const line of records)assert.match(line,
+    /^audit-attempt phase=(start|finish) tool=(bun|npm) lock=[A-Za-z0-9_./-]+ attempt=[1-3] status=(pending|0|1) elapsedSeconds=[0-9]+$/);
+  assert.equal(records.filter(line=>line.includes('phase=finish')&&line.includes(' status=0 ')).length,inventory.length);
+});
+test('persistent request timeouts never substitute a clean audit verdict',()=>{
+  const result=audit('request-timeout',99,3);
+  assert.notEqual(result.status,0);
+  assert(result.calls.every(count=>count===3));
+  assert(!result.stdout.includes('No vulnerabilities found'));
   for(const lock of inventory)assert(result.stderr.includes(
     `::error title=advisory registry unreachable for ${lock}::`));
 });

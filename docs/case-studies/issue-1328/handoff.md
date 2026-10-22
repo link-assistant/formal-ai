@@ -914,3 +914,11 @@ CodeQL also identified two assertion diagnostics that printed the session-ID
 evidence. Both marker assertions remain intact, while their failure messages
 are now static and do not disclose session contents. Actual CodeQL and native
 test success on the next head remain required.
+
+The dependency gate also exhausted its outage budget without answers for the
+root Bun and E2E npm lockfiles. npm audit now bounds individual requests below
+the existing outer attempt deadline; only the existing outer loop retries.
+Live per-attempt tool, lockfile, status and elapsed records survive isolated
+output capture. All lockfiles still need real audit verdicts. Bun keeps its
+existing process bound; its transport cause remains unknown. Neither an
+unanswered audit nor an advisory is treated as a successful audit.
