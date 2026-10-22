@@ -956,3 +956,21 @@ All remaining selected coverage, profile/ratchet and production/released-client
 gates remain required. Qualify the complete known failure batch and publish one
 ordinary push, then require actual latest-head CI before normal merge. No local
 Rust build, extra E2E attempt or timeout increase is needed for this deferral.
+
+
+### Released memory and PID1 measurement
+
+Source tests and original-three-client task/no-op receipts leave two distinct
+released-runtime observations unproven: live-memory handling and native PID1
+shutdown with an active connection. The published-only Hive image step now
+measures those outcomes on the authenticated immutable release parent before
+real task effects, without another client or GitHub test attempt. Both maintained
+memory fixtures and their canonical parser participate in the policy identity.
+The probe checks supported lossless migration and exact backup, preserved
+incompatible bytes with an actual chat write to the reported current store,
+idempotent restarts, the PID1 executable hash, held-connection responsiveness
+and successful bounded SIGTERM exit. It keeps a small JSON observation artifact
+and refuses incomplete cleanup. Dreaming and live fetch are explicitly disabled
+for isolation; default-dind behavior and original-volume reconstruction are not
+claimed. Pure Node controls use injected Docker/network observations and cannot
+establish hosted or released acceptance. Require the real published result.

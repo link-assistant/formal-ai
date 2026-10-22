@@ -208,6 +208,18 @@ jobs:
         run: node .hive-protocol/scripts/prepare-hive-original-delivery.mjs
       - name: Build and verify actual same-source task image
         run: node .hive-protocol/scripts/build-hive-original-delivery-image.mjs
+      - name: Measure released native PID1 shutdown and live-memory fixtures
+        if: ${{ needs.admission.outputs.published == 'true' }}
+        timeout-minutes: 4
+        run: node .hive-protocol/scripts/verify-released-server-lifecycle.mjs
+      - name: Retain isolated released lifecycle observations
+        if: ${{ always() && needs.admission.outputs.published == 'true' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: hive-released-lifecycle-evidence
+          path: ${{ runner.temp }}/hive-original-evidence/released-lifecycle.json
+          if-no-files-found: error
+          retention-days: 90
       - uses: actions/upload-artifact@v7
         with:
           name: hive-same-source-task-image

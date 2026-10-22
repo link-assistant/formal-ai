@@ -118,3 +118,23 @@ Restore this exact instrumented case after bounded stage profiling identifies
 and repairs the slow path, and the unchanged offline request completes within
 its existing 30-second deadline under hosted coverage. Do not substitute a
 larger timeout, cached answer, reduced assertions or a broad HTTP-test exclusion.
+
+
+## Released native lifecycle acceptance
+
+The published-source Hive image job now measures the released native executable
+as PID1 against owned, isolated memory fixtures before task effects. It uses
+the authenticated immutable parent image and checks the actual PID1 executable
+digest. Supported schema-1 memory must migrate losslessly with its original
+backup, and incompatible bytes must remain unchanged beside an explicitly
+reported current store that accepts a real chat write. Both stores restart
+without further byte changes. Each serving cycle holds an incomplete request
+while a second health request succeeds, then requires successful SIGTERM exit
+within five seconds. Failed cleanup cannot qualify a result.
+
+This probe disables dreaming and live fetch to isolate migration and shutdown;
+it does not establish default-dind-entrypoint behavior or reconstruct an older
+user volume. Its small `hive-released-lifecycle-evidence` artifact records source,
+image, binary, fixture and observed memory identities. Source controls and
+three-client task receipts alone cannot replace this actual released-image
+measurement; delivery stays pending until its hosted result is verified.
