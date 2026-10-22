@@ -1,6 +1,6 @@
 [package]
 name = "formal-ai"
-version = "0.355.0"
+version = "0.355.1"
 edition = "2024"
 description = "Don't know everything, know just enough to get to know anything"
 readme = "../README.md"
