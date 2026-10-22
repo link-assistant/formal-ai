@@ -138,3 +138,22 @@ user volume. Its small `hive-released-lifecycle-evidence` artifact records sourc
 image, binary, fixture and observed memory identities. Source controls and
 three-client task receipts alone cannot replace this actual released-image
 measurement; delivery stays pending until its hosted result is verified.
+
+
+## Availability-gated client installation recovery
+
+The current Agent CLI matrix failure happened during dependency installation,
+before any model request: Bun received an HTTP 404 for an official npm tarball.
+The pinned client and that exact dependency are still published; a later
+metadata read and HEAD request from this observer both succeeded. This does not
+prove every registry edge has recovered or justify a dependency downgrade.
+
+Keep the client version, install arguments, lifecycle-script policy and normal
+package-integrity verification. One unchanged installation retry is eligible
+only after a clean first failure whose sole fatal diagnostic names an official
+registry tarball 404, exact-version metadata matches that URL and declares valid
+SHA512 integrity, and a nonredirecting HEAD check returns 200. Persistent 404s,
+authentication errors, other failures and uncertain child cleanup remain fatal.
+Both attempts and probes share one finite install deadline inside the unchanged
+job cap. Retain bounded diagnostic output and attempt identities. A successful
+installation still requires the original executable checks and model tests.

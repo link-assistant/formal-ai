@@ -974,3 +974,26 @@ and refuses incomplete cleanup. Dreaming and live fetch are explicitly disabled
 for isolation; default-dind behavior and original-volume reconstruction are not
 claimed. Pure Node controls use injected Docker/network observations and cannot
 establish hosted or released acceptance. Require the real published result.
+
+
+### Agent CLI install artifact availability
+
+On source `c5f27d6b014b0019942aba3c6cc2c8893d011368`,
+[Agent CLI setup](https://github.com/link-assistant/formal-ai/actions/runs/39732636164/job/119672417632)
+failed before any model execution. The full 33,279-byte log has SHA256
+`68225921c12e78984c8b22ed3d2a4c0e1133f35d5393712384e877843961f248`.
+Bun resolved the pinned client dependency graph, then received a 404 for
+`vscode-languageserver-types-3.18.5.tgz`. Official exact-version metadata and a
+HEAD-only observation subsequently returned 200 from this observer. Preserve
+the failed attempt; that later availability is not global-recovery proof.
+
+The repair keeps client pins and normal integrity verification. It permits one
+unchanged install retry only after the first command exits cleanly with the
+sole qualifying official tarball 404 and fresh, bounded exact-version metadata
+and nonredirecting HEAD checks establish eligibility. Both commands and probes
+share one finite deadline, newly tighter than the existing job limit. Other
+errors, persistent missing bytes, timeouts, capture overflow and uncertain
+cleanup cannot reopen the retry. Bounded captured output is replayed after each
+attempt with explicit phase records; live child-output streaming is not claimed.
+Source/emulated recovery controls cannot replace actual hosted installation and
+the original model/E2E or released-client acceptance.

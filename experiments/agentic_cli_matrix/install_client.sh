@@ -46,7 +46,8 @@ case "$installer" in
         bun add -g --trust "$spec" \
           || matrix_fail "bun add -g --trust $spec failed"
       else
-        bun add -g --ignore-scripts "$spec" \
+        # One shared finite budget; retry only a metadata-confirmed transient npm tarball 404.
+        bun "$ROOT/scripts/install-client-registry-recovery.mjs" bun add -g --ignore-scripts "$spec" \
           || matrix_fail "bun add -g --ignore-scripts $spec failed"
       fi
       installed="${BUN_INSTALL:-$HOME/.bun}/bin/$command_name"
