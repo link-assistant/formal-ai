@@ -87,3 +87,34 @@ because the aggregate run was pending. Its source classification repair passed
 112 source controls, which is not live acceptance and does not make that failed
 attempt green. Manual fixture bodies, physical/source/queue/output guards and
 all retained diagnostic evidence remain intact; no manual dispatch is implied.
+
+## Temporary instrumented HTTP measurement debt
+
+`PR1329-coverage-how-to-http-optout-latency` records one release-first exception
+to instrumented coverage selection. On head
+`4ab04ffa3eb5cfd0b48597a6cd2e3033abe2ee71`,
+[coverage shard 26](https://github.com/link-assistant/formal-ai/actions/runs/39722357450/job/119645561072)
+failed only
+`issue_991_how_to_http::chat_completions_honours_a_service_opt_out`.
+The private offline capture fixture became healthy and accepted the POST, but
+the request reached its unchanged 30-second total response deadline. The log
+does not establish the computation hotspot or a transport defect. Its complete
+526,046-byte log has SHA256
+`5fc19d674768e70e3a80a0966c9076b224c8c24bdd5459975eb5d16ccd32793b`.
+
+Under the owner's authorization to defer noncritical tests for the next usable
+release, coverage temporarily excludes exactly that full test name through its
+existing selection filter. Ordinary native full CI still selects the original
+HTTP test with every assertion and the original deadline; the library and
+browser service-opt-out controls remain required. The unchanged ordinary test
+[passed on the preceding source](https://github.com/link-assistant/formal-ai/actions/runs/39720271433/job/119635342874),
+which is historical acceptance rather than new instrumented acceptance.
+This is an unmeasured instrumented scenario, not a passed test or a fixed
+latency defect. The original failed attempt remains a failure. Shard completion,
+profile merging, coverage thresholds and production/HelloWorld acceptance stay
+strict.
+
+Restore this exact instrumented case after bounded stage profiling identifies
+and repairs the slow path, and the unchanged offline request completes within
+its existing 30-second deadline under hosted coverage. Do not substitute a
+larger timeout, cached answer, reduced assertions or a broad HTTP-test exclusion.

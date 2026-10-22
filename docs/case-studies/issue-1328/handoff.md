@@ -922,3 +922,37 @@ Live per-attempt tool, lockfile, status and elapsed records survive isolated
 output capture. All lockfiles still need real audit verdicts. Bun keeps its
 existing process bound; its transport cause remains unknown. Neither an
 unanswered audit nor an advisory is treated as a successful audit.
+
+### Current coverage-only release debt
+
+The complete CI census for `4ab04ffa3eb5cfd0b48597a6cd2e3033abe2ee71`
+finished with all noncoverage workflows successful. All native targets and
+desktop packaging passed, CodeQL completed with no new alerts, canonical
+requirements matched, and all six dependency audits returned clean first-attempt
+verdicts. Native full/SPEC jobs may reuse an identical-input green-ledger result;
+that is not fresh exact-head execution. Coverage shard 13 freshly completed its
+previously interrupted multilingual case and every selected obligation.
+
+The remaining real failure was the offline how-to service-opt-out HTTP case in
+[coverage shard 26](https://github.com/link-assistant/formal-ai/actions/runs/39722357450/job/119645561072).
+The server accepted the request, then its caller reached the unchanged
+30-second response deadline. `WouldBlock` is the final socket timeout error;
+it does not prove thread/resource exhaustion or a framing bug. No computation
+hotspot is established. Preserve the complete mixed log, SHA256
+`5fc19d674768e70e3a80a0966c9076b224c8c24bdd5459975eb5d16ccd32793b`,
+526,046 bytes, and the correctly failed coverage aggregate.
+
+The owner's release-first authorization permits temporary deferral of this
+noncritical instrumented scenario. The existing coverage selection now excludes
+only `issue_991_how_to_http::chat_completions_honours_a_service_opt_out`;
+ordinary native full CI retains that original test, all assertions and its
+30-second deadline. The original ordinary case
+[passed on source 829](https://github.com/link-assistant/formal-ai/actions/runs/39720271433/job/119635342874),
+but that historical result is not instrumented acceptance. Library and browser
+opt-out controls remain required. This deferral does not claim the slow path is
+fixed. The stable debt ID and restoration condition are recorded in
+[the critical scope](critical-delivery-scope.md#temporary-instrumented-http-measurement-debt).
+All remaining selected coverage, profile/ratchet and production/released-client
+gates remain required. Qualify the complete known failure batch and publish one
+ordinary push, then require actual latest-head CI before normal merge. No local
+Rust build, extra E2E attempt or timeout increase is needed for this deferral.
