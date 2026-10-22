@@ -1078,3 +1078,14 @@ Continue collecting all default-branch failures into one repair batch. Require
 actual follow-up-head CI before normal merge, then monitor its production
 release and the original three-client acceptance; the merged candidate and
 historical compiler successes cannot substitute for those observations.
+
+The follow-up is [PR 1394](https://github.com/link-assistant/formal-ai/pull/1394).
+Its first lint lane failed only `check-pull-request-link`: the description
+omitted an explicit issue disposition. Preserve the complete 396,505-byte log
+from [job 119788589006](https://github.com/link-assistant/formal-ai/actions/runs/39767617743/job/119788589006),
+SHA256 `0d2f2b0a95fa9ebec09264722539b6ff8fccd26bdce5cda5a1d538dffe483016`.
+Add the required whole-line pending-acceptance reference to issue 1364 rather
+than a false closing claim. Released-client acceptance remains unfinished.
+The compiler and production gates themselves need no further change for this
+description failure. The next ordinary source update records these PR/debt
+links and lets CI check the corrected description without a manual rerun.

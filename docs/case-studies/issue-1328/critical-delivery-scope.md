@@ -181,7 +181,8 @@ optional math integration a release prerequisite.
 ## Temporary real-prover installation debt
 
 `PR1329-prover-cold-install-throughput` records the failed merged-source setup
-on `9b800dc33a2c6ec8bed1e56a48d8c7c8a5934268`.
+on `9b800dc33a2c6ec8bed1e56a48d8c7c8a5934268`. The release-first deferral is
+tracked in [PR 1394](https://github.com/link-assistant/formal-ai/pull/1394).
 [The actual prover job](https://github.com/link-assistant/formal-ai/actions/runs/39764481959/job/119776755681)
 exhausted both 120-second attempts and failed after 247 seconds of its
 250-second installation budget. The first attempt used Azure; the second
