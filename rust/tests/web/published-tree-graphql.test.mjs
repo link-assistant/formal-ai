@@ -185,6 +185,21 @@ test('GraphQL physical failures still consume exactly one query with no retry',a
  await assert.rejects(reader.readTree('a'.repeat(40)),/GitHub read failed/u);
  assert.equal(calls,1);assert.equal(reader.statistics().graphqlRequests,1);
 });
+test('standard parenthetical GitHub HTTP diagnostics preserve denial and retry policy',async()=>{
+ for(const status of [400,401,403,404,429,500,502,503])for(const format of [
+  code=>'gh: HTTP '+code+'\n',code=>'gh: HTTP '+code+': public diagnostic\n',
+  code=>'gh: public diagnostic (HTTP '+code+')\n'
+ ])for(const kind of ['rest','graphql']){
+  let calls=0;const observed=[];
+  const reader=githubReader({repository:treeRepository,diagnostics:x=>observed.push(x),transport:async()=>{
+   calls++;return {status:1,signal:null,cleanup_complete:true,stdout:Buffer.alloc(0),stderr:Buffer.from(format(status))};
+  }});
+  await assert.rejects(kind==='rest'?reader.read('repos/'+treeRepository+'/metadata'):reader.readTree('a'.repeat(40)),/GitHub read failed/u);
+  assert.equal(calls,kind==='rest'&&status>=500?2:1);
+  assert(observed.every(value=>value.httpStatus===status));
+  assert.equal(observed.at(-1).retrying,false);
+ }
+});
 test('a REST retry shares the original absolute deadline and cannot issue request513',async()=>{
  const saved=Date.now;let now=0;Date.now=()=>now;
  try{

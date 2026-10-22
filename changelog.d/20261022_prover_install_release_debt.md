@@ -11,4 +11,10 @@ fail-closed source authentication, refuse retries for known denials, partial
 responses, process uncertainty and GraphQL, and report private-safe request
 identities, attempts and failure digests.
 
+Recognize parenthetical GitHub CLI HTTP statuses so known access denials remain
+unretried. Reuse the validated official Ubuntu HTTPS mirror transform before
+Playwright installs browser system dependencies, retaining signed catalogs,
+the existing setup deadline and every browser smoke oracle. Missing browser
+publication evidence continues to fail installer checksum publication.
+
 Follow-up: [PR 1394](https://github.com/link-assistant/formal-ai/pull/1394).

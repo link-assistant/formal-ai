@@ -12,6 +12,7 @@ export const RELEASE_PROTOCOL_FILES = Object.freeze({
    'scripts/publish-browser-engine.mjs',
    'scripts/build-selected-wasm.mjs',
    'scripts/browser-engine-deadline.mjs',
+   'scripts/prepare-ubuntu-apt-mirror.sh',
    'scripts/browser-engine-cold-install.mjs',
    'scripts/release-publication-observation.mjs',
    'scripts/browser-engine-public-download.mjs',

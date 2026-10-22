@@ -40,7 +40,7 @@ export function githubReader({
       });
       if (result.status !== 0 || result.signal !== null || result.error || result.timed_out || result.cleanup_complete !== true) {
         const stdout = Buffer.from(result.stdout ?? ''), stderr = Buffer.from(result.stderr ?? '');
-        const http = /(?:^|\s)HTTP\s+([1-5][0-9]{2})(?=[:\s]|$)/u.exec(stderr.toString());
+        const http = /(?:^|[\s(])HTTP\s+([1-5][0-9]{2})(?=[:\s)]|$)/u.exec(stderr.toString());
         const httpStatus = http ? Number(http[1]) : null;
         const errorCode = result.error?.code;
         // Only unchanged, read-only REST calls may repeat once. Failed bodies,

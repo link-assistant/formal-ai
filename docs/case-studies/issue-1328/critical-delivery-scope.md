@@ -255,8 +255,38 @@ client-effect authorization remains fail-closed.
 
 Report the operation family, request identity hash, physical attempt, status,
 HTTP status when present, byte counts and output digests for recovered as well
-as fatal failures. Recognize the colon in standard GitHub CLI HTTP errors.
+as fatal failures. Recognize both bare/colon and parenthetical `(HTTP 422)`
+GitHub CLI HTTP errors, including their closing delimiter.
 Never echo raw arguments, response bodies or diagnostics. Offline controls
 cover the actual selector path, stale-source refusal, recovery and repeated
 failure bounds; they do not reproduce the suppressed diagnostic or establish
 live transport recovery. Keep that distinction in hosted acceptance evidence.
+
+## Browser system-dependency publication blocker
+
+The [browser package job](https://github.com/link-assistant/formal-ai/actions/runs/39797277559/job/119889539325)
+completed npm setup, then exhausted its unchanged setup deadline while
+Playwright's APT subprocess downloaded fonts from the Azure Ubuntu archive.
+The operation exited 124 after 295 seconds; no browser smoke oracle ran.
+Retain the complete log, SHA256
+`fe41d2d907cb165ad40971da90e4e8677f3151efa441ec3409f6edcd0002f2d3`.
+This establishes the stalled phase and endpoint, rather than an underlying
+network cause or an assertion failure.
+
+Extract the existing validated mirror transform into one shared helper. The
+prover fallback still invokes it only within its existing second attempt;
+browser setup explicitly selects the same official HTTPS archive before the
+original Playwright install. Preserve signed catalogs, package hashes, source
+stanzas, unrelated hosts, comments, priorities, file mode and path/ownership
+checks. Capture the helper with the immutable browser protocol and include it
+where the APT wrapper is packaged. Keep the five-minute step, operation/job
+deadlines and actual browser worker/cold-install assertions unchanged.
+Hosted throughput and browser publication still require fresh acceptance.
+
+The subsequent [desktop checksum job](https://github.com/link-assistant/formal-ai/actions/runs/39797277574/job/119920164267)
+correctly refused the absent `browser-publication.json` receipt. Its complete
+log has SHA256
+`d16bc1ffe5b6214c7f1c44022ab783cd93eef9c39d6a498918feecc0a9b3a3d8`.
+This is a consequence of failed browser publication; no checksum corruption
+was observed. Keep that exact receipt requirement and rerun it through the
+next normally triggered release after browser setup succeeds.

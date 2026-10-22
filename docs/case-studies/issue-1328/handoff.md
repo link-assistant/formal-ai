@@ -1116,3 +1116,23 @@ cannot accept this additional change: require fresh current-head results
 before the normal merge. This manual repair has zero autonomous Formal AI
 authorship credit. Continue monitoring actual release consumers and the original
 three task repositories; do not close issue 1364 prematurely.
+
+### Browser dependency setup and checksum cascade
+
+The main v0.355.1 release pipeline completed successfully. Independent data-only
+checks verified anonymous immutable full/slim GHCR and DockerHub manifests
+against the released source and executable receipts; these contain the merged
+PR 1329 changes. Installer/browser/download and original-client acceptance
+remain separate requirements.
+
+Browser publication then exhausted its existing setup deadline downloading
+Ubuntu fonts, before any browser smoke assertion. Desktop checksum publication
+subsequently refused the missing browser publication receipt. Preserve both
+complete failure logs and the precise limits in the
+[critical scope](critical-delivery-scope.md#browser-system-dependency-publication-blocker).
+Batch the shared validated HTTPS mirror preparation, immutable protocol/package
+dependency, HTTP diagnostic delimiter correction and regression controls into
+PR 1394. Keep every existing deadline, signature check and browser/checksum
+oracle. Earlier current-head green CI does not accept these added changes;
+require a fresh exact-head census before the normal merge. The suppressed
+admission diagnostic's underlying cause remains unknown.
