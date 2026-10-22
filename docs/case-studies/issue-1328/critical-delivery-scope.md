@@ -175,7 +175,38 @@ package choices, cached downloads and normal APT integrity verification remain.
 Other callers keep their existing behavior. The same two 120-second attempts,
 five-second pause, 250-second stage and original compiler oracles remain.
 Offline controls cannot establish hosted download throughput or real prover
-compilation. Require the complete current-head hosted result.
+compilation. The subsequent main-branch failure below supersedes making this
+optional math integration a release prerequisite.
+
+## Temporary real-prover installation debt
+
+`PR1329-prover-cold-install-throughput` records the failed merged-source setup
+on `9b800dc33a2c6ec8bed1e56a48d8c7c8a5934268`.
+[The actual prover job](https://github.com/link-assistant/formal-ai/actions/runs/39764481959/job/119776755681)
+exhausted both 120-second attempts and failed after 247 seconds of its
+250-second installation budget. The first attempt used Azure; the second
+actually selected the official HTTPS Ubuntu archive, progressed past the
+26.5 MB standard library, and then reached its deadline downloading the
+27.7 MB core library. Neither compiler ran. Preserve its complete 30,164-byte
+log, SHA256 `098fc63823d20ea9e3187d0a146501fff7ed47dcca7524f7d30f1efc9b905b63`.
+These observations establish insufficient bounded setup on this runner;
+they do not establish a theorem defect or a precise network root cause.
+
+Under the owner's release-first authorization, this one noncritical math
+integration now requires repository variable
+`FORMAL_AI_REAL_PROVER_INTEGRATION=true`. Its default skipped state is
+explicitly unverified, not a successful compiler run. When enabled, the
+original Lean and Rocq units, assertions, versions and all installation,
+compilation and job deadlines remain required. Install with
+`--no-install-recommends` to avoid optional package dependencies; mandatory
+Coq/OCaml downloads remain, so this alone is not a throughput fix.
+JavaScript prover-adapter controls and every production, coding, released-client
+and public-download acceptance gate remain required.
+
+Restore unconditional real-prover integration after a bounded, authenticated
+cold-install strategy succeeds on hosted runners and both unchanged compiler
+oracles execute successfully. Keep the failed main attempt and any later
+observations separate; no older successful run establishes current acceptance.
 
 ## Reset-test isolation and unknown-prompt latency debt
 

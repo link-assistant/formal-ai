@@ -1051,3 +1051,30 @@ coverage elsewhere and track `PR1329-browser-unknown-seed-latency` as unresolved
 profiling debt, not a product latency fix. This direct fixture repair receives
 zero autonomous Formal AI authorship credit. Require actual hosted acceptance
 on the next source and retain every other pending check as unaccepted.
+
+### Merged-source prover setup follow-up
+
+PR 1329 merged normally as
+`9b800dc33a2c6ec8bed1e56a48d8c7c8a5934268` after its complete check inventory
+was green. The subsequent default-branch
+[prover installation](https://github.com/link-assistant/formal-ai/actions/runs/39764481959/job/119776755681)
+failed before either compiler ran. The complete 30,164-byte mixed log has
+SHA256 `098fc63823d20ea9e3187d0a146501fff7ed47dcca7524f7d30f1efc9b905b63`.
+Both existing attempts reached their 120-second deadlines; the second did
+exercise the official HTTPS mirror alternate. Its progress is insufficient
+to establish that the mirror recovery solves cold-install throughput.
+
+The follow-up uses the owner's temporary noncritical-test deferral authority:
+only the real Lean/Rocq math integration requires explicit repository variable
+`FORMAL_AI_REAL_PROVER_INTEGRATION=true`. Keep its skipped result unaccepted.
+When enabled, install mandatory packages without recommendations and run every
+original compiler oracle under the same bounds. This is release debt, not a
+fixed network root cause. The stable debt and restoration conditions are in
+[the critical scope](critical-delivery-scope.md#temporary-real-prover-installation-debt).
+No production, coding, released-client or public-download gate is deferred.
+Manual changes receive zero autonomous Formal AI authorship credit.
+
+Continue collecting all default-branch failures into one repair batch. Require
+actual follow-up-head CI before normal merge, then monitor its production
+release and the original three-client acceptance; the merged candidate and
+historical compiler successes cannot substitute for those observations.
