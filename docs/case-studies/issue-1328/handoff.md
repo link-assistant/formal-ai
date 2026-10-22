@@ -997,3 +997,36 @@ cleanup cannot reopen the retry. Bounded captured output is replayed after each
 attempt with explicit phase records; live child-output streaming is not claimed.
 Source/emulated recovery controls cannot replace actual hosted installation and
 the original model/E2E or released-client acceptance.
+
+
+### Current Agent model acceptance and prover setup failure
+
+On `c28e28d4fa71e1cc0ddcd35c12d1ce97eb223c59`,
+[Agent E2E](https://github.com/link-assistant/formal-ai/actions/runs/39736536093/job/119688639024)
+succeeded under hosted Bun 1.4.2. The pinned client installed on its first
+attempt; the original greeting, real tool file-read, summary, interactive,
+persistent-config undo and relocated-config oracles all executed successfully.
+The normal installation/model path is accepted on that source. No live outage
+retry occurred. Its full 38,622-byte log has SHA256
+`03c5e7c8852cad7a9e1c5f4526581a71e9b4514626b2dbd2561ffb87c760a501`.
+Two genuine browser Worker tests and clean CodeQL also passed on the same
+authenticated source tree. These are candidate observations, not a released
+three-client or all-eleven acceptance.
+
+The next actual blocker was
+[prover setup](https://github.com/link-assistant/formal-ai/actions/runs/39736536224/job/119691094928).
+Its complete 31,707-byte log has SHA256
+`022474bff847c92d94e3459479c47deae81b7646abb0bfed1c9312e83705d3ba`.
+Both existing APT attempts hit their 120-second deadlines through the same
+Azure Ubuntu archive; neither Lean nor Rocq compilation executed. The official
+runner-image source confirms a mirror list and signed Ubuntu source settings.
+Current HEAD-only observations find the official alternate index and exact Coq
+archive available, but prove neither throughput nor hosted recovery.
+
+The prover-only opt-in uses its existing second attempt to change the exact
+known Azure URI to the official HTTPS Ubuntu archive after a deadline failure.
+It preserves source trust settings, package choices, completed download cache,
+all attempt/stage/job bounds and both real compiler oracles. Other callers do
+not opt in. Retain the original failure, exercise the offline shell controls,
+and require actual current-head setup and compiler success before merge. This
+manual repair receives zero autonomous Formal AI authorship credit.

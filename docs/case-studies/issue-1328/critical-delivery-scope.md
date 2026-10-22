@@ -157,3 +157,22 @@ authentication errors, other failures and uncertain child cleanup remain fatal.
 Both attempts and probes share one finite install deadline inside the unchanged
 job cap. Retain bounded diagnostic output and attempt identities. A successful
 installation still requires the original executable checks and model tests.
+
+
+## Prover archive mirror recovery
+
+The prover setup on source `c28e28d4fa71e1cc0ddcd35c12d1ce97eb223c59`
+exhausted its two bounded APT attempts before either compiler oracle ran. The
+first attempt downloaded most dependencies and reached Coq with about five
+seconds left; the second spent its deadline on the same Coq archive through
+the configured Azure Ubuntu mirror. This establishes a setup-download failure,
+not a theorem or compiler failure, and does not establish a global outage.
+
+The prover job opts into an official Ubuntu mirror alternate for its existing
+second attempt after a deadline failure. Only the exact known Azure archive URI
+in the runner mirror list changes; source suites, components, signing keys,
+package choices, cached downloads and normal APT integrity verification remain.
+Other callers keep their existing behavior. The same two 120-second attempts,
+five-second pause, 250-second stage and original compiler oracles remain.
+Offline controls cannot establish hosted download throughput or real prover
+compilation. Require the complete current-head hosted result.

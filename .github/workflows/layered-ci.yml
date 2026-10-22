@@ -318,6 +318,7 @@ jobs:
           FORMAL_AI_APT_ATTEMPTS: 2
           FORMAL_AI_APT_ATTEMPT_SECONDS: 120
           FORMAL_AI_APT_RETRY_DELAY_SECONDS: 5
+          FORMAL_AI_APT_OFFICIAL_MIRROR_FALLBACK: "1"
         run: >-
           scripts/run-with-budget-warning.sh
           "$TEST_BUDGET_SECONDS" "Install Rocq"
