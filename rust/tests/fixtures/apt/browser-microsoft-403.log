@@ -1,0 +1,3 @@
+2026-10-22T22:03:32.1477683Z E: Failed to fetch https://packages.microsoft.com/ubuntu/24.04/prod/dists/noble/InRelease  403  Forbidden [IP: 13.107.246.40 443]
+2026-10-22T22:03:32.1479468Z E: The repository 'https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease' is no longer signed.
+2026-10-22T22:03:32.1504902Z Error: Installation process exited with code: 100
