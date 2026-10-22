@@ -318,6 +318,7 @@ jobs:
           FORMAL_AI_APT_ATTEMPTS: 2
           FORMAL_AI_APT_ATTEMPT_SECONDS: 120
           FORMAL_AI_APT_RETRY_DELAY_SECONDS: 5
+          FORMAL_AI_APT_OFFICIAL_MIRROR_FALLBACK: "1"
         run: >-
           scripts/run-with-budget-warning.sh
           "$TEST_BUDGET_SECONDS" "Install Rocq"
@@ -514,3 +515,17 @@ jobs:
       - uses: ./.github/actions/formal-ai-binary
       - name: Both servers answer the parity corpus alike (R1013)
         run: node scripts/check-server-parity.mjs --rust-binary rust/target/release/formal-ai --list
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - name: Install the trusted source-operation bundle dependencies
+        run: bun install --frozen-lockfile --ignore-scripts
+      - name: Native optional installed source operations preserve physical consumers
+        run: node scripts/check-native-source-operations.mjs --rust-binary rust/target/release/formal-ai --resource-home "$GITHUB_WORKSPACE"
+      - name: Preserve bounded native source-operation evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: native-source-operations-evidence
+          path: native-source-operations-evidence.json
+          if-no-files-found: error

@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=071a9f31caaf116dc2103622e6923bc3bdd8e557e60b1de1647e20663e8056d7 bytes=5303
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=56cd72df6a79cc5ba8179ad08ac89005ae354ec584a0ec926afb986b1235c9f4 bytes=5340
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds callback-loops items=1; import-pruning items=0 carried=1; string-methods items=1
 
@@ -326,13 +326,18 @@ pub fn wa_str_split(text: String, separator: String) -> Vec<String> {
     text.split(separator.as_str()).map(String::from).collect() }
 // formal-ai:workaround-prelude end
 
+// meta-language:translated JavaScript import_statement items=1 sha256=ea67ac58c941251801bc82c22574a8e03c0fd9db18bf89015315cef5823b17a3
+// | /** Mirrors `enum SourceRoot`: `{name, directory, owned_extension}` per root. */
+// | import { lower as canonicalUnaryLower } from './rust_str.mjs';
+use crate::rust_str::lower as canonical_unary_lower;
+
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
 // formal-ai:blockers Object.freeze | null | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .replace()
-// formal-ai:blockers arrow callback of .replace() | method call .replace() | null | regular expression | sibling value
+// formal-ai:blockers method call .replace() | null | regular expression | sibling value
 
 // formal-ai:workaround callback-loops+string-methods JavaScript export_statement items=2 sha256=3664f3509b29f10ce0581146ed22cef087912c99f88884ea00d31a5e9d91e2c0
 // | /** Mirrors `fn escapes_root`. @param {string} repoRelative */
@@ -394,7 +399,7 @@ pub fn ml_escapes_root_loop2(mut wa_result1: bool, mut ml_values1: Vec<String>, 
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal method call .replace()
-// formal-ai:blockers arrow callback of .replace() | arrow function | method call .replace() | regular expression
+// formal-ai:blockers arrow function | method call .replace() | regular expression
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal method call .split()

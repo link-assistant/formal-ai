@@ -238,3 +238,145 @@ fn structured_events_cannot_hide_an_outer_process_or_unstructured_failure() {
         assert!(failure.contains(suffix), "{failure}");
     }
 }
+
+#[test]
+fn agent_result_preserves_the_captured_nested_exit_status() {
+    use formal_ai::agentic_coding::tool_result::{StepOutcome, step_outcome};
+    let render = |label: &str, raw: &str, prompt: &str| {
+        let request: formal_ai::ChatCompletionRequest = serde_json::from_value(json!({
+            "model":"formal-ai",
+            "messages":[
+                {"role":"user","content":prompt},
+                {"role":"assistant","content":"","tool_calls":[{"id":"observed-render","type":"function",
+                    "function":{"name":"bash","arguments":json!({"command":label}).to_string()}}]},
+                {"role":"tool","name":"bash","tool_call_id":"observed-render","content":raw}
+            ],
+            "tools":[{"type":"function","function":{"name":"bash","parameters":{"type":"object",
+                "properties":{"command":{"type":"string"}},"required":["command"],"additionalProperties":false}}}]
+        })).expect("the observed provider result has a declared public protocol frame");
+        let solver = UniversalSolver::new(formal_ai::SolverConfig {
+            agent_mode: true,
+            ..Default::default()
+        });
+        formal_ai::create_chat_completion_with_solver(&request, &solver)
+            .choices
+            .into_iter()
+            .next()
+            .expect("the public protocol returns an observed-result answer")
+            .message
+            .content
+            .plain_text()
+    };
+    let packet: serde_json::Value = serde_json::from_str(include_str!(
+        "../../fixtures/issue-1364-agent-tool-use.json"
+    ))
+    .expect("captured redacted provider fixture");
+    let frame = &packet["fixture"];
+    let raw = frame.to_string();
+    assert_eq!(step_outcome(&raw), StepOutcome::Failed);
+    let message = render(
+        "scalac Main.scala",
+        &raw,
+        "Explain the observed result in English.",
+    );
+    assert!(message.contains("127"));
+    assert!(!message.to_lowercase().contains("no exit code"));
+    for code in [1, 13, 42, 127, -1] {
+        let mut changed = frame.clone();
+        changed["part"]["state"]["error"] = "The compiler is unavailable.".into();
+        changed["part"]["state"]["metadata"]["exit"] = code.into();
+        let raw = changed.to_string();
+        assert_eq!(step_outcome(&raw), StepOutcome::Failed);
+        let message = render("exec", &raw, "Explain the observed result in English.");
+        assert!(message.contains(&code.to_string()));
+        assert!(!message.to_lowercase().contains("no exit code"));
+    }
+}
+
+#[test]
+fn completed_provider_parts_retain_outer_failure_signals() {
+    use formal_ai::agentic_coding::tool_result::{StepOutcome, step_outcome};
+    let state =
+        serde_json::json!({"status":"completed","metadata":{"exit":0,"output":"tool output"}});
+    let frame =
+        serde_json::json!({"type":"tool_use","part":{"type":"tool","tool":"exec","state":state}});
+    assert_eq!(step_outcome(&frame.to_string()), StepOutcome::Succeeded);
+    for extra in [
+        serde_json::json!({"status":"error"}),
+        serde_json::json!({"outcome":"failed"}),
+        serde_json::json!({"status_code":500}),
+        serde_json::json!({"success":false}),
+        serde_json::json!({"is_error":true}),
+        serde_json::json!({"timed_out":true}),
+        serde_json::json!({"signal":"SIGTERM"}),
+    ] {
+        let mut changed = frame.clone();
+        changed
+            .as_object_mut()
+            .expect("frame")
+            .extend(extra.as_object().expect("signals").clone());
+        assert_eq!(step_outcome(&changed.to_string()), StepOutcome::Failed);
+    }
+}
+
+#[test]
+fn typed_git_status_stdout_preserves_leading_columns_before_restart_hygiene() {
+    let task = "Issue to solve: https://github.com/example/fixture/issues/1\nYour prepared Pull Request: https://github.com/example/fixture/pull/2\nUNCOMMITTED CHANGES DETECTED\n```\n M main\n```\nContinue.";
+    let status = "git status --porcelain --untracked-files=all";
+    let frame = serde_json::json!({"type":"tool_use","part":{"type":"tool","tool":"bash",
+        "state":{"status":"completed","metadata":{"exit":0,"output":" M main\n"}}}});
+    let mut messages = vec![
+        formal_ai::ChatMessage::user(task),
+        formal_ai::ChatMessage::assistant_tool_calls(vec![formal_ai::ToolCall::function(
+            "status",
+            "bash",
+            serde_json::json!({"command":status}).to_string(),
+        )]),
+        formal_ai::ChatMessage::tool_result("status", "bash", frame.to_string()),
+    ];
+    let Some(formal_ai::agentic_coding::AgenticPlan::ToolCalls(calls)) =
+        formal_ai::agentic_coding::plan_chat_step(&messages, &["bash"])
+    else {
+        panic!("exact typed status must request owned hygiene instead of a scope refusal");
+    };
+    assert_eq!(calls.len(), 1);
+    let arguments: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
+    let command = arguments["command"].as_str().unwrap();
+    assert!(command.contains("python3"));
+    assert!(!command.contains("gh pr ready"));
+    let mut failed = frame;
+    failed["isError"] = true.into();
+    messages[2] = formal_ai::ChatMessage::tool_result("status", "bash", failed.to_string());
+    assert!(matches!(
+        formal_ai::agentic_coding::plan_chat_step(&messages, &["bash"]),
+        Some(formal_ai::agentic_coding::AgenticPlan::Final(_))
+    ));
+}
+
+#[test]
+fn original_three_program_recipes_probe_external_tools_before_compilation() {
+    for language in ["Rust", "Kotlin", "Scala"] {
+        let prompt = format!("Write a program in {language} that prints \"Hello, World!\".");
+        let answer = UniversalSolver::default().solve(&prompt);
+        let recipe = answer.execution_recipe.expect("original language recipe");
+        let verifier = recipe
+            .supporting_files
+            .iter()
+            .find(|file| file.path == "tests/verify-output.sh")
+            .expect("owned verifier");
+        let probe = verifier.source.find("command -v ").expect("tool preflight");
+        let workspace = verifier
+            .source
+            .find("verification_dir=$(mktemp")
+            .expect("isolated workspace");
+        assert!(
+            probe < workspace,
+            "all prerequisites precede compiler outputs: {language}"
+        );
+        assert!(
+            verifier
+                .source
+                .contains("__formal_ai_owned_process_failed_0__")
+        );
+    }
+}

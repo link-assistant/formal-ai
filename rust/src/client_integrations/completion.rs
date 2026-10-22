@@ -284,7 +284,13 @@ pub(super) fn run_to_completion(
     } = invocation;
     let task = caller.task();
     let initial_args = build_invocation_args(integration, caller, context, options, initial_resume);
-    let mut output = clone_command(command, &initial_args).output()?;
+    let mut output = crate::bounded_process::command_output(
+        clone_command(command, &initial_args),
+        std::time::Duration::from_mins(21),
+        128 * 1024 * 1024,
+        64 * 1024 * 1024,
+    )
+    .map_err(|failure| std::io::Error::new(failure.kind(), failure))?;
     authoring.observe_output(&output, &context.endpoint_base_url)?;
     let mut workspace_changes = authoring.changes()?;
     let mut ladder = authoring.plan_recovery(&integration.id).into_iter();
@@ -317,7 +323,13 @@ pub(super) fn run_to_completion(
             options,
             resume_id.as_deref(),
         );
-        output = clone_command(command, &retry_args).output()?;
+        output = crate::bounded_process::command_output(
+            clone_command(command, &retry_args),
+            std::time::Duration::from_mins(21),
+            128 * 1024 * 1024,
+            64 * 1024 * 1024,
+        )
+        .map_err(|failure| std::io::Error::new(failure.kind(), failure))?;
         authoring.observe_output(&output, &context.endpoint_base_url)?;
         workspace_changes = authoring.changes()?;
         authoring.record_recovery(&integration.id, &strategy, !workspace_changes.is_empty())?;
@@ -366,10 +378,19 @@ fn ignore_scratch_directory(workspace: &Path, scratch: &str) -> Result<(), Box<d
     if scratch.is_empty() || Path::new(scratch).is_absolute() || scratch.contains("..") {
         return Err("completion scratch directory must be a safe relative path".into());
     }
-    let output = Command::new("git")
-        .args(["rev-parse", "--git-path", "info/exclude"])
-        .current_dir(workspace)
-        .output()?;
+    let output = crate::bounded_process::command_output(
+        {
+            let mut bounded_child_command = Command::new("git");
+            bounded_child_command
+                .args(["rev-parse", "--git-path", "info/exclude"])
+                .current_dir(workspace);
+            bounded_child_command
+        },
+        std::time::Duration::from_secs(30),
+        64 * 1024 * 1024,
+        16 * 1024 * 1024,
+    )
+    .map_err(|failure| std::io::Error::new(failure.kind(), failure))?;
     if !output.status.success() {
         return Ok(());
     }

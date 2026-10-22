@@ -46,12 +46,21 @@ impl RepositoryCorpus {
 }
 
 fn tracked_paths(root: &Path) -> Option<Vec<PathBuf>> {
-    let output = Command::new("git")
-        .args(["-C"])
-        .arg(root)
-        .args(["ls-files", "-z"])
-        .output()
-        .ok()?;
+    let output = crate::bounded_process::command_output(
+        {
+            let mut bounded_child_command = Command::new("git");
+            bounded_child_command
+                .args(["-C"])
+                .arg(root)
+                .args(["ls-files", "-z"]);
+            bounded_child_command
+        },
+        std::time::Duration::from_secs(30),
+        64 * 1024 * 1024,
+        16 * 1024 * 1024,
+    )
+    .map_err(|failure| std::io::Error::new(failure.kind(), failure))
+    .ok()?;
     if !output.status.success() {
         return None;
     }

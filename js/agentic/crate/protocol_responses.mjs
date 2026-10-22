@@ -50,9 +50,22 @@ export function responseArgumentsForTool(tools, toolName, args, userPrompt, work
     return args;
   }
   if (!isObject(source)) return args;
-  const required = isObject(schema) && Array.isArray(schema.required) ? schema.required : [];
+  return jsonText(projectSchemaValue(source, schema, definition, userPrompt, workspace, 0));
+}
+
+/** Mirrors `fn project_schema_value` in rust/src/protocol_responses.rs; invalid values remain available to boundary validation. */
+function projectSchemaValue(source, schema, definition, userPrompt, workspace, depth) {
+  if (depth > 32 || !isObject(schema) || has(schema, '$ref')) return source;
+  if (Array.isArray(source)) {
+    if (!has(schema, 'items')) return source;
+    return source.map((item) => projectSchemaValue(item, schema.items, definition, userPrompt, workspace, depth + 1));
+  }
+  if (!isObject(source)) return source;
+  const properties = isObject(schema.properties) ? schema.properties : null;
+  if (!properties || !Object.keys(properties).length) return source;
+  const required = Array.isArray(schema.required) ? schema.required : [];
   const createsFile = callWritesBytes(properties, source);
-  const projected = {};
+  const projected = Object.create(null);
   for (const name of sortedKeys(properties)) {
     const propertySchema = properties[name];
     let value = has(source, name) ? source[name] : semanticAlias(name, source, userPrompt);
@@ -60,14 +73,13 @@ export function responseArgumentsForTool(tools, toolName, args, userPrompt, work
       value = missingRequiredValue(propertySchema, name, userPrompt);
     }
     if (value === undefined) continue;
-    value = constrainToSchema(value, propertySchema, name, userPrompt);
     if (typeof value === 'string' && demandsAbsolutePath(definition, name, propertySchema)) {
       const absolute = absolutePath(value, workspace, createsFile);
       if (absolute !== null) value = absolute;
     }
-    projected[name] = value;
+    projected[name] = projectSchemaValue(value, propertySchema, definition, userPrompt, workspace, depth + 1);
   }
-  return jsonText(projected);
+  return projected;
 }
 
 /** Mirrors `fn tool_parameters_schema`; `undefined` when absent. */
@@ -83,7 +95,7 @@ function toolParametersSchema(tool) {
 const ALIASES = [
   [['path', 'filePath', 'file_path', 'absolute_path'], ['path', 'filePath', 'file_path', 'absolute_path']],
   [['command', 'cmd'], ['command', 'cmd']],
-  [['query', 'pattern'], ['query', 'pattern']],
+  [['query', 'pattern', 'input'], ['query', 'pattern', 'input']],
   [['paths', 'file_paths', 'files'], ['paths', 'file_paths', 'files']],
   [['old', 'oldString', 'old_string', 'old_str'], ['old', 'oldString', 'old_string', 'old_str']],
   [['new', 'newString', 'new_string', 'new_str'], ['new', 'newString', 'new_string', 'new_str']],
@@ -150,72 +162,16 @@ function callWritesBytes(properties, source) {
   return CONTENT_PROPERTIES.some((name) => has(properties, name) && has(source, name));
 }
 
-/** Mirrors `fn missing_required_value`; `undefined` for `None`. */
+const FREE_TEXT = ['prompt', 'instruction', 'message', 'description', 'commit_message', 'commitMessage'];
+
+/** Explicit schema defaults/constants and grounded semantic fields only. */
 function missingRequiredValue(schema, name, userPrompt) {
-  const hasDefault = isObject(schema) && has(schema, 'default');
-  if (!hasDefault && isIdentityArgument(name)) {
-    return groundedIdentityArgument(name, userPrompt) ?? undefined;
-  }
-  if (!hasDefault && isObject(schema) && Array.isArray(schema.enum) && schema.enum.length > 1) return undefined;
-  return schemaDefault(schema, name, userPrompt);
-}
-
-const FREE_TEXT = ['prompt', 'instruction', 'message', 'commit_message', 'commitMessage'];
-
-/** Mirrors `fn schema_default`. */
-function schemaDefault(schema, name, userPrompt) {
   if (isObject(schema) && has(schema, 'default')) return schema.default;
-  if (isObject(schema) && Array.isArray(schema.enum) && schema.enum.length) return schema.enum[0];
-  switch (isObject(schema) ? schema.type : undefined) {
-    case 'boolean': return name === 'login';
-    case 'array': return [];
-    case 'object': return {};
-    case 'integer':
-    case 'number': return 0;
-    case 'null': return null;
-    default: return FREE_TEXT.includes(name) ? userPrompt : '';
-  }
-}
-
-function jsonEqual(left, right) {
-  return jsonText(left) === jsonText(right);
-}
-
-/** Mirrors `fn constrain_to_schema`. */
-function constrainToSchema(value, schema, name, userPrompt) {
-  if (isObject(schema) && Array.isArray(schema.enum) && !schema.enum.some((option) => jsonEqual(option, value))) {
-    return schema.enum.length ? schema.enum[0] : value;
-  }
-  const kind = isObject(schema) ? schema.type : undefined;
-  if (kind === 'object') {
-    if (!isObject(value)) return schemaDefault(schema, name, userPrompt);
-    if (!isObject(schema.properties)) return value;
-    const required = Array.isArray(schema.required) ? schema.required : [];
-    const projected = {};
-    for (const childName of sortedKeys(schema.properties)) {
-      const childSchema = schema.properties[childName];
-      let child = has(value, childName) ? value[childName] : undefined;
-      if (child === undefined && required.some((entry) => entry === childName)) {
-        child = schemaDefault(childSchema, childName, userPrompt);
-      }
-      if (child !== undefined) projected[childName] = constrainToSchema(child, childSchema, childName, userPrompt);
-    }
-    return projected;
-  }
-  if (kind === 'array') {
-    if (!Array.isArray(value)) return schemaDefault(schema, name, userPrompt);
-    let values = [...value];
-    if (has(schema, 'items')) {
-      values = values.map((item) => constrainToSchema(item, schema.items, name, userPrompt));
-      const minimum = Number.isInteger(schema.minItems) && schema.minItems >= 0 ? Math.min(schema.minItems, 64) : 0;
-      while (values.length < minimum) values.push(schemaDefault(schema.items, name, userPrompt));
-    }
-    return values;
-  }
-  if (kind === 'string' && typeof value !== 'string') return schemaDefault(schema, name, userPrompt);
-  if (kind === 'boolean' && typeof value !== 'boolean') return schemaDefault(schema, name, userPrompt);
-  if (kind === 'integer' && !Number.isInteger(value)) return schemaDefault(schema, name, userPrompt);
-  if (kind === 'number' && typeof value !== 'number') return schemaDefault(schema, name, userPrompt);
-  if (kind === 'null' && value !== null) return null;
-  return value;
+  if (isObject(schema) && has(schema, 'const')) return schema.const;
+  if (isIdentityArgument(name)) return groundedIdentityArgument(name, userPrompt) ?? undefined;
+  if (isObject(schema) && Array.isArray(schema.enum)) return schema.enum.length === 1 ? schema.enum[0] : undefined;
+  if (FREE_TEXT.includes(name)) return userPrompt;
+  if (name === 'is_background') return false;
+  if (name === 'login') return true;
+  return undefined;
 }

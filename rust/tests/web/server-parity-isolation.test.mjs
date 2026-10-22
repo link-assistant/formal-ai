@@ -27,6 +27,23 @@ test('only explicitly owned cache prefixes normalize, with the entire record ide
  assert.equal(compareResponses(response(value(roots.rust)),response(wrong),'GET',roots).kind,'content');
 });
 
+test('health compares sink state and normalizes only the exact owned top-level log directory',()=>{
+ const logRoots={rust:'/owned/rust/logs',js:'/owned/js/logs'};
+ const health=directory=>({status:'ok',logs:{directory,file_sink:'active',stderr:true}});
+ const left=response(health(logRoots.rust));
+ const compare=body=>compareResponses(left,response(body),'GET',{},logRoots);
+ assert.equal(compare(health(logRoots.js)).kind,'same');
+ assert.equal(compareResponses(left,response(health(logRoots.js))).kind,'content');
+ for(const directory of ['/foreign/logs',logRoots.js+'/extra',logRoots.js+'-other',logRoots.rust]){
+  assert.equal(compare(health(directory)).kind,'content');
+ }
+ for(const logs of [{...health(logRoots.js).logs,file_sink:'failed'},{...health(logRoots.js).logs,stderr:false},{...health(logRoots.js).logs,failures:1}]){
+  assert.notEqual(compare({status:'ok',logs}).kind,'same');
+ }
+ const payload={answer:logRoots.js,directory:logRoots.js,nested:{logs:{directory:logRoots.js}},list:[{logs:{directory:logRoots.js}}]};
+ assert.deepEqual(normalize(payload,'',null,logRoots.js),payload);
+});
+
 test('SSE applies the same exact-root rule and retains protocol and payload differences',()=>{
  const stream=v=>({...response(v,'text/event-stream'),body:'event: response.completed\ndata: '+JSON.stringify(v)+'\n\n'});
  assert.equal(compareResponses(stream(value(roots.rust)),stream(value(roots.js)),'GET',roots).kind,'same');
@@ -38,6 +55,7 @@ test('the runner isolates runtime state and enables its explicit conversation-lo
  const env=createParityEnvironment('/private/parity-home','fixture-token',{FORMAL_AI_SILENT:'true',FORMAL_AI_CACHE_DIR:'/foreign',FORMAL_AI_AGENT_MODE:'1',PATH:'kept'});
  assert.equal(env.FORMAL_AI_CACHE_DIR,path.join('/private/parity-home','runtime-cache'));
  assert.equal(env.FORMAL_AI_DIALOG_LOG_DIR,path.join('/private/parity-home','dialogs'));
+ assert.equal(env.FORMAL_AI_LOG_DIR,path.join('/private/parity-home','logs'));
  assert.equal(env.FORMAL_AI_LOG_LEVEL,'error');assert.equal(env.FORMAL_AI_SILENT,undefined);assert.equal(env.FORMAL_AI_AGENT_MODE,undefined);assert.equal(env.PATH,'kept');
 });
 
@@ -96,4 +114,49 @@ test('the previous silent runner setup reproduces the recorded-conversation refu
   assert.equal(fs.existsSync(path.join(home,'dialogs','server-parity-learning.conversation.lino')),false);
   assert.equal(fs.existsSync(path.join(home,'dialogs','server-parity-learning.conversation.jsonl')),false);
  }finally{if(running)await new Promise(resolve=>running.server.close(resolve));fs.rmSync(home,{recursive:true,force:true});}
+});
+
+
+test('health memory paths compare exact relative identities within each constructor-owned home',()=>{
+ const homes={rust:'/owned/rust/home',js:'/owned/js/home'};
+ const health=(home,leaf='memory.lino')=>({status:'ok',memory:{active_path:home+'/'+leaf,configured_path:home+'/memory.lino',
+  schema_valid:true,writable:true,migration_needed:false}});
+ const left=response(health(homes.rust));
+ assert.equal(compareResponses(left,response(health(homes.js)),'GET',{}, {},homes).kind,'same');
+ assert.equal(compareResponses(left,response(health(homes.js))).kind,'content');
+ const normalizeMemory=value=>normalize(value,'',null,null,'',homes.js);
+ assert.deepEqual(normalizeMemory(health(homes.js)).memory,{active_path:'<runtime-memory>/memory.lino',
+  configured_path:'<runtime-memory>/memory.lino',schema_valid:true,writable:true,migration_needed:false});
+ for(const leaf of ['memory.lino.sidecar','nested/memory.lino']){
+  assert.equal(compareResponses(response(health(homes.rust,leaf)),response(health(homes.js,leaf)),'GET',{}, {},homes).kind,'same');
+  assert.equal(compareResponses(left,response(health(homes.js,leaf)),'GET',{}, {},homes).kind,'content');
+ }
+ for(const wrong of ['memory.lino','/foreign/memory.lino',homes.js+'-other/memory.lino',
+  homes.rust+'/memory.lino',homes.js+'/../memory.lino',homes.js+'/./memory.lino',homes.js+'/different.lino']){
+  const changed=health(homes.js);changed.memory.active_path=wrong;
+  assert.equal(compareResponses(left,response(changed),'GET',{}, {},homes).kind,'content');
+ }
+ const payload={answer:homes.js+'/memory.lino',active_path:homes.js+'/memory.lino',
+  nested:{memory:health(homes.js).memory},list:[health(homes.js)]};
+ assert.deepEqual(normalizeMemory(payload),payload);
+ assert.deepEqual(normalize(health('relative'),'','','','', 'relative'),health('relative'));
+});
+
+test('memory normalization never erases sidecar configured-path or schema differences',()=>{
+ const homes={rust:'/owned/rust/home',js:'/owned/js/home'};
+ const health=home=>({memory:{active_path:home+'/memory.lino',configured_path:home+'/memory.lino',schema_valid:true}});
+ for(const mutate of [x=>x.memory.configured_path+='.sidecar',x=>x.memory.schema_valid=false,
+  x=>x.memory.active_path=null,x=>delete x.memory.configured_path,x=>x.memory.extra=true]){
+  const changed=health(homes.js);mutate(changed);
+  assert.notEqual(compareResponses(response(health(homes.rust)),response(changed),'GET',{}, {},homes).kind,'same');
+ }
+ assert.equal(compareResponses(response({memory:{active_path:null,configured_path:null}}),
+  response({memory:{active_path:null,configured_path:null}}),'GET',{}, {},homes).kind,'same');
+ const env=createParityEnvironment('/owned/home','fixture-token',{});
+ assert.equal(env.HOME,'/owned/home');assert.equal(env.FORMAL_AI_MEMORY_PATH,'/owned/home/memory.lino');
+ const runner=fs.readFileSync(new URL('../../../scripts/check-server-parity.mjs',import.meta.url),'utf8');
+ assert(runner.includes('runtimeMemoryRoot: env.HOME'));
+ assert(runner.includes('runtimeMemoryRoots.rust = rust.runtimeMemoryRoot;'));
+ assert(runner.includes('runtimeMemoryRoots.js = js.runtimeMemoryRoot;'));
+ assert(runner.includes('compareResponses(rust, js, request.method, runtimeCacheRoots, runtimeLogRoots, runtimeMemoryRoots)'));
 });

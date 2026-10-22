@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=da24d751f89809de904278211849fb625151d4d4c55805a465f5a7c15b94b597 bytes=6099
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=47c2e1c824be8a08b03152a09994e454acc6224a6a0ce0cd728378cfb6af4765 bytes=6421
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=2
 
@@ -298,6 +298,10 @@ pub mod ml {
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
 // formal-ai:blockers default or namespace import
 
 // meta-language:carried JavaScript import_statement (unsupported)
@@ -338,7 +342,7 @@ pub static MAX_U64: std::sync::LazyLock<crate::ml::Big> = std::sync::LazyLock::n
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal JSDoc type {…}
-// formal-ai:blockers JSDoc type {…} | call of an imported function | field access | method call .join() | object spread | object without a $ tag | throw of a non-error value
+// formal-ai:blockers JSDoc type {…} | call of an imported function | field access | method call .join() | new Error | null | nullish coalescing | object spread | object without a $ tag | throw of a non-error value
 
 // meta-language:carried JavaScript export_statement (syntax)
 // formal-ai:refusal syntax: malformed number
@@ -370,4 +374,4 @@ pub fn trailer(name: String, value: String) -> String {
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal new expression
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | arrow callback of .some() | call of a sibling function | call of an imported function | field access | method call .filter() | method call .has() | method call .join() | method call .map() | method call .some() | method call .sort() | method call .split() | new Set | sibling value | throw of a non-error value
+// formal-ai:blockers arrow callback of .map() | arrow callback of .some() | call of a sibling function | call of an imported function | field access | imported value | method call .filter() | method call .has() | method call .join() | method call .map() | method call .some() | method call .sort() | method call .split() | new Set | sibling value | throw of a non-error value

@@ -7,6 +7,7 @@
 // are UTF-16 indices into one string and its ASCII-lowercased twin, which share
 // lengths, so the byte arithmetic of the Rust original carries over unchanged.
 
+import { callbackText as canonicalUnaryText } from '../callback_values.mjs';
 import { cached } from '../host.mjs';
 import { agenticMessage } from '../messages.mjs';
 import { extractConceptQuery, lookupConceptQuery } from './concepts_lookup.mjs';
@@ -90,7 +91,7 @@ const suffixLiterals = (role) => roleWordForms(role).filter((form) => slotOf(for
 const circumfixLiterals = (role) => roleWordForms(role)
   .filter((form) => slotOf(form) === 'circumfix')
   .map((form) => [beforeSlot(form), afterSlot(form)]);
-const bareLiterals = (role) => roleWordForms(role).filter((form) => slotOf(form) === 'bare').map((form) => form.text);
+const bareLiterals = (role) => roleWordForms(role).filter((form) => slotOf(form) === 'bare').map(canonicalUnaryText);
 const sourceLiterals = (role) => wordsForRole(role).map((word) => trim(word).toLowerCase());
 
 function informationLiterals() {

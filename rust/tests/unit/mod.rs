@@ -1,6 +1,10 @@
 // Production dependency used by source-included contract modules.
 use ::formal_ai::source_fetch;
 
+// Shared production template reader, loaded once for all unit descendants.
+#[path = "../../src/agentic_coding/work_item_steps.rs"]
+pub mod canonical_work_item_steps;
+
 #[path = "../fixtures/first-workspace-call.rs"]
 mod first_workspace_call;
 
@@ -19,7 +23,10 @@ mod architect_notes;
 mod architecture_docs;
 mod assistant_name;
 mod benchmark_release_capability;
+mod bounded_command_lifecycle;
+mod bounded_retry;
 mod bulk_lexeme_import;
+mod callback_values;
 mod caller_framing_context;
 mod candidate_solution_portfolios;
 mod ci_gates;
@@ -84,6 +91,7 @@ mod issue_1138_source_walk_parity;
 mod issue_1138_three_source_roots;
 mod issue_1138_translation_tool;
 mod issue_1138_universal_loop_lookup;
+mod issue_1364_server_lifecycle;
 mod issue_498_google_trends;
 mod issue_499_learn_from_source;
 mod issue_531_algorithm_discovery;
@@ -185,6 +193,7 @@ mod server_route_manifest;
 mod shared_dialog;
 mod shared_memory_isolation;
 mod software_project;
+mod source_cache_budget;
 #[path = "../fixtures/source-cache-seed-contract.rs"]
 mod source_cache_seed_contract;
 mod source_module_contracts;

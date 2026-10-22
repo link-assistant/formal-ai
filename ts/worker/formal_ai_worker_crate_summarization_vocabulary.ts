@@ -3,7 +3,6 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/summarization_vocabulary.mjs"] = (crateRequire) => {
 // `crate::summarization::vocabulary` (rust/src/summarization/vocabulary.rs):
 // the seed-driven word lists shared by statement merging and the identifier
@@ -11,23 +10,20 @@
 // vocabulary; nothing is hardcoded here. The lists are cached per installed
 // host, like the Rust `OnceLock`s.
 //
-
+const { lower: canonicalUnaryLower } = crateRequire("crate/rust_str.mjs");
 const { cached } = crateRequire("host.mjs");
 const { containsCjk, wordsForRole } = crateRequire("crate/seed_meanings.mjs");
 const { multilingualResponses } = crateRequire("crate/seed.mjs");
-
 /** Mirrors `ROLE_STATEMENT_FUNCTION_WORD` in rust/src/seed/roles/tooling.rs. */
 const ROLE_STATEMENT_FUNCTION_WORD = 'statement_function_word';
 /** Mirrors `ROLE_STATEMENT_NEGATION_CUE` in rust/src/seed/roles/tooling.rs. */
 const ROLE_STATEMENT_NEGATION_CUE = 'statement_negation_cue';
 /** Mirrors `ROLE_IDENTIFIER_RESERVED_WORD` in rust/src/seed/roles/program.rs. */
 const ROLE_IDENTIFIER_RESERVED_WORD = 'identifier_reserved_word';
-
 /** Mirrors `fn words_for` in rust/src/summarization/vocabulary.rs: the role's words, lowercased. */
 function wordsFor(role) {
-  return wordsForRole(role).map((word) => word.toLowerCase());
+  return wordsForRole(role).map(canonicalUnaryLower);
 }
-
 /**
  * Mirrors `fn function_words` in rust/src/summarization/vocabulary.rs: articles,
  * prepositions, copulas and coordinators dropped from terms and identifiers.
@@ -36,7 +32,6 @@ function wordsFor(role) {
 function functionWords() {
   return cached('summarization-function-words', () => wordsFor(ROLE_STATEMENT_FUNCTION_WORD));
 }
-
 /**
  * Mirrors `fn negation_cues` in rust/src/summarization/vocabulary.rs.
  * @returns {Array<string>}
@@ -44,7 +39,6 @@ function functionWords() {
 function negationCues() {
   return cached('summarization-negation-cues', () => wordsFor(ROLE_STATEMENT_NEGATION_CUE));
 }
-
 /**
  * Mirrors `fn reserved_words` in rust/src/summarization/vocabulary.rs.
  * @returns {Array<string>}
@@ -52,7 +46,6 @@ function negationCues() {
 function reservedWords() {
   return cached('summarization-reserved-words', () => wordsFor(ROLE_IDENTIFIER_RESERVED_WORD));
 }
-
 /**
  * Mirrors `fn is_reserved_word` in rust/src/summarization/vocabulary.rs: an
  * exact (case-sensitive) match against the seed's reserved words.
@@ -61,7 +54,6 @@ function reservedWords() {
 function isReservedWord(candidate) {
   return wordsForRole(ROLE_IDENTIFIER_RESERVED_WORD).some((word) => word === candidate);
 }
-
 /** Mirrors `fn flush` in rust/src/summarization/vocabulary.rs. */
 function flush(buffer, out) {
   let start = 0;
@@ -71,7 +63,6 @@ function flush(buffer, out) {
   const token = buffer.slice(start, end);
   if (token !== '') out.push(token);
 }
-
 /**
  * Mirrors `fn tokenize` in rust/src/summarization/vocabulary.rs: lowercased
  * alphanumeric runs, with the apostrophe kept inside a token and typographic
@@ -95,7 +86,6 @@ function tokenize(text) {
   flush(buffer, out);
   return out;
 }
-
 /**
  * Mirrors `fn cjk_words_longest_first` in rust/src/summarization/vocabulary.rs:
  * the CJK members of the vocabulary, longest first, ties in declaration order.
@@ -107,7 +97,6 @@ function cjkWordsLongestFirst(vocabulary) {
     .sort((left, right) => (right.length - left.length) || (left.index - right.index))
     .map((entry) => entry.word);
 }
-
 /**
  * Mirrors `fn strip_words` in rust/src/summarization/vocabulary.rs: every token
  * equal to a vocabulary word removed; a CJK token loses vocabulary words as
@@ -131,7 +120,6 @@ function stripWords(tokens, vocabulary) {
   }
   return out;
 }
-
 /**
  * Mirrors `fn mentions_word` in rust/src/summarization/vocabulary.rs: does any
  * token carry a vocabulary word, whole or (for CJK) as a substring?
@@ -143,7 +131,6 @@ function mentionsWord(tokens, vocabulary) {
   return tokens.some((token) => vocabulary.some((word) => word === token)
     || (containsCjk(token) && cjk.some((word) => token.includes(word))));
 }
-
 /**
  * Mirrors `fn response_template` in rust/src/summarization/vocabulary.rs: the
  * seed response text for an intent and language slug.
@@ -152,7 +139,6 @@ function responseTemplate(intent, language) {
   const found = multilingualResponses().find((record) => record.intent === intent && record.language === language);
   return found === undefined ? null : found.text;
 }
-
 /**
  * Mirrors `fn rendered_response` in rust/src/summarization/vocabulary.rs: a
  * seed response template for `language` (English when it has none, empty when
@@ -165,7 +151,6 @@ function renderedResponse(intent, language, values) {
   const template = responseTemplate(intent, language) ?? responseTemplate(intent, 'en') ?? '';
   return values.reduce((rendered, [placeholder, value]) => rendered.split(placeholder).join(value), template);
 }
-
 return Object.freeze({
   ROLE_STATEMENT_FUNCTION_WORD,
   ROLE_STATEMENT_NEGATION_CUE,

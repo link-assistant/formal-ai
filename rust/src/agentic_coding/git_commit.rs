@@ -27,6 +27,12 @@ pub(super) struct CommitTarget {
     pub(super) reference: String,
 }
 
+/// Classify the already validated work-item destination for all recipe consumers.
+#[must_use]
+pub(super) fn is_pull_request_target(target: &CommitTarget) -> bool {
+    target.reference.contains("/pull/")
+}
+
 impl CommitTarget {
     /// The branch the push names.
     pub(super) fn push_ref(&self) -> &str {

@@ -3,6 +3,7 @@
 // `{role, text}`; the role is informational except for the weight bias that
 // lets user turns dominate a short summary or a chat title.
 
+import { lower as canonicalUnaryLower } from './rust_str.mjs';
 import {
   SummarizationMode, defaultConfig, deformalize, formalize, isLabelOnly, labelForMode, maxByWeight,
   summarize, toTopic, withLanguage, withMode,
@@ -66,7 +67,7 @@ export function summarizeDialog(turns, config) {
 
 /** ASCII-case-insensitive equality (`str::eq_ignore_ascii_case`). */
 function eqIgnoreAsciiCase(left, right) {
-  const fold = (text) => text.replace(/[A-Z]/g, (letter) => letter.toLowerCase());
+  const fold = (text) => text.replace(/[A-Z]/g, canonicalUnaryLower);
   return fold(left) === fold(right);
 }
 

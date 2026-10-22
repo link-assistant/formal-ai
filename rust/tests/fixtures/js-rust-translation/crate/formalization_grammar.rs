@@ -1,9 +1,13 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=9761ca409796bc4cac79ff32b70b2165c1ddbd7d0ef6e4f125506c29bb310872 bytes=1902
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=bf449f285a52c6a2390dc47ade6cef5bc4f40b8c524a0de5460f63589e60ce27 bytes=1985
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
@@ -19,7 +23,7 @@ pub const PATH: &str = "data/seed/text-formalization.lino";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal arrow function
-// formal-ai:blockers Object.freeze | arrow callback of .filter() | arrow callback of .map() | arrow callback of .some() | arrow function | call of a sibling function | call of an imported function | field access | method call .filter() | method call .map() | method call .some() | new Set | nullish coalescing | object without a $ tag | optional chaining | throw of a non-error value
+// formal-ai:blockers Object.freeze | arrow callback of .filter() | arrow callback of .some() | arrow function | call of a sibling function | call of an imported function | field access | imported value | method call .filter() | method call .map() | method call .some() | new Set | nullish coalescing | object without a $ tag | optional chaining | throw of a non-error value
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal throw of a non-error value
@@ -27,4 +31,4 @@ pub const PATH: &str = "data/seed/text-formalization.lino";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal optional chaining
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .find() | arrow callback of .map() | call of a sibling function | field access | method call .filter() | method call .find() | method call .map() | nullish coalescing | optional chaining
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .find() | call of a sibling function | field access | imported value | method call .filter() | method call .find() | method call .map() | nullish coalescing | optional chaining

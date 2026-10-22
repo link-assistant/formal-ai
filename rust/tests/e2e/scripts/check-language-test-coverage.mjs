@@ -185,6 +185,8 @@ function isLanguageFacingChange(baseRef, relativePath) {
 }
 
 function isChangedTestFile(relativePath) {
+  // This is the exact flat suite glob executed by layered-ci.yml.
+  if (/^rust\/tests\/web\/[^/]+\.test\.mjs$/u.test(relativePath)) return true;
   const isTestRoot =
     relativePath.startsWith('rust/tests/unit/') ||
     relativePath.startsWith('rust/tests/integration/') ||

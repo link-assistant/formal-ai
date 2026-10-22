@@ -3,7 +3,6 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/method_registry.mjs"] = (crateRequire) => {
 // The method registry as link data (R331, R1013 server parity):
 // rust/src/method_registry.rs `MethodRegistry` (`from_store_with_learned_seed`,
@@ -21,21 +20,18 @@
 //
 // A method is `{name, order, surface, execution}`; `execution` is
 // `{runtime, response_language, project_lookup, definition_fusion}`.
-
+const { callbackValue: canonicalUnaryValue } = crateRequire("callback_values.mjs");
 const { cached, childValue, childrenNamed, readText } = crateRequire("host.mjs");
 const { parseLinoRoot } = crateRequire("write_lino.mjs");
 const { formatLinoRecord } = crateRequire("crate/links_format.mjs");
-
 /** Mirrors `PRELUDE_METHOD_NAMES` in rust/src/solver_dispatch.rs. */
 const PRELUDE_METHOD_NAMES = Object.freeze(['diagnostic', 'nl_tool', 'behavior_rules', 'feature_capability', 'playwright_script']);
-
 /** Mirrors `CONTEXTUAL_HANDLER_NAMES` in rust/src/solver_dispatch.rs. */
 const CONTEXTUAL_HANDLER_NAMES = Object.freeze([
   'http_fetch', 'proof_request', 'meta_explanation', 'numeric_list', 'program_synthesis',
   'shell_command_transform', 'text_manipulation', 'task_decomposition', 'response_language_followup',
   'fact_checking', 'world_state', 'web_search', 'procedural_how_to', 'fact_lookup',
 ]);
-
 const HANDLER_PRECEDENCE_PATH = 'data/seed/handler-precedence.lino';
 const METHOD_EXECUTION_PATH = 'data/seed/method-execution.lino';
 const LEARNED_METHODS_PATH = 'data/seed/learned-methods.lino';
@@ -44,7 +40,6 @@ const HEURISTICS_PATH = 'data/meta/selection-heuristics.lino';
 const ALIASES_PATH = 'data/meta/route-method-aliases.lino';
 const HEURISTIC_RECORD_TYPE = 'selection_heuristic';
 const HEURISTIC_STRUCTURAL_FIELDS = new Set(['record_type', 'role', 'order', 'applies_when']);
-
 /** Mirrors `fn handler_precedence` / `fn browser_only_handlers` in rust/src/seed/handler_precedence.rs. */
 function specializedHandlerNames() {
   const root = childrenNamed(parseLinoRoot(readText(HANDLER_PRECEDENCE_PATH)), 'handler_precedence')[0];
@@ -56,7 +51,6 @@ function specializedHandlerNames() {
   rows.sort((left, right) => (left.rank - right.rank) || (left.name < right.name ? -1 : left.name > right.name ? 1 : 0));
   return rows.filter((row) => !row.browserOnly).map((row) => row.name);
 }
-
 /** Mirrors `fn parse_method_execution` in rust/src/method_registry.rs. */
 function parseMethodExecution() {
   const root = childrenNamed(parseLinoRoot(readText(METHOD_EXECUTION_PATH)), 'method_execution')[0];
@@ -71,7 +65,6 @@ function parseMethodExecution() {
   }
   return attributes;
 }
-
 /** Mirrors `fn parse_steps` in rust/src/recipe_interpreter.rs: `{order, records}` per `meta_step`, by order. */
 function recipeSteps() {
   const steps = [];
@@ -104,14 +97,12 @@ function recipeSteps() {
   flush();
   return steps.sort((left, right) => left.order - right.order);
 }
-
 /** Mirrors `fn step_emits` in rust/src/method_registry.rs. */
 function stepEmits(step, base) {
   if (step.records === null) return false;
   const kind = step.records.startsWith('record_') ? step.records.slice('record_'.length) : step.records;
   return kind === base || kind.startsWith(`${base}_`);
 }
-
 /** Mirrors `LearnedMethod::to_recipe_program`: `{steps}` or `{error}`. */
 function learnedRecipeProgram(method) {
   const recipe = recipeSteps();
@@ -125,10 +116,9 @@ function learnedRecipeProgram(method) {
   const last = orders.length ? Math.max(...orders) : 0;
   return { steps: recipe.filter((step) => step.records !== null && step.order <= last) };
 }
-
 /** Mirrors `fn parse_learned_methods` in rust/src/method_registry.rs (the shipped seed is valid). */
 function parseLearnedMethods() {
-  const values = (node, name) => childrenNamed(node, name).map((child) => child.value);
+  const values = (node, name) => childrenNamed(node, name).map(canonicalUnaryValue);
   return childrenNamed(parseLinoRoot(readText(LEARNED_METHODS_PATH)), 'learned_method').map((node) => ({
     name: node.value,
     status: childValue(node, 'status') === 'adopted_not_effective' ? 'adopted_not_effective' : 'adopted',
@@ -137,7 +127,6 @@ function parseLearnedMethods() {
     operations: values(node, 'operation'),
   }));
 }
-
 /** Mirrors `fn catalog_from` in rust/src/selection_heuristics.rs (the shipped catalog). */
 function shippedHeuristics() {
   return (parseLinoRoot(readText(HEURISTICS_PATH)).children || [])
@@ -146,12 +135,11 @@ function shippedHeuristics() {
       name: record.name,
       role: childValue(record, 'role'),
       order: Number(childValue(record, 'order')),
-      applies_when: childrenNamed(record, 'applies_when').map((field) => field.value),
+      applies_when: childrenNamed(record, 'applies_when').map(canonicalUnaryValue),
       parameters: (record.children || []).filter((field) => !HEURISTIC_STRUCTURAL_FIELDS.has(field.name))
         .map((field) => [field.name, field.value]),
     }));
 }
-
 /** Mirrors `fn load_aliases` in rust/src/route_method_alias.rs. */
 function routeMethodAliases() {
   return (parseLinoRoot(readText(ALIASES_PATH)).children || [])
@@ -159,7 +147,6 @@ function routeMethodAliases() {
     .map((record) => ({ route: childValue(record, 'route'), method: childValue(record, 'method') }))
     .filter((alias) => alias.route && alias.method);
 }
-
 /** Mirrors `MethodRegistry::shared` (`from_store_with_learned_seed`), built once per host. */
 function methodRegistry() {
   return cached('method-registry', () => {
@@ -179,7 +166,6 @@ function methodRegistry() {
     };
   });
 }
-
 /** Mirrors `MethodRegistry::method_for_route`. @returns {object|null} */
 function methodForRoute(registry, route) {
   const direct = registry.methods.find((method) => method.name === route);
@@ -187,20 +173,17 @@ function methodForRoute(registry, route) {
   const alias = registry.aliases.find((entry) => entry.route === route);
   return alias ? registry.methods.find((method) => method.name === alias.method) ?? null : null;
 }
-
 /** Mirrors `MethodRegistry::explicit_learned_method_relevants`. */
 function explicitLearnedMethodRelevants(registry, prompt) {
   const tokens = String(prompt).split(/[^\p{Alphabetic}\p{N}:_-]/u).filter(Boolean);
   return registry.learned_methods.map((method) => `method:${method.name}`).filter((reference) => tokens.includes(reference));
 }
-
 /** Mirrors `MethodRegistry::heuristics_for`: the heuristics for `role` that apply in `situation`, by order. */
 function heuristicsFor(registry, role, situation) {
   return registry.heuristics
     .filter((heuristic) => heuristic.role === role && (!heuristic.applies_when.length || heuristic.applies_when.includes(situation)))
     .sort((left, right) => left.order - right.order);
 }
-
 /** Mirrors `Method::to_links_notation`. */
 function methodLinksNotation(method) {
   const pairs = [['record_type', 'method'], ['name', method.name], ['order', String(method.order)], ['surface', method.surface]];
@@ -210,7 +193,6 @@ function methodLinksNotation(method) {
   if (method.execution.definition_fusion) pairs.push(['definition_fusion', 'true']);
   return formatLinoRecord(method.name, pairs);
 }
-
 /** Mirrors `LearnedMethod::to_links_notation`. */
 function learnedMethodLinksNotation(method) {
   const pairs = [
@@ -224,7 +206,6 @@ function learnedMethodLinksNotation(method) {
   else pairs.push(['bound_steps', String(program.steps.length)]);
   return formatLinoRecord(method.name, pairs);
 }
-
 /** Mirrors `HeuristicMethod::to_links_notation` in rust/src/selection_heuristics.rs. */
 function heuristicLinksNotation(heuristic) {
   const pairs = [['record_type', HEURISTIC_RECORD_TYPE], ['role', heuristic.role], ['order', String(heuristic.order)]];
@@ -232,7 +213,6 @@ function heuristicLinksNotation(heuristic) {
   for (const [key, value] of heuristic.parameters) pairs.push([key, value]);
   return formatLinoRecord(heuristic.name, pairs);
 }
-
 /** Mirrors `MethodRegistry::to_links_notation`. */
 function methodRegistryLinksNotation(registry) {
   const countOn = (surface) => String(registry.methods.filter((method) => method.surface === surface).length);
@@ -253,7 +233,6 @@ function methodRegistryLinksNotation(registry) {
   for (const heuristic of registry.heuristics) out += `\n${heuristicLinksNotation(heuristic)}`;
   return out;
 }
-
 /** Mirrors `fn record_method_registry` in rust/src/method_registry.rs. */
 function recordMethodRegistry(log) {
   const registry = methodRegistry();
@@ -261,7 +240,6 @@ function recordMethodRegistry(log) {
   log.push({ kind: 'method_registry:count', payload: String(registry.methods.length) });
   return registry;
 }
-
 return Object.freeze({
   PRELUDE_METHOD_NAMES,
   CONTEXTUAL_HANDLER_NAMES,

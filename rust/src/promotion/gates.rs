@@ -104,12 +104,21 @@ pub fn replay_promotion_gates(
     workspace_root: &Path,
 ) -> Result<Vec<PromotionProposal>, String> {
     replay_promotion_gates_with(proposals, |runner| {
-        let output = Command::new("sh")
-            .arg("-c")
-            .arg(runner)
-            .current_dir(workspace_root)
-            .output()
-            .map_err(|error| format!("failed to start `{runner}`: {error}"))?;
+        let output = crate::bounded_process::command_output(
+            {
+                let mut bounded_child_command = Command::new("sh");
+                bounded_child_command
+                    .arg("-c")
+                    .arg(runner)
+                    .current_dir(workspace_root);
+                bounded_child_command
+            },
+            std::time::Duration::from_mins(21),
+            128 * 1024 * 1024,
+            64 * 1024 * 1024,
+        )
+        .map_err(|failure| std::io::Error::new(failure.kind(), failure))
+        .map_err(|error| format!("failed to start `{runner}`: {error}"))?;
         Ok(GateCommandOutput {
             succeeded: output.status.success(),
             stdout: String::from_utf8_lossy(&output.stdout).into_owned(),

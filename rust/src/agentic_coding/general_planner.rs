@@ -482,6 +482,18 @@ pub(super) fn repository_work_reference(request: &str) -> Option<String> {
         .then(|| url.to_owned())
     })
 }
+// Completed empty source lines end a paragraph; the current partial line does not.
+fn command_paragraph_end(text: &str) -> usize {
+    let mut start = 0;
+    for (end, _) in text.match_indices('\n') {
+        if text[start..end].trim().is_empty() {
+            return start;
+        }
+        start = end + 1;
+    }
+    text.len()
+}
+
 /// Recover a command-output file request from a structural, seed-backed frame.
 ///
 /// The command must immediately follow a seed-defined run verb and be enclosed
@@ -499,6 +511,29 @@ fn parse_command_output_request(request: &str) -> Option<(String, String)> {
         .iter()
         .filter(|token| run_verbs.contains(&clean_cue_token(token.text)))
     {
+        let prefix = request.get(..run.start)?.trim();
+        let politeness = bare_surfaces(seed::ROLE_POLITENESS_CUE);
+        let preface_words: Vec<String> = tokens(prefix)
+            .iter()
+            .map(|token| clean_cue_token(token.text))
+            .collect();
+        let first_action = preface_words.get(usize::from(
+            preface_words
+                .first()
+                .is_some_and(|word| politeness.contains(word)),
+        ));
+        // A preceding owned task sentence may introduce the command; quoted reports may not.
+        let raw_prefix = request.get(..run.start)?.trim_start();
+        let owned_preface = first_action.is_some_and(|word| run_verbs.contains(word))
+            && command_paragraph_end(raw_prefix) == raw_prefix.len()
+            && crate::normal_markov::quoted_segment_spans(prefix).is_empty()
+            && prefix
+                .chars()
+                .next_back()
+                .is_some_and(|character| ".!?。！？।".contains(character));
+        if !prefix.is_empty() && !politeness.contains(&clean_cue_token(prefix)) && !owned_preface {
+            continue;
+        }
         let tail = request.get(run.end..)?;
         let leading = tail.len() - tail.trim_start().len();
         let quoted = tail.get(leading..)?;
@@ -515,11 +550,18 @@ fn parse_command_output_request(request: &str) -> Option<(String, String)> {
             continue;
         }
         let suffix_offset = run.end + leading + quote.len_utf8() + close + quote.len_utf8();
-        let suffix = request.get(suffix_offset..)?;
+        let paragraph_end = run.start + command_paragraph_end(request.get(run.start..)?);
+        let suffix = request.get(suffix_offset..paragraph_end)?;
         if !mentions_bare_role(suffix, seed::ROLE_FILE_WRITE_COMMAND_OUTPUT_REFERENCE) {
             continue;
         }
         let suffix_tokens = tokens(suffix);
+        if suffix_tokens
+            .iter()
+            .any(|token| run_verbs.contains(&clean_cue_token(token.text)))
+        {
+            continue;
+        }
         let has_write_action = suffix_tokens
             .iter()
             .any(|token| actions.contains(&clean_cue_token(token.text)));

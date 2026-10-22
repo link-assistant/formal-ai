@@ -280,3 +280,11 @@ registry_entry docker_image/node
 registry_entry crates_io/url
   latest "2.5.8"
   source_url "https://crates.io/api/v1/crates/url"
+
+# New runtime tool publisher records; existing snapshot date and entries remain unchanged.
+registry_entry npm/start-command
+  latest "0.38.0"
+  source_url "https://registry.npmjs.org/start-command/latest"
+registry_entry npm/@link-assistant/agent
+  latest "0.26.15"
+  source_url "https://registry.npmjs.org/@link-assistant%2fagent/latest"

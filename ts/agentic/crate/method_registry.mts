@@ -15,6 +15,7 @@
 // A method is `{name, order, surface, execution}`; `execution` is
 // `{runtime, response_language, project_lookup, definition_fusion}`.
 
+import { callbackValue as canonicalUnaryValue } from '../callback_values.mjs';
 import { cached, childValue, childrenNamed, readText } from '../host.mjs';
 import { parseLinoRoot } from '../write_lino.mjs';
 import { formatLinoRecord } from './links_format.mjs';
@@ -121,7 +122,7 @@ function learnedRecipeProgram(method) {
 
 /** Mirrors `fn parse_learned_methods` in rust/src/method_registry.rs (the shipped seed is valid). */
 function parseLearnedMethods() {
-  const values = (node, name) => childrenNamed(node, name).map((child) => child.value);
+  const values = (node, name) => childrenNamed(node, name).map(canonicalUnaryValue);
   return childrenNamed(parseLinoRoot(readText(LEARNED_METHODS_PATH)), 'learned_method').map((node) => ({
     name: node.value,
     status: childValue(node, 'status') === 'adopted_not_effective' ? 'adopted_not_effective' : 'adopted',
@@ -139,7 +140,7 @@ function shippedHeuristics() {
       name: record.name,
       role: childValue(record, 'role'),
       order: Number(childValue(record, 'order')),
-      applies_when: childrenNamed(record, 'applies_when').map((field) => field.value),
+      applies_when: childrenNamed(record, 'applies_when').map(canonicalUnaryValue),
       parameters: (record.children || []).filter((field) => !HEURISTIC_STRUCTURAL_FIELDS.has(field.name))
         .map((field) => [field.name, field.value]),
     }));

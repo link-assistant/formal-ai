@@ -2,6 +2,7 @@
 // a port of rust/src/tool_scope.rs and its seed reader
 // rust/src/seed/tool_resource_scopes.rs (data/seed/tool-resource-scopes.lino).
 
+import { lower as canonicalUnaryLower } from './rust_str.mjs';
 import { cached, readText } from '../host.mjs';
 import { findToolDefinition } from '../protocol_policy.mjs';
 import { splitPipeList } from './seed.mjs';
@@ -18,7 +19,7 @@ export const ToolResourceScope = Object.freeze({
 /** Mirrors `ToolResourceScope::is_client_workspace`. */
 export const isClientWorkspace = (scope) => scope === ToolResourceScope.ClientWorkspace;
 
-const lowercaseList = (raw) => splitPipeList(raw).map((entry) => entry.toLowerCase());
+const lowercaseList = (raw) => splitPipeList(raw).map(canonicalUnaryLower);
 
 /** Mirrors `fn parse_tool_resource_scopes` in rust/src/seed/tool_resource_scopes.rs. */
 export function parseToolResourceScopes(text) {
@@ -154,7 +155,7 @@ function repositoryReference(context) {
 
 /** Mirrors `fn address_segments`. */
 function addressSegments(name) {
-  return name.split('__').flatMap((part) => part.split(/[./:]/)).filter(Boolean).map((segment) => segment.toLowerCase());
+  return name.split('__').flatMap((part) => part.split(/[./:]/)).filter(Boolean).map(canonicalUnaryLower);
 }
 
 const present = (object, key) => (isObject(object) && Object.prototype.hasOwnProperty.call(object, key) ? object[key] : undefined);
@@ -167,5 +168,5 @@ function requiredArgumentNames(definition) {
     present(fn, 'parameters'), present(fn, 'input_schema')].find((candidate) => candidate !== undefined);
   const required = present(schema, 'required');
   if (!Array.isArray(required)) return [];
-  return required.filter((entry) => typeof entry === 'string').map((entry) => entry.toLowerCase());
+  return required.filter((entry) => typeof entry === 'string').map(canonicalUnaryLower);
 }

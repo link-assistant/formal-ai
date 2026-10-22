@@ -61,6 +61,24 @@ export function validateProgram(language, source) {
   }
 }
 
+/** Validate a fixed installed two-argument command and return a defensive copy. */
+function installedCommand(command) {
+  const absolute = value => typeof value === 'string'
+    && /^(?:\/|[A-Za-z]:[\\/])/u.test(value) && !value.includes('\0');
+  return Array.isArray(command) && command.length === 2 && command.every(absolute)
+    ? [...command] : null;
+}
+
+/** Installed executable identities, supplied by the host rather than conversation metadata. */
+export function sourceCstTransformCommand() {
+  return installedCommand(current?.sourceCstTransformCommand?.());
+}
+
+/** Fixed installed source operation; conversation text never supplies an executable. */
+export function sourceUnaryConsolidationCommand() {
+  return installedCommand(current?.sourceUnaryConsolidationCommand?.());
+}
+
 /** Whether a host is installed. */
 export function hasHost() {
   return current !== null;

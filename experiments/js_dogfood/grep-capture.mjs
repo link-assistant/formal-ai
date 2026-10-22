@@ -1,5 +1,6 @@
+import { writeCaptureBytes } from './shell-capture.mjs';
 // Capture complete ripgrep output before rendering bounded previews.
-import { spawnSync } from 'node:child_process';
+import { boundedCommandSync } from '../../js/server/bounded-command.mjs';
 import { createHash } from 'node:crypto';
 import { closeSync, mkdtempSync, openSync, readSync, rmSync, statSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -70,20 +71,26 @@ function renderCapture(file) {
   return { total, rendered, body, truncated, omittedRecords, sha256: digest.digest('hex'), bytes: statSync(file).size };
 }
 
-/** Regular-file stdout avoids pipe capacity limits and preserves original bytes. */
-export function grepCapture(argv) {
+/** Complete bounded pipe capture precedes preview rendering and raw-file retention. */
+export function grepCapture(argv, {
+  timeoutMs = 30000, stdoutLimitBytes = 64 * 1024 * 1024, stderrLimitBytes = 1024 * 1024,
+} = {}) {
+  for (const [value, maximum] of [[timeoutMs, 30000],
+    [stdoutLimitBytes, 64 * 1024 * 1024], [stderrLimitBytes, 1024 * 1024]]) {
+    if (!Number.isSafeInteger(value) || value <= 0 || value > maximum) {
+      throw new RangeError('invalid_grep_capture_bounds');
+    }
+  }
   const directory = mkdtempSync(join(tmpdir(), 'formal-ai-grep-capture-'));
   const file = join(directory, 'ripgrep.jsonl');
-  const descriptor = openSync(file, 'wx', 0o600);
-  let result;
-  try { result = spawnSync('rg', argv, { stdio: ['ignore', descriptor, 'pipe'], encoding: 'utf8', maxBuffer: 1024 * 1024 }); }
-  finally { closeSync(descriptor); }
-  if (result.error || result.status !== 0) {
+  const result = boundedCommandSync('rg', argv, { timeout: timeoutMs, stdoutLimitBytes, stderrLimitBytes });
+  if (result.error || !result.cleanup_complete || result.status !== 0) {
     rmSync(directory, { recursive: true, force: true });
-    if (!result.error && result.status === 1) return 'No files found';
+    if (!result.error && result.cleanup_complete && result.status === 1) return 'No files found';
     throw result.error ?? new Error('ripgrep exited ' + result.status + ': ' + result.stderr);
   }
   try {
+    writeCaptureBytes(file, result.stdout);
     const captured = renderCapture(file);
     if (!captured.total) { rmSync(directory, { recursive: true, force: true }); return 'No files found'; }
     const output = 'Found ' + captured.total + ' matches\n' + captured.body;

@@ -1,5 +1,6 @@
 import { collectLeaseDiagnostics, validateDiagnosticDescendant } from './release-fixture-lease-diagnostics.mjs';
-import { observeCallerAdmission } from './release-fixture-caller-admission.mjs';
+import { observeCallerAdmission, requireFixtureDescendantName, requireNonterminalFixtureRun } from './release-fixture-caller-admission.mjs';
+import { requireExactCurrentGroupMember } from './staged-caller-authority.mjs';
 // Harmless GitHub runtime fixture: text tar only, scoped GET requests and private fixture lease.
 // It deliberately never invokes the production transfer CLI, compiler, package or release authority.
 import assert from 'node:assert/strict';
@@ -106,6 +107,10 @@ export function validateQueueSnapshot(snapshot, expected, {
   if (requireContender) assert.ok(members.some(member => String(member.run_id) === expected.run && member.status === 'pending' && member.job_name === 'Fixture private queued contender' && Number.isSafeInteger(member.job_id)), 'independent pending contender missing');
   return true;
 }
+export function validateActiveFixtureLease(lease) {
+  assert.equal(lease?.observation, 'VerifiedPrivateFixtureLease', 'actual active fixture lease proof required');
+  return true;
+}
 export function validateFixtureOutputs(active, inactive, source) {
   assert.equal(active.source, source);
   assert.equal(inactive.source, source);
@@ -114,31 +119,64 @@ export function validateFixtureOutputs(active, inactive, source) {
   assert.equal(inactive.artifact, 'SkippedInactive');
   assert.equal(inactive.marker, '');
 }
+// Legacy entry name retained; proof is exact unfiltered membership plus physical execution.
 export async function observeActiveAncestor({ get, context, name, label, snapshots, diagnose, runnerName }) {
   const base = '/repos/' + context.repository + '/actions';
-  const jobs = await get(base + '/runs/' + context.run + '/jobs?filter=latest&per_page=100');
-  snapshots.push(jobs);
-  assert.equal(jobs.status, 200);
-  const matches = jobs.body.jobs.filter(job => job.name.endsWith(label) && job.status === 'in_progress');
+  const descendantName = requireFixtureDescendantName('Active reusable fixture / ' + label);
+  assert.equal(typeof runnerName, 'string');
+  assert.ok(runnerName.length > 0, 'physical runner identity required');
+  const observe = async route => {
+    const snapshot = await get(route);
+    snapshots.push(snapshot);
+    requireFixtureApiSuccess(snapshot);
+    return snapshot;
+  };
+  const jobs = await observe(base + '/runs/' + context.run + '/jobs?filter=latest&per_page=100');
+  assert.ok(Array.isArray(jobs.body.jobs));
+  assert.equal(jobs.body.total_count, jobs.body.jobs.length);
+  const matches = jobs.body.jobs.filter(job => job.name === descendantName && job.status === 'in_progress');
   assert.equal(matches.length, 1, 'unique actual executing descendant job absent');
   const child = matches[0];
   assert.ok(Number.isSafeInteger(child.id) && child.id > 0);
   assert.equal(String(child.run_id), context.run, 'descendant run differs');
-  if (runnerName !== undefined) {
-    assert.equal(typeof runnerName, 'string');
-    assert.ok(runnerName.length > 0, 'physical runner identity required');
-    const physical = await get(base + '/jobs/' + child.id);
-    snapshots.push(physical);
-    validateDiagnosticDescendant(physical, { ...context, id: child.id, name: child.name, runnerName });
+  const physical = await observe(base + '/jobs/' + child.id);
+  validateDiagnosticDescendant(physical, { ...context, id: child.id, name: descendantName, runnerName });
+  for (const key of ['id', 'run_id', 'run_attempt', 'head_sha', 'name', 'status', 'runner_id', 'runner_name', 'url']) {
+    assert.equal(child[key], physical.body[key], 'physical/list identity differs: ' + key);
   }
-  const ancestor = await get(base + '/concurrency_groups/' + encodeURIComponent(name) + '?ahead_of_job=' + child.id);
-  snapshots.push(ancestor);
+  const run = await observe(base + '/runs/' + context.run);
+  assert.equal(String(run.body.id), context.run);
+  assert.equal(String(run.body.run_attempt), context.attempt);
+  assert.equal(run.body.head_sha, context.eventHead);
+  assert.equal(run.body.path, '.github/workflows/release-runtime-fixture.yml');
+  requireNonterminalFixtureRun(run.body);
+  const group = await observe(base + '/concurrency_groups/' + encodeURIComponent(name));
+  requireExactCurrentGroupMember({ ...context, head: context.eventHead, runnerName }, descendantName, name, group, jobs);
+  const times = [jobs, physical, run, group].map(value => Date.parse(value.observedAt));
+  assert.ok(times.every(Number.isFinite) && Math.max(...times) - Math.min(...times) <= 5000, 'fresh independent execution observations required');
   if (diagnose) await diagnose(child);
-  validateQueueSnapshot(ancestor, { group: name, run: context.run }, { requireContender: false });
-  const target = ancestor.body.group_members.at(-1);
-  assert.equal(String(target.run_id), context.run, 'matched ancestor run differs');
-  assert.equal(target.status, 'in_progress', 'matched ancestor is not active');
-  return { observation: 'VerifiedPrivateFixtureAncestorCheckpoint', descendantJobId: child.id };
+  return { observation: 'VerifiedPrivateFixtureMatchedExecutionCheckpoint', descendantJobId: child.id,
+    proof: 'ExactCurrentGroupMemberAndPhysicalExecution', productionAuthority: false };
+}
+export function requireFixtureApiSuccess(snapshot) {
+  if (snapshot.status !== 200) throw Object.assign(new Error('ActualQueueAPIUnavailable:' + snapshot.status), { apiStatus: snapshot.status });
+}
+// Permanent API refusals stop immediately; only transient failures consume three attempts.
+export async function pollFixtureObservation(observe, { deadline, now = Date.now, wait = pause }) {
+  let failures = 0;
+  while (now() < deadline) {
+    try {
+      const result = await observe();
+      failures = 0;
+      if (result !== null) return result;
+    } catch (error) {
+      if ([401, 403, 404, 422].includes(error.apiStatus) || ++failures >= 3) {
+        return { observation: 'Unknown', reason: error.message };
+      }
+    }
+    if (now() < deadline) await wait(Math.min(2000, deadline - now()));
+  }
+  return { observation: 'Unknown', reason: 'NoCompleteActualQueuedExecutionObservation' };
 }
 async function queueObservation(final = false) {
   const context = identity();
@@ -148,50 +186,31 @@ async function queueObservation(final = false) {
   let ancestorDiagnostic = null;
   let ancestorCheckpoint = null;
   const deadline = Date.now() + (final ? 90000 : 180000);
-  while (Date.now() < deadline) {
+  const result = await pollFixtureObservation(async () => {
     const state = await api(base + '/concurrency_groups/' + encodeURIComponent(name));
     snapshots.push(state);
-    if ([401, 403, 422].includes(state.status)) return {
-      observation: 'Unknown',
-      reason: 'ActualQueueAPIUnavailable:' + state.status,
-      snapshots
-    };
-    try {
-      validateQueueSnapshot(state, { group: name, run: context.run }, { requireContender: false });
-      const label = final ? 'Fixture final active' : 'Fixture lease holder active';
-      try {
-        ancestorCheckpoint = await observeActiveAncestor({ get: api, context, name, label, snapshots, runnerName: process.env.RUNNER_NAME ?? null,
-          diagnose: async child => {
-            if (ancestorDiagnostic === null) ancestorDiagnostic = await collectLeaseDiagnostics({
-              context, child, group: name, runnerName: process.env.RUNNER_NAME,
-              get: api, deadline
-            });
-          }
+    requireFixtureApiSuccess(state);
+    // Healthy scheduling can propagate without constituting a failed transport attempt.
+    if (!state.body?.group_members?.some(member => member.status === 'in_progress')) return null;
+    validateQueueSnapshot(state, { group: name, run: context.run }, { requireContender: false });
+    ancestorCheckpoint = await observeActiveAncestor({ get: api, context, name,
+      label: final ? 'Fixture final active' : 'Fixture lease holder active', snapshots,
+      runnerName: process.env.RUNNER_NAME ?? null,
+      diagnose: async child => {
+        if (ancestorDiagnostic === null) ancestorDiagnostic = await collectLeaseDiagnostics({
+          context, child, group: name, runnerName: process.env.RUNNER_NAME, get: api, deadline
         });
-      } catch (error) {
-        ancestorCheckpoint = { observation: 'Unknown', reason: error.message };
       }
-      // Queue and independent ancestor obligations remain separate and both are required.
-      validateQueueSnapshot(state, { group: name, run: context.run });
-      assert.equal(ancestorCheckpoint.observation, 'VerifiedPrivateFixtureAncestorCheckpoint');
-      return {
-        observation: 'VerifiedPrivateFixtureLease',
-        group: name,
-        descendantJobId: ancestorCheckpoint.descendantJobId,
-        ancestorDiagnostic,
-        ancestorCheckpoint,
-        snapshots
-      };
-    } catch {/* Pending scheduling or propagation remains an observation, never guessed success. */}
-    await pause(2000);
-  }
-  return {
-    observation: 'Unknown',
-    reason: 'NoCompleteActualQueuedAncestorObservation',
-    ancestorDiagnostic,
-    ancestorCheckpoint,
-    snapshots
-  };
+    });
+    const pending = state.body.group_members.some(member => String(member.run_id) === context.run &&
+      member.status === 'pending' && member.job_name === 'Fixture private queued contender');
+    if (!pending) return null;
+    validateQueueSnapshot(state, { group: name, run: context.run });
+    assert.equal(ancestorCheckpoint.observation, 'VerifiedPrivateFixtureMatchedExecutionCheckpoint');
+    return { observation: 'VerifiedPrivateFixtureLease', group: name,
+      descendantJobId: ancestorCheckpoint.descendantJobId };
+  }, { deadline });
+  return { ...result, ancestorDiagnostic, ancestorCheckpoint, snapshots };
 }
 function work(name, callback) {
   const target = resolve(directory, name);
@@ -361,6 +380,7 @@ async function finalize() {
     finalObservedAt: new Date().toISOString()
   };
   write('final-' + (active ? 'active' : 'inactive') + '.json', receipt);
+  if (active) validateActiveFixtureLease(lease);
   outputs({
     fixture_source: context.source,
     artifact_observation: receipt.artifact,
@@ -380,7 +400,14 @@ async function collect() {
     artifact: process.env.INACTIVE_ARTIFACT,
     marker: process.env.INACTIVE_MARKER
   };
+  // Persist bounded observed inputs before strict validation; failure never claims verified output.
+  write('collected.json', { ...context, active, inactive,
+    leaseObservation: process.env.ACTIVE_LEASE ?? null,
+    contenderResult: process.env.CONTENDER_RESULT ?? null,
+    actualArtifactObservation: 'Incomplete', actualOutputsObservation: 'Incomplete',
+    productionReleaseProof: false, coldProductionTimingProof: false });
   validateFixtureOutputs(active, inactive, context.source);
+  validateActiveFixtureLease({ observation: process.env.ACTIVE_LEASE });
   assert.equal(process.env.CONTENDER_RESULT, 'success');
   const jobs = await api('/repos/' + context.repository + '/actions/runs/' + context.run + '/jobs?filter=latest&per_page=100');
   assert.equal(jobs.status, 200);

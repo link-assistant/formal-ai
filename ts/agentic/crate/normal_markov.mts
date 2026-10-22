@@ -2,6 +2,7 @@
 // (rust/src/normal_markov.rs). Spans are JavaScript string indices; the
 // execution trace reports UTF-8 byte offsets, as Rust does.
 
+import { callbackText as canonicalUnaryText } from '../callback_values.mjs';
 import { isAsciiAlphanumeric, trim, trimEnd, utf8Len } from '../write_str.mjs';
 
 /** Mirrors `RewriteRule::new` (plus `.terminal()` through `terminal`). */
@@ -44,7 +45,7 @@ export function executeRewrite(program, input) {
 
 /** Mirrors `fn quoted_segments`. @param {string} text @returns {Array<string>} */
 export function quotedSegments(text) {
-  return quotedSegmentSpans(text).map((segment) => segment.text);
+  return quotedSegmentSpans(text).map(canonicalUnaryText);
 }
 
 /**

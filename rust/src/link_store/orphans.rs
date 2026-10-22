@@ -73,15 +73,24 @@ fn process_is_alive(pid: u32) -> bool {
     // the sweep only ever removes what it is sure about.
     #[cfg(unix)]
     {
-        std::process::Command::new("kill")
-            .args(["-0", &pid.to_string()])
-            .stdout(std::process::Stdio::null())
-            .stderr(std::process::Stdio::piped())
-            .output()
-            .is_ok_and(|output| {
-                output.status.success()
-                    || !String::from_utf8_lossy(&output.stderr).contains("No such process")
-            })
+        crate::bounded_process::command_output(
+            {
+                let mut bounded_child_command = std::process::Command::new("kill");
+                bounded_child_command
+                    .args(["-0", &pid.to_string()])
+                    .stdout(std::process::Stdio::null())
+                    .stderr(std::process::Stdio::piped());
+                bounded_child_command
+            },
+            std::time::Duration::from_secs(30),
+            0,
+            16 * 1024 * 1024,
+        )
+        .map_err(|failure| std::io::Error::new(failure.kind(), failure))
+        .is_ok_and(|output| {
+            output.status.success()
+                || !String::from_utf8_lossy(&output.stderr).contains("No such process")
+        })
     }
     #[cfg(not(unix))]
     {

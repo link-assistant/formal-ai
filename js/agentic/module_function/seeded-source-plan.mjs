@@ -54,7 +54,8 @@ export function deriveSeededSourcePlan(request, observations, acceptance, operat
     'consumer-parameter': escaped(consumerParameter),
     'wrapper-parameter': '(?:' + inputRoleParameters.map(escaped).join('|') + ')'
   };
-  const sentences = sourceSentences(sourceGoalScope(request.text)).map(sentence => sentence.text);
+  const sentences = request.goalClause === undefined
+    ? sourceSentences(sourceGoalScope(request.text)).map(sentence => sentence.text) : [request.goalClause];
   const matches = forms.flatMap(form => {
     const technicalValues = {
       'consumer-parameter': [consumerParameter],
@@ -87,8 +88,19 @@ export function deriveSeededSourcePlan(request, observations, acceptance, operat
     locals.add(name);
     return name;
   };
-  const producerLocal = fresh('_sourceProjection'),
-    consumerLocal = fresh('_sourceRendering'),
+  const requestedAliases = request.aliases ?? [];
+  assert.ok(requestedAliases.every(alias => safe(alias.exported) && safe(alias.local)
+    && candidate.imports.some(binding => binding.exported === alias.exported)), 'UnboundRequestedImportAlias');
+  assert.equal(new Set(requestedAliases.map(alias => alias.exported)).size, requestedAliases.length, 'DuplicateImportAlias');
+  const bindLocal = (binding, fallback) => {
+    const alias = requestedAliases.find(value => value.exported === binding.exported);
+    if (alias === undefined) return fresh(fallback);
+    assert.ok(!locals.has(alias.local), 'RequestedImportAliasCollision');
+    locals.add(alias.local);
+    return alias.local;
+  };
+  const producerLocal = bindLocal(candidate.imports[0], '_sourceProjection'),
+    consumerLocal = bindLocal(candidate.imports[1], '_sourceRendering'),
     valueLocal = fresh('_sourceValue');
   const template = goal.children.filter(node => node.name === 'template');
   assert.equal(template.length, 1, 'ambiguous template');

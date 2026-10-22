@@ -3,15 +3,17 @@
 // `ShellIntentArgument` values are 'none' | 'path' | 'name_lead' |
 // 'one_path' | 'two_paths' | 'remainder' | 'search_query'.
 
+import { callbackValue as canonicalUnaryValue } from '../callback_values.mjs';
+import { lower as canonicalUnaryLower } from './rust_str.mjs';
 import { cached, readText } from '../host.mjs';
 import { findChildValue, parseRoot } from './seed_parser.mjs';
 
 const childrenNamed = (node, name) => (node.children || []).filter((child) => child.name === name);
 
 const collectLanguageValues = (group, name) => childrenNamed(group, 'language')
-  .flatMap((language) => childrenNamed(language, name).map((child) => child.value));
+  .flatMap((language) => childrenNamed(language, name).map(canonicalUnaryValue));
 
-const lowerAll = (values) => values.map((value) => value.toLowerCase());
+const lowerAll = (values) => values.map(canonicalUnaryLower);
 
 const ARGUMENTS = ['path', 'name_lead', 'one_path', 'two_paths', 'remainder', 'search_query'];
 

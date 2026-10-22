@@ -47,22 +47,9 @@ export function createStagedAuthority(contract, read) {
       assert.equal(blob(bytes), entry.sha);
       assert.equal(sha(bytes), source.sha256, source.path);
     }
-    const jobs = await get(base + '/runs/' + expected.run + '/attempts/' + expected.attempt + '/jobs?per_page=100');
-    assert.equal(jobs.total_count, jobs.jobs.length, 'truncated job identities refused');
-    const matches = jobs.jobs.filter(job => job.name === route.descendantName && job.runner_name === expected.runnerName && job.status === 'in_progress');
-    assert.equal(matches.length, 1, 'unique actual executing descendant required');
-    const child = matches[0];
-    assert.equal(String(child.run_id), expected.run);
-    assert.equal(String(child.run_attempt), expected.attempt);
-    assert.equal(child.head_sha, expected.head);
-    assert.ok(Number.isSafeInteger(child.id));
-    const group = await get(base + '/concurrency_groups/' + encodeURIComponent(contract.writerGroup) + '?ahead_of_job=' + child.id);
-    assert.equal(group.group_name, contract.writerGroup);
-    assert.ok(Array.isArray(group.group_members));
-    // Require source-derived caller lease, not any same-run active job.
-    const lease = group.group_members.find(member => String(member.run_id) === expected.run && member.status === 'in_progress' && member.job_name === route.descendantName && member.job_id === child.id);
-    assert.ok(lease && Number.isSafeInteger(lease.job_id), 'actual canonical caller ancestor lease required');
-    assert.equal(group.group_members.at(-1), lease, 'ancestor result must terminate at selected lease');
+    const jobs = await read(base + '/runs/' + expected.run + '/attempts/' + expected.attempt + '/jobs?per_page=100');
+    const group = await read(base + '/concurrency_groups/' + encodeURIComponent(contract.writerGroup));
+    requireCurrentGroupMembership(contract, expected, route, group, jobs);
     const receipt = Object.freeze({});
     receipts.set(receipt, {
       context: Object.freeze({
@@ -232,17 +219,9 @@ export async function observeCommandStagedContext({
     assert.ok(expectedSource);
     assert.equal(sha(bytes), expectedSource.sha256, 'immutable source bytes differ');
   }
-  const jobs = read(provider.registered().jobs).body;
-  const actual = jobs.jobs.filter(job => job.name === route.descendantName && job.runner_name === expected.runnerName && job.status === 'in_progress');
-  assert.equal(actual.length, 1);
-  const ancestor = read(provider.registered().ancestor).body;
-  assert.equal(ancestor.group_name, contract.writerGroup);
-  const lease = ancestor.group_members.at(-1);
-  assert.ok(lease);
-  assert.equal(lease.job_id, actual[0].id);
-  assert.equal(lease.job_name, route.descendantName);
-  assert.equal(String(lease.run_id), expected.run);
-  assert.equal(lease.status, 'in_progress');
+  const jobs = read(provider.registered().jobs);
+  const group = read(provider.registered().group);
+  requireCurrentGroupMembership(contract, expected, route, group, jobs);
   return releaseContext({
     ...environment,
     GITHUB_JOB: route.caller
@@ -259,14 +238,24 @@ export function requireCurrentGroupMembership(contract,expected,route,group,jobs
 
 // This shared identity evaluator is pure and returns no release context.
 export function requireExactCurrentGroupMember(expected,descendantName,writerGroup,group,jobs) {
+ assert.equal(jobs.status,200);assert.ok(Array.isArray(jobs.body.jobs));
+ assert.equal(jobs.body.total_count,jobs.body.jobs.length,'complete bounded job identities required');
  assert.equal(group.status,200);assert.equal(group.body.group_name,writerGroup);
+ assert.ok(Array.isArray(group.body.group_members));
+ assert.equal(group.body.total_count,group.body.group_members.length,'complete bounded group identities required');
  const activeJobs=jobs.body.jobs.filter(job=>job.name===descendantName&&job.runner_name===expected.runnerName&&job.status==='in_progress');
  assert.equal(activeJobs.length,1);const job=activeJobs[0];
  assert.ok(Number.isSafeInteger(job.id)&&job.id>0);assert.equal(String(job.run_id),expected.run);assert.equal(String(job.run_attempt),expected.attempt);assert.equal(job.head_sha,expected.head);
  assert.ok(Number.isSafeInteger(job.runner_id)&&job.runner_id>0);assert.equal(job.completed_at,null);assert.equal(job.url,'https://api.github.com/repos/'+expected.repository+'/actions/jobs/'+job.id);
  const members=group.body.group_members.filter(member=>member.status==='in_progress');assert.equal(members.length,1,'one exact active caller-group descendant required');const member=members[0];
  assert.equal(member.job_id,job.id);assert.equal(member.job_name,descendantName);assert.equal(String(member.run_id),expected.run);
- const groupTime=Date.parse(group.observedAt),jobTime=Date.parse(jobs.observedAt);assert.ok(Number.isFinite(groupTime)&&Number.isFinite(jobTime)&&groupTime>=jobTime&&groupTime-jobTime<=5000,'bounded matching current observations required');assert.ok(Date.parse(job.started_at)<=jobTime);
+ assert.equal(member.job_url,job.url);assert.equal(member.run_url,'https://api.github.com/repos/'+expected.repository+'/actions/runs/'+expected.run);
+ const groupTime=Date.parse(group.observedAt),
+  jobTime=Date.parse(jobs.observedAt);
+  assert.ok(Number.isFinite(groupTime)&&Number.isFinite(jobTime)&&groupTime>=jobTime&&groupTime-jobTime<=5000,
+  'bounded matching current observations required');
+  assert.ok(Date.parse(job.started_at)<=jobTime);
+
 }
 
 export async function observeCommandCurrentGroupStagedContext({
@@ -318,11 +307,11 @@ export async function observeCommandCurrentGroupStagedContext({
     assert.equal(sha(bytes), expectedSource.sha256, 'immutable source bytes differ');
   }
   const jobSnapshot=read(provider.registered().jobs);
-  const jobs=jobSnapshot.body;const jobObservedAt=jobSnapshot.observedAt;
+  const jobs=jobSnapshot.body;
   const actual = jobs.jobs.filter(job => job.name === route.descendantName && job.runner_name === expected.runnerName && job.status === 'in_progress');
   assert.equal(actual.length, 1);
   const groupSnapshot=read(provider.registered().group);
-  requireCurrentGroupMembership(contract,expected,route,groupSnapshot,{body:jobs,observedAt:jobObservedAt});
+  requireCurrentGroupMembership(contract,expected,route,groupSnapshot,jobSnapshot);
   const lease = groupSnapshot.body.group_members.find(member=>member.status==='in_progress');
   assert.equal(lease.job_id, actual[0].id);
   assert.equal(lease.job_name, route.descendantName);

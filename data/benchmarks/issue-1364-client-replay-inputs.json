@@ -1,0 +1,25 @@
+{
+  "schema": "formal-ai-issue-1364-client-replay-inputs/v1",
+  "sourceIssue": "https://github.com/link-assistant/formal-ai/issues/1364",
+  "expectedStdout": "Hello, World!\n",
+  "clients": {
+    "claude": {
+      "issueUrl": "https://github.com/konard/test-hello-world-019fb330-fa49-7c9d-a664-b7ea33bb698a/issues/1",
+      "pullRequestUrl": "https://github.com/konard/test-hello-world-019fb330-fa49-7c9d-a664-b7ea33bb698a/pull/2",
+      "branch": "issue-1-604f2202fd18",
+      "bodySha256": "59af36c4b1b27bc55db61be9a80005e67d593ecc797f966a6595191c60e1688b"
+    },
+    "codex": {
+      "issueUrl": "https://github.com/konard/test-hello-world-019fb331-c107-78c7-8ff6-9f127a3c593c/issues/1",
+      "pullRequestUrl": "https://github.com/konard/test-hello-world-019fb331-c107-78c7-8ff6-9f127a3c593c/pull/2",
+      "branch": "issue-1-09b0c76bd0e4",
+      "bodySha256": "f04af3d39ed1b1856a0e526d81937360b20e739fcef2e9329c02d2551808645a"
+    },
+    "agent": {
+      "issueUrl": "https://github.com/konard/test-hello-world-019fb330-00e1-73b9-955e-f357a1600d5b/issues/1",
+      "pullRequestUrl": "https://github.com/konard/test-hello-world-019fb330-00e1-73b9-955e-f357a1600d5b/pull/2",
+      "branch": "issue-1-1f3e3886bcb8",
+      "bodySha256": "7e82e40760bbb8cde2ab27ed74d2cf82edc9c4f3481885a03a0cf23d0b334b90"
+    }
+  }
+}

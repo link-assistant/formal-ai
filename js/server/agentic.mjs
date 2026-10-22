@@ -7,8 +7,11 @@
 // module installs its host over the booted worker and projects its plans onto
 // the Chat Completions and Responses wire shapes exactly as Rust does.
 
-import {observedPlanTerminal} from '../logging/terminal-events.mjs';
-import {currentDialogId} from './dialog-log.mjs';
+import { invalidArguments } from '../agentic/crate/tool_call_validation.mjs';
+import { serverMessage } from './messages.mjs';
+import { repeatedActionStop } from '../agentic/repetition_guard.mjs';
+import { observedPlanTerminal } from '../logging/terminal-events.mjs';
+import { currentDialogId } from './dialog-log.mjs';
 import { plainText, requestsToolExecution } from './chat-request.mjs';
 import { estimateTokens, stableId } from './ids.mjs';
 import { resolveModelId } from './seed.mjs';
@@ -22,18 +25,8 @@ import { planSymbolicCommandReroute } from '../agentic/command_reroute.mjs';
 import { suppliedFileAnswer } from '../agentic/file_read/supplied.mjs';
 import { planChatStep, toolCapability } from '../agentic/planner.mjs';
 import { projectDeclaredCommandKeys } from '../agentic/tool_result.mjs';
-import {
-  agenticToolPermissionDenial,
-  findToolDefinition,
-  isHostedToolDefinition,
-  requestedToolNames,
-  responseToolCallIdentity,
-} from '../agentic/protocol_policy.mjs';
-import {
-  customResponseToolInput,
-  isCustomResponseTool,
-  responseArgumentsForTool,
-} from '../agentic/crate/protocol_responses.mjs';
+import { agenticToolPermissionDenial, findToolDefinition, isHostedToolDefinition, requestedToolNames, responseToolCallIdentity } from '../agentic/protocol_policy.mjs';
+import { customResponseToolInput, isCustomResponseTool, responseArgumentsForTool } from '../agentic/crate/protocol_responses.mjs';
 import { projectAppendContracts } from '../agentic/append_contract.mjs';
 import { ungroundedIdentityArguments } from '../agentic/crate/tool_scope.mjs';
 
@@ -41,34 +34,41 @@ import { ungroundedIdentityArguments } from '../agentic/crate/tool_scope.mjs';
 async function ensureHost(ctx) {
   await ensureNodeHost(ctx);
 }
-
 function memoryEvents(ctx) {
   return ctx.memory && typeof ctx.memory.events === 'function' ? ctx.memory.events() : [];
 }
 
 /** `dreaming_application::amended_answer`. */
 function amendedAnswer(ctx, prompt, answer) {
-  return applyRetainedAmendments(prompt, { answer, evidence_links: [] }, memoryEvents(ctx)).answer;
+  return applyRetainedAmendments(prompt, {
+    answer,
+    evidence_links: []
+  }, memoryEvents(ctx)).answer;
 }
 
 /** `tool_permission_refusal_answer`. */
 export function toolPermissionRefusalAnswer(denial) {
-  const { capability } = denial;
+  const {
+    capability
+  } = denial;
   const detail = `package_permission_required:${capability}`;
   return {
     intent: 'tool_call_refused',
-    answer: agenticMessage('tool_permission_refused', { capability, reason: denial.reason }),
+    answer: agenticMessage('tool_permission_refused', {
+      capability,
+      reason: denial.reason
+    }),
     confidence: 1,
     evidence_links: [`policy:${detail}`],
     thinking_steps: [thinkingStep(0, 'policy_refusal', detail, 'high', 'policy')],
-    links_notation: `tool_call_refusal\n  policy "package_permission_required"\n  capability "${capability}"\n  thinking_step "policy_refusal ${detail}"\n`,
+    links_notation: `tool_call_refusal\n  policy "package_permission_required"\n  capability "${capability}"\n  thinking_step "policy_refusal ${detail}"\n`
   };
 }
 
 /** `groundable_tool_names`: the advertised tools this request can address. */
 function groundableToolNames(request, names) {
-  const context = request.messages.map((message) => plainText(message.content)).join('\n');
-  return names.filter((name) => {
+  const context = request.messages.map(message => plainText(message.content)).join('\n');
+  return names.filter(name => {
     const definition = findToolDefinition(request.tools, name);
     return !definition || ungroundedIdentityArguments(definition, {}, context).length === 0;
   });
@@ -87,23 +87,65 @@ export async function agenticOutcome(ctx, request, refusal) {
     if (ctx.agentMode) {
       await ensureHost(ctx);
       const answer = suppliedFileAnswer(request.messages);
-      if (answer !== null) return { kind: 'planned', plan: { kind: 'final', answer } };
+      if (answer !== null) return {
+        kind: 'planned',
+        plan: {
+          kind: 'final',
+          answer
+        }
+      };
     }
-    return { kind: 'fallthrough' };
+    return {
+      kind: 'fallthrough'
+    };
   }
-  if (!ctx.agentMode) {ctx.logger?.log('warn','agent.terminal',{component:'agent',dialog_id:currentDialogId(),reason:'refusal',origin:'agent_mode_required'});return { kind: 'refused', answer: refusal() };}
+  if (!ctx.agentMode) {
+    ctx.logger?.log('warn', 'agent.terminal', {
+      component: 'agent',
+      dialog_id: currentDialogId(),
+      reason: 'refusal',
+      origin: 'agent_mode_required'
+    });
+    return {
+      kind: 'refused',
+      answer: refusal()
+    };
+  }
   await ensureHost(ctx);
   const owned = requestedToolNames(request);
   const denial = agenticToolPermissionDenial(owned, toolCapability);
-  if (denial) {ctx.logger?.log('warn','agent.terminal',{component:'agent',dialog_id:currentDialogId(),reason:'refusal',origin:'package_permission_required'});return { kind: 'refused', answer: toolPermissionRefusalAnswer(denial) };}
+  if (denial) {
+    ctx.logger?.log('warn', 'agent.terminal', {
+      component: 'agent',
+      dialog_id: currentDialogId(),
+      reason: 'refusal',
+      origin: 'package_permission_required'
+    });
+    return {
+      kind: 'refused',
+      answer: toolPermissionRefusalAnswer(denial)
+    };
+  }
   // R1154-1: a shell tool whose schema names its command property something
   // else than `command`/`cmd`/`script` is read through that declared key.
   const messages = projectDeclaredCommandKeys(request.messages, request.tools);
   const scoped = projectAppendContracts(messages, request.tools);
   const plan = await planChatStep(scoped, groundableToolNames(request, owned));
-  const terminal=observedPlanTerminal(plan);
-  ctx.logger?.log('debug','agent.plan',{component:'agent',dialog_id:currentDialogId(),...(terminal??{reason:plan?'awaiting_tool_result':'Unknown'}),plan_kind:plan?.kind??'none'});
-  return plan === null ? { kind: 'fallthrough' } : { kind: 'planned', plan };
+  const terminal = observedPlanTerminal(plan);
+  ctx.logger?.log('debug', 'agent.plan', {
+    component: 'agent',
+    dialog_id: currentDialogId(),
+    ...(terminal ?? {
+      reason: plan ? 'awaiting_tool_result' : 'Unknown'
+    }),
+    plan_kind: plan?.kind ?? 'none'
+  });
+  return plan === null ? {
+    kind: 'fallthrough'
+  } : {
+    kind: 'planned',
+    plan
+  };
 }
 
 /** `command_reroute_plan`: a plan that reroutes the solver's command, or null. */
@@ -112,15 +154,90 @@ export async function commandReroutePlan(ctx, request, symbolic) {
   await ensureHost(ctx);
   return planSymbolicCommandReroute(request.messages, requestedToolNames(request), symbolic);
 }
-
-function logPlanTerminal(ctx,plan){
- const terminal=observedPlanTerminal(plan)??{reason:'planned_not_executed',origin:'client_execution_pending'};
- ctx.logger?.log(terminal.reason==='success'?'info':'debug','agent.terminal',{component:'agent',dialog_id:currentDialogId(),...terminal,scope:'server_response',task_delivery:'Unknown'});
+function logPlanTerminal(ctx, plan) {
+  const terminal = observedPlanTerminal(plan) ?? {
+    reason: 'planned_not_executed',
+    origin: 'client_execution_pending'
+  };
+  ctx.logger?.log(terminal.reason === 'success' ? 'info' : 'debug', 'agent.terminal', {
+    component: 'agent',
+    dialog_id: currentDialogId(),
+    ...terminal,
+    scope: 'server_response',
+    task_delivery: 'Unknown'
+  });
 }
-export function logUnclassifiedTerminal(ctx,origin){
- ctx.logger?.log('debug','agent.terminal',{component:'agent',dialog_id:currentDialogId(),reason:'Unknown',origin,scope:'server_response',task_delivery:'Unknown'});
+export function logUnclassifiedTerminal(ctx, origin) {
+  ctx.logger?.log('debug', 'agent.terminal', {
+    component: 'agent',
+    dialog_id: currentDialogId(),
+    reason: 'Unknown',
+    origin,
+    scope: 'server_response',
+    task_delivery: 'Unknown'
+  });
 }
-
+function bindPlan(ctx, request, plan, prompt, workspace) {
+  if (plan.kind !== 'tool_calls') {
+    ctx.logger?.log('debug', 'planning_terminal', {
+      component: 'planner',
+      answer: String(plan.answer ?? '').slice(0, 4096),
+      state: 'terminal',
+      repeat_limit: 3
+    });
+    return plan;
+  }
+  const calls = [];
+  for (const call of plan.calls) {
+    const args = responseArgumentsForTool(request.tools, call.tool, call.arguments, prompt, workspace);
+    const definition = findToolDefinition(request.tools, call.tool);
+    const holder = definition?.function ?? definition;
+    const schema = holder?.parameters ?? holder?.input_schema;
+    let reason = null;
+    if (schema) {
+      try {
+        reason = invalidArguments(JSON.parse(args), schema);
+      } catch {
+        reason = serverMessage('tool-arguments-invalid-json');
+      }
+    }
+    if (reason) {
+      ctx.logger?.log('error', 'tool_argument_binding_failed', {
+        component: 'planner',
+        tool: call.tool,
+        arguments: args,
+        schema,
+        reason
+      });
+      return {
+        kind: 'final',
+        answer: agenticMessage('tool-argument-binding-incomplete', {
+          tool: call.tool
+        })
+      };
+    }
+    ctx.logger?.log('debug', 'tool_call_bound', {
+      component: 'planner',
+      tool: call.tool,
+      arguments: args,
+      repeat_limit: 3,
+      state: 'awaiting_client_receipt'
+    });
+    calls.push({
+      ...call,
+      arguments: args
+    });
+  }
+  const repeated = repeatedActionStop(request.messages, calls);
+  if (repeated) return {
+    kind: 'final',
+    answer: repeated
+  };
+  return {
+    ...plan,
+    calls
+  };
+}
 function messageTokens(messages) {
   return messages.reduce((total, message) => {
     if (typeof message.content === 'string') return total + estimateTokens(message.content);
@@ -137,30 +254,39 @@ function messageTokens(messages) {
  * @param {number} created the response timestamp
  */
 export function chatCompletionFromPlan(ctx, request, prompt, plan, created) {
-  logPlanTerminal(ctx,plan);
+  logPlanTerminal(ctx, plan);
   const promptTokens = messageTokens(request.messages);
   const workspace = clientWorkingDirectory(request.messages);
+  plan = bindPlan(ctx, request, plan, prompt, workspace);
   let message;
   let finishReason;
   let completionTokens;
   if (plan.kind === 'tool_calls') {
     const narration = toolActionNarration(prompt, plan.calls);
     const toolCalls = plan.calls.map((call, index) => ({
-      id: stableId('call', `${prompt}|${index}|${call.tool}|${call.arguments}`),
+      id: stableId('call', `${prompt}|${request.messages.length}|${index}|${call.tool}|${call.arguments}`),
       type: 'function',
       function: {
         name: call.tool,
-        arguments: responseArgumentsForTool(request.tools, call.tool, call.arguments, prompt, workspace),
-      },
+        arguments: responseArgumentsForTool(request.tools, call.tool, call.arguments, prompt, workspace)
+      }
     }));
-    completionTokens = estimateTokens(narration) + toolCalls.reduce((total, call) =>
-      total + estimateTokens(call.function.name) + estimateTokens(call.function.arguments), 0);
-    message = { role: 'assistant', content: narration, tool_calls: toolCalls };
+    completionTokens = estimateTokens(narration) + toolCalls.reduce((total, call) => total + estimateTokens(call.function.name) + estimateTokens(call.function.arguments)
+    , 0);
+    message = {
+      role: 'assistant',
+      content: narration,
+      tool_calls: toolCalls
+    };
     finishReason = 'tool_calls';
   } else {
     const answer = amendedAnswer(ctx, prompt, plan.answer);
     completionTokens = estimateTokens(answer);
-    message = { role: 'assistant', content: answer, tool_calls: [] };
+    message = {
+      role: 'assistant',
+      content: answer,
+      tool_calls: []
+    };
     finishReason = 'stop';
   }
   return {
@@ -168,21 +294,38 @@ export function chatCompletionFromPlan(ctx, request, prompt, plan, created) {
     object: 'chat.completion',
     created,
     model: resolveModelId(request.model),
-    choices: [{ index: 0, message, finish_reason: finishReason }],
-    usage: { prompt_tokens: promptTokens, completion_tokens: completionTokens, total_tokens: promptTokens + completionTokens },
+    choices: [{
+      index: 0,
+      message,
+      finish_reason: finishReason
+    }],
+    usage: {
+      prompt_tokens: promptTokens,
+      completion_tokens: completionTokens,
+      total_tokens: promptTokens + completionTokens
+    }
   };
 }
-
 function outputMessage(text) {
-  return { id: stableId('msg', text), type: 'message', role: 'assistant', content: [{ type: 'output_text', text }] };
+  return {
+    id: stableId('msg', text),
+    type: 'message',
+    role: 'assistant',
+    content: [{
+      type: 'output_text',
+      text
+    }]
+  };
 }
 
 /** The output item one planned call becomes on the Responses surface. */
 function responseCallItem(request, prompt, workspace, call, index) {
-  const { tool } = call;
-  const seed = `${prompt}|${index}|${tool}|${call.arguments}`;
+  const {
+    tool
+  } = call;
+  const seed = `${prompt}|${request.messages.length}|${index}|${tool}|${call.arguments}`;
   const args = responseArgumentsForTool(request.tools, tool, call.arguments, prompt, workspace);
-  if (tool === 'web_search' && request.tools.some((definition) => isHostedToolDefinition(definition, tool))) {
+  if (tool === 'web_search' && request.tools.some(definition => isHostedToolDefinition(definition, tool))) {
     let query = prompt;
     try {
       const value = JSON.parse(args);
@@ -194,17 +337,32 @@ function responseCallItem(request, prompt, workspace, call, index) {
       id: stableId('ws', seed),
       type: 'web_search_call',
       status: 'completed',
-      action: { type: 'search', query, queries: [query] },
+      action: {
+        type: 'search',
+        query,
+        queries: [query]
+      }
     };
     return [item, estimateTokens(tool) + estimateTokens(args)];
   }
   if (isCustomResponseTool(request.tools, tool)) {
     const input = customResponseToolInput(request.tools, tool, call.arguments);
-    const item = { id: stableId('ctc', seed), type: 'custom_tool_call', call_id: stableId('call', seed), name: tool, input };
+    const item = {
+      id: stableId('ctc', seed),
+      type: 'custom_tool_call',
+      call_id: stableId('call', seed),
+      name: tool,
+      input
+    };
     return [item, estimateTokens(tool) + estimateTokens(input)];
   }
   const [name, namespace] = responseToolCallIdentity(request.tools, tool);
-  const item = { id: stableId('fc', seed), type: 'function_call', call_id: stableId('call', seed), name };
+  const item = {
+    id: stableId('fc', seed),
+    type: 'function_call',
+    call_id: stableId('call', seed),
+    name
+  };
   if (namespace !== null) item.namespace = namespace;
   item.arguments = args;
   item.status = 'completed';
@@ -221,9 +379,10 @@ function responseCallItem(request, prompt, workspace, call, index) {
  * @param {number} created the response timestamp
  */
 export function responseFromPlan(ctx, request, chatRequest, prompt, plan, created) {
-  logPlanTerminal(ctx,plan);
+  logPlanTerminal(ctx, plan);
   const inputTokens = messageTokens(chatRequest.messages);
   const workspace = clientWorkingDirectory(chatRequest.messages);
+  plan = bindPlan(ctx, chatRequest, plan, prompt, workspace);
   let output;
   let outputTokens;
   if (plan.kind === 'tool_calls') {
@@ -247,7 +406,11 @@ export function responseFromPlan(ctx, request, chatRequest, prompt, plan, create
     status: 'completed',
     model: resolveModelId(request.model),
     output,
-    usage: { input_tokens: inputTokens, output_tokens: outputTokens, total_tokens: inputTokens + outputTokens },
-    evidence_links: [],
+    usage: {
+      input_tokens: inputTokens,
+      output_tokens: outputTokens,
+      total_tokens: inputTokens + outputTokens
+    },
+    evidence_links: []
   };
 }

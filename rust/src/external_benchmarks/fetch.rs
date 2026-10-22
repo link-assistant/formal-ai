@@ -110,15 +110,20 @@ fn create_parent(path: &Path) -> Result<(), String> {
 fn download(url: &str, destination: &Path) -> Result<(), String> {
     create_parent(destination)?;
     let partial = destination.with_extension("partial");
-    let status = Command::new("curl")
+    let mut command = Command::new("curl");
+    command
         .args(["-fSL", "--retry", "3", "--retry-delay", "2"])
         // A stalled transfer must fail rather than hold the run until the
         // job cap cancels it with nothing recorded.
         .args(["--connect-timeout", "20", "--max-time", "600", "-o"])
         .arg(&partial)
-        .arg(url)
-        .status()
-        .map_err(|error| format!("failed to start curl for {url}: {error}"))?;
+        .arg(url);
+    // Four existing transfers, their three fixed backoffs, and bounded startup.
+    let status = crate::bounded_process::command_status(
+        command,
+        std::time::Duration::from_secs(4 * 600 + 3 * 2 + 30),
+    )
+    .map_err(|error| format!("failed to start curl for {url}: {error}"))?;
     if !status.success() {
         return Err(format!("curl failed for {url} with status {status}"));
     }
@@ -132,12 +137,16 @@ fn download_gzip(url: &str, destination: &Path) -> Result<(), String> {
     let partial = destination.with_extension("partial");
     let output = fs::File::create(&partial)
         .map_err(|error| format!("failed to create {}: {error}", partial.display()))?;
-    let status = Command::new("gzip")
+    let mut command = Command::new("gzip");
+    command
         .arg("-dc")
         .arg(&compressed)
-        .stdout(Stdio::from(output))
-        .status()
-        .map_err(|error| format!("failed to start gzip for {}: {error}", compressed.display()))?;
+        .stdout(Stdio::from(output));
+    let status =
+        crate::bounded_process::command_status(command, std::time::Duration::from_mins(10))
+            .map_err(|error| {
+                format!("failed to start gzip for {}: {error}", compressed.display())
+            })?;
     if !status.success() {
         return Err(format!(
             "gzip failed for {} with status {status}",
@@ -163,10 +172,18 @@ pub fn unavailable_reason(manifest: &SuiteManifest) -> Option<String> {
 
 fn python_module_available(module: &str) -> bool {
     let import = vocabulary::render("external_benchmark_python_import", &[("module", module)]);
-    Command::new("python3")
-        .args(["-c", &import])
-        .output()
-        .is_ok_and(|output| output.status.success())
+    crate::bounded_process::command_output(
+        {
+            let mut bounded_child_command = Command::new("python3");
+            bounded_child_command.args(["-c", &import]);
+            bounded_child_command
+        },
+        std::time::Duration::from_secs(30),
+        64 * 1024 * 1024,
+        16 * 1024 * 1024,
+    )
+    .map_err(|failure| std::io::Error::new(failure.kind(), failure))
+    .is_ok_and(|output| output.status.success())
 }
 
 fn parquet_records(path: &Path, manifest: &SuiteManifest) -> Result<Vec<String>, String> {
@@ -176,19 +193,26 @@ fn parquet_records(path: &Path, manifest: &SuiteManifest) -> Result<Vec<String>,
         "for row in parquet.read_table(sys.argv[1]).to_pylist():\n",
         "    print(json.dumps(row, default=str, separators=(',', ':')))\n",
     );
-    let output = Command::new("python3")
-        .args(["-c", script])
-        .arg(path)
-        .output()
-        .map_err(|error| {
-            vocabulary::render(
-                "external_benchmark_parquet_start_error",
-                &[
-                    ("path", &path.display().to_string()),
-                    ("error", &error.to_string()),
-                ],
-            )
-        })?;
+    let output = crate::bounded_process::command_output(
+        {
+            let mut bounded_child_command = Command::new("python3");
+            bounded_child_command.args(["-c", script]).arg(path);
+            bounded_child_command
+        },
+        std::time::Duration::from_secs(600),
+        128 * 1024 * 1024,
+        64 * 1024 * 1024,
+    )
+    .map_err(|failure| std::io::Error::new(failure.kind(), failure))
+    .map_err(|error| {
+        vocabulary::render(
+            "external_benchmark_parquet_start_error",
+            &[
+                ("path", &path.display().to_string()),
+                ("error", &error.to_string()),
+            ],
+        )
+    })?;
     if !output.status.success() {
         return Err(vocabulary::render(
             "external_benchmark_parquet_decode_error",

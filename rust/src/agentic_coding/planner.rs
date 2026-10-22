@@ -1,6 +1,7 @@
 //! Deterministic agentic planner for choosing the next tool or final answer from
 //! a conversation and its advertised capabilities, without hidden neural state.
 
+use super::repetition_guard::repeated_action_stop_for_candidates as action_stop;
 use serde_json::json;
 mod continuation;
 mod obligations;
@@ -178,7 +179,8 @@ pub(super) fn plan_chat_step_resolved(
     tool_names: &[&str],
 ) -> Option<ResolvedPlan> {
     let mut result = None;
-    let plan = plan_chat_step_inner(messages, tool_names, &mut result)?;
+    let plan = plan_chat_step_inner(messages, tool_names, &mut result);
+    let plan = super::repetition_guard::guard_plan(messages, plan, &mut result)?;
     Some(ResolvedPlan::new(plan, result))
 }
 
@@ -188,6 +190,14 @@ fn plan_chat_step_inner(
     result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let received = crate::protocol::latest_user_request(messages)?;
+    if let Some(reason) = action_stop(messages, Some(&[])) {
+        return Some(record(
+            AgenticPlan::Final(reason),
+            FinalDisposition::Failure,
+            "repeated_action_budget",
+            result,
+        ));
+    }
     // A harness prompt that quotes the task to have it summarized is answered
     // with the summary, never by doing the task again (issue #1133).
     if let Some(summary) = harness_envelope::summarize_request(&received) {
@@ -377,6 +387,11 @@ pub(super) fn plan_settled_routes(
     // work to do (issue #1133).
     if let Some(plan) = steps::explicit_shell_step(task, messages, tool_names, result)
         .or_else(|| {
+            super::source_cst_transform::plan_source_cst_transform_step(
+                task, messages, tool_names, result,
+            )
+        })
+        .or_else(|| {
             code_task::plan_verified_generated_source_step(task, messages, tool_names, result)
         })
         .or_else(|| git_commit::plan_commit_step(owned, messages, tool_names))
@@ -390,41 +405,43 @@ pub(super) fn plan_settled_routes(
     // modules, write both, run the stated command.
     // A copy or move followed by edits of the file it makes is planned
     // sentence by sentence (PR #1188 G82).
-    if let Some(plan) =
+    if let Some(plan) = super::source_unary_consolidation::plan_source_unary_consolidation_step(
+        owned, messages, tool_names, result,
+    )
+    .or_else(|| {
         super::source_maintenance::plan_source_maintenance_step(owned, messages, tool_names, result)
-            .or_else(|| {
-                super::request_sequence::plan_request_sequence_step(
-                    owned,
-                    messages,
-                    tool_names,
-                    plan_chat_step_resolved,
-                    result,
-                )
-            })
-            .or_else(|| {
-                super::workspace_change::plan_workspace_change_step(
-                    owned, messages, tool_names, result,
-                )
-            })
-            .or_else(|| {
-                super::coding_research::plan_module_function_research_step(
-                    owned, messages, tool_names, result,
-                )
-            })
-            // A bug report with a stated expectation is checked before anything is
-            // rewritten (PR #1188 T93).
-            .or_else(|| {
-                super::function_expectation::plan_function_expectation_step(
-                    owned, messages, tool_names, result,
-                )
-            })
-            // An assertion of a stated call and value is added in the test
-            // file's own form, and the file is run (PR #1188 G13).
-            .or_else(|| {
-                super::test_assertion::plan_test_assertion_step(owned, messages, tool_names, result)
-            })
-            // A test asked for with no expected result is a question (PR #1188 G25).
-            .or_else(|| super::function_expectation::test_expectation_question(owned, result))
+    })
+    .or_else(|| {
+        super::request_sequence::plan_request_sequence_step(
+            owned,
+            messages,
+            tool_names,
+            plan_chat_step_resolved,
+            result,
+        )
+    })
+    .or_else(|| {
+        super::workspace_change::plan_workspace_change_step(owned, messages, tool_names, result)
+    })
+    .or_else(|| {
+        super::coding_research::plan_module_function_research_step(
+            owned, messages, tool_names, result,
+        )
+    })
+    // A bug report with a stated expectation is checked before anything is
+    // rewritten (PR #1188 T93).
+    .or_else(|| {
+        super::function_expectation::plan_function_expectation_step(
+            owned, messages, tool_names, result,
+        )
+    })
+    // An assertion of a stated call and value is added in the test
+    // file's own form, and the file is run (PR #1188 G13).
+    .or_else(|| {
+        super::test_assertion::plan_test_assertion_step(owned, messages, tool_names, result)
+    })
+    // A test asked for with no expected result is a question (PR #1188 G25).
+    .or_else(|| super::function_expectation::test_expectation_question(owned, result))
     {
         return Some(plan);
     }
@@ -540,6 +557,11 @@ pub(super) fn plan_settled_routes(
                 conversation_recall::plan_verified_recipe_step(messages, tool_names)
                     .or_else(|| {
                         super::coding_research::plan_coding_research_step(
+                            task, messages, tool_names, result,
+                        )
+                    })
+                    .or_else(|| {
+                        super::semantic_source_preflight::plan_semantic_source_preflight(
                             task, messages, tool_names, result,
                         )
                     })

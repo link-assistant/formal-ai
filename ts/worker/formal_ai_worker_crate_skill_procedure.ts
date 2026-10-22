@@ -3,7 +3,6 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/skill_procedure.mjs"] = (crateRequire) => {
 // Compiler for arbitrary, freely-phrased natural-language procedures
 // (issue #674): the part of rust/src/skill_procedure.rs
@@ -19,7 +18,8 @@
 // source_span}, steps: [{id, index, requirement_id, kind, objects,
 // target_language, source_text, source_span}], canonical_program}`. Spans are
 // UTF-8 byte ranges, as in Rust.
-
+const { callbackText: canonicalUnaryText } = crateRequire("callback_values.mjs");
+const { callbackNonempty: canonicalUnaryNonempty } = crateRequire("callback_values.mjs");
 const { cached, parseLino, readText } = crateRequire("host.mjs");
 const { stableId } = crateRequire("crate/engine_stable_identifier.mjs");
 const { impulseIdFor } = crateRequire("crate/intent_formalization.mjs");
@@ -29,24 +29,20 @@ const { isAlphanumeric, trim, utf8Len } = crateRequire("crate/rust_str.mjs");
 const { responseFor } = crateRequire("crate/seed.mjs");
 const { meaningsWithRole } = crateRequire("crate/seed_meanings.mjs");
 const { findChildValue, parseRoot } = crateRequire("crate/seed_parser.mjs");
-
 /** Mirrors `MINIMUM_STEPS` in rust/src/skill_procedure.rs. */
 const MINIMUM_STEPS = 2;
 /** Mirrors `PROCEDURE_CONFORMANCE_TRIGGER` in rust/src/skill_procedure.rs. */
 const PROCEDURE_CONFORMANCE_TRIGGER = 'https://example.com/article';
 /** Mirrors `crate::engine::KNOWLEDGE_SCHEMA_VERSION`. */
 const KNOWLEDGE_SCHEMA_VERSION = '0.2.0';
-
 /** `crate::seed::ROLE_SKILL_PROCEDURE_*` and `ROLE_TRANSLATION_LANGUAGE` (rust/src/seed/roles/). */
 const ROLE_SKILL_PROCEDURE_TRIGGER_LEAD = 'skill_procedure_trigger_lead';
 const ROLE_SKILL_PROCEDURE_CLAUSE_SEPARATOR = 'skill_procedure_clause_separator';
 const ROLE_SKILL_PROCEDURE_STEP_VERB = 'skill_procedure_step_verb';
 const ROLE_SKILL_PROCEDURE_STEP_OBJECT = 'skill_procedure_step_object';
 const ROLE_TRANSLATION_LANGUAGE = 'translation_language';
-
 const PROCEDURE_MEANINGS_FILE = 'data/seed/meanings-skill-procedure.lino';
 const CAPABILITY_LEDGER_FILE = 'data/meta/procedure-capability-ledger.lino';
-
 /** Mirrors `decode_codepoints` in rust/src/seed/parser.rs. */
 function decodeCodepoints(raw) {
   let out = '';
@@ -59,7 +55,6 @@ function decodeCodepoints(raw) {
   }
   return out;
 }
-
 /** Mirrors `fn surface_text` in rust/src/seed/meanings/parse.rs. */
 function surfaceText(node) {
   const text = findChildValue(node, 'text');
@@ -67,7 +62,6 @@ function surfaceText(node) {
   const codepoints = findChildValue(node, 'codepoints');
   return codepoints ? decodeCodepoints(codepoints) : node.value;
 }
-
 /**
  * Mirrors `seed::parse_lexicon_text(PROCEDURE_MEANINGS_LINO)` for the fields
  * the compiler reads (`slug`, `roles`, lexeme word texts), the same walk as
@@ -94,22 +88,17 @@ function procedureLexicon() {
     return meanings;
   });
 }
-
 const procedureMeaningsWithRole = (role) => procedureLexicon().filter((meaning) => meaning.roles.includes(role));
-
 /** Mirrors `fn surfaces` in rust/src/skill_procedure.rs: every non-empty surface text. */
-const surfaces = (meaning) => meaning.lexemes.flatMap((lexeme) => lexeme.words.map((word) => word.text)).filter((text) => text !== '');
-
+const surfaces = (meaning) => meaning.lexemes.flatMap((lexeme) => lexeme.words.map(canonicalUnaryText)).filter(canonicalUnaryNonempty);
 /** Mirrors `fn procedure_role_surfaces` in rust/src/skill_procedure.rs. */
 function procedureRoleSurfaces(role) {
   return procedureMeaningsWithRole(role).flatMap(surfaces);
 }
-
 /** Mirrors `fn meaning_has_role` in rust/src/skill_procedure.rs (the global lexicon). */
 function meaningHasRole(slug, role) {
   return meaningsWithRole(role).some((meaning) => meaning.slug === slug);
 }
-
 /**
  * Mirrors `fn default_capability_ledger` in rust/src/skill_procedure/learning.rs:
  * the reviewed lessons as `[{canonical_kind, surfaces: [{language, text}]}]`.
@@ -134,11 +123,9 @@ function defaultCapabilityLedger() {
     });
   });
 }
-
 /** Whether `candidate` (`{start, length}`, UTF-16 start, UTF-8 length) beats `current`. */
 const better = (candidate, current) => current === null || candidate.start < current.start
   || (candidate.start === current.start && candidate.length > current.length);
-
 /** Mirrors `fn first_match_in` in rust/src/skill_procedure.rs over `meanings`. */
 function firstMatchIn(meanings, hay, role) {
   let best = null;
@@ -153,20 +140,16 @@ function firstMatchIn(meanings, hay, role) {
   }
   return best;
 }
-
 /** Mirrors `fn first_match` in rust/src/skill_procedure.rs (the global lexicon). */
 function firstMatch(hay, role) {
   return firstMatchIn(meaningsWithRole(role), hay, role);
 }
-
 /** Mirrors `fn first_procedure_match` in rust/src/skill_procedure.rs. */
 function firstProcedureMatch(hay, role) {
   return firstMatchIn(procedureLexicon(), hay, role);
 }
-
 /** Mirrors `fn is_ideographic` in rust/src/skill_procedure.rs. */
 const isIdeographic = (character) => /^[㐀-鿿豈-﫿]$/u.test(character);
-
 /** Mirrors `fn is_standalone` in rust/src/skill_procedure.rs (UTF-16 indices). */
 function isStandalone(lower, start, end) {
   const matched = Array.from(lower.slice(start, end));
@@ -176,7 +159,6 @@ function isStandalone(lower, start, end) {
   const alnum = (character) => character !== undefined && isAlphanumeric(character);
   return (!alnum(matched[0]) || !alnum(before)) && (!alnum(matched[matched.length - 1]) || !alnum(after));
 }
-
 /** Mirrors `fn first_step_match` in rust/src/skill_procedure.rs. */
 function firstStepMatch(hay, ledger) {
   let best = firstProcedureMatch(hay, ROLE_SKILL_PROCEDURE_STEP_VERB);
@@ -192,7 +174,6 @@ function firstStepMatch(hay, ledger) {
   }
   return best;
 }
-
 /** Mirrors `fn objects_in` in rust/src/skill_procedure.rs: object slugs in mention order. */
 function objectsIn(clause, skip) {
   const hits = [];
@@ -210,23 +191,19 @@ function objectsIn(clause, skip) {
   hits.sort((left, right) => left[0] - right[0]);
   return hits.map(([, slug]) => slug);
 }
-
 /** Mirrors `fn gap_name` in rust/src/skill_procedure.rs. */
 function gapName(step) {
   return (responseFor('skill_gap_name', 'en') ?? '').split('{step}').join(step);
 }
-
 /** Mirrors `ProcedureStep::arguments`. */
 function stepArguments(step) {
   return step.target_language === null ? [...step.objects] : [...step.objects, step.target_language];
 }
-
 /** Mirrors `fn requirement_id` in rust/src/skill_procedure.rs. */
 function requirementId(impulseId, index, requirement) {
   return stableId('procedure_requirement',
     `${impulseId}:${index}:${requirement.source_span[0]}..${requirement.source_span[1]}:${requirement.source_text}`);
 }
-
 /** Mirrors `fn canonical_program` in rust/src/skill_procedure.rs. */
 function canonicalProgram(trigger, steps) {
   let out = 'procedure\n  trigger\n';
@@ -237,12 +214,10 @@ function canonicalProgram(trigger, steps) {
   }
   return out;
 }
-
 /** Mirrors `fn step_id` in rust/src/skill_procedure.rs: the step id `compile_procedure_with_ledger` derives. */
 function stepId(procedureId, step) {
   return stableId('compiled_procedure_step', `${procedureId}:${step.index}:${step.kind}:${stepArguments(step).join('+')}`);
 }
-
 /**
  * Mirrors `fn compile_procedure` (via `compile_procedure_with_ledger`) in
  * rust/src/skill_procedure.rs: `{procedure}` on success, else `{error}` with
@@ -304,7 +279,6 @@ function compileProcedureResult(description) {
     },
   };
 }
-
 /**
  * Mirrors `compile_procedure(description).ok()`.
  * @param {string} description
@@ -313,7 +287,6 @@ function compileProcedureResult(description) {
 function compileProcedure(description) {
   return compileProcedureResult(description).procedure ?? null;
 }
-
 /**
  * Mirrors `CompiledProcedure::conformance_links_notation`: one walk with the
  * deterministic conformance host (`kind(input)` per step) as a
@@ -341,7 +314,6 @@ function conformanceLinksNotation(procedure, triggerValue) {
   });
   return pushLinoNode(out, 2, 'answer', outcomes.length ? outcomes[outcomes.length - 1].output : '');
 }
-
 /** Mirrors `CompiledProcedure::restate_steps`: each step quoting its source span. */
 function restateSteps(procedure) {
   let out = '';
@@ -353,7 +325,6 @@ function restateSteps(procedure) {
   }
   return out;
 }
-
 /** Mirrors `CompiledProcedure::links_notation`: the canonical, language-independent export. */
 function procedureLinksNotation(procedure) {
   let out = '';
@@ -371,7 +342,6 @@ function procedureLinksNotation(procedure) {
   }
   return out;
 }
-
 return Object.freeze({
   MINIMUM_STEPS,
   PROCEDURE_CONFORMANCE_TRIGGER,

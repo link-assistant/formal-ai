@@ -162,11 +162,20 @@ fn prepare_local_branch(workspace_root: &Path, branch: &str) -> io::Result<()> {
 }
 
 fn git(workspace_root: &Path, args: &[&str]) -> io::Result<String> {
-    let output = Command::new("git")
-        .arg("-C")
-        .arg(workspace_root)
-        .args(args)
-        .output()?;
+    let output = crate::bounded_process::command_output(
+        {
+            let mut bounded_child_command = Command::new("git");
+            bounded_child_command
+                .arg("-C")
+                .arg(workspace_root)
+                .args(args);
+            bounded_child_command
+        },
+        std::time::Duration::from_secs(30),
+        64 * 1024 * 1024,
+        16 * 1024 * 1024,
+    )
+    .map_err(|failure| std::io::Error::new(failure.kind(), failure))?;
     if !output.status.success() {
         return Err(invalid_data(format!(
             "git {} failed: {}",

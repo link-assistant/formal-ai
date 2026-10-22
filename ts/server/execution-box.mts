@@ -1,3 +1,4 @@
+import { boundedCommandSync } from './bounded-command.mjs';
 // Where code actually runs, and the honest report of what happened:
 // rust/src/execution_box/mod.rs and rust/src/execution_box/invocation.rs.
 //
@@ -324,7 +325,7 @@ let startupNs = null;
 function interpreterStartup() {
   if (startupNs !== null) return startupNs;
   const started = process.hrtime.bigint();
-  const observed = spawnSync(HOST_INTERPRETER, ['-c', 'pass'], { stdio: 'ignore' });
+  const observed = spawnSync(HOST_INTERPRETER, ['-c', 'pass'], { stdio: 'ignore', timeout: 1000, killSignal: 'SIGKILL' });
   startupNs = observed.error ? STARTUP_FLOOR_NS : process.hrtime.bigint() - started;
   return startupNs;
 }
@@ -334,8 +335,9 @@ function interpreterStartup() {
  * returning the verdict slug. A fresh workspace holds no workspace-scoped
  * toolchains, so `workspace_path` is the ambient `PATH`.
  */
-function probeDocker(workspace) {
-  const observed = spawnSync('docker', ['info'], {
+function probeDocker(workspace, timeout) {
+  const observed = boundedCommandSync('docker', ['info'], {
+    timeout, stdoutLimitBytes: 256 * 1024, stderrLimitBytes: 256 * 1024,
     cwd: workspace,
     env: { ...process.env, PATH: process.env.PATH ?? '' },
     encoding: 'utf8',
@@ -349,8 +351,10 @@ function probeDocker(workspace) {
 }
 
 /** Mirrors rust/src/execution_box/invocation.rs `archive_workspace`. */
-function archiveWorkspace(workspace) {
-  const output = spawnSync('tar', ['-czf', '-', '-C', workspace, '.'], { maxBuffer: Infinity });
+function archiveWorkspace(workspace, timeout) {
+  const output = boundedCommandSync('tar', ['-czf', '-', '-C', workspace, '.'], {
+    timeout, stdoutLimitBytes: 16 * 1024 * 1024, stderrLimitBytes: 256 * 1024,
+  });
   if (output.error) throw observedError(ioErrorText(output.error));
   if (output.status !== 0) throw observedError(output.stderr.toString('utf8'));
   return output.stdout;
@@ -386,7 +390,7 @@ export class ExecutionBox {
       if (!rustTrim(process.env[BACKEND_ENV] ?? '')) {
         throw new BoxError('BackendNotConfigured', { backend: backendSlug(backend) });
       }
-      const verdict = probeDocker(workspace);
+      const verdict = probeDocker(workspace, Math.min(policy.deadlineMs, 10000));
       if (verdict !== 'present') throw new BoxError('NoDaemon', { detail: [backendSlug(backend), verdict].join(':') });
     }
     return new ExecutionBox(backend, policy.network, policy.deadlineMs, workspace);
@@ -436,7 +440,7 @@ export class ExecutionBox {
           Buffer.from(script, 'utf8'),
         );
       case 'box': {
-        const archive = archiveWorkspace(this.workspace);
+        const archive = archiveWorkspace(this.workspace, Math.min(this.deadlineMs, 10000));
         const invocation = disposableContainerInvocation(this.backend.image, this.network, HOST_INTERPRETER, [SCRIPT_FILE]);
         return this.observeInvocation(invocation, archive);
       }
@@ -457,67 +461,97 @@ export class ExecutionBox {
     const startup = interpreterStartup();
     const bound = BigInt(this.deadlineMs) * NS_PER_MS + (startup > STARTUP_FLOOR_NS ? startup : STARTUP_FLOOR_NS);
     const child = spawn(invocation.program, invocation.arguments, {
-      cwd: this.workspace,
-      env,
+      cwd: this.workspace, env, detached: process.platform !== 'win32',
       stdio: [stdin === null ? 'ignore' : 'pipe', 'pipe', 'pipe'],
     });
-    let observed = '';
-    const collect = (chunk) => {
-      for (let offset = 0; offset < chunk.length; offset += READ_BUFFER) {
-        observed += chunk.subarray(offset, offset + READ_BUFFER).toString('utf8');
-      }
-    };
-    child.on('error', () => {});
-    child.stdin?.on('error', () => {});
-    child.stdout.on('data', collect);
-    child.stderr.on('data', collect);
-    const closed = new Promise((resolve) => child.once('close', resolve));
-    let exitInfo = null;
-    const exited = new Promise((resolve) => {
-      child.once('exit', (code) => {
-        exitInfo = { code, at: process.hrtime.bigint() };
-        resolve();
-      });
-    });
-    const spawnError = await new Promise((resolve) => {
-      child.once('spawn', () => resolve(null));
-      child.once('error', resolve);
-    });
-    if (spawnError) throw observedError(ioErrorText(spawnError));
-
-    if (stdin !== null) {
-      const writeError = await new Promise((resolve) => {
-        child.stdin.once('error', resolve);
-        child.stdin.end(stdin, () => resolve(null));
-      });
-      if (writeError) {
-        child.kill('SIGKILL');
-        await exited;
-        throw observedError(ioErrorText(writeError));
-      }
-    }
-
-    let timedOut = false;
-    const remainingNs = bound - (process.hrtime.bigint() - started);
-    const timer = setTimeout(
-      () => {
-        if (exitInfo !== null) return;
+    return new Promise((resolve, reject) => {
+      let observed = '', outputBytes = 0, exitInfo = null;
+      let timedOut = false, failure = null, settled = false, closed = false;
+      let inputDone = stdin === null, cleanup;
+      const kill = () => {
+        try {
+          if (process.platform !== 'win32' && child.pid > 1) process.kill(-child.pid, 'SIGKILL');
+          else child.kill('SIGKILL');
+        } catch (error) {
+          if (error.code !== 'ESRCH') child.kill('SIGKILL');
+        }
+      };
+      const finish = () => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        clearTimeout(cleanup);
+        kill();
+        child.stdin?.destroy();
+        child.stdout.destroy();
+        child.stderr.destroy();
+        if (failure) reject(observedError(failure + (observed ? '\n' + observed : '')));
+        else resolve({
+          exit_code: timedOut ? null : exitInfo?.code ?? null,
+          timed_out: timedOut,
+          elapsedNs: process.hrtime.bigint() - started,
+          deadlineMs: this.deadlineMs,
+          partial_output: observed,
+        });
+      };
+      const terminate = reason => {
+        if (settled || cleanup) return;
+        failure = reason;
+        kill();
+        child.stdin?.destroy();
+        inputDone = true;
+        cleanup = setTimeout(() => {
+          if (exitInfo === null || !closed) failure ??= 'execution_cleanup_incomplete';
+          child.unref();
+          finish();
+        }, 250);
+        if (closed) finish();
+      };
+      const remaining = bound - (process.hrtime.bigint() - started);
+      const timer = setTimeout(() => {
         timedOut = true;
-        child.kill('SIGKILL');
-      },
-      Number(remainingNs > 0n ? (remainingNs + NS_PER_MS - 1n) / NS_PER_MS : 0n),
-    );
-    await exited;
-    clearTimeout(timer);
-    const elapsedNs = exitInfo.at - started;
-    await closed;
-    return {
-      exit_code: timedOut ? null : exitInfo.code,
-      timed_out: timedOut,
-      elapsedNs,
-      deadlineMs: this.deadlineMs,
-      partial_output: observed,
-    };
+        terminate(null);
+      }, Number(remaining > 0n ? (remaining + NS_PER_MS - 1n) / NS_PER_MS : 0n));
+      const collect = chunk => {
+        for (let offset = 0; offset < chunk.length; offset += READ_BUFFER) {
+          const text = chunk.subarray(offset, offset + READ_BUFFER).toString('utf8');
+          const bytes = Buffer.byteLength(text);
+          if (outputBytes + bytes <= 1024 * 1024) {
+            observed += text;
+            outputBytes += bytes;
+          } else {
+            for (const character of text) {
+              const size = Buffer.byteLength(character);
+              if (outputBytes + size > 1024 * 1024) break;
+              observed += character;
+              outputBytes += size;
+            }
+            terminate('execution_output_limit_exceeded');
+            return;
+          }
+        }
+      };
+      child.stdout.on('data', collect);
+      child.stderr.on('data', collect);
+      child.stdout.on('error', error => terminate(ioErrorText(error)));
+      child.stderr.on('error', error => terminate(ioErrorText(error)));
+      child.once('error', error => terminate(ioErrorText(error)));
+      child.once('exit', code => { exitInfo = { code }; });
+      child.once('close', () => {
+        closed = true;
+        if (inputDone || failure || timedOut) finish();
+      });
+      child.stdin?.on('error', error => {
+        inputDone = true;
+        if (!timedOut && !failure) terminate(ioErrorText(error));
+      });
+      if (stdin !== null) {
+        child.stdin.end(stdin, () => {
+          inputDone = true;
+          if (closed) finish();
+        });
+      }
+    });
   }
 
   /**

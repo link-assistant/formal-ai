@@ -220,7 +220,7 @@ fn namespace_tool_call_identity(
     None
 }
 
-fn qualify_tool_name(prefix: Option<&str>, name: &str) -> String {
+pub fn qualify_tool_name(prefix: Option<&str>, name: &str) -> String {
     prefix.map_or_else(
         || name.to_owned(),
         |prefix| {

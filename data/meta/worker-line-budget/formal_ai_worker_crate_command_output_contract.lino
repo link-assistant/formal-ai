@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_crate_command_output_contract.js"
+  ceiling 1000
+  rationale "Shared source-derived command-capture parser replaces two independently maintained decisions. Existing module ceilings remain unchanged."

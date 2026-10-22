@@ -1,9 +1,13 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=a6af27c82925febbe84a1c5a9af55c940095c73be93a0b227ec40bf31c087350 bytes=10313
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=a4bc9f9125d4cd10b9a8136b5d87b297c8e1c3eb61fb0edfc2da89847b273839 bytes=10383
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
@@ -23,7 +27,7 @@
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .map()
-// formal-ai:blockers arrow callback of .map() | call of a sibling function | field access | method call .map()
+// formal-ai:blockers call of a sibling function | imported value | method call .map()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal array destructuring

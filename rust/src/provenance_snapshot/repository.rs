@@ -10,7 +10,7 @@ use std::fs::{self, File, Metadata};
 use std::io::{self, Read};
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
-use std::time::{Duration, Instant, SystemTime};
+use std::time::{Duration, SystemTime};
 
 const INDEX_BYTES: u64 = 4 * 1024 * 1024;
 const GIT_TIMEOUT: Duration = Duration::from_secs(15);
@@ -49,17 +49,20 @@ struct Entry {
     identity: Identity,
 }
 #[cfg(unix)]
-fn open_observed(path: &Path) -> io::Result<File> {
+pub fn open_observed(path: &Path) -> io::Result<File> {
     rustix::fs::open(
         path,
-        rustix::fs::OFlags::RDONLY | rustix::fs::OFlags::NOFOLLOW | rustix::fs::OFlags::CLOEXEC,
+        rustix::fs::OFlags::RDONLY
+            | rustix::fs::OFlags::NOFOLLOW
+            | rustix::fs::OFlags::CLOEXEC
+            | rustix::fs::OFlags::NONBLOCK,
         rustix::fs::Mode::empty(),
     )
     .map(File::from)
     .map_err(io::Error::from)
 }
 #[cfg(windows)]
-fn open_observed(path: &Path) -> io::Result<File> {
+pub fn open_observed(path: &Path) -> io::Result<File> {
     use std::os::windows::fs::OpenOptionsExt;
     use windows_sys::Win32::Storage::FileSystem::FILE_FLAG_OPEN_REPARSE_POINT;
     fs::OpenOptions::new()
@@ -68,7 +71,7 @@ fn open_observed(path: &Path) -> io::Result<File> {
         .open(path)
 }
 #[cfg(not(any(unix, windows)))]
-fn open_observed(_path: &Path) -> io::Result<File> {
+pub fn open_observed(_path: &Path) -> io::Result<File> {
     Err(failure("snapshot_platform_unsupported"))
 }
 #[cfg(unix)]
@@ -132,6 +135,19 @@ fn ancestors(root: &Path, relative: &str) -> io::Result<PathBuf> {
     }
     Ok(path)
 }
+/// Compare descriptor and current no-follow path identities on every supported host.
+pub fn same_observed_file(file: &File, path: &Path) -> io::Result<bool> {
+    let metadata = file.metadata()?;
+    if !regular(&metadata) {
+        return Ok(false);
+    }
+    let current = open_observed(path)?;
+    let observed = current.metadata()?;
+    if !regular(&observed) {
+        return Ok(false);
+    }
+    Ok(file_identity(file, &metadata)? == file_identity(&current, &observed)?)
+}
 fn inspect(path: &Path) -> io::Result<Identity> {
     let file = open_observed(path)?;
     let metadata = file.metadata()?;
@@ -141,43 +157,24 @@ fn inspect(path: &Path) -> io::Result<Identity> {
     file_identity(&file, &metadata)
 }
 fn git(root: &Path, arguments: &[&str]) -> io::Result<Vec<u8>> {
-    let mut child = Command::new("git")
+    let mut command = Command::new("git");
+    command
         .arg("-c")
         .arg("core.fsmonitor=false")
         .arg("-C")
         .arg(root)
         .args(arguments)
         .stdin(Stdio::null())
-        .stdout(Stdio::piped())
-        .stderr(Stdio::null())
-        .spawn()?;
-    let stdout = child
-        .stdout
-        .take()
-        .ok_or_else(|| failure("snapshot_git_stdout_missing"))?;
-    let reader = std::thread::spawn(move || {
-        let mut output = Vec::new();
-        stdout
-            .take(INDEX_BYTES + 1)
-            .read_to_end(&mut output)
-            .map(|_| output)
-    });
-    let started = Instant::now();
-    let status = loop {
-        if let Some(status) = child.try_wait()? {
-            break status;
-        }
-        if started.elapsed() >= GIT_TIMEOUT {
-            let _ = child.kill();
-            let _ = child.wait();
-            let _ = reader.join();
-            return Err(failure("snapshot_git_timeout"));
-        }
-        std::thread::sleep(Duration::from_millis(5));
-    };
-    let output = reader
-        .join()
-        .map_err(|_| failure("snapshot_git_reader_failed"))??;
+        .stderr(Stdio::null());
+    let observed = crate::bounded_process::command_output(
+        command,
+        GIT_TIMEOUT,
+        usize::try_from(INDEX_BYTES).map_err(|_| failure("snapshot_index_too_large"))?,
+        0,
+    )
+    .map_err(|error| io::Error::new(error.kind(), error))?;
+    let status = observed.status;
+    let output = observed.stdout;
     if !status.success()
         || u64::try_from(output.len()).map_err(|_| failure("snapshot_index_too_large"))?
             > INDEX_BYTES

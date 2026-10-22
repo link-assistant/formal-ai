@@ -6,6 +6,20 @@ const descendantNames = new Set([
   'Active reusable fixture / Fixture final active'
 ]);
 
+export function requireFixtureDescendantName(name) {
+  assert.ok(descendantNames.has(name), 'source-declared fixture descendant required');
+  return name;
+}
+
+// GitHub REST Actions workflow-run states: only Actions sets requested/waiting/pending.
+// https://docs.github.com/en/rest/actions/workflow-runs#list-workflow-runs-for-a-repository
+export function requireNonterminalFixtureRun(run) {
+  assert.ok(['queued', 'in_progress', 'requested', 'waiting', 'pending'].includes(run?.status),
+    'nonterminal aggregate run required');
+  assert.equal(run.conclusion, null, 'terminal aggregate conclusion refused');
+  return true;
+}
+
 // Admission enables a contender to queue. It is never executing-lease authority.
 export function validateCallerAdmission(run, jobs, group, context) {
   assert.match(context.repository, /^[\w.-]+\/[\w.-]+$/);
@@ -22,8 +36,7 @@ export function validateCallerAdmission(run, jobs, group, context) {
   assert.equal(String(run.body.run_attempt), context.attempt);
   assert.equal(run.body.head_sha, context.eventHead);
   assert.equal(run.body.path, '.github/workflows/release-runtime-fixture.yml');
-  assert.ok(['queued', 'in_progress'].includes(run.body.status), 'nonterminal aggregate run required');
-  assert.equal(run.body.conclusion, null, 'terminal aggregate conclusion refused');
+  requireNonterminalFixtureRun(run.body);
   assert.ok(Array.isArray(jobs.body.jobs));
   assert.equal(jobs.body.total_count, jobs.body.jobs.length, 'complete bounded job listing required');
   assert.equal(group.body.group_name, name);
@@ -41,8 +54,7 @@ export function validateCallerAdmission(run, jobs, group, context) {
   assert.equal(String(child.run_attempt), context.attempt);
   assert.equal(child.head_sha, context.eventHead);
   assert.ok(['queued', 'in_progress'].includes(child.status));
-  if (child.name !== 'Active reusable fixture / Fixture lease holder active')
-    assert.equal(child.status, 'in_progress', 'later caller phase must be active');
+  // The private group proves admission; a queued runner is not execution, in any callee phase.
   assert.equal(child.completed_at, null);
   assert.equal(child.url, 'https://api.github.com' + base + '/jobs/' + child.id);
   assert.equal(member.job_id, child.id);

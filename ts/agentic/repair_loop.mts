@@ -7,7 +7,9 @@
 // 'apply_fix'|'retry', plan}` or `{kind: 'stop', reason: 'no_diagnostic'|'no_tools'|
 // 'exhausted'|'no_match'}`.
 
+import { lower as canonicalUnaryLower } from './crate/rust_str.mjs';
 import { Capability } from './capability.mjs';
+import { gitPushRecovery } from './git_push_recovery.mjs';
 import { toolFor } from './capability_router.mjs';
 import { latestUserRequest, rustLines } from './content.mjs';
 import { fetchArguments, jsonText, planOne, writeArguments } from './plan.mjs';
@@ -29,7 +31,7 @@ const QUERY_MESSAGE_TOKENS = 12;
 const SHAPES_PATH = 'data/seed/diagnostic-code-shapes.lino';
 
 function shapeLanguage(language) {
-  const lowered = trim(language).replace(/[A-Z]/g, (letter) => letter.toLowerCase());
+  const lowered = trim(language).replace(/[A-Z]/g, canonicalUnaryLower);
   return { 'c++': 'cpp', cxx: 'cpp', 'c#': 'csharp', js: 'javascript', ts: 'typescript' }[lowered] ?? lowered;
 }
 
@@ -167,7 +169,7 @@ export function searchQuery(language, diagnostic) {
 
 function messageCoverage(text, diagnostic) {
   const page = text.toLowerCase();
-  const tokens = messageTokens(diagnostic.message).map((token) => token.toLowerCase());
+  const tokens = messageTokens(diagnostic.message).map(canonicalUnaryLower);
   if (!tokens.length) return 0;
   return Math.fround(tokens.filter((token) => page.includes(token)).length / tokens.length);
 }
@@ -306,11 +308,14 @@ const stop = (reason) => ({ kind: 'stop', reason });
 
 /** Mirrors `fn repair_step`. */
 export function repairStep(messages, toolNames, failure, ladderRung, maxRungs) {
+  const gitRecovery = gitPushRecovery(messages, toolNames, failure);
+  if (gitRecovery !== null) return {kind: 'retry', plan: gitRecovery};
   if (ladderRung >= maxRungs) return stop('exhausted');
   const primary = formalizeDiagnostic(failure.language, failure.reported)[0];
   if (!primary) return stop('no_diagnostic');
   const progress = Progress.scan(messages);
   if (progress.search_output === null || progress.search_output === undefined) {
+    if (progress.done(Capability.Search)) return stop('no_match');
     const tool = toolFor(toolNames, Capability.Search);
     if (!tool) return stop('no_tools');
     return { kind: 'search', plan: planOne(tool, jsonText({ query: searchQuery(failure.language, primary) })) };

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import YAML from 'yaml';
-import { validateQueueSnapshot, validateFixtureOutputs } from '../../../scripts/release-runtime-fixture.mjs';
+import { validateQueueSnapshot, validateFixtureOutputs, validateActiveFixtureLease } from '../../../scripts/release-runtime-fixture.mjs';
 const root = new URL('../../../', import.meta.url);
 const caller = () => YAML.parse(readFileSync(new URL('.github/workflows/release-runtime-fixture.yml', root), 'utf8'));
 const callee = () => YAML.parse(readFileSync(new URL('.github/workflows/release-runtime-fixture-callee.yml', root), 'utf8'));
@@ -22,8 +22,17 @@ function validateGraph(parent, child) {
     actions: 'read'
   });
   assert.deepEqual(child.permissions, parent.permissions);
+  for(const workflow of [parent,child])for(const job of Object.values(workflow.jobs)){
+    for(const step of job.steps??[])if(step['timeout-minutes']!==undefined){
+      assert.ok(Number.isFinite(job['timeout-minutes']));
+      assert.ok(step['timeout-minutes']*100<=job['timeout-minutes']*70,'step retains original job headroom');
+    }
+  }
   assert.equal(child.concurrency, undefined);
-  assert.equal(parent.on.pull_request.types.includes('synchronize'), true);
+  assert.deepEqual(parent.on, {workflow_dispatch: {inputs: {
+    mode: {description: 'Run the harmless read-only fixture checks', type: 'choice', options: ['checks'], default: 'checks'},
+    'pull-request': {description: 'Pull request whose harmless checks were dispatched', type: 'string', default: ''}
+  }}}, 'live concurrency experiment is manual-only; original manual inputs remain exact');
   const privateGroup = 'formal-ai-release-fixture-${{ github.run_id }}-${{ github.run_attempt }}';
   for (const id of ['active-fixture', 'inactive-fixture']) {
     const job = parent.jobs[id];
@@ -56,7 +65,7 @@ function validateGraph(parent, child) {
   assert.equal(parent.jobs['fixture-contender'].concurrency.group, privateGroup);
   assert.equal(parent.jobs['fixture-contender'].concurrency.queue, 'max');
   assert.equal(parent.jobs.observer.needs, 'auto_compile-release');
-  assert.deepEqual(parent.on.pull_request['branches-ignore'], ['e2e/**']);
+  assert.equal(parent.on.pull_request, undefined, 'no automatic pull-request experiment');
   const ordinaryGroups = new Set();
   for (const role of ['auto_compile-release', 'observer', 'collect']) {
     const expected = 'formal-ai-release-fixture-check-' + role + '-${{ github.workflow }}-${{ github.ref }}';
@@ -70,7 +79,8 @@ function validateGraph(parent, child) {
   assert.deepEqual(admission.env, {GH_TOKEN: '${{ github.token }}'});
   assert.equal(parent.jobs.observer.steps.some(step => step.run === 'node scripts/release-runtime-fixture.mjs download'), false);
   const liveWitness = child.jobs['lease-holder'].steps.find(step => step.name === 'Expose live callee witness before observer finishes');
-  assert.equal(liveWitness.uses, 'actions/upload-artifact@v7');
+  assert.equal(liveWitness.uses, './.github/actions/upload-artifact-with-retry');
+  assert.equal(liveWitness['timeout-minutes'], 1);
   assert.equal(liveWitness.with.name, 'release-fixture-lease-start-${{ github.run_id }}-${{ github.run_attempt }}');
   assert.equal(liveWitness.with.path, '.release-fixture/lease-start.json');
   assert.equal(child.jobs['lease-holder'].if, 'inputs.active');
@@ -214,7 +224,7 @@ test('credential routing, production group, nested lease and spoofed or ungated 
   }
 });
 
-test('ordinary check groups preserve private lease isolation and e2e filtering', () => {
+test('ordinary check groups preserve private lease isolation and manual-only scheduling', () => {
   for (const role of ['auto_compile-release', 'observer', 'collect']) {
     for (const change of [
       p => delete p.jobs[role].concurrency,
@@ -225,8 +235,55 @@ test('ordinary check groups preserve private lease isolation and e2e filtering',
       const p = caller(); change(p); assert.throws(() => validateGraph(p, callee()));
     }
   }
+  for (const event of ['push', 'pull_request_target', 'workflow_run', 'workflow_call', 'schedule', 'repository_dispatch']) {
+    const p = caller(); p.on[event] = {}; assert.throws(() => validateGraph(p, callee()));
+  }
+  for (const change of [p => delete p.on.workflow_dispatch, p => p.on.workflow_dispatch.inputs.mode.default = 'release']) {
+    const p = caller(); change(p); assert.throws(() => validateGraph(p, callee()));
+  }
   for (const value of [undefined, [], ['other/**']]) {
-    const p = caller(); p.on.pull_request['branches-ignore'] = value;
+    const p = caller(); p.on.pull_request = {'branches-ignore': value};
     assert.throws(() => validateGraph(p, callee()));
   }
+});
+
+
+test('final active fixture acceptance requires the verified queue and ancestor result', () => {
+  assert.equal(validateActiveFixtureLease({observation:'VerifiedPrivateFixtureLease'}),true);
+  for(const value of [null,undefined,{}, {observation:'Unknown'},
+    {observation:'ObservedCallerAdmissionForContender'}, {observation:'NotExercisedInactive'}]) {
+    assert.throws(()=>validateActiveFixtureLease(value),/actual active fixture lease proof required/u);
+  }
+  const source=readFileSync(new URL('../../../scripts/release-runtime-fixture.mjs',import.meta.url),'utf8');
+  assert(source.includes('if (active) validateActiveFixtureLease(lease);'));
+  assert(source.includes('validateActiveFixtureLease({ observation: process.env.ACTIVE_LEASE });'));
+});
+
+
+test('failed active finalization preserves its diagnostic receipt before refusing success outputs', () => {
+  const source=readFileSync(new URL('../../../scripts/release-runtime-fixture.mjs',import.meta.url),'utf8');
+  const start=source.indexOf('async function finalize() {');
+  const end=source.indexOf('async function collect() {',start);
+  assert(start>=0&&end>start);
+  const final=source.slice(start,end);
+  const write=final.indexOf("write('final-' + (active ? 'active' : 'inactive') + '.json', receipt);");
+  const validate=final.indexOf('if (active) validateActiveFixtureLease(lease);');
+  const output=final.indexOf('outputs({');
+  assert(write>=0&&write<validate&&validate<output,'retain failure evidence, then validate, then emit outputs');
+  assert(final.includes('    lease,\n'));
+  assert(final.includes("observation: 'NotExercisedInactive'"));
+  assert.throws(()=>validateActiveFixtureLease({observation:'Unknown',reason:'actual missing queue observation'}));
+  assert.equal(validateActiveFixtureLease({observation:'VerifiedPrivateFixtureLease'}),true);
+});
+
+
+test('failed collection persists incomplete observations before strict output and lease checks', () => {
+  const source=helper();const start=source.indexOf('async function collect() {');
+  const collect=source.slice(start);const write=collect.indexOf("write('collected.json', { ...context, active, inactive,");
+  const validate=collect.indexOf('validateFixtureOutputs(active, inactive, context.source);');
+  const lease=collect.indexOf('validateActiveFixtureLease({ observation: process.env.ACTIVE_LEASE });');
+  const success=collect.indexOf("actualOutputsObservation: 'VerifiedActiveAndInactive'");
+  assert(write>=0&&write<validate&&validate<lease&&lease<success);
+  assert(collect.slice(write,validate).includes("actualOutputsObservation: 'Incomplete'"));
+  assert.throws(()=>validateActiveFixtureLease({observation:'Unknown'}));
 });

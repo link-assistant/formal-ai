@@ -372,10 +372,18 @@ fn run_command(args: &[String]) -> Result<Vec<u8>, String> {
     let Some((program, rest)) = args.split_first() else {
         return Err(String::from("empty command"));
     };
-    let output = Command::new(program)
-        .args(rest)
-        .output()
-        .map_err(|error| format!("failed to start {program}: {error}"))?;
+    let output = crate::bounded_process::command_output(
+        {
+            let mut bounded_child_command = Command::new(program);
+            bounded_child_command.args(rest);
+            bounded_child_command
+        },
+        std::time::Duration::from_secs(120),
+        64 * 1024 * 1024,
+        16 * 1024 * 1024,
+    )
+    .map_err(|failure| std::io::Error::new(failure.kind(), failure))
+    .map_err(|error| format!("failed to start {program}: {error}"))?;
     if output.status.success() {
         Ok(output.stdout)
     } else {

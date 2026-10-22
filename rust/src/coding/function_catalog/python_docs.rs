@@ -293,13 +293,21 @@ fn runtime_fallback_index(source: &SourceRecord) -> Result<StdlibIndex, FetchErr
         ("str.split", "str.split"),
         ("str.join", "str.join"),
     ];
-    let version = Command::new("python3")
-        .args([
-            "-c",
-            "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')",
-        ])
-        .output()
-        .map_err(|error| FetchError::Cache(format!("python_docs_runtime:{error}")))?;
+    let version = crate::bounded_process::command_output(
+        {
+            let mut bounded_child_command = Command::new("python3");
+            bounded_child_command.args([
+                "-c",
+                "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')",
+            ]);
+            bounded_child_command
+        },
+        std::time::Duration::from_secs(30),
+        64 * 1024 * 1024,
+        16 * 1024 * 1024,
+    )
+    .map_err(|failure| std::io::Error::new(failure.kind(), failure))
+    .map_err(|error| FetchError::Cache(format!("python_docs_runtime:{error}")))?;
     if !version.status.success() {
         return Err(FetchError::Cache(
             "python_docs_runtime:python3 failed".to_owned(),
@@ -316,10 +324,18 @@ fn runtime_fallback_index(source: &SourceRecord) -> Result<StdlibIndex, FetchErr
                 "python_docs_runtime:missing python_doc_probe fragment".to_owned(),
             ));
         };
-        let output = Command::new("python3")
-            .args(["-c", &script])
-            .output()
-            .map_err(|error| FetchError::Cache(format!("python_docs_runtime:{symbol}:{error}")))?;
+        let output = crate::bounded_process::command_output(
+            {
+                let mut bounded_child_command = Command::new("python3");
+                bounded_child_command.args(["-c", &script]);
+                bounded_child_command
+            },
+            std::time::Duration::from_secs(30),
+            64 * 1024 * 1024,
+            16 * 1024 * 1024,
+        )
+        .map_err(|failure| std::io::Error::new(failure.kind(), failure))
+        .map_err(|error| FetchError::Cache(format!("python_docs_runtime:{symbol}:{error}")))?;
         if !output.status.success() {
             continue;
         }

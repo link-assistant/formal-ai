@@ -532,11 +532,13 @@ jobs:
         if: matrix.label == 'windows-arm64'
         run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/prefetch-windows-packaging.mjs" "$GITHUB_WORKSPACE/desktop" "$GITHUB_WORKSPACE/native-source/source-selection.json" --validate-only
       - name: Install desktop dependencies
-        env: {INSTALL_NODE_DEPENDENCIES_MODE: "${{ matrix.label == 'windows-arm64' && 'ci' || 'install' }}", PUPPETEER_SKIP_DOWNLOAD: "true"}
+        env: {INSTALL_NODE_DEPENDENCIES_MODE: "${{ matrix.label == 'windows-arm64' && 'ci' || 'install' }}", PUPPETEER_SKIP_DOWNLOAD: "true", INSTALL_NODE_DEPENDENCIES_USE_NODE_HEADERS: "${{ runner.os == 'macOS' && '1' || '0' }}"}
         run: if [ "${{ matrix.label }}" = windows-arm64 ]; then bash "$FORMAL_AI_NATIVE_PROTOCOL_DIR/install-node-dependencies.sh" "$GITHUB_WORKSPACE/desktop"; else scripts/install-node-dependencies.sh desktop; fi
       - name: Prefetch electron-builder toolsets
         working-directory: desktop
         run: |
+          node --test scripts/prefetch-electron.test.mjs
+          node scripts/prefetch-electron.mjs
           if [ "${{ matrix.label }}" = windows-arm64 ]; then
             node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/prefetch-windows-packaging.mjs" "$GITHUB_WORKSPACE/desktop" "$GITHUB_WORKSPACE/native-source/source-selection.json"
           else

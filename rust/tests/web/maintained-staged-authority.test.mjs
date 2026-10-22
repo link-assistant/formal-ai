@@ -11,7 +11,20 @@ const YAML = createRequire(path.join(root, 'package.json'))('yaml');
 const evidence = 'experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/';
 function layout() {
   const directory = fs.mkdtempSync(path.join(tmpdir(), 'maintained-stage-controls-'));
-  const files = ['scripts/maintained-staged-authority.mjs', 'scripts/staged-caller-authority.mjs', 'scripts/governed-github-command-provider.mjs', 'scripts/release-source-freshness.mjs', 'scripts/refresh-release-specification-witness.mjs', 'scripts/generate-staged-release.mjs', 'scripts/lib/ci-speed-workflows.mjs', '.github/workflows/release.yml', '.github/workflows/release-staged.yml', ...['stage-source-coverage.json', 'candidate-release-caller.yml', 'candidate-output-bindings.json', 'original-release-workflow.yml'].map(name => evidence + name)];
+  const files = ['scripts/maintained-staged-authority.mjs',
+   'scripts/staged-caller-authority.mjs',
+   'scripts/governed-github-command-provider.mjs',
+   'scripts/release-source-freshness.mjs',
+   'scripts/refresh-release-specification-witness.mjs',
+   'scripts/generate-staged-release.mjs',
+   'scripts/lib/ci-speed-workflows.mjs',
+   '.github/workflows/release.yml',
+   '.github/workflows/release-staged.yml',
+   ...['stage-source-coverage.json',
+   'candidate-release-caller.yml',
+   'candidate-output-bindings.json',
+   'original-release-workflow.yml'].map(name => evidence + name)];
+
   for (const file of files) {
     fs.mkdirSync(path.dirname(path.join(directory, file)), {
       recursive: true
@@ -68,7 +81,11 @@ test('checked complete projection rejects changed authority, source, operations 
     const module = await import(pathToFileURL(path.join(directory, 'scripts/maintained-staged-authority.mjs')));
     const file = path.join(directory, '.github/workflows/release-staged.yml');
     const before = fs.readFileSync(file, 'utf8');
-    const mutations = [workflow => workflow.jobs['auto_prepare-source'].permissions.contents = 'read', workflow => workflow.jobs['auto_compile-release'].env.EXPECT_COMPILER = 'foreign', workflow => workflow.jobs['auto_compile-release'].env.EXPECT_SOURCE = 'foreign', workflow => workflow.jobs['auto_compile-release']['timeout-minutes'] = 31, workflow => workflow.jobs['auto_compile-release'].concurrency = {
+    const mutations = [workflow => workflow.jobs['auto_prepare-source'].permissions.contents = 'read',
+   workflow => workflow.jobs['auto_compile-release'].env.EXPECT_COMPILER = 'foreign',
+   workflow => workflow.jobs['auto_compile-release'].env.EXPECT_SOURCE = 'foreign',
+   workflow => workflow.jobs['auto_compile-release']['timeout-minutes'] = 31,
+   workflow => workflow.jobs['auto_compile-release'].concurrency = {
       group: 'formal-ai-repository-writes'
     }, workflow => workflow.jobs['auto_compile-release'].steps.pop(), workflow => workflow.jobs['auto_compile-release'].steps.reverse(), workflow => workflow.jobs['auto_prepare-source'].outputs.source_sha = 'foreign'];
     for (const mutate of mutations) {
@@ -179,12 +196,36 @@ test('separate current group proof rejects stale foreign duplicate and unsourced
   const packet=JSON.parse(fs.readFileSync(path.join(directory,evidence,'stage-source-coverage.json'),'utf8'));
   const contract=module.compileContract({canonical,callerDraft,staged,packet,YAML});const route=contract.routes[0];
   const expected={repository:'link-assistant/formal-ai',run:'1',attempt:'2',head:'a'.repeat(40),runnerName:'declared fixture runner'};
-  const job={id:71,run_id:1,run_attempt:2,head_sha:expected.head,name:route.descendantName,runner_name:expected.runnerName,runner_id:81,status:'in_progress',started_at:'2026-10-10T10:00:00Z',completed_at:null,url:'https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/71'};
-  const jobs={body:{jobs:[job]},observedAt:'2026-10-10T10:00:01Z'};
-  const group={status:200,observedAt:'2026-10-10T10:00:02Z',body:{group_name:contract.writerGroup,group_members:[{job_id:71,run_id:1,job_name:route.descendantName,status:'in_progress'}]}};
+  const job={id:71,
+  run_id:1,
+  run_attempt:2,
+  head_sha:expected.head,
+  name:route.descendantName,
+  runner_name:expected.runnerName,
+  runner_id:81,
+  status:'in_progress',
+  started_at:'2026-10-10T10:00:00Z',
+  completed_at:null,
+  url:'https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/71'};
+
+  const jobs={status:200,body:{total_count:1,jobs:[job]},observedAt:'2026-10-10T10:00:01Z'};
+  const group={status:200,
+  observedAt:'2026-10-10T10:00:02Z',
+  body:{group_name:contract.writerGroup,
+  total_count:1,
+  group_members:[{job_id:71,
+  run_id:1,
+  job_name:route.descendantName,
+  status:'in_progress',
+  job_url:job.url,
+  run_url:'https://api.github.com/repos/link-assistant/formal-ai/actions/runs/1'}]}};
+
   assert.equal(module.requireCurrentGroupMembership(contract,expected,route,group,jobs),undefined,'pure proof helper grants no release receipt');
   const mutations=[
    (g,j)=>g.status=422,(g,j)=>g.body.group_name='foreign',
+   (g,j)=>j.status=403,(g,j)=>j.body.total_count=2,(g,j)=>g.body.total_count=2,
+   (g,j)=>g.body.group_members[0].job_url='https://foreign.invalid',
+   (g,j)=>g.body.group_members[0].run_url='https://foreign.invalid',
    (g,j)=>g.body.group_members[0].job_id=72,(g,j)=>g.body.group_members[0].run_id=3,
    (g,j)=>g.body.group_members[0].job_name='foreign',(g,j)=>g.body.group_members[0].status='pending',
    (g,j)=>g.body.group_members.push({...g.body.group_members[0]}),

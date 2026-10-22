@@ -1,10 +1,22 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=04e92446eaba4e26554cdc2382501697c9938c6bf2b137af3ca457ce054f32bd bytes=14733
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=eaab0649bae74d0f8756ea6c576dffee58d461df3247dd336100e6f121742924 bytes=14980
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=1
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
@@ -32,7 +44,7 @@ pub const UNIT_SEPARATOR: &str = "\u{1f}";
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal optional chaining
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | field access | method call .filter() | method call .map() | optional chaining
+// formal-ai:blockers arrow callback of .filter() | field access | imported value | method call .filter() | method call .map() | optional chaining
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
@@ -44,7 +56,7 @@ pub const UNIT_SEPARATOR: &str = "\u{1f}";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .split()
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | global call String() | method call .filter() | method call .map() | method call .push() | method call .reverse() | method call .split() | object without a $ tag
+// formal-ai:blockers global call String() | imported value | method call .filter() | method call .map() | method call .push() | method call .reverse() | method call .split() | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .indexOf()
@@ -72,7 +84,7 @@ pub static STATEMENT_SEPARATORS: std::sync::LazyLock<Vec<String>> = std::sync::L
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal regular expression
-// formal-ai:blockers arrow callback of .filter() | arrow function | call of a sibling function | method call .exec() | method call .filter() | method call .indexOf() | method call .join() | method call .replace() | method call .slice() | method call .split() | method call .test() | null | regular expression | undefined
+// formal-ai:blockers arrow function | call of a sibling function | imported value | method call .exec() | method call .filter() | method call .indexOf() | method call .join() | method call .replace() | method call .slice() | method call .split() | method call .test() | null | regular expression | undefined
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .get()

@@ -79,6 +79,7 @@ function capture(url, fetchedAt, sha256, cachedFlag, bytes) {
 
 /** Mirrors `fn write_capture` (metadata written after the body it names). */
 function writeCapture(io, root, metadataPath, record) {
+  if (typeof io.writeCapture === 'function') return io.writeCapture(root, metadataPath, record);
   io.createDirAll(join(root, 'objects'));
   io.writeBytes(join(root, 'objects', `${record.sha256}.body`), record.bytes);
   const metadata = `${CACHE_FORMAT_VERSION}\nurl=${record.source_url}\nfetched_at=${record.fetched_at}\nsha256=${record.sha256}\n`;

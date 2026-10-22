@@ -211,8 +211,10 @@ describe('PR #1188 dogfood: shell requests run what they name', () => {
     const messages = [{ role: 'user', content: "Commit all changes with the message 'initial notes'." }];
     const plan = await planChatStep(messages, AGENT_CLI_TOOLS);
     assert.equal(plan.kind, 'tool_calls');
-    assert.equal(JSON.parse(plan.calls[0].arguments).command,
-      "git add -A && git commit -q -m 'initial notes' && if test -n \"$(git remote)\"; then git push -q origin HEAD; fi && git rev-parse HEAD");
+    const command = JSON.parse(plan.calls[0].arguments).command;
+    assert.match(command, /^git add -A && git commit -q -m 'initial notes' && if test -n "\$\(git remote\)"; then /u);
+    assert.match(command, /git branch --show-current/u);
+    assert.match(command, /git push -q origin "\$__formal_ai_push_ref"; fi && git rev-parse HEAD$/u);
     assert.equal(files.size, 0);
   });
 });

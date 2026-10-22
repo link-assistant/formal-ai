@@ -26,6 +26,10 @@ pub struct ServeArgs {
     #[arg(long, env = "FORMAL_AI_PREREQUISITE_GRANT_JSON")]
     prerequisite_grant: Option<String>,
 
+    /// Explicit caller-owned installed Node/resource identities for source operations.
+    #[arg(long)]
+    source_command_host: Option<String>,
+
     /// Serve the transport-neutral API envelope over WebSocket.
     #[arg(long, conflicts_with = "webrtc", default_value_t = false)]
     ws: bool,
@@ -92,6 +96,9 @@ pub fn run_serve(args: &ServeArgs) -> Result<(), Box<dyn Error>> {
         legacy_grant.as_deref(),
     )?;
     formal_ai::prerequisite::configure_workspace_grant(grant.as_deref())?;
+    formal_ai::agentic_coding::installed_source_commands::configure_installed_source_commands(
+        args.source_command_host.as_deref(),
+    )?;
     let address = format!("{}:{}", args.host, args.port);
     if args.ws {
         serve_websocket(&address, args.transport_trace).map_err(|error| transport_error(&error))?;

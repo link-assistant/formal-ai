@@ -12,6 +12,7 @@ use crate::seed::{
 
 // Issue #1154: the request's tool schemas name each tool's command property.
 mod command_keys;
+mod provider_result;
 mod response_language;
 mod result_kind;
 mod source_observation;
@@ -364,6 +365,9 @@ fn normalize(raw: &str) -> NormalizedResult {
     let Some(object) = value.as_object() else {
         return from_payload(&pretty_json(&value), None);
     };
+    if let Some(projection) = provider_result::project(&value) {
+        return normalize(&projection.to_string());
+    }
     let nonzero_exit = ["exit_code", "exitCode"]
         .iter()
         .filter_map(|key| object.get(*key))

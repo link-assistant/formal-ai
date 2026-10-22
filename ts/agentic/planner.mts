@@ -1,4 +1,7 @@
+import {planSourceUnaryConsolidationStep} from './source_unary_consolidation.mjs';
+import {planSemanticSourcePreflight} from './semantic_source_preflight.mjs';
 import {host,hasHost} from './host.mjs';
+import { repeatedActionStop } from './repetition_guard.mjs';
 import {EventLog} from './crate/event_log.mjs';
 import {answerDerivationId,recordFor,toLino} from './crate/derivation.mjs';
 import {planSourceMaintenanceStep} from './source_maintenance.mjs';
@@ -79,6 +82,7 @@ import * as sourceLinks from './source_links.mjs';
 import * as statementAudit from './statement_audit.mjs';
 import * as structuredDocument from './structured_document.mjs';
 import * as structuredEdit from './structured_edit.mjs';
+import {planSourceCstTransformStep} from './source_cst_transform.mjs';
 import * as taskObligations from './task_obligations.mjs';
 import { planObligationsStep } from './planner/obligations.mjs';
 import * as taskStructure from './task_structure.mjs';
@@ -140,7 +144,8 @@ export function checkedRoutePrecedence() {
 async function planWorkspaceChangeArm(task, messages, toolNames) {
   // A copy or move followed by edits of the file it makes is planned sentence
   // by sentence (PR #1188 G82).
-  return (await planSourceMaintenanceStep(task, messages, toolNames))
+  return planSourceUnaryConsolidationStep(task, messages, toolNames)
+    ?? (await planSourceMaintenanceStep(task, messages, toolNames))
     ?? (await requestSequence.planRequestSequenceStep(task, messages, toolNames, planChatStepResolved))
     ?? (await workspaceChange.planWorkspaceChangeStep(task, messages, toolNames))
     ?? (await planModuleFunctionResearchStep(task, messages, toolNames))
@@ -226,8 +231,19 @@ export async function planChatStep(messages, toolNames) {
 
 /** Internal planner result; recursion retains disposition and origin. */
 export async function planChatStepResolved(messages, toolNames) {
+  const plan = await planChatStepInner(messages, toolNames);
+  if (latestUserRequest(messages) === null) return plan;
+  const repeated = repeatedActionStop(messages, isToolCalls(plan) ? plan.calls : null);
+  return repeated === null ? plan
+    : resolvedFinalAnswer(repeated, FinalDisposition.Failure, 'repeated_action_budget');
+}
+
+/** Mirrors `fn plan_chat_step_inner` in rust/src/agentic_coding/planner.rs. */
+async function planChatStepInner(messages, toolNames) {
   const received = latestUserRequest(messages);
   if (received === null) return null;
+  const repeated = repeatedActionStop(messages, []);
+  if (repeated !== null) return resolvedFinalAnswer(repeated, FinalDisposition.Failure, 'repeated_action_budget');
   const summary = harnessEnvelope.summarizeRequest(received);
   if (summary !== null) return resolvedFinalAnswer(summary, FinalDisposition.Finding, 'harness_summary');
   const effective = continuedAgentTask(messages, received);
@@ -352,6 +368,8 @@ export async function planSettledRoutes(task, messages, toolNames) {
       ?? await mutatingAction.planStep(explicit, messages, toolNames, task)
       ?? planShellStep(messages, toolNames, explicit);
   }
+  const sourceTransform = planSourceCstTransformStep(task, messages, toolNames, planShellStep);
+  if (sourceTransform !== null) return sourceTransform;
   const verifiedSource = codeTask.planVerifiedGeneratedSourceStep(task, messages, toolNames);
   if (verifiedSource !== null) return verifiedSource;
   for (const arm of [gitCommit.planCommitStep, planWorkspaceChangeArm, codeTask.planGeneratedSourceStep, structuredEdit.planStructuredEditStep, structuredDocument.planStep]) {
@@ -564,6 +582,8 @@ async function missingSemanticImplementation(task, messages, toolNames) {
     if (verifiedRecipe !== null) return verifiedRecipe;
     const research = planCodingResearchStep(task, messages, toolNames);
     if (research !== null) return research;
+    const sourcePreflight = planSemanticSourcePreflight(task, messages, toolNames);
+    if (sourcePreflight !== null) return sourcePreflight;
     const discovery = { reason: 'MissingContract', goal: task, authored: false, verified: false,
       missingContracts: ['source-bound-implementation-plan', 'independent-goal-validation'] };
     const plan = resolvedFinalAnswer(agenticMessage('callable-discovery-outcome', {

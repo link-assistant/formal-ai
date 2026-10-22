@@ -133,3 +133,90 @@ fn complete_json_source_keys_do_not_own_discovery_transport_status() {
     assert!(witness["observations"][1].get("catalog").is_none());
     assert_eq!(witness["detail"]["graphs"], json!([]));
 }
+
+const COMPACT_SOURCE_TASK: &str = "Implement exported renderChosen(pick) to nested/caption.mjs: return the compact summary of the selected candidate or null. Discover and compose observed left.mjs and right.mjs exports through imports using aliases chooseRecord as chosen, describeRecord as describe; preserve inputs and reuse semantics. Run node --test gate.test.mjs; keep source modules and tests unchanged.";
+const COMPACT_SOURCE_SEED: &str = include_str!("../../../data/seed/source-authoring-grammar.lino");
+
+#[test]
+fn compact_source_frame_preserves_real_goal_spans_and_inferred_operation_needs() {
+    use formal_ai::agentic_coding::module_function::{
+        compact_source_request, derive_complete_source_request,
+    };
+    let request = compact_source_request(COMPACT_SOURCE_TASK, COMPACT_SOURCE_SEED)
+        .expect("closed compact request");
+    assert_eq!(request["destination"], "nested/caption.mjs");
+    assert_eq!(request["inputs"], json!(["left.mjs", "right.mjs"]));
+    assert_eq!(
+        request["aliases"],
+        json!([{"exported":"chooseRecord","local":"chosen"},{"exported":"describeRecord","local":"describe"}])
+    );
+    let observed =
+        observed_callable_request(COMPACT_SOURCE_TASK).expect("compact discovery operands");
+    assert_eq!(
+        observed.command.as_deref(),
+        Some("node --test gate.test.mjs")
+    );
+    let frame = derive_complete_source_request(COMPACT_SOURCE_TASK, COMPACT_SOURCE_SEED)
+        .expect("complete compact frame");
+    let goal = frame["clauses"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|value| value["kind"] == "goal")
+        .unwrap();
+    assert_eq!(
+        goal["sentence"],
+        "return the compact summary of the selected candidate or null"
+    );
+    assert_eq!(goal["evidence"]["source"], goal["sentence"]);
+    assert_eq!(
+        frame["inferredOperationPrerequisites"][0]["authority"],
+        "candidate-operation-invariant"
+    );
+    assert_eq!(frame["writeAuthority"], false);
+    assert_eq!(frame["semanticAuthority"], false);
+}
+
+#[test]
+fn compact_source_ownership_refuses_unknown_effects_conflicts_and_alias_ambiguity() {
+    use formal_ai::agentic_coding::module_function::compact_source_request;
+    let invalid = [
+        format!("{COMPACT_SOURCE_TASK} Delete another.mjs."),
+        COMPACT_SOURCE_TASK.replace(
+            "preserve inputs and reuse semantics",
+            "preserve inputs and reuse semantics and deploy the release",
+        ),
+        COMPACT_SOURCE_TASK.replace("; keep source modules and tests unchanged", ""),
+        format!("{COMPACT_SOURCE_TASK} Run node --test other.mjs."),
+        COMPACT_SOURCE_TASK.replace("left.mjs and right.mjs", "left.mjs and left.mjs"),
+        COMPACT_SOURCE_TASK.replace("left.mjs and right.mjs", "nested/caption.mjs and right.mjs"),
+        COMPACT_SOURCE_TASK.replace("left.mjs and right.mjs", "gate.test.mjs and right.mjs"),
+        COMPACT_SOURCE_TASK.replace("left.mjs and right.mjs", "../left.mjs and right.mjs"),
+        COMPACT_SOURCE_TASK.replace("nested/caption.mjs", "nested/caption.rs"),
+        COMPACT_SOURCE_TASK.replace("describeRecord as describe", "chooseRecord as describe"),
+        COMPACT_SOURCE_TASK.replace("describeRecord as describe", "describeRecord as chosen"),
+        COMPACT_SOURCE_TASK.replace("chooseRecord as chosen", "chooseRecord as chosen()"),
+        COMPACT_SOURCE_TASK.replace(
+            "preserve inputs and reuse semantics",
+            "\"preserve inputs and reuse semantics\"",
+        ),
+    ];
+    for task in invalid {
+        assert!(
+            compact_source_request(&task, COMPACT_SOURCE_SEED).is_none(),
+            "{task}"
+        );
+    }
+}
+
+#[test]
+fn original_source_request_keeps_all_nine_explicit_clauses() {
+    use formal_ai::agentic_coding::module_function::derive_complete_source_request;
+    let archived: Value = serde_json::from_str(include_str!("../../../experiments/formal_ai_subagent/evidence/formal-ai-only-1188/g132/T1804-request.json")).unwrap();
+    let original = archived["prompt"].as_str().unwrap();
+    assert_eq!(original.len(), 955);
+    let frame = derive_complete_source_request(original, COMPACT_SOURCE_SEED)
+        .expect("original source frame");
+    assert_eq!(frame["clauses"].as_array().unwrap().len(), 9);
+    assert!(frame.get("inferredOperationPrerequisites").is_none());
+}

@@ -1,3 +1,4 @@
+import { qualifyToolName } from '../agentic/protocol_policy.mjs';
 import {chatMessage, isMap as isObject} from './protocol-values.mjs';
 // The Responses request model and its translation into the shared chat
 // transcript: rust/src/protocol.rs `ResponsesRequest`
@@ -59,13 +60,13 @@ const callArgumentsText = (value) => {
   return isObject(value) ? JSON.stringify(value) : '{}';
 };
 
-function appendItem(item, out, toolNamesById) {
+function appendItem(item, out, toolNamesByIdentity) {
   const itemType = typeof item?.type === 'string' ? item.type : 'message';
   if (itemType === 'function_call' || itemType === 'custom_tool_call') {
     const callId = stringField(item, 'call_id', 'id') ?? '';
-    const name = typeof item.name === 'string' ? item.name : '';
+    const name = qualifyToolName(typeof item.namespace === 'string' ? item.namespace : null, typeof item.name === 'string' ? item.name : '');
     const args = callArgumentsText(item.arguments !== undefined ? item.arguments : item.input);
-    if (name) toolNamesById.set(callId, name);
+    if (name) toolNamesByIdentity.set(callId, name);
     out.push(chatMessage('assistant', '', {
       tool_calls: [{ id: callId, type: 'function', function: { name, arguments: args } }],
     }));
@@ -73,14 +74,14 @@ function appendItem(item, out, toolNamesById) {
   }
   if (itemType === 'function_call_output' || itemType === 'custom_tool_call_output') {
     const callId = typeof item.call_id === 'string' ? item.call_id : '';
-    const output = item.output === undefined ? '' : valueToPromptText(item.output);
+    const output = item.output === undefined ? '' : isObject(item.output) ? JSON.stringify(item.output) : valueToPromptText(item.output);
     const flag = item.is_error !== undefined ? item.is_error : item.isError;
     const isError = typeof flag === 'boolean'
       ? flag
       : typeof item.status === 'string' && FAILED_STATUSES.includes(item.status.toLowerCase());
     out.push(chatMessage('tool', output, {
       tool_call_id: callId,
-      name: toolNamesById.has(callId) ? toolNamesById.get(callId) : null,
+      name: toolNamesByIdentity.has(callId) ? toolNamesByIdentity.get(callId) : null,
       is_error: isError,
     }));
     return;
@@ -93,13 +94,13 @@ function appendItem(item, out, toolNamesById) {
 /** `responses_input::messages`: a bare string, one item, or an item array. */
 export function responsesInputMessages(input) {
   const out = [];
-  const toolNamesById = new Map();
+  const toolNamesByIdentity = new Map();
   if (typeof input === 'string') {
     if (input.trim()) out.push(chatMessage('user', input));
   } else if (Array.isArray(input)) {
-    for (const item of input) appendItem(item, out, toolNamesById);
+    for (const item of input) appendItem(item, out, toolNamesByIdentity);
   } else if (isObject(input)) {
-    appendItem(input, out, toolNamesById);
+    appendItem(input, out, toolNamesByIdentity);
   }
   return out;
 }

@@ -1,10 +1,18 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=663b75bf70ed45ca7eddf54200f61f2f4b69c2892470c5ad3e3602ce07eec855 bytes=12145
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=47c56e2074245a3f51a921859126565bce615b584251af6164123b0c33721d49 bytes=12305
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=1 carried=10
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
@@ -82,7 +90,7 @@ pub const PROBABILITY_PLACEHOLDER: &str = "{probability}";
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal undefined
-// formal-ai:blockers Array.isArray | arrow callback of .filter() | arrow callback of .map() | call of a sibling function | method call .filter() | method call .join() | method call .map() | null | object without a $ tag | typeof operator | undefined
+// formal-ai:blockers Array.isArray | arrow callback of .filter() | arrow callback of .map() | call of a sibling function | imported value | method call .filter() | method call .join() | method call .map() | null | object without a $ tag | typeof operator | undefined
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal nullish coalescing

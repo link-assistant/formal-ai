@@ -1,10 +1,12 @@
 // `crate::seed::operation_vocabulary` (rust/src/seed/operation_vocabulary.rs),
 // read from data/seed/operation-vocabulary.lino.
 
+import { callbackTrim as canonicalUnaryTrim } from '../callback_values.mjs';
+import { callbackNonempty as canonicalUnaryNonempty } from '../callback_values.mjs';
 import { cached, readText } from '../host.mjs';
 import { findChildValue, parseRoot } from './seed_parser.mjs';
 
-const splitCombo = (raw) => raw.split('+').map((part) => part.trim()).filter((part) => part !== '');
+const splitCombo = (raw) => raw.split('+').map(canonicalUnaryTrim).filter(canonicalUnaryNonempty);
 
 /** Mirrors `fn operation_vocabulary`: `[{canonical, languages: Map, inverse_of, exclusions}]`. */
 export function operationVocabulary() {

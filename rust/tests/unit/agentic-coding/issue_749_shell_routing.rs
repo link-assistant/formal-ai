@@ -4,6 +4,11 @@ use formal_ai::agentic_coding::mutating_action::verified_recipe;
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::{ChatMessage, ToolCall};
 
+// Render the exact expected generic commit from its maintained canonical data.
+use crate::canonical_work_item_steps;
+const SUBJECT_PLACEHOLDER: &str = "{subject}";
+const BRANCH_PLACEHOLDER: &str = "{branch}";
+
 /// The command a prompt is carried out by, driven to the end of its plan.
 ///
 /// A command that changes the workspace is not issued once: since issue #944 it
@@ -73,6 +78,13 @@ fn explicit_shell_forms_pass_the_complete_command_through() {
 
 #[test]
 fn natural_shell_intents_cover_file_vcs_build_and_search_tasks() {
+    let expected_commit = canonical_work_item_steps::fill(
+        "commit_command_without_body",
+        &[
+            (SUBJECT_PLACEHOLDER, "'chore: commit pending changes'"),
+            (BRANCH_PLACEHOLDER, "HEAD"),
+        ],
+    );
     for (language, prompt, expected) in [
         ("English", "show current directory", "pwd"),
         (
@@ -93,11 +105,7 @@ fn natural_shell_intents_cover_file_vcs_build_and_search_tasks() {
         // dogfooding), planned as the non-interactive commit recipe — a bare
         // `git commit` would wait on an editor — and the JavaScript planner
         // plans the same command.
-        (
-            "en",
-            "commit my changes",
-            "git add -A && git commit -q -m 'chore: commit pending changes' && if test -n \"$(git remote)\"; then git push -q origin HEAD; fi && git rev-parse HEAD",
-        ),
+        ("en", "commit my changes", expected_commit.as_str()),
         ("ru", "удали файл old.txt", "rm old.txt"),
         ("ru", "скопируй a.txt в b.txt", "cp a.txt b.txt"),
         ("hi", "फ़ाइल old.txt हटाओ", "rm old.txt"),

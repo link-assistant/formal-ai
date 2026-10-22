@@ -182,12 +182,18 @@ impl SetupExecutor for ProcessSetupExecutor {
         current_dir: &Path,
         environment: &BTreeMap<String, String>,
     ) -> Result<SetupStepObservation, String> {
-        let output = Command::new(program)
+        let mut command = Command::new(program);
+        command
             .args(arguments)
             .current_dir(current_dir)
-            .envs(environment)
-            .output()
-            .map_err(|error| error.to_string())?;
+            .envs(environment);
+        let output = crate::bounded_process::command_output(
+            command,
+            std::time::Duration::from_mins(15),
+            4 * 1024 * 1024,
+            1024 * 1024,
+        )
+        .map_err(|error| error.to_string())?;
         Ok(SetupStepObservation {
             program: program.to_owned(),
             arguments: arguments.to_vec(),
@@ -210,7 +216,15 @@ pub fn available_bytes(path: &Path) -> Option<u64> {
             return None;
         }
     }
-    let observed = Command::new("df").arg("-Pk").arg(&probe).output().ok()?;
+    let mut command = Command::new("df");
+    command.arg("-Pk").arg(&probe);
+    let observed = crate::bounded_process::command_output(
+        command,
+        std::time::Duration::from_secs(5),
+        64 * 1024,
+        64 * 1024,
+    )
+    .ok()?;
     let text = String::from_utf8_lossy(&observed.stdout).into_owned();
     let row = text.lines().nth(1)?;
     let kilobytes: u64 = row.split_whitespace().nth(3)?.parse().ok()?;

@@ -3,36 +3,30 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/summarization_dialog.mjs"] = (crateRequire) => {
 // `crate::summarization::dialog` (rust/src/summarization/dialog.rs):
 // dialog-aware helpers for the summarization pipeline. A `DialogTurn` is
 // `{role, text}`; the role is informational except for the weight bias that
 // lets user turns dominate a short summary or a chat title.
-
+const { lower: canonicalUnaryLower } = crateRequire("crate/rust_str.mjs");
 const { SummarizationMode, defaultConfig, deformalize, formalize, isLabelOnly, labelForMode, maxByWeight, summarize, toTopic, withLanguage, withMode } = crateRequire("crate/summarization.mjs");
 const { stripMarkdownNoise } = crateRequire("crate/summarization_markdown.mjs");
-
 const TRIM_BOTH = /^\p{White_Space}+|\p{White_Space}+$/gu;
 const WORDS = /\p{White_Space}+/u;
 const SENTENCE_ENDS = new Set(['.', '!', '?', '。', '！', '？']);
 const WORD_TAIL = new Set(['.', ',', ';', ':', '!', '?', '。', '！', '？']);
-
 /** Mirrors `DialogTurn::new` in rust/src/summarization/dialog.rs. */
 function dialogTurn(role, text) {
   return { role, text };
 }
-
 /** Mirrors `DialogTurn::user` in rust/src/summarization/dialog.rs. */
 function userTurn(text) {
   return dialogTurn('user', text);
 }
-
 /** Mirrors `DialogTurn::assistant` in rust/src/summarization/dialog.rs. */
 function assistantTurn(text) {
   return dialogTurn('assistant', text);
 }
-
 /**
  * Mirrors `fn formalize_dialog` in rust/src/summarization/dialog.rs: every
  * turn formalized on its own, user weights raised by 20 and assistant weights
@@ -52,7 +46,6 @@ function formalizeDialog(turns) {
   }
   return out;
 }
-
 /**
  * Mirrors `fn summarize_dialog` in rust/src/summarization/dialog.rs.
  * @param {Array<{role: string, text: string}>} turns
@@ -67,13 +60,11 @@ function summarizeDialog(turns, config) {
   if (statements.length === 0) return '';
   return deformalize(summarize(statements, config));
 }
-
 /** ASCII-case-insensitive equality (`str::eq_ignore_ascii_case`). */
 function eqIgnoreAsciiCase(left, right) {
-  const fold = (text) => text.replace(/[A-Z]/g, (letter) => letter.toLowerCase());
+  const fold = (text) => text.replace(/[A-Z]/g, canonicalUnaryLower);
   return fold(left) === fold(right);
 }
-
 /**
  * Mirrors `fn summarize_dialog_plain` in rust/src/summarization/dialog.rs: the
  * latest user turn's first sentence plus the following assistant turn's first
@@ -109,7 +100,6 @@ function summarizeDialogPlain(turns, maxWords, maxSentences) {
   }
   return boundPlainWords(sentences.join(' '), maxWords);
 }
-
 /** Mirrors `fn plain_first_sentence` in rust/src/summarization/dialog.rs. */
 function plainFirstSentence(text) {
   const cleaned = stripMarkdownNoise(text);
@@ -135,7 +125,6 @@ function plainFirstSentence(text) {
   if (plain === '') return null;
   return SENTENCE_ENDS.has(Array.from(plain).pop()) ? plain : `${plain}.`;
 }
-
 /** Mirrors `fn bound_plain_words` in rust/src/summarization/dialog.rs. */
 function boundPlainWords(text, maxWords) {
   const wordsOfText = text.split(WORDS).filter(Boolean);
@@ -144,7 +133,6 @@ function boundPlainWords(text, maxWords) {
   while (bounded.length > 0 && WORD_TAIL.has(bounded[bounded.length - 1])) bounded.pop();
   return `${bounded.join('')}.`;
 }
-
 /**
  * Mirrors `fn generate_chat_title` in rust/src/summarization/dialog.rs: the
  * dialog summarized in `Topic` mode (at most five words).
@@ -154,7 +142,6 @@ function boundPlainWords(text, maxWords) {
 function generateChatTitle(turns, language) {
   return summarizeDialog(turns, withLanguage(withMode(defaultConfig(), SummarizationMode.Topic), language));
 }
-
 return Object.freeze({
   dialogTurn,
   userTurn,

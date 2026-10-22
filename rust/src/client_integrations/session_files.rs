@@ -190,10 +190,18 @@ fn query_session_id(integration: &ClientIntegration) -> Option<String> {
     if integration.invocation.session_id_query_args.is_empty() {
         return None;
     }
-    let output = Command::new(&integration.command)
-        .args(&integration.invocation.session_id_query_args)
-        .output()
-        .ok()?;
+    let output = crate::bounded_process::command_output(
+        {
+            let mut bounded_child_command = Command::new(&integration.command);
+            bounded_child_command.args(&integration.invocation.session_id_query_args);
+            bounded_child_command
+        },
+        std::time::Duration::from_secs(30),
+        64 * 1024 * 1024,
+        16 * 1024 * 1024,
+    )
+    .map_err(|failure| std::io::Error::new(failure.kind(), failure))
+    .ok()?;
     if !output.status.success() {
         return None;
     }

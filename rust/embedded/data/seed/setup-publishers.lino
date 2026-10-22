@@ -72,8 +72,8 @@ setup_publisher_scalac
   record_type "setup_publisher"
   program "scalac"
   source_id "scala_official"
-  host "scala-lang.org"
-  documentation "https://www.scala-lang.org/download/"
+  host "api.github.com"
+  documentation "https://api.github.com/repos/scala/scala3/releases/latest"
 setup_publisher_kotlinc
   record_type "setup_publisher"
   program "kotlinc"

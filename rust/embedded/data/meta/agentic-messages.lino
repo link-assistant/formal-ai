@@ -582,3 +582,108 @@ agentic_messages
     text "last"
   message file-read-cue-first-line
     text "first line"
+  message tool-validation-schema-depth-limit
+    text "{path}: schema depth limit"
+  message tool-validation-forbidden-value
+    text "{path}: forbidden value"
+  message tool-validation-unresolved-schema-reference
+    text "{path}: unresolved schema reference"
+  message tool-validation-allof-mismatch
+    text "{path}: allOf mismatch"
+  message tool-validation-anyof-mismatch
+    text "{path}: anyOf mismatch"
+  message tool-validation-oneof-mismatch
+    text "{path}: oneOf mismatch"
+  message tool-validation-forbidden-schema
+    text "{path}: forbidden schema"
+  message tool-validation-type-mismatch
+    text "{path}: type mismatch"
+  message tool-validation-enum-mismatch
+    text "{path}: enum mismatch"
+  message tool-validation-const-mismatch
+    text "{path}: const mismatch"
+  message tool-validation-string-length-mismatch
+    text "{path}: string length mismatch"
+  message tool-validation-unsupported-schema-pattern
+    text "{path}: unsupported schema pattern"
+  message tool-validation-pattern-mismatch
+    text "{path}: pattern mismatch"
+  message tool-validation-numeric-range-mismatch
+    text "{path}: numeric range mismatch"
+  message tool-validation-array-length-mismatch
+    text "{path}: array length mismatch"
+  message tool-validation-required-value-is-unbound
+    text "{path}: required value is unbound"
+  message action-budget-exhausted
+    text "Action budget exhausted after {total} tool declarations (limit {maximum}). The task is incomplete; inspect progress before starting a new request."
+  message action-receipt-missing
+    text "No bound tool result was received."
+  message action-repetition-stopped
+    text "Repeated action stopped after {attempts} attempts (limit {maximum}): {tool} {arguments}. Last result: {result}. The task is incomplete; inspect the tool contract or change strategy."
+  message action-repetition-observation
+    text "Latest bound observation from {tool} {arguments}: {result}"
+  message git-refspec-other-remote
+    text "The push failed with an invalid local refspec. Inspect the current branch and the originally requested remote before retrying; no alternative remote is authorized."
+  message git-refspec-explicit-branch
+    text "The refspec failed while an explicit branch binding exists. Inspect that local ref and preserve the requested destination; the current branch was not pushed automatically."
+  message git-refspec-recovery-attempted
+    text "The current-branch push recovery was attempted. Inspect its Git receipt; any remaining task requirements are incomplete."
+  message git-refspec-shell-missing
+    text "The push failed with an invalid local refspec. Read git branch --show-current in the client workspace before retrying; no shell tool is available."
+  message tool-argument-binding-incomplete
+    text "Planning stopped: required tool arguments could not be bound for {tool}. No call was sent; inspect tool_argument_binding_failed diagnostics. The task is incomplete."
+  message memory-storage-unavailable
+    text "persisted-memory storage unavailable at {path}: {error}"
+  message source-cst-read-arguments
+    text "Read arguments are not structured data."
+  message source-cst-read-owner
+    text "Read observation belongs to a different source owner."
+  message source-cst-read-failed
+    text "Read observation failed."
+  message source-cst-host-missing
+    text "The installed host does not provide the complete CST transformation command."
+  message source-cst-run-missing
+    text "The complete CST transformation requires an authorized command tool."
+  message source-cst-read-missing
+    text "The source preimage requires an authorized read tool."
+  message source-unary-gap-1
+    text "The installed host does not provide the stateless unary AST operation."
+  message source-unary-gap-2
+    text "The source preimage requires an authorized Read tool."
+  message source-unary-gap-3
+    text "A complete successful exact-owner source Read is required."
+  message source-unary-gap-4
+    text "The preimage has no complete exact Read observation."
+  message source-unary-gap-5
+    text "The source operation receipt has invalid arguments."
+  message source-unary-gap-6
+    text "The exact source operation did not complete successfully."
+  message source-unary-gap-7
+    text "The installed operation returned no complete structured receipt."
+  message source-unary-gap-8
+    text "The source operation receipt does not match the current request."
+  message source-unary-gap-9
+    text "The applied source requires an independent physical readback."
+  message source-unary-gap-10
+    text "Physical source readback disagrees with the installed operation receipt."
+  message source-unary-gap-11
+    text "The preimage has no current exact Read observation."
+  message source-unary-gap-12
+    text "The installed AST operation requires an authorized command tool."
+  message semantic-source-preflight-gap-output
+    text "Semantic source discovery MissingContract:\n{discovery}"
+
+  message installed-source-operation-command
+    text "{node} {script} --request {task} --expected {digest}"
+
+  message semantic-source-preflight-incomplete-markers
+    text "Results truncated|preview truncated"
+
+  message source-cache-cleanup-diagnostic
+    text "{primary}; source_cache_cleanup_failed:{cleanup}"
+
+  message source-transport-cleanup-diagnostic
+    text "{error}; cleanup_complete={cleaned}"
+
+  message source-transport-timeout-diagnostic
+    text "source_transport_timeout; cleanup_complete={cleaned}"

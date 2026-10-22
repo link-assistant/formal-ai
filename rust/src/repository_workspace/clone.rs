@@ -60,24 +60,30 @@ pub fn run_git(root: &Path, argv: &[&str]) -> Result<String, WorkspaceError> {
             program: ["git", argv.first().copied().unwrap_or_default()].join(" "),
         });
     }
-    let observed = Command::new("git")
-        .arg("-C")
-        .arg(root)
-        .args(argv)
-        .output()
-        .map_err(|error| {
-            if error.kind() == std::io::ErrorKind::NotFound {
-                WorkspaceError::MissingPrerequisite {
-                    program: String::from("git"),
-                    exit_code: Some(crate::prerequisite::probe::COMMAND_NOT_FOUND_EXIT),
-                    stderr: error.to_string(),
-                }
-            } else {
-                WorkspaceError::Observed {
-                    detail: error.to_string(),
-                }
+    let observed = crate::bounded_process::command_output(
+        {
+            let mut bounded_child_command = Command::new("git");
+            bounded_child_command.arg("-C").arg(root).args(argv);
+            bounded_child_command
+        },
+        std::time::Duration::from_secs(600),
+        64 * 1024 * 1024,
+        16 * 1024 * 1024,
+    )
+    .map_err(|failure| std::io::Error::new(failure.kind(), failure))
+    .map_err(|error| {
+        if error.kind() == std::io::ErrorKind::NotFound {
+            WorkspaceError::MissingPrerequisite {
+                program: String::from("git"),
+                exit_code: Some(crate::prerequisite::probe::COMMAND_NOT_FOUND_EXIT),
+                stderr: error.to_string(),
             }
-        })?;
+        } else {
+            WorkspaceError::Observed {
+                detail: error.to_string(),
+            }
+        }
+    })?;
     if observed.status.success() {
         Ok(String::from_utf8_lossy(&observed.stdout).into_owned())
     } else {
@@ -128,22 +134,30 @@ pub fn clone_at_base(spec: &WorkspaceSpec, root: &Path) -> Result<PathBuf, Works
             detail: error.to_string(),
         })?;
     }
-    let cloned = Command::new("git")
-        .args(clone_argv)
-        .output()
-        .map_err(|error| {
-            if error.kind() == std::io::ErrorKind::NotFound {
-                WorkspaceError::MissingPrerequisite {
-                    program: String::from("git"),
-                    exit_code: Some(crate::prerequisite::probe::COMMAND_NOT_FOUND_EXIT),
-                    stderr: error.to_string(),
-                }
-            } else {
-                WorkspaceError::Observed {
-                    detail: error.to_string(),
-                }
+    let cloned = crate::bounded_process::command_output(
+        {
+            let mut bounded_child_command = Command::new("git");
+            bounded_child_command.args(clone_argv);
+            bounded_child_command
+        },
+        std::time::Duration::from_secs(600),
+        64 * 1024 * 1024,
+        16 * 1024 * 1024,
+    )
+    .map_err(|failure| std::io::Error::new(failure.kind(), failure))
+    .map_err(|error| {
+        if error.kind() == std::io::ErrorKind::NotFound {
+            WorkspaceError::MissingPrerequisite {
+                program: String::from("git"),
+                exit_code: Some(crate::prerequisite::probe::COMMAND_NOT_FOUND_EXIT),
+                stderr: error.to_string(),
             }
-        })?;
+        } else {
+            WorkspaceError::Observed {
+                detail: error.to_string(),
+            }
+        }
+    })?;
     if !cloned.status.success() {
         return Err(WorkspaceError::Observed {
             detail: String::from_utf8_lossy(&cloned.stderr).into_owned(),

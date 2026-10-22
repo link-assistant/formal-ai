@@ -172,6 +172,16 @@ pub fn workspace_environment(root: &Path) -> BTreeMap<String, String> {
 /// never asserted against a hard-coded value.
 #[must_use]
 pub fn probe_command(probe: &ToolchainProbe, root: &Path) -> ProbeVerdict {
+    probe_command_with_timeout(probe, root, std::time::Duration::from_secs(10))
+}
+
+/// Run one probe within the caller's remaining operation budget.
+#[must_use]
+pub fn probe_command_with_timeout(
+    probe: &ToolchainProbe,
+    root: &Path,
+    timeout: std::time::Duration,
+) -> ProbeVerdict {
     if probe.program.trim().is_empty() {
         return ProbeVerdict::NotProbed {
             reason: String::from("no program declared"),
@@ -185,22 +195,23 @@ pub fn probe_command(probe: &ToolchainProbe, root: &Path) -> ProbeVerdict {
         command.current_dir(root);
     }
 
-    let observed = match command.output() {
-        Ok(observed) => observed,
-        Err(error) => {
-            if error.kind() == std::io::ErrorKind::NotFound {
-                return ProbeVerdict::Missing {
-                    exit_code: Some(COMMAND_NOT_FOUND_EXIT),
-                    stderr: [probe.program.as_str(), NOT_FOUND_MARKER, &error.to_string()]
-                        .join(": "),
+    let observed =
+        match crate::bounded_process::command_output(command, timeout, 1024 * 1024, 256 * 1024) {
+            Ok(observed) => observed,
+            Err(error) => {
+                if error.kind() == std::io::ErrorKind::NotFound {
+                    return ProbeVerdict::Missing {
+                        exit_code: Some(COMMAND_NOT_FOUND_EXIT),
+                        stderr: [probe.program.as_str(), NOT_FOUND_MARKER, &error.to_string()]
+                            .join(": "),
+                    };
+                }
+                return ProbeVerdict::Unusable {
+                    exit_code: None,
+                    stderr: error.to_string(),
                 };
             }
-            return ProbeVerdict::Unusable {
-                exit_code: None,
-                stderr: error.to_string(),
-            };
-        }
-    };
+        };
 
     let stdout = String::from_utf8_lossy(&observed.stdout).into_owned();
     let stderr = String::from_utf8_lossy(&observed.stderr).into_owned();

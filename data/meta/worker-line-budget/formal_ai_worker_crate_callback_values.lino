@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_crate_callback_values.js"
+  ceiling 23
+  rationale "New canonical ECMAScript callback-value module; exact initial maintained factory line count, no existing ceiling raised. Byte regeneration remains authoritative."

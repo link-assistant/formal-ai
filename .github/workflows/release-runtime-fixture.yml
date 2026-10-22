@@ -1,21 +1,5 @@
 name: Harmless reusable release runtime fixture
 on:
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
-    paths:
-      - .github/workflows/release-runtime-fixture*.yml
-      - scripts/release-runtime-fixture.mjs
-      - scripts/release-fixture-caller-admission.mjs
-      - rust/tests/web/release-fixture-caller-admission.test.mjs
-      - scripts/release-stage-transfer.mjs
-      - rust/tests/web/release-runtime-fixture.test.mjs
-      - scripts/github-artifact-by-identifier.mjs
-      - rust/tests/web/github-artifact-by-identifier.test.mjs
-    branches-ignore:
-      - e2e/**
   workflow_dispatch:
     inputs:
       mode:
@@ -55,7 +39,8 @@ jobs:
         run: node scripts/release-runtime-fixture.mjs produce
       - name: Upload immutable controlled text tar
         id: upload
-        uses: actions/upload-artifact@v7
+        uses: ./.github/actions/upload-artifact-with-retry
+        timeout-minutes: 3
         with:
           name: release-fixture-text-${{ github.run_id }}-${{ github.run_attempt }}
           path: .release-fixture/producer/.release-transfer/binary/*

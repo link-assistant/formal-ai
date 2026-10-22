@@ -7,6 +7,7 @@
 // the record has the browser shape (`subjectAliases`, `questionKeywords`,
 // `localized`, ...), which solver_handlers_benchmark_prompts.mjs reads.
 
+import { lower as canonicalUnaryLower } from './rust_str.mjs';
 import { cached, parseLino, readText } from '../host.mjs';
 import { splitPipeList } from './seed.mjs';
 import { meaning } from './seed_meanings.mjs';
@@ -376,7 +377,7 @@ export function deriveFactsFromTexts(captureText, realizationText, propertyOf) {
       subjectLabel: lead.subjectLabel || "",
       valueLabel: lead.valueLabel || "",
       subjectAliases: factLabelSurfaces(rules, subject),
-      questionKeywords: relation.keywords.map((keyword) => keyword.toLowerCase()),
+      questionKeywords: relation.keywords.map(canonicalUnaryLower),
       summary: lead.summary || "",
       source: lead.source || "",
       sourceKind: relation.sourceKind,

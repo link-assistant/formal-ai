@@ -86,7 +86,11 @@ test('stable provider source drift invalidates only a private fixture identity',
     });
     writeFileSync(join(directory, 'drive.mjs'), source);
     const provider = join(directory, 'shell-capture.mjs');
-    writeFileSync(provider, readFileSync(new URL('./shell-capture.mjs', driverUrl)));
+    const providerUrl = new URL('./shell-capture.mjs', driverUrl);
+    const providerSource = readFileSync(providerUrl, 'utf8').replace(
+      /from (['"])([^'"]+)\1/gu, (whole, quoteStyle, path) => path.startsWith('.')
+        ? 'from ' + JSON.stringify(new URL(path, providerUrl).href) : whole);
+    writeFileSync(provider, providerSource);
     const fixture = await import(pathToFileURL(join(directory, 'drive.mjs')).href);
     const {token, observation} = await issue(directory, fixture); assert(observation);
     writeFileSync(provider, readFileSync(provider, 'utf8') + '\n// private fixture source drift\n');

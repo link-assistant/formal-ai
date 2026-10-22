@@ -5,6 +5,7 @@
 // indices into the prompt (so `prompt.slice(start, end)` is the sentence with
 // its terminator), the JavaScript twin of the Rust byte range.
 
+import { callbackText as canonicalUnaryText } from './callback_values.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
 import { carriesPolicyLead } from './crate/seed_caller_context.mjs';
 import { negatedCommandPolicy } from './shell-command-negative-ownership.mjs';
@@ -35,7 +36,7 @@ function splitSentences(prompt, endsSentence) {
     index += character.length;
     if (!endsSentence(character)) continue;
     if (character === '.') {
-      const next = Array.from(prompt.slice(index))[0];
+      const next = Array.from(prompt.slice(index, index + 2))[0];
       if (next !== undefined && isAlphanumeric(next)) continue;
     }
     const text = trim(prompt.slice(start, at));
@@ -53,7 +54,7 @@ function splitSentences(prompt, endsSentence) {
 
 /** Mirrors `fn sentence_spans`: each sentence's text. */
 export function sentenceSpans(prompt) {
-  return sentences(prompt).map((sentence) => sentence.text);
+  return sentences(prompt).map(canonicalUnaryText);
 }
 
 /** Mirrors `fn states_a_command_policy`. */

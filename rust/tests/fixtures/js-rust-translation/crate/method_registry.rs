@@ -1,10 +1,14 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=1390ee78a666b6bc4c9fbaa8a36b66a86aa7d69e474eb7e59d043a3441bc583f bytes=12666
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=0ac23d2d7309a6e34f1e39d006dcbb3b3f09434a533e89491f4e452e959eef85 bytes=12739
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=1
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
@@ -121,11 +125,11 @@ pub const HEURISTIC_RECORD_TYPE: &str = "selection_heuristic";
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal arrow function
-// formal-ai:blockers arrow callback of .map() | arrow function | call of an imported function | field access | method call .map() | object without a $ tag
+// formal-ai:blockers arrow callback of .map() | arrow function | call of an imported function | field access | imported value | method call .map() | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal function value …
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | call of an imported function | field access | method call .filter() | method call .has() | method call .map() | object without a $ tag | sibling value
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | call of an imported function | field access | imported value | method call .filter() | method call .has() | method call .map() | object without a $ tag | sibling value
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal function value …

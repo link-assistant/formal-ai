@@ -94,7 +94,15 @@ impl HttpClient for CurlClient {
             "\n__formal_ai_http_status__:%{http_code}",
             url,
         ];
-        let output = Command::new("curl").args(args).output().map_err(|error| {
+        let mut command = Command::new("curl");
+        command.args(args);
+        let output = crate::bounded_process::command_output(
+            command,
+            self.timeout,
+            8 * 1024 * 1024,
+            256 * 1024,
+        )
+        .map_err(|error| {
             if error.kind() == io::ErrorKind::NotFound {
                 HttpError::Transport(String::from(
                     "curl is required for the translation pipeline; install curl and retry",

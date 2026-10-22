@@ -17,8 +17,7 @@ pub(super) struct ServerGuard {
 
 impl Drop for ServerGuard {
     fn drop(&mut self) {
-        let _ = self.child.kill();
-        let _ = self.child.wait();
+        let _ = crate::bounded_process::stop_child(&mut self.child, Duration::from_millis(250));
     }
 }
 

@@ -1,4 +1,4 @@
-import { childrenNamed, parseLino, readText } from '../host.mjs';
+import { cached, childrenNamed, parseLino, readText } from '../host.mjs';
 // Source-owned Read operands and policies; twin: rust/src/agentic_coding/file_read/ownership.rs.
 import { containsCjk } from '../crate/coding_catalog.mjs';
 import { observedCallableRequest } from '../module_function.mjs';
@@ -16,16 +16,28 @@ const FUNCTION_ROLES = ['request_function_word', 'enumeration_cue'];
 const OBJECT_ROLE = 'file-read-object-noun';
 const READ_ROLE = 'file_read_action_cue';
 const escapePattern = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+// Only immutable seeded roles own cache keys; prompts and matches are never retained.
+function rolePatterns(role) {
+  const patternsByRole = cached('owned-file-read-role-patterns', () => new Map());
+  if (patternsByRole.has(role)) return patternsByRole.get(role);
+  const patterns = wordsForRole(role)
+    .filter(surface => surface && !surface.includes('…'))
+    .map(surface => ({
+      expression: new RegExp(escapePattern(surface), 'giu'),
+      requiresBoundary: !containsCjk(surface),
+    }));
+  if (patterns.length) patternsByRole.set(role, patterns);
+  return patterns;
+}
 function roleSpans(text, roles) {
   const quoted = quotedSegmentSpans(text);
   const result = [];
-  for (const role of roles) for (const surface of wordsForRole(role)) {
-    if (!surface || surface.includes('…')) continue;
-    for (const match of text.matchAll(new RegExp(escapePattern(surface), 'giu'))) {
+  for (const role of roles) for (const {expression, requiresBoundary} of rolePatterns(role)) {
+    for (const match of text.matchAll(expression)) {
       const start = match.index, end = start + match[0].length;
-      const before = Array.from(text.slice(0, start)).pop();
-      const after = Array.from(text.slice(end))[0];
-      if (!containsCjk(surface) && ((before && (isAlphanumeric(before) || before === '_'))
+      const before = Array.from(text.slice(Math.max(0, start - 2), start)).pop();
+      const after = Array.from(text.slice(end, end + 2))[0];
+      if (requiresBoundary && ((before && (isAlphanumeric(before) || before === '_'))
         || (after && (isAlphanumeric(after) || after === '_')))) continue;
       if (quoted.some(span => start >= span.start && end <= span.end)) continue;
       result.push({start, end});
@@ -218,37 +230,54 @@ export function readPolicyBlocksPlan(prompt,plan) {
   return false;
 }
 
-export function modePathsForClause(prompt) {
-  prompt=balancedPathText(prompt);
-  const root = parseLino(readText('data/seed/meanings-file-write.lino'));
-  const contract = childrenNamed(root, 'file-read-mode-contract')[0];
-  if (!contract) return null;
-  for (const form of childrenNamed(contract, 'form')) {
-    const template = childrenNamed(form, 'pattern')[0]?.value;
-    if (!template) continue;
-    let missing = false;
-    const pattern = template.replace(/\{([a-z]+(?:-[a-z]+)*)\}/gu, (_, name) => {
-      if (name === 'source' || name === 'sources') return `(?<${name}>.+?)`;
-      const exact = wordsForRole(name);
-      const legacy = wordsForRole(name.replaceAll('-', '_'));
-      if (exact.length > 0 && legacy.length > 0 && JSON.stringify(exact) !== JSON.stringify(legacy)) { missing = true; return ''; }
-      const surfaces = exact.length > 0 ? exact : legacy;
-      if (surfaces.length === 0) { missing = true; return ''; }
-      return '(?:'+surfaces.map(escapePattern).join('|')+')';
-    });
-    if (missing) continue;
-    let match;
-    try { match = new RegExp(pattern, 'diu').exec(prompt); } catch { continue; }
-    if (!match || match[0].length !== prompt.length) continue;
-    const domains = childrenNamed(form, 'capture-domain');
-    if (!domains.every(domain => {
-      const value = match.groups[domain.value];
-      const domainPattern = childrenNamed(domain, 'pattern')[0]?.value;
-      if (value === undefined || !domainPattern) return false;
+/** Compile only immutable host-owned grammar; no prompt, match or answer is retained. */
+function readModeForms() {
+  return cached('owned-file-read-mode-forms', () => {
+    const root = parseLino(readText('data/seed/meanings-file-write.lino'));
+    const contract = childrenNamed(root, 'file-read-mode-contract')[0];
+    const forms = [];
+    if (!contract) return forms;
+    for (const form of childrenNamed(contract, 'form')) {
+      const template = childrenNamed(form, 'pattern')[0]?.value;
+      if (!template) continue;
+      let missing = false;
+      const pattern = template.replace(/\{([a-z]+(?:-[a-z]+)*)\}/gu, (_, name) => {
+        if (name === 'source' || name === 'sources') return `(?<${name}>.+?)`;
+        const exact = wordsForRole(name);
+        const legacy = wordsForRole(name.replaceAll('-', '_'));
+        if (exact.length > 0 && legacy.length > 0 && JSON.stringify(exact) !== JSON.stringify(legacy)) {
+          missing = true;
+          return '';
+        }
+        const surfaces = exact.length > 0 ? exact : legacy;
+        if (surfaces.length === 0) missing = true;
+        return '(?:' + surfaces.map(escapePattern).join('|') + ')';
+      });
+      if (missing) continue;
       try {
-        const observed = new RegExp(domainPattern, 'u').exec(value);
-        return observed !== null && observed[0].length === value.length;
-      } catch { return false; }
+        const expression = new RegExp(pattern, 'diu');
+        const domains = childrenNamed(form, 'capture-domain').map(domain => {
+          const domainPattern = childrenNamed(domain, 'pattern')[0]?.value;
+          if (!domainPattern) throw Error('MissingReadCaptureDomain');
+          return { name: domain.value, expression: new RegExp(domainPattern, 'u') };
+        });
+        forms.push({ expression, domains });
+      } catch { /* An invalid static form or domain could never authorize a request. */ }
+    }
+    return forms;
+  });
+}
+
+export function modePathsForClause(prompt) {
+  prompt = balancedPathText(prompt);
+  for (const { expression, domains } of readModeForms()) {
+    const match = expression.exec(prompt);
+    if (!match || match[0].length !== prompt.length) continue;
+    if (!domains.every(domain => {
+      const value = match.groups[domain.name];
+      if (value === undefined) return false;
+      const observed = domain.expression.exec(value);
+      return observed !== null && observed[0].length === value.length;
     })) continue;
     const source = match.groups.source ?? match.groups.sources;
     if (!source || quoteFault(source) !== null) continue;

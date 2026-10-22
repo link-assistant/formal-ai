@@ -392,6 +392,28 @@ impl Default for CaptureOptions {
 /// Exact single-quoted shell operand, corresponding to shellQuote.
 pub(super) use crate::portable_string_contracts::quote_shell_word as shell_quote;
 
+fn bounded_capture_source() -> &'static str {
+    static SOURCE: std::sync::OnceLock<String> = std::sync::OnceLock::new();
+    SOURCE.get_or_init(|| {
+        let parsed = crate::seed::parser::parse_lino(include_str!(
+            "../../embedded/data/meta/bounded-command-capture-source.lino"
+        ));
+        parsed
+            .children
+            .iter()
+            .find(|node| node.name == "bounded-command-capture-source")
+            .map(|root| {
+                root.children
+                    .iter()
+                    .filter(|line| line.name == "line")
+                    .map(|line| line.id.as_str())
+                    .collect::<Vec<_>>()
+                    .join("\n")
+            })
+            .unwrap_or_default()
+    })
+}
+
 /// Readable Node receipt producer corresponding to captureProgram.
 /// Valid UTF-8 strings correspond to the JavaScript Unicode-scalar input domain.
 pub(super) fn capture_program(
@@ -408,7 +430,8 @@ pub(super) fn capture_program(
     }
     let characters: Vec<char> = command.chars().collect();
     let mut lines = vec![
-        "  const { spawnSync } = require('node:child_process');".to_owned(),
+        bounded_capture_source().to_owned(),
+        "(async () => {".to_owned(),
         "  const command = [".to_owned(),
     ];
     for chunk in characters.chunks(64) {
@@ -418,7 +441,7 @@ pub(super) fn capture_program(
     }
     let suffix = [
         "  ].join('');",
-        "  const result = spawnSync('/bin/sh', ['-c', command], {",
+        "  const result = await boundedCommand('/bin/sh', ['-c', command], {",
         "    timeout: TIMEOUT, maxBuffer: MAX_BUFFER,",
         "  });",
         "  const decoder = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true });",
@@ -431,15 +454,16 @@ pub(super) fn capture_program(
         "  const receipt = {",
         "    schema: 'command-execution-receipt/v1', stdout, stderr,",
         "    exit_code: result.status, signal: result.signal ?? null,",
-        "    complete: !result.error && decodingError === null",
+        "    complete: !result.error && result.cleanup_complete && decodingError === null",
         "      && result.status !== null && result.signal === null,",
         "    truncated: result.error?.code === 'ENOBUFS',",
-        "    timed_out: result.error?.code === 'ETIMEDOUT', aborted: false,",
+        "    timed_out: result.timed_out, aborted: false,",
         "    error: decodingError ?? result.error?.message ?? null,",
         "  };",
         "  process.stdout.write(JSON.stringify(receipt));",
-        "  process.exitCode = decodingError !== null ? 1",
+        "  process.exitCode = result.error || !result.cleanup_complete || decodingError !== null ? 1",
         "    : Number.isInteger(result.status) ? result.status : 1;",
+        "})().catch(error => { process.stderr.write(String(error)); process.exitCode = 1; });",
     ];
     lines.extend(suffix.iter().map(|line| {
         line.replace("TIMEOUT", &options.timeout.to_string())

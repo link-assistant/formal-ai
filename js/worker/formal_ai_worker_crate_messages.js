@@ -31,7 +31,7 @@ function table() {
  * The template under `key` with `{name}` placeholders filled from `params`.
  * Throws for an unknown key: the file ships with the code, so a missing key
  * is a defect of this repository, not of a request.
- * Rust built-in `format!`: the Rust planner spells each sentence inline.
+ * Mirrors `fn agentic_message` in rust/src/seed/agentic_messages.rs.
  * @param {string} key
  * @param {Record<string, unknown>} [params]
  * @returns {string}

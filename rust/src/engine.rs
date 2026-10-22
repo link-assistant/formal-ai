@@ -666,6 +666,10 @@ pub(crate) fn hello_world_program_by_alias(normalized: &str) -> Option<ProgramSp
 }
 
 pub(crate) fn normalize_prompt(prompt: &str) -> String {
+    crate::agentic_coding::normalization_cache::normalized(prompt, normalize_prompt_uncached)
+}
+
+fn normalize_prompt_uncached(prompt: &str) -> String {
     let canonical: String = prompt
         .chars()
         .flat_map(char::to_lowercase)

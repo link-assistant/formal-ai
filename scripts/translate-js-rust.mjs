@@ -553,7 +553,7 @@ function fetchUpstream(commit) {
   rmSync(dir, { recursive: true, force: true });
   mkdirSync(dir, { recursive: true });
   const archive = join(dir, '..', `${commit}.tar.gz`);
-  execFileSync('curl', ['-fsSL', '-o', archive, `https://codeload.github.com/${UPSTREAM}/tar.gz/${commit}`], { stdio: 'inherit' });
+  execFileSync('curl', ['-fsSL', '--connect-timeout', '20', '--max-time', '120', '--retry', '2', '--retry-max-time', '240', '-o', archive, `https://codeload.github.com/${UPSTREAM}/tar.gz/${commit}`], { stdio: 'inherit' });
   execFileSync('tar', ['-xzf', archive, '-C', dir, '--strip-components=1'], { stdio: 'inherit' });
   rmSync(archive, { force: true });
   execFileSync('npm', ['ci', '--prefix', join(dir, 'js'), '--omit=dev', '--ignore-scripts', '--no-audit', '--no-fund'], { stdio: 'inherit' });

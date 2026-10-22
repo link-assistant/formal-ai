@@ -362,17 +362,26 @@ fn check_ratchet(
             .to_str()
             .ok_or("the ledger path is not valid UTF-8")?;
         let object = format!("{base_ref}:{ledger_path}");
-        let output = Command::new("git")
-            .args(["-C"])
-            .arg(repository_root)
-            .args(["show", &object])
-            .output()
-            .map_err(|error| {
-                vocabulary::render(
-                    "external_benchmark_baseline_read_error",
-                    &[("object", &object), ("error", &error.to_string())],
-                )
-            })?;
+        let output = formal_ai::bounded_process::command_output(
+            {
+                let mut bounded_child_command = Command::new("git");
+                bounded_child_command
+                    .args(["-C"])
+                    .arg(repository_root)
+                    .args(["show", &object]);
+                bounded_child_command
+            },
+            std::time::Duration::from_secs(30),
+            64 * 1024 * 1024,
+            16 * 1024 * 1024,
+        )
+        .map_err(|failure| std::io::Error::new(failure.kind(), failure))
+        .map_err(|error| {
+            vocabulary::render(
+                "external_benchmark_baseline_read_error",
+                &[("object", &object), ("error", &error.to_string())],
+            )
+        })?;
         let stderr = String::from_utf8_lossy(&output.stderr);
         let baseline_is_new = stderr.contains("does not exist in")
             || (stderr.contains("exists on disk, but not in") && stderr.contains(ledger_path));

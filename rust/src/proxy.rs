@@ -93,23 +93,27 @@ pub fn run_proxy(config: &ProxyConfig) -> io::Result<()> {
         config.log_path.display()
     );
 
-    for stream in listener.incoming() {
-        match stream {
-            Ok(stream) => {
-                let upstream = upstream.clone();
-                let logger = Arc::clone(&logger);
-                let log_bodies = config.log_bodies;
-                thread::spawn(move || {
+    let report_connection_error =
+        |error: &io::Error| crate::diagnostic!("error"; "proxy connection failed: {error}");
+    crate::bounded_retry::dispatch_incoming(
+        listener.incoming(),
+        |stream| {
+            let upstream = upstream.clone();
+            let logger = Arc::clone(&logger);
+            let log_bodies = config.log_bodies;
+            thread::Builder::new()
+                .spawn(move || {
                     if let Err(error) =
                         handle_proxy_connection(stream, &upstream, &logger, log_bodies)
                     {
                         crate::diagnostic!("error"; "proxy request failed: {error}");
                     }
-                });
-            }
-            Err(error) => crate::diagnostic!("error"; "proxy connection failed: {error}"),
-        }
-    }
+                })
+                .map(drop)
+        },
+        report_connection_error,
+        report_connection_error,
+    )?;
 
     Ok(())
 }

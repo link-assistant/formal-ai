@@ -405,7 +405,8 @@ impl<'a> AuthoringRun<'a> {
         if let Some(parent) = self.server_binary.parent() {
             path_env = format!("{}:{}", parent.display(), path_env);
         }
-        let agent_status = Command::new(&agent_binary)
+        let mut agent_command = Command::new(&agent_binary);
+        agent_command
             .current_dir(&self.work.path)
             .args([
                 "--model",
@@ -425,8 +426,9 @@ impl<'a> AuthoringRun<'a> {
             .env("FORMAL_AI_API_KEY", "local")
             .env("LINK_ASSISTANT_AGENT_CONFIG_CONTENT", &agent_config)
             .stdout(Stdio::from(raw_stream))
-            .stderr(Stdio::from(agent_stderr))
-            .status()?;
+            .stderr(Stdio::from(agent_stderr));
+        let agent_status =
+            crate::bounded_process::command_status(agent_command, Duration::from_mins(21))?;
         if !agent_status.success() {
             return Err(format!("the Agent CLI exited {agent_status}").into());
         }
@@ -440,10 +442,12 @@ impl<'a> AuthoringRun<'a> {
         // The classifier is a bash script (its `#!/usr/bin/env bash` shebang and
         // its `[[ ]]` / `(( ))` dialect say so), so it must run under bash: the
         // ubuntu runner's `/bin/sh` is dash, which cannot parse either form.
-        let classification = Command::new("bash")
+        let mut classifier_command = Command::new("bash");
+        classifier_command
             .arg(&classifier)
-            .arg(self.evidence.join("agent-stderr.log"))
-            .status()?;
+            .arg(self.evidence.join("agent-stderr.log"));
+        let classification =
+            crate::bounded_process::command_status(classifier_command, Duration::from_secs(30))?;
         if !classification.success() {
             return Err("the Agent CLI stderr classified as a known fatal class".into());
         }
@@ -576,13 +580,15 @@ impl<'a> AuthoringRun<'a> {
             add.arg(destination);
         }
         add.arg(&self.evidence_relative);
-        if !add.status()?.success() {
+        if !crate::bounded_process::command_status(add, Duration::from_secs(30))?.success() {
             return Err("git add failed for the authored artifacts".into());
         }
-        let reproduced = Command::new("git")
+        let mut diff_command = Command::new("git");
+        diff_command
             .current_dir(&self.repository)
-            .args(["diff", "--cached", "--quiet"])
-            .status()?;
+            .args(["diff", "--cached", "--quiet"]);
+        let reproduced =
+            crate::bounded_process::command_status(diff_command, Duration::from_secs(30))?;
         if reproduced.success() {
             return Err("the run reproduced the committed bytes; nothing to author".into());
         }
@@ -594,17 +600,39 @@ impl<'a> AuthoringRun<'a> {
             "Formal-AI-Session: {session_marker}\nFormal-AI-Model: {model}\nFormal-AI-Evidence: {evidence_relative}\nFormal-AI-Pull-Request: {pull_request}\n"
         );
         let commit_message = format!("{}\n\n{trailers}", self.message);
-        let commit = Command::new("git")
-            .current_dir(&self.repository)
-            .args(["commit", "--quiet", "-m", &self.message, "-m", &trailers])
-            .status()?;
+        let mut commit_command = Command::new("git");
+        commit_command.current_dir(&self.repository).args([
+            "commit",
+            "--quiet",
+            "-m",
+            &self.message,
+            "-m",
+            &trailers,
+        ]);
+        let commit =
+            crate::bounded_process::command_status(commit_command, Duration::from_mins(5))?;
         if !commit.success() {
             return Err("git commit failed for the authored change".into());
         }
-        let _ = Command::new("git")
-            .current_dir(&self.repository)
-            .args(["--no-pager", "log", "-1", "--format=%h %s%n%b"])
-            .status()?;
+        let mut log_command = Command::new("git");
+        log_command.current_dir(&self.repository).args([
+            "--no-pager",
+            "log",
+            "-1",
+            "--format=%h %s%n%b",
+        ]);
+        // Capture the display command before printing: inherited child stdout
+        // bypasses libtest's capture and can split another test's result line.
+        let log = crate::bounded_process::command_output(
+            log_command,
+            Duration::from_secs(30),
+            1024 * 1024,
+            64 * 1024,
+        )?;
+        let stdout = String::from_utf8_lossy(&log.stdout);
+        let stderr = String::from_utf8_lossy(&log.stderr);
+        print!("{stdout}");
+        eprint!("{stderr}");
         self.committed = true;
         self.commit_message = commit_message;
         Ok(StageStatus::Requested)
@@ -647,7 +675,6 @@ struct ServerGuard(Child);
 
 impl Drop for ServerGuard {
     fn drop(&mut self) {
-        let _ = self.0.kill();
-        let _ = self.0.wait();
+        let _ = crate::bounded_process::stop_child(&mut self.0, Duration::from_millis(250));
     }
 }

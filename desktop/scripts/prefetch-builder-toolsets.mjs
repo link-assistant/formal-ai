@@ -285,6 +285,10 @@ export async function downloadWithRetry(url, destination, options = {}) {
     expectedSha256,
     log = () => {},
   } = options;
+  if (!Number.isSafeInteger(attempts) || attempts < 1 || attempts > 8) throw new RangeError('attempts must be an integer within 1..8');
+  for (const [name, value] of Object.entries({retryDelayMs, stallTimeoutMs, totalTimeoutMs})) {
+    if (!Number.isSafeInteger(value) || value < (name === 'retryDelayMs' ? 0 : 1) || value > (name === 'retryDelayMs' ? 60000 : 900000)) throw new RangeError(`${name} must be a finite bounded duration`);
+  }
   let lastError = null;
   for (let attempt = 1; attempt <= attempts; attempt++) {
     try {

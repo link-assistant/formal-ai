@@ -730,6 +730,9 @@ pub fn repair_step(
     ladder_rung: u8,
     max_rungs: u8,
 ) -> RepairOutcome {
+    if let Some(plan) = super::git_push_recovery::recover(messages, tool_names, failure) {
+        return RepairOutcome::Retry(plan);
+    }
     if ladder_rung >= max_rungs {
         return RepairOutcome::Stop(RepairStop::Exhausted);
     }
@@ -739,6 +742,9 @@ pub fn repair_step(
     };
     let progress = Progress::scan(messages);
     if progress.search_output.is_none() {
+        if progress.done(Capability::Search) {
+            return RepairOutcome::Stop(RepairStop::NoMatch);
+        }
         let Some(tool) = tool_for(tool_names, Capability::Search) else {
             return RepairOutcome::Stop(RepairStop::NoTools);
         };

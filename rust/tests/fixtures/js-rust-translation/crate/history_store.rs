@@ -1,10 +1,18 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=a618022402f8306a371a9d4a9fed5826e2ea8cdd6cd3b35d28e325d4139147db bytes=13585
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=322f3f27a636a82eeda4b86310fd6784c0ca3057d65af52fc3ec7c5f802ce8f2 bytes=14361
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=5
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
@@ -43,7 +51,7 @@ pub const LOCAL_REPOSITORY: &str = "local-repository";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal destructured parameter
-// formal-ai:blockers JSDoc type {…} | arrow callback of .filter() | arrow callback of .map() | arrow function | bitwise operator | field access | method call .dirname() | method call .execFileSync() | method call .existsSync() | method call .filter() | method call .isDirectory() | method call .join() | method call .map() | method call .mkdirSync() | method call .readFileSync() | method call .readdirSync() | method call .writeFileSync() | null | object spread | object without a $ tag | typeof operator
+// formal-ai:blockers JSDoc type {…} | arrow callback of .filter() | arrow callback of .map() | arrow function | field access | method call .dirname() | method call .existsSync() | method call .filter() | method call .isDirectory() | method call .join() | method call .map() | method call .mkdirSync() | method call .readFileSync() | method call .readdirSync() | method call .writeFileSync() | null | object spread | object without a $ tag | optional chaining | typeof operator | undefined
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal rest parameter
@@ -59,7 +67,7 @@ pub const LOCAL_REPOSITORY: &str = "local-repository";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | call of a sibling function | method call .filter() | method call .map() | method call .split() | null
+// formal-ai:blockers call of a sibling function | imported value | method call .filter() | method call .map() | method call .split() | null
 
 // meta-language:carried JavaScript function_declaration (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
@@ -123,7 +131,7 @@ pub const LOCAL_REPOSITORY: &str = "local-repository";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal nullish coalescing
-// formal-ai:blockers arrow callback of .filter() | call of a sibling function | method call .filter() | method call .slice() | method call .split() | nullish coalescing | regular expression
+// formal-ai:blockers call of a sibling function | imported value | method call .filter() | method call .slice() | method call .split() | nullish coalescing | regular expression
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag

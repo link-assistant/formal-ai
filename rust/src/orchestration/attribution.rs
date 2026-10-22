@@ -187,13 +187,22 @@ where
         .into_iter()
         .map(|argument| argument.as_ref().to_os_string())
         .collect::<Vec<_>>();
-    let output = Command::new("git")
-        .arg("-C")
-        .arg(workspace)
-        .args(&arguments)
-        .env("GIT_LITERAL_PATHSPECS", "1")
-        .output()
-        .map_err(|error| attribution_error(format!("git_process:{error}")))?;
+    let output = crate::bounded_process::command_output(
+        {
+            let mut bounded_child_command = Command::new("git");
+            bounded_child_command
+                .arg("-C")
+                .arg(workspace)
+                .args(&arguments)
+                .env("GIT_LITERAL_PATHSPECS", "1");
+            bounded_child_command
+        },
+        std::time::Duration::from_secs(600),
+        64 * 1024 * 1024,
+        16 * 1024 * 1024,
+    )
+    .map_err(|failure| std::io::Error::new(failure.kind(), failure))
+    .map_err(|error| attribution_error(format!("git_process:{error}")))?;
     if !output.status.success() {
         let command = arguments
             .iter()

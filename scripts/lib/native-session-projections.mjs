@@ -1,12 +1,21 @@
 import assert from 'node:assert/strict';
+import {isAuthenticatedProjectionSource} from './native-session-source.mjs';
 import {createHash} from 'node:crypto';
 import {readFileSync,lstatSync,readdirSync} from 'node:fs';
 import {join} from 'node:path';
 export const digest = bytes => createHash('sha256').update(bytes).digest('hex');
 /** A dispatch selector is not a source selection without authenticated head/base/merge binding. */
-export function validateProjectionSelector(environment) {
+export function validateProjectionSelector(environment, proof) {
   const requested = environment.NATIVE_SESSION_REQUESTED_PULL_REQUEST ?? '';
   assert.equal(typeof requested, 'string', 'native session PR selector must be a string');
+  if (requested !== '' && isAuthenticatedProjectionSource(proof)) {
+    assert.equal(proof.requestedPullRequest, requested);
+    assert.equal(proof.repository, environment.GITHUB_REPOSITORY);
+    assert.equal(proof.commit, environment.GITHUB_SHA);
+    assert.equal(proof.run, environment.GITHUB_RUN_ID);
+    assert.equal(proof.attempt, environment.GITHUB_RUN_ATTEMPT);
+    return proof;
+  }
   assert.equal(requested, '', 'requested pull-request projection source is unsupported without authenticated merge selection');
   return Object.freeze({requestedPullRequest: null, selection: 'exact workflow checkout only'});
 }

@@ -29,6 +29,8 @@
 #                                   at a stand-in
 #   FORMAL_AI_APT_PRIVILEGE         privilege escalation prefix (sudo); empty
 #                                   when already root, as tests are
+#   FORMAL_AI_APT_OFFICIAL_MIRROR_FALLBACK  1 opts into the second-attempt alternate
+#   FORMAL_AI_APT_MIRROR_LIST       regular mirror-list fixture or runner path
 set -euo pipefail
 
 # The per-attempt deadline is `scripts/run-with-deadline.sh`, not GNU `timeout`:
@@ -51,6 +53,15 @@ budget_seconds="${TEST_BUDGET_SECONDS:-}"
 apt_get="${FORMAL_AI_APT_GET:-apt-get}"
 privilege="${FORMAL_AI_APT_PRIVILEGE-sudo}"
 packages="$*"
+
+# Opted-in Ubuntu callers may use the existing second attempt on the official
+# alternate after a process deadline. Other callers keep their original sources.
+mirror_fallback="${FORMAL_AI_APT_OFFICIAL_MIRROR_FALLBACK:-0}"
+mirror_list="${FORMAL_AI_APT_MIRROR_LIST:-/etc/apt/apt-mirrors.txt}"
+[[ "$mirror_fallback" = 0 || "$mirror_fallback" = 1 ]] || {
+  echo "official Ubuntu mirror fallback must be 0 or 1" >&2
+  exit 2
+}
 
 for name in FORMAL_AI_APT_ATTEMPTS:$attempts \
   FORMAL_AI_APT_ATTEMPT_SECONDS:$attempt_seconds \
@@ -81,6 +92,10 @@ fi
 status=0
 for ((attempt = 1; attempt <= attempts; attempt++)); do
   started=$SECONDS
+  use_alternate=0
+  if [ "$mirror_fallback" = 1 ] && [ "$attempt" -eq 2 ] && [ "$status" -eq 124 ]; then
+    use_alternate=1
+  fi
   # The deadline runs *inside* the privilege escalation so it signals apt-get
   # itself; killing an unprivileged parent would leave root's apt holding the
   # dpkg lock and fail every remaining attempt with a lock error instead of the
@@ -89,9 +104,41 @@ for ((attempt = 1; attempt <= attempts; attempt++)); do
   attempt_command=(
     "$deadline" "$attempt_seconds" bash -c '
       set -e
+      use_alternate="$1"; mirror_list="$2"; shift 2
+      if [ "$use_alternate" = 1 ]; then
+        [[ "$mirror_list" =~ ^/[A-Za-z0-9_./-]+/apt-mirrors\.txt$ ]] &&
+          [ -f "$mirror_list" ] && [ ! -L "$mirror_list" ] && [ -O "$mirror_list" ] || {
+          echo "official Ubuntu mirror list is absent or not a regular owned path" >&2; exit 2;
+        }
+        physical="$(cd -P -- "$(dirname -- "$mirror_list")" && pwd)/apt-mirrors.txt"
+        [ "$physical" = "$mirror_list" ] && [ "$(wc -c < "$mirror_list")" -le 65536 ] || {
+          echo "official Ubuntu mirror list path or size is unsupported" >&2; exit 2;
+        }
+        [ "$(tail -c 1 "$mirror_list" | wc -l)" -eq 1 ] || {
+          echo "official Ubuntu mirror list must end with a newline" >&2; exit 2;
+        }
+        original="$(mktemp "${mirror_list}.before.XXXXXX")"
+        staged=""
+        trap '\''rm -f -- "$original" "${staged:-}"'\'' EXIT
+        cp -p -- "$mirror_list" "$original"
+        staged="$(mktemp "${mirror_list}.next.XXXXXX")"
+        cp -p -- "$original" "$staged"
+        # Match one exact URI token, preserving priorities, comments and all
+        # other hosts. APT still verifies the unchanged signed catalog/hashes.
+        awk '\''$1 == "http://azure.archive.ubuntu.com/ubuntu" || $1 == "http://azure.archive.ubuntu.com/ubuntu/" {
+          sub(/http:\/\/azure\.archive\.ubuntu\.com\/ubuntu/, "https://archive.ubuntu.com/ubuntu")
+        } { print }'\'' "$original" > "$staged"
+        [ ! -L "$mirror_list" ] && cmp -s -- "$mirror_list" "$original" || {
+          echo "official Ubuntu mirror list changed during preparation" >&2; exit 2;
+        }
+        if ! cmp -s -- "$original" "$staged"; then
+          mv -- "$staged" "$mirror_list"
+          echo "Using official Ubuntu archive HTTPS alternate on existing attempt 2."
+        fi
+      fi
       "$0" -o DPkg::Lock::Timeout=60 update -q
       "$0" -o DPkg::Lock::Timeout=60 install -y -q "$@"
-    ' "$apt_get" "$@"
+    ' "$apt_get" "$use_alternate" "$mirror_list" "$@"
   )
   [ -z "$privilege" ] || attempt_command=("$privilege" "${attempt_command[@]}")
 

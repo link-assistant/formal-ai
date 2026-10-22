@@ -111,13 +111,22 @@ fn serve_startup_wires_the_dreaming_worker_and_requests_guard_the_idle_clock() {
     let serve_body = transport
         .split("pub fn serve(")
         .nth(1)
-        .expect("serve() exists");
+        .expect("serve() exists")
+        .split("\n}\n")
+        .next()
+        .expect("serve() body exists");
+    let dreaming_start = serve_body
+        .find("dreaming_runtime::start_core_dreaming()")
+        .expect("serve() starts the core dreaming worker");
+    let listener_bind = serve_body
+        .find("TcpListener::bind(")
+        .expect("serve() owns the listening socket");
+    let first_accept = serve_body
+        .find("listener.accept()")
+        .expect("serve() accepts connections");
     assert!(
-        serve_body
-            .lines()
-            .take(3)
-            .any(|line| line.contains("dreaming_runtime::start_core_dreaming()")),
-        "serve() must start the core dreaming worker before accepting connections"
+        dreaming_start < listener_bind && listener_bind < first_accept,
+        "serve() must start the core dreaming worker before binding or accepting connections"
     );
     assert!(
         server.contains("ForegroundActivity::begin()"),

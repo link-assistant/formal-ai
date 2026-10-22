@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=e0981d77f0dc717ca123e173237ad2e2f3d79ddb9e4b2aea0f8244970f1d0b87 bytes=9704
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=c0d8751e60a81ae5c680643e924c2062e948186e8cef71b32a60c358afa6c0d5 bytes=7957
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=2
 
@@ -52,39 +52,43 @@
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
-// formal-ai:blockers Array.isArray | JSDoc type {…} | JSON.parse | Object.keys | arrow callback of .some() | assignment of a field or element | call of a sibling function | call of an imported function | field access | let without a value | method call .some() | null | object without a $ tag | try statement | typeof operator | undefined
+// formal-ai:blockers JSDoc type {…} | JSON.parse | Object.keys | call of a sibling function | call of an imported function | field access | let without a value | null | try statement | undefined
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal Array.isArray
+// formal-ai:blockers Object.create | Object.keys | arrow callback of .map() | arrow callback of .some() | assignment of a field or element | call of a sibling function | field access | method call .isArray() | method call .map() | method call .some() | null | typeof operator | undefined
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal undefined
 // formal-ai:blockers call of a sibling function | field access | undefined
 
-// meta-language:translated JavaScript lexical_declaration items=1 sha256=27de87701f704d8b6b17c4da1dc771256a745224312d6dd0a0e518e92c8bca4d
+// meta-language:translated JavaScript lexical_declaration items=1 sha256=b85977188f5d0ef9ae5c1c8d4bf1f7fe325e5e48aa95b2ceba8d6b691ee45cae
 // | const ALIASES = [
 // |   [['path', 'filePath', 'file_path', 'absolute_path'], ['path', 'filePath', 'file_path', 'absolute_path']],
 // |   [['command', 'cmd'], ['command', 'cmd']],
-// |   [['query', 'pattern'], ['query', 'pattern']],
+// |   [['query', 'pattern', 'input'], ['query', 'pattern', 'input']],
 // |   [['paths', 'file_paths', 'files'], ['paths', 'file_paths', 'files']],
 // |   [['old', 'oldString', 'old_string', 'old_str'], ['old', 'oldString', 'old_string', 'old_str']],
 // |   [['new', 'newString', 'new_string', 'new_str'], ['new', 'newString', 'new_string', 'new_str']],
 // | ];
-// formal-ai:presentation:v1 rawSHA256=27de87701f704d8b6b17c4da1dc771256a745224312d6dd0a0e518e92c8bca4d rawBytes=1159 renderedSHA256=433dad851ee3d9cf5dda8a50e9fd8df1d799ddd19199519a5f2d422b1fd29ef3
+// formal-ai:presentation:v1 rawSHA256=b85977188f5d0ef9ae5c1c8d4bf1f7fe325e5e48aa95b2ceba8d6b691ee45cae rawBytes=1205 renderedSHA256=ef237f935fc5131563ddfc68f06e86932c1239ca73199705406cf54043e6ff0a
 // formal-ai:presentation-raw cHViIHN0YXRpYyBBTElBU0VTOiBzdGQ6OnN5bmM6OkxhenlMb2NrPFZlYzxWZWM8VmVjPFN0cmluZz4+Pj4gPSBzdGQ6OnN5
 // formal-ai:presentation-raw bmM6OkxhenlMb2NrOjpuZXcofHwgdmVjIVt2ZWMhW3ZlYyFbU3RyaW5nOjpmcm9tKCJwYXRoIiksIFN0cmluZzo6ZnJvbSgi
 // formal-ai:presentation-raw ZmlsZVBhdGgiKSwgU3RyaW5nOjpmcm9tKCJmaWxlX3BhdGgiKSwgU3RyaW5nOjpmcm9tKCJhYnNvbHV0ZV9wYXRoIildLCB2
 // formal-ai:presentation-raw ZWMhW1N0cmluZzo6ZnJvbSgicGF0aCIpLCBTdHJpbmc6OmZyb20oImZpbGVQYXRoIiksIFN0cmluZzo6ZnJvbSgiZmlsZV9w
 // formal-ai:presentation-raw YXRoIiksIFN0cmluZzo6ZnJvbSgiYWJzb2x1dGVfcGF0aCIpXV0sIHZlYyFbdmVjIVtTdHJpbmc6OmZyb20oImNvbW1hbmQi
 // formal-ai:presentation-raw KSwgU3RyaW5nOjpmcm9tKCJjbWQiKV0sIHZlYyFbU3RyaW5nOjpmcm9tKCJjb21tYW5kIiksIFN0cmluZzo6ZnJvbSgiY21k
-// formal-ai:presentation-raw IildXSwgdmVjIVt2ZWMhW1N0cmluZzo6ZnJvbSgicXVlcnkiKSwgU3RyaW5nOjpmcm9tKCJwYXR0ZXJuIildLCB2ZWMhW1N0
-// formal-ai:presentation-raw cmluZzo6ZnJvbSgicXVlcnkiKSwgU3RyaW5nOjpmcm9tKCJwYXR0ZXJuIildXSwgdmVjIVt2ZWMhW1N0cmluZzo6ZnJvbSgi
-// formal-ai:presentation-raw cGF0aHMiKSwgU3RyaW5nOjpmcm9tKCJmaWxlX3BhdGhzIiksIFN0cmluZzo6ZnJvbSgiZmlsZXMiKV0sIHZlYyFbU3RyaW5n
-// formal-ai:presentation-raw Ojpmcm9tKCJwYXRocyIpLCBTdHJpbmc6OmZyb20oImZpbGVfcGF0aHMiKSwgU3RyaW5nOjpmcm9tKCJmaWxlcyIpXV0sIHZl
-// formal-ai:presentation-raw YyFbdmVjIVtTdHJpbmc6OmZyb20oIm9sZCIpLCBTdHJpbmc6OmZyb20oIm9sZFN0cmluZyIpLCBTdHJpbmc6OmZyb20oIm9s
-// formal-ai:presentation-raw ZF9zdHJpbmciKSwgU3RyaW5nOjpmcm9tKCJvbGRfc3RyIildLCB2ZWMhW1N0cmluZzo6ZnJvbSgib2xkIiksIFN0cmluZzo6
-// formal-ai:presentation-raw ZnJvbSgib2xkU3RyaW5nIiksIFN0cmluZzo6ZnJvbSgib2xkX3N0cmluZyIpLCBTdHJpbmc6OmZyb20oIm9sZF9zdHIiKV1d
-// formal-ai:presentation-raw LCB2ZWMhW3ZlYyFbU3RyaW5nOjpmcm9tKCJuZXciKSwgU3RyaW5nOjpmcm9tKCJuZXdTdHJpbmciKSwgU3RyaW5nOjpmcm9t
-// formal-ai:presentation-raw KCJuZXdfc3RyaW5nIiksIFN0cmluZzo6ZnJvbSgibmV3X3N0ciIpXSwgdmVjIVtTdHJpbmc6OmZyb20oIm5ldyIpLCBTdHJp
-// formal-ai:presentation-raw bmc6OmZyb20oIm5ld1N0cmluZyIpLCBTdHJpbmc6OmZyb20oIm5ld19zdHJpbmciKSwgU3RyaW5nOjpmcm9tKCJuZXdfc3Ry
-// formal-ai:presentation-raw IildXV0pOw==
+// formal-ai:presentation-raw IildXSwgdmVjIVt2ZWMhW1N0cmluZzo6ZnJvbSgicXVlcnkiKSwgU3RyaW5nOjpmcm9tKCJwYXR0ZXJuIiksIFN0cmluZzo6
+// formal-ai:presentation-raw ZnJvbSgiaW5wdXQiKV0sIHZlYyFbU3RyaW5nOjpmcm9tKCJxdWVyeSIpLCBTdHJpbmc6OmZyb20oInBhdHRlcm4iKSwgU3Ry
+// formal-ai:presentation-raw aW5nOjpmcm9tKCJpbnB1dCIpXV0sIHZlYyFbdmVjIVtTdHJpbmc6OmZyb20oInBhdGhzIiksIFN0cmluZzo6ZnJvbSgiZmls
+// formal-ai:presentation-raw ZV9wYXRocyIpLCBTdHJpbmc6OmZyb20oImZpbGVzIildLCB2ZWMhW1N0cmluZzo6ZnJvbSgicGF0aHMiKSwgU3RyaW5nOjpm
+// formal-ai:presentation-raw cm9tKCJmaWxlX3BhdGhzIiksIFN0cmluZzo6ZnJvbSgiZmlsZXMiKV1dLCB2ZWMhW3ZlYyFbU3RyaW5nOjpmcm9tKCJvbGQi
+// formal-ai:presentation-raw KSwgU3RyaW5nOjpmcm9tKCJvbGRTdHJpbmciKSwgU3RyaW5nOjpmcm9tKCJvbGRfc3RyaW5nIiksIFN0cmluZzo6ZnJvbSgi
+// formal-ai:presentation-raw b2xkX3N0ciIpXSwgdmVjIVtTdHJpbmc6OmZyb20oIm9sZCIpLCBTdHJpbmc6OmZyb20oIm9sZFN0cmluZyIpLCBTdHJpbmc6
+// formal-ai:presentation-raw OmZyb20oIm9sZF9zdHJpbmciKSwgU3RyaW5nOjpmcm9tKCJvbGRfc3RyIildXSwgdmVjIVt2ZWMhW1N0cmluZzo6ZnJvbSgi
+// formal-ai:presentation-raw bmV3IiksIFN0cmluZzo6ZnJvbSgibmV3U3RyaW5nIiksIFN0cmluZzo6ZnJvbSgibmV3X3N0cmluZyIpLCBTdHJpbmc6OmZy
+// formal-ai:presentation-raw b20oIm5ld19zdHIiKV0sIHZlYyFbU3RyaW5nOjpmcm9tKCJuZXciKSwgU3RyaW5nOjpmcm9tKCJuZXdTdHJpbmciKSwgU3Ry
+// formal-ai:presentation-raw aW5nOjpmcm9tKCJuZXdfc3RyaW5nIiksIFN0cmluZzo6ZnJvbSgibmV3X3N0ciIpXV1dKTs=
 // formal-ai:presentation-raw end
 pub static ALIASES: std::sync::LazyLock<Vec<Vec<Vec<String>>>> = std::sync::LazyLock::new(||
     vec![vec![vec![String::from("path"),
@@ -100,9 +104,11 @@ pub static ALIASES: std::sync::LazyLock<Vec<Vec<Vec<String>>>> = std::sync::Lazy
     vec![String::from("command"),
     String::from("cmd")]],
     vec![vec![String::from("query"),
-    String::from("pattern")],
+    String::from("pattern"),
+    String::from("input")],
     vec![String::from("query"),
-    String::from("pattern")]],
+    String::from("pattern"),
+    String::from("input")]],
     vec![vec![String::from("paths"),
     String::from("file_paths"),
     String::from("files")],
@@ -200,33 +206,22 @@ pub static CONTENT_PROPERTIES: std::sync::LazyLock<Vec<String>> = std::sync::Laz
 // formal-ai:refusal arrow function
 // formal-ai:blockers CONTENT_PROPERTIES.some | arrow callback of .some() | call of a sibling function
 
-// meta-language:carried JavaScript function_declaration (unsupported)
-// formal-ai:refusal nullish coalescing
-// formal-ai:blockers Array.isArray | call of a sibling function | call of an imported function | field access | nullish coalescing | undefined
-
-// meta-language:translated JavaScript lexical_declaration items=1 sha256=abf836d03d47e1dc3f522b2bca213dd7262d3760c70b2e8f7073d0409df16887
-// | const FREE_TEXT = ['prompt', 'instruction', 'message', 'commit_message', 'commitMessage'];
-// formal-ai:presentation:v1 rawSHA256=abf836d03d47e1dc3f522b2bca213dd7262d3760c70b2e8f7073d0409df16887 rawBytes=232 renderedSHA256=bea30cd78af924923dcda5d8110f10b146ebf5ccf517c3113ee0c2b59125675c
+// meta-language:translated JavaScript lexical_declaration items=1 sha256=5c3468f8eeed10ba042a267c856f04155f175f1df69f93be1d393f44738ed2d5
+// | const FREE_TEXT = ['prompt', 'instruction', 'message', 'description', 'commit_message', 'commitMessage'];
+// formal-ai:presentation:v1 rawSHA256=5c3468f8eeed10ba042a267c856f04155f175f1df69f93be1d393f44738ed2d5 rawBytes=261 renderedSHA256=008c300a39664f8219366458f4f5a3abc738ae715abfdca93bb22b1099c0ba3b
 // formal-ai:presentation-raw cHViIHN0YXRpYyBGUkVFX1RFWFQ6IHN0ZDo6c3luYzo6TGF6eUxvY2s8VmVjPFN0cmluZz4+ID0gc3RkOjpzeW5jOjpMYXp5
 // formal-ai:presentation-raw TG9jazo6bmV3KHx8IHZlYyFbU3RyaW5nOjpmcm9tKCJwcm9tcHQiKSwgU3RyaW5nOjpmcm9tKCJpbnN0cnVjdGlvbiIpLCBT
-// formal-ai:presentation-raw dHJpbmc6OmZyb20oIm1lc3NhZ2UiKSwgU3RyaW5nOjpmcm9tKCJjb21taXRfbWVzc2FnZSIpLCBTdHJpbmc6OmZyb20oImNv
-// formal-ai:presentation-raw bW1pdE1lc3NhZ2UiKV0pOw==
+// formal-ai:presentation-raw dHJpbmc6OmZyb20oIm1lc3NhZ2UiKSwgU3RyaW5nOjpmcm9tKCJkZXNjcmlwdGlvbiIpLCBTdHJpbmc6OmZyb20oImNvbW1p
+// formal-ai:presentation-raw dF9tZXNzYWdlIiksIFN0cmluZzo6ZnJvbSgiY29tbWl0TWVzc2FnZSIpXSk7
 // formal-ai:presentation-raw end
 pub static FREE_TEXT: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(||
     vec![String::from("prompt"),
     String::from("instruction"),
     String::from("message"),
+    String::from("description"),
     String::from("commit_message"),
     String::from("commitMessage")]);
 
 // meta-language:carried JavaScript function_declaration (unsupported)
-// formal-ai:refusal Array.isArray
-// formal-ai:blockers Array.isArray | FREE_TEXT.includes | call of a sibling function | field access | null | object without a $ tag | undefined
-
-// meta-language:carried JavaScript function_declaration (type)
-// formal-ai:refusal type: unknown name (a sibling item or an import)
-// formal-ai:blockers call of an imported function
-
-// meta-language:carried JavaScript function_declaration (unsupported)
-// formal-ai:refusal Array.isArray
-// formal-ai:blockers Array.isArray | arrow callback of .map() | arrow callback of .some() | assignment of a field or element | call of a sibling function | field access | method call .map() | method call .push() | method call .some() | null | object without a $ tag | typeof operator | undefined
+// formal-ai:refusal nullish coalescing
+// formal-ai:blockers Array.isArray | FREE_TEXT.includes | call of a sibling function | call of an imported function | field access | nullish coalescing | undefined

@@ -7,8 +7,7 @@
 //! the configured Sentry server; this is not a promise of network anonymity.
 
 use serde_json::json;
-use std::io::Write;
-use std::process::{Command, Stdio};
+use std::process::Command;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -234,49 +233,35 @@ pub struct CurlSentryTransport;
 impl TelemetryTransport for CurlSentryTransport {
     fn send(&mut self, target: &SentryTarget, envelope: &str) -> Result<(), TelemetryError> {
         let null_device = if cfg!(windows) { "NUL" } else { "/dev/null" };
-        let mut child = Command::new("curl")
-            .args([
-                "--silent",
-                "--fail",
-                "--max-time",
-                "15",
-                "--proto",
-                "=https",
-                "--request",
-                "POST",
-                "--header",
-                "Content-Type: application/x-sentry-envelope",
-                "--data-binary",
-                "@-",
-                "--output",
-                null_device,
-                "--write-out",
-                "%{http_code}",
-                "--",
-                target.endpoint(),
-            ])
-            .stdin(Stdio::piped())
-            .stdout(Stdio::piped())
-            .stderr(Stdio::null())
-            .spawn()
-            .map_err(|_| TelemetryError::Transport)?;
-        let written = child
-            .stdin
-            .take()
-            .ok_or(TelemetryError::Transport)
-            .and_then(|mut stdin| {
-                stdin
-                    .write_all(envelope.as_bytes())
-                    .map_err(|_| TelemetryError::Transport)
-            });
-        if written.is_err() {
-            let _ = child.kill();
-            let _ = child.wait();
-            return Err(TelemetryError::Transport);
-        }
-        let output = child
-            .wait_with_output()
-            .map_err(|_| TelemetryError::Transport)?;
+        let mut command = Command::new("curl");
+        command.args([
+            "--silent",
+            "--fail",
+            "--max-time",
+            "15",
+            "--proto",
+            "=https",
+            "--request",
+            "POST",
+            "--header",
+            "Content-Type: application/x-sentry-envelope",
+            "--data-binary",
+            "@-",
+            "--output",
+            null_device,
+            "--write-out",
+            "%{http_code}",
+            "--",
+            target.endpoint(),
+        ]);
+        let output = crate::bounded_process::command_output_with_input(
+            command,
+            envelope.as_bytes().to_vec(),
+            std::time::Duration::from_secs(15),
+            4096,
+            4096,
+        )
+        .map_err(|_| TelemetryError::Transport)?;
         let status = std::str::from_utf8(&output.stdout)
             .ok()
             .and_then(|value| value.parse::<u16>().ok());

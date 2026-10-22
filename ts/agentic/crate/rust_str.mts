@@ -42,8 +42,17 @@ export const utf8Len = (text) => new TextEncoder().encode(text).length;
 /** `str::chars().count()`. */
 export const charCount = (text) => Array.from(text).length;
 
+/**
+ * `str::to_lowercase`.
+ * @param {string} text
+ * @returns {string}
+ */
+export function lower(text) {
+  return text.toLowerCase();
+}
+
 /** `str::to_ascii_lowercase`. */
-export const toAsciiLowercase = (text) => text.replace(/[A-Z]/g, (letter) => letter.toLowerCase());
+export const toAsciiLowercase = (text) => text.replace(/[A-Z]/g, lower);
 
 /** `str::eq_ignore_ascii_case`. */
 export const eqIgnoreAsciiCase = (left, right) => toAsciiLowercase(left) === toAsciiLowercase(right);

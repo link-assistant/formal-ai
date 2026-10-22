@@ -60,6 +60,10 @@ fn append_item(
                 .and_then(Value::as_str)
                 .unwrap_or_default()
                 .to_owned();
+            let name = crate::protocol_policy::qualify_tool_name(
+                item.get("namespace").and_then(Value::as_str),
+                &name,
+            );
             // Most clients send `arguments` as a JSON-encoded string, but a
             // replayed transcript can carry the decoded object itself (the
             // Codex `exec_command` record of issue #1154). Dropping it to
@@ -82,9 +86,13 @@ fn append_item(
                 .and_then(Value::as_str)
                 .unwrap_or_default()
                 .to_owned();
-            let output = item
-                .get("output")
-                .map_or_else(String::new, value_to_prompt_text);
+            let output = item.get("output").map_or_else(String::new, |value| {
+                if value.is_object() {
+                    value.to_string()
+                } else {
+                    value_to_prompt_text(value)
+                }
+            });
             let name = tool_names_by_id.get(&call_id).cloned();
             let is_error = item
                 .get("is_error")

@@ -1,10 +1,14 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=b2cb566d102dda4f74a7704c2adcfad5f9b8b2932c901dcdeedf1fb1e388a4f9 bytes=5195
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=f12f7d485929c6f5de3079750b91a92db1c13bf1b20888a255613afefff62332 bytes=5269
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=1
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
@@ -53,7 +57,7 @@ pub const SEED_REGISTRY: &str = "data/meta/seed-registry.lino";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .slice()
-// formal-ai:blockers arrow callback of .map() | call of a sibling function | global value Boolean | method call .filter() | method call .map() | method call .slice() | method call .split()
+// formal-ai:blockers call of a sibling function | global value Boolean | imported value | method call .filter() | method call .map() | method call .slice() | method call .split()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal Array.from

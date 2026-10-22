@@ -5,6 +5,7 @@
 // (rust/src/knowledge.rs) answered by the worker realm's twin
 // `codingOracleKnowsLanguage` behind the same seed `bootstrap` gate.
 
+import { lower as canonicalUnaryLower } from './rust_str.mjs';
 import { cached } from '../host.mjs';
 import { oracleKnowsLanguage } from './discovery_production.mjs';
 import { normalizePrompt } from './engine.mjs';
@@ -17,10 +18,10 @@ const prepositionSurfaces = () => cached('implementation-language-prepositions',
 const languageNounSurfaces = () => cached('implementation-language-nouns', () =>
   headInitialSurfaces('implementation_language_noun'));
 const functionWords = () => cached('statement-function-words', () =>
-  wordsForRole('statement_function_word').map((word) => word.toLowerCase()));
+  wordsForRole('statement_function_word').map(canonicalUnaryLower));
 
 function headInitialSurfaces(role) {
-  return wordsForRoleInLanguages(role, ['en', 'ru']).map((word) => word.toLowerCase());
+  return wordsForRoleInLanguages(role, ['en', 'ru']).map(canonicalUnaryLower);
 }
 
 const isPreposition = (token) => prepositionSurfaces().includes(token);

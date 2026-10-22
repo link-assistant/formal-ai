@@ -32,3 +32,16 @@ Authority: the owner's 2026-10-18 instructions while delivering PR #1234. These 
 The [source-model guide](../source-representation.md) records the architecture and acceptance distinctions. The [2026-10-18 architect note](../architect-notes/2026-10-18-readable-source-and-comment-meta-language.md) records the source and useful prior art. Documentation of this contract is delivered by these files; implementation acceptance requires the observations above.
 
 Canonical self-inspection writes `self-cst.lino`. Historical AST API names remain compatibility identifiers, not permission to substitute an inventory or histogram. Its independent CI oracle must reconstruct the persisted document, compare every source character including comments and whitespace with the selected current module, authenticate ownership and reparse concrete grammar. An expected node count or substring cannot establish acceptance. The original transport minimum, deadlines and refusal controls remain required. This content-fidelity witness does not discharge semantic/comment naturalization or multilingual/logic obligations.
+
+
+A qualified parameter-renaming implementation is now available through complete
+source models and an explicit persisted transformation contract. The natural
+planner observes a declaration-qualified request and actual source; the host
+checks tracked ownership, exact preimages and supported scopes, then retains full
+CSTs, rule and inverse. The same shared model handles hand-authored JavaScript,
+TypeScript and Rust facets. This finite alpha-transformation evidence does not
+close the broader semantic propagation, formal comment meaning, four-language
+documentation, dependent-probability, contradiction-repair or native planner
+requirements above. Unsupported effects and comment references remain explicit
+needs, not successful semantic proofs. Generated owners require their canonical
+generator rather than direct transformation.

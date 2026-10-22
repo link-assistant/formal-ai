@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=b25fb8210f62cdf57f1419efbf4ecec80e01084b887ac95fbd1c41c94d946f03 bytes=8951
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=25d034c1770ffe331d29dca42313685c0be580f72707a60e8a4c0df2ef701ecb bytes=9063
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds string-methods items=1
 
@@ -199,9 +199,22 @@ pub fn wa_strs_join(items: Vec<String>, separator: String) -> String {
 // formal-ai:refusal Array.from
 // formal-ai:blockers Array.from | arrow function
 
+// meta-language:translated JavaScript export_statement items=1 sha256=9a1c312a9ec28b94f04f6ee90314138562870e1811ace72708042f3ddf8d3ba3
+// | /**
+// |  * `str::to_lowercase`.
+// |  * @param {string} text
+// |  * @returns {string}
+// |  */
+// | export function lower(text) {
+// |   return text.toLowerCase();
+// | }
+pub fn lower(text: String) -> String {
+    text.to_lowercase()
+}
+
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .replace()
-// formal-ai:blockers arrow callback of .replace() | arrow function | method call .replace() | regular expression
+// formal-ai:blockers arrow function | method call .replace() | regular expression
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)

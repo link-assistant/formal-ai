@@ -1,0 +1,14 @@
+{
+  "schema": "captured-client-install-failure/v1",
+  "sourceLog": {
+    "run": "39732636164",
+    "job": "119672417632",
+    "bytes": 33279,
+    "sha256": "68225921c12e78984c8b22ed3d2a4c0e1133f35d5393712384e877843961f248"
+  },
+  "client": "@link-assistant/agent@0.26.0",
+  "stdout": "bun add v1.4.2 (744846f84)\n",
+  "stderr": "Resolving dependencies\nResolved, downloaded and extracted [1950]\nerror: GET https://registry.npmjs.org/vscode-languageserver-types/-/vscode-languageserver-types-3.18.5.tgz - 404\n",
+  "qualification": "Selected public package diagnostic only; original complete mixed log retained privately. No credentials, task or model content. Official later metadata/HEAD200 is independently retained by root; not an observed install recovery.",
+  "streamAttribution": "Reconstructed from mixed hosted job log; classifier examines both streams, not an independent raw-stream capture."
+}

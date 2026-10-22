@@ -597,11 +597,5 @@ fn decision_slug(decision: &RecoveryDecision) -> String {
     }
 }
 
-fn quote(value: &str) -> String {
-    value
-        .replace('\\', "\\\\")
-        .replace('"', "\\\"")
-        .replace('\n', "\\n")
-        .replace('\r', "\\r")
-        .replace('\t', "\\t")
-}
+// Preserve this module's existing quote name through the canonical identical escaper.
+use crate::memory::escape_value as quote;

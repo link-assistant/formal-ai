@@ -549,3 +549,213 @@ fn work_item_transcript(body: &str) -> Vec<ChatMessage> {
     result.tool_call_id = Some(String::from(CALL_ID));
     vec![ChatMessage::user(HARNESS_PROMPT), assistant, result]
 }
+
+#[test]
+fn structured_owned_issue_stdout_preserves_the_complete_original_requirements() {
+    use formal_ai::ToolCall;
+    let issues: serde_json::Value = serde_json::from_str(include_str!(
+        "../../fixtures/issue-1364-hello-world-issues.json"
+    ))
+    .expect("public original issue body fixtures");
+    let issue = &issues[0];
+    let url = issue["html_url"].as_str().expect("original issue URL");
+    let title = issue["title"].as_str().expect("original issue title");
+    let body = issue["body"]
+        .as_str()
+        .expect("complete original issue body");
+    let command = format!(
+        "gh issue view '{url}' --json title --jq .title && echo && gh issue view '{url}' --json body --jq .body; printf '\\n__formal_ai_exit=%s\\n' $?"
+    );
+    let stdout = format!("{title}\n\n{body}\n__formal_ai_exit=0\n");
+    let fixture: serde_json::Value = serde_json::from_str(include_str!(
+        "../../fixtures/issue-1364-agent-tool-use.json"
+    ))
+    .expect("captured Agent envelope fixture");
+    let mut typed = fixture["fixture"].clone();
+    typed["part"]["state"]["status"] = serde_json::json!("completed");
+    typed["part"]["state"]["input"] = serde_json::json!({"command":command});
+    typed["part"]["state"]
+        .as_object_mut()
+        .expect("typed state")
+        .remove("error");
+    typed["part"]["state"]["metadata"] = serde_json::json!({
+        "output": stdout, "exit": 0, "signal": null, "timedOut": false, "aborted": false
+    });
+    for result in [
+        serde_json::json!({"exit_code":0,"stdout":stdout,"stderr":"","complete":true}),
+        typed,
+    ] {
+        let messages = vec![
+            ChatMessage::user(format!(
+                "Issue to solve: {url}\nImplement every numbered requirement."
+            )),
+            ChatMessage::assistant_tool_calls_with_content(
+                String::new(),
+                vec![ToolCall::function(
+                    "owned-issue-read".to_owned(),
+                    "bash".to_owned(),
+                    serde_json::json!({"command":command}).to_string(),
+                )],
+            ),
+            ChatMessage::tool_result("owned-issue-read".to_owned(), "bash", result.to_string()),
+        ];
+        let plan = formal_ai::agentic_coding::plan_chat_step(&messages, &["bash", "write"])
+            .expect("the fully observed original requirements remain actionable");
+        let AgenticPlan::ToolCalls(calls) = plan else {
+            panic!("accepted complete issue must plan a source effect");
+        };
+        let call = calls.first().expect("owned source operation");
+        assert_eq!(call.tool, "write");
+        let arguments: serde_json::Value =
+            serde_json::from_str(&call.arguments).expect("source arguments");
+        assert!(
+            arguments["content"]
+                .as_str()
+                .expect("source bytes")
+                .contains("Hello, World!")
+        );
+    }
+}
+
+fn issue_1364_resume_recipe_answer() -> formal_ai::SymbolicAnswer {
+    serde_json::from_value(serde_json::json!({
+        "intent":"code", "answer":"owned source", "confidence":1.0,
+        "evidence_links":[], "links_notation":"",
+        "execution_recipe":{"language":"javascript", "path":"owned.js", "source":"expected source\n",
+            "supporting_files":[], "commands":["node owned.js"]}
+    })).expect("a declared source recipe")
+}
+
+#[test]
+fn issue_1364_resume_uses_exact_scalar_alias_probe_and_rejects_later_edits() {
+    let answer = issue_1364_resume_recipe_answer();
+    let tools = ["exec_command", "write", "Edit", "Read"];
+    let request = "Issue to solve: https://github.com/fixture/project/issues/1\nYour prepared Pull Request: https://github.com/fixture/project/pull/2";
+    let mut messages = vec![ChatMessage::user(request.to_owned())];
+    let Some(AgenticPlan::ToolCalls(calls)) =
+        formal_ai::agentic_coding::plan_symbolic_command_reroute(&messages, &tools, &answer)
+    else {
+        panic!("an existing checkout requires a bounded source probe");
+    };
+    let arguments: serde_json::Value =
+        serde_json::from_str(&calls[0].arguments).expect("probe operands");
+    let command = arguments["command"].as_str().expect("owned probe command");
+    messages.push(ChatMessage::assistant_tool_calls_with_content(
+        String::new(),
+        vec![formal_ai::protocol::ToolCall::function(
+            "owned-probe".to_owned(),
+            "exec_command".to_owned(),
+            serde_json::json!({"cmd":command}).to_string(),
+        )],
+    ));
+    messages.push(ChatMessage::tool_result("owned-probe".to_owned(), "exec_command", serde_json::json!({
+        "exit_code":0, "stdout":serde_json::json!({"schema":"workspace-source-v1","path":"owned.js",
+            "success":true,"complete":true,"absent":false,"source":"expected source\n"}).to_string(),
+        "complete":true
+    }).to_string()));
+    let Some(AgenticPlan::ToolCalls(calls)) =
+        formal_ai::agentic_coding::plan_symbolic_command_reroute(&messages, &tools, &answer)
+    else {
+        panic!("the exact cmd alias must retain source authority");
+    };
+    let arguments: serde_json::Value =
+        serde_json::from_str(&calls[0].arguments).expect("verification operands");
+    assert_eq!(arguments["command"], "node owned.js");
+    messages.push(ChatMessage::assistant_tool_calls_with_content(String::new(), vec![formal_ai::protocol::ToolCall::function(
+        "later-edit".to_owned(), "Edit".to_owned(), serde_json::json!({"path":"owned.js","old_string":"expected source\n","new_string":"other source\n"}).to_string(),
+    )]));
+    messages.push(ChatMessage::tool_result(
+        "later-edit".to_owned(),
+        "Edit",
+        serde_json::json!({"exit_code":0,"stdout":"","complete":true}).to_string(),
+    ));
+    assert!(matches!(
+        formal_ai::agentic_coding::plan_symbolic_command_reroute(&messages, &tools, &answer),
+        Some(AgenticPlan::Final(_))
+    ));
+}
+
+#[test]
+fn issue_1364_resume_binds_the_actual_raw_canonical_patch_and_preserves_plain_issue_writes() {
+    let answer = issue_1364_resume_recipe_answer();
+    let tools = ["exec_command", "apply_patch"];
+    let mut messages = vec![ChatMessage::user("Issue to solve: https://github.com/fixture/project/issues/1\nYour prepared Pull Request: https://github.com/fixture/project/pull/2".to_owned())];
+    messages.push(ChatMessage::assistant_tool_calls_with_content(
+        String::new(),
+        vec![formal_ai::protocol::ToolCall::function(
+            "owned-source-create".to_owned(),
+            "apply_patch".to_owned(),
+            "*** Begin Patch\n*** Add File: owned.js\n+expected source\n*** End Patch\n".to_owned(),
+        )],
+    ));
+    messages.push(ChatMessage::tool_result(
+        "owned-source-create".to_owned(),
+        "apply_patch",
+        serde_json::json!({"exit_code":0,"stdout":"","complete":true}).to_string(),
+    ));
+    let Some(AgenticPlan::ToolCalls(calls)) =
+        formal_ai::agentic_coding::plan_symbolic_command_reroute(&messages, &tools, &answer)
+    else {
+        panic!("the exact raw declaration must certify its own newly created source");
+    };
+    let arguments: serde_json::Value =
+        serde_json::from_str(&calls[0].arguments).expect("verification operands");
+    assert_eq!(arguments["command"], "node owned.js");
+    let plain = [ChatMessage::user(
+        "Issue to solve: https://github.com/fixture/project/issues/1".to_owned(),
+    )];
+    let Some(AgenticPlan::ToolCalls(calls)) =
+        formal_ai::agentic_coding::plan_symbolic_command_reroute(
+            &plain,
+            &["bash", "write"],
+            &answer,
+        )
+    else {
+        panic!("the ordinary issue route must preserve source creation");
+    };
+    assert_eq!(calls[0].tool, "write");
+}
+
+#[test]
+fn issue_1364_tool_call_identity_is_stable_per_request_and_changes_after_history_progress() {
+    let request_value = serde_json::json!({
+        "model":"formal-ai",
+        "messages":[{"role":"user","content":"Issue to solve: https://github.com/fixture/project/issues/1\nImplement every numbered requirement."}],
+        "tools":[{"type":"function","function":{"name":"bash","parameters":{"type":"object","properties":{"command":{"type":"string"}},"required":["command"],"additionalProperties":false}}}]
+    });
+    let request: formal_ai::ChatCompletionRequest =
+        serde_json::from_value(request_value.clone()).expect("declared chat request");
+    let solver = formal_ai::UniversalSolver::new(formal_ai::SolverConfig {
+        agent_mode: true,
+        ..Default::default()
+    });
+    let first = formal_ai::create_chat_completion_with_solver(&request, &solver);
+    let repeated = formal_ai::create_chat_completion_with_solver(&request, &solver);
+    let first_call = first.choices[0]
+        .message
+        .tool_calls
+        .first()
+        .expect("owned issue fetch");
+    let repeated_call = repeated.choices[0]
+        .message
+        .tool_calls
+        .first()
+        .expect("same owned issue fetch");
+    assert_eq!(first_call.id, repeated_call.id);
+    let mut progressed_value = request_value;
+    progressed_value["messages"].as_array_mut().expect("messages").push(serde_json::json!({"role":"assistant","content":"I am preparing the owned issue read."}));
+    let progressed_request: formal_ai::ChatCompletionRequest =
+        serde_json::from_value(progressed_value).expect("progressed request");
+    let progressed = formal_ai::create_chat_completion_with_solver(&progressed_request, &solver);
+    let progressed_call = progressed.choices[0]
+        .message
+        .tool_calls
+        .first()
+        .expect("same pending issue fetch");
+    assert_eq!(first_call.function.name, progressed_call.function.name);
+    assert_eq!(
+        first_call.function.arguments,
+        progressed_call.function.arguments
+    );
+    assert_ne!(first_call.id, progressed_call.id);
+}

@@ -368,8 +368,16 @@ impl CurlTelegramTransport {
         }
     }
 
-    fn run_curl(args: &[&str]) -> Result<String, TelegramPollingRuntimeError> {
-        let output = Command::new("curl").args(args).output().map_err(|error| {
+    fn run_curl(&self, args: &[&str]) -> Result<String, TelegramPollingRuntimeError> {
+        let mut command = Command::new("curl");
+        command.args(args);
+        let output = crate::bounded_process::command_output(
+            command,
+            Duration::from_secs(u64::from(self.http_timeout_seconds)),
+            8 * 1024 * 1024,
+            256 * 1024,
+        )
+        .map_err(|error| {
             if error.kind() == io::ErrorKind::NotFound {
                 TelegramPollingRuntimeError::Transport(String::from(
                     "curl is required for the Telegram polling client; install curl and retry",
@@ -402,7 +410,7 @@ impl TelegramTransport for CurlTelegramTransport {
             &timeout,
             url,
         ];
-        Self::run_curl(&args)
+        self.run_curl(&args)
     }
 
     fn send_message(
@@ -425,7 +433,7 @@ impl TelegramTransport for CurlTelegramTransport {
             body,
             url,
         ];
-        Self::run_curl(&args)
+        self.run_curl(&args)
     }
 
     fn edit_message_text(
@@ -469,6 +477,7 @@ pub fn run_telegram_polling_with_transport<T: TelegramTransport>(
     crate::dreaming_runtime::start_core_dreaming();
 
     let mut offset = initial_offset;
+    let mut failures = crate::bounded_retry::FailureBudget::default();
 
     while !cancellation.load(Ordering::Relaxed) {
         let updates_url = config.get_updates_url(offset);
@@ -476,6 +485,9 @@ pub fn run_telegram_polling_with_transport<T: TelegramTransport>(
             Ok(body) => body,
             Err(error) => {
                 crate::diagnostic!("error"; "telegram-poll: getUpdates failed: {error}");
+                if failures.failed() {
+                    return Err(error);
+                }
                 sleep_with_cancellation(Duration::from_secs(1), &cancellation);
                 continue;
             }
@@ -485,11 +497,15 @@ pub fn run_telegram_polling_with_transport<T: TelegramTransport>(
             Ok(batch) => batch,
             Err(error) => {
                 crate::diagnostic!("error"; "telegram-poll: invalid getUpdates response: {error}");
+                if failures.failed() {
+                    return Err(error.into());
+                }
                 sleep_with_cancellation(Duration::from_secs(1), &cancellation);
                 continue;
             }
         };
 
+        failures.succeeded();
         if let Some(next_offset) = batch.next_offset {
             offset = Some(next_offset);
         }

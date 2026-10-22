@@ -312,16 +312,35 @@ pub fn grade_swebench_with_install(
     for case in cases {
         command.arg(&case.id);
     }
-    let output = command
-        .current_dir(workspace)
-        .envs(workspace_environment(workspace))
-        .output()
-        .map_err(|error| {
-            vocabulary::render(
-                "external_benchmark_swe_start_error",
-                &[("error", &error.to_string())],
-            )
-        })?;
+    let output = crate::bounded_process::command_output(
+        {
+            command
+                .current_dir(workspace)
+                .envs(workspace_environment(workspace));
+            command
+        },
+        std::time::Duration::from_secs(
+            u64::try_from(cases.len())
+                .ok()
+                .and_then(|count| count.checked_mul(900))
+                .and_then(|seconds| seconds.checked_add(300))
+                .ok_or_else(|| {
+                    vocabulary::render(
+                        "external_benchmark_swe_start_error",
+                        &[("error", "swebench_duration_overflow")],
+                    )
+                })?,
+        ),
+        128 * 1024 * 1024,
+        64 * 1024 * 1024,
+    )
+    .map_err(|failure| std::io::Error::new(failure.kind(), failure))
+    .map_err(|error| {
+        vocabulary::render(
+            "external_benchmark_swe_start_error",
+            &[("error", &error.to_string())],
+        )
+    })?;
     if !output.status.success() {
         return Err(vocabulary::render(
             "external_benchmark_swe_exit_error",
@@ -354,16 +373,25 @@ fn fnv1a64(bytes: impl IntoIterator<Item = u8>) -> u64 {
 }
 
 fn inspect_swebench_runtime(workspace: &Path) -> Result<bool, String> {
-    let module = Command::new("python3")
-        .args(["-c", "import swebench.harness.run_evaluation"])
-        .envs(workspace_environment(workspace))
-        .output()
-        .map_err(|error| {
-            vocabulary::render(
-                "external_benchmark_swe_inspect_error",
-                &[("error", &error.to_string())],
-            )
-        })?;
+    let module = crate::bounded_process::command_output(
+        {
+            let mut bounded_child_command = Command::new("python3");
+            bounded_child_command
+                .args(["-c", "import swebench.harness.run_evaluation"])
+                .envs(workspace_environment(workspace));
+            bounded_child_command
+        },
+        std::time::Duration::from_secs(30),
+        64 * 1024 * 1024,
+        16 * 1024 * 1024,
+    )
+    .map_err(|failure| std::io::Error::new(failure.kind(), failure))
+    .map_err(|error| {
+        vocabulary::render(
+            "external_benchmark_swe_inspect_error",
+            &[("error", &error.to_string())],
+        )
+    })?;
     Ok(module.status.success())
 }
 
@@ -439,15 +467,23 @@ fn ensure_swebench_runtime(workspace: &Path, allow_install: bool) -> Result<(), 
             ));
         }
     }
-    let docker = Command::new("docker")
-        .arg("info")
-        .output()
-        .map_err(|error| {
-            vocabulary::render(
-                "external_benchmark_swe_docker_error",
-                &[("error", &error.to_string())],
-            )
-        })?;
+    let docker = crate::bounded_process::command_output(
+        {
+            let mut bounded_child_command = Command::new("docker");
+            bounded_child_command.arg("info");
+            bounded_child_command
+        },
+        std::time::Duration::from_secs(30),
+        64 * 1024 * 1024,
+        16 * 1024 * 1024,
+    )
+    .map_err(|failure| std::io::Error::new(failure.kind(), failure))
+    .map_err(|error| {
+        vocabulary::render(
+            "external_benchmark_swe_docker_error",
+            &[("error", &error.to_string())],
+        )
+    })?;
     if !docker.status.success() {
         return Err(vocabulary::render(
             "external_benchmark_swe_docker_error",
@@ -533,10 +569,18 @@ fn failure(case: &BenchmarkCase, detail: &str) -> CaseOutcome {
 /// Whether a `python3` interpreter is callable in this environment.
 #[must_use]
 pub fn python_available() -> bool {
-    Command::new("python3")
-        .arg("--version")
-        .output()
-        .is_ok_and(|output| output.status.success())
+    crate::bounded_process::command_output(
+        {
+            let mut bounded_child_command = Command::new("python3");
+            bounded_child_command.arg("--version");
+            bounded_child_command
+        },
+        std::time::Duration::from_secs(30),
+        64 * 1024 * 1024,
+        16 * 1024 * 1024,
+    )
+    .map_err(|failure| std::io::Error::new(failure.kind(), failure))
+    .is_ok_and(|output| output.status.success())
 }
 
 fn run_python(program: &str, workspace: &Path, case_id: &str) -> (bool, String) {
@@ -554,12 +598,25 @@ fn run_python(program: &str, workspace: &Path, case_id: &str) -> (bool, String) 
             format!("failed to write {}: {error}", path.display()),
         );
     }
-    let output = Command::new("timeout")
-        .arg(PYTHON_TIMEOUT_SECONDS)
-        .arg("python3")
-        .arg(&path)
-        .current_dir(workspace)
-        .output();
+    let output = crate::bounded_process::command_output(
+        {
+            let mut bounded_child_command = Command::new("timeout");
+            bounded_child_command
+                .arg(PYTHON_TIMEOUT_SECONDS)
+                .arg("python3")
+                .arg(&path)
+                .current_dir(workspace);
+            bounded_child_command
+        },
+        std::time::Duration::from_secs(
+            PYTHON_TIMEOUT_SECONDS
+                .parse::<u64>()
+                .expect("PythonTimeoutConfigurationInvariant"),
+        ),
+        64 * 1024 * 1024,
+        16 * 1024 * 1024,
+    )
+    .map_err(|failure| std::io::Error::new(failure.kind(), failure));
     match output {
         Ok(output) if output.status.success() => (true, String::new()),
         Ok(output) => (

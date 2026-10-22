@@ -440,3 +440,47 @@ test('caller environment cannot extend fixed process-group or absolute job bound
     });
   }
 });
+
+test('locked npm request recovery fits inside the unchanged setup deadline and timeout remains failure', () => {
+  const directory = mkdtempSync(join(temporaryDirectory(), 'engine-npm-deadline-'));
+  try {
+    const bytes = JSON.stringify(clock);
+    writeFileSync(join(directory, 'browser-engine-job-clock.json'), bytes);
+    const events = [];
+    let calls = 0;
+    const status = runBoundedOperation('setup', ['npm', 'ci', 'fixture-hidden-argument'], {
+      environment: { ...environment, RUNNER_TEMP: directory,
+        ENGINE_CLOCK_SHA256: createHash('sha256').update(bytes).digest('hex'),
+        PRIVATE_FIXTURE_HINT: 'fixture-hidden-environment' },
+      now: clock.started,
+      log: record => events.push(record),
+      run: () => { calls++; return { status: 124, signal: null }; }
+    });
+    assert.equal(status, 124);
+    assert.equal(calls, 1, 'a failed install is not retried as a whole process');
+    assert.deepEqual(events.map(event => event.event), ['started', 'finished']);
+    assert(events.every(event => event.mode === 'setup' && event.program === 'npm'));
+    assert.equal(events[0].deadlineSeconds, 295);
+    assert.equal(events[1].status, 124);
+    assert.equal(events[1].spawnError, false);
+    assert(Number.isInteger(events[1].elapsedMilliseconds) && events[1].elapsedMilliseconds >= 0);
+    assert.doesNotMatch(JSON.stringify(events), /fixture-hidden/u);
+
+    const setup = workflow.jobs.package.steps.find(step => step.name === 'Prepare locked browser smoke dependencies');
+    assert.equal(setup['timeout-minutes'], 5);
+    assert.match(setup.run, /npm ci --prefix vscode --ignore-scripts/u);
+    const number = name => {
+      const value = new RegExp('--' + name + '=(\\d+)').exec(setup.run);
+      assert(value, 'an explicit request bound is required: ' + name);
+      return Number(value[1]);
+    };
+    const timeout = number('fetch-timeout'), retries = number('fetch-retries');
+    const minimum = number('fetch-retry-mintimeout'), maximum = number('fetch-retry-maxtimeout');
+    assert(timeout > 0 && retries <= 1 && maximum >= minimum && minimum > 0);
+    assert(timeout * (retries + 1) + maximum * retries < events[0].deadlineSeconds * 1000);
+    // npm's documented default single request already exceeds this phase.
+    assert(300000 > events[0].deadlineSeconds * 1000);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});

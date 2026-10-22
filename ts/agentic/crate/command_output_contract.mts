@@ -1,0 +1,60 @@
+// One structural capture parser; callers supply their existing lexical adapters.
+// Completed empty source lines end a paragraph; the current partial line does not.
+function commandParagraphEnd(text, trim) {
+  let start = 0;
+  for (;;) {
+    const end = text.indexOf('\n', start);
+    if (end < 0) return text.length;
+    if (trim(text.slice(start, end)) === '') return start;
+    start = end + 1;
+  }
+}
+
+/** Mirrors `fn parse_command_output_request` in rust/src/agentic_coding/general_planner.rs. */
+export function parseCommandOutputContract(request, lexical) {
+  const {tokens, runVerbs, bareSurfaces, cleanCueToken, trim, trimStart, quotedSegmentSpans, mentionsBareRole, cleanPathToken, looksLikeFilePath, safeRelativePath} = lexical;
+  const requestTokens = tokens(request);
+  const actions = bareSurfaces('file_write_action_cue');
+  const targets = bareSurfaces('file_write_target_cue');
+  const destinations = bareSurfaces('file_write_destination_cue');
+  for (const run of requestTokens.filter((token) => runVerbs.includes(cleanCueToken(token.text)))) {
+    const prefix = trim(request.slice(0, run.start));
+    const politeness = bareSurfaces('politeness_cue');
+    const prefaceWords = tokens(prefix).map(token => cleanCueToken(token.text));
+    const firstAction = prefaceWords[politeness.includes(prefaceWords[0]) ? 1 : 0];
+    // A preceding owned task sentence may introduce the command; quoted reports may not.
+    const rawPrefix = trimStart(request.slice(0, run.start));
+    const ownedPreface = runVerbs.includes(firstAction) && commandParagraphEnd(rawPrefix, trim) === rawPrefix.length
+      && quotedSegmentSpans(prefix).length === 0
+      && Array.from('.!?。！？।').some(mark => prefix.endsWith(mark));
+    if (prefix && !politeness.includes(cleanCueToken(prefix)) && !ownedPreface) continue;
+    const tail = request.slice(run.end);
+    const leading = tail.length - trimStart(tail).length;
+    const quoted = tail.slice(leading);
+    const quote = Array.from(quoted)[0];
+    if (quote === undefined) return null;
+    if (quote !== "'" && quote !== '"' && quote !== '`') continue;
+    const body = quoted.slice(1);
+    const close = body.indexOf(quote);
+    if (close < 0) continue;
+    const command = trim(body.slice(0, close));
+    if (!command || /[\n\r\0]/.test(command)) continue;
+    const paragraphEnd = run.start + commandParagraphEnd(request.slice(run.start), trim);
+    const suffix = request.slice(run.end + leading + 1 + close + 1, paragraphEnd);
+    if (!mentionsBareRole(suffix, 'file_write_command_output_reference')) continue;
+    const suffixTokens = tokens(suffix);
+    if (suffixTokens.some(token => runVerbs.includes(cleanCueToken(token.text)))) continue;
+    if (!suffixTokens.some((token) => actions.includes(cleanCueToken(token.text)))) continue;
+    let target = null;
+    for (let index = 1; index < suffixTokens.length; index += 1) {
+      const cleaned = cleanPathToken(suffixTokens[index].text);
+      const cue = cleanCueToken(suffixTokens[index - 1].text);
+      if (looksLikeFilePath(cleaned) && safeRelativePath(cleaned) && (targets.includes(cue) || destinations.includes(cue))) {
+        target = cleaned;
+        break;
+      }
+    }
+    if (target !== null) return [target, command];
+  }
+  return null;
+}

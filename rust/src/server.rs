@@ -31,6 +31,7 @@ mod conversation_reports;
 mod debug_session;
 mod debug_stage;
 mod debug_stage_sources;
+mod shutdown;
 mod transport;
 
 pub use debug_session::{
@@ -240,6 +241,7 @@ fn dispatch_api_request_with_auth(
                 "model": canonical_model_id(),
                 "version": env!("CARGO_PKG_VERSION"),
                 "memory": memory_health_status(),
+                "logs": crate::dialog_log::structured_log::health_status(),
             }),
         ),
         ("GET", "/v1/models" | "/api/openai/v1/models") => handle_openai_models_request(),
@@ -354,8 +356,11 @@ fn memory_health_status() -> Value {
             "migration_state": "missing",
         });
     };
+    let original_path = path;
+    let path = crate::memory_sync::active_memory_path(&original_path);
     let status = crate::memory::preflight_memory_upgrade(&path);
     json!({
+        "active_path":path,"configured_path":original_path,
         "schema_version": status.detected_schema_version,
         "minimum_readable_schema_version": status.minimum_readable_schema_version,
         "maximum_readable_schema_version": status.maximum_readable_schema_version,

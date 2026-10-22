@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Client-owned bounded workspace installer. No publisher shell text is executed."""
-import hashlib, html, json, os, pathlib, platform, re, shutil, stat, subprocess, sys, tempfile, urllib.parse, urllib.request, zipfile
+import hashlib, html, json, os, pathlib, platform, re, shutil, ssl, stat, subprocess, sys, tempfile, urllib.error, urllib.parse, urllib.request, zipfile
 from html.parser import HTMLParser
 
 def require(condition, reason):
@@ -25,9 +25,52 @@ class Links(HTMLParser):
             self.anchor=None
 
 
-def publisher_document(documentation, fetch):
+def documentation_alias(url, publisher_host, hosts):
+    """An alias never grants an additional network host."""
+    value=urllib.parse.urlsplit(url)
+    host=value.hostname or ''
+    bare=host.removeprefix('www.')
+    if not publisher_host or bare!=publisher_host.removeprefix('www.'):
+        return None
+    alternate=bare if host.startswith('www.') else 'www.'+bare
+    if value.scheme!='https' or value.username or value.password or value.port not in (None,443) or host not in hosts or alternate not in hosts:
+        return None
+    authority=alternate+(':443' if value.port==443 else '')
+    return urllib.parse.urlunsplit(value._replace(netloc=authority,fragment=''))
+
+def transient_document_failure(error):
+    if isinstance(error,urllib.error.HTTPError):
+        return 500<=error.code<=599
+    reason=error.reason if isinstance(error,urllib.error.URLError) else error
+    return not isinstance(reason,ssl.SSLError) and isinstance(reason,(TimeoutError,ConnectionError))
+
+def diagnostic_url(url):
+    value=urllib.parse.urlsplit(url)
+    return urllib.parse.urlunsplit((value.scheme,value.hostname or '',value.path,'',''))
+
+def publisher_document(documentation, fetch, publisher_host=None, hosts=()):
     """At most one authenticated same-origin current-release documentation hop."""
-    raw,document_digest=fetch(documentation,2097152)
+    attempted=set()
+    def read_document(url):
+        require(url not in attempted,'documentation_already_attempted')
+        attempted.add(url)
+        try:
+            raw,digest=fetch(url,2097152)
+            return url,raw,digest
+        except Exception as error:
+            record('documentation_fetch_failed',url=diagnostic_url(url),status=error.code if isinstance(error,urllib.error.HTTPError) else None,error_type=type(error).__name__)
+            alternate=documentation_alias(url,publisher_host,hosts)
+            if not transient_document_failure(error) or alternate is None or alternate in attempted:
+                raise
+            attempted.add(alternate)
+            try:
+                raw,digest=fetch(alternate,2097152)
+            except Exception as alternate_error:
+                record('documentation_fetch_failed',url=diagnostic_url(alternate),status=alternate_error.code if isinstance(alternate_error,urllib.error.HTTPError) else None,error_type=type(alternate_error).__name__)
+                raise
+            record('documentation_alias_selected',url=diagnostic_url(alternate),sha256=digest)
+            return alternate,raw,digest
+    documentation,raw,document_digest=read_document(documentation)
     document=raw.decode('utf-8'); parser=Links(); parser.feed(document)
     origin=urllib.parse.urlsplit(documentation)
     candidates=[]
@@ -53,9 +96,26 @@ def publisher_document(documentation, fetch):
             require(len(candidates)==1,'current_documentation_ambiguous')
     if candidates:
         documentation=candidates[0]
-        raw,document_digest=fetch(documentation,2097152)
+        documentation,raw,document_digest=read_document(documentation)
         document=raw.decode('utf-8'); parser=Links(); parser.feed(document)
     return documentation,document,parser,document_digest
+
+def github_release_document(documentation, fetch, publisher_host):
+    """A catalog-owned canonical release API is also a complete discovery document."""
+    value=urllib.parse.urlsplit(documentation)
+    if value.hostname!='api.github.com': return None
+    match=re.fullmatch(r'/repos/([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)/releases/(latest|tags/[^/]+)',value.path)
+    require(value.scheme=='https' and value.port in (None,443) and not value.username and not value.password and not value.query and not value.fragment and publisher_host=='api.github.com' and match is not None,'invalid_release_documentation')
+    repo,endpoint=match.groups()
+    raw,document_digest=fetch(documentation,2097152)
+    release=json.loads(raw)
+    require(isinstance(release,dict) and release.get('draft') is False and release.get('prerelease') is False,'unstable_release')
+    tag=release.get('tag_name')
+    require(isinstance(tag,str) and bool(tag),'release_document_tag_missing')
+    require(release.get('html_url')=='https://github.com/'+repo+'/releases/tag/'+urllib.parse.quote(tag,safe=''),'release_document_repository_mismatch')
+    if endpoint.startswith('tags/'):
+        require(urllib.parse.unquote(endpoint[5:])==tag,'release_document_tag_mismatch')
+    return repo,endpoint,release,document_digest
 
 def select_release_archive(assets,document,system=None,machine=None):
     """Use observed host identity; metadata names never grant processes or network."""
@@ -121,15 +181,23 @@ def execute(request):
     def url_allowed(url):
         value=urllib.parse.urlsplit(url)
         return value.scheme == 'https' and value.hostname in hosts and not value.username and not value.password and value.port in (None,443)
+    failed_fetch_urls=set()
     class Redirect(urllib.request.HTTPRedirectHandler):
         def redirect_request(self,req,fp,code,msg,headers,newurl):
             require(url_allowed(newurl),'redirect_not_granted')
+            require(newurl not in failed_fetch_urls,'redirect_to_failed_fetch')
             return super().redirect_request(req,fp,code,msg,headers,newurl)
     opener=urllib.request.build_opener(Redirect())
     def fetch(url,limit,destination=None):
         require(url_allowed(url),'url_not_granted')
         digest=hashlib.sha256(); total=0; chunks=[]
-        with opener.open(discovery_request(url),timeout=30) as response:
+        try:
+            response=opener.open(discovery_request(url),timeout=30)
+        except Exception as error:
+            failed_fetch_urls.add(url)
+            if isinstance(error,urllib.error.HTTPError): failed_fetch_urls.add(error.url)
+            raise
+        with response:
             while True:
                 chunk=response.read(65536)
                 if not chunk: break
@@ -139,19 +207,24 @@ def execute(request):
         record('fetch',url=url,sha256=digest.hexdigest(),size=total)
         return b''.join(chunks),digest.hexdigest()
     documentation=publisher['documentation']; require(publisher.get('program') == program,'publisher_program_mismatch')
-    documentation,document,parser,document_digest=publisher_document(documentation,fetch)
-    releases=[]
-    for link in parser.links:
-        value=urllib.parse.urlsplit(urllib.parse.urljoin(documentation,link)); parts=value.path.strip('/').split('/')
-        if value.scheme == 'https' and value.hostname == 'github.com' and len(parts)>=3 and parts[2]=='releases':
-            repo='/'.join(parts[:2]); require(re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+',repo) is not None,'invalid_release_repository')
-            if len(parts)>=5 and parts[3]=='tag': endpoint='tags/'+urllib.parse.quote(urllib.parse.unquote('/'.join(parts[4:])),safe='')
-            else: endpoint='latest'
-            candidate=(repo,endpoint)
-            if candidate not in releases: releases.append(candidate)
-    require(len(releases)==1,'publisher_release_link_ambiguous_or_missing')
-    repo,endpoint=releases[0]; api='https://api.github.com/repos/'+repo+'/releases/'+endpoint
-    release_raw,_=fetch(api,2097152); release=json.loads(release_raw); require(release.get('draft') is False and release.get('prerelease') is False,'unstable_release')
+    release_document=github_release_document(documentation,fetch,publisher.get('host'))
+    if release_document is not None:
+        repo,endpoint,release,document_digest=release_document
+        document=''
+    else:
+        documentation,document,parser,document_digest=publisher_document(documentation,fetch,publisher.get('host'),hosts)
+        releases=[]
+        for link in parser.links:
+            value=urllib.parse.urlsplit(urllib.parse.urljoin(documentation,link)); parts=value.path.strip('/').split('/')
+            if value.scheme == 'https' and value.hostname == 'github.com' and len(parts)>=3 and parts[2]=='releases':
+                repo='/'.join(parts[:2]); require(re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+',repo) is not None,'invalid_release_repository')
+                if len(parts)>=5 and parts[3]=='tag': endpoint='tags/'+urllib.parse.quote(urllib.parse.unquote('/'.join(parts[4:])),safe='')
+                else: endpoint='latest'
+                candidate=(repo,endpoint)
+                if candidate not in releases: releases.append(candidate)
+        require(len(releases)==1,'publisher_release_link_ambiguous_or_missing')
+        repo,endpoint=releases[0]; api='https://api.github.com/repos/'+repo+'/releases/'+endpoint
+        release_raw,_=fetch(api,2097152); release=json.loads(release_raw); require(release.get('draft') is False and release.get('prerelease') is False,'unstable_release')
     asset=select_release_archive(release.get('assets',[]),document)
     digest=asset.get('digest',''); require(re.fullmatch(r'sha256:[a-f0-9]{64}',digest) is not None,'asset_digest_missing')
     download=asset['browser_download_url']; require(download.startswith('https://github.com/'+repo+'/releases/download/'),'asset_repository_mismatch')

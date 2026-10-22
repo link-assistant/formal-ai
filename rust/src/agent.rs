@@ -15,7 +15,6 @@ use std::io;
 use std::path::{Component, Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::sync::atomic::{AtomicU64, Ordering};
-use std::thread;
 use std::time::{Duration, Instant};
 
 use crate::engine::stable_id;
@@ -370,43 +369,35 @@ impl AgentWorkspace {
         for (name, value) in command_environment() {
             command.env(name, value);
         }
-        let mut child = command.spawn()?;
         let started = Instant::now();
-        let stdout_reader = read_command_output(
-            child
-                .stdout
-                .take()
-                .ok_or_else(|| io::Error::from(io::ErrorKind::BrokenPipe))?,
-        );
-        let stderr_reader = read_command_output(
-            child
-                .stderr
-                .take()
-                .ok_or_else(|| io::Error::from(io::ErrorKind::BrokenPipe))?,
-        );
-        let deadline_reached = loop {
-            if child.try_wait()?.is_some() {
-                break false;
-            }
-            if started.elapsed() >= command_budget {
-                child.kill()?;
-                break true;
-            }
-            thread::sleep(Duration::from_millis(10));
-        };
-        let status = child.wait()?;
-        let stdout = finish_command_output(stdout_reader)?;
-        let stderr = finish_command_output(stderr_reader)?;
-        // The child can exit after `try_wait` observes it running but before
-        // `kill` reaches the kernel. On macOS, killing that unreaped process
-        // can still return success even though its eventual status is exit 0.
-        // The reaped status is authoritative: a successful child was not
-        // terminated by our deadline.
-        let timed_out = command_timed_out(deadline_reached, status.success());
+        let (status_code, stdout, stderr, deadline_reached, completed_successfully) =
+            match crate::bounded_process::command_output(
+                command,
+                command_budget,
+                4 * 1024 * 1024,
+                4 * 1024 * 1024,
+            ) {
+                Ok(output) => (
+                    output.status.code(),
+                    output.stdout,
+                    output.stderr,
+                    false,
+                    output.status.success(),
+                ),
+                Err(error) if error.timed_out() && error.cleanup_complete() => (
+                    error.observed_status().and_then(|status| status.code()),
+                    error.partial_stdout().to_vec(),
+                    error.partial_stderr().to_vec(),
+                    true,
+                    false,
+                ),
+                Err(error) => return Err(io::Error::new(error.kind(), error).into()),
+            };
+        let timed_out = command_timed_out(deadline_reached, completed_successfully);
         trace_command(&program_path, command_budget, started.elapsed(), timed_out);
         Ok(AgentCommandResult {
             command: command_line.to_owned(),
-            status_code: status.code(),
+            status_code,
             stdout: String::from_utf8_lossy(&stdout).to_string(),
             stderr: String::from_utf8_lossy(&stderr).to_string(),
             timed_out,
@@ -772,26 +763,9 @@ fn trace_command(program_path: &Path, budget: Duration, elapsed: Duration, timed
     }
 }
 
-// Drain both pipes while the child runs: waiting first can block a writer
-// against a full pipe and turn a working command into a deadline failure.
-fn read_command_output(
-    mut stream: impl io::Read + Send + 'static,
-) -> thread::JoinHandle<io::Result<Vec<u8>>> {
-    thread::spawn(move || {
-        let mut bytes = Vec::new();
-        stream.read_to_end(&mut bytes)?;
-        Ok(bytes)
-    })
-}
-
-fn finish_command_output(reader: thread::JoinHandle<io::Result<Vec<u8>>>) -> io::Result<Vec<u8>> {
-    reader
-        .join()
-        .map_err(|_| io::Error::from(io::ErrorKind::Other))?
-}
-
-const fn command_timed_out(deadline_reached: bool, status_success: bool) -> bool {
-    deadline_reached && !status_success
+// A successful observation includes child status, stdin completion and both pipe EOFs.
+const fn command_timed_out(deadline_reached: bool, completed_successfully: bool) -> bool {
+    deadline_reached && !completed_successfully
 }
 
 fn looks_like_workspace_path(argument: &str) -> bool {

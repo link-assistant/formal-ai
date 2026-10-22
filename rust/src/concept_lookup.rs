@@ -61,6 +61,21 @@ pub struct ConceptSense {
     pub depth: usize,
 }
 
+/// Canonical four-field identity shared with the JavaScript concept grounding path.
+#[must_use]
+pub fn concept_sense_content_identifier(sense: &ConceptSense) -> String {
+    crate::engine::stable_id(
+        "sense",
+        &[
+            sense.sha256.as_str(),
+            sense.lemma.as_str(),
+            sense.language.as_str(),
+            sense.gloss.as_str(),
+        ]
+        .join("\u{1f}"),
+    )
+}
+
 impl ConceptSense {
     /// Stable id over the bytes, the headword, the language and the gloss.
     ///
@@ -69,16 +84,7 @@ impl ConceptSense {
     /// reproduces it and nothing else can.
     #[must_use]
     pub fn content_id(&self) -> String {
-        crate::engine::stable_id(
-            "sense",
-            &[
-                self.sha256.as_str(),
-                self.lemma.as_str(),
-                self.language.as_str(),
-                self.gloss.as_str(),
-            ]
-            .join("\u{1f}"),
-        )
+        concept_sense_content_identifier(self)
     }
 
     /// The sense as a link, gloss and attribution together.

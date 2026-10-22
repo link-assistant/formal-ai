@@ -12,7 +12,9 @@ export function validateDiagnosticDescendant(snapshot, expected) {
 export function validateRunAncestorDiagnostic(snapshot, expected) {
   assert.equal(snapshot.status,200);assert.equal(snapshot.body.group_name,expected.group);
   const members=snapshot.body.group_members;assert.ok(Array.isArray(members) && members.length>0);
-  const selected=members.at(-1);assert.equal(String(selected.run_id),expected.run);
+  assert.equal(snapshot.body.total_count,members.length);
+  const active=members.filter(member=>member.status==='in_progress');assert.equal(active.length,1);
+  const selected=active[0];assert.equal(String(selected.run_id),expected.run);
   assert.equal(selected.status,'in_progress');
   return {observation:'ObservedRunScopedGroup',descendantLeaseProof:false,productionAuthority:false};
 }
@@ -24,7 +26,7 @@ export async function collectLeaseDiagnostics({context,child,group,runnerName,ge
     const observe=async route=>{const remaining=deadline-Date.now();assert.ok(remaining>0);const value=await get(route,Math.min(5000,remaining));snapshots.push(value);return value;};
     const job=await observe(base+'/jobs/'+child.id);
     validateDiagnosticDescendant(job,{...context,id:child.id,name:child.name,runnerName});
-    const ancestor=await observe(base+'/concurrency_groups/'+encodeURIComponent(group)+'?ahead_of_run='+context.run);
+    const ancestor=await observe(base+'/concurrency_groups/'+encodeURIComponent(group));
     const diagnostic=validateRunAncestorDiagnostic(ancestor,{...context,group});
     return {...diagnostic,snapshots};
   } catch(error) {

@@ -304,11 +304,18 @@ fn percentage(basis_points: &str) -> Option<String> {
 
 /// Run git in `root`, trimmed stdout on success.
 fn git(root: &Path, args: &[&str]) -> Option<String> {
-    let output = std::process::Command::new("git")
-        .args(args)
-        .current_dir(root)
-        .output()
-        .ok()?;
+    let output = crate::bounded_process::command_output(
+        {
+            let mut bounded_child_command = std::process::Command::new("git");
+            bounded_child_command.args(args).current_dir(root);
+            bounded_child_command
+        },
+        std::time::Duration::from_secs(30),
+        64 * 1024 * 1024,
+        16 * 1024 * 1024,
+    )
+    .map_err(|failure| std::io::Error::new(failure.kind(), failure))
+    .ok()?;
     output
         .status
         .success()

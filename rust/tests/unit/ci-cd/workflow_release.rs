@@ -740,6 +740,7 @@ fn agent_cli_e2e_does_not_call_an_unrelated_summary_provider() {
 fn release_workflow_jobs_have_explicit_timeouts() {
     let workflow = release_workflow();
     let expected_timeouts = [
+        ("hive-source-provenance", 0),
         ("detect-changes", 5),
         ("changelog", 10),
         // Issue #808's evidence-check job now lives in

@@ -228,11 +228,11 @@ fn the_evidence_keeps_the_framed_events_and_never_the_raw_stream() {
     let session_id = fs::read_to_string(evidence.join("session-id.txt")).unwrap();
     assert!(
         session_id.contains("formal-ai session ses_authoringfixture"),
-        "{session_id}"
+        "session evidence must contain the fixture session marker"
     );
     assert!(
         session_id.contains("formal-ai model formal-ai/"),
-        "{session_id}"
+        "session evidence must contain the Formal AI model marker"
     );
     for entry in fs::read_dir(&evidence).unwrap() {
         let name = entry.unwrap().file_name();
@@ -285,5 +285,45 @@ fn a_malformed_pull_request_is_rejected_before_anything_runs() {
     assert_eq!(
         fs::read_to_string(root.path().join("published/leaf.txt")).unwrap(),
         "keep destination\n"
+    );
+}
+
+/// A real authoring run must leave its native harness completion intact: child
+/// Git output cannot bypass capture and corrupt another concurrent test's line.
+#[test]
+fn authoring_commit_display_preserves_native_harness_framing() {
+    use std::process::Command;
+    use std::time::Duration;
+
+    let name = concat!(
+        "specification::self_hosting_metric::solve_attribution::",
+        "the_live_authoring_loop_lands_a_commit_the_canonical_parser_accepts"
+    );
+    let mut command =
+        Command::new(std::env::current_exe().expect("current native test executable"));
+    command
+        .args(["--exact", "--color", "never", "--test-threads", "1", name])
+        .env_remove("RUST_TEST_NOCAPTURE");
+    let output = formal_ai::bounded_process::command_output(
+        command,
+        Duration::from_secs(30),
+        1024 * 1024,
+        64 * 1024,
+    )
+    .expect("the original authoring fixture completes with bounded captured output");
+    assert!(
+        output.status.success(),
+        "original authoring fixture failed: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let stdout = String::from_utf8(output.stdout).expect("native harness UTF-8 output");
+    let completion = format!("test {name} ... ok");
+    assert!(
+        stdout.lines().any(|line| line == completion),
+        "authoring output corrupted the exact completion line:\n{stdout}"
+    );
+    assert!(
+        !stdout.contains("Formal-AI-Session:"),
+        "the Git display bypassed native test capture:\n{stdout}"
     );
 }

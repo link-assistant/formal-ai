@@ -70,13 +70,19 @@ pub fn start_core_dreaming() {
             .name(String::from("formal-ai-dreaming"))
             .spawn(move || {
                 lower_current_thread_priority();
+                let mut failures = crate::bounded_retry::FailureBudget::default();
                 loop {
                     std::thread::sleep(Duration::from_secs(DEFAULT_IDLE_SECONDS));
                     if core_is_idle(Duration::from_secs(DEFAULT_IDLE_SECONDS)) {
-                        if let Err(error) = run_core_dreaming_once(&path)
-                            && crate::cli_env::flag_enabled("FORMAL_AI_DREAMING_DEBUG")
-                        {
-                            crate::diagnostic!("error"; "[dreaming] background run failed: {error}");
+                        match run_core_dreaming_once(&path) {
+                            Ok(_) => failures.succeeded(),
+                            Err(error) => {
+                                crate::diagnostic!("error"; "[dreaming] background run failed: {error}");
+                                if failures.failed() {
+                                    crate::diagnostic!("error"; "[dreaming] retry budget exhausted; background worker stopped");
+                                    return;
+                                }
+                            }
                         }
                         std::thread::sleep(Duration::from_secs(DEFAULT_INTERVAL_SECONDS));
                     }

@@ -7,6 +7,7 @@ use std::cmp::Ordering;
 use std::io;
 
 pub(crate) mod repository;
+pub(crate) use repository::{open_observed, same_observed_file};
 /// One observed source file, with its exact repository-relative path.
 pub struct SourceFile {
     /// UTF-8 relative path as observed in the Git index.

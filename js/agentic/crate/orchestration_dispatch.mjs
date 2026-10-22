@@ -10,6 +10,7 @@
 // `runAgent` promise and settles all of them before returning an error, so a
 // failing worker never leaves another one running behind the caller.
 
+import { callbackText as canonicalUnaryText } from '../callback_values.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -228,7 +229,7 @@ export async function dispatchAgents(config) {
     tasks = config.clis.map(() => config.task);
   } else {
     const found = leaves(decomposeTask(config.task, config.max_depth));
-    tasks = found.length === 0 ? [config.task] : found.map((leaf) => leaf.text);
+    tasks = found.length === 0 ? [config.task] : found.map(canonicalUnaryText);
   }
   const jobs = config.mode === 'compare'
     ? config.clis.map((cli, index) => [cli, tasks[index]])

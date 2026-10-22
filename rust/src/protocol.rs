@@ -361,32 +361,6 @@ pub struct FunctionCall {
     pub arguments: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct ChatCompletion {
-    pub id: String,
-    pub object: String,
-    pub created: u64,
-    pub model: String,
-    pub choices: Vec<ChatChoice>,
-    pub usage: TokenUsage,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub learning_trace: Option<Value>,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct ChatChoice {
-    pub index: u32,
-    pub message: ChatMessage,
-    pub finish_reason: String,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct TokenUsage {
-    pub prompt_tokens: u32,
-    pub completion_tokens: u32,
-    pub total_tokens: u32,
-}
-
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct ResponsesRequest {
     #[serde(default)]
@@ -646,8 +620,16 @@ fn chat_completion_from_plan(
 ) -> ChatCompletion {
     let model = resolved_request_model(request.model.as_deref());
     let prompt_tokens = message_input_tokens(&request.messages);
+    let message_count = request.messages.len();
     let workspace = client_working_directory(&request.messages);
 
+    let plan = crate::protocol_call_validation::bind_plan(
+        plan,
+        &request.tools,
+        &request.messages,
+        prompt,
+        workspace.as_deref(),
+    );
     let (message, finish_reason, completion_tokens) = match plan {
         AgenticPlan::ToolCalls(calls) => {
             let narration = tool_action_narration(prompt, &calls);
@@ -655,7 +637,10 @@ fn chat_completion_from_plan(
                 .into_iter()
                 .enumerate()
                 .map(|(index, call)| {
-                    let seed = format!("{prompt}|{index}|{}|{}", call.tool, call.arguments);
+                    let seed = format!(
+                        "{prompt}|{message_count}|{index}|{}|{}",
+                        call.tool, call.arguments
+                    );
                     let arguments = response_arguments_for_tool(
                         &request.tools,
                         &call.tool,
@@ -811,10 +796,18 @@ fn response_from_plan(
 ) -> ResponseObject {
     let model = resolved_request_model(request.model.as_deref());
     let input_tokens = responses_input_tokens(request);
+    let message_count = request.to_chat_completion_request().messages.len();
     // The Responses surface carries the same client prose in its own shape, so
     // the declaration is read from the chat projection rather than parsed twice.
     let workspace = client_working_directory(&request.to_chat_completion_request().messages);
 
+    let plan = crate::protocol_call_validation::bind_plan(
+        plan,
+        &request.tools,
+        &request.to_chat_completion_request().messages,
+        prompt,
+        workspace.as_deref(),
+    );
     let (output, output_tokens) = match plan {
         AgenticPlan::ToolCalls(calls) => {
             let narration = tool_action_narration(prompt, &calls);
@@ -833,7 +826,7 @@ fn response_from_plan(
             for (index, call) in calls.into_iter().enumerate() {
                 let tool = call.tool;
                 let planned_arguments = call.arguments;
-                let seed = format!("{prompt}|{index}|{tool}|{planned_arguments}");
+                let seed = format!("{prompt}|{message_count}|{index}|{tool}|{planned_arguments}");
                 let custom_tool = is_custom_response_tool(&request.tools, &tool);
                 let arguments = response_arguments_for_tool(
                     &request.tools,

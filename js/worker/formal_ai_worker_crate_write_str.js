@@ -112,10 +112,8 @@ function firstChar(text) {
   return Array.from(text)[0];
 }
 
-/** `str::to_lowercase`. */
-function lower(text) {
-  return text.toLowerCase();
-}
+/** Shared Unicode lowercase; preserves the original write-side API. */
+const { lower } = crateRequire("crate/rust_str.mjs");
 
 /** `str::strip_prefix`: the rest, or null. */
 function stripPrefix(text, prefix) {
@@ -207,13 +205,13 @@ return Object.freeze({
   splitWhitespace,
   lastChar,
   firstChar,
-  lower,
   stripPrefix,
   stripSuffix,
   minByKey,
   maxByKey,
   compareStr,
   matchIndices,
+  lower,
   lines,
 });
 };

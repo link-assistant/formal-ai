@@ -1,10 +1,14 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=bec29d14abdb2ba463f26e304e3f5d2f58e4e3cf25bd827761927ab15717e283 bytes=17666
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=bd9a26b9054722b6787bf587aed9494cd92f4f6d326d3d47ff21b052b5ead8b7 bytes=17736
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=9
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
@@ -148,7 +152,7 @@ pub static OBLIGATION_ROLES: std::sync::LazyLock<Vec<String>> = std::sync::LazyL
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .flatMap()
-// formal-ai:blockers arrow callback of .map() | call of a sibling function | global value Boolean | method call .filter() | method call .flatMap() | method call .map() | sibling value
+// formal-ai:blockers call of a sibling function | global value Boolean | imported value | method call .filter() | method call .flatMap() | method call .map() | sibling value
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal arrow function

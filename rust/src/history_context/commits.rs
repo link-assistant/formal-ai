@@ -10,13 +10,20 @@ pub(super) fn run_git(
     repo_root: &Path,
     args: &[&str],
 ) -> Result<String, RepositoryHistoryImportError> {
-    let output = Command::new("git")
-        .args(args)
-        .current_dir(repo_root)
-        .output()
-        .map_err(|error| {
-            RepositoryHistoryImportError::with_detail("git_spawn_failed", format!("{error}"))
-        })?;
+    let output = crate::bounded_process::command_output(
+        {
+            let mut bounded_child_command = Command::new("git");
+            bounded_child_command.args(args).current_dir(repo_root);
+            bounded_child_command
+        },
+        std::time::Duration::from_secs(30),
+        64 * 1024 * 1024,
+        16 * 1024 * 1024,
+    )
+    .map_err(|failure| std::io::Error::new(failure.kind(), failure))
+    .map_err(|error| {
+        RepositoryHistoryImportError::with_detail("git_spawn_failed", format!("{error}"))
+    })?;
     if !output.status.success() {
         return Err(RepositoryHistoryImportError::with_detail(
             "git_command_failed",

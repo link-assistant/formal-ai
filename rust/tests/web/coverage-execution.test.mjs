@@ -19,7 +19,11 @@ for (const name of names) {
   if (mode === 'silent-failure' && name.endsWith('fail')) continue;
   const status = name.endsWith('fail') ? 'FAILED' : name.endsWith('ignored') ? 'ignored' : 'ok';
   if (status === 'FAILED') failed++; else if (status === 'ignored') ignored++; else passed++;
-  console.log('test ' + name + ' ... ' + status);
+  if (mode === 'interleaved' && name === names[0]) {
+    console.log('test ' + name + ' ... 7b6dd03 fixture: authoring loop landing');
+    console.log('Formal-AI-Session: ses_authoringfixture');
+    console.log('ok');
+  } else console.log('test ' + name + ' ... ' + status);
 }
 if (mode === 'duplicate') console.log('test ' + names[0] + ' ... ok');
 if (mode === 'extra') console.log('test unselected ... ok');
@@ -93,6 +97,21 @@ test('actual ignored-case completion remains distinct from passed cases', async 
     assert.equal(result.succeeded, true);
     assert.equal(result.selected, 2);
     assert.deepEqual(result.batches[0].summary, { passed: 1, failed: 0, ignored: 1 });
+  } finally { fixture.close(); }
+});
+
+test('captured Git chatter cannot make a split harness completion or bare ok authoritative', async () => {
+  const fixture = fakeHarness();
+  try {
+    const result = await executeBatches(planned(['a-split', 'b-good'], {}), new Map([['unit', fixture.path]]), {
+      env: { ...process.env, COVERAGE_FAKE_MODE: 'interleaved' },
+    });
+    assert.equal(result.batches[0].exitCode, 0);
+    assert.deepEqual(result.batches[0].summary, {passed: 2, failed: 0, ignored: 0});
+    assert.equal(result.completed, 1);
+    assert.equal(result.succeeded, false);
+    assert(result.batches[0].problems.includes('missing completion: a-split'));
+    assert(result.batches[0].problems.includes('summary passed mismatch'));
   } finally { fixture.close(); }
 });
 

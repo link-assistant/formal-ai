@@ -13,9 +13,10 @@
 //     astCensus?(source) -> [{kind, count}]  (optional: the named-node
 //                                             histogram of a Rust source) }
 //
-// `nodeHistoryIo` builds that object from the `node:fs`, `node:path` and
-// `node:child_process` modules a node caller passes in. The browser worker has
-// no repository to run git in and passes none.
+// `nodeHistoryIo` requires caller-trusted fs/path and a finite runCommand
+// capability. js/server/history-host.mjs supplies the maintained Node runner.
+// Legacy childProcess injection is insufficient and is refused before Git I/O.
+// The browser worker has no repository to run git in and passes none.
 //
 // The per-path symbol diff mirrors `diff_symbols` in full: an ES path gets the
 // `es_meta_extract token_count` delta from the shared tokenizer twin
@@ -30,6 +31,8 @@
 // histogram is empty, exactly as the native importer built without the
 // `meta-language` feature records it.
 
+import { callbackTrim as canonicalUnaryTrim } from '../callback_values.mjs';
+import { callbackHasLength as canonicalUnaryPositiveLength } from '../callback_values.mjs';
 import { countTokens, tokenize } from './es_tokenizer.mjs';
 import { diffNamedItems, formalizeCommit, parseLogOutput } from './history_context.mjs';
 import { importCiRuns, importIssuesAndPullsWithWatermark } from './history_github.mjs';
@@ -47,18 +50,24 @@ export const LOCAL_REPOSITORY = 'local-repository';
  * An `io` over node's own modules, plus the optional Rust census
  * (`historyAstCensus` of rust_ast_census.mjs).
  * Rust built-in `std::fs` and `std::process::Command`, which native Rust calls directly.
- * @param {{fs: object, path: object, childProcess: object, astCensus?: Function}} modules
+ * @param {{fs: object, path: object, runCommand: Function, astCensus?: Function}} modules
  */
-export function nodeHistoryIo({ fs, path, childProcess, astCensus }) {
+export function nodeHistoryIo({ fs, path, runCommand, astCensus }) {
+  if (typeof runCommand !== 'function') throw new TypeError('HistoryCommandRunnerRequired');
   return {
     ...(typeof astCensus === 'function' ? { astCensus } : {}),
     runGit(repoRoot, args) {
-      return childProcess.execFileSync('git', args, {
-        cwd: repoRoot,
-        encoding: 'utf8',
-        maxBuffer: 1 << 30,
-        stdio: ['ignore', 'pipe', 'pipe'],
+      const observed = runCommand('git', args, {
+        cwd: repoRoot, encoding: 'utf8', timeout: 30000,
+        stdoutLimitBytes: 64 * 1024 * 1024, stderrLimitBytes: 16 * 1024 * 1024,
       });
+      if (!observed || observed.error !== undefined || observed.status !== 0
+          || observed.signal !== null || observed.cleanup_complete !== true
+          || observed.timed_out !== false || typeof observed.stdout !== 'string'
+          || typeof observed.stderr !== 'string') {
+        throw new Error('HistoryGitCommandFailed', { cause: observed?.error });
+      }
+      return observed.stdout;
     },
     readText(file) {
       return fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null;
@@ -98,8 +107,8 @@ export function mergeSubjectFor(io, repoRoot, sha) {
   if (out === null) return null;
   const lines = out
     .split('\n')
-    .map((line) => line.trim())
-    .filter((line) => line.length > 0);
+    .map(canonicalUnaryTrim)
+    .filter(canonicalUnaryPositiveLength);
   return lines.length > 0 ? lines[lines.length - 1] : null;
 }
 
@@ -273,7 +282,7 @@ export function repositorySlug(io, repoRoot) {
   const url = (gitOrNull(io, repoRoot, ['config', '--get', 'remote.origin.url']) ?? '').trim();
   if (url.length === 0) return LOCAL_REPOSITORY;
   const withoutGit = url.endsWith('.git') ? url.slice(0, -4) : url;
-  const segments = withoutGit.split(/[/:]/).filter((segment) => segment.length > 0);
+  const segments = withoutGit.split(/[/:]/).filter(canonicalUnaryPositiveLength);
   return segments.length >= 2
     ? `${segments[segments.length - 2]}-${segments[segments.length - 1]}`
     : LOCAL_REPOSITORY;

@@ -2,6 +2,7 @@
 // `response_variant_for`, `render_response`, `localized_response`,
 // `response_values_for`; rust/src/seed/planner_precedence.rs).
 
+import { callbackTrim as canonicalUnaryTrim } from '../callback_values.mjs';
 import { cached, childValue, childrenNamed, parseLino, readText } from '../host.mjs';
 import { languageFromSlug } from './language.mjs';
 
@@ -92,7 +93,7 @@ export function splitPipeList(raw) {
   if (trimmed.startsWith('(') && trimmed.endsWith(')') && trimmed.length >= 2) {
     return splitReferenceTokens(trimmed.slice(1, -1));
   }
-  return trimmed.split('|').map((part) => part.trim()).filter(Boolean);
+  return trimmed.split('|').map(canonicalUnaryTrim).filter(Boolean);
 }
 
 /** Mirrors `fn split_reference_tokens` in rust/src/seed/parser.rs. */

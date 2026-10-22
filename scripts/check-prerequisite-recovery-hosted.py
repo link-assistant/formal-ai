@@ -9,7 +9,7 @@ resolved=subprocess.run(['node','--input-type=module','-e',program],env=os.envir
 grant=json.loads(resolved.stdout)
 assert grant is not None, 'hosted caller must explicitly grant workspace recovery'
 language=sys.argv[1] if len(sys.argv)>1 else 'kotlin'
-cases={'kotlin':{'program':'kotlinc','publisher':{'program':'kotlinc','source_id':'kotlin_official','host':'kotlinlang.org','documentation':'https://kotlinlang.org/docs/command-line.html'},'name':'Independent.kt','source':'fun main() { println("Hello, World!") }\n'},'scala':{'program':'scalac','publisher':{'program':'scalac','source_id':'scala_official','host':'www.scala-lang.org','documentation':'https://www.scala-lang.org/download/'},'name':'Independent.scala','source':'object Independent extends App { println("Hello, World!") }\n'}}
+cases={'kotlin':{'program':'kotlinc','publisher':{'program':'kotlinc','source_id':'kotlin_official','host':'kotlinlang.org','documentation':'https://kotlinlang.org/docs/command-line.html'},'name':'Independent.kt','source':'fun main() { println("Hello, World!") }\n'},'scala':{'program':'scalac','publisher':{'program':'scalac','source_id':'scala_official','host':'api.github.com','documentation':'https://api.github.com/repos/scala/scala3/releases/latest'},'name':'Independent.scala','source':'object Independent extends App { println("Hello, World!") }\n'}}
 case=cases[language];program=case['program'];publisher=case['publisher']
 request={'program':program,'publisher':publisher,'dependencies':['java'],'grant':grant}
 if os.environ.get('GITHUB_ACTIONS')!='true': raise SystemExit('hosted-only guard: no local installer execution')

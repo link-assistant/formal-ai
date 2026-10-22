@@ -10,6 +10,8 @@
 // JSONL transcript loaders (`load_observations`, `observe_proxy_transcript`)
 // belong to `formal-ai learn clients` and are not orchestration inputs.
 
+import { callbackTrim as canonicalUnaryTrim } from '../callback_values.mjs';
+import { callbackNonempty as canonicalUnaryNonempty } from '../callback_values.mjs';
 import { stableId } from './engine_stable_identifier.mjs';
 
 const byteOrder = (left, right) => Buffer.compare(Buffer.from(left), Buffer.from(right));
@@ -76,7 +78,7 @@ function normalizedContract(contract) {
   const out = new Map();
   for (const name of sorted(Object.keys(contract))) {
     if (!isObservedContractField(name)) continue;
-    const values = new Set(contract[name].map((value) => value.trim()).filter((value) => value !== ''));
+    const values = new Set(contract[name].map(canonicalUnaryTrim).filter(canonicalUnaryNonempty));
     if (values.size > 0) out.set(name, values);
   }
   return out;

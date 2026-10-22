@@ -5,6 +5,7 @@
 // host, like the Rust `OnceLock`s.
 //
 
+import { lower as canonicalUnaryLower } from './rust_str.mjs';
 import { cached } from '../host.mjs';
 import { containsCjk, wordsForRole } from './seed_meanings.mjs';
 import { multilingualResponses } from './seed.mjs';
@@ -18,7 +19,7 @@ export const ROLE_IDENTIFIER_RESERVED_WORD = 'identifier_reserved_word';
 
 /** Mirrors `fn words_for` in rust/src/summarization/vocabulary.rs: the role's words, lowercased. */
 function wordsFor(role) {
-  return wordsForRole(role).map((word) => word.toLowerCase());
+  return wordsForRole(role).map(canonicalUnaryLower);
 }
 
 /**

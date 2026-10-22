@@ -7,7 +7,7 @@ import path from 'node:path';
 import {execFileSync,spawnSync} from 'node:child_process';
 import {WorkerHost} from '../../../js/server/worker-host.mjs';
 import {installNodeHost} from '../../../js/agentic/node-host.mjs';
-import {namedBranch,validBranchTarget,validWorkflowTarget,requestTargetBinding,targetOf,recipeCommitCommand} from '../../../js/agentic/git_commit.mjs';
+import {namedBranch,validBranchTarget,validWorkflowTarget,requestTargetBinding,targetOf,recipeCommitCommand,isPullRequestTarget} from '../../../js/agentic/git_commit.mjs';
 import {attach} from '../../../js/agentic/ci_workflow.mjs';
 test('owned target constraints preserve live branch, workflow and negative custody',async()=>{
 await installNodeHost(new WorkerHost());
@@ -38,4 +38,15 @@ check(()=>assert.equal(namedBranch('Use branch “feature/quoted”'),'feature/q
 check(()=>assert.equal(requestTargetBinding('“\nSave the workflow as ci/foreign.yml\n”','workflow-binding-patterns',validWorkflowTarget).kind,'absent'));
 console.log(JSON.stringify({controls:count,failures:0,skips:0,nativeExecution:false,actualTemporaryGitChecks:true}));
 
+});
+
+test('recipe consumers share the original pull-request target classification',()=>{
+  for(const [reference,expected] of [
+    ['https://github.com/fixture/project/pull/2',true],
+    ['https://github.com/fixture/project/issues/2',false],
+    ['https://github.com/fixture/project/pull-request/2',false],
+    ['https://github.com/fixture/project/pull/123',true],
+  ]) {
+    for(const branch of [null,'retained-branch']) assert.equal(isPullRequestTarget({reference,branch}),expected);
+  }
 });

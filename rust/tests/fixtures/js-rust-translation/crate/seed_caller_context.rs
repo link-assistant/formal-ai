@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=76e5d9b789858eee7a6efa2b334a2930df596ac7c58b36c1455d34ad01f5c1b3 bytes=3973
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=43719d4b522aaf4add47142302540078b5b6c3b32841a6274633f2185fd33673 bytes=4049
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=2; string-methods items=1
 
@@ -24,6 +24,10 @@ pub fn wa_str_code_point_at(text: String, index: f64) -> f64 {
 // formal-ai:refusal import from '…'
 // formal-ai:blockers import from outside the module directory
 
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
+
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
 // formal-ai:blockers import of names its module carries
@@ -38,7 +42,7 @@ pub fn wa_str_code_point_at(text: String, index: f64) -> f64 {
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal arrow function
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | arrow function | assignment of a field or element | call of a sibling function | call of an imported function | field access | method call .filter() | method call .map() | object without a $ tag
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | arrow function | assignment of a field or element | call of a sibling function | call of an imported function | field access | imported value | method call .filter() | method call .map() | object without a $ tag
 
 // formal-ai:workaround string-methods JavaScript function_declaration items=1 sha256=09cb445220d41e9e0d176bafbd7e105c30c7e325b6ffbf98ad06aeb950aea7c9
 // | /** Mirrors `const fn is_unspaced_script`. @param {string} character */

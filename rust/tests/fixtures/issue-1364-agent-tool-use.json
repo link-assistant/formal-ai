@@ -1,0 +1,32 @@
+{
+  "fixture": {
+    "type": "tool_use",
+    "part": {
+      "type": "tool",
+      "tool": "bash",
+      "state": {
+        "status": "error",
+        "input": {
+          "command": "scalac Main.scala"
+        },
+        "error": "Exit code 127\n/bin/sh: 1: scalac: not found\n",
+        "title": "scalac Main.scala",
+        "metadata": {
+          "output": "/bin/sh: 1: scalac: not found\n",
+          "exit": 127,
+          "signal": null,
+          "timedOut": false,
+          "aborted": false
+        }
+      }
+    }
+  },
+  "originalFrameSha256": "45d21d353cf67907762317562b7b638dbbab3f4e7c10c90d61580d2841f95237",
+  "originalFrameBytes": 821,
+  "redactions": [
+    "outer timestamp/sessionID",
+    "part id/sessionID/messageID/callID",
+    "state time"
+  ],
+  "completeFrameDecoded": true
+}

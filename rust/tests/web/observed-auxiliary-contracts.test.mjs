@@ -105,6 +105,7 @@ test('target write is retried once after an actual missing-target read, then sto
   assert.equal(result.calls.filter(call => call.args.command === 'cat hello.txt').length, 1);
   assert.ok(!result.answer.includes('Completed the general change request'));
   assert.match(result.answer, /hello\.txt/u);
+  assert.match(result.answer, /Exit Code: 1/u);
 });
 test('write-only target succeeds with an explicit missing auxiliary receipt', async () => {
   const result = await run(PROMPT, { tools: ['write_file'] });

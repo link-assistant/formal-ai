@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=1d929512c58691ed9b4acb2116460e5d2c98c19724f05ee046d5ecab60b2fb7a bytes=10247
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=ab9945a406672221ec4102845fe4ff586eb46f8592faf87969266ada0f28e82e bytes=10323
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=1 carried=5
 
@@ -31,6 +31,10 @@ pub mod ml_array {
     }
 }
 // meta-language:prelude end
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
@@ -85,7 +89,7 @@ use crate::skill_procedure::{KNOWLEDGE_SCHEMA_VERSION, MINIMUM_STEPS, ROLE_SKILL
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal method call .filter()
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | arrow function | field access | method call .filter() | method call .map()
+// formal-ai:blockers arrow callback of .filter() | arrow function | field access | imported value | method call .filter() | method call .map()
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal null

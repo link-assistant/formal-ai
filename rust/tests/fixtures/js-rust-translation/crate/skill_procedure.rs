@@ -1,10 +1,18 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=3cde1bb83fac796cd620dc51015d6628f8172b20f0a58937f71f258d4f7c7150 bytes=16703
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=7307f6bd7ef206c5f675ab2a3b098203ff5b19e222862c8357218cac68bcdd4e bytes=16865
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=8
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
@@ -104,7 +112,7 @@ pub const CAPABILITY_LEDGER_FILE: &str = "data/meta/procedure-capability-ledger.
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal method call .flatMap()
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .flatMap() | arrow callback of .map() | arrow function | field access | method call .filter() | method call .flatMap() | method call .map()
+// formal-ai:blockers arrow callback of .flatMap() | arrow function | field access | imported value | method call .filter() | method call .flatMap() | method call .map()
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .flatMap()

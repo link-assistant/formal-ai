@@ -13,6 +13,8 @@
 // target_language, source_text, source_span}], canonical_program}`. Spans are
 // UTF-8 byte ranges, as in Rust.
 
+import { callbackText as canonicalUnaryText } from '../callback_values.mjs';
+import { callbackNonempty as canonicalUnaryNonempty } from '../callback_values.mjs';
 import { cached, parseLino, readText } from '../host.mjs';
 import { stableId } from './engine_stable_identifier.mjs';
 import { impulseIdFor } from './intent_formalization.mjs';
@@ -91,7 +93,7 @@ function procedureLexicon() {
 const procedureMeaningsWithRole = (role) => procedureLexicon().filter((meaning) => meaning.roles.includes(role));
 
 /** Mirrors `fn surfaces` in rust/src/skill_procedure.rs: every non-empty surface text. */
-const surfaces = (meaning) => meaning.lexemes.flatMap((lexeme) => lexeme.words.map((word) => word.text)).filter((text) => text !== '');
+const surfaces = (meaning) => meaning.lexemes.flatMap((lexeme) => lexeme.words.map(canonicalUnaryText)).filter(canonicalUnaryNonempty);
 
 /** Mirrors `fn procedure_role_surfaces` in rust/src/skill_procedure.rs. */
 function procedureRoleSurfaces(role) {

@@ -53,7 +53,7 @@ function temporaryPath(file, purpose) {
   return path.join(path.dirname(file), `.${path.basename(file) || 'memory.lino'}.${purpose}.${process.pid}.${tempSequence - 1}`);
 }
 
-const LOCK_HELPER = 'use Fcntl qw(:flock); open(my $f, ">>", $ARGV[0]) or die "$!\\n"; '
+const LOCK_HELPER = 'alarm 30; use Fcntl qw(:flock); open(my $f, ">>", $ARGV[0]) or die "$!\\n"; '
   + 'flock($f, LOCK_EX | LOCK_NB) or die "$!\\n"; $| = 1; print "locked\\n"; <STDIN>;';
 
 /**
@@ -62,39 +62,39 @@ const LOCK_HELPER = 'use Fcntl qw(:flock); open(my $f, ">>", $ARGV[0]) or die "$
  * Rejects with the helper's error when the lock is held elsewhere.
  * @returns {Promise<{release: () => Promise<void>}>}
  */
-export function holdExclusiveLock(lockPath) {
-  return new Promise((resolve, reject) => {
-    const child = spawn('perl', ['-e', LOCK_HELPER, lockPath], { stdio: ['pipe', 'pipe', 'pipe'] });
-    let stdout = '';
-    let stderr = '';
-    let settled = false;
-    const exited = new Promise((done) => child.once('close', done));
-    child.stderr.on('data', (chunk) => {
-      stderr += chunk;
+export function holdExclusiveLock(lockPath,{handshakeMs=5000,lifetimeMs=30000,settleMs=250}={}) {
+ for(const [value,maximum]of [[handshakeMs,5000],[lifetimeMs,30000],[settleMs,250]])if(!Number.isSafeInteger(value)||value<1||value>maximum)throw Error('memory_lock_budget_invalid');
+ return new Promise((resolve,reject)=>{
+  const child=spawn('perl',['-e',LOCK_HELPER,lockPath],{stdio:['pipe','pipe','pipe'],detached:process.platform!=='win32'});
+  let stdout='',stderr='',settled=false,closed=false,expired=false;const deadline=Date.now()+lifetimeMs;
+  let closedResolve;const ended=new Promise(done=>{closedResolve=done;});
+  const waitClosed=milliseconds=>new Promise(done=>{if(closed){done(true);return;}const timer=setTimeout(()=>done(false),milliseconds);ended.then(()=>{clearTimeout(timer);done(true);});});
+  const kill=()=>{try{if(process.platform!=='win32'&&child.pid)process.kill(-child.pid,'SIGKILL');else child.kill('SIGKILL');}catch(error){if(error.code!=='ESRCH')stderr=(stderr+' '+String(error)).slice(0,4096);}};
+  const cleanup=async()=>{kill();child.stdin?.destroy();child.stdout?.destroy();child.stderr?.destroy();const complete=await waitClosed(settleMs);if(!complete)child.unref();return complete;};
+  let handshake,lifetime;
+  const refuse=async error=>{if(settled)return;settled=true;expired=true;clearTimeout(handshake);clearTimeout(lifetime);error.cleanup_complete=await cleanup();error.partial_stderr=stderr;reject(error);};
+  handshake=setTimeout(()=>{void refuse(Error('memory_lock_handshake_timeout'));},handshakeMs);
+  lifetime=setTimeout(()=>{expired=true;if(!settled)void refuse(Error('memory_lock_lifetime_timeout'));else void cleanup();},lifetimeMs);
+  child.once('error',error=>{void refuse(error);});
+  for(const stream of [child.stdin,child.stdout,child.stderr])stream.on('error',error=>{expired=true;if(!settled)void refuse(error);else void cleanup();});
+  child.once('close',code=>{closed=true;closedResolve();clearTimeout(handshake);clearTimeout(lifetime);if(!settled)void refuse(Error(stderr.trim()||`lock_helper_exit:${code}`));});
+  child.stderr.on('data',chunk=>{const available=Math.max(0,4096-Buffer.byteLength(stderr));stderr+=chunk.subarray(0,available).toString();if(chunk.length>available){expired=true;if(!settled)void refuse(Error('memory_lock_output_limit'));else void cleanup();}});
+  child.stdout.on('data',chunk=>{
+   const available=Math.max(0,4096-Buffer.byteLength(stdout));stdout+=chunk.subarray(0,available).toString();if(chunk.length>available){expired=true;if(!settled)void refuse(Error('memory_lock_output_limit'));else void cleanup();return;}
+   if(!settled&&stdout.includes('locked\n')){
+    settled=true;clearTimeout(handshake);
+    resolve({
+     assertHeld(){if(expired||closed||Date.now()>=deadline||child.exitCode!==null||child.signalCode!==null)throw Error('memory_lock_lease_expired');},
+     async release(){
+      clearTimeout(handshake);clearTimeout(lifetime);child.stdin.end();
+      const normal=await waitClosed(settleMs);const complete=normal||await cleanup();if(normal)kill();
+      if(!complete){const error=Error('memory_lock_release_incomplete');error.cleanup_complete=false;throw error;}
+      if(expired||child.exitCode!==0||child.signalCode!==null){const error=Error('memory_lock_release_failed');error.partial_stderr=stderr;error.cleanup_complete=true;throw error;}
+     }
     });
-    child.stdout.on('data', (chunk) => {
-      stdout += chunk;
-      if (!settled && stdout.includes('locked\n')) {
-        settled = true;
-        resolve({
-          async release() {
-            child.stdin.end();
-            await exited;
-          },
-        });
-      }
-    });
-    child.once('error', (error) => {
-      if (settled) return;
-      settled = true;
-      reject(error);
-    });
-    child.once('close', (code) => {
-      if (settled) return;
-      settled = true;
-      reject(new Error(stderr.trim() || `lock_helper_exit:${code}`));
-    });
+   }
   });
+ });
 }
 
 /** Mirrors `write_new_file`: create-new, permissions, write, `sync_all`. */
@@ -103,7 +103,12 @@ function writeNewFile(file, bytes, mode = null) {
   const descriptor = fs.openSync(file, 'wx');
   try {
     if (mode !== null) fs.fchmodSync(descriptor, mode);
-    fs.writeSync(descriptor, bytes);
+    let offset=0;
+    for(let attempt=0;attempt<bytes.length&&offset<bytes.length;attempt++) {
+      const count=fs.writeSync(descriptor,bytes,offset,bytes.length-offset);
+      if(!Number.isInteger(count)||count<=0)throw Error('memory_upgrade_write_no_progress');offset+=count;
+    }
+    if(offset!==bytes.length)throw Error('memory_upgrade_write_incomplete');
     fs.fsyncSync(descriptor);
   } finally {
     fs.closeSync(descriptor);
@@ -231,10 +236,12 @@ export async function migrateMemory(file, backupPath = null, receiptPath = null,
   } catch (error) {
     throw new MemoryUpgradeError('memory_locked', `memory_locked:path=${file}:lock=${lockPath}:error=${error.message}`, preflightMemoryUpgrade(file));
   }
+  let primary;
   try {
-    return transaction(file, backupPath, receiptPath, beforeCommit, lockPath);
-  } finally {
-    await lock.release();
+    return transaction(file,backupPath,receiptPath,staged=>{lock.assertHeld();beforeCommit(staged);lock.assertHeld();},lockPath);
+  } catch(error) {primary=error;throw error;}
+  finally {
+    try {await lock.release();}catch(error){if(primary)primary.cleanupError=String(error);else throw error;}
   }
 }
 

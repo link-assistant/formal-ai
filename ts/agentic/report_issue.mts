@@ -4,6 +4,7 @@
 // Targets are 'harness_log' | 'server_log' | 'github_issue' | 'formal_ai';
 // report contents are 'both' | 'harness' | 'server'.
 
+import { callbackNonempty as canonicalUnaryNonempty } from './callback_values.mjs';
 import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
 import { plainText, userRequestText } from './content.mjs';
@@ -340,7 +341,7 @@ function reportFinished(targets, runOutputs, language) {
     const detail = failures.map(([target, output]) => `${targetLabel(target)}: ${output}`).join('\n');
     return `${config('issue_report_failed')}\n\n\`\`\`text\n${detail}\n\`\`\``;
   }
-  const trimmed = runOutputs.map(trim).filter((output) => output !== '').join('\n');
+  const trimmed = runOutputs.map(trim).filter(canonicalUnaryNonempty).join('\n');
   if (targets.includes('github_issue')) {
     const url = splitWhitespace(trimmed).find((token) => token.startsWith('https://') && token.includes('/issues/'));
     if (url !== undefined) return renderConfig('issue_report_created_with_url', [['url', url]]);

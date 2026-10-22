@@ -100,9 +100,13 @@ impl Value {
             Self::Text(_) | Self::Path(_) => "text",
             Self::Number(_) => "number",
             Self::List(items) => {
-                if !items.is_empty() && items.iter().all(|item| matches!(item, Self::Number(_))) {
+                if crate::callback_values::callback_has_length(items.as_slice())
+                    && items.iter().all(|item| matches!(item, Self::Number(_)))
+                {
                     "list_number"
-                } else if !items.is_empty() && items.iter().all(Self::is_string) {
+                } else if crate::callback_values::callback_has_length(items.as_slice())
+                    && items.iter().all(Self::is_string)
+                {
                     "list_text"
                 } else {
                     "list_any"

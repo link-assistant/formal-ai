@@ -1127,3 +1127,21 @@ meanings
     effect "Leaves success unclaimed until independent evidence supports the required effects and checks."
     unit "one evidence-backed success claim"
     example "Do not claim a rename succeeded without its required evidence."
+  declaration-goal
+    role source-request-declaration
+    defined-by relation
+    definition "A compact source request joins one exported signature and destination to a return goal separated by a colon."
+    precondition source-request-preflight
+    effect "The classifier records distinct declaration and goal spans; both remain subject to observed source contracts before a candidate write."
+    unit "not applicable"
+    example "Add exported display(record) in result.mjs: return the compact text of the selected record or null."
+    grounding "data/seed/source-authoring-grammar.lino source-request-compact form declaration-goal; js/agentic/module_function.mjs compactSourceRequest; js/agentic/module_function/complete-source-preflight.mjs deriveCompleteSourceRequest; rust/src/agentic_coding/module_function/compact_source_request.rs"
+  english-source-selected-optional-text
+    role source-request-goal
+    defined-by relation
+    definition "An optional source composition goal asks for text from the selected consumer parameter, or null when selection has no value."
+    precondition source-request-preflight
+    effect "The goal matcher binds its declared style and source-qualified parameter roles; it does not infer an implementation from a function name or authorize unknown effects."
+    unit "not applicable"
+    example "Return the compact text of the selected record or null."
+    grounding "data/seed/source-authoring-grammar.lino source-callable-composition goal optional-source-text form english-source-selected-optional-text; js/agentic/module_function/seeded-source-plan.mjs; rust/src/agentic_coding/module_function/seeded_source_plan.rs"

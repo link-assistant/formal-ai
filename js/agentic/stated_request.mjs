@@ -1,5 +1,6 @@
 // Which part of a prompt states the work (rust/src/agentic_coding/stated_request.rs).
 
+import { callbackNonempty as canonicalUnaryNonempty } from './callback_values.mjs';
 import { trim } from './crate/rust_str.mjs';
 
 /**
@@ -10,6 +11,6 @@ import { trim } from './crate/rust_str.mjs';
  * @returns {Array<string>}
  */
 export function requestBlocks(prompt) {
-  const blocks = prompt.split('\n\n').map(trim).filter((block) => block !== '');
+  const blocks = prompt.split('\n\n').map(trim).filter(canonicalUnaryNonempty);
   return blocks.length < 2 ? [prompt] : blocks;
 }

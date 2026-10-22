@@ -4,9 +4,10 @@
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/seed_terminal_commands.mjs"] = (crateRequire) => {
 // `crate::seed::terminal_command_vocabulary` (rust/src/seed/terminal_commands.rs),
 // read from data/seed/terminal-commands.lino.
+const { callbackValue: canonicalUnaryValue } = crateRequire("callback_values.mjs");
 const { cached, readText } = crateRequire("host.mjs");
 const { parseRoot } = crateRequire("crate/seed_parser.mjs");
-const collectValues = (group, name) => (group.children || []).filter((child) => child.name === name).map((child) => child.value);
+const collectValues = (group, name) => (group.children || []).filter((child) => child.name === name).map(canonicalUnaryValue);
 const collectLanguageValues = (group, name) => (group.children || [])
   .filter((child) => child.name === 'language')
   .flatMap((language) => collectValues(language, name));

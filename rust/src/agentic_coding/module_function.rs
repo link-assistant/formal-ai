@@ -25,6 +25,8 @@
 //! language's IR lowering (`coding/ir_lowering`).
 
 pub mod callable_catalog;
+mod compact_source_request;
+pub use compact_source_request::compact_source_request;
 mod complete_source_preflight;
 mod expression_values;
 mod optional_command_port;
@@ -617,7 +619,8 @@ fn relation_operations() -> Vec<RelationOperation> {
                 .children
                 .iter()
                 .filter(|child| child.name == "supports")
-                .map(|child| child.id.clone())
+                .map(crate::callback_values::callback_value)
+                .map(str::to_owned)
                 .collect(),
         })
         .filter(|operation| is_binary_idiom(&operation.idiom))

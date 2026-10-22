@@ -1,6 +1,6 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=26aee84110482bdcd26ecb0786bbf005618cede1f2f8ff57e973d5e47b28dae6 bytes=3079
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=4a47f74ff016d4606dc5de76019fdff0d498b6ed6a5be0854c8dcd863881bd53 bytes=3177
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
-// formal-ai:workarounds import-pruning items=0 carried=5
+// formal-ai:workarounds import-pruning items=0 carried=6
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
@@ -122,6 +122,10 @@ pub mod ml_number {
 // formal-ai:refusal import of names its module does not translate
 // formal-ai:blockers import of names its module carries
 
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import of names its module carries
+
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal export …
 // formal-ai:blockers export … | imported value
@@ -151,4 +155,4 @@ pub fn span(doc_id: String, start: f64, end: f64) -> String {
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
-// formal-ai:blockers assignment of a field or element | field access | imported value | method call .lookup() | method call .push() | object without a $ tag | sibling value
+// formal-ai:blockers assignment of a field or element | call of an imported function | field access | imported value | method call .lookup() | method call .push() | object without a $ tag | sibling value

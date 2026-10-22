@@ -19,12 +19,17 @@ struct ParsedHttpRequest {
 }
 
 pub fn serve(address: &str) -> std::io::Result<()> {
+    let mut shutdown = super::shutdown::Shutdown::new()?;
+    if let Some(path) = crate::memory_sync::configured_memory_path() {
+        crate::memory_sync::prepare_live_memory(&path)?;
+    }
     crate::dreaming_runtime::start_core_dreaming();
     crate::diagnostic!("debug";
         "formal-ai shared memory: {}",
         crate::shared_memory::shared_memory_path().display()
     );
     let listener = TcpListener::bind(address)?;
+    listener.set_nonblocking(true)?;
     crate::diagnostic!("debug"; "formal-ai server listening on http://{address}");
     // Issue #1085 (D1.2): with `FORMAL_AI_SEED_LINKS_MIRROR=1`, the seed
     // network is mirrored into the native store beside the memory file.
@@ -53,25 +58,36 @@ pub fn serve(address: &str) -> std::io::Result<()> {
     // A thread per connection rather than a pool: this server is a local,
     // single-user surface, connections are short, and the alternative is a
     // queue whose depth is one more thing to tune wrongly.
-    for stream in listener.incoming() {
-        match stream {
-            Ok(mut stream) => {
-                if let Err(error) = std::thread::Builder::new()
-                    .name(String::from("formal-ai-connection"))
-                    .spawn(move || {
-                        if let Err(error) = handle_connection(&mut stream) {
-                            crate::diagnostic!("error"; "request failed: {error}");
+    crate::bounded_retry::dispatch_incoming(
+        std::iter::from_fn(|| {
+            loop {
+                if shutdown.wait(Duration::ZERO) {
+                    return None;
+                }
+                match listener.accept() {
+                    Ok((stream, _)) => return Some(stream.set_nonblocking(false).map(|()| stream)),
+                    Err(error) if error.kind() == ErrorKind::WouldBlock => {
+                        if shutdown.wait(Duration::from_millis(25)) {
+                            return None;
                         }
-                    })
-                {
-                    crate::diagnostic!("error"; "connection thread failed: {error}");
+                    }
+                    Err(error) => return Some(Err(error)),
                 }
             }
-            Err(error) => crate::diagnostic!("error"; "connection failed: {error}"),
-        }
-    }
-
-    Ok(())
+        }),
+        |mut stream| {
+            std::thread::Builder::new()
+                .name(String::from("formal-ai-connection"))
+                .spawn(move || {
+                    if let Err(error) = handle_connection(&mut stream) {
+                        crate::diagnostic!("error"; "request failed: {error}");
+                    }
+                })
+                .map(drop)
+        },
+        |error| crate::diagnostic!("error"; "connection failed: {error}"),
+        |error| crate::diagnostic!("error"; "connection thread failed: {error}"),
+    )
 }
 
 fn handle_connection(stream: &mut TcpStream) -> std::io::Result<()> {

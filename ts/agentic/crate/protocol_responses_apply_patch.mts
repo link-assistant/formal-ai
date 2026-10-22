@@ -3,9 +3,9 @@
 
 import { rustLines } from '../content.mjs';
 
-const PATCH_BEGIN = '*** Begin Patch';
-const PATCH_ADD_FILE = '*** Add File:';
-const PATCH_END = '*** End Patch';
+export const PATCH_BEGIN = '*** Begin Patch';
+export const PATCH_ADD_FILE = '*** Add File:';
+export const PATCH_END = '*** End Patch';
 
 /** A JSON object parsed from `text`, or null: Rust dependency `serde_json::from_str::<Value>`. */
 export function jsonObject(text) {

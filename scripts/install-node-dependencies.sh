@@ -42,7 +42,66 @@ trace() {
 
 trace "installing in '$directory' (npm $(npm --version 2>/dev/null || echo unknown))"
 
-if ! npm --prefix "$directory" "$mode" --no-audit --no-fund 2>"$stderr_log"; then
+# Opt in only for a host-Node install; later Electron rebuilds keep their own headers.
+# node-gyp >= 12 prefers this package-config namespace over deprecated npm config.
+# https://github.com/nodejs/node-gyp/blob/v12.4.0/lib/node-gyp.js
+install_environment=(env)
+case "${INSTALL_NODE_DEPENDENCIES_USE_NODE_HEADERS:-0}" in
+  0) ;;
+  1)
+    effective_config="$(mktemp)"
+    trap 'rm -f "$stderr_log" "$unexpected" "$unreviewed_scripts" "$effective_config"' EXIT
+    if ! npm --prefix "$directory" config list --json >"$effective_config" 2>>"$stderr_log"; then
+      cat "$stderr_log" >&2
+      exit 1
+    fi
+    if ! host_node_headers="$(node - "$effective_config" <<'NODE'
+const fs = require('node:fs');
+const path = require('node:path');
+function installedHeaders() {
+  const file = process.argv[2];
+  if (fs.statSync(file).size > 1024 * 1024) throw Error('npm configuration exceeds metadata bound');
+  const config = JSON.parse(fs.readFileSync(file, 'utf8'));
+  const keys = ['nodedir', 'target', 'runtime', 'dist-url', 'disturl', 'devdir'];
+  const configured = value => value !== undefined && value !== null && value !== '';
+  if (keys.some(key => configured(config[key]))) return null;
+  for (const name of Object.keys(process.env)) {
+    const option = name.toLowerCase().replace(/^npm_(?:package_config_node_gyp_|config_)/u, '').replaceAll('_', '-');
+    if (/^npm_(?:package_config_node_gyp_|config_)/iu.test(name) && keys.includes(option)) return null;
+  }
+  const prefix = path.dirname(path.dirname(fs.realpathSync(process.execPath)));
+  const directory = path.join(prefix, 'include', 'node');
+  for (const name of ['node.h', 'config.gypi', 'node_version.h']) {
+    const observed = fs.statSync(path.join(directory, name));
+    if (!observed.isFile() || observed.size === 0 || observed.size > 8 * 1024 * 1024) {
+      throw Error('Installed Node headers are missing or exceed their metadata bound');
+    }
+  }
+  const versionFile = path.join(directory, 'node_version.h');
+  if (fs.statSync(versionFile).size > 64 * 1024) throw Error('Node version header exceeds metadata bound');
+  const text = fs.readFileSync(versionFile, 'utf8');
+  const version = ['MAJOR', 'MINOR', 'PATCH'].map(part => {
+    const match = new RegExp('^\\s*#\\s*define\\s+NODE_' + part + '_VERSION\\s+(\\d+)\\s*$', 'm').exec(text);
+    if (!match) throw Error('Installed Node version header is incomplete');
+    return Number(match[1]);
+  }).join('.');
+  if (version !== process.versions.node) throw Error('Installed Node headers do not match the executing Node version');
+  return prefix;
+}
+const prefix = installedHeaders();
+if (prefix !== null) process.stdout.write(prefix);
+NODE
+    )"; then
+      exit 1
+    fi
+    if [[ -n "$host_node_headers" ]]; then
+      install_environment=(env "npm_package_config_node_gyp_nodedir=$host_node_headers")
+    fi
+    ;;
+  *) echo "Unsupported installed Node header selection mode" >&2; exit 2 ;;
+esac
+
+if ! "${install_environment[@]}" npm --prefix "$directory" "$mode" --no-audit --no-fund 2>>"$stderr_log"; then
   cat "$stderr_log" >&2
   exit 1
 fi

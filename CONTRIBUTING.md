@@ -10,6 +10,8 @@ other document, gate or requirement contradicts that page, the other one is wron
 
 ## How we develop Formal AI: drive the Agent CLI, never defer
 
+**Bound retries (issue #1328).** Every retry loop needs a finite attempt ceiling; external IO also needs a finite deadline or cancellation boundary. Count repeated client-owned calls from the transcript, preserving namespace identity and complete failure metadata, even when results are missing or unrecognized. Invalid arguments and local refspec/permission errors require a strategy change or an honest terminal report. Preserve existing safety controls and add a regression that reaches the limit. See [the retry requirement and audit](docs/requirements/issue-1328-bounded-retries.md).
+
 **Method: progressive JPEG (R1188-U28 to R1188-U30).** Every problem and every pull request is attacked the way a progressive JPEG loads: first the whole at low resolution, then sharper passes over all of it, the lowest level first. JavaScript goes first, and the other roots follow by automated translation, with recorded temporary workarounds where the meta language cannot translate yet. See [`docs/progressive-delivery.md`](docs/progressive-delivery.md); [`docs/progressive-plan.md`](docs/progressive-plan.md) is the generated next pass.
 
 **From issue #538 forward, this is the only way we develop the Formal AI

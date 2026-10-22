@@ -66,7 +66,7 @@ pub fn apply_patch_input(arguments: &str) -> Option<String> {
 /// Agentic clients use different names for the same values (`command`/`cmd`,
 /// `query`/`pattern`, and several path/edit variants). Planner code deliberately
 /// carries those semantic aliases; this boundary removes undeclared aliases and
-/// fills every required schema field before a call crosses the protocol.
+/// uses declared defaults or grounded values for missing required fields.
 ///
 /// `workspace` is the directory the client said it is running in, when it said
 /// so; a path the client requires to be absolute is resolved against it rather
@@ -95,45 +95,11 @@ pub fn response_arguments_for_tool(
     let Ok(source) = serde_json::from_str::<Value>(&arguments) else {
         return arguments;
     };
-    let Some(source) = source.as_object() else {
+    if !source.is_object() {
         return arguments;
-    };
-
-    let required = schema
-        .get("required")
-        .and_then(Value::as_array)
-        .map(Vec::as_slice)
-        .unwrap_or_default();
-    let creates_file = call_writes_bytes(properties, source);
-    let mut projected = Map::new();
-    for (name, property_schema) in properties {
-        let value = source
-            .get(name)
-            .cloned()
-            .or_else(|| semantic_alias(name, source, user_prompt))
-            .or_else(|| {
-                required
-                    .iter()
-                    .any(|entry| entry.as_str() == Some(name))
-                    .then(|| missing_required_value(property_schema, name, user_prompt))
-                    .flatten()
-            });
-        if let Some(value) = value {
-            let mut value = constrain_to_schema(value, property_schema, name, user_prompt);
-            if let Some(path) = value
-                .as_str()
-                .filter(|_| demands_absolute_path(definition, name, property_schema))
-            {
-                // A write with no observed workspace keeps the request's own
-                // spelling so the client resolves it in its own directory.
-                if let Some(absolute) = absolute_path(path, workspace, creates_file) {
-                    value = Value::String(absolute);
-                }
-            }
-            projected.insert(name.clone(), value);
-        }
     }
-    let projected = Value::Object(projected).to_string();
+    let projected =
+        project_schema_value(source, schema, definition, user_prompt, workspace, 0).to_string();
     if crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS") && projected != arguments {
         crate::diagnostic!("debug";
             "[trace] tool_schema_projection: tool={tool_name} planned={arguments} emitted={projected}"
@@ -142,7 +108,91 @@ pub fn response_arguments_for_tool(
     projected
 }
 
-fn tool_parameters_schema(tool: &Value) -> Option<&Value> {
+/// Project only declared members, retaining invalid explicit values for validation.
+fn project_schema_value(
+    source: Value,
+    schema: &Value,
+    definition: &Value,
+    user_prompt: &str,
+    workspace: Option<&str>,
+    depth: usize,
+) -> Value {
+    if depth > 32 || schema.get("$ref").is_some() {
+        return source;
+    }
+    if let Value::Array(items) = source {
+        let Some(item_schema) = schema.get("items") else {
+            return Value::Array(items);
+        };
+        return Value::Array(
+            items
+                .into_iter()
+                .map(|item| {
+                    project_schema_value(
+                        item,
+                        item_schema,
+                        definition,
+                        user_prompt,
+                        workspace,
+                        depth + 1,
+                    )
+                })
+                .collect(),
+        );
+    }
+    let Value::Object(source) = source else {
+        return source;
+    };
+    let Some(properties) = schema.get("properties").and_then(Value::as_object) else {
+        return Value::Object(source);
+    };
+    if properties.is_empty() {
+        return Value::Object(source);
+    }
+    let required = schema
+        .get("required")
+        .and_then(Value::as_array)
+        .map(Vec::as_slice)
+        .unwrap_or_default();
+    let creates_file = call_writes_bytes(properties, &source);
+    let mut projected = Map::new();
+    for (name, property_schema) in properties {
+        let value = source
+            .get(name)
+            .cloned()
+            .or_else(|| semantic_alias(name, &source, user_prompt))
+            .or_else(|| {
+                required
+                    .iter()
+                    .any(|entry| entry.as_str() == Some(name))
+                    .then(|| missing_required_value(property_schema, name, user_prompt))
+                    .flatten()
+            });
+        if let Some(mut value) = value {
+            if let Some(path) = value
+                .as_str()
+                .filter(|_| demands_absolute_path(definition, name, property_schema))
+                && let Some(absolute) = absolute_path(path, workspace, creates_file)
+            {
+                value = Value::String(absolute);
+            }
+            projected.insert(
+                name.clone(),
+                project_schema_value(
+                    value,
+                    property_schema,
+                    definition,
+                    user_prompt,
+                    workspace,
+                    depth + 1,
+                ),
+            );
+        }
+    }
+    Value::Object(projected)
+}
+
+pub fn tool_parameters_schema(tool: &Value) -> Option<&Value> {
     let object = tool.as_object()?;
     object
         .get("parameters")
@@ -165,7 +215,7 @@ fn semantic_alias(name: &str, source: &Map<String, Value>, user_prompt: &str) ->
             &["path", "filePath", "file_path", "absolute_path"]
         }
         "command" | "cmd" => &["command", "cmd"],
-        "query" | "pattern" => &["query", "pattern"],
+        "query" | "pattern" | "input" => &["query", "pattern", "input"],
         "paths" | "file_paths" | "files" => &["paths", "file_paths", "files"],
         "old" | "oldString" | "old_string" | "old_str" => {
             &["old", "oldString", "old_string", "old_str"]
@@ -290,119 +340,26 @@ fn call_writes_bytes(properties: &Map<String, Value>, source: &Map<String, Value
 /// default. Picking the first is picking an action — the order in a schema is
 /// not a preference — so the choice is left to fail loudly instead.
 fn missing_required_value(schema: &Value, name: &str, user_prompt: &str) -> Option<Value> {
-    if schema.get("default").is_none() && crate::tool_scope::is_identity_argument(name) {
+    if let Some(default) = schema.get("default").or_else(|| schema.get("const")) {
+        return Some(default.clone());
+    }
+    if crate::tool_scope::is_identity_argument(name) {
         return crate::tool_scope::grounded_identity_argument(name, user_prompt);
     }
-    if schema.get("default").is_none()
-        && schema
-            .get("enum")
-            .and_then(Value::as_array)
-            .is_some_and(|options| options.len() > 1)
-    {
-        return None;
+    if let Some(options) = schema.get("enum").and_then(Value::as_array) {
+        return (options.len() == 1).then(|| options[0].clone());
     }
-    Some(schema_default(schema, name, user_prompt))
-}
-
-fn schema_default(schema: &Value, name: &str, user_prompt: &str) -> Value {
-    if let Some(default) = schema.get("default") {
-        return default.clone();
+    if matches!(
+        name,
+        "prompt" | "instruction" | "message" | "description" | "commit_message" | "commitMessage"
+    ) {
+        return Some(Value::String(user_prompt.to_owned()));
     }
-    if let Some(first) = schema
-        .get("enum")
-        .and_then(Value::as_array)
-        .and_then(|e| e.first())
-    {
-        return first.clone();
+    if name == "is_background" {
+        return Some(Value::Bool(false));
     }
-    match schema.get("type").and_then(Value::as_str) {
-        Some("boolean") => Value::Bool(name == "login"),
-        Some("array") => Value::Array(Vec::new()),
-        Some("object") => Value::Object(Map::new()),
-        Some("integer" | "number") => Value::from(0),
-        Some("null") => Value::Null,
-        // A required free-text field describes the work, and the work is what
-        // the request said. `github.create_file` was called with
-        // `"message": ""` beside its empty repository; a commit message that
-        // says nothing is a fabrication too, and this one is already known.
-        _ if matches!(
-            name,
-            "prompt" | "instruction" | "message" | "commit_message" | "commitMessage"
-        ) =>
-        {
-            Value::String(user_prompt.to_owned())
-        }
-        _ => Value::String(String::new()),
+    if name == "login" {
+        return Some(Value::Bool(true));
     }
-}
-
-fn constrain_to_schema(value: Value, schema: &Value, name: &str, user_prompt: &str) -> Value {
-    if let Some(allowed) = schema.get("enum").and_then(Value::as_array)
-        && !allowed.contains(&value)
-    {
-        return allowed.first().cloned().unwrap_or(value);
-    }
-    match schema.get("type").and_then(Value::as_str) {
-        Some("object") => {
-            let Some(source) = value.as_object() else {
-                return schema_default(schema, name, user_prompt);
-            };
-            let Some(properties) = schema.get("properties").and_then(Value::as_object) else {
-                return value;
-            };
-            let required = schema
-                .get("required")
-                .and_then(Value::as_array)
-                .map(Vec::as_slice)
-                .unwrap_or_default();
-            let mut projected = Map::new();
-            for (child_name, child_schema) in properties {
-                let child = source.get(child_name).cloned().or_else(|| {
-                    required
-                        .iter()
-                        .any(|entry| entry.as_str() == Some(child_name))
-                        .then(|| schema_default(child_schema, child_name, user_prompt))
-                });
-                if let Some(child) = child {
-                    projected.insert(
-                        child_name.clone(),
-                        constrain_to_schema(child, child_schema, child_name, user_prompt),
-                    );
-                }
-            }
-            Value::Object(projected)
-        }
-        Some("array") => {
-            let Some(values) = value.as_array() else {
-                return schema_default(schema, name, user_prompt);
-            };
-            let mut values = values.clone();
-            if let Some(item_schema) = schema.get("items") {
-                values = values
-                    .into_iter()
-                    .map(|item| constrain_to_schema(item, item_schema, name, user_prompt))
-                    .collect();
-                let minimum = schema
-                    .get("minItems")
-                    .and_then(Value::as_u64)
-                    .and_then(|minimum| usize::try_from(minimum).ok())
-                    // Client-provided schemas must not be able to force an
-                    // unbounded allocation while defaults are projected.
-                    .unwrap_or(0)
-                    .min(64);
-                while values.len() < minimum {
-                    values.push(schema_default(item_schema, name, user_prompt));
-                }
-            }
-            Value::Array(values)
-        }
-        Some("string") if !value.is_string() => schema_default(schema, name, user_prompt),
-        Some("boolean") if !value.is_boolean() => schema_default(schema, name, user_prompt),
-        Some("integer") if !value.is_i64() && !value.is_u64() => {
-            schema_default(schema, name, user_prompt)
-        }
-        Some("number") if !value.is_number() => schema_default(schema, name, user_prompt),
-        Some("null") if !value.is_null() => Value::Null,
-        _ => value,
-    }
+    None
 }

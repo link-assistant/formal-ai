@@ -3,7 +3,6 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/language.mjs"] = (crateRequire) => {
 // Seed-driven language detection: a port of rust/src/language.rs.
 //
@@ -12,34 +11,28 @@
 // embeds. A `Language` is its slug string; `Language::Unknown` is 'unknown'.
 // The forced response language (issue #556) is a per-solve native slot the
 // planner never sets, so `detect` here never honours one.
-
+const { lower: canonicalUnaryLower } = crateRequire("crate/rust_str.mjs");
 const { cached, readText } = crateRequire("host.mjs");
 const { rustLines } = crateRequire("content.mjs");
-
 const UNKNOWN = 'unknown';
 const ENGLISH = 'en';
-
 const ALPHABETIC = /\p{Alphabetic}/u;
 const isAlphabetic = (character) => ALPHABETIC.test(character);
-
 /** Mirrors `fn unquote` in rust/src/language.rs. */
 function unquote(value) {
   return value.length >= 2 && value.startsWith('"') && value.endsWith('"') ? value.slice(1, -1) : value;
 }
-
 /** Rust `str::split_once(' ')`. */
 function splitOnce(text, separator) {
   const at = text.indexOf(separator);
   return at < 0 ? null : [text.slice(0, at), text.slice(at + separator.length)];
 }
-
 /** Mirrors `fn parse_codepoint`. */
 function parseCodepoint(value) {
   const digits = value.startsWith('0x') || value.startsWith('0X') ? value.slice(2) : null;
   if (digits === null || !/^[0-9a-fA-F]+$/.test(digits)) return 0;
   return parseInt(digits, 16);
 }
-
 /** Mirrors `fn parse_quoted_list`. @param {string} value */
 function parseQuotedList(value) {
   const items = [];
@@ -53,7 +46,6 @@ function parseQuotedList(value) {
   }
   return items;
 }
-
 /** Mirrors `fn parse_rules` (cached like the Rust `OnceLock`). */
 function rules() {
   return cached('language-detection-rules', () => {
@@ -80,31 +72,25 @@ function rules() {
     return out.filter((rule) => rule.language);
   });
 }
-
 function ruleClaims(rule, character) {
   const codepoint = character.codePointAt(0);
   return codepoint >= rule.start && codepoint <= rule.end && (!rule.alphabetic_only || isAlphabetic(character));
 }
-
 /** Mirrors `fn from_slug`: the slug when the registry declares it, else null. */
 function languageFromSlug(slug) {
   return rules().find((rule) => rule.language === slug)?.language ?? null;
 }
-
 /** Mirrors `fn registered_languages`. */
 function registeredLanguages() {
   return rules().map((rule) => rule.language);
 }
-
 /** Mirrors `fn fallback_language`. */
 function fallbackLanguage() {
   return fallbackOf(rules());
 }
-
 function ledgerLines() {
   return cached('language-ledger-lines', () => rustLines(readText('data/seed/languages.lino')));
 }
-
 /** Mirrors `fn uses_postpositions` in rust/src/language.rs. */
 function usesPostpositions(slug) {
   let current = null;
@@ -117,7 +103,6 @@ function usesPostpositions(slug) {
   }
   return false;
 }
-
 /** Mirrors `fn language_name` in rust/src/language.rs. */
 function languageName(slug) {
   let current = null;
@@ -129,7 +114,6 @@ function languageName(slug) {
   }
   return null;
 }
-
 /** Mirrors `fn surface_matches_language` in rust/src/language.rs. */
 function surfaceMatchesLanguage(surface, slug) {
   const all = rules();
@@ -139,22 +123,18 @@ function surfaceMatchesLanguage(surface, slug) {
     .filter((candidate) => candidate.script === rule.script)
     .some((candidate) => Array.from(surface).some((character) => ruleClaims(candidate, character)));
 }
-
 function fallbackOf(all) {
   return all.find((rule) => rule.fallback)?.language ?? ENGLISH;
 }
-
 function fallbackScriptOf(all) {
   return all.find((rule) => rule.fallback)?.script ?? '';
 }
-
 /** Mirrors `fn default_language_of`. */
 function defaultLanguageOf(all, script) {
   const rule = all.find((candidate) => candidate.script === script && candidate.fallback)
     ?? all.find((candidate) => candidate.script === script);
   return rule ? rule.language : fallbackOf(all);
 }
-
 /** Mirrors `struct ScriptCounts` + `fn count_scripts`. */
 function countScripts(prompt, all) {
   const counts = { counts: [], other: 0, first: null };
@@ -172,12 +152,10 @@ function countScripts(prompt, all) {
   }
   return counts;
 }
-
 const countOf = (counts, script) => counts.counts.find(([name]) => name === script)?.[1] ?? 0;
 const maxExcluding = (counts, script) =>
   counts.counts.filter(([name]) => name !== script).reduce((max, [, count]) => Math.max(max, count), 0);
 const total = (counts) => counts.counts.reduce((sum, [, count]) => sum + count, 0) + counts.other;
-
 /**
  * Mirrors `fn in_identifier`: whether the whitespace-delimited token around
  * `at` is a path or an identifier (`_`, `/`, `\`, or a `.` before a letter or
@@ -190,7 +168,6 @@ function inIdentifier(text, at) {
   while (end < text.length && !/\s/u.test(text[end])) end += 1;
   return /[_/\\]|\.[\p{Alphabetic}\p{N}]/u.test(text.slice(start, end));
 }
-
 /** Mirrors `fn marker_present`. */
 function markerPresent(normalized, marker, all, fallbackScript) {
   const first = Array.from(marker)[0];
@@ -206,7 +183,6 @@ function markerPresent(normalized, marker, all, fallbackScript) {
     from = at + marker.length;
   }
 }
-
 /** Mirrors `fn marker_language`. */
 function markerLanguage(prompt, all, counts, fallbackScript) {
   const normalized = prompt.toLowerCase();
@@ -223,7 +199,6 @@ function markerLanguage(prompt, all, counts, fallbackScript) {
   }
   return best ? best[1] : null;
 }
-
 /** Mirrors `fn detect_with`. */
 function detectWith(prompt, all) {
   const fallback = fallbackOf(all);
@@ -249,7 +224,6 @@ function detectWith(prompt, all) {
   }
   return fallback;
 }
-
 /**
  * Mirrors `fn detect` in rust/src/language.rs: the dominant language's slug,
  * or 'unknown'. The forced-language slot is never set on the planner path.
@@ -259,7 +233,6 @@ function detectWith(prompt, all) {
 function detect(prompt) {
   return detectWith(String(prompt), rules());
 }
-
 /** Mirrors `fn language_for_concept_slug` in rust/src/language.rs. */
 function languageForConceptSlug(conceptSlug) {
   if (!conceptSlug.startsWith('language_')) return null;
@@ -271,11 +244,10 @@ function languageForConceptSlug(conceptSlug) {
     const right = Array.from(name);
     return new TextEncoder().encode(declared).length === new TextEncoder().encode(name).length
       && left.every((character, index) => right[index] !== undefined
-        && character.replace(/[A-Z]/g, (letter) => letter.toLowerCase()) === right[index]);
+        && character.replace(/[A-Z]/g, canonicalUnaryLower) === right[index]);
   });
   return rule ? rule.language : null;
 }
-
 return Object.freeze({
   UNKNOWN,
   ENGLISH,

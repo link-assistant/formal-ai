@@ -1,6 +1,7 @@
 // The engine helpers the planner calls (rust/src/engine.rs).
 
 import { cached, readText } from '../host.mjs';
+import { memoizedNormalization } from './normalization_cache.mjs';
 
 const ALPHANUMERIC = /[\p{Alphabetic}\p{N}]/u;
 
@@ -19,6 +20,10 @@ function isScriptCombiningMark(character) {
 
 /** Mirrors `fn normalize_prompt` in rust/src/engine.rs. @param {string} prompt */
 export function normalizePrompt(prompt) {
+  return memoizedNormalization(prompt, normalizePromptUncached);
+}
+
+function normalizePromptUncached(prompt) {
   const canonical = Array.from(String(prompt), (character) => character.toLowerCase())
     .join('')
     .replaceAll('c++', ' cpp ')

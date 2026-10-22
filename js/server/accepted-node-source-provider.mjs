@@ -7,7 +7,7 @@ import { observedCallableRequest } from "../agentic/module_function.mjs";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
-import { spawnSync } from "node:child_process";
+import { boundedCommandSync } from "./bounded-command.mjs";
 import { createHash } from "node:crypto";
 import { pathToFileURL } from "node:url";
 import { tokenizeWithSpans } from "../agentic/crate/es_tokenizer.mjs";
@@ -330,12 +330,13 @@ export function createAcceptedNodeSourceProvider(configuration) {
       assert.equal(actualCommand, command, 'different command');
       fresh();
       const candidateBefore = candidateIdentity();
-      const result = spawnSync(process.execPath, ['--test', policy.acceptanceOperand], {
+      const result = boundedCommandSync(process.execPath, ['--test', policy.acceptanceOperand], {
         cwd: workspace,
         timeout: 30000,
         maxBuffer: 4 * 1024 * 1024
       });
       fresh();
+      assert.equal(result.cleanup_complete, true, 'incomplete process');
       assert.equal(result.signal, null, 'incomplete process');
       assert.equal(result.error, undefined, serverMessage("source-operation-failed-process-transport"));
       assert.ok(Number.isInteger(result.status), serverMessage("source-operation-missing-process-status"));

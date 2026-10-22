@@ -8,20 +8,30 @@ export function readBoundedFileBytes(directory,relative,maximum){
   if(state.isSymbolicLink())throw Error('RuntimeArchiveSymlink');
   if(index<parts.length-1&&!state.isDirectory())throw Error('RuntimeArchiveDirectory');
  }
- if(typeof fs.constants.O_NOFOLLOW!=='number')throw Error('RuntimeArchiveNoFollowUnavailable');
- const descriptor=fs.openSync(filename,fs.constants.O_RDONLY|fs.constants.O_NOFOLLOW);
+ return readBoundedFilePath(filename,maximum);
+}
+
+/** Read one stable regular file without allocating beyond its declared byte budget. */
+export function readBoundedFilePath(filename,maximum,{allowSymlink=false,io=fs}={}){
+ if(!Number.isSafeInteger(maximum)||maximum<0)throw Error('BoundedReadInvalidLimit');
+ if(!allowSymlink&&typeof io.constants.O_NOFOLLOW!=='number')throw Error('RuntimeArchiveNoFollowUnavailable');
+ const observed=allowSymlink?io.statSync(filename,{bigint:true}):io.lstatSync(filename,{bigint:true});
+ if(!observed.isFile()||observed.size>BigInt(maximum)||observed.size<0n||(!allowSymlink&&observed.isSymbolicLink()))throw Error('RuntimeArchiveSizeOrType');
+ const nonblocking=typeof io.constants.O_NONBLOCK==='number'?io.constants.O_NONBLOCK:0;
+ const descriptor=io.openSync(filename,io.constants.O_RDONLY|nonblocking|(allowSymlink?0:io.constants.O_NOFOLLOW));
  try{
-  const before=fs.fstatSync(descriptor,{bigint:true});
+  const before=io.fstatSync(descriptor,{bigint:true});
+  if(before.dev!==observed.dev||before.ino!==observed.ino||before.size!==observed.size||before.mtimeNs!==observed.mtimeNs||before.ctimeNs!==observed.ctimeNs)throw Error('RuntimeArchiveChanged');
   if(!before.isFile()||before.size>BigInt(maximum)||before.size<0n)throw Error('RuntimeArchiveSizeOrType');
   const length=Number(before.size),bytes=Buffer.alloc(length);let offset=0;
   while(offset<length){
-   const count=fs.readSync(descriptor,bytes,offset,length-offset,null);
-   if(count===0)throw Error('RuntimeArchiveTruncated');offset+=count;
+   const count=io.readSync(descriptor,bytes,offset,length-offset,null);
+   if(!Number.isSafeInteger(count)||count<=0||count>length-offset)throw Error('RuntimeArchiveTruncated');offset+=count;
   }
-  const after=fs.fstatSync(descriptor,{bigint:true}),current=fs.lstatSync(filename,{bigint:true});
+  const after=io.fstatSync(descriptor,{bigint:true}),current=allowSymlink?io.statSync(filename,{bigint:true}):io.lstatSync(filename,{bigint:true});
   if(current.isSymbolicLink()||current.dev!==before.dev||current.ino!==before.ino
     ||after.size!==before.size||after.mtimeNs!==before.mtimeNs||after.ctimeNs!==before.ctimeNs
     ||current.size!==before.size||current.mtimeNs!==before.mtimeNs||current.ctimeNs!==before.ctimeNs)throw Error('RuntimeArchiveChanged');
   return bytes;
- }finally{fs.closeSync(descriptor);}
+ }finally{io.closeSync(descriptor);}
 }

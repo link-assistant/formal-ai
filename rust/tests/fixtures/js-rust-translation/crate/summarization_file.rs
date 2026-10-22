@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=9d4ce1a89f1d7c8c352a185f3603e3fc22dbb8ab9bc82b5ee78075c7bc125790 bytes=25827
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=4783771551124a73b7b99fae2a600c2239cf18b7c8c851a87c32cbe68a00847d bytes=25864
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=3; string-methods items=1
 
@@ -26,6 +26,10 @@ pub fn wa_str_slice(text: String, start: f64, end: f64) -> String {
 pub fn wa_str_slice_from(text: String, start: f64) -> String {
     wa_str_slice(text, start, f64::INFINITY) }
 // formal-ai:workaround-prelude end
+
+// meta-language:translated JavaScript import_statement items=1 sha256=ea67ac58c941251801bc82c22574a8e03c0fd9db18bf89015315cef5823b17a3
+// | import { lower as canonicalUnaryLower } from './rust_str.mjs';
+use crate::rust_str::lower as canonical_unary_lower;
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
@@ -168,7 +172,7 @@ pub const MAX_PLAIN_TEXT_STATEMENTS: f64 = 256f64;
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .replace()
-// formal-ai:blockers arrow callback of .replace() | call of a sibling function | method call .replace() | nullish coalescing | regular expression
+// formal-ai:blockers call of a sibling function | method call .replace() | nullish coalescing | regular expression
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .split()
@@ -208,7 +212,7 @@ pub fn path_extension(file_name: String) -> String {
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .replace()
-// formal-ai:blockers arrow callback of .replace() | method call .replace() | regular expression | sibling value
+// formal-ai:blockers method call .replace() | regular expression | sibling value
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal case test

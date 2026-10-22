@@ -1,18 +1,20 @@
 // Explicit optional physical provider; never promote caller receipt metadata.
-import { spawnSync } from 'node:child_process';
+import { boundedCommandSync } from '../../js/server/bounded-command.mjs';
 import { fileURLToPath } from 'node:url';
 
 const adapter = fileURLToPath(new URL('./exclusive-create.py', import.meta.url));
 
-export function exclusiveCreate(root, path, content, rootIdentity = undefined) {
-  const result = spawnSync('python3', [adapter], {
-    input: JSON.stringify({ root, path, content, root_identity: rootIdentity }), encoding: 'utf8',
-    timeout: 30000, maxBuffer: 65536,
-  });
+export function exclusiveCreate(root, path, content, rootIdentity = undefined, { timeoutMs = 30000 } = {}) {
+  if (!Number.isSafeInteger(timeoutMs) || timeoutMs <= 0 || timeoutMs > 30000) {
+    throw new RangeError('invalid_creation_timeout');
+  }
+  const input = JSON.stringify({ root, path, content, root_identity: rootIdentity });
+  const result = boundedCommandSync('python3', [adapter], { input, encoding: 'utf8',
+      timeout: timeoutMs, stdoutLimitBytes: 65536, stderrLimitBytes: 65536 });
   let receipt;
   try { receipt = JSON.parse(result.stdout); }
   catch { receipt = null; }
-  if (result.error || result.signal || result.status !== 0
+  if (result.error || !result.cleanup_complete || result.signal || result.status !== 0
       || receipt?.success !== true || receipt.path !== path
       || receipt.bytes !== Buffer.byteLength(content, 'utf8')) {
     return { content: JSON.stringify({ is_error: true,

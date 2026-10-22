@@ -6,6 +6,8 @@
 // host solver. Importing ./planner.mjs here is a module cycle; it is safe
 // because nothing is called at module evaluation time.
 
+import { callbackNonempty as canonicalUnaryNonempty } from './callback_values.mjs';
+import { lower as canonicalUnaryLower } from './crate/rust_str.mjs';
 import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
 import { plainText } from './content.mjs';
@@ -384,7 +386,7 @@ function substantiveResultLine(answer, task) {
 }
 
 function relevanceScore(line, terms, conditionRequested, implementationRequested, relationship, authority) {
-  const words = line.split(/[^A-Za-z0-9]/u).filter((word) => word !== '').map((word) => word.toLowerCase());
+  const words = line.split(/[^A-Za-z0-9]/u).filter(canonicalUnaryNonempty).map(canonicalUnaryLower);
   const matches = (term) => words.includes(term) || term.split('_').every((part) => words.includes(part));
   const overlap = terms.filter(matches).length;
   const requestedProperty = terms.length && matches(terms[terms.length - 1]) ? 1 : 0;

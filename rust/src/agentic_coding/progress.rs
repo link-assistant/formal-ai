@@ -10,6 +10,8 @@ use super::capability_router::classify_tool;
 use super::planner::Capability;
 use crate::protocol::ChatMessage;
 mod source_fetch_observation;
+mod work_item_read_receipt;
+use work_item_read_receipt::{without_exit_sentinel, work_item_read_failure_reason};
 
 /// One observed client-owned tool execution in transcript order.
 #[derive(Debug)]
@@ -26,6 +28,13 @@ pub(super) struct ToolAttempt {
 }
 
 impl ToolAttempt {
+    /// Borrow the scanner-created typed source observation without granting new authority.
+    pub(super) const fn source_observation(
+        &self,
+    ) -> Option<&super::tool_result::SourceReadObservation> {
+        self.source_read.as_ref()
+    }
+
     /// Whether this attempt read a work item through the shell (`gh issue view …`, or one of the REST fallbacks of issue #1155).
     pub(super) fn is_work_item_read(&self) -> bool {
         self.capability == Capability::Run
@@ -178,7 +187,9 @@ impl Progress {
             if capability == Capability::Search {
                 let payload = super::tool_result::normalized_payload(&raw);
                 search_result = Some(payload.clone().unwrap_or_default());
-                if let Some(text) = payload.filter(|text| !text.trim().is_empty()) {
+                if let Some(text) =
+                    payload.filter(|text| failure.is_none() && !text.trim().is_empty())
+                {
                     search_output = Some(text);
                 }
             }
@@ -192,7 +203,9 @@ impl Progress {
                 // A work item read through the client's own `gh` is a fetched
                 // page like any other (issue #1133): the command names the
                 // URL, and its output is the issue's title and body.
-                if let Some(url) = command.as_deref().and_then(work_item_read_url) {
+                if let Some(command) = command.as_deref()
+                    && let Some(url) = work_item_read_url(command)
+                {
                     // The attempt is recorded whatever it returned: a read
                     // that came back empty has still been tried, and planning
                     // it again would loop (issue #1133).
@@ -204,15 +217,15 @@ impl Progress {
                     // (issue #1155): clients echo tool output with the status
                     // dropped, which once let an unauthenticated `gh`'s
                     // how-to-authenticate banner pass for an issue body.
-                    if let Some(reason) = command.as_deref().and_then(|command| {
+                    if let Some(reason) =
                         work_item_read_failure_reason(command, &raw, failure.as_deref())
-                    }) {
+                    {
                         failed_work_item_reads.push((url.clone(), reason));
                     } else if failure.is_none()
                         && let Some(text) = super::tool_result::normalized_payload(&raw)
                             .filter(|text| !text.trim().is_empty())
                     {
-                        fetched_pages.push((url, without_exit_sentinel(&text)));
+                        fetched_pages.push((url, without_exit_sentinel(&text, command)));
                     }
                 }
                 run_outputs.push(raw);
@@ -384,6 +397,17 @@ impl Progress {
         super::qualified_tool_observation::latest(&self.qualified_attempts, capability, arguments)
     }
 
+    /// Exact scalar aliases retain the actual full declaration frame.
+    pub(super) fn qualified_command_attempt(
+        &self,
+        command: &str,
+    ) -> Option<&super::qualified_tool_observation::QualifiedToolAttempt> {
+        super::qualified_tool_observation::qualified_command_attempt(
+            &self.qualified_attempts,
+            command,
+        )
+    }
+
     /// Whether this turn already ran `command` exactly as given.
     pub(super) fn has_run(&self, command: &str) -> bool {
         self.run_observations.iter().any(|(ran, _)| ran == command)
@@ -408,6 +432,31 @@ impl Progress {
                 && (attempt.arguments.as_deref() == Some(call.arguments.as_str())
                     || Self::same_run_operand(attempt, call))
         })?;
+        // A completed shell operation can change source even when its arguments repeat.
+        // This invalidates Read evidence only; the transcript action budgets remain intact.
+        let source_changed = super::planner::tool_capability(&call.tool) == Some(Capability::Read)
+            && self.attempts[index]
+                .source_read
+                .as_ref()
+                .is_some_and(|read| {
+                    read.status == super::tool_result::SourceReadStatus::ReportedSuccess
+                        && read.complete
+                })
+            && self.attempts[index + 1..].iter().any(|later| {
+                later.capability == Capability::Run
+                    && later.succeeded
+                    && later
+                        .arguments
+                        .as_deref()
+                        .and_then(super::tool_result::command_argument)
+                        .is_some()
+                    && !super::tool_result::incomplete_receipt(&later.detail)
+                    && super::tool_result::step_outcome(&later.detail)
+                        == super::tool_result::StepOutcome::Succeeded
+            });
+        if source_changed {
+            return None;
+        }
         let progressed = self.attempts[index + 1..]
             .iter()
             .enumerate()
@@ -649,14 +698,32 @@ impl Progress {
         })
     }
 
-    /// The latest write declaration of this path, including failed observations.
-    pub(super) fn latest_write_index(&self, path: &str) -> Option<usize> {
+    /// Unknown edit scope cannot certify an earlier source observation.
+    pub(super) fn latest_source_mutation_index(&self, path: &str) -> Option<usize> {
         self.attempts.iter().rposition(|attempt| {
-            attempt.capability == Capability::Write
-                && attempt
+            matches!(
+                attempt.capability,
+                Capability::Write | Capability::Edit | Capability::MultiEdit
+            ) && (attempt.capability == Capability::MultiEdit
+                || attempt
                     .arguments
                     .as_deref()
-                    .is_some_and(|arguments| argument_targets(arguments, path))
+                    .and_then(|arguments| {
+                        source_read_path(arguments).or_else(|| {
+                            super::qualified_tool_observation::canonical_creation_path(arguments)
+                                .map(str::to_owned)
+                        })
+                    })
+                    .is_none()
+                || attempt.arguments.as_deref().is_some_and(|arguments| {
+                    argument_targets(arguments, path)
+                        || super::qualified_tool_observation::canonical_creation_path(arguments)
+                            .is_some_and(|declared| {
+                                declared == path
+                                    || (!std::path::Path::new(path).is_absolute()
+                                        && std::path::Path::new(declared).ends_with(path))
+                            })
+                }))
         })
     }
 
@@ -859,55 +926,6 @@ fn rest_read_url(command: &str) -> Option<String> {
     // plan targets, so the REST reads were never matched to their work item.
     let kind = if kind == "pulls" { "pull" } else { "issues" };
     Some(format!("https://github.com/{owner}/{repo}/{kind}/{number}"))
-}
-
-/// The exit status a read command printed about itself, when it printed one.
-fn exit_sentinel(raw: &str) -> Option<i32> {
-    raw.lines()
-        .filter_map(|line| line.trim().strip_prefix("__formal_ai_exit="))
-        .filter_map(|digits| digits.parse().ok())
-        .next_back()
-}
-
-/// The output of a read without the sentinel lines it printed about itself —
-/// the issue text is the payload, not the plumbing.
-fn without_exit_sentinel(text: &str) -> String {
-    text.lines()
-        .filter(|line| !line.trim().starts_with("__formal_ai_exit="))
-        .collect::<Vec<_>>()
-        .join("\n")
-}
-
-/// Why a work-item read's output is not page evidence, when it is not.
-fn work_item_read_failure_reason(
-    command: &str,
-    raw: &str,
-    echoed_failure: Option<&str>,
-) -> Option<String> {
-    if let Some(failure) = echoed_failure {
-        return Some(failure.to_owned());
-    }
-    if let Some(status) = exit_sentinel(raw)
-        && status != 0
-    {
-        return Some(super::work_item_steps::fill(
-            "read_failure_exit_status",
-            &[(concat!("{", "status}"), status.to_string().as_str())],
-        ));
-    }
-    let text = without_exit_sentinel(raw);
-    let shaped = if command.starts_with("curl ") {
-        !text.trim().is_empty() && !text.trim_start().starts_with('{')
-    } else {
-        text.contains("\n\n")
-    };
-    (!shaped).then(|| {
-        if command.starts_with("curl ") {
-            "the REST answer was not issue text".to_owned()
-        } else {
-            "the output did not have the title-and-body shape of a work item".to_owned()
-        }
-    })
 }
 
 // Only a leading seeded provider notice supplies legacy status-less Fetch failure evidence.

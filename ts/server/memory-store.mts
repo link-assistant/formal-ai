@@ -440,27 +440,34 @@ export function mergeUnionById(base, incoming) {
 
 /** `write_locked_atomic` (temp file + rename; the advisory lock file is created, not held). */
 export function writeAtomic(file, contents, {privateMode=false}={}) {
-  const parent = path.dirname(file);
-  if (parent) fs.mkdirSync(parent, { recursive: true });
-  const name = path.basename(file) || 'memory.lino';
-  fs.closeSync(fs.openSync(path.join(parent, `${name}.lock`), 'a'));
-  const temp = path.join(parent, `${name}.tmp.${process.pid}`);
-  let temporaryOwned=false;
-  try {
-    if(privateMode){
-      const descriptor=fs.openSync(temp,'wx',0o600);temporaryOwned=true;
-      try{fs.writeFileSync(descriptor,contents);}finally{fs.closeSync(descriptor);}
-    }
-    else fs.writeFileSync(temp, contents);
-    fs.renameSync(temp, file);
-  } catch (error) {
-    try {
-      if(!privateMode||temporaryOwned)fs.unlinkSync(temp);
-    } catch {
-      // the temp file may never have been created
-    }
-    throw error;
+ const parent=path.dirname(file);if(parent)fs.mkdirSync(parent,{recursive:true});
+ const name=path.basename(file)||'memory.lino',temporary=path.join(parent,`${name}.tmp.${process.pid}`),lockPath=path.join(parent,`${name}.lock`);
+ // This synchronous host still does not claim a cross-native flock transaction.
+ const lock=fs.openSync(lockPath,fs.constants.O_CREAT|fs.constants.O_RDWR|(fs.constants.O_NOFOLLOW??0)|(fs.constants.O_NONBLOCK??0),0o600);
+ try {if(!fs.fstatSync(lock).isFile()||fs.lstatSync(lockPath).isSymbolicLink())throw Error('memory_atomic_lock_identity');}finally{fs.closeSync(lock);}
+ let original=null,initial=null,staged=null,failure=null,committed=false;
+ const same=(left,right)=>left.dev===right.dev&&left.ino===right.ino;
+ try {
+  try {const named=fs.lstatSync(file);
+  if(!named.isFile()||named.isSymbolicLink())throw Error('memory_atomic_regular_file_required');
+  original=fs.openSync(file,fs.constants.O_RDONLY|(fs.constants.O_NOFOLLOW??0)|(fs.constants.O_NONBLOCK??0));
+  initial=fs.fstatSync(original);
+  if(!initial.isFile()||!same(initial,named))throw Error('memory_atomic_target_identity');
+  }catch(error){if(error.code!=='ENOENT')throw error;
   }
+  staged=fs.openSync(temporary,'wx',0o600);
+  if(initial&&!privateMode)fs.fchmodSync(staged,initial.mode&0o7777);
+  const bytes=Buffer.from(contents);let offset=0;
+  for(let attempt=0;attempt<bytes.length&&offset<bytes.length;attempt++) {const count=fs.writeSync(staged,bytes,offset,bytes.length-offset);if(!Number.isInteger(count)||count<=0)throw Error('memory_atomic_write_no_progress');offset+=count;}
+  if(offset!==bytes.length)throw Error('memory_atomic_write_incomplete');fs.fsyncSync(staged);
+  const currentStage=fs.lstatSync(temporary);if(currentStage.isSymbolicLink()||!same(fs.fstatSync(staged),currentStage))throw Error('memory_atomic_stage_changed');
+  if(original!==null) {const current=fs.lstatSync(file),observed=fs.fstatSync(original);if(current.isSymbolicLink()||!same(initial,current)||observed.size!==initial.size||observed.mtimeMs!==initial.mtimeMs||observed.ctimeMs!==initial.ctimeMs)throw Error('memory_atomic_target_changed');}
+  else {try{fs.lstatSync(file);throw Error('memory_atomic_target_changed');}catch(error){if(error.code!=='ENOENT')throw error;}}
+  fs.renameSync(temporary,file);committed=true;
+ } catch(error){failure=error;}
+ if(failure&&staged!==null) {try{const current=fs.lstatSync(temporary);if(current.isSymbolicLink()||!same(fs.fstatSync(staged),current))throw Error('memory_atomic_cleanup_identity_changed');fs.unlinkSync(temporary);}catch(error){failure.cleanupError=String(error);}}
+ for(const descriptor of [staged,original])if(descriptor!==null)try{fs.closeSync(descriptor);}catch(error){if(failure)failure.cleanupError=String(error);else{failure=error;failure.committed=committed;}}
+ if(failure)throw failure;
 }
 
 /** `memory_sync::chat_recording_enabled`. */

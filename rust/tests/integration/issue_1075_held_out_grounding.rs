@@ -266,11 +266,26 @@ fn a_required_choice_the_request_never_makes_is_left_to_the_client() {
         })],
     );
 
-    let calls = tool_calls(&response);
-    let (_, arguments) = calls.first().unwrap_or_else(|| panic!("{response}"));
+    // Leaving an unmade choice to the client also means refusing an incomplete call.
+    // Emitting a function call without its required visibility would violate the schema.
     assert!(
-        arguments.get("visibility").is_none(),
-        "an unmade choice was made for the user: {arguments}"
+        tool_calls(&response).is_empty(),
+        "an incomplete call escaped: {response}"
+    );
+    assert_eq!(
+        response["choices"][0]["finish_reason"], "stop",
+        "{response}"
+    );
+    let answer = response["choices"][0]["message"]["content"]
+        .as_str()
+        .expect("terminal refusal text");
+    assert!(
+        answer.contains("No call was sent") && answer.contains("incomplete"),
+        "{response}"
+    );
+    assert!(
+        !response.to_string().contains("\"visibility\":"),
+        "a visibility choice was fabricated: {response}"
     );
 }
 

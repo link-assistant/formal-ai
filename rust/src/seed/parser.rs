@@ -350,7 +350,7 @@ pub fn split_pipe_list(raw: &str) -> Vec<String> {
     trimmed
         .split('|')
         .map(str::trim)
-        .filter(|s| !s.is_empty())
+        .filter(|s| crate::callback_values::callback_nonempty(*s))
         .map(ToOwned::to_owned)
         .collect()
 }

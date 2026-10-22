@@ -1,10 +1,11 @@
 // `crate::seed::terminal_command_vocabulary` (rust/src/seed/terminal_commands.rs),
 // read from data/seed/terminal-commands.lino.
 
+import { callbackValue as canonicalUnaryValue } from '../callback_values.mjs';
 import { cached, readText } from '../host.mjs';
 import { parseRoot } from './seed_parser.mjs';
 
-const collectValues = (group, name) => (group.children || []).filter((child) => child.name === name).map((child) => child.value);
+const collectValues = (group, name) => (group.children || []).filter((child) => child.name === name).map(canonicalUnaryValue);
 
 const collectLanguageValues = (group, name) => (group.children || [])
   .filter((child) => child.name === 'language')

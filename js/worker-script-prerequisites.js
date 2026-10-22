@@ -22,7 +22,7 @@ const formalAiWorkerScriptPrerequisites = Object.freeze([
   },
   {
     "script": "js/worker/formal_ai_worker_meta_synthesis.js",
-    "sourceSha256": "b8b4aa8034abdd14fc949a25f2b46ae5e36f9e0019781791c7c2d788dd3c8c41",
+    "sourceSha256": "8178aa0004eeb1d6f20537570c2c37ef1a6e83922d2b3c12543aed90e0cd90e1",
     "requires": [
       {
         "script": "js/seed_loader.js",

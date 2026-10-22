@@ -1,7 +1,8 @@
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { validateCallerAdmission, observeCallerAdmission } from '../../../scripts/release-fixture-caller-admission.mjs';
+import { validateCallerAdmission, observeCallerAdmission, requireNonterminalFixtureRun } from '../../../scripts/release-fixture-caller-admission.mjs';
 import { validateDiagnosticDescendant } from '../../../scripts/release-fixture-lease-diagnostics.mjs';
 
 const context = Object.freeze({repository: 'owner/repo', run: '123', attempt: '2', eventHead: 'a'.repeat(40)});
@@ -94,15 +95,20 @@ import { observeActiveAncestor } from '../../../scripts/release-runtime-fixture.
 function syntheticPhysicalReceipts() {
   const physical = {id: 42, name: childName, run_id: 123, run_attempt: 2, head_sha: context.eventHead,
     status: 'in_progress', runner_name: 'synthetic-runner', runner_id: 7,
+    completed_at:null,started_at:'2026-10-11T00:00:00Z',
     url: 'https://api.github.com' + base + '/jobs/42'};
-  return [{status: 200, body: {jobs: [structuredClone(physical)]}},
-    {status: 200, body: physical},
-    {status: 200, body: {group_name: groupName, group_members: [{run_id: 123, status: 'in_progress'}]}}];
+  return [{status: 200, observedAt:'2026-10-11T00:00:01Z', body: {total_count:1,jobs: [structuredClone(physical)]}},
+    {status: 200, observedAt:'2026-10-11T00:00:02Z', body: physical},
+    {status: 200, observedAt:'2026-10-11T00:00:04Z', body: {group_name: groupName,total_count:1,
+      group_members: [{run_id:123,job_id:42,job_name:childName,status:'in_progress',job_url:physical.url,
+        run_url:'https://api.github.com'+base+'/runs/123'}]}}];
 }
 async function syntheticPhysicalAttempt(values, runnerName = 'synthetic-runner') {
   const calls = [];
   const receipt = await observeActiveAncestor({
-    get: async route => {calls.push(route); return values[calls.length - 1];},
+    get: async route => {calls.push(route);
+      if(route===base+'/runs/123')return {...syntheticSnapshots()[0],observedAt:'2026-10-11T00:00:03Z'};
+      return values[route.includes('/jobs?')?0:route.includes('/jobs/')?1:2];},
     context, name: groupName, label: 'Fixture lease holder active', snapshots: [], runnerName
   });
   return {calls, receipt};
@@ -112,7 +118,7 @@ test('synthetic physical execution guard binds exact current runner, source, run
   const result = await syntheticPhysicalAttempt(syntheticPhysicalReceipts());
   assert.equal(result.receipt.descendantJobId, 42);
   assert.deepEqual(result.calls, [base + '/runs/123/jobs?filter=latest&per_page=100',
-    base + '/jobs/42', base + '/concurrency_groups/' + groupName + '?ahead_of_job=42']);
+    base + '/jobs/42', base + '/runs/123', base + '/concurrency_groups/' + groupName]);
 });
 
 test('synthetic queued, foreign and missing physical execution cannot use admission as a witness', async () => {
@@ -149,7 +155,7 @@ test('queued aggregate requires authentic matching admitted group without execut
  for(const mutate of [
   x=>x[0].body.conclusion='success',
   x=>delete x[0].body.conclusion,
-  x=>x[0].body.status='waiting',
+  x=>x[0].body.status='unrecognized',
   x=>x[2].body.group_members[0].status='queued',
   x=>x[2].body.group_members[0].job_id=43,
   x=>x[2].observedAt='2026-10-11T00:00:06Z'
@@ -174,7 +180,7 @@ test('admission follows the authenticated source-declared active callee phase', 
   const foreign=structuredClone(values);foreign[1].body.jobs[1].name='Inactive reusable fixture / '+phase;
   foreign[2].body.group_members[0].job_name=foreign[1].body.jobs[1].name;
   assert.throws(()=>validateCallerAdmission(...foreign,context));
-  for(const mutate of [x=>x[1].body.jobs[1].status='queued',x=>x[1].body.jobs[1].status='completed',
+  for(const mutate of [x=>x[2].body.group_members[0].status='pending',x=>x[1].body.jobs[1].status='completed',
    x=>x[1].body.jobs[1].run_attempt=1,x=>x[1].body.jobs[1].head_sha='b'.repeat(40),
    x=>x[2].body.group_members[0].job_name='foreign phase']){
    const changed=structuredClone(values);mutate(changed);
@@ -192,5 +198,86 @@ test('admission refuses duplicate selected phase names even with distinct job id
   duplicate.url='https://api.github.com'+base+'/jobs/43';
   values[1].body.jobs.push(duplicate);values[1].body.total_count=2;
   assert.throws(()=>validateCallerAdmission(...values,context));
+ }
+});
+
+
+test('captured source-bound admission accepts the actual queued consumer without execution authority', async () => {
+  const fixture=JSON.parse(readFileSync(new URL('../fixtures/release-fixture-admission-788.json',import.meta.url)));
+  assert.equal(fixture.snapshots[1].body.total_count,7);
+  assert.equal(fixture.snapshots[1].body.jobs.length,7);
+  const admission=validateCallerAdmission(...fixture.snapshots,fixture.context);
+  assert.equal(admission.descendantJobId,119233027993);
+  assert.equal(admission.descendantStatus,'queued');
+  assert.equal(admission.executingLeaseProof,false);
+  assert.equal(admission.productionAuthority,false);
+  const child=fixture.snapshots[1].body.jobs.find(job=>job.id===admission.descendantJobId);
+  const physical={...child,runner_id:7,runner_name:'synthetic-heldout-runner'};
+  assert.throws(()=>validateDiagnosticDescendant({status:200,body:physical},
+    {...fixture.context,id:physical.id,name:physical.name,runnerName:physical.runner_name}),/in_progress/u);
+  await assert.rejects(observeActiveAncestor({get:async()=>fixture.snapshots[1],context:fixture.context,
+    name:fixture.snapshots[2].body.group_name,label:'Fixture artifact consumer active',snapshots:[],
+    runnerName:physical.runner_name}),/executing descendant/u);
+});
+test('all three admitted queued phases retain strict group identity and reject physical execution promotion', async () => {
+  for(const phase of ['Fixture lease holder active','Fixture artifact consumer active','Fixture final active']) {
+    const values=syntheticSnapshots();const child=values[1].body.jobs[0];child.name='Active reusable fixture / '+phase;
+    values[2].body.group_members[0].job_name=child.name;
+    const admission=validateCallerAdmission(...values,context);
+    assert.equal(admission.descendantStatus,'queued');assert.equal(admission.executingLeaseProof,false);
+    assert.equal(admission.productionAuthority,false);
+    const physical={...child,runner_id:7,runner_name:'synthetic-heldout-runner'};
+    assert.throws(()=>validateDiagnosticDescendant({status:200,body:physical},
+      {...context,id:child.id,name:child.name,runnerName:physical.runner_name}),/in_progress/u);
+    await assert.rejects(observeActiveAncestor({get:async()=>values[1],context,name:groupName,label:phase,
+      snapshots:[],runnerName:physical.runner_name}),/executing descendant/u);
+    for(const mutate of [x=>x[2].body.group_members[0].status='pending',
+      x=>x[2].body.group_members[0].job_id=43,x=>x[1].body.jobs[0].run_attempt=1,
+      x=>x[1].body.jobs[0].head_sha='b'.repeat(40),x=>x[1].body.jobs[0].completed_at='2026-10-11T00:00:01Z']) {
+      const changed=structuredClone(values);mutate(changed);assert.throws(()=>validateCallerAdmission(...changed,context));
+    }
+  }
+});
+
+
+test('documented nonterminal aggregate states retain null conclusion and never confer execution authority',()=>{
+ for(const status of ['queued','in_progress','requested','waiting','pending']){
+  const values=syntheticSnapshots();values[0].body.status=status;
+  assert.equal(requireNonterminalFixtureRun(values[0].body),true);
+  const admission=validateCallerAdmission(...values,context);
+  assert.equal(admission.executingLeaseProof,false);assert.equal(admission.productionAuthority,false);
+  for(const conclusion of ['success','failure','cancelled','neutral',undefined]){
+   const changed=structuredClone(values);changed[0].body.conclusion=conclusion;
+   assert.throws(()=>validateCallerAdmission(...changed,context));
+  }
+ }
+ for(const status of ['completed','success','unknown','',null,undefined]){
+  assert.throws(()=>requireNonterminalFixtureRun({status,conclusion:null}));
+ }
+});
+
+test('captured cbd pending aggregate is nonterminal while stale prior-phase membership remains no final proof',()=>{
+ const raw=readFileSync(new URL('../fixtures/release-fixture-pending-aggregate-cbd3.json',import.meta.url));
+ assert.equal(createHash('sha256').update(raw).digest('hex'),'35ec856b7ddc20966680c05c00eca67246f2e6d44ff5000a72363b2fea1b2b25');
+ const capture=JSON.parse(raw),[group,jobs,physical,run]=capture.snapshots;
+ assert(capture.snapshots.every(value=>value.status===200));
+ assert.equal(run.body.id,39617489419);assert.equal(run.body.head_sha,capture.context.eventHead);
+ assert.equal(String(run.body.run_attempt),capture.context.attempt);
+ assert.equal(run.body.status,'pending');assert.equal(run.body.conclusion,null);
+ assert.equal(requireNonterminalFixtureRun(run.body),true);
+ const child=jobs.body.jobs.find(value=>value.id===physical.body.id);assert(child);
+ assert.equal(child.id,119288808781);assert.equal(child.status,'in_progress');assert.equal(physical.body.status,'in_progress');
+ assert.equal(child.head_sha,run.body.head_sha);assert.equal(child.run_attempt,run.body.run_attempt);
+ const times=capture.snapshots.map(value=>Date.parse(value.observedAt));
+ assert.deepEqual(times,[Date.parse('2026-10-21T14:46:33.607Z'),Date.parse('2026-10-21T14:46:34.097Z'),
+  Date.parse('2026-10-21T14:46:34.368Z'),Date.parse('2026-10-21T14:46:34.655Z')]);
+ assert.ok(Math.max(...times)-Math.min(...times)<5000);
+ // This initial group still named the prior consumer; no later final-group snapshot was captured.
+ const active=group.body.group_members.find(value=>value.status==='in_progress');
+ assert.equal(active.job_id,119287510771);assert.notEqual(active.job_id,child.id);
+ // Runner facts were redacted. This capture establishes aggregate classification only.
+ assert.throws(()=>validateDiagnosticDescendant(physical,{...capture.context,id:child.id,name:child.name,runnerName:'unproven'}));
+ for(const change of [x=>x.status='completed',x=>x.status='unknown',x=>x.conclusion='success']){
+  const changed=structuredClone(run.body);change(changed);assert.throws(()=>requireNonterminalFixtureRun(changed));
  }
 });

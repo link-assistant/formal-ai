@@ -1,6 +1,7 @@
 // Friendly, lossless presentation of client-owned tool results (issue #750):
 // a port of rust/src/agentic_coding/tool_result.rs.
 
+import { callbackNonempty as canonicalUnaryNonempty } from './callback_values.mjs';
 import { fill as fillWorkItemStep } from './work_item_steps.mjs';
 import { plainText, rustLines } from './content.mjs';
 import { sourceFromAgentReadResult } from './code_artifact.mjs';
@@ -81,7 +82,7 @@ function labelledProcessExitCode(raw) {
     const line = toAsciiLowercase(trim(rawLine));
     const label = labels.find(candidate => line.startsWith(candidate));
     if (label === undefined) continue;
-    const token = line.slice(label.length).split(/[^0-9-]/u).find(part => part !== '');
+    const token = line.slice(label.length).split(/[^0-9-]/u).find(canonicalUnaryNonempty);
     if (token !== undefined) {
       const code = parseI64(token);
       if (code !== null) return code;
@@ -117,6 +118,9 @@ export function normalizedPayload(raw) {
 
 /** Mirrors `fn observed_payload`. */
 export function observedPayload(raw) {
+  const value = parseJson(trim(raw));
+  const projection = isObject(value) ? providerResultProjection(value) : null;
+  if (projection !== null) return observedPayload(JSON.stringify(projection));
   const envelope = parseShellEnvelope(raw);
   if (envelope?.exit_code === 0) {
     // The explicit stdout-only receipt keeps authored whitespace and JSON bytes.
@@ -365,6 +369,44 @@ function result(payload, error, format, exitCode) {
 const has = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
 
 /** Mirrors `fn normalize`: `{payload, error, format, exit_code}`. */
+/** Project only terminal typed provider parts; arbitrary stdout JSON grants no status. */
+function providerResultProjection(value) {
+  const part = value.type === 'tool_use' && Object.hasOwn(value, 'part') ? value.part : value;
+  if (!isObject(part) || !['tool', 'tool_use'].includes(part.type)
+    || typeof (part.tool ?? part.name) !== 'string' || !isObject(part.state)
+    || !['completed', 'error'].includes(part.state.status)) return null;
+  const state = part.state, metadata = isObject(state.metadata) ? state.metadata : {};
+  if (['status', 'outcome'].some(key => expectedStopStatus(value[key]))) return null;
+  const projected = Object.create(null);
+  for (const key of ['exit_code', 'exitCode', 'status_code', 'status', 'outcome', 'ok', 'success',
+    'is_error', 'isError', 'timed_out', 'aborted', 'signal', 'error', 'stderr', 'failure',
+    'output', 'stdout', 'content', 'result']) {
+    if (Object.prototype.hasOwnProperty.call(state, key)) projected[key] = state[key];
+  }
+  const stated = typeof state.error === 'string' ? labelledProcessExitCode(state.error) : null;
+  const codes = [value.exit_code, value.exitCode, state.exit_code, state.exitCode, metadata.exit, stated]
+    .map(entry => asI64(entry) ?? (typeof entry === 'string' ? parseI64(entry) : null))
+    .filter(entry => entry !== null);
+  const code = codes.find(entry => entry !== 0) ?? codes[0];
+  if (code !== null && code !== undefined) projected.exit_code = code;
+  if (value.is_error === true || value.isError === true) projected.is_error = true;
+  if (['status', 'outcome'].some(key => failedStatus(value[key]))
+    || (Number.isInteger(value.status_code) && value.status_code >= 400)) projected.is_error = true;
+  if (value.success === false || value.ok === false) projected.success = false;
+  for (const key of ['error', 'stderr', 'failure']) {
+    if (nonemptyText(value[key]) !== null && nonemptyText(projected[key]) === null) projected[key] = value[key];
+  }
+  if (metadata.timedOut === true || value.timed_out === true) projected.timed_out = true;
+  if (metadata.aborted === true || value.aborted === true) projected.aborted = true;
+  const signal = [state.signal, metadata.signal, value.signal]
+    .find(entry => typeof entry === 'string' && entry.length > 0);
+  if (signal !== undefined) projected.signal = signal;
+  if (!['output', 'stdout', 'content', 'result'].some(key => Object.hasOwn(projected, key))
+    && Object.hasOwn(metadata, 'output')) projected.output = metadata.output;
+  // The fixed projection deliberately excludes type/part/state: normalization cannot recurse.
+  return projected;
+}
+
 function normalize(raw) {
   const trimmed = trim(raw);
   const value = parseJson(trimmed);
@@ -376,6 +418,8 @@ function normalize(raw) {
     return fromPayload(stripTransportEnvelope(trimmed), null);
   }
   if (!isObject(value)) return fromPayload(prettyJson(value), null);
+  const projection = providerResultProjection(value);
+  if (projection !== null) return normalize(JSON.stringify(projection));
   const object = value;
   const present = (keys) => keys.filter((key) => has(object, key)).map((key) => object[key]);
   const nonzeroExit = present(['exit_code', 'exitCode']).some(nonzeroStatus);
@@ -467,7 +511,7 @@ function parseShellEnvelope(text) {
   const errorAt = lastIndexWhere(head, (line) => isField(line, 'Error'), outputAt + 1);
   const output = envelopeSection(lines.slice(outputAt, errorAt < 0 ? end : errorAt), 'Output:');
   const stated = errorAt < 0 ? '' : envelopeSection(lines.slice(errorAt, end), 'Error:');
-  const error = exitCode === null ? [stated, ...killed].filter((part) => part !== '').join('\n') : stated;
+  const error = exitCode === null ? [stated, ...killed].filter(canonicalUnaryNonempty).join('\n') : stated;
   return { output, error, exit_code: exitCode };
 }
 

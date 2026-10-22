@@ -1,3 +1,4 @@
+import { lower as canonicalUnaryLower } from './crate/rust_str.mjs';
 import {quoteShellWord as shellQuote} from './portable/string_contracts.mjs';
 // Committing and pushing what a task produced
 // (rust/src/agentic_coding/git_commit.rs, issue #1133).
@@ -21,6 +22,11 @@ import { charIn, isAscii, isAsciiAlphanumeric, isWhitespace, trim, trimEnd, trim
 /** Mirrors `CommitTarget::push_ref`. */
 export function pushRef(target) {
   return target.branch ?? 'HEAD';
+}
+
+/** Mirrors fn is_pull_request_target: classify the already validated destination. */
+export function isPullRequestTarget(target) {
+  return target.reference.includes('/pull/');
 }
 
 /** Mirrors `fn target_of`: a `CommitTarget` or null. */
@@ -151,7 +157,7 @@ export function planCommitStep(task, messages, toolNames) {
  */
 function statedSubject(task) {
   const lowered = task.toLowerCase();
-  const ends = wordsForRole('git_commit_message_lead').map((word) => word.toLowerCase())
+  const ends = wordsForRole('git_commit_message_lead').map(canonicalUnaryLower)
     .map((word) => { const at = lowered.indexOf(word); return at < 0 ? null : at + word.length; })
     .filter((end) => end !== null);
   if (!ends.length) return null;

@@ -5,7 +5,7 @@ import {recordFor,toLino,answerDerivationId} from './crate/derivation.mjs';
 // Used by the JavaScript server and by node:test suites; a browser host would
 // install the same shape from the worker's own globals.
 
-import { execFileSync } from 'node:child_process';
+import { boundedCommandSync } from '../server/bounded-command.mjs';
 import { lstatSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
@@ -15,6 +15,7 @@ import { symbolicFromWorker } from '../server/solve.mjs';
 import * as webTreeSitter from '../vendor/tree-sitter/web-tree-sitter.mjs';
 import { loadRustAstCensus } from './crate/rust_ast_census.mjs';
 import { cachedSourceFetch } from './crate/source_cache.mjs';
+import {boundedSourceCacheIo, SOURCE_CACHE_POLICY} from '../provenance/source-cache-budget.mjs';
 import {scanSignatureSymbols} from '../../scripts/lib/signature-census.mjs';
 import {sourceModelFrontend} from '../../scripts/source-model.mjs';
 import {workflowPin} from '../../scripts/translate-js-rust.mjs';
@@ -122,22 +123,16 @@ const flagEnabled = (value) => ['1', 'true', 'yes', 'on'].includes(String(value 
 /** `CurlSourceTransport::get`: the response bytes, null on any failure. */
 function curlGet(url) {
   try {
-    return new Uint8Array(execFileSync('curl', ['--fail', '--silent', '--show-error', '--location', '--compressed',
-      '--max-time', '30', '--user-agent', 'formal-ai (https://github.com/link-assistant/formal-ai; source retrieval)', url],
-    { stdio: ['ignore', 'pipe', 'ignore'], maxBuffer: 64 * 1024 * 1024 }));
+    const observed = boundedCommandSync('curl', ['--fail', '--silent', '--show-error', '--location', '--compressed',
+      '--max-time', '30', '--max-filesize', String(SOURCE_CACHE_POLICY.maxBodyBytes), '--user-agent', 'formal-ai (https://github.com/link-assistant/formal-ai; source retrieval)', url],
+    { timeout: 30000, stdoutLimitBytes: SOURCE_CACHE_POLICY.maxBodyBytes, stderrLimitBytes: 0 });
+    if (observed.error || observed.status !== 0 || observed.signal !== null
+      || observed.cleanup_complete !== true) return null;
+    return new Uint8Array(observed.stdout);
   } catch {
     return null;
   }
 }
-
-const readCacheOrMissing = (action) => {
-  try {
-    return action();
-  } catch (error) {
-    if (error.code === 'ENOENT') return null;
-    throw error;
-  }
-};
 
 /**
  * The source client `VersionSet::for_generation` builds, read from the
@@ -149,13 +144,7 @@ function nodeSourceFetch() {
   return cachedSourceFetch({
     cacheDir: process.env.FORMAL_AI_SOURCE_CACHE_DIR || runtimeCachePaths().runtimeRoot,
     online: flagEnabled(process.env.FORMAL_AI_LIVE_FETCH),
-    io: {
-      readText: (file) => readCacheOrMissing(() => readFileSync(file, 'utf8')),
-      readBytes: (file) => readCacheOrMissing(() => new Uint8Array(readFileSync(file))),
-      writeBytes: (file, bytes) => writeFileSync(file, bytes),
-      createDirAll: (directory) => mkdirSync(directory, { recursive: true }),
-      get: curlGet,
-    },
+    io: boundedSourceCacheIo(curlGet),
   });
 }
 
@@ -243,6 +232,8 @@ export async function installNodeHost(worker, options = {}) {
     censusDocuments,
     censusSourceClosureComplete,
     sourceDocument,
+    sourceCstTransformCommand: () => [process.execPath, path.join(REPO_ROOT, 'scripts/source-cst-transform-request.mjs')],
+    sourceUnaryConsolidationCommand: () => [process.execPath, path.join(REPO_ROOT, 'scripts/consolidate-stateless-unary-request.mjs')],
     generatedSeedOwnerDeclarations,
     sourceFetch: nodeSourceFetch,
     validateProgram: validateRepairProgram,

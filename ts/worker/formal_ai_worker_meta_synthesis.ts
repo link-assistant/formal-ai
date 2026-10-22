@@ -129,24 +129,16 @@ function metaMeasures(element, type) {
  * @param {number} length
  * @param {Set<string>|null} [mustUse] when given, only the programs using one
  *   of these operations (see `metaStepUsesAny`) are returned
- * @returns {Array<{steps: Array<object>, type: string}>}
+ * @returns {Generator<{steps: Array<object>, type: string}>}
  */
-function metaPrograms(fromType, length, mustUse = null) {
+function* metaProgramIterator(fromType, length, mustUse = null) {
   // Call-local descriptors cannot retain a different request, seed or worker realm.
   const transitionsByType = new Map();
   const primitives = metaSeed().primitives;
   let frontier = [mustUse === null ? { steps: [], type: fromType } : { steps: [], type: fromType, uses: false }];
-  const out = [];
   for (let size = 1; size <= length; size += 1) {
     const next = [];
     // A last-length program using none of `mustUse` is never built.
-    const extend = (program, step, type) => {
-      const uses = mustUse === null ? null : program.uses || metaStepUsesAny(step, mustUse);
-      if (mustUse !== null && size === length && !uses) return;
-      const grown = { steps: program.steps.concat(step), type };
-      if (mustUse !== null) grown.uses = uses;
-      next.push(grown);
-    };
     for (const program of frontier) {
       let typedTransitions = transitionsByType.get(program.type);
       if (typedTransitions === undefined) {
@@ -189,12 +181,22 @@ function metaPrograms(fromType, length, mustUse = null) {
 
         transitionsByType.set(program.type, typedTransitions);
       }
-      for (const transition of typedTransitions) extend(program, { ...transition.step }, transition.type);
+      for (const transition of typedTransitions) {
+        const step = { ...transition.step }, type = transition.type;
+        const uses = mustUse === null ? null : program.uses || metaStepUsesAny(step, mustUse);
+        if (mustUse !== null && size === length && !uses) continue;
+        const grown = { steps: program.steps.concat(step), type };
+        if (mustUse !== null) grown.uses = uses;
+        if (size < length) next.push(grown);
+        if (mustUse === null || uses) yield grown;
+      }
     }
-    for (const program of next) if (mustUse === null || program.uses) out.push(program);
     frontier = next;
   }
-  return out;
+}
+/** Eager compatibility preserves complete ordering and shared prefix step identities. */
+function metaPrograms(fromType, length, mustUse = null) {
+  return Array.from(metaProgramIterator(fromType, length, mustUse));
 }
 
 /**
@@ -525,7 +527,7 @@ function metaSynthesizeFromMeaning(groups, evidence, trace, values, words, input
   const headOperations = new Set(lastHead);
   for (const fromType of types) {
     // Only programs using the head operation are enumerated at full length.
-    for (const program of metaPrograms(fromType, META_BOUNDS.programLength - 1, headOperations)) {
+    for (const program of metaProgramIterator(fromType, META_BOUNDS.programLength - 1, headOperations)) {
       const parametric = program.steps.filter(metaStepIsParametric);
       if (parametric.length > (values.length ? 1 : 0)) continue;
       const bound = parametric.length ? metaBindValues(metaStepParameterTypes(parametric[0]), values) : null;

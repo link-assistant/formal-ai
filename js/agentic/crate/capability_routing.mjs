@@ -7,6 +7,8 @@
 // preferred, capability}` | `{kind: 'honest_gap', needed, missing}` |
 // `{kind: 'ask', readings}`.
 
+import { callbackValue as canonicalUnaryValue } from '../callback_values.mjs';
+import { callbackNonempty as canonicalUnaryNonempty } from '../callback_values.mjs';
 import { cached, readText } from '../host.mjs';
 import { normalizePrompt } from './web_engine_core.mjs';
 import { mentionsRole, mentionsRoleRaw, wordsForRole } from './seed_meanings.mjs';
@@ -95,14 +97,14 @@ export function dialogueUtteranceRoles() {
   return parseRoot(readText(ROUTING_FILE)).children
     .flatMap((document) => document.children || [])
     .filter((child) => child.name === 'dialogue_utterance_role' && child.value)
-    .map((child) => child.value);
+    .map(canonicalUnaryValue);
 }
 
 /** Mirrors `fn words` in rust/src/capability_routing/claim_evidence.rs. */
 function claimWords(text) {
   return splitWhitespace(text)
     .map((word) => word.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, ''))
-    .filter((word) => word !== '');
+    .filter(canonicalUnaryNonempty);
 }
 
 /** Mirrors `fn content_beyond_roles` in rust/src/capability_routing/claim_evidence.rs. */

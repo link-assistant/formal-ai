@@ -72,6 +72,8 @@ test('/health reports detected, minimum, maximum and target schema without migra
   const file = path.join(dir, 'memory.lino');
   fs.writeFileSync(file, RELEASED);
   assert.deepEqual(memoryHealthStatus(env(file)), {
+    active_path: file,
+    configured_path: file,
     compatible: true,
     maximum_readable_schema_version: 2,
     migration_required: true,

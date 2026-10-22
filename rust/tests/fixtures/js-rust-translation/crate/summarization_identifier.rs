@@ -1,10 +1,14 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=83011714f20e61cfd3a326e062acf85ac594ff9a59844c28597ecc603f1b1bcd bytes=6325
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=49cccd739530628aac794a4542820613f7866a844eaa9ee76281bc4e0ca4186d bytes=6411
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=1
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
@@ -78,7 +82,7 @@ pub const DEFAULT_IDENTIFIER_MAX_WORDS: f64 = 4f64;
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
-// formal-ai:blockers JSDoc type {…} | arrow callback of .filter() | arrow callback of .map() | call of a sibling function | call of an imported function | method call .filter() | method call .join() | method call .map() | method call .split()
+// formal-ai:blockers JSDoc type {…} | arrow callback of .map() | call of a sibling function | call of an imported function | imported value | method call .filter() | method call .join() | method call .map() | method call .split()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal function value …

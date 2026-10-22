@@ -1,0 +1,85 @@
+{
+  "schema": "formal-ai-natural-unary-property-completion/v1",
+  "naturalRequest": "Consolidate stateless unary callbacks in js/agentic/coding_research_observation.mjs using canonical helpers. Preserve callback value behavior and comments.",
+  "taskBytes": 155,
+  "requestContainsImplementationOrCommand": false,
+  "historicalAttempts": "../natural-unary-source-task.json",
+  "qualification": "One independently qualified source-task identity within the stateless unary callback-value contract; no representative cohort or general synthesis claim.",
+  "actualMaintainedJavaScriptDriver": true,
+  "tools": [
+    "read",
+    "bash",
+    "read"
+  ],
+  "operation": "Source-derived named-property callback factory, authenticated by exact helper AST and source preimages.",
+  "targetPatchSupplied": false,
+  "sourceEffect": {
+    "owner": "js/agentic/coding_research_observation.mjs",
+    "beforeSha256": "ea199b0846a316a11b7311f175ff6ee5f7ac9e0e768e8a7e9daa159585f1ef8b",
+    "afterSha256": "425fe25234a2071b1aeb53ece199d581cc91475e9a549d40c5107375157b21a7",
+    "beforeBytes": 3160,
+    "afterBytes": 3257,
+    "netByteGrowth": 97,
+    "remainingStatelessUnaryCallbacks": 0,
+    "capturingCallbacksRetained": [
+      "item => item.local === declaration?.name"
+    ],
+    "allCommentTextPreserved": true
+  },
+  "fixedOracle": {
+    "path": "rust/tests/web/coding-research-observation-unary.test.mjs",
+    "sha256": "7b373cb2fee3033782e694e7af072d737b484dc23887b5fb15dacf29b2b27830",
+    "unchanged": true,
+    "pass": 5,
+    "fail": 0,
+    "skip": 0,
+    "cleanupComplete": true
+  },
+  "independentWholeRequestAcceptedWithinCallbackValueContract": true,
+  "completeGeneralSemanticEquivalence": false,
+  "suppliedAlgorithmsControllersAndRepairsAutonomousAuthorshipCredit": 0,
+  "modelUsage": "Unknown",
+  "totalObservedInput": "Unknown",
+  "cost": "Unknown",
+  "taskBytesAreTotalInput": false,
+  "tokenSavingsClaim": false,
+  "sourceFreeReadableRecursiveCst": {
+    "before": {
+      "owner": "js/agentic/coding_research_observation.mjs",
+      "phase": "before",
+      "sourceSha256": "ea199b0846a316a11b7311f175ff6ee5f7ac9e0e768e8a7e9daa159585f1ef8b",
+      "modelSha256": "370316e5bfba6a15f547177538a2dffb0c23e4206e11e4831fa96a65b8a0a72c",
+      "sourceContentRestoration": true,
+      "sourceFreePersistedReconstruction": true,
+      "fullReadableRecursiveCst": true,
+      "model": "before.cst.lino",
+      "provenance": {
+        "provider": "@babel/parser",
+        "version": "7.29.7",
+        "moduleSha256": "201724d1415df7749087d9d6e88af50f2bcafe2eb68dfbe9347f49d3361ff426",
+        "syntaxRulesSha256": "bf66d6fe8fce0683ba33f7eec848b0a43df1f6af32b83a6adb5b34cb49b550f2"
+      },
+      "semanticEquivalenceCertified": false,
+      "commentMeaningCertified": false
+    },
+    "after": {
+      "owner": "js/agentic/coding_research_observation.mjs",
+      "phase": "after",
+      "sourceSha256": "425fe25234a2071b1aeb53ece199d581cc91475e9a549d40c5107375157b21a7",
+      "modelSha256": "c7b1d96ec3aa9fc6905c7ebde72bc51929c641ad055852aeffe262f7614043bb",
+      "sourceContentRestoration": true,
+      "sourceFreePersistedReconstruction": true,
+      "fullReadableRecursiveCst": true,
+      "model": "after.cst.lino",
+      "provenance": {
+        "provider": "@babel/parser",
+        "version": "7.29.7",
+        "moduleSha256": "201724d1415df7749087d9d6e88af50f2bcafe2eb68dfbe9347f49d3361ff426",
+        "syntaxRulesSha256": "bf66d6fe8fce0683ba33f7eec848b0a43df1f6af32b83a6adb5b34cb49b550f2"
+      },
+      "semanticEquivalenceCertified": false,
+      "commentMeaningCertified": false
+    }
+  },
+  "nativeTypedReceiverAndConsumer": "Implemented source and hosted tests; execution remains pending CI. Native agentic operation parity remains pending."
+}

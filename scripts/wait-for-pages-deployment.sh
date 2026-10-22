@@ -26,10 +26,10 @@ while true; do
 
   index_ok=false
   marker_ok=false
-  if curl -fsSL --retry 2 --retry-delay 1 -o "$index_file" "$index_url"; then
+  if curl -fsSL --connect-timeout 10 --max-time 20 --retry 2 --retry-delay 1 --retry-max-time 60 -o "$index_file" "$index_url"; then
     index_ok=true
   fi
-  if curl -fsSL --retry 2 --retry-delay 1 -o "$marker_file" "$marker_url"; then
+  if curl -fsSL --connect-timeout 10 --max-time 20 --retry 2 --retry-delay 1 --retry-max-time 60 -o "$marker_file" "$marker_url"; then
     marker_ok=true
   fi
 
