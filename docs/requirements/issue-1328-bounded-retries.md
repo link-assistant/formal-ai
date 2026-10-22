@@ -44,7 +44,7 @@ Diagnostic persistence is best effort but its failure is observable: probe the c
 - HTTP, WebSocket, WebRTC-signaling and logging-proxy listeners use one shared dispatcher: acceptance and connection-thread dispatch each have their own three-consecutive-failure ceiling. A successful accept resets only acceptance failures; successful dispatch resets only dispatch failures. Exhaustion returns the actual IO error to the supervisor. Healthy serving remains long lived.
 - Parser/tokenizer/source walkers advance a finite cursor or ascend a finite path, and healthy event loops serve new operations. These are not retries of one failed action and must retain their progress/cancellation boundaries. Runner-capacity sampling intentionally observes new samples until its supervising CI process ends.
 
-Native compilation and product execution run only in CI. Local checks use maintained JavaScript sources and disposable data fixtures. Supplied integration controllers run through JavaScript Formal AI and receive no autonomous-authorship credit.
+Native compilation and product execution run only in CI. Local checks use maintained JavaScript sources and disposable data fixtures. Supplied integration controllers receive no autonomous-authorship credit. For this immediate release, follow the owner's [manual-fix authorization](../case-studies/issue-1328/critical-delivery-scope.md); direct JavaScript execution is allowed without routing each change through Formal AI.
 
 
 ## Cross-repository CI evidence

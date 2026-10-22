@@ -5,6 +5,11 @@ original HelloWorld deliveries as quickly as possible. It supersedes the earlier
 work order to finish every broader feature first. It changes priorities, not
 requirement definitions or the evidence needed to claim delivery.
 
+The owner authorizes manual fixes and direct JavaScript integration controllers
+for this immediate release. Use Formal AI when it helps delivery; manual or
+supplied changes receive no autonomous Formal AI authorship credit. This
+exception does not establish self-coding acceptance.
+
 ## Immediate work
 
 - Deliver a usable published release through the existing source-bound release,
