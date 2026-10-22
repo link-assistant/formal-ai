@@ -9,7 +9,7 @@ const root=fileURLToPath(new URL('../../../',import.meta.url));
 // GitHub runner configure-apt-sources.sh blob b3f5b2b180df8eb39fcbba034f616e03a69e775c.
 // c28 job119691094928: first Coq archive starts with ~5s left; second same-mirror attempt times out.
 const upstream=fs.readFileSync(new URL('../fixtures/apt/hosted-ubuntu-mirrors.txt',import.meta.url),'utf8');
-function run({optin='1',mode='timeout',text=upstream,missing=false,symlink=false}={}){
+function run({optin='1',mode='timeout',text=upstream,missing=false,symlink=false,direct=false}={}){
   const directory=fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(),'formal-ai-apt-mirrors-')));
   const mirror=path.join(directory,'apt-mirrors.txt'),target=path.join(directory,'foreign.txt');
   const sources=path.join(directory,'ubuntu.sources');
@@ -35,7 +35,8 @@ for operand in "$@"; do
 done
 `,{mode:0o755});
   try{
-    const result=spawnSync('bash',['scripts/apt-install-with-retry.sh','coq','zstd'],{
+    const arguments_=direct?['scripts/prepare-ubuntu-apt-mirror.sh',mirror]:['scripts/apt-install-with-retry.sh','coq','zstd'];
+    const result=spawnSync('bash',arguments_,{
       cwd:root,encoding:'utf8',timeout:15000,maxBuffer:1048576,
       env:{...process.env,FORMAL_AI_APT_OFFICIAL_MIRROR_FALLBACK:optin,
         FORMAL_AI_APT_MIRROR_LIST:mirror,FORMAL_AI_APT_GET:fake,FORMAL_AI_APT_PRIVILEGE:'',
@@ -45,11 +46,17 @@ done
     assert.ifError(result.error);assert.equal(result.signal,null);
     assert.equal(fs.readFileSync(sources,'utf8'),sourceText,'signed source stanzas remain byte-exact');
     const observed=fs.existsSync(mirror)?fs.readFileSync(mirror,'utf8'):null;
-    const invocations=fs.readFileSync(calls,'utf8').trim().split('\n');
+    const invocations=fs.existsSync(calls)?fs.readFileSync(calls,'utf8').trim().split('\n'):[];
     assert(invocations.every(line=>line==='-o DPkg::Lock::Timeout=60 update -q'
       ||line==='-o DPkg::Lock::Timeout=60 install -y -q coq zstd'));
     assert.deepEqual(fs.readdirSync(directory).filter(name=>/\.before\.|\.next\./u.test(name)),[]);
-    return {...result,observed,invocations,installs:Number(fs.readFileSync(count,'utf8')),
+    if(direct&&result.status===0){
+      const inode=fs.statSync(mirror).ino;
+      const repeated=spawnSync('bash',arguments_,{cwd:root,encoding:'utf8',timeout:5000,maxBuffer:1048576});
+      assert.ifError(repeated.error);assert.equal(repeated.status,0);assert.equal(fs.statSync(mirror).ino,inode);
+      assert.equal(fs.readFileSync(mirror,'utf8'),observed,'already prepared mirror is unchanged');
+    }
+    return {...result,observed,invocations,installs:fs.existsSync(count)?Number(fs.readFileSync(count,'utf8')):0,
       mode:missing||symlink?null:fs.statSync(mirror).mode&0o777,foreign:symlink?fs.readFileSync(target,'utf8'):null};
   }finally{fs.rmSync(directory,{recursive:true,force:true});}
 }
@@ -86,4 +93,13 @@ test('foreign hosts, Azure lookalikes, priorities and comments are not rewritten
 for(const options of [{missing:true},{symlink:true}])test('absent or symlink mirror list refuses alternate without replacing foreign bytes '+JSON.stringify(options),()=>{
   const result=run(options);assert.equal(result.status,2);assert.equal(result.installs,1);
   if(options.symlink)assert.equal(result.foreign,upstream);else assert.equal(result.observed,null);
+});
+test('direct browser preparation shares the exact signed-source-preserving mirror transform without APT calls',()=>{
+  const result=run({direct:true});assert.equal(result.status,0,result.stdout+result.stderr);
+  assert.equal(result.observed,upstream.replace('http://azure.archive.ubuntu.com/ubuntu/','https://archive.ubuntu.com/ubuntu/'));
+  assert.equal(result.mode,0o640);assert.equal(result.installs,0);assert.deepEqual(result.invocations,[]);
+});
+for(const options of [{missing:true},{symlink:true},{text:upstream.trimEnd()}])test('direct browser mirror preparation fails closed '+JSON.stringify(options),()=>{
+  const result=run({...options,direct:true});assert.equal(result.status,2);assert.equal(result.installs,0);
+  if(options.symlink)assert.equal(result.foreign,upstream);
 });

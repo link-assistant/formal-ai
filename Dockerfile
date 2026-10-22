@@ -91,7 +91,7 @@ ENV PATH="${BUN_INSTALL}/bin:/usr/local/bin:${PATH}"
 # write /var/lib/apt/lists as box. The bun installs below run as box again.
 USER root
 # Reuse the bounded mirror retry; every attempt retains apt's integrity checks.
-COPY --chmod=0755 scripts/apt-install-with-retry.sh scripts/run-with-deadline.sh /usr/local/lib/formal-ai-build/
+COPY --chmod=0755 scripts/apt-install-with-retry.sh scripts/run-with-deadline.sh scripts/prepare-ubuntu-apt-mirror.sh /usr/local/lib/formal-ai-build/
 RUN FORMAL_AI_APT_PRIVILEGE= bash /usr/local/lib/formal-ai-build/apt-install-with-retry.sh \
       --no-install-recommends libstdc++6 libatomic1 && \
     rm -rf /var/lib/apt/lists/* /usr/local/lib/formal-ai-build

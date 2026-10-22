@@ -1051,3 +1051,88 @@ coverage elsewhere and track `PR1329-browser-unknown-seed-latency` as unresolved
 profiling debt, not a product latency fix. This direct fixture repair receives
 zero autonomous Formal AI authorship credit. Require actual hosted acceptance
 on the next source and retain every other pending check as unaccepted.
+
+### Merged-source prover setup follow-up
+
+PR 1329 merged normally as
+`9b800dc33a2c6ec8bed1e56a48d8c7c8a5934268` after its complete check inventory
+was green. The subsequent default-branch
+[prover installation](https://github.com/link-assistant/formal-ai/actions/runs/39764481959/job/119776755681)
+failed before either compiler ran. The complete 30,164-byte mixed log has
+SHA256 `098fc63823d20ea9e3187d0a146501fff7ed47dcca7524f7d30f1efc9b905b63`.
+Both existing attempts reached their 120-second deadlines; the second did
+exercise the official HTTPS mirror alternate. Its progress is insufficient
+to establish that the mirror recovery solves cold-install throughput.
+
+The follow-up uses the owner's temporary noncritical-test deferral authority:
+only the real Lean/Rocq math integration requires explicit repository variable
+`FORMAL_AI_REAL_PROVER_INTEGRATION=true`. Keep its skipped result unaccepted.
+When enabled, install mandatory packages without recommendations and run every
+original compiler oracle under the same bounds. This is release debt, not a
+fixed network root cause. The stable debt and restoration conditions are in
+[the critical scope](critical-delivery-scope.md#temporary-real-prover-installation-debt).
+No production, coding, released-client or public-download gate is deferred.
+Manual changes receive zero autonomous Formal AI authorship credit.
+
+Continue collecting all default-branch failures into one repair batch. Require
+actual follow-up-head CI before normal merge, then monitor its production
+release and the original three-client acceptance; the merged candidate and
+historical compiler successes cannot substitute for those observations.
+
+The follow-up is [PR 1394](https://github.com/link-assistant/formal-ai/pull/1394).
+Its first lint lane failed only `check-pull-request-link`: the description
+omitted an explicit issue disposition. Preserve the complete 396,505-byte log
+from [job 119788589006](https://github.com/link-assistant/formal-ai/actions/runs/39767617743/job/119788589006),
+SHA256 `0d2f2b0a95fa9ebec09264722539b6ff8fccd26bdce5cda5a1d538dffe483016`.
+Add the required whole-line pending-acceptance reference to issue 1364 rather
+than a false closing claim. Released-client acceptance remains unfinished.
+The compiler and production gates themselves need no further change for this
+description failure. The next ordinary source update records these PR/debt
+links and lets CI check the corrected description without a manual rerun.
+
+
+### Public release and read-only admission follow-up
+
+[Release v0.355.1](https://github.com/link-assistant/formal-ai/releases/tag/v0.355.1)
+is public. Its crate publication, registry-content audit, installed-crate
+smoke test, full/slim GHCR images and Docker Hub mirror passed their actual
+hosted steps. Installer, signing, public-download and remaining surface
+verification still require their own results. The original released three-client
+and all-eleven issue-1364 acceptance is not established by those release steps.
+
+The subsequent [admission failure](https://github.com/link-assistant/formal-ai/actions/runs/39790340888/job/119864406820)
+happened before client execution: the fourth GitHub CLI read exited 1 with an
+empty response and completed cleanup. Preserve its full 28,367-byte log, SHA256
+`6eede8918b85174d2a35779480b1a5dcc0ace05c3451563487e4a66dba19fdfd`.
+The exact cause of the suppressed 29-byte diagnostic remains unknown.
+
+Batch one unchanged clean REST-read retry and privacy-safe attempt diagnostics
+into PR 1394. Keep the original global request, byte and time limits; GraphQL,
+known denials, partial bodies and uncertain processes stay unretried. A second
+failure stops without client effects. The
+[critical scope](critical-delivery-scope.md#bounded-read-only-github-admission-recovery)
+records the precise policy and evidence limits. The preceding head's green CI
+cannot accept this additional change: require fresh current-head results
+before the normal merge. This manual repair has zero autonomous Formal AI
+authorship credit. Continue monitoring actual release consumers and the original
+three task repositories; do not close issue 1364 prematurely.
+
+### Browser dependency setup and checksum cascade
+
+The main v0.355.1 release pipeline completed successfully. Independent data-only
+checks verified anonymous immutable full/slim GHCR and DockerHub manifests
+against the released source and executable receipts; these contain the merged
+PR 1329 changes. Installer/browser/download and original-client acceptance
+remain separate requirements.
+
+Browser publication then exhausted its existing setup deadline downloading
+Ubuntu fonts, before any browser smoke assertion. Desktop checksum publication
+subsequently refused the missing browser publication receipt. Preserve both
+complete failure logs and the precise limits in the
+[critical scope](critical-delivery-scope.md#browser-system-dependency-publication-blocker).
+Batch the shared validated HTTPS mirror preparation, immutable protocol/package
+dependency, HTTP diagnostic delimiter correction and regression controls into
+PR 1394. Keep every existing deadline, signature check and browser/checksum
+oracle. Earlier current-head green CI does not accept these added changes;
+require a fresh exact-head census before the normal merge. The suppressed
+admission diagnostic's underlying cause remains unknown.

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
 import {readFileSync} from 'node:fs';
 import {verifiedGraphTree,treeQuery,createTreeReader} from '../../../scripts/lib/hive-delivery-trees.mjs';
-import {githubReader} from '../../../scripts/admit-hive-original-delivery.mjs';
+import {githubReader,selectPullRequest} from '../../../scripts/admit-hive-original-delivery.mjs';
 import {lateSourceCandidate,precheckPublishedCi,publishedChangedPaths} from '../../../scripts/lib/hive-delivery-release.mjs';
 const treeRepository='owner/repository';
 const graphLeaf=(name,mode=33188,type='blob')=>({name,nameRaw:Buffer.from(name).toString('base64'),mode,type,size:0,oid:'e'.repeat(40)});
@@ -95,6 +95,7 @@ test('GraphQL point exhaustion never issues a retry or a129th physical query',as
 test('failed API reads expose bounded status diagnostics without echoing response bodies',async()=>{
  for(const [status,stderr,error,timed_out,expected]of [
   [1,'gh: HTTP 502\n',undefined,false,/"httpStatus":502/u],
+  [1,'gh: HTTP 502: Bad Gateway\n',undefined,false,/"httpStatus":502/u],
   [null,'',Object.assign(Error('timeout'),{code:'ETIMEDOUT'}),true,/"errorCode":"ETIMEDOUT"/u]]){
   const reader=githubReader({repository:treeRepository,transport:async()=>({status,signal:null,error,timed_out,
    cleanup_complete:true,stdout:Buffer.from('private-diagnostic-content'),stderr:Buffer.from(stderr)})});
@@ -103,6 +104,120 @@ test('failed API reads expose bounded status diagnostics without echoing respons
    assert(!failure.message.includes('private-diagnostic-content'));return true;
   });
  }
+});
+test('clean empty REST read failure retries the identical owned request once with private diagnostics hashed',async()=>{
+ const observed=[];let calls=0;const argumentsSeen=[];
+ const endpoint='repos/'+treeRepository+'/commits/'+'a'.repeat(40)+'/pulls?per_page=100&page=1';
+ const stderr=Buffer.from('private diagnostic transport');
+ const reader=githubReader({repository:treeRepository,diagnostics:record=>observed.push(record),
+  transport:async(program,args,options)=>{
+   calls++;argumentsSeen.push(args);assert.equal(program,'gh');
+   assert(options.timeout>0&&options.timeout<=20000);assert.equal(options.stderrLimitBytes,65536);
+   return calls===1?{status:1,signal:null,cleanup_complete:true,stdout:Buffer.alloc(0),stderr}:
+    {status:0,signal:null,cleanup_complete:true,stdout:Buffer.from('[]')};
+  }});
+ assert.deepEqual(await reader.pages(endpoint),[]);assert.equal(calls,2);assert.deepEqual(argumentsSeen[0],argumentsSeen[1]);
+ assert.equal(observed.length,1);assert.equal(observed[0].operation,'commit-pull-requests');
+ assert.equal(observed[0].attempt,1);assert.equal(observed[0].maximumAttempts,2);assert.equal(observed[0].retrying,true);
+ assert.equal(observed[0].stderrBytes,stderr.length);assert.match(observed[0].requestSha256,/^[a-f0-9]{64}$/u);
+ assert(!JSON.stringify(observed).includes(stderr.toString()));assert(!JSON.stringify(observed).includes(endpoint));
+ assert.equal(reader.statistics().requests,2);assert.equal(reader.statistics().restRequests,2);
+});
+test('repeated clean REST failures stop after two physical requests and preserve both diagnostics',async()=>{
+ for(const stderr of ['unknown CLI read failure\n','gh: HTTP 503: Service Unavailable\n']){
+  let calls=0;const observed=[];const reader=githubReader({repository:treeRepository,diagnostics:x=>observed.push(x),
+   transport:async()=>{calls++;return {status:1,signal:null,cleanup_complete:true,stdout:Buffer.alloc(0),stderr:Buffer.from(stderr)};}});
+  await assert.rejects(reader.read('repos/'+treeRepository+'/metadata'),/GitHub read failed/u);
+  assert.equal(calls,2);assert.deepEqual(observed.map(x=>[x.attempt,x.retrying]),[[1,true],[2,false]]);
+  assert.equal(observed[0].requestSha256,observed[1].requestSha256);assert.equal(reader.statistics().requests,2);
+ }
+});
+test('fourth-read admission failure recovers through the real selector without admitting an absent or changed source',async()=>{
+ const head='a'.repeat(40),prefix='repos/'+treeRepository;
+ const trigger={id:41,status:'completed',path:'.github/workflows/coverage.yml',head_sha:head,
+  repository:{full_name:treeRepository},head_repository:{full_name:treeRepository}};
+ const pull={number:1,state:'open',merged:false,merged_at:null,
+  head:{sha:head,ref:'task',repo:{full_name:treeRepository}},
+  base:{sha:'b'.repeat(40),ref:'main',repo:{full_name:treeRepository}}};
+ for(const mode of ['absent','current','changed']){
+  let calls=0,failed=false;const observed=[];
+  const reader=githubReader({repository:treeRepository,diagnostics:x=>observed.push(x),transport:async(program,args)=>{
+   calls++;const endpoint=args.at(-1);let value;
+   if(endpoint===prefix+'/metadata')value={};
+   else if(endpoint===prefix+'/actions/runs/41')value=trigger;
+   else if(endpoint===prefix+'/commits/'+head+'/pulls?per_page=100&page=1'){
+    if(!failed){failed=true;assert.equal(calls,4);return {status:1,signal:null,cleanup_complete:true,
+     stdout:Buffer.alloc(0),stderr:Buffer.alloc(29,120)};}
+    value=mode==='absent'?[]:[pull];
+   }else{assert.equal(endpoint,prefix+'/pulls/1');value=mode==='changed'?{...pull,head:{...pull.head,sha:'c'.repeat(40)}}:pull;}
+   return {status:0,signal:null,cleanup_complete:true,stdout:Buffer.from(JSON.stringify(value))};
+  }});
+  await reader.read(prefix+'/metadata');await reader.read(prefix+'/metadata');
+  const selected=selectPullRequest({repository:treeRepository,eventName:'workflow_run',event:{workflow_run:{id:41}},reader});
+  if(mode==='changed')await assert.rejects(selected,/stale pull-request head/u);
+  else assert.equal((await selected)?.source??null,mode==='current'?head:null);
+  assert.equal(calls,mode==='absent'?5:6);assert.equal(observed.length,1);
+  assert.equal(observed[0].request,4);assert.equal(observed[0].stderrBytes,29);assert.equal(observed[0].retrying,true);
+ }
+});
+test('REST denial, partial body, timeout, interrupted process and incomplete cleanup never retry',async()=>{
+ const base={status:1,signal:null,cleanup_complete:true,stdout:Buffer.alloc(0),stderr:Buffer.alloc(0)};
+ for(const change of [
+  {stderr:Buffer.from('gh: HTTP 401: Bad credentials\n')},
+  {stderr:Buffer.from('gh: HTTP 403: Forbidden\n')},
+  {stderr:Buffer.from('gh: HTTP 429: Too Many Requests\n')},
+  {stdout:Buffer.from('{"private":"partial response"}'),stderr:Buffer.from('gh: HTTP 503: Service Unavailable\n')},
+  {timed_out:true},{signal:'SIGTERM'},{cleanup_complete:false},
+  {error:Object.assign(Error('private process failure'),{code:'EACCES'})}
+ ]){
+  let calls=0;const observed=[];const reader=githubReader({repository:treeRepository,diagnostics:x=>observed.push(x),
+   transport:async()=>{calls++;return {...base,...change};}});
+  await assert.rejects(reader.read('repos/'+treeRepository+'/metadata'),/GitHub read failed/u);
+  assert.equal(calls,1);assert.equal(observed[0].retrying,false);
+  assert(!JSON.stringify(observed).includes('private'));
+ }
+});
+test('GraphQL physical failures still consume exactly one query with no retry',async()=>{
+ let calls=0;const reader=githubReader({repository:treeRepository,diagnostics:()=>{},transport:async()=>{
+  calls++;return {status:1,signal:null,cleanup_complete:true,stdout:Buffer.alloc(0),stderr:Buffer.from('gh: HTTP 503: Service Unavailable\n')};
+ }});
+ await assert.rejects(reader.readTree('a'.repeat(40)),/GitHub read failed/u);
+ await assert.rejects(reader.readTree('a'.repeat(40)),/GitHub read failed/u);
+ assert.equal(calls,1);assert.equal(reader.statistics().graphqlRequests,1);
+});
+test('standard parenthetical GitHub HTTP diagnostics preserve denial and retry policy',async()=>{
+ for(const status of [400,401,403,404,429,500,502,503])for(const format of [
+  code=>'gh: HTTP '+code+'\n',code=>'gh: HTTP '+code+': public diagnostic\n',
+  code=>'gh: public diagnostic (HTTP '+code+')\n'
+ ])for(const kind of ['rest','graphql']){
+  let calls=0;const observed=[];
+  const reader=githubReader({repository:treeRepository,diagnostics:x=>observed.push(x),transport:async()=>{
+   calls++;return {status:1,signal:null,cleanup_complete:true,stdout:Buffer.alloc(0),stderr:Buffer.from(format(status))};
+  }});
+  await assert.rejects(kind==='rest'?reader.read('repos/'+treeRepository+'/metadata'):reader.readTree('a'.repeat(40)),/GitHub read failed/u);
+  assert.equal(calls,kind==='rest'&&status>=500?2:1);
+  assert(observed.every(value=>value.httpStatus===status));
+  assert.equal(observed.at(-1).retrying,false);
+ }
+});
+test('a REST retry shares the original absolute deadline and cannot issue request513',async()=>{
+ const saved=Date.now;let now=0;Date.now=()=>now;
+ try{
+  const timeouts=[];const reader=githubReader({repository:treeRepository,diagnostics:()=>{},transport:async(program,args,options)=>{
+   timeouts.push(options.timeout);
+   if(timeouts.length===1){now=149990;return {status:1,signal:null,cleanup_complete:true,stdout:Buffer.alloc(0)};}
+   return {status:0,signal:null,cleanup_complete:true,stdout:Buffer.from('{}')};
+  }});
+  assert.deepEqual(await reader.read('repos/'+treeRepository+'/metadata'),{});assert.deepEqual(timeouts,[20000,10]);
+ }finally{Date.now=saved;}
+ let calls=0;const observed=[];const reader=githubReader({repository:treeRepository,diagnostics:x=>observed.push(x),transport:async()=>{
+  calls++;return calls===512?{status:1,signal:null,cleanup_complete:true,stdout:Buffer.alloc(0)}:
+   {status:0,signal:null,cleanup_complete:true,stdout:Buffer.from('{}')};
+ }});
+ for(let index=0;index<511;index++)await reader.read('repos/'+treeRepository+'/metadata');
+ await assert.rejects(reader.read('repos/'+treeRepository+'/metadata'),/GitHub read failed/u);
+ assert.equal(calls,512);assert.equal(reader.statistics().requests,512);assert.equal(observed[0].retrying,false);
+ await assert.rejects(reader.read('repos/'+treeRepository+'/metadata'),/bounded admission API requests/u);assert.equal(calls,512);
 });
 test('REST and GraphQL share the existing finite physical request budget',async()=>{
  const value=independentTree([graphLeaf('budget')]);let calls=0;

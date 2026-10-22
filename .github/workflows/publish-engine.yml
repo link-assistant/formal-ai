@@ -191,6 +191,7 @@ jobs:
           node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" setup npm ci --prefix vscode --ignore-scripts \
             --no-audit --no-fund --fetch-timeout=30000 --fetch-retries=1 \
             --fetch-retry-mintimeout=1000 --fetch-retry-maxtimeout=5000 --timing
+          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" setup sudo bash "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/prepare-ubuntu-apt-mirror.sh"
           node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" setup node vscode/node_modules/playwright/cli.js install chromium --with-deps
       - name: Prepare web and engine artifacts
         env:

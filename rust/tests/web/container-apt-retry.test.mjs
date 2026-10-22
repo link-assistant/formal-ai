@@ -69,7 +69,7 @@ test('permanent installation failure retains exit status and retries only within
 });
 
 test('retry integration preserves repositories, package verification and helper ownership',()=>{
- assert.match(docker,/COPY --chmod=0755 scripts\/apt-install-with-retry\.sh scripts\/run-with-deadline\.sh \/usr\/local\/lib\/formal-ai-build\//);
+ assert.match(docker,/COPY --chmod=0755 scripts\/apt-install-with-retry\.sh scripts\/run-with-deadline\.sh scripts\/prepare-ubuntu-apt-mirror\.sh \/usr\/local\/lib\/formal-ai-build\//);
  assert.doesNotMatch(docker,/allow-unauthenticated|AllowInsecure|AllowUnauthenticated|Check-Valid-Until=false/);
  assert.doesNotMatch(docker,/rm[^\n]*(?:sources\.list|sources\.list\.d)/);
  const wrapper=readFileSync('scripts/apt-install-with-retry.sh','utf8');

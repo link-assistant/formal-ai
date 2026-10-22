@@ -175,7 +175,39 @@ package choices, cached downloads and normal APT integrity verification remain.
 Other callers keep their existing behavior. The same two 120-second attempts,
 five-second pause, 250-second stage and original compiler oracles remain.
 Offline controls cannot establish hosted download throughput or real prover
-compilation. Require the complete current-head hosted result.
+compilation. The subsequent main-branch failure below supersedes making this
+optional math integration a release prerequisite.
+
+## Temporary real-prover installation debt
+
+`PR1329-prover-cold-install-throughput` records the failed merged-source setup
+on `9b800dc33a2c6ec8bed1e56a48d8c7c8a5934268`. The release-first deferral is
+tracked in [PR 1394](https://github.com/link-assistant/formal-ai/pull/1394).
+[The actual prover job](https://github.com/link-assistant/formal-ai/actions/runs/39764481959/job/119776755681)
+exhausted both 120-second attempts and failed after 247 seconds of its
+250-second installation budget. The first attempt used Azure; the second
+actually selected the official HTTPS Ubuntu archive, progressed past the
+26.5 MB standard library, and then reached its deadline downloading the
+27.7 MB core library. Neither compiler ran. Preserve its complete 30,164-byte
+log, SHA256 `098fc63823d20ea9e3187d0a146501fff7ed47dcca7524f7d30f1efc9b905b63`.
+These observations establish insufficient bounded setup on this runner;
+they do not establish a theorem defect or a precise network root cause.
+
+Under the owner's release-first authorization, this one noncritical math
+integration now requires repository variable
+`FORMAL_AI_REAL_PROVER_INTEGRATION=true`. Its default skipped state is
+explicitly unverified, not a successful compiler run. When enabled, the
+original Lean and Rocq units, assertions, versions and all installation,
+compilation and job deadlines remain required. Install with
+`--no-install-recommends` to avoid optional package dependencies; mandatory
+Coq/OCaml downloads remain, so this alone is not a throughput fix.
+JavaScript prover-adapter controls and every production, coding, released-client
+and public-download acceptance gate remain required.
+
+Restore unconditional real-prover integration after a bounded, authenticated
+cold-install strategy succeeds on hosted runners and both unchanged compiler
+oracles execute successfully. Keep the failed main attempt and any later
+observations separate; no older successful run establishes current acceptance.
 
 ## Reset-test isolation and unknown-prompt latency debt
 
@@ -199,3 +231,62 @@ nonempty-memory precondition; it does not fix arbitrary-prompt latency.
 Resolve that debt through bounded stage profiling and an unchanged-deadline
 regression for the original seed prompts. Actual current-head hosted reset
 acceptance remains required.
+
+
+## Bounded read-only GitHub admission recovery
+
+The [released-source admission job](https://github.com/link-assistant/formal-ai/actions/runs/39790340888/job/119864406820)
+on `368d34ffa0c2632db480cf99b4207b1145b5f25a` failed at its fourth API read,
+while listing pull requests associated with the trigger commit. The GitHub CLI
+exited with status 1, no response bytes and 29 diagnostic bytes; cleanup
+completed, with no signal or timeout. No client task ran. Retain the complete
+28,367-byte log, SHA256
+`6eede8918b85174d2a35779480b1a5dcc0ace05c3451563487e4a66dba19fdfd`.
+The suppressed diagnostic prevents assigning an exact transport, HTTP or
+authentication cause; do not infer a global outage or a client defect.
+
+An unchanged owned REST read may repeat once after a clean, empty-response CLI
+exit 1, excluding known HTTP 4xx denials. Both physical requests share the
+existing 150-second admission deadline, 20-second request bound, 512-request
+budget and response/aggregate byte limits. GraphQL, partial responses,
+timeouts, interrupted processes, spawn errors and incomplete cleanup never
+retry. A second failure stops admission. Existing source, complete-CI and
+client-effect authorization remains fail-closed.
+
+Report the operation family, request identity hash, physical attempt, status,
+HTTP status when present, byte counts and output digests for recovered as well
+as fatal failures. Recognize both bare/colon and parenthetical `(HTTP 422)`
+GitHub CLI HTTP errors, including their closing delimiter.
+Never echo raw arguments, response bodies or diagnostics. Offline controls
+cover the actual selector path, stale-source refusal, recovery and repeated
+failure bounds; they do not reproduce the suppressed diagnostic or establish
+live transport recovery. Keep that distinction in hosted acceptance evidence.
+
+## Browser system-dependency publication blocker
+
+The [browser package job](https://github.com/link-assistant/formal-ai/actions/runs/39797277559/job/119889539325)
+completed npm setup, then exhausted its unchanged setup deadline while
+Playwright's APT subprocess downloaded fonts from the Azure Ubuntu archive.
+The operation exited 124 after 295 seconds; no browser smoke oracle ran.
+Retain the complete log, SHA256
+`fe41d2d907cb165ad40971da90e4e8677f3151efa441ec3409f6edcd0002f2d3`.
+This establishes the stalled phase and endpoint, rather than an underlying
+network cause or an assertion failure.
+
+Extract the existing validated mirror transform into one shared helper. The
+prover fallback still invokes it only within its existing second attempt;
+browser setup explicitly selects the same official HTTPS archive before the
+original Playwright install. Preserve signed catalogs, package hashes, source
+stanzas, unrelated hosts, comments, priorities, file mode and path/ownership
+checks. Capture the helper with the immutable browser protocol and include it
+where the APT wrapper is packaged. Keep the five-minute step, operation/job
+deadlines and actual browser worker/cold-install assertions unchanged.
+Hosted throughput and browser publication still require fresh acceptance.
+
+The subsequent [desktop checksum job](https://github.com/link-assistant/formal-ai/actions/runs/39797277574/job/119920164267)
+correctly refused the absent `browser-publication.json` receipt. Its complete
+log has SHA256
+`d16bc1ffe5b6214c7f1c44022ab783cd93eef9c39d6a498918feecc0a9b3a3d8`.
+This is a consequence of failed browser publication; no checksum corruption
+was observed. Keep that exact receipt requirement and rerun it through the
+next normally triggered release after browser setup succeeds.

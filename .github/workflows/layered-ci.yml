@@ -297,7 +297,10 @@ jobs:
   provers:
     name: provers (real Lean 4 and Rocq compile, R1186-4)
     needs: [changes]
-    if: needs.changes.outputs.js-changed == 'true'
+    # Release-first debt PR1329-prover-cold-install-throughput: both official
+    # mirrors exceeded the bounded install on main. Keep this optional math
+    # integration explicit; a skipped job is not real-prover acceptance.
+    if: needs.changes.outputs.js-changed == 'true' && vars.FORMAL_AI_REAL_PROVER_INTEGRATION == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 12
     concurrency:
@@ -322,7 +325,7 @@ jobs:
         run: >-
           scripts/run-with-budget-warning.sh
           "$TEST_BUDGET_SECONDS" "Install Rocq"
-          scripts/apt-install-with-retry.sh coq zstd
+          scripts/apt-install-with-retry.sh --no-install-recommends coq zstd
       - name: Download Lean 4
         env:
           TEST_BUDGET_SECONDS: 90

@@ -16,41 +16,58 @@ const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 export function githubReader({
   repository,
   transport = boundedCommand,
-  environment = process.env
+  environment = process.env,
+  diagnostics = record => console.error('GitHub read diagnostic ' + JSON.stringify(record))
 } = {}) {
   assert.match(repository ?? '', /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/u);
   let requests = 0, restRequests = 0, graphqlRequests = 0,
     byteCount = 0;
   const deadline = Date.now() + 150000;
-  const request = async (arguments_, kind) => {
-    assert.ok(++requests <= 512, 'bounded admission API requests');
-    const remaining = deadline - Date.now();
-    assert.ok(remaining > 0, 'admission deadline');
-    if (kind === 'graphql') graphqlRequests++; else restRequests++;
-    const result = await transport('gh', arguments_, {
-      env: environment,
-      timeout: Math.min(20000, remaining),
-      stdoutLimitBytes: maximumBytes,
-      stderrLimitBytes: 65536
-    });
-    if (result.status !== 0 || result.signal !== null || result.error || result.timed_out || result.cleanup_complete !== true) {
-      const stdout = Buffer.from(result.stdout), stderr = Buffer.from(result.stderr ?? '');
-      const http = /(?:^|\s)HTTP\s+([1-5][0-9]{2})(?:\s|$)/u.exec(stderr.toString());
-      const errorCode = result.error?.code;
-      assert.fail('GitHub read failed ' + JSON.stringify({
-        kind, request: requests, status: result.status, signal: result.signal,
-        timedOut: result.timed_out === true, cleanupComplete: result.cleanup_complete === true,
-        errorCode: typeof errorCode === 'string' && /^[A-Z0-9_]{1,64}$/u.test(errorCode) ? errorCode : null,
-        httpStatus: http ? Number(http[1]) : null,
-        stdoutBytes: stdout.length, stderrBytes: stderr.length,
-        stdoutSha256: hash(stdout), stderrSha256: hash(stderr)
-      }));
+  const request = async (arguments_, kind, operation) => {
+    const stableArguments = [...arguments_];
+    const requestSha256 = hash(Buffer.from(JSON.stringify(stableArguments)));
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      assert.ok(requests < 512, 'bounded admission API requests');
+      const remaining = deadline - Date.now();
+      assert.ok(remaining > 0, 'admission deadline');
+      requests++;
+      if (kind === 'graphql') graphqlRequests++; else restRequests++;
+      const result = await transport('gh', [...stableArguments], {
+        env: environment,
+        timeout: Math.min(20000, remaining),
+        stdoutLimitBytes: maximumBytes,
+        stderrLimitBytes: 65536
+      });
+      if (result.status !== 0 || result.signal !== null || result.error || result.timed_out || result.cleanup_complete !== true) {
+        const stdout = Buffer.from(result.stdout ?? ''), stderr = Buffer.from(result.stderr ?? '');
+        const http = /(?:^|[\s(])HTTP\s+([1-5][0-9]{2})(?=[:\s)]|$)/u.exec(stderr.toString());
+        const httpStatus = http ? Number(http[1]) : null;
+        const errorCode = result.error?.code;
+        // Only unchanged, read-only REST calls may repeat once. Failed bodies,
+        // 4xx denials, GraphQL costs and incomplete process cleanup never retry.
+        const retrying = kind === 'rest' && attempt === 1 && result.status === 1 && result.signal === null &&
+          !result.error && !result.timed_out && result.cleanup_complete === true && stdout.length === 0 &&
+          (httpStatus === null || httpStatus >= 500) && requests < 512 && Date.now() < deadline;
+        const diagnostic = {
+          kind, operation, requestSha256, attempt, maximumAttempts: kind === 'rest' ? 2 : 1,
+          request: requests, status: result.status, signal: result.signal,
+          timedOut: result.timed_out === true, cleanupComplete: result.cleanup_complete === true,
+          errorCode: typeof errorCode === 'string' && /^[A-Z0-9_]{1,64}$/u.test(errorCode) ? errorCode : null,
+          httpStatus, retrying,
+          stdoutBytes: stdout.length, stderrBytes: stderr.length,
+          stdoutSha256: hash(stdout), stderrSha256: hash(stderr)
+        };
+        diagnostics(diagnostic);
+        if (retrying) continue;
+        assert.fail('GitHub read failed ' + JSON.stringify(diagnostic));
+      }
+      const body = Buffer.from(result.stdout);
+      assert.ok(body.length <= maximumBytes, 'admission response bytes');
+      byteCount += body.length;
+      assert.ok(byteCount <= 64 * 1024 * 1024, 'admission aggregate bytes');
+      return body;
     }
-    const body = Buffer.from(result.stdout);
-    assert.ok(body.length <= maximumBytes, 'admission response bytes');
-    byteCount += body.length;
-    assert.ok(byteCount <= 64 * 1024 * 1024, 'admission aggregate bytes');
-    return body;
+    throw new Error('bounded admission read attempts exhausted');
   };
   const bytes = async (endpoint, {
     accept = null
@@ -58,10 +75,11 @@ export function githubReader({
     assert.ok(accept === null || accept === 'application/octet-stream');
     assert.ok(endpoint.startsWith('repos/' + repository + '/') && !endpoint.split('?')[0].split('/').some(value => value === '.' || value === '..'),
  'owned GitHub endpoint');
-    return request(['api', '--hostname', 'github.com', ...(accept ? ['-H', 'Accept: ' + accept] : []), endpoint], 'rest');
+    const operation = /\/commits\/[^/?]+\/pulls(?:\?|$)/u.test(endpoint) ? 'commit-pull-requests' : 'owned-rest-read';
+    return request(['api', '--hostname', 'github.com', ...(accept ? ['-H', 'Accept: ' + accept] : []), endpoint], 'rest', operation);
   };
   const treeReader = createTreeReader(repository, async query => JSON.parse(new TextDecoder('utf-8', {fatal: true}).decode(
-    await request(['api', '--hostname', 'github.com', 'graphql', '-f', 'query=' + query], 'graphql'))));
+    await request(['api', '--hostname', 'github.com', 'graphql', '-f', 'query=' + query], 'graphql', 'owned-tree-query'))));
   const read = async endpoint => JSON.parse(new TextDecoder('utf-8', {
     fatal: true
   }).decode(await bytes(endpoint)));
