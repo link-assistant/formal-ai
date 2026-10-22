@@ -1030,3 +1030,24 @@ all attempt/stage/job bounds and both real compiler oracles. Other callers do
 not opt in. Retain the original failure, exercise the offline shell controls,
 and require actual current-head setup and compiler success before merge. This
 manual repair receives zero autonomous Formal AI authorship credit.
+
+### Pending seed in the multilingual memory-reset test
+
+On `c0ba2074f876429176ce74a16d1dcaa413169504`,
+[local web shard 2](https://github.com/link-assistant/formal-ai/actions/runs/39743045641/job/119720443946)
+failed before a reset command while waiting for an arbitrary synthetic seed to
+finish. The full log is 119,955 bytes, SHA256
+`9f4de1f8e33ac20aa83c8c252d27c896bbc0ef50ade92a6ddcadddcb1d90fd05`.
+Two diagnostic Markdown members were read using bounded HTTPS ranges from the
+authenticated `playwright-report-local-2` artifact, without downloading its
+complete archive, trace, products or executing a browser locally. The snapshots show
+pending `Memory reset seed en` and `Memory reset seed ru`; the latter follows
+a completed English reset. Whole-archive digest verification is not claimed.
+
+Seed each reset through a real `2 + 2` exchange and require both persisted user
+and assistant messages before exercising each original reset phrase. All reset,
+confirmation, empty-memory and deadline oracles remain. Keep unknown-prompt
+coverage elsewhere and track `PR1329-browser-unknown-seed-latency` as unresolved
+profiling debt, not a product latency fix. This direct fixture repair receives
+zero autonomous Formal AI authorship credit. Require actual hosted acceptance
+on the next source and retain every other pending check as unaccepted.

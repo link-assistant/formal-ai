@@ -176,3 +176,26 @@ Other callers keep their existing behavior. The same two 120-second attempts,
 five-second pause, 250-second stage and original compiler oracles remain.
 Offline controls cannot establish hosted download throughput or real prover
 compilation. Require the complete current-head hosted result.
+
+## Reset-test isolation and unknown-prompt latency debt
+
+`PR1329-browser-unknown-seed-latency` retains the unrelated response-latency
+failure observed in the
+[local web memory-reset test](https://github.com/link-assistant/formal-ai/actions/runs/39743045641/job/119720443946)
+on `c0ba2074f876429176ce74a16d1dcaa413169504`. Its complete 119,955-byte log has
+SHA256 `9f4de1f8e33ac20aa83c8c252d27c896bbc0ef50ade92a6ddcadddcb1d90fd05`.
+Retained browser snapshots show a pending English seed on one attempt and a
+pending Russian seed after a completed English reset on the other. Both failed
+before submitting the next reset command. These observations do not establish
+the computation hotspot or a reset failure.
+
+The reset test now seeds each case through the real worker with `2 + 2`, checks
+the answer and waits for persisted user and assistant messages before resetting.
+All four original reset phrases, confirmation-dialog checks, zero displayed
+messages, zero persisted events and existing helper/test deadlines remain.
+Separate unknown-prompt tests remain selected. No worker response is mocked and
+no timeout is raised. This isolates reset coverage and strengthens its
+nonempty-memory precondition; it does not fix arbitrary-prompt latency.
+Resolve that debt through bounded stage profiling and an unchanged-deadline
+regression for the original seed prompts. Actual current-head hosted reset
+acceptance remains required.

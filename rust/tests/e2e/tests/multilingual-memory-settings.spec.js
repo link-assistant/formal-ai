@@ -304,7 +304,20 @@ test.describe('memory export/import', () => {
     });
 
     for (const { language, phrase } of resetPromptCases) {
-      await sendPrompt(page, `Memory reset seed ${language}`);
+      await test.step(`Persist a real chat before the ${language} reset`, async () => {
+        // Reset coverage needs stored messages, without an unrelated open-ended task.
+        const answer = await sendPrompt(page, '2 + 2');
+        await expect(answer).toContainText('4');
+        await expect.poll(() => page.evaluate(async () => {
+          const events = await window.FormalAiMemory.listEvents();
+          return {
+            user: events.some((event) => event.kind === 'message'
+              && event.role === 'user' && event.content === '2 + 2'),
+            assistant: events.some((event) => event.kind === 'message'
+              && event.role === 'assistant' && Boolean(event.content)),
+          };
+        })).toEqual({ user: true, assistant: true });
+      });
       const input = page.locator('[data-testid="chat-composer-input"]');
       await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
       await input.fill(phrase);
