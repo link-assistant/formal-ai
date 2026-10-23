@@ -21,6 +21,7 @@ const TEST_MATCH = [
   '**/creator-question.spec.js',
   '**/search-menu-and-deduplication.spec.js',
   '**/offline-bundled-runtime.spec.js',
+  '**/worker-startup-recovery.spec.js',
   '**/ocr-image-attachments.spec.js',
   '**/prime-proof-prompts.spec.js',
   '**/quoted-russian-translation.spec.js',

@@ -37,6 +37,8 @@ inject the same HTTP failures and require the real native worker to answer
 arithmetic after recovery; persistent failures must produce an explicit error
 after two requests. These emulations create no GitHub issues or pull requests.
 They run in CI without local Rust compilation.
+The explicit local-suite configuration selects these tests, and a configuration
+regression ensures duration-based partitioning assigns them to one project.
 
 This repair uses the authorized manual critical-release workflow and receives
 no Formal AI authorship credit. It does not confer the real three-client

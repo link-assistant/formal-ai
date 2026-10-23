@@ -8,13 +8,33 @@
 
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import test from 'node:test';
+import { runInNewContext } from 'node:vm';
 
 import { REPO_ROOT } from './support/browser-runtime.mjs';
 
 const E2E = `${REPO_ROOT}/rust/tests/e2e`;
 const CONFIG = readFileSync(`${E2E}/playwright.local.config.js`, 'utf8');
 const WORKFLOW = readFileSync(`${REPO_ROOT}/.github/workflows/e2e-local.yml`, 'utf8');
+
+test('startup recovery regressions belong to exactly one real local browser project', () => {
+  const module = { exports: {} };
+  const require = createRequire(import.meta.url);
+  runInNewContext(CONFIG, {
+    module, __dirname: E2E, process: { env: { CI: 'true' } },
+    require: name => name === '@playwright/test'
+      ? { defineConfig: config => config, devices: { 'Desktop Chrome': {} } }
+      : require(name),
+  }, { filename: `${E2E}/playwright.local.config.js` });
+  const config = module.exports;
+  const spec = '**/worker-startup-recovery.spec.js';
+  const matches = patterns => (patterns || []).includes(spec);
+  assert(matches(config.testMatch), 'Recovery tests must be discovered by CI test listing');
+  const selected = config.projects.filter(project =>
+    matches(project.testMatch || config.testMatch) && !matches(project.testIgnore));
+  assert.equal(selected.length, 1, 'Run recovery tests once, including after duration-based repartitioning');
+});
 
 test('the legs are planned longest-first, never cut by test count', () => {
   assert.match(WORKFLOW, /plan-test-shards\.mjs --shard "\$SHARD" --of 3 --durations "\$durations"/u);
