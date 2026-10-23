@@ -38,8 +38,8 @@
     "@link-assistant/web-capture": {
       "@kreuzberg/html-to-markdown-node": "3.5.5",
       "browser-commander": "0.20.0",
-      "puppeteer": "^25.12.0",
-      "puppeteer-core": "^25.12.0",
+      "puppeteer": "25.13.0",
+      "puppeteer-core": "25.13.0",
       "qs": "^6.16.0"
     },
     "global-agent": "^4.1.3"

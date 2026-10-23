@@ -319,3 +319,30 @@ different YAML indentation that the historical text-only sweep does not cover.
 Their measured deadlines and finite job clocks are retained. A later headroom
 review must cover that syntax and choose budgets from actual timings; this PR
 does not claim complete parsed-YAML headroom coverage for all workflows.
+
+
+## Update the compatible browser-tool chain for the live Zod advisory
+
+[The next lint run](https://github.com/link-assistant/formal-ai/actions/runs/40022351344/job/120652744467)
+passed its Rust stage but failed the JavaScript dependency audit. Its complete
+610,876-byte log has SHA-256
+`f536385e53129dceb97ec305456a5080a447de904e1bff36922f2c5b78c20d33`.
+The official [GHSA-mrhx-c7xc-m3w5](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5)
+metadata marks Zod below 4.6.6 vulnerable to memory exhaustion and names 4.6.6
+as the first fixed version. Both desktop and VS Code locks held Zod 3.25.76
+through chromium-bidi 17.0.2, which explicitly requires Zod 3.
+
+Do not force Zod 4 into that incompatible parent. Pin Puppeteer and its core to
+25.13.0, whose declared mapper supports Zod 4, and regenerate both lockfiles with
+npm's lockfile-only resolver. The old and new Puppeteer releases declare the same
+Node >=22.12.0 requirement. The selected mapper resolves Zod 4.6.7. Exactly ten
+related browser-tool package records change in each project; all other package
+records, project versions, unrelated overrides and manifest fields are identical.
+
+Both regenerated locks return zero findings from the live npm audit. Official
+registry HEAD requests confirm all ten new tarball URLs return HTTP 200. Resolution
+used isolated temporary projects with package-lock-only and ignore-scripts: no
+node_modules, package archive fetches, browser downloads or lifecycle execution.
+The temporary npm caches were removed after preserving metadata and audit proofs.
+The advisory threshold remains enforced, without suppression or an audit waiver;
+actual updated desktop/browser/VS Code runtime validation runs in CI.

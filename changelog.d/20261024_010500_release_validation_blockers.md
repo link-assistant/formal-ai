@@ -23,3 +23,5 @@ bump: patch
 ### Security
 
 - Update both committed Tokio resolutions to 1.53.3 for RUSTSEC-2026-0386.
+
+- Update the compatible desktop and VS Code browser-tool chain to patched Zod 4.6.7 for GHSA-mrhx-c7xc-m3w5.
