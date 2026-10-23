@@ -6,7 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {createEvidenceClient} from './collect-test-replays.mjs';
-import {effectOwnerArtifact, cleanupClaimName, validateCleanupCursor, prepareCleanupClaim, applyCleanupClaim,
+import {effectOwnerArtifact, cleanupClaimName, validateCleanupCursor, prepareCleanupClaim, revalidateCleanupClaim, applyCleanupClaim,
   readScanCursor, makeScanProgress} from './lib/generated-task-cleanup-journal.mjs';
 const repository = 'link-assistant/formal-ai';
 export async function prepareOwnedHiveRuns({reader, producer, maxPages = 3, maxOwners = 3,
@@ -82,13 +82,27 @@ export function writeCleanupOutcome(outcome, directory) {
   const target = path.join(directory, `${outcome.sourceRun}-${outcome.sourceAttempt}`);
   return {...outcome, outcomePath: outputDocument(target, 'outcome.json', outcome)};
 }
+export function writeCleanupRecheck(result, directory) {
+  cleanupClaimName(result.run, result.attempt); assert.equal(typeof result.eligible, 'boolean');
+  const claimPath = result.eligible
+    ? outputDocument(path.join(directory, `${result.run}-${result.attempt}`), 'claim.json', result.claim) : null;
+  return {...result, schema: 'owned-hive-cleanup-preclaim/v1', claimPath};
+}
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const [phase, ...args] = process.argv.slice(2);
-  assert.ok(['prepare', 'apply'].includes(phase), 'Usage: finalize-owned-hive-delivery-runs.mjs prepare|apply');
+  assert.ok(['prepare', 'recheck', 'apply'].includes(phase), 'Usage: finalize-owned-hive-delivery-runs.mjs prepare|recheck|apply');
   const {githubReader} = await import('./admit-hive-original-delivery.mjs');
   const reader = githubReader({repository}), producer = producerFromEnvironment(process.env);
   const directory = path.join(process.env.RUNNER_TEMP ?? os.tmpdir(), `hive-cleanup-${producer.run}-${producer.attempt}`);
-  if (phase === 'apply') {
+  if (phase === 'recheck') {
+    assert.equal(args.length, 0); const input = process.env.CLEANUP_CLAIM ?? '';
+    assert.ok(Buffer.byteLength(input, 'utf8') <= 131072, 'bounded queued claim');
+    const result = await revalidateCleanupClaim({reader, producer, claim: JSON.parse(input)});
+    const published = writeCleanupRecheck(result, directory);
+    assert.ok(process.env.GITHUB_OUTPUT, 'workflow step output is required');
+    fs.appendFileSync(process.env.GITHUB_OUTPUT, `eligible=${published.eligible}\nclaim_path=${published.claimPath ?? ''}\n`);
+    process.stdout.write(JSON.stringify(published, null, 2) + '\n');
+  } else if (phase === 'apply') {
     assert.equal(args.length, 1); assert.match(args[0], /^[1-9]\d*$/u);
     const outcome = await applyOwnedHiveClaim({reader, producer, claimArtifactId: Number(args[0])});
     process.stdout.write(JSON.stringify(writeCleanupOutcome(outcome, directory), null, 2) + '\n');

@@ -100,7 +100,7 @@ async function uniqueOwnerArtifact(reader, metadata, owner, readArtifact) {
   }
   assert.equal(matching.length, 1, 'ambiguous effect-owner artifact'); assert.deepEqual(matching[0], metadata);
 }
-export async function prepareCleanupClaim({reader, metadata, producer, cache = new Map(), ...options}) {
+export async function prepareCleanupClaim({reader, metadata, producer, cache = new Map(), expectedClaim = null, ...options}) {
   const services = await dependencies(options);
   const owner = await authenticateEffectOwner({reader, metadata, cache, ...services});
   await uniqueOwnerArtifact(reader, metadata, owner, services.readArtifact);
@@ -108,15 +108,28 @@ export async function prepareCleanupClaim({reader, metadata, producer, cache = n
   const claimName = cleanupClaimName(owner.run, owner.attempt);
   const previous = await reader.pages(`repos/${repository}/actions/artifacts?name=${claimName}`, 'artifacts');
   assert.ok(previous.length <= 16, 'bounded immutable cleanup claims');
-  // Unknown, expired or interrupted claims cannot become permission for another mutation.
-  if (previous.length) return {eligible: false, run: owner.run, attempt: owner.attempt, reason: 'prior-claim-quarantined'};
+  // Discovery may cheaply retain an existing claim; queued rechecks must still authenticate their full input.
+  const retained = previous.length ? {eligible: false, run: owner.run, attempt: owner.attempt, reason: 'prior-claim-quarantined'} : null;
+  if (retained && expectedClaim === null) return retained;
   const identity = await services.cleanupPolicy(reader, repository, producer.protocolCommit); assert.match(identity.policyHash, hash);
   const claim = {schema: 'formal-ai-hive-cleanup-claim/v1', repository, producer,
     cleanupPolicyHash: identity.policyHash, ownerArtifactId: metadata.id, ownerArtifactDigest: metadata.digest,
     sourceRun: owner.run, sourceAttempt: owner.attempt, protocolHead: owner.protocolCommit,
     selectedSourceFromOwner: owner.selectedSource};
+  if (expectedClaim !== null) assert.deepEqual(claim, expectedClaim, 'queued cleanup claim changed before publication');
+  // Unknown, expired or interrupted claims cannot become permission for another mutation.
+  if (retained) return retained;
   return {eligible: true, run: owner.run, attempt: owner.attempt, claimName,
     outcomeName: cleanupOutcomeName(owner.run, owner.attempt), claim};
+}
+export async function revalidateCleanupClaim({reader, claim, producer, ...options}) {
+  assert.equal(claim?.schema, 'formal-ai-hive-cleanup-claim/v1'); assert.equal(claim.repository, repository);
+  assert.deepEqual(claim.producer, producer, 'queued claim belongs to this exact cleanup invocation');
+  assert.ok(Number.isSafeInteger(claim.ownerArtifactId) && claim.ownerArtifactId > 0);
+  assert.match(claim.ownerArtifactDigest, /^sha256:[a-f0-9]{64}$/u);
+  const metadata = await reader.read(`repos/${repository}/actions/artifacts/${claim.ownerArtifactId}`);
+  assert.equal(metadata.digest, claim.ownerArtifactDigest);
+  return prepareCleanupClaim({...options, reader, metadata, producer, expectedClaim: claim});
 }
 export async function applyCleanupClaim({reader, claimArtifactId, producer, client, finalize, ...options}) {
   assert.ok(Number.isSafeInteger(claimArtifactId) && claimArtifactId > 0);
@@ -146,7 +159,8 @@ export async function applyCleanupClaim({reader, claimArtifactId, producer, clie
       expectedProtocolHead: owner.protocolCommit, apply: true, client});
     const uncertain = result.applied?.results.some(row => row.status === 'mutation-uncertain'
       || row.comment === 'uncertain-not-retried') === true;
-    return {...outcome, state: uncertain ? 'uncertain' : 'completed', cleanupReceipt: result.cleanupReceipt};
+    return {...outcome, state: uncertain ? 'uncertain' : result.cleanupReceipt?.complete === true ? 'completed' : 'retained',
+      cleanupReceipt: result.cleanupReceipt};
   } catch (error) {
     return {...outcome, state: error.code === 'OWNER_CHANGED_BEFORE_CLEANUP' ? 'retained' : 'uncertain',
       reason: error.code === 'OWNER_CHANGED_BEFORE_CLEANUP' ? 'owner-changed-before-cleanup' : 'finalizer-interrupted-or-unknown'};

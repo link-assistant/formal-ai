@@ -1,4 +1,4 @@
-# Bound search-adapter setup before coverage begins
+# Release blockers: setup deadlines, security audit, and owned cleanup
 
 After PR #1401 merged, default-branch Coverage run
 [39971329880](https://github.com/link-assistant/formal-ai/actions/runs/39971329880)
@@ -37,3 +37,35 @@ Its checksum comes from the public crates.io index; the old and new releases
 have identical dependency, feature, and Rust-version metadata. No other locked
 package changes, and the advisory is not ignored. Native builds and the real
 Cargo audit validate the update in CI; no crate is downloaded or compiled locally.
+
+## Recheck queued cleanup plans before publishing a claim
+
+Main's finalizer run
+[39982797815](https://github.com/link-assistant/formal-ai/actions/runs/39982797815/job/120519109289)
+failed before issue writes because two immutable claims existed for the same
+owner. Its full 29,383-byte log has SHA-256
+`5d282cf8942e7a6afa5dfc469f578debd1d8f7d79735eeacb4aaf433c57a4d93`.
+The claims were published at 16:08:41 and 16:19:43 UTC on 2026-10-23.
+The second run finished preparation at 16:08:10, before the first claim existed,
+and its sweep did not start until 16:19:11.
+
+Preparation ran before the sweep acquired per-owner job concurrency. A queued
+sweep then materialized its old plan without checking whether another run had
+already claimed the owner. The apply-time uniqueness assertion correctly refused
+the duplicate; weakening that assertion would permit uncertain repeated writes.
+
+Revalidate the exact queued claim, producer, policy, immutable owner digest, and
+current claim census inside the serialized sweep before publishing anything.
+An already claimed owner produces an explicit pre-claim decision and
+no new claim or cleanup request. Claim upload, apply, and terminal-outcome upload
+all require fresh eligibility. The original apply-time uniqueness and uncertain
+write quarantine remain enforced. An incomplete cleanup receipt is retained
+instead of being labelled completed. Existing ambiguous claims remain quarantined;
+this fix does not delete history or grant another mutation attempt.
+
+Regressions interleave two producers that prepared before either published,
+verify the second cannot publish a duplicate, reject changed queued identities
+even after quarantine, and evaluate the actual workflow's effect conditions for
+both eligibility outcomes. Existing ownership, interrupted-write, and complete
+closure tests remain required. All validation uses fake transports and local
+temporary files, without writes to real GitHub issues.

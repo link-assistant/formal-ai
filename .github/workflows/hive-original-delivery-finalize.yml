@@ -75,28 +75,40 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-      - name: Materialize only authenticated public owner claim metadata
+      - name: Recheck queued owner before publishing a cleanup claim
+        id: recheck
         env:
+          GH_TOKEN: ${{ github.token }}
           CLEANUP_CLAIM: ${{ toJSON(matrix.owner.claim) }}
-        run: node --input-type=module -e 'import fs from
-          "node:fs";fs.writeFileSync(process.env.RUNNER_TEMP+"/claim.json",JSON.stringify(JSON.parse(process.env.CLEANUP_CLAIM))+"\n",{flag:"wx",mode:0o600});'
+        run: node scripts/finalize-owned-hive-delivery-runs.mjs recheck >
+          "$RUNNER_TEMP/preclaim.json"
+      - name: Retain the authenticated pre-claim decision without cleanup credit
+        if: ${{ always() && steps.recheck.outcome == 'success' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: hive-cleanup-preclaim-${{ matrix.owner.run }}-${{ matrix.owner.attempt }}
+          path: ${{ runner.temp }}/preclaim.json
+          if-no-files-found: error
+          retention-days: 90
       - name: Persist immutable cleanup claim before issue writes
+        if: ${{ steps.recheck.outputs.eligible == 'true' }}
         id: claim
         uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.owner.claimName }}
-          path: ${{ runner.temp }}/claim.json
+          path: ${{ steps.recheck.outputs.claim_path }}
           if-no-files-found: error
           retention-days: 90
       - name: Apply one fresh authenticated claimed owner without uncertain-write
           retries
+        if: ${{ steps.recheck.outputs.eligible == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
           CLAIM_ARTIFACT_ID: ${{ steps.claim.outputs.artifact-id }}
         run: node scripts/finalize-owned-hive-delivery-runs.mjs apply
           "$CLAIM_ARTIFACT_ID" > "$RUNNER_TEMP/outcome.json"
       - name: Retain terminal outcome without granting retries after uncertainty
-        if: ${{ always() }}
+        if: ${{ always() && steps.recheck.outputs.eligible == 'true' }}
         uses: actions/upload-artifact@v7
         with:
           name: hive-cleanup-outcome-${{ matrix.owner.run }}-${{ matrix.owner.attempt }}

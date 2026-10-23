@@ -3,13 +3,16 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import {prepareOwnedHiveRuns, applyOwnedHiveClaim, writeCleanupPreparation, writeCleanupOutcome} from '../../../scripts/finalize-owned-hive-delivery-runs.mjs';
-import {prepareCleanupClaim, readScanCursor, makeScanProgress, cleanupClaimName,
+import vm from 'node:vm';
+import YAML from 'yaml';
+import {prepareOwnedHiveRuns, applyOwnedHiveClaim, writeCleanupPreparation, writeCleanupOutcome,
+  writeCleanupRecheck} from '../../../scripts/finalize-owned-hive-delivery-runs.mjs';
+import {prepareCleanupClaim, revalidateCleanupClaim, readScanCursor, makeScanProgress, cleanupClaimName,
   effectOwnerArtifact} from '../../../scripts/lib/generated-task-cleanup-journal.mjs';
 const protocol = 'a'.repeat(40), cleanupProtocol = 'b'.repeat(40), selected = 'c'.repeat(40);
 const deliveryHash = 'd'.repeat(64), inputHash = 'e'.repeat(64), cleanupHash = 'f'.repeat(64);
 const producer = {run: 900, attempt: 1, protocolCommit: cleanupProtocol};
-function fixture() {
+function fixture({additionalProducers = []} = {}) {
   const calls = [], effects = [], owners = new Map(), artifacts = new Map(), documents = new Map();
   let claims = [], progress = [], listingOverride = null;
   function addOwner(run = 101, artifact = 11) {
@@ -36,10 +39,11 @@ function fixture() {
       const match = /runs\/(\d+)\/attempts\/(\d+)/u.exec(endpoint);
       if (match) {
         const id = Number(match[1]), attempt = Number(match[2]);
-        return {id, run_attempt: attempt, head_sha: id === producer.run ? cleanupProtocol : protocol,
+        const isCleanup = [producer, ...additionalProducers].some(value => value.run === id);
+        return {id, run_attempt: attempt, head_sha: isCleanup ? cleanupProtocol : protocol,
           repository: {full_name: 'link-assistant/formal-ai'}, head_repository: {full_name: 'link-assistant/formal-ai'},
-          path: id === producer.run ? '.github/workflows/hive-original-delivery-finalize.yml'
-            : '.github/workflows/hive-original-delivery.yml', event: id === producer.run ? 'schedule' : 'workflow_run',
+          path: isCleanup ? '.github/workflows/hive-original-delivery-finalize.yml'
+            : '.github/workflows/hive-original-delivery.yml', event: isCleanup ? 'schedule' : 'workflow_run',
           status: 'completed', conclusion: 'success'};
       }
       throw Error('unexpected synthetic endpoint');
@@ -117,6 +121,68 @@ test('concurrent immutable claims refuse all issue mutations', async () => {
   const f = fixture(), prepared = await prepare(f); f.publishClaim(prepared.claim); f.publishClaim(prepared.claim, 22);
   await assert.rejects(applyOwnedHiveClaim({reader: f.reader, producer, claimArtifactId: 21,
     finalize: f.finalize, ...f.dependencies})); assert.equal(f.effects.length, 0);
+});
+test('a queued second producer rechecks after the first claim and never publishes a duplicate', async () => {
+  const other = {...producer, run: 901}, f = fixture({additionalProducers: [other]});
+  const first = await prepare(f), queued = await prepareCleanupClaim({reader: f.reader,
+    metadata: f.metadata, producer: other, ...f.dependencies});
+  assert.equal(first.eligible, true); assert.equal(queued.eligible, true);
+  const fresh = await revalidateCleanupClaim({reader: f.reader, producer, claim: first.claim, ...f.dependencies});
+  assert.deepEqual(fresh.claim, first.claim); assert.equal(f.effects.length, 0); f.publishClaim(fresh.claim);
+  const blocked = await revalidateCleanupClaim({reader: f.reader, producer: other, claim: queued.claim, ...f.dependencies});
+  assert.equal(blocked.eligible, false); assert.equal(blocked.reason, 'prior-claim-quarantined');
+  assert.equal((await f.reader.pages('name=hive-cleanup-attempt-101-1')).length, 1);
+  const applied = await applyOwnedHiveClaim({reader: f.reader, producer, claimArtifactId: 21,
+    finalize: f.finalize, ...f.dependencies});
+  assert.equal(applied.state, 'completed'); assert.equal(f.effects.length, 1);
+});
+test('queued claim identity is revalidated even when another claim already quarantines the owner', async () => {
+  for (const field of ['cleanupPolicyHash', 'selectedSourceFromOwner', 'protocolHead', 'ownerArtifactDigest']) {
+    const f = fixture(), prepared = await prepare(f); f.publishClaim(prepared.claim);
+    const claim = structuredClone(prepared.claim); claim[field] = field === 'ownerArtifactDigest'
+      ? 'sha256:' + '0'.repeat(64) : '0'.repeat(field === 'cleanupPolicyHash' ? 64 : 40);
+    await assert.rejects(revalidateCleanupClaim({reader: f.reader, producer, claim, ...f.dependencies}));
+    assert.equal(f.effects.length, 0);
+  }
+});
+test('queued claim from another invocation rejects before any transport or mutation', async () => {
+  const f = fixture(), prepared = await prepare(f); f.calls.length = 0;
+  await assert.rejects(revalidateCleanupClaim({reader: f.reader, producer: {...producer, attempt: 2},
+    claim: prepared.claim, ...f.dependencies}));
+  assert.equal(f.calls.length, 0); assert.equal(f.effects.length, 0);
+});
+test('an incomplete cleanup receipt cannot be promoted to a completed outcome', async () => {
+  const f = fixture(), prepared = await prepare(f); f.publishClaim(prepared.claim);
+  const result = await applyOwnedHiveClaim({reader: f.reader, producer, claimArtifactId: 21,
+    ...f.dependencies, finalize: async () => ({applied: {results: [{status: 'retained'}]}, cleanupReceipt: {complete: false}})});
+  assert.equal(result.state, 'retained'); assert.equal(result.cleanupReceipt.complete, false);
+});
+test('pre-claim materialization retains a blocked decision without creating another durable claim', async () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'formal-ai-preclaim-'));
+  try {
+    const blocked = writeCleanupRecheck({eligible: false, run: 101, attempt: 1, reason: 'prior-claim-quarantined'}, directory);
+    assert.equal(blocked.schema, 'owned-hive-cleanup-preclaim/v1'); assert.equal(blocked.claimPath, null);
+    assert.deepEqual(fs.readdirSync(directory), []);
+    const f = fixture(), prepared = await prepare(f), fresh = writeCleanupRecheck(prepared, directory);
+    assert.deepEqual(JSON.parse(fs.readFileSync(fresh.claimPath)), prepared.claim);
+    assert.throws(() => writeCleanupRecheck({...prepared, run: '../escape'}, directory));
+  } finally { fs.rmSync(directory, {recursive: true, force: true}); }
+});
+test('actual cleanup workflow rechecks inside owner serialization and gates every effect on fresh eligibility', () => {
+  const workflow = YAML.parse(fs.readFileSync('.github/workflows/hive-original-delivery-finalize.yml', 'utf8'));
+  const job = workflow.jobs.sweep, steps = job.steps, recheck = steps.findIndex(step => step.id === 'recheck');
+  assert.match(job.concurrency.group, /matrix\.owner\.run.*matrix\.owner\.attempt/u);
+  assert.equal(job.concurrency['cancel-in-progress'], false); assert(recheck >= 0);
+  assert.match(steps[recheck].run, /finalize-owned-hive-delivery-runs\.mjs recheck/u);
+  const effects = [steps.find(step => step.id === 'claim'),
+    steps.find(step => step.run?.includes('finalize-owned-hive-delivery-runs.mjs apply')),
+    steps.find(step => step.with?.name?.startsWith('hive-cleanup-outcome-'))];
+  for (const step of effects) {
+    assert(steps.indexOf(step) > recheck); assert.equal(typeof step.if, 'string');
+    const expression = step.if.replace(/^\$\{\{\s*|\s*\}\}$/gu, '');
+    for (const eligible of ['true', 'false']) assert.equal(vm.runInNewContext(expression,
+      {steps: {recheck: {outputs: {eligible}}}, always: () => true}, {timeout: 100}), eligible === 'true');
+  }
 });
 test('changed owner artifact identity after claim is refused', async () => {
   const f = fixture(), prepared = await prepare(f); f.publishClaim(prepared.claim);
