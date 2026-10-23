@@ -20,6 +20,9 @@ across later loader calls. Successful scripts are not replayed during recovery,
 and syntax errors, runtime errors, and errors from nested services are not
 retried. Required bootstrap failures propagate. The application reports fatal
 worker errors explicitly and keeps the dead worker's composer disabled.
+Consolidated asset-version handling keeps the existing worker line ceiling.
+The maintained translator regenerates its TypeScript twin, and the Rust
+package receives a byte-identical copy of the canonical worker entry.
 
 The original live smoke retains its native worker, arithmetic, landing, and
 documentation assertions, its 20-second worker bound, and zero test retries.

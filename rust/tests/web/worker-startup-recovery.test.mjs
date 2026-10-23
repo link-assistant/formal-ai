@@ -50,6 +50,15 @@ test('captured transient startup transport failures recover without replaying su
   assert.equal(result.warnings.length, 2);
 });
 
+test('consolidated asset version handling preserves query and encoding behavior', () => {
+  const { context } = boot();
+  assert.equal(vm.runInContext('withAssetVersion("seed.js?mode=local")', context), 'seed.js?mode=local&v=fixture');
+  context.location.search = '?v=release+candidate%2Fone';
+  assert.equal(vm.runInContext('withAssetVersion("seed.js")', context), 'seed.js?v=release%20candidate%2Fone');
+  context.location.search = '?v=%ZZ';
+  assert.equal(vm.runInContext('withAssetVersion("seed.js")', context), 'seed.js');
+});
+
 for (const asset of captured.startupAssets) {
   test(`permanent network failure stops after two attempts: ${asset}`, () => {
     const result = boot({ failures: { [asset]: Infinity } });

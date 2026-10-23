@@ -3,6 +3,10 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
+import { EventEmitter } from 'node:events';
+import { createRequire } from 'node:module';
+
+const { withWorkerDiagnostics } = createRequire(import.meta.url)('../e2e/tests/support/worker-diagnostics.js');
 
 const root = new URL('../../../', import.meta.url);
 const read = relative => fs.readFileSync(new URL(relative, root), 'utf8');
@@ -47,7 +51,7 @@ async function exercise(change = {}) {
   };
   const navigations = [];
   let count = 0;
-  const page = {
+  const page = Object.assign(new EventEmitter(), {
     addInitScript: async () => {},
     goto: async target => {
       navigations.push(target);
@@ -61,7 +65,7 @@ async function exercise(change = {}) {
       fill: async value => assert.equal(value, 'Can you calculate 2 + 2?'),
       click: async () => { count += 2; },
     }),
-  };
+  });
   function expected(actual, inverse = false) {
     const check = condition => assert.equal(Boolean(condition), !inverse);
     const text = () => actual.selector === '.status' ? scenario.mode
@@ -80,11 +84,14 @@ async function exercise(change = {}) {
     };
   }
   vm.runInNewContext(smoke, {
-    require: name => name === '@playwright/test'
-      ? { test: (_name, callback) => { assert.equal(body, undefined); body = callback; }, expect: expected }
-      : { WORKER_READY_TIMEOUT_MS: 20_000 },
+    require: name => {
+      if (name === '@playwright/test') return { test: (_name, callback) => { assert.equal(body, undefined); body = callback; }, expect: expected };
+      if (name === './support/worker-ready') return { WORKER_READY_TIMEOUT_MS: 20_000 };
+      if (name === './support/worker-diagnostics') return { withWorkerDiagnostics };
+      throw Error('UnexpectedSmokeImport:' + name);
+    },
   });
-  await body({ page });
+  await body({ page }, { attach: async () => {} });
   return navigations;
 }
 
