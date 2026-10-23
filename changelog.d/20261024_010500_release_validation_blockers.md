@@ -18,6 +18,8 @@ bump: patch
 
 - Keep historical ledger assertions complete by reading every immutable archive part.
 
+- Resolve every literal matrix job cap in deadline contracts and align Docker assertions with the shipped recovery layout.
+
 ### Security
 
 - Update both committed Tokio resolutions to 1.53.3 for RUSTSEC-2026-0386.

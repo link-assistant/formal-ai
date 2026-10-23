@@ -287,3 +287,35 @@ storage controls are also included in ordinary unit selection. Seven JavaScript
 storage and script-selection controls pass, and the maintained JavaScript twin
 verifies the baseline and every actual historical row without compiling Rust.
 The native assertion changes compile and run only in CI.
+
+
+## Keep Docker and matrix deadline contracts aligned with executable configuration
+
+[Full shard 6](https://github.com/link-assistant/formal-ai/actions/runs/40014890861/job/120636778744)
+reported two contract failures: its Docker assertion still named the old flat
+helper COPY layout, and its timeout assertion could not parse the existing
+`${{ matrix.capmin }}` job caps once checkouts gained explicit step deadlines.
+Its full 487,189-byte log has SHA-256
+`e407f467b8cf22073c0b396c334715f26ed4daa8c84b65ea5c7be52155fb9467`.
+[Coverage shard 17](https://github.com/link-assistant/formal-ai/actions/runs/40014890534/job/120631351532)
+found the same Docker assertion; its full 575,860-byte log has SHA-256
+`4c028e380d7415c0a1f7d42fb47b1f64dfd6cb37a6ea97d347e80e9fe0e12afe`.
+The real Docker build, runtime and released-to-candidate memory-upgrade job
+`120636778212` passed on this exact source.
+
+Update the Docker contract to require the actual recovery script, its complete
+source import closure and its installed entry path. Share literal job-cap lookup
+and resolve the minimum across every row of the maintained literal include
+matrix. Both deadline sweeps retain their 70-percent margin. Missing, zero,
+non-numeric, incomplete or unsupported matrix declarations fail closed; no job or
+step clock is increased. Native negative fixtures cover misleading quoted fields
+and a shorter matrix leg. An independent parsed-YAML control checks every desktop
+step against every real leg. All 15 targeted Docker/deadline/readability controls
+pass locally; the Rust assertions compile and run only in CI.
+
+Deferred under the release-first scope: a wider exploratory parsed-YAML audit
+found existing 25-minute container steps under 30-minute jobs. Those steps use a
+different YAML indentation that the historical text-only sweep does not cover.
+Their measured deadlines and finite job clocks are retained. A later headroom
+review must cover that syntax and choose budgets from actual timings; this PR
+does not claim complete parsed-YAML headroom coverage for all workflows.
