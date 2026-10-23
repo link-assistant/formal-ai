@@ -8,6 +8,14 @@ import {verifyContainerRuntimeTools} from '../../../scripts/verify-container-run
 import {boundedCommand} from '../../../js/server/bounded-command.mjs';
 const root=fileURLToPath(new URL('../../../',import.meta.url));
 const manifest=JSON.parse(fs.readFileSync(path.join(root,'packages/container-runtime-tools/package.json'),'utf8'));
+test('importing the recovery module from JavaScript stdin has no installer effect',async()=>{
+ const module=new URL('../../../scripts/install-client-registry-recovery.mjs',import.meta.url).href;
+ const result=await boundedCommand(process.execPath,['--input-type=module','-'],{
+  input:'import '+JSON.stringify(module)+'; console.log("imported");',timeout:5000,maxBuffer:65536,
+ });
+ assert.equal(result.error,undefined);assert.equal(result.status,0,result.stderr.toString());
+ assert.equal(result.stdout.toString().trim(),'imported');assert.equal(result.stderr.length,0);
+});
 function fixture(t){
  const home=fs.mkdtempSync(path.join(os.tmpdir(),'formal-runtime-tools-'));
  t.after(()=>fs.rmSync(home,{recursive:true,force:true}));

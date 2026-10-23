@@ -235,5 +235,8 @@ installer with a failing stand-in package manager. This checks its complete
 source import closure and exit propagation without building an image or
 installing dependencies. The fixture also exposed a CLI entry guard that silently
 did nothing through macOS's temporary-directory symlink; compare real paths so
-that invocation executes and preserves a failed install. No product downloads or
+that invocation executes and preserves a failed install. A non-file import host,
+including JavaScript stdin, must return false without an install or path error.
+The stdin regression fails against the unguarded real-path lookup.
+No product downloads or
 local Rust builds are needed for these controls.

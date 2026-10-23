@@ -100,6 +100,10 @@ export async function main(argv=process.argv.slice(2)){
   process.exitCode=result.error||result.signal||result.timed_out||result.cleanup_complete!==true?1:result.status??1;
   return result;
 }
-if(process.argv[1]&&import.meta.url===pathToFileURL(realpathSync(process.argv[1])).href)main().catch(error=>{
+function invokedDirectly(){
+  try{return !!process.argv[1]&&import.meta.url===pathToFileURL(realpathSync(process.argv[1])).href;}
+  catch{return false;} // Imported from stdin or another non-file host: no install.
+}
+if(invokedDirectly())main().catch(error=>{
   console.error(error.code??'ClientInstallRecoveryRefused');process.exitCode=1;
 });
