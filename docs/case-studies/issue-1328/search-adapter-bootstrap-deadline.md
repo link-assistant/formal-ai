@@ -267,3 +267,23 @@ locally. All 63 public-download/Mac/readability controls pass without skips.
 The failed v0.355.5 consumer remains failed and receives no full-download
 acceptance credit. Verify the actual next release with the corrected consumer;
 an unrelated old success cannot stand in for that source-bound result.
+
+
+## Keep historical assertions complete after ledger rotation
+
+[Specification shard 1](https://github.com/link-assistant/formal-ai/actions/runs/40014890861/job/120636778854)
+failed its historical v0.296.0 assertion because it read only the newest ledger
+file. Its full 298,826-byte log has SHA-256
+`5f0c1741b0917f3f25223a5013838175747a4b46871eb44795b32639a9758676`.
+The archive-aware production reader still finds that exact baseline and its zero
+percentage; all historical release rows retain metric version 3. This is a test
+consumer that did not follow the storage change, rather than deleted evidence.
+
+Include the shared production ledger reader once at the unit crate root, and use
+it for the historical specification, all-row metric-version assertion, and
+self-hosting evidence assertion. Keep every existing assertion; header-only and
+newest-status consumers can still read the small root file. The reader's inline
+storage controls are also included in ordinary unit selection. Seven JavaScript
+storage and script-selection controls pass, and the maintained JavaScript twin
+verifies the baseline and every actual historical row without compiling Rust.
+The native assertion changes compile and run only in CI.

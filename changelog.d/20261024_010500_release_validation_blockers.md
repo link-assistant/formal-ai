@@ -16,6 +16,8 @@ bump: patch
 - Preserve installer execution and exit status through symlinked temporary directories.
 - Give public macOS app transfers bounded copy deadlines distinct from short metadata probes, with command timing diagnostics.
 
+- Keep historical ledger assertions complete by reading every immutable archive part.
+
 ### Security
 
 - Update both committed Tokio resolutions to 1.53.3 for RUSTSEC-2026-0386.

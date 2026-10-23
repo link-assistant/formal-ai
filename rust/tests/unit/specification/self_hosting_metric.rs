@@ -900,7 +900,7 @@ fn release_pipeline_and_ledger_remain_pinned_to_the_metric() {
     // script instead of duplicating it inline, so the pin lives there.
     let invoke_script = fs::read_to_string(root.join("scripts/invoke-create-github-release.sh"))
         .expect("release invocation script must be readable");
-    let ledger = fs::read_to_string(root.join("data/meta/self-hosting-ledger.lino"))
+    let ledger = crate::release_ledger::read(&root.join("data/meta/self-hosting-ledger.lino"))
         .expect("self-hosting ledger must be readable");
 
     assert!(

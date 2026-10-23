@@ -33,7 +33,8 @@ fn release_versions(ledger: &str) -> Vec<String> {
 
 #[test]
 fn every_release_row_in_the_ledger_is_stated_under_metric_version_3() {
-    let ledger = read("data/meta/self-hosting-ledger.lino");
+    let ledger = crate::release_ledger::read(&root().join("data/meta/self-hosting-ledger.lino"))
+        .expect("complete self-hosting history must be readable");
     assert!(ledger.contains("current_metric_version \"3\""));
     assert!(ledger.contains("--replay-epoch"));
     let releases = ledger.lines().filter(|line| *line == "  release").count();
