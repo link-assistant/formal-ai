@@ -99,7 +99,12 @@ RUN FORMAL_AI_APT_PRIVILEGE= bash /usr/local/lib/formal-ai-build/apt-install-wit
 # Ubuntu 24.04 supplies the shared libraries required by official Node 26.
 # Its distro Node 18 cannot parse the /v regex used by agent dependencies.
 COPY --from=node-runtime /usr/local/bin/node /usr/local/bin/node
-RUN node --version && \
+# Node's CLI alone omits npm: derived Hive images also run npm ci as box.
+# Keep the package manager and both launchers from the same pinned donor.
+COPY --from=node-runtime /usr/local/lib/node_modules/npm/ /usr/local/lib/node_modules/npm/
+RUN ln -sf ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && \
+    ln -sf ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx && \
+    node --version && \
     node --eval "if (process.versions.node.split('.')[0] !== '26') process.exit(1); new RegExp('', 'v')"
 
 USER box
@@ -109,6 +114,8 @@ RUN mkdir -p /home/box/.formal-ai-runtime-tools
 COPY --chown=box:box packages/container-runtime-tools/package.json /home/box/.formal-ai-runtime-tools/package.json
 COPY --chmod=0755 scripts/install-container-runtime-tools.sh scripts/verify-container-runtime-tools.mjs scripts/run-with-deadline.sh /usr/local/lib/formal-ai-runtime-tools/
 RUN /usr/local/lib/formal-ai-runtime-tools/install-container-runtime-tools.sh /home/box/.formal-ai-runtime-tools && \
+    npm --version && \
+    npx --version && \
     "$" --version && \
     agent --version && \
     start-agent --help >/dev/null
