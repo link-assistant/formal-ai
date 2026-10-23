@@ -14,6 +14,7 @@ bump: patch
 
 - Reuse evidence-based, bounded npm publication recovery in Agent CLI tests and container runtime installation.
 - Preserve installer execution and exit status through symlinked temporary directories.
+- Give public macOS app transfers bounded copy deadlines distinct from short metadata probes, with command timing diagnostics.
 
 ### Security
 

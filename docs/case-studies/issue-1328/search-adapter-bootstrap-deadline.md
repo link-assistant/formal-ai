@@ -240,3 +240,30 @@ including JavaScript stdin, must return false without an install or path error.
 The stdin regression fails against the unguarded real-path lookup.
 No product downloads or
 local Rust builds are needed for these controls.
+
+
+## Allow complete public app transfers their own bounded deadline
+
+The produced v0.355.5 native packages and public signing metadata verified, but
+[public Intel Mac verification](https://github.com/link-assistant/formal-ai/actions/runs/40017610647/job/120634705715)
+failed before renderer startup: copying the application from its read-only DMG
+with `ditto` exceeded the helper's generic 30-second subprocess deadline.
+The complete 36,491-byte log has SHA-256
+`f8eaeba4eb3f07a23af59de48ad989d71d3edef4979d94ec42143860caba7145`.
+The signed DMG is 442,462,575 bytes, including a 258,399,440-byte native component.
+The successful producer's installed-DMG smoke step took about 48 seconds, whereas
+the independent consumer treated this transfer like a small metadata command.
+The independently downloaded Mac ARM and browser packages passed.
+
+Give the two `ditto` operations a single 180-second attempt each, while retaining
+30-second metadata probes and the existing 15-minute hosted job cap. Do not retry
+a partial extraction, change signatures, remove quarantine, or weaken checksum,
+native-identity, deep-signature or rendered-UI assertions. Log command identity,
+deadline, elapsed time, status, signal and error code without arguments or
+credentials. A virtual process driver covers a transfer beyond the old deadline,
+permanent failures and deadline exhaustion without copying or executing products
+locally. All 63 public-download/Mac/readability controls pass without skips.
+
+The failed v0.355.5 consumer remains failed and receives no full-download
+acceptance credit. Verify the actual next release with the corrected consumer;
+an unrelated old success cannot stand in for that source-bound result.
