@@ -371,3 +371,16 @@ to `10629c27ecdf419b632188de6a74cae41c602431561362e78f68ccb2801aa1ba`.
 All 43 governed-source and version-only maintenance controls pass without skips.
 The version-only guard still rejects changes to cases, assertions, unsupported
 scope and native source; this explicit review does not relax that guard.
+
+## Accept equivalent quoted workflow references in the native contract
+
+[Coverage shard 11](https://github.com/link-assistant/formal-ai/actions/runs/40027608553/job/120672887040)
+failed the desktop cold-build contract because it searched for an unquoted YAML
+reference after checkout settings were compacted into a flow mapping. The actual
+checkout still pins `${{ github.workflow_sha }}`. The complete 598,734-byte log
+has SHA-256 `7804c4342b2beaa87f1479dd44e607000a9f361621f61106ad9ce64c31c30057`.
+Accept that same reference in plain or double-quoted scalar form. Keep the
+independent parsed-YAML checks for the exact reference, disabled credential
+persistence, shallow history and protocol capture before source checkout.
+Those workflow and deadline controls pass locally without Rust compilation;
+the native assertion remains enabled and runs in CI.

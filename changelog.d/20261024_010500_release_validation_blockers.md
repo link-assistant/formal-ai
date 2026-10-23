@@ -22,6 +22,8 @@ bump: patch
 
 - Refresh reviewed governed source inputs after ledger and manifest changes while preserving every assertion.
 
+- Accept equivalent quoted workflow references in the native checkout contract while retaining parsed protocol-pinning checks.
+
 ### Security
 
 - Update both committed Tokio resolutions to 1.53.3 for RUSTSEC-2026-0386.
