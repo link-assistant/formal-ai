@@ -45,6 +45,18 @@ and require the same two-request bound and disabled composer in every case.
 The partial Spanish solver language uses the English browser fallback; the
 four fully supported UI languages retain their exact language assertions.
 
+The PR's native full-suite shard also exposed a pre-existing literal-file replay
+failure: the unchanged semicolon request returned no target write. Its failure
+log omitted the intermediate plans and tool receipts, so the root cause remains
+unresolved. Under the release-first scope, that full native replay is temporarily
+ignored as `PR1401-native-literal-replay`, with its original request, expected
+bytes, and six-turn bound preserved. Native plan composition still checks both
+clauses. The unchanged JavaScript physical replay remains required and passes
+with real filesystem writes and shell verification. Empty native replay results
+now print the stopping plan and actual bounded conversation for diagnosis.
+Restore the full native replay after identifying and repairing its cause; this
+debt grants no native file-delivery or three-client acceptance credit.
+
 This repair uses the authorized manual critical-release workflow and receives
 no Formal AI authorship credit. It does not confer the real three-client
 acceptance required by [issue #1364](https://github.com/link-assistant/formal-ai/issues/1364).
