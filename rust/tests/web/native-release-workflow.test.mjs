@@ -1,10 +1,13 @@
 // Production workflow target and consumer invariants complement actual receipt corruption tests.
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync,mkdtempSync,mkdirSync,writeFileSync,existsSync,rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join,dirname} from 'node:path';
 import YAML from 'yaml';
 import {parseSpeedPolicy} from '../../../scripts/lib/ci-speed-policy.mjs';
 import {NATIVE_TARGETS} from '../../../scripts/native-release-artifact.mjs';
+import {boundedCommandSync} from '../../../js/server/bounded-command.mjs';
 const text=readFileSync(new URL('../../../.github/workflows/desktop-release.yml',import.meta.url),'utf8');
 function job(name){const at=text.indexOf('\n  '+name+':\n');assert.ok(at>=0,name);const tail=text.slice(at+1),end=tail.slice(1).search(/\n  [a-z][a-z-]*:\n/u);return (end<0?tail:tail.slice(0,end+1)).split('\n').filter(line=>!/^\s*#/u.test(line)).join('\n');}
 test('one source job seals source and compiler before all eight distinct native producers',()=>{
@@ -70,6 +73,40 @@ test('long Windows checkout paths are enabled before any native, desktop or CLI 
   assert.match(step,/if: runner\.os == 'Windows'/u);
   assert.match(step,/run: git config --system core\.longpaths true/u);
  }
+});
+
+test('protocol capture uses sparse source and the next checkout restores all build inputs',context=>{
+ const workflow=YAML.parse(text),folders=['scripts','desktop/scripts'];
+ assert.equal(workflow.env.GIT_HTTP_LOW_SPEED_LIMIT,'1024');
+ assert.equal(workflow.env.GIT_HTTP_LOW_SPEED_TIME,'20');
+ for(const name of ['native','build','cli','vscode']){
+  const steps=workflow.jobs[name].steps;
+  const index=steps.findIndex(step=>step.uses?.startsWith('actions/checkout@')&&step.with?.ref==='${{ github.workflow_sha }}');
+  const protocol=steps[index],source=steps.slice(index+1).find(step=>step.uses?.startsWith('actions/checkout@'));
+  assert.equal(protocol.with.filter,'blob:none',name);
+  assert.deepEqual(protocol.with['sparse-checkout'].split('\n'),folders,name);
+  assert.notEqual(protocol.with['sparse-checkout-cone-mode'],false,name);
+  assert.equal(source.with.ref,'${{ github.sha }}',name);
+  assert.equal(source.with['fetch-depth'],0,name);
+  assert.equal(source.with['sparse-checkout'],undefined,name);
+  assert.equal(source.with.filter,undefined,name);
+ }
+ const root=mkdtempSync(join(tmpdir(),'formal-ai-protocol-sparse-'));
+ context.after(()=>rmSync(root,{recursive:true,force:true}));
+ const files=['scripts/protocol.mjs','desktop/scripts/prepare.mjs','rust/src/main.rs','data/seed/fixture.lino'];
+ for(const file of files){mkdirSync(dirname(join(root,file)),{recursive:true});writeFileSync(join(root,file),'fixture\n');}
+ const git=args=>{
+  const result=boundedCommandSync('git',['-c','core.hooksPath=/dev/null','-c','commit.gpgsign=false',...args],{cwd:root,timeout:5000,maxBuffer:1048576});
+  assert.equal(result.error,undefined,String(result.error));assert.equal(result.cleanup_complete,true);
+  assert.equal(result.status,0,result.stderr.toString());
+ };
+ git(['init','--quiet']);git(['add','--',...files]);
+ git(['-c','user.name=Fixture','-c','user.email=fixture@example.invalid','commit','--quiet','-m','fixture']);
+ git(['sparse-checkout','set','--cone',...folders]);
+ assert.ok(existsSync(join(root,files[0]))&&existsSync(join(root,files[1])));
+ assert.equal(existsSync(join(root,files[2])),false);assert.equal(existsSync(join(root,files[3])),false);
+ git(['sparse-checkout','disable']);
+ for(const file of files)assert.equal(readFileSync(join(root,file),'utf8'),'fixture\n');
 });
 
 test('only Intel native carries explicit cold-build debt and a pinned process-group deadline',()=>{

@@ -419,3 +419,27 @@ The maintained wrapper already recognizes those exact signatures, preserves the
 job deadline and removes only incomplete top-level DMGs before another attempt.
 Do not increase attempts or relabel the failed job. The corrected source receives
 a fresh normal packaging job, and that job must pass before merge.
+
+## Avoid full protocol-only checkout transfers on native consumers
+
+[The next Intel Mac package job](https://github.com/link-assistant/formal-ai/actions/runs/40032107489/job/120693006129)
+timed out while fetching the workflow protocol commit, before package installation
+or compilation. Its complete 14,701-byte log has SHA-256
+`068e7b46a3ee9b3c9f4eaa69a1dd496b9820797643a8d992e3b5a002f8520905`.
+The ARM Mac package job on that same source passed, so the preceding exhausted
+disk-image attempt is retained as a failed run rather than a current-source waiver.
+
+Capture protocol scripts through a shallow, blob-filtered sparse checkout in
+native producers and desktop, CLI and VS Code consumers. Include both script
+directories required by the unchanged capture commands. Leave the following
+full source checkout unchanged: checkout v7 disables the earlier sparse selection
+when no sparse input is supplied. Bound stalled Git HTTP transfers with the same
+low-speed settings already used by the release preflight. Keep every checkout
+deadline, immutable reference, credential setting and release assertion intact.
+
+Apply the change through parsed CST ranges, preserving surrounding source and
+comments, and compare the complete parsed workflow object against the declared
+delta. A small local Git fixture proves protocol files remain available while
+build inputs are omitted initially, then restored byte-for-byte after disabling
+sparse checkout. Workflow and deadline controls pass without compiling Rust,
+building images or contacting GitHub from the fixture.

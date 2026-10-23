@@ -49,6 +49,8 @@ env:
   CARGO_NET_RETRY: '10'
   CARGO_HTTP_MULTIPLEXING: 'false'
   RUSTFLAGS: -Dwarnings
+  GIT_HTTP_LOW_SPEED_LIMIT: "1024"
+  GIT_HTTP_LOW_SPEED_TIME: "20"
 jobs:
   resolve:
     name: Resolve target release
@@ -289,7 +291,7 @@ jobs:
       - name: Check out this workflow's pinned release protocol
         uses: actions/checkout@v7
         timeout-minutes: 5
-        with: {persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1}
+        with: {persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1, filter: blob:none, sparse-checkout: "scripts\ndesktop/scripts"}
       - name: Capture release protocol before selecting binary source
         env:
           NATIVE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
@@ -427,7 +429,7 @@ jobs:
       - name: Check out this workflow's pinned release protocol
         uses: actions/checkout@v7
         timeout-minutes: 5
-        with: {persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1}
+        with: {persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1, filter: blob:none, sparse-checkout: "scripts\ndesktop/scripts"}
       - name: Capture release protocol before selecting binary source
         env:
           NATIVE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
@@ -901,7 +903,7 @@ jobs:
       - name: Check out this workflow's pinned release protocol
         uses: actions/checkout@v7
         timeout-minutes: 5
-        with: {persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1}
+        with: {persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1, filter: blob:none, sparse-checkout: "scripts\ndesktop/scripts"}
       - name: Capture release protocol before selecting binary source
         env:
           NATIVE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
@@ -1052,7 +1054,7 @@ jobs:
       - name: Check out this workflow's pinned release protocol
         uses: actions/checkout@v7
         timeout-minutes: 5
-        with: {persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1}
+        with: {persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1, filter: blob:none, sparse-checkout: "scripts\ndesktop/scripts"}
       - name: Capture release protocol before selecting binary source
         env:
           NATIVE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
