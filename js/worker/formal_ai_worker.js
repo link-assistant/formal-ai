@@ -38,7 +38,30 @@ try {
   const fromWebRoot = (url) =>
     typeof url === "string" && url ? new URL(url, webRoot).href : url;
   const nativeImportScripts = importScripts;
-  importScripts = (...urls) => nativeImportScripts(...urls.map(fromWebRoot));
+  const networkFailures = new Map();
+  importScripts = (...urls) => {
+    for (const url of urls.map(fromWebRoot)) {
+      const previous = networkFailures.get(url);
+      if (previous && previous.attempts >= 2) throw previous.error;
+      for (let attempt = (previous?.attempts || 0) + 1; attempt <= 2; attempt++) {
+        try {
+          nativeImportScripts(url);
+          networkFailures.delete(url);
+          break;
+        } catch (error) {
+          // A failed network import has not executed the script. Syntax and
+          // runtime failures may have side effects and must never be replayed.
+          if (error?.name !== "NetworkError" || !String(error.message).includes(url)) throw error;
+          networkFailures.set(url, { attempts: attempt, error });
+          if (attempt === 2) {
+            console.error("WorkerAssetImportFailed", { url, attempts: attempt, error: String(error) });
+            throw error;
+          }
+          console.warn("WorkerAssetImportRetry", { url, attempt, maximumAttempts: 2 });
+        }
+      }
+    }
+  };
   const nativeFetch = fetch;
   fetch = (url, options) => nativeFetch(fromWebRoot(url), options);
 } catch (_error) {
@@ -59,8 +82,11 @@ try {
   loadWorkerAsset("seed-files.js");
   loadWorkerAsset("parser-cache-primordials.js");
   loadWorkerAsset("seed_loader.js");
-} catch (_error) {
-  // Mock workers may omit the optional loader.
+} catch (error) {
+  // The seed parser is required by dependent modules. Report a failed boot
+  // instead of leaving the application waiting for a ready event forever.
+  console.error("WorkerBootstrapFailed", error);
+  throw error;
 }
 
 try {

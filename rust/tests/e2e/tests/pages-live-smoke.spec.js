@@ -2,8 +2,9 @@
 // One live context verifies delivery and the real engine without a CDN load test.
 const { test, expect } = require('@playwright/test');
 const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
+const { withWorkerDiagnostics } = require('./support/worker-diagnostics');
 
-test('live Pages serves landing, native-engine chat, and documentation', async ({ page }) => {
+test('live Pages serves landing, native-engine chat, and documentation', async ({ page }, testInfo) => withWorkerDiagnostics(page, testInfo, async () => {
   await page.addInitScript(() => {
     window.localStorage.setItem(
       'formal-ai.preferences.v1',
@@ -39,4 +40,4 @@ test('live Pages serves landing, native-engine chat, and documentation', async (
   expect(docs.status()).toBe(200);
   await expect(page.locator('[data-testid="docs-app-summary"]')).toBeVisible();
   await expect(page.locator('.hero h1')).toHaveText('Documentation');
-});
+}));

@@ -136,6 +136,19 @@ export function useFormalAiWorker({
         : workerUrl,
     );
     workerRef.current = worker;
+    const workerFailed = (event) => {
+      const message = String(event.message || "Worker message could not be decoded");
+      console.error("FormalAiWorkerFailed", {
+        message,
+        filename: event.filename || workerUrl,
+        line: event.lineno || 0,
+      });
+      setWorkerState("engine unavailable");
+      setWorkerReady(false);
+      setEngineUnavailable(message);
+    };
+    worker.onerror = workerFailed;
+    worker.onmessageerror = workerFailed;
     worker.onmessage = ({ data }) => {
       // The worker owns the single seed fetch; metadata is ready before WASM.
       if (data.kind === "seed_loaded") {
@@ -152,6 +165,7 @@ export function useFormalAiWorker({
         return;
       }
       if (data.kind === "engine_unavailable") {
+        setWorkerState("engine unavailable");
         setEngineUnavailable(String(data.error || "unknown error"));
         setWorkerReady(true);
         return;
@@ -165,7 +179,11 @@ export function useFormalAiWorker({
       }
     };
 
-    return () => worker.terminate();
+    return () => {
+      worker.onerror = null;
+      worker.onmessageerror = null;
+      worker.terminate();
+    };
   }, []);
 
   // #670/#1138: Pyodide is never fetched during page or worker startup. This
