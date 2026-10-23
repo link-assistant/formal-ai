@@ -48,12 +48,16 @@ test("VS Code and final provenance use the same exact source selection",()=>{
 test('each packaging job captures the pinned workflow protocol before checking out binary source',()=>{
  for(const name of ['native-source','native','build','cli','vscode']){
   const body=job(name);
-  assert.match(body,/ref: \$\{\{ github\.workflow_sha \}\}/u);
+  const steps=YAML.parse(text).jobs[name].steps;
+  const protocol=steps.findIndex(step=>step.uses?.startsWith('actions/checkout@')&&step.with?.ref==='${{ github.workflow_sha }}');
+  assert.ok(protocol>=0,'workflow-pinned protocol checkout required');
+  assert.equal(steps[protocol].with['persist-credentials'],false);
+  assert.equal(steps[protocol].with['fetch-depth'],1);
   assert.match(body,/NATIVE_PROTOCOL_COMMIT: \$\{\{ github\.workflow_sha \}\}/u);
   assert.match(body,/cp scripts\/native-release-source\.mjs scripts\/native-release-artifact\.mjs/u);
-  const capture=body.indexOf('Capture release protocol');
-  const checkout=body.indexOf('ref: ${{ github.sha }}',capture);
-  assert.ok(capture>=0&&checkout>capture,'captured protocol must precede event-pinned source checkout');
+  const capture=steps.findIndex(step=>step.name?.startsWith('Capture release protocol'));
+  const checkout=steps.findIndex((step,index)=>index>capture&&step.with?.ref==='${{ github.sha }}');
+  assert.ok(capture>protocol&&checkout>capture,'pinned checkout and capture must precede event-pinned source checkout');
   assert.ok(body.includes('FORMAL_AI_NATIVE_PROTOCOL_DIR'));
  }
 });

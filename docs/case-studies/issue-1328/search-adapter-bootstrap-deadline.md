@@ -72,6 +72,25 @@ implementation in CI. The initial split preserves every historical record line
 byte for byte, and generated status surfaces are refreshed through their
 maintained renderer.
 
+## Bound checkouts and include the required release fragment
+
+The follow-up's changelog gate correctly found no new fragment after the base
+release consumed earlier fragments. Add a patch fragment describing this PR's
+actual fixes. JavaScript tier 8 and native coverage shard 1 independently reported
+the same stale witness and oversized ledger already addressed above; their full
+logs introduce no additional engine failure.
+
+The Intel Mac producer was cancelled after remaining in the protocol checkout
+step, with no compilation step reached. GitHub returns HTTP 404 for its log, so
+the underlying infrastructure cause is unconfirmed. Its downstream
+[CLI job](https://github.com/link-assistant/formal-ai/actions/runs/39990184348/job/120570130735)
+then correctly refused the missing same-run native artifact. Its full log has
+SHA-256 `d04041d9e9815c3d6f410410c09dd5654cebac9e44bb4b98b46e7d2c276ba8f5`.
+Apply explicit two-minute deadlines to desktop workflow checkouts, preserving
+all source refs, credential settings, fetch depths, job caps, and artifact guards.
+An automated parsed-object comparison permits only the deadline changes. The
+deployed-workflow regression covers every producer and consumer checkout.
+
 ## Recheck queued cleanup plans before publishing a claim
 
 Main's finalizer run

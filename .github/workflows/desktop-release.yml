@@ -70,6 +70,7 @@ jobs:
       should_build: ${{ steps.pick.outputs.should_build }}
     steps:
       - uses: actions/checkout@v7
+        timeout-minutes: 2
         with:
           persist-credentials: false
       - name: Resolve tag and whether desktop assets are needed
@@ -121,10 +122,8 @@ jobs:
     steps:
       - name: Check out this workflow's pinned release protocol
         uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-          ref: ${{ github.workflow_sha }}
-          fetch-depth: 1
+        timeout-minutes: 2
+        with: {persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1}
       - name: Capture release protocol before selecting binary source
         env:
           NATIVE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
@@ -166,17 +165,13 @@ jobs:
       - name: Select the triggering merge preview for a read-only pull-request build
         if: github.event_name == 'pull_request'
         uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-          ref: ${{ github.sha }}
-          fetch-depth: 0
+        timeout-minutes: 2
+        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 0}
       - name: Select the independently authorized stable release tag
         if: github.event_name != 'pull_request'
         uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-          ref: ${{ env.NATIVE_AUTHORIZED_RELEASE_COMMIT }}
-          fetch-depth: 0
+        timeout-minutes: 2
+        with: {persist-credentials: false, ref: "${{ env.NATIVE_AUTHORIZED_RELEASE_COMMIT }}", fetch-depth: 0}
       - name: Record the original pull-request source prerequisite
         if: github.event_name == 'pull_request'
         env:
@@ -293,10 +288,8 @@ jobs:
         run: git config --system core.longpaths true
       - name: Check out this workflow's pinned release protocol
         uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-          ref: ${{ github.workflow_sha }}
-          fetch-depth: 1
+        timeout-minutes: 2
+        with: {persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1}
       - name: Capture release protocol before selecting binary source
         env:
           NATIVE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
@@ -326,10 +319,8 @@ jobs:
           writeFileSync(join(directory,'native-build-budget-protocol.json'),JSON.stringify({...record,files:budgetFiles}));
           NODE
       - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-          ref: ${{ github.sha }}
-          fetch-depth: 0
+        timeout-minutes: 2
+        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 0}
       - uses: actions/setup-node@v7
         with:
           node-version: 22
@@ -435,10 +426,8 @@ jobs:
         run: git config --system core.longpaths true
       - name: Check out this workflow's pinned release protocol
         uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-          ref: ${{ github.workflow_sha }}
-          fetch-depth: 1
+        timeout-minutes: 2
+        with: {persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1}
       - name: Capture release protocol before selecting binary source
         env:
           NATIVE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
@@ -469,10 +458,8 @@ jobs:
           writeFileSync(join(directory,'packaging-protocol-selection.json'),JSON.stringify({...record,files:packagingFiles})+'\n');
           NODE
       - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-          ref: ${{ github.sha }}
-          fetch-depth: 0
+        timeout-minutes: 2
+        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 0}
       - uses: actions/setup-node@v7
         with:
           node-version: 22
@@ -913,10 +900,8 @@ jobs:
         run: git config --system core.longpaths true
       - name: Check out this workflow's pinned release protocol
         uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-          ref: ${{ github.workflow_sha }}
-          fetch-depth: 1
+        timeout-minutes: 2
+        with: {persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1}
       - name: Capture release protocol before selecting binary source
         env:
           NATIVE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
@@ -943,10 +928,8 @@ jobs:
           writeFileSync(join(directory,'protocol-selection.json'),JSON.stringify(record,null,2)+'\n');
           NODE
       - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-          ref: ${{ github.sha }}
-          fetch-depth: 0
+        timeout-minutes: 2
+        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 0}
       - uses: actions/setup-node@v7
         with:
           node-version: 22
@@ -1068,10 +1051,8 @@ jobs:
     steps:
       - name: Check out this workflow's pinned release protocol
         uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-          ref: ${{ github.workflow_sha }}
-          fetch-depth: 1
+        timeout-minutes: 2
+        with: {persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1}
       - name: Capture release protocol before selecting binary source
         env:
           NATIVE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
@@ -1098,10 +1079,8 @@ jobs:
           writeFileSync(join(directory,'protocol-selection.json'),JSON.stringify(record,null,2)+'\n');
           NODE
       - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-          ref: ${{ github.sha }}
-          fetch-depth: 0
+        timeout-minutes: 2
+        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 0}
       - uses: actions/setup-node@v7
         with:
           node-version: 22
@@ -1225,10 +1204,8 @@ jobs:
     steps:
       - name: Check out this workflow's pinned release protocol
         uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-          ref: ${{ github.workflow_sha }}
-          fetch-depth: 0
+        timeout-minutes: 2
+        with: {persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 0}
       - name: Capture release protocol before selecting binary source
         env:
           NATIVE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
