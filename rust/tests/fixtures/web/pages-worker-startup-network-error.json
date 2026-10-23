@@ -1,0 +1,14 @@
+{
+  "deployedSource": "431c30f4273b02d8d627e6b52c6d8d76c22f41f6",
+  "ciJob": 120291504219,
+  "ciLogSha256": "e31c58d069cf45bb730ac4b6ab75a6f7c880e867a25bc17afd2f14f104038a55",
+  "observation": "Isolated public-browser reproduction of the CI composer readiness failure",
+  "status": 503,
+  "errorName": "NetworkError",
+  "startupAssets": [
+    "seed_loader.js",
+    "worker/formal_ai_worker_crate_dialogue_formalization.js"
+  ],
+  "message": "Failed to execute 'importScripts' on 'WorkerGlobalScope': The script at '{url}' failed to load.",
+  "uiStatus": "loading worker"
+}

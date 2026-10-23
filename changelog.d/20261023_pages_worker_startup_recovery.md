@@ -1,0 +1,1 @@
+fix: Recover transient browser worker asset imports with a shared two-attempt limit, report persistent startup failures instead of leaving chat loading indefinitely, and retain worker/network diagnostics when the deployed Pages smoke fails.

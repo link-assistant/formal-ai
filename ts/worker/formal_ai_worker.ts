@@ -1,44 +1,44 @@
-// Universal solver implementation for the demo worker.
-//
-// Every reasoning path here mirrors the Rust `FormalAiEngine` in
-// `src/solver.rs` so the website, CLI, Telegram bot, library, and HTTP server
-// all produce the same answers for the same prompts. The answer the user
-// sees is always a projection of an append-only event log — there is no
-// hardcoded prompt→answer table.
-//
-// All multilingual phrases, concept summaries, and the tool registry are
-// loaded from `seed/*.lino` files at startup via `seed_loader.js`. Editing a
-// `.lino` file is enough to retune the agent — no JavaScript change required.
-
-function currentAssetVersion() {
-  try {
-    const search = self.location && self.location.search;
-    const match = search && /[?&]v=([^&]+)/.exec(search);
-    return match ? decodeURIComponent(match[1].replace(/\+/g, " ")) : "";
-  } catch (_error) {
-    return "";
-  }
-}
+// Browser entry for shared solver modules and trusted seeds (data/meta/seed-registry.lino).
 
 function withAssetVersion(url) {
-  const version = currentAssetVersion();
-  if (!version) return url;
-  return `${url}${url.includes("?") ? "&" : "?"}v=${encodeURIComponent(
-    version,
-  )}`;
+  try {
+    const raw = /[?&]v=([^&]+)/.exec(self.location?.search || "")?.[1];
+    if (raw) return `${url}${url.includes("?") ? "&" : "?"}v=${encodeURIComponent(decodeURIComponent(raw.replace(/\+/g, " ")))}`;
+  } catch (_error) {}
+  return url;
 }
 
-// Every address the chain loads — `seed/*.lino`, the generated module list,
-// `formal_ai_worker.wasm` — is web-root relative, but this entry lives one
-// directory down in `js/worker/` (issue #1138). Resolve `importScripts` and
-// `fetch` against the parent directory so the rest of the chain is unchanged
-// wherever the entry file sits.
+// This entry lives in worker/; shared scripts, seeds and WASM are web-root relative.
+// Resolve imports and fetches from its parent (issue #1138).
 try {
   const webRoot = new URL("..", self.location.href);
   const fromWebRoot = (url) =>
     typeof url === "string" && url ? new URL(url, webRoot).href : url;
   const nativeImportScripts = importScripts;
-  importScripts = (...urls) => nativeImportScripts(...urls.map(fromWebRoot));
+  const networkFailures = new Map(), maximumImportAttempts = 2;
+  importScripts = (...urls) => {
+    for (const url of urls.map(fromWebRoot)) {
+      const previous = networkFailures.get(url);
+      if (previous && previous.attempts >= maximumImportAttempts) throw previous.error;
+      for (let attempt = (previous?.attempts || 0) + 1; attempt <= maximumImportAttempts; attempt++) {
+        try {
+          nativeImportScripts(url);
+          networkFailures.delete(url);
+          break;
+        } catch (error) {
+          // A failed network import has not executed the script. Syntax and
+          // runtime failures may have side effects and must never be replayed.
+          if (error?.name !== "NetworkError" || !String(error.message).includes(url)) throw error;
+          networkFailures.set(url, { attempts: attempt, error });
+          if (attempt === maximumImportAttempts) {
+            console.error("WorkerAssetImportFailed", { url, attempts: attempt, error: String(error) });
+            throw error;
+          }
+          console.warn("WorkerAssetImportRetry", { url, attempt, maximumAttempts: maximumImportAttempts });
+        }
+      }
+    }
+  };
   const nativeFetch = fetch;
   fetch = (url, options) => nativeFetch(fromWebRoot(url), options);
 } catch (_error) {
@@ -51,16 +51,16 @@ importScripts(withAssetVersion("worker-script-prerequisites.js"));
 const loadWorkerAsset = createWorkerAssetLoader(importScripts, withAssetVersion);
 
 try {
-  // `seed-files.js` first: it is the generated inventory of `seed/*.lino` files
-  // that `seed_loader.js` fetches, kept in its own file so two branches that
-  // each add a seed file never edit the same lines. See issue #991 and
-  // `data/meta/seed-registry.lino`; shipped responses also boot offline.
+  // Load the seed inventory and parser before dependent modules (issue #991).
+  // Bootstrap responses also support offline answers.
   loadWorkerAsset("worker-bootstrap-responses.js");
   loadWorkerAsset("seed-files.js");
   loadWorkerAsset("parser-cache-primordials.js");
   loadWorkerAsset("seed_loader.js");
-} catch (_error) {
-  // Mock workers may omit the optional loader.
+} catch (error) {
+  // Required bootstrap failures must reach the application's worker error handler.
+  console.error("WorkerBootstrapFailed", error);
+  throw error;
 }
 
 try {

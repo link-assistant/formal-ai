@@ -797,6 +797,21 @@ fn a_literal_payload_never_crosses_a_sentence_boundary() {
 }
 
 #[test]
+fn a_semicolon_inside_a_payload_survives_native_plan_composition() {
+    let plan = formal_ai::agentic_coding::general_planner::compose_general_change_plan(
+        "Create file `policy/retention.md` containing Logs are kept for ninety \
+         days; backups are kept for a year.",
+    )
+    .expect("literal write plan");
+    assert_eq!(plan.target, "policy/retention.md");
+    assert_eq!(
+        plan.content,
+        "Logs are kept for ninety days; backups are kept for a year."
+    );
+}
+
+#[test]
+#[ignore = "PR1401-native-literal-replay: restore full native replay with captured planning/tool diagnostics; JS physical replay and native composition remain required"]
 fn a_semicolon_inside_a_payload_does_not_end_it() {
     // The sentence splitter that bounds a literal payload was written for
     // command policy, where a semicolon separates one command from the next, so

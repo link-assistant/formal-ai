@@ -198,7 +198,11 @@ fn planned_writes_to(prompt: &str, target: &str) -> Vec<String> {
     let mut written = Vec::new();
     let mut workspace = tool_workspace::ToolWorkspace::new(prompt);
     for turn in 0..LADDER_TURN_CAP {
-        let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &LADDER_TOOLS) else {
+        let plan = plan_chat_step(&messages, &LADDER_TOOLS);
+        let Some(AgenticPlan::ToolCalls(calls)) = plan else {
+            if written.is_empty() {
+                eprintln!("No write to {target:?}: turn {turn} stopped with {plan:?}");
+            }
             break;
         };
         for (index, call) in calls.iter().enumerate() {
@@ -226,6 +230,9 @@ fn planned_writes_to(prompt: &str, target: &str) -> Vec<String> {
             }
             messages.push(receipt);
         }
+    }
+    if written.is_empty() {
+        eprintln!("No write to {target:?} within {LADDER_TURN_CAP} turns: {messages:#?}");
     }
     written
 }
