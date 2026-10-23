@@ -125,6 +125,30 @@ Replace the unavailable sentiment benchmark citation with Stanford NLP's
 maintained public `sentiment-treebank` repository, which documents its binary
 labels. Keep the link checker and its finite recovery limits enabled.
 
+The benchmark registry is the authority for this generated document. Update the
+same URL in `data/meta/llm-task-classes.lino`; the registry and rendered document
+then differ from their checked predecessors only by that matching URL. The
+unchanged Rust generator checks the full projection in CI.
+
+## Keep script tests in their real compilation context
+
+[Lint lane 1](https://github.com/link-assistant/formal-ai/actions/runs/40006276763/job/120607372614)
+reported a redundant standalone invocation of the new Rust library helper.
+Its complete log has SHA-256
+`6d6a5f9799a3ab069010815ed8026b8b45ff1501d97083cfa3e63c9d1b531342`.
+`rust-script` wraps a library without `main` as an expression; the helper's
+nested tests then cannot see its functions. Those tests already compile in both
+native metric consumers. Extend the existing direct-helper discovery to native
+test consumers as well as gate consumers, retaining standalone suites. A
+synthetic filesystem regression executes the actual selection shell without
+compiling Rust. Clippy's three string-allocation findings use direct appends or
+formatted writes, preserving emitted bytes and warnings as errors.
+
+[Browser coverage shard 8](https://github.com/link-assistant/formal-ai/actions/runs/40006276794/job/120596696311)
+also flagged a long metadata-policy predicate; split its expression into readable
+lines without changing its conditions or adding an exemption. Its full log has
+SHA-256 `cb12c4f6505a8b7a19e0eb465f94b89e60e6e2630fc3789b7cc7dde248c6da18`.
+
 ## Recheck queued cleanup plans before publishing a claim
 
 Main's finalizer run

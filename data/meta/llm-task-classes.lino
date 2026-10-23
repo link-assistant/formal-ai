@@ -85,7 +85,7 @@ llm_task_classes
   class classification
     name "Classification and sentiment"
     llm_strength "Accurate label prediction for common facets"
-    benchmark "SST-2" benchmark_url "https://nlp.stanford.edu/sentiment/treebank.html"
+    benchmark "SST-2" benchmark_url "https://github.com/stanfordnlp/sentiment-treebank"
     formal_version "Formalize the statement, score it against the labeled seed facets, and answer with the matched label and margin"
     status "0.347.0: canned search paragraph, no answer"
     tracking_issue 1173

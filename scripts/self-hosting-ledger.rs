@@ -1,6 +1,7 @@
 //! Bounded, lossless storage for the append-only release ledger.
 //! Parts contain complete release records, in order; no evidence is discarded.
 
+use std::fmt::Write as FmtWrite;
 use std::fs::{self, OpenOptions};
 use std::io::Write;
 use std::path::Path;
@@ -98,10 +99,11 @@ pub fn append(ledger: &Path, record: &str) -> Result<(), String> {
     }
     let mut next = header.to_owned();
     for _ in &chunks {
-        next.push_str(&format!("{PREFIX}{:04}.lino\"\n", names.len() + 1));
+        let _ = writeln!(next, "{PREFIX}{:04}.lino\"", names.len() + 1);
         names.push(String::new());
     }
-    next.push_str(&format!("  release\n{latest}"));
+    next.push_str("  release\n");
+    next.push_str(latest);
     next.push_str(record);
     if next.lines().count() > LIMIT {
         return Err("release or archive index exceeds ledger limit".to_owned());
@@ -167,7 +169,7 @@ mod tests {
     fn row(index: usize) -> String {
         let mut result = format!("  release\n    tag \"v{index}\"\n");
         for field in 0..12 {
-            result.push_str(&format!("    field_{field} \"{index}\"\n"));
+            let _ = writeln!(result, "    field_{field} \"{index}\"");
         }
         result
     }
