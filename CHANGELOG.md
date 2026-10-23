@@ -20,6 +20,10 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.355.4] - 2026-10-23
+
+fix: Include the matching bundled npm and npx in the full Node runtime image so derived Hive images can install their locked dependencies. Verify both commands as the ordinary image user and retain an offline regression for the observed missing-npm failure.
+
 ## [0.355.3] - 2026-10-23
 
 ### Fixed
