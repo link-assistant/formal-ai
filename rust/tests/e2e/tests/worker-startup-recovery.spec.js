@@ -1,18 +1,24 @@
 // @ts-check
 // Hermetic transport faults exercise the real local CI worker, without GitHub side effects.
 const { test, expect } = require('@playwright/test');
+const { readFileSync } = require('node:fs');
+const { parseRegisteredLanguages } = require('../scripts/lino-seed-parser.mjs');
 const captured = require('../../fixtures/web/pages-worker-startup-network-error.json');
 const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 const { withWorkerDiagnostics } = require('./support/worker-diagnostics');
 
 test.describe.configure({ retries: 0 });
 
-test.beforeEach(async ({ page }) => {
-  await page.addInitScript(() => localStorage.setItem('formal-ai.preferences.v1',
-    'demo_preferences\n  demoMode "off"\n  diagnosticsMode "on"\n  uiLanguage "en"\n  greetingVariations "off"'));
-});
+const registered_languages = parseRegisteredLanguages(readFileSync(
+  require.resolve('../../../../data/seed/languages.lino'), 'utf8'));
+
+async function configurePreferences(page, language) {
+  await page.addInitScript(nextLanguage => localStorage.setItem('formal-ai.preferences.v1',
+    `demo_preferences\n  demoMode "off"\n  diagnosticsMode "on"\n  uiLanguage "${nextLanguage}"\n  greetingVariations "off"`), language);
+}
 
 test('transient captured HTTP failures recover into the real native worker', async ({ page }, testInfo) => withWorkerDiagnostics(page, testInfo, async () => {
+  await configurePreferences(page, 'en');
   const attempts = new Map();
   await page.route(url => captured.startupAssets.some(asset => url.pathname.endsWith('/' + asset)), async route => {
     const asset = captured.startupAssets.find(asset => new URL(route.request().url()).pathname.endsWith('/' + asset));
@@ -35,7 +41,8 @@ test('transient captured HTTP failures recover into the real native worker', asy
   await expect(messages.last()).toContainText('2 + 2 = 4');
 }));
 
-test('persistent startup failure is reported after two requests', async ({ page }, testInfo) => withWorkerDiagnostics(page, testInfo, async () => {
+for (const language of registered_languages) test(`persistent startup failure is reported after two requests (${language})`, async ({ page }, testInfo) => withWorkerDiagnostics(page, testInfo, async () => {
+  await configurePreferences(page, language);
   const asset = captured.startupAssets[1];
   let attempts = 0;
   await page.route(url => url.pathname.endsWith('/' + asset), async route => {
@@ -43,6 +50,7 @@ test('persistent startup failure is reported after two requests', async ({ page 
     await route.fulfill({ status: captured.status, body: 'Temporarily unavailable' });
   });
   await page.goto('./');
+  await expect(page.locator('html')).toHaveAttribute('lang', language);
   const failure = page.locator('[data-testid="engine-unavailable"]');
   await expect(failure).toBeVisible({ timeout: WORKER_READY_TIMEOUT_MS });
   await expect(failure).toHaveAttribute('title', /importScripts/);
