@@ -384,3 +384,38 @@ independent parsed-YAML checks for the exact reference, disabled credential
 persistence, shallow history and protocol capture before source checkout.
 Those workflow and deadline controls pass locally without Rust compilation;
 the native assertion remains enabled and runs in CI.
+
+## Resolve the additional live JavaScript security findings together
+
+[The fresh lint audit](https://github.com/link-assistant/formal-ai/actions/runs/40032107333/job/120686777005)
+reported two more advisories. Its complete 613,965-byte log has SHA-256
+`4a7dd2355f3a5de741ba60e692a60784b7dabca583bec6be87b59b948f219fbd`.
+[GHSA-27r3-jxmh-p828](https://github.com/advisories/GHSA-27r3-jxmh-p828)
+requires body-parser 2.4.0 on the existing major version.
+[GHSA-jr5w-w6x2-84p9](https://github.com/advisories/GHSA-jr5w-w6x2-84p9)
+requires Electron 44.9.1 or newer on the existing Electron 44 line. The official
+npm resolver selects body-parser 2.4.0, Electron 44.9.3 and qs 6.16.1 without
+changing either package manifest or any engine requirement.
+
+Review the full lockfile objects, not only the audit summary. The first candidate
+was rejected because body-parser's new qs constraint also needs its locked
+dependency updated. The final candidate changes three desktop records and two
+VS Code records; every other lockfile field remains identical. Published metadata
+authenticates the exact versions, tarball URLs, integrity values and dependency
+constraints. Every direct body-parser dependency satisfies its published range.
+Both live lockfile-only audits report zero vulnerabilities, and all three
+official tarball HEAD requests return HTTP 200. No package archives, Electron
+binaries, browsers, lifecycle scripts or Rust builds run locally. The audit
+threshold stays enforced; real installation and runtime validation remain in CI.
+
+## Retain exhausted macOS runner failures without acceptance credit
+
+[The preceding ARM Mac package job](https://github.com/link-assistant/formal-ai/actions/runs/40027608647/job/120677625775)
+exhausted its existing three attempts with disk-image service failures:
+`hdiutil` reported `Device not configured`, followed by dmgbuild's empty
+`Unable to shrink` diagnostic. The complete 3,736,740-byte log has SHA-256
+`4173056a2342322fbee09a98a80e304537f21fa6837be99288456afe757a8dd5`.
+The maintained wrapper already recognizes those exact signatures, preserves the
+job deadline and removes only incomplete top-level DMGs before another attempt.
+Do not increase attempts or relabel the failed job. The corrected source receives
+a fresh normal packaging job, and that job must pass before merge.
