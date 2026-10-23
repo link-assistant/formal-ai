@@ -12,6 +12,9 @@ bump: patch
 - Keep the new ledger archive root consistent with the existing notation naming policy.
 - Bound desktop producer and consumer checkouts so a stalled network step fails promptly.
 
+- Reuse evidence-based, bounded npm publication recovery in Agent CLI tests and container runtime installation.
+- Preserve installer execution and exit status through symlinked temporary directories.
+
 ### Security
 
 - Update both committed Tokio resolutions to 1.53.3 for RUSTSEC-2026-0386.

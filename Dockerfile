@@ -112,8 +112,12 @@ WORKDIR /home/box
 ENV PATH="/home/box/.formal-ai-runtime-tools/node_modules/.bin:${PATH}"
 RUN mkdir -p /home/box/.formal-ai-runtime-tools
 COPY --chown=box:box packages/container-runtime-tools/package.json /home/box/.formal-ai-runtime-tools/package.json
-COPY --chmod=0755 scripts/install-container-runtime-tools.sh scripts/verify-container-runtime-tools.mjs scripts/run-with-deadline.sh /usr/local/lib/formal-ai-runtime-tools/
-RUN /usr/local/lib/formal-ai-runtime-tools/install-container-runtime-tools.sh /home/box/.formal-ai-runtime-tools && \
+COPY --chmod=0755 scripts/install-container-runtime-tools.sh scripts/verify-container-runtime-tools.mjs \
+    scripts/install-client-registry-recovery.mjs /usr/local/lib/formal-ai-runtime-tools/scripts/
+COPY js/server/bounded-command.mjs js/server/structured-log.mjs js/server/json.mjs /usr/local/lib/formal-ai-runtime-tools/js/server/
+COPY js/logging/diagnostic-metadata.mjs js/logging/typed-codec.mjs js/logging/text-lines.mjs \
+    js/logging/json-numbers.mjs js/logging/lino-codec.mjs /usr/local/lib/formal-ai-runtime-tools/js/logging/
+RUN /usr/local/lib/formal-ai-runtime-tools/scripts/install-container-runtime-tools.sh /home/box/.formal-ai-runtime-tools && \
     npm --version && \
     npx --version && \
     "$" --version && \

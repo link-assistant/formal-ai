@@ -204,3 +204,36 @@ trigger scans.
 Regressions replay a thousand checkpoints, retain the authenticated continuation,
 fall back from an invalid newest candidate, reject wholly untrusted or malformed
 windows, and exercise the actual workflow condition. No test writes to GitHub.
+
+
+## Reuse evidence-based recovery for package publication propagation
+
+Both Agent CLI legs failed during installation, before tests, when official npm
+metadata resolved `ai@7.0.152` but its tarball returned HTTP 404. The Docker build
+failed on the same URL. The full job logs have these SHA-256 digests:
+
+- Agent scenarios, job `120613341313`: `799a92d0a0231bb667686e6ac02e5b6621c4144ad5e9fdc357a442e5ba67f0b1`.
+- Agent generalization, job `120613341485`: `14d217f2062a141880ebf26bbcf02e48a87ab7cccdf9c06fd8505fab0a6ffc22`.
+- Docker build, job `120613340569`: `dd1eb568c8fa26d9f604d14a8f28c76bf92e7e82a7605003c75c434cdc0b1ddb`.
+
+A subsequent metadata-only probe observed the exact tarball returning HTTP 200.
+Its Last-Modified timestamp was 19:41:17 UTC on 2026-10-23; the agent installation
+failed at 19:41:34 UTC. This is evidence of publication propagation, rather than
+an unavailable package version that needs a dependency override.
+
+Reuse `install-client-registry-recovery.mjs` for the Agent CLI jobs and both
+container runtime installers. It permits only one identical retry after exact
+package/version/tarball/integrity metadata and an HTTP 200 HEAD from official npm.
+Both attempts and probes share the existing ten-minute deadline. Unknown errors,
+authentication failures, unavailable tarballs, timeouts, overflow, and uncertain
+process cleanup remain failures. Project installs preserve the existing manifest,
+provider pins, and lifecycle trust; global E2E clients use the observed official
+Agent CLI version `0.27.0`. No test or runtime probe is skipped.
+
+Container tests stage the actual Docker COPY declarations and execute the
+installer with a failing stand-in package manager. This checks its complete
+source import closure and exit propagation without building an image or
+installing dependencies. The fixture also exposed a CLI entry guard that silently
+did nothing through macOS's temporary-directory symlink; compare real paths so
+that invocation executes and preserves a failed install. No product downloads or
+local Rust builds are needed for these controls.

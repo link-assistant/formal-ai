@@ -9,6 +9,7 @@ on:
       - "rust/src/**"
       - "data/seed/**"
       - "experiments/agent_cli_e2e/run_issue_864.sh"
+      - "scripts/install-client-registry-recovery.mjs"
       - ".github/workflows/proactive-failure-report-e2e.yml"
       - "rust/Cargo.toml"
       - "Cargo.lock"
@@ -62,8 +63,9 @@ jobs:
           bun-version-file: .bun-version
           no-cache: true
       - name: Install the real Agent CLI
+        timeout-minutes: 11
         run: |
-          bun add -g --ignore-scripts @link-assistant/agent
+          bun scripts/install-client-registry-recovery.mjs bun add -g --ignore-scripts @link-assistant/agent@0.27.0
           echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
       # Reused across every workflow that only needs to *run* the binary: the
       # cache key is the content of the sources it is built from, so a push that

@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
 import {performance} from 'node:perf_hooks';
+import {isAbsolute} from 'node:path';
+import {realpathSync} from 'node:fs';
 import {boundedCommand} from '../js/server/bounded-command.mjs';
 import {makeRedactor} from '../js/server/structured-log.mjs';
 const digest=bytes=>createHash('sha256').update(bytes).digest('hex');
@@ -35,8 +37,13 @@ export function requireRegistryMetadata(candidate,metadata){
 }
 export async function recoverClientInstall(file,args,options={},injected={}){
   assert.equal(file,'bun');assert.equal(args.length,4);
-  assert.deepEqual(args.slice(0,3),['add','-g','--ignore-scripts']);
-  assert.match(args[3],/^(?:@[a-z0-9._-]+\/)?[a-z0-9._-]+@\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/u);
+  if(args[0]==='install'){
+    assert.deepEqual(args.slice(0,3),['install','--production','--cwd']);
+    assert(isAbsolute(args[3]),'Owned project directory must be absolute');
+  }else{
+    assert.deepEqual(args.slice(0,3),['add','-g','--ignore-scripts']);
+    assert.match(args[3],/^(?:@[a-z0-9._-]+\/)?[a-z0-9._-]+@\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/u);
+  }
   const seconds=options.seconds??600;
   assert(Number.isSafeInteger(seconds)&&seconds>0&&seconds<=600);
   const env=options.env??process.env,cwd=options.cwd??process.cwd(),redact=makeRedactor(env);
@@ -93,6 +100,6 @@ export async function main(argv=process.argv.slice(2)){
   process.exitCode=result.error||result.signal||result.timed_out||result.cleanup_complete!==true?1:result.status??1;
   return result;
 }
-if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href)main().catch(error=>{
+if(process.argv[1]&&import.meta.url===pathToFileURL(realpathSync(process.argv[1])).href)main().catch(error=>{
   console.error(error.code??'ClientInstallRecoveryRefused');process.exitCode=1;
 });

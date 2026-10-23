@@ -57,19 +57,31 @@ test('both images share owned project policy and preserve all original runtime p
   assert(source.includes('COPY --chown=box:box packages/container-runtime-tools/package.json'));
   assert(source.includes('ENV PATH="/home/box/.formal-ai-runtime-tools/node_modules/.bin:${PATH}"'));
   assert(source.includes('RUN mkdir -p /home/box/.formal-ai-runtime-tools'));
-  assert(source.includes('RUN /usr/local/lib/formal-ai-runtime-tools/install-container-runtime-tools.sh /home/box/.formal-ai-runtime-tools'));
+  assert(source.includes('RUN /usr/local/lib/formal-ai-runtime-tools/scripts/install-container-runtime-tools.sh /home/box/.formal-ai-runtime-tools'));
   assert.doesNotMatch(source,/bun install -g/u);
   for(const probe of ['"$" --version','agent --version','start-agent --help >/dev/null'])assert(source.includes(probe));
  }
  const installer=fs.readFileSync(path.join(root,'scripts/install-container-runtime-tools.sh'),'utf8');
- assert.match(installer,/run-with-deadline\.sh" 600/u);
+ assert.match(installer,/install-client-registry-recovery\.mjs/u);
  assert.doesNotMatch(installer,/--ignore-scripts|--trust|--force|\|\| true/u);
 });
-test('single bounded installer propagates package manager failure without retry or real installs',async t=>{
+for(const filename of ['Dockerfile','Dockerfile.slim'])test(filename+' ships the executable recovery closure and preserves unrelated install failures',async t=>{
  const {home}=fixture(t),bin=path.join(home,'bin'),log=path.join(home,'calls');
  fs.mkdirSync(bin);
  const fake=path.join(bin,'bun');fs.writeFileSync(fake,'#!/bin/sh\nprintf "%s\\n" "$*" >> "$CALL_LOG"\nexit 37\n');fs.chmodSync(fake,0o700);
- const result=await boundedCommand('bash',[path.join(root,'scripts/install-container-runtime-tools.sh'),home],{
+ // Stage the real COPY declarations, so a missing transitive source import fails
+ // before our stand-in package manager can run. No image build or install.
+ const stage=path.join(home,'stage'),prefix='/usr/local/lib/formal-ai-runtime-tools/';
+ const docker=fs.readFileSync(path.join(root,filename),'utf8').replace(/\\\n\s*/gu,' ');
+ for(const line of docker.split('\n')){
+  if(!line.startsWith('COPY ')||!line.endsWith('/'))continue;
+  const parts=line.split(/\s+/u),destination=parts.at(-1);
+  if(!destination.startsWith(prefix))continue;
+  const target=path.join(stage,destination.slice(prefix.length));fs.mkdirSync(target,{recursive:true});
+  for(const source of parts.slice(1,-1).filter(value=>!value.startsWith('--')))
+   fs.copyFileSync(path.join(root,source),path.join(target,path.basename(source)));
+ }
+ const result=await boundedCommand('bash',[path.join(stage,'scripts/install-container-runtime-tools.sh'),home],{
   cwd:home,env:{...process.env,PATH:bin+path.delimiter+process.env.PATH,CALL_LOG:log},timeout:5000,maxBuffer:65536,
  });
  assert.equal(result.error,undefined);assert.equal(result.status,37);assert.equal(result.cleanup_complete,true);
