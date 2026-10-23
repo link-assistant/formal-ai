@@ -20,6 +20,11 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.355.3] - 2026-10-23
+
+### Fixed
+- Keep browser release, download verification and end-to-end dependency installation independent of unrelated runner APT repositories. Use the unchanged signed Ubuntu source definitions for that command, preserve other repositories and signature verification, and keep browser downloads under the original user.
+
 ## [0.355.2] - 2026-10-22
 
 Temporarily make real Lean/Rocq CI integration opt-in through

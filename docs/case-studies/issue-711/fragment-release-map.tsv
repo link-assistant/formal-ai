@@ -880,3 +880,4 @@ changelog.d/20261020_011000_reuse_unchanged_progress_window.md	0.355.0
 changelog.d/20261020_014000_keep_cache_outages_from_blocking_native_builds.md	0.355.0
 changelog.d/20261020_1328_bounded_agent_actions.md	0.355.1
 changelog.d/20261022_prover_install_release_debt.md	0.355.2
+changelog.d/20261023_browser_apt_source_isolation.md	0.355.3
