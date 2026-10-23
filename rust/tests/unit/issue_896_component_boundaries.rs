@@ -336,7 +336,7 @@ fn desktop_budget_bounds_the_published_component_cold_build() {
             "ref: ${{ github.workflow_sha }}",
             "ref: \"${{ github.workflow_sha }}\"",
         ]
-        .iter()
+        .into_iter()
         .any(|reference| native.contains(reference)),
         "native protocol checkout must pin the workflow commit"
     );
