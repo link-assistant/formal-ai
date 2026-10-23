@@ -2,15 +2,18 @@
 // Hermetic transport faults exercise the real local CI worker, without GitHub side effects.
 const { test, expect } = require('@playwright/test');
 const { readFileSync } = require('node:fs');
-const { parseRegisteredLanguages } = require('../scripts/lino-seed-parser.mjs');
+const { parseRegisteredLanguages, parseSupportedLanguagesFromAgentInfo } = require('../scripts/lino-seed-parser.mjs');
 const captured = require('../../fixtures/web/pages-worker-startup-network-error.json');
 const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 const { withWorkerDiagnostics } = require('./support/worker-diagnostics');
 
 test.describe.configure({ retries: 0 });
+test.use({ locale: 'en-US' });
 
 const registered_languages = parseRegisteredLanguages(readFileSync(
   require.resolve('../../../../data/seed/languages.lino'), 'utf8'));
+const supportedUiLanguages = new Set(parseSupportedLanguagesFromAgentInfo(readFileSync(
+  require.resolve('../../../../data/seed/agent-info.lino'), 'utf8')));
 
 async function configurePreferences(page, language) {
   await page.addInitScript(nextLanguage => localStorage.setItem('formal-ai.preferences.v1',
@@ -50,7 +53,9 @@ for (const language of registered_languages) test(`persistent startup failure is
     await route.fulfill({ status: captured.status, body: 'Temporarily unavailable' });
   });
   await page.goto('./');
-  await expect(page.locator('html')).toHaveAttribute('lang', language);
+  // Partial solver languages use the supported browser locale for the UI.
+  const uiLanguage = supportedUiLanguages.has(language) ? language : 'en';
+  await expect(page.locator('html')).toHaveAttribute('lang', uiLanguage);
   const failure = page.locator('[data-testid="engine-unavailable"]');
   await expect(failure).toBeVisible({ timeout: WORKER_READY_TIMEOUT_MS });
   await expect(failure).toHaveAttribute('title', /importScripts/);

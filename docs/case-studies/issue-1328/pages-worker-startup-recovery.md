@@ -40,8 +40,10 @@ They run in CI without local Rust compilation.
 The explicit local-suite configuration selects these tests, and a configuration
 regression ensures duration-based partitioning assigns them to one project.
 Persistent-failure checks derive their UI language cases from the maintained
-language registry, verify the selected page language, and require the same
-two-request bound and disabled composer in every case.
+language registry, verify the advertised UI language or its browser fallback,
+and require the same two-request bound and disabled composer in every case.
+The partial Spanish solver language uses the English browser fallback; the
+four fully supported UI languages retain their exact language assertions.
 
 This repair uses the authorized manual critical-release workflow and receives
 no Formal AI authorship credit. It does not confer the real three-client
