@@ -33,3 +33,5 @@ bump: patch
 - Update the compatible desktop and VS Code browser-tool chain to patched Zod 4.6.7 for GHSA-mrhx-c7xc-m3w5.
 
 - Update body-parser to 2.4.0 with its required qs dependency and Electron to 44.9.3 for GHSA-27r3-jxmh-p828 and GHSA-jr5w-w6x2-84p9.
+
+- Refresh the corresponding root Bun body-parser, qs and content-type resolutions and validate all six committed JavaScript lockfiles with the maintained audit gate.

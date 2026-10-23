@@ -443,3 +443,22 @@ delta. A small local Git fixture proves protocol files remain available while
 build inputs are omitted initially, then restored byte-for-byte after disabling
 sparse checkout. Workflow and deadline controls pass without compiling Rust,
 building images or contacting GitHub from the fixture.
+
+## Audit every lockfile before publishing a security batch
+
+[The next audit](https://github.com/link-assistant/formal-ai/actions/runs/40036580050/job/120700635386)
+confirmed the npm fixes but found the same body-parser advisory in the root
+`bun.lock`. Its complete 612,562-byte log has SHA-256
+`7eccfc2663cb579323d8b4313a9fa20798036e26689c8c6c2b6d5ab093a9b1bf`.
+The preceding local validation covered the two edited npm locks and missed this
+corresponding Bun resolution. Run the maintained whole-repository audit gate
+before publishing security changes rather than inferring coverage from individual
+package audits.
+
+Use Bun's lockfile-only resolver with scripts disabled. Review only the root
+body-parser 2.4.0, qs 6.16.1 and nested content-type 2.1.0 records against official
+package metadata. Every other lock field and the package manifest remain exact;
+all direct dependency ranges are satisfied. The unchanged maintained audit gate
+then passes for both committed Bun locks and all four npm locks. All governed
+source controls also pass without changing their witness. No package archive,
+product execution or Rust compilation is needed locally.
