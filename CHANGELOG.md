@@ -20,6 +20,10 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.355.5] - 2026-10-23
+
+fix: Recover transient browser worker asset imports with a shared two-attempt limit, report persistent startup failures instead of leaving chat loading indefinitely, and retain worker/network diagnostics when the deployed Pages smoke fails.
+
 ## [0.355.4] - 2026-10-23
 
 fix: Include the matching bundled npm and npx in the full Node runtime image so derived Hive images can install their locked dependencies. Verify both commands as the ordinary image user and retain an offline regression for the observed missing-npm failure.
