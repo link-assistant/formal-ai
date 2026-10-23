@@ -75,7 +75,7 @@ shell-words = "1.1.1"
 fs2 = "0.4"
 thread-priority = "3.1.1"
 toml_edit = "0.25.15"
-tokio = { version = "1", features = ["rt", "time"] }
+tokio = { version = "1.53.3", features = ["rt", "time"] }
 # General categories for the lib's word segmentation: abugida conjuncts are
 # held together by combining marks, which `char::is_alphanumeric` excludes.
 unicode-general-category = "1.1"
@@ -86,7 +86,7 @@ unicode-normalization = "0.1"
 url = "2.5.8"
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-tokio = { version = "1", features = ["process", "io-util", "signal"] }
+tokio = { version = "1.53.3", features = ["process", "io-util", "signal"] }
 blake3 = { version = "1.8.7", features = ["rayon"] }
 ring = "0.17"
 tracing = "0.1.44"
