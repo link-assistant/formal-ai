@@ -1,0 +1,3 @@
+RUN npm --prefix /opt/hive-e2e ci --omit=dev --ignore-scripts
+/bin/bash: line 1: npm: command not found
+exit code: 127
