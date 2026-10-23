@@ -22,7 +22,6 @@
 
 use std::env;
 use std::fmt::Write as _;
-use std::fs;
 use std::path::{Component, Path, PathBuf};
 use std::process::Command;
 

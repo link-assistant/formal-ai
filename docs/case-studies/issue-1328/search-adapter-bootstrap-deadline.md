@@ -72,6 +72,12 @@ implementation in CI. The initial split preserves every historical record line
 byte for byte, and generated status surfaces are refreshed through their
 maintained renderer.
 
+The first native compile after extracting storage correctly rejected the old,
+now unused `std::fs` import under `-Dwarnings` in both imports of the metric
+module. Remove that import; retain warnings as errors. The full question-gate
+log has SHA-256
+`6cee9d4bf0c4aedf813a3c97942f5590bb904d820dfd3b42b1173503896510a9`.
+
 ## Bound checkouts and include the required release fragment
 
 The follow-up's changelog gate correctly found no new fragment after the base
@@ -90,6 +96,17 @@ Apply explicit two-minute deadlines to desktop workflow checkouts, preserving
 all source refs, credential settings, fetch depths, job caps, and artifact guards.
 An automated parsed-object comparison permits only the deadline changes. The
 deployed-workflow regression covers every producer and consumer checkout.
+
+## Repair the unavailable benchmark citation
+
+[Check Links](https://github.com/link-assistant/formal-ai/actions/runs/40000756136/job/120575972934)
+exhausted its three bounded direct probes of the Stanford sentiment-treebank
+website. Its full log has SHA-256
+`26715fd1bee29f06134036eb530796d2ea435cb7cac6049f3b2aa0c023a7ea62`.
+The other failing website recovered with HTTP 200 during the same job.
+Replace the unavailable sentiment benchmark citation with Stanford NLP's
+maintained public `sentiment-treebank` repository, which documents its binary
+labels. Keep the link checker and its finite recovery limits enabled.
 
 ## Recheck queued cleanup plans before publishing a claim
 
