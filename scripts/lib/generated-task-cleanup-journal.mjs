@@ -171,8 +171,16 @@ export async function readScanCursor({reader, now = Date.now(), ...options}) {
   const dates = [0, 1].map(offset => new Date(now - offset * 86400000).toISOString().slice(0, 10));
   const records = [];
   for (const day of dates) {
-    const values = await reader.pages(`repos/${repository}/actions/artifacts?name=${progressName(day)}`, 'artifacts');
-    assert.ok(values.length <= 256, 'bounded complete daily progress census');
+    // A cursor is a discovery hint, never permission to mutate an owner. Read a
+    // finite candidate window instead of enumerating an ever-growing journal.
+    // Every selected cursor still authenticates its complete artifact/producer;
+    // every owner independently requires its unique immutable claim at apply.
+    const listing = await reader.read(`repos/${repository}/actions/artifacts?name=${progressName(day)}&per_page=100&page=1`);
+    assert.ok(Number.isSafeInteger(listing.total_count) && listing.total_count >= 0);
+    const values = listing.artifacts;
+    assert.ok(Array.isArray(values) && values.length <= 100 && values.length <= listing.total_count);
+    assert.ok(listing.total_count === 0 || values.length > 0, 'nonempty progress history needs a candidate window');
+    assert.equal(new Set(values.map(value => value.id)).size, values.length, 'unique progress candidates');
     for (const metadata of values) records.push({day, metadata});
   }
   records.sort((left, right) => Date.parse(right.metadata.created_at) - Date.parse(left.metadata.created_at)

@@ -8,7 +8,7 @@ test('every desktop producer and consumer checkout has a short explicit deadline
   const checked=[];
   for(const [name,job] of Object.entries(workflow.jobs))for(const step of job.steps??[]) {
     if(!step.uses?.startsWith('actions/checkout@'))continue;
-    assert.ok(Number.isFinite(step['timeout-minutes'])&&step['timeout-minutes']>0&&step['timeout-minutes']<=2,name);
+    assert.ok(Number.isFinite(step['timeout-minutes'])&&step['timeout-minutes']>0&&step['timeout-minutes']<=5,name);
     checked.push(name);
   }
   for(const name of ['resolve','native-source','native','build','cli','vscode','finalize'])assert.ok(checked.includes(name),name);

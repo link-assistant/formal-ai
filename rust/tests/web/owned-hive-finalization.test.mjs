@@ -27,6 +27,11 @@ function fixture({additionalProducers = []} = {}) {
   const reader = {
     async read(endpoint) {
       calls.push(endpoint);
+      if (endpoint.includes('/actions/artifacts?name=hive-cleanup-scan-progress-')) {
+        const name = new URLSearchParams(endpoint.split('?')[1]).get('name');
+        const values = progress.filter(row => row.name === name);
+        return {total_count: values.length, artifacts: values.slice(0,100)};
+      }
       if (endpoint.includes('/actions/artifacts?')) {
         if (listingOverride) return listingOverride(endpoint);
         return {total_count: owners.size, artifacts: [...owners.keys()].map(id => artifacts.get(id))};
@@ -228,6 +233,49 @@ test('authenticated durable progress advances scheduled discovery beyond its pre
     {page: 8, offset: 17});
   progress.document.cleanupPolicyHash = '0'.repeat(64);
   await assert.rejects(readScanCursor({reader: f.reader, now: Date.parse('2026-10-21T13:00:00Z'), ...f.dependencies}));
+});
+
+test('progress journals larger than the old daily cap retain authenticated continuation with bounded reads', async () => {
+  const f=fixture(),now=Date.parse('2026-10-21T13:00:00Z');
+  const progress=await makeScanProgress({reader:f.reader,producer,now,continuation:{page:8,offset:17},...f.dependencies});
+  const values=Array.from({length:1000},(_,index)=>({id:2000-index,name:progress.name,expired:false,size_in_bytes:100,
+    created_at:new Date(now-index*1000).toISOString(),workflow_run:{id:producer.run,head_sha:cleanupProtocol}}));
+  for(const metadata of values)f.documents.set(metadata.id,structuredClone(progress.document));
+  f.setProgress(values);
+  assert.deepEqual(await readScanCursor({reader:f.reader,now,...f.dependencies}),{page:8,offset:17});
+  const reads=f.calls.filter(value=>value.includes('name=hive-cleanup-scan-progress-'));
+  assert.equal(reads.length,2);assert.ok(reads.every(value=>value.endsWith('&per_page=100&page=1')));
+  assert.equal(f.calls.filter(value=>value.startsWith('artifact-json/')).length,1);
+  assert.equal(f.effects.length,0);
+  f.documents.get(values[0].id).schema='foreign-progress';
+  const beforeFallback=f.calls.filter(value=>value.startsWith('artifact-json/')).length;
+  assert.deepEqual(await readScanCursor({reader:f.reader,now,...f.dependencies}),{page:8,offset:17});
+  assert.equal(f.calls.filter(value=>value.startsWith('artifact-json/')).length-beforeFallback,2);
+  for(const metadata of values)f.documents.get(metadata.id).cleanupPolicyHash='0'.repeat(64);
+  await assert.rejects(readScanCursor({reader:f.reader,now,...f.dependencies}),/without an authenticated cursor/u);
+  assert.equal(f.effects.length,0);
+});
+
+test('malformed progress windows cannot masquerade as absent history',async()=>{
+  for(const listing of [{total_count:1,artifacts:[]},{total_count:0,artifacts:[{id:1}]},
+    {total_count:2,artifacts:[{id:1},{id:1}]}]) {
+    const f=fixture(),read=f.reader.read;
+    f.reader.read=endpoint=>endpoint.includes('name=hive-cleanup-scan-progress-')?listing:read(endpoint);
+    await assert.rejects(readScanCursor({reader:f.reader,now:Date.parse('2026-10-21T13:00:00Z'),...f.dependencies}));
+    assert.equal(f.effects.length,0);
+  }
+});
+
+test('cancelled no-op admissions do not enqueue cleanup scans; schedules and failed deliveries still do',()=>{
+  const workflow=YAML.parse(fs.readFileSync(new URL('../../../.github/workflows/hive-original-delivery-finalize.yml',import.meta.url),'utf8'));
+  const expression=workflow.jobs.prepare.if.replace(/^\$\{\{\s*|\s*\}\}$/gu,'');
+  const eligible=(event_name,conclusion,full_name='link-assistant/formal-ai')=>vm.runInNewContext(expression,
+    {github:{event_name,repository:'link-assistant/formal-ai',event:{workflow_run:{conclusion,head_repository:{full_name}}}}},{timeout:100});
+  assert.equal(eligible('workflow_run','cancelled'),false);
+  assert.equal(eligible('workflow_run','failure'),true);
+  assert.equal(eligible('workflow_run','success'),true);
+  assert.equal(eligible('workflow_run','success','foreign/repo'),false);
+  assert.equal(eligible('schedule','cancelled'),true);
 });
 
 test('published claim and outcome filenames match exact sole artifact members', () => {

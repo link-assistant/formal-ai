@@ -92,10 +92,19 @@ the underlying infrastructure cause is unconfirmed. Its downstream
 [CLI job](https://github.com/link-assistant/formal-ai/actions/runs/39990184348/job/120570130735)
 then correctly refused the missing same-run native artifact. Its full log has
 SHA-256 `d04041d9e9815c3d6f410410c09dd5654cebac9e44bb4b98b46e7d2c276ba8f5`.
-Apply explicit two-minute deadlines to desktop workflow checkouts, preserving
+Apply explicit five-minute deadlines to desktop workflow checkouts, preserving
 all source refs, credential settings, fetch depths, job caps, and artifact guards.
 An automated parsed-object comparison permits only the deadline changes. The
 deployed-workflow regression covers every producer and consumer checkout.
+
+The first two-minute backstop proved too short for this repository's 73,608
+files. Windows ARM reached 100% of worktree population and Intel Mac reached
+83% while still making progress. Their complete logs have SHA-256
+`cd95ee6be67632812a91de44771cafb1ab2f11deda79b60d53bada4104f2294e`
+and `0baad21d55a9b48cc299f83bfe9503452b0d4386a5f287dc9f703560964561c8`,
+respectively. Five minutes allows this observed checkout work while retaining an
+explicit step deadline and the original job caps; no platform or artifact
+requirement is skipped.
 
 ## Repair the unavailable benchmark citation
 
@@ -139,3 +148,27 @@ even after quarantine, and evaluate the actual workflow's effect conditions for
 both eligibility outcomes. Existing ownership, interrupted-write, and complete
 closure tests remain required. All validation uses fake transports and local
 temporary files, without writes to real GitHub issues.
+
+## Bound checkpoint discovery independently of accumulated history
+
+Prepared source `43671c8` failed cleanup preparation in
+[run 40001125369](https://github.com/link-assistant/formal-ai/actions/runs/40001125369/job/120577171246)
+because its daily progress journal exceeded 256 artifacts. Its complete log has
+SHA-256 `9208c6d0fc3b34d1f90ca202e9fa5a3a5ac7ac6c95015e74e84f641fde4094f7`.
+Every completed admission could start another scan, including cancelled no-op
+admissions; enumerating the entire daily checkpoint history eventually exhausted
+a fixed cap even though each individual cleanup scan was bounded.
+
+Read at most one 100-artifact candidate page for each of the two existing day
+names. Authenticate the complete artifact, finished producer, trusted source and
+policy before using a continuation. A continuation only guides discovery:
+independent owner authentication, unique immutable claims and apply-time custody
+still authorize every write. Existing history with no authenticated candidate
+fails closed; malformed or duplicate windows cannot pretend the history is empty.
+Do not start an event-driven scan for cancelled admissions. The scheduled sweeper
+still handles interrupted owners, and failed or successful real deliveries still
+trigger scans.
+
+Regressions replay a thousand checkpoints, retain the authenticated continuation,
+fall back from an invalid newest candidate, reject wholly untrusted or malformed
+windows, and exercise the actual workflow condition. No test writes to GitHub.
