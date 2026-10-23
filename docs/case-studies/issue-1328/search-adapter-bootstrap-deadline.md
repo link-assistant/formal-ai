@@ -346,3 +346,28 @@ node_modules, package archive fetches, browser downloads or lifecycle execution.
 The temporary npm caches were removed after preserving metadata and audit proofs.
 The advisory threshold remains enforced, without suppression or an audit waiver;
 actual updated desktop/browser/VS Code runtime validation runs in CI.
+
+
+## Refresh reviewed source fixtures without changing governed assertions
+
+The archived-ledger assertion and the security manifest updates also change
+source inputs pinned by the governed specification witness. A local run caught
+this missing regeneration before the next full native cycle finished. Invoke the
+maintained explicit reviewed-baseline generator with the exact preceding witness
+hash and unchanged reader hash. Do not use the narrower version-only refresh for
+these source changes.
+
+The complete object comparison permits only exact full-file input text and
+fixture identities for the reviewed desktop/VS Code manifests and unit module,
+plus the changed specification source identity. Case IDs, asks, checks, counts,
+unsupported reasons, reader source and every other object field remain exact.
+The initial over-narrow one-hash check rejected the additional captured manifest
+inputs and restored the preceding witness before review; no partial snapshot was
+committed. The final strict comparison accepts only those declared source inputs.
+
+The maintained witness changes from SHA-256
+`2b3a94e7819d64e9ac2f81e5e5949698452394379a00fb5e0a4e7ccad7ae2de2`
+to `10629c27ecdf419b632188de6a74cae41c602431561362e78f68ccb2801aa1ba`.
+All 43 governed-source and version-only maintenance controls pass without skips.
+The version-only guard still rejects changes to cases, assertions, unsupported
+scope and native source; this explicit review does not relax that guard.

@@ -20,6 +20,8 @@ bump: patch
 
 - Resolve every literal matrix job cap in deadline contracts and align Docker assertions with the shipped recovery layout.
 
+- Refresh reviewed governed source inputs after ledger and manifest changes while preserving every assertion.
+
 ### Security
 
 - Update both committed Tokio resolutions to 1.53.3 for RUSTSEC-2026-0386.
