@@ -9,6 +9,7 @@ bump: patch
 - Resume cleanup from bounded authenticated history windows and avoid scans triggered by cancelled admissions.
 - Refresh the governed Cargo source witness after the dependency update.
 - Rotate release-ledger history into bounded, lossless parts while preserving source-size limits.
+- Keep the new ledger archive root consistent with the existing notation naming policy.
 - Bound desktop producer and consumer checkouts so a stalled network step fails promptly.
 
 ### Security

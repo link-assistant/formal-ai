@@ -72,6 +72,14 @@ implementation in CI. The initial split preserves every historical record line
 byte for byte, and generated status surfaces are refreshed through their
 maintained renderer.
 
+[Browser coverage shard 7](https://github.com/link-assistant/formal-ai/actions/runs/40006276794/job/120596696326)
+also caught the new archive root's underscore spelling under the existing
+notation ratchet. Its full log has SHA-256
+`336794f529ecb2d5aaf24457e63039390967069094b1411bf8aae6701d5f8f43`.
+Use `self-hosting-ledger-archive` in the generated part and both storage readers
+and writers. The historical records remain identical, and the existing notation
+ceiling stays unchanged. The notation check and storage controls pass locally.
+
 The first native compile after extracting storage correctly rejected the old,
 now unused `std::fs` import under `-Dwarnings` in both imports of the metric
 module. Remove that import; retain warnings as errors. The full question-gate

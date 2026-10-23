@@ -45,7 +45,7 @@ pub fn read(ledger: &Path) -> Result<String, String> {
     }
     for name in names {
         let part = read_text(&directory.join(name))?;
-        if !part.starts_with("self_hosting_ledger_archive\n")
+        if !part.starts_with("self-hosting-ledger-archive\n")
             || !parts(&part)?.is_empty()
             || part.lines().count() > LIMIT
         {
@@ -76,7 +76,7 @@ pub fn append(ledger: &Path, record: &str) -> Result<(), String> {
     let (header, records) = text.split_at(offset);
     let mut names = parts(header)?;
     let mut chunks = Vec::new();
-    let mut chunk = String::from("self_hosting_ledger_archive\n");
+    let mut chunk = String::from("self-hosting-ledger-archive\n");
     let mut rows: Vec<_> = records.split("  release\n").skip(1).collect();
     let latest = rows.pop().ok_or("ledger has no release record")?;
     for row in rows {
@@ -86,11 +86,11 @@ pub fn append(ledger: &Path, record: &str) -> Result<(), String> {
         }
         if chunk.lines().count() + row.lines().count() > LIMIT {
             chunks.push(chunk);
-            chunk = String::from("self_hosting_ledger_archive\n");
+            chunk = String::from("self-hosting-ledger-archive\n");
         }
         chunk.push_str(&row);
     }
-    if chunk != "self_hosting_ledger_archive\n" {
+    if chunk != "self-hosting-ledger-archive\n" {
         chunks.push(chunk);
     }
     if names.len() + chunks.len() > MAX_PARTS {
@@ -228,7 +228,7 @@ mod tests {
         fs::write(
             directory.join("0001.lino"),
             format!(
-                "self_hosting_ledger_archive\n{PREFIX}0001.lino\"\n{}",
+                "self-hosting-ledger-archive\n{PREFIX}0001.lino\"\n{}",
                 row(0)
             ),
         )

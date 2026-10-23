@@ -1,4 +1,4 @@
-self_hosting_ledger_archive
+self-hosting-ledger-archive
   release
     metric_version "3"
     tag "v0.296.0"

@@ -33,7 +33,7 @@ test('duplicate, nested, traversal, missing and excessive archives fail before w
     const f=fixture(t,text);assert.throws(()=>appendLedger(f.file,row(1)));assert.equal(readFileSync(f.file,'utf8'),text);
   }
   const f=fixture(t,'self_hosting_ledger\n  archive "self-hosting-ledger-parts/0001.lino"\n'+row(1));mkdirSync(f.parts);
-  writeFileSync(join(f.parts,'0001.lino'),'self_hosting_ledger_archive\n  archive "self-hosting-ledger-parts/0001.lino"\n'+row(0));
+  writeFileSync(join(f.parts,'0001.lino'),'self-hosting-ledger-archive\n  archive "self-hosting-ledger-parts/0001.lino"\n'+row(0));
   assert.throws(()=>readLedger(f.file),/nested/u);
 });
 test('interrupted publication retains history and refuses to overwrite uncommitted archive bytes',t=>{
@@ -44,7 +44,7 @@ test('interrupted publication retains history and refuses to overwrite uncommitt
 });
 test('symlink archives cannot substitute evidence or redirect writes',t=>{
   const text='self_hosting_ledger\n  archive "self-hosting-ledger-parts/0001.lino"\n'+row(1);
-  const f=fixture(t,text);mkdirSync(f.parts);writeFileSync(join(f.dir,'outside'),'self_hosting_ledger_archive\n'+row(0));symlinkSync(join(f.dir,'outside'),join(f.parts,'0001.lino'));
+  const f=fixture(t,text);mkdirSync(f.parts);writeFileSync(join(f.dir,'outside'),'self-hosting-ledger-archive\n'+row(0));symlinkSync(join(f.dir,'outside'),join(f.parts,'0001.lino'));
   assert.throws(()=>readLedger(f.file),/invalid ledger/u);
 });
 test('archive and single-record bounds fail before rewriting the root',t=>{
