@@ -30,7 +30,8 @@ export function preparedMetadataPolicy(versionSource, witnessSource, metricSourc
     witness,
     ledger,
     mapping,
-    archive
+    archive,
+    ledgerParts: metricSource.includes('pub mod ledger_storage;') ? 'data/meta/self-hosting-ledger-parts' : null
   };
 }
 export function requirePreparedVersionDelta({
@@ -58,7 +59,7 @@ export function requirePreparedVersionDelta({
   const lockVersion = /(\[\[package\]\]\s*\nname\s*=\s*"formal-ai"\s*\nversion\s*=\s*")[^"]+(")/u;
   assert.ok(lockVersion.test(beforeLock));
   assert.equal(beforeLock.replace(lockVersion, (_whole, prefix, suffix) => prefix + version + suffix), afterLock, 'dependency edges and checksums unchanged');
-  const allowed = name => name === 'rust/Cargo.toml' || name === 'rust/Cargo.lock' || name === policy.witness || name === policy.ledger || name === policy.mapping || name === 'CHANGELOG.md' || policy.surfaces.includes(name) || name.startsWith(policy.archive + '/') && name.endsWith('.md');
+  const allowed = name => name === 'rust/Cargo.toml' || name === 'rust/Cargo.lock' || name === policy.witness || name === policy.ledger || name === policy.mapping || name === 'CHANGELOG.md' || policy.surfaces.includes(name) || name.startsWith(policy.archive + '/') && name.endsWith('.md') || policy.ledgerParts === 'data/meta/self-hosting-ledger-parts' && /^data\/meta\/self-hosting-ledger-parts\/\d{4}\.lino$/u.test(name);
   for (const file of files) {
     if (file.filename.startsWith('changelog.d/')) {
       assert.equal(file.status, 'removed', 'only consumed fragments');

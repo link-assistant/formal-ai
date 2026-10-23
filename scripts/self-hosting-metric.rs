@@ -22,8 +22,7 @@
 
 use std::env;
 use std::fmt::Write as _;
-use std::fs::{self, OpenOptions};
-use std::io::Write;
+use std::fs;
 use std::path::{Component, Path, PathBuf};
 use std::process::Command;
 
@@ -32,6 +31,9 @@ const EVIDENCE_TRAILER: &str = "Formal-AI-Evidence";
 const PULL_REQUEST_TRAILER: &str = "Formal-AI-Pull-Request";
 const DEFAULT_LEDGER: &str = "data/meta/self-hosting-ledger.lino";
 const DEFAULT_TRAILING_WINDOW: usize = 3;
+
+#[path = "self-hosting-ledger.rs"]
+pub mod ledger_storage;
 
 #[path = "self-hosting-retraction.rs"]
 mod retraction;
@@ -648,7 +650,7 @@ fn weighted_percentage(rows: &[ReleaseRow]) -> u64 {
 }
 
 pub fn read_release_rows(ledger: &Path) -> Result<Vec<ReleaseRow>, String> {
-    let text = fs::read_to_string(ledger)
+    let text = ledger_storage::read(ledger)
         .map_err(|error| format!("could not read {}: {error}", ledger.display()))?;
     let mut rows = Vec::new();
     let mut fields = Vec::new();
@@ -733,10 +735,6 @@ fn parse_release_row(fields: &[String]) -> Result<ReleaseRow, String> {
 }
 
 fn append_release_row(ledger: &Path, row: &ReleaseRow) -> Result<(), String> {
-    let mut file = OpenOptions::new()
-        .append(true)
-        .open(ledger)
-        .map_err(|error| format!("could not append {}: {error}", ledger.display()))?;
     let fields = [
         ("metric_version", row.metric_version.to_string()),
         ("tag", row.tag.clone()),
@@ -782,7 +780,7 @@ fn append_release_row(ledger: &Path, row: &ReleaseRow) -> Result<(), String> {
     for author in &row.self_authored_pull_request_authors {
         let _ = writeln!(record, "    self_authored_pull_request_author \"{author}\"");
     }
-    write!(file, "{record}")
+    ledger_storage::append(ledger, &record)
         .map_err(|error| format!("could not append {}: {error}", ledger.display()))
 }
 

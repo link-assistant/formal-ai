@@ -38,6 +38,40 @@ have identical dependency, feature, and Rust-version metadata. No other locked
 package changes, and the advisory is not ignored. Native builds and the real
 Cargo audit validate the update in CI; no crate is downloaded or compiled locally.
 
+The dependency update also requires refreshing the governed source witness.
+[Browser shard 4](https://github.com/link-assistant/formal-ai/actions/runs/39990184256/job/120545719484)
+correctly rejected its stale Cargo fixture hashes. Regenerate through the
+maintained explicit review command with the exact reader and previous-witness
+hashes. Full object comparison permits only the reviewed Cargo content-hash
+references to change; all cases, assertions, profiles, scope, counts, other
+source identities, and the reader remain identical. The guarded test fails before
+this refresh and all its controls pass afterward. No guard or test is skipped.
+
+## Split release history before it exceeds the maintained file limit
+
+[Lint lane 1](https://github.com/link-assistant/formal-ai/actions/runs/39990184167/job/120555670495)
+correctly rejected the generated ledger at 1,506 lines after the version commit
+appended another release. Its full log has SHA-256
+`ffcb2e8f00265f91f22ad632beb110e9d99dd5204047f6824c7acb16827e8776`.
+Generated committed data remains subject to the existing 1,500-line limit.
+
+Split the historical release records into explicitly referenced parts without
+changing a record or its order. The metric reader loads the parts before current
+records. The appender rotates complete records whenever another append would
+cross the limit; the newest record stays in the root for status projection.
+Existing parts are immutable, archive references are canonical and bounded,
+nested references and symlinks are rejected, and an interrupted publication
+cannot silently overwrite history. The version producer stages the parts; its
+freshness and published-source checks admit only the exact numbered `.lino`
+metadata paths. Source files and unrelated paths retain their original guards.
+
+The JavaScript storage twin performs the initial lossless split and exercises
+hundreds of future appends, invalid references, size bounds, and interrupted
+writes without compiling Rust. Native controls run against the Rust storage
+implementation in CI. The initial split preserves every historical record line
+byte for byte, and generated status surfaces are refreshed through their
+maintained renderer.
+
 ## Recheck queued cleanup plans before publishing a claim
 
 Main's finalizer run
