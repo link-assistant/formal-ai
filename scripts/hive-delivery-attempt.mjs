@@ -1,5 +1,5 @@
 import { createDeliveryClaim, publishDeliveryResult, githubLedgerWriter } from './lib/hive-delivery-ledger.mjs';
-import { taskCredentialTarget, requireTaskCredentialAccess } from './lib/hive-delivery-credentials.mjs';
+import { taskCredentialTarget, requireTaskCredentialAccess, requireTaskCredentialConfiguration } from './lib/hive-delivery-credentials.mjs';
 // Credential preflight before claim; claim before effects. Publish only a qualified result after the unchanged independent oracle.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -406,8 +406,15 @@ export async function persistAttemptResult(environment = process.env, {
 }
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
   const mode = process.argv[2];
-  assert.ok(['target', 'credentials', 'claim', 'result', 'owner', 'aggregate', 'publish-result'].includes(mode));
-  const result = mode === 'target' ? prepareCredentialTarget() : mode === 'credentials' ? await preflightTaskCredentials() : mode === 'claim' ? await claimAttempt() : mode === 'result' ? recordAttemptResult() : mode === 'owner' ? recordEffectOwner() : mode === 'publish-result' ? await persistAttemptResult() : await aggregateAcceptance();
+  assert.ok(['configuration', 'target', 'credentials', 'claim', 'result', 'owner', 'aggregate', 'publish-result'].includes(mode));
+  const result = mode === 'configuration' ? requireTaskCredentialConfiguration()
+    : mode === 'target' ? prepareCredentialTarget()
+    : mode === 'credentials' ? await preflightTaskCredentials()
+    : mode === 'claim' ? await claimAttempt()
+    : mode === 'result' ? recordAttemptResult()
+    : mode === 'owner' ? recordEffectOwner()
+    : mode === 'publish-result' ? await persistAttemptResult()
+    : await aggregateAcceptance();
   console.log(JSON.stringify({
     mode,
     action: result.action ?? result.state ?? 'observed',

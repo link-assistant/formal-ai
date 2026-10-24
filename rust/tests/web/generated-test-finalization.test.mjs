@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import {finalizeGeneratedRun} from '../../../scripts/finalize-generated-test-issues.mjs';
 const head = 'a'.repeat(40);
 function fixture({status = 'completed', conclusion = 'success', log = null} = {}) {
@@ -124,5 +125,50 @@ test('authenticated owner attempt and protocol cannot race into a newer cleanup'
     await assert.rejects(finalizeGeneratedRun({runId: 40, apply: true, ...expected, ...f}),
       error => error.code === 'OWNER_CHANGED_BEFORE_CLEANUP');
     assert.equal(f.calls.length, 1); assert.equal(f.cleanupCalls.length, 0);
+  }
+});
+
+const preEffectReplay = JSON.parse(fs.readFileSync(new URL('../fixtures/hive-pre-effect-failure.json', import.meta.url)));
+function replayFixture() {
+  const f = fixture({conclusion: 'failure', log: {ok: true, streamComplete: true, tailComplete: true,
+    text: 'Credential preflight failed before the effect claim.\n'}});
+  f.jobs.splice(0, f.jobs.length, ...structuredClone(preEffectReplay.jobs));
+  return f;
+}
+test('actual pre-claim credential failure and cancelled image loads need no generated issue closure', async () => {
+  const f = replayFixture(), result = await finalizeGeneratedRun({runId: 40, apply: true, ...f});
+  assert.equal(result.cleanupReceipt.noEffects, true);
+  assert.equal(result.cleanupReceipt.complete, false, 'a no-op never certifies three successful solves');
+  assert.equal(result.cleanupReceipt.closed, 0); assert.equal(result.cleanupReceipt.retained, 0);
+  assert.equal(result.discovery.length, 3);
+  assert(result.discovery.every(row => row.reason === 'all-effect-gates-skipped'));
+  assert(f.cleanupCalls.every(call => (call.plan.candidates ?? []).length === 0));
+});
+test('missing, duplicated, reordered, active or executed gates cannot prove a no-op', async () => {
+  for (const change of [
+    steps => steps.splice(steps.findIndex(step => step.name.startsWith('Claim one bounded')), 1),
+    steps => steps.push({...steps.find(step => step.name.startsWith('Persist effect claim'))}),
+    steps => steps.reverse(),
+    steps => { steps.find(step => step.name.startsWith('Run actual Hive')).status = 'in_progress'; },
+    ...['Claim one bounded', 'Persist effect claim', 'Run actual Hive'].map(prefix => steps => {
+      steps.find(step => step.name.startsWith(prefix)).conclusion = 'success'; })
+  ]) {
+    const f = replayFixture(); change(f.jobs[0].steps);
+    if (f.jobs[0].steps.some(step => step.status !== 'completed')) {
+      const result = await finalizeGeneratedRun({runId: 40, apply: true, ...f});
+      assert.equal(result.cleanupReceipt.noEffects, false); continue;
+    }
+    const result = await finalizeGeneratedRun({runId: 40, apply: true, ...f});
+    assert.equal(result.cleanupReceipt.noEffects, false); assert.equal(result.cleanupReceipt.retained, 1);
+  }
+});
+test('truncated logs or a final issue URL retain cleanup even when every effect gate was skipped', async () => {
+  for (const log of [{ok: true, streamComplete: true, tailComplete: false, text: ''},
+    {ok: true, streamComplete: true, tailComplete: true,
+      text: 'Final issue URL: https://github.com/link-assistant/formal-ai/issues/42\n'}]) {
+    const f = replayFixture(); f.client.request = async endpoint => ({...log,
+      text: log.text.replace('/issues/42', '/issues/' + /jobs\/(\d+)/u.exec(endpoint)[1])});
+    const result = await finalizeGeneratedRun({runId: 40, apply: true, ...f});
+    assert.equal(result.cleanupReceipt.noEffects, false);
   }
 });

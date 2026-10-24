@@ -9,10 +9,18 @@ concurrency fixture is now manual-only and explicitly unproven; see the
 [recorded deferral](critical-delivery-scope.md#recorded-follow-up). Its prior
 strict-final Unknown remains a failed attempt, not a skipped check or a pass.
 
-Continue in [the existing PR 1329](https://github.com/link-assistant/formal-ai/pull/1329).
-Its four original bot commits and public session logs must be retained by normal
-history updates. The integration started from `98f7808d49583e1e7932d133355445d8fdfb91f9`
-(v0.355.0). Do not create a replacement PR or rewrite its branch history.
+The original integration and subsequent release fixes are merged. Most recently,
+[PR 1402](https://github.com/link-assistant/formal-ai/pull/1402) merged normally as
+`71be7a07321a4f03e8bda8ab49c91817f746eb21` after all its checks passed.
+Its direct version-preparation child is `f81affcb6631b7a0f1fd55ca8297d47c058df38f`
+(`0.355.6`). Monitor the actual release producer, not an old open-PR instruction.
+The next fix is [PR 1403](https://github.com/link-assistant/formal-ai/pull/1403),
+which addresses [Hive failures before effects](hive-pre-effect-finalization.md),
+including the missing external credential configuration and cleanup of a proved
+no-op. The released three-client requirement remains unverified. Preserve all
+original bot commits and public evidence in normal history; do not rewrite them.
+Let the active guarded release finish before this next merge advances `main`;
+the prepared-source authority requires current `main` throughout publication.
 
 ## Findings and implementation
 

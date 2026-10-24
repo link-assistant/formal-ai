@@ -162,6 +162,21 @@ test('an incomplete cleanup receipt cannot be promoted to a completed outcome', 
     ...f.dependencies, finalize: async () => ({applied: {results: [{status: 'retained'}]}, cleanupReceipt: {complete: false}})});
   assert.equal(result.state, 'retained'); assert.equal(result.cleanupReceipt.complete, false);
 });
+test('proved skipped effect gates produce a distinct terminal no-op without delivery credit', async () => {
+  const f = fixture(), prepared = await prepare(f); f.publishClaim(prepared.claim);
+  const result = await applyOwnedHiveClaim({reader: f.reader, producer, claimArtifactId: 21,
+    ...f.dependencies, finalize: async () => ({applied: {results: []},
+      cleanupReceipt: {complete: false, noEffects: true, closed: 0, retained: 0}})});
+  assert.equal(result.state, 'not-started'); assert.equal(result.cleanupReceipt.complete, false);
+  assert.equal((await prepare(f)).eligible, false, 'the original immutable claim still prevents repetition');
+});
+test('uncertain writes take precedence over an inconsistent no-effects receipt', async () => {
+  const f = fixture(), prepared = await prepare(f); f.publishClaim(prepared.claim);
+  const result = await applyOwnedHiveClaim({reader: f.reader, producer, claimArtifactId: 21,
+    ...f.dependencies, finalize: async () => ({applied: {results: [{status: 'mutation-uncertain'}]},
+      cleanupReceipt: {complete: false, noEffects: true}})});
+  assert.equal(result.state, 'uncertain');
+});
 test('pre-claim materialization retains a blocked decision without creating another durable claim', async () => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'formal-ai-preclaim-'));
   try {

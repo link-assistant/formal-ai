@@ -1,6 +1,13 @@
 // Canonical task identity controls credential scope; read-only preflight grants no delivery credit.
 import assert from 'node:assert/strict';
 import { requireHistoricalTask } from './hive-delivery-admission.mjs';
+export function requireTaskCredentialConfiguration(environment = process.env) {
+  const present = name => typeof environment[name] === 'string' && environment[name].trim().length > 0;
+  assert.ok(present('AUTOMATION_TOKEN') || present('AUTOMATION_APP_ID') && present('AUTOMATION_APP_PRIVATE_KEY'),
+    'External Hive tasks require AUTOMATION_TOKEN or AUTOMATION_APP_ID plus AUTOMATION_APP_PRIVATE_KEY; '
+    + 'the default repository token cannot authorize the canonical task repositories. No task effect was started.');
+  return {configured: true, deliveryVerified: false};
+}
 export function taskCredentialTarget(manifestBytes, {
   inputHash,
   tool

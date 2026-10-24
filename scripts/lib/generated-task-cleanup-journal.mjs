@@ -159,7 +159,8 @@ export async function applyCleanupClaim({reader, claimArtifactId, producer, clie
       expectedProtocolHead: owner.protocolCommit, apply: true, client});
     const uncertain = result.applied?.results.some(row => row.status === 'mutation-uncertain'
       || row.comment === 'uncertain-not-retried') === true;
-    return {...outcome, state: uncertain ? 'uncertain' : result.cleanupReceipt?.complete === true ? 'completed' : 'retained',
+    return {...outcome, state: uncertain ? 'uncertain' : result.cleanupReceipt?.complete === true ? 'completed'
+      : result.cleanupReceipt?.noEffects === true ? 'not-started' : 'retained',
       cleanupReceipt: result.cleanupReceipt};
   } catch (error) {
     return {...outcome, state: error.code === 'OWNER_CHANGED_BEFORE_CLEANUP' ? 'retained' : 'uncertain',

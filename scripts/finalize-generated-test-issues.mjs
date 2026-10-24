@@ -6,7 +6,7 @@ import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {createEvidenceClient} from './collect-test-replays.mjs';
 import {cleanupGeneratedIssues} from './close-finished-test-issues.mjs';
-import {custodyFromLog, originalWorkflow} from './lib/generated-task-custody.mjs';
+import {custodyFromLog, effectWasNotStarted, originalWorkflow} from './lib/generated-task-custody.mjs';
 import {redact} from './collect-ci-failures.mjs';
 const repository = 'link-assistant/formal-ai';
 export async function finalizeGeneratedRun({runId, apply = false, expectedRunAttempt = null,
@@ -36,6 +36,9 @@ export async function finalizeGeneratedRun({runId, apply = false, expectedRunAtt
   for (const job of jobs) {
     const log = await client.request(`repos/${repository}/actions/jobs/${job.id}/logs`, {log: true, full: true});
     const custody = custodyFromLog({repository, run, job, log});
+    if (effectWasNotStarted(job, custody)) {
+      discovery.push({job: job.id, status: 'not-started', reason: 'all-effect-gates-skipped'}); continue;
+    }
     if (!custody.complete || custody.issueNumbers.length !== 1 || custody.finalIssueUrls.length !== 1
       || custody.finalIssueUrls[0] !== `https://github.com/${repository}/issues/${custody.issueNumbers[0]}`) {
       discovery.push({job: job.id, status: 'retained', reason: 'incomplete-or-ambiguous-owned-log'}); continue;
@@ -50,13 +53,16 @@ export async function finalizeGeneratedRun({runId, apply = false, expectedRunAtt
     const candidate = candidates.find(row => row.proof.job === job.id);
     const result = applied?.results.find(row => row.number === candidate?.number);
     const closed = result?.status === 'closed';
+    const notStarted = discovery.some(row => row.job === job.id && row.status === 'not-started');
     const complete = closed && result.comment === 'recorded';
     return {tool: job.name.split(' ')[2], job: job.id, outcome: job.conclusion, complete,
-      closed: closed ? 1 : 0, retained: closed ? 0 : 1, comment: result?.comment ?? 'not-confirmed'};
+      closed: closed ? 1 : 0, retained: closed || notStarted ? 0 : 1, notStarted,
+      comment: result?.comment ?? 'not-confirmed'};
   });
   const cleanupReceipt = {schema: 'generated-e2e-cleanup-proof/v1', sourceRun: runId,
     sourceAttempt: run.run_attempt, protocolHead: run.head_sha, outcome: run.conclusion,
     complete: apply && jobs.length === 3 && perTool.every(row => row.complete), perTool,
+    noEffects: apply && jobs.length === 3 && perTool.every(row => row.notStarted),
     closed: perTool.reduce((sum, row) => sum + row.closed, 0),
     retained: perTool.reduce((sum, row) => sum + row.retained, 0)};
   // protocolHead identifies the owning workflow, not a separately admitted tested PR head.
