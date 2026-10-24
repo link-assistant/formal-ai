@@ -22,8 +22,11 @@ export function githubReader({
   assert.match(repository ?? '', /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/u);
   let requests = 0, restRequests = 0, graphqlRequests = 0,
     byteCount = 0;
+  let terminalReadFailure = null;
   const deadline = Date.now() + 150000;
   const request = async (arguments_, kind, operation) => {
+    assert.ok(requests < 512, 'bounded admission API requests');
+    if (terminalReadFailure) throw terminalReadFailure;
     const stableArguments = [...arguments_];
     const requestSha256 = hash(Buffer.from(JSON.stringify(stableArguments)));
     for (let attempt = 1; attempt <= 2; attempt++) {
@@ -59,7 +62,12 @@ export function githubReader({
         };
         diagnostics(diagnostic);
         if (retrying) continue;
-        assert.fail('GitHub read failed ' + JSON.stringify(diagnostic));
+        const failure = new Error('GitHub read failed ' + JSON.stringify(diagnostic));
+        failure.code = 'GITHUB_READ_FAILED'; failure.httpStatus = httpStatus;
+        // Missing individual candidates may be skipped. Unavailable authority
+        // ends this reader's observation; a bulk scan cannot hammer other paths.
+        if (httpStatus !== 404) terminalReadFailure = failure;
+        throw failure;
       }
       const body = Buffer.from(result.stdout);
       assert.ok(body.length <= maximumBytes, 'admission response bytes');

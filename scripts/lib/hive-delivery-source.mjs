@@ -79,6 +79,26 @@ export async function readWorkflowPolicy(reader, repository, source) {
   }));
 }
 const identityCache = new WeakMap();
+/** Read only a literal path array from immutable source; historical code never executes. */
+export function declaredPolicyRoots(bytes, name, required) {
+  assert.ok(['policyRoots', 'cleanupRoots'].includes(name));
+  assert.ok(bytes.length > 0 && bytes.length <= 131072);
+  const pattern = new RegExp('^(?:export )?const ' + name + ' = (\\[[\\s\\S]*?\\]);', 'gmu');
+  const declarations = [...text(bytes).matchAll(pattern)];
+  assert.equal(declarations.length, 1, 'one source-declared policy root list required');
+  const parts = declarations[0][1].slice(1, -1).split(',').map(value => value.trim());
+  if (parts.at(-1) === '') parts.pop();
+  assert.ok(parts.length > 0 && parts.length <= 128);
+  const roots = parts.map(value => {
+    const match = /^(['"])([A-Za-z0-9_./-]+)\1$/u.exec(value);
+    assert.ok(match, 'policy roots must be literal relative paths');
+    assert.ok(match[2].split('/').every(part => part && part !== '.' && part !== '..'));
+    return match[2];
+  });
+  assert.equal(new Set(roots).size, roots.length, 'unique declared policy roots');
+  assert.ok(roots.includes(required), 'policy must bind its own source');
+  return Object.freeze(roots);
+}
 /** Policy root hashes identify this admission/oracle contract; they do not relabel product source as executed. */
 export async function policyIdentity(reader, repository, protocolCommit) {
   let cached = identityCache.get(reader);
@@ -89,6 +109,13 @@ export async function policyIdentity(reader, repository, protocolCommit) {
   const cacheKey = repository + '@' + protocolCommit;
   if (cached.has(cacheKey)) return cached.get(cacheKey);
   assert.ok(cached.size < 128);
+  const pending = computePolicyIdentity(reader, repository, protocolCommit);
+  cached.set(cacheKey, pending);
+  return pending;
+}
+async function computePolicyIdentity(reader, repository, protocolCommit) {
+  const policyPath = 'scripts/lib/hive-delivery-source.mjs';
+  const declared = declaredPolicyRoots(await sourceBytes(reader, repository, protocolCommit, policyPath), 'policyRoots', policyPath);
   const inputBytes = await sourceBytes(reader, repository, protocolCommit, 'data/benchmarks/issue-1364-client-replay-inputs.json');
   const manifest = JSON.parse(text(inputBytes)),
     inputHash = hash(inputBytes);
@@ -109,8 +136,8 @@ export async function policyIdentity(reader, repository, protocolCommit) {
       branch: entry.branch
     });
   }
-  const members = await orderedSourceMembers(reader, repository, protocolCommit, policyRoots);
-  const roots = policyRoots.map((name, index) => ({
+  const members = await orderedSourceMembers(reader, repository, protocolCommit, declared);
+  const roots = declared.map((name, index) => ({
     path: name,
     sha256: hash(members[index])
   }));
@@ -124,6 +151,5 @@ export async function policyIdentity(reader, repository, protocolCommit) {
     roots: Object.freeze(roots.map(Object.freeze)),
     protocolCommit
   });
-  cached.set(cacheKey, identity);
   return identity;
 }

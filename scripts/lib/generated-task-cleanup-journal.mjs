@@ -41,11 +41,23 @@ async function trustedProtocol(reader, protocol, cache) {
     assert.equal(ancestry.merge_base_commit?.sha, protocol); cache.set(protocol, true);
   }
 }
+const cleanupIdentities = new WeakMap();
 export async function cleanupPolicyIdentity(reader, ownedRepository, protocol) {
   assert.equal(ownedRepository, repository); assert.match(protocol, source);
-  const {sourceBytes} = await import('./hive-delivery-source.mjs');
+  let identities = cleanupIdentities.get(reader);
+  if (!identities) { identities = new Map(); cleanupIdentities.set(reader, identities); }
+  if (identities.has(protocol)) return identities.get(protocol);
+  assert.ok(identities.size < 128, 'bounded historical policy identities');
+  const pending = computeCleanupPolicyIdentity(reader, protocol);
+  identities.set(protocol, pending);
+  return pending;
+}
+async function computeCleanupPolicyIdentity(reader, protocol) {
+  const {sourceBytes, declaredPolicyRoots} = await import('./hive-delivery-source.mjs');
+  const policyPath = 'scripts/lib/generated-task-cleanup-journal.mjs';
+  const declared = declaredPolicyRoots(await sourceBytes(reader, repository, protocol, policyPath), 'cleanupRoots', policyPath);
   const roots = [];
-  for (const path of cleanupRoots) roots.push({path, sha256: digest(await sourceBytes(reader, repository, protocol, path))});
+  for (const path of declared) roots.push({path, sha256: digest(await sourceBytes(reader, repository, protocol, path))});
   return {policyHash: digest(JSON.stringify({schema: 'formal-ai-hive-cleanup-policy/v1', roots}))};
 }
 export async function authenticateCleanupProducer({reader, producer, metadata = null,
@@ -170,6 +182,7 @@ export async function applyCleanupClaim({reader, claimArtifactId, producer, clie
 }
 export async function readScanCursor({reader, now = Date.now(), ...options}) {
   assert.ok(Number.isFinite(now)); const services = await dependencies(options), cache = new Map();
+  const policies = new Map();
   const dates = [0, 1].map(offset => new Date(now - offset * 86400000).toISOString().slice(0, 10));
   const records = [];
   for (const day of dates) {
@@ -193,10 +206,15 @@ export async function readScanCursor({reader, now = Date.now(), ...options}) {
       const progress = await services.readArtifact(reader, repository, metadata, 'progress.json');
       assert.equal(progress.schema, 'formal-ai-hive-cleanup-progress/v1'); assert.equal(progress.day, day);
       await authenticateCleanupProducer({reader, producer: progress.producer, metadata, completed: true, cache});
-      const identity = await services.cleanupPolicy(reader, repository, progress.producer.protocolCommit);
+      const protocol = progress.producer.protocolCommit;
+      if (!policies.has(protocol)) policies.set(protocol, Promise.resolve().then(() => services.cleanupPolicy(reader, repository, protocol)));
+      const identity = await policies.get(protocol);
       assert.equal(progress.cleanupPolicyHash, identity.policyHash);
       return progress.continuation === null ? {page: 1, offset: 0} : validateCleanupCursor(progress.continuation);
-    } catch { /* An unauthenticated cursor never grants progress or source authority. */ }
+    } catch (error) {
+      if (error?.code === 'GITHUB_READ_FAILED' && error.httpStatus !== 404) throw error;
+      /* An unauthenticated cursor never grants progress or source authority. */
+    }
   }
   assert.equal(records.length, 0, 'progress journal exists without an authenticated cursor');
   return {page: 1, offset: 0};

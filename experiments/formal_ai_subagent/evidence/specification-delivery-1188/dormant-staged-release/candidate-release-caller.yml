@@ -885,10 +885,10 @@ jobs:
           retention-days: 1
       - name: Upload test executables
         uses: actions/upload-artifact@v7
-        with:
-          name: formal-ai-test-executables
-          path: dist/tests
-          retention-days: 1
+        with: {name: formal-ai-test-executables, path: dist/tests, retention-days: 1}
+      - name: Upload the selected self-coding test executable and original receipt
+        uses: actions/upload-artifact@v7
+        with: {name: formal-ai-self-coding-test-executable, path: "dist/tests/unit\ndist/tests/native-build-receipt.json\n", retention-days: 1}
   native-response-observations:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-native-response-observations

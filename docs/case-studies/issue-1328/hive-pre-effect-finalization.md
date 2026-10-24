@@ -85,3 +85,97 @@ publication. Merge the follow-up only after its exact-head CI is green and the
 current release has completed, with public Docker metadata verified against its
 source, binary and runtime receipts. Do not relax those source checks to overlap
 the two merges.
+
+## Historical policy rollout
+
+PR #1404 merged as `af6e30e7828c0dfd1eb844235756949c610f5467` with all
+16 workflows successful. The separate cleanup preparation then failed in
+[run 40097677974](https://github.com/link-assistant/formal-ai/actions/runs/40097677974)
+with `progress journal exists without an authenticated cursor`. The new policy
+file inventory was incorrectly applied to older producers. Files added later
+returned HTTP 404 at the older commits, and each progress record repeated those
+immutable failed lookups. Cleanup wrote nothing.
+
+Policy authentication now reads each root list as literal path data from that
+policy's immutable source revision, verifies the Git blob bytes, and hashes the
+declared members in their original order. Historical source is never executed.
+The root list must include its own source and cannot contain expressions,
+duplicate paths or traversal. Missing or forged history still fails closed.
+Immutable identity promises, including failures, are cached per reader and
+protocol so multiple records cannot repeat the same missing-source request.
+Producer ancestry, artifact digests, immutable cleanup claims and the separate
+fresh owner proof before every cleanup remain required.
+
+The actual 350-byte progress artifact `12561071335` from producer `40096186976`
+was checked against its published ZIP digest and sole `progress.json` member.
+Reading its original source commit reproduces its exact cleanup policy hash
+`962d8f47f1061572879d0c5b26b5f008c59962d8c220fad2e83ca477957a9477`.
+This proves compatibility with that captured record; hosted recovery still
+requires the follow-up to merge after active release publishers finish.
+
+## Selected native self-coding transfer
+
+Main pipeline [40097546818](https://github.com/link-assistant/formal-ai/actions/runs/40097546818)
+then failed in the agent-CLI job because downloading `formal-ai-test-executables`
+exceeded its three-minute deadline. The actual archive was 214,929,875 bytes;
+the step failed before the native self-coding replay ran. Earlier test output
+and negative-control evidence in the failure dump are separate from this
+terminal transfer error. One bounded retry of the unchanged failed run is
+allowed for that read-only transport; it does not replace the permanent fix.
+
+The producer now also publishes `unit` and its original complete native build
+receipt as a separate artifact. The self-coding consumer downloads those two
+members into its own directory, verifies the unchanged source/build identity,
+canonical receipt keys, selected executable hash and runtime binary hash, and
+runs the same exact registered testcase. Consumers of the full artifact still
+require and verify all three test executables. Empty/unknown selections,
+malformed checksums, foreign source/build variants and tampered executable or
+runtime bytes remain refusals before execution.
+
+The workflow upload is applied to the retained canonical source and projected
+with the maintained staged-release generator. A parsed whole-workflow comparison
+permits only the added upload step; all production publication operations and
+their output bindings remain identical. The original three-minute transfer,
+five-minute replay budget and eight-minute step backstop remain bounded.
+The selected native replay also runs in ordinary PR validation, so hosted CI
+exercises this transfer before merge while the wider recorded scenarios retain
+their existing full-replay selection.
+
+## Governed release read failure
+
+The one transport retry of main run `40097546818` passed every agent-CLI E2E leg,
+including the exact native self-coding replay. Automatic preparation then failed
+in job `120898047504`, before advancing `main`, while reading a registered
+immutable source blob. The original provider exposed only status `0`; it inferred
+HTTP status from process success or a JSON property, and kept the transport
+error only as a hash. Those observations cannot distinguish a timeout from
+other unavailable-response causes, so no more specific carrier is claimed.
+
+The provider now requests response headers and derives HTTP status from the
+wire response. A nonzero process or a claimed JSON `status: 200` cannot establish
+success. Registered read-only discovery queries get at most two transport
+attempts within the unchanged 30-second aggregate budget and five-second
+attempt ceiling. The GitHub CLI identity is revalidated before each attempt.
+Permission failures remain immediate refusals; live job/group reads remain
+single-attempt to preserve the original matched freshness proof.
+
+Diagnostics report attempt bounds, native error/signal, real HTTP status, byte
+counts, rate-limit metadata and output digests without printing credentials,
+response bodies or raw stderr. Provider-issued observation custody, immutable
+source bytes, active writer membership and all publication gates stay required.
+Regression controls cover unknown transport, transient service errors, denied
+access, malformed/forged success, deadline exhaustion and executable replacement.
+
+A later finalizer prepare log (`40103881193`, job `120901436587`) recorded 102
+HTTP 403 denials. The shared observation reader now latches terminal read
+failures and cursor discovery stops on unavailable authority, instead of
+requesting each remaining candidate. Individual HTTP 404 candidates can still
+be skipped. The finalizer workflow alone was temporarily disabled to stop the
+denial storm while the repair is validated. It must be re-enabled after merge
+and its actual hosted recovery must be checked; this mitigation grants no
+cleanup or delivery credit. The original preparation log does not establish
+that the same denial caused its earlier status `0`.
+Completed triggers without an immutable effect-owner artifact now stop after
+two authenticated metadata reads. They do not download historical journals or
+publish a cursor, cleanup receipt or delivery credit. Real cancelled owners
+still enter full verification; scheduled discovery remains the recovery backstop.

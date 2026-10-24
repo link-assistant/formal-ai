@@ -6,7 +6,7 @@ import path from 'node:path';
 import vm from 'node:vm';
 import YAML from 'yaml';
 import {prepareOwnedHiveRuns, applyOwnedHiveClaim, writeCleanupPreparation, writeCleanupOutcome,
-  writeCleanupRecheck} from '../../../scripts/finalize-owned-hive-delivery-runs.mjs';
+  writeCleanupRecheck, triggeredHiveOwnerExists} from '../../../scripts/finalize-owned-hive-delivery-runs.mjs';
 import {prepareCleanupClaim, revalidateCleanupClaim, readScanCursor, makeScanProgress, cleanupClaimName,
   effectOwnerArtifact} from '../../../scripts/lib/generated-task-cleanup-journal.mjs';
 const protocol = 'a'.repeat(40), cleanupProtocol = 'b'.repeat(40), selected = 'c'.repeat(40);
@@ -81,6 +81,36 @@ function fixture({additionalProducers = []} = {}) {
 async function prepare(f) {
   return prepareCleanupClaim({reader: f.reader, metadata: f.metadata, producer, ...f.dependencies});
 }
+function triggerFixture({hasOwner = false, conclusion = 'success'} = {}) {
+  const calls = [], trigger = {id: 101, run_attempt: 1, head_sha: protocol};
+  const run = {...trigger, status: 'completed', conclusion,
+    repository: {full_name: 'link-assistant/formal-ai'}, head_repository: {full_name: 'link-assistant/formal-ai'},
+    path: '.github/workflows/hive-original-delivery.yml'};
+  const listing = {total_count: hasOwner ? 1 : 0, artifacts: hasOwner ? [{name: effectOwnerArtifact}] : []};
+  const reader = {async read(endpoint) {
+    calls.push(endpoint);
+    if (endpoint.endsWith('/runs/101/attempts/1')) return run;
+    if (endpoint.endsWith('/runs/101/artifacts?name=' + effectOwnerArtifact + '&per_page=100')) return listing;
+    throw new Error('No unrelated history or source read permitted');
+  }};
+  return {reader, trigger, run, listing, calls};
+}
+test('completed no-owner triggers stop after two metadata reads without cursor, journal or cleanup credit', async () => {
+  const f = triggerFixture();
+  const plan = await prepareOwnedHiveRuns({reader: f.reader, producer, trigger: f.trigger});
+  assert.equal(f.calls.length, 2); assert.deepEqual(plan.owners, []);
+  assert.equal(plan.complete, false); assert.equal(plan.progress, null); assert.equal(plan.progressName, '');
+  assert.equal(plan.trigger.immutableOwner, false);
+});
+test('cancelled owners with immutable evidence still enter cleanup; partial or foreign triggers cannot skip proof', async () => {
+  const f = triggerFixture({hasOwner: true, conclusion: 'cancelled'});
+  assert.equal(await triggeredHiveOwnerExists(f.reader, f.trigger), true);
+  for (const mutate of [f => {f.run.status = 'in_progress';}, f => {f.run.head_sha = '0'.repeat(40);},
+    f => {f.run.repository.full_name = 'foreign/repo';}, f => {f.listing.total_count = 1;}]) {
+    const value = triggerFixture(); mutate(value);
+    await assert.rejects(triggeredHiveOwnerExists(value.reader, value.trigger));
+  }
+});
 test('nonfinite scan bounds and invalid cursors reject before IO', async () => {
   for (const options of [{maxPages: Infinity}, {maxOwners: NaN}, {cursor: {page: 0, offset: 0}}, {now: Infinity}]) {
     const f = fixture(); await assert.rejects(prepareOwnedHiveRuns({reader: f.reader, producer,
@@ -279,6 +309,34 @@ test('malformed progress windows cannot masquerade as absent history',async()=>{
     await assert.rejects(readScanCursor({reader:f.reader,now:Date.parse('2026-10-21T13:00:00Z'),...f.dependencies}));
     assert.equal(f.effects.length,0);
   }
+});
+
+test('many historical cursors share one failed immutable policy lookup instead of repeating HTTP 404 reads', async () => {
+  const f = fixture(), now = Date.parse('2026-10-21T13:00:00Z');
+  const progress = await makeScanProgress({reader: f.reader, producer, now,
+    continuation: {page: 8, offset: 17}, ...f.dependencies});
+  const values = Array.from({length: 100}, (_, index) => ({id: 2000 - index,
+    name: progress.name, expired: false, size_in_bytes: 100,
+    created_at: new Date(now - index * 1000).toISOString(),
+    workflow_run: {id: producer.run, head_sha: cleanupProtocol}}));
+  for (const metadata of values) f.documents.set(metadata.id, structuredClone(progress.document));
+  f.setProgress(values);
+  let lookups = 0;
+  await assert.rejects(readScanCursor({reader: f.reader, now, ...f.dependencies,
+    cleanupPolicy() {lookups++; throw new Error('observed historical HTTP 404');}}),
+  /without an authenticated cursor/u);
+  assert.equal(lookups, 1); assert.equal(f.effects.length, 0);
+});
+test('cursor discovery reports denied authority immediately instead of trying the remaining artifacts',async()=>{
+ const f=fixture(),now=Date.parse('2026-10-21T13:00:00Z');
+ const progress=await makeScanProgress({reader:f.reader,producer,now,continuation:null,...f.dependencies});
+ f.setProgress([1,2].map(id=>({id,name:progress.name,expired:false,size_in_bytes:100,
+  created_at:new Date(now).toISOString(),workflow_run:{id:producer.run,head_sha:cleanupProtocol}})));
+ let reads=0;
+ const denied=Object.assign(new Error('GitHub read failed'),{code:'GITHUB_READ_FAILED',httpStatus:403});
+ await assert.rejects(readScanCursor({reader:f.reader,now,...f.dependencies,
+  readArtifact:async()=>{reads++;throw denied;}}),error=>error===denied);
+ assert.equal(reads,1);assert.equal(f.effects.length,0);
 });
 
 test('terminal cancelled owners can recover isolated fixtures; foreign owners cannot enqueue cleanup',()=>{

@@ -10,6 +10,53 @@ const freeze = value => {
   }
   return value;
 };
+/** Bounded transport only: callers still need a provider-issued registered observation. */
+export function runGovernedGithubRead(executable, arguments_, {deadline, maximumAttempts}, {
+  spawn = spawnSync, now = Date.now, beforeAttempt = () => {}
+} = {}) {
+  assert.ok(Number.isFinite(deadline) && [1, 2].includes(maximumAttempts));
+  const attempts = [];
+  let result;
+  for (let attempt = 1; attempt <= maximumAttempts; attempt++) {
+    const remaining = deadline - now();
+    if (remaining <= 0) {
+      assert.ok(result, 'aggregate observation deadline expired');
+      break;
+    }
+    beforeAttempt();
+    const available = deadline - now();
+    if (available <= 0) {
+      assert.ok(result, 'aggregate observation deadline expired');
+      break;
+    }
+    const timeout = Math.min(5000, available);
+    const process = spawn(executable, arguments_, {shell: false, encoding: null,
+      timeout, killSignal: 'SIGKILL', maxBuffer: 4 * 1024 * 1024});
+    const raw = process.stdout ?? Buffer.alloc(0), stderr = process.stderr ?? Buffer.alloc(0);
+    const wire = raw.toString('utf8'), separator = /\r?\n\r?\n/u.exec(wire);
+    const headers = separator ? wire.slice(0, separator.index) : '';
+    const httpStatus = Number(/^HTTP\/\S+ ([1-5][0-9]{2})(?: |\r?$)/mu.exec(headers)?.[1]) || 0;
+    let body = null;
+    try { body = JSON.parse(separator ? wire.slice(separator.index + separator[0].length) : ''); } catch {}
+    const clean = process.status === 0 && !process.error && !process.signal;
+    const status = clean && httpStatus === 200 && body !== null && typeof body === 'object'
+      ? 200 : httpStatus >= 400 ? httpStatus : 0;
+    const numericHeader = name => {
+      const value = new RegExp('^' + name + ':\\s*([0-9]+)\\s*$', 'imu').exec(headers)?.[1];
+      const number = value === undefined ? null : Number(value);
+      return number === null || Number.isSafeInteger(number) ? number : null;
+    };
+    attempts.push({attempt, maximumAttempts, timeoutMilliseconds: timeout, status, httpStatus,
+      processStatus: process.status, signal: process.signal ?? null, errorCode: process.error?.code ?? null,
+      bytes: raw.length, responseSha256: hash(raw), stderrSha256: hash(stderr),
+      rateLimitRemaining: numericHeader('x-ratelimit-remaining'),
+      rateLimitReset: numericHeader('x-ratelimit-reset'), retryAfter: numericHeader('retry-after')});
+    result = {process, raw, stderr, body, status, attempts};
+    const transient = !clean && [0, 200].includes(httpStatus) || [429, 500, 502, 503, 504].includes(httpStatus);
+    if (status === 200 || !transient) break;
+  }
+  return result;
+}
 export function requireRegisteredTreeEntry(body, treeSha, name, type, mode) {
   assert.equal(body.sha, treeSha);
   assert.equal(body.truncated, false);
@@ -88,19 +135,20 @@ export function createGovernedGithubCommandProvider({
     assert.ok(remaining > 0, 'aggregate observation deadline expired');
     assert.equal(realpathSync(installed), executable);
     assert.equal(hash(readFileSync(executable)), executableSha256, 'GitHubCLI executable changed');
-    const arguments_ = ['api', '--hostname', 'github.com', '--method', 'GET', '-H', 'Accept: application/vnd.github+json', '-H', 'X-GitHub-Api-Version: 2026-03-10', route];
-    const process = spawnSync(executable, arguments_, {
-      shell: false,
-      encoding: null,
-      timeout: Math.min(5000, remaining),
-      maxBuffer: 4 * 1024 * 1024
+    const arguments_ = ['api', '--include', '--hostname', 'github.com', '--method', 'GET', '-H', 'Accept: application/vnd.github+json', '-H', 'X-GitHub-Api-Version: 2026-03-10', route];
+    const {process, raw, stderr, body, status, attempts} = runGovernedGithubRead(executable, arguments_, {
+      deadline, maximumAttempts: route === jobsPath || route === groupPath ? 1 : 2
+    }, {
+      beforeAttempt() {
+        assert.equal(realpathSync(installed), executable);
+        assert.equal(hash(readFileSync(executable)), executableSha256, 'GitHubCLI executable changed');
+      }
     });
-    const raw = process.stdout ?? Buffer.alloc(0);
-    let body = null;
-    try {
-      body = JSON.parse(raw.toString('utf8'));
-    } catch {}
-    const status = process.status === 0 ? 200 : Number(body?.status) || 0;
+    if (status !== 200 || attempts.length > 1) for (const attempt of attempts) {
+      console.error('Governed GitHub read diagnostic ' + JSON.stringify({
+        requestSha256: hash(route), logicalRead: count, maximumLogicalReads: profile.maximumRequests,
+        ...attempt}));
+    }
     const snapshot = freeze({
       status,
       route,
@@ -115,13 +163,14 @@ export function createGovernedGithubCommandProvider({
         signal: process.signal,
         error: process.error?.code,
         bytes: raw.length,
-        stderrSha256: hash(process.stderr ?? Buffer.alloc(0))
+        stderrSha256: hash(stderr),
+        attempts
       }
     });
     receipts.set(snapshot, {
       route,
       raw: Buffer.from(raw),
-      stderr: Buffer.from(process.stderr ?? Buffer.alloc(0))
+      stderr: Buffer.from(stderr)
     });
     if (status !== 200) return snapshot;
     if (route === runPath) {

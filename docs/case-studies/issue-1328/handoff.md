@@ -16,8 +16,9 @@ Its version-preparation child is `95dcfcaba7b544cbc25c94b4050b1065a4086f3b`
 (`0.355.7`). All release producers and the actual public-download verification
 finished successfully, including Docker and both macOS architectures.
 
-The current follow-up, [PR 1404](https://github.com/link-assistant/formal-ai/pull/1404),
-removes the mandatory external credential requirement,
+[PR 1404](https://github.com/link-assistant/formal-ai/pull/1404) merged normally as
+`af6e30e7828c0dfd1eb844235756949c610f5467` after all 16 workflows passed.
+It removes the mandatory external credential requirement,
 following the latest user direction and Hive Mind's default-token approach.
 See [the updated cause and contract](hive-pre-effect-finalization.md). The default
 token creates run-owned orphan branches, issues and PRs in this repository and
@@ -28,6 +29,34 @@ three-client requirement remains unverified until the actual hosted run passes.
 Preserve all original bot commits and public evidence in normal history.
 Before another merge, require green exact-head CI and let any active guarded
 release finish; current `main` remains required throughout publication.
+
+The next follow-up is on `fix/hive-cleanup-policy-history`. Cleanup preparation
+after that merge exposed a historical-policy rollout failure; see the
+[captured cause and compatibility proof](hive-pre-effect-finalization.md#historical-policy-rollout).
+The fix reads each policy's root list from its original immutable source and
+caches failed lookups. The actual older CI progress hash is reproduced, and
+249 related JavaScript regressions pass. Monitor main pipeline
+[40097546818](https://github.com/link-assistant/formal-ai/actions/runs/40097546818)
+through publication before merging this follow-up, then require its hosted
+cleanup recovery and the actual three-client acceptance.
+The same follow-up also fixes the observed three-minute native test artifact
+download timeout in that pipeline by publishing a selected self-coding artifact
+with the original receipt. The exact native replay remains required. The failed
+main run has one bounded transport retry; no further retry is authorized by
+this record. The permanent workflow change is projected from the canonical
+staged-release source with publication operations and bindings unchanged.
+That bounded main retry passed all agent-CLI legs, but automatic source
+preparation then failed on an unavailable governed source read before changing
+`main`. The same follow-up adds real HTTP status, redacted process diagnostics
+and finite recovery for discovery reads under the unchanged deadline. Live
+writer/job observations remain single-attempt and every source/lease gate is
+preserved. Do not rerun the unchanged failed main run again; validate the fixed
+source through the follow-up's CI and next default-branch run.
+Operational mitigation: workflow `hive-original-delivery-finalize.yml` (ID
+`392761102`) is temporarily disabled after a later prepare job logged 102 HTTP
+403 denials. Other release/test workflows remain enabled. Re-enable this exact
+workflow after the corrected follow-up merges, confirm its state is `active`,
+and verify actual hosted recovery. Restoring it is required before completion.
 
 ## Findings and implementation
 

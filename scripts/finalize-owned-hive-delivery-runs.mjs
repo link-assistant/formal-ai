@@ -9,12 +9,33 @@ import {createEvidenceClient} from './collect-test-replays.mjs';
 import {effectOwnerArtifact, cleanupClaimName, validateCleanupCursor, prepareCleanupClaim, revalidateCleanupClaim, applyCleanupClaim,
   readScanCursor, makeScanProgress} from './lib/generated-task-cleanup-journal.mjs';
 const repository = 'link-assistant/formal-ai';
+/** A completed no-op trigger must not rescan all history or download old journals. */
+export async function triggeredHiveOwnerExists(reader, trigger) {
+  assert.ok(Number.isSafeInteger(trigger?.id) && trigger.id > 0);
+  assert.ok(Number.isSafeInteger(trigger.run_attempt) && trigger.run_attempt > 0);
+  assert.match(trigger.head_sha, /^[a-f0-9]{40}$/u);
+  const run = await reader.read(`repos/${repository}/actions/runs/${trigger.id}/attempts/${trigger.run_attempt}`);
+  assert.equal(run.id, trigger.id); assert.equal(run.run_attempt, trigger.run_attempt);
+  assert.equal(run.head_sha, trigger.head_sha); assert.equal(run.status, 'completed');
+  assert.equal(run.repository?.full_name, repository); assert.equal(run.head_repository?.full_name, repository);
+  assert.equal(run.path?.split('@')[0], '.github/workflows/hive-original-delivery.yml');
+  const listing = await reader.read(`repos/${repository}/actions/runs/${run.id}/artifacts?name=${effectOwnerArtifact}&per_page=100`);
+  assert.ok(Number.isSafeInteger(listing.total_count) && listing.total_count >= 0 && listing.total_count <= 100);
+  assert.ok(Array.isArray(listing.artifacts) && listing.artifacts.length === listing.total_count);
+  return listing.artifacts.some(artifact => artifact.name === effectOwnerArtifact);
+}
 export async function prepareOwnedHiveRuns({reader, producer, maxPages = 3, maxOwners = 3,
-  cursor = null, now = Date.now(), ...dependencies} = {}) {
+  cursor = null, trigger = null, now = Date.now(), ...dependencies} = {}) {
   assert.ok(Number.isSafeInteger(maxPages) && maxPages > 0 && maxPages <= 5, 'finite page bound');
   assert.ok(Number.isSafeInteger(maxOwners) && maxOwners > 0 && maxOwners <= 5, 'finite owner bound');
   assert.ok(Number.isFinite(now)); if (cursor !== null) validateCleanupCursor(cursor);
   assert.equal(typeof reader?.read, 'function');
+  if (trigger !== null && !await triggeredHiveOwnerExists(reader, trigger)) {
+    return {schema: 'owned-hive-cleanup-preparation/v1', repository, artifactName: effectOwnerArtifact,
+      owners: [], retained: [], examined: 0, continuation: null, enumerationComplete: false,
+      complete: false, incomplete: false, trigger: {run: trigger.id, attempt: trigger.run_attempt,
+        immutableOwner: false}, progress: null, progressName: ''};
+  }
   cursor ??= await readScanCursor({reader, now, ...dependencies});
   const owners = [], retained = [], seen = new Map(), cache = new Map();
   let examined = 0, census = null;
@@ -117,7 +138,9 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
       const [key, value] = arg.split('='); assert.equal(options.has(key), false); options.set(key, value);
     }
     const position = options.has('--cursor') ? options.get('--cursor').split(':').map(Number) : null;
-    const result = await prepareOwnedHiveRuns({reader, producer,
+    const trigger = process.env.GITHUB_EVENT_NAME === 'workflow_run'
+      ? JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8')).workflow_run : null;
+    const result = await prepareOwnedHiveRuns({reader, producer, trigger,
       cursor: position ? {page: position[0], offset: position[1]} : null,
       maxPages: Number(options.get('--pages') ?? 3), maxOwners: Number(options.get('--owners') ?? 3)});
     process.stdout.write(JSON.stringify(writeCleanupPreparation(result, directory), null, 2) + '\n');
