@@ -26,6 +26,8 @@ bump: patch
 
 - Fetch only protocol scripts during initial native/desktop/CLI/VS Code protocol capture and bound stalled Git transfers before the unchanged full source checkout.
 
+- Run the complete JavaScript dependency audit before native compilation while retaining its later registered gate.
+
 ### Security
 
 - Update both committed Tokio resolutions to 1.53.3 for RUSTSEC-2026-0386.
@@ -35,3 +37,5 @@ bump: patch
 - Update body-parser to 2.4.0 with its required qs dependency and Electron to 44.9.3 for GHSA-27r3-jxmh-p828 and GHSA-jr5w-w6x2-84p9.
 
 - Refresh the corresponding root Bun body-parser, qs and content-type resolutions and validate all six committed JavaScript lockfiles with the maintained audit gate.
+
+- Patch the existing fast-uri and undici major lines in desktop, VS Code and browser-test locks for the additional URI and HTTP-client advisories.

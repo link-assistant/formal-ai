@@ -462,3 +462,28 @@ all direct dependency ranges are satisfied. The unchanged maintained audit gate
 then passes for both committed Bun locks and all four npm locks. All governed
 source controls also pass without changing their witness. No package archive,
 product execution or Rust compilation is needed locally.
+
+## Surface additional security findings before native compilation
+
+[The subsequent live audit](https://github.com/link-assistant/formal-ai/actions/runs/40039993374/job/120710335999)
+passed both Bun locks and reported additional fast-uri and undici advisories in
+three npm locks. Its complete 617,614-byte log has SHA-256
+`aacd7ab5e812bc0d2688eac4731c548eaf4834a11370cdf245613919f6d7bc06`.
+The preceding complete local audit had returned no findings; retain both results
+with their observation times rather than treating an earlier verdict as permanent.
+
+The official advisory floors are fast-uri 3.1.9 and undici 6.29.1/7.30.1 on the
+existing major lines. The lockfile-only resolver changes five package records:
+three in desktop and one each in VS Code and browser E2E tests. Exact package
+metadata, dependency constraints, engine requirements and integrity values are
+checked; manifests and every other lockfile field remain identical. All six
+committed lockfiles then pass the maintained audit gate.
+
+Run that same complete audit in lint lane 1 before Rust setup and compilation,
+after the source merge and existing Node/Bun setup. Keep the existing late web
+audit so a later finding still fails validation. The early step has a nine-minute
+ceiling and preserves the script's finite transport recovery and moderate
+threshold. Apply the setup moves through CST ranges and verify the complete
+parsed workflow delta. Audit ordering, full inventory, terminal findings,
+bounded outage recovery and governed-source controls all pass without Rust
+compilation or local package installation.
