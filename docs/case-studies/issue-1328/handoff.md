@@ -45,6 +45,18 @@ with the original receipt. The exact native replay remains required. The failed
 main run has one bounded transport retry; no further retry is authorized by
 this record. The permanent workflow change is projected from the canonical
 staged-release source with publication operations and bindings unchanged.
+That bounded main retry passed all agent-CLI legs, but automatic source
+preparation then failed on an unavailable governed source read before changing
+`main`. The same follow-up adds real HTTP status, redacted process diagnostics
+and finite recovery for discovery reads under the unchanged deadline. Live
+writer/job observations remain single-attempt and every source/lease gate is
+preserved. Do not rerun the unchanged failed main run again; validate the fixed
+source through the follow-up's CI and next default-branch run.
+Operational mitigation: workflow `hive-original-delivery-finalize.yml` (ID
+`392761102`) is temporarily disabled after a later prepare job logged 102 HTTP
+403 denials. Other release/test workflows remain enabled. Re-enable this exact
+workflow after the corrected follow-up merges, confirm its state is `active`,
+and verify actual hosted recovery. Restoring it is required before completion.
 
 ## Findings and implementation
 

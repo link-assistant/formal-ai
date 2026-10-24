@@ -132,6 +132,27 @@ test('repeated clean REST failures stop after two physical requests and preserve
   assert.equal(observed[0].requestSha256,observed[1].requestSha256);assert.equal(reader.statistics().requests,2);
  }
 });
+test('a terminal authority denial is latched across a bulk scan instead of requesting every candidate',async()=>{
+ let calls=0;const observed=[];
+ const reader=githubReader({repository:treeRepository,diagnostics:row=>observed.push(row),transport:async()=>{
+  calls++;return {status:1,signal:null,cleanup_complete:true,stdout:Buffer.from('{"message":"denied"}'),stderr:Buffer.from('gh: HTTP 403\n')};
+ }});
+ for(let candidate=0;candidate<100;candidate++) {
+  await assert.rejects(reader.read('repos/'+treeRepository+'/actions/artifacts/'+(candidate+1)),error=>{
+   assert.equal(error.code,'GITHUB_READ_FAILED');assert.equal(error.httpStatus,403);return true;
+  });
+ }
+ assert.equal(calls,1);assert.equal(observed.length,1);assert.equal(reader.statistics().requests,1);
+});
+test('a missing individual candidate can be skipped without latching unrelated owned reads',async()=>{
+ let calls=0;
+ const reader=githubReader({repository:treeRepository,diagnostics:()=>{},transport:async()=>{
+  calls++;return calls===1?{status:1,signal:null,cleanup_complete:true,stdout:Buffer.from('{}'),stderr:Buffer.from('gh: HTTP 404\n')}:
+   {status:0,signal:null,cleanup_complete:true,stdout:Buffer.from('{"id":2}')};
+ }});
+ await assert.rejects(reader.read('repos/'+treeRepository+'/actions/artifacts/1'),error=>error.httpStatus===404);
+ assert.deepEqual(await reader.read('repos/'+treeRepository+'/actions/artifacts/2'),{id:2});assert.equal(calls,2);
+});
 test('fourth-read admission failure recovers through the real selector without admitting an absent or changed source',async()=>{
  const head='a'.repeat(40),prefix='repos/'+treeRepository;
  const trigger={id:41,status:'completed',path:'.github/workflows/coverage.yml',head_sha:head,

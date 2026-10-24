@@ -140,3 +140,42 @@ five-minute replay budget and eight-minute step backstop remain bounded.
 The selected native replay also runs in ordinary PR validation, so hosted CI
 exercises this transfer before merge while the wider recorded scenarios retain
 their existing full-replay selection.
+
+## Governed release read failure
+
+The one transport retry of main run `40097546818` passed every agent-CLI E2E leg,
+including the exact native self-coding replay. Automatic preparation then failed
+in job `120898047504`, before advancing `main`, while reading a registered
+immutable source blob. The original provider exposed only status `0`; it inferred
+HTTP status from process success or a JSON property, and kept the transport
+error only as a hash. Those observations cannot distinguish a timeout from
+other unavailable-response causes, so no more specific carrier is claimed.
+
+The provider now requests response headers and derives HTTP status from the
+wire response. A nonzero process or a claimed JSON `status: 200` cannot establish
+success. Registered read-only discovery queries get at most two transport
+attempts within the unchanged 30-second aggregate budget and five-second
+attempt ceiling. The GitHub CLI identity is revalidated before each attempt.
+Permission failures remain immediate refusals; live job/group reads remain
+single-attempt to preserve the original matched freshness proof.
+
+Diagnostics report attempt bounds, native error/signal, real HTTP status, byte
+counts, rate-limit metadata and output digests without printing credentials,
+response bodies or raw stderr. Provider-issued observation custody, immutable
+source bytes, active writer membership and all publication gates stay required.
+Regression controls cover unknown transport, transient service errors, denied
+access, malformed/forged success, deadline exhaustion and executable replacement.
+
+A later finalizer prepare log (`40103881193`, job `120901436587`) recorded 102
+HTTP 403 denials. The shared observation reader now latches terminal read
+failures and cursor discovery stops on unavailable authority, instead of
+requesting each remaining candidate. Individual HTTP 404 candidates can still
+be skipped. The finalizer workflow alone was temporarily disabled to stop the
+denial storm while the repair is validated. It must be re-enabled after merge
+and its actual hosted recovery must be checked; this mitigation grants no
+cleanup or delivery credit. The original preparation log does not establish
+that the same denial caused its earlier status `0`.
+Completed triggers without an immutable effect-owner artifact now stop after
+two authenticated metadata reads. They do not download historical journals or
+publish a cursor, cleanup receipt or delivery credit. Real cancelled owners
+still enter full verification; scheduled discovery remains the recovery backstop.

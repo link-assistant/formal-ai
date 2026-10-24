@@ -211,7 +211,10 @@ export async function readScanCursor({reader, now = Date.now(), ...options}) {
       const identity = await policies.get(protocol);
       assert.equal(progress.cleanupPolicyHash, identity.policyHash);
       return progress.continuation === null ? {page: 1, offset: 0} : validateCleanupCursor(progress.continuation);
-    } catch { /* An unauthenticated cursor never grants progress or source authority. */ }
+    } catch (error) {
+      if (error?.code === 'GITHUB_READ_FAILED' && error.httpStatus !== 404) throw error;
+      /* An unauthenticated cursor never grants progress or source authority. */
+    }
   }
   assert.equal(records.length, 0, 'progress journal exists without an authenticated cursor');
   return {page: 1, offset: 0};
