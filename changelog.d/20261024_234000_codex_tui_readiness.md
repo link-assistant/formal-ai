@@ -4,5 +4,5 @@ bump: patch
 
 ### Fixed
 
-- Wait for Codex's selected-model banner before submitting interactive prompts, preventing the loading-screen footer from consuming a test prompt before the client can submit it.
+- Wait for Codex's selected-model banner and rendered draft, then send Enter separately after quiet output, preventing loading-screen and paste-burst handling from leaving a test prompt unsubmitted.
 - Replay the captured loading/ready terminal sequence with a mocked interactive client during ordinary PR validation.

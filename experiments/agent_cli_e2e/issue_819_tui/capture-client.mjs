@@ -3,7 +3,7 @@ import { appendFile, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 import {
-  promptAfterFor,
+  promptInteractionsFor,
   startupInteractionsFor,
 } from './client-contract.mjs';
 
@@ -25,7 +25,7 @@ const tool = required('ISSUE819_TUI_CLIENT');
 const expectedResult = required('ISSUE819_EXPECT_RESULT');
 const prompt = required('ISSUE819_TUI_PROMPT');
 const artifactDirectory = required('ISSUE819_TUI_ARTIFACT_DIR');
-const promptAfter = promptAfterFor(tool);
+const promptInteractions = promptInteractionsFor(tool, prompt);
 const startupInteractions = startupInteractionsFor(tool);
 const capture = await captureAgentTui({
   tool,
@@ -34,13 +34,12 @@ const capture = await captureAgentTui({
   prefixArgs: jsonArray('ISSUE819_TUI_PREFIX_ARGS'),
   extraArgs: jsonArray('ISSUE819_TUI_EXTRA_ARGS'),
   model: tool === 'opencode' ? 'formal-ai/formal-ai' : undefined,
-  prompt,
-  promptAfter,
   startupInteractions,
   extraEnv: {
     FORMAL_AI_DESKTOP_DIR: required('ISSUE819_DESKTOP_DIR'),
   },
   interactions: [
+    ...promptInteractions,
     {
       after: expectedResult,
       resize: { cols: 96, rows: 36 },
@@ -66,7 +65,7 @@ for (const expected of [prompt, visibleToolMarker, expectedResult]) {
 if (!capture.output.includes(expectedResult)) {
   throw new Error(`${tool} TUI ended before rendering the expected result`);
 }
-const expectedInteractions = startupInteractions.length + 2;
+const expectedInteractions = startupInteractions.length + promptInteractions.length + 1;
 if (capture.interactionCount !== expectedInteractions) {
   throw new Error(
     `${tool} TUI applied ${capture.interactionCount}/${expectedInteractions} interactions`,

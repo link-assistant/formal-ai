@@ -60,7 +60,8 @@ check authenticated the journal in 20 requests. A scheduled full sweep remains
 to be observed; no workflow is intentionally left disabled.
 
 The new main run `40109825719` then exposed a separate Codex TUI startup race:
-the harness sent Enter while its model was still loading. See
+the harness sent Enter while its model was still loading and inside the pinned
+client's paste-suppression window. See
 [`codex-tui-startup-race.md`](codex-tui-startup-race.md) for the captured evidence
 and follow-up regression. Release preparation had not started at this failure;
 the latest released version remains `v0.355.7`. Continue fixing and validating
