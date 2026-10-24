@@ -16,7 +16,8 @@ Its version-preparation child is `95dcfcaba7b544cbc25c94b4050b1065a4086f3b`
 (`0.355.7`). All release producers and the actual public-download verification
 finished successfully, including Docker and both macOS architectures.
 
-The current follow-up removes the mandatory external credential requirement,
+The current follow-up, [PR 1404](https://github.com/link-assistant/formal-ai/pull/1404),
+removes the mandatory external credential requirement,
 following the latest user direction and Hive Mind's default-token approach.
 See [the updated cause and contract](hive-pre-effect-finalization.md). The default
 token creates run-owned orphan branches, issues and PRs in this repository and
