@@ -5,11 +5,31 @@ import os from 'node:os';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {execFileSync,spawnSync} from 'node:child_process';
+import YAML from 'yaml';
 const root=fileURLToPath(new URL('../../../',import.meta.url));
 const inventory=execFileSync('git',['ls-files','-z','--','bun.lock','**/bun.lock','package-lock.json','**/package-lock.json'],{cwd:root,encoding:'utf8',timeout:10000,maxBuffer:1048576})
   .split('\0').filter(name=>['bun.lock','package-lock.json'].includes(path.basename(name))
     &&fs.existsSync(path.join(root,name))).sort();
 assert(inventory.length>0,'the committed lockfile inventory must be nonempty');
+test('the complete audit precedes native compilation and retains its later registered gate',()=>{
+  const workflow=YAML.parse(fs.readFileSync(path.join(root,'.github/workflows/release.yml'),'utf8'));
+  const steps=workflow.jobs.lint.steps;
+  const early=steps.findIndex(step=>step.run==='bash scripts/check-javascript-dependencies.sh');
+  assert(early>=0,'an audit must fail before native compilation starts');
+  for(const name of ['Setup Node','Setup Bun','Simulate fresh merge with base branch (PR only)']){
+    const index=steps.findIndex(step=>step.name===name);assert(index>=0&&index<early,name);
+  }
+  for(const name of ['Setup Rust','Run registered gates (stage rust)','Run registered gates (stage web)']){
+    const index=steps.findIndex(step=>step.name===name);assert(index>early,name);
+  }
+  assert.equal(steps[early].if,'matrix.lane == 1');
+  assert.equal(steps[early]['timeout-minutes'],9);
+  assert.equal(steps[early]['continue-on-error'],undefined);
+  assert.equal(steps[early].env,undefined,'the preflight may not override the audit threshold');
+  const registered=fs.readFileSync(path.join(root,'data/meta/ci-gates/check-javascript-dependencies.lino'),'utf8');
+  assert.match(registered,/^\s+stage web$/mu);
+  assert.match(registered,/run "bash scripts\/check-javascript-dependencies\.sh"/u);
+});
 function audit(mode,failures,attempts) {
   const directory=fs.mkdtempSync(path.join(os.tmpdir(),'formal-ai-audit-inventory-'));
   try {

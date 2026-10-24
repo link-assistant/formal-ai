@@ -5,6 +5,11 @@ use ::formal_ai::source_fetch;
 #[path = "../../src/agentic_coding/work_item_steps.rs"]
 pub mod canonical_work_item_steps;
 
+// Shared production reader includes every immutable release-ledger part.
+#[allow(clippy::duplicate_mod)]
+#[path = "../../../scripts/self-hosting-ledger.rs"]
+pub mod release_ledger;
+
 #[path = "../fixtures/first-workspace-call.rs"]
 mod first_workspace_call;
 

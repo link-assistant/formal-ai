@@ -105,8 +105,9 @@ jobs:
           no-cache: true
       - name: Install @link-assistant/agent CLI
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
+        timeout-minutes: 11
         run: |
-          bun add -g --ignore-scripts @link-assistant/agent
+          bun scripts/install-client-registry-recovery.mjs bun add -g --ignore-scripts @link-assistant/agent@0.27.0
           echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
       - name: Install external agent CLIs
         if: ${{ matrix.part == 'scenarios' && steps.ledger.outputs.already-green != 'true' }}

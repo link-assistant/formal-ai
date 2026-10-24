@@ -331,7 +331,15 @@ fn desktop_budget_bounds_the_published_component_cold_build() {
             "native producer must preserve default features: {feature_override}"
         );
     }
-    assert!(native.contains("ref: ${{ github.workflow_sha }}"));
+    assert!(
+        [
+            "ref: ${{ github.workflow_sha }}",
+            "ref: \"${{ github.workflow_sha }}\"",
+        ]
+        .into_iter()
+        .any(|reference| native.contains(reference)),
+        "native protocol checkout must pin the workflow commit"
+    );
     assert!(native.contains("cp scripts/native-release-evidence.mjs scripts/build-selected-wasm.mjs scripts/run-with-budget-warning.sh \"$protocol_dir/\""));
     assert!(native.contains("native-build-budget-protocol.json"));
     assert!(native.contains("sha256:createHash('sha256').update(budgetBytes).digest('hex')"));

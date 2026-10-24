@@ -93,6 +93,20 @@ test('staged executable source or Cargo dependency drift cannot be recorded as t
  for(const kind of ['source','manifest']){const f=fixture();try{f.check('before-sync');writeFileSync(join(f.cwd,'rust/Cargo.toml'),'[package]\nname = "formal-ai"\nversion = "1.2.3"\n'+(kind==='manifest'?'[dependencies]\nevil = "1"\n':''));f.run(f.cwd,['add','rust/Cargo.toml']);if(kind==='source'){writeFileSync(join(f.cwd,'source.txt'),'different executable source\n');f.run(f.cwd,['add','source.txt']);}assert.throws(()=>f.check('before-commit'),/undeclared|manifest/);}finally{f.close();}}
 });
 
+test('version child admits bounded ledger parts and rejects sibling source and nested paths',()=>{
+ for(const name of ['0001.lino','0001.rs','nested/0001.lino']) {
+  const f=fixture();try {
+   f.check('before-sync');
+   writeFileSync(join(f.cwd,'rust/Cargo.toml'),'[package]\nname = "formal-ai"\nversion = "1.2.3"\n');
+   const file=join(f.cwd,'data/meta/self-hosting-ledger-parts',name);mkdirSync(join(file,'..'),{recursive:true});
+   writeFileSync(file,'self_hosting_ledger_archive\n');
+   f.run(f.cwd,['add','rust/Cargo.toml','data/meta/self-hosting-ledger-parts']);
+   if(name==='0001.lino')assert.match(f.check('before-commit').expectedTree,/^[a-f0-9]{40}$/u);
+   else assert.throws(()=>f.check('before-commit'),/undeclared/u);
+  }finally{f.close();}
+ }
+});
+
 
 test('physical version-child validation preserves LF and CRLF Cargo bytes and exact witness scope',()=>{
  for(const ending of ['\n','\r\n'])for(const mutation of [null,'whitespace','dependency','assertion','stale-witness']){

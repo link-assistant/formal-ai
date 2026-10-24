@@ -14,7 +14,7 @@ function contract(text){
  assert(text.includes('COPY --from=node-runtime /usr/local/lib/node_modules/npm/ /usr/local/lib/node_modules/npm/'));
  const libraries=text.indexOf('--no-install-recommends libstdc++6 libatomic1');
  const capability=text.indexOf("new RegExp('', 'v')");
- const install=text.indexOf('RUN /usr/local/lib/formal-ai-runtime-tools/install-container-runtime-tools.sh /home/box/.formal-ai-runtime-tools');
+ const install=text.indexOf('RUN /usr/local/lib/formal-ai-runtime-tools/scripts/install-container-runtime-tools.sh /home/box/.formal-ai-runtime-tools');
  assert(libraries>text.indexOf('FROM konard/box-dind:2.10.2')&&copy>libraries&&capability>copy&&install>capability);
  assert(text.includes("process.versions.node.split('.')[0] !== '26'"));
  assert.doesNotMatch(text,/apt-get install[^\n]*\bnodejs\b/);

@@ -39,13 +39,7 @@ fn repository_file(path: &str) -> String {
         .replace("\r\n", "\n")
 }
 
-/// `timeout-minutes:` as written, which may be a `${{ ... }}` expression when a
-/// matrix leg needs a different cap than its siblings.
-pub fn job_timeout(job: &str) -> Option<&str> {
-    job.lines()
-        .find_map(|line| line.trim().strip_prefix("timeout-minutes:"))
-        .map(str::trim)
-}
+pub use super::workflow_fixtures::job_timeout;
 
 fn run_budget_wrapper(env: &[(&str, &str)], arguments: &[&str]) -> (std::process::Output, u64) {
     let mut command = Command::new("bash");
@@ -79,16 +73,9 @@ fn every_step_budget_expires_before_the_job_clock_it_guards() {
                     .strip_prefix("TEST_BUDGET_SECONDS:")
                     .and_then(|value| value.trim().parse::<u64>().ok())
             }) {
-                let cap_minutes: u64 = job_timeout(job)
+                let cap_minutes = super::workflow_fixtures::minimum_job_timeout(job)
                     .unwrap_or_else(|| {
-                        panic!("{name}: job `{job_name}` budgets a step but declares no cap")
-                    })
-                    .parse()
-                    .unwrap_or_else(|_| {
-                        panic!(
-                            "{name}: job `{job_name}` budgets a step under a cap this test \
-                             cannot compare against; write the cap as a plain number of minutes"
-                        )
+                        panic!("{name}: job `{job_name}` requires a complete positive literal or include-matrix cap")
                     });
                 checked += 1;
                 let cap_seconds = cap_minutes * 60;

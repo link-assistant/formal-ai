@@ -518,6 +518,16 @@ test('prepared release inherits checked parent only for exact version and declar
     policy
   };
   assert.equal(requirePreparedVersionDelta(value).ciSource, source);
+  const splitLedger=structuredClone(value);
+  splitLedger.policy.ledgerParts='data/meta/self-hosting-ledger-parts';
+  splitLedger.files.push({filename:'data/meta/self-hosting-ledger-parts/0001.lino',status:'added'});
+  assert.equal(requirePreparedVersionDelta(splitLedger).ciSource,source);
+  for(const filename of ['data/meta/self-hosting-ledger-parts/../source.rs','data/meta/self-hosting-ledger-parts/0001.rs','data/meta/self-hosting-ledger-parts/nested/0001.lino']) {
+    const changed=structuredClone(splitLedger);changed.files[1].filename=filename;
+    assert.throws(()=>requirePreparedVersionDelta(changed),/unverified/u);
+  }
+  delete splitLedger.policy.ledgerParts;
+  assert.throws(()=>requirePreparedVersionDelta(splitLedger),/unverified/u);
   for (const change of [value => value.commit.parents.push({
     sha: other
   }), value => value.files.push({

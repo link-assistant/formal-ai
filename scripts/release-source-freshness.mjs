@@ -60,7 +60,7 @@ export function checkReleaseFreshness({cwd,environment,event,phase,stateDirector
     const changed=git(['diff','--cached','--name-only','-z']).split('\0').filter(Boolean);
     const fixed=new Set([WITNESS,'rust/Cargo.toml','rust/Cargo.lock','CHANGELOG.md','data/meta/self-hosting-ledger.lino','docs/status.md','docs/benchmarks.md','README.md','docs/case-studies/issue-711/fragment-release-map.tsv']);
     assert.ok(changed.includes('rust/Cargo.toml'),'version child must update actual Cargo manifest');
-    for(const path of changed)assert.ok(fixed.has(path)||/^changelog\.d\/[^/]+\.md$/u.test(path)||/^docs\/changelog\/[^/]+\.md$/u.test(path),'undeclared version-child source change: '+path);
+    for(const path of changed)assert.ok(fixed.has(path)||/^data\/meta\/self-hosting-ledger-parts\/\d{4}\.lino$/u.test(path)||/^changelog\.d\/[^/]+\.md$/u.test(path)||/^docs\/changelog\/[^/]+\.md$/u.test(path),'undeclared version-child source change: '+path);
     const originalManifest=gitRaw(['show',context.head+':rust/Cargo.toml']);
     const nextManifest=gitRaw(['show',':rust/Cargo.toml']);
     const version=/^(version\s*=\s*")[^"]+(".*)$/mu;
