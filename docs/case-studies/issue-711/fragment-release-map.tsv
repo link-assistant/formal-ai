@@ -885,3 +885,6 @@ changelog.d/20261023_container_node_package_tools.md	0.355.4
 changelog.d/20261023_pages_worker_startup_recovery.md	0.355.5
 changelog.d/20261024_010500_release_validation_blockers.md	0.355.6
 changelog.d/20261024_044000_hive_pre_effect_finalization.md	0.355.7
+changelog.d/20261024_150000_hive_default_token_fallback.md	0.355.8
+changelog.d/20261024_210000_hive_historical_policy_roots.md	0.355.8
+changelog.d/20261024_234000_codex_tui_readiness.md	0.355.8

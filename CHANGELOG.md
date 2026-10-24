@@ -20,6 +20,25 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.355.8] - 2026-10-24
+
+### Fixed
+
+- Run the original Hive three-client acceptance with the default GitHub Actions token using isolated repository branches and staged workflows; additional automation credentials remain optional.
+- Finalize owned test issues, pull requests and branches after verification, including cancelled runs, with bounded writes and source/run ownership checks.
+
+### Fixed
+
+- Authenticate older Hive cleanup and delivery records using the policy paths declared in their original source revision, preserving ownership checks across policy updates.
+- Cache failed immutable policy lookups so multiple historical records cannot repeat the same missing-source request.
+- Transfer only the selected native self-coding executable and its original build receipt, preserving source, checksum and exact-test checks without downloading unrelated test binaries.
+- Preserve actual HTTP status and redacted transport diagnostics for governed release reads, with one bounded recovery attempt inside the existing observation deadline and strict live lease checks.
+
+### Fixed
+
+- Wait for Codex's selected-model banner and rendered draft, then send Enter separately after quiet output, preventing loading-screen and paste-burst handling from leaving a test prompt unsubmitted.
+- Replay the captured loading/ready terminal sequence with a mocked interactive client during ordinary PR validation.
+
 ## [0.355.7] - 2026-10-24
 
 ### Fixed
