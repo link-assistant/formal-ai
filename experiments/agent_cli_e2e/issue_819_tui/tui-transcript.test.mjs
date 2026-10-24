@@ -23,6 +23,20 @@ test('Claude waits for the current interactive input prompt', () => {
   expect(promptAfterFor('claude')).toBe('$');
 });
 
+test('Codex submits once after model readiness, even when its footer arrives first', async () => {
+  const prompt = 'Find archive folder on my desktop';
+  const capture = await captureAgentTui({
+    tool: 'codex', workingDirectory: directory, executable: process.execPath,
+    prefixArgs: [join(directory, 'codex-startup-fixture.mjs')],
+    skipDefaultSafetyFlags: true, prompt, promptAfter: promptAfterFor('codex'),
+    startupInteractions: startupInteractionsFor('codex'), timeoutMilliseconds: 5000,
+  });
+  expect(capture.exitCode).toBe(0);
+  expect(capture.transcript).toContain('Submitted: ' + prompt);
+  expect(capture.transcript).not.toContain('Prompt arrived while model was loading');
+  expect(capture.interactionCount).toBe(2);
+});
+
 test('published adapter preserves ordered states and writes replay artifacts', async () => {
   const artifactDirectory = await mkdtemp(join(tmpdir(), 'formal-ai-tui-'));
   const capture = await captureAgentTui({
