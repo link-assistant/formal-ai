@@ -85,3 +85,30 @@ publication. Merge the follow-up only after its exact-head CI is green and the
 current release has completed, with public Docker metadata verified against its
 source, binary and runtime receipts. Do not relax those source checks to overlap
 the two merges.
+
+## Historical policy rollout
+
+PR #1404 merged as `af6e30e7828c0dfd1eb844235756949c610f5467` with all
+16 workflows successful. The separate cleanup preparation then failed in
+[run 40097677974](https://github.com/link-assistant/formal-ai/actions/runs/40097677974)
+with `progress journal exists without an authenticated cursor`. The new policy
+file inventory was incorrectly applied to older producers. Files added later
+returned HTTP 404 at the older commits, and each progress record repeated those
+immutable failed lookups. Cleanup wrote nothing.
+
+Policy authentication now reads each root list as literal path data from that
+policy's immutable source revision, verifies the Git blob bytes, and hashes the
+declared members in their original order. Historical source is never executed.
+The root list must include its own source and cannot contain expressions,
+duplicate paths or traversal. Missing or forged history still fails closed.
+Immutable identity promises, including failures, are cached per reader and
+protocol so multiple records cannot repeat the same missing-source request.
+Producer ancestry, artifact digests, immutable cleanup claims and the separate
+fresh owner proof before every cleanup remain required.
+
+The actual 350-byte progress artifact `12561071335` from producer `40096186976`
+was checked against its published ZIP digest and sole `progress.json` member.
+Reading its original source commit reproduces its exact cleanup policy hash
+`962d8f47f1061572879d0c5b26b5f008c59962d8c220fad2e83ca477957a9477`.
+This proves compatibility with that captured record; hosted recovery still
+requires the follow-up to merge after active release publishers finish.

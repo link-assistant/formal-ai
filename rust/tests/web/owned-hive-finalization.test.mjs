@@ -281,6 +281,23 @@ test('malformed progress windows cannot masquerade as absent history',async()=>{
   }
 });
 
+test('many historical cursors share one failed immutable policy lookup instead of repeating HTTP 404 reads', async () => {
+  const f = fixture(), now = Date.parse('2026-10-21T13:00:00Z');
+  const progress = await makeScanProgress({reader: f.reader, producer, now,
+    continuation: {page: 8, offset: 17}, ...f.dependencies});
+  const values = Array.from({length: 100}, (_, index) => ({id: 2000 - index,
+    name: progress.name, expired: false, size_in_bytes: 100,
+    created_at: new Date(now - index * 1000).toISOString(),
+    workflow_run: {id: producer.run, head_sha: cleanupProtocol}}));
+  for (const metadata of values) f.documents.set(metadata.id, structuredClone(progress.document));
+  f.setProgress(values);
+  let lookups = 0;
+  await assert.rejects(readScanCursor({reader: f.reader, now, ...f.dependencies,
+    cleanupPolicy() {lookups++; throw new Error('observed historical HTTP 404');}}),
+  /without an authenticated cursor/u);
+  assert.equal(lookups, 1); assert.equal(f.effects.length, 0);
+});
+
 test('terminal cancelled owners can recover isolated fixtures; foreign owners cannot enqueue cleanup',()=>{
   const workflow=YAML.parse(fs.readFileSync(new URL('../../../.github/workflows/hive-original-delivery-finalize.yml',import.meta.url),'utf8'));
   const expression=workflow.jobs.prepare.if.replace(/^\$\{\{\s*|\s*\}\}$/gu,'');

@@ -693,7 +693,10 @@ test('direct privacy export and collector source roots participate in reusable p
         assert.ok(endpoint.startsWith(prefix));
         assert.ok(endpoint.endsWith('?ref=' + source));
         const name = endpoint.slice(prefix.length, -('?ref=' + source).length);
-        const bytes = name === 'data/benchmarks/issue-1364-client-replay-inputs.json' ? canonical : Buffer.from(name === changed ? 'changed direct guard\n' : 'original owned guard\n');
+        const guard = name === changed ? 'changed direct guard\n' : 'original owned guard\n';
+        const module = name === 'scripts/lib/hive-delivery-source.mjs'
+          ? 'export const policyRoots = ' + JSON.stringify(policyRoots) + ';\n' : '';
+        const bytes = name === 'data/benchmarks/issue-1364-client-replay-inputs.json' ? canonical : Buffer.from(module + guard);
         assert.ok(name === 'data/benchmarks/issue-1364-client-replay-inputs.json' || policyRoots.includes(name));
         return {
           type: 'file',

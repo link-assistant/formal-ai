@@ -91,7 +91,9 @@ async function fixture() {
       if (relative.startsWith('contents/')) {
         const name = relative.slice('contents/'.length).split('?')[0];
         assert.ok(name === 'data/benchmarks/issue-1364-client-replay-inputs.json' || policyRoots.includes(name));
-        const bytes = name === 'data/benchmarks/issue-1364-client-replay-inputs.json' ? canonical : Buffer.from('owned protocol ' + name + '\n');
+        const module = name === 'scripts/lib/hive-delivery-source.mjs'
+          ? 'export const policyRoots = ' + JSON.stringify(policyRoots) + ';\n' : '';
+        const bytes = name === 'data/benchmarks/issue-1364-client-replay-inputs.json' ? canonical : Buffer.from(module + 'owned protocol ' + name + '\n');
         return {
           type: 'file',
           encoding: 'base64',
