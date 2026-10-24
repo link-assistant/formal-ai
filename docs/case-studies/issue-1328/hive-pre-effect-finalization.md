@@ -9,9 +9,10 @@ The owner used protocol `43671c81673e3fd5040de1830175a2152e7d3a00`.
 
 The Codex job failed its read-only credential preflight with
 `missing configured credential for canonical external task repository`.
-The repository had neither an `AUTOMATION_TOKEN` secret nor the configured
-`AUTOMATION_APP_ID` and `AUTOMATION_APP_PRIVATE_KEY` pair. Only configuration
-names were inspected; no secret values were collected. The default repository
+Neither an `AUTOMATION_TOKEN` secret nor the configured `AUTOMATION_APP_ID`
+and `AUTOMATION_APP_PRIVATE_KEY` pair was available to this job. Only repository
+configuration names were inspected; organization configuration was not visible
+to the local credential. No secret values were collected. The default repository
 token cannot authorize the three canonical external task repositories.
 Claude and Agent were cancelled during image loading. All three jobs skipped
 the effect claim, immutable claim publication, and actual solve steps.
@@ -58,3 +59,19 @@ repository operator configures credentials for the canonical external task
 repositories. This change does not claim issue #1364's released three-client
 acceptance. No Rust compilation, Docker build/pull or product execution was
 performed locally.
+
+## Follow-up release coordination
+
+[PR #1403](https://github.com/link-assistant/formal-ai/pull/1403) carries these
+fixes. Its description uses explicit acceptance-pending issue links, as required
+by `scripts/check-pull-request-link.rs`; it must not prematurely close #1328 or
+#1364. CI reads the description from its triggering event, so a corrected
+description must be present before the validation event is created.
+
+Allow the existing guarded release producer to finish before advancing `main`.
+`scripts/prepared-release-binary.mjs` and the stage-transfer authority require
+the prepared release source to remain the independently current `main` during
+publication. Merge the follow-up only after its exact-head CI is green and the
+current release has completed, with public Docker metadata verified against its
+source, binary and runtime receipts. Do not relax those source checks to overlap
+the two merges.

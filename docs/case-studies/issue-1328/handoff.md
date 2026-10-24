@@ -14,10 +14,13 @@ The original integration and subsequent release fixes are merged. Most recently,
 `71be7a07321a4f03e8bda8ab49c91817f746eb21` after all its checks passed.
 Its direct version-preparation child is `f81affcb6631b7a0f1fd55ca8297d47c058df38f`
 (`0.355.6`). Monitor the actual release producer, not an old open-PR instruction.
-The next fix addresses [Hive failures before effects](hive-pre-effect-finalization.md),
+The next fix is [PR 1403](https://github.com/link-assistant/formal-ai/pull/1403),
+which addresses [Hive failures before effects](hive-pre-effect-finalization.md),
 including the missing external credential configuration and cleanup of a proved
 no-op. The released three-client requirement remains unverified. Preserve all
 original bot commits and public evidence in normal history; do not rewrite them.
+Let the active guarded release finish before this next merge advances `main`;
+the prepared-source authority requires current `main` throughout publication.
 
 ## Findings and implementation
 
