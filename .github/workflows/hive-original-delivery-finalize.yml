@@ -19,7 +19,6 @@ concurrency:
 jobs:
   prepare:
     if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_run'
-      && github.event.workflow_run.conclusion != 'cancelled'
       && github.event.workflow_run.head_repository.full_name ==
       github.repository) }}
     runs-on: ubuntu-24.04
@@ -117,6 +116,7 @@ jobs:
           if-no-files-found: error
           retention-days: 90
     permissions:
-      contents: read
+      contents: write
       actions: read
       issues: write
+      pull-requests: write

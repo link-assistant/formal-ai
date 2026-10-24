@@ -10,17 +10,23 @@ concurrency fixture is now manual-only and explicitly unproven; see the
 strict-final Unknown remains a failed attempt, not a skipped check or a pass.
 
 The original integration and subsequent release fixes are merged. Most recently,
-[PR 1402](https://github.com/link-assistant/formal-ai/pull/1402) merged normally as
-`71be7a07321a4f03e8bda8ab49c91817f746eb21` after all its checks passed.
-Its direct version-preparation child is `f81affcb6631b7a0f1fd55ca8297d47c058df38f`
-(`0.355.6`). Monitor the actual release producer, not an old open-PR instruction.
-The next fix is [PR 1403](https://github.com/link-assistant/formal-ai/pull/1403),
-which addresses [Hive failures before effects](hive-pre-effect-finalization.md),
-including the missing external credential configuration and cleanup of a proved
-no-op. The released three-client requirement remains unverified. Preserve all
-original bot commits and public evidence in normal history; do not rewrite them.
-Let the active guarded release finish before this next merge advances `main`;
-the prepared-source authority requires current `main` throughout publication.
+[PR 1403](https://github.com/link-assistant/formal-ai/pull/1403) merged normally as
+`4bffcd1f5cf72314c2a7880c80b27cd5c534625e` after all its checks passed.
+Its version-preparation child is `95dcfcaba7b544cbc25c94b4050b1065a4086f3b`
+(`0.355.7`). All release producers and the actual public-download verification
+finished successfully, including Docker and both macOS architectures.
+
+The current follow-up removes the mandatory external credential requirement,
+following the latest user direction and Hive Mind's default-token approach.
+See [the updated cause and contract](hive-pre-effect-finalization.md). The default
+token creates run-owned orphan branches, issues and PRs in this repository and
+uses Hive's staged `ci/` workflow transport with `act`. Original task hashes,
+two-pass/no-op and independent output verification remain mandatory. Cleanup
+runs only after the complete owner workflow is terminal. The released
+three-client requirement remains unverified until the actual hosted run passes.
+Preserve all original bot commits and public evidence in normal history.
+Before another merge, require green exact-head CI and let any active guarded
+release finish; current `main` remains required throughout publication.
 
 ## Findings and implementation
 

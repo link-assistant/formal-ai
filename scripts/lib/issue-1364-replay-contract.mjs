@@ -39,8 +39,10 @@ export function adaptReplayEntrypoint(source, task, workspace) {
   assert.equal(source.split(original).length, 2, 'unreviewed pinned solve constructor');
   const target = '/home/box/formal-ai-issue-1364-workspace';
   const replacement = [
-    "const replayArgv = buildE2eSolveArgv({issueUrl, tool, model, logDir: '/home/box/logs'});",
-    'replayArgv[0] = ' + JSON.stringify(task.pullRequestUrl) + ';',
+    "const replayArgv = buildE2eSolveArgv({issueUrl, tool, model, "
+      + (task.baseBranch ? 'baseBranch: ' + JSON.stringify(task.baseBranch) + ', ' : '')
+      + "logDir: '/home/box/logs'});",
+    ...(task.pullRequestUrl ? ['replayArgv[0] = ' + JSON.stringify(task.pullRequestUrl) + ';'] : []),
     'replayArgv.push("--working-directory", ' + JSON.stringify(target) + ');',
     // Raw client transcripts stay in the owned evidence directory, not public issue attachments.
     'const attachmentFlag = replayArgv.indexOf("--attach-logs");',
@@ -53,7 +55,16 @@ export function adaptReplayEntrypoint(source, task, workspace) {
     "  forwardEnv:['GH_TOKEN', ...modelKeys, 'FORMAL_AI_INSTALL_GRANT', 'GITHUB_ACTIONS'],",
     '  extraMounts:[' + JSON.stringify(workspace + ':' + target) + ']});',
   ].join('\n');
-  return source.replace(original, () => replacement);
+  let adapted = source.replace(original, () => replacement);
+  if (task.workflowDirectory) {
+    assert.equal(task.workflowDirectory, 'ci/');
+    const workflow = "const workflowDir = !option('--issue') && isolation === 'branch' ? workflowDirectoryForLayer(evidence.layer) : '.github/workflows/';";
+    assert.equal(adapted.split(workflow).length, 2, 'pinned workflow staging selection');
+    assert.equal(adapted.split('let baseBranch;').length, 2, 'pinned isolated base selection');
+    adapted = adapted.replace(workflow, "const workflowDir = 'ci/';")
+      .replace('let baseBranch;', 'let baseBranch = ' + JSON.stringify(task.baseBranch) + ';');
+  }
+  return adapted;
 }
 export function taskSnapshot(directory, trackedPaths, issueUrl = null) {
   if (issueUrl !== null) {

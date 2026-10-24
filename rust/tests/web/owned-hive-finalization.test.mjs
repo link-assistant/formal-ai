@@ -281,12 +281,12 @@ test('malformed progress windows cannot masquerade as absent history',async()=>{
   }
 });
 
-test('cancelled no-op admissions do not enqueue cleanup scans; schedules and failed deliveries still do',()=>{
+test('terminal cancelled owners can recover isolated fixtures; foreign owners cannot enqueue cleanup',()=>{
   const workflow=YAML.parse(fs.readFileSync(new URL('../../../.github/workflows/hive-original-delivery-finalize.yml',import.meta.url),'utf8'));
   const expression=workflow.jobs.prepare.if.replace(/^\$\{\{\s*|\s*\}\}$/gu,'');
   const eligible=(event_name,conclusion,full_name='link-assistant/formal-ai')=>vm.runInNewContext(expression,
     {github:{event_name,repository:'link-assistant/formal-ai',event:{workflow_run:{conclusion,head_repository:{full_name}}}}},{timeout:100});
-  assert.equal(eligible('workflow_run','cancelled'),false);
+  assert.equal(eligible('workflow_run','cancelled'),true);
   assert.equal(eligible('workflow_run','failure'),true);
   assert.equal(eligible('workflow_run','success'),true);
   assert.equal(eligible('workflow_run','success','foreign/repo'),false);

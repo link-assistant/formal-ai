@@ -25,11 +25,13 @@ receipt, but the visible job log only showed exit code 1.
 
 ## Changes and limits
 
-An admitted execution checks credential configuration before build/image jobs
-are allocated. Missing configuration fails explicitly; it never becomes a
-successful solve or a fallback to the current repository token. The existing
-read-only canonical owner/repository, push and workflow-scope preflight remains
-mandatory immediately before the effect claim. Presence alone proves no access.
+PR #1403 initially made optional credential configuration a prerequisite. The
+latest user requirement supersedes that decision: absent optional credentials
+must use the current repository token, following Hive Mind's own resolver and
+orphan-branch fixture approach. Read-only repository identity and push preflight
+still run before the effect claim. External tokens retain their external scope
+checks; the default token is restricted to the current repository and stages
+workflow files under `ci/` for execution by Hive's original `act` transport.
 
 Cleanup recognizes a distinct `not-started` terminal state only when complete
 logs contain no final issue URL and complete GitHub job metadata contains one
@@ -52,13 +54,21 @@ complete logs. It contains no task inputs, credential values or local data.
 Regression tests replay the failure and reject incomplete logs, unexpected issue
 URLs and every malformed or executed effect gate. Separate tests preserve
 immutable claim quarantine and uncertain-write precedence. Configuration tests
-require the complete App pair or an explicit token and never echo either.
+cover default fallback, a complete App pair and an explicit token without
+printing credential values.
 
-The operational credential requirement remains unresolved until an authorized
-repository operator configures credentials for the canonical external task
-repositories. This change does not claim issue #1364's released three-client
-acceptance. No Rust compilation, Docker build/pull or product execution was
-performed locally.
+No additional credentials are required. The fallback uses the pinned Hive task
+generator unchanged, and verifies that reversing only the two workflow staging
+instructions reproduces each complete original task body hash. Two-pass and
+independent compilation/output oracles remain intact. Receipts explicitly
+distinguish same-repository acceptance from historical external delivery.
+The trusted finalizer closes owned issues and PRs and deletes their branches
+after the full owner workflow finishes, including cancellation. It corroborates
+complete logs, bot ownership, task content and actual PR branches before writes,
+preserves human feedback and never retries uncertain writes. Captured public
+Hive source fixtures exercise the real generator and fixture creator without
+network effects. Local regressions do not claim released three-client acceptance.
+No Rust compilation, Docker build/pull or product execution was performed locally.
 
 ## Follow-up release coordination
 

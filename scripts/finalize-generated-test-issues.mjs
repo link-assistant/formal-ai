@@ -6,7 +6,9 @@ import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {createEvidenceClient} from './collect-test-replays.mjs';
 import {cleanupGeneratedIssues} from './close-finished-test-issues.mjs';
-import {custodyFromLog, effectWasNotStarted, originalWorkflow} from './lib/generated-task-custody.mjs';
+import {custodyFromLog, effectWasNotStarted, originalWorkflow, generatedIssue} from './lib/generated-task-custody.mjs';
+import {verifyIsolatedCleanup, requireIsolatedOwner, selectIsolatedFixture,
+  cleanupIsolatedTask} from './lib/hive-isolated-task.mjs';
 import {redact} from './collect-ci-failures.mjs';
 const repository = 'link-assistant/formal-ai';
 export async function finalizeGeneratedRun({runId, apply = false, expectedRunAttempt = null,
@@ -43,6 +45,37 @@ export async function finalizeGeneratedRun({runId, apply = false, expectedRunAtt
       || custody.finalIssueUrls[0] !== `https://github.com/${repository}/issues/${custody.issueNumbers[0]}`) {
       discovery.push({job: job.id, status: 'retained', reason: 'incomplete-or-ambiguous-owned-log'}); continue;
     }
+    if (custody.isolatedFixtures) {
+      try {
+        const fixture = selectIsolatedFixture(custody.isolatedFixtures);
+        if (fixture?.resource?.issueNumber !== custody.issueNumbers[0]
+          || fixture.resource.issueUrl !== custody.finalIssueUrls[0]) throw new Error('Isolated cleanup owner differs');
+        const context = {repository, run, job, client, recognizeIssue: generatedIssue};
+        await requireIsolatedOwner(fixture, context);
+        if (!apply) {
+          discovery.push({job: job.id, status: 'would-close-owned-fixture'}); continue;
+        }
+        let writes = 0;
+        const api = async (endpoint, {method = 'GET', body} = {}) => {
+          if (!endpoint.startsWith('repos/' + repository + '/')) throw new Error('Foreign fixture endpoint');
+          if (method === 'GET') return client.json(endpoint);
+          if (!['POST', 'PATCH', 'DELETE'].includes(method) || ++writes > 8) throw new Error('Fixture mutation budget');
+          const mutation = ['--method', method];
+          for (const [key, value] of Object.entries(body ?? {})) mutation.push('-f', key + '=' + value);
+          const result = await client.request(endpoint, {mutation});
+          if (!result.ok || result.truncated || result.downloadTruncated || result.timedOut) {
+            throw new Error('Fixture write uncertain; no retry permitted');
+          }
+          return result.text?.trim() ? JSON.parse(result.text) : null;
+        };
+        await cleanupIsolatedTask(fixture, {api, save() {}, outcome: job.conclusion});
+        await verifyIsolatedCleanup(fixture, context);
+        discovery.push({job: job.id, status: 'closed-owned-fixture', comment: 'recorded', fixture});
+      } catch (error) {
+        discovery.push({job: job.id, status: 'retained', reason: redact(error.message)});
+      }
+      continue;
+    }
     candidates.push({number: custody.issueNumbers[0], runAttempt: run.run_attempt,
       expectedLogSha256: custody.logSha256, proof: {run: runId, job: job.id, head: run.head_sha}});
   }
@@ -52,17 +85,19 @@ export async function finalizeGeneratedRun({runId, apply = false, expectedRunAtt
   const perTool = jobs.map(job => {
     const candidate = candidates.find(row => row.proof.job === job.id);
     const result = applied?.results.find(row => row.number === candidate?.number);
-    const closed = result?.status === 'closed';
+    const alreadyFinalized = discovery.find(row => row.job === job.id && row.status === 'closed-owned-fixture');
+    const closed = result?.status === 'closed' || !!alreadyFinalized;
     const notStarted = discovery.some(row => row.job === job.id && row.status === 'not-started');
-    const complete = closed && result.comment === 'recorded';
+    const comment = alreadyFinalized?.comment ?? result?.comment ?? 'not-confirmed';
+    const complete = closed && comment === 'recorded';
     return {tool: job.name.split(' ')[2], job: job.id, outcome: job.conclusion, complete,
       closed: closed ? 1 : 0, retained: closed || notStarted ? 0 : 1, notStarted,
-      comment: result?.comment ?? 'not-confirmed'};
+      comment};
   });
   const cleanupReceipt = {schema: 'generated-e2e-cleanup-proof/v1', sourceRun: runId,
     sourceAttempt: run.run_attempt, protocolHead: run.head_sha, outcome: run.conclusion,
-    complete: apply && jobs.length === 3 && perTool.every(row => row.complete), perTool,
-    noEffects: apply && jobs.length === 3 && perTool.every(row => row.notStarted),
+    complete: apply && perTool.some(row => row.complete) && perTool.every(row => row.complete || row.notStarted), perTool,
+    noEffects: apply && jobs.length > 0 && perTool.every(row => row.notStarted),
     closed: perTool.reduce((sum, row) => sum + row.closed, 0),
     retained: perTool.reduce((sum, row) => sum + row.retained, 0)};
   // protocolHead identifies the owning workflow, not a separately admitted tested PR head.

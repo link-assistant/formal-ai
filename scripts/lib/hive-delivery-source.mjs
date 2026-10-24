@@ -7,6 +7,7 @@ const text = bytes => new TextDecoder('utf-8', {
 }).decode(bytes);
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 export const policyRoots = ['.github/workflows/hive-original-delivery.yml',
+ '.github/actions/automation-token/action.yml',
  '.github/workflows/hive-source-provenance.yml',
  'scripts/admit-hive-original-delivery.mjs',
  'scripts/hive-delivery-attempt.mjs',
@@ -20,6 +21,7 @@ export const policyRoots = ['.github/workflows/hive-original-delivery.yml',
  'scripts/collect-test-replays.mjs',
  'scripts/lib/hive-delivery-admission.mjs',
  'scripts/lib/hive-delivery-credentials.mjs',
+ 'scripts/lib/hive-isolated-task.mjs',
  'scripts/lib/hive-delivery-source.mjs',
  'scripts/lib/hive-delivery-journal.mjs',
  'scripts/lib/hive-delivery-ledger.mjs',

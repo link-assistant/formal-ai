@@ -118,6 +118,24 @@ test('transport adaptation preserves every original harness assertion and treats
   assert.throws(()=>adaptReplayEntrypoint(source,{},'/tmp/unsafe:path'));
 });
 
+test('default-token adaptation binds both passes to the same orphan base and stages the original workflow', () => {
+  const constructor = "const dockerArgv = buildDockerArgv({ solveArgv: buildE2eSolveArgv({ issueUrl, tool, model, baseBranch, logDir: '/home/box/logs' }), solveCommand: '/opt/hive-e2e/src/solve.mjs', image, hostLogDir, forwardEnv: ['GH_TOKEN', ...modelKeys, 'FORMAL_AI_INSTALL_GRANT', 'GITHUB_ACTIONS'] });";
+  const source = "const workflowDir = !option('--issue') && isolation === 'branch' ? workflowDirectoryForLayer(evidence.layer) : '.github/workflows/';\nlet baseBranch;\n" + constructor;
+  const task = {workflowDirectory: 'ci/', baseBranch: 'e2e/hello-world/700-1/codex-formal-ai'};
+  const issueUrl = 'https://github.com/host/project/issues/17';
+  for (const pullRequestUrl of [null, 'https://github.com/host/project/pull/18']) {
+    const adapted = adaptReplayEntrypoint(source, {...task, pullRequestUrl}, '/tmp/owned');
+    const run = new Function('buildE2eSolveArgv', 'buildDockerArgv', 'issueUrl', 'tool',
+      'model', 'image', 'hostLogDir', 'modelKeys', adapted + '\nreturn {dockerArgv, workflowDir, baseBranch};');
+    let observed;
+    const result = run(value => {observed = value; return [value.issueUrl, '--attach-logs'];},
+      value => value, issueUrl, 'codex', 'formal-ai', 'task-image', '/tmp/logs', []);
+    assert.equal(observed.baseBranch, task.baseBranch);
+    assert.equal(result.baseBranch, task.baseBranch); assert.equal(result.workflowDir, 'ci/');
+    assert.equal(result.dockerArgv.solveArgv[0], pullRequestUrl ?? issueUrl);
+  }
+});
+
 test('released references and actual candidate content IDs bind the same bare receipt digest',()=>{
   const digest='sha256:'+'f'.repeat(64);
   assert.equal(runtimeImageDigest(digest),digest);

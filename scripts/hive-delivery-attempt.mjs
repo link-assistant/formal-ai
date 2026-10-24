@@ -1,5 +1,5 @@
 import { createDeliveryClaim, publishDeliveryResult, githubLedgerWriter } from './lib/hive-delivery-ledger.mjs';
-import { taskCredentialTarget, requireTaskCredentialAccess, requireTaskCredentialConfiguration } from './lib/hive-delivery-credentials.mjs';
+import { taskCredentialTarget, taskCredentialScope, requireTaskCredentialAccess, requireTaskCredentialConfiguration } from './lib/hive-delivery-credentials.mjs';
 // Credential preflight before claim; claim before effects. Publish only a qualified result after the unchanged independent oracle.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -199,6 +199,7 @@ export function resultForAttempt(claim, {
       imageDigest: claim.imageDigest
     });
     assert.equal(acceptance.taskPRhead, independent.head);
+    if (acceptance.taskTransport) assert.deepEqual(acceptance.taskTransport, independent.taskTransport);
   }
   return {
     ...claim,
@@ -313,11 +314,13 @@ export function prepareCredentialTarget(environment = process.env) {
 export async function preflightTaskCredentials(environment = process.env, {
   transport = boundedCommand
 } = {}) {
-  const target = prepareCredentialTarget(environment),
-    layer = environment.HIVE_CREDENTIAL_LAYER;
+  const layer = environment.HIVE_CREDENTIAL_LAYER;
+  const target = taskCredentialScope(prepareCredentialTarget(environment), {
+    layer, repository: environment.GITHUB_REPOSITORY
+  });
   const token = environment.GH_TOKEN;
   assert.ok(typeof token === 'string' && token.length > 0 && token.length <= 8192 && !/\s/u.test(token),
- 'missing configured credential for canonical external task repository');
+ 'GitHub Actions must provide a task token');
   async function request(endpoint) {
     const result = await transport('gh', ['api', '--hostname', 'github.com', '--include', endpoint], {
       env: environment,
@@ -348,7 +351,8 @@ export async function preflightTaskCredentials(environment = process.env, {
     repository: observed.value,
     layer,
     installation,
-    scopes: observed.scopes
+    scopes: observed.scopes,
+    currentRepository: environment.GITHUB_REPOSITORY
   });
   console.log('::add-mask::' + token);
   outputs(environment, {
