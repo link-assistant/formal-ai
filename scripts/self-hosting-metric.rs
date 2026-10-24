@@ -94,7 +94,7 @@ pub struct Measurement {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ReleaseRow {
     /// Measurement epoch this row was produced under; see [`METRIC_VERSION`].
-    /// Rows written before issue #812 carry no field and read back as `1`.
+    /// Legacy rows without a field or file-scoped default read back as `1`.
     pub metric_version: u64,
     pub tag: String,
     pub since: String,
@@ -653,27 +653,50 @@ pub fn read_release_rows(ledger: &Path) -> Result<Vec<ReleaseRow>, String> {
         .map_err(|error| format!("could not read {}: {error}", ledger.display()))?;
     let mut rows = Vec::new();
     let mut fields = Vec::new();
+    let mut defaults = Vec::new();
+    let mut in_defaults = false;
+    let mut seen_defaults = false;
     for line in text.lines() {
-        if line.trim() == "release" {
+        if line.trim() == "release"
+            || matches!(line, "self_hosting_ledger" | "self-hosting-ledger-archive")
+        {
             if !fields.is_empty() {
-                rows.push(parse_release_row(&fields)?);
+                rows.push(parse_release_row(&fields, &defaults)?);
                 fields.clear();
             }
+            if !line.starts_with("  ") {
+                defaults.clear();
+                seen_defaults = false;
+            }
+            in_defaults = false;
+        } else if line == "  release-defaults" {
+            if !fields.is_empty() || seen_defaults {
+                return Err("release defaults must precede their records".to_owned());
+            }
+            in_defaults = true;
+            seen_defaults = true;
         } else if line.starts_with("    ") {
-            fields.push(line.trim().to_owned());
+            if in_defaults {
+                defaults.push(line.trim().to_owned());
+            } else {
+                fields.push(line.trim().to_owned());
+            }
+        } else if line.starts_with("  ") {
+            in_defaults = false;
         }
     }
     if !fields.is_empty() {
-        rows.push(parse_release_row(&fields)?);
+        rows.push(parse_release_row(&fields, &defaults)?);
     }
     Ok(rows)
 }
 
-fn parse_release_row(fields: &[String]) -> Result<ReleaseRow, String> {
+fn parse_release_row(fields: &[String], defaults: &[String]) -> Result<ReleaseRow, String> {
     let value = |key: &str| -> Result<String, String> {
         let prefix = format!("{key} \"");
         fields
             .iter()
+            .chain(defaults)
             .find_map(|field| {
                 field
                     .strip_prefix(&prefix)
@@ -696,8 +719,8 @@ fn parse_release_row(fields: &[String]) -> Result<ReleaseRow, String> {
             .map_err(|error| format!("release row has invalid {key}: {error}"))
     };
     Ok(ReleaseRow {
-        // Rows recorded before issue #812 carry no epoch marker; they are, by
-        // definition, epoch 1.
+        // Explicit file-scoped defaults share structure. Legacy files without
+        // a marker retain epoch 1; a row's own fields always take precedence.
         metric_version: optional_number("metric_version")?.unwrap_or(1),
         tag: value("tag")?,
         since: value("since")?,
@@ -756,16 +779,21 @@ fn append_release_row(ledger: &Path, row: &ReleaseRow) -> Result<(), String> {
             row.trailing_percentage_basis_points.to_string(),
         ),
     ];
+    let ledger_text = fs::read_to_string(ledger).map_err(|error| error.to_string())?;
+    let defaults = ledger_storage::release_defaults(&ledger_text);
     let mut record = String::from("  release\n");
     for (key, value) in &fields {
-        record.push_str("    ");
-        record.push_str(key);
-        record.push_str(" \"");
-        record.push_str(value);
-        record.push_str("\"\n");
+        let field = format!("    {key} \"{value}\"");
+        if defaults.contains(&field.as_str()) {
+            continue;
+        }
+        let _ = writeln!(record, "{field}");
     }
     if let Some(target) = row.target_percentage_basis_points {
-        let _ = writeln!(record, "    target_percentage_basis_points \"{target}\"");
+        let field = format!("    target_percentage_basis_points \"{target}\"");
+        if !defaults.contains(&field.as_str()) {
+            let _ = writeln!(record, "{field}");
+        }
     }
     if let Some(override_target) = row.target_override_basis_points {
         let _ = writeln!(

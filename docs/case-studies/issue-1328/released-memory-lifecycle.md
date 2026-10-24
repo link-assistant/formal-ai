@@ -25,6 +25,19 @@ message events all fail. A whitespace/Unicode answer verifies exact preservation
 These local controls emulate Docker/HTTP observations; actual released native
 execution remains exclusively in hosted CI.
 
+The first follow-up CI also exposed release-preparation debt: adding the fourth
+recent release made the repeated `target_percentage_basis_points "389"` field
+exceed the existing notation ceiling. The ledger now states its identical fields
+once in `release-defaults`. Rust measurement readers, the release writer and both
+status-renderer twins resolve these explicit defaults; row fields override them.
+Legacy files without defaults retain their original epoch interpretation.
+JavaScript and Rust archive rotation retain the defaults beside their complete
+records, preventing inheritance from leaking across file boundaries. Automated
+expansion reproduced every prior release field/value, and no measurement,
+attribution evidence, target policy or notation ceiling was changed. Hosted
+native tests cover inheritance, explicit overrides, legacy scope and future
+release writing; local JavaScript controls cover rotation and status rendering.
+
 Receipts retain the failing pass's phase, health, shutdown observations, memory
 digest, event count and a bounded event sample. Text fields are represented by
 their UTF-8 size and SHA-256, preserving useful field-shape diagnostics without
