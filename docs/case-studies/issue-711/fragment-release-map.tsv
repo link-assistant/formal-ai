@@ -884,3 +884,4 @@ changelog.d/20261023_browser_apt_source_isolation.md	0.355.3
 changelog.d/20261023_container_node_package_tools.md	0.355.4
 changelog.d/20261023_pages_worker_startup_recovery.md	0.355.5
 changelog.d/20261024_010500_release_validation_blockers.md	0.355.6
+changelog.d/20261024_044000_hive_pre_effect_finalization.md	0.355.7
