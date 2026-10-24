@@ -487,3 +487,33 @@ threshold. Apply the setup moves through CST ranges and verify the complete
 parsed workflow delta. Audit ordering, full inventory, terminal findings,
 bounded outage recovery and governed-source controls all pass without Rust
 compilation or local package installation.
+
+## Keep the canonical staged source synchronized and resolve MSAL findings
+
+The early audit edit initially changed only the deployed caller. The guarded
+staged-authority job and browser coverage correctly rejected that caller because
+the canonical workflow and generated projection still described the old lint
+order. Apply the lint edit to the canonical workflow and regenerate the caller,
+output bindings and coverage packet with the maintained generator. Preserve all
+52 production operations and 104 bindings. Compact only the new audit step's YAML
+presentation to retain the existing 1,500-line limit; the parsed configuration is
+identical. Check the deployed projection before pushing.
+
+The next full audit also reported
+[GHSA-xcx6-jx8p-x3h5](https://github.com/advisories/GHSA-xcx6-jx8p-x3h5).
+Current stable Azure Identity requires affected MSAL 6 even after updating its
+parent. Temporarily pin the development-only VSCE publisher to 3.9.2, whose
+declared Identity range accepts 4.13.0 and its unaffected MSAL 3 dependency.
+That older chain also needs the UUID 11.1.1 security backport for
+[GHSA-w5hq-g745-h8pq](https://github.com/advisories/GHSA-w5hq-g745-h8pq).
+Scope that override to the publisher's MSAL subtree: its official GuidGenerator
+uses only the zero-argument UUID v4 function, and UUID 11 retains that CommonJS
+export. This explicit UUID override crosses the declared major range; actual
+extension packaging must still pass in CI. Remove the temporary pins when the
+current publisher's upstream Identity dependency supports patched MSAL.
+
+The metadata-only resolver changes development dependencies; every production
+package record remains identical. All six committed locks pass the unchanged
+audit gate. Refresh the governed witness through its explicit reviewed command,
+then verify the whole object differs only in the VS Code manifest source inputs;
+case identities, asks, assertions and unsupported reasons remain unchanged.

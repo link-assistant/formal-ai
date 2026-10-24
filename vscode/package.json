@@ -146,7 +146,7 @@
   },
   "devDependencies": {
     "@vscode/test-web": "^0.0.81",
-    "@vscode/vsce": "^4.0.0",
+    "@vscode/vsce": "3.9.2",
     "esbuild": "^0.28.2",
     "typescript": "^7.0.2"
   },
@@ -164,6 +164,14 @@
       "puppeteer": "25.13.0",
       "puppeteer-core": "25.13.0",
       "qs": "^6.16.0"
+    },
+    "@vscode/vsce": {
+      "@azure/identity": {
+        ".": "4.13.0",
+        "@azure/msal-node": {
+          "uuid": "11.1.1"
+        }
+      }
     }
   },
   "allowScripts": {
@@ -189,5 +197,6 @@
   "bugs": {
     "url": "https://github.com/link-assistant/formal-ai/issues"
   },
-  "homepage": "https://github.com/link-assistant/formal-ai/tree/main/vscode"
+  "homepage": "https://github.com/link-assistant/formal-ai/tree/main/vscode",
+  "@vscode/vsce//": "Temporarily retain VSCE 3.9.2 with Azure Identity 4.13.0 (within its declared ^4.1.0 range) to avoid GHSA-xcx6-jx8p-x3h5. VSCE 4 requires Identity >=4.13.2, whose latest stable release still requires vulnerable MSAL 6. Remove the pin when upstream supports a patched MSAL release. MSAL 3 uses only UUID v4; scope the compatible CommonJS UUID 11.1.1 security backport to that MSAL subtree (GHSA-w5hq-g745-h8pq)."
 }

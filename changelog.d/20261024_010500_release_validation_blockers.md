@@ -39,3 +39,7 @@ bump: patch
 - Refresh the corresponding root Bun body-parser, qs and content-type resolutions and validate all six committed JavaScript lockfiles with the maintained audit gate.
 
 - Patch the existing fast-uri and undici major lines in desktop, VS Code and browser-test locks for the additional URI and HTTP-client advisories.
+
+- Keep the canonical staged workflow and generated caller synchronized with the early dependency audit.
+
+- Temporarily select the compatible older VS Code publisher authentication chain and scope the UUID security backport to its MSAL dependency, clearing the MSAL and UUID advisories without changing production packages.

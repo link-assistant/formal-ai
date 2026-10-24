@@ -329,12 +329,8 @@ jobs:
           cache-dependency-path: rust/tests/e2e/package-lock.json
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: .bun-version
-      - name: Audit JavaScript dependencies before native compilation
-        if: matrix.lane == 1
-        timeout-minutes: 9
-        run: bash scripts/check-javascript-dependencies.sh
+        with: {bun-version-file: .bun-version}
+      - {name: Audit JavaScript dependencies before native compilation, if: matrix.lane == 1, timeout-minutes: 9, run: bash scripts/check-javascript-dependencies.sh}
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
