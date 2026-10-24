@@ -37,6 +37,11 @@ expansion reproduced every prior release field/value, and no measurement,
 attribution evidence, target policy or notation ceiling was changed. Hosted
 native tests cover inheritance, explicit overrides, legacy scope and future
 release writing; local JavaScript controls cover rotation and status rendering.
+The governed source witness is refreshed through its explicit review command:
+every existing supported program, assertion and unsupported record is unchanged.
+Its only additions are the two new filesystem/Git regressions, honestly marked
+unsupported by the browser specification reader and still required in native CI.
+The reader source itself and all coverage/notation ceilings remain unchanged.
 
 Receipts retain the failing pass's phase, health, shutdown observations, memory
 digest, event count and a bounded event sample. Text fields are represented by
