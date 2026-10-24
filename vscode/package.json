@@ -198,5 +198,5 @@
     "url": "https://github.com/link-assistant/formal-ai/issues"
   },
   "homepage": "https://github.com/link-assistant/formal-ai/tree/main/vscode",
-  "@vscode/vsce//": "Temporarily retain VSCE 3.9.2 with Azure Identity 4.13.0 (within its declared ^4.1.0 range) to avoid GHSA-xcx6-jx8p-x3h5. VSCE 4 requires Identity >=4.13.2, whose latest stable release still requires vulnerable MSAL 6. Remove the pin when upstream supports a patched MSAL release. MSAL 3 uses only UUID v4; scope the compatible CommonJS UUID 11.1.1 security backport to that MSAL subtree (GHSA-w5hq-g745-h8pq)."
+  "@vscode/vsce//": "blocked: https://github.com/advisories/GHSA-xcx6-jx8p-x3h5 Temporarily retain VSCE 3.9.2 with Azure Identity 4.13.0 (within its declared ^4.1.0 range) to avoid GHSA-xcx6-jx8p-x3h5. VSCE 4 requires Identity >=4.13.2, whose latest stable release still requires vulnerable MSAL 6. Remove the pin when upstream supports a patched MSAL release. MSAL 3 uses only UUID v4; scope the compatible CommonJS UUID 11.1.1 security backport to that MSAL subtree (GHSA-w5hq-g745-h8pq)."
 }
