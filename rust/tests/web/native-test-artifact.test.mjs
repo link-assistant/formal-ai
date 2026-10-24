@@ -5,6 +5,7 @@ import {mkdtempSync,mkdirSync,writeFileSync,readFileSync,existsSync,rmSync} from
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import {writeReceipt,verifyReceipt,runVerifiedTest} from '../../../scripts/native-test-artifact.mjs';
+import YAML from 'yaml';
 const identity={'source-commit':'a'.repeat(40),'source-tree':'b'.repeat(40),'cargo-lock-sha256':'c'.repeat(64),platform:'linux',architecture:'x64','rust-flags':'-Dwarnings',compiler:'actual producer compiler',profile:'release',features:'all'};
 function fixture(){
  const root=mkdtempSync(join(tmpdir(),'native-test-artifact-')),directory=join(root,'tests'),binary=join(root,'formal-ai');mkdirSync(directory);
@@ -14,6 +15,25 @@ function fixture(){
 }
 test('same build identity and bytes execute the exact registered testcase',()=>{
  const f=fixture();try{assert.equal(runVerifiedTest(f.directory,identity,f.binary,'suite::wanted',f.root),0);assert.equal(readFileSync(join(f.root,'ran.txt'),'utf8'),'actual testcase ran\n');}finally{f.dispose();}
+});
+test('the selected unit transfer preserves the full original receipt while omitting unused executables',()=>{
+ const f=fixture();try{
+  for(const target of ['integration','source'])rmSync(join(f.directory,target));
+  assert.throws(()=>verifyReceipt(f.directory,identity,f.binary),'full consumers still require all artifacts');
+  assert.equal(runVerifiedTest(f.directory,identity,f.binary,'suite::wanted',f.root),0);
+  assert.equal(readFileSync(join(f.root,'ran.txt'),'utf8'),'actual testcase ran\n');
+ }finally{f.dispose();}
+});
+test('selected transfer refuses an empty selection, unknown target or malformed unused checksum',()=>{
+ const f=fixture();try{
+  for(const targets of [[],['unknown'],['unit','unit']]){
+   assert.throws(()=>verifyReceipt(f.directory,identity,f.binary,{targets}));
+  }
+  const file=join(f.directory,'native-build-receipt.json'),receipt=JSON.parse(readFileSync(file,'utf8'));
+  receipt.files.integration='invalid';writeFileSync(file,JSON.stringify(receipt));
+  assert.throws(()=>runVerifiedTest(f.directory,identity,f.binary,'suite::wanted',f.root));
+  assert.equal(existsSync(join(f.root,'ran.txt')),false);
+ }finally{f.dispose();}
 });
 test('foreign source tree and build variants refuse before executing artifact bytes',()=>{
  const f=fixture();try{
@@ -32,4 +52,21 @@ test('missing testcase and noncanonical receipt cannot silently run a different 
   assert.throws(()=>runVerifiedTest(f.directory,identity,f.binary,'suite::absent',f.root));assert.equal(existsSync(join(f.root,'ran.txt')),false);
   const path=join(f.directory,'native-build-receipt.json'),receipt=JSON.parse(readFileSync(path,'utf8'));receipt.files['../outside']='0'.repeat(64);writeFileSync(path,JSON.stringify(receipt));assert.throws(()=>verifyReceipt(f.directory,identity,f.binary));
  }finally{f.dispose();}
+});
+test('self-coding transfer carries only its executed member and the original source-bound receipt',()=>{
+ const release=YAML.parse(readFileSync(new URL('../../../.github/workflows/release.yml',import.meta.url),'utf8'));
+ const steps=release.jobs['build-artifacts'].steps;
+ const selected=steps.find(step=>step.with?.name==='formal-ai-self-coding-test-executable');
+ assert(selected);
+ assert.deepEqual(selected.with.path.trim().split('\n'),['dist/tests/unit','dist/tests/native-build-receipt.json']);
+ assert(steps.indexOf(selected)>steps.findIndex(step=>step.name==='Bind native test artifacts to their actual build inputs'));
+ assert.equal(steps.find(step=>step.with?.name==='formal-ai-test-executables').with.path,'dist/tests');
+ const consumer=YAML.parse(readFileSync(new URL('../../../.github/workflows/agent-cli-e2e.yml',import.meta.url),'utf8'));
+ const download=consumer.jobs['agent-cli-e2e'].steps.find(step=>step.name==='Download the current native self-coding test executable');
+ assert.equal(download.with.name,selected.with.name);assert.equal(download.with.path,'dist/self-coding-tests');
+ assert.equal(download['timeout-minutes'],3);
+ assert(!download.if.includes('inputs.full-replay'),'ordinary pull requests must exercise the selected transfer');
+ const replay=consumer.jobs['agent-cli-e2e'].steps.find(step=>step.name?.includes('Replay Hive Mind self-coding'));
+ assert(!replay.if.includes('inputs.full-replay'));
+ assert(replay.run.includes('native-test-artifact.mjs run dist/self-coding-tests release all agentic_coding::self_coding::self_coding_session_replays'));
 });

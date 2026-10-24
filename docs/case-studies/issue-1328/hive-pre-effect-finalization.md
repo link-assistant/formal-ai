@@ -112,3 +112,31 @@ Reading its original source commit reproduces its exact cleanup policy hash
 `962d8f47f1061572879d0c5b26b5f008c59962d8c220fad2e83ca477957a9477`.
 This proves compatibility with that captured record; hosted recovery still
 requires the follow-up to merge after active release publishers finish.
+
+## Selected native self-coding transfer
+
+Main pipeline [40097546818](https://github.com/link-assistant/formal-ai/actions/runs/40097546818)
+then failed in the agent-CLI job because downloading `formal-ai-test-executables`
+exceeded its three-minute deadline. The actual archive was 214,929,875 bytes;
+the step failed before the native self-coding replay ran. Earlier test output
+and negative-control evidence in the failure dump are separate from this
+terminal transfer error. One bounded retry of the unchanged failed run is
+allowed for that read-only transport; it does not replace the permanent fix.
+
+The producer now also publishes `unit` and its original complete native build
+receipt as a separate artifact. The self-coding consumer downloads those two
+members into its own directory, verifies the unchanged source/build identity,
+canonical receipt keys, selected executable hash and runtime binary hash, and
+runs the same exact registered testcase. Consumers of the full artifact still
+require and verify all three test executables. Empty/unknown selections,
+malformed checksums, foreign source/build variants and tampered executable or
+runtime bytes remain refusals before execution.
+
+The workflow upload is applied to the retained canonical source and projected
+with the maintained staged-release generator. A parsed whole-workflow comparison
+permits only the added upload step; all production publication operations and
+their output bindings remain identical. The original three-minute transfer,
+five-minute replay budget and eight-minute step backstop remain bounded.
+The selected native replay also runs in ordinary PR validation, so hosted CI
+exercises this transfer before merge while the wider recorded scenarios retain
+their existing full-replay selection.

@@ -39,6 +39,12 @@ caches failed lookups. The actual older CI progress hash is reproduced, and
 [40097546818](https://github.com/link-assistant/formal-ai/actions/runs/40097546818)
 through publication before merging this follow-up, then require its hosted
 cleanup recovery and the actual three-client acceptance.
+The same follow-up also fixes the observed three-minute native test artifact
+download timeout in that pipeline by publishing a selected self-coding artifact
+with the original receipt. The exact native replay remains required. The failed
+main run has one bounded transport retry; no further retry is authorized by
+this record. The permanent workflow change is projected from the canonical
+staged-release source with publication operations and bindings unchanged.
 
 ## Findings and implementation
 

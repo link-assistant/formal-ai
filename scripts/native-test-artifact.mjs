@@ -20,17 +20,21 @@ export function writeReceipt(directory,identity,binary=resolve(directory,'../for
  const receipt={version:1,identity,files};
  writeFileSync(join(directory,RECEIPT),JSON.stringify(receipt,null,2)+'\n');return receipt;
 }
-export function verifyReceipt(directory,identity,binary){
+export function verifyReceipt(directory,identity,binary,{targets=TARGETS}={}){
  const receipt=JSON.parse(readFileSync(join(directory,RECEIPT),'utf8'));
  assert.equal(receipt.version,1);
  assert.deepEqual(receipt.identity,identity);
  assert.deepEqual(Object.keys(receipt.files).sort(),[...TARGETS,'binary'].sort());
- for(const target of TARGETS)assert.equal(hash(join(directory,target)),receipt.files[target]);
+ assert.ok(Array.isArray(targets)&&targets.length>0&&new Set(targets).size===targets.length);
+ assert.ok(targets.every(target=>TARGETS.includes(target)));
+ for(const value of Object.values(receipt.files))assert.match(value,/^[a-f0-9]{64}$/u);
+ for(const target of targets)assert.equal(hash(join(directory,target)),receipt.files[target]);
  assert.equal(hash(binary),receipt.files.binary);
  return receipt;
 }
 export function runVerifiedTest(directory,identity,binary,testName,cwd=process.cwd()){
- verifyReceipt(directory,identity,binary);
+ // Only unit executes here; unrelated test executables need not cross this transfer.
+ verifyReceipt(directory,identity,binary,{targets:['unit']});
  const executable=resolve(directory,'unit');chmodSync(executable,0o755);
  const listing=execFileSync(executable,['--list','--format','terse'],{cwd,encoding:'utf8',maxBuffer:10e6});
  assert.equal(listing.split(/\r?\n/u).filter(line=>line===testName+': test').length,1);
