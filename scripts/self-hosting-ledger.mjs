@@ -18,6 +18,13 @@ function parts(text) {
   }
   return names;
 }
+function releaseDefaults(text) {
+  const lines=text.split('\n'),start=lines.indexOf('  release-defaults');
+  if(start<0)return [];
+  const fields=[];
+  for(const line of lines.slice(start+1)) {if(!line.startsWith('    '))break;fields.push(line);}
+  return fields;
+}
 export function readLedger(ledger) {
   const text=readText(ledger);
   let result='';
@@ -42,14 +49,16 @@ export function appendLedger(ledger,record) {
   assert.ok(offset>=0,'ledger has no release record');
   const header=text.slice(0,offset),rows=text.slice(offset).split('  release\n').slice(1);
   const latest=rows.pop(),names=parts(header),chunks=[];
-  let chunk='self-hosting-ledger-archive\n';
+  const shared=releaseDefaults(header);
+  const archiveHeader='self-hosting-ledger-archive\n'+(shared.length?'  release-defaults\n'+shared.join('\n')+'\n':'');
+  let chunk=archiveHeader;
   for(const row of rows) {
     const record='  release\n'+row;
-    assert.ok(count(record)+1<=LIMIT,'single release record exceeds ledger limit');
-    if(count(chunk)+count(record)>LIMIT) {chunks.push(chunk);chunk='self-hosting-ledger-archive\n';}
+    assert.ok(count(record)+count(archiveHeader)<=LIMIT,'single release record exceeds ledger limit');
+    if(count(chunk)+count(record)>LIMIT) {chunks.push(chunk);chunk=archiveHeader;}
     chunk+=record;
   }
-  if(chunk!=='self-hosting-ledger-archive\n')chunks.push(chunk);
+  if(chunk!==archiveHeader)chunks.push(chunk);
   assert.ok(names.length+chunks.length<=MAX_PARTS,'ledger archive bound exhausted');
   let next=header;
   for(let index=0;index<chunks.length;index++)next+=PREFIX+String(names.length+index+1).padStart(4,'0')+'.lino"\n';
