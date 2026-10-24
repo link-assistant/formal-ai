@@ -517,3 +517,18 @@ package record remains identical. All six committed locks pass the unchanged
 audit gate. Refresh the governed witness through its explicit reviewed command,
 then verify the whole object differs only in the VS Code manifest source inputs;
 case identities, asks, assertions and unsupported reasons remain unchanged.
+
+The hosted VSIX installation then exposed an npm-version difference rather than
+a source-selection failure: Node 22.23.3 / npm 10.9.9 installed deprecated UUID
+8.3.2 from the correct selected source. Its complete 183,440-byte
+[job log](https://github.com/link-assistant/formal-ai/actions/runs/40046158645/job/120731584208)
+has SHA-256 `7c4c03d969a19b28773db805d4cdca0b38048cee5e4a8d6f6e34c47abdac4556`.
+The existing local npm 10.8.1 reproduces the same drift using metadata-only
+resolution: it discards the deeply nested UUID override, while npm 11.7 retains
+it. Place the override directly on the version-qualified MSAL 3.8.10 parent.
+Both npm majors must preserve every committed lockfile field, and npm 10 must
+validate the resulting graph in a frozen, script-disabled dry run. Set the VSIX
+installer's existing mode explicitly to `ci`; mutable `install` must not silently
+replace the reviewed graph. Keep the UUID warning fatal and add its observed
+diagnostic to the installer regression fixtures. No package installation or new
+toolchain is required to reproduce and fix this failure locally.

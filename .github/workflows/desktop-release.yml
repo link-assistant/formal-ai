@@ -1116,6 +1116,7 @@ jobs:
       # Install the committed extension lock through the warning classifier so
       # this package job exercises the exact production and build-tool graph.
       - name: Install extension dependencies
+        env: {INSTALL_NODE_DEPENDENCIES_MODE: ci}
         run: scripts/install-node-dependencies.sh vscode
       # Issue #1014: the source-only lint suite intentionally needs no install.
       # Exercise the real esbuild + Playwright graph here, after its locked

@@ -43,3 +43,5 @@ bump: patch
 - Keep the canonical staged workflow and generated caller synchronized with the early dependency audit.
 
 - Temporarily select the compatible older VS Code publisher authentication chain and scope the UUID security backport to its MSAL dependency, clearing the MSAL and UUID advisories without changing production packages.
+
+- Make the UUID override compatible with npm 10 and install the frozen VSIX dependency graph without suppressing deprecation diagnostics.

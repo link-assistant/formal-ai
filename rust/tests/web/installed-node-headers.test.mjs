@@ -73,6 +73,7 @@ test('host header reuse preserves reviewed, unreviewed and install-script diagno
  for(const [diagnostic,status,expected]of [
   ['npm warn deprecated glob@10.5.0: reviewed upstream warning\n',0,'::notice title='],
   ['npm warn deprecated unfamiliar-package@1.0.0: unreviewed\n',1,'Unexpected npm stderr'],
+  ['npm warn deprecated uuid@8.3.2: uuid@10 and below is no longer supported. For CommonJS codebases, use uuid@11.\n',1,'Unexpected npm stderr'],
   ['npm warn allow-scripts   example-native@1.0.0 (install: node-gyp rebuild)\n',1,'Unreviewed npm install scripts'],
   ['npm error genuine failure\n',1,'npm error genuine failure'],
  ]){
