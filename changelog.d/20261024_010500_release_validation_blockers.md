@@ -28,6 +28,8 @@ bump: patch
 
 - Run the complete JavaScript dependency audit before native compilation while retaining its later registered gate.
 
+- Isolate sparse protocol Git checkouts from full source checkouts so missing promisor blobs cannot trigger an unprotected fetch during sparse-index removal.
+
 ### Security
 
 - Update both committed Tokio resolutions to 1.53.3 for RUSTSEC-2026-0386.

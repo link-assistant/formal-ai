@@ -291,8 +291,9 @@ jobs:
       - name: Check out this workflow's pinned release protocol
         uses: actions/checkout@v7
         timeout-minutes: 5
-        with: {persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1, filter: blob:none, sparse-checkout: "scripts\ndesktop/scripts"}
+        with: {path: .formal-ai-protocol-source, persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1, filter: blob:none, sparse-checkout: "scripts\ndesktop/scripts"}
       - name: Capture release protocol before selecting binary source
+        working-directory: .formal-ai-protocol-source
         env:
           NATIVE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
         run: |
@@ -429,8 +430,9 @@ jobs:
       - name: Check out this workflow's pinned release protocol
         uses: actions/checkout@v7
         timeout-minutes: 5
-        with: {persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1, filter: blob:none, sparse-checkout: "scripts\ndesktop/scripts"}
+        with: {path: .formal-ai-protocol-source, persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1, filter: blob:none, sparse-checkout: "scripts\ndesktop/scripts"}
       - name: Capture release protocol before selecting binary source
+        working-directory: .formal-ai-protocol-source
         env:
           NATIVE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
         run: |
@@ -903,8 +905,9 @@ jobs:
       - name: Check out this workflow's pinned release protocol
         uses: actions/checkout@v7
         timeout-minutes: 5
-        with: {persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1, filter: blob:none, sparse-checkout: "scripts\ndesktop/scripts"}
+        with: {path: .formal-ai-protocol-source, persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1, filter: blob:none, sparse-checkout: "scripts\ndesktop/scripts"}
       - name: Capture release protocol before selecting binary source
+        working-directory: .formal-ai-protocol-source
         env:
           NATIVE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
         run: |
@@ -1054,8 +1057,9 @@ jobs:
       - name: Check out this workflow's pinned release protocol
         uses: actions/checkout@v7
         timeout-minutes: 5
-        with: {persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1, filter: blob:none, sparse-checkout: "scripts\ndesktop/scripts"}
+        with: {path: .formal-ai-protocol-source, persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1, filter: blob:none, sparse-checkout: "scripts\ndesktop/scripts"}
       - name: Capture release protocol before selecting binary source
+        working-directory: .formal-ai-protocol-source
         env:
           NATIVE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
         run: |

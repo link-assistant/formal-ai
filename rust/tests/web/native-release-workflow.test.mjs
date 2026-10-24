@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import {readFileSync,mkdtempSync,mkdirSync,writeFileSync,existsSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join,dirname} from 'node:path';
+import {pathToFileURL} from 'node:url';
 import YAML from 'yaml';
 import {parseSpeedPolicy} from '../../../scripts/lib/ci-speed-policy.mjs';
 import {NATIVE_TARGETS} from '../../../scripts/native-release-artifact.mjs';
@@ -75,7 +76,7 @@ test('long Windows checkout paths are enabled before any native, desktop or CLI 
  }
 });
 
-test('protocol capture uses sparse source and the next checkout restores all build inputs',context=>{
+test('protocol capture is isolated from full source and survives unavailable promisor blobs',context=>{
  const workflow=YAML.parse(text),folders=['scripts','desktop/scripts'];
  assert.equal(workflow.env.GIT_HTTP_LOW_SPEED_LIMIT,'1024');
  assert.equal(workflow.env.GIT_HTTP_LOW_SPEED_TIME,'20');
@@ -84,29 +85,56 @@ test('protocol capture uses sparse source and the next checkout restores all bui
   const index=steps.findIndex(step=>step.uses?.startsWith('actions/checkout@')&&step.with?.ref==='${{ github.workflow_sha }}');
   const protocol=steps[index],source=steps.slice(index+1).find(step=>step.uses?.startsWith('actions/checkout@'));
   assert.equal(protocol.with.filter,'blob:none',name);
+  assert.equal(protocol.with.path,'.formal-ai-protocol-source',name);
   assert.deepEqual(protocol.with['sparse-checkout'].split('\n'),folders,name);
   assert.notEqual(protocol.with['sparse-checkout-cone-mode'],false,name);
   assert.equal(source.with.ref,'${{ github.sha }}',name);
   assert.equal(source.with['fetch-depth'],0,name);
   assert.equal(source.with['sparse-checkout'],undefined,name);
   assert.equal(source.with.filter,undefined,name);
+  assert.equal(source.with.path,undefined,name);
+  const capture=steps.find(step=>step.name?.startsWith('Capture release protocol'));
+  assert.equal(capture['working-directory'],protocol.with.path,name);
  }
  const root=mkdtempSync(join(tmpdir(),'formal-ai-protocol-sparse-'));
  context.after(()=>rmSync(root,{recursive:true,force:true}));
+ const seed=join(root,'seed'),remote=join(root,'remote.git'),workspace=join(root,'workspace');
+ const protocol=join(workspace,'.formal-ai-protocol-source'),captured=join(root,'captured');
  const files=['scripts/protocol.mjs','desktop/scripts/prepare.mjs','rust/src/main.rs','data/seed/fixture.lino'];
- for(const file of files){mkdirSync(dirname(join(root,file)),{recursive:true});writeFileSync(join(root,file),'fixture\n');}
- const git=args=>{
-  const result=boundedCommandSync('git',['-c','core.hooksPath=/dev/null','-c','commit.gpgsign=false',...args],{cwd:root,timeout:5000,maxBuffer:1048576});
+ // Distinct blobs leave omitted source unavailable in the filtered clone.
+ const contents=new Map(files.map(file=>[file,'fixture '+file+'\n']));
+ for(const [file,content]of contents){mkdirSync(dirname(join(seed,file)),{recursive:true});writeFileSync(join(seed,file),content);}
+ const git=(args,cwd=seed,status=0)=>{
+  const result=boundedCommandSync('git',['-c','core.hooksPath=/dev/null','-c','commit.gpgsign=false',...args],{cwd,timeout:5000,maxBuffer:1048576});
   assert.equal(result.error,undefined,String(result.error));assert.equal(result.cleanup_complete,true);
-  assert.equal(result.status,0,result.stderr.toString());
+  assert.equal(result.status,status,result.stderr.toString());
+  return result.stdout.toString().trim();
  };
  git(['init','--quiet']);git(['add','--',...files]);
  git(['-c','user.name=Fixture','-c','user.email=fixture@example.invalid','commit','--quiet','-m','fixture']);
- git(['sparse-checkout','set','--cone',...folders]);
- assert.ok(existsSync(join(root,files[0]))&&existsSync(join(root,files[1])));
- assert.equal(existsSync(join(root,files[2])),false);assert.equal(existsSync(join(root,files[3])),false);
- git(['sparse-checkout','disable']);
- for(const file of files)assert.equal(readFileSync(join(root,file),'utf8'),'fixture\n');
+ git(['clone','--bare','--quiet',seed,remote]);
+ git(['config','uploadpack.allowFilter','true'],remote);
+ const url=pathToFileURL(remote).href;
+ git(['clone','--no-checkout','--depth','1','--filter=blob:none',url,protocol]);
+ git(['sparse-checkout','set','--cone',...folders],protocol);
+ git(['checkout','--force','HEAD'],protocol);
+ assert.equal(git(['config','--get','remote.origin.promisor'],protocol),'true');
+ assert.ok(git(['rev-list','--objects','--all','--missing=print'],protocol).split('\n').some(line=>line.startsWith('?')));
+ for(const file of files.slice(2))assert.equal(existsSync(join(protocol,file)),false);
+ mkdirSync(captured);
+ for(const [index,file]of files.slice(0,2).entries())writeFileSync(join(captured,String(index)),readFileSync(join(protocol,file)));
+ git(['remote','set-url','origin',join(root,'unavailable.git')],protocol);
+ // Reusing the sparse repository reproduces the CI failure before checkout.
+ git(['sparse-checkout','disable'],protocol,128);
+ // The action clears the workspace after capture, then fetches a full source.
+ rmSync(workspace,{recursive:true,force:true});
+ git(['clone','--quiet',url,workspace]);
+ git(['remote','set-url','origin',join(root,'unavailable.git')],workspace);
+ git(['reset','--hard','HEAD'],workspace);
+ assert.equal(git(['config','--get','remote.origin.promisor'],workspace,1),'');
+ assert.equal(git(['config','--get','core.sparseCheckout'],workspace,1),'');
+ for(const [file,content]of contents)assert.equal(readFileSync(join(workspace,file),'utf8'),content);
+ for(const [index,file]of files.slice(0,2).entries())assert.equal(readFileSync(join(captured,String(index)),'utf8'),contents.get(file));
 });
 
 test('only Intel native carries explicit cold-build debt and a pinned process-group deadline',()=>{

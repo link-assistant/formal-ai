@@ -532,3 +532,29 @@ installer's existing mode explicitly to `ci`; mutable `install` must not silentl
 replace the reviewed graph. Keep the UUID warning fatal and add its observed
 diagnostic to the installer regression fixtures. No package installation or new
 toolchain is required to reproduce and fix this failure locally.
+
+## Isolate protocol partial clones from the full source checkout
+
+All four lint lanes, all eight native producers and the VSIX package passed on
+`61c247eb3`. The Intel Mac CLI job then failed before packaging when the next
+checkout ran `git sparse-checkout disable`. That operation lazily fetched missing
+blobs from the previous protocol partial clone; the existing low-speed bound
+stopped a stalled transfer, and the checkout exited 128. The complete 152,671-byte
+[job log](https://github.com/link-assistant/formal-ai/actions/runs/40048238520/job/120741533987)
+has SHA-256 `8a9e788348b1a88b5e87925d72f64dc55aa0cf63e89b9946456c16a5224154f7`.
+
+Keep each native, desktop, CLI and VSIX protocol checkout in a separate workspace
+subdirectory. Capture its exact scripts and Git identity from that directory into
+the existing runner-temporary location before checking out the complete source
+at the workspace root. The full source no longer inherits a sparse index or
+promisor remote. Keep all immutable refs, credentials, fetch depths, transfer and
+job deadlines, capture scripts and build assertions unchanged. Verify the whole
+parsed workflow differs only in the four protocol paths and capture directories.
+
+The local regression uses a filtered clone of a tiny local bare Git repository,
+with distinct source blobs so omitted content is actually missing. After making
+its promisor remote unavailable, the old sparse-disable path reproduces exit 128.
+An independent full source checkout then resets successfully with its remote
+unavailable, preserves every source byte and leaves the captured protocol intact.
+This exercises the failure without GitHub effects, external downloads or Rust
+compilation.
