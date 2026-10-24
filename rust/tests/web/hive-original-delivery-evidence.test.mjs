@@ -463,6 +463,11 @@ test('external task credentials bind canonical owner and repository and prefligh
   assert.ok(steps.findIndex(value => value.id === 'gh') < steps.findIndex(value => value.id === 'claim'));
   assert.equal(steps.find(value => value.id === 'gh').env.GH_TOKEN, '${{ steps.task_app.outputs.token || secrets.AUTOMATION_TOKEN }}');
   assert.ok(!steps.some(value => value.uses?.endsWith('/resolve-github-token')), 'current repository resolver cannot authorize canonical external fixtures');
+  const early = workflow.jobs.admission.steps.find(step => step.run?.endsWith('hive-delivery-attempt.mjs configuration'));
+  assert(early, 'missing credentials fail in admission before allocating build/image jobs');
+  assert.match(early.if, /steps\.admit\.outputs\.admitted == 'true'.*steps\.admit\.outputs\.execute == 'true'/u);
+  assert.equal(early.env.AUTOMATION_TOKEN, '${{ secrets.AUTOMATION_TOKEN }}');
+  assert.equal(early.env.AUTOMATION_APP_PRIVATE_KEY, '${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}');
 });
 test('durable result publication is isolated from untrusted compiler execution and precedes final qualification', () => {
   const workflow = parse(readFileSync(new URL('.github/workflows/hive-original-delivery.yml', new URL('../../../', import.meta.url)), 'utf8'));

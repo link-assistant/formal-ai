@@ -106,7 +106,10 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     assert.equal(args.length, 1); assert.match(args[0], /^[1-9]\d*$/u);
     const outcome = await applyOwnedHiveClaim({reader, producer, claimArtifactId: Number(args[0])});
     process.stdout.write(JSON.stringify(writeCleanupOutcome(outcome, directory), null, 2) + '\n');
-    if (outcome.state !== 'completed') process.exitCode = 1;
+    process.stderr.write(`Owned cleanup: state=${outcome.state}; owner=${outcome.sourceRun}/${outcome.sourceAttempt}; `
+      + `closed=${outcome.cleanupReceipt?.closed ?? 'unknown'}; retained=${outcome.cleanupReceipt?.retained ?? 'unknown'}; `
+      + `delivery-credit=false\n`);
+    if (!['completed', 'not-started'].includes(outcome.state)) process.exitCode = 1;
   } else {
     const options = new Map();
     for (const arg of args) {

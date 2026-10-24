@@ -68,6 +68,13 @@ jobs:
           path: ${{ runner.temp }}/hive-admission/selection.json
           if-no-files-found: error
           retention-days: 90
+      - name: Require external task credentials before allocating builds or images
+        if: ${{ steps.admit.outputs.admitted == 'true' && steps.admit.outputs.execute == 'true' }}
+        env:
+          AUTOMATION_TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
+          AUTOMATION_APP_ID: ${{ vars.AUTOMATION_APP_ID || secrets.AUTOMATION_APP_ID }}
+          AUTOMATION_APP_PRIVATE_KEY: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+        run: node .hive-protocol/scripts/hive-delivery-attempt.mjs configuration
   build:
     if: ${{ needs.admission.outputs.admitted == 'true' &&
       needs.admission.outputs.execute == 'true' }}
