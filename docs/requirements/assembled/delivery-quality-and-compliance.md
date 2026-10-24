@@ -624,8 +624,16 @@ acceptance and released-image evidence must be distinguished.
 | Live memory | Migrate validated supported older schema without loss. For incompatible bytes, preserve the original and select an explicitly reported new current-schema store. Permission/IO failures remain distinct; second startup is idempotent. |
 | Shutdown | A serving process handles SIGTERM within the container stop timeout, including PID1 and active connections; no local native build is permitted for this work. |
 
-Acceptance uses the exact three issue bodies and PR branches named in issue
-1364, with source provenance. Each client must produce the commented program,
+Acceptance preserves the complete three original issue bodies named in issue
+1364, with source provenance. Following the latest credential requirement,
+the default GitHub Actions token uses an owned orphan branch, issue and PR in
+this repository. The pinned Hive generator stages the workflow in `ci/` and
+the original harness executes it with `act`. Only its two workflow location
+instructions change; reversing those instructions must reproduce the original
+complete body hash. Optional credentials may use the historical external PR
+branches. Receipts distinguish these transports and never claim an external
+repository write from same-repository acceptance. Missing optional credentials
+must not block the release or this acceptance. Each client must produce the commented program,
 build/run instructions, verifier and working workflow, push everything, update
 the ready PR, exit zero, and leave a clean tree without build outputs. A second
 run is a no-op success. No run may make more than two identical failing calls.

@@ -6,6 +6,8 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { requireHistoricalTask } from './lib/hive-delivery-admission.mjs';
+import {requireIsolatedTask, requireIsolatedIssue, requireIsolatedPullRequest,
+  isolatedTaskTransport} from './lib/hive-isolated-task.mjs';
 import { requireHarnessDelivery,
  requireReadyPullRequest,
  requireProgramMember,
@@ -19,8 +21,20 @@ const tool = process.env.E2E_TOOL;
 const language = inputs.clients[tool];
 assert(language);
 const selected = requireHarnessDelivery(evidence, tool);
+const identity = JSON.parse(fs.readFileSync(path.join(logDirectory, 'source-binary-identity.json')));
+const isolatedFile = path.join(logDirectory, 'isolated-task.json');
+const isolated = fs.existsSync(isolatedFile) ? JSON.parse(fs.readFileSync(isolatedFile)) : null;
 let historical = null;
-if (process.env.HIVE_ISSUE1364_MODE === 'true') {
+if (isolated) {
+  const manifest = JSON.parse(fs.readFileSync('data/benchmarks/issue-1364-client-replay-inputs.json'));
+  requireIsolatedTask(isolated, {repository: process.env.GITHUB_REPOSITORY,
+    run: Number(process.env.GITHUB_RUN_ID), attempt: Number(process.env.GITHUB_RUN_ATTEMPT),
+    source: process.env.HIVE_ADMISSION_SOURCE, protocolHead: process.env.GITHUB_WORKFLOW_SHA,
+    inputHash: process.env.HIVE_INPUT_SHA256, tool, task: manifest.clients[tool]});
+  assert.equal(isolated.cleanup, null, 'independent verification precedes owned fixture cleanup');
+  assert.equal(selected.repository, isolated.repository);
+  assert.equal(selected.number, isolated.resource.pullRequestNumber);
+} else if (process.env.HIVE_ISSUE1364_MODE === 'true') {
   const manifestBytes = fs.readFileSync('data/benchmarks/issue-1364-client-replay-inputs.json');
   historical = {
     manifest: JSON.parse(manifestBytes),
@@ -40,7 +54,9 @@ const api = endpoint => JSON.parse(execFileSync('gh', ['api', 'repos/' + selecte
   maxBuffer: 2 * 1024 * 1024
 }));
 const pullRequest = api('pulls/' + selected.number);
+if (isolated) requireIsolatedIssue(api('issues/' + isolated.resource.issueNumber), isolated);
 const ready = value => {
+  if (isolated) return requireIsolatedPullRequest(value, isolated);
   if (historical) {
     const entry = requireHistoricalTask({
       ...historical,
@@ -84,7 +100,6 @@ try {
   }));
   requireExactProgramOutput(result, inputs.expectedStdout);
   assert.equal(ready(api('pulls/' + selected.number)), head, 'PR changed during independent verification');
-  const identity = JSON.parse(fs.readFileSync(path.join(logDirectory, 'source-binary-identity.json')));
   assert.equal(identity.sameRunBinary, true);
   assert.equal(identity.binarySha256, identity.actualTaskImageBinarySha256);
   fs.writeFileSync(path.join(logDirectory, 'independent-delivery-receipt.json'), JSON.stringify({
@@ -100,6 +115,7 @@ try {
     result,
     originalHarnessPassed: true,
     ready: true,
+    ...(isolated ? {taskTransport: isolatedTaskTransport(isolated), readyBeforeOwnedCleanup: true} : {}),
     authorship: 'not-verified-by-this-oracle',
     autonomousAuthorshipCredit: 0
   }, null, 2) + '\n');

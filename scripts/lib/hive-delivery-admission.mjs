@@ -232,7 +232,8 @@ export function clientAdmission({
       action: 'reuse',
       testedHead: success.testedHead,
       run: success.run,
-      attempt: success.attempt
+      attempt: success.attempt,
+      ...(success.acceptance.taskTransport ? {taskTransport: success.acceptance.taskTransport} : {})
     };
   }
   if (attempts.some(record => record.run === currentRun)) return {

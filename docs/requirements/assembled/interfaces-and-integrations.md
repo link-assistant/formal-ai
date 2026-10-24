@@ -477,6 +477,19 @@ live in `docs/case-studies/issue-1181/`.
 
 ## Issue #1187 Optional GitHub Credentials in Every Workflow
 
+The original Hive three-client delivery also follows this contract. Missing or
+unusable optional App credentials select the usable token fallback. At layer
+`default`, the pinned Hive generator creates an owned orphan branch, issue and
+PR here, stages the test workflow in `ci/`, and runs it using Hive's `act`
+transport. The original requirements, independent compiler/stdout checks and
+second-pass no-op oracle remain mandatory. The separate trusted finalizer
+closes the owned issue and PR and deletes their branches only after the complete
+owner workflow is terminal, including cancellation. Complete log custody and
+live API corroboration are required before those bounded cleanup writes.
+Same-repository acceptance must be reported separately from historical external
+repository delivery. This supersedes the credential prerequisite introduced in
+PR #1403; additional secrets are optional in this workload too.
+
 Issue [#1187](https://github.com/link-assistant/formal-ai/issues/1187) (E151,
 part of the E127 umbrella #1183): tokens are "not mandatory, but optional in
 all cases". One resolver chooses a GitHub App, then one `AUTOMATION_TOKEN`

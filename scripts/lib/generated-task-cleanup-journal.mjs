@@ -8,6 +8,7 @@ const source = /^[a-f0-9]{40}$/u, hash = /^[a-f0-9]{64}$/u;
 const cleanupRoots = ['scripts/finalize-owned-hive-delivery-runs.mjs',
   'scripts/lib/generated-task-cleanup-journal.mjs', 'scripts/finalize-generated-test-issues.mjs',
   'scripts/lib/generated-task-custody.mjs', 'scripts/close-finished-test-issues.mjs',
+  'scripts/lib/hive-isolated-task.mjs', 'scripts/lib/hive-delivery-evidence.mjs',
   'scripts/collect-test-replays.mjs', 'scripts/collect-ci-failures.mjs',
   'scripts/lib/hive-delivery-journal.mjs', 'scripts/lib/hive-delivery-source.mjs',
   'scripts/github-artifact-by-identifier.mjs', '.github/workflows/hive-original-delivery-finalize.yml'];

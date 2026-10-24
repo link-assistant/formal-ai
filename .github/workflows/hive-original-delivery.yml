@@ -68,7 +68,7 @@ jobs:
           path: ${{ runner.temp }}/hive-admission/selection.json
           if-no-files-found: error
           retention-days: 90
-      - name: Require external task credentials before allocating builds or images
+      - name: Report optional credentials and the default-token isolation fallback
         if: ${{ steps.admit.outputs.admitted == 'true' && steps.admit.outputs.execute == 'true' }}
         env:
           AUTOMATION_TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
@@ -288,10 +288,12 @@ jobs:
           HIVE_PUBLISHED_RUNTIME_FILE: ${{ needs.admission.outputs.published == 'true' &&
             format('{0}/hive-admission/selection.json', runner.temp) || '' }}
           HIVE_EVIDENCE_PUBLISH_DIRECTORY: ${{ runner.temp }}/hive-original-evidence/publish
+          HIVE_ATTEMPT_CLAIM: ${{ runner.temp }}/hive-attempt/claim.json
         run: >
           printf '%s\n' "HIVE_ADMISSION_SELECTION=$HIVE_ADMISSION_SELECTION"
           "HIVE_PUBLISHED_RUNTIME_FILE=$HIVE_PUBLISHED_RUNTIME_FILE"
-          "HIVE_EVIDENCE_PUBLISH_DIRECTORY=$HIVE_EVIDENCE_PUBLISH_DIRECTORY" >>
+          "HIVE_EVIDENCE_PUBLISH_DIRECTORY=$HIVE_EVIDENCE_PUBLISH_DIRECTORY"
+          "HIVE_ATTEMPT_CLAIM=$HIVE_ATTEMPT_CLAIM" >>
           "$GITHUB_ENV"
       - uses: actions/checkout@v7
         with:
@@ -363,33 +365,23 @@ jobs:
           attempt
         id: target
         run: node .hive-protocol/scripts/hive-delivery-attempt.mjs target
-      - name: Observe configured credential availability without exposing secrets
-        id: credential_config
-        env:
-          APP_ID: ${{ vars.AUTOMATION_APP_ID || secrets.AUTOMATION_APP_ID }}
-          APP_KEY: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
-        run: if [ -n "$APP_ID" ] && [ -n "$APP_KEY" ]; then echo "has_app=true" >>
-          "$GITHUB_OUTPUT"; else echo "has_app=false" >> "$GITHUB_OUTPUT"; fi
-      - name: Mint token only for the authenticated canonical task repository
-        id: task_app
-        if: ${{ steps.credential_config.outputs.has_app == 'true' }}
-        continue-on-error: true
-        uses: actions/create-github-app-token@v3
+      - name: Resolve optional credentials with the repository token as fallback
+        id: task_token
+        uses: ./.hive-protocol/.github/actions/automation-token # zizmor: ignore[self-repository] Trusted workflow_sha protocol checkout.
         with:
           app-id: ${{ vars.AUTOMATION_APP_ID || secrets.AUTOMATION_APP_ID }}
-          private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+          app-private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+          automation-token: ${{ secrets.AUTOMATION_TOKEN }}
+          github-token: ${{ github.token }}
           owner: ${{ steps.target.outputs.target_owner }}
           repositories: ${{ steps.target.outputs.target_name }}
-          permission-contents: write
-          permission-issues: write
-          permission-pull-requests: write
           permission-actions: write
           permission-workflows: write
       - name: Read-only exact-target push and available workflow-scope preflight
         id: gh
         env:
-          GH_TOKEN: ${{ steps.task_app.outputs.token || secrets.AUTOMATION_TOKEN }}
-          HIVE_CREDENTIAL_LAYER: ${{ steps.task_app.outcome == 'success' && 'app' || 'token' }}
+          GH_TOKEN: ${{ steps.task_token.outputs.token }}
+          HIVE_CREDENTIAL_LAYER: ${{ steps.task_token.outputs.layer }}
         run: node .hive-protocol/scripts/hive-delivery-attempt.mjs credentials
       - name: Claim one bounded client effect after fresh CI and source revalidation
         id: claim
@@ -470,6 +462,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: read
+      issues: read
     strategy:
       fail-fast: false
       matrix:

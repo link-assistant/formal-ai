@@ -1,5 +1,6 @@
 // Custody grants cleanup of generated tests only; it never certifies feature delivery.
 import {digest} from './native-session-projections.mjs';
+import {isolatedFixturePrefix} from './hive-isolated-task.mjs';
 export {digest};
 
 export const originalWorkflow = '.github/workflows/hive-original-delivery.yml';
@@ -46,17 +47,31 @@ export function generatedIssue(issue) {
 }
 export function custodyFromLog({repository, run, job, log, generator}) {
   const issueNumbers = new Set(), finalIssueUrls = new Set();
+  const isolatedFixtures = [];
   for (const line of String(log.text ?? '').split(/\r?\n/u)) {
     const clean = line.replace(/^\d{4}-\d\d-\d\dT[\d:.]+Z\s*/u, '');
     const match = /^\s*Final issue URL: https:\/\/github\.com\/([^/]+\/[^/]+)\/issues\/([1-9]\d*)\s*$/u.exec(clean);
     if (match) finalIssueUrls.add(`https://github.com/${match[1]}/issues/${match[2]}`);
     if (match?.[1] === repository) issueNumbers.add(Number(match[2]));
+    if (clean.startsWith(isolatedFixturePrefix)) {
+      const value = clean.slice(isolatedFixturePrefix.length);
+      try {
+        const fixture = Buffer.byteLength(value) <= 32768 ? JSON.parse(value) : null;
+        isolatedFixtures.push(fixture);
+        const resource = fixture?.resource;
+        if (Number.isSafeInteger(resource?.issueNumber) && resource.issueNumber > 0
+          && resource.issueUrl === `https://github.com/${repository}/issues/${resource.issueNumber}`) {
+          issueNumbers.add(resource.issueNumber); finalIssueUrls.add(resource.issueUrl);
+        }
+      } catch { isolatedFixtures.push(null); }
+    }
   }
   return {
     schema: 'generated-e2e-issue-custody/v1', repository, run: run.id, job: job.id,
     sourceHead: run.head_sha, workflow: run.path?.split('@')[0],
     generator,
     issueNumbers: [...issueNumbers].sort((a, b) => a - b), finalIssueUrls: [...finalIssueUrls].sort(),
+    ...(isolatedFixtures.length ? {isolatedFixtures} : {}),
     logSha256: digest(log.text ?? ''), logBytes: log.bytesReceived ?? Buffer.byteLength(log.text ?? ''),
     complete: log.ok === true && log.truncated !== true && log.downloadTruncated !== true
       && log.timedOut !== true && log.streamComplete === true && log.tailComplete === true,

@@ -451,20 +451,26 @@ test('released completion cannot be replaced by unrelated candidate events and e
   assert.match(steps[effect].env.CLAIM_ARTIFACT_ID, /steps.claim.outputs.artifact-id/);
   assert.ok(cleanup.jobs.prepare.steps.some(step => step.with?.name === '${{ steps.prepare.outputs.progress_name }}' && step.with['retention-days'] >= 2));
 });
-test('external task credentials bind canonical owner and repository and preflight before consuming an effect attempt', () => {
+test('the shared credential resolver scopes optional App access and retains the default token before claims', () => {
   const workflow = parse(readFileSync(new URL('.github/workflows/hive-original-delivery.yml', new URL('../../../', import.meta.url)), 'utf8'));
   const steps = workflow.jobs.delivery.steps,
-    app = steps.find(value => value.id === 'task_app');
-  assert.equal(app.uses, 'actions/create-github-app-token@v3');
+    app = steps.find(value => value.id === 'task_token');
+  assert.equal(app.uses, './.hive-protocol/.github/actions/automation-token');
   assert.equal(app.with.owner, '${{ steps.target.outputs.target_owner }}');
   assert.equal(app.with.repositories, '${{ steps.target.outputs.target_name }}');
-  for (const permission of ['contents', 'issues', 'pull-requests', 'actions', 'workflows']) assert.equal(app.with['permission-' + permission], 'write');
+  for (const permission of ['actions', 'workflows']) assert.equal(app.with['permission-' + permission], 'write');
+  assert.equal(app.with['github-token'], '${{ github.token }}');
+  const resolver = parse(readFileSync(new URL('.github/actions/automation-token/action.yml', new URL('../../../', import.meta.url)), 'utf8'));
+  const mint = resolver.runs.steps.find(step => step.id === 'app-token');
+  assert.equal(mint['continue-on-error'], true, 'an unusable optional App must retain its fallback');
+  assert.equal(mint.with.owner, '${{ inputs.owner }}');
+  for (const permission of ['contents', 'issues', 'pull-requests']) assert.equal(mint.with['permission-' + permission], 'write');
   assert.ok(steps.findIndex(value => value.id === 'target') < steps.indexOf(app));
   assert.ok(steps.findIndex(value => value.id === 'gh') < steps.findIndex(value => value.id === 'claim'));
-  assert.equal(steps.find(value => value.id === 'gh').env.GH_TOKEN, '${{ steps.task_app.outputs.token || secrets.AUTOMATION_TOKEN }}');
-  assert.ok(!steps.some(value => value.uses?.endsWith('/resolve-github-token')), 'current repository resolver cannot authorize canonical external fixtures');
+  assert.equal(steps.find(value => value.id === 'gh').env.GH_TOKEN, '${{ steps.task_token.outputs.token }}');
+  assert.equal(steps.find(value => value.id === 'gh').env.HIVE_CREDENTIAL_LAYER, '${{ steps.task_token.outputs.layer }}');
   const early = workflow.jobs.admission.steps.find(step => step.run?.endsWith('hive-delivery-attempt.mjs configuration'));
-  assert(early, 'missing credentials fail in admission before allocating build/image jobs');
+  assert(early, 'optional credential availability is reported without blocking the default layer');
   assert.match(early.if, /steps\.admit\.outputs\.admitted == 'true'.*steps\.admit\.outputs\.execute == 'true'/u);
   assert.equal(early.env.AUTOMATION_TOKEN, '${{ secrets.AUTOMATION_TOKEN }}');
   assert.equal(early.env.AUTOMATION_APP_PRIVATE_KEY, '${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}');
