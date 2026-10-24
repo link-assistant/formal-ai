@@ -52,11 +52,21 @@ and finite recovery for discovery reads under the unchanged deadline. Live
 writer/job observations remain single-attempt and every source/lease gate is
 preserved. Do not rerun the unchanged failed main run again; validate the fixed
 source through the follow-up's CI and next default-branch run.
-Operational mitigation: workflow `hive-original-delivery-finalize.yml` (ID
-`392761102`) is temporarily disabled after a later prepare job logged 102 HTTP
-403 denials. Other release/test workflows remain enabled. Re-enable this exact
-workflow after the corrected follow-up merges, confirm its state is `active`,
-and verify actual hosted recovery. Restoring it is required before completion.
+PR #1405 merged as `9739704f886447ef05f586be942b73e00e512ff5` after all 18
+workflows passed (152 successful checks and 24 conditional skips). The paused
+finalizer (`392761102`) was re-enabled immediately and verified `active`.
+Multiple hosted discovery runs passed, and a read-only live historical-cursor
+check authenticated the journal in 20 requests. A scheduled full sweep remains
+to be observed; no workflow is intentionally left disabled.
+
+The new main run `40109825719` then exposed a separate Codex TUI startup race:
+the harness sent Enter while its model was still loading and inside the pinned
+client's paste-suppression window. See
+[`codex-tui-startup-race.md`](codex-tui-startup-race.md) for the captured evidence
+and follow-up regression. Release preparation had not started at this failure;
+the latest released version remains `v0.355.7`. Continue fixing and validating
+the follow-up, self-merge only its exact green head, and monitor the resulting
+release, public downloads, container tags and original three-client acceptance.
 
 ## Findings and implementation
 

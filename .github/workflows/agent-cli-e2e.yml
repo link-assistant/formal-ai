@@ -103,6 +103,13 @@ jobs:
         with:
           bun-version-file: .bun-version
           no-cache: true
+      - name: Replay captured TUI startup regressions without external clients
+        if: ${{ matrix.part == 'scenarios' && steps.ledger.outputs.already-green != 'true' }}
+        timeout-minutes: 5
+        working-directory: experiments/agent_cli_e2e/issue_819_tui
+        run: |
+          bun install --frozen-lockfile
+          bun test
       - name: Install @link-assistant/agent CLI
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 11

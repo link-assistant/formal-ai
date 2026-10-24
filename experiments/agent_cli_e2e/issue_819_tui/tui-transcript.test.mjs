@@ -8,6 +8,7 @@ import { captureAgentTui } from 'agent-commander';
 
 import {
   promptAfterFor,
+  promptInteractionsFor,
   startupInteractionsFor,
 } from './client-contract.mjs';
 
@@ -21,6 +22,20 @@ test('Claude confirms only the remaining bypass-permissions prompt', () => {
 
 test('Claude waits for the current interactive input prompt', () => {
   expect(promptAfterFor('claude')).toBe('$');
+});
+
+test('Codex submits once after model readiness, even when its footer arrives first', async () => {
+  const prompt = 'Find archive folder on my desktop';
+  const capture = await captureAgentTui({
+    tool: 'codex', workingDirectory: directory, executable: process.execPath,
+    prefixArgs: [join(directory, 'codex-startup-fixture.mjs')],
+    skipDefaultSafetyFlags: true, interactions: promptInteractionsFor('codex', prompt),
+    startupInteractions: startupInteractionsFor('codex'), timeoutMilliseconds: 5000,
+  });
+  expect(capture.exitCode).toBe(0);
+  expect(capture.transcript).toContain('Submitted: ' + prompt);
+  expect(capture.transcript).not.toContain('Prompt arrived while model was loading');
+  expect(capture.interactionCount).toBe(3);
 });
 
 test('published adapter preserves ordered states and writes replay artifacts', async () => {
