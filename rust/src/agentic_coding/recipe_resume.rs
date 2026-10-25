@@ -428,7 +428,10 @@ pub(super) fn plan_recipe_ci_fallback(
     if let Some(file) = completion.recipe.supporting_files.iter().find(|file| {
         !value("staged-workflow-prefix").is_empty()
             && file.path.starts_with(value("staged-workflow-prefix"))
-            && (file.path.ends_with(".yml") || file.path.ends_with(".yaml"))
+            && file
+                .path
+                .rsplit_once('.')
+                .is_some_and(|(_, extension)| matches!(extension, "yml" | "yaml"))
             && file
                 .source
                 .lines()
