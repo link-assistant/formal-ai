@@ -53,3 +53,9 @@ self_hosting_ledger
     until "fd721a2277c58932fa49c65652db06b29a8993f4"
     changed_lines "1601"
     commits "7"
+  release
+    tag "v0.355.9"
+    since "v0.355.8"
+    until "2621c2193ec15d2ccc04f347dd192f62699142e5"
+    changed_lines "789"
+    commits "8"

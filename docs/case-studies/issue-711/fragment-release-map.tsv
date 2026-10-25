@@ -888,3 +888,4 @@ changelog.d/20261024_044000_hive_pre_effect_finalization.md	0.355.7
 changelog.d/20261024_150000_hive_default_token_fallback.md	0.355.8
 changelog.d/20261024_210000_hive_historical_policy_roots.md	0.355.8
 changelog.d/20261024_234000_codex_tui_readiness.md	0.355.8
+changelog.d/20261025_062000_released_memory_lifecycle.md	0.355.9
