@@ -867,6 +867,12 @@ jobs:
         run: bash scripts/collect-build-artifacts.sh
       - name: Bind native test artifacts to their actual build inputs
         run: node scripts/native-test-artifact.mjs write dist/tests release all
+      - name: Check captured client latency before distributing native executables
+        timeout-minutes: 2
+        run: |
+          timeout --kill-after=5s 90s node scripts/native-test-artifact.mjs run dist/tests release all released_client_request_latency::absent_predictions_do_not_resolve_the_captured_coding_prompt
+          timeout --kill-after=5s 90s node scripts/native-test-artifact.mjs run dist/tests release all released_client_request_latency::released_client_requests_plan_without_consuming_the_delivery_budget
+          timeout --kill-after=5s 90s node scripts/native-test-artifact.mjs run dist/tests release all released_client_request_latency::released_agent_request_is_bounded_through_native_http integration
       - name: Capture complete current native agentic protocols
         timeout-minutes: 5
         run: node scripts/capture-native-agentic-protocol.mjs "$RUNNER_TEMP/native-agentic-protocol-captures" dist/formal-ai

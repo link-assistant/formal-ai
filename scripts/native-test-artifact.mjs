@@ -32,10 +32,10 @@ export function verifyReceipt(directory,identity,binary,{targets=TARGETS}={}){
  assert.equal(hash(binary),receipt.files.binary);
  return receipt;
 }
-export function runVerifiedTest(directory,identity,binary,testName,cwd=process.cwd()){
- // Only unit executes here; unrelated test executables need not cross this transfer.
- verifyReceipt(directory,identity,binary,{targets:['unit']});
- const executable=resolve(directory,'unit');chmodSync(executable,0o755);
+export function runVerifiedTest(directory,identity,binary,testName,cwd=process.cwd(),target='unit'){
+ // Only the requested, receipt-bound target executes; unrelated files need not transfer.
+ verifyReceipt(directory,identity,binary,{targets:[target]});
+ const executable=resolve(directory,target);chmodSync(executable,0o755);
  const listing=execFileSync(executable,['--list','--format','terse'],{cwd,encoding:'utf8',maxBuffer:10e6});
  assert.equal(listing.split(/\r?\n/u).filter(line=>line===testName+': test').length,1);
  const result=spawnSync(executable,['--exact',testName,'--nocapture'],{cwd,stdio:'inherit'});
@@ -43,10 +43,10 @@ export function runVerifiedTest(directory,identity,binary,testName,cwd=process.c
  assert.equal(result.signal,null);assert.equal(result.status,0);return result.status;
 }
 if(import.meta.url===pathToFileURL(process.argv[1]??'').href){
- const [mode,directory,profile,features,testName]=process.argv.slice(2),cwd=process.cwd();
+ const [mode,directory,profile,features,testName,target='unit']=process.argv.slice(2),cwd=process.cwd();
  assert.ok(directory&&profile&&features);
  const identity=buildIdentity(cwd,profile,features);
  if(mode==='write')writeReceipt(directory,identity);
- else if(mode==='run')runVerifiedTest(directory,identity,resolve('rust/target/release/formal-ai'),testName,cwd);
+ else if(mode==='run')runVerifiedTest(directory,identity,resolve('rust/target/release/formal-ai'),testName,cwd,target);
  else assert.fail(mode);
 }
