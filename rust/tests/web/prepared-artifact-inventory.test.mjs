@@ -162,6 +162,59 @@ function hygieneFixture() {
     inventory
   };
 }
+test('released-client placeholder is removed only after fresh source and empty-file checks', () => {
+  const fixture = hygieneFixture();
+  try {
+    fixture.save('.gitkeep', '');
+    fixture.save('nested/.gitkeep', '');
+    fixture.save('README.md', 'Keep existing documentation.\n');
+    fixture.localGit('add', '--', '.gitkeep', 'nested/.gitkeep', 'README.md');
+    fixture.localGit('-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid', 'commit', '-qm', 'bootstrap');
+    const observed = fixture.execute(api.recipeArtifactInventoryCommand(sourcePaths, evidenceRoot));
+    assert.equal(observed.status, 0, observed.stderr);
+    const inventory = api.recipeArtifactInventoryResult(observed.stdout, sourcePaths, evidenceRoot);
+    assert(inventory.ownedPaths.includes('.gitkeep'));
+    assert(!inventory.ownedPaths.includes('nested/.gitkeep'));
+    const hygiene = preparedRecipeHygiene(sourcePaths, [], inventory);
+    assert(hygiene.commitFiles.includes('.gitkeep'));
+    const result = fixture.execute(hygiene.command);
+    assert.equal(result.status, 0, result.stderr);
+    assert(!fs.existsSync(path.join(fixture.directory, '.gitkeep')));
+    assert(fs.existsSync(path.join(fixture.directory, 'nested/.gitkeep')));
+    assert.equal(fs.readFileSync(path.join(fixture.directory, 'README.md'), 'utf8'), 'Keep existing documentation.\n');
+    assert.equal(fs.readFileSync(path.join(fixture.directory, 'main.rs'), 'utf8'), 'fn main() {}\n');
+  } finally { fs.rmSync(fixture.directory, {recursive:true, force:true}); }
+});
+test('changed placeholder bytes and missing replacement source prevent deletion', () => {
+  for(const mutation of ['placeholder', 'source']) {
+    const fixture = hygieneFixture();
+    try {
+      fixture.save('.gitkeep', '');
+      fixture.localGit('add', '--', '.gitkeep');
+      const observed = fixture.execute(api.recipeArtifactInventoryCommand(sourcePaths, evidenceRoot));
+      assert.equal(observed.status, 0, observed.stderr);
+      const inventory = api.recipeArtifactInventoryResult(observed.stdout, sourcePaths, evidenceRoot);
+      const hygiene = preparedRecipeHygiene(sourcePaths, [], inventory);
+      fixture.save(mutation === 'placeholder' ? '.gitkeep' : 'main.rs', mutation === 'placeholder' ? 'User content.\n' : '');
+      assert.notEqual(fixture.execute(hygiene.command).status, 0);
+      assert(fs.existsSync(path.join(fixture.directory, '.gitkeep')));
+    } finally { fs.rmSync(fixture.directory, {recursive:true, force:true}); }
+  }
+});
+test('nonempty and untracked placeholders remain outside the removal scope', () => {
+  const fixture = hygieneFixture();
+  try {
+    for(const tracked of [false, true]) {
+      fixture.save('.gitkeep', tracked ? 'User content.\n' : '');
+      if(tracked) fixture.localGit('add', '--', '.gitkeep');
+      const observed = fixture.execute(api.recipeArtifactInventoryCommand(sourcePaths, evidenceRoot));
+      assert.equal(observed.status, 0, observed.stderr);
+      const inventory = api.recipeArtifactInventoryResult(observed.stdout, sourcePaths, evidenceRoot);
+      assert(!inventory.ownedPaths.includes('.gitkeep'));
+      assert(fs.existsSync(path.join(fixture.directory, '.gitkeep')));
+    }
+  } finally { fs.rmSync(fixture.directory, {recursive:true, force:true}); }
+});
 test('qualified clean tracked artifacts untrack without physical deletion or new source staging', () => {
   const fixture = hygieneFixture();
   try {

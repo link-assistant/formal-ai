@@ -18,6 +18,7 @@ function policy() {
       sessionPattern: childValue(root, 'session-pattern'),
       sessionLimit: Number(childValue(root, 'session-limit')),
       streams: lines(root, 'stream'),
+      emptyPlaceholders: lines(root, 'empty-placeholder'),
       flags: lines(hygiene, 'output-flag'),
       binaryPrefixes: lines(hygiene, 'binary-prefix'),
       python,
@@ -53,13 +54,14 @@ function descriptor(sourcePaths, evidenceRoot) {
       });
     }
   }
-  const candidates = [...new Set([...outputs.map(entry => entry.output), ...installed.streams.map(member => evidenceRoot + member), evidenceRoot + 'session-id.txt'])];
+  const candidates = [...new Set([...outputs.map(entry => entry.output), ...installed.streams.map(member => evidenceRoot + member), evidenceRoot + 'session-id.txt', ...installed.emptyPlaceholders])];
   return {
     sourcePaths,
     evidenceRoot,
     outputs,
     candidates,
     streams: installed.streams,
+    emptyPlaceholders: installed.emptyPlaceholders,
     sessionPattern: installed.sessionPattern,
     sessionLimit: installed.sessionLimit,
     binaryPrefixes: installed.binaryPrefixes,

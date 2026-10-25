@@ -29,12 +29,14 @@ fn hygiene_policy() -> &'static crate::seed::parser::LinoNode {
 /// this does not grant authority to remove arbitrary files or execute a compiler.
 #[must_use]
 pub fn prepared_work_hygiene(paths: &[String]) -> Option<PreparedWorkHygiene> {
-    work_hygiene_with_policy(paths, None)
+    work_hygiene_with_policy(paths, None, &[], &[])
 }
 
 fn work_hygiene_with_policy(
     paths: &[String],
     session_policy: Option<&serde_json::Value>,
+    placeholders: &[String],
+    source_paths: &[String],
 ) -> Option<PreparedWorkHygiene> {
     let root = hygiene_policy().children.first()?;
     let values = |name: &str| {
@@ -62,7 +64,8 @@ fn work_hygiene_with_policy(
         .collect::<Vec<_>>();
     let plan = json!({"files":paths, "outputs":outputs, "ignored":ignored,
         "binary-prefixes":values("binary-prefix"), "evidence-root":evidence_root,
-        "empty-evidence-suffixes":suffixes,"session-policy":session_policy,"session-contract":session_contract()?});
+        "empty-evidence-suffixes":suffixes,"session-policy":session_policy,"session-contract":session_contract()?,
+        "empty-placeholders":placeholders,"source-paths":source_paths});
     let source_io = crate::seed::parser::parse_lino(include_str!(
         "../../embedded/data/meta/workspace-source-io.lino"
     ));
@@ -409,6 +412,7 @@ pub(super) fn prepared_recipe_hygiene_with_inventory(
     let mut combined = changed.to_vec();
     let mut session_policy = None;
     let mut evidence_members = Vec::new();
+    let mut placeholders = Vec::new();
     if let Some(inventory) = inventory {
         let contract = session_contract()?;
         let root_pattern = contract.get("rootPattern")?.as_str()?;
@@ -440,10 +444,25 @@ pub(super) fn prepared_recipe_hygiene_with_inventory(
             .map(|node| format!("{}{}", inventory.evidence_root, node.id))
             .collect();
         evidence_members.push(format!("{}session-id.txt", inventory.evidence_root));
+        let allowed_placeholders = installed
+            .children
+            .first()?
+            .children
+            .iter()
+            .filter(|node| node.name == "empty-placeholder")
+            .map(|node| node.id.clone())
+            .collect::<Vec<_>>();
         let mut observed = std::collections::BTreeSet::new();
         for path in &inventory.owned_paths {
-            if !observed.insert(path) || (!output_owned(path) && !evidence_members.contains(path)) {
+            if !observed.insert(path)
+                || (!output_owned(path)
+                    && !evidence_members.contains(path)
+                    && !allowed_placeholders.contains(path))
+            {
                 return None;
+            }
+            if allowed_placeholders.contains(path) {
+                placeholders.push(path.clone());
             }
             if !combined.contains(path) {
                 combined.push(path.clone());
@@ -455,7 +474,7 @@ pub(super) fn prepared_recipe_hygiene_with_inventory(
         source_paths.contains(path)
             || output_owned(path)
             || if inventory.is_some() {
-                evidence_members.contains(path)
+                evidence_members.contains(path) || placeholders.contains(path)
             } else {
                 path.starts_with(policy.find_child_value("evidence-root"))
                     && policy
@@ -466,7 +485,14 @@ pub(super) fn prepared_recipe_hygiene_with_inventory(
             }
     });
     known
-        .then(|| work_hygiene_with_policy(&combined, session_policy.as_ref()))
+        .then(|| {
+            work_hygiene_with_policy(
+                &combined,
+                session_policy.as_ref(),
+                &placeholders,
+                source_paths,
+            )
+        })
         .flatten()
 }
 

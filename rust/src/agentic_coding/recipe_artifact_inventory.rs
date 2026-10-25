@@ -113,6 +113,8 @@ fn descriptor(source_paths: &[String], evidence_root: &str) -> Option<Value> {
             .map(|member| format!("{evidence_root}{member}")),
     );
     candidates.push(format!("{evidence_root}session-id.txt"));
+    let placeholders = lines(policy(), "empty-placeholder");
+    candidates.extend(placeholders.iter().cloned());
     let library = crate::seed::parser::parse_lino(include_str!(
         "../../embedded/data/meta/workspace-source-io.lino"
     ));
@@ -120,7 +122,7 @@ fn descriptor(source_paths: &[String], evidence_root: &str) -> Option<Value> {
     python.extend(lines(policy(), "python-line"));
     Some(
         json!({"sourcePaths":source_paths,"evidenceRoot":evidence_root,"outputs":outputs,
-        "candidates":candidates,"streams":streams,"sessionPattern":value("session-pattern"),
+        "candidates":candidates,"streams":streams,"emptyPlaceholders":placeholders,"sessionPattern":value("session-pattern"),
         "sessionLimit":value("session-limit").parse::<usize>().ok()?,
         "binaryPrefixes":lines(&hygiene,"binary-prefix"),"python":python.join("\n")+"\n"}),
     )
