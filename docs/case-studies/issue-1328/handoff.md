@@ -11,10 +11,20 @@ strict-final Unknown remains a failed attempt, not a skipped check or a pass.
 
 ## Latest continuation: 25 October 2026
 
+PR 1410 is now merged and v0.355.10 passed all main, publisher and public-download
+checks, including independently checked Docker manifests. The fresh actual
+three-client owner failed: Claude left an empty placeholder, while Agent and
+Codex exceeded their finite first-pass budgets while progressing. The next
+batched follow-up fixes placeholder scope and repeated native registry parsing,
+with captured-request regressions. See the
+[current causes, fixes and acceptance contract](released-client-progress.md).
+The broad vision and issue 1364 are not complete; fresh released-client
+acceptance and terminal authenticated cleanup remain mandatory.
+
 PR 1407 is merged; v0.355.9 and all configured release/public-download gates
 passed. Real released-image acceptance then verified the native memory
 lifecycle and default-token access, but exposed a post-admission proposal race
-and missing Claude/Codex/MCP runtime prerequisites. The fixes are batched on
+and missing Claude/Codex/MCP runtime prerequisites. The fixes were delivered by
 [`PR 1410`](https://github.com/link-assistant/formal-ai/pull/1410) on
 `fix/published-ci-proposal-admission`; see the
 [exact causes, verification contract and evidence](released-client-prerequisites.md).
@@ -22,17 +32,17 @@ Issue 1364 remains open until a fresh real three-client execution and trusted
 cleanup pass. No local Rust compilation or product download/execution is
 permitted. The private untracked session export must never be read or staged.
 
-Current follow-up also replays the recent public Hive Mind client failures:
+PR 1410 also replayed the recent public Hive Mind client failures:
 stdout-only source receipts, raw Git status whitespace, and missing hosted
 checks for explicitly staged workflows. PR readiness in the staged transport
 grants no CI credit; the original independent workflow execution and all
 acceptance assertions remain required. The default-token hosted read-only
 audit now proves owner discovery. Existing uncertain cleanup claims must not
-be retried automatically. Container checks passed on both architectures at an
-earlier head; require all checks again at the final reviewed head before merge.
+be retried automatically. PR 1410's final reviewed head and main publication
+passed; the next follow-up requires its own complete exact-head checks.
 
-The final blocker batch corrects an order-dependent Docker COPY test and cites
-the existing Rust staged-readiness twins. It also preserves the solve budget
+Its final blocker batch corrected an order-dependent Docker COPY test and cited
+the existing Rust staged-readiness twins. It also preserved the solve budget
 after the actual 28-minute image setup: only the delivery parent receives a
 documented temporary 55-minute allowance, while the solve remains bounded at
 21 minutes. Public-timestamp regressions cover the parent/child budget. Require
