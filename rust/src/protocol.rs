@@ -495,8 +495,7 @@ enum AgenticOutcome {
 /// [`AgenticOutcome::Fallthrough`] so ordinary chat stays untouched.
 fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> AgenticOutcome {
     let trace = crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS");
-    let started = std::time::Instant::now();
-    let phase = |name| crate::dialog_log::structured_log::request_phase(trace, started, name);
+    let phase = crate::dialog_log::structured_log::request_phases(trace);
     if !request.requests_tool_execution() {
         // A client that speaks no function calling can still ground a file
         // read: `aider` puts the file's bytes in the conversation itself

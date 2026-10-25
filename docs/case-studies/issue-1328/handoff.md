@@ -32,6 +32,13 @@ files satisfy the size gate, 35 focused JavaScript tests pass and the native
 specification generator remains current. Require fresh exact-head CI after the
 batch push; native latency and released-client acceptance remain unverified.
 
+The next batch also corrects a diagnostics dependency: the logging helper takes
+the caller's trace flag instead of reading the CLI surface. Clock creation is
+lazy and native-only; browser WASM never calls the unsupported standard-library
+monotonic clock. Preserve the architecture ceiling and verify the actual native
+request tests in CI. These fixes are manual and grant no autonomous authorship
+credit.
+
 PR 1407 is merged; v0.355.9 and all configured release/public-download gates
 passed. Real released-image acceptance then verified the native memory
 lifecycle and default-token access, but exposed a post-admission proposal race

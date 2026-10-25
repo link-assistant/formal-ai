@@ -102,10 +102,13 @@ pub fn enabled(level: &str) -> bool {
             <= rank(&std::env::var("FORMAL_AI_LOG_LEVEL").unwrap_or_else(|_| "debug".into()))
 }
 
-/// Passive native request timing; only explicit request tracing enables it.
-pub(crate) fn request_phase(trace: bool, started: std::time::Instant, name: &str) {
-    if trace {
-        crate::diagnostic!("debug"; "[trace] agentic_phase={name} elapsed_ms={}", started.elapsed().as_millis());
+/// Passive native request timing; WASM has no standard-library monotonic clock.
+pub(crate) fn request_phases(trace: bool) -> impl Fn(&str) {
+    let started = (trace && !cfg!(target_arch = "wasm32")).then(std::time::Instant::now);
+    move |name| {
+        if let Some(started) = started {
+            crate::diagnostic!("debug"; "[trace] agentic_phase={name} elapsed_ms={}", started.elapsed().as_millis());
+        }
     }
 }
 
