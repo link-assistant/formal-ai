@@ -17,6 +17,13 @@ planner before argument binding; no executable Codex replay equivalence is
 claimed. A future exporter should distinguish schema declarations from actual
 account metadata without weakening personal-data redaction.
 
+The native integration case also sends the complete Agent request through a
+real loopback server with private temporary memory and request phase tracing.
+It validates the tool-call stream under the same finite latency budget without
+executing the emitted command or touching GitHub. This separates pure-planner
+latency from HTTP, memory-recording and diagnostic overhead. Native execution
+belongs exclusively to CI.
+
 `hive-bootstrap-placeholder.txt` is the complete public `.gitkeep` left in
 Claude's actual PR 1416 at head `ef7e1ba7f4305558b97a2fe1a7849e36292c0fc6`.
 Its Git blob is `7a9c542bcb875ce677c30723bf1bb50601f727e2` (174 bytes).

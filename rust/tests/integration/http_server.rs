@@ -169,7 +169,7 @@ pub fn spawn_formal_ai_server_agent_mode(port: u16) -> FormalAiServer {
     spawn_formal_ai_server_with_args(port, &["--agent-mode"], &[])
 }
 
-fn spawn_formal_ai_server_with_args(
+pub fn spawn_formal_ai_server_with_args(
     port: u16,
     extra_args: &[&str],
     env: &[(&str, &str)],
