@@ -128,10 +128,11 @@ test('a real ready isolated PR and one safe original-language source are require
 });
 import { readFileSync } from 'node:fs';
 import YAML from 'yaml';
+import { parseSpeedPolicy } from '../../../scripts/lib/ci-speed-policy.mjs';
 const {
   parse
 } = YAML;
-test('genuine image, solve and independent verification phases use same-run handoffs within the existing cap', () => {
+test('genuine image, solve and independent verification phases use same-run handoffs within recorded caps', () => {
   const root = new URL('../../../', import.meta.url);
   const {
     jobs
@@ -142,8 +143,10 @@ test('genuine image, solve and independent verification phases use same-run hand
   assert.equal(jobs.verification.if,
  "${{ !cancelled() && needs.image.result == 'success' && needs.admission.outputs.execute == 'true' }}",
  'failed original solves still reach the original verifier');
-  for (const job of Object.values(jobs)) {
-    assert.ok(job['timeout-minutes'] <= 30);
+  const speed = parseSpeedPolicy(readFileSync(new URL('data/meta/ci-speed.lino', root), 'utf8'));
+  for (const [id, job] of Object.entries(jobs)) {
+    const exception = speed.exceptions.find(value => value.workflow === '.github/workflows/hive-original-delivery.yml' && value.job === id);
+    assert.ok(job['timeout-minutes'] <= (exception?.timeoutMinutes ?? speed.limitMinutes));
     for (const step of job.steps ?? []) if (step['timeout-minutes'] !== undefined) {
       assert.ok(step['timeout-minutes'] * 100 <= job['timeout-minutes'] * 70, 'step retains original job headroom');
     }
@@ -196,6 +199,29 @@ test('genuine image, solve and independent verification phases use same-run hand
   assert.ok(!jobs.delivery.steps.some(step => step.uses === 'dtolnay/rust-toolchain@stable' || step.uses?.startsWith('coursier/')),
  'compilers belong only to the independent verification host');
   assert.ok(jobs.verification.steps.findIndex(step => (step.run || '').includes('--verify-evidence')) < jobs.verification.steps.findIndex(step => (step.run || '').includes('node .hive-protocol/scripts/check-hive-original-delivery.mjs')));
+});
+test('the delivery parent preserves the full solve budget after observed image setup', () => {
+  const root = new URL('../../../', import.meta.url);
+  const { jobs } = parse(readFileSync(new URL('.github/workflows/hive-original-delivery.yml', root), 'utf8'));
+  // Public job metadata, owner 40173640886 attempt 1, 2026-10-25:
+  // https://github.com/link-assistant/formal-ai/actions/runs/40173640886
+  // Job 121114230265 (Codex) and 121114230383 (Claude), before any model work.
+  const observations = [
+    { job: 121114230265, started: '2026-10-25T08:04:29Z', solve: '2026-10-25T08:32:42Z' },
+    { job: 121114230383, started: '2026-10-25T08:04:29Z', solve: '2026-10-25T08:31:55Z' },
+  ];
+  const solve = jobs.delivery.steps.find(step => step.name === 'Run actual Hive solve and original assertions');
+  const reserveSeconds = 5 * 60;
+  for (const observed of observations) {
+    const setupSeconds = (Date.parse(observed.solve) - Date.parse(observed.started)) / 1000;
+    assert.ok(setupSeconds > 0);
+    assert.ok(jobs.delivery['timeout-minutes'] * 60 >= setupSeconds + solve['timeout-minutes'] * 60 + reserveSeconds,
+      `job ${observed.job}: image handoff must not consume the solve/evidence budget`);
+  }
+  assert.ok(jobs.delivery['timeout-minutes'] <= 55, 'the temporary allowance remains finite and scoped');
+  for (const [id, job] of Object.entries(jobs)) if (id !== 'delivery') {
+    assert.ok(job['timeout-minutes'] <= 30, `${id}: no general deadline expansion`);
+  }
 });
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';

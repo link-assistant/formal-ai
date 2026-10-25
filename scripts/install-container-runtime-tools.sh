@@ -12,3 +12,4 @@ script_dir="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 node "$script_dir/install-client-registry-recovery.mjs" \
   bun install --production --cwd "$runtime_home"
 node "$script_dir/verify-container-runtime-tools.mjs" "$runtime_home"
+node "$script_dir/configure-container-client-tools.mjs" "$runtime_home"

@@ -24,7 +24,7 @@ import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
 import { planRecovery, planRecoveryWithIdentity } from './prerequisite_recovery.mjs';
 import { Progress, qualifiedToolAttempt, qualifiedCommandAttempt, writeMatches } from './progress.mjs';
-import { recipeSourceCommand, recipeSourceResult, recipeSourceMatches, recipeSourceUpdateCommand, recipeSourceUpdateResult, planRecipeCiFallback
+import { recipeSourceCommand, recipeSourceResult, recipeSourceMatches, recipeSourceReceipt, recipeSourceUpdateCommand, recipeSourceUpdateResult, planRecipeCiFallback
     , recipeDeliveryReference, recipeSourceRefusal } from './recipe_resume.mjs';
 import { validateProgram } from './host.mjs';
 import { requestedIn as requestedCiWorkflow, attach as attachCiWorkflow } from './ci_workflow.mjs';
@@ -286,8 +286,8 @@ export function recipeProgressAfterLatestUser(messages, writeTool, recipe, expec
     if (!matchesWrite && !matchesRun && !matchesProbe && !matchesUpdate) continue;
     const output = plainText(message.content);
     if (matchesUpdate) {
-      const frame = qualifiedCommandAttempt(Progress.scan(messages.slice(start, index + 1)), updateCommand);
-      if (frame?.binding === 'exact' && frame.succeeded && reportedExitCode(output) === 0 && recipeSourceUpdateResult(output, pending[0])) {
+      const receipt = recipeSourceReceipt(Progress.scan(messages.slice(start, index + 1)), updateCommand);
+      if (receipt !== null && recipeSourceUpdateResult(receipt, pending[0])) {
         progress.source_checked.delete(pending[0]);
         progress.source_preimages.delete(pending[0]);
       } else {
@@ -302,8 +302,8 @@ export function recipeProgressAfterLatestUser(messages, writeTool, recipe, expec
     }
     if (matchesProbe) {
       const observed = Progress.scan(messages.slice(start, index + 1));
-      const frame = qualifiedCommandAttempt(observed, recipeSourceCommand(pending[0]));
-      const result = frame?.binding === 'exact' && frame.succeeded && reportedExitCode(output) === 0 ? recipeSourceResult(output, pending[0]) : null;
+      const receipt = recipeSourceReceipt(observed, recipeSourceCommand(pending[0]));
+      const result = receipt === null ? null : recipeSourceResult(receipt, pending[0]);
       if (result === null) {
         progress.failure = {
           reported: output,
@@ -347,6 +347,13 @@ export function recipeProgressAfterLatestUser(messages, writeTool, recipe, expec
   }
   if (resume) {
     const observed = Progress.scan(messages);
+    const pending = files[progress.files_written];
+    if (pending !== undefined && progress.source_checked.has(pending[0])
+      && recipeSourceReceipt(observed, recipeSourceCommand(pending[0])) === null) {
+      progress.source_checked.delete(pending[0]);
+      progress.source_preimages.delete(pending[0]);
+      progress.source_invalidated = true;
+    }
     for (let index = 0; index < progress.files_written; index += 1) {
       const [path, content] = files[index];
       if (!recipeFileMatches(observed, {

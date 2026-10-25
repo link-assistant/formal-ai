@@ -258,7 +258,9 @@ jobs:
       - build
       - image
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    # Owner 40173640886 needed 28m13s before solve; preserve its full 21m budget.
+    # Temporary image-transfer debt is recorded in data/meta/ci-speed.lino.
+    timeout-minutes: 55
     permissions:
       contents: write
       issues: write

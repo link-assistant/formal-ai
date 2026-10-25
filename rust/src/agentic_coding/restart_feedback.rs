@@ -263,9 +263,7 @@ pub(super) fn plan_restart(
             json!({"command": status_command}).to_string(),
         ));
     };
-    let status = super::tool_result::observed_payload(status_output)
-        .unwrap_or_else(|| status_output.to_owned());
-    let current = porcelain_paths(&status);
+    let current = prepared_work_paths(status_output);
     let Some(current) = current.filter(|paths| {
         paths.iter().all(|path| {
             listed.iter().any(|scope| {
@@ -475,5 +473,9 @@ pub(super) fn prepared_recipe_hygiene_with_inventory(
 /// Decode a freshly command-bound status payload without trimming its path bytes.
 #[must_use]
 pub(super) fn prepared_work_paths(output: &str) -> Option<Vec<String>> {
-    porcelain_paths(&super::tool_result::observed_payload(output)?)
+    if super::tool_result::incomplete_receipt(output) {
+        return None;
+    }
+    porcelain_paths(output)
+        .or_else(|| porcelain_paths(&super::tool_result::observed_payload(output)?))
 }

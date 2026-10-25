@@ -22,6 +22,49 @@ fn record(messages: &mut Vec<ChatMessage>, call: &PlannedToolCall, result: &str)
 }
 
 #[test]
+fn prepared_source_probe_accepts_complete_semantics_without_inventing_an_exit_status() {
+    let prompt = "Write a hello world program in Python.";
+    let answer = UniversalSolver::default().solve(prompt);
+    let recipe = answer.execution_recipe.as_ref().expect("program recipe");
+    let request = format!(
+        "{prompt}\nIssue to solve: https://github.com/fixture/project/issues/1\n\
+         Your prepared Pull Request: https://github.com/fixture/project/pull/2"
+    );
+    let tools = ["write", "bash"];
+    let mut messages = vec![ChatMessage::user(&request)];
+    let Some(AgenticPlan::ToolCalls(mut probes)) =
+        plan_symbolic_command_reroute(&messages, &tools, &answer)
+    else {
+        panic!("prepared work must start with a source probe");
+    };
+    let probe = probes.remove(0);
+    assert_eq!(probe.tool, "bash");
+    let payload = json!({"schema":"workspace-source-v1", "path":recipe.path,
+        "success":true, "complete":true, "absent":true, "error_code":"ENOENT"});
+    record(&mut messages, &probe, &payload.to_string());
+    let Some(AgenticPlan::ToolCalls(writes)) =
+        plan_symbolic_command_reroute(&messages, &tools, &answer)
+    else {
+        panic!("a bound absence receipt must permit the still-pending write");
+    };
+    assert_eq!(writes[0].tool, "write");
+    let arguments: serde_json::Value = serde_json::from_str(&writes[0].arguments).unwrap();
+    assert_eq!(arguments["path"], recipe.path);
+    assert_eq!(arguments["content"], recipe.source);
+
+    let mut failed = vec![ChatMessage::user(&request)];
+    record(
+        &mut failed,
+        &probe,
+        &json!({"exit_code":1,"stdout":payload.to_string()}).to_string(),
+    );
+    assert!(matches!(
+        plan_symbolic_command_reroute(&failed, &tools, &answer),
+        Some(AgenticPlan::Final(_))
+    ));
+}
+
+#[test]
 fn unrelated_or_wrong_content_write_does_not_satisfy_a_recipe_artifact() {
     for (path, content) in [("notes.txt", "unrelated"), ("main.py", "wrong bytes")] {
         let mut messages = vec![ChatMessage::user("Write a hello world program in Python.")];
@@ -344,6 +387,12 @@ fn typed_git_status_stdout_preserves_leading_columns_before_restart_hygiene() {
     let command = arguments["command"].as_str().unwrap();
     assert!(command.contains("python3"));
     assert!(!command.contains("gh pr ready"));
+    let mut raw = messages.clone();
+    raw[2] = formal_ai::ChatMessage::tool_result("status", "bash", " M main\n");
+    assert!(matches!(
+        formal_ai::agentic_coding::plan_chat_step(&raw, &["bash"]),
+        Some(formal_ai::agentic_coding::AgenticPlan::ToolCalls(_))
+    ));
     let mut failed = frame;
     failed["isError"] = true.into();
     messages[2] = formal_ai::ChatMessage::tool_result("status", "bash", failed.to_string());

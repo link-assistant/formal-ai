@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { sourceBinaryIdentity, requireImageBundle, fileDigest } from './lib/hive-delivery-bundle.mjs';
@@ -82,6 +82,30 @@ export function verifyTaskImageOperationalEvidence({
     adaptedOwnerImports: 'passed'
   };
 }
+/** Fail before archive transfer or issue creation when the final task environment lacks a real client. */
+export function verifyTaskImageClientPrerequisites(run) {
+  const name = 'formal-ai-hive-client-probe-' + randomUUID();
+  const program = `
+import assert from 'node:assert/strict';
+import {execFileSync} from 'node:child_process';
+for (const tool of ['claude','codex','agent']) execFileSync(tool,['--version'],{timeout:15000,stdio:'inherit'});
+const {ensureSolvePlaywrightMcpReady}=await import('file:///opt/hive-e2e/src/playwright-mcp.lib.mjs');
+for (const tool of ['claude','codex','agent']) {
+  const result=await ensureSolvePlaywrightMcpReady({argv:{tool},log:async message=>console.log(message)});
+  assert.equal(result.ok,true,'original Hive MCP preflight failed for '+tool);
+}
+`;
+  let primary;
+  try {
+    run('docker',['run','--name',name,'--entrypoint','node','hive-e2e:candidate',
+      '--input-type=module','--eval',program],{timeout:180000});
+  } catch (error) { primary=error; throw error; }
+  finally {
+    try { run('docker',['rm','--force',name],{timeout:30000}); }
+    catch (cleanup) { if(primary)primary.message+='; client probe cleanup: '+cleanup.message;else throw cleanup; }
+  }
+  return {clientVersions:'passed',originalHiveMcpPreflight:'passed',containerCleanup:'passed'};
+}
 export function verifyTaskImage({
   hive,
   expected,
@@ -100,6 +124,7 @@ export function verifyTaskImage({
  'hive-e2e:candidate',
  '-c',
  'test -x "$JAVA_HOME/bin/java" && test "$(readlink -f "$JAVA_HOME/bin/java")" = "$(readlink -f "$(command -v java)")"']);
+  const clientPrerequisites = verifyTaskImageClientPrerequisites(run);
   const operationalEvidence = verifyTaskImageOperationalEvidence({
     hive,
     sourceIdentity: {
@@ -136,6 +161,7 @@ export function verifyTaskImage({
   }
   return {
     actualTaskImageBinarySha256: observed,
+    clientPrerequisites,
     transportAdapter,
     operationalEvidence
   };

@@ -43,6 +43,10 @@ ci-speed
     over-limit-job build-archive
       timeout-minutes 55
       reason "Switched off while non-Linux CI is off (issue #1111): a cold build of the macOS test archive. To meet 30: build the archive from a shared compiler cache on the Linux build job's schedule."
+  workflow ".github/workflows/hive-original-delivery.yml"
+    over-limit-job delivery
+      timeout-minutes 55
+      reason "Issue #1364: owner40173640886 job121114230265 spent28m13s before solve (08:04:29Z to08:32:42Z on2026-10-25), leaving only1m47s under the old30-minute parent for its bounded21-minute solve. Temporary image-transfer debt: allow55 minutes for observed setup plus solve and5-minute evidence reserve; retain all operation limits and single-attempt ownership. Remove after source-bound image handoff plus solve fits30 minutes."
   workflow ".github/workflows/release-staged.yml"
     over-limit-job "auto_publish-verify-images"
       timeout-minutes 90

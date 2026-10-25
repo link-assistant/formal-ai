@@ -10,6 +10,28 @@ on: # zizmor: ignore[dangerous-triggers]
       - completed
   schedule:
     - cron: 7,22,37,52 * * * *
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Run read-only checks on a bot pull request
+        type: choice
+        default: checks
+        options: [checks]
+      pull-request:
+        description: Pull request whose explicit audit owner is read from metadata
+        type: string
+      owner-run:
+        description: Original Hive owner to audit without mutations
+        required: false
+        type: string
+  pull_request:
+    branches-ignore: ['e2e/**']
+    types: [opened, synchronize, reopened, edited]
+    paths:
+      - .github/workflows/hive-original-delivery-finalize.yml
+      - scripts/audit-owned-hive-cleanup.mjs
+      - scripts/finalize-generated-test-issues.mjs
+      - scripts/lib/generated-task-*.mjs
 permissions:
   contents: read
   actions: read
@@ -17,6 +39,44 @@ concurrency:
   group: hive-generated-cleanup-${{ github.event.workflow_run.id || github.run_id }}
   cancel-in-progress: false
 jobs:
+  audit:
+    name: Audit explicit owner without mutations
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' &&
+       github.event.pull_request.head.repo.full_name == github.repository &&
+       contains(github.event.pull_request.body, 'Cleanup-audit-owner:'))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+      issues: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Report complete log custody and read-only ownership decisions
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CLEANUP_AUDIT_OWNER: ${{ inputs['owner-run'] || '' }}
+          CLEANUP_AUDIT_BODY: ${{ github.event.pull_request.body || '' }}
+          CLEANUP_AUDIT_PR: ${{ inputs['pull-request'] || '' }}
+          CLEANUP_AUDIT_SOURCE: ${{ github.sha }}
+          CLEANUP_AUDIT_REPOSITORY: ${{ github.repository }}
+        run: node scripts/audit-owned-hive-cleanup.mjs | tee "$RUNNER_TEMP/cleanup-audit.json"
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: hive-cleanup-audit
+          path: ${{ runner.temp }}/cleanup-audit.json
+          if-no-files-found: error
+          retention-days: 7
   prepare:
     if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_run'
       && github.event.workflow_run.head_repository.full_name ==

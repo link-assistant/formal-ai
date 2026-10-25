@@ -668,7 +668,8 @@ test('released runtime keeps its immutable full reference while acceptance requi
 });
 import { policyIdentity, policyRoots } from '../../../scripts/lib/hive-delivery-source.mjs';
 test('direct privacy export and collector source roots participate in reusable policy identity', async () => {
-  const ownedPaths = ['scripts/lib/issue-1364-public-evidence.mjs', 'scripts/collect-test-replays.mjs'];
+  const ownedPaths = ['scripts/lib/issue-1364-public-evidence.mjs', 'scripts/lib/issue-1364-command-result.mjs',
+    'scripts/collect-test-replays.mjs', 'scripts/collect-ci-failures.mjs'];
   for (const name of ownedPaths) assert.ok(policyRoots.includes(name));
   const body = 'actual public task\n';
   const task = {

@@ -279,7 +279,8 @@ test('cheap fresh CI precheck only defers observed pending work; full required-w
  const source='a'.repeat(40),run={id:1,run_attempt:1,head_sha:source,path:'.github/workflows/release.yml',
   repository:{full_name:treeRepository},head_repository:{full_name:treeRepository},event:'push',status:'in_progress',conclusion:null};
  let calls=0;const reader={pages:async(endpoint,member)=>{calls++;assert.equal(member,'workflow_runs');assert(endpoint.endsWith(source));return [run];}};
- assert.deepEqual(await precheckPublishedCi(reader,treeRepository,source,run.path),{admitted:false,reason:'other CI pending'});
+ assert.deepEqual(await precheckPublishedCi(reader,treeRepository,source,run.path),{admitted:false,reason:'other CI pending',
+  blockedBy:{run:1,attempt:1,path:run.path,event:'push',status:'in_progress',conclusion:null}});
  run.status='completed';run.conclusion='success';assert.equal((await precheckPublishedCi(reader,treeRepository,source,run.path)).admitted,true);
  assert.equal(calls,2);assert.equal((await precheckPublishedCi({pages:async()=>[]},treeRepository,source,run.path)).admitted,false);
  await assert.rejects(precheckPublishedCi({pages:async()=>[{...run,head_repository:{full_name:'foreign/repo'}}]},treeRepository,source,run.path));

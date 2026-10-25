@@ -178,7 +178,14 @@ async function nextClient(context, history, tools, protocol) {
   };
 }
 function appendClient(history, next, call, result, protocol) {
-  const output = JSON.stringify({
+  let sourceReceipt = false;
+  try {
+    sourceReceipt = ['workspace-source-v1', 'workspace-source-update-v1']
+      .includes(JSON.parse(result.stdout).schema);
+  } catch { /* Other commands retain their explicit process envelope. */ }
+  // Real Hive Claude/Agent callbacks carry these semantic receipts as stdout
+  // without a shell exit code. Preserve that observed transport in full replays.
+  const output = sourceReceipt || result.status === 0 && protocol !== 'codex' ? result.stdout : JSON.stringify({
     exit_code: result.status,
     stdout: result.stdout,
     stderr: result.stderr,
@@ -704,7 +711,10 @@ json.dump(s,open(p,'w'))
         flag: 'wx'
       });
       assert.equal(typeof final, 'string');
-      assert.match(final, /verified by CI/u);
+      assert.match(final, /verified by CI/u, JSON.stringify({final,lastCalls:calls.slice(-4).map(call=>({
+        tool:call.declaredTool,command:(call.arguments.command??call.arguments.cmd??'').slice(0,80),
+        observation:call.observation
+      }))}));
       assert.doesNotMatch(final, /Created and verified/u);
       assert.equal(receipt.at(-1).status, '');
       assert.equal(receipt.at(-1).state.isDraft, false);

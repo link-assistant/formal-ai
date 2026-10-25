@@ -9,6 +9,42 @@ concurrency fixture is now manual-only and explicitly unproven; see the
 [recorded deferral](critical-delivery-scope.md#recorded-follow-up). Its prior
 strict-final Unknown remains a failed attempt, not a skipped check or a pass.
 
+## Latest continuation: 25 October 2026
+
+PR 1407 is merged; v0.355.9 and all configured release/public-download gates
+passed. Real released-image acceptance then verified the native memory
+lifecycle and default-token access, but exposed a post-admission proposal race
+and missing Claude/Codex/MCP runtime prerequisites. The fixes are batched on
+[`PR 1410`](https://github.com/link-assistant/formal-ai/pull/1410) on
+`fix/published-ci-proposal-admission`; see the
+[exact causes, verification contract and evidence](released-client-prerequisites.md).
+Issue 1364 remains open until a fresh real three-client execution and trusted
+cleanup pass. No local Rust compilation or product download/execution is
+permitted. The private untracked session export must never be read or staged.
+
+Current follow-up also replays the recent public Hive Mind client failures:
+stdout-only source receipts, raw Git status whitespace, and missing hosted
+checks for explicitly staged workflows. PR readiness in the staged transport
+grants no CI credit; the original independent workflow execution and all
+acceptance assertions remain required. The default-token hosted read-only
+audit now proves owner discovery. Existing uncertain cleanup claims must not
+be retried automatically. Container checks passed on both architectures at an
+earlier head; require all checks again at the final reviewed head before merge.
+
+The final blocker batch corrects an order-dependent Docker COPY test and cites
+the existing Rust staged-readiness twins. It also preserves the solve budget
+after the actual 28-minute image setup: only the delivery parent receives a
+documented temporary 55-minute allowance, while the solve remains bounded at
+21 minutes. Public-timestamp regressions cover the parent/child budget. Require
+fresh final-head CI; neither earlier image success nor hermetic replay grants
+the still-missing released three-client acceptance.
+
+Keep native regressions outside production source. The staged-readiness
+regression now uses the repository's supported external fixture registration,
+preserving access to private helpers without shipping inline test bodies.
+
+## Earlier release history
+
 The original integration and subsequent release fixes are merged. Most recently,
 [PR 1406](https://github.com/link-assistant/formal-ai/pull/1406) merged normally as
 `fd721a2277c58932fa49c65652db06b29a8993f4` after all its checks passed.

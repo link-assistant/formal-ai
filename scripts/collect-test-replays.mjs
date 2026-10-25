@@ -23,7 +23,7 @@ export function createEvidenceClient({bounds: input = {}, aggregateBytes = 26843
       const remaining = aggregateBytes - bytes;
       const transfer = Math.min(log ? bounds.logDownloadBytes : 1048576, remaining);
       const args = ['api', endpoint, ...(mutation ?? [])];
-      last = await transport(args, {timeoutMs: bounds.timeoutMs,
+      last = await transport(args, {captureRaw: log && !mutation, timeoutMs: bounds.timeoutMs,
         maxBytes: Math.min(log && !full ? bounds.logBytes : transfer, transfer), maxDownloadBytes: transfer});
       const received = last.bytesReceived ?? Buffer.byteLength(last.text ?? '');
       if (!Number.isSafeInteger(received) || received < 0 || received > transfer) throw new Error('Transport exceeded declared byte bound');

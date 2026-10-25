@@ -2,7 +2,10 @@
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for};
 use super::progress::Progress;
 use super::qualified_tool_observation::Binding;
-use super::tool_result::{StepOutcome, command_argument, observed_payload, step_outcome};
+use super::tool_result::{
+    StepOutcome, command_argument, incomplete_receipt, observed_payload, reported_exit_code,
+    step_outcome,
+};
 use crate::engine::ExecutionRecipe;
 use crate::protocol::ChatMessage;
 use serde_json::json;
@@ -105,20 +108,28 @@ pub(super) fn recipe_source_result(output: &str, path: &str) -> Option<RecipeSou
     }
     None
 }
+/// Source constructors decode semantic receipts without inventing a missing process status.
+#[must_use]
+pub(super) fn recipe_source_receipt<'a>(progress: &'a Progress, command: &str) -> Option<&'a str> {
+    let frame = progress.qualified_command_attempt(command)?;
+    if frame.binding != Binding::Exact
+        || !frame.succeeded
+        || incomplete_receipt(&frame.detail)
+        || reported_exit_code(&frame.detail).is_some_and(|code| code != 0)
+    {
+        return None;
+    }
+    Some(&frame.detail)
+}
+
 /// Exact source evidence is invalid after a later write to that owner.
 #[must_use]
 pub(super) fn recipe_source_matches(progress: &Progress, path: &str, source: &str) -> bool {
     let command = recipe_source_command(path);
-    let Some(frame) = progress.qualified_command_attempt(&command) else {
+    let Some(receipt) = recipe_source_receipt(progress, &command) else {
         return false;
     };
-    if frame.binding != Binding::Exact
-        || !frame.succeeded
-        || step_outcome(&frame.detail) != StepOutcome::Succeeded
-    {
-        return false;
-    }
-    let Some(result) = recipe_source_result(&frame.detail, path) else {
+    let Some(result) = recipe_source_result(receipt, path) else {
         return false;
     };
     if result.absent || result.source.as_deref() != Some(source) {
@@ -161,10 +172,22 @@ pub(super) fn recipe_ci_result(
     ready: bool,
 ) -> Option<RecipeCiResult> {
     let value: serde_json::Value = serde_json::from_str(&observed_payload(output)?).ok()?;
+    if value.get("schema")?.as_str()? != "recipe-ci-v1"
+        || !(1..=9_007_199_254_740_991).contains(&value.get("checks")?.as_u64()?)
+    {
+        return None;
+    }
+    receipt_identity(&value, reference, workflow, ready)
+}
+fn receipt_identity(
+    value: &serde_json::Value,
+    reference: &str,
+    workflow: &str,
+    ready: bool,
+) -> Option<RecipeCiResult> {
     let head = value.get("head")?.as_str()?;
     let branch = value.get("branch")?.as_str()?;
-    if value.get("schema")?.as_str()? != "recipe-ci-v1"
-        || !value.get("success")?.as_bool()?
+    if !value.get("success")?.as_bool()?
         || !value.get("complete")?.as_bool()?
         || value.get("reference")?.as_str()? != reference
         || value.get("workflow")?.as_str()? != workflow
@@ -174,7 +197,6 @@ pub(super) fn recipe_ci_result(
             .bytes()
             .all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte))
         || branch.is_empty()
-        || !(1..=9_007_199_254_740_991).contains(&value.get("checks")?.as_u64()?)
     {
         return None;
     }
@@ -183,6 +205,38 @@ pub(super) fn recipe_ci_result(
         is_draft: value.get("isDraft")?.as_bool()?,
     })
 }
+fn staged_ready_command(
+    reference: &str,
+    workflow: &str,
+    path: &str,
+    source: &str,
+    ready: bool,
+) -> String {
+    command(
+        value("ci-command"),
+        ci_program(),
+        &json!({"reference":reference,"workflow":workflow,"ready":ready,
+            "operation":"staged-ready","path":path,"source":source}),
+    )
+}
+fn staged_ready_result(
+    output: &str,
+    reference: &str,
+    workflow: &str,
+    path: &str,
+    ready: bool,
+) -> Option<RecipeCiResult> {
+    let value: serde_json::Value = serde_json::from_str(&observed_payload(output)?).ok()?;
+    if value.get("schema")?.as_str()? != "recipe-staged-ready-v1"
+        || value.get("path")?.as_str()? != path
+        || value.get("checks")?.as_u64()? != 0
+        || value.get("ciVerified")?.as_bool()?
+    {
+        return None;
+    }
+    receipt_identity(&value, reference, workflow, ready)
+}
+
 /// Repository obligations admitted by the source recipe route.
 #[derive(Clone, Copy)]
 pub(super) struct RecipeCompletion<'a> {
@@ -204,7 +258,8 @@ fn observation<'a>(progress: &'a Progress, command: &str) -> Observation<'a> {
     };
     if frame.binding == Binding::Exact
         && frame.succeeded
-        && step_outcome(&frame.detail) == StepOutcome::Succeeded
+        && !incomplete_receipt(&frame.detail)
+        && step_outcome(&frame.detail) != StepOutcome::Failed
     {
         Observation::Succeeded(&frame.detail)
     } else {
@@ -217,7 +272,85 @@ fn call(run: &str, command: &str) -> AgenticPlan {
 fn gap(name: &str) -> AgenticPlan {
     AgenticPlan::Final(value(name).to_owned())
 }
-/// Preserve owned changes and require current-head CI before a ready result.
+fn plan_staged_completion(
+    run: &str,
+    progress: &Progress,
+    completion: RecipeCompletion<'_>,
+    path: &str,
+    source: &str,
+) -> AgenticPlan {
+    if let Some(comments) = completion.followup.first() {
+        match observation(progress, comments) {
+            Observation::Missing => return call(run, comments),
+            Observation::Failed => return gap("scope-refusal"),
+            Observation::Succeeded(_) => {}
+        }
+    }
+    let view = staged_ready_command(
+        completion.reference,
+        completion.workflow,
+        path,
+        source,
+        false,
+    );
+    let output = match observation(progress, &view) {
+        Observation::Missing => return call(run, &view),
+        Observation::Failed => return gap("scope-refusal"),
+        Observation::Succeeded(output) => output,
+    };
+    let Some(before) = staged_ready_result(
+        output,
+        completion.reference,
+        completion.workflow,
+        path,
+        false,
+    ) else {
+        return gap("scope-refusal");
+    };
+    if before.is_draft
+        && let Some(edit) = completion.followup.get(1)
+    {
+        match observation(progress, edit) {
+            Observation::Missing => return call(run, edit),
+            Observation::Failed => return gap("scope-refusal"),
+            Observation::Succeeded(_) => {}
+        }
+    }
+    let ready = staged_ready_command(
+        completion.reference,
+        completion.workflow,
+        path,
+        source,
+        true,
+    );
+    let output = match observation(progress, &ready) {
+        Observation::Missing => return call(run, &ready),
+        Observation::Failed => return gap("scope-refusal"),
+        Observation::Succeeded(output) => output,
+    };
+    let Some(after) = staged_ready_result(
+        output,
+        completion.reference,
+        completion.workflow,
+        path,
+        true,
+    ) else {
+        return gap("scope-refusal");
+    };
+    if after.is_draft || after.head != before.head {
+        return gap("scope-refusal");
+    }
+    let report = if completion.local_verified {
+        "staged-local-report"
+    } else {
+        "staged-unverified-report"
+    };
+    AgenticPlan::Final(crate::seed::fill_template_once(
+        value(report),
+        &[("head", &after.head)],
+    ))
+}
+/// Preserve owned changes; staged readiness never certifies hosted CI completion.
 #[must_use]
 pub(super) fn plan_recipe_ci_fallback(
     messages: &[ChatMessage],
@@ -291,6 +424,21 @@ pub(super) fn plan_recipe_ci_fallback(
                 Observation::Succeeded(_) => {}
             }
         }
+    }
+    if let Some(file) = completion.recipe.supporting_files.iter().find(|file| {
+        !value("staged-workflow-prefix").is_empty()
+            && file.path.starts_with(value("staged-workflow-prefix"))
+            && file
+                .path
+                .rsplit_once('.')
+                .is_some_and(|(_, extension)| matches!(extension, "yml" | "yaml"))
+            && file
+                .source
+                .lines()
+                .find_map(|line| line.strip_prefix("name: "))
+                == Some(completion.workflow)
+    }) {
+        return plan_staged_completion(run, &progress, completion, &file.path, &file.source);
     }
     let ci = recipe_ci_command(completion.reference, completion.workflow, false);
     let output = match observation(&progress, &ci) {
@@ -476,3 +624,7 @@ pub(super) fn recipe_source_update_result(output: &str, path: &str) -> bool {
                 && value.get("complete").and_then(serde_json::Value::as_bool) == Some(true)
         })
 }
+
+#[cfg(test)]
+#[path = "../../tests/fixtures/recipe-staged-readiness.rs"]
+mod staged_receipt_tests;

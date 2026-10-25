@@ -3,6 +3,7 @@
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
+import assert from 'node:assert/strict';
 
 const defaults = { runs: 20, pages: 2, jobs: 8, logBytes: 65536, logDownloadBytes: 2097152, timeoutMs: 20000, retries: 1 };
 const maxima = { runs: 100, pages: 5, jobs: 30, logBytes: 1048576, logDownloadBytes: 8388608, timeoutMs: 60000, retries: 2 };
@@ -89,7 +90,23 @@ export function deduplicate(occurrences) {
   }
   return [...groups.values()].sort((a, b) => b.occurrences.length - a.occurrences.length || a.fingerprint.localeCompare(b.fingerprint));
 }
-export function runGh(args, { timeoutMs, maxBytes, maxDownloadBytes = maxBytes }) {
+let rawCapability = null;
+/** Raw logs are captured as closed data, never printed to the terminal. Probe local CLI support once. */
+export async function runGh(args, {captureRaw = false, ...options}) {
+  if (!captureRaw) return runGhProcess(args, options);
+  assert.equal(args.length, 2, 'raw capture permits one read-only API endpoint');
+  assert.equal(args[0], 'api');
+  assert.match(args[1], /^repos\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/actions\/jobs\/[1-9][0-9]*\/logs$/u);
+  const deadline = Date.now() + options.timeoutMs;
+  if (!rawCapability || rawCapability.path !== process.env.PATH) rawCapability = {path: process.env.PATH,
+    promise: runGhProcess(['api', '--help'], {timeoutMs: Math.min(options.timeoutMs, 5000), maxBytes: 65536})};
+  const capability = await rawCapability.promise;
+  if (!capability.ok || capability.truncated || Date.now() >= deadline) return {...capability,
+    ok: false, text: '', error: 'GitHub CLI raw-log capability check unavailable: ' + capability.error};
+  const flags = capability.text.includes('--allow-escape-sequences') ? ['--allow-escape-sequences'] : [];
+  return runGhProcess([...args, ...flags], {...options, timeoutMs: deadline - Date.now()});
+}
+function runGhProcess(args, { timeoutMs, maxBytes, maxDownloadBytes = maxBytes }) {
   return new Promise(resolve => {
     const child = spawn('gh', args, {
       detached: process.platform !== 'win32', stdio: ['ignore', 'pipe', 'pipe'],
@@ -108,7 +125,8 @@ export function runGh(args, { timeoutMs, maxBytes, maxDownloadBytes = maxBytes }
       const truncated = bytes > maxBytes;
       const streamComplete = ended.stdout && ended.stderr && !forcedSettlement;
       const ok = closed && observedCode === 0 && !timedOut && !downloadTruncated && !failure && streamComplete;
-      const text = first.toString('utf8') + (truncated ? '\n[bounded middle omitted]\n' : '') + tail.toString('utf8');
+      const text = truncated ? first.toString('utf8') + '\n[bounded middle omitted]\n' + tail.toString('utf8')
+        : Buffer.concat([first, tail]).toString('utf8');
       resolve({ ok, text, error: redact(failure ?? stderr), truncated, downloadTruncated, timedOut,
         bytesReceived: Math.min(bytes, maxDownloadBytes), tailComplete: ok && !downloadTruncated,
         exitCode: observedCode, signal: observedSignal, processClosed: closed,
@@ -192,7 +210,7 @@ export async function collect({ conclusion = null, repositories = ['link-assista
   async function request(endpoint, log = false) {
     let result;
     for (let attempt = 0; attempt <= bounds.retries; attempt++) {
-      result = await transport(['api', endpoint], { timeoutMs: bounds.timeoutMs, maxBytes: log ? bounds.logBytes : 2097152, maxDownloadBytes: log ? bounds.logDownloadBytes : 2097152 });
+      result = await transport(['api', endpoint], { captureRaw: log, timeoutMs: bounds.timeoutMs, maxBytes: log ? bounds.logBytes : 2097152, maxDownloadBytes: log ? bounds.logDownloadBytes : 2097152 });
       if (result.ok || result.truncated) return { ...result, attempts: attempt + 1 };
       // Retry transient transport/server errors only, never authentication or missing logs.
       if (!result.timedOut && !/\b(?:429|50[0234])\b|connection reset|temporar/iu.test(result.error ?? '')) return { ...result, attempts: attempt + 1 };

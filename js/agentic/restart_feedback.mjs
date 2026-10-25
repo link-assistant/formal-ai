@@ -165,7 +165,7 @@ export function planRestart(task, messages, tools) {
       command: policy.statusCommand
     }));
   }
-  const current = porcelainPaths(observedPayload(statusOutput) ?? statusOutput);
+  const current = preparedWorkPaths(statusOutput);
   if (current === null || current.some(path => !listed.some(scope => path === scope || scope.endsWith('/') && path.startsWith(scope)))) {
     return finalAnswer(policy.scopeRefusal);
   }
@@ -241,6 +241,9 @@ export function preparedRecipeHygiene(sourcePaths, changed, inventory = null) {
 
 /** Mirrors `fn prepared_work_paths`; caller binds the exact status receipt. */
 export function preparedWorkPaths(output) {
+  if (incompleteReceipt(output)) return null;
+  const raw = porcelainPaths(output);
+  if (raw !== null) return raw;
   const payload = observedPayload(output);
   return payload === null ? null : porcelainPaths(payload);
 }
