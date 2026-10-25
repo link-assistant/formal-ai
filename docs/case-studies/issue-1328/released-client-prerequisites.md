@@ -189,3 +189,11 @@ Read-only repository settings on 25 October also confirmed that Formal AI and
 Hive Mind both use `default_workflow_permissions: write` with
 `can_approve_pull_request_reviews: true`. Their existing default-token policy
 supports the task transport; no repository setting or credential was changed.
+
+Coverage shard 28 then caught the new private-helper regression inside the
+production source file. The unchanged test now lives in
+`rust/tests/fixtures/recipe-staged-readiness.rs`, with the existing supported
+external registration in its parent module. Its helper visibility, module
+identity and rejection assertions are preserved; production logic is unchanged.
+The test-placement guard remains enabled. Native verification follows the next
+complete fix batch; moving the fixture is not evidence of hosted acceptance.

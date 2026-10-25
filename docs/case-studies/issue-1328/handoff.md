@@ -39,6 +39,10 @@ documented temporary 55-minute allowance, while the solve remains bounded at
 fresh final-head CI; neither earlier image success nor hermetic replay grants
 the still-missing released three-client acceptance.
 
+Keep native regressions outside production source. The staged-readiness
+regression now uses the repository's supported external fixture registration,
+preserving access to private helpers without shipping inline test bodies.
+
 ## Earlier release history
 
 The original integration and subsequent release fixes are merged. Most recently,
