@@ -31,7 +31,6 @@ fn dockerfile_defines_only_supported_dind_telegram_runtime() {
             "node --version",
             "COPY --chown=box:box packages/container-runtime-tools/package.json /home/box/.formal-ai-runtime-tools/package.json",
             "COPY --chmod=0755 scripts/install-container-runtime-tools.sh scripts/verify-container-runtime-tools.mjs",
-            "scripts/install-client-registry-recovery.mjs /usr/local/lib/formal-ai-runtime-tools/scripts/",
             "js/server/bounded-command.mjs js/server/structured-log.mjs js/server/json.mjs",
             "js/logging/json-numbers.mjs js/logging/lino-codec.mjs",
             "RUN /usr/local/lib/formal-ai-runtime-tools/scripts/install-container-runtime-tools.sh /home/box/.formal-ai-runtime-tools",
@@ -44,6 +43,28 @@ fn dockerfile_defines_only_supported_dind_telegram_runtime() {
             "CMD [\"formal-ai\", \"telegram\", \"--mode\", \"polling\"]",
         ],
     );
+
+    let instructions = dockerfile.replace("\\\n", " ");
+    let copied: Vec<_> = instructions
+        .lines()
+        .filter_map(|line| line.strip_prefix("COPY "))
+        .filter(|line| {
+            line.split_whitespace().last()
+                == Some("/usr/local/lib/formal-ai-runtime-tools/scripts/")
+        })
+        .flat_map(str::split_whitespace)
+        .collect();
+    for source in [
+        "scripts/install-container-runtime-tools.sh",
+        "scripts/verify-container-runtime-tools.mjs",
+        "scripts/install-client-registry-recovery.mjs",
+        "scripts/configure-container-client-tools.mjs",
+    ] {
+        assert!(
+            copied.contains(&source),
+            "runtime COPY closure lacks {source}"
+        );
+    }
 
     assert!(
         !dockerfile.contains("FROM debian:"),

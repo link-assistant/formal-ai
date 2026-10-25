@@ -31,6 +31,14 @@ audit now proves owner discovery. Existing uncertain cleanup claims must not
 be retried automatically. Container checks passed on both architectures at an
 earlier head; require all checks again at the final reviewed head before merge.
 
+The final blocker batch corrects an order-dependent Docker COPY test and cites
+the existing Rust staged-readiness twins. It also preserves the solve budget
+after the actual 28-minute image setup: only the delivery parent receives a
+documented temporary 55-minute allowance, while the solve remains bounded at
+21 minutes. Public-timestamp regressions cover the parent/child budget. Require
+fresh final-head CI; neither earlier image success nor hermetic replay grants
+the still-missing released three-client acceptance.
+
 ## Earlier release history
 
 The original integration and subsequent release fixes are merged. Most recently,

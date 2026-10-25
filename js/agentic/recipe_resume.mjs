@@ -100,7 +100,7 @@ function ciInvocation(plan) {
   const installed = policy();
   return installed.ciCommand.replace(/\{(?:source|plan)\}/gu, slot => shellQuote(slot === '{source}' ? installed.ciSource : jsonText(plan)));
 }
-/** Readiness of an explicitly staged workflow grants no hosted-CI completion credit. */
+/** Mirrors `fn staged_ready_command`; staged readiness grants no hosted-CI credit. */
 export function recipeStagedReadyCommand(reference, workflow, file, ready) {
   return ciInvocation({reference,workflow,ready,operation:'staged-ready',path:file.path,source:file.source});
 }
@@ -109,6 +109,7 @@ function receiptIdentity(value,reference,workflow,ready) {
     &&value.ready===ready&&typeof value.isDraft==='boolean'&&typeof value.head==='string'&&/^[a-f0-9]{40}$/u.test(value.head)
     &&typeof value.branch==='string'&&value.branch!=='';
 }
+/** Mirrors `fn staged_ready_result`; never substitutes for positive hosted checks. */
 export function recipeStagedReadyResult(output,reference,workflow,path,ready) {
   let value;try{value=JSON.parse(observedPayload(output));}catch{return null;}
   return receiptIdentity(value,reference,workflow,ready)&&value.schema==='recipe-staged-ready-v1'

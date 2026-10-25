@@ -162,3 +162,19 @@ derivatives, adds the three publisher registry answers without relabeling the
 older snapshot cohort, and records the audited CLI compatibility pins against
 issue 1364. The read-only audit supports standard bot checks-mode dispatch and
 excludes E2E base branches; neither dispatch mode can enter mutating cleanup.
+
+A final older-head native shard exposed an order-dependent Dockerfile test:
+it required the recovery helper to be adjacent to the COPY destination. The
+real image matrix passed, including the newly added configurator. The test now
+reads the continued COPY instruction and requires every runtime helper in that
+closure independently of source order. Runtime and build probes stay required.
+
+The same owner exposed a second deadline problem before the next execution:
+Codex job 121114230265 used 28 minutes 13 seconds before starting its bounded
+21-minute solve; Claude job 121114230383 used 27 minutes 26 seconds. The old
+30-minute parent therefore could not preserve that solve budget. Only the
+delivery job now has a temporary, explicit 55-minute CI-speed exception for
+observed setup, solve and five minutes of evidence reserve. Every inner limit,
+single-attempt rule and other job cap stays unchanged. A regression uses the
+actual public timestamps. Remove this transfer debt once the source-bound image
+handoff and full solve fit within 30 minutes; no duration record was invented.
