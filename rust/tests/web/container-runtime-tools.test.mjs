@@ -113,6 +113,28 @@ test('fresh image setup links only the pinned native client and registers real l
  assert.equal(fs.realpathSync(target),fs.realpathSync(path.join(home,'node_modules/@playwright/mcp')));
  linkContainerMcp(home,global);assert.equal(fs.lstatSync(target).mtimeMs,before);
 });
+test('Bun may link directly to the official native executable while the package bin is its hard link',async t=>{
+ const {home}=fixture(t),calls=[],base=clientTransport(home,calls);
+ const platform=path.join(home,'node_modules/@anthropic-ai/claude-code-linux-arm64');
+ fs.mkdirSync(platform);const native=path.join(platform,'claude');fs.writeFileSync(native,'metadata-only native fixture');
+ const bin=path.join(home,'node_modules/.bin');fs.mkdirSync(bin);
+ fs.symlinkSync(native,path.join(bin,'claude'));
+ const transport=async(command,args,options)=>{
+  if(!args[0]?.endsWith('/install.cjs'))return base(command,args,options);
+  calls.push({command,args,options});const declared=path.join(path.dirname(args[0]),'bin/claude.exe');
+  fs.mkdirSync(path.dirname(declared));fs.linkSync(native,declared);
+  return {status:0,signal:null,cleanup_complete:true,stdout:Buffer.alloc(0),stderr:Buffer.alloc(0)};
+ };
+ assert.equal((await configureContainerClientTools(home,{transport})).verified,true);
+ assert.equal(fs.realpathSync(path.join(bin,'claude')),native,'preserve the official existing link');
+});
+test('a different existing client executable stays refused even if its current bytes match',async t=>{
+ const {home}=fixture(t),calls=[],bin=path.join(home,'node_modules/.bin'),foreign=path.join(home,'foreign-claude');
+ fs.mkdirSync(bin);fs.writeFileSync(foreign,'metadata-only native fixture');fs.symlinkSync(foreign,path.join(bin,'claude'));
+ await assert.rejects(configureContainerClientTools(home,{transport:clientTransport(home,calls)}),/unexpected existing runtime link/u);
+ assert.equal(calls.length,1,'refuse before executing the unrelated client');
+ assert.equal(fs.realpathSync(path.join(bin,'claude')),foreign);
+});
 test('image client setup fails once and redacts credentials before any MCP registration',async t=>{
  const {home}=fixture(t),calls=[],secret='private-client-setup-token';
  await assert.rejects(configureContainerClientTools(home,{environment:{...process.env,GH_TOKEN:secret},

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import YAML from 'yaml';
-import {ciAdmissionDecision,isGatingCiRun} from '../../../scripts/lib/hive-delivery-admission.mjs';
+import {ciAdmissionDecision,isGatingCiRun,applicableWorkflows} from '../../../scripts/lib/hive-delivery-admission.mjs';
 import {precheckPublishedCi} from '../../../scripts/lib/hive-delivery-release.mjs';
 
 // Minimal replay of release run 40173640886: proposal run 40176454890 started
@@ -15,6 +15,18 @@ const proposal={...publisher,id:40176454890,event:'schedule',path:'.github/workf
  status:'in_progress',conclusion:null};
 const options=runs=>({source,expected:[publisher.path],runs,complete:true});
 const reader=runs=>({pages:async()=>runs});
+
+test('derived PR obligations and observed CI agree that cleanup is outside delivery admission',()=>{
+ const validator={path:'.github/workflows/release.yml',document:{on:{pull_request:{}}}};
+ const cleanup={path:'.github/workflows/hive-original-delivery-finalize.yml',document:
+  YAML.parse(readFileSync(new URL('../../../.github/workflows/hive-original-delivery-finalize.yml',import.meta.url),'utf8'))};
+ const expected=applicableWorkflows([validator,cleanup],{event:'pull_request',baseBranch:'main',
+  files:['scripts/finalize-generated-test-issues.mjs']});
+ assert.deepEqual(expected,[validator.path]);
+ const result=ciAdmissionDecision({source,expected,complete:true,runs:[{...publisher,path:validator.path,event:'pull_request'},
+  {...proposal,path:cleanup.path,event:'pull_request'}]});
+ assert.equal(result.admitted,true);
+});
 
 test('a later proposal-only cycle cannot invalidate authenticated release CI',async()=>{
  for(const event of ['schedule','workflow_dispatch']){

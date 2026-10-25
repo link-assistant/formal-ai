@@ -49,6 +49,11 @@ repository's CLI checks. Installation retains Bun's existing lifecycle trust
 policy. The pinned Claude package ships a placeholder executable; its reviewed
 `install.cjs` links the installed matching native optional dependency. Only
 that official linker is explicitly run, once within the setup deadline.
+The first ARM64 image check also showed Bun's existing executable link pointing
+directly at the official platform binary. The installer hard-links the generic
+package executable to that same file. Accept this identical filesystem object
+as well as the canonical path, preserve the existing link, and continue to
+refuse a different executable even if its current bytes happen to match.
 
 Both images check actual client versions and local, pinned MCP registration.
 The same MCP package is linked into the discovered npm global directory so
@@ -83,6 +88,21 @@ replay recognized the two actual owned fixtures, while Agent's failed
 pre-claim check was incorrectly treated as an ambiguous task. This difference
 does not establish a permissions failure or justify new credentials.
 
+The default-token PR audit in
+[40182009633](https://github.com/link-assistant/formal-ai/actions/runs/40182009633)
+then exposed the exact transport difference: the hosted GitHub CLI rejected
+all three raw logs because they contained terminal escape sequences. The
+local older CLI allowed them. No issue write was reached. For captured log
+data only, the shared reader probes local CLI help once and uses its supported
+[`--allow-escape-sequences`](https://cli.github.com/manual/gh_api) option.
+The API read is never retried for this negotiation, existing transfer/time
+bounds remain, and raw bytes are parsed or hashed rather than printed to a
+terminal. Legacy CLIs keep their original argument list. Tests emulate both
+versions and reject the raw opt-in for writes or arbitrary endpoints.
+The qualified native-data collector uses the same captured-log reader. Complete
+UTF-8 text is decoded after joining retained buffers so a multibyte character
+at their boundary is preserved.
+
 The repair recognizes the terminal failed read-only claim check followed by
 skipped persistence and solve gates as no task effects. Incomplete logs,
 unknown gates or any created resource still refuse that classification.
@@ -90,6 +110,8 @@ Retained cleanup receipts now include bounded transport/ownership reasons.
 An explicitly selected owner can also be audited in a same-repository PR or
 manual workflow using only the default token's read permissions; the audit
 cannot enter either mutating cleanup job and grants no cleanup credit. The
+audit explicitly uses Bash pipefail so an incomplete JSON result cannot become
+a successful workflow merely because its final `tee` command succeeded. The
 existing immutable cleanup claim continues to prohibit automatic repetition
 after uncertainty. Use the audit to diagnose the actual hosted difference
 before another recovery decision.

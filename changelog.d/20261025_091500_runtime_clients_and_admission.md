@@ -9,3 +9,4 @@ bump: patch
 - Keep proposal-only learning events outside release CI gating while retaining mandatory checks and publication verification.
 - Report the blocking CI run and bounded, redacted stdout and stderr when a replay command fails.
 - Preserve generated-task cleanup refusal details, recognize failed pre-effect admission without phantom tasks, and support a read-only default-token ownership audit.
+- Capture ANSI-bearing job logs with modern and legacy GitHub CLIs without relaxing bounded reads, and fail incomplete audit pipelines.

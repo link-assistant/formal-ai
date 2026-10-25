@@ -17,7 +17,12 @@ function member(home,name,relative){
 function ensureLink(link,target,type){
  fs.mkdirSync(path.dirname(link),{recursive:true});let existing=false;
  try{fs.lstatSync(link);existing=true;}catch(error){if(error.code!=='ENOENT')throw error;}
- if(existing)assert.equal(fs.realpathSync(link),fs.realpathSync(target),'unexpected existing runtime link');
+ if(existing){
+  const actual=fs.statSync(link),expected=fs.statSync(target);
+  assert(fs.realpathSync(link)===fs.realpathSync(target)||
+   actual.isFile()&&expected.isFile()&&actual.dev===expected.dev&&actual.ino===expected.ino,
+  'unexpected existing runtime link');
+ }
  else fs.symlinkSync(path.relative(path.dirname(link),target),link,type);
  return link;
 }

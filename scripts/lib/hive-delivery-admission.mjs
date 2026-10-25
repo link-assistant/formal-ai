@@ -72,7 +72,7 @@ export function applicableWorkflows(workflows, {
   const expected = [];
   for (const workflow of workflows) {
     assert.match(workflow.path, /^\.github\/workflows\/[A-Za-z0-9_-]+\.ya?ml$/u);
-    if (workflow.path === deliveryWorkflow) continue;
+    if (!isGatingCiRun({path: workflow.path, event})) continue;
     const triggers = workflow.document.on;
     const policy = typeof triggers === 'string' ? triggers === event ? {} : undefined : Array.isArray(triggers) ? triggers.includes(event) ? {} : undefined : triggers?.[event];
     if (policy === undefined) continue;

@@ -32,4 +32,5 @@ test('PR and manual audits have read-only scope and cannot enter the mutating cl
  assert.equal(workflow.jobs.prepare.if.includes('pull_request'),false);
  assert.equal(workflow.jobs.sweep.needs,'prepare');
  assert(audit.steps.filter(step=>step.run).every(step=>!step.run.includes('${{')),'owner input stays in environment data');
+ assert.equal(audit.steps.find(step=>step.run).shell,'bash','pipefail must retain a failed audit before tee');
 });

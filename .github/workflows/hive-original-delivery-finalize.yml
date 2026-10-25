@@ -52,6 +52,7 @@ jobs:
         with:
           node-version: 24
       - name: Report complete log custody and read-only ownership decisions
+        shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
           CLEANUP_AUDIT_OWNER: ${{ inputs['owner-run'] || '' }}
