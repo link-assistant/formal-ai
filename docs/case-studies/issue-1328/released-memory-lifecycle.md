@@ -83,3 +83,29 @@ token fallback, following Hive Mind's staged-workflow transport. Preserve the
 original task bodies, independent output oracle, two-pass/no-op acceptance and
 trusted terminal-owner cleanup. Issue 1364 remains open until those real hosted
 tasks pass using the released image.
+
+## Default-token preflight
+
+Candidate execution [40152800096](https://github.com/link-assistant/formal-ai/actions/runs/40152800096)
+completed its native build and source-bound image verification. All three client
+jobs selected the default token and advertised `Contents: write`, `Issues: write`
+and `PullRequests: write`. Their repository responses nevertheless reported
+`permissions.push: false`, and the preflight rejected that role flag before any
+client claim or task issue/PR was created. Attempts to publish nonexistent solve
+evidence then added secondary `ENOENT` errors.
+
+When repository metadata does not positively establish push access, preflight now
+performs one bounded Git receive-pack dry-run against the exact selected repository.
+It uses the token through GitHub CLI's credential helper, disables prompting and
+pre-push hooks, and sends no objects or ref updates. A failed, signalled, timed-out
+or incompletely cleaned probe remains a failure, without retry. Current-repository
+isolation, installation/classic workflow scope and all real task acceptance checks
+remain mandatory. The preflight grants no delivery credit. Evidence publication
+requires an executed client claim; claimed failures must still retain evidence.
+
+Regression coverage invokes the actual hosted preflight with the observed false
+role flag and tests both successful and denied probes. A real Git dry-run against
+a disposable bare repository verifies that no refs or objects are created.
+Hosted default-token delivery still requires validation after this trusted
+default-branch protocol fix is merged. Never rerun the earlier effectful workflow.
+The candidate image archive was approximately 9.3 GB; it stayed in hosted CI.

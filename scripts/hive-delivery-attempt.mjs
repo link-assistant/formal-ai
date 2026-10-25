@@ -1,5 +1,5 @@
 import { createDeliveryClaim, publishDeliveryResult, githubLedgerWriter } from './lib/hive-delivery-ledger.mjs';
-import { taskCredentialTarget, taskCredentialScope, requireTaskCredentialAccess, requireTaskCredentialConfiguration } from './lib/hive-delivery-credentials.mjs';
+import { taskCredentialTarget, taskCredentialScope, probeTaskPushAccess, requireTaskCredentialAccess, requireTaskCredentialConfiguration } from './lib/hive-delivery-credentials.mjs';
 // Credential preflight before claim; claim before effects. Publish only a qualified result after the unchanged independent oracle.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -346,13 +346,16 @@ export async function preflightTaskCredentials(environment = process.env, {
     };
   }
   const observed = await request('repos/' + target.repository);
+  const pushProbe = observed.value.permissions?.push === true ? null
+    : await probeTaskPushAccess(target, {environment, transport});
   const installation = layer === 'app' ? (await request('installation/repositories?per_page=100')).value : null;
   const proof = requireTaskCredentialAccess(target, {
     repository: observed.value,
     layer,
     installation,
     scopes: observed.scopes,
-    currentRepository: environment.GITHUB_REPOSITORY
+    currentRepository: environment.GITHUB_REPOSITORY,
+    pushProbe
   });
   console.log('::add-mask::' + token);
   outputs(environment, {

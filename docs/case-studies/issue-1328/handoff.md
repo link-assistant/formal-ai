@@ -21,6 +21,14 @@ instead of the actual linked task record. The focused follow-up on
 `fix/released-lifecycle-and-ci-recovery` fixes that verifier and uses the real
 JavaScript memory writer for its regression. See
 [the cause, diagnostics and release evidence](released-memory-lifecycle.md).
+The same [PR 1407](https://github.com/link-assistant/formal-ai/pull/1407) also fixes
+the subsequent candidate run `40152800096`: all three clients selected the default
+token but stopped before their claims because a false repository role flag was
+treated as proof of denied push access despite the jobs' declared write scope.
+A bounded, read-only Git receive-pack probe now establishes actual access when
+metadata is not positive. No new credentials are required. This privileged
+protocol executes from the default branch, so its hosted validation must follow
+the corrected PR's green checks and merge; do not rerun the old effectful run.
 
 [PR 1404](https://github.com/link-assistant/formal-ai/pull/1404) merged normally as
 `af6e30e7828c0dfd1eb844235756949c610f5467` after all 16 workflows passed.

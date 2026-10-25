@@ -182,8 +182,9 @@ test('genuine image, solve and independent verification phases use same-run hand
   assert.equal(stage.with.name, staged.with.name);
   assert.equal(stage.with.path, staged.with.path + '/publish', 'only sanitized explicit export is uploaded');
   assert.equal(final.with.name, 'hive-original-${{ matrix.tool }}-evidence');
+  assert.equal(stage.if, "${{ !cancelled() && steps.claim.outputs.execute == 'true' }}");
+  assert.equal(final.if, '${{ !cancelled() }}');
   for (const upload of [stage, final]) {
-    assert.equal(upload.if, '${{ !cancelled() }}');
     assert.equal(upload.with['if-no-files-found'], 'error');
     assert.equal(upload.with['include-hidden-files'], false);
   }

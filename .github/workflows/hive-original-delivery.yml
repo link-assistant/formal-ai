@@ -434,10 +434,10 @@ jobs:
           node .hive-protocol/scripts/run-issue-1364-client-replay.mjs --tool "$E2E_TOOL" --source "$HIVE_ADMISSION_SOURCE" --image "$E2E_IMAGE" --output "$E2E_LOG_DIR/issue-1364-delivery.json"
         if: ${{ steps.claim.outputs.execute == 'true' }}
       - name: Seal staged source/run evidence without granting success credit
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.claim.outputs.execute == 'true' }}
         run: node .hive-protocol/scripts/lib/hive-delivery-bundle.mjs --seal-evidence
       - name: Stage actual original solve evidence for independent verification
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.claim.outputs.execute == 'true' }}
         uses: actions/upload-artifact@v7
         with:
           name: hive-original-${{ matrix.tool }}-staged-evidence
