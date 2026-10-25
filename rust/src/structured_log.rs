@@ -103,8 +103,8 @@ pub fn enabled(level: &str) -> bool {
 }
 
 /// Passive native request timing; only explicit request tracing enables it.
-pub(crate) fn request_phase(started: std::time::Instant, name: &str) {
-    if crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS") {
+pub(crate) fn request_phase(trace: bool, started: std::time::Instant, name: &str) {
+    if trace {
         crate::diagnostic!("debug"; "[trace] agentic_phase={name} elapsed_ms={}", started.elapsed().as_millis());
     }
 }
