@@ -44,6 +44,13 @@ gates; actual validation workflows, publishers and unknown scheduled checks
 remain required. Revalidation and command failures must identify their blocking
 run or bounded redacted stdout/stderr instead of a bare boolean assertion.
 
+For explicitly staged `ci/` workflows, source-qualified PR readiness and CI
+completion are separate observations. A clean pushed source tree and its exact
+staged workflow may be marked ready for independent execution. This grants no
+CI or task-completion credit. The original Hive harness must still execute that
+workflow and all unchanged delivery assertions before acceptance. Missing
+hosted checks must never become a fabricated green result.
+
 ## Replay and GitHub side effects
 
 Collect every E2E attempt's available setup, request, tool-result, stdout/stderr,

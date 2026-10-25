@@ -15,11 +15,21 @@ PR 1407 is merged; v0.355.9 and all configured release/public-download gates
 passed. Real released-image acceptance then verified the native memory
 lifecycle and default-token access, but exposed a post-admission proposal race
 and missing Claude/Codex/MCP runtime prerequisites. The fixes are batched on
+[`PR 1410`](https://github.com/link-assistant/formal-ai/pull/1410) on
 `fix/published-ci-proposal-admission`; see the
 [exact causes, verification contract and evidence](released-client-prerequisites.md).
 Issue 1364 remains open until a fresh real three-client execution and trusted
 cleanup pass. No local Rust compilation or product download/execution is
 permitted. The private untracked session export must never be read or staged.
+
+Current follow-up also replays the recent public Hive Mind client failures:
+stdout-only source receipts, raw Git status whitespace, and missing hosted
+checks for explicitly staged workflows. PR readiness in the staged transport
+grants no CI credit; the original independent workflow execution and all
+acceptance assertions remain required. The default-token hosted read-only
+audit now proves owner discovery. Existing uncertain cleanup claims must not
+be retried automatically. Container checks passed on both architectures at an
+earlier head; require all checks again at the final reviewed head before merge.
 
 ## Earlier release history
 

@@ -640,6 +640,22 @@ run is a no-op success. No run may make more than two identical failing calls.
 Released-image Hive `/claude`, `/codex` and `/agent` outcomes must also be zero;
 candidate-image results do not establish released-image acceptance.
 
+The published runtime must include the real Claude, Codex and Agent executables
+and the MCP prerequisites required by the original Hive defaults. Verify those
+prerequisites in the final task image before transferring it or creating issues;
+do not infer client readiness from the Formal AI server version alone. Preserve
+the original MCP preflight. Proposal-only learning events are not release CI
+gates; actual validation workflows, publishers and unknown scheduled checks
+remain required. Revalidation and command failures must identify their blocking
+run or bounded redacted stdout/stderr instead of a bare boolean assertion.
+
+For explicitly staged `ci/` workflows, source-qualified PR readiness and CI
+completion are separate observations. A clean pushed source tree and its exact
+staged workflow may be marked ready for independent execution. This grants no
+CI or task-completion credit. The original Hive harness must still execute that
+workflow and all unchanged delivery assertions before acceptance. Missing
+hosted checks must never become a fabricated green result.
+
 ## Replay and GitHub side effects
 
 Collect every E2E attempt's available setup, request, tool-result, stdout/stderr,

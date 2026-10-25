@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "description": "Shared image CLI compatibility pins; this manifest is not a full transitive lockfile.",
+  "@anthropic-ai/claude-code//": "blocked: https://github.com/link-assistant/formal-ai/issues/1364 (retain the native package/linker version audited with the real CLI acceptance matrix until newer packaging passes the same three-client contract)",
+  "@openai/codex//": "blocked: https://github.com/link-assistant/formal-ai/issues/1364 (retain the CLI acceptance matrix pin; newer Codex TUI paste/Enter behavior must pass the existing startup and original-task regressions before updating both owners)",
   "dependencies": {
     "@anthropic-ai/claude-code": "2.1.252",
     "@openai/codex": "0.147.0",

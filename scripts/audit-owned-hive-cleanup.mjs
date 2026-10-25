@@ -10,6 +10,21 @@ export function cleanupAuditOwner(value,body=''){
  else assert.equal(matches.length,1,'one explicit Cleanup-audit-owner required');
  const owner=Number(value||matches[0][1]);assert(Number.isSafeInteger(owner)&&owner>0);return owner;
 }
+/** Standard bot checks resolve the optional request through authenticated PR metadata. */
+export async function resolveCleanupAuditOwner(environment,client=createEvidenceClient({maxRequests:2,bounds:{retries:0}})){
+ const owner=environment.CLEANUP_AUDIT_OWNER??'',body=environment.CLEANUP_AUDIT_BODY??'';
+ const pull=environment.CLEANUP_AUDIT_PR??'';
+ if(!pull)return cleanupAuditOwner(owner,body);
+ assert.equal(owner,'','one explicit owner source');assert.equal(body,'','dispatch uses fresh PR metadata');
+ assert.equal(environment.CLEANUP_AUDIT_REPOSITORY,'link-assistant/formal-ai');
+ assert.match(pull,/^[1-9][0-9]*$/u);assert(Number.isSafeInteger(Number(pull)));
+ assert.match(environment.CLEANUP_AUDIT_SOURCE??'',/^[a-f0-9]{40}$/u);
+ const pr=await client.json('repos/link-assistant/formal-ai/pulls/'+pull);
+ assert.equal(pr.number,Number(pull));assert.equal(pr.head.repo.full_name,environment.CLEANUP_AUDIT_REPOSITORY);
+ assert.equal(pr.head.sha,environment.CLEANUP_AUDIT_SOURCE,'checks source must remain the current PR head');
+ const current=pr.body??'';
+ return current.includes('Cleanup-audit-owner:')?cleanupAuditOwner('',current):null;
+}
 export async function auditOwnedHiveCleanup(runId,{client=createEvidenceClient({maxRequests:100,
  bounds:{retries:0,logBytes:1048576,logDownloadBytes:8388608}}),finalize=finalizeGeneratedRun}={}){
  assert(Number.isSafeInteger(runId)&&runId>0);
@@ -25,6 +40,7 @@ export async function auditOwnedHiveCleanup(runId,{client=createEvidenceClient({
  outcome.requests=client.attempts;outcome.transferredBytes=client.transferredBytes();return outcome;
 }
 if(import.meta.url===pathToFileURL(process.argv[1]??'').href){
- const owner=cleanupAuditOwner(process.argv[2]??process.env.CLEANUP_AUDIT_OWNER,process.env.CLEANUP_AUDIT_BODY);
- const result=await auditOwnedHiveCleanup(owner);console.log(JSON.stringify(result));if(!result.complete)process.exitCode=1;
+ const owner=process.argv[2]?cleanupAuditOwner(process.argv[2]):await resolveCleanupAuditOwner(process.env);
+ if(owner===null)console.log(JSON.stringify({schema:'owned-hive-cleanup-audit/v1',status:'not-requested',apply:false,cleanupCredit:false,complete:false}));
+ else{const result=await auditOwnedHiveCleanup(owner);console.log(JSON.stringify(result));if(!result.complete)process.exitCode=1;}
 }

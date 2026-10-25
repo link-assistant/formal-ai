@@ -6,7 +6,7 @@ import { fill } from './work_item_steps.mjs';
 // A successful probe proves bytes at its observed epoch, never issue completion.
 import { cached, childrenNamed, childValue, parseLino, readText } from './host.mjs';
 import { shellQuote } from './git_commit.mjs';
-import { observedPayload, stepOutcome, StepOutcome, commandArgument } from './tool_result.mjs';
+import { observedPayload, stepOutcome, StepOutcome, commandArgument, reportedExitCode, incompleteReceipt } from './tool_result.mjs';
 import { Capability } from './capability.mjs';
 import { qualifiedToolAttempt, qualifiedCommandAttempt, Progress } from './progress.mjs';
 import { toolFor } from './capability_router.mjs';
@@ -23,6 +23,9 @@ function policy() {
       ciCommand: childValue(root, 'ci-command'),
       verified: childValue(root, 'ci-verified-report'),
       verifiedLocal: childValue(root, 'ci-verified-local-report'),
+      stagedPrefix: childValue(root, 'staged-workflow-prefix'),
+      stagedLocal: childValue(root, 'staged-local-report'),
+      stagedUnverified: childValue(root, 'staged-unverified-report'),
       ciSource: [...childrenNamed(parseLino(readText('data/meta/bounded-command-capture-source.lino')), 'line'), ...childrenNamed(root, 'ci-source-line')].map(node => node.value).join('\n') + '\n',
       pending: childValue(root, 'ci-pending-report'),
       refusal: childValue(root, 'scope-refusal'),
@@ -68,12 +71,21 @@ export function recipeSourceResult(output, path) {
   return null;
 }
 
+/** Source constructors decode semantic receipts; missing process status stays unknown. */
+export function recipeSourceReceipt(progress, command) {
+  const frame = qualifiedCommandAttempt(progress, command);
+  const exit = frame === null ? null : reportedExitCode(frame.detail);
+  if (frame?.binding !== 'exact' || !frame.succeeded || incompleteReceipt(frame.detail)
+    || exit !== null && exit !== 0) return null;
+  return frame.detail;
+}
+
 /** Mirrors `fn recipe_source_matches`; later writes invalidate an earlier probe. */
 export function recipeSourceMatches(progress, path, source) {
   const command = recipeSourceCommand(path);
-  const frame = qualifiedCommandAttempt(progress, command);
-  if (frame?.binding !== 'exact' || !frame.succeeded || stepOutcome(frame.detail, false, false) !== StepOutcome.Succeeded) return false;
-  const result = recipeSourceResult(frame.detail, path);
+  const receipt = recipeSourceReceipt(progress, command);
+  if (receipt === null) return false;
+  const result = recipeSourceResult(receipt, path);
   if (result?.absent !== false || result.source !== source) return false;
   const probe = progress.attempts.findLastIndex(attempt => attempt.capability === Capability.Run && attempt.arguments !== null && commandArgument(attempt.arguments) === command);
   const write = progress.latestSourceMutationIndex(path);
@@ -82,12 +94,25 @@ export function recipeSourceMatches(progress, path, source) {
 
 /** Mirrors `fn recipe_ci_command`; source-projected bounded kernel, no copied poller. */
 export function recipeCiCommand(reference, workflow, ready) {
+  return ciInvocation({reference, workflow, ready});
+}
+function ciInvocation(plan) {
   const installed = policy();
-  return installed.ciCommand.replace(/\{(?:source|plan)\}/gu, slot => shellQuote(slot === '{source}' ? installed.ciSource : jsonText({
-    reference,
-    workflow,
-    ready
-  })));
+  return installed.ciCommand.replace(/\{(?:source|plan)\}/gu, slot => shellQuote(slot === '{source}' ? installed.ciSource : jsonText(plan)));
+}
+/** Readiness of an explicitly staged workflow grants no hosted-CI completion credit. */
+export function recipeStagedReadyCommand(reference, workflow, file, ready) {
+  return ciInvocation({reference,workflow,ready,operation:'staged-ready',path:file.path,source:file.source});
+}
+function receiptIdentity(value,reference,workflow,ready) {
+  return value?.success===true&&value.complete===true&&value.reference===reference&&value.workflow===workflow
+    &&value.ready===ready&&typeof value.isDraft==='boolean'&&typeof value.head==='string'&&/^[a-f0-9]{40}$/u.test(value.head)
+    &&typeof value.branch==='string'&&value.branch!=='';
+}
+export function recipeStagedReadyResult(output,reference,workflow,path,ready) {
+  let value;try{value=JSON.parse(observedPayload(output));}catch{return null;}
+  return receiptIdentity(value,reference,workflow,ready)&&value.schema==='recipe-staged-ready-v1'
+    &&value.path===path&&value.checks===0&&value.ciVerified===false?value:null;
 }
 
 /** Mirrors `fn recipe_ci_result`; exact command qualification belongs to the caller. */
@@ -99,9 +124,7 @@ export function recipeCiResult(output, reference, workflow, ready) {
   } catch {
     return null;
   }
-  if (value?.schema !== 'recipe-ci-v1' || value.success !== true || value.complete !== true || value.reference !== reference || value.workflow !== workflow
-    || value.ready !== ready || typeof value.isDraft !== 'boolean' || typeof value.head !== 'string' || !/^[a-f0-9]{40}$/u.test(value.head) || typeof value.branch !== 'string'
-    || value.branch === '' || !Number.isSafeInteger(value.checks) || value.checks <= 0) return null;
+  if (!receiptIdentity(value,reference,workflow,ready)||value.schema!=='recipe-ci-v1'||!Number.isSafeInteger(value.checks)||value.checks<=0) return null;
   return value;
 }
 
@@ -117,7 +140,7 @@ export function planRecipeCiFallback(messages, tools, recipe, reference, workflo
     if (frame === null) return {
       kind: 'missing'
     };
-    return frame.binding === 'exact' && frame.succeeded && stepOutcome(frame.detail) === StepOutcome.Succeeded ? {
+    return frame.binding === 'exact' && frame.succeeded && !incompleteReceipt(frame.detail) && stepOutcome(frame.detail) !== StepOutcome.Failed ? {
       kind: 'success',
       output: frame.detail
     } : {
@@ -149,6 +172,28 @@ export function planRecipeCiFallback(messages, tools, recipe, reference, workflo
       if (result.kind === 'failed') return gap(installed.refusal);
       if (result.kind === 'missing') return call(command);
     }
+  }
+  const staged = recipe.supporting_files.find(file=>installed.stagedPrefix!==''&&file.path.startsWith(installed.stagedPrefix)
+    && /\.ya?ml$/u.test(file.path) && /^name: ([^\r\n]+)$/mu.exec(file.source)?.[1]===workflow);
+  if(staged){
+    if(followup[0]!==undefined){
+      const review=observed(followup[0]);
+      if(review.kind==='missing')return call(followup[0]);if(review.kind==='failed')return gap(installed.refusal);
+    }
+    const command=recipeStagedReadyCommand(reference,workflow,staged,false),view=observed(command);
+    if(view.kind==='missing')return call(command);
+    const before=view.kind==='success'?recipeStagedReadyResult(view.output,reference,workflow,staged.path,false):null;
+    if(before===null)return gap(installed.refusal);
+    if(before.isDraft&&followup[1]!==undefined){
+      const edit=observed(followup[1]);
+      if(edit.kind==='missing')return call(followup[1]);if(edit.kind==='failed')return gap(installed.refusal);
+    }
+    const readyCommand=recipeStagedReadyCommand(reference,workflow,staged,true),ready=observed(readyCommand);
+    if(ready.kind==='missing')return call(readyCommand);
+    const after=ready.kind==='success'?recipeStagedReadyResult(ready.output,reference,workflow,staged.path,true):null;
+    if(after===null||after.isDraft||after.head!==before.head)return gap(installed.refusal);
+    return resolvedFinalAnswer((localVerified?installed.stagedLocal:installed.stagedUnverified).replace('{head}',()=>after.head),
+      FinalDisposition.Gap,'recipe-staged-workflow-pending');
   }
   const ciCommand = recipeCiCommand(reference, workflow, false);
   const ci = observed(ciCommand);

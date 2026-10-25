@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import YAML from 'yaml';
-import {cleanupAuditOwner,auditOwnedHiveCleanup} from '../../../scripts/audit-owned-hive-cleanup.mjs';
+import {cleanupAuditOwner,auditOwnedHiveCleanup,resolveCleanupAuditOwner} from '../../../scripts/audit-owned-hive-cleanup.mjs';
 test('audit requires one explicit bounded owner and never infers one from arbitrary text',()=>{
  assert.equal(cleanupAuditOwner('41'),41);assert.equal(cleanupAuditOwner('', 'Cleanup-audit-owner: 41\n'),41);
  for(const [value,body] of [['0',''],['1;write',''],['9007199254740992',''],['','owner 41'],
@@ -33,4 +33,16 @@ test('PR and manual audits have read-only scope and cannot enter the mutating cl
  assert.equal(workflow.jobs.sweep.needs,'prepare');
  assert(audit.steps.filter(step=>step.run).every(step=>!step.run.includes('${{')),'owner input stays in environment data');
  assert.equal(audit.steps.find(step=>step.run).shell,'bash','pipefail must retain a failed audit before tee');
+ assert.deepEqual(workflow.on.pull_request['branches-ignore'],['e2e/**']);
+ assert.deepEqual(workflow.on.workflow_dispatch.inputs.mode.options,['checks']);
+ assert(workflow.on.workflow_dispatch.inputs['pull-request']);
+});
+test('standard checks dispatch reads its owner from exact-head PR metadata without inventing an audit',async()=>{
+ const environment={CLEANUP_AUDIT_PR:'42',CLEANUP_AUDIT_SOURCE:'a'.repeat(40),CLEANUP_AUDIT_REPOSITORY:'link-assistant/formal-ai'};
+ const pr={number:42,head:{sha:environment.CLEANUP_AUDIT_SOURCE,repo:{full_name:environment.CLEANUP_AUDIT_REPOSITORY}},body:''};
+ const client={json:async endpoint=>{assert.equal(endpoint,'repos/link-assistant/formal-ai/pulls/42');return pr;}};
+ assert.equal(await resolveCleanupAuditOwner(environment,client),null);
+ pr.body='Cleanup-audit-owner: 41';assert.equal(await resolveCleanupAuditOwner(environment,client),41);
+ pr.head.sha='b'.repeat(40);await assert.rejects(resolveCleanupAuditOwner(environment,client),/current PR head/u);
+ await assert.rejects(resolveCleanupAuditOwner({...environment,CLEANUP_AUDIT_OWNER:'41'},client),/one explicit/u);
 });

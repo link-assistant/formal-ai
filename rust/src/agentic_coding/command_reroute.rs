@@ -656,14 +656,13 @@ impl RecipeProgress {
             if matches_update {
                 let (path, _) = files[progress.files_written];
                 let observation = super::progress::Progress::scan(&messages[start..=index]);
-                let frame =
-                    observation.qualified_command_attempt(update_command.as_deref().unwrap_or(""));
-                if frame.is_some_and(|frame| {
-                    frame.binding == super::qualified_tool_observation::Binding::Exact
-                        && frame.succeeded
-                }) && reported_exit_code(&output) == Some(0)
-                    && super::recipe_resume::recipe_source_update_result(&output, path)
-                {
+                let receipt = super::recipe_resume::recipe_source_receipt(
+                    &observation,
+                    update_command.as_deref().unwrap_or(""),
+                );
+                if receipt.is_some_and(|receipt| {
+                    super::recipe_resume::recipe_source_update_result(receipt, path)
+                }) {
                     progress.source_checked.remove(path);
                     progress.source_preimages.remove(path);
                 } else {
@@ -679,14 +678,8 @@ impl RecipeProgress {
             if let Some((path, source)) = probe_path {
                 let observation = super::progress::Progress::scan(&messages[start..=index]);
                 let command = super::recipe_resume::recipe_source_command(path);
-                let frame = observation.qualified_command_attempt(&command);
-                let result = frame
-                    .filter(|frame| {
-                        frame.binding == super::qualified_tool_observation::Binding::Exact
-                            && frame.succeeded
-                            && reported_exit_code(&output) == Some(0)
-                    })
-                    .and_then(|_| super::recipe_resume::recipe_source_result(&output, path));
+                let result = super::recipe_resume::recipe_source_receipt(&observation, &command)
+                    .and_then(|receipt| super::recipe_resume::recipe_source_result(receipt, path));
                 if let Some(result) = result {
                     progress.failure = None;
                     progress.source_checked.insert((*path).to_owned());
@@ -752,6 +745,18 @@ impl RecipeProgress {
         }
         if resume {
             let observation = super::progress::Progress::scan(messages);
+            if let Some((path, _)) = files.get(progress.files_written)
+                && progress.source_checked.contains(*path)
+                && super::recipe_resume::recipe_source_receipt(
+                    &observation,
+                    &super::recipe_resume::recipe_source_command(path),
+                )
+                .is_none()
+            {
+                progress.source_checked.remove(*path);
+                progress.source_preimages.remove(*path);
+                progress.source_invalidated = true;
+            }
             for (index, (path, source)) in files.iter().take(progress.files_written).enumerate() {
                 if !recipe_file_matches(&observation, path, source) {
                     progress.files_written = index;

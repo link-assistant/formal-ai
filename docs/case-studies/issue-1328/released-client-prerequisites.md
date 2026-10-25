@@ -118,3 +118,47 @@ before another recovery decision.
 
 Never rerun the effectful Original workflow. Require a fresh
 execution and actual released-image client success before closing issue 1364.
+
+## Hive Mind source-callback failure
+
+The bounded shared collector also retrieved the original client logs from
+[Hive Mind run 40124638032](https://github.com/link-assistant/hive-mind/actions/runs/40124638032).
+That run explicitly used Formal AI 0.355.7. Claude job 120963507697 and Agent
+job 120963507679 returned a complete `workspace-source-v1` observation with
+`success: true`, `absent: true` and `error_code: ENOENT`. Their real callbacks
+contained stdout without a shell exit code. The unchanged current recipe
+continuation required exit zero before decoding that source observation, so
+it reported a failed write and stopped before creating the program.
+
+A focused JavaScript replay reproduced that failure on current source. The
+source constructors now decode their own complete semantic receipts after
+exact command/callback binding and harness-failure checks. Missing process
+status remains unknown. Explicit nonzero status, error callbacks, partial or
+truncated output, signals, wrong paths and duplicate bindings still refuse
+source evidence. Source updates retain preimage validation and force a new
+exact-byte read before any artifact credit. Existing source mutation epochs
+still invalidate an earlier read. Both Rust and JavaScript use this boundary;
+native execution is checked only by CI. No task solution or recorded answer
+was added to production dispatch.
+
+The full API replay also exposed raw Git porcelain status losing its first
+column through a presentation normalizer. Its exact status grammar now parses
+the raw bytes first in both runtimes; structured transport fallback still
+rejects explicit failures and incomplete observations.
+
+Codex job 120963507681 in the same Hive run delivered and committed its source,
+then stopped with `no checks reported` for a staged `ci/` workflow. Hosted
+checks cannot be assumed for these default-token task PRs. The source-owned
+continuation now observes readiness separately: it verifies the exact staged
+workflow at the clean, pushed current head, reads the live same-head PR, and
+makes one ready transition if needed. A repeated run only reads already-ready
+state. Its distinct receipt reports zero hosted checks and `ciVerified: false`;
+it cannot satisfy the unchanged normal hosted-CI decoder. The final report
+keeps workflow verification pending for the original Hive harness, which must
+still execute the staged workflow and every original delivery assertion.
+
+The follow-up batch also regenerates the source-selector and requirements
+derivatives, adds the three publisher registry answers without relabeling the
+older snapshot cohort, and records the audited CLI compatibility pins against
+issue 1364. The read-only audit supports standard bot checks-mode dispatch and
+excludes E2E base branches; neither dispatch mode can enter mutating cleanup.

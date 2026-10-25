@@ -10,3 +10,5 @@ bump: patch
 - Report the blocking CI run and bounded, redacted stdout and stderr when a replay command fails.
 - Preserve generated-task cleanup refusal details, recognize failed pre-effect admission without phantom tasks, and support a read-only default-token ownership audit.
 - Capture ANSI-bearing job logs with modern and legacy GitHub CLIs without relaxing bounded reads, and fail incomplete audit pipelines.
+- Let exact, complete source-probe callbacks advance coding recipes when clients omit shell status; preserve explicit failures and require fresh source verification after updates in Rust and JavaScript.
+- Separate ready staged-workflow pull requests from hosted CI completion so default-token task delivery can reach independent workflow execution without claiming nonexistent green checks.
