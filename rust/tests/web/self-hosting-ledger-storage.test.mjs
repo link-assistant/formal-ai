@@ -27,6 +27,15 @@ test('hundreds of future appends rotate repeatedly without changing prior record
   assert.ok(readdirSync(f.parts).length>=3);
   assert.match(readFileSync(f.file,'utf8'),/tag "v330"/u);
 });
+test('rotated records retain their explicit inherited defaults in every archive',t=>{
+  const shared='  release-defaults\n    metric_version "3"\n    target_percentage_basis_points "389"\n';
+  const before='self_hosting_ledger\n'+shared+Array.from({length:108},(_,i)=>row(i)).join('');
+  const f=fixture(t,before);appendLedger(f.file,'');
+  assert.deepEqual(records(readLedger(f.file).replaceAll(shared,'')),records(before.replace(shared,'')));
+  for(const name of readdirSync(f.parts))
+    assert(readFileSync(join(f.parts,name),'utf8').startsWith('self-hosting-ledger-archive\n'+shared));
+  assert(readFileSync(f.file,'utf8').includes(shared));
+});
 test('duplicate, nested, traversal, missing and excessive archives fail before writes',t=>{
   for(const directive of ['../outside','0002.lino','0001.lino"\n  archive "self-hosting-ledger-parts/0001.lino','0001.lino']) {
     const text='self_hosting_ledger\n  archive "self-hosting-ledger-parts/'+directive+'"\n'+row(0);

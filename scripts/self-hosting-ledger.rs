@@ -31,6 +31,15 @@ fn parts(text: &str) -> Result<Vec<String>, String> {
     Ok(names)
 }
 
+#[must_use]
+pub fn release_defaults(text: &str) -> Vec<&str> {
+    text.lines()
+        .skip_while(|line| *line != "  release-defaults")
+        .skip(1)
+        .take_while(|line| line.starts_with("    "))
+        .collect()
+}
+
 pub fn read(ledger: &Path) -> Result<String, String> {
     let text = read_text(ledger)?;
     let directory = ledger.parent().unwrap_or_else(|| Path::new("."));
@@ -77,21 +86,28 @@ pub fn append(ledger: &Path, record: &str) -> Result<(), String> {
     let (header, records) = text.split_at(offset);
     let mut names = parts(header)?;
     let mut chunks = Vec::new();
-    let mut chunk = String::from("self-hosting-ledger-archive\n");
+    let mut archive_header = String::from("self-hosting-ledger-archive\n");
+    let shared = release_defaults(header);
+    if !shared.is_empty() {
+        archive_header.push_str("  release-defaults\n");
+        for line in shared {
+            let _ = writeln!(archive_header, "{line}");
+        }
+    }
+    let mut chunk = archive_header.clone();
     let mut rows: Vec<_> = records.split("  release\n").skip(1).collect();
     let latest = rows.pop().ok_or("ledger has no release record")?;
     for row in rows {
         let row = format!("  release\n{row}");
-        if row.lines().count() + 1 > LIMIT {
+        if row.lines().count() + archive_header.lines().count() > LIMIT {
             return Err("single release record exceeds ledger limit".to_owned());
         }
         if chunk.lines().count() + row.lines().count() > LIMIT {
-            chunks.push(chunk);
-            chunk = String::from("self-hosting-ledger-archive\n");
+            chunks.push(std::mem::replace(&mut chunk, archive_header.clone()));
         }
         chunk.push_str(&row);
     }
-    if chunk != "self-hosting-ledger-archive\n" {
+    if chunk != archive_header {
         chunks.push(chunk);
     }
     if names.len() + chunks.len() > MAX_PARTS {
@@ -204,6 +220,28 @@ mod tests {
             count += 1;
         }
         assert!(count >= 3);
+    }
+    #[test]
+    fn rotated_archives_preserve_their_shared_release_defaults() {
+        let fixture = Fixture::new();
+        let shared = "  release-defaults\n    metric_version \"3\"\n    target_percentage_basis_points \"389\"\n";
+        let text = format!(
+            "self_hosting_ledger\n{shared}{}",
+            (0..108).map(row).collect::<String>()
+        );
+        fs::write(fixture.ledger(), &text).unwrap();
+        append(&fixture.ledger(), "").unwrap();
+        assert_eq!(
+            records(&read(&fixture.ledger()).unwrap().replace(shared, "")),
+            records(&text.replace(shared, ""))
+        );
+        for entry in fs::read_dir(fixture.0.join("self-hosting-ledger-parts")).unwrap() {
+            assert!(
+                read_text(&entry.unwrap().path())
+                    .unwrap()
+                    .starts_with(&format!("self-hosting-ledger-archive\n{shared}"))
+            );
+        }
     }
     #[test]
     fn missing_traversal_duplicate_and_nested_archives_refuse_before_writes() {

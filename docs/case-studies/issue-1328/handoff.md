@@ -10,11 +10,25 @@ concurrency fixture is now manual-only and explicitly unproven; see the
 strict-final Unknown remains a failed attempt, not a skipped check or a pass.
 
 The original integration and subsequent release fixes are merged. Most recently,
-[PR 1403](https://github.com/link-assistant/formal-ai/pull/1403) merged normally as
-`4bffcd1f5cf72314c2a7880c80b27cd5c534625e` after all its checks passed.
-Its version-preparation child is `95dcfcaba7b544cbc25c94b4050b1065a4086f3b`
-(`0.355.7`). All release producers and the actual public-download verification
-finished successfully, including Docker and both macOS architectures.
+[PR 1406](https://github.com/link-assistant/formal-ai/pull/1406) merged normally as
+`fd721a2277c58932fa49c65652db06b29a8993f4` after all its checks passed.
+Its version-preparation child is `55e2f7ea83ad127c6f77c820bee3fdb996498943`
+(`0.355.8`). Release producers and public-download verification passed, including
+full/slim multiarchitecture containers and both macOS architectures. Original
+three-client acceptance is still unverified: hosted run `40139076853` failed
+before client tasks because its lifecycle verifier expected an assistant message
+instead of the actual linked task record. The focused follow-up on
+`fix/released-lifecycle-and-ci-recovery` fixes that verifier and uses the real
+JavaScript memory writer for its regression. See
+[the cause, diagnostics and release evidence](released-memory-lifecycle.md).
+The same [PR 1407](https://github.com/link-assistant/formal-ai/pull/1407) also fixes
+the subsequent candidate run `40152800096`: all three clients selected the default
+token but stopped before their claims because a false repository role flag was
+treated as proof of denied push access despite the jobs' declared write scope.
+A bounded, read-only Git receive-pack probe now establishes actual access when
+metadata is not positive. No new credentials are required. This privileged
+protocol executes from the default branch, so its hosted validation must follow
+the corrected PR's green checks and merge; do not rerun the old effectful run.
 
 [PR 1404](https://github.com/link-assistant/formal-ai/pull/1404) merged normally as
 `af6e30e7828c0dfd1eb844235756949c610f5467` after all 16 workflows passed.
@@ -30,8 +44,8 @@ Preserve all original bot commits and public evidence in normal history.
 Before another merge, require green exact-head CI and let any active guarded
 release finish; current `main` remains required throughout publication.
 
-The next follow-up is on `fix/hive-cleanup-policy-history`. Cleanup preparation
-after that merge exposed a historical-policy rollout failure; see the
+The merged PR 1405 follow-up used `fix/hive-cleanup-policy-history`. Cleanup preparation
+after PR 1404 exposed a historical-policy rollout failure; see the
 [captured cause and compatibility proof](hive-pre-effect-finalization.md#historical-policy-rollout).
 The fix reads each policy's root list from its original immutable source and
 caches failed lookups. The actual older CI progress hash is reproduced, and
@@ -59,14 +73,17 @@ Multiple hosted discovery runs passed, and a read-only live historical-cursor
 check authenticated the journal in 20 requests. A scheduled full sweep remains
 to be observed; no workflow is intentionally left disabled.
 
-The new main run `40109825719` then exposed a separate Codex TUI startup race:
+The historical main run `40109825719` exposed a separate Codex TUI startup race:
 the harness sent Enter while its model was still loading and inside the pinned
 client's paste-suppression window. See
 [`codex-tui-startup-race.md`](codex-tui-startup-race.md) for the captured evidence
-and follow-up regression. Release preparation had not started at this failure;
-the latest released version remains `v0.355.7`. Continue fixing and validating
-the follow-up, self-merge only its exact green head, and monitor the resulting
-release, public downloads, container tags and original three-client acceptance.
+and regression, delivered in merged PR 1406. Its hosted PTY regression and main
+real grounded-client test passed, followed by release `v0.355.8`. Validate the
+current lifecycle follow-up, self-merge only its exact green head after prior
+publishers/effect owners are terminal, and monitor publication plus the original
+three-client acceptance. Do not rerun the failed original-Hive workflow: its
+first-attempt requirement remains authoritative. Work solo under the latest
+owner instruction, without local Rust builds or product execution/downloads.
 
 ## Findings and implementation
 

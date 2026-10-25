@@ -22,6 +22,7 @@
 
 use std::env;
 use std::fmt::Write as _;
+use std::fs;
 use std::path::{Component, Path, PathBuf};
 use std::process::Command;
 
@@ -33,6 +34,9 @@ const DEFAULT_TRAILING_WINDOW: usize = 3;
 
 #[path = "self-hosting-ledger.rs"]
 pub mod ledger_storage;
+
+#[path = "self-hosting-ledger-rows.rs"]
+mod ledger_rows;
 
 #[path = "self-hosting-retraction.rs"]
 mod retraction;
@@ -94,7 +98,7 @@ pub struct Measurement {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ReleaseRow {
     /// Measurement epoch this row was produced under; see [`METRIC_VERSION`].
-    /// Rows written before issue #812 carry no field and read back as `1`.
+    /// Legacy rows without a field or file-scoped default read back as `1`.
     pub metric_version: u64,
     pub tag: String,
     pub since: String,
@@ -648,90 +652,7 @@ fn weighted_percentage(rows: &[ReleaseRow]) -> u64 {
     percentage_basis_points(self_authored, changed)
 }
 
-pub fn read_release_rows(ledger: &Path) -> Result<Vec<ReleaseRow>, String> {
-    let text = ledger_storage::read(ledger)
-        .map_err(|error| format!("could not read {}: {error}", ledger.display()))?;
-    let mut rows = Vec::new();
-    let mut fields = Vec::new();
-    for line in text.lines() {
-        if line.trim() == "release" {
-            if !fields.is_empty() {
-                rows.push(parse_release_row(&fields)?);
-                fields.clear();
-            }
-        } else if line.starts_with("    ") {
-            fields.push(line.trim().to_owned());
-        }
-    }
-    if !fields.is_empty() {
-        rows.push(parse_release_row(&fields)?);
-    }
-    Ok(rows)
-}
-
-fn parse_release_row(fields: &[String]) -> Result<ReleaseRow, String> {
-    let value = |key: &str| -> Result<String, String> {
-        let prefix = format!("{key} \"");
-        fields
-            .iter()
-            .find_map(|field| {
-                field
-                    .strip_prefix(&prefix)
-                    .and_then(|value| value.strip_suffix('"'))
-                    .map(str::to_owned)
-            })
-            .ok_or_else(|| format!("release row is missing {key}"))
-    };
-    let number = |key: &str| -> Result<u64, String> {
-        value(key)?
-            .parse::<u64>()
-            .map_err(|error| format!("release row has invalid {key}: {error}"))
-    };
-    let optional_number = |key: &str| -> Result<Option<u64>, String> {
-        let Ok(raw) = value(key) else {
-            return Ok(None);
-        };
-        raw.parse::<u64>()
-            .map(Some)
-            .map_err(|error| format!("release row has invalid {key}: {error}"))
-    };
-    Ok(ReleaseRow {
-        // Rows recorded before issue #812 carry no epoch marker; they are, by
-        // definition, epoch 1.
-        metric_version: optional_number("metric_version")?.unwrap_or(1),
-        tag: value("tag")?,
-        since: value("since")?,
-        until: value("until")?,
-        self_authored_lines: number("self_authored_lines")?,
-        changed_lines: number("changed_lines")?,
-        self_authored_commits: number("self_authored_commits")?,
-        commits: number("commits")?,
-        percentage_basis_points: number("percentage_basis_points")?,
-        trailing_window: usize::try_from(number("trailing_window")?)
-            .map_err(|_| "trailing_window does not fit usize".to_owned())?,
-        trailing_percentage_basis_points: number("trailing_percentage_basis_points")?,
-        target_percentage_basis_points: optional_number("target_percentage_basis_points")?,
-        target_override_basis_points: optional_number("target_override_basis_points")?,
-        self_authored_pull_requests: fields
-            .iter()
-            .filter_map(|field| {
-                field
-                    .strip_prefix("self_authored_pull_request \"")
-                    .and_then(|value| value.strip_suffix('"'))
-                    .map(str::to_owned)
-            })
-            .collect(),
-        self_authored_pull_request_authors: fields
-            .iter()
-            .filter_map(|field| {
-                field
-                    .strip_prefix("self_authored_pull_request_author \"")
-                    .and_then(|value| value.strip_suffix('"'))
-                    .map(str::to_owned)
-            })
-            .collect(),
-    })
-}
+pub use ledger_rows::read_release_rows;
 
 fn append_release_row(ledger: &Path, row: &ReleaseRow) -> Result<(), String> {
     let fields = [
@@ -756,16 +677,21 @@ fn append_release_row(ledger: &Path, row: &ReleaseRow) -> Result<(), String> {
             row.trailing_percentage_basis_points.to_string(),
         ),
     ];
+    let ledger_text = fs::read_to_string(ledger).map_err(|error| error.to_string())?;
+    let defaults = ledger_storage::release_defaults(&ledger_text);
     let mut record = String::from("  release\n");
     for (key, value) in &fields {
-        record.push_str("    ");
-        record.push_str(key);
-        record.push_str(" \"");
-        record.push_str(value);
-        record.push_str("\"\n");
+        let field = format!("    {key} \"{value}\"");
+        if defaults.contains(&field.as_str()) {
+            continue;
+        }
+        let _ = writeln!(record, "{field}");
     }
     if let Some(target) = row.target_percentage_basis_points {
-        let _ = writeln!(record, "    target_percentage_basis_points \"{target}\"");
+        let field = format!("    target_percentage_basis_points \"{target}\"");
+        if !defaults.contains(&field.as_str()) {
+            let _ = writeln!(record, "{field}");
+        }
     }
     if let Some(override_target) = row.target_override_basis_points {
         let _ = writeln!(

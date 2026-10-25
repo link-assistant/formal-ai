@@ -11,6 +11,10 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 
+#[allow(clippy::duplicate_mod)]
+#[path = "../../../scripts/self-hosting-metric.rs"]
+mod metric;
+
 fn root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR"))
         .parent()
@@ -33,21 +37,23 @@ fn release_versions(ledger: &str) -> Vec<String> {
 
 #[test]
 fn every_release_row_in_the_ledger_is_stated_under_metric_version_3() {
-    let ledger = crate::release_ledger::read(&root().join("data/meta/self-hosting-ledger.lino"))
-        .expect("complete self-hosting history must be readable");
+    let file = root().join("data/meta/self-hosting-ledger.lino");
+    let ledger =
+        crate::release_ledger::read(&file).expect("complete self-hosting history must be readable");
     assert!(ledger.contains("current_metric_version \"3\""));
     assert!(ledger.contains("--replay-epoch"));
     let releases = ledger.lines().filter(|line| *line == "  release").count();
-    let versions = release_versions(&ledger);
+    let rows =
+        metric::read_release_rows(&file).expect("all release rows must resolve their fields");
     assert!(releases > 0, "the ledger must hold release rows");
     assert_eq!(
-        versions.len(),
+        rows.len(),
         releases,
-        "every release row names its metric version"
+        "resolving defaults must preserve every release row"
     );
     assert!(
-        versions.iter().all(|version| version == "3"),
-        "every release row in the live ledger is a version-3 row: {versions:?}"
+        rows.iter().all(|row| row.metric_version == 3),
+        "every release row explicitly records or inherits metric version 3: {rows:?}"
     );
 }
 
