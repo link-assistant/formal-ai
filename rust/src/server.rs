@@ -136,9 +136,14 @@ fn record_exchange_best_effort(
     let Some((prompt, answer)) = exchange else {
         return;
     };
+    let phase = crate::dialog_log::structured_log::request_phases(
+        crate::solver_config::flag_enabled("FORMAL_AI_TRACE_REQUESTS"),
+    );
+    phase("memory_recording_started");
     if let Err(error) = store.record_chat_exchange_with_tools(&prompt, &answer, tools) {
         crate::diagnostic!("error"; "[memory] failed to record live chat exchange: {error}");
     }
+    phase("memory_recording_finished");
 }
 
 #[must_use]
@@ -154,10 +159,15 @@ pub fn handle_api_request_with_auth(
     // The planner reads this back when it writes a report command, so the
     // exported session is the caller's own session and not a guess (#839).
     let _dialog = crate::dialog_log::DialogScope::begin(headers);
+    let phase = crate::dialog_log::structured_log::request_phases(
+        crate::solver_config::flag_enabled("FORMAL_AI_TRACE_REQUESTS"),
+    );
     let response = dispatch_api_request_with_auth(method, path, headers, body, auth);
+    phase("api_dispatch_finished");
     crate::dialog_log::record_api_exchange_if_enabled(
         method, path, headers, body, &response, authorized,
     );
+    phase("dialog_logging_finished");
     response
 }
 

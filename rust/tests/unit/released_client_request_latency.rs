@@ -7,6 +7,41 @@ use formal_ai::solver::{SolverConfig, UniversalSolver};
 use std::time::{Duration, Instant};
 
 #[test]
+fn absent_predictions_do_not_resolve_the_captured_coding_prompt() {
+    let request: ChatCompletionRequest = serde_json::from_str(include_str!(
+        "../fixtures/released-client-requests/agent.json"
+    ))
+    .unwrap();
+    let prompt = request
+        .messages
+        .iter()
+        .rev()
+        .find(|message| message.role == "user")
+        .unwrap()
+        .content
+        .user_request_text();
+    for events in [
+        Vec::new(),
+        vec![formal_ai::MemoryEvent {
+            id: "ordinary-history".into(),
+            kind: Some("message".into()),
+            content: Some(prompt.clone()),
+            ..formal_ai::MemoryEvent::default()
+        }],
+    ] {
+        let started = Instant::now();
+        assert!(
+            formal_ai::anticipation::prediction_hit_event(&events, &prompt, "actual-request")
+                .is_none()
+        );
+        assert!(
+            started.elapsed() < Duration::from_secs(5),
+            "absence of predictions must not trigger a second solve"
+        );
+    }
+}
+
+#[test]
 fn released_client_requests_plan_without_consuming_the_delivery_budget() {
     let solver = UniversalSolver::new(SolverConfig {
         agent_mode: true,

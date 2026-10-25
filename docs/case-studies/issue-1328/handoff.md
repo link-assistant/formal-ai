@@ -39,6 +39,15 @@ monotonic clock. Preserve the architecture ceiling and verify the actual native
 request tests in CI. These fixes are manual and grant no autonomous authorship
 credit.
 
+The older H4 native run passed pure captured-request planning, but its real HTTP
+regression timed out after 30 seconds despite planning completing in 716 ms.
+The follow-up fixes a Rust/JavaScript parity gap: prediction-hit bookkeeping
+must skip classification when memory has no prediction events. Rust invoked
+the full offline solver there; JavaScript already short-circuits. Retain memory
+and log recording, genuine prediction matching and the original HTTP deadline.
+The drafted guard and captured-prompt test require fresh native CI; dispatch,
+memory and dialog timings identify any remaining downstream bottleneck.
+
 PR 1407 is merged; v0.355.9 and all configured release/public-download gates
 passed. Real released-image acceptance then verified the native memory
 lifecycle and default-token access, but exposed a post-admission proposal race

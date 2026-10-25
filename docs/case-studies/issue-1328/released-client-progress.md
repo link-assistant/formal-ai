@@ -97,3 +97,15 @@ JavaScript/TypeScript scope introduced zero duplicate groups against its real
 base; existing repository duplication debt is not claimed fixed. Rust source
 formatting passed. Native compilation, native latency and new released-client
 acceptance are reserved for CI.
+
+Native CI then passed the captured pure-planning regression for all three
+clients, but the [real HTTP regression failed](https://github.com/link-assistant/formal-ai/actions/runs/40236271144/job/121303272468):
+planning took 716 ms and the request still exhausted its 30-second transport
+deadline. Memory prediction-hit bookkeeping called the full offline solver even
+when no prediction events existed. JavaScript already guards that case. The
+native correction restores that guard without disabling memory, logs or genuine
+prediction matching. A captured-prompt regression covers empty and ordinary
+history; existing anticipation cases retain positive prediction checks. Opt-in
+timings now also delimit memory recording, API dispatch and dialog persistence.
+The unchanged 15-second full HTTP budget still requires successful current-head
+CI execution, followed by fresh released-client acceptance.

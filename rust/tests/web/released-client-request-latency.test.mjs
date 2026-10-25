@@ -7,9 +7,20 @@ import {WorkerHost} from '../../../js/server/worker-host.mjs';
 import {createMemory} from '../../../js/server/memory.mjs';
 import {ensureNodeHost} from '../../../js/server/node-host-install.mjs';
 import {createChatCompletion} from '../../../js/server/openai.mjs';
-import {parseChatRequest} from '../../../js/server/chat-request.mjs';
+import {chatPromptAndHistory, parseChatRequest} from '../../../js/server/chat-request.mjs';
 import {parseResponsesRequest, toChatCompletionRequest} from '../../../js/server/responses-input.mjs';
 import {parseAnthropicRequest, anthropicToChatCompletionRequest} from '../../../js/server/anthropic.mjs';
+import {predictionHitEvent} from '../../../js/server/anticipation.mjs';
+
+test('ordinary coding history does not invoke a prediction classifier', () => {
+  const body=fs.readFileSync(new URL('../fixtures/released-client-requests/agent.json',import.meta.url),'utf8');
+  const request=parseChatRequest(body);
+  const {prompt}=chatPromptAndHistory(request.messages);
+  const unexpectedClassifier=()=>{throw new Error('no prediction exists to classify');};
+  for(const events of [[],[{id:'ordinary-history',kind:'message',content:prompt}]]) {
+    assert.equal(predictionHitEvent(events,prompt,'actual-request',unexpectedClassifier),null);
+  }
+});
 
 test('captured released-client requests produce the grounded first step without tool effects', {timeout:30000}, async () => {
   const directory=fs.mkdtempSync(path.join(os.tmpdir(),'formal-ai-released-request-'));
