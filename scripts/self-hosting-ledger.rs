@@ -103,8 +103,7 @@ pub fn append(ledger: &Path, record: &str) -> Result<(), String> {
             return Err("single release record exceeds ledger limit".to_owned());
         }
         if chunk.lines().count() + row.lines().count() > LIMIT {
-            chunks.push(chunk);
-            chunk.clone_from(&archive_header);
+            chunks.push(std::mem::replace(&mut chunk, archive_header.clone()));
         }
         chunk.push_str(&row);
     }
