@@ -189,6 +189,7 @@ mod pull_request_1188_typo_discovery;
 mod pull_request_1188_unnamed_language;
 mod pull_request_1188_unquoted_output;
 mod pull_request_1188_workspace_search;
+mod released_client_request_latency;
 mod report_output_location;
 mod requirement_listing_route;
 mod requirement_span_integrity;
