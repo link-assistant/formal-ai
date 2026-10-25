@@ -18,7 +18,7 @@ function policy() {
       sessionPattern: childValue(root, 'session-pattern'),
       sessionLimit: Number(childValue(root, 'session-limit')),
       streams: lines(root, 'stream'),
-      emptyPlaceholders: lines(root, 'empty-placeholder'),
+      placeholders: lines(root, 'bootstrap-placeholder'),
       flags: lines(hygiene, 'output-flag'),
       binaryPrefixes: lines(hygiene, 'binary-prefix'),
       python,
@@ -35,11 +35,12 @@ export function recipeArtifactEvidenceRoot(issueReference) {
   if (segments[5] !== 'issues' || !/^[1-9][0-9]*$/u.test(segments[6] ?? '')) return null;
   return policy().template.replace('{number}', () => segments[6]);
 }
-function descriptor(sourcePaths, evidenceRoot) {
+function descriptor(sourcePaths, evidenceRoot, issueReference = null) {
   const installed = policy();
   const portable = value => typeof value === 'string' && /^[A-Za-z0-9_.\/-]+$/u.test(value) && !/[\r\n]/u.test(value) && !value.startsWith('/') && !value.split('/').includes('..');
   if (!Array.isArray(sourcePaths) || sourcePaths.length === 0 || sourcePaths.length > 256 || !sourcePaths.every(portable) || new Set(sourcePaths).size !== sourcePaths.length
-    || typeof evidenceRoot !== 'string' || new RegExp(installed.evidencePattern, 'u').exec(evidenceRoot)?.[0] !== evidenceRoot) return null;
+    || typeof evidenceRoot !== 'string' || new RegExp(installed.evidencePattern, 'u').exec(evidenceRoot)?.[0] !== evidenceRoot
+    || issueReference !== null && recipeArtifactEvidenceRoot(issueReference) !== evidenceRoot) return null;
   const outputs = [];
   for (const language of programLanguages()) {
     const source = language.save_as;
@@ -54,14 +55,15 @@ function descriptor(sourcePaths, evidenceRoot) {
       });
     }
   }
-  const candidates = [...new Set([...outputs.map(entry => entry.output), ...installed.streams.map(member => evidenceRoot + member), evidenceRoot + 'session-id.txt', ...installed.emptyPlaceholders])];
+  const candidates = [...new Set([...outputs.map(entry => entry.output), ...installed.streams.map(member => evidenceRoot + member), evidenceRoot + 'session-id.txt', ...installed.placeholders])];
   return {
     sourcePaths,
     evidenceRoot,
+    issueReference,
     outputs,
     candidates,
     streams: installed.streams,
-    emptyPlaceholders: installed.emptyPlaceholders,
+    placeholders: installed.placeholders,
     sessionPattern: installed.sessionPattern,
     sessionLimit: installed.sessionLimit,
     binaryPrefixes: installed.binaryPrefixes,
@@ -70,16 +72,16 @@ function descriptor(sourcePaths, evidenceRoot) {
 }
 
 /** Mirrors `fn recipe_artifact_inventory_command`; exact root is caller-bound to its issue. */
-export function recipeArtifactInventoryCommand(sourcePaths, evidenceRoot) {
-  const plan = descriptor(sourcePaths, evidenceRoot);
+export function recipeArtifactInventoryCommand(sourcePaths, evidenceRoot, issueReference = null) {
+  const plan = descriptor(sourcePaths, evidenceRoot, issueReference);
   if (plan === null) return null;
   const installed = policy();
   return installed.command.replace(/\{(?:source|plan)\}/gu, slot => shellQuote(slot === '{source}' ? installed.source : jsonText(plan)));
 }
 
 /** Mirrors `fn recipe_artifact_inventory_result`; caller requires exact successful command. */
-export function recipeArtifactInventoryResult(output, sourcePaths, evidenceRoot) {
-  const plan = descriptor(sourcePaths, evidenceRoot);
+export function recipeArtifactInventoryResult(output, sourcePaths, evidenceRoot, issueReference = null) {
+  const plan = descriptor(sourcePaths, evidenceRoot, issueReference);
   if (plan === null) return null;
   let value;
   try {
@@ -89,10 +91,16 @@ export function recipeArtifactInventoryResult(output, sourcePaths, evidenceRoot)
   }
   if (value?.schema !== 'prepared-artifact-inventory/v1' || value.complete !== true || value.evidenceRoot !== evidenceRoot || !Array.isArray(value.sourcePaths) || JSON.stringify(value.sourcePaths) !== JSON.stringify(sourcePaths)
     || !Array.isArray(value.ownedPaths) || value.ownedPaths.length > 256 || new Set(value.ownedPaths).size !== value.ownedPaths.length || !value.ownedPaths.every(path => plan.candidates.includes(path))) return null;
+  const placeholders=value.ownedPaths.filter(path=>plan.placeholders.includes(path));
+  if(placeholders.length&&(typeof value.branch!=='string'||value.branch===''||value.branch.length>512||/[\r\n\0]/u.test(value.branch)
+    ||value.placeholderSources===null||typeof value.placeholderSources!=='object'||Array.isArray(value.placeholderSources)
+    ||Object.keys(value.placeholderSources).length!==placeholders.length
+    ||!placeholders.every(path=>typeof value.placeholderSources[path]==='string'&&new TextEncoder().encode(value.placeholderSources[path]).length<=1024)))return null;
   return {
     ownedPaths: value.ownedPaths,
     sourcePaths: [...sourcePaths],
     evidenceRoot,
+    placeholderPolicy:placeholders.length?{issue:issueReference,branch:value.branch,sources:value.placeholderSources}:null,
     sessionPolicy: {
       evidenceRoot,
       filename: 'session-id.txt',

@@ -27,6 +27,7 @@ function hygienePolicy() {
       untrack: childValue(root, 'untrack-command'),
       clean: childValue(root, 'clean-command'),
       indexGuard: childValue(root, 'index-guard-command'),
+      branchGuard: childValue(root, 'branch-guard-command'),
       statusCommand: childValue(root, 'status-command'),
       scopeRefusal: childValue(root, 'scope-refusal'),
       commitCommand: childValue(root, 'commit-command')
@@ -63,7 +64,7 @@ function hygieneOutputs(policy) {
 export function preparedWorkHygiene(paths) {
   return workHygieneWithPolicy(paths, null);
 }
-function workHygieneWithPolicy(paths, sessionPolicy, emptyPlaceholders = [], sourcePaths = []) {
+function workHygieneWithPolicy(paths, sessionPolicy, placeholders = [], sourcePaths = [], placeholderPolicy = null) {
   const policy = hygienePolicy();
   const outputs = hygieneOutputs(policy);
   const ignored = paths.filter(value => outputs.some(entry => entry.output === value) || value.startsWith(policy.evidenceRoot) && policy.evidenceSuffixes.some(suffix => value.endsWith(suffix)));
@@ -76,12 +77,16 @@ function workHygieneWithPolicy(paths, sessionPolicy, emptyPlaceholders = [], sou
     'empty-evidence-suffixes': policy.evidenceSuffixes,
     'session-policy': sessionPolicy,
     'session-contract': sessionContract(),
-    'empty-placeholders': emptyPlaceholders,
-    'source-paths': sourcePaths
+    'placeholders': placeholders,
+    'source-paths': sourcePaths,
+    'placeholder-issue': placeholderPolicy?.issue ?? null,
+    'placeholder-branch': placeholderPolicy?.branch ?? null,
+    'placeholder-sources': placeholderPolicy?.sources ?? {}
   };
   const command = policy.command.replace(/\{(?:source|plan)\}/gu, placeholder => shellQuote(placeholder === '{source}' ? policy.source : jsonText(plan)));
   const excluded = [...new Set([...paths, '.gitignore'])].map(value => shellQuote(':(exclude,literal)' + value)).join(' ');
-  const indexGuardCommand = policy.indexGuard.replace('{exclude}', () => excluded);
+  const indexGuardCommand = (placeholders.length ? policy.branchGuard.replace('{branch}',()=>shellQuote(placeholderPolicy.branch))+' && ' : '')
+    + policy.indexGuard.replace('{exclude}', () => excluded);
   const commands = [indexGuardCommand, command];
   if (ignored.length) commands.push(policy.untrack.replace('{files}', () => ignored.map(value => shellQuote(':(literal)' + value)).join(' ')));
   return {
@@ -211,12 +216,12 @@ function sessionContract() {
 }
 
 /** Mirrors `fn prepared_recipe_hygiene_with_inventory`; only caller-qualified inventory grants scope. */
-export function preparedRecipeHygiene(sourcePaths, changed, inventory = null) {
+export function preparedRecipeHygiene(sourcePaths, changed, inventory = null, issueReference = null) {
   const policy = hygienePolicy();
   const outputs = hygieneOutputs(policy).filter(entry => sourcePaths.includes(entry.source));
   let sessionPolicy = null;
   let owned = [];
-  const placeholders = [...childrenNamed(parseLino(readText('data/meta/prepared-artifact-inventory.lino')), 'empty-placeholder')].map(node => node.value);
+  const placeholders = [...childrenNamed(parseLino(readText('data/meta/prepared-artifact-inventory.lino')), 'bootstrap-placeholder')].map(node => node.value);
   if (inventory !== null) {
     const contract = sessionContract();
     const root = inventory.evidenceRoot;
@@ -239,7 +244,9 @@ export function preparedRecipeHygiene(sourcePaths, changed, inventory = null) {
   const known = changed.every(path => sourcePaths.includes(path) || outputs.some(entry => entry.output === path) || inventory !== null && owned.includes(path) && placeholders.includes(path) || (inventory !== null ? path === sessionPolicy.path
     || [...childrenNamed(parseLino(readText('data/meta/prepared-artifact-inventory.lino')), 'stream')].some(node => path === inventory.evidenceRoot + node.value) : path.startsWith(policy.evidenceRoot)
     && policy.evidenceSuffixes.some(suffix => path.endsWith(suffix))));
-  return known ? workHygieneWithPolicy([...new Set([...changed, ...owned])], sessionPolicy, owned.filter(path => placeholders.includes(path)), sourcePaths) : null;
+  const selected=owned.filter(path=>placeholders.includes(path)),scope=inventory?.placeholderPolicy??null;
+  if(selected.length&&(scope?.issue!==issueReference||typeof scope.branch!=='string'||scope.branch===''||scope.branch.length>512||/[\r\n\0]/u.test(scope.branch)))return null;
+  return known ? workHygieneWithPolicy([...new Set([...changed, ...owned])], sessionPolicy, selected, sourcePaths, scope) : null;
 }
 
 /** Mirrors `fn prepared_work_paths`; caller binds the exact status receipt. */

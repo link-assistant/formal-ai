@@ -387,6 +387,7 @@ pub(super) fn plan_recipe_ci_fallback(
         super::recipe_artifact_inventory::recipe_artifact_inventory_command(
             &source_paths,
             &evidence_root,
+            Some(completion.commit_reference),
         )
     else {
         return gap("scope-refusal");
@@ -400,6 +401,7 @@ pub(super) fn plan_recipe_ci_fallback(
         inventory_output,
         &source_paths,
         &evidence_root,
+        Some(completion.commit_reference),
     ) else {
         return gap("scope-refusal");
     };
@@ -408,6 +410,7 @@ pub(super) fn plan_recipe_ci_fallback(
             &source_paths,
             &paths,
             Some(&inventory),
+            Some(completion.commit_reference),
         ) else {
             return gap("scope-refusal");
         };

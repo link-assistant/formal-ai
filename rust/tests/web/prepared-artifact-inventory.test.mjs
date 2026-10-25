@@ -186,7 +186,7 @@ test('released-client placeholder is removed only after fresh source and empty-f
   } finally { fs.rmSync(fixture.directory, {recursive:true, force:true}); }
 });
 test('changed placeholder bytes and missing replacement source prevent deletion', () => {
-  for(const mutation of ['placeholder', 'source']) {
+  for(const mutation of ['placeholder', 'source', 'symlink', 'missing']) {
     const fixture = hygieneFixture();
     try {
       fixture.save('.gitkeep', '');
@@ -195,9 +195,13 @@ test('changed placeholder bytes and missing replacement source prevent deletion'
       assert.equal(observed.status, 0, observed.stderr);
       const inventory = api.recipeArtifactInventoryResult(observed.stdout, sourcePaths, evidenceRoot);
       const hygiene = preparedRecipeHygiene(sourcePaths, [], inventory);
-      fixture.save(mutation === 'placeholder' ? '.gitkeep' : 'main.rs', mutation === 'placeholder' ? 'User content.\n' : '');
+      if(mutation==='symlink'||mutation==='missing') {
+        fs.unlinkSync(path.join(fixture.directory,'.gitkeep'));
+        if(mutation==='symlink')fs.symlinkSync('main.rs',path.join(fixture.directory,'.gitkeep'));
+      } else fixture.save(mutation === 'placeholder' ? '.gitkeep' : 'main.rs', mutation === 'placeholder' ? 'User content.\n' : '');
       assert.notEqual(fixture.execute(hygiene.command).status, 0);
-      assert(fs.existsSync(path.join(fixture.directory, '.gitkeep')));
+      if(mutation!=='missing')assert(fs.existsSync(path.join(fixture.directory, '.gitkeep')));
+      if(mutation==='symlink')assert.equal(fs.readFileSync(path.join(fixture.directory,'main.rs'),'utf8'),'fn main() {}\n');
     } finally { fs.rmSync(fixture.directory, {recursive:true, force:true}); }
   }
 });
@@ -214,6 +218,64 @@ test('nonempty and untracked placeholders remain outside the removal scope', () 
       assert(fs.existsSync(path.join(fixture.directory, '.gitkeep')));
     }
   } finally { fs.rmSync(fixture.directory, {recursive:true, force:true}); }
+});
+const bootstrapSource=fs.readFileSync(new URL('../fixtures/released-client-requests/hive-bootstrap-placeholder.txt',import.meta.url),'utf8');
+const bootstrapReference='https://github.com/link-assistant/formal-ai/issues/1415';
+const bootstrapBranch='issue-1415-cfcc23c376ad';
+function bootstrapFixture(source=bootstrapSource) {
+  const fixture=hygieneFixture();
+  fixture.localGit('checkout','-qb',bootstrapBranch);
+  fixture.save('.gitkeep',source);
+  fixture.localGit('add','--','.gitkeep');
+  fixture.localGit('-c','user.name=Fixture','-c','user.email=fixture@example.invalid','commit','-qm','Hive bootstrap');
+  const root=api.recipeArtifactEvidenceRoot(bootstrapReference);
+  const command=api.recipeArtifactInventoryCommand(sourcePaths,root,bootstrapReference);
+  const observation=fixture.execute(command);
+  assert.equal(observation.status,0,observation.stderr);
+  return {...fixture,root,command,inventory:api.recipeArtifactInventoryResult(observation.stdout,sourcePaths,root,bootstrapReference)};
+}
+test('actual released Hive bootstrap content is removed, stages cleanly, and is absent on the next inventory',()=>{
+  const fixture=bootstrapFixture();
+  try {
+    assert.equal(Buffer.byteLength(bootstrapSource),174);
+    assert(fixture.inventory.ownedPaths.includes('.gitkeep'));
+    assert.equal(fixture.inventory.placeholderPolicy.sources['.gitkeep'],bootstrapSource);
+    const hygiene=preparedRecipeHygiene(sourcePaths,[],fixture.inventory,bootstrapReference);
+    const result=fixture.execute(hygiene.command);
+    assert.equal(result.status,0,result.stderr);
+    assert(!fs.existsSync(path.join(fixture.directory,'.gitkeep')));
+    fixture.localGit('add','--',...hygiene.commitFiles.map(file=>':(literal)'+file));
+    assert.match(fixture.localGit('diff','--cached','--name-status'),/^D\s+\.gitkeep$/mu);
+    const second=fixture.execute(fixture.command);
+    assert.equal(second.status,0,second.stderr);
+    assert(!api.recipeArtifactInventoryResult(second.stdout,sourcePaths,fixture.root,bootstrapReference).ownedPaths.includes('.gitkeep'));
+  } finally {fs.rmSync(fixture.directory,{recursive:true,force:true});}
+});
+test('foreign issue, wrong branch, invalid timestamp and appended human content are preserved',()=>{
+  for(const source of [
+    bootstrapSource.replace('link-assistant/formal-ai','other/repository'),
+    bootstrapSource.replace(bootstrapBranch,'issue-1415-other'),
+    bootstrapSource.replace('2026-10-25','2026-99-25'),
+    bootstrapSource+'\nHuman documentation.\n',
+  ]) {
+    const fixture=bootstrapFixture(source);
+    try {
+      assert(!fixture.inventory.ownedPaths.includes('.gitkeep'));
+      assert.equal(fs.readFileSync(path.join(fixture.directory,'.gitkeep'),'utf8'),source);
+    } finally {fs.rmSync(fixture.directory,{recursive:true,force:true});}
+  }
+});
+test('changed bootstrap preimage or Git branch refuses before removing the observed file',()=>{
+  for(const mutation of ['content','branch']) {
+    const fixture=bootstrapFixture();
+    try {
+      const hygiene=preparedRecipeHygiene(sourcePaths,[],fixture.inventory,bootstrapReference);
+      if(mutation==='content')fixture.save('.gitkeep',bootstrapSource.replace('19:23:01','19:24:01'));
+      else fixture.localGit('checkout','-qb','issue-1415-other');
+      assert.notEqual(fixture.execute(hygiene.command).status,0);
+      assert(fs.existsSync(path.join(fixture.directory,'.gitkeep')));
+    } finally {fs.rmSync(fixture.directory,{recursive:true,force:true});}
+  }
 });
 test('qualified clean tracked artifacts untrack without physical deletion or new source staging', () => {
   const fixture = hygieneFixture();

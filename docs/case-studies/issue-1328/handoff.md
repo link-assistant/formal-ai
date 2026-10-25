@@ -15,7 +15,7 @@ PR 1410 is now merged and v0.355.10 passed all main, publisher and public-downlo
 checks, including independently checked Docker manifests. The fresh actual
 three-client owner failed: Claude left an empty placeholder, while Agent and
 Codex exceeded their finite first-pass budgets while progressing. The next
-batched follow-up fixes placeholder scope and repeated native registry parsing,
+batched [PR 1417](https://github.com/link-assistant/formal-ai/pull/1417) fixes placeholder scope and repeated native registry parsing,
 with captured-request regressions. See the
 [current causes, fixes and acceptance contract](released-client-progress.md).
 The broad vision and issue 1364 are not complete; fresh released-client

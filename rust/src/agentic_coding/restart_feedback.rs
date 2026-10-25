@@ -29,7 +29,7 @@ fn hygiene_policy() -> &'static crate::seed::parser::LinoNode {
 /// this does not grant authority to remove arbitrary files or execute a compiler.
 #[must_use]
 pub fn prepared_work_hygiene(paths: &[String]) -> Option<PreparedWorkHygiene> {
-    work_hygiene_with_policy(paths, None, &[], &[])
+    work_hygiene_with_policy(paths, None, &[], &[], None)
 }
 
 fn work_hygiene_with_policy(
@@ -37,6 +37,7 @@ fn work_hygiene_with_policy(
     session_policy: Option<&serde_json::Value>,
     placeholders: &[String],
     source_paths: &[String],
+    placeholder_policy: Option<&serde_json::Value>,
 ) -> Option<PreparedWorkHygiene> {
     let root = hygiene_policy().children.first()?;
     let values = |name: &str| {
@@ -65,7 +66,10 @@ fn work_hygiene_with_policy(
     let plan = json!({"files":paths, "outputs":outputs, "ignored":ignored,
         "binary-prefixes":values("binary-prefix"), "evidence-root":evidence_root,
         "empty-evidence-suffixes":suffixes,"session-policy":session_policy,"session-contract":session_contract()?,
-        "empty-placeholders":placeholders,"source-paths":source_paths});
+        "placeholders":placeholders,"source-paths":source_paths,
+        "placeholder-issue":placeholder_policy.and_then(|value|value.get("issue")),
+        "placeholder-branch":placeholder_policy.and_then(|value|value.get("branch")),
+        "placeholder-sources":placeholder_policy.and_then(|value|value.get("sources")).cloned().unwrap_or_else(|| json!({}))});
     let source_io = crate::seed::parser::parse_lino(include_str!(
         "../../embedded/data/meta/workspace-source-io.lino"
     ));
@@ -87,10 +91,18 @@ fn work_hygiene_with_policy(
         .map(|path| quote(&format!(":(exclude,literal){path}")))
         .collect::<Vec<_>>()
         .join(" ");
-    let index_guard_command = crate::seed::fill_template_once(
+    let mut index_guard_command = crate::seed::fill_template_once(
         root.find_child_value("index-guard-command"),
         &[("exclude", &excluded)],
     );
+    if !placeholders.is_empty() {
+        let branch = placeholder_policy?.get("branch")?.as_str()?;
+        let guard = crate::seed::fill_template_once(
+            root.find_child_value("branch-guard-command"),
+            &[("branch", &quote(branch))],
+        );
+        index_guard_command = format!("{guard} && {index_guard_command}");
+    }
     let quoted_source = quote(&source);
     let quoted_plan = quote(&plan.to_string());
     let command = crate::seed::fill_template_once(
@@ -387,6 +399,7 @@ pub(super) fn prepared_recipe_hygiene_with_inventory(
     source_paths: &[String],
     changed: &[String],
     inventory: Option<&super::recipe_artifact_inventory::RecipeArtifactInventory>,
+    issue_reference: Option<&str>,
 ) -> Option<PreparedWorkHygiene> {
     let policy = hygiene_policy().children.first()?;
     let flags = policy
@@ -449,7 +462,7 @@ pub(super) fn prepared_recipe_hygiene_with_inventory(
             .first()?
             .children
             .iter()
-            .filter(|node| node.name == "empty-placeholder")
+            .filter(|node| node.name == "bootstrap-placeholder")
             .map(|node| node.id.clone())
             .collect::<Vec<_>>();
         let mut observed = std::collections::BTreeSet::new();
@@ -484,6 +497,18 @@ pub(super) fn prepared_recipe_hygiene_with_inventory(
                         .any(|node| path.ends_with(node.id.as_str()))
             }
     });
+    let placeholder_policy = inventory.and_then(|inventory| inventory.placeholder_policy.as_ref());
+    if !placeholders.is_empty() {
+        let scope = placeholder_policy?;
+        let branch = scope.get("branch")?.as_str()?;
+        if scope.get("issue")? != &json!(issue_reference)
+            || branch.is_empty()
+            || branch.len() > 512
+            || branch.contains(['\r', '\n', '\0'])
+        {
+            return None;
+        }
+    }
     known
         .then(|| {
             work_hygiene_with_policy(
@@ -491,6 +516,7 @@ pub(super) fn prepared_recipe_hygiene_with_inventory(
                 session_policy.as_ref(),
                 &placeholders,
                 source_paths,
+                placeholder_policy,
             )
         })
         .flatten()

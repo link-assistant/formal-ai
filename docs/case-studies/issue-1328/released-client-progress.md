@@ -30,13 +30,19 @@ memory/shutdown lifecycle cycles passed. Actual task acceptance did not:
   placeholder in the diff.
 
 The follow-up uses the shared meta-language inventory/hygiene programs to
-remove only the tracked, empty root placeholder once every recipe source file
-exists, is nonempty and decodes as UTF-8. Inventory grants scope only after
-complete regular-file reads. Hygiene repeats those content checks and checks
-the placeholder's file identity immediately before removal. Nonempty files,
-untracked placeholders, nested placeholders, symlinks, unrelated source and
-documentation never gain deletion authority. Changed placeholder content or
-missing replacement source refuses cleanup. Rust and JavaScript use the same source programs; TypeScript is
+remove only a tracked root bootstrap placeholder once every recipe source file
+exists, is nonempty and decodes as UTF-8. An empty file qualifies; a nonempty
+file must match Hive's complete generated metadata template, a valid timestamp,
+the exact requested issue URL and the client's observed Git branch. The actual
+failure file has 174 bytes, Git blob `7a9c542bcb875ce677c30723bf1bb50601f727e2`;
+the initial empty-file-only draft was insufficient and is corrected before merge.
+Inventory grants scope only after complete regular-file reads and retains the
+full observed placeholder text. Hygiene repeats the source/template checks,
+requires that exact preimage, checks the fresh branch and rechecks file identity
+immediately before removal. Unrecognized nonempty files, untracked placeholders,
+nested placeholders, symlinks, unrelated source and documentation never gain
+deletion authority. Changed placeholder content or missing replacement source
+refuses cleanup. Rust and JavaScript use the same source programs; TypeScript is
 generated from JavaScript.
 
 Native tool classification previously reloaded the immutable capability

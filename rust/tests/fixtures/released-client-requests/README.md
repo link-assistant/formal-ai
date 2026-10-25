@@ -17,6 +17,13 @@ planner before argument binding; no executable Codex replay equivalence is
 claimed. A future exporter should distinguish schema declarations from actual
 account metadata without weakening personal-data redaction.
 
+`hive-bootstrap-placeholder.txt` is the complete public `.gitkeep` left in
+Claude's actual PR 1416 at head `ef7e1ba7f4305558b97a2fe1a7849e36292c0fc6`.
+Its Git blob is `7a9c542bcb875ce677c30723bf1bb50601f727e2` (174 bytes).
+It is a timestamped Hive bootstrap instruction, rather than an empty file.
+The regression binds its full content to the actual issue and branch and
+preserves foreign, modified or appended content.
+
 Agent HTTP responses took 48–51 seconds, Codex responses about 29 seconds,
 and Claude responses about 8 seconds. Agent and Codex reached their finite
 delivery deadlines while still progressing. The native regression times pure
