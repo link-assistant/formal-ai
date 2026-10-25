@@ -178,3 +178,14 @@ observed setup, solve and five minutes of evidence reserve. Every inner limit,
 single-attempt rule and other job cap stays unchanged. A regression uses the
 actual public timestamps. Remove this transfer debt once the source-bound image
 handoff and full solve fit within 30 minutes; no duration record was invented.
+
+The final native lint run found Clippy's case-sensitive-extension diagnostic
+in the new staged-workflow selector. Splitting at the final dot preserves its
+exact lowercase `yml`/`yaml` predicate without that lint violation. No workflow
+verification or readiness condition changes. Native validation remains a CI
+obligation after the final push.
+
+Read-only repository settings on 25 October also confirmed that Formal AI and
+Hive Mind both use `default_workflow_permissions: write` with
+`can_approve_pull_request_reviews: true`. Their existing default-token policy
+supports the task transport; no repository setting or credential was changed.
