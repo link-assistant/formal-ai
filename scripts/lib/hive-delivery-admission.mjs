@@ -3,6 +3,12 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 export const deliveryWorkflow = '.github/workflows/hive-original-delivery.yml';
 export const admissionPolicy = 'formal-ai-hive-1364-admission/v1';
+/** Proposal generation has no release authority; push/PR checks and unknown workflows still gate. */
+export function isGatingCiRun(run) {
+  if ([deliveryWorkflow, '.github/workflows/hive-original-delivery-finalize.yml'].includes(run.path)) return false;
+  return run.path !== '.github/workflows/learning-cycle.yml' ||
+    !['schedule', 'workflow_dispatch'].includes(run.event);
+}
 const commit = value => assert.match(value ?? '', /^[a-f0-9]{40}$/u);
 const positive = value => assert.ok(Number.isSafeInteger(value) && value > 0);
 const strings = value => {
@@ -127,7 +133,15 @@ export function authenticatePullRequest({
   };
 }
 /** Every applicable workflow and every other observed workflow must be green at the exact source. */
-class CiAdmissionDeferred extends Error {}
+class CiAdmissionDeferred extends Error {
+  constructor(message, run = null) {
+    super(message);
+    this.blockedBy = run === null ? null : {
+      run: run.id, attempt: run.run_attempt, path: run.path, event: run.event,
+      status: run.status, conclusion: run.conclusion
+    };
+  }
+}
 
 export function ciAdmission({
   source,
@@ -146,7 +160,7 @@ export function ciAdmission({
     positive(run.id);
     positive(run.run_attempt);
     assert.equal(typeof run.path, 'string');
-    if ([deliveryWorkflow, '.github/workflows/hive-original-delivery-finalize.yml'].includes(run.path)) continue;
+    if (!isGatingCiRun(run)) continue;
     const key = run.path + '\0' + run.event,
       previous = latest.get(key);
     if (!previous || run.id > previous.id || run.id === previous.id && run.run_attempt > previous.run_attempt) latest.set(key, run);
@@ -158,10 +172,10 @@ export function ciAdmission({
     assert.ok(['completed', 'queued', 'in_progress', 'requested', 'waiting', 'pending'].includes(run.status), 'invalid CI status metadata');
     if (run.status !== 'completed') {
       assert.equal(run.conclusion, null, 'nonterminal CI conclusion metadata');
-      throw new CiAdmissionDeferred('other CI pending');
+      throw new CiAdmissionDeferred('other CI pending', run);
     }
     assert.ok(['success', 'failure', 'neutral', 'cancelled', 'skipped', 'timed_out', 'action_required', 'stale', 'startup_failure'].includes(run.conclusion), 'invalid CI conclusion metadata');
-    if (run.conclusion !== 'success') throw new CiAdmissionDeferred('other CI not green');
+    if (run.conclusion !== 'success') throw new CiAdmissionDeferred('other CI not green', run);
   }
   return [...latest.values()].map(run => ({
     id: run.id,
@@ -292,6 +306,6 @@ export function ciAdmissionDecision(options) {
   try { return {admitted: true, ci: ciAdmission(options)}; }
   catch (error) {
     if (!(error instanceof CiAdmissionDeferred)) throw error;
-    return {admitted: false, reason: error.message};
+    return {admitted: false, reason: error.message, ...(error.blockedBy ? {blockedBy: error.blockedBy} : {})};
   }
 }

@@ -19,7 +19,10 @@ export function verifyContainerRuntimeTools(directory) {
   const manifest = metadata(path.join(home, 'package.json'));
   const observed = {};
   const packages = new Map();
-  for (const name of ['start-command', '@link-assistant/agent', 'agent-commander']) {
+  const names = Object.keys(manifest.dependencies ?? {});
+  if (names.length === 0 || names.length > 16) throw Error('Bounded runtime dependencies required');
+  for (const name of names) {
+    if (!/^(?:@[a-z0-9_-]+\/)?[a-z0-9_-]+$/u.test(name)) throw Error('Runtime package name refused');
     const expected = manifest.dependencies?.[name];
     if (!/^\d+\.\d+\.\d+$/u.test(expected ?? '')) throw Error('Exact runtime tool pin required: ' + name);
     const filename = path.join(home, 'node_modules', name, 'package.json');

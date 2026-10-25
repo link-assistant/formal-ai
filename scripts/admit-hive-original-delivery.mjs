@@ -242,7 +242,9 @@ export async function recheckAdmission({
       reader,
       verifiedRunId: selection.publicDownloadVerification.run
     });
-    assert.equal(current.admitted, true);
+    assert.equal(current.admitted, true, 'published CI revalidation denied: ' + JSON.stringify({
+      reason: current.reason, blockedBy: current.blockedBy
+    }));
     assert.deepEqual(current.selected, selection.selected);
     assert.deepEqual(current.publishedRuntime, selection.publishedRuntime);
     return {

@@ -39,11 +39,16 @@ export async function finalizeGeneratedRun({runId, apply = false, expectedRunAtt
     const log = await client.request(`repos/${repository}/actions/jobs/${job.id}/logs`, {log: true, full: true});
     const custody = custodyFromLog({repository, run, job, log});
     if (effectWasNotStarted(job, custody)) {
-      discovery.push({job: job.id, status: 'not-started', reason: 'all-effect-gates-skipped'}); continue;
+      discovery.push({job: job.id, status: 'not-started', reason: 'no-task-effects-started'}); continue;
     }
     if (!custody.complete || custody.issueNumbers.length !== 1 || custody.finalIssueUrls.length !== 1
       || custody.finalIssueUrls[0] !== `https://github.com/${repository}/issues/${custody.issueNumbers[0]}`) {
-      discovery.push({job: job.id, status: 'retained', reason: 'incomplete-or-ambiguous-owned-log'}); continue;
+      discovery.push({job: job.id, status: 'retained', reason: 'incomplete-or-ambiguous-owned-log',
+        evidence: {complete: custody.complete, issueCount: custody.issueNumbers.length,
+          finalUrlCount: custody.finalIssueUrls.length, logOk: log.ok === true,
+          streamComplete: log.streamComplete === true, tailComplete: log.tailComplete === true,
+          truncated: log.truncated === true, downloadTruncated: log.downloadTruncated === true,
+          timedOut: log.timedOut === true, error: redact(log.error ?? '').slice(0, 500)}}); continue;
     }
     if (custody.isolatedFixtures) {
       try {
@@ -90,9 +95,10 @@ export async function finalizeGeneratedRun({runId, apply = false, expectedRunAtt
     const notStarted = discovery.some(row => row.job === job.id && row.status === 'not-started');
     const comment = alreadyFinalized?.comment ?? result?.comment ?? 'not-confirmed';
     const complete = closed && comment === 'recorded';
+    const retained = discovery.find(row => row.job === job.id && row.status === 'retained');
     return {tool: job.name.split(' ')[2], job: job.id, outcome: job.conclusion, complete,
       closed: closed ? 1 : 0, retained: closed || notStarted ? 0 : 1, notStarted,
-      comment};
+      comment, ...(retained ? {retention: {reason: retained.reason, ...(retained.evidence ? {evidence: retained.evidence} : {})}} : {})};
   });
   const cleanupReceipt = {schema: 'generated-e2e-cleanup-proof/v1', sourceRun: runId,
     sourceAttempt: run.run_attempt, protocolHead: run.head_sha, outcome: run.conclusion,

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { artifactJson } from './hive-delivery-journal.mjs';
 import { sourceBytes, readWorkflowPolicy } from './hive-delivery-source.mjs';
-import { applicableWorkflows, ciAdmissionDecision, admissionPolicy, deliveryWorkflow } from './hive-delivery-admission.mjs';
+import { applicableWorkflows, ciAdmissionDecision, admissionPolicy, isGatingCiRun } from './hive-delivery-admission.mjs';
 import { validateVersionWitness } from '../refresh-release-specification-witness.mjs';
 import { verifyAnonymousImageManifest } from '../verify-anonymous-image-manifest.mjs';
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -231,8 +231,7 @@ export async function precheckPublishedCi(reader, repository, source, requiredPa
   }
   assert.ok(Array.isArray(runs) && runs.length <= 2000, 'bounded complete CI inventory');
   if (requiredPath !== null && runs.length === 0) return {admitted: false, reason: 'missing applicable CI ' + requiredPath};
-  const observed = [...new Set(runs.filter(run => run.path !== deliveryWorkflow
-    && run.path !== '.github/workflows/hive-original-delivery-finalize.yml').map(run => run.path))];
+  const observed = [...new Set(runs.filter(isGatingCiRun).map(run => run.path))];
   const expected = requiredPath === null ? observed : [requiredPath];
   return expected.length ? ciAdmissionDecision({source, expected, runs, complete: true}) : {admitted: true, ci: []};
 }
@@ -416,7 +415,7 @@ export async function observePublishedAdmission({
     assert.equal(run.repository.full_name, repository);
     assert.equal(run.head_repository.full_name, repository);
   }
-  const publishedExpected = [...new Set(publishedRuns.filter(run => run.path !== deliveryWorkflow && run.path !== '.github/workflows/hive-original-delivery-finalize.yml').map(run => run.path))];
+  const publishedExpected = [...new Set(publishedRuns.filter(isGatingCiRun).map(run => run.path))];
   const publishedDecision = publishedExpected.length ? ciAdmissionDecision({
     source, expected: publishedExpected, runs: publishedRuns, complete: true
   }) : {admitted: true, ci: []};

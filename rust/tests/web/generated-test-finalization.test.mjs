@@ -141,8 +141,28 @@ test('actual pre-claim credential failure and cancelled image loads need no gene
   assert.equal(result.cleanupReceipt.complete, false, 'a no-op never certifies three successful solves');
   assert.equal(result.cleanupReceipt.closed, 0); assert.equal(result.cleanupReceipt.retained, 0);
   assert.equal(result.discovery.length, 3);
-  assert(result.discovery.every(row => row.reason === 'all-effect-gates-skipped'));
+  assert(result.discovery.every(row => row.reason === 'no-task-effects-started'));
   assert(f.cleanupCalls.every(call => (call.plan.candidates ?? []).length === 0));
+});
+test('fresh CI refusal before the durable effect claim leaves no phantom owned task', async () => {
+  const f = replayFixture();
+  for (const job of f.jobs) {
+    job.steps.find(step => step.name.startsWith('Claim one bounded')).conclusion = 'failure';
+  }
+  const result = await finalizeGeneratedRun({runId: 40, apply: true, ...f});
+  assert.equal(result.cleanupReceipt.noEffects, true);
+  assert.equal(result.cleanupReceipt.retained, 0);
+  assert.equal(result.cleanupReceipt.complete, false);
+  assert(result.discovery.every(row => row.status === 'not-started'));
+});
+test('incomplete log transport details survive into the retained cleanup receipt', async () => {
+  const f = fixture({log: {ok: false, streamComplete: true, tailComplete: false,
+    error: 'HTTP 403', text: ''}});
+  const result = await finalizeGeneratedRun({runId: 40, apply: true, ...f});
+  assert.equal(result.cleanupReceipt.perTool[0].retention.reason, 'incomplete-or-ambiguous-owned-log');
+  assert.deepEqual(result.cleanupReceipt.perTool[0].retention.evidence,
+    {complete: false, issueCount: 0, finalUrlCount: 0, logOk: false, streamComplete: true,
+      tailComplete: false, truncated: false, downloadTruncated: false, timedOut: false, error: 'HTTP 403'});
 });
 test('missing, duplicated, reordered, active or executed gates cannot prove a no-op', async () => {
   for (const change of [

@@ -77,7 +77,7 @@ export function custodyFromLog({repository, run, job, log, generator}) {
       && log.timedOut !== true && log.streamComplete === true && log.tailComplete === true,
   };
 }
-// Server-reported skipped effect gates prove a no-op, never successful delivery.
+// Skipped persistence and solve gates prove no task effects even when the read-only claim check fails.
 export function effectWasNotStarted(job, custody) {
   const gates = ['Claim one bounded client effect after fresh CI and source revalidation',
     'Persist effect claim before any task effects', 'Run actual Hive solve and original assertions'];
@@ -87,8 +87,10 @@ export function effectWasNotStarted(job, custody) {
     || !Array.isArray(job.steps) || job.steps.length === 0
     || job.steps.some(step => step.status !== 'completed' || !terminal.has(step.conclusion))) return false;
   const positions = gates.map(name => job.steps.flatMap((step, index) => step.name === name ? [index] : []));
-  return positions.every(values => values.length === 1 && job.steps[values[0]].conclusion === 'skipped')
-    && positions[0][0] < positions[1][0] && positions[1][0] < positions[2][0];
+  return positions.every(values => values.length === 1)
+    && positions[0][0] < positions[1][0] && positions[1][0] < positions[2][0]
+    && ['skipped', 'failure'].includes(job.steps[positions[0][0]].conclusion)
+    && positions.slice(1).every(values => job.steps[values[0]].conclusion === 'skipped');
 }
 export function cleanupDecision({repository, issue, run, jobs, custody,
   allowOwnedCancelled = false, expectedSourceHead = null}) {

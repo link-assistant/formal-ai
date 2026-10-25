@@ -113,7 +113,7 @@ ENV PATH="/home/box/.formal-ai-runtime-tools/node_modules/.bin:${PATH}"
 RUN mkdir -p /home/box/.formal-ai-runtime-tools
 COPY --chown=box:box packages/container-runtime-tools/package.json /home/box/.formal-ai-runtime-tools/package.json
 COPY --chmod=0755 scripts/install-container-runtime-tools.sh scripts/verify-container-runtime-tools.mjs \
-    scripts/install-client-registry-recovery.mjs /usr/local/lib/formal-ai-runtime-tools/scripts/
+    scripts/install-client-registry-recovery.mjs scripts/configure-container-client-tools.mjs /usr/local/lib/formal-ai-runtime-tools/scripts/
 COPY js/server/bounded-command.mjs js/server/structured-log.mjs js/server/json.mjs /usr/local/lib/formal-ai-runtime-tools/js/server/
 COPY js/logging/diagnostic-metadata.mjs js/logging/typed-codec.mjs js/logging/text-lines.mjs \
     js/logging/json-numbers.mjs js/logging/lino-codec.mjs /usr/local/lib/formal-ai-runtime-tools/js/logging/
@@ -125,6 +125,8 @@ RUN /usr/local/lib/formal-ai-runtime-tools/scripts/install-container-runtime-too
     start-agent --help >/dev/null
 
 USER root
+RUN node /usr/local/lib/formal-ai-runtime-tools/scripts/configure-container-client-tools.mjs --global-mcp /home/box/.formal-ai-runtime-tools && \
+    npm ls --global @playwright/mcp
 COPY --from=selected-binary /app/target/release/formal-ai /usr/local/bin/formal-ai
 COPY scripts/verify-docker-runtime.sh /usr/local/bin/verify-formal-ai-dind
 RUN chmod 0755 /usr/local/bin/formal-ai /usr/local/bin/verify-formal-ai-dind && \

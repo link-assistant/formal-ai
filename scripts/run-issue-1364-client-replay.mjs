@@ -12,6 +12,7 @@ import {loadConversationContext} from '../js/server/conversations.mjs';
 import {requireHarnessDelivery, requireHistoricalReadyPullRequest, requireProgramMember} from './lib/hive-delivery-evidence.mjs';
 import {redact} from './collect-ci-failures.mjs';
 import {createPublicEvidenceExport} from './lib/issue-1364-public-evidence.mjs';
+import {requireSuccessfulReplayCommand} from './lib/issue-1364-command-result.mjs';
 import {createIsolatedTask, requireIsolatedIssue, requireIsolatedPullRequest,
   isolatedTaskTransport, isolatedFixturePrefix} from './lib/hive-isolated-task.mjs';
 import {replaySchema, contentDigest, runtimeImageDigest, requireReplayTask, adaptReplayEntrypoint,
@@ -55,8 +56,7 @@ export async function runIssue1364Replay(options, environment=process.env) {
     observations.push({program:file,arguments:args,exitCode:result.status,signal:result.signal,
       timedOut:result.timed_out,cleanupComplete:result.cleanup_complete,
       stdoutSha256:contentDigest(result.stdout),stderrSha256:contentDigest(result.stderr)});
-    assert.equal(result.error,undefined,String(result.error));assert.equal(result.cleanup_complete,true);
-    assert.equal(result.signal,null);assert.equal(result.status,0,redact(result.stderr.toString()).slice(-4000));
+    requireSuccessfulReplayCommand(result,{program:file,environment:env});
     return result.stdout.toString();
   }
   const api=async endpoint=>JSON.parse(await execute('gh',['api','repos/'+repository+'/'+endpoint]));

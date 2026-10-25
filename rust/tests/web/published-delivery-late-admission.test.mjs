@@ -109,7 +109,8 @@ test('production CI decision catches only ordinary missing, pending or failed CI
  const options={source:checkedSource,expected:['.github/workflows/coverage.yml'],complete:true,runs:[lateTrigger()]};
  assert.equal(lateCiDecision(options).admitted,true);
  for(const [status,conclusion,reason]of [['in_progress',null,'other CI pending'],['completed','failure','other CI not green']]){
-  assert.deepEqual(lateCiDecision({...options,runs:[{...lateTrigger(),status,conclusion}]}),{admitted:false,reason});
+  assert.deepEqual(lateCiDecision({...options,runs:[{...lateTrigger(),status,conclusion}]}),{admitted:false,reason,
+   blockedBy:{run:41,attempt:1,path:'.github/workflows/coverage.yml',event:'push',status,conclusion}});
  }
  assert.equal(lateCiDecision({...options,expected:['missing.yml']}).admitted,false);
  for(const changed of [{...options,complete:false},{...options,runs:[{...lateTrigger(),head_sha:'c'.repeat(40)}]},
@@ -118,9 +119,11 @@ test('production CI decision catches only ordinary missing, pending or failed CI
 test('source-bound published recheck refuses a deferred dependency before consuming success fields',async()=>{
  // Fault-inject only the observer dependency in the exact maintained function text.
  // This checks refusal ordering, not publication authentication or real effect authority.
- const source=lateRecheckAdmission.toString();assert.match(source,/assert.equal\(current.admitted, true\)/u);
+ const source=lateRecheckAdmission.toString();assert.match(source,/assert.equal\(current.admitted, true,/u);
  const isolated=Function('observePublishedAdmission','assert','admissionPolicy','return ('+source+');')(
-  async()=>({admitted:false,get selected(){throw Error('success fields read before refusal');}}),assert,latePolicy);
+  async()=>({admitted:false,reason:'other CI pending',blockedBy:{path:'.github/workflows/desktop-release.yml'},
+   get selected(){throw Error('success fields read before refusal');}}),assert,latePolicy);
  await assert.rejects(isolated({selection:{schema:latePolicy,admitted:true,selected:{event:'published-release'},
-  publicDownloadVerification:{run:77}},repository:lateRepository,reader:{}}),{code:'ERR_ASSERTION'});
+  publicDownloadVerification:{run:77}},repository:lateRepository,reader:{}}),{code:'ERR_ASSERTION',
+   message:/published CI revalidation denied:.*other CI pending.*desktop-release/u});
 });
