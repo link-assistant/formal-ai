@@ -101,6 +101,14 @@ pub fn enabled(level: &str) -> bool {
         && rank(level)
             <= rank(&std::env::var("FORMAL_AI_LOG_LEVEL").unwrap_or_else(|_| "debug".into()))
 }
+
+/// Passive native request timing; only explicit request tracing enables it.
+pub(crate) fn request_phase(started: std::time::Instant, name: &str) {
+    if crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS") {
+        crate::diagnostic!("debug"; "[trace] agentic_phase={name} elapsed_ms={}", started.elapsed().as_millis());
+    }
+}
+
 fn secret_key(key: &str) -> bool {
     let key: String = key
         .chars()

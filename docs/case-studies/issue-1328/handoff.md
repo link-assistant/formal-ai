@@ -13,13 +13,24 @@ strict-final Unknown remains a failed attempt, not a skipped check or a pass.
 
 PR 1410 is now merged and v0.355.10 passed all main, publisher and public-download
 checks, including independently checked Docker manifests. The fresh actual
-three-client owner failed: Claude left an empty placeholder, while Agent and
+three-client owner failed: Claude left Hive's 174-byte bootstrap placeholder, while Agent and
 Codex exceeded their finite first-pass budgets while progressing. The next
 batched [PR 1417](https://github.com/link-assistant/formal-ai/pull/1417) fixes placeholder scope and repeated native registry parsing,
 with captured-request regressions. See the
 [current causes, fixes and acceptance contract](released-client-progress.md).
 The broad vision and issue 1364 are not complete; fresh released-client
 acceptance and terminal authenticated cleanup remain mandatory.
+
+PR 1417's first CI batch exposed file-size limits and a stale governed source
+witness after registering the native regression. The correction moves request
+timing into the existing logging module and reformats the captured Claude JSON
+without changing parsed content. The witness refresh changes only the reviewed
+`rust/tests/unit/mod.rs` source hash; cases and assertions remain identical.
+Both JavaScript failures share that witness cause. The PR description retains
+issues 1328 and 1364 using the exact pending-acceptance disposition. All tracked
+files satisfy the size gate, 35 focused JavaScript tests pass and the native
+specification generator remains current. Require fresh exact-head CI after the
+batch push; native latency and released-client acceptance remain unverified.
 
 PR 1407 is merged; v0.355.9 and all configured release/public-download gates
 passed. Real released-image acceptance then verified the native memory
