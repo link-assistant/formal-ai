@@ -24,6 +24,10 @@ executing the emitted command or touching GitHub. This separates pure-planner
 latency from HTTP, memory-recording and diagnostic overhead. Native execution
 belongs exclusively to CI.
 
+`smoke-tests.json` selects the receipt-bound unit and integration checks that
+the native producer runs before distributing executables. It is CI control
+data; the three client JSON files remain the captured requests.
+
 `hive-bootstrap-placeholder.txt` is the complete public `.gitkeep` left in
 Claude's actual PR 1416 at head `ef7e1ba7f4305558b97a2fe1a7849e36292c0fc6`.
 Its Git blob is `7a9c542bcb875ce677c30723bf1bb50601f727e2` (174 bytes).

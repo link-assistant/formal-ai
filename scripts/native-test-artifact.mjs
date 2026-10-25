@@ -46,7 +46,17 @@ if(import.meta.url===pathToFileURL(process.argv[1]??'').href){
  const [mode,directory,profile,features,testName,target='unit']=process.argv.slice(2),cwd=process.cwd();
  assert.ok(directory&&profile&&features);
  const identity=buildIdentity(cwd,profile,features);
- if(mode==='write')writeReceipt(directory,identity);
+ if(mode==='write'||mode==='write-and-check'){
+  writeReceipt(directory,identity);
+  if(mode==='write-and-check'){
+   const cases=JSON.parse(readFileSync(testName,'utf8'));
+   assert.ok(Array.isArray(cases)&&cases.length>0&&cases.length<=16);
+   for(const entry of cases){
+    assert.deepEqual(Object.keys(entry).sort(),['name','target']);
+    runVerifiedTest(directory,identity,resolve('rust/target/release/formal-ai'),entry.name,cwd,entry.target);
+   }
+  }
+ }
  else if(mode==='run')runVerifiedTest(directory,identity,resolve('rust/target/release/formal-ai'),testName,cwd,target);
  else assert.fail(mode);
 }

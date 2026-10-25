@@ -36,13 +36,16 @@ test('unknown or tampered explicit targets refuse before executing bytes',()=>{
 test('critical latency checks precede artifact distribution under the original build budget',()=>{
  const release=YAML.parse(readFileSync(new URL('../../../.github/workflows/release.yml',import.meta.url),'utf8'));
  const job=release.jobs['build-artifacts'],steps=job.steps;
- const early=steps.find(step=>step.name==='Check captured client latency before distributing native executables');
- assert.equal(job['timeout-minutes'],20);assert.equal(early['timeout-minutes'],2);
- assert(steps.indexOf(early)>steps.findIndex(step=>step.name==='Bind native test artifacts to their actual build inputs'));
+ const early=steps.find(step=>step.name==='Bind native test artifacts to their actual build inputs');
+ assert.equal(job['timeout-minutes'],20);
  assert(steps.indexOf(early)<steps.findIndex(step=>step.name==='Upload formal-ai binaries'));
- for(const name of ['absent_predictions_do_not_resolve_the_captured_coding_prompt','released_client_requests_plan_without_consuming_the_delivery_budget','released_agent_request_is_bounded_through_native_http'])assert(early.run.includes('released_client_request_latency::'+name));
- assert.equal(early.run.split('timeout --kill-after=5s 90s').length-1,3);
- assert(early.run.includes('native_http integration'));
+ assert.equal(early.run,'timeout --kill-after=5s 90s node scripts/native-test-artifact.mjs write-and-check dist/tests release all rust/tests/fixtures/released-client-requests/smoke-tests.json');
+ const cases=JSON.parse(readFileSync(new URL('../fixtures/released-client-requests/smoke-tests.json',import.meta.url),'utf8'));
+ assert.deepEqual(cases.map(entry=>[entry.target,entry.name]),[
+  ['unit','released_client_request_latency::absent_predictions_do_not_resolve_the_captured_coding_prompt'],
+  ['unit','released_client_request_latency::released_client_requests_plan_without_consuming_the_delivery_budget'],
+  ['integration','released_client_request_latency::released_agent_request_is_bounded_through_native_http'],
+ ]);
 });
 test('the selected unit transfer preserves the full original receipt while omitting unused executables',()=>{
  const f=fixture();try{

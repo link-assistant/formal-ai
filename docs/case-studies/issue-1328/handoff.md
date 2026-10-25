@@ -49,8 +49,8 @@ The drafted guard and captured-prompt test require fresh native CI; dispatch,
 memory and dialog timings identify any remaining downstream bottleneck.
 The shared native producer now runs the three captured-request regressions
 immediately after receipt binding and before artifact distribution, under its
-unchanged 20-minute budget. Each invocation has a 90-second timeout and five-second
-kill grace; the step has a two-minute limit. Explicit integration execution verifies its
+unchanged 20-minute budget. The artifact-binding command has a 90-second timeout
+and five-second kill grace for the complete declarative smoke list. Explicit integration execution verifies its
 own receipt member; existing unit-only transfers keep their original default.
 
 PR 1407 is merged; v0.355.9 and all configured release/public-download gates
