@@ -31,6 +31,7 @@ fn parts(text: &str) -> Result<Vec<String>, String> {
     Ok(names)
 }
 
+#[must_use]
 pub fn release_defaults(text: &str) -> Vec<&str> {
     text.lines()
         .skip_while(|line| *line != "  release-defaults")
@@ -103,7 +104,7 @@ pub fn append(ledger: &Path, record: &str) -> Result<(), String> {
         }
         if chunk.lines().count() + row.lines().count() > LIMIT {
             chunks.push(chunk);
-            chunk = archive_header.clone();
+            chunk.clone_from(&archive_header);
         }
         chunk.push_str(&row);
     }
