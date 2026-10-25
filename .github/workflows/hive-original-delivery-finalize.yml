@@ -31,6 +31,7 @@ on: # zizmor: ignore[dangerous-triggers]
       - .github/workflows/hive-original-delivery-finalize.yml
       - scripts/audit-owned-hive-cleanup.mjs
       - scripts/finalize-generated-test-issues.mjs
+      - scripts/lib/hive-isolated-task.mjs
       - scripts/lib/generated-task-*.mjs
 permissions:
   contents: read
