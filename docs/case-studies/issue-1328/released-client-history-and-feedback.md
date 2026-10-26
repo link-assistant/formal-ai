@@ -73,6 +73,9 @@ closing the owned issue/PR and when acknowledging cleanup. An unprotected branch
 still requires confirmed deletion. Changed heads, unknown protection, missing
 rules, incomplete closes and uncertain mutations remain failures; no mutation
 is retried. Diagnostics identify the failing operation within the existing bound.
+The durable per-client cleanup receipt retains the verified protected branch
+heads and ruleset identities, so the final outcome does not discard that proof
+when it omits intermediate discovery records.
 
 Protected branch residue is not an open test issue and grants no task-delivery
 credit. Historical immutable cleanup claims remain retained; do not retry them

@@ -257,9 +257,10 @@ test('only a terminal owner without human feedback authorizes fixture cleanup', 
 });
 
 test('terminal success and cancellation finalize only the current repository fixture after full verification', async () => {
-  for (const conclusion of ['success', 'cancelled']) {
+  for (const [conclusion, protectedRefs] of [['success',false],['cancelled',false],['success',true]]) {
     const repository = 'link-assistant/formal-ai';
     const {fixture, api, state} = await prepared(repository);
+    if (protectedRefs) state.rules=[{type:'deletion',ruleset_id:21300712}];
     const run = {id: 700, run_attempt: 1, head_sha: context.protocolHead, status: 'completed', conclusion,
       repository: {full_name: repository}, path: '.github/workflows/hive-original-delivery.yml'};
     const job = {id: 90, name: 'Actual Hive codex original delivery', status: 'completed', conclusion,
@@ -290,6 +291,12 @@ test('terminal success and cancellation finalize only the current repository fix
     assert.equal(result.cleanupReceipt.complete, true);
     assert.equal(result.discovery[0].status, 'closed-owned-fixture');
     assert.equal(state.issue.state, 'closed'); assert.equal(state.pull.state, 'closed');
-    assert.equal(state.refs.size, 0);
+    assert.equal(state.refs.size, protectedRefs ? 2 : 0);
+    const preserved=result.cleanupReceipt.perTool[0].protectedBranches;
+    if (protectedRefs) {
+      assert.equal(preserved.length,2,'durable outcome must retain the independently verified protected heads');
+      assert.deepEqual(preserved,result.discovery[0].fixture.cleanup.protectedBranches);
+      assert.equal(state.calls.filter(call=>call.method==='DELETE').length,0);
+    } else assert.equal(preserved,undefined);
   }
 });
