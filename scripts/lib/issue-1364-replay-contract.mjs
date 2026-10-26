@@ -52,7 +52,7 @@ export function adaptReplayEntrypoint(source, task, workspace) {
     'if (replayArgv.some(value => value === "--attribution" || value.startsWith("--attribution="))) throw Error("pinned attribution policy changed");',
     'replayArgv.push("--attribution", "none");',
     "const dockerArgv = buildDockerArgv({solveArgv:replayArgv, solveCommand:'/opt/hive-e2e/src/solve.mjs', image, hostLogDir,",
-    "  forwardEnv:['GH_TOKEN', ...modelKeys, 'FORMAL_AI_INSTALL_GRANT', 'GITHUB_ACTIONS'],",
+    "  forwardEnv:['GH_TOKEN', ...modelKeys, 'FORMAL_AI_INSTALL_GRANT', 'GITHUB_ACTIONS', 'HIVE_MIND_SOLVE_NO_CHANGES_EXIT_CODE'],",
     '  extraMounts:[' + JSON.stringify(workspace + ':' + target) + ']});',
   ].join('\n');
   let adapted = source.replace(original, () => replacement);
@@ -65,6 +65,11 @@ export function adaptReplayEntrypoint(source, task, workspace) {
       .replace('let baseBranch;', 'let baseBranch = ' + JSON.stringify(task.baseBranch) + ';');
   }
   return adapted;
+}
+/** Hive's supported compatibility mode is limited to the verified repeat pass. */
+export function replayPassEnvironment(environment, pass) {
+  assert(pass === 1 || pass === 2, 'only the first delivery and its verified repeat are permitted');
+  return {...environment, HIVE_MIND_SOLVE_NO_CHANGES_EXIT_CODE: pass === 2 ? '0' : '5'};
 }
 export function taskSnapshot(directory, trackedPaths, issueUrl = null) {
   if (issueUrl !== null) {

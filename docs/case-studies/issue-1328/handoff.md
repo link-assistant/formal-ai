@@ -11,6 +11,24 @@ strict-final Unknown remains a failed attempt, not a skipped check or a pass.
 
 ## Latest continuation: 26 October 2026
 
+PR 1418 merged and v0.355.12 passed all main, publisher and public-download
+checks. Public Docker manifests, native/signing attestations, the browser Worker
+and package metadata were independently verified without local product
+downloads or native execution. The fresh three-client run passed every first
+delivery, but each repeat returned Hive's documented no-change exit 5. Coding
+acceptance remains pending. The focused follow-up uses Hive's supported
+compatibility setting only for the verified repeat, with the original oracle
+and no-write/no-commit checks intact. See the [captured cause and regression](released-client-no-change-exit.md).
+The released workflow chain also exhausted GitHub's `workflow_run` depth before
+cleanup. The follow-up explicitly dispatches trusted cleanup with the default
+token, authenticates the exact terminal owner with a finite read-only wait, and
+preserves immutable claims and protected references. Read-only audits remain
+read-only; no extra credential is required.
+Do not rerun owner 40377859689 or any immutable claim. Require a new qualified
+source, released-client attempt and terminal authenticated cleanup.
+
+## Previous PR 1418 continuation
+
 PR 1418 also fixes the actual v0.355.11 acceptance failures: endpoint query
 classification, duplicate aggregated tool histories, own Hive session notices
 blocking a no-op, and cleanup encountering repository-wide branch deletion

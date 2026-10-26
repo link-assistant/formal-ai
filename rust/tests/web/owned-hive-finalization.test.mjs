@@ -6,7 +6,7 @@ import path from 'node:path';
 import vm from 'node:vm';
 import YAML from 'yaml';
 import {prepareOwnedHiveRuns, applyOwnedHiveClaim, writeCleanupPreparation, writeCleanupOutcome,
-  writeCleanupRecheck, triggeredHiveOwnerExists} from '../../../scripts/finalize-owned-hive-delivery-runs.mjs';
+  writeCleanupRecheck, triggeredHiveOwnerExists, prepareExplicitHiveOwner} from '../../../scripts/finalize-owned-hive-delivery-runs.mjs';
 import {prepareCleanupClaim, revalidateCleanupClaim, readScanCursor, makeScanProgress, cleanupClaimName,
   effectOwnerArtifact} from '../../../scripts/lib/generated-task-cleanup-journal.mjs';
 const protocol = 'a'.repeat(40), cleanupProtocol = 'b'.repeat(40), selected = 'c'.repeat(40);
@@ -123,6 +123,27 @@ test('prepare creates source-bound claim data without any close', async () => {
   assert.equal(result.outcomeName, 'hive-cleanup-outcome-101-1');
   assert.equal(result.claim.cleanupPolicyHash, cleanupHash);
   assert.equal(result.claim.protocolHead, protocol); assert.equal(result.claim.selectedSourceFromOwner, selected);
+  assert.equal(f.effects.length, 0);
+});
+test('explicit cleanup waits for and authenticates only its exact owner, without scanning history', async () => {
+  const f = fixture(), original = f.reader.read;
+  f.reader.read = async endpoint => {
+    if (endpoint === 'repos/link-assistant/formal-ai/actions/runs/101/artifacts?name=' + effectOwnerArtifact + '&per_page=100') {
+      f.calls.push(endpoint); return {total_count: 1, artifacts: [f.metadata]};
+    }
+    return original(endpoint);
+  };
+  const owner = {id: 101, run_attempt: 1, head_sha: protocol};
+  const result = await prepareExplicitHiveOwner({reader: f.reader, producer, owner, ...f.dependencies});
+  assert.equal(result.owners.length, 1); assert.equal(result.owners[0].run, 101);
+  assert.equal(result.progress, null); assert.equal(f.effects.length, 0);
+  assert(f.calls.every(endpoint => !endpoint.includes('/actions/artifacts?name=' + effectOwnerArtifact)
+    && !endpoint.includes('hive-cleanup-scan-progress-')));
+  f.publishClaim(result.owners[0].claim);
+  const repeated = await prepareExplicitHiveOwner({reader: f.reader, producer, owner, ...f.dependencies});
+  assert.deepEqual(repeated.owners, []); assert.equal(repeated.retained[0].reason, 'prior-claim-quarantined');
+  await assert.rejects(prepareExplicitHiveOwner({reader: f.reader, producer,
+    owner: {...owner, run_attempt: 2}, ...f.dependencies}));
   assert.equal(f.effects.length, 0);
 });
 test('no remote durable claim means no cleanup effect', async () => {
