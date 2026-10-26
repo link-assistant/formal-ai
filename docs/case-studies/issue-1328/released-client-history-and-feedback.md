@@ -62,6 +62,15 @@ Correct the names in both readers and the mirrored data; do not raise the
 notation ceilings. Source formatting, package-data mirroring and the notation
 gate are required source-only preflight checks for this change.
 
+The maintained TypeScript twin must also be regenerated through
+`scripts/translate-es.mjs` when this JavaScript logic changes. Hosted coverage
+[job 121570546692](https://github.com/link-assistant/formal-ai/actions/runs/40321904871/job/121570546692)
+caught its stale feedback predicate. Regenerate from the canonical JavaScript
+through the existing layout-preserving token-tree/meta projection, then check
+the entire maintained tree and actual TypeScript worker/planner inputs. Keep
+the missing/tampered-input refusals and the ban on owned JavaScript fallback.
+This source projection does not establish unrestricted runtime feature parity.
+
 The existing full-API two-pass regressions now return these actual notices
 instead of an empty comments list for all three protocol clients. They still
 require unchanged owned source and no second-pass write or commit.
