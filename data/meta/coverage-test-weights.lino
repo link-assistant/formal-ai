@@ -24,7 +24,8 @@ coverage-test-weights
   test "agentic_coding::issue_498_google_trends_catalog::planner_walks_the_google_trends_catalog_recipe"
     seconds 90.552994
   test "agentic_coding::issue_498_google_trends_learning::committed_agent_cli_session_matches_a_fresh_google_trends_learning_run"
-    seconds 406.600538874
+    # Additional main-run warning observation; see the captured coverage fixture.
+    seconds 429.169
   test "agentic_coding::issue_498_google_trends_learning::committed_google_trends_learning_report_is_generated_by_the_recipe"
     seconds 261.220006
   test "agentic_coding::issue_498_google_trends_learning::driver_drives_the_google_trends_learning_recipe_to_a_write"
@@ -138,7 +139,8 @@ coverage-test-weights
   test "issue_705_anticipation::class_expansion_uses_meaning_operation_and_parameter_evidence"
     seconds 322.465993
   test "issue_705_anticipation::every_unknown_or_failed_offline_probe_reaches_the_adoption_frontier"
-    seconds 107.895001
+    # Additional main-run warning observation; see the captured coverage fixture.
+    seconds 110.289
   test "issue_705_anticipation::idle_dreaming_persists_the_ledger_and_later_live_usage_records_a_hit"
     # observed PR-head 9d95920808c54cbb5d2f7f9f3392289284989eb6 test-merge 9fda50c32ffd8122a00e7769d9ce58950659d3c7 run 38416254362 job 115372610293
     # raw-log-sha256 b0e8c1d9d2ae71f0ff3125de0c799384e7ffc4ea87a405367250c89ae48d585e warning-at 2026-10-13T15:30:46.7112967Z completed-at 2026-10-13T15:32:18.8837914Z lower-bound-seconds 152.172494
@@ -425,3 +427,19 @@ coverage-test-weights
     # observed PR-head 9d95920808c54cbb5d2f7f9f3392289284989eb6 test-merge 9fda50c32ffd8122a00e7769d9ce58950659d3c7 run 38416254362 job 115372610390
     # raw-log-sha256 5a31ee8e83c4c1f4915079be704e5c32f2364c0c14261ea08c7174693d83c61a warning-at 2026-10-13T15:49:44.8574885Z completed-at 2026-10-13T15:49:56.9977390Z lower-bound-seconds 72.140250
     seconds 72.140250
+
+# Main bb7c745cdf1fba24dadbdccca02950f1d8be7a44, run40254186002 job121355235944.
+# Complete public log SHA256 db1fb9ed1d2494b0ed1b291b4860035cb07a040e056b248e1c0f53cee8ef64d7.
+# Warning-to-completion wall lower bounds; the unfinished cold TypeScript case
+# is censored at the 1200-second shard deadline, not an exact or passed timing.
+  test "agentic_coding::agentic_backend_actions::factual_question::research_prefers_an_official_source_and_cites_it"
+    seconds 229.151
+  test "agentic_coding::agentic_general_planner::explicit_issue_named_file_write_is_not_misrouted_to_issue_reporting"
+    seconds 169.486
+  test "agentic_coding::coding_research_production::canonical_native_production_route_handles_cold_held_out_typescript_and_reuses_without_writes"
+    # Unfinished at whole-shard expiry; preserve the missing completion as failure.
+    seconds 776.792
+  test "agentic_coding::issue_1069_ladder_change_tasks::issue_1069_every_ladder_leaf_reaches_a_real_change"
+    seconds 472.964
+  test "issue_1095_continuation_cue::changed_or_intervening_objectives_do_not_reuse_the_prior_source"
+    seconds 68.659

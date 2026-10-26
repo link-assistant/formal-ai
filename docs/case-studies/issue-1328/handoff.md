@@ -11,6 +11,12 @@ strict-final Unknown remains a failed attempt, not a skipped check or a pass.
 
 ## Latest continuation: 25 October 2026
 
+PR 1417 merged after all required PR checks passed. Its main run then exposed a
+coverage-shard deadline caused by an unmeasured cold TypeScript research case
+sharing a default-weight process batch. The native suites passed; publication
+of candidate v0.355.11 does not establish complete acceptance while coverage is
+red. See the [preserved failure and scheduling correction](coverage-cold-research-budget.md).
+
 PR 1410 is now merged and v0.355.10 passed all main, publisher and public-download
 checks, including independently checked Docker manifests. The fresh actual
 three-client owner failed: Claude left Hive's 174-byte bootstrap placeholder, while Agent and
