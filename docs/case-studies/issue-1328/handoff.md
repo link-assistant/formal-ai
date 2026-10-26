@@ -11,6 +11,13 @@ strict-final Unknown remains a failed attempt, not a skipped check or a pass.
 
 ## Latest continuation: 26 October 2026
 
+The ready follow-up is [PR 1437](https://github.com/link-assistant/formal-ai/pull/1437).
+Focused captured-replay, cleanup, admission and ledger checks pass locally.
+Its first CI batch found a stale assembled requirement part after the shard
+update. Regenerate it with `node scripts/assemble-requirements.mjs --write` and
+check with the same JavaScript twin; do not compile Rust locally. Retain the
+failed CI attempt and require fresh current-head CI after the complete fix batch.
+
 PR 1418 merged and v0.355.12 passed all main, publisher and public-download
 checks. Public Docker manifests, native/signing attestations, the browser Worker
 and package metadata were independently verified without local product
