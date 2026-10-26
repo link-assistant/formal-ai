@@ -7,6 +7,7 @@ import {installNodeHost} from '../../../js/agentic/node-host.mjs';
 import {WorkerHost} from '../../../js/server/worker-host.mjs';
 import {planCodeArtifactStep} from '../../../js/agentic/code_artifact.mjs';
 import {planReportFlow} from '../../../js/agentic/report_issue.mjs';
+import {completeOwnedSourceReadFrame} from '../../../js/agentic/tool_result.mjs';
 await installNodeHost(new WorkerHost({WebAssembly:{instantiate(){throw Error('LocalWasmExecutionForbidden');},compile(){throw Error('LocalWasmExecutionForbidden');}}}));
 const source='// kept 雪\r\nfn main() {\r\n    println!("Penger!");\r\n}\r\n';
 const prompt='Change the output to "I told you!"';
@@ -48,6 +49,20 @@ test('failed edits and failed verification reads stop without another mutation o
 test('a different file read does not supply contextual source authority',()=>{
  const messages=history(),read=call('foreign','Read',{file_path:'other.rs'});messages.push(assistant(read),reply(read,framed(source)));
  const plan=planCodeArtifactStep(prompt,messages,tools);assert.equal(plan.calls[0].tool,'Read');assert.equal(JSON.parse(plan.calls[0].arguments).file_path,'main.rs');
+});
+test('provider-owned complete reads retain general substitution semantics without an Edit tool',()=>{
+ for(const [file,before,task,expected] of [
+  ['notes.custom-format','alpha beta alpha',"Transform 'alpha' into 'omega'.",'omega beta alpha'],
+  ['main.rs','fn main() {\n    println!("Hello, world!");\n}\n','(("Hello, world!")) ((terminal: "Hello 2"))','fn main() {\n    println!("Hello 2");\n}\n'],
+  ['notes.txt','body','() ((terminal: "prefix "))','prefix body']
+ ]){
+  const created=call('created','Write',{file_path:file,content:before});
+  const messages=[{role:'user',content:'Create the active workspace artifact.'},assistant(created),reply(created,'Created.'),{role:'assistant',content:'Created the artifact.'},{role:'user',content:task}];
+  let plan=planCodeArtifactStep(task,messages,['Read','Write']);assert.equal(plan.calls[0].tool,'Read');
+  append(messages,plan.calls[0],completeOwnedSourceReadFrame(before));
+  plan=planCodeArtifactStep(task,messages,['Read','Write']);assert.equal(plan.calls[0].tool,'Write');
+  const written=JSON.parse(plan.calls[0].arguments);assert.equal(written.content,expected);assert.equal(written.file_path??written.filePath??written.path,file);
+ }
 });
 const reportHistory=()=>[{role:'user',content:'The source file gained line numbers.'},{role:'user',content:'report'},
  {role:'user',content:'GitHub issue'},{role:'user',content:'Both logs'}];

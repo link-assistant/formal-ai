@@ -6,7 +6,8 @@ import {editArguments} from './intent_router.mjs';
 import {readArguments} from './workspace_change.mjs';
 import {agenticMessage} from './messages.mjs';
 import {finalAnswer,planOne} from './plan.mjs';
-function targets(attempt,path){try{const args=JSON.parse(attempt.arguments);return ['path','filePath','file_path'].some(key=>args[key]===path);}catch{return false;}}
+function targets(attempt,path){try{const arguments_=JSON.parse(attempt.arguments);return ['path','filePath','file_path'].some(key=>arguments_[key]===path);}catch{return false;}}
+/** Mirrors `fn plan` in rust/src/agentic_coding/code_artifact/literal_edit.rs. */
 export function planLiteralArtifactEdit(artifact,rewrite,messages,tools){
  const rule=rewrite.program.rules.length===1?rewrite.program.rules[0]:null;
  const edit=toolFor(tools,Capability.Edit),read=toolFor(tools,Capability.Read);

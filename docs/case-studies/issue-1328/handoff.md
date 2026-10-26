@@ -17,6 +17,16 @@ The current batch also addresses issues [1438](https://github.com/link-assistant
 are recorded in the respective issue shards. The previous pushed head passed all
 16 applicable workflows; that evidence does not qualify this expanded batch.
 Require fresh exact-head CI, including native compilation and parity in CI only.
+The H5 coverage and JavaScript shards also exposed older fixtures that still
+expected compound report scripts or supplied an opaque Read before a whole-file
+write. Migrate those fixtures to the named submission and provider-owned complete
+reads, retaining the executable body-content checks and the opaque-read refusal
+regression. Preserve general substitution semantics across arbitrary extensions,
+escaped literals, insertion and deletion. Bound the notation fixture to eight
+planner steps. Add the real Rust function citation for the new JavaScript literal
+planner, spell its new binding in full, and regenerate the single status surface.
+These fixes are one batch; no quality ceiling or production oracle is relaxed.
+
 The expanded H3 batch exposed an unused legacy report scratch builder under
 warnings-as-errors and required recording the improved literal-predicate debt
 ceiling. Remove that obsolete builder in both maintained languages and record

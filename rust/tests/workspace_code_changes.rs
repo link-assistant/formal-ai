@@ -4,6 +4,16 @@
 use formal_ai::agentic_coding::{AgenticPlan, PlannedToolCall, plan_chat_step};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 
+// Model a provider-owned complete Read, including exact trailing newlines.
+fn complete_read(id: &str, tool: &str, source: impl Into<String>) -> ChatMessage {
+    let source: String = source.into();
+    ChatMessage::tool_result(
+        id,
+        tool,
+        formal_ai::agentic_coding::tool_result::complete_owned_source_read_frame(&source),
+    )
+}
+
 fn one_call(messages: &[ChatMessage], tools: &[&str]) -> PlannedToolCall {
     match plan_chat_step(messages, tools) {
         Some(AgenticPlan::ToolCalls(mut calls)) => {
@@ -96,11 +106,7 @@ fn contextual_change_rewrites_workspace_source_for_every_catalog_language() {
             "read".to_owned(),
             read.arguments,
         )]));
-        messages.push(ChatMessage::tool_result(
-            "read-current",
-            "read",
-            source.clone(),
-        ));
+        messages.push(complete_read("read-current", "read", source.clone()));
 
         let write = one_call(&messages, &["read", "write"]);
         let value = args(&write);
@@ -135,7 +141,7 @@ fn rewrite_current_rust_source(prompt: &str, source: &str) -> String {
         "read".to_owned(),
         read.arguments,
     )]));
-    messages.push(ChatMessage::tool_result("read-rewrite", "read", source));
+    messages.push(complete_read("read-rewrite", "read", source));
 
     let write = one_call(&messages, &["read", "write"]);
     assert_eq!(write.tool, "write", "{prompt}");
@@ -156,10 +162,10 @@ fn contextual_code_change_reads_then_writes_the_active_file() {
         "read".to_owned(),
         read.arguments,
     )]));
-    messages.push(ChatMessage::tool_result(
+    messages.push(complete_read(
         "read-2",
         "read",
-        "<path>/workspace/main.rs</path>\n<type>file</type>\n<content>\n1: fn main() {\n2:     println!(\"Hello, world!\");\n3: }\n\n(End of file - total 3 lines)\n</content>",
+        "fn main() {\n    println!(\"Hello, world!\");\n}\n",
     ));
 
     let write = one_call(&messages, &["read", "write"]);
@@ -270,7 +276,7 @@ fn explicit_old_new_change_can_rewrite_an_arbitrary_code_fragment() {
         "read".to_owned(),
         read.arguments,
     )]));
-    messages.push(ChatMessage::tool_result(
+    messages.push(complete_read(
         "read-3",
         "read",
         "fn main() {\n    println!(\"Hello, world!\");\n}\n",
@@ -361,7 +367,7 @@ fn substitution_query_lowers_identically_on_every_harness_vocabulary() {
             tools[0].to_owned(),
             read.arguments,
         )]));
-        messages.push(ChatMessage::tool_result("read-harness", tools[0], source));
+        messages.push(complete_read("read-harness", tools[0], source));
 
         let write = one_call(&messages, &tools);
         assert_eq!(write.tool, tools[1], "{tools:?}");
@@ -387,7 +393,7 @@ fn mutation_trace_publishes_the_substitution_query_and_effects() {
         "read".to_owned(),
         read.arguments,
     )]));
-    messages.push(ChatMessage::tool_result("read-trace", "read", source));
+    messages.push(complete_read("read-trace", "read", source));
     let write = one_call(&messages, &["read", "write"]);
     messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
         "write-trace".to_owned(),
