@@ -1,7 +1,7 @@
 //! "How it works" follow-up handler extracted from `solver_handlers` to keep
 //! that module under the 1000-line cap enforced by `scripts/check-file-size.rs`.
 
-pub(crate) mod practical_help;
+pub mod practical_help;
 use crate::concepts::{extract_concept_query, lookup_concept_query};
 use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;

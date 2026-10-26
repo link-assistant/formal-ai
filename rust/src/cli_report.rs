@@ -214,13 +214,16 @@ fn create_report_issue(
                     .all(|character| character.is_ascii_alphanumeric() || "_.-".contains(character))
         })
     {
-        return Err("report destination must be owner/name".into());
+        return Err(config("issue-report-destination-invalid").into());
     }
     if title.trim().is_empty() || title.len() > 1024 {
-        return Err("report title is empty or exceeds its byte budget".into());
+        return Err(config("issue-report-title-invalid").into());
     }
     which::which("gh").map_err(|error| {
-        format!("Required report submission command gh is unavailable: {error}")
+        formal_ai::seed::fill_template_once(
+            &config("issue-report-submit-unavailable"),
+            &[("error", &error.to_string())],
+        )
     })?;
     let directory = create_report_directory()?;
     if options.output == Path::new("-") {
@@ -249,7 +252,18 @@ fn create_report_issue(
         65_536,
         65_536,
     )
-    .map_err(|failure| std::io::Error::new(failure.kind(), format!("Issue submission is uncertain; do not retry automatically. The complete report remains at {}. {failure}", body.display())))?;
+    .map_err(|failure| {
+        std::io::Error::new(
+            failure.kind(),
+            formal_ai::seed::fill_template_once(
+                &config("issue-report-submit-uncertain"),
+                &[
+                    ("body", &body.display().to_string()),
+                    ("error", &failure.to_string()),
+                ],
+            ),
+        )
+    })?;
     let stdout = String::from_utf8_lossy(&output.stdout);
     let prefix = format!("https://github.com/{repo}/issues/");
     let url = stdout.lines().map(str::trim).find(|line| {
@@ -264,8 +278,14 @@ fn create_report_issue(
         println!("{url}");
         Ok(())
     } else {
-        Err(format!("Issue submission failed or is uncertain; do not retry automatically. The complete report remains at {}. {}",
-            body.display(), String::from_utf8_lossy(&output.stderr).trim()).into())
+        Err(formal_ai::seed::fill_template_once(
+            &config("issue-report-submit-uncertain"),
+            &[
+                ("body", &body.display().to_string()),
+                ("error", String::from_utf8_lossy(&output.stderr).trim()),
+            ],
+        )
+        .into())
     }
 }
 
@@ -291,7 +311,7 @@ fn create_report_directory() -> Result<PathBuf, Box<dyn Error>> {
             Err(error) => return Err(error.into()),
         }
     }
-    Err("report directory collision budget exhausted".into())
+    Err(config("issue-report-directory-collisions").into())
 }
 
 /// Keep the GitHub document bounded while the complete context stays attached.

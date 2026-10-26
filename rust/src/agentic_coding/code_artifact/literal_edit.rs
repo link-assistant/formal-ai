@@ -35,9 +35,9 @@ pub(super) fn plan(
         .filter(|attempt| targets(attempt.arguments.as_deref(), &artifact.path))
         .collect::<Vec<_>>();
     let fail = || {
-        AgenticPlan::Final(format!(
-            "Could not independently verify the literal update of {}; no whole-file replacement was attempted.",
-            artifact.path
+        AgenticPlan::Final(crate::seed::agentic_message(
+            "code-artifact-literal-unverified",
+            &[("path", &artifact.path)],
         ))
     };
     if let Some(index) = attempts
@@ -67,9 +67,9 @@ pub(super) fn plan(
             && let (Some(before), Some(after)) = (&before.source, &after.source)
             && before.replacen(rule.pattern.as_str(), &rule.replacement, 1) == *after
         {
-            return Some(AgenticPlan::Final(format!(
-                "Updated {} with an exact literal edit and observed the requested result; all other content stayed outside the edit.",
-                artifact.path
+            return Some(AgenticPlan::Final(crate::seed::agentic_message(
+                "code-artifact-literal-verified",
+                &[("path", &artifact.path)],
             )));
         }
         return Some(fail());

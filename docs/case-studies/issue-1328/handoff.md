@@ -25,7 +25,12 @@ regression. Preserve general substitution semantics across arbitrary extensions,
 escaped literals, insertion and deletion. Bound the notation fixture to eight
 planner steps. Add the real Rust function citation for the new JavaScript literal
 planner, spell its new binding in full, and regenerate the single status surface.
-These fixes are one batch; no quality ceiling or production oracle is relaxed.
+These fixtures retain every quality ceiling and production oracle. The remaining
+Rust lint failures require reading the existing shared literal-edit wording,
+storing submission diagnostics in agent-info data, defining the four practical
+guidance identifiers in the already loaded meanings registry, and correcting
+visibility inside private modules. The closure gap and prose allowlist remain
+at their reviewed values; no exception or ceiling increase is introduced.
 
 The expanded H3 batch exposed an unused legacy report scratch builder under
 warnings-as-errors and required recording the improved literal-predicate debt

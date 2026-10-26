@@ -30,7 +30,7 @@ fn whole(text: &str, word: &str) -> bool {
                 .is_some_and(|character| character.is_alphanumeric() || character == '_'))
     })
 }
-pub(crate) fn goal(prompt: &str, _normalized: &str) -> Option<String> {
+pub fn goal(prompt: &str, _normalized: &str) -> Option<String> {
     let canonical = normalize_prompt(prompt);
     let normalized = canonical.as_str();
     if prompt
@@ -125,7 +125,7 @@ pub(super) fn cached(prompt: &str, normalized: &str, log: &mut EventLog) -> Opti
         log,
     ))
 }
-pub(crate) fn with_client<T: SourceTransport>(
+pub fn with_client<T: SourceTransport>(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,

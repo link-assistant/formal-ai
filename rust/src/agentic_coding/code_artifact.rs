@@ -150,9 +150,9 @@ pub(super) fn plan_code_artifact_step(
                         && read.source.as_deref() == Some(current_source.as_str())
                 })
             {
-                return Some(AgenticPlan::Final(format!(
-                    "Could not independently verify the literal update of {}; no whole-file replacement was attempted.",
-                    artifact.path
+                return Some(AgenticPlan::Final(crate::seed::agentic_message(
+                    "code-artifact-literal-unverified",
+                    &[("path", &artifact.path)],
                 )));
             }
             return Some(plan_one(
