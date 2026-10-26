@@ -260,13 +260,16 @@ fn own_session_status(item: &serde_json::Value, body: &str) -> bool {
     {
         return false;
     }
-    ["pr_status_summary_pattern", "pr_status_started_pattern"]
-        .iter()
-        .any(|key| {
-            regex::Regex::new(&super::work_item_steps::fill(key, &[]))
-                .expect("compiled-in session status policy")
-                .is_match(body.trim())
-        })
+    [
+        "pull-request-session-summary-pattern",
+        "pull-request-session-started-pattern",
+    ]
+    .iter()
+    .any(|key| {
+        regex::Regex::new(&super::work_item_steps::fill(key, &[]))
+            .expect("compiled-in session status policy")
+            .is_match(body.trim())
+    })
 }
 
 const COMMAND_PLACEHOLDER: &str = "{command}";

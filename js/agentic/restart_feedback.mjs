@@ -149,7 +149,7 @@ export function feedbackNeedsChanges(output) {
 /** Own framework notices are bookkeeping, never evidence that a task passed. */
 function ownSessionStatus(item) {
   if (item.viewerDidAuthor !== true || item.includesCreatedEdit === true) return false;
-  return ['pr_status_summary_pattern', 'pr_status_started_pattern']
+  return ['pull-request-session-summary-pattern', 'pull-request-session-started-pattern']
     .some(key => new RegExp(fill(key, []), 'u').test(trim(item.body)));
 }
 const REFERENCE_TRIM = new Set(['`', ')', ',', '.']);

@@ -53,6 +53,15 @@ incomplete tool receipts still refuse readiness. Ignoring bookkeeping provides
 no credit for the notice's verification claims: source, execution, CI and no-op
 proof remain independently required.
 
+The shared keys use full English words and hyphens:
+`pull-request-session-summary-pattern` and
+`pull-request-session-started-pattern`. The first hosted coverage attempt caught
+the underscore/abbreviation form through the existing notation gate
+([job 121559007224](https://github.com/link-assistant/formal-ai/actions/runs/40318587888/job/121559007224)).
+Correct the names in both readers and the mirrored data; do not raise the
+notation ceilings. Source formatting, package-data mirroring and the notation
+gate are required source-only preflight checks for this change.
+
 The existing full-API two-pass regressions now return these actual notices
 instead of an empty comments list for all three protocol clients. They still
 require unchanged owned source and no second-pass write or commit.
