@@ -101,6 +101,18 @@ or rewrite their failed outcomes.
 
 ## Delivery gate
 
+The offline recorded-session replay also needs a bounded source checkout.
+[Job 121584796548](https://github.com/link-assistant/formal-ai/actions/runs/40326352911/job/121584796548)
+spent almost its complete five-minute job clock fetching the full repository;
+GitHub cancelled checkout before any transcript assertion ran. Select only
+`experiments/agentic_cli_matrix` through sparse checkout. The pinned checkout
+action uses `blob:none` for that selection. Bound checkout at two minutes with
+Git low-speed detection inside that deadline, preserving the original
+five-minute job budget and every replay assertion. A regression executes all
+original transcripts from an isolated harness-only copy with only Bash, jq and
+shell utilities available; no GitHub, product binary, compiler or network tool
+is available to that test.
+
 Batch these fixes with the coverage and translation corrections in PR 1418.
 Require fresh exact-head CI, including instrumented native coverage and native
 feedback regressions. The old controller is trusted from the default branch,

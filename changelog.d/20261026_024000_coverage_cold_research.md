@@ -19,3 +19,5 @@ notices while retaining genuine review feedback and incomplete-receipt refusals.
 Close owned fixture issues and pull requests without weakening repository-wide
 branch deletion protection; explicitly verify preserved protected branch heads
 and retain bounded operation diagnostics for failures.
+Keep offline transcript replay within its original job deadline by checking out
+only its harness and recorded data, with a separate bounded checkout step.
