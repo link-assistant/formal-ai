@@ -289,10 +289,17 @@ jobs:
     name: Replay recorded sessions
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    env:
+      GIT_HTTP_LOW_SPEED_LIMIT: '1024'
+      GIT_HTTP_LOW_SPEED_TIME: '30'
     steps:
       - uses: actions/checkout@v7
+        timeout-minutes: 2
         with:
           persist-credentials: false
+          # Offline replay only reads this harness and its committed transcripts.
+          # checkout uses blob:none for a sparse checkout, avoiding unrelated blobs.
+          sparse-checkout: experiments/agentic_cli_matrix
       - name: Replay every committed transcript
         run: experiments/agentic_cli_matrix/replay.sh
 

@@ -64,3 +64,6 @@ work_item_steps
   refspec-failure-markers '["src refspec","does not match any"]'
   git-push-command-pattern '\bgit\s+push\b'
   origin-push-command-pattern '\bgit\s+push\s+(?:(?:-q|--quiet)\s+)?origin\s+'
+
+  pull-request-session-summary-pattern "^<!-- hive-mind:working-session-summary -->\n## Working session summary\n\n[\s\S]+\n\n---\n\*This summary was automatically extracted from the AI working session output\.\*$"
+  pull-request-session-started-pattern "^🤖 \*\*AI Work Session Started\*\*\n\nStarted at [0-9TZ:.+-]+\. Please wait for it to finish before giving feedback\.\n\n_Runtime: solve `v[^`\n]+` · tool `[^`\n]+` · model `[^`\n]+`_$"

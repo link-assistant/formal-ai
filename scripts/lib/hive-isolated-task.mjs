@@ -153,20 +153,43 @@ export async function requireIsolatedOwner(fixture, {repository, run, job, clien
   return issue;
 }
 
+// A repository rule is not permission to weaken protection or retry a deletion.
+// Retain its exact branch head as explicit read-only residue after closing work.
+async function protectedFixtureBranch(api, root, branch) {
+  const rules = await api(`${root}/rules/branches/${encodeURIComponent(branch)}`);
+  assert(Array.isArray(rules) && rules.length <= 100, 'bounded effective branch rules required');
+  const deletion = rules.filter(rule => rule.type === 'deletion');
+  if (!deletion.length) return null;
+  const refs = await api(`${root}/git/matching-refs/heads/${branch}`);
+  assert(Array.isArray(refs) && refs.length <= 100);
+  const exact = refs.filter(ref => ref.ref === 'refs/heads/' + branch);
+  assert.equal(exact.length, 1, 'protected branch identity unavailable');
+  assert.match(exact[0].object?.sha ?? '', /^[a-f0-9]{40}$/u);
+  const rulesets = deletion.map(rule => {
+    assert(Number.isSafeInteger(rule.ruleset_id) && rule.ruleset_id > 0);
+    return rule.ruleset_id;
+  }).sort((a, b) => a - b);
+  return {branch, head:exact[0].object.sha, rulesets};
+}
+
 async function closeFixtureResources(resource, {api}) {
   const root = 'repos/' + resource.repository;
   const operations = [];
   if (resource.pullRequestNumber) operations.push([`${root}/pulls/${resource.pullRequestNumber}`, {method: 'PATCH', body: {state: 'closed'}}]);
   if (resource.issueNumber) operations.push([`${root}/issues/${resource.issueNumber}`, {method: 'PATCH', body: {state: 'closed'}}]);
-  for (const branch of [...new Set(resource.branches)].reverse()) {
-    operations.push([`${root}/git/refs/heads/${branch}`, {method: 'DELETE'}]);
-  }
-  const errors = [];
+  const errors = [], protectedBranches = [];
   for (const [endpoint, options] of operations) {
     try { await api(endpoint, options); }
-    catch (error) { errors.push(String(error.message)); }
+    catch (error) { errors.push(options.method + ' ' + endpoint + ': ' + String(error.message)); }
   }
-  return {errors, retainedBranches: []};
+  for (const branch of [...new Set(resource.branches)].reverse()) {
+    try {
+      const protectedBranch = await protectedFixtureBranch(api, root, branch);
+      if (protectedBranch) protectedBranches.push(protectedBranch);
+      else await api(`${root}/git/refs/heads/${branch}`, {method:'DELETE'});
+    } catch (error) { errors.push('branch ' + branch + ': ' + String(error.message)); }
+  }
+  return {errors, retainedBranches: [], protectedBranches};
 }
 
 /** Shared bounded cleanup follows Hive's issue/PR/branch lifecycle without retrying uncertain writes. */
@@ -212,7 +235,7 @@ export async function cleanupIsolatedTask(fixture, {api, cleanup = closeFixtureR
     save(fixture);
   }
   const result = await cleanup(resource, {api, summaryFile: null});
-  assert.equal(result.errors.length, 0, 'owned fixture cleanup failed');
+  assert.equal(result.errors.length, 0, 'owned fixture cleanup failed: ' + JSON.stringify(result.errors).slice(0, 2000));
   assert.equal(result.retainedBranches.length, 0, 'owned fixture branches must be deleted');
   if (resource.issueNumber) {
     assert.equal((await api(`${root}/issues/${resource.issueNumber}`)).state, 'closed');
@@ -221,10 +244,16 @@ export async function cleanupIsolatedTask(fixture, {api, cleanup = closeFixtureR
     assert.equal((await api(`${root}/pulls/${resource.pullRequestNumber}`)).state, 'closed');
   }
   for (const branch of resource.branches) {
+    const protectedBranch = result.protectedBranches?.find(row => row.branch === branch);
+    if (protectedBranch) {
+      assert.deepEqual(await protectedFixtureBranch(api, root, branch), protectedBranch);
+      if (fixture.ready?.branch === branch) assert.equal(protectedBranch.head, fixture.ready.head);
+      continue;
+    }
     const refs = await api(`${root}/git/matching-refs/heads/${branch}`);
     assert(Array.isArray(refs) && !refs.some(ref => ref.ref === 'refs/heads/' + branch));
   }
-  fixture.cleanup = {complete: true, outcome};
+  fixture.cleanup = {complete: true, outcome, protectedBranches:result.protectedBranches ?? []};
   save(fixture);
   return fixture;
 }
@@ -268,8 +297,18 @@ export async function verifyIsolatedCleanup(fixture, {repository, run, job, clie
     }
   }
   assert(fixture.resource.branches.length > 0 && fixture.resource.branches.length <= 2);
+  const protectedBranches = fixture.cleanup.protectedBranches ?? [];
+  assert(Array.isArray(protectedBranches) && protectedBranches.length <= fixture.resource.branches.length);
+  assert(new Set(protectedBranches.map(row => row.branch)).size === protectedBranches.length);
+  assert(protectedBranches.every(row => fixture.resource.branches.includes(row.branch)));
   for (const branch of fixture.resource.branches) {
     assert(branch === fixture.resource.baseBranch || new RegExp('^issue-' + issue.number + '-[A-Za-z0-9-]+$').test(branch));
+    const protectedBranch = protectedBranches.find(row => row.branch === branch);
+    if (protectedBranch) {
+      assert.deepEqual(await protectedFixtureBranch(endpoint => client.json(endpoint), root, branch), protectedBranch);
+      if (fixture.ready?.branch === branch) assert.equal(protectedBranch.head, fixture.ready.head);
+      continue;
+    }
     const refs = await client.json(`${root}/git/matching-refs/heads/${branch}`);
     assert(Array.isArray(refs) && !refs.some(ref => ref.ref === 'refs/heads/' + branch));
   }

@@ -143,8 +143,14 @@ export function feedbackNeedsChanges(output) {
   const value = parseJson(text);
   if (value === undefined) return true;
   if (!isObject(value) || !Array.isArray(value.comments) || !Array.isArray(value.reviews)) return true;
-  return value.comments.some(item => isObject(item) && typeof item.body === 'string' && trim(item.body) !== '') || value.reviews.some(item => isObject(item)
+  return value.comments.some(item => isObject(item) && typeof item.body === 'string' && trim(item.body) !== '' && !ownSessionStatus(item)) || value.reviews.some(item => isObject(item)
     && item.state === 'CHANGES_REQUESTED');
+}
+/** Own framework notices are bookkeeping, never evidence that a task passed. */
+function ownSessionStatus(item) {
+  if (item.viewerDidAuthor !== true || item.includesCreatedEdit === true) return false;
+  return ['pull-request-session-summary-pattern', 'pull-request-session-started-pattern']
+    .some(key => new RegExp(fill(key, []), 'u').test(trim(item.body)));
 }
 const REFERENCE_TRIM = new Set(['`', ')', ',', '.']);
 

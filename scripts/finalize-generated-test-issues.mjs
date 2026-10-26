@@ -96,8 +96,10 @@ export async function finalizeGeneratedRun({runId, apply = false, expectedRunAtt
     const comment = alreadyFinalized?.comment ?? result?.comment ?? 'not-confirmed';
     const complete = closed && comment === 'recorded';
     const retained = discovery.find(row => row.job === job.id && row.status === 'retained');
+    const protectedBranches = alreadyFinalized?.fixture?.cleanup?.protectedBranches ?? [];
     return {tool: job.name.split(' ')[2], job: job.id, outcome: job.conclusion, complete,
       closed: closed ? 1 : 0, retained: closed || notStarted ? 0 : 1, notStarted,
+      ...(protectedBranches.length ? {protectedBranches} : {}),
       comment, ...(retained ? {retention: {reason: retained.reason, ...(retained.evidence ? {evidence: retained.evidence} : {})}} : {})};
   });
   const cleanupReceipt = {schema: 'generated-e2e-cleanup-proof/v1', sourceRun: runId,

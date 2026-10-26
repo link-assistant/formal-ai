@@ -1,12 +1,38 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
+import { Script } from 'node:vm';
+import YAML from 'yaml';
 import { workflowJobs } from '../../../scripts/lib/ci-speed-workflows.mjs';
 import { parseSpeedPolicy } from '../../../scripts/lib/ci-speed-policy.mjs';
 
 const workflow = readFileSync('.github/workflows/coverage.yml', 'utf8');
 const producer = workflowJobs(workflow).find(job => job.id === 'coverage-build');
 const policy = parseSpeedPolicy(readFileSync('data/meta/ci-speed.lino', 'utf8'));
+
+// Model GitHub's implicit success() only when the expression has no status
+// function. The observed dispatch had a skipped detector and a valid producer.
+function dispatchesShards(expression, { detector, producer, cancelled = false }) {
+  const text = (expression ?? 'true').trim().replace(/^\$\{\{\s*|\s*\}\}$/gu, '');
+  if (!/\b(?:always|cancelled|failure|success)\s*\(/u.test(text)
+      && (detector !== 'success' || producer !== 'success' || cancelled)) return false;
+  return new Script(text.replaceAll('needs.coverage-build.result', 'producer'))
+    .runInNewContext({ producer, cancelled: () => cancelled }, { timeout: 100 }) === true;
+}
+
+test('manual native coverage runs after a valid producer despite its skipped detector ancestor', () => {
+  const jobs = YAML.parse(workflow).jobs;
+  assert(jobs['coverage-build'].needs.includes('detect-changes'));
+  assert(jobs['coverage-shard'].needs.includes('coverage-build'));
+  const observed = { detector: 'skipped', producer: 'success' };
+  assert.equal(dispatchesShards(undefined, observed), false, 'recorded implicit skip');
+  assert.equal(dispatchesShards(jobs['coverage-shard'].if, observed), true);
+  for (const producer of ['failure', 'skipped', 'cancelled']) {
+    assert.equal(dispatchesShards(jobs['coverage-shard'].if, { ...observed, producer }), false);
+  }
+  assert.equal(dispatchesShards(jobs['coverage-shard'].if, { ...observed, cancelled: true }), false);
+  assert.equal(dispatchesShards(jobs['coverage-shard'].if, { detector: 'success', producer: 'success' }), true);
+});
 
 test('the whole instrumented producer fits thirty minutes without an exception', () => {
   assert.equal(producer.timeout, '30');
