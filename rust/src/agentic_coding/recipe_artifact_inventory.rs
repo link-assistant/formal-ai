@@ -45,7 +45,16 @@ pub(super) fn recipe_artifact_evidence_root(issue_reference: &str) -> Option<Str
         &[("number", number)],
     ))
 }
-fn descriptor(source_paths: &[String], evidence_root: &str) -> Option<Value> {
+fn descriptor(
+    source_paths: &[String],
+    evidence_root: &str,
+    issue_reference: Option<&str>,
+) -> Option<Value> {
+    if issue_reference.is_some_and(|reference| {
+        recipe_artifact_evidence_root(reference).as_deref() != Some(evidence_root)
+    }) {
+        return None;
+    }
     let portable = |path: &str| {
         !path.is_empty()
             && !path.starts_with('/')
@@ -113,14 +122,16 @@ fn descriptor(source_paths: &[String], evidence_root: &str) -> Option<Value> {
             .map(|member| format!("{evidence_root}{member}")),
     );
     candidates.push(format!("{evidence_root}session-id.txt"));
+    let placeholders = lines(policy(), "bootstrap-placeholder");
+    candidates.extend(placeholders.iter().cloned());
     let library = crate::seed::parser::parse_lino(include_str!(
         "../../embedded/data/meta/workspace-source-io.lino"
     ));
     let mut python = lines(&library, "source-line");
     python.extend(lines(policy(), "python-line"));
     Some(
-        json!({"sourcePaths":source_paths,"evidenceRoot":evidence_root,"outputs":outputs,
-        "candidates":candidates,"streams":streams,"sessionPattern":value("session-pattern"),
+        json!({"sourcePaths":source_paths,"evidenceRoot":evidence_root,"issueReference":issue_reference,"outputs":outputs,
+        "candidates":candidates,"streams":streams,"placeholders":placeholders,"sessionPattern":value("session-pattern"),
         "sessionLimit":value("session-limit").parse::<usize>().ok()?,
         "binaryPrefixes":lines(&hygiene,"binary-prefix"),"python":python.join("\n")+"\n"}),
     )
@@ -130,8 +141,9 @@ fn descriptor(source_paths: &[String], evidence_root: &str) -> Option<Value> {
 pub(super) fn recipe_artifact_inventory_command(
     source_paths: &[String],
     evidence_root: &str,
+    issue_reference: Option<&str>,
 ) -> Option<String> {
-    let plan = descriptor(source_paths, evidence_root)?;
+    let plan = descriptor(source_paths, evidence_root, issue_reference)?;
     let kernel = crate::seed::parser::parse_lino(include_str!(
         "../../embedded/data/meta/bounded-command-capture-source.lino"
     ));
@@ -151,6 +163,7 @@ pub(super) struct RecipeArtifactInventory {
     pub source_paths: Vec<String>,
     pub evidence_root: String,
     pub session_policy: Value,
+    pub placeholder_policy: Option<Value>,
 }
 /// Reject foreign paths, mismatched roots and partial source projections.
 #[must_use]
@@ -158,8 +171,9 @@ pub(super) fn recipe_artifact_inventory_result(
     output: &str,
     source_paths: &[String],
     evidence_root: &str,
+    issue_reference: Option<&str>,
 ) -> Option<RecipeArtifactInventory> {
-    let plan = descriptor(source_paths, evidence_root)?;
+    let plan = descriptor(source_paths, evidence_root, issue_reference)?;
     let payload = super::tool_result::observed_payload(output)?;
     let result: Value = serde_json::from_str(&payload).ok()?;
     if result.get("schema")?.as_str()? != "prepared-artifact-inventory/v1"
@@ -182,10 +196,36 @@ pub(super) fn recipe_artifact_inventory_result(
         }
         owned_paths.push(text);
     }
+    let placeholders = plan.get("placeholders")?.as_array()?;
+    let placeholder_policy = if paths.iter().any(|path| placeholders.contains(path)) {
+        let branch = result.get("branch")?.as_str()?;
+        if branch.is_empty() || branch.len() > 512 || branch.contains(['\r', '\n', '\0']) {
+            return None;
+        }
+        let sources = result.get("placeholderSources")?.as_object()?;
+        let selected = paths
+            .iter()
+            .filter(|path| placeholders.contains(path))
+            .collect::<Vec<_>>();
+        if sources.len() != selected.len()
+            || !selected.iter().all(|path| {
+                path.as_str()
+                    .and_then(|key| sources.get(key))
+                    .and_then(Value::as_str)
+                    .is_some_and(|source| source.len() <= 1024)
+            })
+        {
+            return None;
+        }
+        Some(json!({"issue":issue_reference,"branch":branch,"sources":sources}))
+    } else {
+        None
+    };
     Some(RecipeArtifactInventory {
         owned_paths,
         source_paths: source_paths.to_vec(),
         evidence_root: evidence_root.to_owned(),
+        placeholder_policy,
         session_policy: json!({"evidenceRoot":evidence_root,"filename":"session-id.txt","pattern":value("session-pattern"),"maximumBytes":plan.get("sessionLimit")?,
             "path":format!("{evidence_root}session-id.txt")}),
     })

@@ -16,6 +16,37 @@ function fixture(){
 test('same build identity and bytes execute the exact registered testcase',()=>{
  const f=fixture();try{assert.equal(runVerifiedTest(f.directory,identity,f.binary,'suite::wanted',f.root),0);assert.equal(readFileSync(join(f.root,'ran.txt'),'utf8'),'actual testcase ran\n');}finally{f.dispose();}
 });
+test('an explicit integration target executes only its own verified member',()=>{
+ const f=fixture();try{
+  writeFileSync(join(f.directory,'integration'),readFileSync(join(f.directory,'unit')));
+  writeReceipt(f.directory,identity,f.binary);
+  rmSync(join(f.directory,'unit'));
+  assert.equal(runVerifiedTest(f.directory,identity,f.binary,'suite::wanted',f.root,'integration'),0);
+  assert.equal(readFileSync(join(f.root,'ran.txt'),'utf8'),'actual testcase ran\n');
+ }finally{f.dispose();}
+});
+test('unknown or tampered explicit targets refuse before executing bytes',()=>{
+ const f=fixture();try{
+  for(const target of ['unknown','../unit'])assert.throws(()=>runVerifiedTest(f.directory,identity,f.binary,'suite::wanted',f.root,target));
+  writeFileSync(join(f.directory,'integration'),'tampered');
+  assert.throws(()=>runVerifiedTest(f.directory,identity,f.binary,'suite::wanted',f.root,'integration'));
+  assert.equal(existsSync(join(f.root,'ran.txt')),false);
+ }finally{f.dispose();}
+});
+test('critical latency checks precede artifact distribution under the original build budget',()=>{
+ const release=YAML.parse(readFileSync(new URL('../../../.github/workflows/release.yml',import.meta.url),'utf8'));
+ const job=release.jobs['build-artifacts'],steps=job.steps;
+ const early=steps.find(step=>step.name==='Bind native test artifacts to their actual build inputs');
+ assert.equal(job['timeout-minutes'],20);
+ assert(steps.indexOf(early)<steps.findIndex(step=>step.name==='Upload formal-ai binaries'));
+ assert.equal(early.run,'FORMAL_AI_DEADLINE_GRACE_SECONDS=5 scripts/run-with-deadline.sh 90 node scripts/native-test-artifact.mjs write-and-check dist/tests release all rust/tests/fixtures/released-client-requests/smoke-tests.json');
+ const cases=JSON.parse(readFileSync(new URL('../fixtures/released-client-requests/smoke-tests.json',import.meta.url),'utf8'));
+ assert.deepEqual(cases.map(entry=>[entry.target,entry.name]),[
+  ['unit','released_client_request_latency::absent_predictions_do_not_resolve_the_captured_coding_prompt'],
+  ['unit','released_client_request_latency::released_client_requests_plan_without_consuming_the_delivery_budget'],
+  ['integration','released_client_request_latency::released_agent_request_is_bounded_through_native_http'],
+ ]);
+});
 test('the selected unit transfer preserves the full original receipt while omitting unused executables',()=>{
  const f=fixture();try{
   for(const target of ['integration','source'])rmSync(join(f.directory,target));

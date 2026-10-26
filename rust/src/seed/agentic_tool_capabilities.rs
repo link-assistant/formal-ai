@@ -18,29 +18,41 @@ pub struct AgenticToolCapability {
 
 #[must_use]
 pub fn agentic_tool_capabilities() -> Vec<AgenticToolCapability> {
-    let tree = parse_lino(AGENTIC_TOOL_CAPABILITIES_LINO);
-    let Some(root) = tree.children.first() else {
-        return Vec::new();
+    // Classification reads this immutable registry for every advertised tool.
+    let load = || {
+        let tree = parse_lino(AGENTIC_TOOL_CAPABILITIES_LINO);
+        let Some(root) = tree.children.first() else {
+            return Vec::new();
+        };
+        root.children
+            .iter()
+            .filter(|node| node.name == "capability")
+            .map(|node| {
+                let cues = node
+                    .children
+                    .iter()
+                    .find(|child| child.name == "cues")
+                    .into_iter()
+                    .flat_map(|group| &group.children)
+                    .flat_map(|language| split_pipe_list(&language.id))
+                    .map(|cue| cue.to_lowercase())
+                    .collect();
+                AgenticToolCapability {
+                    id: node.id.clone(),
+                    aliases: split_pipe_list(node.find_child_value("aliases")),
+                    command_aliases: split_pipe_list(node.find_child_value("command_aliases")),
+                    cues,
+                }
+            })
+            .collect()
     };
-    root.children
-        .iter()
-        .filter(|node| node.name == "capability")
-        .map(|node| {
-            let cues = node
-                .children
-                .iter()
-                .find(|child| child.name == "cues")
-                .into_iter()
-                .flat_map(|group| &group.children)
-                .flat_map(|language| split_pipe_list(&language.id))
-                .map(|cue| cue.to_lowercase())
-                .collect();
-            AgenticToolCapability {
-                id: node.id.clone(),
-                aliases: split_pipe_list(node.find_child_value("aliases")),
-                command_aliases: split_pipe_list(node.find_child_value("command_aliases")),
-                cues,
-            }
-        })
-        .collect()
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        static CAPABILITIES: std::sync::OnceLock<Vec<AgenticToolCapability>> =
+            std::sync::OnceLock::new();
+        CAPABILITIES.get_or_init(load).clone()
+    }
+    // The WASM host resets its allocator between exported calls.
+    #[cfg(target_arch = "wasm32")]
+    load()
 }

@@ -34,6 +34,7 @@ test('PR and manual audits have read-only scope and cannot enter the mutating cl
  assert(audit.steps.filter(step=>step.run).every(step=>!step.run.includes('${{')),'owner input stays in environment data');
  assert.equal(audit.steps.find(step=>step.run).shell,'bash','pipefail must retain a failed audit before tee');
  assert.deepEqual(workflow.on.pull_request['branches-ignore'],['e2e/**']);
+ assert(workflow.on.pull_request.paths.includes('scripts/lib/hive-isolated-task.mjs'), 'owned fixture changes must trigger the read-only audit');
  assert.deepEqual(workflow.on.workflow_dispatch.inputs.mode.options,['checks']);
  assert(workflow.on.workflow_dispatch.inputs['pull-request']);
 });

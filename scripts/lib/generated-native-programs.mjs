@@ -463,7 +463,7 @@ true,"cases":[{"input":"off","variant":"Off"},{"input":"propose","variant":"Prop
 "formal_ai::anticipation::ANTICIPATION_FRONTIER","canonicalPath":"formal_ai::anticipation::ANTICIPATION_FRONTIER","kind"
 :"nativeConstant","nativeType":"&str","returnType":"string","value":"anticipation","nativeSourceQualified":true,
 "nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1179,"end":1234},"sourceWitnesses":[{"path":
-"rust/src/anticipation.rs","sha256":"0b62bfa63c903e51dc53febad2dacb1c2409bfbf08553860ed2eac112241e951"},{"path":
+"rust/src/anticipation.rs","sha256":"818ec04b63eb77191c8f8990b871eb2619aca3f5310d0856ee51c6d1fac4d6d5"},{"path":
 "rust/src/lib.rs","sha256":"797bdfc344c69094db88f2e76ee80b386a95f1e0a0aa93257ee0dd4e0c1b029b"}],"maintainedMeta":
 "(constant ANTICIPATION-FRONTIER (exported) (type string) (value (string anticipation)))","maintainedJavaScript":
 "export const ANTICIPATION_FRONTIER = 'anticipation';","maintainedTranslationSha256":
@@ -472,7 +472,7 @@ true,"cases":[{"input":"off","variant":"Off"},{"input":"propose","variant":"Prop
 "formal_ai::anticipation::ANTICIPATION_PREDICTION_KIND","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"anticipation_prediction","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,
 "sourceSpan":{"start":1235,"end":1308},"sourceWitnesses":[{"path":"rust/src/anticipation.rs","sha256":
-"0b62bfa63c903e51dc53febad2dacb1c2409bfbf08553860ed2eac112241e951"},{"path":"rust/src/lib.rs","sha256":
+"818ec04b63eb77191c8f8990b871eb2619aca3f5310d0856ee51c6d1fac4d6d5"},{"path":"rust/src/lib.rs","sha256":
 "797bdfc344c69094db88f2e76ee80b386a95f1e0a0aa93257ee0dd4e0c1b029b"}],"maintainedMeta":
 "(constant ANTICIPATION-PREDICTION-KIND (exported) (type string) (value (string anticipation_prediction)))",
 "maintainedJavaScript":"export const ANTICIPATION_PREDICTION_KIND = 'anticipation_prediction';",
@@ -480,7 +480,7 @@ true,"cases":[{"input":"off","variant":"Off"},{"input":"propose","variant":"Prop
 "formal_ai::anticipation::ANTICIPATION_SOURCE_KIND","canonicalPath":"formal_ai::anticipation::ANTICIPATION_SOURCE_KIND",
 "kind":"nativeConstant","nativeType":"&str","returnType":"string","value":"anticipation_source","nativeSourceQualified":
 true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1309,"end":1374},"sourceWitnesses":[{"path":
-"rust/src/anticipation.rs","sha256":"0b62bfa63c903e51dc53febad2dacb1c2409bfbf08553860ed2eac112241e951"},{"path":
+"rust/src/anticipation.rs","sha256":"818ec04b63eb77191c8f8990b871eb2619aca3f5310d0856ee51c6d1fac4d6d5"},{"path":
 "rust/src/lib.rs","sha256":"797bdfc344c69094db88f2e76ee80b386a95f1e0a0aa93257ee0dd4e0c1b029b"}],"maintainedMeta":
 "(constant ANTICIPATION-SOURCE-KIND (exported) (type string) (value (string anticipation_source)))",
 "maintainedJavaScript":"export const ANTICIPATION_SOURCE_KIND = 'anticipation_source';","maintainedTranslationSha256":
@@ -488,7 +488,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1309,"end":137
 "formal_ai::anticipation::PREDICTION_HIT_KIND","canonicalPath":"formal_ai::anticipation::PREDICTION_HIT_KIND","kind":
 "nativeConstant","nativeType":"&str","returnType":"string","value":"prediction_hit","nativeSourceQualified":true,
 "nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1375,"end":1430},"sourceWitnesses":[{"path":
-"rust/src/anticipation.rs","sha256":"0b62bfa63c903e51dc53febad2dacb1c2409bfbf08553860ed2eac112241e951"},{"path":
+"rust/src/anticipation.rs","sha256":"818ec04b63eb77191c8f8990b871eb2619aca3f5310d0856ee51c6d1fac4d6d5"},{"path":
 "rust/src/lib.rs","sha256":"797bdfc344c69094db88f2e76ee80b386a95f1e0a0aa93257ee0dd4e0c1b029b"}],"maintainedMeta":
 "(constant PREDICTION-HIT-KIND (exported) (type string) (value (string prediction_hit)))","maintainedJavaScript":
 "export const PREDICTION_HIT_KIND = 'prediction_hit';","maintainedTranslationSha256":

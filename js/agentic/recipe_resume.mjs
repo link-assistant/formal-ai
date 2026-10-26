@@ -158,14 +158,14 @@ export function planRecipeCiFallback(messages, tools, recipe, reference, workflo
   if (paths === null) return gap(installed.refusal);
   const sourcePaths = [recipe.path, ...recipe.supporting_files.map(file => file.path)];
   const evidenceRoot = recipeArtifactEvidenceRoot(commitReference);
-  const inventoryCommand = evidenceRoot === null ? null : recipeArtifactInventoryCommand(sourcePaths, evidenceRoot);
+  const inventoryCommand = evidenceRoot === null ? null : recipeArtifactInventoryCommand(sourcePaths, evidenceRoot, commitReference);
   if (inventoryCommand === null) return gap(installed.refusal);
   const inventoryObserved = observed(inventoryCommand);
   if (inventoryObserved.kind === 'missing') return call(inventoryCommand);
-  const inventory = inventoryObserved.kind === 'success' ? recipeArtifactInventoryResult(inventoryObserved.output, sourcePaths, evidenceRoot) : null;
+  const inventory = inventoryObserved.kind === 'success' ? recipeArtifactInventoryResult(inventoryObserved.output, sourcePaths, evidenceRoot, commitReference) : null;
   if (inventory === null) return gap(installed.refusal);
   if (paths.length !== 0 || inventory.ownedPaths.length !== 0) {
-    const hygiene = preparedRecipeHygiene(sourcePaths, paths, inventory);
+    const hygiene = preparedRecipeHygiene(sourcePaths, paths, inventory, commitReference);
     if (hygiene === null) return gap(installed.refusal);
     const commands = [hygiene.command, preparedWorkCommitCommand(hygiene, commitReference), hygiene.cleanCommand];
     for (const command of commands) {

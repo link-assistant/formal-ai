@@ -11,10 +11,71 @@ strict-final Unknown remains a failed attempt, not a skipped check or a pass.
 
 ## Latest continuation: 25 October 2026
 
+PR 1410 is now merged and v0.355.10 passed all main, publisher and public-download
+checks, including independently checked Docker manifests. The fresh actual
+three-client owner failed: Claude left Hive's 174-byte bootstrap placeholder, while Agent and
+Codex exceeded their finite first-pass budgets while progressing. The next
+batched [PR 1417](https://github.com/link-assistant/formal-ai/pull/1417) fixes placeholder scope and repeated native registry parsing,
+with captured-request regressions. See the
+[current causes, fixes and acceptance contract](released-client-progress.md).
+The broad vision and issue 1364 are not complete; fresh released-client
+acceptance and terminal authenticated cleanup remain mandatory.
+
+PR 1417's first CI batch exposed file-size limits and a stale governed source
+witness after registering the native regression. The correction moves request
+timing into the existing logging module and reformats the captured Claude JSON
+without changing parsed content. The witness refresh changes only the reviewed
+`rust/tests/unit/mod.rs` source hash; cases and assertions remain identical.
+Both JavaScript failures share that witness cause. The PR description retains
+issues 1328 and 1364 using the exact pending-acceptance disposition. All tracked
+files satisfy the size gate, 35 focused JavaScript tests pass and the native
+specification generator remains current. Require fresh exact-head CI after the
+batch push; native latency and released-client acceptance remain unverified.
+
+The next batch also corrects a diagnostics dependency: the logging helper takes
+the caller's trace flag instead of reading the CLI surface. Clock creation is
+lazy and native-only; browser WASM never calls the unsupported standard-library
+monotonic clock. Preserve the architecture ceiling and verify the actual native
+request tests in CI. These fixes are manual and grant no autonomous authorship
+credit.
+
+The older H4 native run passed pure captured-request planning, but its real HTTP
+regression timed out after 30 seconds despite planning completing in 716 ms.
+The follow-up fixes a Rust/JavaScript parity gap: prediction-hit bookkeeping
+must skip classification when memory has no prediction events. Rust invoked
+the full offline solver there; JavaScript already short-circuits. Retain memory
+and log recording, genuine prediction matching and the original HTTP deadline.
+The drafted guard and captured-prompt test require fresh native CI; dispatch,
+memory and dialog timings identify any remaining downstream bottleneck.
+The shared native producer now runs the three captured-request regressions
+immediately after receipt binding and before artifact distribution, under its
+unchanged 20-minute budget. The artifact-binding command has a 90-second timeout
+and five-second kill grace for the complete declarative smoke list. Explicit integration execution verifies its
+own receipt member; existing unit-only transfers keep their original default.
+
+The 26 October native producer verified the memory correction with the real
+Agent HTTP request in 1.306 seconds, including normal memory and dialog logging.
+Captured pure planning took 625 ms (Agent), 241 ms (Codex schema refusal) and
+147 ms (Claude). The sanitized Codex schema still grants no executable replay
+credit. All unchanged 15-second deadlines passed; released three-client
+acceptance remains pending. The full native and instrumented coverage lanes
+then exposed the same GNU-timeout portability defect in the new CI command.
+Use the existing process-group-aware `run-with-deadline.sh`, preserving the
+90-second deadline and five-second kill grace, and regenerate the checked
+workflow projection without changing publication operations.
+
+The slim sidecar's cold Bun dependency resolution exhausted its existing
+600-second bound with only `Resolving dependencies` logged. Limit the shared
+installer to eight simultaneous registry requests, as Bun recommends for
+connection trouble. This is a mitigation requiring fresh image-build evidence;
+the available log does not establish which network request stalled. Keep the
+same pins, trust policy, verification, deadline and evidence-qualified retry
+rule. A timeout must still fail without an automatic retry or delivery credit.
+
 PR 1407 is merged; v0.355.9 and all configured release/public-download gates
 passed. Real released-image acceptance then verified the native memory
 lifecycle and default-token access, but exposed a post-admission proposal race
-and missing Claude/Codex/MCP runtime prerequisites. The fixes are batched on
+and missing Claude/Codex/MCP runtime prerequisites. The fixes were delivered by
 [`PR 1410`](https://github.com/link-assistant/formal-ai/pull/1410) on
 `fix/published-ci-proposal-admission`; see the
 [exact causes, verification contract and evidence](released-client-prerequisites.md).
@@ -22,17 +83,17 @@ Issue 1364 remains open until a fresh real three-client execution and trusted
 cleanup pass. No local Rust compilation or product download/execution is
 permitted. The private untracked session export must never be read or staged.
 
-Current follow-up also replays the recent public Hive Mind client failures:
+PR 1410 also replayed the recent public Hive Mind client failures:
 stdout-only source receipts, raw Git status whitespace, and missing hosted
 checks for explicitly staged workflows. PR readiness in the staged transport
 grants no CI credit; the original independent workflow execution and all
 acceptance assertions remain required. The default-token hosted read-only
 audit now proves owner discovery. Existing uncertain cleanup claims must not
-be retried automatically. Container checks passed on both architectures at an
-earlier head; require all checks again at the final reviewed head before merge.
+be retried automatically. PR 1410's final reviewed head and main publication
+passed; the next follow-up requires its own complete exact-head checks.
 
-The final blocker batch corrects an order-dependent Docker COPY test and cites
-the existing Rust staged-readiness twins. It also preserves the solve budget
+Its final blocker batch corrected an order-dependent Docker COPY test and cited
+the existing Rust staged-readiness twins. It also preserved the solve budget
 after the actual 28-minute image setup: only the delivery parent receives a
 documented temporary 55-minute allowance, while the solve remains bounded at
 21 minutes. Public-timestamp regressions cover the parent/child budget. Require

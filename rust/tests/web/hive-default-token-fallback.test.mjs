@@ -63,7 +63,11 @@ function github(repository = context.repository) {
     }
     if (route === 'issues/17') return structuredClone(state.issue);
     if (route === 'pulls/18') return structuredClone(state.pull);
-    if (route.startsWith('pulls?')) return state.pull ? [structuredClone(state.pull)] : [];
+    if (route.startsWith('pulls?')) {
+      if(!state.pull)return [];
+      const listed=structuredClone(state.pull);delete listed.merged;
+      return [listed];
+    }
     if (route === 'issues/17/comments?per_page=100') return structuredClone(state.comments);
     if (route.startsWith('git/matching-refs/heads/')) {
       const prefix = 'refs/heads/' + route.slice('git/matching-refs/heads/'.length);
@@ -85,7 +89,7 @@ async function prepared(repository = context.repository) {
       assert.equal(args[0], 'label'); assert.equal(args[1], 'create');
       assert.equal(args[args.indexOf('--repo') + 1], repository);
     }});
-  state.pull = {number: 18, state: 'open', draft: false, merged: false,
+  state.pull = {number: 18, state: 'open', draft: false, merged: false, merged_at: null,
     html_url: `https://github.com/${repository}/pull/18`,
     head: {ref: 'issue-17-fixture', sha: 'd'.repeat(40), repo: {full_name: repository}},
     base: {ref: fixture.resource.baseBranch, repo: {full_name: repository}}};
@@ -135,6 +139,27 @@ test('successful fixtures close the issue and PR, delete both branches, and are 
       completed_at: '2026-10-24T00:10:00Z'}, client: {json: api}, recognizeIssue: generatedIssue});
   assert.equal(result.complete, true);
   assert(state.calls.slice(before).every(call => call.method === 'GET'), 'cleanup acknowledgment is read-only');
+});
+
+test('fresh PR detail is mandatory before cleanup and must match the list head', async () => {
+  for(const mutation of [
+    pull=>{delete pull.merged;},
+    pull=>{pull.merged=true;},
+    pull=>{pull.merged_at='2026-10-25T20:14:56Z';},
+    pull=>{pull.head.sha='f'.repeat(40);},
+  ]) {
+    const {fixture,state,api}=await prepared();
+    const before=state.calls.length;
+    const observed=async(endpoint,options)=>{
+      const result=await api(endpoint,options);
+      if(endpoint.endsWith('/pulls/18')&&(options?.method??'GET')==='GET')mutation(result);
+      return result;
+    };
+    await assert.rejects(cleanupIsolatedTask(fixture,{api:observed,save(){},outcome:'failure'}));
+    assert(state.calls.slice(before).every(call=>call.method==='GET'));
+    assert.equal(state.issue.state,'open');assert.equal(state.pull.state,'open');
+    assert.equal(state.refs.size,2);
+  }
 });
 
 test('task body edits and a changed task head stop cleanup before any close or deletion', async () => {

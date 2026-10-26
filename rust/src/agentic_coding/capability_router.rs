@@ -170,9 +170,13 @@ const BROWSER_INTERACTION_MARKERS: [&str; 11] = [
     "file_upload",
 ];
 
-fn tool_matches_capability(name: &str, capability: Capability) -> bool {
-    seed::agentic_tool_capabilities()
-        .into_iter()
+fn tool_matches_capability(
+    name: &str,
+    capability: Capability,
+    registry: &[seed::AgenticToolCapability],
+) -> bool {
+    registry
+        .iter()
         .find(|entry| entry.id == capability.registry_id())
         .is_some_and(|entry| {
             entry
@@ -185,6 +189,7 @@ fn tool_matches_capability(name: &str, capability: Capability) -> bool {
 /// Classify a tool name through the shared alias registry, with legacy
 /// substring matching as a compatibility fallback.
 pub(super) fn classify_tool(name: &str) -> Option<Capability> {
+    let registry = seed::agentic_tool_capabilities();
     for capability in [
         Capability::Search,
         Capability::Fetch,
@@ -201,7 +206,7 @@ pub(super) fn classify_tool(name: &str) -> Option<Capability> {
         Capability::MultiEdit,
         Capability::AskUser,
     ] {
-        if tool_matches_capability(name, capability) {
+        if tool_matches_capability(name, capability, &registry) {
             return Some(capability);
         }
     }

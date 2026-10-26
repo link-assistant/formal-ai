@@ -184,11 +184,19 @@ export async function cleanupIsolatedTask(fixture, {api, cleanup = closeFixtureR
     const pulls = await api(`${root}/pulls?state=all&base=${encodeURIComponent(resource.baseBranch)}&per_page=100`);
     assert(Array.isArray(pulls) && pulls.length <= 1, 'one owned task PR at most');
     if (pulls.length) {
-      const pull = pulls[0];
+      const listed = pulls[0];
+      assert(Number.isSafeInteger(listed.number) && listed.number > 0, 'owned PR number required');
+      // The list endpoint omits `merged`. Only a fresh, matching detail response
+      // can prove the owned PR was not merged before cleanup effects.
+      const pull = await api(`${root}/pulls/${listed.number}`);
+      assert.equal(pull.number, listed.number);
+      assert.equal(pull.head.ref, listed.head.ref, 'task branch changed during cleanup discovery');
+      assert.equal(pull.head.sha, listed.head.sha, 'task head changed during cleanup discovery');
       assert.equal(pull.base.ref, resource.baseBranch);
       assert.equal(pull.base.repo.full_name, fixture.repository);
       assert.equal(pull.head.repo.full_name, fixture.repository);
       assert.equal(pull.merged, false, 'merged task PR must be preserved');
+      assert.equal(pull.merged_at, null, 'merged task PR must be preserved');
       assert.match(pull.head.ref, new RegExp('^issue-' + resource.issueNumber + '-[A-Za-z0-9-]+$'));
       resource.pullRequestNumber = pull.number;
       resource.branches = [...new Set([...resource.branches, pull.head.ref])];

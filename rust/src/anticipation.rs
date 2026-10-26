@@ -632,6 +632,12 @@ pub fn prediction_hit_event(
     prompt: &str,
     actual_request_id: &str,
 ) -> Option<MemoryEvent> {
+    if !events
+        .iter()
+        .any(|event| event.kind.as_deref() == Some(ANTICIPATION_PREDICTION_KIND))
+    {
+        return None;
+    }
     let class = intent_class_for_prompt(prompt);
     let prediction = events.iter().rev().find(|event| {
         event.kind.as_deref() == Some(ANTICIPATION_PREDICTION_KIND)

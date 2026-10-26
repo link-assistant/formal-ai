@@ -1,0 +1,14 @@
+[
+  {
+    "target": "unit",
+    "name": "released_client_request_latency::absent_predictions_do_not_resolve_the_captured_coding_prompt"
+  },
+  {
+    "target": "unit",
+    "name": "released_client_request_latency::released_client_requests_plan_without_consuming_the_delivery_budget"
+  },
+  {
+    "target": "integration",
+    "name": "released_client_request_latency::released_agent_request_is_bounded_through_native_http"
+  }
+]

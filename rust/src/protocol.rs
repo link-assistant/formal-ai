@@ -495,6 +495,7 @@ enum AgenticOutcome {
 /// [`AgenticOutcome::Fallthrough`] so ordinary chat stays untouched.
 fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> AgenticOutcome {
     let trace = crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS");
+    let phase = crate::dialog_log::structured_log::request_phases(trace);
     if !request.requests_tool_execution() {
         // A client that speaks no function calling can still ground a file
         // read: `aider` puts the file's bytes in the conversation itself
@@ -543,6 +544,7 @@ fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> Agentic
     // none, is not a tool that is available here — offering it anyway is how a
     // local file write became a 404 against `""`.
     let grounded = groundable_tool_names(request, &owned_names);
+    phase("permissions_and_grounding");
     if trace && grounded.len() != owned_names.len() {
         let withheld: Vec<&String> = owned_names
             .iter()
@@ -559,8 +561,10 @@ fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> Agentic
     );
     let messages =
         crate::agentic_coding::append_contract::project_append_contracts(&messages, &request.tools);
+    phase("contract_projection");
     let outcome = plan_chat_step(&messages, &tool_names)
         .map_or(AgenticOutcome::Fallthrough, AgenticOutcome::Planned);
+    phase("planning");
     if trace {
         match &outcome {
             AgenticOutcome::Planned(plan) => {
