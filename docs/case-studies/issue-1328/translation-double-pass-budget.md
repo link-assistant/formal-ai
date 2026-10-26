@@ -31,3 +31,11 @@ JavaScript tests use synthetic modules to check one-pass equivalence, preserved
 relative imports and fail-closed source/pin validation. Actual upstream
 translation and Rust execution remain CI-only. Replace the adapter with an
 upstream public combined-result API when one is available and verified.
+
+The [first hosted packet run](https://github.com/link-assistant/formal-ai/actions/runs/40267812823/job/121394111811)
+exposed an omitted static import companion in the
+independently captured release protocol: the translator imported the new adapter,
+but its source-network capture recipe did not include that file. Include the
+adapter in the immutable snapshot. The historical-checkout regression imports
+the captured translator, then removes, changes and restores that companion to
+verify both execution availability and the original source-byte checks.

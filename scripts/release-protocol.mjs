@@ -26,6 +26,7 @@ export const RELEASE_PROTOCOL_FILES = Object.freeze({
    'scripts/check-source-networks.mjs',
    'scripts/verify-source-network-distribution.mjs',
    'scripts/translate-js-rust.mjs',
+   'scripts/lib/translation-single-pass.mjs',
    "scripts/lib/rust-projection-presentation.mjs",
    "scripts/self-translation/lexer.mjs",
    "scripts/check-readable-code.mjs",
