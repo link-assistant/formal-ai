@@ -13,6 +13,7 @@ The screenshot is a practical request answered with unrelated fragments about a 
 - Keep search rank, algorithm parameters and dependent copies of the same source separate from factual confidence and independent corroboration. User-facing replies should not expose irrelevant ranking machinery.
 - Prefer trusted sources for practical or health guidance; maintain provenance for the minimal cached knowledge and support discovery without that cache.
 - Preserve explicit search and definition requests, quotation, negation, and unrelated tasks as counterexamples.
+- Matching loops must advance or stop. Reject empty match operands consistently in JavaScript and Rust, with a regression that fails within a finite execution timeout.
 - Verify browser/JavaScript, TypeScript and Rust parity, including fresh-source, cached-source and unavailable-source behavior. Rust runs only in CI for this work.
 
 # Issue 1396: urgent practical requests and follow-ups

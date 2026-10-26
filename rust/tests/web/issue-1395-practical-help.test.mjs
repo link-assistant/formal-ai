@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import vm from 'node:vm';
 import {WorkerHost} from '../../../js/server/worker-host.mjs';
 const forbiddenWasm={instantiate(){throw Error('LocalWasmExecutionForbidden');},compile(){throw Error('LocalWasmExecutionForbidden');}};
 const worker=()=>new WorkerHost({WebAssembly:forbiddenWasm});
@@ -50,4 +51,9 @@ test('zero-byte stream chunks have a finite read budget and are cancelled',async
 test('the same strategy handles a new data-defined goal without a prompt-specific code branch',async()=>{
  const host=worker();await host.boot();await host.run('globalThis.originalPracticalPolicy=practicalHelpPolicy;MULTILINGUAL_ANSWERS["practical-help-test-rest"]={en:"Take a rest. [{source}]({source})"};practicalHelpPolicy=key=>Object.hasOwn(__profile,key)?__profile[key]:originalPracticalPolicy(key);true',{__profile:{goals:'rest',leads:'i need to','rest-forms':'rest','rest-source':source,'rest-proof':'A verified rest instruction.','rest-cached-proof':'A verified rest instruction.','rest-response':'practical-help-test-rest','rest-unavailable':'practical-help-toilet-unavailable'}});
  const result=await host.run('tryPracticalHelp("I need to rest","en")');assert(result.evidence.includes('practical_help:goal:rest'));assert.equal(result.confidence,0.8);assert(result.content.startsWith('Take a rest.'));
+});
+
+test('an empty matcher operand terminates within the same finite contract as Rust',async()=>{
+ const host=worker(),context=await host.boot();
+ assert.equal(vm.runInContext('practicalHelpContains("letters", "")',context,{timeout:1000}),false);
 });

@@ -5,6 +5,7 @@
 function practicalHelpPolicy(key){return howPolicy('practical-help',key,{});}
 function practicalHelpForms(key){return practicalHelpPolicy(key).split('|').map(normalizePrompt).filter(Boolean);}
 function practicalHelpContains(text,word){
+ if(!word)return false;
  let from=0;for(;;){const at=text.indexOf(word,from);if(at<0)return false;from=at+word.length;
   if(/[\u3400-\u9fff]/u.test(word)||(!/[\p{L}\p{N}_]/u.test(text[at-1]||'')&&!/[\p{L}\p{N}_]/u.test(text[from]||'')))return true;}
 }
