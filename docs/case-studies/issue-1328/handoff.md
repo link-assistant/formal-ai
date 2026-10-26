@@ -9,7 +9,20 @@ concurrency fixture is now manual-only and explicitly unproven; see the
 [recorded deferral](critical-delivery-scope.md#recorded-follow-up). Its prior
 strict-final Unknown remains a failed attempt, not a skipped check or a pass.
 
-## Latest continuation: 25 October 2026
+## Latest continuation: 26 October 2026
+
+PR 1418 also fixes the actual v0.355.11 acceptance failures: endpoint query
+classification, duplicate aggregated tool histories, own Hive session notices
+blocking a no-op, and cleanup encountering repository-wide branch deletion
+protection. See the [observed causes and delivery gates](released-client-history-and-feedback.md).
+Publication of v0.355.11 passed; its actual client owner and old cleanup claims
+remain failed/retained historical evidence and must not be retried. Require new
+exact-head CI and a fresh released-client execution after merging this fix.
+Cleanup closes owned issues and PRs while explicitly preserving and independently
+checking branches protected by an effective deletion rule; it never changes
+repository protection or requests another credential.
+
+## Previous continuation
 
 PR 1417 merged after all required PR checks passed. Its main run then exposed a
 coverage-shard deadline caused by an unmeasured cold TypeScript research case

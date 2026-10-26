@@ -352,6 +352,31 @@ mod restart_feedback {
         assert!(feedback_needs_changes("{}"));
         assert!(feedback_needs_changes("authentication failed"));
     }
+
+    #[test]
+    fn own_framework_status_is_not_a_change_request() {
+        let fixture: serde_json::Value = serde_json::from_str(include_str!(
+            "../fixtures/agentic/hive-own-session-feedback.json"
+        ))
+        .unwrap();
+        assert!(!feedback_needs_changes(
+            fixture["toolReceipt"].as_str().unwrap()
+        ));
+        let feedback = &fixture["feedback"];
+        assert!(!feedback_needs_changes(&feedback.to_string()));
+        for field in ["viewerDidAuthor", "includesCreatedEdit"] {
+            let mut changed = feedback.clone();
+            changed["comments"][0][field] = serde_json::json!(field != "viewerDidAuthor");
+            assert!(feedback_needs_changes(&changed.to_string()));
+        }
+        let mut changed = feedback.clone();
+        let body = changed["comments"][0]["body"].as_str().unwrap().to_owned();
+        changed["comments"][0]["body"] = serde_json::json!(body + "\nFix the verifier.");
+        assert!(feedback_needs_changes(&changed.to_string()));
+        changed = feedback.clone();
+        changed["reviews"] = serde_json::json!([{"state":"CHANGES_REQUESTED"}]);
+        assert!(feedback_needs_changes(&changed.to_string()));
+    }
 }
 
 mod program_contract_stdout {

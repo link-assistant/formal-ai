@@ -31,7 +31,7 @@ const context = {repository: 'host/project', run: 700, attempt: 1, tool: 'codex'
 const inputHash = sha256(manifestBytes);
 
 function github(repository = context.repository) {
-  const state = {calls: [], refs: new Set(), comments: [], issue: null, pull: null, fail: null};
+  const state = {calls: [], refs: new Set(), comments: [], issue: null, pull: null, fail: null, rules:[]};
   const root = 'repos/' + repository + '/';
   const api = async (endpoint, options = {}) => {
     const method = options.method ?? 'GET';
@@ -69,9 +69,11 @@ function github(repository = context.repository) {
       return [listed];
     }
     if (route === 'issues/17/comments?per_page=100') return structuredClone(state.comments);
+    if (route.startsWith('rules/branches/')) return structuredClone(state.rules);
     if (route.startsWith('git/matching-refs/heads/')) {
       const prefix = 'refs/heads/' + route.slice('git/matching-refs/heads/'.length);
-      return [...state.refs].filter(ref => ref.startsWith(prefix)).map(ref => ({ref}));
+      return [...state.refs].filter(ref => ref.startsWith(prefix)).map(ref => ({ref,
+        object:{sha:ref.endsWith('/issue-17-fixture') ? state.pull.head.sha : 'c'.repeat(40)}}));
     }
     throw new Error('Unmocked API request: ' + method + ' ' + route);
   };
@@ -139,6 +141,36 @@ test('successful fixtures close the issue and PR, delete both branches, and are 
       completed_at: '2026-10-24T00:10:00Z'}, client: {json: api}, recognizeIssue: generatedIssue});
   assert.equal(result.complete, true);
   assert(state.calls.slice(before).every(call => call.method === 'GET'), 'cleanup acknowledgment is read-only');
+});
+
+test('effective deletion protection closes work but preserves independently verified branch heads', async () => {
+  const {fixture,state,api}=await prepared();
+  // Public repository ruleset 21300712 applies deletion protection to ~ALL refs.
+  state.rules=[{type:'deletion',ruleset_id:21300712},{type:'non_fast_forward',ruleset_id:21300712}];
+  await cleanupIsolatedTask(fixture,{api,save(){},outcome:'failure'});
+  assert.equal(state.issue.state,'closed');assert.equal(state.pull.state,'closed');
+  assert.equal(state.refs.size,2);
+  assert.equal(state.calls.filter(call=>call.method==='DELETE').length,0);
+  assert.equal(fixture.cleanup.protectedBranches.length,2);
+  const verify=()=>verifyIsolatedCleanup(fixture,{repository:context.repository,
+    run:{id:700,run_attempt:1,head_sha:context.protocolHead},
+    job:{name:'Actual Hive codex original delivery',started_at:'2026-10-24T00:00:00Z',completed_at:'2026-10-24T00:10:00Z'},
+    client:{json:api},recognizeIssue:generatedIssue});
+  assert.equal((await verify()).complete,true);
+  state.rules=[];
+  await assert.rejects(verify());
+  state.rules=[{type:'deletion',ruleset_id:21300712}];
+  state.pull.head.sha='f'.repeat(40);
+  await assert.rejects(verify());
+});
+
+test('unavailable or malformed protection metadata cannot authorize cleanup completion', async () => {
+  for(const rules of [null,[{type:'deletion',ruleset_id:'unknown'}]]) {
+    const {fixture,state,api}=await prepared();state.rules=rules;
+    await assert.rejects(cleanupIsolatedTask(fixture,{api,save(){},outcome:'failure'}),/cleanup failed/u);
+    assert.equal(fixture.cleanup,null);
+    assert.equal(state.calls.filter(call=>call.method==='DELETE').length,0);
+  }
 });
 
 test('fresh PR detail is mandatory before cleanup and must match the list head', async () => {

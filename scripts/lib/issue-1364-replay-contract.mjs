@@ -123,16 +123,32 @@ export function requireTaskObligations({source, workflow, verifier, programPath}
   assert(verifier.includes('cmp ') && verifier.includes('set -eu'), 'actual verifier must preserve failure and exact bytes');
   return true;
 }
+function capturedArgumentValue(value) {
+  // Custom tools carry literal text; ordinary function tools carry JSON.
+  if (typeof value !== 'string') return value;
+  try { return JSON.parse(value); } catch { return value; }
+}
 export function canonicalCapturedMessages(context) {
   assert(context.metadata.exchange_count > 0 && context.server_logs.length === context.metadata.exchange_count);
   const modelExchanges = context.server_logs.filter(row => row.method === 'POST' && row.request_body);
   assert(modelExchanges.length > 0, 'complete model exchanges required');
-  const families = new Set(modelExchanges.map(row => row.path.endsWith('/chat/completions') ? 'chat'
-    : row.path.endsWith('/messages') ? 'anthropic' : row.path.endsWith('/responses') ? 'responses' : 'unknown'));
+  const families = new Set(modelExchanges.map(row => {
+    // Query parameters select transport features, not a different message protocol.
+    const pathname = new URL(row.path, 'http://capture.invalid').pathname;
+    return pathname.endsWith('/chat/completions') ? 'chat'
+      : pathname.endsWith('/messages') ? 'anthropic' : pathname.endsWith('/responses') ? 'responses' : 'unknown';
+  }));
   assert.equal(families.size, 1, 'mixed or unrecognized protocol capture');
   const family = [...families][0];
   assert.equal(modelExchanges.at(-1).response_tool_calls.length, 0, 'capture ended before a tool receipt');
-  const body = JSON.stringify({model:'formal-ai', messages:context.messages, input:context.messages});
+  // Persisted conversation views merge cumulative client prefixes and can contain
+  // duplicates. The final complete wire request is the authoritative tool history.
+  // Explicit incremental Responses clients still need the recorded accumulated
+  // history; the emitted-call identity comparison below applies to both paths.
+  const last = modelExchanges.at(-1).request_body;
+  const incremental = family === 'responses' && typeof JSON.parse(last).previous_response_id === 'string'
+    && JSON.parse(last).previous_response_id.length > 0;
+  const body = incremental ? JSON.stringify({model:'formal-ai',input:context.messages}) : last;
   let messages;
   if (family === 'chat') messages = parseChatRequest(body).messages;
   else if (family === 'anthropic') messages = anthropicToChatCompletionRequest(parseAnthropicRequest(body)).messages;
@@ -140,9 +156,12 @@ export function canonicalCapturedMessages(context) {
     assert.equal(family, 'responses', 'unrecognized model capture');
     messages = toChatCompletionRequest(parseResponsesRequest(body)).messages;
   }
-  const emitted = modelExchanges.reduce((sum, row) => sum + row.response_tool_calls.length, 0);
-  const captured = messages.reduce((sum, row) => sum + (row.tool_calls?.length ?? 0), 0);
-  assert.equal(captured, emitted, 'tool history is missing, duplicated, or predates this capture');
+  const emitted = modelExchanges.flatMap(row => row.response_tool_calls)
+    .map(call => [call.name, capturedArgumentValue(call.arguments)]);
+  const captured = messages.flatMap(row => row.tool_calls ?? [])
+    .map(call => [call.function.name, capturedArgumentValue(call.function.arguments)]);
+  assert.equal(captured.length, emitted.length, 'tool history is missing, duplicated, or predates this capture');
+  assert.equal(jsonText(captured), jsonText(emitted), 'captured tool identities differ from actual model emissions');
   return messages;
 }
 export function auditCapturedActions(messages, failures = new Map()) {
@@ -161,7 +180,7 @@ export function auditCapturedActions(messages, failures = new Map()) {
       assert(call, 'orphaned or duplicate observed tool receipt'); pending.delete(message.tool_call_id); completed++;
       assert(!message.name || message.name.toLowerCase() === call.function.name.toLowerCase());
       if (failureMessage(plainText(message.content), message.is_error === true || message.isError === true, false) !== null) {
-        const key = jsonText([call.function.name.toLowerCase(), JSON.parse(call.function.arguments)]);
+        const key = jsonText([call.function.name.toLowerCase(), capturedArgumentValue(call.function.arguments)]);
         const count = (failures.get(key) ?? 0) + 1; failures.set(key, count);
         assert(count <= 2, 'more than two identical failed actions');
       }

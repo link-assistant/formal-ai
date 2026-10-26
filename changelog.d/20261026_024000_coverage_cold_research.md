@@ -11,3 +11,11 @@ release tooling, with historical-checkout and tamper regressions.
 Run native coverage shards after a successful manually dispatched producer even
 when its change detector is intentionally skipped, keeping missing-profile
 refusals and failure/cancellation handling intact.
+
+Audit original client tool histories from actual wire requests, recognize endpoint
+query parameters, and bind emitted call identities including text custom tools.
+Allow verified no-op continuations past the current viewer's complete Hive session
+notices while retaining genuine review feedback and incomplete-receipt refusals.
+Close owned fixture issues and pull requests without weakening repository-wide
+branch deletion protection; explicitly verify preserved protected branch heads
+and retain bounded operation diagnostics for failures.

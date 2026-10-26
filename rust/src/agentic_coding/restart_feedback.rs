@@ -232,7 +232,7 @@ pub fn feedback_needs_changes(output: &str) -> bool {
             items.iter().any(|item| {
                 item.get("body")
                     .and_then(serde_json::Value::as_str)
-                    .is_some_and(|body| !body.trim().is_empty())
+                    .is_some_and(|body| !body.trim().is_empty() && !own_session_status(item, body))
             })
         })
         || value
@@ -244,6 +244,23 @@ pub fn feedback_needs_changes(output: &str) -> bool {
                         == Some("CHANGES_REQUESTED")
                 })
             })
+}
+
+// Shared framework framing plus the authenticated viewer's authorship identify
+// bookkeeping. This does not certify any verification claim in the notice.
+fn own_session_status(item: &serde_json::Value, body: &str) -> bool {
+    if item.get("viewerDidAuthor").and_then(serde_json::Value::as_bool) != Some(true)
+        || item.get("includesCreatedEdit").and_then(serde_json::Value::as_bool) == Some(true)
+    {
+        return false;
+    }
+    ["pr_status_summary_pattern", "pr_status_started_pattern"]
+        .iter()
+        .any(|key| {
+            regex::Regex::new(&super::work_item_steps::fill(key, &[]))
+                .expect("compiled-in session status policy")
+                .is_match(body.trim())
+        })
 }
 
 const COMMAND_PLACEHOLDER: &str = "{command}";

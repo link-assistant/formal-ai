@@ -25,6 +25,7 @@ import { invalidArguments } from '../../../js/agentic/crate/tool_call_validation
 const originalTask = fs.readFileSync(new URL('../fixtures/issue-1364-claude-restart.txt', import.meta.url), 'utf8');
 const issues = JSON.parse(fs.readFileSync(new URL('../fixtures/issue-1364-hello-world-issues.json', import.meta.url), 'utf8'));
 const historicalSources = JSON.parse(fs.readFileSync(new URL('../fixtures/issue-1364-original-sources.json', import.meta.url), 'utf8'));
+const ownSessionFeedback = JSON.parse(fs.readFileSync(new URL('../fixtures/agentic/hive-own-session-feedback.json', import.meta.url), 'utf8')).feedback;
 const logicalRoot = '/tmp/gh-issue-solver-1792505721477';
 function relativeClientPath(value) {
   if (path.isAbsolute(value)) {
@@ -334,6 +335,7 @@ async function runFixture(configuration) {
       isDraft: true,
       reference: issue.html_url.replace('/issues/1', '/pull/2'),
       issue,
+      feedback: ownSessionFeedback,
       workflow: 'Run ' + configuration.source,
       calls: []
     };
@@ -355,7 +357,7 @@ elif a[:2]==['pr','view']:
         if fields=='headRefOid,headRefName,isDraft,state,url':
             print(json.dumps(dict(headRefOid=s['head'],headRefName=s['branch'],isDraft=s['isDraft'],state='OPEN',url=s['reference'])))
         elif fields=='comments,reviews':
-            print(json.dumps(dict(comments=[],reviews=[])))
+            print(json.dumps(s['feedback']))
         else:
             raise RuntimeError('unexpected fixture PR fields '+fields)
     else:

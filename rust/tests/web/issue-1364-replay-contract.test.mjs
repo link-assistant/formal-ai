@@ -9,6 +9,15 @@ import {contentDigest, runtimeImageDigest, requireReplayTask, adaptReplayEntrypo
   requireNoopTask, requireActualTaskCi, requireTaskObligations, canonicalCapturedMessages,
   auditCapturedActions} from '../../../scripts/lib/issue-1364-replay-contract.mjs';
 await installNodeHost(new WorkerHost());
+const projectedCaptures = JSON.parse(fs.readFileSync(new URL('../fixtures/agentic/hive-wire-history-projections.json', import.meta.url)));
+for (const captured of projectedCaptures.cases) {
+  test('public run '+projectedCaptures.run+' '+captured.tool+' '+captured.pass+' wire projection binds every emitted call',()=>{
+    const value = structuredClone(captured.context);
+    assert.equal(auditCapturedActions(canonicalCapturedMessages(value)).completed,captured.expectedCalls);
+    value.server_logs[0].response_tool_calls[0].name += '_forged';
+    assert.throws(()=>canonicalCapturedMessages(value),/identities differ/u);
+  });
+}
 const call = (id='one', name='Bash', args='{"command":"inspect public task"}') =>
   ({role:'assistant',content:'',tool_calls:[{id,type:'function',function:{name,arguments:args}}]});
 const receipt = (id='one', failed=false) => ({role:'tool',tool_call_id:id,
@@ -26,9 +35,11 @@ function context(family) {
       {type:'message',role:'assistant',content:'done'}],
   };
   const suffix = {chat:'/chat/completions',anthropic:'/messages',responses:'/responses'}[family];
+  const request = messages => JSON.stringify({model:'formal-ai',
+    ...(family === 'responses' ? {input:messages} : {messages})});
   return {metadata:{exchange_count:2},messages:bodies[family],server_logs:[
-    {method:'POST',path:'/v1'+suffix,request_body:'{}',response_tool_calls:[{name:'Bash',arguments:{command:'inspect public task'}}]},
-    {method:'POST',path:'/v1'+suffix,request_body:'{}',response_tool_calls:[]}]};
+    {method:'POST',path:'/v1'+suffix,request_body:request(bodies[family].slice(0,1)),response_tool_calls:[{name:'Bash',arguments:{command:'inspect public task'}}]},
+    {method:'POST',path:'/v1'+suffix,request_body:request(bodies[family]),response_tool_calls:[]}]};
 }
 for(const family of ['chat','anthropic','responses']) {
   test(family+' capture uses production normalization and binds exact tool identities',()=>{
@@ -37,11 +48,32 @@ for(const family of ['chat','anthropic','responses']) {
   });
   for(const [label,change] of [
     ['lost exchange',value=>{value.server_logs.pop();}],
-    ['lost tool history',value=>{value.messages=[{role:'user',content:'public task'}];}],
+    ['lost tool history',value=>{value.server_logs.at(-1).request_body=JSON.stringify({messages:[],input:[]});}],
     ['unfinished tool response',value=>{value.server_logs.at(-1).response_tool_calls=[{name:'Bash',arguments:{}}];}],
     ['mixed protocol',value=>{value.server_logs.at(-1).path='/unknown';}],
   ])test(family+' refuses '+label,()=>{const value=context(family);change(value);assert.throws(()=>canonicalCapturedMessages(value));});
+  test(family+' audits the actual wire request despite cumulative memory prefixes and endpoint query parameters',()=>{
+    const value=context(family);
+    value.messages=[...value.messages,...value.messages,...value.messages];
+    for(const row of value.server_logs)row.path+='?beta=true';
+    assert.equal(auditCapturedActions(canonicalCapturedMessages(value)).completed,1);
+  });
+  test(family+' rejects same-count forged call names or arguments',()=>{
+    for(const changed of [{name:'Read',arguments:{command:'inspect public task'}},
+      {name:'Bash',arguments:{command:'different action'}}]){
+      const value=context(family);value.server_logs[0].response_tool_calls=[changed];
+      assert.throws(()=>canonicalCapturedMessages(value),/identities differ/u);
+    }
+  });
 }
+test('explicit incremental Responses retains recorded history with exact emitted-call matching',()=>{
+  const value=context('responses');
+  value.server_logs.at(-1).request_body=JSON.stringify({model:'formal-ai',previous_response_id:'resp_prior',
+    input:[{type:'function_call_output',call_id:'one',output:'ok'}]});
+  assert.equal(auditCapturedActions(canonicalCapturedMessages(value)).completed,1);
+  value.messages.push(value.messages[1]);
+  assert.throws(()=>canonicalCapturedMessages(value),/missing, duplicated/u);
+});
 test('unresolved, duplicate and wrong-owner results cannot be called a complete tool trace',()=>{
   for(const messages of [[call()],[call(),call(),receipt()],
     [receipt()],[call(),receipt(),receipt()],
