@@ -55,6 +55,7 @@ on: # zizmor: ignore[dangerous-triggers]
       - "js/vendor/tree-sitter/LICENSE-web-tree-sitter"
       - "js/vendor/tree-sitter/LICENSE-tree-sitter-rust"
       - "js/vendor/tree-sitter/provenance.lino"
+      - "scripts/lib/translation-single-pass.mjs"
   workflow_dispatch:
     inputs:
       mode:

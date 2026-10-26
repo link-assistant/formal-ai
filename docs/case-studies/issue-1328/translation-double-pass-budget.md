@@ -39,3 +39,11 @@ but its source-network capture recipe did not include that file. Include the
 adapter in the immutable snapshot. The historical-checkout regression imports
 the captured translator, then removes, changes and restores that companion to
 verify both execution availability and the original source-byte checks.
+
+Every captured source also has an explicit publication trigger operand. Update
+that projection with `projectReleaseTriggerPaths` whenever the capture manifest
+changes, then run `node scripts/generate-release-trigger-paths.mjs --check` and
+the release-trigger regression alongside the historical-capture checks. Existing
+anchored wildcard filters do not replace explicit ownership declarations. The
+first coverage check correctly rejected the missing adapter operand; regenerating
+it preserves every other workflow byte and leaves the assertion unchanged.
