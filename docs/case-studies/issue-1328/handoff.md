@@ -17,6 +17,15 @@ The current batch also addresses issues [1438](https://github.com/link-assistant
 are recorded in the respective issue shards. The previous pushed head passed all
 16 applicable workflows; that evidence does not qualify this expanded batch.
 Require fresh exact-head CI, including native compilation and parity in CI only.
+The expanded H3 batch exposed an unused legacy report scratch builder under
+warnings-as-errors and required recording the improved literal-predicate debt
+ceiling. Remove that obsolete builder in both maintained languages and record
+the actual procedural integration in the boundary census; keep all semantic
+quality checks and native acceptance requirements. The full JavaScript planner
+also replayed the original contextual edit as Read, Edit, Read while preserving
+physical CRLF and Unicode source bytes. A large whole-ledger literal edit was
+interrupted and decomposed into small verified edits; it grants no autonomous
+implementation credit.
 
 The public reporting reproduction also exposed contextual source corruption:
 provider line numbers were written into a Rust file. Contextual single-line
