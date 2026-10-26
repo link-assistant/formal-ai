@@ -4,6 +4,7 @@
 //! the prior tool-call history is the authoritative mutable-artifact context.
 
 use std::fmt::Write as _;
+mod literal_edit;
 
 use lino_objects_codec::format::escape_reference;
 use serde_json::{Value, json};
@@ -105,6 +106,14 @@ pub(super) fn plan_code_artifact_step(
 
     if let Some(artifact) = latest_workspace_artifact(&messages[..latest_user]) {
         let rewrite = requested_rewrite(task, &artifact)?;
+        if let Some(plan) = literal_edit::plan(
+            &artifact,
+            &rewrite,
+            &messages[latest_user + 1..],
+            tool_names,
+        ) {
+            return Some(plan);
+        }
         let current_messages = &messages[latest_user + 1..];
         if let Some(result) = latest_result(current_messages, Capability::Write) {
             let outcome = latest_result(current_messages, Capability::Read)
@@ -129,6 +138,20 @@ pub(super) fn plan_code_artifact_step(
             if outcome.output == current_source {
                 return Some(AgenticPlan::Final(format!(
                     "No matching source fragment was found in `{}`.",
+                    artifact.path
+                )));
+            }
+            let progress = super::planner::Progress::scan(current_messages);
+            if !progress
+                .source_read_for(&artifact.path)
+                .is_some_and(|read| {
+                    read.complete
+                        && read.error.is_none()
+                        && read.source.as_deref() == Some(current_source.as_str())
+                })
+            {
+                return Some(AgenticPlan::Final(format!(
+                    "Could not independently verify the literal update of {}; no whole-file replacement was attempted.",
                     artifact.path
                 )));
             }

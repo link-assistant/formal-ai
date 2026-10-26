@@ -154,6 +154,7 @@ export function createBrowserContext(overrides = {},{provenance=false}={}) {
     queueMicrotask,
     TextEncoder,
     TextDecoder,
+    AbortController,
     URL,
     URLSearchParams,
     crypto,

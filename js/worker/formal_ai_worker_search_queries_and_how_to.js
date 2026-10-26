@@ -1,6 +1,50 @@
 // Web-search query extraction, procedural how-to answers from wikiHow and the
 // frame-policy checks.
 // Loaded by ../formal_ai_worker.js.
+// Generic first-person need -> registered goal -> source-backed practical guidance.
+function practicalHelpPolicy(key){return howPolicy('practical-help',key,{});}
+function practicalHelpForms(key){return practicalHelpPolicy(key).split('|').map(normalizePrompt).filter(Boolean);}
+function practicalHelpContains(text,word){
+ let from=0;for(;;){const at=text.indexOf(word,from);if(at<0)return false;from=at+word.length;
+  if(/[\u3400-\u9fff]/u.test(word)||(!/[\p{L}\p{N}_]/u.test(text[at-1]||'')&&!/[\p{L}\p{N}_]/u.test(text[from]||'')))return true;}
+}
+function practicalHelpGoal(prompt){
+ if(/^[\s]*["'\x60\u00ab\u201c]/u.test(prompt))return null;
+ const text=normalizePrompt(prompt);const lead=practicalHelpForms('leads').sort((a,b)=>b.length-a.length).find(word=>text.startsWith(word)
+  &&(/[\u3400-\u9fff]/u.test(word)||!/[\p{L}\p{N}_]/u.test(text[word.length]||'')));
+ if(!lead)return null;const rest=text.slice(lead.length).trim();
+ if(practicalHelpForms('negations').some(word=>practicalHelpContains(rest,word)))return null;
+ return practicalHelpPolicy('goals').split('|').find(goal=>practicalHelpForms(goal+'-forms').some(word=>rest.startsWith(word)&&practicalHelpContains(rest,word)))||null;
+}
+async function practicalHelpAnswer(goal,language,preferences={}){
+ const source=practicalHelpPolicy(goal+'-source'),proof=practicalHelpPolicy(goal+'-proof');let trusted=false;
+ try{const url=new URL(source);trusted=url.protocol==='https:'&&practicalHelpPolicy('trusted-hosts').split('|').map(value=>value.trim().toLowerCase()).includes(url.hostname);}catch{}
+ let evidence=preferences.practicalHelpCache===false?'':practicalHelpPolicy(goal+'-cached-proof');let mode='curated-excerpt';
+ if(trusted&&proof&&!evidence&&preferences.offline!==true&&typeof fetch==='function'){
+  const controller=new AbortController();let timer,reader;
+  try{evidence=await Promise.race([
+   (async()=>{const response=await fetch(source,{signal:controller.signal});if(controller.signal.aborted||!response.ok)throw Error('PracticalSourceHttp');
+    if(response.body?.getReader){reader=response.body.getReader();const parts=[];let size=0;
+     for(let reads=0;;reads++){if(reads>=1024||controller.signal.aborted)throw Error('PracticalSourceReadBound');const row=await reader.read();if(row.done)break;size+=row.value.byteLength;if(size>2097152)throw Error('PracticalSourceByteBound');parts.push(row.value);}
+     const bytes=new Uint8Array(size);let at=0;for(const part of parts){bytes.set(part,at);at+=part.byteLength;}return new TextDecoder('utf-8',{fatal:true}).decode(bytes);}
+    const text=await response.text();if(new TextEncoder().encode(text).byteLength>2097152)throw Error('PracticalSourceByteBound');return text;
+   })(),
+   new Promise((_,reject)=>{timer=setTimeout(()=>{controller.abort();reject(Error('PracticalSourceDeadline'));},3000);})
+  ]);mode='fetched-source';
+  }catch{evidence='';}
+  finally{clearTimeout(timer);controller.abort();if(reader)Promise.resolve(reader.cancel()).catch(()=>{});}
+ }
+ const supported=trusted&&proof&&normalizePrompt(howToStripHtml(evidence)).includes(normalizePrompt(proof));
+ return{intent:'procedural_how_to',content:howResponse(practicalHelpPolicy(goal+(supported?'-response':'-unavailable')),language,{source}),confidence:supported?0.8:0,
+  evidence:['meaning:practical_need','practical_help:goal:'+goal,'practical_help:source_mode:'+(supported?mode:'unavailable'),...(supported?['source:'+source]:[])],
+  solverEvents:[{kind:'practical_help:goal',payload:goal},{kind:'practical_help:source_mode',payload:supported?mode:'unavailable'}]};
+}
+async function tryPracticalHelp(prompt,language,preferences={}){const goal=practicalHelpGoal(prompt);return goal?practicalHelpAnswer(goal,language,preferences):null;}
+async function tryPracticalHelpFollowup(prompt,language,history,preferences={}){
+ if(!practicalHelpForms('followups').includes(normalizePrompt(prompt).replace(/[!?！。؟]+$/gu,''))&&!isProceduralElaborationRequest(normalizePrompt(prompt)))return null;
+ const prior=lastHistoryTurn(history,'user');const goal=prior?practicalHelpGoal(prior):null;return goal?practicalHelpAnswer(goal,language,preferences):null;
+}
+
 function truncateSearchInstructionTail(value) {
   const markers = webSearchMarkers();
   const text = String(value || "");
@@ -732,6 +776,8 @@ function proceduralDiscoveryEvents(task, pageTitle, apiUrl, searchQuery, fallbac
 }
 
 async function tryProceduralHowTo(prompt, language, preferences = {}) {
+  const practical = await tryPracticalHelp(prompt,language,preferences);
+  if(practical)return practical;
   const normalized = normalizePrompt(prompt);
   const task = extractProceduralHowToTask(normalized);
   if (!task) return null;
@@ -1012,12 +1058,15 @@ function priorProceduralHowToDialogue(history) {
   if (!assistant) return null;
   const user = lastHistoryTurn(history, "user");
   if (!user) return null;
-  const task = extractProceduralHowToTask(normalizePrompt(user));
+  const goal=practicalHelpGoal(user);
+  const task = extractProceduralHowToTask(normalizePrompt(user)) || (goal?{task:goal}:null);
   return task ? { user, task } : null;
 }
 
 // Issue #444: a bare follow-up such as "Can you give me specific instructions?"
 async function tryProceduralHowToFollowup(prompt, language, history = [], preferences = {}) {
+  const practical = await tryPracticalHelpFollowup(prompt,language,history,preferences);
+  if(practical)return practical;
   const canonical = normalizePrompt(prompt);
   if (!isProceduralElaborationRequest(canonical)) return null;
   const dialogue = priorProceduralHowToDialogue(history);

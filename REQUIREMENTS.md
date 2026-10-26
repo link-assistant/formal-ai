@@ -92,6 +92,7 @@ the areas are the whole register.
    - Issue #1181 Standalone CLI Binaries and Consistent Boolean Env Switches
    - Issue #1187 Optional GitHub Credentials in Every Workflow
    - Issue #1207 Hive Mind Delivery and Progressive Self-Coding
+   - Issue 1438: reliable reporting and source-read preservation
 
 4. [Coding and agents](docs/requirements/assembled/coding-and-agents.md)
    - Issue #80 Software Project Request Requirements
@@ -131,7 +132,11 @@ the areas are the whole register.
    - Issue #1185 Error-Driven Repair Loop
    - Issue #1188 Compact Inputs and Useful Coding Work
 
-5. [Reasoning and knowledge](docs/requirements/assembled/reasoning-and-knowledge.md)
+5. [Practical guidance and user needs](docs/requirements/assembled/practical-guidance.md)
+   - Issue 1395: useful reactions and relevant practical answers
+   - Issue 1396: urgent practical requests and follow-ups
+
+6. [Reasoning and knowledge](docs/requirements/assembled/reasoning-and-knowledge.md)
    - Issue #16 Follow-Up: Universal Data/Seed Across Every Interface (PR #17 reopen)
    - Issue #16 Multilingual, Wikipedia, and Append-Only Memory Requirements
    - Issue #63 Cross-Language Definition Fusion Requirements

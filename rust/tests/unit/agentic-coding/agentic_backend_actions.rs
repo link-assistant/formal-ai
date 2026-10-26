@@ -227,9 +227,9 @@ mod report_issue {
             let args = arguments(&calls[0]);
             let command = args["command"].as_str().expect("command string");
             assert!(
-                command.starts_with("set -eu\n")
-                    && command.contains("formal-ai report body")
-                    && command.contains("gh issue create"),
+                command.starts_with("formal-ai report create-issue ")
+                    && !command.contains("set -eu")
+                    && !command.contains("mktemp"),
                 "{prompt:?} should render and file one atomic report script, got: {command}"
             );
             assert!(
@@ -251,7 +251,7 @@ mod report_issue {
         assert_eq!(calls[0].tool, "bash");
         let args = arguments(&calls[0]);
         let command = args["command"].as_str().unwrap();
-        assert!(command.contains("gh issue create"));
+        assert!(command.starts_with("formal-ai report create-issue "));
     }
 
     #[test]
@@ -278,7 +278,8 @@ mod report_issue {
                         .unwrap_or_default()
                         .to_owned();
                     assert!(
-                        !command.contains("gh issue create"),
+                        !command.contains("gh issue create")
+                            && !command.contains("formal-ai report create-issue"),
                         "a request to solve an existing issue must not file a new one: {command}"
                     );
                 }

@@ -9,7 +9,50 @@ concurrency fixture is now manual-only and explicitly unproven; see the
 [recorded deferral](critical-delivery-scope.md#recorded-follow-up). Its prior
 strict-final Unknown remains a failed attempt, not a skipped check or a pass.
 
-## Latest continuation: 26 October 2026
+## Latest continuation: expanded PR 1437, 27 October 2026
+
+The current batch also addresses issues [1438](https://github.com/link-assistant/formal-ai/issues/1438),
+[1395](https://github.com/link-assistant/formal-ai/issues/1395), and
+[1396](https://github.com/link-assistant/formal-ai/issues/1396). Their requirements
+are recorded in the respective issue shards. The previous pushed head passed all
+16 applicable workflows; that evidence does not qualify this expanded batch.
+Require fresh exact-head CI, including native compilation and parity in CI only.
+
+The public reporting reproduction also exposed contextual source corruption:
+provider line numbers were written into a Rust file. Contextual single-line
+changes now use an exact literal Edit and a fresh Read; ambiguous provider output
+cannot authorize a whole-file Write. Reporting uses one inspectable named
+submission command, preserves complete context, bounds the child process, and
+retains the prepared report after uncertain submission without retrying creation.
+Host approval refusals remain authoritative and are reported honestly.
+
+The browser failures came from choosing encyclopedic search for a first-person
+practical need and losing its goal in a follow-up. A data-owned goal reader now
+selects trusted-source guidance in English, Russian, Hindi and Chinese. Minimal
+curated evidence is distinguished from fetched evidence; empty-cache discovery
+has a byte limit, read limit and deadline. Unavailable or irrelevant evidence
+produces a targeted question. The same reader controls formal claim admission;
+quoted, negated and unrelated requests must remain outside this route.
+
+JavaScript Formal AI applied small file edits and larger literal replacements,
+with expected-content verification. Implementation text was supplied by the
+operator: autonomous implementation credit is zero. A larger behavioral-only ask
+was not solved autonomously and was decomposed into explicit edits. During this
+batch, one malformed intermediate worker edit prevented Formal AI from booting;
+its syntax was repaired directly to restore the tool, then edits resumed through
+Formal AI. This is recovery evidence, not a claimed self-coding success.
+
+The new browser regressions pass locally without WASM or native execution.
+The source-only refresh of the carried agent-info projection uses the pinned
+portable JavaScript frontend and existing blocker analyzer. It reproduces the
+old projection byte for byte, classifies all three new items as still carried,
+and grants no translated-code credit. Full upstream regeneration remains a
+required independent CI oracle; no parser WASM was executed locally.
+Native regressions are drafted for CI; do not report native parity as verified
+until those current-head jobs pass. No personal session exports, user-created
+root source files or binaries were read, staged, executed or uploaded.
+
+## Prior PR 1437 continuation: 26 October 2026
 
 The ready follow-up is [PR 1437](https://github.com/link-assistant/formal-ai/pull/1437).
 Focused captured-replay, cleanup, admission and ledger checks pass locally.

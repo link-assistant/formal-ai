@@ -25,18 +25,14 @@ import { StepOutcome, stepOutcome } from './tool_result.mjs';
 const CONTEXT_SESSION_FLAG = ' --session ';
 const SOURCE_FLAG = ' --source ';
 const OUTPUT_FLAG = ' --output ';
-const CONTEXT_OUTPUT_FLAG = ' --context-output ';
 const SEPARATE_CONTEXT_LINKS_FLAG = ' --separate-context-links';
 const SURFACE_FLAG = ' --surface ';
 const TITLE_FLAG = ' --title ';
-const BODY_FILE_FLAG = ' --body-file ';
+const REPOSITORY_FLAG = ' --repo ';
 const FORMAL_AI_PROGRAM = 'formal-ai';
-const GH_PROGRAM = 'gh';
 const PRINTF_PROGRAM = 'printf';
 const PRINTF_LINE_FORMAT = " '%s\\n' ";
 const AGENTIC_SURFACE = 'agentic-cli';
-const BODY_FILE = 'body.md';
-const CONTEXT_FILE = 'context.lino';
 const LATEST_SESSION = 'latest';
 const LANGUAGES = ['en', 'ru', 'hi', 'zh'];
 
@@ -283,18 +279,11 @@ function learningCommand(dialog) {
 
 /** Mirrors `fn github_command`. */
 function githubCommand(contents, messages, reportIndex, dialog) {
-  const script = new ReportScript();
-  const bodyFile = script.scratch(BODY_FILE);
-  const contextFile = script.scratch(CONTEXT_FILE);
-  let body = agenticMessage('report_issue_report_body_command') + CONTEXT_SESSION_FLAG + shellQuote(dialog)
-    + SOURCE_FLAG + sourceName(contents) + SURFACE_FLAG + AGENTIC_SURFACE + OUTPUT_FLAG + bodyFile
-    + CONTEXT_OUTPUT_FLAG + contextFile;
-  if (contents === 'both') body += SEPARATE_CONTEXT_LINKS_FLAG;
-  script.step(FORMAL_AI_PROGRAM, body);
-  const create = agenticMessage('report_issue_issue_create_command') + formalAiRepo() + TITLE_FLAG
-    + shellQuote(reportTitle(messages, reportIndex)) + BODY_FILE_FLAG + bodyFile;
-  script.step(GH_PROGRAM, create);
-  return script.render();
+  let command = agenticMessage('report-issue-submit-command') + CONTEXT_SESSION_FLAG + shellQuote(dialog)
+    + SOURCE_FLAG + sourceName(contents) + SURFACE_FLAG + AGENTIC_SURFACE
+    + REPOSITORY_FLAG + shellQuote(formalAiRepo()) + TITLE_FLAG + shellQuote(reportTitle(messages, reportIndex));
+  if (contents === 'both') command += SEPARATE_CONTEXT_LINKS_FLAG;
+  return command;
 }
 
 /** Mirrors `const fn target_label`. */
@@ -343,7 +332,9 @@ function reportFinished(targets, runOutputs, language) {
   }
   const trimmed = runOutputs.map(trim).filter(canonicalUnaryNonempty).join('\n');
   if (targets.includes('github_issue')) {
-    const url = splitWhitespace(trimmed).find((token) => token.startsWith('https://') && token.includes('/issues/'));
+    const submission = runOutputs[ordered.indexOf('github_issue')] ?? '';
+    const prefix = 'https://github.com/' + formalAiRepo() + '/issues/';
+    const url = splitWhitespace(submission).find(token => token.startsWith(prefix) && /^[1-9][0-9]*$/u.test(token.slice(prefix.length)));
     if (url !== undefined) return renderConfig('issue_report_created_with_url', [['url', url]]);
     const failed = config('issue_report_failed');
     return trimmed === '' ? failed : `${failed}\n\n\`\`\`text\n${trimmed}\n\`\`\``;

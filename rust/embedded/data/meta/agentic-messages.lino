@@ -70,6 +70,12 @@ agentic_messages
     text "Formal AI learning"
   message report_issue_report_body_command
     text "formal-ai report body"
+  message report-issue-submit-command
+    text "formal-ai report create-issue"
+  message code-artifact-literal-unverified
+    text "Could not independently verify the literal update of {path}; no whole-file replacement was attempted."
+  message code-artifact-literal-verified
+    text "Updated {path} with an exact literal edit and observed the requested result; all other content stayed outside the edit."
   message report_issue_context_export_command
     text "formal-ai context export"
   message report_issue_context_learn_command
