@@ -16,6 +16,10 @@ coverage-shard deadline caused by an unmeasured cold TypeScript research case
 sharing a default-weight process batch. The native suites passed; publication
 of candidate v0.355.11 does not establish complete acceptance while coverage is
 red. See the [preserved failure and scheduling correction](coverage-cold-research-budget.md).
+The one permitted pure coverage rerun completed every selected case; the first
+timeout remains preserved. PR 1418 also addresses a fresh-translation deadline
+by [removing a duplicate upstream pass](translation-double-pass-budget.md).
+Native scheduling checks are explicitly dispatched for its CI-only edits.
 
 PR 1410 is now merged and v0.355.10 passed all main, publisher and public-download
 checks, including independently checked Docker manifests. The fresh actual

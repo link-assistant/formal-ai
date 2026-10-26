@@ -229,6 +229,8 @@ jobs:
     # fresh CI must establish completion under the existing deadlines.
     timeout-minutes: 30
     needs: [coverage-build]
+    # Dispatch skips the detector; a successful producer must still release its shards.
+    if: ${{ !cancelled() && needs.coverage-build.result == 'success' }}
     strategy:
       fail-fast: false
       matrix:

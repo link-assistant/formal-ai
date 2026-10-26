@@ -27,6 +27,16 @@ The shard count, deadline, instrumentation, original assertions, exact-name
 completion requirements and coverage thresholds remain unchanged. No additional
 test is skipped. New hosted execution is required to verify the scheduling fix.
 
+CI-control-only edits do not automatically select instrumented native coverage.
+Use the workflow's existing branch dispatch with `mode=checks` and the pull
+request number to verify this scheduling change on its exact head. The first
+dispatch on head `41e4132873f725afaf1c52a7b5951cb8774cd502` exposed a separate
+dependency bug: the detector was intentionally skipped and its instrumented
+producer succeeded, but the shard matrix inherited the ancestor's implicit
+success condition and was skipped. The aggregate correctly refused missing
+measurements. An explicit uncancelled producer-success condition releases all
+shards after that valid producer and still rejects failed or skipped builds.
+
 One pure coverage-job rerun is permitted for the original merge, at most two
 attempts including its first failure. It gathers a second timing observation
 while the permanent scheduling correction is prepared. Preserve the first

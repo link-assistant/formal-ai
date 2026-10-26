@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { BLOCKERS_FILE, CALLS_FILE, LEDGER_FILE, projectionPath, scopeModules } from './translate-js-rust.mjs';
+import { SINGLE_PASS_CONTRACT_FILE } from './lib/translation-single-pass.mjs';
 
 export async function runParallelChecks(commands) {
   const children = [];
@@ -56,7 +57,7 @@ export async function runParallelChecks(commands) {
 async function main() {
   const root = join(dirname(fileURLToPath(import.meta.url)), '..');
   const modules = scopeModules(root);
-  const paths = [...modules, ...modules.map(projectionPath), LEDGER_FILE, BLOCKERS_FILE, CALLS_FILE];
+  const paths = [...modules, ...modules.map(projectionPath), LEDGER_FILE, BLOCKERS_FILE, CALLS_FILE, SINGLE_PASS_CONTRACT_FILE];
   const snapshot = () => paths.map((path) => createHash('sha256').update(readFileSync(join(root, path))).digest('hex'));
   const before = snapshot();
   const translator = join(root, 'scripts/translate-js-rust.mjs');
