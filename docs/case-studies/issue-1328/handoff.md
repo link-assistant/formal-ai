@@ -53,6 +53,25 @@ unchanged 20-minute budget. The artifact-binding command has a 90-second timeout
 and five-second kill grace for the complete declarative smoke list. Explicit integration execution verifies its
 own receipt member; existing unit-only transfers keep their original default.
 
+The 26 October native producer verified the memory correction with the real
+Agent HTTP request in 1.306 seconds, including normal memory and dialog logging.
+Captured pure planning took 625 ms (Agent), 241 ms (Codex schema refusal) and
+147 ms (Claude). The sanitized Codex schema still grants no executable replay
+credit. All unchanged 15-second deadlines passed; released three-client
+acceptance remains pending. The full native and instrumented coverage lanes
+then exposed the same GNU-timeout portability defect in the new CI command.
+Use the existing process-group-aware `run-with-deadline.sh`, preserving the
+90-second deadline and five-second kill grace, and regenerate the checked
+workflow projection without changing publication operations.
+
+The slim sidecar's cold Bun dependency resolution exhausted its existing
+600-second bound with only `Resolving dependencies` logged. Limit the shared
+installer to eight simultaneous registry requests, as Bun recommends for
+connection trouble. This is a mitigation requiring fresh image-build evidence;
+the available log does not establish which network request stalled. Keep the
+same pins, trust policy, verification, deadline and evidence-qualified retry
+rule. A timeout must still fail without an automatic retry or delivery credit.
+
 PR 1407 is merged; v0.355.9 and all configured release/public-download gates
 passed. Real released-image acceptance then verified the native memory
 lifecycle and default-token access, but exposed a post-admission proposal race

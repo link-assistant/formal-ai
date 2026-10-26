@@ -85,6 +85,7 @@ test('both images share owned project policy and preserve all original runtime p
  }
  const installer=fs.readFileSync(path.join(root,'scripts/install-container-runtime-tools.sh'),'utf8');
  assert.match(installer,/install-client-registry-recovery\.mjs/u);
+ assert.match(installer,/export BUN_CONFIG_MAX_HTTP_REQUESTS=8\nnode "\$script_dir\/install-client-registry-recovery\.mjs"/u);
  assert.doesNotMatch(installer,/--ignore-scripts|--trust|--force|\|\| true/u);
 });
 function clientTransport(home,calls,{deny=null}={}){

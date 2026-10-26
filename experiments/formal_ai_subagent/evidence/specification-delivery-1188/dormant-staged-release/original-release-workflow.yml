@@ -1253,7 +1253,7 @@ jobs:
       - name: Collect the build artifacts
         run: bash scripts/collect-build-artifacts.sh
       - name: Bind native test artifacts to their actual build inputs
-        run: timeout --kill-after=5s 90s node scripts/native-test-artifact.mjs write-and-check dist/tests release all rust/tests/fixtures/released-client-requests/smoke-tests.json
+        run: FORMAL_AI_DEADLINE_GRACE_SECONDS=5 scripts/run-with-deadline.sh 90 node scripts/native-test-artifact.mjs write-and-check dist/tests release all rust/tests/fixtures/released-client-requests/smoke-tests.json
       - name: Capture complete current native agentic protocols
         timeout-minutes: 5
         run: node scripts/capture-native-agentic-protocol.mjs "$RUNNER_TEMP/native-agentic-protocol-captures" dist/formal-ai

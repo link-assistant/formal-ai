@@ -39,7 +39,7 @@ test('critical latency checks precede artifact distribution under the original b
  const early=steps.find(step=>step.name==='Bind native test artifacts to their actual build inputs');
  assert.equal(job['timeout-minutes'],20);
  assert(steps.indexOf(early)<steps.findIndex(step=>step.name==='Upload formal-ai binaries'));
- assert.equal(early.run,'timeout --kill-after=5s 90s node scripts/native-test-artifact.mjs write-and-check dist/tests release all rust/tests/fixtures/released-client-requests/smoke-tests.json');
+ assert.equal(early.run,'FORMAL_AI_DEADLINE_GRACE_SECONDS=5 scripts/run-with-deadline.sh 90 node scripts/native-test-artifact.mjs write-and-check dist/tests release all rust/tests/fixtures/released-client-requests/smoke-tests.json');
  const cases=JSON.parse(readFileSync(new URL('../fixtures/released-client-requests/smoke-tests.json',import.meta.url),'utf8'));
  assert.deepEqual(cases.map(entry=>[entry.target,entry.name]),[
   ['unit','released_client_request_latency::absent_predictions_do_not_resolve_the_captured_coding_prompt'],
