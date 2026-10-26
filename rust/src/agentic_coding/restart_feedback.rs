@@ -249,8 +249,14 @@ pub fn feedback_needs_changes(output: &str) -> bool {
 // Shared framework framing plus the authenticated viewer's authorship identify
 // bookkeeping. This does not certify any verification claim in the notice.
 fn own_session_status(item: &serde_json::Value, body: &str) -> bool {
-    if item.get("viewerDidAuthor").and_then(serde_json::Value::as_bool) != Some(true)
-        || item.get("includesCreatedEdit").and_then(serde_json::Value::as_bool) == Some(true)
+    if item
+        .get("viewerDidAuthor")
+        .and_then(serde_json::Value::as_bool)
+        != Some(true)
+        || item
+            .get("includesCreatedEdit")
+            .and_then(serde_json::Value::as_bool)
+            == Some(true)
     {
         return false;
     }
