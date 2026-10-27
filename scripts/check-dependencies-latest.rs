@@ -697,94 +697,10 @@ pub use parsers::*;
 mod action_release;
 pub use action_release::*;
 
-/// Read the snapshot written by `--refresh-snapshot`.
-pub fn read_snapshot(path: &Path) -> Option<Snapshot> {
-    let text = fs::read_to_string(path).ok()?;
-    let mut refreshed_at = String::new();
-    let mut entries: BTreeMap<(Ecosystem, String), (String, String)> = BTreeMap::new();
-    let mut current: Option<(Ecosystem, String)> = None;
-    let mut action_releases = BTreeMap::new();
-    for line in text.lines() {
-        let trimmed = line.trim_start();
-        if let Some(rest) = trimmed.strip_prefix("refreshed_at ") {
-            refreshed_at = quoted_value(rest).unwrap_or_default();
-            continue;
-        }
-        if let Some(rest) = trimmed.strip_prefix("registry_entry ") {
-            let id = rest.trim().to_string();
-            current = ecosystem_of(&id).map(|ecosystem| (ecosystem, bare_id(&id, ecosystem)));
-            continue;
-        }
-        if let Some((key, value)) = trimmed.split_once(' ')
-            && let Some((Ecosystem::GitHubAction, name)) = &current
-            && let Some(value) = quoted_value(value)
-        {
-            let release = action_releases
-                .entry(name.clone())
-                .or_insert_with(|| ActionRelease {
-                    tag: String::new(),
-                    commit: String::new(),
-                    source_url: String::new(),
-                    tag_source_url: String::new(),
-                });
-            match key {
-                "latest" => release.tag = value,
-                "release-commit" | "release_commit" => release.commit = value,
-                "source_url" => release.source_url = value,
-                "tag-source-url" | "tag_source_url" => release.tag_source_url = value,
-                _ => {}
-            }
-        }
-        if let Some(rest) = trimmed.strip_prefix("source_url ")
-            && let (Some(key), Some(url)) = (&current, quoted_value(rest))
-            && let Some(entry) = entries.get_mut(key)
-        {
-            entry.1 = url;
-        }
-        if let Some(rest) = trimmed.strip_prefix("latest ")
-            && let (Some(key), Some(latest)) = (&current, quoted_value(rest))
-        {
-            entries.insert(key.clone(), (latest, String::new()));
-        }
-    }
-    Some(Snapshot {
-        refreshed_at,
-        action_releases,
-        entries,
-    })
-}
-
-/// Write the snapshot `--offline` runs against.
-pub fn write_snapshot(path: &Path, snapshot: &Snapshot) {
-    let mut text = String::new();
-    let _ = writeln!(
-        text,
-        "# Written by `rust-script scripts/check-dependencies-latest.rs --refresh-snapshot`.\n# One flat record per registry answer; `--offline` reads exactly these.\ndependency_registry_snapshot\n  record_type \"dependency_registry_snapshot\"\n  refreshed_at \"{}\"",
-        snapshot.refreshed_at
-    );
-    for ((ecosystem, name), (latest, url)) in &snapshot.entries {
-        let _ = writeln!(
-            text,
-            "registry_entry {}/{}\n  latest \"{latest}\"\n  source_url \"{url}\"",
-            ecosystem.key(),
-            name
-        );
-        if *ecosystem == Ecosystem::GitHubAction
-            && let Some(release) = snapshot.action_releases.get(name)
-            && valid_action_release(name, latest, release)
-        {
-            let _ = writeln!(
-                text,
-                "  release-commit \"{}\"\n  tag-source-url \"{}\"",
-                release.commit, release.tag_source_url
-            );
-        }
-    }
-    if let Some(directory) = path.parent() {
-        let _ = fs::create_dir_all(directory);
-    }
-    fs::write(path, text).expect("write the registry snapshot");
-}
+// Snapshot I/O owns the shared release representation.
+#[path = "check-dependencies-snapshot.rs"]
+mod snapshot_io;
+pub use snapshot_io::{read_snapshot, write_snapshot};
 
 fn ecosystem_of(id: &str) -> Option<Ecosystem> {
     match id.split('/').next()? {

@@ -72,7 +72,7 @@ function checkBrowserCoverage(workflow) {
  const producer=workflow.jobs['browser-coverage-shard'],collector=workflow.jobs['browser-coverage'];
  assert.equal(producer['timeout-minutes'],15);assert.equal(collector['timeout-minutes'],15);
  assert.equal(producer.strategy['fail-fast'],false);assert.deepEqual(producer.strategy.matrix.shard,Array.from({length:browserShardCount},(_,index)=>index+1));
- assert.deepEqual(producer.needs,['detect-changes']);assert.deepEqual(collector.needs,['detect-changes','browser-coverage-shard']);
+ assert.deepEqual(producer.needs,['coverage-policy','detect-changes']);assert.deepEqual(collector.needs,['coverage-policy','detect-changes','browser-coverage-shard']);
  for(const job of [producer,collector]) {
   assert.ok(job.if.includes('!cancelled()'));assert.ok(job.if.includes("github.event_name == 'workflow_dispatch'"));
   for(const output of ['any-code-changed','workflow-changed'])assert.ok(job.if.includes(`needs.detect-changes.outputs.${output} == 'true'`));
@@ -92,7 +92,7 @@ function checkBrowserCoverage(workflow) {
  order(collector,['Every browser shard measured its complete test slice','Download every browser coverage shard','Collect the complete source-bound browser coverage','Check browser coverage ratchet']);
 }
 function checkCoverage(workflow){
- const originalNames=['detect-changes','coverage-build','coverage-shard','coverage','browser-coverage'];
+ const originalNames=['detect-changes','coverage-policy','coverage-build','coverage-shard','coverage','browser-coverage'];
  const browserProducer='browser-coverage-shard';
  assert.deepEqual(Object.keys(workflow.jobs).filter(name=>name!==browserProducer),originalNames);
  const names=[...originalNames.slice(0,-1),browserProducer,originalNames.at(-1)];assert.deepEqual(Object.keys(workflow.jobs),names);
@@ -112,7 +112,7 @@ function checkCoverage(workflow){
  step(shard,'Run the instrumented coverage shard');
  const profileUploads=shard.steps.filter(value=>String(value.uses).startsWith('actions/upload-artifact@')&&value.with?.name?.startsWith('coverage-profile-'));
  assert.equal(profileUploads.length,1);assert.equal(profileUploads[0].with['if-no-files-found'],'error');
- assert.deepEqual(reducer.needs,['detect-changes','coverage-build','coverage-shard']);
+ assert.deepEqual(reducer.needs,['coverage-policy','detect-changes','coverage-build','coverage-shard']);
  assert.equal(step(reducer,'Every coverage shard measured its tests').run,'bash scripts/check-shard-results.sh');
  download(reducer,'coverage-objects');
  const profiles=step(reducer,"Download every shard's profile");assert.equal(profiles.with.pattern,'coverage-profile-*');assert.equal(profiles.with['merge-multiple'],true);

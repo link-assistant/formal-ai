@@ -27,6 +27,10 @@ on:
   # (.github/actions/dispatch-checks); mode and pull-request are its inputs.
   workflow_dispatch:
     inputs:
+      full-coverage:
+        description: Run all native and browser instrumented coverage shards (temporarily opt-in)
+        type: boolean
+        default: false
       mode:
         description: 'checks: run the pull-request checks on the dispatched branch'
         required: false
@@ -96,6 +100,26 @@ jobs:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_EVENT_BEFORE: ${{ github.event.before }}
         run: rust-script scripts/detect-code-changes.rs
+  coverage-policy:
+    name: Declare temporary coverage scope
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      run: ${{ steps.scope.outputs.run }}
+    steps:
+      - name: Record instrumented coverage selection without claiming a measurement
+        id: scope
+        env:
+          FULL_COVERAGE: ${{ inputs.full-coverage == true || vars.FORMAL_AI_FULL_COVERAGE == 'run' }}
+        run: |
+          set -euo pipefail
+          printf 'run=%s\n' "$FULL_COVERAGE" >> "$GITHUB_OUTPUT"
+          if [ "$FULL_COVERAGE" = true ]; then
+            printf '### Full instrumented coverage requested\n\nAll selected shards and both unchanged ratchets are required.\n' >> "$GITHUB_STEP_SUMMARY"
+          else
+            printf '### Instrumented coverage temporarily deferred\n\nNo coverage measurement or coverage credit is claimed. Normal Linux Rust/JS tests, browser E2E, coding/reporting and real-client release acceptance remain required. Restore with full-coverage=true on dispatch or FORMAL_AI_FULL_COVERAGE=run. See docs/ci-cd/speed.md.\n' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
   # === CODE COVERAGE ===
   # Generate the Rust coverage report with cargo-llvm-cov, from one build and
   # parallel test shards.
@@ -133,9 +157,9 @@ jobs:
     # A 1260s compile deadline is 70% of this 30-minute cap; compilation
     # and the unchanged artifact protocol retain their independent checks.
     timeout-minutes: 30
-    needs: [detect-changes]
+    needs: [coverage-policy, detect-changes]
     if: |
-      !cancelled() && (
+      !cancelled() && needs.coverage-policy.outputs.run == 'true' && (
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
         needs.detect-changes.outputs.toml-changed == 'true'
@@ -444,9 +468,9 @@ jobs:
     # objects a single run's report read; the ratchet, the uploads and the
     # downloads fit in the remainder.
     timeout-minutes: 25
-    needs: [detect-changes, coverage-build, coverage-shard]
+    needs: [coverage-policy, detect-changes, coverage-build, coverage-shard]
     if: |
-      !cancelled() && (
+      !cancelled() && needs.coverage-policy.outputs.run == 'true' && (
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
         needs.detect-changes.outputs.toml-changed == 'true'
@@ -592,13 +616,13 @@ jobs:
     name: Browser coverage shard ${{ matrix.shard }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    needs: [detect-changes]
+    needs: [coverage-policy, detect-changes]
     strategy:
       fail-fast: false
       matrix:
         shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
     if: |
-      !cancelled() && (
+      !cancelled() && needs.coverage-policy.outputs.run == 'true' && (
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.workflow-changed == 'true'
@@ -653,9 +677,9 @@ jobs:
     name: Browser Code Coverage
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    needs: [detect-changes, browser-coverage-shard]
+    needs: [coverage-policy, detect-changes, browser-coverage-shard]
     if: |
-      !cancelled() && (
+      !cancelled() && needs.coverage-policy.outputs.run == 'true' && (
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.workflow-changed == 'true'

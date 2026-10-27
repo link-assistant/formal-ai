@@ -161,7 +161,7 @@ fn coverage_jobs_enforce_and_publish_the_ratchet() {
         "browser coverage must be published in both forms as well"
     );
     assert!(
-        browser.contains("needs: [detect-changes, browser-coverage-shard]")
+        browser.contains("needs: [coverage-policy, detect-changes, browser-coverage-shard]")
             && browser.contains("!cancelled()"),
         "browser-coverage follows the same change-gating contract as the other jobs"
     );
@@ -180,6 +180,7 @@ fn coverage_workflow_keeps_the_timeout_and_change_gating_contract() {
         workflow_job_names(&workflow),
         vec![
             "detect-changes",
+            "coverage-policy",
             "coverage-build",
             "coverage-shard",
             "coverage",
@@ -190,6 +191,7 @@ fn coverage_workflow_keeps_the_timeout_and_change_gating_contract() {
 
     for (job_name, timeout_minutes) in [
         ("detect-changes", 5),
+        ("coverage-policy", 5),
         // Issue #812 raised the single job's cap from 15, issue #895 to 25,
         // issue #1076 to 60 and issues #1138/#1149 to 135 minutes, each time
         // because the instrumented suite outgrew it (run 37652295937: 6m21s

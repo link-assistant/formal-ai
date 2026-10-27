@@ -125,7 +125,7 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-docker-build
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     needs: [detect-changes, build-artifacts]
-    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+    if: needs.build-artifacts.result == 'success' && github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
     steps:
       - uses: actions/checkout@v7
         with:
@@ -188,7 +188,7 @@ jobs:
       group: ${{ github.workflow }}-docker-slim-${{ github.ref }}
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     needs: [detect-changes, build-artifacts]
-    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+    if: needs.build-artifacts.result == 'success' && github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
     uses: ./.github/workflows/docker-slim.yml
     permissions:
       contents: read
@@ -381,7 +381,7 @@ jobs:
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     needs: [detect-changes, base, build-artifacts]
     if: |
-      !cancelled() && (
+      !cancelled() && needs.build-artifacts.result == 'success' && (
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
@@ -448,7 +448,7 @@ jobs:
           enabled: ${{ github.ref != 'refs/heads/main' }}
       - name: Free up runner disk space
         if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
-        run: bash scripts/free-runner-disk.sh
+        run: RUNNER_DISK_TARGET_MIB=12288 bash scripts/free-runner-disk.sh
       - name: Setup Rust
         if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
         uses: dtolnay/rust-toolchain@stable
@@ -1204,7 +1204,7 @@ jobs:
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     needs: [detect-changes, build-artifacts]
     if: |
-      !cancelled() && (
+      !cancelled() && needs.build-artifacts.result == 'success' && (
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
@@ -1213,7 +1213,7 @@ jobs:
       )
     uses: ./.github/workflows/agent-cli-e2e.yml
     with:
-      full-replay: ${{ github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || (github.event_name == 'pull_request' && needs.detect-changes.outputs.agentic-routing-changed == 'true') }}
+      full-replay: ${{ vars.FORMAL_AI_FULL_AGENT_REPLAY == 'run' || (github.event_name == 'pull_request' && needs.detect-changes.outputs.agentic-routing-changed == 'true') }}
     permissions:
       contents: read
   build-artifacts:
@@ -1296,7 +1296,7 @@ jobs:
     timeout-minutes: 30
     needs: [detect-changes, build-artifacts]
     if: |
-      !cancelled() && (
+      !cancelled() && needs.build-artifacts.result == 'success' && (
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
@@ -1322,7 +1322,7 @@ jobs:
           enabled: ${{ github.ref != 'refs/heads/main' }}
       - name: Free up runner disk space
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
-        run: bash scripts/free-runner-disk.sh
+        run: RUNNER_DISK_TARGET_MIB=12288 bash scripts/free-runner-disk.sh
       - uses: ./.github/actions/download-formal-ai-binary
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
       - name: Generate the ${{ matrix.language }} project from Formal-AI answers

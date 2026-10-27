@@ -121,3 +121,58 @@ macOS while non-Linux CI is off. The ones that do run on pull requests are:
 - the desktop packaging builds;
 - the agent ladder's static 180-minute cap, which the wall-clock record
   [`data/meta/ci-wall-clock.lino`](../../data/meta/ci-wall-clock.lino) reads.
+
+## Temporary critical coding profile (2026-10-27)
+
+The current priority is a usable Linux/Docker release that can solve small
+coding tasks, report failures and retain evidence for learning. The ordinary
+Rust and JavaScript tests, specification shards, real browser E2E, coding and
+reporting scenarios, three original client first/repeat solves, released-memory
+lifecycle, authenticated cleanup and public release/download checks remain
+required. No failed critical check is converted into a successful skip.
+
+Noncritical recorded agent scenarios and the long method-learning and
+computer-record replay legs are temporarily opt-in with
+FORMAL_AI_FULL_AGENT_REPLAY=run; routing-changing pull requests still select
+them automatically. Hello World compilation, resumed execution, literal/file
+creation, duplicate-issue avoidance, issue submission, readable complete-context
+reports, report TUI, client-execution learning, held-out generalization and the
+self-coding inner loop run in the ordinary profile. Native learning unit tests
+remain required.
+
+The duplicate instrumented coverage execution is temporarily opt-in: its
+32 native and 16 browser shards and both report jobs are retained unchanged.
+The workflow's scope job records that no coverage was measured when deferred.
+Run coverage.yml with full-coverage=true, or set FORMAL_AI_FULL_COVERAGE=run
+to restore automatic execution. Both unchanged ratchets and every shard must
+pass whenever coverage is selected. Reenable automatic instrumentation after
+reducing the queue and release latency; this is temporary delivery debt.
+
+Windows/macOS test reruns already use FORMAL_AI_NON_LINUX_CI=run to opt in.
+Platform release producers, signing, package contents and publication smoke
+checks remain required for every advertised platform package.
+
+Observed v0.355.13 costs: original-client image download31.4 minutes and
+image load5.2 minutes versus6.2 minutes of actual solve; macOS Intel native
+compile23.5 minutes; method-learning replay15.4 minutes. Image-transfer and
+duplicate compilation are the next optimization targets. Keep the original
+coding assertions, exact source/image/binary provenance and single-attempt
+effect ownership while improving transport. Do not replace a real solve with
+a fixture or rerun an old effect owner to obtain a faster green result.
+
+Artifact consumers now require a successful producer before allocating a
+runner. Prebuilt test/project jobs request12GiB of available disk; heavy builds
+retain their existing exhaustive cleanup. With an explicit reserve, cleanup
+stops at the requested reserve instead of always deleting
+all optional SDKs and pruning Docker. This avoids observed2-7 minute cleanup
+steps on jobs whose normal hosted disk was already sufficient.
+
+For a live dependency-updater check without opening another PR, dispatch
+dependencies-latest.yml with create-pull-request=false (the manual default).
+Every refresh, resolution and gate still runs. Scheduled updates and explicit
+create-pull-request=true retain the normal single-PR publication step.
+
+Automatic original-client admission ignores feature-branch workflow completions.
+Successful main push checks and public-download completion still wake the full
+readiness audit, so a slow required main check can qualify later. Explicit manual
+candidate checks remain available; all immutable ownership and CI gates remain.

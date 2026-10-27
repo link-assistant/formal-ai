@@ -48,7 +48,7 @@ test('re-resolves every lockfile with the tool that owns it', () => {
   assert.doesNotMatch(workflow, /--mode=save/);
 });
 
-test('re-runs all three gate stages after re-resolution, then opens one pull request', () => {
+test('re-runs all three gate stages after re-resolution before optional PR creation', () => {
   const resolved = position('npm install --package-lock-only');
   const stages = ['rust', 'wasm', 'web'].map((stage) =>
     position(`run: rust-script scripts/run-ci-gates.rs --stage ${stage}`),

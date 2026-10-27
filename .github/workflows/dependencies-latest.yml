@@ -15,6 +15,11 @@ on:
     # outage (issue #1021's retry rule exists for the same reason).
     - cron: "23 5 * * *"
   workflow_dispatch:
+    inputs:
+      create-pull-request:
+        description: Open the dependency update PR after validation (scheduled runs always do)
+        type: boolean
+        default: false
 
 permissions: {}
 
@@ -130,6 +135,7 @@ jobs:
         run: rust-script scripts/run-ci-gates.rs --stage web
 
       - name: Open one pull request with everything that moved
+        if: github.event_name == 'schedule' || inputs.create-pull-request == true
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ steps.automation.outputs.token }}
