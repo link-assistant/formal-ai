@@ -89,11 +89,18 @@ fn attachment_metadata_does_not_supply_a_requested_web_target() {
 
 #[test]
 fn an_explicit_request_url_precedes_attachment_metadata() {
-    let response = FormalAiEngine.answer(
+    let solver = formal_ai::UniversalSolver::new(formal_ai::SolverConfig {
+        offline: true,
+        ..Default::default()
+    });
+    let response = solver.solve(
         "Fetch https://docs.example.org/guide\n\nAttached files:\n1. tiny.png (image/png, 68 B)",
     );
     assert_eq!(response.intent, "http_fetch");
-    assert!(response.answer.contains("https://docs.example.org/guide"));
+    assert_eq!(
+        response.answer,
+        "cache miss for https://docs.example.org/guide and offline mode is active (set FORMAL_AI_LIVE_API to populate)"
+    );
 }
 
 #[test]

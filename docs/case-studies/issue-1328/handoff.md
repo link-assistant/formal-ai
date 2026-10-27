@@ -75,6 +75,9 @@ The same batch addresses macOS compiler setup failing to resolve the official
 Rust distribution host. Retry only a transient, fully settled installation
 failure once; preserve the exact compiler, target and later source/signature
 checks. Mocked setup tests never invoke Rust locally.
+The attachment URL regression now forces offline mode and documents its entire
+expected answer. This satisfies the tests-as-documentation gate without adding
+an allowlist entry or depending on external network state.
 The new browser regressions pass locally without WASM or native execution.
 The source-only refresh of the carried agent-info projection uses the pinned
 portable JavaScript frontend and existing blocker analyzer. It reproduces the
