@@ -513,5 +513,5 @@ core_boundary_ledger
   note "PR1188 coreference repair reuses one bounded normalized seed pronoun matcher for handler claims and meta deferral. Actual benchmark handler shrinks547 to541; both measured line ceilings fall6, source membership88 unchanged. Native execution remains pending CI."
   component practical-goal-guidance
     file rust/src/solver_handler_how/practical_help.rs
-    kind seeded-goal-interpreter
+    kind "Generic interpreter"
     reason "Matches registered first-person goals and binds localized guidance to trusted-source evidence; goal forms, sources, wording and cached knowledge are shared seed data, with no exact-prompt branch."

@@ -95,6 +95,9 @@ factual question and removed by the question-necessity gate. Make the intended
 request for the user's choice explicit in every registered language. Native
 regressions require the complete answer and an authorized necessity trace;
 the existing classifier, question budget and factual-question refusal remain.
+Register the practical-goal component under the existing Generic interpreter
+boundary category; the component metadata must use the canonical category
+rather than inventing a new category for the same kind of interpreter.
 The new browser regressions pass locally without WASM or native execution.
 The source-only refresh of the carried agent-info projection uses the pinned
 portable JavaScript frontend and existing blocker analyzer. It reproduces the
