@@ -90,6 +90,11 @@ The seed integrity test rejects pipe-packed policy lists. Store practical
 vocabulary as ordered rule-table rows and read those rows in both runtimes;
 retain scalar policy values for single values and the existing goal extension
 test. No data-integrity exception is added.
+Native coverage found that unavailable-source wording was classified as a
+factual question and removed by the question-necessity gate. Make the intended
+request for the user's choice explicit in every registered language. Native
+regressions require the complete answer and an authorized necessity trace;
+the existing classifier, question budget and factual-question refusal remain.
 The new browser regressions pass locally without WASM or native execution.
 The source-only refresh of the carried agent-info projection uses the pinned
 portable JavaScript frontend and existing blocker analyzer. It reproduces the

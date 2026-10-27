@@ -24,7 +24,39 @@ test('Spanish detection, follow-up and unavailable guidance use the same strateg
  const followup=await host.solve('¡Ayúdame!',history);assert.equal(followup.content,example.expected);
  await host.boot();host.context.fetch=async()=>new Response('unrelated text');
  const unavailable=await host.run('tryPracticalHelp(__prompt,"es",{practicalHelpCache:false})',{__prompt:example.prompt});
- assert.equal(unavailable.confidence,0);assert.equal(unavailable.content,'Suena urgente. ¿Necesitas encontrar un baño o no puedes evacuar?');
+ assert.equal(unavailable.confidence,0);assert.equal(unavailable.content,'Suena urgente. ¿Quieres ayuda para encontrar un baño o no puedes evacuar?');
+});
+const unavailableCases=[
+ {
+  "language": "en",
+  "prompt": "I need to poop",
+  "expected": "It sounds urgent. Do you want help finding a toilet, or are you unable to go?"
+ },
+ {
+  "language": "ru",
+  "prompt": "Хочу какать, что делать?",
+  "expected": "Похоже, это срочно. Хотите, чтобы я помог найти туалет, или у вас не получается сходить?"
+ },
+ {
+  "language": "hi",
+  "prompt": "मुझे शौच करना है",
+  "expected": "यह ज़रूरी लग रहा है। क्या आप शौचालय ढूँढने में मदद चाहते हैं, या शौच नहीं हो पा रहा है?"
+ },
+ {
+  "language": "zh",
+  "prompt": "我快要大便了，怎么办？",
+  "expected": "听起来很着急。是否需要帮你找厕所，还是你排不出来？"
+ },
+ {
+  "language": "es",
+  "prompt": "Necesito ir al baño, ¿qué debo hacer?",
+  "expected": "Suena urgente. ¿Quieres ayuda para encontrar un baño o no puedes evacuar?"
+ }
+];
+for(const {language,prompt,expected} of unavailableCases)test('unavailable guidance asks for the user choice in '+language,async()=>{
+ const host=worker();await host.boot();host.context.fetch=async()=>new Response('Unrelated festival text');
+ const result=await host.run('solve(__prompt, [], {greetingVariations:false, practicalHelpCache:false}, {}, [], {forcedResponseLanguage:__language})',{__prompt:prompt,__language:language});
+ assert.equal(result.intent,'procedural_how_to');assert.equal(result.confidence,0);assert.equal(result.content,expected);
 });
 test('the urgent report and a short follow-up preserve the actual goal',async()=>{
  const host=worker();const urgent=await host.solve('Сейчас обкакаюсь! Помоги!');assert(urgent.content.includes('Идите в туалет'),urgent.content);

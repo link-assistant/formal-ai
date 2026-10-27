@@ -121,10 +121,61 @@ fn spanish_followups_and_unavailable_evidence_keep_the_registered_goal() {
     let unavailable = from_source(prompt, "toilet", &mut log, &client);
     assert_eq!(
         unavailable.answer,
-        "Suena urgente. ¿Necesitas encontrar un baño o no puedes evacuar?"
+        "Suena urgente. ¿Quieres ayuda para encontrar un baño o no puedes evacuar?"
     );
     assert_eq!(unavailable.confidence, 0.0);
     let _ = std::fs::remove_dir_all(root);
+}
+#[test]
+fn unavailable_guidance_is_an_authorized_choice_in_every_registered_language() {
+    for (prompt, expected) in [
+        (
+            "I need to poop",
+            "It sounds urgent. Do you want help finding a toilet, or are you unable to go?",
+        ),
+        (
+            "Хочу какать, что делать?",
+            "Похоже, это срочно. Хотите, чтобы я помог найти туалет, или у вас не получается сходить?",
+        ),
+        (
+            "मुझे शौच करना है",
+            "यह ज़रूरी लग रहा है। क्या आप शौचालय ढूँढने में मदद चाहते हैं, या शौच नहीं हो पा रहा है?",
+        ),
+        (
+            "我快要大便了，怎么办？",
+            "听起来很着急。是否需要帮你找厕所，还是你排不出来？",
+        ),
+        (
+            "Necesito ir al baño, ¿qué debo hacer?",
+            "Suena urgente. ¿Quieres ayuda para encontrar un baño o no puedes evacuar?",
+        ),
+    ] {
+        assert_eq!(
+            crate::question_necessity::classify_question(expected).class,
+            crate::question_necessity::QuestionClass::Requirement
+        );
+        let root = std::env::temp_dir().join(format!(
+            "formal-ai-practical-{}-{}",
+            std::process::id(),
+            NEXT.fetch_add(1, Ordering::SeqCst)
+        ));
+        let client = CachedSourceClient::new(
+            &root,
+            Transport {
+                body: b"Unrelated festival text".to_vec(),
+            },
+        )
+        .with_online(true);
+        let mut log = EventLog::new();
+        let answer = from_source(prompt, "toilet", &mut log, &client);
+        assert_eq!(answer.answer, expected, "{prompt}");
+        assert_eq!(answer.confidence, 0.0);
+        assert!(
+            log.last_of("question_necessity:authorized").is_some(),
+            "{prompt}"
+        );
+        let _ = std::fs::remove_dir_all(root);
+    }
 }
 #[test]
 fn an_empty_capture_cache_fetches_or_asks_without_claiming_unsupported_evidence() {

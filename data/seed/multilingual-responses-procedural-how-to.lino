@@ -331,20 +331,20 @@ multilingual_responses
   response response-practical-help-toilet-unavailable-en
     intent practical-help-toilet-unavailable
     language en
-    text "It sounds urgent. Is the problem finding a toilet, or being unable to go?"
+    text "It sounds urgent. Do you want help finding a toilet, or are you unable to go?"
   response response-practical-help-toilet-unavailable-ru
     intent practical-help-toilet-unavailable
     language ru
-    text "Похоже, это срочно. Вам нужно найти туалет или у вас не получается сходить?"
+    text "Похоже, это срочно. Хотите, чтобы я помог найти туалет, или у вас не получается сходить?"
   response response-practical-help-toilet-unavailable-hi
     intent practical-help-toilet-unavailable
     language hi
-    text "यह ज़रूरी लग रहा है। क्या समस्या शौचालय ढूँढने की है या शौच नहीं हो पा रहा है?"
+    text "यह ज़रूरी लग रहा है। क्या आप शौचालय ढूँढने में मदद चाहते हैं, या शौच नहीं हो पा रहा है?"
   response response-practical-help-toilet-unavailable-zh
     intent practical-help-toilet-unavailable
     language zh
-    text "听起来很着急。你是找不到厕所，还是排不出来？"
+    text "听起来很着急。是否需要帮你找厕所，还是你排不出来？"
   response response-practical-help-toilet-unavailable-es
     intent practical-help-toilet-unavailable
     language es
-    text "Suena urgente. ¿Necesitas encontrar un baño o no puedes evacuar?"
+    text "Suena urgente. ¿Quieres ayuda para encontrar un baño o no puedes evacuar?"
