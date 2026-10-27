@@ -87,3 +87,30 @@ test('ordinary Linux test inventory and critical agent coding/reporting remain r
   assert.match(release.jobs['test-agent-cli-e2e'].with['full-replay'], /FORMAL_AI_FULL_AGENT_REPLAY/u);
   assert.match(release.jobs['test-agent-cli-e2e'].with['full-replay'], /agentic-routing-changed/u);
 });
+
+test('dependency validation dispatch is read-only unless creation is explicit', () => {
+  const workflow = read('.github/workflows/dependencies-latest.yml');
+  assert.equal(workflow.on.workflow_dispatch.inputs['create-pull-request'].default, false);
+  const step = workflow.jobs.update.steps.find(item => item.name === 'Open one pull request with everything that moved');
+  for (const [event, requested, expected] of [['workflow_dispatch', false, false], ['workflow_dispatch', true, true], ['schedule', false, true]]) {
+    assert.equal(evaluate(step.if, {github: {event_name: event}, inputs: {'create-pull-request': requested}}), expected);
+  }
+});
+
+test('automatic real-client admission ignores feature branches while retaining main readiness tails', () => {
+  const workflow = read('.github/workflows/hive-original-delivery.yml');
+  assert.deepEqual(workflow.on.workflow_run.branches, ['main']);
+  assert(workflow.on.workflow_dispatch.inputs['pull-request']);
+  const expression = workflow.jobs.admission.if;
+  assert.equal(evaluate(expression, {github: {event_name: 'workflow_dispatch'}}), true);
+  for (const [event, branch, name, conclusion, expected] of [
+    ['push','main','Coverage','success',true],
+    ['workflow_run','main','Verify Public Release Downloads','success',true],
+    ['pull_request','feature','Coverage','success',false],
+    ['schedule','main','dependencies-latest','success',false],
+    ['push','main','Coverage','failure',false],
+    ['workflow_run','main','Desktop Release','success',false],
+  ]) {
+    assert.equal(evaluate(expression, {github: {event_name:'workflow_run',event:{workflow_run:{event,head_branch:branch,name,conclusion}}}}), expected);
+  }
+});

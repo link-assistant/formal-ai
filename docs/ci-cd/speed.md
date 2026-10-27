@@ -166,3 +166,13 @@ retain their existing exhaustive cleanup. With an explicit reserve, cleanup
 stops at the requested reserve instead of always deleting
 all optional SDKs and pruning Docker. This avoids observed2-7 minute cleanup
 steps on jobs whose normal hosted disk was already sufficient.
+
+For a live dependency-updater check without opening another PR, dispatch
+dependencies-latest.yml with create-pull-request=false (the manual default).
+Every refresh, resolution and gate still runs. Scheduled updates and explicit
+create-pull-request=true retain the normal single-PR publication step.
+
+Automatic original-client admission ignores feature-branch workflow completions.
+Successful main push checks and public-download completion still wake the full
+readiness audit, so a slow required main check can qualify later. Explicit manual
+candidate checks remain available; all immutable ownership and CI gates remain.
