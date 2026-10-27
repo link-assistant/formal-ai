@@ -41,6 +41,99 @@ fn snapshot() -> Snapshot {
 }
 
 #[test]
+fn shared_action_releases_round_trip_with_and_without_a_root_action() {
+    let directory =
+        std::env::temp_dir().join(format!("shared-action-snapshot-{}", std::process::id()));
+    fs::create_dir_all(&directory).unwrap();
+    let path = directory.join("registry.lino");
+    let mut captured = snapshot();
+    for name in ["owner/action", "owner/action/other"] {
+        captured.entries.insert(
+            (Ecosystem::GitHubAction, name.to_string()),
+            ("v2.3.4".to_string(), action_release_url(name)),
+        );
+        captured.action_releases.insert(name.to_string(), release());
+    }
+    for aliases in [2, 1] {
+        write_snapshot(&path, &captured);
+        let written = fs::read_to_string(&path).unwrap();
+        assert_eq!(written.matches("  release-commit ").count(), 1);
+        assert_eq!(written.matches("  release-alias ").count(), aliases);
+        let loaded = read_snapshot(&path).unwrap();
+        assert_eq!(loaded.entries, captured.entries);
+        assert_eq!(loaded.action_releases, captured.action_releases);
+        let dependencies: Vec<_> = captured
+            .entries
+            .keys()
+            .map(|(_, name)| {
+                let mut item = dependency();
+                item.name = name.clone();
+                item
+            })
+            .collect();
+        let (findings, unknown) = compare(&dependencies, &loaded);
+        assert!(unknown.is_empty());
+        assert_eq!(findings.len(), dependencies.len());
+        assert!(findings.iter().all(|finding| finding.latest == CURRENT));
+        captured
+            .entries
+            .remove(&(Ecosystem::GitHubAction, "owner/action".to_string()));
+        captured.action_releases.remove("owner/action");
+    }
+    // A changed immutable commit must remain a separate complete record.
+    captured
+        .action_releases
+        .get_mut("owner/action/other")
+        .unwrap()
+        .commit = OLD.to_string();
+    write_snapshot(&path, &captured);
+    assert_eq!(
+        fs::read_to_string(&path)
+            .unwrap()
+            .matches("  release-commit ")
+            .count(),
+        2
+    );
+    let loaded = read_snapshot(&path).unwrap();
+    assert_eq!(loaded.entries, captured.entries);
+    assert_eq!(loaded.action_releases, captured.action_releases);
+    fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
+fn snapshot_aliases_reject_missing_chained_cyclic_conflicting_and_foreign_releases() {
+    let directory =
+        std::env::temp_dir().join(format!("invalid-action-alias-{}", std::process::id()));
+    fs::create_dir_all(&directory).unwrap();
+    let path = directory.join("registry.lino");
+    write_snapshot(&path, &snapshot());
+    let canonical = fs::read_to_string(&path).unwrap();
+    let record = |name: &str, target: &str| {
+        format!("registry_entry github_action/{name}\n  release-alias \"{target}\"\n")
+    };
+    let valid = record("owner/action/alias", "owner/action/path");
+    for tail in [
+        record("owner/action/alias", "owner/action/missing"),
+        record("other/action/alias", "owner/action/path"),
+        record("owner/action/alias", "owner/action/alias"),
+        format!(
+            "{valid}{}",
+            record("owner/action/chain", "owner/action/alias")
+        ),
+        format!("{valid}{valid}"),
+        format!("{valid}registry_entry github_action/owner/action/alias\n  latest \"v2.3.4\"\n"),
+        "registry_entry npm/alias\n  release-alias \"owner/action/path\"\n".to_string(),
+    ] {
+        fs::write(&path, format!("{canonical}{tail}")).unwrap();
+        assert!(
+            read_snapshot(&path).is_none(),
+            "accepted invalid reference: {tail}"
+        );
+    }
+    fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
 fn immutable_current_stale_missing_and_unresolved_are_distinct() {
     let mut item = dependency();
     let mut captured = snapshot();
