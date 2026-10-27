@@ -83,6 +83,9 @@ guidance and language evidence. Add Spanish through the same goal and response
 data, show full answer examples in every registered language, and mirror the
 follow-up and unavailable-evidence regressions in native CI. Keep the response
 parity debt ceiling unchanged; do not record the omission as new accepted debt.
+Native coverage also checks the canonical role registry. Regenerate its object
+and procedure declarations from the meaning records, and check the generated
+registry locally before pushing. This changes no role-closure exception.
 The new browser regressions pass locally without WASM or native execution.
 The source-only refresh of the carried agent-info projection uses the pinned
 portable JavaScript frontend and existing blocker analyzer. It reproduces the

@@ -711,6 +711,8 @@ roles
     kind predicate
   numeric_concept
     kind predicate
+  object
+    kind predicate
   observable_task_action
     kind meaning
   observed-callable-authoring
@@ -763,6 +765,8 @@ roles
     kind meaning
   procedural_task_modifier
     kind meaning
+  procedure
+    kind predicate
   production_relation
     kind predicate
   program-termination-clause
