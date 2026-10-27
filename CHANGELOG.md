@@ -20,6 +20,25 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.355.13] - 2026-10-27
+
+### Fixed
+
+- Use Hive Mind's supported no-change exit compatibility only for verified
+  repeat coding tasks, while retaining strict first-delivery failures, every
+  original task assertion, and independent no-write/no-commit checks.
+- Dispatch authenticated generated-task cleanup with the default Actions token
+  beyond GitHub's workflow chain limit, with a finite terminal-owner wait and
+  the existing immutable claims and protected-branch safeguards.
+
+### Fixed
+
+- Keep attachment metadata outside requested web targets and isolate OCR export tests from public-network availability.
+
+- Use an explicit bounded issue-report submission, retaining complete reports after uncertain creation (#1438).
+- Preserve contextual source edits without copying provider line numbers into files, and align the JavaScript agent-info reader with Rust (#1438).
+- Answer practical needs and urgent follow-ups with relevant trusted-source guidance in English, Russian, Hindi, Chinese and Spanish, bounded cold discovery and targeted clarification when evidence is unavailable (#1395, #1396).
+
 ## [0.355.12] - 2026-10-26
 
 Prioritize instrumented cold-research tests from observed runtime lower bounds,
