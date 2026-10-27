@@ -640,8 +640,13 @@ turn a missing or damaged source bundle into an unchecked network fallback.
 
 Reuse the existing bounded APT installer for slim runtime and source-builder
 layers. A mirror integrity failure retries within the finite attempt and time
-budget; permanently inconsistent signed indexes remain failures. Preserve the
-package list, repositories, signatures and checksum verification.
+budget; permanently inconsistent signed indexes remain failures. Preserve
+required runtime capabilities, repositories, signatures and checksum verification.
+The slim image uses the same pinned target-native Node/npm donor as the full
+image instead of the distro npm dependency graph. A deadline during unpacking
+can leave dpkg interrupted: distinguish slow installation from mirror failure
+using the complete command output, rather than diagnosing every timeout as a
+network stall or repeating an unchanged broken transaction indefinitely.
 
 Direct literal editing of extensionless root files remains an observed
 pathname capability gap. A supplied JavaScript transformation can instead be

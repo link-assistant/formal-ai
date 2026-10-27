@@ -126,8 +126,8 @@ for ((attempt = 1; attempt <= attempts; attempt++)); do
 
   echo "::warning title=apt install of ${packages} failed attempt ${attempt}/${attempts}::\
 Attempt ${attempt} exited ${status} after ${elapsed}s of its ${attempt_seconds}s \
-deadline. Exit 124 is the deadline itself -- a stalled mirror, transient and \
-upstream; anything else is apt's own status." >&2
+deadline. Exit 124 is the process deadline; inspect the output to distinguish \
+a mirror stall from slow package unpacking/configuration. Other exits are apt's own status." >&2
 
   [ "$attempt" -lt "$attempts" ] || break
   sleep "$retry_delay_seconds"
@@ -135,6 +135,6 @@ done
 
 echo "::error title=apt install of ${packages} failed every attempt::\
 All ${attempts} attempts of ${attempt_seconds}s failed; the last exited \
-${status}. This is no longer a transient stall -- read the attempt warnings \
-above for apt's own output." >&2
+${status}. The finite retry budget is exhausted -- read the attempt warnings \
+above for the original command output." >&2
 exit "$status"

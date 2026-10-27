@@ -54,7 +54,12 @@ function checkDesktop(workflow){
   const imported=step(job,'Import and verify exact source selection');
   assert.equal(imported.env.NATIVE_SELECTED_HEAD,'${{ needs.native-source.outputs.selected-head }}');
   assert.equal(imported.env.NATIVE_SELECTION_SHA256,'${{ needs.native-source.outputs.selection-sha256 }}');
-  assert.match(imported.run,/native-release-source\.mjs" import native-source/u);
+  if(job===cli){
+   assert.equal(imported.run.trim(),'node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import-offline native-source');
+   const history=download(job,'native-release-source-history');assert.equal(history.with.path,'native-source');
+   assert.ok(job.steps.indexOf(history)>job.steps.indexOf(download(job,'native-release-source')));
+   assert.ok(job.steps.indexOf(history)<job.steps.indexOf(imported));
+  }else assert.equal(imported.run.trim(),'node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import native-source');
   const verified=step(job,'Verify native receipt, bytes and startup before packaging');
   assert.equal(verified.env.NATIVE_SELECTION_SHA256,'${{ needs.native-source.outputs.selection-sha256 }}');
   assert.equal(verified.run.trim(),'node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-artifact.mjs" verify native-bin native-source "${{ matrix.target }}"');
@@ -150,6 +155,9 @@ const desktopRefusals=[
  ['source drift selection digest',w=>{step(w.jobs.build,'Import and verify exact source selection').env.NATIVE_SELECTION_SHA256='unproved';}],
  ['unqualified required binary',w=>{step(w.jobs.build,'Prepare desktop resources (web + bundled binary + version sync)').env.FORMAL_AI_DESKTOP_REQUIRE_BINARY='false';}],
  ['duplicate package compilation',w=>{w.jobs.build.steps.push({name:'Unproved build',run:'cargo build --release'});}],
+ ['missing CLI history',w=>{w.jobs.cli.steps=w.jobs.cli.steps.filter(s=>s.with?.name!=='native-release-source-history');}],
+ ['misplaced CLI history',w=>{download(w.jobs.cli,'native-release-source-history').with.path='wrong-source';}],
+ ['CLI skips offline restore',w=>{step(w.jobs.cli,'Import and verify exact source selection').run='node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import native-source';}],
  ['missing CLI smoke',w=>{w.jobs.cli.steps=w.jobs.cli.steps.filter(s=>s.name!=='Smoke test CLI archive');}]
 ];
 for(const [name,mutate]of desktopRefusals)test('refuse changed relocated native/package source: '+name,()=>{checkDesktop(desktop);const changed=structuredClone(desktop);mutate(changed);assert.throws(()=>checkDesktop(changed));});

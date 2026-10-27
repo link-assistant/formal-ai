@@ -62,6 +62,9 @@ COPY rust/target/release/formal-ai /app/target/release/formal-ai
 
 FROM ${BINARY_SOURCE}-binary AS selected-binary
 
+# Use the same target-native Node/npm donor as the full image.
+FROM node:26.12.0-bookworm-slim AS node-runtime
+
 FROM ubuntu:26.10
 
 LABEL org.opencontainers.image.source="https://github.com/link-assistant/formal-ai" \
@@ -74,15 +77,23 @@ ENV HOME=/home/box \
 # Unlike the DinD variant, tasks are not isolated into sibling containers here
 # -- a sidecar host provides its own isolation -- so the start runner keeps
 # its plain default instead of the docker-isolated one.
-ENV PATH="${BUN_INSTALL}/bin:${PATH}"
+ENV PATH="${BUN_INSTALL}/bin:/usr/local/bin:${PATH}"
 
 # Runtime dependencies only: ca-certificates for HTTPS, curl for the health
-# check, git for repository tasks, nodejs + bun for the global CLIs below.
+# check and git for repository tasks. The donor supplies Node and npm.
 COPY --chmod=0755 scripts/apt-install-with-retry.sh scripts/run-with-deadline.sh scripts/prepare-ubuntu-apt-mirror.sh /usr/local/lib/formal-ai-build/
 RUN TEST_BUDGET_SECONDS=300 FORMAL_AI_APT_PRIVILEGE= bash /usr/local/lib/formal-ai-build/apt-install-with-retry.sh \
-      --no-install-recommends ca-certificates curl git nodejs npm && \
-    rm -rf /var/lib/apt/lists/* /usr/local/lib/formal-ai-build && \
-    node --version
+      --no-install-recommends libstdc++6 libatomic1 ca-certificates curl git && \
+    rm -rf /var/lib/apt/lists/* /usr/local/lib/formal-ai-build
+
+COPY --from=node-runtime /usr/local/bin/node /usr/local/bin/node
+# Node's CLI alone omits npm: derived Hive images also run npm ci as box.
+# Keep the package manager and both launchers from the same pinned donor.
+COPY --from=node-runtime /usr/local/lib/node_modules/npm/ /usr/local/lib/node_modules/npm/
+RUN ln -sf ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && \
+    ln -sf ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx && \
+    node --version && \
+    node --eval "if (process.versions.node.split('.')[0] !== '26') process.exit(1); new RegExp('', 'v')"
 
 COPY --from=oven/bun:1.4.2 /usr/local/bin/bun /usr/local/bin/bun
 RUN chmod 0755 /usr/local/bin/bun
@@ -111,6 +122,8 @@ COPY js/server/bounded-command.mjs js/server/structured-log.mjs js/server/json.m
 COPY js/logging/diagnostic-metadata.mjs js/logging/typed-codec.mjs js/logging/text-lines.mjs \
     js/logging/json-numbers.mjs js/logging/lino-codec.mjs /usr/local/lib/formal-ai-runtime-tools/js/logging/
 RUN /usr/local/lib/formal-ai-runtime-tools/scripts/install-container-runtime-tools.sh /home/box/.formal-ai-runtime-tools && \
+    npm --version && \
+    npx --version && \
     "$" --version && \
     agent --version && \
     start-agent --help >/dev/null

@@ -78,13 +78,13 @@ test('retry integration preserves repositories, package verification and helper 
 });
 
 
-test('slim runtime uses the same bounded signed-index recovery and preserves its exact package set',()=>{
+test('slim runtime retries signed indexes for shared libraries without the distro npm dependency graph',()=>{
  const slim=readFileSync('Dockerfile.slim','utf8'),marker='RUN TEST_BUDGET_SECONDS=300 FORMAL_AI_APT_PRIVILEGE=';
  const result=run(1,0,slim,marker,'FROM ubuntu:26.10');
  assert.equal(result.status,0,result.stderr);
  assert.equal(result.records.filter(row=>row.kind==='apt'&&row.args.includes('update')).length,2);
  assert.deepEqual(result.records.filter(row=>row.kind==='apt'&&row.args.includes('install')).map(row=>row.args),
-  [['-o','DPkg::Lock::Timeout=60','install','-y','-q','--no-install-recommends','ca-certificates','curl','git','nodejs','npm']]);
+  [['-o','DPkg::Lock::Timeout=60','install','-y','-q','--no-install-recommends','libstdc++6','libatomic1','ca-certificates','curl','git']]);
  const permanent=run(99,0,slim,marker,'FROM ubuntu:26.10');
  assert.equal(permanent.status,100);assert.equal(permanent.records.length,3);
  assert(permanent.records.every(row=>row.kind==='apt'&&row.args.includes('update')));
