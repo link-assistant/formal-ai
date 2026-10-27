@@ -44,3 +44,13 @@ autonomous-authorship credit. Task length is not total input, and no amplificati
 token saving or development-cost reduction is claimed. A larger source task still
 fails its original acceptance. R1207-4's representative cohort, R1207-5's general
 decomposition and full runtime acceptance remain pending.
+
+
+### Current CI evidence and self-coding clarification
+
+The [CI self-coding evidence contract](self-coding-ci-evidence.md) clarifies the
+existing useful-change and complete-log requirements. Historical plan-only
+attempts retain their failure classification; source assistance is not
+autonomous implementation. Console recovery and source-qualified native log
+mounting are independently tested. Hosted capture remains unverified until a
+real run's artifacts and completeness manifests are inspected.

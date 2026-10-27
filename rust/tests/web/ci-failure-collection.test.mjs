@@ -306,3 +306,13 @@ test('aggregate jobs budget stops older attempts without resetting at each rerun
   assert(!endpoints.some(endpoint=>endpoint.includes('/attempts/1/')));
   assert.doesNotMatch(JSON.stringify(report),/abcdefghijkl|user@example.com/u);
 });
+
+test('multi-megabyte unbroken log records redact promptly without discarding the middle',async()=>{
+ const {boundedCommand}=await import('../../../js/server/bounded-command.mjs');
+ const moduleUrl=new URL('../../../scripts/collect-ci-failures.mjs',import.meta.url).href;
+ const code='import {redact} from '+JSON.stringify(moduleUrl)+';'
+  +'const input="x".repeat(1048576)+"\\nError EINVAL --command user@example.org\\n"+"z".repeat(1048576);'
+  +'const output=redact(input);if(output.includes("example.org")||!output.includes("Error EINVAL --command")||!output.endsWith("z".repeat(1048576)))process.exitCode=1;';
+ const result=await boundedCommand(process.execPath,['--input-type=module','--eval',code],{timeout:5000,maxBuffer:16384});
+ assert(!result.error,result.error?.message);assert.equal(result.status,0);assert.equal(result.cleanup_complete,true);
+});

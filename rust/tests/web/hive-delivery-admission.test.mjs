@@ -910,11 +910,9 @@ test('source-event relocation preserves exact readonly producer semantics withou
   },
   "steps": [
     {
-      "uses": "actions/checkout@v7",
+      "uses": "actions/github-script@v8",
       "with": {
-        "persist-credentials": false,
-        "sparse-checkout": "/scripts/record-hive-source-event.mjs",
-        "sparse-checkout-cone-mode": false
+        "script": "const p = 'scripts/record-hive-source-event.mjs';\nconst {data} = await github.rest.repos.getContent({...context.repo, path:p, ref:context.sha, request:{timeout:20000}});\nif(data.type !== 'file' || data.encoding !== 'base64' || data.size > 65536) throw Error('invalid provenance source');\nconst fs = require('node:fs'); fs.mkdirSync('scripts', {recursive:true}); fs.writeFileSync(p, Buffer.from(data.content, 'base64'), {flag:'wx'});\n"
       }
     },
     {
@@ -946,7 +944,7 @@ test('source-event relocation preserves exact readonly producer semantics withou
 });
 
 
-test('source event recorder executes with only the declared sparse input', async () => {
+test('source event recorder executes with only its exact fetched source', async () => {
   const fs = await import('node:fs');
   const path = await import('node:path');
   const os = await import('node:os');
@@ -955,15 +953,26 @@ test('source event recorder executes with only the declared sparse input', async
   try {
     const root = new URL('../../../', import.meta.url);
     const workflow = YAML.parse(fs.readFileSync(new URL('.github/workflows/hive-source-provenance.yml', root), 'utf8'));
-    const checkout = workflow.jobs['hive-source-provenance'].steps[0].with;
-    const input = checkout['sparse-checkout'];
-    assert.equal(input, '/scripts/record-hive-source-event.mjs');
-    assert.equal(checkout['sparse-checkout-cone-mode'], false);
-    const workspace = path.join(directory, 'workspace');
-    const relative = input.slice(1);
+    const fetch = workflow.jobs['hive-source-provenance'].steps[0];
+    assert.equal(fetch.uses, 'actions/github-script@v8');
+    const workspace = path.join(directory, 'workspace'), relative = 'scripts/record-hive-source-event.mjs';
     const executable = path.join(workspace, relative);
-    fs.mkdirSync(path.dirname(executable), {recursive:true});
-    fs.copyFileSync(new URL(relative, root), executable);
+    const {Script} = await import('node:vm');
+    const content = fs.readFileSync(new URL(relative, root));
+    await new Script('(async()=>{'+fetch.with.script+'})()').runInNewContext({
+      Buffer, context:{repo:{owner:'owner',repo:'repo'},sha:source},
+      github:{rest:{repos:{getContent:async query=>{
+        assert.equal(query.path,relative); assert.equal(query.ref,source); assert.equal(query.request.timeout,20000);
+        return {data:{type:'file',encoding:'base64',size:content.length,content:content.toString('base64')}};
+      }}}},
+      require:name=>{
+        assert.equal(name,'node:fs');
+        return {
+          mkdirSync(directory,options){assert.equal(directory,'scripts');fs.mkdirSync(path.join(workspace,directory),options);},
+          writeFileSync(file,bytes,options){assert.equal(file,relative);fs.writeFileSync(path.join(workspace,file),bytes,options);}
+        };
+      }
+    });
     const event = path.join(directory, 'event.json');
     fs.writeFileSync(event, JSON.stringify({repository:{full_name:repository}, before:other, after:source, ref:'refs/heads/main', unrelated:'not retained'}));
     const output = path.join(directory, 'runner-temp', 'source-event.json');

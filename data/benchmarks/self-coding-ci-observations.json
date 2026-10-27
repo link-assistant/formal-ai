@@ -1,0 +1,98 @@
+{
+  "schema": "self-coding-ci-observations/v1",
+  "observedAt": "2026-10-27",
+  "rawPersonalDataIncluded": false,
+  "source": "Complete public Git blobs checked against their Git SHA-1; local log copies are not committed.",
+  "cases": [
+    {
+      "pullRequest": "https://github.com/link-assistant/formal-ai/pull/1397",
+      "issue": 1395,
+      "observedTerminal": "planned_not_executed",
+      "implemented": false,
+      "engineToolActions": 1,
+      "rootCause": "Only issue body was read; unsupported repository implementation remained a gap. Evidence-only changes were admitted by orchestration.",
+      "completePublicLog": {
+        "bytes": 478352,
+        "sha256": "bfa52d6be550b4c1fdff1156f0b57ef998ccb183a7f4a4bc054122191f27d53c"
+      },
+      "files": [
+        {
+          "filename": ".gitkeep",
+          "status": "modified",
+          "changes": 3
+        },
+        {
+          "filename": "dev/log/public-case/metadata.json",
+          "status": "added",
+          "changes": 20
+        },
+        {
+          "filename": "dev/log/public-case/solve.log",
+          "status": "added",
+          "changes": 3861
+        }
+      ],
+      "acceptance": "Original issue behavior plus held-out variants; these observations establish a gap, not a solved task."
+    },
+    {
+      "pullRequest": "https://github.com/link-assistant/formal-ai/pull/1398",
+      "issue": 1396,
+      "observedTerminal": "planned_not_executed",
+      "implemented": false,
+      "engineToolActions": 1,
+      "rootCause": "Only issue body was read; unsupported repository implementation remained a gap. Evidence-only changes were admitted by orchestration.",
+      "completePublicLog": {
+        "bytes": 479001,
+        "sha256": "0f4e680323e2dbba1f122e9f01f16deb5f55267d63826a4af8863340717a83d2"
+      },
+      "files": [
+        {
+          "filename": ".gitkeep",
+          "status": "modified",
+          "changes": 3
+        },
+        {
+          "filename": "dev/log/public-case/metadata.json",
+          "status": "added",
+          "changes": 20
+        },
+        {
+          "filename": "dev/log/public-case/solve.log",
+          "status": "added",
+          "changes": 3859
+        }
+      ],
+      "acceptance": "Original issue behavior plus held-out variants; these observations establish a gap, not a solved task."
+    },
+    {
+      "pullRequest": "https://github.com/link-assistant/formal-ai/pull/1439",
+      "issue": 1438,
+      "observedTerminal": "planned_not_executed",
+      "implemented": false,
+      "engineToolActions": 1,
+      "rootCause": "Only issue body was read; unsupported repository implementation remained a gap. Evidence-only changes were admitted by orchestration.",
+      "completePublicLog": {
+        "bytes": 478390,
+        "sha256": "12f086d882496d9a574d7df04bda642ccae3293f46fc2514c80290c8535fb6e5"
+      },
+      "files": [
+        {
+          "filename": ".gitkeep",
+          "status": "modified",
+          "changes": 3
+        },
+        {
+          "filename": "dev/log/public-case/metadata.json",
+          "status": "added",
+          "changes": 20
+        },
+        {
+          "filename": "dev/log/public-case/solve.log",
+          "status": "added",
+          "changes": 3858
+        }
+      ],
+      "acceptance": "Original issue behavior plus held-out variants; these observations establish a gap, not a solved task."
+    }
+  ]
+}

@@ -496,3 +496,13 @@ PR #416 lists 48 researched sources in
 edit variations per source, and requires every source to pass both the explicit
 3-check repository-local 10% floor and the stronger 30/30 ratchet, for 1,440 of
 1,440 passing checks before the branch is complete.
+
+
+Self-coding acceptance follows observed useful effects. Reading an issue,
+writing a plan, retaining logs or touching a bootstrap marker cannot count as
+implementing its requested change. General CI passing on such a draft does not
+prove the issue fixed. Require the original behavior and held-out variants;
+keep unsupported work visible while preserving correct iterative releases.
+Full redacted console, dialog and native-response evidence must survive failed
+attempts, with exact source/attempt identities and explicit missing or partial
+capture status. See the [CI self-coding evidence contract](docs/requirements/self-coding-ci-evidence.md).

@@ -246,11 +246,13 @@ export function prepareHiveOperationalEvidence({
 export function transferOperationalEvidenceOwner({
   logDirectory,
   userIdentity,
-  groupIdentity
+  groupIdentity,
+  category = 'formal-ai-operational'
 }) {
   assert.ok(path.isAbsolute(logDirectory), 'absolute hosted log directory required');
   for (const identity of [userIdentity, groupIdentity]) assert.ok(Number.isSafeInteger(identity) && identity >= 0 && identity <= 4294967294, 'invalid artifact owner');
-  const directory = path.join(logDirectory, 'formal-ai-operational');
+  assert.ok(['formal-ai-operational','formal-ai-diagnostics','formal-ai-dialog','formal-ai-native'].includes(category), 'owned evidence category required');
+  const directory = path.join(logDirectory, category);
   try {
     fs.lstatSync(directory);
   } catch (error) {
@@ -298,12 +300,13 @@ export function transferOperationalEvidenceOwner({
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   assert.equal(process.env.GITHUB_ACTIONS, 'true', 'hosted ownership boundary only');
-  assert.equal(process.argv.length, 6);
+  assert.ok([6, 7].includes(process.argv.length));
   assert.equal(process.argv[2], '--transfer-ownership');
-  for (const identity of process.argv.slice(4)) assert.match(identity, /^(0|[1-9][0-9]*)$/);
+  for (const identity of process.argv.slice(4,6)) assert.match(identity, /^(0|[1-9][0-9]*)$/);
   console.log(JSON.stringify(transferOperationalEvidenceOwner({
     logDirectory: process.argv[3],
     userIdentity: Number(process.argv[4]),
-    groupIdentity: Number(process.argv[5])
+    groupIdentity: Number(process.argv[5]),
+    category: process.argv[6]
   })));
 }
