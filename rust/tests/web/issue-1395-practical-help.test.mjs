@@ -4,12 +4,27 @@ import vm from 'node:vm';
 import {WorkerHost} from '../../../js/server/worker-host.mjs';
 const forbiddenWasm={instantiate(){throw Error('LocalWasmExecutionForbidden');},compile(){throw Error('LocalWasmExecutionForbidden');}};
 const worker=()=>new WorkerHost({WebAssembly:forbiddenWasm});
-const cases=[['en','I really need to poop, what should I do?','Use a toilet'],['ru','Хочу какать, что делать?','Идите в туалет'],['hi','मुझे शौच करना है','शौचालय'],['zh','我快要大便了，怎么办？','厕所']];
+const cases=[
+ {language:'en',prompt:'I really need to poop, what should I do?',expected:'Use a toilet as soon as you can rather than holding it. If you cannot go or have pain, tell me what is happening. [NHS guidance](https://www.nhs.uk/conditions/constipation/)'},
+ {language:'ru',prompt:'Хочу какать, что делать?',expected:'Идите в туалет при первой возможности, не терпите. Если не получается сходить или есть боль, уточните, что происходит. [Рекомендации NHS](https://www.nhs.uk/conditions/constipation/)'},
+ {language:'hi',prompt:'मुझे शौच करना है',expected:'जितनी जल्दी हो सके शौचालय जाएँ, रोककर न रखें। यदि शौच नहीं हो रहा है या दर्द है, तो बताएँ कि क्या हो रहा है। [NHS की सलाह](https://www.nhs.uk/conditions/constipation/)'},
+ {language:'zh',prompt:'我快要大便了，怎么办？',expected:'尽快去厕所，不要憋着。如果排不出来或疼痛，请说明具体情况。[NHS 指引](https://www.nhs.uk/conditions/constipation/)'},
+ {language:'es',prompt:'Necesito ir al baño, ¿qué debo hacer?',expected:'Ve al baño en cuanto puedas y no te aguantes. Si no puedes evacuar o tienes dolor, explica qué ocurre. [Consejos del NHS](https://www.nhs.uk/conditions/constipation/)'}
+];
 const source='https://www.nhs.uk/conditions/constipation/';
-for(const [language,prompt,expected] of cases)test('real solver gives source-backed practical guidance in '+language,async()=>{
+for(const {language,prompt,expected} of cases)test('real solver gives source-backed practical guidance in '+language,async()=>{
  const host=worker(),result=await host.solve(prompt,[],{forcedResponseLanguage:language});
- assert.equal(result.intent,'procedural_how_to');assert(result.content.includes(expected),result.content);assert(result.content.includes(source));
+ assert.equal(result.intent,'procedural_how_to');assert.equal(result.content,expected);assert(result.content.includes(source));
  assert(!/reciprocal rank|source_count|teach|unknown|зауч|Tió|Cheese/iu.test(result.content));
+});
+test('Spanish detection, follow-up and unavailable guidance use the same strategy',async()=>{
+ const host=worker(),example=cases.find(row=>row.language==='es');
+ const initial=await host.solve(example.prompt);assert.equal(initial.content,example.expected);
+ const history=[{role:'user',content:example.prompt},{role:'assistant',content:initial.content}];
+ const followup=await host.solve('¡Ayúdame!',history);assert.equal(followup.content,example.expected);
+ await host.boot();host.context.fetch=async()=>new Response('unrelated text');
+ const unavailable=await host.run('tryPracticalHelp(__prompt,"es",{practicalHelpCache:false})',{__prompt:example.prompt});
+ assert.equal(unavailable.confidence,0);assert.equal(unavailable.content,'Suena urgente. ¿Necesitas encontrar un baño o no puedes evacuar?');
 });
 test('the urgent report and a short follow-up preserve the actual goal',async()=>{
  const host=worker();const urgent=await host.solve('Сейчас обкакаюсь! Помоги!');assert(urgent.content.includes('Идите в туалет'),urgent.content);
@@ -18,7 +33,7 @@ test('the urgent report and a short follow-up preserve the actual goal',async()=
 });
 test('negations, quotations and unrelated requests do not become personal needs',async()=>{
  const host=worker();
- for(const prompt of ['"I need to poop" is a quotation','I need to not poop','Мне нужно не какать','मुझे शौच नहीं करना है','我不想大便','I need to write about poop','I want to understand the toilet history','I needed to poop yesterday'])
+ for(const prompt of ['"I need to poop" is a quotation','I need to not poop','Мне нужно не какать','मुझे शौच नहीं करना है','我不想大便','Necesito no ir al baño','No necesito ir al baño','I need to write about poop','I want to understand the toilet history','I needed to poop yesterday'])
   assert.equal(await host.run('practicalHelpGoal(__prompt)',{__prompt:prompt}),null,prompt);
  const history=[{role:'user',content:'I need to poop'},{role:'assistant',content:'Use a toilet.'},{role:'user',content:'Tell me about stars'},{role:'assistant',content:'Stars are astronomical objects.'}];
  assert.equal(await host.run('tryPracticalHelpFollowup("help me","en",__history)',{__history:history}),null);

@@ -324,6 +324,10 @@ multilingual_responses
     intent practical-help-toilet
     language zh
     text "尽快去厕所，不要憋着。如果排不出来或疼痛，请说明具体情况。[NHS 指引]({source})"
+  response response-practical-help-toilet-es
+    intent practical-help-toilet
+    language es
+    text "Ve al baño en cuanto puedas y no te aguantes. Si no puedes evacuar o tienes dolor, explica qué ocurre. [Consejos del NHS]({source})"
   response response-practical-help-toilet-unavailable-en
     intent practical-help-toilet-unavailable
     language en
@@ -340,3 +344,7 @@ multilingual_responses
     intent practical-help-toilet-unavailable
     language zh
     text "听起来很着急。你是找不到厕所，还是排不出来？"
+  response response-practical-help-toilet-unavailable-es
+    intent practical-help-toilet-unavailable
+    language es
+    text "Suena urgente. ¿Necesitas encontrar un baño o no puedes evacuar?"

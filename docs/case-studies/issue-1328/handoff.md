@@ -52,7 +52,7 @@ Host approval refusals remain authoritative and are reported honestly.
 
 The browser failures came from choosing encyclopedic search for a first-person
 practical need and losing its goal in a follow-up. A data-owned goal reader now
-selects trusted-source guidance in English, Russian, Hindi and Chinese. Minimal
+selects trusted-source guidance in English, Russian, Hindi, Chinese and Spanish. Minimal
 curated evidence is distinguished from fetched evidence; empty-cache discovery
 has a byte limit, read limit and deadline. Unavailable or irrelevant evidence
 produces a targeted question. The same reader controls formal claim admission;
@@ -78,6 +78,11 @@ checks. Mocked setup tests never invoke Rust locally.
 The attachment URL regression now forces offline mode and documents its entire
 expected answer. This satisfies the tests-as-documentation gate without adding
 an allowlist entry or depending on external network state.
+The next web gate exposed the registered Spanish locale missing from the new
+guidance and language evidence. Add Spanish through the same goal and response
+data, show full answer examples in every registered language, and mirror the
+follow-up and unavailable-evidence regressions in native CI. Keep the response
+parity debt ceiling unchanged; do not record the omission as new accepted debt.
 The new browser regressions pass locally without WASM or native execution.
 The source-only refresh of the carried agent-info projection uses the pinned
 portable JavaScript frontend and existing blocker analyzer. It reproduces the

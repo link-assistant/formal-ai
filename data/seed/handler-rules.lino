@@ -999,11 +999,11 @@ handler-rules
 
   policy practical-help
     goals toilet
-    leads "i need to|i really need to|i want to|i have to|i am about to|хочу|мне нужно|мне очень нужно|мне надо|сейчас|сейчас я|срочно|मुझे|मैं|मैं अभी|我想|我要|我需要|我快要|马上"
-    followups "help|help me|please help|помоги|помогите|срочно помоги|मदद करो|कृपया मदद करें|帮帮我|请帮忙|救命"
-    negations "not|never|don't|не|नहीं|मत|不|没"
+    leads "i need to|i really need to|i want to|i have to|i am about to|хочу|мне нужно|мне очень нужно|мне надо|сейчас|сейчас я|срочно|मुझे|मैं|मैं अभी|我想|我要|我需要|我快要|马上|necesito|quiero|tengo que|estoy a punto de"
+    followups "help|help me|please help|помоги|помогите|срочно помоги|मदद करो|कृपया मदद करें|帮帮我|请帮忙|救命|ayuda|ayúdame|ayudame|por favor ayuda"
+    negations "not|never|don't|не|नहीं|मत|不|没|no|nunca"
     trusted-hosts "www.nhs.uk"
-    toilet-forms "poop|poo|defecate|bowel movement|use a toilet|go to the toilet|go to a toilet|какать|покакать|обкакаюсь|в туалет|туалет|शौच|पाखाना|大便|拉屎|厕所"
+    toilet-forms "poop|poo|defecate|bowel movement|use a toilet|go to the toilet|go to a toilet|какать|покакать|обкакаюсь|в туалет|туалет|शौच|पाखाना|大便|拉屎|厕所|ir al baño|usar un baño|defecar|hacer caca"
     toilet-source "https://www.nhs.uk/conditions/constipation/"
     toilet-proof "Do not delay if you feel the urge to poo."
     toilet-cached-proof "Do not delay if you feel the urge to poo."
