@@ -1,0 +1,435 @@
+{
+  "schema": "captured-hive-repeat-no-changes/v1",
+  "repository": "link-assistant/formal-ai",
+  "run": 40377859689,
+  "source": "cf946eff7672a1e478c41206ae37e0de2b84fad7",
+  "upstream": {
+    "repository": "link-assistant/hive-mind",
+    "commit": "8f22b87c515adece0427cb59e429531f35d7760a",
+    "exitCodePath": "src/solve.exit-codes.lib.mjs",
+    "exitCodeBlob": "4f53b424f0cbd5153f1377a70e933b5a6577edf0",
+    "exitCodeSource": "/**\n * Exit codes of `solve` that are not plain success or failure. Kept free of\n * imports so the Telegram bot and hive can read them without loading solve.\n *\n *   0 - finished, and this run made progress (or its pull request was merged);\n *   5 - finished without changes: no new commit, no file change and no comment\n *       by this run (issue #3211, see session-changes.lib.mjs);\n *   any other non-zero code - failed.\n *\n * @see https://github.com/link-assistant/hive-mind/issues/3211\n */\n\n/** `solve` exit code: the run finished, but changed nothing. */\nexport const EXIT_CODE_SOLVE_NO_CHANGES = 5;\n\n/**\n * The code `solve` actually exits with when it finished without changes.\n * Before #3211 such a run exited 0; a script that treats every nonzero exit\n * as an error can keep that with `HIVE_MIND_SOLVE_NO_CHANGES_EXIT_CODE=0`\n * (any code from 0 to 255). The run is still reported as ⚠️ finished without\n * changes and its draft stays a draft; only the process exit code differs.\n */\nexport const getSolveNoChangesExitCode = (env = process.env) => {\n  const raw = String(env.HIVE_MIND_SOLVE_NO_CHANGES_EXIT_CODE ?? '').trim();\n  if (!/^\\d{1,3}$/.test(raw) || Number(raw) > 255) return EXIT_CODE_SOLVE_NO_CHANGES;\n  return Number(raw);\n};\n\nexport default { EXIT_CODE_SOLVE_NO_CHANGES, getSolveNoChangesExitCode };\n",
+    "dockerPath": "scripts/formal-ai-draft.lib.mjs",
+    "dockerBlob": "fead2ed752110ea58199b589e93f85a191ec2f6d",
+    "dockerFunction": "export function buildDockerArgv({ solveArgv, solveCommand = 'solve', image = DEFAULT_HIVE_MIND_IMAGE, hostLogDir = null, containerLogDir = '/home/box/logs', forwardEnv = ['GH_TOKEN'], setEnv = buildGitIdentityEnv(), extraMounts = [] } = {}) {\n  if (!Array.isArray(solveArgv) || solveArgv.length === 0) throw new Error('buildDockerArgv needs the solve argv from buildSolveArgv()');\n\n  const argv = ['run', '--rm', '--user', 'box'];\n  for (const name of forwardEnv) argv.push('-e', name);\n  for (const [name, value] of Object.entries(setEnv)) argv.push('-e', `${name}=${value}`);\n  if (hostLogDir) argv.push('-v', `${hostLogDir}:${containerLogDir}`);\n  for (const mount of extraMounts) argv.push('-v', mount);\n  argv.push(image, solveCommand, ...solveArgv);\n  return argv;\n}",
+    "entrypointBlob": "6bec72e1bc03104a05ff9588ca2964197e13247a",
+    "constructor": "const dockerArgv = buildDockerArgv({ solveArgv: buildE2eSolveArgv({ issueUrl, tool, model, baseBranch, logDir: '/home/box/logs' }), solveCommand: '/opt/hive-e2e/src/solve.mjs', image, hostLogDir, forwardEnv: ['GH_TOKEN', ...modelKeys, 'FORMAL_AI_INSTALL_GRANT', 'GITHUB_ACTIONS'] });"
+  },
+  "projection": "All original assertion rows retained; volatile timing, resources and unrelated metadata omitted. Raw failed repeat observations remain failures.",
+  "cases": [
+    {
+      "tool": "agent",
+      "job": 121780407499,
+      "logSha256": "3f37ca9efafe38f7c7f3383ae1aefb9caf7fd048edc86bd41d6114f9df0a0ab5",
+      "firstResultSha256": "73e50fa3212f89e65fe9197fa1ac2413690d1ebc5d78bedc874615b562915ea6",
+      "secondResultSha256": "6fd8711c9b4cf8963f6724a9965e06c9ed93df92e40bd8872a2ca0d573f9f253",
+      "first": {
+        "tool": "agent",
+        "model": "formal-ai",
+        "passed": true,
+        "solveExitCode": 0,
+        "pullRequestUrl": "https://github.com/link-assistant/formal-ai/pull/1434",
+        "harness": [
+          {
+            "name": "task image runs the shipped Formal AI",
+            "ok": true,
+            "reason": "formal-ai 0.355.12"
+          },
+          {
+            "name": "workflow push accepted",
+            "ok": true,
+            "reason": "no unrecovered workflow push rejection in solve.log"
+          }
+        ],
+        "evaluation": {
+          "passed": true,
+          "results": [
+            {
+              "name": "ready for review",
+              "ok": true,
+              "reason": "state OPEN, ready"
+            },
+            {
+              "name": "diff is the program, the workflow and a test script",
+              "ok": true,
+              "reason": "3 files: Main.scala, ci/test-hello-world.yml, tests/verify-output.sh"
+            },
+            {
+              "name": "program prints exactly \"Hello, World!\"",
+              "ok": true,
+              "reason": "searched the workflow run log for the exact line"
+            },
+            {
+              "name": "workflow green",
+              "ok": true,
+              "reason": "1 checks, 0 pending, failed: none"
+            },
+            {
+              "name": "body is final",
+              "ok": true,
+              "reason": "the body contains the agent description"
+            },
+            {
+              "name": "title is final",
+              "ok": true,
+              "reason": "\"Implement Hello World in Scala\""
+            },
+            {
+              "name": "no \"🛑 Automation stopped\" comment",
+              "ok": true,
+              "reason": "0 stop comments"
+            }
+          ]
+        },
+        "verdict": {
+          "harness": true,
+          "model": true
+        }
+      },
+      "repeat": {
+        "tool": "agent",
+        "model": "formal-ai",
+        "passed": false,
+        "solveExitCode": 5,
+        "pullRequestUrl": "https://github.com/link-assistant/formal-ai/pull/1434",
+        "harness": [
+          {
+            "name": "task image runs the shipped Formal AI",
+            "ok": true,
+            "reason": "formal-ai 0.355.12"
+          },
+          {
+            "name": "workflow push accepted",
+            "ok": true,
+            "reason": "no unrecovered workflow push rejection in solve.log"
+          }
+        ],
+        "evaluation": {
+          "passed": false,
+          "results": [
+            {
+              "name": "ready for review",
+              "ok": true,
+              "reason": "state OPEN, ready"
+            },
+            {
+              "name": "diff is the program, the workflow and a test script",
+              "ok": true,
+              "reason": "3 files: Main.scala, ci/test-hello-world.yml, tests/verify-output.sh"
+            },
+            {
+              "name": "program prints exactly \"Hello, World!\"",
+              "ok": true,
+              "reason": "searched the workflow run log for the exact line"
+            },
+            {
+              "name": "workflow green",
+              "ok": true,
+              "reason": "1 checks, 0 pending, failed: none"
+            },
+            {
+              "name": "body is final",
+              "ok": true,
+              "reason": "the body contains the agent description"
+            },
+            {
+              "name": "title is final",
+              "ok": true,
+              "reason": "\"Implement Hello World in Scala\""
+            },
+            {
+              "name": "no \"🛑 Automation stopped\" comment",
+              "ok": true,
+              "reason": "0 stop comments"
+            },
+            {
+              "name": "solve completed",
+              "ok": false,
+              "reason": "solve exited 5"
+            }
+          ]
+        },
+        "verdict": {
+          "harness": true,
+          "model": false
+        }
+      }
+    },
+    {
+      "tool": "codex",
+      "job": 121780407741,
+      "logSha256": "d8213bef1252e274708d0a60e6fcef351699a1254d5a127bd93b4b726bc50f35",
+      "firstResultSha256": "30e717d110ec8135622352da46ea9fce52b408e2c20d975b4245ffeee03cae37",
+      "secondResultSha256": "36bc6bab38066857b82c13e9312970027177e084b663d9697eed56454478035b",
+      "first": {
+        "tool": "codex",
+        "model": "formal-ai",
+        "passed": true,
+        "solveExitCode": 0,
+        "pullRequestUrl": "https://github.com/link-assistant/formal-ai/pull/1436",
+        "harness": [
+          {
+            "name": "task image runs the shipped Formal AI",
+            "ok": true,
+            "reason": "formal-ai 0.355.12"
+          },
+          {
+            "name": "workflow push accepted",
+            "ok": true,
+            "reason": "no unrecovered workflow push rejection in solve.log"
+          }
+        ],
+        "evaluation": {
+          "passed": true,
+          "results": [
+            {
+              "name": "ready for review",
+              "ok": true,
+              "reason": "state OPEN, ready"
+            },
+            {
+              "name": "diff is the program, the workflow and a test script",
+              "ok": true,
+              "reason": "3 files: ci/test-hello-world.yml, main.rs, tests/verify-output.sh"
+            },
+            {
+              "name": "program prints exactly \"Hello, World!\"",
+              "ok": true,
+              "reason": "searched the workflow run log for the exact line"
+            },
+            {
+              "name": "workflow green",
+              "ok": true,
+              "reason": "1 checks, 0 pending, failed: none"
+            },
+            {
+              "name": "body is final",
+              "ok": true,
+              "reason": "the body contains the agent description"
+            },
+            {
+              "name": "title is final",
+              "ok": true,
+              "reason": "\"Implement Hello World in Rust\""
+            },
+            {
+              "name": "no \"🛑 Automation stopped\" comment",
+              "ok": true,
+              "reason": "0 stop comments"
+            }
+          ]
+        },
+        "verdict": {
+          "harness": true,
+          "model": true
+        }
+      },
+      "repeat": {
+        "tool": "codex",
+        "model": "formal-ai",
+        "passed": false,
+        "solveExitCode": 5,
+        "pullRequestUrl": "https://github.com/link-assistant/formal-ai/pull/1436",
+        "harness": [
+          {
+            "name": "task image runs the shipped Formal AI",
+            "ok": true,
+            "reason": "formal-ai 0.355.12"
+          },
+          {
+            "name": "workflow push accepted",
+            "ok": true,
+            "reason": "no unrecovered workflow push rejection in solve.log"
+          }
+        ],
+        "evaluation": {
+          "passed": false,
+          "results": [
+            {
+              "name": "ready for review",
+              "ok": true,
+              "reason": "state OPEN, ready"
+            },
+            {
+              "name": "diff is the program, the workflow and a test script",
+              "ok": true,
+              "reason": "3 files: ci/test-hello-world.yml, main.rs, tests/verify-output.sh"
+            },
+            {
+              "name": "program prints exactly \"Hello, World!\"",
+              "ok": true,
+              "reason": "searched the workflow run log for the exact line"
+            },
+            {
+              "name": "workflow green",
+              "ok": true,
+              "reason": "1 checks, 0 pending, failed: none"
+            },
+            {
+              "name": "body is final",
+              "ok": true,
+              "reason": "the body contains the agent description"
+            },
+            {
+              "name": "title is final",
+              "ok": true,
+              "reason": "\"Implement Hello World in Rust\""
+            },
+            {
+              "name": "no \"🛑 Automation stopped\" comment",
+              "ok": true,
+              "reason": "0 stop comments"
+            },
+            {
+              "name": "solve completed",
+              "ok": false,
+              "reason": "solve exited 5"
+            }
+          ]
+        },
+        "verdict": {
+          "harness": true,
+          "model": false
+        }
+      }
+    },
+    {
+      "tool": "claude",
+      "job": 121780407872,
+      "logSha256": "a4128418b43d2469ff1866638098cd7ec5672931b45a4e85c0b64ff1ecf4aa0a",
+      "firstResultSha256": "2280cbcb32684cdce8ddb6f7f20b946700e5fbf4e7c7e956e9d3adc45e1cae44",
+      "secondResultSha256": "dd60b9be74ce16980f825185d9ad840e2989dfe307a5d1549f8a15c24dc3a2ca",
+      "first": {
+        "tool": "claude",
+        "model": "formal-ai",
+        "passed": true,
+        "solveExitCode": 0,
+        "pullRequestUrl": "https://github.com/link-assistant/formal-ai/pull/1435",
+        "harness": [
+          {
+            "name": "task image runs the shipped Formal AI",
+            "ok": true,
+            "reason": "formal-ai 0.355.12"
+          },
+          {
+            "name": "workflow push accepted",
+            "ok": true,
+            "reason": "no unrecovered workflow push rejection in solve.log"
+          }
+        ],
+        "evaluation": {
+          "passed": true,
+          "results": [
+            {
+              "name": "ready for review",
+              "ok": true,
+              "reason": "state OPEN, ready"
+            },
+            {
+              "name": "diff is the program, the workflow and a test script",
+              "ok": true,
+              "reason": "3 files: Main.kt, ci/test-hello-world.yml, tests/verify-output.sh"
+            },
+            {
+              "name": "program prints exactly \"Hello, World!\"",
+              "ok": true,
+              "reason": "searched the workflow run log for the exact line"
+            },
+            {
+              "name": "workflow green",
+              "ok": true,
+              "reason": "1 checks, 0 pending, failed: none"
+            },
+            {
+              "name": "body is final",
+              "ok": true,
+              "reason": "the body contains the agent description"
+            },
+            {
+              "name": "title is final",
+              "ok": true,
+              "reason": "\"Implement Hello World in Kotlin\""
+            },
+            {
+              "name": "no \"🛑 Automation stopped\" comment",
+              "ok": true,
+              "reason": "0 stop comments"
+            }
+          ]
+        },
+        "verdict": {
+          "harness": true,
+          "model": true
+        }
+      },
+      "repeat": {
+        "tool": "claude",
+        "model": "formal-ai",
+        "passed": false,
+        "solveExitCode": 5,
+        "pullRequestUrl": "https://github.com/link-assistant/formal-ai/pull/1435",
+        "harness": [
+          {
+            "name": "task image runs the shipped Formal AI",
+            "ok": true,
+            "reason": "formal-ai 0.355.12"
+          },
+          {
+            "name": "workflow push accepted",
+            "ok": true,
+            "reason": "no unrecovered workflow push rejection in solve.log"
+          }
+        ],
+        "evaluation": {
+          "passed": false,
+          "results": [
+            {
+              "name": "ready for review",
+              "ok": true,
+              "reason": "state OPEN, ready"
+            },
+            {
+              "name": "diff is the program, the workflow and a test script",
+              "ok": true,
+              "reason": "3 files: Main.kt, ci/test-hello-world.yml, tests/verify-output.sh"
+            },
+            {
+              "name": "program prints exactly \"Hello, World!\"",
+              "ok": true,
+              "reason": "searched the workflow run log for the exact line"
+            },
+            {
+              "name": "workflow green",
+              "ok": true,
+              "reason": "1 checks, 0 pending, failed: none"
+            },
+            {
+              "name": "body is final",
+              "ok": true,
+              "reason": "the body contains the agent description"
+            },
+            {
+              "name": "title is final",
+              "ok": true,
+              "reason": "\"Implement Hello World in Kotlin\""
+            },
+            {
+              "name": "no \"🛑 Automation stopped\" comment",
+              "ok": true,
+              "reason": "0 stop comments"
+            },
+            {
+              "name": "solve completed",
+              "ok": false,
+              "reason": "solve exited 5"
+            }
+          ]
+        },
+        "verdict": {
+          "harness": true,
+          "model": false
+        }
+      }
+    }
+  ]
+}

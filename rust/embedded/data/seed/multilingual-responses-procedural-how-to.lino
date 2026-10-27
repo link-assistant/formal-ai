@@ -307,3 +307,44 @@ multilingual_responses
     intent procedural_how_to_fallback_search_plan
     language es
     text "La búsqueda web alternativa de `{query}` debe usar {providers} y reciprocal rank fusion (k = {k})."
+
+  response response-practical-help-toilet-en
+    intent practical-help-toilet
+    language en
+    text "Use a toilet as soon as you can rather than holding it. If you cannot go or have pain, tell me what is happening. [NHS guidance]({source})"
+  response response-practical-help-toilet-ru
+    intent practical-help-toilet
+    language ru
+    text "Идите в туалет при первой возможности, не терпите. Если не получается сходить или есть боль, уточните, что происходит. [Рекомендации NHS]({source})"
+  response response-practical-help-toilet-hi
+    intent practical-help-toilet
+    language hi
+    text "जितनी जल्दी हो सके शौचालय जाएँ, रोककर न रखें। यदि शौच नहीं हो रहा है या दर्द है, तो बताएँ कि क्या हो रहा है। [NHS की सलाह]({source})"
+  response response-practical-help-toilet-zh
+    intent practical-help-toilet
+    language zh
+    text "尽快去厕所，不要憋着。如果排不出来或疼痛，请说明具体情况。[NHS 指引]({source})"
+  response response-practical-help-toilet-es
+    intent practical-help-toilet
+    language es
+    text "Ve al baño en cuanto puedas y no te aguantes. Si no puedes evacuar o tienes dolor, explica qué ocurre. [Consejos del NHS]({source})"
+  response response-practical-help-toilet-unavailable-en
+    intent practical-help-toilet-unavailable
+    language en
+    text "It sounds urgent. Do you want help finding a toilet, or are you unable to go?"
+  response response-practical-help-toilet-unavailable-ru
+    intent practical-help-toilet-unavailable
+    language ru
+    text "Похоже, это срочно. Хотите, чтобы я помог найти туалет, или у вас не получается сходить?"
+  response response-practical-help-toilet-unavailable-hi
+    intent practical-help-toilet-unavailable
+    language hi
+    text "यह ज़रूरी लग रहा है। क्या आप शौचालय ढूँढने में मदद चाहते हैं, या शौच नहीं हो पा रहा है?"
+  response response-practical-help-toilet-unavailable-zh
+    intent practical-help-toilet-unavailable
+    language zh
+    text "听起来很着急。是否需要帮你找厕所，还是你排不出来？"
+  response response-practical-help-toilet-unavailable-es
+    intent practical-help-toilet-unavailable
+    language es
+    text "Suena urgente. ¿Quieres ayuda para encontrar un baño o no puedes evacuar?"

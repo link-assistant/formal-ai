@@ -64,44 +64,58 @@ pub struct ReportArgs {
 #[derive(Debug, Subcommand)]
 enum ReportAction {
     /// Render the issue-report body for one session, context included.
-    Body {
-        /// Session to report; `latest` resolves the session this shell is in.
-        #[arg(long, default_value = "latest")]
-        session: String,
-        /// Which capture to export.
-        #[arg(long, value_enum, default_value_t = ContextSource::Both)]
-        source: ContextSource,
-        /// `OpenCode` `SQLite` database path.
+    Body(ReportBodyOptions),
+    /// Prepare complete context and submit one GitHub issue without a shell script.
+    CreateIssue {
+        #[command(flatten)]
+        options: ReportBodyOptions,
+        /// Explicit owner/name destination for the authorized report.
         #[arg(long)]
-        db: Option<PathBuf>,
-        /// Explicit Formal AI dialog-log directory.
+        repo: String,
+        /// Issue title selected from the reporting conversation.
         #[arg(long)]
-        log_dir: Option<PathBuf>,
-        /// Output path for the Markdown body, or `-` for stdout.
-        #[arg(short, long, default_value = "-")]
-        output: PathBuf,
-        /// Also keep the exported Links Notation context at this path.
-        #[arg(long)]
-        context_output: Option<PathBuf>,
-        /// Link harness, server, and merged captures as three distinct files.
-        #[arg(long)]
-        separate_context_links: bool,
-        /// Which surface is filing this report.
-        #[arg(long, default_value = DEFAULT_SURFACE)]
-        surface: String,
-        /// Largest context attached inline, in bytes.
-        #[arg(long, default_value_t = DEFAULT_INLINE_BYTES)]
-        max_inline_bytes: usize,
-        /// Largest excerpt kept inline once the full context is attached.
-        #[arg(long, default_value_t = DEFAULT_EXCERPT_BYTES)]
-        max_excerpt_bytes: usize,
-        /// Where a context too large to inline is attached in full.
-        #[arg(long, value_enum, default_value_t = OversizeContext::Gist)]
-        oversize: OversizeContext,
-        /// Visibility of that gist. Conversations are private by default.
-        #[arg(long, value_enum, default_value_t = GistVisibility::Secret)]
-        gist_visibility: GistVisibility,
+        title: String,
     },
+}
+
+#[derive(Debug, Args)]
+struct ReportBodyOptions {
+    /// Session to report; `latest` resolves the session this shell is in.
+    #[arg(long, default_value = "latest")]
+    session: String,
+    /// Which capture to export.
+    #[arg(long, value_enum, default_value_t = ContextSource::Both)]
+    source: ContextSource,
+    /// `OpenCode` `SQLite` database path.
+    #[arg(long)]
+    db: Option<PathBuf>,
+    /// Explicit Formal AI dialog-log directory.
+    #[arg(long)]
+    log_dir: Option<PathBuf>,
+    /// Output path for the Markdown body, or `-` for stdout.
+    #[arg(short, long, default_value = "-")]
+    output: PathBuf,
+    /// Also keep the exported Links Notation context at this path.
+    #[arg(long)]
+    context_output: Option<PathBuf>,
+    /// Link harness, server, and merged captures as three distinct files.
+    #[arg(long)]
+    separate_context_links: bool,
+    /// Which surface is filing this report.
+    #[arg(long, default_value = DEFAULT_SURFACE)]
+    surface: String,
+    /// Largest context attached inline, in bytes.
+    #[arg(long, default_value_t = DEFAULT_INLINE_BYTES)]
+    max_inline_bytes: usize,
+    /// Largest excerpt kept inline once the full context is attached.
+    #[arg(long, default_value_t = DEFAULT_EXCERPT_BYTES)]
+    max_excerpt_bytes: usize,
+    /// Where a context too large to inline is attached in full.
+    #[arg(long, value_enum, default_value_t = OversizeContext::Gist)]
+    oversize: OversizeContext,
+    /// Visibility of that gist. Conversations are private by default.
+    #[arg(long, value_enum, default_value_t = GistVisibility::Secret)]
+    gist_visibility: GistVisibility,
 }
 
 /// What to do with a context too large to attach inline.
@@ -127,55 +141,177 @@ enum GistVisibility {
 
 pub fn run_report(args: ReportArgs) -> Result<(), Box<dyn Error>> {
     match args.action {
-        ReportAction::Body {
-            session,
-            source,
-            db,
-            log_dir,
-            output,
-            context_output,
-            separate_context_links,
-            surface,
-            max_inline_bytes,
-            max_excerpt_bytes,
-            oversize,
+        ReportAction::Body(options) => run_report_body(options),
+        ReportAction::CreateIssue {
+            options,
+            repo,
+            title,
+        } => create_report_issue(options, &repo, &title),
+    }
+}
+
+fn run_report_body(options: ReportBodyOptions) -> Result<(), Box<dyn Error>> {
+    let ReportBodyOptions {
+        session,
+        source,
+        db,
+        log_dir,
+        output,
+        context_output,
+        separate_context_links,
+        surface,
+        max_inline_bytes,
+        max_excerpt_bytes,
+        oversize,
+        gist_visibility,
+    } = options;
+    let (session, context) = exported_context(&session, source, db.as_deref(), log_dir.as_deref())?;
+    let lino = conversation_context_to_lino(&session, &context);
+    let context_path = context_path(context_output, &session);
+    std::fs::write(&context_path, &lino)?;
+    let settings = AttachmentSettings {
+        max_inline_bytes,
+        max_excerpt_bytes,
+        oversize,
+        gist_visibility,
+    };
+    let attachments = if separate_context_links && source == ContextSource::Both {
+        separate_context_attachments(
+            &session,
+            db.as_deref(),
+            log_dir.as_deref(),
+            &context_path,
+            &lino,
             gist_visibility,
-        } => {
-            let (session, context) =
-                exported_context(&session, source, db.as_deref(), log_dir.as_deref())?;
-            let lino = conversation_context_to_lino(&session, &context);
-            let context_path = context_path(context_output, &session);
-            std::fs::write(&context_path, &lino)?;
-            let settings = AttachmentSettings {
-                max_inline_bytes,
-                max_excerpt_bytes,
-                oversize,
-                gist_visibility,
-            };
-            let attachments = if separate_context_links && source == ContextSource::Both {
-                separate_context_attachments(
-                    &session,
-                    db.as_deref(),
-                    log_dir.as_deref(),
-                    &context_path,
-                    &lino,
-                    gist_visibility,
-                )?
-            } else {
-                vec![attach_context(&lino, &context_path, &session, &settings)?]
-            };
-            let body = bound_report_body(report_body(
-                &session,
-                source,
-                &surface,
-                &context,
-                &lino,
-                attachments,
-            ));
-            write_output(&output, &body.render())?;
+        )?
+    } else {
+        vec![attach_context(&lino, &context_path, &session, &settings)?]
+    };
+    let body = bound_report_body(report_body(
+        &session,
+        source,
+        &surface,
+        &context,
+        &lino,
+        attachments,
+    ));
+    write_output(&output, &body.render())?;
+    Ok(())
+}
+
+/// A named CLI action keeps its mutation visible to host approval. No uncertain
+/// issue submission is retried; prepared body/context stay local on failure.
+fn create_report_issue(
+    mut options: ReportBodyOptions,
+    repo: &str,
+    title: &str,
+) -> Result<(), Box<dyn Error>> {
+    if repo.split('/').count() != 2
+        || !repo.split('/').all(|part| {
+            !part.is_empty()
+                && part
+                    .chars()
+                    .all(|character| character.is_ascii_alphanumeric() || "_.-".contains(character))
+        })
+    {
+        return Err(config("issue-report-destination-invalid").into());
+    }
+    if title.trim().is_empty() || title.len() > 1024 {
+        return Err(config("issue-report-title-invalid").into());
+    }
+    which::which("gh").map_err(|error| {
+        formal_ai::seed::fill_template_once(
+            &config("issue-report-submit-unavailable"),
+            &[("error", &error.to_string())],
+        )
+    })?;
+    let directory = create_report_directory()?;
+    if options.output == Path::new("-") {
+        options.output = directory.join("body.md");
+    }
+    if options.context_output.is_none() {
+        options.context_output = Some(directory.join("context.lino"));
+    }
+    let body = options.output.clone();
+    run_report_body(options)?;
+    let mut command = Command::new("gh");
+    command
+        .args([
+            "issue",
+            "create",
+            "--repo",
+            repo,
+            "--title",
+            title,
+            "--body-file",
+        ])
+        .arg(&body);
+    let output = formal_ai::bounded_process::command_output(
+        command,
+        std::time::Duration::from_secs(120),
+        65_536,
+        65_536,
+    )
+    .map_err(|failure| {
+        std::io::Error::new(
+            failure.kind(),
+            formal_ai::seed::fill_template_once(
+                &config("issue-report-submit-uncertain"),
+                &[
+                    ("body", &body.display().to_string()),
+                    ("error", &failure.to_string()),
+                ],
+            ),
+        )
+    })?;
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let prefix = format!("https://github.com/{repo}/issues/");
+    let url = stdout.lines().map(str::trim).find(|line| {
+        line.strip_prefix(&prefix).is_some_and(|number| {
+            number.parse::<u64>().is_ok_and(|value| value > 0)
+                && number.bytes().all(|byte| byte.is_ascii_digit())
+        })
+    });
+    if output.status.success()
+        && let Some(url) = url
+    {
+        println!("{url}");
+        Ok(())
+    } else {
+        Err(formal_ai::seed::fill_template_once(
+            &config("issue-report-submit-uncertain"),
+            &[
+                ("body", &body.display().to_string()),
+                ("error", String::from_utf8_lossy(&output.stderr).trim()),
+            ],
+        )
+        .into())
+    }
+}
+
+fn create_report_directory() -> Result<PathBuf, Box<dyn Error>> {
+    let nonce = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)?
+        .as_nanos();
+    for attempt in 0..8 {
+        let directory = std::env::temp_dir().join(format!(
+            "formal-ai-report-{}-{nonce}-{attempt}",
+            std::process::id()
+        ));
+        let mut builder = std::fs::DirBuilder::new();
+        builder.recursive(false);
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::DirBuilderExt;
+            builder.mode(0o700);
+        }
+        match builder.create(&directory) {
+            Ok(()) => return Ok(directory),
+            Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {}
+            Err(error) => return Err(error.into()),
         }
     }
-    Ok(())
+    Err(config("issue-report-directory-collisions").into())
 }
 
 /// Keep the GitHub document bounded while the complete context stays attached.

@@ -708,3 +708,25 @@ jobs:
           path: ${{ runner.temp }}/hive-final-acceptance/acceptance.json
           if-no-files-found: error
           retention-days: 90
+  cleanup-request:
+    name: Request terminal owner cleanup beyond the workflow chain limit
+    needs: [admission, image, delivery, verification, ledger, acceptance]
+    if: ${{ always() && needs.admission.outputs.admitted == 'true' &&
+      needs.admission.outputs.execute == 'true' && github.run_attempt == 1 }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Dispatch exactly one authenticated cleanup request with the default token
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/request-owned-hive-cleanup.mjs

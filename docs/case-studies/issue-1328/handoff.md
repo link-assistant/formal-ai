@@ -9,7 +9,131 @@ concurrency fixture is now manual-only and explicitly unproven; see the
 [recorded deferral](critical-delivery-scope.md#recorded-follow-up). Its prior
 strict-final Unknown remains a failed attempt, not a skipped check or a pass.
 
-## Latest continuation: 26 October 2026
+## Latest continuation: expanded PR 1437, 27 October 2026
+
+The current batch also addresses issues [1438](https://github.com/link-assistant/formal-ai/issues/1438),
+[1395](https://github.com/link-assistant/formal-ai/issues/1395), and
+[1396](https://github.com/link-assistant/formal-ai/issues/1396). Their requirements
+are recorded in the respective issue shards. The previous pushed head passed all
+16 applicable workflows; that evidence does not qualify this expanded batch.
+Require fresh exact-head CI, including native compilation and parity in CI only.
+The H5 coverage and JavaScript shards also exposed older fixtures that still
+expected compound report scripts or supplied an opaque Read before a whole-file
+write. Migrate those fixtures to the named submission and provider-owned complete
+reads, retaining the executable body-content checks and the opaque-read refusal
+regression. Preserve general substitution semantics across arbitrary extensions,
+escaped literals, insertion and deletion. Bound the notation fixture to eight
+planner steps. Add the real Rust function citation for the new JavaScript literal
+planner, spell its new binding in full, and regenerate the single status surface.
+These fixtures retain every quality ceiling and production oracle. The remaining
+Rust lint failures require reading the existing shared literal-edit wording,
+storing submission diagnostics in agent-info data, defining the four practical
+guidance identifiers in the already loaded meanings registry, and correcting
+visibility inside private modules. The closure gap and prose allowlist remain
+at their reviewed values; no exception or ceiling increase is introduced.
+
+The expanded H3 batch exposed an unused legacy report scratch builder under
+warnings-as-errors and required recording the improved literal-predicate debt
+ceiling. Remove that obsolete builder in both maintained languages and record
+the actual procedural integration in the boundary census; keep all semantic
+quality checks and native acceptance requirements. The full JavaScript planner
+also replayed the original contextual edit as Read, Edit, Read while preserving
+physical CRLF and Unicode source bytes. A large whole-ledger literal edit was
+interrupted and decomposed into small verified edits; it grants no autonomous
+implementation credit.
+
+The public reporting reproduction also exposed contextual source corruption:
+provider line numbers were written into a Rust file. Contextual single-line
+changes now use an exact literal Edit and a fresh Read; ambiguous provider output
+cannot authorize a whole-file Write. Reporting uses one inspectable named
+submission command, preserves complete context, bounds the child process, and
+retains the prepared report after uncertain submission without retrying creation.
+Host approval refusals remain authoritative and are reported honestly.
+
+The browser failures came from choosing encyclopedic search for a first-person
+practical need and losing its goal in a follow-up. A data-owned goal reader now
+selects trusted-source guidance in English, Russian, Hindi, Chinese and Spanish. Minimal
+curated evidence is distinguished from fetched evidence; empty-cache discovery
+has a byte limit, read limit and deadline. Unavailable or irrelevant evidence
+produces a targeted question. The same reader controls formal claim admission;
+quoted, negated and unrelated requests must remain outside this route.
+
+JavaScript Formal AI applied small file edits and larger literal replacements,
+with expected-content verification. Implementation text was supplied by the
+operator: autonomous implementation credit is zero. A larger behavioral-only ask
+was not solved autonomously and was decomposed into explicit edits. During this
+batch, one malformed intermediate worker edit prevented Formal AI from booting;
+its syntax was repaired directly to restore the tool, then edits resumed through
+Formal AI. This is recovery evidence, not a claimed self-coding success.
+
+A subsequent browser OCR export timeout exposed an unrelated external-network
+dependency: an attachment filename was treated as a hostname. URL readers now
+use the shared attachment-section boundary in both runtimes. The OCR persistence
+test keeps its real worker, image, OCR and memory-export assertions while
+emulating unavailable external services; failures print worker diagnostics.
+The same batch addresses macOS compiler setup failing to resolve the official
+Rust distribution host. Retry only a transient, fully settled installation
+failure once; preserve the exact compiler, target and later source/signature
+checks. Mocked setup tests never invoke Rust locally.
+The attachment URL regression now forces offline mode and documents its entire
+expected answer. This satisfies the tests-as-documentation gate without adding
+an allowlist entry or depending on external network state.
+The next web gate exposed the registered Spanish locale missing from the new
+guidance and language evidence. Add Spanish through the same goal and response
+data, show full answer examples in every registered language, and mirror the
+follow-up and unavailable-evidence regressions in native CI. Keep the response
+parity debt ceiling unchanged; do not record the omission as new accepted debt.
+Native coverage also checks the canonical role registry. Regenerate its object
+and procedure declarations from the meaning records, and check the generated
+registry locally before pushing. This changes no role-closure exception.
+The seed integrity test rejects pipe-packed policy lists. Store practical
+vocabulary as ordered rule-table rows and read those rows in both runtimes;
+retain scalar policy values for single values and the existing goal extension
+test. No data-integrity exception is added.
+Native coverage found that unavailable-source wording was classified as a
+factual question and removed by the question-necessity gate. Make the intended
+request for the user's choice explicit in every registered language. Native
+regressions require the complete answer and an authorized necessity trace;
+the existing classifier, question budget and factual-question refusal remain.
+Register the practical-goal component under the existing Generic interpreter
+boundary category; the component metadata must use the canonical category
+rather than inventing a new category for the same kind of interpreter.
+The new browser regressions pass locally without WASM or native execution.
+The source-only refresh of the carried agent-info projection uses the pinned
+portable JavaScript frontend and existing blocker analyzer. It reproduces the
+old projection byte for byte, classifies all three new items as still carried,
+and grants no translated-code credit. Full upstream regeneration remains a
+required independent CI oracle; no parser WASM was executed locally.
+Native regressions are drafted for CI; do not report native parity as verified
+until those current-head jobs pass. No personal session exports, user-created
+root source files or binaries were read, staged, executed or uploaded.
+
+## Prior PR 1437 continuation: 26 October 2026
+
+The ready follow-up is [PR 1437](https://github.com/link-assistant/formal-ai/pull/1437).
+Focused captured-replay, cleanup, admission and ledger checks pass locally.
+Its first CI batch found a stale assembled requirement part after the shard
+update. Regenerate it with `node scripts/assemble-requirements.mjs --write` and
+check with the same JavaScript twin; do not compile Rust locally. Retain the
+failed CI attempt and require fresh current-head CI after the complete fix batch.
+
+PR 1418 merged and v0.355.12 passed all main, publisher and public-download
+checks. Public Docker manifests, native/signing attestations, the browser Worker
+and package metadata were independently verified without local product
+downloads or native execution. The fresh three-client run passed every first
+delivery, but each repeat returned Hive's documented no-change exit 5. Coding
+acceptance remains pending. The focused follow-up uses Hive's supported
+compatibility setting only for the verified repeat, with the original oracle
+and no-write/no-commit checks intact. See the [captured cause and regression](released-client-no-change-exit.md).
+The released workflow chain also exhausted GitHub's `workflow_run` depth before
+cleanup. The follow-up explicitly dispatches trusted cleanup with the default
+token, authenticates the exact terminal owner with a finite read-only wait, and
+preserves immutable claims and protected references. Read-only audits remain
+read-only; no extra credential is required.
+Do not rerun owner 40377859689 or any immutable claim. Require a new qualified
+source, released-client attempt and terminal authenticated cleanup.
+
+## Previous PR 1418 continuation
 
 PR 1418 also fixes the actual v0.355.11 acceptance failures: endpoint query
 classification, duplicate aggregated tool histories, own Hive session notices

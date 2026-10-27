@@ -59,13 +59,13 @@ pub fn try_http_fetch_with_offline(
 /// Unlike [`try_http_fetch_with_offline`], this entry point does not ask a
 /// second verb recognizer whether the already-routed request really meant
 /// fetch.  The URL remains structural and is parsed from the original prompt;
-/// all execution, cache, provenance, and offline behaviour is the same.
+/// Attachment metadata stays outside URL operands; cache and offline behaviour stay the same.
 pub fn try_routed_http_fetch_with_offline(
     prompt: &str,
     log: &mut EventLog,
     offline: bool,
 ) -> Option<SymbolicAnswer> {
-    let url = crate::capability_routing::first_url(prompt)?;
+    let (_, url) = first_url_candidate(prompt)?;
     Some(answer_http_fetch_url(prompt, &url, log, offline))
 }
 

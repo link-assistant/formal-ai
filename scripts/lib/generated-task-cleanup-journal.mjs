@@ -6,6 +6,7 @@ export const effectOwnerArtifact = 'hive-real-effect-owner';
 export const cleanupWorkflow = '.github/workflows/hive-original-delivery-finalize.yml';
 const source = /^[a-f0-9]{40}$/u, hash = /^[a-f0-9]{64}$/u;
 const cleanupRoots = ['scripts/finalize-owned-hive-delivery-runs.mjs',
+  'scripts/request-owned-hive-cleanup.mjs',
   'scripts/lib/generated-task-cleanup-journal.mjs', 'scripts/finalize-generated-test-issues.mjs',
   'scripts/lib/generated-task-custody.mjs', 'scripts/close-finished-test-issues.mjs',
   'scripts/lib/hive-isolated-task.mjs', 'scripts/lib/hive-delivery-evidence.mjs',

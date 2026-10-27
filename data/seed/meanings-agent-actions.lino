@@ -1,4 +1,36 @@
 meanings
+  practical-help
+    defined-by concept
+    role procedure
+    precondition "a first-person request names a goal declared by the practical guidance policy"
+    effect "selects source-supported guidance or a targeted clarification for that goal"
+    unit "not applicable"
+    example "a request to use a toilet selects the registered toilet goal"
+    grounding "data/seed/handler-rules.lino"
+  toilet
+    defined-by concept
+    role object
+    precondition "a practical request asks to use a toilet or describes an urgent bowel need"
+    effect "names the goal whose guidance is grounded in the declared NHS source"
+    unit "not applicable"
+    example "the toilet goal binds its source and response identifiers"
+    grounding "https://www.nhs.uk/conditions/constipation/"
+  practical-help-toilet
+    defined-by answer
+    role localized_response_template
+    precondition "the selected toilet goal has supporting trusted-source evidence"
+    effect "renders actionable guidance in the user's language with its source link"
+    unit "not applicable"
+    example "the response recommends using a toilet and asks for the remaining difficulty"
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
+  practical-help-toilet-unavailable
+    defined-by answer
+    role localized_response_template
+    precondition "the selected toilet goal lacks usable trusted-source evidence"
+    effect "asks which practical difficulty the user needs help with without claiming a fetched answer"
+    unit "not applicable"
+    example "the response asks whether the difficulty is finding a toilet or being unable to go"
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
   formalize_document_action
     defined-by action
     role agent_action_formalize_verb

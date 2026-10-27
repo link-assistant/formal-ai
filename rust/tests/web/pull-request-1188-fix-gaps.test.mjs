@@ -13,6 +13,7 @@ import { createHash } from 'node:crypto';
 
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+import { completeOwnedSourceReadFrame } from '../../../js/agentic/tool_result.mjs';
 
 let planChatStep;
 let sequenceSteps;
@@ -315,7 +316,7 @@ test('formal rewrite queries validate escaped literals before the prose quote gu
   assert.equal(read.calls[0].tool, 'read');
   messages.push({ role: 'assistant', content: '', tool_calls: [{ id: 'read', type: 'function', function: {
     name: 'read', arguments: read.calls[0].arguments,
-  } }] }, { role: 'tool', tool_call_id: 'read', content: source });
+  } }] }, { role: 'tool', tool_call_id: 'read', content: completeOwnedSourceReadFrame(source) });
   const write = await planChatStep(messages, ['read', 'write']);
   assert.equal(write.calls[0].tool, 'write');
   assert.equal(JSON.parse(write.calls[0].arguments).content, 'fn main() {\n}\n');

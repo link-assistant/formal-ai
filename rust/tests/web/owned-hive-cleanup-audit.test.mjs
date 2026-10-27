@@ -28,7 +28,10 @@ test('PR and manual audits have read-only scope and cannot enter the mutating cl
  assert.match(audit.if,/head.repo.full_name == github.repository/u);
  assert.match(audit.if,/Cleanup-audit-owner:/u);
  assert(audit.steps.filter(step=>step.uses?.startsWith('actions/checkout@')).every(step=>step.with['persist-credentials']===false));
- assert.equal(workflow.jobs.prepare.if.includes('workflow_dispatch'),false);
+ const prepare=(github,inputs)=>Function('github','inputs','return ('+workflow.jobs.prepare.if.slice(3,-3)+')')(github,inputs);
+ assert.equal(prepare({event_name:'workflow_dispatch',ref:'refs/heads/main'},{mode:'checks'}),false);
+ assert.equal(prepare({event_name:'workflow_dispatch',ref:'refs/heads/main'},{mode:'checks',cleanup:true}),true);
+ assert.equal(prepare({event_name:'workflow_dispatch',ref:'refs/heads/other'},{mode:'checks',cleanup:true}),false);
  assert.equal(workflow.jobs.prepare.if.includes('pull_request'),false);
  assert.equal(workflow.jobs.sweep.needs,'prepare');
  assert(audit.steps.filter(step=>step.run).every(step=>!step.run.includes('${{')),'owner input stays in environment data');
@@ -36,6 +39,8 @@ test('PR and manual audits have read-only scope and cannot enter the mutating cl
  assert.deepEqual(workflow.on.pull_request['branches-ignore'],['e2e/**']);
  assert(workflow.on.pull_request.paths.includes('scripts/lib/hive-isolated-task.mjs'), 'owned fixture changes must trigger the read-only audit');
  assert.deepEqual(workflow.on.workflow_dispatch.inputs.mode.options,['checks']);
+ assert.equal(workflow.on.workflow_dispatch.inputs.cleanup.default,false);
+ assert.match(audit.if,/inputs.mode == 'checks'/u);
  assert(workflow.on.workflow_dispatch.inputs['pull-request']);
 });
 test('standard checks dispatch reads its owner from exact-head PR metadata without inventing an audit',async()=>{

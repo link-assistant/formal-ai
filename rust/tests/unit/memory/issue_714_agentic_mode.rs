@@ -26,14 +26,16 @@ fn report_action_calls_gh_through_the_advertised_shell_tool() {
     assert_eq!(calls[0].tool, "bash");
     let arguments: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
     let command = arguments["command"].as_str().unwrap();
-    // A multi-line script under `set -eu`, so a failed preflight or a failed
-    // body render stops before `gh issue create` (#839 §5).
-    assert!(command.starts_with("set -eu\n"), "{command}");
+    // The CLI owns preflight, body rendering and the single gh submission.
     assert!(
-        command.contains("--repo link-assistant/formal-ai"),
+        command.starts_with("formal-ai report create-issue "),
         "{command}"
     );
-    assert!(command.contains("formal-ai report body"), "{command}");
+    assert!(
+        command.contains("--repo 'link-assistant/formal-ai'"),
+        "{command}"
+    );
+    assert!(command.contains("--separate-context-links"), "{command}");
     assert!(command.contains("--source both"), "{command}");
     assert!(!command.contains("curl"), "{command}");
     assert!(!command.contains("I do not have an age."), "{command}");
@@ -70,7 +72,7 @@ fn localized_report_actions_route_to_shell() {
             panic!("{language} report action did not emit a shell call");
         };
         assert_eq!(calls[0].tool, "bash", "language={language}");
-        assert!(calls[0].arguments.contains("gh issue create"));
+        assert!(calls[0].arguments.contains("formal-ai report create-issue"));
     }
 }
 
@@ -152,7 +154,8 @@ fn ordinary_report_writing_is_not_mistaken_for_issue_reporting() {
         assert!(
             calls
                 .iter()
-                .all(|call| !call.arguments.contains("gh issue create")),
+                .all(|call| !call.arguments.contains("gh issue create")
+                    && !call.arguments.contains("formal-ai report create-issue")),
             "ordinary report unexpectedly created an issue: {calls:?}"
         );
     }

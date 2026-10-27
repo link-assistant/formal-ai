@@ -640,6 +640,15 @@ run is a no-op success. No run may make more than two identical failing calls.
 Released-image Hive `/claude`, `/codex` and `/agent` outcomes must also be zero;
 candidate-image results do not establish released-image acceptance.
 
+For Hive revisions whose documented no-change process status is 5, the verified
+repeat uses the supported `HIVE_MIND_SOLVE_NO_CHANGES_EXIT_CODE=0` invocation
+setting, forwarded into its container. The first delivery explicitly retains 5
+so an inherited override cannot excuse missing work. The original harness must
+still exit zero and pass every assertion, and the repeat must independently
+preserve source bytes, file identities and commits without mutation calls.
+Never rewrite failed observations or add artificial changes to satisfy a change
+counter. See the [released failure and compatibility boundary](../../case-studies/issue-1328/released-client-no-change-exit.md).
+
 The published runtime must include the real Claude, Codex and Agent executables
 and the MCP prerequisites required by the original Hive defaults. Verify those
 prerequisites in the final task image before transferring it or creating issues;
@@ -678,6 +687,13 @@ test and evidence finalization are terminal. Record pass/failure/cancellation
 and the run link. Preserve active or unproven issues; never close feature issues
 based on title, age or labels alone. Cleanup must run for failed and cancelled
 tests too, with bounded recovery for interrupted finalization.
+When a released-owner chain exhausts GitHub's `workflow_run` depth, explicitly
+dispatch trusted-main cleanup with the default Actions token, naming its exact
+run, attempt and protocol commit. Wait only a finite number of read-only polls
+for owner completion; authenticate source custody before the immutable cleanup
+claim and every effect. Standard checks dispatches stay read-only. Dispatch is
+not cleanup credit, uncertain mutations never retry, and existing claims remain
+quarantined rather than replayed.
 
 Live service/authentication/publication behavior remains independently checked
 by the final real run; replay success alone is not proof that GitHub is usable.

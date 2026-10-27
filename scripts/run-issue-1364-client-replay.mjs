@@ -17,7 +17,7 @@ import {createIsolatedTask, requireIsolatedIssue, requireIsolatedPullRequest,
   isolatedTaskTransport, isolatedFixturePrefix} from './lib/hive-isolated-task.mjs';
 import {replaySchema, contentDigest, runtimeImageDigest, requireReplayTask, adaptReplayEntrypoint,
   taskSnapshot, requireNoopTask, requireActualTaskCi, requireTaskObligations,
-  canonicalCapturedMessages, auditCapturedActions} from './lib/issue-1364-replay-contract.mjs';
+  canonicalCapturedMessages, auditCapturedActions, replayPassEnvironment} from './lib/issue-1364-replay-contract.mjs';
 const optionNames = ['--tool','--source','--image','--output'];
 function argumentsOf(values) {
   assert.equal(values.length, 8);
@@ -144,7 +144,7 @@ export async function runIssue1364Replay(options, environment=process.env) {
   async function onePass(index) {
     const directory=path.join(owned,'pass-'+index);fs.mkdirSync(directory,{mode:0o777});fs.chmodSync(directory,0o777);
     fs.writeFileSync(path.join(directory,'source-binary-identity.json'),JSON.stringify(identity,null,2)+'\n',{flag:'wx'});
-    const env={...requestEnvironment,E2E_LOG_DIR:directory,E2E_IMAGE:bundle.imageId,E2E_TOOL:tool,E2E_KEEP:'true'};
+    const env={...replayPassEnvironment(requestEnvironment,index),E2E_LOG_DIR:directory,E2E_IMAGE:bundle.imageId,E2E_TOOL:tool,E2E_KEEP:'true'};
     fs.writeFileSync(wrapper,adaptReplayEntrypoint(original,task,workspace),{flag:index===1?'wx':'w',mode:0o600});
     const stdout=await execute(process.execPath,[wrapper,'--tool',tool,'--model','formal-ai','--issue',task.issueUrl,'--keep'],
       {cwd:hive,env,timeout:index===1?540000:420000,captureDirectory:directory});

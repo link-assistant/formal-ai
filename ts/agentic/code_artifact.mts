@@ -2,6 +2,8 @@
 // (rust/src/agentic_coding/code_artifact.rs).
 
 import { Capability } from './capability.mjs';
+import {planLiteralArtifactEdit} from './artifact_literal_edit.mjs';
+import {Progress} from './progress.mjs';
 import { classifyTool, toolFor } from './capability_router.mjs';
 import { plainText } from './content.mjs';
 import { agenticMessage } from './messages.mjs';
@@ -80,6 +82,8 @@ export function planCodeArtifactStep(rawTask, messages, toolNames) {
   if (artifact) {
     const rewrite = requestedRewrite(task, artifact);
     if (!rewrite) return null;
+    const literalEdit = planLiteralArtifactEdit(artifact,rewrite,current,toolNames);
+    if (literalEdit) return literalEdit;
     const result = latestResult(current, Capability.Write);
     if (result !== null) {
       const read = latestResult(current, Capability.Read);
@@ -98,6 +102,9 @@ export function planCodeArtifactStep(rawTask, messages, toolNames) {
         }));
       }
       if (outcome.output === currentSource) return finalAnswer(agenticMessage('code_artifact_no_match', { path: artifact.path }));
+      const observed = Progress.scan(current).sourceReadFor(artifact.path);
+      if (!observed?.complete || observed.error || observed.source !== currentSource) return finalAnswer(
+        agenticMessage('code-artifact-literal-unverified',{path:artifact.path}));
       return planOne(writeTool, writeArguments(artifact.path, outcome.output));
     }
     const readTool = toolFor(toolNames, Capability.Read);

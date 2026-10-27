@@ -188,27 +188,27 @@ fn opencode_report_selection_runs_one_command_per_destination() {
     assert!(!server.contains("gh issue create"), "{server}");
 
     let github = next_command(&mut messages);
-    assert!(github.contains("gh issue create"), "{github}");
+    assert!(
+        github.starts_with("formal-ai report create-issue "),
+        "{github}"
+    );
     assert!(github.contains("--source both"), "{github}");
     // The body is rendered by a testable command and handed over as a file;
     // #838 was filed by a `tail -c 12000` of a proxy trace instead.
-    assert!(github.contains("formal-ai report body"), "{github}");
-    assert!(github.contains("--body-file"), "{github}");
+    assert!(github.contains("formal-ai report create-issue"), "{github}");
+    assert!(github.contains("--separate-context-links"), "{github}");
     assert!(!github.contains("tail -c"), "{github}");
     assert!(!github.contains("curl"), "{github}");
 
     // Every command the script runs is verified to exist first (#839, §5).
-    for command in [&harness, &server, &github] {
+    for command in [&harness, &server] {
         assert!(command.starts_with("set -eu\n"), "{command}");
         assert!(
             command.contains("command -v formal-ai >/dev/null 2>&1 ||"),
             "{command}"
         );
     }
-    assert!(
-        github.contains("command -v gh >/dev/null 2>&1 ||"),
-        "{github}"
-    );
+    assert!(!github.contains("set -eu"), "{github}");
 }
 
 /// The real session, not a hash of the first sentence.
@@ -232,7 +232,10 @@ fn a_report_without_an_issue_url_is_narrated_as_a_failure() {
         let _ = next_command(&mut messages);
     }
     let github = next_command(&mut messages);
-    assert!(github.contains("gh issue create"), "{github}");
+    assert!(
+        github.starts_with("formal-ai report create-issue "),
+        "{github}"
+    );
 
     let failed = final_message(&messages);
     assert!(!failed.contains("https://"), "{failed}");

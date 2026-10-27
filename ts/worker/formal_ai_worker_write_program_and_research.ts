@@ -788,7 +788,9 @@ function normalizeUrlCandidate(candidate) {
 }
 
 function firstUrlCandidate(prompt) {
-  const tokens = String(prompt || "").split(/\s+/);
+  const lines = String(prompt || "").split(/\r?\n/u);
+  const boundary = lines.findIndex(line => isDocumentOriginalitySectionLine(line.trim()));
+  const tokens = (boundary < 0 ? lines : lines.slice(0, boundary)).join(" ").split(/\s+/);
   for (const token of tokens) {
     const trimmed = trimUrlToken(token);
     const url = normalizeUrlCandidate(trimmed);

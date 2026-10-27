@@ -335,7 +335,15 @@ jobs:
           path: native-source
       - name: Import and verify exact source selection
         run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import native-source
+      - name: Install exact selected Rust compiler with bounded transport recovery
+        if: matrix.target == 'x86_64-apple-darwin'
+        timeout-minutes: 5
+        env:
+          SELECTED_RUST_TOOLCHAIN: ${{ needs.native-source.outputs.toolchain }}
+          SELECTED_RUST_TARGET: ${{ matrix.target }}
+        run: node scripts/install-selected-rust-toolchain.mjs "$SELECTED_RUST_TOOLCHAIN" "$SELECTED_RUST_TARGET"
       - uses: dtolnay/rust-toolchain@stable
+        if: matrix.target != 'x86_64-apple-darwin'
         with:
           toolchain: ${{ needs.native-source.outputs.toolchain }}
           targets: ${{ matrix.target }}

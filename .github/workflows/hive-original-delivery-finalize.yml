@@ -17,12 +17,22 @@ on: # zizmor: ignore[dangerous-triggers]
         type: choice
         default: checks
         options: [checks]
+      cleanup:
+        description: Explicitly authenticate and clean up the specified terminal owner
+        type: boolean
+        default: false
       pull-request:
         description: Pull request whose explicit audit owner is read from metadata
         type: string
       owner-run:
-        description: Original Hive owner to audit without mutations
+        description: Exact original Hive owner to audit or authenticate for cleanup
         required: false
+        type: string
+      owner-attempt:
+        description: Exact attempt required for explicit cleanup
+        type: string
+      owner-head:
+        description: Exact protocol commit required for explicit cleanup
         type: string
   pull_request:
     branches-ignore: ['e2e/**']
@@ -30,6 +40,8 @@ on: # zizmor: ignore[dangerous-triggers]
     paths:
       - .github/workflows/hive-original-delivery-finalize.yml
       - scripts/audit-owned-hive-cleanup.mjs
+      - scripts/finalize-owned-hive-delivery-runs.mjs
+      - scripts/request-owned-hive-cleanup.mjs
       - scripts/finalize-generated-test-issues.mjs
       - scripts/lib/hive-isolated-task.mjs
       - scripts/lib/generated-task-*.mjs
@@ -43,7 +55,7 @@ jobs:
   audit:
     name: Audit explicit owner without mutations
     if: >-
-      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_dispatch' && inputs.mode == 'checks' && !inputs.cleanup) ||
       (github.event_name == 'pull_request' &&
        github.event.pull_request.head.repo.full_name == github.repository &&
        contains(github.event.pull_request.body, 'Cleanup-audit-owner:'))
@@ -79,7 +91,8 @@ jobs:
           if-no-files-found: error
           retention-days: 7
   prepare:
-    if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_run'
+    if: ${{ (github.event_name == 'workflow_dispatch' && inputs.cleanup == true
+      && github.ref == 'refs/heads/main') || github.event_name == 'schedule' || (github.event_name == 'workflow_run'
       && github.event.workflow_run.head_repository.full_name ==
       github.repository) }}
     runs-on: ubuntu-24.04
@@ -98,6 +111,9 @@ jobs:
         id: prepare
         env:
           GH_TOKEN: ${{ github.token }}
+          CLEANUP_OWNER_RUN: ${{ inputs['owner-run'] || '' }}
+          CLEANUP_OWNER_ATTEMPT: ${{ inputs['owner-attempt'] || '' }}
+          CLEANUP_OWNER_HEAD: ${{ inputs['owner-head'] || '' }}
         run: >-
           node scripts/finalize-owned-hive-delivery-runs.mjs prepare >
           "$RUNNER_TEMP/preparation.json"

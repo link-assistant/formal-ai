@@ -1,6 +1,7 @@
 //! "How it works" follow-up handler extracted from `solver_handlers` to keep
 //! that module under the 1000-line cap enforced by `scripts/check-file-size.rs`.
 
+pub mod practical_help;
 use crate::concepts::{extract_concept_query, lookup_concept_query};
 use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
@@ -41,6 +42,9 @@ pub fn try_how_to_procedure(
 ) -> Option<SymbolicAnswer> {
     if crate::legality_warning::assess(prompt, normalized).is_some() {
         return None;
+    }
+    if let Some(answer) = practical_help::cached(prompt, normalized, log) {
+        return Some(answer);
     }
     let task = extract_procedural_how_to_task(normalized)?;
     for correction in &task.corrections {
@@ -170,6 +174,9 @@ pub fn try_procedural_how_to_followup(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    if let Some(answer) = practical_help::followup(prompt, normalized, log) {
+        return Some(answer);
+    }
     // The dispatch loop passes a lightly-cleaned `prompt.to_lowercase()` whose
     // punctuation survives, so "Can you give me specific instructions?" keeps its
     // trailing "?" and a phrase surface would miss. Canonicalise first, exactly

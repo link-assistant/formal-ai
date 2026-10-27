@@ -189,7 +189,7 @@ const CLASS_CLAIM_EVIDENCE = Object.freeze({
   concept_subject: (prompt) => extractConceptQuery(prompt) !== null || wordDefinitionTerm(prompt) !== null,
   definition_merge_term: (prompt) => extractDefinitionMergeTerm(prompt, true) !== null,
   mechanism_subject: (prompt) => Boolean(extractHowItWorksSubject(prompt, nativeLaneLowercase(prompt))),
-  procedure_task: (prompt) => extractProceduralHowToTask(normalizePrompt(prompt)) != null,
+  procedure_task: (prompt) => extractProceduralHowToTask(normalizePrompt(prompt)) != null || practicalHelpGoal(prompt) !== null,
   search_focus: (prompt, normalized) => Boolean((extractWebSearchRequest(prompt, normalized) || {}).query),
   conversation_topic_subject: (prompt) => handlerRuleSetClaims("conversation_topic", prompt, String(prompt || "").toLowerCase()),
   marketplace_scope: (prompt, normalized) => productSearchCatalogue().marketplaces.some((item) =>

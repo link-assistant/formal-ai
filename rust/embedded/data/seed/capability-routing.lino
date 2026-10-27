@@ -596,12 +596,12 @@ capability_routing
     handler procedural_how_to
     browser_handler tryProceduralHowTo
     admits_on procedure_task
-    because "issue 1175 R3: a procedure claims only with the task the how-to reader extracts"
+    because "a procedure claims only with an extracted how-to task or a registered first-person practical goal; issue 1395 uses the same evidence predicate as its answer reader"
   claim
     handler procedural_how_to_followup
     browser_handler tryProceduralHowToFollowup
     admits_on prior_procedure
-    because "issue 1175 R3: an elaboration claims only when the earlier turn was an answered how-to request whose task re-parses"
+    because "an elaboration claims only when the earlier answered turn re-parses as a how-to task or registered practical goal; unrelated latest turns do not inherit older goals"
   claim
     handler web_search
     browser_handler tryWebSearch

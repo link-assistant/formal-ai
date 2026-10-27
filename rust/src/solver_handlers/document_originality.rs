@@ -43,7 +43,7 @@ fn starts_with_marker(line: &str, kinds: &[&str]) -> bool {
     originality_markers(kinds).any(|marker| line.starts_with(marker))
 }
 
-fn is_section_line(line: &str) -> bool {
+pub(in crate::solver_handlers) fn is_section_line(line: &str) -> bool {
     originality_markers(&[SECTION]).any(|marker| line.eq_ignore_ascii_case(marker))
 }
 

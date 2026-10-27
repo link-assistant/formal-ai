@@ -91,6 +91,9 @@ requirement-areas
     match "repair"
     match "duplication"
     match "verifiable-task"
+  area practical-guidance
+    title "Practical guidance and user needs"
+    match "practical-"
   area reasoning-and-knowledge
     title "Reasoning and knowledge"
     match ""

@@ -6,6 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {createEvidenceClient} from './collect-test-replays.mjs';
+import {cleanupOwnerInput, waitForCleanupOwner} from './request-owned-hive-cleanup.mjs';
 import {effectOwnerArtifact, cleanupClaimName, validateCleanupCursor, prepareCleanupClaim, revalidateCleanupClaim, applyCleanupClaim,
   readScanCursor, makeScanProgress} from './lib/generated-task-cleanup-journal.mjs';
 const repository = 'link-assistant/formal-ai';
@@ -81,6 +82,21 @@ export async function applyOwnedHiveClaim({reader, producer, claimArtifactId, cl
   bounds: {retries: 0, logBytes: 1048576, logDownloadBytes: 8388608}}), ...dependencies} = {}) {
   return applyCleanupClaim({reader, producer, claimArtifactId, client, ...dependencies});
 }
+/** An explicit dispatch authenticates only its exact terminal owner, never a history scan. */
+export async function prepareExplicitHiveOwner({reader, producer, owner, wait = waitForCleanupOwner, ...dependencies}) {
+  await wait({reader, owner});
+  const listing = await reader.read(`repos/${repository}/actions/runs/${owner.id}/artifacts?name=${effectOwnerArtifact}&per_page=100`);
+  assert.equal(listing.total_count, 1, 'one immutable effect owner is required');
+  assert.ok(Array.isArray(listing.artifacts) && listing.artifacts.length === 1);
+  const metadata = listing.artifacts[0];
+  assert.equal(metadata.workflow_run?.id, owner.id); assert.equal(metadata.workflow_run.head_sha, owner.head_sha);
+  const prepared = await prepareCleanupClaim({reader, metadata, producer, ...dependencies});
+  assert.equal(prepared.run, owner.id); assert.equal(prepared.attempt, owner.run_attempt);
+  return {schema: 'owned-hive-cleanup-preparation/v1', repository, artifactName: effectOwnerArtifact,
+    owners: prepared.eligible ? [prepared] : [], retained: prepared.eligible ? [] : [prepared],
+    examined: 1, enumerationComplete: true, complete: false, incomplete: !prepared.eligible,
+    trigger: owner, progress: null, progressName: ''};
+}
 function producerFromEnvironment(environment) {
   assert.equal(environment.GITHUB_REPOSITORY, repository);
   return {run: Number(environment.GITHUB_RUN_ID), attempt: Number(environment.GITHUB_RUN_ATTEMPT),
@@ -140,7 +156,10 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     const position = options.has('--cursor') ? options.get('--cursor').split(':').map(Number) : null;
     const trigger = process.env.GITHUB_EVENT_NAME === 'workflow_run'
       ? JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8')).workflow_run : null;
-    const result = await prepareOwnedHiveRuns({reader, producer, trigger,
+    const result = process.env.GITHUB_EVENT_NAME === 'workflow_dispatch'
+      ? await prepareExplicitHiveOwner({reader, producer, owner: cleanupOwnerInput(
+        process.env.CLEANUP_OWNER_RUN, process.env.CLEANUP_OWNER_ATTEMPT, process.env.CLEANUP_OWNER_HEAD)})
+      : await prepareOwnedHiveRuns({reader, producer, trigger,
       cursor: position ? {page: position[0], offset: position[1]} : null,
       maxPages: Number(options.get('--pages') ?? 3), maxOwners: Number(options.get('--owners') ?? 3)});
     process.stdout.write(JSON.stringify(writeCleanupPreparation(result, directory), null, 2) + '\n');

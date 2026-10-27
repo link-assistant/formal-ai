@@ -21,8 +21,8 @@ translation_blockers
   blockers_per_item 5 203
   blockers_per_item 6 138
   blockers_per_item 7 105
-  blockers_per_item 8 84
-  blockers_per_item 9 85
+  blockers_per_item 8 83
+  blockers_per_item 9 86
   blockers_per_item 10 60
   blockers_per_item 11 42
   blockers_per_item 12 34
@@ -71,7 +71,7 @@ construct "arrow callback of .some()" items 167 only 0
 construct "undefined" items 160 only 0
 construct "method call .split()" items 148 only 0
 construct "arrow callback of .find()" items 147 only 0
-construct "method call .find()" items 142 only 0
+construct "method call .find()" items 143 only 0
 construct "assignment of a field or element" items 125 only 0
 construct "destructuring" items 125 only 0
 construct "method call .test()" items 120 only 0

@@ -141,7 +141,7 @@ fn every_selected_report_action_runs_as_its_own_executable_step() {
 
     let github = next_command(&mut messages, "https://github.com/o/r/issues/1");
     assert!(github.contains("--source both"), "{github}");
-    assert!(github.contains("gh issue create"), "{github}");
+    assert!(github.contains("formal-ai report create-issue"), "{github}");
 
     for command in [&harness, &server, &github] {
         assert!(!command.contains("curl"), "{command}");
@@ -174,7 +174,7 @@ fn narrated_question_tool_call_does_not_end_the_report_flow() {
     assert!(server.contains("--source server"), "{server}");
 
     let github = next_command(&mut messages, "https://github.com/o/r/issues/1");
-    assert!(github.contains("gh issue create"), "{github}");
+    assert!(github.contains("formal-ai report create-issue"), "{github}");
 }
 
 /// The planned steps are not just well-formed strings — they run.
@@ -206,6 +206,7 @@ fn every_planned_report_step_executes_its_selected_action() {
             "formal-ai",
             r#"#!/bin/sh
 printf 'formal-ai %s\n' "$*" >> "$REPORT_CAPTURE"
+if [ "$1 $2" = "report create-issue" ]; then exec gh issue create; fi
 out=
 while [ "$#" -gt 0 ]; do
   if [ "$1" = "--output" ]; then shift; out=$1; fi
@@ -261,7 +262,10 @@ fi
     assert!(actions.contains("--source harness"), "{actions}");
     assert!(actions.contains("--source server"), "{actions}");
     assert!(actions.contains("--source both"), "{actions}");
-    assert!(actions.contains("formal-ai report body"), "{actions}");
+    assert!(
+        actions.contains("formal-ai report create-issue"),
+        "{actions}"
+    );
     assert!(actions.contains("gh issue create"), "{actions}");
     assert!(last_stdout.contains("/issues/99999"), "{last_stdout}");
     std::fs::remove_dir_all(root).expect("remove report fixture");
