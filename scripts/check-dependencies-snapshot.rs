@@ -1,6 +1,5 @@
 //! Registry snapshot I/O; action sub-paths share exact authenticated release records.
 use super::*;
-use std::fmt::Write as _;
 
 /// Read legacy full entries and bounded direct references to shared action releases.
 pub fn read_snapshot(path: &Path) -> Option<Snapshot> {

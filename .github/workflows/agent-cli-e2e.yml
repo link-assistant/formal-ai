@@ -25,14 +25,13 @@ on:
     inputs:
       full-replay:
         description: >-
-          Replay every recorded scenario. `main`, scheduled runs, manual
-          dispatches, and pull requests that change agentic routing pass true;
-          other feature branches run the held-out generalization gates instead
-          (issues #1107 and #1137). Those
-          gates are the ones that fail when the planner has been overfitted to
-          the recorded scenarios, which is the regression a branch can
-          introduce; the remaining steps re-verify scenarios already pinned on
-          `main`, and every one of them still runs before a merge lands.
+          Replay every recorded scenario when explicitly selected. During the
+          temporary critical-coding profile, routing changes on pull requests
+          or FORMAL_AI_FULL_AGENT_REPLAY=run select it. Ordinary runs retain
+          coding, resumed execution, issue reporting, TUI reporting, self-coding,
+          client-execution learning and held-out generalization. Noncritical
+          recorded scenarios and long method-learning/computer-record replays
+          are deferred. See docs/ci-cd/speed.md for retained checks and controls.
         required: false
         type: boolean
         default: true
@@ -214,10 +213,10 @@ jobs:
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
       - name: "Run agent CLI E2E — literal payload containing an edit phrase (issue #708)"
-        if: ${{ matrix.part == 'scenarios' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
+        if: ${{ matrix.part == 'scenarios' && steps.ledger.outputs.already-green != 'true' }}
         run: PORT=8808 experiments/agent_cli_e2e/run_issue_708.sh
       - name: "Run agent CLI E2E — file-creation routes to write not read (issue #681)"
-        if: ${{ matrix.part == 'scenarios' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
+        if: ${{ matrix.part == 'scenarios' && steps.ledger.outputs.already-green != 'true' }}
         env:
           PORT: 8775
           TASK: "Create a file named hello.txt with the content hello world"
@@ -226,7 +225,7 @@ jobs:
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
       - name: "Run agent CLI E2E — existing issue reference does not file a duplicate (issue #730)"
-        if: ${{ matrix.part == 'scenarios' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
+        if: ${{ matrix.part == 'scenarios' && steps.ledger.outputs.already-green != 'true' }}
         env:
           PORT: 8781
           TASK: "For existing issue-730, create file issue-730-finding.md containing provenance paths are portable"
@@ -245,7 +244,7 @@ jobs:
         timeout-minutes: 6
         run: NODE_PORT=8944 SPLIT_PORT=8945 experiments/agent_cli_e2e/run_issue_1066.sh
       - name: "Run agent CLI E2E — generated programs use harness commands (issue #716)"
-        if: ${{ matrix.part == 'scenarios' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
+        if: ${{ matrix.part == 'scenarios' && steps.ledger.outputs.already-green != 'true' }}
         env:
           PORT: 8776
           TASK: "Give me hello world program in Rust"
@@ -257,12 +256,12 @@ jobs:
             ./main
         run: experiments/agent_cli_e2e/run_agent_cli.sh
       - name: "Run agent CLI E2E — compile and execute a resumed substitution export (issue #936)"
-        if: ${{ matrix.part == 'scenarios' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
+        if: ${{ matrix.part == 'scenarios' && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 5
         env: { PORT: 8936 }
         run: experiments/agent_cli_e2e/run_issue_936.sh
       - name: "Run agent CLI E2E — auto-learn client execution architecture (issue #716)"
-        if: ${{ matrix.part == 'scenarios' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
+        if: ${{ matrix.part == 'scenarios' && steps.ledger.outputs.already-green != 'true' }}
         env:
           PORT: 8777
           TASK: "Use Formal AI auto-learning to inspect the persisted issue 716 client-execution failures as an associative links network, rank the observations and architectural amendments, keep promotion human-review gated, and write client-execution-learning-report.lino."
@@ -280,7 +279,7 @@ jobs:
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
       - name: "Run agent CLI E2E — report action executes gh (issue #714)"
-        if: ${{ matrix.part == 'scenarios' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
+        if: ${{ matrix.part == 'scenarios' && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 3
         env:
           PORT: 8780
@@ -319,12 +318,12 @@ jobs:
             "$TEST_BUDGET_SECONDS" "Held-out computer-use generalization E2E" \
             experiments/agent_cli_e2e/run_issue_707_generalization.sh
       - name: "Run agent CLI E2E — filed report stays readable and bounded (issue #771)"
-        if: ${{ matrix.part == 'scenarios' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
+        if: ${{ matrix.part == 'scenarios' && steps.ledger.outputs.already-green != 'true' }}
         env:
           PORT: 8781
         run: experiments/agent_cli_e2e/run_issue_771.sh
       - name: "Run agent CLI E2E — confirmed complete-context reports (issue #822)"
-        if: ${{ matrix.part == 'scenarios' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
+        if: ${{ matrix.part == 'scenarios' && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 10
         env:
           PORT: 8783
@@ -353,7 +352,7 @@ jobs:
           PORT: 8785
         run: experiments/issue_840_reference_agents/run_differential_gate.sh
       - name: "Run OpenCode TUI E2E — report multiselect and issue body (issue #838)"
-        if: ${{ matrix.part == 'scenarios' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
+        if: ${{ matrix.part == 'scenarios' && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 3
         env: { PORT: 8804, ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/report-flow }
         run: experiments/agent_cli_e2e/run_issue_819_report_tui.sh

@@ -72,7 +72,7 @@ fn shared_action_releases_round_trip_with_and_without_a_root_action() {
             })
             .collect();
         let (findings, unknown) = compare(&dependencies, &loaded);
-        assert!(unknown.is_empty());
+        assert_eq!(unknown, [] as [String; 0]);
         assert_eq!(findings.len(), dependencies.len());
         assert!(findings.iter().all(|finding| finding.latest == CURRENT));
         captured

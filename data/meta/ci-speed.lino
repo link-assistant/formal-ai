@@ -15,6 +15,14 @@
 # job meets the limit again, or no longer exists, fails the gate until removed.
 ci-speed
   issue 1188
+  temporary-profile critical-coding-release
+    recorded "2026-10-27"
+    deferred "duplicate native/browser instrumented coverage; no measurement credit"
+    restore "coverage dispatch full-coverage=true or FORMAL_AI_FULL_COVERAGE=run"
+    retained "normal Linux Rust/JS/specification/browser E2E, coding/reporting, three-client first/repeat, lifecycle, authenticated cleanup and public download checks"
+    replay-deferred "noncritical recorded scenarios, long method-learning and computer-record legs"
+    replay-restore "FORMAL_AI_FULL_AGENT_REPLAY=run; routing-changing pull requests retain full replay"
+    documentation "docs/ci-cd/speed.md"
   limit-minutes 30
   target-minutes 15
   long-job-minutes 10
