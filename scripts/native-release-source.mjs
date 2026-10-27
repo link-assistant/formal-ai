@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
-import {existsSync,readdirSync,readFileSync,writeFileSync} from 'node:fs';
+import {existsSync,readdirSync,readFileSync,writeFileSync,lstatSync,openSync,readSync,closeSync,mkdirSync} from 'node:fs';
 import {join,resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {authorizePublishedStableSource,validateSelectedSourceAuthority} from './native-release-trust.mjs';
@@ -101,10 +101,70 @@ export function sealSource(cwd,directory,{head,base=null,tag=null,run,metadata,c
 }
 
 /** Verify independent workflow outputs before accepting any selected tree or bundle. */
-export function importSource(cwd,directory,{head,run,selectionSha}) {
+function readSourceSelection(directory,{head,run,selectionSha}) {
  const bytes=readFileSync(join(directory,SOURCE_FILE));assert.equal(sha(bytes),selectionSha);
  const record=JSON.parse(bytes);assert.equal(record.version,1);assert.equal(record.selected_head,head);
  assert.equal(record.producer_run,String(run));commit(record.source_commit);commit(record.source_tree);
+ return record;
+}
+
+const HISTORY_BUNDLE='source-history.bundle',HISTORY_MANIFEST='source-history.json';
+const HISTORY_LIMIT=2*1024*1024*1024;
+function historyDigest(file) {
+ const before=lstatSync(file);assert(before.isFile()&&!before.isSymbolicLink());
+ assert(before.size>0&&before.size<=HISTORY_LIMIT,'source history exceeds explicit transfer budget');
+ const descriptor=openSync(file,'r'),buffer=Buffer.alloc(65536),digest=createHash('sha256');
+ try{for(let bytes;(bytes=readSync(descriptor,buffer,0,buffer.length,null))>0;)digest.update(buffer.subarray(0,bytes));}
+ finally{closeSync(descriptor);}
+ const after=lstatSync(file);assert.equal(after.size,before.size);assert.equal(after.mtimeMs,before.mtimeMs);
+ return {bytes:before.size,sha256:digest.digest('hex')};
+}
+function historyCommand(cwd,args,deadline) {
+ const remaining=deadline-Date.now();assert(remaining>0,'source history deadline exhausted');
+ execFileSync('git',args,{cwd,stdio:'inherit',timeout:Math.min(180000,remaining),killSignal:'SIGKILL',
+  env:{...process.env,GIT_LFS_SKIP_SMUDGE:'1',GIT_TERMINAL_PROMPT:'0'}});
+}
+/** One complete selected ancestry supplies CLI jobs without repeated cold GitHub transfers. */
+export function exportSourceHistory(cwd,directory,outputDirectory=directory) {
+ const bytes=readFileSync(join(directory,SOURCE_FILE)),record=JSON.parse(bytes);
+ commit(record.source_commit);commit(record.source_tree);
+ assert.equal(git(cwd,['rev-parse','HEAD']),record.source_commit);
+ assert.equal(git(cwd,['rev-parse','HEAD^{tree}']),record.source_tree);
+ assert.equal(git(cwd,['rev-parse','--is-shallow-repository']),'false');
+ if(!existsSync(outputDirectory))mkdirSync(outputDirectory);
+ const file=resolve(outputDirectory,HISTORY_BUNDLE);assert(!existsSync(file));
+ historyCommand(cwd,['bundle','create','--progress',file,'HEAD'],Date.now()+240000);
+ const manifest={schema:'native-source-history/v1',sourceCommit:record.source_commit,sourceTree:record.source_tree,
+  selectionSha256:sha(bytes),bundle:HISTORY_BUNDLE,...historyDigest(file)};
+ writeFileSync(join(outputDirectory,HISTORY_MANIFEST),JSON.stringify(manifest,null,2)+'\n',{flag:'wx'});
+ return manifest;
+}
+/** Restore only an authenticated same-run source into a fresh, unfiltered repository. */
+export function restoreSourceHistory(cwd,directory,options) {
+ assert(!existsSync(join(cwd,'.git')),'offline source restore requires a fresh workspace');
+ const record=readSourceSelection(directory,options),manifestFile=join(directory,HISTORY_MANIFEST);
+ const metadata=lstatSync(manifestFile);assert(metadata.isFile()&&!metadata.isSymbolicLink()&&metadata.size<=65536);
+ const manifest=JSON.parse(readFileSync(manifestFile,'utf8'));
+ assert.equal(manifest.schema,'native-source-history/v1');assert.equal(manifest.bundle,HISTORY_BUNDLE);
+ assert.equal(manifest.sourceCommit,record.source_commit);assert.equal(manifest.sourceTree,record.source_tree);
+ assert.equal(manifest.selectionSha256,options.selectionSha);
+ assert(Number.isSafeInteger(manifest.bytes)&&manifest.bytes>0&&manifest.bytes<=HISTORY_LIMIT);
+ const file=resolve(directory,HISTORY_BUNDLE);
+ assert.deepEqual(historyDigest(file),{bytes:manifest.bytes,sha256:manifest.sha256});
+ const repository=options.repository;assert.match(repository,/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/u);
+ const deadline=Date.now()+240000;
+ for(const args of [['init','--initial-branch=source-artifact'],['config','core.autocrlf','false'],
+  ['config','core.longpaths','true'],['bundle','verify',file],['fetch','--progress','--no-tags',file,'HEAD'],
+  ['checkout','--detach',record.source_commit],['remote','add','origin','https://github.com/'+repository+'.git']])
+  historyCommand(cwd,args,deadline);
+ assert.equal(git(cwd,['rev-parse','HEAD^{tree}']),record.source_tree);
+ assert.equal(git(cwd,['rev-parse','--is-shallow-repository']),'false');
+ assert.deepEqual(historyDigest(file),{bytes:manifest.bytes,sha256:manifest.sha256});
+ return record;
+}
+
+export function importSource(cwd,directory,options) {
+ const record=readSourceSelection(directory,options);
  if(record.bundle!==null) {
   assert.equal(record.bundle.name,'source.bundle');const file=join(directory,record.bundle.name),payload=readFileSync(file);
   assert.equal(payload.length,record.bundle.bytes);assert.equal(sha(payload),record.bundle.sha256);
@@ -121,7 +181,7 @@ export function importSource(cwd,directory,{head,run,selectionSha}) {
 }
 
 if(import.meta.url===pathToFileURL(process.argv[1]??'').href) {
- const [mode,directory]=process.argv.slice(2),cwd=process.cwd();
+ const [mode,directory,destination]=process.argv.slice(2),cwd=process.cwd();
  if(mode==='hydrate-source') {
   assert.equal(directory,undefined);console.log(JSON.stringify(hydrateSourceHistory(cwd)));
  } else if(mode==='seal') {
@@ -140,9 +200,13 @@ if(import.meta.url===pathToFileURL(process.argv[1]??'').href) {
     +'\nselected-head='+result.record.selected_head+'\nselection-sha256='+result.sha256+'\n',{flag:'a'});
   }
   console.log(JSON.stringify(result));
- } else if(mode==='import') {
-  const record=importSource(cwd,directory,{head:process.env.NATIVE_SELECTED_HEAD,
-   run:process.env.GITHUB_RUN_ID,selectionSha:process.env.NATIVE_SELECTION_SHA256});
+ } else if(mode==='export-history') {
+  console.log(JSON.stringify(exportSourceHistory(cwd,directory,destination)));
+ } else if(mode==='import'||mode==='import-offline') {
+  const options={head:process.env.NATIVE_SELECTED_HEAD,run:process.env.GITHUB_RUN_ID,
+   selectionSha:process.env.NATIVE_SELECTION_SHA256,repository:process.env.NATIVE_REPOSITORY};
+  if(mode==='import-offline')restoreSourceHistory(cwd,directory,options);
+  const record=importSource(cwd,directory,options);
   const authority=process.env.NATIVE_RELEASE_EVENT==='pull_request'||process.env.NATIVE_RELEASE_PURPOSE==='validation'?null:
    authorizePublishedStableSource(cwd,{tag:record.release_tag,repository:process.env.NATIVE_REPOSITORY});
   console.log(JSON.stringify(validateSelectedSourceAuthority(cwd,record,{

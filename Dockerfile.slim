@@ -34,9 +34,10 @@ ARG BINARY_SOURCE=compile
 FROM rust:1.99-slim AS builder
 
 WORKDIR /app
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends libssl-dev pkg-config && \
-    rm -rf /var/lib/apt/lists/*
+COPY --chmod=0755 scripts/apt-install-with-retry.sh scripts/run-with-deadline.sh scripts/prepare-ubuntu-apt-mirror.sh /usr/local/lib/formal-ai-build/
+RUN TEST_BUDGET_SECONDS=300 FORMAL_AI_APT_PRIVILEGE= bash /usr/local/lib/formal-ai-build/apt-install-with-retry.sh \
+      --no-install-recommends libssl-dev pkg-config && \
+    rm -rf /var/lib/apt/lists/* /usr/local/lib/formal-ai-build
 
 # Dependency-only layer, keyed on the manifests alone (see Dockerfile for the
 # cache-key measurement that motivated this split).
@@ -77,10 +78,10 @@ ENV PATH="${BUN_INSTALL}/bin:${PATH}"
 
 # Runtime dependencies only: ca-certificates for HTTPS, curl for the health
 # check, git for repository tasks, nodejs + bun for the global CLIs below.
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-      ca-certificates curl git nodejs npm && \
-    rm -rf /var/lib/apt/lists/* && \
+COPY --chmod=0755 scripts/apt-install-with-retry.sh scripts/run-with-deadline.sh scripts/prepare-ubuntu-apt-mirror.sh /usr/local/lib/formal-ai-build/
+RUN TEST_BUDGET_SECONDS=300 FORMAL_AI_APT_PRIVILEGE= bash /usr/local/lib/formal-ai-build/apt-install-with-retry.sh \
+      --no-install-recommends ca-certificates curl git nodejs npm && \
+    rm -rf /var/lib/apt/lists/* /usr/local/lib/formal-ai-build && \
     node --version
 
 COPY --from=oven/bun:1.4.2 /usr/local/bin/bun /usr/local/bin/bun

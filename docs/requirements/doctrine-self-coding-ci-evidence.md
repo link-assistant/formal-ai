@@ -1,4 +1,4 @@
-# Self-coding CI evidence and useful-change acceptance
+## Standing Doctrine: Self-coding CI evidence and useful-change acceptance
 
 This clarifies R1207-1/2/3/4/8/9 and R1220's complete redacted evidence contract,
 following the 2026-10-27 review of [PR1397](https://github.com/link-assistant/formal-ai/pull/1397),
@@ -76,3 +76,35 @@ the remote is removed, a complete selected ancestry and no promisor database;
 it also checks that an unrelated branch's commit is absent. Existing job caps,
 step deadlines, source/bundle authentication, outputs and release oracles stay
 unchanged. Hosted timing improvement requires actual observation.
+
+
+### Shared failure controls and current capability boundaries
+
+Normalize the Node spec reporter's summary marker before the existing strict
+TAP counter grammar in both JavaScript and Rust. The shared decision kernel
+still requires an explicit successful, complete process result, positive
+executed tests, consistent totals, and no failures or cancellations. Malformed,
+duplicate and mixed-format duplicate fields must remain failures. Real file
+writes, a cold repeated session with no write, and a deliberately failing
+independent test verify this route; accepting a different display format is
+never permission to accept a plan or empty test run.
+
+CLI packaging receives complete selected Git history through a separate,
+same-run Actions artifact instead of repeating cold GitHub transfers. Keep the
+compact source-selection artifact unchanged. Verify source/run/selection and
+bundle hashes before initializing a fresh unfiltered repository; validate the
+restored tree, native inputs, full ancestry and offline file bytes. Original
+published-tag/default-branch authority and native executable/archived-byte
+checks still apply. Bound transfers, hashing memory and Git operations; do not
+turn a missing or damaged source bundle into an unchecked network fallback.
+
+Reuse the existing bounded APT installer for slim runtime and source-builder
+layers. A mirror integrity failure retries within the finite attempt and time
+budget; permanently inconsistent signed indexes remain failures. Preserve the
+package list, repositories, signatures and checksum verification.
+
+Direct literal editing of extensionless root files remains an observed
+pathname capability gap. A supplied JavaScript transformation can instead be
+written and executed through Formal AI's existing tools under an exact command
+and file/hash allowlist. Record this as supplied automation with zero autonomous
+implementation credit; general pathname handling remains further work.

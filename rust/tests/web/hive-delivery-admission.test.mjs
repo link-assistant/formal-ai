@@ -910,7 +910,7 @@ test('source-event relocation preserves exact readonly producer semantics withou
   },
   "steps": [
     {
-      "uses": "actions/github-script@v8",
+      "uses": "actions/github-script@v9",
       "with": {
         "script": "const p = 'scripts/record-hive-source-event.mjs';\nconst {data} = await github.rest.repos.getContent({...context.repo, path:p, ref:context.sha, request:{timeout:20000}});\nif(data.type !== 'file' || data.encoding !== 'base64' || data.size > 65536) throw Error('invalid provenance source');\nconst fs = require('node:fs'); fs.mkdirSync('scripts', {recursive:true}); fs.writeFileSync(p, Buffer.from(data.content, 'base64'), {flag:'wx'});\n"
       }
@@ -954,7 +954,7 @@ test('source event recorder executes with only its exact fetched source', async 
     const root = new URL('../../../', import.meta.url);
     const workflow = YAML.parse(fs.readFileSync(new URL('.github/workflows/hive-source-provenance.yml', root), 'utf8'));
     const fetch = workflow.jobs['hive-source-provenance'].steps[0];
-    assert.equal(fetch.uses, 'actions/github-script@v8');
+    assert.equal(fetch.uses, 'actions/github-script@v9');
     const workspace = path.join(directory, 'workspace'), relative = 'scripts/record-hive-source-event.mjs';
     const executable = path.join(workspace, relative);
     const {Script} = await import('node:vm');

@@ -235,6 +235,7 @@ jobs:
           const protocol=readFileSync('native-source/protocol-selection.json');
           appendFileSync(process.env.GITHUB_OUTPUT,'package-version='+source.package_version+'\nprotocol-sha256='+createHash('sha256').update(protocol).digest('hex')+'\n');
           NODE
+      - {name: Stage complete selected Git history for offline CLI packaging, timeout-minutes: 5, run: 'node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" export-history native-source native-source-history'}
       - name: Build worker from the exact selected Desktop source
         id: selected_wasm
         run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/build-selected-wasm.mjs" build
@@ -256,6 +257,7 @@ jobs:
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 7
+      - {uses: actions/upload-artifact@v7, with: {name: native-release-source-history, path: native-source-history/, compression-level: 0, if-no-files-found: error, retention-days: 7}}
   native:
     name: Produce native ${{ matrix.target }}
     concurrency:
@@ -943,10 +945,6 @@ jobs:
             tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{encoding:'utf8'}).trim(),files};
           writeFileSync(join(directory,'protocol-selection.json'),JSON.stringify(record,null,2)+'\n');
           NODE
-      - uses: actions/checkout@v7
-        timeout-minutes: 5
-        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 1}
-      - {name: Complete only the selected source ancestry, timeout-minutes: 5, run: 'node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" hydrate-source'}
       - uses: actions/setup-node@v7
         with:
           node-version: 22
@@ -957,11 +955,12 @@ jobs:
         with:
           name: native-release-source
           path: native-source
+      - {name: Download selected source history, uses: actions/download-artifact@v8, env: {NODE_OPTIONS: --disable-warning=DEP0005}, with: {name: native-release-source-history, path: native-source}}
       - name: Import and verify exact source selection
         env:
           NATIVE_SELECTED_HEAD: ${{ needs.native-source.outputs.selected-head }}
           NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
-        run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import native-source
+        run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import-offline native-source
       - name: Download the same-run target executable
         uses: actions/download-artifact@v8
         env:

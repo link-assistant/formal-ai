@@ -30,7 +30,7 @@ The resumed PR #1221 source adds typed .lino dialog/conversation persistence wit
 
 ### Current CI evidence and self-coding clarification
 
-The [CI self-coding evidence contract](self-coding-ci-evidence.md) clarifies the
+The [CI self-coding evidence contract](doctrine-self-coding-ci-evidence.md) clarifies the
 existing useful-change and complete-log requirements. Historical plan-only
 attempts retain their failure classification; source assistance is not
 autonomous implementation. Console recovery and source-qualified native log

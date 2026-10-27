@@ -505,4 +505,4 @@ prove the issue fixed. Require the original behavior and held-out variants;
 keep unsupported work visible while preserving correct iterative releases.
 Full redacted console, dialog and native-response evidence must survive failed
 attempts, with exact source/attempt identities and explicit missing or partial
-capture status. See the [CI self-coding evidence contract](docs/requirements/self-coding-ci-evidence.md).
+capture status. See the [CI self-coding evidence contract](docs/requirements/doctrine-self-coding-ci-evidence.md).

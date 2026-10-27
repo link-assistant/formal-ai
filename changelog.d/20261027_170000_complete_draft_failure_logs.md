@@ -4,6 +4,11 @@ bump: patch
 
 ## Fixed
 
+- Recognize Node spec-reporter test evidence in coding research using the same
+  strict JavaScript/Rust acceptance rules and shared negative cases.
+- Reuse verified same-run Git history for CLI packaging and bounded APT recovery
+  for slim runtime and source-builder images, retaining integrity failures.
+
 - Avoid fetching unrelated release history, keep generated native and TypeScript
   projections current, and use small committed source fixtures in workspace tests.
 - Enable Rust panic backtraces and retain large failed-job logs; fix Node 24

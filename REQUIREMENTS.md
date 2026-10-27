@@ -27,6 +27,7 @@ the areas are the whole register.
    - Issue #1085 The Links Network Is Not The System That Reasons (E108)
    - Issue #1188 User Requirements
    - Standing Doctrine: Readable Recursive Source and Comment Meta-Language (2026-10-18)
+   - Standing Doctrine: Self-coding CI evidence and useful-change acceptance
    - Standing Doctrine: Compiled Logic, Interfacing-Only JavaScript (2026-08-04)
    - Standing Doctrine: JavaScript First, Full Parity, Then Translate (2026-10-06)
    - Standing Doctrine: The JavaScript Server Has Full Parity With the Rust Server (2026-10-07)

@@ -15,9 +15,10 @@ ARG BINARY_SOURCE=compile
 FROM rust:1.99-slim AS builder
 
 WORKDIR /app
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends libssl-dev pkg-config && \
-    rm -rf /var/lib/apt/lists/*
+COPY --chmod=0755 scripts/apt-install-with-retry.sh scripts/run-with-deadline.sh scripts/prepare-ubuntu-apt-mirror.sh /usr/local/lib/formal-ai-build/
+RUN TEST_BUDGET_SECONDS=300 FORMAL_AI_APT_PRIVILEGE= bash /usr/local/lib/formal-ai-build/apt-install-with-retry.sh \
+      --no-install-recommends libssl-dev pkg-config && \
+    rm -rf /var/lib/apt/lists/* /usr/local/lib/formal-ai-build
 
 # Dependencies are their own layer, keyed on the manifests alone.
 #

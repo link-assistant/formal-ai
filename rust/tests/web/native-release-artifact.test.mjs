@@ -6,7 +6,7 @@ import {mkdtempSync,mkdirSync,readFileSync,writeFileSync,rmSync,cpSync} from 'no
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {createHash} from 'node:crypto';
-import {sealSource,importSource,nativeInputIdentity,SOURCE_FILE} from '../../../scripts/native-release-source.mjs';
+import {sealSource,importSource,nativeInputIdentity,SOURCE_FILE,exportSourceHistory,restoreSourceHistory} from '../../../scripts/native-release-source.mjs';
 import {expectedIdentity,writeExecutableReceipt,verifyExecutableReceipt,verifyArchivedExecutable,NATIVE_TARGETS,RECEIPT_FILE} from '../../../scripts/native-release-artifact.mjs';
 const hash=x=>createHash('sha256').update(x).digest('hex');
 const git=(cwd,...args)=>execFileSync('git',args,{cwd,encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();
@@ -138,4 +138,46 @@ test('extracted archives preserve the verified executable name, length and SHA',
  assert.throws(()=>verifyArchivedExecutable(archiveBinary,receipt));
  writeFileSync(archiveBinary,'');
  assert.throws(()=>verifyArchivedExecutable(archiveBinary,receipt));
+});
+
+
+test('same-run full history restores every source byte and native input with the original remote gone',context=>{
+ const f=fixture(context),options={head:f.head,run:'42',selectionSha:f.sealed.sha256,repository:'fixture/source'};
+ const files=git(f.repo,'ls-files','-z').split('\0').filter(Boolean).map(name=>[name,readFileSync(join(f.repo,name))]);
+ const history=exportSourceHistory(f.repo,f.packet);
+ assert.equal(history.sourceCommit,f.selected);assert(history.bytes>0);
+ rmSync(f.repo,{recursive:true,force:true});rmSync(f.consumer,{recursive:true,force:true});
+ const destination=join(f.root,'offline');mkdirSync(destination);
+ restoreSourceHistory(destination,f.packet,options);
+ git(destination,'remote','remove','origin');
+ const imported=importSource(destination,f.packet,options);
+ assert.equal(imported.source_commit,f.selected);assert.equal(git(destination,'rev-parse','--is-shallow-repository'),'false');
+ assert.throws(()=>git(destination,'config','--get','remote.origin.promisor'));
+ for(const [name,bytes]of files)assert.deepEqual(readFileSync(join(destination,name)),bytes,name);
+ assert.equal(nativeInputIdentity(destination).sha256,f.sealed.record.native_inputs_sha256);
+ for(const parent of [f.head,f.base])assert.equal(git(destination,'merge-base',f.selected,parent),parent);
+ assert.throws(()=>restoreSourceHistory(destination,f.packet,options),/fresh workspace/);
+});
+
+test('offline history refuses changed run, head, selection and bundle before initializing a repository',context=>{
+ const f=fixture(context),options={head:f.head,run:'42',selectionSha:f.sealed.sha256,repository:'fixture/source'};
+ exportSourceHistory(f.repo,f.packet);
+ for(const [index,change]of [{run:'43'},{head:f.base},{selectionSha:'0'.repeat(64)}].entries()){
+  const destination=join(f.root,'refused-'+index);mkdirSync(destination);
+  assert.throws(()=>restoreSourceHistory(destination,f.packet,{...options,...change}));
+  assert.throws(()=>git(destination,'rev-parse','--git-dir'));
+ }
+ const file=join(f.packet,'source-history.bundle');writeFileSync(file,Buffer.concat([readFileSync(file),Buffer.from('changed')]));
+ const destination=join(f.root,'damaged');mkdirSync(destination);
+ assert.throws(()=>restoreSourceHistory(destination,f.packet,options));assert.throws(()=>git(destination,'rev-parse','--git-dir'));
+});
+
+
+test('large history is a separate transport artifact and does not alter compact source-selection custody',context=>{
+ const f=fixture(context),before=readFileSync(join(f.packet,SOURCE_FILE)),destination=join(f.root,'history-only');
+ exportSourceHistory(f.repo,f.packet,destination);
+ assert.deepEqual(readFileSync(join(f.packet,SOURCE_FILE)),before);
+ assert.throws(()=>readFileSync(join(f.packet,'source-history.bundle')));
+ assert.throws(()=>readFileSync(join(destination,SOURCE_FILE)));
+ assert(readFileSync(join(destination,'source-history.bundle')).length>0);
 });

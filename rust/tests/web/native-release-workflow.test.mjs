@@ -62,7 +62,12 @@ test('each packaging job captures the pinned workflow protocol before checking o
   assert.match(body,/cp scripts\/native-release-source\.mjs scripts\/native-release-artifact\.mjs/u);
   const capture=steps.findIndex(step=>step.name?.startsWith('Capture release protocol'));
   const checkout=steps.findIndex((step,index)=>index>capture&&step.with?.ref==='${{ github.sha }}');
-  assert.ok(capture>protocol&&checkout>capture,'pinned checkout and capture must precede event-pinned source checkout');
+  if(name==='cli'){
+   const restore=steps.findIndex(step=>step.run?.includes('native-release-source.mjs" import-offline'));
+   const artifact=steps.findIndex(step=>step.uses?.startsWith('actions/download-artifact@')&&step.with?.name==='native-release-source');
+   assert.ok(capture>protocol&&artifact>capture&&restore>artifact,'pinned protocol and same-run source artifact precede offline source restoration');
+   assert.equal(checkout,-1,'CLI source uses authenticated complete history, without another GitHub checkout');
+  }else assert.ok(capture>protocol&&checkout>capture,'pinned checkout and capture must precede event-pinned source checkout');
   assert.ok(body.includes('FORMAL_AI_NATIVE_PROTOCOL_DIR'));
  }
 });
@@ -89,6 +94,14 @@ test('protocol capture is isolated from full source and survives unavailable pro
   assert.equal(protocol.with.path,'.formal-ai-protocol-source',name);
   assert.deepEqual(protocol.with['sparse-checkout'].split('\n'),folders,name);
   assert.notEqual(protocol.with['sparse-checkout-cone-mode'],false,name);
+  if(name==='cli'){
+   assert.equal(source,undefined,'CLI source restoration uses the complete same-run bundle');
+   const restored=steps.find(step=>step.run?.includes('native-release-source.mjs" import-offline'));
+   assert.ok(restored);assert.equal(restored.env.NATIVE_SELECTED_HEAD,'${{ needs.native-source.outputs.selected-head }}');
+   assert.equal(restored.env.NATIVE_SELECTION_SHA256,'${{ needs.native-source.outputs.selection-sha256 }}');
+   assert.ok(job('native-source').includes('export-history native-source'));
+   continue;
+  }
   assert.equal(source.with.ref,'${{ github.sha }}',name);
   assert.equal(source.with['fetch-depth'],1,name);
   const hydrate=steps.findIndex(step=>step.name==='Complete only the selected source ancestry');
