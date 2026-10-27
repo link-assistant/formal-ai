@@ -66,7 +66,7 @@ test('declared sparse protocol inputs still compile the unchanged guarded operat
  const files=execFileSync('git',['ls-tree','-r','--name-only','HEAD','--',...selectors],{
   cwd:root,encoding:'utf8',timeout:5000,maxBuffer:1048576}).trim().split('\n');
  assert(files.length>0&&files.every(file=>selectors.some(selector=>file===selector||file.startsWith(selector+'/'))));
- for(const file of files){const target=path.join(workspace,file);fs.mkdirSync(path.dirname(target),{recursive:true});fs.linkSync(path.join(root,file),target);}
+ for(const file of files){const target=path.join(workspace,file);fs.mkdirSync(path.dirname(target),{recursive:true});fs.copyFileSync(path.join(root,file),target);}
  fs.symlinkSync(path.join(root,'node_modules'),path.join(workspace,'node_modules'),'junction');
  const adapter=await import(url.pathToFileURL(path.join(workspace,'scripts/maintained-staged-authority.mjs')).href);
  const inventory=adapter.maintainedStagedInventory(adapter.compileDeployedStagedAuthority());
