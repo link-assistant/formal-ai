@@ -18,7 +18,10 @@ filenames, attachments or the raw logs into the source tree.
    issue resolution: the original behavior and independent oracles must pass.
 2. Keep the full initial request, tool calls and results, model terminal reason,
    build/attempt console streams, actual source/binary identity, native responses
-   and per-dialog exchanges. Metadata previews are not complete payload capture.
+   and per-dialog exchanges. Metadata previews are not complete payload capture. Retain full stdout and stderr,
+   panic backtraces, exit/signal/deadline outcomes, and the exact source/run/attempt.
+   Collection must cover observed large logs (including 17 MiB failures), with
+   explicit finite budgets and an incomplete manifest whenever a limit is reached.
    Native evidence belongs under the shared runner's mounted session directory
    so removing its container does not remove the evidence.
 3. Capture nonzero exit status and actual deadline expiration separately.
@@ -33,7 +36,9 @@ filenames, attachments or the raw logs into the source tree.
    including cancellation. This cannot recover files lost with a killed runner;
    missing local payloads must remain explicit. Collection has finite transfer,
    request and time budgets, and never reruns the model or GitHub task effects.
-5. Use the default Actions token and artifact storage. Optional app/PAT credentials\n   are not used for drafts: their automatic PR events could bypass diff admission.\n   Gist publication and
+5. Use the default Actions token and artifact storage. Optional app/PAT credentials
+   are not used for drafts: their automatic PR events could bypass diff admission.
+   Gist publication and
    authenticated-user lookup are not prerequisites. Redact environment
    credentials, credential patterns and personal-data patterns before upload.
    Read only the CI-owned session directory; never follow links, dump the home
@@ -56,3 +61,18 @@ a test fixture. Any pin/use-site change must be reviewed, not guessed.
 These controls establish orchestration and log custody, not autonomous solution
 of the three complex tasks. Pure JavaScript/fake-process tests do not establish
 hosted native execution, public release availability or production acceptance.
+
+
+### Full source checkout and ancestry
+
+PR1449 CI native Windows ARM job122351540397 and VSIX job122351539778 timed out
+while fetching all branches and tags, before source import. Keep isolated
+filtered protocol capture and an independent unfiltered source checkout.
+Start the latter at depth one, then complete only the exact selected commit's
+ancestry with progress output and a four-minute hard fetch budget inside the
+existing five-minute step. Do not fetch unrelated branch/tag histories.
+The offline-source regression still requires every selected source file after
+the remote is removed, a complete selected ancestry and no promisor database;
+it also checks that an unrelated branch's commit is absent. Existing job caps,
+step deadlines, source/bundle authentication, outputs and release oracles stay
+unchanged. Hosted timing improvement requires actual observation.

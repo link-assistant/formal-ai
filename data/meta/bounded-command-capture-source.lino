@@ -11,8 +11,8 @@ bounded-command-capture-source
   line "      || (abortSignal !== undefined && typeof abortSignal?.addEventListener !== 'function')) {"
   line "    throw new TypeError('invalid_command_cancellation');"
   line "  }"
-  line "  if ((stdoutObserver !== undefined && typeof stdoutObserver !== \"function\")"
-  line "      || (stderrObserver !== undefined && typeof stderrObserver !== \"function\")"
+  line '  if ((stdoutObserver !== undefined && typeof stdoutObserver !== "function")'
+  line '      || (stderrObserver !== undefined && typeof stderrObserver !== "function")'
   line "      || !Number.isFinite(timeout) || timeout <= 0 || timeout > 2147482647"
   line "      || !Number.isSafeInteger(stdoutLimit) || stdoutLimit < 0"
   line "      || !Number.isSafeInteger(stderrLimit) || stderrLimit < 0) {"

@@ -168,12 +168,13 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: actions/checkout@v7
         timeout-minutes: 5
-        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 0}
+        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 1}
       - name: Select the independently authorized stable release tag
         if: github.event_name != 'pull_request'
         uses: actions/checkout@v7
         timeout-minutes: 5
-        with: {persist-credentials: false, ref: "${{ env.NATIVE_AUTHORIZED_RELEASE_COMMIT }}", fetch-depth: 0}
+        with: {persist-credentials: false, ref: "${{ env.NATIVE_AUTHORIZED_RELEASE_COMMIT }}", fetch-depth: 1}
+      - {name: Complete only the selected source ancestry, timeout-minutes: 5, run: 'node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" hydrate-source'}
       - name: Record the original pull-request source prerequisite
         if: github.event_name == 'pull_request'
         env:
@@ -323,7 +324,8 @@ jobs:
           NODE
       - uses: actions/checkout@v7
         timeout-minutes: 5
-        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 0}
+        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 1}
+      - {name: Complete only the selected source ancestry, timeout-minutes: 5, run: 'node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" hydrate-source'}
       - uses: actions/setup-node@v7
         with:
           node-version: 22
@@ -402,7 +404,7 @@ jobs:
     concurrency:
       group: desktop-release-${{ github.event.pull_request.number || needs.resolve.outputs.tag }}-${{ matrix.label }}
       queue: max
-    if: ${{ !cancelled() && (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
+    if: ${{ !cancelled() && needs.native-source.result == 'success' && (github.event_name != 'pull_request' || needs.native.result == 'success') &&  (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
     strategy:
       fail-fast: false
       matrix:
@@ -471,7 +473,8 @@ jobs:
           NODE
       - uses: actions/checkout@v7
         timeout-minutes: 5
-        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 0}
+        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 1}
+      - {name: Complete only the selected source ancestry, timeout-minutes: 5, run: 'node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" hydrate-source'}
       - uses: actions/setup-node@v7
         with:
           node-version: 22
@@ -883,7 +886,7 @@ jobs:
     concurrency:
       group: desktop-release-${{ github.event.pull_request.number || needs.resolve.outputs.tag }}-cli-${{ matrix.label }}
       queue: max
-    if: ${{ !cancelled() && (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
+    if: ${{ !cancelled() && needs.native-source.result == 'success' && (github.event_name != 'pull_request' || needs.native.result == 'success') &&  (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
     strategy:
       fail-fast: false
       matrix:
@@ -942,7 +945,8 @@ jobs:
           NODE
       - uses: actions/checkout@v7
         timeout-minutes: 5
-        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 0}
+        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 1}
+      - {name: Complete only the selected source ancestry, timeout-minutes: 5, run: 'node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" hydrate-source'}
       - uses: actions/setup-node@v7
         with:
           node-version: 22
@@ -1051,7 +1055,7 @@ jobs:
       group: desktop-release-${{ github.event.pull_request.number || needs.resolve.outputs.tag }}-vscode
       queue: max
     # Same skipped-dependency handling as `build`; see the comment there.
-    if: ${{ !cancelled() && (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
+    if: ${{ !cancelled() && needs.native-source.result == 'success' &&  (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -1094,7 +1098,8 @@ jobs:
           NODE
       - uses: actions/checkout@v7
         timeout-minutes: 5
-        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 0}
+        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 1}
+      - {name: Complete only the selected source ancestry, timeout-minutes: 5, run: 'node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" hydrate-source'}
       - uses: actions/setup-node@v7
         with:
           node-version: 22
@@ -1220,7 +1225,7 @@ jobs:
       - name: Check out this workflow's pinned release protocol
         uses: actions/checkout@v7
         timeout-minutes: 5
-        with: {persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 0}
+        with: {persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1}
       - name: Capture release protocol before selecting binary source
         env:
           NATIVE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
@@ -1251,6 +1256,7 @@ jobs:
             tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{encoding:'utf8'}).trim(),files};
           writeFileSync(join(directory,'protocol-selection.json'),JSON.stringify(record,null,2)+'\n');
           NODE
+      - {name: Complete only the selected source ancestry, timeout-minutes: 5, run: 'node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" hydrate-source'}
       - uses: actions/setup-node@v7
         with:
           node-version: 22

@@ -3,8 +3,9 @@ import {createRequire} from 'node:module';
 import {readFileSync} from 'node:fs';
 import {dirname, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import * as formalAiBabelParser from '@babel/parser';
 const require = createRequire(import.meta.url);
-const {parse} = require('@babel/parser');
+const {parse} = formalAiBabelParser;
 const {parseDocument} = require('yaml');
 function literalPath(value) {
   assert.equal(typeof value, 'string', 'Primitive source path required');

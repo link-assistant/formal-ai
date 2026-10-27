@@ -22,10 +22,7 @@ on:
         required: false
         type: choice
         default: checks
-        options:
-          - checks
-          - instant
-          - changelog-pr
+        options: [checks, instant, changelog-pr]
       bump_type:
         description: 'Version bump type'
         required: false
@@ -36,7 +33,8 @@ on:
         description: 'Release description (optional)'
         required: false
         type: string
-permissions: {contents: read}
+permissions:
+  contents: read
 env:
   GIT_CONFIG_COUNT: '1'
   GIT_CONFIG_KEY_0: init.defaultBranch
@@ -47,6 +45,7 @@ env:
   FORMAL_AI_CI_VERBOSE: ${{ vars.FORMAL_AI_CI_VERBOSE || 'false' }}
   FORMAL_AI_NON_LINUX_CI: ${{ vars.FORMAL_AI_NON_LINUX_CI || 'skip' }}
   RUSTFLAGS: -Dwarnings
+  RUST_BACKTRACE: '1'
   CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
   CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
   GHCR_IMAGE: ghcr.io/${{ github.repository }}

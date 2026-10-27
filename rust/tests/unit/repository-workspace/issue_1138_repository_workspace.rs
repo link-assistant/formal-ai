@@ -19,11 +19,7 @@ use formal_ai::repository_workspace::{
 };
 
 fn repo_root() -> PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR"))
-        .ancestors()
-        .nth(1)
-        .unwrap()
-        .to_path_buf()
+    super::fixture::source_root()
 }
 
 struct TempRoot(PathBuf);
@@ -58,8 +54,7 @@ fn temp_root(tag: &str) -> TempRoot {
     TempRoot::new(tag)
 }
 
-/// The ambient checkout's own HEAD, so the fixtures clone something real and
-/// local rather than reaching the network.
+/// The fixture's immutable HEAD, with actual source bytes and no archived logs.
 fn head_commit() -> String {
     let output = Command::new("git")
         .args([

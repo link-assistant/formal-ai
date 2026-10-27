@@ -9,7 +9,7 @@ import {authorizePublishedStableSource,validateSelectedSourceAuthority} from './
 
 export const SOURCE_FILE='source-selection.json';
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
-const git=(cwd,args)=>execFileSync('git',args,{cwd,encoding:'utf8',maxBuffer:32*1024*1024}).trim();
+const git=(cwd,args)=>execFileSync('git',args,{cwd,encoding:'utf8',timeout:30000,maxBuffer:32*1024*1024}).trim();
 const commit=value=>assert.match(value,/^[a-f0-9]{40}$/u);
 
 export const nativeCompilationInputRoots = Object.freeze(['rust/src','rust/embedded','rust/Cargo.toml','rust/Cargo.lock','rust/build.rs',
@@ -44,6 +44,20 @@ export function nativeInputIdentity(cwd) {
   digest.update(name);digest.update('\0');digest.update(String(bytes.length));digest.update('\0');digest.update(bytes);
  }
  return {sha256:digest.digest('hex'),files:names.length};
+}
+
+/** Complete only this selected commit's ancestry, not every branch and tag.
+ * A fresh, unfiltered checkout keeps current source usable with the remote offline. */
+export function hydrateSourceHistory(cwd) {
+ const head=git(cwd,['rev-parse','HEAD']);commit(head);
+ const shallow=git(cwd,['rev-parse','--is-shallow-repository'])==='true';
+ let partial='';try{partial=git(cwd,['config','--get','remote.origin.promisor']);}catch(error){if(error.status!==1)throw error;}
+ assert.notEqual(partial,'true','native source must not inherit a promisor object database');
+ if(shallow)execFileSync('git',['-c','protocol.version=2','fetch','--progress','--no-tags','--unshallow','origin',head],{
+  cwd,stdio:'inherit',timeout:240000,killSignal:'SIGKILL'});
+ assert.equal(git(cwd,['rev-parse','HEAD']),head);
+ assert.equal(git(cwd,['rev-parse','--is-shallow-repository']),'false','selected source ancestry remains incomplete');
+ return {head,completedHistory:shallow,sourceTree:git(cwd,['rev-parse','HEAD^{tree}']),refspec:'exact selected commit only'};
 }
 
 /** Root default features are derived from Cargo's actual package metadata. */
@@ -108,7 +122,9 @@ export function importSource(cwd,directory,{head,run,selectionSha}) {
 
 if(import.meta.url===pathToFileURL(process.argv[1]??'').href) {
  const [mode,directory]=process.argv.slice(2),cwd=process.cwd();
- if(mode==='seal') {
+ if(mode==='hydrate-source') {
+  assert.equal(directory,undefined);console.log(JSON.stringify(hydrateSourceHistory(cwd)));
+ } else if(mode==='seal') {
   const result=sealSource(cwd,directory,{head:process.env.NATIVE_SELECTED_HEAD,
    base:process.env.NATIVE_BASE_COMMIT||null,tag:process.env.NATIVE_RELEASE_TAG||null,run:process.env.GITHUB_RUN_ID,
    metadata:JSON.parse(readFileSync(process.env.NATIVE_METADATA_FILE,'utf8')),

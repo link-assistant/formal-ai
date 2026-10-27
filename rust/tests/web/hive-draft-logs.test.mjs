@@ -36,7 +36,7 @@ test('pinned shared runner retains full payloads on the existing mounted directo
 test('complete console capture preserves middle output, stderr and the failing command status',t=>{
  const directory=workspace(t),payload='α😀'.repeat(20000)+'\nMIDDLE-ERROR\n'+'z'.repeat(100000)+'\n';
  const result=spawnSync('bash',['scripts/run-with-session-evidence.sh','10','attempt',process.execPath,'-e',
-  'process.stdout.write('+JSON.stringify(payload)+');process.stderr.write("stderr failure\\n");process.exitCode=7;'],
+  'process.stdout.write("α😀".repeat(20000)+"\\nMIDDLE-ERROR\\n"+"z".repeat(100000)+"\\n");process.stderr.write("stderr failure\\n");process.exitCode=7;'],
   {cwd:root,env:{...process.env,FORMAL_AI_DRAFT_LOG_DIR:directory},encoding:'utf8',timeout:15000,maxBuffer:1048576});
  assert.equal(result.status,7,result.stderr);assert(!result.error);
  const capture=fs.readFileSync(path.join(directory,'attempt.log'),'utf8');
@@ -217,4 +217,20 @@ test('the final pipeline status fetches its exact tiny script without another re
  }}}}});
  assert.equal(queried.ref,context.sha);assert.equal(queried.request.timeout,20000);
  assert.equal(written.file,'scripts/check-pipeline-status.sh');assert.equal(written.bytes.toString(),'status body');
+});
+
+
+test('post-run collection retains logs larger than the observed former eight MiB ceiling',async t=>{
+ const directory=workspace(t),fixture=apiFixture();
+ const text='BEGIN FULL LOG\n'+'x'.repeat(9*1024*1024)+'\nLAST ROOT CAUSE\n';
+ const transport=async(args,options)=>{
+  if(!args[1].endsWith('/logs'))return fixture.transport(args,options);
+  const bytes=Buffer.from(text),retained=bytes.subarray(0,options.maxDownloadBytes);
+  return {ok:true,text:retained.toString(),bytesReceived:retained.length,
+   streamComplete:retained.length===bytes.length,downloadTruncated:retained.length<bytes.length};
+ };
+ const receipt=await collectDraftJobLogs({repository:'owner/repo',runId:11,attempt:2,head:fixture.head,
+  output:path.join(directory,'artifact'),transport});
+ assert.equal(receipt.complete,true);assert.equal(receipt.jobs[0].log.complete,true);
+ assert.equal(fs.readFileSync(path.join(directory,'artifact/job-22.log'),'utf8'),text);
 });

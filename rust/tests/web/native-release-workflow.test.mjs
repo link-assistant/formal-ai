@@ -9,6 +9,7 @@ import YAML from 'yaml';
 import {parseSpeedPolicy} from '../../../scripts/lib/ci-speed-policy.mjs';
 import {NATIVE_TARGETS} from '../../../scripts/native-release-artifact.mjs';
 import {boundedCommandSync} from '../../../js/server/bounded-command.mjs';
+import {hydrateSourceHistory} from '../../../scripts/native-release-source.mjs';
 const text=readFileSync(new URL('../../../.github/workflows/desktop-release.yml',import.meta.url),'utf8');
 function job(name){const at=text.indexOf('\n  '+name+':\n');assert.ok(at>=0,name);const tail=text.slice(at+1),end=tail.slice(1).search(/\n  [a-z][a-z-]*:\n/u);return (end<0?tail:tail.slice(0,end+1)).split('\n').filter(line=>!/^\s*#/u.test(line)).join('\n');}
 test('one source job seals source and compiler before all eight distinct native producers',()=>{
@@ -89,7 +90,10 @@ test('protocol capture is isolated from full source and survives unavailable pro
   assert.deepEqual(protocol.with['sparse-checkout'].split('\n'),folders,name);
   assert.notEqual(protocol.with['sparse-checkout-cone-mode'],false,name);
   assert.equal(source.with.ref,'${{ github.sha }}',name);
-  assert.equal(source.with['fetch-depth'],0,name);
+  assert.equal(source.with['fetch-depth'],1,name);
+  const hydrate=steps.findIndex(step=>step.name==='Complete only the selected source ancestry');
+  assert.ok(hydrate>index+1,name);assert.equal(steps[hydrate]['timeout-minutes'],5);
+  assert.match(steps[hydrate].run,/native-release-source[.]mjs".*hydrate-source/);
   assert.equal(source.with['sparse-checkout'],undefined,name);
   assert.equal(source.with.filter,undefined,name);
   assert.equal(source.with.path,undefined,name);
@@ -112,6 +116,13 @@ test('protocol capture is isolated from full source and survives unavailable pro
  };
  git(['init','--quiet']);git(['add','--',...files]);
  git(['-c','user.name=Fixture','-c','user.email=fixture@example.invalid','commit','--quiet','-m','fixture']);
+ const primary=git(['branch','--show-current']);
+ writeFileSync(join(seed,files[3]),'updated selected source\n');contents.set(files[3],'updated selected source\n');
+ git(['add','--',files[3]]);git(['-c','user.name=Fixture','-c','user.email=fixture@example.invalid','commit','--quiet','-m','selected ancestry']);
+ git(['switch','--quiet','-c','unrelated']);
+ writeFileSync(join(seed,'unrelated.txt'),'irrelevant branch payload\n');git(['add','--','unrelated.txt']);
+ git(['-c','user.name=Fixture','-c','user.email=fixture@example.invalid','commit','--quiet','-m','unrelated']);
+ const unrelated=git(['rev-parse','HEAD']);git(['switch','--quiet',primary]);
  git(['clone','--bare','--quiet',seed,remote]);
  git(['config','uploadpack.allowFilter','true'],remote);
  const url=pathToFileURL(remote).href;
@@ -128,7 +139,11 @@ test('protocol capture is isolated from full source and survives unavailable pro
  git(['sparse-checkout','disable'],protocol,128);
  // The action clears the workspace after capture, then fetches a full source.
  rmSync(workspace,{recursive:true,force:true});
- git(['clone','--quiet',url,workspace]);
+ git(['clone','--quiet','--depth','1','--no-tags','--branch',primary,url,workspace]);
+ assert.equal(git(['rev-parse','--is-shallow-repository'],workspace),'true');
+ const hydrated=hydrateSourceHistory(workspace);assert.equal(hydrated.completedHistory,true);
+ assert.equal(git(['rev-parse','--is-shallow-repository'],workspace),'false');
+ git(['cat-file','-e',unrelated+'^{commit}'],workspace,128);
  git(['remote','set-url','origin',join(root,'unavailable.git')],workspace);
  git(['reset','--hard','HEAD'],workspace);
  assert.equal(git(['config','--get','remote.origin.promisor'],workspace,1),'');
@@ -154,4 +169,16 @@ test('only Intel native carries explicit cold-build debt and a pinned process-gr
  const exceptions=policy.exceptions.filter(entry=>entry.workflow==='.github/workflows/desktop-release.yml');
  assert.equal(exceptions.length,1);assert.equal(exceptions[0].job,'native');assert.equal(exceptions[0].timeoutMinutes,45);
  assert.ok(exceptions[0].reason.includes('decodedLogSHA5228190b36a1b72ccd6c7c91d1f9f08c3d7c191f8c08bcfa66cb9fe0ffc5012c'));assert.ok(exceptions[0].reason.includes('restore30'));assert.equal(policy.limitMinutes,30);
+});
+
+
+test('PR artifact consumers do not retry missing native outputs after a failed producer',()=>{
+ const workflow=YAML.parse(text);
+ for(const name of ['build','cli']){
+  assert(workflow.jobs[name].needs.includes('native'));
+  assert(workflow.jobs[name].if.includes("needs.native-source.result == 'success'"));
+  assert(workflow.jobs[name].if.includes("(github.event_name != 'pull_request' || needs.native.result == 'success')"));
+ }
+ assert(workflow.jobs.vscode.if.includes("needs.native-source.result == 'success'"));
+ assert(!workflow.jobs.vscode.needs.includes('native'),'VSIX remains an independent source consumer');
 });

@@ -11,9 +11,10 @@ export {encodeTyped,decodeTyped,MAXIMUM_LOG_RECORD_BYTES,MAX_LOG_RECORD_BYTES} f
 const levels=Object.freeze({silent:-1,error:0,warn:1,info:2,debug:3,trace:4});
 const normalizeKey=k=>k.toLowerCase().split('_').join('').split('-').join('');
 const secretKeys=new Set(['authorization','proxyauthorization','password','passwd','secret','clientsecret','token','accesstoken','refreshtoken','apikey','formalaiapikey','cookie','setcookie','privatekey','xapikey','xauthtoken','xgoogapikey','anthropicapikey','ghtoken','githubtoken']);
-export function makeRedactor(env={}, {preserveJsonNumbers=false}={}){
+export function makeRedactor(env={}, {preserveJsonNumbers=false,transformText=value=>value}={}){
+ if(typeof transformText!=='function')throw Error('invalid_text_redactor');
  const secrets=Object.entries(env).filter(([k,v])=>typeof v==='string'&&v.length>0&&(secretKeys.has(normalizeKey(k))||normalizeKey(k).endsWith('token')||normalizeKey(k).endsWith('secret')||normalizeKey(k).endsWith('apikey'))).map(([,v])=>v).sort((a,b)=>b.length-a.length);
- const scrub=s=>{text(s);for(const secret of secrets)s=s.split(secret).join('[REDACTED]');return s;};
+ const scrub=s=>{text(s);for(const secret of secrets)s=s.split(secret).join('[REDACTED]');return text(transformText(s));};
  const walk=(v,depth=0,seen=new Set())=>{
   if(depth>64)throw Error('redaction_depth_limit');
   if(typeof v==='string')return scrub(v);

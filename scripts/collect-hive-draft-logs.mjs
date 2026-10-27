@@ -15,8 +15,8 @@ export async function collectDraftJobLogs({repository,runId,attempt,head,output,
  const deadline=Date.now()+180000;let bytes=0,requests=0;
  async function request(endpoint,log=false){
   assert(++requests<=33&&Date.now()<deadline,'collection deadline/request budget exhausted');
-  const remaining=67108864-bytes;assert(remaining>0,'aggregate log budget exhausted');
-  const limit=Math.min(log?8388608:1048576,remaining);
+  const remaining=134217728-bytes;assert(remaining>0,'aggregate log budget exhausted');
+  const limit=Math.min(log?67108864:1048576,remaining);
   const result=await transport(['api','repos/'+repository+'/'+endpoint],{
    captureRaw:log,timeoutMs:Math.min(20000,deadline-Date.now()),maxBytes:limit,maxDownloadBytes:limit});
   bytes+=result.bytesReceived??Buffer.byteLength(result.text??'');

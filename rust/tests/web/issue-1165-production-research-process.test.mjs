@@ -70,8 +70,8 @@ for (const fixture of supported) {
       assert.equal(verification.length, 1);
       assert.equal(stepOutcome(verification[0].receipt.content), StepOutcome.Succeeded,
         verification[0].receipt.content);
-      assert.match(verification[0].receipt.content, /# tests 1/u);
-      assert.match(verification[0].receipt.content, /# pass 1/u);
+      assert.match(verification[0].receipt.content, /^(?:#|ℹ) tests 1$/mu);
+      assert.match(verification[0].receipt.content, /^(?:#|ℹ) pass 1$/mu);
       assert.equal(readFileSync(join(workspace, fixture.module), 'utf8'), fixture.expected);
       assert.equal(readFileSync(join(workspace, 'acceptance.test.mjs'), 'utf8'), fixture.acceptance);
       const before = statSync(join(workspace, fixture.module)).mtimeMs;
@@ -94,7 +94,7 @@ for (const fixture of supported) {
       const rejected = negative.observations.filter(item => item.tool === 'bash');
       assert.equal(rejected.length, 1);
       assert.equal(stepOutcome(rejected[0].receipt.content), StepOutcome.Failed);
-      assert.match(rejected[0].receipt.content, /# fail 1/u);
+      assert.match(rejected[0].receipt.content, /^(?:#|ℹ) fail 1$/mu);
       assert.equal(negative.plan.result?.disposition, 'failure', JSON.stringify(negative.plan));
       assert.equal(negative.plan.research?.verified, false);
       assert.equal(negative.observations.filter(item => item.tool === 'write').length, 0);
