@@ -49,6 +49,7 @@ env:
   CARGO_NET_RETRY: '10'
   CARGO_HTTP_MULTIPLEXING: 'false'
   RUSTFLAGS: -Dwarnings
+  RUST_BACKTRACE: full
   GIT_HTTP_LOW_SPEED_LIMIT: "1024"
   GIT_HTTP_LOW_SPEED_TIME: "20"
 jobs:
@@ -414,7 +415,7 @@ jobs:
           - { os: ubuntu-latest,    ebflag: "--linux", label: "linux-x64", target: x86_64-unknown-linux-gnu, binext: "",     capmin: 30 }
           - { os: ubuntu-24.04-arm, ebflag: "--linux", label: "linux-arm64", target: aarch64-unknown-linux-gnu, binext: "",     capmin: 30 }
           - { os: macos-15-intel,   ebflag: "--mac",   label: "macos-x64", target: x86_64-apple-darwin, binext: "",     capmin: 30 }
-          - { os: macos-14,         ebflag: "--mac",   label: "macos-arm64", target: aarch64-apple-darwin, binext: "",     capmin: 30 }
+          - { os: macos-15,         ebflag: "--mac",   label: "macos-arm64", target: aarch64-apple-darwin, binext: "",     capmin: 30 }
           - { os: windows-latest,   ebflag: "--win",   label: "windows-x64", target: x86_64-pc-windows-msvc, binext: ".exe", capmin: 30 }
           - { os: windows-11-arm,   ebflag: "--win",   label: "windows-arm64", target: aarch64-pc-windows-msvc, binext: ".exe", capmin: 30 }
     runs-on: ${{ matrix.os }}
@@ -622,6 +623,8 @@ jobs:
           # Never begin a retry that cannot finish before the existing deadline.
           FORMAL_AI_MACOS_PACKAGE_DEADLINE_EPOCH: ${{ env.FORMAL_AI_JOB_DEADLINE_EPOCH }}
         run: bash scripts/package-macos-with-retry.sh ${{ matrix.ebflag }} --publish never -c.mac.notarize=false -c.mac.identity=- -c.mac.sign=./scripts/adhoc-sign-mac.cjs
+      # Preserve all attempts before any later smoke check or action post hook.
+      - {name: Upload complete packaging console, if: "${{ always() }}", uses: actions/upload-artifact@v7, with: {name: "packaging-console-${{ matrix.label }}", path: "${{ runner.temp }}/formal-ai-packaging-logs/", if-no-files-found: ignore, retention-days: 30}}
       - name: Normalize desktop artifact names
         working-directory: desktop
         run: node scripts/normalize-artifacts.mjs
@@ -1390,7 +1393,7 @@ jobs:
             [linux-x64]="ubuntu-latest"
             [linux-arm64]="ubuntu-24.04-arm"
             [macos-x64]="macos-15-intel"
-            [macos-arm64]="macos-14"
+            [macos-arm64]="macos-15"
             [windows-x64]="windows-latest"
             [windows-arm64]="windows-11-arm"
             [cli-linux-x64]="ubuntu-latest"

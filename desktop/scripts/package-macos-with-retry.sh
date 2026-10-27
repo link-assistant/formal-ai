@@ -99,14 +99,39 @@ cleanup_log() {
 }
 trap cleanup_log EXIT
 
+# Keep every attempt outside the source/build tree for always-upload CI artifacts.
+# A running receipt remains explicitly incomplete if the runner terminates us.
+package_evidence_dir="${RUNNER_TEMP:+${RUNNER_TEMP}/formal-ai-packaging-logs}"
+if [ -n "$package_evidence_dir" ]; then
+  mkdir -p "$package_evidence_dir"
+fi
+
 attempt=1
 while [ "$attempt" -le "$max_attempts" ]; do
   attempt_started="$SECONDS"
+  log_paths=("$package_log")
+  if [ -n "$package_evidence_dir" ]; then
+    log_paths+=("$package_evidence_dir/attempt-${attempt}.log")
+    printf '{"state":"running","attempt":%s,"consoleComplete":false}\n' "$attempt" > "$package_evidence_dir/attempt-${attempt}.json"
+  fi
   set +e
-  npx --no-install electron-builder "$@" 2>&1 | tee "$package_log"
-  package_status="${PIPESTATUS[0]}"
+  npx --no-install electron-builder "$@" 2>&1 | tee "${log_paths[@]}"
+  package_statuses=("${PIPESTATUS[@]}")
   set -e
+  package_status="${package_statuses[0]}"
+  log_status="${package_statuses[1]}"
   attempt_seconds=$((SECONDS - attempt_started))
+  console_complete=false
+  if [ "$log_status" -eq 0 ]; then console_complete=true; fi
+  if [ -n "$package_evidence_dir" ]; then
+    printf '{"state":"finished","attempt":%s,"exitCode":%s,"logExitCode":%s,"durationSeconds":%s,"consoleComplete":%s}\n' \
+      "$attempt" "$package_status" "$log_status" "$attempt_seconds" "$console_complete" > "$package_evidence_dir/attempt-${attempt}.json"
+  fi
+  if [ "$log_status" -ne 0 ]; then
+    echo "Packaging console capture failed with status $log_status; retained output is incomplete" >&2
+    if [ "$package_status" -ne 0 ]; then exit "$package_status"; fi
+    exit "$log_status"
+  fi
 
   if [ "$package_status" -eq 0 ]; then
     exit 0

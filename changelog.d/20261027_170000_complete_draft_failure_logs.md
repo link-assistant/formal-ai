@@ -18,6 +18,11 @@ bump: patch
 - Enable Rust panic backtraces and retain large failed-job logs; fix Node 24
   parser loading and test-report compatibility without weakening behavioral checks.
 
+- Retain every desktop packaging attempt and process/log-pipe outcome even on
+  failure; move ARM packaging off deprecated macOS 14 while retaining signing
+  and both DMG/ZIP runtime checks.
+- Keep Hive integration temporary work on the runner workspace so its unchanged
+  disk admission measures the filesystem with capacity available.
 - Retain complete standalone build attempts and runtime stderr before post-job
   processing; preserve build/log-pipe outcomes and upload diagnostics on failure.
 - Delegate Buildx builder disposal to the declared disposable hosted VMs,

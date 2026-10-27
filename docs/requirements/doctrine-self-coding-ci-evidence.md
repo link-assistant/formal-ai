@@ -124,6 +124,18 @@ capture completeness. Preserve runtime stdout and stderr. Upload available
 logs and outcomes even after failure; absent or interrupted outcomes remain
 incomplete evidence, never successful compilation or runtime acceptance.
 
+Apply the same retention to desktop packaging: keep separate complete stdout
+and stderr capture for every bounded attempt, with original process and log-pipe
+statuses and elapsed time. Upload all available attempt logs and outcomes with
+an always-run step before smoke checks and action cleanup. A capture error fails
+the step and marks evidence incomplete; it must not erase the original failure.
+Use hosted workspace temporary storage for Hive integration scratch and child
+temporary files when the runner has a separate small temporary filesystem;
+retain Hive Mind's disk admission and all real executor/oracle checks.
+The ARM desktop packager uses supported macOS 15 after persistent disk-image
+service failures on deprecated macOS 14. Native production compilation keeps its
+original deployment SDK; DMG, ZIP, signing and runtime acceptance remain required.
+
 Direct literal editing of extensionless root files remains an observed
 pathname capability gap. A supplied JavaScript transformation can instead be
 written and executed through Formal AI's existing tools under an exact command
