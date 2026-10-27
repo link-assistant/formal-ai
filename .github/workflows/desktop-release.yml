@@ -623,8 +623,8 @@ jobs:
           # Never begin a retry that cannot finish before the existing deadline.
           FORMAL_AI_MACOS_PACKAGE_DEADLINE_EPOCH: ${{ env.FORMAL_AI_JOB_DEADLINE_EPOCH }}
         run: bash scripts/package-macos-with-retry.sh ${{ matrix.ebflag }} --publish never -c.mac.notarize=false -c.mac.identity=- -c.mac.sign=./scripts/adhoc-sign-mac.cjs
-      # Preserve all attempts before any later smoke check or action post hook.
-      - {name: Upload complete packaging console, if: "${{ always() }}", uses: actions/upload-artifact@v7, with: {name: "packaging-console-${{ matrix.label }}", path: "${{ runner.temp }}/formal-ai-packaging-logs/", if-no-files-found: ignore, retention-days: 30}}
+      - {name: Stage redacted packaging console, if: "${{ always() }}", env: {MAC_SIGNING_CERTIFICATE_SECRET: "${{ secrets.MAC_CSC_LINK }}", MAC_SIGNING_PASSWORD_SECRET: "${{ secrets.MAC_CSC_KEY_PASSWORD }}"}, run: 'node scripts/prepare-hive-draft-evidence.mjs "$RUNNER_TEMP/formal-ai-packaging-logs" "$RUNNER_TEMP/formal-ai-packaging-artifact"'}
+      - {name: Upload complete packaging console, if: "${{ always() }}", uses: actions/upload-artifact@v7, with: {name: "packaging-console-${{ matrix.label }}", path: "${{ runner.temp }}/formal-ai-packaging-artifact/", if-no-files-found: ignore, retention-days: 30}}
       - name: Normalize desktop artifact names
         working-directory: desktop
         run: node scripts/normalize-artifacts.mjs

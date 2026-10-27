@@ -4,6 +4,8 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {spawnSync} from 'node:child_process';
 import test from 'node:test';
+import {createHash} from 'node:crypto';
+import {prepareDraftEvidence} from '../../../scripts/prepare-hive-draft-evidence.mjs';
 
 const wrapper = new URL('../../../desktop/scripts/package-macos-with-retry.sh', import.meta.url).pathname;
 const workflow = readFileSync(new URL('../../../.github/workflows/desktop-release.yml', import.meta.url), 'utf8');
@@ -93,7 +95,7 @@ test('workflow uploads packaging consoles even after failure and before smoke te
   assert.ok(marker > 0 && marker < workflow.indexOf('      - name: Normalize desktop artifact names'));
   const upload = workflow.slice(marker, workflow.indexOf('\n', marker));
   for (const required of ['always()', 'actions/upload-artifact@v7', 'packaging-console-${{ matrix.label }}',
-    '${{ runner.temp }}/formal-ai-packaging-logs/', 'retention-days: 30']) assert.ok(upload.includes(required));
+    '${{ runner.temp }}/formal-ai-packaging-artifact/', 'retention-days: 30']) assert.ok(upload.includes(required));
   assert.match(workflow, /os: macos-15,\s+ebflag: "--mac",\s+label: "macos-arm64"/);
   assert.match(workflow, /\[macos-arm64\]="macos-15"/);
   // The native producer and CLI keep their original deployment SDK and selected-source identity checks.
@@ -145,4 +147,34 @@ test('Hive failure cleanup retains the complete solve log and the original faili
   assert.match(result.stderr, /Hive Mind full-circle failed at run.sh:[0-9]+ \(exit 37\)/);
   assert.equal(readFileSync(join(out, 'raw-logs', 'solve-failure.log'), 'utf8'), complete);
   assert.ok(!readdirSync(root).includes('scratch'));
+});
+
+test('packaging artifact staging preserves complete sanitized logs and hashes while excluding raw credentials', t => {
+  const f = fixture(t, {mode: 'transient'});
+  const certificate = 'synthetic-signing-certificate-payload-xyz';
+  const password = 'synthetic-signing-password-xyz';
+  const original = 'BEGIN\n' + 'detail α😀\n'.repeat(140000) +
+    `certificate=${certificate}\npassword=${password}\ncontact=fixture@example.invalid\n/home/private-user/work\nEND\n`;
+  writeFileSync(join(f.directory, 'attempt-1.log'), original);
+  const destination = join(f.root, 'sanitized-artifact');
+  const receipt = prepareDraftEvidence({source: realpathSync(f.directory), destination,
+    env: {MAC_SIGNING_CERTIFICATE_SECRET: certificate, MAC_SIGNING_PASSWORD_SECRET: password}});
+  assert.equal(receipt.complete, true);
+  assert.equal(receipt.rawPrivateFilesIncluded, false);
+  assert.equal(receipt.taskAcceptance, false);
+  const retained = readFileSync(join(destination, 'attempt-1.log'), 'utf8');
+  assert.equal(retained, original.replace(certificate, '[REDACTED]').replace(password, '[credential]')
+    .replace('fixture@example.invalid', '[email]').replace('/home/private-user', '/home/[user]'));
+  const entry = receipt.files.find(row => row.path === 'attempt-1.log');
+  assert.equal(entry.bytes, Buffer.byteLength(retained));
+  assert.equal(entry.sha256, createHash('sha256').update(retained).digest('hex'));
+  assert.equal(entry.complete, true);
+  assert.equal(JSON.parse(readFileSync(join(destination, 'attempt-1.json'), 'utf8')).exitCode, 37);
+  const stage = workflow.indexOf('name: Stage redacted packaging console');
+  const upload = workflow.indexOf('name: Upload complete packaging console');
+  assert.ok(stage > 0 && stage < upload);
+  const staging = workflow.slice(stage, workflow.indexOf('\n', stage));
+  for (const required of ['always()', 'scripts/prepare-hive-draft-evidence.mjs',
+    'MAC_SIGNING_CERTIFICATE_SECRET', 'MAC_SIGNING_PASSWORD_SECRET']) assert.ok(staging.includes(required));
+  assert.ok(!workflow.slice(upload, workflow.indexOf('\n', upload)).includes('/formal-ai-packaging-logs/'));
 });

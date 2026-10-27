@@ -129,6 +129,10 @@ and stderr capture for every bounded attempt, with original process and log-pipe
 statuses and elapsed time. Upload all available attempt logs and outcomes with
 an always-run step before smoke checks and action cleanup. A capture error fails
 the step and marks evidence incomplete; it must not erase the original failure.
+Stage uploaded packaging files through the shared credential/personal-data
+redactor, retaining complete sanitized content, hashes and unavailable-file
+receipts. Supply signing credentials to that redactor as secret values; raw
+private packaging files are never artifact inputs.
 Use hosted workspace temporary storage for Hive integration scratch and child
 temporary files when the runner has a separate small temporary filesystem;
 retain Hive Mind's disk admission and all real executor/oracle checks.
