@@ -359,7 +359,7 @@ not legal approval.
   [general-purpose AI model guidance](https://digital-strategy.ec.europa.eu/en/policies/guidelines-gpai-providers)
 - Meta, [Llama 3.3 model card](https://github.com/meta-llama/llama-models/blob/main/models/llama3_3/MODEL_CARD.md)
   and [license](https://github.com/meta-llama/llama-models/blob/main/models/llama3_3/LICENSE)
-- Mistral AI, [Mistral 7B model card](https://docs.mistral.ai/models/model-cards/mistral-7b-0-1)
+- Mistral AI, [Mistral 7B model card](https://huggingface.co/mistralai/Mistral-7B-v0.1)
 - OpenRouter, [distillation guidance](https://openrouter.ai/docs/cookbook/evaluate-and-optimize/distillation)
   and [Terms of Service](https://openrouter.ai/terms)
 - OpenAI, [Services Agreement](https://openai.com/policies/services-agreement/)
