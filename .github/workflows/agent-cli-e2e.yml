@@ -25,9 +25,9 @@ on:
     inputs:
       full-replay:
         description: >-
-          Replay every recorded scenario when explicitly selected. During the
-          temporary critical-coding profile, routing changes on pull requests
-          or FORMAL_AI_FULL_AGENT_REPLAY=run select it. Ordinary runs retain
+          Replay every recorded scenario when explicitly selected. In this
+          profile, pull requests that change agentic routing pass true.
+          FORMAL_AI_FULL_AGENT_REPLAY=run also selects it. Ordinary runs retain
           coding, resumed execution, issue reporting, TUI reporting, self-coding,
           client-execution learning and held-out generalization. Noncritical
           recorded scenarios and long method-learning/computer-record replays
