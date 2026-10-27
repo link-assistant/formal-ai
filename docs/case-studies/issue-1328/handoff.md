@@ -66,6 +66,15 @@ batch, one malformed intermediate worker edit prevented Formal AI from booting;
 its syntax was repaired directly to restore the tool, then edits resumed through
 Formal AI. This is recovery evidence, not a claimed self-coding success.
 
+A subsequent browser OCR export timeout exposed an unrelated external-network
+dependency: an attachment filename was treated as a hostname. URL readers now
+use the shared attachment-section boundary in both runtimes. The OCR persistence
+test keeps its real worker, image, OCR and memory-export assertions while
+emulating unavailable external services; failures print worker diagnostics.
+The same batch addresses macOS compiler setup failing to resolve the official
+Rust distribution host. Retry only a transient, fully settled installation
+failure once; preserve the exact compiler, target and later source/signature
+checks. Mocked setup tests never invoke Rust locally.
 The new browser regressions pass locally without WASM or native execution.
 The source-only refresh of the carried agent-info projection uses the pinned
 portable JavaScript frontend and existing blocker analyzer. It reproduces the

@@ -67,6 +67,36 @@ fn environment_directory_declares_every_supported_surface() {
 }
 
 #[test]
+fn attachment_metadata_does_not_supply_a_requested_web_target() {
+    for name in [
+        "tiny.png",
+        "invoice.pdf",
+        "data.custom-format",
+        "example.com",
+    ] {
+        let prompt = format!(
+            "Read attached image\n\nAttached files:\n1. {name} (image/png, 68 B)\nOCR text: https://quoted.example.org/content"
+        );
+        let response = FormalAiEngine.answer(&prompt);
+        assert_ne!(response.intent, "http_fetch", "{name}: {}", response.answer);
+        assert_ne!(
+            response.intent, "url_navigate",
+            "{name}: {}",
+            response.answer
+        );
+    }
+}
+
+#[test]
+fn an_explicit_request_url_precedes_attachment_metadata() {
+    let response = FormalAiEngine.answer(
+        "Fetch https://docs.example.org/guide\n\nAttached files:\n1. tiny.png (image/png, 68 B)",
+    );
+    assert_eq!(response.intent, "http_fetch");
+    assert!(response.answer.contains("https://docs.example.org/guide"));
+}
+
+#[test]
 fn fetch_prompt_returns_http_fetch_intent_not_unknown() {
     // Regression test for issue #71: "fetch google.com" was returning
     // intent: unknown instead of routing to the http_fetch handler.

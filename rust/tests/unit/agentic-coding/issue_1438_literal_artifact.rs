@@ -37,7 +37,7 @@ fn call(messages: &[ChatMessage], tools: &[&str]) -> PlannedToolCall {
             assert_eq!(calls.len(), 1);
             calls.remove(0)
         }
-        other => panic!("expected call, {other:?}"),
+        other @ AgenticPlan::Final(_) => panic!("expected call, {other:?}"),
     }
 }
 fn framed(text: &str) -> String {
@@ -69,7 +69,7 @@ fn contextual_literal_edits_keep_read_line_numbers_outside_source() {
     );
     match plan_chat_step(&messages, &TOOLS).unwrap() {
         AgenticPlan::Final(answer) => assert!(answer.contains("observed the requested result")),
-        other => panic!("{other:?}"),
+        other @ AgenticPlan::ToolCalls(_) => panic!("{other:?}"),
     }
 }
 #[test]

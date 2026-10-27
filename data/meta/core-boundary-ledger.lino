@@ -4,7 +4,7 @@ core_boundary_ledger
   note "Issues 1395 and 1396 add twelve source lines wiring the shared data-owned practical-goal interpreter into existing procedural entry points. Handler dispositions and semantic-debt ceilings remain binding; this census records actual integration, not implementation authorship."
   boundary "docs/design/minimal-core-boundary.md"
   source_file_count_max 88
-  source_lines_max 35657
+  source_lines_max 35662
   outside_core_file_count_max 50
   outside_core_lines_max 18603
   note "Re-measured 2026-09-30 after the seeded creative, formalization, planning, and product-search interpreters were split into ledgered modules: 73 handler sources and 30942 total lines, with 51 promoted-core files contributing 20267 migration lines."
@@ -484,9 +484,9 @@ core_boundary_ledger
     reason "Search-provider selection and result policy belong in data over a network surface. Re-measured 2026-09-30: issue #1173's fallback-executes-search path (a search the handler already decided on runs live when enabled, instead of returning instructions) grew the file from 87 to 138 lines."
   source rust/src/solver_handlers/web_requests/url_parse.rs
     disposition promote
-    baseline_lines 151
+    baseline_lines 156
     core_component seed_driven_url_interpreter
-    reason "The module is generic structural machinery: URL syntax is parsed once and language-specific fetch/navigation evidence comes from role word forms in seed data."
+    reason "The module is generic structural machinery: URL syntax is parsed once and language-specific fetch/navigation evidence comes from role word forms in seed data. The shared seeded attachment-section reader keeps filenames and extracted text outside requested URL operands."
   source rust/src/solver_handlers/web_search_intent.rs
     disposition migrate
     baseline_lines 910
