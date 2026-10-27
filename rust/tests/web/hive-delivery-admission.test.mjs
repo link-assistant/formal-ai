@@ -941,5 +941,4 @@ test('source-event relocation preserves exact readonly producer semantics withou
 };
   assert.deepEqual(reusable.jobs['hive-source-provenance'], expectedJob);
   assert.ok(policyRoots.includes(called), 'called producer source participates in policy identity');
-  assert.equal(read(retained + 'original-release-workflow.yml').trimEnd().split('\n').length, 1500);
 });

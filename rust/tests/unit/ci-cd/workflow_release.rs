@@ -500,7 +500,7 @@ fn test_job_reclaims_runner_disk_before_restoring_the_target_cache() {
 
     let cleanup = workflow_step_block(test_job, "Free up runner disk space");
     assert!(
-        cleanup.contains("run: bash scripts/free-runner-disk.sh"),
+        cleanup.contains("run: RUNNER_DISK_TARGET_MIB=12288 bash scripts/free-runner-disk.sh"),
         "the test job must use the repository's established, observable disk cleanup"
     );
     assert!(

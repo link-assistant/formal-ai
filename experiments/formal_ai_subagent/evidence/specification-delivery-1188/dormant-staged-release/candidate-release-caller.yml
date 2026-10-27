@@ -457,9 +457,8 @@ jobs:
             rust/src rust/tests data rust/examples rust/build.rs rust/Cargo.toml rust/Cargo.lock scripts .github/workflows/release.yml .github/actions
           enabled: ${{ github.ref != 'refs/heads/main' }}
       - name: Free up runner disk space
-        env: {RUNNER_DISK_TARGET_MIB: 12288}
         if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
-        run: bash scripts/free-runner-disk.sh
+        run: RUNNER_DISK_TARGET_MIB=12288 bash scripts/free-runner-disk.sh
       - name: Setup Rust
         if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
         uses: dtolnay/rust-toolchain@stable
@@ -935,9 +934,8 @@ jobs:
             rust/src data rust/build.rs rust/Cargo.toml rust/Cargo.lock experiments/box_language_projects scripts .github/workflows/release.yml .github/actions
           enabled: ${{ github.ref != 'refs/heads/main' }}
       - name: Free up runner disk space
-        env: {RUNNER_DISK_TARGET_MIB: 12288}
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
-        run: bash scripts/free-runner-disk.sh
+        run: RUNNER_DISK_TARGET_MIB=12288 bash scripts/free-runner-disk.sh
       - uses: ./.github/actions/download-formal-ai-binary
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
       - name: Generate the ${{ matrix.language }} project from Formal-AI answers
