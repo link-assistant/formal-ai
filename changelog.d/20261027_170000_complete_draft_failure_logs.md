@@ -18,6 +18,10 @@ bump: patch
 - Enable Rust panic backtraces and retain large failed-job logs; fix Node 24
   parser loading and test-report compatibility without weakening behavioral checks.
 
+- Retain complete standalone build attempts and runtime stderr before post-job
+  processing; preserve build/log-pipe outcomes and upload diagnostics on failure.
+- Delegate Buildx builder disposal to the declared disposable hosted VMs,
+  avoiding an implicit post-hook that outlasted the ARM job after runtime passed.
 - Retain complete redacted draft console, dialog and native-response evidence,
   explicit process/deadline outcomes, and read-only post-cancellation job logs.
 - Refuse evidence-only draft diffs before dispatching the check matrix; useful

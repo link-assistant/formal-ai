@@ -648,6 +648,22 @@ can leave dpkg interrupted: distinguish slow installation from mirror failure
 using the complete command output, rather than diagnosing every timeout as a
 network stall or repeating an unchanged broken transaction indefinitely.
 
+On the declared disposable GitHub-hosted Ubuntu runners, delegate Buildx builder
+disposal to VM disposal instead of the implicit action post-hook. An observed
+ARM job completed compilation, runtime checks and artifact upload, then spent
+its remaining job budget in that post-hook. The exact Docker wait is unknown:
+GitHub returned 404 for its job console and omitted it from the run log archive.
+Keep this missing evidence explicit. Do not apply this disposal policy to
+self-hosted or retained runners. See [GitHub's runner lifecycle](https://docs.github.com/en/actions/concepts/runners/github-hosted-runners)
+and the [Buildx action post-hook](https://github.com/docker/setup-buildx-action/blob/v4/src/main.ts).
+
+Retain every bounded standalone build attempt before post-processing. Keep a
+separate per-attempt buffer for transport classification, append all attempts
+to the durable console, and record original build and log-pipe exit codes plus
+capture completeness. Preserve runtime stdout and stderr. Upload available
+logs and outcomes even after failure; absent or interrupted outcomes remain
+incomplete evidence, never successful compilation or runtime acceptance.
+
 Direct literal editing of extensionless root files remains an observed
 pathname capability gap. A supplied JavaScript transformation can instead be
 written and executed through Formal AI's existing tools under an exact command
