@@ -3,7 +3,8 @@
 // Loaded by ../formal_ai_worker.js.
 // Generic first-person need -> registered goal -> source-backed practical guidance.
 function practicalHelpPolicy(key){return howPolicy('practical-help',key,{});}
-function practicalHelpForms(key){return practicalHelpPolicy(key).split('|').map(normalizePrompt).filter(Boolean);}
+function practicalHelpValues(key){const scalar=practicalHelpPolicy(key);return scalar?[scalar]:(handlerRulesTables()['practical-help']||{rows:[]}).rows.filter(([name])=>name===key).map(([,value])=>value);}
+function practicalHelpForms(key){return practicalHelpValues(key).map(normalizePrompt).filter(Boolean);}
 function practicalHelpContains(text,word){
  if(!word)return false;
  let from=0;for(;;){const at=text.indexOf(word,from);if(at<0)return false;from=at+word.length;
@@ -15,11 +16,11 @@ function practicalHelpGoal(prompt){
   &&(/[\u3400-\u9fff]/u.test(word)||!/[\p{L}\p{N}_]/u.test(text[word.length]||'')));
  if(!lead)return null;const rest=text.slice(lead.length).trim();
  if(practicalHelpForms('negations').some(word=>practicalHelpContains(rest,word)))return null;
- return practicalHelpPolicy('goals').split('|').find(goal=>practicalHelpForms(goal+'-forms').some(word=>rest.startsWith(word)&&practicalHelpContains(rest,word)))||null;
+ return practicalHelpValues('goals').find(goal=>practicalHelpForms(goal+'-forms').some(word=>rest.startsWith(word)&&practicalHelpContains(rest,word)))||null;
 }
 async function practicalHelpAnswer(goal,language,preferences={}){
  const source=practicalHelpPolicy(goal+'-source'),proof=practicalHelpPolicy(goal+'-proof');let trusted=false;
- try{const url=new URL(source);trusted=url.protocol==='https:'&&practicalHelpPolicy('trusted-hosts').split('|').map(value=>value.trim().toLowerCase()).includes(url.hostname);}catch{}
+ try{const url=new URL(source);trusted=url.protocol==='https:'&&practicalHelpValues('trusted-hosts').map(value=>value.trim().toLowerCase()).includes(url.hostname);}catch{}
  let evidence=preferences.practicalHelpCache===false?'':practicalHelpPolicy(goal+'-cached-proof');let mode='curated-excerpt';
  if(trusted&&proof&&!evidence&&preferences.offline!==true&&typeof fetch==='function'){
   const controller=new AbortController();let timer,reader;

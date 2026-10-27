@@ -86,6 +86,10 @@ parity debt ceiling unchanged; do not record the omission as new accepted debt.
 Native coverage also checks the canonical role registry. Regenerate its object
 and procedure declarations from the meaning records, and check the generated
 registry locally before pushing. This changes no role-closure exception.
+The seed integrity test rejects pipe-packed policy lists. Store practical
+vocabulary as ordered rule-table rows and read those rows in both runtimes;
+retain scalar policy values for single values and the existing goal extension
+test. No data-integrity exception is added.
 The new browser regressions pass locally without WASM or native execution.
 The source-only refresh of the carried agent-info projection uses the pinned
 portable JavaScript frontend and existing blocker analyzer. It reproduces the

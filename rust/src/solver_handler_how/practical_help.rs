@@ -5,10 +5,21 @@ use crate::source_fetch::{CachedSourceClient, SourceTransport};
 fn policy(key: &str) -> String {
     crate::rule_interpreter::handler_policy("practical-help", key).unwrap_or_default()
 }
+fn values(key: &str) -> Vec<String> {
+    let scalar = policy(key);
+    if !scalar.is_empty() {
+        return vec![scalar];
+    }
+    crate::rule_interpreter::handler_table_rows("practical-help")
+        .iter()
+        .filter(|(name, _)| name == key)
+        .map(|(_, value)| value.clone())
+        .collect()
+}
 fn forms(key: &str) -> Vec<String> {
-    policy(key)
-        .split('|')
-        .map(normalize_prompt)
+    values(key)
+        .iter()
+        .map(|value| normalize_prompt(value))
         .filter(|value| !value.is_empty())
         .collect()
 }
@@ -56,21 +67,21 @@ pub fn goal(prompt: &str, _normalized: &str) -> Option<String> {
     if forms("negations").iter().any(|word| whole(rest, word)) {
         return None;
     }
-    policy("goals")
-        .split('|')
+    values("goals")
+        .iter()
         .find(|goal| {
             forms(&format!("{goal}-forms"))
                 .iter()
                 .any(|word| rest.starts_with(word.as_str()) && whole(rest, word))
         })
-        .map(str::to_owned)
+        .cloned()
 }
 fn trusted(goal: &str) -> bool {
     url::Url::parse(&policy(&format!("{goal}-source"))).is_ok_and(|url| {
         url.scheme() == "https"
             && url.host_str().is_some_and(|host| {
-                policy("trusted-hosts")
-                    .split('|')
+                values("trusted-hosts")
+                    .iter()
                     .any(|entry| entry.trim().eq_ignore_ascii_case(host))
             })
     })
