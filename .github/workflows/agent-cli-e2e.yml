@@ -104,6 +104,8 @@ jobs:
           bun-version-file: .bun-version
           no-cache: true
       - name: Replay captured TUI startup regressions without external clients
+        env:
+          FORMAL_AI_FULL_TUI_REPLAY: ${{ inputs.full-replay && 'run' || vars.FORMAL_AI_FULL_TUI_REPLAY || 'skip' }}
         if: ${{ matrix.part == 'scenarios' && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 5
         working-directory: experiments/agent_cli_e2e/issue_819_tui

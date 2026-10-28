@@ -285,6 +285,9 @@ jobs:
   fast-pr-lint:
     name: Fast Linux source and requirement checks
     if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && vars.FORMAL_AI_FULL_PR_CI != 'run'
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-fast-pr-lint
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -301,6 +304,7 @@ jobs:
           node scripts/check-ci-speed.mjs
           node scripts/assemble-requirements.mjs
           node scripts/check-requirement-status.mjs
+          node scripts/mirror-package-data.mjs --check
 
   lint:
     name: Lint and Format Check (lane ${{ matrix.lane }})
