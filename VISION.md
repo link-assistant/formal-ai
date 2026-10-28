@@ -129,7 +129,10 @@ skipped test earns no execution credit; a green PR is not proof of a published
 release. Generated test issues must be finalized with accurate outcomes so the
 issue tracker remains useful. Deliver related implementation, evidence and policy
 changes in the same PR; follow its exact source through merge, main and actual
-public release verification. The operational policy lives in
+public release verification. Keep release feedback affordable by reusing authenticated complete source
+artifacts, retaining independent tag/ancestry verification and learning transport
+regressions from real CI evidence. Infrastructure cancellations earn no execution
+credit. The operational policy lives in
 [CI speed](docs/ci-cd/speed.md) and the
 [fast PR requirements](docs/requirements/doctrine-fast-pull-request-production-ci.md).
 

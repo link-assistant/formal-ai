@@ -325,10 +325,6 @@ jobs:
           const budgetFiles=[{name:budgetName,bytes:budgetBytes.length,sha256:createHash('sha256').update(budgetBytes).digest('hex')}];
           writeFileSync(join(directory,'native-build-budget-protocol.json'),JSON.stringify({...record,files:budgetFiles}));
           NODE
-      - uses: actions/checkout@v7
-        timeout-minutes: 5
-        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 1}
-      - {name: Complete only the selected source ancestry, timeout-minutes: 5, run: 'node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" hydrate-source'}
       - uses: actions/setup-node@v7
         with:
           node-version: 22
@@ -338,8 +334,9 @@ jobs:
         with:
           name: native-release-source
           path: native-source
+      - {name: Download selected source history, uses: actions/download-artifact@v8, env: {NODE_OPTIONS: --disable-warning=DEP0005}, with: {name: native-release-source-history, path: native-source}}
       - name: Import and verify exact source selection
-        run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import native-source
+        run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import-offline native-source
       - name: Install exact selected Rust compiler with bounded transport recovery
         if: matrix.target == 'x86_64-apple-darwin'
         timeout-minutes: 5
@@ -474,10 +471,6 @@ jobs:
           const packagingFiles=['install-node-dependencies.sh','prefetch-builder-toolsets.mjs','prefetch-windows-packaging.mjs'].map(name=>{const bytes=readFileSync(join(directory,name));return {name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};});
           writeFileSync(join(directory,'packaging-protocol-selection.json'),JSON.stringify({...record,files:packagingFiles})+'\n');
           NODE
-      - uses: actions/checkout@v7
-        timeout-minutes: 5
-        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 1}
-      - {name: Complete only the selected source ancestry, timeout-minutes: 5, run: 'node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" hydrate-source'}
       - uses: actions/setup-node@v7
         with:
           node-version: 22
@@ -488,11 +481,12 @@ jobs:
         with:
           name: native-release-source
           path: native-source
+      - {name: Download selected source history, uses: actions/download-artifact@v8, env: {NODE_OPTIONS: --disable-warning=DEP0005}, with: {name: native-release-source-history, path: native-source}}
       - name: Import and verify exact source selection
         env:
           NATIVE_SELECTED_HEAD: ${{ needs.native-source.outputs.selected-head }}
           NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
-        run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import native-source
+        run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import-offline native-source
       - uses: ./.github/actions/release-web
         with: {mode: import}
       - name: Download the same-run target executable
@@ -589,6 +583,7 @@ jobs:
             echo "mode=signed" >> "$GITHUB_OUTPUT"
           fi
       - name: Package desktop app (Linux/Windows)
+        id: package_desktop
         if: matrix.ebflag != '--mac'
         working-directory: desktop
         env:
@@ -596,6 +591,7 @@ jobs:
           FORMAL_AI_MACOS_PACKAGE_DEADLINE_EPOCH: ${{ env.FORMAL_AI_JOB_DEADLINE_EPOCH }}
         run: bash scripts/package-macos-with-retry.sh ${{ matrix.ebflag }} --publish never
       - name: Package desktop app (macOS signed)
+        id: package_macos_signed
         if: matrix.ebflag == '--mac' && steps.mac_secrets.outputs.has_secrets == 'true'
         working-directory: desktop
         env:
@@ -608,6 +604,7 @@ jobs:
           FORMAL_AI_MACOS_PACKAGE_DEADLINE_EPOCH: ${{ env.FORMAL_AI_JOB_DEADLINE_EPOCH }}
         run: bash scripts/package-macos-with-retry.sh ${{ matrix.ebflag }} --publish never
       - name: Package desktop app (macOS ad-hoc)
+        id: package_macos_adhoc
         if: matrix.ebflag == '--mac' && steps.mac_secrets.outputs.has_secrets != 'true'
         working-directory: desktop
         env:
@@ -623,7 +620,12 @@ jobs:
           # Never begin a retry that cannot finish before the existing deadline.
           FORMAL_AI_MACOS_PACKAGE_DEADLINE_EPOCH: ${{ env.FORMAL_AI_JOB_DEADLINE_EPOCH }}
         run: bash scripts/package-macos-with-retry.sh ${{ matrix.ebflag }} --publish never -c.mac.notarize=false -c.mac.identity=- -c.mac.sign=./scripts/adhoc-sign-mac.cjs
-      - {name: Stage redacted packaging console, if: "${{ always() }}", env: {MAC_SIGNING_CERTIFICATE_SECRET: "${{ secrets.MAC_CSC_LINK }}", MAC_SIGNING_PASSWORD_SECRET: "${{ secrets.MAC_CSC_KEY_PASSWORD }}"}, run: 'node scripts/prepare-hive-draft-evidence.mjs "$RUNNER_TEMP/formal-ai-packaging-logs" "$RUNNER_TEMP/formal-ai-packaging-artifact"'}
+      - name: Stage redacted packaging console
+        if: ${{ always() && ((steps.package_desktop.outcome != '' && steps.package_desktop.outcome != 'skipped') || (steps.package_macos_signed.outcome != '' && steps.package_macos_signed.outcome != 'skipped') || (steps.package_macos_adhoc.outcome != '' && steps.package_macos_adhoc.outcome != 'skipped')) }}
+        env:
+          MAC_SIGNING_CERTIFICATE_SECRET: ${{ secrets.MAC_CSC_LINK }}
+          MAC_SIGNING_PASSWORD_SECRET: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
+        run: node scripts/prepare-hive-draft-evidence.mjs "$RUNNER_TEMP/formal-ai-packaging-logs" "$RUNNER_TEMP/formal-ai-packaging-artifact"
       - {name: Upload complete packaging console, if: "${{ always() }}", uses: actions/upload-artifact@v7, with: {name: "packaging-console-${{ matrix.label }}", path: "${{ runner.temp }}/formal-ai-packaging-artifact/", if-no-files-found: ignore, retention-days: 30}}
       - name: Normalize desktop artifact names
         working-directory: desktop
@@ -1098,10 +1100,6 @@ jobs:
             tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{encoding:'utf8'}).trim(),files};
           writeFileSync(join(directory,'protocol-selection.json'),JSON.stringify(record,null,2)+'\n');
           NODE
-      - uses: actions/checkout@v7
-        timeout-minutes: 5
-        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 1}
-      - {name: Complete only the selected source ancestry, timeout-minutes: 5, run: 'node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" hydrate-source'}
       - uses: actions/setup-node@v7
         with:
           node-version: 22
@@ -1112,11 +1110,12 @@ jobs:
         with:
           name: native-release-source
           path: native-source
+      - {name: Download selected source history, uses: actions/download-artifact@v8, env: {NODE_OPTIONS: --disable-warning=DEP0005}, with: {name: native-release-source-history, path: native-source}}
       - name: Import and verify exact source selection
         env:
           NATIVE_SELECTED_HEAD: ${{ needs.native-source.outputs.selected-head }}
           NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
-        run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import native-source
+        run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import-offline native-source
       - uses: ./.github/actions/release-web
         with: {mode: import}
       - name: Download the same-run selected-source worker

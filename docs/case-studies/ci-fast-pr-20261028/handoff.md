@@ -134,3 +134,38 @@ The latest instruction keeps all remaining implementation and policy updates in
 PR1454. CI-FAST-12 now explicitly requires exact-head qualification before merge
 and source-linked main/release/public-artifact verification afterwards. VISION,
 CONTRIBUTING and the CI speed guide carry the same standing working policy.
+
+## Native release transport recovery
+
+PR1454 merged as 123d89e6ccc16b3c36da77d523637cff869c44c4 after all 20 workflows
+and 39 jobs passed. Its complete main census is green: 12 workflows and 126 jobs.
+Release v0.355.15 was published from the permitted direct version-preparation
+child f4c13e62a07ee40d7f9fe9bf1ae7cd551735628f. Public immutable full/slim GHCR
+manifests and the Docker Hub mirror were independently verified through small
+JSON receipts and anonymous manifest bytes, with no local product downloads.
+The final four platform manifests and two full/slim indexes were independently
+verified against the green producer's digest-bound JSON receipt artifact too.
+
+The downstream native producer run 40752567784 exposed four transfer failures:
+both Windows source checkouts exceeded five minutes, while Linux musl and arm64
+tag authorization redundantly downloaded full history and exceeded four minutes.
+One transfer exceeded 800 MiB before aborting. Complete public logs were captured
+with hashes in rust/tests/fixtures/native-release-source-transport.json. A tiny
+real-Git control confirms that a detached checkout with no named refs omits its
+existing history from negotiation; advertising HEAD repairs that behavior without
+changing tag/default ancestry checks or finite budgets.
+
+The recovery batch reuses the already verified same-run source-history artifact
+for native, desktop and extension consumers, following the existing CLI path.
+It retains the independently pinned protocol and all source-byte checks. Console
+staging requires an attempted package operation so an earlier missing executable
+does not create a second false packaging-log failure. Actual failed packaging
+still requires complete redacted evidence. Changes are on the single follow-up
+branch fix/native-release-source-transport-20261029 because PR1454 is merged.
+
+The arm64 macOS job was never acquired by a hosted runner: GitHub reports capacity
+constraints and no executed steps. Its console endpoint returns BlobNotFound;
+the two bounded read attempts and explicit incomplete receipt were retained.
+This is an infrastructure cancellation, with no compile or signing acceptance.
+Native packages, extension publication and full public-download acceptance remain
+pending the recovery. Do not label the partially published release fully verified.

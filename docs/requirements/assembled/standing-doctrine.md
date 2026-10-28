@@ -570,6 +570,17 @@ Formal AI edit recipes receive zero autonomous implementation credit.
   release consumers and public artifact verification. Record the source commit,
   actual version, workflow outcomes and immutable artifact identities. A previous
   release, a skipped job or an unrelated green run cannot satisfy this delivery.
+- **CI-FAST-13:** Reuse the digest-verified same-run complete source-history
+  artifact for native, desktop and extension consumers. Keep their independently
+  pinned workflow protocol separate. Advertise detached selected history during
+  release-tag fetch negotiation so existing objects are not downloaded again.
+  Preserve complete unfiltered source bytes, published tag/default-branch
+  ancestry checks, original finite budgets and failure policy. Capture actual
+  failed transfers as small unit fixtures, including detached-head and advancing
+  default-branch controls. Stage packaging console evidence only after packaging
+  starts; missing evidence after an attempted package operation remains a failure.
+  An unacquired hosted runner has no execution credit: retain its structured
+  annotations and explicit unavailable-console outcome instead of inventing logs.
 
 ## Standing Doctrine: Readable Recursive Source and Comment Meta-Language (2026-10-18)
 

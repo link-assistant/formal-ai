@@ -235,3 +235,17 @@ VS Code package/WASM probes and the native full-source-content example are also
 retained behind the full PR profile. Production extension publication is
 unchanged; the full source-content workflow remains available on explicit
 dispatch. Their original build payloads are included in the retention check.
+
+Release consumers reuse the digest-verified same-run complete source-history
+bundle, as the CLI packager already did. Their pinned protocol stays separate;
+restoration still verifies run/head/selection, the complete tree and native input
+bytes. Published tag and default-branch ancestry are independently checked.
+Detached source checkouts explicitly advertise HEAD during Git negotiation;
+otherwise a checkout without named refs can download its entire history again.
+The v0.355.15 native failures captured over 800 MiB of one redundant transfer
+before its finite deadline. Tiny real-Git controls cover the detached state and
+an advancing default branch, without native compilation or a large local clone.
+Keep the original transfer and retry limits. Packaging console staging runs only
+after a package operation is attempted, and missing evidence after an attempted
+operation still fails. An unacquired hosted runner has no console to fabricate;
+retain its structured capacity annotations and explicit unavailable outcome.

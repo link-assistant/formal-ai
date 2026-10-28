@@ -1,0 +1,50 @@
+{
+  "schema": "native-release-source-transport/v1",
+  "repository": "link-assistant/formal-ai",
+  "run": 40752567784,
+  "source": "f4c13e62a07ee40d7f9fe9bf1ae7cd551735628f",
+  "observations": [
+    {
+      "target": "x86_64-pc-windows-msvc",
+      "job": 123044813649,
+      "phase": "selected-source-checkout",
+      "failure": "five-minute checkout deadline",
+      "logSha256": "808ab809c53b599cae2818d19d17c024aa9eab2b1b88ba6aee9a23fec01d72fa"
+    },
+    {
+      "target": "aarch64-pc-windows-msvc",
+      "job": 123044813859,
+      "phase": "selected-source-checkout",
+      "failure": "five-minute checkout deadline",
+      "logSha256": "706e7cf25bf6f7d81800006c944c7e6805a3570941d3934552d90f447eaefb95"
+    },
+    {
+      "target": "x86_64-unknown-linux-musl",
+      "job": 123044813720,
+      "phase": "release-tag-authorization",
+      "failure": "git ETIMEDOUT after redundant history transfer",
+      "logSha256": "d9f1981aee21349de033adc1f3044273ca0f01d2c23f744d7ba6435af6dc54f0"
+    },
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "job": 123044813735,
+      "phase": "release-tag-authorization",
+      "failure": "git ETIMEDOUT after redundant history transfer",
+      "logSha256": "2cea371393ab872ae0714a362634133973cbc536342395aa1f0d93120ad2bc79"
+    }
+  ],
+  "detachedSource": {
+    "shallowAfterHydration": false,
+    "namedRefs": [],
+    "releaseAndDefaultCommitEqual": true,
+    "inferredFromCheckoutCommands": true
+  },
+  "runnerCapacity": {
+    "target": "aarch64-apple-darwin",
+    "job": 123044813618,
+    "steps": [],
+    "consoleAvailable": false,
+    "annotation": "The job was not acquired by Runner of type hosted even after multiple attempts"
+  },
+  "scope": "Public failure metadata only. No executable, product archive, credentials, or acceptance credit."
+}
