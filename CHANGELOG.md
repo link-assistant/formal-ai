@@ -20,6 +20,49 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.355.14] - 2026-10-28
+
+### Fixed
+
+- Store shared GitHub action release metadata once in refreshed dependency snapshots, preserving every sub-action and its immutable release identity while satisfying the existing notation duplication gate. Reject missing, chained, cyclic, conflicting and cross-repository release references.
+- Temporarily make duplicate instrumented coverage opt-in while retaining all ordinary critical coding, reporting and release checks; stop artifact consumers after a failed producer and skip unnecessary hosted disk cleanup.
+- Add read-only live dependency validation and avoid redundant feature-branch admission runs while retaining manual candidate checks and late main readiness checks.
+
+- Fetch only the exact source-event recorder for the existing three-minute provenance job, avoiding full-repository checkout timeouts while preserving the original source coordinates and minimal payload.
+- Point the Mistral model-card citation to its official model repository.
+- Resolve symlinked recorder entry points so successful invocation always writes the minimal provenance artifact.
+
+## Fixed
+
+- Recognize Node spec-reporter test evidence in coding research using the same
+  strict JavaScript/Rust acceptance rules and shared negative cases.
+- Reuse verified same-run Git history for CLI packaging and bounded APT recovery
+  for slim runtime and source-builder images, retaining integrity failures.
+- Share the pinned official Node/npm payload between full and slim images,
+  avoiding the slow distro npm install that left dpkg interrupted at its deadline.
+- Copy sparse test fixtures across filesystems and require the new offline CLI
+  source import in relocated-stage controls.
+
+- Avoid fetching unrelated release history, keep generated native and TypeScript
+  projections current, and use small committed source fixtures in workspace tests.
+- Enable Rust panic backtraces and retain large failed-job logs; fix Node 24
+  parser loading and test-report compatibility without weakening behavioral checks.
+
+- Retain every desktop packaging attempt and process/log-pipe outcome even on
+  failure; move ARM packaging off deprecated macOS 14 while retaining signing
+  and both DMG/ZIP runtime checks.
+- Keep Hive integration temporary work on the runner workspace so its unchanged
+  disk admission measures the filesystem with capacity available.
+- Retain complete standalone build attempts and runtime stderr before post-job
+  processing; preserve build/log-pipe outcomes and upload diagnostics on failure.
+- Delegate Buildx builder disposal to the declared disposable hosted VMs,
+  avoiding an implicit post-hook that outlasted the ARM job after runtime passed.
+- Retain complete redacted draft console, dialog and native-response evidence,
+  explicit process/deadline outcomes, and read-only post-cancellation job logs.
+- Refuse evidence-only draft diffs before dispatching the check matrix; useful
+  source, configuration and documentation changes still require original
+  behavioral acceptance before the task is considered solved.
+
 ## [0.355.13] - 2026-10-27
 
 ### Fixed

@@ -894,3 +894,6 @@ changelog.d/20261025_213600_released_client_progress.md	0.355.11
 changelog.d/20261026_024000_coverage_cold_research.md	0.355.12
 changelog.d/20261026_193731_verified_client_resume.md	0.355.13
 changelog.d/20261027_045000_reporting_and_practical_help.md	0.355.13
+changelog.d/20261027_114000_shared_registry_releases.md	0.355.14
+changelog.d/20261027_153500_sparse_source_provenance.md	0.355.14
+changelog.d/20261027_170000_complete_draft_failure_logs.md	0.355.14
