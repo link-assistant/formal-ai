@@ -643,7 +643,10 @@ filenames, attachments or the raw logs into the source tree.
    output. Supplied literal patches receive zero autonomous implementation credit.
    The three historical complex issue repairs remain capability gaps until their
    original acceptance is observed. They do not block a correct iterative release;
-   actual Hello World/client/reporting acceptance stays independent and critical.
+   actual Hello World/client/reporting acceptance remains independent. Under the
+   2026-10-28 fast PR doctrine, offline coding/reporting regressions gate PRs;
+   retained real GitHub client effects require explicit opt-in, and a skip grants
+   no live solve or three-client acceptance credit.
 
 Implementation seams: scripts/run-with-session-evidence.sh,
 scripts/prepare-hive-draft-evidence.mjs, scripts/collect-hive-draft-logs.mjs,

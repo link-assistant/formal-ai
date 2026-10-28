@@ -524,7 +524,10 @@ Removal from a public thread is not approval to retain another copy.
    cargo fmt --manifest-path rust/Cargo.toml --check && cargo clippy --manifest-path rust/Cargo.toml --lib --bins --tests --all-features && cargo check --manifest-path rust/Cargo.toml --examples --all-features && rust-script scripts/check-file-size.rs && rust-script scripts/check-hardcoded-language.rs
    ```
 
-4. **Run tests**
+4. **Run tests in CI**
+
+   Rust commands below document CI usage. On the workstation, run only one
+   necessary JavaScript test file at a time; never run Rust builds or tests.
 
    ```bash
    # Run all tests

@@ -7,7 +7,8 @@ name: Agentic CLI Matrix
 # recording every exchange. Our own server is the model provider, so no leg
 # needs vendor credentials.
 #
-# Legs run in parallel and never skip: a client the runner cannot exercise
+# When this retained integration is selected, every client leg runs in parallel.
+# A client the runner cannot exercise
 # headlessly still gets an interactive PTY leg, and a documented upstream
 # limitation is written as an assertion that fails when upstream lifts it,
 # not as a `continue-on-error`. The `agentic_cli_matrix_covers_every_seeded_client`
