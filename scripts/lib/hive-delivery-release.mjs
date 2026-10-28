@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { artifactJson } from './hive-delivery-journal.mjs';
 import { sourceBytes, readWorkflowPolicy } from './hive-delivery-source.mjs';
-import { applicableWorkflows, ciAdmissionDecision, admissionPolicy, isGatingCiRun } from './hive-delivery-admission.mjs';
+import { applicableWorkflows, ciAdmissionDecision, admissionPolicy, isGatingCiRun, declaredScheduledWorkflows } from './hive-delivery-admission.mjs';
 import { validateVersionWitness } from '../refresh-release-specification-witness.mjs';
 import { verifyAnonymousImageManifest } from '../verify-anonymous-image-manifest.mjs';
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -222,7 +222,7 @@ export function lateSourceCandidate(source, commit, head) {
   return head === source || (commit.parents.length === 1 && commit.parents[0].sha === head);
 }
 /** Cheap observed-state refusal only; the full applicable-workflow census still runs afterward. */
-export async function precheckPublishedCi(reader, repository, source, requiredPath = null) {
+export async function precheckPublishedCi(reader, repository, source, requiredPath = null, {scheduledWorkflows = []} = {}) {
   const runs = await reader.pages('repos/' + repository + '/actions/runs?head_sha=' + source, 'workflow_runs');
   for (const run of runs) {
     assert.equal(run.repository.full_name, repository);
@@ -231,9 +231,9 @@ export async function precheckPublishedCi(reader, repository, source, requiredPa
   }
   assert.ok(Array.isArray(runs) && runs.length <= 2000, 'bounded complete CI inventory');
   if (requiredPath !== null && runs.length === 0) return {admitted: false, reason: 'missing applicable CI ' + requiredPath};
-  const observed = [...new Set(runs.filter(isGatingCiRun).map(run => run.path))];
+  const observed = [...new Set(runs.filter(run => isGatingCiRun(run, {scheduledWorkflows})).map(run => run.path))];
   const expected = requiredPath === null ? observed : [requiredPath];
-  return expected.length ? ciAdmissionDecision({source, expected, runs, complete: true}) : {admitted: true, ci: []};
+  return expected.length ? ciAdmissionDecision({source, expected, runs, complete: true, scheduledWorkflows}) : {admitted: true, ci: []};
 }
 /** No open PR is inferred from a default-branch workflow SHA; published source has its own authenticated chain. */
 export async function observePublishedAdmission({
@@ -320,10 +320,13 @@ export async function observePublishedAdmission({
   assert.equal(main.event, 'push');
   assert.equal(main.status, 'completed');
   assert.equal(main.conclusion, 'success');
-  const earlyChecked = await precheckPublishedCi(reader, repository, main.head_sha, main.path);
+  // The guarded prepared child cannot alter these authenticated workflow definitions.
+  const workflows = await readWorkflowPolicy(reader, repository, main.head_sha);
+  const scheduledWorkflows = declaredScheduledWorkflows(workflows);
+  const earlyChecked = await precheckPublishedCi(reader, repository, main.head_sha, main.path, {scheduledWorkflows});
   if (!earlyChecked.admitted) return earlyChecked;
   if (source !== main.head_sha) {
-    const earlyPublished = await precheckPublishedCi(reader, repository, source);
+    const earlyPublished = await precheckPublishedCi(reader, repository, source, null, {scheduledWorkflows});
     if (!earlyPublished.admitted) return earlyPublished;
   }
   const artifacts = await reader.pages(prefix + '/actions/runs/' + main.id + '/artifacts', 'artifacts');
@@ -344,7 +347,6 @@ export async function observePublishedAdmission({
   const comparison = await reader.read(prefix + '/compare/' + event.before + '...' + event.after);
   assert.equal(comparison.status, 'ahead');
   const changedPaths = await publishedChangedPaths(reader, repository, event.before, event.after);
-  const workflows = await readWorkflowPolicy(reader, repository, main.head_sha);
   const expected = applicableWorkflows(workflows, {
     event: 'push',
     baseBranch: 'main',
@@ -355,7 +357,7 @@ export async function observePublishedAdmission({
     assert.equal(run.repository.full_name, repository);
     assert.equal(run.head_repository.full_name, repository);
   }
-  const checkedDecision = ciAdmissionDecision({source: main.head_sha, expected, runs, complete: true});
+  const checkedDecision = ciAdmissionDecision({source: main.head_sha, expected, runs, complete: true, scheduledWorkflows});
   if (!checkedDecision.admitted) return checkedDecision;
   const ci = checkedDecision.ci;
   let delta = {
@@ -415,9 +417,9 @@ export async function observePublishedAdmission({
     assert.equal(run.repository.full_name, repository);
     assert.equal(run.head_repository.full_name, repository);
   }
-  const publishedExpected = [...new Set(publishedRuns.filter(isGatingCiRun).map(run => run.path))];
+  const publishedExpected = [...new Set(publishedRuns.filter(run => isGatingCiRun(run, {scheduledWorkflows})).map(run => run.path))];
   const publishedDecision = publishedExpected.length ? ciAdmissionDecision({
-    source, expected: publishedExpected, runs: publishedRuns, complete: true
+    source, expected: publishedExpected, runs: publishedRuns, complete: true, scheduledWorkflows
   }) : {admitted: true, ci: []};
   if (!publishedDecision.admitted) return publishedDecision;
   const publishedObservedCi = publishedDecision.ci;

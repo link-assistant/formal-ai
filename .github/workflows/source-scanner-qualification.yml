@@ -52,6 +52,7 @@ jobs:
           if-no-files-found: error
           retention-days: 7
   native:
+    if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (true) }}
     needs: javascript
     runs-on: ubuntu-24.04
     timeout-minutes: 20

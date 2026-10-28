@@ -1,0 +1,314 @@
+{
+  "schema": "captured-generated-issues/v1",
+  "repository": "link-assistant/formal-ai",
+  "capturedOn": "2026-10-28",
+  "scope": "Exact public bot-generated issue metadata and complete bodies before retirement; no test or feature success is implied.",
+  "bodyFiles": {
+    "Kotlin": "hello-kotlin.md",
+    "Scala": "hello-scala.md",
+    "Rust": "hello-rust.md"
+  },
+  "issues": [
+    {
+      "number": 1385,
+      "language": "Rust",
+      "createdAt": "2026-10-21T03:29:44Z",
+      "updatedAt": "2026-10-21T03:29:44Z",
+      "bodySha256": "7d0759fe103c20e59afed08d3af25b3367fa813913cdc266d59f9a7a2cf36823"
+    },
+    {
+      "number": 1384,
+      "language": "Scala",
+      "createdAt": "2026-10-21T03:28:58Z",
+      "updatedAt": "2026-10-21T03:28:58Z",
+      "bodySha256": "639ba239291b20e4c04fec2cb524d0797e55d705dd4745a25c45ee3f420cfd30"
+    },
+    {
+      "number": 1382,
+      "language": "Kotlin",
+      "createdAt": "2026-10-21T03:24:56Z",
+      "updatedAt": "2026-10-21T03:24:56Z",
+      "bodySha256": "57e31e88511375b7bf29e3e023d2c30ce7238c0cd71df0f1bcb685f8fa7b6653"
+    },
+    {
+      "number": 1378,
+      "language": "Scala",
+      "createdAt": "2026-10-21T02:33:07Z",
+      "updatedAt": "2026-10-21T02:33:07Z",
+      "bodySha256": "639ba239291b20e4c04fec2cb524d0797e55d705dd4745a25c45ee3f420cfd30"
+    },
+    {
+      "number": 1377,
+      "language": "Rust",
+      "createdAt": "2026-10-21T02:33:03Z",
+      "updatedAt": "2026-10-21T02:33:03Z",
+      "bodySha256": "7d0759fe103c20e59afed08d3af25b3367fa813913cdc266d59f9a7a2cf36823"
+    },
+    {
+      "number": 1376,
+      "language": "Kotlin",
+      "createdAt": "2026-10-21T02:32:56Z",
+      "updatedAt": "2026-10-21T02:32:56Z",
+      "bodySha256": "57e31e88511375b7bf29e3e023d2c30ce7238c0cd71df0f1bcb685f8fa7b6653"
+    },
+    {
+      "number": 1373,
+      "language": "Kotlin",
+      "createdAt": "2026-10-21T00:38:38Z",
+      "updatedAt": "2026-10-21T00:38:38Z",
+      "bodySha256": "57e31e88511375b7bf29e3e023d2c30ce7238c0cd71df0f1bcb685f8fa7b6653"
+    },
+    {
+      "number": 1372,
+      "language": "Rust",
+      "createdAt": "2026-10-21T00:37:50Z",
+      "updatedAt": "2026-10-21T00:37:50Z",
+      "bodySha256": "7d0759fe103c20e59afed08d3af25b3367fa813913cdc266d59f9a7a2cf36823"
+    },
+    {
+      "number": 1370,
+      "language": "Scala",
+      "createdAt": "2026-10-21T00:31:31Z",
+      "updatedAt": "2026-10-21T00:31:31Z",
+      "bodySha256": "639ba239291b20e4c04fec2cb524d0797e55d705dd4745a25c45ee3f420cfd30"
+    },
+    {
+      "number": 1366,
+      "language": "Rust",
+      "createdAt": "2026-10-20T22:48:01Z",
+      "updatedAt": "2026-10-20T22:48:01Z",
+      "bodySha256": "7d0759fe103c20e59afed08d3af25b3367fa813913cdc266d59f9a7a2cf36823"
+    },
+    {
+      "number": 1365,
+      "language": "Kotlin",
+      "createdAt": "2026-10-20T22:47:12Z",
+      "updatedAt": "2026-10-20T22:47:12Z",
+      "bodySha256": "57e31e88511375b7bf29e3e023d2c30ce7238c0cd71df0f1bcb685f8fa7b6653"
+    },
+    {
+      "number": 1362,
+      "language": "Scala",
+      "createdAt": "2026-10-20T22:39:03Z",
+      "updatedAt": "2026-10-20T22:39:03Z",
+      "bodySha256": "639ba239291b20e4c04fec2cb524d0797e55d705dd4745a25c45ee3f420cfd30"
+    },
+    {
+      "number": 1350,
+      "language": "Scala",
+      "createdAt": "2026-10-20T19:46:16Z",
+      "updatedAt": "2026-10-20T19:46:16Z",
+      "bodySha256": "639ba239291b20e4c04fec2cb524d0797e55d705dd4745a25c45ee3f420cfd30"
+    },
+    {
+      "number": 1344,
+      "language": "Scala",
+      "createdAt": "2026-10-20T18:54:29Z",
+      "updatedAt": "2026-10-20T18:54:29Z",
+      "bodySha256": "639ba239291b20e4c04fec2cb524d0797e55d705dd4745a25c45ee3f420cfd30"
+    },
+    {
+      "number": 1340,
+      "language": "Scala",
+      "createdAt": "2026-10-20T17:23:52Z",
+      "updatedAt": "2026-10-20T17:23:52Z",
+      "bodySha256": "639ba239291b20e4c04fec2cb524d0797e55d705dd4745a25c45ee3f420cfd30"
+    },
+    {
+      "number": 1339,
+      "language": "Rust",
+      "createdAt": "2026-10-20T17:23:13Z",
+      "updatedAt": "2026-10-20T17:23:13Z",
+      "bodySha256": "7d0759fe103c20e59afed08d3af25b3367fa813913cdc266d59f9a7a2cf36823"
+    },
+    {
+      "number": 1338,
+      "language": "Kotlin",
+      "createdAt": "2026-10-20T17:22:53Z",
+      "updatedAt": "2026-10-20T17:22:53Z",
+      "bodySha256": "57e31e88511375b7bf29e3e023d2c30ce7238c0cd71df0f1bcb685f8fa7b6653"
+    },
+    {
+      "number": 1335,
+      "language": "Kotlin",
+      "createdAt": "2026-10-20T16:48:16Z",
+      "updatedAt": "2026-10-20T16:48:16Z",
+      "bodySha256": "57e31e88511375b7bf29e3e023d2c30ce7238c0cd71df0f1bcb685f8fa7b6653"
+    },
+    {
+      "number": 1334,
+      "language": "Scala",
+      "createdAt": "2026-10-20T16:47:09Z",
+      "updatedAt": "2026-10-20T16:47:09Z",
+      "bodySha256": "639ba239291b20e4c04fec2cb524d0797e55d705dd4745a25c45ee3f420cfd30"
+    },
+    {
+      "number": 1332,
+      "language": "Rust",
+      "createdAt": "2026-10-20T16:45:42Z",
+      "updatedAt": "2026-10-20T16:45:42Z",
+      "bodySha256": "7d0759fe103c20e59afed08d3af25b3367fa813913cdc266d59f9a7a2cf36823"
+    },
+    {
+      "number": 1321,
+      "language": "Rust",
+      "createdAt": "2026-10-19T18:42:17Z",
+      "updatedAt": "2026-10-19T18:42:17Z",
+      "bodySha256": "7d0759fe103c20e59afed08d3af25b3367fa813913cdc266d59f9a7a2cf36823"
+    },
+    {
+      "number": 1318,
+      "language": "Scala",
+      "createdAt": "2026-10-19T17:02:29Z",
+      "updatedAt": "2026-10-19T17:02:29Z",
+      "bodySha256": "639ba239291b20e4c04fec2cb524d0797e55d705dd4745a25c45ee3f420cfd30"
+    },
+    {
+      "number": 1314,
+      "language": "Rust",
+      "createdAt": "2026-10-19T16:45:37Z",
+      "updatedAt": "2026-10-19T16:45:37Z",
+      "bodySha256": "7d0759fe103c20e59afed08d3af25b3367fa813913cdc266d59f9a7a2cf36823"
+    },
+    {
+      "number": 1312,
+      "language": "Scala",
+      "createdAt": "2026-10-19T16:42:50Z",
+      "updatedAt": "2026-10-19T16:42:50Z",
+      "bodySha256": "639ba239291b20e4c04fec2cb524d0797e55d705dd4745a25c45ee3f420cfd30"
+    },
+    {
+      "number": 1307,
+      "language": "Scala",
+      "createdAt": "2026-10-19T15:33:19Z",
+      "updatedAt": "2026-10-19T15:33:19Z",
+      "bodySha256": "639ba239291b20e4c04fec2cb524d0797e55d705dd4745a25c45ee3f420cfd30"
+    },
+    {
+      "number": 1305,
+      "language": "Scala",
+      "createdAt": "2026-10-19T15:15:09Z",
+      "updatedAt": "2026-10-19T15:15:09Z",
+      "bodySha256": "639ba239291b20e4c04fec2cb524d0797e55d705dd4745a25c45ee3f420cfd30"
+    },
+    {
+      "number": 1302,
+      "language": "Rust",
+      "createdAt": "2026-10-19T15:10:28Z",
+      "updatedAt": "2026-10-19T15:10:28Z",
+      "bodySha256": "7d0759fe103c20e59afed08d3af25b3367fa813913cdc266d59f9a7a2cf36823"
+    },
+    {
+      "number": 1301,
+      "language": "Kotlin",
+      "createdAt": "2026-10-19T15:09:37Z",
+      "updatedAt": "2026-10-19T15:09:37Z",
+      "bodySha256": "57e31e88511375b7bf29e3e023d2c30ce7238c0cd71df0f1bcb685f8fa7b6653"
+    },
+    {
+      "number": 1293,
+      "language": "Rust",
+      "createdAt": "2026-10-19T12:53:13Z",
+      "updatedAt": "2026-10-19T12:53:13Z",
+      "bodySha256": "7d0759fe103c20e59afed08d3af25b3367fa813913cdc266d59f9a7a2cf36823"
+    },
+    {
+      "number": 1291,
+      "language": "Scala",
+      "createdAt": "2026-10-19T12:49:08Z",
+      "updatedAt": "2026-10-19T12:49:08Z",
+      "bodySha256": "639ba239291b20e4c04fec2cb524d0797e55d705dd4745a25c45ee3f420cfd30"
+    },
+    {
+      "number": 1289,
+      "language": "Kotlin",
+      "createdAt": "2026-10-19T12:46:28Z",
+      "updatedAt": "2026-10-19T12:46:28Z",
+      "bodySha256": "57e31e88511375b7bf29e3e023d2c30ce7238c0cd71df0f1bcb685f8fa7b6653"
+    },
+    {
+      "number": 1283,
+      "language": "Scala",
+      "createdAt": "2026-10-19T11:37:38Z",
+      "updatedAt": "2026-10-19T11:37:38Z",
+      "bodySha256": "639ba239291b20e4c04fec2cb524d0797e55d705dd4745a25c45ee3f420cfd30"
+    },
+    {
+      "number": 1280,
+      "language": "Scala",
+      "createdAt": "2026-10-19T09:33:13Z",
+      "updatedAt": "2026-10-19T09:33:13Z",
+      "bodySha256": "639ba239291b20e4c04fec2cb524d0797e55d705dd4745a25c45ee3f420cfd30"
+    },
+    {
+      "number": 1278,
+      "language": "Kotlin",
+      "createdAt": "2026-10-19T09:21:34Z",
+      "updatedAt": "2026-10-19T09:21:34Z",
+      "bodySha256": "57e31e88511375b7bf29e3e023d2c30ce7238c0cd71df0f1bcb685f8fa7b6653"
+    },
+    {
+      "number": 1276,
+      "language": "Rust",
+      "createdAt": "2026-10-19T09:16:51Z",
+      "updatedAt": "2026-10-19T09:16:51Z",
+      "bodySha256": "7d0759fe103c20e59afed08d3af25b3367fa813913cdc266d59f9a7a2cf36823"
+    },
+    {
+      "number": 1264,
+      "language": "Scala",
+      "createdAt": "2026-10-19T05:51:10Z",
+      "updatedAt": "2026-10-19T05:51:10Z",
+      "bodySha256": "639ba239291b20e4c04fec2cb524d0797e55d705dd4745a25c45ee3f420cfd30"
+    },
+    {
+      "number": 1263,
+      "language": "Kotlin",
+      "createdAt": "2026-10-19T05:33:26Z",
+      "updatedAt": "2026-10-19T05:33:26Z",
+      "bodySha256": "57e31e88511375b7bf29e3e023d2c30ce7238c0cd71df0f1bcb685f8fa7b6653"
+    },
+    {
+      "number": 1262,
+      "language": "Rust",
+      "createdAt": "2026-10-19T05:32:58Z",
+      "updatedAt": "2026-10-19T05:32:58Z",
+      "bodySha256": "7d0759fe103c20e59afed08d3af25b3367fa813913cdc266d59f9a7a2cf36823"
+    },
+    {
+      "number": 1261,
+      "language": "Scala",
+      "createdAt": "2026-10-19T05:32:10Z",
+      "updatedAt": "2026-10-19T05:32:10Z",
+      "bodySha256": "639ba239291b20e4c04fec2cb524d0797e55d705dd4745a25c45ee3f420cfd30"
+    },
+    {
+      "number": 1255,
+      "language": "Scala",
+      "createdAt": "2026-10-18T21:27:12Z",
+      "updatedAt": "2026-10-18T21:27:12Z",
+      "bodySha256": "639ba239291b20e4c04fec2cb524d0797e55d705dd4745a25c45ee3f420cfd30"
+    },
+    {
+      "number": 1249,
+      "language": "Scala",
+      "createdAt": "2026-10-18T20:29:01Z",
+      "updatedAt": "2026-10-18T20:29:01Z",
+      "bodySha256": "639ba239291b20e4c04fec2cb524d0797e55d705dd4745a25c45ee3f420cfd30"
+    },
+    {
+      "number": 1243,
+      "language": "Scala",
+      "createdAt": "2026-10-18T18:43:05Z",
+      "updatedAt": "2026-10-18T18:43:05Z",
+      "bodySha256": "639ba239291b20e4c04fec2cb524d0797e55d705dd4745a25c45ee3f420cfd30"
+    },
+    {
+      "number": 1241,
+      "language": "Scala",
+      "createdAt": "2026-10-18T16:29:21Z",
+      "updatedAt": "2026-10-18T16:29:21Z",
+      "bodySha256": "639ba239291b20e4c04fec2cb524d0797e55d705dd4745a25c45ee3f420cfd30"
+    }
+  ]
+}

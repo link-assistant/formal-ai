@@ -490,6 +490,62 @@ Each row says what holds today and what is still missing.
 | R1188-U29 | More of the work goes through Formal AI from its JavaScript source, and the JavaScript requirements pass first; the other roots follow. (Owner, 2026-10-08, message 145.) Narrower rows cover parts of this: R1188-U13 (delegation), R1188-U16 (the agentic planner), R1188-U24 (local runs from JavaScript). | Partial: `docs/progressive-plan.md` counts which root's test pins each requirement: the generated-plan baseline measured 2026-10-09 before round 21 has 432 of 1369 pinned by a JavaScript test, 921 by a Rust test only and 16 by none; subsequent new JavaScript pins update the generated plan. A row that names tests in both roots cites the JavaScript one (`testPath` and `test_path` of `scripts/generate-requirement-status.{mjs,rs}`, test `rust/tests/web/requirement-status-test-path.test.mjs`), which moved 194 requirements from the Rust-only count. The tally `docs/case-studies/pull-request-1188/formal-ai-tally.md` now sets Formal AI's edits beside the edits made by hand, from the ledger's "Edits by hand" table (`scripts/tally-formal-ai-dogfood.mjs`, `handRows`, `renderHandEdits`). `data/meta/progressive-plan-ratchet.lino` holds the Rust-only count to a ceiling of 921 that only falls (gate `check-progressive-plan`). `scripts/check-specification-in-javascript.mjs` (gate `check-specification-in-javascript`, test `rust/tests/web/specification-in-javascript.test.mjs`) conservatively reads supported native prompts, typed constructors, verified pure helper bodies and imported history calls through `scripts/lib/rust-specification-cases.mjs` and executes the whole supported case: 214 of1182 complete cases are carried and all214 execute successfully in the ordinary installed T3409 replay, with968 explicitly unsupported; T2670 previously carried202 of1181. General pure-source compilation preserves all original ordered assertions and rejects unsupported constructors, enum derives and ownership semantics. Source fixture identities and all original ordered assertions are retained; unknown engine profiles and unsupported helper/configuration bodies are not replaced by default solves. Three general mechanisms closed 20: every worker answer carries the native evidence links of the log it records (`js/agentic/crate/event_log.mjs`, the twin of `build_evidence_links`, run in the worker as a generated crate factory); the policy gates read seed roles and responses in five languages in both roots (`data/seed/meanings-policy.lino`, `rust/src/solver_helpers/mod.rs`, `js/worker/formal_ai_worker_policy_gates.js`); and project lookup runs in the two phases `data/seed/method-execution.lino` declares, with the identity rule after the handler table (test `rust/tests/web/specification-parity-worker.test.mjs`). No carried failures remain in `data/meta/specification-javascript-gaps.lino` as the worker's parity debt, and the passing count never falls. Missing: a JavaScript test for each requirement pinned by Rust only and the968 unsupported native cases, including remaining multi-turn/fixture forms, unknown engine profiles and unsupported source-bound helper/configuration bodies. |
 | R1188-U30 | Translation between JavaScript, TypeScript, Rust and the meta language is fully automated, so code is translated by hand less and less. Where relative meta logic (RML) and the meta language (ML) are not done yet, temporary workarounds in this repository do the translation, and they are retired as RML and ML, developed in parallel, improve. (Owner, 2026-10-08, message 145.) | Partial. JavaScript → TypeScript is automated (`scripts/translate-es.mjs`). JavaScript → Rust is automated through meta-language self-translation at the pinned main commit `eb0574d5`, where PR #216 binds sibling items and relative imports. Where it cannot translate yet, a recorded temporary workaround does it, each with the upstream issue that retires it (`data/meta/translation-workarounds.lino`, `scripts/lib/translation-workarounds.mjs`, `scripts/lib/translation-lowering.mjs`). The workarounds are import pruning ([meta-language#220](https://github.com/link-foundation/meta-language/issues/220)), one crate per root for the compile check ([#219](https://github.com/link-foundation/meta-language/issues/219)), string methods through 22 recorded UTF-16 stubs ([#209](https://github.com/link-foundation/meta-language/issues/209)), `.push` ([#208](https://github.com/link-foundation/meta-language/issues/208)) and callbacks lowered to loops ([#207](https://github.com/link-foundation/meta-language/issues/207)). Measured 2026-10-09 in round21: of2571 top-level items across139 modules, meta-language translates291 and the recorded workarounds33 more;2247 remain carried.97 modules have translated items and42 are refused. Current reviewed production integration:293 translated,33 workaround items and2285 carried across141 modules;98 modules have translations and43 are refused. The checked ledger separates upstream and workaround counts. The current full blocker scan counts678 carried items with one construct and237 with two; its generated unlock rows give the current ordered causes. Upstream PR #218 wraps long Rust output and all of its actual JavaScript/Rust/workload stages passed, but the final aggregate310/323 remains red from13 inherited broad acceptance/evidence gaps. Its merge and the main-pin update remain pending; the verified current main pin stays eb0574d5. A module's translated count is a ratchet: `--write` refuses a fall. The CI js-rust job re-translates, compiles each root as one crate and runs the 15 calls of `calls.lino`, which cover every workaround (`rust/tests/web/translation-workarounds.test.mjs`). A sibling-context retry was measured on 2026-10-08 and dropped: it recovered 1 of 2,229 items. Missing: Rust → JavaScript is only measured. meta-language translates 4,377 of the 51,040 top-level items of `rust/src` (774 files, 2026-10-09), but nothing is generated from it, and the214 whole specification cases executed in JavaScript (ordinary T3409:214passing of1182total,968unsupported) are the current source-backed Rust → JavaScript workaround. The temporary source-qualified compiler expands registered substitutions, constants and builtin Copy/Clone/PartialEq-proved unit enums and pure predicates with deterministic generation checks and conservative refusal. Actual pinned upstream execution T4985 rejects these enum items; earlier portable adapter diagnostics are not upstream translation proof. Complete meta-language/native profile equivalence and upstream retirement remain unverified. TypeScript → Rust is not automated on its own, because `ts/` is generated from `js/`. `null`, untyped object records and closures as values remain with upstream ([#204](https://github.com/link-foundation/meta-language/issues/204), [#206](https://github.com/link-foundation/meta-language/issues/206), [#207](https://github.com/link-foundation/meta-language/issues/207)). 17 items got `@param` types so that the lowering could translate them, and more items need them. |
 
+## Standing Doctrine: Fast pull-request checks and production verification
+
+The architect's 2026-10-28 instruction supersedes earlier requirements that
+made every integration, platform build or live client test mandatory on each PR.
+
+- **CI-FAST-1:** Use one bulk-drafted PR for related fixes, tests, documentation,
+  vision and guidelines. Commit the complete batch before pushing; collect and
+  fix all available CI failures before the next push. Do not wait idly on CI.
+- **CI-FAST-2:** Default PR checks run on Linux and prioritize coding, Hello World,
+  source edits, question answering, issue reporting, retry bounds and offline
+  failure regressions. Keep lint, workflow/security checks, requirement consistency
+  and JavaScript/TypeScript checks. The fast lint job uses maintained JavaScript
+  checks; the original native/WASM lint gates stay on main/full PR opt-in.
+  Production native builds, packaging, Docker,
+  broad benchmark ladders and heavy integration/E2E jobs are retained but deferred
+  to main. Set FORMAL_AI_FULL_PR_CI=run to restore the retained PR jobs, including
+  branch-dispatched checks. Existing narrower platform/coverage opt-ins still apply.
+- **CI-FAST-3:** Main retains native tests, integrations, final production builds,
+  signed/self-signed package verification where advertised, Docker publication and
+  public-download verification. A green PR proves the selected fast profile only;
+  delivery is complete only after the resulting main CI and configured release
+  producers/consumers are green. Diagnose main failures and fix them promptly in
+  a follow-up PR. Never label skipped suites as executed, passing or equivalent.
+- **CI-FAST-4:** Real GitHub E2E effects are disabled by default. Enable a deliberate
+  run with FORMAL_AI_REAL_GITHUB_E2E=true or the real-github-e2e dispatch input.
+  Preserve immutable per-PR/per-release ownership, attempt bounds, first/repeat
+  oracles, independent verification, cleanup and complete redacted evidence.
+  Never rerun an old effect owner to make it green. Failure does not authorize
+  blind mutation retries. Offline emulation can run frequently with no GitHub
+  effects. Its coverage of live authentication, network and runtimes is limited.
+- **CI-FAST-5:** Turn complete public CI logs and actual bot-created test records
+  into small provenance-labelled unit fixtures. Cover the observed failure and
+  held-out negative cases, not just a successful transcript. Retain every original
+  integration/E2E test for opt-in execution. Do not claim that captured data
+  establishes an unobserved live solve or full unit/E2E equivalence.
+- **CI-FAST-6:** Close generated test issues after a verified test outcome through
+  the trusted finalizer. Historical stale issues may be retired as not_planned
+  with an explicit unverified comment only after exact bot/body/label/custody and
+  inactivity checks. Never mark an unverified test completed or grant feature
+  delivery credit. Revalidate immediately before mutation, stop on uncertain
+  writes and preserve receipts; never touch human/modified/active issues.
+- **CI-FAST-7:** Scheduled observations declared by authenticated workflow source
+  do not invalidate an otherwise checked release. Required commit checks and
+  publication obligations remain mandatory; unknown workflows, pending/failed
+  push/manual checks, foreign sources and missing required checks still refuse.
+- **CI-FAST-8:** On the workstation, run only a single necessary JavaScript test
+  at a time. Never run Rust builds, tests, clippy, native products or local Docker
+  builds. Keep finite time/transfer budgets, avoid broad filesystem scans and
+  preserve disk space. Production verification belongs to CI.
+
+Evidence for the initial regressions: generated-e2e fixtures capture 43 exact
+public bot test issues and the v0.355.14 Agent claim failure caused by a late
+scheduled task-ladder run. Retiring those issues is housekeeping with unverified
+outcomes; it is not evidence that their coding tasks passed. Supplied literal
+Formal AI edit recipes receive zero autonomous implementation credit.
+
 ## Standing Doctrine: Readable Recursive Source and Comment Meta-Language (2026-10-18)
 
 Authority: the owner's 2026-10-18 instructions while delivering PR #1234. These requirements strengthen R381, R394, R480–R483, R993 and R1188-U3. They supersede signature-only or histogram-based acceptance of a full source representation. Historical results remain evidence for their original narrower behavior. All related implementation stays in the same delivery pull request.
@@ -589,7 +645,10 @@ filenames, attachments or the raw logs into the source tree.
    output. Supplied literal patches receive zero autonomous implementation credit.
    The three historical complex issue repairs remain capability gaps until their
    original acceptance is observed. They do not block a correct iterative release;
-   actual Hello World/client/reporting acceptance stays independent and critical.
+   actual Hello World/client/reporting acceptance remains independent. Under the
+   2026-10-28 fast PR doctrine, offline coding/reporting regressions gate PRs;
+   retained real GitHub client effects require explicit opt-in, and a skip grants
+   no live solve or three-client acceptance credit.
 
 Implementation seams: scripts/run-with-session-evidence.sh,
 scripts/prepare-hive-draft-evidence.mjs, scripts/collect-hive-draft-logs.mjs,

@@ -4,8 +4,9 @@ import { createHash } from 'node:crypto';
 export const deliveryWorkflow = '.github/workflows/hive-original-delivery.yml';
 export const admissionPolicy = 'formal-ai-hive-1364-admission/v1';
 /** Proposal generation has no release authority; push/PR checks and unknown workflows still gate. */
-export function isGatingCiRun(run) {
+export function isGatingCiRun(run, {scheduledWorkflows = []} = {}) {
   if ([deliveryWorkflow, '.github/workflows/hive-original-delivery-finalize.yml'].includes(run.path)) return false;
+  if (run.event === 'schedule' && scheduledWorkflows.includes(run.path)) return false;
   return run.path !== '.github/workflows/learning-cycle.yml' ||
     !['schedule', 'workflow_dispatch'].includes(run.event);
 }
@@ -16,6 +17,18 @@ const strings = value => {
   assert.ok(value.every(item => typeof item === 'string' && item.length <= 1024));
   return value;
 };
+/** Only authenticated source declarations may classify periodic observations outside commit CI. */
+export function declaredScheduledWorkflows(workflows) {
+  assert.ok(Array.isArray(workflows) && workflows.length <= 128);
+  return [...new Set(workflows.filter(workflow => {
+    const schedule = workflow.document?.on?.schedule;
+    return Array.isArray(schedule) && schedule.length > 0
+      && schedule.every(row => typeof row?.cron === 'string' && row.cron.trim().length > 0);
+  }).map(workflow => {
+    assert.match(workflow.path, /^[.]github\/workflows\/[A-Za-z0-9_.-]+[.]ya?ml$/u);
+    return workflow.path;
+  }))].sort();
+}
 /** Match the bounded GitHub branch/path glob subset used by maintained triggers. Unknown syntax refuses. */
 export function githubPattern(pattern, value) {
   assert.equal(typeof pattern, 'string');
@@ -132,7 +145,7 @@ export function authenticatePullRequest({
     event: 'pull_request'
   };
 }
-/** Every applicable workflow and every other observed workflow must be green at the exact source. */
+/** Required commit CI and other observed gates remain strict; declared periodic observations confer no authority. */
 class CiAdmissionDeferred extends Error {
   constructor(message, run = null) {
     super(message);
@@ -147,9 +160,11 @@ export function ciAdmission({
   source,
   expected,
   runs,
-  complete
+  complete,
+  scheduledWorkflows = []
 }) {
   commit(source);
+  strings(scheduledWorkflows);
   assert.equal(complete, true, 'incomplete API census');
   strings(expected);
   assert.ok(expected.length > 0);
@@ -160,7 +175,7 @@ export function ciAdmission({
     positive(run.id);
     positive(run.run_attempt);
     assert.equal(typeof run.path, 'string');
-    if (!isGatingCiRun(run)) continue;
+    if (!isGatingCiRun(run, {scheduledWorkflows})) continue;
     const key = run.path + '\0' + run.event,
       previous = latest.get(key);
     if (!previous || run.id > previous.id || run.id === previous.id && run.run_attempt > previous.run_attempt) latest.set(key, run);
