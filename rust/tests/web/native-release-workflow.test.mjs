@@ -50,7 +50,7 @@ test("VS Code and final provenance use the same exact source selection",()=>{
  assert.ok(job("finalize").includes("NATIVE_SOURCE_COMMIT: ${{ needs.native-source.outputs.commit }}"));
 });
 
-test('each packaging job captures the pinned workflow protocol before checking out binary source',()=>{
+test('each packaging job captures the pinned workflow protocol before selecting binary source',()=>{
  for(const name of ['native-source','native','build','cli','vscode']){
   const body=job(name);
   const steps=YAML.parse(text).jobs[name].steps;
@@ -62,11 +62,12 @@ test('each packaging job captures the pinned workflow protocol before checking o
   assert.match(body,/cp scripts\/native-release-source\.mjs scripts\/native-release-artifact\.mjs/u);
   const capture=steps.findIndex(step=>step.name?.startsWith('Capture release protocol'));
   const checkout=steps.findIndex((step,index)=>index>capture&&step.with?.ref==='${{ github.sha }}');
-  if(name==='cli'){
+  if(name!=='native-source'){
    const restore=steps.findIndex(step=>step.run?.includes('native-release-source.mjs" import-offline'));
    const artifact=steps.findIndex(step=>step.uses?.startsWith('actions/download-artifact@')&&step.with?.name==='native-release-source');
-   assert.ok(capture>protocol&&artifact>capture&&restore>artifact,'pinned protocol and same-run source artifact precede offline source restoration');
-   assert.equal(checkout,-1,'CLI source uses authenticated complete history, without another GitHub checkout');
+   const history=steps.findIndex(step=>step.uses?.startsWith('actions/download-artifact@')&&step.with?.name==='native-release-source-history');
+   assert.ok(capture>protocol&&artifact>capture&&history>artifact&&restore>history,'pinned protocol and same-run source artifacts precede offline source restoration');
+   assert.equal(checkout,-1,name+' source uses authenticated complete history, without another GitHub checkout');
   }else assert.ok(capture>protocol&&checkout>capture,'pinned checkout and capture must precede event-pinned source checkout');
   assert.ok(body.includes('FORMAL_AI_NATIVE_PROTOCOL_DIR'));
  }
@@ -94,22 +95,16 @@ test('protocol capture is isolated from full source and survives unavailable pro
   assert.equal(protocol.with.path,'.formal-ai-protocol-source',name);
   assert.deepEqual(protocol.with['sparse-checkout'].split('\n'),folders,name);
   assert.notEqual(protocol.with['sparse-checkout-cone-mode'],false,name);
-  if(name==='cli'){
-   assert.equal(source,undefined,'CLI source restoration uses the complete same-run bundle');
-   const restored=steps.find(step=>step.run?.includes('native-release-source.mjs" import-offline'));
-   assert.ok(restored);assert.equal(restored.env.NATIVE_SELECTED_HEAD,'${{ needs.native-source.outputs.selected-head }}');
-   assert.equal(restored.env.NATIVE_SELECTION_SHA256,'${{ needs.native-source.outputs.selection-sha256 }}');
-   assert.ok(job('native-source').includes('export-history native-source'));
-   continue;
-  }
-  assert.equal(source.with.ref,'${{ github.sha }}',name);
-  assert.equal(source.with['fetch-depth'],1,name);
-  const hydrate=steps.findIndex(step=>step.name==='Complete only the selected source ancestry');
-  assert.ok(hydrate>index+1,name);assert.equal(steps[hydrate]['timeout-minutes'],5);
-  assert.match(steps[hydrate].run,/native-release-source[.]mjs".*hydrate-source/);
-  assert.equal(source.with['sparse-checkout'],undefined,name);
-  assert.equal(source.with.filter,undefined,name);
-  assert.equal(source.with.path,undefined,name);
+  assert.equal(source,undefined,name+' source restoration uses the complete same-run bundle');
+  const restored=steps.find(step=>step.run?.includes('native-release-source.mjs" import-offline'));
+  assert.ok(restored);
+  const bindings={...workflow.jobs[name].env,...restored.env};
+  assert.equal(bindings.NATIVE_SELECTED_HEAD,'${{ needs.native-source.outputs.selected-head }}');
+  assert.equal(bindings.NATIVE_SELECTION_SHA256,'${{ needs.native-source.outputs.selection-sha256 }}');
+  const history=steps.find(step=>step.with?.name==='native-release-source-history');
+  assert.equal(history?.with.path,'native-source');
+  assert.ok(steps.indexOf(history)<steps.indexOf(restored));
+  assert.ok(job('native-source').includes('export-history native-source'));
   const capture=steps.find(step=>step.name?.startsWith('Capture release protocol'));
   assert.equal(capture['working-directory'],protocol.with.path,name);
  }
@@ -150,7 +145,7 @@ test('protocol capture is isolated from full source and survives unavailable pro
  git(['remote','set-url','origin',join(root,'unavailable.git')],protocol);
  // Reusing the sparse repository reproduces the CI failure before checkout.
  git(['sparse-checkout','disable'],protocol,128);
- // The action clears the workspace after capture, then fetches a full source.
+ // An independent source bootstrap never reuses the filtered protocol repository.
  rmSync(workspace,{recursive:true,force:true});
  git(['clone','--quiet','--depth','1','--no-tags','--branch',primary,url,workspace]);
  assert.equal(git(['rev-parse','--is-shallow-repository'],workspace),'true');

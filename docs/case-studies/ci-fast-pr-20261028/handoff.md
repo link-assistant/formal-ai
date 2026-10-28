@@ -169,3 +169,15 @@ the two bounded read attempts and explicit incomplete receipt were retained.
 This is an infrastructure cancellation, with no compile or signing acceptance.
 Native packages, extension publication and full public-download acceptance remain
 pending the recovery. Do not label the partially published release fully verified.
+
+PR1457 merged as 292035b914db4320297a3c6c8e05892056084aac after all 18 workflows
+and 37 jobs passed. Its full main JavaScript inventory then found two older
+native-release-workflow assertions still requiring cold source checkouts. The
+minimal follow-up updates those assertions to require pinned protocol capture
+before same-run source/history restoration and retains selector, full-byte,
+promisor-isolation and producer-bootstrap checks. It adds that existing guard
+suite to fast PR selection so this contract is no longer deferred to main.
+The other completed JavaScript shard exposed one log-retention assertion that
+assumed the YAML staging step occupied a single line. The same open follow-up
+parses its structured fields instead, retaining full sanitized content and hash
+checks, and includes that existing diagnostic suite in fast PR selection.
