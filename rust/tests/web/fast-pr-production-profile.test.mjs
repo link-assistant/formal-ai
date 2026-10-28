@@ -56,3 +56,17 @@ test('fast inventory retains coding, questions, reports and captured CI failure 
   assert.match(step.run,/printf '%s\\n' rust\/tests\/web\/\*\.test\.mjs/u);
   assert.match(read('.github/workflows/pr-check-profile.yml'),/no execution or acceptance credit/u);
 });
+
+test('fast source lint is mandatory on PRs without invoking native compilation', () => {
+  const release = workflow('release.yml'), job = release.jobs['fast-pr-lint'];
+  assert.equal(evaluate(job.if, context('pull_request')), true);
+  assert.equal(evaluate(job.if, context('push', 'refs/heads/main')), false);
+  assert(release.jobs['pipeline-status'].needs.includes('fast-pr-lint'));
+  const commands = job.steps.map(step => step.run ?? '').join('\n');
+  for (const name of ['check-readable-code','check-file-size','check-ci-speed','assemble-requirements','check-requirement-status'])
+    assert(commands.includes('node scripts/' + name + '.mjs'), name);
+  assert.doesNotMatch(commands, /cargo |rust-script |build-selected-wasm/u);
+  const changelog = release.jobs.changelog.steps.map(step => step.run ?? '').join('\n');
+  assert.match(changelog, /node scripts\/check-changelog-fragment[.]mjs/u);
+  assert.doesNotMatch(changelog, /rust-script /u);
+});

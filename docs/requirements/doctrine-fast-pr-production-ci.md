@@ -9,7 +9,9 @@ made every integration, platform build or live client test mandatory on each PR.
 - **CI-FAST-2:** Default PR checks run on Linux and prioritize coding, Hello World,
   source edits, question answering, issue reporting, retry bounds and offline
   failure regressions. Keep lint, workflow/security checks, requirement consistency
-  and JavaScript/TypeScript checks. Production native builds, packaging, Docker,
+  and JavaScript/TypeScript checks. The fast lint job uses maintained JavaScript
+  checks; the original native/WASM lint gates stay on main/full PR opt-in.
+  Production native builds, packaging, Docker,
   broad benchmark ladders and heavy integration/E2E jobs are retained but deferred
   to main. Set FORMAL_AI_FULL_PR_CI=run to restore the retained PR jobs, including
   branch-dispatched checks. Existing narrower platform/coverage opt-ins still apply.

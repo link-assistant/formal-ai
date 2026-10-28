@@ -197,6 +197,11 @@
       "file": "external-benchmarks.yml",
       "id": "ratchet",
       "payloadSha256": "7dd7f85d95020c76353f5da042a372a613c5dff8834f7b33f54e60b090b22530"
+    },
+    {
+      "file": "release.yml",
+      "id": "lint",
+      "payloadSha256": "93608460d771382fdb5e2aff6401e3a3c4e185ccf4cb5073ea45593231b16d5c"
     }
   ]
 }

@@ -72,3 +72,8 @@ The full public failure logs were retained with hashes. Browser/package and
 source-network PR probes and remaining native measurement jobs were also deferred
 without deleting their payloads; the fast inventory now includes the staged
 authority regression. Main publication and download checks remain unchanged.
+
+The first CI observation also showed that the job named lint performs a WASM
+production build. A required fast-pr-lint job now runs the maintained JavaScript
+source/budget/requirements checks on PRs; the full original lint payload remains
+on main/full opt-in. The changelog metadata check uses its existing JS twin.

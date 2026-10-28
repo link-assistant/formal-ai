@@ -113,14 +113,13 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
-      - name: Install rust-script
-        run: bash scripts/install-rust-script.sh
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
       - name: Check for changelog fragments
         env:
           GITHUB_BASE_REF: ${{ github.base_ref }}
-        run: rust-script scripts/check-changelog-fragment.rs
+        run: node scripts/check-changelog-fragment.mjs
   docker-build:
     name: Docker Image Build & Runtime Check
     runs-on: ubuntu-latest
@@ -283,6 +282,26 @@ jobs:
     uses: ./.github/workflows/pin-base-commit.yml
     permissions:
       contents: read
+  fast-pr-lint:
+    name: Fast Linux source and requirement checks
+    if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && vars.FORMAL_AI_FULL_PR_CI != 'run'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - name: Validate source readability, CI budgets and requirements without a native build
+        run: |
+          node scripts/check-readable-code.mjs
+          node scripts/check-file-size.mjs
+          node scripts/check-ci-speed.mjs
+          node scripts/assemble-requirements.mjs
+          node scripts/check-requirement-status.mjs
+
   lint:
     name: Lint and Format Check (lane ${{ matrix.lane }})
     runs-on: ubuntu-latest
@@ -295,16 +314,7 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-lint-${{ matrix.lane }}
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     needs: [detect-changes, base]
-    if: |
-      !cancelled() && (
-        github.event_name == 'workflow_dispatch' ||
-        needs.detect-changes.outputs.any-code-changed == 'true' ||
-        needs.detect-changes.outputs.rs-changed == 'true' ||
-        needs.detect-changes.outputs.toml-changed == 'true' ||
-        needs.detect-changes.outputs.docs-changed == 'true' ||
-        needs.detect-changes.outputs.pipeline-changed == 'true' ||
-        needs.detect-changes.outputs.workflow-changed == 'true'
-      )
+    if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (!cancelled() && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' || needs.detect-changes.outputs.docs-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' || needs.detect-changes.outputs.workflow-changed == 'true' )) }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -1042,7 +1052,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     if: always()
-    needs: [hive-source-provenance, detect-changes, changelog, docker-build, docker-slim, secrets-scan,
+    needs: [fast-pr-lint, hive-source-provenance, detect-changes, changelog, docker-build, docker-slim, secrets-scan,
             version-check, release-preflight, base, lint, test, doc-tests, macos-core-tests, build,
             auto-release, manual-release, native-container-images,
             changelog-pr, test-e2e-local, test-agent-cli-e2e,

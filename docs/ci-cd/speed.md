@@ -202,3 +202,10 @@ Changes to the release caller also refresh its retained canonical source and
 checked projections through the maintained JavaScript generator. Preserve every
 production release operation and keep the exact deployed-caller proof; never
 relax source identity checks to accommodate workflow edits.
+
+The former lint job also builds WASM and runs native gate programs. It is
+retained for main/full PR opt-in; default PRs use fast-pr-lint with the maintained
+JavaScript readability, file-size, CI-budget, requirements and status checks.
+The changelog check uses its existing JavaScript twin to avoid rust-script
+installation solely for that metadata check. Pipeline Status requires the fast
+lint job as well as every other selected PR check.
