@@ -162,6 +162,41 @@
       "file": "security.yml",
       "id": "codeql",
       "payloadSha256": "5f9b47093cfb3dc58dce10b9ec51be3004cf154b8644fc0673976783cbc3bcb1"
+    },
+    {
+      "file": "publish-engine.yml",
+      "id": "package",
+      "payloadSha256": "7ac8c1f712abf6fbcde588bdd89b5942e6d2ba2709b5743b9016bd62dbc01200"
+    },
+    {
+      "file": "publish-source-networks.yml",
+      "id": "packets",
+      "payloadSha256": "96fbcd7f61bdce18453f9bfe9a9f26262018278fa8421ac29b4eddf22d37b7eb"
+    },
+    {
+      "file": "regenerate-native-session-projections.yml",
+      "id": "regenerate",
+      "payloadSha256": "4665f5a540e7266f8779474f7d8a6d858515f3e95eabdd72fd33615c71555b7d"
+    },
+    {
+      "file": "evidence-check.yml",
+      "id": "evidence-check",
+      "payloadSha256": "94a05026572490d2c15ff702152d0510917ad6ea5de6be7828c0ed4e5c0aa569"
+    },
+    {
+      "file": "evidence-check.yml",
+      "id": "evidence-status",
+      "payloadSha256": "4665a69450164d2e5f79160122e21ddda7ab4b71a02ef8885a8c6df042f0ad15"
+    },
+    {
+      "file": "self-development-status.yml",
+      "id": "self-development-status",
+      "payloadSha256": "3db621bc86599db4df5870a1acbb05f1c8b9f04b2d60b6048a6014d1493e9da3"
+    },
+    {
+      "file": "external-benchmarks.yml",
+      "id": "ratchet",
+      "payloadSha256": "7dd7f85d95020c76353f5da042a372a613c5dff8834f7b33f54e60b090b22530"
     }
   ]
 }

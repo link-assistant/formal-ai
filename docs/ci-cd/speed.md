@@ -129,7 +129,7 @@ coding tasks, answer questions, report failures and retain evidence for learning
 The 2026-10-28 fast PR policy supersedes the earlier all-integrations-on-PR
 profile: Linux JavaScript/TypeScript behavior and consistency checks remain on
 PRs; native production compilation/tests, package and image builds, native parity,
-source-network serialization and broad benchmark/client integration jobs are
+source-network serialization, native measurement and broad benchmark/client integration jobs are
 retained for main. Set FORMAL_AI_FULL_PR_CI=run to restore those PR jobs. A manual
 branch dispatch also uses the fast profile unless this variable is set. Main's
 production builds, native tests, browser/agent integration and public-download
@@ -197,3 +197,8 @@ Automatic original-client admission ignores feature-branch workflow completions.
 Successful main push checks and public-download completion still wake the full
 readiness audit, so a slow required main check can qualify later. Explicit manual
 candidate checks remain available; all immutable ownership and CI gates remain.
+
+Changes to the release caller also refresh its retained canonical source and
+checked projections through the maintained JavaScript generator. Preserve every
+production release operation and keep the exact deployed-caller proof; never
+relax source identity checks to accommodate workflow edits.

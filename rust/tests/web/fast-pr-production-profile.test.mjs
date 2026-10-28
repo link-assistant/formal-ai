@@ -16,7 +16,7 @@ function context(event, ref = 'refs/pull/1500/merge', enabled = false) {
   const outputs = Object.fromEntries(['any-code-changed','rs-changed','toml-changed','pipeline-changed','rust-changed','js-changed','ts-changed'].map(k => [k,'true']));
   return {github: {event_name:event,ref}, vars:{FORMAL_AI_FULL_PR_CI:enabled?'run':'skip',FORMAL_AI_NON_LINUX_CI:'run'},
     inputs:{}, needs:Object.fromEntries(['detect-changes','changes','build-artifacts','lint','test','macos-core-tests','js','ts','native-source','native','resolve']
-      .map(k => [k,{result:'success',outputs:{...outputs,should_build:'true'}}]))};
+      .map(k => [k,{result:'success',outputs:{...outputs,should_build:'true',build:'true'}}]))};
 }
 test('heavy original job bodies remain intact and default PR dispatches cannot allocate them', () => {
   for (const row of manifest.jobs) {

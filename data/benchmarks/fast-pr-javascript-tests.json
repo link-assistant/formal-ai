@@ -32,6 +32,7 @@
     "rust/tests/web/native-producer-source-pin.test.mjs",
     "rust/tests/web/native-workflow-cache-bindings.test.mjs",
     "rust/tests/web/container-node-runtime.test.mjs",
-    "rust/tests/web/ci-speed.test.mjs"
+    "rust/tests/web/ci-speed.test.mjs",
+    "rust/tests/web/staged-release-authority-fixture.test.mjs"
   ]
 }

@@ -1,4 +1,4 @@
-# Fast PR checks and offline GitHub-test regressions
+# PR1452: Fast PR checks and offline GitHub-test regressions
 
 ## Scope and policy
 
@@ -59,3 +59,16 @@ then verify main and the actual resulting release, including configured Docker,
 native packages and public downloads. A green fast PR alone is insufficient.
 Full three-client and historical complex self-coding capability remain separate
 unmeasured or failed evidence; default-off tests must never be called passing.
+
+## First CI repair batch
+
+PR1452 first-head workflow lint passed. Two JavaScript shards and the harmless
+staged-authority refusal fixture exposed the same stale checked caller projection
+after changing ordinary job admission. The retained canonical workflow and its
+source-derived projections were regenerated together; every inline production
+release operation remained identical. The deployed projection check, harmless
+JavaScript refusal fixture and the two affected publication assertions passed.
+The full public failure logs were retained with hashes. Browser/package and
+source-network PR probes and remaining native measurement jobs were also deferred
+without deleting their payloads; the fast inventory now includes the staged
+authority regression. Main publication and download checks remain unchanged.
