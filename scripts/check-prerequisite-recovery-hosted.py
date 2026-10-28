@@ -35,7 +35,15 @@ with tempfile.TemporaryDirectory(prefix='formal-ai-prerequisite-hosted-') as tem
         run_command=['java','-jar',str(workspace/'independent.jar')]
     else:
         compile_command=[prefix+'/'+program,'-d',str(workspace),str(source)]
-        run_command=[prefix+'/scala','run','--classpath',str(workspace),'--main-class','Independent']
+        help_result=subprocess.run([prefix+'/scala','-help'],cwd=workspace,env=environment,check=False,stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=30)
+        help_text=(help_result.stdout+help_result.stderr).decode('utf-8',errors='replace')
+        print(json.dumps({'phase':'runner-help','runtime':language,'exit_code':help_result.returncode,'output':help_text}),flush=True)
+        assert help_result.returncode==0,'runner help failed'
+        if '--main-class' in help_text:
+            run_command=[prefix+'/scala','run','--classpath',str(workspace),'--main-class','Independent']
+        else:
+            assert '-classpath' in help_text or '-cp' in help_text,'unrecognized JVM runner command grammar'
+            run_command=[prefix+'/scala','-classpath',str(workspace),'Independent']
     subprocess.run(compile_command,cwd=workspace,env=environment,check=True,timeout=90)
     observed=subprocess.run(run_command,cwd=workspace,env=environment,check=False,stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=30)
     if observed.returncode:

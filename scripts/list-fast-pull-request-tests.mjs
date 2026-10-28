@@ -13,6 +13,6 @@ export function selectFastTests(manifest, available = existsSync) {
   return [...manifest.files];
 }
 if (process.argv[1] && import.meta.url === new URL(process.argv[1], 'file:').href) {
-  const manifest = JSON.parse(readFileSync('data/benchmarks/fast-pr-javascript-tests.json', 'utf8'));
+  const manifest = JSON.parse(readFileSync('data/benchmarks/fast-pull-request-javascript-tests.json', 'utf8'));
   process.stdout.write(selectFastTests(manifest).join('\n') + '\n');
 }

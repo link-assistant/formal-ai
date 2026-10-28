@@ -150,7 +150,7 @@ unit tests cover failures and negative variants without GitHub effects. The
 retirement CLI first writes a reviewed plan, then revalidates every issue before
 closing only exact inactive bot-owned fixtures as not_planned with an unverified
 outcome comment; it never claims historical test success. Normal freshly run
-tests retain the trusted finalizer. See the [requirements](../requirements/doctrine-fast-pr-production-ci.md)
+tests retain the trusted finalizer. See the [requirements](../requirements/doctrine-fast-pull-request-production-ci.md)
 for scope, restore controls and coverage limitations.
 Noncritical recorded agent scenarios and the long method-learning and
 computer-record replay legs are temporarily opt-in with

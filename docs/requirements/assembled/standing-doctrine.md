@@ -546,6 +546,14 @@ scheduled task-ladder run. Retiring those issues is housekeeping with unverified
 outcomes; it is not evidence that their coding tasks passed. Supplied literal
 Formal AI edit recipes receive zero autonomous implementation credit.
 
+- **CI-FAST-9:** Archive discovery may consider a unique platform-neutral ZIP
+  from an authenticated canonical publisher release catalog. It remains only a
+  candidate: reject ambiguity, incompatible explicit platform/architecture,
+  missing digest, ungranted effects and failed actual probes. A generic archive
+  mentioned nowhere in unauthenticated context remains refused. Select runner
+  command grammar from observed help, never a hardcoded release version. Retain
+  full bounded selection/probe diagnostics; no compiler execution occurs locally.
+
 ## Standing Doctrine: Readable Recursive Source and Comment Meta-Language (2026-10-18)
 
 Authority: the owner's 2026-10-18 instructions while delivering PR #1234. These requirements strengthen R381, R394, R480–R483, R993 and R1188-U3. They supersede signature-only or histogram-based acceptance of a full source representation. Historical results remain evidence for their original narrower behavior. All related implementation stays in the same delivery pull request.

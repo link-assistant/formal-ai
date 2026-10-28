@@ -27,12 +27,16 @@
     "rust/tests/web/published-delivery-late-admission.test.mjs",
     "rust/tests/web/hive-delivery-admission.test.mjs",
     "rust/tests/web/ci-fast-critical-profile.test.mjs",
-    "rust/tests/web/fast-pr-production-profile.test.mjs",
+    "rust/tests/web/fast-pull-request-production-profile.test.mjs",
     "rust/tests/web/package-release-publication.test.mjs",
     "rust/tests/web/native-producer-source-pin.test.mjs",
     "rust/tests/web/native-workflow-cache-bindings.test.mjs",
     "rust/tests/web/container-node-runtime.test.mjs",
     "rust/tests/web/ci-speed.test.mjs",
-    "rust/tests/web/staged-release-authority-fixture.test.mjs"
+    "rust/tests/web/staged-release-authority-fixture.test.mjs",
+    "rust/tests/web/abbreviations.test.mjs",
+    "rust/tests/web/pr1196-authoring-deferral.test.mjs",
+    "rust/tests/web/coding-research-compiler-boundary.test.mjs",
+    "rust/tests/web/prerequisite-portable-archive.test.mjs"
   ]
 }

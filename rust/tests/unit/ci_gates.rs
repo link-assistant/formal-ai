@@ -109,6 +109,27 @@ pub fn pipeline_workflows() -> String {
 /// asking what `auto-release` waits for must not be answered with an edge from
 /// somebody else's file.
 fn called_workflow_job_body(path: &str, workflow: &str) -> String {
+    let mut remaining = 128;
+    called_workflow_job_body_bounded(path, workflow, &mut Vec::new(), &mut remaining)
+}
+
+fn called_workflow_job_body_bounded(
+    path: &str,
+    workflow: &str,
+    stack: &mut Vec<String>,
+    remaining: &mut usize,
+) -> String {
+    assert!(
+        *remaining > 0,
+        "reusable workflow expansion budget exceeded"
+    );
+    assert!(stack.len() < 8, "reusable workflow depth exceeded");
+    assert!(
+        !stack.iter().any(|seen| seen == path),
+        "reusable workflow cycle: {path}"
+    );
+    *remaining -= 1;
+    stack.push(path.to_owned());
     let marker = "\njobs:\n";
     let start = workflow
         .find(marker)
@@ -155,7 +176,22 @@ fn called_workflow_job_body(path: &str, workflow: &str) -> String {
             index += 1;
         }
     }
-    format!("{}\n", body.trim_end())
+    let mut body = format!("{}\n", body.trim_end());
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .expect("repository root");
+    for called in called_workflows(&body) {
+        assert!(!called.split('/').any(|part| part == ".." || part == "."));
+        let source = fs::read_to_string(root.join(&called))
+            .unwrap_or_else(|error| panic!("nested workflow {called}: {error}"))
+            .replace("\r\n", "\n");
+        let expanded = called_workflow_job_body_bounded(&called, &source, stack, remaining);
+        let call = format!("    uses: ./{called}\n");
+        assert!(body.contains(&call), "unsupported nested call indentation");
+        body = body.replace(&call, &expanded);
+    }
+    assert_eq!(stack.pop().as_deref(), Some(path));
+    body
 }
 
 /// The repository-local workflow files referenced by `uses: ./…`, in the order
@@ -181,6 +217,21 @@ fn called_workflows(surface: &str) -> Vec<String> {
 #[cfg(test)]
 mod pipeline_workflow_tests {
     use super::*;
+
+    #[test]
+    fn nested_reusable_jobs_are_visible_and_cycles_are_bounded() {
+        let source = "on:\n  workflow_call:\njobs:\n  profile:\n    uses: ./.github/workflows/pull-request-check-profile.yml\n";
+        let expanded = called_workflow_job_body("outer.yml", source);
+        assert_eq!(expanded.matches("    steps:\n").count(), 1);
+        assert!(expanded.contains("no execution or acceptance credit"));
+        assert!(!expanded.contains("uses: ./.github/workflows/"));
+        assert!(
+            std::panic::catch_unwind(|| {
+                called_workflow_job_body(".github/workflows/pull-request-check-profile.yml", source)
+            })
+            .is_err()
+        );
+    }
 
     #[test]
     fn the_pipeline_surface_reaches_into_the_workflows_it_calls() {

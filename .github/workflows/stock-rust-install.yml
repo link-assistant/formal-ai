@@ -34,7 +34,7 @@ concurrency:
 jobs:
   pr-check-profile:
     if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && vars.FORMAL_AI_FULL_PR_CI != 'run'
-    uses: ./.github/workflows/pr-check-profile.yml
+    uses: ./.github/workflows/pull-request-check-profile.yml
   stock-rust-install:
     if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (true) }}
     runs-on: ubuntu-latest

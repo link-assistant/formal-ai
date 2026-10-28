@@ -4,9 +4,9 @@ import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {Script} from 'node:vm';
 import YAML from 'yaml';
-import {selectFastTests} from '../../../scripts/list-fast-pr-tests.mjs';
+import {selectFastTests} from '../../../scripts/list-fast-pull-request-tests.mjs';
 const read = file => readFileSync(file, 'utf8');
-const manifest = JSON.parse(read('data/benchmarks/fast-pr-retained-jobs.json'));
+const manifest = JSON.parse(read('data/benchmarks/fast-pull-request-retained-jobs.json'));
 const workflow = file => YAML.parse(read('.github/workflows/' + file));
 const evaluate = (expression, context) => new Script(expression.trim()
   .replace(/^\$\{\{\s*/u, '').replace(/\s*\}\}$/u, '')
@@ -42,7 +42,7 @@ test('main keeps production builds and original selected integrations', () => {
   assert.match(read('.github/workflows/verify-release-downloads.yml'),/name: Verify Public Release Downloads/u);
 });
 test('fast inventory retains coding, questions, reports and captured CI failure regressions', () => {
-  const selected=selectFastTests(JSON.parse(read('data/benchmarks/fast-pr-javascript-tests.json')));
+  const selected=selectFastTests(JSON.parse(read('data/benchmarks/fast-pull-request-javascript-tests.json')));
   for(const name of ['ordinary-literal-addition','issue-1180-repository-qa','issue-1438-report-and-edit','generated-test-retirement','scheduled-published-admission-race'])
     assert(selected.includes('rust/tests/web/'+name+'.test.mjs'),name);
   for(const files of [[],['../outside.test.mjs'],[selected[0],selected[0]],['rust/tests/web/missing.test.mjs']])
@@ -54,7 +54,7 @@ test('fast inventory retains coding, questions, reports and captured CI failure 
   assert.equal(evaluate(step.env.FAST_PR_PROFILE,context('pull_request')),true);
   assert.equal(evaluate(step.env.FAST_PR_PROFILE,context('push','refs/heads/main')),false);
   assert.match(step.run,/printf '%s\\n' rust\/tests\/web\/\*\.test\.mjs/u);
-  assert.match(read('.github/workflows/pr-check-profile.yml'),/no execution or acceptance credit/u);
+  assert.match(read('.github/workflows/pull-request-check-profile.yml'),/no execution or acceptance credit/u);
 });
 
 test('fast source lint is mandatory on PRs without invoking native compilation', () => {

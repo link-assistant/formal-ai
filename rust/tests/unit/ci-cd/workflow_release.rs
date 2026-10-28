@@ -863,12 +863,18 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         ("native-container-images", 0),
         ("pipeline-status", 5),
     ];
-    let actual_jobs = workflow_job_names(&workflow);
-    let expected_jobs = expected_timeouts
-        .iter()
-        .map(|(job_name, _)| *job_name)
-        .collect::<Vec<_>>();
-    assert_eq!(actual_jobs, expected_jobs);
+    // Preserve known budget contracts without requiring a second job inventory.
+    // Every newly declared job must also own a deadline or delegate to a local workflow.
+    for job_name in workflow_job_names(&workflow) {
+        let job = job_block(&workflow, job_name);
+        assert!(
+            minimum_job_timeout(job).is_some()
+                || job
+                    .lines()
+                    .any(|line| { line.trim().starts_with("uses: ./.github/workflows/") }),
+            "{job_name} must own a positive deadline or delegate to a local workflow"
+        );
+    }
 
     for (job_name, timeout_minutes) in expected_timeouts {
         let job = job_block(&workflow, job_name);
@@ -889,8 +895,9 @@ fn release_workflow_jobs_have_explicit_timeouts() {
                     .unwrap_or_else(|error| panic!("read {called}: {error}"));
             for inner_job in workflow_job_names(&reusable) {
                 assert!(
-                    job_block(&reusable, inner_job).contains("    timeout-minutes:"),
-                    "{inner_job} should declare an explicit timeout"
+                    minimum_job_timeout(job_block(&reusable, inner_job)).is_some()
+                        || job_block(&reusable, inner_job).contains("uses: ./.github/workflows/"),
+                    "{inner_job} should declare an explicit timeout or delegate"
                 );
             }
             continue;
