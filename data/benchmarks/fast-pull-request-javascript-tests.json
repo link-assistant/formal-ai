@@ -40,6 +40,9 @@
     "rust/tests/web/prerequisite-portable-archive.test.mjs",
     "rust/tests/web/client-startup-contract.test.mjs",
     "rust/tests/web/census-source-selectors.test.mjs",
-    "rust/tests/web/release-extension-transfer.test.mjs"
+    "rust/tests/web/release-extension-transfer.test.mjs",
+    "rust/tests/web/native-release-trust-shallow.test.mjs",
+    "rust/tests/web/native-release-artifact.test.mjs",
+    "rust/tests/web/native-release-source-transport.test.mjs"
   ]
 }

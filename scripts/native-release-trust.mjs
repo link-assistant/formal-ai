@@ -26,7 +26,9 @@ export function authorizePublishedStableSource(cwd,{tag,repository}) {
  // A depth-one protocol checkout can retain a shallow boundary even after the tag is fetched.
  const history=git(cwd,['rev-parse','--is-shallow-repository'])==='true'?['--unshallow']:[];
  if(history.length)console.error('Completing shallow release history: tag='+tag+' release='+releaseCommit+' default='+defaultCommit);
- execFileSync('git',['fetch','--progress','--no-tags',...history,'origin','refs/tags/'+tag+':refs/tags/'+tag,defaultCommit],{cwd,stdio:'inherit',timeout:240000,killSignal:'SIGKILL'});
+ // Selected-source checkouts are detached and may have no named local refs.
+ // Advertise their verified history explicitly instead of downloading it again.
+ execFileSync('git',['fetch','--progress','--no-tags','--negotiation-tip=HEAD',...history,'origin','refs/tags/'+tag+':refs/tags/'+tag,defaultCommit],{cwd,stdio:'inherit',timeout:240000,killSignal:'SIGKILL'});
  return validatePublishedStableSource(cwd,{tag,release,defaultCommit,releaseCommit});
 }
 

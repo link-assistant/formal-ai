@@ -603,6 +603,12 @@ Removal from a public thread is not approval to retain another copy.
    and handoff in the same working PR. Verify its exact current head before merge;
    record the resulting source commit, actual release version and immutable public
    artifact identities after merge. Earlier releases do not prove this delivery.
+   Reuse the authenticated same-run complete source-history artifact across
+   release consumers; keep the pinned protocol and independent stable-tag and
+   ancestry checks. Explicitly advertise detached source history when negotiating
+   a fetch. Do not retry large redundant downloads or raise their budgets to hide
+   duplication. Missing console evidence after packaging starts remains a failure;
+   record unacquired runners with structured annotations and no execution credit.
    See [CI speed](docs/ci-cd/speed.md) and the
    [current requirements](docs/requirements/doctrine-fast-pull-request-production-ci.md).
 
