@@ -20,6 +20,18 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.355.16] - 2026-10-28
+
+Reuse the verified same-run source history for native, desktop and extension
+release consumers, and advertise detached source history during tag authorization
+so Git does not download it again. Preserve all byte, tag and ancestry checks.
+Only stage packaging console evidence after packaging actually starts.
+
+Keep native release workflow guards aligned with authenticated offline source
+restoration, and run those complete custody checks in fast pull-request CI.
+Read packaging evidence declarations structurally while preserving full sanitized
+console content and hash checks.
+
 ## [0.355.15] - 2026-10-28
 
 Prioritize Linux coding and question-answering checks on pull requests while retaining heavy production and integration suites for main or explicit opt-in. Disable live GitHub test effects by default, add captured-data offline regressions and guarded stale test-issue retirement, and prevent authenticated scheduled observations from invalidating release admission.
