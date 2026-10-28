@@ -105,3 +105,32 @@ matrix in a deadline-bounded child with its own cwd and an executed-case receipt
 No product trust check is weakened: the Claude fixture failure came from the
 other test changing the shared process cwd. Rust changes are test/support code
 only and are verified in CI; only source formatting ran locally.
+
+## Packaging follow-up after PR1453
+
+PR1453 merged as 4c18fa47059e19963601a35d749db5c493d4245f after 22 exact-head
+workflows and 42 jobs passed. Main then passed 16 of 17 workflows, including the
+real Kotlin/Scala recovery, full JavaScript suite and the previously failing
+workflow contracts. The remaining root pipeline failures were a stale packaged
+installer mirror, missing fast-lint concurrency ownership and a visual replay
+export taking 7.45 seconds against Bun’s default five-second test deadline. The
+stale mirror also explained the native bootstrap payload-equality failure.
+
+The next batch regenerates the single stale mirror through JavaScript, adds a
+cheap mandatory pre-merge mirror check and fast-lint concurrency, retains visual
+export tests behind an explicit opt-in with finite deadlines, and adds cheap
+unit checks over the real captured client startup frames. All remaining main
+logs were collected; Rust tests/builds and visual rendering stay in CI. No new
+release acceptance is claimed until the fresh main and publication are green.
+
+The packaged-mirror edit selected two additional native PR probes through
+existing rust/embedded path filters: VS Code/WASM packaging and the Rust
+full-source-content example. Those payloads are now retained behind the same
+full-profile gate, with source-selector/extension-transfer regressions in the
+fast inventory. Production extension publication and explicit content dispatch
+remain available; no source-content execution credit is awarded to PR skips.
+
+The latest instruction keeps all remaining implementation and policy updates in
+PR1454. CI-FAST-12 now explicitly requires exact-head qualification before merge
+and source-linked main/release/public-artifact verification afterwards. VISION,
+CONTRIBUTING and the CI speed guide carry the same standing working policy.

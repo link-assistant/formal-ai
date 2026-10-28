@@ -13,6 +13,8 @@ import {
 } from './client-contract.mjs';
 
 const directory = fileURLToPath(new URL('.', import.meta.url));
+// Image/font export is optional; ordinary client readiness and PTY checks stay on.
+const artifactTest = process.env.FORMAL_AI_FULL_TUI_REPLAY === 'run' ? test : test.skip;
 
 test('Claude confirms only the remaining bypass-permissions prompt', () => {
   expect(startupInteractionsFor('claude')).toEqual([
@@ -38,7 +40,7 @@ test('Codex submits once after model readiness, even when its footer arrives fir
   expect(capture.interactionCount).toBe(3);
 });
 
-test('published adapter preserves ordered states and writes replay artifacts', async () => {
+artifactTest('published adapter preserves ordered states and writes replay artifacts', async () => {
   const artifactDirectory = await mkdtemp(join(tmpdir(), 'formal-ai-tui-'));
   const capture = await captureAgentTui({
     tool: 'opencode',
@@ -48,6 +50,7 @@ test('published adapter preserves ordered states and writes replay artifacts', a
     skipDefaultSafetyFlags: true,
     cols: 120,
     rows: 2,
+    timeoutMilliseconds: 10000,
     artifactDirectory,
   });
 
@@ -79,7 +82,7 @@ test('published adapter preserves ordered states and writes replay artifacts', a
     ).toBeGreaterThan(0);
   }
   await rm(artifactDirectory, { recursive: true, force: true });
-});
+}, 30000);
 
 test('published adapter sends text, control keys, and resize through its PTY', async () => {
   const capture = await captureAgentTui({
@@ -106,7 +109,7 @@ test('published adapter sends text, control keys, and resize through its PTY', a
   expect(capture.transcript).toContain('resized:40x10');
 });
 
-test('published adapter defaults to a faithful publishable replay bundle', async () => {
+artifactTest('published adapter defaults to a faithful publishable replay bundle', async () => {
   const artifactDirectory = await mkdtemp(join(tmpdir(), 'formal-ai-tui-'));
   try {
     const capture = await captureAgentTui({
@@ -116,6 +119,7 @@ test('published adapter defaults to a faithful publishable replay bundle', async
       prefixArgs: [join(directory, 'tui-fixture.mjs')],
       skipDefaultSafetyFlags: true,
       artifactDirectory,
+      timeoutMilliseconds: 10000,
       artifactOptions: { borderRadius: 0 },
     });
 
@@ -152,9 +156,9 @@ test('published adapter defaults to a faithful publishable replay bundle', async
   } finally {
     await rm(artifactDirectory, { recursive: true, force: true });
   }
-});
+}, 30000);
 
-test('published adapter preserves partial replay artifacts after timeout', async () => {
+artifactTest('published adapter preserves partial replay artifacts after timeout', async () => {
   const artifactDirectory = await mkdtemp(join(tmpdir(), 'formal-ai-tui-'));
   try {
     let failure;
@@ -182,4 +186,4 @@ test('published adapter preserves partial replay artifacts after timeout', async
   } finally {
     await rm(artifactDirectory, { recursive: true, force: true });
   }
-});
+}, 30000);

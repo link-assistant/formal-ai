@@ -596,7 +596,13 @@ Removal from a public thread is not approval to retain another copy.
    Real GitHub effects require FORMAL_AI_REAL_GITHUB_E2E=true or explicit dispatch;
    preserve single-owner custody and trusted outcome-aware cleanup. Run only one
    necessary JavaScript test locally at a time; no Rust builds or tests locally.
+   Regenerate canonical data mirrors with node scripts/mirror-package-data.mjs
+   --write and commit them; fast lint checks byte equality before merge.
    Delivery includes green main CI and verified configured release artifacts.
+   Keep the implementation, regression fixtures, requirements, vision, guidelines
+   and handoff in the same working PR. Verify its exact current head before merge;
+   record the resulting source commit, actual release version and immutable public
+   artifact identities after merge. Earlier releases do not prove this delivery.
    See [CI speed](docs/ci-cd/speed.md) and the
    [current requirements](docs/requirements/doctrine-fast-pull-request-production-ci.md).
 

@@ -78,7 +78,11 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  pr-check-profile:
+    if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && vars.FORMAL_AI_FULL_PR_CI != 'run'
+    uses: ./.github/workflows/pull-request-check-profile.yml
   content:
+    if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (true) }}
     name: Build full source content (${{ matrix.shard }})
     runs-on: ubuntu-latest
     timeout-minutes: 30

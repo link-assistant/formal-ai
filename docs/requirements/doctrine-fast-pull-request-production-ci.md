@@ -61,3 +61,20 @@ Formal AI edit recipes receive zero autonomous implementation credit.
   mentioned nowhere in unauthenticated context remains refused. Select runner
   command grammar from observed help, never a hardcoded release version. Retain
   full bounded selection/probe diagnostics; no compiler execution occurs locally.
+
+- **CI-FAST-10:** Canonical package data and every demanded rust/embedded byte
+  mirror must agree before merge. Regenerate through the existing JavaScript
+  mirror-package-data generator and commit its outputs; never manually edit
+  generated mirrors or defer this cheap parity check to production compilation.
+- **CI-FAST-11:** Visual replay/font/GIF export integration tests are retained
+  but default-off with FORMAL_AI_FULL_TUI_REPLAY=run or full agent replay opt-in.
+  Their explicit finite test deadlines include export overhead. Keep ordinary
+  readiness, literal typing and PTY checks enabled; use real captured startup
+  frames in cheap unit tests. A skipped export test grants no visual acceptance.
+- **CI-FAST-12:** Keep the implementation, captured-log regressions, requirement
+  register, vision, contributor guidelines and handoff in the same working PR.
+  Before merge, verify all applicable checks against its exact current head.
+  After merge, follow that source through main, version preparation, configured
+  release consumers and public artifact verification. Record the source commit,
+  actual version, workflow outcomes and immutable artifact identities. A previous
+  release, a skipped job or an unrelated green run cannot satisfy this delivery.

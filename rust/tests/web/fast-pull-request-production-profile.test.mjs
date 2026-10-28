@@ -61,9 +61,12 @@ test('fast source lint is mandatory on PRs without invoking native compilation',
   const release = workflow('release.yml'), job = release.jobs['fast-pr-lint'];
   assert.equal(evaluate(job.if, context('pull_request')), true);
   assert.equal(evaluate(job.if, context('push', 'refs/heads/main')), false);
+  assert.match(job.concurrency.group, /-fast-pr-lint$/u);
+  assert.equal(evaluate(job.concurrency['cancel-in-progress'], context('pull_request')), true);
+  assert.equal(evaluate(job.concurrency['cancel-in-progress'], context('push', 'refs/heads/main')), false);
   assert(release.jobs['pipeline-status'].needs.includes('fast-pr-lint'));
   const commands = job.steps.map(step => step.run ?? '').join('\n');
-  for (const name of ['check-readable-code','check-file-size','check-ci-speed','assemble-requirements','check-requirement-status'])
+  for (const name of ['check-readable-code','check-file-size','check-ci-speed','assemble-requirements','check-requirement-status','mirror-package-data'])
     assert(commands.includes('node scripts/' + name + '.mjs'), name);
   assert.doesNotMatch(commands, /cargo |rust-script |build-selected-wasm/u);
   const changelog = release.jobs.changelog.steps.map(step => step.run ?? '').join('\n');
