@@ -13,3 +13,5 @@ mod issue_1138_repository_world_model;
 
 #[path = "observation_goals.rs"]
 mod observation_goals;
+
+mod fixture;

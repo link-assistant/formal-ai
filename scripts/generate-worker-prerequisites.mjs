@@ -3,6 +3,9 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+// Complete the default ESM provider before synchronous target-root resolution.
+// The selected root still owns parser resolution; no foreign-root fallback is introduced.
+import '@babel/parser';
 const digest = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 export function dependencyRecords(sources, parse) {
   const scripts = new Map(sources.map(source => [source.owner, source]));

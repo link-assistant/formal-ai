@@ -134,5 +134,156 @@
     "id": "unknown-comment-u2029",
     "payload": "# tests 1\n# pass 1\n# fail 0\n# note # cancelled Unknown",
     "expected": null
+  },
+  {
+    "id": "spec-valid",
+    "payload": "ℹ tests 1\nℹ pass 1\nℹ fail 0\nℹ skipped 0\nℹ cancelled 0",
+    "expected": null
+  },
+  {
+    "id": "spec-legacy-missing-optional",
+    "payload": "ℹ tests 1\nℹ pass 1\nℹ fail 0",
+    "expected": null
+  },
+  {
+    "id": "spec-crlf",
+    "payload": "ℹ tests 1\r\nℹ pass 1\r\nℹ fail 0\r\nℹ skipped 0\r\nℹ cancelled 0",
+    "expected": null
+  },
+  {
+    "id": "spec-nested-comment",
+    "payload": "ℹ tests 1\nℹ pass 1\nℹ fail 0\nℹ skipped 0\nℹ cancelled 0\n    ℹ pass Unknown",
+    "expected": null
+  },
+  {
+    "id": "spec-unknown-field-0",
+    "payload": "ℹ tests 1\nℹ pass 1\nℹ fail 0\nℹ skipped 0\nℹ cancelled 0\nℹ password 7",
+    "expected": null
+  },
+  {
+    "id": "spec-unknown-field-1",
+    "payload": "ℹ tests 1\nℹ pass 1\nℹ fail 0\nℹ skipped 0\nℹ cancelled 0\nℹ passed 7",
+    "expected": null
+  },
+  {
+    "id": "spec-unknown-field-2",
+    "payload": "ℹ tests 1\nℹ pass 1\nℹ fail 0\nℹ skipped 0\nℹ cancelled 0\nℹ tests_total Unknown",
+    "expected": null
+  },
+  {
+    "id": "spec-unknown-field-3",
+    "payload": "ℹ tests 1\nℹ pass 1\nℹ fail 0\nℹ skipped 0\nℹ cancelled 0\nℹ skipped_custom -1",
+    "expected": null
+  },
+  {
+    "id": "spec-malformed-0",
+    "payload": "ℹ tests 1\nℹ pass 1\nℹ fail 0\nℹ skipped 0\nℹ cancelled 0\nℹ pass garbage",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "spec-malformed-1",
+    "payload": "ℹ tests 1\nℹ pass 1\nℹ fail 0\nℹ skipped 0\nℹ cancelled 0\nℹ pass 1 extra",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "spec-malformed-2",
+    "payload": "ℹ tests 1\nℹ pass 1\nℹ fail 0\nℹ skipped 0\nℹ cancelled 0\nℹ skipped -1",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "spec-malformed-3",
+    "payload": "ℹ tests 1\nℹ pass 1\nℹ fail 0\nℹ skipped 0\nℹ cancelled 0\nℹ cancelled Unknown",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "spec-malformed-4",
+    "payload": "ℹ tests 1\nℹ pass 1\nℹ fail 0\nℹ skipped 0\nℹ cancelled 0\nℹ skipped +1",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "spec-malformed-5",
+    "payload": "ℹ tests 1\nℹ pass 1\nℹ fail 0\nℹ skipped 0\nℹ cancelled 0\nℹ skipped 1.0",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "spec-malformed-6",
+    "payload": "ℹ tests 1\nℹ pass 1\nℹ fail 0\nℹ skipped 0\nℹ cancelled 0\nℹ skipped 1e0",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "spec-malformed-7",
+    "payload": "ℹ tests 1\nℹ pass 1\nℹ fail 0\nℹ skipped 0\nℹ cancelled 0\nℹ skipped",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "spec-malformed-8",
+    "payload": "ℹ tests 1\nℹ pass 1\nℹ fail 0\nℹ skipped 0\nℹ cancelled 0\nℹ skipped\t1",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "spec-malformed-9",
+    "payload": "ℹ tests 1\nℹ pass 1\nℹ fail 0\nℹ skipped 0\nℹ cancelled 0\nℹ cancelled 0 ",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "spec-malformed-only-optional",
+    "payload": "ℹ tests 1\nℹ pass 1\nℹ fail 0\nℹ skipped -1\nℹ cancelled 0",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "spec-malformed-cancelled",
+    "payload": "ℹ tests 1\nℹ pass 1\nℹ fail 0\nℹ skipped 0\nℹ cancelled Unknown",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "spec-duplicate-valid-optional",
+    "payload": "ℹ tests 1\nℹ pass 1\nℹ fail 0\nℹ skipped 0\nℹ cancelled 0\nℹ skipped 0",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "spec-zero-tests",
+    "payload": "ℹ tests 0\nℹ pass 0\nℹ fail 0",
+    "expected": "NoTestsExecuted"
+  },
+  {
+    "id": "spec-physical-lf-u2028",
+    "payload": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "spec-physical-lf-u2029",
+    "payload": "ℹ tests 1 ℹ pass 1 ℹ fail 0",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "spec-double-cr-existing-frame-normalization",
+    "payload": "ℹ tests 1\r\r\nℹ pass 1\nℹ fail 0",
+    "expected": null,
+    "boundary": "Existing receipt framing normalizes CR before TAP; this is not a fixed counter hole."
+  },
+  {
+    "id": "spec-unknown-comment-u2028",
+    "payload": "ℹ tests 1\nℹ pass 1\nℹ fail 0\nℹ note ℹ skipped Unknown",
+    "expected": null
+  },
+  {
+    "id": "spec-unknown-comment-u2029",
+    "payload": "ℹ tests 1\nℹ pass 1\nℹ fail 0\nℹ note ℹ cancelled Unknown",
+    "expected": null
+  },
+  {
+    "id": "mixed-duplicate",
+    "payload": "# tests 1\n# pass 1\n# fail 0\n# skipped 0\n# cancelled 0\nℹ fail 1",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "mixed-malformed",
+    "payload": "# tests 1\n# pass 1\n# fail 0\n# skipped 0\n# cancelled 0\nℹ skipped Unknown",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "spec-tap-duplicate",
+    "payload": "ℹ tests 1\nℹ pass 1\nℹ fail 0\nℹ skipped 0\nℹ cancelled 0\n# pass 1",
+    "expected": "VerificationReceiptIncomplete"
   }
 ]

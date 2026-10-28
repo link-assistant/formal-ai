@@ -6,7 +6,8 @@ import os from 'node:os';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
 const source=readFileSync(fileURLToPath(new URL('../../../Dockerfile',import.meta.url)),'utf8');
-function contract(text){
+const slimSource=readFileSync(fileURLToPath(new URL('../../../Dockerfile.slim',import.meta.url)),'utf8');
+function contract(text,slim=false){
  assert.match(text,/^FROM node:26\.12\.0-bookworm-slim AS node-runtime$/m);
  assert(text.includes('ENV PATH="${BUN_INSTALL}/bin:/usr/local/bin:${PATH}"'));
  assert.doesNotMatch(text,/FROM --platform=\S+ node:/);
@@ -15,18 +16,27 @@ function contract(text){
  const libraries=text.indexOf('--no-install-recommends libstdc++6 libatomic1');
  const capability=text.indexOf("new RegExp('', 'v')");
  const install=text.indexOf('RUN /usr/local/lib/formal-ai-runtime-tools/scripts/install-container-runtime-tools.sh /home/box/.formal-ai-runtime-tools');
- assert(libraries>text.indexOf('FROM konard/box-dind:2.10.2')&&copy>libraries&&capability>copy&&install>capability);
+ assert(libraries>text.indexOf(slim?'FROM ubuntu:26.10':'FROM konard/box-dind:2.10.2')&&copy>libraries&&capability>copy&&install>capability);
  assert(text.includes("process.versions.node.split('.')[0] !== '26'"));
  assert.doesNotMatch(text,/apt-get install[^\n]*\bnodejs\b/);
- for(const check of ['"$" --version','agent --version','start-agent --help','COPY scripts/verify-docker-runtime.sh','ENTRYPOINT ["/usr/local/bin/dind-entrypoint.sh"]'])assert(text.includes(check));
+ for(const check of ['"$" --version','agent --version','start-agent --help',
+  slim?'COPY scripts/verify-docker-slim-runtime.sh':'COPY scripts/verify-docker-runtime.sh',
+  slim?'ENTRYPOINT ["/usr/local/bin/formal-ai"]':'ENTRYPOINT ["/usr/local/bin/dind-entrypoint.sh"]'])assert(text.includes(check));
+ for(const tool of ['npm','npx'])assert(text.includes('ln -sf ../lib/node_modules/npm/bin/'+tool+'-cli.js /usr/local/bin/'+tool));
  for(const check of ['npm --version','npx --version'])assert(text.indexOf(check)>text.indexOf('USER box',copy));
 }
 test('target-native Node26 donor and shared libraries precede agent capability checks',()=>contract(source));
-test('Node18 regression is rejected',()=>assert.throws(()=>contract(source.replace('node:26.12.0-bookworm-slim','node:18.19.1-bookworm-slim'))));
+test('slim reuses the same donor payload and launchers without installing distro npm',()=>contract(slimSource,true));
+test('Node18 regression is rejected in both images',()=>{
+ for(const [text,slim] of [[source,false],[slimSource,true]])assert.throws(()=>contract(text.replace('node:26.12.0-bookworm-slim','node:18.19.1-bookworm-slim'),slim));
+});
 test('architecture pin and missing capability fail closed',()=>{
- assert.throws(()=>contract(source.replace('FROM node:','FROM --platform=linux/amd64 node:')));
- assert.throws(()=>contract(source.replace("new RegExp('', 'v')",'true')));
- assert.throws(()=>contract(source.replace('libstdc++6 libatomic1','nodejs')));
+ for(const [text,slim] of [[source,false],[slimSource,true]]){
+  assert.throws(()=>contract(text.replace('FROM node:','FROM --platform=linux/amd64 node:'),slim));
+  assert.throws(()=>contract(text.replace("new RegExp('', 'v')",'true'),slim));
+  assert.throws(()=>contract(text.replace('libstdc++6 libatomic1','nodejs'),slim));
+  assert.throws(()=>contract(text.replace('ln -sf ../lib/node_modules/npm/bin/npx-cli.js','true'),slim));
+ }
 });
 
 test('captured Hive npm failure is repaired by the shipped package payload and launchers',t=>{

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {readFileSync,mkdtempSync,mkdirSync,writeFileSync,rmSync} from 'node:fs';
+import {readFileSync,existsSync,mkdtempSync,mkdirSync,writeFileSync,rmSync} from 'node:fs';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import {spawnSync} from 'node:child_process';
@@ -16,7 +16,7 @@ function run(steps,teeFail=false){
  const fake=`#!${process.execPath}\nimport fs from 'node:fs';const p=process.env.TRANSPORT_STATE;let s=JSON.parse(fs.readFileSync(p));const step=s.steps[s.calls.length];if(!step)throw Error('unbounded attempt');s.calls.push(process.argv.slice(2));fs.writeFileSync(p,JSON.stringify(s));console.error(step.output??'');process.exit(step.status);\n`;
  writeFileSync(join(bin,'docker'),fake,{mode:0o755});
  writeFileSync(join(bin,'sleep'),`#!${process.execPath}\nimport fs from 'node:fs';const p=process.env.TRANSPORT_STATE,s=JSON.parse(fs.readFileSync(p));s.waits.push(process.argv[2]);fs.writeFileSync(p,JSON.stringify(s));\n`,{mode:0o755});
- if(teeFail)writeFileSync(join(bin,'tee'),'#!/bin/sh\ncat > "$1"\nexit 7\n',{mode:0o755});
+ if(teeFail)writeFileSync(join(bin,'tee'),'#!/bin/sh\ncat >/dev/null\nexit 7\n',{mode:0o755});
  const state=join(directory,'state.json');writeFileSync(state,JSON.stringify({steps,calls:[],waits:[]}));
  try{
     const result=spawnSync('bash',
@@ -43,6 +43,8 @@ function run(steps,teeFail=false){
     'every original build operand preserved');
     return{
     status:result.status,
+    retainedLog:existsSync(join(directory,'standalone-build.log'))?readFileSync(join(directory,'standalone-build.log'),'utf8'):null,
+    outcome:JSON.parse(readFileSync(join(directory,'standalone-build-outcome.json'),'utf8')),
     ...receipt}
     ;
     }
@@ -70,4 +72,14 @@ test('429-only retry preserves original command, finite attempts and existing de
 });
 test('a failed build log pipe cannot turn a producer failure into retry or success',()=>{
  const r=run([{status:0}],true);assert.equal(r.status,7);assert.equal(r.calls.length,1);assert.deepEqual(r.waits,[]);
+ assert.equal(r.outcome.consoleComplete,false);assert.equal(r.outcome.logExitCode,7);
+});
+
+test('complete compiler output survives every attempt and a final non-transport failure',()=>{
+ const first=rate+'\nfirst attempt diagnostic',second='ERROR: failed to build: real compiler failure\nsecond attempt diagnostic';
+ const result=run([{status:41,output:first},{status:53,output:second}]);
+ assert.equal(result.status,53);assert.equal(result.calls.length,2);assert.deepEqual(result.waits,['30']);
+ assert.deepEqual(result.outcome,{state:'finished',attempt:2,exitCode:53,logExitCode:0,consoleComplete:true});
+ for(const fragment of ['Build attempt 1/3',first,'Build attempt 2/3',second])assert(result.retainedLog.includes(fragment),fragment);
+ assert(result.retainedLog.indexOf(first)<result.retainedLog.indexOf(second));
 });

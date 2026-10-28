@@ -53,6 +53,7 @@ env:
   CARGO_TERM_COLOR: always
   FORMAL_AI_CI_VERBOSE: ${{ vars.FORMAL_AI_CI_VERBOSE || 'false' }}
   RUSTFLAGS: -Dwarnings
+  RUST_BACKTRACE: full
 
 jobs:
   agent-cli-e2e:

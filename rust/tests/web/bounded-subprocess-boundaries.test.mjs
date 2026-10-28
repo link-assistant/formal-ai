@@ -91,3 +91,48 @@ test('hosted capture source projection remains mechanically current', async () =
     assert.equal(auditor.javascript('const {spawnSync: run}=await import("node:child_process"); run("x", [], {stdio:"ignore",timeout:1000,killSignal:"SIGKILL"});','source.mjs',options).allowed.length,1);
   }
 });
+
+
+test('capture generation checks and repairs the native embedded consumer together with canonical source',async t=>{
+  const fs=await import('node:fs'),path=await import('node:path'),os=await import('node:os');
+  const {generateBoundedCommandCapture}=await import('../../../scripts/generate-bounded-command-capture.mjs');
+  const repository=fs.mkdtempSync(path.join(os.tmpdir(),'formal-ai-capture-mirror-'));
+  t.after(()=>fs.rmSync(repository,{recursive:true,force:true}));
+  fs.mkdirSync(path.join(repository,'js/server'),{recursive:true});
+  fs.writeFileSync(path.join(repository,'js/server/bounded-command.mjs'),
+    'export async function boundedCommand() {\n  // Preserve actual source comments.\n  return "fixture";\n}\n');
+  const outputs=generateBoundedCommandCapture({repository});
+  assert.equal(outputs.length,2);assert(fs.readFileSync(outputs[0]).equals(fs.readFileSync(outputs[1])));
+  assert(fs.readFileSync(outputs[0],'utf8').includes('Preserve actual source comments.'));
+  generateBoundedCommandCapture({repository,check:true});
+  fs.writeFileSync(outputs[1],'stale native body\n');
+  assert.throws(()=>generateBoundedCommandCapture({repository,check:true}),/projection drift.*rust/);
+  generateBoundedCommandCapture({repository});
+  generateBoundedCommandCapture({repository,check:true});
+  assert(fs.readFileSync(outputs[0]).equals(fs.readFileSync(outputs[1])));
+});
+
+
+test('readable capture projection is valid canonical notation and round-trips quotes, escapes and UTF-8',async t=>{
+  const {generateBoundedCommandCapture}=await import('../../../scripts/generate-bounded-command-capture.mjs');
+  const {Parser}=await import('links-notation');
+  const {installNodeHost}=await import('../../../js/agentic/node-host.mjs');
+  const {WorkerHost}=await import('../../../js/server/worker-host.mjs');
+  const {parseLinoRoot}=await import('../../../js/agentic/write_lino.mjs');
+  const os=await import('node:os'),repository=fs.mkdtempSync(path.join(os.tmpdir(),'formal-ai-capture-notation-'));
+  t.after(()=>fs.rmSync(repository,{recursive:true,force:true}));
+  const source=['export async function boundedCommand() {',
+        `  // Unicode: Привет 世界; "double" and 'single' quotes.`,
+    '  return "literal \\n and \\t";', '}'].join('\n');
+  fs.mkdirSync(path.join(repository,'js/server'),{recursive:true});
+  fs.writeFileSync(path.join(repository,'js/server/bounded-command.mjs'),source);
+  const [output]=generateBoundedCommandCapture({repository});
+  const notation=fs.readFileSync(output,'utf8');
+  assert.doesNotThrow(()=>new Parser().parse(notation));
+  await installNodeHost(new WorkerHost({WebAssembly:{
+    compile(){throw Error('LocalWasmExecutionForbidden');},
+    instantiate(){throw Error('LocalWasmExecutionForbidden');}}}));
+  const tree=parseLinoRoot(notation).children[0];
+  const restored=tree.children.filter(node=>node.name==='line').map(node=>node.value??node.id).join('\n');
+  assert.equal(restored,source.replace('export ',''));
+});

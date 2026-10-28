@@ -72,6 +72,10 @@ export function verificationReceiptGap(output) {
   const complete = !incompleteReceipt(output) && stepOutcome(output) === StepOutcome.Succeeded;
   const payload = normalizedPayload(output) ?? '';
   const lines = payload.split("\n");
+  // Normalize Node's spec summary marker before the unchanged strict counter grammar.
+  for (let index = 0; index < lines.length; index += 1) {
+    if (lines[index].startsWith('ℹ ')) lines[index] = '# ' + lines[index].slice(2);
+  }
   const counts = {};
   let unique = true;
   for (const field of ['tests', 'pass', 'fail', 'skipped', 'cancelled']) {

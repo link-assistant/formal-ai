@@ -25,7 +25,7 @@ export function redact(value) {
     .replace(/\b(Bearer|Basic)\s+\S+/gi, '$1 [credential]')
     .replace(/\b(token|password|secret|authorization|api[_-]?key)["']?\s*[=:]\s*["']?[^\s"']+/gi, '$1=[credential]')
     .replace(/https?:\/\/[^\s/@]+:[^\s/@]+@/gi, 'https://[credential]@')
-    .replace(/[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/g, '[email]')
+    .replace(/(?<![\w.+-])[\w.+-]{1,64}@[\w.-]{1,253}\.[A-Za-z]{2,63}/g, '[email]')
     .replace(/\b\d{12}\b/g, '[account]')
     .replace(/\b(?:\d{1,3}\.){3}\d{1,3}\b/g, '[ip]')
     .replace(/\/(?:Users|home)\/[^/\s]+/g, '/home/[user]');

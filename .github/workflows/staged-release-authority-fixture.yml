@@ -47,11 +47,23 @@ jobs:
         with:
           ref: ${{ github.sha }}
           persist-credentials: false
+          sparse-checkout: |
+            /.github/workflows/release.yml
+            /scripts/staged-release-authority-fixture.mjs
+          sparse-checkout-cone-mode: false
       - uses: actions/checkout@v7
         with:
           ref: ${{ github.sha }}
           path: _protocol
           persist-credentials: false
+          sparse-checkout: |
+            /.github/
+            /scripts/
+            /experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/
+            /package.json
+            /bun.lock
+            /.bun-version
+          sparse-checkout-cone-mode: false
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: _protocol/.bun-version

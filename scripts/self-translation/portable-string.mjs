@@ -3,10 +3,11 @@
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { toLino, fromLino, canonicalMetaSymbol, rustIdentifier } from './ir.mjs';
+import * as formalAiBabelParser from '@babel/parser';
 const require = createRequire(import.meta.url);
 const {
   parse
-} = require('@babel/parser');
+} = formalAiBabelParser;
 export const PROFILE = 'portable-string-v1';
 const fail = reason => {
   throw new Error(PROFILE + ': ' + reason);

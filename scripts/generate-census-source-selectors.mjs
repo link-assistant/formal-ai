@@ -3,11 +3,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import * as formalAiBabelParser from '@babel/parser';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const require = createRequire(path.join(root, 'package.json'));
 const {
     parse
-  } = require('@babel/parser'),
+  } = formalAiBabelParser,
   YAML = require('yaml');
 export function literalSourceList(source, name) {
   assert(Buffer.byteLength(source) <= 1048576, 'bounded source required');

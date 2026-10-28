@@ -7,7 +7,7 @@ import {spawnSync} from 'node:child_process';
 
 const docker=readFileSync('Dockerfile','utf8');
 const helpers=['apt-install-with-retry.sh','run-with-deadline.sh'];
-function run(failures,installStatus=0){
+function run(failures,installStatus=0,source=docker,marker='RUN FORMAL_AI_APT_PRIVILEGE=',stage='FROM konard/box-dind:2.10.2'){
  const directory=mkdtempSync(join(tmpdir(),'container-apt-retry-'));
  try{
   const scripts=join(directory,'helpers'),bin=join(directory,'bin');
@@ -27,10 +27,10 @@ function run(failures,installStatus=0){
    "import fs from 'node:fs';",
    "fs.appendFileSync(process.env.FAKE_CALLS,JSON.stringify({kind:'cleanup',args:process.argv.slice(2)})+'\\n');",
   ].join('\n'),{mode:0o755});
-  const start=docker.indexOf('RUN FORMAL_AI_APT_PRIVILEGE=');
-  assert(start>docker.indexOf('FROM konard/box-dind:2.10.2'));
-  const end=docker.indexOf('\n\n',start);
-  const command=docker.slice(start+4,end).replaceAll('/usr/local/lib/formal-ai-build',scripts);
+  const start=source.indexOf(marker,source.indexOf(stage));
+  assert(start>source.indexOf(stage));
+  const end=source.indexOf('\n\n',start);
+  const command=source.slice(start+4,end).replaceAll('/usr/local/lib/formal-ai-build',scripts);
   const result=spawnSync('bash',['-c',command],{cwd:directory,encoding:'utf8',timeout:15000,
    env:{...process.env,PATH:bin+':'+process.env.PATH,FORMAL_AI_APT_GET:fake,
     FORMAL_AI_APT_ATTEMPTS:'3',FORMAL_AI_APT_ATTEMPT_SECONDS:'3',FORMAL_AI_APT_RETRY_DELAY_SECONDS:'0',
@@ -75,4 +75,25 @@ test('retry integration preserves repositories, package verification and helper 
  const wrapper=readFileSync('scripts/apt-install-with-retry.sh','utf8');
  assert(wrapper.includes('attempts="'+ '\x24' + '{FORMAL_AI_APT_ATTEMPTS:-3}"'));
  assert(wrapper.includes('attempt_seconds="'+ '\x24' + '{FORMAL_AI_APT_ATTEMPT_SECONDS:-90}"'));
+});
+
+
+test('slim runtime retries signed indexes for shared libraries without the distro npm dependency graph',()=>{
+ const slim=readFileSync('Dockerfile.slim','utf8'),marker='RUN TEST_BUDGET_SECONDS=300 FORMAL_AI_APT_PRIVILEGE=';
+ const result=run(1,0,slim,marker,'FROM ubuntu:26.10');
+ assert.equal(result.status,0,result.stderr);
+ assert.equal(result.records.filter(row=>row.kind==='apt'&&row.args.includes('update')).length,2);
+ assert.deepEqual(result.records.filter(row=>row.kind==='apt'&&row.args.includes('install')).map(row=>row.args),
+  [['-o','DPkg::Lock::Timeout=60','install','-y','-q','--no-install-recommends','libstdc++6','libatomic1','ca-certificates','curl','git']]);
+ const permanent=run(99,0,slim,marker,'FROM ubuntu:26.10');
+ assert.equal(permanent.status,100);assert.equal(permanent.records.length,3);
+ assert(permanent.records.every(row=>row.kind==='apt'&&row.args.includes('update')));
+});
+test('both source builder stages share the bounded APT installer without compiling locally',()=>{
+ for(const source of [docker,readFileSync('Dockerfile.slim','utf8')]){
+  const result=run(1,0,source,'RUN TEST_BUDGET_SECONDS=300 FORMAL_AI_APT_PRIVILEGE=','FROM rust:');
+  assert.equal(result.status,0,result.stderr);
+  assert.deepEqual(result.records.filter(row=>row.kind==='apt'&&row.args.includes('install')).map(row=>row.args),
+   [['-o','DPkg::Lock::Timeout=60','install','-y','-q','--no-install-recommends','libssl-dev','pkg-config']]);
+ }
 });

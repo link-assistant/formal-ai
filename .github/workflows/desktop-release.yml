@@ -49,6 +49,7 @@ env:
   CARGO_NET_RETRY: '10'
   CARGO_HTTP_MULTIPLEXING: 'false'
   RUSTFLAGS: -Dwarnings
+  RUST_BACKTRACE: full
   GIT_HTTP_LOW_SPEED_LIMIT: "1024"
   GIT_HTTP_LOW_SPEED_TIME: "20"
 jobs:
@@ -168,12 +169,13 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: actions/checkout@v7
         timeout-minutes: 5
-        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 0}
+        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 1}
       - name: Select the independently authorized stable release tag
         if: github.event_name != 'pull_request'
         uses: actions/checkout@v7
         timeout-minutes: 5
-        with: {persist-credentials: false, ref: "${{ env.NATIVE_AUTHORIZED_RELEASE_COMMIT }}", fetch-depth: 0}
+        with: {persist-credentials: false, ref: "${{ env.NATIVE_AUTHORIZED_RELEASE_COMMIT }}", fetch-depth: 1}
+      - {name: Complete only the selected source ancestry, timeout-minutes: 5, run: 'node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" hydrate-source'}
       - name: Record the original pull-request source prerequisite
         if: github.event_name == 'pull_request'
         env:
@@ -234,6 +236,7 @@ jobs:
           const protocol=readFileSync('native-source/protocol-selection.json');
           appendFileSync(process.env.GITHUB_OUTPUT,'package-version='+source.package_version+'\nprotocol-sha256='+createHash('sha256').update(protocol).digest('hex')+'\n');
           NODE
+      - {name: Stage complete selected Git history for offline CLI packaging, timeout-minutes: 5, run: 'node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" export-history native-source native-source-history'}
       - name: Build worker from the exact selected Desktop source
         id: selected_wasm
         run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/build-selected-wasm.mjs" build
@@ -255,6 +258,7 @@ jobs:
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 7
+      - {uses: actions/upload-artifact@v7, with: {name: native-release-source-history, path: native-source-history/, compression-level: 0, if-no-files-found: error, retention-days: 7}}
   native:
     name: Produce native ${{ matrix.target }}
     concurrency:
@@ -323,7 +327,8 @@ jobs:
           NODE
       - uses: actions/checkout@v7
         timeout-minutes: 5
-        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 0}
+        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 1}
+      - {name: Complete only the selected source ancestry, timeout-minutes: 5, run: 'node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" hydrate-source'}
       - uses: actions/setup-node@v7
         with:
           node-version: 22
@@ -402,7 +407,7 @@ jobs:
     concurrency:
       group: desktop-release-${{ github.event.pull_request.number || needs.resolve.outputs.tag }}-${{ matrix.label }}
       queue: max
-    if: ${{ !cancelled() && (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
+    if: ${{ !cancelled() && needs.native-source.result == 'success' && (github.event_name != 'pull_request' || needs.native.result == 'success') &&  (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
     strategy:
       fail-fast: false
       matrix:
@@ -410,7 +415,7 @@ jobs:
           - { os: ubuntu-latest,    ebflag: "--linux", label: "linux-x64", target: x86_64-unknown-linux-gnu, binext: "",     capmin: 30 }
           - { os: ubuntu-24.04-arm, ebflag: "--linux", label: "linux-arm64", target: aarch64-unknown-linux-gnu, binext: "",     capmin: 30 }
           - { os: macos-15-intel,   ebflag: "--mac",   label: "macos-x64", target: x86_64-apple-darwin, binext: "",     capmin: 30 }
-          - { os: macos-14,         ebflag: "--mac",   label: "macos-arm64", target: aarch64-apple-darwin, binext: "",     capmin: 30 }
+          - { os: macos-15,         ebflag: "--mac",   label: "macos-arm64", target: aarch64-apple-darwin, binext: "",     capmin: 30 }
           - { os: windows-latest,   ebflag: "--win",   label: "windows-x64", target: x86_64-pc-windows-msvc, binext: ".exe", capmin: 30 }
           - { os: windows-11-arm,   ebflag: "--win",   label: "windows-arm64", target: aarch64-pc-windows-msvc, binext: ".exe", capmin: 30 }
     runs-on: ${{ matrix.os }}
@@ -471,7 +476,8 @@ jobs:
           NODE
       - uses: actions/checkout@v7
         timeout-minutes: 5
-        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 0}
+        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 1}
+      - {name: Complete only the selected source ancestry, timeout-minutes: 5, run: 'node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" hydrate-source'}
       - uses: actions/setup-node@v7
         with:
           node-version: 22
@@ -617,6 +623,8 @@ jobs:
           # Never begin a retry that cannot finish before the existing deadline.
           FORMAL_AI_MACOS_PACKAGE_DEADLINE_EPOCH: ${{ env.FORMAL_AI_JOB_DEADLINE_EPOCH }}
         run: bash scripts/package-macos-with-retry.sh ${{ matrix.ebflag }} --publish never -c.mac.notarize=false -c.mac.identity=- -c.mac.sign=./scripts/adhoc-sign-mac.cjs
+      - {name: Stage redacted packaging console, if: "${{ always() }}", env: {MAC_SIGNING_CERTIFICATE_SECRET: "${{ secrets.MAC_CSC_LINK }}", MAC_SIGNING_PASSWORD_SECRET: "${{ secrets.MAC_CSC_KEY_PASSWORD }}"}, run: 'node scripts/prepare-hive-draft-evidence.mjs "$RUNNER_TEMP/formal-ai-packaging-logs" "$RUNNER_TEMP/formal-ai-packaging-artifact"'}
+      - {name: Upload complete packaging console, if: "${{ always() }}", uses: actions/upload-artifact@v7, with: {name: "packaging-console-${{ matrix.label }}", path: "${{ runner.temp }}/formal-ai-packaging-artifact/", if-no-files-found: ignore, retention-days: 30}}
       - name: Normalize desktop artifact names
         working-directory: desktop
         run: node scripts/normalize-artifacts.mjs
@@ -883,7 +891,7 @@ jobs:
     concurrency:
       group: desktop-release-${{ github.event.pull_request.number || needs.resolve.outputs.tag }}-cli-${{ matrix.label }}
       queue: max
-    if: ${{ !cancelled() && (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
+    if: ${{ !cancelled() && needs.native-source.result == 'success' && (github.event_name != 'pull_request' || needs.native.result == 'success') &&  (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
     strategy:
       fail-fast: false
       matrix:
@@ -940,9 +948,6 @@ jobs:
             tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{encoding:'utf8'}).trim(),files};
           writeFileSync(join(directory,'protocol-selection.json'),JSON.stringify(record,null,2)+'\n');
           NODE
-      - uses: actions/checkout@v7
-        timeout-minutes: 5
-        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 0}
       - uses: actions/setup-node@v7
         with:
           node-version: 22
@@ -953,11 +958,12 @@ jobs:
         with:
           name: native-release-source
           path: native-source
+      - {name: Download selected source history, uses: actions/download-artifact@v8, env: {NODE_OPTIONS: --disable-warning=DEP0005}, with: {name: native-release-source-history, path: native-source}}
       - name: Import and verify exact source selection
         env:
           NATIVE_SELECTED_HEAD: ${{ needs.native-source.outputs.selected-head }}
           NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
-        run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import native-source
+        run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import-offline native-source
       - name: Download the same-run target executable
         uses: actions/download-artifact@v8
         env:
@@ -1051,7 +1057,7 @@ jobs:
       group: desktop-release-${{ github.event.pull_request.number || needs.resolve.outputs.tag }}-vscode
       queue: max
     # Same skipped-dependency handling as `build`; see the comment there.
-    if: ${{ !cancelled() && (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
+    if: ${{ !cancelled() && needs.native-source.result == 'success' &&  (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -1094,7 +1100,8 @@ jobs:
           NODE
       - uses: actions/checkout@v7
         timeout-minutes: 5
-        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 0}
+        with: {persist-credentials: false, ref: "${{ github.sha }}", fetch-depth: 1}
+      - {name: Complete only the selected source ancestry, timeout-minutes: 5, run: 'node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" hydrate-source'}
       - uses: actions/setup-node@v7
         with:
           node-version: 22
@@ -1220,7 +1227,7 @@ jobs:
       - name: Check out this workflow's pinned release protocol
         uses: actions/checkout@v7
         timeout-minutes: 5
-        with: {persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 0}
+        with: {persist-credentials: false, ref: "${{ github.workflow_sha }}", fetch-depth: 1}
       - name: Capture release protocol before selecting binary source
         env:
           NATIVE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
@@ -1251,6 +1258,7 @@ jobs:
             tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{encoding:'utf8'}).trim(),files};
           writeFileSync(join(directory,'protocol-selection.json'),JSON.stringify(record,null,2)+'\n');
           NODE
+      - {name: Complete only the selected source ancestry, timeout-minutes: 5, run: 'node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" hydrate-source'}
       - uses: actions/setup-node@v7
         with:
           node-version: 22
@@ -1385,7 +1393,7 @@ jobs:
             [linux-x64]="ubuntu-latest"
             [linux-arm64]="ubuntu-24.04-arm"
             [macos-x64]="macos-15-intel"
-            [macos-arm64]="macos-14"
+            [macos-arm64]="macos-15"
             [windows-x64]="windows-latest"
             [windows-arm64]="windows-11-arm"
             [cli-linux-x64]="ubuntu-latest"

@@ -225,10 +225,15 @@ fn unsupported_write_program_fails_with_a_named_skill_gap() {
             );
             let trail = &response.answer[message.len()..];
             assert!(
-                trail.starts_with(
-                    "phrases=write a rust program that reverses a linked list | reverses@en"
-                ),
+                trail.starts_with("phrases=write a rust program that reverses a linked list"),
                 "the trail names the request's phrases: {trail}"
+            );
+            assert!(
+                trail.contains(";parts=")
+                    && trail.contains(";failed_examples=")
+                    && trail.contains(";blocked_needs=")
+                    && trail.contains(";attempts=program_ir_"),
+                "the trail retains actual discovery results and nonempty synthesis attempts: {trail}"
             );
             assert_eq!(
                 trail.matches("program_ir_").count(),

@@ -1,8 +1,7 @@
 name: CI/CD Pipeline
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
     branches-ignore: ['e2e/**']
     types: [opened, synchronize, reopened]
@@ -32,10 +31,7 @@ on:
         required: false
         default: patch
         type: choice
-        options:
-          - patch
-          - minor
-          - major
+        options: [patch, minor, major]
       description:
         description: 'Release description (optional)'
         required: false
@@ -52,6 +48,7 @@ env:
   FORMAL_AI_CI_VERBOSE: ${{ vars.FORMAL_AI_CI_VERBOSE || 'false' }}
   FORMAL_AI_NON_LINUX_CI: ${{ vars.FORMAL_AI_NON_LINUX_CI || 'skip' }}
   RUSTFLAGS: -Dwarnings
+  RUST_BACKTRACE: full
   CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
   CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
   GHCR_IMAGE: ghcr.io/${{ github.repository }}
@@ -224,8 +221,7 @@ jobs:
           fetch-depth: 0
       - name: Setup Node
         uses: actions/setup-node@v7
-        with:
-          node-version: 22
+        with: {node-version: 22}
       - name: Check for secrets
         env:
           BASE_REF: ${{ github.base_ref || github.event.before || 'HEAD~1' }}
@@ -1099,9 +1095,13 @@ jobs:
             build-artifacts, native-response-observations, box-language-projects, build-pages, deploy-pages,
             test-e2e-pages, server-parity]
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/github-script@v9
         with:
-          persist-credentials: false
+          script: |
+            const p = 'scripts/check-pipeline-status.sh';
+            const {data} = await github.rest.repos.getContent({...context.repo, path:p, ref:context.sha, request:{timeout:20000}});
+            if(data.type !== 'file' || data.encoding !== 'base64' || data.size > 65536) throw Error('invalid status source');
+            const fs = require('node:fs'); fs.mkdirSync('scripts', {recursive:true}); fs.writeFileSync(p, Buffer.from(data.content, 'base64'), {flag:'wx'});
       - name: Fail the run when a required job was cancelled or failed
         env:
           NEEDS_JSON: ${{ toJSON(needs) }}

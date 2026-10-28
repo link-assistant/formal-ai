@@ -910,9 +910,9 @@ test('source-event relocation preserves exact readonly producer semantics withou
   },
   "steps": [
     {
-      "uses": "actions/checkout@v7",
+      "uses": "actions/github-script@v9",
       "with": {
-        "persist-credentials": false
+        "script": "const p = 'scripts/record-hive-source-event.mjs';\nconst {data} = await github.rest.repos.getContent({...context.repo, path:p, ref:context.sha, request:{timeout:20000}});\nif(data.type !== 'file' || data.encoding !== 'base64' || data.size > 65536) throw Error('invalid provenance source');\nconst fs = require('node:fs'); fs.mkdirSync('scripts', {recursive:true}); fs.writeFileSync(p, Buffer.from(data.content, 'base64'), {flag:'wx'});\n"
       }
     },
     {
@@ -941,4 +941,61 @@ test('source-event relocation preserves exact readonly producer semantics withou
 };
   assert.deepEqual(reusable.jobs['hive-source-provenance'], expectedJob);
   assert.ok(policyRoots.includes(called), 'called producer source participates in policy identity');
+});
+
+
+test('source event recorder executes with only its exact fetched source', async () => {
+  const fs = await import('node:fs');
+  const path = await import('node:path');
+  const os = await import('node:os');
+  const {spawnSync} = await import('node:child_process');
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'formal-ai-source-event-sparse-'));
+  try {
+    const root = new URL('../../../', import.meta.url);
+    const workflow = YAML.parse(fs.readFileSync(new URL('.github/workflows/hive-source-provenance.yml', root), 'utf8'));
+    const fetch = workflow.jobs['hive-source-provenance'].steps[0];
+    assert.equal(fetch.uses, 'actions/github-script@v9');
+    const workspace = path.join(directory, 'workspace'), relative = 'scripts/record-hive-source-event.mjs';
+    const executable = path.join(workspace, relative);
+    const {Script} = await import('node:vm');
+    const content = fs.readFileSync(new URL(relative, root));
+    await new Script('(async()=>{'+fetch.with.script+'})()').runInNewContext({
+      Buffer, context:{repo:{owner:'owner',repo:'repo'},sha:source},
+      github:{rest:{repos:{getContent:async query=>{
+        assert.equal(query.path,relative); assert.equal(query.ref,source); assert.equal(query.request.timeout,20000);
+        return {data:{type:'file',encoding:'base64',size:content.length,content:content.toString('base64')}};
+      }}}},
+      require:name=>{
+        assert.equal(name,'node:fs');
+        return {
+          mkdirSync(directory,options){assert.equal(directory,'scripts');fs.mkdirSync(path.join(workspace,directory),options);},
+          writeFileSync(file,bytes,options){assert.equal(file,relative);fs.writeFileSync(path.join(workspace,file),bytes,options);}
+        };
+      }
+    });
+    const event = path.join(directory, 'event.json');
+    fs.writeFileSync(event, JSON.stringify({repository:{full_name:repository}, before:other, after:source, ref:'refs/heads/main', unrelated:'not retained'}));
+    const output = path.join(directory, 'runner-temp', 'source-event.json');
+    const alias = path.join(directory, 'workspace-alias');
+    fs.symlinkSync(workspace, alias, 'junction');
+    const result = spawnSync(process.execPath, [path.join(alias, relative)], {
+      cwd: workspace, encoding:'utf8', timeout:5000, maxBuffer:65536,
+      env: {GITHUB_ACTIONS:'true', GITHUB_REPOSITORY:repository,
+        GITHUB_WORKFLOW_REF:repository+'/.github/workflows/release.yml@refs/heads/main',
+        GITHUB_RUN_ID:'13', GITHUB_RUN_ATTEMPT:'1', GITHUB_EVENT_NAME:'push',
+        GITHUB_SHA:source, GITHUB_REF:'refs/heads/main', GITHUB_EVENT_PATH:event,
+        HIVE_SOURCE_EVENT_OUTPUT:output},
+    });
+    assert.equal(result.error, undefined);
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(result.signal, null);
+    assert.deepEqual(JSON.parse(fs.readFileSync(output, 'utf8')), {
+      schema:'formal-ai-hive-source-event/v1', repository, run:13, attempt:1,
+      event:'push', source, ref:'refs/heads/main', before:other, after:source,
+    });
+    assert.deepEqual(fs.readdirSync(workspace), ['scripts']);
+    assert.deepEqual(fs.readdirSync(path.dirname(executable)), ['record-hive-source-event.mjs']);
+  } finally {
+    fs.rmSync(directory, {recursive:true, force:true});
+  }
 });

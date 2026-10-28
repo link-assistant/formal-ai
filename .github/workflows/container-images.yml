@@ -1,4 +1,6 @@
 # Native source receipts and actual registry manifests; publication remains pending until cold CI and live registry checks pass.
+# Buildx builders live only on disposable GitHub-hosted VMs. Avoid unbounded
+# action post-removal; VM disposal owns cleanup after artifacts are retained.
 name: container-images
 on:
   workflow_call:
@@ -480,19 +482,28 @@ jobs:
       run: |
         bash "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/free-runner-disk.sh"
     - uses: docker/setup-buildx-action@v4
+      with: {cleanup: false}
     - name: Compile the full image independently on each native architecture
       run: |
         set -euo pipefail
         test ! -e rust/target/release/formal-ai
         build_log=$(mktemp "$RUNNER_TEMP/formal-ai-independent-build.XXXXXX")
         trap 'rm -f "$build_log"' EXIT
+        : > standalone-build.log
         for build_attempt in 1 2 3; do
+          : > "$build_log"
+          printf '{"state":"running","attempt":%s,"consoleComplete":false}\n' "$build_attempt" > standalone-build-outcome.json
+          printf 'Build attempt %s/3\n' "$build_attempt" >> standalone-build.log
           set +e
           docker buildx build --load --provenance=false --platform "linux/$CONTAINER_ARCH" \
            --file Dockerfile --build-arg BINARY_SOURCE=compile --tag formal-ai:independent-full \
-           --label "org.opencontainers.image.revision=$CONTAINER_SOURCE_COMMIT" --metadata-file standalone-build.json . 2>&1 | tee "$build_log"
+           --label "org.opencontainers.image.revision=$CONTAINER_SOURCE_COMMIT" --metadata-file standalone-build.json . 2>&1 | tee -a "$build_log" standalone-build.log
           build_status=("${PIPESTATUS[@]}")
           set -e
+          build_capture_complete=false
+          if [ "${build_status[1]}" -eq 0 ]; then build_capture_complete=true; fi
+          printf '{"state":"finished","attempt":%s,"exitCode":%s,"logExitCode":%s,"consoleComplete":%s}\n' \
+           "$build_attempt" "${build_status[0]}" "${build_status[1]}" "$build_capture_complete" > standalone-build-outcome.json
           if [ "${build_status[1]}" -ne 0 ]; then exit "${build_status[1]}"; fi
           if [ "${build_status[0]}" -eq 0 ]; then break; fi
           if [ "$build_attempt" -eq 3 ] || ! grep -Eq '^ERROR: failed to build: failed to solve:.*unexpected status from HEAD request to https://registry-1\.docker\.io/v2/[^ ]+/manifests/[^ ]+: 429 Too Many Requests$' "$build_log"; then
@@ -502,14 +513,17 @@ jobs:
         done
         version=$(docker run --rm --entrypoint /usr/local/bin/formal-ai formal-ai:independent-full --version)
         test "$version" = "formal-ai $CONTAINER_VERSION"
-        docker run --rm --privileged formal-ai:independent-full verify-formal-ai-dind | tee standalone-runtime.log
+        docker run --rm --privileged formal-ai:independent-full verify-formal-ai-dind 2>&1 | tee standalone-runtime.log
         docker run --rm --entrypoint sha256sum formal-ai:independent-full /usr/local/bin/formal-ai > standalone-executable.sha256
         docker image inspect formal-ai:independent-full > standalone-image.json
       timeout-minutes: 25
     - uses: actions/upload-artifact@v7
+      if: always()
       with:
         name: ${{ format('container-standalone-full-{0}', matrix.arch) }}
         path: |-
+          standalone-build.log
+          standalone-build-outcome.json
           standalone-build.json
           standalone-runtime.log
           standalone-executable.sha256
@@ -651,6 +665,7 @@ jobs:
         name: ${{ format('container-native-{0}', matrix.arch) }}
         path: native-bin
     - uses: docker/setup-buildx-action@v4
+      with: {cleanup: false}
     - name: Build and observe the actual native container
       run: |
         bash "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/build-container-image.sh"
@@ -799,6 +814,7 @@ jobs:
         name: ${{ format('container-native-{0}', matrix.arch) }}
         path: native-bin
     - uses: docker/setup-buildx-action@v4
+      with: {cleanup: false}
     - uses: docker/login-action@v4
       with:
         registry: ghcr.io
@@ -947,6 +963,7 @@ jobs:
         merge-multiple: true
         path: image-receipts
     - uses: docker/setup-buildx-action@v4
+      with: {cleanup: false}
     - uses: docker/login-action@v4
       with:
         registry: ghcr.io

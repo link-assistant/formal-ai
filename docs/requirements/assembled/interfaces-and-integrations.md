@@ -559,6 +559,16 @@ token saving or development-cost reduction is claimed. A larger source task stil
 fails its original acceptance. R1207-4's representative cohort, R1207-5's general
 decomposition and full runtime acceptance remain pending.
 
+
+### Current CI evidence and self-coding clarification
+
+The [CI self-coding evidence contract](../doctrine-self-coding-ci-evidence.md) clarifies the
+existing useful-change and complete-log requirements. Historical plan-only
+attempts retain their failure classification; source assistance is not
+autonomous implementation. Console recovery and source-qualified native log
+mounting are independently tested. Hosted capture remains unverified until a
+real run's artifacts and completeness manifests are inspected.
+
 # Issue 1438: reliable reporting and source-read preservation
 
 This requirement belongs to [PR 1437](https://github.com/link-assistant/formal-ai/pull/1437)

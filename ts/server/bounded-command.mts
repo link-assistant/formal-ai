@@ -5,8 +5,15 @@ export async function boundedCommand(file, argumentsValue = [], options = {}) {
   const timeout = options.timeout;
   const stdoutLimit = options.stdoutLimitBytes ?? options.maxBuffer ?? 1024 * 1024;
   const stderrLimit = options.stderrLimitBytes ?? options.maxBuffer ?? 1024 * 1024;
-  const grace = 250;
-  if (!Number.isFinite(timeout) || timeout <= 0 || timeout > 2147482647
+  const stdoutObserver = options.onStdout, stderrObserver = options.onStderr;
+  const grace = 250, terminationGrace = options.terminationGraceMs ?? 0, abortSignal = options.signal;
+  if (!Number.isSafeInteger(terminationGrace) || terminationGrace < 0 || terminationGrace > 30000
+      || (abortSignal !== undefined && typeof abortSignal?.addEventListener !== 'function')) {
+    throw new TypeError('invalid_command_cancellation');
+  }
+  if ((stdoutObserver !== undefined && typeof stdoutObserver !== "function")
+      || (stderrObserver !== undefined && typeof stderrObserver !== "function")
+      || !Number.isFinite(timeout) || timeout <= 0 || timeout > 2147482647
       || !Number.isSafeInteger(stdoutLimit) || stdoutLimit < 0
       || !Number.isSafeInteger(stderrLimit) || stderrLimit < 0) {
     throw new TypeError('invalid_command_bounds');
@@ -19,10 +26,11 @@ export async function boundedCommand(file, argumentsValue = [], options = {}) {
     let timedOut = false;
     let exited = false;
     let stdinComplete = options.input == null;
-    let stdoutComplete = stdoutLimit === 0;
-    let stderrComplete = stderrLimit === 0;
+    let stdoutComplete = stdoutLimit === 0 && !stdoutObserver;
+    let stderrComplete = stderrLimit === 0 && !stderrObserver;
     let settled = false;
     let cleanupTimer;
+    let terminationTimer;
     let deadlineTimer;
     const stdout = [];
     const stderr = [];
@@ -30,12 +38,12 @@ export async function boundedCommand(file, argumentsValue = [], options = {}) {
     let stderrBytes = 0;
     const complete = () => exited && stdinComplete && stdoutComplete && stderrComplete;
     const makeError = (code) => Object.assign(new Error(code), { code });
-    const kill = () => {
+    const kill = (stopSignal = 'SIGKILL') => {
       if (!child?.pid) return;
       if (process.platform !== 'win32') {
-        try { process.kill(-child.pid, 'SIGKILL'); } catch {}
+        try { process.kill(-child.pid, stopSignal); } catch {}
       }
-      try { child.kill('SIGKILL'); } catch {}
+      try { child.kill(stopSignal); } catch {}
     };
     const finish = (cleanupComplete) => {
       if (settled) return;
@@ -44,6 +52,8 @@ export async function boundedCommand(file, argumentsValue = [], options = {}) {
       if (cleanupComplete && options.childSignal) Atomics.store(options.childSignal, 0, 0);
       clearTimeout(deadlineTimer);
       clearTimeout(cleanupTimer);
+      clearTimeout(terminationTimer);
+      abortSignal?.removeEventListener('abort', abort);
       if (!cleanupComplete) { failure ??= makeError('ECLEANUP'); child?.unref(); }
       child?.stdin?.destroy();
       child?.stdout?.destroy();
@@ -66,18 +76,24 @@ export async function boundedCommand(file, argumentsValue = [], options = {}) {
       if (settled) return;
       if (complete() && !failure) { finish(true); return; }
       failure ??= error;
-      kill();
+      const force = () => {
+        kill();
+        cleanupTimer ??= setTimeout(() => finish(complete()), grace);
+      };
+      if (terminationGrace > 0) {
+        if (!terminationTimer) { kill('SIGTERM'); terminationTimer = setTimeout(force, terminationGrace); }
+      } else force();
       child?.stdin?.destroy();
       stdinComplete = true;
-      cleanupTimer ??= setTimeout(() => finish(complete()), grace);
       check();
     };
+    const abort = () => stop(makeError('ECANCELLED'));
     try {
       child = spawn(file, argumentsValue, {
         cwd: options.cwd, env: options.env, windowsHide: true,
         detached: process.platform !== 'win32',
         stdio: [options.input == null ? 'ignore' : 'pipe',
-          stdoutLimit === 0 ? 'ignore' : 'pipe', stderrLimit === 0 ? 'ignore' : 'pipe'],
+          stdoutLimit === 0 && !stdoutObserver ? 'ignore' : 'pipe', stderrLimit === 0 && !stderrObserver ? 'ignore' : 'pipe'],
       });
       if (options.childSignal) Atomics.store(options.childSignal, 0, child.pid ?? 0);
     } catch (error) {
@@ -90,6 +106,11 @@ export async function boundedCommand(file, argumentsValue = [], options = {}) {
       if (!pipe) return;
       pipe.on('data', (chunk) => {
         if (settled) return;
+        try {
+          const observed = (isStdout ? stdoutObserver : stderrObserver)?.(chunk);
+          if (observed?.then) throw makeError('EASYNC_OUTPUT_OBSERVER');
+        } catch (error) { stop(error); return; }
+        if (limit === 0) return;
         const used = isStdout ? stdoutBytes : stderrBytes;
         const accepted = Math.min(limit - used, chunk.length);
         if (accepted > 0) {
@@ -126,6 +147,8 @@ export async function boundedCommand(file, argumentsValue = [], options = {}) {
       timedOut = true;
       stop(makeError('ETIMEDOUT'));
     }, Math.max(0, timeout - Number(process.hrtime.bigint() - started) / 1e6));
+    abortSignal?.addEventListener('abort', abort, {once:true});
+    if (abortSignal?.aborted) abort();
     if (child.stdin) {
       child.stdin.once('error', (error) => stop(error));
       child.stdin.end(options.input, () => { stdinComplete = true; check(); });

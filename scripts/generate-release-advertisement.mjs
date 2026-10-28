@@ -5,13 +5,14 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync, realpathSync, lstat
 import { fileURLToPath } from 'node:url';
 import { join, dirname, resolve, relative, posix } from 'node:path';
 import { captureReleaseProtocol, verifyReleaseProtocol } from './release-protocol.mjs';
+import * as formalAiBabelParser from '@babel/parser';
 const require = createRequire(import.meta.url);
 const {
   parseDocument
 } = require('yaml');
 const {
   parse
-} = require('@babel/parser');
+} = formalAiBabelParser;
 export const ADVERTISEMENT_SCHEMA = 'release-advertisement/v1';
 export const ADVERTISEMENT_ROOTS = Object.freeze(['.github/workflows/desktop-release.yml',
    '.github/workflows/container-images.yml',

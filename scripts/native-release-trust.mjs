@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
 import {writeFileSync} from 'node:fs';
 import {pathToFileURL} from 'node:url';
-const git=(cwd,args)=>execFileSync('git',args,{cwd,encoding:'utf8'}).trim();
+const git=(cwd,args)=>execFileSync('git',args,{cwd,encoding:'utf8',timeout:30000}).trim();
 const stableTag=/^v(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)$/u;
 const commit=value=>assert.match(value,/^[a-f0-9]{40}$/u);
 export function validatePublishedStableSource(cwd,{tag,release,defaultCommit,releaseCommit}) {
@@ -12,12 +12,12 @@ export function validatePublishedStableSource(cwd,{tag,release,defaultCommit,rel
  assert.ok(typeof release.published_at==='string'&&Number.isFinite(Date.parse(release.published_at)));
  commit(defaultCommit);commit(releaseCommit);
  assert.equal(git(cwd,['rev-parse','refs/tags/'+tag+'^{commit}']),releaseCommit,'release API commit and fetched tag must agree');
- execFileSync('git',['merge-base','--is-ancestor',releaseCommit,defaultCommit],{cwd,stdio:'pipe'});
+ execFileSync('git',['merge-base','--is-ancestor',releaseCommit,defaultCommit],{cwd,stdio:'inherit',timeout:30000,killSignal:'SIGKILL'});
  return {tag,releaseCommit,defaultCommit};
 }
 export function authorizePublishedStableSource(cwd,{tag,repository}) {
  assert.match(tag,stableTag);assert.match(repository,/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/u);
- const api=path=>JSON.parse(execFileSync('gh',['api','repos/'+repository+(path?'/'+path:'')],{encoding:'utf8',maxBuffer:1024*1024}));
+ const api=path=>JSON.parse(execFileSync('gh',['api','repos/'+repository+(path?'/'+path:'')],{encoding:'utf8',timeout:20000,maxBuffer:1024*1024}));
  const release=api('releases/tags/'+encodeURIComponent(tag));
  const branch=api('').default_branch;assert.ok(typeof branch==='string'&&branch.length>0);
  const defaultCommit=api('commits/'+encodeURIComponent(branch)).sha;
@@ -26,7 +26,7 @@ export function authorizePublishedStableSource(cwd,{tag,repository}) {
  // A depth-one protocol checkout can retain a shallow boundary even after the tag is fetched.
  const history=git(cwd,['rev-parse','--is-shallow-repository'])==='true'?['--unshallow']:[];
  if(history.length)console.error('Completing shallow release history: tag='+tag+' release='+releaseCommit+' default='+defaultCommit);
- execFileSync('git',['fetch','--no-tags',...history,'origin','refs/tags/'+tag+':refs/tags/'+tag,defaultCommit],{cwd,stdio:'pipe'});
+ execFileSync('git',['fetch','--progress','--no-tags',...history,'origin','refs/tags/'+tag+':refs/tags/'+tag,defaultCommit],{cwd,stdio:'inherit',timeout:240000,killSignal:'SIGKILL'});
  return validatePublishedStableSource(cwd,{tag,release,defaultCommit,releaseCommit});
 }
 
@@ -40,7 +40,7 @@ export function validateSelectedSourceAuthority(cwd,record,{event,authority=null
   assert.equal(record.release_tag,null,'read-only validation cannot acquire stable publication authority');
   commit(record.selected_head);commit(record.pinned_base);
   for(const prerequisite of [record.selected_head,record.pinned_base])
-   execFileSync('git',['merge-base','--is-ancestor',prerequisite,record.source_commit],{cwd,stdio:'pipe'});
+   execFileSync('git',['merge-base','--is-ancestor',prerequisite,record.source_commit],{cwd,stdio:'pipe',timeout:30000});
  } else {
   assert.notEqual(event,'pull_request','PR cannot publish a stable release');
   assert.ok(authority,'independent published-release authority required');
@@ -51,7 +51,7 @@ export function validateSelectedSourceAuthority(cwd,record,{event,authority=null
   assert.equal(record.selected_head,authority.releaseCommit);
   assert.equal(record.bundle,null,'stable release cannot substitute a synthetic bundle');
   assert.equal(git(cwd,['rev-parse','refs/tags/'+authority.tag+'^{commit}']),authority.releaseCommit);
-  execFileSync('git',['merge-base','--is-ancestor',record.source_commit,authority.defaultCommit],{cwd,stdio:'pipe'});
+  execFileSync('git',['merge-base','--is-ancestor',record.source_commit,authority.defaultCommit],{cwd,stdio:'pipe',timeout:30000});
  }
  return record;
 }
