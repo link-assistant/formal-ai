@@ -121,6 +121,16 @@ solvable. Do not rate a task before splitting it.
 The practical aim this serves: *"it is critical to be able to produce formal-ai
 releases for testing in Hive Mind on real GitHub issues."*
 
+Fast feedback serves this aim: pull requests prioritize small Linux tests for
+coding, question answering and failure reporting. Retain costly integration and
+E2E suites behind explicit controls, learn unit regressions from their complete
+CI logs, and run final production builds and release verification on main. A
+skipped test earns no execution credit; a green PR is not proof of a published
+release. Generated test issues must be finalized with accurate outcomes so the
+issue tracker remains useful. The operational policy lives in
+[CI speed](docs/ci-cd/speed.md) and the
+[fast PR requirements](docs/requirements/doctrine-fast-pr-production-ci.md).
+
 **Start from a working Hello World.**
 
 > We must provide Formal AI with all capability nessesary to start with a simple

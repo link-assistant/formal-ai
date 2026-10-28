@@ -11,7 +11,7 @@ const agent = read('.github/workflows/agent-cli-e2e.yml');
 function evaluate(expression, context) {
   const source = expression.trim().replace(/^\$\{\{\s*/u, '').replace(/\s*\}\}$/u, '')
     .replace(/\.([a-zA-Z_][a-zA-Z0-9_-]*)/gu, (_, key) => '[' + JSON.stringify(key) + ']');
-  return new Script(source).runInNewContext({cancelled: () => false, ...context}, {timeout: 100});
+  return new Script(source).runInNewContext({cancelled: () => false, vars: {}, inputs: {}, ...context}, {timeout: 100});
 }
 function coverageContext(enabled, event = 'workflow_dispatch') {
   return {
@@ -57,7 +57,7 @@ test('both explicit restore controls select the complete unchanged coverage plan
 test('failed artifact producers cannot start test, project or image consumers', () => {
   for (const id of ['test','test-agent-cli-e2e','box-language-projects','docker-build','docker-slim']) {
     const context = {
-      github: {event_name: 'pull_request'},
+      github: {event_name: 'pull_request'}, vars: {FORMAL_AI_FULL_PR_CI: 'run'},
       needs: {'detect-changes': {outputs: {'any-code-changed': 'true'}}, 'build-artifacts': {result: 'success'}},
     };
     assert.equal(evaluate(release.jobs[id].if, context), true, id);
@@ -102,7 +102,7 @@ test('automatic real-client admission ignores feature branches while retaining m
   assert.deepEqual(workflow.on.workflow_run.branches, ['main']);
   assert(workflow.on.workflow_dispatch.inputs['pull-request']);
   const expression = workflow.jobs.admission.if;
-  assert.equal(evaluate(expression, {github: {event_name: 'workflow_dispatch'}}), true);
+  assert.equal(evaluate(expression, {github: {event_name: 'workflow_dispatch'}, vars: {}, inputs: {'real-github-e2e': true}}), true);
   for (const [event, branch, name, conclusion, expected] of [
     ['push','main','Coverage','success',true],
     ['workflow_run','main','Verify Public Release Downloads','success',true],
@@ -111,6 +111,6 @@ test('automatic real-client admission ignores feature branches while retaining m
     ['push','main','Coverage','failure',false],
     ['workflow_run','main','Desktop Release','success',false],
   ]) {
-    assert.equal(evaluate(expression, {github: {event_name:'workflow_run',event:{workflow_run:{event,head_branch:branch,name,conclusion}}}}), expected);
+    assert.equal(evaluate(expression, {vars: {FORMAL_AI_REAL_GITHUB_E2E: 'true'}, github: {event_name:'workflow_run',event:{workflow_run:{event,head_branch:branch,name,conclusion}}}}), expected);
   }
 });

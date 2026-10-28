@@ -73,7 +73,11 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
+  pr-check-profile:
+    if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && vars.FORMAL_AI_FULL_PR_CI != 'run'
+    uses: ./.github/workflows/pr-check-profile.yml
   ladder-binary:
+    if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (true) }}
     name: Coding ladder binary
     runs-on: ubuntu-latest
     # A cold release build measured 4.4-5.6 minutes; a cache hit is seconds.
@@ -146,7 +150,7 @@ jobs:
     needs: [ladder-binary, ladder-shard]
     # Not `always()`: a run superseded by a newer push is the one
     # cancellation that is not a defect, and it skips the verdict.
-    if: ${{ !cancelled() }}
+    if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (!cancelled()) }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:

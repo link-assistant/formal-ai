@@ -1,0 +1,167 @@
+{
+  "schema": "retained-ci-job-payloads/v1",
+  "source": "b46e2b0a486895e821ee73f2289d0a7ceef5a512",
+  "scope": "Original steps, strategies and reusable calls retained unchanged; only job admission changes.",
+  "jobs": [
+    {
+      "file": "release.yml",
+      "id": "docker-build",
+      "payloadSha256": "598acc0383209cad090a317b983dd0f92ed9d884b59f47a9ba7cc1ddcadb809c"
+    },
+    {
+      "file": "release.yml",
+      "id": "docker-slim",
+      "payloadSha256": "fbdf31e996f3c2efaf7e2c016a1a0a69182e5ea27d216cb3d90bdcb833524f31"
+    },
+    {
+      "file": "release.yml",
+      "id": "test",
+      "payloadSha256": "41e1ed0946d9a50a60789081c4415d2539e0c99a938795ff61a6808bc46cb128"
+    },
+    {
+      "file": "release.yml",
+      "id": "doc-tests",
+      "payloadSha256": "98abba6ac6d5da40b6dde24525b95aacd01d03990eddb1c2718a3c9356fa8b50"
+    },
+    {
+      "file": "release.yml",
+      "id": "macos-core-tests",
+      "payloadSha256": "74d5f55ae51804e3b9ed595cf99214d94e8af0c4d4c89d14af15fbfc23bba12f"
+    },
+    {
+      "file": "release.yml",
+      "id": "build",
+      "payloadSha256": "6ba96a6a72ad7807b9ff9d825a64d1c660ee44d2753de8620f19d80c76d53e18"
+    },
+    {
+      "file": "release.yml",
+      "id": "server-parity",
+      "payloadSha256": "0e57a59b3b1668b0448584360f1f57e401c444f726830916f40c694d5766bda0"
+    },
+    {
+      "file": "release.yml",
+      "id": "test-e2e-local",
+      "payloadSha256": "350f2c688faf77c5cef5d152d5f693ed89a5064f5edf12741e92d14bb33108c6"
+    },
+    {
+      "file": "release.yml",
+      "id": "test-agent-cli-e2e",
+      "payloadSha256": "a3c6c90f1738c5fe8f23aaa87e4d2292ceed6170be82296fc97a336a9dcd82be"
+    },
+    {
+      "file": "release.yml",
+      "id": "build-artifacts",
+      "payloadSha256": "e34fe48b4405ed2877577639f5aa717c9c23a4e4c23d271610a97c823fcde538"
+    },
+    {
+      "file": "release.yml",
+      "id": "native-response-observations",
+      "payloadSha256": "879caecff6deeda00ccb1bb839812549c8a707565270af3784cda02c8258fb85"
+    },
+    {
+      "file": "release.yml",
+      "id": "box-language-projects",
+      "payloadSha256": "aebba797a2919c9541697428f3079257427022412bf24cca5417c82beef35406"
+    },
+    {
+      "file": "layered-ci.yml",
+      "id": "source-networks",
+      "payloadSha256": "cd9830d7d33029fd25c6989d249e27817a19f1fa65226a7192a1a0e9e44d3167"
+    },
+    {
+      "file": "layered-ci.yml",
+      "id": "js-rust",
+      "payloadSha256": "a4eaa4f2615e60c7a51daefcdbb387e596103e0953c289736ea499bb3dd9fd59"
+    },
+    {
+      "file": "layered-ci.yml",
+      "id": "rust",
+      "payloadSha256": "3658d9a3df92305474fd07631ac33e85a5a6019493c0e6be94bfa433db3469fa"
+    },
+    {
+      "file": "layered-ci.yml",
+      "id": "server-parity",
+      "payloadSha256": "10be4c3cb42f0f66e6d4e9c8e9f991e71fe982b9401d5e00955a0286f27b5b40"
+    },
+    {
+      "file": "agentic-cli-matrix.yml",
+      "id": "build",
+      "payloadSha256": "595df394e6dc0982ed132790bfa33d9c43cfbc1b5fb17c790945500a20904385"
+    },
+    {
+      "file": "agentic-cli-matrix.yml",
+      "id": "replay",
+      "payloadSha256": "57cc47766664ec227e2fefaafdcfa3965430bad78becdb7f1d8bc41684ad6d5a"
+    },
+    {
+      "file": "agentic-cli-matrix.yml",
+      "id": "summary",
+      "payloadSha256": "3c2f3c825411bb0cbd2bc33cf7cb6624e948ee2a7d7576210add0026959cd33f"
+    },
+    {
+      "file": "benchmark-corpus-gate.yml",
+      "id": "corpus-build",
+      "payloadSha256": "22ffdd36b839a9857b0eeb2ec4fa9cba517b4384d9a7a6814508d8a151e92748"
+    },
+    {
+      "file": "benchmark-corpus-gate.yml",
+      "id": "corpus-gate",
+      "payloadSha256": "4ef0431e795ac4274d2bea99ca1fe1720b60143e14205f2ccb9a299e3ef4f790"
+    },
+    {
+      "file": "coding-ladder.yml",
+      "id": "ladder-binary",
+      "payloadSha256": "6ad04f0570dcd9596e7263a41b279ef6deaebfbcb203d3bdaec6aa2f89b7bf81"
+    },
+    {
+      "file": "coding-ladder.yml",
+      "id": "coding-ladder",
+      "payloadSha256": "ded5a6c022d690f6842c7297d945cd711a3a5431024f25d165b7e0a9c70d3044"
+    },
+    {
+      "file": "container-images.yml",
+      "id": "resolve",
+      "payloadSha256": "73189e5d309be9033f6d0c27858eba416c2a41e60caf214855c00f2dd7af337b"
+    },
+    {
+      "file": "desktop-release.yml",
+      "id": "native-source",
+      "payloadSha256": "71a0f7143c27b8c4beee41a99c05d7cdb63fd09080912a47a9ad0b7af1579072"
+    },
+    {
+      "file": "question-necessity-ratchet.yml",
+      "id": "question-necessity-ratchet",
+      "payloadSha256": "776762964558bdcc1e0118b605c3a87122d3192b3caf4e5c3aac9e803347d39c"
+    },
+    {
+      "file": "summarization-ratchet.yml",
+      "id": "summarization-ratchet",
+      "payloadSha256": "1f1f8455f414dd287e21f226da25f2c8e1a9c65b73f7d80ac208f0dcbc8fe9a3"
+    },
+    {
+      "file": "task-ladder.yml",
+      "id": "task-ladder",
+      "payloadSha256": "5c384b8c63b36cd65b39f86a3ab0a9329d249ecec6a90e4051ddd18567e23332"
+    },
+    {
+      "file": "write-effect-ladder.yml",
+      "id": "write-effect-ladder",
+      "payloadSha256": "8dfdeb06007bc75b58c93ac69051d63c7ede70ba5ebf0aa380b75fea9899beb3"
+    },
+    {
+      "file": "stock-rust-install.yml",
+      "id": "stock-rust-install",
+      "payloadSha256": "692e703e210feddac3e37eae08f61bd4b681762aefa15983af18d16ad6fcb2e2"
+    },
+    {
+      "file": "source-scanner-qualification.yml",
+      "id": "native",
+      "payloadSha256": "cf6c15374c6460c058e9fbfdc23030f0645063576a942e8c0c8249d123fbf1b6"
+    },
+    {
+      "file": "security.yml",
+      "id": "codeql",
+      "payloadSha256": "5f9b47093cfb3dc58dce10b9ec51be3004cf154b8644fc0673976783cbc3bcb1"
+    }
+  ]
+}

@@ -581,6 +581,22 @@ Removal from a public thread is not approval to retain another copy.
      best available practices (researched online when needed), not put to
      the owner as questions.
 
+   **Use the fast PR / production-main profile (2026-10-28).** Bulk draft related
+   fixes and their tests, requirement updates, vision and guidelines in one PR.
+   Keep essential Linux coding, question-answering and failure-reporting checks
+   on PRs. Retain heavy native, packaging, Docker and integration/E2E jobs rather
+   than deleting them; FORMAL_AI_FULL_PR_CI=run restores the deferred PR jobs.
+   Main still builds and verifies production releases. Collect complete bounded
+   redacted CI logs, derive small behavioral unit fixtures with negative cases,
+   and fix all available failures before the next push. Never grant execution
+   credit to skipped suites or claim that offline emulation proves a live solve.
+   Real GitHub effects require FORMAL_AI_REAL_GITHUB_E2E=true or explicit dispatch;
+   preserve single-owner custody and trusted outcome-aware cleanup. Run only one
+   necessary JavaScript test locally at a time; no Rust builds or tests locally.
+   Delivery includes green main CI and verified configured release artifacts.
+   See [CI speed](docs/ci-cd/speed.md) and the
+   [current requirements](docs/requirements/doctrine-fast-pr-production-ci.md).
+
    **The three-root cycle is js-first.** Rust, JavaScript and TypeScript
    are all full implementation roots — client and backend — kept
    equivalent through the meta language rather than by shrinking any

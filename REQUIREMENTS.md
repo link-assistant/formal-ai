@@ -26,6 +26,7 @@ the areas are the whole register.
    - Issue #1073 Reasoning Standard: Unconditional Depth, Refutation First, Computed Trust
    - Issue #1085 The Links Network Is Not The System That Reasons (E108)
    - Issue #1188 User Requirements
+   - Standing Doctrine: Fast pull-request checks and production verification
    - Standing Doctrine: Readable Recursive Source and Comment Meta-Language (2026-10-18)
    - Standing Doctrine: Self-coding CI evidence and useful-change acceptance
    - Standing Doctrine: Compiled Logic, Interfacing-Only JavaScript (2026-08-04)

@@ -13,6 +13,11 @@ on: # zizmor: ignore[dangerous-triggers]
       - completed
   workflow_dispatch:
     inputs:
+      real-github-e2e:
+        description: Explicitly enable real GitHub test effects; offline replay is the default.
+        required: false
+        type: boolean
+        default: false
       pull-request:
         description: Current same-repository pull request number
         required: true
@@ -32,10 +37,12 @@ jobs:
   admission:
     name: Authenticate current source and every applicable CI result
     if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (github.event.workflow_run.conclusion == 'success' &&
-      (github.event.workflow_run.name == 'Verify Public Release Downloads' ||
-      (github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main')))
+      (vars.FORMAL_AI_REAL_GITHUB_E2E == 'true' ||
+       (github.event_name == 'workflow_dispatch' && inputs['real-github-e2e'] == true)) &&
+      (github.event_name == 'workflow_dispatch' ||
+       (github.event.workflow_run.conclusion == 'success' &&
+        (github.event.workflow_run.name == 'Verify Public Release Downloads' ||
+         (github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main'))))
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     outputs:

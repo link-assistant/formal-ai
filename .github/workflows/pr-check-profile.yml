@@ -1,0 +1,14 @@
+name: Pull request coverage profile
+on:
+  workflow_call:
+permissions:
+  contents: read
+jobs:
+  profile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Record deferred production and integration coverage
+        run: |
+          echo '::notice::Fast Linux PR profile: production builds and heavy integrations are deferred, not passed. Set FORMAL_AI_FULL_PR_CI=run to restore them.'
+          printf '%s\n' 'Fast PR profile: coding, question answering and offline regression checks remain selected. Deferred production, integration and end-to-end suites receive no execution or acceptance credit. Main retains the production build and publication checks.' >> "$GITHUB_STEP_SUMMARY"

@@ -74,7 +74,11 @@ env:
   CARGO_INCREMENTAL: '0'
 
 jobs:
+  pr-check-profile:
+    if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && vars.FORMAL_AI_FULL_PR_CI != 'run'
+    uses: ./.github/workflows/pr-check-profile.yml
   summarization-ratchet:
+    if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (true) }}
     name: 'Summarization quality ratchet (issue #893)'
     runs-on: ubuntu-latest
     # A release build of the CLI plus a few dozen summarizations; the build

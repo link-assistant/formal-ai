@@ -105,7 +105,7 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-native-source${{ github.event_name != 'pull_request' && format('-{0}', github.run_id) || '' }}
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     needs: [resolve, base]
-    if: ${{ !cancelled() && (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
+    if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (!cancelled() && (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:

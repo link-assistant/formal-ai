@@ -125,12 +125,33 @@ macOS while non-Linux CI is off. The ones that do run on pull requests are:
 ## Temporary critical coding profile (2026-10-27)
 
 The current priority is a usable Linux/Docker release that can solve small
-coding tasks, report failures and retain evidence for learning. The ordinary
-Rust and JavaScript tests, specification shards, real browser E2E, coding and
-reporting scenarios, three original client first/repeat solves, released-memory
-lifecycle, authenticated cleanup and public release/download checks remain
-required. No failed critical check is converted into a successful skip.
+coding tasks, answer questions, report failures and retain evidence for learning.
+The 2026-10-28 fast PR policy supersedes the earlier all-integrations-on-PR
+profile: Linux JavaScript/TypeScript behavior and consistency checks remain on
+PRs; native production compilation/tests, package and image builds, native parity,
+source-network serialization and broad benchmark/client integration jobs are
+retained for main. Set FORMAL_AI_FULL_PR_CI=run to restore those PR jobs. A manual
+branch dispatch also uses the fast profile unless this variable is set. Main's
+production builds, native tests, browser/agent integration and public-download
+checks retain their original assertions and failure policy. The profile notice
+explicitly awards no coverage to deferred jobs.
 
+Real GitHub client tests have an independent, default-off effect gate:
+FORMAL_AI_REAL_GITHUB_E2E=true or workflow_dispatch real-github-e2e=true.
+Use the offline JavaScript regressions for frequent iteration. Retained live
+first/repeat solves, released-memory lifecycle and authenticated cleanup run only
+when deliberately selected; offline fixtures do not establish current live
+credentials, network behavior or three-client acceptance. A selected failure
+remains a failure. Never rerun an old effect owner.
+
+Public CI captures under rust/tests/fixtures/generated-e2e reproduce the late
+scheduled-observation admission race and exact legacy test-issue shapes. Their
+unit tests cover failures and negative variants without GitHub effects. The
+retirement CLI first writes a reviewed plan, then revalidates every issue before
+closing only exact inactive bot-owned fixtures as not_planned with an unverified
+outcome comment; it never claims historical test success. Normal freshly run
+tests retain the trusted finalizer. See the [requirements](../requirements/doctrine-fast-pr-production-ci.md)
+for scope, restore controls and coverage limitations.
 Noncritical recorded agent scenarios and the long method-learning and
 computer-record replay legs are temporarily opt-in with
 FORMAL_AI_FULL_AGENT_REPLAY=run; routing-changing pull requests still select

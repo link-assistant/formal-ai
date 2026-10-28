@@ -125,6 +125,7 @@ jobs:
 
 
   source-networks:
+    if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (true) }}
     name: Full source network serialization (${{ matrix.shard }}/16)
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -172,7 +173,7 @@ jobs:
     needs: [changes]
     # Only this tier's own predicate and no `always()`: another tier's
     # folder changing alone must let this tier stand on its last green run.
-    if: needs.changes.outputs.js-changed == 'true'
+    if: needs.changes.outputs.js-changed == 'true' || github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')
     runs-on: ubuntu-latest
     # Issue #1017: `timeout-minutes` is a backstop, never the deadline. The
     # suites ran as one unbudgeted step that took 378s of this 600s cap
@@ -272,6 +273,7 @@ jobs:
         env:
           SHARD: ${{ matrix.shard }}
           SHARDS: 8
+          FAST_PR_PROFILE: ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && vars.FORMAL_AI_FULL_PR_CI != 'run' }}
           TEST_BUDGET_SECONDS: 360
           TEST_WARN_RATIO_PERCENT: 75
         # PR #1188: the suite files are planned longest-first from
@@ -282,7 +284,11 @@ jobs:
         run: |
           set -euo pipefail
           suites="$RUNNER_TEMP/javascript-suites.txt"
-          printf '%s\n' rust/tests/web/*.test.mjs > "$suites"
+          if [[ "$FAST_PR_PROFILE" == 'true' ]]; then
+            node scripts/list-fast-pr-tests.mjs > "$suites"
+          else
+            printf '%s\n' rust/tests/web/*.test.mjs > "$suites"
+          fi
           node scripts/plan-test-shards.mjs --of "$SHARDS" --durations data/meta/javascript-test-durations.lino --check < "$suites"
           mapfile -t files < <(node scripts/plan-test-shards.mjs --shard "$SHARD" --of "$SHARDS" --durations data/meta/javascript-test-durations.lino < "$suites")
           scripts/run-with-budget-warning.sh \
@@ -365,7 +371,7 @@ jobs:
     # translated Rust. JavaScript must be green or carried first.
     # R1183: generated research Rust or compiler inputs can change without a
     # JavaScript path change, so this compiler boundary also runs for those edits.
-    if: ${{ !cancelled() && (needs.js.result == 'success' || needs.js.result == 'skipped') }}
+    if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (!cancelled() && (needs.js.result == 'success' || needs.js.result == 'skipped')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     concurrency:
@@ -460,7 +466,7 @@ jobs:
     # rust-changed gates the tier (it includes js/** and ts/** today,
     # because the dogfood gate binds all three trees); js and ts must each
     # be green or carried. Either red means skipped-by-cycle, not own red.
-    if: needs.changes.outputs.rust-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped') && (needs.ts.result == 'success' || needs.ts.result == 'skipped')
+    if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (needs.changes.outputs.rust-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped') && (needs.ts.result == 'success' || needs.ts.result == 'skipped')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     concurrency:
@@ -503,7 +509,7 @@ jobs:
     # data/meta/server-routes.lino exactly as the Rust server does (R1013).
     # The same gate as the rust tier: it wakes on any js, seed, server-manifest
     # or rust change, and js and ts must be green or carried first.
-    if: needs.changes.outputs.rust-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped') && (needs.ts.result == 'success' || needs.ts.result == 'skipped')
+    if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (needs.changes.outputs.rust-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped') && (needs.ts.result == 'success' || needs.ts.result == 'skipped')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     concurrency:
