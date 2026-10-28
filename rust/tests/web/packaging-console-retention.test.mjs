@@ -5,6 +5,7 @@ import {join} from 'node:path';
 import {spawnSync} from 'node:child_process';
 import test from 'node:test';
 import {createHash} from 'node:crypto';
+import YAML from 'yaml';
 import {prepareDraftEvidence} from '../../../scripts/prepare-hive-draft-evidence.mjs';
 
 const wrapper = new URL('../../../desktop/scripts/package-macos-with-retry.sh', import.meta.url).pathname;
@@ -170,11 +171,14 @@ test('packaging artifact staging preserves complete sanitized logs and hashes wh
   assert.equal(entry.sha256, createHash('sha256').update(retained).digest('hex'));
   assert.equal(entry.complete, true);
   assert.equal(JSON.parse(readFileSync(join(destination, 'attempt-1.json'), 'utf8')).exitCode, 37);
-  const stage = workflow.indexOf('name: Stage redacted packaging console');
-  const upload = workflow.indexOf('name: Upload complete packaging console');
+  const steps = YAML.parse(workflow).jobs.build.steps;
+  const stage = steps.findIndex(step => step.name === 'Stage redacted packaging console');
+  const upload = steps.findIndex(step => step.name === 'Upload complete packaging console');
   assert.ok(stage > 0 && stage < upload);
-  const staging = workflow.slice(stage, workflow.indexOf('\n', stage));
-  for (const required of ['always()', 'scripts/prepare-hive-draft-evidence.mjs',
-    'MAC_SIGNING_CERTIFICATE_SECRET', 'MAC_SIGNING_PASSWORD_SECRET']) assert.ok(staging.includes(required));
-  assert.ok(!workflow.slice(upload, workflow.indexOf('\n', upload)).includes('/formal-ai-packaging-logs/'));
+  const staging = steps[stage];
+  assert.ok(staging.if.includes('always()'));
+  assert.ok(staging.run.includes('scripts/prepare-hive-draft-evidence.mjs'));
+  for (const name of ['MAC_SIGNING_CERTIFICATE_SECRET','MAC_SIGNING_PASSWORD_SECRET'])
+    assert.ok(Object.hasOwn(staging.env, name));
+  assert.ok(!steps[upload].with.path.includes('/formal-ai-packaging-logs/'));
 });

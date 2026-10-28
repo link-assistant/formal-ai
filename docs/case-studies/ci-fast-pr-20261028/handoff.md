@@ -177,3 +177,7 @@ minimal follow-up updates those assertions to require pinned protocol capture
 before same-run source/history restoration and retains selector, full-byte,
 promisor-isolation and producer-bootstrap checks. It adds that existing guard
 suite to fast PR selection so this contract is no longer deferred to main.
+The other completed JavaScript shard exposed one log-retention assertion that
+assumed the YAML staging step occupied a single line. The same open follow-up
+parses its structured fields instead, retaining full sanitized content and hash
+checks, and includes that existing diagnostic suite in fast PR selection.
