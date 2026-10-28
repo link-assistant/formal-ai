@@ -129,7 +129,7 @@ skipped test earns no execution credit; a green PR is not proof of a published
 release. Generated test issues must be finalized with accurate outcomes so the
 issue tracker remains useful. The operational policy lives in
 [CI speed](docs/ci-cd/speed.md) and the
-[fast PR requirements](docs/requirements/doctrine-fast-pr-production-ci.md).
+[fast PR requirements](docs/requirements/doctrine-fast-pull-request-production-ci.md).
 
 **Start from a working Hello World.**
 

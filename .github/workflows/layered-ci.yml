@@ -285,7 +285,7 @@ jobs:
           set -euo pipefail
           suites="$RUNNER_TEMP/javascript-suites.txt"
           if [[ "$FAST_PR_PROFILE" == 'true' ]]; then
-            node scripts/list-fast-pr-tests.mjs > "$suites"
+            node scripts/list-fast-pull-request-tests.mjs > "$suites"
           else
             printf '%s\n' rust/tests/web/*.test.mjs > "$suites"
           fi

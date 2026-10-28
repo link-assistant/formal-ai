@@ -53,3 +53,11 @@ public bot test issues and the v0.355.14 Agent claim failure caused by a late
 scheduled task-ladder run. Retiring those issues is housekeeping with unverified
 outcomes; it is not evidence that their coding tasks passed. Supplied literal
 Formal AI edit recipes receive zero autonomous implementation credit.
+
+- **CI-FAST-9:** Archive discovery may consider a unique platform-neutral ZIP
+  from an authenticated canonical publisher release catalog. It remains only a
+  candidate: reject ambiguity, incompatible explicit platform/architecture,
+  missing digest, ungranted effects and failed actual probes. A generic archive
+  mentioned nowhere in unauthenticated context remains refused. Select runner
+  command grammar from observed help, never a hardcoded release version. Retain
+  full bounded selection/probe diagnostics; no compiler execution occurs locally.

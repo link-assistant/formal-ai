@@ -5,7 +5,7 @@
 One follow-up PR contains the fast CI profile, release-admission race fix,
 legacy generated-issue retirement, captured-data regressions, vision,
 contributor guidelines and assembled requirements. The authoritative policy is
-[the fast PR doctrine](../../requirements/doctrine-fast-pr-production-ci.md).
+[the fast PR doctrine](../../requirements/doctrine-fast-pull-request-production-ci.md).
 No integration or end-to-end test is deleted. Production checks remain on main;
 FORMAL_AI_FULL_PR_CI=run restores deferred PR jobs. Real GitHub test effects have
 an independent explicit opt-in. Skips carry no test or acceptance credit.
@@ -77,3 +77,21 @@ The first CI observation also showed that the job named lint performs a WASM
 production build. A required fast-pr-lint job now runs the maintained JavaScript
 source/budget/requirements checks on PRs; the full original lint payload remains
 on main/full opt-in. The changelog metadata check uses its existing JS twin.
+
+## Main verification and follow-up
+
+PR1452 merged normally as 304b35d2bc3d7a5707a9e3f2015d675068f45589 after
+24 exact-head workflows and 44 jobs passed. Full main verification then found
+stale integration eligibility expectations, six abbreviated new filenames, and
+a Scala publisher catalog now offering a single portable ZIP rather than a
+platform-labelled archive. The web gate failed the same naming rule. None of
+these failures receives success credit; no new release is claimed at this stage.
+
+The follow-up branch fixes all observed classes in one batch, retains the same
+full-profile assertions, renames the files without raising ratchets, and adds
+actual publisher metadata as an offline fixture. Unique catalog ZIPs still need
+all existing digest, grant, workspace and successful host probes. Hosted JVM
+runner invocation is selected from observed help rather than a version table.
+The installer edits exercised JavaScript Formal AI supplied recipes with zero
+autonomous implementation credit. Focused local JavaScript-only checks passed;
+Python policy and actual compiler checks are reserved for CI.

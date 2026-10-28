@@ -117,7 +117,7 @@ def github_release_document(documentation, fetch, publisher_host):
         require(urllib.parse.unquote(endpoint[5:])==tag,'release_document_tag_mismatch')
     return repo,endpoint,release,document_digest
 
-def select_release_archive(assets,document,system=None,machine=None):
+def select_release_archive(assets,document,system=None,machine=None,catalog=False):
     """Use observed host identity; metadata names never grant processes or network."""
     system=(system or platform.system()).lower()
     machine=(machine or platform.machine()).lower()
@@ -139,6 +139,12 @@ def select_release_archive(assets,document,system=None,machine=None):
         candidates=[asset for asset in explicit if compatible(asset,True)]
     else:
         candidates=[asset for asset in zipped if compatible(asset,False)]
+    # A unique catalog archive is only a candidate: checksum, grant and actual
+    # host probes below must still pass before any active prefix is published.
+    if not candidates and catalog and len(zipped)==1 and compatible(zipped[0],True):
+        candidates=zipped
+    record('archive_selection',system=system,machine=machine,catalog=catalog,
+           archives=[asset['name'] for asset in zipped],candidates=[asset['name'] for asset in candidates])
     require(len(candidates)==1,'documented_archive_ambiguous_or_missing')
     return candidates[0]
 
@@ -225,7 +231,7 @@ def execute(request):
         require(len(releases)==1,'publisher_release_link_ambiguous_or_missing')
         repo,endpoint=releases[0]; api='https://api.github.com/repos/'+repo+'/releases/'+endpoint
         release_raw,_=fetch(api,2097152); release=json.loads(release_raw); require(release.get('draft') is False and release.get('prerelease') is False,'unstable_release')
-    asset=select_release_archive(release.get('assets',[]),document)
+    asset=select_release_archive(release.get('assets',[]),document,catalog=release_document is not None)
     digest=asset.get('digest',''); require(re.fullmatch(r'sha256:[a-f0-9]{64}',digest) is not None,'asset_digest_missing')
     download=asset['browser_download_url']; require(download.startswith('https://github.com/'+repo+'/releases/download/'),'asset_repository_mismatch')
     tag=release.get('tag_name') or (urllib.parse.unquote(endpoint[5:]) if endpoint.startswith('tags/') else None)

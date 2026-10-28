@@ -1,0 +1,35 @@
+{
+  "schema": "public-release-archive-capture/v1",
+  "capturedOn": "2026-10-28",
+  "source": "https://api.github.com/repos/scala/scala3/releases/tags/3.3.9",
+  "scope": "Public release identity and archive metadata only; no product downloaded or executed.",
+  "release": {
+    "draft": false,
+    "prerelease": false,
+    "tag_name": "3.3.9",
+    "html_url": "https://github.com/scala/scala3/releases/tag/3.3.9",
+    "assets": [
+      {
+        "name": "scala3-3.3.9.tar.gz",
+        "browser_download_url": "https://github.com/scala/scala3/releases/download/3.3.9/scala3-3.3.9.tar.gz",
+        "content_type": "application/x-gtar",
+        "size": 35454525,
+        "digest": "sha256:ba96214801ea01b0d0aee45f00c94d3f61ed40d0f2aa748aff11c7f136737d7c"
+      },
+      {
+        "name": "scala3-3.3.9.zip",
+        "browser_download_url": "https://github.com/scala/scala3/releases/download/3.3.9/scala3-3.3.9.zip",
+        "content_type": "application/zip",
+        "size": 35459721,
+        "digest": "sha256:3ca496561250f088e0894c5a160777a940370ed8f8f58a55ace79716248d2194"
+      },
+      {
+        "name": "sha256sum.txt",
+        "browser_download_url": "https://github.com/scala/scala3/releases/download/3.3.9/sha256sum.txt",
+        "content_type": "text/plain; charset=utf-8",
+        "size": 193,
+        "digest": "sha256:44e04529295478dd08083c8998c244cf912d55047017ee525fa5d4d91f527a49"
+      }
+    ]
+  }
+}

@@ -598,7 +598,7 @@ Removal from a public thread is not approval to retain another copy.
    necessary JavaScript test locally at a time; no Rust builds or tests locally.
    Delivery includes green main CI and verified configured release artifacts.
    See [CI speed](docs/ci-cd/speed.md) and the
-   [current requirements](docs/requirements/doctrine-fast-pr-production-ci.md).
+   [current requirements](docs/requirements/doctrine-fast-pull-request-production-ci.md).
 
    **The three-root cycle is js-first.** Rust, JavaScript and TypeScript
    are all full implementation roots — client and backend — kept

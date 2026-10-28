@@ -54,7 +54,7 @@ env:
 jobs:
   pr-check-profile:
     if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && vars.FORMAL_AI_FULL_PR_CI != 'run'
-    uses: ./.github/workflows/pr-check-profile.yml
+    uses: ./.github/workflows/pull-request-check-profile.yml
   # === RATCHET - every PR compares its ledger with the actual base revision ===
   ratchet:
     if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (true) }}
