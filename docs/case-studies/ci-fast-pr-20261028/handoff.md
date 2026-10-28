@@ -129,3 +129,8 @@ full-source-content example. Those payloads are now retained behind the same
 full-profile gate, with source-selector/extension-transfer regressions in the
 fast inventory. Production extension publication and explicit content dispatch
 remain available; no source-content execution credit is awarded to PR skips.
+
+The latest instruction keeps all remaining implementation and policy updates in
+PR1454. CI-FAST-12 now explicitly requires exact-head qualification before merge
+and source-linked main/release/public-artifact verification afterwards. VISION,
+CONTRIBUTING and the CI speed guide carry the same standing working policy.

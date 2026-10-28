@@ -127,7 +127,9 @@ E2E suites behind explicit controls, learn unit regressions from their complete
 CI logs, and run final production builds and release verification on main. A
 skipped test earns no execution credit; a green PR is not proof of a published
 release. Generated test issues must be finalized with accurate outcomes so the
-issue tracker remains useful. The operational policy lives in
+issue tracker remains useful. Deliver related implementation, evidence and policy
+changes in the same PR; follow its exact source through merge, main and actual
+public release verification. The operational policy lives in
 [CI speed](docs/ci-cd/speed.md) and the
 [fast PR requirements](docs/requirements/doctrine-fast-pull-request-production-ci.md).
 

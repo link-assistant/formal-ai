@@ -136,6 +136,13 @@ production builds, native tests, browser/agent integration and public-download
 checks retain their original assertions and failure policy. The profile notice
 explicitly awards no coverage to deferred jobs.
 
+Keep related implementation, captured-log regressions, requirements, vision,
+guidelines and handoff together in the working PR. Qualify its exact current head
+before merging. Then monitor the resulting main source and version-preparation
+commit, every configured release consumer, and public artifact verification.
+Record the actual version and immutable artifact identities; an older published
+release does not satisfy delivery of the new source.
+
 Real GitHub client tests have an independent, default-off effect gate:
 FORMAL_AI_REAL_GITHUB_E2E=true or workflow_dispatch real-github-e2e=true.
 Use the offline JavaScript regressions for frequent iteration. Retained live
@@ -158,8 +165,9 @@ FORMAL_AI_FULL_AGENT_REPLAY=run; routing-changing pull requests still select
 them automatically. Hello World compilation, resumed execution, literal/file
 creation, duplicate-issue avoidance, issue submission, readable complete-context
 reports, report TUI, client-execution learning, held-out generalization and the
-self-coding inner loop run in the ordinary profile. Native learning unit tests
-remain required.
+self-coding inner loop remain in the ordinary full main profile. Native learning
+unit tests remain required on main; the fast PR profile uses the selected
+JavaScript regressions and does not claim those native executions.
 
 The duplicate instrumented coverage execution is temporarily opt-in: its
 32 native and 16 browser shards and both report jobs are retained unchanged.
