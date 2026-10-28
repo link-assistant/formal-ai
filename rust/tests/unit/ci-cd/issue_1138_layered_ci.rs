@@ -58,8 +58,9 @@ fn every_tier_declares_its_path_predicate_and_needs_the_tiers_above() {
 
     let js = tier_condition(&workflow, "js");
     assert_eq!(
-        js, "needs.changes.outputs.js-changed == 'true'",
-        "the js tier is gated on its own predicate and nothing else"
+        js,
+        "needs.changes.outputs.js-changed == 'true' || github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')",
+        "main retains path gating and every fast pull request runs its coding regressions"
     );
 
     let ts = tier_condition(&workflow, "ts");
@@ -70,7 +71,7 @@ fn every_tier_declares_its_path_predicate_and_needs_the_tiers_above() {
 
     let rust = tier_condition(&workflow, "rust");
     assert!(
-        rust.starts_with("needs.changes.outputs.rust-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped') && (needs.ts.result == 'success' || needs.ts.result == 'skipped')"),
+        rust.contains("needs.changes.outputs.rust-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped') && (needs.ts.result == 'success' || needs.ts.result == 'skipped')") && rust.contains("FORMAL_AI_FULL_PR_CI"),
         "the rust tier is gated on its own predicate plus js and ts each being green or carried: {rust}"
     );
 

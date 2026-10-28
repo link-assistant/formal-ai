@@ -95,3 +95,13 @@ runner invocation is selected from observed help rather than a version table.
 The installer edits exercised JavaScript Formal AI supplied recipes with zero
 autonomous implementation credit. Focused local JavaScript-only checks passed;
 Python policy and actual compiler checks are reserved for CI.
+
+The final native shard logs added old timeout/job-inventory expectations, missing
+concurrency ownership on the new profile, one-level reusable-workflow expansion,
+and a process-wide cwd race in an integration fixture. The same follow-up PR
+updates those assertions, derives installer counts from declared steps, expands
+nested reusable workflows with cycle/depth/work limits, and runs the shell
+matrix in a deadline-bounded child with its own cwd and an executed-case receipt.
+No product trust check is weakened: the Claude fixture failure came from the
+other test changing the shared process cwd. Rust changes are test/support code
+only and are verified in CI; only source formatting ran locally.
