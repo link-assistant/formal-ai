@@ -43,6 +43,7 @@
     "rust/tests/web/release-extension-transfer.test.mjs",
     "rust/tests/web/native-release-trust-shallow.test.mjs",
     "rust/tests/web/native-release-artifact.test.mjs",
-    "rust/tests/web/native-release-source-transport.test.mjs"
+    "rust/tests/web/native-release-source-transport.test.mjs",
+    "rust/tests/web/relocated-build-stage-controls.test.mjs"
   ]
 }
