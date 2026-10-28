@@ -249,3 +249,7 @@ Keep the original transfer and retry limits. Packaging console staging runs only
 after a package operation is attempted, and missing evidence after an attempted
 operation still fails. An unacquired hosted runner has no console to fabricate;
 retain its structured capacity annotations and explicit unavailable outcome.
+Source-transport changes must run both native-release-workflow and
+relocated-build-stage-controls in the fast inventory. These preserve pinned
+protocol ordering, complete-history custody, compiler/default-feature contracts
+and packaging receipt checks without compiling native code.
