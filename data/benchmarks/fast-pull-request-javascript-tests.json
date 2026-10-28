@@ -38,6 +38,8 @@
     "rust/tests/web/pr1196-authoring-deferral.test.mjs",
     "rust/tests/web/coding-research-compiler-boundary.test.mjs",
     "rust/tests/web/prerequisite-portable-archive.test.mjs",
-    "rust/tests/web/client-startup-contract.test.mjs"
+    "rust/tests/web/client-startup-contract.test.mjs",
+    "rust/tests/web/census-source-selectors.test.mjs",
+    "rust/tests/web/release-extension-transfer.test.mjs"
   ]
 }

@@ -202,6 +202,16 @@
       "file": "release.yml",
       "id": "lint",
       "payloadSha256": "93608460d771382fdb5e2aff6401e3a3c4e185ccf4cb5073ea45593231b16d5c"
+    },
+    {
+      "file": "publish-vscode.yml",
+      "id": "publish",
+      "payloadSha256": "701756c41e51b9b4eb94bbb4d0ca49438537262608dd3dd3c18b00ecf3a164c4"
+    },
+    {
+      "file": "regenerate-self-ast-census.yml",
+      "id": "content",
+      "payloadSha256": "0b9c39648694e1e3a1383f390cb4a2b00723e815f2ee57f273af93d6f2ccff4b"
     }
   ]
 }

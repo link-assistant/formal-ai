@@ -100,7 +100,7 @@ jobs:
       actions: read
   publish:
     needs: resolve
-    if: ${{ !cancelled() && needs.resolve.outputs.build == 'true' }}
+    if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (!cancelled() && needs.resolve.outputs.build == 'true') }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:

@@ -122,3 +122,10 @@ export tests behind an explicit opt-in with finite deadlines, and adds cheap
 unit checks over the real captured client startup frames. All remaining main
 logs were collected; Rust tests/builds and visual rendering stay in CI. No new
 release acceptance is claimed until the fresh main and publication are green.
+
+The packaged-mirror edit selected two additional native PR probes through
+existing rust/embedded path filters: VS Code/WASM packaging and the Rust
+full-source-content example. Those payloads are now retained behind the same
+full-profile gate, with source-selector/extension-transfer regressions in the
+fast inventory. Production extension publication and explicit content dispatch
+remain available; no source-content execution credit is awarded to PR skips.

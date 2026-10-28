@@ -222,3 +222,8 @@ export latency was 7.45 seconds against Bun’s implicit five-second test clock.
 Ordinary readiness, paste/submission and PTY checks remain on; fast unit tests
 reuse the actual captured startup frames. Skipped visual tests have no execution
 credit. Restore automatic rendering after its cold startup cost is predictable.
+
+VS Code package/WASM probes and the native full-source-content example are also
+retained behind the full PR profile. Production extension publication is
+unchanged; the full source-content workflow remains available on explicit
+dispatch. Their original build payloads are included in the retention check.
