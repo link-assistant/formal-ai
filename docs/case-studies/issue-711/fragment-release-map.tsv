@@ -897,3 +897,6 @@ changelog.d/20261027_045000_reporting_and_practical_help.md	0.355.13
 changelog.d/20261027_114000_shared_registry_releases.md	0.355.14
 changelog.d/20261027_153500_sparse_source_provenance.md	0.355.14
 changelog.d/20261027_170000_complete_draft_failure_logs.md	0.355.14
+changelog.d/fast-pr-offline-e2e-admission.md	0.355.15
+changelog.d/main-branch-archive-discovery-and-profile-contracts.md	0.355.15
+changelog.d/package-parity-and-optional-visual-replays.md	0.355.15

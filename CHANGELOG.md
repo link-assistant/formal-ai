@@ -20,6 +20,14 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.355.15] - 2026-10-28
+
+Prioritize Linux coding and question-answering checks on pull requests while retaining heavy production and integration suites for main or explicit opt-in. Disable live GitHub test effects by default, add captured-data offline regressions and guarded stale test-issue retirement, and prevent authenticated scheduled observations from invalidating release admission.
+
+Repair full-profile workflow expectations after the fast pull-request transition, spell new filenames in full, and discover unique portable archives from authenticated publisher release catalogs while retaining checksum, permission and actual host-probe requirements. Detect the installed JVM runner's supported command grammar before exercising its original Hello World oracle.
+
+Synchronize the packaged prerequisite installer with its canonical source and check all demanded mirrors in fast pull-request lint. Give fast lint explicit concurrency ownership. Retain visual replay export integrations behind an explicit opt-in with bounded test deadlines, while keeping ordinary readiness/PTY checks and adding cheap captured-startup unit coverage.
+
 ## [0.355.14] - 2026-10-28
 
 ### Fixed
