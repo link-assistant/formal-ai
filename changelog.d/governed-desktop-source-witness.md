@@ -1,0 +1,1 @@
+Refresh the reviewed desktop source fixtures after the installer-boundary fix. Add a cheap PR check for every governed fixture and native-source digest so stale embedded source is caught before main, while retaining complete-object and reader parity checks.

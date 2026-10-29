@@ -47,6 +47,7 @@
     "rust/tests/web/relocated-build-stage-controls.test.mjs",
     "rust/tests/web/native-release-workflow.test.mjs",
     "rust/tests/web/packaging-console-retention.test.mjs",
-    "rust/tests/web/desktop-package-boundary.test.mjs"
+    "rust/tests/web/desktop-package-boundary.test.mjs",
+    "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
   ]
 }

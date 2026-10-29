@@ -96,3 +96,6 @@ Formal AI edit recipes receive zero autonomous implementation credit.
   source inclusion fails early. Replay captured packaging paths in fast unit
   tests and check exclusions with the installed packager in hosted packaging.
   Never mask oversized-payload failures with generic retries or higher limits.
+  Refresh reviewed complete source witnesses after referenced configuration
+  changes; fast source-binding checks must detect stale embedded bytes before
+  main, while preserving full reader and complete-object parity checks.
