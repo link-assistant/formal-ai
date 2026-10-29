@@ -126,3 +126,17 @@ The same follow-up preserves literal Git filenames using NUL-delimited diff and
 tree records. Unicode and embedded line breaks in documentation paths must not
 be mistaken for code because Git quoted a filename; diagnostics escape these
 paths. A focused classifier unit test runs only in CI, with no local Rust build.
+
+The final main source `aa0bf4211e116852f956c6c98bb5b651b4842427` passed all
+15 source-derived main workflows (130 passing jobs), and release `v0.355.18`
+produced 74 assets. Independent metadata verification passed eight native
+targets, 12 workflow attestations, both multiarchitecture GHCR indices, Docker
+Hub and browser/crate metadata. The last arm64 Mac public-download verifier
+remained queued on `macos-14`. GitHub announced an October 29 14:00–24:00 UTC
+brownout and November 2 retirement for that runner:
+https://github.blog/changelog/2026-10-01-github-actions-macos-14-runner-image-retirement/
+The supported-runner follow-up migrates every remaining operational reference
+to `macos-15`, including the retained CLI replay runner mapping, and updates the
+existing policy assertion. Historical issue fixtures retain their original text.
+Do not mark the queued verification as passed or rerun a partial native producer
+with mixed attempt custody; qualify a fresh complete publication when needed.
