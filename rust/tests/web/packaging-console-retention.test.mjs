@@ -99,8 +99,8 @@ test('workflow uploads packaging consoles even after failure and before smoke te
     '${{ runner.temp }}/formal-ai-packaging-artifact/', 'retention-days: 30']) assert.ok(upload.includes(required));
   assert.match(workflow, /os: macos-15,\s+ebflag: "--mac",\s+label: "macos-arm64"/);
   assert.match(workflow, /\[macos-arm64\]="macos-15"/);
-  // The native producer and CLI keep their original deployment SDK and selected-source identity checks.
-  assert.match(workflow, /os: macos-14,\s+target: aarch64-apple-darwin/);
+  // The native producer and CLI use supported runners and keep selected-source identity checks.
+  assert.match(workflow, /os: macos-15,\s+target: aarch64-apple-darwin/);
   assert.ok(workflow.includes('required_macos_artifacts=('));
   assert.ok(workflow.includes('codesign --verify'));
   assert.match(workflow, /RUST_BACKTRACE: full/);
