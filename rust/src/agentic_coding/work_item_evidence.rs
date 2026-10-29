@@ -35,7 +35,7 @@ fn work_item_evidence_paths(task: &str) -> Vec<&str> {
     paths
 }
 
-/// Native twin of js/agentic/work_item_evidence.mjs. References grant read evidence only.
+/// Native twin of `js/agentic/work_item_evidence.mjs`. References grant read evidence only.
 pub(super) fn plan_work_item_evidence(
     task: &str,
     messages: &[ChatMessage],

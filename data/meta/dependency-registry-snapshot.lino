@@ -298,3 +298,8 @@ registry_entry npm/@openai/codex
 registry_entry npm/@playwright/mcp
   latest "0.0.83"
   source_url "https://registry.npmjs.org/@playwright%2fmcp/latest"
+
+# This isolated parser publisher was observed 2026-10-29; the older cohort's refresh time is unchanged.
+registry_entry npm/yaml
+  latest "2.9.1"
+  source_url "https://registry.npmjs.org/yaml/latest"

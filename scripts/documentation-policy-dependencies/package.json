@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "yaml": "1.10.3"
+    "yaml": "2.9.1"
   }
 }

@@ -80,3 +80,11 @@ The auxiliary tests assert the structured schema, missing-read-tool reason,
 no-authorship/no-verification and unfinished implementation, while preserving
 all their no-journal/no-unauthorized-write checks. All three regression files are
 now part of fast PR coverage. No native tests were run locally.
+
+The first main Rust gate lane also identified a missing backtick in a native
+documentation comment and dependency currency for the isolated parser/action
+versions. The follow-up corrects the comment, uses the repository's v7 action
+convention, locks the parser to the current official npm registry answer and
+records that one publisher observation without changing the older snapshot
+cohort's refresh time. The single documentation-policy JavaScript regression
+passes against the isolated current parser as well as the existing test parser.
