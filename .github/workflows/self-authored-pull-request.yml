@@ -49,6 +49,11 @@ on:
       - '.github/actions/author-with-formal-ai/**'
       - 'scripts/author-change-with-formal-ai.sh'
       - 'scripts/self-authored-commit-count.sh'
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   schedule:
     - cron: '41 5 * * 1'
 

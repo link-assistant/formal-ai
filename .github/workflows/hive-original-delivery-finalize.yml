@@ -45,6 +45,11 @@ on: # zizmor: ignore[dangerous-triggers]
       - scripts/finalize-generated-test-issues.mjs
       - scripts/lib/hive-isolated-task.mjs
       - scripts/lib/generated-task-*.mjs
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
 permissions:
   contents: read
   actions: read

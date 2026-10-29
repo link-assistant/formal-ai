@@ -12,6 +12,7 @@ use super::general_planner::{
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for, write_arguments};
 use super::progress::Progress;
 use super::tool_result;
+use super::work_item_evidence::plan_work_item_evidence;
 use crate::protocol::ChatMessage;
 
 const EXPECTED_PLACEHOLDER: &str = concat!("{", "expected", "}");
@@ -224,7 +225,7 @@ fn general_change_step(
     // capability is only genuinely unavailable once the fetch has been tried.
     if plan.mode == GeneralPlanMode::RepositoryWorkItem {
         if let Some(fetched) = repository_work_item_objective(plan, &progress) {
-            if let Some(step) = plan_work_item_execution(&fetched, messages, tool_names) {
+            if let Some(step) = plan_work_item_execution(&fetched, messages, tool_names, result) {
                 return step;
             }
         } else if let Some(step) =
@@ -457,6 +458,7 @@ fn plan_work_item_execution(
     objective: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     // The default configuration is the right one: the recipe wanted here is the
     // same `write_program` answer a user typing this request directly would get,
@@ -477,8 +479,11 @@ fn plan_work_item_execution(
     ) {
         return Some(step);
     }
-    let executable = compose_general_change_plan(objective)
-        .filter(|executable| executable.mode != GeneralPlanMode::RepositoryWorkItem)?;
+    let Some(executable) = compose_general_change_plan(objective)
+        .filter(|executable| executable.mode != GeneralPlanMode::RepositoryWorkItem)
+    else {
+        return plan_work_item_evidence(objective, messages, tool_names, result);
+    };
     Some(plan_work_item_change_step(
         messages,
         tool_names,

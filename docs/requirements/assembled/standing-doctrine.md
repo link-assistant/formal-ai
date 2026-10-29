@@ -495,6 +495,12 @@ Each row says what holds today and what is still missing.
 The architect's 2026-10-28 instruction supersedes earlier requirements that
 made every integration, platform build or live client test mandatory on each PR.
 
+The 2026-10-29 documentation-only exception is defined in
+[issue #1455 requirements](../issue-1455-documentation-and-evidence.md): automatic
+docs-only pushes/PRs run lightweight documentation checks and produce no release
+by default. Mixed code changes, schedules and explicit manual runs retain their
+existing verification obligations.
+
 - **CI-FAST-1:** Use one bulk-drafted PR for related fixes, tests, documentation,
   vision and guidelines. Commit the complete batch before pushing; collect and
   fix all available CI failures before the next push. Do not wait idly on CI.

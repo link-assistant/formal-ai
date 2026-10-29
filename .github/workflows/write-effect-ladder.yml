@@ -30,6 +30,11 @@ on:
       - 'data/seed/**'
       - 'experiments/issue_916_write_effect_ladder/**'
       - '.github/workflows/write-effect-ladder.yml'
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   # Issue #1107 (item 3): four ladders each booted Formal AI and drove an agent
   # on every Rust-touching branch push. One of them proving the path is the
   # branch signal; running all four is four times the bill for the same answer.
@@ -44,6 +49,11 @@ on:
     paths:
       - 'experiments/issue_916_write_effect_ladder/**'
       - '.github/workflows/write-effect-ladder.yml'
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   schedule:
     - cron: '41 4 * * *'
   # Issue #1187 R2: a bot pull request's checks start through dispatch

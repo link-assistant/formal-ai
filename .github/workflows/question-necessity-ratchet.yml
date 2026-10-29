@@ -13,6 +13,11 @@ on:
       - 'rust/Cargo.lock'
       - 'data/benchmarks/question-necessity-suite.lino'
       - 'data/seed/question-necessity.lino'
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   push:
     branches: [main]
     paths:
@@ -22,6 +27,11 @@ on:
       - 'data/benchmarks/question-necessity-suite.lino'
       - 'data/seed/question-necessity.lino'
       - '.github/workflows/question-necessity-ratchet.yml'
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   # Issue #1187 R2: a bot pull request's checks start through dispatch
   # (.github/actions/dispatch-checks); mode and pull-request are its inputs.
   workflow_dispatch:

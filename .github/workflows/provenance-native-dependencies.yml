@@ -6,6 +6,11 @@ on:
     paths:
       - '.github/workflows/provenance-native-dependencies.yml'
       - 'scripts/resolve-provenance-native-dependencies.mjs'
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   workflow_dispatch:
     inputs:
       mode:

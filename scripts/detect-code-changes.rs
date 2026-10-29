@@ -13,7 +13,7 @@
 //! - Excludes additional documentation/example paths from "code changes"
 //!
 //! Excluded from code changes (don't require changelog fragments):
-//! - Markdown files (*.md) in any folder
+//! - Root Markdown and nested README.md/CHANGELOG.md documentation
 //! - changelog.d/ folder (changelog fragments)
 //! - docs/ folder (documentation)
 //! - experiments/ folder (experimental scripts)
@@ -167,7 +167,11 @@ fn get_changed_files() -> Vec<String> {
         println!("Merge commit detected (pull_request event)");
     }
     println!("Comparing {base} to {head} ({description})");
-    let output = exec("git", &["diff", "--name-only", &base, &head]);
+    // A source-to-doc rename must retain the removed source path for admission.
+    let output = exec(
+        "git",
+        &["diff", "--no-renames", "--name-only", &base, &head],
+    );
 
     if output.is_empty() && exec("git", &["rev-parse", "--verify", &base]).is_empty() {
         println!("{base} is not available, listing all files in HEAD");
@@ -192,9 +196,32 @@ fn is_ignored_by_ci(file_path: &str) -> bool {
         .any(|prefix| file_path.starts_with(prefix))
 }
 
+// Exact twin of documentationPaths in scripts/documentation-only-ci-policy.mjs.
+fn is_documentation_path(path: &str) -> bool {
+    path.starts_with("docs/")
+        || path.starts_with("changelog.d/")
+        || (!path.contains('/') && path.ends_with(".md"))
+        || path.ends_with("/README.md")
+        || path.ends_with("/CHANGELOG.md")
+}
+
+fn automatic_release_pending(
+    event: &str,
+    git_ref: &str,
+    fragments: &[String],
+    changed_files: &[String],
+) -> bool {
+    // A pending fragment cannot turn a docs-only push into an automatic release,
+    // even if GitHub bypasses workflow path filters for an oversized event.
+    changed_files
+        .iter()
+        .any(|path| !is_documentation_path(path))
+        && release_pending(event, git_ref, fragments)
+}
+
 fn is_excluded_from_code_changes(file_path: &str) -> bool {
-    // Exclude markdown files in any folder
-    if has_extension(file_path, "md") {
+    // Unknown Markdown may be runtime input, not documentation.
+    if is_documentation_path(file_path) {
         return true;
     }
 
@@ -436,10 +463,11 @@ fn main() {
     println!();
 
     let pending = env::var("RELEASE_PIPELINE").is_ok_and(|value| value == "true")
-        && release_pending(
+        && automatic_release_pending(
             &env::var("GITHUB_EVENT_NAME").unwrap_or_default(),
             &env::var("GITHUB_REF").unwrap_or_default(),
             &changelog_fragments(),
+            &changed_files,
         );
     if pending && !flags.any_code_changed {
         println!(
@@ -468,9 +496,35 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use super::{
-        ChangeFlags, LAYER_CLASSIFIER, LAYERED_WORKFLOW, classify_changes, comparison_for_event,
-        release_pending,
+        ChangeFlags, LAYER_CLASSIFIER, LAYERED_WORKFLOW, automatic_release_pending,
+        classify_changes, comparison_for_event, is_documentation_path, release_pending,
     };
+
+    #[test]
+    fn documentation_only_push_never_releases_a_waiting_fragment() {
+        let waiting = vec!["pending.md".to_string()];
+        let docs = vec![
+            "docs/guide.md".to_string(),
+            "changelog.d/pending.md".to_string(),
+        ];
+        assert!(!automatic_release_pending(
+            "push",
+            "refs/heads/main",
+            &waiting,
+            &docs
+        ));
+        let mixed = vec!["docs/guide.md".to_string(), "rust/src/lib.rs".to_string()];
+        assert!(automatic_release_pending(
+            "push",
+            "refs/heads/main",
+            &waiting,
+            &mixed
+        ));
+        assert!(is_documentation_path("README.md"));
+        assert!(is_documentation_path("rust/README.md"));
+        assert!(!is_documentation_path("data/seed/runtime.md"));
+        assert!(classify_changes(&["data/seed/runtime.md".to_string()]).any_code_changed);
+    }
 
     #[test]
     fn a_waiting_fragment_on_main_makes_the_release_pending() {

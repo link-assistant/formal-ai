@@ -31,6 +31,11 @@ on:
       - '**/Cargo.toml'
       - 'rust/Cargo.lock'
       - '.github/workflows/summarization-ratchet.yml'
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   pull_request:
     # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
     # never triggers this repository's own pipeline.
@@ -43,6 +48,11 @@ on:
       - '**/Cargo.toml'
       - 'rust/Cargo.lock'
       - '.github/workflows/summarization-ratchet.yml'
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   # Issue #1187 R2: a bot pull request's checks start through dispatch
   # (.github/actions/dispatch-checks); mode and pull-request are its inputs.
   workflow_dispatch:

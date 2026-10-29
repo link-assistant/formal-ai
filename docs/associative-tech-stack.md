@@ -136,6 +136,60 @@ localized messages. It is declared in `package.json`, bundled for browser use,
 and loaded by `js/i18n.js`. Its boundary is web internationalization; it is
 not part of the Rust solver.
 
+### `command-stream`
+
+Repository: [link-foundation/command-stream](https://github.com/link-foundation/command-stream)
+
+`rust/Cargo.toml` declares the native command execution dependency. In
+`rust/src/orchestration/runner.rs`, `execute` passes an exact program/argument
+vector, working directory and environment to `StreamingRunner::from_argv`.
+`collect_command_stream` consumes stdout, stderr and exit events, with a bounded
+execution timeout and process cancellation. This is the execution boundary for
+external agent commands; it does not itself provide reasoning or link storage.
+The manifest declaration is unconditional, while this orchestration is a native
+host facility, not a browser subprocess API.
+
+### `web-capture`
+
+Repository: [link-assistant/web-capture](https://github.com/link-assistant/web-capture)
+
+`rust/Cargo.toml` selects `default-features = false` and the `search` feature under
+`cfg(not(target_arch = "wasm32"))`. The native acquisition path in
+`rust/src/web_search_core.rs` calls `web_capture::search::build_search_url` and
+`parse_search_results`, recording blocked, empty and unavailable observations.
+This supplies search acquisition/parsing rather than a knowledge-store backend;
+failed acquisition is evidence of a failure, not an answer.
+
+The browser component in `js/web-search-component-entry.js` uses an HTTP capture
+adapter: it first requests `/fetch?url=…` from the configured capture base
+(default `http://localhost:3000`) with a deadline. A transport failure can fall
+back to a direct CORS fetch. The adapter preserves the target status and bytes,
+including target HTTP errors; a target error must not be misrepresented as a
+successful discovery. This browser HTTP boundary is distinct from compiling the
+native Cargo dependency into WASM.
+
+### `web-search`
+
+Repository: [link-assistant/web-search](https://github.com/link-assistant/web-search)
+
+There are two direct package integrations, with versions governed by their
+respective manifests:
+
+- Native: `rust/Cargo.toml` declares `web-search` without default features and with
+  `merge`, under `cfg(not(target_arch = "wasm32"))`.
+  `rust/src/web_search_core.rs` converts provider rankings to `SearchResult`,
+  configures `MergeOptions` with the shared reciprocal-rank-fusion constant and
+  calls `web_search::merger::merge_results`.
+- JavaScript: `package.json` declares `@link-assistant/web-search`.
+  `js/web-search-component-entry.js` imports and actually calls
+  `getDefaultProviderIds` and `mergeResults`. Its merge uses reciprocal rank
+  fusion and duplicate removal; its HTTP adapter supplies captured pages.
+
+Search discovers candidate evidence; capture obtains it; ranking merges the
+candidates. Formal AI still owns the reasoning and verification needed to turn
+those observations into supported statements. Neither package substitutes for
+that reasoning, proves the content true, or provides a link-store dependency.
+
 ## Architecture and protocol components
 
 These repositories explain protocol lineage, compatibility, or design context.

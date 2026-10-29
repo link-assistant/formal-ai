@@ -1,0 +1,8 @@
+{
+  "name": "formal-ai-documentation-policy-dependencies",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "yaml": "1.10.3"
+  }
+}

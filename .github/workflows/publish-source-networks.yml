@@ -56,6 +56,11 @@ on: # zizmor: ignore[dangerous-triggers]
       - "js/vendor/tree-sitter/LICENSE-tree-sitter-rust"
       - "js/vendor/tree-sitter/provenance.lino"
       - "scripts/lib/translation-single-pass.mjs"
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   workflow_dispatch:
     inputs:
       mode:

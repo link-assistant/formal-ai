@@ -16,25 +16,16 @@ on: # zizmor: ignore[dangerous-triggers]
     branches-ignore: ['e2e/**']
     types: [opened, synchronize, reopened]
     paths:
-      - 'desktop/**'
-      - 'vscode/**'
-      - '.github/workflows/desktop-release.yml'
-      - 'scripts/desktop-release-resolve.sh'
-      - 'scripts/release-checksums.mjs'
-      - 'scripts/install-node-dependencies.sh'
-      - 'scripts/native-release-*.mjs'
-      - 'scripts/build-selected-wasm.mjs'
-      - 'rust/tests/web/selected-source-wasm.test.mjs'
-      - 'js/**'
-      - 'data/seed/**'
-      - 'rust/src/**'
-      - 'rust/embedded/**'
-      - 'rust/build.rs'
-      - 'data/seed/api-cache/**'
-      - '.cargo/**'
-      - 'rust/.cargo/**'
-      - 'rust/Cargo.toml'
-      - 'rust/Cargo.lock'
+      [
+        "desktop/**", "vscode/**", ".github/workflows/desktop-release.yml",
+        "scripts/desktop-release-resolve.sh", "scripts/release-checksums.mjs", "scripts/install-node-dependencies.sh",
+        "scripts/native-release-*.mjs", "scripts/build-selected-wasm.mjs", "rust/tests/web/selected-source-wasm.test.mjs",
+        "js/**", "data/seed/**", "rust/src/**",
+        "rust/embedded/**", "rust/build.rs", "data/seed/api-cache/**",
+        ".cargo/**", "rust/.cargo/**", "rust/Cargo.toml",
+        "rust/Cargo.lock", "!docs/**", "!*.md",
+        "!**/README.md", "!**/CHANGELOG.md", "!changelog.d/**"
+      ]
 permissions:
   contents: read
 env:

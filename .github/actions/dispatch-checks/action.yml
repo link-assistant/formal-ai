@@ -63,6 +63,21 @@ runs:
           targets="$(echo "$WORKFLOWS" | tr ' ' '\n')"
         else
           targets="$(grep -l '^on:.*pull_request\|pull_request:' .github/workflows/*.yml 2>/dev/null | xargs -n1 basename || true)"
+          # Automatic bot dispatches must respect the docs-only policy too.
+          # Check complete pagination and both sides of a rename; uncertain API
+          # observations retain the normal targets. Explicit caller subsets stay explicit.
+          docs_only=false
+          if changed_count="$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json changedFiles --jq .changedFiles)" && \
+            file_pages="$(gh api --paginate --slurp "repos/$REPOSITORY/pulls/$PR_NUMBER/files?per_page=100" --jq 'map(map({filename,previous_filename} | with_entries(select(.value != null))))')"; then
+            docs_only="$(printf '%s' "$file_pages" | node scripts/lib/documentation-paths.mjs "$changed_count")"
+          fi
+          if [ "$docs_only" = true ] && [ "$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json headRefOid --jq .headRefOid)" != "$head_sha" ]; then
+            docs_only=false
+          fi
+          if [ "$docs_only" = true ]; then
+            targets="$(node --input-type=module -e 'import {lightweightWorkflows} from "./scripts/lib/documentation-paths.mjs"; console.log([...lightweightWorkflows].join("\n"));')"
+            echo "documentation-only PR: dispatching lightweight checks"
+          fi
         fi
 
         dispatched=""

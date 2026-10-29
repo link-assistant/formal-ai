@@ -20,6 +20,7 @@ import { failedVerification, harnessReportedFailure, observedPayload, reportedEx
 import { fill } from './work_item_steps.mjs';
 import { observedRecoveryCommand, planRecovery } from './prerequisite_recovery.mjs';
 import { programContractAnswer } from './crate/coding_program_contract.mjs';
+import { planWorkItemEvidence } from './work_item_evidence.mjs';
 import { fencedBlock, LINO_FENCE_LANGUAGE } from './crate/issue_report.mjs';
 import { detect } from './crate/language.mjs';
 import { localizedResponse } from './crate/seed.mjs';
@@ -237,7 +238,7 @@ function planWorkItemExecution(objective, messages, toolNames) {
   const step = answer ? planSymbolicCommandReroute(messages, toolNames, answer, objective) : null;
   if (step) return step;
   const executable = composeGeneralChangePlan(objective);
-  if (!executable || executable.mode === GeneralPlanMode.RepositoryWorkItem) return null;
+  if (!executable || executable.mode === GeneralPlanMode.RepositoryWorkItem) return planWorkItemEvidence(objective, messages, toolNames);
   return planWorkItemChangeStep(messages, toolNames, executable);
 }
 

@@ -22,6 +22,12 @@ on:
         description: Observed per-architecture full-size
         value: ${{ jobs.merge.outputs.full-size }}
   pull_request:
+    paths-ignore:
+      - "docs/**"
+      - "*.md"
+      - "**/README.md"
+      - "**/CHANGELOG.md"
+      - "changelog.d/**"
     branches-ignore: ['e2e/**']
   release:
     types:
