@@ -5,8 +5,7 @@ import {createHash} from 'node:crypto';
 import {WorkerHost} from '../../../js/server/worker-host.mjs';
 import {installNodeHost} from '../../../js/agentic/node-host.mjs';
 import {planWorkItemEvidence, workItemEvidencePaths} from '../../../js/agentic/work_item_evidence.mjs';
-import {planGeneralChangeStep} from '../../../js/agentic/general_execution.mjs';
-import {composeGeneralChangePlan} from '../../../js/agentic/general_planner.mjs';
+import {planChatStep} from '../../../js/agentic/planner.mjs';
 const fixture = JSON.parse(readFileSync('data/benchmarks/fixtures/work-item-1455/failure.json','utf8'));
 before(async () => installNodeHost(new WorkerHost({WebAssembly: {
   compile(){throw Error('LocalProductWasmForbidden');}, instantiate(){throw Error('LocalProductWasmForbidden');},
@@ -16,21 +15,24 @@ function observe(messages, tool, args, content, extra = {}) {
   messages.push({role:'assistant',content:'',tool_calls:[{id,type:'function',function:{name:tool,arguments:JSON.stringify(args)}}]});
   messages.push({role:'tool',tool_call_id:id,name:tool,content,...extra});
 }
-test('the actual failed issue now reads manifests, guide and executable adapter before reporting a bounded gap', () => {
+test('the actual failed issue now reads manifests, guide and executable adapter before reporting a bounded gap', async () => {
   const paths = workItemEvidencePaths(fixture.objective);
   assert.deepEqual(paths, ['docs/associative-tech-stack.md','rust/Cargo.toml','package.json','js/web-search-component-entry.js']);
   const messages = [{role:'user',content:'Implement ' + fixture.issue}];
-  observe(messages,'fetch_url',{url:fixture.issue},fixture.title + '\n\n' + fixture.objective);
-  const plan = composeGeneralChangePlan('Implement ' + fixture.issue);
-  assert.ok(plan);
+  const tools = ['fetch_url','read','write'];
+  const retrieval = await planChatStep(messages,tools);
+  assert.equal(retrieval.kind,'tool_calls');
+  assert.equal(retrieval.calls[0].tool,'fetch_url');
+  assert.equal(JSON.parse(retrieval.calls[0].arguments).url,fixture.issue);
+  observe(messages,retrieval.calls[0].tool,JSON.parse(retrieval.calls[0].arguments),fixture.title + '\n\n' + fixture.objective);
   for (const path of paths) {
-    const step = planGeneralChangeStep(messages,['fetch_url','read','write'],plan);
+    const step = await planChatStep(messages,tools);
     assert.equal(step.kind,'tool_calls'); assert.equal(step.calls.length,1);
     const call = step.calls[0], args = JSON.parse(call.arguments);
     assert.equal(call.tool,'read'); assert.equal(args.path,path);
     observe(messages,'read',args,readFileSync(path,'utf8'),{source_read:{path,success:true,complete:true,format:'raw'}});
   }
-  const result = planGeneralChangeStep(messages,['fetch_url','read','write'],plan);
+  const result = await planChatStep(messages,tools);
   assert.equal(result.kind,'final');
   const evidence = JSON.parse(result.answer);
   assert.equal(evidence.reason,'EvidenceCollected');
