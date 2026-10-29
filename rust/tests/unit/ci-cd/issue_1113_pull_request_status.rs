@@ -9,18 +9,19 @@
 //! These tests pin the trigger *and* the thing it must not become: a place to
 //! weaken the condition now that it is visible sooner.
 
-use super::workflow_fixtures::{self_development_status_workflow, unwrapped};
+use super::workflow_fixtures::{job_block, self_development_status_workflow, unwrapped};
 
 /// The trigger exists, beside the two that were already there.
 #[test]
 fn the_status_runs_on_pull_requests_as_well_as_pushes_and_the_schedule() {
-    let workflow = unwrapped(&self_development_status_workflow());
+    let source = self_development_status_workflow();
+    let workflow = unwrapped(&source);
     assert!(
         workflow.contains("pull_request:"),
         "a pull request must be able to see the self-development status (issue #1113)"
     );
     assert!(
-        workflow.contains("push: branches: [main]"),
+        unwrapped(job_block(&source, "push")).contains("branches: [main]"),
         "the push trigger is what reports the status on `main`; it stays"
     );
     assert!(

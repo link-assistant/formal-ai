@@ -27,6 +27,10 @@ their existing obligations.
   work-item gap, formalize the observations and decompose the remaining work.
   Bound paths, observations and repeated actions; stop on failed, partial or
   policy-refused reads. Preserve JavaScript/native behavior parity in CI.
+- Bind each evidence record to the caller's referenced work item and the
+  original goal hash; retain original clause text and UTF-8 source spans.
+  Fetched prose must not replace the work-item origin. Keep native regressions
+  in the integration-test tree rather than embedding fixtures in production source.
 - Reading evidence alone does not deliver the original task. Record unbound
   requirements, implementation and independent verification as unfinished. The
   current bounded preflight is a capability improvement, not an autonomous

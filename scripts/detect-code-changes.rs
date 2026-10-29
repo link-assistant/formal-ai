@@ -200,7 +200,8 @@ fn is_ignored_by_ci(file_path: &str) -> bool {
 fn is_documentation_path(path: &str) -> bool {
     path.starts_with("docs/")
         || path.starts_with("changelog.d/")
-        || (!path.contains('/') && path.ends_with(".md"))
+        // GitHub path filters are case-sensitive globs, including a root `.md` file.
+        || (!path.contains('/') && matches!(path.rsplit_once('.'), Some((_, "md"))))
         || path.ends_with("/README.md")
         || path.ends_with("/CHANGELOG.md")
 }
@@ -296,7 +297,7 @@ fn classify_changes(changed_files: &[String]) -> ChangeFlags {
         .filter(|file| !is_ignored_by_ci(file))
         .collect();
     let code_pattern =
-        Regex::new(r"\.(rs|toml|mjs|cjs|js|lino|yml|yaml)$|\.github/workflows/").unwrap();
+        Regex::new(r"\.(rs|toml|mjs|cjs|js|lino|yml|yaml|[mM][dD])$|\.github/workflows/").unwrap();
     // A workflow is code for the gates that read it, but it is not the code
     // the compiled jobs test. Counting it in `any_code_changed` made every
     // workflow edit buy the macOS archive, the Docker check, six box images
@@ -521,9 +522,12 @@ mod tests {
             &mixed
         ));
         assert!(is_documentation_path("README.md"));
+        assert!(is_documentation_path(".md"));
+        assert!(!is_documentation_path("README.MD"));
         assert!(is_documentation_path("rust/README.md"));
         assert!(!is_documentation_path("data/seed/runtime.md"));
         assert!(classify_changes(&["data/seed/runtime.md".to_string()]).any_code_changed);
+        assert!(classify_changes(&["data/seed/RUNTIME.MD".to_string()]).any_code_changed);
     }
 
     #[test]

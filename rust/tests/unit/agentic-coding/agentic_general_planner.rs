@@ -157,10 +157,13 @@ fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() 
     )
     .expect("the owned offline issue body");
     assert_eq!(outcome.steps[1].result, body);
-    let mut expected =
-        compose_general_change_plan(ISSUE_698_WORK_ITEM).expect("the original work-item plan");
-    expected.goal = body.trim().to_owned();
-    assert_eq!(outcome.final_answer, expected.planned_not_executed_answer());
+    let evidence: serde_json::Value =
+        serde_json::from_str(&outcome.final_answer).expect("structured unsupported-work-item gap");
+    assert_eq!(evidence["schema"], "repository-work-item-evidence/v1");
+    assert_eq!(evidence["reason"], "ReadPolicyRefused");
+    assert_eq!(evidence["authored"], false);
+    assert_eq!(evidence["verified"], false);
+    assert_eq!(evidence["decomposition"][2]["status"], "not_executed");
     assert!(
         outcome
             .steps
@@ -168,8 +171,82 @@ fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() 
             .all(|step| !step.arguments.contains(PLAN_PATH)),
         "an unsupported work item must not write an auxiliary plan journal"
     );
-    assert!(outcome.final_answer.contains("Planned, not executed"));
     assert!(!outcome.final_answer.contains("project lookup"));
+}
+
+#[test]
+fn original_documentation_issue_collects_evidence_without_claiming_implementation() {
+    let fixture: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../../data/benchmarks/fixtures/work-item-1455/failure.json"
+    ))
+    .expect("public failure fixture");
+    let issue = fixture["issue"].as_str().expect("issue");
+    let request = format!("Implement {issue}");
+    let body = format!(
+        "{}\n\n{}",
+        fixture["title"].as_str().expect("title"),
+        fixture["objective"].as_str().expect("objective")
+    );
+    let tools = ["fetch_url", "read_file", "write_file"];
+    let mut messages = vec![ChatMessage::user(&request)];
+    let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &tools) else {
+        panic!("the original work item must be retrieved first")
+    };
+    assert_eq!(calls.len(), 1);
+    assert_eq!(calls[0].tool, "fetch_url");
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        "work-item-read",
+        &calls[0].tool,
+        calls[0].arguments.clone(),
+    )]));
+    messages.push(ChatMessage::tool_result(
+        "work-item-read",
+        "fetch_url",
+        body,
+    ));
+    let mut workspace = crate::tool_workspace::ToolWorkspace::new(&request);
+    let paths = [
+        "docs/associative-tech-stack.md",
+        "rust/Cargo.toml",
+        "package.json",
+        "js/web-search-component-entry.js",
+    ];
+    for path in paths {
+        workspace
+            .write_initial(path, "observed source\n")
+            .expect("source fixture");
+        let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &tools) else {
+            panic!("explicit source evidence must be read")
+        };
+        assert_eq!(calls.len(), 1);
+        assert_eq!(calls[0].tool, "read_file");
+        let arguments: serde_json::Value =
+            serde_json::from_str(&calls[0].arguments).expect("read operands");
+        assert_eq!(arguments["path"], path);
+        let identity = format!("evidence-read-{}", messages.len());
+        messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            &identity,
+            &calls[0].tool,
+            calls[0].arguments.clone(),
+        )]));
+        messages.push(workspace.execute(&identity, &calls[0]));
+    }
+    let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
+        panic!("bounded evidence collection must terminate")
+    };
+    let evidence: serde_json::Value = serde_json::from_str(&answer).expect("structured evidence");
+    assert_eq!(evidence["reason"], "EvidenceCollected");
+    assert_eq!(evidence["workItem"], issue);
+    assert_eq!(evidence["authored"], false);
+    assert_eq!(evidence["verified"], false);
+    assert_eq!(
+        evidence["observations"]
+            .as_array()
+            .expect("observations")
+            .len(),
+        paths.len()
+    );
+    assert!(workspace.read(PLAN_PATH).is_err());
 }
 
 #[test]

@@ -22,12 +22,12 @@ export function workItemEvidencePaths(task) {
   return paths;
 }
 
-export function planWorkItemEvidence(task, messages, tools) {
+export function planWorkItemEvidence(task, messages, tools, workItem = null) {
   const paths = workItemEvidencePaths(task);
   if (!paths.length) return null;
   const progress = Progress.scan(messages), observations = [];
   const finish = reason => resolvedFinalAnswer(jsonText({
-    schema: 'repository-work-item-evidence/v1', reason, taskIdentity: sha256Hex(task),
+    schema: 'repository-work-item-evidence/v1', reason, workItem, taskIdentity: sha256Hex(task),
     requirements: clausesWithSpans(task).map(([text, span]) => ({text, span, status: 'unbound'})),
     decomposition: [
       {step: 'collect_repository_evidence', status: reason === 'EvidenceCollected' ? 'observed' : 'incomplete'},
