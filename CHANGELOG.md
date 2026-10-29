@@ -20,6 +20,12 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.355.19] - 2026-10-29
+
+### Fixed
+- Move remaining Mac ARM release and public-download jobs to supported macOS 15
+  runners so the macOS 14 brownouts and November 2 retirement cannot stall releases.
+
 ## [0.355.18] - 2026-10-29
 
 ### Fixed

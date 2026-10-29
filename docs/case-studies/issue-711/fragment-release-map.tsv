@@ -901,6 +901,7 @@ changelog.d/20261029_100000_documentation-filter-compatibility.md	0.355.18
 changelog.d/20261029_103000_documentation-admission-guards.md	0.355.18
 changelog.d/20261029_114000_native-regression-lint.md	0.355.18
 changelog.d/20261029_120000_issue-1455-documentation-evidence.md	0.355.18
+changelog.d/20261029_153000_supported-macos-runners.md	0.355.19
 changelog.d/desktop-package-source-boundary.md	0.355.17
 changelog.d/fast-pr-offline-e2e-admission.md	0.355.15
 changelog.d/governed-desktop-source-witness.md	0.355.17
