@@ -109,3 +109,8 @@ integration target. Its replacement exercises the public planner and actual
 temporary-workspace reads. Evidence now carries the caller's work-item URL,
 without accepting a replacement origin from fetched prose; UTF-8 goal hashes
 and original requirement spans remain bound to the captured source.
+The intermediate main Clippy run also flagged a filesystem-extension heuristic
+on the root Markdown predicate. The predicate now expresses the exact
+case-sensitive GitHub suffix rule (including a root `.md` filename), while
+unknown runtime Markdown of either case reaches code admission. No lint is
+suppressed and no documentation path policy is broadened.

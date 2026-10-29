@@ -19,7 +19,7 @@ for (const event of ['push', 'pull_request']) {
       assert.ok(!selected.includes('.github/workflows/release.yml'));
     });
   }
-  for (const path of ['rust/src/lib.rs', 'js/agentic/planner.mjs', 'data/seed/runtime.md', '.github/workflows/release.yml', 'Cargo.toml', 'unknown-input']) {
+  for (const path of ['rust/src/lib.rs', 'js/agentic/planner.mjs', 'data/seed/runtime.md', 'data/seed/RUNTIME.MD', '.github/workflows/release.yml', 'Cargo.toml', 'unknown-input']) {
     test(event + ': mixed changes retain main CI and release admission: ' + path, () => {
       assert.ok(applicableWorkflows(workflows, {event, baseBranch: 'main', files: ['docs/guide.md', path]}).includes('.github/workflows/release.yml'));
     });
