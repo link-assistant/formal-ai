@@ -4,6 +4,7 @@ import {readFileSync} from 'node:fs';
 import {dirname, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import * as formalAiBabelParser from '@babel/parser';
+import {documentationPaths} from './lib/documentation-paths.mjs';
 const require = createRequire(import.meta.url);
 const {parse} = formalAiBabelParser;
 const {parseDocument} = require('yaml');
@@ -15,6 +16,8 @@ function literalPath(value) {
 }
 // Existing anchored filters remain text; they never substitute for explicit source ownership.
 function retainedPathFilter(value) {
+  // These exact policy exclusions grant no positive source ownership.
+  if (documentationPaths.some(path => value === '!' + path)) return value;
   if (typeof value === 'string' && value.endsWith('/**')) {
     literalPath(value.slice(0, -3));
     return value;
@@ -150,19 +153,22 @@ export function projectReleaseTriggerPaths(recipeSource, workflowSource, role) {
   const missing = declared.filter(value => !existing.includes(value));
   if (!missing.length) return Object.freeze({text:workflowSource,added:Object.freeze([]),declared:Object.freeze(declared)});
   const last = sequence.items.at(-1);
-  const start = workflowSource.lastIndexOf('\n', last.range[0]) + 1;
+  const firstExclusion = sequence.items.find(item => item.value.startsWith('!'));
+  const anchor = firstExclusion ?? last;
+  const start = workflowSource.lastIndexOf('\n', anchor.range[0]) + 1;
   const prefix = /^([ ]*)- /u.exec(workflowSource.slice(start));
   assert.ok(prefix, 'Exact existing block item indentation required');
-  const lineEnd = workflowSource.indexOf('\n', last.range[1]);
+  const lineEnd = workflowSource.indexOf('\n', anchor.range[1]);
   assert.ok(lineEnd >= 0, 'Existing path line ending required');
-  const offset = lineEnd + 1;
+  const offset = firstExclusion ? start : lineEnd + 1;
   const ending = workflowSource[lineEnd - 1] === '\r' ? '\r\n' : '\n';
   const insertion = missing.map(value => prefix[1] + '- ' + JSON.stringify(value) + ending).join('');
   const text = workflowSource.slice(0, offset) + insertion + workflowSource.slice(offset);
   const result = parseDocument(text, {uniqueKeys:true});
   assert.equal(result.errors.length, 0);
   const before = document.toJSON(), after = result.toJSON();
-  assert.deepEqual(after.on.pull_request.paths, [...existing,...missing]);
+  const insertionIndex = firstExclusion ? sequence.items.indexOf(firstExclusion) : existing.length;
+  assert.deepEqual(after.on.pull_request.paths, [...existing.slice(0,insertionIndex),...missing,...existing.slice(insertionIndex)]);
   after.on.pull_request.paths = before.on.pull_request.paths;
   assert.deepEqual(after, before, 'No other workflow semantics may change');
   assert.equal(text.slice(0,offset) + text.slice(offset+insertion.length),workflowSource);

@@ -63,3 +63,20 @@ profile. Their step payloads are fingerprinted in the retained-jobs manifest;
 default PR deferral earns no execution credit. Main's production compilation and
 native tests remain selected. These two separate qualifications are available
 through manual dispatch, or `FORMAL_AI_FULL_PR_CI=run` on PRs.
+
+## Full-suite compatibility follow-up
+
+PR #1461 merged as `690fb930005600d0a98c4c990e9f76bf5c5094c4` after its
+exact-head fast checks passed. The broader main suite then found three gaps:
+the publication-path projector rejected the exact new documentation negatives;
+the twin scanner required a separately named native path-parser function; and
+two original auxiliary-safety tests assumed the old English rendering.
+
+The follow-up retains only the shared, exact documentation exclusions, inserts
+new positive declarations before them and still rejects arbitrary negation,
+traversal and dynamic source authority. Original bytes/comments and CRLF framing
+remain reversible. The native parser is extracted without changing its logic.
+The auxiliary tests assert the structured schema, missing-read-tool reason,
+no-authorship/no-verification and unfinished implementation, while preserving
+all their no-journal/no-unauthorized-write checks. All three regression files are
+now part of fast PR coverage. No native tests were run locally.
