@@ -75,3 +75,7 @@ test('read prohibitions and oversized observations remain unverified', () => {
   observe(messages,'read',{path:'package.json'},'x'.repeat(262145),{source_read:{path:'package.json',success:true,complete:true,format:'raw'}});
   assert.equal(JSON.parse(planWorkItemEvidence(task,messages,['read']).answer).reason,'IncompleteSourceObservation');
 });
+test('source references preserve native Unicode separator semantics', () => {
+  assert.deepEqual(workItemEvidencePaths('Inspect\u0085Cargo.toml.'),['Cargo.toml']);
+  assert.deepEqual(workItemEvidencePaths('Inspect\uFEFFCargo.toml.'),[]);
+});

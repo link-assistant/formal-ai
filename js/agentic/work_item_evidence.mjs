@@ -7,12 +7,13 @@ import {FinalDisposition, resolvedFinalAnswer, planOne, jsonText} from './plan.m
 import {sha256Hex} from './crate/source_fetch.mjs';
 import {readPolicyBlocksPlan} from './file_read/ownership.mjs';
 import {clausesWithSpans} from './crate/obligation_ledger.mjs';
+import {splitWhitespace} from './crate/rust_str.mjs';
 
 /** File references are evidence candidates, never shell commands or write authority. */
 export function workItemEvidencePaths(task) {
   if (new TextEncoder().encode(task).length > 32768) return [];
   const paths = [];
-  for (const word of task.split(/[\s`'"()[\],;]+/u)) {
+  for (const word of splitWhitespace(task).flatMap(part => part.split(/[`'"()[\],;]+/u))) {
     const path = word.replace(/^[`'"(\[]+|[`'"),.;:\]]+$/gu, '');
     if (!/^[A-Za-z0-9_-][A-Za-z0-9_./-]*\.(?:md|toml|json|rs|mjs|js|ts|yml|yaml|lino)$/u.test(path)
       || path.split('/').some(part => !part || part === '.' || part === '..') || paths.includes(path)) continue;

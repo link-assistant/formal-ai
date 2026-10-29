@@ -61,7 +61,7 @@ fn fetched_issue_prose_does_not_pair_content_with_a_later_filename() {
     let task = format!("Solve {ISSUE_URL} in this checkout as one whole task.");
     let tools = ["web_fetch", "write_file", "run_shell_command"];
     let workspace = observed_tool_workspace::ToolWorkspace::new(&task);
-    let mut messages = vec![ChatMessage::user(task.clone())];
+    let mut messages = vec![ChatMessage::user(task)];
     let body = "Produce a legitimate release with no fabricated evidence.\n\
          Adding a bypass flag to check-self-development-release.rs is not acceptable.";
 
