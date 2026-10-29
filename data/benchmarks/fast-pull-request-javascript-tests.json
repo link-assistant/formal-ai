@@ -50,6 +50,9 @@
     "rust/tests/web/desktop-package-boundary.test.mjs",
     "rust/tests/web/rust-specification-fixture-integrity.test.mjs",
     "rust/tests/web/documentation-only-ci-policy.test.mjs",
-    "rust/tests/web/work-item-evidence.test.mjs"
+    "rust/tests/web/work-item-evidence.test.mjs",
+    "rust/tests/web/release-trigger-paths.test.mjs",
+    "rust/tests/web/fetched-issue-auxiliary-safety.test.mjs",
+    "rust/tests/web/planner-twins.test.mjs"
   ]
 }

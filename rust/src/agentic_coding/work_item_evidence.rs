@@ -5,15 +5,10 @@ use super::progress::Progress;
 use crate::protocol::ChatMessage;
 use serde_json::json;
 
-/// Native twin of js/agentic/work_item_evidence.mjs. References grant read evidence only.
-pub(super) fn plan_work_item_evidence(
-    task: &str,
-    messages: &[ChatMessage],
-    tools: &[&str],
-    result: &mut Option<FinalResult>,
-) -> Option<AgenticPlan> {
+/// Parse bounded explicit source references without granting effect authority.
+fn work_item_evidence_paths(task: &str) -> Vec<&str> {
     if task.len() > 32_768 {
-        return None;
+        return Vec::new();
     }
     let pattern = regex::Regex::new(
         r"^[A-Za-z0-9_-][A-Za-z0-9_./-]*\.(md|toml|json|rs|mjs|js|ts|yml|yaml|lino)$",
@@ -37,6 +32,17 @@ pub(super) fn plan_work_item_evidence(
             break;
         }
     }
+    paths
+}
+
+/// Native twin of `js/agentic/work_item_evidence.mjs`. References grant read evidence only.
+pub(super) fn plan_work_item_evidence(
+    task: &str,
+    messages: &[ChatMessage],
+    tools: &[&str],
+    result: &mut Option<FinalResult>,
+) -> Option<AgenticPlan> {
+    let paths = work_item_evidence_paths(task);
     if paths.is_empty() {
         return None;
     }

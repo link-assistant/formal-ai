@@ -59,7 +59,12 @@ test('original fetched task and two statements retain an honest gap with no jour
   const dir = mkdtempSync(join(tmpdir(), 'fetched-auxiliary-'));
   try {
     const { result } = await fetched();
-    assert.equal(result.kind, 'final'); assert.ok(result.answer.includes('Planned, not executed'));
+    assert.equal(result.kind, 'final');
+    const evidence = JSON.parse(result.answer);
+    assert.equal(evidence.schema, 'repository-work-item-evidence/v1');
+    assert.equal(evidence.reason, 'MissingReadTool');
+    assert.equal(evidence.authored, false); assert.equal(evidence.verified, false);
+    assert.equal(evidence.decomposition.find(step => step.step === 'implement_requested_change').status, 'not_executed');
     assert.equal(finalResult(result).disposition, 'gap'); assert.equal(result.calls, undefined);
     assert.ok(result.answer.includes('Produce a legitimate release with no fabricated evidence.'));
     assert.ok(result.answer.includes('Adding a bypass flag to check-self-development-release.rs is not acceptable.'));
@@ -93,6 +98,8 @@ test('legacy run_command retrieval does not authorize a shell journal recipe for
   const legacyTools = ['web_fetch', 'write_file', 'run_command'];
   const { result } = await fetched(legacyTools, 'run_command');
   assert.equal(result.kind, 'final'); assert.equal(finalResult(result).disposition, 'gap');
-  assert.ok(result.answer.includes('Planned, not executed'));
+  const evidence = JSON.parse(result.answer);
+  assert.equal(evidence.reason, 'MissingReadTool');
+  assert.equal(evidence.authored, false); assert.equal(evidence.verified, false);
   assert.ok(!result.answer.includes('Executed')); assert.equal(result.calls, undefined);
 });
