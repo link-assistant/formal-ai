@@ -2,6 +2,12 @@
 
 **Don't know everything, know just enough to get to know anything**
 
+Live issue handling must use current Formal AI and Hive Mind, resolving each
+source once per attempt and preserving that identity across jobs. Record actual
+runtime versions and fail explicitly rather than silently using older code.
+Historical replay pins describe past behavior and cannot establish current
+capability. See [the runtime requirements](docs/requirements/issue-1455-documentation-and-evidence.md#current-runtimes-for-issue-handling-2026-10-30).
+
 Formal AI should become a symbolic assistant whose live state is an associative operational space. The assistant should not be defined by hidden neural weights or by a large memoized answer table. It should be defined by an inspectable associative network of links: user messages, source data, inferred meanings, commands, test results, generated code, failures, permissions, and final answers.
 
 The associative network is the AI. The runtime should activate, extend, query, and simplify that network as work happens. What that thesis means in the present code — which parts are implemented today and which remain a direction — is stated in the Present boundary section of [`docs/philosophy.md`](docs/philosophy.md), and it is that boundary, not the thesis alone, that governs what published claims may say.

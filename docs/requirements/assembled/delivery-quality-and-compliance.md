@@ -737,3 +737,28 @@ their existing obligations.
   current bounded preflight is a capability improvement, not an autonomous
   documentation-authoring claim; general evidence-to-edit synthesis remains an
   explicit development gap.
+
+### Current runtimes for issue handling (2026-10-30)
+
+- Each live issue-drafting attempt resolves current Formal AI `main` and current
+  Hive Mind `main`, rather than using a historical source pin. Resolve each once
+  and reuse the exact selected commits across the attempt's jobs. Log actual
+  checkout identities, Formal AI version and binary digest, and Hive Mind
+  package version and requested image. Moving branches must not change an
+  in-progress attempt's source identity.
+- Build Formal AI from that source in CI. Select Hive Mind's exact versioned
+  runtime image from the selected source, with no fallback to a potentially
+  older `latest` image. Unavailable images, failed discovery or incompatible
+  runner structure are explicit failures with retained evidence and an issue
+  response; they must not silently run a stale version or claim task delivery.
+- Maintained Hive Mind CLI integration checks install its latest published npm
+  version and print the installed package identity. This published CLI check
+  is distinct from the live issue handler's current-source policy.
+- Keep historical fixtures and disabled forensic replays pinned to their
+  original sources. Their results provide historical regression evidence,
+  never acceptance evidence for current runtime freshness. Diagnostic adaptation
+  preserves source text outside a structurally qualified environment insertion;
+  it does not replace the shared solve command or task.
+- Fresh runtimes do not establish general autonomous editing. The evidence-to-edit
+  synthesis gap above remains open until actual authored and verified changes
+  demonstrate it. These workflow repairs are manual, not Formal-AI-authored.

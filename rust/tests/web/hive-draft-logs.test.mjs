@@ -5,22 +5,23 @@ import path from 'node:path';
 import os from 'node:os';
 import vm from 'node:vm';
 import {spawnSync} from 'node:child_process';
-import {adaptDraftDiagnostics,prepareDraftDiagnostics,HIVE_DRAFT_PIN} from '../../../scripts/lib/hive-draft-diagnostics.mjs';
+import {adaptDraftDiagnostics,prepareDraftDiagnostics} from '../../../scripts/lib/hive-draft-diagnostics.mjs';
 import {prepareDraftEvidence} from '../../../scripts/prepare-hive-draft-evidence.mjs';
 import {collectDraftJobLogs} from '../../../scripts/collect-hive-draft-logs.mjs';
 import {captureDraftCommand} from '../../../scripts/capture-draft-command.mjs';
 import {transferOperationalEvidenceOwner} from '../../../scripts/lib/hive-operational-evidence.mjs';
 import {usefulDraftChanges} from '../../../scripts/hive-mind-draft-result.mjs';
 const root=path.resolve(import.meta.dirname,'../../..');
+const HIVE_DRAFT_PIN='2083d6fd86ba0a7ee54e36110c8aebcfb5f2774d'; // Historical captured fixture identity only.
 function workspace(t){
  const directory=fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(),'formal-ai-draft-logs-')));
  t.after(()=>fs.rmSync(directory,{recursive:true,force:true}));return directory;
 }
 const publicRunner=fs.readFileSync(path.join(root,'rust/tests/fixtures/hive-draft-runner.mjs.txt'),'utf8');
-test('pinned shared runner retains full payloads on the existing mounted directory without changing solve',t=>{
+test('source-qualified shared runner retains full payloads on the existing mounted directory without changing solve',t=>{
  const directory=workspace(t),hive=path.join(directory,'hive'),logs=path.join(directory,'logs');
  fs.mkdirSync(path.join(hive,'scripts'),{recursive:true});fs.writeFileSync(path.join(hive,'scripts/formal-ai-draft.mjs'),publicRunner);
- const report=prepareDraftDiagnostics({hive,logDirectory:logs}),adapted=fs.readFileSync(path.join(hive,'scripts/formal-ai-draft.mjs'),'utf8');
+ const report=prepareDraftDiagnostics({hive,logDirectory:logs,upstreamCommit:HIVE_DRAFT_PIN,readHead:()=>HIVE_DRAFT_PIN}),adapted=fs.readFileSync(path.join(hive,'scripts/formal-ai-draft.mjs'),'utf8');
  assert.equal(report.upstreamCommit,HIVE_DRAFT_PIN);assert.equal(report.taskChanged,false);
  const start=adapted.indexOf('buildDockerArgv({'),end=adapted.indexOf('\n});',start);
  const args=vm.runInNewContext(adapted.slice(start,end+3),{
@@ -31,7 +32,9 @@ test('pinned shared runner retains full payloads on the existing mounted directo
   assert(args.setEnv[key].startsWith('/home/box/logs/formal-ai-'));
  assert.equal(args.setEnv.FORMAL_AI_LOG_LEVEL,'trace');
  assert.equal(args.solveArgv.logDir,'/home/box/logs');assert.equal(args.image,'pinned-image');
- assert.throws(()=>adaptDraftDiagnostics(publicRunner+'\n// changed'),/unreviewed/);
+ assert.equal(adaptDraftDiagnostics(publicRunner+'\n// changed'),adapted+'\n// changed');
+ assert.throws(()=>adaptDraftDiagnostics(publicRunner.replace('setEnv:', 'otherEnv:')),/use site changed/);
+ assert.throws(()=>prepareDraftDiagnostics({hive,logDirectory:logs,upstreamCommit:HIVE_DRAFT_PIN,readHead:()=> 'b'.repeat(40)}),/differs/);
 });
 test('complete console capture preserves middle output, stderr and the failing command status',t=>{
  const directory=workspace(t),payload='α😀'.repeat(20000)+'\nMIDDLE-ERROR\n'+'z'.repeat(100000)+'\n';
@@ -233,4 +236,15 @@ test('post-run collection retains logs larger than the observed former eight MiB
   output:path.join(directory,'artifact'),transport});
  assert.equal(receipt.complete,true);assert.equal(receipt.jobs[0].log.complete,true);
  assert.equal(fs.readFileSync(path.join(directory,'artifact/job-22.log'),'utf8'),text);
+});
+
+test('diagnostic adaptation preserves formatting and refuses comment/string impostors',()=>{
+ const source='const argv = buildDockerArgv({ setEnv: { /* retain */ ...buildGitIdentityEnv(),\n ...buildRunContextEnv(env), }, image });\n';
+ const adapted=adaptDraftDiagnostics(source);
+ assert(adapted.includes('/* retain */'));assert(adapted.endsWith('}, image });\n'));
+ assert.match(adapted,/FORMAL_AI_NATIVE_RESPONSE_CAPTURE_DIR/);
+ const impostor='// '+source.replaceAll('\n',' ')+'\nconst argv = buildDockerArgv({ image });';
+ assert.throws(()=>adaptDraftDiagnostics(impostor),/use site changed/);
+ assert.throws(()=>adaptDraftDiagnostics('const text = '+JSON.stringify(source)+';'),/invocation required/);
+ assert.throws(()=>adaptDraftDiagnostics(source+source),/invocation required/);
 });

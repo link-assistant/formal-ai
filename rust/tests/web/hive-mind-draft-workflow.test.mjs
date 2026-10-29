@@ -18,14 +18,19 @@ test('no-PR failure comment always links run and available full session artifact
 test('workflow contracts retain source identity, shared policy, evidence and default-token checks',()=>{
  assert.match(workflow,/types:\s*(?:\[opened\]|- opened)/); assert.match(workflow,/issue_number:/);
  assert.match(workflow,/cancel-in-progress: false/); assert.match(workflow,/group: hive-mind-draft-/);
- assert.match(workflow,/2083d6fd86ba0a7ee54e36110c8aebcfb5f2774d/);
+ assert.doesNotMatch(workflow,/2083d6fd86ba0a7ee54e36110c8aebcfb5f2774d/);
+ assert.match(workflow,/repos\/link-assistant\/hive-mind\/commits\/main/);
+ assert.match(workflow,/ref: \$\{\{ steps.hive-source.outputs.sha/);
+ assert.match(workflow,/ref: \$\{\{ needs.build.outputs.hive_source_sha/);
+ assert.match(workflow,/FORMAL_AI_DRAFT_IMAGE: \$\{\{ needs.build.outputs.hive_image/);
+ assert.match(workflow,/HIVE_MIND_SOURCE_SHA: \$\{\{ needs.build.outputs.hive_source_sha/);
  assert.ok(workflow.indexOf('--decide') < workflow.indexOf('cargo build'));
  assert.match(workflow,/commits\/main/); assert.match(workflow,/ref: \$\{\{ steps.source.outputs.sha/);
  assert.match(workflow,/--version/); assert.match(workflow,/sha256sum/);
  assert.match(workflow,/FORMAL_AI_DRAFT_BINARY:.*formal-ai/);
  assert.match(workflow,/GH_TOKEN: \$\{\{ github.token \}\}/); assert.match(workflow,/actions\/dispatch-checks/);
  assert.match(workflow,/AUTOMATION_LAYER: default/); assert.doesNotMatch(workflow,/secrets\.AUTOMATION|steps\.credentials/); assert.match(workflow,/steps.exact-pr.outputs.pull_request_number/);
- assert.match(workflow,/always\(\).*steps.decide.outputs.should_run == 'true'/);
+ assert.match(workflow,/always\(\).*steps.decide.outputs.should_run == 'true'.*failure\(\)/);
  assert.ok(workflow.indexOf('id: logs') < workflow.indexOf('node scripts/hive-mind-draft-result.mjs --failure'));
  assert.doesNotMatch(workflow,/github.event.issue.(body|title)|auto-merge|writer-lock/);
 });
@@ -105,4 +110,19 @@ test('candidate inspection consumes the full census and refuses head movement or
  assert.equal(receipt.files.length,101);
  assert.throws(()=>run('moved'),/changed during inspection/);
  assert.throws(()=>run('missing'),/incomplete diff census/);
+});
+
+test('fresh selections are sealed across jobs and setup failures retain an issue response',()=>{
+ assert(workflow.indexOf('id: hive-source')<workflow.indexOf('id: decide'));
+ assert(workflow.indexOf('id: hive-version')>workflow.indexOf('id: decide'));
+ assert.match(workflow,/hive_source_sha: \$\{\{ steps.hive-source.outputs.sha/);
+ assert.match(workflow,/hive_image: \$\{\{ steps.hive-version.outputs.image/);
+ assert.match(workflow,/image.endsWith\(':'\+version\)/);
+ assert.match(workflow,/should_run:.*failure\(\).*'true'/);
+ assert.match(workflow,/issue_number:.*github.event.issue.number.*inputs.issue_number/);
+ assert.match(workflow,/FORMAL_AI_DRAFT_ISSUE:.*needs.build.outputs.issue_number/);
+ assert.match(workflow,/tee -a "\$FORMAL_AI_DRAFT_LOG_DIR\/source-identity.txt"/);
+ const integration=readFileSync(new URL('../../../.github/workflows/agent-cli-e2e.yml',import.meta.url),'utf8');
+ assert.match(integration,/@link-assistant\/hive-mind@latest/);
+ assert.doesNotMatch(integration,/@link-assistant\/hive-mind@2\.15\.1/);
 });
