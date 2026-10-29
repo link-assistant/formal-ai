@@ -1,5 +1,32 @@
 # PR1452: Fast PR checks and offline GitHub-test regressions
 
+## Desktop package source-boundary recovery
+
+PR1458 merged as fcba2c6b48302515df840c3134d74ad9c8a2f406. Its complete main
+census passed eleven required workflows and 124 jobs. v0.355.16 selected
+b33d7da9cbeb853e0eab4e02f6d17049261e7fc4; initial full/slim GHCR images,
+Docker Hub mirror and all six final Docker manifests/indexes were independently
+verified using public JSON metadata only. All eight native targets, five CLI
+archives and both ad-hoc signed macOS desktop packages passed. Engine and source
+network publication passed. This is not complete native release acceptance:
+Windows x64 desktop packaging failed and public download verification skipped.
+
+The complete public console for native release run40787709964,
+job123172160709 has SHA256
+220b17374ab70243cb7c9c99a7369dd90a3628039458fe48d4ffc351203e7178.
+Its installer input was 5,443,783 KiB unpacked, and NSIS failed creating mmap of
+the application archive. The log exposed a nested formal-ai-web-bundle dependency
+containing desktop/release/win-unpacked/electron.exe, another browser runtime and
+duplicate native executables. These are captured as a small public fixture.
+
+The recovery excludes the private parent package from dependency collection,
+audits actual ASAR metadata before installer generation and replays those paths
+alongside retained browser/native/runtime dependency controls. Hosted packaging
+also exercises its installed packager's actual matcher. No package/native build
+is run locally. The source-history restoration fix passed on all native and
+packaging targets; do not weaken its provenance checks or retry the old failed
+release owner. Record the new exact PR head and resulting publication separately.
+
 ## Scope and policy
 
 One follow-up PR contains the fast CI profile, release-admission race fix,

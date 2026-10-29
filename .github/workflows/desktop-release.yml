@@ -536,6 +536,7 @@ jobs:
       - name: Prefetch electron-builder toolsets
         working-directory: desktop
         run: |
+          node --test ../rust/tests/web/desktop-package-boundary.test.mjs
           node --test scripts/prefetch-electron.test.mjs
           node scripts/prefetch-electron.mjs
           if [ "${{ matrix.label }}" = windows-arm64 ]; then

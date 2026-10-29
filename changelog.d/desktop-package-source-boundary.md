@@ -1,0 +1,1 @@
+Fix desktop installers recursively including the private parent source tree and previous build outputs. Exclude the repository package from runtime dependencies and audit ASAR contents before installer creation. Add captured Windows NSIS failure regressions and hosted packager filter verification.

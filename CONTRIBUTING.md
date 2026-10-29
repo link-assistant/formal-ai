@@ -609,6 +609,9 @@ Removal from a public thread is not approval to retain another copy.
    a fetch. Do not retry large redundant downloads or raise their budgets to hide
    duplication. Missing console evidence after packaging starts remains a failure;
    record unacquired runners with structured annotations and no execution credit.
+   Exclude private repository source and build outputs from desktop dependencies;
+   verify captured exclusions with the installed packager and audit actual ASAR
+   metadata before installer creation. Preserve required browser/native resources.
    See [CI speed](docs/ci-cd/speed.md) and the
    [current requirements](docs/requirements/doctrine-fast-pull-request-production-ci.md).
 

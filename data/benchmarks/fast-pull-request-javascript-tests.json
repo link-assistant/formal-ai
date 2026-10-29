@@ -46,6 +46,7 @@
     "rust/tests/web/native-release-source-transport.test.mjs",
     "rust/tests/web/relocated-build-stage-controls.test.mjs",
     "rust/tests/web/native-release-workflow.test.mjs",
-    "rust/tests/web/packaging-console-retention.test.mjs"
+    "rust/tests/web/packaging-console-retention.test.mjs",
+    "rust/tests/web/desktop-package-boundary.test.mjs"
   ]
 }
