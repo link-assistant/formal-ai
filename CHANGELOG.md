@@ -20,6 +20,12 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.355.17] - 2026-10-29
+
+Fix desktop installers recursively including the private parent source tree and previous build outputs. Exclude the repository package from runtime dependencies and audit ASAR contents before installer creation. Add captured Windows NSIS failure regressions and hosted packager filter verification.
+
+Refresh the reviewed desktop source fixtures after the installer-boundary fix. Add a cheap PR check for every governed fixture and native-source digest so stale embedded source is caught before main, while retaining complete-object and reader parity checks.
+
 ## [0.355.16] - 2026-10-28
 
 Reuse the verified same-run source history for native, desktop and extension
