@@ -118,7 +118,9 @@ test('fresh selections are sealed across jobs and setup failures retain an issue
  assert.match(workflow,/hive_source_sha: \$\{\{ steps.hive-source.outputs.sha/);
  assert.match(workflow,/hive_image: \$\{\{ steps.hive-version.outputs.image/);
  assert.match(workflow,/image.endsWith\(':'\+version\)/);
- assert.match(workflow,/should_run:.*failure\(\).*'true'/);
+ assert.match(workflow,/should_run:.*job.status == 'failure'.*'true'/);
+ const outputs=workflow.slice(workflow.indexOf('    outputs:'),workflow.indexOf('    # The default token'));
+ assert.doesNotMatch(outputs,/\b(?:failure|success|always|cancelled)\(\)/);
  assert.match(workflow,/issue_number:.*github.event.issue.number.*inputs.issue_number/);
  assert.match(workflow,/FORMAL_AI_DRAFT_ISSUE:.*needs.build.outputs.issue_number/);
  assert.match(workflow,/tee -a "\$FORMAL_AI_DRAFT_LOG_DIR\/source-identity.txt"/);

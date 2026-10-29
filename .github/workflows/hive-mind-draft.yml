@@ -26,7 +26,7 @@ jobs:
       contents: read
       issues: read
     outputs:
-      should_run: ${{ steps.decide.outputs.should_run || (failure() && 'true') || 'false' }}
+      should_run: ${{ steps.decide.outputs.should_run || (job.status == 'failure' && 'true') || 'false' }}
       decision_code: ${{ steps.decide.outputs.decision_code }}
       issue_number: ${{ steps.decide.outputs.issue_number || github.event.issue.number || inputs.issue_number }}
       source_sha: ${{ steps.source.outputs.sha }}
