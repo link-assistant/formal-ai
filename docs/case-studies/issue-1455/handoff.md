@@ -114,3 +114,10 @@ on the root Markdown predicate. The predicate now expresses the exact
 case-sensitive GitHub suffix rule (including a root `.md` filename), while
 unknown runtime Markdown of either case reaches code admission. No lint is
 suppressed and no documentation path policy is broadened.
+
+The final repaired main source then exposed one residual test-only Clippy error:
+the old expected-plan assertion had been removed, leaving its `task.clone()`
+redundant. The follow-up moves the final owned task into its message and keeps
+all no-effect/source-identity assertions. It also reuses the native-compatible
+Unicode whitespace splitter for source references: NEL is whitespace and BOM is
+not, matching Rust without changing original goal text or source spans.
