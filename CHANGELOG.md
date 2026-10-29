@@ -20,6 +20,37 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.355.18] - 2026-10-29
+
+### Fixed
+- Preserve exact documentation exclusions when projecting publication trigger
+  paths, without granting negated patterns source-declaration authority.
+- Keep original fetched-work-item safety assertions aligned with structured gap
+  observations and expose the shared native path parser for parity verification.
+
+### Fixed
+- Treat unknown Markdown runtime inputs as code after documented paths are
+  excluded, and test native change admission before CI uses its tier outputs.
+- Cancel superseded read-only documentation checks on PRs while protecting main.
+- Drop checkout push credentials and preserve native unsupported-work-item
+  no-effect assertions with the structured gap protocol.
+- Bind evidence reports to the caller's work-item URL and keep native regression
+  tests in the integration-test tree, outside production source.
+
+### Fixed
+- Remove the redundant task clone exposed by the structured-gap regression update.
+- Use native Unicode whitespace semantics when collecting source references in
+  JavaScript, keeping the generated TypeScript and native parser aligned.
+- Decode Git filenames as NUL-delimited literal paths so Unicode documentation
+  filenames cannot accidentally admit an automatic release.
+
+### Fixed
+- Document actual command-stream, web-capture and web-search integration boundaries.
+- Skip heavy automatic CI and automatic publication for documentation-only changes,
+  including bot-dispatched checks and pending-changelog release admission.
+- Collect bounded repository evidence and expose unfinished implementation and
+  verification steps before stopping on unsupported repository work items.
+
 ## [0.355.17] - 2026-10-29
 
 Fix desktop installers recursively including the private parent source tree and previous build outputs. Exclude the repository package from runtime dependencies and audit ASAR contents before installer creation. Add captured Windows NSIS failure regressions and hosted packager filter verification.
