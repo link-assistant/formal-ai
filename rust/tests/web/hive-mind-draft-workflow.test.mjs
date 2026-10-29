@@ -126,5 +126,7 @@ test('fresh selections are sealed across jobs and setup failures retain an issue
  assert.match(workflow,/tee -a "\$FORMAL_AI_DRAFT_LOG_DIR\/source-identity.txt"/);
  const integration=readFileSync(new URL('../../../.github/workflows/agent-cli-e2e.yml',import.meta.url),'utf8');
  assert.match(integration,/@link-assistant\/hive-mind@latest/);
+ assert.match(integration,/run: \|\n\s+bun add -g --ignore-scripts @link-assistant\/hive-mind@latest\n\s+bun pm ls -g/);
+ assert.doesNotMatch(integration,/bun add -g[^\n]*&&/);
  assert.doesNotMatch(integration,/@link-assistant\/hive-mind@2\.15\.1/);
 });
