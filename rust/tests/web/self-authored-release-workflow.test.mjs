@@ -47,3 +47,14 @@ test('optional restoration conserves ordinary event fallback and never creates a
     "steps.automation.outputs.layer == 'default' && steps.author.outputs.authored == 'true'");
   assert.ok(workflow.jobs.author.steps.every(step => !String(step.run ?? '').includes('gh release')));
 });
+
+test('author checkout retains history and writable credentials with bounded partial cloning', () => {
+  const author=workflow.jobs.author;
+  const checkout=author.steps.find(step=>step.uses==='actions/checkout@v7');
+  assert.equal(checkout.with['fetch-depth'],0);
+  assert.equal(checkout.with.filter,'blob:none');
+  assert.notEqual(checkout.with['persist-credentials'],false);
+  assert.equal(checkout['timeout-minutes'],5);
+  assert.equal(author.env.GIT_HTTP_LOW_SPEED_LIMIT,'1024');
+  assert.equal(author.env.GIT_HTTP_LOW_SPEED_TIME,'30');
+});

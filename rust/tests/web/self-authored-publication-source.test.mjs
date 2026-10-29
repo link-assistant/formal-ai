@@ -116,9 +116,11 @@ test('authentic no-release conditional operation stays inactive without release 
 });
 
 
-test('queued aggregate authenticates only the exact completed registered publisher', () => {
+// Main run 40954594484, job 123779514059 rejected a real pending parent after publication.
+for (const aggregateStatus of ['queued', 'in_progress', 'waiting', 'pending', 'requested']) {
+test(`${aggregateStatus} aggregate authenticates only the exact completed registered publisher`, () => {
   const currentFixture = fixture();
-  currentFixture.run.status = 'queued';
+  currentFixture.run.status = aggregateStatus;
   const result = resolvePublishedProducer(cwd, environment, currentFixture.read);
   assert.deepEqual(result, {publish: true, tag: 'v1.2.3', producerRun: 41, producerAttempt: 2,
     publisherJob: 73, sourceHead: head, effectAuthority: 'Unknown', pipelineGreen: 'Pending'});
@@ -127,7 +129,7 @@ test('queued aggregate authenticates only the exact completed registered publish
   assert.ok(currentFixture.calls.includes(base + 'commits/v1.2.3'));
 });
 
-test('queued aggregate preserves run, repository, attempt, workflow, inventory and source guards', () => {
+test(`${aggregateStatus} aggregate preserves run, repository, attempt, workflow, inventory and source guards`, () => {
   for (const change of [
     current => {current.run.id = 42;},
     current => {current.run.head_repository.full_name = 'foreign/repository';},
@@ -155,12 +157,12 @@ test('queued aggregate preserves run, repository, attempt, workflow, inventory a
       return /publisher source differs from compiled default-source contract/u;
     },
   ]) {
-    const currentFixture = fixture(); currentFixture.run.status = 'queued'; const expectedReason = change(currentFixture);
+    const currentFixture = fixture(); currentFixture.run.status = aggregateStatus; const expectedReason = change(currentFixture);
     assert.throws(() => resolvePublishedProducer(cwd, environment, currentFixture.read), expectedReason);
   }
 });
 
-test('queued aggregate cannot replace completed successful publisher and operation witnesses', () => {
+test(`${aggregateStatus} aggregate cannot replace completed successful publisher and operation witnesses`, () => {
   for (const change of [
     current => {current.publisher.status = 'queued'; current.publisher.conclusion = null;},
     current => {current.publisher.status = 'in_progress'; current.publisher.conclusion = null;},
@@ -172,21 +174,21 @@ test('queued aggregate cannot replace completed successful publisher and operati
     current => {current.publisher.steps.push({...current.publisher.steps[0]});},
     current => {current.publisher.steps[0].completed_at = '2026-10-11T00:03:00Z';},
   ]) {
-    const currentFixture = fixture(); currentFixture.run.status = 'queued'; change(currentFixture);
+    const currentFixture = fixture(); currentFixture.run.status = aggregateStatus; change(currentFixture);
     assert.throws(() => resolvePublishedProducer(cwd, environment, currentFixture.read));
     assert.ok(currentFixture.calls.every(endpoint => !endpoint.includes('/releases') && !endpoint.includes('/commits/')));
   }
 });
 
-test('queued aggregate retains cancellation guards and unsupported status diagnostics are bounded', () => {
+test(`${aggregateStatus} aggregate retains cancellation guards and unsupported status diagnostics are bounded`, () => {
   for (const conclusion of ['cancelled', 'skipped', 'neutral', 'timed_out', 'action_required']) {
-    const currentFixture = fixture(); currentFixture.run.status = 'queued'; currentFixture.run.conclusion = conclusion;
+    const currentFixture = fixture(); currentFixture.run.status = aggregateStatus; currentFixture.run.conclusion = conclusion;
     assert.throws(() => resolvePublishedProducer(cwd, environment, currentFixture.read));
     assert.equal(currentFixture.calls.length, 1);
   }
-  for (const status of ['waiting', 'pending', 'requested', 'secret-status\nprivate-value', null, {secret: 'private-value'}]) {
+  for (const status of ['secret-status\nprivate-value', null, undefined, {secret: 'private-value'}, 'success', 'failure']) {
     const currentFixture = fixture(); currentFixture.run.status = status;
-    const label = ['waiting', 'pending', 'requested'].includes(status) ? status : 'invalid';
+    const label = 'invalid';
     assert.throws(() => resolvePublishedProducer(cwd, environment, currentFixture.read), error => {
       assert.equal(error.code, 'ERR_ASSERTION');
       assert.equal(error.message, 'unsupported_producer_aggregate_status:' + label);
@@ -196,17 +198,17 @@ test('queued aggregate retains cancellation guards and unsupported status diagno
   }
 });
 
-test('queued aggregate keeps absent, unrelated and skipped publications inactive without authority', () => {
+test(`${aggregateStatus} aggregate keeps absent, unrelated and skipped publications inactive without authority`, () => {
   for (const change of [
     current => {current.entries.get(base + 'commits/v1.2.3').parents = [];},
     current => {current.entries.get(base + 'releases?per_page=5&page=1')[0].draft = true;},
     current => {current.entries.get(base + 'releases?per_page=5&page=1')[0].prerelease = true;},
     current => {current.entries.set(base + 'releases?per_page=5&page=1', []);},
   ]) {
-    const currentFixture = fixture(); currentFixture.run.status = 'queued'; change(currentFixture);
+    const currentFixture = fixture(); currentFixture.run.status = aggregateStatus; change(currentFixture);
     assert.deepEqual(resolvePublishedProducer(cwd, environment, currentFixture.read), {publish: false, tag: '', effectAuthority: 'Unknown'});
   }
-  const currentFixture = fixture(); currentFixture.run.status = 'queued';
+  const currentFixture = fixture(); currentFixture.run.status = aggregateStatus;
   currentFixture.publisher.steps[0].conclusion = 'skipped';
   assert.deepEqual(resolvePublishedProducer(cwd, environment, currentFixture.read), {
     publish: false, tag: '', reason: 'registered-publication-skipped', effectAuthority: 'Unknown',
@@ -214,13 +216,15 @@ test('queued aggregate keeps absent, unrelated and skipped publications inactive
   assert.ok(currentFixture.calls.every(endpoint => !endpoint.includes('/releases') && !endpoint.includes('/commits/')));
 });
 
-test('queued aggregate cannot substitute controller identity or bypass the observation deadline', () => {
+test(`${aggregateStatus} aggregate cannot substitute controller identity or bypass the observation deadline`, () => {
   for (const delta of [{PRODUCER_RUN_ID: '42'}, {PRODUCER_RUN_ATTEMPT: '3'}, {REFERENCE: 'refs/heads/feature'},
     {CURRENT_WORKFLOW_REF: 'foreign/repository/.github/workflows/release.yml@refs/heads/main'}, {EVENT: 'pull_request'}]) {
-    const currentFixture = fixture(); currentFixture.run.status = 'queued';
+    const currentFixture = fixture(); currentFixture.run.status = aggregateStatus;
     assert.throws(() => resolvePublishedProducer(cwd, {...environment, ...delta}, currentFixture.read));
     assert.equal(currentFixture.calls.length, 0);
   }
-  const currentFixture = fixture(); currentFixture.run.status = 'queued'; let tick = 0;
+  const currentFixture = fixture(); currentFixture.run.status = aggregateStatus; let tick = 0;
   assert.throws(() => resolvePublishedProducer(cwd, environment, currentFixture.read, () => tick++ * 90001));
 });
+
+}

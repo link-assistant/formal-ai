@@ -83,14 +83,19 @@ jobs:
       actions: write
     env:
       LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: "false"
+      GIT_HTTP_LOW_SPEED_LIMIT: '1024'
+      GIT_HTTP_LOW_SPEED_TIME: '30'
     steps:
       # This checkout keeps its credential (no `persist-credentials: false`):
       # the action's push steps write the bot branch with it when the
       # resolver below falls back to github.token, and nothing else supplies
       # one (issue #1079).
       - uses: actions/checkout@v7
+        timeout-minutes: 5
         with:
           fetch-depth: 0
+          # Preserve history and current source, without downloading historical blobs.
+          filter: blob:none
           ref: ${{ (github.event_name == 'release' || inputs.production-run-id != '') && github.event.repository.default_branch || github.head_ref || github.ref }}
 
       # Issue #1187 R1: the one credential resolver -- GitHub App, then

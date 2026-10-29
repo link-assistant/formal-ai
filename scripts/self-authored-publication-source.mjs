@@ -57,8 +57,10 @@ export function resolvePublishedProducer(cwd, environment, readGithub, clock = (
   assert.equal(run.event, environment.EVENT);
   assert.match(run.head_sha, /^[a-f0-9]{40}$/u);
   // Aggregate queue state is not publication proof; the exact completed job and step are checked below.
-  assert.ok(['queued', 'in_progress', 'completed'].includes(run.status),
-    'unsupported_producer_aggregate_status:' + (['waiting', 'pending', 'requested'].includes(run.status) ? run.status : 'invalid'));
+  // GitHub Actions also reports pending/waiting/requested while descendants queue.
+  // These lifecycle states grant no publication or effect authority.
+  assert.ok(['queued', 'in_progress', 'completed', 'waiting', 'pending', 'requested'].includes(run.status),
+    'unsupported_producer_aggregate_status:invalid');
   assert.ok(!['cancelled', 'skipped', 'neutral', 'timed_out', 'action_required'].includes(run.conclusion));
   assert.ok(Number.isSafeInteger(run.workflow_id) && run.workflow_id > 0);
   const workflow = get(base + 'actions/workflows/' + run.workflow_id);
