@@ -6,6 +6,7 @@ import {toolFor} from './capability_router.mjs';
 import {FinalDisposition, resolvedFinalAnswer, planOne, jsonText} from './plan.mjs';
 import {sha256Hex} from './crate/source_fetch.mjs';
 import {readPolicyBlocksPlan} from './file_read/ownership.mjs';
+import {clausesWithSpans} from './crate/obligation_ledger.mjs';
 
 /** File references are evidence candidates, never shell commands or write authority. */
 export function workItemEvidencePaths(task) {
@@ -27,6 +28,7 @@ export function planWorkItemEvidence(task, messages, tools) {
   const progress = Progress.scan(messages), observations = [];
   const finish = reason => resolvedFinalAnswer(jsonText({
     schema: 'repository-work-item-evidence/v1', reason, taskIdentity: sha256Hex(task),
+    requirements: clausesWithSpans(task).map(([text, span]) => ({text, span, status: 'unbound'})),
     decomposition: [
       {step: 'collect_repository_evidence', status: reason === 'EvidenceCollected' ? 'observed' : 'incomplete'},
       {step: 'bind_requirements_to_source', status: 'unverified'},

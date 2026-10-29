@@ -6,12 +6,17 @@ and a gate that enforces it.
 ## The rule
 
 Documentation-only automatic changes use the policy in
-[`scripts/docs-only-ci-policy.mjs`](../../scripts/docs-only-ci-policy.mjs): skip
+[`scripts/documentation-only-ci-policy.mjs`](../../scripts/documentation-only-ci-policy.mjs): skip
 heavy workflows and automatic releases, retain lightweight checks and explicit
 manual controls. The bot dispatch action observes the same policy. A pending
 changelog fragment cannot override it. Mixed source changes and unknown runtime
 Markdown retain normal CI; GitHub's large-diff limits can reduce filtering savings.
 See [the requirements](../requirements/issue-1455-documentation-and-evidence.md).
+The separate provenance performance qualification and real Agent CLI
+failure-report replay are retained as full-PR/manual qualifications; their native
+compilation does not run in the default PR profile. Default deferral is recorded
+explicitly and provides no execution credit. Production compilation and native
+tests still run on main.
 
 - **No job or step runs longer than 30 minutes.** 15 minutes is the target.
   Every job declares `timeout-minutes` at or under 30, and so does every step

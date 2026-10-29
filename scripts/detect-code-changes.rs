@@ -196,7 +196,7 @@ fn is_ignored_by_ci(file_path: &str) -> bool {
         .any(|prefix| file_path.starts_with(prefix))
 }
 
-// Exact twin of documentationPaths in scripts/docs-only-ci-policy.mjs.
+// Exact twin of documentationPaths in scripts/documentation-only-ci-policy.mjs.
 fn is_documentation_path(path: &str) -> bool {
     path.starts_with("docs/")
         || path.starts_with("changelog.d/")

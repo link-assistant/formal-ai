@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync, readdirSync} from 'node:fs';
 import YAML from 'yaml';
-import {checkDocumentationPolicy, filteredWorkflow, lightweightWorkflows} from '../../../scripts/docs-only-ci-policy.mjs';
+import {checkDocumentationPolicy, filteredWorkflow, lightweightWorkflows} from '../../../scripts/documentation-only-ci-policy.mjs';
 import {applicableWorkflows} from '../../../scripts/lib/hive-delivery-admission.mjs';
 import {documentationOnlyPullRequest} from '../../../scripts/lib/documentation-paths.mjs';
 const workflows = readdirSync('.github/workflows').filter(name => name.endsWith('.yml')).map(name => ({path: '.github/workflows/' + name, document: YAML.parse(readFileSync('.github/workflows/' + name, 'utf8'))}));
@@ -25,12 +25,13 @@ for (const event of ['push', 'pull_request']) {
   }
 }
 test('transformation preserves every job, manual dispatch and schedule, and is idempotent', () => {
-  const source = 'name: sample\non:\n  push:\n    branches: [main]\n  pull_request:\n    paths: ["rust/**"]\n  workflow_dispatch:\n  schedule:\n    - cron: "0 0 * * *"\njobs:\n  retained:\n    runs-on: ubuntu-latest\n    steps: []\n';
+  const source = 'name: sample\non: # retained security annotation\n  push:\n    branches: [main]\n  pull_request:\n    # retained selection rationale\n    paths: ["rust/**"] # retained path comment\n  workflow_dispatch:\n  schedule:\n    - cron: "0 0 * * *"\njobs:\n  retained:\n    runs-on: ubuntu-latest\n    steps: []\n';
   const updated = filteredWorkflow(source);
   assert.equal(updated.split('jobs:')[1], source.split('jobs:')[1]);
   assert.deepEqual(YAML.parse(updated).on.workflow_dispatch, YAML.parse(source).on.workflow_dispatch);
   assert.deepEqual(YAML.parse(updated).on.schedule, YAML.parse(source).on.schedule);
   assert.equal(filteredWorkflow(updated), updated);
+  for (const comment of ['# retained security annotation','# retained selection rationale','# retained path comment']) assert.ok(updated.includes(comment));
 });
 test('automatic bot checks require complete file observations and both sides of renames', () => {
   assert.equal(documentationOnlyPullRequest([[{filename:'docs/guide.md'}]],1),true);

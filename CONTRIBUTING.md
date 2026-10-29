@@ -1,7 +1,7 @@
 # Contributing to formal-ai
 
 For documentation-only changes, heavy push/PR workflows and automatic releases
-are filtered by `scripts/docs-only-ci-policy.mjs`. Run its `--write` mode after
+are filtered by `scripts/documentation-only-ci-policy.mjs`. Run its `--write` mode after
 adding a heavy workflow, then its targeted JavaScript regression. The policy
 preserves comments, retained job bodies and explicit manual controls. Root
 Markdown, `docs/**`, nested README/CHANGELOG files and changelog fragments are

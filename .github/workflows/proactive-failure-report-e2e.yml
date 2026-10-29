@@ -38,7 +38,11 @@ permissions:
   contents: read
 
 jobs:
+  pr-check-profile:
+    if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && vars.FORMAL_AI_FULL_PR_CI != 'run'
+    uses: ./.github/workflows/pull-request-check-profile.yml
   agent-cli-failure-report:
+    if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (true) }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:

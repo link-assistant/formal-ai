@@ -36,6 +36,11 @@ test('the actual failed issue now reads manifests, guide and executable adapter 
   assert.equal(evidence.reason,'EvidenceCollected');
   assert.equal(evidence.authored,false); assert.equal(evidence.verified,false);
   assert.equal(evidence.decomposition[2].status,'not_executed');
+  assert.ok(evidence.requirements.length > 0);
+  for (const requirement of evidence.requirements) {
+    assert.equal(requirement.status,'unbound');
+    assert.equal(Buffer.from(fixture.title + '\n\n' + fixture.objective).subarray(...requirement.span).toString(),requirement.text);
+  }
   for (const observation of evidence.observations) {
     assert.equal(observation.complete,true);
     assert.equal(observation.sourceIdentity,createHash('sha256').update(readFileSync(observation.path)).digest('hex'));

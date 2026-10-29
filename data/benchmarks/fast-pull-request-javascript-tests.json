@@ -49,7 +49,7 @@
     "rust/tests/web/packaging-console-retention.test.mjs",
     "rust/tests/web/desktop-package-boundary.test.mjs",
     "rust/tests/web/rust-specification-fixture-integrity.test.mjs",
-    "rust/tests/web/docs-only-ci-policy.test.mjs",
+    "rust/tests/web/documentation-only-ci-policy.test.mjs",
     "rust/tests/web/work-item-evidence.test.mjs"
   ]
 }

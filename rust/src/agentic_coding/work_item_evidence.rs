@@ -46,6 +46,8 @@ pub(super) fn plan_work_item_evidence(
         let payload = json!({
             "schema":"repository-work-item-evidence/v1", "reason":reason,
             "taskIdentity":crate::source_fetch::sha256_hex(task.as_bytes()),
+            "requirements":crate::obligation_ledger::clauses_with_spans(task).into_iter()
+                .map(|(text,(start,end))|json!({"text":text,"span":[start,end],"status":"unbound"})).collect::<Vec<_>>(),
             "decomposition":[
                 {"step":"collect_repository_evidence", "status":if reason == "EvidenceCollected" {"observed"} else {"incomplete"}},
                 {"step":"bind_requirements_to_source", "status":"unverified"},
@@ -126,17 +128,17 @@ mod work_item_evidence_tests {
             let arguments: serde_json::Value =
                 serde_json::from_str(&calls[0].arguments).expect("read operands");
             assert_eq!(arguments["path"], path);
-            let id = format!("evidence-{}", messages.len());
+            let tool_call_identity = format!("evidence-{}", messages.len());
             messages.push(ChatMessage::assistant_tool_calls_with_content(
                 String::new(),
                 vec![ToolCall::function(
-                    id.clone(),
+                    tool_call_identity.clone(),
                     "read".to_owned(),
                     calls[0].arguments.clone(),
                 )],
             ));
             messages.push(ChatMessage::tool_result(
-                id,
+                tool_call_identity,
                 "read",
                 tool_result::complete_owned_source_read_frame("observed source\n"),
             ));

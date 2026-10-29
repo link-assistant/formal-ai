@@ -26,8 +26,8 @@ jobs:
         with:
           node-version: '22'
       # Install only the policy parser, never the application/native dependency tree.
-      - run: npm install --ignore-scripts --no-audit --no-fund --prefix /tmp/documentation-policy yaml@1.10.3
+      - run: npm ci --ignore-scripts --no-audit --no-fund --prefix scripts/documentation-policy-dependencies
       - run: |
           mkdir -p node_modules
-          ln -s /tmp/documentation-policy/node_modules/yaml node_modules/yaml
-          node --test rust/tests/web/docs-only-ci-policy.test.mjs
+          ln -s ../scripts/documentation-policy-dependencies/node_modules/yaml node_modules/yaml
+          node --test rust/tests/web/documentation-only-ci-policy.test.mjs

@@ -53,7 +53,7 @@ export function checkDocumentationPolicy({write = false} = {}) {
     if (!triggers || typeof triggers !== 'object' || !['push','pull_request'].some(event => Object.hasOwn(triggers,event))) continue;
     const expected = filteredWorkflow(source);
     if (write) writeFileSync(path, expected);
-    else assert.equal(source, expected, path + ': run node scripts/docs-only-ci-policy.mjs --write');
+    else assert.equal(source, expected, path + ': run node scripts/documentation-only-ci-policy.mjs --write');
     checked++;
   }
   return checked;

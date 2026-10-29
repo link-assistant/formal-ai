@@ -2,6 +2,7 @@
 
 Base: `3c9195899c627c0e6f05771e1c059bddac2c9ee9` (released v0.355.17).
 Working branch: `fix/issue-1455-docs-and-ci-20261029`.
+Pull request: https://github.com/link-assistant/formal-ai/pull/1461.
 
 ## Failure and scope
 
@@ -35,7 +36,7 @@ gap; this PR must not receive autonomous task-completion credit for reading file
 
 ## Verification and continuation
 
-Targeted JavaScript files: `docs-only-ci-policy`, `work-item-evidence`,
+Targeted JavaScript files: `documentation-only-ci-policy`, `work-item-evidence`,
 `fetch-work-item-observations`, `release-pending-pipeline`,
 `fast-pull-request-production-profile` and `ci-speed` under `rust/tests/web`.
 Requirement assembly/status, package-data mirroring, TypeScript translation and
@@ -51,3 +52,14 @@ before claiming production delivery. Future docs-only changes produce no release
 by default; GitHub path-filter diff limits may sacrifice CI savings, and the
 detector remains the additional automatic-release guard. Before protecting a
 filtered workflow, account for GitHub's pending-check behavior.
+
+The first hosted CI batch identified an unlocked parser installation, abbreviated
+new names and the desktop workflow crossing its source line limit. The fixes use
+a tiny dedicated dependency lockfile, full-word names and a semantically identical
+compact path list. No retained job payload or CI acceptance criterion is removed.
+Two unrelated native-compiling PR qualifications (provenance performance and the
+real Agent CLI failure-report replay) now use the existing full-PR/manual opt-in
+profile. Their step payloads are fingerprinted in the retained-jobs manifest;
+default PR deferral earns no execution credit. Main's production compilation and
+native tests remain selected. These two separate qualifications are available
+through manual dispatch, or `FORMAL_AI_FULL_PR_CI=run` on PRs.
