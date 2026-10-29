@@ -90,7 +90,7 @@ fn exec(command: &str, args: &[&str]) -> String {
     match Command::new(command).args(args).output() {
         Ok(output) => {
             if output.status.success() {
-                String::from_utf8_lossy(&output.stdout).trim().to_string()
+                String::from_utf8_lossy(&output.stdout).into_owned()
             } else {
                 eprintln!("Error executing {command} {args:?}");
                 eprintln!("{}", String::from_utf8_lossy(&output.stderr));
@@ -153,6 +153,14 @@ fn comparison_for_event(
     )
 }
 
+fn decode_git_paths(output: &str) -> Vec<String> {
+    output
+        .split('\0')
+        .filter(|path| !path.is_empty())
+        .map(String::from)
+        .collect()
+}
+
 fn get_changed_files() -> Vec<String> {
     // GitHub Actions checks out a synthetic merge commit for pull_request
     // events: HEAD is the merge commit, HEAD^ is the base branch, HEAD^2
@@ -168,26 +176,17 @@ fn get_changed_files() -> Vec<String> {
     }
     println!("Comparing {base} to {head} ({description})");
     // A source-to-doc rename must retain the removed source path for admission.
-    let output = exec(
+    let mut output = exec(
         "git",
-        &["diff", "--no-renames", "--name-only", &base, &head],
+        &["diff", "--no-renames", "--name-only", "-z", &base, &head],
     );
 
     if output.is_empty() && exec("git", &["rev-parse", "--verify", &base]).is_empty() {
         println!("{base} is not available, listing all files in HEAD");
-        let output = exec("git", &["ls-tree", "--name-only", "-r", "HEAD"]);
-        return output
-            .lines()
-            .filter(|s| !s.is_empty())
-            .map(String::from)
-            .collect();
+        output = exec("git", &["ls-tree", "--name-only", "-z", "-r", "HEAD"]);
     }
 
-    output
-        .lines()
-        .filter(|s| !s.is_empty())
-        .map(String::from)
-        .collect()
+    decode_git_paths(&output)
 }
 
 fn is_ignored_by_ci(file_path: &str) -> bool {
@@ -391,7 +390,7 @@ fn main() {
         println!("  (none)");
     } else {
         for file in &changed_files {
-            println!("  {file}");
+            println!("  {file:?}");
         }
     }
     println!();
@@ -458,7 +457,7 @@ fn main() {
         println!("  (none)");
     } else {
         for file in &code_changed_files {
-            println!("  {file}");
+            println!("  {file:?}");
         }
     }
     println!();
@@ -498,8 +497,26 @@ fn main() {
 mod tests {
     use super::{
         ChangeFlags, LAYER_CLASSIFIER, LAYERED_WORKFLOW, automatic_release_pending,
-        classify_changes, comparison_for_event, is_documentation_path, release_pending,
+        classify_changes, comparison_for_event, decode_git_paths, is_documentation_path,
+        release_pending,
     };
+
+    #[test]
+    fn git_path_records_preserve_literal_unicode_and_linebreaks() {
+        let paths = decode_git_paths("docs/中文.md\0docs/line\nbreak.md\0");
+        assert_eq!(paths, vec!["docs/中文.md", "docs/line\nbreak.md"]);
+        assert!(!classify_changes(&paths).any_code_changed);
+        assert!(!automatic_release_pending(
+            "push",
+            "refs/heads/main",
+            &["pending.md".to_string()],
+            &paths,
+        ));
+        assert_eq!(
+            decode_git_paths(" docs/space.md \0"),
+            vec![" docs/space.md "]
+        );
+    }
 
     #[test]
     fn documentation_only_push_never_releases_a_waiting_fragment() {

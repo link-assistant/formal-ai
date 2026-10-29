@@ -121,3 +121,8 @@ redundant. The follow-up moves the final owned task into its message and keeps
 all no-effect/source-identity assertions. It also reuses the native-compatible
 Unicode whitespace splitter for source references: NEL is whitespace and BOM is
 not, matching Rust without changing original goal text or source spans.
+
+The same follow-up preserves literal Git filenames using NUL-delimited diff and
+tree records. Unicode and embedded line breaks in documentation paths must not
+be mistaken for code because Git quoted a filename; diagnostics escape these
+paths. A focused classifier unit test runs only in CI, with no local Rust build.
