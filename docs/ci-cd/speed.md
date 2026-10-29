@@ -5,6 +5,14 @@ and a gate that enforces it.
 
 ## The rule
 
+Issue drafting resolves current Formal AI and Hive Mind source once per attempt
+and shares exact source identities between jobs. Keep the single Formal AI CI
+build and select the matching versioned Hive Mind image without a stale-image
+fallback. Log versions and hashes; retain failure evidence and respond to the
+issue even when initial source discovery fails. CLI integration uses the latest
+published Hive Mind package. Frozen historical replays remain explicitly
+historical, not current-runtime qualification.
+
 Documentation-only automatic changes use the policy in
 [`scripts/documentation-only-ci-policy.mjs`](../../scripts/documentation-only-ci-policy.mjs): skip
 heavy workflows and automatic releases, retain lightweight checks and explicit

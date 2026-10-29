@@ -431,7 +431,7 @@ jobs:
         run: PORT=8918 BIN=rust/target/release/formal-ai OUT=/tmp/formal-ai-issue-918-evidence experiments/issue_918_agent_cli.sh
       - name: Install @link-assistant/hive-mind CLI
         if: ${{ matrix.part == 'scenarios' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
-        run: bun add -g --ignore-scripts @link-assistant/hive-mind@2.15.1
+        run: bun add -g --ignore-scripts @link-assistant/hive-mind@latest && bun pm ls -g
       - name: "Run Hive Mind full-circle integration gate (issue #921)"
         if: ${{ matrix.part == 'scenarios' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 5
