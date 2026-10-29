@@ -119,3 +119,9 @@ self_hosting_ledger
     until "5c51410fda9ccf456fa45cb08e323e5c1f7815d4"
     changed_lines "12"
     commits "1"
+  release
+    tag "v0.355.20"
+    since "v0.355.19"
+    until "aaec1e88824eae73c3d9218b889482759e2572be"
+    changed_lines "165"
+    commits "2"

@@ -20,6 +20,16 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.355.20] - 2026-10-29
+
+### Fixed
+- Resolve current Hive Mind source for live issue drafting, reuse the selected commit across jobs, and require its exact versioned runtime image without a stale-image fallback.
+- Qualify shared runner diagnostics structurally while preserving solve inputs, record the actual source identity, and retain an issue response on source discovery failures.
+- Use the latest published Hive Mind CLI in maintained integration checks; document runtime freshness and distinguish historical replay evidence.
+
+### Fixed
+- Keep Hive Mind's latest-version install and version logging on separate command lines, so the CI package-version guard does not misread a shell operator as an unversioned package.
+
 ## [0.355.19] - 2026-10-29
 
 ### Fixed
