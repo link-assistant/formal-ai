@@ -20,6 +20,12 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.355.21] - 2026-10-29
+
+### Fixed
+- Recognize pending, waiting and requested GitHub scheduling states in post-publication self-authoring, while preserving exact publisher, source, attempt and operation authentication.
+- Bound self-authoring checkout duration and filter historical blobs while preserving history, current source and bot-branch credentials.
+
 ## [0.355.20] - 2026-10-29
 
 ### Fixed
