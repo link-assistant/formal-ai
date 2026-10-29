@@ -2,6 +2,19 @@
 
 ## Desktop package source-boundary recovery
 
+PR1459 merged as d02e1c627d0349960c3f5641e3253edc79002086 after 17 workflows
+and 36 jobs passed. Main Layered CI run40793481067, JavaScript shard6
+job123184365459 found a stale governed witness embedding desktop/package.json.
+The complete public log SHA256 is
+b485d065211c8218dc371e8217677b96437c98f4f8e468c6a90e0c08ea8d7fcf.
+The existing JavaScript reviewed-witness generator refreshed it. A complete
+object comparison verified that only the actual desktop manifest bytes and hash
+changed in three cases; native source, case identities and all other objects
+are unchanged. The fast profile now compares every governed fixture and native
+source digest to current bytes without parsing or compiling Rust. Full reader
+and complete-object comparison remains on main. This is source binding only,
+not native execution or complete specification parity credit.
+
 PR1458 merged as fcba2c6b48302515df840c3134d74ad9c8a2f406. Its complete main
 census passed eleven required workflows and 124 jobs. v0.355.16 selected
 b33d7da9cbeb853e0eab4e02f6d17049261e7fc4; initial full/slim GHCR images,

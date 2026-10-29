@@ -612,6 +612,8 @@ Removal from a public thread is not approval to retain another copy.
    Exclude private repository source and build outputs from desktop dependencies;
    verify captured exclusions with the installed packager and audit actual ASAR
    metadata before installer creation. Preserve required browser/native resources.
+   Refresh governed source witnesses through their reviewed JavaScript generator
+   when referenced files change; run the cheap source-integrity check before push.
    See [CI speed](docs/ci-cd/speed.md) and the
    [current requirements](docs/requirements/doctrine-fast-pull-request-production-ci.md).
 

@@ -190,6 +190,13 @@ matcher, then audits the real ASAR directory (including unpacked entries) before
 creating installers. Keep required runtime dependencies and explicit browser/bin
 resources. An oversized archive is a content defect, not a retryable transport error.
 
+The fast profile also checks governed specification fixture and native-source
+digests directly against current files. When a referenced configuration changes,
+refresh its complete witness through the existing reviewed JavaScript generator
+and inspect the full object delta. This cheap source-binding check avoids a main
+cycle for stale embedded content; full reader and complete-object parity stays on
+main. Do not replace source content with counters or remove the governed checks.
+
 Observed v0.355.13 costs: original-client image download31.4 minutes and
 image load5.2 minutes versus6.2 minutes of actual solve; macOS Intel native
 compile23.5 minutes; method-learning replay15.4 minutes. Image-transfer and
