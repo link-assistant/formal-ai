@@ -762,3 +762,9 @@ their existing obligations.
 - Fresh runtimes do not establish general autonomous editing. The evidence-to-edit
   synthesis gap above remains open until actual authored and verified changes
   demonstrate it. These workflow repairs are manual, not Formal-AI-authored.
+- Publication observation accepts GitHub's documented active scheduling states,
+  including pending, waiting and requested, while still authenticating the exact
+  completed publisher job, operation, source and attempt. A scheduling state is
+  never pipeline-success or effect-authority evidence. Keep invalid-state
+  diagnostics bounded. Self-authoring checkouts retain history and current file
+  contents, filter historical blobs, and have finite network and step deadlines.
