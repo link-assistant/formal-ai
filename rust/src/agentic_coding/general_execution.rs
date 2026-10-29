@@ -225,7 +225,9 @@ fn general_change_step(
     // capability is only genuinely unavailable once the fetch has been tried.
     if plan.mode == GeneralPlanMode::RepositoryWorkItem {
         if let Some(fetched) = repository_work_item_objective(plan, &progress) {
-            if let Some(step) = plan_work_item_execution(&fetched, messages, tool_names, result) {
+            if let Some(step) =
+                plan_work_item_execution(&fetched, messages, tool_names, &plan.target, result)
+            {
                 return step;
             }
         } else if let Some(step) =
@@ -458,6 +460,7 @@ fn plan_work_item_execution(
     objective: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
+    work_item: &str,
     result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     // The default configuration is the right one: the recipe wanted here is the
@@ -482,7 +485,7 @@ fn plan_work_item_execution(
     let Some(executable) = compose_general_change_plan(objective)
         .filter(|executable| executable.mode != GeneralPlanMode::RepositoryWorkItem)
     else {
-        return plan_work_item_evidence(objective, messages, tool_names, result);
+        return plan_work_item_evidence(objective, messages, tool_names, work_item, result);
     };
     Some(plan_work_item_change_step(
         messages,

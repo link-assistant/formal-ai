@@ -34,6 +34,7 @@ test('the actual failed issue now reads manifests, guide and executable adapter 
   assert.equal(result.kind,'final');
   const evidence = JSON.parse(result.answer);
   assert.equal(evidence.reason,'EvidenceCollected');
+  assert.equal(evidence.workItem,fixture.issue);
   assert.equal(evidence.authored,false); assert.equal(evidence.verified,false);
   assert.equal(evidence.decomposition[2].status,'not_executed');
   assert.ok(evidence.requirements.length > 0);

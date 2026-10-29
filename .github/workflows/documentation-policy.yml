@@ -16,12 +16,17 @@ on:
         type: string
 permissions:
   contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-documentation-policy
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 jobs:
   documentation-policy:
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v7
         with:
           node-version: '22'

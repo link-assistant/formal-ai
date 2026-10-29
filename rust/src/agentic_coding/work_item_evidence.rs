@@ -40,6 +40,7 @@ pub(super) fn plan_work_item_evidence(
     task: &str,
     messages: &[ChatMessage],
     tools: &[&str],
+    work_item: &str,
     result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let paths = work_item_evidence_paths(task);
@@ -50,7 +51,7 @@ pub(super) fn plan_work_item_evidence(
     let mut observations = Vec::new();
     let mut finish = |reason: &str, observations: &[serde_json::Value]| {
         let payload = json!({
-            "schema":"repository-work-item-evidence/v1", "reason":reason,
+            "schema":"repository-work-item-evidence/v1", "reason":reason,"workItem":work_item,
             "taskIdentity":crate::source_fetch::sha256_hex(task.as_bytes()),
             "requirements":crate::obligation_ledger::clauses_with_spans(task).into_iter()
                 .map(|(text,(start,end))|json!({"text":text,"span":[start,end],"status":"unbound"})).collect::<Vec<_>>(),
@@ -100,68 +101,4 @@ pub(super) fn plan_work_item_evidence(
         }
     }
     Some(finish("EvidenceCollected", &observations))
-}
-
-#[cfg(test)]
-mod work_item_evidence_tests {
-    use super::super::tool_result;
-    use super::*;
-    use crate::protocol::ToolCall;
-
-    #[test]
-    fn original_documentation_issue_collects_evidence_without_claiming_implementation() {
-        let fixture: serde_json::Value = serde_json::from_str(include_str!(
-            "../../embedded/data/benchmarks/fixtures/work-item-1455/failure.json"
-        ))
-        .expect("public failure fixture");
-        let task = fixture["objective"].as_str().expect("objective");
-        let paths = [
-            "docs/associative-tech-stack.md",
-            "rust/Cargo.toml",
-            "package.json",
-            "js/web-search-component-entry.js",
-        ];
-        let mut messages = vec![ChatMessage::user(task)];
-        let mut result = None;
-        for path in paths {
-            let Some(AgenticPlan::ToolCalls(calls)) =
-                plan_work_item_evidence(task, &messages, &["read", "write"], &mut result)
-            else {
-                panic!("evidence must be read before a terminal answer")
-            };
-            assert_eq!(calls.len(), 1);
-            assert_eq!(calls[0].tool, "read");
-            let arguments: serde_json::Value =
-                serde_json::from_str(&calls[0].arguments).expect("read operands");
-            assert_eq!(arguments["path"], path);
-            let tool_call_identity = format!("evidence-{}", messages.len());
-            messages.push(ChatMessage::assistant_tool_calls_with_content(
-                String::new(),
-                vec![ToolCall::function(
-                    tool_call_identity.clone(),
-                    "read".to_owned(),
-                    calls[0].arguments.clone(),
-                )],
-            ));
-            messages.push(ChatMessage::tool_result(
-                tool_call_identity,
-                "read",
-                tool_result::complete_owned_source_read_frame("observed source\n"),
-            ));
-        }
-        let Some(AgenticPlan::Final(answer)) =
-            plan_work_item_evidence(task, &messages, &["read", "write"], &mut result)
-        else {
-            panic!("bounded evidence collection must terminate")
-        };
-        let evidence: serde_json::Value =
-            serde_json::from_str(&answer).expect("formal observation");
-        assert_eq!(evidence["reason"], "EvidenceCollected");
-        assert_eq!(evidence["authored"], false);
-        assert_eq!(evidence["verified"], false);
-        assert_eq!(
-            result.expect("qualified gap").disposition,
-            FinalDisposition::Gap
-        );
-    }
 }

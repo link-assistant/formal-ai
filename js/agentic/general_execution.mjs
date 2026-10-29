@@ -128,7 +128,7 @@ function generalChangeStep(messages, toolNames, plan, resolvedFromWorkItem) {
   if (plan.mode === GeneralPlanMode.RepositoryWorkItem) {
     const fetched = repositoryWorkItemObjective(plan, progress);
     if (fetched !== null) {
-      const step = planWorkItemExecution(fetched, messages, toolNames);
+      const step = planWorkItemExecution(fetched, messages, toolNames, plan.target);
       if (step) return step;
     } else {
       const step = planWorkItemRead(messages, toolNames, plan.target, progress);
@@ -232,13 +232,13 @@ function planEventStep(plan, progress, toolNames, messages) {
  * `write_program` recipe arm is native-only, so a work item only that arm
  * would answer falls through to the literal-file composer.
  */
-function planWorkItemExecution(objective, messages, toolNames) {
+function planWorkItemExecution(objective, messages, toolNames, workItem) {
   const answer = workItemSolverAnswer(objective);
   if (answer && answer.execution_recipe && requestedIn(objective)) attach(answer.execution_recipe, objective);
   const step = answer ? planSymbolicCommandReroute(messages, toolNames, answer, objective) : null;
   if (step) return step;
   const executable = composeGeneralChangePlan(objective);
-  if (!executable || executable.mode === GeneralPlanMode.RepositoryWorkItem) return planWorkItemEvidence(objective, messages, toolNames);
+  if (!executable || executable.mode === GeneralPlanMode.RepositoryWorkItem) return planWorkItemEvidence(objective, messages, toolNames, workItem);
   return planWorkItemChangeStep(messages, toolNames, executable);
 }
 

@@ -296,7 +296,7 @@ fn classify_changes(changed_files: &[String]) -> ChangeFlags {
         .filter(|file| !is_ignored_by_ci(file))
         .collect();
     let code_pattern =
-        Regex::new(r"\.(rs|toml|mjs|cjs|js|lino|yml|yaml)$|\.github/workflows/").unwrap();
+        Regex::new(r"\.(rs|toml|mjs|cjs|js|lino|yml|yaml|md)$|\.github/workflows/").unwrap();
     // A workflow is code for the gates that read it, but it is not the code
     // the compiled jobs test. Counting it in `any_code_changed` made every
     // workflow edit buy the macOS archive, the Docker check, six box images

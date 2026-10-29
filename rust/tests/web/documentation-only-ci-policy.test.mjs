@@ -5,6 +5,7 @@ import YAML from 'yaml';
 import {checkDocumentationPolicy, filteredWorkflow, lightweightWorkflows} from '../../../scripts/documentation-only-ci-policy.mjs';
 import {applicableWorkflows} from '../../../scripts/lib/hive-delivery-admission.mjs';
 import {documentationOnlyPullRequest} from '../../../scripts/lib/documentation-paths.mjs';
+import {Script} from 'node:vm';
 const workflows = readdirSync('.github/workflows').filter(name => name.endsWith('.yml')).map(name => ({path: '.github/workflows/' + name, document: YAML.parse(readFileSync('.github/workflows/' + name, 'utf8'))}));
 test('all heavy push and PR triggers carry the generated documentation policy', () => {
   assert.ok(checkDocumentationPolicy() > 10);
@@ -38,4 +39,24 @@ test('automatic bot checks require complete file observations and both sides of 
   assert.equal(documentationOnlyPullRequest([[{filename:'docs/guide.md',previous_filename:'rust/src/lib.rs'}]],1),false);
   for (const [pages,count] of [[[],0],[[[]],2],[[[{filename:'docs/guide.md'}]],3001],[[[{filename:'data/seed/runtime.md'}]],1]])
     assert.equal(documentationOnlyPullRequest(pages,count),false);
+});
+test('lightweight read-only checks cancel superseded PRs and protect main', () => {
+  const {concurrency} = workflows.find(workflow => workflow.path.endsWith('/documentation-policy.yml')).document;
+  const expression = concurrency['cancel-in-progress'].replace(/^\$\{\{\s*|\s*\}\}$/gu,'');
+  const evaluate = ref => new Script(expression).runInNewContext({github:{ref}}, {timeout:100});
+  assert.equal(evaluate('refs/pull/1/merge'),true);
+  assert.equal(evaluate('refs/heads/fix/example'),true);
+  assert.equal(evaluate('refs/heads/main'),false);
+  assert.ok(concurrency.group.includes('github.workflow') && concurrency.group.includes('github.ref'));
+});
+test('native admission unit tests run in CI before their outputs select the tiers', () => {
+  const {steps} = workflows.find(workflow => workflow.path.endsWith('/layered-ci.yml')).document.jobs.changes;
+  const testIndex = steps.findIndex(step => step.run === 'rust-script --test scripts/detect-code-changes.rs');
+  const classifyIndex = steps.findIndex(step => step.id === 'changes');
+  assert.ok(testIndex >= 0 && testIndex < classifyIndex);
+});
+test('read-only documentation checkout retains no push credentials', () => {
+  const {steps} = workflows.find(workflow => workflow.path.endsWith('/documentation-policy.yml')).document.jobs['documentation-policy'];
+  const checkout = steps.find(step => step.uses?.startsWith('actions/checkout@'));
+  assert.equal(checkout.with['persist-credentials'],false);
 });

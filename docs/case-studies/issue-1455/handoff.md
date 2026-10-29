@@ -88,3 +88,24 @@ convention, locks the parser to the current official npm registry answer and
 records that one publisher observation without changing the older snapshot
 cohort's refresh time. The single documentation-policy JavaScript regression
 passes against the isolated current parser as well as the existing test parser.
+
+The earlier main native unit run subsequently found two admission regressions:
+the filename allowlist still omitted unknown runtime Markdown, and the new
+read-only documentation workflow lacked concurrency ownership. A further scoped
+follow-up includes Markdown after the explicit documentation exclusion, protects
+main while cancelling superseded PR checks, and runs the classifier's small
+standalone Rust unit suite in CI before tier selection. That suite is CI-only;
+local verification remains one targeted JavaScript file at a time.
+The same native run also confirmed the documentation checkout must explicitly
+drop credentials and an original compound-work-item test must assert the
+structured policy-refusal gap. The latter keeps its exact two retrieval steps
+and prohibition on plan-journal effects; no acceptance criterion is relaxed.
+The deprecated-action check reported there is already fixed by PR #1462.
+Final results from that earlier main run also required preserving the push/main
+association in the status-trigger test despite intervening documentation filters,
+updating one native CLI original-prose assertion to the structured protocol, and
+moving the inline native regression out of production `src` into the real unit
+integration target. Its replacement exercises the public planner and actual
+temporary-workspace reads. Evidence now carries the caller's work-item URL,
+without accepting a replacement origin from fetched prose; UTF-8 goal hashes
+and original requirement spans remain bound to the captured source.
