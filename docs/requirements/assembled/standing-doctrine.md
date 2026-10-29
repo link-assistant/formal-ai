@@ -581,6 +581,13 @@ Formal AI edit recipes receive zero autonomous implementation credit.
   starts; missing evidence after an attempted package operation remains a failure.
   An unacquired hosted runner has no execution credit: retain its structured
   annotations and explicit unavailable-console outcome instead of inventing logs.
+- **CI-FAST-14:** Desktop runtime packages contain the prepared renderer, engine,
+  browser and actual production dependencies. Exclude the private repository
+  package and its source/build outputs from dependency collection. Audit ASAR
+  metadata before installer creation, including unpacked entries, so recursive
+  source inclusion fails early. Replay captured packaging paths in fast unit
+  tests and check exclusions with the installed packager in hosted packaging.
+  Never mask oversized-payload failures with generic retries or higher limits.
 
 ## Standing Doctrine: Readable Recursive Source and Comment Meta-Language (2026-10-18)
 

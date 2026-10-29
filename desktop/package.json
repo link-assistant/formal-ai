@@ -60,7 +60,8 @@
       "preload.cjs",
       "lib/**",
       "package.json",
-      "dist-web/**"
+      "dist-web/**",
+      "!**/node_modules/formal-ai-web-bundle{,/**/*}"
     ],
     "extraResources": [
       {
@@ -117,7 +118,8 @@
     },
     "portable": {
       "artifactName": "formal-ai-desktop-windows-portable-${arch}-${version}.${ext}"
-    }
+    },
+    "afterPack": "./scripts/package-content.cjs"
   },
   "allowScripts": {
     "electron-winstaller": true,

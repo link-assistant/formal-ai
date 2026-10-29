@@ -181,6 +181,15 @@ Windows/macOS test reruns already use FORMAL_AI_NON_LINUX_CI=run to opt in.
 Platform release producers, signing, package contents and publication smoke
 checks remain required for every advertised platform package.
 
+Desktop dependency collection excludes the private parent repository package.
+The renderer already lives in dist-web; copying the parent also copies native-bin,
+browser downloads and desktop/release back into the application. The captured
+Windows NSIS failure is replayed by desktop-package-boundary.test.mjs in fast PR
+checks. Hosted packaging also checks those paths with its actual electron-builder
+matcher, then audits the real ASAR directory (including unpacked entries) before
+creating installers. Keep required runtime dependencies and explicit browser/bin
+resources. An oversized archive is a content defect, not a retryable transport error.
+
 Observed v0.355.13 costs: original-client image download31.4 minutes and
 image load5.2 minutes versus6.2 minutes of actual solve; macOS Intel native
 compile23.5 minutes; method-learning replay15.4 minutes. Image-transfer and

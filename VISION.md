@@ -132,7 +132,9 @@ changes in the same PR; follow its exact source through merge, main and actual
 public release verification. Keep release feedback affordable by reusing authenticated complete source
 artifacts, retaining independent tag/ancestry verification and learning transport
 regressions from real CI evidence. Infrastructure cancellations earn no execution
-credit. The operational policy lives in
+credit. Keep runtime packages bounded to their required contents; prevent source
+trees and previous build outputs from recursively entering installers, and turn
+captured failures into cheap checks before packaging. The operational policy lives in
 [CI speed](docs/ci-cd/speed.md) and the
 [fast PR requirements](docs/requirements/doctrine-fast-pull-request-production-ci.md).
 
