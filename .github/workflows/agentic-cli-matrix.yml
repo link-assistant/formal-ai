@@ -16,6 +16,12 @@ name: Agentic CLI Matrix
 
 on:
   push:
+    paths-ignore:
+      - "docs/**"
+      - "*.md"
+      - "**/README.md"
+      - "**/CHANGELOG.md"
+      - "changelog.d/**"
     branches:
       - main
   pull_request:
@@ -43,6 +49,11 @@ on:
       - 'rust/Cargo.toml'
       - 'rust/Cargo.lock'
       - '.github/workflows/agentic-cli-matrix.yml'
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   # Issue #1187 R2: a bot pull request's checks start through dispatch
   # (.github/actions/dispatch-checks); mode and pull-request are its inputs.
   workflow_dispatch:

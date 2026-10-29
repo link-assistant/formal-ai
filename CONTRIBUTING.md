@@ -1,5 +1,13 @@
 # Contributing to formal-ai
 
+For documentation-only changes, heavy push/PR workflows and automatic releases
+are filtered by `scripts/docs-only-ci-policy.mjs`. Run its `--write` mode after
+adding a heavy workflow, then its targeted JavaScript regression. The policy
+preserves comments, retained job bodies and explicit manual controls. Root
+Markdown, `docs/**`, nested README/CHANGELOG files and changelog fragments are
+documentation; other Markdown may be runtime input. Mixed changes run normal CI.
+See [issue #1455 requirements](docs/requirements/issue-1455-documentation-and-evidence.md).
+
 Thank you for your interest in contributing! This document provides guidelines and instructions for contributing to this project.
 
 **Read [VISION.md](VISION.md) first**, and the architect's notes it is kept up to date from, in [docs/architect-notes/](docs/architect-notes/). It is the standing guideline, in the architect's

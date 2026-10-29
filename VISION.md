@@ -138,6 +138,14 @@ captured failures into cheap checks before packaging. The operational policy liv
 [CI speed](docs/ci-cd/speed.md) and the
 [fast PR requirements](docs/requirements/doctrine-fast-pull-request-production-ci.md).
 
+Documentation-only automatic changes should have documentation-sized costs:
+run lightweight checks and produce no release by default. Keep production checks
+available manually; mixed code changes retain their normal verification. Formal
+AI must inspect repository evidence and expose a structured decomposition before
+stopping on an unsupported task. Observations, proposed work, actual edits and
+independent acceptance are distinct; evidence collection alone is not delivery.
+
+
 **Start from a working Hello World.**
 
 > We must provide Formal AI with all capability nessesary to start with a simple

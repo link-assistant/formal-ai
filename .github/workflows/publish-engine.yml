@@ -31,6 +31,11 @@ on: # zizmor: ignore[dangerous-triggers]
       - "rust/**"
       - "rust/tests/web/browser-engine-release-integration.test.mjs"
       - "scripts/generate-web-distribution.py"
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   workflow_dispatch:
     inputs:
       mode:

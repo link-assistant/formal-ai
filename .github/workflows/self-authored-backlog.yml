@@ -17,6 +17,11 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/self-authored-backlog.yml'
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   workflow_dispatch:
     inputs:
       max-age-days:

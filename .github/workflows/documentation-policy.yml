@@ -1,0 +1,33 @@
+name: Documentation policy
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches-ignore: ['e2e/**']
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Run documentation checks
+        type: choice
+        options: [checks]
+        default: checks
+      pull-request:
+        description: Pull request whose checks were requested
+        type: string
+permissions:
+  contents: read
+jobs:
+  documentation-policy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      # Install only the policy parser, never the application/native dependency tree.
+      - run: npm install --ignore-scripts --no-audit --no-fund --prefix /tmp/documentation-policy yaml@1.10.3
+      - run: |
+          mkdir -p node_modules
+          ln -s /tmp/documentation-policy/node_modules/yaml node_modules/yaml
+          node --test rust/tests/web/docs-only-ci-policy.test.mjs

@@ -15,6 +15,11 @@ on:
       - 'rust/Cargo.toml'
       - 'rust/Cargo.lock'
       - '.github/workflows/provenance-native.yml'
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   workflow_dispatch:
     inputs:
       mode:

@@ -12,6 +12,11 @@ on:
       - 'scripts/lib/native-process-diagnostics.mjs'
       - 'scripts/lib/native-response-identity.mjs'
       - '.github/workflows/regenerate-native-session-projections.yml'
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   workflow_dispatch:
     inputs:
       mode:

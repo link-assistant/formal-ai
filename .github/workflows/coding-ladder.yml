@@ -32,6 +32,11 @@ on:
       - 'scripts/check-shard-results.sh'
       - '.github/actions/formal-ai-binary/**'
       - '.github/workflows/coding-ladder.yml'
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   pull_request:
     # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
     # never triggers this repository's own pipeline.
@@ -47,6 +52,11 @@ on:
       - 'scripts/check-coding-ladder.rs'
       - 'scripts/check-shard-results.sh'
       - '.github/workflows/coding-ladder.yml'
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   schedule:
     - cron: '17 5 * * 0'
   # Issue #1187 R2: a bot pull request's checks start through dispatch

@@ -4,11 +4,13 @@
 // skipped too while Pipeline Status stayed green. Merge #1150 left
 // `20260926_215107_issue-1149-coverage-budget.md` unreleased that way.
 //
-// The release workflow now asks scripts/detect-code-changes.rs to count a
+// The release workflow asks scripts/detect-code-changes.rs to count a
 // waiting fragment on main as a reason to run the pipeline. This pins the
 // chain: the detector folds `release-pending` into `any-code-changed`, the
 // release workflow opts in, and every job Auto Release needs to succeed is
 // gated on `any-code-changed`.
+// The 2026-10-29 docs-only exception deliberately defers pending fragments until
+// a source change or explicit release; docs-only automatic publication is forbidden.
 
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -38,6 +40,8 @@ test("the detector counts a waiting fragment on main as a pipeline change", () =
   assert.match(detector, /env::var\("RELEASE_PIPELINE"\)/);
   assert.match(detector, /if flags\.any_code_changed \|\| pending \{/);
   assert.match(detector, /set_output\("release-pending"/);
+  assert.match(detector, /&& automatic_release_pending\(/);
+  assert.match(detector, /any\(\|path\| !is_documentation_path\(path\)\)/);
 });
 
 test("the release workflow opts in, and Auto Release's prerequisites follow any-code-changed", () => {

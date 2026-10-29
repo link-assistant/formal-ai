@@ -35,6 +35,11 @@ on: # zizmor: ignore[dangerous-triggers]
       - 'rust/.cargo/**'
       - 'rust/Cargo.toml'
       - 'rust/Cargo.lock'
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
 permissions:
   contents: read
 env:

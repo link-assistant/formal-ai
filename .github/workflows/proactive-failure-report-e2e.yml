@@ -13,6 +13,11 @@ on:
       - ".github/workflows/proactive-failure-report-e2e.yml"
       - "rust/Cargo.toml"
       - "Cargo.lock"
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   # Issue #1187 R2: a bot pull request's checks start through dispatch
   # (.github/actions/dispatch-checks); mode and pull-request are its inputs.
   workflow_dispatch:

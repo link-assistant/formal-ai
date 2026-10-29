@@ -68,6 +68,11 @@ on:
       - 'rust/src/agentic_coding/**'
       - 'data/meta/ladder-ratchet.lino'
       - '.github/workflows/issue-1028-agent-ladder.yml'
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   schedule:
     - cron: '23 3 * * 0'
 

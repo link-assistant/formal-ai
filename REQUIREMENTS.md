@@ -65,6 +65,7 @@ the areas are the whole register.
    - Issue #1168 Generated Code Uses Versions Resolved at Generation Time
    - Issue #1169 Every Dependency at Its Latest Release
    - Issue 1364: complete three-client release acceptance
+   - Issue #1455: Grounded integration documentation and affordable documentation CI
 
 3. [Interfaces and integrations](docs/requirements/assembled/interfaces-and-integrations.md)
    - Issue #6 UI Follow-Up Requirements

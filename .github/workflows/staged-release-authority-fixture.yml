@@ -19,6 +19,11 @@ on:
       - package.json
       - bun.lock
       - .bun-version
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   workflow_dispatch:
     inputs:
       mode:
