@@ -11,6 +11,12 @@ https://docs\.rs/example-sum-package-name
 # Web Archive rejects automated checks despite serving browser requests
 https://web\.archive\.org
 
+# Decorative live crate-version image only. Main run 40986729989 received
+# HTTP 408 through all three direct retries; the same URL subsequently served
+# 200. Keep checking its README destination (crates.io/crates/formal-ai), other
+# badges and all ordinary links. This is not an exception for HTTP 408 globally.
+^https://img\.shields\.io/crates/v/formal-ai\?label=crates\.io&style=flat$
+
 # These pages require a browser session or reject automated HEAD/GET probes.
 https://openai\.com/index/introducing-gpt-oss/
 https://openai\.com/index/introducing-simpleqa/

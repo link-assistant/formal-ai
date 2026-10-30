@@ -21,6 +21,12 @@ and the restore transaction to six, and give the workflow import step a
 seven-minute backstop. Tests trace actual Git operations against small offline
 fixtures; all Rust compilation and package execution remain in CI.
 
+Decorative live badge outages must not block coding and release delivery. Keep
+exceptions anchored to the exact image URL with the observed CI evidence; keep
+checking its artifact destination and other URLs. A badge exception grants no
+publication evidence and must not accept HTTP 408 globally or expand retry limits.
+The link workflow runs the small real-HTTP timeout and missing-page regressions.
+
 Documentation-only automatic changes use the policy in
 [`scripts/documentation-only-ci-policy.mjs`](../../scripts/documentation-only-ci-policy.mjs): skip
 heavy workflows and automatic releases, retain lightweight checks and explicit

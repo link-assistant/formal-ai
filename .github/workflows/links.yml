@@ -13,6 +13,7 @@ on:
       - 'scripts/check-web-archive.test.mjs'
       - 'scripts/recheck-broken-links.mjs'
       - 'scripts/recheck-broken-links.test.mjs'
+      - 'scripts/recheck-transient-http.test.mjs'
   pull_request:
     # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
     # never triggers this repository's own pipeline.
@@ -27,6 +28,7 @@ on:
       - 'scripts/check-web-archive.test.mjs'
       - 'scripts/recheck-broken-links.mjs'
       - 'scripts/recheck-broken-links.test.mjs'
+      - 'scripts/recheck-transient-http.test.mjs'
   # Issue #1187 R2: a bot pull request's checks start through dispatch
   # (.github/actions/dispatch-checks); mode and pull-request are its inputs.
   workflow_dispatch:
@@ -79,7 +81,8 @@ jobs:
         run: |
           node --test \
             scripts/check-web-archive.test.mjs \
-            scripts/recheck-broken-links.test.mjs
+            scripts/recheck-broken-links.test.mjs \
+            scripts/recheck-transient-http.test.mjs
 
       - name: Prepare reconstructable release history for link checking
         # Older releases roll out of CHANGELOG.md into docs/changelog/ (every
