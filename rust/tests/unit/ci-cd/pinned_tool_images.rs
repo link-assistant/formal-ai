@@ -685,9 +685,9 @@ const REMOTE_GIT_WRITES: [&str; 4] = [
 ///
 /// Rather than trusting a list of which jobs push, this reads each job body
 /// and asks whether anything in it writes to the remote over git. A job that
-/// does must keep its checkout credential, because nothing else in this
-/// repository supplies one: `scripts/git-config.rs` sets `user.name` and
-/// `user.email` and no credential helper, and no workflow configures one.
+/// does must keep its checkout credential. The composite author's explicit
+/// selected-token helper is verified separately below; `scripts/git-config.rs`
+/// alone supplies committer identity, not authentication.
 fn root_push_credential_is_retained(job: &[&str]) -> bool {
     let mut starts: Vec<usize> = job
         .iter()
@@ -872,26 +872,28 @@ fn every_job_that_pushes_still_has_a_credential_to_push_with() {
         );
     }
 
-    // The fifth writer is the self-authored author job, and its pushes moved
+    // The composite writer is the self-authored author job, and its pushes moved
     // into `.github/actions/author-with-formal-ai` when the loop became an
-    // action another repository can install (issue #1085). The job still has
-    // to keep its checkout credential, because that is what the action pushes
-    // with when no bot token is configured -- so the pair is asserted here
+    // action another repository can install (issue #1085). Its selected-token
+    // helper supplies Git credentials, including the default-token fallback,
+    // while checkout's old header must not shadow that selection. The pair is
+    // asserted here
     // rather than being lost with the `git push` line that used to be visible.
     let authoring = repository_file(".github/workflows/self-authored-pull-request.yml");
     assert!(
         authoring.contains("uses: ./.github/actions/author-with-formal-ai"),
         "the self-authored workflow drives the loop through the action"
     );
-    // The comment above that checkout says the words `persist-credentials:
-    // false` to explain why they are absent, so this reads the setting rather
-    // than the file: only a line that actually sets it counts.
+    // Read the actual setting, rather than matching explanatory comments.
     assert!(
-        !authoring
+        authoring
             .lines()
             .any(|line| line.trim().starts_with("persist-credentials: false")),
-        "the author job's checkout keeps its credential: the action pushes the bot branch with \
-         it when the repository provides no FORMAL_AI_BOT_TOKEN (issue #1079)"
+        "the author checkout must not shadow the selected credential with a default header"
+    );
+    assert!(
+        authoring.contains("run: gh auth setup-git --hostname github.com"),
+        "the author must configure its selected credential before fetching or writing"
     );
     let action =
         repository_file(".github/actions/author-with-formal-ai/scripts/push-formal-ai-commit.sh");

@@ -66,6 +66,15 @@ test('author checkout retains history while selected credentials own publication
   const resolver=author.steps.find(step=>step.id==='automation');
   assert.equal(resolver.with['permission-actions'],'read');
   assert.equal(resolver.with['permission-workflows'],'write');
+  const credentials=author.steps.find(step=>step.name==='Configure Git with the selected author credential');
+  const context=author.steps.find(step=>step.id==='release-context');
+  const writer=author.steps.find(step=>step.id==='author');
+  assert.equal(credentials.run,'gh auth setup-git --hostname github.com');
+  assert.equal(credentials['timeout-minutes'],1);
+  for(const step of [credentials,context,writer])assert.equal(step.env.GH_TOKEN,'${{ steps.automation.outputs.token }}');
+  assert(author.steps.indexOf(resolver)<author.steps.indexOf(credentials));
+  assert(author.steps.indexOf(credentials)<author.steps.indexOf(context));
+  assert(author.steps.indexOf(credentials)<author.steps.indexOf(writer));
   for(const name of ['open-formal-ai-pull-request','push-formal-ai-commit']) {
     const source=readFileSync(new URL('../../../.github/actions/author-with-formal-ai/scripts/'+name+'.sh',import.meta.url),'utf8');
     assert(source.indexOf('git remote set-url origin')<source.indexOf('"$RUNNER_TEMP/push-to-shared-branch.sh"'));
