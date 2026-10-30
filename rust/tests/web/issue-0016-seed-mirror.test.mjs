@@ -12,6 +12,7 @@ import path from "node:path";
 import { test } from "node:test";
 
 import { REPO_ROOT } from "./support/browser-runtime.mjs";
+import { loadPlaywrightConfig } from "./support/playwright-configuration.mjs";
 
 const read = (relative) => readFileSync(path.join(REPO_ROOT, relative), "utf8");
 const git = (...args) => execFileSync("git", args, { cwd: REPO_ROOT, encoding: "utf8" });
@@ -30,7 +31,9 @@ test("R105: the mirror is gitignored and has no tracked copy", () => {
 
 test("R105: every web-serving surface regenerates the mirror before serving js/", () => {
   for (const config of ["rust/tests/e2e/playwright.local.config.js", "rust/tests/e2e/playwright.adhoc.config.js"]) {
-    assert.match(read(config), /sync-seed\.sh && npx serve \.\.\/\.\.\/\.\.\/js /u, config);
+    // Check the command Playwright receives, including computed configuration.
+    assert.match(loadPlaywrightConfig(config).webServer.command,
+      /sync-seed\.sh && npx serve \.\.\/\.\.\/\.\.\/js /u, config);
   }
   // The Pages bundle is built by the reusable pages-artifact.yml, which
   // release.yml calls (PR #1188 R1188-U9 moved the build out of release.yml).
