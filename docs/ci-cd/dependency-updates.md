@@ -5,6 +5,9 @@ re-resolves lockfiles and runs all three gate stages before publication. Its
 scoped App token must explicitly request workflow-file write permission because
 the validated update can include `.github/workflows/` changes. Contents write
 permission alone cannot publish those changes.
+Mint optional write credentials after the long validation stages and only when
+publication is requested. Installation tokens expire after one hour; public
+registry discovery uses the job's default token instead.
 
 Optional credentials remain optional. With only `github.token`, an update that
 does not change workflows may still create one PR and dispatch its checks. If

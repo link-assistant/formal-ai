@@ -50,14 +50,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: ./.github/actions/automation-token
-        with:
-          app-id: ${{ secrets.AUTOMATION_APP_ID }}
-          app-private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
-          automation-token: ${{ secrets.AUTOMATION_TOKEN }}
-          permission-workflows: write
-        id: automation
-
       # The same toolchain set the release workflow's gate job uses, so the
       # re-run below executes the gates exactly as CI does.
       - name: Setup Rust
@@ -83,7 +75,7 @@ jobs:
       # fails this run loudly instead of opening a PR from a partial view.
       - name: Refresh the registry snapshot the gate reads
         env:
-          GH_TOKEN: ${{ steps.automation.outputs.token }}
+          GH_TOKEN: ${{ github.token }}
         run: rust-script scripts/check-dependencies-latest.rs --refresh-snapshot
 
       # Exit 1 means "findings", which is exactly what --apply just moved;
@@ -139,11 +131,21 @@ jobs:
       - name: Run registered gates (stage web)
         run: rust-script scripts/run-ci-gates.rs --stage web
 
+      # Installation tokens expire after one hour; mint after the long gates.
+      - uses: ./.github/actions/automation-token
+        if: github.event_name == 'schedule' || inputs.create-pull-request == true
+        with:
+          app-id: ${{ secrets.AUTOMATION_APP_ID }}
+          app-private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+          automation-token: ${{ secrets.AUTOMATION_TOKEN }}
+          permission-workflows: write
+        id: automation
+
       - name: Prepare complete dependency update review
         id: publication
         timeout-minutes: 2
         env:
-          AUTOMATION_LAYER: ${{ steps.automation.outputs.layer }}
+          AUTOMATION_LAYER: ${{ steps.automation.outputs.layer || 'default' }}
           DEPENDENCY_REVIEW_DIRECTORY: ${{ runner.temp }}/dependency-update-review
         run: node scripts/dependency-update-publication.mjs
 

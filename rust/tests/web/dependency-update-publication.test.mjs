@@ -76,9 +76,15 @@ test('dependency workflow requests the missing App scope and safely gates public
   const job = workflow.jobs.update, steps = job.steps;
   const credentials = steps.find(step => step.uses === './.github/actions/automation-token');
   assert.equal(credentials.with['permission-workflows'], 'write');
+  assert.ok(steps.indexOf(credentials) > steps.findIndex(step => step.name === 'Run registered gates (stage web)'),
+    'short-lived write credentials are minted after long validation');
+  assert.match(credentials.if, /create-pull-request == true/);
+  assert.equal(steps.find(step => step.name === 'Refresh the registry snapshot the gate reads').env.GH_TOKEN,
+    '${{ github.token }}');
   assert.equal(job.permissions.actions, 'write');
   const review = steps.find(step => step.id === 'publication');
   assert.equal(review.run, 'node scripts/dependency-update-publication.mjs');
+  assert.equal(review.env.AUTOMATION_LAYER, "${{ steps.automation.outputs.layer || 'default' }}");
   assert.ok(steps.findIndex(step => step.name === 'Run registered gates (stage web)') < steps.indexOf(review));
   const upload = steps.find(step => step.with?.name === 'dependency-update-review');
   assert.equal(upload.uses, 'actions/upload-artifact@v7');

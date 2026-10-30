@@ -5,3 +5,5 @@
   as review patches, and dispatch checks for ordinary dependency PRs it can create.
 - Preserve repository branch protections with immutable per-run update branches;
   retain review data rather than rewriting an existing branch or duplicating a PR.
+- Mint optional write credentials after validation so long jobs do not exhaust
+  their lifetime before publication; use the default token for registry reads.
