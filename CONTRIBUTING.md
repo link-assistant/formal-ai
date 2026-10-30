@@ -8,6 +8,13 @@ Markdown, `docs/**`, nested README/CHANGELOG files and changelog fragments are
 documentation; other Markdown may be runtime input. Mixed changes run normal CI.
 See [issue #1455 requirements](docs/requirements/issue-1455-documentation-and-evidence.md).
 
+Before merging during production delivery, follow the
+[release handoff guide](docs/ci-cd/release-handoff.md). Version preparation is not
+publication: freshness is checked again after compilation and before later
+release effects. Keep main stable through the active release and verify its
+consumers before merging routine changes. Draft fixes while CI runs; do not
+weaken a freshness check or rerun a superseded producer to force publication.
+
 Live issue drafting selects current Formal AI and Hive Mind sources once per
 attempt, reuses those exact commits across jobs, and records their runtime
 identities. Never silently fall back to an older runtime. Maintained Hive Mind
