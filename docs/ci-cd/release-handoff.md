@@ -62,6 +62,9 @@ The shared JSON observer now bounds each read, retries only clean HTTP
 502/503/504 responses at most three times, and redacts the selected credential
 in diagnostics. Exact-attempt job inventories use twenty-job pages and still
 refuse missing, duplicate, drifting, oversized or foreign observations.
+The release writer recognizes that same upstream error class, but follows its
+existing exact-tag/source reconciliation before any further write. A failed
+or unavailable reconciliation does not authorize another creation attempt.
 
 Release delivery takes priority over this optional post-publication canary's
 access to GitHub. If those server-error retries exhaust, report the observation

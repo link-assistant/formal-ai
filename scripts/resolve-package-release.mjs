@@ -9,6 +9,8 @@ import { pathToFileURL } from 'node:url';
 const RELEASE_TAG = /^v[0-9]+\.[0-9]+\.[0-9]+$/;
 const COMMIT_IDENTIFIER = /^[a-f0-9]{40,64}$/;
 
+export const transientGithubServerFailure = message => /\bHTTP 50[234]\b/u.test(message);
+
 function executeGithubRead(file, args, options) {
   try {
     return {status: 0, signal: null, cleanup_complete: true,
@@ -54,7 +56,7 @@ export function readGithubJson(endpoint, {
       signal: result.signal, timedOut: result.timed_out, cleanupComplete: result.cleanup_complete,
       error: result.error?.code, stderr: stderr.slice(-2048)};
     report(detail);
-    const unavailable = clean && /\bHTTP 50[234]\b/u.test(stderr);
+    const unavailable = clean && transientGithubServerFailure(stderr);
     if (unavailable && attempt === 3) throw new GithubObservationUnavailable(detail);
     assert(unavailable,
       'bounded GitHub observation failed: ' + JSON.stringify(detail));

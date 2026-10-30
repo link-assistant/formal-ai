@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import {pathToFileURL} from 'node:url';
 import {boundedCommand} from '../js/server/bounded-command.mjs';
+import {transientGithubServerFailure} from './resolve-package-release.mjs';
 
 const successful = result => result.status === 0 && !result.error && !result.signal &&
   !result.timed_out && result.cleanup_complete === true;
@@ -39,7 +40,9 @@ export async function createReleaseWithRecovery(args, {
     report({phase: 'release-create', attempt, ...detail(result)});
     if (successful(result)) return {complete: true, attempt, reconciled: false};
     const failure = text(result.stderr) + text(result.stdout);
-    const transient = /^Error creating release: unexpected end of JSON input\s*$/mu.test(failure);
+    const publicationFailure = /^Error creating release: ([^\r\n]*)/mu.exec(failure)?.[1]?.trim();
+    const transient = publicationFailure === 'unexpected end of JSON input' ||
+      transientGithubServerFailure(publicationFailure ?? '');
     assert(result.cleanup_complete === true && !result.error && !result.signal && !result.timed_out && transient,
       'release creation failed without retryable transport evidence: ' + JSON.stringify(detail(result)));
     // POST may have committed even when its response was lost. Only an authenticated,

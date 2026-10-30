@@ -45,6 +45,14 @@ test('captured truncated JSON failure retries only after exact authenticated abs
   assert.deepEqual(fixture.calls[0].args, fixture.calls[2].args);
   assert.deepEqual(fixture.pauses, [2000]);
 });
+test('observed upstream 502/503/504 errors reconcile before another release write', async () => {
+  for(const code of [502,503,504]) {
+    const fixture=scenario([result(1,'','Error creating release: gh: Server error (HTTP '+code+')'),absent,result(0)]);
+    assert.deepEqual(await fixture.run(),{complete:true,attempt:2,reconciled:false});
+    assert.deepEqual(fixture.calls.map(call=>call.command),['rust-script','gh','rust-script']);
+    assert.deepEqual(fixture.calls[0].args,fixture.calls[2].args);
+  }
+});
 test('lost response after a committed release reconciles tag and source without a second write', async () => {
   const fixture = scenario([lostResponse, present(release), result(0, JSON.stringify({sha: environment.EXPECT_SOURCE}))]);
   assert.deepEqual(await fixture.run(), {complete: true, attempt: 1, reconciled: true});
