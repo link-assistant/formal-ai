@@ -84,12 +84,12 @@ export function resolvePublishedProducer(cwd, environment, readGithub, clock = (
   const route = routes[0];
   const jobs = [], identifiers = new Set();
   let total;
-  for (let page = 1; page <= 10; page++) {
-    const response = get(base + 'actions/runs/' + run.id + '/attempts/' + run.run_attempt + '/jobs?per_page=100&page=' + page);
+  for (let page = 1; page <= 50; page++) {
+    const response = get(base + 'actions/runs/' + run.id + '/attempts/' + run.run_attempt + '/jobs?per_page=20&page=' + page);
     assert.ok(Number.isSafeInteger(response.total_count) && response.total_count >= 0 && response.total_count <= 1000);
     total ??= response.total_count;
     assert.equal(response.total_count, total, 'job inventory changed during observation');
-    assert.ok(Array.isArray(response.jobs) && response.jobs.length <= 100);
+    assert.ok(Array.isArray(response.jobs) && response.jobs.length <= 20);
     for (const job of response.jobs) {
       assert.ok(Number.isSafeInteger(job.id) && job.id > 0 && !identifiers.has(job.id));
       identifiers.add(job.id);
@@ -99,7 +99,7 @@ export function resolvePublishedProducer(cwd, environment, readGithub, clock = (
     }
     assert.ok(jobs.length <= total);
     if (jobs.length === total) break;
-    assert.equal(response.jobs.length, 100, 'truncated job inventory refused');
+    assert.equal(response.jobs.length, 20, 'truncated job inventory refused');
   }
   assert.equal(jobs.length, total, 'complete bounded exact-attempt job inventory required');
   const publishers = jobs.filter(job => job.name === route.descendantName);

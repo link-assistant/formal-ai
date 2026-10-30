@@ -1,18 +1,70 @@
 // Resolve a published package release without executing a workflow's arbitrary ref.
 // Automated GITHUB_TOKEN releases need the CI completion event, because their
 // release event is suppressed. Only a published tag belonging to that run is used.
-import { execFileSync } from 'node:child_process';
+import assert from 'node:assert/strict';
+import {execFileSync} from 'node:child_process';
 import { appendFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 
 const RELEASE_TAG = /^v[0-9]+\.[0-9]+\.[0-9]+$/;
 const COMMIT_IDENTIFIER = /^[a-f0-9]{40,64}$/;
 
+function executeGithubRead(file, args, options) {
+  try {
+    return {status: 0, signal: null, cleanup_complete: true,
+      stdout: execFileSync(file, args, {...options, killSignal: 'SIGKILL', stdio: ['ignore', 'pipe', 'pipe']}), stderr: Buffer.alloc(0)};
+  } catch (error) {
+    return {status: error.status ?? null, signal: error.signal ?? null,
+      error: error.code ? error : undefined, timed_out: error.code === 'ETIMEDOUT',
+      cleanup_complete: Number.isInteger(error.status) && !error.signal,
+      stdout: error.stdout ?? Buffer.alloc(0), stderr: error.stderr ?? Buffer.alloc(0)};
+  }
+}
+
+export class GithubObservationUnavailable extends Error {
+  constructor(detail) {
+    super('bounded GitHub observation failed: ' + JSON.stringify(detail));
+    this.name = 'GithubObservationUnavailable';
+    this.detail = detail;
+  }
+}
+
+export function readGithubJson(endpoint, {
+  hostname, timeout = 10000, maxBuffer = 2097152, environment = process.env,
+  transport = executeGithubRead,
+  pause = milliseconds => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, milliseconds),
+  report = record => console.error(JSON.stringify(record)),
+} = {}) {
+  assert(typeof endpoint === 'string' && endpoint.startsWith('repos/') && !/[\r\n\0]/u.test(endpoint));
+  assert(Number.isSafeInteger(timeout) && timeout > 0 && timeout <= 30000);
+  assert(Number.isSafeInteger(maxBuffer) && maxBuffer > 0 && maxBuffer <= 2097152);
+  assert(hostname === undefined || hostname === 'github.com');
+  const args = ['api', ...(hostname ? ['--hostname', hostname] : []), endpoint];
+  const env = hostname ? {...environment, GH_HOST: hostname} : environment;
+  const redact = value => environment.GH_TOKEN ? value.replaceAll(environment.GH_TOKEN, '***') : value;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    const result = transport('gh', args, {env, timeout, maxBuffer});
+    const stderr = redact(result.stderr?.toString('utf8') ?? '');
+    const clean = result.cleanup_complete === true && !result.error && !result.signal && !result.timed_out;
+    if (clean && result.status === 0) {
+      assert(result.stdout.length <= maxBuffer, 'GitHub observation response exceeds its byte bound');
+      return JSON.parse(new TextDecoder('utf-8', {fatal: true}).decode(result.stdout));
+    }
+    const detail = {operation: 'github-json-read', endpoint, attempt, status: result.status,
+      signal: result.signal, timedOut: result.timed_out, cleanupComplete: result.cleanup_complete,
+      error: result.error?.code, stderr: stderr.slice(-2048)};
+    report(detail);
+    const unavailable = clean && /\bHTTP 50[234]\b/u.test(stderr);
+    if (unavailable && attempt === 3) throw new GithubObservationUnavailable(detail);
+    assert(unavailable,
+      'bounded GitHub observation failed: ' + JSON.stringify(detail));
+    pause(attempt * 2000);
+  }
+}
+
 /** Read JSON from GitHub with arguments kept separate from the command. */
 export function githubJson(endpoint) {
-  return JSON.parse(execFileSync('gh', ['api', endpoint], {
-    encoding: 'utf8', timeout: 30000, stdio: ['ignore', 'pipe', 'pipe'],
-  }));
+  return readGithubJson(endpoint);
 }
 
 /** Search the original thirty-release window in bounded five-release pages. */
@@ -73,10 +125,7 @@ export function resolvePackageRelease(environment, readGithub = githubJson) {
 
 /** The production reader fixes the official API host and per-response bounds. */
 export function productionGithubJson(endpoint) {
-  return JSON.parse(execFileSync('gh', ['api', '--hostname', 'github.com', endpoint], {
-    encoding: 'utf8', timeout: 10000, maxBuffer: 1024 * 1024,
-    env: {...process.env, GH_HOST: 'github.com'}, stdio: ['ignore', 'pipe', 'pipe']
-  }));
+  return readGithubJson(endpoint, {hostname: 'github.com', maxBuffer: 1024 * 1024});
 }
 
 /** Production entrypoints reject nonproduction run events before selecting release source. */

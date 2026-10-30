@@ -66,7 +66,8 @@ concurrency:
 jobs:
   author:
     name: Formal AI authors a change and opens the pull request
-    if: github.event_name != 'issues' || github.event.label.name == 'formal-ai-solve'
+    # PRs exercise the captured JavaScript tests; live authoring stays on its explicit routes.
+    if: github.event_name != 'pull_request' && (github.event_name != 'issues' || github.event.label.name == 'formal-ai-solve')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     concurrency:
@@ -86,14 +87,13 @@ jobs:
       GIT_HTTP_LOW_SPEED_LIMIT: '1024'
       GIT_HTTP_LOW_SPEED_TIME: '30'
     steps:
-      # This checkout keeps its credential (no `persist-credentials: false`):
-      # the action's push steps write the bot branch with it when the
-      # resolver below falls back to github.token, and nothing else supplies
-      # one (issue #1079).
+      # The author action sets its authenticated remote before any fetch/push.
+      # Retaining checkout's default header would shadow the selected App token.
       - uses: actions/checkout@v7
         timeout-minutes: 5
         with:
           fetch-depth: 0
+          persist-credentials: false
           # Preserve history and current source, without downloading historical blobs.
           filter: blob:none
           ref: ${{ (github.event_name == 'release' || inputs.production-run-id != '') && github.event.repository.default_branch || github.head_ref || github.ref }}
@@ -106,6 +106,8 @@ jobs:
           app-id: ${{ secrets.AUTOMATION_APP_ID }}
           app-private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
           automation-token: ${{ secrets.AUTOMATION_TOKEN }}
+          permission-actions: read
+          permission-workflows: write
         id: automation
 
       - name: Set up locked source protocol dependencies

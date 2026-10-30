@@ -59,6 +59,12 @@
     "rust/tests/web/release-trigger-paths.test.mjs",
     "rust/tests/web/fetched-issue-auxiliary-safety.test.mjs",
     "rust/tests/web/planner-twins.test.mjs",
-    "rust/tests/web/create-release-with-recovery.test.mjs"
+    "rust/tests/web/create-release-with-recovery.test.mjs",
+    "rust/tests/web/github-json-observation.test.mjs",
+    "rust/tests/web/self-authored-publication-source.test.mjs",
+    "rust/tests/web/self-authored-release-workflow.test.mjs",
+    "rust/tests/web/self-authored-release-context.test.mjs",
+    "rust/tests/web/production-package-release.test.mjs",
+    "rust/tests/web/package-release-authority-controls.test.mjs"
   ]
 }

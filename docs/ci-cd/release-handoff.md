@@ -54,6 +54,29 @@ correctly refused it. Retain that attempt boundary. Recover transient writes
 inside the original attempt, or let a fresh main run produce new artifacts
 after the repair merges. Never relabel an earlier artifact as a new attempt.
 
+## Publication-observer server failures
+
+The [v0.355.25 self-authoring job](https://github.com/link-assistant/formal-ai/actions/runs/41084627272/job/124217768379)
+failed before authoring when its single 100-job request received HTTP 504.
+The shared JSON observer now bounds each read, retries only clean HTTP
+502/503/504 responses at most three times, and redacts the selected credential
+in diagnostics. Exact-attempt job inventories use twenty-job pages and still
+refuse missing, duplicate, drifting, oversized or foreign observations.
+
+Release delivery takes priority over this optional post-publication canary's
+access to GitHub. If those server-error retries exhaust, report the observation
+as **Deferred**, keep authoring inactive, and award no self-development credit.
+This is temporary operational debt for external observation availability, not
+evidence of authored or reviewed work. Authorization errors, invalid JSON,
+incomplete cleanup, timeouts and provenance violations remain failures. Core
+coding/QA checks and production artifact verification remain mandatory.
+
+PRs replay the captured JavaScript cases and do not allocate the live authoring
+job. Explicit live routes remain available. Optional App credentials request
+Actions read and workflow-file write permissions; checkout must not retain a
+default-token header that would shadow the selected author's authenticated
+remote. No additional secret is mandatory.
+
 ## Observed failure: release v0.355.22
 
 The [production compile job](https://github.com/link-assistant/formal-ai/actions/runs/40986730103/job/123853286634)
