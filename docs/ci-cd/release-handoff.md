@@ -83,6 +83,29 @@ Configure GitHub CLI's selected-token credential helper before source fetches
 and authoring. The credential policy verifies that explicit path; ordinary
 direct Git writers retain their checkout credential.
 
+## Browser test server preparation
+
+The [main browser shard](https://github.com/link-assistant/formal-ai/actions/runs/41116576030/job/124273089332)
+timed out before running tests: Playwright rebuilt the entire web distribution
+inside its fifteen-second server-start window, although CI had already built
+and synchronized the assets. CI now explicitly selects those prepared assets
+only after both preparation steps succeed. Standalone runs retain preparation.
+Allow a bounded two-minute startup window and pipe both server output streams
+into CI logs. Preserve the browser tests, assertion limits and suite deadline.
+Fast JavaScript tests exercise both configuration paths without launching a
+browser, building products or running Rust locally.
+
+The [hosted compiler discovery job](https://github.com/link-assistant/formal-ai/actions/runs/41116575751/job/124273018371)
+also observed a TLS handshake timeout before downloading an archive. The shared
+installer retries transient connection establishment at most three times with
+thirty-second request limits and one/two-second backoff. It never retries a
+partially read archive or weakens digest, redirect, workspace or process grants.
+Authorization, certificate and policy failures stop immediately. Each attempt
+logs a sanitized URL and error class. CI replays this captured failure and the
+retry exhaustion/refusal controls using fake transport and clocks; it retains
+the real hosted install/compile/Hello World oracles. Run those Python controls
+only in CI, with JavaScript transaction tests available locally.
+
 ## Observed failure: release v0.355.22
 
 The [production compile job](https://github.com/link-assistant/formal-ai/actions/runs/40986730103/job/123853286634)

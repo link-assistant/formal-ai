@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Client-owned bounded workspace installer. No publisher shell text is executed."""
-import hashlib, html, json, os, pathlib, platform, re, shutil, ssl, stat, subprocess, sys, tempfile, urllib.error, urllib.parse, urllib.request, zipfile
+import hashlib, html, json, os, pathlib, platform, re, shutil, ssl, stat, subprocess, sys, tempfile, time, urllib.error, urllib.parse, urllib.request, zipfile
 from html.parser import HTMLParser
 
 def require(condition, reason):
@@ -164,6 +164,21 @@ def discovery_request(url, environment=None):
     return request
 
 
+def open_discovery_response(opener, url):
+    """Retry transient connection establishment only; never append partial downloads."""
+    for attempt in range(1, 4):
+        try:
+            return opener.open(discovery_request(url), timeout=30)
+        except Exception as error:
+            retry=attempt<3 and transient_document_failure(error)
+            record('fetch_open_failed',url=diagnostic_url(url),attempt=attempt,
+                   status=error.code if isinstance(error,urllib.error.HTTPError) else None,
+                   error_type=type(error).__name__,retry=retry)
+            if isinstance(error,urllib.error.HTTPError): error.close()
+            if not retry: raise
+            time.sleep(attempt)
+
+
 def execute(request):
     grant=request['grant']; program=request['program']; publisher=request['publisher']
     require(grant.get('schema') == 'formal-ai-workspace-prerequisites-v1' and grant.get('scope') == 'workspace', 'grant_required')
@@ -198,7 +213,7 @@ def execute(request):
         require(url_allowed(url),'url_not_granted')
         digest=hashlib.sha256(); total=0; chunks=[]
         try:
-            response=opener.open(discovery_request(url),timeout=30)
+            response=open_discovery_response(opener,url)
         except Exception as error:
             failed_fetch_urls.add(url)
             if isinstance(error,urllib.error.HTTPError): failed_fetch_urls.add(error.url)

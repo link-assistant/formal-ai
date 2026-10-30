@@ -105,6 +105,8 @@ jobs:
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
         env:
           SHARD: ${{ matrix.shard }}
+          # Both preparation steps above must succeed before this opt-in.
+          E2E_PREBUILT_WEB: '1'
         # R1188-U10: the legs are planned longest-first from the seconds each
         # spec file took (data/meta/playwright-test-durations.lino) by
         # scripts/plan-test-shards.mjs, not cut by test count in file order,

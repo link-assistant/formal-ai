@@ -65,6 +65,8 @@
     "rust/tests/web/self-authored-release-workflow.test.mjs",
     "rust/tests/web/self-authored-release-context.test.mjs",
     "rust/tests/web/production-package-release.test.mjs",
-    "rust/tests/web/package-release-authority-controls.test.mjs"
+    "rust/tests/web/package-release-authority-controls.test.mjs",
+    "rust/tests/web/e2e-local-parallel.test.mjs",
+    "rust/tests/web/prerequisite-fetch-recovery.test.mjs"
   ]
 }

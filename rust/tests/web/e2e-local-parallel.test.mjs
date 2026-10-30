@@ -18,6 +18,40 @@ const E2E = `${REPO_ROOT}/rust/tests/e2e`;
 const CONFIG = readFileSync(`${E2E}/playwright.local.config.js`, 'utf8');
 const WORKFLOW = readFileSync(`${REPO_ROOT}/.github/workflows/e2e-local.yml`, 'utf8');
 
+function loadConfig(env) {
+  const module = { exports: {} };
+  const require = createRequire(import.meta.url);
+  runInNewContext(CONFIG, {
+    module, __dirname: E2E, process: { env },
+    require: name => name === '@playwright/test'
+      ? { defineConfig: config => config, devices: { 'Desktop Chrome': {} } }
+      : require(name),
+  }, { filename: `${E2E}/playwright.local.config.js` });
+  return module.exports;
+}
+
+test('CI serves its prepared web assets without rebuilding during startup', () => {
+  const { webServer } = loadConfig({ CI: 'true', E2E_PREBUILT_WEB: '1' });
+  assert.equal(webServer.command, 'npx serve ../../../js --listen 3456 --no-clipboard');
+  assert.equal(webServer.timeout, 120_000);
+  assert.equal(webServer.stdout, 'pipe');
+  assert.equal(webServer.stderr, 'pipe');
+  assert.equal(webServer.reuseExistingServer, false);
+  const prepare = WORKFLOW.indexOf('run: bun run build:web');
+  const sync = WORKFLOW.indexOf('run: scripts/sync-seed.sh');
+  const run = WORKFLOW.indexOf('- name: Run local e2e tests');
+  assert(prepare >= 0 && sync > prepare && run > sync);
+  assert.match(WORKFLOW.slice(run), /E2E_PREBUILT_WEB: '1'/u);
+});
+
+test('standalone startup still builds and syncs unless explicitly prepared', () => {
+  for (const env of [{}, { CI: 'true' }, { E2E_PREBUILT_WEB: '0' }]) {
+    const { webServer } = loadConfig(env);
+    assert.match(webServer.command, /^bun run --cwd ..\/..\/.. build:web && ..\/..\/..\/scripts\/sync-seed.sh && npx serve /u);
+    assert(webServer.timeout < loadConfig(env).globalTimeout);
+  }
+});
+
 test('startup recovery regressions belong to exactly one real local browser project', () => {
   const module = { exports: {} };
   const require = createRequire(import.meta.url);
