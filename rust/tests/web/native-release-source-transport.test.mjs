@@ -14,6 +14,8 @@ test('captured failing native targets consume the verified same-run history inst
     assert.equal(steps.filter(step => step.uses?.includes('checkout@') && !step.with?.path).length, 0, id);
     assert.equal(steps.filter(step => step.with?.name === 'native-release-source-history').length, 1, id);
     assert(steps.some(step => step.run?.includes('native-release-source.mjs" import-offline native-source')), id);
+    const sourceImport=steps.find(step=>step.run?.includes('native-release-source.mjs" import-offline native-source'));
+    assert.equal(sourceImport['timeout-minutes'],7,id);
     const protocol = steps.find(step => step.uses?.includes('checkout@'));
     assert.equal(protocol.with.ref, '${{ github.workflow_sha }}');
     assert.equal(protocol.with['persist-credentials'], false);

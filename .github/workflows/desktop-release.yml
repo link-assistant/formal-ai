@@ -327,6 +327,7 @@ jobs:
           path: native-source
       - {name: Download selected source history, uses: actions/download-artifact@v8, env: {NODE_OPTIONS: --disable-warning=DEP0005}, with: {name: native-release-source-history, path: native-source}}
       - name: Import and verify exact source selection
+        timeout-minutes: 7
         run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import-offline native-source
       - name: Install exact selected Rust compiler with bounded transport recovery
         if: matrix.target == 'x86_64-apple-darwin'
@@ -474,6 +475,7 @@ jobs:
           path: native-source
       - {name: Download selected source history, uses: actions/download-artifact@v8, env: {NODE_OPTIONS: --disable-warning=DEP0005}, with: {name: native-release-source-history, path: native-source}}
       - name: Import and verify exact source selection
+        timeout-minutes: 7
         env:
           NATIVE_SELECTED_HEAD: ${{ needs.native-source.outputs.selected-head }}
           NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
@@ -954,6 +956,7 @@ jobs:
           path: native-source
       - {name: Download selected source history, uses: actions/download-artifact@v8, env: {NODE_OPTIONS: --disable-warning=DEP0005}, with: {name: native-release-source-history, path: native-source}}
       - name: Import and verify exact source selection
+        timeout-minutes: 7
         env:
           NATIVE_SELECTED_HEAD: ${{ needs.native-source.outputs.selected-head }}
           NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
@@ -1104,6 +1107,7 @@ jobs:
           path: native-source
       - {name: Download selected source history, uses: actions/download-artifact@v8, env: {NODE_OPTIONS: --disable-warning=DEP0005}, with: {name: native-release-source-history, path: native-source}}
       - name: Import and verify exact source selection
+        timeout-minutes: 7
         env:
           NATIVE_SELECTED_HEAD: ${{ needs.native-source.outputs.selected-head }}
           NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}

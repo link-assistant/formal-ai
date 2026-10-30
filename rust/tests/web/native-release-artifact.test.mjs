@@ -6,7 +6,7 @@ import {mkdtempSync,mkdirSync,readFileSync,writeFileSync,rmSync,cpSync} from 'no
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {createHash} from 'node:crypto';
-import {sealSource,importSource,nativeInputIdentity,SOURCE_FILE,exportSourceHistory,restoreSourceHistory} from '../../../scripts/native-release-source.mjs';
+import {sealSource,importSource,importOfflineSource,nativeInputIdentity,SOURCE_FILE,exportSourceHistory,restoreSourceHistory} from '../../../scripts/native-release-source.mjs';
 import {expectedIdentity,writeExecutableReceipt,verifyExecutableReceipt,verifyArchivedExecutable,NATIVE_TARGETS,RECEIPT_FILE} from '../../../scripts/native-release-artifact.mjs';
 const hash=x=>createHash('sha256').update(x).digest('hex');
 const git=(cwd,...args)=>execFileSync('git',args,{cwd,encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();
@@ -148,15 +148,43 @@ test('same-run full history restores every source byte and native input with the
  assert.equal(history.sourceCommit,f.selected);assert(history.bytes>0);
  rmSync(f.repo,{recursive:true,force:true});rmSync(f.consumer,{recursive:true,force:true});
  const destination=join(f.root,'offline');mkdirSync(destination);
- restoreSourceHistory(destination,f.packet,options);
+ // The Windows ARM failure timed out in checkout. Trace the real Git operations
+ // to prevent another complete checkout-index pass after the offline restore.
+ const trace=join(f.root,'git-events.json'),previous=process.env.GIT_TRACE2_EVENT;
+ let imported;
+ try{process.env.GIT_TRACE2_EVENT=trace;imported=importOfflineSource(destination,f.packet,options);}
+ finally{if(previous===undefined)delete process.env.GIT_TRACE2_EVENT;else process.env.GIT_TRACE2_EVENT=previous;}
+ const commands=readFileSync(trace,'utf8').trim().split('\n').map(line=>JSON.parse(line)).filter(event=>event.event==='start').map(event=>event.argv.slice(1));
+ assert.deepEqual(commands.filter(args=>args[0]==='checkout'),[['checkout','--detach',f.selected]]);
+ assert.equal(commands.some(args=>args[0]==='checkout-index'),false);
+ assert.equal(git(destination,'config','checkout.workers'),'4');
  git(destination,'remote','remove','origin');
- const imported=importSource(destination,f.packet,options);
  assert.equal(imported.source_commit,f.selected);assert.equal(git(destination,'rev-parse','--is-shallow-repository'),'false');
  assert.throws(()=>git(destination,'config','--get','remote.origin.promisor'));
  for(const [name,bytes]of files)assert.deepEqual(readFileSync(join(destination,name)),bytes,name);
  assert.equal(nativeInputIdentity(destination).sha256,f.sealed.record.native_inputs_sha256);
  for(const parent of [f.head,f.base])assert.equal(git(destination,'merge-base',f.selected,parent),parent);
  assert.throws(()=>restoreSourceHistory(destination,f.packet,options),/fresh workspace/);
+});
+
+test('single-checkout offline import still refuses mismatched actual input and lock bytes',context=>{
+ const f=fixture(context);exportSourceHistory(f.repo,f.packet);
+ const original=JSON.parse(readFileSync(join(f.packet,SOURCE_FILE))),history=JSON.parse(readFileSync(join(f.packet,'source-history.json')));
+ for(const field of ['native_inputs_sha256','cargo_lock_sha256']){
+  const record=structuredClone(original);record[field]='0'.repeat(64);
+  const bytes=Buffer.from(JSON.stringify(record)+'\n'),selectionSha=hash(bytes);
+  writeFileSync(join(f.packet,SOURCE_FILE),bytes);
+  writeFileSync(join(f.packet,'source-history.json'),JSON.stringify({...history,selectionSha256:selectionSha})+'\n');
+  const destination=join(f.root,field);mkdirSync(destination);
+  assert.throws(()=>importOfflineSource(destination,f.packet,{head:f.head,run:'42',selectionSha,repository:'fixture/source'}));
+ }
+});
+
+test('offline import validates the declared synthetic bundle even when complete history already contains its commit',context=>{
+ const f=fixture(context);exportSourceHistory(f.repo,f.packet);
+ const file=join(f.packet,'source.bundle');writeFileSync(file,Buffer.concat([readFileSync(file),Buffer.from('changed')]));
+ const destination=join(f.root,'bad-selected-bundle');mkdirSync(destination);
+ assert.throws(()=>importOfflineSource(destination,f.packet,{head:f.head,run:'42',selectionSha:f.sealed.sha256,repository:'fixture/source'}));
 });
 
 test('offline history refuses changed run, head, selection and bundle before initializing a repository',context=>{

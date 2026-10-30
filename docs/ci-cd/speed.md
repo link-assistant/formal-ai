@@ -13,6 +13,14 @@ issue even when initial source discovery fails. CLI integration uses the latest
 published Hive Mind package. Frozen historical replays remain explicitly
 historical, not current-runtime qualification.
 
+Native release import materializes its authenticated offline worktree once.
+Verify the commit, tree, lock bytes and native-input bytes after restoration;
+do not repeat a full checkout-index rewrite. Keep complete unfiltered history,
+use at most four checkout workers, bound each history command to four minutes
+and the restore transaction to six, and give the workflow import step a
+seven-minute backstop. Tests trace actual Git operations against small offline
+fixtures; all Rust compilation and package execution remain in CI.
+
 Documentation-only automatic changes use the policy in
 [`scripts/documentation-only-ci-policy.mjs`](../../scripts/documentation-only-ci-policy.mjs): skip
 heavy workflows and automatic releases, retain lightweight checks and explicit
