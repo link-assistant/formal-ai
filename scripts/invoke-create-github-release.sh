@@ -27,4 +27,4 @@ if [ -n "${DOCKER_HUB_URL:-}" ]; then
   release_args+=(--docker-hub-url "$DOCKER_HUB_URL")
 fi
 
-rust-script scripts/create-github-release.rs "${release_args[@]}"
+node scripts/create-release-with-recovery.mjs "${release_args[@]}"
