@@ -95,6 +95,11 @@ into CI logs. Preserve the browser tests, assertion limits and suite deadline.
 Fast JavaScript tests exercise both configuration paths without launching a
 browser, building products or running Rust locally.
 
+The older R105 mirror policy must inspect the evaluated Playwright startup
+command, including computed configuration, rather than require contiguous
+source text. Keep that regression alongside the startup checks in the fast
+PR inventory. Shared configuration evaluation starts no server or browser.
+
 The [hosted compiler discovery job](https://github.com/link-assistant/formal-ai/actions/runs/41116575751/job/124273018371)
 also observed a TLS handshake timeout before downloading an archive. The shared
 installer retries transient connection establishment at most three times with

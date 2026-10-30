@@ -8,26 +8,17 @@
 
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
-import { createRequire } from 'node:module';
 import test from 'node:test';
-import { runInNewContext } from 'node:vm';
 
 import { REPO_ROOT } from './support/browser-runtime.mjs';
+import { loadPlaywrightConfig } from './support/playwright-config.mjs';
 
 const E2E = `${REPO_ROOT}/rust/tests/e2e`;
 const CONFIG = readFileSync(`${E2E}/playwright.local.config.js`, 'utf8');
 const WORKFLOW = readFileSync(`${REPO_ROOT}/.github/workflows/e2e-local.yml`, 'utf8');
 
 function loadConfig(env) {
-  const module = { exports: {} };
-  const require = createRequire(import.meta.url);
-  runInNewContext(CONFIG, {
-    module, __dirname: E2E, process: { env },
-    require: name => name === '@playwright/test'
-      ? { defineConfig: config => config, devices: { 'Desktop Chrome': {} } }
-      : require(name),
-  }, { filename: `${E2E}/playwright.local.config.js` });
-  return module.exports;
+  return loadPlaywrightConfig('rust/tests/e2e/playwright.local.config.js', env);
 }
 
 test('CI serves its prepared web assets without rebuilding during startup', () => {
@@ -53,15 +44,7 @@ test('standalone startup still builds and syncs unless explicitly prepared', () 
 });
 
 test('startup recovery regressions belong to exactly one real local browser project', () => {
-  const module = { exports: {} };
-  const require = createRequire(import.meta.url);
-  runInNewContext(CONFIG, {
-    module, __dirname: E2E, process: { env: { CI: 'true' } },
-    require: name => name === '@playwright/test'
-      ? { defineConfig: config => config, devices: { 'Desktop Chrome': {} } }
-      : require(name),
-  }, { filename: `${E2E}/playwright.local.config.js` });
-  const config = module.exports;
+  const config = loadConfig({ CI: 'true' });
   const spec = '**/worker-startup-recovery.spec.js';
   const matches = patterns => (patterns || []).includes(spec);
   assert(matches(config.testMatch), 'Recovery tests must be discovered by CI test listing');
