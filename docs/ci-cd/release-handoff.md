@@ -79,6 +79,9 @@ job. Explicit live routes remain available. Optional App credentials request
 Actions read and workflow-file write permissions; checkout must not retain a
 default-token header that would shadow the selected author's authenticated
 remote. No additional secret is mandatory.
+Configure GitHub CLI's selected-token credential helper before source fetches
+and authoring. The credential policy verifies that explicit path; ordinary
+direct Git writers retain their checkout credential.
 
 ## Observed failure: release v0.355.22
 

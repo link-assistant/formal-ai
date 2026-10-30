@@ -110,6 +110,12 @@ jobs:
           permission-workflows: write
         id: automation
 
+      - name: Configure Git with the selected author credential
+        timeout-minutes: 1
+        env:
+          GH_TOKEN: ${{ steps.automation.outputs.token }}
+        run: gh auth setup-git --hostname github.com
+
       - name: Set up locked source protocol dependencies
         if: inputs.production-run-id != ''
         uses: oven-sh/setup-bun@v2
