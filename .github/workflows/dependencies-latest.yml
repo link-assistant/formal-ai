@@ -7,6 +7,9 @@
 # the lockfiles from the rewritten manifests, re-runs the CI gates against
 # the result, and opens one pull request carrying whatever moved. An empty
 # day produces no PR at all.
+# If only the default token is available and workflows changed, retain the
+# complete validated patch for review instead of pushing an unauthorized
+# workflow edit or publishing a partial update.
 name: dependencies-latest
 
 on:
@@ -38,6 +41,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      actions: write
     steps:
       # Issue #1079: this checkout keeps persist-credentials (the default)
       # because peter-evans/create-pull-request below commits and pushes the
@@ -51,6 +55,7 @@ jobs:
           app-id: ${{ secrets.AUTOMATION_APP_ID }}
           app-private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
           automation-token: ${{ secrets.AUTOMATION_TOKEN }}
+          permission-workflows: write
         id: automation
 
       # The same toolchain set the release workflow's gate job uses, so the
@@ -134,8 +139,27 @@ jobs:
       - name: Run registered gates (stage web)
         run: rust-script scripts/run-ci-gates.rs --stage web
 
+      - name: Prepare complete dependency update review
+        id: publication
+        timeout-minutes: 2
+        env:
+          AUTOMATION_LAYER: ${{ steps.automation.outputs.layer }}
+          DEPENDENCY_REVIEW_DIRECTORY: ${{ runner.temp }}/dependency-update-review
+        run: node scripts/dependency-update-publication.mjs
+
+      - name: Retain the complete dependency update patch
+        timeout-minutes: 5
+        uses: actions/upload-artifact@v7
+        with:
+          name: dependency-update-review
+          path: ${{ runner.temp }}/dependency-update-review
+          if-no-files-found: error
+          retention-days: 7
+
       - name: Open one pull request with everything that moved
-        if: github.event_name == 'schedule' || inputs.create-pull-request == true
+        timeout-minutes: 5
+        if: (github.event_name == 'schedule' || inputs.create-pull-request == true) && steps.publication.outputs.publish == 'true'
+        id: pull-request
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ steps.automation.outputs.token }}
@@ -151,3 +175,11 @@ jobs:
           branch: dependencies/latest
           delete-branch: true
           labels: dependencies
+
+      - name: Start checks for a PR created with the default token
+        timeout-minutes: 5
+        if: steps.automation.outputs.layer == 'default' && steps.pull-request.outputs.pull-request-number != '' && (steps.pull-request.outputs.pull-request-operation == 'created' || steps.pull-request.outputs.pull-request-operation == 'updated')
+        uses: ./.github/actions/dispatch-checks
+        with:
+          pull-request: ${{ steps.pull-request.outputs.pull-request-number }}
+          token: ${{ github.token }}
