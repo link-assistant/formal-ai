@@ -93,7 +93,12 @@ test('dependency validation dispatch is read-only unless creation is explicit', 
   assert.equal(workflow.on.workflow_dispatch.inputs['create-pull-request'].default, false);
   const step = workflow.jobs.update.steps.find(item => item.name === 'Open one pull request with everything that moved');
   for (const [event, requested, expected] of [['workflow_dispatch', false, false], ['workflow_dispatch', true, true], ['schedule', false, true]]) {
-    assert.equal(evaluate(step.if, {github: {event_name: event}, inputs: {'create-pull-request': requested}}), expected);
+    for (const publish of ['true', 'false']) {
+      assert.equal(evaluate(step.if, {
+        github: {event_name: event}, inputs: {'create-pull-request': requested},
+        steps: {publication: {outputs: {publish}}},
+      }), expected && publish === 'true');
+    }
   }
 });
 
