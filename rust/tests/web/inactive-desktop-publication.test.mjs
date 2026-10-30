@@ -70,7 +70,9 @@ test('workflow gates every download and selection upload on an active producer',
   const upload = workflow.jobs.resolve.steps.find(step => step.uses === 'actions/upload-artifact@v7');
   assert.equal(upload.if, "steps.select.outputs.active == 'true'");
 });
-test('real CLI resolves recorded inactive API data without network, products or latest-release fallback', () => {
+test('real CLI resolves recorded inactive API data without network, products or latest-release fallback', {
+  skip: process.platform === 'win32' ? 'POSIX gh executable fixture; producer data checks remain portable' : false,
+}, () => {
   const directory = fs.mkdtempSync(path.join(tmpdir(), 'formal-ai-inactive-publication-'));
   try {
     fs.writeFileSync(path.join(directory, 'fixture.json'), JSON.stringify(fixture()));
