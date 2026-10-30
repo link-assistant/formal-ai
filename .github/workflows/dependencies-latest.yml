@@ -172,8 +172,8 @@ jobs:
             do carry one are untouched by design. The registry snapshot under
             `data/meta/` is the same run's live answer, so reviewers can see
             what "latest" meant when the branch was cut.
-          branch: dependencies/latest
-          delete-branch: true
+          branch: ${{ steps.publication.outputs.branch }}
+          delete-branch: false
           labels: dependencies
 
       - name: Start checks for a PR created with the default token

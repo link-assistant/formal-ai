@@ -14,6 +14,12 @@ an unauthorized workflow edit, discard the workflow changes, publish an
 unvalidated partial update, or claim that dependency updates were delivered.
 This review artifact is the default-token fallback, not publication authority.
 
+Use one immutable `dependencies/latest/<workflow-run-id>` branch per update run.
+Never delete it or rewrite a previous update branch: repository rules prohibit
+both operations. A bounded read-only ref check detects an existing branch on a
+retry and defers publication with the full review patch. This prevents duplicate
+PRs and preserves uncertain earlier publication state for inspection.
+
 The [observed failure](https://github.com/link-assistant/formal-ai/actions/runs/41048151603/job/124037268862)
 validated its dependency changes but failed to push them because its App token
 had not requested workflow permission. The shared credential resolver already

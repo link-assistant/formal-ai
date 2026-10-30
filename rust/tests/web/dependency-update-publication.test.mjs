@@ -49,10 +49,25 @@ test('real Git patch retains all updates without publishing or rewriting the wor
     assert.equal(report.patchBytes, patch.length);
     assert.equal(git(['diff', '--binary', '--no-renames', 'HEAD', '--']), before);
     assert.deepEqual(JSON.parse(fs.readFileSync(path.join(root, 'review/review.json'))), report);
+    const remote = path.join(root, 'remote.git'), branch = 'dependencies/latest/123';
+    git(['init', '--bare', '-q', '-b', 'main', remote]); git(['remote', 'add', 'origin', remote]);
+    const candidate = prepareDependencyReview({cwd, layer: 'app', branch, directory: path.join(root, 'candidate')});
+    assert.equal(candidate.publish, true); assert.equal(candidate.branch, branch);
+    git(['push', '-q', 'origin', 'HEAD:refs/heads/' + branch]);
+    const existing = git(['ls-remote', 'origin', 'refs/heads/' + branch]);
+    const retry = prepareDependencyReview({cwd, layer: 'app', branch, directory: path.join(root, 'retry')});
+    assert.equal(retry.publish, false); assert.equal(retry.reason, 'immutable-update-branch-already-exists');
+    assert.match(retry.existingCommit, /^[a-f0-9]{40}$/u);
+    assert.equal(git(['ls-remote', 'origin', 'refs/heads/' + branch]), existing);
+    assert.match(fs.readFileSync(path.join(root, 'retry/update.patch'), 'utf8'), /version two/);
     git(['mv', '.github/workflows/dependency.yml', 'moved.yml']);
     const renamed = prepareDependencyReview({cwd, layer: 'default', directory: path.join(root, 'renamed')});
     assert.equal(renamed.publish, false, 'moving a workflow out still requires workflow permission');
     assert.ok(renamed.workflowPaths.includes('.github/workflows/dependency.yml'));
+    git(['remote', 'remove', 'origin']);
+    assert.throws(() => prepareDependencyReview({cwd, layer: 'app', branch: 'dependencies/latest/124',
+      directory: path.join(root, 'unverifiable')}), /bounded dependency review command failed/);
+    assert.equal(fs.existsSync(path.join(root, 'unverifiable')), false);
   } finally {fs.rmSync(root, {recursive: true, force: true});}
 });
 
@@ -69,6 +84,8 @@ test('dependency workflow requests the missing App scope and safely gates public
   assert.equal(upload.uses, 'actions/upload-artifact@v7');
   const publication = steps.find(step => step.id === 'pull-request');
   assert.match(publication.if, /steps\.publication\.outputs\.publish == 'true'/);
+  assert.equal(publication.with.branch, '${{ steps.publication.outputs.branch }}');
+  assert.equal(publication.with['delete-branch'], false);
   assert.ok(steps.indexOf(upload) < steps.indexOf(publication));
   const dispatch = steps.find(step => step.uses === './.github/actions/dispatch-checks');
   assert.match(dispatch.if, /layer == 'default'/); assert.match(dispatch.if, /operation == 'created'/);
