@@ -27,6 +27,13 @@ checking its artifact destination and other URLs. A badge exception grants no
 publication evidence and must not accept HTTP 408 globally or expand retry limits.
 The link workflow runs the small real-HTTP timeout and missing-page regressions.
 
+Keep main stable throughout production publication, not just version preparation.
+The release checks freshness again after compilation. Continue drafting fixes
+while CI runs, but hold routine merges until publication and the release consumers
+are verified. If a critical fix must supersede a failed release, let the fresh
+main run deliver it; do not weaken source checks or retry the superseded run.
+See [the release handoff guide](release-handoff.md).
+
 Documentation-only automatic changes use the policy in
 [`scripts/documentation-only-ci-policy.mjs`](../../scripts/documentation-only-ci-policy.mjs): skip
 heavy workflows and automatic releases, retain lightweight checks and explicit
