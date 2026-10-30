@@ -26,6 +26,34 @@ permission to publish the earlier binary under a newer source identity. Do not
 remove the check, substitute a tree or receipt, or retry the obsolete run.
 Only a proven transient transport failure warrants a bounded retry.
 
+## Ambiguous GitHub release-create responses
+
+The [v0.355.24 create job](https://github.com/link-assistant/formal-ai/actions/runs/41045510144/job/124113910176)
+passed source and image validation but the GitHub CLI returned
+`unexpected end of JSON input`. The log does not establish the upstream reason
+for that truncated response. The original publisher immediately failed, leaving
+the already published crate and container images without a GitHub release.
+
+The shared invocation now supervises the unchanged Rust publisher through a
+bounded JavaScript recovery loop. After this specific ambiguous transport error,
+read the exact tag through the authenticated API. An existing stable release
+counts only when its repository, tag and tag commit match the selected source.
+Only an authenticated 404 authorizes another write. Stop after three attempts,
+and stop immediately on authorization/validation errors, unknown observations,
+subprocess timeouts or incomplete cleanup. Log each attempt and observation with
+the selected credential redacted. A deferred or failed observation grants no
+publication credit. Source/main freshness guards remain unchanged.
+
+The captured error and response-loss scenarios are replayed in the fast
+JavaScript inventory without creating real releases or invoking Rust locally.
+
+Do not rerun only failed publication jobs against artifacts sealed by an earlier
+run attempt. The v0.355.24 failed-job retry advanced the consumer to attempt 2
+while its source descriptor still declared attempt 1; the transfer guard
+correctly refused it. Retain that attempt boundary. Recover transient writes
+inside the original attempt, or let a fresh main run produce new artifacts
+after the repair merges. Never relabel an earlier artifact as a new attempt.
+
 ## Observed failure: release v0.355.22
 
 The [production compile job](https://github.com/link-assistant/formal-ai/actions/runs/40986730103/job/123853286634)

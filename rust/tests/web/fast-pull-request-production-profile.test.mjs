@@ -43,7 +43,8 @@ test('main keeps production builds and original selected integrations', () => {
 });
 test('fast inventory retains coding, questions, reports and captured CI failure regressions', () => {
   const selected=selectFastTests(JSON.parse(read('data/benchmarks/fast-pull-request-javascript-tests.json')));
-  for(const name of ['ordinary-literal-addition','issue-1180-repository-qa','issue-1438-report-and-edit','generated-test-retirement','scheduled-published-admission-race'])
+  for(const name of ['ordinary-literal-addition','issue-1180-repository-qa','issue-1438-report-and-edit','generated-test-retirement','scheduled-published-admission-race',
+    'inactive-desktop-publication','verify-public-release-downloads','dependency-update-publication','create-release-with-recovery'])
     assert(selected.includes('rust/tests/web/'+name+'.test.mjs'),name);
   for(const files of [[],['../outside.test.mjs'],[selected[0],selected[0]],['rust/tests/web/missing.test.mjs']])
     assert.throws(()=>selectFastTests({schema:'fast-pr-javascript-tests/v1',files}));

@@ -56,5 +56,6 @@ test('re-runs all three gate stages after re-resolution before optional PR creat
   assert.ok(resolved < stages[0] && stages[0] < stages[1] && stages[1] < stages[2]);
   const pullRequest = position('uses: peter-evans/create-pull-request@v8');
   assert.ok(stages[2] < pullRequest);
-  position('branch: dependencies/latest');
+  position('branch: ${{ steps.publication.outputs.branch }}');
+  position('delete-branch: false');
 });
