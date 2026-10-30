@@ -12,7 +12,7 @@ import path from "node:path";
 import { test } from "node:test";
 
 import { REPO_ROOT } from "./support/browser-runtime.mjs";
-import { loadPlaywrightConfig } from "./support/playwright-config.mjs";
+import { loadPlaywrightConfig } from "./support/playwright-configuration.mjs";
 
 const read = (relative) => readFileSync(path.join(REPO_ROOT, relative), "utf8");
 const git = (...args) => execFileSync("git", args, { cwd: REPO_ROOT, encoding: "utf8" });

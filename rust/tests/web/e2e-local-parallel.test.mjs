@@ -11,7 +11,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import test from 'node:test';
 
 import { REPO_ROOT } from './support/browser-runtime.mjs';
-import { loadPlaywrightConfig } from './support/playwright-config.mjs';
+import { loadPlaywrightConfig } from './support/playwright-configuration.mjs';
 
 const E2E = `${REPO_ROOT}/rust/tests/e2e`;
 const CONFIG = readFileSync(`${E2E}/playwright.local.config.js`, 'utf8');
