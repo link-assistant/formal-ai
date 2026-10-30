@@ -83,6 +83,18 @@ Configure GitHub CLI's selected-token credential helper before source fetches
 and authoring. The credential policy verifies that explicit path; ordinary
 direct Git writers retain their checkout credential.
 
+## Browser test server preparation
+
+The [main browser shard](https://github.com/link-assistant/formal-ai/actions/runs/41116576030/job/124273089332)
+timed out before running tests: Playwright rebuilt the entire web distribution
+inside its fifteen-second server-start window, although CI had already built
+and synchronized the assets. CI now explicitly selects those prepared assets
+only after both preparation steps succeed. Standalone runs retain preparation.
+Allow a bounded two-minute startup window and pipe both server output streams
+into CI logs. Preserve the browser tests, assertion limits and suite deadline.
+Fast JavaScript tests exercise both configuration paths without launching a
+browser, building products or running Rust locally.
+
 ## Observed failure: release v0.355.22
 
 The [production compile job](https://github.com/link-assistant/formal-ai/actions/runs/40986730103/job/123853286634)

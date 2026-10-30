@@ -206,13 +206,18 @@ module.exports = defineConfig({
     reducedMotion: 'reduce',
   },
   webServer: {
-    // The seed mirror under js/seed/ is generated from the canonical
-    // data/seed/ tree on every server start so we never serve stale data.
+    // CI builds and syncs in separate, logged steps before running Playwright.
+    // Standalone runs still prepare their own assets and canonical seed mirror.
+    // Never rebuild the whole web distribution inside a 15-second server wait.
     command:
-      `bun run --cwd ../../.. build:web && ../../../scripts/sync-seed.sh && npx serve ../../../js --listen ${PORT} --no-clipboard`,
+      (process.env.E2E_PREBUILT_WEB === '1' ? '' :
+        'bun run --cwd ../../.. build:web && ../../../scripts/sync-seed.sh && ') +
+      `npx serve ../../../js --listen ${PORT} --no-clipboard`,
     url: ORIGIN,
     reuseExistingServer: false,
-    timeout: 15_000,
+    timeout: 120_000,
+    stdout: 'pipe',
+    stderr: 'pipe',
   },
   projects: [
     {
