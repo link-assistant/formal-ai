@@ -905,6 +905,7 @@ changelog.d/20261029_153000_supported-macos-runners.md	0.355.19
 changelog.d/20261030_030000_latest_issue_handling_runtimes.md	0.355.20
 changelog.d/20261030_040000_hive_cli_install_policy.md	0.355.20
 changelog.d/20261030_050000_self_author_pending_producer.md	0.355.21
+changelog.d/20261030_060000_native_offline_checkout.md	0.355.22
 changelog.d/desktop-package-source-boundary.md	0.355.17
 changelog.d/fast-pr-offline-e2e-admission.md	0.355.15
 changelog.d/governed-desktop-source-witness.md	0.355.17

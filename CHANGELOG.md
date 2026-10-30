@@ -20,6 +20,12 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.355.22] - 2026-10-30
+
+### Fixed
+- Avoid a redundant full worktree rewrite during native offline source import while retaining exact commit, tree, lock, bundle and native-input verification.
+- Use four checkout workers and finite import budgets to accommodate Windows ARM source materialization without dropping source files or history.
+
 ## [0.355.21] - 2026-10-29
 
 ### Fixed
