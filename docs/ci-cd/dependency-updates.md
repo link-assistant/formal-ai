@@ -11,7 +11,7 @@ registry discovery uses the job's default token instead.
 
 Optional credentials remain optional. With only `github.token`, an update that
 does not change workflows may still create one PR and dispatch its checks. If
-workflows changed, retain the complete patch and its digest in the
+workflows changed, retain the complete patch, original commit and digest in the
 `dependency-update-review` artifact. Report publication as deferred; do not push
 an unauthorized workflow edit, discard the workflow changes, publish an
 unvalidated partial update, or claim that dependency updates were delivered.

@@ -26,7 +26,9 @@ export function prepareDependencyReview({cwd, layer, directory, branch}) {
     return result;
   };
   const git = (args, maxBuffer) => gitResult(args, maxBuffer).stdout;
-  const names = git(['diff', '--no-ext-diff', '--no-textconv', '--no-renames', '--name-only', '-z', 'HEAD', '--'], 1024 * 1024);
+  const baseCommit = git(['rev-parse', 'HEAD'], 128).toString('utf8').trim();
+  assert.match(baseCommit, /^[a-f0-9]{40}$/u);
+  const names = git(['diff', '--no-ext-diff', '--no-textconv', '--no-renames', '--name-only', '-z', baseCommit, '--'], 1024 * 1024);
   const paths = new TextDecoder('utf-8', {fatal: true}).decode(names).split('\0').filter(Boolean);
   const decision = dependencyPublication(paths, layer);
   if (branch !== undefined) {
@@ -44,8 +46,8 @@ export function prepareDependencyReview({cwd, layer, directory, branch}) {
       }
     }
   }
-  const patch = git(['diff', '--no-ext-diff', '--no-textconv', '--no-renames', '--binary', 'HEAD', '--'], 8 * 1024 * 1024);
-  const review = {schema: 'dependency-update-review/v1', ...decision, changedPaths: paths,
+  const patch = git(['diff', '--no-ext-diff', '--no-textconv', '--no-renames', '--binary', baseCommit, '--'], 8 * 1024 * 1024);
+  const review = {schema: 'dependency-update-review/v1', baseCommit, ...decision, changedPaths: paths,
     patchBytes: patch.length, patchSha256: createHash('sha256').update(patch).digest('hex')};
   fs.mkdirSync(directory, {recursive: true});
   fs.writeFileSync(path.join(directory, 'update.patch'), patch, {flag: 'wx'});

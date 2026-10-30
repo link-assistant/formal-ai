@@ -44,6 +44,7 @@ test('real Git patch retains all updates without publishing or rewriting the wor
     const report = prepareDependencyReview({cwd, layer: 'default', directory: path.join(root, 'review')});
     const patch = fs.readFileSync(path.join(root, 'review/update.patch'));
     assert.equal(report.publish, false); assert.equal(report.publicationApplied, false);
+    assert.equal(report.baseCommit, git(['rev-parse', 'HEAD']).trim());
     assert.match(patch.toString(), /version two/); assert.match(patch.toString(), /2\.0\.0/);
     assert.equal(report.patchSha256, createHash('sha256').update(patch).digest('hex'));
     assert.equal(report.patchBytes, patch.length);
