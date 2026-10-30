@@ -20,6 +20,41 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.355.26] - 2026-10-30
+
+### Fixed
+
+- Retry transient GitHub JSON reads within finite time, response and attempt
+  bounds, and observe publication jobs in smaller exact-attempt pages.
+- Reconcile ambiguous release writes for the same observed GitHub 502/503/504
+  error class before another creation attempt, preserving exact tag/source checks.
+- Defer the optional post-publication authoring canary after exhausted GitHub
+  server errors, with explicit diagnostics and no authoring or self-development
+  credit. Source, authorization and code failures remain failures.
+- Request the selected author's required App permissions and prevent checkout's
+  default credential from shadowing that token. Keep live authoring out of PR
+  checks; replay captured publication and HTTP failures in fast JavaScript tests.
+
+### Fixed
+
+- Configure the selected author credential explicitly for Git before source
+  fetches and writes. Verify that path in the Rust credential policy instead
+  of requiring checkout's obsolete default-token header.
+
+### Fixed
+
+- Reuse CI's prepared browser assets instead of rebuilding them inside
+  Playwright's server-start wait. Keep standalone preparation, bound startup
+  to two minutes, and retain both server log streams for diagnosing failures.
+- Recover transient installer connection failures with three bounded attempts
+  before download, preserving certificate, grant and archive-integrity checks.
+
+### Fixed
+
+- Verify the seed-mirror policy against evaluated browser configuration and
+  include it in fast PR checks, preserving both standalone preparation and
+  CI's explicitly prepared asset path.
+
 ## [0.355.25] - 2026-10-30
 
 ### Fixed
