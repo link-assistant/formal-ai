@@ -21,7 +21,7 @@ test('captured jobs HTTP 504 and monitor HTTP 502 recover within a three-read bo
  assert.deepEqual(fixture.run(),{total_count:0,jobs:[]});assert.equal(fixture.calls.length,3);
  assert.deepEqual(fixture.pauses,[2000,4000]);assert.equal(fixture.reports.length,2);
  for(const call of fixture.calls){assert.equal(call.file,'gh');assert.deepEqual(call.args,['api',endpoint]);
-  assert.equal(call.options.timeout,10000);assert.equal(call.options.maxBuffer,2097152);}
+  assert.equal(call.options.timeout,30000);assert.equal(call.options.maxBuffer,2097152);}
 });
 test('persistent upstream failure stops after exactly three reads',()=>{
  const fixture=scenario([failure(504),failure(504),failure(504)]);
@@ -37,10 +37,11 @@ test('authorization, absence, malformed JSON and uncertain process cleanup never
  }
 });
 test('official production hostname and smaller response budget remain explicit',()=>{
- const fixture=scenario([success],{hostname:'github.com',maxBuffer:1048576});fixture.run();
+ const fixture=scenario([success],{hostname:'github.com',timeout:10000,maxBuffer:1048576});fixture.run();
  assert.deepEqual(fixture.calls[0].args,['api','--hostname','github.com',endpoint]);
  assert.equal(fixture.calls[0].options.env.GH_HOST,'github.com');
  assert.equal(fixture.calls[0].options.maxBuffer,1048576);
+ assert.equal(fixture.calls[0].options.timeout,10000);
 });
 test('unknown endpoints, invalid UTF-8 and oversized responses fail closed',()=>{
  for(const value of ['https://foreign.invalid','-X POST','repos/owner/repo\nextra'])

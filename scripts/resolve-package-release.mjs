@@ -30,7 +30,7 @@ export class GithubObservationUnavailable extends Error {
 }
 
 export function readGithubJson(endpoint, {
-  hostname, timeout = 10000, maxBuffer = 2097152, environment = process.env,
+  hostname, timeout = 30000, maxBuffer = 2097152, environment = process.env,
   transport = executeGithubRead,
   pause = milliseconds => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, milliseconds),
   report = record => console.error(JSON.stringify(record)),
@@ -125,7 +125,7 @@ export function resolvePackageRelease(environment, readGithub = githubJson) {
 
 /** The production reader fixes the official API host and per-response bounds. */
 export function productionGithubJson(endpoint) {
-  return readGithubJson(endpoint, {hostname: 'github.com', maxBuffer: 1024 * 1024});
+  return readGithubJson(endpoint, {hostname: 'github.com', timeout: 10000, maxBuffer: 1024 * 1024});
 }
 
 /** Production entrypoints reject nonproduction run events before selecting release source. */
