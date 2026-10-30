@@ -95,6 +95,17 @@ into CI logs. Preserve the browser tests, assertion limits and suite deadline.
 Fast JavaScript tests exercise both configuration paths without launching a
 browser, building products or running Rust locally.
 
+The [hosted compiler discovery job](https://github.com/link-assistant/formal-ai/actions/runs/41116575751/job/124273018371)
+also observed a TLS handshake timeout before downloading an archive. The shared
+installer retries transient connection establishment at most three times with
+thirty-second request limits and one/two-second backoff. It never retries a
+partially read archive or weakens digest, redirect, workspace or process grants.
+Authorization, certificate and policy failures stop immediately. Each attempt
+logs a sanitized URL and error class. CI replays this captured failure and the
+retry exhaustion/refusal controls using fake transport and clocks; it retains
+the real hosted install/compile/Hello World oracles. Run those Python controls
+only in CI, with JavaScript transaction tests available locally.
+
 ## Observed failure: release v0.355.22
 
 The [production compile job](https://github.com/link-assistant/formal-ai/actions/runs/40986730103/job/123853286634)
