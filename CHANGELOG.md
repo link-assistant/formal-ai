@@ -20,6 +20,14 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.355.24] - 2026-10-30
+
+### Fixed
+
+- Skip public-download verification for an authenticated Desktop workflow that
+  intentionally produced no release, without falling back to another release
+  or treating skipped publication as successful verification.
+
 ## [0.355.23] - 2026-10-30
 
 ### Fixed
