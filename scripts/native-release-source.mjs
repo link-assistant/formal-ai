@@ -121,7 +121,7 @@ function historyDigest(file) {
 }
 function historyCommand(cwd,args,deadline) {
  const remaining=deadline-Date.now();assert(remaining>0,'source history deadline exhausted');
- execFileSync('git',args,{cwd,stdio:'inherit',timeout:Math.min(180000,remaining),killSignal:'SIGKILL',
+ execFileSync('git',args,{cwd,stdio:'inherit',timeout:Math.min(240000,remaining),killSignal:'SIGKILL',
   env:{...process.env,GIT_LFS_SKIP_SMUDGE:'1',GIT_TERMINAL_PROMPT:'0'}});
 }
 /** One complete selected ancestry supplies CLI jobs without repeated cold GitHub transfers. */
@@ -152,9 +152,10 @@ export function restoreSourceHistory(cwd,directory,options) {
  const file=resolve(directory,HISTORY_BUNDLE);
  assert.deepEqual(historyDigest(file),{bytes:manifest.bytes,sha256:manifest.sha256});
  const repository=options.repository;assert.match(repository,/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/u);
- const deadline=Date.now()+240000;
+ const deadline=Date.now()+360000;
  for(const args of [['init','--initial-branch=source-artifact'],['config','core.autocrlf','false'],
-  ['config','core.longpaths','true'],['bundle','verify',file],['fetch','--progress','--no-tags',file,'HEAD'],
+  ['config','core.longpaths','true'],['config','checkout.workers','4'],
+  ['bundle','verify',file],['fetch','--progress','--no-tags',file,'HEAD'],
   ['checkout','--detach',record.source_commit],['remote','add','origin','https://github.com/'+repository+'.git']])
   historyCommand(cwd,args,deadline);
  assert.equal(git(cwd,['rev-parse','HEAD^{tree}']),record.source_tree);
@@ -163,21 +164,35 @@ export function restoreSourceHistory(cwd,directory,options) {
  return record;
 }
 
-export function importSource(cwd,directory,options) {
- const record=readSourceSelection(directory,options);
+function verifiedSourceBundle(cwd,directory,record) {
  if(record.bundle!==null) {
   assert.equal(record.bundle.name,'source.bundle');const file=join(directory,record.bundle.name),payload=readFileSync(file);
   assert.equal(payload.length,record.bundle.bytes);assert.equal(sha(payload),record.bundle.sha256);
-  execFileSync('git',['bundle','verify',file],{cwd,stdio:'pipe'});
-  execFileSync('git',['fetch',file,'HEAD'],{cwd,stdio:'pipe'});
+  execFileSync('git',['bundle','verify',file],{cwd,stdio:'pipe',timeout:30000});
+  return file;
  }
- execFileSync('git',['diff','--quiet'],{cwd,stdio:'pipe'});
- execFileSync('git',['checkout','--detach',record.source_commit],{cwd,stdio:'pipe'});
- execFileSync('git',['-c','core.autocrlf=false','checkout-index','--all','--force'],{cwd,stdio:'pipe'});
+ return null;
+}
+function verifyImportedSource(cwd,record) {
+ assert.equal(git(cwd,['rev-parse','HEAD']),record.source_commit);
  assert.equal(git(cwd,['rev-parse','HEAD^{tree}']),record.source_tree);
  assert.equal(sha(readFileSync(join(cwd,'rust/Cargo.lock'))),record.cargo_lock_sha256);
  assert.equal(nativeInputIdentity(cwd).sha256,record.native_inputs_sha256);
  return record;
+}
+/** A fresh offline restore already materializes exact LF bytes; verify them without rewriting every file. */
+export function importOfflineSource(cwd,directory,options) {
+ const record=restoreSourceHistory(cwd,directory,options);
+ verifiedSourceBundle(cwd,directory,record);
+ return verifyImportedSource(cwd,record);
+}
+export function importSource(cwd,directory,options) {
+ const record=readSourceSelection(directory,options),bundle=verifiedSourceBundle(cwd,directory,record);
+ if(bundle)execFileSync('git',['fetch',bundle,'HEAD'],{cwd,stdio:'pipe',timeout:30000});
+ execFileSync('git',['diff','--quiet'],{cwd,stdio:'pipe'});
+ execFileSync('git',['checkout','--detach',record.source_commit],{cwd,stdio:'pipe'});
+ execFileSync('git',['-c','core.autocrlf=false','checkout-index','--all','--force'],{cwd,stdio:'pipe'});
+ return verifyImportedSource(cwd,record);
 }
 
 if(import.meta.url===pathToFileURL(process.argv[1]??'').href) {
@@ -205,8 +220,7 @@ if(import.meta.url===pathToFileURL(process.argv[1]??'').href) {
  } else if(mode==='import'||mode==='import-offline') {
   const options={head:process.env.NATIVE_SELECTED_HEAD,run:process.env.GITHUB_RUN_ID,
    selectionSha:process.env.NATIVE_SELECTION_SHA256,repository:process.env.NATIVE_REPOSITORY};
-  if(mode==='import-offline')restoreSourceHistory(cwd,directory,options);
-  const record=importSource(cwd,directory,options);
+  const record=mode==='import-offline'?importOfflineSource(cwd,directory,options):importSource(cwd,directory,options);
   const authority=process.env.NATIVE_RELEASE_EVENT==='pull_request'||process.env.NATIVE_RELEASE_PURPOSE==='validation'?null:
    authorizePublishedStableSource(cwd,{tag:record.release_tag,repository:process.env.NATIVE_REPOSITORY});
   console.log(JSON.stringify(validateSelectedSourceAuthority(cwd,record,{

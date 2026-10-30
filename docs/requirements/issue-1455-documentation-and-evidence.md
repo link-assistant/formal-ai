@@ -67,3 +67,9 @@ their existing obligations.
   never pipeline-success or effect-authority evidence. Keep invalid-state
   diagnostics bounded. Self-authoring checkouts retain history and current file
   contents, filter historical blobs, and have finite network and step deadlines.
+- Native release source import retains complete authenticated offline history
+  and all current source bytes. Materialize the worktree once, then verify the
+  selected commit, tree, lock bytes, declared bundle and actual native inputs.
+  Parallel checkout has four workers; history commands have a four-minute cap
+  inside a six-minute restore transaction and a seven-minute workflow step.
+  Damaged artifacts and inconsistent input digests must still fail closed.
