@@ -20,6 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 3
     outputs:
+      active: ${{ steps.select.outputs.active }}
       tag: ${{ steps.select.outputs.tag }}
       release_id: ${{ steps.select.outputs.release_id }}
       source_sha: ${{ steps.select.outputs.source_sha }}
@@ -41,6 +42,7 @@ jobs:
           RELEASE_DOWNLOAD_DIRECTORY: ${{ runner.temp }}/release-selection
         run: node scripts/verify-public-release-downloads.mjs
       - uses: actions/upload-artifact@v7
+        if: steps.select.outputs.active == 'true'
         with:
           name: public-release-selection
           path: ${{ runner.temp }}/release-selection/selection.json
@@ -48,6 +50,7 @@ jobs:
           retention-days: 14
   all-public-bytes:
     needs: resolve
+    if: needs.resolve.outputs.active == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -87,6 +90,7 @@ jobs:
           retention-days: 14
   macos-public-packages:
     needs: resolve
+    if: needs.resolve.outputs.active == 'true'
     strategy:
       fail-fast: false
       matrix:
@@ -146,6 +150,7 @@ jobs:
           retention-days: 14
   browser-public-package:
     needs: resolve
+    if: needs.resolve.outputs.active == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:

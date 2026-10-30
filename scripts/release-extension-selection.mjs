@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { verifyArtifactArchive } from './github-artifact-by-identifier.mjs';
-/** Authenticated artifact identifies a candidate; signed release verification grants authority later. */
-export function selectCompletedSource(expected,
+/** Authenticate the completed Desktop run and its complete job inventory. */
+function completedProducer(expected,
  github) {
   assert.match(expected.repository,
  /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/u);
@@ -35,6 +35,45 @@ export function selectCompletedSource(expected,
   assert.equal(jobs.total_count,
  jobs.jobs.length,
  'incomplete producer job selection');
+  return {base, run, jobs};
+}
+/** A successful no-op Desktop workflow is not evidence of publication. */
+export function completedDesktopPublication(expected, github) {
+  const {run, jobs} = completedProducer(expected, github);
+  assert.equal(run.conclusion, 'success', 'completed Desktop producer must have succeeded');
+  const named = name => {
+    const selected = jobs.jobs.filter(job => job.name === name);
+    assert.equal(selected.length, 1, 'one exact producer job required: ' + name);
+    return selected[0];
+  };
+  const identifiers = new Set();
+  for (const job of jobs.jobs) {
+    assert.ok(Number.isSafeInteger(job.id) && job.id > 0 && !identifiers.has(job.id));
+    identifiers.add(job.id);
+    assert.equal(String(job.run_id), String(expected.runId));
+    assert.equal(job.run_attempt, Number(expected.attempt));
+    assert.equal(job.status, 'completed');
+  }
+  const source = named('Select exact native release source');
+  if (source.conclusion !== 'skipped') {
+    assert.equal(source.conclusion, 'success');
+    return {active: true, publicationAuthority: false};
+  }
+  assert.equal(named('Resolve target release').conclusion, 'success');
+  for (const name of ['Package VS Code extension (.vsix)', 'Publish SHA256SUMS.txt + provenance']) {
+    assert.equal(named(name).conclusion, 'skipped');
+  }
+  for (const job of jobs.jobs) {
+    if (job.name === 'Resolve target release') continue;
+    if (job.name === 'base / Pin base commit') {
+      assert.ok(['success', 'skipped'].includes(job.conclusion));
+    } else assert.equal(job.conclusion, 'skipped', 'inactive producer must have no product jobs');
+  }
+  return {active: false, reason: 'authenticated-desktop-publication-inactive', publicationAuthority: false};
+}
+/** Authenticated artifact identifies a candidate; signed release verification grants authority later. */
+export function selectCompletedSource(expected, github) {
+  const {base, run, jobs} = completedProducer(expected, github);
   for (const name of ['Package VS Code extension (.vsix)',
  'Publish SHA256SUMS.txt + provenance']) {
     const selected = jobs.jobs.filter(job => job.name === name);
