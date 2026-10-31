@@ -491,7 +491,7 @@ jobs:
           bun-version-file: .bun-version
       - name: Install actual locked native fixture dependencies
         if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
-        run: bun install --frozen-lockfile --ignore-scripts
+        run: node scripts/install-locked-fixture-dependencies.mjs
       - name: Check LiNo data integrity
         if: ${{ (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' && !matrix.shard }}
         env:

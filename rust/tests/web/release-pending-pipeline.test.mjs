@@ -47,7 +47,7 @@ test("the detector counts a waiting fragment on main as a pipeline change", () =
 test("the release workflow opts in, and Auto Release's prerequisites follow any-code-changed", () => {
   const detect = job("detect-changes");
   assert.match(detect, /RELEASE_PIPELINE: 'true'/);
-  assert.match(detect, /run: rust-script scripts\/detect-code-changes\.rs/);
+  assert.match(detect, /rust-script scripts\/detect-code-changes\.rs/);
   const auto = job("auto-release");
   assert.match(auto, /needs\.build\.result == 'success'/);
   assert.match(job("build"), /needs\.lint\.result == 'success' && needs\.test\.result == 'success'/);

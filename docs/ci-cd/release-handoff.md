@@ -162,3 +162,76 @@ and reported one fast-source readability failure for a long test regexp. The
 follow-up splits that regexp and narrows workflow-lint checkout to .github plus
 its canary fixture after observing a 126-second full checkout. Recheck the exact
 new head; first-head passing jobs do not qualify a later revision.
+
+## Main repair after PR #1478
+
+Main source 13dda883c630e9259ed356e0044cf06fe7e13d17 is blocked before release
+publication. Follow-up branch: fix/main-dependency-audit-20261031.
+
+- CI/CD Pipeline run 41181550676, lint lane 1 job 124480192498: registry advisories
+  updated on October 30 now reject minimatch below 11.0.1 and glob 9 through
+  14.0.1. Desktop, VS Code and browser-test tooling are affected. Retain the VSCE
+  Azure security pin. A small private local package delegates pattern matching
+  to upstream minimatch 11.0.1 and preserves the callable CommonJS API used by
+  older packagers/serve-handler. Modern ESM exports pass through unchanged.
+  Each consumer directly owns the local dependency and overrides transitive
+  requests through that root reference. install-links=true copies the facade
+  into node_modules; it cannot depend on a sibling's installed node_modules.
+  Glob 9+ resolves to patched 14.x; the unaffected legacy glob 7 API is retained.
+- Update only affected lock entries through npm's resolver. All three audit
+  verdicts are zero vulnerabilities. npm-ci dry runs validate their resolution;
+  no application dependencies or build scripts ran locally. Install only the
+  facade's four tiny JS dependencies for its focused CJS/ESM unit test.
+- Layered CI run 41181550510: shard 5's coverage producer fixture omitted the new
+  GitHub event/ref context; shard 8's checkout fixture and shard 1's generated
+  transition fixture expected the old sparse source closure. Shard 7 expected
+  the Rust detector command to be a single YAML run scalar. Update those fixture
+  expectations while preserving refusal/mutation tests. The motto must follow
+  the vision title immediately; keep the build policy after it.
+- Add every observed failing test and the real matcher compatibility test to
+  the selected fast PR inventory, including the isolated dependency install.
+  Native compilation and main-only production checks remain in GitHub CI.
+
+Advisory sources:
+[matcher amplification](https://github.com/advisories/GHSA-g3hv-75wg-m249),
+[glob cancellation](https://github.com/advisories/GHSA-3g3m-2fjr-6pw4).
+
+Root package.json and bun.lock remain unchanged. Automatic approval review
+rejected a broader root-manifest proposal; the repair uses only the affected
+consumers and the isolated compatibility package instead.
+
+The next observations add two repairs to the same PR #1479 batch:
+
+- Native specification job 124482883860 asserts that single-job benchmark
+  admission excludes sharded dispatch. Preserve that original predicate at the
+  start of the workflow condition, appending the main-only guard. A fast JS truth
+  table now evaluates actual single/sharded/main/feature/PR admission. No Rust
+  source changes or local native executions are needed.
+- Dependency review incorrectly identifies the private facade as public
+  minimatch@1.0.0 from its installation path, despite its declared private scoped
+  name and clean npm audit. Couple the facade's version to its actual upstream
+  implementation (11.0.1), and assert that equality in tests and every consumer
+  lock. The source still delegates to the same pinned, integrity-checked patched
+  upstream package. No advisory or dependency-review exemption is added.
+
+The PR's first JS run also correctly refused stale governed fixture hashes after
+updating desktop/package.json and vscode/package.json. Refresh only those two
+source-byte bindings in the existing witness: assert each previous digest matches
+origin/main, all authoritative native-source digests remain current, and the
+entire remaining inventory/cases/assertions/source manifest stays identical.
+The cheap fixture-integrity test passes; no native parser or full suite ran
+locally. All four affected/new dependency closures audit clean after version
+alignment. The root manifest and Bun lockfile remain untouched.
+
+Native full job 124482883753 passed its unit/integration/source binaries but
+failed the earlier frozen fixture install: Bun reported GET of the locked Babel
+generator 7.29.7 tarball returning HTTP 409. Other source-identical installs
+succeeded; the upstream reason is not established. The native fixture step now
+uses a bounded JS supervisor: retain frozen-lockfile/ignore-scripts, stream both
+channels, allow only clean exit 1 with exclusively recognized registry tarball
+409 error lines, and stop after three 120-second attempts with one/two-second
+backoff. Timeouts, missing status, incomplete cleanup, auth/integrity errors,
+foreign hosts and unknown failures stop immediately. Captured unit fixtures
+exercise success, exhaustion and refusals without launching Bun locally. Root
+package.json/bun.lock are unchanged; regenerate the caller through its existing
+retained-source projection after changing the step.
