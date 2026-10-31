@@ -913,6 +913,12 @@ changelog.d/20261031_013000_self_authoring_observation_recovery.md	0.355.26
 changelog.d/20261031_023000_selected_author_credential_policy.md	0.355.26
 changelog.d/20261031_030000_browser_server_startup.md	0.355.26
 changelog.d/20261031_034000_evaluated_seed_startup_policy.md	0.355.26
+changelog.d/20261031_alias_fixture_clippy.md	0.355.27
+changelog.d/20261031_alias_fixture_formatter.md	0.355.27
+changelog.d/20261031_complete_governed_fixture_objects.md	0.355.27
+changelog.d/20261031_default_branch_builds.md	0.355.27
+changelog.d/20261031_derived_ci_budget_and_npm_aliases.md	0.355.27
+changelog.d/20261031_patched_matcher_and_policy_regressions.md	0.355.27
 changelog.d/desktop-package-source-boundary.md	0.355.17
 changelog.d/fast-pr-offline-e2e-admission.md	0.355.15
 changelog.d/governed-desktop-source-witness.md	0.355.17
