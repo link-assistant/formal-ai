@@ -274,3 +274,13 @@ Branch: fix/remaining-main-policy-gates-20261031. Shared native/JavaScript ident
 fixtures cite the actual failed job. Fast JS controls cover dependency chains,
 parallel timeouts, cycles, unknown bounds and the unchanged ceiling. Native gate
 tests remain in main CI; no Rust, product or Docker builds execute locally.
+
+PR #1481 merged as 528053940e8015d16752ee625cffcf15eedc0487. In main run
+41189020585, both repaired gates passed, including shared native alias fixtures,
+installed-lock resolution and the unchanged timeout ceiling. Lint lane 1 job
+124502187766 then rejected the new fixture test's Option::map(...).unwrap_or(...)
+under Clippy's map_unwrap_or lint. Follow-up branch:
+fix/main-clippy-alias-fixture-20261031. Apply its suggested map_or expression,
+preserving every input and expected value; retain strict Clippy on main and no
+local Rust execution. Remaining main jobs must still be observed before merging
+the next green repair, and no release credit is granted to this failed producer.
