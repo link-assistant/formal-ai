@@ -618,6 +618,12 @@ See [the operational policy](../../ci-cd/default-branch-builds.md), including th
 existing non-atomic cross-service publication boundary. A green PR is fast-source
 qualification; complete production delivery still requires all release consumers.
 
+- **CI-FAST-17:** Source-fixture changes must refresh complete governed objects,
+  including cached source text, through the reviewed reader. Preserve case IDs,
+  assertions and unchanged native-source hashes. Fast PR checks must compare the
+  complete objects as well as fixture digests; matching hashes alone do not
+  establish consistency of the program representation.
+
 ## Standing Doctrine: Readable Recursive Source and Comment Meta-Language (2026-10-18)
 
 Authority: the owner's 2026-10-18 instructions while delivering PR #1234. These requirements strengthen R381, R394, R480–R483, R993 and R1188-U3. They supersede signature-only or histogram-based acceptance of a full source representation. Historical results remain evidence for their original narrower behavior. All related implementation stays in the same delivery pull request.

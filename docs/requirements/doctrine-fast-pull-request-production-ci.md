@@ -125,3 +125,9 @@ Formal AI edit recipes receive zero autonomous implementation credit.
 See [the operational policy](../ci-cd/default-branch-builds.md), including the
 existing non-atomic cross-service publication boundary. A green PR is fast-source
 qualification; complete production delivery still requires all release consumers.
+
+- **CI-FAST-17:** Source-fixture changes must refresh complete governed objects,
+  including cached source text, through the reviewed reader. Preserve case IDs,
+  assertions and unchanged native-source hashes. Fast PR checks must compare the
+  complete objects as well as fixture digests; matching hashes alone do not
+  establish consistency of the program representation.

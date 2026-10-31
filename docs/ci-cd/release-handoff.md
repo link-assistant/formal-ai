@@ -235,3 +235,20 @@ foreign hosts and unknown failures stop immediately. Captured unit fixtures
 exercise success, exhaustion and refusals without launching Bun locally. Root
 package.json/bun.lock are unchanged; regenerate the caller through its existing
 retained-source projection after changing the step.
+
+## Complete governed objects after PR #1479
+
+Merged source a8b134c746f7ab7412e830a6679173187458ca3b, production run 41184366583.
+Layered CI run 41184366336 job 124488319716 found that the previous refresh changed
+fixture digests but left old desktop/vscode package text in program.initial.
+Follow-up branch: fix/complete-governed-fixture-refresh-20261031.
+
+Use the existing rust-specification-unicode-identifiers.test.mjs reviewed refresh
+mode, passing the exact current reader digest and previous witness digest. The
+refresh is supervised with a 512 MB Node heap and thirty-second deadline. Review
+confirmed exactly eight cached strings changed, each from the previous source
+manifest text to its exact current text; all other fields, case identities,
+assertions and authoritative native-source manifests are byte/structure stable.
+The complete JavaScript parity test passes and is now included in fast PR CI.
+No Rust compilation/execution or application build ran locally. Do not substitute
+a hash-only edit for complete formal/source object synchronization.

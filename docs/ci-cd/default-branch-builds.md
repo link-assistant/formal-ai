@@ -63,3 +63,15 @@ full checkout (job 124478292166); its follow-up checkout is narrowed to .github
 and the real ShellCheck canary fixture, with blob filtering and a three-minute
 step deadline. Lint still examines every workflow/action and exercises that
 canary. These observations do not predict release-build speed.
+
+## Complete governed source fixtures
+
+A fixture digest alone does not refresh a governed program. The program can also
+cache the source text in its initial values. After a source fixture changes,
+regenerate the complete witness with the reviewed source-reader command and
+compare the full objects. Preserve native source hashes, case identities and
+assertions; review each derived-data change against the actual changed file.
+Keep the complete object/source consistency test in the fast PR inventory. It
+parses source in JavaScript and does not compile or execute Rust. This essential
+check prevents a later main-only failure that the cheaper digest check cannot
+find. Local verification runs this one file with a bounded heap and deadline.
