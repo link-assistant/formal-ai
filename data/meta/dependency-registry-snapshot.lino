@@ -303,3 +303,7 @@ registry_entry npm/@playwright/mcp
 registry_entry npm/yaml
   latest "2.9.1"
   source_url "https://registry.npmjs.org/yaml/latest"
+registry_entry npm/minimatch
+  latest "11.0.3"
+  source_url "https://registry.npmjs.org/minimatch"
+  observed_at "2026-10-31"

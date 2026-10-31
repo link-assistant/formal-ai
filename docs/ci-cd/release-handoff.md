@@ -252,3 +252,25 @@ assertions and authoritative native-source manifests are byte/structure stable.
 The complete JavaScript parity test passes and is now included in fast PR CI.
 No Rust compilation/execution or application build ran locally. Do not substitute
 a hash-only edit for complete formal/source object synchronization.
+
+## Remaining main policy gates after PR #1480
+
+Main source 6b203df4489f9830817e548479fab4c42353c67e completed production run
+41185985718 without publishing. Native tests and the full JavaScript inventory
+passed. Lint lane 1 job 124493275719 found two independent gate failures:
+
+- The computed conservative PR bound is 120 minutes; its manually copied record
+  still said 115. Derive the bound and selected chain directly, retaining the
+  unchanged 225-minute ceiling and all unknown-bound/cycle refusals. Remove the
+  synchronized counter rather than incrementing it after workflow edits.
+- The dependency checker queried registry identities for three local file
+  facades and the installed alias minimatch-modern. Skip local package currency,
+  retain checking their actual registry dependencies, and normalize npm aliases
+  to the real publisher while reading versions under the original lock key.
+  Preserve alias syntax during updates. The registry currently reports minimatch
+  11.0.3; update the isolated facade and affected locks to that verified version.
+
+Branch: fix/remaining-main-policy-gates-20261031. Shared native/JavaScript identity
+fixtures cite the actual failed job. Fast JS controls cover dependency chains,
+parallel timeouts, cycles, unknown bounds and the unchanged ceiling. Native gate
+tests remain in main CI; no Rust, product or Docker builds execute locally.

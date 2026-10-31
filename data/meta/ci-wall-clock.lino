@@ -1,7 +1,7 @@
 # Wall-clock ceiling for the pull-request pipeline. R1085-16 item 5.
 # scripts/check-ci-wall-clock.rs discovers PR workflows and computes their
-# timeout-weighted needs DAG. measured_minutes is that static maximum,
-# excluding push-only and dispatch-only jobs; it is not observed runtime.
+# timeout-weighted needs DAG. The maximum is computed, never copied into a
+# maintained counter; static bounds are not observed runtime.
 #
 # Historical discovery before the release-first PR ladder deferral (2026-10-09):
 #   release.yml: 115 min
@@ -15,10 +15,6 @@
 # Each semantic verdict remains25PASS/38FAIL; timing does not certify task success.
 # Their raw100-job/step observations are preserved in the coordinator evidence.
 ci_wall_clock pull_request_pipeline
-  measured_minutes 115
-  measured_date "2026-10-21"
   ceiling_minutes 225
-  workflow ".github/workflows/release.yml"
-  chain "base(->reusable:pin-base-commit.yml:5m)->macos-core-tests(->reusable:macos-core-tests.yml:85m)->build(20m)->pipeline-status(5m)"
-  note "Issue #1364 moves actual Hive client effects to post-green workflow_run admission, so that workflow no longer contributes to the pull-request DAG. The maintained static timeout calculation now selects release.yml at 115 minutes: a 5-minute base predecessor, the 85-minute reusable macOS archive/test path, build at 20 minutes and pipeline status at 5 minutes. The optional all-mode Agent CLI ladder retains its historical 120-minute complete-mode allowance and cold-cycle observations above. The 225-minute ceiling is unchanged. Static allowances do not certify observed timing, semantic success or publication."
+  note "Compute the conservative timeout bound and its workflow/chain directly from current workflow definitions. No manually synchronized measured counter is required. The existing ceiling remains unchanged; declared timeout allowances do not certify observed runtime, semantic success or publication."
   requirement "R1085-16"

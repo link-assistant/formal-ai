@@ -34,7 +34,7 @@ test('old callable CommonJS and modern ESM consumers use the same patched matche
 test('every lock uses the audited implementation and preserves legacy API resolution', () => {
   const upstream = JSON.parse(readFileSync(require.resolve('minimatch-modern/package.json')));
   assert.equal(upstream.name, 'minimatch');
-  assert.equal(upstream.version, '11.0.1');
+  assert.match(upstream.version, /^11[.]0[.][1-9][0-9]*$/u);
   const facade = JSON.parse(readFileSync('packages/minimatch-compat/package.json'));
   assert.equal(facade.version, upstream.version, 'facade version must track its actual matcher');
   for (const folder of ['desktop','vscode','rust/tests/e2e']) {

@@ -75,3 +75,18 @@ Keep the complete object/source consistency test in the fast PR inventory. It
 parses source in JavaScript and does not compile or execute Rust. This essential
 check prevents a later main-only failure that the cheaper digest check cannot
 find. Local verification runs this one file with a bounded heap and deadline.
+
+## Derived CI budgets and registry identities
+
+Compute the conservative PR timeout bound from current workflow definitions and
+compare it with the existing ceiling. Do not maintain a second copy of the
+computed maximum, workflow or dependency chain. Actual Actions step/job timings
+remain separate observations; a declared timeout allowance is not runtime.
+Unknown timeouts, malformed dependencies and cycles must still fail closed.
+
+Dependency currency checks identify the publisher behind npm aliases while
+looking up installed versions under the original lockfile key. Local file,
+link and workspace dependencies have no registry latest version; continue
+checking the registry dependencies declared inside those packages. Automatic
+updates must preserve the alias and its range operator. Keep the small shared
+Rust/JavaScript identity fixtures in fast PR checks and native gate tests.
