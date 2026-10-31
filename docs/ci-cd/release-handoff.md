@@ -156,3 +156,9 @@ No Rust compilation/tests, application builds, containers or public archives run
 locally. Production timing and remaining cross-service publication limits are
 recorded in default-branch-builds.md. CI and the resulting release must qualify
 this batch; local fixture success grants no production-build credit.
+
+PR #1478 first-head CI passed the selected JavaScript group (77-second test step)
+and reported one fast-source readability failure for a long test regexp. The
+follow-up splits that regexp and narrows workflow-lint checkout to .github plus
+its canary fixture after observing a 126-second full checkout. Recheck the exact
+new head; first-head passing jobs do not qualify a later revision.

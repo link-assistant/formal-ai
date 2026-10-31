@@ -56,3 +56,10 @@ already-public artifacts. Continue monitoring every configured consumer and fix
 failures; do not describe initial release creation as complete delivery. Moving
 all platforms before stable-release promotion requires a separate orchestration
 change, not suppressing an existing failure or weakening source authority.
+
+The first PR #1478 execution ran the complete selected unit-test step on one
+runner in 77 seconds (job 124478342329). Workflow lint spent 126 seconds in a
+full checkout (job 124478292166); its follow-up checkout is narrowed to .github
+and the real ShellCheck canary fixture, with blob filtering and a three-minute
+step deadline. Lint still examines every workflow/action and exercises that
+canary. These observations do not predict release-build speed.

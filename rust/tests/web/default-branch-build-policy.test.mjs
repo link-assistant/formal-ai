@@ -28,7 +28,13 @@ test('actual compiler, image, application and deployment entries refuse PR execu
   for (const file of readdirSync('.github/workflows').filter(file=>file.endsWith('.yml'))) {
     for (const [id,job] of Object.entries(workflow(file).jobs)) {
       if (['changes','detect-changes','version-check'].includes(id)) continue;
-      const heavy = job.steps?.some(step => /cargo\s+(?:build|test|check|package|install|doc|run|bench|nextest|llvm-cov|clippy)|rustc\s+(?!-vV|--version)|rust-script |docker (?:build|compose)|build-push-action|build:web|build-selected-wasm|build-rust-api-docs|wasm-pack|deploy-pages@|codeql-action[/]autobuild|[.]github[/]actions[/](?:formal-ai-binary|release-web)/u.test((step.run??'')+' '+(step.uses??'')));
+      const buildCommands = [
+        /cargo\s+(?:build|test|check|package|install|doc|run|bench|nextest|llvm-cov|clippy)/u,
+        /rustc\s+(?!-vV|--version)|rust-script |docker (?:build|compose)|build-push-action/u,
+        /build:web|build-selected-wasm|build-rust-api-docs|wasm-pack|deploy-pages@/u,
+        /codeql-action[/]autobuild|[.]github[/]actions[/](?:formal-ai-binary|release-web)/u,
+      ];
+      const heavy = job.steps?.some(step => buildCommands.some(pattern => pattern.test((step.run??'')+' '+(step.uses??''))));
       if (!heavy || file === 'release-staged.yml') continue; // Main-only prepare-source dominates every generated stage.
       assert(job.if,file+'/'+id+' needs explicit admission');
       assert.equal(Boolean(evaluate(job.if,'pull_request','refs/pull/1500/merge')),false,file+'/'+id);
@@ -80,4 +86,15 @@ test('complete PR diff, deletions and source-to-doc renames cannot disappear beh
   checkVersions('[package]\nversion = "1.2.3"\n','[package]\nversion = "1.2.3"\n');
   assert.throws(()=>checkVersions('[package]\nversion = "1.2.4"\n','[package]\nversion = "1.2.3"\n'));
   assert.throws(()=>checkVersions('[dependencies]\nversion = "1.2.3"\n',''));
+});
+test('workflow lint checks only its source closure and retains the real ShellCheck canary', () => {
+  const jobs=workflow('workflows.yml').jobs;
+  for (const id of ['actionlint','zizmor']) {
+    const checkout=jobs[id].steps.find(step=>step.uses==='actions/checkout@v7');
+    assert.equal(checkout.with.filter,'blob:none');
+    assert(checkout.with['sparse-checkout'].includes('/.github/'));
+    assert(checkout.with['sparse-checkout'].includes('/rust/tests/fixtures/actionlint/'));
+    assert.equal(checkout['timeout-minutes'],3);
+  }
+  assert(jobs.actionlint.steps.some(step=>step.run?.includes('shellcheck-canary.yml')));
 });

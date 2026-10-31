@@ -67,8 +67,14 @@ jobs:
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v7
+        timeout-minutes: 3
         with:
           persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            /.github/
+            /rust/tests/fixtures/actionlint/
+          sparse-checkout-cone-mode: false
 
       # The image bundles ShellCheck and pyflakes, so this lints every `run:`
       # block as well as the workflow schema. Reproduce locally with:
@@ -132,8 +138,14 @@ jobs:
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v7
+        timeout-minutes: 3
         with:
           persist-credentials: false
+          filter: blob:none
+          sparse-checkout: |
+            /.github/
+            /rust/tests/fixtures/actionlint/
+          sparse-checkout-cone-mode: false
 
       # Reproduce locally with exactly this configuration:
       #   pipx run zizmor==1.29.0 --config .github/zizmor.yml \
