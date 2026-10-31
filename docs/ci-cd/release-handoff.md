@@ -131,3 +131,34 @@ and consumer verification, keep drafting in parallel, and let the fresh main
 producer deliver the accumulated fixes. Existing fail-closed source checks and
 their stale-source regressions remain unchanged. These documentation changes
 are manual and claim no Formal AI self-development credit.
+
+## Default-branch build policy batch (2026-10-31)
+
+The branch `ci/default-branch-builds-20261031` follows released v0.355.26. It
+closes legacy full-PR build overrides, including branch dispatch and composite
+binary-builder paths; Pages, native, WASM, image and application compilation are
+main-only (or independently authorized main release consumers). PR admission
+uses bounded JavaScript Git reads and fails closed on missing merge/base evidence.
+The complete diff includes deletions and source-to-doc renames. Version checks
+retain automated-release branch handling and reject manual package version edits.
+
+Selected offline JavaScript tests use one PR runner; main keeps its eight-shard
+plan. Browser E2E and box-language integration remain available with
+FORMAL_AI_FULL_INTEGRATION=run on main. The independent cold full-container build
+remains available with FORMAL_AI_COLD_CONTAINER_REBUILD=run, outside the normal
+publication dependency chain. Real native image construction/runtime checks and
+source/producer/attempt/byte validation remain selected. Cargo package creation
+and staged publishing avoid recompiling an already authenticated build.
+
+Local validation uses individual JavaScript files, actionlint without subprocess
+linters, generated workflow checks, tracked-change size checks and policy gates.
+No Rust compilation/tests, application builds, containers or public archives run
+locally. Production timing and remaining cross-service publication limits are
+recorded in default-branch-builds.md. CI and the resulting release must qualify
+this batch; local fixture success grants no production-build credit.
+
+PR #1478 first-head CI passed the selected JavaScript group (77-second test step)
+and reported one fast-source readability failure for a long test regexp. The
+follow-up splits that regexp and narrows workflow-lint checkout to .github plus
+its canary fixture after observing a 126-second full checkout. Recheck the exact
+new head; first-head passing jobs do not qualify a later revision.

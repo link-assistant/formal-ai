@@ -15,7 +15,7 @@ function evaluate(expression, context) {
 }
 function coverageContext(enabled, event = 'workflow_dispatch') {
   return {
-    github: {event_name: event},
+    github: {event_name: event, ref:'refs/heads/main'},
     needs: {
       'coverage-policy': {outputs: {run: String(enabled)}},
       'detect-changes': {outputs: {'rs-changed': 'true', 'toml-changed': 'true', 'any-code-changed': 'true', 'workflow-changed': 'true'}},
@@ -55,9 +55,9 @@ test('both explicit restore controls select the complete unchanged coverage plan
 });
 
 test('failed artifact producers cannot start test, project or image consumers', () => {
-  for (const id of ['test','test-agent-cli-e2e','box-language-projects','docker-build','docker-slim']) {
+  for (const id of ['test','test-agent-cli-e2e','box-language-projects']) {
     const context = {
-      github: {event_name: 'pull_request'}, vars: {FORMAL_AI_FULL_PR_CI: 'run'},
+      github: {event_name: 'push', ref:'refs/heads/main'}, vars: {FORMAL_AI_FULL_INTEGRATION:'run'},
       needs: {'detect-changes': {outputs: {'any-code-changed': 'true'}}, 'build-artifacts': {result: 'success'}},
     };
     assert.equal(evaluate(release.jobs[id].if, context), true, id);

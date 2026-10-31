@@ -179,6 +179,12 @@ fn main() {
     // Build the cargo publish command
     let mut cmd = Command::new("cargo");
     cmd.arg("publish").arg("--allow-dirty").arg("-p").arg(&name);
+    // Staged CI already compiled the exact source and validated the immutable
+    // binary/package transfers. Avoid compiling the package again there.
+    // Standalone callers retain Cargo's ordinary compilation verification.
+    if get_arg("verified-build").as_deref() == Some("true") {
+        cmd.arg("--no-verify");
+    }
 
     if let Some(t) = &token {
         cmd.arg("--token").arg(t);

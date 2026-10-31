@@ -8,7 +8,7 @@ const root=fileURLToPath(new URL('../../../',import.meta.url));
 const workflow=YAML.parse(fs.readFileSync(root+'/.github/workflows/layered-ci.yml','utf8'));
 const command='node scripts/generate-coding-research-program.mjs --check --meta-language .meta-language';
 const pin='eb0574d5528babd3b4aadece81590d8e2230b99b';
-const eligibility=String.fromCharCode(36)+"{{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (!cancelled() && (needs.js.result == 'success' || needs.js.result == 'skipped')) }}";
+const eligibility=String.fromCharCode(36)+"{{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && (needs.js.result == 'success' || needs.js.result == 'skipped')) }}";
 function issues(document,registeredCompilerGate=false) {
   const job=document.jobs['js-rust'], steps=job.steps;
   const findings=[];
@@ -61,7 +61,7 @@ test('carried JavaScript and Rust-only edits run the check while failed JavaScri
   for(const status of ['success','skipped','failure','cancelled']) {
     assert.equal(evaluate('push',status),['success','skipped'].includes(status));
     assert.equal(evaluate('pull_request',status),false);
-    assert.equal(evaluate('pull_request',status,true),['success','skipped'].includes(status));
+    assert.equal(evaluate('pull_request',status,true),false);
     assert.equal(evaluate('push',status,false,true),false);
   }
   const mutated=structuredClone(workflow);mutated.jobs['js-rust'].if='always()';

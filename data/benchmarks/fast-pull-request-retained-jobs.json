@@ -1,7 +1,7 @@
 {
   "schema": "retained-ci-job-payloads/v1",
   "source": "b46e2b0a486895e821ee73f2289d0a7ceef5a512",
-  "scope": "Original steps, strategies and reusable calls retained unchanged; only job admission changes.",
+  "scope": "Retained suites and optional qualifications. PR build restoration is disabled; duplicate package compilation removed explicitly.",
   "jobs": [
     {
       "file": "release.yml",
@@ -31,7 +31,7 @@
     {
       "file": "release.yml",
       "id": "build",
-      "payloadSha256": "6ba96a6a72ad7807b9ff9d825a64d1c660ee44d2753de8620f19d80c76d53e18"
+      "payloadSha256": "50c903eb69cfe43b5a28b57f4f81e2e9b4f3ce0d67ec08e9457b0aa087032ad3"
     },
     {
       "file": "release.yml",

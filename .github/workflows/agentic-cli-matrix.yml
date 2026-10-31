@@ -84,12 +84,12 @@ env:
 
 jobs:
   pr-check-profile:
-    if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && vars.FORMAL_AI_FULL_PR_CI != 'run'
+    if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'))
     uses: ./.github/workflows/pull-request-check-profile.yml
   # Build once; every leg downloads the same binary. A leg that rebuilt would
   # spend more time compiling than driving a CLI.
   build:
-    if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (true) }}
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true) }}
     name: Build formal-ai
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -302,7 +302,7 @@ jobs:
   # runs. This job needs no CLI, no display and no network — only `jq` — so it is
   # the one leg that can never be skipped for environmental reasons.
   replay:
-    if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (true) }}
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true) }}
     name: Replay recorded sessions
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -382,7 +382,7 @@ jobs:
     # gate holds a billable job for six hours and reports `cancelled` at the end.
     # Three string comparisons need seconds.
     timeout-minutes: 5
-    if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (always()) }}
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (always()) }}
     steps:
       - name: Fail if any leg failed
         # A single red leg fails the matrix. Issue #671 exists because

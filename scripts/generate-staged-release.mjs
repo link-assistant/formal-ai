@@ -235,7 +235,7 @@ export function buildStagedReleaseProjection(source, packet) {
   let detectorBody = detector.body;
   for (const [marker, addition] of [
     ['    timeout-minutes: 5\n', "    # Checkout retries must fit this unchanged job clock.\n    env:\n      GIT_HTTP_LOW_SPEED_LIMIT: '1024'\n      GIT_HTTP_LOW_SPEED_TIME: '30'\n"],
-    ['          fetch-depth: 0\n', '          # Keep complete commit history, without materializing unrelated blobs.\n          sparse-checkout: |\n            /scripts/detect-code-changes.rs\n            /scripts/install-rust-script.sh\n            /changelog.d/\n          sparse-checkout-cone-mode: false\n']
+    ['          fetch-depth: 0\n', '          # Keep complete commit history, without materializing unrelated blobs.\n          sparse-checkout: |\n            /scripts/detect-code-changes.rs\n            /scripts/ci-pull-request-admission.mjs\n            /scripts/lib/documentation-paths.mjs\n            /scripts/install-rust-script.sh\n            /changelog.d/\n          sparse-checkout-cone-mode: false\n']
   ]) {
     assert.equal(detectorBody.split(marker).length, 2, 'unique original detector field required');
     detectorBody = detectorBody.replace(marker, marker + addition);

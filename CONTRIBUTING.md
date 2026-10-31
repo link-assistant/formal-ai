@@ -1,5 +1,11 @@
 # Contributing to formal-ai
 
+The [default-branch build policy](docs/ci-cd/default-branch-builds.md) governs
+CI changes: no application, Cargo or Docker builds or deployments on PRs, even
+through branch dispatch or legacy full-PR controls. Run necessary local JS tests
+one at a time; do not build or test Rust locally.
+
+
 For documentation-only changes, heavy push/PR workflows and automatic releases
 are filtered by `scripts/documentation-only-ci-policy.mjs`. Run its `--write` mode after
 adding a heavy workflow, then its targeted JavaScript regression. The policy
@@ -609,7 +615,9 @@ Removal from a public thread is not approval to retain another copy.
    fixes and their tests, requirement updates, vision and guidelines in one PR.
    Keep essential Linux coding, question-answering and failure-reporting checks
    on PRs. Retain heavy native, packaging, Docker and integration/E2E jobs rather
-   than deleting them; FORMAL_AI_FULL_PR_CI=run restores the deferred PR jobs.
+   than deleting them. Production builds, application packaging and Pages deployment
+   run only on main (including its independently authorized release consumers).
+   FORMAL_AI_FULL_PR_CI cannot restore compilation on a PR or branch dispatch.
    Main still builds and verifies production releases. Collect complete bounded
    redacted CI logs, derive small behavioral unit fixtures with negative cases,
    and fix all available failures before the next push. Never grant execution

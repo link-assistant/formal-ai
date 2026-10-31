@@ -71,10 +71,10 @@ defaults:
     shell: bash
 jobs:
   pr-check-profile:
-    if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && vars.FORMAL_AI_FULL_PR_CI != 'run'
+    if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'))
     uses: ./.github/workflows/pull-request-check-profile.yml
   resolve:
-    if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (true) }}
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true) }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
@@ -259,6 +259,7 @@ jobs:
         if-no-files-found: error
         retention-days: 7
   native:
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) }}
     needs:
     - resolve
     - source
@@ -384,6 +385,7 @@ jobs:
         if-no-files-found: error
         retention-days: 7
   independent-full:
+    if: vars.FORMAL_AI_COLD_CONTAINER_REBUILD == 'run' && ((github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))))
     needs:
     - resolve
     - source
@@ -545,7 +547,6 @@ jobs:
     - resolve
     - source
     - native
-    - independent-full
     if: ${{ github.event_name == 'pull_request' || needs.resolve.outputs.publish == 'false' }}
     permissions:
       contents: read
@@ -691,7 +692,6 @@ jobs:
     - resolve
     - source
     - native
-    - independent-full
     if: ${{ needs.resolve.outputs.publish == 'true' && github.event_name != 'pull_request' && (github.event_name == 'release'
       || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch
       == 'main' && github.event.workflow_run.head_repository.full_name == github.repository) || ((github.event_name == 'workflow_dispatch'

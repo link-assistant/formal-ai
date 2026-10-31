@@ -1,5 +1,13 @@
 # Vision
 
+Production artifacts belong to default-branch CI. Pull requests use essential
+Linux unit and policy checks, avoid Rust and Docker compilation, and combine
+small test groups instead of multiplying runner setup. Build each distinct
+release target once and reuse authenticated outputs. Retain heavy qualification
+suites as main-only opt-ins; derive focused regressions from observed CI failures.
+See [the build policy](docs/ci-cd/default-branch-builds.md).
+
+
 **Don't know everything, know just enough to get to know anything**
 
 Live issue handling must use current Formal AI and Hive Mind, resolving each

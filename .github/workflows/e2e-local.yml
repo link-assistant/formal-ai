@@ -30,6 +30,7 @@ permissions:
 
 jobs:
   e2e-local:
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) }}
     name: E2E Tests (local web app, shard ${{ matrix.shard }}/3)
     runs-on: ubuntu-latest
     # R1188-U9/U11: the suite is split over three matrix legs by spec file

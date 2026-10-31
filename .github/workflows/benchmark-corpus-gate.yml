@@ -86,10 +86,10 @@ concurrency:
 
 jobs:
   pr-check-profile:
-    if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && vars.FORMAL_AI_FULL_PR_CI != 'run'
+    if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'))
     uses: ./.github/workflows/pull-request-check-profile.yml
   corpus-build:
-    if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (true) }}
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true) }}
     name: Build the corpus gate binary
     runs-on: ubuntu-latest
     # 1200s of budget under a 30-minute cap is 66.7%, inside the 70% share
@@ -148,6 +148,7 @@ jobs:
           retention-days: 1
 
   corpus-shard:
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) }}
     name: Corpus shard ${{ matrix.shard }}
     needs: [corpus-build]
     runs-on: ubuntu-latest
@@ -212,7 +213,7 @@ jobs:
     needs: [corpus-build, corpus-shard]
     # Not `always()`: a run superseded by a newer push is the one
     # cancellation that is not a defect, and it skips the verdict.
-    if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (!cancelled()) }}
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled()) }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

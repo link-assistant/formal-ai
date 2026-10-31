@@ -57,6 +57,7 @@ env:
 
 jobs:
   agent-cli-e2e:
+    if: github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))
     name: E2E Tests (agent CLI ↔ formal-ai)${{ matrix.part == 'learning' && ' (method learning)' || matrix.part != 'scenarios' && format(' ({0})', matrix.part) || '' }}
     runs-on: ubuntu-latest
     # Issue #1069 raised the cap from 32 to 45 so one job outlasted the 900s
