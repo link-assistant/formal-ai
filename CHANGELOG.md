@@ -20,6 +20,29 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.355.27] - 2026-10-31
+
+### Fixed
+- Keep the shared npm alias fixture compatible with strict main Clippy checks without changing its test cases or dependency-policy behavior.
+
+### Fixed
+- Apply the exact main rustfmt output to the shared npm alias fixture while preserving its strict Clippy-compatible behavior.
+
+### Fixed
+- Regenerate complete governed specification objects after package-manifest changes and check complete source parity during fast PR validation.
+
+### Changed
+- Restrict production compilation and deployments to main and authorized release consumers; use JavaScript for lightweight PR admission and one group of selected unit tests.
+- Avoid redundant Cargo package compilation and make independent Docker cold builds, browser E2E and box-language integration explicit main-only qualifications.
+
+### Fixed
+- Derive the PR timeout bound without a stale manual counter and correctly check npm alias publishers and local package dependencies against the registry snapshot.
+- Update the isolated matcher compatibility package and consumer locks to the verified upstream minimatch 11.0.3 release.
+
+### Fixed
+- Resolve patched matcher dependencies for desktop, extension and browser-test tooling while preserving legacy CommonJS and modern ESM APIs.
+- Update main-only coverage, sparse-checkout and staged-release fixtures for the fast PR policy, preserve the vision motto placement, and run the captured regressions in fast PR checks.
+
 ## [0.355.26] - 2026-10-30
 
 ### Fixed
