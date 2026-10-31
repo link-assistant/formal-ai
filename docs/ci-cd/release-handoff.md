@@ -284,3 +284,12 @@ fix/main-clippy-alias-fixture-20261031. Apply its suggested map_or expression,
 preserving every input and expected value; retain strict Clippy on main and no
 local Rust execution. Remaining main jobs must still be observed before merging
 the next green repair, and no release credit is granted to this failed producer.
+
+PR #1482 merged as edf219e604cb9c244abaaed3115ce2fc1277e427. Main run 41190559170
+passed strict Clippy but formatting job 124506773286 required rustfmt's exact
+multiline map_or layout. Follow-up branch: fix/main-alias-fixture-format-20261031.
+Apply the complete formatter diff from that public log; inputs, fallback and
+assertions stay identical. Rust scripts included by the native unit crate also
+belong to cargo fmt's source closure. Compiler/Clippy success alone does not
+qualify their formatting. Native tests and production release qualification must
+still pass on the replacement source; interrupted jobs earn no success credit.

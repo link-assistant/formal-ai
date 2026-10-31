@@ -525,9 +525,10 @@ fn npm_aliases_and_local_sources_share_the_javascript_identity_vectors() {
             case["name"].as_str().unwrap(),
             case["declared"].as_str().unwrap(),
         )
-        .map_or(serde_json::Value::Null, |(name, requirement)| {
-            serde_json::json!({"name":name,"requirement":requirement})
-        });
+        .map_or(
+            serde_json::Value::Null,
+            |(name, requirement)| serde_json::json!({"name":name,"requirement":requirement}),
+        );
         assert_eq!(actual, case["expected"]);
     }
 }
