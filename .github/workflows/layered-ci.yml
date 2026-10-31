@@ -121,25 +121,35 @@ jobs:
           # Keep complete commit history, without materializing unrelated blobs.
           sparse-checkout: |
             /scripts/detect-code-changes.rs
+            /scripts/ci-pull-request-admission.mjs
+            /scripts/lib/documentation-paths.mjs
             /scripts/install-rust-script.sh
             /changelog.d/
           sparse-checkout-cone-mode: false
       - name: Setup Rust
+        if: github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')
         uses: dtolnay/rust-toolchain@stable
       - name: Install rust-script
+        if: github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')
         run: bash scripts/install-rust-script.sh
       - name: Test change admission before selecting tiers
+        if: github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')
         run: rust-script --test scripts/detect-code-changes.rs
       - name: Detect tier changes
         id: changes
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_EVENT_BEFORE: ${{ github.event.before }}
-        run: rust-script scripts/detect-code-changes.rs
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = pull_request ] || { [ "$GITHUB_EVENT_NAME" = workflow_dispatch ] && [ "$GITHUB_REF" != refs/heads/main ]; }; then
+            node scripts/ci-pull-request-admission.mjs detect
+          else
+            rust-script scripts/detect-code-changes.rs
+          fi
 
 
   source-networks:
-    if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (true) }}
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true) }}
     name: Full source network serialization (${{ matrix.shard }}/16)
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -183,7 +193,7 @@ jobs:
           retention-days: 7
 
   js:
-    name: js tier (node --check over js, suites ${{ matrix.shard }}/8)
+    name: js tier (node --check over js, suite group ${{ matrix.shard }})
     needs: [changes]
     # Only this tier's own predicate and no `always()`: another tier's
     # folder changing alone must let this tier stand on its last green run.
@@ -208,7 +218,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4, 5, 6, 7, 8]
+        shard: ${{ fromJSON((github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && '[1]' || '[1,2,3,4,5,6,7,8]') }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -286,8 +296,8 @@ jobs:
       - name: Run this shard of the JavaScript suites
         env:
           SHARD: ${{ matrix.shard }}
-          SHARDS: 8
-          FAST_PR_PROFILE: ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && vars.FORMAL_AI_FULL_PR_CI != 'run' }}
+          SHARDS: ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && 1 || 8 }}
+          FAST_PR_PROFILE: ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) }}
           TEST_BUDGET_SECONDS: 360
           TEST_WARN_RATIO_PERCENT: 75
         # PR #1188: the suite files are planned longest-first from
@@ -385,7 +395,7 @@ jobs:
     # translated Rust. JavaScript must be green or carried first.
     # R1183: generated research Rust or compiler inputs can change without a
     # JavaScript path change, so this compiler boundary also runs for those edits.
-    if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (!cancelled() && (needs.js.result == 'success' || needs.js.result == 'skipped')) }}
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && (needs.js.result == 'success' || needs.js.result == 'skipped')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     concurrency:
@@ -480,7 +490,7 @@ jobs:
     # rust-changed gates the tier (it includes js/** and ts/** today,
     # because the dogfood gate binds all three trees); js and ts must each
     # be green or carried. Either red means skipped-by-cycle, not own red.
-    if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (needs.changes.outputs.rust-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped') && (needs.ts.result == 'success' || needs.ts.result == 'skipped')) }}
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (needs.changes.outputs.rust-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped') && (needs.ts.result == 'success' || needs.ts.result == 'skipped')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     concurrency:
@@ -523,7 +533,7 @@ jobs:
     # data/meta/server-routes.lino exactly as the Rust server does (R1013).
     # The same gate as the rust tier: it wakes on any js, seed, server-manifest
     # or rust change, and js and ts must be green or carried first.
-    if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (needs.changes.outputs.rust-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped') && (needs.ts.result == 'success' || needs.ts.result == 'skipped')) }}
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (needs.changes.outputs.rust-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped') && (needs.ts.result == 'success' || needs.ts.result == 'skipped')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     concurrency:

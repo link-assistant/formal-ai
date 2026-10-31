@@ -1,6 +1,6 @@
 {
   "schema": "fast-pr-javascript-tests/v1",
-  "scope": "Coding, question answering, reporting, custody, CI/release admission and regressions. Full inventory remains on main or explicit full PR opt-in.",
+  "scope": "Essential offline coding, QA, reporting and captured CI failure regressions. Full native and product build qualification runs only on main.",
   "files": [
     "rust/tests/web/ordinary-literal-addition.test.mjs",
     "rust/tests/web/authored-literal-planning.test.mjs",
@@ -68,6 +68,7 @@
     "rust/tests/web/package-release-authority-controls.test.mjs",
     "rust/tests/web/e2e-local-parallel.test.mjs",
     "rust/tests/web/prerequisite-fetch-recovery.test.mjs",
-    "rust/tests/web/issue-0016-seed-mirror.test.mjs"
+    "rust/tests/web/issue-0016-seed-mirror.test.mjs",
+    "rust/tests/web/default-branch-build-policy.test.mjs"
   ]
 }

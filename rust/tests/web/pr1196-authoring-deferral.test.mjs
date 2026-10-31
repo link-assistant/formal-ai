@@ -101,7 +101,8 @@ test('invalid trailers still fail before the optional positive-authoring step', 
   assert.equal(deferral.if, undefined); assert.equal(deferral['continue-on-error'], undefined);
   assert.equal(deferral.run, 'node scripts/check-release-recovery-authoring-deferral.mjs');
   const status = definition.jobs['evidence-status'];
-  assert.match(status.if, /FORMAL_AI_FULL_PR_CI/u);
+  assert.doesNotMatch(status.if, /FORMAL_AI_FULL_PR_CI/u);
+  assert.match(status.if, /github.ref == 'refs\/heads\/main'/u);
   assert.match(status.if, /always\(\)/u); assert.deepEqual(status.needs, ['evidence-check']);
   assert.equal(status.steps.at(-1).run, 'bash scripts/check-pipeline-status.sh');
 });

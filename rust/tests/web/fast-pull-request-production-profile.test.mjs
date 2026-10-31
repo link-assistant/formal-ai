@@ -14,7 +14,7 @@ const evaluate = (expression, context) => new Script(expression.trim()
   .runInNewContext({cancelled: () => false, always: () => true, ...context}, {timeout: 100});
 function context(event, ref = 'refs/pull/1500/merge', enabled = false) {
   const outputs = Object.fromEntries(['any-code-changed','rs-changed','toml-changed','pipeline-changed','rust-changed','js-changed','ts-changed'].map(k => [k,'true']));
-  return {github: {event_name:event,ref}, vars:{FORMAL_AI_FULL_PR_CI:enabled?'run':'skip',FORMAL_AI_NON_LINUX_CI:'run'},
+  return {github: {event_name:event,ref}, vars:{FORMAL_AI_FULL_PR_CI:enabled?'run':'skip',FORMAL_AI_NON_LINUX_CI:'run',FORMAL_AI_FULL_INTEGRATION:'run'},
     inputs:{}, needs:Object.fromEntries(['detect-changes','changes','build-artifacts','lint','test','macos-core-tests','js','ts','native-source','native','resolve']
       .map(k => [k,{result:'success',outputs:{...outputs,should_build:'true',build:'true'}}]))};
 }
@@ -27,7 +27,7 @@ test('heavy original job bodies remain intact and default PR dispatches cannot a
     assert.equal(Boolean(evaluate(job.if, context('workflow_dispatch','refs/heads/fix/example'))),false,row.file+'/'+row.id+' bot dispatch');
     const full = context('pull_request',undefined,true);
     const oldPredicate=job.if.replace(/^\$\{\{\s*/u,'').replace(/\s*\}\}$/u,'');
-    assert.equal(Boolean(evaluate(oldPredicate, full)),true,row.file+'/'+row.id+' explicit restore');
+    assert.equal(Boolean(evaluate(oldPredicate, full)),false,row.file+'/'+row.id+' override cannot restore PR builds');
   }
 });
 test('main keeps production builds and original selected integrations', () => {

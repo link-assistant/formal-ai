@@ -16,11 +16,11 @@ existing verification obligations.
   source edits, question answering, issue reporting, retry bounds and offline
   failure regressions. Keep lint, workflow/security checks, requirement consistency
   and JavaScript/TypeScript checks. The fast lint job uses maintained JavaScript
-  checks; the original native/WASM lint gates stay on main/full PR opt-in.
+  checks; the original native/WASM lint gates stay on main or explicit main-only qualification.
   Production native builds, packaging, Docker,
   broad benchmark ladders and heavy integration/E2E jobs are retained but deferred
-  to main. Set FORMAL_AI_FULL_PR_CI=run to restore the retained PR jobs, including
-  branch-dispatched checks. Existing narrower platform/coverage opt-ins still apply.
+  to main. FORMAL_AI_FULL_PR_CI cannot reenable PR builds or branch-dispatched
+  builds. Existing narrower platform/coverage opt-ins apply only on main.
 - **CI-FAST-3:** Main retains native tests, integrations, final production builds,
   signed/self-signed package verification where advertised, Docker publication and
   public-download verification. A green PR proves the selected fast profile only;
@@ -105,3 +105,23 @@ Formal AI edit recipes receive zero autonomous implementation credit.
   Refresh reviewed complete source witnesses after referenced configuration
   changes; fast source-binding checks must detect stale embedded bytes before
   main, while preserving full reader and complete-object parity checks.
+
+## Default-branch build amendment (2026-10-31)
+
+- **CI-FAST-13:** No PR or feature-branch check dispatch may compile Cargo,
+  Docker, WASM or application products, or deploy Pages, even with the old full-PR
+  override. Production consumers must independently select authorized main source.
+- **CI-FAST-14:** Remove redundant compilation from package verification after
+  the actual compiler succeeds. Retain the cold independent Docker build as a
+  main-only opt-in; production image publication depends on its actual native
+  producer. Keep immutable source, byte, producer and attempt checks.
+- **CI-FAST-15:** PR change/version admission uses JavaScript without installing
+  Rust tooling. Combine selected JavaScript unit suites in one runner. Preserve
+  measured main sharding and optimization where needed; run no Rust locally.
+- **CI-FAST-16:** Browser E2E and box-language integrations are retained but
+  default-off; restore explicitly on main. Preserve critical coding/QA/reporting
+  coverage and log-derived unit regressions without claiming E2E equivalence.
+
+See [the operational policy](../ci-cd/default-branch-builds.md), including the
+existing non-atomic cross-service publication boundary. A green PR is fast-source
+qualification; complete production delivery still requires all release consumers.

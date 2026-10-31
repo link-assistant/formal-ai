@@ -89,8 +89,7 @@ jobs:
           AUTOMATION_APP_PRIVATE_KEY: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
         run: node .hive-protocol/scripts/hive-delivery-attempt.mjs configuration
   build:
-    if: ${{ needs.admission.outputs.admitted == 'true' &&
-      needs.admission.outputs.execute == 'true' }}
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (needs.admission.outputs.admitted == 'true' && needs.admission.outputs.execute == 'true') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:

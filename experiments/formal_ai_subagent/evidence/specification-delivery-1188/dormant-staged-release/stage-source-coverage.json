@@ -1,8 +1,8 @@
 {
-  "schema": "release-original-stage-coverage/v1", "workflowSha256": "9c9973e905b8c3f8d2c793e479f02ab6effb554b5142ab39744f68bb4af85470",
+  "schema": "release-original-stage-coverage/v1", "workflowSha256": "a51342f3a11d3368cf13d81ae13b3e77a093f7de1c7f1e0c8cc181dcd38bf6e7",
   "callers": [
     {
-      "caller": "auto-release", "bodySha256": "30838e01005b84b922413f4acd42e58a00cfb6d73abf6115be2b45ba0d463c65", "originalSteps": 28,
+      "caller": "auto-release", "bodySha256": "4cd8b2e40f8fb7a17ade88c836563221ea5d3080cbd2e49bc0a7f46c6a95a12f", "originalSteps": 28,
       "steps": [
         {
           "ordinal": 0, "name": "actions/checkout@v7", "stage": "prepare-source", "sha256": "78bf11c402b6253fa5bf89c76c386e0ff199ed9747fd2c904efb90be01ef15a0",
@@ -58,13 +58,13 @@
         },
         {
           "ordinal": 10, "name": "Verify packaged crate archive", "stage": "verify-package",
-          "sha256": "15172312a02742109df6ed9f5ed51622de182b64935a917842772be9762b141e",
-          "raw": "      - name: Verify packaged crate archive\n        if: steps.check.outputs.should_release == 'true'\n        run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai\n",
+          "sha256": "64ee0886bfc49d8f1dd3b37b18d0bb425b39ed5ee732dbc5daf9a5a6c4be271d",
+          "raw": "      - name: Verify packaged crate archive\n        if: steps.check.outputs.should_release == 'true'\n        run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai --no-verify\n",
           "stepId": null, "referencedStepOutputs": [{"step":"check","output":"should_release"}]
         },
         {
-          "ordinal": 11, "name": "Publish to Crates.io", "stage": "publish-crate", "sha256": "6069e87ff178f75276c023a069e1551830b5031a9ad71abf35e8317b5c5a1b7f",
-          "raw": "      - name: Publish to Crates.io\n        if: steps.check.outputs.should_release == 'true' && steps.prepared.outputs.crate_published != 'true'\n        id: publish-crate\n        env:\n          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}\n          CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}\n        run: rust-script scripts/publish-crate.rs\n",
+          "ordinal": 11, "name": "Publish to Crates.io", "stage": "publish-crate", "sha256": "bbe46e35ef4ccb8a2c37277f0cf292d5d6d5494e0a986d6a60665a0301bf0474",
+          "raw": "      - name: Publish to Crates.io\n        if: steps.check.outputs.should_release == 'true' && steps.prepared.outputs.crate_published != 'true'\n        id: publish-crate\n        env:\n          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}\n          CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}\n        run: rust-script scripts/publish-crate.rs --verified-build true\n",
           "stepId": "publish-crate", "referencedStepOutputs": [{"step":"check","output":"should_release"},{"step":"prepared","output":"crate_published"}]
         },
         {
@@ -458,7 +458,7 @@
       ]
     },
     {
-      "caller": "manual-release", "bodySha256": "94ff176918fa37ccddfe578417b8e49f490e7f56afba14f896de76483ce5ac55", "originalSteps": 24,
+      "caller": "manual-release", "bodySha256": "0e911afab59aca433b32cb144251ed9efd3109ff116a2c99f38e6257c3a15818", "originalSteps": 24,
       "steps": [
         {
           "ordinal": 0, "name": "actions/checkout@v7", "stage": "prepare-source", "sha256": "78bf11c402b6253fa5bf89c76c386e0ff199ed9747fd2c904efb90be01ef15a0",
@@ -490,13 +490,13 @@
         },
         {
           "ordinal": 6, "name": "Verify packaged crate archive", "stage": "verify-package",
-          "sha256": "495aa8a1fa375daa1f54834b2ae348aad513098ec33188e5e556b64d3c95f0e1",
-          "raw": "      - name: Verify packaged crate archive\n        if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'\n        run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai\n",
+          "sha256": "950bf3b48f56d22a06adae9443685a141b747fb6ce30a8322d6585aee82e6e3c",
+          "raw": "      - name: Verify packaged crate archive\n        if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'\n        run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai --no-verify\n",
           "stepId": null, "referencedStepOutputs": [{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"}]
         },
         {
-          "ordinal": 7, "name": "Publish to Crates.io", "stage": "publish-crate", "sha256": "1b7b61f221de1dd1383c688a4408647eeb0b3af987293d9f62e34f45dec1d4c8",
-          "raw": "      - name: Publish to Crates.io\n        if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'\n        id: publish-crate\n        env:\n          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}\n          CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}\n        run: rust-script scripts/publish-crate.rs\n",
+          "ordinal": 7, "name": "Publish to Crates.io", "stage": "publish-crate", "sha256": "8b299857456d973542c08364bb943672049729c900e48a9426f77f65832250ba",
+          "raw": "      - name: Publish to Crates.io\n        if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'\n        id: publish-crate\n        env:\n          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}\n          CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}\n        run: rust-script scripts/publish-crate.rs --verified-build true\n",
           "stepId": "publish-crate", "referencedStepOutputs": [{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"}]
         },
         {

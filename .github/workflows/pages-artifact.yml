@@ -28,6 +28,7 @@ permissions:
 
 jobs:
   build:
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) }}
     name: Build GitHub Pages artifact
     runs-on: ubuntu-latest
     timeout-minutes: 30

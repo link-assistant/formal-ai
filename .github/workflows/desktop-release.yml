@@ -96,7 +96,7 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-native-source${{ github.event_name != 'pull_request' && format('-{0}', github.run_id) || '' }}
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     needs: [resolve, base]
-    if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (!cancelled() && (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true')) }}
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:
@@ -256,7 +256,7 @@ jobs:
       group: ${{ github.workflow }}-native-${{ github.event.pull_request.number || github.ref }}-${{ matrix.target }}${{ github.event_name != 'pull_request' && format('-{0}', github.run_id) || '' }}
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     needs: [native-source]
-    if: ${{ !cancelled() && needs.native-source.result == 'success' }}
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.native-source.result == 'success') }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: ${{ matrix.capmin }}
     strategy:
@@ -396,7 +396,7 @@ jobs:
     concurrency:
       group: desktop-release-${{ github.event.pull_request.number || needs.resolve.outputs.tag }}-${{ matrix.label }}
       queue: max
-    if: ${{ !cancelled() && needs.native-source.result == 'success' && (github.event_name != 'pull_request' || needs.native.result == 'success') &&  (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.native-source.result == 'success' && (github.event_name != 'pull_request' || needs.native.result == 'success') &&  (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true')) }}
     strategy:
       fail-fast: false
       matrix:
@@ -887,7 +887,7 @@ jobs:
     concurrency:
       group: desktop-release-${{ github.event.pull_request.number || needs.resolve.outputs.tag }}-cli-${{ matrix.label }}
       queue: max
-    if: ${{ !cancelled() && needs.native-source.result == 'success' && (github.event_name != 'pull_request' || needs.native.result == 'success') &&  (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.native-source.result == 'success' && (github.event_name != 'pull_request' || needs.native.result == 'success') &&  (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true')) }}
     strategy:
       fail-fast: false
       matrix:
@@ -1054,7 +1054,7 @@ jobs:
       group: desktop-release-${{ github.event.pull_request.number || needs.resolve.outputs.tag }}-vscode
       queue: max
     # Same skipped-dependency handling as `build`; see the comment there.
-    if: ${{ !cancelled() && needs.native-source.result == 'success' &&  (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.native-source.result == 'success' &&  (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -1210,7 +1210,7 @@ jobs:
     # complete SHA256SUMS.txt from an earlier successful run with a manifest
     # covering whichever one or two arches happened to finish (issue #812).
     # Never on pull requests: there is no release to publish checksums to.
-    if: ${{ !cancelled() && github.event_name != 'pull_request' && needs.resolve.outputs.should_build == 'true' }}
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && github.event_name != 'pull_request' && needs.resolve.outputs.should_build == 'true') }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:

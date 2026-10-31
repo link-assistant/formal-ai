@@ -99,19 +99,28 @@ jobs:
           # Keep complete commit history, without materializing unrelated blobs.
           sparse-checkout: |
             /scripts/detect-code-changes.rs
+            /scripts/ci-pull-request-admission.mjs
+            /scripts/lib/documentation-paths.mjs
             /scripts/install-rust-script.sh
             /changelog.d/
           sparse-checkout-cone-mode: false
       - name: Setup Rust
+        if: github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')
         uses: dtolnay/rust-toolchain@stable
       - name: Install rust-script
+        if: github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')
         run: bash scripts/install-rust-script.sh
       - name: Detect changes
         id: changes
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_EVENT_BEFORE: ${{ github.event.before }}
-        run: rust-script scripts/detect-code-changes.rs
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = pull_request ] || { [ "$GITHUB_EVENT_NAME" = workflow_dispatch ] && [ "$GITHUB_REF" != refs/heads/main ]; }; then
+            node scripts/ci-pull-request-admission.mjs detect
+          else
+            rust-script scripts/detect-code-changes.rs
+          fi
   coverage-policy:
     name: Declare temporary coverage scope
     runs-on: ubuntu-latest
@@ -170,12 +179,7 @@ jobs:
     # and the unchanged artifact protocol retain their independent checks.
     timeout-minutes: 30
     needs: [coverage-policy, detect-changes]
-    if: |
-      !cancelled() && needs.coverage-policy.outputs.run == 'true' && (
-        github.event_name == 'workflow_dispatch' ||
-        needs.detect-changes.outputs.rs-changed == 'true' ||
-        needs.detect-changes.outputs.toml-changed == 'true'
-      )
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.coverage-policy.outputs.run == 'true' && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' )) }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -266,7 +270,7 @@ jobs:
     timeout-minutes: 30
     needs: [coverage-build]
     # Dispatch skips the detector; a successful producer must still release its shards.
-    if: ${{ !cancelled() && needs.coverage-build.result == 'success' }}
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.coverage-build.result == 'success') }}
     strategy:
       fail-fast: false
       matrix:
@@ -481,12 +485,7 @@ jobs:
     # downloads fit in the remainder.
     timeout-minutes: 25
     needs: [coverage-policy, detect-changes, coverage-build, coverage-shard]
-    if: |
-      !cancelled() && needs.coverage-policy.outputs.run == 'true' && (
-        github.event_name == 'workflow_dispatch' ||
-        needs.detect-changes.outputs.rs-changed == 'true' ||
-        needs.detect-changes.outputs.toml-changed == 'true'
-      )
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.coverage-policy.outputs.run == 'true' && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' )) }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -690,12 +689,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: [coverage-policy, detect-changes, browser-coverage-shard]
-    if: |
-      !cancelled() && needs.coverage-policy.outputs.run == 'true' && (
-        github.event_name == 'workflow_dispatch' ||
-        needs.detect-changes.outputs.any-code-changed == 'true' ||
-        needs.detect-changes.outputs.workflow-changed == 'true'
-      )
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.coverage-policy.outputs.run == 'true' && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.workflow-changed == 'true' )) }}
     steps:
       - uses: actions/checkout@v7
         with:

@@ -59,11 +59,11 @@ env:
 
 jobs:
   pr-check-profile:
-    if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && vars.FORMAL_AI_FULL_PR_CI != 'run'
+    if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'))
     uses: ./.github/workflows/pull-request-check-profile.yml
   # === RATCHET - every PR compares its ledger with the actual base revision ===
   ratchet:
-    if: ${{ ((github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')) || vars.FORMAL_AI_FULL_PR_CI == 'run') && (true) }}
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true) }}
     name: Verify monotonic ledger
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-ratchet
@@ -98,7 +98,7 @@ jobs:
     concurrency:
       group: formal-ai-repository-writes
       queue: max
-    if: github.event_name != 'pull_request' && !inputs.shard_size
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (github.event_name != 'pull_request' && !inputs.shard_size) }}
     runs-on: ubuntu-latest
     timeout-minutes: 90
     permissions:
@@ -244,7 +244,7 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.suite }}-shard-plan
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
-    if: github.event_name == 'workflow_dispatch' && inputs.shard_size
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (github.event_name == 'workflow_dispatch' && inputs.shard_size) }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:
@@ -281,6 +281,7 @@ jobs:
       - uses: ./.github/actions/formal-ai-binary
 
   upstream-shard:
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) }}
     name: Upstream shard ${{ matrix.window.offset }}
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.suite }}-shard-${{ matrix.window.offset }}

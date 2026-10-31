@@ -36,7 +36,7 @@ env:
 jobs:
   build-archive:
     # Temporary optional Mac test debt; restore only after unchanged work meets its budgets.
-    if: vars.FORMAL_AI_PR1188_RESTORE_OPTIONAL_MAC_TESTS == 'verified-within-budget'
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (vars.FORMAL_AI_PR1188_RESTORE_OPTIONAL_MAC_TESTS == 'verified-within-budget') }}
     name: Build macOS test archive
     runs-on: macos-15-intel
     outputs:
@@ -168,7 +168,7 @@ jobs:
 
   test-archive:
     # Temporary optional Mac test debt; restore only after unchanged work meets its budgets.
-    if: vars.FORMAL_AI_PR1188_RESTORE_OPTIONAL_MAC_TESTS == 'verified-within-budget'
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (vars.FORMAL_AI_PR1188_RESTORE_OPTIONAL_MAC_TESTS == 'verified-within-budget') }}
     name: Run macOS platform tests
     needs: [build-archive]
     runs-on: macos-15-intel

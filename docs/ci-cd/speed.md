@@ -1,5 +1,15 @@
 # CI speed: small parallel jobs, longest first
 
+The [default-branch build policy](default-branch-builds.md) supersedes older
+full-PR restore instructions. PR admission uses JavaScript; selected JavaScript
+unit regressions share one runner. The full main suite retains its measured
+shards. Rust tests are not compiled in the PR profile, so release optimization
+settings cannot increase PR feedback time. Main retains its measured test
+optimization: earlier CI observed 52.86 seconds unoptimized versus 9.34 seconds
+optimized for one computation-heavy test. Do not trade a longer main test run
+for a guessed compilation saving.
+
+
 CI is only useful while it is quick to iterate on. PR #1188 sets the rule
 and a gate that enforces it.
 
@@ -42,7 +52,7 @@ changelog fragment cannot override it. Mixed source changes and unknown runtime
 Markdown retain normal CI; GitHub's large-diff limits can reduce filtering savings.
 See [the requirements](../requirements/issue-1455-documentation-and-evidence.md).
 The separate provenance performance qualification and real Agent CLI
-failure-report replay are retained as full-PR/manual qualifications; their native
+failure-report replay are retained as main-only manual qualifications; their native
 compilation does not run in the default PR profile. Default deferral is recorded
 explicitly and provides no execution credit. Production compilation and native
 tests still run on main.
@@ -172,10 +182,10 @@ The 2026-10-28 fast PR policy supersedes the earlier all-integrations-on-PR
 profile: Linux JavaScript/TypeScript behavior and consistency checks remain on
 PRs; native production compilation/tests, package and image builds, native parity,
 source-network serialization, native measurement and broad benchmark/client integration jobs are
-retained for main. Set FORMAL_AI_FULL_PR_CI=run to restore those PR jobs. A manual
-branch dispatch also uses the fast profile unless this variable is set. Main's
-production builds, native tests, browser/agent integration and public-download
-checks retain their original assertions and failure policy. The profile notice
+retained for main. FORMAL_AI_FULL_PR_CI no longer restores builds on PRs or
+branch dispatches. Main retains production builds, native tests, critical coding
+integration and public-download checks. Browser E2E and box-language integration
+are retained behind FORMAL_AI_FULL_INTEGRATION=run on main. The profile notice
 explicitly awards no coverage to deferred jobs.
 
 Keep related implementation, captured-log regressions, requirements, vision,
@@ -270,7 +280,7 @@ production release operation and keep the exact deployed-caller proof; never
 relax source identity checks to accommodate workflow edits.
 
 The former lint job also builds WASM and runs native gate programs. It is
-retained for main/full PR opt-in; default PRs use fast-pr-lint with the maintained
+retained for main or explicit main-only qualification; default PRs use fast-pr-lint with the maintained
 JavaScript readability, file-size, CI-budget, requirements and status checks.
 The changelog check uses its existing JavaScript twin to avoid rust-script
 installation solely for that metadata check. Pipeline Status requires the fast
@@ -290,7 +300,7 @@ reuse the actual captured startup frames. Skipped visual tests have no execution
 credit. Restore automatic rendering after its cold startup cost is predictable.
 
 VS Code package/WASM probes and the native full-source-content example are also
-retained behind the full PR profile. Production extension publication is
+retained for explicit qualification on main. Production extension publication is
 unchanged; the full source-content workflow remains available on explicit
 dispatch. Their original build payloads are included in the retention check.
 

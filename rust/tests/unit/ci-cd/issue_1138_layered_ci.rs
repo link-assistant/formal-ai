@@ -71,7 +71,7 @@ fn every_tier_declares_its_path_predicate_and_needs_the_tiers_above() {
 
     let rust = tier_condition(&workflow, "rust");
     assert!(
-        rust.contains("needs.changes.outputs.rust-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped') && (needs.ts.result == 'success' || needs.ts.result == 'skipped')") && rust.contains("FORMAL_AI_FULL_PR_CI"),
+        rust.contains("needs.changes.outputs.rust-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped') && (needs.ts.result == 'success' || needs.ts.result == 'skipped')") && rust.contains("github.ref == 'refs/heads/main'"),
         "the rust tier is gated on its own predicate plus js and ts each being green or carried: {rust}"
     );
 
@@ -149,7 +149,8 @@ fn the_classifier_feeds_the_tiers_from_the_complete_diff() {
         );
     }
     assert!(
-        changes.contains("run: rust-script scripts/detect-code-changes.rs"),
+        changes.contains("rust-script scripts/detect-code-changes.rs")
+            && changes.contains("node scripts/ci-pull-request-admission.mjs detect"),
         "the tier predicates are the detector's, not a second list in the workflow"
     );
     assert!(
@@ -259,23 +260,13 @@ fn the_tier_predicates_live_in_the_classifier_not_the_workflow() {
 fn the_javascript_suites_run_in_budgeted_shards_that_cover_every_file() {
     let workflow = layered_workflow();
     let js = job_block(&workflow, "js");
-    let legs: Vec<u32> = js
-        .lines()
-        .find_map(|line| line.trim().strip_prefix("shard: ["))
-        .and_then(|rest| rest.strip_suffix(']'))
-        .expect("the js tier declares its shard matrix")
-        .split(',')
-        .map(|leg| leg.trim().parse().expect("a numeric shard"))
-        .collect();
-    let declared: u32 = js
-        .lines()
-        .find_map(|line| line.trim().strip_prefix("SHARDS: "))
-        .and_then(|value| value.trim().parse().ok())
-        .expect("the suites step names its shard count");
-    assert_eq!(
-        legs,
-        (1..=declared).collect::<Vec<u32>>(),
-        "the matrix must run every shard the step divides the files into"
+    assert!(js.contains("fromJSON("));
+    assert!(js.contains("&& '[1]' || '[1,2,3,4,5,6,7,8]'"));
+    assert!(js.contains("&& 1 || 8"));
+    // JavaScript evaluates both matrix branches and checks the exact coverage.
+    assert!(
+        include_str!("../../web/default-branch-build-policy.test.mjs")
+            .contains("PRs use one JS unit group")
     );
     for pin in [
         "SHARD: ${{ matrix.shard }}",
