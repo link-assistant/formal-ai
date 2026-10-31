@@ -9,7 +9,8 @@ import {createRequire} from 'node:module';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'../../..');
 const YAML=createRequire(import.meta.url)('yaml');
 const detectors=[['release.yml','detect-changes'],['coverage.yml','detect-changes'],['layered-ci.yml','changes']];
-const paths=['/scripts/detect-code-changes.rs','/scripts/install-rust-script.sh','/changelog.d/'];
+const paths=['/scripts/detect-code-changes.rs','/scripts/ci-pull-request-admission.mjs',
+  '/scripts/lib/documentation-paths.mjs','/scripts/install-rust-script.sh','/changelog.d/'];
 const jobs=detectors.map(([file,name])=>({file,job:YAML.parse(readFileSync(join(root,'.github/workflows',file),'utf8')).jobs[name]}));
 function check(job){
   assert.equal(job['timeout-minutes'],5);
@@ -19,7 +20,8 @@ function check(job){
   assert.deepEqual(checkouts[0].with,{'persist-credentials':false,'fetch-depth':0,
     'sparse-checkout':paths.join('\n')+'\n','sparse-checkout-cone-mode':false});
   assert(job.steps.some(step=>step.run==='bash scripts/install-rust-script.sh'));
-  assert(job.steps.some(step=>step.run==='rust-script scripts/detect-code-changes.rs'));
+  assert(job.steps.some(step=>step.run?.includes('rust-script scripts/detect-code-changes.rs')));
+  assert(job.steps.some(step=>step.run?.includes('node scripts/ci-pull-request-admission.mjs detect')));
 }
 test('every change detector retains complete history, native classification and bounded sparse checkout',()=>{
   for(const {file,job} of jobs){assert.doesNotThrow(()=>check(job),file);}

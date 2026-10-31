@@ -289,6 +289,8 @@ jobs:
           bun-version-file: .bun-version
       - name: Install actual locked UI test dependencies
         run: bun install --frozen-lockfile --ignore-scripts
+      - name: Install the isolated patched matcher test dependencies
+        run: npm ci --prefix packages/minimatch-compat --ignore-scripts --no-audit --no-fund
       - name: Provision the real agentic search adapter
         run: bash scripts/install-agentic-search-tools.sh
       - name: Provision the actual pinned source-model frontend

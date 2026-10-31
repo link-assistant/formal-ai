@@ -69,6 +69,12 @@
     "rust/tests/web/e2e-local-parallel.test.mjs",
     "rust/tests/web/prerequisite-fetch-recovery.test.mjs",
     "rust/tests/web/issue-0016-seed-mirror.test.mjs",
-    "rust/tests/web/default-branch-build-policy.test.mjs"
+    "rust/tests/web/default-branch-build-policy.test.mjs",
+    "rust/tests/web/coverage-producer-budget.test.mjs",
+    "rust/tests/web/ci-change-detection-checkout.test.mjs",
+    "rust/tests/web/staged-release-activation-transition.test.mjs",
+    "rust/tests/web/project-motto.test.mjs",
+    "rust/tests/web/patched-matcher-compatibility.test.mjs",
+    "rust/tests/web/release-pending-pipeline.test.mjs"
   ]
 }

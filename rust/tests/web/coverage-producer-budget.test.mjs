@@ -12,12 +12,14 @@ const policy = parseSpeedPolicy(readFileSync('data/meta/ci-speed.lino', 'utf8'))
 
 // Model GitHub's implicit success() only when the expression has no status
 // function. The observed dispatch had a skipped detector and a valid producer.
-function dispatchesShards(expression, { detector, producer, cancelled = false }) {
+function dispatchesShards(expression, { detector, producer, cancelled = false,
+  event = 'workflow_dispatch', ref = 'refs/heads/main' }) {
   const text = (expression ?? 'true').trim().replace(/^\$\{\{\s*|\s*\}\}$/gu, '');
   if (!/\b(?:always|cancelled|failure|success)\s*\(/u.test(text)
       && (detector !== 'success' || producer !== 'success' || cancelled)) return false;
   return new Script(text.replaceAll('needs.coverage-build.result', 'producer'))
-    .runInNewContext({ producer, cancelled: () => cancelled }, { timeout: 100 }) === true;
+    .runInNewContext({ producer, cancelled: () => cancelled,
+      github: {event_name: event, ref} }, { timeout: 100 }) === true;
 }
 
 test('manual native coverage runs after a valid producer despite its skipped detector ancestor', () => {
@@ -32,6 +34,8 @@ test('manual native coverage runs after a valid producer despite its skipped det
   }
   assert.equal(dispatchesShards(jobs['coverage-shard'].if, { ...observed, cancelled: true }), false);
   assert.equal(dispatchesShards(jobs['coverage-shard'].if, { detector: 'success', producer: 'success' }), true);
+  assert.equal(dispatchesShards(jobs['coverage-shard'].if, {...observed, event:'pull_request'}), false);
+  assert.equal(dispatchesShards(jobs['coverage-shard'].if, {...observed, ref:'refs/heads/feature'}), false);
 });
 
 test('the whole instrumented producer fits thirty minutes without an exception', () => {
