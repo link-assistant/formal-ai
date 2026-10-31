@@ -624,6 +624,14 @@ qualification; complete production delivery still requires all release consumers
   complete objects as well as fixture digests; matching hashes alone do not
   establish consistency of the program representation.
 
+- **CI-FAST-18:** Derive the conservative PR timeout maximum and selected workflow
+  from current definitions, retaining the existing ceiling and fail-closed checks.
+  Do not maintain a synchronized measurement counter. Resolve npm aliases to
+  their actual publisher for currency checks and preserve alias syntax during
+  updates; local packages have no registry currency, while their declared
+  registry dependencies remain checked. Capture observed failures in shared
+  fast JavaScript and native gate fixtures.
+
 ## Standing Doctrine: Readable Recursive Source and Comment Meta-Language (2026-10-18)
 
 Authority: the owner's 2026-10-18 instructions while delivering PR #1234. These requirements strengthen R381, R394, R480–R483, R993 and R1188-U3. They supersede signature-only or histogram-based acceptance of a full source representation. Historical results remain evidence for their original narrower behavior. All related implementation stays in the same delivery pull request.

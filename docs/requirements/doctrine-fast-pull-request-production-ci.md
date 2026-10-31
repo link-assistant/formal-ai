@@ -131,3 +131,11 @@ qualification; complete production delivery still requires all release consumers
   assertions and unchanged native-source hashes. Fast PR checks must compare the
   complete objects as well as fixture digests; matching hashes alone do not
   establish consistency of the program representation.
+
+- **CI-FAST-18:** Derive the conservative PR timeout maximum and selected workflow
+  from current definitions, retaining the existing ceiling and fail-closed checks.
+  Do not maintain a synchronized measurement counter. Resolve npm aliases to
+  their actual publisher for currency checks and preserve alias syntax during
+  updates; local packages have no registry currency, while their declared
+  registry dependencies remain checked. Capture observed failures in shared
+  fast JavaScript and native gate fixtures.

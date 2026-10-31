@@ -513,3 +513,68 @@ fn uses_pins_decode_quoted_scalars_and_preserve_comment_boundaries() {
         [] as [(String, String, usize); 0]
     );
 }
+
+#[test]
+fn npm_aliases_and_local_sources_share_the_javascript_identity_vectors() {
+    let cases: serde_json::Value = serde_json::from_str(include_str!(
+        "../data/benchmarks/npm-registry-identities.json"
+    ))
+    .unwrap();
+    for case in cases["cases"].as_array().unwrap() {
+        let actual = npm_registry_identity(
+            case["name"].as_str().unwrap(),
+            case["declared"].as_str().unwrap(),
+        )
+        .map(|(name, requirement)| serde_json::json!({"name":name,"requirement":requirement}))
+        .unwrap_or(serde_json::Value::Null);
+        assert_eq!(actual, case["expected"]);
+    }
+}
+
+#[test]
+fn npm_updates_preserve_the_actual_alias_and_range_operator() {
+    let source = "{\n  \"alias\": \"npm:@scope/actual@^1.0.0\"\n}\n";
+    let dependency = Dependency {
+        ecosystem: Ecosystem::Npm,
+        name: "@scope/actual".to_string(),
+        declared: Some("npm:@scope/actual@^1.0.0".to_string()),
+        resolved: "1.0.0".to_string(),
+        path: "package.json".into(),
+        line: 2,
+        blocked: None,
+    };
+    assert_eq!(
+        rewrite_npm_line(source, &dependency, "2.0.0"),
+        source.replace("@^1.0.0", "@^2.0.0")
+    );
+}
+
+#[test]
+fn local_packages_still_check_their_aliased_registry_dependencies() {
+    let root = std::env::temp_dir().join(format!("npm-alias-collection-{}", std::process::id()));
+    let local = root.join("packages/compat");
+    fs::create_dir_all(&local).unwrap();
+    for (path, value) in [
+        (
+            root.join("package.json"),
+            serde_json::json!({"dependencies":{"minimatch":"file:packages/compat"}}),
+        ),
+        (
+            local.join("package.json"),
+            serde_json::json!({"dependencies":{"minimatch-modern":"npm:minimatch@^11.0.1"}}),
+        ),
+        (
+            local.join("package-lock.json"),
+            serde_json::json!({"packages":{"node_modules/minimatch-modern":{"version":"11.0.3"}}}),
+        ),
+    ] {
+        fs::write(path, serde_json::to_string_pretty(&value).unwrap()).unwrap();
+    }
+    let mut dependencies = Vec::new();
+    collect_npm(&root, &mut dependencies);
+    let _ = fs::remove_dir_all(&root);
+    assert_eq!(dependencies.len(), 1);
+    assert_eq!(dependencies[0].name, "minimatch");
+    assert_eq!(dependencies[0].resolved, "11.0.3");
+    assert_eq!(dependencies[0].path, local.join("package.json"));
+}

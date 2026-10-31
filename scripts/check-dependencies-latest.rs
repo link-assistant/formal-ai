@@ -317,13 +317,16 @@ fn collect_npm(repo: &Path, dependencies: &mut Vec<Dependency>) {
         };
         let lock_versions = npm_lock_versions(&manifest_path);
         for (name, declared, line, blocked) in parse_package_json(&text) {
+            let Some((registry_name, requirement)) = npm_registry_identity(&name, &declared) else {
+                continue;
+            };
             let resolved = lock_versions
                 .get(&name)
                 .cloned()
-                .unwrap_or_else(|| base_version(&declared).to_string());
+                .unwrap_or_else(|| base_version(requirement).to_string());
             dependencies.push(Dependency {
                 ecosystem: Ecosystem::Npm,
-                name,
+                name: registry_name.to_string(),
                 declared: Some(declared),
                 resolved,
                 path: manifest_path.clone(),
@@ -602,14 +605,20 @@ fn rewrite_cargo_line(text: &str, dependency: &Dependency, latest: &str) -> Stri
 fn rewrite_npm_line(text: &str, dependency: &Dependency, latest: &str) -> String {
     rewrite_line_at(text, dependency.line, |line| {
         let declared = dependency.declared.as_deref()?;
+        let (name, requirement) = npm_registry_identity(&dependency.name, declared)?;
+        let alias = if declared.starts_with("npm:") {
+            format!("npm:{name}@")
+        } else {
+            String::new()
+        };
         let prefix = ['^', '~', '>', '=']
             .iter()
-            .find(|c| declared.starts_with(**c))
+            .find(|c| requirement.starts_with(**c))
             .map(std::string::ToString::to_string)
             .unwrap_or_default();
         Some(line.replacen(
             &format!("\"{declared}\""),
-            &format!("\"{prefix}{latest}\""),
+            &format!("\"{alias}{prefix}{latest}\""),
             1,
         ))
     })

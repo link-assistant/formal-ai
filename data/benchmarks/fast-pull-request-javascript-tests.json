@@ -78,6 +78,7 @@
     "rust/tests/web/release-pending-pipeline.test.mjs",
     "rust/tests/web/external-benchmark-admission.test.mjs",
     "rust/tests/web/locked-fixture-installation.test.mjs",
-    "rust/tests/web/rust-specification-unicode-identifiers.test.mjs"
+    "rust/tests/web/rust-specification-unicode-identifiers.test.mjs",
+    "rust/tests/web/ci-budget-and-registry-identities.test.mjs"
   ]
 }

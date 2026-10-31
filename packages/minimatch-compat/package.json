@@ -1,6 +1,6 @@
 {
   "name": "@formal-ai/minimatch-compat",
-  "version": "11.0.1",
+  "version": "11.0.3",
   "private": true,
   "description": "Callable CommonJS facade, versioned with its patched upstream minimatch implementation",
   "type": "module",
@@ -13,6 +13,6 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "minimatch-modern": "npm:minimatch@11.0.1"
+    "minimatch-modern": "npm:minimatch@11.0.3"
   }
 }
