@@ -1,7 +1,7 @@
 {
   "schema": "retained-ci-job-payloads/v1",
   "source": "b46e2b0a486895e821ee73f2289d0a7ceef5a512",
-  "scope": "Retained suites and optional qualifications. PR build restoration is disabled; duplicate package compilation removed explicitly.",
+  "scope": "Retained suites and optional qualifications. Main-only builds; redundant compilation removed; native fixture installation keeps frozen flags under bounded supervision.",
   "jobs": [
     {
       "file": "release.yml",
@@ -16,7 +16,7 @@
     {
       "file": "release.yml",
       "id": "test",
-      "payloadSha256": "41e1ed0946d9a50a60789081c4415d2539e0c99a938795ff61a6808bc46cb128"
+      "payloadSha256": "8d21fe8e0b83a5d69925e0d68fddb4940d294731324e00f773ce3299668f9fcc"
     },
     {
       "file": "release.yml",

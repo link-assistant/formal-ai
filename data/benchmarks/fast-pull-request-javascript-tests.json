@@ -75,6 +75,8 @@
     "rust/tests/web/staged-release-activation-transition.test.mjs",
     "rust/tests/web/project-motto.test.mjs",
     "rust/tests/web/patched-matcher-compatibility.test.mjs",
-    "rust/tests/web/release-pending-pipeline.test.mjs"
+    "rust/tests/web/release-pending-pipeline.test.mjs",
+    "rust/tests/web/external-benchmark-admission.test.mjs",
+    "rust/tests/web/locked-fixture-installation.test.mjs"
   ]
 }

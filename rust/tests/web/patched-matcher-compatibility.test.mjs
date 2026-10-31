@@ -35,12 +35,15 @@ test('every lock uses the audited implementation and preserves legacy API resolu
   const upstream = JSON.parse(readFileSync(require.resolve('minimatch-modern/package.json')));
   assert.equal(upstream.name, 'minimatch');
   assert.equal(upstream.version, '11.0.1');
+  const facade = JSON.parse(readFileSync('packages/minimatch-compat/package.json'));
+  assert.equal(facade.version, upstream.version, 'facade version must track its actual matcher');
   for (const folder of ['desktop','vscode','rust/tests/e2e']) {
     const manifest = JSON.parse(readFileSync(folder+'/package.json'));
     const lock = JSON.parse(readFileSync(folder+'/package-lock.json'));
     assert.equal(manifest.overrides.minimatch, '$minimatch');
     assert.equal(manifest.overrides['glob@>=9'], '^14.0.2');
     assert.equal(lock.packages['node_modules/minimatch'].name, '@formal-ai/minimatch-compat');
+    assert.equal(lock.packages['node_modules/minimatch'].version, upstream.version);
     assert.equal(lock.packages['node_modules/minimatch-modern'].version, upstream.version);
     for (const [path, entry] of Object.entries(lock.packages)) {
       if (path.endsWith('/minimatch')) assert.equal(entry.name, '@formal-ai/minimatch-compat');
