@@ -102,6 +102,7 @@
     "rust/tests/web/source-import-edit.test.mjs",
     "rust/tests/web/source-maintenance.test.mjs",
     "rust/tests/web/owned-destination-tail.test.mjs",
-    "rust/tests/web/workspace-verification-missing-tool.test.mjs"
+    "rust/tests/web/workspace-verification-missing-tool.test.mjs",
+    "rust/tests/web/r1085-16-ci-gate-justifications.test.mjs"
   ]
 }

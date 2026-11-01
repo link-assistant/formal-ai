@@ -7,4 +7,4 @@ ci_gate run_clippy
   stage rust
   description "Compiler and bug/performance lints are fatal; full style linting is opt-in while recorded debt is repaired."
   run "bash scripts/ci-clippy-profile.sh"
-  justification "Release-first policy: keep compiler warnings and correctness/suspicious/performance categories fatal. Preserve full original style checks with FORMAL_AI_STRICT_STYLE_LINTS=1; debt and restoration criteria are recorded in docs/case-studies/pull-request-1502/main-follow-up.md."
+  justification "PR #1503 release-first policy: keep compiler warnings and correctness/suspicious/performance categories fatal. Preserve full original style checks with FORMAL_AI_STRICT_STYLE_LINTS=1; debt and restoration criteria are recorded in docs/case-studies/pull-request-1502/main-follow-up.md."
