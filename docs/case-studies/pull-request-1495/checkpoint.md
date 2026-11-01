@@ -62,3 +62,22 @@ Formal AI JavaScript delivery agent and a CI observer. Do not start another
 production translation is [#1500](https://github.com/link-assistant/formal-ai/issues/1500)
 and belongs at the very end; supported shared kernels and paired behavior remain
 required now.
+
+## First source-maintenance contribution
+
+The [constant-rename record](formal-ai-constant-rename.json) captures an actual
+maintained JavaScript Formal AI task on its own production source. It read the
+file, proposed and executed a whole-token rename, and requested a file hash.
+An external oracle verified the two changed identifier occurrences, unchanged
+residual bytes and valid JavaScript syntax. No final patch or engine repair was
+supplied for this attempt. The first attempt was denied by an overly narrow
+local command allowlist; that failed execution remains recorded, and the retry
+used the unchanged task, preimage and oracle with the solver's command approved.
+
+This is a naming-maintenance contribution, not a genuine logic repair or a
+general coding success rate. Its useful net addition is smaller than the task
+input, an expected outcome for renaming; no output amplification is claimed.
+The other CI binding renames and native controller repair remain separately
+identified reviewer work. Generated kernel code now lives under the existing
+agentic module, preserving the governed root source content without changing
+its recorded witness.

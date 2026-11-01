@@ -21,6 +21,7 @@ pub mod coding_research_observation;
 pub(crate) mod command_reroute;
 mod comparison;
 pub mod comparison_boundary;
+pub mod comparison_boundary_generated;
 pub mod compound_task;
 mod contents_source;
 mod conversation_recall;

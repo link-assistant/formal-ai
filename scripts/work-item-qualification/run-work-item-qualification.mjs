@@ -99,6 +99,7 @@ try{
   fs.writeFileSync(transport+'/policy.json',JSON.stringify(policy));
   const bin=transport+'/bin';fs.mkdirSync(bin,{mode:0o755});
   const client=fs.readFileSync(new URL('./transport-client.mjs',import.meta.url));
+  fs.copyFileSync(new URL('./push-policy.mjs',import.meta.url),bin+'/push-policy.mjs');
   fs.writeFileSync(bin+'/client.mjs',client,{mode:0o755});fs.symlinkSync('client.mjs',bin+'/gh');fs.symlinkSync('client.mjs',bin+'/git');
   const hive=path.join(root,'.hive-mind');
   assert.equal((await command('git',['-C',hive,'rev-parse','HEAD'])).stdout.toString().trim(),selection.hiveSource);

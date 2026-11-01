@@ -83,6 +83,7 @@
     "rust/tests/web/work-item-hosted-effects.test.mjs",
     "rust/tests/web/comparison-boundary-transform.test.mjs",
     "rust/tests/web/source-documentation-controller.test.mjs",
-    "rust/tests/web/work-item-boundary-route.test.mjs"
+    "rust/tests/web/work-item-boundary-route.test.mjs",
+    "rust/tests/web/coding-research-namespace.test.mjs"
   ]
 }

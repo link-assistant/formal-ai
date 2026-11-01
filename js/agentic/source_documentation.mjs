@@ -63,15 +63,15 @@ export function deriveSourceDocumentation(task,sourcePath,source,guide,template)
   const suffix='\n\n'+paragraph+'\n';
   return {key,value,paragraph,sourceIdentity:sha256Hex(source),content:guide.includes(paragraph)?guide:guide.replace(/\n?$/u,'')+suffix};
 }
-const MAX_SOURCE_BYTES=262144;
-function argsOf(attempt){try{return JSON.parse(attempt.arguments);}catch{return null;}}
-function alias(args,names){
-  if(!args||typeof args!=='object'||Array.isArray(args))return null;
-  const values=names.filter(name=>Object.hasOwn(args,name)).map(name=>args[name]);
+const MAXIMUM_SOURCE_BYTES=262144;
+function argumentsOf(attempt){try{return JSON.parse(attempt.arguments);}catch{return null;}}
+function alias(argumentsValue,names){
+  if(!argumentsValue||typeof argumentsValue!=='object'||Array.isArray(argumentsValue))return null;
+  const values=names.filter(name=>Object.hasOwn(argumentsValue,name)).map(name=>argumentsValue[name]);
   return values.length>0&&values.every(value=>typeof value==='string'&&value===values[0])?values[0]:null;
 }
-function pathOf(attempt){return alias(argsOf(attempt),['filePath','file_path','path']);}
-function complete(attempt){const value=attempt?.source_read;return attempt?.succeeded===true&&value?.error===null&&value.complete===true&&typeof value.source==='string'&&new TextEncoder().encode(value.source).length<=MAX_SOURCE_BYTES?value.source:null;}
+function pathOf(attempt){return alias(argumentsOf(attempt),['filePath','file_path','path']);}
+function complete(attempt){const value=attempt?.source_read;return attempt?.succeeded===true&&value?.error===null&&value.complete===true&&typeof value.source==='string'&&new TextEncoder().encode(value.source).length<=MAXIMUM_SOURCE_BYTES?value.source:null;}
 export function planSourceDocumentationStep(task,messages,tools,workItem=null) {
   const policy=grammar();if(!policy)return null;
   const paths=workItemEvidencePaths(task),sources=paths.filter(path=>path.endsWith('.json')),guides=paths.filter(path=>path.endsWith('.md'));
@@ -105,8 +105,8 @@ export function planSourceDocumentationStep(task,messages,tools,workItem=null) {
     if(originalSource===null||originalGuide===null)return finish('EditPreconditionObservationMissing',true);
     const expected=deriveSourceDocumentation(task,sourcePath,originalSource,originalGuide,policy.template);
     if(expected.gap)return finish(expected.gap,true);
-    const args=argsOf(latest.attempt);
-    const old=alias(args,['oldString','old_string','old_str','old']),next=alias(args,['newString','new_string','new_str','new']);
+    const argumentsValue=argumentsOf(latest.attempt);
+    const old=alias(argumentsValue,['oldString','old_string','old_str','old']),next=alias(argumentsValue,['newString','new_string','new_str','new']);
     state.binding={key:expected.key,value:expected.value,sourceIdentity:expected.sourceIdentity};
     state.candidateEdits.push({path:guidePath,preimageIdentity:sha256Hex(originalGuide),postimageIdentity:sha256Hex(expected.content)});
     if(old!==originalGuide||next!==expected.content||next===old)return finish('UnrelatedEditCandidate',true);

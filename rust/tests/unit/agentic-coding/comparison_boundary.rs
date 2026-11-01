@@ -4,7 +4,7 @@ use formal_ai::agentic_coding::comparison_boundary::{
     BoundaryDefinition, native_comparison_boundary_candidate,
     native_comparison_boundary_regression, select_comparison_boundary_definition,
 };
-use formal_ai::comparison_boundary_generated::{
+use formal_ai::agentic_coding::comparison_boundary_generated::{
     comparison_boundary_role_kernel, comparison_boundary_witness_kernel,
 };
 use formal_ai::readable_source::{owned_source_links, source_to_links};

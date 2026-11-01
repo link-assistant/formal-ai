@@ -77,8 +77,8 @@ fn documentation_authority(
         .then_some("DocumentationActionUnowned")
 }
 
-fn argument_alias(args: &Value, names: &[&str]) -> Option<String> {
-    let object = args.as_object()?;
+fn argument_alias(argument_values: &Value, names: &[&str]) -> Option<String> {
+    let object = argument_values.as_object()?;
     let values: Vec<_> = names.iter().filter_map(|name| object.get(*name)).collect();
     let first = values.first()?.as_str()?;
     values
@@ -87,8 +87,8 @@ fn argument_alias(args: &Value, names: &[&str]) -> Option<String> {
         .then(|| first.to_owned())
 }
 fn attempt_path(attempt: &ToolAttempt) -> Option<String> {
-    let args: Value = serde_json::from_str(attempt.arguments.as_deref()?).ok()?;
-    argument_alias(&args, &["filePath", "file_path", "path"])
+    let argument_values: Value = serde_json::from_str(attempt.arguments.as_deref()?).ok()?;
+    argument_alias(&argument_values, &["filePath", "file_path", "path"])
 }
 fn complete(attempt: &ToolAttempt) -> Option<&str> {
     let observed = attempt.source_observation()?;
@@ -332,9 +332,15 @@ pub(super) fn plan_source_documentation_step(
         if let Some(gap) = expected.get("gap").and_then(Value::as_str) {
             return Some(finish(&state, gap, true, result));
         }
-        let args: Value = serde_json::from_str(edit.arguments.as_deref()?).ok()?;
-        let old = argument_alias(&args, &["oldString", "old_string", "old_str", "old"]);
-        let next = argument_alias(&args, &["newString", "new_string", "new_str", "new"]);
+        let argument_values: Value = serde_json::from_str(edit.arguments.as_deref()?).ok()?;
+        let old = argument_alias(
+            &argument_values,
+            &["oldString", "old_string", "old_str", "old"],
+        );
+        let next = argument_alias(
+            &argument_values,
+            &["newString", "new_string", "new_str", "new"],
+        );
         state["binding"] = json!({"key":expected["key"],"value":expected["value"],"sourceIdentity":expected["sourceIdentity"]});
         state["candidateEdits"].as_array_mut()?.push(json!({"path":guide_path,"preimageIdentity":sha256_hex(original_guide.as_bytes()),"postimageIdentity":sha256_hex(expected["content"].as_str()?.as_bytes())}));
         if old.as_deref() != Some(original_guide)

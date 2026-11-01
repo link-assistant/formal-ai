@@ -160,17 +160,19 @@ pub(super) fn boundary_work_item_contract(
     if owned.len() == 1 { owned.pop() } else { None }
 }
 
-/// Construct a candidate using current, scanner-qualified source observations.
-/// The registered native operation uses native complete CSTs and generated core.
-pub(super) fn derive_boundary_work_item_candidate(contract: &Value, progress: &Progress) -> Value {
+/// Mirrors `boundaryCandidateObservations`: keep the latest matching read before
+/// the first owned effect. An untyped latest read remains unknown; it cannot
+/// expose an older successful read as the current observation.
+pub(super) fn boundary_candidate_observations<'a>(
+    contract: &Value,
+    progress: &'a Progress,
+) -> std::collections::BTreeMap<String, Option<&'a SourceReadObservation>> {
     let Some(owner) = contract["owner"].as_str() else {
-        return json!({"gap":"BoundaryContractInvalid"});
+        return std::collections::BTreeMap::new();
     };
     let Some(target) = contract["target"].as_str() else {
-        return json!({"gap":"BoundaryContractInvalid"});
+        return std::collections::BTreeMap::new();
     };
-    // Transcript retention supplies the exact preimage before the first owned
-    // target effect. Subsequent physical reads remain verification observations.
     let attempts = progress.research_attempts();
     let first_effect = attempts.iter().position(|attempt| {
         matches!(attempt.capability, Capability::Write | Capability::Edit)
@@ -181,16 +183,40 @@ pub(super) fn derive_boundary_work_item_candidate(contract: &Value, progress: &P
                 .is_some_and(|arguments| bound_path(&arguments, target))
     });
     let before_attempts = &attempts[..first_effect.unwrap_or(attempts.len())];
-    let observed = |path: &str| {
-        before_attempts.iter().rev().find_map(|attempt| {
-            let arguments: Value = serde_json::from_str(attempt.arguments.as_deref()?).ok()?;
-            (attempt.capability == Capability::Read && bound_path(&arguments, path))
-                .then(|| attempt.source_observation())
-                .flatten()
-        })
+    let observed = |path: &str| -> Option<&'a SourceReadObservation> {
+        before_attempts
+            .iter()
+            .rev()
+            .find(|attempt| {
+                attempt.capability == Capability::Read
+                    && attempt
+                        .arguments
+                        .as_deref()
+                        .and_then(|raw| serde_json::from_str::<Value>(raw).ok())
+                        .is_some_and(|arguments| bound_path(&arguments, path))
+            })
+            .and_then(|attempt| attempt.source_observation())
     };
-    let source_observation = observed(owner);
-    let target_observation = observed(target);
+    [
+        (owner.to_owned(), observed(owner)),
+        (target.to_owned(), observed(target)),
+    ]
+    .into_iter()
+    .collect()
+}
+
+/// Construct a candidate using current, scanner-qualified source observations.
+/// The registered native operation uses native complete CSTs and generated core.
+pub(super) fn derive_boundary_work_item_candidate(contract: &Value, progress: &Progress) -> Value {
+    let Some(owner) = contract["owner"].as_str() else {
+        return json!({"gap":"BoundaryContractInvalid"});
+    };
+    let Some(target) = contract["target"].as_str() else {
+        return json!({"gap":"BoundaryContractInvalid"});
+    };
+    let observations = boundary_candidate_observations(contract, progress);
+    let source_observation = observations.get(owner).copied().flatten();
+    let target_observation = observations.get(target).copied().flatten();
     let Some(source) = complete(source_observation) else {
         return json!({"gap":"BoundaryCompleteSourceRequired","missingEvidence":[owner]});
     };

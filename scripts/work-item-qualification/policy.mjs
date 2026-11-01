@@ -5,6 +5,7 @@ export const workItemRoots=[
   'scripts/work-item-qualification/prepare-work-item-qualification.mjs',
   'scripts/work-item-qualification/run-work-item-qualification.mjs',
   'scripts/work-item-qualification/transport-client.mjs',
+  'scripts/work-item-qualification/push-policy.mjs',
   'scripts/work-item-qualification/transport-broker.mjs',
   'scripts/work-item-qualification/independent-oracle.mjs',
   'scripts/work-item-qualification/manifest-claims.mjs',

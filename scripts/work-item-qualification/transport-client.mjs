@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // DRAFT: reviewed transport only. Current Hive/clients and task text are not rewritten.
 import fs from 'node:fs';
+import {ownedPushRequest} from './push-policy.mjs';
 import path from 'node:path';
 import {randomUUID} from 'node:crypto';
 import {spawnSync} from 'node:child_process';
@@ -42,6 +43,7 @@ while(index<args.length){
 }
 const command=args[index];
 if(command==='push'){
+  const requested=ownedPushRequest(args.slice(index+1),policy);
   if(args.some(value=>(/^https:\/\//u.test(value)||/^git@/u.test(value))
     &&value.replace(/\.git$/u,'')!=='https://github.com/'+policy.repository
     &&value.replace(/\.git$/u,'')!=='git@github.com:'+policy.repository))throw Error('foreign push refused');
@@ -49,6 +51,7 @@ if(command==='push'){
   const branch=spawnSync('/usr/bin/git',[...args.slice(0,index),'branch','--show-current'],{encoding:'utf8',timeout:5000});
   const name=branch.stdout?.trim();
   if(!new RegExp('^issue-'+policy.issueNumber+'-[A-Za-z0-9-]+$').test(name??''))throw Error('only owned issue branch may push');
+  if(requested.branch!==null&&requested.branch!=='HEAD'&&requested.branch!==name)throw Error('PushBranchMismatch');
   const bundle='push-'+randomUUID()+'.bundle', file=root+'/bundles/'+bundle;
   const created=spawnSync('/usr/bin/git',[...args.slice(0,index),'bundle','create',file,'refs/heads/'+name],
     {encoding:null,timeout:30000,maxBuffer:1024*1024});

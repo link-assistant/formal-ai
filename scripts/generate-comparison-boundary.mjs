@@ -8,8 +8,8 @@ import {fileURLToPath,pathToFileURL} from 'node:url';
 import {loadResearchCompiler,generateCodingResearchProgram} from './generate-coding-research-program.mjs';
 import {workflowPin} from './translate-js-rust.mjs';
 export const SOURCE='js/agentic/portable/comparison_boundary_kernel.mjs';
-export const PROFILE={sources:[SOURCE],nativeDirectory:'rust/src/comparison_boundary_generated',
-  metaPath:'data/meta/comparison-boundary-program.lino',namespace:'comparison_boundary_generated',
+export const PROFILE={sources:[SOURCE],nativeDirectory:'rust/src/agentic_coding/comparison_boundary_generated',
+  metaPath:'data/meta/comparison-boundary-program.lino',namespace:'agentic_coding::comparison_boundary_generated',
   generatorPath:'scripts/generate-comparison-boundary.mjs',metaRecord:'comparison-boundary-program',
   description:'Finite interval role binding and contract witnesses from canonical portable JavaScript.'};
 export async function generateComparisonBoundary(directory,compilerDirectory,write=false) {

@@ -401,16 +401,17 @@ fn select(document: &Value, definition: &BoundaryDefinition) -> Result<Selection
             path: operator_path,
         });
     }
-    let roles = crate::comparison_boundary_generated::comparison_boundary_role_kernel(
-        pair[0].left.name.clone(),
-        pair[0].right.name.clone(),
-        pair[1].left.name.clone(),
-        pair[1].right.name.clone(),
-        pair[0].operator.clone(),
-        pair[1].operator.clone(),
-        definition.bound.clone(),
-        definition.inclusive,
-    );
+    let roles =
+        crate::agentic_coding::comparison_boundary_generated::comparison_boundary_role_kernel(
+            pair[0].left.name.clone(),
+            pair[0].right.name.clone(),
+            pair[1].left.name.clone(),
+            pair[1].right.name.clone(),
+            pair[0].operator.clone(),
+            pair[1].operator.clone(),
+            definition.bound.clone(),
+            definition.inclusive,
+        );
     if roles.first().map(String::as_str) != Some("selected") {
         return Err(roles
             .get(1)
@@ -617,14 +618,14 @@ pub fn derive_comparison_boundary_regression(
     let mut samples = Vec::new();
     let mut assertions = Vec::new();
     for value in witnesses {
-        let expected = crate::comparison_boundary_generated::comparison_boundary_witness_kernel(
+        let expected = crate::agentic_coding::comparison_boundary_generated::comparison_boundary_witness_kernel(
             value,
             low,
             high,
             lower_inclusive,
             upper_inclusive,
         );
-        let args = observed
+        let argument_values = observed
             .parameters
             .iter()
             .map(|parameter| {
@@ -639,7 +640,7 @@ pub fn derive_comparison_boundary_regression(
                 }
             })
             .collect::<Result<Vec<f64>, String>>()?;
-        if !args.iter().all(|value| value.is_finite()) {
+        if !argument_values.iter().all(|value| value.is_finite()) {
             return Err("BoundaryFiniteWitnessUnavailable".to_owned());
         }
         assertions.push(render(
@@ -647,7 +648,8 @@ pub fn derive_comparison_boundary_regression(
             &[
                 (
                     "arguments",
-                    args.iter()
+                    argument_values
+                        .iter()
                         .map(ToString::to_string)
                         .collect::<Vec<_>>()
                         .join(", "),
@@ -655,7 +657,7 @@ pub fn derive_comparison_boundary_regression(
                 ("expected", expected.to_string()),
             ],
         )?);
-        samples.push(json!({"args":args,"expected":expected}));
+        samples.push(json!({"args":argument_values,"expected":expected}));
     }
     let polarity = forms["polarities"][if definition.inclusive {
         "inclusive"

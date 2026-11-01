@@ -1,3 +1,4 @@
+import {ownedPushRequest} from '../../../scripts/work-item-qualification/push-policy.mjs';
 import {createCommandCapture} from '../../../scripts/work-item-qualification/command-capture.mjs';
 // Focused hosted-effect contracts; actual hosted execution remains separate.
 import test from 'node:test';
@@ -153,4 +154,13 @@ test('full process streams and errors are retained; capture budgets fail explici
   assert.throws(()=>createCommandCapture(directory,{maximumBytes:Infinity}),/InvalidCommandCaptureBounds/u);
   const limited=createCommandCapture(path.join(directory,'limited'),{maximumBytes:1});
   assert.throws(()=>limited({status:0},Buffer.from('雪'),Buffer.alloc(0)),/CommandCaptureBudgetExceeded/u);
+});
+
+test('dry-run and alternate push semantics are refused before any mutation',()=>{
+  const policy={repository:'link-assistant/formal-ai',issueNumber:77};
+  for(const args of [[],['-u','origin','issue-77-change'],['origin','HEAD']])assert.doesNotThrow(()=>ownedPushRequest(args,policy));
+  for(const args of [['--dry-run','origin','HEAD'],['-n','origin','HEAD'],['--delete','origin','issue-77-change'],
+    ['--mirror','origin'],['--all','origin'],['--force','origin','HEAD'],['--force-with-lease','origin','HEAD'],
+    ['origin','HEAD:other'],['origin',':issue-77-change'],['foreign','HEAD'],['origin','issue-78-change']])
+    assert.throws(()=>ownedPushRequest(args,policy),/UnsupportedPush|UnownedPush/u);
 });
