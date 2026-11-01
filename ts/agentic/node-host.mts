@@ -22,6 +22,7 @@ import {workflowPin} from '../../scripts/translate-js-rust.mjs';
 import {readSyntaxRules, sourceToLinks, ownedSourceLinks, writeSourceLinks, verifySourceLinks} from '../meta/readable-source.js';
 import { stableId } from './crate/engine_stable_identifier.mjs';
 import { installHost } from './host.mjs';
+import {observedComparisonBoundaryOperation} from '../server/source-boundary-operation.mjs';
 import { validateRepairProgram } from '../server/repair-program-syntax.mjs';
 import { createNodeSourceSessionHost } from '../server/node-source-session-host.mjs';
 import { sourceQualifiedSeedOwners } from '../../scripts/generate-seed-registry.mjs';
@@ -237,6 +238,7 @@ export async function installNodeHost(worker, options = {}) {
     generatedSeedOwnerDeclarations,
     sourceFetch: nodeSourceFetch,
     validateProgram: validateRepairProgram,
+    comparisonBoundaryOperation: observedComparisonBoundaryOperation,
   };
   const session = createNodeSourceSessionHost(baseHost.readText);
   installHost({ ...baseHost, sourceSession: session, sourceOperation: session.sourceOperation });

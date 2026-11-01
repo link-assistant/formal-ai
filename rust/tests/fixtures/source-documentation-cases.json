@@ -1,0 +1,80 @@
+{
+  "template": "Setup declaration from `{source}`: use `{value}` for {concept}.",
+  "cases": [
+    {
+      "task": "Update the deployment mode documentation",
+      "source": "{\"deploymentMode\":\"isolated\"}",
+      "expectedKey": "deploymentMode"
+    },
+    {
+      "task": "Update the cache enabled documentation",
+      "source": "{\"cacheEnabled\":true}",
+      "expectedKey": "cacheEnabled"
+    },
+    {
+      "task": "Update the cache policy documentation",
+      "source": "{\"cachePolicy\":\"local\",\"cache_policy\":\"shared\"}",
+      "expectedGap": "AmbiguousPropertyBinding"
+    },
+    {
+      "task": "Update the cache policy documentation",
+      "source": "{\"other\":\"local\"}",
+      "expectedGap": "MissingPropertyBinding"
+    },
+    {
+      "task": "Update the cache policy documentation",
+      "source": "{\"cachePolicy\":{\"value\":\"local\"}}",
+      "expectedGap": "MissingPropertyBinding"
+    },
+    {
+      "task": "Update the cache policy documentation",
+      "source": "broken json",
+      "expectedGap": "InvalidSourceJson"
+    },
+    {
+      "task": "Update the cache policy documentation",
+      "source": "{\"cachePolicy\":\"local\\nshared\"}",
+      "expectedGap": "UnsupportedDocumentationValue"
+    },
+    {
+      "task": "雪。 Update the deployment mode documentation",
+      "source": "{\"deploymentMode\":\"工具@版本\"}",
+      "expectedKey": "deploymentMode"
+    },
+    {
+      "task": "Update the deployment mode documentation",
+      "source": "{\"deploymentMode\":\"$&\"}",
+      "expectedKey": "deploymentMode",
+      "expectedParagraph": "Setup declaration from `settings.json`: use `$&` for deployment mode."
+    },
+    {
+      "task": "Update the deployment mode documentation",
+      "source": "{\"deploymentMode\":\"$$\"}",
+      "expectedKey": "deploymentMode",
+      "expectedParagraph": "Setup declaration from `settings.json`: use `$$` for deployment mode."
+    },
+    {
+      "task": "Update the deployment mode documentation",
+      "source": "{\"deploymentMode\":\"$'\"}",
+      "expectedKey": "deploymentMode",
+      "expectedParagraph": "Setup declaration from `settings.json`: use `$'` for deployment mode."
+    },
+    {
+      "task": "Update the deployment mode documentation",
+      "source": "{\"deploymentMode\":\"雪 $& $$ $' 😀\"}",
+      "expectedKey": "deploymentMode",
+      "expectedParagraph": "Setup declaration from `settings.json`: use `雪 $& $$ $' 😀` for deployment mode."
+    },
+    {
+      "task": "Update the deployment mode documentation",
+      "source": "{\"deploymentMode\":\"{source} {concept} {value} $\"}",
+      "expectedKey": "deploymentMode",
+      "expectedParagraph": "Setup declaration from `settings.json`: use `{source} {concept} {value} $` for deployment mode."
+    },
+    {
+      "task": "Update the deployment mode documentation",
+      "source": "{\"deploymentMode\":\"$`\"}",
+      "expectedGap": "UnsupportedDocumentationValue"
+    }
+  ]
+}

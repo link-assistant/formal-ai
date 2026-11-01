@@ -1,3 +1,6 @@
+import {planSourceDocumentationStep} from './source_documentation.mjs';
+import {planWorkItemBoundaryStep} from './work_item_boundary_candidate.mjs';
+import {workItemEvidencePaths} from './work_item_evidence.mjs';
 import {planSourceUnaryConsolidationStep} from './source_unary_consolidation.mjs';
 import {planSemanticSourcePreflight} from './semantic_source_preflight.mjs';
 import {host,hasHost} from './host.mjs';
@@ -307,9 +310,11 @@ function planRequestPreflight(task, messages, toolNames) {
     return { claimed: true, plan: null };
   }
   const prerequisiteGap = pendingReadGap(task);
-  return prerequisiteGap !== null
-    ? { claimed: true, plan: prerequisiteGap }
-    : { claimed: false, plan: null };
+  if (prerequisiteGap !== null) return { claimed: true, plan: prerequisiteGap };
+  const documentation = planSourceDocumentationStep(task, messages, toolNames);
+  if (documentation !== null) return { claimed: true, plan: documentation };
+  const boundary = planWorkItemBoundaryStep(task, messages, toolNames, null, workItemEvidencePaths);
+  return boundary !== null ? { claimed: true, plan: boundary } : { claimed: false, plan: null };
 }
 
 /** Mirrors `fn plan_chat_step_routes` in rust/src/agentic_coding/planner.rs. */

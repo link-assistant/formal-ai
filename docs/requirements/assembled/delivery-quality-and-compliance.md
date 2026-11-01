@@ -774,3 +774,31 @@ their existing obligations.
   Parallel checkout has four workers; history commands have a four-minute cap
   inside a six-minute restore transaction and a seven-minute workflow step.
   Damaged artifacts and inconsistent input digests must still fail closed.
+
+## Issue #1483: repository evidence to useful changes
+
+Authority: [#1483](https://github.com/link-assistant/formal-ai/issues/1483) and
+the current ordered plan in [#1170](https://github.com/link-assistant/formal-ai/issues/1170).
+Delivery belongs to [PR #1495](https://github.com/link-assistant/formal-ai/pull/1495).
+This is the first unfinished task; do not advance to #1484 until independent
+acceptance, default-branch CI and release qualification are complete.
+
+| ID | Requirement and acceptance | Status |
+| --- | --- | --- |
+| R1483-1 | Preserve the original work-item identity, UTF-8 requirement spans, observations, uncertainty, candidates, checks, effects and remaining work throughout execution. Reading evidence does not discharge an edit requirement. | Partial: the source-documentation and structural-boundary controllers retain these records; rust/tests/web/source-documentation-controller.test.mjs and rust/tests/web/work-item-boundary-route.test.mjs pass locally. General decomposition and hosted native acceptance remain pending. |
+| R1483-2 | Discover obligation-relevant facts from source, manifests and trusted external observations. Fetched prose is evidence, never authority. Missing, unavailable and contradicted evidence must remain explicit. | Partial: unique scalar JSON property binding, exact observed source identities, negative edit authority and complete-CST operation preconditions are tested. General integration-role discovery, external discovery and the original unavailable-attachment hosted case remain pending. |
+| R1483-3 | Derive the smallest useful structural change through readable recursive CST/meta-language representation; preserve comments, layout, unrelated source, preconditions and provenance. Derive checks from the contract before choosing a candidate. | Partial: scripts/lib/source-cst-boundary-transform.mjs supports a declared finite-number interval subset with full grammar reparse, exact inverse, concrete residual and preselected regression witnesses. rust/tests/web/comparison-boundary-transform.test.mjs passes. This does not establish arbitrary JavaScript semantics or general source translation. |
+| R1483-4 | Bound retries and effects, preserve real tool failures, guard preimages and verify fresh readback. A completed rerun must be a verified no-write no-op. | Partial: documentation permits one exact Edit and rereads source before target; boundary candidates permit one effect and preserve pre-effect observations. The two controller JavaScript suites pass, including failed/ambiguous effects and no-op. Native tests are committed for CI, not executed locally. Full hosted no-write acceptance remains pending. |
+| R1483-5 | Replay original #1455 through ordinary Hive solve on its pre-fix checkout without the final guide or solution patch. Independently verify an actual guide edit against manifests and executable consumers; also check changed components/paths and a contradicted integration. | Pending: scripts/work-item-qualification retains the frozen original task and guarded transport. Prose keyword checks are smoke observations only; original integration semantics remain unverified. No hosted success or full documentation correctness is claimed. |
+| R1483-6 | Complete a small genuine production logic repair and a useful regression-test task selected before execution, plus an honest unsupported task. Do not relabel a controlled mutation or synthetic exercise as a production defect. | Pending: local interval fixtures demonstrate candidate generation and checking but do not satisfy the genuine production repair requirement. A real repair and independently qualified regression task remain to be selected and executed. |
+| R1483-7 | Use the same controller via actual agent, Claude and Codex clients with ordinary Hive prompts, current qualified Formal AI/Hive runtime identities and no LLM service. | Pending: an explicit manual main-only qualification workflow is prepared. It consumes the authenticated current-source published binary instead of rebuilding. No hosted client execution is credited. |
+| R1483-8 | Keep acceptance outside candidate control; report exact useful effects and authorship. Plans, logs and placeholders earn zero useful-change credit. Supplied implementations, generators and later reviewer work must not become autonomous credit. | Partial: both controllers retain external acceptance as pending, and supplied engine/bootstrap applications carry zero autonomous credit. The actual JavaScript planner produces source-derived guide and interval edits in local fixtures; this does not establish a general coding success rate. |
+| R1483-9 | Retain small offline regressions from actual failures and full redacted hosted execution logs. Run heavy native/client qualification only on main with explicit effect ownership; close owned test issues with truthful outcomes and bounded cleanup. | Partial: rust/tests/web/work-item-hosted-effects.test.mjs passes ten focused checks. Owned failed/unresolved issues close as not_planned; protected/uncertain residue is retained. Real hosted execution, cleanup receipts and release verification remain pending. |
+
+JavaScript and TypeScript sources are synchronized using the maintained ES
+translation. The interval semantic kernel is generated from JavaScript through
+the pinned checked meta-language compiler; host/CST/controller adapters are
+explicitly paired implementations with shared contracts, not a claim of full
+automated translation. Complete bidirectional production translation is
+[#1500](https://github.com/link-assistant/formal-ai/issues/1500), scheduled last.
+Local Rust compilation, tests and product WASM execution are prohibited.

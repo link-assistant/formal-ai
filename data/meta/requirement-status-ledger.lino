@@ -3,7 +3,7 @@ requirement_status_ledger
   source "REQUIREMENTS.md and docs/requirements/*.md"
   verdict_vocabulary "implemented | partial | not-delivered | superseded | withdrawn"
   manual_column "aspirational since 2026-09-30 (issue #1090): not yet confirmed rows carry no debt"
-  requirement_count 1440
+  requirement_count 1449
   implemented_count 1310
   shard "data/meta/requirement-status-ledger/doctrine-readable-recursive-source-and-comment-meta-language-2026-10-18.lino"
   shard "data/meta/requirement-status-ledger/doctrine-standing-doctrine-compiled-logic-interfacing-only-javascript-2026-08-04.lino"
@@ -162,4 +162,5 @@ requirement_status_ledger
   shard "data/meta/requirement-status-ledger/issue-1212-project-motto.lino"
   shard "data/meta/requirement-status-ledger/issue-1213-cryptographic-provenance.lino"
   shard "data/meta/requirement-status-ledger/issue-1220-structured-links-notation-logging.lino"
+  shard "data/meta/requirement-status-ledger/issue-1483-evidence-to-useful-edit.lino"
   shard "data/meta/requirement-status-ledger/preamble-requirements-for-issue-1.lino"

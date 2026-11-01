@@ -1,0 +1,150 @@
+# Main-only controlled work-item qualification; run receipts establish actual outcomes.
+name: Work-item useful-edit hosted qualification
+on:
+  workflow_dispatch:
+    inputs:
+      pull-request:
+        description: Merged same-repository issue 1483 PR
+        required: true
+        type: string
+      real-github-e2e:
+        description: Explicit grant for owned frozen fixture branches and issues
+        type: boolean
+        default: false
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: work-item-1483-main-qualification
+  cancel-in-progress: false
+jobs:
+  admission:
+    if: github.ref == 'refs/heads/main' && inputs.real-github-e2e == true
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    outputs:
+      source: ${{ steps.admit.outputs.source }}
+      hive_source: ${{ steps.admit.outputs.hive_source }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - run: bun install --frozen-lockfile --ignore-scripts
+      - id: admit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          WORK_ITEM_PULL_REQUEST: ${{ inputs.pull-request }}
+          WORK_ITEM_REAL_EFFECTS: ${{ inputs.real-github-e2e }}
+        run: node scripts/work-item-qualification/prepare-work-item-qualification.mjs
+      - name: Extract authenticated current-source runtime without recompilation
+        env:
+          HIVE_PUBLISHED_RUNTIME_FILE: ${{ runner.temp }}/work-item-admission/selection.json
+        run: node scripts/build-hive-original-delivery-image.mjs extract-published-binary
+      - uses: actions/upload-artifact@v7
+        with:
+          name: work-item-current-binary
+          path: rust/target/release/formal-ai
+          retention-days: 1
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v7
+        with:
+          name: work-item-admission
+          path: ${{ steps.admit.outputs.directory }}
+          if-no-files-found: error
+      # Immutable owner precedes effects. Cleanup authenticates this exact
+      # taskMode/workflow, policy roots, task receipts and terminal states.
+      - uses: actions/upload-artifact@v7
+        with:
+          name: hive-real-effect-owner
+          path: ${{ steps.admit.outputs.directory }}/owner.json
+          if-no-files-found: error
+  qualification:
+    name: Actual Hive ${{ matrix.tool }} work-item ${{ matrix.task }}
+    needs: admission
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      actions: read
+    strategy:
+      fail-fast: false
+      matrix:
+        tool: [agent, claude, codex]
+        task: [original-documentation, renamed-components, contradicted-documentation, unsupported]
+    env:
+      E2E_TOOL: ${{ matrix.tool }}
+      WORK_ITEM_TASK: ${{ matrix.task }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.admission.outputs.source }}
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - run: bun install --frozen-lockfile --ignore-scripts
+      - uses: actions/checkout@v7
+        with:
+          repository: link-assistant/hive-mind
+          ref: ${{ needs.admission.outputs.hive_source }}
+          path: .hive-mind
+          persist-credentials: false
+      - run: npm ci --omit=dev --ignore-scripts --no-audit --no-fund
+        working-directory: .hive-mind
+      - uses: actions/download-artifact@v8
+        with:
+          name: work-item-current-binary
+          path: rust/target/release
+      - uses: actions/download-artifact@v8
+        with:
+          name: work-item-admission
+          path: ${{ runner.temp }}/work-item-admission
+      - name: Run ordinary Hive prompts through isolated actual current clients
+        env:
+          GH_TOKEN: ${{ github.token }}
+          WORK_ITEM_SELECTION: ${{ runner.temp }}/work-item-admission/selection.json
+          WORK_ITEM_OWNER: ${{ runner.temp }}/work-item-admission/owner.json
+        run: node scripts/work-item-qualification/run-work-item-qualification.mjs
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: work-item-resource-${{ matrix.tool }}-${{ matrix.task }}
+          path: ${{ runner.temp }}/work-item-${{ matrix.tool }}-${{ matrix.task }}/publish/resource.json
+          if-no-files-found: error
+          retention-days: 90
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: work-item-${{ matrix.tool }}-${{ matrix.task }}
+          path: ${{ runner.temp }}/work-item-${{ matrix.tool }}-${{ matrix.task }}/publish
+          if-no-files-found: error
+          retention-days: 90
+  cleanup:
+    needs: [admission, qualification]
+    if: always() && github.ref == 'refs/heads/main' && needs.admission.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      # Reuse the existing custody-aware cleanup dispatch. The work-item handler
+      # has separate mode/source/resource checks; historical ownership stays intact.
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/request-owned-hive-cleanup.mjs

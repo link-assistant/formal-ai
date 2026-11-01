@@ -51,6 +51,34 @@ fn general_change_step(
         return guarded;
     }
     let progress = Progress::scan(messages);
+    if plan.mode == GeneralPlanMode::RepositoryWorkItem
+        && let Some(objective) = repository_work_item_objective(plan, &progress)
+    {
+        if let Some(step) = super::source_documentation::plan_source_documentation_step(
+            &objective,
+            messages,
+            tool_names,
+            Some(&plan.target),
+            result,
+        ) {
+            return step;
+        }
+        if let Some(step) = super::work_item_boundary_candidate::plan_work_item_boundary_step(
+            &objective,
+            messages,
+            tool_names,
+            Some(&plan.target),
+            |clause| {
+                super::work_item_evidence::work_item_evidence_paths(clause)
+                    .into_iter()
+                    .map(str::to_owned)
+                    .collect()
+            },
+            result,
+        ) {
+            return step;
+        }
+    }
     if let Some(command) = super::prerequisite_recovery::observed_recovery_command(messages)
         && let Some(output) = progress.latest_run_output_for(&command)
         && let Some(recovery) = super::prerequisite_recovery::plan_recovery(

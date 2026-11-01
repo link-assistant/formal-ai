@@ -1,0 +1,12 @@
+source-documentation
+  action update
+  action document
+  action bring
+  preserve preserve
+  preserve keeping
+  template "Setup declaration from `{source}`: use `{value}` for {concept}."
+  prefix please
+  negation not
+  negation never
+  negation without
+  negation "don't"

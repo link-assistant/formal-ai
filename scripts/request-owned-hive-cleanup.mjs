@@ -5,7 +5,7 @@ import {pathToFileURL} from 'node:url';
 import {createEvidenceClient} from './collect-test-replays.mjs';
 import {cleanupWorkflow, effectOwnerArtifact} from './lib/generated-task-cleanup-journal.mjs';
 const repository = 'link-assistant/formal-ai';
-const ownerWorkflow = '.github/workflows/hive-original-delivery.yml';
+const ownerWorkflows = new Set(['.github/workflows/hive-original-delivery.yml', '.github/workflows/work-item-qualification.yml']);
 export function cleanupOwnerInput(run, attempt, head) {
   assert.match(run ?? '', /^[1-9]\d*$/u);
   assert.match(attempt ?? '', /^[1-9]\d*$/u);
@@ -19,7 +19,7 @@ function requireOwnerRun(run, expected) {
   assert.equal(run.head_sha, expected.head_sha);
   assert.equal(run.repository?.full_name, repository);
   assert.equal(run.head_repository?.full_name, repository);
-  assert.equal(run.path?.split('@')[0], ownerWorkflow);
+  assert.ok(ownerWorkflows.has(run.path?.split('@')[0]));
   assert.ok(['workflow_run', 'workflow_dispatch'].includes(run.event));
 }
 export async function waitForCleanupOwner({reader, owner, maximumPolls = 13, intervalMs = 10000,

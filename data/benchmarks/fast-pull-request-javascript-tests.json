@@ -79,6 +79,10 @@
     "rust/tests/web/external-benchmark-admission.test.mjs",
     "rust/tests/web/locked-fixture-installation.test.mjs",
     "rust/tests/web/rust-specification-unicode-identifiers.test.mjs",
-    "rust/tests/web/ci-budget-and-registry-identities.test.mjs"
+    "rust/tests/web/ci-budget-and-registry-identities.test.mjs",
+    "rust/tests/web/work-item-hosted-effects.test.mjs",
+    "rust/tests/web/comparison-boundary-transform.test.mjs",
+    "rust/tests/web/source-documentation-controller.test.mjs",
+    "rust/tests/web/work-item-boundary-route.test.mjs"
   ]
 }

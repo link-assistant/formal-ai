@@ -6,7 +6,7 @@ use crate::protocol::ChatMessage;
 use serde_json::json;
 
 /// Parse bounded explicit source references without granting effect authority.
-fn work_item_evidence_paths(task: &str) -> Vec<&str> {
+pub(super) fn work_item_evidence_paths(task: &str) -> Vec<&str> {
     if task.len() > 32_768 {
         return Vec::new();
     }
