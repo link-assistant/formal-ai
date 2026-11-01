@@ -151,3 +151,45 @@ test('source references preserve native Unicode separator semantics', () => {
   assert.deepEqual(workItemEvidencePaths('Inspect\u0085Cargo.toml.'), ['Cargo.toml']);
   assert.deepEqual(workItemEvidencePaths('Inspect\uFEFFCargo.toml.'), []);
 });
+
+test('quoted documentation examples remain literal edit payloads',async()=>{
+  const owner='tests/request.mjs',before='const note = "before";',after='const note = "Document docs/runtime.md using package.json and js/client.mjs.";';
+  const task='In '+owner+', replace «'+before+'» with «'+after+'». Preserve all other content.';
+  const messages=[{role:'user',content:task}],tools=['read_file','edit_file'];
+  const read=await planChatStep(messages,tools);
+  assert.equal(read.kind,'tool_calls');assert.equal(read.calls.length,1);
+  assert.equal(read.calls[0].tool,'read_file');const args=JSON.parse(read.calls[0].arguments);
+  assert.equal(args.path,owner);
+  observe(messages,'read_file',args,before,{source_read:{path:owner,success:true,complete:true,format:'raw'}});
+  const edit=await planChatStep(messages,tools);
+  assert.equal(edit.kind,'tool_calls');assert.equal(edit.calls.length,1);
+  assert.equal(edit.calls[0].tool,'edit_file');const replacement=JSON.parse(edit.calls[0].arguments);
+  assert.equal(replacement.path,owner);assert.equal(replacement.old_string,before);assert.equal(replacement.new_string,after);
+});
+
+test('captured original issue with invalid evidence terminates without effects',async()=>{
+  const messages=[{role:'user',content:'Implement '+fixture.issue}],tools=['fetch_url','read_file','write_file'];
+  const retrieval=await planChatStep(messages,tools);
+  assert.equal(retrieval.kind,'tool_calls');assert.equal(retrieval.calls.length,1);
+  assert.equal(retrieval.calls[0].tool,'fetch_url');
+  assert.equal(JSON.parse(retrieval.calls[0].arguments).url,fixture.issue);
+  observe(messages,'fetch_url',JSON.parse(retrieval.calls[0].arguments),fixture.title+'\n\n'+fixture.objective);
+  const paths=['rust/Cargo.toml','package.json','js/web-search-component-entry.js','docs/associative-tech-stack.md'];
+  for(const path of paths){
+    const step=await planChatStep(messages,tools);
+    assert.equal(step.kind,'tool_calls');assert.equal(step.calls.length,1);
+    const call=step.calls[0],args=JSON.parse(call.arguments);
+    assert.equal(call.tool,'read_file');assert.equal(args.path,path);
+    assert.equal(args.filePath,path);assert.equal(args.file_path,path);
+    observe(messages,call.tool,args,'observed source\n',{source_read:{path,success:true,complete:true,format:'raw'}});
+  }
+  const result=await planChatStep(messages,tools);
+  assert.equal(result.kind,'final');const state=JSON.parse(result.answer);
+  assert.equal(state.schema,'repository-work-item-controller/v1');
+  assert.equal(state.reason,'UnsupportedManifestDocumentationSource');
+  for(const field of ['authored','verified','complete'])assert.equal(state[field],false);
+  for(const field of ['candidateEdits','checks','effects'])assert.deepEqual(state[field],[]);
+  assert.equal(state.workItem,fixture.issue);assert.deepEqual(state.observations.map(row=>row.path),paths);
+  assert.ok(state.requirements.length>0);assert.ok(state.requirements.every(row=>row.status==='unverified'));
+  for(const row of state.observations){assert.equal(row.complete,true);assert.equal(row.sourceIdentity,createHash('sha256').update('observed source\n').digest('hex'));}
+});

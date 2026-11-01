@@ -349,6 +349,8 @@ function planRequestPreflight(task, messages, toolNames) {
     claimed: true,
     plan: prerequisiteGap
   };
+  // Quoted edit payloads are data; their documentation examples grant no new route.
+  if (composeEditRequest(task) !== null) return {claimed: false, plan: null};
   const boundary = planWorkItemBoundaryStep(task, messages, toolNames, null, workItemEvidencePaths);
   if (boundary !== null) return {
     claimed: true,

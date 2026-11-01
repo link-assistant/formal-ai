@@ -577,6 +577,9 @@ jobs:
           if-no-files-found: error
 
   server-parity-diagnostic:
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-server-parity-diagnostic
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     name: Explicit server parity diagnostic from existing main binary
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.diagnostic-native-run != '' }}
     runs-on: ubuntu-latest
