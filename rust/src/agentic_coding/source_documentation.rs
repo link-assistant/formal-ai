@@ -174,9 +174,10 @@ fn manifest_declaration_request(task: &str) -> bool {
 }
 
 /// Bind one requested concept to a scalar source field; ambiguity remains unresolved.
+// Literal named template slots are replaced below; these are not Rust format strings.
 #[expect(
     clippy::literal_string_with_formatting_args,
-    reason = "Literal named template slots are replaced below; these are not Rust format strings."
+    reason = "literal_template_slots_are_not_format_strings"
 )]
 pub(super) fn derive_source_documentation(
     task: &str,

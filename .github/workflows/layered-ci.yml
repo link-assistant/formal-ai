@@ -589,7 +589,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Validate immutable diagnostic producer and successful build job
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           PRODUCER_RUN: ${{ inputs.diagnostic-native-run }}
           PRODUCER_SOURCE: ${{ inputs.diagnostic-native-source }}
