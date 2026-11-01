@@ -1,0 +1,22 @@
+{
+  "schema": "file-command-cases/v1",
+  "cases": [
+    {"task":"print list of files in current directory","operation":"listing","arguments":["ls"]},
+    {"task":"print list of files in corrent directory","operation":"listing","arguments":["ls"]},
+    {"task":"delete all files","operation":"unsupported","reason":"UnsupportedBulkDeletion"},
+    {"task":"search for TODO in all files","operation":"search","arguments":["grep","-rFn","--","TODO","."]},
+    {"task":"how many files are in the current directory","operation":"count","countPath":"."},
+    {"task":"show the first 5 lines of README.md","operation":"head","arguments":["head","-n","5","--","README.md"]},
+    {"task":"ls; rm -rf ~","operation":"unsupported","reason":"CompoundShellInputUnsupported"},
+    {"task":"ls\nrm marker","operation":"unsupported","reason":"CompoundShellInputUnsupported"},
+    {"task":"ls | cat","operation":"unsupported","reason":"CompoundShellInputUnsupported"},
+    {"task":"Display the first 12 lines from \"notes file.txt\".","operation":"head","arguments":["head","-n","12","--","notes file.txt"]},
+    {"task":"Find the-token in src","operation":"search","arguments":["grep","-rFn","--","the-token","src"]},
+    {"task":"count files","operation":"count","countPath":"."},
+    {"task":"count files in fixtures","operation":"count","countPath":"fixtures"},
+    {"task":"show first 0 lines of README.md","operation":"unsupported","reason":"FileCommandLineLimit"},
+    {"task":"show first 3 lines of ../private.txt","operation":"unsupported","reason":"FileCommandPathUnsupported"},
+    {"task":"print list of files in \"corrent directory\"","unclaimed":true},
+    {"task":"Run `node known-script.mjs`.","unclaimed":true}
+  ]
+}

@@ -1,3 +1,4 @@
+import { fileCommandContract } from './file_command_contract.mjs';
 import { planOwnedSourceRepair } from './source_repair.mjs';
 import { planRepositoryDocumentation } from './repository_documentation.mjs';
 import { planSourceDocumentationStep } from './source_documentation.mjs';
@@ -9,7 +10,7 @@ import { host, hasHost } from './host.mjs';
 import { repeatedActionStop } from './repetition_guard.mjs';
 import { EventLog } from './crate/event_log.mjs';
 import { answerDerivationId, recordFor, toLino } from './crate/derivation.mjs';
-import { planSourceMaintenanceStep } from './source_maintenance.mjs';
+import { planSourceMaintenanceStep, ownedSourceMaintenanceRequest } from './source_maintenance.mjs';
 import { planGoalLedger, ownsCompleteEditRequest, instructionViewForRequest, pendingReadGap } from './planner/owned_goals.mjs';
 import { ownedSemanticAuthoringLead } from './crate/literal_authoring_contract.mjs';
 // Deterministic agentic planner: the next tool call or final answer from a
@@ -308,6 +309,23 @@ function stopRepeatedFailure(plan, messages) {
 
 /** Resolve request ownership before incidental routes or prerequisite gaps. */
 function planRequestPreflight(task, messages, toolNames) {
+  const fileCommand = fileCommandContract(task);
+  if (fileCommand !== null && fileCommand.operation !== 'listing'
+    && (fileCommand.operation !== 'search' || capabilityRouter.toolFor(toolNames, Capability.Grep) === null)
+) {
+    const raw = fileCommand.operation === 'count' ? Progress.scan(messages).latestRunOutputFor(fileCommand.command) : null;
+    if (raw !== null) {
+      const status = toolResult.reportedExitCode(raw), output = toolResult.normalizedPayload(raw)?.trim();
+      if (status === 0 && typeof output === 'string' && /^(?:0|[1-9][0-9]{0,3})$/u.test(output) && Number(output) <= 4096)
+        return {claimed:true,plan:resolvedFinalAnswer(output,FinalDisposition.Finding,'file-count-observed')};
+      if (status === 0 || status === null) return {claimed:true,plan:resolvedFinalAnswer(jsonText({schema:'file-command-contract/v1',operation:'count',complete:false,verified:false,
+        reason:status===null?'FileCountStatusUnavailable':'FileCountOutputUnsupported'}),FinalDisposition.Gap,'file-count-observed')};
+    }
+    return {
+    claimed: true,
+    plan: fileCommand.command ? planShellStep(messages, toolNames, fileCommand.command) : resolvedFinalAnswer(jsonText(fileCommand), FinalDisposition.Gap, 'file-command-contract')
+    };
+  }
   // A declared issue objective and continuation/prerequisite guards share the
   // request boundary: surrounding examples never become independent effects.
   const workItem = composeGeneralChangePlan(task);
@@ -333,7 +351,8 @@ function planRequestPreflight(task, messages, toolNames) {
     claimed: true,
     plan: boundary
   };
-  const sourceRepair = planOwnedSourceRepair(task, messages, toolNames);
+  const supportedMaintenance = ownedSourceMaintenanceRequest(task) !== null || functionExpectation.expectationRequest(task) !== null;
+  const sourceRepair = supportedMaintenance ? null : planOwnedSourceRepair(task, messages, toolNames);
   if (sourceRepair !== null) return {
     claimed: true,
     plan: sourceRepair

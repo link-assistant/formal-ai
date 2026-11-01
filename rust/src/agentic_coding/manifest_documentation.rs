@@ -1,5 +1,6 @@
 //! Manual native projection; source only, not verified translation credit.
 use super::source_documentation::source_documentation_policy;
+use super::source_lexical_policy::source_lexical_rule;
 use super::source_manifest_facts::observed_manifest_facts;
 use crate::source_fetch::sha256_hex;
 use serde_json::{Value, json};
@@ -100,7 +101,7 @@ fn owned_blocks(guide: &str, policy: &Value) -> Result<Vec<OwnedBlock>, ()> {
                 return Err(());
             };
             if !owner_pattern.is_match(owner)
-                || owner.contains("--")
+                || source_lexical_rule(owner, "html-comment-forbidden") != Some(false)
                 || owner
                     .split('/')
                     .any(|part| part.is_empty() || part == "." || part == "..")
@@ -194,7 +195,9 @@ pub(super) fn derive_manifest_documentation(
     if selected.len() > 32 {
         return gap("ManifestDocumentationRowLimit");
     }
-    if !safe(source_path) || source_path.contains("--") {
+    if !safe(source_path)
+        || source_lexical_rule(source_path, "html-comment-forbidden") != Some(false)
+    {
         return gap("UnsupportedManifestDocumentationValue");
     }
     let field = |key: &str| policy[key].as_str().ok_or(());

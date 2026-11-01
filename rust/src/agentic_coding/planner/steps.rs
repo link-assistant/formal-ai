@@ -148,6 +148,55 @@ pub(super) fn plan_request_preflight(
     tool_names: &[&str],
     result: &mut Option<FinalResult>,
 ) -> SourceOrOwnedGoalStep {
+    if let Some(contract) =
+        crate::agentic_coding::file_command_contract::file_command_contract(task)
+        && contract["operation"] != "listing"
+        && (contract["operation"] != "search" || tool_for(tool_names, Capability::Grep).is_none())
+    {
+        let plan = if let Some(command) = contract["command"].as_str() {
+            let progress = Progress::scan(messages);
+            if contract["operation"] == "count" {
+                if let Some(raw) = progress.latest_run_output_for(command) {
+                    let status = tool_result::reported_exit_code(raw);
+                    let output =
+                        tool_result::normalized_payload(raw).map(|value| value.trim().to_owned());
+                    let valid = output.as_deref().and_then(|value| {
+                        value
+                            .parse::<usize>()
+                            .ok()
+                            .filter(|count| *count <= 4096 && count.to_string() == value)
+                    });
+                    if status == Some(0) && valid.is_some() {
+                        return SourceOrOwnedGoalStep::Claimed(Some(
+                            crate::agentic_coding::final_result::record(
+                                AgenticPlan::Final(output.expect("ObservedFileCount")),
+                                crate::agentic_coding::final_result::FinalDisposition::Finding,
+                                "file-count-observed",
+                                result,
+                            ),
+                        ));
+                    }
+                    if matches!(status, None | Some(0)) {
+                        let reason = if status.is_none() {
+                            "FileCountStatusUnavailable"
+                        } else {
+                            "FileCountOutputUnsupported"
+                        };
+                        return SourceOrOwnedGoalStep::Claimed(Some(crate::agentic_coding::final_result::record(AgenticPlan::Final(serde_json::json!({"schema":"file-command-contract/v1","operation":"count","complete":false,"verified":false,"reason":reason}).to_string()),crate::agentic_coding::final_result::FinalDisposition::Gap,"file-count-observed",result)));
+                    }
+                }
+            }
+            plan_shell_step(messages, tool_names, command, result)
+        } else {
+            crate::agentic_coding::final_result::record(
+                AgenticPlan::Final(contract.to_string()),
+                crate::agentic_coding::final_result::FinalDisposition::Gap,
+                "file-command-contract",
+                result,
+            )
+        };
+        return SourceOrOwnedGoalStep::Claimed(Some(plan));
+    }
     // Declared issue ownership and continuation/prerequisite guards share the
     // request boundary; surrounding examples cannot become independent effects.
     if let Some(plan) = crate::agentic_coding::general_planner::compose_general_change_plan(task)
@@ -187,9 +236,12 @@ pub(super) fn plan_request_preflight(
     {
         return SourceOrOwnedGoalStep::Claimed(Some(step));
     }
-    if let Some(step) = crate::agentic_coding::source_repair::plan_owned_source_repair(
-        task, messages, tool_names, None, result,
-    ) {
+    if crate::agentic_coding::source_maintenance::owned_source_maintenance_request(task).is_none()
+        && !crate::agentic_coding::function_expectation::has_function_expectation(task)
+        && let Some(step) = crate::agentic_coding::source_repair::plan_owned_source_repair(
+            task, messages, tool_names, None, result,
+        )
+    {
         return SourceOrOwnedGoalStep::Claimed(Some(step));
     }
     if let Some(step) =

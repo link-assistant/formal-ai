@@ -8,6 +8,7 @@ use super::observed_documentation::{
 use super::observed_source_usage::observed_source_usage_operation;
 use super::planner::{AgenticPlan, Capability};
 use super::source_documentation::{documentation_authority, source_documentation_policy};
+use super::source_lexical_policy::source_lexical_rule;
 use super::source_manifest_facts::observed_cargo_source_directories;
 use super::work_item_evidence::work_item_evidence_paths;
 use super::work_item_file_io::{
@@ -94,9 +95,9 @@ fn caption_safe(value: &str) -> bool {
         .is_match(value)
 }
 fn snippet(value: &Value) -> Option<&str> {
-    value
-        .as_str()
-        .filter(|source| source.len() <= 512 && !source.contains("```"))
+    value.as_str().filter(|source| {
+        source.len() <= 512 && source_lexical_rule(source, "source-fence-forbidden") == Some(false)
+    })
 }
 fn syntax_paragraph(owner: &str, usage: &Value, policy: &Value) -> Option<String> {
     let forms = policy.get("sourceUsage")?;
@@ -484,6 +485,7 @@ fn repository_discovery_preflight(
         return discovery;
     }
     let mut candidates: BTreeMap<String, Consumer> = BTreeMap::new();
+    let mut incomplete_search = false;
     for (directory, identifiers) in &planned_queries {
         let Some(observed) = frozen.search_for(directory, identifiers) else {
             if effect.is_some() {
@@ -509,6 +511,7 @@ fn repository_discovery_preflight(
             || frozen.root.as_deref() != Some(observed.root.as_str())
             || after.is_none()
         {
+            incomplete_search = true;
             discovery.note(format!("consumer-search-incomplete:{directory}"));
             continue;
         }
@@ -534,13 +537,7 @@ fn repository_discovery_preflight(
             }
         }
     }
-    if discovery.information["gaps"]
-        .as_array()
-        .into_iter()
-        .flatten()
-        .filter_map(Value::as_str)
-        .any(|reason| reason.starts_with("consumer-search-incomplete:"))
-    {
+    if incomplete_search {
         discovery.information["state"] = json!("incomplete");
         return discovery;
     }

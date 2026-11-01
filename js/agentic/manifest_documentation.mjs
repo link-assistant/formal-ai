@@ -1,3 +1,4 @@
+import { sourceLexicalRule } from './source_lexical_policy.mjs';
 // Manual generic engine bootstrap; no autonomous artifact-authoring credit.
 import { observedManifestFacts } from './source_manifest_facts.mjs';
 import { sha256Hex } from './crate/source_fetch.mjs';
@@ -52,7 +53,7 @@ function ownedBlocks(guide, policy) {
       if (!line.includes(prefix)) continue;
       if (!line.startsWith(prefix) || !line.endsWith(suffix)) throw Error('InvalidManifestMarkers');
       const owner = line.slice(prefix.length, line.length - suffix.length);
-      if (!/^[A-Za-z0-9_][A-Za-z0-9_./-]*$/u.test(owner) || owner.includes('--') || owner.split('/').some(part => !part || part === '.' || part === '..')) throw Error('InvalidManifestMarkers');
+      if (!/^[A-Za-z0-9_][A-Za-z0-9_./-]*$/u.test(owner) || sourceLexicalRule(owner, 'html-comment-forbidden') !== false || owner.split('/').some(part => !part || part === '.' || part === '..')) throw Error('InvalidManifestMarkers');
       if (kind === 0) {
         if (pending || owners.has(owner)) throw Error('InvalidManifestMarkers');
         pending = {
@@ -89,7 +90,7 @@ export function deriveManifestDocumentation(task, sourcePath, source, guide, for
   const selected = named.length ? named : declarations;
   if (!selected.length) return gap('MissingManifestDeclarations');
   if (selected.length > 32) return gap('ManifestDocumentationRowLimit');
-  if (!safe(sourcePath) || sourcePath.includes('--')) return gap('UnsupportedManifestDocumentationValue');
+  if (!safe(sourcePath) || sourceLexicalRule(sourcePath, 'html-comment-forbidden') !== false) return gap('UnsupportedManifestDocumentationValue');
   let start, end, paragraph;
   try {
     start = fill(policy.manifestStart, {

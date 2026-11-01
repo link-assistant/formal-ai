@@ -92,6 +92,9 @@ fn last_name_offset(chars: &[char], name: &str, end: usize) -> Option<usize> {
 
 /// A bug report that names a module with a probe contract and states an
 /// expectation.
+pub(super) fn has_function_expectation(task: &str) -> bool {
+    expectation_request(task).is_some()
+}
 fn expectation_request(task: &str) -> Option<ExpectationRequest> {
     let lexicon = seed::lexicon();
     if !lexicon.mentions_role(ROLE_BUG_FIX, &crate::engine::normalize_prompt(task)) {

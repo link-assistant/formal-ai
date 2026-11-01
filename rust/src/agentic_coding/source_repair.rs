@@ -4,6 +4,7 @@ use super::planner::{AgenticPlan, Capability};
 use super::shell_command_policy::sentences;
 use super::source_dictionary_binding::derive_own_key_dictionary_repair;
 use super::source_documentation::concept_words;
+use super::source_import_binding::{derive_named_import_edit, source_import_contract};
 use super::work_item_file_io::FileIoAttempt;
 use super::work_item_file_io::{
     FileIoPlan, WorkItemFileProgress, file_io_effect_step, file_io_pending_step, file_io_read_step,
@@ -16,6 +17,9 @@ use crate::source_fetch::sha256_hex;
 use serde_json::{Value, json};
 const POLICY: &str = include_str!("../../embedded/data/meta/owned-source-repair.lino");
 pub(super) fn source_repair_contract(task: &str) -> Option<Value> {
+    if let Some(contract) = source_import_contract(task) {
+        return Some(contract);
+    }
     if task.len() > 262_144 || quote_fault(task).is_some() {
         return None;
     }
@@ -220,11 +224,19 @@ pub(super) fn plan_owned_source_repair(
     };
     let prior = reads(effect.map_or(attempts.len(), |(index, _)| index), None);
     if prior.is_empty() {
-        return Some(io(
-            file_io_read_step(messages, tools, owner, task),
-            &state,
-            result,
-        ));
+        let planned = file_io_read_step(messages, tools, owner, task);
+        if contract["operation"].is_null()
+            && super::file_read::file_read_task_for(task).is_none()
+            && !matches!(&planned, FileIoPlan::Gap(reason) if reason == "ReadPolicyRefused")
+        {
+            return Some(finish(
+                &state,
+                "SourceRepairOperatorUnavailable",
+                false,
+                result,
+            ));
+        }
+        return Some(io(planned, &state, result));
     }
     let original = prior.iter().find_map(|(_, attempt)| complete(attempt));
     let latest = prior.last().and_then(|(_, attempt)| complete(attempt));
@@ -249,13 +261,43 @@ pub(super) fn plan_owned_source_repair(
             result,
         ));
     }
-    let derived = match derive_own_key_dictionary_repair(owner, original) {
+    let derived = match if contract["operation"] == "add-named-import" {
+        derive_named_import_edit(
+            owner,
+            original,
+            contract["module"].as_str().unwrap_or_default(),
+            contract["binding"].as_str().unwrap_or_default(),
+        )
+    } else {
+        derive_own_key_dictionary_repair(owner, original)
+    } {
         Ok(value) => value,
         Err(reason) => return Some(finish(&state, &reason, effect.is_some(), result)),
     };
     let candidate = &derived["candidate"];
     let next = candidate["source"].as_str();
-    if derived["schema"] != "observed-own-key-dictionary-repair/v1"
+    let expected_schema = if contract["operation"] == "add-named-import" {
+        "observed-source-edit/v1"
+    } else {
+        "observed-own-key-dictionary-repair/v1"
+    };
+    if derived["schema"] == expected_schema
+        && derived["owner"] == owner
+        && candidate["path"] == owner
+        && candidate["changed"] == false
+        && next == Some(original)
+        && candidate["beforeSha256"] == sha256_hex(original.as_bytes())
+        && candidate["afterSha256"] == sha256_hex(original.as_bytes())
+        && effect.is_none()
+        && derived["verification"]["completeConcreteResidual"] == true
+        && derived["verification"]["independentGrammarReparse"] == true
+        && derived["verification"]["exactInverse"] == true
+    {
+        state["binding"] = derived["binding"].clone();
+        state["sourceProof"] = derived["verification"].clone();
+        return Some(finish(&state, "VerifiedNoOp", false, result));
+    }
+    if derived["schema"] != expected_schema
         || derived["owner"] != owner
         || candidate["path"] != owner
         || candidate["beforeSha256"] != sha256_hex(original.as_bytes())
@@ -277,7 +319,7 @@ pub(super) fn plan_owned_source_repair(
     state["candidateEdits"] = json!([{"path":owner,"preimageIdentity":sha256_hex(original.as_bytes()),"postimageIdentity":sha256_hex(next.as_bytes())}]);
     let Some((effect_index, effect)) = effect else {
         return Some(io(
-            file_io_effect_step(messages, tools, owner, original, next),
+            file_io_effect_step(messages, tools, owner, Some(original), next),
             &state,
             result,
         ));

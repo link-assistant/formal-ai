@@ -1,0 +1,31 @@
+{
+  "schema": "source-lexical-rules/v1",
+  "rules": {
+    "relative-module-prefix": {
+      "operator": "prefix",
+      "patterns": [
+        "./",
+        "../"
+      ]
+    },
+    "html-comment-forbidden": {
+      "operator": "contains",
+      "patterns": [
+        "--"
+      ]
+    },
+    "source-fence-forbidden": {
+      "operator": "contains",
+      "patterns": [
+        "```"
+      ]
+    },
+    "toml-multiline-opening": {
+      "operator": "prefix",
+      "patterns": [
+        "\"\"\"",
+        "'''"
+      ]
+    }
+  }
+}

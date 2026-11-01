@@ -2,6 +2,7 @@
 //! from canonical JS -> checked IR -> generated Rust. This CST adapter is
 //! manually paired and qualified with shared behavior vectors. No source regex.
 //! Intended owner: rust/src/agentic_coding/comparison_boundary.rs.
+use super::source_lexical_policy::source_lexical_rule;
 use crate::readable_source::{owned_source_links, source_from_links, source_owner};
 use serde_json::{Value, json};
 
@@ -549,7 +550,7 @@ pub fn derive_comparison_boundary_regression(
     if parse_owned(&source_from_links(document)?, owner)? != *document {
         return Err("BoundaryPreimageReparseMismatch".to_owned());
     }
-    if !(module_specifier.starts_with("./") || module_specifier.starts_with("../"))
+    if source_lexical_rule(module_specifier, "relative-module-prefix") != Some(true)
         || !(module_specifier.ends_with(".mjs") || module_specifier.ends_with(".js"))
         || !module_specifier
             .chars()

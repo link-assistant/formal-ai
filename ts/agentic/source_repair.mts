@@ -1,3 +1,5 @@
+import { sourceImportContract } from './source_import_binding.mjs';
+import { fileReadTaskFor } from './file_read.mjs';
 // Manual generic engine bootstrap after a preserved owned-repair intake failure.
 import { WorkItemFileProgress, fileIoReadStep, fileIoPendingStep, fileIoEffectStep } from './work_item_file_io.mjs';
 import { Capability } from './capability.mjs';
@@ -10,6 +12,8 @@ import { sentences } from './shell_command_policy.mjs';
 import { quotedSegmentSpans, quoteFault } from './crate/normal_markov.mjs';
 import { conceptWords } from './source_documentation.mjs';
 export function sourceRepairContract(task) {
+  const importRequest = sourceImportContract(task);
+  if (importRequest !== null) return importRequest;
   if (typeof task !== 'string' || new TextEncoder().encode(task).length > 262144 || quoteFault(task) !== null) return null;
   let policy;
   try {
@@ -131,6 +135,7 @@ export function planOwnedSourceRepair(task, messages, tools, workItem = null) {
     first = prior.find(item => complete(item.attempt) !== null);
   if (!prior.length) {
     const planned = fileIoReadStep(messages, tools, contract.owner, task);
+    if (contract.operation === null && fileReadTaskFor(task) === null && planned.gap !== 'ReadPolicyRefused') return finish('SourceRepairOperatorUnavailable');
     return planned.step ?? finish(planned.gap);
   }
   const original = complete(first?.attempt),
@@ -148,6 +153,10 @@ export function planOwnedSourceRepair(task, messages, tools, workItem = null) {
     const operation = host().observedSourceRepair;
     if (typeof operation !== 'function') return finish('SourceRepairOperatorUnavailable');
     derived = operation({
+      ...(contract.operation === 'add-named-import' ? {
+        binding: contract.binding,
+        module: contract.module
+      } : {}),
       operation: contract.operation,
       owner: contract.owner,
       source: original
@@ -156,11 +165,21 @@ export function planOwnedSourceRepair(task, messages, tools, workItem = null) {
     return finish(typeof error?.message === 'string' && /^[A-Za-z][A-Za-z0-9]{0,127}$/u.test(error.message) ? error.message : 'SourceRepairOperationFailed', effect !== null);
   }
   const candidate = derived?.candidate;
-  if (derived?.schema !== 'observed-own-key-dictionary-repair/v1' || derived.owner !== contract.owner ||
-         candidate?.path !== contract.owner || candidate.beforeSha256 !== sha256Hex(original) || typeof candidate.source !== 'string' ||
-         candidate.afterSha256 !== sha256Hex(candidate.source) || candidate.source === original || new TextEncoder().encode(candidate.source).length > 262144 ||
-         derived.verification?.completeConcreteResidual !== true || derived.verification?.independentGrammarReparse !== true ||
-         derived.verification?.exactInverse !== true) return finish('SourceRepairCandidateInvalid', true);
+  const expectedSchema = contract.operation === 'add-named-import' ? 'observed-source-edit/v1' : 'observed-own-key-dictionary-repair/v1';
+  if (derived?.schema === expectedSchema && derived.owner === contract.owner && candidate?.path === contract.owner &&
+         candidate.changed === false && candidate.source === original && candidate.beforeSha256 === sha256Hex(original) &&
+         candidate.afterSha256 === sha256Hex(original) && derived.verification?.completeConcreteResidual === true &&
+         derived.verification?.independentGrammarReparse === true && derived.verification?.exactInverse === true &&
+         !effect) {
+    state.binding = derived.binding;
+    state.sourceProof = derived.verification;
+    return finish('VerifiedNoOp');
+  }
+  if (derived?.schema !== expectedSchema || derived.owner !== contract.owner || candidate?.path !== contract.owner ||
+         candidate.beforeSha256 !== sha256Hex(original) || typeof candidate.source !== 'string' || candidate.afterSha256 !== sha256Hex(candidate.source) ||
+         candidate.source === original || new TextEncoder().encode(candidate.source).length > 262144 || derived.verification?.completeConcreteResidual !== true ||
+         derived.verification?.independentGrammarReparse !== true || derived.verification?.exactInverse !== true) return finish('SourceRepairCandidateInvalid',
+         true);
   state.binding = derived.binding;
   state.sourceProof = derived.verification;
   state.knowledge = derived.knowledge;
