@@ -7,6 +7,9 @@ export const admissionPolicy = 'formal-ai-hive-1364-admission/v1';
 export function isGatingCiRun(run, {scheduledWorkflows = []} = {}) {
   if ([deliveryWorkflow, '.github/workflows/hive-original-delivery-finalize.yml',
     '.github/workflows/work-item-qualification.yml'].includes(run.path)) return false;
+  // Issue-specific proposal attempts do not qualify or invalidate published source.
+  if (run.path === '.github/workflows/hive-mind-draft.yml' &&
+    ['issues', 'workflow_dispatch'].includes(run.event)) return false;
   if (run.event === 'schedule' && scheduledWorkflows.includes(run.path)) return false;
   return run.path !== '.github/workflows/learning-cycle.yml' ||
     !['schedule', 'workflow_dispatch'].includes(run.event);
