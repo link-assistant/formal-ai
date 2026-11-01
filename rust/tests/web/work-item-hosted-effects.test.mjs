@@ -10,7 +10,7 @@ import {createHash} from 'node:crypto';
 import {startBroker} from '../../../scripts/work-item-qualification/transport-broker.mjs';
 import {requireWorkItemOwner,cleanupWorkItemReceipt} from '../../../scripts/work-item-qualification/cleanup-contract.mjs';
 import {ownedTaskBody} from '../../../scripts/work-item-qualification/fixtures.mjs';
-import {explicitUnknownTerminal} from '../../../scripts/work-item-qualification/trace-oracle.mjs';
+import {explicitUnknownTerminal,cleanQualificationPass} from '../../../scripts/work-item-qualification/trace-oracle.mjs';
 const digest=value=>createHash('sha256').update(value).digest('hex');
 const hash='a'.repeat(40),head='b'.repeat(40),policyHash='c'.repeat(64),inputHash='d'.repeat(64);
 const owner={schema:'formal-ai-hive-effect-owner/v1',taskMode:'work-item-1483',repository:'link-assistant/formal-ai',
@@ -163,4 +163,16 @@ test('dry-run and alternate push semantics are refused before any mutation',()=>
     ['--mirror','origin'],['--all','origin'],['--force','origin','HEAD'],['--force-with-lease','origin','HEAD'],
     ['origin','HEAD:other'],['origin',':issue-77-change'],['foreign','HEAD'],['origin','issue-78-change']])
     assert.throws(()=>ownedPushRequest(args,policy),/UnsupportedPush|UnownedPush/u);
+});
+
+test('qualification credit requires a clean terminated client, including negative tasks',()=>{
+  const healthy={status:0,cleanupComplete:true,signal:null,timedOut:false,error:null};
+  assert.equal(cleanQualificationPass(healthy),true);
+  assert.equal(cleanQualificationPass({...healthy,status:5}),false);
+  assert.equal(cleanQualificationPass({...healthy,status:5},{unsupported:true}),true);
+  for(const change of [{status:1},{status:null},{signal:'SIGTERM'},{timedOut:true},{error:{code:'EIO'}},{cleanupComplete:false},{cleanupComplete:undefined},{timedOut:undefined}]){
+    assert.equal(cleanQualificationPass({...healthy,...change}),false);
+    assert.equal(cleanQualificationPass({...healthy,...change},{unsupported:true}),false);
+  }
+  assert.equal(cleanQualificationPass(null),false);
 });

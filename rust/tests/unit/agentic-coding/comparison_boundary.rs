@@ -133,3 +133,43 @@ fn native_structural_adapter_refuses_effects_and_ambiguous_shapes() {
         );
     }
 }
+
+#[test]
+fn shared_regression_witnesses_bind_legal_parameter_names_literally() {
+    let vectors: Value = serde_json::from_str(include_str!(
+        "../../fixtures/comparison-boundary/vectors.json"
+    ))
+    .expect("shared comparison vectors");
+    for row in vectors["regressions"].as_array().expect("regressions") {
+        let definition = BoundaryDefinition {
+            declaration: row["definition"]["declaration"]
+                .as_str()
+                .expect("declaration")
+                .to_owned(),
+            bound: row["definition"]["bound"]
+                .as_str()
+                .expect("bound")
+                .to_owned(),
+            inclusive: row["definition"]["inclusive"].as_bool().expect("inclusive"),
+        };
+        let result = native_comparison_boundary_regression(
+            row["source"].as_str().expect("source"),
+            row["owner"].as_str().expect("owner"),
+            &definition,
+            row["moduleSpecifier"].as_str().expect("specifier"),
+        )
+        .expect("legal parameter bindings");
+        let samples = result["samples"].as_array().expect("samples");
+        let expected = row["expectedSamples"].as_array().expect("expected samples");
+        assert_eq!(samples.len(), expected.len());
+        for (actual, expected) in samples.iter().zip(expected) {
+            assert_eq!(actual["expected"], expected["expected"]);
+            let argument_values = actual["args"].as_array().expect("actual args");
+            let expected_arguments = expected["args"].as_array().expect("expected args");
+            assert_eq!(argument_values.len(), expected_arguments.len());
+            for (actual, expected) in argument_values.iter().zip(expected_arguments) {
+                assert_eq!(actual.as_f64(), expected.as_f64());
+            }
+        }
+    }
+}

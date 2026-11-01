@@ -10,7 +10,7 @@ import {createCommandCapture} from './command-capture.mjs';
 import {startBroker} from './transport-broker.mjs';
 import {checkDocumentationCandidate} from './independent-oracle.mjs';
 import {prepareFixture,taskNames,ownedTaskBody} from './fixtures.mjs';
-import {actualTraceOracle} from './trace-oracle.mjs';
+import {actualTraceOracle,cleanQualificationPass} from './trace-oracle.mjs';
 import {workspaceSnapshot} from './workspace-snapshot.mjs';
 const root=process.env.GITHUB_WORKSPACE;
 const shared=async file=>import(pathToFileURL(path.join(root,file)));
@@ -112,6 +112,7 @@ try{
   const imageId=JSON.parse((await command('docker',['image','inspect',image])).stdout)[0].Id;
   assert.match(imageId,/^sha256:[a-f0-9]{64}$/u);
   const binary=path.join(root,'rust/target/release/formal-ai'), binarySha256=sha(fs.readFileSync(binary));
+  assert.equal(binarySha256,selection.publishedRuntime.binarySha256,'downloaded binary must match admitted published bytes');
   const actualVersion=(await command('docker',['run','--rm','--network','none','-v',binary+':/usr/local/bin/formal-ai:ro',
     '--entrypoint','/usr/local/bin/formal-ai',imageId,'--version'])).stdout.toString().trim();
   const imagePath=(await command('docker',['run','--rm','--network','none','--entrypoint','/bin/sh',imageId,'-c','printf "%s" "$PATH"'])).stdout.toString();
@@ -209,10 +210,10 @@ try{
         &&resources.secondPass.trace?.writes===0;
     }
   }
+  const firstPassFinished=cleanQualificationPass(resources.firstPass,{unsupported:task==='unsupported'});
   resources.phase='verified';resources.complete=task==='unsupported'
-    ? resources.independentCheck.complete
-    : resources.firstPass.status===0&&resources.firstPass.cleanupComplete===true
-      &&resources.firstPass.signal===null&&resources.firstPass.timedOut===false&&resources.firstPass.error===null
+    ? firstPassFinished&&resources.independentCheck.complete
+    : firstPassFinished
       &&resources.firstPass.trace!==null
       &&resources.independentCheck.complete&&resources.noopVerified===true;
   resources.taskDisposition=task==='unsupported'?'unresolved':resources.complete?'verified':'unresolved';

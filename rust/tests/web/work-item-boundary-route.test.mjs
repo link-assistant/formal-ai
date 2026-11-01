@@ -12,6 +12,8 @@ import {WorkerHost} from '../../../js/server/worker-host.mjs';
 import {installNodeHost} from '../../../js/agentic/node-host.mjs';
 import {planChatStep} from '../../../js/agentic/planner.mjs';
 import {drive} from '../../../experiments/js_dogfood/drive.mjs';
+import {planWorkItemBoundaryStep} from '../../../js/agentic/work_item_boundary_candidate.mjs';
+import {workItemEvidencePaths} from '../../../js/agentic/work_item_evidence.mjs';
 before(async()=>installNodeHost(new WorkerHost({WebAssembly:{
   compile(){throw Error('LocalProductWasmForbidden');},instantiate(){throw Error('LocalProductWasmForbidden');},
 }})));
@@ -63,4 +65,39 @@ test('an unsupported expression stays an explicit gap with no physical edit',asy
     const report=JSON.parse(result.answer);assert.equal(report.verified,false);assert.equal(report.authored,false);
     assert.equal(report.complete,false);assert.ok(report.remainingWork.length>0);
   }finally{rmSync(directory,{recursive:true,force:true});}
+});
+
+// These deliberately inconsistent protocol fixtures test refusal and custody;
+// they do not claim a real mutation or a held-out production repair.
+function receipt(messages,tool,argumentsValue,content,sourceRead=null) {
+  const id='boundary-guard-'+messages.length;
+  messages.push({role:'assistant',tool_calls:[{id,type:'function',function:{name:tool,arguments:JSON.stringify(argumentsValue)}}]},
+    {role:'tool',tool_call_id:id,name:tool,content,...(sourceRead?{source_read:sourceRead}:{})});
+}
+test('ambiguous reads or edits and unrelated mutations terminate before another effect',()=>{
+  for(const [variant,expected] of [
+    ['ambiguousRead','BoundaryAmbiguousReadPathAttempt'],
+    ['ambiguousEdit','BoundaryUnrelatedOrAmbiguousMutationAttempt'],
+    ['unrelatedEdit','BoundaryUnrelatedOrAmbiguousMutationAttempt'],
+    ['totalBudget','BoundaryEffectAttemptBudgetExceeded'],
+  ]) {
+    const messages=[{role:'user',content:task}];
+    receipt(messages,'read',{filePath:'src/ceiling.mjs'},source,
+      {path:'src/ceiling.mjs',success:true,complete:true,format:'raw'});
+    if(variant==='ambiguousRead')receipt(messages,'read',{filePath:'src/ceiling.mjs',path:'other.mjs'},source,
+      {path:'src/ceiling.mjs',success:true,complete:true,format:'raw'});
+    else {
+      const argumentsValue={filePath:variant==='unrelatedEdit'||variant==='totalBudget'?'other.mjs':'src/ceiling.mjs',
+        oldString:source,newString:source};
+      if(variant==='ambiguousEdit')argumentsValue.path='other.mjs';
+      receipt(messages,'edit',argumentsValue,'File edited successfully');
+      if(variant==='totalBudget')receipt(messages,'edit',{filePath:'src/ceiling.mjs',oldString:source,newString:source},'File edited successfully');
+    }
+    const plan=planWorkItemBoundaryStep(task,messages,['read','edit','write'],null,workItemEvidencePaths);
+    assert.equal(plan.kind,'final',variant);
+    const report=JSON.parse(plan.answer);
+    assert.equal(report.reason,expected,variant);assert.equal(report.authored,false);
+    assert.equal(report.physicalReadbackVerified,false);assert.equal(report.complete,false);
+    assert.equal(report.detail.budget.observed,variant==='totalBudget'?2:variant==='ambiguousRead'?0:1);
+  }
 });

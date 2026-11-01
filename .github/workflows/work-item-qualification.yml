@@ -107,6 +107,8 @@ jobs:
         with:
           name: work-item-current-binary
           path: rust/target/release
+      - name: Restore shipped executable mode after artifact transfer
+        run: chmod 0755 rust/target/release/formal-ai
       - uses: actions/download-artifact@v8
         with:
           name: work-item-admission

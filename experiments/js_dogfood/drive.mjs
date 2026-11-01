@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 import {ownedSourceMaintenanceRequest} from '../../js/agentic/source_maintenance.mjs';
 import {createScopedSourceEditHost} from './scoped-source-edit-host.mjs';
+import {createBoundaryRegressionCreateHost} from './boundary-regression-create-host.mjs';
+import {boundaryWorkItemContract} from '../../js/agentic/work_item_boundary_candidate.mjs';
+import {workItemEvidencePaths} from '../../js/agentic/work_item_evidence.mjs';
 // Drive the JavaScript Formal AI planner (`planChatStep`, the function the JS
 // server runs for /v1/chat/completions in agent mode) through a whole agentic
 // session in-process, executing every planned tool call against a real
@@ -415,6 +418,8 @@ async function driveInternal(planChatStep, dir, prompt, {
     : collection !== null && collection.every(frame => frame !== null)
       && new Set(collection.map(frame => frame.target)).size === collection.length ? collection : [];
   const createContract = createContracts[0] ?? null;
+  const boundaryContract = createContract === null ? boundaryWorkItemContract(prompt,workItemEvidencePaths) : null;
+  const regressionContract = boundaryContract?.mode === 'regression' ? boundaryContract : null;
   const maintenanceContract = ownedSourceMaintenanceRequest(prompt);
   const maintenanceSession = maintenanceContract === null ? null : createScopedSourceEditHost({workspace:dir,ownedPath:maintenanceContract.target,maximumBytes:131072});
   const createdTargets = new Set();
@@ -440,15 +445,20 @@ async function driveInternal(planChatStep, dir, prompt, {
       return Object.freeze({ dev: String(value.dev), ino: String(value.ino), canonicalPath: realpathSync(dir) });
     } catch { return null; }
   }
-  const createWorkspace = createContract === null ? null : workspaceIdentity();
+  const createWorkspace = createContract === null && regressionContract === null ? null : workspaceIdentity();
   const sameWorkspace = () => {
     const current = workspaceIdentity();
     return current !== null && createWorkspace !== null
       && current.dev === createWorkspace.dev && current.ino === createWorkspace.ino
       && current.canonicalPath === createWorkspace.canonicalPath;
   };
-  if (createContract !== null && createWorkspace === null) {
+  if ((createContract !== null || regressionContract !== null) && createWorkspace === null) {
     return { transcript, answer: null, stop: 'unsupported-create-workspace', toolsAdvertised: tools };
+  }
+  let semanticRegression = null;
+  if (regressionContract !== null) {
+    try { semanticRegression = createBoundaryRegressionCreateHost({workspace:createWorkspace.canonicalPath,contract:regressionContract,operation:host().comparisonBoundaryOperation}); }
+    catch { return {transcript,answer:null,stop:'unsupported-semantic-regression-workspace',toolsAdvertised:tools}; }
   }
   const rawCreate = parseWriteContract(prompt);
   const prefix = rawCreate === null ? '' : normalizePrompt(prompt.slice(0, rawCreate.targetSpan.start));
@@ -509,14 +519,14 @@ async function driveInternal(planChatStep, dir, prompt, {
         && keys.every(key => args[key] === args[keys[0]]);
     });
   let researchReadPrerequisite = false;
-  if (createIntent && createContract === null && !readOnlyOperation && !sourceEditOperation) {
+  if (createIntent && createContract === null && semanticRegression === null && !readOnlyOperation && !sourceEditOperation) {
     const owned = planCodingResearchStep(prompt, messages, tools);
     const current = await maintainedResolvedStep(messages, tools);
     researchReadPrerequisite = researchReadOwns(owned) && current?.kind === 'tool_calls'
       && JSON.stringify(owned.calls) === JSON.stringify(current.calls);
   }
   let sourceReferencePrerequisite = null;
-  if (createIntent && createContract === null && !readOnlyOperation && !sourceEditOperation) {
+  if (createIntent && createContract === null && semanticRegression === null && !readOnlyOperation && !sourceEditOperation) {
     const owned = registeredSourceReferenceReadPlan(prompt, policyWorkspace, tools);
     if (owned?.kind === 'OnlySourceReferenceReadPrerequisite'
         && owned.originalRequest === prompt && owned.mutationAuthority === false
@@ -525,7 +535,7 @@ async function driveInternal(planChatStep, dir, prompt, {
         && owned.plan.calls.every(call => call.tool === 'read' && tools.includes(call.tool))
         && !readPolicyBlocksPlan(prompt, owned.plan)) sourceReferencePrerequisite = owned;
   }
-  if (createIntent && createContract === null && !readOnlyOperation && !sourceEditOperation
+  if (createIntent && createContract === null && semanticRegression === null && !readOnlyOperation && !sourceEditOperation
       && sourceReferencePrerequisite === null && !researchReadPrerequisite) {
     const refusal = await maintainedPlanChatStep(messages, tools);
     if (refusal?.kind === 'final') {
@@ -597,6 +607,11 @@ async function driveInternal(planChatStep, dir, prompt, {
       if (!matches) return { transcript, answer: null, stop: 'unbound-research-prerequisite', toolsAdvertised: tools };
     }
     if (plan.kind === 'final') {
+      if (semanticRegression !== null) {
+        const current = await maintainedResolvedStep(scoped,tools);
+        if (!semanticRegression.current() || current?.kind !== 'final' || plan.answer !== current.answer) return {transcript,answer:null,stop:'unbound-semantic-regression-final',toolsAdvertised:tools};
+        return {transcript,answer:current.answer,stop:'final',toolsAdvertised:tools};
+      }
       if (sourceReferencePrerequisite !== null) {
         return { transcript, answer: null, stop: 'source-reference-obligations-unresolved', toolsAdvertised: tools };
       }
@@ -653,6 +668,11 @@ async function driveInternal(planChatStep, dir, prompt, {
         return { transcript, answer: null, stop: 'unbound-read-operation', toolsAdvertised: tools };
       }
     }
+    if (semanticRegression !== null) {
+      const current = await maintainedResolvedStep(scoped,tools);
+      const denial = current !== null && readPolicyBlocksPlan(prompt,current) ? 'semantic-regression-read-policy-refused' : semanticRegression.authorize(calls,current,scoped);
+      if (denial !== null) return {transcript,answer:null,stop:denial,toolsAdvertised:tools};
+    }
     const toolCalls = calls.map((call, index) => ({
       id: `c${step}_${index}`, type: 'function', function: { name: call.tool, arguments: call.arguments },
     }));
@@ -708,7 +728,7 @@ async function driveInternal(planChatStep, dir, prompt, {
       const observedPath=typeof writePath==='string'?within(dir,writePath):null;
       const before=capture&&observedPath?capture.before(observedPath):null;
       const toolBoundary=capture?.beforeTool(call)??null;
-      const creation = authorizedAppendCalls.has(call)?null:ownedCreation(call);
+      const creation = authorizedAppendCalls.has(call)?null:semanticRegression !== null ? semanticRegression.execute(call) : ownedCreation(call);
       if (creation?.source_creation?.success === true) createdTargets.add(creation.source_creation.path);
       const receipt = maintenanceSession !== null ? maintenanceSession.execute(call) : creation ?? (sourceSession
         ? sourceSession.executeResult(call, messages, () => executeResult(dir, call))

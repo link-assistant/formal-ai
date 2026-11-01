@@ -2,10 +2,13 @@
 //! the whole task ledger; this module handles one seeded structural leaf only.
 use super::comparison_boundary::observed_comparison_boundary_operation;
 use super::final_result::{FinalDisposition, FinalResult, record};
-use super::planner::{AgenticPlan, Capability, plan_one, tool_for, write_arguments};
-use super::progress::Progress;
+use super::planner::{AgenticPlan, Capability};
 use super::shell_command_policy::sentences;
 use super::tool_result::{SourceReadObservation, SourceReadStatus};
+use super::work_item_file_io::{
+    FileIoPlan, WorkItemFileProgress as Progress, file_io_effect_step, file_io_pending_step,
+    file_io_read_step,
+};
 use crate::protocol::ChatMessage;
 use crate::seed::parser::parse_lino;
 use serde_json::{Value, json};
@@ -296,18 +299,70 @@ fn bound_path(arguments: &Value, path: &str) -> bool {
         .collect::<Vec<_>>();
     !values.is_empty() && values.iter().all(|value| value.as_str() == Some(path))
 }
+fn boundary_attempt_guard(progress: &Progress, target: &str) -> Option<Value> {
+    let attempts = progress.research_attempts();
+    let mutations = attempts
+        .iter()
+        .filter(|attempt| matches!(attempt.capability, Capability::Write | Capability::Edit))
+        .collect::<Vec<_>>();
+    let gap = if mutations.len() > 1 {
+        Some("BoundaryEffectAttemptBudgetExceeded")
+    } else if mutations.iter().any(|attempt| {
+        attempt
+            .arguments
+            .as_deref()
+            .and_then(|text| serde_json::from_str::<Value>(text).ok())
+            .is_none_or(|arguments| !bound_path(&arguments, target))
+    }) {
+        Some("BoundaryUnrelatedOrAmbiguousMutationAttempt")
+    } else if attempts.iter().any(|attempt| {
+        if attempt.capability != Capability::Read {
+            return false;
+        }
+        let Some(arguments) = attempt
+            .arguments
+            .as_deref()
+            .and_then(|text| serde_json::from_str::<Value>(text).ok())
+        else {
+            return true;
+        };
+        let paths = ["path", "filePath", "file_path", "absolute_path"]
+            .iter()
+            .filter_map(|key| arguments.get(*key))
+            .collect::<Vec<_>>();
+        paths.is_empty()
+            || paths
+                .iter()
+                .any(|path| path.as_str().is_none() || path.as_str() != paths[0].as_str())
+    }) {
+        Some("BoundaryAmbiguousReadPathAttempt")
+    } else {
+        None
+    };
+    gap.map(|reason| json!({"gap":reason,"budget":{"maximum":1,"observed":mutations.len()}}))
+}
+
 /// Operate a persisted candidate; never recompute its preimage after a write.
 pub(super) fn plan_boundary_candidate_effect(
     candidate: &Value,
     messages: &[ChatMessage],
     tools: &[&str],
+    task: &str,
 ) -> BoundaryEffectOutcome {
     use BoundaryEffectOutcome::{Effect, Failure, Gap, Pending};
     let Some(path) = candidate["path"].as_str() else {
         return Gap("BoundaryContractInvalid".to_owned());
     };
     let progress = Progress::scan(messages);
-    let read = tool_for(tools, Capability::Read);
+    if let Some(pending) = file_io_pending_step(&progress, tools) {
+        return lower_file_io(pending);
+    }
+    if let Some(guard) = boundary_attempt_guard(&progress, path) {
+        return Gap(guard["gap"]
+            .as_str()
+            .unwrap_or("BoundaryAttemptUnresolved")
+            .to_owned());
+    }
     let attempts = progress.research_attempts();
     let effects = attempts
         .iter()
@@ -343,15 +398,7 @@ pub(super) fn plan_boundary_candidate_effect(
                 .flatten()
         });
         let Some(observed) = observed else {
-            return read.map_or_else(
-                || Gap("BoundaryReadbackToolMissing".to_owned()),
-                |tool| {
-                    Pending(plan_one(
-                        tool,
-                        json!({"path":path,"filePath":path,"file_path":path}).to_string(),
-                    ))
-                },
-            );
+            return lower_file_io(file_io_read_step(messages, tools, path, task));
         };
         let mut checked = verify_boundary_candidate_readback(candidate, Some(observed));
         if checked["verified"] != true {
@@ -389,10 +436,7 @@ pub(super) fn plan_boundary_candidate_effect(
         if !target.is_some_and(|value| value.absent) {
             return Gap("BoundaryTargetPreconditionChanged".to_owned());
         }
-        return tool_for(tools, Capability::Write).map_or_else(
-            || Gap("BoundaryWriteToolMissing".to_owned()),
-            |tool| Pending(plan_one(tool, write_arguments(path, after))),
-        );
+        return lower_file_io(file_io_effect_step(messages, tools, path, None, after));
     }
     let before = complete(target);
     if before != candidate["before"].as_str()
@@ -400,15 +444,14 @@ pub(super) fn plan_boundary_candidate_effect(
     {
         return Gap("BoundaryTargetPreconditionChanged".to_owned());
     }
-    tool_for(tools, Capability::Edit).map_or_else(
-        || Gap("BoundaryEditToolMissing".to_owned()),
-        |tool| {
-            Pending(plan_one(
-                tool,
-                json!({"filePath":path,"oldString":before,"newString":after}).to_string(),
-            ))
-        },
-    )
+    lower_file_io(file_io_effect_step(messages, tools, path, before, after))
+}
+
+fn lower_file_io(plan: FileIoPlan) -> BoundaryEffectOutcome {
+    match plan {
+        FileIoPlan::Pending(step) => BoundaryEffectOutcome::Pending(step),
+        FileIoPlan::Gap(reason) => BoundaryEffectOutcome::Gap(reason),
+    }
 }
 
 /// Native whole-route wrapper. The work-item router invokes this before its
@@ -451,7 +494,7 @@ pub(super) fn plan_work_item_boundary_step(
             .map(|value| value["checks"].clone())
             .unwrap_or_else(|| json!([]));
         let remaining=requirements.iter().map(|value|json!({"text":value["text"],"span":value["span"],"reason":if value["status"]=="independent_check_pending"{"independent-requirement-acceptance-required"}else{"unsupported-or-unbound-obligation"}})).collect::<Vec<_>>();
-        let payload = json!({"schema":"repository-work-item-controller/v1","reason":reason,"workItem":work_item,
+        let payload = json!({"schema":"repository-work-item-controller/v1","transportDiagnostics":progress.transport_diagnostics(),"reason":reason,"workItem":work_item,
             "taskIdentity":digest(task),"requirements":requirements,"supportedSubset":"finite-number-interval-boundary-and-regression",
             "boundContract":contract,"observations":observations,"candidate":candidate_view,"checks":checks,
             "effects":effect.into_iter().collect::<Vec<_>>(),"authored":authored,"verified":false,"independentlyAccepted":false,"complete":false,
@@ -466,35 +509,33 @@ pub(super) fn plan_work_item_boundary_step(
             result,
         )
     };
+    if let Some(pending) = file_io_pending_step(&progress, tools) {
+        return Some(match pending {
+            FileIoPlan::Pending(step) => step,
+            FileIoPlan::Gap(reason) => {
+                finish(&reason, &observations, None, None, Value::Null, result)
+            }
+        });
+    }
+    if let Some(guard) = boundary_attempt_guard(&progress, contract["target"].as_str()?) {
+        return Some(finish(
+            guard["gap"].as_str().unwrap_or("BoundaryAttemptUnresolved"),
+            &observations,
+            None,
+            None,
+            guard.clone(),
+            result,
+        ));
+    }
     let mut paths = vec![contract["owner"].as_str()?, contract["target"].as_str()?];
     paths.dedup();
     for path in paths {
         let Some(observed) = progress.source_read_for(path) else {
-            let Some(read) = tool_for(tools, Capability::Read) else {
-                return Some(finish(
-                    "MissingReadTool",
-                    &observations,
-                    None,
-                    None,
-                    Value::Null,
-                    result,
-                ));
-            };
-            let step = plan_one(
-                read,
-                json!({"path":path,"filePath":path,"file_path":path}).to_string(),
-            );
-            return Some(if super::file_read::read_policy_blocks_plan(task, &step) {
-                finish(
-                    "ReadPolicyRefused",
-                    &observations,
-                    None,
-                    None,
-                    Value::Null,
-                    result,
-                )
-            } else {
-                step
+            return Some(match file_io_read_step(messages, tools, path, task) {
+                FileIoPlan::Pending(step) => step,
+                FileIoPlan::Gap(reason) => {
+                    finish(&reason, &observations, None, None, Value::Null, result)
+                }
             });
         };
         let source = complete(Some(observed));
@@ -532,7 +573,7 @@ pub(super) fn plan_work_item_boundary_step(
             result,
         ));
     };
-    match plan_boundary_candidate_effect(candidate, messages, tools) {
+    match plan_boundary_candidate_effect(candidate, messages, tools, task) {
         BoundaryEffectOutcome::Pending(step) => {
             Some(if super::file_read::read_policy_blocks_plan(task, &step) {
                 finish(

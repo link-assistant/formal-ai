@@ -81,3 +81,50 @@ The other CI binding renames and native controller repair remain separately
 identified reviewer work. Generated kernel code now lives under the existing
 agentic module, preserving the governed root source content without changing
 its recorded witness.
+
+## Follow-up source and client qualification
+
+The pre-fix dependency manifests now produce typed, source-hash-bound literal
+facts, including renamed Cargo packages, explicit target predicates, feature
+enables and dependency options. Complete source observations remain separate
+from executable-use evidence. Invalid, duplicate, oversized or unsupported
+manifest syntax stays unknown. The JavaScript TOML reader is a bounded declared
+subset; its native adapter uses toml_edit, with shared fixtures qualified in CI.
+The implementations are paired manually, not a claim of full automatic
+Rust/JavaScript translation or identical admission of every TOML form.
+
+A separate host-only parser uses Python standard-library JSON/TOML parsing to
+check explicit documentation claims against the frozen source. It rejects
+duplicate JSON keys, distinguishes contradicted fields from unknown evidence,
+and makes contradictions blocking obligations. It does not certify unstructured
+prose, consumer behavior or whole-task semantics. Missing parser support stays
+unknown; the qualification result remains incomplete.
+
+The client IO adapter supports dedicated file tools and a fixed registered Node
+operation when a client exposes only command tools. It retains actual process
+status, call identity and raw-receipt provenance, binds reads and writes to
+source hashes, and never fabricates protocol Read/Edit receipts. Polling is
+bounded. Absolute aliases require the actual caller root. Unverified client
+frames and noncanonical caller-root aliases remain explicit compatibility gaps.
+Schema fixtures come from previously inspected tool declarations; they are not
+proof that the current ordinary Hive clients completed the original task.
+
+The [prototype-binding regression record](formal-ai-prototype-regression.json)
+preserves an unchanged task across an intake denial, a real generator gap and a
+successful retry. After a manually supplied general null-prototype binding-map
+repair, Formal AI created a regression artifact from observed source, preserved
+the source, and passed a private healthy-versus-broken-control oracle. Neither
+the test body nor final candidate was supplied. The experimental driver intake
+repair and production generator repair receive zero autonomous authorship
+credit. This is a useful supported regression task, not an unassisted production
+logic repair or a general success-rate measurement.
+
+Hosted admission restores executable permission after artifact download and
+checks the binary digest before execution. Even an expected unsupported task
+requires a clean, bounded, reaped client process; a captured gap cannot excuse a
+subsequent hang or crash. Integration/e2e qualification remains explicit and
+main-only. No new release or completed original-task acceptance is claimed by
+these local checks. The original multi-file documentation synthesis, genuine
+production repair, actual all-client task run, no-write hosted repeat and final
+default-branch release qualification are still open. Continue #1483 in this PR
+before taking the next #1170 issue.

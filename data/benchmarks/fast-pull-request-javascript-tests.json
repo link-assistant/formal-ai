@@ -84,6 +84,9 @@
     "rust/tests/web/comparison-boundary-transform.test.mjs",
     "rust/tests/web/source-documentation-controller.test.mjs",
     "rust/tests/web/work-item-boundary-route.test.mjs",
-    "rust/tests/web/coding-research-namespace.test.mjs"
+    "rust/tests/web/coding-research-namespace.test.mjs",
+    "rust/tests/web/source-manifest-facts.test.mjs",
+    "rust/tests/web/work-item-file-io.test.mjs",
+    "rust/tests/web/boundary-regression-driver.test.mjs"
   ]
 }

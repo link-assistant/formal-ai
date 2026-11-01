@@ -48,6 +48,11 @@ test('the actual failed issue now reads manifests, guide and executable adapter 
     assert.equal(observation.complete,true);
     assert.equal(observation.sourceIdentity,createHash('sha256').update(readFileSync(observation.path)).digest('hex'));
     assert.ok(Array.from(observation.excerpt).length <= 1024);
+    if(/\.(?:json|toml)$/u.test(observation.path)){
+      assert.ok(observation.manifestFacts.length>0);
+      assert.equal(observation.factScope,'literal-declarations-only; executable use remains unverified');
+      for(const fact of observation.manifestFacts)assert.equal(fact.sourceIdentity,observation.sourceIdentity);
+    }
   }
 });
 test('missing tool, failed and truncated reads terminate without repeating an action or writing', () => {

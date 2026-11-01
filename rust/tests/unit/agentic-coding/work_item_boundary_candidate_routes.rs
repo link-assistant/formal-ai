@@ -137,3 +137,100 @@ fn native_route_retains_gap_provenance_after_real_edit_and_verified_no_op() {
         after
     );
 }
+
+// Deliberately inconsistent receipts qualify terminal custody checks only; no
+// physical mutation, independent task success or production repair is claimed.
+fn guard_receipt(
+    messages: &mut Vec<ChatMessage>,
+    tool: &str,
+    arguments_value: Value,
+    content: &str,
+    source_read: Option<Value>,
+) {
+    let id = format!("boundary-guard-{}", messages.len());
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        &id,
+        tool,
+        arguments_value.to_string(),
+    )]));
+    let mut receipt = ChatMessage::tool_result(&id, tool, content);
+    receipt.source_read = source_read;
+    messages.push(receipt);
+}
+#[test]
+fn native_boundary_refuses_ambiguous_reads_and_all_unowned_mutations_before_filtering() {
+    let task = "Repair the upper-bound check in src/ceiling.mjs so the maximum is included. Preserve the lower bound, comments and other functions.";
+    let source = "export function accepts(value,minimum,maximum) { return value >= minimum && value < maximum; }";
+    for (variant, expected) in [
+        ("ambiguousRead", "BoundaryAmbiguousReadPathAttempt"),
+        (
+            "ambiguousEdit",
+            "BoundaryUnrelatedOrAmbiguousMutationAttempt",
+        ),
+        (
+            "unrelatedEdit",
+            "BoundaryUnrelatedOrAmbiguousMutationAttempt",
+        ),
+        ("totalBudget", "BoundaryEffectAttemptBudgetExceeded"),
+    ] {
+        let mut messages = vec![ChatMessage::user(task)];
+        guard_receipt(
+            &mut messages,
+            "read",
+            json!({"filePath":"src/ceiling.mjs"}),
+            source,
+            Some(json!({"path":"src/ceiling.mjs","success":true,"complete":true,"format":"raw"})),
+        );
+        if variant == "ambiguousRead" {
+            guard_receipt(
+                &mut messages,
+                "read",
+                json!({"filePath":"src/ceiling.mjs","path":"other.mjs"}),
+                source,
+                Some(
+                    json!({"path":"src/ceiling.mjs","success":true,"complete":true,"format":"raw"}),
+                ),
+            );
+        } else {
+            let mut arguments_value = json!({"filePath":if matches!(variant,"unrelatedEdit"|"totalBudget"){"other.mjs"}else{"src/ceiling.mjs"},"oldString":source,"newString":source});
+            if variant == "ambiguousEdit" {
+                arguments_value["path"] = json!("other.mjs");
+            }
+            guard_receipt(
+                &mut messages,
+                "edit",
+                arguments_value,
+                "File edited successfully",
+                None,
+            );
+            if variant == "totalBudget" {
+                guard_receipt(
+                    &mut messages,
+                    "edit",
+                    json!({"filePath":"src/ceiling.mjs","oldString":source,"newString":source}),
+                    "File edited successfully",
+                    None,
+                );
+            }
+        }
+        let mut final_result = None;
+        let plan = plan_work_item_boundary_step(
+            task,
+            &messages,
+            &["read", "edit", "write"],
+            None,
+            paths,
+            &mut final_result,
+        )
+        .unwrap();
+        let AgenticPlan::Final(answer) = plan else {
+            panic!("{variant}: another effect was planned");
+        };
+        let report: Value = serde_json::from_str(&answer).unwrap();
+        assert_eq!(report["reason"], expected, "{variant}");
+        assert_eq!(report["authored"], false);
+        assert_eq!(report["physicalReadbackVerified"], false);
+        assert_eq!(report["complete"], false);
+        assert_eq!(final_result.unwrap().disposition, FinalDisposition::Gap);
+    }
+}

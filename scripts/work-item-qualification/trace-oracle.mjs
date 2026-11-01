@@ -55,3 +55,10 @@ export function explicitUnknownTerminal(text){
   return {schema:record.schema??null,disposition:gaps.includes(terminal)?'gap':'unknown',verified,
     unresolvedEvidence:missing.length>0,terminal,missingEvidenceCount:missing.length};
 }
+
+/** An explicit unsupported answer is evidence only after the actual client
+ * terminates cleanly. Exit5 is the configured no-change outcome, not a crash. */
+export function cleanQualificationPass(pass,{unsupported=false}={}){
+  return pass?.cleanupComplete===true&&pass.signal===null&&pass.timedOut===false&&pass.error===null
+    &&(unsupported?[0,5].includes(pass.status):pass.status===0);
+}

@@ -172,7 +172,7 @@ function finiteSamples(observed,definition) {
   if (high === null) high = low + Math.max(2,Math.abs(low) / 2);
   const width = high - low, middle = low + width / 2;
   if (![low,high,width,middle].every(Number.isFinite) || !(low < middle && middle < high)) throw Error('BoundaryFiniteWitnessUnavailable');
-  const assignments = {};
+  const assignments = Object.create(null);
   if (observed.lower.bound.kind === 'parameter') assignments[observed.lower.bound.name] = low;
   if (observed.upper.bound.kind === 'parameter') assignments[observed.upper.bound.name] = high;
   const lowerInclusive = definition.bound === 'lower' ? definition.inclusive : observed.lower.operator === '>=';

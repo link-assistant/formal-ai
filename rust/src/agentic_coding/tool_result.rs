@@ -819,11 +819,11 @@ pub(super) fn command_argument(arguments: &str) -> Option<String> {
 fn result_tool(messages: &[ChatMessage], index: usize) -> Option<&str> {
     let message = &messages[index];
     message.name.as_deref().or_else(|| {
-        let id = message.tool_call_id.as_deref()?;
+        let call_identifier = message.tool_call_id.as_deref()?;
         messages[..index]
             .iter()
             .flat_map(|prior| &prior.tool_calls)
-            .find(|call| call.id == id)
+            .find(|call| call.id == call_identifier)
             .map(|call| call.function.name.as_str())
     })
 }

@@ -69,3 +69,13 @@ test('regression derives contract witnesses before any candidate source is selec
   assert.equal(result.contract.independentAcceptance,false);
   assert.equal(sourceFromLinks(owned(before)),before);
 });
+
+
+test('shared regression witnesses bind every legal parameter name literally',()=>{
+  for(const row of vectors.regressions){
+    const model=ownedSourceLinks(row.owner,sourceToLinks(row.source,'JavaScript',frontend));
+    const result=deriveComparisonBoundaryRegression(model,row.definition,{moduleSpecifier:row.moduleSpecifier,frontend,forms});
+    assert.deepEqual(result.samples,row.expectedSamples);
+    assert.equal(sourceFromLinks(model),row.source);
+  }
+});

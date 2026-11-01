@@ -1,9 +1,12 @@
 //! Manual native projection of the bounded source-documentation controller.
 //! Source only: no native compilation or verified translation credit claimed.
 use super::final_result::{FinalDisposition, FinalResult, record};
-use super::planner::{AgenticPlan, Capability, plan_one, tool_for};
-use super::progress::{Progress, ToolAttempt};
+use super::planner::{AgenticPlan, Capability};
 use super::shell_command_policy::sentences;
+use super::work_item_file_io::{
+    FileIoAttempt as ToolAttempt, FileIoPlan, WorkItemFileProgress as Progress,
+    file_io_effect_step, file_io_pending_step, file_io_read_step,
+};
 use crate::normal_markov::{quote_fault, quoted_segment_spans};
 use crate::obligation_ledger::clauses_with_spans;
 use crate::protocol::ChatMessage;
@@ -190,19 +193,15 @@ fn finish(
 
 fn read_step(
     task: &str,
+    messages: &[ChatMessage],
     path: &str,
     tools: &[&str],
     state: &Value,
     result: &mut Option<FinalResult>,
 ) -> AgenticPlan {
-    let Some(read) = tool_for(tools, Capability::Read) else {
-        return finish(state, "MissingReadTool", false, result);
-    };
-    let step = plan_one(read, json!({"filePath":path}).to_string());
-    if super::file_read::read_policy_blocks_plan(task, &step) {
-        finish(state, "ReadPolicyRefused", false, result)
-    } else {
-        step
+    match file_io_read_step(messages, tools, path, task) {
+        FileIoPlan::Pending(step) => step,
+        FileIoPlan::Gap(reason) => finish(state, &reason, false, result),
     }
 }
 
@@ -262,6 +261,13 @@ pub(super) fn plan_source_documentation_step(
     if authority != "owned" {
         return Some(finish(&state, authority, false, result));
     }
+    state["transportDiagnostics"] = json!(progress.transport_diagnostics());
+    if let Some(pending) = file_io_pending_step(&progress, tools) {
+        return Some(match pending {
+            FileIoPlan::Pending(step) => step,
+            FileIoPlan::Gap(reason) => finish(&state, &reason, false, result),
+        });
+    }
     if attempts
         .iter()
         .any(|attempt| attempt.capability == Capability::Read && attempt_path(attempt).is_none())
@@ -290,7 +296,7 @@ pub(super) fn plan_source_documentation_step(
     for path in [source_path, guide_path] {
         let reads = reads_for(attempts, path, attempts.len(), None);
         let Some((_, observation)) = reads.last() else {
-            return Some(read_step(task, path, tools, &state, result));
+            return Some(read_step(task, messages, path, tools, &state, result));
         };
         let Some(content) = complete(observation) else {
             return Some(finish(
@@ -354,7 +360,14 @@ pub(super) fn plan_source_documentation_step(
         }
         let source_reads = reads_for(attempts, source_path, attempts.len(), Some(index));
         let Some((source_index, source_read)) = source_reads.last().copied() else {
-            return Some(read_step(task, source_path, tools, &state, result));
+            return Some(read_step(
+                task,
+                messages,
+                source_path,
+                tools,
+                &state,
+                result,
+            ));
         };
         let observed_source = complete(source_read);
         if observed_source.is_none_or(|source| {
@@ -364,7 +377,7 @@ pub(super) fn plan_source_documentation_step(
         }
         let guide_reads = reads_for(attempts, guide_path, attempts.len(), Some(source_index));
         let Some((_, guide_read)) = guide_reads.last() else {
-            return Some(read_step(task, guide_path, tools, &state, result));
+            return Some(read_step(task, messages, guide_path, tools, &state, result));
         };
         let guide = complete(guide_read);
         if guide != expected["content"].as_str() {
@@ -393,15 +406,18 @@ pub(super) fn plan_source_documentation_step(
         state["checks"] = json!([{"kind":"source-bound-noop","passed":true}]);
         return Some(finish(&state, "VerifiedNoOp", false, result));
     }
-    Some(if let Some(edit) = tool_for(tools, Capability::Edit) {
-        plan_one(
-            edit,
-            json!({"filePath":guide_path,"oldString":guide,"newString":derived["content"]})
-                .to_string(),
-        )
-    } else {
-        finish(&state, "MissingEditTool", false, result)
-    })
+    Some(
+        match file_io_effect_step(
+            messages,
+            tools,
+            guide_path,
+            Some(guide),
+            derived["content"].as_str()?,
+        ) {
+            FileIoPlan::Pending(step) => step,
+            FileIoPlan::Gap(reason) => finish(&state, &reason, false, result),
+        },
+    )
 }
 
 #[cfg(test)]
