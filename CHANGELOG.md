@@ -20,6 +20,27 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.355.28] - 2026-11-01
+
+Fix agent file-command routing for directory typos, literal search, bounded counts and line-limited reads; reject unsupported deletion and compound shell input. Preserve dedicated tool priority and source-repair ownership. Restore native build and captured main-CI regressions, and add a guarded source-derived named-import edit.
+
+### Fixed
+- Connect bounded repository observations to source-derived documentation and concrete-syntax interval edits, with guarded effects, fresh readback and explicit pending independent acceptance.
+- Preserve literal replacement metacharacters in source-derived documentation, matching native string replacement behavior.
+- Add opt-in default-branch work-item qualification with authenticated released runtimes, isolated GitHub transport, complete bounded process logs and truthful cleanup of owned test issues. General work-item coding and original multi-file integration documentation acceptance remain pending.
+
+Restore CI gate citations and fast metadata validation; preserve local path discovery and client Read aliases. Retain bounded server parity failure diagnostics and support CI-only replay from an existing main binary. Move native regressions outside production source without deleting their coverage. Keep parity request sockets open until asynchronous HTTP responses finish.
+
+Retain validated consumer-search diagnostics and report a terminal verification gap when an edit host lacks a Run tool, preventing an unrelated unchanged-file claim.
+
+# Fixed
+
+- Restore the relocated native test fixture path, align CI dependency and disk-policy checks with their actual shared owners, and keep compiler-only explanations out of user-facing prose detection.
+
+# Fixed
+
+- Keep quoted edit payloads from becoming documentation instructions, and align current native and CI policy regressions with the maintained controller and shared lint profile.
+
 ## [0.355.27] - 2026-10-31
 
 ### Fixed

@@ -10,6 +10,7 @@ changelog.d/1188-release-source-freshness.md	0.353.0
 changelog.d/1188-release-workflow-operation-controls.md	0.353.0
 changelog.d/1188-relocated-build-stage-controls.md	0.353.0
 changelog.d/1188-source-owned-literal-actions.md	0.353.0
+changelog.d/1501-fixed.md	0.355.28
 changelog.d/20251227_224645_changeset_support.md	0.2.0
 changelog.d/20251229_143823_fix_ci_workflow_dependencies.md	0.2.0
 changelog.d/20251231_115800_fix_readme_script_references.md	0.2.0
@@ -919,10 +920,15 @@ changelog.d/20261031_complete_governed_fixture_objects.md	0.355.27
 changelog.d/20261031_default_branch_builds.md	0.355.27
 changelog.d/20261031_derived_ci_budget_and_npm_aliases.md	0.355.27
 changelog.d/20261031_patched_matcher_and_policy_regressions.md	0.355.27
+changelog.d/20261101_054048_checked_work_item_edits.md	0.355.28
+changelog.d/ci-gate-citation-fixed.md	0.355.28
 changelog.d/desktop-package-source-boundary.md	0.355.17
 changelog.d/fast-pr-offline-e2e-admission.md	0.355.15
 changelog.d/governed-desktop-source-witness.md	0.355.17
 changelog.d/main-branch-archive-discovery-and-profile-contracts.md	0.355.15
+changelog.d/main-search-diagnostics-fixed.md	0.355.28
 changelog.d/native-release-source-transport.md	0.355.16
+changelog.d/native-test-fixture-path-fixed.md	0.355.28
 changelog.d/offline-native-workflow-controls.md	0.355.16
 changelog.d/package-parity-and-optional-visual-replays.md	0.355.15
+changelog.d/quoted-payload-routing-fixed.md	0.355.28
