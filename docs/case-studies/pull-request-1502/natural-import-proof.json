@@ -1,0 +1,24 @@
+{
+  "schema": "natural-import-edit-proof/v1",
+  "unchangedEnglishRequest": true,
+  "initialStop": "no-plan",
+  "initialTools": 0,
+  "tools": [
+    "read",
+    "edit",
+    "read"
+  ],
+  "singleRequestedImportInsertion": true,
+  "allOtherBytesPreserved": true,
+  "independentBabelSyntaxValid": true,
+  "sharedGrammarDisclosed": true,
+  "beforeSha256": "d5769aa77d977a91e53c75ab758c36c861f058665abf4fe42546678fada97b9e",
+  "afterSha256": "6a9a170d4d5abeb11375e574bec3ca9875e45ba381621632c064cff590294855",
+  "usefulNetCodeBytes": 31,
+  "engineBootstrapAuthorshipCredit": 0,
+  "owner": "js/agentic/planner.mjs",
+  "prompt": "In js/agentic/planner.mjs, add the missing named import ownedSourceMaintenanceRequest from ./source_maintenance.mjs to the existing import from that module. This fixes the undefined identifier in planRequestPreflight. Preserve all other source and comments.",
+  "defectOrigin": "coordinator bootstrap in this branch; not a live-main production defect",
+  "scope": "finite named-import insertion only; no export resolution, compilation or independent hosted acceptance",
+  "nativeQualification": "CI only; pending"
+}

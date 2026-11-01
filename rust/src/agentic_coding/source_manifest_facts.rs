@@ -1,4 +1,5 @@
 //! Manual native manifest observation projection; no native execution claimed.
+use super::source_lexical_policy::source_lexical_rule;
 use crate::source_fetch::sha256_hex;
 use serde::Deserialize;
 use serde::de::{self, MapAccess, SeqAccess, Visitor};
@@ -180,7 +181,7 @@ fn validate_literal(value: &TomlValue, depth: usize) -> Result<(), String> {
         TomlValue::String(_) => {
             let rendered = value.to_string();
             let rendered = rendered.trim_start();
-            if rendered.starts_with("\"\"\"") || rendered.starts_with("'''") {
+            if source_lexical_rule(rendered, "toml-multiline-opening") != Some(false) {
                 return Err("unsupported multiline manifest string".to_owned());
             }
             let quote = rendered.as_bytes().first().copied();

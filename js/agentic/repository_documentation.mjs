@@ -1,3 +1,4 @@
+import { sourceLexicalRule } from './source_lexical_policy.mjs';
 import { WorkItemFileProgress, fileIoReadStep, fileIoSearchStep, fileIoPendingStep } from './work_item_file_io.mjs';
 import { Capability } from './capability.mjs';
 import { shellCommandTool } from './capability_router.mjs';
@@ -42,7 +43,7 @@ function syntaxParagraph(owner, usage, policy) {
     if (typeof call.source !== 'string' || new TextEncoder().encode(call.source).length > 512) return null;
     // Literal snippets remain code quotations, not paraphrased API contracts.
     // A source fence inside a snippet is refused rather than escaped lossily.
-    if (call.source.includes('```')) return null;
+    if (sourceLexicalRule(call.source, 'source-fence-forbidden') !== false) return null;
     if ([call.imported, call.module].some(value => typeof value !== 'string' || /[`\r\n\p{Cc}\p{Cf}]/u.test(value))) return null;
     const caption = fill(forms.call, {
       owner,
@@ -54,7 +55,7 @@ function syntaxParagraph(owner, usage, policy) {
     }) + '\n' + call.source + '\n' + forms.codeClose);
   }
   for (const reference of usage.references ?? []) {
-    if (typeof reference.source !== 'string' || new TextEncoder().encode(reference.source).length > 512 || reference.source.includes('```')) return null;
+    if (typeof reference.source !== 'string' || new TextEncoder().encode(reference.source).length > 512 || sourceLexicalRule(reference.source, 'source-fence-forbidden') !== false) return null;
     rows.push(fill(forms.reference, {
       owner
     }) + '\n\n' + fill(forms.codeOpen, {
@@ -154,9 +155,7 @@ function repositoryDiscoveryPreflight(task, messages, tools, contract, policy) {
     discovery
   };
   const owned = path => typeof path === 'string' && /^[A-Za-z0-9_][A-Za-z0-9_./-]*$/u.test(path) && path.split('/').every(part => part !== '' && part !== '.' && part !== '..');
-  if (contract.authority !== 'owned' || !Array.isArray(contract.sources) || !contract.sources.length ||
-         contract.sources.length > 16 || !contract.sources.every(owned) || !owned(contract.target) || new Set([...contract.sources,
-         contract.target]).size !== contract.sources.length + 1 || !shellCommandTool(tools)) return result;
+  if (contract.authority !== 'owned' || !Array.isArray(contract.sources) || !contract.sources.length || contract.sources.length > 16 || !contract.sources.every(owned) || !owned(contract.target) || new Set([...contract.sources, contract.target]).size !== contract.sources.length + 1 || !shellCommandTool(tools)) return result;
   const progress = WorkItemFileProgress.scan(messages);
   if (progress.gap) return {
     ...result,
@@ -267,6 +266,7 @@ function repositoryDiscoveryPreflight(task, messages, tools, contract, policy) {
   }
   if (!plannedQueries.length) return result;
   const candidates = new Map();
+  let incompleteSearch = false;
   for (const query of plannedQueries) {
     const observed = frozen.searchFor(query.directory, query.identifiers);
     if (!observed) {
@@ -298,6 +298,7 @@ function repositoryDiscoveryPreflight(task, messages, tools, contract, policy) {
       }
     });
     if (observed.status !== 'reported-success' || observed.complete !== true || observed.root !== frozen.root || !Number.isInteger(observed.transport?.completedAt)) {
+      incompleteSearch = true;
       note('consumer-search-incomplete:' + query.directory);
       continue;
     }
@@ -315,7 +316,7 @@ function repositoryDiscoveryPreflight(task, messages, tools, contract, policy) {
       });
     }
   }
-  if (discovery.gaps.some(reason => reason.startsWith('consumer-search-incomplete:'))) {
+  if (incompleteSearch) {
     discovery.state = 'incomplete';
     return result;
   }

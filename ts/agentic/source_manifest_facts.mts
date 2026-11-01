@@ -1,3 +1,4 @@
+import { sourceLexicalRule } from './source_lexical_policy.mjs';
 // Finite, source-only manifest facts. No solver prose, filesystem access or
 // package-name lookup can establish a declaration or a runtime integration.
 import { sha256Hex } from './crate/source_fetch.mjs';
@@ -125,7 +126,7 @@ function tomlDeclarations(source) {
   const string = () => {
     const quote = source[cursor++],
       start = cursor;
-    if (source.slice(cursor, cursor + 2) === quote.repeat(2)) fail('ManifestMultilineStringUnsupported');
+    if (sourceLexicalRule(source.slice(cursor - 1, cursor + 2), 'toml-multiline-opening') !== false) fail('ManifestMultilineStringUnsupported');
     while (cursor < source.length) {
       const character = source[cursor++];
       if (character === quote) {

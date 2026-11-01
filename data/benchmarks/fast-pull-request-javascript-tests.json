@@ -97,6 +97,10 @@
     "rust/tests/web/boundary-regression-driver.test.mjs",
     "rust/tests/web/cargo-source-directories.test.mjs",
     "rust/tests/web/repository-consumer-discovery.test.mjs",
-    "rust/tests/web/work-item-source-quotation-checker.test.mjs"
+    "rust/tests/web/work-item-source-quotation-checker.test.mjs",
+    "rust/tests/web/file-command-contract.test.mjs",
+    "rust/tests/web/source-import-edit.test.mjs",
+    "rust/tests/web/source-maintenance.test.mjs",
+    "rust/tests/web/owned-destination-tail.test.mjs"
   ]
 }

@@ -3,11 +3,12 @@
 const installed = new WeakMap();
 
 /** Install one immutable host capability policy for a worker. */
-export async function ensureNodeHost(ctx, {
-  sourceUsageRustGrammar = true
-} = {}) {
-  if (typeof sourceUsageRustGrammar !== 'boolean') throw Error('host_source_usage_grammar_must_be_boolean');
+export async function ensureNodeHost(ctx, options = {}) {
   const existing = installed.get(ctx.worker);
+  const descriptor = Object.getOwnPropertyDescriptor(options, 'sourceUsageRustGrammar');
+  if (descriptor && !Object.hasOwn(descriptor, 'value')) throw Error('host_source_usage_grammar_must_be_boolean');
+  const sourceUsageRustGrammar = descriptor ? descriptor.value : existing?.sourceUsageRustGrammar ?? true;
+  if (typeof sourceUsageRustGrammar !== 'boolean') throw Error('host_source_usage_grammar_must_be_boolean');
   if (existing && existing.sourceUsageRustGrammar !== sourceUsageRustGrammar) {
     throw Error('host_source_usage_grammar_installation_conflict');
   }

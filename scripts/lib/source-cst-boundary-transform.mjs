@@ -1,3 +1,4 @@
+import { sourceLexicalRule } from '../../js/agentic/source_lexical_policy.mjs';
 // Pure evaluator for a deliberately finite relation contract. The host supplies
 // an actual complete grammar frontend; this module neither loads WASM nor runs
 // observed source. Intended owner: scripts/lib/source-cst-boundary-transform.mjs.
@@ -191,7 +192,8 @@ function finiteSamples(observed,definition) {
  * any edit. They are candidate evidence; independent graders remain separate. */
 export function deriveComparisonBoundaryRegression(document,definition,{moduleSpecifier,frontend,forms}) {
   verifySourceLinks(document,frontend);
-  if (typeof moduleSpecifier !== 'string' || !/^\.\.?\/[A-Za-z0-9_./-]+\.(?:mjs|js)$/u.test(moduleSpecifier)
+  if (typeof moduleSpecifier !== 'string' || sourceLexicalRule(moduleSpecifier, 'relative-module-prefix') !== true
+      || !/^\.\.?\/[A-Za-z0-9_./-]+\.(?:mjs|js)$/u.test(moduleSpecifier)
       || moduleSpecifier.includes('\\')) throw Error('BoundaryRegressionModuleUnsupported');
   const observed = inspect(document,definition), samples = finiteSamples(observed,definition);
   if (!observed.exported) throw Error('BoundaryRegressionNamedExportRequired');

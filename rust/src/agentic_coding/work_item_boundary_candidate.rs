@@ -349,7 +349,7 @@ pub(super) fn plan_boundary_candidate_effect(
     tools: &[&str],
     task: &str,
 ) -> BoundaryEffectOutcome {
-    use BoundaryEffectOutcome::{Effect, Failure, Gap, Pending};
+    use BoundaryEffectOutcome::{Effect, Failure, Gap};
     let Some(path) = candidate["path"].as_str() else {
         return Gap("BoundaryContractInvalid".to_owned());
     };
