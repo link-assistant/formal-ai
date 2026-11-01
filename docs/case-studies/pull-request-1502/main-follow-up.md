@@ -10,7 +10,7 @@ No local Rust compilation/tests, product WASM or Docker builds were run. Merged-
 
 ## Further failures included in this batch
 
-Existing typed Read and content-search ownership now precede the new file-command fallback. Captured line-slice and quoted-folder search failures keep their original dedicated behavior; shell-only #1501 requests remain covered. Minimal-feature builds expose the same source-model API but return SourceGrammarFeatureUnavailable, rather than importing a disabled optional parser or claiming source verification. A new manifest error is a machine diagnostic instead of unseeded English prose.
+Existing typed Read and content-search ownership now precede the new file-command fallback. Captured line-slice and quoted-folder search failures keep their original dedicated behavior; shell-only #1501 requests remain covered. The internal coding source-model boundary returns SourceGrammarFeatureUnavailable when the optional parser feature is disabled. The public library and its governed source identities stay unchanged; default builds re-export the real parser through that same internal boundary. No source verification is fabricated. A new manifest error is a machine diagnostic instead of unseeded English prose.
 
 ## Temporary style-lint debt
 

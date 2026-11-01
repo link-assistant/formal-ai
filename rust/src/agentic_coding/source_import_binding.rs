@@ -1,6 +1,6 @@
 //! Finite source-derived import addition. Qualification runs only in CI.
 use super::observed_source_usage::view::{View, concrete, field, form, literal, one};
-use crate::readable_source::{
+use super::source_model::{
     owned_source_links, source_from_links, source_to_links, verify_source_links,
 };
 use crate::source_fetch::sha256_hex;
