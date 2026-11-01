@@ -313,6 +313,7 @@ function planRequestPreflight(task, messages, toolNames) {
   if (fileCommand !== null && fileCommand.operation !== 'listing'
     && !(toolFor(toolNames, Capability.Read) !== null && fileReadTaskFor(task) !== null)
     && workspaceSearch.contentSearchFor(task) === null
+    && !localSearch.ownsPathDiscovery(task)
     && (fileCommand.operation !== 'search' || capabilityRouter.toolFor(toolNames, Capability.Grep) === null)
 ) {
     const raw = fileCommand.operation === 'count' ? Progress.scan(messages).latestRunOutputFor(fileCommand.command) : null;

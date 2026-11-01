@@ -109,3 +109,8 @@ test('captured native-tool precedence survives shell-only command support',async
  const search=await planChatStep([{role:'user',content:"Grep for 'return a' in lib/"}],['bash']);
  assert.equal(JSON.parse(search.calls[0].arguments).command,"grep -rnHF --exclude-dir=.git -- 'return a' 'lib'");
 });
+
+test('captured desktop folder discovery retains filename search',async()=>{
+ const plan=await planChatStep([{role:'user',content:'Find sample-target folder in desktop'}],['bash']);
+ assert.equal(plan.kind,'tool_calls');assert.ok(JSON.parse(plan.calls[0].arguments).command.startsWith('find '));
+});

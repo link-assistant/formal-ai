@@ -57,13 +57,15 @@ fn the_commit_hook_checks_examples_instead_of_linking_them() {
 fn the_commit_hook_and_the_ci_gate_lint_the_same_targets() {
     let config = repository_file(".pre-commit-config.yaml");
     let gate = repository_file("data/meta/ci-gates/run-clippy.lino");
+    let profile = repository_file("scripts/ci-clippy-profile.sh");
+    assert!(gate.contains("bash scripts/ci-clippy-profile.sh"));
 
     for fragment in [
         "cargo clippy --manifest-path rust/Cargo.toml --lib --bins --tests --all-features -- -D warnings",
         "cargo check --manifest-path rust/Cargo.toml --examples --all-features",
     ] {
         assert!(
-            gate.contains(fragment),
+            profile.contains(fragment),
             "the CI gate should run `{fragment}`; if it changed, the hook has \
              to change with it"
         );

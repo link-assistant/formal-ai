@@ -531,3 +531,8 @@ function localized(intent, language) {
 
 /** Mirrors `fn shell_quote`. */
 
+
+/** Existing path discovery owns find/type/content requests before generic content search. */
+export function ownsPathDiscovery(task) {
+  return ['find','type','list_contents'].includes(requestFor(task)?.mode);
+}

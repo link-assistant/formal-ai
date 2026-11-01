@@ -136,7 +136,7 @@ function freePort() {
  * reader sees exactly the bytes on the wire, including a body a server writes
  * after a HEAD response, which an HTTP client library would refuse.
  */
-function send(base, request) {
+function send(base, request, label = 'health') {
   const url = new URL(base);
   const lines = [`${request.method} ${request.path} HTTP/1.1`, `host: ${url.host}`];
   for (const line of request.headers) lines.push(line.replaceAll('{host}', url.host));
@@ -151,15 +151,15 @@ function send(base, request) {
   return new Promise((resolve, reject) => {
     const socket = net.connect({ host: url.hostname, port: Number(url.port) });
     const chunks = [];
-    socket.setTimeout(180000, () => socket.destroy(new Error(`timeout: ${request.id}`)));
+    socket.setTimeout(180000, () => socket.destroy(new Error(`timeout: ${label}/${request.id}`)));
     socket.on('connect', () => socket.end(body ? Buffer.concat([head, body]) : head));
     socket.on('data', (chunk) => chunks.push(chunk));
-    socket.on('error', reject);
+    socket.on('error', error => reject(new Error(`${label} request ${request.id}: ${error.message}`,{cause:error})));
     socket.on('close', () => {
       const raw = Buffer.concat(chunks);
       const split = raw.indexOf('\r\n\r\n');
       if (split < 0) {
-        reject(new Error(`no response head for ${request.id}`));
+        reject(new Error(`no response head from ${label} for ${request.id} (${raw.length} response bytes)`));
         return;
       }
       const [statusLine, ...headerLines] = raw.subarray(0, split).toString('utf8').split('\r\n');
@@ -213,24 +213,40 @@ export function createParityEnvironment(home, token, parent = process.env) {
   return env;
 }
 
+/** Bounded raw channel tails remain available after startup and before cleanup. */
+export function retainServerDiagnostics(child, label, limit = 65536) {
+  if (!Number.isSafeInteger(limit) || limit < 1 || limit > 1048576) throw Error('InvalidServerDiagnosticLimit');
+  const channels = {stdout:{bytes:0,tail:Buffer.alloc(0)},stderr:{bytes:0,tail:Buffer.alloc(0)}};
+  for (const name of Object.keys(channels)) child[name]?.on('data', chunk => {
+    const bytes = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+    const channel = channels[name];
+    channel.bytes += bytes.length;
+    channel.tail = bytes.length >= limit ? Buffer.from(bytes.subarray(-limit))
+      : Buffer.concat([channel.tail.subarray(Math.max(0,channel.tail.length + bytes.length - limit)),bytes]);
+  });
+  return () => ({label,exitCode:child.exitCode ?? null,signal:child.signalCode ?? null,
+    stdout:channels.stdout.tail.toString('utf8'),stderr:channels.stderr.tail.toString('utf8'),
+    stdoutBytes:channels.stdout.bytes,stderrBytes:channels.stderr.bytes,
+    stdoutDroppedBytes:channels.stdout.bytes-channels.stdout.tail.length,
+    stderrDroppedBytes:channels.stderr.bytes-channels.stderr.tail.length});
+}
+
 async function startServer(label, command, args, token) {
   const home = mkdtempSync(path.join(os.tmpdir(), `formal-ai-parity-${label}-`));
   const port = await freePort();
   const env = createParityEnvironment(home, token);
-  const child = spawn(command, [...args, '--port', String(port)], { cwd: REPO, env, stdio: ['ignore', 'ignore', 'pipe'] });
-  let stderr = '';
-  child.stderr.on('data', (chunk) => {
-    stderr = (stderr + chunk).slice(-4000);
-  });
+  const child = spawn(command, [...args, '--port', String(port)], { cwd: REPO, env, stdio: ['ignore', 'pipe', 'pipe'] });
+  const diagnostics = retainServerDiagnostics(child,label);
   const base = `http://127.0.0.1:${port}`;
   try {
     await waitForHealth(base, child, label);
   } catch (error) {
     child.kill('SIGKILL');
-    throw new Error(`${error.message}\n${stderr}`);
+    throw new Error(`${label} startup: ${error.message}\n${JSON.stringify(diagnostics())}`, {cause:error});
   }
   return {
     base,
+    diagnostics,
     runtimeCacheRoot: env.FORMAL_AI_CACHE_DIR,
     runtimeLogRoot: env.FORMAL_AI_LOG_DIR,
     runtimeMemoryRoot: env.HOME,
@@ -529,8 +545,8 @@ async function main(argv) {
       if (options.only && !options.only.has(request.id)) continue;
       const prepared = { ...request, authHeader: authHeader(request, corpus.token) };
       const { rustBase, jsBase, runtimeCacheRoots, runtimeLogRoots, runtimeMemoryRoots } = request.agentMode ? bases.agent : bases.plain;
-      const rust = await send(rustBase, prepared);
-      const js = await send(jsBase, prepared);
+      const rust = await send(rustBase, prepared, 'Rust');
+      const js = await send(jsBase, prepared, 'JavaScript');
       const verdict = compareResponses(rust, js, request.method, runtimeCacheRoots, runtimeLogRoots, runtimeMemoryRoots);
       if (verdict.kind === 'protocol') protocol.push([request.id, verdict.detail]);
       else if (verdict.kind === 'content') content.push([request.id, verdict.detail]);
@@ -568,6 +584,8 @@ async function main(argv) {
       status = 1;
     }
     return status;
+  } catch (error) {
+    throw new Error(`${error.message}\nServer diagnostics: ${JSON.stringify(servers.map(server => server.diagnostics()))}`,{cause:error});
   } finally {
     for (const server of servers) server.stop();
   }
