@@ -424,3 +424,155 @@ pub(super) fn observed_source_json(source: &str) -> Result<Value, String> {
     validate_json_depth(&document, 0)?;
     Ok(document)
 }
+
+/// Candidate Cargo lib/bin search scopes; no filesystem, target or use proof.
+pub(super) fn observed_cargo_source_directories(owner: &str, source: &str) -> Value {
+    let result = |identity: Option<&str>,
+                  directories: Vec<String>,
+                  facts: Vec<Value>,
+                  gaps: Vec<Value>| {
+        let complete = gaps.is_empty();
+        json!({"schema":"observed-cargo-source-directories/v1","manifest":owner,
+            "sourceIdentity":identity,"directories":directories,"facts":facts,"gaps":gaps,
+            "complete":complete,"scope":"cargo-lib-bin-candidate-search-scopes-only; no existence/target/runtime claim"})
+    };
+    if source.len() > 262_144 {
+        return result(
+            None,
+            Vec::new(),
+            Vec::new(),
+            vec![json!({"reason":"CargoSourceBudgetExceeded"})],
+        );
+    }
+    let valid = owner
+        .as_bytes()
+        .first()
+        .is_some_and(|byte| byte.is_ascii_alphanumeric() || *byte == b'_')
+        && owner
+            .bytes()
+            .all(|byte| byte.is_ascii_alphanumeric() || b"_./-".contains(&byte))
+        && owner
+            .split('/')
+            .all(|part| !part.is_empty() && part != "." && part != ".." && !part.starts_with('.'))
+        && owner.split('/').next_back() == Some("Cargo.toml");
+    if !valid {
+        return result(
+            None,
+            Vec::new(),
+            Vec::new(),
+            vec![json!({"reason":"CargoSourceOwnerRequired"})],
+        );
+    }
+    let identity = sha256_hex(source.as_bytes());
+    let collect = || -> Result<(Vec<String>, Vec<Value>), &'static str> {
+        validate_toml_profile(source).map_err(|_| "CargoSourceLayoutUnsupported")?;
+        let document = source
+            .parse::<DocumentMut>()
+            .map_err(|_| "CargoSourceLayoutUnsupported")?;
+        validate_table(document.as_table()).map_err(|_| "CargoSourceLayoutUnsupported")?;
+        let mut entries = Vec::new();
+        if let Some(item) = document.get("lib") {
+            let table = item.as_table().ok_or("CargoSourceLayoutUnsupported")?;
+            if table.is_dotted()
+                || table.is_implicit()
+                || table.iter().any(|(_, item)| item.as_value().is_none())
+            {
+                return Err("CargoSourceLayoutUnsupported");
+            }
+            if let Some(item) = table.get("path") {
+                entries.push((
+                    "explicit-lib-path",
+                    item.as_str()
+                        .ok_or("CargoSourcePathUnsupported")?
+                        .to_owned(),
+                ));
+            }
+        }
+        if let Some(item) = document.get("bin") {
+            let tables = item
+                .as_array_of_tables()
+                .ok_or("CargoSourceLayoutUnsupported")?;
+            for table in tables {
+                if table.iter().any(|(_, item)| item.as_value().is_none()) {
+                    return Err("CargoSourceLayoutUnsupported");
+                }
+                if let Some(item) = table.get("path") {
+                    entries.push((
+                        "explicit-bin-path",
+                        item.as_str()
+                            .ok_or("CargoSourcePathUnsupported")?
+                            .to_owned(),
+                    ));
+                }
+            }
+        }
+        let parent: Vec<_> = owner.split('/').collect();
+        let parent = &parent[..parent.len() - 1];
+        let default_directory = parent
+            .iter()
+            .copied()
+            .chain(std::iter::once("src"))
+            .collect::<Vec<_>>()
+            .join("/");
+        let mut directories = std::collections::BTreeSet::new();
+        directories.insert(default_directory.clone());
+        let mut facts = vec![
+            json!({"kind":"cargo-source-directory-candidate","manifest":owner,
+            "sourceIdentity":identity,"directory":default_directory,"basis":"conventional-src"}),
+        ];
+        let mut identities = std::collections::BTreeSet::new();
+        for (basis, path) in entries {
+            let parts: Vec<_> = path.split('/').collect();
+            let valid = path
+                .as_bytes()
+                .first()
+                .is_some_and(|byte| byte.is_ascii_alphanumeric() || *byte == b'_')
+                && path
+                    .bytes()
+                    .all(|byte| byte.is_ascii_alphanumeric() || b"_./-".contains(&byte))
+                && path.ends_with(".rs")
+                && parts.len() >= 2
+                && parts.iter().all(|part| {
+                    !part.is_empty() && *part != "." && *part != ".." && !part.starts_with('.')
+                });
+            if !valid {
+                return Err("CargoSourcePathUnsupported");
+            }
+            let directory = parent
+                .iter()
+                .copied()
+                .chain(parts[..parts.len() - 1].iter().copied())
+                .collect::<Vec<_>>()
+                .join("/");
+            if directory.split('/').count() <= parent.len() {
+                return Err("CargoSourcePathUnsupported");
+            }
+            directories.insert(directory.clone());
+            if directories.len() > 8 {
+                return Err("CargoSourceDirectoryBudgetExceeded");
+            }
+            if identities.insert(json!([directory, basis, path]).to_string()) {
+                facts.push(json!({"kind":"cargo-source-directory-candidate","manifest":owner,
+                    "sourceIdentity":identity,"directory":directory,"basis":basis,"sourcePath":path}));
+            }
+        }
+        facts.sort_by_cached_key(|fact| {
+            json!([
+                fact["directory"],
+                fact["basis"],
+                fact.get("sourcePath").and_then(Value::as_str).unwrap_or("")
+            ])
+            .to_string()
+        });
+        Ok((directories.into_iter().collect(), facts))
+    };
+    match collect() {
+        Ok((directories, facts)) => result(Some(&identity), directories, facts, Vec::new()),
+        Err(reason) => result(
+            Some(&identity),
+            Vec::new(),
+            Vec::new(),
+            vec![json!({"reason":reason})],
+        ),
+    }
+}

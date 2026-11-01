@@ -668,6 +668,10 @@ impl WorkItemFileProgress {
                     }
                 }
             }
+            if transport["kind"] == "client-file-tool" {
+                transport["callId"] = json!(frame.id);
+                transport["completedAt"] = json!(frame.index);
+            }
             let source_read = attempt
                 .source_observation()
                 .map(|read| SourceReadObservation {

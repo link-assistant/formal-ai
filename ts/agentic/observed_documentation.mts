@@ -181,3 +181,6 @@ export function planObservedDocumentation(task, messages, tools, contract, deriv
   const planned = fileIoEffectStep(messages, tools, target, guide, derived.content);
   return planned.step ?? finish(planned.gap);
 }
+
+// Shared custody validation; native owner_of and complete implement the same predicates.
+export { ownerOf, complete };

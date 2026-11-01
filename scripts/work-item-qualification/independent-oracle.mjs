@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { observedManifestEvidence, supportedManifestClaims } from './manifest-claims.mjs';
 import { checkOwnedManifestTables } from './owned-manifest-claims.mjs';
+import { checkGeneratedDocumentation } from './source-quotation-claims.mjs';
 import { usefulDraftChanges } from '../hive-mind-draft-result.mjs';
 const sha = value => createHash('sha256').update(value).digest('hex');
 export function unexpectedCandidateChanges(files, guide) {
@@ -93,6 +94,7 @@ export async function checkDocumentationCandidate({
   const ownedTableClaims = checkOwnedManifestTables(text, sourceFacts, manifestEvidence.observations, {
     expectedOwners: originalFiles.filter(file => /\.(?:json|toml)$/u.test(file.path)).map(file => file.path)
   });
+  const generatedDocumentation = checkGeneratedDocumentation(text, original.content, originalFiles, manifestEvidence);
   const checkedClaims = [...typedClaims, ...ownedTableClaims];
   const manifestContradictions = checkedClaims.filter(row => row.status === 'contradicted');
   const unexpectedChanges = unexpectedCandidateChanges(files, guide);
@@ -111,6 +113,7 @@ export async function checkDocumentationCandidate({
     checkedClaims,
     typedClaims,
     ownedTableClaims,
+    generatedDocumentation,
     manifestContradictions,
     unexpectedChanges,
     smokeObservations: rows,

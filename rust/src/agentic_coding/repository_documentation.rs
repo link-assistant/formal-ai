@@ -1,13 +1,23 @@
 //! Composition of literal declarations and observed syntax only. Manual native pair.
+use super::capability_router::shell_command_tool;
 use super::final_result::FinalResult;
 use super::manifest_documentation::derive_manifest_documentation;
-use super::observed_documentation::plan_observed_documentation;
+use super::observed_documentation::{
+    complete as discovery_source, owner_of as discovery_owner, plan_observed_documentation,
+};
 use super::observed_source_usage::observed_source_usage_operation;
-use super::planner::AgenticPlan;
+use super::planner::{AgenticPlan, Capability};
 use super::source_documentation::{documentation_authority, source_documentation_policy};
+use super::source_manifest_facts::observed_cargo_source_directories;
 use super::work_item_evidence::work_item_evidence_paths;
+use super::work_item_file_io::{
+    FileIoAttempt, FileIoPlan, WorkItemFileProgress, file_io_pending_step, file_io_read_step,
+    file_io_search_step,
+};
 use crate::protocol::ChatMessage;
+use crate::source_fetch::sha256_hex;
 use serde_json::{Value, json};
+use std::collections::{BTreeMap, BTreeSet};
 use std::sync::OnceLock;
 
 fn manifest_path(path: &str) -> bool {
@@ -236,7 +246,403 @@ pub(super) fn derive_repository_documentation(
             "coverage":"explicit-source-paths-only; no executable-role or whole-task acceptance credit"}})
 }
 
-/// Run the shared custody state machine using the actual native syntax operation.
+// Externally specified bootstrap input, not autonomous Formal AI synthesis.
+struct Discovery {
+    contract: Value,
+    info: Value,
+    step: Option<AgenticPlan>,
+    gap: Option<String>,
+}
+impl Discovery {
+    fn new(contract: &Value) -> Self {
+        Self {
+            contract: contract.clone(),
+            step: None,
+            gap: None,
+            info: json!({"schema":"observed-consumer-discovery/v1","state":"explicit-only","queries":[],"candidates":[],
+                "confirmedOwners":[],"gaps":[],"scope":"bounded-observed-cargo-source-scopes; syntax witnesses only; no whole-repository absence or runtime semantics"}),
+        }
+    }
+    fn note(&mut self, reason: String) {
+        let gaps = self.info["gaps"].as_array_mut().expect("DiscoveryGaps");
+        if !gaps.contains(&json!(reason)) {
+            gaps.push(json!(reason));
+        }
+    }
+    fn fail(mut self, reason: &str) -> Self {
+        self.gap = Some(reason.to_owned());
+        self
+    }
+    fn planned(mut self, plan: FileIoPlan) -> Self {
+        match plan {
+            FileIoPlan::Pending(step) => self.step = Some(step),
+            FileIoPlan::Gap(reason) => self.gap = Some(reason),
+        }
+        self
+    }
+}
+fn discovery_reads<'a>(progress: &'a WorkItemFileProgress, owner: &str) -> Vec<&'a FileIoAttempt> {
+    progress
+        .research_attempts()
+        .iter()
+        .filter(|attempt| {
+            attempt.capability == Capability::Read
+                && discovery_owner(attempt).as_deref() == Some(owner)
+        })
+        .collect()
+}
+fn observation_position(attempt: &FileIoAttempt) -> Option<usize> {
+    attempt.transport["completedAt"]
+        .as_u64()
+        .and_then(|value| usize::try_from(value).ok())
+}
+struct Consumer {
+    path: String,
+    sha256: String,
+    after: usize,
+    aliases: BTreeSet<String>,
+}
+fn repository_discovery_preflight(
+    task: &str,
+    messages: &[ChatMessage],
+    tools: &[&str],
+    contract: &Value,
+    policy: &Value,
+) -> Discovery {
+    let mut discovery = Discovery::new(contract);
+    let owned = |path: &str| {
+        path.as_bytes()
+            .first()
+            .is_some_and(|byte| byte.is_ascii_alphanumeric() || *byte == b'_')
+            && path
+                .bytes()
+                .all(|byte| byte.is_ascii_alphanumeric() || b"_./-".contains(&byte))
+            && path.split('/').all(|part| !matches!(part, "" | "." | ".."))
+    };
+    let sources = contract["sources"].as_array();
+    let target = contract["target"].as_str();
+    let valid = sources.is_some_and(|rows| {
+        !rows.is_empty()
+            && rows.len() <= 16
+            && rows.iter().all(|row| row.as_str().is_some_and(owned))
+            && rows
+                .iter()
+                .filter_map(Value::as_str)
+                .chain(target)
+                .collect::<BTreeSet<_>>()
+                .len()
+                == rows.len() + 1
+    }) && target.is_some_and(owned);
+    if contract["authority"] != "owned" || !valid || shell_command_tool(tools).is_none() {
+        return discovery;
+    }
+    let progress = WorkItemFileProgress::scan(messages);
+    if let Some(reason) = progress.gap.as_ref() {
+        return discovery.fail(reason);
+    }
+    let effects = progress
+        .research_attempts()
+        .iter()
+        .filter(|attempt| matches!(attempt.capability, Capability::Edit | Capability::Write))
+        .collect::<Vec<_>>();
+    if effects.len() > 1
+        || effects.iter().any(|attempt| {
+            attempt.capability != Capability::Edit
+                || discovery_owner(attempt).as_deref() != contract["target"].as_str()
+        })
+        || progress.research_attempts().iter().any(|attempt| {
+            attempt.capability == Capability::Read && discovery_owner(attempt).is_none()
+        })
+    {
+        return discovery;
+    }
+    if let Some(pending) = file_io_pending_step(&progress, tools) {
+        return discovery.planned(pending);
+    }
+    let effect = effects.first().copied();
+    let mut cutoff = messages.len();
+    if let Some(effect) = effect {
+        let Some(position) =
+            observation_position(effect).filter(|position| *position < messages.len())
+        else {
+            return discovery.fail("ConsumerEffectProvenanceUnavailable");
+        };
+        let Some(call_identifier) = effect.transport["callId"].as_str() else {
+            return discovery.fail("ConsumerEffectProvenanceUnavailable");
+        };
+        if !messages[position].role.eq_ignore_ascii_case("tool")
+            || messages[position].tool_call_id.as_deref() != Some(call_identifier)
+        {
+            return discovery.fail("ConsumerEffectProvenanceUnavailable");
+        }
+        let declarations = messages[..position]
+            .iter()
+            .enumerate()
+            .filter(|(_, message)| {
+                message.role.eq_ignore_ascii_case("assistant")
+                    && message.tool_calls.iter().any(|call| {
+                        call.id == call_identifier
+                            && Some(call.function.name.as_str())
+                                == effect.transport["actualTool"].as_str()
+                    })
+            })
+            .map(|(index, _)| index)
+            .collect::<Vec<_>>();
+        if declarations.len() != 1 {
+            return discovery.fail("ConsumerEffectProvenanceUnavailable");
+        }
+        cutoff = declarations[0];
+    }
+    let frozen = WorkItemFileProgress::scan(&messages[..cutoff]);
+    let read = |discovery: Discovery, owner: &str| {
+        if effect.is_some() {
+            discovery.fail("ConsumerPreEffectObservationMissing")
+        } else {
+            discovery.planned(file_io_read_step(messages, tools, owner, task))
+        }
+    };
+    let mut queries: BTreeMap<String, BTreeSet<String>> = BTreeMap::new();
+    let explicit = contract["sources"].as_array().cloned().unwrap_or_default();
+    for owner in explicit
+        .iter()
+        .filter_map(Value::as_str)
+        .filter(|owner| owner.ends_with(".toml"))
+    {
+        let observations = discovery_reads(&frozen, owner);
+        if observations.is_empty() {
+            return read(discovery, owner);
+        }
+        let first = observations
+            .iter()
+            .find_map(|attempt| discovery_source(attempt));
+        let latest = observations
+            .last()
+            .and_then(|attempt| discovery_source(attempt));
+        let (Some(source), Some(latest)) = (first, latest) else {
+            return discovery.fail("ConsumerManifestObservationIncomplete");
+        };
+        if source != latest {
+            return discovery.fail("ConsumerManifestSnapshotChanged");
+        }
+        let layout = observed_cargo_source_directories(owner, source);
+        let selected = derive_manifest_documentation(task, owner, source, "", Some(policy));
+        let directories = layout["directories"].as_array();
+        if layout["schema"] != "observed-cargo-source-directories/v1"
+            || layout["manifest"] != owner
+            || layout["sourceIdentity"] != sha256_hex(source.as_bytes())
+            || layout["complete"] != true
+            || directories.is_none_or(|rows| rows.len() > 4)
+            || selected.get("gap").is_some()
+        {
+            discovery.note(format!("cargo-source-layout-unverified:{owner}"));
+            continue;
+        }
+        let selected_facts = selected["facts"]
+            .as_array()
+            .or_else(|| selected["value"].as_array());
+        let aliases = selected_facts
+            .into_iter()
+            .flatten()
+            .filter(|fact| fact["kind"] == "manifest-declaration")
+            .filter_map(|fact| fact["name"].as_str())
+            .map(|name| name.replace('-', "_"))
+            .collect::<BTreeSet<_>>();
+        let identifier = |name: &str| {
+            let mut characters = name.chars();
+            characters
+                .next()
+                .is_some_and(|first| first.is_ascii_alphabetic() || first == '_')
+                && name.len() <= 128
+                && characters.all(|character| character.is_ascii_alphanumeric() || character == '_')
+        };
+        if aliases.is_empty() || aliases.iter().any(|alias| !identifier(alias)) {
+            discovery.note(format!("cargo-dependency-alias-unavailable:{owner}"));
+            continue;
+        }
+        for directory in directories.into_iter().flatten().filter_map(Value::as_str) {
+            queries
+                .entry(directory.to_owned())
+                .or_default()
+                .extend(aliases.iter().cloned());
+        }
+    }
+    let mut planned_queries = Vec::new();
+    for (directory, aliases) in &queries {
+        let identifiers = aliases.iter().cloned().collect::<Vec<_>>();
+        for chunk in identifiers.chunks(8) {
+            planned_queries.push((directory.clone(), chunk.to_vec()));
+        }
+    }
+    if queries.len() > 4 || planned_queries.len() > 4 {
+        discovery.note("consumer-query-budget-exceeded".to_owned());
+        discovery.info["state"] = json!("incomplete");
+        return discovery;
+    }
+    if planned_queries.is_empty() {
+        return discovery;
+    }
+    let mut candidates: BTreeMap<String, Consumer> = BTreeMap::new();
+    for (directory, identifiers) in &planned_queries {
+        let Some(observed) = frozen.search_for(directory, identifiers) else {
+            if effect.is_some() {
+                return discovery.fail("ConsumerPreEffectSearchMissing");
+            }
+            return discovery.planned(file_io_search_step(
+                messages,
+                tools,
+                directory,
+                identifiers,
+                task,
+            ));
+        };
+        discovery.info["queries"].as_array_mut().expect("DiscoveryQueries").push(json!({"directory":directory,"identifiers":identifiers,
+            "requestIdentity":observed.request_identity,"status":observed.status,"complete":observed.complete,"root":observed.root,
+            "transport":{"actualTool":observed.transport["actualTool"],"callId":observed.transport["callId"],
+                "actualExitCode":observed.transport["actualExitCode"],"completedAt":observed.transport["completedAt"]}}));
+        let after = observed.transport["completedAt"]
+            .as_u64()
+            .and_then(|value| usize::try_from(value).ok());
+        if observed.status != "reported-success"
+            || !observed.complete
+            || frozen.root.as_deref() != Some(observed.root.as_str())
+            || after.is_none()
+        {
+            discovery.note(format!("consumer-search-incomplete:{directory}"));
+            continue;
+        }
+        for file in &observed.files {
+            let owner = file["path"].as_str().unwrap_or_default();
+            let hash = file["sha256"].as_str().unwrap_or_default();
+            if let Some(prior) = candidates.get_mut(owner) {
+                if prior.sha256 != hash {
+                    return discovery.fail("ConsumerSearchSnapshotContradiction");
+                }
+                prior.after = prior.after.max(after.unwrap_or_default());
+                prior.aliases.extend(identifiers.iter().cloned());
+            } else {
+                candidates.insert(
+                    owner.to_owned(),
+                    Consumer {
+                        path: owner.to_owned(),
+                        sha256: hash.to_owned(),
+                        after: after.unwrap_or_default(),
+                        aliases: identifiers.iter().cloned().collect(),
+                    },
+                );
+            }
+        }
+    }
+    if discovery.info["gaps"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter_map(Value::as_str)
+        .any(|reason| reason.starts_with("consumer-search-incomplete:"))
+    {
+        discovery.info["state"] = json!("incomplete");
+        return discovery;
+    }
+    if candidates.len() > 8 {
+        discovery.note("consumer-source-budget-exceeded".to_owned());
+        discovery.info["state"] = json!("incomplete");
+        return discovery;
+    }
+    let mut confirmed = Vec::new();
+    for candidate in candidates.values() {
+        let reads = discovery_reads(&frozen, &candidate.path)
+            .into_iter()
+            .filter(|attempt| {
+                observation_position(attempt).is_some_and(|position| position > candidate.after)
+            })
+            .collect::<Vec<_>>();
+        let Some(observed) = reads.last() else {
+            return read(discovery, &candidate.path);
+        };
+        let Some(source) = discovery_source(observed)
+            .filter(|source| sha256_hex(source.as_bytes()) == candidate.sha256)
+        else {
+            return discovery.fail("ConsumerSearchReadCustodyMismatch");
+        };
+        let usage = match observed_source_usage_operation(
+            &json!({"owner":candidate.path,"source":source,"language":"Rust"}),
+        ) {
+            Ok(usage) => usage,
+            Err(_) => {
+                discovery.note(format!("consumer-syntax-unavailable:{}", candidate.path));
+                continue;
+            }
+        };
+        if usage["schema"] != "observed-source-usage/v1"
+            || usage["owner"] != candidate.path
+            || usage["sourceIdentity"] != candidate.sha256
+            || usage["language"] != "Rust"
+        {
+            discovery.note(format!("consumer-syntax-unbound:{}", candidate.path));
+            continue;
+        }
+        let witnessed = ["imports", "calls"].iter().any(|key| {
+            usage[*key].as_array().into_iter().flatten().any(|row| {
+                row["module"].as_str().is_some_and(|name| {
+                    candidate
+                        .aliases
+                        .contains(name.split("::").next().unwrap_or(name))
+                })
+            })
+        }) || usage["references"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .any(|row| {
+                row["root"].as_str().is_some_and(|name| {
+                    candidate
+                        .aliases
+                        .contains(name.split("::").next().unwrap_or(name))
+                })
+            });
+        discovery.info["candidates"].as_array_mut().expect("DiscoveryCandidates").push(json!({"path":candidate.path,"sourceIdentity":candidate.sha256,"syntaxConfirmed":witnessed,"gaps":usage["gaps"]}));
+        if witnessed {
+            confirmed.push(candidate.path.clone());
+        }
+        if usage["gaps"]
+            .as_array()
+            .is_some_and(|rows| !rows.is_empty())
+        {
+            discovery.note(format!(
+                "consumer-syntax-resolution-unverified:{}",
+                candidate.path
+            ));
+        }
+    }
+    let mut sources = explicit
+        .iter()
+        .filter_map(Value::as_str)
+        .map(str::to_owned)
+        .collect::<Vec<_>>();
+    for owner in &confirmed {
+        if !sources.contains(owner) {
+            sources.push(owner.clone());
+        }
+    }
+    if sources.len() > 16 {
+        discovery.note("documentation-source-budget-exceeded".to_owned());
+        discovery.info["state"] = json!("incomplete");
+        return discovery;
+    }
+    discovery.info["confirmedOwners"] = json!(confirmed);
+    discovery.info["state"] = json!(if discovery.info["gaps"]
+        .as_array()
+        .is_some_and(|rows| !rows.is_empty())
+    {
+        "partial"
+    } else {
+        "observed-scopes"
+    });
+    discovery.contract["sources"] = json!(sources);
+    discovery.contract["coverage"] = discovery.info["scope"].clone();
+    discovery
+}
+
+/// Run the shared custody state machine using pre-effect discovery observations.
 pub(super) fn plan_repository_documentation(
     task: &str,
     messages: &[ChatMessage],
@@ -245,21 +651,76 @@ pub(super) fn plan_repository_documentation(
     result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let policy = source_documentation_policy()?;
-    let mut contract = repository_documentation_contract(task, &policy)?;
+    let contract = repository_documentation_contract(task, &policy)?;
+    if contract["authority"] != "owned" || shell_command_tool(tools).is_none() {
+        let mut contract = contract;
+        contract["workItem"] = json!(work_item);
+        return Some(plan_observed_documentation(
+            task,
+            messages,
+            tools,
+            &contract,
+            |sources, guide| {
+                derive_repository_documentation(
+                    task,
+                    sources,
+                    guide,
+                    &policy,
+                    observed_source_usage_operation,
+                )
+            },
+            result,
+        ));
+    }
+    let mut preflight = repository_discovery_preflight(task, messages, tools, &contract, &policy);
+    if let Some(step) = preflight.step.take() {
+        return Some(step);
+    }
+    let mut contract = preflight.contract;
     contract["workItem"] = json!(work_item);
+    let info = preflight.info;
+    let gap = preflight.gap;
     Some(plan_observed_documentation(
         task,
         messages,
         tools,
         &contract,
         |sources, guide| {
-            derive_repository_documentation(
+            if let Some(reason) = &gap {
+                return json!({"gap":reason});
+            }
+            let mut derived = derive_repository_documentation(
                 task,
                 sources,
                 guide,
                 &policy,
                 observed_source_usage_operation,
-            )
+            );
+            if derived.get("gap").is_some() {
+                return derived;
+            }
+            let fact = json!({"kind":"observed-consumer-discovery","schema":info["schema"],"state":info["state"],
+            "queries":info["queries"],"candidates":info["candidates"],"confirmedOwners":info["confirmedOwners"],"gaps":info["gaps"],"scope":info["scope"]});
+            derived["facts"]
+                .as_array_mut()
+                .expect("RepositoryFacts")
+                .push(fact);
+            derived["binding"]["discovery"] = info.clone();
+            let remaining = derived["remainingWork"]
+                .as_array_mut()
+                .expect("RepositoryRemainingWork");
+            for reason in info["gaps"]
+                .as_array()
+                .into_iter()
+                .flatten()
+                .filter_map(Value::as_str)
+            {
+                let reason = json!(format!("consumer-discovery-unverified:{reason}"));
+                if !remaining.contains(&reason) {
+                    remaining.push(reason);
+                }
+            }
+            derived
         },
         result,
     ))

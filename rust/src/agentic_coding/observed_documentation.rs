@@ -24,10 +24,10 @@ fn argument_alias(value: &Value, names: &[&str]) -> Option<String> {
         .all(|value| value.as_str() == Some(first))
         .then(|| first.to_owned())
 }
-fn owner_of(attempt: &FileIoAttempt) -> Option<String> {
+pub(super) fn owner_of(attempt: &FileIoAttempt) -> Option<String> {
     argument_alias(&arguments_of(attempt)?, &["filePath", "file_path", "path"])
 }
-fn complete(attempt: &FileIoAttempt) -> Option<&str> {
+pub(super) fn complete(attempt: &FileIoAttempt) -> Option<&str> {
     let read = attempt.source_observation()?;
     let source = read.source.as_deref()?;
     (attempt.succeeded && read.error.is_none() && read.complete && source.len() <= MAXIMUM_BYTES)

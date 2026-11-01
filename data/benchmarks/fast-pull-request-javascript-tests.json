@@ -94,6 +94,9 @@
     "rust/tests/web/source-repair-intake.test.mjs",
     "rust/tests/web/work-item-owned-manifest-checker.test.mjs",
     "rust/tests/web/open-reasoning-delivery.test.mjs",
-    "rust/tests/web/boundary-regression-driver.test.mjs"
+    "rust/tests/web/boundary-regression-driver.test.mjs",
+    "rust/tests/web/cargo-source-directories.test.mjs",
+    "rust/tests/web/repository-consumer-discovery.test.mjs",
+    "rust/tests/web/work-item-source-quotation-checker.test.mjs"
   ]
 }

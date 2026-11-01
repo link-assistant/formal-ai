@@ -559,6 +559,10 @@ export class WorkItemFileProgress {
       const index = frame ? frames.indexOf(frame) : frames.findIndex((frame, index) => !used.has(index) && frame.tool === attempt.tool && frame.argumentsValue === attempt.arguments);
       if (index >= 0) {
         used.add(index);
+        if (attempt.transport?.kind === 'client-file-tool') {
+          attempt.transport.callId = frames[index].id;
+          attempt.transport.completedAt = frames[index].index;
+        }
         events.push({
           at: frames[index].index,
           attempt

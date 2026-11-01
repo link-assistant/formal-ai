@@ -1,0 +1,183 @@
+{
+  "schema": "formal-ai-cargo-source-directory-bootstrap-qualification/v1",
+  "scope": "Generic observed Cargo candidate-scope helper only; root integration pending.",
+  "naturalAttempt": {
+    "request": "Add exported observedCargoSourceDirectories(owner, source) to js/agentic/source_manifest_facts.mjs, reusing its existing strict TOML declarations and validation. Return sourceIdentity, directories, source-bound candidate facts and explicit gaps for safe Cargo source search scopes: the manifest-parent/src convention and directories of explicit lib-table or bin-array Rust path values. These are candidates, never file-existence or runtime-use claims. Reject hidden, traversing, absolute, non-.rs and manifest-parent/root scopes, unsupported custom layouts, more than eight unique directories or source over 262144 UTF8 bytes. Do not access files or network; preserve observedManifestFacts behavior. Add focused tests in rust/tests/web/cargo-source-directories.test.mjs for a nested Cargo manifest default src candidate, explicit library/binary directories and unsafe-path rejection, then run node --test rust/tests/web/cargo-source-directories.test.mjs.",
+    "requestIdentity": "31f8ca56b4d8340c86d59985548278b9f9aba8498d1594f68563a61d761cfec4",
+    "tools": [],
+    "stop": "command-policy-denied",
+    "proposedAction": "node --test rust/tests/web/cargo-source-directories.test.mjs",
+    "sourcePreIdentity": "92bb681161235aed9d23889cd1df7d5b8c97f36ced0a8dffa4595b31fdbcbdc1",
+    "sourcePostIdentity": "92bb681161235aed9d23889cd1df7d5b8c97f36ced0a8dffa4595b31fdbcbdc1",
+    "testProduced": false,
+    "candidateProduced": false,
+    "interpretation": "Explicit verification command preempted helper/test creation and was denied before execution; this does not establish universal synthesis incapability."
+  },
+  "api": {
+    "javascript": "observedCargoSourceDirectories(owner, source)",
+    "native": "pub(super) fn observed_cargo_source_directories(owner:&str,source:&str)->Value",
+    "schema": "observed-cargo-source-directories/v1",
+    "fields": [
+      "manifest",
+      "sourceIdentity",
+      "directories",
+      "facts",
+      "gaps",
+      "complete",
+      "scope"
+    ],
+    "explicitEntryPoint": "facts[].sourcePath",
+    "candidateOnly": true,
+    "maximumUniqueDirectories": 8,
+    "maximumSourceUtf8Bytes": 262144
+  },
+  "externalBootstrap": {
+    "synthesisCredit": 0,
+    "implementationOrigin": "Externally specified manual generic engine payload after preserved natural attempt.",
+    "transport": "Actual maintained JS FormalAI explicit Run per reviewed fixed force-copy command, with generated existence/preparation/postcondition steps. No custom target writer.",
+    "initialGuardedApply": "Default copy prerequisite test-e was denied by cp-only allowlist before any copy.",
+    "rootReviewedOverwrite": true,
+    "payloads": [
+      {
+        "target": "js/agentic/source_manifest_facts.mjs",
+        "beforeIdentity": "92bb681161235aed9d23889cd1df7d5b8c97f36ced0a8dffa4595b31fdbcbdc1",
+        "afterIdentity": "45bf78b3ecb65a2f309ed084f29d2518a2fd552d923ff1416dea43babec7297f",
+        "scratchPostimageMatches": true,
+        "actualTools": [
+          "bash",
+          "bash",
+          "bash",
+          "bash",
+          "bash"
+        ],
+        "actualStop": "final",
+        "synthesisCredit": 0
+      },
+      {
+        "target": "ts/agentic/source_manifest_facts.mts",
+        "beforeIdentity": "92bb681161235aed9d23889cd1df7d5b8c97f36ced0a8dffa4595b31fdbcbdc1",
+        "afterIdentity": "45bf78b3ecb65a2f309ed084f29d2518a2fd552d923ff1416dea43babec7297f",
+        "scratchPostimageMatches": true,
+        "actualTools": [
+          "bash",
+          "bash",
+          "bash",
+          "bash",
+          "bash"
+        ],
+        "actualStop": "final",
+        "synthesisCredit": 0
+      },
+      {
+        "target": "rust/src/agentic_coding/source_manifest_facts.rs",
+        "beforeIdentity": "75bb2d1f99f79d22c011feed3ea064fbb64d1876b284dd97b324650b3f622f35",
+        "afterIdentity": "93986d573a37b6094a7c04fc58e5c2a88813c20fa0d5c54bf38569ff866d8c27",
+        "scratchPostimageMatches": true,
+        "actualTools": [
+          "bash",
+          "bash",
+          "bash",
+          "bash",
+          "bash"
+        ],
+        "actualStop": "final",
+        "synthesisCredit": 0
+      },
+      {
+        "target": "rust/tests/fixtures/cargo-source-directories.json",
+        "beforeIdentity": null,
+        "afterIdentity": "70ff2060a72db4c500d03103064988d8968dceb788c687d19eb12c0f95b8d47d",
+        "scratchPostimageMatches": true,
+        "actualTools": [
+          "bash",
+          "bash",
+          "bash",
+          "bash",
+          "bash"
+        ],
+        "actualStop": "final",
+        "synthesisCredit": 0
+      },
+      {
+        "target": "rust/tests/web/cargo-source-directories.test.mjs",
+        "beforeIdentity": null,
+        "afterIdentity": "115c7071ccb4945cd05c6ba73770285e00de73b94f46a6b64bd505be8bd9c158",
+        "scratchPostimageMatches": true,
+        "actualTools": [
+          "bash",
+          "bash",
+          "bash",
+          "bash",
+          "bash"
+        ],
+        "actualStop": "final",
+        "synthesisCredit": 0
+      },
+      {
+        "target": "rust/tests/unit/agentic-coding/source_manifest_facts.rs",
+        "beforeIdentity": "5a69a13cc771cfc2ca78b8969b307eef741184031542cb0f7dbb7b7a2d9de32b",
+        "afterIdentity": "0d8abdd75c821dc00fa8bf823c67d26635142a7286199808767aee961a281216",
+        "scratchPostimageMatches": true,
+        "actualTools": [
+          "bash",
+          "bash",
+          "bash",
+          "bash",
+          "bash"
+        ],
+        "actualStop": "final",
+        "synthesisCredit": 0
+      }
+    ]
+  },
+  "qualification": {
+    "focusedFile": "rust/tests/web/cargo-source-directories.test.mjs",
+    "executedFrom": "Owned scratch fixture with physically copied read-only SHA dependency and old shared fixture; no worktree symlink parents.",
+    "tests": 22,
+    "passed": 22,
+    "failed": 0,
+    "exitCode": 0,
+    "elapsedSecondsApplicationAndTests": 8.504876417020569,
+    "existingObservedManifestFactsFixturesPreserved": true,
+    "maximumUniqueDirectories": 8,
+    "sourceUtf8Bytes": 262144,
+    "explicitEntryPointRetained": "facts[].sourcePath",
+    "claim": "Only candidates; no filesystem existence, actual Cargo target, consumer import or runtime-use proof.",
+    "nativeRuntimeExecuted": false,
+    "nativeParityQualified": false
+  },
+  "explicitUnsupportedCases": [
+    "Non-Cargo/hidden/absolute/traversing manifest owners",
+    "Hidden/absolute/traversing/backslash/non-rs target paths",
+    "Target source file directly in manifest parent or workspace search-root scope",
+    "Inline/dotted/nested selected lib/bin layouts; non-array bin table",
+    "Duplicate target keys and malformed/outside-profile TOML",
+    "More than eight unique candidate directories or oversized source"
+  ],
+  "nativeGap": "Native counterpart manually uses existing toml_edit/private validation; only JS focused suite executed locally. Shared native fixtures require hosted CI, and no verified translation or broader profile parity is claimed.",
+  "workflow": {
+    "maintainedChanges": false,
+    "newParserOrFramework": false,
+    "manualMaintainedWriter": false,
+    "boundedJavaScriptProcesses": 3,
+    "heapMegabytes": 384,
+    "deadlineSecondsPerProcess": 25,
+    "WasmBlocked": true,
+    "sourceUsageRustGrammar": false,
+    "localRustCompilationOrTests": false,
+    "noFurtherWorkAfterCurrentTask": true
+  },
+  "evidence": {
+    "bootstrap-bundle.json": "3a7b971751a8f973d32daa1ed8126e9436fa14151b6d3ef0deb33aa35b4c6288",
+    "scratch-application.json": "3d997cee1e21cd60e04f401d579f02e75f265e5977a0ea1111764150c0fc4a41",
+    "scratch-application-process.json": "908c945cdb677530896b5d5a0658f2f357b7cd79be88cce1f751626f480795c9",
+    "scratch-application-final.json": "5f4469c58bcdb90b49df1bc9c7413d697f05842f78d21d36bbf7d3d79bc3aec2",
+    "scratch-final-process.json": "0f7b2e8936638353f61b1078e820cbcf4c85e5b5cfcfea92f92bd9fd94b1fe62",
+    "natural/request.json": "9fcea69aa9017178ab0afcf25f9139c4de939c6ddce696bed60c3ff37398eafc",
+    "natural/result.json": "32edf5399fbe6451a386af744d201760d102797cca9db58923ce723603dfe517",
+    "natural/before-source.mjs": "92bb681161235aed9d23889cd1df7d5b8c97f36ced0a8dffa4595b31fdbcbdc1",
+    "natural/after-source.mjs": "92bb681161235aed9d23889cd1df7d5b8c97f36ced0a8dffa4595b31fdbcbdc1",
+    "natural/independent-oracle-plan.json": "ebcccb38f7928dfedcf6daf081a3058e30758633cbb4f07e57fbb848f75012ee",
+    "natural/independent-initial-review.json": "061b6ada80466f0df79bdc4167b733be299e0a4376c5ca19a180632ba7659f3d"
+  }
+}

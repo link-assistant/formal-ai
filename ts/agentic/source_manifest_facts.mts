@@ -407,3 +407,68 @@ function sortedFacts(facts) {
   };
   return facts.sort(compare);
 }
+
+/** Candidate Cargo lib/bin search scopes from complete observed TOML only.
+ * Convention does not establish any file, target, import or runtime use. */
+export function observedCargoSourceDirectories(owner, source) {
+  const manifest = typeof owner === 'string' ? owner : null;
+  let sourceIdentity = null;
+  const result = (directories, facts, gaps) => ({
+    schema: 'observed-cargo-source-directories/v1', manifest, sourceIdentity,
+    directories, facts, gaps, complete: gaps.length === 0,
+    scope: 'cargo-lib-bin-candidate-search-scopes-only; no existence/target/runtime claim'
+  });
+  const gap = reason => result([], [], [{ reason }]);
+  if (typeof source !== 'string' || new TextEncoder().encode(source).length > 262144) return gap('CargoSourceBudgetExceeded');
+  if (typeof owner !== 'string' || !/^[A-Za-z0-9_][A-Za-z0-9_./-]*$/u.test(owner)
+      || owner.split('/').some(part => !part || part === '.' || part === '..' || part.startsWith('.'))
+      || owner.split('/').at(-1) !== 'Cargo.toml') return gap('CargoSourceOwnerRequired');
+  sourceIdentity = sha256Hex(source);
+  let rows;
+  try { rows = tomlDeclarations(source); } catch { return gap('CargoSourceLayoutUnsupported'); }
+  const parent = owner.split('/').slice(0, -1), directories = new Set(), facts = [], identities = new Set();
+  const add = (directory, basis, sourcePath = null) => {
+    if (directory.split('/').length <= parent.length || !directory.startsWith(parent.length ? parent.join('/') + '/' : '')) fail('CargoSourcePathUnsupported');
+    directories.add(directory);
+    if (directories.size > 8) fail('CargoSourceDirectoryBudgetExceeded');
+    const identity = JSON.stringify([directory, basis, sourcePath]);
+    if (identities.has(identity)) return;
+    identities.add(identity);
+    facts.push({ kind: 'cargo-source-directory-candidate', manifest, sourceIdentity,
+      directory, basis, ...(sourcePath === null ? {} : { sourcePath }) });
+  };
+  const explicit = (path, section) => {
+    if (typeof path !== 'string' || !/^[A-Za-z0-9_][A-Za-z0-9_./-]*\.rs$/u.test(path)
+        || path.split('/').some(part => !part || part === '.' || part === '..' || part.startsWith('.'))
+        || path.split('/').length < 2) fail('CargoSourcePathUnsupported');
+    add([...parent, ...path.split('/').slice(0, -1)].join('/'), 'explicit-' + section + '-path', path);
+  };
+  try {
+    add([...parent, 'src'].join('/'), 'conventional-src');
+    let selected = null;
+    for (const row of rows) {
+      if (row.header) {
+        selected = null;
+        if (!['lib', 'bin'].includes(row.section[0])) continue;
+        if (row.section.length !== 1 || row.arrayTable !== (row.section[0] === 'bin')) fail('CargoSourceLayoutUnsupported');
+        selected = { section: row.section[0], keys: new Set() };
+        continue;
+      }
+      if (row.section.length === 0 && ['lib', 'bin'].includes(row.key[0])) fail('CargoSourceLayoutUnsupported');
+      if (!['lib', 'bin'].includes(row.section[0])) continue;
+      if (!selected || row.section.length !== 1 || row.section[0] !== selected.section || row.key.length !== 1
+          || selected.keys.has(row.key[0])) fail('CargoSourceLayoutUnsupported');
+      selected.keys.add(row.key[0]);
+      if (row.key[0] === 'path') explicit(row.value, selected.section);
+    }
+  } catch (error) {
+    return gap(['CargoSourcePathUnsupported', 'CargoSourceDirectoryBudgetExceeded'].includes(error.message)
+      ? error.message : 'CargoSourceLayoutUnsupported');
+  }
+  facts.sort((left, right) => {
+    const first = JSON.stringify([left.directory, left.basis, left.sourcePath ?? '']);
+    const second = JSON.stringify([right.directory, right.basis, right.sourcePath ?? '']);
+    return first < second ? -1 : first > second ? 1 : 0;
+  });
+  return result([...directories].sort(), facts, []);
+}

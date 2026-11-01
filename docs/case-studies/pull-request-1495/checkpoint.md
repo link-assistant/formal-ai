@@ -27,7 +27,13 @@ The bounded search transport passed six focused JavaScript tests; the
 independent manifest-table checker passed seven. Its literal-field checks
 remain separate from executable integration semantics. Shared documentation
 custody now permits sixteen source owners in JavaScript, TypeScript and Rust.
-Consumer discovery still needs connection to the complete original work item.
+Consumer discovery now derives bounded search directories from observed Cargo
+entrypoints and dependency aliases, then requires fresh matching source reads.
+Four tiny-workspace JavaScript checks passed, covering alias discovery, changed
+source custody, post-edit manifest drift and incomplete symlink searches.
+Their Rust syntax witness is explicitly mocked; full original-work-item and
+real Rust grammar qualification remain pending. Twenty-two focused Cargo-layout
+checks and all three existing documentation checks also passed.
 The production dictionary-repair replay and its independent healthy/broken
 regression controls are preserved in formal-ai-production-dictionary-repair.json;
 this is a historical real-defect replay, not a new live-main contribution.
@@ -181,3 +187,16 @@ these local checks. The original multi-file documentation synthesis, genuine
 production repair, actual all-client task run, no-write hosted repeat and final
 default-branch release qualification are still open. Continue #1483 in this PR
 before taking the next #1170 issue.
+
+## Solo continuation after agent completion
+
+All three subagents finished their drafts; subsequent work is performed by the
+coordinator alone. The final independent quotation checker uses direct Babel
+AST and lexical-scope checks against frozen source, and is connected to the
+hosted candidate oracle. It accounts for added text without granting API-role,
+Rust root-resolution or whole-task acceptance credit. Its parser dependency is
+shared with production; its checking logic does not import the production
+extractor or renderer. Externally specified integration payloads are applied
+through actual JavaScript Formal AI tool calls and receive zero autonomous
+synthesis credit. Focused regressions are included in the fast PR profile.
+No local Rust compilation or Rust tests are performed.
