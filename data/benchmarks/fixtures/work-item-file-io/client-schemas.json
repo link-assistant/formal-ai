@@ -1,0 +1,20 @@
+{
+  "schema": "sanitized-client-io-schema-evidence/v1",
+  "source": {
+    "run": 41192482885,
+    "job": 124512441797,
+    "codex": {"path":"artifacts/codex/read-file/proxy.jsonl","bytes":59812,"sha256":"77ceece9a12fb715a6cbf597e9db18d4d0e123d841781624409fc694122b1fec"},
+    "claude": {"path":"artifacts/claude/read-file/proxy.jsonl","bytes":170344,"sha256":"08deda2ef279a180d17c1143665de240a7541712035502786b66c5a0bf618a1f"}
+  },
+  "projection": "Only inspected required names and confirmed property types; optional properties and all conversation/header/session content omitted.",
+  "codexTools": [
+    {"type":"function","name":"exec_command","parameters":{"type":"object","properties":{"cmd":{"type":"string"}},"required":["cmd"]}}
+  ],
+  "codexOtherObservedTool": {"name":"apply_patch","type":"custom","grammar":"present in actual capture; not retained in this reduced evidence"},
+  "claudeTools": [
+    {"type":"function","name":"Read","parameters":{"type":"object","properties":{"file_path":{"type":"string","description":"Absolute path of the file to read"}},"required":["file_path"]}},
+    {"type":"function","name":"Edit","parameters":{"type":"object","properties":{"file_path":{"type":"string","description":"Absolute path of the file to edit"},"old_string":{"type":"string"},"new_string":{"type":"string"}},"required":["file_path","old_string","new_string"]}}
+  ],
+  "claudeAbsoluteDescription": "Test projection condition; the reduced live-schema notes retained aliases but did not retain exact original description or absolute call samples.",
+  "processFrame": {"source":"rust/tests/fixtures/agentic/hive-own-session-feedback.json#toolReceipt","shape":"Chunk ID / Wall time / Process exited with code / Output","qualification":"existing observed production frame; exact current-client process framing remains hosted qualification"}
+}

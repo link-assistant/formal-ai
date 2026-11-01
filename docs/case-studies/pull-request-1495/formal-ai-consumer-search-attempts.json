@@ -1,0 +1,78 @@
+{
+  "schema": "formal-ai-natural-consumer-search-producer-attempts/v1",
+  "scope": "Two attempts total for one real missing bounded-search command producer, both scratch only.",
+  "sourceOwner": "js/agentic/work_item_file_io.mjs",
+  "sourcePreIdentity": "b8fd4789f65ffd75a302de8f90ee96c96c14373cc772a39ee7be24ae686b3dba",
+  "attempts": [
+    {
+      "id": "consumer-search-command-baseline",
+      "request": "Read js/agentic/work_item_file_io.mjs. Add an exported fileIoSearchCommand(root, directory, identifiers) function for the bounded consumer-search protocol. Reuse the existing command encoding, canonical JSON serialization and shell quoting helpers. Validate a canonical absolute workspace root, a nonhidden relative directory, and one to eight distinct ASCII Rust identifier strings, each at most 128 characters; sort the identifiers deterministically. The encoded request must contain exactly schema, operation, root, directory and identifiers: schema is formal-ai-owned-search-request/v1 and operation is search. Return the command string and reject unsupported scope inputs. Preserve all existing source and behavior. Do not execute the generated command.",
+      "requestIdentity": "12cb894f8c28a9360d8ca64f2656543d91fda94dfe67fe7b37d8ca7db23f301b",
+      "tools": [
+        "read"
+      ],
+      "stop": "final",
+      "sourceChanged": false,
+      "sourcePostIdentity": "b8fd4789f65ffd75a302de8f90ee96c96c14373cc772a39ee7be24ae686b3dba",
+      "elapsedSeconds": 3.655841625004541,
+      "heapMegabytes": 384,
+      "deadlineSeconds": 25,
+      "oraclePredeclared": true,
+      "oracleRun": false,
+      "candidateProduced": false,
+      "actualAnswer": "Contents of source echoed; full source omitted from curated record.",
+      "evidence": {
+        "request.json": "f764939af2462103ceee12375eb00a78e5930dc624a0e5d1ef3e6c4771a21dba",
+        "result.json": "875b25b4059281561c5e826587a4533c2dc6a2ba63a6782ddf5da4de3ece75ad",
+        "before-source.mjs": "b8fd4789f65ffd75a302de8f90ee96c96c14373cc772a39ee7be24ae686b3dba",
+        "after-source.mjs": "b8fd4789f65ffd75a302de8f90ee96c96c14373cc772a39ee7be24ae686b3dba",
+        "independent-oracle-plan.json": "33295c28f8b69e6bfdbdf3de196a6390513fcd35158f8bd580016a42ab088725",
+        "independent-review.json": "b9166825d4821775dd6bccc2f768b6effaa42d0134a0990111137c8906c69cdc"
+      }
+    },
+    {
+      "id": "consumer-search-command-mutation-first",
+      "request": "Add an exported fileIoSearchCommand(root, directory, identifiers) function to js/agentic/work_item_file_io.mjs for bounded consumer search. Reuse its existing command encoding, canonical JSON, path validation and shell quoting. Accept a canonical absolute root, nonhidden relative directory and one to eight distinct ASCII Rust identifiers of at most 128 characters; sort identifiers. Return a command carrying exactly schema, operation, root, directory and identifiers, with schema formal-ai-owned-search-request/v1 and operation search. Reject invalid scope inputs. Preserve all existing code and behavior; do not execute the command.",
+      "requestIdentity": "9019c49e84e816901310e12ae4c44140fcb9c5dbc8a3ab8e9fb3e5081e6dace2",
+      "tools": [],
+      "stop": "final",
+      "sourceChanged": false,
+      "sourcePostIdentity": "b8fd4789f65ffd75a302de8f90ee96c96c14373cc772a39ee7be24ae686b3dba",
+      "elapsedSeconds": 3.403489874996012,
+      "heapMegabytes": 384,
+      "deadlineSeconds": 25,
+      "oraclePredeclared": true,
+      "oracleRun": false,
+      "candidateProduced": false,
+      "actualAnswer": "Coding research remains unresolved: IndependentVerificationRequired",
+      "evidence": {
+        "request.json": "68e4463cbbc46af5668c4adb66c0c14652df386fe90a918d9f8c6807881cc298",
+        "result.json": "3863accb82cf7cefc3b52833813ef00ba7aa6f9ce54797d6c4a332d4333d34bb",
+        "before-source.mjs": "b8fd4789f65ffd75a302de8f90ee96c96c14373cc772a39ee7be24ae686b3dba",
+        "after-source.mjs": "b8fd4789f65ffd75a302de8f90ee96c96c14373cc772a39ee7be24ae686b3dba",
+        "independent-oracle-plan.json": "67e42f4c718490abfe438e7c2b4fb638cab9e396424440ae216b623b4a49a21d",
+        "independent-review.json": "b9c64645f102f0666c9f0608960468525f95db6483cfe9d38946652b377794e7"
+      }
+    }
+  ],
+  "grammarInspection": {
+    "coding_research_state.mjs:23": "Non-arithmetic coding research requires named independent test and verification command before Read.",
+    "module_function.mjs:613": "No-test source authoring accepted only for closed arithmetic declaration.",
+    "module_function.mjs:461": "Fallback operation search requires two parameters and seeded integer arithmetic.",
+    "module_function/seeded-source-plan.mjs:26": "Current seeded source composition request is unary.",
+    "module_function/conditional_ir.mjs:111,179": "Observed conditional profile is unary and recognizes map/join/push methods; no general JSON/sort/local-call synthesis in this profile."
+  },
+  "nextNeededStep": "A real bounded-search producer with an independently specified acceptance test and explicit verification command, then measure whether supported synthesis exists. This is not claimed derivable by current profiles; no unrelated arithmetic demonstration is recommended as productive work.",
+  "compliance": {
+    "naturalLanguageBehaviorOnly": true,
+    "suppliedTaskPatch": false,
+    "suppliedFrozenPostimage": false,
+    "suppliedImplementationGenerator": false,
+    "manualTargetEdits": false,
+    "manualEngineEdits": false,
+    "maintainedWrites": false,
+    "newNativeOrWasmExecution": false,
+    "zeroUsefulArtifactCreditForEchoOrLogs": true,
+    "additionalRetries": false
+  }
+}

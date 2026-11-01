@@ -1,0 +1,80 @@
+{
+  "schema": "comparison-boundary-behavior-vectors/v1",
+  "scope": "independent-grader-only; never solver prompts or seed answers",
+  "roles": [
+    {"operands":["value","minimum","value","maximum"],"operators":[">=","<"],"bound":"upper","inclusive":true,"expected":["selected","1","value","<","<=","0","1",">=","<"]},
+    {"operands":["floor","amount","ceiling","amount"],"operators":["<=",">"],"bound":"upper","inclusive":true,"expected":["selected","1","amount",">",">=","0","1",">=","<"]},
+    {"operands":["maximum","size","size","base"],"operators":[">",">"],"bound":"lower","inclusive":true,"expected":["selected","1","size",">",">=","1","0",">","<"]},
+    {"operands":["score","limit","score","start"],"operators":["<=",">="],"bound":"upper","inclusive":false,"expected":["selected","0","score","<=","<","1","0",">=","<="]},
+    {"operands":["reading","","reading",""],"operators":[">=","<"],"bound":"upper","inclusive":true,"expected":["selected","1","reading","<","<=","0","1",">=","<"]},
+    {"operands":["first","lower","second","upper"],"operators":[">=","<"],"bound":"upper","inclusive":true,"expected":["refused","BoundarySharedSubjectAmbiguous"]},
+    {"operands":["first","second","first","second"],"operators":[">=","<"],"bound":"upper","inclusive":true,"expected":["refused","BoundarySharedSubjectAmbiguous"]},
+    {"operands":["item","lower","item","upper"],"operators":["<","<"],"bound":"upper","inclusive":true,"expected":["refused","BoundaryIntervalRequired"]},
+    {"operands":["item","item","item","upper"],"operators":[">=","<"],"bound":"upper","inclusive":true,"expected":["refused","BoundarySubjectAmbiguous"]},
+    {"operands":["item","lower","item","upper"],"operators":["==","<"],"bound":"upper","inclusive":true,"expected":["refused","BoundaryOperatorUnsupported"]},
+    {"operands":["item","lower","item","upper"],"operators":[">=","<"],"bound":"sideways","inclusive":true,"expected":["refused","BoundaryRoleUnsupported"]}
+  ],
+  "witnesses": [
+    {"args":[-1,0,5,true,true],"expected":false},
+    {"args":[0,0,5,true,true],"expected":true},
+    {"args":[3,0,5,true,true],"expected":true},
+    {"args":[5,0,5,true,true],"expected":true},
+    {"args":[6,0,5,true,true],"expected":false},
+    {"args":[0,0,5,false,true],"expected":false},
+    {"args":[5,0,5,true,false],"expected":false}
+  ],
+  "regressions": [
+    {
+      "source": "// Preserve the inclusive interval contract. 雪\nexport function contains(value,__proto__,maximum){\n  return value >= __proto__ && value <= maximum;\n}\n",
+      "owner": "src/range.mjs",
+      "moduleSpecifier": "../src/range.mjs",
+      "definition": {
+        "declaration": "contains",
+        "bound": "upper",
+        "inclusive": true
+      },
+      "expectedSamples": [
+        {
+          "args": [
+            -2,
+            0,
+            2
+          ],
+          "expected": false
+        },
+        {
+          "args": [
+            0,
+            0,
+            2
+          ],
+          "expected": true
+        },
+        {
+          "args": [
+            1,
+            0,
+            2
+          ],
+          "expected": true
+        },
+        {
+          "args": [
+            2,
+            0,
+            2
+          ],
+          "expected": true
+        },
+        {
+          "args": [
+            4,
+            0,
+            2
+          ],
+          "expected": false
+        }
+      ]
+    }
+  ]
+}

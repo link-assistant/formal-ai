@@ -1,0 +1,98 @@
+{
+  "schema": "own-key-dictionary-repair-cases/v1",
+  "cases": [
+    {
+      "name": "arbitrary lexical dictionary own-spread",
+      "owner": "lib/records.mjs",
+      "source": "// Preserve 雪.\nexport function collect(key,value){const stash={};stash[key]=value;return {...stash};}\n",
+      "writes": 1,
+      "reads": 0,
+      "spreads": 1
+    },
+    {
+      "name": "computed reads are supported",
+      "owner": "lib/lookups.mjs",
+      "source": "export function resolve(key,value){const index={};index[key]=value;return index[key];}\n",
+      "writes": 1,
+      "reads": 1,
+      "spreads": 0
+    },
+    {
+      "name": "nested closure own-spread retains binding",
+      "owner": "lib/closure.mjs",
+      "source": "export function enumerate(items){const values={};for(const [key,value] of items)values[key]=value;return [0].map(()=>({...values}));}\n",
+      "writes": 1,
+      "reads": 0,
+      "spreads": 1
+    },
+    {
+      "name": "initializer whitespace and Unicode comments preserved",
+      "owner": "lib/layout.mjs",
+      "source": "// Before 雪.\nexport function collect(key,value){const stash = { \n\t};stash[key]=value;return {...stash};}\n// After 工具.\n",
+      "writes": 1,
+      "reads": 0,
+      "spreads": 1,
+      "preserveTrivia": true
+    },
+    {
+      "name": "intrinsic shadow refuses",
+      "owner": "lib/shadow.mjs",
+      "source": "export function build(Object,key,value){const storage={};storage[key]=value;return {...storage};}\n",
+      "gap": "DictionaryIntrinsicShadowedOrEscaped"
+    },
+    {
+      "name": "dictionary escape refuses",
+      "owner": "lib/escape.mjs",
+      "source": "export function build(key,value){const storage={};storage[key]=value;consume(storage);return {...storage};}\n",
+      "gap": "DictionaryBindingUnsupported"
+    },
+    {
+      "name": "prototype method dependence refuses",
+      "owner": "lib/method.mjs",
+      "source": "export function build(key,value){const storage={};storage[key]=value;storage.toString();return {...storage};}\n",
+      "gap": "DictionaryBindingUnsupported"
+    },
+    {
+      "name": "multiple candidates remain ambiguous",
+      "owner": "lib/ambiguous.mjs",
+      "source": "export function build(key,value){const first={};first[key]=value;const second={};second[key]=value;return [{...first},{...second}];}\n",
+      "gap": "DictionaryBindingAmbiguous"
+    },
+    {
+      "name": "shadowed record binding refuses",
+      "owner": "lib/local-shadow.mjs",
+      "source": "export function build(key,value){const data={};data[key]=value;return (()=>{const data={};data[key]=value;return data[key];})();}\n",
+      "gap": "DictionaryBindingUnsupported"
+    },
+    {
+      "name": "initializer comments cannot be dropped",
+      "owner": "lib/comment.mjs",
+      "source": "export function build(key,value){const data={/* retain */};data[key]=value;return data[key];}\n",
+      "gap": "DictionaryBindingUnsupported"
+    },
+    {
+      "name": "compound updates cannot weaken proof",
+      "owner": "lib/update.mjs",
+      "source": "export function build(key,value){const data={};data[key]+=value;return data[key];}\n",
+      "gap": "DictionaryBindingUnsupported"
+    },
+    {
+      "name": "computed method invocation refuses",
+      "owner": "lib/call.mjs",
+      "source": "export function build(key,value){const data={};data[key]=value;return data[key]();}\n",
+      "gap": "DictionaryBindingUnsupported"
+    },
+    {
+      "name": "intrinsic mutation refuses",
+      "owner": "lib/mutate.mjs",
+      "source": "Object.create = custom;export function build(key,value){const data={};data[key]=value;return data[key];}\n",
+      "gap": "DictionaryIntrinsicMutationUnsupported"
+    },
+    {
+      "name": "eligible binding scan is finitely capped",
+      "owner": "lib/budget.mjs",
+      "source": "export function build(){const item0={};const item1={};const item2={};const item3={};const item4={};const item5={};const item6={};const item7={};const item8={};const item9={};const item10={};const item11={};const item12={};const item13={};const item14={};const item15={};const item16={};const item17={};const item18={};const item19={};const item20={};const item21={};const item22={};const item23={};const item24={};const item25={};const item26={};const item27={};const item28={};const item29={};const item30={};const item31={};const item32={};return 0;}\n",
+      "gap": "DictionarySelectionBudgetExceeded"
+    }
+  ]
+}

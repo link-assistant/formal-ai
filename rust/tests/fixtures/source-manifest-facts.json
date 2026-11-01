@@ -1,0 +1,307 @@
+{
+  "schema": "observed-manifest-facts-fixtures/v1",
+  "cases": [
+    {
+      "name": "npm literal declarations and unrelated fields",
+      "owner": "config/project.json",
+      "source": "{\"description\":\"dependencies: forged\", \"dependencies\":{\"river-tools\":\"^2.4\"},\"optionalDependencies\":{\"optional-peer\":\"3\"},\"peerDependencies\":{\"@river/api\":\"*\"}}",
+      "expected": [
+        {
+          "kind": "manifest-declaration",
+          "section": "dependencies",
+          "name": "river-tools",
+          "version": "^2.4"
+        },
+        {
+          "kind": "manifest-declaration",
+          "section": "optionalDependencies",
+          "name": "optional-peer",
+          "version": "3"
+        },
+        {
+          "kind": "manifest-declaration",
+          "section": "peerDependencies",
+          "name": "@river/api",
+          "version": "*"
+        }
+      ]
+    },
+    {
+      "name": "Cargo aliases targets options and feature graph",
+      "owner": "native/Project.toml",
+      "source": "# counterfeit = \"9\" is a comment, not a declaration\n[dependencies]\nriver = \"1.5\"\nrenamed = { package = \"river-parser\", version = \"2\", optional = true }\nlocal = { path = \"../local\" }\n[target.'cfg(not(target_arch = \"wasm32\"))'.dependencies]\nsearch = { version = \"0.6\", default-features = false, features = [\"merge\"] }\n[features]\ndefault = [\"native\"]\nnative = [\"dep:renamed\"]\n[[bin]]\nname = \"one\"\n[[bin]]\nname = \"two\"\n",
+      "expected": [
+        {
+          "kind": "cargo-feature",
+          "section": "features",
+          "name": "default",
+          "enables": [
+            "native"
+          ]
+        },
+        {
+          "kind": "cargo-feature",
+          "section": "features",
+          "name": "native",
+          "enables": [
+            "dep:renamed"
+          ]
+        },
+        {
+          "kind": "manifest-declaration",
+          "section": "dependencies",
+          "name": "local",
+          "version": null,
+          "options": {
+            "path": "../local"
+          }
+        },
+        {
+          "kind": "manifest-declaration",
+          "section": "dependencies",
+          "name": "renamed",
+          "version": "2",
+          "options": {
+            "package": "river-parser",
+            "optional": true
+          }
+        },
+        {
+          "kind": "manifest-declaration",
+          "section": "dependencies",
+          "name": "river",
+          "version": "1.5"
+        },
+        {
+          "kind": "manifest-declaration",
+          "section": "dependencies",
+          "target": "cfg(not(target_arch = \"wasm32\"))",
+          "name": "search",
+          "version": "0.6",
+          "options": {
+            "default-features": false,
+            "features": [
+              "merge"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "dependency subtable is a literal declaration",
+      "owner": "Cargo.toml",
+      "source": "[dependencies.river]\nversion = \"2\"\nfeatures = [\"parse\", \"read\"]\n",
+      "expected": [
+        {
+          "kind": "manifest-declaration",
+          "section": "dependencies",
+          "name": "river",
+          "version": "2",
+          "options": {
+            "features": [
+              "parse",
+              "read"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "prototype property remains ordinary package data",
+      "owner": "package.json",
+      "source": "{\"dependencies\":{\"__proto__\":\"1\",\"constructor\":\"2\"}}",
+      "expected": [
+        {
+          "kind": "manifest-declaration",
+          "section": "dependencies",
+          "name": "__proto__",
+          "version": "1"
+        },
+        {
+          "kind": "manifest-declaration",
+          "section": "dependencies",
+          "name": "constructor",
+          "version": "2"
+        }
+      ]
+    },
+    {
+      "name": "duplicate npm dependency",
+      "owner": "package.json",
+      "source": "{\"dependencies\":{\"river\":\"1\",\"river\":\"2\"}}",
+      "rejected": true
+    },
+    {
+      "name": "duplicate nested JSON unrelated to facts",
+      "owner": "package.json",
+      "source": "{\"extra\":{\"x\":1,\"x\":2},\"dependencies\":{\"river\":\"1\"}}",
+      "rejected": true
+    },
+    {
+      "name": "nonliteral npm declaration",
+      "owner": "package.json",
+      "source": "{\"dependencies\":{\"river\":{\"version\":\"1\"}}}",
+      "rejected": true
+    },
+    {
+      "name": "duplicate Cargo dependency",
+      "owner": "Cargo.toml",
+      "source": "[dependencies]\nriver=\"1\"\nriver=\"2\"\n",
+      "rejected": true
+    },
+    {
+      "name": "TOML comment is not a table",
+      "owner": "Cargo.toml",
+      "source": "# [dependencies]\n# river=\"1\"\n[features]\na = [true]\n",
+      "rejected": true
+    },
+    {
+      "name": "invalid decimal underscore",
+      "owner": "Cargo.toml",
+      "source": "count = 1__2\n[dependencies]\nriver=\"1\"\n",
+      "rejected": true
+    },
+    {
+      "name": "inline table trailing comma",
+      "owner": "Cargo.toml",
+      "source": "[dependencies]\nriver={version=\"1\",}\n",
+      "rejected": true
+    },
+    {
+      "name": "scalar and table conflict",
+      "owner": "Cargo.toml",
+      "source": "dependencies=1\n[dependencies]\nriver=\"1\"\n",
+      "rejected": true
+    },
+    {
+      "name": "empty selected array table",
+      "owner": "Cargo.toml",
+      "source": "[[dependencies]]\n",
+      "rejected": true
+    },
+    {
+      "name": "unknown dependency option",
+      "owner": "Cargo.toml",
+      "source": "[dependencies]\nriver={version=\"1\",mystery=true}\n",
+      "rejected": true
+    },
+    {
+      "name": "missing dependency origin",
+      "owner": "Cargo.toml",
+      "source": "[dependencies]\nriver={optional=true}\n",
+      "rejected": true
+    },
+    {
+      "name": "invalid TOML slash escape",
+      "owner": "Cargo.toml",
+      "source": "[dependencies]\nriver=\"a\\/b\"\n",
+      "rejected": true
+    },
+    {
+      "name": "nonfinite number",
+      "owner": "Cargo.toml",
+      "source": "count=inf\n[dependencies]\nriver=\"1\"\n",
+      "rejected": true
+    },
+    {
+      "name": "multiline string not admitted",
+      "owner": "Cargo.toml",
+      "source": "description=\"\"\"many\nlines\"\"\"\n",
+      "rejected": true
+    },
+    {
+      "name": "quoted misleading declaration",
+      "owner": "Cargo.toml",
+      "source": "description='river = \"9\"'\n[dependencies]\nriver=\"1\"\n",
+      "expected": [
+        {
+          "kind": "manifest-declaration",
+          "section": "dependencies",
+          "name": "river",
+          "version": "1"
+        }
+      ]
+    },
+    {
+      "name": "original 1455 manifest evidence without fixed guide",
+      "owner": "rust/Cargo.toml",
+      "source": "[package]\nname = \"formal-ai\"\nversion = \"0.355.14\"\nedition = \"2024\"\ndescription = \"Don't know everything, know just enough to get to know anything\"\nreadme = \"../README.md\"\nlicense = \"Unlicense\"\nkeywords = [\"formal-ai\", \"symbolic-ai\", \"openai\", \"links\"]\ncategories = [\"command-line-utilities\", \"web-programming::http-server\"]\nrepository = \"https://github.com/link-assistant/formal-ai\"\ndocumentation = \"https://github.com/link-assistant/formal-ai\"\nrust-version = \"1.99\"\ninclude = [\n    \"/Cargo.lock\",\n    \"/Cargo.toml\",\n    \"../LICENSE\",\n    \"../README.md\",\n    \"/build.rs\",\n    \"/embedded/**\",\n    \"/src/**\",\n]\nbuild = \"build.rs\"\n\n# docs.rs sets DOCS_RS while building dependencies. meta-language currently\n# pulls lindera-jieba, whose DOCS_RS build path is broken upstream\n# (lindera/lindera#750). Keep the complete engine enabled for every normal build,\n# while letting docs.rs render this crate's API without executing that transitive\n# build script.\n[package.metadata.docs.rs]\nno-default-features = true\n\n# Issue #1181: the `cli` job of the Desktop Release workflow publishes\n# prebuilt standalone archives as release assets, so `cargo binstall\n# formal-ai` downloads one of those instead of compiling this crate. The\n# archives hold `formal-ai-cli-<triple>/{formal-ai,LICENSE,README.md}`; names\n# are version-less because each GitHub release namespaces its own assets.\n[package.metadata.binstall]\npkg-url = \"{ repo }/releases/download/v{ version }/formal-ai-cli-{ target }.tar.gz\"\npkg-fmt = \"tgz\"\nbin-dir = \"formal-ai-cli-{ target }/{ bin }{ binary-ext }\"\n\n[package.metadata.binstall.overrides.x86_64-pc-windows-msvc]\npkg-url = \"{ repo }/releases/download/v{ version }/formal-ai-cli-{ target }.zip\"\npkg-fmt = \"zip\"\n\n[lib]\nname = \"formal_ai\"\npath = \"src/lib.rs\"\n\n[[bin]]\nname = \"formal-ai\"\npath = \"src/main.rs\"\n\n[dependencies]\nbase64 = \"0.23\"\nclap = { version = \"4.6\", features = [\"derive\", \"env\"] }\ncommand-stream = \"1.5\"\negg = { version = \"0.11.0\", default-features = false, features = [\"deterministic\"], optional = true }\nlino-arguments = \"0.4.0\"\nlino-objects-codec = \"0.8.0\"\nlinks-notation = \"0.23.0\"\nlink-calculator = \"0.22.0\"\n# CST/AST engine: the link-foundation meta-language links network. It ships\n# real tree-sitter grammars for every language we target and exposes a single\n# mutable links-network representation, so it is the sole CST/AST engine here\n# (https://github.com/link-foundation/meta-language).\nmeta-language = { version = \"1.0.0\", optional = true }\nnom = \"8\"\nkamadak-exif = \"0.6.1\"\nregex = \"1\"\nserde = { version = \"1\", features = [\"derive\"] }\nserde_json = { version = \"1\", features = [\"float_roundtrip\"] }\nsha2 = \"0.11\"\nshell-words = \"1.1.1\"\nfs2 = \"0.4\"\nthread-priority = \"3.1.1\"\ntoml_edit = \"0.25.15\"\ntokio = { version = \"1.53.3\", features = [\"rt\", \"time\"] }\n# General categories for the lib's word segmentation: abugida conjuncts are\n# held together by combining marks, which `char::is_alphanumeric` excludes.\nunicode-general-category = \"1.1\"\nwalkdir = \"2\"\nwhich = \"8\"\nunicode-normalization = \"0.1\"\n# URL Standard observer shared with JavaScript's URL API; already present in Cargo.lock.\nurl = \"2.5.8\"\n\n[target.'cfg(not(target_arch = \"wasm32\"))'.dependencies]\ntokio = { version = \"1.53.3\", features = [\"process\", \"io-util\", \"signal\"] }\nblake3 = { version = \"1.8.7\", features = [\"rayon\"] }\nring = \"0.17\"\ntracing = \"0.1.44\"\nwgpu = { version = \"30.0.1\", optional = true }\npollster = { version = \"0.4.0\", optional = true }\nasync-trait = \"0.1\"\nbytes = \"1\"\nlink-cli = { version = \"1.0.0\", optional = true }\ntungstenite = \"0.30\"\nweb-capture = { version = \"0.3.37\", default-features = false, features = [\"search\"] }\nweb-search = { version = \"0.6.0\", default-features = false, features = [\"merge\"] }\nwebrtc = \"0.21\"\n\n[features]\nprovenance-gpu = [\"dep:wgpu\", \"dep:pollster\"]\ndefault = [\"doublets-native\", \"equality-saturation\", \"meta-language\"]\ndoublets-native = [\"dep:link-cli\"]\nequality-saturation = [\"dep:egg\"]\nmeta-language = [\"dep:meta-language\"]\n\n[dev-dependencies]\n# The same codec the library encodes with, so tests can hold published\n# artifacts to the notation they claim to be written in.\nlino-objects-codec = \"0.8.0\"\ntemp-env = \"0.3.6\"\n\n[lints.rust]\nunsafe_code = \"forbid\"\n\n[lints.clippy]\nall = { level = \"warn\", priority = -1 }\npedantic = { level = \"warn\", priority = -1 }\nnursery = { level = \"warn\", priority = -1 }\n\n# Allow some common patterns\nmodule_name_repetitions = \"allow\"\ntoo_many_lines = \"allow\"\nmissing_errors_doc = \"allow\"\nmissing_panics_doc = \"allow\"\n\n[[test]]\nname = \"unit\"\npath = \"tests/unit/mod.rs\"\n\n[[test]]\nname = \"integration\"\npath = \"tests/integration/mod.rs\"\n\n[[test]]\nname = \"source\"\npath = \"tests/source/mod.rs\"\n\n# This crate embeds large language dictionaries and compiles dozens of parser\n# grammars. Cargo's defaults retain full debuginfo plus incremental state for\n# every test/example binary, which made ordinary development workspaces grow\n# past 10 GiB. Keep fast debug assertions, but do not retain those two largest\n# classes of recomputable artifacts. Developers who need debugger symbols can\n# opt in with `CARGO_PROFILE_DEV_DEBUG=2` for that run.\n[profile.dev]\ndebug = 0\nincremental = false\n\n[profile.test]\ndebug = 0\nincremental = false\n# Issue #1053: the slow tests here are pure in-process computation -- the seven\n# that exceed 60s spawn no subprocesses at all -- so running them unoptimized\n# spends most of their time in code the compiler would have folded away.\n# Measured on `installation_conversion::popular_github_projects_route_through_\n# install_conversion`: 52.86s at opt-level 0 against 9.34s at 2, a 5.7x\n# difference, for +40s of one-time compilation per job.\n#\n# `debug-assertions` and `overflow-checks` stay on deliberately. They are\n# independent of `opt-level`, and turning them off would change what the tests\n# actually check: `debug_assert!` appears in `src/` and an arithmetic overflow\n# must keep panicking here rather than wrapping silently.\nopt-level = 2\ndebug-assertions = true\noverflow-checks = true\n\n[profile.release]\n# Issue #1055: no LTO, and no cap on codegen units.\n#\n# Link-time optimization is the one stage of a Rust build that does not\n# parallelize: it merges every crate into a single optimization unit and links\n# it on one thread, so more cores do not shorten it. Measured here on\n# `cargo test --release --no-run --bins --tests` from a touched `lib.rs`:\n#\n#   lto = true,  codegen-units = 1    867s\n#   lto = false, codegen-units unset  162s\n#\n# 705 seconds, 5.4x, sitting on the critical path of everything downstream --\n# tests, packaging, Docker, the release chain. Issue #1043 had already measured\n# the same effect on one job (536s -> 372s) and dropped LTO there; this applies\n# the finding everywhere rather than one job at a time.\n#\n# `codegen-units` is left at the default so the compiler splits the work across\n# every core the runner has. Pinning it to 1 was what forbade that.\n#\n# The cost is a slightly slower binary at runtime. Nothing in this pipeline\n# measures that, and no benchmark gates on it; the build time it buys back is\n# measured and immediate.\nlto = false\nstrip = true\n\n# Safe no-follow/identity adapters reuse already-locked audited platform crates.\n[target.'cfg(unix)'.dependencies]\nrustix = { version = \"1.1.5\", features = [\"fs\", \"process\"] }\n\n[target.'cfg(windows)'.dependencies]\nwinapi-util = \"0.1.11\"\nwindows-sys = { version = \"0.61.2\", features = [\"Win32_Storage_FileSystem\"] }\n",
+      "expectedSubset": [
+        {
+          "kind": "manifest-declaration",
+          "section": "dependencies",
+          "name": "command-stream",
+          "version": "1.5"
+        },
+        {
+          "kind": "manifest-declaration",
+          "section": "dependencies",
+          "target": "cfg(not(target_arch = \"wasm32\"))",
+          "name": "web-capture",
+          "version": "0.3.37",
+          "options": {
+            "default-features": false,
+            "features": [
+              "search"
+            ]
+          }
+        },
+        {
+          "kind": "manifest-declaration",
+          "section": "dependencies",
+          "target": "cfg(not(target_arch = \"wasm32\"))",
+          "name": "web-search",
+          "version": "0.6.0",
+          "options": {
+            "default-features": false,
+            "features": [
+              "merge"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "root scalar dependency section",
+      "owner": "Cargo.toml",
+      "source": "dependencies = 1\n",
+      "rejected": true
+    },
+    {
+      "name": "empty dependency subtable",
+      "owner": "Cargo.toml",
+      "source": "[dependencies.river]\n",
+      "rejected": true
+    },
+    {
+      "name": "empty nested dependency subtable",
+      "owner": "Cargo.toml",
+      "source": "[dependencies.river.extra]\n",
+      "rejected": true
+    },
+    {
+      "name": "nested feature section",
+      "owner": "Cargo.toml",
+      "source": "[features.extra]\nenables=[]\n",
+      "rejected": true
+    },
+    {
+      "name": "unpaired escaped TOML surrogate",
+      "owner": "Cargo.toml",
+      "source": "[dependencies]\nriver=\"\\uD800\"\n",
+      "rejected": true
+    },
+    {
+      "name": "unpaired escaped JSON surrogate",
+      "owner": "package.json",
+      "source": "{\"dependencies\":{\"river\":\"\\uD800\"}}",
+      "rejected": true
+    },
+    {
+      "name": "workspace false is not a dependency origin",
+      "owner": "Cargo.toml",
+      "source": "[dependencies]\nriver={workspace=false}\n",
+      "rejected": true
+    }
+  ]
+}

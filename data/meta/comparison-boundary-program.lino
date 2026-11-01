@@ -1,0 +1,8 @@
+# Source/provenance observation of the actual checked portable-core IR.
+(comparison-boundary-program
+  (source-sha256 1470b5eedade5c03f25e0d9a22f9afb10dbf1f76a10dd73befa402b11ad0ad7b)
+  (checked-ir-sha256 625aa9cbf39007178f8d8da7444b46fff301332e969e5392ffb1ba5a548fc3e6)
+  (upstream-commit eb0574d5528babd3b4aadece81590d8e2230b99b)
+  (runtime-count 1)
+  (source-unit (path "js/agentic/portable/comparison_boundary_kernel.mjs") (sha256 1470b5eedade5c03f25e0d9a22f9afb10dbf1f76a10dd73befa402b11ad0ad7b))
+)

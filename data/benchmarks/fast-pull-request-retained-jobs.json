@@ -71,7 +71,7 @@
     {
       "file": "layered-ci.yml",
       "id": "js-rust",
-      "payloadSha256": "a4eaa4f2615e60c7a51daefcdbb387e596103e0953c289736ea499bb3dd9fd59"
+      "payloadSha256": "b3eb40fd2d3184e1eb4ad1e1c98640b79bde4fe687615264dd5b16ab83a2cc86"
     },
     {
       "file": "layered-ci.yml",

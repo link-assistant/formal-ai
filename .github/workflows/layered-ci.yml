@@ -425,6 +425,8 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
       - name: Verify canonical research program from pinned checked IR (R1183)
         run: node scripts/generate-coding-research-program.mjs --check --meta-language .meta-language
+      - name: Verify canonical comparison boundary from pinned checked IR
+        run: node scripts/generate-comparison-boundary.mjs --check --meta-language .meta-language
       - name: Verify canonical continuation state from pinned checked IR
         run: node scripts/generate-agentic-continuation.mjs --check --meta-language .meta-language
       - name: Verify readable source content through actual shared grammars

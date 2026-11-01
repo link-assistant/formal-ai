@@ -1,3 +1,6 @@
+import {planRepositoryDocumentation} from './repository_documentation.mjs';
+import {planSourceDocumentationStep} from './source_documentation.mjs';
+import {planWorkItemBoundaryStep} from './work_item_boundary_candidate.mjs';
 // Execution state machine for a composed general change plan
 // (rust/src/agentic_coding/general_execution.rs).
 
@@ -20,7 +23,7 @@ import { failedVerification, harnessReportedFailure, observedPayload, reportedEx
 import { fill } from './work_item_steps.mjs';
 import { observedRecoveryCommand, planRecovery } from './prerequisite_recovery.mjs';
 import { programContractAnswer } from './crate/coding_program_contract.mjs';
-import { planWorkItemEvidence } from './work_item_evidence.mjs';
+import { planWorkItemEvidence, workItemEvidencePaths } from './work_item_evidence.mjs';
 import { fencedBlock, LINO_FENCE_LANGUAGE } from './crate/issue_report.mjs';
 import { detect } from './crate/language.mjs';
 import { localizedResponse } from './crate/seed.mjs';
@@ -49,6 +52,17 @@ function generalChangeStep(messages, toolNames, plan, resolvedFromWorkItem) {
   const guarded = guardedStep(plan, messages, toolNames);
   if (guarded !== null) return guarded;
   const progress = Progress.scan(messages);
+  if (plan.mode === GeneralPlanMode.RepositoryWorkItem) {
+    const objective = repositoryWorkItemObjective(plan, progress);
+    if (objective !== null) {
+      const repositoryDocumentation=planRepositoryDocumentation(objective,messages,toolNames,plan.target);
+      if(repositoryDocumentation!==null)return repositoryDocumentation;
+      const documentation = planSourceDocumentationStep(objective, messages, toolNames, plan.target);
+      if (documentation !== null) return documentation;
+      const boundary = planWorkItemBoundaryStep(objective, messages, toolNames, plan.target, workItemEvidencePaths);
+      if (boundary !== null) return boundary;
+    }
+  }
   const recoveryCommand = observedRecoveryCommand(messages);
   if (recoveryCommand !== null) {
     const output = progress.latestRunOutputFor(recoveryCommand);

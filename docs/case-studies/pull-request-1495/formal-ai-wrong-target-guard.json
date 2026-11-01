@@ -1,0 +1,113 @@
+{
+  "schema": "formal-ai-1483-curated-wrong-target-guard/v1",
+  "scope": "Local maintained JavaScript working-tree engine and real bounded scratch tool effects; no published/native/client qualification implied",
+  "request": {
+    "identity": "3bb99c6a4c274f607370d775ae87f3a283118c56a11ea7b6d441a14995dd8a17",
+    "objective": "Add a referenced test filename exactly once to the files array of the JavaScript PR test profile, preserving existing files",
+    "intendedDestination": "data/benchmarks/fast-pull-request-javascript-tests.json",
+    "referencedSource": "rust/tests/web/repository-documentation.test.mjs"
+  },
+  "before": {
+    "actualTools": [
+      "write",
+      "read"
+    ],
+    "wrongTargetWritten": true,
+    "wrongTargetAfterSha256": "a3f3991bb579b811dd70c7a1922f503882d0eba74d54783b4dcb0dbe32bafd55",
+    "intendedBeforeSha256": "fd781643856c0800b55535167dd1813d8984d4aba295bd3fc7ce4875d2e6da66",
+    "intendedAfterSha256": "fd781643856c0800b55535167dd1813d8984d4aba295bd3fc7ce4875d2e6da66",
+    "sourcePreimageLimit": "Initial source was copied before execution, but its direct preimage hash was not recorded; no later reference is claimed as that captured preimage."
+  },
+  "rootCause": {
+    "readOnlyDiagnostic": true,
+    "toolsExecuted": 0,
+    "actualFullPlanEqualsEvidenceRecordArm": true,
+    "composeGeneralChangePlan": null,
+    "writesWholeFile": false,
+    "selection": "deliveredWriteTarget selected the collection entry/source path as a report destination, and parseObligation removed the requested operation from the residual",
+    "residual": "Preservation and CI constraints only",
+    "actualResidualIntent": "meta_reasoning_open",
+    "confidence": 0.3,
+    "synthesizedProgramPresent": false,
+    "executionRecipePresent": false,
+    "classificationFault": "evidence_record.symbolicAnswer promoted the unresolved typed intent to Finding because the shared inconclusive classifier omitted it",
+    "mutationPath": "evidence_record emits its delivery Write directly, outside the literal-file read-first guard"
+  },
+  "repair": {
+    "naturalBehaviorAttempt": {
+      "actualTools": [
+        "read"
+      ],
+      "reason": "SourceRepairOperatorUnavailable",
+      "edited": false
+    },
+    "implementation": "Add meta_reasoning_open and meta_reasoned_program_unverified to the shared inconclusive intent classification",
+    "authorship": "Externally specified engine bootstrap; Formal AI literal instruction execution; zero autonomous code synthesis",
+    "delivery": "Each of JS, TypeScript and Rust was first changed in scratch via actual Read/Edit, byte-checked against the declared small replacement, then changed through the identical prompt in the maintained tree",
+    "sourceBindings": [
+      {
+        "path": "js/agentic/crate/engine_answer.mjs",
+        "beforeSha256": "11b3d9eeb9d84c4883fb8c520d6f96610316d8322dc3983074585a3e759faacd",
+        "afterSha256": "1c9083458140dd10e9f723d55bc01a30addf88da85c87c1cf138cbb11b65bf91",
+        "actualTools": [
+          "read",
+          "edit"
+        ]
+      },
+      {
+        "path": "ts/agentic/crate/engine_answer.mts",
+        "beforeSha256": "11b3d9eeb9d84c4883fb8c520d6f96610316d8322dc3983074585a3e759faacd",
+        "afterSha256": "1c9083458140dd10e9f723d55bc01a30addf88da85c87c1cf138cbb11b65bf91",
+        "actualTools": [
+          "read",
+          "edit"
+        ]
+      },
+      {
+        "path": "rust/src/engine_answer.rs",
+        "beforeSha256": "46a3bd41b20680388ad5f9fe8c180b55cffe97f8c0c1fb55179481d8a2ab9837",
+        "afterSha256": "c75166b53122ec5b825a40ced2c1f8e760c4a6560e6abbd2a8b500ac99ae6e9d",
+        "actualTools": [
+          "read",
+          "edit"
+        ]
+      }
+    ],
+    "verifiedRecipeBoundary": "meta_reasoned_program and write_program classifications and recipe routing were not changed; focused regression test execution is recorded separately"
+  },
+  "unchangedRequestReplay": {
+    "requestIdentityUnchanged": true,
+    "actualTools": [],
+    "inputBeforeSha256": {
+      "data/benchmarks/fast-pull-request-javascript-tests.json": "fd781643856c0800b55535167dd1813d8984d4aba295bd3fc7ce4875d2e6da66",
+      "rust/tests/web/repository-documentation.test.mjs": "67129c3e24527da7f7189fd1877f77e597ae3d94e2db665bec89836b1de80bc8"
+    },
+    "inputAfterSha256": {
+      "data/benchmarks/fast-pull-request-javascript-tests.json": "fd781643856c0800b55535167dd1813d8984d4aba295bd3fc7ce4875d2e6da66",
+      "rust/tests/web/repository-documentation.test.mjs": "67129c3e24527da7f7189fd1877f77e597ae3d94e2db665bec89836b1de80bc8"
+    },
+    "wrongTargetMutationPrevented": true,
+    "requestedProfileOperationCompleted": false,
+    "remainingGap": "clarification still names source/example path; collection destination binding remains unresolved"
+  },
+  "testCreationAttempts": {
+    "behaviorOnly": {
+      "actualTools": [],
+      "result": "Clarification misidentified the classifier source as the test destination; no file created"
+    },
+    "literalBootstrap": {
+      "actualTools": [],
+      "stop": "unbound-create-operation",
+      "created": false,
+      "readOnlyDiagnosis": "The test destination parsed correctly, but the first resolved plan asked for an auxiliary .formal-ai/general-change-plan.lino read; closed creation custody refused it before tool execution"
+    }
+  },
+  "verificationLimits": {
+    "nativeCompiledOrTestedLocally": false,
+    "productWasmExecuted": false,
+    "externalLlmUsed": false,
+    "autonomousRepairOrTestSynthesisCredit": 0,
+    "wholeIssueAcceptance": "pending",
+    "destinationBinding": "unresolved; destructive delivery prevented, collection mutation remains unsupported"
+  }
+}

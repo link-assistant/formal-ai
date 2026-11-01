@@ -1,0 +1,75 @@
+{
+  "schema": "formal-ai-small-source-contribution/v1",
+  "category": "identifier-maintenance",
+  "task": "In the file js/agentic/source_documentation.mjs, rename the constant MAX_SOURCE_BYTES to MAXIMUM_SOURCE_BYTES everywhere it appears in this file. Preserve all other content.",
+  "source": "js/agentic/source_documentation.mjs",
+  "preimageSource": {
+    "commit": "db5f9c166b6d4ca0a2ccf0729cb485744d913d46",
+    "sha256": "8f3a5e58f715715449091ed4d04551641ed3f9417b19c882d41d25d57b76e041"
+  },
+  "candidateSha256": "ab1302755342c96131a3ff55f454f377ff7a0387a2729b2f04f8e593ed63e15b",
+  "independentReview": {
+    "candidatePreservedBeforeReview": true,
+    "plannerStop": "final",
+    "answer": "Renamed `MAX_SOURCE_BYTES` to `MAXIMUM_SOURCE_BYTES` in `js/agentic/source_documentation.mjs` and observed the result.",
+    "tools": [
+      "read",
+      "bash",
+      "bash"
+    ],
+    "sourceChanged": true,
+    "exactOracleBytes": true,
+    "syntax": true,
+    "syntaxError": null,
+    "oldIdentifierTokens": 0,
+    "newIdentifierTokens": 2,
+    "preimageSha256": "8f3a5e58f715715449091ed4d04551641ed3f9417b19c882d41d25d57b76e041",
+    "postimageSha256": "ab1302755342c96131a3ff55f454f377ff7a0387a2729b2f04f8e593ed63e15b",
+    "authorshipBoundary": "Actual maintained JS FormalAI request with natural rename operands; independent oracle remained outside workspace; no supplied final patch or manual source fix.",
+    "reviewBoundary": "Reviewer approved prior solver-generated command; unchanged task/preimage/oracle; no engine repair or algorithm supplied.",
+    "passed": true
+  },
+  "observedCalls": [
+    {
+      "tool": "read",
+      "arguments": {
+        "filePath": "js/agentic/source_documentation.mjs",
+        "file_path": "js/agentic/source_documentation.mjs",
+        "path": "js/agentic/source_documentation.mjs"
+      }
+    },
+    {
+      "tool": "bash",
+      "arguments": {
+        "command": "perl -pi -e 's/\\bMAX_SOURCE_BYTES\\b/MAXIMUM_SOURCE_BYTES/g' -- js/agentic/source_documentation.mjs"
+      }
+    },
+    {
+      "tool": "bash",
+      "arguments": {
+        "command": "sha256sum -- js/agentic/source_documentation.mjs"
+      }
+    }
+  ],
+  "initialAttempt": {
+    "stop": "command-policy-denied",
+    "sourceChanged": false,
+    "classification": "over-restrictive-local-command-allowlist"
+  },
+  "retryBoundary": "Only previously solver-proposed rename command was approved after over-restrictive first allowlist; prompt and oracle unchanged; no engine repair.",
+  "measuredScope": {
+    "promptUtf8Bytes": 173,
+    "usefulNetAddedBytes": 8,
+    "tokenUsage": "unknown",
+    "totalToolInputBytes": "not-aggregated",
+    "cost": "unknown",
+    "amplificationClaim": false
+  },
+  "remaining": [
+    "broader source task coverage",
+    "independent genuine logic-repair qualification",
+    "hosted native/client qualification"
+  ],
+  "personalSessionExportsRead": false,
+  "rawLocalProvenancePublished": false
+}

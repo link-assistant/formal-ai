@@ -1,0 +1,35 @@
+comparison-boundary-grammar
+  repair-action repair
+  repair-action fix
+  repair-action correct
+  repair-action make
+  repair-action change
+  regression-action "regression test"
+  regression-action "boundary test"
+  regression-action "test the boundary"
+  upper-bound "upper bound"
+  upper-bound "upper-bound"
+  upper-bound "upper boundary"
+  upper-bound maximum
+  lower-bound "lower bound"
+  lower-bound "lower-bound"
+  lower-bound "lower boundary"
+  lower-bound minimum
+  inclusive inclusive
+  inclusive "is included"
+  inclusive "include the boundary"
+  exclusive exclusive
+  exclusive "is excluded"
+  exclusive "exclude the boundary"
+  negated-property "not inclusive"
+  negated-property "not exclusive"
+  negated-action "do not repair"
+  negated-action "do not fix"
+  negated-action "do not change"
+  negated-action "do not make"
+  declaration-marker function
+  declaration-marker predicate
+  source-suffix .mjs
+  source-suffix .js
+  test-suffix .test.mjs
+  test-suffix .test.js

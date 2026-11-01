@@ -1,0 +1,36 @@
+{
+  "schema": "owned-source-repair-goal-cases/v1",
+  "eligibleSource": "export function resolve(key,value){const lookup={};lookup[key]=value;return lookup[key];}\n",
+  "cases": [
+    {
+      "name": "unchanged production task owns binding retention",
+      "task": "Read scripts/lib/source-cst-boundary-transform.mjs. Fix its regression generator so legal JavaScript parameter names retain their numeric bindings, including __proto__ as an interval's lower-bound parameter. At present, generating an inclusive-upper-bound regression for function contains(value, __proto__, maximum) { return value >= __proto__ && value <= maximum; } incorrectly fails with BoundaryUnusedParameterUnsupported. Preserve the rest of the source, comments, supported interval behavior, and generated regression contract. Derive the repair from the source.",
+      "operation": "own-key-storage"
+    },
+    {
+      "name": "unrelated arithmetic remains unsupported",
+      "task": "Read lib/records.mjs. Fix the arithmetic error while preserving the existing dictionary behavior.",
+      "operation": null
+    },
+    {
+      "name": "logging names and bindings is not storage repair",
+      "task": "Read lib/records.mjs. Fix logging of legal key names and bindings.",
+      "operation": null
+    },
+    {
+      "name": "quoted goal cannot authorize different repair",
+      "task": "Read lib/records.mjs. Fix the arithmetic. The example says \"legal names retain their numeric bindings\".",
+      "operation": null
+    },
+    {
+      "name": "additional unrelated owned repair prevents dictionary mutation",
+      "task": "Read lib/records.mjs. Fix legal keys so they retain their numeric bindings. Correct the arithmetic output.",
+      "operation": null
+    },
+    {
+      "name": "unowned symptom sentence cannot authorize repair",
+      "task": "Read lib/records.mjs. Fix logging. Legal names retain their numeric bindings.",
+      "operation": null
+    }
+  ]
+}

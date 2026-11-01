@@ -181,9 +181,8 @@ async function nextClient(context, history, tools, protocol) {
 function appendClient(history, next, call, result, protocol) {
   let sourceReceipt = false;
   try {
-    sourceReceipt = ['workspace-source-v1', 'workspace-source-update-v1']
-      .includes(JSON.parse(result.stdout).schema);
-  } catch { /* Other commands retain their explicit process envelope. */ }
+    sourceReceipt = ['workspace-source-v1', 'workspace-source-update-v1'].includes(JSON.parse(result.stdout).schema);
+  } catch {/* Other commands retain their explicit process envelope. */}
   // Real Hive Claude/Agent callbacks carry these semantic receipts as stdout
   // without a shell exit code. Preserve that observed transport in full replays.
   const output = sourceReceipt || result.status === 0 && protocol !== 'codex' ? result.stdout : JSON.stringify({
@@ -291,7 +290,9 @@ async function runFixture(configuration) {
     const sourceContext = {
       worker: new WorkerHost()
     };
-    await ensureNodeHost(sourceContext);
+    await ensureNodeHost(sourceContext, {
+      sourceUsageRustGrammar: false
+    });
     const generated = programContractAnswer(issue.body)?.execution_recipe?.source;
     assert.equal(typeof generated, 'string');
     const generatedLines = generated.split('\n');
@@ -322,8 +323,7 @@ async function runFixture(configuration) {
       // Synthetic bytes use the pinned producer grammar; original private session bytes are absent.
       remember(evidence + 'session-id.txt', Buffer.from('formal-ai session synthetic-historical-session\nformal-ai model formal-ai/0.3.55\n'));
     }
-    if (configuration.protocol === 'codex') remember('main', Buffer.from([0x7f, 0x45, 0x4c, 0x46, 0x00, 0x53, 0x59, 0x4e, 0x54, 0x48, 0x45, 0x54, 0x49
-    , 0x43]));
+    if (configuration.protocol === 'codex') remember('main', Buffer.from([0x7f, 0x45, 0x4c, 0x46, 0x00, 0x53, 0x59, 0x4e, 0x54, 0x48, 0x45, 0x54, 0x49, 0x43]));
     await git('add', 'README.md', configuration.source, ...retainedArtifacts.map(entry => entry.path));
     await git('commit', '-qm', 'initial');
     await git('remote', 'add', 'origin', origin);
@@ -407,7 +407,9 @@ json.dump(s,open(p,'w'))
           FORMAL_AI_MEMORY_PATH: fixture + '/memory-' + run + '.lino'
         })
       };
-      await ensureNodeHost(context);
+      await ensureNodeHost(context, {
+        sourceUsageRustGrammar: false
+      });
       if (run === 0) {
         const own = issue.html_url.replace('/issues/1', '/pull/2');
         const handoff = reference => 'Your prepared Pull Request: ' + reference;
@@ -713,10 +715,14 @@ json.dump(s,open(p,'w'))
         flag: 'wx'
       });
       assert.equal(typeof final, 'string');
-      assert.match(final, /verified by CI/u, JSON.stringify({final,lastCalls:calls.slice(-4).map(call=>({
-        tool:call.declaredTool,command:(call.arguments.command??call.arguments.cmd??'').slice(0,80),
-        observation:call.observation
-      }))}));
+      assert.match(final, /verified by CI/u, JSON.stringify({
+        final,
+        lastCalls: calls.slice(-4).map(call => ({
+          tool: call.declaredTool,
+          command: (call.arguments.command ?? call.arguments.cmd ?? '').slice(0, 80),
+          observation: call.observation
+        }))
+      }));
       assert.doesNotMatch(final, /Created and verified/u);
       assert.equal(receipt.at(-1).status, '');
       assert.equal(receipt.at(-1).state.isDraft, false);
