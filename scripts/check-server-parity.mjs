@@ -119,6 +119,10 @@ export function renderRatchet(ids) {
   return `${lines.join('\n')}\n`;
 }
 
+// The response carries Connection: close. Ending the client TCP write side
+// before an asynchronous handler replies makes Node close with no response.
+export {send as sendParityRequest};
+
 function freePort() {
   return new Promise((resolve, reject) => {
     const server = net.createServer();
@@ -152,7 +156,7 @@ function send(base, request, label = 'health') {
     const socket = net.connect({ host: url.hostname, port: Number(url.port) });
     const chunks = [];
     socket.setTimeout(180000, () => socket.destroy(new Error(`timeout: ${label}/${request.id}`)));
-    socket.on('connect', () => socket.end(body ? Buffer.concat([head, body]) : head));
+    socket.on('connect', () => socket.write(body ? Buffer.concat([head, body]) : head));
     socket.on('data', (chunk) => chunks.push(chunk));
     socket.on('error', error => reject(new Error(`${label} request ${request.id}: ${error.message}`,{cause:error})));
     socket.on('close', () => {

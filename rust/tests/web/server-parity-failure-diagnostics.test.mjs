@@ -24,3 +24,23 @@ test('diagnostic memory remains bounded while observed and dropped byte counts r
 test('invalid diagnostic budgets are rejected',()=>{
  for(const limit of [0,-1,Infinity,1048577])assert.throws(()=>retainServerDiagnostics(child(),'rust',limit));
 });
+
+import http from 'node:http';
+import {readFileSync} from 'node:fs';
+import {sendParityRequest,loadCorpus} from '../../../scripts/check-server-parity.mjs';
+test('original CI request receives a delayed Node HTTP response without client TCP EOF',async context=>{
+ const request=loadCorpus(readFileSync('rust/tests/fixtures/server-parity/requests.lino','utf8')).requests.find(entry=>entry.id==='chat_standing_requirement');
+ assert.ok(request);
+ const answer=JSON.stringify({observed:true}),bodies=[];
+ const server=http.createServer(async(incoming,response)=>{
+  const chunks=[];for await(const chunk of incoming)chunks.push(chunk);
+  bodies.push(Buffer.concat(chunks).toString('utf8'));
+  await new Promise(resolve=>setTimeout(resolve,30));
+  response.writeHead(200,{'content-type':'application/json','content-length':Buffer.byteLength(answer),'connection':'close'});
+  response.end(answer);
+ });
+ await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(0,'127.0.0.1',resolve);});
+ context.after(async()=>{server.closeAllConnections();await new Promise(resolve=>server.close(resolve));});
+ const response=await sendParityRequest('http://127.0.0.1:'+server.address().port,request,'JavaScript');
+ assert.equal(response.status,200);assert.equal(response.body,answer);assert.deepEqual(bodies,[request.body]);
+});
