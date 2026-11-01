@@ -94,6 +94,7 @@ test('incomplete symlink search stays pending and never reads a linked candidate
  assert.equal(result.state.reason,'UsefulCandidateReadbackVerified');
  const discovery=result.state.facts.find(row=>row.kind==='observed-consumer-discovery');
  assert.equal(discovery.state,'incomplete');assert.deepEqual(discovery.confirmedOwners,[]);
+ assert.ok(discovery.queries[0].searchGaps.length>0);assert.equal(discovery.queries[0].error,null);
  assert.ok(discovery.gaps.some(reason=>reason.startsWith('consumer-search-incomplete:')));
  assert.ok(result.transcript.filter(row=>row.tool==='read').every(row=>!JSON.parse(row.arguments).filePath.endsWith('escape.rs')));
  assert.equal(result.state.complete,false);

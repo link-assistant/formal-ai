@@ -501,6 +501,7 @@ fn repository_discovery_preflight(
         };
         discovery.information["queries"].as_array_mut().expect("DiscoveryQueries").push(json!({"directory":directory,"identifiers":identifiers,
             "requestIdentity":observed.request_identity,"status":observed.status,"complete":observed.complete,"root":observed.root,
+            "searchGaps":observed.receipt.as_ref().map(|receipt|receipt["gaps"].clone()),"error":observed.error,
             "transport":{"actualTool":observed.transport["actualTool"],"callId":observed.transport["callId"],
                 "actualExitCode":observed.transport["actualExitCode"],"completedAt":observed.transport["completedAt"]}}));
         let after = observed.transport["completedAt"]

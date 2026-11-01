@@ -101,6 +101,7 @@
     "rust/tests/web/file-command-contract.test.mjs",
     "rust/tests/web/source-import-edit.test.mjs",
     "rust/tests/web/source-maintenance.test.mjs",
-    "rust/tests/web/owned-destination-tail.test.mjs"
+    "rust/tests/web/owned-destination-tail.test.mjs",
+    "rust/tests/web/workspace-verification-missing-tool.test.mjs"
   ]
 }

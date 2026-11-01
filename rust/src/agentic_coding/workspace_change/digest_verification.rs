@@ -18,7 +18,9 @@ pub(in crate::agentic_coding) fn plan_digest_verification(
 ) -> Option<AgenticPlan> {
     let command = ["sha256sum -- ", change.target].concat();
     let Some(observed) = result_for_command(current_turn, &command) else {
-        let tool = tool_for(tool_names, Capability::Run)?;
+        let Some(tool) = tool_for(tool_names, Capability::Run) else {
+            return Some(record(AgenticPlan::Final(json!({"schema":"workspace-change-verification-gap/v1","target":change.target,"reason":"VerificationRunToolUnavailable","verified":false,"complete":false}).to_string()),FinalDisposition::Gap,"workspace-change-verification-gap",result));
+        };
         return Some(plan_one(tool, json!({"command": command}).to_string()));
     };
     let digest = crate::source_fetch::sha256_hex(change.expected.as_bytes());

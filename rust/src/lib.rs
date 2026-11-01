@@ -33,6 +33,9 @@ pub mod code_example_knowledge;
 pub(crate) mod coding;
 #[cfg(feature = "meta-language")]
 pub mod readable_source;
+#[cfg(not(feature = "meta-language"))]
+#[path = "readable_source_unavailable.rs"]
+pub mod readable_source;
 pub use coding::composition;
 pub use coding::composition_search;
 pub use coding::concept_discovery;

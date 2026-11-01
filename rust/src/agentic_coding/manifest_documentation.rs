@@ -220,7 +220,10 @@ pub(super) fn derive_manifest_documentation(
             let target = fact["target"]
                 .as_str()
                 .unwrap_or(field("manifestUnqualifiedTarget")?);
-            let options = canonical(fact.get("options").unwrap_or(&json!({}))).to_string();
+            let options = fact
+                .get("options")
+                .map_or_else(|| canonical(&json!({})), canonical)
+                .to_string();
             if name.is_empty()
                 || ![name, section, version, target, &options]
                     .iter()

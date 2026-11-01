@@ -151,6 +151,9 @@ pub(super) fn plan_request_preflight(
     if let Some(contract) =
         crate::agentic_coding::file_command_contract::file_command_contract(task)
         && contract["operation"] != "listing"
+        && !(tool_for(tool_names, Capability::Read).is_some()
+            && crate::agentic_coding::file_read::file_read_task_for(task).is_some())
+        && crate::agentic_coding::workspace_search::content_search_for(task).is_none()
         && (contract["operation"] != "search" || tool_for(tool_names, Capability::Grep).is_none())
     {
         let plan = if let Some(command) = contract["command"].as_str() {
