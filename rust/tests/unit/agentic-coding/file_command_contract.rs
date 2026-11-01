@@ -24,7 +24,7 @@ fn shared_operation_arguments_and_refusals_match() {
             assert_eq!(arguments[1], "-e");
             assert_eq!(
                 arguments[2],
-                include_str!("../../embedded/data/meta/file-count-program.cjs")
+                include_str!("../../../embedded/data/meta/file-count-program.cjs")
             );
             assert_eq!(arguments[4], path);
         }

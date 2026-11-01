@@ -114,3 +114,17 @@ test('captured desktop folder discovery retains filename search',async()=>{
  const plan=await planChatStep([{role:'user',content:'Find sample-target folder in desktop'}],['bash']);
  assert.equal(plan.kind,'tool_calls');assert.ok(JSON.parse(plan.calls[0].arguments).command.startsWith('find '));
 });
+
+test('relocated native shared-vector modules resolve every embedded input',()=>{
+ for(const name of ['file_command_contract','source_import_binding']){
+  const owner=new URL('../unit/agentic-coding/'+name+'.rs',import.meta.url);
+  const source=fs.readFileSync(owner,'utf8');
+  const inputs=[...source.matchAll(/\binclude_str!\s*\(\s*"([^"\n]+)"\s*\)/gu)];
+  assert.ok(inputs.length>0,name);
+  for(const [,relative] of inputs){
+   const content=fs.readFileSync(new URL(relative,owner),'utf8');
+   if(relative.endsWith('.json'))assert.ok(Array.isArray(JSON.parse(content).cases),relative);
+   else assert.equal(content,fs.readFileSync(new URL('../../../data/meta/file-count-program.cjs',import.meta.url),'utf8'));
+  }
+ }
+});

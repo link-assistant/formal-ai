@@ -56,6 +56,16 @@ fn main() -> ExitCode {
     // only the workflow would score a gate's command as absent the moment it
     // stopped being an inline step.
     sources.extend(gate_registry());
+    // Include the shared profile only when a registered workflow or gate invokes it.
+    if sources
+        .iter()
+        .any(|source| source.contains("bash scripts/ci-clippy-profile.sh"))
+    {
+        sources.push(
+            fs::read_to_string("scripts/ci-clippy-profile.sh")
+                .expect("read the invoked shared Clippy profile"),
+        );
+    }
     let workflows = sources.join("\n");
 
     let required_profiles = [

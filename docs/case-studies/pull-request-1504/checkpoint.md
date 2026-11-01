@@ -22,7 +22,11 @@ After the branch is pushed, reproduce the original server corpus using:
 gh workflow run layered-ci.yml --ref fix/post-1503-main -f diagnostic-native-run=41328792781 -f diagnostic-native-source=1980a31f47d4afdc33092a1baa83484fd73e631f
 ```
 
-Replay the fixed transport against the original binary, then finish PR checks, merge and monitor fresh main/release/Docker qualification. Do not claim production delivery from the historical diagnostic or the green PR checks.
+The full original corpus passed in [diagnostic run 41334639147](https://github.com/link-assistant/formal-ai/actions/runs/41334639147) at 37a61cfbb0fa078adb8d6c5b7d22f0d7beffa0a3 against the unchanged original binary. All PR checks passed; PR #1504 merged as 851200b7cfb2b3fe264feb0f4d904ad2691fcda9. This historical diagnostic does not establish production delivery.
+
+Fresh main [run 41334848898](https://github.com/link-assistant/formal-ai/actions/runs/41334848898) passed lint lanes 2–4 and default-feature documentation, but the native build and lint lane 1 failed. The follow-up fixes the relocated native test’s remaining embedded include path, checks that every relocated shared-vector input resolves in fast JavaScript CI, follows the committed github-script v9 snapshot, includes the actually invoked shared Clippy profile in disk-policy evidence, and keeps compiler-only explanation prose in a comment with a machine-readable lint reason. All changes were applied through JavaScript Formal AI from English; literal supplied changes receive zero synthesis credit. The focused file-command suite passes 21 checks. Rust verification and the new main/release/Docker cycle remain pending in CI; no local Rust execution is permitted.
+
+A bare quoted replacement of a relative include path was not recognized and made no edit. Supplying the full include_str expression selected the supported literal edit route. This is a prompt-shape limitation, not general synthesis success; improve its reusable grammar after the release blocker is resolved.
 
 ## Local verification and development provenance
 
