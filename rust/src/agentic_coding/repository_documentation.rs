@@ -249,7 +249,7 @@ pub(super) fn derive_repository_documentation(
 // Externally specified bootstrap input, not autonomous Formal AI synthesis.
 struct Discovery {
     contract: Value,
-    info: Value,
+    information: Value,
     step: Option<AgenticPlan>,
     gap: Option<String>,
 }
@@ -259,12 +259,14 @@ impl Discovery {
             contract: contract.clone(),
             step: None,
             gap: None,
-            info: json!({"schema":"observed-consumer-discovery/v1","state":"explicit-only","queries":[],"candidates":[],
+            information: json!({"schema":"observed-consumer-discovery/v1","state":"explicit-only","queries":[],"candidates":[],
                 "confirmedOwners":[],"gaps":[],"scope":"bounded-observed-cargo-source-scopes; syntax witnesses only; no whole-repository absence or runtime semantics"}),
         }
     }
     fn note(&mut self, reason: String) {
-        let gaps = self.info["gaps"].as_array_mut().expect("DiscoveryGaps");
+        let gaps = self.information["gaps"]
+            .as_array_mut()
+            .expect("DiscoveryGaps");
         if !gaps.contains(&json!(reason)) {
             gaps.push(json!(reason));
         }
@@ -475,7 +477,7 @@ fn repository_discovery_preflight(
     }
     if queries.len() > 4 || planned_queries.len() > 4 {
         discovery.note("consumer-query-budget-exceeded".to_owned());
-        discovery.info["state"] = json!("incomplete");
+        discovery.information["state"] = json!("incomplete");
         return discovery;
     }
     if planned_queries.is_empty() {
@@ -495,7 +497,7 @@ fn repository_discovery_preflight(
                 task,
             ));
         };
-        discovery.info["queries"].as_array_mut().expect("DiscoveryQueries").push(json!({"directory":directory,"identifiers":identifiers,
+        discovery.information["queries"].as_array_mut().expect("DiscoveryQueries").push(json!({"directory":directory,"identifiers":identifiers,
             "requestIdentity":observed.request_identity,"status":observed.status,"complete":observed.complete,"root":observed.root,
             "transport":{"actualTool":observed.transport["actualTool"],"callId":observed.transport["callId"],
                 "actualExitCode":observed.transport["actualExitCode"],"completedAt":observed.transport["completedAt"]}}));
@@ -532,19 +534,19 @@ fn repository_discovery_preflight(
             }
         }
     }
-    if discovery.info["gaps"]
+    if discovery.information["gaps"]
         .as_array()
         .into_iter()
         .flatten()
         .filter_map(Value::as_str)
         .any(|reason| reason.starts_with("consumer-search-incomplete:"))
     {
-        discovery.info["state"] = json!("incomplete");
+        discovery.information["state"] = json!("incomplete");
         return discovery;
     }
     if candidates.len() > 8 {
         discovery.note("consumer-source-budget-exceeded".to_owned());
-        discovery.info["state"] = json!("incomplete");
+        discovery.information["state"] = json!("incomplete");
         return discovery;
     }
     let mut confirmed = Vec::new();
@@ -599,7 +601,7 @@ fn repository_discovery_preflight(
                         .contains(name.split("::").next().unwrap_or(name))
                 })
             });
-        discovery.info["candidates"].as_array_mut().expect("DiscoveryCandidates").push(json!({"path":candidate.path,"sourceIdentity":candidate.sha256,"syntaxConfirmed":witnessed,"gaps":usage["gaps"]}));
+        discovery.information["candidates"].as_array_mut().expect("DiscoveryCandidates").push(json!({"path":candidate.path,"sourceIdentity":candidate.sha256,"syntaxConfirmed":witnessed,"gaps":usage["gaps"]}));
         if witnessed {
             confirmed.push(candidate.path.clone());
         }
@@ -625,11 +627,11 @@ fn repository_discovery_preflight(
     }
     if sources.len() > 16 {
         discovery.note("documentation-source-budget-exceeded".to_owned());
-        discovery.info["state"] = json!("incomplete");
+        discovery.information["state"] = json!("incomplete");
         return discovery;
     }
-    discovery.info["confirmedOwners"] = json!(confirmed);
-    discovery.info["state"] = json!(if discovery.info["gaps"]
+    discovery.information["confirmedOwners"] = json!(confirmed);
+    discovery.information["state"] = json!(if discovery.information["gaps"]
         .as_array()
         .is_some_and(|rows| !rows.is_empty())
     {
@@ -638,7 +640,7 @@ fn repository_discovery_preflight(
         "observed-scopes"
     });
     discovery.contract["sources"] = json!(sources);
-    discovery.contract["coverage"] = discovery.info["scope"].clone();
+    discovery.contract["coverage"] = discovery.information["scope"].clone();
     discovery
 }
 
@@ -678,7 +680,7 @@ pub(super) fn plan_repository_documentation(
     }
     let mut contract = preflight.contract;
     contract["workItem"] = json!(work_item);
-    let info = preflight.info;
+    let information = preflight.information;
     let gap = preflight.gap;
     Some(plan_observed_documentation(
         task,
@@ -699,17 +701,17 @@ pub(super) fn plan_repository_documentation(
             if derived.get("gap").is_some() {
                 return derived;
             }
-            let fact = json!({"kind":"observed-consumer-discovery","schema":info["schema"],"state":info["state"],
-            "queries":info["queries"],"candidates":info["candidates"],"confirmedOwners":info["confirmedOwners"],"gaps":info["gaps"],"scope":info["scope"]});
+            let fact = json!({"kind":"observed-consumer-discovery","schema":information["schema"],"state":information["state"],
+            "queries":information["queries"],"candidates":information["candidates"],"confirmedOwners":information["confirmedOwners"],"gaps":information["gaps"],"scope":information["scope"]});
             derived["facts"]
                 .as_array_mut()
                 .expect("RepositoryFacts")
                 .push(fact);
-            derived["binding"]["discovery"] = info.clone();
+            derived["binding"]["discovery"] = information.clone();
             let remaining = derived["remainingWork"]
                 .as_array_mut()
                 .expect("RepositoryRemainingWork");
-            for reason in info["gaps"]
+            for reason in information["gaps"]
                 .as_array()
                 .into_iter()
                 .flatten()
