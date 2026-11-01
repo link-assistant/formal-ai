@@ -74,6 +74,14 @@ on:
         required: false
         default: ''
         type: string
+      diagnostic-native-run:
+        description: 'Explicit diagnostic only: reuse a completed main native producer run; no build or release'
+        type: string
+        default: ''
+      diagnostic-native-source:
+        description: 'Exact immutable source SHA of the diagnostic producer'
+        type: string
+        default: ''
   push:
     paths-ignore:
       - "docs/**"
@@ -100,6 +108,7 @@ permissions:
 jobs:
   changes:
     name: Detect tier changes
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.diagnostic-native-run == '' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     # Checkout retries must fit this unchanged job clock.
@@ -566,3 +575,55 @@ jobs:
           name: native-source-operations-evidence
           path: native-source-operations-evidence.json
           if-no-files-found: error
+
+  server-parity-diagnostic:
+    name: Explicit server parity diagnostic from existing main binary
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.diagnostic-native-run != '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Validate immutable diagnostic producer and successful build job
+        uses: actions/github-script@v8
+        env:
+          PRODUCER_RUN: ${{ inputs.diagnostic-native-run }}
+          PRODUCER_SOURCE: ${{ inputs.diagnostic-native-source }}
+        with:
+          script: |
+            const runText = process.env.PRODUCER_RUN;
+            const source = process.env.PRODUCER_SOURCE;
+            if (!/^[1-9][0-9]{0,14}$/.test(runText) || !/^[a-f0-9]{40}$/.test(source)) throw Error('InvalidDiagnosticProducer');
+            const runId = Number(runText);
+            const parameters = {...context.repo, run_id: runId};
+            const {data: run} = await github.rest.actions.getWorkflowRun(parameters);
+            if (run.event !== 'push' || run.head_branch !== 'main' || run.head_sha !== source || run.path !== '.github/workflows/release.yml') throw Error('DiagnosticProducerSourceMismatch');
+            const {data: jobs} = await github.rest.actions.listJobsForWorkflowRun({...parameters,per_page:100});
+            if (jobs.total_count > 100) throw Error('DiagnosticProducerJobBudget');
+            const builds = jobs.jobs.filter(job => job.name === 'Build binaries and tests');
+            if (builds.length !== 1 || builds[0].conclusion !== 'success') throw Error('DiagnosticProducerBuildUnavailable');
+            const {data: artifacts} = await github.rest.actions.listWorkflowRunArtifacts({...parameters,per_page:100});
+            if (artifacts.total_count > 100) throw Error('DiagnosticProducerArtifactBudget');
+            const selected = artifacts.artifacts.filter(artifact => artifact.name === 'formal-ai-release-binary' && !artifact.expired);
+            if (selected.length !== 1) throw Error('DiagnosticProducerArtifactUnavailable');
+            core.notice(JSON.stringify({scope:'diagnostic-only; no release or current-head acceptance',producerRun:runId,producerSource:source,artifactId:selected[0].id,artifactDigest:selected[0].digest ?? null}));
+      - name: Reuse the actual CI native binary without rebuilding
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ inputs.diagnostic-native-run }}
+          name: formal-ai-release-binary
+          path: ${{ runner.temp }}/server-parity-native
+      - name: Replay the original server corpus with retained failure diagnostics
+        env:
+          RUST_BACKTRACE: full
+          NATIVE_BINARY: ${{ runner.temp }}/server-parity-native/formal-ai
+        run: |
+          chmod +x "$NATIVE_BINARY"
+          node scripts/check-server-parity.mjs --rust-binary "$NATIVE_BINARY" --list

@@ -104,12 +104,16 @@ jobs:
       - run: npm ci --omit=dev --ignore-scripts --no-audit --no-fund
         working-directory: .hive-mind
       - uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: work-item-current-binary
           path: rust/target/release
       - name: Restore shipped executable mode after artifact transfer
         run: chmod 0755 rust/target/release/formal-ai
       - uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: work-item-admission
           path: ${{ runner.temp }}/work-item-admission

@@ -1,3 +1,4 @@
+import {readArguments} from './workspace_change.mjs';
 // Intended owner: js/agentic/work_item_file_io.mjs.
 // An explicit transport observation adapter. It retains physical Run provenance;
 // it does not synthesize ChatMessage Read/Edit receipts or infer process success.
@@ -656,9 +657,7 @@ export function fileIoReadStep(messages, tools, path, task = '') {
   if (pending) return pending;
   const read = toolFor(tools, Capability.Read);
   return read ? {
-    step: planOne(read, jsonText({
-      filePath: path
-    }))
+    step: planOne(read, readArguments(path))
   } : runStep(messages, tools, 'read', path);
 }
 export function fileIoEffectStep(messages, tools, path, before, after) {

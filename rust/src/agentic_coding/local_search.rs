@@ -733,3 +733,12 @@ fn localized(intent: &str, language: &str) -> String {
 }
 
 use crate::portable_string_contracts::quote_shell_word as shell_quote;
+
+pub(super) fn owns_path_discovery(task: &str) -> bool {
+    request_for(task).is_some_and(|request| {
+        matches!(
+            request.mode,
+            SearchMode::Find | SearchMode::Type | SearchMode::ListContents
+        )
+    })
+}

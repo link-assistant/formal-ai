@@ -249,3 +249,12 @@ test('search symlinks and match overflow are explicitly incomplete', () => {
     });
   }
 });
+
+test('captured read_file custody requests retain established path aliases',()=>{
+ const owner='docs/associative-tech-stack.md';
+ const plan=fileIoReadStep([],['read_file'],owner,'Read the requested documentation source.');
+ assert.equal(plan.step.kind,'tool_calls');
+ const argumentsValue=JSON.parse(plan.step.calls[0].arguments);
+ assert.equal(argumentsValue.path,owner);assert.equal(argumentsValue.filePath,owner);
+ assert.equal(argumentsValue.file_path,owner);
+});

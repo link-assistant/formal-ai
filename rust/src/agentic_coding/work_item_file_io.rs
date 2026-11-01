@@ -850,7 +850,12 @@ pub(super) fn file_io_read_step(
     }
     tool_for(tools, Capability::Read).map_or_else(
         || run_step(messages, tools, "read", path, None, None),
-        |tool| FileIoPlan::Pending(plan_one(tool, json!({"filePath":path}).to_string())),
+        |tool| {
+            FileIoPlan::Pending(plan_one(
+                tool,
+                super::workspace_change::read_arguments(path),
+            ))
+        },
     )
 }
 pub(super) fn file_io_effect_step(
