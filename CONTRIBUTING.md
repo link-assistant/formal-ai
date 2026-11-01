@@ -1,5 +1,15 @@
 # Contributing to formal-ai
 
+## Development through Formal AI
+
+Follow [VISION.md](VISION.md): give small natural-language tasks to JavaScript Formal AI, let it execute actual tools, and increase difficulty after verified success.
+Retain requests, runtime and source identities, tool calls, failures, diffs and independent checks.
+Supplied patches, scripts, generators and literal replacements earn zero autonomous-authorship credit.
+Report unsupported work and terminal effects honestly; record externally authored bootstraps separately.
+Preserve readable CST, comments and unrelated content; verify JavaScript, TypeScript and Rust parity.
+Use at most three subagents plus the coordinator; batch verified changes, bound retries and prioritize release delivery.
+Run only necessary JavaScript checks locally, sequentially; Rust compilation and tests run exclusively in CI.
+
 The [default-branch build policy](docs/ci-cd/default-branch-builds.md) governs
 CI changes: no application, Cargo or Docker builds or deployments on PRs, even
 through branch dispatch or legacy full-PR controls. Run necessary local JS tests

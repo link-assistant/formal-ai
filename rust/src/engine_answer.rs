@@ -96,7 +96,12 @@ impl SymbolicAnswer {
     pub fn is_inconclusive(&self) -> bool {
         matches!(
             self.intent.as_str(),
-            "unknown" | "ill_formed" | "punctuation_only_prompt" | "concept_lookup_unresolved"
+            "unknown"
+                | "ill_formed"
+                | "punctuation_only_prompt"
+                | "concept_lookup_unresolved"
+                | "meta_reasoning_open"
+                | "meta_reasoned_program_unverified"
         ) || self.asks_for_clarification()
     }
 

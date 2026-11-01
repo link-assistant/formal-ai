@@ -1,0 +1,217 @@
+{
+  "schema": "formal-ai-production-dictionary-repair-replay/v1",
+  "scope": "Historical real production defect replay from public pre-fix revision0d12e35; not a new live-main contribution.",
+  "request": "Read scripts/lib/source-cst-boundary-transform.mjs. Fix its regression generator so legal JavaScript parameter names retain their numeric bindings, including __proto__ as an interval's lower-bound parameter. At present, generating an inclusive-upper-bound regression for function contains(value, __proto__, maximum) { return value >= __proto__ && value <= maximum; } incorrectly fails with BoundaryUnusedParameterUnsupported. Preserve the rest of the source, comments, supported interval behavior, and generated regression contract. Derive the repair from the source.",
+  "requestIdentity": "eeeeb54c751f34e2a2310c3688446aeeb2a5accda5931a868f9ba22d6f690d5f",
+  "sourceOwner": "scripts/lib/source-cst-boundary-transform.mjs",
+  "sourceRevision": "0d12e35",
+  "oraclePredeclared": true,
+  "oracleIdentity": "296190724d8510c8e8f4849568be99179ef8a1d6073a7d6abb8894898fa0b4be",
+  "stages": [
+    {
+      "id": "production-prototype-binding-repair-baseline",
+      "recordIdentity": "891c58217fa46ff076714145a775f989a7b73c8345eb33e9a8cde7aac9902cc4",
+      "tools": [],
+      "candidate": false,
+      "outcome": "Incorrect standalone code formalization; source unchanged."
+    },
+    {
+      "id": "production-prototype-binding-repair-intake",
+      "recordIdentity": "e54c71ea181fcce44c419170e0cc2fdf7ea2049e2b0b346c7853046eb9e8dc0a",
+      "tools": [
+        "read"
+      ],
+      "candidate": false,
+      "outcome": "SourceRepairOperatorUnavailable; source unchanged."
+    },
+    {
+      "id": "production-prototype-binding-repair-operator",
+      "tools": [
+        "read",
+        "edit",
+        "read"
+      ],
+      "candidate": true,
+      "outcome": "UsefulSourceRepairReadbackVerified",
+      "elapsedSeconds": 3.9110471669991966,
+      "sourcePreIdentity": "c0f773e2a82a41a498ce45070e25e4e1f6e62bb94272a3bd77be613b50ceb4e6",
+      "sourcePostIdentity": "ef77f7bac6065f7f9e3e0be31946ac900f23a9719f2c0f45d672cd6ec11de0ce"
+    }
+  ],
+  "observedExactResidual": {
+    "schema": "observed-actual-replay-residual/v1",
+    "startUtf8Byte": 12310,
+    "oldEndUtf8Byte": 12312,
+    "newEndUtf8Byte": 12329,
+    "before": "{}",
+    "after": "Object.create(null)",
+    "allOtherBytesExactlySame": true,
+    "credit": "Observed after actual planner candidate was preserved; never supplied as request patch."
+  },
+  "independentQualification": {
+    "passed": true,
+    "candidatePreservedBeforeReview": true,
+    "sourcePreIdentity": "c0f773e2a82a41a498ce45070e25e4e1f6e62bb94272a3bd77be613b50ceb4e6",
+    "sourcePostIdentity": "ef77f7bac6065f7f9e3e0be31946ac900f23a9719f2c0f45d672cd6ec11de0ce",
+    "syntaxValid": true,
+    "residualOutsideFiniteSamplesExact": true,
+    "allOriginalCommentsPreserved": true,
+    "noFixtureKeyedBranchAdded": true,
+    "actualGeneratedRegression": true,
+    "samples": [
+      [
+        [
+          -2,
+          0,
+          2
+        ],
+        false
+      ],
+      [
+        [
+          0,
+          0,
+          2
+        ],
+        true
+      ],
+      [
+        [
+          1,
+          0,
+          2
+        ],
+        true
+      ],
+      [
+        [
+          2,
+          0,
+          2
+        ],
+        true
+      ],
+      [
+        [
+          4,
+          0,
+          2
+        ],
+        false
+      ]
+    ],
+    "ordinaryBeforeAfterSame": true,
+    "healthyExitCode": 0,
+    "exclusiveUpperControlExitCode": 1,
+    "generatedTestIdentity": "44c782ff4342dd0994c373e58647c2dde8e52097d049daa0a83a2a2270ce36ae",
+    "dependencyIdentities": {
+      "js/agentic/portable/comparison_boundary_kernel.mjs": "1470b5eedade5c03f25e0d9a22f9afb10dbf1f76a10dd73befa402b11ad0ad7b",
+      "js/meta/readable-source.js": "e0d0a544d0f77bf17f4ff5d68917d9ff03daa6fcef8c11d52ad1e8f07ef9eb10",
+      "js/logging/lino-codec.mjs": "2645ba4b80221787e8261f67aef2cff73cbae6570835408993eaaaa4be3c8e08",
+      "js/agentic/crate/rust_str.mjs": "25d034c1770ffe331d29dca42313685c0be580f72707a60e8a4c0df2ef701ecb"
+    },
+    "evaluatorImportRebaseOnly": true,
+    "controllerReason": "UsefulSourceRepairReadbackVerified",
+    "controllerProof": {
+      "arbitrarySemanticEquivalence": false,
+      "authorshipCredit": 0,
+      "compilerValidity": "not-checked",
+      "completeConcreteResidual": true,
+      "exactInverse": true,
+      "independentGrammarReparse": true,
+      "initializerTriviaPreserved": true,
+      "readCount": 0,
+      "schema": "own-key-dictionary-source-proof/v1",
+      "scope": "own-key-dictionary-binding-repair-only",
+      "sourceReflectionEquivalence": false,
+      "spreadCount": 1,
+      "writeCount": 2
+    },
+    "controllerAuthored": false,
+    "controllerVerified": false,
+    "controllerComplete": false,
+    "liveMainContribution": false,
+    "manualEngineBootstrapCredit": 0,
+    "nativeRuntimeExecuted": false
+  },
+  "focusedSuites": [
+    {
+      "file": "rust/tests/web/own-key-dictionary-repair.test.mjs",
+      "passed": 15,
+      "failed": 0,
+      "exitCode": 0,
+      "elapsedSeconds": 0.17571516701718792,
+      "recordIdentity": "5b3638d69daeb962f936692cb679e1172eca8a00e6b81d1f879aab97862b0bbe"
+    },
+    {
+      "file": "rust/tests/web/source-repair-intake.test.mjs",
+      "passed": 15,
+      "failed": 0,
+      "exitCode": 0,
+      "elapsedSeconds": 3.4249836659873836,
+      "recordIdentity": "b5051a327fbc9afbdb5751ff22c61c1078d097c19f05bd82145b8c6d0bce4786"
+    }
+  ],
+  "assistance": {
+    "manualGeneralEngineBootstrap": true,
+    "manualMechanismAutonomousCredit": 0,
+    "changes": [
+      "Explicit owned-source repair intake precedes standalone example formalization",
+      "General task-goal-bound complete-CST own-key dictionary repair using primary ECMAScript data",
+      "Read-only shared CST view exposure, exact residual/reparse/inverse/trivia checks and one-Edit/readback custody",
+      "Existing experimental driver maintained-call equality seam; no task-supplied patch"
+    ],
+    "requiredProductionArtifactManuallyPatched": false,
+    "expectedFinalPatchSuppliedToSolver": false,
+    "currentFixedProductionSourceReadForAnswer": false,
+    "reviewerPriorRelatedMechanismKnowledge": true,
+    "independentDiscoveryClaim": false,
+    "unassistedGeneralCodingClaim": false,
+    "liveMainContribution": false
+  },
+  "runtime": {
+    "node": "v20.19.4",
+    "taskHeapMegabytes": 384,
+    "taskDeadlineSeconds": 25,
+    "oracleParentHeapMegabytes": 256,
+    "oracleChildHeapMegabytes": 96,
+    "oracleParentDeadlineSeconds": 25,
+    "oracleChildDeadlineSeconds": 5,
+    "WasmBlocked": true,
+    "localRustExecuted": false
+  },
+  "creditAndLimitations": {
+    "actualFormalAIProducedReplaySource": true,
+    "productionReplayAccepted": true,
+    "manualGeneralBootstrapCredit": 0,
+    "nativeParity": "Manual source counterpart/shared vectors; native CI pending, no local native run or verified-translation credit.",
+    "wholeIssue1483Complete": false,
+    "arbitraryProgramEquivalence": false,
+    "proofScope": "own-key dictionary binding repair under standard-unmodified-intrinsic and no-source-reflection assumptions"
+  },
+  "evidence": {
+    "request.json": "eec64c52d1f53d721a5166f8607479aeb91ba07ae545ea19703aca43125e03bb",
+    "result.json": "f5c0895980e6a5aa15351e9ff32d8282c44800edbc3b9fa6c1b021b22540a080",
+    "before-source.mjs": "c0f773e2a82a41a498ce45070e25e4e1f6e62bb94272a3bd77be613b50ceb4e6",
+    "after-source.mjs": "ef77f7bac6065f7f9e3e0be31946ac900f23a9719f2c0f45d672cd6ec11de0ce",
+    "independent-oracle-plan.json": "296190724d8510c8e8f4849568be99179ef8a1d6073a7d6abb8894898fa0b4be",
+    "initial-review.json": "6e12b836d7a4a3866abe41e110b5aa18f0b2484b99154251868995cc1193b833",
+    "private-oracle.mjs": "31f70896ed8724d2627b16acc97d9606cedc80caf753fd8c949d15c406a24c84",
+    "independent-production-review.json": "022dc5ea681a0c0bb5734c7f52efc36f1df8c2c06a641d346c679c5822733646",
+    "observed-exact-residual.json": "f09dfe6faa9726845573ecc1e7913ce88e62cd60e7558a522a8a3901dd0eb361",
+    "oracle/healthy.json": "e691412b51f1d622ac6e21c14b2652838eb17f7ef8ab4dbb4a68dfe870f5c4d0",
+    "oracle/exclusive-control.json": "a0d246545cae9d19ad8b64e699bcb43f7cc112d5c125a81d9d76df5e62cbc870",
+    "oracle/healthy/tests/range.test.mjs": "44c782ff4342dd0994c373e58647c2dde8e52097d049daa0a83a2a2270ce36ae",
+    "oracle/exclusive-control/tests/range.test.mjs": "44c782ff4342dd0994c373e58647c2dde8e52097d049daa0a83a2a2270ce36ae"
+  },
+  "reviewedEngineApplicationIdentity": "5db03eb1e6e233edf8bfb6a76d4001b1bd02b7c5175c26324221f7f992d8462d",
+  "postRunEngineFileIdentities": {
+    "js/agentic/source_repair.mjs": "27cbffae399d2ee2957948e58309839764f7320a1adf5b85eefb93934afa8c3f",
+    "js/agentic/source_dictionary_binding.mjs": "55f3628a8356838be82e9830631f5c670f84584fa918579a6b3bd42ea1d497fb",
+    "js/agentic/observed_source_usage.mjs": "eb28a08ea70900c8a4718d9285b180f1ed24a7901856b8874694b8b3fe7b5e48",
+    "js/server/source-dictionary-operation.mjs": "233b0b0e2d30f12956c043b709e024fcafbeeba5ec6635bb7bcc2b7414198b9f",
+    "js/agentic/node-host.mjs": "473d018a88c6e7a111991d92ab6c3e063c76d01848a5f481251ce35f8ac0aed6",
+    "data/meta/owned-source-repair.lino": "2d9b0a4c5aa3f4f1f36e97e499eb941b4b0cc15846a142d962895aeb94e63a90",
+    "data/meta/ecmascript-own-key-dictionary.json": "e11939f3d8bf3ca36e5740533226665ae0d312b22e44bd4fe55d4e2dd6a0df54"
+  }
+}

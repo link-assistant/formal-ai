@@ -2,11 +2,12 @@
 use super::final_result::{FinalDisposition, FinalResult, record};
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for};
 use super::progress::Progress;
+use super::source_manifest_facts::observed_manifest_facts;
 use crate::protocol::ChatMessage;
 use serde_json::json;
 
 /// Parse bounded explicit source references without granting effect authority.
-fn work_item_evidence_paths(task: &str) -> Vec<&str> {
+pub(super) fn work_item_evidence_paths(task: &str) -> Vec<&str> {
     if task.len() > 32_768 {
         return Vec::new();
     }
@@ -93,9 +94,23 @@ pub(super) fn plan_work_item_evidence(
                 .as_ref()
                 .is_some_and(|source| source.len() <= 262_144);
         let source = observed.source.as_deref().unwrap_or_default();
-        observations.push(json!({"path":path,"complete":complete,
+        let mut observation = json!({"path":path,"complete":complete,
             "sourceIdentity":complete.then(||crate::source_fetch::sha256_hex(source.as_bytes())),
-            "excerpt":complete.then(||source.chars().take(1024).collect::<String>())}));
+            "excerpt":complete.then(||source.chars().take(1024).collect::<String>())});
+        if complete && (path.ends_with(".json") || path.ends_with(".toml")) {
+            match observed_manifest_facts(path, source) {
+                Ok(facts) => {
+                    observation["manifestFacts"] = json!(facts);
+                    observation["factScope"] =
+                        json!("literal-declarations-only; executable use remains unverified");
+                }
+                Err(_) => {
+                    observation["manifestFacts"] = json!([]);
+                    observation["factGap"] = json!("UnsupportedOrInvalidManifest");
+                }
+            }
+        }
+        observations.push(observation);
         if !complete {
             return Some(finish("IncompleteSourceObservation", &observations));
         }

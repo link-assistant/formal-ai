@@ -25,7 +25,7 @@ test('unknown external roots and duplicate declarations refuse instead of creati
     /UnknownGeneratedNamespaceReference/u);
   assert.throws(()=>relocateGeneratedRustNamespace(['pub fn value() {}','pub fn value() {}'],namespace),
     /DuplicateGeneratedRootDeclaration/u);
-  assert.throws(()=>relocateGeneratedRustNamespace(['pub fn value() {}'],'invalid::namespace'),
+  assert.throws(()=>relocateGeneratedRustNamespace(['pub fn value() {}'],'invalid::::namespace'),
     /GeneratedNamespaceIdentifierRequired/u);
 });
 test('opaque Rust Unicode and hexadecimal character spans remain exact while lifetimes stay distinct',()=>{
@@ -61,4 +61,14 @@ test('the production library exposes the generated module without a root wildcar
   const lib=fs.readFileSync(new URL('../../src/lib.rs',import.meta.url),'utf8');
   assert(lib.includes('pub mod coding_research_generated;'));
   assert(!lib.includes('use coding_research_generated::*'));
+});
+
+test('nested subsystem namespaces preserve exact tokens, literals and inverse reconstruction',()=>{
+  const definitions=['pub fn first() { crate::second(); }','pub fn second() { "crate::second"; }'];
+  const result=relocateGeneratedRustNamespace(definitions,'agentic_coding::comparison_boundary_generated');
+  assert.equal(result.definitions[0],'pub fn first() { crate::agentic_coding::comparison_boundary_generated::second(); }');
+  assert.equal(result.definitions[1],definitions[1]);
+  assert.equal(result.references,1);
+  for(const invalid of ['', '::root', 'root::', 'root::::child', 'root::../other'])
+    assert.throws(()=>relocateGeneratedRustNamespace(definitions,invalid),/GeneratedNamespaceIdentifierRequired/u);
 });

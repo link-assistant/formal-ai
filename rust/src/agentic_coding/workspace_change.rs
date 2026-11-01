@@ -948,12 +948,12 @@ fn matching_result(
             if !message.role.eq_ignore_ascii_case("tool") {
                 return None;
             }
-            let id = message.tool_call_id.as_deref()?;
+            let call_identifier = message.tool_call_id.as_deref()?;
             let call = messages[..index]
                 .iter()
                 .rev()
                 .flat_map(|prior| prior.tool_calls.iter().rev())
-                .find(|call| call.id == id)?;
+                .find(|call| call.id == call_identifier)?;
             matches(&call.function.name, &call.function.arguments)
                 .then(|| message.content.plain_text())
         })

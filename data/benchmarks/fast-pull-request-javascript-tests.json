@@ -79,6 +79,24 @@
     "rust/tests/web/external-benchmark-admission.test.mjs",
     "rust/tests/web/locked-fixture-installation.test.mjs",
     "rust/tests/web/rust-specification-unicode-identifiers.test.mjs",
-    "rust/tests/web/ci-budget-and-registry-identities.test.mjs"
+    "rust/tests/web/ci-budget-and-registry-identities.test.mjs",
+    "rust/tests/web/work-item-hosted-effects.test.mjs",
+    "rust/tests/web/comparison-boundary-transform.test.mjs",
+    "rust/tests/web/source-documentation-controller.test.mjs",
+    "rust/tests/web/work-item-boundary-route.test.mjs",
+    "rust/tests/web/coding-research-namespace.test.mjs",
+    "rust/tests/web/source-manifest-facts.test.mjs",
+    "rust/tests/web/work-item-file-io.test.mjs",
+    "rust/tests/web/manifest-documentation.test.mjs",
+    "rust/tests/web/observed-source-usage.test.mjs",
+    "rust/tests/web/own-key-dictionary-repair.test.mjs",
+    "rust/tests/web/repository-documentation.test.mjs",
+    "rust/tests/web/source-repair-intake.test.mjs",
+    "rust/tests/web/work-item-owned-manifest-checker.test.mjs",
+    "rust/tests/web/open-reasoning-delivery.test.mjs",
+    "rust/tests/web/boundary-regression-driver.test.mjs",
+    "rust/tests/web/cargo-source-directories.test.mjs",
+    "rust/tests/web/repository-consumer-discovery.test.mjs",
+    "rust/tests/web/work-item-source-quotation-checker.test.mjs"
   ]
 }

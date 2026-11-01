@@ -569,6 +569,26 @@ autonomous implementation. Console recovery and source-qualified native log
 mounting are independently tested. Hosted capture remains unverified until a
 real run's artifacts and completeness manifests are inspected.
 
+### Current ordered delivery and translation boundary
+
+The current plan in [#1170](https://github.com/link-assistant/formal-ai/issues/1170)
+supersedes its historical ordering. Deliver one task per pull request, starting
+with [#1483](https://github.com/link-assistant/formal-ai/issues/1483) in
+[#1495](https://github.com/link-assistant/formal-ai/pull/1495); qualify its actual
+main-branch CI and release before taking the next task. Read-only evidence,
+diagnostic files and supplied patches do not satisfy useful autonomous editing.
+
+Complete bidirectional Rust ↔ meta-language ↔ JavaScript production translation
+is tracked separately in [#1500](https://github.com/link-assistant/formal-ai/issues/1500)
+and scheduled at the very end of the ordered work. It is not a prerequisite for
+the first useful coding contribution. Reuse existing checked portable kernels
+where supported; otherwise keep explicitly paired implementations and shared
+behavioral contracts. A narrow kernel translation does not establish complete
+source translation. Preserve the readable recursive CST, including comments and
+layout, and distinguish exact source reconstruction from semantic translation.
+All Rust compilation and native qualification remain in CI; local iterations use
+bounded, focused JavaScript checks only.
+
 # Issue 1438: reliable reporting and source-read preservation
 
 This requirement belongs to [PR 1437](https://github.com/link-assistant/formal-ai/pull/1437)

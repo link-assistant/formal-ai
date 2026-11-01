@@ -45,6 +45,7 @@ on: # zizmor: ignore[dangerous-triggers]
       - scripts/finalize-generated-test-issues.mjs
       - scripts/lib/hive-isolated-task.mjs
       - scripts/lib/generated-task-*.mjs
+      - scripts/work-item-qualification/**
       - "!docs/**"
       - "!*.md"
       - "!**/README.md"

@@ -105,7 +105,10 @@ export function pruneUnreachablePreludeFunctions(preludes, definitions) {
 }
 /** Mechanical namespace relocation over emitted items; strings/comments remain exact data. */
 export function relocateGeneratedRustNamespace(definitions, namespace) {
-  assert(/^[a-z][a-z0-9_]*$/u.test(namespace), 'GeneratedNamespaceIdentifierRequired');
+  assert(typeof namespace === 'string', 'GeneratedNamespaceIdentifierRequired');
+  const namespaceSegments = namespace.split('::');
+  assert(namespaceSegments.every(segment => /^[a-z][a-z0-9_]*$/u.test(segment)), 'GeneratedNamespaceIdentifierRequired');
+  const namespaceTokens = namespaceSegments.flatMap(segment => [['ident',segment],['punct','::']]);
   const symbols = new Set();
   const declarations = new Set(['fn', 'mod', 'enum', 'struct', 'const', 'static', 'type']);
   for (const definition of definitions) {
@@ -136,7 +139,7 @@ export function relocateGeneratedRustNamespace(definitions, namespace) {
     for (const position of [...insertions].reverse()) rendered = rendered.slice(0, position) + prefix + rendered.slice(position);
     const positions = new Set(insertions);
     const expected = tokens.flatMap(token => positions.has(token.start)
-      ? [['ident', namespace], ['punct', '::'], [token.type, token.text]] : [[token.type, token.text]]);
+      ? [...namespaceTokens, [token.type, token.text]] : [[token.type, token.text]]);
     assert.deepEqual(lex(rendered, 'Rust').map(token => [token.type, token.text]), expected, 'GeneratedNamespaceTokenDrift');
     let inverse = rendered;
     for (let index = insertions.length - 1; index >= 0; index -= 1) {

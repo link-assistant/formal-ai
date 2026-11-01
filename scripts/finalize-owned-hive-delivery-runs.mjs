@@ -19,7 +19,7 @@ export async function triggeredHiveOwnerExists(reader, trigger) {
   assert.equal(run.id, trigger.id); assert.equal(run.run_attempt, trigger.run_attempt);
   assert.equal(run.head_sha, trigger.head_sha); assert.equal(run.status, 'completed');
   assert.equal(run.repository?.full_name, repository); assert.equal(run.head_repository?.full_name, repository);
-  assert.equal(run.path?.split('@')[0], '.github/workflows/hive-original-delivery.yml');
+  assert.ok(['.github/workflows/hive-original-delivery.yml', '.github/workflows/work-item-qualification.yml'].includes(run.path?.split('@')[0]));
   const listing = await reader.read(`repos/${repository}/actions/runs/${run.id}/artifacts?name=${effectOwnerArtifact}&per_page=100`);
   assert.ok(Number.isSafeInteger(listing.total_count) && listing.total_count >= 0 && listing.total_count <= 100);
   assert.ok(Array.isArray(listing.artifacts) && listing.artifacts.length === listing.total_count);

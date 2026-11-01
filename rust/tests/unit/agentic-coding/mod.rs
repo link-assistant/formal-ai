@@ -142,6 +142,9 @@ mod module_function_signature_vectors;
 #[path = "coding_research_kernel.rs"]
 mod coding_research_kernel;
 
+#[path = "comparison_boundary.rs"]
+mod comparison_boundary;
+
 #[path = "coding_research_production.rs"]
 mod coding_research_production;
 
