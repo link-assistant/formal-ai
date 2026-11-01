@@ -72,6 +72,14 @@ fn validate_json_depth(value: &Value, depth: usize) -> Result<(), String> {
         return Err("manifest depth limit".to_owned());
     }
     match value {
+        Value::Number(value) => {
+            let number = value.as_f64().ok_or("unsupported manifest numeric range")?;
+            if !number.is_finite()
+                || (number.fract() == 0.0 && number.abs() > 9_007_199_254_740_991.0)
+            {
+                return Err("unsupported manifest numeric range".to_owned());
+            }
+        }
         Value::Array(values) => {
             for value in values {
                 validate_json_depth(value, depth + 1)?;
@@ -337,9 +345,7 @@ pub(super) fn observed_manifest_facts(owner: &str, source: &str) -> Result<Vec<V
     let identity = sha256_hex(source.as_bytes());
     let mut output = Vec::new();
     if owner.ends_with(".json") {
-        let UniqueJson(document) =
-            serde_json::from_str::<UniqueJson>(source).map_err(|error| error.to_string())?;
-        validate_json_depth(&document, 0)?;
+        let document = observed_source_json(source)?;
         let object = document
             .as_object()
             .ok_or("package manifest must be object")?;
@@ -407,3 +413,14 @@ pub(super) fn observed_manifest_facts(owner: &str, source: &str) -> Result<Vec<V
 #[cfg(test)]
 #[path = "../../tests/unit/agentic-coding/source_manifest_facts.rs"]
 mod tests;
+
+/// Complete bounded JSON observations shared by manifest and scalar bindings.
+pub(super) fn observed_source_json(source: &str) -> Result<Value, String> {
+    if source.len() > 262_144 {
+        return Err("manifest source exceeds finite observation bound".to_owned());
+    }
+    let UniqueJson(document) =
+        serde_json::from_str::<UniqueJson>(source).map_err(|error| error.to_string())?;
+    validate_json_depth(&document, 0)?;
+    Ok(document)
+}

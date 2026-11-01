@@ -54,6 +54,15 @@ fn general_change_step(
     if plan.mode == GeneralPlanMode::RepositoryWorkItem
         && let Some(objective) = repository_work_item_objective(plan, &progress)
     {
+        if let Some(step) = super::repository_documentation::plan_repository_documentation(
+            &objective,
+            messages,
+            tool_names,
+            Some(&plan.target),
+            result,
+        ) {
+            return step;
+        }
         if let Some(step) = super::source_documentation::plan_source_documentation_step(
             &objective,
             messages,

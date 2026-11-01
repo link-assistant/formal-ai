@@ -1,5 +1,58 @@
 # PR #1495: evidence to useful edits
 
+## Current natural-language development workflow
+
+All developers and up to three subagents now attempt task changes through
+natural-language requests to the JavaScript Formal AI planner, using actual
+tools. Scratch execution precedes any new maintained-file operation. Earlier
+externally authored controllers and supplied bulk applications remain disclosed
+as bootstrap work with zero autonomous authorship credit. Literal instruction
+copies also receive zero autonomous synthesis credit.
+
+The latest probes exposed remaining blockers: a source-addition request read
+and echoed the source without implementing the requested export; a parity
+repair read both sources without changing them or reporting a useful gap; and
+a JSON-list update wrote an explanation into a referenced test file instead of
+changing the intended profile. That wrong-target effect occurred only in an
+isolated scratch directory. Broad prose updates were unsupported. Smaller
+explicit prose insertions did execute Read and Edit, but their final messages
+incorrectly claimed the files were unchanged. Independent observed diffs take
+precedence over those messages. The open-reasoning classification guard now
+prevents the demonstrated wrong-target overwrite: the unchanged request makes
+no tool calls and preserves both inputs. The requested JSON transformation and
+its destination clarification remain unsupported. Focused regressions retain
+that boundary; no general self-coding or issue-completion claim follows.
+
+The bounded search transport passed six focused JavaScript tests; the
+independent manifest-table checker passed seven. Its literal-field checks
+remain separate from executable integration semantics. Shared documentation
+custody now permits sixteen source owners in JavaScript, TypeScript and Rust.
+Consumer discovery still needs connection to the complete original work item.
+The production dictionary-repair replay and its independent healthy/broken
+regression controls are preserved in formal-ai-production-dictionary-repair.json;
+this is a historical real-defect replay, not a new live-main contribution.
+All disclosed engine/bootstrap and literal integration work has zero autonomous
+synthesis credit. Native, hosted-client, main and release qualification remain
+pending.
+
+Local workspace note: the old tracked archive under
+experiments/formal_ai_subagent/evidence/coordinator-1188/ is excluded through
+Git sparse checkout to recover roughly 794 MB. It remains in Git history;
+current evidence and source edits are retained and no deletion is staged.
+Restore with `git sparse-checkout disable` only when disk space permits.
+Protected root files and personal session exports remain outside this batch.
+
+A referenced filename is data, not write authority. Structural edits require
+an observed destination, unambiguous ownership, preservation of unrelated
+content, real process status and fresh readback. Unsupported transformations
+must stop explicitly without writing diagnostics into referenced files.
+
+The experimental natural-language CLI mode is tracked separately in
+https://github.com/link-foundation/start/issues/255 and does not expand the
+current pull request into a second implementation task. No local Rust build
+or test is permitted; necessary JavaScript checks remain small and sequential.
+
+
 The current work addresses [#1483](https://github.com/link-assistant/formal-ai/issues/1483),
 the first unfinished item in the latest [#1170](https://github.com/link-assistant/formal-ai/issues/1170)
 plan. [Requirements](../../requirements/issue-1483-evidence-to-useful-edit.md)

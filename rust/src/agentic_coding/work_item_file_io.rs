@@ -14,6 +14,8 @@ use std::collections::{BTreeMap, BTreeSet};
 
 const PROGRAM: &str = include_str!("../../embedded/data/meta/work-item-file-io-program.cjs");
 const FRAME: &str = "FORMAL_AI_FILE_IO_V1 ";
+mod search;
+pub(super) use search::FileIoSearchObservation;
 fn digest(text: &str) -> String {
     crate::source_fetch::sha256_hex(text.as_bytes())
 }
@@ -97,6 +99,9 @@ pub(super) fn file_io_command(
     before: Option<&str>,
     after: Option<&str>,
 ) -> Option<String> {
+    if PROGRAM.len() > 32768 {
+        return None;
+    }
     let request = request(operation, root, path, before, after)?;
     let payload = encode(&canonical(&request)?);
     let quote = crate::portable_string_contracts::quote_shell_word;
@@ -128,7 +133,17 @@ fn owned_command(command: &str) -> Option<Request> {
     }
     let input = decoded(payload)?;
     let value: Value = serde_json::from_str(&input).ok()?;
-    if canonical(&value)? != input || value["schema"] != "formal-ai-owned-file-request/v1" {
+    if canonical(&value)? != input {
+        return None;
+    }
+    if search::valid_request(&value) {
+        return Some(Request {
+            value,
+            identity: digest(&input),
+            command: command.to_owned(),
+        });
+    }
+    if value["schema"] != "formal-ai-owned-file-request/v1" {
         return None;
     }
     let keys = value.as_object()?.keys().cloned().collect::<BTreeSet<_>>();
@@ -413,6 +428,7 @@ impl FileIoAttempt {
 }
 pub(super) struct WorkItemFileProgress {
     attempts: Vec<FileIoAttempt>,
+    searches: Vec<FileIoSearchObservation>,
     pub root: Option<String>,
     pub pending: Option<Pending>,
     pub gap: Option<String>,
@@ -439,17 +455,30 @@ impl WorkItemFileProgress {
             .map(|_| "FileIoCallerRootUnsupported".to_owned());
         let mut events: Vec<(usize, FileIoAttempt)> = Vec::new();
         let mut transport_diagnostics = Vec::new();
+        let mut searches = Vec::new();
         for (frame, request) in &owned {
             let completed = completed_run(frame, &frames);
             transport_diagnostics.push(json!({"kind":"registered-process","actualTool":frame.tool,"callId":frame.id,"requestIdentity":request.identity,
                 "operation":request.value["operation"],"path":request.value["path"],"actualExitCode":completed.code,
                 "pendingSession":completed.pending.as_ref().map(|pending|pending.session),"polls":completed.polls,"reason":completed.gap}));
+            if request.value["operation"] == "search" {
+                searches.push(search::observation(frame, request, &completed));
+            }
             if completed.pending.is_some() {
                 pending = completed.pending;
                 continue;
             }
             if completed.gap.is_some() {
                 gap = completed.gap;
+                continue;
+            }
+            if request.value["operation"] == "search" {
+                if root
+                    .as_deref()
+                    .is_some_and(|root| request.value["root"] != root)
+                {
+                    gap = Some("FileIoRootContextContradicted".to_owned());
+                }
                 continue;
             }
             let observed = receipt(request, &completed.output);
@@ -696,7 +725,15 @@ impl WorkItemFileProgress {
             pending,
             gap,
             transport_diagnostics,
+            searches,
         }
+    }
+    pub(super) fn search_for(
+        &self,
+        directory: &str,
+        identifiers: &[String],
+    ) -> Option<&FileIoSearchObservation> {
+        search::find(&self.searches, directory, identifiers)
     }
     pub(super) fn research_attempts(&self) -> &[FileIoAttempt] {
         &self.attempts
@@ -780,6 +817,15 @@ fn run_step(
             ))
         },
     )
+}
+pub(super) fn file_io_search_step(
+    messages: &[ChatMessage],
+    tools: &[&str],
+    directory: &str,
+    identifiers: &[String],
+    task: &str,
+) -> FileIoPlan {
+    search::step(messages, tools, directory, identifiers, task)
 }
 pub(super) fn file_io_read_step(
     messages: &[ChatMessage],

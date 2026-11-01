@@ -121,3 +121,65 @@ fn native_absolute_alias_normalization_requires_exact_caller_root() {
         None
     );
 }
+
+#[test]
+fn native_registered_search_retains_actual_process_custody_without_source_read_credit() {
+    let directory = directory();
+    fs::create_dir(directory.0.join("src")).unwrap();
+    fs::write(
+        directory.0.join("src/consumer.rs"),
+        "// candidate_engine is a candidate, not an import.\n",
+    )
+    .unwrap();
+    fs::write(directory.0.join("src/other.rs"), "fn unrelated() {}\n").unwrap();
+    let root = directory.0.to_str().unwrap();
+    let identifiers = vec!["candidate_engine".to_owned()];
+    let mut messages = vec![
+        ChatMessage::new(
+            "system",
+            format!("<env>\nWorking directory: {root}\n</env>"),
+        ),
+        ChatMessage::user("Find the observed dependency's consumers."),
+    ];
+    let FileIoPlan::Pending(plan) =
+        file_io_search_step(&messages, &["exec_command"], "src", &identifiers, "")
+    else {
+        panic!("Expected owned search command");
+    };
+    let AgenticPlan::ToolCalls(calls) = plan else {
+        panic!("Expected physical Run");
+    };
+    assert_eq!(calls.len(), 1);
+    assert_eq!(calls[0].tool, "exec_command");
+    let arguments: Value = serde_json::from_str(&calls[0].arguments).unwrap();
+    let command = arguments["command"].as_str().unwrap().to_owned();
+    assert_eq!(command, search::command(root, "src", &identifiers).unwrap());
+    let output = Command::new("/bin/sh")
+        .args(["-c", &command])
+        .current_dir(&directory.0)
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(0));
+    observe(
+        &mut messages,
+        "exec_command",
+        json!({"cmd":command}),
+        String::from_utf8(output.stdout).unwrap(),
+        0,
+    );
+    let progress = WorkItemFileProgress::scan(&messages);
+    let search = progress.search_for("src", &identifiers).unwrap();
+    assert!(search.complete);
+    assert_eq!(search.status, "reported-success");
+    assert_eq!(search.transport["actualExitCode"], 0);
+    assert_eq!(search.root, root);
+    assert_eq!(search.files.len(), 1);
+    assert_eq!(search.files[0]["path"], "src/consumer.rs");
+    assert_eq!(
+        search.files[0]["sha256"],
+        crate::source_fetch::sha256_hex(&fs::read(directory.0.join("src/consumer.rs")).unwrap())
+    );
+    assert!(progress.research_attempts().is_empty());
+    assert!(progress.source_read_for("src/consumer.rs").is_none());
+    assert!(progress.search_for("other", &identifiers).is_none());
+}

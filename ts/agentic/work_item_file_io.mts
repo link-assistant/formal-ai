@@ -31,7 +31,7 @@ function decode(text) {
 }
 function program() {
   const source = readText(PROGRAM);
-  if (typeof source !== 'string' || source.length > 16384) throw Error('FileIoProgramUnavailable');
+  if (typeof source !== 'string' || source.length > 32768) throw Error('FileIoProgramUnavailable');
   return source;
 }
 const relative = path => typeof path === 'string' && path.length > 0 && path.length <= 4096 && !path.startsWith('/') && !path.includes('\\') && !path.includes('\0') && path.split('/').every(part => part !== '' && part !== '.' && part !== '..');
@@ -64,6 +64,129 @@ export function fileIoCommand(operation, root, path, before = null, after = null
   if (command.length > 196608) throw Error('FileIoCommandLimit');
   return command;
 }
+function searchSpecification(directory, identifiers) {
+  if (!relative(directory) || directory.split('/').some(part => part.startsWith('.')) || !Array.isArray(identifiers) ||
+         !identifiers.length || identifiers.length > 8 || identifiers.some(identifier => typeof identifier !== 'string' ||
+         !/^[A-Za-z_][A-Za-z0-9_]{0,127}$/u.test(identifier)) || new Set(identifiers).size !== identifiers.length) throw Error('FileIoSearchScopeRequired');
+  return {
+    directory,
+    identifiers: [...identifiers].sort()
+  };
+}
+function validSearchRequest(value) {
+  try {
+    const specification = searchSpecification(value.directory, value.identifiers);
+    return value.schema === 'formal-ai-owned-search-request/v1' && value.operation === 'search' && Object.keys(value).sort().join('|') === 'directory|identifiers|operation|root|schema' && rootPath(value.root) && JSON.stringify(specification.identifiers) === JSON.stringify(value.identifiers);
+  } catch {
+    return false;
+  }
+}
+/** Mirrors `command` in rust/src/agentic_coding/work_item_file_io/search.rs. */
+export function fileIoSearchCommand(root, directory, identifiers) {
+  if (!rootPath(root)) throw Error('FileIoOwnedPathRequired');
+  const specification = searchSpecification(directory, identifiers);
+  const request = {
+    schema: 'formal-ai-owned-search-request/v1',
+    operation: 'search',
+    root,
+    ...specification
+  };
+  const command = 'node -e ' + quoteShellWord(program()) + ' ' + quoteShellWord(encode(canonical(request)));
+  if (command.length > 196608) throw Error('FileIoCommandLimit');
+  return command;
+}
+function searchReceiptFor(request, output) {
+  if (typeof output !== 'string' || output.length > 262144) return null;
+  const exact = /^FORMAL_AI_FILE_IO_V1 ([A-Za-z0-9+/=]+)\n?$/u.exec(output);
+  if (!exact) return null;
+  try {
+    const text = decode(exact[1]),
+      receipt = JSON.parse(text),
+      value = request.value;
+    if (canonical(receipt) !== text || receipt.schema !== 'formal-ai-owned-search-receipt/v1' || receipt.operation !== 'search' ||
+         receipt.requestIdentity !== request.identity || receipt.root !== value.root || receipt.directory !== value.directory ||
+         JSON.stringify(receipt.identifiers) !== JSON.stringify(value.identifiers) || receipt.state !== 'observed-search' ||
+         typeof receipt.complete !== 'boolean' || !Array.isArray(receipt.files) || receipt.files.length > 8 ||
+         !Array.isArray(receipt.gaps) || receipt.gaps.length > 32 || receipt.complete && receipt.gaps.length !== 0 ||
+         !Number.isInteger(receipt.visitedFiles) || receipt.visitedFiles < 0 || receipt.visitedFiles > 1025 ||
+         !Number.isInteger(receipt.visitedDirectories) || receipt.visitedDirectories < 0 || receipt.visitedDirectories > 129 ||
+         !Number.isInteger(receipt.bytesRead) || receipt.bytesRead < 0 || receipt.bytesRead > 16777216 || receipt.scope !== 'bounded-nonhidden-rust-source-candidates; text matches are not bindings; fresh Read and CST validation required') return null;
+    const paths = new Set();
+    for (const file of receipt.files) {
+      if (!relative(file.path) || !file.path.startsWith(value.directory + '/') || !file.path.endsWith('.rs') ||
+         file.path.split('/').some(part => part.startsWith('.')) || paths.has(file.path) || !/^[a-f0-9]{64}$/u.test(file.sha256) ||
+         !Number.isInteger(file.byteLength) || file.byteLength < 0 || file.byteLength > 131072 || !Array.isArray(file.identifiers) ||
+         !file.identifiers.length || new Set(file.identifiers).size !== file.identifiers.length || file.identifiers.some(identifier => !value.identifiers.includes(identifier))) return null;
+      paths.add(file.path);
+    }
+    return receipt;
+  } catch {
+    return null;
+  }
+}
+function searchObservation(frame, request, completed) {
+  const receipt = searchReceiptFor(request, completed.output),
+    code = completed.parts?.code ?? null;
+  const succeeded = code === 0 && receipt !== null && !completed.gap && !completed.pending;
+  return {
+    directory: request.value.directory,
+    identifiers: request.value.identifiers,
+    root: request.value.root,
+    requestIdentity: request.identity,
+    status: completed.pending ? 'pending' : code === 0 ? 'reported-success' : code === null ? 'unknown' : 'reported-failure',
+    complete: succeeded && receipt.complete,
+    files: succeeded ? receipt.files : [],
+    receipt: succeeded ? receipt : null,
+    error: completed.gap ?? (completed.pending ? null : !succeeded ? 'FileIoSearchObservationUnavailable' : null),
+    transport: {
+      kind: 'registered-run-search',
+      actualTool: frame.tool,
+      callId: frame.id,
+      command: request.command,
+      actualExitCode: code,
+      pendingSession: completed.pending?.session ?? null,
+      completedAt: completed.completedAt,
+      originalReceipt: frame.raw,
+      root: request.value.root
+    }
+  };
+}
+export function fileIoSearchStep(messages, tools, directory, identifiers, task = '') {
+  let specification;
+  try {
+    specification = searchSpecification(directory, identifiers);
+  } catch (error) {
+    return {
+      gap: String(error.message)
+    };
+  }
+  if (readPolicyBlocksPlan(task, planOne('read', jsonText({
+    filePath: directory
+  })))) return {
+    gap: 'ReadPolicyRefused'
+  };
+  const progress = WorkItemFileProgress.scan(messages),
+    pending = fileIoPendingStep(progress, tools);
+  if (pending) return pending;
+  const run = shellCommandTool(tools);
+  if (!run) return {
+    gap: 'FileIoRunToolUnavailable'
+  };
+  try {
+    const command = progress.root ? fileIoSearchCommand(progress.root, specification.directory, specification.identifiers) : fileIoCommand('root', null, null);
+    return {
+      step: planOne(run, jsonText({
+        command,
+        max_output_tokens: 65536,
+        yield_time_ms: 1000
+      }))
+    };
+  } catch (error) {
+    return {
+      gap: String(error.message)
+    };
+  }
+}
 function ownedCommand(command) {
   if (typeof command !== 'string' || command.length > 196608) return null;
   let source;
@@ -79,7 +202,13 @@ function ownedCommand(command) {
   try {
     const input = decode(encoded.slice(1, -1)),
       value = JSON.parse(input);
-    if (canonical(value) !== input || Object.keys(value).sort().join('|') !== 'afterBase64|beforeSha256|operation|path|root|schema' || value.schema !== 'formal-ai-owned-file-request/v1' || !['root', 'read', 'create', 'replace'].includes(value.operation)) return null;
+    if (canonical(value) !== input) return null;
+    if (validSearchRequest(value)) return {
+      value,
+      identity: sha256Hex(input),
+      command
+    };
+    if (Object.keys(value).sort().join('|') !== 'afterBase64|beforeSha256|operation|path|root|schema' || value.schema !== 'formal-ai-owned-file-request/v1' || !['root', 'read', 'create', 'replace'].includes(value.operation)) return null;
     if (value.operation === 'root') {
       if ([value.root, value.path, value.beforeSha256, value.afterBase64].some(item => item !== null)) return null;
     } else if (!rootPath(value.root) || !relative(value.path)) return null;
@@ -151,8 +280,14 @@ function canonicalNativeAttempt(attempt, root) {
     ...attempt,
     arguments: null,
     physicalArguments: attempt.arguments,
-    transport: {kind:'client-file-tool',root,canonicalPath:null,actualTool:attempt.tool,
-      physicalArguments:attempt.arguments,reason:'AmbiguousOrUnownedPathAliases'}
+    transport: {
+      kind: 'client-file-tool',
+      root,
+      canonicalPath: null,
+      actualTool: attempt.tool,
+      physicalArguments: attempt.arguments,
+      reason: 'AmbiguousOrUnownedPathAliases'
+    }
   };
   const normalized = {
     ...argumentsValue
@@ -271,7 +406,8 @@ function completedRun(frame, frames) {
   };
 }
 export class WorkItemFileProgress {
-  constructor(attempts, root, pending = null, gap = null, transportDiagnostics = []) {
+  constructor(attempts, root, pending = null, gap = null, transportDiagnostics = [], searches = []) {
+    this.searches = searches;
     this.attempts = attempts;
     this.root = root;
     this.pending = pending;
@@ -290,6 +426,7 @@ export class WorkItemFileProgress {
       gap = null;
     if (root !== null && root !== undefined && !rootPath(root)) gap = 'FileIoCallerRootUnsupported';
     const events = [],
+      searches = [],
       transportDiagnostics = [];
     for (const {
       frame,
@@ -308,6 +445,7 @@ export class WorkItemFileProgress {
         polls: completed.polls ?? completed.pending?.polls ?? null,
         reason: completed.gap ?? null
       });
+      if (request.value.operation === 'search') searches.push(searchObservation(frame, request, completed));
       if (completed.pending) {
         pending = {
           ...completed.pending,
@@ -318,6 +456,10 @@ export class WorkItemFileProgress {
       }
       if (completed.gap) {
         gap = completed.gap;
+        continue;
+      }
+      if (request.value.operation === 'search') {
+        if (root && request.value.root !== root) gap = 'FileIoRootContextContradicted';
         continue;
       }
       const receipt = receiptFor(request, completed.output),
@@ -428,12 +570,9 @@ export class WorkItemFileProgress {
       const attempt = events[index].attempt,
         argumentsValue = argumentsObject(attempt);
       if (attempt.transport?.kind !== 'registered-run-file-io' || attempt.capability !== Capability.Edit) continue;
-      const prior = events.slice(0, index).reverse().find(event =>
-        event.attempt.capability === Capability.Read
-        && argumentsObject(event.attempt)?.filePath === argumentsValue.filePath
-        && event.attempt.source_read?.complete === true
-        && event.attempt.source_read.error === null
-      )?.attempt.source_read.source;
+      const prior = events.slice(0, index).reverse().find(event => event.attempt.capability === Capability.Read &&
+         argumentsObject(event.attempt)?.filePath === argumentsValue.filePath && event.attempt.source_read?.complete === true &&
+         event.attempt.source_read.error === null)?.attempt.source_read.source;
       if (typeof prior === 'string' && sha256Hex(prior) === argumentsValue.beforeSha256) attempt.arguments = jsonText({
         ...argumentsValue,
         oldString: prior
@@ -442,7 +581,16 @@ export class WorkItemFileProgress {
         gap = 'FileIoObservedPreimageUnavailable';
       }
     }
-    return new WorkItemFileProgress(events.map(event => event.attempt), root, pending, gap, transportDiagnostics);
+    return new WorkItemFileProgress(events.map(event => event.attempt), root, pending, gap, transportDiagnostics, searches);
+  }
+  searchFor(directory, identifiers) {
+    let specification;
+    try {
+      specification = searchSpecification(directory, identifiers);
+    } catch {
+      return null;
+    }
+    return [...this.searches].reverse().find(observation => observation.directory === specification.directory && JSON.stringify(observation.identifiers) === JSON.stringify(specification.identifiers)) ?? null;
   }
   sourceReadFor(path) {
     return [...this.attempts].reverse().find(attempt => attempt.capability === Capability.Read && argumentsObject(attempt)?.filePath === path)?.source_read ?? null;

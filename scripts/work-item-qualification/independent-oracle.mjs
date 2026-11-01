@@ -2,7 +2,23 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { observedManifestEvidence, supportedManifestClaims } from './manifest-claims.mjs';
+import { checkOwnedManifestTables } from './owned-manifest-claims.mjs';
+import { usefulDraftChanges } from '../hive-mind-draft-result.mjs';
 const sha = value => createHash('sha256').update(value).digest('hex');
+export function unexpectedCandidateChanges(files, guide) {
+  const unexpected = new Set(usefulDraftChanges(files).filter(name => name !== guide));
+  for (const file of files) {
+    if (typeof file.previous_filename === 'string' && file.previous_filename !== guide) {
+      const previous = {
+        ...file,
+        filename: file.previous_filename
+      };
+      delete previous.previous_filename;
+      for (const name of usefulDraftChanges([previous])) unexpected.add(name);
+    }
+  }
+  return [...unexpected].sort();
+}
 export async function candidateReader({
   api,
   repository,
@@ -73,8 +89,13 @@ export async function checkDocumentationCandidate({
   assert(original);
   const manifestEvidence = observedManifestEvidence(originalFiles),
     sourceFacts = manifestEvidence.facts;
-  const checkedClaims = supportedManifestClaims(text, sourceFacts, manifestEvidence.observations);
+  const typedClaims = supportedManifestClaims(text, sourceFacts, manifestEvidence.observations);
+  const ownedTableClaims = checkOwnedManifestTables(text, sourceFacts, manifestEvidence.observations, {
+    expectedOwners: originalFiles.filter(file => /\.(?:json|toml)$/u.test(file.path)).map(file => file.path)
+  });
+  const checkedClaims = [...typedClaims, ...ownedTableClaims];
   const manifestContradictions = checkedClaims.filter(row => row.status === 'contradicted');
+  const unexpectedChanges = unexpectedCandidateChanges(files, guide);
   const sourceBindings = originalFiles.filter(file => file.path !== guide).map(file => ({
     path: file.path,
     sourceIdentity: sha(file.content)
@@ -88,7 +109,10 @@ export async function checkDocumentationCandidate({
     sourceBindings,
     manifestObservations: manifestEvidence.observations,
     checkedClaims,
+    typedClaims,
+    ownedTableClaims,
     manifestContradictions,
+    unexpectedChanges,
     smokeObservations: rows,
     obligations: [{
       id: 'requested_guide_diff',
@@ -96,6 +120,9 @@ export async function checkDocumentationCandidate({
     }, {
       id: 'literal_manifest_claims_match_observed_sources',
       status: manifestContradictions.length ? 'failed' : checkedClaims.length && checkedClaims.every(row => row.status === 'verified-literal-declaration') ? 'passed-literal-fields-only' : 'unresolved'
+    }, {
+      id: 'only_requested_guide_and_explicit_diagnostics_changed',
+      status: unexpectedChanges.length ? 'failed' : 'passed'
     }, {
       id: 'frozen_source_inputs_preserved',
       status: sourceBindings.length > 0 && rows.filter(row => row.id.startsWith('preserved_source:')).length === sourceBindings.length && rows.filter(row => row.id.startsWith('preserved_source:')).every(row => row.predicateMatched) ? 'passed' : 'failed'

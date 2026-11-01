@@ -75,6 +75,11 @@
       "task": "Update the deployment mode documentation",
       "source": "{\"deploymentMode\":\"$`\"}",
       "expectedGap": "UnsupportedDocumentationValue"
+    },
+    {
+      "task": "Document the package manager",
+      "source": "{\"packageManager\":\"pnpm@10\",\"packageManager\":\"yarn@4\"}",
+      "expectedGap": "InvalidSourceJson"
     }
   ]
 }

@@ -1,0 +1,174 @@
+{
+  "schema": "formal-ai-qualified-manifest-declaration-leaf/v1",
+  "scope": "Two-file literal dependency declaration documentation leaf only; original1455 task not replayed or accepted.",
+  "request": "Read package.json and docs/associative-tech-stack.md. Update docs/associative-tech-stack.md to document the dependencies declared in package.json, including their declared versions and dependency sections. Derive the facts from the manifest and preserve all existing guide text. Do not claim executable runtime use from a declaration alone.",
+  "requestIdentity": "6d8776db3e168907f4d81473e778c85cd9442d9d05a8f7143c27ddb93a400a38",
+  "frozenSnapshot": "4c18fa47059e19963601a35d749db5c493d4245f",
+  "inputs": {
+    "package.json": "7719887e1ddef6d01246c4c462ae0c1e007cae2d84f89e9850c745855a464a77",
+    "docs/associative-tech-stack.md": "2fe4fc583b22075c147636a3fc82e13dc4ff251133d028594b63e6763adca00b"
+  },
+  "oraclePredeclared": true,
+  "oracleIdentity": "555408d111d771be9ba0232ec7cb8d116cccf20fb37212d8f085669906b32ee3",
+  "budget": {
+    "perRunSeconds": 25,
+    "oldSpaceMegabytes": 384,
+    "maximumPlannerSteps": 8,
+    "WasmBlocked": true,
+    "localRustExecuted": false
+  },
+  "stages": [
+    {
+      "id": "manifest-declarations-baseline",
+      "elapsedSeconds": 2.588733999989927,
+      "tools": [
+        "read",
+        "read"
+      ],
+      "reason": "MissingPropertyBinding",
+      "guideChanged": false,
+      "sourceUnchanged": true,
+      "guidePreIdentity": "2fe4fc583b22075c147636a3fc82e13dc4ff251133d028594b63e6763adca00b",
+      "guidePostIdentity": "2fe4fc583b22075c147636a3fc82e13dc4ff251133d028594b63e6763adca00b",
+      "controllerAuthored": false,
+      "controllerVerified": false,
+      "checks": {},
+      "evidence": {
+        "request.json": "d3bb6aa5588f19eb071a3af08aa2f7c97befd679a7db00cf10831819f2e0c86e",
+        "result.json": "aa54f5807929ac5a6208be29338c827d281ad8fe77598f0156280540764545cc",
+        "before-package.json": "7719887e1ddef6d01246c4c462ae0c1e007cae2d84f89e9850c745855a464a77",
+        "after-package.json": "7719887e1ddef6d01246c4c462ae0c1e007cae2d84f89e9850c745855a464a77",
+        "before-associative-tech-stack.md": "2fe4fc583b22075c147636a3fc82e13dc4ff251133d028594b63e6763adca00b",
+        "after-associative-tech-stack.md": "2fe4fc583b22075c147636a3fc82e13dc4ff251133d028594b63e6763adca00b",
+        "independent-review.json": "a87a13926c8444778c6694937f3739f384900e5d8bd64957f9366295521db9ee"
+      }
+    },
+    {
+      "id": "manifest-declarations-repaired",
+      "elapsedSeconds": 2.77477420802461,
+      "tools": [
+        "read",
+        "read",
+        "edit",
+        "read",
+        "read"
+      ],
+      "reason": "UsefulCandidateReadbackVerified",
+      "guideChanged": true,
+      "sourceUnchanged": true,
+      "guidePreIdentity": "2fe4fc583b22075c147636a3fc82e13dc4ff251133d028594b63e6763adca00b",
+      "guidePostIdentity": "e8517865df22bf076fb3f747b7764021bdcc5c99ddd791a698727630db782620",
+      "controllerAuthored": false,
+      "controllerVerified": false,
+      "checks": {
+        "independent-row-review.json": {
+          "candidatePreservedBeforeReview": true,
+          "requestUnchanged": true,
+          "all12ExactRows": true,
+          "missingRows": [],
+          "extraRows": [],
+          "originalGuideBytesPreserved": true,
+          "manifestUnchanged": true,
+          "tools": [
+            "read",
+            "read",
+            "edit",
+            "read",
+            "read"
+          ],
+          "reason": "UsefulCandidateReadbackVerified",
+          "authored": false,
+          "verified": false,
+          "wholeIssueAccepted": false,
+          "falseClaimReview": "New prose states literal manifest declarations only and explicitly disclaims executable runtime use; rows contain only actual source names/versions/sections/unqualified target and literal empty options. No source-role claims, installed/executed claim, or overrides rows.",
+          "passed": true
+        }
+      },
+      "evidence": {
+        "request.json": "d3bb6aa5588f19eb071a3af08aa2f7c97befd679a7db00cf10831819f2e0c86e",
+        "result.json": "a8190c553d46412e4192b3dc59cc1e3d2a4204d10c76d4caa559981892da5e54",
+        "before-package.json": "7719887e1ddef6d01246c4c462ae0c1e007cae2d84f89e9850c745855a464a77",
+        "after-package.json": "7719887e1ddef6d01246c4c462ae0c1e007cae2d84f89e9850c745855a464a77",
+        "before-associative-tech-stack.md": "2fe4fc583b22075c147636a3fc82e13dc4ff251133d028594b63e6763adca00b",
+        "after-associative-tech-stack.md": "e8517865df22bf076fb3f747b7764021bdcc5c99ddd791a698727630db782620",
+        "independent-review.json": "b2f9eef1525eac9eb0b91d863e29b2f1e12a27b94c69fa8b2c789d80ac2050e1",
+        "independent-row-review.json": "dea1c97e7e155096fd16b9a6dc63179ef15533782250c212659080337119d48a"
+      }
+    },
+    {
+      "id": "manifest-declarations-repaired-repeat",
+      "elapsedSeconds": 2.709360334003577,
+      "tools": [
+        "read",
+        "read"
+      ],
+      "reason": "VerifiedNoOp",
+      "guideChanged": false,
+      "sourceUnchanged": true,
+      "guidePreIdentity": "e8517865df22bf076fb3f747b7764021bdcc5c99ddd791a698727630db782620",
+      "guidePostIdentity": "e8517865df22bf076fb3f747b7764021bdcc5c99ddd791a698727630db782620",
+      "controllerAuthored": false,
+      "controllerVerified": false,
+      "checks": {
+        "independent-repeat-review.json": {
+          "reason": "VerifiedNoOp",
+          "tools": [
+            "read",
+            "read"
+          ],
+          "noWriteOrEdit": true,
+          "guideByteIdentical": true,
+          "manifestByteIdentical": true,
+          "initialHarnessReview": "Preserved provisional first-change-only review is not the repeat oracle.",
+          "passed": true
+        }
+      },
+      "evidence": {
+        "request.json": "d3bb6aa5588f19eb071a3af08aa2f7c97befd679a7db00cf10831819f2e0c86e",
+        "result.json": "e1ea09ff68d506b278f9b4e750037f4dd5cba549b8a86f35a5f881020e23b699",
+        "before-package.json": "7719887e1ddef6d01246c4c462ae0c1e007cae2d84f89e9850c745855a464a77",
+        "after-package.json": "7719887e1ddef6d01246c4c462ae0c1e007cae2d84f89e9850c745855a464a77",
+        "before-associative-tech-stack.md": "e8517865df22bf076fb3f747b7764021bdcc5c99ddd791a698727630db782620",
+        "after-associative-tech-stack.md": "e8517865df22bf076fb3f747b7764021bdcc5c99ddd791a698727630db782620",
+        "independent-review.json": "8e8714dc18a1fcde4283e6bd43f337085bef6f5c5729b548168fc3afd6a8b1e5",
+        "independent-repeat-review.json": "e39143cb324d6db8d67c7cfce036c77489b581517b84a3d53b9975c20561706d"
+      }
+    }
+  ],
+  "assistance": {
+    "manualGenericEngineBootstrap": true,
+    "engineAutonomousAuthorshipCredit": 0,
+    "mechanisms": [
+      "Observed manifest-declaration facts naturalized by shared generic data templates with JS/native source projections",
+      "Readable paired owner blocks with finite limits and literal substitution",
+      "Strict JSON parser rejects duplicate primitive bindings; reviewer-demonstrated separate bug"
+    ],
+    "requestedGuideManuallyWritten": false,
+    "suppliedExpectedParagraph": false,
+    "historicalPatchSupplied": false,
+    "resultClassification": "Assisted generic capability replay; no unassisted coding, broad logic-repair rate, native parity or whole-issue completion claim."
+  },
+  "qualification": {
+    "manifestLeaf": true,
+    "original1455": false,
+    "whole1483": false,
+    "nativeRuntime": "not run locally; CI pending",
+    "nativeProjection": "manual source counterpart; no verified-translation credit"
+  },
+  "engineIdentitiesAtReviewedApplication": {
+    "js/agentic/source_manifest_facts.mjs": "92bb681161235aed9d23889cd1df7d5b8c97f36ced0a8dffa4595b31fdbcbdc1",
+    "js/agentic/manifest_documentation.mjs": "11514a5dc756f1b553a84cf7923af30a5d243f17c3f5916d577c79d3930330fb",
+    "js/agentic/source_documentation_policy.mjs": "7ab5371376fb670d02bc156011a29c82c56bafc44655c4cb9b4cda0ec85e175a",
+    "js/agentic/source_documentation.mjs": "4f7eb00ca1dee04cd1a064b7ff7f5ffa8bf6042aa923811696da58012b62602c",
+    "data/meta/source-documentation.lino": "bb30fd173dbaa52f321c0e99d95a7728eb369c4339ad73929e1a17b2aaadb00b"
+  },
+  "focusedRegression": {
+    "file": "rust/tests/web/manifest-documentation.test.mjs",
+    "exitCode": 0,
+    "elapsedSeconds": 1.2179485420056153,
+    "passed": 14,
+    "failed": 0,
+    "recordIdentity": "cec072064d858d638ba6faf01b063c50ca61b2391291274961d7c211e23c200e"
+  },
+  "provisionalReviewCaveat": "Copied baseline harness preserved its initial first-change-only review before independent qualification. Its repeat passed:false means no new change, not repeat failure; definitive separate repeat oracle passed:true."
+}

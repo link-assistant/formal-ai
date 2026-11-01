@@ -77,12 +77,23 @@ function checkedJson(source) {
     }
     const scalar = /^(?:true|false|null|-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)/u.exec(source.slice(cursor));
     if (!scalar) fail('ManifestScalarRequired');
+    if(!['true','false','null'].includes(scalar[0])){
+      const number=Number(scalar[0]);
+      if(!Number.isFinite(number)||Number.isInteger(number)&&!Number.isSafeInteger(number))fail('ManifestNumberRangeUnsupported');
+    }
     cursor += scalar[0].length;
   };
   value(0);
   space();
   if (cursor !== source.length) fail('ManifestTrailingContent');
   return JSON.parse(source);
+}
+
+/** Parse complete observed JSON with duplicate/depth/range checks. A source
+ * value is evidence only; this function grants no edit or truth authority. */
+export function observedSourceJson(source) {
+  if(typeof source!=='string'||new TextEncoder().encode(source).length>262144)fail('ManifestSourceBudgetExceeded');
+  return checkedJson(source);
 }
 
 /** This is a declared TOML subset, not a regex search for version-looking
@@ -285,7 +296,7 @@ export function observedManifestFacts(owner, source) {
     },
     facts = [];
   if (owner.endsWith('.json')) {
-    const document = checkedJson(source);
+    const document = observedSourceJson(source);
     if (!object(document)) fail('ManifestObjectRequired');
     for (const section of Object.keys(document).filter(key => packageSections.has(key)).sort()) {
       if (!object(document[section])) fail('ManifestDependencySectionRequired');

@@ -4,9 +4,10 @@ import { mkdtempSync, realpathSync, mkdirSync, writeFileSync, readFileSync, rmSy
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
-import { WorkItemFileProgress, fileIoReadStep, fileIoEffectStep, fileIoCommand, fileIoPendingStep } from '../../../js/agentic/work_item_file_io.mjs';
+import { WorkItemFileProgress, fileIoSearchStep, fileIoReadStep, fileIoEffectStep, fileIoCommand, fileIoPendingStep } from '../../../js/agentic/work_item_file_io.mjs';
 import { responseArgumentsForTool } from '../../../js/agentic/crate/protocol_responses.mjs';
 const evidence = JSON.parse(readFileSync('data/benchmarks/fixtures/work-item-file-io/client-schemas.json', 'utf8'));
 before(async () => installNodeHost(new WorkerHost({
@@ -182,6 +183,65 @@ test('missing outer process status earns no observation; synthetic pending metad
     const poll = fileIoPendingStep(progress, ['exec_command', 'write_stdin']);
     assert.equal(poll.step.calls[0].tool, 'write_stdin');
     assert.equal(JSON.parse(poll.step.calls[0].arguments).chars, '');
+  } finally {
+    rmSync(root, {
+      recursive: true,
+      force: true
+    });
+  }
+});
+test('registered bounded search returns candidate custody and requires fresh reads', () => {
+  const root = workspace(),
+    messages = history(root);
+  try {
+    mkdirSync(join(root, 'src/nested'));
+    writeFileSync(join(root, 'src/nested/consumer.rs'), '// candidate_engine is syntax search, not binding proof.\n');
+    writeFileSync(join(root, 'src/other.rs'), 'fn unrelated() {}\n');
+    mkdirSync(join(root, 'src/.private'));
+    writeFileSync(join(root, 'src/.private/secret.rs'), 'candidate_engine');
+    execute(root, messages, fileIoSearchStep(messages, ['exec_command'], 'src', ['candidate_engine'], task).step);
+    const progress = WorkItemFileProgress.scan(messages),
+      search = progress.searchFor('src', ['candidate_engine']);
+    assert.equal(search.status, 'reported-success');
+    assert.equal(search.complete, true);
+    assert.equal(search.transport.actualExitCode, 0);
+    assert.equal(search.root, root);
+    assert.deepEqual(search.files.map(file => file.path), ['src/nested/consumer.rs']);
+    assert.equal(search.files[0].sha256, createHash('sha256').update(readFileSync(join(root, 'src/nested/consumer.rs'))).digest('hex'));
+    assert.equal(progress.attempts.length, 0);
+    assert.equal(progress.sourceReadFor('src/nested/consumer.rs'), null);
+    assert.equal(progress.searchFor('src', ['unrelated']), null);
+    assert.equal(progress.searchFor('other', ['candidate_engine']), null);
+    assert.ok(search.receipt.scope.includes('text matches are not bindings'));
+    execute(root, messages, fileIoReadStep(messages, ['exec_command'], 'src/nested/consumer.rs', task).step);
+    assert.ok(WorkItemFileProgress.scan(messages).sourceReadFor('src/nested/consumer.rs').complete);
+  } finally {
+    rmSync(root, {
+      recursive: true,
+      force: true
+    });
+  }
+});
+test('search symlinks and match overflow are explicitly incomplete', () => {
+  const root = workspace();
+  try {
+    for (let index = 0; index < 9; index++) writeFileSync(join(root, 'src/consumer' + index + '.rs'), 'candidate_engine::invoke();\n');
+    let messages = history(root);
+    execute(root, messages, fileIoSearchStep(messages, ['exec_command'], 'src', ['candidate_engine'], task).step);
+    let search = WorkItemFileProgress.scan(messages).searchFor('src', ['candidate_engine']);
+    assert.equal(search.complete, false);
+    assert.equal(search.files.length, 8);
+    assert.ok(search.receipt.gaps.some(gap => gap.kind === 'SearchMatchBudget'));
+    mkdirSync(join(root, 'tiny'));
+    symlinkSync(join(root, 'src/consumer0.rs'), join(root, 'tiny/alias.rs'));
+    messages = history(root);
+    execute(root, messages, fileIoSearchStep(messages, ['exec_command'], 'tiny', ['candidate_engine'], task).step);
+    search = WorkItemFileProgress.scan(messages).searchFor('tiny', ['candidate_engine']);
+    assert.equal(search.complete, false);
+    assert.deepEqual(search.files, []);
+    assert.ok(search.receipt.gaps.some(gap => gap.kind === 'SearchSymlinkRefused'));
+    assert.equal(fileIoSearchStep(messages, ['exec_command'], '../src', ['candidate_engine'], task).gap, 'FileIoSearchScopeRequired');
+    assert.equal(fileIoSearchStep(messages, ['exec_command'], 'src', ['bad-name'], task).gap, 'FileIoSearchScopeRequired');
   } finally {
     rmSync(root, {
       recursive: true,

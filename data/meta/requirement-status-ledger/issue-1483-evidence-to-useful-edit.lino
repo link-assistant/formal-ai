@@ -19,7 +19,6 @@ requirement_status_ledger_shard
     verdict "not-delivered"
   requirement
     id "R1483-6"
-    verdict "not-delivered"
   requirement
     id "R1483-7"
     verdict "not-delivered"

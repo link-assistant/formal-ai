@@ -10,3 +10,23 @@ source-documentation
   negation never
   negation without
   negation "don't"
+  dependency-cue dependencies
+  dependency-cue dependency
+  version-cue version
+  version-cue versions
+  section-cue section
+  section-cue sections
+  manifest-start "<!-- formal-ai-manifest-start: {source} -->"
+  manifest-end "<!-- formal-ai-manifest-end: {source} -->"
+  manifest-title "Dependency declarations from `{source}`:"
+  manifest-notice "These are literal manifest declarations; they do not establish executable runtime use."
+  manifest-header "| Dependency | Declared version | Dependency section | Target qualifier | Literal options |"
+  manifest-separator "| --- | --- | --- | --- | --- |"
+  manifest-row "| `{name}` | `{version}` | `{section}` | `{target}` | `{options}` |"
+  manifest-absent-version "not declared"
+  manifest-unqualified-target "unqualified"
+  source-usage-heading "Source syntax observed in `{owner}`:"
+  source-usage-call "Imported `{imported}` from `{module}` is called in `{owner}`; the following excerpt records its syntax."
+  source-usage-reference "Qualified source reference in `{owner}`; module-root resolution is unverified."
+  source-usage-code-open "```{language}"
+  source-usage-code-close "```"

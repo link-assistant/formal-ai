@@ -1,3 +1,4 @@
+import {planRepositoryDocumentation} from './repository_documentation.mjs';
 import {planSourceDocumentationStep} from './source_documentation.mjs';
 import {planWorkItemBoundaryStep} from './work_item_boundary_candidate.mjs';
 // Execution state machine for a composed general change plan
@@ -54,6 +55,8 @@ function generalChangeStep(messages, toolNames, plan, resolvedFromWorkItem) {
   if (plan.mode === GeneralPlanMode.RepositoryWorkItem) {
     const objective = repositoryWorkItemObjective(plan, progress);
     if (objective !== null) {
+      const repositoryDocumentation=planRepositoryDocumentation(objective,messages,toolNames,plan.target);
+      if(repositoryDocumentation!==null)return repositoryDocumentation;
       const documentation = planSourceDocumentationStep(objective, messages, toolNames, plan.target);
       if (documentation !== null) return documentation;
       const boundary = planWorkItemBoundaryStep(objective, messages, toolNames, plan.target, workItemEvidencePaths);

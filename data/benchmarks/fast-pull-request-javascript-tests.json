@@ -87,6 +87,13 @@
     "rust/tests/web/coding-research-namespace.test.mjs",
     "rust/tests/web/source-manifest-facts.test.mjs",
     "rust/tests/web/work-item-file-io.test.mjs",
+    "rust/tests/web/manifest-documentation.test.mjs",
+    "rust/tests/web/observed-source-usage.test.mjs",
+    "rust/tests/web/own-key-dictionary-repair.test.mjs",
+    "rust/tests/web/repository-documentation.test.mjs",
+    "rust/tests/web/source-repair-intake.test.mjs",
+    "rust/tests/web/work-item-owned-manifest-checker.test.mjs",
+    "rust/tests/web/open-reasoning-delivery.test.mjs",
     "rust/tests/web/boundary-regression-driver.test.mjs"
   ]
 }

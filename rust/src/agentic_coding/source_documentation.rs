@@ -1,14 +1,11 @@
 //! Manual native projection of the bounded source-documentation controller.
 //! Source only: no native compilation or verified translation credit claimed.
-use super::final_result::{FinalDisposition, FinalResult, record};
-use super::planner::{AgenticPlan, Capability};
+use super::final_result::FinalResult;
+use super::observed_documentation::plan_observed_documentation;
+use super::planner::AgenticPlan;
 use super::shell_command_policy::sentences;
-use super::work_item_file_io::{
-    FileIoAttempt as ToolAttempt, FileIoPlan, WorkItemFileProgress as Progress,
-    file_io_effect_step, file_io_pending_step, file_io_read_step,
-};
+use super::source_manifest_facts::observed_source_json;
 use crate::normal_markov::{quote_fault, quoted_segment_spans};
-use crate::obligation_ledger::clauses_with_spans;
 use crate::protocol::ChatMessage;
 use crate::seed::parser::parse_lino;
 use crate::source_fetch::sha256_hex;
@@ -16,7 +13,54 @@ use serde_json::{Value, json};
 
 const GRAMMAR: &str = include_str!("../../embedded/data/meta/source-documentation.lino");
 
-fn concept_words(text: &str) -> Vec<String> {
+pub(super) use super::manifest_documentation::derive_manifest_documentation;
+
+pub(super) fn source_documentation_policy() -> Option<Value> {
+    let parsed = parse_lino(GRAMMAR);
+    let root = parsed
+        .children
+        .iter()
+        .find(|node| node.name == "source-documentation")?;
+    let values = |name: &str| {
+        root.children
+            .iter()
+            .filter(|node| node.name == name)
+            .map(|node| node.id.clone())
+            .collect::<Vec<_>>()
+    };
+    let mut policy = json!({"actions":values("action"),"preserve":values("preserve"),"negations":values("negation"),"prefixes":values("prefix"),"template":values("template").first()?,"dependencyCues":values("dependency-cue"),"versionCues":values("version-cue"),"sectionCues":values("section-cue")});
+    policy["manifestStart"] = values("manifest-start")
+        .first()
+        .map_or(Value::Null, |value| json!(value));
+    policy["manifestEnd"] = values("manifest-end")
+        .first()
+        .map_or(Value::Null, |value| json!(value));
+    policy["manifestTitle"] = values("manifest-title")
+        .first()
+        .map_or(Value::Null, |value| json!(value));
+    policy["manifestNotice"] = values("manifest-notice")
+        .first()
+        .map_or(Value::Null, |value| json!(value));
+    policy["manifestHeader"] = values("manifest-header")
+        .first()
+        .map_or(Value::Null, |value| json!(value));
+    policy["manifestSeparator"] = values("manifest-separator")
+        .first()
+        .map_or(Value::Null, |value| json!(value));
+    policy["manifestRow"] = values("manifest-row")
+        .first()
+        .map_or(Value::Null, |value| json!(value));
+    policy["manifestAbsentVersion"] = values("manifest-absent-version")
+        .first()
+        .map_or(Value::Null, |value| json!(value));
+    policy["manifestUnqualifiedTarget"] = values("manifest-unqualified-target")
+        .first()
+        .map_or(Value::Null, |value| json!(value));
+    policy["sourceUsage"] = json!({"heading":values("source-usage-heading").first().cloned(),"call":values("source-usage-call").first().cloned(),"reference":values("source-usage-reference").first().cloned(),"codeOpen":values("source-usage-code-open").first().cloned(),"codeClose":values("source-usage-code-close").first().cloned()});
+    Some(policy)
+}
+
+pub(super) fn concept_words(text: &str) -> Vec<String> {
     let camel = regex::Regex::new(r"([a-z0-9])([A-Z])").expect("StaticConceptBoundary");
     let words = regex::Regex::new(r"[^\p{L}\p{N}]+").expect("StaticConceptWords");
     let normalized = camel.replace_all(text, "$1 $2").to_lowercase();
@@ -27,13 +71,15 @@ fn concept_words(text: &str) -> Vec<String> {
         .collect()
 }
 
-fn documentation_authority(
+pub(super) fn documentation_authority(
     task: &str,
     guide_path: &str,
     actions: &[String],
     preserve: &[String],
     negations: &[String],
     prefixes: &[String],
+    require_target_mention: bool,
+    require_preservation: bool,
 ) -> Option<&'static str> {
     if quote_fault(task).is_some() {
         return Some("DocumentationActionUnowned");
@@ -47,15 +93,16 @@ fn documentation_authority(
         }
     }
     let masked = String::from_utf8(masked).expect("MaskedQuoteUtf8");
-    if !preserve
-        .iter()
-        .any(|cue| concept_words(&masked).contains(cue))
+    if require_preservation
+        && !preserve
+            .iter()
+            .any(|cue| concept_words(&masked).contains(cue))
     {
         return None;
     }
     let mut mentioned = false;
     for clause in sentences(&masked) {
-        if !task[clause.span.clone()].contains(guide_path) {
+        if require_target_mention && !task[clause.span.clone()].contains(guide_path) {
             continue;
         }
         let words = concept_words(clause.text);
@@ -80,48 +127,50 @@ fn documentation_authority(
         .then_some("DocumentationActionUnowned")
 }
 
-fn argument_alias(argument_values: &Value, names: &[&str]) -> Option<String> {
-    let object = argument_values.as_object()?;
-    let values: Vec<_> = names.iter().filter_map(|name| object.get(*name)).collect();
-    let first = values.first()?.as_str()?;
-    values
-        .iter()
-        .all(|value| value.as_str() == Some(first))
-        .then(|| first.to_owned())
-}
-fn attempt_path(attempt: &ToolAttempt) -> Option<String> {
-    let argument_values: Value = serde_json::from_str(attempt.arguments.as_deref()?).ok()?;
-    argument_alias(&argument_values, &["filePath", "file_path", "path"])
-}
-fn complete(attempt: &ToolAttempt) -> Option<&str> {
-    let observed = attempt.source_observation()?;
-    let source = observed.source.as_deref()?;
-    (attempt.succeeded && observed.error.is_none() && observed.complete && source.len() <= 262_144)
-        .then_some(source)
-}
-fn reads_for<'a>(
-    attempts: &'a [ToolAttempt],
-    path: &str,
-    before: usize,
-    after: Option<usize>,
-) -> Vec<(usize, &'a ToolAttempt)> {
-    attempts
-        .iter()
-        .enumerate()
-        .filter(|(index, attempt)| {
-            *index < before
-                && after.is_none_or(|after| *index > after)
-                && attempt.capability == Capability::Read
-                && attempt_path(attempt).as_deref() == Some(path)
-        })
-        .collect()
-}
 fn property_text(value: &Value) -> Option<String> {
     match value {
         Value::String(text) => Some(text.clone()),
         Value::Bool(value) => Some(value.to_string()),
         _ => None,
     }
+}
+
+fn manifest_declaration_request(task: &str) -> bool {
+    let Some(policy) = source_documentation_policy() else {
+        return false;
+    };
+    if quote_fault(task).is_some() {
+        return false;
+    }
+    let mut masked = task.as_bytes().to_vec();
+    for span in quoted_segment_spans(task) {
+        for byte in &mut masked[span.start..span.end] {
+            if !matches!(*byte, b'\r' | b'\n') {
+                *byte = b' ';
+            }
+        }
+    }
+    let masked = String::from_utf8(masked).expect("MaskedManifestRequestUtf8");
+    sentences(&masked).iter().any(|clause| {
+        let words = concept_words(clause.text);
+        let phrase = format!(" {} ", words.join(" "));
+        if policy["negations"].as_array().is_some_and(|cues| {
+            cues.iter()
+                .filter_map(Value::as_str)
+                .any(|cue| phrase.contains(&format!(" {} ", concept_words(cue).join(" "))))
+        }) {
+            return false;
+        }
+        ["dependencyCues", "versionCues", "sectionCues"]
+            .iter()
+            .all(|key| {
+                policy[*key].as_array().is_some_and(|cues| {
+                    cues.iter()
+                        .filter_map(Value::as_str)
+                        .any(|cue| words.iter().any(|word| word == cue))
+                })
+            })
+    })
 }
 
 /// Bind one requested concept to a scalar source field; ambiguity remains unresolved.
@@ -132,7 +181,7 @@ pub(super) fn derive_source_documentation(
     guide: &str,
     template: &str,
 ) -> Value {
-    let Ok(value) = serde_json::from_str::<Value>(source) else {
+    let Ok(value) = observed_source_json(source) else {
         return json!({"gap":"InvalidSourceJson"});
     };
     let Some(object) = value.as_object() else {
@@ -148,6 +197,12 @@ pub(super) fn derive_source_documentation(
                 && property_text(value).is_some()
         })
         .collect();
+    if manifest_declaration_request(task) {
+        if !bindings.is_empty() {
+            return json!({"gap":"AmbiguousDocumentationBinding"});
+        }
+        return derive_manifest_documentation(task, source_path, source, guide, None);
+    }
     if bindings.len() != 1 {
         return json!({"gap":if bindings.is_empty() {"MissingPropertyBinding"} else {"AmbiguousPropertyBinding"}});
     }
@@ -171,40 +226,6 @@ pub(super) fn derive_source_documentation(
     json!({"key":key,"value":value,"paragraph":paragraph,"sourceIdentity":sha256_hex(source.as_bytes()),"content":content})
 }
 
-fn finish(
-    state: &Value,
-    reason: &str,
-    failure: bool,
-    result: &mut Option<FinalResult>,
-) -> AgenticPlan {
-    let mut payload = state.clone();
-    payload["reason"] = json!(reason);
-    record(
-        AgenticPlan::Final(payload.to_string()),
-        if failure {
-            FinalDisposition::Failure
-        } else {
-            FinalDisposition::Gap
-        },
-        "source-documentation-controller",
-        result,
-    )
-}
-
-fn read_step(
-    task: &str,
-    messages: &[ChatMessage],
-    path: &str,
-    tools: &[&str],
-    state: &Value,
-    result: &mut Option<FinalResult>,
-) -> AgenticPlan {
-    match file_io_read_step(messages, tools, path, task) {
-        FileIoPlan::Pending(step) => step,
-        FileIoPlan::Gap(reason) => finish(state, &reason, false, result),
-    }
-}
-
 /// Same read/candidate/edit/readback and no-op contract as the JavaScript route.
 pub(super) fn plan_source_documentation_step(
     task: &str,
@@ -213,211 +234,64 @@ pub(super) fn plan_source_documentation_step(
     work_item: Option<&str>,
     result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
-    let parsed = parse_lino(GRAMMAR);
-    let root = parsed
-        .children
-        .iter()
-        .find(|node| node.name == "source-documentation")?;
+    let policy = source_documentation_policy()?;
     let values = |name: &str| {
-        root.children
-            .iter()
-            .filter(|node| node.name == name)
-            .map(|node| node.id.clone())
-            .collect::<Vec<_>>()
+        policy[name]
+            .as_array()
+            .map(|items| {
+                items
+                    .iter()
+                    .filter_map(Value::as_str)
+                    .map(str::to_owned)
+                    .collect::<Vec<_>>()
+            })
+            .unwrap_or_default()
     };
-    let template = values("template").into_iter().next()?;
-    // Integration exposes this existing helper as pub(super); no duplicate path parser.
+    let template = policy["template"].as_str()?;
     let paths = super::work_item_evidence::work_item_evidence_paths(task);
-    let sources: Vec<_> = paths
+    let sources = paths
         .iter()
         .copied()
         .filter(|path| path.ends_with(".json"))
-        .collect();
-    let guides: Vec<_> = paths
+        .collect::<Vec<_>>();
+    let guides = paths
         .iter()
         .copied()
         .filter(|path| path.ends_with(".md"))
-        .collect();
+        .collect::<Vec<_>>();
     if paths.len() != 2 || sources.len() != 1 || guides.len() != 1 {
         return None;
     }
     let source_path = sources[0];
-    let guide_path = guides[0];
+    let target = guides[0];
     let authority = documentation_authority(
         task,
-        guide_path,
-        &values("action"),
+        target,
+        &values("actions"),
         &values("preserve"),
-        &values("negation"),
-        &values("prefix"),
+        &values("negations"),
+        &values("prefixes"),
+        true,
+        true,
     )?;
-    let progress = Progress::scan(messages);
-    let attempts = progress.research_attempts();
-    let mut requirements: Vec<_>=clauses_with_spans(task).into_iter().map(|(text,(start,end))|json!({"text":text,"span":[start,end],"kind":"source-documentation","status":"unverified"})).collect();
-    if requirements.is_empty() {
-        requirements.push(json!({"text":task,"span":[0,task.len()],"kind":"source-documentation","status":"unverified"}));
-    }
-    let mut state = json!({"schema":"source-documentation-controller/v1","task":task,"taskIdentity":sha256_hex(task.as_bytes()),"workItem":work_item,"requirements":requirements,"source":source_path,"target":guide_path,"observations":[],"candidateEdits":[],"checks":[],"effects":[],"remainingWork":["independent-requirement-acceptance"],"authored":false,"verified":false,"complete":false});
-    if authority != "owned" {
-        return Some(finish(&state, authority, false, result));
-    }
-    state["transportDiagnostics"] = json!(progress.transport_diagnostics());
-    if let Some(pending) = file_io_pending_step(&progress, tools) {
-        return Some(match pending {
-            FileIoPlan::Pending(step) => step,
-            FileIoPlan::Gap(reason) => finish(&state, &reason, false, result),
-        });
-    }
-    if attempts
-        .iter()
-        .any(|attempt| attempt.capability == Capability::Read && attempt_path(attempt).is_none())
-    {
-        return Some(finish(&state, "AmbiguousReadPathAttempt", true, result));
-    }
-    let mutations: Vec<_> = attempts
-        .iter()
-        .enumerate()
-        .filter(|(_, attempt)| matches!(attempt.capability, Capability::Edit | Capability::Write))
-        .collect();
-    if mutations.iter().any(|(_, attempt)| {
-        attempt.capability != Capability::Edit
-            || attempt_path(attempt).as_deref() != Some(guide_path)
-    }) {
-        return Some(finish(
-            &state,
-            "UnrelatedOrAmbiguousMutationAttempt",
-            true,
-            result,
-        ));
-    }
-    if mutations.len() > 1 {
-        return Some(finish(&state, "MultipleEditAttempts", true, result));
-    }
-    for path in [source_path, guide_path] {
-        let reads = reads_for(attempts, path, attempts.len(), None);
-        let Some((_, observation)) = reads.last() else {
-            return Some(read_step(task, messages, path, tools, &state, result));
-        };
-        let Some(content) = complete(observation) else {
-            return Some(finish(
-                &state,
-                "IncompleteOrOversizedSourceObservation",
-                false,
-                result,
-            ));
-        };
-        state["observations"].as_array_mut()?.push(
-            json!({"path":path,"sourceIdentity":sha256_hex(content.as_bytes()),"complete":true}),
-        );
-    }
-    if let Some((index, edit)) = mutations.first().copied() {
-        let source_reads = reads_for(attempts, source_path, index, None);
-        let guide_reads = reads_for(attempts, guide_path, index, None);
-        let original_source = source_reads
-            .iter()
-            .find_map(|(_, attempt)| complete(attempt));
-        let original_guide = guide_reads
-            .last()
-            .and_then(|(_, attempt)| complete(attempt));
-        let (Some(original_source), Some(original_guide)) = (original_source, original_guide)
-        else {
-            return Some(finish(
-                &state,
-                "EditPreconditionObservationMissing",
-                true,
-                result,
-            ));
-        };
-        let expected = derive_source_documentation(
-            task,
-            source_path,
-            original_source,
-            original_guide,
-            &template,
-        );
-        if let Some(gap) = expected.get("gap").and_then(Value::as_str) {
-            return Some(finish(&state, gap, true, result));
-        }
-        let argument_values: Value = serde_json::from_str(edit.arguments.as_deref()?).ok()?;
-        let old = argument_alias(
-            &argument_values,
-            &["oldString", "old_string", "old_str", "old"],
-        );
-        let next = argument_alias(
-            &argument_values,
-            &["newString", "new_string", "new_str", "new"],
-        );
-        state["binding"] = json!({"key":expected["key"],"value":expected["value"],"sourceIdentity":expected["sourceIdentity"]});
-        state["candidateEdits"].as_array_mut()?.push(json!({"path":guide_path,"preimageIdentity":sha256_hex(original_guide.as_bytes()),"postimageIdentity":sha256_hex(expected["content"].as_str()?.as_bytes())}));
-        if old.as_deref() != Some(original_guide)
-            || next.as_deref() != expected["content"].as_str()
-            || next == old
-        {
-            return Some(finish(&state, "UnrelatedEditCandidate", true, result));
-        }
-        if !edit.succeeded {
-            return Some(finish(&state, "CandidateEditFailed", true, result));
-        }
-        let source_reads = reads_for(attempts, source_path, attempts.len(), Some(index));
-        let Some((source_index, source_read)) = source_reads.last().copied() else {
-            return Some(read_step(
-                task,
-                messages,
-                source_path,
-                tools,
-                &state,
-                result,
-            ));
-        };
-        let observed_source = complete(source_read);
-        if observed_source.is_none_or(|source| {
-            sha256_hex(source.as_bytes()) != expected["sourceIdentity"].as_str().unwrap_or_default()
-        }) {
-            return Some(finish(&state, "SourceFreshnessMismatch", true, result));
-        }
-        let guide_reads = reads_for(attempts, guide_path, attempts.len(), Some(source_index));
-        let Some((_, guide_read)) = guide_reads.last() else {
-            return Some(read_step(task, messages, guide_path, tools, &state, result));
-        };
-        let guide = complete(guide_read);
-        if guide != expected["content"].as_str() {
-            return Some(finish(&state, "ReadbackMismatch", true, result));
-        }
-        state["checks"] = json!([{"kind":"source-freshness","passed":true},{"kind":"exact-readback","passed":true}]);
-        state["effects"] =
-            json!([{"path":guide_path,"sourceIdentity":sha256_hex(guide?.as_bytes())}]);
-        return Some(finish(
-            &state,
-            "UsefulCandidateReadbackVerified",
-            false,
-            result,
-        ));
-    }
-    let source_reads = reads_for(attempts, source_path, attempts.len(), None);
-    let guide_reads = reads_for(attempts, guide_path, attempts.len(), None);
-    let source = complete(source_reads.last()?.1)?;
-    let guide = complete(guide_reads.last()?.1)?;
-    let derived = derive_source_documentation(task, source_path, source, guide, &template);
-    if let Some(gap) = derived.get("gap").and_then(Value::as_str) {
-        return Some(finish(&state, gap, false, result));
-    }
-    state["binding"] = json!({"key":derived["key"],"value":derived["value"],"sourceIdentity":derived["sourceIdentity"]});
-    if derived["content"].as_str()? == guide {
-        state["checks"] = json!([{"kind":"source-bound-noop","passed":true}]);
-        return Some(finish(&state, "VerifiedNoOp", false, result));
-    }
-    Some(
-        match file_io_effect_step(
-            messages,
-            tools,
-            guide_path,
-            Some(guide),
-            derived["content"].as_str()?,
-        ) {
-            FileIoPlan::Pending(step) => step,
-            FileIoPlan::Gap(reason) => finish(&state, &reason, false, result),
+    Some(plan_observed_documentation(
+        task,
+        messages,
+        tools,
+        &json!({"sources":sources,"target":target,"authority":authority,"workItem":work_item}),
+        |observed, guide| {
+            observed
+                .first()
+                .and_then(|row| row["source"].as_str())
+                .map_or_else(
+                    || json!({"gap":"EditPreconditionObservationMissing"}),
+                    |source| {
+                        derive_source_documentation(task, source_path, source, guide, template)
+                    },
+                )
         },
-    )
+        result,
+    ))
 }
 
 #[cfg(test)]

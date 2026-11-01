@@ -15,6 +15,175 @@ const decode = text => {
   if (bytes.toString('base64') !== text) throw Error('InvalidBase64');
   return bytes;
 };
+// Text matching selects candidates only; complete CST validation follows a fresh Read.
+function searchRequest(value) {
+  return value.schema === 'formal-ai-owned-search-request/v1' && value.operation === 'search' && Object.keys(value).sort().join('|') === 'directory|identifiers|operation|root|schema' &&
+         typeof value.directory === 'string' && value.directory.length <= 4096 && !value.directory.includes('\\') &&
+         !value.directory.includes('\0') && value.directory.split('/').every(part => part && part !== '.' && part !== '..' &&
+         !part.startsWith('.')) && Array.isArray(value.identifiers) && value.identifiers.length > 0 && value.identifiers.length <= 8 &&
+         value.identifiers.every(identifier => typeof identifier === 'string' && /^[A-Za-z_][A-Za-z0-9_]{0,127}$/.test(identifier)) &&
+         new Set(value.identifiers).size === value.identifiers.length;
+}
+function searchSources(value, cwd) {
+  if (typeof value.root !== 'string' || value.root !== cwd || fs.realpathSync(value.root) !== value.root) throw Error('RootContextMismatch');
+  const files = [],
+    gaps = [],
+    parents = [];
+  let visitedFiles = 0,
+    visitedDirectories = 0,
+    bytesRead = 0,
+    stopped = false;
+  const gap = (kind, owner) => {
+    if (gaps.length < 32) gaps.push({
+      kind,
+      path: owner
+    });
+  };
+  const remember = owner => {
+    const metadata = fs.lstatSync(owner);
+    if (!metadata.isDirectory() || metadata.isSymbolicLink()) throw Error('SearchDirectoryRefused');
+    parents.push({
+      path: owner,
+      dev: metadata.dev,
+      ino: metadata.ino,
+      mtimeMs: metadata.mtimeMs,
+      ctimeMs: metadata.ctimeMs
+    });
+    return metadata;
+  };
+  const check = () => {
+    if (fs.realpathSync(process.cwd()) !== value.root || fs.realpathSync(value.root) !== value.root) throw Error('RootContextChanged');
+    for (const saved of parents) {
+      const current = fs.lstatSync(saved.path);
+      if (!current.isDirectory() || current.isSymbolicLink() || current.dev !== saved.dev || current.ino !== saved.ino || current.mtimeMs !== saved.mtimeMs || current.ctimeMs !== saved.ctimeMs) throw Error('SearchDirectoryChanged');
+    }
+  };
+  let owner = value.root;
+  remember(owner);
+  for (const part of value.directory.split('/')) {
+    owner = path.join(owner, part);
+    remember(owner);
+  }
+  const walk = (directory, depth) => {
+    if (stopped) return;
+    if (depth > 12 || ++visitedDirectories > 128) {
+      gap('SearchDirectoryBudget', directory);
+      stopped = true;
+      return;
+    }
+    check();
+    const entries = [],
+      handle = fs.opendirSync(path.join(value.root, directory));
+    try {
+      let entry;
+      while (entries.length <= 512 && (entry = handle.readSync())) entries.push(entry.name);
+    } finally {
+      handle.closeSync();
+    }
+    if (entries.length > 512) {
+      gap('SearchEntryBudget', directory);
+      stopped = true;
+      return;
+    }
+    entries.sort();
+    for (const name of entries) {
+      if (stopped) break;
+      if (name.startsWith('.')) continue;
+      const relative = directory + '/' + name,
+        absolute = path.join(value.root, relative);
+      try {
+        const metadata = fs.lstatSync(absolute);
+        if (metadata.isSymbolicLink()) {
+          gap('SearchSymlinkRefused', relative);
+          continue;
+        }
+        if (metadata.isDirectory()) {
+          remember(absolute);
+          walk(relative, depth + 1);
+          continue;
+        }
+        if (!name.endsWith('.rs')) continue;
+        if (++visitedFiles > 1024) {
+          gap('SearchFileBudget', relative);
+          stopped = true;
+          break;
+        }
+        if (!metadata.isFile() || metadata.nlink !== 1 || metadata.size > LIMIT) {
+          gap('SearchFileRefused', relative);
+          continue;
+        }
+        if (bytesRead + metadata.size > 16777216) {
+          gap('SearchByteBudget', relative);
+          stopped = true;
+          break;
+        }
+        check();
+        const descriptor = fs.openSync(absolute, fs.constants.O_RDONLY | fs.constants.O_NOFOLLOW);
+        let bytes;
+        try {
+          const opened = fs.fstatSync(descriptor);
+          if (!opened.isFile() || opened.nlink !== 1 || opened.dev !== metadata.dev || opened.ino !== metadata.ino || opened.size !== metadata.size) throw Error('SearchFileChanged');
+          // Read at most one byte beyond the allowed snapshot, never unbounded readFile.
+          const buffer = Buffer.alloc(opened.size + 1);
+          let length = 0,
+            count;
+          while (length < buffer.length && (count = fs.readSync(descriptor, buffer, length, buffer.length - length, null)) > 0) length += count;
+          bytes = buffer.subarray(0, length);
+          const after = fs.fstatSync(descriptor),
+            current = fs.lstatSync(absolute);
+          if (length !== opened.size || after.size !== opened.size || after.mtimeMs !== opened.mtimeMs || after.ctimeMs !== opened.ctimeMs || current.dev !== opened.dev || current.ino !== opened.ino || !current.isFile() || current.nlink !== 1) throw Error('SearchFileChanged');
+          check();
+        } finally {
+          fs.closeSync(descriptor);
+        }
+        bytesRead += bytes.length;
+        const source = bytes.toString('utf8');
+        if (!Buffer.from(source, 'utf8').equals(bytes)) {
+          gap('SearchUtf8Required', relative);
+          continue;
+        }
+        const identifiers = value.identifiers.filter(identifier => source.includes(identifier));
+        if (identifiers.length) {
+          if (files.length >= 8) {
+            gap('SearchMatchBudget', relative);
+            stopped = true;
+            break;
+          }
+          files.push({
+            byteLength: bytes.length,
+            identifiers,
+            path: relative,
+            sha256: digest(bytes)
+          });
+        }
+      } catch (error) {
+        gap(String(error.code ?? error.message), relative);
+      }
+    }
+    check();
+  };
+  try {
+    walk(value.directory, 0);
+  } catch (error) {
+    gap(String(error.code ?? error.message), value.directory);
+  }
+  return {
+    schema: 'formal-ai-owned-search-receipt/v1',
+    requestIdentity,
+    operation: 'search',
+    root: value.root,
+    directory: value.directory,
+    identifiers: value.identifiers,
+    state: 'observed-search',
+    complete: gaps.length === 0 && !stopped,
+    files,
+    gaps,
+    visitedFiles,
+    visitedDirectories,
+    bytesRead,
+    scope: 'bounded-nonhidden-rust-source-candidates; text matches are not bindings; fresh Read and CST validation required'
+  };
+}
 let request = null,
   requestIdentity = null,
   staged = null;
@@ -27,10 +196,14 @@ try {
   if (input.length > 196608) throw Error('RequestLimit');
   request = JSON.parse(input.toString('utf8'));
   const keys = ['afterBase64', 'beforeSha256', 'operation', 'path', 'root', 'schema'];
-  if (Object.keys(request).sort().join('|') !== keys.join('|') || request.schema !== 'formal-ai-owned-file-request/v1' || !['root', 'read', 'create', 'replace'].includes(request.operation) || canonical(request) !== input.toString('utf8')) throw Error('RequestContract');
+  const search = searchRequest(request);
+  const file = Object.keys(request).sort().join('|') === keys.join('|') && request.schema === 'formal-ai-owned-file-request/v1' && ['root', 'read', 'create', 'replace'].includes(request.operation);
+  if (!search && !file || canonical(request) !== input.toString('utf8')) throw Error('RequestContract');
   requestIdentity = digest(input);
   const cwd = fs.realpathSync(process.cwd());
-  if (request.operation === 'root') {
+  if (search) {
+    emit(searchSources(request, cwd), 0);
+  } else if (request.operation === 'root') {
     if (request.root !== null || request.path !== null || request.beforeSha256 !== null || request.afterBase64 !== null) throw Error('RootRequestContract');
     emit({
       schema: 'formal-ai-owned-file-receipt/v1',
@@ -202,7 +375,10 @@ try {
     } catch {/* Preserve the original operation error. */}
   }
   emit({
-    schema: 'formal-ai-owned-file-receipt/v1',
+    schema: request?.operation === 'search' ? 'formal-ai-owned-search-receipt/v1' : 'formal-ai-owned-file-receipt/v1',
+    directory: request?.directory ?? null,
+    identifiers: request?.identifiers ?? null,
+    complete: false,
     requestIdentity,
     operation: request?.operation ?? null,
     root: request?.root ?? null,

@@ -1,0 +1,39 @@
+{
+  "schema": "owned-source-repair-intake-cases/v1",
+  "cases": [
+    {
+      "name": "unchanged actual production repair request",
+      "task": "Read scripts/lib/source-cst-boundary-transform.mjs. Fix its regression generator so legal JavaScript parameter names retain their numeric bindings, including __proto__ as an interval's lower-bound parameter. At present, generating an inclusive-upper-bound regression for function contains(value, __proto__, maximum) { return value >= __proto__ && value <= maximum; } incorrectly fails with BoundaryUnusedParameterUnsupported. Preserve the rest of the source, comments, supported interval behavior, and generated regression contract. Derive the repair from the source.",
+      "owner": "scripts/lib/source-cst-boundary-transform.mjs",
+      "authority": "owned"
+    },
+    {
+      "name": "renamed owner repair with example",
+      "task": "Read lib/bindings.mjs. Repair its handling of legal key bindings. The example function demonstration(a,b){return a+b;} describes a symptom. Preserve the remaining source.",
+      "owner": "lib/bindings.mjs",
+      "authority": "owned"
+    },
+    {
+      "name": "quoted action cannot own repair",
+      "task": "Read lib/bindings.mjs. \"Repair its key bindings.\"",
+      "unowned": true
+    },
+    {
+      "name": "negated repair refuses effects",
+      "task": "Do not fix lib/bindings.mjs. Preserve all text.",
+      "owner": "lib/bindings.mjs",
+      "authority": "NegatedSourceRepairAction"
+    },
+    {
+      "name": "multiple explicit owners remain ambiguous",
+      "task": "Read lib/a.mjs and lib/b.mjs. Repair their bindings.",
+      "owner": null,
+      "authority": "AmbiguousSourceRepairOwner"
+    },
+    {
+      "name": "program example alone stays with program route",
+      "task": "Write a JavaScript function sample(x){return x;}",
+      "unowned": true
+    }
+  ]
+}

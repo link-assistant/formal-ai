@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import {sourceRepairContract} from '../../js/agentic/source_repair.mjs';
 import {ownedSourceMaintenanceRequest} from '../../js/agentic/source_maintenance.mjs';
 import {createScopedSourceEditHost} from './scoped-source-edit-host.mjs';
 import {createBoundaryRegressionCreateHost} from './boundary-regression-create-host.mjs';
@@ -490,7 +491,7 @@ async function driveInternal(planChatStep, dir, prompt, {
       && mentionsRole('evidence-report-artifact-kind', clause.text);
   });
   if (readOnlyOperation && reportDelivery && readReportFrame === null) readOnlyOperation = false;
-  let sourceEditOperation = maintenanceContract !== null;
+  let sourceEditOperation = maintenanceContract !== null || sourceRepairContract(prompt)?.authority === 'owned';
   const firstGoal = Array.isArray(declaredGoals) ? declaredGoals[0] : null;
   if (createIntent && createContract === null && firstGoal?.kind === 'source_edit'
       && firstGoal.sourceUnit === 'utf16'

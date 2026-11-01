@@ -1,5 +1,30 @@
 # Vision
 
+## Development through Formal AI
+
+Developers and subagents perform task changes by giving natural-language
+instructions to the JavaScript version of Formal AI and allowing it to execute
+real tools through Agent, Codex or Claude. Begin with the smallest useful task,
+verify the result, and increase difficulty after demonstrated success.
+
+Keep the original request, runtime identity, observed source, tool calls,
+failures, resulting diff and independent checks as evidence. A supplied patch,
+script, generator or exact replacement is instruction execution and earns no
+autonomous code-generation credit. Unsupported tasks remain explicit gaps;
+never substitute a manual edit while claiming Formal AI authored the change.
+
+Improve reusable reasoning and transformation capabilities when a small task
+fails, then retry the unchanged task. Record any externally authored bootstrap
+separately. Preserve the complete readable CST, comments and unrelated content,
+and verify JavaScript, TypeScript and Rust parity. Prefer natural-language
+read-only tool operations when supported; direct observation is allowed and
+does not establish code authorship.
+
+Use at most three subagents plus the coordinator for the current issue. Batch
+verified changes before pushing, retain bounded retries, and keep release
+delivery as the priority. Run only necessary JavaScript checks locally, one at
+a time; Rust compilation and tests belong exclusively to CI.
+
 **Don't know everything, know just enough to get to know anything**
 
 Production artifacts belong to default-branch CI. Pull requests use essential
