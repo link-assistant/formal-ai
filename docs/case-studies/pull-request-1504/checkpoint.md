@@ -34,4 +34,14 @@ Focused sequential JavaScript checks passed: 111 existing registry/timing cases,
 
 The citation replacement was applied by JavaScript Formal AI from English, producing Read and Edit. Its terminal answer correctly reported the missing verification Run capability; independent exact-diff inspection established the requested literal effect. Supplied literals and externally authored engine/native bootstrap payloads receive zero autonomous synthesis credit. No general autonomous coding success rate, cost reduction or amplification claim is made.
 
+## Fresh-main native assertion follow-up
+
+PR #1505 merged as e92bb80f6e422d78df68617267e36b3879c531d9. Its [main pipeline](https://github.com/link-assistant/formal-ai/actions/runs/41336669362) passed native compilation, all lint lanes, fresh-binary server parity, every specification shard and both agent CLI E2E jobs. All other workflows on that source finished with passing or intentional skipped conclusions. Release remained blocked by three native assertions: the original invalid-documentation fixture expected the obsolete evidence-only route and guide-first order; a second workflow test still expected inline Clippy commands; and the explicit diagnostic lacked its own concurrency group.
+
+The next batch retains every original invalid-evidence read and honesty assertion, adds explicit no-candidate/no-check/no-effect/unverified assertions for the current controller, checks the invoked shared Clippy owner including fatal bug/performance categories, and gives the read-only diagnostic a bounded cancellation group. No test is skipped or removed.
+
+While drafting this batch through English, JavaScript Formal AI misclassified documentation examples inside a quoted test replacement as new instructions. The JavaScript planner now defers explicit literal edits to the established edit owner after prerequisite/read guards. Retrying the identical English request produced Read then Edit. Rust has the paired routing boundary, and TypeScript was regenerated with the maintained JavaScript translator. Supplied literal edits and bootstrap changes receive zero autonomous synthesis credit. The terminal verification-tool gap remains explicit; independent checks verified the applied diff.
+
+Focused sequential JavaScript checks pass: seven evidence/quoted-payload regressions, fifteen repair-intake cases and three repository-documentation cases, including actual useful partial edits, preserved unrelated files and verified no-write repeats. Native compilation/tests and release/container qualification remain CI-only. The latest observed published release still precedes these changes.
+
 All agents are finished; the coordinator works alone. Protected root files and personal session exports remain excluded. #1483 original hosted three-client acceptance remains pending. The next ordered #1170 task, #1484, waits for this main/release cycle to qualify.

@@ -175,7 +175,7 @@ fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() 
 }
 
 #[test]
-fn original_documentation_issue_collects_evidence_without_claiming_implementation() {
+fn original_documentation_issue_with_invalid_evidence_never_claims_implementation() {
     let fixture: serde_json::Value = serde_json::from_str(include_str!(
         "../../../../data/benchmarks/fixtures/work-item-1455/failure.json"
     ))
@@ -206,10 +206,10 @@ fn original_documentation_issue_collects_evidence_without_claiming_implementatio
     ));
     let mut workspace = crate::tool_workspace::ToolWorkspace::new(&request);
     let paths = [
-        "docs/associative-tech-stack.md",
         "rust/Cargo.toml",
         "package.json",
         "js/web-search-component-entry.js",
+        "docs/associative-tech-stack.md",
     ];
     for path in paths {
         workspace
@@ -235,7 +235,24 @@ fn original_documentation_issue_collects_evidence_without_claiming_implementatio
         panic!("bounded evidence collection must terminate")
     };
     let evidence: serde_json::Value = serde_json::from_str(&answer).expect("structured evidence");
-    assert_eq!(evidence["reason"], "EvidenceCollected");
+    assert_eq!(evidence["schema"], "repository-work-item-controller/v1");
+    assert_eq!(evidence["reason"], "UnsupportedManifestDocumentationSource");
+    assert_eq!(evidence["complete"], false);
+    for field in ["candidateEdits", "checks", "effects"] {
+        assert!(
+            evidence[field]
+                .as_array()
+                .expect("empty effect ledger")
+                .is_empty()
+        );
+    }
+    assert!(
+        evidence["requirements"]
+            .as_array()
+            .expect("requirements")
+            .iter()
+            .all(|row| row["status"] == "unverified")
+    );
     assert_eq!(evidence["workItem"], issue);
     assert_eq!(evidence["authored"], false);
     assert_eq!(evidence["verified"], false);
@@ -247,6 +264,45 @@ fn original_documentation_issue_collects_evidence_without_claiming_implementatio
         paths.len()
     );
     assert!(workspace.read(PLAN_PATH).is_err());
+}
+
+#[test]
+fn quoted_documentation_examples_remain_literal_edit_payloads() {
+    let owner = "tests/request.mjs";
+    let before = "const note = \"before\";";
+    let after = "const note = \"Document docs/runtime.md using package.json and js/client.mjs.\";";
+    let request =
+        format!("In {owner}, replace «{before}» with «{after}». Preserve all other content.");
+    let tools = ["read_file", "edit_file"];
+    let mut workspace = crate::tool_workspace::ToolWorkspace::new(&request);
+    workspace
+        .write_initial(owner, before)
+        .expect("literal source");
+    let mut messages = vec![ChatMessage::user(&request)];
+    let Some(AgenticPlan::ToolCalls(read)) = plan_chat_step(&messages, &tools) else {
+        panic!("literal edit must read its target")
+    };
+    assert_eq!(read.len(), 1);
+    assert_eq!(read[0].tool, "read_file");
+    let arguments: serde_json::Value =
+        serde_json::from_str(&read[0].arguments).expect("read arguments");
+    assert_eq!(arguments["path"], owner);
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        "literal-read",
+        &read[0].tool,
+        read[0].arguments.clone(),
+    )]));
+    messages.push(workspace.execute("literal-read", &read[0]));
+    let Some(AgenticPlan::ToolCalls(edit)) = plan_chat_step(&messages, &tools) else {
+        panic!("quoted documentation is payload, not new instructions")
+    };
+    assert_eq!(edit.len(), 1);
+    assert_eq!(edit[0].tool, "edit_file");
+    let arguments: serde_json::Value =
+        serde_json::from_str(&edit[0].arguments).expect("edit arguments");
+    assert_eq!(arguments["path"], owner);
+    assert_eq!(arguments["old_string"], before);
+    assert_eq!(arguments["new_string"], after);
 }
 
 #[test]

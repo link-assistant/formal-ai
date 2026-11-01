@@ -223,6 +223,10 @@ pub(super) fn plan_request_preflight(
     if let Some(plan) = crate::agentic_coding::general_planner::pending_read_gap(task, result) {
         return SourceOrOwnedGoalStep::Claimed(Some(plan));
     }
+    // Quoted edit payloads are data, not new documentation or repair instructions.
+    if crate::agentic_coding::general_planner::compose_edit_request(task).is_some() {
+        return SourceOrOwnedGoalStep::Unclaimed;
+    }
     if let Some(step) =
         crate::agentic_coding::work_item_boundary_candidate::plan_work_item_boundary_step(
             task,

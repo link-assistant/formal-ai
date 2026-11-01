@@ -521,12 +521,21 @@ fn lint_job_gates_on_workflow_shell_and_clippy_findings() {
     let workflow = ci_surface();
     let lint = job_block(&workflow, "lint");
 
+    assert!(lint.contains("bash scripts/ci-clippy-profile.sh"));
+    let profile = fs::read_to_string(format!(
+        "{}/../scripts/ci-clippy-profile.sh",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .expect("shared Clippy profile");
     assert!(
-        lint.contains("cargo clippy --manifest-path rust/Cargo.toml --lib --bins --tests --all-features -- -D warnings"),
+        profile.contains("cargo clippy --manifest-path rust/Cargo.toml --lib --bins --tests --all-features -- -D warnings"),
         "clippy must lint executable test targets and fail the job on findings"
     );
+    for lint in ["correctness", "suspicious", "perf"] {
+        assert!(profile.contains(&format!("-D clippy::{lint}")));
+    }
     assert!(
-        lint.contains("cargo check --manifest-path rust/Cargo.toml --examples --all-features"),
+        profile.contains("cargo check --manifest-path rust/Cargo.toml --examples --all-features"),
         "examples must be compile-checked without linking every standalone binary (issue #534)"
     );
     assert!(
