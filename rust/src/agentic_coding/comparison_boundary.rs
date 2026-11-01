@@ -3,7 +3,7 @@
 //! manually paired and qualified with shared behavior vectors. No source regex.
 //! Intended owner: rust/src/agentic_coding/comparison_boundary.rs.
 use super::source_lexical_policy::source_lexical_rule;
-use crate::readable_source::{owned_source_links, source_from_links, source_owner};
+use super::source_model::{owned_source_links, source_from_links, source_owner};
 use serde_json::{Value, json};
 
 #[derive(Clone)]

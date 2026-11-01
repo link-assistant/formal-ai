@@ -290,6 +290,8 @@ function repositoryDiscoveryPreflight(task, messages, tools, contract, policy) {
       status: observed.status,
       complete: observed.complete,
       root: observed.root,
+      searchGaps: observed.receipt?.gaps ?? null,
+      error: observed.error,
       transport: {
         actualTool: observed.transport?.actualTool,
         callId: observed.transport?.callId,

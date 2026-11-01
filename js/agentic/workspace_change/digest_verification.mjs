@@ -18,7 +18,7 @@ export function planDigestVerification(task, currentTurn, toolNames, change) {
   const observed = resultForCommand(currentTurn, command);
   if (observed === null) {
     const tool = toolFor(toolNames, Capability.Run);
-    return tool === null ? null : planOne(tool, jsonText({ command }));
+    return tool === null ? resolvedFinalAnswer(jsonText({schema:'workspace-change-verification-gap/v1',target:change.target,reason:'VerificationRunToolUnavailable',verified:false,complete:false}),FinalDisposition.Gap,'workspace-change-verification-gap') : planOne(tool, jsonText({ command }));
   }
   if (!observedDigestMatches(observed, sha256Hex(change.expected))) return failed(task, change.target);
   return finish(renderSeededChange(change.intent, task, change.target, change.slots), FinalDisposition.Finding, change.intent);

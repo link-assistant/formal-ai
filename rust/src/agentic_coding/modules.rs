@@ -113,6 +113,7 @@ pub mod source_links;
 mod source_maintenance;
 mod source_maintenance_observation;
 mod source_manifest_facts;
+mod source_model;
 mod source_repair;
 pub mod source_unary_consolidation;
 mod spelling;

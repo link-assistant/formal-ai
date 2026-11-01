@@ -279,7 +279,7 @@ fn dependency_details(item: &Item) -> Result<(Option<String>, Map<String, Value>
                     Value::Bool(value.as_bool().ok_or("dependency option must be boolean")?)
                 }
                 "features" => json!(string_array(value)?),
-                _ => return Err(format!("unsupported dependency property: {name}")),
+                _ => return Err(format!("ManifestDependencyPropertyUnsupported:{name}")),
             };
             options.insert(name, converted);
         }

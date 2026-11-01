@@ -102,3 +102,10 @@ test('shared native operation vectors cover original requests and held-out opera
   if(entry.countPath){assert.equal(contract.arguments[0],'node');assert.equal(contract.arguments.at(-1),entry.countPath);}
  }
 });
+
+test('captured native-tool precedence survives shell-only command support',async()=>{
+ const read=await planChatStep([{role:'user',content:'Show the first 2 lines of n.txt.'}],['read','bash']);
+ assert.equal(read.calls[0].tool,'read');
+ const search=await planChatStep([{role:'user',content:"Grep for 'return a' in lib/"}],['bash']);
+ assert.equal(JSON.parse(search.calls[0].arguments).command,"grep -rnHF --exclude-dir=.git -- 'return a' 'lib'");
+});

@@ -194,6 +194,10 @@ fn changed_source_and_oversized_utf8_observations_fail() {
 }
 
 #[test]
+#[expect(
+    clippy::literal_string_with_formatting_args,
+    reason = "The fixture is a literal documentation template, not a Rust format string."
+)]
 fn unicode_task_source_and_fetched_identity_keep_exact_byte_spans() {
     let task = format!("雪。 {TASK}");
     let source = r#"{"packageManager":"工具@版本"}"#;

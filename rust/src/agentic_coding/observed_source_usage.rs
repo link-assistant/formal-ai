@@ -1,6 +1,6 @@
 //! Bounded observed source syntax, manually paired with the JavaScript extractor.
 //! Actual complete grammar/CST witnesses never establish external API behavior.
-use crate::readable_source::{owned_source_links, source_from_links, source_to_links};
+use super::source_model::{owned_source_links, source_from_links, source_to_links};
 use crate::source_fetch::sha256_hex;
 use serde_json::{Value, json};
 use std::collections::{BTreeMap, BTreeSet};
