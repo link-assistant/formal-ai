@@ -1,5 +1,7 @@
 # Vision
 
+**Don't know everything, know just enough to get to know anything**
+
 ## Development through Formal AI
 
 Developers and subagents perform task changes by giving natural-language
@@ -24,8 +26,6 @@ Use at most three subagents plus the coordinator for the current issue. Batch
 verified changes before pushing, retain bounded retries, and keep release
 delivery as the priority. Run only necessary JavaScript checks locally, one at
 a time; Rust compilation and tests belong exclusively to CI.
-
-**Don't know everything, know just enough to get to know anything**
 
 Production artifacts belong to default-branch CI. Pull requests use essential
 Linux unit and policy checks, avoid Rust and Docker compilation, and combine

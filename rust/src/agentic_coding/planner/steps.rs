@@ -170,23 +170,6 @@ pub(super) fn plan_request_preflight(
     if let Some(plan) = crate::agentic_coding::general_planner::pending_read_gap(task, result) {
         return SourceOrOwnedGoalStep::Claimed(Some(plan));
     }
-    if let Some(step) = crate::agentic_coding::source_repair::plan_owned_source_repair(
-        task, messages, tool_names, None, result,
-    ) {
-        return SourceOrOwnedGoalStep::Claimed(Some(step));
-    }
-    if let Some(step) =
-        crate::agentic_coding::repository_documentation::plan_repository_documentation(
-            task, messages, tool_names, None, result,
-        )
-    {
-        return SourceOrOwnedGoalStep::Claimed(Some(step));
-    }
-    if let Some(step) = crate::agentic_coding::source_documentation::plan_source_documentation_step(
-        task, messages, tool_names, None, result,
-    ) {
-        return SourceOrOwnedGoalStep::Claimed(Some(step));
-    }
     if let Some(step) =
         crate::agentic_coding::work_item_boundary_candidate::plan_work_item_boundary_step(
             task,
@@ -202,6 +185,23 @@ pub(super) fn plan_request_preflight(
             result,
         )
     {
+        return SourceOrOwnedGoalStep::Claimed(Some(step));
+    }
+    if let Some(step) = crate::agentic_coding::source_repair::plan_owned_source_repair(
+        task, messages, tool_names, None, result,
+    ) {
+        return SourceOrOwnedGoalStep::Claimed(Some(step));
+    }
+    if let Some(step) =
+        crate::agentic_coding::repository_documentation::plan_repository_documentation(
+            task, messages, tool_names, None, result,
+        )
+    {
+        return SourceOrOwnedGoalStep::Claimed(Some(step));
+    }
+    if let Some(step) = crate::agentic_coding::source_documentation::plan_source_documentation_step(
+        task, messages, tool_names, None, result,
+    ) {
         return SourceOrOwnedGoalStep::Claimed(Some(step));
     }
     SourceOrOwnedGoalStep::Unclaimed

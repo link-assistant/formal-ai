@@ -328,6 +328,11 @@ function planRequestPreflight(task, messages, toolNames) {
     claimed: true,
     plan: prerequisiteGap
   };
+  const boundary = planWorkItemBoundaryStep(task, messages, toolNames, null, workItemEvidencePaths);
+  if (boundary !== null) return {
+    claimed: true,
+    plan: boundary
+  };
   const sourceRepair = planOwnedSourceRepair(task, messages, toolNames);
   if (sourceRepair !== null) return {
     claimed: true,
@@ -343,11 +348,7 @@ function planRequestPreflight(task, messages, toolNames) {
     claimed: true,
     plan: documentation
   };
-  const boundary = planWorkItemBoundaryStep(task, messages, toolNames, null, workItemEvidencePaths);
-  return boundary !== null ? {
-    claimed: true,
-    plan: boundary
-  } : {
+  return {
     claimed: false,
     plan: null
   };
