@@ -789,6 +789,20 @@ fn contract_action_prologue(clause: &str, contract: &LiteralWriteContract) -> bo
 }
 
 /// Declared content is data only after the existing operation prologue owns it.
+pub(super) fn owns_recovered_write_operation(
+    request: &str,
+    contract: &LiteralWriteContract,
+) -> bool {
+    let Some(view) = instruction_view(request, contract) else {
+        return false;
+    };
+    quote_fault(request).is_none()
+        && !attributed_action_prefix(request)
+        && (contract_action_prologue(request, contract)
+            || declared_creation_prologue(request, contract))
+        && crate::agentic_coding::literal_write_guard::writes_whole_file(&view)
+}
+
 pub(super) fn owns_declared_payload_domain(request: &str, contract: &LiteralWriteContract) -> bool {
     let Some((lead_start, lead_end)) =
         first_raw_prefix_lead_end(request, "file_write_content_lead")
@@ -798,14 +812,7 @@ pub(super) fn owns_declared_payload_domain(request: &str, contract: &LiteralWrit
     if contract.target_span.end > lead_start || lead_end > contract.payload.start {
         return false;
     }
-    let Some(view) = instruction_view(request, contract) else {
-        return false;
-    };
-    quote_fault(request).is_none()
-        && !attributed_action_prefix(request)
-        && (contract_action_prologue(request, contract)
-            || declared_creation_prologue(request, contract))
-        && crate::agentic_coding::literal_write_guard::writes_whole_file(&view)
+    owns_recovered_write_operation(request, contract)
 }
 
 fn declared_creation_prologue(request: &str, contract: &LiteralWriteContract) -> bool {

@@ -89,6 +89,10 @@ pub(super) fn parse_write_contract(request: &str) -> Option<LiteralWriteContract
         if data_action && super::owned_goals::owns_declared_payload_domain(request, &contract) {
             return Some(contract);
         }
+        if independent_owned_write_statement(request, &contract, edit.spans.map(|spans| spans[1].0))
+        {
+            return Some(contract);
+        }
         let operands = crate::normal_markov::quoted_segment_spans(request);
         let old_operand = operands.iter().position(|span| span.text == edit.edit.1);
         let owned_operands = old_operand.is_some_and(|index| {
@@ -110,6 +114,42 @@ pub(super) fn parse_write_contract(request: &str) -> Option<LiteralWriteContract
         }
     }
     Some(contract)
+}
+
+fn independent_owned_write_statement(
+    request: &str,
+    contract: &LiteralWriteContract,
+    action_start: Option<usize>,
+) -> bool {
+    let Some(action_start) = action_start else {
+        return false;
+    };
+    let scoped = statement_scope(request);
+    for statement in prose_sentences(&scoped) {
+        let span = statement.span;
+        if contract.target_span.start < span.start
+            || contract.target_span.end > span.end
+            || contract.payload.start < span.start
+            || contract.payload.end > span.end
+        {
+            continue;
+        }
+        if span.contains(&action_start) {
+            return false;
+        }
+        let local = LiteralWriteContract {
+            target: contract.target.clone(),
+            content: contract.content.clone(),
+            target_span: contract.target_span.start - span.start
+                ..contract.target_span.end - span.start,
+            payload: contract.payload.start - span.start..contract.payload.end - span.start,
+        };
+        let Some(text) = request.get(span) else {
+            return false;
+        };
+        return super::owned_goals::owns_recovered_write_operation(text, &local);
+    }
+    false
 }
 
 fn recover_write_contract(request: &str) -> Option<LiteralWriteContract> {

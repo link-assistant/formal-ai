@@ -305,14 +305,19 @@ function declaredCreationPrologue(request, contract) {
 }
 
 /** Declared content is data only after the existing operation prologue owns it. */
-export function ownsDeclaredPayloadDomain(request, contract) {
+export function ownsRecoveredWriteOperation(request, contract) {
   if (contract === null) return false;
-  const lead = firstRawPrefixLeadEnd(request, 'file_write_content_lead');
-  if (lead === null || contract.targetSpan.end > lead[0] || lead[1] > contract.payload.start) return false;
   const view = instructionView(request, contract);
   return view !== null && quoteFault(request) === null && !attributedActionPrefix(request)
     && (contractActionPrologue(request, contract) || declaredCreationPrologue(request, contract))
     && writesWholeFile(view);
+}
+
+export function ownsDeclaredPayloadDomain(request, contract) {
+  if (contract === null) return false;
+  const lead = firstRawPrefixLeadEnd(request, 'file_write_content_lead');
+  return lead !== null && contract.targetSpan.end <= lead[0] && lead[1] <= contract.payload.start
+    && ownsRecoveredWriteOperation(request, contract);
 }
 
 /** Mirrors owned_declared_create_frame; classification does not grant filesystem authority. */

@@ -11,7 +11,7 @@ use super::planner::Capability;
 use crate::protocol::ChatMessage;
 mod source_fetch_observation;
 mod source_freshness;
-pub(super) use source_freshness::{creation_readback_command, read_only_capability};
+pub(super) use source_freshness::{owned_creation_readback_command, read_only_capability};
 mod work_item_read_receipt;
 use work_item_read_receipt::{without_exit_sentinel, work_item_read_failure_reason};
 

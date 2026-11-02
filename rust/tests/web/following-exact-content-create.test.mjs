@@ -45,7 +45,10 @@ test('following content leads bind literal bytes and preserve creation ownership
         changed.at(-1).source_read = {path, success: !failed, complete: !failed, format: 'raw'};
         const rejected = planGeneralChangeStep(changed, ['read', 'write'], plan);
         assert.equal(rejected.kind, 'final');
-        assert.match(rejected.answer, /could not|failed|verify/i);
+        assert.equal(rejected.result.disposition, 'failure');
+        assert.equal(rejected.result.origin, 'general_change_failed');
+        assert.match(rejected.answer, /could not|failed|verif/i);
+        if (failed) assert.match(rejected.answer, /read failed/i);
       }
     }
     assert.equal(existsSync(join(root, 'hidden.txt')), false);

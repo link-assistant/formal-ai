@@ -7,7 +7,9 @@ use crate::agentic_coding::general_planner::{
 use crate::agentic_coding::planner::{
     AgenticPlan, Capability, plan_one, tool_for, write_arguments,
 };
-use crate::agentic_coding::progress::{Progress, creation_readback_command as readback_command};
+use crate::agentic_coding::progress::{
+    Progress, owned_creation_readback_command as readback_command,
+};
 use crate::agentic_coding::tool_result;
 use serde_json::json;
 

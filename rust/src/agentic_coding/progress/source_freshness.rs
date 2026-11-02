@@ -9,7 +9,7 @@ pub(in crate::agentic_coding) struct PostWriteCommandReceipt<'a> {
     pub(in crate::agentic_coding) succeeded: bool,
 }
 
-pub(in crate::agentic_coding) fn creation_readback_command(target: &str) -> String {
+pub(in crate::agentic_coding) fn owned_creation_readback_command(target: &str) -> String {
     crate::seed::agentic_message(
         "literal_create_shell_readback",
         &[("path", &shell_quote(target))],
@@ -65,7 +65,7 @@ fn read_only_attempt(progress: &Progress, attempt: &ToolAttempt) -> bool {
                 .arguments
                 .as_deref()
                 .and_then(source_read_path)
-                .is_some_and(|path| creation_readback_command(&path) == command)
+                .is_some_and(|path| owned_creation_readback_command(&path) == command)
     })
 }
 

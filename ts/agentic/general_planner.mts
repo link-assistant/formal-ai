@@ -18,7 +18,7 @@ import { literalInstructionView } from './crate/literal_instruction_view.mjs';
 export { semanticAuthoringLead };
 import { Capability } from './capability.mjs';
 import { wholeFileOperationAt } from './literal_write_guard.mjs';
-import { ownsDeclaredPayloadDomain } from './planner/owned_goals.mjs';
+import { ownsDeclaredPayloadDomain, ownsRecoveredWriteOperation } from './planner/owned_goals.mjs';
 import { fill as fillWorkStep, template as workStepTemplate } from './work_item_steps.mjs';
 import { agenticMessage } from './messages.mjs';
 import { composedDocumentSpecificationSpan } from './note_composition.mjs';
@@ -375,6 +375,7 @@ export function parseWriteContract(request) {
     const actionStart = edit.spans?.[1][0] ?? null;
     if (actionStart !== null && actionStart >= contract.payload.start && actionStart < contract.payload.end
       && ownsDeclaredPayloadDomain(request, contract)) return contract;
+    if (independentOwnedWriteStatement(request, contract, actionStart)) return contract;
     const operands = quotedSegmentSpans(request);
     const oldOperand = operands.findIndex(span => span.text === edit.edit[1]);
     const ownedOperands = oldOperand >= 0
@@ -382,6 +383,21 @@ export function parseWriteContract(request) {
     if (ownedOperands || edit.spans === null || !wholeFileOperationAt(request, edit.spans[1][0], edit.edit[0], edit.spans[0][1])) return null;
   }
   return contract;
+}
+
+function independentOwnedWriteStatement(request, contract, actionStart) {
+  if (actionStart === null) return false;
+  for (const statement of proseSentences(statementScope(request))) {
+    const span = spanOf(statement);
+    if (contract.targetSpan.start < span.start || contract.targetSpan.end > span.end
+      || contract.payload.start < span.start || contract.payload.end > span.end) continue;
+    if (actionStart >= span.start && actionStart < span.end) return false;
+    const local = {...contract,
+      targetSpan: {start: contract.targetSpan.start - span.start, end: contract.targetSpan.end - span.start},
+      payload: {start: contract.payload.start - span.start, end: contract.payload.end - span.start}};
+    return ownsRecoveredWriteOperation(request.slice(span.start, span.end), local);
+  }
+  return false;
 }
 
 function recoverWriteContract(request) {
