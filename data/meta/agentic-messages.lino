@@ -694,17 +694,17 @@ agentic_messages
   message source-transport-timeout-diagnostic
     text "source_transport_timeout; cleanup_complete={cleaned}"
 
-  message tool_result_command_streams
+  message tool-result-command-streams
     text "Output: {output}{separator}Error: {error}"
 
-  message literal_create_shell_readback
+  message literal-create-shell-readback
     text "printf %s '(' && cat -- {path} && printf %s ')'"
 
-  message literal_create_write_unobserved
+  message literal-create-write-unobserved
     text "Declared target write was not observed."
 
-  message literal_create_read_incomplete
+  message literal-create-read-incomplete
     text "Target readback was incomplete or unbound."
 
-  message literal_create_receipt_unbound
+  message literal-create-receipt-unbound
     text "Unbound target verification receipt."

@@ -42,10 +42,18 @@ test('complete literal payload retains edit-looking prose without extra ownershi
   assert.equal(goalLedger(prompt),null);
 });
 
-test('partial literal collision does not consume an independent unowned tail',()=>{
+test('partial literal collision does not consume an independent unowned tail',async context=>{
   const prompt=`In source.mjs replace «${old}» with «${replacement}» and deploy production`;
   const goals=goalLedger(prompt);
   assert.ok(goals?.some(goal=>goal.kind==='unsupported'));
+  const root=fs.mkdtempSync(join(tmpdir(),'formal-ai-unowned-edit-tail-'));
+  context.after(()=>fs.rmSync(root,{recursive:true,force:true}));
+  fs.writeFileSync(join(root,'source.mjs'),old);
+  const result=await drive(planChatStepResolved,root,prompt,{tools:['read','edit','write'],steps:4});
+  assert.equal(fs.readFileSync(join(root,'source.mjs'),'utf8'),old);
+  const plan=await planChatStepResolved([{role:'user',content:prompt}],['read','edit','write']);
+  assert.equal(plan.result?.disposition,'gap',JSON.stringify(plan));
+  assert.equal(result.transcript.some(call=>['edit','write'].includes(call.tool)),false);
 });
 
 test('source-edit metadata follows outer proof and quoted filename causes no write', async context => {

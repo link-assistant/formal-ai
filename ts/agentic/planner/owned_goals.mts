@@ -88,6 +88,13 @@ function completeEditFrame(request, spans) {
   return grammar(request.slice(end));
 }
 
+function ownsEditRequestPrefix(request) {
+  const edit = composeEditClauses(request);
+  if (edit === null || edit.spans === null) return false;
+  const end = Math.max(...edit.spans.map(span => span[1]));
+  return completeEditFrame(request.slice(0, end), edit.spans);
+}
+
 /** Mirrors owns_complete_edit_request: a fully consumed Edit retains source bytes. */
 export function ownsCompleteLiteralRequest(request) {
   const literal = literalWriteOwnership(request);
@@ -136,7 +143,7 @@ export function goalLedger(request) {
     const literal = literalWriteOwnership(clause);
     const completeLiteral = literal !== null && literalTail(clause, literal) && !attributedActionPrefix(clause) && contractActionPrologue(clause, literal);
     const edit = completeLiteral ? null : composeEditClauses(clause);
-    const kind = completeLiteral ? 'literal_file' : edit !== null && edit.spans !== null && (literal === null || completeEditFrame(clause, edit.spans)) ? 'source_edit' : 'unsupported';
+    const kind = completeLiteral ? 'literal_file' : edit !== null && edit.spans !== null && completeEditFrame(clause, edit.spans) ? 'source_edit' : 'unsupported';
     const target = kind === 'source_edit' ? edit.edit[0] : literal?.target ?? edit?.edit[0] ?? null;
     const expectation = kind === 'literal_file' ? { kind: 'file_bytes', path: target, sha256: null }
       : { kind: 'underivable', reason: kind === 'source_edit' ? 'source-edit-preimage-required' : 'no_artifact_in_clause' };
@@ -145,7 +152,8 @@ export function goalLedger(request) {
   });
   if (goals.length === 0 || goals.length === 1 && goals[0].kind !== 'unsupported') return null;
   return contract !== null && contract.targetSpan.start >= contract.payload.end
-    || goals.some((goal) => literalWriteOwnership(goal.clause) !== null) ? goals : null;
+    || goals.some((goal) => literalWriteOwnership(goal.clause) !== null
+      || ownsEditRequestPrefix(goal.clause)) ? goals : null;
 }
 
 function goalGap(goal) {
@@ -177,7 +185,8 @@ export async function planGoalLedger(request, messages, toolNames, planFor) {
   if (missingIndex >= 0) {
     const missing = goals[missingIndex];
     if (hasContext) return goalGap(missing);
-    if (literalWriteOwnership(missing.clause) !== null) return goalGap(missing);
+    if (literalWriteOwnership(missing.clause) !== null
+      || ownsEditRequestPrefix(missing.clause)) return goalGap(missing);
     if (missingIndex === 0) {
       if (collectionSummaryOwns(goals)) {
         const plan = await planBoundRequestSteps(goals.slice(1).map(goal => goal.clause), messages, toolNames, planFor);

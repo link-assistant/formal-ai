@@ -52,7 +52,7 @@ function planOwnedCreationStep(plan, progress, toolNames) {
   if (written === null) {
     if (progress.attemptedWriteFor(plan.target)) {
       const failure = progress.latestFailure();
-      return failed(failure?.raw_receipt ?? failure?.detail ?? agenticMessage('literal_create_write_unobserved'));
+      return failed(failure?.raw_receipt ?? failure?.detail ?? agenticMessage('literal-create-write-unobserved'));
     }
     const write = toolFor(toolNames, Capability.Write);
     return write === null ? finish('coding_workspace_written_unverified', FinalDisposition.Gap)
@@ -64,17 +64,17 @@ function planOwnedCreationStep(plan, progress, toolNames) {
     const observed = progress.sourceReadAfterLatestWriteFor(plan.target);
     if (observed === null || observed.error !== null || !observed.complete) {
       const failure = progress.latestFailure();
-      return failed(failure?.detail ?? observed?.error ?? agenticMessage('literal_create_read_incomplete'));
+      return failed(failure?.detail ?? observed?.error ?? agenticMessage('literal-create-read-incomplete'));
     }
     return observed.source === plan.content
-      ? failed(agenticMessage('literal_create_receipt_unbound')) : mismatch(observed.source ?? '');
+      ? failed(agenticMessage('literal-create-receipt-unbound')) : mismatch(observed.source ?? '');
   }
   const readbackCommand = ownedCreationReadbackCommand(plan.target);
   const receipt = progress.postWriteCommandReceiptFor(plan.target, readbackCommand);
   if (receipt !== null) {
     if (!receipt.qualified || !receipt.succeeded || receipt.raw === null
       || reportedExitCode(receipt.raw) !== 0 || incompleteReceipt(receipt.raw)
-      || harnessReportedFailure(receipt.raw)) return failed(receipt.raw ?? agenticMessage('literal_create_receipt_unbound'), readbackCommand);
+      || harnessReportedFailure(receipt.raw)) return failed(receipt.raw ?? agenticMessage('literal-create-receipt-unbound'), readbackCommand);
     const observed = observedPayload(receipt.raw);
     return mismatch(observed ?? '');
   }

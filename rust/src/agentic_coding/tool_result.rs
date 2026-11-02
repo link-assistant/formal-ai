@@ -492,7 +492,7 @@ impl ShellEnvelope {
             self.output
         } else {
             crate::seed::agentic_message(
-                "tool_result_command_streams",
+                "tool-result-command-streams",
                 &[
                     ("output", &self.output),
                     ("separator", "\n"),

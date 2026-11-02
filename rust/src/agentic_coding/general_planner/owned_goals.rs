@@ -215,6 +215,16 @@ fn complete_edit_frame(request: &str, spans: [(usize, usize); 2]) -> bool {
     request.get(end..).is_some_and(grammar)
 }
 
+fn owns_edit_request_prefix(request: &str) -> bool {
+    let Some(spans) = compose_edit_clauses(request).and_then(|edit| edit.spans) else {
+        return false;
+    };
+    let end = spans.iter().map(|span| span.1).max().unwrap_or(0);
+    request
+        .get(..end)
+        .is_some_and(|prefix| complete_edit_frame(prefix, spans))
+}
+
 pub(in crate::agentic_coding) fn owns_complete_literal_request(request: &str) -> bool {
     let literal = literal_write_ownership(request);
     literal.as_ref().is_some_and(|contract| {
@@ -288,7 +298,7 @@ fn goal_ledger(request: &str) -> Option<Vec<Goal>> {
             GoalKind::LiteralFile
         } else if edit.as_ref().is_some_and(|edit| {
             edit.spans
-                .is_some_and(|spans| literal.is_none() || complete_edit_frame(clause, spans))
+                .is_some_and(|spans| complete_edit_frame(clause, spans))
         }) {
             GoalKind::SourceEdit
         } else {
@@ -321,9 +331,10 @@ fn goal_ledger(request: &str) -> Option<Vec<Goal>> {
     (contract
         .as_ref()
         .is_some_and(|contract| contract.target_span.start >= contract.payload.end)
-        || goals
-            .iter()
-            .any(|goal| literal_write_ownership(&goal.node.clause).is_some()))
+        || goals.iter().any(|goal| {
+            literal_write_ownership(&goal.node.clause).is_some()
+                || owns_edit_request_prefix(&goal.node.clause)
+        }))
     .then_some(goals)
 }
 fn goal_gap(goal: &Goal, result: &mut Option<FinalResult>) -> AgenticPlan {
@@ -475,7 +486,9 @@ pub(in crate::agentic_coding) fn plan_owned_goal_step(
         if has_context {
             return Some(goal_gap(missing, result));
         }
-        if literal_write_ownership(&missing.node.clause).is_some() {
+        if literal_write_ownership(&missing.node.clause).is_some()
+            || owns_edit_request_prefix(&missing.node.clause)
+        {
             return Some(goal_gap(missing, result));
         }
         if index == 0 {

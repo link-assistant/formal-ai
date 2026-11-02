@@ -9,6 +9,8 @@ import {decodeTyped,encodeTyped}from '../logging/typed-codec.mjs';
 import {blake3Hex}from '../crypto/blake3.mjs';
 import {logicalMemoryStep}from './memory-evidence.mjs';
 import {projectDriverDispatch,projectDriverHistory}from '../../experiments/js_dogfood/drive.mjs';
+import {driverRequestAuthority,literalJournalCallsMatch}from './literal-journal-authority.mjs';
+import {planChatStepResolved as installedResolvedStep}from '../agentic/planner.mjs';
 export function verifyCallerRequestObservation(recorded,index,request,sourceMaintenanceOwnership){
  if(!request||!recorded||!Object.hasOwn(recorded,'sourceMaintenanceOwnership')
   ||encodeTyped(recorded)!==encodeTyped({index,...request,sourceMaintenanceOwnership}))throw Error('FreshReplayCallerRequestMismatch');
@@ -67,6 +69,7 @@ export async function recomputeFreshRun(configuration,engine){
   if(markers.length&&markers.length!==declared.length||!markers.length&&declared.length!==1)throw Error('FreshReplayCallerRequestCount');
   for(const group of groups){
    const request=group.request,requestRecords=group.records;
+   const {literalJournal:journalAuthority}=driverRequestAuthority(request.prompt);
    const firstInput=firstEvidenceRecord(requestRecords,'message_in');
    if(!firstInput)throw Error('FreshReplayCallerInputMissing');
    const tools=JSON.parse(retained(firstInput.payload.evidence).toString('utf8')).tools;
@@ -108,6 +111,11 @@ export async function recomputeFreshRun(configuration,engine){
      if(cycle===null)throw Error('FreshReplayOutputOrder');
      const dispatched=projectDriverDispatch(cycle.raw,{prompt:request.prompt,tools:cycle.input.tools,
       scoped:cycle.input.messages,verificationHistory:projectDriverHistory(cycle.input.messages,[]),sourceSession:session});
+     if(journalAuthority!==null&&dispatched?.kind==='tool_calls'){
+      const maintained=await installedResolvedStep(projectDriverHistory(cycle.input.messages,[]),cycle.input.tools);
+      if(!literalJournalCallsMatch(journalAuthority,dispatched.calls,maintained))
+       throw Error('FreshReplayLiteralJournalAuthorityMismatch');
+     }
      const bytes=Buffer.from(JSON.stringify(dispatched));
      if(blake3Hex(bytes)!==record.payload.evidence.blake3)throw Error('FreshReplayDispatchedPlanMismatch');
      const transitionRecord=records.find(item=>item.hash===record.payload.memoryTransition);

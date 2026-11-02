@@ -135,6 +135,12 @@
     "rust/tests/web/quoted-create-intent-provider.test.mjs",
     "rust/tests/web/source-read-owned-provider.test.mjs",
     "rust/tests/web/source-read-provenance.test.mjs",
-    "rust/tests/web/literal-write-request-scope.test.mjs"
+    "rust/tests/web/literal-write-request-scope.test.mjs",
+    "rust/tests/web/artifact-delivery-header.test.mjs",
+    "rust/tests/web/literal-journal-authority.test.mjs",
+    "rust/tests/web/owned-edit-contract.test.mjs",
+    "rust/tests/web/pinned-source-comparison.test.mjs",
+    "rust/tests/web/workspace-domain-discovery.test.mjs",
+    "rust/tests/web/notation.test.mjs"
   ]
 }
