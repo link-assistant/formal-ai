@@ -11,6 +11,34 @@ import { chatPromptAndHistory, parseChatRequest } from '../../../js/server/chat-
 import { parseResponsesRequest, toChatCompletionRequest } from '../../../js/server/responses-input.mjs';
 import { parseAnthropicRequest, anthropicToChatCompletionRequest } from '../../../js/server/anthropic.mjs';
 import { predictionHitEvent } from '../../../js/server/anticipation.mjs';
+test('trusted JavaScript-only server policy boots without attempting Rust WASM', {timeout: 10000}, async () => {
+  const previousPolicy = process.env.FORMAL_AI_SOURCE_USAGE_RUST_GRAMMAR;
+  const originalWasm = globalThis.WebAssembly;
+  let attempts = 0;
+  const denied = () => { attempts++; throw Error('LocalProductWasmForbidden'); };
+  globalThis.WebAssembly = new Proxy(originalWasm, {get(target, key) {
+    return ['compile', 'compileStreaming', 'instantiate', 'instantiateStreaming', 'Module', 'Instance'].includes(key)
+      ? denied : Reflect.get(target, key);
+  }});
+  process.env.FORMAL_AI_SOURCE_USAGE_RUST_GRAMMAR = 'false';
+  try {
+    const ctx = {worker: new WorkerHost()};
+    await ensureNodeHost(ctx);
+    assert.equal(attempts, 0);
+    await ensureNodeHost(ctx);
+    await assert.rejects(ensureNodeHost(ctx, {sourceUsageRustGrammar: true}), /installation_conflict/u);
+    const {observedSourceUsageOperation} = await import('../../../js/server/observed-source-usage.mjs');
+    assert.throws(() => observedSourceUsageOperation({owner: 'src/lib.rs', language: 'Rust', source: 'pub fn answer() {}'}),
+      /SourceUsageRustFrontendUnavailable/u);
+    process.env.FORMAL_AI_SOURCE_USAGE_RUST_GRAMMAR = 'invalid';
+    await assert.rejects(ensureNodeHost({worker: new WorkerHost()}), /environment_must_be_boolean/u);
+  } finally {
+    globalThis.WebAssembly = originalWasm;
+    if (previousPolicy === undefined) delete process.env.FORMAL_AI_SOURCE_USAGE_RUST_GRAMMAR;
+    else process.env.FORMAL_AI_SOURCE_USAGE_RUST_GRAMMAR = previousPolicy;
+  }
+});
+
 test('ordinary coding history does not invoke a prediction classifier', () => {
   const body = fs.readFileSync(new URL('../fixtures/released-client-requests/agent.json', import.meta.url), 'utf8');
   const request = parseChatRequest(body);

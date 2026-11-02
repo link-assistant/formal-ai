@@ -472,7 +472,10 @@ function envelopeResult(envelope) {
   if (envelope.exit_code === 0) {
     return { ...fromPayload(envelope.output || envelope.error, null), exit_code: 0 };
   }
-  return result('', envelope.error || envelope.output, 'text', envelope.exit_code);
+  const error = envelope.output && envelope.error
+    ? 'Output: ' + envelope.output + '\nError: ' + envelope.error
+    : envelope.error || envelope.output;
+  return result('', error, 'text', envelope.exit_code);
 }
 
 function untrustedInner(text) {

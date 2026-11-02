@@ -85,3 +85,92 @@ test('real post-publication CLI defers only exhausted server reads and performs 
   }
  }finally{rmSync(directory,{recursive:true,force:true});}
 });
+
+// Captured Windows failure shape: the direct read ended on its timeout signal before publication effects.
+const windowsTimeout = {
+ status:null,signal:'SIGTERM',cleanup_complete:false,timed_out:true,
+ stdout:Buffer.alloc(0),stderr:Buffer.alloc(0),
+ error:{code:'ETIMEDOUT',name:'Error',message:'spawnSync gh ETIMEDOUT fixture-secret',syscall:'spawnSync gh'}
+};
+test('opt-in captured Windows GET timeout recovers on the second or third bounded read',()=>{
+ for(const failures of [1,2]){
+  const fixture=scenario([...Array(failures).fill(windowsTimeout),success],{retryTimeouts:true});
+  assert.deepEqual(fixture.run(),{total_count:0,jobs:[]});
+  assert.equal(fixture.calls.length,failures+1);
+  assert.deepEqual(fixture.pauses,[2000,4000].slice(0,failures));
+  for(const call of fixture.calls)assert.deepEqual([call.file,call.args],['gh',['api',endpoint]]);
+  for(const report of fixture.reports){
+   assert.equal(report.status,null);assert.equal(report.signal,'SIGTERM');
+   assert.equal(report.timedOut,true);assert.equal(report.cleanupComplete,false);
+   assert.equal(report.error,'ETIMEDOUT');assert.equal(report.errorDetails.syscall,'spawnSync gh');
+   assert(!JSON.stringify(report).includes('fixture-secret'));
+  }
+ }
+});
+test('opt-in timeout exhaustion preserves the last actual error after exactly three GETs',()=>{
+ const last={...windowsTimeout,signal:'SIGKILL',
+  error:{...windowsTimeout.error,message:'last fixture-secret timeout',errno:17},
+  stdout:Buffer.from('last observed stdout'),stderr:Buffer.from('last observed stderr')};
+ const fixture=scenario([windowsTimeout,windowsTimeout,last],{retryTimeouts:true});
+ assert.throws(fixture.run,error=>{
+  assert(error instanceof GithubObservationUnavailable);
+  assert.equal(error.detail.attempt,3);assert.equal(error.detail.status,null);
+  assert.equal(error.detail.signal,'SIGKILL');assert.equal(error.detail.cleanupComplete,false);
+  assert.equal(error.detail.error,'ETIMEDOUT');assert.equal(error.detail.errorDetails.errno,17);
+  assert.equal(error.detail.errorDetails.message,'last *** timeout');
+  assert.equal(error.detail.stdout,'last observed stdout');assert.equal(error.detail.stderr,'last observed stderr');
+  return true;
+ });
+ assert.equal(fixture.calls.length,3);assert.deepEqual(fixture.pauses,[2000,4000]);
+});
+test('one absolute deadline clamps subprocess and pause and prevents further reads',()=>{
+ let clock=100;
+ const fixture=scenario([windowsTimeout],{retryTimeouts:true,deadlineMilliseconds:150,now:()=>clock,
+  transport:(file,args,options)=>{
+   fixture.calls.push({file,args,options});clock+=20;return windowsTimeout;
+  },pause:milliseconds=>{fixture.pauses.push(milliseconds);clock+=milliseconds;}});
+ assert.throws(fixture.run,error=>error instanceof GithubObservationUnavailable
+  &&error.detail.reason==='deadline-expired'&&error.detail.attempt===1
+  &&error.detail.error==='ETIMEDOUT'&&error.detail.cleanupComplete===false);
+ assert.equal(fixture.calls.length,1);assert.equal(fixture.calls[0].options.timeout,50);
+ assert.deepEqual(fixture.pauses,[30]);
+ const expired=scenario([success],{retryTimeouts:true,deadlineMilliseconds:150,now:()=>clock});
+ assert.throws(expired.run,error=>error instanceof GithubObservationUnavailable&&error.detail.attempt===0);
+ assert.equal(expired.calls.length,0);
+});
+test('a shared deadline also rejects late success without accepting metadata',()=>{
+ let clock=100;
+ const fixture=scenario([],{retryTimeouts:true,deadlineMilliseconds:150,now:()=>clock,
+  transport:(file,args,options)=>{fixture.calls.push({file,args,options});clock=150;return success;}});
+ assert.throws(fixture.run,error=>error instanceof GithubObservationUnavailable
+  &&error.detail.reason==='deadline-expired'&&error.detail.status===0&&error.detail.attempt===1);
+ assert.equal(fixture.calls.length,1);assert.equal(fixture.pauses.length,0);
+});
+test('timeout opt-in never retries nontransient, contradictory or unsafe observations',()=>{
+ for(const value of [failure(401),failure(403),failure(404),
+  {...success,stdout:Buffer.from('malformed')},{...success,stdout:Buffer.from([0xff])},
+  {...success,stdout:Buffer.alloc(2097153)},
+  {...windowsTimeout,status:1},{...windowsTimeout,signal:null},{...windowsTimeout,signal:'SIGUSR1'},
+  {...windowsTimeout,timed_out:false},{...windowsTimeout,error:{code:'ECONNRESET'}},
+  {...failure(504),cleanup_complete:false},
+  ...[401,403,404].map(code=>({...windowsTimeout,stderr:Buffer.from('HTTP '+code)}))]){
+  const fixture=scenario([value],{retryTimeouts:true});
+  assert.throws(fixture.run);assert.equal(fixture.calls.length,1);assert.equal(fixture.pauses.length,0);
+  assert.deepEqual(fixture.calls[0].args,['api',endpoint]);
+ }
+ for(const unsafe of ['-X POST','https://foreign.invalid','repos/owner/repo\n-X DELETE']){
+  let calls=0;
+  assert.throws(()=>readGithubJson(unsafe,{retryTimeouts:true,transport:()=>{calls++;return success;}}));
+  assert.equal(calls,0);
+ }
+});
+test('retry settings and injected clocks require finite bounded values before transport',()=>{
+ for(const extra of [
+  {retryTimeouts:'true'},{retryTimeouts:1},{deadlineMilliseconds:NaN},{deadlineMilliseconds:Infinity},
+  {deadlineMilliseconds:-1},{deadlineMilliseconds:1.5},{now:null},{now:()=>NaN},{now:()=>Infinity},
+  {now:()=>-1},{now:()=>1.5},
+ ]){
+  const fixture=scenario([success],extra);
+  assert.throws(fixture.run);assert.equal(fixture.calls.length,0);
+ }
+});

@@ -486,10 +486,12 @@ impl ShellEnvelope {
                 ..from_payload(&payload, None)
             };
         }
-        let error = if self.error.is_empty() {
+        let error = if self.output.is_empty() {
+            self.error
+        } else if self.error.is_empty() {
             self.output
         } else {
-            self.error
+            format!("Output: {}\nError: {}", self.output, self.error)
         };
         NormalizedResult {
             payload: String::new(),

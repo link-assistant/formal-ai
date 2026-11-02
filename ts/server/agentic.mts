@@ -23,7 +23,7 @@ import { ensureNodeHost } from './node-host-install.mjs';
 import { agenticMessage } from '../agentic/messages.mjs';
 import { planSymbolicCommandReroute } from '../agentic/command_reroute.mjs';
 import { suppliedFileAnswer } from '../agentic/file_read/supplied.mjs';
-import { planChatStep, toolCapability } from '../agentic/planner.mjs';
+import { planChatStepResolved, toolCapability } from '../agentic/planner.mjs';
 import { projectDeclaredCommandKeys } from '../agentic/tool_result.mjs';
 import { agenticToolPermissionDenial, findToolDefinition, isHostedToolDefinition, requestedToolNames, responseToolCallIdentity } from '../agentic/protocol_policy.mjs';
 import { customResponseToolInput, isCustomResponseTool, responseArgumentsForTool } from '../agentic/crate/protocol_responses.mjs';
@@ -130,7 +130,7 @@ export async function agenticOutcome(ctx, request, refusal) {
   // else than `command`/`cmd`/`script` is read through that declared key.
   const messages = projectDeclaredCommandKeys(request.messages, request.tools);
   const scoped = projectAppendContracts(messages, request.tools);
-  const plan = await planChatStep(scoped, groundableToolNames(request, owned));
+  const plan = await planChatStepResolved(scoped, groundableToolNames(request, owned));
   const terminal = observedPlanTerminal(plan);
   ctx.logger?.log('debug', 'agent.plan', {
     component: 'agent',

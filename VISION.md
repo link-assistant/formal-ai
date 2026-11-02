@@ -4,10 +4,12 @@
 
 ## Development through Formal AI
 
-Developers and subagents perform task changes by giving natural-language
-instructions to the JavaScript version of Formal AI and allowing it to execute
-real tools through Agent, Codex or Claude. Begin with the smallest useful task,
-verify the result, and increase difficulty after demonstrated success.
+Developers and subagents perform all development task actions through natural-language
+instructions to JavaScript Formal AI: exploration, commands, drafting, tests,
+verification and code changes. Let it execute real tools through Agent, Codex
+or Claude. Begin with the smallest useful task, verify the result, and increase
+difficulty after demonstrated success. Register observed capability failures
+as focused regressions, repair the reusable cause and retry the unchanged task.
 
 Keep the original request, runtime identity, observed source, tool calls,
 failures, resulting diff and independent checks as evidence. A supplied patch,
@@ -18,9 +20,13 @@ never substitute a manual edit while claiming Formal AI authored the change.
 Improve reusable reasoning and transformation capabilities when a small task
 fails, then retry the unchanged task. Record any externally authored bootstrap
 separately. Preserve the complete readable CST, comments and unrelated content,
-and verify JavaScript, TypeScript and Rust parity. Prefer natural-language
-read-only tool operations when supported; direct observation is allowed and
-does not establish code authorship.
+and verify JavaScript, TypeScript and Rust parity. Use Formal AI for read-only development operations as well. A missing tool or
+capability must remain explicit; never replace an unsuccessful request with
+unrecorded manual effects or claim unsupported autonomous authorship.
+
+If a source change prevents Formal AI itself from starting, use a narrowly
+guarded temporary bootstrap to restore its execution, then resume actual
+Formal AI tool actions. Record that bootstrap with zero synthesis credit.
 
 Use at most three subagents plus the coordinator for the current issue. Batch
 verified changes before pushing, retain bounded retries, and keep release

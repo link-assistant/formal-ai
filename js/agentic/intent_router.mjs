@@ -4,7 +4,7 @@
 import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
 import { renderSeededChange } from './code_task.mjs';
-import { finalAnswer, jsonText, planOne } from './plan.mjs';
+import { finalAnswer, jsonText, planOne, resolvedFinalAnswer, FinalDisposition } from './plan.mjs';
 import { Progress } from './progress.mjs';
 import { requestBlocks } from './stated_request.mjs';
 import { latestTurnAnswer, latestTurnQuietSuccess, render, renderFailure } from './tool_result.mjs';
@@ -70,7 +70,15 @@ export function planEditStep(task, messages, toolNames) {
   if (!edit) return null;
   const [target, old, replacement] = edit;
   const tool = toolFor(toolNames, Capability.Edit);
-  if (tool === null) return null;
+  const missingCapabilities = [Capability.Read, Capability.Edit].filter(capability => toolFor(toolNames, capability) === null);
+  if (missingCapabilities.length > 0) return resolvedFinalAnswer(jsonText({
+    schema: 'workspace-edit-capability-gap/v1',
+    target,
+    reason: tool === null ? 'EditToolUnavailable' : 'ReadToolUnavailable',
+    missingCapabilities,
+    verified: false,
+    complete: false
+  }), FinalDisposition.Gap, 'workspace-edit-capability-gap');
   const progress = Progress.scan(messages);
   if (progress.done(Capability.Edit)) {
     const answer = latestTurnAnswer(messages, toolNames, task);

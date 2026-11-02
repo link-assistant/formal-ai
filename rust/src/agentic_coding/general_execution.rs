@@ -2,6 +2,9 @@
 
 use serde_json::json;
 
+#[path = "general_execution/literal_creation.rs"]
+mod literal_creation;
+
 use super::append_contract::{AppendRecordStep, append_record_step};
 
 use super::capability_router::shell_command_tool;
@@ -51,6 +54,11 @@ fn general_change_step(
         return guarded;
     }
     let progress = Progress::scan(messages);
+    if let Some(creation) =
+        literal_creation::plan_owned_creation_step(plan, &progress, tool_names, result)
+    {
+        return creation;
+    }
     if plan.mode == GeneralPlanMode::RepositoryWorkItem
         && let Some(objective) = repository_work_item_objective(plan, &progress)
     {

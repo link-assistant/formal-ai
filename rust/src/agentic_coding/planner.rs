@@ -714,7 +714,7 @@ pub(super) fn plan_settled_routes(
             ));
         }
     }
-    if let Some(plan) = intent_router::plan_edit_step(task, messages, tool_names) {
+    if let Some(plan) = intent_router::plan_edit_step(task, messages, tool_names, result) {
         return Some(plan);
     }
     // Preserve the established stateful list/read recipe whenever the client

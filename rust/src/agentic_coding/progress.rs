@@ -10,6 +10,7 @@ use super::capability_router::classify_tool;
 use super::planner::Capability;
 use crate::protocol::ChatMessage;
 mod source_fetch_observation;
+mod source_freshness;
 mod work_item_read_receipt;
 use work_item_read_receipt::{without_exit_sentinel, work_item_read_failure_reason};
 
@@ -687,7 +688,7 @@ impl Progress {
         Some(&self.attempts[index + 1..])
     }
 
-    /// Content supplied to the latest successful write of `path`.
+    /// Content supplied to the latest successful write.
     pub(super) fn successful_write_content_for(&self, path: &str) -> Option<String> {
         self.attempts.iter().rev().find_map(|attempt| {
             (attempt.capability == Capability::Write && attempt.succeeded)

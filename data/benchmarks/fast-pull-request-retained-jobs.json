@@ -126,7 +126,7 @@
     {
       "file": "desktop-release.yml",
       "id": "native-source",
-      "payloadSha256": "71a0f7143c27b8c4beee41a99c05d7cdb63fd09080912a47a9ad0b7af1579072"
+      "payloadSha256": "c6ee076010a919f3f391d85a6dc893ac286f4c53c4897bc6e12f32d8a9ede080"
     },
     {
       "file": "question-necessity-ratchet.yml",
