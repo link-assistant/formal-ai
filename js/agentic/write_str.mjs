@@ -1,3 +1,6 @@
+import { isAsciiAlphanumeric } from './ascii_character.mjs';
+export { isAsciiAlphanumeric };
+
 // Rust `str` / `char` semantics the write-side planner modules share
 // (agent "write" helper; no Rust module of its own). Offsets are JavaScript
 // string indices (UTF-16 code units); `utf8Offset` converts one to the UTF-8
@@ -15,11 +18,6 @@ export function isWhitespace(character) {
 /** `char::is_alphanumeric`. @param {string|undefined} character */
 export function isAlphanumeric(character) {
   return character !== undefined && ALPHANUMERIC.test(character);
-}
-
-/** `char::is_ascii_alphanumeric`. @param {string|undefined} character */
-export function isAsciiAlphanumeric(character) {
-  return character !== undefined && /^[A-Za-z0-9]$/.test(character);
 }
 
 /** `char::is_ascii_digit`. @param {string|undefined} character */

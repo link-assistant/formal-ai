@@ -4,17 +4,17 @@ import { writesWholeFile } from '../literal_write_guard.mjs';
 import { closedArithmeticDeclaration } from '../module_function.mjs';
 import { boundReadPaths, pendingReadCondition } from '../file_read/ownership.mjs';
 import { normalizePrompt } from '../crate/engine.mjs';
-import { unquotedPathTokens } from '../positional_edit.mjs';
+import { unquotedPathTokens, introducedBlock } from '../positional_edit.mjs';
 // Source-owned mixed actions share the existing obligation nodes and request replay.
 import { firstContentLeadEnd, firstRawPrefixLeadEnd, pinnedFirstLine, composeEditClauses, withoutAllOccurrenceCues, preferredBinding, tokens, firstActionCueStart, firstActionCueEnd, bareSurfaces, cleanCueToken, cleanPathToken, looksLikeFilePath } from '../write_request.mjs';
 import { literalWriteOwnership, instructionView, composeGeneralChangePlan, parseWriteContract } from '../general_planner.mjs';
 import { sentences } from '../shell_command_policy.mjs';
 import { quotedSegmentSpans, quoteFault } from '../crate/normal_markov.mjs';
-import { nestedQuoteFault } from '../quote_nesting.mjs';
+import { nestedQuoteFault, wholePayloadEnd } from '../quote_nesting.mjs';
 import { leafNode } from '../crate/obligation_ledger.mjs';
 import { gapAnswer } from '../task_obligations.mjs';
-import { planBoundRequestSteps, requestSequence } from '../request_sequence.mjs';
-import { replaceClauses, replaceList, severalEditTargets } from '../replace_list.mjs';
+import { planBoundRequestSteps, requestSequence, sequenceSteps } from '../request_sequence.mjs';
+import { replaceClauses, replaceList, severalEditTargets, unplannedEditClause } from '../replace_list.mjs';
 import { FinalDisposition, canDeliverFinal, resolvedFinalAnswer } from '../plan.mjs';
 import { collectionSummaryOwns } from './collection_summary.mjs';
 
@@ -77,13 +77,29 @@ function literalTail(request, contract) {
     && (grammarTail(request.slice(target.end)) || suffixOwned);
 }
 
+function seededActionPrologue(text) {
+  if (quotedSegmentSpans(text).length > 0) return false;
+  const prologue = normalizePrompt(text);
+  return ['politeness_cue', 'enumeration_cue', 'file-edit-sequence-cue'].some(role =>
+    bareSurfaces(role).some(surface => normalizePrompt(surface) === prologue));
+}
+
+function ownedBlockEdit(request) {
+  const block = introducedBlock(request);
+  const edit = block === null ? null : composeEditClauses(request);
+  const head = block === null ? null : composeEditClauses(block.head);
+  return edit !== null && edit.spans === null && edit.edit[2] === block.text
+    && head !== null && head.spans !== null && head.edit[0] === edit.edit[0] && head.edit[1] === edit.edit[1]
+    && completeEditFrame(block.head, effectiveEditSpans(block.head, head));
+}
+
 function completeEditFrame(request, spans) {
   const view = withoutAllOccurrenceCues(request);
   const ordered = [...spans].sort((left, right) => left[0] - right[0]);
   const grammar = text => /^[ \t\r\n.!?。！？।;；]*$/u.test(text);
   const prefix = text => {
     const cue = text.trim().replace(/[,.!?。！？।;；]+$/u, '').trim().toLowerCase();
-    return grammar(text) || bareSurfaces('file-edit-sequence-cue').includes(cue);
+    return grammar(text) || seededActionPrologue(cue);
   };
   let end = 0;
   for (const [start, next] of ordered) {
@@ -106,10 +122,11 @@ function effectiveEditSpans(request, edit) {
   if (file[0] >= old.end && file[1] <= next.start)
     lead = request.slice(old.end, file[0]) + ' ' + request.slice(file[1], next.start);
   if (!bareSurfaces('file_edit_new_lead_cue').includes(lead.trim().toLowerCase())) return edit.spans;
-  return [file, [action[0], next.end]];
+  return [file, [action[0], wholePayloadEnd(request, next.start, next.end)]];
 }
 
 function supportedEditFrame(request) {
+  if (ownedBlockEdit(request)) return true;
   const edit = composeEditClauses(request);
   if (edit !== null && edit.spans !== null && completeEditFrame(request, effectiveEditSpans(request, edit))) return true;
   const list = replaceList(request);
@@ -127,7 +144,9 @@ function supportedEditFrame(request) {
 }
 
 function delegatedEditRequest(request) {
-  if (severalEditTargets(request) !== null) return true;
+  if (ownedBlockEdit(request) || severalEditTargets(request) !== null || unplannedEditClause(request) !== null) return true;
+  const sequence = sequenceSteps(request);
+  if (sequence !== null && sequence.every(supportedEditFrame)) return true;
   const parts = requestSequence(request);
   return parts !== null && parts.slice(1).every(supportedEditFrame);
 }
@@ -149,6 +168,7 @@ export function ownsCompleteLiteralRequest(request) {
 
 export function ownsCompleteEditRequest(request) {
   if (ownsCompleteLiteralRequest(request)) return false;
+  if (ownedBlockEdit(request)) return true;
   const edit = composeEditClauses(request);
   return edit !== null && edit.spans !== null && completeEditFrame(request, effectiveEditSpans(request, edit));
 }
@@ -349,7 +369,7 @@ function contractActionPrologue(clause, contract) {
   const prologue = normalizePrompt(view.slice(0, start));
   return prologue === '' || sourceContextLabel(view.slice(0, start).trim()) || sourceContextWhitespaceSupported(view.slice(0, start))
     && contextGrammarPatterns('action-prologue').some(([prefix, suffix]) => prefix.test(view.slice(0, start)) && suffix.test(''))
-    || ['politeness_cue', 'enumeration_cue', 'file-edit-sequence-cue'].some((role) => bareSurfaces(role).some((surface) => normalizePrompt(surface) === prologue));
+    || seededActionPrologue(view.slice(0, start));
 }
 
 function declaredCreationPrologue(request, contract) {

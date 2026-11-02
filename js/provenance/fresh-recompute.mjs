@@ -9,7 +9,7 @@ import {decodeTyped,encodeTyped}from '../logging/typed-codec.mjs';
 import {blake3Hex}from '../crypto/blake3.mjs';
 import {logicalMemoryStep}from './memory-evidence.mjs';
 import {projectDriverDispatch,projectDriverHistory}from '../../experiments/js_dogfood/drive.mjs';
-import {driverRequestAuthority,literalJournalCallsMatch}from './literal-journal-authority.mjs';
+import {withDriverRequestAuthority,literalJournalCallsMatch}from './literal-journal-authority.mjs';
 import {planChatStepResolved as installedResolvedStep}from '../agentic/planner.mjs';
 export function verifyCallerRequestObservation(recorded,index,request,sourceMaintenanceOwnership){
  if(!request||!recorded||!Object.hasOwn(recorded,'sourceMaintenanceOwnership')
@@ -69,11 +69,11 @@ export async function recomputeFreshRun(configuration,engine){
   if(markers.length&&markers.length!==declared.length||!markers.length&&declared.length!==1)throw Error('FreshReplayCallerRequestCount');
   for(const group of groups){
    const request=group.request,requestRecords=group.records;
-   const {literalJournal:journalAuthority}=driverRequestAuthority(request.prompt);
    const firstInput=firstEvidenceRecord(requestRecords,'message_in');
    if(!firstInput)throw Error('FreshReplayCallerInputMissing');
    const tools=JSON.parse(retained(firstInput.payload.evidence).toString('utf8')).tools;
-   await session.run({request:request.prompt,workspace:configuration.workspace,tools},async()=>{
+   await withDriverRequestAuthority(session,{request:request.prompt,workspace:configuration.workspace,tools},async authority=>{
+    const {literalJournal:journalAuthority}=authority;
     for(let index=0;index<requestRecords.length;index++){
     const record=requestRecords[index];
     if(record.kind==='engine_genesis'){

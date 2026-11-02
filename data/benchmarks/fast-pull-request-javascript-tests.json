@@ -141,6 +141,11 @@
     "rust/tests/web/owned-edit-contract.test.mjs",
     "rust/tests/web/pinned-source-comparison.test.mjs",
     "rust/tests/web/workspace-domain-discovery.test.mjs",
-    "rust/tests/web/notation.test.mjs"
+    "rust/tests/web/notation.test.mjs",
+    "rust/tests/web/runtime-failure-identity.test.mjs",
+    "rust/tests/web/native-protocol-capture.test.mjs",
+    "rust/tests/web/literal-action-independent-goals.test.mjs",
+    "rust/tests/web/pull-request-1188-edit-composer-gaps.test.mjs",
+    "rust/tests/web/worker-quote-parser-cycle.test.mjs"
   ]
 }

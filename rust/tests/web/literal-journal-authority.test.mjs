@@ -1,6 +1,7 @@
+import {host,installHost} from '../../../js/agentic/host.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {driverRequestAuthority,literalJournalAuthority,literalJournalCallsMatch} from '../../../js/provenance/literal-journal-authority.mjs';
+import {driverRequestAuthority,withDriverRequestAuthority,literalJournalAuthority,literalJournalCallsMatch} from '../../../js/provenance/literal-journal-authority.mjs';
 import {WorkerHost} from '../../../js/server/worker-host.mjs';
 import {installNodeHost} from '../../../js/agentic/node-host.mjs';
 import {ownedDeclaredCreateFrame} from '../../../js/agentic/planner/owned_goals.mjs';
@@ -46,4 +47,21 @@ test('literal journal refuses reusing one canonical call more than once',()=>{
 });
 test('literal journal refuses a malformed canonical call batch',()=>{
  assert.equal(literalJournalCallsMatch(heldoutAuthority,[heldoutCall],{kind:'tool_calls',calls:null}),false);
+});
+
+test('replay derives real request authority only inside its strict source-session scope',async()=>{
+ const installed=host();let active=false,reads=0;
+ const strict={...installed,readText(relative){if(!active)throw Error('StrictRequestScopeRequired');reads++;return installed.readText(relative);}};
+ const request='Set the contents of scoped.mjs to exactly this content: «export const scoped = 17;».';
+ try{
+  installHost(strict);
+  assert.throws(()=>driverRequestAuthority(request),/StrictRequestScopeRequired/u);
+  installHost(strict);
+  const session={async run(context,action){assert.equal(context.request,request);active=true;try{return await action();}finally{active=false;}}};
+  await withDriverRequestAuthority(session,{request,workspace:'/synthetic',tools:['read','write']},authority=>{
+   assert.equal(active,true);assert.equal(authority.literalJournal.target,'scoped.mjs');
+   assert.equal(authority.literalJournal.content,'export const scoped = 17;');
+  });
+  assert.ok(reads>0);assert.equal(active,false);
+ }finally{installHost(installed);}
 });
