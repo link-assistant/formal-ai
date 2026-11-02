@@ -325,6 +325,8 @@ jobs:
           node scripts/check-readable-code.mjs
           node scripts/check-file-size.mjs
           node scripts/check-ci-speed.mjs
+          node scripts/check-hardcoded-language.mjs
+          node scripts/check-js-literals.mjs
           node scripts/assemble-requirements.mjs
           node scripts/check-requirement-status.mjs
           node scripts/mirror-package-data.mjs --check
