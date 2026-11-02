@@ -128,13 +128,13 @@ class ExecutedToolFailureTests(unittest.TestCase):
                 "file_path": "hello.txt", "content": content,
             })},
         }
-        replies = [{"content": "", "tool_calls": [call]}] if invoke else []
+        replies = [{"role": "assistant", "content": "", "tool_calls": [call]}] if invoke else []
         if recovery is not None:
-            replies.append({"content": "", "tool_calls": [{
+            replies.append({"role": "assistant", "content": "", "tool_calls": [{
                 "id": "actual-retry-1", "type": "function",
                 "function": {"name": "write_file", "arguments": json.dumps(recovery)},
             }]})
-        replies.append({"content": answer})
+        replies.append({"role": "assistant", "content": answer})
 
         class ScriptedLoop(AgentLoop):
             def __init__(self):
@@ -160,6 +160,7 @@ class ExecutedToolFailureTests(unittest.TestCase):
         self.assertFalse((root / "hello.txt").exists())
         self.assertEqual(observation["exit_codes"], [])
         self.assertEqual(len(loop.requests), 2)
+        self.assertEqual(loop.requests[1][-2]["role"], "assistant")
         delivered = loop.requests[1][-1]
         self.assertEqual(delivered["tool_call_id"], "actual-write-0")
         self.assertEqual(delivered["name"], "write_file")
@@ -248,6 +249,8 @@ class ExecutedToolFailureTests(unittest.TestCase):
             lambda rows: rows[-1].update(tool_call_id="different-call"),
             lambda rows: rows[-1].update(name="run_shell_command"),
             lambda rows: rows[-1].update(content="forged successful receipt"),
+            lambda rows: rows[-2].pop("role", None),
+            lambda rows: rows[-2].update(role="user"),
             changed_arguments,
             duplicate_declaration,
         ]
