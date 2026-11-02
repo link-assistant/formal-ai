@@ -55,3 +55,8 @@ export function driverRequestAuthority(prompt){
   const literalJournal = literalJournalAuthority(prompt,createContract !== null);
   return {declaredGoals,mixedGoals,createContracts,createContract,literalJournal};
 }
+
+// Construct request authority under the same provider scope that owns actual execution.
+export function withDriverRequestAuthority(session,context,action){
+ return session.run(context,()=>action(driverRequestAuthority(context.request)));
+}

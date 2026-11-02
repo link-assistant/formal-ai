@@ -1,8 +1,10 @@
 //! Owned source-edit frames reuse the primitive parsers and consumed modifiers.
 use super::compose_edit_clauses;
 use crate::agentic_coding::edit_scope::without_all_occurrence_cues;
-use crate::agentic_coding::replace_list::{replace_clauses, replace_list, several_edit_targets};
-use crate::agentic_coding::request_sequence::request_sequence;
+use crate::agentic_coding::replace_list::{
+    replace_clauses, replace_list, several_edit_targets, unplanned_edit_clause,
+};
+use crate::agentic_coding::request_sequence::{request_sequence, sequence_steps};
 use crate::agentic_coding::write_request::bare_surfaces;
 
 fn grammar(text: &str) -> bool {
@@ -15,7 +17,7 @@ fn frame_prefix(text: &str) -> bool {
         .trim_end_matches(|character| ",.!?。！？।;；".contains(character))
         .trim()
         .to_lowercase();
-    grammar(text) || bare_surfaces("file-edit-sequence-cue").contains(&cue)
+    grammar(text) || super::seeded_action_prologue(&cue)
 }
 pub(super) fn complete_edit_frame(request: &str, spans: [(usize, usize); 2]) -> bool {
     let view = without_all_occurrence_cues(request);
@@ -70,7 +72,13 @@ pub(super) fn effective_edit_spans(
     if !bare_surfaces("file_edit_new_lead_cue").contains(&lead.trim().to_lowercase()) {
         return edit.spans;
     }
-    Some([file, (action.0, next.end)])
+    Some([
+        file,
+        (
+            action.0,
+            crate::agentic_coding::quote_nesting::whole_payload_end(request, next.start, next.end),
+        ),
+    ])
 }
 
 pub(super) fn owns_edit_request_prefix(request: &str) -> bool {
@@ -84,7 +92,28 @@ pub(super) fn owns_edit_request_prefix(request: &str) -> bool {
         .get(..end)
         .is_some_and(|prefix| complete_edit_frame(prefix, spans))
 }
+pub(super) fn owned_block_edit(request: &str) -> bool {
+    let Some(block) = crate::agentic_coding::positional_edit::introduced_block(request) else {
+        return false;
+    };
+    let Some(edit) = compose_edit_clauses(request) else {
+        return false;
+    };
+    let Some(head) = compose_edit_clauses(block.head) else {
+        return false;
+    };
+    edit.spans.is_none()
+        && edit.edit.2 == block.text
+        && head.edit.0 == edit.edit.0
+        && head.edit.1 == edit.edit.1
+        && effective_edit_spans(block.head, &head)
+            .is_some_and(|spans| complete_edit_frame(block.head, spans))
+}
+
 pub(super) fn supported_edit_frame(request: &str) -> bool {
+    if owned_block_edit(request) {
+        return true;
+    }
     if compose_edit_clauses(request)
         .and_then(|edit| effective_edit_spans(request, &edit))
         .is_some_and(|spans| complete_edit_frame(request, spans))
@@ -120,7 +149,11 @@ pub(super) fn supported_edit_frame(request: &str) -> bool {
     })
 }
 pub(super) fn delegated_edit_request(request: &str) -> bool {
-    several_edit_targets(request).is_some()
+    owned_block_edit(request)
+        || several_edit_targets(request).is_some()
+        || unplanned_edit_clause(request).is_some()
+        || sequence_steps(request)
+            .is_some_and(|parts| parts.iter().all(|part| supported_edit_frame(part)))
         || request_sequence(request)
             .is_some_and(|parts| parts.iter().skip(1).all(|part| supported_edit_frame(part)))
 }

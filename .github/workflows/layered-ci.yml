@@ -318,6 +318,9 @@ jobs:
         # exactly one shard, and a shard's files run on every core, longest first.
         run: |
           set -euo pipefail
+          if [[ "$FAST_PR_PROFILE" == 'true' && "$SHARD" == '1' ]]; then
+            python3 -m unittest discover -s experiments/issue_916_write_effect_ladder -p test_ladder.py
+          fi
           suites="$RUNNER_TEMP/javascript-suites.txt"
           if [[ "$FAST_PR_PROFILE" == 'true' ]]; then
             node scripts/list-fast-pull-request-tests.mjs > "$suites"

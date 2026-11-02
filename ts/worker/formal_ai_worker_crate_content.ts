@@ -14,6 +14,7 @@ const { callbackText: canonicalUnaryText } = crateRequire("callback_values.mjs")
 const { callbackValue: canonicalUnaryValue } = crateRequire("callback_values.mjs");
 const { callbackTrim: canonicalUnaryTrim } = crateRequire("callback_values.mjs");
 const { cached, childrenNamed, isDirectory, parseLino, readText } = crateRequire("host.mjs");
+const { quotedSegmentSpans } = crateRequire("crate/quoted_segments.mjs");
 /** `MessageContent::plain_text`. */
 function plainText(content) {
   if (typeof content === 'string') return content;
@@ -27,10 +28,18 @@ function injectedBlocks() {
     return childrenNamed(group, 'block').map(canonicalUnaryValue);
   });
 }
+function unquotedMarkerOffsets(text, marker) {
+  const quoted = quotedSegmentSpans(text);
+  const offsets = [];
+  for (let start = text.indexOf(marker); start >= 0; start = text.indexOf(marker, start + marker.length)) {
+    if (!quoted.some(span => start >= span.start && start < span.end)) offsets.push(start);
+  }
+  return offsets;
+}
 function stripBlock(text, open, close) {
   let remaining = text;
   let request = '';
-  for (let start = remaining.indexOf(open); start >= 0; start = remaining.indexOf(open)) {
+  for (let start = unquotedMarkerOffsets(remaining, open)[0]; start !== undefined; start = unquotedMarkerOffsets(remaining, open)[0]) {
     request += remaining.slice(0, start);
     const afterOpen = remaining.slice(start + open.length);
     const end = afterOpen.indexOf(close);
@@ -134,12 +143,12 @@ function observedDirectory(messages) {
 }
 function declaredDirectory(text) {
   const WORKSPACE_LIST = '**Workspace Directories:**';
-  const tagged = text.split('<cwd>').slice(1).map((rest) => rest.split('</cwd>')[0]);
-  const labelled = rustLines(text)
-    .filter((line) => line.includes('Working directory:'))
-    .map((line) => line.slice(line.indexOf('Working directory:') + 'Working directory:'.length));
+  const tagged = unquotedMarkerOffsets(text, '<cwd>')
+    .map(start => text.slice(start + '<cwd>'.length).split('</cwd>')[0]);
+  const labelled = unquotedMarkerOffsets(text, 'Working directory:')
+    .map(start => text.slice(start + 'Working directory:'.length).split('\n')[0]);
   const listed = [];
-  const at = text.indexOf(WORKSPACE_LIST);
+  const at = unquotedMarkerOffsets(text, WORKSPACE_LIST)[0] ?? -1;
   if (at >= 0) {
     for (const line of rustLines(text.slice(at + WORKSPACE_LIST.length)).slice(1)) {
       if (!line.trimStart().startsWith('- ')) break;

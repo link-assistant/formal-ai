@@ -19,8 +19,8 @@ use crate::normal_markov::{quote_fault, quoted_segment_spans};
 use crate::obligation_ledger::{ObligationExpectation, ObligationNode};
 use crate::protocol::ChatMessage;
 use edit_frame::{
-    complete_edit_frame, delegated_edit_request, effective_edit_spans, owns_edit_request_prefix,
-    supported_edit_frame,
+    complete_edit_frame, delegated_edit_request, effective_edit_spans, owned_block_edit,
+    owns_edit_request_prefix, supported_edit_frame,
 };
 use std::ops::Range;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -209,6 +209,9 @@ pub(in crate::agentic_coding) fn owns_complete_literal_request(request: &str) ->
 pub(in crate::agentic_coding) fn owns_complete_edit_request(request: &str) -> bool {
     if owns_complete_literal_request(request) {
         return false;
+    }
+    if owned_block_edit(request) {
+        return true;
     }
     compose_edit_clauses(request)
         .and_then(|edit| effective_edit_spans(request, &edit))
@@ -732,6 +735,24 @@ fn attributed_action_prefix(clause: &str) -> bool {
     })
 }
 
+fn seeded_action_prologue(text: &str) -> bool {
+    if !quoted_segment_spans(text).is_empty() {
+        return false;
+    }
+    let prologue = crate::engine::normalize_prompt(text);
+    [
+        "politeness_cue",
+        "enumeration_cue",
+        "file-edit-sequence-cue",
+    ]
+    .iter()
+    .any(|role| {
+        bare_surfaces(role)
+            .iter()
+            .any(|surface| crate::engine::normalize_prompt(surface) == prologue)
+    })
+}
+
 fn contract_action_prologue(clause: &str, contract: &LiteralWriteContract) -> bool {
     let mut view = clause.to_owned();
     for span in quoted_segment_spans(clause) {
@@ -762,17 +783,7 @@ fn contract_action_prologue(clause: &str, contract: &LiteralWriteContract) -> bo
             && context_grammar_patterns("action-prologue")
                 .iter()
                 .any(|(prefix, suffix)| prefix.is_match(&view[..start]) && suffix.is_match(""))
-        || [
-            "politeness_cue",
-            "enumeration_cue",
-            "file-edit-sequence-cue",
-        ]
-        .iter()
-        .any(|role| {
-            bare_surfaces(role)
-                .iter()
-                .any(|surface| crate::engine::normalize_prompt(surface) == prologue)
-        })
+        || seeded_action_prologue(&view[..start])
 }
 
 /// Declared content is data only after the existing operation prologue owns it.

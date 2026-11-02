@@ -9,7 +9,7 @@ import { callbackText as canonicalUnaryText } from './callback_values.mjs';
 import { callbackValue as canonicalUnaryValue } from './callback_values.mjs';
 import { callbackTrim as canonicalUnaryTrim } from './callback_values.mjs';
 import { cached, childrenNamed, isDirectory, parseLino, readText } from './host.mjs';
-import { quotedSegmentSpans } from './crate/normal_markov.mjs';
+import { quotedSegmentSpans } from './crate/quoted_segments.mjs';
 
 /** `MessageContent::plain_text`. */
 export function plainText(content) {

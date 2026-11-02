@@ -6,6 +6,7 @@ import crypto from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {spawnSync} from 'node:child_process';
 import {blake3Hex} from '../crypto/blake3.mjs';
+import {checkedRuntimeFailureIdentity} from './runtime-failure-identity.mjs';
 import {resolveEvidenceDirectory}from './drive-capture.mjs';
 const repository=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 import {readBoundedFileBytes as readBoundedRuntimeFile}from './bounded-file.mjs';
@@ -111,7 +112,11 @@ export function captureFreshPlannerRun(options=null){
  fs.writeFileSync(path.join(owned,'stderr.log'),child.stderr??'',{mode:0o600});
  const processReceipt={status:child.status,signal:child.signal,error:child.error?.message??null};
  fs.writeFileSync(path.join(owned,'process.json'),JSON.stringify(processReceipt),{mode:0o600});
- if(child.status!==0)throw Object.assign(Error('FreshRuntimeProcessFailed'),{directory:owned,processReceipt});
+ if(child.status!==0){
+  let runtimeFailure={name:'Error',code:'RuntimeChildFailure'};
+  try{runtimeFailure=checkedRuntimeFailureIdentity(JSON.parse(readBoundedRuntimeFile(owned,'result.json',65536).toString('utf8')).runtimeFailure)??runtimeFailure;}catch{}
+  throw Object.assign(Error('FreshRuntimeProcessFailed'),{directory:owned,processReceipt,runtimeFailure});
+ }
  if(JSON.stringify(observeRuntimeExecutable())!==JSON.stringify(executable))throw Error('RuntimeExecutableChanged');
  for(const entry of bootstrap){if(blake3Hex(fs.readFileSync(path.join(owned,entry.file)))!==entry.blake3)throw Error('FreshRuntimeBootstrapChanged');}
  const observed=JSON.parse(fs.readFileSync(resultFile,'utf8'));
