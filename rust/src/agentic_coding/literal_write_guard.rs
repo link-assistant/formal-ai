@@ -116,7 +116,7 @@ pub(super) fn whole_file_operation_at(
         let word = suffix
             .get(destination)
             .map(|token| clean_cue_token(token.text))
-            .unwrap_or("");
+            .unwrap_or_default();
         if bare_surfaces("request_function_word").contains(&word)
             && !bare_surfaces("file_edit_new_lead_cue").contains(&word)
         {
