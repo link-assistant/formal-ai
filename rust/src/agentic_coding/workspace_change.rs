@@ -8,7 +8,10 @@
 //! request cannot stop after its first observable effect.
 
 mod digest_verification;
-pub(super) use digest_verification::{plan_digest_verification, plan_write_digest_verification};
+pub(super) use digest_verification::{
+    plan_digest_verification, plan_edit_failure, plan_edit_preimage_gap,
+    plan_edit_read_verification, plan_write_digest_verification,
+};
 
 use serde_json::{Value, json};
 use std::path::Path;
@@ -28,7 +31,7 @@ use crate::normal_markov::{quoted_segments, unwrap_transport_quotes};
 use crate::protocol::ChatMessage;
 use crate::seed;
 use crate::workspace_change_learning::{
-    RewriteScope, execute_scoped_workspace_rewrite, is_identifier_word, word_scoped_matches,
+    RewriteScope, execute_scoped_workspace_rewrite, is_identifier_word,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -259,126 +262,8 @@ fn sourced_request(task: &str, current_turn: &[ChatMessage]) -> Option<Sourced> 
     Some(Sourced::Task(with_contents(task, &source, &contents)))
 }
 
-fn plan_rewrite_step(
-    task: &str,
-    current_turn: &[ChatMessage],
-    tool_names: &[&str],
-    rewrite: &GroundedRewrite,
-    result: &mut Option<FinalResult>,
-) -> Option<AgenticPlan> {
-    let Some(read) = result_for_path(current_turn, Capability::Read, &rewrite.target, None) else {
-        let tool = tool_for(tool_names, Capability::Read)?;
-        return Some(plan_one(tool, read_arguments(&rewrite.target)));
-    };
-    let source = source_from_read_result(&read);
-    let written = as_written(&source, rewrite);
-    let rewrite = written.as_ref().unwrap_or(rewrite);
-    let Some(updated) = rewritten_source(&source, rewrite) else {
-        // A replace asked again finds its old text gone: that is the answer (G87).
-        let absent = super::replace_list::absent_text_answer(
-            task,
-            &rewrite.target,
-            &source,
-            &rewrite.pattern,
-            Some(&rewrite.replacement),
-        );
-        return Some(AgenticPlan::Final(match absent {
-            Some(answer) => answer,
-            None => render_seeded_outcome(
-                "coding_workspace_verification_failed",
-                task,
-                &rewrite.target,
-            )?,
-        }));
-    };
-
-    let occurrences = match rewrite.scope {
-        RewriteScope::Substring => source.match_indices(&rewrite.pattern).count(),
-        RewriteScope::Word => word_scoped_matches(&source, &rewrite.pattern).len(),
-    };
-    if occurrences > 1
-        && let Some(answer) = super::edit_scope::scoped_decline(task, &rewrite.target, &source)
-    {
-        return Some(AgenticPlan::Final(answer));
-    }
-    if occurrences == 1 {
-        // The bare pattern when it is unique in the file; otherwise the
-        // smallest unique run of changed lines -- the edit tool refuses an
-        // `oldString` it finds twice, and `smal` also sits inside `small`.
-        let edit = if rewrite.unique {
-            anchored_lines(&source, rewrite).map(|(_, old, new)| (old, new))
-        } else if source.matches(rewrite.pattern.as_str()).count() == 1 {
-            Some((rewrite.pattern.clone(), rewrite.replacement.clone()))
-        } else {
-            changed_lines_edit(&source, &updated)
-        };
-        if let Some(tool) = tool_for(tool_names, Capability::Edit)
-            && let Some((old, new)) = edit
-        {
-            if result_for_edit(current_turn, &rewrite.target, &old, &new).is_none() {
-                return Some(plan_one(tool, edit_arguments(&rewrite.target, &old, &new)));
-            }
-            return plan_digest_verification(
-                task,
-                current_turn,
-                tool_names,
-                &VerifiedChange {
-                    target: &rewrite.target,
-                    expected: &updated,
-                    intent: rewrite.stated_intent(),
-                    slots: &rewrite.stated_slots(),
-                    list_slots: &[],
-                },
-                result,
-            );
-        }
-    } else if tool_for(tool_names, Capability::Edit).is_some()
-        && let Some(command) = repeated_identifier_rewrite_command(rewrite)
-        && let Some(tool) = tool_for(tool_names, Capability::Run)
-    {
-        if result_for_command(current_turn, &command).is_none() {
-            return Some(plan_one(tool, json!({"command": command}).to_string()));
-        }
-        return plan_digest_verification(
-            task,
-            current_turn,
-            tool_names,
-            &VerifiedChange {
-                target: &rewrite.target,
-                expected: &updated,
-                intent: rewrite.stated_intent(),
-                slots: &rewrite.stated_slots(),
-                list_slots: &[],
-            },
-            result,
-        );
-    }
-
-    if result_for_path(
-        current_turn,
-        Capability::Write,
-        &rewrite.target,
-        Some(&updated),
-    )
-    .is_none()
-    {
-        let tool = tool_for(tool_names, Capability::Write)?;
-        return Some(plan_one(tool, write_arguments(&rewrite.target, &updated)));
-    }
-    plan_write_digest_verification(
-        task,
-        current_turn,
-        tool_names,
-        &VerifiedChange {
-            target: &rewrite.target,
-            expected: &updated,
-            intent: rewrite.stated_intent(),
-            slots: &rewrite.stated_slots(),
-            list_slots: &[],
-        },
-        result,
-    )
-}
+mod rewrite_execution;
+use rewrite_execution::plan_rewrite_step;
 
 fn plan_composite_step(
     task: &str,

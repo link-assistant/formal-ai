@@ -527,7 +527,8 @@ fn an_existing_target_is_kept_for_that_verb_and_replaced_for_a_whole_file_write(
     );
     let mut replaced = std::collections::BTreeMap::from([("a.txt".to_owned(), "old".to_owned())]);
     let (calls, _) = run_over("Create a file a.txt containing hello", &mut replaced);
-    assert_eq!(calls[0], "append .formal-ai/general-change-plan.lino");
+    assert_eq!(calls[0], "write a.txt");
+    assert!(!replaced.contains_key(".formal-ai/general-change-plan.lino"));
     assert_eq!(replaced["a.txt"], "hello");
 }
 

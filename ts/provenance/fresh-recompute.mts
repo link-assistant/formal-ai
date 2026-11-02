@@ -9,7 +9,7 @@ import {decodeTyped,encodeTyped}from '../logging/typed-codec.mjs';
 import {blake3Hex}from '../crypto/blake3.mjs';
 import {logicalMemoryStep}from './memory-evidence.mjs';
 import {projectDriverDispatch,projectDriverHistory}from '../../experiments/js_dogfood/drive.mjs';
-import {withDriverRequestAuthority,literalJournalCallsMatch}from './literal-journal-authority.mjs';
+import {withDriverRequestAuthority,literalJournalCallsMatch,driverAppendContracts,boundDriverAppendGrant}from './literal-journal-authority.mjs';
 import {planChatStepResolved as installedResolvedStep}from '../agentic/planner.mjs';
 export function verifyCallerRequestObservation(recorded,index,request,sourceMaintenanceOwnership){
  if(!request||!recorded||!Object.hasOwn(recorded,'sourceMaintenanceOwnership')
@@ -33,6 +33,7 @@ export async function recomputeFreshRun(configuration,engine){
   ||observed.workingDirectory!==process.cwd()||observed.engineProfile!=='javascript-product-wasm-disabled'
   ||observed.request.prompt!==configuration.prompt)throw Error('FreshReplayRuntimeContextMismatch');
  if(encodeTyped(observed.prerequisiteGrant)!==encodeTyped(engine.host().prerequisiteGrant?.()??null))throw Error('FreshReplayCallerGrantMismatch');
+ const recordedAppend=boundDriverAppendGrant(observed.driver?.atomicRecordAppend,configuration.atomicRecordAppend);
  const transportKeys=new Set(['FORMAL_AI_RUNTIME_CONFIG','FORMAL_AI_RUNTIME_BOOTSTRAP']);
  const keys=new Set([...Object.keys(observed.environment),...Object.keys(process.env)]);
  for(const key of keys)if(!transportKeys.has(key)&&observed.environment[key]!==process.env[key])throw Error('FreshReplayEnvironmentMismatch');
@@ -109,10 +110,11 @@ export async function recomputeFreshRun(configuration,engine){
     }
     if(record.kind==='message_out'){
      if(cycle===null)throw Error('FreshReplayOutputOrder');
+     const verificationHistory=projectDriverHistory(cycle.input.messages,driverAppendContracts(cycle.input.tools,recordedAppend));
      const dispatched=projectDriverDispatch(cycle.raw,{prompt:request.prompt,tools:cycle.input.tools,
-      scoped:cycle.input.messages,verificationHistory:projectDriverHistory(cycle.input.messages,[]),sourceSession:session});
+      scoped:cycle.input.messages,verificationHistory,sourceSession:session});
      if(journalAuthority!==null&&dispatched?.kind==='tool_calls'){
-      const maintained=await installedResolvedStep(projectDriverHistory(cycle.input.messages,[]),cycle.input.tools);
+      const maintained=await installedResolvedStep(verificationHistory,cycle.input.tools);
       if(!literalJournalCallsMatch(journalAuthority,dispatched.calls,maintained))
        throw Error('FreshReplayLiteralJournalAuthorityMismatch');
      }

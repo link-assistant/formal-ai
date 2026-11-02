@@ -441,6 +441,14 @@ function bindingHasWriteInstruction(request, toks, binding) {
 
 const slice = (text, start, end) => (start <= end && end <= text.length ? text.slice(start, end) : null);
 
+function markerPayloadStart(request, toks, leadEnd) {
+  const actionStart = firstActionCueStart(toks), actionEnd = firstActionCueEnd(toks);
+  // A postposed write verb belongs to the header only before its explicit colon.
+  return actionStart !== null && actionEnd !== null && actionStart >= leadEnd
+    && /^\s*$/u.test(request.slice(leadEnd, actionStart))
+    && /[:：]\s*$/u.test(request.slice(actionStart, actionEnd)) ? actionEnd : leadEnd;
+}
+
 function parseWriteRequestBound(request, toks, binding) {
   if (!bindingHasWriteInstruction(request, toks, binding)) return null;
   const lowered = request.toLowerCase();
@@ -453,7 +461,7 @@ function parseWriteRequestBound(request, toks, binding) {
   const specificationSpan = specification ? spanOf({ span: specification }) : null;
   const lead = firstRawContentLeadEnd(request);
   if (lead) {
-    const markerEnd = lead[1];
+    const markerEnd = markerPayloadStart(request, toks, lead[1]);
     const insideSpecification = specificationSpan && markerEnd >= specificationSpan.start && markerEnd < specificationSpan.end;
     if (!insideSpecification && positionsShareStatement(request, markerEnd, clauseStart)) {
       const markerLeads = markerEnd <= clauseStart;

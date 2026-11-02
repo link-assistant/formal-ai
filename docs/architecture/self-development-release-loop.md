@@ -24,3 +24,12 @@ This layer observes merged ancestry; it does not add an AI-only authority.
 Review, CI, and the #656 trusted promotion protocol remain outside and above
 the authorship measurement. E69 supplies the write-effect foundation and E74
 supplies the replayable Hive Mind/Agent CLI route used to produce candidates.
+
+Use reproduced requests and their retained outcomes as skill examples, following
+[the development direction](../../VISION.md#development-through-formal-ai).
+Generalize shared transformations and discovery strategies from those examples,
+then validate unseen variants and compositions before increasing task difficulty.
+Retain failure evidence and distinguish tool-assisted execution of supplied edits
+from autonomous synthesis. Judge improvement by reusable behavior, avoiding task
+or filename memorization and artificial output growth. This learning loop adds
+no new release thresholds.

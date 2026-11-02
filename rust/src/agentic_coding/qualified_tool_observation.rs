@@ -26,6 +26,17 @@ pub(super) struct QualifiedToolAttempt {
 }
 
 impl QualifiedToolAttempt {
+    pub(super) const fn capability(&self) -> Capability {
+        self.capability
+    }
+
+    pub(super) fn targets_path(&self, path: &str) -> bool {
+        super::progress::source_read_path(&self.arguments_value.to_string()).as_deref()
+            == Some(path)
+    }
+    pub(super) fn arguments_match(&self, arguments: &Value) -> bool {
+        argument_values_equal(&self.arguments_value, arguments)
+    }
     pub(super) const fn has_receipt(&self) -> bool {
         self.receipt_present
     }

@@ -3,6 +3,7 @@ import {classifyTool} from './capability_router.mjs';
 import {Progress, sourceReadPath, qualifiedToolAttempt} from './progress.mjs';
 import {argumentValuesEqual} from './qualified_tool_observation.mjs';
 import {readOnlyCapability} from './progress_command_readback.mjs';
+import {evidenceWindowStart} from './planner/continuation.mjs';
 // A file operation followed by edits of the file it makes (PR #1188 G82):
 // `Copy a.lino to b.lino. In b.lino replace 'x' with 'y', replace 'p' with
 // 'q'.` was written as one literal file. When the first sentence is a seeded
@@ -231,14 +232,13 @@ export async function planBoundRequestSteps(parts, messages, toolNames, planFor)
  * @param {Array<object>} messages
  */
 function turnExchanges(messages) {
-  let latest = -1;
-  messages.forEach((message, index) => {
-    if (String(message.role).toLowerCase() === 'user') latest = index;
-  });
+  const start = evidenceWindowStart(messages);
   const exchanges = [];
-  for (const message of messages.slice(latest + 1)) {
+  for (const message of messages.slice(start)) {
+    // The shared boundary already proved these repeats/cues retain this objective.
+    if (String(message.role).toLowerCase() === 'user') continue;
     if (String(message.role).toLowerCase() === 'assistant' || exchanges.length === 0) exchanges.push([message]);
     else exchanges.at(-1).push(message);
   }
-  return { base: messages.slice(0, latest + 1), exchanges };
+  return { base: messages.slice(0, start), exchanges };
 }

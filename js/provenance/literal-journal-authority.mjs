@@ -5,6 +5,16 @@ import {collectionSummaryOwns} from '../agentic/planner/collection_summary.mjs';
 import {bareSurfaces} from '../agentic/write_request.mjs';
 import {normalizePrompt} from '../agentic/crate/engine.mjs';
 import {writesWholeFile} from '../agentic/literal_write_guard.mjs';
+import {appendDefinition} from '../agentic/append_contract.mjs';
+// Provider capabilities derive from the driver grant during both execution and replay.
+export function driverAppendContracts(tools,enabled){
+ return enabled===true&&Array.isArray(tools)&&tools.includes('write')?[appendDefinition('write')]:[];
+}
+export function boundDriverAppendGrant(recorded,configured=false){
+ const observed=recorded??false,expected=configured??false;
+ if(typeof observed!=='boolean'||typeof expected!=='boolean'||observed!==expected)throw Error('FreshReplayRuntimeContextMismatch');
+ return observed;
+}
 export function literalJournalAuthority(prompt,exclusiveCreate=false){
  const plan=composeGeneralChangePlan(prompt),frame=parseWriteContract(prompt);
  return !exclusiveCreate&&ownsCompleteLiteralRequest(prompt)&&writesWholeFile(prompt)

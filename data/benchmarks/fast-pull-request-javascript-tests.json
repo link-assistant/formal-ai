@@ -146,6 +146,12 @@
     "rust/tests/web/native-protocol-capture.test.mjs",
     "rust/tests/web/literal-action-independent-goals.test.mjs",
     "rust/tests/web/pull-request-1188-edit-composer-gaps.test.mjs",
-    "rust/tests/web/worker-quote-parser-cycle.test.mjs"
+    "rust/tests/web/worker-quote-parser-cycle.test.mjs",
+    "rust/tests/web/js-rust-translation.test.mjs",
+    "rust/tests/web/translation-workarounds.test.mjs",
+    "rust/tests/web/replay-append-contract-projection.test.mjs",
+    "rust/tests/web/self-coding-proof.test.mjs",
+    "rust/tests/web/native-edit-observation-parity.test.mjs",
+    "rust/tests/web/issue-982-native-session-observation.test.mjs"
   ]
 }

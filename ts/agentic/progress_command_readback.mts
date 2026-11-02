@@ -1,6 +1,7 @@
 // Exact commanded readback custody. The caller constructs the owned read-only command.
 import {Capability} from './capability.mjs';
 import {commandArgument} from './tool_result.mjs';
+import {argumentValuesEqual} from './qualified_tool_observation.mjs';
 import {agenticMessage} from './messages.mjs';
 import {quoteShellWord} from './portable/string_contracts.mjs';
 
@@ -50,6 +51,53 @@ export function postWriteCommandReceiptFor(progress, path, command, qualify, pat
       return qualifiedReceipt(progress, attempt, command, qualify);
     }
     if (!readOnlyAttempt(progress, attempt, qualify, pathFromArguments)) return null;
+  }
+  return null;
+}
+
+/** Only the exact successful latest mutation may lend its subsequent complete Read. */
+export function postMutationReadStateFor(progress, path, capability, argumentsValue, qualifyTool, qualifyCommand, pathFromArguments) {
+  let read = null;
+  for (let index = progress.attempts.length - 1; index >= 0; index--) {
+    const attempt = progress.attempts[index];
+    if (readOnlyAttempt(progress, attempt, qualifyCommand, pathFromArguments)) {
+      if (read === null && attempt.capability === Capability.Read && attempt.arguments !== null
+        && pathFromArguments(attempt.arguments) === path) read = attempt;
+      continue;
+    }
+    let actual; try { actual = JSON.parse(attempt.arguments); } catch { return {current:false,attempt:null}; }
+    const frame = qualifyTool(progress, capability, argumentsValue);
+    const current = attempt.capability === capability && argumentValuesEqual(actual, argumentsValue)
+      && attempt.succeeded && frame?.binding === 'exact' && frame.receiptPresent
+      && frame.declaredTool === attempt.tool && frame.succeeded && frame.detail === attempt.detail;
+    return {current,attempt:current ? read : null};
+  }
+  return {current:false,attempt:null};
+}
+
+/** The actual complete preimage before the latest target mutation, without intervening effects. */
+export function sourceReadBeforeLatestMutationFor(progress, path, capability, qualifyCommand, pathFromArguments) {
+  const index = progress.attempts.findLastIndex(attempt => attempt.capability === capability
+    && attempt.arguments !== null && pathFromArguments(attempt.arguments) === path);
+  for (let prior = index - 1; prior >= 0; prior--) {
+    const attempt = progress.attempts[prior];
+    if (!readOnlyAttempt(progress, attempt, qualifyCommand, pathFromArguments)) return null;
+    if (attempt.capability === Capability.Read && attempt.arguments !== null
+      && pathFromArguments(attempt.arguments) === path) {
+      const observed = attempt.source_read;
+      return attempt.succeeded && observed?.error === null && observed.complete ? attempt : null;
+    }
+  }
+  return null;
+}
+
+/** Current target Read, stopping at any observed potential effect. */
+export function freshSourceReadAttemptFor(progress, path, qualifyCommand, pathFromArguments) {
+  for (let index = progress.attempts.length - 1; index >= 0; index--) {
+    const attempt = progress.attempts[index];
+    if (!readOnlyAttempt(progress, attempt, qualifyCommand, pathFromArguments)) return null;
+    if (attempt.capability === Capability.Read && attempt.arguments !== null
+      && pathFromArguments(attempt.arguments) === path) return attempt;
   }
   return null;
 }
