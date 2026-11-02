@@ -63,21 +63,30 @@ fn gemini_update_request_routes_to_edit() {
     let _guard = server_test_lock();
     let port = reserve_loopback_port();
     let _server = spawn_formal_ai_server_agent_mode(port);
-    let response = http_post_json(
-        port,
-        "/api/gemini/v1beta/models/formal-ai:generateContent",
-        TOKEN,
-        &serde_json::json!({
-            "contents": [{
-                "role": "user",
-                "parts": [{"text": "update main.rs and change foo to bar"}]
-            }],
-            "tools": [{
-                "functionDeclarations": [
-                    {"name": "replace", "parameters": {"type": "object"}}
-                ]
-            }]
-        }),
+    let request = serde_json::json!({
+        "contents": [{
+            "role": "user",
+            "parts": [{"text": "update main.rs and change foo to bar"}]
+        }],
+        "tools": [{
+            "functionDeclarations": [
+                {"name": "replace", "parameters": {"type": "object"}}
+            ]
+        }]
+    });
+    let response = auxiliary_workspace::observed_gemini_edit(
+        &request,
+        "main.rs",
+        "foo",
+        "replace",
+        &mut |request| {
+            http_post_json(
+                port,
+                "/api/gemini/v1beta/models/formal-ai:generateContent",
+                TOKEN,
+                request,
+            )
+        },
     );
     let call = response["candidates"][0]["content"]["parts"]
         .as_array()
@@ -156,7 +165,18 @@ fn leading_edit_action_is_language_general() {
         ("Chinese", "修改 main.rs 并 替换 foo 为 bar"),
     ];
     for (language, prompt) in cases {
-        let response = chat_on_port(port, prompt, &["edit"]);
+        let request = serde_json::json!({
+            "model": "formal-ai", "stream": false,
+            "messages": [{"role": "user", "content": prompt}],
+            "tools": [function_tool("edit")]
+        });
+        let response = auxiliary_workspace::observed_chat_edit(
+            &request,
+            "main.rs",
+            "foo",
+            "edit",
+            &mut |request| http_post_json(port, "/api/openai/v1/chat/completions", TOKEN, request),
+        );
         let call = &response["choices"][0]["message"]["tool_calls"][0];
         assert_eq!(call["function"]["name"], "edit", "{language}: {prompt}");
         let arguments = chat_arguments(call);
@@ -187,7 +207,7 @@ fn chat_on_port(port: u16, prompt: &str, tools: &[&str]) -> serde_json::Value {
 }
 
 fn write_on_port(port: u16, prompt: &str, tools: &[&str]) -> serde_json::Value {
-    auxiliary_workspace::observed_target_write(
+    auxiliary_workspace::observed_target_only_write(
         prompt,
         "notes.txt",
         "earlier observed fixture event\n",

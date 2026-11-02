@@ -107,7 +107,7 @@ fn chat_completions_routes_write_intent_to_tool_call() {
     ]);
     let prompt = "create a file called README.md with the following: hello world";
     let response =
-        auxiliary_workspace::observed_target_write(prompt, "README.md", "", &mut |messages| {
+        auxiliary_workspace::observed_target_only_write(prompt, "README.md", "", &mut |messages| {
             http_post_json(
                 port,
                 "/api/openai/v1/chat/completions",
@@ -206,19 +206,21 @@ fn responses_routes_edit_intent_to_function_call() {
     let port = reserve_loopback_port();
     let _server = spawn_formal_ai_server_agent_mode(port);
 
-    let response = http_post_json(
-        port,
-        "/api/openai/v1/responses",
-        TOKEN,
-        &serde_json::json!({
-            "model": "formal-ai",
-            "input": "Replace foo with bar in notes.txt",
-            "tools": [{
-                "type": "function",
-                "name": "replace",
-                "parameters": {"type": "object"}
-            }]
-        }),
+    let request = serde_json::json!({
+        "model": "formal-ai",
+        "input": "Replace foo with bar in notes.txt",
+        "tools": [{
+            "type": "function",
+            "name": "replace",
+            "parameters": {"type": "object"}
+        }]
+    });
+    let response = auxiliary_workspace::observed_responses_edit(
+        &request,
+        "notes.txt",
+        "foo",
+        "replace",
+        &mut |request| http_post_json(port, "/api/openai/v1/responses", TOKEN, request),
     );
 
     let call = response["output"]
@@ -242,21 +244,30 @@ fn gemini_routes_edit_intent_to_function_call() {
     let port = reserve_loopback_port();
     let _server = spawn_formal_ai_server_agent_mode(port);
 
-    let response = http_post_json(
-        port,
-        "/api/gemini/v1beta/models/formal-ai:generateContent",
-        TOKEN,
-        &serde_json::json!({
-            "contents": [{
-                "role": "user",
-                "parts": [{"text": "замени привет на пока в файле заметки.txt"}]
-            }],
-            "tools": [{
-                "functionDeclarations": [
-                    {"name": "replace", "parameters": {"type": "object"}}
-                ]
-            }]
-        }),
+    let request = serde_json::json!({
+        "contents": [{
+            "role": "user",
+            "parts": [{"text": "замени привет на пока в файле заметки.txt"}]
+        }],
+        "tools": [{
+            "functionDeclarations": [
+                {"name": "replace", "parameters": {"type": "object"}}
+            ]
+        }]
+    });
+    let response = auxiliary_workspace::observed_gemini_edit(
+        &request,
+        "заметки.txt",
+        "привет",
+        "replace",
+        &mut |request| {
+            http_post_json(
+                port,
+                "/api/gemini/v1beta/models/formal-ai:generateContent",
+                TOKEN,
+                request,
+            )
+        },
     );
 
     let call = response["candidates"][0]["content"]["parts"]

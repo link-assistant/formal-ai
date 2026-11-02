@@ -32,8 +32,8 @@ fn record(messages: &mut Vec<ChatMessage>, call: &PlannedToolCall, result: &str)
     messages.push(ChatMessage::tool_result(id, &call.tool, result));
 }
 
-fn advance_to_verification() -> (Vec<ChatMessage>, PlannedToolCall) {
-    let (mut messages, target_write) = before_target(PROMPT);
+fn advance_with_tools(tools: &[&str]) -> (Vec<ChatMessage>, PlannedToolCall) {
+    let (mut messages, target_write) = observed_plan_event::before_target(PROMPT, tools);
     assert_eq!(target_write.tool, "write_file");
     let arguments: serde_json::Value =
         serde_json::from_str(&target_write.arguments).expect("write arguments");
@@ -41,9 +41,13 @@ fn advance_to_verification() -> (Vec<ChatMessage>, PlannedToolCall) {
     assert_eq!(arguments["content"], "Hello World");
     record(&mut messages, &target_write, r#"{"success":true}"#);
 
-    let verification = next_call(&messages);
-    assert_eq!(verification.tool, "run_command");
+    let verification = observed_plan_event::next_call(&messages, tools);
     (messages, verification)
+}
+fn advance_to_verification() -> (Vec<ChatMessage>, PlannedToolCall) {
+    let result = advance_with_tools(&TOOLS);
+    assert_eq!(result.1.tool, "read_file");
+    result
 }
 
 #[test]
@@ -105,111 +109,68 @@ fn exact_content_parsing_generalizes_across_payloads_and_punctuation() {
     }
 }
 
+// Exclusive Create failures are terminal observations, not overwrite-retry authority.
+// Separate Set-contents coverage in observed-auxiliary-contracts.test.mjs retains
+// the one read-before-write retry and its second-failure bound.
 #[test]
-fn failed_write_is_followed_by_read_then_one_write_retry() {
-    let (mut messages, plan_write) = before_target(PROMPT);
+fn failed_exclusive_creation_does_not_retry_or_read_an_absent_target() {
+    let (mut messages, call) = before_target(PROMPT);
     record(
         &mut messages,
-        &plan_write,
+        &call,
         r#"{"is_error":true,"content":"File must be read before writing. Use read_file first."}"#,
     );
-
-    let read = next_call(&messages);
-    assert_eq!(read.tool, "read_file");
-    record(
-        &mut messages,
-        &read,
-        r#"{"is_error":true,"content":"File hello.txt not found"}"#,
+    let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &TOOLS) else {
+        panic!("failed exclusive creation must terminate without overwrite recovery");
+    };
+    assert!(
+        answer.contains("File must be read before writing"),
+        "{answer}"
     );
-
-    let retry = next_call(&messages);
-    assert_eq!(retry.tool, "write_file");
-    assert_eq!(
-        serde_json::from_str::<serde_json::Value>(&retry.arguments).unwrap()["path"],
-        "hello.txt"
-    );
+    assert!(!answer.contains("Completed"), "{answer}");
 }
 
 #[test]
-fn a_second_failed_write_for_the_same_path_stops_retrying() {
-    let (mut messages, first) = before_target(PROMPT);
+fn repeated_planning_after_failed_creation_never_retries_the_write() {
+    let (mut messages, call) = before_target(PROMPT);
     record(
         &mut messages,
-        &first,
-        r#"{"is_error":true,"content":"Read the file before writing"}"#,
-    );
-    let read = next_call(&messages);
-    record(
-        &mut messages,
-        &read,
-        r#"{"is_error":true,"content":"File not found"}"#,
-    );
-    let retry = next_call(&messages);
-    record(
-        &mut messages,
-        &retry,
+        &call,
         r#"{"is_error":true,"content":"Write transport remains unavailable"}"#,
     );
+    for _ in 0..2 {
+        let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &TOOLS) else {
+            panic!("failed exclusive creation must stay terminal");
+        };
+        assert!(
+            answer.contains("Write transport remains unavailable"),
+            "{answer}"
+        );
+        assert!(!answer.contains("Completed"), "{answer}");
+    }
+}
 
-    // Retrying stops, but the plan still asks the workspace: the check the
-    // plan itself named runs once, and its status is what gets reported.
-    let verification = next_call(&messages);
-    assert_eq!(verification.tool, "run_command");
+#[test]
+fn an_unrecoverable_write_reports_the_transport_without_inventing_a_check() {
+    let tools = ["write_file", "run_command"];
+    let (mut messages, call) = observed_plan_event::before_target(PROMPT, &tools);
+    assert_eq!(call.tool, "write_file");
     record(
         &mut messages,
-        &verification,
-        "Command: cat hello.txt\nOutput: (empty)\nError: cat: hello.txt: No such file or directory\nExit Code: 1\n",
+        &call,
+        "Error: write_stdin failed: Unknown process id 0",
     );
-
-    let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &TOOLS) else {
-        panic!("the bounded retry must stop after the second failure");
+    let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
+        panic!("the actual failed write must terminate");
     };
-    assert!(
-        !answer.contains("Completed the general change request"),
-        "{answer}"
-    );
-    assert!(answer.contains('1'), "{answer}");
-    assert!(answer.contains("hello.txt"), "{answer}");
-}
-
-/// Issue #916 rung R916-01: the write transport fault of issue #905 leaves the
-/// plan without a recovery path, and the report must carry what the workspace
-/// answered — the check the plan named, and the status it exited with — rather
-/// than the transport message alone.
-#[test]
-fn an_unrecoverable_write_still_asks_the_workspace_before_reporting() {
-    let tools = ["write_file", "run_command"];
-    let (mut messages, _) = observed_plan_event::before_target(PROMPT, &tools);
-    let mut guard = 0;
-    let answer = loop {
-        guard += 1;
-        assert!(guard < 8, "the plan must terminate");
-        match plan_chat_step(&messages, &tools) {
-            Some(AgenticPlan::ToolCalls(mut calls)) => {
-                let call = calls.remove(0);
-                let result = if call.tool == "write_file" {
-                    "Error: write_stdin failed: Unknown process id 0".to_owned()
-                } else {
-                    "Command: cat hello.txt\nOutput: (empty)\nError: cat: hello.txt: No such file \
-                     or directory\nExit Code: 1\n"
-                        .to_owned()
-                };
-                record(&mut messages, &call, &result);
-            }
-            Some(AgenticPlan::Final(answer)) => break answer,
-            other => panic!("unexpected plan {other:?}"),
-        }
-    };
+    assert!(answer.contains("Unknown process id 0"), "{answer}");
     assert!(!answer.contains("verified it"), "{answer}");
-    assert!(
-        !answer.contains("Completed the general change request"),
-        "{answer}"
-    );
-    assert!(answer.contains('1'), "{answer}");
+    assert!(!answer.contains("Completed"), "{answer}");
+    assert!(!answer.contains("Exit Code:"), "{answer}");
 }
 
 #[test]
-fn write_only_target_failure_is_reported_without_overwriting_the_auxiliary_stream() {
+fn write_only_target_failure_is_terminal_and_reports_the_actual_error() {
     let tools = ["write_file"];
     let mut messages = vec![ChatMessage::user(PROMPT)];
     let call = observed_plan_event::next_call(&messages, &tools);
@@ -225,14 +186,11 @@ fn write_only_target_failure_is_reported_without_overwriting_the_auxiliary_strea
         panic!("the real target transport failure must terminate honestly");
     };
     assert!(answer.contains("Error writing file"), "{answer}");
-    assert!(
-        !answer.contains("Completed the general change request"),
-        "{answer}"
-    );
+    assert!(!answer.contains("Completed"), "{answer}");
 }
 
 #[test]
-fn write_only_success_keeps_the_missing_auxiliary_receipt_explicit() {
+fn write_only_success_is_explicitly_unverified_without_readback() {
     let tools = ["write_file"];
     let mut messages = vec![ChatMessage::user(PROMPT)];
     let call = observed_plan_event::next_call(&messages, &tools);
@@ -243,14 +201,13 @@ fn write_only_success_keeps_the_missing_auxiliary_receipt_explicit() {
     let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
         panic!("write-only clients cannot fabricate missing verification");
     };
-    assert!(
-        answer.contains(".formal-ai/general-change-plan.lino"),
-        "{answer}"
+    assert_eq!(
+        answer,
+        formal_ai::seed::localized_response("coding_workspace_written_unverified", "en")
+            .expect("maintained unverified response")
+            .replace("{path}", "hello.txt")
     );
-    assert!(
-        answer.contains("not marked the change complete"),
-        "{answer}"
-    );
+    assert!(!answer.contains(".formal-ai/general-change-plan.lino"));
 }
 
 #[test]
@@ -264,47 +221,42 @@ fn explicit_error_verification_cannot_produce_a_success_claim() {
     let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &TOOLS) else {
         panic!("expected an honest terminal report");
     };
-    assert!(
-        !answer.contains("Completed the general change request"),
-        "{answer}"
-    );
+    assert!(!answer.contains("Completed"), "{answer}");
     assert!(!answer.contains("verified it"), "{answer}");
     assert!(answer.contains("No such file or directory"), "{answer}");
 }
 
 #[test]
 fn nonzero_exit_verification_cannot_produce_a_success_claim() {
-    let (mut messages, verification) = advance_to_verification();
+    let tools = ["write_file", "run_command"];
+    let (mut messages, verification) = advance_with_tools(&tools);
+    assert_eq!(verification.tool, "run_command");
     record(
         &mut messages,
         &verification,
         r#"{"exit_code":1,"status":"failed","output":"cat: hello.txt: No such file"}"#,
     );
-    let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &TOOLS) else {
+    let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
         panic!("expected an honest terminal report");
     };
-    assert!(
-        !answer.contains("Completed the general change request"),
-        "{answer}"
-    );
+    assert!(!answer.contains("Completed"), "{answer}");
     assert!(answer.contains("No such file"), "{answer}");
 }
 
 #[test]
 fn successful_command_with_wrong_evidence_is_not_verified() {
-    let (mut messages, verification) = advance_to_verification();
+    let tools = ["write_file", "run_command"];
+    let (mut messages, verification) = advance_with_tools(&tools);
+    assert_eq!(verification.tool, "run_command");
     record(
         &mut messages,
         &verification,
-        r#"{"exit_code":0,"status":"completed","output":"Goodbye World"}"#,
+        r#"{"exit_code":0,"status":"completed","output":"(Goodbye World)"}"#,
     );
-    let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &TOOLS) else {
+    let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
         panic!("expected a mismatch report");
     };
-    assert!(
-        !answer.contains("Completed the general change request"),
-        "{answer}"
-    );
+    assert!(!answer.contains("Completed"), "{answer}");
     assert!(answer.contains("Goodbye World"), "{answer}");
 }
 
@@ -314,16 +266,17 @@ fn matching_observed_evidence_allows_completion() {
     record(
         &mut messages,
         &verification,
-        r#"{"exit_code":0,"status":"completed","output":"Hello World\n"}"#,
+        &formal_ai::agentic_coding::tool_result::complete_owned_source_read_frame("Hello World"),
     );
     let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &TOOLS) else {
         panic!("expected completion");
     };
-    assert!(
-        answer.contains("Completed the general change request"),
-        "{answer}"
+    assert_eq!(
+        answer,
+        formal_ai::seed::localized_response("coding_workspace_effect_observed", "en")
+            .expect("maintained completion")
+            .replace("{path}", "hello.txt")
     );
-    assert!(answer.contains("verified it"), "{answer}");
 }
 
 #[test]
@@ -335,14 +288,16 @@ fn requested_failure_vocabulary_is_valid_successful_evidence() {
     record(
         &mut messages,
         &verification,
-        r#"{"exit_code":0,"status":"completed","output":"failed\n"}"#,
+        &formal_ai::agentic_coding::tool_result::complete_owned_source_read_frame("failed"),
     );
     let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &TOOLS) else {
         panic!("expected completion");
     };
-    assert!(
-        answer.contains("Completed the general change request"),
-        "{answer}"
+    assert_eq!(
+        answer,
+        formal_ai::seed::localized_response("coding_workspace_effect_observed", "en")
+            .expect("maintained completion")
+            .replace("{path}", "status.txt")
     );
 }
 

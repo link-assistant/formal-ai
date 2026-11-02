@@ -158,18 +158,19 @@ fn the_whole_write_read_task_persists_and_reads_back_the_users_content() {
     // create -> read back, driven end to end through the protocol with a client
     // loop that actually applies the writes to a scratch workspace.
     let tools = vec![write_tool(&strict_write_schema()), read_tool()];
-    let plan = formal_ai::agentic_coding::general_planner::compose_general_change_plan(
-        "write 10 to 1.txt file",
-    )
-    .expect("original literal write plan");
-    let plan_path = formal_ai::agentic_coding::general_planner::PLAN_PATH;
-    let prior = "earlier observed fixture event\n";
-    let mut workspace: Vec<(String, String)> = vec![(plan_path.to_owned(), prior.to_owned())];
-    let transcript = drive_with(
-        "write 10 to 1.txt file",
-        &tools,
-        6,
-        &mut |name, arguments| match name {
+    for (prompt, journal_owned) in [
+        ("write 10 to 1.txt file", false),
+        (
+            "Set the contents of 1.txt to exactly this content: «10».",
+            true,
+        ),
+    ] {
+        let plan = formal_ai::agentic_coding::general_planner::compose_general_change_plan(prompt)
+            .expect("original literal write plan");
+        let plan_path = formal_ai::agentic_coding::general_planner::PLAN_PATH;
+        let prior = "earlier observed fixture event\n";
+        let mut workspace: Vec<(String, String)> = vec![(plan_path.to_owned(), prior.to_owned())];
+        let transcript = drive_with(prompt, &tools, 6, &mut |name, arguments| match name {
             "Write" => {
                 let path = arguments["file_path"].as_str().unwrap_or_default();
                 let content = arguments["content"].as_str().unwrap_or_default();
@@ -181,43 +182,70 @@ fn the_whole_write_read_task_persists_and_reads_back_the_users_content() {
                     .as_str()
                     .expect("advertised read path");
                 workspace
-                    .iter()
-                    .rev()
-                    .find(|(written, _)| written == path)
-                    .map_or_else(
-                        || ({
-                            json!({"is_error": true, "error": format!("File not found: {path}")})
-                                .to_string()
-                        }).into(),
-                        |(_, content)| formal_ai::agentic_coding::tool_result::ProviderToolObservation::complete_owned_read(path, content),
-                    )
+                        .iter()
+                        .rev()
+                        .find(|(written, _)| written == path)
+                        .map_or_else(
+                            || ({
+                                json!({"is_error": true, "error": format!("File not found: {path}")})
+                                    .to_string()
+                            }).into(),
+                            |(_, content)| formal_ai::agentic_coding::tool_result::ProviderToolObservation::complete_owned_read(path, content),
+                        )
             }
             other => panic!("unadvertised workspace operation: {other}"),
-        },
-    );
-    assert!(!transcript.is_empty(), "the request should drive a write");
-    let observed_stream = workspace
-        .iter()
-        .rev()
-        .find(|(path, _)| path == plan_path)
-        .expect("actual written plan stream");
-    assert_eq!(
-        observed_stream.1,
-        format!("{prior}{}", plan.links_notation())
-    );
-    assert_eq!(
-        transcript
+        });
+        assert!(!transcript.is_empty(), "the request should drive a write");
+        let observed_stream = workspace
             .iter()
-            .filter(|(tool, arguments)| tool == "Write" && arguments["file_path"] == plan_path)
-            .count(),
-        1
-    );
-    assert!(
-        workspace
+            .rev()
+            .find(|(path, _)| path == plan_path)
+            .expect("actual written plan stream");
+        assert_eq!(
+            observed_stream.1,
+            if journal_owned {
+                format!("{prior}{}", plan.links_notation())
+            } else {
+                prior.to_owned()
+            }
+        );
+        assert_eq!(
+            transcript
+                .iter()
+                .filter(|(tool, arguments)| tool == "Write" && arguments["file_path"] == plan_path)
+                .count(),
+            usize::from(journal_owned)
+        );
+        assert!(
+            workspace
+                .iter()
+                .any(|(path, content)| path == "1.txt" && content == "10"),
+            "the user's file must receive the user's content, wrote {workspace:?}"
+        );
+        let written_at = transcript
             .iter()
-            .any(|(path, content)| path == "1.txt" && content == "10"),
-        "the user's file must receive the user's content, wrote {workspace:?}"
-    );
+            .rposition(|(tool, arguments)| tool == "Write" && arguments["file_path"] == "1.txt")
+            .expect("actual target write");
+        assert!(
+            transcript[written_at + 1..]
+                .iter()
+                .any(|(tool, arguments)| { tool == "Read" && arguments["file_path"] == "1.txt" }),
+            "actual target read follows the latest target write"
+        );
+        if !journal_owned {
+            assert!(
+                transcript
+                    .iter()
+                    .all(|(_, arguments)| arguments["file_path"] == "1.txt")
+            );
+            assert!(
+                transcript[..written_at]
+                    .iter()
+                    .all(|(tool, _)| tool != "Read"),
+                "original creation never reads its absent target before writing"
+            );
+        }
+    }
 }
 
 #[test]

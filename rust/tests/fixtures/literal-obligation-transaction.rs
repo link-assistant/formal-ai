@@ -59,6 +59,7 @@ fn run_with_receipts(
         answer: None,
     };
     let mut messages = vec![ChatMessage::user(task)];
+    let mut written = Vec::<String>::new();
     for turn in 0..8 {
         match plan_chat_step(&messages, tools) {
             Some(AgenticPlan::ToolCalls(calls)) => {
@@ -71,12 +72,13 @@ fn run_with_receipts(
                             .expect("write parent directory");
                         fs::write(target, args["content"].as_str().expect("bytes"))
                             .expect("target write");
+                        written.push(args["path"].as_str().expect("target").to_owned());
                         run.writes += 1;
                         String::new()
                     } else if call.tool == "read" {
                         let path = args["path"].as_str().expect("read target");
                         match fs::read_to_string(run.root.join(path)) {
-                            Ok(bytes) => bytes,
+                            Ok(bytes) => formal_ai::agentic_coding::tool_result::complete_owned_source_read_frame(&bytes),
                             Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
                                 "Error: ENOENT: no such file or directory".to_owned()
                             }
@@ -86,13 +88,18 @@ fn run_with_receipts(
                         }
                     } else if call.tool == "bash" {
                         let command = args["command"].as_str().expect("command");
+                        let framed_readback = written.iter().any(|path| {
+                            command
+                                == formal_ai::agentic_coding::owned_creation_readback_command(path)
+                        });
                         let output = Command::new("bash")
                             .args(["-c", command])
                             .current_dir(&run.root)
                             .output()
                             .expect("bounded fixture shell");
                         let stdout = String::from_utf8(output.stdout).expect("UTF8 stdout");
-                        let result = if (command.starts_with("cat ")
+                        let result = if (framed_readback
+                            || command.starts_with("cat ")
                             || (inject_digest && command.starts_with("sha256sum -- ")))
                             && output.status.success()
                         {
@@ -103,7 +110,8 @@ fn run_with_receipts(
                                 output.status.code().unwrap_or(1)
                             )
                         };
-                        if command.starts_with("cat ")
+                        if framed_readback
+                            || command.starts_with("cat ")
                             || (inject_digest && command.starts_with("sha256sum -- "))
                         {
                             run.receipts.push((command.to_owned(), stdout));
@@ -130,6 +138,12 @@ fn run_with_receipts(
     }
     run
 }
+fn framed_receipt(path: &str, bytes: &str) -> (String, String) {
+    (
+        formal_ai::agentic_coding::owned_creation_readback_command(path),
+        format!("({bytes})"),
+    )
+}
 fn exact_pair(run: &Run, first: &str, second: &str) {
     assert_eq!(
         fs::read_to_string(run.root.join("a.txt")).expect("first file"),
@@ -139,14 +153,8 @@ fn exact_pair(run: &Run, first: &str, second: &str) {
         fs::read_to_string(run.root.join("b.txt")).expect("second file"),
         second
     );
-    assert!(
-        run.receipts
-            .contains(&("cat a.txt".to_owned(), first.to_owned()))
-    );
-    assert!(
-        run.receipts
-            .contains(&("cat b.txt".to_owned(), second.to_owned()))
-    );
+    assert!(run.receipts.contains(&framed_receipt("a.txt", first)));
+    assert!(run.receipts.contains(&framed_receipt("b.txt", second)));
     assert_eq!(run.writes, 2);
     assert!(run.answer.is_some());
 }
@@ -193,14 +201,10 @@ fn mandatory_unknown_clause_is_a_gap_after_first_verified_artifact() {
         fs::read_to_string(outcome.root.join("a.txt")).expect("first artifact"),
         "alpha"
     );
-    assert!(
-        outcome
-            .receipts
-            .contains(&("cat a.txt".to_owned(), "alpha".to_owned()))
-    );
+    assert!(outcome.receipts.contains(&framed_receipt("a.txt", "alpha")));
     let answer = outcome.answer.as_deref().expect("mandatory gap");
     assert!(answer.contains("no_artifact_in_clause"));
-    assert!(!answer.contains("Completed the general change request"));
+    assert!(!answer.contains("Completed"));
 }
 
 #[test]
@@ -438,13 +442,13 @@ fn unchanged_l21_preserves_source_and_both_independent_records() {
         .expect("independent proof");
     assert_eq!(proof.lines().next(), Some("node_path=2.1.2.1.1"));
     assert!(proof.contains("FORMAL_AI_HOW_SOURCE_CACHE_DIR"));
-    assert!(outcome.receipts.contains(&(
-        "cat agent-ladder-effects/node-2.1.2.1.1.lino".to_owned(),
-        effect
+    assert!(outcome.receipts.contains(&framed_receipt(
+        "agent-ladder-effects/node-2.1.2.1.1.lino",
+        &effect
     )));
-    assert!(outcome.receipts.contains(&(
-        "cat .agent-ladder/node-2.1.2.1.1-proof.md".to_owned(),
-        proof
+    assert!(outcome.receipts.contains(&framed_receipt(
+        ".agent-ladder/node-2.1.2.1.1-proof.md",
+        &proof
     )));
     assert_eq!(outcome.writes, 3);
     assert!(outcome.answer.is_some());

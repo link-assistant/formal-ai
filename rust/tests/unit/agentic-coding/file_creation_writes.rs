@@ -135,14 +135,34 @@ fn file_creation_end_to_end_writes_the_target_and_never_reads_the_absent_target(
         .iter()
         .map(|step| step.tool.as_str())
         .collect();
+    let names_target = |arguments: &str| {
+        serde_json::from_str::<serde_json::Value>(arguments).is_ok_and(|args| {
+            ["path", "filePath", "file_path"]
+                .iter()
+                .any(|key| args[*key] == "hello.txt")
+        })
+    };
+    let target_write = outcome
+        .steps
+        .iter()
+        .position(|step| step.tool == "write_file" && names_target(&step.arguments))
+        .expect("the exclusive target write is observed");
     assert!(
-        !outcome.steps.iter().any(|step| {
-            (step.tool == "read" || step.tool == "read_file")
-                && serde_json::from_str::<serde_json::Value>(&step.arguments).is_ok_and(|args| {
-                    args["path"] == "hello.txt" || args["filePath"] == "hello.txt"
-                })
+        !outcome.steps[..target_write].iter().any(|step| {
+            (step.tool == "read" || step.tool == "read_file") && names_target(&step.arguments)
         }),
-        "must never read the file it was asked to create: {tools:?}"
+        "the absent target must not be read before its write: {tools:?}"
+    );
+    let verification = outcome.steps[target_write + 1..]
+        .iter()
+        .find(|step| {
+            (step.tool == "read" || step.tool == "read_file") && names_target(&step.arguments)
+        })
+        .expect("fresh target read after the actual write");
+    assert_eq!(
+        verification.result,
+        formal_ai::agentic_coding::tool_result::complete_owned_source_read_frame("hello world"),
+        "verification must preserve the complete actual target bytes"
     );
     assert!(
         tools.iter().any(|tool| tool == &"write_file"),

@@ -520,7 +520,7 @@ fn g72_an_anchor_line_found_more_than_once_is_named() {
 fn g15_the_plan_event_preserves_history_and_records_a_real_append() {
     let before = "general_change_plan\n  id \"previous\"\n";
     let run = drive(
-        "Write hello to x.txt",
+        "Set the contents of x.txt to «hello»",
         &[(".formal-ai/general-change-plan.lino", before)],
     );
     assert!(run.files[".formal-ai/general-change-plan.lino"].starts_with(before));
@@ -533,6 +533,21 @@ fn g15_the_plan_event_preserves_history_and_records_a_real_append() {
         "{}",
         run.files[".formal-ai/general-change-plan.lino"]
     );
+}
+
+#[test]
+fn g15_the_unchanged_literal_write_owns_only_its_target() {
+    let before = "general_change_plan\n  id \"previous\"\n";
+    let run = drive(
+        "Write hello to x.txt",
+        &[(".formal-ai/general-change-plan.lino", before)],
+    );
+    assert_eq!(run.files[".formal-ai/general-change-plan.lino"], before);
+    assert_eq!(run.files["x.txt"], "hello");
+    assert_eq!(run.tools.first().map(String::as_str), Some("write"));
+    assert!(run.tools.iter().skip(1).all(|tool| tool == "read"));
+    assert!(run.tools.iter().any(|tool| tool == "read"));
+    assert!(run.commands.is_empty());
 }
 
 #[test]
@@ -795,10 +810,14 @@ fn g76_a_leading_code_span_is_the_command_and_the_words_after_it_are_prose() {
 fn g77_a_call_killed_at_the_timeout_is_stated_without_an_exit_code() {
     let run = drive("Run `node --test slow.test.mjs`.", &[]);
     assert_eq!(run.commands, ["node --test slow.test.mjs"]);
-    assert_eq!(
-        run.answer.as_deref(),
-        Some("The command failed: Signal: SIGTERM\nTimeout: 60000 ms")
-    );
+    let answer = run.answer.as_deref().expect("reported timeout");
+    assert!(answer.starts_with("The command failed:"));
+    assert!(answer.contains("TAP version 13"));
+    assert!(answer.contains("Signal: SIGTERM"));
+    assert!(answer.contains("Timeout: 60000 ms"));
+    assert!(!answer.contains("Exit Code"));
+    assert!(!answer.contains("Report issue"));
+    assert!(!answer.contains("Would you like"));
 }
 
 #[test]

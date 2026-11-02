@@ -182,17 +182,43 @@ fn explicit_file_receipts_advance_the_declared_leaf_without_hashing_shell_metada
         )]));
         messages.push(ChatMessage::tool_result(id, "bash", raw));
     };
-    for raw in ["Output: alpha.\nExit Code: 0", "alpha."] {
-        let mut messages = vec![ChatMessage::user(task)];
-        receipt(&mut messages, "cat a.txt", raw);
-        let Some(ObligationStep::Observe(node)) = next_step(task, &messages) else {
-            panic!("second file remains open");
+    // A physical matching Write and complete target Read discharge the literal leaf.
+    let mut workspace = crate::observed_plan_tools::ToolWorkspace::new(task);
+    let mut messages = vec![ChatMessage::user(task)];
+    for (index, (tool, arguments)) in [
+        (
+            "write",
+            serde_json::json!({"path":"a.txt","content":"alpha."}),
+        ),
+        ("read", serde_json::json!({"path":"a.txt"})),
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        let id = format!("actual-file-{index}");
+        let call = formal_ai::agentic_coding::PlannedToolCall {
+            tool: tool.to_owned(),
+            arguments: arguments.to_string(),
         };
-        assert!(
-            matches!(node.expectation, ObligationExpectation::FileBytes { ref path, .. } if path == "b.txt")
-        );
+        let observed = workspace.execute(&id, &call);
+        assert!(!observed.is_error);
+        messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            &id,
+            tool,
+            &call.arguments,
+        )]));
+        messages.push(observed);
     }
+    assert_eq!(workspace.read("a.txt").unwrap(), "alpha.");
+    let Some(ObligationStep::Observe(node)) = next_step(task, &messages) else {
+        panic!("second file remains open");
+    };
+    assert!(
+        matches!(node.expectation, ObligationExpectation::FileBytes { ref path, .. } if path == "b.txt")
+    );
     for (command, raw) in [
+        ("cat a.txt", "Output: alpha.\nExit Code: 0"),
+        ("cat a.txt", "alpha."),
         ("cat a.txt", "Output: wrong\nExit Code: 0"),
         ("cat a.txt", "Output: alpha.\nExit Code: 1"),
         ("cat other-a.txt", "Output: alpha.\nExit Code: 0"),

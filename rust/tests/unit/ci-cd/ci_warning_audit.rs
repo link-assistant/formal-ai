@@ -386,9 +386,11 @@ fn formal_ai_and_real_agent_cli_authored_two_of_nine_requirement_leaves() {
             )),
             &observed,
         );
-        assert_eq!(
-            observed, rendered,
-            "the complete actual native session must replay byte-for-byte"
+        assert_current_literal_observation(
+            &repository_file(&format!(
+                "docs/case-studies/pull-request-1188/native-protocol-captures/history/{capture}-legacy-4a560.json"
+            )),
+            &rendered,
         );
 
         let written_leaf = fresh

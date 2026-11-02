@@ -543,8 +543,10 @@ fn r916_04_completion_is_not_claimed_when_verification_exits_nonzero() {
         serde_json::from_str(&target.arguments).expect("target arguments");
     assert_eq!(target_args["path"], "hello.txt");
     assert_eq!(target_args["content"], "Hello World");
-    // Auxiliary stdout is observed before injecting the original effect/verification outcomes.
-    for (index, result) in ["wrote hello.txt", MISSING_FILE_ENVELOPE]
+    let command = formal_ai::agentic_coding::owned_creation_readback_command("hello.txt");
+    let missing =
+        MISSING_FILE_ENVELOPE.replacen("Command: cat hello.txt", &format!("Command: {command}"), 1);
+    for (index, result) in ["wrote hello.txt", missing.as_str()]
         .into_iter()
         .enumerate()
     {
@@ -553,7 +555,7 @@ fn r916_04_completion_is_not_claimed_when_verification_exits_nonzero() {
             assert_eq!(call.tool, "bash");
             assert_eq!(
                 serde_json::from_str::<serde_json::Value>(&call.arguments).expect("verification")["command"],
-                "cat hello.txt"
+                command
             );
         }
         observed_plan_event::record(&mut messages, &call, result);
@@ -561,8 +563,8 @@ fn r916_04_completion_is_not_claimed_when_verification_exits_nonzero() {
 
     let answer = final_answer(&messages, &tools);
     assert!(
-        !answer.contains("Completed the general change request"),
-        "`cat hello.txt` exited 1: completion must not be claimed: {answer}"
+        !answer.contains("Completed"),
+        "the actual framed readback exited 1: completion must not be claimed: {answer}"
     );
     assert!(
         !answer.contains("verified it"),
@@ -584,25 +586,31 @@ fn r916_04_completion_is_claimed_when_the_effect_is_observed() {
         serde_json::from_str(&target.arguments).expect("target arguments");
     assert_eq!(target_args["path"], "hello.txt");
     assert_eq!(target_args["content"], "Hello World");
-    // Auxiliary stdout is observed before injecting the original effect/verification outcomes.
-    let observed = "Command: cat hello.txt\nDirectory: (root)\nOutput: Hello World\n\
-         Error: (none)\nExit Code: 0\nSignal: 0\nProcess Group PGID: 685377";
-    for (index, result) in ["wrote hello.txt", observed].into_iter().enumerate() {
+    let command = formal_ai::agentic_coding::owned_creation_readback_command("hello.txt");
+    let observed = format!(
+        "Command: {command}\nDirectory: (root)\nOutput: (Hello World)\nError: (none)\nExit Code: 0\nSignal: 0\nProcess Group PGID: 685377"
+    );
+    for (index, result) in ["wrote hello.txt", observed.as_str()]
+        .into_iter()
+        .enumerate()
+    {
         let call = observed_plan_event::next_call(&messages, &tools);
         if index == 1 {
             assert_eq!(call.tool, "bash");
             assert_eq!(
                 serde_json::from_str::<serde_json::Value>(&call.arguments).expect("verification")["command"],
-                "cat hello.txt"
+                command
             );
         }
         observed_plan_event::record(&mut messages, &call, result);
     }
 
     let answer = final_answer(&messages, &tools);
-    assert!(
-        answer.contains("Completed the general change request"),
-        "an observed, exit-0 verification is exactly what completion means: {answer}"
+    assert_eq!(
+        answer,
+        formal_ai::seed::localized_response("coding_workspace_effect_observed", "en")
+            .expect("maintained completion")
+            .replace("{path}", "hello.txt")
     );
 }
 

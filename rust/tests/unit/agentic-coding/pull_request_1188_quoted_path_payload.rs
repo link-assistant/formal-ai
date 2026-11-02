@@ -93,8 +93,8 @@ fn a_sentence_mark_after_one_quoted_literal_is_not_content() {
             assert!(
                 workspace
                     .read(".formal-ai/general-change-plan.lino")
-                    .expect("actual appended plan")
-                    .contains("Create a file new.txt containing 'hello'.")
+                    .is_err(),
+                "a declared creation must not add an unrequested journal"
             );
             break;
         }
