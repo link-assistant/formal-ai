@@ -137,6 +137,9 @@ pub(super) fn plan_edit_step(
         .into_iter()
         .filter_map(|(capability, name)| tool_for(tool_names, capability).is_none().then_some(name))
         .collect::<Vec<_>>();
+    if !missing_capabilities.is_empty() && tool_for(tool_names, Capability::MultiEdit).is_some() {
+        return None;
+    }
     if !missing_capabilities.is_empty() {
         let reason = if tool_for(tool_names, Capability::Edit).is_none() {
             "EditToolUnavailable"

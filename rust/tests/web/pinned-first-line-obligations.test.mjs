@@ -9,6 +9,9 @@ import { installNodeHost } from '../../../js/agentic/node-host.mjs';
 import { planChatStepResolved } from '../../../js/agentic/planner.mjs';
 import { canDeliverFinal } from '../../../js/agentic/plan.mjs';
 import { pinnedLineNeed } from '../../../js/agentic/planner/owned_goals.mjs';
+import { executeResult } from '../../../experiments/js_dogfood/drive.mjs';
+import { Progress } from '../../../js/agentic/progress.mjs';
+import { composeGeneralChangePlan } from '../../../js/agentic/general_planner.mjs';
 await installNodeHost(new WorkerHost());
 const tools = ["bash", "batch", "codesearch", "edit", "glob", "grep", "list", "read", "task", "todoread", "todowrite", "webfetch", "websearch", "write"];
 const cases = [{
@@ -87,14 +90,8 @@ function physicalResult(call, directory, writes, receipts) {
     });
   }
   if (call.tool === 'read') {
-    try {
-      return fs.readFileSync(local(relative), 'utf8');
-    } catch (error) {
-      return JSON.stringify({
-        is_error: true,
-        error: error.message
-      });
-    }
+    local(relative);
+    return executeResult(directory, call);
   }
   if (call.tool === 'list') return JSON.stringify(fs.readdirSync(directory));
   if (call.tool !== 'bash') return JSON.stringify({ is_error: true, error: 'unsupported physical fixture tool' });
@@ -112,7 +109,8 @@ function physicalResult(call, directory, writes, receipts) {
   receipts.push({
     command,
     status: receipt.status,
-    error: receipt.error
+    error: receipt.error,
+    stdout: receipt.stdout
   });
   return JSON.stringify({
     stdout: receipt.stdout,
@@ -126,37 +124,22 @@ for (const fixture of cases) {
   test(fixture.request, async () => {
     const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'formal-ai-first-line-'));
     try {
-      const messages = [{
-        role: 'user',
-        content: fixture.request
-      }];
-      const plans = [],
-        writes = [],
-        receipts = [];
+      const messages = [{role: 'user', content: fixture.request}];
+      const plans = [], writes = [], receipts = [];
       for (let turn = 0; turn < 6; turn++) {
         const plan = await planChatStepResolved(messages, tools);
         plans.push(plan);
         if (plan?.kind !== 'tool_calls') break;
         for (const [index, call] of plan.calls.entries()) {
           const identifier = 'physical-first-line-' + turn + '-' + index;
-          const content = physicalResult(call, directory, writes, receipts);
+          const observation = physicalResult(call, directory, writes, receipts);
+          const receipt = typeof observation === 'string' ? {content: observation} : observation;
           messages.push({
-            role: 'assistant',
-            tool_calls: [{
-              id: identifier,
-              type: 'function',
-              function: {
-                name: call.tool,
-                arguments: call.arguments
-              }
+            role: 'assistant', tool_calls: [{
+              id: identifier, type: 'function',
+              function: {name: call.tool, arguments: call.arguments}
             }]
-          });
-          messages.push({
-            role: 'tool',
-            name: call.tool,
-            tool_call_id: identifier,
-            content
-          });
+          }, {role: 'tool', name: call.tool, tool_call_id: identifier, ...receipt});
         }
       }
       assert.equal(plans.at(-1)?.kind, 'final', 'original six-turn cap');
@@ -166,18 +149,27 @@ for (const fixture of cases) {
         assert.equal(receipts.length, 0, 'negative request executes no shell effect');
         assert.equal(canDeliverFinal(plans.at(-1)), false, 'refusal is not delivered intent');
       } else {
-        assert.equal(plans.length, 4, 'original literal write and readback sequence');
         assert.equal(canDeliverFinal(plans.at(-1)), true);
-        assert.equal(receipts.length, 2, 'real plan event and readback receipts');
         for (const receipt of receipts) assert.equal(receipt.status, 0);
-        for (const write of writes) assert.equal(fs.readFileSync(path.join(directory, write.path), 'utf8'), write.content);
+        const progress = Progress.scan(messages);
+        for (const write of writes) {
+          assert.equal(fs.readFileSync(path.join(directory, write.path), 'utf8'), write.content);
+          const read = progress.sourceReadAfterLatestWriteFor(write.path);
+          if (read !== null) {
+            assert.equal(read.complete, true);
+            assert.equal(read.error, null);
+            assert.equal(read.source, write.content);
+          } else {
+            const plan = composeGeneralChangePlan(fixture.request);
+            assert.equal(plan.target, write.path);
+            const receipt = receipts.findLast(entry => entry.command === plan.verification_command);
+            assert.ok(receipt, 'legacy owner has its actual target command receipt');
+            assert.equal(receipt.status, 0);
+            assert.equal(receipt.stdout, write.content);
+          }
+        }
       }
-    } finally {
-      fs.rmSync(directory, {
-        recursive: true,
-        force: true
-      });
-    }
+    } finally { fs.rmSync(directory, {recursive: true, force: true}); }
   });
 }
 test('consumed first-line modifier carries exact immutable spans', () => {

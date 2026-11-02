@@ -1,3 +1,4 @@
+import {exactLiteralEffectProof} from './helpers/literal-effect-proof.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import{
@@ -62,6 +63,6 @@ steps:8}
 assert.equal(readFileSync(join(root,'unicode.txt'),'utf8'),'томаты α');
 assert.equal(result.stop,'final');
 assert.equal(result.transcript.find(row=>row.tool==='write')?.source_creation?.success,true);
-assert(result.transcript.some(row=>row.tool==='bash'&&JSON.parse(row.arguments).command==='cat unicode.txt'));
+assert(exactLiteralEffectProof(result,'unicode.txt','томаты α'));
 }
 ));

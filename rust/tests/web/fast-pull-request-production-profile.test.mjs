@@ -68,7 +68,7 @@ test('fast source lint is mandatory on PRs without invoking native compilation',
   assert.equal(evaluate(job.concurrency['cancel-in-progress'], context('push', 'refs/heads/main')), false);
   assert(release.jobs['pipeline-status'].needs.includes('fast-pr-lint'));
   const commands = job.steps.map(step => step.run ?? '').join('\n');
-  for (const name of ['check-readable-code','check-file-size','check-ci-speed','assemble-requirements','check-requirement-status','mirror-package-data'])
+  for (const name of ['check-readable-code','check-file-size','check-ci-speed','check-hardcoded-language','check-js-literals','assemble-requirements','check-requirement-status','mirror-package-data'])
     assert(commands.includes('node scripts/' + name + '.mjs'), name);
   assert.doesNotMatch(commands, /cargo |rust-script |build-selected-wasm/u);
   const changelog = release.jobs.changelog.steps.map(step => step.run ?? '').join('\n');

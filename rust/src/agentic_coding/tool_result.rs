@@ -491,7 +491,14 @@ impl ShellEnvelope {
         } else if self.error.is_empty() {
             self.output
         } else {
-            format!("Output: {}\nError: {}", self.output, self.error)
+            crate::seed::agentic_message(
+                "tool_result_command_streams",
+                &[
+                    ("output", &self.output),
+                    ("separator", "\n"),
+                    ("error", &self.error),
+                ],
+            )
         };
         NormalizedResult {
             payload: String::new(),

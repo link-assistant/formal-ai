@@ -42,7 +42,7 @@ test('a write-only client receives the actual target and a truthful auxiliary ga
   const final = planGeneralChangeStep(messages, ['write'], plan);
   assert.equal(final.kind, 'final');
   assert.equal(finalResult(final).disposition, FinalDisposition.Gap);
-  assert.equal(finalResult(final).origin, 'auxiliary_event_unavailable');
+  assert.equal(finalResult(final).origin, 'coding_workspace_written_unverified');
   assert.doesNotMatch(final.answer, /Completed the general change request/);
 });
 test('write-only target transport failure remains an actual failure', async () => {

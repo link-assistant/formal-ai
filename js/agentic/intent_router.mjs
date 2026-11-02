@@ -71,6 +71,7 @@ export function planEditStep(task, messages, toolNames) {
   const [target, old, replacement] = edit;
   const tool = toolFor(toolNames, Capability.Edit);
   const missingCapabilities = [Capability.Read, Capability.Edit].filter(capability => toolFor(toolNames, capability) === null);
+  if (missingCapabilities.length > 0 && toolFor(toolNames, Capability.MultiEdit) !== null) return null;
   if (missingCapabilities.length > 0) return resolvedFinalAnswer(jsonText({
     schema: 'workspace-edit-capability-gap/v1',
     target,

@@ -6,11 +6,13 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
-import { planChatStep } from '../../../js/agentic/planner.mjs';
+import { planChatStepResolved } from '../../../js/agentic/planner.mjs';
 import { composeGeneralChangePlan, PLAN_PATH } from '../../../js/agentic/general_planner.mjs';
+import { ownedCreationReadbackCommand } from '../../../js/agentic/general_execution.mjs';
 import { executeResult } from '../../../experiments/js_dogfood/drive.mjs';
 before(async () => installNodeHost(new WorkerHost()));
 const PROMPT = 'Create a file hello.txt containing exactly: Hello World';
+const LEGACY_PROMPT = 'Set the contents of hello.txt to «Hello World»';
 const TOOLS = ['read_file', 'write_file', 'run_command'];
 const aliases = { read_file: 'read', write_file: 'write', run_command: 'bash', run_shell_command: 'bash', bash: 'bash' };
 async function run(prompt, { tools = TOOLS, inject = null } = {}) {
@@ -18,16 +20,17 @@ async function run(prompt, { tools = TOOLS, inject = null } = {}) {
   const messages = [{ role: 'user', content: prompt }], calls = [];
   try {
     for (let turn = 0; turn < 12; turn += 1) {
-      const step = await planChatStep(messages, tools);
+      const step = await planChatStepResolved(messages, tools);
       assert.ok(step, 'a declared plan must progress');
-      if (step.kind === 'final') return { calls, answer: step.answer, messages,
+      if (step.kind === 'final') return { calls, answer: step.answer, result: step.result, messages,
         read: path => readFileSync(join(directory, path), 'utf8') };
       assert.equal(step.kind, 'tool_calls');
       assert.equal(step.calls.length, 1);
       const call = step.calls[0], args = JSON.parse(call.arguments);
       const override = inject?.(call, args, calls);
       const receipt = override === undefined || override === null
-        ? executeResult(directory, { ...call, tool: aliases[call.tool] }) : { content: override };
+        ? executeResult(directory, { ...call, tool: aliases[call.tool] })
+        : typeof override === 'string' ? {content: override} : override;
       const output = receipt.content;
       calls.push({ ...call, args, result: output, injected: override !== undefined && override !== null });
       const id = 'contract-' + turn;
@@ -48,7 +51,7 @@ function assertTarget(run, path, bytes) {
   assert.equal(writes.length, 1);
   assert.equal(writes[0].args.content, bytes);
   assert.equal(writes[0].actualBytes, bytes);
-  assert.ok(!run.calls.some(call => call.tool === 'read_file' && call.args.path === path));
+
 }
 const literals = [
 ['Create a file a.txt containing exactly: alpha','a.txt','alpha'],
@@ -77,27 +80,56 @@ const literals = [
 ['Generate a file named data.json containing {"ok": true}','data.json','{"ok": true}'],
 ['new file: notes.txt, contents: hello','notes.txt','hello']
 ];
-test('original literal matrices preserve target bytes after observed auxiliary I/O', async () => {
+test('original literal matrices preserve target bytes through target-only fresh readback', async () => {
   for (const [prompt, path, bytes] of literals) {
     const result = await run(prompt);
     assertTarget(result, path, bytes);
-    assert.deepEqual(result.calls.filter(call => call.args.path === PLAN_PATH).map(call => call.tool),
-      ['read_file', 'write_file', 'read_file']);
-    assert.match(result.answer, /Completed the general change request/u);
+    assert.deepEqual(result.calls.map(call => call.tool), ['write_file', 'read_file']);
+    assert.ok(result.calls.every(call => call.args.path === path));
+    assert.ok(!result.calls.some(call => call.args.path === PLAN_PATH));
+    assertVerified(result);
   }
 });
+
+function completeRawRead(path, content) {
+  return {content, source_read: {path, success: true, complete: true, format: 'raw'}};
+}
+function assertVerified(result) {
+  assert.equal(result.result?.disposition, 'finding');
+  assert.match(result.answer, /Completed the (?:file change|general change request)/u);
+}
+function assertUnverified(result) {
+  assert.notEqual(result.result?.disposition, 'finding');
+  assert.doesNotMatch(result.answer, /Completed the (?:file change|general change request)/u);
+}
 for (const [name, output, success] of [
-['explicit error', JSON.stringify({ is_error: true, content: 'cat: hello.txt: No such file or directory\nExit Code: 1' }), false],
-['nonzero status', JSON.stringify({ exit_code: 1, status: 'failed', output: 'cat: hello.txt: No such file' }), false],
-['wrong bytes', JSON.stringify({ exit_code: 0, status: 'completed', output: 'Goodbye World' }), false],
-['matching bytes', JSON.stringify({ exit_code: 0, status: 'completed', output: 'Hello World\n' }), true]
+  ['explicit error', {content: JSON.stringify({is_error: true,
+    content: 'cat: hello.txt: No such file or directory\nExit Code: 1'}),
+    is_error: true, source_read: {path: 'hello.txt', success: false,
+      complete: false, format: 'raw', error_code: 'EIO'}}, false],
+  ['nonzero status', {content: JSON.stringify({exit_code: 1, status: 'failed',
+    output: 'cat: hello.txt: No such file'}), is_error: true,
+    source_read: {path: 'hello.txt', success: false, complete: false,
+      format: 'raw', exit_code: 1}}, false],
+  ['wrong bytes', completeRawRead('hello.txt', 'Goodbye World'), false],
+  ['extra newline bytes', completeRawRead('hello.txt', 'Hello World\n'), false],
+  ['truncated matching bytes', {content: 'Hello World', source_read: {
+    path: 'hello.txt', success: true, complete: false, format: 'raw'}}, false],
+  ['foreign matching bytes', completeRawRead('other.txt', 'Hello World'), false],
+  ['matching bytes', completeRawRead('hello.txt', 'Hello World'), true]
 ]) test('original verification outcome: ' + name, async () => {
-  const result = await run(PROMPT, { inject: (_, args) => args.command === 'cat hello.txt' ? output : null });
+  const result = await run(PROMPT, {
+    inject: (call, args) => call.tool === 'read_file' && args.path === 'hello.txt'
+      ? output : null
+  });
   assertTarget(result, 'hello.txt', 'Hello World');
-  assert.equal(result.answer.includes('Completed the general change request'), success);
+  assert.equal(result.calls.filter(call => call.injected).length, 1);
+  assert.deepEqual(result.calls.map(call => call.tool), ['write_file', 'read_file']);
+  if (success) assertVerified(result);
+  else assertUnverified(result);
 });
 test('target write is retried once after an actual missing-target read, then stops', async () => {
-  const result = await run(PROMPT, { inject: (call, args) => call.tool === 'write_file' && args.path === 'hello.txt'
+  const result = await run(LEGACY_PROMPT, { inject: (call, args) => call.tool === 'write_file' && args.path === 'hello.txt'
     ? JSON.stringify({ is_error: true, error: 'Read the file before writing' }) : null });
   const targets = result.calls.filter(call => call.args.path === 'hello.txt');
   assert.deepEqual(targets.map(call => call.tool), ['write_file', 'read_file', 'write_file']);
@@ -111,7 +143,8 @@ test('write-only target succeeds with an explicit missing auxiliary receipt', as
   const result = await run(PROMPT, { tools: ['write_file'] });
   assertTarget(result, 'hello.txt', 'Hello World');
   assert.equal(result.calls.length, 1);
-  assert.match(result.answer, /not marked the change complete/u);
+  assert.equal(result.result?.disposition, 'gap');
+  assertUnverified(result);
 });
 test('write-only actual target error is terminal and never becomes completion', async () => {
   const result = await run(PROMPT, { tools: ['write_file'], inject: () => '<tool_use_error>Error writing file</tool_use_error>' });
@@ -122,7 +155,7 @@ test('write-only actual target error is terminal and never becomes completion', 
 });
 test('shell-only event persistence uses actual command stdout before target verification', async () => {
   for (const tools of [['write_file', 'run_shell_command'], ['write_file', 'bash']]) {
-    const result = await run(PROMPT, { tools });
+    const result = await run(LEGACY_PROMPT, { tools });
     assertTarget(result, 'hello.txt', 'Hello World');
     assert.ok(result.calls[0].args.command.startsWith('mkdir -p -- .formal-ai && (lock='));
     assert.ok(result.calls[0].result.includes(composeGeneralChangePlan(PROMPT).target));
@@ -135,8 +168,20 @@ test('a generic command declaration does not grant an atomic shell journal', asy
   assertTarget(result, 'hello.txt', 'Hello World');
   assert.deepEqual(result.calls.map(call => call.tool), ['write_file', 'run_command']);
   assert.equal(result.calls[0].args.path, 'hello.txt');
-  assert.equal(result.calls[1].args.command, 'cat hello.txt');
+  assert.equal(result.calls[1].args.command, ownedCreationReadbackCommand('hello.txt'));
   assert.ok(!result.calls.some(call => call.args.path === PLAN_PATH));
-  assert.match(result.answer, /not marked the change complete/u);
-  assert.ok(!result.answer.includes('Completed the general change request'));
+  assertVerified(result);
+});
+
+test('original Create failed precondition is terminal without retries or physical effects', async () => {
+  const result = await run(PROMPT, {
+    inject: call => call.tool === 'write_file'
+      ? JSON.stringify({is_error: true, error: 'Read the file before writing'}) : null
+  });
+  assert.deepEqual(result.calls.map(call => call.tool), ['write_file']);
+  assert.equal(result.calls[0].args.path, 'hello.txt');
+  assert.equal(result.calls[0].args.content, 'Hello World');
+  assert.equal(result.calls[0].actualBytes, null);
+  assert.equal(result.result?.disposition, 'failure');
+  assertUnverified(result);
 });

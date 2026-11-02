@@ -1,3 +1,4 @@
+import {postWriteCommandReceiptFor as postWriteCommandReceipt, readOnlyAttempt} from './progress_command_readback.mjs';
 // Reading a turn's tool results back out of the transcript (issue #468): a
 // port of rust/src/agentic_coding/progress.rs.
 //
@@ -83,6 +84,7 @@ export class Progress {
       progress.attempts.push({
         capability,
         source_read: observation,
+        ...(capability === Capability.Run ? {raw_receipt: raw} : {}),
         succeeded: failure === null,
         detail: failure ?? raw,
         arguments: call ? call.function.arguments : null,
@@ -369,13 +371,15 @@ export class Progress {
   }
 
   /** Exact target read after the most recent potentially mutating attempt. */
+  postWriteCommandReceiptFor(path, command) {
+    return postWriteCommandReceipt(this, path, command, qualifiedCommandAttempt, sourceReadPath);
+  }
+
   latestPostWriteReadAttemptFor(path) {
     const attempts = this.attemptsAfterLatestWrite(path) ?? [];
-    const readOnly = [Capability.Read, Capability.ReadMany, Capability.Search, Capability.Fetch,
-      Capability.Grep, Capability.Glob, Capability.ListDir, Capability.AskUser];
     for (let index = attempts.length - 1; index >= 0; index--) {
       const attempt = attempts[index];
-      if (!readOnly.includes(attempt.capability)) return null;
+      if (!readOnlyAttempt(this, attempt, qualifiedCommandAttempt, sourceReadPath)) return null;
       if (attempt.capability === Capability.Read && attempt.arguments !== null && sourceReadPath(attempt.arguments) === path) return attempt;
     }
     return null;
@@ -453,7 +457,7 @@ function firstStringField(argumentsText, keys) {
 
 /** Mirrors `fn argument_path`. */
 /** Mirrors fn source_read_path: conflicting naming fields do not bind source bytes. */
-function sourceReadPath(argumentsText) {
+export function sourceReadPath(argumentsText) {
   const value = parseJson(argumentsText);
   if (!isObject(value)) return null;
   const fields = ['path', 'filePath', 'file_path'].filter(key => Object.hasOwn(value, key)).map(key => value[key]);

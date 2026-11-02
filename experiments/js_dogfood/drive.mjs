@@ -419,6 +419,13 @@ async function driveInternal(planChatStep, dir, prompt, {
     : collection !== null && collection.every(frame => frame !== null)
       && new Set(collection.map(frame => frame.target)).size === collection.length ? collection : [];
   const createContract = createContracts[0] ?? null;
+  // A whole-file literal journal has its own custody; it never grants exclusive creation.
+  const literalPlan = composeGeneralChangePlan(prompt);
+  const literalFrame = parseWriteContract(prompt);
+  const literalJournal = createContract === null && ownsCompleteLiteralRequest(prompt)
+    && writesWholeFile(prompt) && literalPlan?.mode === 'literal_file'
+    && literalFrame !== null && literalPlan.target === literalFrame.target
+    && literalPlan.content === literalFrame.content ? literalPlan : null;
   const boundaryContract = createContract === null ? boundaryWorkItemContract(prompt,workItemEvidencePaths) : null;
   const regressionContract = boundaryContract?.mode === 'regression' ? boundaryContract : null;
   const maintenanceContract = ownedSourceMaintenanceRequest(prompt);
@@ -446,14 +453,14 @@ async function driveInternal(planChatStep, dir, prompt, {
       return Object.freeze({ dev: String(value.dev), ino: String(value.ino), canonicalPath: realpathSync(dir) });
     } catch { return null; }
   }
-  const createWorkspace = createContract === null && regressionContract === null ? null : workspaceIdentity();
+  const createWorkspace = createContract === null && regressionContract === null && literalJournal === null ? null : workspaceIdentity();
   const sameWorkspace = () => {
     const current = workspaceIdentity();
     return current !== null && createWorkspace !== null
       && current.dev === createWorkspace.dev && current.ino === createWorkspace.ino
       && current.canonicalPath === createWorkspace.canonicalPath;
   };
-  if ((createContract !== null || regressionContract !== null) && createWorkspace === null) {
+  if ((createContract !== null || regressionContract !== null || literalJournal !== null) && createWorkspace === null) {
     return { transcript, answer: null, stop: 'unsupported-create-workspace', toolsAdvertised: tools };
   }
   let semanticRegression = null;
@@ -678,6 +685,20 @@ async function driveInternal(planChatStep, dir, prompt, {
       id: `c${step}_${index}`, type: 'function', function: { name: call.tool, arguments: call.arguments },
     }));
     const authorizedAppendCalls=new Set();
+    if (literalJournal !== null) {
+      if (!sameWorkspace()) return {transcript, answer:null, stop:'changed-create-workspace', toolsAdvertised:tools};
+      const current = await maintainedResolvedStep(projectDriverHistory(messages,contracts), tools);
+      const matches = current?.kind === 'tool_calls' && calls.every(call =>
+        current.calls.some(owned => owned.tool === call.tool && owned.arguments === call.arguments));
+      if (!matches) return {transcript, answer:null, stop:'unbound-create-operation', toolsAdvertised:tools};
+      for (const call of calls) {
+        const args = argsOf(call);
+        if (call.tool !== 'write' || args?.append_mode === undefined) continue;
+        if (!atomicRecordAppend || args.append_mode !== APPEND_MODE)
+          return {transcript, answer:null, stop:'unbound-create-operation', toolsAdvertised:tools};
+        authorizedAppendCalls.add(call);
+      }
+    }
     if (createContract !== null && !sameWorkspace()) {
       return { transcript, answer: null, stop: 'changed-create-workspace', toolsAdvertised: tools };
     }

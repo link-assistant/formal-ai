@@ -51,6 +51,7 @@ test('source-selected lowest task performs real exclusive creation and closed or
     assert.deepEqual(out.results.map(item => item.runId), ['lower']);
     assert.equal(out.results[0].result.transcript.find(item => item.tool === 'write').source_creation.success, true);
     assert.equal(readFileSync(join(f.root, 'lower/result.txt'), 'utf8'), 'hello');
+    assert.equal(existsSync(join(f.root, 'lower', PLAN_PATH)), false);
     assert.equal(existsSync(join(f.root, 'higher/result.txt')), false);
     assert.equal(out.requirementsPromoted, false);
     assert.equal(out.fullAcceptance, false);
@@ -133,6 +134,8 @@ test('missing ledger binding, duplicate ownership and unknown requirement never 
 test('omitting the source-owned plan event effect remains a measured scope failure', async () => {
   const f = fixture();
   try {
+    f.manifest.cases[0].task = 'Set the contents of result.txt to exactly this content: hello';
+    f.manifest.cases[0].taskSHA256 = hash(f.manifest.cases[0].task);
     f.manifest.cases[0].allowedEffects = [join(f.root, 'lower/result.txt')];
     const out = await executeProgressivePass(f.admit(), 'undeclared-plan-first');
     assert.equal(out.accepted, false);

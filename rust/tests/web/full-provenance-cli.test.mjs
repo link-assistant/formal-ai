@@ -18,7 +18,8 @@ import {decodeTyped}from '../../../js/logging/typed-codec.mjs';
 import {verifyCallerRequestObservation}from '../../../js/provenance/fresh-recompute.mjs';
 import {retainedEvidenceBytes}from '../../../js/provenance/verify-drive.mjs';
 const git=(workspace,args)=>repositoryText(repositoryGit(workspace,args)).trimEnd();
-test('full CLI verifies a real fresh planner write and Git execution with independent pins, then refuses dirty, foreign and truncated proof',()=>{
+test('full CLI verifies a real fresh planner write and Git execution with independent pins, then refuses dirty, foreign and truncated proof',
+ {skip:process.env.FAST_PR_PROFILE==='true'},()=>{
  const directory=fileSystem.mkdtempSync(path.join(os.tmpdir(),'full-provenance-cli-'));
  const savedTrace=process.env.FORMAL_AI_PROVENANCE_TRACE;process.env.FORMAL_AI_PROVENANCE_TRACE='1';
  try{
@@ -27,7 +28,7 @@ test('full CLI verifies a real fresh planner write and Git execution with indepe
   fileSystem.writeFileSync(path.join(workspace,'base.txt'),'base\n');git(workspace,['add','base.txt']);git(workspace,['commit','-m','base']);
   const base=git(workspace,['rev-parse','HEAD']),runtime=observeRuntimeExecutable(),keys=path.join(directory,'keys');
   const command='git add -- retained.mjs '+PLAN_PATH+' && git commit -m observed --trailer "Formal-AI-Chain: $FORMAL_AI_CHAIN_PREFIX"';
-  const prompt='Create file retained.mjs containing «export const sample = 97;».';
+  const prompt='Set the contents of retained.mjs to exactly this content: «export const sample = 97;».';
   const captured=captureFreshPlannerRun({directory:path.join(directory,'capture'),workspace,prompt,steps:12,atomicRecordAppend:true,
    requests:[{prompt,steps:12},{prompt:'Run '+command,steps:6}],
    memoryFile:path.join(directory,'memory.lino'),taskURL:'https://example.invalid/tasks/full-proof-97',signing:{directory:keys}});
@@ -103,7 +104,7 @@ test('runtime request sequences retain owned data and refuse malformed, inherite
  assert.throws(()=>normalizeRuntimeRequests('first',2,[{prompt:'first',get steps(){reads++;return 2;}}]),/FreshRuntimeRequestSequenceInvalid/u);
  assert.equal(reads,0);
 });
-test('declared atomic append cannot substitute an unowned path, content or request identity in a create operation',async()=>{
+test('declared atomic append cannot substitute an unowned path, content or request identity in a Set contents operation',async()=>{
  const directory=fileSystem.mkdtempSync(path.join(os.tmpdir(),'owned-append-negative-'));
  try{
   await installNodeHost(new WorkerHost({WebAssembly:{compile(){throw Error('ProductWasmDisabled');},
@@ -120,7 +121,7 @@ test('declared atomic append cannot substitute an unowned path, content or reque
      return{...call,arguments:JSON.stringify(changed)};
     })};
    };
-   const result=await drive(malicious,workspace,'Create file guarded.mjs containing export const guarded = 29;',
+   const result=await drive(malicious,workspace,'Set the contents of guarded.mjs to exactly this content: export const guarded = 29;',
     {steps:6,atomicRecordAppend:true});
    assert.equal(result.stop,'unbound-create-operation',JSON.stringify(result));
    assert.equal(fileSystem.existsSync(path.join(workspace,'guarded.mjs')),false);
@@ -130,7 +131,21 @@ test('declared atomic append cannot substitute an unowned path, content or reque
   assert(originalAppend!==null);
   const workspace=path.join(directory,'undeclared');fileSystem.mkdirSync(workspace);
   const refused=await drive(async()=>({kind:'tool_calls',calls:[originalAppend]}),workspace,
-   'Create file guarded.mjs containing export const guarded = 29;',{steps:1,atomicRecordAppend:false});
+   'Set the contents of guarded.mjs to exactly this content: export const guarded = 29;',{steps:1,atomicRecordAppend:false});
   assert.equal(refused.stop,'undeclared-append-contract');assert.equal(fileSystem.existsSync(path.join(workspace,PLAN_PATH)),false);
+ }finally{fileSystem.rmSync(directory,{recursive:true,force:true});}
+});
+
+test('original Create with atomic append available has no journal effect',async()=>{
+ const directory=fileSystem.mkdtempSync(path.join(os.tmpdir(),'original-create-provenance-boundary-'));
+ try{
+  await installNodeHost(new WorkerHost({WebAssembly:{compile(){throw Error('ProductWasmDisabled');},
+   instantiate(){throw Error('ProductWasmDisabled');},instantiateStreaming(){throw Error('ProductWasmDisabled');}}}));
+  const result=await drive(planChatStep,directory,'Create file guarded.mjs containing export const guarded = 29;',
+   {steps:6,tools:['write','read'],atomicRecordAppend:true});
+  assert.equal(result.stop,'final',JSON.stringify(result));
+  assert.equal(fileSystem.readFileSync(path.join(directory,'guarded.mjs'),'utf8'),'export const guarded = 29;');
+  assert.deepEqual(result.transcript.map(row=>row.tool),['write','read']);
+  assert.equal(fileSystem.existsSync(path.join(directory,PLAN_PATH)),false);
  }finally{fileSystem.rmSync(directory,{recursive:true,force:true});}
 });

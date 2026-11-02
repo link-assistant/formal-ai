@@ -473,7 +473,7 @@ function envelopeResult(envelope) {
     return { ...fromPayload(envelope.output || envelope.error, null), exit_code: 0 };
   }
   const error = envelope.output && envelope.error
-    ? 'Output: ' + envelope.output + '\nError: ' + envelope.error
+    ? agenticMessage('tool_result_command_streams', {output: envelope.output, separator: '\n', error: envelope.error})
     : envelope.error || envelope.output;
   return result('', error, 'text', envelope.exit_code);
 }
