@@ -14,17 +14,17 @@
 js_rust_translation
   upstream link-foundation/meta-language
   commit eb0574d5528babd3b4aadece81590d8e2230b99b
-  modules 154
+  modules 155
   translated_items 313
-  workaround_items 33
+  workaround_items 34
   inferred_signatures 2
-  carried_items 2443
-  translated_modules 105
+  carried_items 2446
+  translated_modules 106
   fully_translated_modules 1
   refused_modules 49
 workaround array-push items 2
 workaround callback-loops items 1
-workaround import-pruning items 8
+workaround import-pruning items 9
 workaround string-methods items 25
 module js/agentic/crate/algorithm_discovery.mjs translated 6 workaround 1 inferred 0 carried 39
 module js/agentic/crate/associative_persistence.mjs translated 1 workaround 0 inferred 0 carried 7
@@ -90,7 +90,7 @@ module js/agentic/crate/meta_frame.mjs translated 6 workaround 0 inferred 0 carr
 module js/agentic/crate/meta_translate.mjs translated 1 workaround 1 inferred 0 carried 8
 module js/agentic/crate/method_registry.mjs translated 9 workaround 0 inferred 0 carried 22
 module js/agentic/crate/needs.mjs translated 1 workaround 1 inferred 0 carried 7
-module js/agentic/crate/normal_markov.mjs translated 5 workaround 0 inferred 0 carried 19
+module js/agentic/crate/normal_markov.mjs translated 4 workaround 1 inferred 0 carried 13
 module js/agentic/crate/normalization_cache.mjs translated 0 workaround 0 inferred 0 carried 2
 module js/agentic/crate/obligation_ledger.mjs translated 0 workaround 1 inferred 0 carried 36
 module js/agentic/crate/operation_owner.mjs translated 0 workaround 0 inferred 0 carried 9
@@ -110,6 +110,7 @@ module js/agentic/crate/probability.mjs translated 0 workaround 0 inferred 0 car
 module js/agentic/crate/protocol_recording.mjs translated 0 workaround 0 inferred 0 carried 2
 module js/agentic/crate/protocol_responses.mjs translated 5 workaround 0 inferred 0 carried 21
 module js/agentic/crate/protocol_responses_apply_patch.mjs translated 3 workaround 0 inferred 0 carried 3
+module js/agentic/crate/quoted_segments.mjs translated 1 workaround 0 inferred 0 carried 9
 module js/agentic/crate/rebuild_plan.mjs translated 0 workaround 0 inferred 0 carried 12
 module js/agentic/crate/recursive_execution.mjs translated 1 workaround 0 inferred 0 carried 13
 module js/agentic/crate/relative_meta_logic.mjs translated 2 workaround 0 inferred 0 carried 21
@@ -182,7 +183,7 @@ module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inf
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 26
 refusal "import of names its module does not translate" 334
 refusal "JSDoc type {…}" 215
-refusal "import from '…'" 206
+refusal "import from '…'" 208
 refusal "null" 188
 refusal "arrow function" 130
 refusal "type: unknown name (a sibling item or an import)" 117
@@ -203,7 +204,7 @@ refusal "method call .indexOf()" 31
 refusal "optional chaining" 30
 refusal "nullish coalescing" 26
 refusal "method call .replace()" 24
-refusal "export …" 22
+refusal "export …" 23
 refusal "syntax: malformed number" 21
 refusal "try statement" 19
 refusal "case test" 18
