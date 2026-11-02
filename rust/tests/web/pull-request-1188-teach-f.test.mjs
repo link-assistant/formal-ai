@@ -15,6 +15,7 @@ import { join } from 'node:path';
 
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+import {completeOwnedSourceReadFrame} from '../../../js/agentic/tool_result.mjs';
 
 let planChatStep;
 let quoteFault;
@@ -31,11 +32,7 @@ before(async () => {
 const TOOLS = ['bash', 'edit', 'glob', 'grep', 'list', 'read', 'write'];
 const pathOf = (args) => args.filePath ?? args.file_path ?? args.path;
 
-function agentRead(text) {
-  const body = text.split('\n').map((line, index) => `${String(index + 1).padStart(5, '0')}| ${line}`).join('\n');
-  return `<file>\n${body}\n\n(End of file - total ${text.split('\n').length} lines)\n</file>`;
-}
-
+const agentRead = completeOwnedSourceReadFrame;
 /** The Agent CLI's tools over an in-memory workspace; bash knows `sha256sum --`, `cat`, a word-for-word `perl -pi` and a passing `node --test`. */
 function execute(files, tool, args) {
   if (tool === 'read') {

@@ -1032,11 +1032,14 @@ export function planComputedChangeStep(task, currentTurn, toolNames, change) {
   if (read === null) return planWithTool(toolNames, Capability.Read, readArguments(target));
   // A read that came back as the client's file block is the file, whatever
   // its text says: a ledger that quotes "Error:" lines is not a missing file.
-  const missing = sourceFromAgentReadResult(read) === null && failureMessage(read, false, true) !== null;
+  const readMissing = sourceFromAgentReadResult(read) === null && failureMessage(read, false, true) !== null;
   const progress = Progress.scan(currentTurn);
   const preimage = progress.sourceReadBeforeLatestMutationFor(target, Capability.Edit);
   if (preimage === null && progress.attemptedMutationFor(target, Capability.Edit)) return planEditPreimageGap(target);
-  const source = preimage?.source ?? (missing ? '' : sourceFromReadResult(read));
+  const fresh = preimage === null ? progress.freshSourceReadFor(target) : null;
+  const completeSource = preimage?.source ?? fresh?.source ?? null;
+  const missing = completeSource === null && readMissing;
+  const source = completeSource ?? (missing ? '' : sourceFromReadResult(read));
   const scoped = scopedDecline(task, target, source);
   if (scoped !== null) return finalOrNull(scoped);
   const updated = change.compute(source, missing);
@@ -1058,7 +1061,12 @@ export function planComputedChangeStep(task, currentTurn, toolNames, change) {
   const editTool = compact ? toolFor(toolNames, Capability.Edit) : null;
   if (compact && editTool) {
     const [old, next] = compact;
-    if (resultForEdit(currentTurn, target, old, next) === null) return planOne(editTool, editArguments(target, old, next));
+    if (resultForEdit(currentTurn, target, old, next) === null) {
+      if (!progress.attemptedMutationFor(target, Capability.Edit) && fresh === null) {
+        return planWithTool(toolNames, Capability.Read, readArguments(target));
+      }
+      return planOne(editTool, editArguments(target, old, next));
+    }
     return planEditFailure(task, currentTurn, editTool, editArguments(target, old, next))
       ?? planEditReadVerification(task, currentTurn, toolNames, { target, expected: updated, intent, slots }, editArguments(target, old, next))
       ?? planDigestVerification(task, currentTurn, toolNames, { target, expected: updated, intent, slots });

@@ -291,3 +291,59 @@ impl Progress {
         unavailable()
     }
 }
+
+/// Current target Read, stopping at any observed potential effect.
+pub(in crate::agentic_coding) fn fresh_source_read_attempt_for<'a>(
+    progress: &'a Progress,
+    path: &str,
+) -> Option<&'a ToolAttempt> {
+    for attempt in progress.attempts.iter().rev() {
+        if !read_only_attempt(progress, attempt) {
+            return None;
+        }
+        if attempt.capability == Capability::Read
+            && attempt
+                .arguments
+                .as_deref()
+                .and_then(source_read_path)
+                .as_deref()
+                == Some(path)
+        {
+            return Some(attempt);
+        }
+    }
+    None
+}
+
+impl Progress {
+    pub(in crate::agentic_coding) fn fresh_source_read_for(
+        &self,
+        path: &str,
+    ) -> Option<&crate::agentic_coding::tool_result::SourceReadObservation> {
+        let attempt = fresh_source_read_attempt_for(self, path)?;
+        if !attempt.succeeded {
+            return None;
+        }
+        let arguments: serde_json::Value =
+            serde_json::from_str(attempt.arguments.as_deref()?).ok()?;
+        let frame = self.latest_attempt_for(Capability::Read, &arguments)?;
+        if !frame.matches_receipt(attempt.tool.as_deref()?, &attempt.detail) {
+            return None;
+        }
+        let index = self
+            .qualified_attempts
+            .iter()
+            .position(|candidate| std::ptr::eq(candidate, frame))?;
+        if self.qualified_attempts[index + 1..]
+            .iter()
+            .any(|candidate| {
+                !candidate.has_receipt() && !read_only_capability(candidate.capability())
+            })
+        {
+            return None;
+        }
+        attempt.source_observation().filter(|observed| {
+            observed.error.is_none() && observed.complete && observed.source.is_some()
+        })
+    }
+}

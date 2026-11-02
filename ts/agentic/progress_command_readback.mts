@@ -90,3 +90,14 @@ export function sourceReadBeforeLatestMutationFor(progress, path, capability, qu
   }
   return null;
 }
+
+/** Current target Read, stopping at any observed potential effect. */
+export function freshSourceReadAttemptFor(progress, path, qualifyCommand, pathFromArguments) {
+  for (let index = progress.attempts.length - 1; index >= 0; index--) {
+    const attempt = progress.attempts[index];
+    if (!readOnlyAttempt(progress, attempt, qualifyCommand, pathFromArguments)) return null;
+    if (attempt.capability === Capability.Read && attempt.arguments !== null
+      && pathFromArguments(attempt.arguments) === path) return attempt;
+  }
+  return null;
+}

@@ -1,4 +1,4 @@
-import {postWriteCommandReceiptFor as postWriteCommandReceipt, postMutationReadStateFor as mutationReadState, sourceReadBeforeLatestMutationFor as mutationPreimage, readOnlyAttempt, readOnlyCapability} from './progress_command_readback.mjs';
+import {postWriteCommandReceiptFor as postWriteCommandReceipt, postMutationReadStateFor as mutationReadState, freshSourceReadAttemptFor as freshReadAttempt, sourceReadBeforeLatestMutationFor as mutationPreimage, readOnlyAttempt, readOnlyCapability} from './progress_command_readback.mjs';
 // Reading a turn's tool results back out of the transcript (issue #468): a
 // port of rust/src/agentic_coding/progress.rs.
 //
@@ -373,6 +373,18 @@ export class Progress {
   /** Exact target read after the most recent potentially mutating attempt. */
   postWriteCommandReceiptFor(path, command) {
     return postWriteCommandReceipt(this, path, command, qualifiedCommandAttempt, sourceReadPath);
+  }
+
+  freshSourceReadFor(path) {
+    const attempt = freshReadAttempt(this, path, qualifiedCommandAttempt, sourceReadPath);
+    if (attempt === null || !attempt.succeeded) return null;
+    const frame = qualifiedToolAttempt(this, Capability.Read, JSON.parse(attempt.arguments));
+    if (frame?.binding !== 'exact' || !frame.receiptPresent || frame.declaredTool !== attempt.tool
+      || frame.detail !== attempt.detail) return null;
+    const frames = qualifiedProgressFrames.get(this) ?? [], index = frames.indexOf(frame);
+    if (index < 0 || frames.slice(index + 1).some(candidate => !candidate.receiptPresent && !readOnlyCapability(candidate.capability))) return null;
+    const observed = attempt.source_read;
+    return observed?.error === null && observed.complete && typeof observed.source === 'string' ? observed : null;
   }
 
   attemptedMutationFor(path, capability) {

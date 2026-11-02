@@ -28,7 +28,7 @@ pub(in crate::agentic_coding) fn plan_computed_change_step(
     };
     // A read that came back as the client's file block is the file, whatever
     // its text says: a ledger that quotes error lines is not a missing file.
-    let missing = crate::agentic_coding::code_artifact::source_from_agent_read_result(&read)
+    let read_missing = crate::agentic_coding::code_artifact::source_from_agent_read_result(&read)
         .is_none()
         && crate::agentic_coding::tool_result::failure_message(&read, false, true).is_some();
     let progress = crate::agentic_coding::progress::Progress::scan(current_turn);
@@ -36,15 +36,22 @@ pub(in crate::agentic_coding) fn plan_computed_change_step(
     if preimage.is_none() && progress.attempted_mutation_for(target, Capability::Edit) {
         return Some(plan_edit_preimage_gap(target, result));
     }
-    let source = preimage
-        .and_then(|observed| observed.source.clone())
-        .unwrap_or_else(|| {
-            if missing {
-                String::new()
-            } else {
-                source_from_read_result(&read)
-            }
-        });
+    let fresh = if preimage.is_none() {
+        progress.fresh_source_read_for(target)
+    } else {
+        None
+    };
+    let complete_source = preimage
+        .or(fresh)
+        .and_then(|observed| observed.source.clone());
+    let missing = complete_source.is_none() && read_missing;
+    let source = complete_source.unwrap_or_else(|| {
+        if missing {
+            String::new()
+        } else {
+            source_from_read_result(&read)
+        }
+    });
 
     if let Some(answer) = crate::agentic_coding::edit_scope::scoped_decline(task, target, &source) {
         return Some(AgenticPlan::Final(answer));
@@ -94,6 +101,10 @@ pub(in crate::agentic_coding) fn plan_computed_change_step(
         && let Some(tool) = tool_for(tool_names, Capability::Edit)
     {
         if result_for_edit(current_turn, target, &old, &new).is_none() {
+            if !progress.attempted_mutation_for(target, Capability::Edit) && fresh.is_none() {
+                let read_tool = tool_for(tool_names, Capability::Read)?;
+                return Some(plan_one(read_tool, read_arguments(target)));
+            }
             return Some(plan_one(tool, edit_arguments(target, &old, &new)));
         }
         if let Some(failed) = plan_edit_failure(
