@@ -6,7 +6,7 @@ import {tmpdir} from 'node:os';
 import {WorkerHost} from '../../../js/server/worker-host.mjs';
 import {installNodeHost} from '../../../js/agentic/node-host.mjs';
 import {composeEditRequest} from '../../../js/agentic/write_request.mjs';
-import {goalLedger} from '../../../js/agentic/planner/owned_goals.mjs';
+import {goalLedger, ownsCompleteEditRequest} from '../../../js/agentic/planner/owned_goals.mjs';
 import {planChatStepResolved} from '../../../js/agentic/planner.mjs';
 import {drive} from '../../../experiments/js_dogfood/drive.mjs';
 before(async()=>installNodeHost(new WorkerHost()));
@@ -42,10 +42,18 @@ test('complete literal payload retains edit-looking prose without extra ownershi
   assert.equal(goalLedger(prompt),null);
 });
 
-test('partial literal collision does not consume an independent unowned tail',()=>{
+test('partial literal collision does not consume an independent unowned tail',async context=>{
   const prompt=`In source.mjs replace «${old}» with «${replacement}» and deploy production`;
   const goals=goalLedger(prompt);
   assert.ok(goals?.some(goal=>goal.kind==='unsupported'));
+  const root=fs.mkdtempSync(join(tmpdir(),'formal-ai-unowned-edit-tail-'));
+  context.after(()=>fs.rmSync(root,{recursive:true,force:true}));
+  fs.writeFileSync(join(root,'source.mjs'),old);
+  const result=await drive(planChatStepResolved,root,prompt,{tools:['read','edit','write'],steps:4});
+  assert.equal(fs.readFileSync(join(root,'source.mjs'),'utf8'),old);
+  const plan=await planChatStepResolved([{role:'user',content:prompt}],['read','edit','write']);
+  assert.equal(plan.result?.disposition,'gap',JSON.stringify(plan));
+  assert.equal(result.transcript.some(call=>['edit','write'].includes(call.tool)),false);
 });
 
 test('source-edit metadata follows outer proof and quoted filename causes no write', async context => {
@@ -77,5 +85,25 @@ test('source-edit metadata follows outer proof and quoted filename causes no wri
   for (const call of result.transcript) {
     const args = JSON.parse(call.arguments);
     assert.notEqual(args.path ?? args.filePath ?? args.file_path, 'b.txt');
+  }
+});
+
+test('seeded edit modifiers cannot authorize unknown or quoted prologues and tails',async context=>{
+  const edit='In source.mjs replace «old» with «new»';
+  assert.equal(ownsCompleteEditRequest('Then '+edit+'.'),true);
+  for(const prefix of ['Reviewer says: ','«Then» ','A provider example: '])
+    assert.equal(ownsCompleteEditRequest(prefix+edit+'.'),false);
+  const root=fs.mkdtempSync(join(tmpdir(),'formal-ai-closed-edit-tail-'));
+  context.after(()=>fs.rmSync(root,{recursive:true,force:true}));
+  fs.writeFileSync(join(root,'source.mjs'),'old');
+  for(const cue of ['', 'everywhere ', 'in all occurrences ']){
+    const request=edit+' '+cue+'and deploy production';
+    assert.equal(ownsCompleteEditRequest(request),false);
+    assert.ok(goalLedger(request)?.some(goal=>goal.kind==='unsupported'));
+    const result=await drive(planChatStepResolved,root,request,{tools:['read','edit','write'],steps:4});
+    assert.equal(fs.readFileSync(join(root,'source.mjs'),'utf8'),'old');
+    assert.equal(result.transcript.some(call=>['edit','write'].includes(call.tool)),false);
+    const plan=await planChatStepResolved([{role:'user',content:request}],['read','edit','write']);
+    assert.equal(plan.result?.disposition,'gap',JSON.stringify(plan));
   }
 });

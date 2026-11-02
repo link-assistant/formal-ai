@@ -32,7 +32,7 @@ fn without_tail(text: &str) -> &str {
 ///
 /// Each clause loses the commas and seeded joiners that led into the next;
 /// `None` unless there are at least two (mirrors `replaceClauses`).
-fn replace_clauses(request: &str) -> Option<Vec<String>> {
+pub(super) fn replace_clauses(request: &str) -> Option<Vec<String>> {
     let segments = quoted_segment_spans(request);
     let actions = bare_surfaces(seed::ROLE_FILE_EDIT_ACTION_CUE);
     let joiners = bare_surfaces("file_edit_joiner_cue");

@@ -12,6 +12,8 @@
 8. Keep source-policy checks inexpensive on pull requests: use the JavaScript hardcoded-language and literal-policy twins without compiling Rust. Retain full integration checks for main or explicit qualification.
 9. Bound local Formal AI invocations externally. An event-loop timer cannot interrupt synchronous planning. After a timeout or missing trace, inspect actual owned effects before retrying; never assume no changes occurred.
 
+10. Capture and replay execute the same request-authority initialization. Recorded dispatch must match the independently maintained planner before a result is accepted. Loaded-source identity checks retain exact URL, format and digest binding; mismatches report bounded project-relative identities without source contents or personal paths.
+
 ## Evidence and implementation boundaries
 
 Main commit 8071f191286eab5889d600c13dabfefc2f58efa5 exposed a write-effect ladder failure, a new literal-policy debt and full-suite compatibility/transaction failures. Physical effects, provider errors, freshness, atomic append custody and all baseline assertions are retained. Journal-specific fixtures use their applicable owner; original Create coverage remains separate.

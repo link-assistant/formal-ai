@@ -11,7 +11,7 @@ pub(in crate::agentic_coding) struct PostWriteCommandReceipt<'a> {
 
 pub(in crate::agentic_coding) fn owned_creation_readback_command(target: &str) -> String {
     crate::seed::agentic_message(
-        "literal_create_shell_readback",
+        "literal-create-shell-readback",
         &[("path", &shell_quote(target))],
     )
 }

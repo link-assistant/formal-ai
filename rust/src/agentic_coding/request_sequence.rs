@@ -31,7 +31,7 @@ const JOINER_ROLE: &str = "file_edit_joiner_cue";
 
 /// The request's sentences when the first is a seeded shell intent and every
 /// later one edits a file the first names (mirrors `requestSequence`).
-fn request_sequence(task: &str) -> Option<Vec<String>> {
+pub(super) fn request_sequence(task: &str) -> Option<Vec<String>> {
     let parts: Vec<String> = super::shell_command_policy::sentences(task)
         .iter()
         .map(|sentence| sentence.text.to_owned())

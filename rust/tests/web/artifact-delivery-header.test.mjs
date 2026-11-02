@@ -172,7 +172,7 @@ for (const steps of [8, 16]) {
       const fields = effect.split(String.fromCharCode(10));
       for (const field of ['node_path=2.1.2.1.1', 'node_depth=5', 'node_kind=leaf']) assert.ok(fields.includes(field));
       const result = fields.find((line) => line.startsWith('result=')).slice(7);
-      assert.ok(result.trim().split(/s+/u).length >= 4);
+      assert.ok(result.trim().split(/\s+/u).length >= 4);
       assert.ok(result.includes('FORMAL_AI_HOW_SOURCE_CACHE_DIR'));
       assert.equal(proof.split(String.fromCharCode(10))[0], 'node_path=2.1.2.1.1');
       assert.ok(proof.includes('FORMAL_AI_HOW_SOURCE_CACHE_DIR'));
@@ -207,6 +207,50 @@ test('typed evidence routing follows renamed source, effect and proof operands',
   assert.ok(finding.split(/\s+/u).length>=4);assert.ok(finding.includes('FORMAL_AI_HOW_SOURCE_CACHE_DIR'));
   assert.equal(support.split('\n')[0],'node_path=2.1.2.1.1');assert.ok(support.includes('FORMAL_AI_HOW_SOURCE_CACHE_DIR'));
   assert.ok(result.transcript.some(item=>item.tool==='edit'));assert.equal(fs.existsSync(join(directory,'agent-ladder-effects/node-2.1.2.1.1.lino')),false);
+ }finally{fs.rmSync(directory,{recursive:true,force:true});}
+});
+
+test('typed evidence source reads never authorize foreign calls or changed edit bytes',async()=>{
+ const fs=await import('node:fs'),{tmpdir}=await import('node:os'),{join,dirname}=await import('node:path');
+ const {drive}=await import('../../../experiments/js_dogfood/drive.mjs');
+ const task=fs.readFileSync(new URL('../fixtures/l21-original-task.txt',import.meta.url),'utf8');
+ const source=fs.readFileSync(new URL('../fixtures/l21-original-source.txt',import.meta.url),'utf8');
+ const target='rust/src/solver_handler_how_synthesis.rs';
+ const directory=fs.mkdtempSync(join(tmpdir(),'formal-ai-typed-evidence-substitution-'));
+ try{
+  fs.mkdirSync(dirname(join(directory,target)),{recursive:true});fs.writeFileSync(join(directory,target),source);
+  fs.writeFileSync(join(directory,'foreign.txt'),'unrelated fixture bytes');
+  const calls=[
+   {tool:'read',arguments:JSON.stringify({path:'foreign.txt'})},
+   {tool:'edit',arguments:JSON.stringify({path:target,old_string:'FORMAL_AI_SOURCE_CACHE_DIR',new_string:'FORGED_CACHE_DIR'})}
+  ];
+  for(const call of calls){
+   let invoked=0;
+   const result=await drive(async()=>{invoked++;return {kind:'tool_calls',calls:[call]};},directory,task,{steps:2});
+   assert.equal(invoked,1,'the source-bound prerequisite was admitted before the substituted call was refused');
+   assert.equal(result.stop,'unbound-read-operation');
+   assert.deepEqual(result.transcript,[]);
+   assert.equal(fs.readFileSync(join(directory,target),'utf8'),source);
+   assert.equal(fs.existsSync(join(directory,'agent-ladder-effects/node-2.1.2.1.1.lino')),false);
+   assert.equal(fs.existsSync(join(directory,'.agent-ladder/node-2.1.2.1.1-proof.md')),false);
+  }
+ }finally{fs.rmSync(directory,{recursive:true,force:true});}
+});
+
+test('an untyped creation cannot borrow a callback source-read prerequisite',async()=>{
+ const fs=await import('node:fs'),{tmpdir}=await import('node:os'),{join}=await import('node:path');
+ const {drive}=await import('../../../experiments/js_dogfood/drive.mjs');
+ const directory=fs.mkdtempSync(join(tmpdir(),'formal-ai-untyped-source-prerequisite-'));
+ try{
+  fs.writeFileSync(join(directory,'source.txt'),'unchanged bytes');
+  let invoked=0;
+  const result=await drive(async()=>{invoked++;return {kind:'tool_calls',calls:[
+   {tool:'read',arguments:JSON.stringify({path:'source.txt'})}
+  ]};},directory,'Create unowned.txt by transforming an unspecified source.',{steps:2});
+  assert.equal(invoked,0);
+  assert.deepEqual(result.transcript,[]);
+  assert.equal(fs.readFileSync(join(directory,'source.txt'),'utf8'),'unchanged bytes');
+  assert.equal(fs.existsSync(join(directory,'unowned.txt')),false);
  }finally{fs.rmSync(directory,{recursive:true,force:true});}
 });
 

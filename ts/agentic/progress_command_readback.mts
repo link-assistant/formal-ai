@@ -6,7 +6,7 @@ import {quoteShellWord} from './portable/string_contracts.mjs';
 
 /** One seeded command builder shared by execution and freshness classification. */
 export function ownedCreationReadbackCommand(target) {
-  return agenticMessage('literal_create_shell_readback', {path: quoteShellWord(target)});
+  return agenticMessage('literal-create-shell-readback', {path: quoteShellWord(target)});
 }
 export function readOnlyCapability(capability) {
   return [Capability.Read, Capability.ReadMany, Capability.Search, Capability.Fetch,

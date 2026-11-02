@@ -154,7 +154,7 @@ pub(super) fn plan_owned_creation_step(
     }
     let Some(written) = progress.successful_write_content_for(&plan.target) else {
         return Some(if progress.attempted_write_for(&plan.target) {
-            let unobserved = crate::seed::agentic_message("literal_create_write_unobserved", &[]);
+            let unobserved = crate::seed::agentic_message("literal-create-write-unobserved", &[]);
             let detail = progress
                 .latest_failure()
                 .map(|attempt| {
@@ -189,8 +189,8 @@ pub(super) fn plan_owned_creation_step(
     }
     if progress.attempted_read_after_latest_write_for(&plan.target) {
         let observed = progress.source_read_after_latest_write_for(&plan.target);
-        let incomplete = crate::seed::agentic_message("literal_create_read_incomplete", &[]);
-        let unbound = crate::seed::agentic_message("literal_create_receipt_unbound", &[]);
+        let incomplete = crate::seed::agentic_message("literal-create-read-incomplete", &[]);
+        let unbound = crate::seed::agentic_message("literal-create-receipt-unbound", &[]);
         let latest_detail = progress
             .latest_failure()
             .map(|attempt| attempt.detail.as_str());

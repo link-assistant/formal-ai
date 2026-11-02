@@ -217,7 +217,8 @@ test('optional result names bind unique call IDs without changing legacy attempt
   assert.equal(qualifiedToolAttempt(progress,Capability.Run,JSON.parse(call.arguments)).binding,'exact');
   assert.deepEqual(['provider','approval','effects'].map(key=>qualifiedToolAttempt(progress,Capability.Run,JSON.parse(call.arguments))[key]),['Unknown','Unknown','Unknown']);
   assert.equal(progress.attempts[0].succeeded,true);
-  assert.deepEqual(Object.keys(progress.attempts[0]),['capability','source_read','succeeded','detail','arguments','tool']);
+  assert.deepEqual(Object.keys(progress.attempts[0]),['capability','source_read','raw_receipt','succeeded','detail','arguments','tool']);
+  assert.equal(progress.attempts[0].raw_receipt,messages.at(-1).content);
   assert.equal(workspaceDiscoveryStep(residual,progress,tools,originalNeed).observationKind,'no_candidate');
 });
 test('plain frames, injected methods and mutation cannot replace scanner snapshots', () => {
