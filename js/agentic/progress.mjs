@@ -368,7 +368,29 @@ export class Progress {
     return index === null ? null : this.attempts.slice(index + 1);
   }
 
-  /** Mirrors `Progress::successful_write_content_for`. */
+  /** Exact target read after the most recent potentially mutating attempt. */
+  latestPostWriteReadAttemptFor(path) {
+    const attempts = this.attemptsAfterLatestWrite(path) ?? [];
+    const readOnly = [Capability.Read, Capability.ReadMany, Capability.Search, Capability.Fetch,
+      Capability.Grep, Capability.Glob, Capability.ListDir, Capability.AskUser];
+    for (let index = attempts.length - 1; index >= 0; index--) {
+      const attempt = attempts[index];
+      if (!readOnly.includes(attempt.capability)) return null;
+      if (attempt.capability === Capability.Read && attempt.arguments !== null && sourceReadPath(attempt.arguments) === path) return attempt;
+    }
+    return null;
+  }
+
+  attemptedReadAfterLatestWriteFor(path) {
+    return this.latestPostWriteReadAttemptFor(path) !== null;
+  }
+
+  /** Failed or missing latest receipts cannot reuse an earlier observation. */
+  sourceReadAfterLatestWriteFor(path) {
+    return this.latestPostWriteReadAttemptFor(path)?.source_read ?? null;
+  }
+
+  /** Content supplied to the latest successful write. */
   successfulWriteContentFor(path) {
     for (let index = this.attempts.length - 1; index >= 0; index -= 1) {
       const attempt = this.attempts[index];

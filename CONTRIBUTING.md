@@ -2,7 +2,7 @@
 
 ## Development through Formal AI
 
-Follow [VISION.md](VISION.md): give small natural-language tasks to JavaScript Formal AI, let it execute actual tools, and increase difficulty after verified success.
+Follow [VISION.md](VISION.md): perform all development task actions through JavaScript Formal AI, including exploration, shell commands, tests and verification as well as edits. Give small natural-language tasks, let it execute actual tools, add focused regressions for observed failures, repair reusable causes and retry unchanged tasks before increasing difficulty.
 Retain requests, runtime and source identities, tool calls, failures, diffs and independent checks.
 Supplied patches, scripts, generators and literal replacements earn zero autonomous-authorship credit.
 Report unsupported work and terminal effects honestly; record externally authored bootstraps separately.

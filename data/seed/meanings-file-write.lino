@@ -45,6 +45,7 @@ meanings
     lexeme en
       words "containing exactly …" "containing …" "with …" "with content …" "with text …" "with the content …"
       words "with exactly this content …" "contents …" "with the text …" "with the following …" "whose content is …"
+      words "with the following exact content …" "with the following content …"
       words "whose contents are …" "that says …" "that contains …" "which says …" "saying …"
     lexeme ru
       words "с точно таким содержанием …" "с текстом …" "с содержанием …" "с содержимым …" "содержащий …" "содержащей …"

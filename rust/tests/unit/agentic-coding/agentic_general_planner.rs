@@ -19,6 +19,131 @@ Read the repository, reproduce the requirement with tests, implement the change,
 through the Formal AI Agent CLI.";
 
 #[test]
+fn grounded_edit_missing_capabilities_are_explicit_before_symbolic_fallthrough() {
+    let open = char::from_u32(171).unwrap();
+    let close = char::from_u32(187).unwrap();
+    for (target, before, after) in [
+        (
+            "snippet.mjs",
+            r#"const label = "before";"#,
+            r#"const label = "after";"#,
+        ),
+        (
+            "nested/held-out.mjs",
+            r#"const memory = "old";"#,
+            r#"const memory = "new";"#,
+        ),
+    ] {
+        let prompt = format!(
+            "In {target}, replace {open}{before}{close} with {open}{after}{close}. Preserve all other content."
+        );
+        let messages = vec![ChatMessage::user(&prompt)];
+        for (tools, reason, missing) in [
+            (
+                &["bash"][..],
+                "EditToolUnavailable",
+                serde_json::json!(["read", "edit"]),
+            ),
+            (
+                &["edit"][..],
+                "ReadToolUnavailable",
+                serde_json::json!(["read"]),
+            ),
+            (
+                &["bash", "edit"][..],
+                "ReadToolUnavailable",
+                serde_json::json!(["read"]),
+            ),
+        ] {
+            for _ in 0..2 {
+                let AgenticPlan::Final(answer) = plan_chat_step(&messages, tools)
+                    .expect("a grounded edit owns a capability gap")
+                else {
+                    panic!("missing edit capabilities must not emit a tool call");
+                };
+                let gap: serde_json::Value =
+                    serde_json::from_str(&answer).expect("structured capability gap");
+                assert_eq!(gap["schema"], "workspace-edit-capability-gap/v1");
+                assert_eq!(gap["target"], target);
+                assert_eq!(gap["reason"], reason);
+                assert_eq!(gap["missingCapabilities"], missing);
+                assert_eq!(gap["complete"], false);
+                assert_eq!(gap["verified"], false);
+            }
+        }
+        let AgenticPlan::ToolCalls(calls) =
+            plan_chat_step(&messages, &["read", "edit"]).expect("supported edit plan")
+        else {
+            panic!("supported edit must first read its source");
+        };
+        assert_eq!(calls.len(), 1);
+        assert_eq!(calls[0].tool, "read");
+        let arguments: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
+        let path = arguments
+            .get("path")
+            .or_else(|| arguments.get("filePath"))
+            .or_else(|| arguments.get("file_path"))
+            .and_then(serde_json::Value::as_str);
+        assert_eq!(path, Some(target));
+    }
+}
+
+#[test]
+fn declared_literal_creation_verifies_only_its_owned_target() {
+    for (target, content) in [
+        (
+            "artifacts/source-case.rs",
+            "// Unicode λ and exact whitespace\npub fn answer() {}\n",
+        ),
+        (
+            "notes/unseen.md",
+            "# Complete literal\n\nPreserve every character.\n",
+        ),
+    ] {
+        let prompt = format!("Create {target} with the following exact content: «{content}».");
+        let mut workspace = observed_plan_tools::ToolWorkspace::new(&prompt);
+        let tools = ["read", "write"];
+        let mut messages = vec![ChatMessage::user(&prompt)];
+        let mut observed_tools = Vec::new();
+        let mut completed = false;
+        for turn in 0..5 {
+            match plan_chat_step(&messages, &tools).expect("owned literal plan") {
+                AgenticPlan::ToolCalls(calls) => {
+                    assert_eq!(calls.len(), 1);
+                    let call = &calls[0];
+                    let arguments: serde_json::Value =
+                        serde_json::from_str(&call.arguments).unwrap();
+                    let path = arguments
+                        .get("path")
+                        .or_else(|| arguments.get("file_path"))
+                        .or_else(|| arguments.get("filePath"))
+                        .and_then(serde_json::Value::as_str);
+                    assert_eq!(path, Some(target));
+                    observed_tools.push(call.tool.clone());
+                    let id = format!("literal-target-{turn}");
+                    let observation = workspace.execute(&id, call);
+                    assert!(!observation.is_error);
+                    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+                        &id,
+                        &call.tool,
+                        call.arguments.clone(),
+                    )]));
+                    messages.push(observation);
+                }
+                AgenticPlan::Final(_) => {
+                    assert_eq!(observed_tools, ["write", "read"]);
+                    assert_eq!(workspace.read(target).unwrap(), content);
+                    assert!(workspace.read(PLAN_PATH).is_err());
+                    completed = true;
+                    break;
+                }
+            }
+        }
+        assert!(completed, "bounded literal creation must finish");
+    }
+}
+
+#[test]
 fn agentic_general_planner_composes_capability_steps_and_verification() {
     let plan = compose_general_change_plan(EN_TASK).expect("general plan");
     assert!(plan.steps.len() >= 3);

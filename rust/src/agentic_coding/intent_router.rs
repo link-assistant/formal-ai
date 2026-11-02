@@ -7,9 +7,9 @@
 //! [`super::planner::plan_chat_step`] runs for an arbitrary request: each fires
 //! only when the request carries that capability's intent (recovered entirely
 //! from the seed lexicon, never from hardcoded natural language — CONTRIBUTING
-//! §2) *and* the CLI actually advertised a matching tool, otherwise it returns
-//! [`None`] so the planner keeps looking and ultimately falls through to the
-//! prose answer rather than fabricating a call the client cannot honour.
+//! §2). A grounded edit whose required Read/Edit capability is absent returns
+//! an explicit capability gap; it never falls through to an unrelated prose
+//! answer or fabricates a call the client cannot honour.
 //!
 //! The probes share the planner's own step primitives ([`super::planner`]'s
 //! `Progress`, `tool_for`, `plan_one`) so routing here never
@@ -118,10 +118,9 @@ fn tool_result_exists(messages: &[ChatMessage], tool_name: &str) -> bool {
 /// read the target first when a read tool is available, then emit a real edit
 /// `tool_call` that replaces the recovered old text with the new text. Reading
 /// first satisfies editing clients that enforce read-before-write and grounds the
-/// replacement in the current file. Returns [`None`] when there is no edit intent
-/// or no edit tool was advertised, so the planner keeps looking (and ultimately
-/// falls through to the prose answer) rather than fabricating a call the client
-/// cannot honour.
+/// replacement in the current file. Returns [`None`] when there is no edit intent.
+/// A grounded edit with missing Read/Edit capabilities returns a typed gap
+/// rather than falling through to an unrelated answer.
 ///
 /// The `(target, old, new)` triple is recovered entirely from the seed lexicon
 /// (the `file_edit_*` roles), not from any pinned phrasing, and the edit tool's
@@ -131,8 +130,36 @@ pub(super) fn plan_edit_step(
     task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
+    result: &mut Option<super::final_result::FinalResult>,
 ) -> Option<AgenticPlan> {
     let (target, old, new) = compose_edit_request(task)?;
+    let missing_capabilities = [(Capability::Read, "read"), (Capability::Edit, "edit")]
+        .into_iter()
+        .filter_map(|(capability, name)| tool_for(tool_names, capability).is_none().then_some(name))
+        .collect::<Vec<_>>();
+    if !missing_capabilities.is_empty() {
+        let reason = if tool_for(tool_names, Capability::Edit).is_none() {
+            "EditToolUnavailable"
+        } else {
+            "ReadToolUnavailable"
+        };
+        return Some(super::final_result::record(
+            AgenticPlan::Final(
+                json!({
+                    "schema": "workspace-edit-capability-gap/v1",
+                    "target": target,
+                    "reason": reason,
+                    "missingCapabilities": missing_capabilities,
+                    "verified": false,
+                    "complete": false
+                })
+                .to_string(),
+            ),
+            super::final_result::FinalDisposition::Gap,
+            "workspace-edit-capability-gap",
+            result,
+        ));
+    }
     let tool = tool_for(tool_names, Capability::Edit)?;
     let progress = Progress::scan(messages);
     if progress.done(Capability::Edit) {

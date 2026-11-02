@@ -1,3 +1,36 @@
+import { ownedDeclaredCreateFrame } from './planner/owned_goals.mjs';
+import { renderSeededOutcome } from './code_task.mjs';
+/** A complete creation owns only its target and a fresh independent readback. */
+function planOwnedCreationStep(plan, progress, toolNames) {
+  if (plan.mode !== GeneralPlanMode.LiteralFile) return null;
+  const frame = ownedDeclaredCreateFrame(plan.goal);
+  if (frame === null || frame.target !== plan.target || frame.content !== plan.content) return null;
+  const finish = (intent, disposition) => resolvedFinalAnswer(
+    renderSeededOutcome(intent, plan.goal, plan.target) ?? plan.target,
+    disposition, intent
+  );
+  const written = progress.successfulWriteContentFor(plan.target);
+  if (written === null) {
+    if (progress.attemptedWriteFor(plan.target)) return finish('coding_workspace_verification_failed', FinalDisposition.Failure);
+    const write = toolFor(toolNames, Capability.Write);
+    return write === null
+      ? finish('coding_workspace_written_unverified', FinalDisposition.Gap)
+      : planOne(write, writeArguments(plan.target, plan.content));
+  }
+  if (written !== plan.content) return finish('coding_workspace_verification_failed', FinalDisposition.Failure);
+  if (!progress.attemptedReadAfterLatestWriteFor(plan.target)) {
+    const read = toolFor(toolNames, Capability.Read);
+    return read === null
+      ? finish('coding_workspace_written_unverified', FinalDisposition.Gap)
+      : planOne(read, readArguments(plan.target));
+  }
+  const observed = progress.sourceReadAfterLatestWriteFor(plan.target);
+  if (observed === null || observed.error !== null || !observed.complete || observed.source !== plan.content) {
+    return finish('coding_workspace_verification_failed', FinalDisposition.Failure);
+  }
+  return finish('coding_workspace_effect_observed', FinalDisposition.Finding);
+}
+
 import {planRepositoryDocumentation} from './repository_documentation.mjs';
 import {planSourceDocumentationStep} from './source_documentation.mjs';
 import {planWorkItemBoundaryStep} from './work_item_boundary_candidate.mjs';
@@ -52,6 +85,8 @@ function generalChangeStep(messages, toolNames, plan, resolvedFromWorkItem) {
   const guarded = guardedStep(plan, messages, toolNames);
   if (guarded !== null) return guarded;
   const progress = Progress.scan(messages);
+  const creation = planOwnedCreationStep(plan, progress, toolNames);
+  if (creation !== null) return creation;
   if (plan.mode === GeneralPlanMode.RepositoryWorkItem) {
     const objective = repositoryWorkItemObjective(plan, progress);
     if (objective !== null) {
