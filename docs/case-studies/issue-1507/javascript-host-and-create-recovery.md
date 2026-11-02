@@ -23,7 +23,7 @@ The exact edit request then produced the explicit missing Read/Edit gap with zer
 
 ## CI compatibility
 
-The first PR run exposed legacy trace assertions that required shell cat verification or auxiliary journaling for complete literal creation. The physical artifacts already matched the unchanged requests. Creation regressions now require an exclusive target write followed by complete, exact, target-bound raw readback. Original multilingual prompts, byte preservation, destination absence and refusal controls remain. Journal-custody regressions use the applicable Set-contents replacement owner and retain every failed/unobserved-receipt refusal and real append/readback authority check. Corresponding native cases retain both original target-only creation and applicable legacy journal coverage.
+The first PR run exposed legacy trace assertions that required shell cat verification or auxiliary journaling for complete literal creation. The physical artifacts already matched the unchanged requests. Creation regressions now require an exclusive target write followed by complete, exact, target-bound raw readback. Original multilingual prompts, byte preservation, destination absence and refusal controls remain. Journal-custody regressions use the applicable Set-contents replacement owner and retain every failed/unobserved-receipt refusal and real append/readback authority check. Corresponding native cases retain both original target-only creation and applicable legacy journal coverage. A later CI run correctly detected that the intentional resolver copy/hash additions changed pinned Desktop job payloads. The retained-job baseline is refreshed only after each old hash matches the preceding workflow and each changed payload is independently reviewed; production job bodies, main-only guards and the existing refusal assertions remain intact.
 
 ## Release-observation hardening
 
@@ -35,7 +35,7 @@ Partial reruns can retain an artifact produced during an earlier attempt. Per-su
 
 ## Verification and remaining acceptance
 
-Focused JavaScript suites cover host policy/released requests, generic creation, existing creation-provider cases, edit capability gaps and failed command streams. Only one necessary JavaScript suite runs locally at a time with bounded memory/deadlines. No Rust compilation/tests, product/Rust-grammar WASM, Docker or application builds run locally; native verification belongs to CI.
+Focused JavaScript suites cover host policy/released requests, generic creation, existing creation-provider cases, edit capability gaps and failed command streams. Only one necessary JavaScript suite runs locally at a time with bounded memory/deadlines. No Rust compilation/tests, product/Rust-grammar WASM, Docker or application builds run locally; native verification belongs to CI. In [PR run 41448219068](https://github.com/link-assistant/formal-ai/actions/runs/41448219068/job/125287235395), checkout took 183 seconds and the focused JavaScript shard took about 84 seconds. Checkout is the measured next speed bottleneck; reducing test coverage would not remove that cost.
 
 Review also reproduced stale certification from a target read before a write followed by an unrelated read. Shared Progress accessors now accept only a complete target-bound read after the latest write and any later potentially mutating tool. Failed, truncated or missing receipts cannot fall back to earlier source bytes. Eleven focused cases cover creation and additive writes, including later Edit/MultiEdit/opaque commands and unrelated writes.
 
