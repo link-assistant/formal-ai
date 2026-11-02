@@ -1,3 +1,4 @@
+import {exactLiteralEffectProof} from './helpers/literal-effect-proof.mjs';
 import { before, test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -85,8 +86,7 @@ test('compound source Edit and independent literal delivery preserve full preima
   const digest = createHash('sha256').update(prefix + replacement + suffix).digest('hex');
   assert.equal(observedPayload(sourceReceipt.result)?.trim(), digest + '  ' + target);
   assert.match(sourceReceipt.result, /Exit Code: 0/u);
-  assert.ok(result.transcript.some(call => call.tool === 'bash'
-    && JSON.parse(call.arguments).command === 'cat proof.txt'));
+  assert.ok(exactLiteralEffectProof(result, 'proof.txt', 'marker'));
   assert.equal(result.stop, 'final');
 });
 test('only fully consumed Edit frames retain raw ownership', () => {

@@ -76,7 +76,16 @@ test('full successful shell bytes still require exact output and real status', (
 test('original authored failure goal proceeds beyond actual bare source read', async () => {
   const next=await planChatStep(history(source),['read','write','bash']);
   assert.ok(next && (next.kind !== 'final' || !next.answer.startsWith('The command failed:')));
-  const failed=await planChatStep(history(source,{is_error:true}),['read','write','bash']);
+  assert.equal(next.kind,'tool_calls');
+  assert.equal(next.calls.length,1);
+  assert.equal(next.calls[0].tool,'write');
+  const write=JSON.parse(next.calls[0].arguments);
+  assert.equal(write.path,'status.txt');
+  assert.equal(write.content,'failed');
+  // A failed journal receipt blocks the owner that actually requires the journal.
+  const journal=history(source,{is_error:true});
+  journal[0].content='Set the contents of status.txt to «failed»';
+  const failed=await planChatStep(journal,['read','write','bash']);
   assert.ok(failed?.kind==='final' && failed.answer.includes('failed'));
 });
 

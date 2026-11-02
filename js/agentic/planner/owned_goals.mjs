@@ -304,6 +304,17 @@ function declaredCreationPrologue(request, contract) {
   return bareSurfaces('file_whole_write_action').some(surface => normalizePrompt(surface) === prefix);
 }
 
+/** Declared content is data only after the existing operation prologue owns it. */
+export function ownsDeclaredPayloadDomain(request, contract) {
+  if (contract === null) return false;
+  const lead = firstRawPrefixLeadEnd(request, 'file_write_content_lead');
+  if (lead === null || contract.targetSpan.end > lead[0] || lead[1] > contract.payload.start) return false;
+  const view = instructionView(request, contract);
+  return view !== null && quoteFault(request) === null && !attributedActionPrefix(request)
+    && (contractActionPrologue(request, contract) || declaredCreationPrologue(request, contract))
+    && writesWholeFile(view);
+}
+
 /** Mirrors owned_declared_create_frame; classification does not grant filesystem authority. */
 export function ownedDeclaredCreateFrame(request) {
   const contract = parseWriteContract(request);

@@ -4,6 +4,7 @@ use serde_json::json;
 
 #[path = "general_execution/literal_creation.rs"]
 mod literal_creation;
+pub(super) use literal_creation::owned_creation_observation;
 
 use super::append_contract::{AppendRecordStep, append_record_step};
 

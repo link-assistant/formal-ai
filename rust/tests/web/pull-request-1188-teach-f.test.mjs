@@ -290,11 +290,24 @@ describe('G72: an anchor line found more than once is named, never reported as a
 describe('G15: the plan event step says what it does, and a run from the repository root keeps the committed plan log', () => {
   test('the event preserves prior events and records a real append', async () => {
     const before = 'general_change_plan\n  id "previous"\n';
-    const { files, calls } = await drive('Write hello to x.txt', { '.formal-ai/general-change-plan.lino': before });
+    const { files, calls } = await drive('Set the contents of x.txt to «hello»', { '.formal-ai/general-change-plan.lino': before });
     assert.ok(files.get('.formal-ai/general-change-plan.lino').startsWith(before));
     assert.deepEqual(calls, ['bash', 'write', 'bash']);
     assert.equal(files.get('x.txt'), 'hello');
     assert.match(files.get('.formal-ai/general-change-plan.lino'), /\n {4}action "append the composed plan to \.formal-ai\/general-change-plan\.lino"\n/u);
+  });
+
+  test('the unchanged original Write owns only its target and leaves prior journal bytes untouched', async () => {
+    const prompt = 'Write hello to x.txt';
+    const eventPath = '.formal-ai/general-change-plan.lino';
+    const before = 'general_change_plan\n  id "previous"\n';
+    const {files, calls, answer} = await drive(prompt, {[eventPath]: before});
+    assert.deepEqual(calls, ['write', 'read']);
+    assert.equal(files.get('x.txt'), 'hello');
+    assert.equal(files.get(eventPath), before);
+    assert.deepEqual([...files.keys()].sort(), [eventPath, 'x.txt']);
+    const {renderSeededOutcome} = await import('../../../js/agentic/code_task.mjs');
+    assert.equal(answer, renderSeededOutcome('coding_workspace_effect_observed', prompt, 'x.txt'));
   });
 
   test('the dogfood driver writes plan events under a git-ignored sandbox at the repository root', async () => {
@@ -460,7 +473,10 @@ describe('G77: a bash call killed at the timeout', () => {
   test('the answer states the kill and invents no exit code', async () => {
     const { commands, answer } = await drive('Run `node --test slow.test.mjs`.', {});
     assert.deepEqual(commands, ['node --test slow.test.mjs']);
-    assert.equal(answer, 'The command failed: Signal: SIGTERM\nTimeout: 60000 ms');
+    assert.match(answer, /^The command failed:/u);
+    assert.match(answer, /TAP version 13/u);
+    assert.match(answer, /Signal: SIGTERM/u);
+    assert.match(answer, /Timeout: 60000 ms/u);
     assert.doesNotMatch(answer, /Exit Code|Report issue|Would you like/u);
   });
 });
@@ -471,6 +487,7 @@ test('G77: timeout diagnostics retain a nonempty harness error without inventing
   const detail = 'Output: TAP version 13\nError: harness terminated the slow command\nSignal: SIGTERM\nTimeout: 60000 ms';
   const answer = renderFailure('bash', detail, 'Run \u0060node --test slow.test.mjs\u0060.');
   assert.match(answer, /harness terminated the slow command/u);
+  assert.match(answer, /TAP version 13/u);
   assert.match(answer, /Signal: SIGTERM/u);
   assert.match(answer, /Timeout: 60000 ms/u);
   assert.doesNotMatch(answer, /Exit Code|Report issue|Would you like/u);

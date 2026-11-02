@@ -11,6 +11,7 @@ use super::planner::Capability;
 use crate::protocol::ChatMessage;
 mod source_fetch_observation;
 mod source_freshness;
+pub(super) use source_freshness::{creation_readback_command, read_only_capability};
 mod work_item_read_receipt;
 use work_item_read_receipt::{without_exit_sentinel, work_item_read_failure_reason};
 
@@ -777,7 +778,7 @@ impl Progress {
 }
 
 /// Conflicting naming fields cannot bind an observation.
-fn source_read_path(arguments: &str) -> Option<String> {
+pub(super) fn source_read_path(arguments: &str) -> Option<String> {
     let value: serde_json::Value = serde_json::from_str(arguments).ok()?;
     let object = value.as_object()?;
     let fields = ["path", "filePath", "file_path"]

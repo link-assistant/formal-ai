@@ -13,7 +13,7 @@
 //! `js/agentic/request_sequence.mjs`.
 
 use super::final_result::{FinalDisposition, FinalResult, ResolvedPlan, record};
-use super::planner::AgenticPlan;
+use super::planner::{AgenticPlan, Capability};
 use super::write_request::{
     bare_surfaces, clean_cue_token, clean_path_token, looks_like_file_path, safe_relative_path,
     tokens,
@@ -209,6 +209,96 @@ fn with_request(messages: &[ChatMessage], part: &str) -> Vec<ChatMessage> {
         .collect()
 }
 
+/// Reuse only the immediately preceding qualified complete Read of the planned target.
+fn carry_qualified_read(plan: &AgenticPlan, exchange: &[ChatMessage]) -> Option<Vec<ChatMessage>> {
+    use super::capability_router::classify_tool;
+    use super::progress::{Progress, source_read_path};
+    use super::qualified_tool_observation::Binding;
+    let AgenticPlan::ToolCalls(planned) = plan else {
+        return None;
+    };
+    let [wanted] = planned.as_slice() else {
+        return None;
+    };
+    if classify_tool(&wanted.tool) != Some(Capability::Read) {
+        return None;
+    }
+    let target = source_read_path(&wanted.arguments)?;
+    let [assistant, receipt] = exchange else {
+        return None;
+    };
+    let [actual] = assistant.tool_calls.as_slice() else {
+        return None;
+    };
+    if !assistant.role.eq_ignore_ascii_case("assistant")
+        || !receipt.role.eq_ignore_ascii_case("tool")
+        || classify_tool(&actual.function.name) != Some(Capability::Read)
+        || source_read_path(&actual.function.arguments).as_deref() != Some(target.as_str())
+    {
+        return None;
+    }
+    let arguments: serde_json::Value = serde_json::from_str(&actual.function.arguments).ok()?;
+    let progress = Progress::scan(exchange);
+    let frame = progress.latest_attempt_for(Capability::Read, &arguments)?;
+    let observed = progress.source_read_for(&target)?;
+    (progress.research_attempts().len() == 1
+        && frame.binding == Binding::Exact
+        && frame.has_receipt()
+        && progress.research_attempts()[0].succeeded
+        && observed.error.is_none()
+        && observed.complete
+        && observed.source.is_some())
+    .then(|| exchange.to_vec())
+}
+
+fn exchange_mutates(exchange: &[ChatMessage]) -> bool {
+    let Some(assistant) = exchange.first() else {
+        return true;
+    };
+    assistant.tool_calls.is_empty()
+        || assistant.tool_calls.iter().any(|call| {
+            !super::capability_router::classify_tool(&call.function.name)
+                .is_some_and(super::progress::read_only_capability)
+        })
+}
+
+fn exchange_matches_plan(exchange: &[ChatMessage], plan: &AgenticPlan) -> bool {
+    use super::progress::Progress;
+    use super::qualified_tool_observation::{Binding, argument_values_equal};
+    let AgenticPlan::ToolCalls(planned) = plan else {
+        return false;
+    };
+    let [wanted] = planned.as_slice() else {
+        return false;
+    };
+    let [assistant, _] = exchange else {
+        return false;
+    };
+    let [actual] = assistant.tool_calls.as_slice() else {
+        return false;
+    };
+    if actual.function.name != wanted.tool {
+        return false;
+    }
+    let Ok(arguments) = serde_json::from_str::<serde_json::Value>(&actual.function.arguments)
+    else {
+        return false;
+    };
+    let Ok(expected) = serde_json::from_str::<serde_json::Value>(&wanted.arguments) else {
+        return false;
+    };
+    let Some(capability) = super::capability_router::classify_tool(&wanted.tool) else {
+        return false;
+    };
+    let progress = Progress::scan(exchange);
+    let Some(frame) = progress.latest_attempt_for(capability, &arguments) else {
+        return false;
+    };
+    argument_values_equal(&arguments, &expected)
+        && frame.binding == Binding::Exact
+        && frame.has_receipt()
+}
+
 /// The next step of the first sentence not yet answered, or every answer.
 ///
 /// Each sentence is planned by `plan_for` as that sentence alone; once each is
@@ -236,9 +326,11 @@ pub(super) fn plan_bound_request_steps(
     let mut taken = 0;
     let mut answers = Vec::new();
     for part in parts {
-        // A step is planned over the tool calls made for it alone: replayed
-        // one exchange at a time until it answers or asks for its next call.
+        // A step is planned over the tool calls made for it alone. Only the
+        // previous actual complete target Read may cross the owned boundary.
         let mut own: Vec<ChatMessage> = base.to_vec();
+        let mut carry_attempted = false;
+        let mut initial_read: Option<AgenticPlan> = None;
         loop {
             let resolved = plan_for(&with_request(&own, part), tool_names)?;
             if matches!(&resolved.plan, AgenticPlan::Final(_)) && !resolved.can_deliver() {
@@ -250,9 +342,25 @@ pub(super) fn plan_bound_request_steps(
                     break;
                 }
                 plan @ AgenticPlan::ToolCalls(_) => {
+                    if !carry_attempted && own.len() == base.len() && taken > 0 {
+                        carry_attempted = true;
+                        if let Some(carry) = carry_qualified_read(&plan, exchanges[taken - 1]) {
+                            initial_read = Some(plan.clone());
+                            own.extend(carry);
+                            continue;
+                        }
+                    }
                     let Some(exchange) = exchanges.get(taken) else {
                         return Some(plan);
                     };
+                    // Unknown later mutations invalidate the carried observation.
+                    // A matched failed planned mutation is retained as its failure.
+                    if let Some(read) = initial_read.as_ref()
+                        && exchange_mutates(exchange)
+                        && !exchange_matches_plan(exchange, &plan)
+                    {
+                        return Some(read.clone());
+                    }
                     own.extend_from_slice(exchange);
                     taken += 1;
                 }

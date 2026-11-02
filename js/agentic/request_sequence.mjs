@@ -1,3 +1,8 @@
+import {Capability} from './capability.mjs';
+import {classifyTool} from './capability_router.mjs';
+import {Progress, sourceReadPath, qualifiedToolAttempt} from './progress.mjs';
+import {argumentValuesEqual} from './qualified_tool_observation.mjs';
+import {readOnlyCapability} from './progress_command_readback.mjs';
 // A file operation followed by edits of the file it makes (PR #1188 G82):
 // `Copy a.lino to b.lino. In b.lino replace 'x' with 'y', replace 'p' with
 // 'q'.` was written as one literal file. When the first sentence is a seeded
@@ -147,6 +152,44 @@ export async function planRequestSequenceStep(task, messages, toolNames, planFor
   return parts === null ? null : planBoundRequestSteps(parts, messages, toolNames, planFor);
 }
 
+
+/** Reuse only an actual, immediately preceding complete Read of the next planned target. */
+function carryQualifiedRead(plan, exchange) {
+  if (plan.kind !== 'tool_calls' || plan.calls.length !== 1
+    || classifyTool(plan.calls[0].tool) !== Capability.Read || exchange?.length !== 2) return null;
+  const target = sourceReadPath(plan.calls[0].arguments);
+  const calls = exchange[0].tool_calls;
+  if (target === null || exchange[0].role.toLowerCase() !== 'assistant'
+    || exchange[1].role.toLowerCase() !== 'tool' || calls?.length !== 1
+    || classifyTool(calls[0].function.name) !== Capability.Read
+    || sourceReadPath(calls[0].function.arguments) !== target) return null;
+  let argumentsValue;
+  try { argumentsValue = JSON.parse(calls[0].function.arguments); } catch { return null; }
+  const progress = Progress.scan(exchange);
+  const frame = qualifiedToolAttempt(progress, Capability.Read, argumentsValue);
+  const observed = progress.sourceReadFor(target);
+  return progress.attempts.length === 1 && frame?.binding === 'exact' && frame.receiptPresent
+    && progress.attempts[0].succeeded && observed !== null && observed.error === null && observed.complete
+    && typeof observed.source === 'string' ? exchange : null;
+}
+
+function exchangeMutates(exchange) {
+  const calls = exchange[0]?.tool_calls;
+  return !Array.isArray(calls) || calls.length === 0
+    || calls.some(call => !readOnlyCapability(classifyTool(call.function?.name ?? '')));
+}
+
+function exchangeMatchesPlan(exchange, plan) {
+  if (plan.kind !== 'tool_calls' || plan.calls.length !== 1 || exchange?.length !== 2) return false;
+  const calls = exchange[0].tool_calls, planned = plan.calls[0];
+  if (calls?.length !== 1 || calls[0].function.name !== planned.tool) return false;
+  let actual, wanted;
+  try { actual = JSON.parse(calls[0].function.arguments); wanted = JSON.parse(planned.arguments); }
+  catch { return false; }
+  const frame = qualifiedToolAttempt(Progress.scan(exchange), classifyTool(planned.tool), actual);
+  return argumentValuesEqual(actual, wanted) && frame?.binding === 'exact' && frame.receiptPresent;
+}
+
 /** Mirrors fn plan_bound_request_steps: replay each source-owned request over only its own exchanges. */
 export async function planBoundRequestSteps(parts, messages, toolNames, planFor) {
   const { base, exchanges } = turnExchanges(messages);
@@ -156,6 +199,7 @@ export async function planBoundRequestSteps(parts, messages, toolNames, planFor)
     // A step is planned over the tool calls made for it alone: replayed one
     // exchange at a time until it answers or asks for its next call.
     const own = [];
+    let carryAttempted = false, initialRead = null;
     for (;;) {
       const plan = await planFor(withRequest([...base, ...own], part), toolNames);
       if (plan === null) return null;
@@ -164,7 +208,15 @@ export async function planBoundRequestSteps(parts, messages, toolNames, planFor)
         answers.push(plan.answer);
         break;
       }
+      if (!carryAttempted && own.length === 0 && taken > 0) {
+        carryAttempted = true;
+        const carry = carryQualifiedRead(plan, exchanges[taken - 1]);
+        if (carry !== null) { initialRead = plan; own.push(...carry); continue; }
+      }
       if (taken === exchanges.length) return plan;
+      // An unowned mutation invalidates the carried observation; request a real fresh Read.
+      if (initialRead !== null && exchangeMutates(exchanges[taken])
+        && !exchangeMatchesPlan(exchanges[taken], plan)) return initialRead;
       own.push(...exchanges[taken]);
       taken += 1;
     }

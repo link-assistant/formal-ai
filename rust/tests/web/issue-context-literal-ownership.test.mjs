@@ -1,3 +1,4 @@
+import {exactLiteralEffectProof as exactReadback} from './helpers/literal-effect-proof.mjs';
 import assert from 'node:assert/strict';
 import {test,before} from 'node:test';
 import {readFileSync,mkdtempSync,existsSync,rmSync} from 'node:fs';
@@ -15,15 +16,14 @@ before(async()=>{
   await installNodeHost(new WorkerHost());
 });
 
+
 async function run(request,path,expected){
   const directory=mkdtempSync(join(tmpdir(),'issue-context-original-'));
   try{
     const out=await drive(planChatStep,directory,request,{steps:8});
     assert.equal(readFileSync(join(directory,path),'utf8'),expected);
     assert.equal(out.stop,'final');
-    assert.ok(out.transcript.some(item=>
-      item.tool==='bash'&&JSON.parse(item.arguments).command==='cat '+path
-    ));
+    assert.ok(exactReadback(out,path,expected));
     return out;
   }finally{
     rmSync(directory,{recursive:true,force:true});

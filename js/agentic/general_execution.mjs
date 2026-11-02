@@ -1,34 +1,88 @@
 import { ownedDeclaredCreateFrame } from './planner/owned_goals.mjs';
 import { renderSeededOutcome } from './code_task.mjs';
+import {agenticMessage} from './messages.mjs';
+import {ownedCreationReadbackCommand} from './progress_command_readback.mjs';
+export {ownedCreationReadbackCommand};
+/** Positive typed proof shared by creation execution and obligation reconciliation. */
+export function ownedCreationObservation(plan, progress) {
+  if (plan?.mode !== GeneralPlanMode.LiteralFile || typeof plan.goal !== 'string'
+    || typeof plan.target !== 'string' || typeof plan.content !== 'string') return null;
+  const frame = ownedDeclaredCreateFrame(plan.goal);
+  if (frame === null || frame.target !== plan.target || frame.content !== plan.content
+    || progress.successfulWriteContentFor(plan.target) !== plan.content) return null;
+  if (progress.attemptedReadAfterLatestWriteFor(plan.target)) {
+    const attempt = progress.latestPostWriteReadAttemptFor(plan.target);
+    const observed = progress.sourceReadAfterLatestWriteFor(plan.target);
+    let qualified;
+    try { qualified = qualifiedToolAttempt(progress, Capability.Read, JSON.parse(attempt.arguments)); }
+    catch { return null; }
+    return qualified?.binding === 'exact' && qualified.receiptPresent && attempt.succeeded
+      && qualified.detail === attempt.detail && qualified.declaredTool === attempt.tool
+      && observed !== null && observed.error === null && observed.complete && observed.source === plan.content
+      ? {method: 'read-tool', capability: Capability.Read, target: plan.target, source: observed.source,
+        command: null, exitCode: null, sourceRead: observed, tool: attempt.tool, arguments: attempt.arguments}
+      : null;
+  }
+  const command = ownedCreationReadbackCommand(plan.target);
+  const receipt = progress.postWriteCommandReceiptFor(plan.target, command);
+  return receipt?.qualified && receipt.succeeded && receipt.raw !== null
+    && reportedExitCode(receipt.raw) === 0 && !incompleteReceipt(receipt.raw)
+    && !harnessReportedFailure(receipt.raw) && observedPayload(receipt.raw) === '(' + plan.content + ')'
+    ? {method: 'framed-run', capability: Capability.Run, target: plan.target, source: plan.content,
+      command, exitCode: 0, sourceRead: null, tool: null, arguments: null}
+    : null;
+}
+
 /** A complete creation owns only its target and a fresh independent readback. */
 function planOwnedCreationStep(plan, progress, toolNames) {
   if (plan.mode !== GeneralPlanMode.LiteralFile) return null;
   const frame = ownedDeclaredCreateFrame(plan.goal);
   if (frame === null || frame.target !== plan.target || frame.content !== plan.content) return null;
-  const finish = (intent, disposition) => resolvedFinalAnswer(
-    renderSeededOutcome(intent, plan.goal, plan.target) ?? plan.target,
-    disposition, intent
+  const finish = (intent, disposition, origin = intent) => resolvedFinalAnswer(
+    renderSeededOutcome(intent, plan.goal, plan.target) ?? plan.target, disposition, origin
   );
+  const failed = (detail, label = plan.target) => resolvedFinalAnswer(
+    renderFailure(label, detail, plan.goal), FinalDisposition.Failure, 'general_change_failed'
+  );
+  const mismatch = observed => resolvedFinalAnswer(
+    generalPlanMismatch(plan, observed), FinalDisposition.Failure, 'general_change_failed'
+  );
+  const completed = () => finish('coding_workspace_effect_observed', FinalDisposition.Finding, 'general_change_verified');
   const written = progress.successfulWriteContentFor(plan.target);
   if (written === null) {
-    if (progress.attemptedWriteFor(plan.target)) return finish('coding_workspace_verification_failed', FinalDisposition.Failure);
+    if (progress.attemptedWriteFor(plan.target)) {
+      const failure = progress.latestFailure();
+      return failed(failure?.raw_receipt ?? failure?.detail ?? agenticMessage('literal_create_write_unobserved'));
+    }
     const write = toolFor(toolNames, Capability.Write);
-    return write === null
-      ? finish('coding_workspace_written_unverified', FinalDisposition.Gap)
+    return write === null ? finish('coding_workspace_written_unverified', FinalDisposition.Gap)
       : planOne(write, writeArguments(plan.target, plan.content));
   }
-  if (written !== plan.content) return finish('coding_workspace_verification_failed', FinalDisposition.Failure);
-  if (!progress.attemptedReadAfterLatestWriteFor(plan.target)) {
-    const read = toolFor(toolNames, Capability.Read);
-    return read === null
-      ? finish('coding_workspace_written_unverified', FinalDisposition.Gap)
-      : planOne(read, readArguments(plan.target));
+  if (written !== plan.content) return mismatch(written);
+  if (ownedCreationObservation(plan, progress) !== null) return completed();
+  if (progress.attemptedReadAfterLatestWriteFor(plan.target)) {
+    const observed = progress.sourceReadAfterLatestWriteFor(plan.target);
+    if (observed === null || observed.error !== null || !observed.complete) {
+      const failure = progress.latestFailure();
+      return failed(failure?.detail ?? observed?.error ?? agenticMessage('literal_create_read_incomplete'));
+    }
+    return observed.source === plan.content
+      ? failed(agenticMessage('literal_create_receipt_unbound')) : mismatch(observed.source ?? '');
   }
-  const observed = progress.sourceReadAfterLatestWriteFor(plan.target);
-  if (observed === null || observed.error !== null || !observed.complete || observed.source !== plan.content) {
-    return finish('coding_workspace_verification_failed', FinalDisposition.Failure);
+  const readbackCommand = ownedCreationReadbackCommand(plan.target);
+  const receipt = progress.postWriteCommandReceiptFor(plan.target, readbackCommand);
+  if (receipt !== null) {
+    if (!receipt.qualified || !receipt.succeeded || receipt.raw === null
+      || reportedExitCode(receipt.raw) !== 0 || incompleteReceipt(receipt.raw)
+      || harnessReportedFailure(receipt.raw)) return failed(receipt.raw ?? agenticMessage('literal_create_receipt_unbound'), readbackCommand);
+    const observed = observedPayload(receipt.raw);
+    return mismatch(observed ?? '');
   }
-  return finish('coding_workspace_effect_observed', FinalDisposition.Finding);
+  const read = toolFor(toolNames, Capability.Read);
+  if (read !== null) return planOne(read, readArguments(plan.target));
+  const run = toolFor(toolNames, Capability.Run);
+  return run === null ? finish('coding_workspace_written_unverified', FinalDisposition.Gap)
+    : planOne(run, jsonText({command: readbackCommand}));
 }
 
 import {planRepositoryDocumentation} from './repository_documentation.mjs';
@@ -52,7 +106,7 @@ import {
 import { FinalDisposition, finalAnswer, jsonText, planOne, resolvedFinalAnswer, writeArguments } from './plan.mjs';
 import { guardedStep, isGuardRead } from './literal_write_guard.mjs';
 import { Progress, isWorkItemRead, qualifiedToolAttempt } from './progress.mjs';
-import { failedVerification, harnessReportedFailure, observedPayload, reportedExitCode, renderFailure, commandArgument } from './tool_result.mjs';
+import { failedVerification, harnessReportedFailure, observedPayload, reportedExitCode, renderFailure, commandArgument, incompleteReceipt } from './tool_result.mjs';
 import { fill } from './work_item_steps.mjs';
 import { observedRecoveryCommand, planRecovery } from './prerequisite_recovery.mjs';
 import { programContractAnswer } from './crate/coding_program_contract.mjs';

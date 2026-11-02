@@ -11,6 +11,8 @@ import { classifyTool } from './capability_router.mjs';
 import { composeGeneralChangePlan, GeneralPlanMode } from './general_planner.mjs';
 import { observedPayload, reportedExitCode } from './tool_result.mjs';
 import { Progress } from './progress.mjs';
+import { ownedCreationObservation } from './general_execution.mjs';
+import { ownedDeclaredCreateFrame } from './planner/owned_goals.mjs';
 import { records } from './transcript_evidence.mjs';
 import { stableId } from './crate/engine_stable_identifier.mjs';
 import { EvidenceSource, ObservationKind, evidenceNames, observedEvidence, reportsSuccess } from './crate/execution_evidence.mjs';
@@ -143,12 +145,25 @@ function reconcileFileObservations(node, progress) {
   if (node.children.length || node.expectation.kind !== 'file_bytes') return;
   const plan = composeGeneralChangePlan(node.clause);
   if (plan?.mode !== GeneralPlanMode.LiteralFile || plan.target !== node.expectation.path) return;
-  const raw = progress.latestRunOutputFor(plan.verification_command);
-  if (raw === null || raw !== progress.latestSuccessfulRunOutputFor(plan.verification_command)) return;
-  const payload = observedPayload(raw);
-  if (payload === null) return;
-  const record = observedEvidence(plan.verification_command, [plan.target], reportedExitCode(raw),
-    encoder.encode(payload), ObservationKind.FileBytes, EvidenceSource.Harness);
+  const proof = ownedCreationObservation(plan, progress);
+  let record;
+  if (proof !== null) {
+    // A Read is a client tool observation, never an invented shell exit.
+    const command = proof.method === 'read-tool'
+      ? proof.tool + ' ' + proof.arguments : proof.command;
+    record = observedEvidence(command, [proof.target], proof.exitCode,
+      encoder.encode(proof.source), ObservationKind.FileBytes, EvidenceSource.Harness);
+    record.produced_by = proof.method;
+  } else {
+    // Complete Create cannot borrow legacy unframed or pre-write command results.
+    if (ownedDeclaredCreateFrame(plan.goal) !== null) return;
+    const raw = progress.latestRunOutputFor(plan.verification_command);
+    if (raw === null || raw !== progress.latestSuccessfulRunOutputFor(plan.verification_command)) return;
+    const payload = observedPayload(raw);
+    if (payload === null) return;
+    record = observedEvidence(plan.verification_command, [plan.target], reportedExitCode(raw),
+      encoder.encode(payload), ObservationKind.FileBytes, EvidenceSource.Harness);
+  }
   const isolated = { frame_id: stableId('file_observation', node.node_id), root: { ...node } };
   observe(isolated, record);
   node.outcome = isolated.root.outcome;

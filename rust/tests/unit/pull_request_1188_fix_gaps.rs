@@ -9,6 +9,163 @@ use super::pull_request_1188_teach_f::drive;
 const MODULE: &str = "import { A } from \"x\";\nfoo(C);\n";
 const LINES: &str = "a\nb\nc\nd\n";
 const ROW: &str = "row A. one\nrow C two\n";
+
+#[test]
+fn same_target_sequence_carries_the_actual_raw_read_without_a_duplicate_preread() {
+    use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
+    use formal_ai::protocol::{ChatMessage, ToolCall};
+    for (body, expected) in [("old", "new"), ("Error: old", "Error: new")] {
+        let open = char::from_u32(171).unwrap();
+        let close = char::from_u32(187).unwrap();
+        let prompt = format!(
+            "Create file a.txt containing {open}{body}{close}. Then in a.txt replace {open}old{close} with {open}new{close}."
+        );
+        let mut workspace = crate::observed_plan_tools::ToolWorkspace::new(&prompt);
+        let mut messages = vec![ChatMessage::user(&prompt)];
+        let mut trace = Vec::new();
+        let mut completed = false;
+        for turn in 0..8 {
+            let before = serde_json::to_value(&messages).unwrap();
+            let plan =
+                plan_chat_step(&messages, &["read", "write", "edit"]).expect("owned sequence");
+            assert_eq!(serde_json::to_value(&messages).unwrap(), before);
+            match plan {
+                AgenticPlan::ToolCalls(calls) => {
+                    assert_eq!(calls.len(), 1);
+                    let call = &calls[0];
+                    trace.push(call.tool.clone());
+                    let id = format!("actual-sequence-{turn}");
+                    let observation = workspace.execute(&id, call);
+                    assert!(!observation.is_error);
+                    if call.tool == "read" {
+                        let metadata = observation
+                            .source_read
+                            .as_ref()
+                            .expect("actual raw receipt");
+                        assert_eq!(metadata["path"], "a.txt");
+                        assert_eq!(metadata["success"], true);
+                        assert_eq!(metadata["complete"], true);
+                        assert_eq!(metadata["format"], "raw");
+                        assert_eq!(observation.tool_call_id.as_deref(), Some(id.as_str()));
+                        assert_eq!(
+                            observation.content.plain_text(),
+                            workspace.read("a.txt").unwrap()
+                        );
+                    }
+                    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+                        &id,
+                        &call.tool,
+                        &call.arguments,
+                    )]));
+                    messages.push(observation);
+                }
+                AgenticPlan::Final(answer) => {
+                    assert_eq!(workspace.read("a.txt").unwrap(), expected);
+                    assert_eq!(trace, ["write", "read", "edit", "read"]);
+                    assert!(answer.contains("Completed the file change"), "{answer}");
+                    assert!(answer.contains("Replaced"), "{answer}");
+                    completed = true;
+                    break;
+                }
+            }
+        }
+        assert!(completed, "bounded sequence must complete: {trace:?}");
+    }
+}
+
+#[test]
+fn carried_read_refuses_foreign_mutation_and_retains_matched_edit_failure() {
+    use formal_ai::agentic_coding::{AgenticPlan, PlannedToolCall, plan_chat_step};
+    use formal_ai::protocol::{ChatMessage, ToolCall};
+
+    fn next_call(messages: &[ChatMessage]) -> PlannedToolCall {
+        let Some(AgenticPlan::ToolCalls(calls)) =
+            plan_chat_step(messages, &["read", "write", "edit"])
+        else {
+            panic!("sequence needs its actual next tool");
+        };
+        assert_eq!(calls.len(), 1);
+        calls[0].clone()
+    }
+    fn observe(
+        workspace: &mut crate::observed_plan_tools::ToolWorkspace,
+        messages: &mut Vec<ChatMessage>,
+        id: &str,
+        call: &PlannedToolCall,
+    ) -> ChatMessage {
+        let observation = workspace.execute(id, call);
+        messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            id,
+            &call.tool,
+            &call.arguments,
+        )]));
+        messages.push(observation.clone());
+        observation
+    }
+
+    for foreign in [true, false] {
+        let open = char::from_u32(171).unwrap();
+        let close = char::from_u32(187).unwrap();
+        let prompt = format!(
+            "Create file a.txt containing {open}old{close}. Then in a.txt replace {open}old{close} with {open}new{close}."
+        );
+        let mut workspace = crate::observed_plan_tools::ToolWorkspace::new(&prompt);
+        let mut messages = vec![ChatMessage::user(&prompt)];
+        for (index, expected_tool) in ["write", "read"].into_iter().enumerate() {
+            let call = next_call(&messages);
+            assert_eq!(call.tool, expected_tool);
+            let observation = observe(
+                &mut workspace,
+                &mut messages,
+                &format!("actual-prefix-{index}"),
+                &call,
+            );
+            assert!(!observation.is_error);
+        }
+        assert_eq!(workspace.read("a.txt").unwrap(), "old");
+        let planned = next_call(&messages);
+        assert_eq!(planned.tool, "edit", "the previous raw Read is reused");
+        if foreign {
+            let mutation = PlannedToolCall {
+                tool: "write".to_owned(),
+                arguments: serde_json::json!({"path": "a.txt", "content": "foreign"}).to_string(),
+            };
+            assert!(
+                !observe(&mut workspace, &mut messages, "foreign-mutation", &mutation).is_error
+            );
+            let fresh = next_call(&messages);
+            assert_eq!(fresh.tool, "read");
+            let arguments: serde_json::Value = serde_json::from_str(&fresh.arguments).unwrap();
+            assert_eq!(
+                arguments["path"]
+                    .as_str()
+                    .or(arguments["file_path"].as_str()),
+                Some("a.txt")
+            );
+        } else {
+            workspace.write_initial("a.txt", "foreign").unwrap();
+            let failure = observe(
+                &mut workspace,
+                &mut messages,
+                "matched-failed-edit",
+                &planned,
+            );
+            assert!(failure.is_error, "actual edit precondition must fail");
+            let Some(AgenticPlan::Final(answer)) =
+                plan_chat_step(&messages, &["read", "write", "edit"])
+            else {
+                panic!("the matched failed edit must remain a terminal failure");
+            };
+            assert!(
+                answer.contains("Edit anchor missing or ambiguous"),
+                "{answer}"
+            );
+            assert!(!answer.contains("Replaced"), "{answer}");
+        }
+        assert_eq!(workspace.read("a.txt").unwrap(), "foreign");
+    }
+}
+
 const SEVERAL_FILES: &str = "and one edit request changes one file, so nothing was changed. Ask for the edit once for each file.";
 const NESTED: &str = "so I cannot tell where it ends, and nothing was done. Quote such a text with «», or with a mark it does not hold.";
 

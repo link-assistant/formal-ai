@@ -17,13 +17,15 @@ import { endOfStatement } from './crate/literal_content.mjs';
 import { literalInstructionView } from './crate/literal_instruction_view.mjs';
 export { semanticAuthoringLead };
 import { Capability } from './capability.mjs';
+import { wholeFileOperationAt } from './literal_write_guard.mjs';
+import { ownsDeclaredPayloadDomain } from './planner/owned_goals.mjs';
 import { fill as fillWorkStep, template as workStepTemplate } from './work_item_steps.mjs';
 import { agenticMessage } from './messages.mjs';
 import { composedDocumentSpecificationSpan } from './note_composition.mjs';
 import { proseSentences } from './shell_command_policy.mjs';
 import { traceRoute } from './planner/continuation.mjs';
 import {
-  CueFamily, actionCueStartAfter, bareSurfaces, cleanContent, cleanCueToken, cleanPathToken,
+  CueFamily, actionCueStartAfter, bareSurfaces, cleanContent, cleanCueToken, cleanPathToken, composeEditClauses,
   rawContentLeadClose, firstActionCueEnd, firstActionCueStart, firstContentLeadEnd, firstPrefixLeadEnd,
   firstRawContentLeadEnd, firstRawPrefixLeadEnd,
   honouringPinnedFirstLine, looksLikeFilePath, payloadContinuesPastItsFirstLine, rankedBindings,
@@ -365,6 +367,24 @@ function parseWriteRequest(request) {
 
 /** Mirrors fn parse_write_contract: raw payload and target positions are UTF16 indices. */
 export function parseWriteContract(request) {
+  const contract = recoverWriteContract(request);
+  if (contract === null) return null;
+  // A concrete substring edit cannot acquire whole-file authority from its operands.
+  const edit = composeEditClauses(request);
+  if (edit !== null) {
+    const actionStart = edit.spans?.[1][0] ?? null;
+    if (actionStart !== null && actionStart >= contract.payload.start && actionStart < contract.payload.end
+      && ownsDeclaredPayloadDomain(request, contract)) return contract;
+    const operands = quotedSegmentSpans(request);
+    const oldOperand = operands.findIndex(span => span.text === edit.edit[1]);
+    const ownedOperands = oldOperand >= 0
+      && operands.slice(oldOperand + 1).some(span => span.text === edit.edit[2]);
+    if (ownedOperands || edit.spans === null || !wholeFileOperationAt(request, edit.spans[1][0], edit.edit[0], edit.spans[0][1])) return null;
+  }
+  return contract;
+}
+
+function recoverWriteContract(request) {
   const toks = tokens(request);
   const literal = literalPayload(request);
   if (literal !== null) {

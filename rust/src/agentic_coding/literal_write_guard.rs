@@ -32,23 +32,104 @@ const UNNAMED: &str = "general_change_target_unnamed";
 /// Whether the request's first write verb names a file's whole new content,
 /// or the request consents to replacing it.
 pub(super) fn writes_whole_file(request: &str) -> bool {
+    let instruction = instruction_outside_quotes(request);
     let lexicon = seed::lexicon();
     if lexicon.mentions_role(
         ROLE_OVERWRITE_CONSENT,
-        &crate::engine::normalize_prompt(request),
+        &crate::engine::normalize_prompt(&instruction),
     ) {
         return true;
     }
-    let toks = tokens(request);
-    if declares_file(request, &toks) {
+    if declares_file(
+        &instruction,
+        &super::positional_edit::unquoted_path_tokens(request),
+    ) {
         return true;
     }
+    let toks = tokens(&instruction);
     let (Some(start), Some(end)) = (first_action_cue_start(&toks), first_action_cue_end(&toks))
     else {
         return false;
     };
-    request.get(start..end).is_some_and(|verb| {
+    instruction.get(start..end).is_some_and(|verb| {
         lexicon.mentions_role(ROLE_WHOLE_WRITE, &crate::engine::normalize_prompt(verb))
+    })
+}
+
+fn instruction_outside_quotes(request: &str) -> String {
+    let mut instruction = request.to_owned();
+    for span in crate::normal_markov::quoted_segment_spans(request)
+        .into_iter()
+        .rev()
+    {
+        instruction.replace_range(span.start..span.end, &" ".repeat(span.end - span.start));
+    }
+    instruction
+}
+
+/// The requested edit action itself must own a whole-file operation.
+pub(super) fn whole_file_operation_at(
+    request: &str,
+    action_start: usize,
+    target: &str,
+    target_end: usize,
+) -> bool {
+    let instruction = instruction_outside_quotes(request);
+    let action_tokens = tokens(&instruction);
+    if first_action_cue_start(&action_tokens).is_some_and(|first| first < action_start) {
+        return false;
+    }
+    let Some(action) = action_tokens
+        .iter()
+        .find(|token| token.start == action_start)
+    else {
+        return false;
+    };
+    if declares_file(
+        &instruction,
+        &super::positional_edit::unquoted_path_tokens(request),
+    ) {
+        return true;
+    }
+    if seed::lexicon().mentions_role(
+        ROLE_WHOLE_WRITE,
+        &crate::engine::normalize_prompt(action.text),
+    ) {
+        return true;
+    }
+    let suffix: Vec<_> = super::positional_edit::unquoted_path_tokens(request)
+        .into_iter()
+        .filter(|token| token.start >= action_start)
+        .collect();
+    bare_surfaces(ROLE_OVERWRITE_CONSENT).iter().any(|cue| {
+        let prefix = tokens(cue);
+        if prefix.is_empty()
+            || prefix.len() > suffix.len()
+            || !prefix
+                .iter()
+                .zip(&suffix)
+                .all(|(token, actual)| clean_cue_token(token.text) == clean_cue_token(actual.text))
+        {
+            return false;
+        }
+        let mut destination = prefix.len();
+        let word = suffix
+            .get(destination)
+            .map(|token| clean_cue_token(token.text))
+            .unwrap_or("");
+        if bare_surfaces("request_function_word").contains(&word)
+            && !bare_surfaces("file_edit_new_lead_cue").contains(&word)
+        {
+            destination += 1;
+        }
+        if suffix.get(destination).is_some_and(|token| {
+            bare_surfaces(ROLE_DECLARED_NOUN).contains(&clean_cue_token(token.text))
+        }) {
+            destination += 1;
+        }
+        suffix
+            .get(destination)
+            .is_some_and(|token| token.end == target_end && clean_path_token(token.text) == target)
     })
 }
 

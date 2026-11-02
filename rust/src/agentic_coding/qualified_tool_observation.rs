@@ -25,6 +25,18 @@ pub(super) struct QualifiedToolAttempt {
     pub(super) detail: String,
 }
 
+impl QualifiedToolAttempt {
+    pub(super) const fn has_receipt(&self) -> bool {
+        self.receipt_present
+    }
+    pub(super) fn matches_receipt(&self, tool: &str, raw: &str) -> bool {
+        self.binding == Binding::Exact
+            && self.receipt_present
+            && self.declared_tool == tool
+            && self.detail == raw
+    }
+}
+
 #[derive(PartialEq, Eq)]
 enum ExactArgumentNumber {
     Integer(i64),

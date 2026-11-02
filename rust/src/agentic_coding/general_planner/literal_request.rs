@@ -80,6 +80,39 @@ pub(super) fn parse_write_request(request: &str) -> Option<(String, String)> {
 }
 
 pub(super) fn parse_write_contract(request: &str) -> Option<LiteralWriteContract> {
+    let contract = recover_write_contract(request)?;
+    // A concrete substring edit cannot acquire whole-file authority from its operands.
+    if let Some(edit) = crate::agentic_coding::write_request::compose_edit_clauses(request) {
+        let data_action = edit
+            .spans
+            .is_some_and(|spans| contract.payload.contains(&spans[1].0));
+        if data_action && super::owned_goals::owns_declared_payload_domain(request, &contract) {
+            return Some(contract);
+        }
+        let operands = crate::normal_markov::quoted_segment_spans(request);
+        let old_operand = operands.iter().position(|span| span.text == edit.edit.1);
+        let owned_operands = old_operand.is_some_and(|index| {
+            operands
+                .iter()
+                .skip(index + 1)
+                .any(|span| span.text == edit.edit.2)
+        });
+        let whole_operation = edit.spans.is_some_and(|spans| {
+            crate::agentic_coding::literal_write_guard::whole_file_operation_at(
+                request,
+                spans[1].0,
+                &edit.edit.0,
+                spans[0].1,
+            )
+        });
+        if owned_operands || !whole_operation {
+            return None;
+        }
+    }
+    Some(contract)
+}
+
+fn recover_write_contract(request: &str) -> Option<LiteralWriteContract> {
     let toks = tokens(request);
     if let Some(literal) = literal_payload(request) {
         // A closed whole-file payload supplies the content. Only target cues
