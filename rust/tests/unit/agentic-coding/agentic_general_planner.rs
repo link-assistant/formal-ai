@@ -489,7 +489,8 @@ fn agentic_general_planner_rejects_non_referential_payload() {
 
 #[test]
 fn general_plan_is_emitted_before_execution() {
-    let messages = vec![ChatMessage::user(EN_TASK)];
+    let task = "Set the contents of notes/general-demo.txt to «planner fallback works»";
+    let messages = vec![ChatMessage::user(task)];
     let tools = ["write_file", "run_shell_command"];
     let AgenticPlan::ToolCalls(calls) = plan_chat_step(&messages, &tools).expect("plan") else {
         panic!("tool call expected")
@@ -501,7 +502,8 @@ fn general_plan_is_emitted_before_execution() {
 
 #[test]
 fn general_task_runs_end_to_end() {
-    let outcome = run_agentic_task(EN_TASK).expect("workspace");
+    let task = "Set the contents of notes/general-demo.txt to «planner fallback works»";
+    let outcome = run_agentic_task(task).expect("workspace");
     assert!(!outcome.hit_turn_cap);
     let tools: Vec<&str> = outcome
         .steps
@@ -537,8 +539,14 @@ fn general_task_preserves_exact_multiline_lino_payload() {
     assert_eq!(plan.content, payload);
 
     let outcome = run_agentic_task(&task).expect("agentic execution");
+    let tools: Vec<_> = outcome
+        .steps
+        .iter()
+        .map(|step| step.tool.as_str())
+        .collect();
+    assert_eq!(tools, ["write_file", "read_file"]);
     let write: serde_json::Value =
-        serde_json::from_str(&outcome.steps[3].arguments).expect("write arguments");
+        serde_json::from_str(&outcome.steps[0].arguments).expect("target write arguments");
     assert_eq!(write["path"], "data/seed/learned-program-rules.lino");
     assert_eq!(write["content"], payload);
 }
@@ -557,15 +565,13 @@ fn bare_with_preserves_an_exact_backticked_multiline_payload() {
     let AgenticPlan::ToolCalls(calls) =
         plan_chat_step(&messages, &tools).expect("literal file plan must own the request")
     else {
-        panic!("the literal file plan must persist its plan before execution")
+        panic!("the literal file plan must write its declared target")
     };
     assert_eq!(calls.len(), 1);
-    assert_eq!(calls[0].tool, "bash");
-    assert!(
-        calls[0].arguments.contains(PLAN_PATH),
-        "the evidence-record route must not search for the payload before it is created: {}",
-        calls[0].arguments,
-    );
+    assert_eq!(calls[0].tool, "write");
+    let write: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
+    assert_eq!(write["path"], plan.target);
+    assert_eq!(write["content"], payload);
 }
 
 #[test]
@@ -593,15 +599,13 @@ fn literal_file_marker_routes_before_edit_shaped_payload() {
         let AgenticPlan::ToolCalls(calls) =
             plan_chat_step(&messages, &tools).expect("literal file plan must own the request")
         else {
-            panic!("literal file plan must persist its plan before execution: {task}")
+            panic!("literal file plan must write its declared target: {task}")
         };
         assert_eq!(calls.len(), 1);
-        assert_eq!(calls[0].tool, "bash", "{task}");
-        assert!(
-            calls[0].arguments.contains(PLAN_PATH),
-            "edit-shaped payload must not route to a read of the new target: {}",
-            calls[0].arguments,
-        );
+        assert_eq!(calls[0].tool, "write", "{task}");
+        let write: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
+        assert_eq!(write["path"], "issue-708-literal-payload.txt");
+        assert_eq!(write["content"], payload);
     }
 }
 
@@ -691,57 +695,75 @@ fn command_stdout_plan_executes_generate_then_verify_through_cli_tools() {
 fn explicit_issue_named_file_write_is_not_misrouted_to_issue_reporting() {
     let payload =
         "learned_rules\n  id \"issue_656_agent_learning\"\n  rule \"unseen_verified_modifier\"";
-    let task = format!("Create file data/seed/issue-656-agent-learned.lino containing\n{payload}");
-
-    let outcome = run_agentic_task(&task).expect("agentic execution");
-    let tools: Vec<&str> = outcome
-        .steps
-        .iter()
-        .map(|step| step.tool.as_str())
-        .collect();
-    assert_eq!(
-        tools,
-        [
-            "read_file",
-            "write_file",
-            "read_file",
-            "write_file",
-            "run_command"
-        ]
-    );
-    let initial: serde_json::Value =
-        serde_json::from_str(&outcome.steps[0].arguments).expect("initial read");
-    assert_eq!(initial["path"], PLAN_PATH);
-    let event: serde_json::Value =
-        serde_json::from_str(&outcome.steps[1].arguments).expect("stored event");
-    assert_eq!(event["path"], PLAN_PATH);
-    let tree = formal_ai::seed::parse_lino(event["content"].as_str().expect("whole event"));
-    assert_eq!(tree.children[0].find_child_value("goal"), task);
-    let observed: serde_json::Value =
-        serde_json::from_str(&outcome.steps[2].arguments).expect("event readback");
-    assert_eq!(observed["path"], PLAN_PATH);
-    assert!(outcome.steps[2].result.starts_with("<file>\n"));
-    assert!(
-        outcome.steps[2]
-            .result
-            .contains(tree.children[0].find_child_value("id"))
-    );
-    let receipt: serde_json::Value =
-        serde_json::from_str(&outcome.steps[4].result).expect("actual target readback");
-    assert_eq!(receipt["schema"], "command-execution-receipt/v1");
-    assert_eq!(
-        receipt["command"],
-        "cat data/seed/issue-656-agent-learned.lino"
-    );
-    assert_eq!(receipt["exit_code"], 0);
-    assert_eq!(receipt["complete"], true);
-    assert_eq!(receipt["truncated"], false);
-    assert_eq!(receipt["timed_out"], false);
-    assert_eq!(receipt["stdout"], payload);
-    let write: serde_json::Value =
-        serde_json::from_str(&outcome.steps[3].arguments).expect("write arguments");
-    assert_eq!(write["path"], "data/seed/issue-656-agent-learned.lino");
-    assert_eq!(write["content"], payload);
+    let creation =
+        format!("Create file data/seed/issue-656-agent-learned.lino containing\n{payload}");
+    let replacement =
+        format!("Set the contents of data/seed/issue-656-agent-learned.lino to «{payload}»");
+    for (index, task) in [creation, replacement].into_iter().enumerate() {
+        let outcome = run_agentic_task(&task).expect("agentic execution");
+        let tools: Vec<&str> = outcome
+            .steps
+            .iter()
+            .map(|step| step.tool.as_str())
+            .collect();
+        if index == 0 {
+            assert_eq!(tools, ["write_file", "read_file"]);
+            let write: serde_json::Value =
+                serde_json::from_str(&outcome.steps[0].arguments).unwrap();
+            assert_eq!(write["path"], "data/seed/issue-656-agent-learned.lino");
+            assert_eq!(write["content"], payload);
+            assert!(
+                outcome
+                    .steps
+                    .iter()
+                    .all(|step| !step.arguments.contains(PLAN_PATH))
+            );
+            continue;
+        }
+        assert_eq!(
+            tools,
+            [
+                "read_file",
+                "write_file",
+                "read_file",
+                "write_file",
+                "run_command"
+            ]
+        );
+        let initial: serde_json::Value =
+            serde_json::from_str(&outcome.steps[0].arguments).expect("initial read");
+        assert_eq!(initial["path"], PLAN_PATH);
+        let event: serde_json::Value =
+            serde_json::from_str(&outcome.steps[1].arguments).expect("stored event");
+        assert_eq!(event["path"], PLAN_PATH);
+        let tree = formal_ai::seed::parse_lino(event["content"].as_str().expect("whole event"));
+        assert_eq!(tree.children[0].find_child_value("goal"), task);
+        let observed: serde_json::Value =
+            serde_json::from_str(&outcome.steps[2].arguments).expect("event readback");
+        assert_eq!(observed["path"], PLAN_PATH);
+        assert!(outcome.steps[2].result.starts_with("<file>\n"));
+        assert!(
+            outcome.steps[2]
+                .result
+                .contains(tree.children[0].find_child_value("id"))
+        );
+        let receipt: serde_json::Value =
+            serde_json::from_str(&outcome.steps[4].result).expect("actual target readback");
+        assert_eq!(receipt["schema"], "command-execution-receipt/v1");
+        assert_eq!(
+            receipt["command"],
+            "cat data/seed/issue-656-agent-learned.lino"
+        );
+        assert_eq!(receipt["exit_code"], 0);
+        assert_eq!(receipt["complete"], true);
+        assert_eq!(receipt["truncated"], false);
+        assert_eq!(receipt["timed_out"], false);
+        assert_eq!(receipt["stdout"], payload);
+        let write: serde_json::Value =
+            serde_json::from_str(&outcome.steps[3].arguments).expect("write arguments");
+        assert_eq!(write["path"], "data/seed/issue-656-agent-learned.lino");
+        assert_eq!(write["content"], payload);
+    }
 }
 
 #[test]

@@ -144,7 +144,15 @@ for (const task of unspecifiedAdditions) {
       assert.equal(creation?.source_creation?.success, true);
       assert.equal(creation.source_creation.exclusive, true);
       assert.equal(result.transcript.every((call, index) => call.tool !== 'read' || index > result.transcript.indexOf(creation)), true);
-      assert.equal(result.transcript.some(call => call.tool === 'bash' && JSON.parse(call.arguments).command === 'cat note.txt'), true);
+      assert.deepEqual(result.transcript.map(call => call.tool), ['write', 'read']);
+      const verification = result.transcript[1];
+      assert.equal(JSON.parse(verification.arguments).path, 'note.txt');
+      assert.equal(verification.result, 'hello');
+      assert.equal(verification.source_read?.path, 'note.txt');
+      assert.equal(verification.source_read?.success, true);
+      assert.equal(verification.source_read?.complete, true);
+      assert.equal(verification.source_read?.format, 'raw');
+      assert.notEqual(verification.is_error, true);
       const prior = 'prior bytes α\n';
       writeFileSync(join(directory, 'note.txt'), prior);
       const existing = await drive(planChatStep, directory, task, { steps: 8 });

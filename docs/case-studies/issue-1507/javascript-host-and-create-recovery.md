@@ -21,6 +21,10 @@ Released Start 0.41.0 was tested against the locally modified JavaScript checkou
 
 The exact edit request then produced the explicit missing Read/Edit gap with zero tools and unchanged fixture files. Start still exited zero and called that an answer. Its advertised Bash tool and permitted write programs cannot perform a guarded text replacement. [Start #258](https://github.com/link-foundation/start/issues/258) records both limitations; [#257](https://github.com/link-foundation/start/issues/257) separately records missing bounded 5xx diagnostics. Keep Start probes in isolated, explicitly owned workspaces. Continue using the direct JavaScript host for maintained edits until the client contract is repaired; never let a client inventory or hash protected workspace artifacts. Never bypass its tool policy with an arbitrary interpreter.
 
+## CI compatibility
+
+The first PR run exposed legacy trace assertions that required shell cat verification or auxiliary journaling for complete literal creation. The physical artifacts already matched the unchanged requests. Creation regressions now require an exclusive target write followed by complete, exact, target-bound raw readback. Original multilingual prompts, byte preservation, destination absence and refusal controls remain. Journal-custody regressions use the applicable Set-contents replacement owner and retain every failed/unobserved-receipt refusal and real append/readback authority check. Corresponding native cases retain both original target-only creation and applicable legacy journal coverage.
+
 ## Verification and remaining acceptance
 
 Focused JavaScript suites cover host policy/released requests, generic creation, existing creation-provider cases, edit capability gaps and failed command streams. Only one necessary JavaScript suite runs locally at a time with bounded memory/deadlines. No Rust compilation/tests, product/Rust-grammar WASM, Docker or application builds run locally; native verification belongs to CI.

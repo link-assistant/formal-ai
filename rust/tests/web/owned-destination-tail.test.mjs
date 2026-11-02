@@ -24,7 +24,18 @@ for (const [label, request, target, expected] of affirmative) {
       assert.equal(readFileSync(join(directory, target), 'utf8'), expected);
       assert.equal(out.stop, 'final');
       assert.ok(out.transcript.some(entry => entry.tool === 'write' && JSON.parse(entry.arguments).path === target));
-      assert.ok(out.transcript.some(entry => entry.tool === 'bash' && JSON.parse(entry.arguments).command === 'cat ' + target));
+      assert.deepEqual(out.transcript.map(entry => entry.tool), ['write', 'read']);
+      const creation = out.transcript[0];
+      assert.equal(creation.source_creation?.success, true);
+      assert.equal(creation.source_creation?.exclusive, true);
+      const verification = out.transcript[1];
+      assert.equal(JSON.parse(verification.arguments).path, target);
+      assert.equal(verification.result, expected);
+      assert.equal(verification.source_read?.path, target);
+      assert.equal(verification.source_read?.success, true);
+      assert.equal(verification.source_read?.complete, true);
+      assert.equal(verification.source_read?.format, 'raw');
+      assert.notEqual(verification.is_error, true);
     } finally { rmSync(directory, { recursive: true, force: true }); }
   });
 }
