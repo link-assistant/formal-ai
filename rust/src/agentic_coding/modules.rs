@@ -208,6 +208,7 @@ pub use planner::{
     AgenticPlan, CANONICAL_SOURCE_URL, KB_PATH, PlannedToolCall, SEARCH_QUERY, plan_chat_step,
 };
 pub use procedure::{COMPILED_PROCEDURE_PATH, compile_task as compile_procedure_task};
+pub use progress::owned_creation_readback_command;
 pub use question_catalog::{
     QUESTION_CATALOG_PATH, QUESTION_CATALOG_TASK, is_question_catalog_task,
 };

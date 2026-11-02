@@ -31,14 +31,14 @@ import { queryOwnedInferredCommandPolicy, registeredSourceReferenceReadPlan, con
 import { moduleFunctionRequest } from '../../js/agentic/module_function.mjs';
 import { planCodingResearchStep } from '../../js/agentic/coding_research.mjs';
 import { sourceOwnedOptionalCommand } from '../../js/agentic/module_function.mjs';
-import { APPEND_MODE, appendDefinition, projectAppendContracts } from '../../js/agentic/append_contract.mjs';
+import { APPEND_MODE, projectAppendContracts } from '../../js/agentic/append_contract.mjs';
 import { atomicRecordAppend } from './atomic-record-append.mjs';
 import { exclusiveCreate } from './exclusive-create.mjs';
 import { ownsCompleteLiteralRequest, ownedAdditiveLiteralFrame, ownedDeclaredCreateFrame, goalLedger } from '../../js/agentic/planner/owned_goals.mjs';
 import { parseWriteContract, composeGeneralChangePlan } from '../../js/agentic/general_planner.mjs';
 import { planGeneralChangeStep } from '../../js/agentic/general_execution.mjs';
 import { planChatStep as maintainedPlanChatStep, planChatStepResolved as maintainedResolvedStep } from '../../js/agentic/planner.mjs';
-import {driverRequestAuthority,literalJournalCallsMatch} from '../../js/provenance/literal-journal-authority.mjs';
+import {driverRequestAuthority,literalJournalCallsMatch,driverAppendContracts} from '../../js/provenance/literal-journal-authority.mjs';
 import { quotedSegmentSpans } from '../../js/agentic/crate/normal_markov.mjs';
 import { mentionsRole } from '../../js/agentic/crate/seed_meanings.mjs';
 import { normalizePrompt } from '../../js/agentic/crate/engine.mjs';
@@ -560,7 +560,7 @@ async function driveInternal(planChatStep, dir, prompt, {
     // The server's fall-through: no planned step means the solver answers and
     // the symbolic command reroute may still turn that answer into tool calls
     // (js/server/agentic.mjs commandReroutePlan).
-    const contracts = atomicRecordAppend && tools.includes('write') ? [appendDefinition('write')] : [];
+    const contracts = driverAppendContracts(tools,atomicRecordAppend);
 
     const scoped = projectDriverHistory(messages,contracts);
     if (sourceReferencePrerequisite !== null && step > 0

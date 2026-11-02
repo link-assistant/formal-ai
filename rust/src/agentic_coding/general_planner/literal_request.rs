@@ -182,6 +182,21 @@ fn recover_write_contract(request: &str) -> Option<LiteralWriteContract> {
 }
 
 /// Read `request` as a write delivered through one particular binding.
+fn marker_payload_start(request: &str, toks: &[Token<'_>], lead_end: usize) -> usize {
+    let (Some(start), Some(end)) = (first_action_cue_start(toks), first_action_cue_end(toks))
+    else {
+        return lead_end;
+    };
+    if start >= lead_end
+        && request[lead_end..start].chars().all(char::is_whitespace)
+        && request[start..end].trim_end().ends_with([':', '：'])
+    {
+        end
+    } else {
+        lead_end
+    }
+}
+
 fn parse_write_request_bound(
     request: &str,
     toks: &[Token<'_>],
@@ -225,6 +240,7 @@ fn parse_write_request_bound(
         && !specification.is_some_and(|span| span.contains(&marker_end))
         && positions_share_statement(request, marker_end, clause_start)
     {
+        let marker_end = marker_payload_start(request, toks, marker_end);
         let marker_leads = marker_end <= clause_start;
         let statement_end = if marker_leads {
             end_of_statement(request, marker_end, clause_start)

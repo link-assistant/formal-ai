@@ -379,13 +379,17 @@ pub(super) fn plan_bound_request_steps(
 /// it, each an assistant message with the messages that answer it (mirrors
 /// `turnExchanges`).
 fn turn_exchanges(messages: &[ChatMessage]) -> (&[ChatMessage], Vec<&[ChatMessage]>) {
-    let start = messages
-        .iter()
-        .rposition(|message| message.role.eq_ignore_ascii_case("user"))
-        .map_or(0, |latest| latest + 1);
+    let start = super::planner::evidence_window_start(messages);
     let mut exchanges: Vec<&[ChatMessage]> = Vec::new();
     let mut from = start;
     for (index, message) in messages.iter().enumerate().skip(start) {
+        if message.role.eq_ignore_ascii_case("user") {
+            if index > from {
+                exchanges.push(&messages[from..index]);
+            }
+            from = index + 1;
+            continue;
+        }
         let opens = message.role.eq_ignore_ascii_case("assistant");
         if opens && index > from {
             exchanges.push(&messages[from..index]);

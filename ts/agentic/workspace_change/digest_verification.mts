@@ -6,11 +6,46 @@ import { renderSeededChange, renderSeededOutcome } from '../code_task.mjs';
 import { plainText } from '../content.mjs';
 import { FinalDisposition, jsonText, planOne, resolvedFinalAnswer } from '../plan.mjs';
 import { sha256Hex } from '../crate/source_fetch.mjs';
-import { commandArgument, observedDigestMatches, StepOutcome, stepOutcome } from '../tool_result.mjs';
+import { commandArgument, observedDigestMatches, renderFailure, StepOutcome, stepOutcome } from '../tool_result.mjs';
+import { Progress, qualifiedToolAttempt } from '../progress.mjs';
+import { ownsCompleteEditRequest } from '../planner/owned_goals.mjs';
 
 const finish = (text, disposition, origin) => text === null ? null : resolvedFinalAnswer(text, disposition, origin);
 const failed = (task, target) => finish(renderSeededOutcome('coding_workspace_verification_failed', task, target),
   FinalDisposition.Failure, 'coding_workspace_verification_failed');
+
+export function planEditPreimageGap(target) {
+  return resolvedFinalAnswer(jsonText({schema:'workspace-change-verification-gap/v1',target,
+    reason:'SourcePreimageUnavailable',verified:false,complete:false}),FinalDisposition.Gap,'workspace-change-verification-gap');
+}
+
+/** An exact failed mutation remains failure before any optional verification capability. */
+export function planEditFailure(task, messages, tool, argumentsText) {
+  const frame = qualifiedToolAttempt(Progress.scan(messages), Capability.Edit, JSON.parse(argumentsText));
+  return frame?.binding === 'exact' && frame.receiptPresent && frame.declaredTool === tool && !frame.succeeded
+    ? resolvedFinalAnswer(renderFailure(tool, frame.detail, task), FinalDisposition.Failure, 'coding_workspace_verification_failed') : null;
+}
+
+/** Fresh owned source bytes may replace only an inferred digest, never requested execution. */
+export function planEditReadVerification(task, messages, toolNames, change, argumentsText) {
+  if (toolFor(toolNames, Capability.Run) !== null || !ownsCompleteEditRequest(task)) return null;
+  const readTool = toolFor(toolNames, Capability.Read);
+  if (readTool === null) return null;
+  const progress = Progress.scan(messages);
+  const state = progress.postMutationReadStateFor(change.target, Capability.Edit, JSON.parse(argumentsText));
+  if (!state.current) return null;
+  if (state.attempt === null) return planOne(readTool, jsonText({path:change.target,filePath:change.target,file_path:change.target}));
+  const attempt = state.attempt;
+  const frame = qualifiedToolAttempt(progress, Capability.Read, JSON.parse(attempt.arguments));
+  const observed = attempt.source_read;
+  if (frame?.binding !== 'exact' || !frame.receiptPresent || frame.declaredTool !== attempt.tool) return null;
+  if (!attempt.succeeded || (observed != null && observed.error !== null)) {
+    return resolvedFinalAnswer(renderFailure(attempt.tool, frame.detail, task), FinalDisposition.Failure, 'coding_workspace_verification_failed');
+  }
+  if (!observed?.complete || typeof observed.source !== 'string') return null;
+  if (observed.source !== change.expected) return failed(task, change.target);
+  return finish(renderSeededChange(change.intent, task, change.target, change.slots), FinalDisposition.Finding, 'workspace_change_observed');
+}
 
 /** Mirrors `fn plan_digest_verification`: keep the existing bare digest observation contract. */
 export function planDigestVerification(task, currentTurn, toolNames, change) {

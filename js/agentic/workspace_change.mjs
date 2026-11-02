@@ -8,7 +8,7 @@ import { ownsAdditiveScope } from './workspace_change/additive_scope.mjs';
 // (rust/src/agentic_coding/workspace_change.rs).
 
 import { scopedDecline } from './edit_scope.mjs';
-import { planDigestVerification, planWriteDigestVerification } from './workspace_change/digest_verification.mjs';
+import { planDigestVerification, planEditFailure, planEditPreimageGap, planEditReadVerification, planWriteDigestVerification } from './workspace_change/digest_verification.mjs';
 import { absentTextAnswer, replaceList, replacedInOrder } from './replace_list.mjs';
 import { planLiteralAdditionStep } from './literal_addition.mjs';
 import { Capability } from './capability.mjs';
@@ -16,6 +16,7 @@ import { classifyTool, toolFor } from './capability_router.mjs';
 import { resultForCommand as commandResult, sourceFromAgentReadResult, sourceFromReadResult } from './code_artifact.mjs';
 import { renderRustTemplate, renderSeededChange, renderSeededOutcome, verifiedSourceDescription } from './code_task.mjs';
 import { plainText } from './content.mjs';
+import { Progress } from './progress.mjs';
 import { contentsSource, withContents } from './contents_source.mjs';
 import { insertedInSection, sectionScope } from './markdown_section.mjs';
 import { lineRangeMove, planLineRangeMoveStep } from './line_range_move.mjs';
@@ -129,7 +130,10 @@ function planWithTool(toolNames, capability, args) {
 function planRewriteStep(task, currentTurn, toolNames, grounded) {
   const read = resultForPath(currentTurn, Capability.Read, grounded.target, null);
   if (read === null) return planWithTool(toolNames, Capability.Read, readArguments(grounded.target));
-  const source = sourceFromReadResult(read);
+  const progress = Progress.scan(currentTurn);
+  const preimage = progress.sourceReadBeforeLatestMutationFor(grounded.target, Capability.Edit);
+  if (preimage === null && progress.attemptedMutationFor(grounded.target, Capability.Edit)) return planEditPreimageGap(grounded.target);
+  const source = preimage?.source ?? sourceFromReadResult(read);
   const rewrite = asWritten(source, grounded);
   const updated = rewrittenSource(source, rewrite);
   if (updated === null) {
@@ -154,7 +158,9 @@ function planRewriteStep(task, currentTurn, toolNames, grounded) {
       if (resultForEdit(currentTurn, rewrite.target, edit[0], edit[1]) === null) {
         return planOne(tool, editArguments(rewrite.target, edit[0], edit[1]));
       }
-      return planDigestVerification(task, currentTurn, toolNames, verified);
+      return planEditFailure(task, currentTurn, tool, editArguments(rewrite.target, edit[0], edit[1]))
+        ?? planEditReadVerification(task, currentTurn, toolNames, verified, editArguments(rewrite.target, edit[0], edit[1]))
+        ?? planDigestVerification(task, currentTurn, toolNames, verified);
     }
   } else if (toolFor(toolNames, Capability.Edit)) {
     const command = repeatedIdentifierRewriteCommand(rewrite);
@@ -1027,7 +1033,10 @@ export function planComputedChangeStep(task, currentTurn, toolNames, change) {
   // A read that came back as the client's file block is the file, whatever
   // its text says: a ledger that quotes "Error:" lines is not a missing file.
   const missing = sourceFromAgentReadResult(read) === null && failureMessage(read, false, true) !== null;
-  const source = missing ? '' : sourceFromReadResult(read);
+  const progress = Progress.scan(currentTurn);
+  const preimage = progress.sourceReadBeforeLatestMutationFor(target, Capability.Edit);
+  if (preimage === null && progress.attemptedMutationFor(target, Capability.Edit)) return planEditPreimageGap(target);
+  const source = preimage?.source ?? (missing ? '' : sourceFromReadResult(read));
   const scoped = scopedDecline(task, target, source);
   if (scoped !== null) return finalOrNull(scoped);
   const updated = change.compute(source, missing);
@@ -1050,7 +1059,9 @@ export function planComputedChangeStep(task, currentTurn, toolNames, change) {
   if (compact && editTool) {
     const [old, next] = compact;
     if (resultForEdit(currentTurn, target, old, next) === null) return planOne(editTool, editArguments(target, old, next));
-    return planDigestVerification(task, currentTurn, toolNames, { target, expected: updated, intent, slots });
+    return planEditFailure(task, currentTurn, editTool, editArguments(target, old, next))
+      ?? planEditReadVerification(task, currentTurn, toolNames, { target, expected: updated, intent, slots }, editArguments(target, old, next))
+      ?? planDigestVerification(task, currentTurn, toolNames, { target, expected: updated, intent, slots });
   }
   if (resultForPath(currentTurn, Capability.Write, target, updated) === null) {
     return planWithTool(toolNames, Capability.Write, writeArguments(target, updated));
