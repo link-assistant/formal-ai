@@ -51,7 +51,7 @@
     {
       "file": "release.yml",
       "id": "build-artifacts",
-      "payloadSha256": "6dea825ef3a4e5ac6dcbdcb37f3f91dcbfd3277247acb898b74600b0b377d426"
+      "payloadSha256": "1eae13e82ca5e66c54a93d3b9fa6ca16b983ddc8e5f25143b231518664c17034"
     },
     {
       "file": "release.yml",
@@ -106,7 +106,7 @@
     {
       "file": "benchmark-corpus-gate.yml",
       "id": "corpus-gate",
-      "payloadSha256": "4ef0431e795ac4274d2bea99ca1fe1720b60143e14205f2ccb9a299e3ef4f790"
+      "payloadSha256": "7df7bfd6f1de2f616ca0867586e257ecbe129898c1026026f1b9c1ccf64d0fcf"
     },
     {
       "file": "coding-ladder.yml",
@@ -227,6 +227,11 @@
       "file": "links.yml",
       "id": "link-checker",
       "payloadSha256": "d4dbf548c0d89a161c1af5cd41ce02b3c5c43f4cb602fa8bdaa7414b33d3e299"
+    },
+    {
+      "file": "coding-ladder.yml",
+      "id": "ladder-shard",
+      "payloadSha256": "29bdb55b943188fc6a660c42b64fb75d89748a028645e561aa1ba1d8e88a09bf"
     }
   ]
 }

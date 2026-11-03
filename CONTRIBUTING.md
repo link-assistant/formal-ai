@@ -628,7 +628,7 @@ Removal from a public thread is not approval to retain another copy.
    than deleting them. Production builds, application packaging and Pages deployment
    run only on main (including its independently authorized release consumers).
    FORMAL_AI_FULL_PR_CI cannot restore compilation on a PR or branch dispatch.
-   Main still builds and verifies production releases. Collect complete bounded
+   Main still builds and verifies production releases. Full Coding Ladder measurement is main-only opt-in (full-ladder=true or FORMAL_AI_FULL_CODING_LADDER=run); keep its fast consistency gate mandatory and award no deferred measurement credit. Collect complete bounded
    redacted CI logs, derive small behavioral unit fixtures with negative cases,
    and fix all available failures before the next push. Never grant execution
    credit to skipped suites or claim that offline emulation proves a live solve.

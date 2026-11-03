@@ -349,3 +349,66 @@ test('the annotated completion trigger retains default-source read-only authenti
   ];
   for (const mutate of mutations) assert.throws(() => assertReadOnlyCompletionBoundary(mutate(source)));
 });
+
+test('download resolution hydrates only its reviewed controller inputs while public verification stays exact', async () => {
+  const {createHash} = await import('node:crypto');
+  const {posix} = await import('node:path');
+  const source = fs.readFileSync(new URL('../../../.github/workflows/verify-release-downloads.yml', import.meta.url), 'utf8');
+  assertReadOnlyCompletionBoundary(source);
+  const resolver = YAML.parse(source).jobs.resolve;
+  assert.equal(resolver['timeout-minutes'], 6);
+  const checkout = resolver.steps.find(step => step.uses === 'actions/checkout@v7');
+  assert.equal(checkout['timeout-minutes'], 2);
+  assert.deepEqual(checkout.with, {
+    ref: '$' + '{{ github.workflow_sha }}', 'persist-credentials': false,
+    'fetch-depth': 1, filter: 'blob:none', 'sparse-checkout-cone-mode': false,
+    'sparse-checkout': '/scripts/\n/package.json\n',
+  });
+  assert.deepEqual(Object.fromEntries(Object.entries(checkout.env).map(([key, value]) => [key, String(value)])), {
+    GIT_CONFIG_COUNT: '2', GIT_CONFIG_KEY_0: 'http.lowSpeedLimit', GIT_CONFIG_VALUE_0: '1024',
+    GIT_CONFIG_KEY_1: 'http.lowSpeedTime', GIT_CONFIG_VALUE_1: '20',
+  });
+  const select = resolver.steps.find(step => step.id === 'select');
+  assert.equal(select['timeout-minutes'], 3);
+  assert.equal(select.run, 'node scripts/verify-public-release-downloads.mjs');
+  const expected = [
+    'scripts/github-artifact-by-identifier.mjs',
+    'scripts/github-public-release-download.mjs',
+    'scripts/lib/native-response-capture.mjs',
+    'scripts/lib/native-session-projections.mjs',
+    'scripts/lib/native-session-source.mjs',
+    'scripts/qualified-data-artifact-profiles.mjs',
+    'scripts/release-advertisement.mjs',
+    'scripts/release-extension-github.mjs',
+    'scripts/release-extension-policy.mjs',
+    'scripts/release-extension-selection.mjs',
+    'scripts/release-protocol.mjs',
+    'scripts/verify-public-release-downloads.mjs',
+  ];
+  const queue = ['scripts/verify-public-release-downloads.mjs'], seen = new Set();
+  let literalDynamicImportCovered = false;
+  while (queue.length) {
+    const file = queue.shift();
+    if (seen.has(file)) continue;
+    assert.ok(seen.size < 32, 'finite controller import closure');
+    assert.ok(file.startsWith('scripts/'));
+    seen.add(file);
+    const text = fs.readFileSync(new URL('../../../' + file, import.meta.url), 'utf8');
+    assert.doesNotMatch(text, /import\s*\((?!\s*['"])/u, 'nonliteral dynamic import requires explicit coverage');
+    for (const match of text.matchAll(/(?:from\s*|import\s*\()(['"])([^'"]+)\1/g)) {
+      const specifier = match[2];
+      if (specifier.startsWith('.')) queue.push(posix.normalize(posix.join(posix.dirname(file), specifier)));
+      else assert.ok(specifier.startsWith('node:'), 'no unhydrated third-party package');
+    }
+    if (file === 'scripts/verify-public-release-downloads.mjs') {
+      assert.match(text, /import\('\.\/github-public-release-download\.mjs'\)/u);
+      literalDynamicImportCovered = true;
+    }
+  }
+  assert.deepEqual([...seen].sort(), expected);
+  assert.equal(literalDynamicImportCovered, true);
+  // Reviewed main101992d baseline: acquisition changes cannot alter actual downstream verification.
+  const downstream = source.slice(source.indexOf('\n  all-public-bytes:\n'));
+  assert.notEqual(source.indexOf('\n  all-public-bytes:\n'), -1);
+  assert.equal(createHash('sha256').update(downstream).digest('hex'), '11977c67b61a050577b42afa0ea0f0f37bc321e03601bd66e1b5e03d3b8f4018');
+});

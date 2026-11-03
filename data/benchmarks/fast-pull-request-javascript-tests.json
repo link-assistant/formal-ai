@@ -172,6 +172,8 @@
     "rust/tests/web/progressive-plan.test.mjs",
     "rust/tests/web/issue-1187-release-dispatch.test.mjs",
     "rust/tests/web/literal-create-completion-evidence.test.mjs",
-    "rust/tests/web/native-library-creation-qualification.test.mjs"
+    "rust/tests/web/native-library-creation-qualification.test.mjs",
+    "rust/tests/web/native-test-artifact.test.mjs",
+    "rust/tests/web/native-compilation-root-identity.test.mjs"
   ]
 }

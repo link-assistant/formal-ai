@@ -218,9 +218,22 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v7
+        timeout-minutes: 2
+        env:
+          GIT_CONFIG_COUNT: 2
+          GIT_CONFIG_KEY_0: http.lowSpeedLimit
+          GIT_CONFIG_VALUE_0: 1024
+          GIT_CONFIG_KEY_1: http.lowSpeedTime
+          GIT_CONFIG_VALUE_1: 20
         with:
           persist-credentials: false
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /scripts/check-shard-results.sh
       - name: Every corpus shard answered its prompts
+        timeout-minutes: 1
         env:
           NEEDS_JSON: ${{ toJSON(needs) }}
           JOBS: corpus-build corpus-shard

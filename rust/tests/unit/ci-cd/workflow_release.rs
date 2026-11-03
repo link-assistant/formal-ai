@@ -854,7 +854,7 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         ("test-agent-cli-e2e", 0),
         // Issue #1012: the shared release binary is built once before the seven
         // Box image legs, avoiding seven identical cache restores and builds.
-        ("build-artifacts", 20),
+        ("build-artifacts", 25),
         ("native-response-observations", 0),
         // Issue #932: per-language matrix leg that pulls one link-foundation/box
         // image, generates the project from solver answers and runs the

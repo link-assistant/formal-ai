@@ -18,7 +18,7 @@ jobs:
   resolve:
     if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_repository.full_name == github.repository
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 6
     outputs:
       active: ${{ steps.select.outputs.active }}
       tag: ${{ steps.select.outputs.tag }}
@@ -27,13 +27,27 @@ jobs:
       source_tree: ${{ steps.select.outputs.source_tree }}
     steps:
       - uses: actions/checkout@v7
+        timeout-minutes: 2
+        env:
+          GIT_CONFIG_COUNT: 2
+          GIT_CONFIG_KEY_0: http.lowSpeedLimit
+          GIT_CONFIG_VALUE_0: 1024
+          GIT_CONFIG_KEY_1: http.lowSpeedTime
+          GIT_CONFIG_VALUE_1: 20
         with:
           ref: ${{ github.workflow_sha }}
           persist-credentials: false
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /scripts/
+            /package.json
       - uses: actions/setup-node@v7
         with: {node-version: '24', package-manager-cache: false}
       - name: Pin published tag, asset metadata and authenticated source
         id: select
+        timeout-minutes: 3
         env:
           GH_TOKEN: ${{ github.token }}
           PRODUCER_RUN_ID: ${{ github.event.workflow_run.id || '' }}

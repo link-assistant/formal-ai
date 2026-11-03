@@ -610,9 +610,9 @@ Formal AI edit recipes receive zero autonomous implementation credit.
 - **CI-FAST-15:** PR change/version admission uses JavaScript without installing
   Rust tooling. Combine selected JavaScript unit suites in one runner. Preserve
   measured main sharding and optimization where needed; run no Rust locally.
-- **CI-FAST-16:** Browser E2E and box-language integrations are retained but
-  default-off; restore explicitly on main. Preserve critical coding/QA/reporting
-  coverage and log-derived unit regressions without claiming E2E equivalence.
+- **CI-FAST-16:** Browser E2E, box-language integration and complete Coding Ladder measurement are retained but default-off; restore explicitly on main.
+  Keep full ladder data, misses, ratchet and mandatory fast consistency; full-ladder=true or FORMAL_AI_FULL_CODING_LADDER=run selects all original shards.
+  Preserve critical coding/QA/reporting and log-derived regressions; deferred suites earn no measurement credit or E2E equivalence.
 
 See [the operational policy](../../ci-cd/default-branch-builds.md), including the
 existing non-atomic cross-service publication boundary. A green PR is fast-source

@@ -1032,3 +1032,78 @@ test('connected readonly transfer writes exact producer bytes once and preserves
     });
   }
 });
+
+test('VSIX resolver hydrates its builtin-only module closure within a separate acquisition phase', async () => {
+  const {workflowJobs} = await import('../../../scripts/lib/ci-speed-workflows.mjs');
+  const {dirname, posix} = await import('node:path');
+  const {spawnSync} = await import('node:child_process');
+  const root = new URL('../../../', import.meta.url);
+  const workflow = fs.readFileSync(new URL('.github/workflows/publish-vscode.yml', root), 'utf8');
+  const resolver = workflowJobs(workflow).find(job => job.id === 'resolve');
+  assert.ok(resolver);
+  assert.deepEqual(resolver.timeoutValues, [6]);
+  assert.deepEqual(resolver.stepTimeouts, [2, 3]);
+  const checkout = resolver.body.slice(0, resolver.body.indexOf('      - uses: actions/setup-node@v7'));
+  for (const field of [
+    'fetch-depth: 1', 'filter: blob:none', 'sparse-checkout-cone-mode: false',
+    '/scripts/', '/package.json', 'persist-credentials: false',
+    'ref: ${{ github.workflow_sha }}', 'GIT_CONFIG_COUNT: 2',
+    'GIT_CONFIG_KEY_0: http.lowSpeedLimit', 'GIT_CONFIG_VALUE_0: 1024',
+    'GIT_CONFIG_KEY_1: http.lowSpeedTime', 'GIT_CONFIG_VALUE_1: 20',
+  ]) assert.ok(checkout.includes(field), field);
+  assert.ok(resolver.body.includes('run: node scripts/release-extension-transfer.mjs resolve'));
+  const expected = [
+    'scripts/github-artifact-by-identifier.mjs',
+    'scripts/lib/native-response-capture.mjs',
+    'scripts/lib/native-session-projections.mjs',
+    'scripts/lib/native-session-source.mjs',
+    'scripts/qualified-data-artifact-profiles.mjs',
+    'scripts/release-extension-dispatch.mjs',
+    'scripts/release-extension-github.mjs',
+    'scripts/release-extension-policy.mjs',
+    'scripts/release-extension-selection.mjs',
+    'scripts/release-extension-transfer.mjs',
+    'scripts/resolve-package-release.mjs',
+  ];
+  const queue = ['scripts/release-extension-transfer.mjs'], modules = new Map();
+  while (queue.length) {
+    const file = queue.shift();
+    if (modules.has(file)) continue;
+    assert.ok(modules.size < 32, 'finite resolver import closure');
+    assert.ok(file.startsWith('scripts/'));
+    const source = fs.readFileSync(new URL(file, root), 'utf8');
+    modules.set(file, source);
+    const imports = [...source.matchAll(/(?:from\s*|import\s*\()(['"])([^'"]+)\1/g)].map(match => match[2]);
+    for (const specifier of imports) {
+      if (specifier.startsWith('.')) queue.push(posix.normalize(posix.join(posix.dirname(file), specifier)));
+      else assert.ok(specifier.startsWith('node:'), 'resolver does not require an unhydrated package dependency');
+    }
+    assert.doesNotMatch(source, /import\s*\((?!\s*['"])/u, 'nonliteral dynamic import needs explicit coverage');
+  }
+  assert.deepEqual([...modules.keys()].sort(), expected);
+  // An isolated source-only checkout has no repository assets beyond the reviewed roots.
+  // PATH is empty so the push resolver cannot accidentally invoke gh or another external command.
+  const fixture = fs.realpathSync(fs.mkdtempSync(join(tmpdir(), 'formal-ai-vsix-resolver-')));
+  try {
+    for (const [file, source] of modules) {
+      const destination = join(fixture, file);
+      fs.mkdirSync(dirname(destination), {recursive: true});
+      fs.writeFileSync(destination, source);
+    }
+    fs.copyFileSync(new URL('package.json', root), join(fixture, 'package.json'));
+    const event = join(fixture, 'event.json'), output = join(fixture, 'output.txt');
+    fs.writeFileSync(event, '{}');
+    const child = spawnSync(process.execPath, ['--max-old-space-size=384', join(fixture, 'scripts/release-extension-transfer.mjs'), 'resolve'], {
+      cwd: fixture, timeout: 5000, maxBuffer: 1024 * 1024, encoding: 'utf8',
+      env: {PATH: '', EVENT: 'push', REPOSITORY: 'owner/repository', REFERENCE: 'refs/heads/main',
+        GITHUB_EVENT_PATH: event, GITHUB_OUTPUT: output, RUNNER_TEMP: fixture},
+    });
+    assert.equal(child.error, undefined);
+    assert.equal(child.signal, null);
+    assert.equal(child.status, 0, child.stderr);
+    assert.deepEqual(JSON.parse(child.stdout), {tag: '', publish: false, build: true});
+    assert.equal(fs.readFileSync(output, 'utf8'), 'tag=\npublish=false\nbuild=true\n');
+  } finally {
+    fs.rmSync(fixture, {recursive: true, force: true});
+  }
+});
