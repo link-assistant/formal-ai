@@ -145,3 +145,44 @@ test('essential PR checkouts reserve their original test clocks and avoid unrela
   assert.equal(javascript.steps.find(step=>step.name==='Run this shard of the JavaScript suites').env.TEST_BUDGET_SECONDS, 360);
   assert.match(release.jobs['version-check'].steps.at(-1).run, /ci-pull-request-admission[.]mjs version/u);
 });
+
+
+test('base identity acquisition needs only its script and keeps one shared pin per workflow', () => {
+  const job = workflow('pin-base-commit.yml').jobs.pin, checkout = job.steps[0];
+  assert.equal(job['timeout-minutes'], 5);
+  assert.equal(job.if, "github.event_name == 'pull_request'");
+  assert.equal(checkout['timeout-minutes'], 2);
+  assert.equal(checkout.with['fetch-depth'], 1);
+  assert.equal(checkout.with.filter, 'blob:none');
+  assert.equal(checkout.with['persist-credentials'], false);
+  assert.equal(checkout.with['sparse-checkout'], '/scripts/pin-base-commit.sh');
+  assert.equal(checkout.with['sparse-checkout-cone-mode'], false);
+  assert.equal(checkout.with.ref, undefined);
+  assert.deepEqual(job.env, {GIT_HTTP_LOW_SPEED_LIMIT:'1024',GIT_HTTP_LOW_SPEED_TIME:'20'});
+  assert.deepEqual(checkout.env, job.env);
+  const pin = job.steps.find(step=>step.id==='pin');
+  assert.equal(pin.env.BASE_REF, '${{ github.base_ref }}');
+  assert.equal(pin.run, 'bash scripts/pin-base-commit.sh');
+  assert.equal(job.outputs.commit, '${{ steps.pin.outputs.commit }}');
+  assert.match(read('scripts/pin-base-commit.sh'), /max_attempts=5/u);
+});
+
+
+test('TypeScript parity acquires its complete source inputs instead of the unrelated repository tree', () => {
+  const job = workflow('layered-ci.yml').jobs.ts, checkout = job.steps[0];
+  assert.equal(job['timeout-minutes'], 10);
+  assert.equal(checkout['timeout-minutes'], 2);
+  assert.equal(checkout.with['fetch-depth'], 1);
+  assert.equal(checkout.with.filter, 'blob:none');
+  assert.equal(checkout.with['persist-credentials'], false);
+  assert.equal(checkout.with.ref, undefined);
+  assert.equal(checkout.with['sparse-checkout-cone-mode'], false);
+  assert.equal(checkout.with['sparse-checkout'], '/js/\n/ts/\n/scripts/translate-es.mjs\n/package.json\n/.gitignore\n');
+  assert.deepEqual(checkout.env, {GIT_HTTP_LOW_SPEED_LIMIT:'1024',GIT_HTTP_LOW_SPEED_TIME:'20'});
+  assert.deepEqual(job.steps.slice(1).map(step=>step.name), [
+    'The ts tree covers exactly the js tree', 'The ts tree is what the JavaScript translator renders'
+  ]);
+  assert.match(job.steps[1].run, /cd js && find/u);
+  assert.match(job.steps[1].run, /cd ts && find/u);
+  assert.match(job.steps[2].run, /node scripts\/translate-es[.]mjs --check/u);
+});

@@ -30,6 +30,9 @@ jobs:
     name: Pin base commit
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    env:
+      GIT_HTTP_LOW_SPEED_LIMIT: '1024'
+      GIT_HTTP_LOW_SPEED_TIME: '20'
     # Only pull requests merge a base branch; a push or tag build has nothing
     # to pin, and the callers guard their merge steps the same way.
     if: github.event_name == 'pull_request'
@@ -37,8 +40,16 @@ jobs:
       commit: ${{ steps.pin.outputs.commit }}
     steps:
       - uses: actions/checkout@v7
+        timeout-minutes: 2
+        env:
+          GIT_HTTP_LOW_SPEED_LIMIT: '1024'
+          GIT_HTTP_LOW_SPEED_TIME: '20'
         with:
           persist-credentials: false
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: /scripts/pin-base-commit.sh
+          sparse-checkout-cone-mode: false
       - id: pin
         env:
           BASE_REF: ${{ github.base_ref }}

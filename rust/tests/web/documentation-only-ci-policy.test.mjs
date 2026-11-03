@@ -60,3 +60,43 @@ test('read-only documentation checkout retains no push credentials', () => {
   const checkout = steps.find(step => step.uses?.startsWith('actions/checkout@'));
   assert.equal(checkout.with['persist-credentials'],false);
 });
+
+test('documentation acquisition is bounded without narrowing policy inputs or changing its checks', () => {
+  const job=workflows.find(workflow=>workflow.path.endsWith('/documentation-policy.yml')).document.jobs['documentation-policy'];
+  const expectedInputs='/*\n!/experiments/formal_ai_subagent/evidence/coordinator-1188/\n';
+  function check(value){
+    assert.equal(value['timeout-minutes'],3);
+    const checkouts=value.steps.filter(step=>step.uses?.startsWith('actions/checkout@'));
+    assert.equal(checkouts.length,1);
+    const checkout=checkouts[0];
+    assert.equal(checkout.uses,'actions/checkout@v7');
+    assert.equal(checkout['timeout-minutes'],2);
+    assert.deepEqual(checkout.env,{GIT_HTTP_LOW_SPEED_LIMIT:'1024',GIT_HTTP_LOW_SPEED_TIME:'20'});
+    assert.deepEqual(checkout.with,{'persist-credentials':false,'fetch-depth':1,
+      filter:'blob:none','sparse-checkout':expectedInputs,'sparse-checkout-cone-mode':false});
+    assert.deepEqual(value.steps.slice(1),[
+      {uses:'actions/setup-node@v7',with:{'node-version':'22'}},
+      {run:'npm ci --ignore-scripts --no-audit --no-fund --prefix scripts/documentation-policy-dependencies'},
+      {run:'mkdir -p node_modules\nln -s ../scripts/documentation-policy-dependencies/node_modules/yaml node_modules/yaml\nnode --test rust/tests/web/documentation-only-ci-policy.test.mjs\n'}
+    ]);
+  }
+  check(job);
+  const mutations=[
+    value=>value['timeout-minutes']=4,
+    value=>value.steps[0]['timeout-minutes']=3,
+    value=>delete value.steps[0].env,
+    value=>value.steps[0].env.GIT_HTTP_LOW_SPEED_LIMIT='0',
+    value=>value.steps[0].env.GIT_HTTP_LOW_SPEED_TIME='300',
+    value=>value.steps[0].with['persist-credentials']=true,
+    value=>value.steps[0].with['fetch-depth']=0,
+    value=>value.steps[0].with.ref='refs/heads/foreign',
+    value=>delete value.steps[0].with.filter,
+    value=>value.steps[0].with['sparse-checkout']='/*\n!/docs/\n',
+    value=>value.steps[0].with['sparse-checkout']=expectedInputs+'!/scripts/\n',
+    value=>value.steps[0].with['sparse-checkout-cone-mode']=true,
+    value=>value.steps.pop()
+  ];
+  for(const mutate of mutations){
+    const changed=structuredClone(job);mutate(changed);assert.throws(()=>check(changed));
+  }
+});
