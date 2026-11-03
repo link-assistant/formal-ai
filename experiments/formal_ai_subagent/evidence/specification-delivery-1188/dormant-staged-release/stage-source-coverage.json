@@ -1,5 +1,5 @@
 {
-  "schema": "release-original-stage-coverage/v1", "workflowSha256": "c6dfc7b68af035650a0030cfdb0aa9e672463b726efc29a586a163f68bd45862",
+  "schema": "release-original-stage-coverage/v1", "workflowSha256": "e80348f97b2ecc531a26f041460ae0a25ad4c1021b0583dafc9be9901440c85f",
   "callers": [
     {
       "caller": "auto-release", "bodySha256": "4cd8b2e40f8fb7a17ade88c836563221ea5d3080cbd2e49bc0a7f46c6a95a12f", "originalSteps": 28,

@@ -243,3 +243,48 @@ test('fast source checkout retains every measured tracked source while excluding
     if(readable||fileLimit(file)!==null)assert.ok(retained.has(file),'missing source input '+file);
   }
 });
+
+
+test('Cargo security acquisition retains the full crate and audit proofs without unrelated evidence', () => {
+  const job=workflow('security.yml').jobs['cargo-audit'];
+  const patterns='/.cargo/\n/rust/\n/scripts/check-rust-dependencies.sh\n/Cargo.toml\n/Cargo.lock\n/README.md\n/LICENSE\n';
+  function check(value){
+    assert.equal(value['timeout-minutes'],10);assert.equal(value.steps.length,4);
+    const step=value.steps[0];assert.equal(step.uses,'actions/checkout@v7');assert.equal(step['timeout-minutes'],2);
+    assert.deepEqual(step.env,{GIT_HTTP_LOW_SPEED_LIMIT:'1024',GIT_HTTP_LOW_SPEED_TIME:'20'});
+    assert.equal(step.with.ref,undefined);
+    assert.deepEqual(step.with,{'persist-credentials':false,'fetch-depth':1,filter:'blob:none',
+      'sparse-checkout':patterns,'sparse-checkout-cone-mode':false});
+    assert.deepEqual(value.steps.slice(1),[
+      {name:'Setup Rust',uses:'dtolnay/rust-toolchain@stable'},
+      {uses:'taiki-e/install-action@v2',with:{tool:'cargo-audit@0.22.2'}},
+      {name:'Audit committed Cargo.lock',run:'bash scripts/check-rust-dependencies.sh'}
+    ]);
+  }
+  check(job);
+  for(const mutate of [value=>value['timeout-minutes']=11,value=>value.steps[0]['timeout-minutes']=3,
+    value=>value.steps[0].with.ref='refs/heads/foreign',value=>value.steps[0].with['persist-credentials']=true,
+    value=>value.steps[0].with.filter='tree:0',value=>value.steps[0].with['sparse-checkout-cone-mode']=true,
+    value=>value.steps[0].with['sparse-checkout']=patterns.replace('/rust/\n',''),
+    value=>value.steps[0].env.GIT_HTTP_LOW_SPEED_TIME='300',value=>value.steps.pop()]){
+    const changed=structuredClone(job);mutate(changed);assert.throws(()=>check(changed));
+  }
+  const tracked=execFileSync('git',['ls-files','--cached','-z','--','rust','.cargo'],{
+    encoding:'utf8',timeout:5000,maxBuffer:4*1024*1024
+  }).split('\0').filter(Boolean);
+  assert.ok(tracked.length>0);assert.deepEqual(checkoutSelection(patterns,tracked),tracked);
+  const retained=['rust/Cargo.toml','rust/Cargo.lock','rust/build.rs','rust/src/lib.rs','rust/src/main.rs',
+    'rust/tests/unit/mod.rs','rust/tests/integration/mod.rs','rust/tests/source/mod.rs',
+    '.cargo/audit.toml','scripts/check-rust-dependencies.sh','Cargo.toml','Cargo.lock','README.md','LICENSE'];
+  const omitted=['dev/log/issues/1079/pulls/1080/upstream-reports/evidence.log',
+    'experiments/formal_ai_subagent/evidence/coordinator-1188/trace.gz','docs/case-studies/history.log'];
+  assert.deepEqual(checkoutSelection(patterns,[...retained,...omitted]),retained);
+  for(const path of retained.filter(path=>!['Cargo.toml','Cargo.lock'].includes(path)))assert.ok(existsSync(path),path);
+  const source=read('scripts/check-rust-dependencies.sh');
+  for(const marker of ['config=".cargo/audit.toml"','lock="rust/Cargo.lock"','if [[ ! -f "$config" ]]',
+    '[[ -n "$spec" && -n "$blocked_spec" ]]','[[ -z "$spec" && -z "$blocked_spec" ]]',
+    'blocked-upstream','if [[ "$status" -ne 0 ]]','cargo audit --file "$lock" --deny warnings'])
+    assert.ok(source.includes(marker),'audit proof guard lost: '+marker);
+  assert.equal((source.match(/cargo tree --manifest-path rust\/Cargo[.]toml --locked --target all --all-features --edges all --invert/gu)??[]).length,2);
+  assert.match(read('.cargo/audit.toml'),/^\[advisories\]/mu);
+});

@@ -9,3 +9,5 @@ Give the main-only native producer a finite 25-minute allocation after observed 
 Keep version-base and changelog admission metadata-only, preserve every measured source file in fast checks, and bound original-Hive cleanup preparation checkout without changing trusted revisions or cleanup permissions. Capture the observed acquisition failures in focused offline regressions.
 
 Reserve realistic acquisition phases inside unchanged fast-check and cleanup job clocks while retaining reviewed source inputs and all validation time.
+
+Read the base manifest through source-verified GitData objects under one fifteen-second deadline using the existing Actions read token. Narrow Cargo-audit checkout while preserving Rust target discovery, ignore proofs and advisory warnings.
