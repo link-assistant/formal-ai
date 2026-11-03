@@ -757,7 +757,9 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // `evidence_check_workflow_caps_its_job_and_installs_rust_script_with_the_retry_wrapper`.
         ("docker-build", 30),
         ("docker-slim", 0),
-        ("secrets-scan", 10),
+        // PR #1523: 597s checkout left only 5s for the clean scanner before cancellation.
+        // Keep full history/tree and reserve five bounded minutes after acquisition.
+        ("secrets-scan", 15),
         ("version-check", 5),
         // Issue #1081 (D15): probes every publishing credential with a write
         // before the pipeline spends 90 minutes building what it cannot

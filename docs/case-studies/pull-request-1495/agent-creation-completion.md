@@ -19,3 +19,68 @@ PR #1522 initially failed the staged authority guard because its checked caller 
 At corrected PR head `8062b041`, JavaScript acquisition completed in 62 seconds and all 1,872 tests completed with zero failures; all 171 file-start/completion records are present. Version admission and staged refusal checks also passed. Base pinning and documentation policy independently stalled in shallow source fetches and were cancelled before assertions. Their acquisition paths receive the same bounded filtering: base pinning checks out only its existing resolver script and preserves one shared base SHA per workflow; documentation keeps its actual source checks and omits only the coordinator archive. No job clocks, test deadlines, source guards or version/base comparison semantics are relaxed.
 
 The same completed head measured TypeScript source acquisition at 206 seconds for parity/translation checks that took about two seconds. Its checkout is narrowed to both complete source trees, the actual translator and root package/ignore metadata; commands, event source and ten-minute job clock remain intact. This is input minimization, not reduced file-set or byte-parity coverage.
+
+After PR #1522 merged as `ac2fbc5f7348dea3481f6964ab535f98fe9ceaa2`, documentation policy run `41687723686` failed during checkout, before Node or policy assertions. The one bounded retry reproduced the same worktree-materialization timeout (jobs `126097801889` and `126102794589`). Fetch had already selected the exact shallow source with blob filtering. Excluding one historical archive did not make the remaining broad worktree an appropriate input set for this small job. No further retry is authorized by this diagnosis.
+
+The follow-up narrows documentation checkout to its complete runtime read-set: every workflow YAML, the policy checker, its two imported helpers, the focused test, the locked YAML dependency directory and the root package boundary. It preserves the event revision, shallow depth, three-minute job clock, two-minute checkout bound and all original checks. A new focused test checks the static module closure, complete workflow census and parser lock inputs. The focused JavaScript suite passes 30 cases locally; hosted acquisition timing and downstream release qualification remain pending. This is an acquisition repair, not evidence that the source assertions or production release already passed.
+
+The same merged source exposed four layered JavaScript checkout timeouts (jobs `126098528439`, `126098528868`, `126098528562` and `126098528814`). All stop before tests. Other shards complete checkout in 32–80 seconds, while unrelated plain checkouts range up to eight minutes; those observations do not establish that blob filtering itself caused the stalls. A bounded Git-tree metadata audit identifies another large historical input: `dev/log/issues` holds about 716 MB of tracked logs. Layered JavaScript now omits historical `dev/log/` payloads while explicitly retaining the issue-702 Agent learning-report directory read by an unchanged full-suite test. This follows the existing coding-ladder checkout precedent and keeps every source, documentation and suite file, the existing coordinator-archive exclusion, event source and execution budgets. The focused profile suite passes ten cases, including actual Git sparse-rule selection for the real retained fixture and excluded historical payloads. No local native executable is built or run. Hosted timing remains the acceptance check for the optimization; no claim of general source-closure analysis or independently synthesized code follows from supplied Formal AI application helpers.
+
+The native producer subsequently completed compilation, all eleven declared creation fixtures (11 passed, zero failed/ignored), artifact binding and protocol capture. Job `126101173726` was cancelled at its twenty-minute job limit during test-executable upload; this is not a native assertion failure. Its plain shallow fetch consumed about 496 seconds, followed by about seven seconds checking out files. The total checkout was 504 seconds and compilation 554 seconds. The fixture qualification artifact was retained before cancellation; the executed binary digest was `b3f2e2f4aac2edba81d4d6cfd6d5b663c52f18f844c3c2afd3ad6a1b03492f1f`. Dependent full/native client qualification did not run, so delivery remains incomplete.
+
+Unlike the JavaScript checks, native test-artifact identity intentionally witnesses every tracked blob through `scripts/lib/native-response-identity.mjs`; omitting historical evidence would break that contract. The follow-up therefore preserves its complete checkout and every producer step, and allocates 25 rather than 20 minutes to this main-only producer. The existing thirty-minute CI ceiling and all PR budgets remain intact. Canonical release authority and generated caller projections are refreshed together; raw staged operations and the actual producer payload remain byte-identical. This finite allocation lets the already successful compile/test/capture sequence finish its required uploads; the next hosted run must still prove complete publication and downstream execution.
+
+PR #1523 initially passed its complete selected JavaScript and TypeScript checks, but three acquisition paths failed before their source assertions: version admission timed out its base fetch (job `126113099334`), fast source lint exhausted its five-minute clock fetching (job `126113099119`), and changelog admission exhausted ten minutes fetching history (job `126114668213`). The version fetch now explicitly requests blob filtering and no tags while preserving the exact base ref, comparison semantics and fifteen-second process deadline. Fast lint retains every tracked file eligible for its maintained source measurements and omits only explicitly excluded development logs and unmeasured coordinator gzip payloads. Its regression derives the tracked filename census and checks actual non-cone Git selection against the maintained file-limit/readability predicates; it does not scan all source bodies or hardcode synchronized counts. Changelog admission keeps complete commit/tree history and the original name-diff check, but materializes only the checker, both possible Cargo layouts and the root package boundary.
+
+The independent original-Hive finalizer also exhausted its prepare clock acquiring source (jobs `126106933517` and `126114328388`). No eligibility decision or cleanup action ran. Its prepare checkout retains the exact trusted workflow revision and broad source tree, omitting only the reviewed logs/gzip payloads; authentication, claims, effects and other job steps are unchanged. All narrow acquisition paths retain finite checkout bounds and their existing job clocks. A scripts-only finalizer dependency closure was not proved and is not claimed. Focused offline tests cover custody preservation, metadata-only base fetch, version refusal/no-retry behavior and actual Git path selection. Real cleanup and production publication still require hosted verification.
+
+At head `2f44655b`, version admission, changelog admission, documentation policy and the complete selected JavaScript/TypeScript checks pass. The sole independent PR failure remains fast-source materialization: fetch finishes in about two seconds, then the new two-minute phase cap stops checkout before any checker runs. Filename/size metadata shows that the reviewed selection still contains about 647 MB of logical Git blob bytes, including every measured source and demanded mirror; logical size is not measured network transfer. Retained successful PR #1522 metadata records seven seconds for the same nine validators, with a 260-second checkout and 271-second total job; its checkout policy is not established by that timing alone.
+
+The next allocation keeps the five-minute fast-source job and gives acquisition four minutes, reserving a minute for the measured short validators and cleanup. Layered JavaScript acquisition receives three minutes within its existing ten-minute job, leaving seven for setup and its observed roughly 322-second PR suite. Original-Hive prepare receives four minutes within ten for the same broad reviewed source selection. Thin policy/version/base/changelog acquisition remains at two minutes. These are finite phase allocations, with no input-census exclusions, job-clock increases, test removal or retry added. The new hosted head must establish the actual checkout and complete-check outcomes; no timing guarantee follows from the source review.
+
+Head `b2eaac4e` establishes the actual fast-source result: 55 seconds acquiring source, seven seconds validating, 66 seconds total. Its selected JavaScript run passes with 1,884 tests, zero failures and 17 explicit skips; TypeScript also passes. Version admission still times out its fifteen-second filtered Git branch fetch before comparison, while Cargo audit independently exhausts ten minutes fetching the repository before any advisory check. These are the complete independent causes observed at that head; pipeline failure is derivative.
+
+The version reader now obtains the exact latest-base ref, commit, nonrecursive source tree(s) and manifest blob through GitHub GitData. It verifies repository/URL/commit/path custody, complete unique trees, regular-file mode, bounded canonical base64, strict UTF-8 and the Git blob identity. One fifteen-second aggregate deadline covers all requests, with no retries or Git fallback. The existing read-only Actions token is supplied only to version admission; no new credential or sparse dependency is needed. Public metadata diagnostics identify the phase and resolved source without logging credentials or response bodies. Seventeen offline controls pass, and a private replay of captured real API data verifies the actual base manifest in five mocked requests; that replay performs no network access and its full manifest remains uncommitted.
+
+Cargo audit retains the full Rust tree, root Cargo/config/package files and its existing dependency-check script. This preserves target discovery for its existing Cargo-tree ignore proofs, then the unchanged advisory audit with warnings denied. Only acquisition changes; the ten-minute audit job, three subsequent steps and ignore/warning policy remain intact. The focused fast-profile suite passes twelve cases, including actual Git selection for this audited closure. Hosted API access and advisory execution must still qualify the next commit.
+
+At `292a57c5`, version admission and Cargo audit execute successfully; the final
+remaining job is the repository-wide live link integration. It spends 588
+seconds acquiring source, passes its parser regressions in one second and is
+cancelled 22 seconds into live crawling by the ten-minute job clock. No complete
+link verdict exists. Following the maintainer's fast-CI policy, the entire live
+job is retained byte-for-byte behind a main-only opt-in; its original payload is
+added to the retained-job witness. The exact existing parser step runs in a
+separate mandatory job on matching triggers, with scripts, package metadata and
+the actually read .lycheeignore file. No parser code, retry/archive behavior or
+advisory policy is removed. Existing requirement-reference checks stay required.
+
+A source-only native regression review finds one test that accidentally reads
+the first timeout in the entire links workflow. The new cheap job exposes that
+ambiguity. It now uses the existing named-job lookup for link-checker while
+preserving its original retry-budget assertion. Only Rust text formatting runs
+locally; actual native execution remains a main-CI obligation. Full live-link
+reachability and its slow source transport are explicit retained tech debt.
+
+The live-links dispatch input is explicitly optional and defaults to false.
+A generic automated main dispatch in checks mode does not enable crawling; only
+live-audit=true on main or the explicit repository opt-in does.
+
+### Preserve secret coverage without fetching every historical blob
+
+At PR #1523 source `fb5e2b278d9c8f0f3ae4f3b484bebd7fb5ea4245`,
+Secrets Scan job 126184725771 spent 597 seconds in checkout. Its unchanged
+scanner inspected all 24 changed files and printed `No secrets found.`, but
+the ten-minute job deadline cancelled the action immediately afterward. A
+clean scanner message does not turn that cancelled job into a passing check.
+
+The follow-up retains complete commit history, the full current working tree,
+the selected ref, the original secretlint invocation and its file selection.
+`filter: blob:none` avoids acquiring unrelated historical file bodies; needed
+objects remain retrievable through Git. There are no sparse exclusions or
+shallow-history shortcuts. Checkout has a finite ten-minute phase limit and
+the enclosing job has fifteen minutes, reserving five minutes for scanning.
+Low-speed transport limits remain finite. The same canonical release source
+and generated caller are updated together. Hosted execution must qualify the
+new source before merge; neither the cancelled run nor a policy unit test
+substitutes for an actual successful secrets scan.

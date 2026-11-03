@@ -34,8 +34,13 @@ jobs:
           fetch-depth: 1
           filter: blob:none
           sparse-checkout: |
-            /*
-            !/experiments/formal_ai_subagent/evidence/coordinator-1188/
+            /.github/workflows/
+            /scripts/documentation-only-ci-policy.mjs
+            /scripts/lib/documentation-paths.mjs
+            /scripts/lib/hive-delivery-admission.mjs
+            /scripts/documentation-policy-dependencies/
+            /rust/tests/web/documentation-only-ci-policy.test.mjs
+            /package.json
           sparse-checkout-cone-mode: false
       - uses: actions/setup-node@v7
         with:

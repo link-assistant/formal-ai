@@ -139,3 +139,28 @@ qualification; complete production delivery still requires all release consumers
   updates; local packages have no registry currency, while their declared
   registry dependencies remain checked. Capture observed failures in shared
   fast JavaScript and native gate fixtures.
+
+- **CI-FAST-19:** Bound source acquisition separately from execution and acquire
+  the complete input closure of each job. Small source-policy jobs should use
+  explicit sparse roots, including dynamically enumerated directories, imported
+  helpers, package boundaries and locked dependencies. Preserve the full input
+  census and original assertions; guard dependency additions with focused tests.
+  A shallow, blob-filtered checkout can still stall while materializing an
+  unnecessarily broad worktree. Diagnose the actual failed phase before retrying;
+  after one bounded acquisition retry reproduces it, prepare a source fix rather
+  than repeat the same action. Missing inputs or timed-out acquisition grant no
+  execution credit. Hosted timings must qualify the resulting optimization.
+
+  Jobs whose identity contract witnesses every tracked blob retain that complete
+  worktree. Never transfer a narrow policy or JavaScript checkout exclusion to
+  those jobs. Allocate finite main-only producer time from observed acquisition,
+  compilation, verification and upload phases within the existing CI ceiling;
+  record changes and preserve PR iteration budgets and source/receipt guards.
+
+- **CI-FAST-20:** Retain full live-link integration under an explicit main-only
+  opt-in (FORMAL_AI_FULL_LINK_CHECKS=run or live-audit=true on main dispatch). Keep its entire
+  original payload, retry bounds, archive checks and failure policy. Always run
+  the existing parser regressions on matching workflow triggers with their
+  complete script/package/ignore inputs. Keep lightweight requirement-reference
+  checks mandatory. Record the deferred full scanner as tech debt and grant no
+  live-link verdict to an offline parser pass.

@@ -35,6 +35,12 @@ Maintainer requirements of 2026-10-31 supersede earlier full-PR build opt-ins.
   retains its measured eight-shard plan. Do not shard merely to add runners.
   Native test optimization remains on main: prior measurements found expensive
   tests slower without optimization. No Rust compilation or tests run locally.
+- Full live-link crawling is retained as a main-only opt-in through
+  FORMAL_AI_FULL_LINK_CHECKS=run or an explicit live-audit=true dispatch on main.
+  Its original parser, retry, archive and failure checks remain intact. Parser
+  regressions always run on matching links workflow triggers with a small source
+  checkout; a parser success is not a live link-reachability verdict. The full
+  scanner still needs source-transport optimization before default reenabling.
 - Documentation-only changes retain lightweight checks and no automatic release.
 
 ## Recorded timing baseline
