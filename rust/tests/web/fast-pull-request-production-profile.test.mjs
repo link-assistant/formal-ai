@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync,existsSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {Script} from 'node:vm';
 import YAML from 'yaml';
@@ -95,4 +95,19 @@ test('explicit translation regeneration selects only the source emitter on every
   }
   for (const event of ['pull_request', 'push'])
     assert.equal(Boolean(evaluate(regeneration.if, context(event, 'refs/heads/main'))), false, event);
+});
+
+test('measured TeachF integration stays on main while fast coding and QA controls remain selected', () => {
+  const selected=selectFastTests(JSON.parse(read('data/benchmarks/fast-pull-request-javascript-tests.json')));
+  const teach='rust/tests/web/pull-request-1188-teach-f.test.mjs';
+  assert.equal(selected.includes(teach),false);
+  assert.equal(existsSync(teach),true);
+  const step=workflow('layered-ci.yml').jobs.js.steps
+    .find(item=>item.name==='Run this shard of the JavaScript suites');
+  assert.equal(evaluate(step.env.FAST_PR_PROFILE,context('push','refs/heads/main')),false);
+  assert.match(step.run,/printf '%s\\n' rust\/tests\/web\/\*\.test\.mjs/u);
+  for(const name of ['ordinary-literal-addition','issue-1180-repository-qa',
+    'issue-1438-report-and-edit','file-command-contract','literal-create-shell-readback',
+    'file-obligation-receipts','source-read-provenance','owned-edit-contract'])
+    assert.equal(selected.includes('rust/tests/web/'+name+'.test.mjs'),true,name);
 });

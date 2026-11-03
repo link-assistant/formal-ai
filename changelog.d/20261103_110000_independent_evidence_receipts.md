@@ -6,3 +6,5 @@
 - Route JavaScript task-decomposition questions through the existing native algorithm and shared seeded wording, with exact TypeScript mirrors.
 - Assess finite JSON scalar claims against fresh complete Read evidence as supported, contradicted or unknown, retaining claim/source identities and spans.
 - Add an explicit hosted source-generation mode that regenerates the affected translation projections without starting native builds or publication.
+- Keep measured full-solver/filesystem scenarios on main and retain fast ownership, operand, and header contracts on pull requests; preserve all integration bodies and the existing execution budget.
+- Report actual per-file completion and duration from Node 22+ test summaries.

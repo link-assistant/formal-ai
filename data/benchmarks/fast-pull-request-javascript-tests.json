@@ -130,7 +130,6 @@
     "rust/tests/web/observed-auxiliary-contracts.test.mjs",
     "rust/tests/web/pinned-first-line-obligations.test.mjs",
     "rust/tests/web/progressive-cohort-scheduler.test.mjs",
-    "rust/tests/web/pull-request-1188-teach-f.test.mjs",
     "rust/tests/web/pull-request-1188-workspace-search.test.mjs",
     "rust/tests/web/quoted-create-intent-provider.test.mjs",
     "rust/tests/web/source-read-owned-provider.test.mjs",
