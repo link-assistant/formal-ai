@@ -156,3 +156,6 @@ mod semantic_source_preflight;
 
 #[path = "source_unary_consolidation.rs"]
 mod source_unary_consolidation;
+
+#[path = "literal_content_boundary.rs"]
+mod literal_content_boundary;

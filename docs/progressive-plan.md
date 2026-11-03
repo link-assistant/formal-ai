@@ -8,11 +8,11 @@ requirement is on a resolution level, and the next pass raises the lowest level 
 | Level | Meaning | Requirements |
 | ---: | --- | ---: |
 | 0 closed | superseded or withdrawn; no pass raises it | 8 |
-| 1 recorded | the row exists, nothing measures it yet | 34 |
+| 1 recorded | the row exists, nothing measures it yet | 35 |
 | 2 measured | a test pins it, but the row says it is not delivered | 3 |
-| 3 partial | delivered in part | 94 |
+| 3 partial | delivered in part | 100 |
 | 4 implemented | delivered, with a test | 1310 |
-| | **all** | **1449** |
+| | **all** | **1456** |
 
 ## JavaScript first
 
@@ -20,16 +20,17 @@ The root the test that pins each requirement runs in (R1188-U29: the JavaScript 
 
 | Pinned by | Requirements |
 | --- | ---: |
-| a JavaScript test | 450 |
+| a JavaScript test | 454 |
 | a Rust test only | 920 |
-| no test | 79 |
+| no test | 82 |
 
 ## Next pass
 
-Level 1 (recorded): 34 requirement(s) to raise before any level above it is refined.
+Level 1 (recorded): 35 requirement(s) to raise before any level above it is refined.
 
 ### Level 1: recorded
 
+- `docs/requirements/doctrine-standing-doctrine-work-delegated-to-formal-ai-2026-10-07.md`: R1017-R1
 - `docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md`: R1021-14
 - `docs/requirements/issue-1207-hive-mind-progressive-self-coding.md`: R1207-1, R1207-2, R1207-3, R1207-4, R1207-5, R1207-8, R1207-9
 - `docs/requirements/issue-1212-project-motto.md`: R1212-2, R1212-3, R1212-4, R1212-5, R1212-7, R1212-8
@@ -48,6 +49,7 @@ Level 1 (recorded): 34 requirement(s) to raise before any level above it is refi
 - `docs/requirements/doctrine-readable-recursive-source-and-comment-meta-language-2026-10-18.md`: R1188-CST1, R1188-CST3, R1188-CST4, R1188-CST5, R1188-CST6, R1188-CST7, R1188-CST8, R1188-CST9, R1188-CST10, R1188-CST11, R1188-CST12, R1188-CST13, R1188-CST14, R1188-CST15, R1188-CST16, R1188-CST17, R1188-CST18, R1188-CST19, R1188-CST20, R1188-CST21, R1188-CST22
 - `docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md`: R1012
 - `docs/requirements/doctrine-standing-doctrine-three-roots-full-parity-through-the-meta-language-2026-09-24.md`: R992, R993
+- `docs/requirements/doctrine-standing-doctrine-work-delegated-to-formal-ai-2026-10-07.md`: R1017-R2, R1017-R3, R1017-R4, R1017-R5
 - `docs/requirements/issue-0398-pr-review-standards-comment-4663407299.md`: R282
 - `docs/requirements/issue-0491-least-action-continuation.md`: R491-C1, R491-C2, R491-C3, R491-C4
 - `docs/requirements/issue-0538-detailed-meanings-and-words.md`: R379, R381
@@ -66,4 +68,4 @@ Level 1 (recorded): 34 requirement(s) to raise before any level above it is refi
 - `docs/requirements/issue-1188-user-requirements.md`: R1188-U1, R1188-U2, R1188-U3, R1188-U4, R1188-U5, R1188-U6, R1188-U7, R1188-U8, R1188-U9, R1188-U13, R1188-U18, R1188-U19, R1188-U20, R1188-U21, R1188-U23, R1188-U27, R1188-U28, R1188-U29, R1188-U30
 - `docs/requirements/issue-1207-hive-mind-progressive-self-coding.md`: R1207-6, R1207-7
 - `docs/requirements/issue-1212-project-motto.md`: R1212-6
-- `docs/requirements/issue-1483-evidence-to-useful-edit.md`: R1483-1, R1483-2, R1483-3, R1483-4, R1483-6, R1483-8, R1483-9
+- `docs/requirements/issue-1483-evidence-to-useful-edit.md`: R1483-1, R1483-2, R1483-3, R1483-4, R1483-6, R1483-8, R1483-9, R1483-10, R1483-11

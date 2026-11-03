@@ -81,18 +81,22 @@ pub(in crate::agentic_coding) fn owned_creation_observation(
         return None;
     }
     let (target, content) = owned_declared_create_frame(&plan.goal)?;
+    let mutation = progress.creation_mutation_for(&plan.target)?;
     if target != plan.target
         || content != plan.content
-        || progress
-            .successful_write_content_for(&plan.target)
-            .as_deref()
-            != Some(plan.content.as_str())
+        || !mutation.qualified
+        || !mutation.succeeded
+        || mutation.content != plan.content
     {
         return None;
     }
-    if progress.attempted_read_after_latest_write_for(&plan.target) {
-        let attempt = progress.latest_post_write_read_attempt_for(&plan.target)?;
-        let observed = progress.source_read_after_latest_write_for(&plan.target)?;
+    let command = readback_command(&plan.target);
+    let state = progress.creation_readback_for(&mutation, &command);
+    if !state.current || state.pending_read {
+        return None;
+    }
+    if let Some(attempt) = state.read_attempt {
+        let observed = attempt.source_observation()?;
         let arguments = attempt.arguments.as_deref()?;
         let value = serde_json::from_str(arguments).ok()?;
         let frame = progress.latest_attempt_for(Capability::Read, &value)?;
@@ -115,8 +119,7 @@ pub(in crate::agentic_coding) fn owned_creation_observation(
             arguments: arguments.to_owned(),
         });
     }
-    let command = readback_command(&plan.target);
-    let receipt = progress.post_write_command_receipt_for(&plan.target, &command)?;
+    let receipt = state.command_receipt?;
     let expected = format!("({})", plan.content);
     let payload = tool_result::observed_payload(receipt.raw)?;
     if !receipt.qualified
@@ -139,12 +142,34 @@ pub(in crate::agentic_coding) fn owned_creation_observation(
     })
 }
 
+fn creation_gap(
+    plan: &GeneralChangePlan,
+    result: &mut Option<FinalResult>,
+    reason: &str,
+) -> AgenticPlan {
+    record(
+        AgenticPlan::Final(
+            json!({
+                "schema": "workspace-creation-gap/v1", "reason": reason, "target": plan.target,
+                "completed": false, "verified": false
+            })
+            .to_string(),
+        ),
+        FinalDisposition::Gap,
+        "workspace-creation-gap",
+        result,
+    )
+}
 pub(super) fn plan_owned_creation_step(
     plan: &GeneralChangePlan,
     progress: &Progress,
     tool_names: &[&str],
     result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
+    use crate::agentic_coding::capability_router::{
+        is_workspace_creation_tool, workspace_creation_tool,
+    };
+    use crate::agentic_coding::qualified_tool_observation::canonical_creation;
     if plan.mode != GeneralPlanMode::LiteralFile {
         return None;
     }
@@ -152,32 +177,95 @@ pub(super) fn plan_owned_creation_step(
     if target != plan.target || content != plan.content {
         return None;
     }
-    let Some(written) = progress.successful_write_content_for(&plan.target) else {
-        return Some(if progress.attempted_write_for(&plan.target) {
+    let Some(mutation) = progress.creation_mutation_for(&plan.target) else {
+        if progress.attempted_write_for(&plan.target) {
             let unobserved = crate::seed::agentic_message("literal-create-write-unobserved", &[]);
             let detail = progress
                 .latest_failure()
-                .map(|attempt| {
-                    attempt
-                        .raw_receipt
-                        .as_deref()
-                        .unwrap_or(attempt.detail.as_str())
-                })
+                .map(|attempt| attempt.raw_receipt.as_deref().unwrap_or(&attempt.detail))
                 .unwrap_or(&unobserved);
-            failure(plan, result, &plan.target, detail)
-        } else if let Some(write) = tool_for(tool_names, Capability::Write) {
-            plan_one(write, write_arguments(&plan.target, &plan.content))
-        } else {
-            outcome(
+            return Some(failure(plan, result, &plan.target, detail));
+        }
+        if progress.research_attempts().iter().any(|attempt| {
+            attempt.capability == Capability::Edit
+                && attempt
+                    .tool
+                    .as_deref()
+                    .is_some_and(is_workspace_creation_tool)
+        }) {
+            return Some(creation_gap(plan, result, "CreationEvidenceUnqualified"));
+        }
+        let Some(write) = workspace_creation_tool(tool_names) else {
+            return Some(creation_gap(plan, result, "WriteToolUnavailable"));
+        };
+        let arguments = write_arguments(&plan.target, &plan.content);
+        if tool_for(&[write], Capability::Write).is_some() {
+            return Some(plan_one(write, arguments));
+        }
+        let representable =
+            crate::protocol_responses::apply_patch_input(&arguments).and_then(|encoded| {
+                canonical_creation(&encoded)
+                    .map(|decoded| decoded.path == plan.target && decoded.content == plan.content)
+            }) == Some(true);
+        if !representable {
+            return Some(creation_gap(plan, result, "CreationContentUnrepresentable"));
+        }
+        let preflight = progress.creation_preflight_for(&plan.target);
+        if !preflight.attempted {
+            return Some(if let Some(read) = tool_for(tool_names, Capability::Read) {
+                plan_one(read, super::read_arguments(&plan.target))
+            } else {
+                creation_gap(plan, result, "ReadToolUnavailable")
+            });
+        }
+        if !preflight
+            .observation
+            .is_some_and(|observation| observation.absent)
+        {
+            return Some(creation_gap(
                 plan,
                 result,
-                "coding_workspace_written_unverified",
-                FinalDisposition::Gap,
-            )
-        });
+                if preflight
+                    .observation
+                    .is_some_and(|observation| observation.complete && observation.error.is_none())
+                {
+                    "CreationTargetAlreadyExists"
+                } else {
+                    "CreationPreflightUnverified"
+                },
+            ));
+        }
+        return Some(plan_one(write, arguments));
     };
-    if written != plan.content {
-        return Some(mismatch(plan, result, &written));
+    if !mutation.receipt_present {
+        return Some(creation_gap(plan, result, "CreationReceiptPending"));
+    }
+    if !mutation.qualified {
+        return Some(creation_gap(plan, result, "CreationEvidenceUnqualified"));
+    }
+    if !mutation.succeeded {
+        let unobserved = crate::seed::agentic_message("literal-create-write-unobserved", &[]);
+        let detail = mutation
+            .attempt
+            .map(|attempt| attempt.raw_receipt.as_deref().unwrap_or(&attempt.detail))
+            .unwrap_or(&unobserved);
+        return Some(failure(plan, result, &plan.target, detail));
+    }
+    if mutation.content != plan.content {
+        return Some(mismatch(plan, result, &mutation.content));
+    }
+    let command = readback_command(&plan.target);
+    let state = progress.creation_readback_for(&mutation, &command);
+    if !state.current {
+        if state.needs_fresh_read {
+            if let Some(read) = tool_for(tool_names, Capability::Read) {
+                return Some(plan_one(read, super::read_arguments(&plan.target)));
+            }
+            if let Some(run) = tool_for(tool_names, Capability::Run) {
+                return Some(plan_one(run, json!({"command": command}).to_string()));
+            }
+        }
+        return Some(creation_gap(plan, result, "CreationEvidenceNotCurrent"));
     }
     if owned_creation_observation(plan, progress).is_some() {
         return Some(outcome(
@@ -187,36 +275,29 @@ pub(super) fn plan_owned_creation_step(
             FinalDisposition::Finding,
         ));
     }
-    if progress.attempted_read_after_latest_write_for(&plan.target) {
-        let observed = progress.source_read_after_latest_write_for(&plan.target);
-        let incomplete = crate::seed::agentic_message("literal-create-read-incomplete", &[]);
-        let unbound = crate::seed::agentic_message("literal-create-receipt-unbound", &[]);
-        let latest_detail = progress
-            .latest_failure()
-            .map(|attempt| attempt.detail.as_str());
-        return Some(match observed {
-            Some(read) if read.error.is_some() || !read.complete => failure(
-                plan,
-                result,
-                &plan.target,
-                latest_detail
-                    .or(read.error.as_deref())
-                    .unwrap_or(&incomplete),
-            ),
-            Some(read) if read.source.as_deref() == Some(plan.content.as_str()) => {
-                failure(plan, result, &plan.target, &unbound)
-            }
-            Some(read) => mismatch(plan, result, read.source.as_deref().unwrap_or_default()),
-            None => failure(
-                plan,
-                result,
-                &plan.target,
-                latest_detail.unwrap_or(&incomplete),
-            ),
-        });
+    if state.pending_read {
+        return Some(creation_gap(plan, result, "CreationReadPending"));
     }
-    let command = readback_command(&plan.target);
-    if let Some(receipt) = progress.post_write_command_receipt_for(&plan.target, &command) {
+    if let Some(attempt) = state.read_attempt {
+        let observed = attempt.source_observation();
+        if observed.is_none_or(|read| read.error.is_some() || !read.complete) {
+            return Some(failure(plan, result, &plan.target, &attempt.detail));
+        }
+        let observed = observed?;
+        return Some(
+            if observed.source.as_deref() == Some(plan.content.as_str()) {
+                failure(
+                    plan,
+                    result,
+                    &plan.target,
+                    &crate::seed::agentic_message("literal-create-receipt-unbound", &[]),
+                )
+            } else {
+                mismatch(plan, result, observed.source.as_deref().unwrap_or_default())
+            },
+        );
+    }
+    if let Some(receipt) = state.command_receipt {
         if !receipt.qualified
             || !receipt.succeeded
             || tool_result::reported_exit_code(receipt.raw) != Some(0)

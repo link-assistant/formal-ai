@@ -1,5 +1,5 @@
 //! Source declaration syntax is checked by round-tripping the maintained producer.
-pub(super) fn canonical_creation_path(raw: &str) -> Option<&str> {
+pub(super) fn canonical_creation(raw: &str) -> Option<super::CanonicalCreation<'_>> {
     let rest = raw.strip_prefix("*** Begin Patch\n*** Add File: ")?;
     let (path, body) = rest.split_once('\n')?;
     let body = body.strip_suffix("*** End Patch\n")?;
@@ -11,6 +11,11 @@ pub(super) fn canonical_creation_path(raw: &str) -> Option<&str> {
         content.push_str(line.strip_prefix('+')?);
         content.push('\n');
     }
-    let arguments = serde_json::json!({"path":path,"content":content}).to_string();
-    (crate::protocol_responses::apply_patch_input(&arguments)?.as_str() == raw).then_some(path)
+    let arguments = serde_json::json!({"path":path,"content":&content}).to_string();
+    (crate::protocol_responses::apply_patch_input(&arguments)?.as_str() == raw)
+        .then_some(super::CanonicalCreation { path, content })
 }
+
+#[cfg(test)]
+#[path = "../../../tests/fixtures/canonical-creation-content.rs"]
+mod tests;

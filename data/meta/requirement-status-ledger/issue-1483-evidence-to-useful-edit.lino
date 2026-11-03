@@ -8,6 +8,12 @@ requirement_status_ledger_shard
     id "R1483-1"
     automated_test "rust/tests/web/source-documentation-controller.test.mjs"
   requirement
+    id "R1483-10"
+    automated_test "rust/tests/web/scoped-creation-evidence.test.mjs"
+  requirement
+    id "R1483-11"
+    automated_test "rust/tests/web/literal-create-content-boundary.test.mjs"
+  requirement
     id "R1483-2"
   requirement
     id "R1483-3"

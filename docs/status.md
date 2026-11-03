@@ -20,7 +20,7 @@ This document is a deterministic projection of committed ledgers.
 | --- | ---: |
 | `implemented` | 1310 |
 | `not-delivered` | 38 |
-| `partial` | 98 |
+| `partial` | 100 |
 | `superseded` | 6 |
 | `withdrawn` | 2 |
 

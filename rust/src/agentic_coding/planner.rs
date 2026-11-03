@@ -8,7 +8,7 @@ mod obligations;
 mod precedence;
 mod steps;
 use super::final_result::{FinalDisposition, FinalResult, ResolvedPlan, record};
-use continuation::continued_agent_task;
+pub(super) use continuation::continued_agent_task;
 pub(in crate::agentic_coding) use continuation::{evidence_window_start, is_continuation_cue};
 pub use continuation::{trace_route, trace_route_with};
 pub use precedence::checked_route_precedence;
