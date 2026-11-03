@@ -3,7 +3,6 @@ import {
   creationPreflightFor as creationPreflight,
   creationReadbackFor as creationReadback,
   ownedCreationDeclarations as creationDeclarations,
-  postWriteCommandReceiptFor as postWriteCommandReceipt,
   postMutationReadStateFor as mutationReadState,
   freshSourceReadAttemptFor as freshReadAttempt,
   sourceReadBeforeLatestMutationFor as mutationPreimage,
@@ -383,11 +382,6 @@ export class Progress {
   attemptsAfterLatestWrite(path) {
     const index = this.latestSuccessfulWriteIndex(path);
     return index === null ? null : this.attempts.slice(index + 1);
-  }
-
-  /** Exact target read after the most recent potentially mutating attempt. */
-  postWriteCommandReceiptFor(path, command) {
-    return postWriteCommandReceipt(this, path, command, qualifiedCommandAttempt, sourceReadPath);
   }
 
   freshSourceReadFor(path) {
