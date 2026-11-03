@@ -331,7 +331,7 @@ jobs:
           mapfile -t files < <(node scripts/plan-test-shards.mjs --shard "$SHARD" --of "$SHARDS" --durations data/meta/javascript-test-durations.lino < "$suites")
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "JavaScript suites shard $SHARD/$SHARDS" \
-            node --test --test-concurrency="$(nproc)" "${files[@]}"
+            node scripts/run-ordered-javascript-tests.mjs --concurrency "$(nproc)" "${files[@]}"
 
   # Issue #1186 R4: the Lean and Rocq texts a formalization answer renders
   # must compile when the provers are present. The js tier pins the prover

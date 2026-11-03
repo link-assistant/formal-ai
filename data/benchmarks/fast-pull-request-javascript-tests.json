@@ -161,6 +161,7 @@
     "rust/tests/web/observed-workspace-digest.test.mjs",
     "rust/tests/web/pull-request-1188-setting-verb.test.mjs",
     "rust/tests/web/runtime-feature-inventory.test.mjs",
-    "rust/tests/web/native-test-phase-diagnostics.test.mjs"
+    "rust/tests/web/native-test-phase-diagnostics.test.mjs",
+    "rust/tests/web/ordered-javascript-test-runner.test.mjs"
   ]
 }

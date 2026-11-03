@@ -637,6 +637,10 @@ Removal from a public thread is not approval to retain another copy.
    necessary JavaScript test locally at a time; no Rust builds or tests locally.
    Regenerate canonical data mirrors with node scripts/mirror-package-data.mjs
    --write and commit them; fast lint checks byte equality before merge.
+   Execute planned test files through the ordered JavaScript runner: Node CLI
+   discovery can alphabetically reorder duration-ranked arguments. Prove actual
+   execution order with isolated fixtures, retain bounded per-file progress logs,
+   and preserve test coverage, concurrency and deadlines.
    Delivery includes green main CI and verified configured release artifacts.
    Keep the implementation, regression fixtures, requirements, vision, guidelines
    and handoff in the same working PR. Verify its exact current head before merge;
