@@ -859,7 +859,26 @@ jobs:
         id: source
         run: printf 'commit=%s\n' "$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
       - name: Build binaries and test executables
-        run: cargo test --manifest-path rust/Cargo.toml --release --no-run --bins --tests --all-features
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo test --manifest-path rust/Cargo.toml --release --no-run --bins --tests --all-features --message-format=json \
+            | tee "$RUNNER_TEMP/native-build-messages.jsonl"
+      - name: Run compiled native creation fixtures
+        run: |
+          FORMAL_AI_DEADLINE_GRACE_SECONDS=5 scripts/run-with-deadline.sh 90 \
+            node scripts/run-native-coding-fixtures.mjs \
+            "$RUNNER_TEMP/native-build-messages.jsonl" "$RUNNER_TEMP/native-creation-fixtures.json"
+      - name: Retain native creation fixture evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: native-creation-fixture-qualification
+          path: |
+            ${{ runner.temp }}/native-build-messages.jsonl
+            ${{ runner.temp }}/native-creation-fixtures.json
+          if-no-files-found: warn
+          retention-days: 3
       - name: Collect the build artifacts
         run: bash scripts/collect-build-artifacts.sh
       - name: Bind native test artifacts to their actual build inputs

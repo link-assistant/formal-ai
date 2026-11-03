@@ -1,4 +1,5 @@
 //! Tests grouped by agentic coding module evidence.
+mod host_workspace_creation_path;
 mod issue_1328_bounded_retries;
 mod issue_1438_literal_artifact;
 

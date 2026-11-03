@@ -77,7 +77,7 @@ export function completionResponse(body) {
     finish
   };
 }
-function relativeFile(value) {
+export function relativeFile(value) {
   assert.ok(typeof value === 'string' && value.length > 0 && !path.isAbsolute(value));
   assert.ok(!/[\r\n\0\\]/u.test(value));
   assert.ok(value.split('/').every(part => part && part !== '.' && part !== '..'), 'unsafe effect path');
@@ -105,7 +105,7 @@ function writeArguments(arguments_, workspace) {
     path: relativeFile(paths[0])
   };
 }
-function observedFile(workspace, relative) {
+export function observedFile(workspace, relative) {
   let location = workspace;
   for (const part of relativeFile(relative).split('/')) {
     location = path.join(location, part);
@@ -114,6 +114,54 @@ function observedFile(workspace, relative) {
   const status = fs.statSync(location);
   assert.ok(status.isFile() && status.size <= 1024 * 1024);
   return fs.readFileSync(location);
+}
+/** Actual emitted calls and echoed receipts, in their recorded transport order. */
+export function completionExchangeTrace(records, {task, workspace}) {
+  const calls = new Map(), returned = new Map(), exchanges = [];
+  let terminal = null;
+  for (const record of records) {
+    if (record.method !== 'POST' || record.path !== '/v1/chat/completions') continue;
+    assert.equal(terminal, null, 'exchange after terminal completion');
+    assert.ok(typeof record.request_body === 'string' && typeof record.response_body === 'string');
+    const request = JSON.parse(record.request_body);
+    assert.ok(Array.isArray(request.messages));
+    assert.ok(request.messages.some(message => message.role === 'user'
+      && text(message.content) === task), 'foreign configured task');
+    const acknowledged = new Set(), receipts = [];
+    for (const message of request.messages) {
+      if (message.role === 'assistant') for (const call of message.tool_calls ?? []) {
+        const emitted = calls.get(call.id);
+        assert.ok(emitted, 'unbound or stale assistant tool call');
+        assert.equal(call.function?.name, emitted.name, 'returned tool name differs');
+        const echoed = JSON.parse(call.function.arguments);
+        const write = ['write', 'write_file'].includes(emitted.name.toLowerCase());
+        assert.deepEqual(write ? writeArguments(echoed, workspace) : echoed,
+          write ? writeArguments(emitted.arguments, workspace) : emitted.arguments,
+          'returned tool arguments differ');
+        acknowledged.add(call.id);
+      }
+      if (message.role !== 'tool') continue;
+      const id = message.tool_call_id;
+      assert.ok(calls.has(id) && acknowledged.has(id), 'unbound or stale tool result');
+      const encoded = JSON.stringify(message);
+      if (returned.has(id)) {
+        assert.equal(returned.get(id), encoded, 'changed repeated tool result');
+        continue;
+      }
+      assert.notEqual(message.is_error, true, 'failed tool result');
+      returned.set(id, encoded);
+      receipts.push({id, message, call:calls.get(id)});
+    }
+    const response = completionResponse(record.response_body);
+    for (const call of response.calls) {
+      assert.equal(calls.has(call.id), false, 'duplicate current tool call id');
+      calls.set(call.id, call);
+    }
+    const exchange = {record, request, response, receipts};
+    exchanges.push(exchange);
+    if (response.finish === 'stop') terminal = exchange;
+  }
+  return {calls, returned, exchanges, terminal};
 }
 export function verifyOutputProject({
   records,
@@ -132,59 +180,24 @@ export function verifyOutputProject({
   assert.ok(!verifier.startsWith('-') && !/\s/u.test(verifier), 'unsupported verification command path');
   assert.ok(expectedFiles.includes(verifier), 'verifier must be a declared effect');
   const command = 'sh ' + verifier;
-  const calls = new Map(),
-    returned = new Map(),
-    writes = new Map();
-  let verifiedCall = null,
-    terminal = null,
-    exchanges = 0;
-  for (const record of records) {
-    if (record.method !== 'POST' || record.path !== '/v1/chat/completions') continue;
-    assert.equal(terminal, null, 'exchange after terminal completion');
-    assert.ok(typeof record.request_body === 'string' && typeof record.response_body === 'string');
-    const request = JSON.parse(record.request_body);
-    assert.ok(Array.isArray(request.messages));
-    assert.ok(request.messages.some(message => message.role === 'user' && text(message.content) === task), 'foreign configured task');
-    const acknowledged = new Set();
-    for (const message of request.messages) {
-      if (message.role === 'assistant') for (const call of message.tool_calls ?? []) {
-        const emitted = calls.get(call.id);
-        assert.ok(emitted, 'unbound or stale assistant tool call');
-        assert.equal(call.function?.name, emitted.name, 'returned tool name differs');
-        const echoedArguments = JSON.parse(call.function.arguments);
-        const write = ['write', 'write_file'].includes(emitted.name.toLowerCase());
-        assert.deepEqual(write ? writeArguments(echoedArguments, workspace) : echoedArguments, write ? writeArguments(emitted.arguments, workspace) : emitted.arguments, 'returned tool arguments differ');
-        acknowledged.add(call.id);
-      }
-      if (message.role !== 'tool') continue;
-      const id = message.tool_call_id;
-      if (!calls.has(id) || !acknowledged.has(id)) throw Error('unbound or stale tool result');
-      const encoded = JSON.stringify(message);
-      if (returned.has(id)) {
-        assert.equal(returned.get(id), encoded, 'changed repeated tool result');
-        continue;
-      }
-      assert.notEqual(message.is_error, true, 'failed tool result');
-      returned.set(id, encoded);
-      if (calls.get(id).name.toLowerCase() === 'bash' && calls.get(id).arguments.command === command) {
+  const trace = completionExchangeTrace(records, {task, workspace});
+  const {returned} = trace, writes = new Map();
+  let verifiedCall = null, terminal = null;
+  const exchanges = trace.exchanges.length;
+  for (const {response, receipts} of trace.exchanges) {
+    for (const {id, message, call} of receipts) {
+      if (call.name.toLowerCase() === 'bash' && call.arguments.command === command) {
         assert.ok(text(message.content).includes(expectedOutput), 'verification output missing from actual returned tool result');
         verifiedCall = id;
       }
     }
-    const response = completionResponse(record.response_body);
-    exchanges += 1;
     for (const call of response.calls) {
-      assert.equal(calls.has(call.id), false, 'duplicate current tool call id');
-      calls.set(call.id, call);
       if (['write', 'write_file'].includes(call.name.toLowerCase())) {
         const file = writeArguments(call.arguments, workspace).path;
         if (expectedFiles.includes(file)) {
           assert.equal(writes.has(file), false, 'duplicate emitted effect');
           assert.equal(typeof call.arguments.content, 'string');
-          writes.set(file, {
-            id: call.id,
-            bytes: Buffer.from(call.arguments.content)
-          });
+          writes.set(file, {id:call.id, bytes:Buffer.from(call.arguments.content)});
         }
       }
     }
