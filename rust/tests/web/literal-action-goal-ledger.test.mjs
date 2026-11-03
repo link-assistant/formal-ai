@@ -57,7 +57,29 @@ function verified(run, target, expected) {
       && observedDigestMatches(row.result, createHash('sha256').update(expected).digest('hex'));
   }));
 }
-test("reverse action order preserves real edit before literal creation", async () => {
+function assertDeclaredGoals(prompt, expected) {
+  const goals = goalLedger(prompt);
+  assert.deepEqual(goals.map(goal => [goal.kind, goal.target]), expected);
+  for (const goal of goals) {
+    assert.equal(prompt.slice(goal.span.start, goal.span.end), goal.clause);
+    assert.equal(Buffer.from(prompt).subarray(...goal.byteSpan).toString('utf8'), goal.clause);
+    assert.equal(goal.sourceUnit, 'utf16');
+  }
+  return goals;
+}
+test("reverse action order retains both independently bound contracts", () => {
+  const prompt = "In b.txt replace «old» with «new». Then create file a.txt containing «replace x with y».";
+  const goals = assertDeclaredGoals(prompt, [['source_edit', 'b.txt'], ['literal_file', 'a.txt']]);
+  assert.equal(goals[1].expected, 'replace x with y');
+});
+test("both independent edits retain their mandatory source contracts", () => {
+  const prompt = "Create file a.txt containing «replace x with y». In b.txt replace «old» with «new». In c.txt replace «left» with «right».";
+  const goals = assertDeclaredGoals(prompt, [['literal_file', 'a.txt'], ['source_edit', 'b.txt'], ['source_edit', 'c.txt']]);
+  assert.equal(goals[0].expected, 'replace x with y');
+});
+test("reverse action order preserves real edit before literal creation", {
+  skip: process.env.FAST_PR_PROFILE === 'true' ? 'physical mixed-goal integration runs on main' : false,
+}, async () => {
   const a = await physical(
     "reverse",
     "In b.txt replace «old» with «new». Then create file a.txt containing «replace x with y».",
@@ -69,7 +91,9 @@ test("reverse action order preserves real edit before literal creation", async (
   verified(a.run, "b.txt", a.artifacts["b.txt"]);
   assert.equal(a.run.stop, "final");
 });
-test("both independently bound edits remain mandatory", async () => {
+test("both independently bound edits remain mandatory", {
+  skip: process.env.FAST_PR_PROFILE === 'true' ? 'physical mixed-goal integration runs on main' : false,
+}, async () => {
   const a = await physical(
     "two-edits",
     "Create file a.txt containing «replace x with y». In b.txt replace «old» with «new». In c.txt replace «left» with «right».",
