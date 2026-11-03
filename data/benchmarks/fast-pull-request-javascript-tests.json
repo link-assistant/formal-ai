@@ -164,6 +164,8 @@
     "rust/tests/web/native-test-phase-diagnostics.test.mjs",
     "rust/tests/web/ordered-javascript-test-runner.test.mjs",
     "rust/tests/web/duplication-coverage-report.test.mjs",
-    "rust/tests/web/unresolved-research-routing.test.mjs"
+    "rust/tests/web/unresolved-research-routing.test.mjs",
+    "rust/tests/web/task-decomposition-natural-route.test.mjs",
+    "rust/tests/web/source-scalar-assessment.test.mjs"
   ]
 }

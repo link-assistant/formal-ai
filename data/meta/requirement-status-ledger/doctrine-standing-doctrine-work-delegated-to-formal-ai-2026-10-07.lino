@@ -2,6 +2,7 @@
 requirement_status_ledger_shard
   shard "docs/requirements/doctrine-standing-doctrine-work-delegated-to-formal-ai-2026-10-07.md"
   issue ""
+  verdict "partial"
   manual "not yet confirmed"
   requirement
     id "R1017"
@@ -13,16 +14,14 @@ requirement_status_ledger_shard
     verdict "not-delivered"
   requirement
     id "R1017-R2"
-    verdict "partial"
   requirement
     id "R1017-R3"
-    verdict "partial"
+    automated_test "rust/tests/web/source-scalar-assessment.test.mjs"
   requirement
     id "R1017-R4"
-    verdict "not-delivered"
+    automated_test "rust/tests/web/task-decomposition-natural-route.test.mjs"
   requirement
     id "R1017-R5"
-    verdict "partial"
   requirement
     id "R1026"
     verdict "implemented"
