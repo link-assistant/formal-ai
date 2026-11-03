@@ -122,7 +122,7 @@ test('essential PR checkouts reserve their original test clocks and avoid unrela
   const release = workflow('release.yml'), layer = workflow('layered-ci.yml');
   const version = release.jobs['version-check'], javascript = layer.jobs.js;
   assert.equal(version['timeout-minutes'], 5);
-  assert.equal(javascript['timeout-minutes'], 10);
+  assert.equal(javascript['timeout-minutes'], 12);
   const check = (step, minutes) => {
     assert.equal(step.uses, 'actions/checkout@v7');
     assert.equal(step['timeout-minutes'], minutes);
@@ -133,7 +133,7 @@ test('essential PR checkouts reserve their original test clocks and avoid unrela
     assert.equal(step.with['sparse-checkout-cone-mode'], false);
     assert.equal(step.with.ref, undefined, 'keep actual event source selection');
   };
-  for (const [job, minutes] of [[version,2],[javascript,3]]) {
+  for (const [job, minutes] of [[version,2],[javascript,5]]) {
     const checkout = job.steps[0];
     check(checkout,minutes);
     for (const mutate of [step=>step['timeout-minutes']=10,
@@ -323,6 +323,11 @@ test('live link integration is explicit main-only while parser regressions stay 
   assert.deepEqual(live.steps.find(step=>step.name===originalParser.name),originalParser,'live opt-in retains the exact same parser command');
   const entries=[...parser.steps[1].run.matchAll(/scripts\/[A-Za-z0-9_.-]+[.]test[.]mjs/gu)].map(match=>match[0]);
   assert.deepEqual(entries,['scripts/check-web-archive.test.mjs','scripts/recheck-broken-links.test.mjs','scripts/recheck-transient-http.test.mjs']);
+  for(const event of ['push','pull_request']){
+    const paths=document.on[event].paths;
+    assert.ok(Array.isArray(paths),event+' must own a paths filter');
+    for(const file of entries)assert.ok(paths.includes(file),event+' trigger must retain '+file);
+  }
   // Finite reviewed module/literal-URL closure; runtime scratch files are independently created by parser tests.
   const {posix}=await import('node:path'),pending=[...entries],visited=new Set(),literalInputs=new Set();
   const covered=file=>file.startsWith('scripts/')||file==='package.json'||file==='.lycheeignore';
