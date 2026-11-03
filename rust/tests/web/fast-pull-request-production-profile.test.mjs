@@ -19,7 +19,7 @@ const evaluate = (expression, context) => new Script(expression.trim()
   .runInNewContext({cancelled: () => false, always: () => true, ...context}, {timeout: 100});
 function context(event, ref = 'refs/pull/1500/merge', enabled = false) {
   const outputs = Object.fromEntries(['any-code-changed','rs-changed','toml-changed','pipeline-changed','rust-changed','js-changed','ts-changed'].map(k => [k,'true']));
-  return {github: {event_name:event,ref}, vars:{FORMAL_AI_FULL_PR_CI:enabled?'run':'skip',FORMAL_AI_NON_LINUX_CI:'run',FORMAL_AI_FULL_INTEGRATION:'run',FORMAL_AI_FULL_LINK_CHECKS:'run'},
+  return {github: {event_name:event,ref}, vars:{FORMAL_AI_FULL_PR_CI:enabled?'run':'skip',FORMAL_AI_NON_LINUX_CI:'run',FORMAL_AI_FULL_INTEGRATION:'run',FORMAL_AI_FULL_LINK_CHECKS:'run',FORMAL_AI_FULL_CODING_LADDER:'run'},
     inputs:{}, needs:Object.fromEntries(['detect-changes','changes','build-artifacts','lint','test','macos-core-tests','js','ts','native-source','native','resolve']
       .map(k => [k,{result:'success',outputs:{...outputs,should_build:'true',build:'true'}}]))};
 }
@@ -391,4 +391,33 @@ test('secrets scanning retains full history and every current file within separa
   ]) {
     const changed=structuredClone(job);mutate(changed);assert.throws(()=>verify(changed));
   }
+});
+
+
+test('complete Coding Ladder is explicit main-only with mandatory default consistency and honest deferral', () => {
+  const document=workflow('coding-ladder.yml'),ids=['ladder-binary','ladder-shard','coding-ladder'];
+  assert.deepEqual(document.on.workflow_dispatch.inputs['full-ladder'],{description:'Run the complete 130-task authoring measurement on main',required:false,default:false,type:'boolean'});
+  const selected=(id,event,ref='refs/heads/main',requested='',fullLadder=false)=>{
+    const value=context(event,ref);value.vars.FORMAL_AI_FULL_CODING_LADDER=requested;value.inputs['full-ladder']=fullLadder;
+    return Boolean(evaluate(document.jobs[id].if,value));
+  };
+  for(const id of ids){
+    assert(manifest.jobs.some(row=>row.file==='coding-ladder.yml'&&row.id===id),'complete original payload is retained: '+id);
+    for(const event of ['push','schedule']){assert.equal(selected(id,event),false);assert.equal(selected(id,event,'refs/heads/main','run'),true);}
+    assert.equal(selected(id,'workflow_dispatch'),false,'generic checks dispatch does not select authoring');
+    assert.equal(selected(id,'workflow_dispatch','refs/heads/main','',true),true);
+    for(const event of ['pull_request','pull_request_target'])for(const ref of ['refs/heads/main','refs/pull/1/merge'])assert.equal(selected(id,event,ref,'run',true),false);
+    for(const event of ['push','workflow_dispatch'])assert.equal(selected(id,event,'refs/heads/feature','run',true),false);
+  }
+  assert.deepEqual(document.jobs['ladder-shard'].strategy.matrix.shard,[1,2,3,4,5]);
+  assert.equal(document.jobs['ladder-shard']['timeout-minutes'],30);
+  const measurement=document.jobs['ladder-shard'].steps.find(step=>step.name==='Measure one shard of the 130 coding tasks');
+  assert.equal(measurement.env.TEST_BUDGET_SECONDS,1200);
+  const scope=document.jobs['ladder-scope'];assert.equal(scope['timeout-minutes'],1);assert.equal(scope.steps.length,1);
+  assert.equal(scope.steps.some(step=>step.uses||/cargo|rust-script|run_coding_ladder[.]sh/u.test(step.run??'')),false);
+  assert.match(scope.steps[0].run,/no authoring measurement, benchmark score or acceptance credit is claimed/u);
+  const gate=read('data/meta/ci-gates/coding-ladder.lino');
+  assert.match(gate,/stage rust/u);assert(gate.includes('rust-script --test scripts/check-coding-ladder.rs && rust-script scripts/check-coding-ladder.rs --base origin/main'));
+  assert(read('.github/workflows/release.yml').includes('rust-script scripts/run-ci-gates.rs --stage rust'),'ordinary main lint retains the mandatory consistency gate');
+  for(const [file,expected] of Object.entries({"experiments/issue_847_coding_ladder/run_coding_ladder.sh":"64f9fa51b7809b7ce6bde6ecb789e84324a5911fd2cf37130eae276e47feebd4","experiments/issue_847_coding_ladder/prompts.json":"d06dc4bd0d1eb17133f407be92a1b6f0ca2323a91e31047261240c734b2f3f0d","experiments/issue_847_coding_ladder/results.json":"450255f7d1d97083f365d66a92b3d5e9a96a10425de456ea0baf066ee0598230","data/meta/ladder-ratchet.lino":"58bc9c284d95115011c187c2f1bacba316a8fee026b4cfe0ef3f46c5981e6c4d","scripts/check-coding-ladder.rs":"42765a4a1ca3f8c2c69dbca408b4a255670f67f305a7b179009b8e52651f67f6","data/meta/ci-gates/coding-ladder.lino":"e76930c5c87a4ffaa9475118ae089bbae13850310f338af5c18b335a6feaa04d"}))assert.equal(createHash('sha256').update(readFileSync(file)).digest('hex'),expected,'retained original benchmark/ratchet '+file);
 });
