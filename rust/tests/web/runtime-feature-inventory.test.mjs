@@ -29,6 +29,7 @@ test('browser message ownership and dynamic response shapes fail closed',()=>{
  assert.throws(()=>browserProtocol('self.onmessage=()=>{postMessage(dynamic)}'));
 });
 test('source changes force inventory regeneration without promoting evidence',()=>{
+ assert.equal(checkRuntimeFeatureInventory(read,read('data/meta/runtime-feature-coverage.json')),true,'committed runtime inventory matches current authoritative sources');
  const expected=renderRuntimeFeatureInventory(read);assert.equal(checkRuntimeFeatureInventory(read,expected),true);
  assert.equal(checkRuntimeFeatureInventory(file=>read(file)+'\n',expected),false);
 });
