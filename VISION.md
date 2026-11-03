@@ -17,6 +17,8 @@ script, generator or exact replacement is instruction execution and earns no
 autonomous code-generation credit. Unsupported tasks remain explicit gaps;
 never substitute a manual edit while claiming Formal AI authored the change.
 
+Delegate substantive thinking as well as actions: target at least 5% of reviewed reasoning units per development batch from Formal AI itself, including decomposition, alternative strategies, trusted public research and fact-checking. Freeze the unit list before results, report attempted and independently accepted shares separately, and give supplied conclusions or procedures zero independent reasoning credit. This is a measured improvement target, not a claim of current capability or a new release blocker. See [the delegation contract](docs/requirements/doctrine-standing-doctrine-work-delegated-to-formal-ai-2026-10-07.md#reasoning-and-fact-checking-delegation).
+
 Improve reusable reasoning and transformation capabilities when a small task
 fails, then retry the unchanged task. Record any externally authored bootstrap
 separately. Preserve the complete readable CST, comments and unrelated content,

@@ -80,7 +80,21 @@ const literals = [
 ['Generate a file named data.json containing {"ok": true}','data.json','{"ok": true}'],
 ['new file: notes.txt, contents: hello','notes.txt','hello']
 ];
-test('original literal matrices preserve target bytes through target-only fresh readback', async () => {
+test('literal matrix binds declared targets and exact bytes without executing tools', () => {
+  for (const [prompt, target, content] of literals) {
+    const plan = composeGeneralChangePlan(prompt);
+    assert.equal(plan.mode, 'literal_file', prompt);
+    assert.equal(plan.target, target, prompt);
+    assert.equal(plan.content, content, prompt);
+    assert.notEqual(plan.target, PLAN_PATH);
+  }
+});
+
+test('original literal matrices preserve target bytes through target-only fresh readback', {
+  skip: process.env.FAST_PR_PROFILE === 'true'
+    ? '25-delivery planner and physical workspace matrix runs on main; contract and refusal controls remain active'
+    : false,
+}, async () => {
   for (const [prompt, path, bytes] of literals) {
     const result = await run(prompt);
     assertTarget(result, path, bytes);

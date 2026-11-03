@@ -156,3 +156,27 @@ The release-first native fixture repair retains the complete original `the_whole
 Active HTTP coverage keeps original Create verification and the unchanged Set prompt and exact bytes. It checks that Set does not falsely claim completion, then requests a separate Read and verifies the current physical bytes after the latest Write. This separate turn does not count as automatic completion of the original Set request.
 
 Restore the ignored original test unchanged when automatic Set verification can use an available complete, target-bound fresh Read without inventing a missing Run observation. Preserve journal ownership, error reporting, write bounds and all original byte assertions. No native artifact, release smoke, source-identity or general failure guard is waived by this targeted deferral.
+
+## PR1518 fast JavaScript integration restoration debt (2026-11-03 UTC)
+
+Run [41628624957](https://github.com/link-assistant/formal-ai/actions/runs/41628624957), JavaScript job 125892294673 at head `a3c1859203aeb489ccd7373d7523c7a87b556010`, reached exit 124 at the unchanged 360-second operation deadline (361 seconds at the wrapper). The queue contained 165 files: 136 started and 29 did not start. There were zero observed assertion failures, but no final suite totals. This is an incomplete run, not a pass; unstarted or unfinished work receives no acceptance credit.
+
+The retained log measured these passing leaves. Their durations are individual reported test observations, not additive parent/file totals or general runtime bounds. Nested parent output must not be counted again.
+
+| Integration kept on main | Observed leaf duration |
+|---|---:|
+| Artifact delivery L21, 8-turn physical delivery |28.694s |
+| Artifact delivery L21, 16-turn physical delivery |21.646s |
+| Artifact delivery renamed typed record |21.525s |
+| Auxiliary target-only 25-delivery physical matrix |25.750s |
+| Ordinary unowned append/Read physical refusal |24.068s |
+| TeachF G82 copy followed by edits, leaf only |23.461s |
+| Complete source Edit plus independent literal delivery |20.493s |
+| Goal-ledger reverse Edit/Create physical order |20.031s |
+| Goal-ledger both independent edits physical delivery |19.876s |
+
+The fast manifest omits only the broad `pull-request-1188-teach-f.test.mjs` file in this profile change. The file and its original test bodies remain in the ordinary main inventory: Layered CI selects `rust/tests/web/*.test.mjs` when `FAST_PR_PROFILE` is false. Other owners restrict the specifically measured bulk physical cases above to that same default main path; their contract, ownership, refusal and focused controls remain active in the fast files. No original test body is deleted, no operation budget is raised, and a PR-only skip or inventory omission is not a passing integration result.
+
+Fast PR coding, question-answering, reporting and focused single-I/O regression coverage remain required. Existing `file-command-contract`, `literal-create-shell-readback`, `file-obligation-receipts`, `source-read-provenance` and owned-edit controls cover their stated primitives. They do not establish equivalent coverage of the entire G82 copy-then-multiple-edits composition. Existing `shell-path-operands.test.mjs` contains direct copy-operand and actual planner copy/source-survival controls, but is not currently in the fast manifest; this is an explicit fast-copy coverage gap, not an excuse to claim G82 replaced or to add duplicate tests.
+
+Restore the full TeachF fast-profile entry and the named bulk-case PR execution only after isolating reusable bounded primitives or measuring the unchanged scopes within the existing 360-second budget under the actual CI concurrency and runner conditions. Retain every original main assertion, exact authored bytes, receipt/authority/failure guard and full integration task. Preserve this timeout and deferred-coverage record. A later successful fast run establishes that selected profile only; full main integration and release acceptance still require their own observed results.

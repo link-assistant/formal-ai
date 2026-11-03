@@ -61,7 +61,12 @@ for (const task of [
   'append and prepend file note.txt containing hello',
   'append file note.txt containing "hello',
 ]) {
-  test('unowned complete request refuses additive effects: ' + task, async () => {
+  test('unowned complete request has no additive contract: ' + task, () => {
+    assert.equal(ownedAdditiveLiteral(task), null);
+  });
+  test('unowned complete request refuses additive effects: ' + task, {
+    skip: process.env.FAST_PR_PROFILE === 'true' ? 'physical refusal integration runs on main' : false,
+  }, async () => {
     assert.equal(ownedAdditiveLiteral(task), null);
     const directory = mkdtempSync(join(tmpdir(), 'formal-append-refusal-'));
     try {

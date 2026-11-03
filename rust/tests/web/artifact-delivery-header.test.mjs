@@ -150,9 +150,25 @@ for (const [label, request, target, expected] of cases) {
   });
 }
 
+test('complete original and renamed L21 tasks retain typed evidence binding: contract only', async () => {
+  const {readFileSync} = await import('node:fs');
+  const {hasTypedEvidenceDelivery} = await import('../../../js/agentic/evidence_record.mjs');
+  const original = readFileSync(new URL('../fixtures/l21-original-task.txt', import.meta.url), 'utf8');
+  const renamed = original.replaceAll('rust/src/solver_handler_how_synthesis.rs', 'rust/src/renamed_subject.rs')
+    .replaceAll('agent-ladder-effects/node-2.1.2.1.1.lino', 'renamed/effect.lino')
+    .replaceAll('.agent-ladder/node-2.1.2.1.1-proof.md', 'renamed/proof.md');
+  assert.equal(hasTypedEvidenceDelivery(original), true);
+  assert.equal(hasTypedEvidenceDelivery(renamed), true);
+});
+
 // Actual per-record receipts supplement independent physical byte checks.
+const fullPlannerIntegration = {
+  skip: process.env.FAST_PR_PROFILE === 'true'
+    ? 'full planner and physical record integration runs on main; header and authority controls remain active'
+    : false,
+};
 for (const steps of [8, 16]) {
-  test('unchanged L21 persists both mandatory records in ' + steps + ' turns', async () => {
+  test('unchanged L21 persists both mandatory records in ' + steps + ' turns', fullPlannerIntegration, async () => {
     const fs = await import('node:fs');
     const { tmpdir } = await import('node:os');
     const { join, dirname } = await import('node:path');
@@ -188,7 +204,7 @@ for (const steps of [8, 16]) {
   });
 }
 
-test('typed evidence routing follows renamed source, effect and proof operands',async()=>{
+test('typed evidence routing follows renamed source, effect and proof operands',fullPlannerIntegration,async()=>{
  const fs=await import('node:fs'),{tmpdir}=await import('node:os'),{join,dirname}=await import('node:path');
  const {drive}=await import('../../../experiments/js_dogfood/drive.mjs'),{planChatStep}=await import('../../../js/agentic/planner.mjs');
  const original=fs.readFileSync(new URL('../fixtures/l21-original-task.txt',import.meta.url),'utf8');

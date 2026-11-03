@@ -64,11 +64,11 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: 'checks: run the pull-request checks on the dispatched branch'
+        description: 'checks: normal checks; regenerate-translations: explicit source-only repair'
         required: false
         default: checks
         type: choice
-        options: [checks]
+        options: [checks, regenerate-translations]
       pull-request:
         description: 'Pull request the dispatched checks report for'
         required: false
@@ -106,9 +106,45 @@ permissions:
   contents: read
 
 jobs:
+  regenerate-translations:
+    name: Explicit source-only translation regeneration
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'regenerate-translations' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    concurrency:
+      group: source-translations-${{ github.ref }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - name: Check out the exact ledger-pinned translator
+        uses: actions/checkout@v7
+        with:
+          repository: link-foundation/meta-language
+          ref: eb0574d5528babd3b4aadece81590d8e2230b99b
+          path: .meta-language
+          persist-credentials: false
+      - name: Install only the translator runtime without lifecycle scripts
+        run: npm ci --prefix .meta-language/js --omit=dev --ignore-scripts --no-audit --no-fund
+      - name: Regenerate the two source projections and verified census
+        run: node --max-old-space-size=384 scripts/regenerate-targeted-js-rust.mjs .meta-language
+      - name: Preserve only generated source and its source/hash manifest
+        uses: actions/upload-artifact@v7
+        with:
+          name: targeted-source-translations-${{ github.sha }}
+          path: translation-regeneration/
+          if-no-files-found: error
+          retention-days: 1
+
   changes:
     name: Detect tier changes
-    if: ${{ github.event_name != 'workflow_dispatch' || inputs.diagnostic-native-run == '' }}
+    if: ${{ (github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations') && (github.event_name != 'workflow_dispatch' || inputs.diagnostic-native-run == '') }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     # Checkout retries must fit this unchanged job clock.
@@ -158,7 +194,7 @@ jobs:
 
 
   source-networks:
-    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true) }}
+    if: ${{ (github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations') && ((github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true)) }}
     name: Full source network serialization (${{ matrix.shard }}/16)
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -206,7 +242,7 @@ jobs:
     needs: [changes]
     # Only this tier's own predicate and no `always()`: another tier's
     # folder changing alone must let this tier stand on its last green run.
-    if: needs.changes.outputs.js-changed == 'true' || github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')
+    if: ${{ (github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations') && (needs.changes.outputs.js-changed == 'true' || github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) }}
     runs-on: ubuntu-latest
     # Issue #1017: `timeout-minutes` is a backstop, never the deadline. The
     # suites ran as one unbudgeted step that took 378s of this 600s cap
@@ -347,7 +383,7 @@ jobs:
     # Release-first debt PR1329-prover-cold-install-throughput: both official
     # mirrors exceeded the bounded install on main. Keep this optional math
     # integration explicit; a skipped job is not real-prover acceptance.
-    if: needs.changes.outputs.js-changed == 'true' && vars.FORMAL_AI_REAL_PROVER_INTEGRATION == 'true'
+    if: ${{ (github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations') && (needs.changes.outputs.js-changed == 'true' && vars.FORMAL_AI_REAL_PROVER_INTEGRATION == 'true') }}
     runs-on: ubuntu-latest
     timeout-minutes: 12
     concurrency:
@@ -412,7 +448,7 @@ jobs:
     # translated Rust. JavaScript must be green or carried first.
     # R1183: generated research Rust or compiler inputs can change without a
     # JavaScript path change, so this compiler boundary also runs for those edits.
-    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && (needs.js.result == 'success' || needs.js.result == 'skipped')) }}
+    if: ${{ (github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations') && ((github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && (needs.js.result == 'success' || needs.js.result == 'skipped'))) }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     concurrency:
@@ -465,7 +501,7 @@ jobs:
     # ts-changed gates the tier; js must be green or carried (skipped by
     # path). A js failure turns this job into skipped-by-js, never its own
     # red -- the cycle's enforcement order.
-    if: needs.changes.outputs.ts-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped')
+    if: ${{ (github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations') && (needs.changes.outputs.ts-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     concurrency:
@@ -509,7 +545,7 @@ jobs:
     # rust-changed gates the tier (it includes js/** and ts/** today,
     # because the dogfood gate binds all three trees); js and ts must each
     # be green or carried. Either red means skipped-by-cycle, not own red.
-    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (needs.changes.outputs.rust-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped') && (needs.ts.result == 'success' || needs.ts.result == 'skipped')) }}
+    if: ${{ (github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations') && ((github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (needs.changes.outputs.rust-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped') && (needs.ts.result == 'success' || needs.ts.result == 'skipped'))) }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     concurrency:
@@ -552,7 +588,7 @@ jobs:
     # data/meta/server-routes.lino exactly as the Rust server does (R1013).
     # The same gate as the rust tier: it wakes on any js, seed, server-manifest
     # or rust change, and js and ts must be green or carried first.
-    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (needs.changes.outputs.rust-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped') && (needs.ts.result == 'success' || needs.ts.result == 'skipped')) }}
+    if: ${{ (github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations') && ((github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (needs.changes.outputs.rust-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped') && (needs.ts.result == 'success' || needs.ts.result == 'skipped'))) }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     concurrency:
@@ -587,7 +623,7 @@ jobs:
       group: check-${{ github.workflow }}-${{ github.ref }}-server-parity-diagnostic
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     name: Explicit server parity diagnostic from existing main binary
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.diagnostic-native-run != '' }}
+    if: ${{ (github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations') && (github.event_name == 'workflow_dispatch' && inputs.diagnostic-native-run != '') }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:

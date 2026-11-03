@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync,existsSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {Script} from 'node:vm';
 import YAML from 'yaml';
@@ -74,4 +74,40 @@ test('fast source lint is mandatory on PRs without invoking native compilation',
   const changelog = release.jobs.changelog.steps.map(step => step.run ?? '').join('\n');
   assert.match(changelog, /node scripts\/check-changelog-fragment[.]mjs/u);
   assert.doesNotMatch(changelog, /rust-script /u);
+});
+
+
+test('explicit translation regeneration selects only the source emitter on every ref', () => {
+  const layered = workflow('layered-ci.yml');
+  const regeneration = layered.jobs['regenerate-translations'];
+  assert(regeneration);
+  assert.deepEqual(regeneration.permissions, {contents: 'read'});
+  assert.equal(regeneration.needs, undefined);
+  assert(regeneration['timeout-minutes'] <= 10);
+  const commands = regeneration.steps.map(step => step.run ?? '').join('\n');
+  assert.match(commands, /node --max-old-space-size=384 scripts\/regenerate-targeted-js-rust[.]mjs/u);
+  assert.doesNotMatch(commands, /\bcargo\b|\brustc\b|\bdocker\b|desktop|vscode/u);
+  for (const ref of ['refs/heads/main', 'refs/heads/fix/example']) {
+    const dispatched = context('workflow_dispatch', ref);
+    dispatched.inputs = {mode: 'regenerate-translations', 'diagnostic-native-run': '123', 'diagnostic-native-source': 'a'.repeat(40)};
+    for (const [name, job] of Object.entries(layered.jobs))
+      assert.equal(Boolean(evaluate(job.if, dispatched)), name === 'regenerate-translations', name + ' explicit source mode');
+  }
+  for (const event of ['pull_request', 'push'])
+    assert.equal(Boolean(evaluate(regeneration.if, context(event, 'refs/heads/main'))), false, event);
+});
+
+test('measured TeachF integration stays on main while fast coding and QA controls remain selected', () => {
+  const selected=selectFastTests(JSON.parse(read('data/benchmarks/fast-pull-request-javascript-tests.json')));
+  const teach='rust/tests/web/pull-request-1188-teach-f.test.mjs';
+  assert.equal(selected.includes(teach),false);
+  assert.equal(existsSync(teach),true);
+  const step=workflow('layered-ci.yml').jobs.js.steps
+    .find(item=>item.name==='Run this shard of the JavaScript suites');
+  assert.equal(evaluate(step.env.FAST_PR_PROFILE,context('push','refs/heads/main')),false);
+  assert.match(step.run,/printf '%s\\n' rust\/tests\/web\/\*\.test\.mjs/u);
+  for(const name of ['ordinary-literal-addition','issue-1180-repository-qa',
+    'issue-1438-report-and-edit','file-command-contract','literal-create-shell-readback',
+    'file-obligation-receipts','source-read-provenance','owned-edit-contract'])
+    assert.equal(selected.includes('rust/tests/web/'+name+'.test.mjs'),true,name);
 });

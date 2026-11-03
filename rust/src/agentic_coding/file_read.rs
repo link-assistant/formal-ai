@@ -10,6 +10,7 @@ pub(super) use ownership::{
 mod exact;
 mod records;
 mod source;
+mod source_claims;
 use records::{
     ToolResultRecord, grep_result_for_path, read_result_for_path, run_record_for_command,
     tool_result_records,

@@ -26,11 +26,22 @@ function reportFile(state, event) {
 const tests = run({files, concurrency});
 tests.on('test:enqueue', event => reportFile('queued', event));
 tests.on('test:dequeue', event => reportFile('started', event));
-tests.on('test:pass', event => reportFile('completed', event));
+// Node22+ emits one summary per isolated file and a final cumulative summary.
+// Case names are not file identities, so case pass/fail events cannot certify completion.
+const summarized = new Set();
+tests.on('test:summary', event => {
+  if (typeof event.file !== 'string') return;
+  const file = selected.get(resolve(event.file));
+  if (file === undefined || summarized.has(file)) return;
+  summarized.add(file);
+  const state = event.success === true ? 'completed' : 'failed';
+  const duration = Number.isFinite(event.duration_ms) && event.duration_ms >= 0
+    ? event.duration_ms : null;
+  console.error('[test-file] ' + state + ' ' + file + ' ' + JSON.stringify({duration_ms: duration}));
+});
 tests.on('test:fail', event => {
   if (event.todo === undefined || event.todo === false) {
     process.exitCode = 1;
-    reportFile('failed', event);
   }
 });
 await pipeline(tests.compose(spec), process.stdout);
