@@ -1,11 +1,7 @@
 #!/usr/bin/env node
 import { writesWholeFile } from '../../js/agentic/literal_write_guard.mjs';
-import {sourceRepairContract} from '../../js/agentic/source_repair.mjs';
-import {ownedSourceMaintenanceRequest} from '../../js/agentic/source_maintenance.mjs';
 import {createScopedSourceEditHost} from './scoped-source-edit-host.mjs';
 import {createBoundaryRegressionCreateHost} from './boundary-regression-create-host.mjs';
-import {boundaryWorkItemContract} from '../../js/agentic/work_item_boundary_candidate.mjs';
-import {workItemEvidencePaths} from '../../js/agentic/work_item_evidence.mjs';
 // Drive the JavaScript Formal AI planner (`planChatStep`, the function the JS
 // server runs for /v1/chat/completions in agent mode) through a whole agentic
 // session in-process, executing every planned tool call against a real
@@ -38,7 +34,7 @@ import { ownsCompleteLiteralRequest, ownedAdditiveLiteralFrame, ownedDeclaredCre
 import { parseWriteContract, composeGeneralChangePlan } from '../../js/agentic/general_planner.mjs';
 import { planGeneralChangeStep } from '../../js/agentic/general_execution.mjs';
 import { planChatStep as maintainedPlanChatStep, planChatStepResolved as maintainedResolvedStep } from '../../js/agentic/planner.mjs';
-import {driverRequestAuthority,literalJournalCallsMatch,driverAppendContracts} from '../../js/provenance/literal-journal-authority.mjs';
+import {driverRequestAuthority,driverSourceEditAuthority,literalJournalCallsMatch,driverAppendContracts} from '../../js/provenance/literal-journal-authority.mjs';
 import { quotedSegmentSpans } from '../../js/agentic/crate/normal_markov.mjs';
 import { mentionsRole } from '../../js/agentic/crate/seed_meanings.mjs';
 import { normalizePrompt } from '../../js/agentic/crate/engine.mjs';
@@ -395,10 +391,8 @@ async function driveInternal(planChatStep, dir, prompt, {
   ];
   const transcript = [];
   // Private live request binding: no caller tool argument can grant creation.
-  const {declaredGoals,mixedGoals,createContracts,createContract,literalJournal} = driverRequestAuthority(prompt);
-  const boundaryContract = createContract === null ? boundaryWorkItemContract(prompt,workItemEvidencePaths) : null;
+  const {declaredGoals,mixedGoals,createContracts,createContract,literalJournal,boundaryContract,maintenanceContract} = driverRequestAuthority(prompt);
   const regressionContract = boundaryContract?.mode === 'regression' ? boundaryContract : null;
-  const maintenanceContract = ownedSourceMaintenanceRequest(prompt);
   const maintenanceSession = maintenanceContract === null ? null : createScopedSourceEditHost({workspace:dir,ownedPath:maintenanceContract.target,maximumBytes:131072});
   const createdTargets = new Set();
   // Bounded path checks detect known replacement/aliases; they do not prove namespace atomicity.
@@ -468,7 +462,7 @@ async function driveInternal(planChatStep, dir, prompt, {
       && mentionsRole('evidence-report-artifact-kind', clause.text);
   });
   if (readOnlyOperation && reportDelivery && readReportFrame === null) readOnlyOperation = false;
-  let sourceEditOperation = maintenanceContract !== null || sourceRepairContract(prompt)?.authority === 'owned';
+  let sourceEditOperation = driverSourceEditAuthority(prompt,maintenanceContract);
   const targetReadPlan = (plan, target) => plan?.kind === 'tool_calls'
     && plan.calls.length > 0 && plan.calls.every(call => {
       if (call.tool !== 'read' || !tools.includes(call.tool)) return false;

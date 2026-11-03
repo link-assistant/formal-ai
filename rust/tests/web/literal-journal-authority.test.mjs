@@ -65,3 +65,39 @@ test('replay derives real request authority only inside its strict source-sessio
   assert.ok(reads>0);assert.equal(active,false);
  }finally{installHost(installed);}
 });
+
+test('capture and replay execute both request classification phases under source custody',async()=>{
+ const installed=host(),reads=new Set();let active=false;
+ const tracked={...installed,readText(relative){
+  if(!active)throw Error('StrictRequestScopeRequired');
+  reads.add(relative);return installed.readText(relative);
+ }};
+ const {boundaryWorkItemContract}=await import('../../../js/agentic/work_item_boundary_candidate.mjs');
+ const {workItemEvidencePaths}=await import('../../../js/agentic/work_item_evidence.mjs');
+ const {ownedSourceMaintenanceRequest}=await import('../../../js/agentic/source_maintenance.mjs');
+ const {sourceRepairContract}=await import('../../../js/agentic/source_repair.mjs');
+ const inputs=['data/meta/comparison-boundary-grammar.lino','data/meta/owned-source-repair.lino'];
+ const session={async run(context,action){active=true;try{return await action();}finally{active=false;}}};
+ try{
+  installHost(tracked);
+  for(const prompt of ['Read file retained.mjs.','Repair source example.mjs.','Do not repair source example.mjs.',
+   'Create file heldout.mjs containing export const leaf = 23;',
+   'Remove trailing whitespace from sample.mjs.']){
+   const expected=await session.run({request:prompt},()=>{
+    const authority=driverRequestAuthority(prompt);
+    const boundaryContract=authority.createContract===null?boundaryWorkItemContract(prompt,workItemEvidencePaths):null;
+    const maintenanceContract=ownedSourceMaintenanceRequest(prompt);
+    const sourceEditOperation=maintenanceContract!==null||sourceRepairContract(prompt)?.authority==='owned';
+    return{boundaryContract,maintenanceContract,sourceEditOperation};
+   });
+   const actualInputs=inputs.filter(input=>reads.has(input));
+   if(prompt==='Read file retained.mjs.')assert.deepEqual(actualInputs,inputs,'original two lazy runtime inputs');
+   reads.clear();
+   await withDriverRequestAuthority(session,{request:prompt,workspace:'/synthetic',tools:['read','write']},authority=>{
+    for(const key of Object.keys(expected))assert.deepEqual(authority[key],expected[key],key+' for '+prompt);
+    assert.deepEqual(inputs.filter(input=>reads.has(input)),actualInputs,'exact lazy runtime inputs for '+prompt);
+   });
+   assert.equal(active,false);reads.clear();
+  }
+ }finally{installHost(installed);}
+});

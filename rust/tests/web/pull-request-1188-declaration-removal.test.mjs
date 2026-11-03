@@ -13,6 +13,7 @@ import { createHash } from 'node:crypto';
 
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+import {completeOwnedSourceReadFrame} from '../../../js/agentic/tool_result.mjs';
 
 let planChatStep;
 
@@ -25,7 +26,7 @@ const TOOLS = ['read', 'edit', 'bash', 'write'];
 
 function execute(files, tool, args) {
   const path = args.filePath ?? args.file_path ?? args.path;
-  if (tool === 'read') return files.get(path) ?? `Error: File not found: ${path}`;
+  if (tool === 'read') return files.has(path) ? completeOwnedSourceReadFrame(files.get(path)) : `Error: File not found: ${path}`;
   if (tool === 'edit') {
     files.set(path, files.get(path).replace(args.oldString, () => args.newString));
     return '';

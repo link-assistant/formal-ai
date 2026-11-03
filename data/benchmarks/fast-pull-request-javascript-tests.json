@@ -152,6 +152,13 @@
     "rust/tests/web/replay-append-contract-projection.test.mjs",
     "rust/tests/web/self-coding-proof.test.mjs",
     "rust/tests/web/native-edit-observation-parity.test.mjs",
-    "rust/tests/web/issue-982-native-session-observation.test.mjs"
+    "rust/tests/web/issue-982-native-session-observation.test.mjs",
+    "rust/tests/web/pull-request-1188-subagent-folder.test.mjs",
+    "rust/tests/web/pull-request-1188-declaration-removal.test.mjs",
+    "rust/tests/web/pull-request-1188-line-operations.test.mjs",
+    "rust/tests/web/pull-request-1188-replace-semantics.test.mjs",
+    "rust/tests/web/issue-1069-greeting-seed-ladder.test.mjs",
+    "rust/tests/web/observed-workspace-digest.test.mjs",
+    "rust/tests/web/pull-request-1188-setting-verb.test.mjs"
   ]
 }

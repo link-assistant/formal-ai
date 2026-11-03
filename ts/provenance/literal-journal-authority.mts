@@ -6,6 +6,10 @@ import {bareSurfaces} from '../agentic/write_request.mjs';
 import {normalizePrompt} from '../agentic/crate/engine.mjs';
 import {writesWholeFile} from '../agentic/literal_write_guard.mjs';
 import {appendDefinition} from '../agentic/append_contract.mjs';
+import {boundaryWorkItemContract} from '../agentic/work_item_boundary_candidate.mjs';
+import {workItemEvidencePaths} from '../agentic/work_item_evidence.mjs';
+import {ownedSourceMaintenanceRequest} from '../agentic/source_maintenance.mjs';
+import {sourceRepairContract} from '../agentic/source_repair.mjs';
 // Provider capabilities derive from the driver grant during both execution and replay.
 export function driverAppendContracts(tools,enabled){
  return enabled===true&&Array.isArray(tools)&&tools.includes('write')?[appendDefinition('write')]:[];
@@ -63,10 +67,20 @@ export function driverRequestAuthority(prompt){
   const createContract = createContracts[0] ?? null;
   // A whole-file literal journal has its own custody; it never grants exclusive creation.
   const literalJournal = literalJournalAuthority(prompt,createContract !== null);
-  return {declaredGoals,mixedGoals,createContracts,createContract,literalJournal};
+  const boundaryContract = createContract === null ? boundaryWorkItemContract(prompt,workItemEvidencePaths) : null;
+  const maintenanceContract = ownedSourceMaintenanceRequest(prompt);
+  return {declaredGoals,mixedGoals,createContracts,createContract,literalJournal,boundaryContract,maintenanceContract};
 }
 
+// Preserve the actual driver's later source-edit phase and maintenance short circuit.
+export function driverSourceEditAuthority(prompt,maintenanceContract){
+ return maintenanceContract !== null || sourceRepairContract(prompt)?.authority === 'owned';
+}
 // Construct request authority under the same provider scope that owns actual execution.
 export function withDriverRequestAuthority(session,context,action){
- return session.run(context,()=>action(driverRequestAuthority(context.request)));
+ return session.run(context,()=>{
+  const authority=driverRequestAuthority(context.request);
+  const sourceEditOperation=driverSourceEditAuthority(context.request,authority.maintenanceContract);
+  return action({...authority,sourceEditOperation});
+ });
 }

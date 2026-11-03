@@ -13,6 +13,7 @@ import { execFileSync } from 'node:child_process';
 
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+import { completeOwnedSourceReadFrame } from '../../../js/agentic/tool_result.mjs';
 
 let planChatStep;
 
@@ -35,7 +36,7 @@ async function drive(prompt, path, source) {
     const [call] = plan.calls;
     const args = JSON.parse(call.arguments);
     let result = '';
-    if (call.tool === 'read') result = file;
+    if (call.tool === 'read') result = completeOwnedSourceReadFrame(file);
     if (call.tool === 'edit') file = file.replace(args.oldString, () => args.newString);
     if (call.tool === 'bash') result = `${createHash('sha256').update(file).digest('hex')}  ${path}\n`;
     calls.push([call.tool, args.filePath ?? args.command]);
