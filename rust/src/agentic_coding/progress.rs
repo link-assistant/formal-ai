@@ -9,6 +9,7 @@
 use super::capability_router::classify_tool;
 use super::planner::Capability;
 use crate::protocol::ChatMessage;
+mod creation;
 mod source_fetch_observation;
 mod source_freshness;
 pub use source_freshness::owned_creation_readback_command;

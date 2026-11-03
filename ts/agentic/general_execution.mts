@@ -8,11 +8,14 @@ export function ownedCreationObservation(plan, progress) {
   if (plan?.mode !== GeneralPlanMode.LiteralFile || typeof plan.goal !== 'string'
     || typeof plan.target !== 'string' || typeof plan.content !== 'string') return null;
   const frame = ownedDeclaredCreateFrame(plan.goal);
+  const mutation = progress.creationMutationFor(plan.target);
   if (frame === null || frame.target !== plan.target || frame.content !== plan.content
-    || progress.successfulWriteContentFor(plan.target) !== plan.content) return null;
-  if (progress.attemptedReadAfterLatestWriteFor(plan.target)) {
-    const attempt = progress.latestPostWriteReadAttemptFor(plan.target);
-    const observed = progress.sourceReadAfterLatestWriteFor(plan.target);
+    || !mutation?.qualified || !mutation.succeeded || mutation.content !== plan.content) return null;
+  const command = ownedCreationReadbackCommand(plan.target);
+  const state = progress.creationReadbackFor(mutation, command);
+  if (!state.current || state.pendingRead) return null;
+  if (state.readAttempt !== null) {
+    const attempt = state.readAttempt, observed = attempt.source_read;
     let qualified;
     try { qualified = qualifiedToolAttempt(progress, Capability.Read, JSON.parse(attempt.arguments)); }
     catch { return null; }
@@ -23,8 +26,7 @@ export function ownedCreationObservation(plan, progress) {
         command: null, exitCode: null, sourceRead: observed, tool: attempt.tool, arguments: attempt.arguments}
       : null;
   }
-  const command = ownedCreationReadbackCommand(plan.target);
-  const receipt = progress.postWriteCommandReceiptFor(plan.target, command);
+  const receipt = state.commandReceipt;
   return receipt?.qualified && receipt.succeeded && receipt.raw !== null
     && reportedExitCode(receipt.raw) === 0 && !incompleteReceipt(receipt.raw)
     && !harnessReportedFailure(receipt.raw) && observedPayload(receipt.raw) === '(' + plan.content + ')'
@@ -41,42 +43,82 @@ function planOwnedCreationStep(plan, progress, toolNames) {
   const finish = (intent, disposition, origin = intent) => resolvedFinalAnswer(
     renderSeededOutcome(intent, plan.goal, plan.target) ?? plan.target, disposition, origin
   );
+  const gap = reason => resolvedFinalAnswer(JSON.stringify({
+    schema: 'workspace-creation-gap/v1', reason, target: plan.target, completed: false, verified: false
+  }), FinalDisposition.Gap, 'workspace-creation-gap');
   const failed = (detail, label = plan.target) => resolvedFinalAnswer(
     renderFailure(label, detail, plan.goal), FinalDisposition.Failure, 'general_change_failed'
   );
   const mismatch = observed => resolvedFinalAnswer(
     generalPlanMismatch(plan, observed), FinalDisposition.Failure, 'general_change_failed'
   );
-  const completed = () => finish('coding_workspace_effect_observed', FinalDisposition.Finding, 'general_change_verified');
-  const written = progress.successfulWriteContentFor(plan.target);
-  if (written === null) {
+  const mutation = progress.creationMutationFor(plan.target);
+  if (mutation === null) {
     if (progress.attemptedWriteFor(plan.target)) {
       const failure = progress.latestFailure();
       return failed(failure?.raw_receipt ?? failure?.detail ?? agenticMessage('literal-create-write-unobserved'));
     }
-    const write = toolFor(toolNames, Capability.Write);
-    return write === null ? finish('coding_workspace_written_unverified', FinalDisposition.Gap)
-      : planOne(write, writeArguments(plan.target, plan.content));
+    if (progress.attempts.some(attempt => attempt.capability === Capability.Edit
+      && typeof attempt.tool === 'string' && isWorkspaceCreationTool(attempt.tool))) {
+      return gap('CreationEvidenceUnqualified');
+    }
+    const write = workspaceCreationTool(toolNames);
+    if (write === null) return gap('WriteToolUnavailable');
+    if (toolFor([write], Capability.Write) !== null) {
+      return planOne(write, writeArguments(plan.target, plan.content));
+    }
+    const encoded = applyPatchInput(writeArguments(plan.target, plan.content));
+    const decoded = canonicalCreation(encoded);
+    if (decoded === null || decoded.path !== plan.target || decoded.content !== plan.content) {
+      return gap('CreationContentUnrepresentable');
+    }
+    const preflight = progress.creationPreflightFor(plan.target);
+    if (!preflight.attempted) {
+      const read = toolFor(toolNames, Capability.Read);
+      return read === null ? gap('ReadToolUnavailable') : planOne(read, readArguments(plan.target));
+    }
+    if (preflight.observation?.absent !== true) {
+      return gap(preflight.observation?.complete && preflight.observation.error === null
+        ? 'CreationTargetAlreadyExists' : 'CreationPreflightUnverified');
+    }
+    return planOne(write, writeArguments(plan.target, plan.content));
   }
-  if (written !== plan.content) return mismatch(written);
-  if (ownedCreationObservation(plan, progress) !== null) return completed();
-  if (progress.attemptedReadAfterLatestWriteFor(plan.target)) {
-    const observed = progress.sourceReadAfterLatestWriteFor(plan.target);
+  if (!mutation.receiptPresent) return gap('CreationReceiptPending');
+  if (!mutation.qualified) return gap('CreationEvidenceUnqualified');
+  if (!mutation.succeeded) {
+    return failed(mutation.attempt?.raw_receipt ?? mutation.attempt?.detail
+      ?? agenticMessage('literal-create-write-unobserved'));
+  }
+  if (mutation.content !== plan.content) return mismatch(mutation.content);
+  const readbackCommand = ownedCreationReadbackCommand(plan.target);
+  const state = progress.creationReadbackFor(mutation, readbackCommand);
+  if (!state.current) {
+    if (state.needsFreshRead) {
+      const read = toolFor(toolNames, Capability.Read);
+      if (read !== null) return planOne(read, readArguments(plan.target));
+      const run = toolFor(toolNames, Capability.Run);
+      if (run !== null) return planOne(run, jsonText({command: readbackCommand}));
+    }
+    return gap('CreationEvidenceNotCurrent');
+  }
+  if (ownedCreationObservation(plan, progress) !== null) {
+    return finish('coding_workspace_effect_observed', FinalDisposition.Finding, 'general_change_verified');
+  }
+  if (state.pendingRead) return gap('CreationReadPending');
+  if (state.readAttempt !== null) {
+    const observed = state.readAttempt.source_read;
     if (observed === null || observed.error !== null || !observed.complete) {
-      const failure = progress.latestFailure();
-      return failed(failure?.detail ?? observed?.error ?? agenticMessage('literal-create-read-incomplete'));
+      return failed(state.readAttempt.detail ?? observed?.error ?? agenticMessage('literal-create-read-incomplete'));
     }
     return observed.source === plan.content
       ? failed(agenticMessage('literal-create-receipt-unbound')) : mismatch(observed.source ?? '');
   }
-  const readbackCommand = ownedCreationReadbackCommand(plan.target);
-  const receipt = progress.postWriteCommandReceiptFor(plan.target, readbackCommand);
+  const receipt = state.commandReceipt;
   if (receipt !== null) {
     if (!receipt.qualified || !receipt.succeeded || receipt.raw === null
       || reportedExitCode(receipt.raw) !== 0 || incompleteReceipt(receipt.raw)
       || harnessReportedFailure(receipt.raw)) return failed(receipt.raw ?? agenticMessage('literal-create-receipt-unbound'), readbackCommand);
-    const observed = observedPayload(receipt.raw);
-    return mismatch(observed ?? '');
+    return mismatch(observedPayload(receipt.raw) ?? '');
   }
   const read = toolFor(toolNames, Capability.Read);
   if (read !== null) return planOne(read, readArguments(plan.target));
@@ -93,7 +135,9 @@ import {planWorkItemBoundaryStep} from './work_item_boundary_candidate.mjs';
 
 import { Capability } from './capability.mjs';
 import { appendRecordStep } from './append_contract.mjs';
-import { shellCommandTool, toolFor } from './capability_router.mjs';
+import { shellCommandTool, toolFor, workspaceCreationTool, isWorkspaceCreationTool } from './capability_router.mjs';
+import {canonicalCreation} from './qualified_tool_observation.mjs';
+import {applyPatchInput} from './crate/protocol_responses_apply_patch.mjs';
 import { attach, requestedIn } from './ci_workflow.mjs';
 import { executionRecipeFinalAnswer, planOwnedRecipeRecovery, planSymbolicCommandReroute } from './command_reroute.mjs';
 import { mentionsRoleRaw } from './write_lexicon.mjs';

@@ -18,6 +18,7 @@ pub(super) struct QualifiedToolAttempt {
     declared_tool: String,
     call_id: String,
     arguments_value: Value,
+    declaration_arguments: String,
     pub(super) binding: Binding,
     duplicate: bool,
     receipt_present: bool,
@@ -26,6 +27,16 @@ pub(super) struct QualifiedToolAttempt {
 }
 
 impl QualifiedToolAttempt {
+    pub(super) fn declaration_arguments(&self) -> &str {
+        &self.declaration_arguments
+    }
+    pub(super) fn declared_tool(&self) -> &str {
+        &self.declared_tool
+    }
+    pub(super) const fn arguments_value(&self) -> &Value {
+        &self.arguments_value
+    }
+
     pub(super) const fn capability(&self) -> Capability {
         self.capability
     }
@@ -176,6 +187,7 @@ pub(super) fn scan(messages: &[ChatMessage], start: usize) -> Vec<QualifiedToolA
                     declared_tool: call.function.name.clone(),
                     call_id: call.id.clone(),
                     arguments_value,
+                    declaration_arguments: call.function.arguments.clone(),
                     binding: if duplicate {
                         Binding::Contradicted
                     } else {
@@ -258,7 +270,18 @@ pub(super) fn qualified_command_attempt<'a>(
 
 mod creation;
 
-/// Recover only an exact canonical Add File declaration's literal path.
+/// Decoded declaration syntax; a declaration alone proves no executed effect.
+pub(super) struct CanonicalCreation<'a> {
+    pub(super) path: &'a str,
+    pub(super) content: String,
+}
+
+/// Recover exact literal bytes only after the maintained producer round-trips.
+pub(super) fn canonical_creation(raw: &str) -> Option<CanonicalCreation<'_>> {
+    creation::canonical_creation(raw)
+}
+
+/// Compatibility path projection shares the same canonical parser.
 pub(super) fn canonical_creation_path(raw: &str) -> Option<&str> {
-    creation::canonical_creation_path(raw)
+    canonical_creation(raw).map(|creation| creation.path)
 }

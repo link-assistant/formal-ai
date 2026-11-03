@@ -1,7 +1,8 @@
 // Exact commanded readback custody. The caller constructs the owned read-only command.
 import {Capability} from './capability.mjs';
 import {commandArgument} from './tool_result.mjs';
-import {argumentValuesEqual} from './qualified_tool_observation.mjs';
+import {argumentValuesEqual, canonicalCreation} from './qualified_tool_observation.mjs';
+import {isWorkspaceCreationTool} from './capability_router.mjs';
 import {agenticMessage} from './messages.mjs';
 import {quoteShellWord} from './portable/string_contracts.mjs';
 
@@ -34,10 +35,17 @@ export function readOnlyAttempt(progress, attempt, qualify, pathFromArguments) {
     || typeof pathFromArguments !== 'function') return false;
   const command = scalarCommand(attempt.arguments);
   if (command === null) return false;
-  const known = progress.attempts.some(write => {
-    if (write.capability !== Capability.Write || !write.succeeded || write.arguments === null) return false;
-    const path = pathFromArguments(write.arguments);
-    return path !== null && command === ownedCreationReadbackCommand(path);
+  const known = progress.attempts.some((write, index) => {
+    if (!write.succeeded || write.arguments === null) return false;
+    if (write.capability === Capability.Write) {
+      const path = pathFromArguments(write.arguments);
+      return path !== null && command === ownedCreationReadbackCommand(path);
+    }
+    const creation = write.capability === Capability.Edit && isWorkspaceCreationTool(write.tool)
+      ? canonicalCreation(write.arguments) : null;
+    const mutation = creation === null ? null : progress.creationMutationFor(creation.path);
+    return mutation?.qualified && mutation.succeeded && mutation.index === index
+      && command === ownedCreationReadbackCommand(creation.path);
   });
   // A failed qualified cat is still read-only; it never becomes successful evidence.
   return known && qualifiedReceipt(progress, attempt, command, qualify).qualified;
@@ -100,4 +108,79 @@ export function freshSourceReadAttemptFor(progress, path, qualifyCommand, pathFr
       && pathFromArguments(attempt.arguments) === path) return attempt;
   }
   return null;
+}
+
+// Creation custody is separate from broad Edit/Write classification.
+function creationArguments(frame, pathFromArguments) {
+  if (!isWorkspaceCreationTool(frame.declaredTool)) return null;
+  if (frame.capability === Capability.Edit) return canonicalCreation(frame.arguments);
+  if (frame.capability !== Capability.Write) return null;
+  const path = pathFromArguments(frame.arguments), value = frame.argumentsValue;
+  if (path === null || value === null || typeof value !== 'object' || Array.isArray(value)) return null;
+  const contents = ['content', 'contents', 'text', 'new_string']
+    .filter(key => Object.hasOwn(value, key)).map(key => value[key]);
+  return contents.length > 0 && contents.every(content => typeof content === 'string' && content === contents[0])
+    ? {path, content: contents[0]} : null;
+}
+function argumentValue(raw) {
+  try { return JSON.parse(raw); } catch { return raw; }
+}
+function boundAttempt(progress, frame) {
+  const matches = progress.attempts.map((attempt, index) => ({attempt, index})).filter(({attempt}) =>
+    attempt.capability === frame.capability && attempt.tool === frame.declaredTool
+    && argumentValuesEqual(argumentValue(attempt.arguments), frame.argumentsValue)
+    && (attempt.raw_receipt ?? attempt.detail) === frame.detail);
+  return matches.length === 1 ? matches[0] : null;
+}
+export function creationMutationFor(progress, frames, path, pathFromArguments) {
+  for (const frame of [...frames].reverse()) {
+    const creation = creationArguments(frame, pathFromArguments);
+    if (creation === null || creation.path !== path) continue;
+    const bound = boundAttempt(progress, frame);
+    const qualified = frame.binding === 'exact' && frame.receiptPresent && !frame.duplicate && bound !== null;
+    return Object.freeze({...creation, frame, capability: frame.capability, tool: frame.declaredTool,
+      arguments: frame.arguments, argumentsValue: frame.argumentsValue, receiptPresent: frame.receiptPresent,
+      attempt: bound?.attempt ?? null, index: bound?.index ?? null, qualified,
+      succeeded: qualified && frame.succeeded && bound.attempt.succeeded});
+  }
+  return null;
+}
+export function creationPreflightFor(progress, frames, path, pathFromArguments) {
+  const unknown = attempted => ({attempted, observation: null});
+  if (frames.some(frame => !frame.receiptPresent && !readOnlyCapability(frame.capability))) return unknown(true);
+  for (const frame of [...frames].reverse()) {
+    if (!readOnlyCapability(frame.capability)) return unknown(false);
+    if (frame.capability !== Capability.Read || pathFromArguments(frame.arguments) !== path) continue;
+    const bound = boundAttempt(progress, frame);
+    return frame.binding === 'exact' && frame.receiptPresent && !frame.duplicate && bound !== null
+      ? {attempted: true, observation: bound.attempt.source_read ?? null} : unknown(true);
+  }
+  return unknown(false);
+}
+export function creationReadbackFor(progress, frames, mutation, command, qualify, pathFromArguments) {
+  const empty = current => ({current, readAttempt: null, commandReceipt: null, pendingRead: false, needsFreshRead: false});
+  if (!mutation?.succeeded || mutation.index === null || !frames.includes(mutation.frame)
+    || progress.attempts[mutation.index] !== mutation.attempt
+    || frames.some(frame => !frame.receiptPresent && !readOnlyCapability(frame.capability))) return empty(false);
+  const laterFrames = frames.slice(frames.indexOf(mutation.frame) + 1);
+  const state = empty(true);
+  state.pendingRead = laterFrames.some(frame => frame.capability === Capability.Read
+    && pathFromArguments(frame.arguments) === mutation.path && !frame.receiptPresent);
+  for (let index = progress.attempts.length - 1; index > mutation.index; index--) {
+    const attempt = progress.attempts[index];
+    if (attempt.capability === Capability.Run && commandArgument(attempt.arguments) === command) {
+      state.commandReceipt ??= qualifiedReceipt(progress, attempt, command, qualify);
+      if (!state.commandReceipt.qualified) return empty(false);
+      continue;
+    }
+    if (!readOnlyAttempt(progress, attempt, qualify, pathFromArguments)) {
+      const invalidators = frames.filter(frame => frame.binding === 'exact' && frame.receiptPresent
+        && !frame.duplicate && boundAttempt(progress, frame)?.attempt === attempt);
+      return {...state, current: false, needsFreshRead: state.readAttempt === null
+        && state.commandReceipt === null && !state.pendingRead && invalidators.length === 1};
+    }
+    if (state.readAttempt === null && attempt.capability === Capability.Read
+      && pathFromArguments(attempt.arguments) === mutation.path) state.readAttempt = attempt;
+  }
+  return state;
 }

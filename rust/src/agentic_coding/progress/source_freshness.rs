@@ -30,7 +30,7 @@ pub(in crate::agentic_coding) fn read_only_capability(capability: Capability) ->
     )
 }
 
-fn read_only_attempt(progress: &Progress, attempt: &ToolAttempt) -> bool {
+pub(super) fn read_only_attempt(progress: &Progress, attempt: &ToolAttempt) -> bool {
     if read_only_capability(attempt.capability) {
         return true;
     }
@@ -58,15 +58,34 @@ fn read_only_attempt(progress: &Progress, attempt: &ToolAttempt) -> bool {
     {
         return false;
     }
-    progress.research_attempts().iter().any(|write| {
-        write.capability == Capability::Write
-            && write.succeeded
-            && write
-                .arguments
-                .as_deref()
-                .and_then(source_read_path)
-                .is_some_and(|path| owned_creation_readback_command(&path) == command)
-    })
+    progress
+        .research_attempts()
+        .iter()
+        .enumerate()
+        .any(|(index, write)| {
+            if write.capability == Capability::Edit {
+                let Some(path) = write.arguments.as_deref().and_then(
+                    crate::agentic_coding::qualified_tool_observation::canonical_creation_path,
+                ) else {
+                    return false;
+                };
+                return progress
+                    .creation_mutation_for(path)
+                    .is_some_and(|mutation| {
+                        mutation.qualified
+                            && mutation.succeeded
+                            && mutation.index == Some(index)
+                            && owned_creation_readback_command(path) == command
+                    });
+            }
+            write.capability == Capability::Write
+                && write.succeeded
+                && write
+                    .arguments
+                    .as_deref()
+                    .and_then(source_read_path)
+                    .is_some_and(|path| owned_creation_readback_command(&path) == command)
+        })
 }
 
 impl Progress {

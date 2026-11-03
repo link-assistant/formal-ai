@@ -1,4 +1,14 @@
-import {postWriteCommandReceiptFor as postWriteCommandReceipt, postMutationReadStateFor as mutationReadState, freshSourceReadAttemptFor as freshReadAttempt, sourceReadBeforeLatestMutationFor as mutationPreimage, readOnlyAttempt, readOnlyCapability} from './progress_command_readback.mjs';
+import {
+  creationMutationFor as creationMutation,
+  creationPreflightFor as creationPreflight,
+  creationReadbackFor as creationReadback,
+  postWriteCommandReceiptFor as postWriteCommandReceipt,
+  postMutationReadStateFor as mutationReadState,
+  freshSourceReadAttemptFor as freshReadAttempt,
+  sourceReadBeforeLatestMutationFor as mutationPreimage,
+  readOnlyAttempt,
+  readOnlyCapability,
+} from './progress_command_readback.mjs';
 // Reading a turn's tool results back out of the transcript (issue #468): a
 // port of rust/src/agentic_coding/progress.rs.
 //
@@ -433,6 +443,18 @@ export class Progress {
   /** Failed or missing latest receipts cannot reuse an earlier observation. */
   sourceReadAfterLatestWriteFor(path) {
     return this.latestPostWriteReadAttemptFor(path)?.source_read ?? null;
+  }
+
+  /** Exact creation-specific witnesses; Edit capability is never rewritten as Write. */
+  creationMutationFor(path) {
+    return creationMutation(this, qualifiedProgressFrames.get(this) ?? [], path, sourceReadPath);
+  }
+  creationPreflightFor(path) {
+    return creationPreflight(this, qualifiedProgressFrames.get(this) ?? [], path, sourceReadPath);
+  }
+  creationReadbackFor(mutation, command) {
+    return creationReadback(this, qualifiedProgressFrames.get(this) ?? [], mutation, command,
+      qualifiedCommandAttempt, sourceReadPath);
   }
 
   /** Content supplied to the latest successful write. */
