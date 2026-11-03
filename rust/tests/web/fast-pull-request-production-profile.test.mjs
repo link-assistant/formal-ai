@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync,existsSync} from 'node:fs';
+import {readFileSync,existsSync,mkdtempSync,writeFileSync,rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {execFileSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {Script} from 'node:vm';
 import YAML from 'yaml';
@@ -141,7 +144,7 @@ test('essential PR checkouts reserve their original test clocks and avoid unrela
   assert.equal(version.steps[0].with['sparse-checkout'],
     '/scripts/ci-pull-request-admission.mjs\n/scripts/lib/documentation-paths.mjs\n/Cargo.toml\n/rust/Cargo.toml\n');
   assert.equal(javascript.steps[0].with['sparse-checkout'],
-    '/*\n!/experiments/formal_ai_subagent/evidence/coordinator-1188/\n');
+    '/*\n!/experiments/formal_ai_subagent/evidence/coordinator-1188/\n!/dev/log/\n/dev/log/issues/702/pulls/818/agent-cli/\n');
   assert.equal(javascript.steps.find(step=>step.name==='Run this shard of the JavaScript suites').env.TEST_BUDGET_SECONDS, 360);
   assert.match(release.jobs['version-check'].steps.at(-1).run, /ci-pull-request-admission[.]mjs version/u);
 });
@@ -185,4 +188,26 @@ test('TypeScript parity acquires its complete source inputs instead of the unrel
   assert.match(job.steps[1].run, /cd js && find/u);
   assert.match(job.steps[1].run, /cd ts && find/u);
   assert.match(job.steps[2].run, /node scripts\/translate-es[.]mjs --check/u);
+});
+
+
+test('JavaScript checkout keeps source and the real learning fixture while omitting historical log payloads', () => {
+  const patterns=workflow('layered-ci.yml').jobs.js.steps[0].with['sparse-checkout'];
+  const fixture='dev/log/issues/702/pulls/818/agent-cli/context-hierarchy-learning-report.lino';
+  assert.match(read('rust/tests/web/issue-0702-nested-contexts.test.mjs'),new RegExp(fixture.replaceAll('.', '[.]'),'u'));
+  assert.ok(read(fixture).length>0,'the unchanged real report remains an input');
+  const retained=['package.json','bun.lock','js/agentic/planner.mjs','ts/agentic/planner.mts',
+    'scripts/plan-test-shards.mjs','data/meta/javascript-test-durations.lino',
+    'rust/tests/web/issue-0702-nested-contexts.test.mjs','rust/src/lib.rs',
+    '.github/actions/setup-source-model/action.yml','docs/case-studies/issue-717/e2e-npm-ci.log',fixture];
+  const omitted=['dev/log/issues/781/pulls/803/sessions/old/solve.log',
+    'experiments/formal_ai_subagent/evidence/coordinator-1188/raw/archive.jsonl.gz'];
+  const directory=mkdtempSync(join(tmpdir(),'formal-ai-checkout-rules-'));
+  try {
+    const file=join(directory,'patterns');writeFileSync(file,patterns);
+    const selected=execFileSync('git',['sparse-checkout','check-rules','--no-cone','--rules-file',file],{
+      input:[...retained,...omitted].join('\n')+'\n',encoding:'utf8',timeout:5000,maxBuffer:64000
+    }).trim().split('\n');
+    assert.deepEqual(selected,retained);
+  } finally {rmSync(directory,{recursive:true,force:true});}
 });

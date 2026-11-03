@@ -277,6 +277,8 @@ jobs:
           sparse-checkout: |
             /*
             !/experiments/formal_ai_subagent/evidence/coordinator-1188/
+            !/dev/log/
+            /dev/log/issues/702/pulls/818/agent-cli/
           sparse-checkout-cone-mode: false
       - name: Report DRY review and language coverage
         if: matrix.shard == 1

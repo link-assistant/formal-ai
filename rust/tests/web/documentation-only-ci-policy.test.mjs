@@ -6,6 +6,7 @@ import {checkDocumentationPolicy, filteredWorkflow, lightweightWorkflows} from '
 import {applicableWorkflows} from '../../../scripts/lib/hive-delivery-admission.mjs';
 import {documentationOnlyPullRequest} from '../../../scripts/lib/documentation-paths.mjs';
 import {Script} from 'node:vm';
+import {posix} from 'node:path';
 const workflows = readdirSync('.github/workflows').filter(name => name.endsWith('.yml')).map(name => ({path: '.github/workflows/' + name, document: YAML.parse(readFileSync('.github/workflows/' + name, 'utf8'))}));
 test('all heavy push and PR triggers carry the generated documentation policy', () => {
   assert.ok(checkDocumentationPolicy() > 10);
@@ -63,7 +64,7 @@ test('read-only documentation checkout retains no push credentials', () => {
 
 test('documentation acquisition is bounded without narrowing policy inputs or changing its checks', () => {
   const job=workflows.find(workflow=>workflow.path.endsWith('/documentation-policy.yml')).document.jobs['documentation-policy'];
-  const expectedInputs='/*\n!/experiments/formal_ai_subagent/evidence/coordinator-1188/\n';
+  const expectedInputs="/.github/workflows/\n/scripts/documentation-only-ci-policy.mjs\n/scripts/lib/documentation-paths.mjs\n/scripts/lib/hive-delivery-admission.mjs\n/scripts/documentation-policy-dependencies/\n/rust/tests/web/documentation-only-ci-policy.test.mjs\n/package.json\n";
   function check(value){
     assert.equal(value['timeout-minutes'],3);
     const checkouts=value.steps.filter(step=>step.uses?.startsWith('actions/checkout@'));
@@ -99,4 +100,41 @@ test('documentation acquisition is bounded without narrowing policy inputs or ch
   for(const mutate of mutations){
     const changed=structuredClone(job);mutate(changed);assert.throws(()=>check(changed));
   }
+});
+
+test('documentation sparse inputs cover the static policy closure and locked parser inputs', () => {
+  const job=workflows.find(workflow=>workflow.path.endsWith('/documentation-policy.yml')).document.jobs['documentation-policy'];
+  const patterns=job.steps.find(step=>step.uses?.startsWith('actions/checkout@')).with['sparse-checkout'].trim().split('\n');
+  const covered=file=>patterns.some(pattern=>pattern.endsWith('/')
+    ?file.startsWith(pattern.slice(1)):file===pattern.slice(1));
+  const pending=['rust/tests/web/documentation-only-ci-policy.test.mjs'];
+  const visited=new Set(),external=new Set();
+  while(pending.length){
+    const file=pending.pop();if(visited.has(file))continue;
+    assert.ok(covered(file),'missing static module '+file);visited.add(file);
+    const source=readFileSync(file,'utf8');
+    for(const line of source.split('\n')){
+      const imported=/^\s*(?:import|export)\s+.*?\bfrom\s+['"]([^'"]+)['"]/u.exec(line)?.[1];
+      if(imported===undefined||imported.startsWith('node:'))continue;
+      if(imported==='yaml'){external.add(imported);continue;}
+      assert.ok(imported.startsWith('.'),'unreviewed dependency '+imported);
+      const next=posix.normalize(posix.join(posix.dirname(file),imported));
+      assert.ok(!next.startsWith('../'));pending.push(next);
+    }
+  }
+  assert.deepEqual([...visited].sort(),[
+    'rust/tests/web/documentation-only-ci-policy.test.mjs',
+    'scripts/documentation-only-ci-policy.mjs',
+    'scripts/lib/documentation-paths.mjs',
+    'scripts/lib/hive-delivery-admission.mjs'
+  ]);
+  assert.deepEqual([...external],['yaml']);
+  assert.ok(patterns.includes('/.github/workflows/'),'complete workflow census required');
+  for(const file of ['package.json','scripts/documentation-policy-dependencies/package.json',
+    'scripts/documentation-policy-dependencies/package-lock.json'])assert.ok(covered(file),file);
+  const dependency=JSON.parse(readFileSync('scripts/documentation-policy-dependencies/package.json','utf8'));
+  const lock=JSON.parse(readFileSync('scripts/documentation-policy-dependencies/package-lock.json','utf8'));
+  assert.deepEqual(Object.keys(dependency.dependencies),['yaml']);
+  assert.equal(dependency.dependencies.yaml,lock.packages['node_modules/yaml'].version);
+  assert.match(lock.packages['node_modules/yaml'].integrity,/^sha512-/u);
 });
