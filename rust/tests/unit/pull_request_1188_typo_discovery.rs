@@ -20,7 +20,11 @@ fn a_typo_without_its_correction_is_corrected_by_discovery() {
         };
         let call = calls[0].clone();
         let id = format!("call_{index}");
-        let result = if call.tool == "read" { SOURCE } else { "" };
+        let result = if call.tool == "read" {
+            formal_ai::agentic_coding::tool_result::complete_owned_source_read_frame(SOURCE)
+        } else {
+            String::new()
+        };
         messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
             id.clone(),
             call.tool.clone(),

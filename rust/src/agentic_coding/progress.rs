@@ -23,7 +23,7 @@ pub(super) struct ToolAttempt {
     source_read: Option<super::tool_result::SourceReadObservation>,
     pub(super) succeeded: bool,
     pub(super) detail: String,
-    /// Original run-tool bytes remain separate from normalized failure detail.
+    /// Original Run and Edit receipt bytes remain separate from normalized failure detail.
     pub(super) raw_receipt: Option<String>,
     pub(super) arguments: Option<String>,
     /// The advertised tool name the result came back under, when known.
@@ -163,7 +163,8 @@ impl Progress {
                 source_read,
                 succeeded: failure.is_none(),
                 detail: failure.clone().unwrap_or_else(|| raw.clone()),
-                raw_receipt: (capability == Capability::Run).then(|| raw.clone()),
+                raw_receipt: matches!(capability, Capability::Run | Capability::Edit)
+                    .then(|| raw.clone()),
                 arguments,
                 tool,
             });

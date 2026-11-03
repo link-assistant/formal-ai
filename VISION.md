@@ -132,6 +132,12 @@ second approval may approve-forever be offered.
 
 **Algorithms are arrived at by deduplication.**
 
+Review repeated implementation logic at work-batch boundaries in every source
+language. Deduplication starts generalization: find the shared invariant, then
+verify behavior, effects, errors and authority boundaries before extracting it.
+CI must expose duplicate candidates and missing language coverage explicitly;
+inventory success and generated-file headers do not prove strict acceptance.
+
 > doublet links are capable of representing each and every data structure or
 > sequence (as nested pairs), that means doublet-links structure is effectively
 > natural deduplicator. Each algorithm at the moment of execution or learning is

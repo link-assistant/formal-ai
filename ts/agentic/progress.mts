@@ -84,7 +84,7 @@ export class Progress {
       progress.attempts.push({
         capability,
         source_read: observation,
-        ...(capability === Capability.Run ? {raw_receipt: raw} : {}),
+        ...(capability === Capability.Run || capability === Capability.Edit ? {raw_receipt: raw} : {}),
         succeeded: failure === null,
         detail: failure ?? raw,
         arguments: call ? call.function.arguments : null,
@@ -399,7 +399,7 @@ export class Progress {
       && item.arguments !== null && sourceReadPath(item.arguments) === path);
     const frames = qualifiedProgressFrames.get(this) ?? [];
     const matches = (frame, item) => frame.capability === item.capability && frame.declaredTool === item.tool
-      && frame.detail === item.detail && argumentValuesEqual(frame.argumentsValue, JSON.parse(item.arguments));
+      && frame.detail === (item.raw_receipt ?? item.detail) && argumentValuesEqual(frame.argumentsValue, JSON.parse(item.arguments));
     const end = frames.findLastIndex(frame => matches(frame, mutation));
     const start = frames.findLastIndex((frame, index) => index < end && matches(frame, attempt)
       && frame.binding === 'exact' && frame.receiptPresent);

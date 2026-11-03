@@ -218,6 +218,12 @@ fn explicit_error_verification_cannot_produce_a_success_claim() {
         &verification,
         r#"{"is_error":true,"content":"cat: hello.txt: No such file or directory\nExit Code: 1"}"#,
     );
+    let observation = messages.last_mut().expect("failed target Read observation");
+    observation.is_error = true;
+    observation.source_read = Some(serde_json::json!({
+        "path": "hello.txt", "format": "raw", "success": false,
+        "complete": false, "error_code": "ENOENT"
+    }));
     let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &TOOLS) else {
         panic!("expected an honest terminal report");
     };
