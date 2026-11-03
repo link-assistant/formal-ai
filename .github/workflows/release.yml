@@ -255,10 +255,8 @@ jobs:
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     if: github.event_name == 'pull_request'
     steps:
-      - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-          fetch-depth: 0
+      - {uses: actions/checkout@v7, timeout-minutes: 2, env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '20'},
+         with: {persist-credentials: false, fetch-depth: 1, filter: blob:none, sparse-checkout: "/scripts/ci-pull-request-admission.mjs\n/scripts/lib/documentation-paths.mjs\n/Cargo.toml\n/rust/Cargo.toml\n", sparse-checkout-cone-mode: false}}
       - name: Setup Rust
         if: github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')
         uses: dtolnay/rust-toolchain@stable
@@ -331,7 +329,6 @@ jobs:
           node scripts/check-requirement-status.mjs
           node scripts/render-status.mjs --check
           node scripts/mirror-package-data.mjs --check
-
   lint:
     name: Lint and Format Check (lane ${{ matrix.lane }})
     runs-on: ubuntu-latest
@@ -869,16 +866,7 @@ jobs:
           FORMAL_AI_DEADLINE_GRACE_SECONDS=5 scripts/run-with-deadline.sh 90 \
             node scripts/run-native-coding-fixtures.mjs \
             "$RUNNER_TEMP/native-build-messages.jsonl" "$RUNNER_TEMP/native-creation-fixtures.json"
-      - name: Retain native creation fixture evidence
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v7
-        with:
-          name: native-creation-fixture-qualification
-          path: |
-            ${{ runner.temp }}/native-build-messages.jsonl
-            ${{ runner.temp }}/native-creation-fixtures.json
-          if-no-files-found: warn
-          retention-days: 3
+      - {name: Retain native creation fixture evidence, if: '${{ always() }}', uses: actions/upload-artifact@v7, with: {name: native-creation-fixture-qualification, path: "${{ runner.temp }}/native-build-messages.jsonl\n${{ runner.temp }}/native-creation-fixtures.json\n", if-no-files-found: warn, retention-days: 3}}
       - name: Collect the build artifacts
         run: bash scripts/collect-build-artifacts.sh
       - name: Bind native test artifacts to their actual build inputs
