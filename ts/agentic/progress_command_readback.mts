@@ -5,6 +5,8 @@ import {argumentValuesEqual, canonicalCreation} from './qualified_tool_observati
 import {isWorkspaceCreationTool} from './capability_router.mjs';
 import {agenticMessage} from './messages.mjs';
 import {quoteShellWord} from './portable/string_contracts.mjs';
+import {ownedDeclaredCreateFrame} from './planner/owned_goals.mjs';
+import {clausesWithSpans} from './crate/obligation_ledger.mjs';
 
 /** One seeded command builder shared by execution and freshness classification. */
 export function ownedCreationReadbackCommand(target) {
@@ -111,6 +113,37 @@ export function freshSourceReadAttemptFor(progress, path, qualifyCommand, pathFr
 }
 
 // Creation custody is separate from broad Edit/Write classification.
+/** Only complete owned clauses of the scanner's standing request may commute. */
+export function ownedCreationDeclarations(request) {
+  if (typeof request !== 'string') return [];
+  const declarations = clausesWithSpans(request).flatMap(([clause, span]) => {
+    const frame = ownedDeclaredCreateFrame(clause);
+    return frame === null ? [] : [Object.freeze({...frame, span: Object.freeze([...span])})];
+  });
+  const targets = declarations.map(declaration => declaration.target);
+  return new Set(targets).size === targets.length ? Object.freeze(declarations) : [];
+}
+function declaredCreation(declarations, mutation) {
+  return declarations.some(declaration => declaration.target === mutation.path
+    && declaration.content === mutation.content);
+}
+function disjointCreationTargets(left, right) {
+  const parts = path => path.replaceAll('\\', '/').split('/');
+  const valid = path => !/^[A-Za-z]:/u.test(path) && parts(path).every(part => part !== '.' && part !== '..');
+  const key = path => parts(path).filter(Boolean).join('/').toLowerCase();
+  const rooted = path => path.startsWith('/') || path.startsWith('\\');
+  return valid(left) && valid(right) && rooted(left) === rooted(right) && key(left) !== key(right);
+}
+function declaredDisjointMutation(progress, frames, mutation, attempt, index, declarations, pathFromArguments) {
+  if (!declaredCreation(declarations, mutation)) return false;
+  const candidates = frames.filter(frame => boundAttempt(progress, frame)?.attempt === attempt);
+  if (candidates.length !== 1) return false;
+  const creation = creationArguments(candidates[0], pathFromArguments);
+  if (creation === null || !disjointCreationTargets(mutation.path, creation.path)) return false;
+  const other = creationMutationFor(progress, frames, creation.path, pathFromArguments);
+  return other?.qualified && other.succeeded && other.index === index
+    && declaredCreation(declarations, other);
+}
 function creationArguments(frame, pathFromArguments) {
   if (!isWorkspaceCreationTool(frame.declaredTool)) return null;
   if (frame.capability === Capability.Edit) return canonicalCreation(frame.arguments);
@@ -157,7 +190,7 @@ export function creationPreflightFor(progress, frames, path, pathFromArguments) 
   }
   return unknown(false);
 }
-export function creationReadbackFor(progress, frames, mutation, command, qualify, pathFromArguments) {
+export function creationReadbackFor(progress, frames, mutation, command, qualify, pathFromArguments, declarations = []) {
   const empty = current => ({current, readAttempt: null, commandReceipt: null, pendingRead: false, needsFreshRead: false});
   if (!mutation?.succeeded || mutation.index === null || !frames.includes(mutation.frame)
     || progress.attempts[mutation.index] !== mutation.attempt
@@ -174,6 +207,7 @@ export function creationReadbackFor(progress, frames, mutation, command, qualify
       continue;
     }
     if (!readOnlyAttempt(progress, attempt, qualify, pathFromArguments)) {
+      if (declaredDisjointMutation(progress, frames, mutation, attempt, index, declarations, pathFromArguments)) continue;
       const invalidators = frames.filter(frame => frame.binding === 'exact' && frame.receiptPresent
         && !frame.duplicate && boundAttempt(progress, frame)?.attempt === attempt);
       return {...state, current: false, needsFreshRead: state.readAttempt === null

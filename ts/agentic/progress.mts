@@ -2,6 +2,7 @@ import {
   creationMutationFor as creationMutation,
   creationPreflightFor as creationPreflight,
   creationReadbackFor as creationReadback,
+  ownedCreationDeclarations as creationDeclarations,
   postWriteCommandReceiptFor as postWriteCommandReceipt,
   postMutationReadStateFor as mutationReadState,
   freshSourceReadAttemptFor as freshReadAttempt,
@@ -17,7 +18,7 @@ import {
 // detail, arguments, tool}` with `arguments` / `tool` null when unknown.
 
 import { sourceFetchObservation } from './source_fetch_observation.mjs';
-import { plainText, rustLines } from './content.mjs';
+import { plainText, rustLines, latestUserRequest } from './content.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
 import { wordsForRole } from './crate/seed_meanings.mjs';
 import { agenticMessage } from './messages.mjs';
@@ -26,7 +27,7 @@ import { writeArguments } from './plan.mjs';
 import { fill } from './work_item_steps.mjs';
 import { classifyTool } from './capability_router.mjs';
 import { commandArgument, failureMessage, incompleteReceipt, normalizedPayload, observedPayload, sourceReadObservation, stepOutcome, StepOutcome } from './tool_result.mjs';
-import { evidenceWindowStart } from './planner/continuation.mjs';
+import { evidenceWindowStart, continuedAgentTask } from './planner/continuation.mjs';
 import { applyPatchInput } from './crate/protocol_responses_apply_patch.mjs';
 import { argumentValuesEqual, qualifiedTranscriptFrames, canonicalCreationPath } from './qualified_tool_observation.mjs';
 import { eqIgnoreAsciiCase, isObject, parseJson, splitWhitespace, trim, trimMatches } from './crate/rust_str.mjs';
@@ -40,6 +41,7 @@ export function isWorkItemRead(attempt) {
 
 // A scanner-created frame proves transcript binding only, never execution authority.
 const qualifiedProgressFrames = new WeakMap();
+const creationProgressContexts = new WeakMap();
 /** Mirrors `latest_attempt_for` in rust/src/agentic_coding/progress.rs. */
 export function qualifiedToolAttempt(progress, capability, argumentsValue) {
   const frames = qualifiedProgressFrames.get(progress);
@@ -76,6 +78,9 @@ export class Progress {
   static scan(messages) {
     const progress = new Progress();
     const currentTurn = evidenceWindowStart(messages);
+    const received = latestUserRequest(messages);
+    const request = received === null ? null : continuedAgentTask(messages, received) ?? received;
+    creationProgressContexts.set(progress, {request, declarations: null});
     for (let index = currentTurn; index < messages.length; index += 1) {
       const message = messages[index];
       if (message.role.toLowerCase() !== 'tool') continue;
@@ -94,7 +99,7 @@ export class Progress {
       progress.attempts.push({
         capability,
         source_read: observation,
-        ...(capability === Capability.Run || capability === Capability.Edit ? {raw_receipt: raw} : {}),
+        ...(capability === Capability.Run || capability === Capability.Edit || capability === Capability.Write ? {raw_receipt: raw} : {}),
         succeeded: failure === null,
         detail: failure ?? raw,
         arguments: call ? call.function.arguments : null,
@@ -453,8 +458,12 @@ export class Progress {
     return creationPreflight(this, qualifiedProgressFrames.get(this) ?? [], path, sourceReadPath);
   }
   creationReadbackFor(mutation, command) {
+    const context = creationProgressContexts.get(this);
+    if (context && context.declarations === null) {
+      context.declarations = creationDeclarations(context.request);
+    }
     return creationReadback(this, qualifiedProgressFrames.get(this) ?? [], mutation, command,
-      qualifiedCommandAttempt, sourceReadPath);
+      qualifiedCommandAttempt, sourceReadPath, context?.declarations ?? []);
   }
 
   /** Content supplied to the latest successful write. */

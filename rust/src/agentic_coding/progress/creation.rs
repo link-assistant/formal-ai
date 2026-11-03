@@ -11,6 +11,113 @@ use crate::agentic_coding::qualified_tool_observation::{
 use crate::agentic_coding::tool_result::{SourceReadObservation, command_argument};
 use serde_json::Value;
 
+pub(super) struct CreationDeclaration {
+    target: String,
+    content: String,
+    span: (usize, usize),
+}
+pub(super) fn standing_request(messages: &[crate::protocol::ChatMessage]) -> Option<String> {
+    let received = crate::protocol::latest_user_request(messages)?;
+    Some(
+        crate::agentic_coding::planner::continued_agent_task(messages, &received)
+            .unwrap_or(received),
+    )
+}
+fn owned_creation_declarations(request: &str) -> Vec<CreationDeclaration> {
+    let mut declarations = Vec::new();
+    let mut targets = std::collections::HashSet::new();
+    for (clause, span) in crate::obligation_ledger::clauses_with_spans(request) {
+        let Some((target, content)) =
+            crate::agentic_coding::general_planner::owned_declared_create_frame(&clause)
+        else {
+            continue;
+        };
+        if span.0 >= span.1
+            || request.get(span.0..span.1).is_none()
+            || !targets.insert(target.clone())
+        {
+            return Vec::new();
+        }
+        declarations.push(CreationDeclaration {
+            target,
+            content,
+            span,
+        });
+    }
+    declarations
+}
+fn declared_creation(
+    declarations: &[CreationDeclaration],
+    mutation: &CreationMutation<'_>,
+) -> bool {
+    declarations.iter().any(|declaration| {
+        declaration.span.0 < declaration.span.1
+            && declaration.target == mutation.path
+            && declaration.content == mutation.content
+    })
+}
+fn disjoint_creation_targets(left: &str, right: &str) -> bool {
+    let left_parts = left.replace('\\', "/");
+    let right_parts = right.replace('\\', "/");
+    let valid = |path: &str| {
+        let bytes = path.as_bytes();
+        let drive_prefix = bytes.first().is_some_and(|byte| byte.is_ascii_alphabetic())
+            && bytes.get(1) == Some(&b':');
+        !drive_prefix && path.split('/').all(|part| part != "." && part != "..")
+    };
+    let key = |path: &str| {
+        path.split('/')
+            .filter(|part| !part.is_empty())
+            .collect::<Vec<_>>()
+            .join("/")
+            .to_lowercase()
+    };
+    let rooted = |path: &str| path.starts_with('/') || path.starts_with('\\');
+    valid(&left_parts)
+        && valid(&right_parts)
+        && rooted(left) == rooted(right)
+        && key(&left_parts) != key(&right_parts)
+}
+fn declared_disjoint_mutation(
+    progress: &Progress,
+    mutation: &CreationMutation<'_>,
+    attempt: &ToolAttempt,
+    index: usize,
+) -> bool {
+    let declarations = progress.creation_declarations.get_or_init(|| {
+        progress
+            .creation_request
+            .as_deref()
+            .map(owned_creation_declarations)
+            .unwrap_or_default()
+    });
+    if !declared_creation(declarations, mutation) {
+        return false;
+    }
+    let mut candidates = progress.qualified_attempts.iter().filter(|frame| {
+        bound_attempt(progress, frame).is_some_and(|(_, actual)| std::ptr::eq(actual, attempt))
+    });
+    let Some(frame) = candidates.next() else {
+        return false;
+    };
+    if candidates.next().is_some() {
+        return false;
+    }
+    let Some((path, _)) = creation_arguments(frame) else {
+        return false;
+    };
+    if !disjoint_creation_targets(&mutation.path, &path) {
+        return false;
+    }
+    let Some(other) = progress.creation_mutation_for(&path) else {
+        return false;
+    };
+    other.qualified
+        && other.succeeded
+        && other.index == Some(index)
+        && declared_creation(declarations, &other)
+}
+
 pub(in crate::agentic_coding) struct CreationMutation<'a> {
     pub(in crate::agentic_coding) path: String,
     pub(in crate::agentic_coding) content: String,
@@ -184,7 +291,7 @@ impl Progress {
                     && source_read_path(frame.declaration_arguments()).as_deref()
                         == Some(mutation.path.as_str())
             });
-        for attempt in self.attempts[index + 1..].iter().rev() {
+        for (offset, attempt) in self.attempts[index + 1..].iter().enumerate().rev() {
             if attempt.capability == Capability::Run
                 && attempt
                     .arguments
@@ -217,6 +324,9 @@ impl Progress {
                 continue;
             }
             if !read_only_attempt(self, attempt) {
+                if declared_disjoint_mutation(self, mutation, attempt, index + 1 + offset) {
+                    continue;
+                }
                 let qualified = self
                     .qualified_attempts
                     .iter()
