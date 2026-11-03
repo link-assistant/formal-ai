@@ -65,3 +65,22 @@ reachability and its slow source transport are explicit retained tech debt.
 The live-links dispatch input is explicitly optional and defaults to false.
 A generic automated main dispatch in checks mode does not enable crawling; only
 live-audit=true on main or the explicit repository opt-in does.
+
+### Preserve secret coverage without fetching every historical blob
+
+At PR #1523 source `fb5e2b278d9c8f0f3ae4f3b484bebd7fb5ea4245`,
+Secrets Scan job 126184725771 spent 597 seconds in checkout. Its unchanged
+scanner inspected all 24 changed files and printed `No secrets found.`, but
+the ten-minute job deadline cancelled the action immediately afterward. A
+clean scanner message does not turn that cancelled job into a passing check.
+
+The follow-up retains complete commit history, the full current working tree,
+the selected ref, the original secretlint invocation and its file selection.
+`filter: blob:none` avoids acquiring unrelated historical file bodies; needed
+objects remain retrievable through Git. There are no sparse exclusions or
+shallow-history shortcuts. Checkout has a finite ten-minute phase limit and
+the enclosing job has fifteen minutes, reserving five minutes for scanning.
+Low-speed transport limits remain finite. The same canonical release source
+and generated caller are updated together. Hosted execution must qualify the
+new source before merge; neither the cancelled run nor a policy unit test
+substitutes for an actual successful secrets scan.

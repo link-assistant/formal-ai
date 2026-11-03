@@ -347,3 +347,48 @@ test('live link integration is explicit main-only while parser regressions stay 
   assert.deepEqual(checkoutSelection(patterns,[...retained,'rust/src/lib.rs','docs/history.log',
     'experiments/formal_ai_subagent/evidence/coordinator-1188/trace.gz']),retained);
 });
+
+test('secrets scanning retains full history and every current file within separate finite phases', () => {
+  const document=workflow('release.yml'),job=document.jobs['secrets-scan'];
+  const verify=value=>{
+    assert.equal(value.name,'Secrets Scan');assert.equal(value['runs-on'],'ubuntu-latest');
+    assert.equal(value['timeout-minutes'],15);assert.deepEqual(value.needs,['detect-changes']);
+    assert.equal(value.steps.length,3);assert.equal(value.permissions,undefined);
+    const checkout=value.steps[0];
+    assert.equal(checkout.uses,'actions/checkout@v7');assert.equal(checkout['timeout-minutes'],10);
+    assert.equal(value['timeout-minutes']-checkout['timeout-minutes'],5);
+    assert.deepEqual(checkout.env,{GIT_HTTP_LOW_SPEED_LIMIT:'1024',GIT_HTTP_LOW_SPEED_TIME:'20'});
+    assert.deepEqual(checkout.with,{'persist-credentials':false,'fetch-depth':0,filter:'blob:none'});
+    assert.equal(checkout.with.ref,undefined);assert.equal(checkout.with['sparse-checkout'],undefined);
+    assert.equal(checkout.with['sparse-checkout-cone-mode'],undefined);
+    assert.deepEqual(value.steps.slice(1),[
+      {name:'Setup Node',uses:'actions/setup-node@v7',with:{'node-version':22}},
+      {name:'Check for secrets',env:{BASE_REF:"${{ github.base_ref || github.event.before || 'HEAD~1' }}"},run:'bash scripts/check-secrets.sh'}
+    ]);
+  };
+  verify(job);
+  assert.deepEqual(document.permissions,{"contents":"read"});
+  assert.deepEqual(job.concurrency,{"group":"${{ github.workflow }}-${{ github.ref }}-secrets-scan","cancel-in-progress":"${{ github.ref != 'refs/heads/main' }}"});
+  assert.equal(job.if.trim().replace(/\s+/gu,' '),"!cancelled() && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.docs-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' )");
+  for(const event of ['pull_request','push','workflow_dispatch']) {
+    assert.equal(Boolean(evaluate(job.if,context(event))),true);
+  }
+  assert.equal(Boolean(evaluate(job.if,{...context('pull_request'),cancelled:()=>true})),false);
+  const scanner=read('scripts/check-secrets.sh');
+  for(const marker of ['git merge-base "$base" HEAD',
+    'git diff --name-only --diff-filter=ACMRT -z "$merge_base" HEAD',
+    'git ls-files -z | exclude','SECRETLINT_VERSION:-13.0.5',
+    '-p "secretlint@${SECRETLINT_VERSION}"','-p "@secretlint/secretlint-rule-preset-recommend@${SECRETLINT_VERSION}"'])
+    assert.ok(scanner.includes(marker),'full reviewed secret selection/guard lost: '+marker);
+  for(const mutate of [
+    value=>value.steps[0].with['fetch-depth']=1,
+    value=>value.steps[0].with['sparse-checkout']='/*\n!/some-source/\n',
+    value=>value.steps[0].with.ref='main',
+    value=>value.steps[0]['timeout-minutes']=15,
+    value=>value['timeout-minutes']=10,
+    value=>value.steps[0].with['persist-credentials']=true,
+    value=>value.steps[2].env.BASE_REF='HEAD~1'
+  ]) {
+    const changed=structuredClone(job);mutate(changed);assert.throws(()=>verify(changed));
+  }
+});

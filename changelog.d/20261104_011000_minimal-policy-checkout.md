@@ -16,3 +16,7 @@ Retain the full live-link audit as a main-only opt-in and keep its unchanged
 parser regressions mandatory with a small checkout. Record the policy in vision,
 contributor guidance and requirements; scope the native budget test to its named
 job rather than the first timeout in the workflow.
+
+Retain full-history and full-tree secret scanning while filtering unrelated
+historical blob downloads. Reserve a bounded scan allowance after checkout
+so source acquisition cannot consume the entire secrets job budget.
