@@ -8,7 +8,7 @@ Supplied patches, scripts, generators and literal replacements earn zero autonom
 Report unsupported work and terminal effects honestly; record externally authored bootstraps separately.
 Preserve readable CST, comments and unrelated content; verify JavaScript, TypeScript and Rust parity. After changing covered crate modules, run the cheap source/projection currency check `node scripts/translate-js-rust.mjs --verify`; run upstream parser/WASM regeneration in hosted CI, with no local Rust execution.
 Use at most three subagents plus the coordinator; batch verified changes, bound retries and prioritize release delivery.
-Run only necessary JavaScript checks locally, sequentially; Rust compilation and tests run exclusively in CI.
+Run only necessary JavaScript checks locally, sequentially; Rust compilation and tests run exclusively in CI. For HTTP client trials, pin `FORMAL_AI_SOURCE_USAGE_RUST_GRAMMAR=false` in the private server environment; direct host installation alone does not register the HTTP initializer policy.
 
 The [default-branch build policy](docs/ci-cd/default-branch-builds.md) governs
 CI changes: no application, Cargo or Docker builds or deployments on PRs, even
