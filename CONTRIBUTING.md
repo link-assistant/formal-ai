@@ -6,7 +6,7 @@ Follow [VISION.md](VISION.md): perform all development task actions through Java
 Retain requests, runtime and source identities, tool calls, failures, diffs and independent checks.
 Supplied patches, scripts, generators and literal replacements earn zero autonomous-authorship credit. Target at least 5% independently accepted Formal AI reasoning units per development batch: decompose tasks, compare strategies, research trusted public sources and fact-check against fresh evidence. Freeze the substantive unit list before outcomes; report attempted and accepted shares separately, retain failures and count supplied conclusions as zero. This reporting target does not add a release gate; see the reasoning contract in docs/requirements/doctrine-standing-doctrine-work-delegated-to-formal-ai-2026-10-07.md.
 Report unsupported work and terminal effects honestly; record externally authored bootstraps separately.
-Preserve readable CST, comments and unrelated content; verify JavaScript, TypeScript and Rust parity.
+Preserve readable CST, comments and unrelated content; verify JavaScript, TypeScript and Rust parity. After changing covered crate modules, run the cheap source/projection currency check `node scripts/translate-js-rust.mjs --verify`; run upstream parser/WASM regeneration in hosted CI, with no local Rust execution.
 Use at most three subagents plus the coordinator; batch verified changes, bound retries and prioritize release delivery.
 Run only necessary JavaScript checks locally, sequentially; Rust compilation and tests run exclusively in CI.
 

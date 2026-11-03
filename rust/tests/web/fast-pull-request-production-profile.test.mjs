@@ -75,3 +75,24 @@ test('fast source lint is mandatory on PRs without invoking native compilation',
   assert.match(changelog, /node scripts\/check-changelog-fragment[.]mjs/u);
   assert.doesNotMatch(changelog, /rust-script /u);
 });
+
+
+test('explicit translation regeneration selects only the source emitter on every ref', () => {
+  const layered = workflow('layered-ci.yml');
+  const regeneration = layered.jobs['regenerate-translations'];
+  assert(regeneration);
+  assert.deepEqual(regeneration.permissions, {contents: 'read'});
+  assert.equal(regeneration.needs, undefined);
+  assert(regeneration['timeout-minutes'] <= 10);
+  const commands = regeneration.steps.map(step => step.run ?? '').join('\n');
+  assert.match(commands, /node --max-old-space-size=384 scripts\/regenerate-targeted-js-rust[.]mjs/u);
+  assert.doesNotMatch(commands, /\bcargo\b|\brustc\b|\bdocker\b|desktop|vscode/u);
+  for (const ref of ['refs/heads/main', 'refs/heads/fix/example']) {
+    const dispatched = context('workflow_dispatch', ref);
+    dispatched.inputs = {mode: 'regenerate-translations', 'diagnostic-native-run': '123', 'diagnostic-native-source': 'a'.repeat(40)};
+    for (const [name, job] of Object.entries(layered.jobs))
+      assert.equal(Boolean(evaluate(job.if, dispatched)), name === 'regenerate-translations', name + ' explicit source mode');
+  }
+  for (const event of ['pull_request', 'push'])
+    assert.equal(Boolean(evaluate(regeneration.if, context(event, 'refs/heads/main'))), false, event);
+});
