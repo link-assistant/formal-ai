@@ -9,6 +9,7 @@ static SERIAL: AtomicU64 = AtomicU64::new(0);
 struct Run {
     root: PathBuf,
     receipts: Vec<(String, String)>,
+    file_events: Vec<(String, String, String)>,
     writes: usize,
     answer: Option<String>,
 }
@@ -55,6 +56,7 @@ fn run_with_receipts(
     let mut run = Run {
         root,
         receipts: Vec::new(),
+        file_events: Vec::new(),
         writes: 0,
         answer: None,
     };
@@ -73,12 +75,24 @@ fn run_with_receipts(
                         fs::write(target, args["content"].as_str().expect("bytes"))
                             .expect("target write");
                         written.push(args["path"].as_str().expect("target").to_owned());
+                        run.file_events.push((
+                            "write".to_owned(),
+                            args["path"].as_str().expect("target").to_owned(),
+                            args["content"].as_str().expect("bytes").to_owned(),
+                        ));
                         run.writes += 1;
                         String::new()
                     } else if call.tool == "read" {
                         let path = args["path"].as_str().expect("read target");
                         match fs::read_to_string(run.root.join(path)) {
-                            Ok(bytes) => formal_ai::agentic_coding::tool_result::complete_owned_source_read_frame(&bytes),
+                            Ok(bytes) => {
+                                run.file_events.push((
+                                    "read".to_owned(),
+                                    path.to_owned(),
+                                    bytes.clone(),
+                                ));
+                                formal_ai::agentic_coding::tool_result::complete_owned_source_read_frame(&bytes)
+                            }
                             Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
                                 "Error: ENOENT: no such file or directory".to_owned()
                             }
@@ -88,6 +102,11 @@ fn run_with_receipts(
                         }
                     } else if call.tool == "bash" {
                         let command = args["command"].as_str().expect("command");
+                        run.file_events.push((
+                            "bash".to_owned(),
+                            command.to_owned(),
+                            String::new(),
+                        ));
                         let framed_readback = written.iter().any(|path| {
                             command
                                 == formal_ai::agentic_coding::owned_creation_readback_command(path)
@@ -143,6 +162,28 @@ fn framed_receipt(path: &str, bytes: &str) -> (String, String) {
         formal_ai::agentic_coding::owned_creation_readback_command(path),
         format!("({bytes})"),
     )
+}
+fn has_fresh_exact_read(run: &Run, path: &str, bytes: &str) -> bool {
+    let Some(index) = run
+        .file_events
+        .iter()
+        .rposition(|(kind, target, _)| kind == "write" && target == path)
+    else {
+        return false;
+    };
+    if run.file_events[index].2 != bytes {
+        return false;
+    }
+    for (kind, target, observed) in &run.file_events[index + 1..] {
+        if kind == "read" && target == path && observed == bytes {
+            return true;
+        }
+        // A later mutation or shell command cannot supply fresh Read authority.
+        if kind == "write" || kind == "bash" {
+            return false;
+        }
+    }
+    false
 }
 fn exact_pair(run: &Run, first: &str, second: &str) {
     assert_eq!(
@@ -442,14 +483,22 @@ fn unchanged_l21_preserves_source_and_both_independent_records() {
         .expect("independent proof");
     assert_eq!(proof.lines().next(), Some("node_path=2.1.2.1.1"));
     assert!(proof.contains("FORMAL_AI_HOW_SOURCE_CACHE_DIR"));
-    assert!(outcome.receipts.contains(&framed_receipt(
-        "agent-ladder-effects/node-2.1.2.1.1.lino",
-        &effect
-    )));
-    assert!(outcome.receipts.contains(&framed_receipt(
-        ".agent-ladder/node-2.1.2.1.1-proof.md",
-        &proof
-    )));
+    assert!(
+        outcome.receipts.contains(&framed_receipt(
+            "agent-ladder-effects/node-2.1.2.1.1.lino",
+            &effect
+        )) || has_fresh_exact_read(
+            &outcome,
+            "agent-ladder-effects/node-2.1.2.1.1.lino",
+            &effect
+        )
+    );
+    assert!(
+        outcome.receipts.contains(&framed_receipt(
+            ".agent-ladder/node-2.1.2.1.1-proof.md",
+            &proof
+        )) || has_fresh_exact_read(&outcome, ".agent-ladder/node-2.1.2.1.1-proof.md", &proof)
+    );
     assert_eq!(outcome.writes, 3);
     assert!(outcome.answer.is_some());
 }

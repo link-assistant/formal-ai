@@ -442,11 +442,17 @@ function bindingHasWriteInstruction(request, toks, binding) {
 const slice = (text, start, end) => (start <= end && end <= text.length ? text.slice(start, end) : null);
 
 function markerPayloadStart(request, toks, leadEnd) {
+  const separatorEnd = from => {
+    const separator = /^[ \t]*[:：]/u.exec(request.slice(from));
+    return separator === null ? null : from + separator[0].length;
+  };
   const actionStart = firstActionCueStart(toks), actionEnd = firstActionCueEnd(toks);
-  // A postposed write verb belongs to the header only before its explicit colon.
-  return actionStart !== null && actionEnd !== null && actionStart >= leadEnd
-    && /^\s*$/u.test(request.slice(leadEnd, actionStart))
-    && /[:：]\s*$/u.test(request.slice(actionStart, actionEnd)) ? actionEnd : leadEnd;
+  // A postposed verb and its separator must stay on the instruction header.
+  const postposed = actionStart !== null && actionEnd !== null && actionStart >= leadEnd
+    && /^[ \t]*$/u.test(request.slice(leadEnd, actionStart))
+    && (/[:：][ \t]*$/u.test(request.slice(actionStart, actionEnd)) || separatorEnd(actionEnd) !== null);
+  const start = postposed ? actionEnd : leadEnd;
+  return separatorEnd(start) ?? start;
 }
 
 function parseWriteRequestBound(request, toks, binding) {

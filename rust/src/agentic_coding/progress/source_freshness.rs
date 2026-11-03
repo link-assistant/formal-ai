@@ -195,10 +195,12 @@ impl Progress {
                 let end = self.qualified_attempts.iter().rposition(|frame| {
                     frame.capability() == capability
                         && frame.arguments_match(&mutation_arguments)
-                        && mutation
-                            .tool
-                            .as_deref()
-                            .is_some_and(|tool| frame.matches_receipt(tool, &mutation.detail))
+                        && mutation.tool.as_deref().is_some_and(|tool| {
+                            frame.matches_receipt(
+                                tool,
+                                mutation.raw_receipt.as_deref().unwrap_or(&mutation.detail),
+                            )
+                        })
                 })?;
                 let read_arguments: serde_json::Value =
                     serde_json::from_str(attempt.arguments.as_deref()?).ok()?;

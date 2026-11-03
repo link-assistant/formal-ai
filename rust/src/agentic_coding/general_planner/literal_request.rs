@@ -183,18 +183,32 @@ fn recover_write_contract(request: &str) -> Option<LiteralWriteContract> {
 
 /// Read `request` as a write delivered through one particular binding.
 fn marker_payload_start(request: &str, toks: &[Token<'_>], lead_end: usize) -> usize {
-    let (Some(start), Some(end)) = (first_action_cue_start(toks), first_action_cue_end(toks))
-    else {
-        return lead_end;
+    let separator_end = |from: usize| -> Option<usize> {
+        let tail = request.get(from..)?;
+        let trimmed = tail.trim_start_matches([' ', '\t']);
+        let separator = trimmed.chars().next()?;
+        matches!(separator, ':' | '：')
+            .then_some(from + tail.len() - trimmed.len() + separator.len_utf8())
     };
-    if start >= lead_end
-        && request[lead_end..start].chars().all(char::is_whitespace)
-        && request[start..end].trim_end().ends_with([':', '：'])
-    {
-        end
-    } else {
-        lead_end
-    }
+    let start = match (first_action_cue_start(toks), first_action_cue_end(toks)) {
+        (Some(start), Some(end))
+            if start >= lead_end
+                && request[lead_end..start]
+                    .chars()
+                    .all(|character| matches!(character, ' ' | '\t'))
+                && (request[start..end]
+                    .trim_end_matches([' ', '\t'])
+                    .ends_with(':')
+                    || request[start..end]
+                        .trim_end_matches([' ', '\t'])
+                        .ends_with('：')
+                    || separator_end(end).is_some()) =>
+        {
+            end
+        }
+        _ => lead_end,
+    };
+    separator_end(start).unwrap_or(start)
 }
 
 fn parse_write_request_bound(

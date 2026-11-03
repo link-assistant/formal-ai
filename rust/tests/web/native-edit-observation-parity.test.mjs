@@ -147,3 +147,67 @@ test('typed source Read keeps error-looking physical bytes distinct from provide
   }
  }finally{rmSync(dir,{recursive:true,force:true});}
 });
+
+test('literal markers consume only their instruction header separator',async()=>{
+ const payload='prefix rename X to Y suffix',path='marker-proof.txt';
+ const tasks=[
+  'Create file '+path+' with exactly this content:\n'+payload,
+  'Создай файл '+path+' с точно таким содержанием:\n'+payload,
+  'फ़ाइल '+path+' ठीक इसी सामग्री के साथ बनाओ:\n'+payload,
+  '创建 文件 '+path+' 内容与以下完全相同：\n'+payload,
+  'फ़ाइल '+path+' ठीक इसी सामग्री के साथ बनाओ：\n'+payload,
+ ];
+ for(const task of tasks){
+  const plan=await ask([{role:'user',content:task}],['write','read','edit','bash']);
+  assert.equal(plan.kind,'tool_calls',task);
+  assert.equal(plan.calls.length,1);assert.equal(plan.calls[0].tool,'write');
+  const args=JSON.parse(plan.calls[0].arguments);
+  assert.equal(args.path,path);assert.equal(args.content,payload,task);
+ }
+});
+test('literal separator punctuation inside authored body quotes and fences stays exact',async()=>{
+ const prefix='创建 文件 marker-body.txt 内容与以下完全相同',tick=String.fromCharCode(96).repeat(3);
+ const cases=[
+  [prefix+'：\n：authored rename P to Q','：authored rename P to Q'],
+  [prefix+'：\n«: authored rename P to Q»',': authored rename P to Q'],
+  [prefix+'：\n'+tick+'\n：fenced body\n'+tick,'：fenced body\n'],
+  [prefix+'\n：body after an unpunctuated header','：body after an unpunctuated header'],
+  ['Create file marker-body.txt with exactly this content:\n：authored body','：authored body'],
+ ];
+ for(const [task,expected]of cases){
+  const plan=await ask([{role:'user',content:task}],['write','read','edit','bash']);
+  assert.equal(plan.kind,'tool_calls',task);
+  assert.equal(plan.calls.length,1);assert.equal(plan.calls[0].tool,'write');
+  assert.equal(JSON.parse(plan.calls[0].arguments).content,expected,task);
+ }
+});
+
+test('matched failed Edit retains the raw native provider receipt after actual anchor drift',async()=>{
+ const directory=mkdtempSync(join(tmpdir(),'formal-ai-native-edit-failure-'));
+ try{
+  const path=join(directory,'receipt.txt'),task='Create file receipt.txt containing «old». Then in receipt.txt replace «old» with «new».';
+  const tools=['read','write','edit'],messages=[{role:'user',content:task}];
+  for(const expected of ['write','read']){
+   const plan=await ask(messages,tools);assert.equal(plan.kind,'tool_calls');
+   const call=plan.calls[0];assert.equal(call.tool,expected);
+   const receipt=executeResult(directory,call);
+   exchange(messages,call,receipt.content,receipt.source_read,receipt.is_error);
+  }
+  assert.equal(readFileSync(path,'utf8'),'old');
+  const plan=await ask(messages,tools);assert.equal(plan.kind,'tool_calls');
+  const call=plan.calls[0];assert.equal(call.tool,'edit');
+  writeFileSync(path,'foreign');
+  const actualFailure=executeResult(directory,call);
+  assert.match(actualFailure.content,/oldString not found/);
+  assert.equal(readFileSync(path,'utf8'),'foreign');
+  // Native ToolWorkspace projects its real anchor Err into this JSON receipt shape.
+  const nativeReceipt=JSON.stringify({error:actualFailure.content,is_error:true});
+  exchange(messages,call,nativeReceipt,undefined,true);
+  const result=await ask(messages,tools);
+  assert.equal(result.kind,'final');
+  assert.equal(result.result.disposition,'failure',JSON.stringify(result));
+  assert.match(result.answer,/oldString not found/);
+  assert.equal(readFileSync(path,'utf8'),'foreign');
+  assert.ok(!result.answer.includes('Replaced'));
+ }finally{rmSync(directory,{recursive:true,force:true});}
+});
