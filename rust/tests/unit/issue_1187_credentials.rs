@@ -248,14 +248,72 @@ fn yaml_string_scalar(scalar: &str) -> Option<String> {
     Some(scalar.to_owned())
 }
 
-fn checks_dispatch_observation(block: &[&str]) -> String {
-    let options = yaml_sequence_at(block, &["workflow_dispatch", "inputs", "mode", "options"]);
-    let kind = yaml_mapping_field(block, &["workflow_dispatch", "inputs", "mode", "type"]);
-    let pull_request = yaml_mapping_field(block, &["workflow_dispatch", "inputs", "pull-request"]);
-    if options == Some(vec!["checks".to_owned()])
-        && kind.is_some_and(|(value, _)| value == "choice")
-        && pull_request.is_some()
+fn checks_dispatch_observation(source: &str) -> String {
+    use std::io::Write;
+    use std::process::{Command, Stdio};
+    use std::time::{Duration, Instant};
+
+    if source.len() > 1_048_576 {
+        return String::new();
+    }
+    // This repository/CI policy test shares the production action's finite
+    // contract. The workflow is data on stdin, never interpolated into code.
+    const SCRIPT: &str = r#"
+import {readFileSync} from 'node:fs';
+import {checksDispatchContract} from './scripts/lib/checks-dispatch-contract.mjs';
+process.exitCode = checksDispatchContract(readFileSync(0, 'utf8')) ? 0 : 1;
+"#;
+    let mut child = match Command::new("node")
+        .args(["--input-type=module", "-e", SCRIPT])
+        .current_dir(repo_root())
+        .stdin(Stdio::piped())
+        .stdout(Stdio::null())
+        .stderr(Stdio::inherit())
+        .spawn()
     {
+        Ok(child) => child,
+        Err(error) => {
+            eprintln!(
+                "checks dispatch contract: Node spawn failed ({:?})",
+                error.kind()
+            );
+            return String::new();
+        }
+    };
+    let Some(mut input) = child.stdin.take() else {
+        let _ = child.kill();
+        let _ = child.wait();
+        return String::new();
+    };
+    let bytes = source.as_bytes().to_vec();
+    let writer = std::thread::spawn(move || input.write_all(&bytes));
+    let deadline = Instant::now() + Duration::from_secs(5);
+    let succeeded = loop {
+        match child.try_wait() {
+            Ok(Some(status)) => break status.success(),
+            Ok(None) if Instant::now() < deadline => {
+                std::thread::sleep(Duration::from_millis(10));
+            }
+            observation => {
+                if let Err(error) = observation {
+                    eprintln!(
+                        "checks dispatch contract: Node status failed ({:?})",
+                        error.kind()
+                    );
+                } else {
+                    eprintln!("checks dispatch contract: Node verifier exceeded its 5s deadline");
+                }
+                let _ = child.kill();
+                let _ = child.wait();
+                break false;
+            }
+        }
+    };
+    let wrote = writer.join().map(|result| result.is_ok()).unwrap_or(false);
+    if !wrote {
+        eprintln!("checks dispatch contract: workflow stdin delivery failed");
+    }
+    if succeeded && wrote {
         "workflow_dispatch:\noptions: [checks]\npull-request:".to_owned()
     } else {
         String::new()
@@ -373,7 +431,7 @@ fn every_pull_request_workflow_is_dispatchable_and_ignores_e2e_bases() {
 #[test]
 fn the_named_workflows_declare_the_checks_mode_the_dispatcher_passes() {
     // R2 names layered-ci, evidence-check and workflows; each declares the
-    // `mode` (options: [checks]) and `pull-request` inputs the dispatcher
+    // effective default `mode=checks` and `pull-request` inputs the dispatcher
     // passes, since GitHub refuses an undeclared input.
     for name in [
         "layered-ci.yml",
@@ -382,7 +440,7 @@ fn the_named_workflows_declare_the_checks_mode_the_dispatcher_passes() {
         "web-ui-boundary.yml",
     ] {
         let body = read(&format!(".github/workflows/{name}"));
-        let block = checks_dispatch_observation(&trigger_block(&body));
+        let block = checks_dispatch_observation(&body);
         assert!(
             block.contains("workflow_dispatch:")
                 && block.contains("options: [checks]")
@@ -392,7 +450,8 @@ fn the_named_workflows_declare_the_checks_mode_the_dispatcher_passes() {
     }
     let dispatcher = read(".github/actions/dispatch-checks/action.yml");
     assert!(
-        dispatcher.contains("options: \\[checks\\]"),
+        dispatcher.contains("node scripts/lib/checks-dispatch-contract.mjs")
+            && dispatcher.contains("-f mode=checks -f pull-request="),
         "the dispatcher calls only checks-mode workflows, never a release or authoring dispatch"
     );
     assert!(
@@ -429,7 +488,7 @@ fn every_pull_request_workflow_declares_the_checks_mode_or_a_reason_not_to() {
         {
             continue;
         }
-        let joined = checks_dispatch_observation(&block);
+        let joined = checks_dispatch_observation(&body);
         if !(joined.contains("options: [checks]") && joined.contains("pull-request:")) {
             missing.push(path);
         }

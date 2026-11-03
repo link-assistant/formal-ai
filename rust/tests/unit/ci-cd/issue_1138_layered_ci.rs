@@ -56,17 +56,27 @@ fn every_tier_declares_its_path_predicate_and_needs_the_tiers_above() {
         );
     }
 
+    let source_only_exclusion =
+        "(github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations')";
+    for job in ["js", "ts", "rust"] {
+        let condition = tier_condition(&workflow, job);
+        assert!(
+            condition.starts_with(&format!("{source_only_exclusion} && (")),
+            "explicit source-only regeneration excludes the {job} tier even when its ordinary path or pull-request predicate is true: {condition}"
+        );
+    }
     let js = tier_condition(&workflow, "js");
     assert_eq!(
         js,
-        "needs.changes.outputs.js-changed == 'true' || github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')",
-        "main retains path gating and every fast pull request runs its coding regressions"
+        "(github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations') && (needs.changes.outputs.js-changed == 'true' || github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'))",
+        "main retains path gating and every fast pull request runs coding regressions, while explicit source-only regeneration runs neither"
     );
 
     let ts = tier_condition(&workflow, "ts");
-    assert!(
-        ts.starts_with("needs.changes.outputs.ts-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped')"),
-        "the ts tier is gated on its own predicate plus the js tier being green or carried: {ts}"
+    assert_eq!(
+        ts,
+        "(github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations') && (needs.changes.outputs.ts-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped'))",
+        "the ts tier retains its own predicate and the green-or-carried js dependency outside explicit source-only regeneration"
     );
 
     let rust = tier_condition(&workflow, "rust");
