@@ -206,7 +206,11 @@ fn unresolved_research_query_with(
     if !unresolved(&task) || is_conversation_meta_request(&task, preceding) {
         return None;
     }
-    let stated = super::stated_request::request_blocks(&task)
+    let blocks = super::stated_request::request_blocks(&task);
+    if blocks.len() == 1 && blocks[0] == task {
+        return Some(trim_question_punctuation(task.trim()));
+    }
+    let stated = blocks
         .into_iter()
         .find(|block| unresolved(block))
         .unwrap_or(task.as_str());

@@ -112,7 +112,9 @@ describe('workspace content search greps the named identifier', () => {
     assert.equal(JSON.parse(plan.calls[0].arguments).command, "grep -rnHF --exclude-dir=.git -- 'return a' 'lib'");
   });
 
-  test('a named file is the scope, and a request to change the uses is not a search', async () => {
+  test('a named file is the scope, and a request to change the uses is not a search', {
+    skip: process.env.FAST_PR_PROFILE === 'true' ? 'full worker solver integration runs on main; emulated routing units run on pull requests' : false,
+  }, async () => {
     const scoped = await planChatStep(conversation('Count the lines containing foo in f.txt.'), REDUCED_TOOLS);
     assert.equal(JSON.parse(scoped.calls[0].arguments).command, "grep -rnHw --exclude-dir=.git -- 'foo' 'f.txt'");
     for (const prompt of ['Rename all usages of add to plus.', 'Remove all uses of add.']) {

@@ -14,6 +14,8 @@ Exact maintained ES-to-TS regeneration plus source/output/generator SHA identiti
 
 Shared shell quoting and failure-invitation composition now have one JavaScript definition projected through Links IR to actual production Rust and through the maintained ES translator to TypeScript. Existing consumers use direct aliases or reexports; they do not keep forwarding copies. A single declarative corpus exercises exact empty/apostrophe/newline/Unicode behavior. This finite extraction does not eliminate all repository duplication.
 
+Periodically review duplication as the first generalization step: collect reproduced examples, identify shared invariants and discovery strategies, and validate unseen variants and compositions before consolidating implementations. The lightweight filename coverage reminder exposes unmeasured languages and paths; it does not replace the strict scanners or establish zero duplication.
+
 ### Measured debt and acceptance boundary
 
 The actual integrated JavaScript/TypeScript source scan contains 1145 files and 29299 callables: 10425 raw groups and 26768 raw sites. Canonical identity and 60 independently regenerated factory proofs leave 713 independent groups, with 0 source/proof gaps. Strict acceptance is false. The source inventory SHA-256 is `670703c27001a3d659b1ac43b145bb8da1ffaf24ea846e42fca260a3645cc371`; regenerate the scan after source changes. This is JavaScript/TypeScript source evidence; native inventory and full behavior parity remain Pending.

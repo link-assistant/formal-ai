@@ -232,6 +232,9 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
+      - name: Report DRY review and language coverage
+        if: matrix.shard == 1
+        run: node scripts/report-duplication-coverage.mjs
       - name: Regenerate canonical seed projection for JavaScript consumers
         timeout-minutes: 1
         run: bash scripts/sync-seed.sh
