@@ -165,6 +165,9 @@
     "rust/tests/web/duplication-coverage-report.test.mjs",
     "rust/tests/web/unresolved-research-routing.test.mjs",
     "rust/tests/web/task-decomposition-natural-route.test.mjs",
-    "rust/tests/web/source-scalar-assessment.test.mjs"
+    "rust/tests/web/source-scalar-assessment.test.mjs",
+    "rust/tests/web/literal-create-content-boundary.test.mjs",
+    "rust/tests/web/scoped-creation-evidence.test.mjs",
+    "rust/tests/web/progressive-plan.test.mjs"
   ]
 }
