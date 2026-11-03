@@ -105,3 +105,16 @@ test('owned request spans preserve Unicode and reject quoted examples',()=>{
  assert.equal(Buffer.from(request).subarray(start,end).toString(),'ключ');
  assert.equal(sourceScalarQuestion('Read facts.json. Example: «Is the value of enabled true?»','enabled'),null);
 });
+
+test('ordinary extraction keeps its actual Read value answer without claim framing',async()=>{
+ // Preserve the historical terminal-period key limitation; this only fixes claim admission.
+ for(const [question,expected] of [
+  ['Read facts.json. What is the value of enabled?','Value of `enabled` in `facts.json`: true'],
+  ['Read facts.json and tell me the value of enabled.','Value of `enabled.` in `facts.json`: {"enabled":true}'],
+ ]){
+  const {final}=await observe(question,'{"enabled":true}');
+  assert.equal(final.answer,expected);
+  assert.equal(final.result.disposition,'finding');
+  assert.doesNotMatch(final.answer,/source-scalar-assessment/u);
+ }
+});

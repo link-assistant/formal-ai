@@ -119,6 +119,12 @@ fn stale_pending_failed_and_incomplete_read_evidence_stays_unknown() {
 
 #[test]
 fn question_operand_spans_preserve_unicode_and_refuse_unowned_negation() {
+    for request in [
+        "Read facts.json. What is the value of enabled?",
+        "Read facts.json and tell me the value of enabled.",
+    ] {
+        assert!(source_scalar_question(request, "enabled").is_none());
+    }
     let request = r#"Read facts.json. Is the value of ключ "?. false or true"?"#;
     let claim = source_scalar_question(request, "ключ")
         .flatten()

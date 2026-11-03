@@ -28,8 +28,9 @@ export function sourceScalarQuestion(request,key) {
   for(let index=quoted.start;index<quoted.end;index++)characters[index]=' ';
  const masked=characters.join('');
  const candidates=sentences(masked).filter(sentence=>{
-  const text=masked.slice(sentence.span.start,sentence.span.end).toLowerCase();
-  return grammar.subjects.some(subject=>text.includes(subject.toLowerCase()));
+  const text=masked.slice(sentence.span.start,sentence.span.end).trimStart().toLowerCase();
+  return grammar.copulas.some(copula=>text.startsWith(copula.toLowerCase()+' '))
+   &&grammar.subjects.some(subject=>text.includes(subject.toLowerCase()));
  });
  if(!candidates.length)return null;
  const unknown={claim:null};

@@ -64,11 +64,15 @@ pub(super) fn source_scalar_question(request: &str, key: &str) -> Option<Option<
     let candidates = sentences(&masked)
         .into_iter()
         .filter(|sentence| {
-            let text = masked[sentence.span.clone()].to_lowercase();
+            let text = masked[sentence.span.clone()].trim_start().to_lowercase();
             grammar
-                .subjects
+                .copulas
                 .iter()
-                .any(|subject| text.contains(&subject.to_lowercase()))
+                .any(|copula| text.starts_with(&format!("{} ", copula.to_lowercase())))
+                && grammar
+                    .subjects
+                    .iter()
+                    .any(|subject| text.contains(&subject.to_lowercase()))
         })
         .collect::<Vec<_>>();
     if candidates.is_empty() {
