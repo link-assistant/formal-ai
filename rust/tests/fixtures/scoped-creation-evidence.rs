@@ -410,8 +410,111 @@ fn immutable_standing_context_and_disjoint_path_guards_do_not_invent_alias_resol
     }
     assert!(
         owned_creation_declarations(
-            "First create a.txt containing «one\n». Then create a.txt containing «one\n»."
+            "First create a.txt containing «one\n». Then create a.txt containing «one\n».",
+            None
         )
         .is_empty()
     );
+}
+
+#[test]
+fn host_workspace_absolute_receipts_preserve_wire_arguments_and_prove_logical_creation() {
+    let host = std::env::current_dir().unwrap();
+    let host = host.to_str().unwrap();
+    for target in ["issue-708-literal-payload.txt", "qualified/heldout.txt"] {
+        let payload = "prefix rename X to Y suffix";
+        let task = format!("Create file {target} with exactly this content:\n{payload}");
+        let plan = compose_general_change_plan(&task).unwrap();
+        let observed = projected_creation_path(target, Some(host)).unwrap();
+        for receipt in ["", "Success"] {
+            let mut messages = vec![ChatMessage::user(&task)];
+            let arguments = json!({"filePath":observed,"content":payload}).to_string();
+            exchange(
+                &mut messages,
+                "absolute-write",
+                "write",
+                arguments.clone(),
+                Some(json!({"content":receipt})),
+            );
+            exchange(
+                &mut messages,
+                "absolute-read",
+                "read",
+                json!({"filePath":observed}).to_string(),
+                Some(json!({"content":complete_owned_source_read_frame(payload)})),
+            );
+            let progress = Progress::scan(&messages);
+            let mutation = progress.creation_mutation_for(target).unwrap();
+            assert_eq!(mutation.path, target);
+            assert_eq!(mutation.observed_path, observed);
+            assert_eq!(mutation.workspace_relative_path.as_deref(), Some(target));
+            assert_eq!(mutation.frame.declaration_arguments(), arguments);
+            let proof = owned_creation_observation(&plan, &progress).unwrap();
+            assert_eq!(proof.method, "read-tool");
+            assert_eq!(proof.source, payload);
+            assert_eq!(proof.target, target);
+            let actual_read: Value = serde_json::from_str(&proof.arguments).unwrap();
+            assert_eq!(actual_read["filePath"], observed);
+            assert_eq!(proof.command, None);
+            assert_eq!(proof.exit_code, None);
+        }
+    }
+}
+#[test]
+fn host_workspace_binding_never_substitutes_for_foreign_pending_or_missing_read_evidence() {
+    let host = std::env::current_dir().unwrap();
+    let host = host.to_str().unwrap();
+    let target = "workspace-negative.txt";
+    let payload = "authored bytes";
+    let task = format!("Create {target} containing «{payload}».");
+    let plan = compose_general_change_plan(&task).unwrap();
+    for variant in [
+        "foreign-root",
+        "no-read",
+        "pending-read",
+        "wrong-bytes",
+        "conflicting-alias",
+    ] {
+        let observed = if variant == "foreign-root" {
+            format!("{host}-foreign/{target}")
+        } else {
+            projected_creation_path(target, Some(host)).unwrap()
+        };
+        let mut messages = vec![ChatMessage::user(&task)];
+        let mut arguments = json!({"filePath":observed,"content":payload});
+        if variant == "conflicting-alias" {
+            arguments["path"] = json!("foreign.txt");
+        }
+        exchange(
+            &mut messages,
+            "write",
+            "write",
+            arguments.to_string(),
+            Some(json!({"content":"Success"})),
+        );
+        if variant != "no-read" {
+            exchange(
+                &mut messages,
+                "read",
+                "read",
+                json!({"filePath":observed}).to_string(),
+                (variant != "pending-read").then(|| {
+                    json!({"content":complete_owned_source_read_frame(
+                        if variant == "wrong-bytes" {"foreign"} else {payload}
+                    )})
+                }),
+            );
+        }
+        let progress = Progress::scan(&messages);
+        assert!(
+            owned_creation_observation(&plan, &progress).is_none(),
+            "{variant}"
+        );
+        if ["foreign-root", "conflicting-alias"].contains(&variant) {
+            assert!(
+                progress.creation_mutation_for(target).is_none(),
+                "{variant}"
+            );
+        }
+    }
 }

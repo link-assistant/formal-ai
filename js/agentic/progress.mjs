@@ -17,6 +17,7 @@ import {
 // detail, arguments, tool}` with `arguments` / `tool` null when unknown.
 
 import { sourceFetchObservation } from './source_fetch_observation.mjs';
+import {currentDirectory} from './host.mjs';
 import { plainText, rustLines, latestUserRequest } from './content.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
 import { wordsForRole } from './crate/seed_meanings.mjs';
@@ -79,7 +80,9 @@ export class Progress {
     const currentTurn = evidenceWindowStart(messages);
     const received = latestUserRequest(messages);
     const request = received === null ? null : continuedAgentTask(messages, received) ?? received;
-    creationProgressContexts.set(progress, {request, declarations: null});
+    let hostRoot = null;
+    try { hostRoot = currentDirectory(); } catch { /* Unavailable host scope grants no equivalence. */ }
+    creationProgressContexts.set(progress, {request, declarations: null, hostRoot});
     for (let index = currentTurn; index < messages.length; index += 1) {
       const message = messages[index];
       if (message.role.toLowerCase() !== 'tool') continue;
@@ -446,18 +449,20 @@ export class Progress {
 
   /** Exact creation-specific witnesses; Edit capability is never rewritten as Write. */
   creationMutationFor(path) {
-    return creationMutation(this, qualifiedProgressFrames.get(this) ?? [], path, sourceReadPath);
+    return creationMutation(this, qualifiedProgressFrames.get(this) ?? [], path, sourceReadPath,
+      creationProgressContexts.get(this)?.hostRoot ?? null);
   }
   creationPreflightFor(path) {
-    return creationPreflight(this, qualifiedProgressFrames.get(this) ?? [], path, sourceReadPath);
+    return creationPreflight(this, qualifiedProgressFrames.get(this) ?? [], path, sourceReadPath,
+      creationProgressContexts.get(this)?.hostRoot ?? null);
   }
   creationReadbackFor(mutation, command) {
     const context = creationProgressContexts.get(this);
     if (context && context.declarations === null) {
-      context.declarations = creationDeclarations(context.request);
+      context.declarations = creationDeclarations(context.request, context.hostRoot);
     }
     return creationReadback(this, qualifiedProgressFrames.get(this) ?? [], mutation, command,
-      qualifiedCommandAttempt, sourceReadPath, context?.declarations ?? []);
+      qualifiedCommandAttempt, sourceReadPath, context?.declarations ?? [], context?.hostRoot ?? null);
   }
 
   /** Content supplied to the latest successful write. */

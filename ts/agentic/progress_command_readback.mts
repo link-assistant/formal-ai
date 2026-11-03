@@ -12,6 +12,31 @@ import {clausesWithSpans} from './crate/obligation_ledger.mjs';
 export function ownedCreationReadbackCommand(target) {
   return agenticMessage('literal-create-shell-readback', {path: quoteShellWord(target)});
 }
+function safeRelativeCreationPath(path) {
+  return typeof path === 'string' && path.length > 0 && !path.startsWith('/')
+    && !/^[A-Za-z]:/u.test(path) && !/[\0\r\n\\]/u.test(path)
+    && path.split('/').every(part => part !== '' && part !== '.' && part !== '..');
+}
+function validCreationHostRoot(root) {
+  return typeof root === 'string' && root.startsWith('/') && !/[\0\r\n\\]/u.test(root)
+    && (root === '/' || safeRelativeCreationPath(root.slice(1)));
+}
+export function projectedCreationPath(relative, hostRoot) {
+  return safeRelativeCreationPath(relative) && validCreationHostRoot(hostRoot)
+    ? (hostRoot === '/' ? '/' : hostRoot + '/') + relative : null;
+}
+export function creationPathMatches(logical, observed, hostRoot) {
+  return typeof logical === 'string' && typeof observed === 'string'
+    && (logical === observed || projectedCreationPath(logical, hostRoot) === observed
+      || projectedCreationPath(observed, hostRoot) === logical);
+}
+export function workspaceRelativeCreationPath(observed, hostRoot) {
+  if (typeof observed !== 'string' || !validCreationHostRoot(hostRoot)) return null;
+  const prefix = hostRoot === '/' ? '/' : hostRoot + '/';
+  if (!observed.startsWith(prefix)) return null;
+  const relative = observed.slice(prefix.length);
+  return projectedCreationPath(relative, hostRoot) === observed ? relative : null;
+}
 export function readOnlyCapability(capability) {
   return [Capability.Read, Capability.ReadMany, Capability.Search, Capability.Fetch,
     Capability.Grep, Capability.Glob, Capability.ListDir, Capability.AskUser].includes(capability);
@@ -39,15 +64,15 @@ export function readOnlyAttempt(progress, attempt, qualify, pathFromArguments) {
   if (command === null) return false;
   const known = progress.attempts.some((write, index) => {
     if (!write.succeeded || write.arguments === null) return false;
-    if (write.capability === Capability.Write) {
-      const path = pathFromArguments(write.arguments);
-      return path !== null && command === ownedCreationReadbackCommand(path);
-    }
+    const path = write.capability === Capability.Write ? pathFromArguments(write.arguments) : null;
+    if (path !== null && command === ownedCreationReadbackCommand(path)) return true;
     const creation = write.capability === Capability.Edit && isWorkspaceCreationTool(write.tool)
       ? canonicalCreation(write.arguments) : null;
-    const mutation = creation === null ? null : progress.creationMutationFor(creation.path);
+    const observedPath = path ?? creation?.path ?? null;
+    const mutation = observedPath === null ? null : progress.creationMutationFor(observedPath);
     return mutation?.qualified && mutation.succeeded && mutation.index === index
-      && command === ownedCreationReadbackCommand(creation.path);
+      && [mutation.path, mutation.observedPath, mutation.workspaceRelativePath]
+        .some(target => typeof target === 'string' && command === ownedCreationReadbackCommand(target));
   });
   // A failed qualified cat is still read-only; it never becomes successful evidence.
   return known && qualifiedReceipt(progress, attempt, command, qualify).qualified;
@@ -102,17 +127,18 @@ export function freshSourceReadAttemptFor(progress, path, qualifyCommand, pathFr
 
 // Creation custody is separate from broad Edit/Write classification.
 /** Only complete owned clauses of the scanner's standing request may commute. */
-export function ownedCreationDeclarations(request) {
+export function ownedCreationDeclarations(request, hostRoot = null) {
   if (typeof request !== 'string') return [];
   const declarations = clausesWithSpans(request).flatMap(([clause, span]) => {
     const frame = ownedDeclaredCreateFrame(clause);
     return frame === null ? [] : [Object.freeze({...frame, span: Object.freeze([...span])})];
   });
-  const targets = declarations.map(declaration => declaration.target);
-  return new Set(targets).size === targets.length ? Object.freeze(declarations) : [];
+  const ambiguous = declarations.some((declaration, index) => declarations.some((other, at) =>
+    at < index && creationPathMatches(declaration.target, other.target, hostRoot)));
+  return ambiguous ? [] : Object.freeze(declarations);
 }
-function declaredCreation(declarations, mutation) {
-  return declarations.some(declaration => declaration.target === mutation.path
+function declaredCreation(declarations, mutation, hostRoot) {
+  return declarations.some(declaration => creationPathMatches(declaration.target, mutation.path, hostRoot)
     && declaration.content === mutation.content);
 }
 function disjointCreationTargets(left, right) {
@@ -122,15 +148,19 @@ function disjointCreationTargets(left, right) {
   const rooted = path => path.startsWith('/') || path.startsWith('\\');
   return valid(left) && valid(right) && rooted(left) === rooted(right) && key(left) !== key(right);
 }
-function declaredDisjointMutation(progress, frames, mutation, attempt, index, declarations, pathFromArguments) {
-  if (!declaredCreation(declarations, mutation)) return false;
+function declaredDisjointMutation(progress, frames, mutation, attempt, index, declarations, pathFromArguments, hostRoot) {
+  if (!declaredCreation(declarations, mutation, hostRoot)) return false;
   const candidates = frames.filter(frame => boundAttempt(progress, frame)?.attempt === attempt);
   if (candidates.length !== 1) return false;
   const creation = creationArguments(candidates[0], pathFromArguments);
-  if (creation === null || !disjointCreationTargets(mutation.path, creation.path)) return false;
-  const other = creationMutationFor(progress, frames, creation.path, pathFromArguments);
+  if (creation === null) return false;
+  const currentPath = mutation.observedPath ?? mutation.path;
+  const left = projectedCreationPath(currentPath, hostRoot) ?? currentPath;
+  const right = projectedCreationPath(creation.path, hostRoot) ?? creation.path;
+  if (!disjointCreationTargets(left, right)) return false;
+  const other = creationMutationFor(progress, frames, creation.path, pathFromArguments, hostRoot);
   return other?.qualified && other.succeeded && other.index === index
-    && declaredCreation(declarations, other);
+    && declaredCreation(declarations, other, hostRoot);
 }
 function creationArguments(frame, pathFromArguments) {
   if (!isWorkspaceCreationTool(frame.declaredTool)) return null;
@@ -153,32 +183,34 @@ function boundAttempt(progress, frame) {
     && (attempt.raw_receipt ?? attempt.detail) === frame.detail);
   return matches.length === 1 ? matches[0] : null;
 }
-export function creationMutationFor(progress, frames, path, pathFromArguments) {
+export function creationMutationFor(progress, frames, path, pathFromArguments, hostRoot = null) {
   for (const frame of [...frames].reverse()) {
     const creation = creationArguments(frame, pathFromArguments);
-    if (creation === null || creation.path !== path) continue;
+    if (creation === null || !creationPathMatches(path, creation.path, hostRoot)) continue;
     const bound = boundAttempt(progress, frame);
     const qualified = frame.binding === 'exact' && frame.receiptPresent && !frame.duplicate && bound !== null;
-    return Object.freeze({...creation, frame, capability: frame.capability, tool: frame.declaredTool,
+    return Object.freeze({...creation, path, observedPath: creation.path,
+      workspaceRelativePath: workspaceRelativeCreationPath(creation.path, hostRoot),
+      frame, capability: frame.capability, tool: frame.declaredTool,
       arguments: frame.arguments, argumentsValue: frame.argumentsValue, receiptPresent: frame.receiptPresent,
       attempt: bound?.attempt ?? null, index: bound?.index ?? null, qualified,
       succeeded: qualified && frame.succeeded && bound.attempt.succeeded});
   }
   return null;
 }
-export function creationPreflightFor(progress, frames, path, pathFromArguments) {
+export function creationPreflightFor(progress, frames, path, pathFromArguments, hostRoot = null) {
   const unknown = attempted => ({attempted, observation: null});
   if (frames.some(frame => !frame.receiptPresent && !readOnlyCapability(frame.capability))) return unknown(true);
   for (const frame of [...frames].reverse()) {
     if (!readOnlyCapability(frame.capability)) return unknown(false);
-    if (frame.capability !== Capability.Read || pathFromArguments(frame.arguments) !== path) continue;
+    if (frame.capability !== Capability.Read || !creationPathMatches(path, pathFromArguments(frame.arguments), hostRoot)) continue;
     const bound = boundAttempt(progress, frame);
     return frame.binding === 'exact' && frame.receiptPresent && !frame.duplicate && bound !== null
       ? {attempted: true, observation: bound.attempt.source_read ?? null} : unknown(true);
   }
   return unknown(false);
 }
-export function creationReadbackFor(progress, frames, mutation, command, qualify, pathFromArguments, declarations = []) {
+export function creationReadbackFor(progress, frames, mutation, command, qualify, pathFromArguments, declarations = [], hostRoot = null) {
   const empty = current => ({current, readAttempt: null, commandReceipt: null, pendingRead: false, needsFreshRead: false});
   if (!mutation?.succeeded || mutation.index === null || !frames.includes(mutation.frame)
     || progress.attempts[mutation.index] !== mutation.attempt
@@ -186,7 +218,7 @@ export function creationReadbackFor(progress, frames, mutation, command, qualify
   const laterFrames = frames.slice(frames.indexOf(mutation.frame) + 1);
   const state = empty(true);
   state.pendingRead = laterFrames.some(frame => frame.capability === Capability.Read
-    && pathFromArguments(frame.arguments) === mutation.path && !frame.receiptPresent);
+    && creationPathMatches(mutation.path, pathFromArguments(frame.arguments), hostRoot) && !frame.receiptPresent);
   for (let index = progress.attempts.length - 1; index > mutation.index; index--) {
     const attempt = progress.attempts[index];
     if (attempt.capability === Capability.Run && commandArgument(attempt.arguments) === command) {
@@ -195,14 +227,14 @@ export function creationReadbackFor(progress, frames, mutation, command, qualify
       continue;
     }
     if (!readOnlyAttempt(progress, attempt, qualify, pathFromArguments)) {
-      if (declaredDisjointMutation(progress, frames, mutation, attempt, index, declarations, pathFromArguments)) continue;
+      if (declaredDisjointMutation(progress, frames, mutation, attempt, index, declarations, pathFromArguments, hostRoot)) continue;
       const invalidators = frames.filter(frame => frame.binding === 'exact' && frame.receiptPresent
         && !frame.duplicate && boundAttempt(progress, frame)?.attempt === attempt);
       return {...state, current: false, needsFreshRead: state.readAttempt === null
         && state.commandReceipt === null && !state.pendingRead && invalidators.length === 1};
     }
     if (state.readAttempt === null && attempt.capability === Capability.Read
-      && pathFromArguments(attempt.arguments) === mutation.path) state.readAttempt = attempt;
+      && creationPathMatches(mutation.path, pathFromArguments(attempt.arguments), hostRoot)) state.readAttempt = attempt;
   }
   return state;
 }

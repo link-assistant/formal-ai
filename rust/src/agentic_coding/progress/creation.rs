@@ -2,6 +2,9 @@
 #[cfg(test)]
 #[path = "../../../tests/fixtures/scoped-creation-evidence.rs"]
 mod tests;
+use super::creation_path::{
+    creation_path_matches, projected_creation_path, workspace_relative_creation_path,
+};
 use super::source_freshness::{PostWriteCommandReceipt, read_only_attempt, read_only_capability};
 use super::{Capability, Progress, ToolAttempt, source_read_path};
 use crate::agentic_coding::capability_router::is_workspace_creation_tool;
@@ -23,9 +26,8 @@ pub(super) fn standing_request(messages: &[crate::protocol::ChatMessage]) -> Opt
             .unwrap_or(received),
     )
 }
-fn owned_creation_declarations(request: &str) -> Vec<CreationDeclaration> {
-    let mut declarations = Vec::new();
-    let mut targets = std::collections::HashSet::new();
+fn owned_creation_declarations(request: &str, host_root: Option<&str>) -> Vec<CreationDeclaration> {
+    let mut declarations: Vec<CreationDeclaration> = Vec::new();
     for (clause, span) in crate::obligation_ledger::clauses_with_spans(request) {
         let Some((target, content)) =
             crate::agentic_coding::general_planner::owned_declared_create_frame(&clause)
@@ -34,7 +36,9 @@ fn owned_creation_declarations(request: &str) -> Vec<CreationDeclaration> {
         };
         if span.0 >= span.1
             || request.get(span.0..span.1).is_none()
-            || !targets.insert(target.clone())
+            || declarations
+                .iter()
+                .any(|declaration| creation_path_matches(&declaration.target, &target, host_root))
         {
             return Vec::new();
         }
@@ -49,10 +53,11 @@ fn owned_creation_declarations(request: &str) -> Vec<CreationDeclaration> {
 fn declared_creation(
     declarations: &[CreationDeclaration],
     mutation: &CreationMutation<'_>,
+    host_root: Option<&str>,
 ) -> bool {
     declarations.iter().any(|declaration| {
         declaration.span.0 < declaration.span.1
-            && declaration.target == mutation.path
+            && creation_path_matches(&declaration.target, &mutation.path, host_root)
             && declaration.content == mutation.content
     })
 }
@@ -84,14 +89,15 @@ fn declared_disjoint_mutation(
     attempt: &ToolAttempt,
     index: usize,
 ) -> bool {
+    let host_root = progress.workspace_root.as_deref();
     let declarations = progress.creation_declarations.get_or_init(|| {
         progress
             .creation_request
             .as_deref()
-            .map(owned_creation_declarations)
+            .map(|request| owned_creation_declarations(request, host_root))
             .unwrap_or_default()
     });
-    if !declared_creation(declarations, mutation) {
+    if !declared_creation(declarations, mutation, host_root) {
         return false;
     }
     let mut candidates = progress.qualified_attempts.iter().filter(|frame| {
@@ -106,7 +112,10 @@ fn declared_disjoint_mutation(
     let Some((path, _)) = creation_arguments(frame) else {
         return false;
     };
-    if !disjoint_creation_targets(&mutation.path, &path) {
+    let left = projected_creation_path(&mutation.observed_path, host_root)
+        .unwrap_or_else(|| mutation.observed_path.clone());
+    let right = projected_creation_path(&path, host_root).unwrap_or_else(|| path.clone());
+    if !disjoint_creation_targets(&left, &right) {
         return false;
     }
     let Some(other) = progress.creation_mutation_for(&path) else {
@@ -115,11 +124,13 @@ fn declared_disjoint_mutation(
     other.qualified
         && other.succeeded
         && other.index == Some(index)
-        && declared_creation(declarations, &other)
+        && declared_creation(declarations, &other, host_root)
 }
 
 pub(in crate::agentic_coding) struct CreationMutation<'a> {
     pub(in crate::agentic_coding) path: String,
+    pub(in crate::agentic_coding) observed_path: String,
+    pub(in crate::agentic_coding) workspace_relative_path: Option<String>,
     pub(in crate::agentic_coding) content: String,
     pub(in crate::agentic_coding) frame: &'a QualifiedToolAttempt,
     pub(in crate::agentic_coding) attempt: Option<&'a ToolAttempt>,
@@ -198,14 +209,19 @@ impl Progress {
             let Some((target, content)) = creation_arguments(frame) else {
                 continue;
             };
-            if target != path {
+            if !creation_path_matches(path, &target, self.workspace_root.as_deref()) {
                 continue;
             }
             let bound = bound_attempt(self, frame);
             let qualified =
                 frame.binding == Binding::Exact && frame.has_receipt() && bound.is_some();
             return Some(CreationMutation {
-                path: target,
+                path: path.to_owned(),
+                workspace_relative_path: workspace_relative_creation_path(
+                    &target,
+                    self.workspace_root.as_deref(),
+                ),
+                observed_path: target,
                 content,
                 frame,
                 attempt: bound.map(|(_, attempt)| attempt),
@@ -239,7 +255,9 @@ impl Progress {
                 return unknown(false);
             }
             if frame.capability() != Capability::Read
-                || source_read_path(frame.declaration_arguments()).as_deref() != Some(path)
+                || !source_read_path(frame.declaration_arguments()).is_some_and(|observed| {
+                    creation_path_matches(path, &observed, self.workspace_root.as_deref())
+                })
             {
                 continue;
             }
@@ -288,8 +306,13 @@ impl Progress {
             .any(|frame| {
                 frame.capability() == Capability::Read
                     && !frame.has_receipt()
-                    && source_read_path(frame.declaration_arguments()).as_deref()
-                        == Some(mutation.path.as_str())
+                    && source_read_path(frame.declaration_arguments()).is_some_and(|observed| {
+                        creation_path_matches(
+                            &mutation.path,
+                            &observed,
+                            self.workspace_root.as_deref(),
+                        )
+                    })
             });
         for (offset, attempt) in self.attempts[index + 1..].iter().enumerate().rev() {
             if attempt.capability == Capability::Run
@@ -352,8 +375,13 @@ impl Progress {
                     .arguments
                     .as_deref()
                     .and_then(source_read_path)
-                    .as_deref()
-                    == Some(mutation.path.as_str())
+                    .is_some_and(|observed| {
+                        creation_path_matches(
+                            &mutation.path,
+                            &observed,
+                            self.workspace_root.as_deref(),
+                        )
+                    })
             {
                 state.read_attempt = Some(attempt);
             }
