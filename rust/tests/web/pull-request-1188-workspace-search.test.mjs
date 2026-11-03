@@ -289,7 +289,10 @@ describe('a literal-file write never replaces an existing file unasked', () => {
   });
 });
 
-test('original Create preserves an existing physical target and creates a fresh target without a journal', async () => {
+// Full physical capture/replay integration stays on main; PRs retain this file's unit cases.
+test('original Create preserves an existing physical target and creates a fresh target without a journal', {
+  skip: process.env.FAST_PR_PROFILE === 'true' ? 'physical capture integration runs on main' : false,
+}, async () => {
   const {mkdtempSync, writeFileSync, readFileSync, existsSync, rmSync} = await import('node:fs');
   const {join} = await import('node:path');
   const {tmpdir} = await import('node:os');
