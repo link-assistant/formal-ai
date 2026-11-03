@@ -133,8 +133,15 @@ fn run_with_receipts(
                             || command.starts_with("cat ")
                             || (inject_digest && command.starts_with("sha256sum -- "))
                         {
-                            run.receipts.push((command.to_owned(), stdout));
+                            run.receipts.push((command.to_owned(), stdout.clone()));
                         }
+                        run.file_events.last_mut().expect("actual command event").2 =
+                            serde_json::json!({
+                                "actual_success": output.status.success(),
+                                "actual_stdout": stdout,
+                                "receipt": &result
+                            })
+                            .to_string();
                         result
                     } else {
                         panic!("unsupported fixture primitive {}", call.tool);
@@ -184,6 +191,126 @@ fn has_fresh_exact_read(run: &Run, path: &str, bytes: &str) -> bool {
         }
     }
     false
+}
+fn has_fresh_exact_command(events: &[(String, String, String)], path: &str, bytes: &str) -> bool {
+    let Some(index) = events
+        .iter()
+        .rposition(|(kind, target, _)| kind == "write" && target == path)
+    else {
+        return false;
+    };
+    if events[index].2 != bytes {
+        return false;
+    }
+    let command = format!("cat {path}");
+    for (kind, target, observed) in &events[index + 1..] {
+        if kind == "bash" && target == &command {
+            let Ok(event) = serde_json::from_str::<serde_json::Value>(observed) else {
+                return false;
+            };
+            let Some(receipt) = event["receipt"].as_str() else {
+                return false;
+            };
+            return event["actual_success"] == true
+                && event["actual_stdout"].as_str() == Some(bytes)
+                && formal_ai::agentic_coding::tool_result::step_outcome(receipt)
+                    == formal_ai::agentic_coding::tool_result::StepOutcome::Succeeded
+                && receipt == successful_source_receipt(bytes);
+        }
+        if kind == "write" || kind == "bash" {
+            return false;
+        }
+    }
+    false
+}
+#[test]
+fn evidence_command_proof_requires_fresh_exact_successful_process_and_receipt() {
+    let bytes = "independent exact record\n";
+    let write = (
+        "write".to_owned(),
+        "record.lino".to_owned(),
+        bytes.to_owned(),
+    );
+    let event = |success: bool, stdout: &str, receipt: &str| {
+        (
+            "bash".to_owned(),
+            "cat record.lino".to_owned(),
+            serde_json::json!({
+                "actual_success": success, "actual_stdout": stdout, "receipt": receipt
+            })
+            .to_string(),
+        )
+    };
+    let receipt = successful_source_receipt(bytes);
+    let valid = event(true, bytes, &receipt);
+    assert!(has_fresh_exact_command(
+        &[write.clone(), valid.clone()],
+        "record.lino",
+        bytes
+    ));
+    let truncated =
+        serde_json::json!({"stdout": bytes, "exit_code": 0, "truncated": true}).to_string();
+    let failed = serde_json::json!({"stdout": bytes, "exit_code": 0, "is_error": true}).to_string();
+    for invalid in [
+        event(false, bytes, &receipt),
+        event(true, "wrong bytes", &receipt),
+        event(
+            true,
+            bytes,
+            "Output: independent exact record\n\nExit Code: 1",
+        ),
+        event(true, bytes, &successful_source_receipt("wrong bytes")),
+        event(true, bytes, &truncated),
+        event(true, bytes, &failed),
+        (
+            "bash".to_owned(),
+            "cat other.lino".to_owned(),
+            valid.2.clone(),
+        ),
+        (
+            "bash".to_owned(),
+            "cat record.lino".to_owned(),
+            "unbound raw bytes".to_owned(),
+        ),
+    ] {
+        assert!(!has_fresh_exact_command(
+            &[write.clone(), invalid],
+            "record.lino",
+            bytes
+        ));
+    }
+    assert!(!has_fresh_exact_command(
+        &[valid.clone(), write.clone()],
+        "record.lino",
+        bytes
+    ));
+    assert!(!has_fresh_exact_command(
+        &[
+            write.clone(),
+            (
+                "write".to_owned(),
+                "other.lino".to_owned(),
+                bytes.to_owned()
+            ),
+            valid.clone()
+        ],
+        "record.lino",
+        bytes
+    ));
+    assert!(!has_fresh_exact_command(
+        &[
+            write.clone(),
+            ("bash".to_owned(), "other command".to_owned(), String::new()),
+            valid.clone()
+        ],
+        "record.lino",
+        bytes
+    ));
+    assert!(!has_fresh_exact_command(
+        &[write, valid],
+        "record.lino",
+        "different requested bytes"
+    ));
 }
 fn exact_pair(run: &Run, first: &str, second: &str) {
     assert_eq!(
@@ -491,6 +618,10 @@ fn unchanged_l21_preserves_source_and_both_independent_records() {
             &outcome,
             "agent-ladder-effects/node-2.1.2.1.1.lino",
             &effect
+        ) || has_fresh_exact_command(
+            &outcome.file_events,
+            "agent-ladder-effects/node-2.1.2.1.1.lino",
+            &effect
         )
     );
     assert!(
@@ -498,6 +629,11 @@ fn unchanged_l21_preserves_source_and_both_independent_records() {
             ".agent-ladder/node-2.1.2.1.1-proof.md",
             &proof
         )) || has_fresh_exact_read(&outcome, ".agent-ladder/node-2.1.2.1.1-proof.md", &proof)
+            || has_fresh_exact_command(
+                &outcome.file_events,
+                ".agent-ladder/node-2.1.2.1.1-proof.md",
+                &proof
+            )
     );
     assert_eq!(outcome.writes, 3);
     assert!(outcome.answer.is_some());
