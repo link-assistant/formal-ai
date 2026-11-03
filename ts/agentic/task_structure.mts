@@ -4,7 +4,7 @@
 import { announcesAListItDoesNotMake, defersToTheOpenWeb, isInconclusive } from './crate/engine_answer.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
 import { trim } from './crate/rust_str.mjs';
-import { answerTaskDecomposition, looksLikeTaskDecomposition } from './crate/solver_handlers_task_decomposition.mjs';
+import { tryTaskDecompositionWithDepth, looksLikeTaskDecomposition } from './crate/solver_handlers_task_decomposition.mjs';
 import { composedDocumentSpecificationSpan } from './note_composition.mjs';
 import { FinalDisposition, resolvedFinalAnswer } from './plan.mjs';
 import { traceRoute } from './planner/continuation.mjs';
@@ -21,7 +21,7 @@ export async function planTaskStructureStep(messages, task) {
   if (!nothingHasBeenObservedYet(messages)) return null;
   if (!looksLikeTaskDecomposition(normalizePrompt(task))) return null;
   if (composedDocumentSpecificationSpan(task) !== null) return null;
-  const answer = answerTaskDecomposition(task);
+  const answer = tryTaskDecompositionWithDepth(task);
   if (answer === null) return null;
   if (isInconclusive(answer) || defersToTheOpenWeb(answer) || announcesAListItDoesNotMake(answer)) return null;
   const text = trim(answer.answer);

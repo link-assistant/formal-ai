@@ -48,7 +48,7 @@ export function looksLikeTaskDecomposition(normalized) {
 }
 
 /** Mirrors native Decomposition::numbered_lines without rebuilding its tree. */
-export function numberedDecompositionLines(decomposition, marker) {
+export function numberedLines(decomposition, marker) {
   const rows = [];
   function visit(node) {
     if (node.depth > 0) {
@@ -67,7 +67,7 @@ function seededDecompositionResponse(intent, language) {
 
 function withSubTasks(lead, decomposition, language) {
   const marker = seededDecompositionResponse('task_decomposition_depth_marker', language);
-  const lines = [lead, ...numberedDecompositionLines(decomposition, marker)];
+  const lines = [lead, ...numberedLines(decomposition, marker)];
   if (leaves(decomposition).some(leaf => leaf.reason === 'depth_bound')) {
     lines.push(seededDecompositionResponse('task_decomposition_depth_bound', language));
   }
@@ -78,7 +78,7 @@ function withSubTasks(lead, decomposition, language) {
  * Pure counterpart of try_task_decomposition_with_depth.
  * This renders an inspected plan; it never claims that its leaves were executed.
  */
-export function answerTaskDecomposition(prompt, maxDepth = DEFAULT_SPLIT_DEPTH_BOUND) {
+export function tryTaskDecompositionWithDepth(prompt, maxDepth = DEFAULT_SPLIT_DEPTH_BOUND) {
   const question = classifyDecompositionQuestion(normalizePrompt(prompt));
   if (question === null) return null;
   const task = statedTask(prompt,

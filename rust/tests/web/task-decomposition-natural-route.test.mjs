@@ -2,7 +2,7 @@ import {before, test} from 'node:test';
 import assert from 'node:assert/strict';
 import {WorkerHost} from '../../../js/server/worker-host.mjs';
 import {installNodeHost} from '../../../js/agentic/node-host.mjs';
-import {answerTaskDecomposition, looksLikeTaskDecomposition}
+import {tryTaskDecompositionWithDepth, looksLikeTaskDecomposition}
   from '../../../js/agentic/crate/solver_handlers_task_decomposition.mjs';
 import {statedTask} from '../../../js/agentic/crate/task_decomposition_stated_task.mjs';
 import {normalizePrompt} from '../../../js/agentic/crate/engine.mjs';
@@ -19,7 +19,7 @@ const asks = text => looksLikeTaskDecomposition(normalizePrompt(text));
 
 test('the unchanged natural requests reach the existing decomposition contract', async () => {
   for (const prompt of [ORIGINAL, SMALL]) {
-    const expected = answerTaskDecomposition(prompt);
+    const expected = tryTaskDecompositionWithDepth(prompt);
     assert(expected);
     const actual = await planChatStep([{role: 'user', content: prompt}], ['read', 'edit', 'write']);
     assert.equal(actual?.kind, 'final');
@@ -31,7 +31,7 @@ test('the unchanged natural requests reach the existing decomposition contract',
 });
 
 test('a held-out missing software contract uses the approved four-stage tree', () => {
-  const answer = answerTaskDecomposition('Split this task into steps: implement the queue rewrite.');
+  const answer = tryTaskDecompositionWithDepth('Split this task into steps: implement the queue rewrite.');
   assert(answer);
   assert.equal(answer.decomposition.root.atomic, false);
   assert.equal(answer.decomposition.root.children.length, 4);
@@ -55,15 +55,15 @@ test('task-span recovery preserves quoted values and excludes unrelated framing'
 });
 
 test('an unresolved leaf and an unsplit depth guard never announce an empty list', () => {
-  const unknown = answerTaskDecomposition('Split this task: understand everything.');
+  const unknown = tryTaskDecompositionWithDepth('Split this task: understand everything.');
   assert.equal(unknown.decomposition.root.atomic, false);
   assert.equal(unknown.decomposition.root.children.length, 0);
   assert(!unknown.answer.includes('\n1.'));
-  const bounded = answerTaskDecomposition('Split this task: implement the queue rewrite.', 0);
+  const bounded = tryTaskDecompositionWithDepth('Split this task: implement the queue rewrite.', 0);
   assert.equal(bounded.decomposition.root.reason, 'depth_bound');
   assert(!bounded.answer.includes('\n1.'));
 });
 
 test('ordinary execution requests do not become decomposition answers', () => {
-  assert.equal(answerTaskDecomposition('Create notes.txt containing exactly «hello».'), null);
+  assert.equal(tryTaskDecompositionWithDepth('Create notes.txt containing exactly «hello».'), null);
 });
