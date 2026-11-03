@@ -52,18 +52,6 @@ export function readOnlyAttempt(progress, attempt, qualify, pathFromArguments) {
   // A failed qualified cat is still read-only; it never becomes successful evidence.
   return known && qualifiedReceipt(progress, attempt, command, qualify).qualified;
 }
-export function postWriteCommandReceiptFor(progress, path, command, qualify, pathFromArguments) {
-  const attempts = progress.attemptsAfterLatestWrite(path) ?? [];
-  for (let index = attempts.length - 1; index >= 0; index--) {
-    const attempt = attempts[index];
-    if (attempt.capability === Capability.Run && attempt.arguments !== null
-      && commandArgument(attempt.arguments) === command) {
-      return qualifiedReceipt(progress, attempt, command, qualify);
-    }
-    if (!readOnlyAttempt(progress, attempt, qualify, pathFromArguments)) return null;
-  }
-  return null;
-}
 
 /** Only the exact successful latest mutation may lend its subsequent complete Read. */
 export function postMutationReadStateFor(progress, path, capability, argumentsValue, qualifyTool, qualifyCommand, pathFromArguments) {

@@ -1,7 +1,6 @@
 //! Target-bound post-write observations and conservative mutation invalidation.
 use super::{Capability, Progress, ToolAttempt, source_read_path};
 use crate::agentic_coding::general_planner::shell_quote;
-use crate::agentic_coding::tool_result::command_argument;
 
 pub(in crate::agentic_coding) struct PostWriteCommandReceipt<'a> {
     pub(in crate::agentic_coding) raw: &'a str,
@@ -114,42 +113,6 @@ impl Progress {
         path: &str,
     ) -> bool {
         self.latest_post_write_read_attempt_for(path).is_some()
-    }
-
-    /// Only an exact fresh command frame can witness a post-write shell readback.
-    pub(in crate::agentic_coding) fn post_write_command_receipt_for(
-        &self,
-        path: &str,
-        command: &str,
-    ) -> Option<PostWriteCommandReceipt<'_>> {
-        for attempt in self.attempts_after_latest_write(path)?.iter().rev() {
-            if attempt.capability == Capability::Run
-                && attempt
-                    .arguments
-                    .as_deref()
-                    .and_then(command_argument)
-                    .as_deref()
-                    == Some(command)
-            {
-                let raw = attempt.raw_receipt.as_deref().unwrap_or("");
-                let qualified = self
-                    .qualified_command_attempt(command)
-                    .is_some_and(|frame| {
-                        frame.succeeded
-                            && frame
-                                .matches_receipt(attempt.tool.as_deref().unwrap_or_default(), raw)
-                    });
-                return Some(PostWriteCommandReceipt {
-                    raw,
-                    qualified,
-                    succeeded: attempt.succeeded,
-                });
-            }
-            if !read_only_attempt(self, attempt) {
-                return None;
-            }
-        }
-        None
     }
 
     /// Failed or missing latest receipts cannot reuse an earlier observation.
