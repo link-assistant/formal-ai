@@ -4,6 +4,8 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import vm from 'node:vm';
+import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
 import YAML from 'yaml';
 import {prepareOwnedHiveRuns, applyOwnedHiveClaim, writeCleanupPreparation, writeCleanupOutcome,
   writeCleanupRecheck, triggeredHiveOwnerExists, prepareExplicitHiveOwner} from '../../../scripts/finalize-owned-hive-delivery-runs.mjs';
@@ -386,4 +388,52 @@ test('published claim and outcome filenames match exact sole artifact members', 
     assert.throws(() => writeCleanupOutcome(outcome, directory));
     assert.throws(() => writeCleanupPreparation({owners: [{run: '../other', attempt: 1, claim}], progress: {}}, directory));
   } finally { fs.rmSync(directory, {recursive: true, force: true}); }
+});
+
+// These finite selection controls are not a claim of a tiny import closure.
+test('prepare acquisition preserves trusted source, custody gates and the complete retained source tree', context => {
+  const workflow=YAML.parse(fs.readFileSync('.github/workflows/hive-original-delivery-finalize.yml','utf8'));
+  assert.deepEqual(workflow.permissions,{contents:'read',actions:'read'});
+  const digest=value=>createHash('sha256').update(value).digest('hex');
+  const patterns='/*\n!/dev/log/\n!/experiments/formal_ai_subagent/evidence/coordinator-1188/**/*.gz\n';
+  function check(job){
+    assert.equal(job['timeout-minutes'],10);assert.equal(job.permissions,undefined);
+    assert.equal(digest(job.if),'9c0227a31cfd009b69321dc7ce30a1d2065a18d156f170f9d4ae940abe13961f');
+    assert.equal(digest(JSON.stringify(job.steps.slice(1))),'91204467397f2eed32a328ebeb5de3c68aa493b41109cac23fe961b2612d6859');
+    const checkouts=job.steps.filter(step=>step.uses?.startsWith('actions/checkout@'));
+    assert.equal(checkouts.length,1);const checkout=checkouts[0];
+    assert.equal(job.steps[0],checkout);assert.equal(checkout.uses,'actions/checkout@v7');
+    assert.equal(checkout['timeout-minutes'],2);
+    assert.deepEqual(checkout.env,{GIT_HTTP_LOW_SPEED_LIMIT:'1024',GIT_HTTP_LOW_SPEED_TIME:'20'});
+    assert.deepEqual(checkout.with,{ref:'${{ github.workflow_sha }}','persist-credentials':false,
+      'fetch-depth':1,filter:'blob:none','sparse-checkout':patterns,'sparse-checkout-cone-mode':false});
+  }
+  const job=workflow.jobs.prepare;check(job);
+  for(const mutate of [value=>value['timeout-minutes']=11,value=>value.steps[0]['timeout-minutes']=3,
+    value=>value.steps[0].with.ref='refs/heads/main',value=>value.steps[0].with['persist-credentials']=true,
+    value=>value.steps[0].with.filter='tree:0',value=>value.steps[0].with['sparse-checkout-cone-mode']=true,
+    value=>value.steps[0].with['sparse-checkout']+='!/scripts/\n',
+    value=>value.steps[0].with['sparse-checkout']='/*\n!/experiments/formal_ai_subagent/evidence/coordinator-1188/\n',
+    value=>value.steps[0].env.GIT_HTTP_LOW_SPEED_TIME='300',value=>value.steps.pop(),value=>value.if='true']){
+    const changed=structuredClone(job);mutate(changed);assert.throws(()=>check(changed));
+  }
+  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'cleanup-checkout-rules-'));
+  context.after(()=>fs.rmSync(directory,{recursive:true,force:true}));
+  const rules=path.join(directory,'rules');fs.writeFileSync(rules,patterns);
+  const retained=['.github/workflows/hive-original-delivery-finalize.yml','package.json','bun.lock',
+    'scripts/finalize-owned-hive-delivery-runs.mjs','scripts/lib/generated-task-cleanup-journal.mjs',
+    'scripts/work-item-qualification/cleanup-contract.mjs','scripts/work-item-qualification/policy.mjs',
+    'scripts/work-item-qualification/fixtures.mjs','scripts/work-item-qualification/original-task.json',
+    'js/server/json.mjs','js/agentic/node-host.mjs','data/benchmarks/hive-original-delivery-inputs.json',
+    'rust/tests/fixtures/memory/schema-1.lino',
+    'experiments/formal_ai_subagent/evidence/coordinator-1188/source.mjs',
+    'experiments/formal_ai_subagent/evidence/coordinator-1188/nested/README.md'];
+  const omitted=['dev/log/private-evidence.json','experiments/formal_ai_subagent/evidence/coordinator-1188/trace.gz',
+    'experiments/formal_ai_subagent/evidence/coordinator-1188/nested/trace.gz'];
+  const selected=execFileSync('git',['sparse-checkout','check-rules','--no-cone','--rules-file',rules,'-z'],{
+    input:[...retained,...omitted].join('\0')+'\0',encoding:'utf8',timeout:5000,maxBuffer:65536
+  }).split('\0').filter(Boolean);
+  assert.deepEqual(selected,retained);
+  assert.ok(fs.existsSync('scripts/work-item-qualification/original-task.json'));
+  assert.doesNotThrow(()=>JSON.parse(fs.readFileSync('scripts/work-item-qualification/original-task.json','utf8')));
 });

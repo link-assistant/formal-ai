@@ -8,6 +8,8 @@ import {createHash} from 'node:crypto';
 import {Script} from 'node:vm';
 import YAML from 'yaml';
 import {selectFastTests} from '../../../scripts/list-fast-pull-request-tests.mjs';
+import {fileLimit} from '../../../scripts/check-file-size.mjs';
+import {ROOTS,familyOf} from '../../../scripts/check-readable-code.mjs';
 const read = file => readFileSync(file, 'utf8');
 const manifest = JSON.parse(read('data/benchmarks/fast-pull-request-retained-jobs.json'));
 const workflow = file => YAML.parse(read('.github/workflows/' + file));
@@ -198,16 +200,46 @@ test('JavaScript checkout keeps source and the real learning fixture while omitt
   assert.ok(read(fixture).length>0,'the unchanged real report remains an input');
   const retained=['package.json','bun.lock','js/agentic/planner.mjs','ts/agentic/planner.mts',
     'scripts/plan-test-shards.mjs','data/meta/javascript-test-durations.lino',
+    'js/例 子.mjs','docs/line\nbreak.md',
     'rust/tests/web/issue-0702-nested-contexts.test.mjs','rust/src/lib.rs',
     '.github/actions/setup-source-model/action.yml','docs/case-studies/issue-717/e2e-npm-ci.log',fixture];
   const omitted=['dev/log/issues/781/pulls/803/sessions/old/solve.log',
     'experiments/formal_ai_subagent/evidence/coordinator-1188/raw/archive.jsonl.gz'];
+  assert.deepEqual(checkoutSelection(patterns,[...retained,...omitted]),retained);
+});
+
+
+function checkoutSelection(patterns,files) {
   const directory=mkdtempSync(join(tmpdir(),'formal-ai-checkout-rules-'));
   try {
     const file=join(directory,'patterns');writeFileSync(file,patterns);
-    const selected=execFileSync('git',['sparse-checkout','check-rules','--no-cone','--rules-file',file],{
-      input:[...retained,...omitted].join('\n')+'\n',encoding:'utf8',timeout:5000,maxBuffer:64000
-    }).trim().split('\n');
-    assert.deepEqual(selected,retained);
+    const selected=execFileSync('git',['sparse-checkout','check-rules','--no-cone','--rules-file',file,'-z'],{
+      input:files.join('\0')+'\0',encoding:'utf8',timeout:5000,maxBuffer:16*1024*1024
+    }).split('\0').filter(Boolean);
+    return selected;
   } finally {rmSync(directory,{recursive:true,force:true});}
+}
+
+
+test('fast source checkout retains every measured tracked source while excluding only unmeasured archives', () => {
+  const job=workflow('release.yml').jobs['fast-pr-lint'],step=job.steps[0];
+  assert.equal(job['timeout-minutes'],5);assert.equal(step['timeout-minutes'],2);
+  assert.equal(step.with.ref,undefined);assert.equal(step.with['persist-credentials'],false);
+  assert.equal(step.with['fetch-depth'],1);assert.equal(step.with.filter,'blob:none');
+  assert.equal(step.with['sparse-checkout-cone-mode'],false);
+  const files=execFileSync('git',['ls-files','--cached','-z'],{
+    encoding:'utf8',timeout:5000,maxBuffer:16*1024*1024
+  }).split('\0').filter(Boolean);
+  const retained=new Set(checkoutSelection(step.with['sparse-checkout'],files));
+  const omitted=files.filter(file=>!retained.has(file));assert.ok(omitted.length>0);
+  for(const file of omitted){
+    if(file.startsWith('dev/log/'))continue;
+    assert.match(file,/^experiments\/formal_ai_subagent\/evidence\/coordinator-1188\/.*[.]gz$/u);
+    assert.equal(fileLimit(file),null,'do not omit measured content: '+file);
+  }
+  for(const file of files){
+    if(file.startsWith('dev/log/'))continue;
+    const readable=ROOTS.some(root=>file.startsWith(root+'/'))&&familyOf(file);
+    if(readable||fileLimit(file)!==null)assert.ok(retained.has(file),'missing source input '+file);
+  }
 });

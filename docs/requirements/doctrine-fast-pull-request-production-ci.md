@@ -150,3 +150,9 @@ qualification; complete production delivery still requires all release consumers
   after one bounded acquisition retry reproduces it, prepare a source fix rather
   than repeat the same action. Missing inputs or timed-out acquisition grant no
   execution credit. Hosted timings must qualify the resulting optimization.
+
+  Jobs whose identity contract witnesses every tracked blob retain that complete
+  worktree. Never transfer a narrow policy or JavaScript checkout exclusion to
+  those jobs. Allocate finite main-only producer time from observed acquisition,
+  compilation, verification and upload phases within the existing CI ceiling;
+  record changes and preserve PR iteration budgets and source/receipt guards.

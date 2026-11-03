@@ -54,7 +54,7 @@ function main(mode) {
       .some(prefix => process.env.GITHUB_HEAD_REF?.startsWith(prefix))) return;
     const base = process.env.GITHUB_BASE_REF || 'main';
     assert(/^[a-zA-Z0-9_./-]+$/u.test(base) && !base.startsWith('-'), 'valid base branch required');
-    git(['fetch', 'origin', `${base}:refs/remotes/origin/${base}`, '--depth=1']);
+    git(['fetch', '--filter=blob:none', '--no-tags', 'origin', `${base}:refs/remotes/origin/${base}`, '--depth=1']);
     const head = ['Cargo.toml', 'rust/Cargo.toml'].find(existsSync);
     assert(head, 'head manifest required');
     let manifest;
