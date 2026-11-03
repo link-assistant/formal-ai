@@ -9,6 +9,21 @@ requirement_status_ledger_shard
     delivered "development tasks put to Formal AI, kept as ladder rungs"
     automated_test "rust/tests/web/meta-reasoner.test.mjs"
   requirement
+    id "R1017-R1"
+    verdict "not-delivered"
+  requirement
+    id "R1017-R2"
+    verdict "partial"
+  requirement
+    id "R1017-R3"
+    verdict "partial"
+  requirement
+    id "R1017-R4"
+    verdict "not-delivered"
+  requirement
+    id "R1017-R5"
+    verdict "partial"
+  requirement
     id "R1026"
     verdict "implemented"
     automated_test "rust/tests/web/pull-request-1188-subagent-folder.test.mjs"
