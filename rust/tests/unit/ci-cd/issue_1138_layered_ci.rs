@@ -38,7 +38,18 @@ fn tier_condition(workflow: &str, job: &str) -> String {
         .lines()
         .find_map(|line| line.trim_start().strip_prefix("if: "))
         .unwrap_or_else(|| panic!("the {job} job declares a tier condition"));
-    unwrapped(line)
+    let expression = line.trim();
+    let expression = if expression.starts_with("${{") || expression.ends_with("}}") {
+        expression
+            .strip_prefix("${{")
+            .and_then(|inner| inner.strip_suffix("}}"))
+            .unwrap_or_else(|| {
+                panic!("the {job} tier condition has an unmatched expression wrapper")
+            })
+    } else {
+        expression
+    };
+    unwrapped(expression)
 }
 
 /// The cycle's job graph: every tier declares its own path predicate, and

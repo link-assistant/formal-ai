@@ -62,28 +62,45 @@ pub(super) fn read_only_attempt(progress: &Progress, attempt: &ToolAttempt) -> b
         .iter()
         .enumerate()
         .any(|(index, write)| {
-            if write.capability == Capability::Edit {
-                let Some(path) = write.arguments.as_deref().and_then(
-                    crate::agentic_coding::qualified_tool_observation::canonical_creation_path,
-                ) else {
-                    return false;
-                };
-                return progress
-                    .creation_mutation_for(path)
-                    .is_some_and(|mutation| {
-                        mutation.qualified
-                            && mutation.succeeded
-                            && mutation.index == Some(index)
-                            && owned_creation_readback_command(path) == command
-                    });
-            }
-            write.capability == Capability::Write
+            if write.capability == Capability::Write
                 && write.succeeded
                 && write
                     .arguments
                     .as_deref()
                     .and_then(source_read_path)
                     .is_some_and(|path| owned_creation_readback_command(&path) == command)
+            {
+                return true;
+            }
+            let path = match write.capability {
+                Capability::Edit => write
+                    .arguments
+                    .as_deref()
+                    .and_then(
+                        crate::agentic_coding::qualified_tool_observation::canonical_creation_path,
+                    )
+                    .map(str::to_owned),
+                Capability::Write => write.arguments.as_deref().and_then(source_read_path),
+                _ => None,
+            };
+            let Some(path) = path else {
+                return false;
+            };
+            progress
+                .creation_mutation_for(&path)
+                .is_some_and(|mutation| {
+                    mutation.qualified
+                        && mutation.succeeded
+                        && mutation.index == Some(index)
+                        && [
+                            Some(mutation.path.as_str()),
+                            Some(mutation.observed_path.as_str()),
+                            mutation.workspace_relative_path.as_deref(),
+                        ]
+                        .into_iter()
+                        .flatten()
+                        .any(|path| owned_creation_readback_command(path) == command)
+                })
         })
 }
 
