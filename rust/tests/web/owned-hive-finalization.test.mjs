@@ -403,13 +403,13 @@ test('prepare acquisition preserves trusted source, custody gates and the comple
     const checkouts=job.steps.filter(step=>step.uses?.startsWith('actions/checkout@'));
     assert.equal(checkouts.length,1);const checkout=checkouts[0];
     assert.equal(job.steps[0],checkout);assert.equal(checkout.uses,'actions/checkout@v7');
-    assert.equal(checkout['timeout-minutes'],2);
+    assert.equal(checkout['timeout-minutes'],4);
     assert.deepEqual(checkout.env,{GIT_HTTP_LOW_SPEED_LIMIT:'1024',GIT_HTTP_LOW_SPEED_TIME:'20'});
     assert.deepEqual(checkout.with,{ref:'${{ github.workflow_sha }}','persist-credentials':false,
       'fetch-depth':1,filter:'blob:none','sparse-checkout':patterns,'sparse-checkout-cone-mode':false});
   }
   const job=workflow.jobs.prepare;check(job);
-  for(const mutate of [value=>value['timeout-minutes']=11,value=>value.steps[0]['timeout-minutes']=3,
+  for(const mutate of [value=>value['timeout-minutes']=11,value=>value.steps[0]['timeout-minutes']=5,
     value=>value.steps[0].with.ref='refs/heads/main',value=>value.steps[0].with['persist-credentials']=true,
     value=>value.steps[0].with.filter='tree:0',value=>value.steps[0].with['sparse-checkout-cone-mode']=true,
     value=>value.steps[0].with['sparse-checkout']+='!/scripts/\n',

@@ -107,7 +107,7 @@ jobs:
       owners: ${{ steps.prepare.outputs.owners }}
     steps:
       - uses: actions/checkout@v7
-        timeout-minutes: 2
+        timeout-minutes: 4
         env:
           GIT_HTTP_LOW_SPEED_LIMIT: '1024'
           GIT_HTTP_LOW_SPEED_TIME: '20'

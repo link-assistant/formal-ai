@@ -123,9 +123,9 @@ test('essential PR checkouts reserve their original test clocks and avoid unrela
   const version = release.jobs['version-check'], javascript = layer.jobs.js;
   assert.equal(version['timeout-minutes'], 5);
   assert.equal(javascript['timeout-minutes'], 10);
-  const check = step => {
+  const check = (step, minutes) => {
     assert.equal(step.uses, 'actions/checkout@v7');
-    assert.equal(step['timeout-minutes'], 2);
+    assert.equal(step['timeout-minutes'], minutes);
     assert.deepEqual(step.env, {GIT_HTTP_LOW_SPEED_LIMIT:'1024', GIT_HTTP_LOW_SPEED_TIME:'20'});
     assert.equal(step.with['persist-credentials'], false);
     assert.equal(step.with['fetch-depth'], 1);
@@ -133,14 +133,14 @@ test('essential PR checkouts reserve their original test clocks and avoid unrela
     assert.equal(step.with['sparse-checkout-cone-mode'], false);
     assert.equal(step.with.ref, undefined, 'keep actual event source selection');
   };
-  for (const job of [version, javascript]) {
+  for (const [job, minutes] of [[version,2],[javascript,3]]) {
     const checkout = job.steps[0];
-    check(checkout);
+    check(checkout,minutes);
     for (const mutate of [step=>step['timeout-minutes']=10,
       step=>step.with['fetch-depth']=0, step=>step.with['persist-credentials']=true,
       step=>step.env.GIT_HTTP_LOW_SPEED_TIME='300']) {
       const changed = structuredClone(checkout); mutate(changed);
-      assert.throws(()=>check(changed));
+      assert.throws(()=>check(changed,minutes));
     }
   }
   assert.equal(version.steps[0].with['sparse-checkout'],
@@ -223,7 +223,7 @@ function checkoutSelection(patterns,files) {
 
 test('fast source checkout retains every measured tracked source while excluding only unmeasured archives', () => {
   const job=workflow('release.yml').jobs['fast-pr-lint'],step=job.steps[0];
-  assert.equal(job['timeout-minutes'],5);assert.equal(step['timeout-minutes'],2);
+  assert.equal(job['timeout-minutes'],5);assert.equal(step['timeout-minutes'],4);
   assert.equal(step.with.ref,undefined);assert.equal(step.with['persist-credentials'],false);
   assert.equal(step.with['fetch-depth'],1);assert.equal(step.with.filter,'blob:none');
   assert.equal(step.with['sparse-checkout-cone-mode'],false);
