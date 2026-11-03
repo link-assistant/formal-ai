@@ -51,7 +51,7 @@
     {
       "file": "release.yml",
       "id": "build-artifacts",
-      "payloadSha256": "e34fe48b4405ed2877577639f5aa717c9c23a4e4c23d271610a97c823fcde538"
+      "payloadSha256": "6dea825ef3a4e5ac6dcbdcb37f3f91dcbfd3277247acb898b74600b0b377d426"
     },
     {
       "file": "release.yml",

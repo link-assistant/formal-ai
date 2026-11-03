@@ -170,6 +170,8 @@
     "rust/tests/web/scoped-creation-evidence.test.mjs",
     "rust/tests/web/host-workspace-creation-evidence.test.mjs",
     "rust/tests/web/progressive-plan.test.mjs",
-    "rust/tests/web/issue-1187-release-dispatch.test.mjs"
+    "rust/tests/web/issue-1187-release-dispatch.test.mjs",
+    "rust/tests/web/literal-create-completion-evidence.test.mjs",
+    "rust/tests/web/native-library-creation-qualification.test.mjs"
   ]
 }

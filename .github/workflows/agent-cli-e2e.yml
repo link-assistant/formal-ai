@@ -214,6 +214,8 @@ jobs:
           TASK: "Create file artifacts/general-agent-plan.txt containing general planner e2e passed"
           EXPECT_FILE: artifacts/general-agent-plan.txt
           EXPECT_TEXT: general planner e2e passed
+          EXPECT_CONTENT: general planner e2e passed
+          COMPLETION_EVIDENCE: literal-creation
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
       - name: "Run agent CLI E2E — literal payload containing an edit phrase (issue #708)"
@@ -226,6 +228,8 @@ jobs:
           TASK: "Create a file named hello.txt with the content hello world"
           EXPECT_FILE: hello.txt
           EXPECT_TEXT: hello world
+          EXPECT_CONTENT: hello world
+          COMPLETION_EVIDENCE: literal-creation
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
       - name: "Run agent CLI E2E — existing issue reference does not file a duplicate (issue #730)"
@@ -235,6 +239,8 @@ jobs:
           TASK: "For existing issue-730, create file issue-730-finding.md containing provenance paths are portable"
           EXPECT_FILE: issue-730-finding.md
           EXPECT_TEXT: provenance paths are portable
+          EXPECT_CONTENT: provenance paths are portable
+          COMPLETION_EVIDENCE: literal-creation
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
       - name: "Run agent CLI E2E — capability-first local code search (issue #758)"
@@ -280,6 +286,8 @@ jobs:
           TASK: "new file: notes.txt, contents: hello"
           EXPECT_FILE: notes.txt
           EXPECT_TEXT: hello
+          EXPECT_CONTENT: hello
+          COMPLETION_EVIDENCE: literal-creation
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
       - name: "Run agent CLI E2E — report action executes gh (issue #714)"

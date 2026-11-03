@@ -111,3 +111,78 @@ test('measured TeachF integration stays on main while fast coding and QA control
     'file-obligation-receipts','source-read-provenance','owned-edit-contract'])
     assert.equal(selected.includes('rust/tests/web/'+name+'.test.mjs'),true,name);
 });
+
+
+test('essential PR checkouts reserve their original test clocks and avoid unrelated archive hydration', () => {
+  const release = workflow('release.yml'), layer = workflow('layered-ci.yml');
+  const version = release.jobs['version-check'], javascript = layer.jobs.js;
+  assert.equal(version['timeout-minutes'], 5);
+  assert.equal(javascript['timeout-minutes'], 10);
+  const check = step => {
+    assert.equal(step.uses, 'actions/checkout@v7');
+    assert.equal(step['timeout-minutes'], 2);
+    assert.deepEqual(step.env, {GIT_HTTP_LOW_SPEED_LIMIT:'1024', GIT_HTTP_LOW_SPEED_TIME:'20'});
+    assert.equal(step.with['persist-credentials'], false);
+    assert.equal(step.with['fetch-depth'], 1);
+    assert.equal(step.with.filter, 'blob:none');
+    assert.equal(step.with['sparse-checkout-cone-mode'], false);
+    assert.equal(step.with.ref, undefined, 'keep actual event source selection');
+  };
+  for (const job of [version, javascript]) {
+    const checkout = job.steps[0];
+    check(checkout);
+    for (const mutate of [step=>step['timeout-minutes']=10,
+      step=>step.with['fetch-depth']=0, step=>step.with['persist-credentials']=true,
+      step=>step.env.GIT_HTTP_LOW_SPEED_TIME='300']) {
+      const changed = structuredClone(checkout); mutate(changed);
+      assert.throws(()=>check(changed));
+    }
+  }
+  assert.equal(version.steps[0].with['sparse-checkout'],
+    '/scripts/ci-pull-request-admission.mjs\n/scripts/lib/documentation-paths.mjs\n/Cargo.toml\n/rust/Cargo.toml\n');
+  assert.equal(javascript.steps[0].with['sparse-checkout'],
+    '/*\n!/experiments/formal_ai_subagent/evidence/coordinator-1188/\n');
+  assert.equal(javascript.steps.find(step=>step.name==='Run this shard of the JavaScript suites').env.TEST_BUDGET_SECONDS, 360);
+  assert.match(release.jobs['version-check'].steps.at(-1).run, /ci-pull-request-admission[.]mjs version/u);
+});
+
+
+test('base identity acquisition needs only its script and keeps one shared pin per workflow', () => {
+  const job = workflow('pin-base-commit.yml').jobs.pin, checkout = job.steps[0];
+  assert.equal(job['timeout-minutes'], 5);
+  assert.equal(job.if, "github.event_name == 'pull_request'");
+  assert.equal(checkout['timeout-minutes'], 2);
+  assert.equal(checkout.with['fetch-depth'], 1);
+  assert.equal(checkout.with.filter, 'blob:none');
+  assert.equal(checkout.with['persist-credentials'], false);
+  assert.equal(checkout.with['sparse-checkout'], '/scripts/pin-base-commit.sh');
+  assert.equal(checkout.with['sparse-checkout-cone-mode'], false);
+  assert.equal(checkout.with.ref, undefined);
+  assert.deepEqual(job.env, {GIT_HTTP_LOW_SPEED_LIMIT:'1024',GIT_HTTP_LOW_SPEED_TIME:'20'});
+  assert.deepEqual(checkout.env, job.env);
+  const pin = job.steps.find(step=>step.id==='pin');
+  assert.equal(pin.env.BASE_REF, '${{ github.base_ref }}');
+  assert.equal(pin.run, 'bash scripts/pin-base-commit.sh');
+  assert.equal(job.outputs.commit, '${{ steps.pin.outputs.commit }}');
+  assert.match(read('scripts/pin-base-commit.sh'), /max_attempts=5/u);
+});
+
+
+test('TypeScript parity acquires its complete source inputs instead of the unrelated repository tree', () => {
+  const job = workflow('layered-ci.yml').jobs.ts, checkout = job.steps[0];
+  assert.equal(job['timeout-minutes'], 10);
+  assert.equal(checkout['timeout-minutes'], 2);
+  assert.equal(checkout.with['fetch-depth'], 1);
+  assert.equal(checkout.with.filter, 'blob:none');
+  assert.equal(checkout.with['persist-credentials'], false);
+  assert.equal(checkout.with.ref, undefined);
+  assert.equal(checkout.with['sparse-checkout-cone-mode'], false);
+  assert.equal(checkout.with['sparse-checkout'], '/js/\n/ts/\n/scripts/translate-es.mjs\n/package.json\n/.gitignore\n');
+  assert.deepEqual(checkout.env, {GIT_HTTP_LOW_SPEED_LIMIT:'1024',GIT_HTTP_LOW_SPEED_TIME:'20'});
+  assert.deepEqual(job.steps.slice(1).map(step=>step.name), [
+    'The ts tree covers exactly the js tree', 'The ts tree is what the JavaScript translator renders'
+  ]);
+  assert.match(job.steps[1].run, /cd js && find/u);
+  assert.match(job.steps[1].run, /cd ts && find/u);
+  assert.match(job.steps[2].run, /node scripts\/translate-es[.]mjs --check/u);
+});

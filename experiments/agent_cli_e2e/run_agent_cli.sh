@@ -16,6 +16,7 @@
 #   EXPECT_FILES  Optional newline-separated additional files that must exist.
 #   EXPECT_TEXT   A string that must appear inside EXPECT_FILE (default: `томаты`,
 #                 the previously missing Russian plural — the issue's canary)
+#   EXPECT_CONTENT Exact bytes required by the explicit literal-creation mode.
 #   FOLLOW_UP     Optional second prompt. When set, the harness resumes the
 #                 first prompt's session without forking before asserting files.
 #   EXPECT_SERVER_TEXTS
@@ -83,6 +84,8 @@ MIN_POSTS="${MIN_POSTS:-4}"
 COMPLETION_EVIDENCE="${COMPLETION_EVIDENCE:-minimum-posts}"
 EFFECT_VERIFIER="${EFFECT_VERIFIER:-}"
 EXPECT_OUTPUT_LINE="${EXPECT_OUTPUT_LINE:-}"
+EXPECT_CONTENT_DECLARED="${EXPECT_CONTENT+x}"
+EXPECT_CONTENT="${EXPECT_CONTENT-}"
 
 LOG="/tmp/formal-ai-serve-$PORT.log"
 source "$ROOT/experiments/agent_cli_e2e/server-log-evidence.sh"
@@ -277,6 +280,14 @@ grep -q "$EXPECT_TEXT" "$WORKDIR/$EXPECT_FILE" \
 # returned verification, terminal completion and independent exact stdout instead.
 posts="$(project_server_log)" || { echo "invalid server evidence" >&2; exit 1; }
 case "$COMPLETION_EVIDENCE" in
+  literal-creation)
+    [ "$EXPECT_CONTENT_DECLARED" = x ] || fail "literal creation requires exact EXPECT_CONTENT"
+    [ -z "$EXPECT_FILES" ] || fail "literal creation accepts one declared target"
+    node "$ROOT/experiments/agent_cli_e2e/verify-literal-creation.mjs" \
+      "$DIALOG_DIR" "$WORKDIR" "$TASK" "$EXPECT_FILE" "$EXPECT_CONTENT" \
+      "$EVIDENCE_DIR/literal-creation-completion.json" \
+      || fail "actual literal-creation completion evidence failed"
+    ;;
   output-project)
     node "$ROOT/experiments/agent_cli_e2e/verify-output-project.mjs" \
       "$DIALOG_DIR" "$WORKDIR" "$TASK" "$EXPECT_FILE" "$EXPECT_FILES" \
