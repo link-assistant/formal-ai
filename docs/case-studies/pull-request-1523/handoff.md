@@ -161,3 +161,18 @@ production gates and products still require a fresh main run after merge. No
 release or Docker publication is credited from ab3. Source changes in this
 follow-up were applied through the JavaScript Formal AI tool host using guarded
 externally supplied helpers; independent synthesis credit is zero.
+
+## Native compilation follow-up after PR 1525
+
+PR [1525](https://github.com/link-assistant/formal-ai/pull/1525) merged as
+`83686e2c3ffa003782fcfcf4b6ef832014812c3d` after all 99 checks passed
+(33 success, 66 skipped), including actual JavaScript, TypeScript, Secrets and
+parser checks. The JavaScript suite passed 1,897 tests with 17 skips.
+
+The fresh main [Question necessity ratchet job](https://github.com/link-assistant/formal-ai/actions/runs/41736751822/job/126267806420)
+then found a compile-time unused parent-module `unwrapped` import under
+`-Dwarnings`. The extracted child owns its own used import; remove only the
+obsolete parent import. This is a source-only correction, with no warning
+exemption, assertion change or local Rust compilation. Other native targets
+may report the same shared compilation cause. The source still requires a
+fresh native CI and release qualification after the follow-up merge.

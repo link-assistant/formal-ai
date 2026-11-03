@@ -26,7 +26,7 @@ pub use super::workflow_fixtures::workflow_files;
 use std::time::Instant;
 
 use super::npm_deprecation_review::{run_classifier, sandbox};
-use super::workflow_fixtures::{job_block, read_only_group, unwrapped, workflow_job_names};
+use super::workflow_fixtures::{job_block, read_only_group, workflow_job_names};
 
 /// The share of a job's cap a single step budget may claim. The remainder pays
 /// for checkout, toolchain install, cache restore, artifact transfer and the
