@@ -110,3 +110,54 @@ claimed. [Start issue #261](https://github.com/link-foundation/start/issues/261)
 records the bounded typed-edit requirement using only synthetic/public data.
 Private raw sessions and personal paths were not uploaded. This does not
 qualify the pending Claude/Codex or general self-coding acceptance cases.
+
+## Actual ab3 producer qualification and remaining JavaScript acquisition
+
+At source `ab3c72a6fbbd4d92587581849dab863888fd5f5f`, the
+[native producer](https://github.com/link-assistant/formal-ai/actions/runs/41728072415/job/126239294738)
+actually verified all 74,026 tracked files and 1,947,978,151 physical bytes
+with the unchanged canonical witness in about eighteen seconds. All eleven
+creation fixtures, three latency/HTTP smoke cases, captures and every artifact
+upload succeeded. Standard Agent and held-out client tests also passed,
+including original hello-world, follow-up creation and actual program execution.
+This establishes those scopes, not complete release publication.
+
+[JavaScript group 7](https://github.com/link-assistant/formal-ai/actions/runs/41728072124/job/126238577448)
+failed before setup or tests: the filtered commit fetch completed in about two
+seconds, sparse mode was activated, and worktree checkout exceeded its existing
+three-minute phase deadline. No JavaScript assertion failed in that attempt.
+Reserve five minutes for materialization and twelve for the enclosing job: the
+existing six-minute suite allowance plus one minute of setup remains intact.
+All source patterns, the issue-702 fixture, event ref, depth/filter, low-speed
+limits, matrix, commands and PR/main selection remain byte-identical. This is
+finite headroom for observed acquisition variance, not a measured speedup.
+Do not mix a partial Layered rerun with source-producing attempt custody. A
+fresh source must qualify all mandatory checks and actual release products.
+
+## Complete ab3 failure inventory and follow-up
+
+The main run completed with 370 terminal checks: 112 successful, 254 skipped,
+three failed and one cancelled. All actual failures are batched in this follow-up:
+
+- Layered JavaScript acquisition exceeded three minutes before tests. Its job
+  now reserves five minutes for checkout and twelve overall, retaining the
+  six-minute suite and all inputs.
+- The primary release workflow server-parity job spent almost fifteen minutes
+  acquiring its full worktree and exhausted its enclosing deadline before any
+  parity case ran. It now has an eighteen-minute checkout within a thirty-minute
+  job, with finite low-speed HTTP limits. Full source, exact ref/depth, binary
+  download and every parity case remain. This is the primary workflow job,
+  distinct from Layered server parity. Staged release projections preserve all
+  52 raw operations and 104 bindings; the deployed staged workflow is unchanged.
+- Native shard two found a stale global parser-command occurrence assertion
+  after adding mandatory unit coverage alongside the retained live-link job.
+  The replacement checks each trigger-owned path, mandatory independent job and
+  both parser steps structurally, keeping the live parser before link checking.
+  The original native test name is retained with its body in a readable child
+  module. Native execution is reserved for CI.
+
+Both focused JavaScript files must pass locally before submission. All other
+production gates and products still require a fresh main run after merge. No
+release or Docker publication is credited from ab3. Source changes in this
+follow-up were applied through the JavaScript Formal AI tool host using guarded
+externally supplied helpers; independent synthesis credit is zero.

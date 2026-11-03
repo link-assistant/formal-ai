@@ -583,7 +583,7 @@ Removal from a public thread is not approval to retain another copy.
    npm run test:web
    ```
 
-   CI caps each test-matrix job at 10 minutes. Rust's built-in `cargo test` runner does not provide a portable global per-test timeout, so wrap long-running network, IO, or async tests with explicit test-level deadlines. If a repository adopts `cargo nextest`, configure runner deadlines with options such as `--slow-timeout` and `--leak-timeout`.
+   CI job budgets are explicit and workflow-specific; acquisition and setup must leave room for the unchanged test deadline. Rust's built-in `cargo test` runner does not provide a portable global per-test timeout, so wrap long-running network, IO, or async tests with explicit test-level deadlines. If a repository adopts `cargo nextest`, configure runner deadlines with options such as `--slow-timeout` and `--leak-timeout`.
 
    **Work in bulk; verify selectively.** Draft the whole change set — tests
    and code together — before running anything, then let it fail in its

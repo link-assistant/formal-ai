@@ -256,7 +256,7 @@ jobs:
     # the requirement audit added 54 suites, so the files then split four ways.
     # Source c7ffbd8a later exhausted shards 2/4 and 4/4 at the unchanged
     # 360s deadline; eight source-derived shards retain every file exactly once.
-    timeout-minutes: 10
+    timeout-minutes: 12
     concurrency:
       group: check-${{ github.workflow }}-${{ github.ref }}-js-${{ matrix.shard }}
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -266,7 +266,7 @@ jobs:
         shard: ${{ fromJSON((github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && '[1]' || '[1,2,3,4,5,6,7,8]') }}
     steps:
       - uses: actions/checkout@v7
-        timeout-minutes: 3
+        timeout-minutes: 5
         env:
           GIT_HTTP_LOW_SPEED_LIMIT: '1024'
           GIT_HTTP_LOW_SPEED_TIME: '20'

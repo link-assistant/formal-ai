@@ -561,53 +561,16 @@ fn cargo_lock_is_committed_so_cache_keys_stay_meaningful() {
     );
 }
 
+#[path = "step_budgets_within_job_clocks/link_parser.rs"]
+mod link_parser;
+
 /// The link check parses lychee's Markdown report with a hand-written parser.
 /// A regression there either invents broken links or swallows real ones, and
 /// neither shows up as a test failure unless the parser itself is tested.
 #[test]
 fn link_report_parser_is_unit_tested_before_it_is_trusted() {
-    let links = repository_file(".github/workflows/links.yml");
-
-    // Asked as an ordering rather than as one line of YAML: the step now runs
-    // two suites and wraps its argument list, and a gate that could not tell
-    // that edit from a deletion is the defect issue #1081 is about.
-    let node_test = links
-        .find("node --test")
-        .expect("links.yml must run the parser's unit tests (issue #1017)");
-    let lychee = links
-        .find("lycheeverse/lychee-action")
-        .expect("links.yml must run lychee");
-    assert!(
-        node_test < lychee,
-        "the parser's unit tests must run before lychee, or a broken parser is \
-         trusted for the whole run (issue #1017)"
-    );
-    assert!(
-        links[node_test..lychee].contains("scripts/check-web-archive.test.mjs"),
-        "links.yml must run the parser's unit tests before lychee (issue #1017)"
-    );
-    assert_eq!(
-        links.matches("scripts/check-web-archive.test.mjs").count(),
-        3,
-        "the test file must be in both `paths:` filters as well as the step, \
-         or editing it would not re-run the check it guards"
-    );
-    assert!(
-        unwrapped(&links).contains("!cancelled() && steps.lychee.outputs.exit_code != 0"),
-        "a cancelled link check must not append a `broken links` error to a run \
-         that never finished checking them"
-    );
-    assert!(
-        !links.contains("if: ${{ always()"),
-        "the guard above is only load-bearing while nothing in links.yml has \
-         widened back to `always()`"
-    );
-    assert!(
-        !repository_file("scripts/check-web-archive.test.mjs").is_empty(),
-        "the parser test file must exist"
-    );
+    link_parser::assert_contract();
 }
-
 /// A `CodeQL` run that reports success while 1,023 files were "extracted with
 /// errors" is the worst kind of false negative: the dashboard is green because
 /// nothing was analysed. Run 31937348308 emitted 20,725 `macro expansion

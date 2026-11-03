@@ -826,7 +826,7 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         ("build", 20),
         // R1015: the JavaScript server answers the parity corpus as the
         // release binary does; it reuses build-artifacts' binary, so no compile.
-        ("server-parity", 15),
+        ("server-parity", 30),
         // Issue #1076 (D5): raised from 60. Worst case 50.6 min over 400
         // `main` runs, 84.4% of that cap -- and the 45-minute GHCR budget that
         // owns the real deadline could never have fired inside it, since the
