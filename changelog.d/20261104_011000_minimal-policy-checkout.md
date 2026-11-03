@@ -11,3 +11,8 @@ Keep version-base and changelog admission metadata-only, preserve every measured
 Reserve realistic acquisition phases inside unchanged fast-check and cleanup job clocks while retaining reviewed source inputs and all validation time.
 
 Read the base manifest through source-verified GitData objects under one fifteen-second deadline using the existing Actions read token. Narrow Cargo-audit checkout while preserving Rust target discovery, ignore proofs and advisory warnings.
+
+Retain the full live-link audit as a main-only opt-in and keep its unchanged
+parser regressions mandatory with a small checkout. Record the policy in vision,
+contributor guidance and requirements; scope the native budget test to its named
+job rather than the first timeout in the workflow.

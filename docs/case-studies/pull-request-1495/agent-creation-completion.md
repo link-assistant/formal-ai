@@ -43,3 +43,25 @@ Head `b2eaac4e` establishes the actual fast-source result: 55 seconds acquiring 
 The version reader now obtains the exact latest-base ref, commit, nonrecursive source tree(s) and manifest blob through GitHub GitData. It verifies repository/URL/commit/path custody, complete unique trees, regular-file mode, bounded canonical base64, strict UTF-8 and the Git blob identity. One fifteen-second aggregate deadline covers all requests, with no retries or Git fallback. The existing read-only Actions token is supplied only to version admission; no new credential or sparse dependency is needed. Public metadata diagnostics identify the phase and resolved source without logging credentials or response bodies. Seventeen offline controls pass, and a private replay of captured real API data verifies the actual base manifest in five mocked requests; that replay performs no network access and its full manifest remains uncommitted.
 
 Cargo audit retains the full Rust tree, root Cargo/config/package files and its existing dependency-check script. This preserves target discovery for its existing Cargo-tree ignore proofs, then the unchanged advisory audit with warnings denied. Only acquisition changes; the ten-minute audit job, three subsequent steps and ignore/warning policy remain intact. The focused fast-profile suite passes twelve cases, including actual Git selection for this audited closure. Hosted API access and advisory execution must still qualify the next commit.
+
+At `292a57c5`, version admission and Cargo audit execute successfully; the final
+remaining job is the repository-wide live link integration. It spends 588
+seconds acquiring source, passes its parser regressions in one second and is
+cancelled 22 seconds into live crawling by the ten-minute job clock. No complete
+link verdict exists. Following the maintainer's fast-CI policy, the entire live
+job is retained byte-for-byte behind a main-only opt-in; its original payload is
+added to the retained-job witness. The exact existing parser step runs in a
+separate mandatory job on matching triggers, with scripts, package metadata and
+the actually read .lycheeignore file. No parser code, retry/archive behavior or
+advisory policy is removed. Existing requirement-reference checks stay required.
+
+A source-only native regression review finds one test that accidentally reads
+the first timeout in the entire links workflow. The new cheap job exposes that
+ambiguity. It now uses the existing named-job lookup for link-checker while
+preserving its original retry-budget assertion. Only Rust text formatting runs
+locally; actual native execution remains a main-CI obligation. Full live-link
+reachability and its slow source transport are explicit retained tech debt.
+
+The live-links dispatch input is explicitly optional and defaults to false.
+A generic automated main dispatch in checks mode does not enable crawling; only
+live-audit=true on main or the explicit repository opt-in does.

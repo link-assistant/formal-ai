@@ -19,7 +19,7 @@ const evaluate = (expression, context) => new Script(expression.trim()
   .runInNewContext({cancelled: () => false, always: () => true, ...context}, {timeout: 100});
 function context(event, ref = 'refs/pull/1500/merge', enabled = false) {
   const outputs = Object.fromEntries(['any-code-changed','rs-changed','toml-changed','pipeline-changed','rust-changed','js-changed','ts-changed'].map(k => [k,'true']));
-  return {github: {event_name:event,ref}, vars:{FORMAL_AI_FULL_PR_CI:enabled?'run':'skip',FORMAL_AI_NON_LINUX_CI:'run',FORMAL_AI_FULL_INTEGRATION:'run'},
+  return {github: {event_name:event,ref}, vars:{FORMAL_AI_FULL_PR_CI:enabled?'run':'skip',FORMAL_AI_NON_LINUX_CI:'run',FORMAL_AI_FULL_INTEGRATION:'run',FORMAL_AI_FULL_LINK_CHECKS:'run'},
     inputs:{}, needs:Object.fromEntries(['detect-changes','changes','build-artifacts','lint','test','macos-core-tests','js','ts','native-source','native','resolve']
       .map(k => [k,{result:'success',outputs:{...outputs,should_build:'true',build:'true'}}]))};
 }
@@ -287,4 +287,63 @@ test('Cargo security acquisition retains the full crate and audit proofs without
     assert.ok(source.includes(marker),'audit proof guard lost: '+marker);
   assert.equal((source.match(/cargo tree --manifest-path rust\/Cargo[.]toml --locked --target all --all-features --edges all --invert/gu)??[]).length,2);
   assert.match(read('.cargo/audit.toml'),/^\[advisories\]/mu);
+});
+
+
+test('live link integration is explicit main-only while parser regressions stay mandatory and bounded', async () => {
+  const document=workflow('links.yml'),live=document.jobs['link-checker'],parser=document.jobs['link-parser-checks'];
+  assert.ok(manifest.jobs.some(row=>row.file==='links.yml'&&row.id==='link-checker'),'original live payload remains a retained job');
+  const allowed=(event,ref='refs/heads/main',requested='',liveAudit=false)=>{
+    const value=context(event,ref);value.vars.FORMAL_AI_FULL_LINK_CHECKS=requested;value.inputs['live-audit']=liveAudit;
+    return Boolean(evaluate(live.if,value));
+  };
+  for(const event of ['push','schedule']){assert.equal(allowed(event),false);assert.equal(allowed(event,'refs/heads/main','run'),true);}
+  assert.equal(allowed('workflow_dispatch'),false);
+  assert.equal(allowed('workflow_dispatch','refs/heads/main','',true),true);
+  assert.equal(allowed('workflow_dispatch','refs/heads/main','run'),true);
+  const liveInput=document.on.workflow_dispatch.inputs['live-audit'];
+  assert.equal(liveInput.type,'boolean');assert.equal(liveInput.default,false);assert.equal(liveInput.required??false,false);
+  for(const event of ['pull_request','pull_request_target']){
+    assert.equal(allowed(event,'refs/pull/1/merge','run',true),false);assert.equal(allowed(event,'refs/heads/main','run',true),false);
+  }
+  assert.equal(allowed('workflow_dispatch','refs/heads/fix/example','run',true),false);
+  assert.equal(allowed('push','refs/heads/main','yes'),false);
+  assert.equal(live['timeout-minutes'],10);
+  assert.deepEqual(document.permissions,{contents:'read'});
+  assert.equal(parser.if,undefined);assert.equal(parser.needs,undefined);assert.equal(parser['timeout-minutes'],3);
+  assert.deepEqual(parser.permissions??document.permissions,{contents:'read'});assert.equal(parser.steps.length,2);
+  const checkout=parser.steps[0],patterns='/scripts/\n/package.json\n/.lycheeignore\n';
+  assert.equal(checkout.uses,'actions/checkout@v7');assert.equal(checkout['timeout-minutes'],2);
+  assert.deepEqual(checkout.env,{GIT_HTTP_LOW_SPEED_LIMIT:'1024',GIT_HTTP_LOW_SPEED_TIME:'20'});
+  assert.equal(checkout.with.ref,undefined);
+  assert.deepEqual(checkout.with,{'persist-credentials':false,'fetch-depth':1,filter:'blob:none',
+    'sparse-checkout':patterns,'sparse-checkout-cone-mode':false});
+  const originalParser={"name":"Test Web Archive report parser","run":"node --test \\\n  scripts/check-web-archive.test.mjs \\\n  scripts/recheck-broken-links.test.mjs \\\n  scripts/recheck-transient-http.test.mjs\n"};
+  assert.deepEqual(parser.steps[1],originalParser);
+  assert.deepEqual(live.steps.find(step=>step.name===originalParser.name),originalParser,'live opt-in retains the exact same parser command');
+  const entries=[...parser.steps[1].run.matchAll(/scripts\/[A-Za-z0-9_.-]+[.]test[.]mjs/gu)].map(match=>match[0]);
+  assert.deepEqual(entries,['scripts/check-web-archive.test.mjs','scripts/recheck-broken-links.test.mjs','scripts/recheck-transient-http.test.mjs']);
+  // Finite reviewed module/literal-URL closure; runtime scratch files are independently created by parser tests.
+  const {posix}=await import('node:path'),pending=[...entries],visited=new Set(),literalInputs=new Set();
+  const covered=file=>file.startsWith('scripts/')||file==='package.json'||file==='.lycheeignore';
+  while(pending.length){const file=pending.pop();if(visited.has(file))continue;assert.ok(covered(file),'parser module omitted: '+file);visited.add(file);
+    const source=read(file);
+    const staticImports=[...source.matchAll(/\bfrom\s+['"]([^'"]+)['"]/gu)].map(match=>match[1]);
+    const dynamicImports=[...source.matchAll(/\bimport\s*\(\s*(['"])([^'"]+)\1\s*\)/gu)].map(match=>match[2]);
+    assert.equal((source.match(/\bimport\s*\(/gu)??[]).length,dynamicImports.length,'review nonliteral dynamic source import before narrowing acquisition');
+    for(const specifier of [...staticImports,...dynamicImports]){
+      if(specifier.startsWith('node:')||['fs','url','path'].includes(specifier))continue;
+      assert.ok(specifier.startsWith('.'),'unreviewed parser dependency: '+specifier);
+      const next=posix.normalize(posix.join(posix.dirname(file),specifier));assert.ok(!next.startsWith('../'));pending.push(next);
+    }
+    for(const match of source.matchAll(/new URL\(\s*['"]([^'"]+)['"]\s*,\s*import[.]meta[.]url\s*\)/gu)){
+      const target=posix.normalize(posix.join(posix.dirname(file),match[1]));assert.ok(covered(target),'parser literal input omitted: '+target);literalInputs.add(target);
+    }
+  }
+  assert.deepEqual([...visited].sort(),['scripts/check-web-archive.mjs','scripts/check-web-archive.test.mjs',
+    'scripts/recheck-broken-links.mjs','scripts/recheck-broken-links.test.mjs','scripts/recheck-transient-http.test.mjs']);
+  assert.ok(literalInputs.has('.lycheeignore'));assert.ok(read('.lycheeignore').length>0);
+  const retained=[...visited,'package.json','.lycheeignore'];
+  assert.deepEqual(checkoutSelection(patterns,[...retained,'rust/src/lib.rs','docs/history.log',
+    'experiments/formal_ai_subagent/evidence/coordinator-1188/trace.gz']),retained);
 });

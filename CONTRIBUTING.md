@@ -320,7 +320,7 @@ algorithm.
 
 #### A branch pays for what it changed
 
-The loop is only as fast as the CI bill it pays. One push to a feature branch
+Use [the current CI policy](docs/ci-cd/default-branch-builds.md): link parser regressions run by default and full live-link audits remain main-only opt-ins. A historical push to a feature branch
 cost about 310 job-minutes across 16 workflows, and a day of iterating on one
 branch cost roughly 4,600 — a budget every self-authored draft competes for.
 Two rules keep that down, and both are measured in

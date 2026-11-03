@@ -156,3 +156,11 @@ qualification; complete production delivery still requires all release consumers
   those jobs. Allocate finite main-only producer time from observed acquisition,
   compilation, verification and upload phases within the existing CI ceiling;
   record changes and preserve PR iteration budgets and source/receipt guards.
+
+- **CI-FAST-20:** Retain full live-link integration under an explicit main-only
+  opt-in (FORMAL_AI_FULL_LINK_CHECKS=run or live-audit=true on main dispatch). Keep its entire
+  original payload, retry bounds, archive checks and failure policy. Always run
+  the existing parser regressions on matching workflow triggers with their
+  complete script/package/ignore inputs. Keep lightweight requirement-reference
+  checks mandatory. Record the deferred full scanner as tech debt and grant no
+  live-link verdict to an offline parser pass.

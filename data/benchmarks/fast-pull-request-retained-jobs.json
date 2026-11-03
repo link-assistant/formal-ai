@@ -222,6 +222,11 @@
       "file": "proactive-failure-report-e2e.yml",
       "id": "agent-cli-failure-report",
       "payloadSha256": "44d64f4c75e0964c563d4b62d8d2a1cbd8a25830d513f7977164f781450de57e"
+    },
+    {
+      "file": "links.yml",
+      "id": "link-checker",
+      "payloadSha256": "d4dbf548c0d89a161c1af5cd41ce02b3c5c43f4cb602fa8bdaa7414b33d3e299"
     }
   ]
 }
