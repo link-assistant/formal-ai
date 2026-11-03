@@ -187,7 +187,13 @@ fn effect_of(leaf: &Leaf, prompt: &str, source: &str) -> Result<Effect, String> 
                 if path != leaf.path {
                     return Err(format!("read {path:?} instead of {:?}", leaf.path));
                 }
-                record(&mut messages, &call, source);
+                record(
+                    &mut messages,
+                    &call,
+                    &formal_ai::agentic_coding::tool_result::complete_owned_source_read_frame(
+                        source,
+                    ),
+                );
             }
             "write_file" | "edit_file" => {
                 let path = first_argument(&call, &["path", "file_path", "filePath"])
@@ -603,8 +609,10 @@ fn run_node(leaf: &Leaf, prompt: &str, source: &str) -> Result<Workspace, String
                 "read_file" => {
                     let path = first_argument(call, &["path", "filePath", "file_path"])
                         .ok_or_else(|| format!("read without a path: {}", call.arguments))?;
-                    workspace_get(&workspace, &path)
-                        .map_or_else(|| format!("Error: File not found: {path}"), str::to_owned)
+                    workspace_get(&workspace, &path).map_or_else(
+                        || format!("Error: File not found: {path}"),
+                        formal_ai::agentic_coding::tool_result::complete_owned_source_read_frame,
+                    )
                 }
                 "write_file" => {
                     let path = first_argument(call, &["path", "filePath", "file_path"])

@@ -811,6 +811,10 @@ fn g77_a_call_killed_at_the_timeout_is_stated_without_an_exit_code() {
     let run = drive("Run `node --test slow.test.mjs`.", &[]);
     assert_eq!(run.commands, ["node --test slow.test.mjs"]);
     let answer = run.answer.as_deref().expect("reported timeout");
+    assert_eq!(
+        answer,
+        "The command failed: Output: TAP version 13\nError: Signal: SIGTERM\nTimeout: 60000 ms"
+    );
     assert!(answer.starts_with("The command failed:"));
     assert!(answer.contains("TAP version 13"));
     assert!(answer.contains("Signal: SIGTERM"));

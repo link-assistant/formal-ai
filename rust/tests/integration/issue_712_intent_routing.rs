@@ -129,6 +129,50 @@ fn declarative_new_file_routes_to_write_and_never_read() {
 }
 
 #[test]
+fn whole_file_set_retains_the_prior_plan_event_before_the_target_write() {
+    let _guard = server_test_lock();
+    let port = reserve_loopback_port();
+    let _server = spawn_formal_ai_server_agent_mode(port);
+    let directory =
+        std::env::temp_dir().join(format!("formal-ai-http-set-{}-{port}", std::process::id()));
+    std::fs::create_dir(&directory).expect("isolated client workspace");
+    let target = directory.join("notes.txt");
+    std::fs::write(&target, "previous target bytes").expect("existing client target");
+    let response = auxiliary_workspace::observed_target_write(
+        "Set the contents of notes.txt to exactly this content: «hello».",
+        "notes.txt",
+        "earlier observed fixture event\n",
+        &mut |messages| {
+            http_post_json(
+                port,
+                "/api/openai/v1/chat/completions",
+                TOKEN,
+                &serde_json::json!({
+                    "model": "formal-ai", "stream": false, "messages": messages,
+                    "tools": [function_tool("write_file"), function_tool("read_file")]
+                }),
+            )
+        },
+    );
+    assert_eq!(response["choices"][0]["finish_reason"], "tool_calls");
+    let calls = response["choices"][0]["message"]["tool_calls"]
+        .as_array()
+        .expect("target call after retained event observation");
+    assert_eq!(calls.len(), 1);
+    assert_eq!(calls[0]["function"]["name"], "write_file");
+    let arguments = chat_arguments(&calls[0]);
+    assert_eq!(arguments["path"], "notes.txt");
+    assert_eq!(arguments["content"], "hello");
+    std::fs::write(&target, arguments["content"].as_str().unwrap())
+        .expect("apply the actual returned target write");
+    assert_eq!(
+        std::fs::read(&target).expect("actual target bytes"),
+        b"hello"
+    );
+    std::fs::remove_dir_all(directory).expect("remove isolated client workspace");
+}
+
+#[test]
 fn all_reported_capability_classes_route_in_one_matrix() {
     let _guard = server_test_lock();
     let port = reserve_loopback_port();
