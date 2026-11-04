@@ -248,3 +248,46 @@ meanings
     lexeme hi "केवल संख्यात्मक परिणाम लौटाएँ" "केवल संख्या लौटाएँ"
     lexeme zh "仅返回数值结果" "只返回数字"
     lexeme es "devuelve solo el resultado numérico" "devuelve solo el número"
+
+  quantity-constraint-bound-frame
+    defined-by arithmetic_operation
+    role quantity-constraint-bound-frame
+    lexeme en "the {bound_ref} is {bound_amount} {bound_unit}"
+  quantity-constraint-members-frame
+    defined-by arithmetic_operation
+    role quantity-constraint-members-frame
+    lexeme en "the {members_ref} are {quantities}"
+  quantity-constraint-comparison-frame
+    defined-by arithmetic_operation
+    role quantity-constraint-comparison-frame
+    lexeme en "is their {aggregation} {relation} the {query_ref}"
+  quantity-constraint-ownership-frame
+    defined-by comparison
+    role quantity-constraint-ownership-frame
+    lexeme en "{relation} the {query_ref}"
+  quantity-constraint-query-prefix
+    defined-by inquiry
+    role quantity-constraint-query-prefix
+    lexeme en "is their" "is the"
+  quantity-constraint-bound-reference
+    defined-by arithmetic_operation
+    role quantity-constraint-bound-reference
+    lexeme en budget limit capacity bound
+  quantity-constraint-member-reference
+    defined-by quantity
+    role quantity-constraint-member-reference
+    lexeme en amounts quantities
+  quantity-constraint-explicit-sum
+    defined-by addition
+    role quantity-constraint-aggregate
+    lexeme en sum "combined total"
+    precondition "the aggregate cue owns its source span; labels and scheduling do not imply addition"
+  quantity-constraint-inclusive-bound
+    defined-by comparison
+    role quantity-constraint-relation-le
+    lexeme en within "at most" "no greater than"
+    effect "compares the explicitly requested aggregate with an inclusive bound"
+  quantity-constraint-list-conjunction
+    defined-by addition
+    role quantity-constraint-list-conjunction
+    lexeme en and

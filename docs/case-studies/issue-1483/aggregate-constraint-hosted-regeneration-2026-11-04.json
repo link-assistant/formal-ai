@@ -1,0 +1,78 @@
+{
+  "schema": "formal-ai-hosted-source-regeneration/v1",
+  "sourceCommit": "efa3d0a3d54b629b8598ceab16e9d18f6f25fab8",
+  "previousReceipt": "aggregate-constraint-source-integration-2026-11-04.json",
+  "workflow": {
+    "runUrl": "https://github.com/link-assistant/formal-ai/actions/runs/41791832746",
+    "runId": 41791832746,
+    "attempt": 1,
+    "jobId": 126446751595,
+    "conclusion": "success"
+  },
+  "artifact": {
+    "id": 13304135199,
+    "compressedBytes": 10332,
+    "sha256": "c77e67f626ed3f7a009a08d6adaad56ea906b86f09a71baf897a813cb2ae160b",
+    "manifestSha256": "190cb81d0877543202609def3dffc5e7e4d0961026c53b49ba6af7d860694b4d"
+  },
+  "upstreamCommit": "eb0574d5528babd3b4aadece81590d8e2230b99b",
+  "inputs": [
+    {
+      "path": "js/agentic/crate/event_log.mjs",
+      "sha256": "93f46625e595dda0ca2c7ad603243eb4d077ce2e8f76713bd170dea661c28fbf"
+    },
+    {
+      "path": "js/agentic/crate/engine_stable_identifier.mjs",
+      "sha256": "cd1d5115a42b4cfff511057ac11807cb0142ed107848efe2afe14277e8fef717"
+    },
+    {
+      "path": "scripts/regenerate-targeted-js-rust.mjs",
+      "sha256": "d34de4579c7d463c16fbd91a112de284eb416686481c5388ff128ecdc71fd282"
+    },
+    {
+      "path": "scripts/translate-js-rust.mjs",
+      "sha256": "fd4d420c8311ba589744ac291b0252090d5887bbb6d08734adffcfdb113ea9b2"
+    },
+    {
+      "path": "data/meta/translation-single-pass-adapter.lino",
+      "sha256": "3f2b7ce98144b406c2cb435f0d0c27024d5a0fede71cebd838f1940465191c45"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/event_log.rs",
+      "bytes": 3354,
+      "sha256": "2b043889c9a0e9fe2cb6d927f3f55e30ffac29e5a82523968bbb26471d8a5bc4"
+    },
+    {
+      "path": "data/meta/js-rust-translation.lino",
+      "bytes": 21090,
+      "sha256": "74d1b03306ecf4b7f4b67fca8f1d2ed774aa5bd150251fbca850fb04d8303faf"
+    },
+    {
+      "path": "data/meta/translation-blockers.lino",
+      "bytes": 19533,
+      "sha256": "e96c76a8b3060dbeb64c9439e807388963688e269ddfb9b2f6a84b261af9972f"
+    }
+  ],
+  "verification": {
+    "actualOldProjectionReproduced": true,
+    "exportedSignaturesUnchanged": true,
+    "allInputHashesMatchSourceCommit": true,
+    "allOutputHashesMatchImportedFiles": true,
+    "ledgerAndBlockerBytesUnchanged": true,
+    "fixtureChange": "Only generated source provenance changed; carried constructs remain carried.",
+    "additionalTranslationCoverageClaimed": false,
+    "localRustOrWasmExecuted": false,
+    "nativeBehaviorQualified": false
+  },
+  "pending": [
+    "Native CI compile, lint and execution of the paired shared-vector tests.",
+    "Full issue #1483 semantic acceptance remains pending."
+  ],
+  "authorship": {
+    "transport": "Formal AI JavaScript executing a reviewed supplied generator",
+    "autonomousImplementationCredit": 0,
+    "globalReasoningShare": "unmeasured"
+  }
+}

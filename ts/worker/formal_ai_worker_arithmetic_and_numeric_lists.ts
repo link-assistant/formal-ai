@@ -81,7 +81,7 @@ function numericCalculationResponse(prompt, expression, formatted) {
   return completeOperand ? formatted : null;
 }
 
-function tryArithmetic(prompt) {
+function tryArithmeticExpression(prompt) {
   const extracted = extractArithmeticExpression(prompt);
   if (!extracted) return null;
   const expression = extracted.expression;

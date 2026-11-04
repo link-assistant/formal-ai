@@ -740,6 +740,11 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "network_fetch" => format!("network_fetch:{}", event.id),
             "calculation:engine" => format!("calculation:engine:{}", event.payload),
             "calculation:lino" => format!("calculation:lino:{}", event.payload),
+            kind @ ("quantity_constraint:frame"
+            | "quantity_constraint:verdict"
+            | "quantity_constraint:unknown"
+            | "quantity_constraint:expression"
+            | "quantity_constraint:difference") => format!("{kind}:{}", event.payload),
             "method:learned:operations_verified" => {
                 format!("method:learned:operations_verified:{}", event.payload)
             }
