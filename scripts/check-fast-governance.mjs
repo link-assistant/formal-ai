@@ -24,6 +24,7 @@ function hostedEnvironment(environment) {
 }
 
 export function executeCheck(check, timeoutMs, cwd) {
+  hostedEnvironment(process.env);
   // GNU timeout owns a process group, including the closure audit's Python child.
   return spawnSync('timeout', ['--signal=TERM', '--kill-after=1s', `${timeoutMs / 1000}s`, check.command, ...check.args], {
     cwd, env: process.env, encoding: 'utf8', maxBuffer: 128 * 1024,
