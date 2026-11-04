@@ -4,6 +4,13 @@ import { createHash } from 'node:crypto';
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const blob = bytes => createHash('sha1').update(Buffer.concat([Buffer.from('blob ' + Buffer.byteLength(bytes) + '\0'), Buffer.from(bytes)])).digest('hex');
 const compiledContracts = new WeakSet();
+// Aggregate queue state alone grants no release authority. Exact running job and
+// current writer-group membership are independently required by every entry.
+function requireNonterminalCallerAggregate(run) {
+  assert.ok(['queued', 'in_progress', 'waiting', 'pending', 'requested'].includes(run.status),
+    'unsupported_caller_aggregate_status:invalid');
+  assert.ok(run.conclusion === null, 'terminal caller aggregate cannot authorize a current stage');
+}
 // Transport is installed by the provider; caller/env strings never grant receipt authority.
 export function createStagedAuthority(contract, read) {
   assert.ok(compiledContracts.has(contract), 'checked source compiler contract required');
@@ -30,7 +37,7 @@ export function createStagedAuthority(contract, read) {
     assert.equal(run.head_repository.full_name, expected.repository);
     assert.equal(run.head_sha, expected.head);
     assert.equal(run.head_branch, 'main');
-    assert.equal(run.status, 'in_progress');
+    requireNonterminalCallerAggregate(run);
     assert.equal(run.path, '.github/workflows/release.yml');
     assert.equal(run.event, route.event);
     const workflow = await get(base + '/workflows/' + run.workflow_id);
@@ -202,7 +209,7 @@ export async function observeCommandStagedContext({
     return snapshot;
   };
   const run = read(provider.runPath).body;
-  assert.equal(run.status, 'in_progress');
+  requireNonterminalCallerAggregate(run);
   assert.equal(run.head_branch, 'main');
   assert.equal(run.event, route.event);
   const workflow = read(provider.registered().workflow).body;
@@ -291,7 +298,7 @@ export async function observeCommandCurrentGroupStagedContext({
     return snapshot;
   };
   const run = read(provider.runPath).body;
-  assert.equal(run.status, 'in_progress');
+  requireNonterminalCallerAggregate(run);
   assert.equal(run.head_branch, 'main');
   assert.equal(run.event, route.event);
   const workflow = read(provider.registered().workflow).body;
