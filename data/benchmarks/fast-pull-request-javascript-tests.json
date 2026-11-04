@@ -176,6 +176,7 @@
     "rust/tests/web/native-test-artifact.test.mjs",
     "rust/tests/web/native-compilation-root-identity.test.mjs",
     "rust/tests/web/release-current-group-retry.test.mjs",
-    "rust/tests/web/quantity-aggregate-comparison.test.mjs"
+    "rust/tests/web/quantity-aggregate-comparison.test.mjs",
+    "rust/tests/web/server-evidence-links.test.mjs"
   ]
 }

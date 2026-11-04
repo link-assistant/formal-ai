@@ -80,5 +80,7 @@
     "globalReasoningShare": "unmeasured",
     "autonomousImplementationAuthorshipCredit": 0,
     "implementation": "Externally specified bootstrap code applied through Formal AI; literal English edits retained separately."
-  }
+  },
+  "sourceCommit": "91c7cf168c1d6246de669effcb9bbb090558d30a",
+  "followUpReceipt": "docs/case-studies/issue-1483/aggregate-constraint-source-integration-2026-11-04.json"
 }
