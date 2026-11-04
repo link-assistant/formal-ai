@@ -176,3 +176,43 @@ obsolete parent import. This is a source-only correction, with no warning
 exemption, assertion change or local Rust compilation. Other native targets
 may report the same shared compilation cause. The source still requires a
 fresh native CI and release qualification after the follow-up merge.
+
+## Qualified native main and release transport follow-up
+
+PR [1526](https://github.com/link-assistant/formal-ai/pull/1526) merged as
+`94f3278cd9d90c65d0970400d4a11029683936b7` after all 89 PR checks passed.
+On that exact main source the complete producer, all native full/specification
+shards, four lint lanes, both client jobs, primary server parity and package
+build actually succeeded. Primary parity compared 153 requests with no content
+or protocol divergence. The previously failing native parser policy test
+passed in full shard two. These are observed outcomes, separate from release
+publication.
+
+[Auto Release preparation](https://github.com/link-assistant/formal-ai/actions/runs/41738975507/job/126288149767)
+failed before version computation or commit: its last authenticated GET, the
+current concurrency group, returned no bytes after the five-second timeout.
+The main run ended with 100 successful, 248 skipped and two failed checks; the
+second failure was the pipeline summary. No new source child, tag, release or
+Docker product was qualified. The entire failing step lasted about nineteen
+seconds, so the existing thirty-second provider budget retains retry headroom.
+
+The correction reserves the same two logical observation slots once and allows
+at most two physical jobs/group pairs within the original shared deadline. A
+transport failure discards the whole partial pair; the next attempt reacquires
+jobs before group. Actual current-job identity is validated before any group
+read or retry. Refusals, malformed or inactive jobs, membership errors, stale
+observations and expired budgets remain failures. The existing five-second
+per-read and pair-freshness bounds, executable checks, source inventories and
+all staged operations/bindings remain. GitHub documents this endpoint and its
+[Actions read permission](https://docs.github.com/en/rest/actions/concurrency-groups).
+
+Nine offline JavaScript regressions retain the captured transport shape and
+independent active-job/member checks; they join the default fast PR inventory.
+The two maintained script postimages were drafted by seven actual English
+`In file, replace «old» with «new».` requests through the current JavaScript
+Formal AI, each with Read/Edit/Read and exact physical postimage checks.
+Replacement content was externally supplied, so independent synthesis credit
+is zero. Earlier unsupported content-header forms that produced malformed
+private copies are retained separately as capability regressions. No Rust
+compilation, native execution or Docker build ran locally. A fresh main and
+actual publication/product chain still must qualify after merge.
