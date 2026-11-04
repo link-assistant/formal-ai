@@ -138,10 +138,15 @@ jobs:
           persist-credentials: false
       - name: Install only the translator runtime without lifecycle scripts
         run: npm ci --prefix .meta-language/js --omit=dev --ignore-scripts --no-audit --no-fund
+      - name: Setup the pinned source-reader dependency installer
+        if: inputs.regeneration-target == 'specification-witness'
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
       - name: Install locked source-reader dependencies without lifecycle scripts
         if: inputs.regeneration-target == 'specification-witness'
         timeout-minutes: 2
-        run: npm ci --ignore-scripts --no-audit --no-fund --fetch-retries=0 --fetch-timeout=60000
+        run: bun install --frozen-lockfile --ignore-scripts
       - name: Regenerate the selected source projections and verified census
         env:
           FORMAL_AI_REGENERATION_TARGET: ${{ inputs.regeneration-target || 'translations' }}

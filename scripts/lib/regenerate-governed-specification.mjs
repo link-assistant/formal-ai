@@ -23,6 +23,9 @@ function bytes(repo, file) {
   assert.equal(typeof file, 'string');
   assert(!path.isAbsolute(file) && !file.includes('\\') && !file.includes('\0'));
   assert(file.split('/').every(part => part && part !== '.' && part !== '..'));
+  execFileSync('git', ['ls-files', '--error-unmatch', '--', file], {
+    cwd: repo, timeout: 10000, maxBuffer: 65536, stdio: ['ignore', 'ignore', 'pipe']
+  });
   const target = full(repo, file);
   assert(target.startsWith(repo + path.sep), 'Source path escaped checkout');
   assert(fs.lstatSync(target).isFile(), 'Source must be a regular file');
@@ -84,7 +87,7 @@ export async function regenerateSpecificationWitness({repo, sourceCommit, pin}) 
   const oldPrograms = (await import(pathToFileURL(full(repo, registry)))).GENERATED_NATIVE_PROGRAMS;
   const inputs = new Set([reader, generator, 'rust/src/lib.rs',
     'scripts/regenerate-targeted-js-rust.mjs', 'scripts/lib/regenerate-governed-specification.mjs',
-    'rust/tests/web/rust-specification-unicode-identifiers.test.mjs', 'package.json', 'package-lock.json']);
+    'rust/tests/web/rust-specification-unicode-identifiers.test.mjs', 'package.json', 'bun.lock', '.bun-version']);
   for (const program of oldPrograms) {
     for (const witness of program.sourceWitnesses ?? []) inputs.add(witness.path);
   }
@@ -96,7 +99,14 @@ export async function regenerateSpecificationWitness({repo, sourceCommit, pin}) 
     }
   }
   assert(!inputs.has(registry) && !inputs.has(baseline), 'Generated outputs cannot be invariant inputs');
-  const sourceInputs = [...inputs].sort().map(file => ({path: file, sha256: sha(bytes(repo, file))}));
+  const sourceInputs = [...inputs].sort().map(file => {
+    const observed = bytes(repo, file);
+    const committed = execFileSync('git', ['show', 'HEAD:' + file], {
+      cwd: repo, timeout: 10000, maxBuffer: 16777216
+    });
+    assert.equal(sha(observed), sha(committed), 'Source input differs from immutable checkout');
+    return {path: file, sha256: sha(observed)};
+  });
   run(repo, [generator]);
   run(repo, [generator, '--check']);
   const generatedUrl = pathToFileURL(full(repo, registry));
