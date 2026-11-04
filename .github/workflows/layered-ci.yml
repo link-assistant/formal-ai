@@ -74,7 +74,7 @@ on:
         required: false
         default: translations
         type: choice
-        options: [translations, specification-witness]
+        options: [translations, specification-witness, debug-owner-baseline]
       pull-request:
         description: 'Pull request the dispatched checks report for'
         required: false
@@ -139,12 +139,12 @@ jobs:
       - name: Install only the translator runtime without lifecycle scripts
         run: npm ci --prefix .meta-language/js --omit=dev --ignore-scripts --no-audit --no-fund
       - name: Setup the pinned source-reader dependency installer
-        if: inputs.regeneration-target == 'specification-witness'
+        if: inputs.regeneration-target == 'specification-witness' || inputs.regeneration-target == 'debug-owner-baseline'
         uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
       - name: Install locked source-reader dependencies without lifecycle scripts
-        if: inputs.regeneration-target == 'specification-witness'
+        if: inputs.regeneration-target == 'specification-witness' || inputs.regeneration-target == 'debug-owner-baseline'
         timeout-minutes: 2
         run: bun install --frozen-lockfile --ignore-scripts
       - name: Regenerate the selected source projections and verified census

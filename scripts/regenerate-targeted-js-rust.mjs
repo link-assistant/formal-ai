@@ -27,7 +27,13 @@ assert(fs.existsSync(path.join(upstream, 'js/node_modules')),
   'Install pinned runtime dependencies in the hosted workflow first');
 
 const regenerationTarget = process.env.FORMAL_AI_REGENERATION_TARGET ?? 'translations';
-assert(['translations', 'specification-witness'].includes(regenerationTarget), 'Unknown regeneration target');
+assert(['translations', 'specification-witness', 'debug-owner-baseline'].includes(regenerationTarget), 'Unknown regeneration target');
+if (regenerationTarget === 'debug-owner-baseline') {
+  const {regenerateDebugOwnerBaseline} = await import(
+    pathToFileURL(path.join(repo, 'scripts/lib/regenerate-debug-owner-baseline.mjs')));
+  await regenerateDebugOwnerBaseline({repo, sourceCommit, pin});
+  process.exit(0);
+}
 if (regenerationTarget === 'specification-witness') {
   const {regenerateSpecificationWitness} = await import(
     pathToFileURL(path.join(repo, 'scripts/lib/regenerate-governed-specification.mjs')));
