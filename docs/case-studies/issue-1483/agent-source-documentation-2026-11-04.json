@@ -1,0 +1,136 @@
+{
+  "schema": "actual-agent-maintained-js-useful-partial/v1",
+  "date": "2026-11-04",
+  "acceptanceIssue": "https://github.com/link-assistant/formal-ai/issues/1483",
+  "originalIssue": "https://github.com/link-assistant/formal-ai/issues/1455",
+  "backendCommit": "0b18431d2a9baa1b147e94a17bbdf486d550f526",
+  "historicalSourceCommit": "4c18fa47059e19963601a35d749db5c493d4245f",
+  "sourceOverlay": false,
+  "originalTaskSHA256": "59d54bb8e575b9ad035aa8e52a71a38d9b412a7d6fbbb40e028f22b1e48824c8",
+  "normalizedTaskSHA256s": [
+    "a50a0052e9c1b8f4d78bab8dbc5596e07c83736f9eb6497017120aca39ccec2d"
+  ],
+  "completedSolutionSupplied": false,
+  "actualToolSequence": [
+    "read",
+    "read",
+    "read",
+    "read",
+    "edit",
+    "read",
+    "read",
+    "read",
+    "read"
+  ],
+  "actualEmittedCalls": 9,
+  "uniqueQualifiedReceipts": 9,
+  "actualEditCount": 1,
+  "checks": {
+    "taskInputAndSourceSpecCustody": true,
+    "usefulPatch": true,
+    "entirePrefixPreserved": true,
+    "independentLiteralRowsAndNativeCfg": true,
+    "literalSourceSyntaxUsageOnly": true,
+    "sourceFilesUnchanged": true,
+    "completeActualWireCapture": true,
+    "actualEmissionEchoReceiptIdentity": true,
+    "matchedActualPreconditionedGuideEdit": true,
+    "currentCompleteFourFileReadback": true,
+    "actualSourceTerminalUsefulPartial": true,
+    "completeFalse": true,
+    "verifiedFalse": true,
+    "remainingIntegrationAndDiscovery": true
+  },
+  "beforeGuideSHA256": "2fe4fc583b22075c147636a3fc82e13dc4ff251133d028594b63e6763adca00b",
+  "afterGuideSHA256": "65f01525f1bc44b1ff8c540287e2b758f890cafcca1078d7bc97aeeb27bed70b",
+  "actualSourceStateReason": "UsefulCandidateReadbackVerified",
+  "remainingWork": [
+    "independent-requirement-acceptance",
+    "independent-integration-semantics",
+    "consumer-discovery",
+    "source-resolution-unverified:js/web-search-component-entry.js"
+  ],
+  "clientProcessPassed": true,
+  "cleanup": {
+    "clientClosed": true,
+    "serverClosed": true,
+    "portClosure": "closed",
+    "verified": true,
+    "signalsUseActualHandlesOnly": true,
+    "ownedChildrenNondetached": true,
+    "descendantClosure": "not independently enumerated"
+  },
+  "timing": {
+    "serverReadyObservedMs": 1097.0697499999999,
+    "clientSpawnObservedMs": 1097.3657919999998,
+    "clientCloseObservedMs": 16286.156375,
+    "cleanupCompleteObservedMs": 16292.074583,
+    "deadlineCause": null,
+    "totalMs": 16293.797333
+  },
+  "wireTimingMs": [
+    {
+      "sequence": 0,
+      "durationMs": 1401.86825
+    },
+    {
+      "sequence": 1,
+      "durationMs": 275.8119999999999
+    },
+    {
+      "sequence": 2,
+      "durationMs": 301.16170799999963
+    },
+    {
+      "sequence": 3,
+      "durationMs": 329.81624999999985
+    },
+    {
+      "sequence": 4,
+      "durationMs": 1099.0142920000008
+    },
+    {
+      "sequence": 5,
+      "durationMs": 1107.1245000000008
+    },
+    {
+      "sequence": 6,
+      "durationMs": 1983.4179159999994
+    },
+    {
+      "sequence": 7,
+      "durationMs": 2068.823166
+    },
+    {
+      "sequence": 8,
+      "durationMs": 2085.2222920000004
+    },
+    {
+      "sequence": 9,
+      "durationMs": 3370.453458000002
+    }
+  ],
+  "usefulPartialProvedFromCapturedRun": true,
+  "fullTaskAcceptance": false,
+  "ordinaryHiveExecution": false,
+  "threeClientAcceptance": false,
+  "productionOrchestrationQualified": false,
+  "providerAuthentication": "Unknown",
+  "clientVersion": "Not separately captured in this probe",
+  "scope": "Actual host-captured wire, qualified relative transcript and known physical fixture; not vendor/provider/process-effect universal authentication",
+  "rawProtocolPublished": false,
+  "sourceFilesPublished": false,
+  "nativeExecutedLocally": false,
+  "evidenceHashes": {
+    "externalGradeSHA256": "c954b44c0a0bcafe276e3d33d868f000024b13de2c5b7ad7fbaa1f59a11f0faf",
+    "actualRootFormalAIInvocationSHA256": "b7f998155b66f8b6a2481f4b1c0884fcfbb87c2525786ff8ead7738ca4abfb7c",
+    "actualWatchdogSHA256": "953bf330033ac4bf32b76f504d497c214a7db4d077b2c5480e67a7afcc88d47d",
+    "oracleBeforeRunSHA256": "ac994a5d0b628c0ba9e49b90d0b15f22190328a3e85ed8f466ec018b7d0df259",
+    "sourceContractSHA256": "fe0d8fcd2d37010b4f0081dc25e48c0af7db43cc11eb82d0601010589501c99c"
+  },
+  "previousAttempt": {
+    "outcome": "Finite timeout after the guide edit and before final readback receipt/terminal; retained without acceptance.",
+    "externalGraderCorrection": "The first private grader omitted the required evidence-window start argument. Its failure is retained as scaffold misuse, separately from the actual timeout. A fresh probe used the corrected API and unchanged logical acceptance criteria."
+  },
+  "authorship": "The maintained planner derived the guide content from observed source files. Probe scaffolding, supplied literal edits, independent grader and later reviewer work earn zero independent implementation or reasoning synthesis credit."
+}

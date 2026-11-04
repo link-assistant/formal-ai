@@ -63,8 +63,13 @@ test('original pre-fix work item produces useful partial documentation and a ver
   const declarations = state.facts.filter(row => row.kind === 'manifest-declaration');
   for (const [name, version] of [['command-stream', '1.5'], ['web-capture', '0.3.37'], ['web-search', '0.6.0'], ['@link-assistant/web-search', '0.11.1']]) {
     assert.ok(declarations.some(row => row.name === name && row.version === version), name);
-    assert.ok(guide.includes('`' + name + '`'));
+    assert.ok(guide.includes('| `' + name + '` | `' + version + '` | `dependencies` |'), 'physical declaration row: ' + name);
   }
+  for (const [name, version, feature] of [['web-capture', '0.3.37', 'search'], ['web-search', '0.6.0', 'merge']]) {
+    const options = JSON.stringify({'default-features': false, features: [feature]});
+    assert.ok(guide.includes('| `' + name + '` | `' + version + '` | `dependencies` | `cfg(not(target_arch = "wasm32"))` | `' + options + '` |'), 'physical native target and literal options: ' + name);
+  }
+  for (const call of ['getDefaultProviderIds()', 'mergeResults(grouped, { strategy: "rrf", rrfK: k, removeDuplicates: true })']) assert.ok(guide.includes(call), 'physical observed source excerpt: ' + call);
   const usage = state.facts.find(row => row.kind === 'observed-source-usage');
   assert.ok(usage);
   for (const name of ['getDefaultProviderIds', 'mergeResults']) assert.ok(usage.calls.some(call => call.imported === name), name);
