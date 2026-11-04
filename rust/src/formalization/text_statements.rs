@@ -36,6 +36,9 @@ pub const FUNCTION_WORD_ROLES: [&str; 2] = ["translation_stop_word", "statement_
 /// The lexicon role whose words deny a statement.
 pub const NEGATION_ROLE: &str = "statement_negation_cue";
 
+/// Grammar lexemes remain available to their owning parser, not the general semantic index.
+pub const SCOPED_GRAMMAR_ROLE: &str = "scoped-grammar-pattern";
+
 /// The most words one lexicon surface may span.
 pub const LONGEST_PHRASE: usize = 4;
 
@@ -365,7 +368,8 @@ fn build_meaning_indexes() -> HashMap<String, HashMap<String, String>> {
         let excluded = FUNCTION_WORD_ROLES
             .iter()
             .any(|role| meaning.has_role(role))
-            || meaning.has_role(NEGATION_ROLE);
+            || meaning.has_role(NEGATION_ROLE)
+            || meaning.has_role(SCOPED_GRAMMAR_ROLE);
         if excluded {
             continue;
         }

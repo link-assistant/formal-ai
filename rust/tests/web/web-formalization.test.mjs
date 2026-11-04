@@ -71,7 +71,7 @@ describe('the shared text formalizer', () => {
     const english = text.meaningIndex('en');
     assert.equal(english.get('apple'), 'wikidata_item_apple');
     assert.equal(text.meaningIndex('hi').get('सेब'), 'wikidata_item_apple');
-    const excluded = [...text.FUNCTION_WORD_ROLES, text.NEGATION_ROLE];
+    const excluded = [...text.FUNCTION_WORD_ROLES, text.NEGATION_ROLE, text.SCOPED_GRAMMAR_ROLE];
     // A rank orders lower first: more languages, fewer surfaces, earlier declared.
     const outranks = (candidate, held) => {
       for (let index = 0; index < 3; index += 1) {

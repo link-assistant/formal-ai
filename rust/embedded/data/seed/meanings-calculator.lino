@@ -252,6 +252,7 @@ meanings
   quantity-constraint-bound-frame
     defined-by arithmetic_operation
     role quantity-constraint-bound-frame
+    role scoped-grammar-pattern
     precondition "A fully consumed bound sentence names one bound, an exact nonnegative integer and a resolvable unit."
     effect "Capture the bound reference, quantity surface and original UTF-8 spans."
     unit "not applicable"
@@ -264,6 +265,7 @@ meanings
   quantity-constraint-members-frame
     defined-by arithmetic_operation
     role quantity-constraint-members-frame
+    role scoped-grammar-pattern
     precondition "A fully consumed collection sentence explicitly lists one or more nonnegative quantities."
     effect "Capture every listed quantity and its original source spans without inventing members."
     unit "not applicable"
@@ -276,6 +278,7 @@ meanings
   quantity-constraint-comparison-frame
     defined-by arithmetic_operation
     role quantity-constraint-comparison-frame
+    role scoped-grammar-pattern
     precondition "The question explicitly requests an aggregate and an inclusive comparison with the same named bound."
     effect "Bind the aggregate cue and comparison relation to their original source spans."
     unit "not applicable"
@@ -288,6 +291,7 @@ meanings
   quantity-constraint-ownership-frame
     defined-by comparison
     role quantity-constraint-ownership-frame
+    role scoped-grammar-pattern
     precondition "A comparison phrase contains a recognized inclusive relation and a bound reference."
     effect "Own the stated comparison; unsupported conditions remain unresolved rather than becoming unit conversions."
     unit "not applicable"
@@ -300,6 +304,7 @@ meanings
   quantity-constraint-query-prefix
     defined-by inquiry
     role quantity-constraint-query-prefix
+    role scoped-grammar-pattern
     precondition "The phrase begins a comparison question in the language of its lexical entry."
     effect "Recognize a question candidate without treating the prefix alone as a numeric proof."
     unit "not applicable"
@@ -312,6 +317,7 @@ meanings
   quantity-constraint-bound-reference
     defined-by arithmetic_operation
     role quantity-constraint-bound-reference
+    role scoped-grammar-pattern
     precondition "The term occupies a bound-reference slot in an explicit quantity constraint."
     effect "Name the stated budget, limit, capacity or bound; require the same reference in the comparison."
     unit "not applicable"
@@ -324,6 +330,7 @@ meanings
   quantity-constraint-member-reference
     defined-by quantity
     role quantity-constraint-member-reference
+    role scoped-grammar-pattern
     precondition "The term occupies the collection-reference slot in an explicit quantity constraint."
     effect "Name the explicitly listed amounts or quantities without implying scheduling order."
     unit "not applicable"
@@ -336,6 +343,7 @@ meanings
   quantity-constraint-explicit-sum
     defined-by addition
     role quantity-constraint-aggregate
+    role scoped-grammar-pattern
     effect "Select addition of the explicitly listed terms; do not infer addition from labels or scheduling."
     unit "not applicable"
     example "The amounts are 4 kg and 6 kg. Is their sum within the bound?"
@@ -348,6 +356,7 @@ meanings
   quantity-constraint-inclusive-bound
     defined-by comparison
     role quantity-constraint-relation-le
+    role scoped-grammar-pattern
     precondition "The explicitly requested sum and bound are resolved in one canonical unit."
     unit "not applicable"
     example "10 kg is within a bound of 10 kg."
@@ -360,6 +369,7 @@ meanings
   quantity-constraint-list-conjunction
     defined-by addition
     role quantity-constraint-list-conjunction
+    role scoped-grammar-pattern
     precondition "The conjunction joins adjacent quantities inside an explicitly stated collection."
     effect "Join the quantity list without adding a sequencing or execution-order claim."
     unit "not applicable"
@@ -408,6 +418,22 @@ meanings
     lexeme hi "अनिर्णीत स्पष्ट तुलना"
     lexeme zh "尚未确定的明确比较"
     lexeme es "comparación explícita sin resolver"
+
+  limit
+    defined-by quantity
+    defined-by comparison
+    role quantity-constraint-bound-reference
+    precondition "An explicit inclusive quantity constraint states the greatest allowed quantity and its unit."
+    effect "Use that stated quantity as an inclusive upper bound; do not infer a mathematical limiting process, an execution order or an unstated allowance."
+    unit "not applicable"
+    example "The limit is 10 kg. => a sum of 10 kg is within the stated limit."
+    source "data/cache/wordnet/en/limit.json#oewn-13780436-n"
+    license "CC BY 4.0"
+    lexeme en limit
+    lexeme ru "предел"
+    lexeme hi "सीमा"
+    lexeme zh "限额"
+    lexeme es "límite"
 
   budget
     defined-by limit
