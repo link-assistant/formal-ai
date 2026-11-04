@@ -1288,15 +1288,15 @@ multilingual_responses
     language es
     text "No se capturó ninguna afirmación verificada por una fuente para esta solicitud, así que no se compuso nada."
 
-  response quantity_constraint_within_en
-    intent quantity_constraint_within
+  response quantity-constraint-within-en
+    intent quantity-constraint-within
     language en
     text "Yes. The explicit sum is {total} {unit}, which is at most {bound} {unit}."
-  response quantity_constraint_exceeds_en
-    intent quantity_constraint_exceeds
+  response quantity-constraint-exceeds-en
+    intent quantity-constraint-exceeds
     language en
     text "No. The explicit sum is {total} {unit}, which exceeds {bound} {unit}."
-  response quantity_constraint_unknown_en
-    intent quantity_constraint_unknown
+  response quantity-constraint-unknown-en
+    intent quantity-constraint-unknown
     language en
     text "I cannot determine this comparison from the fully stated quantities and bound."

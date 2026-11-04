@@ -271,11 +271,11 @@ fn supported_frame(
         return Err("incomplete-raw-frame");
     }
     let members =
-        role_pattern("quantity_constraint_member_reference").ok_or("missing-seeded-grammar")?;
+        role_pattern("quantity-constraint-member-reference").ok_or("missing-seeded-grammar")?;
     let aggregate =
-        role_pattern("quantity_constraint_aggregate").ok_or("missing-seeded-grammar")?;
+        role_pattern("quantity-constraint-aggregate").ok_or("missing-seeded-grammar")?;
     let conjunction =
-        role_pattern("quantity_constraint_list_conjunction").ok_or("missing-seeded-grammar")?;
+        role_pattern("quantity-constraint-list-conjunction").ok_or("missing-seeded-grammar")?;
     let patterns = [
         ("bound_ref", bound_names),
         ("query_ref", bound_names),
@@ -288,21 +288,21 @@ fn supported_frame(
     ];
     let bound = match_frame(
         sentences[0].1,
-        "quantity_constraint_bound_frame",
+        "quantity-constraint-bound-frame",
         &patterns,
         true,
     )
     .ok_or("unsupported-constraint-frame")?;
     let collection = match_frame(
         sentences[1].1,
-        "quantity_constraint_members_frame",
+        "quantity-constraint-members-frame",
         &patterns,
         true,
     )
     .ok_or("unsupported-constraint-frame")?;
     let comparison = match_frame(
         sentences[2].1,
-        "quantity_constraint_comparison_frame",
+        "quantity-constraint-comparison-frame",
         &patterns,
         true,
     )
@@ -398,7 +398,7 @@ fn supported_frame(
             span: comparison.span("aggregation", sentences[2].0)?,
         },
         comparison_proof: ComparisonProof {
-            role: "quantity_constraint_relation_le",
+            role: "quantity-constraint-relation-le",
             surface: comparison.text(sentences[2].1, "relation")?.to_owned(),
             span: comparison.span("relation", sentences[2].0)?,
         },
@@ -413,8 +413,8 @@ fn for_prompt(raw: &str) -> Option<QuantityConstraint> {
     if raw.encode_utf16().count() > 8192 {
         return None;
     }
-    let prefix = role_pattern("quantity_constraint_query_prefix")?;
-    let aggregate = role_pattern("quantity_constraint_aggregate")?;
+    let prefix = role_pattern("quantity-constraint-query-prefix")?;
+    let aggregate = role_pattern("quantity-constraint-aggregate")?;
     let sentence_regex = Regex::new(r"[^.?!]+(?:[.?!]|$)").ok()?;
     let sentences = sentence_regex
         .find_iter(raw)
@@ -428,11 +428,11 @@ fn for_prompt(raw: &str) -> Option<QuantityConstraint> {
     let cue = aggregate_regex
         .find_iter(query)
         .find(|found| token_edges(query, found.start(), found.end()))?;
-    let bound_names = role_pattern("quantity_constraint_bound_reference")?;
-    let relation = role_pattern("quantity_constraint_relation_le")?;
+    let bound_names = role_pattern("quantity-constraint-bound-reference")?;
+    let relation = role_pattern("quantity-constraint-relation-le")?;
     match_frame(
         query,
-        "quantity_constraint_ownership_frame",
+        "quantity-constraint-ownership-frame",
         &[("relation", &relation), ("query_ref", &bound_names)],
         false,
     )?;
@@ -463,7 +463,7 @@ pub(crate) fn owns_prompt(prompt: &str) -> bool {
 fn decline(prompt: &str, log: &mut EventLog, reason: &str) -> SymbolicAnswer {
     log.append("quantity_constraint:unknown", reason.to_owned());
     let body = crate::seed::localized_response(
-        "quantity_constraint_unknown",
+        "quantity-constraint-unknown",
         crate::language::detect(prompt).slug(),
     )
     .unwrap_or_default();
@@ -471,7 +471,7 @@ fn decline(prompt: &str, log: &mut EventLog, reason: &str) -> SymbolicAnswer {
         prompt,
         log,
         "quantity_constraint_unknown",
-        "response:quantity_constraint_unknown",
+        "response:quantity-constraint-unknown",
         &body,
         0.4,
     )
@@ -529,8 +529,13 @@ pub(crate) fn try_answer(prompt: &str, log: &mut EventLog) -> Option<SymbolicAns
         ("unit", supported.bound.unit_surface.as_str()),
     ];
     let language = crate::language::detect(prompt).slug();
-    let Some(body) = crate::seed::render_response(intent, language, &values)
-        .or_else(|| crate::seed::render_response(intent, "en", &values))
+    let response = if holds {
+        "quantity-constraint-within"
+    } else {
+        "quantity-constraint-exceeds"
+    };
+    let Some(body) = crate::seed::render_response(response, language, &values)
+        .or_else(|| crate::seed::render_response(response, "en", &values))
     else {
         return Some(decline(prompt, log, "missing-response-template"));
     };
@@ -544,7 +549,7 @@ pub(crate) fn try_answer(prompt: &str, log: &mut EventLog) -> Option<SymbolicAns
         prompt,
         log,
         intent,
-        &format!("response:{intent}"),
+        &format!("response:{response}"),
         &body,
         1.0,
     ))

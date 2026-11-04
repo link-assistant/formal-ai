@@ -26,6 +26,15 @@ assert.equal(gitHead(upstream), pin);
 assert(fs.existsSync(path.join(upstream, 'js/node_modules')),
   'Install pinned runtime dependencies in the hosted workflow first');
 
+const regenerationTarget = process.env.FORMAL_AI_REGENERATION_TARGET ?? 'translations';
+assert(['translations', 'specification-witness'].includes(regenerationTarget), 'Unknown regeneration target');
+if (regenerationTarget === 'specification-witness') {
+  const {regenerateSpecificationWitness} = await import(
+    pathToFileURL(path.join(repo, 'scripts/lib/regenerate-governed-specification.mjs')));
+  await regenerateSpecificationWitness({repo, sourceCommit, pin});
+  process.exit(0);
+}
+
 const api = await import(pathToFileURL(path.join(repo, 'scripts/translate-js-rust.mjs')));
 const {namedImports, resolveImport} = await import(
   pathToFileURL(path.join(repo, 'scripts/lib/translation-workarounds.mjs')));

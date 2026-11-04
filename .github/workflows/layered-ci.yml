@@ -69,6 +69,12 @@ on:
         default: checks
         type: choice
         options: [checks, regenerate-translations]
+      regeneration-target:
+        description: 'Explicit source artifact family; only used by regeneration mode'
+        required: false
+        default: translations
+        type: choice
+        options: [translations, specification-witness]
       pull-request:
         description: 'Pull request the dispatched checks report for'
         required: false
@@ -132,7 +138,13 @@ jobs:
           persist-credentials: false
       - name: Install only the translator runtime without lifecycle scripts
         run: npm ci --prefix .meta-language/js --omit=dev --ignore-scripts --no-audit --no-fund
-      - name: Regenerate the two source projections and verified census
+      - name: Install locked source-reader dependencies without lifecycle scripts
+        if: inputs.regeneration-target == 'specification-witness'
+        timeout-minutes: 2
+        run: npm ci --ignore-scripts --no-audit --no-fund --fetch-retries=0 --fetch-timeout=60000
+      - name: Regenerate the selected source projections and verified census
+        env:
+          FORMAL_AI_REGENERATION_TARGET: ${{ inputs.regeneration-target || 'translations' }}
         run: node --max-old-space-size=384 scripts/regenerate-targeted-js-rust.mjs .meta-language
       - name: Preserve only generated source and its source/hash manifest
         uses: actions/upload-artifact@v7

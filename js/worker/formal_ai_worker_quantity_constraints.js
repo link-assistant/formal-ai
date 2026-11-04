@@ -47,18 +47,18 @@ function quantityConstraintUnit(surface) {
 function quantityConstraintFor(prompt) {
   const raw = String(prompt || "");
   if (raw.length > 8192) return null;
-  const prefix = quantityConstraintRolePattern("quantity_constraint_query_prefix");
-  const aggregate = quantityConstraintRolePattern("quantity_constraint_aggregate");
+  const prefix = quantityConstraintRolePattern("quantity-constraint-query-prefix");
+  const aggregate = quantityConstraintRolePattern("quantity-constraint-aggregate");
   if (!prefix || !aggregate) return null;
   const sentences = [...raw.matchAll(/[^.?!]+(?:[.?!]|$)/gu)];
   const query = sentences[sentences.length - 1];
   if (!query || !new RegExp("^\\s*(?:" + prefix + ")(?=\\s|$)", "iu").test(query[0])) return null;
   const aggregateMatch = new RegExp("(?<![\\p{L}\\p{N}_])(?:" + aggregate + ")(?=$|[^\\p{L}\\p{N}_])", "idu").exec(query[0]);
   if (!aggregateMatch) return null;
-  const boundNames = quantityConstraintRolePattern("quantity_constraint_bound_reference");
-  const relation = quantityConstraintRolePattern("quantity_constraint_relation_le");
+  const boundNames = quantityConstraintRolePattern("quantity-constraint-bound-reference");
+  const relation = quantityConstraintRolePattern("quantity-constraint-relation-le");
   if (!boundNames || !relation || !quantityConstraintMatch(query[0],
-    "quantity_constraint_ownership_frame", {
+    "quantity-constraint-ownership-frame", {
       relation: "(?:" + relation + ")", query_ref: "(?:" + boundNames + ")"
     }, false)) return null;
   const unknown = reason => ({status: "unknown", reason,
@@ -69,15 +69,15 @@ function quantityConstraintFor(prompt) {
   if (sentences.length !== 3 || sentences.map(row => row[0]).join("") !== raw) {
     return unknown("incomplete-raw-frame");
   }
-  const members = quantityConstraintRolePattern("quantity_constraint_member_reference");
-  const conjunction = quantityConstraintRolePattern("quantity_constraint_list_conjunction");
+  const members = quantityConstraintRolePattern("quantity-constraint-member-reference");
+  const conjunction = quantityConstraintRolePattern("quantity-constraint-list-conjunction");
   if (!boundNames || !members || !relation || !conjunction) return unknown("missing-seeded-grammar");
   const patterns = {bound_ref: "(?:" + boundNames + ")", query_ref: "(?:" + boundNames + ")",
     bound_amount: "[+-]?[0-9]+", bound_unit: "[\\p{L}]+", members_ref: "(?:" + members + ")",
     quantities: "[\\s\\S]+?", aggregation: "(?:" + aggregate + ")", relation: "(?:" + relation + ")"};
-  const bound = quantityConstraintMatch(sentences[0][0], "quantity_constraint_bound_frame", patterns);
-  const collection = quantityConstraintMatch(sentences[1][0], "quantity_constraint_members_frame", patterns);
-  const comparison = quantityConstraintMatch(query[0], "quantity_constraint_comparison_frame", patterns);
+  const bound = quantityConstraintMatch(sentences[0][0], "quantity-constraint-bound-frame", patterns);
+  const collection = quantityConstraintMatch(sentences[1][0], "quantity-constraint-members-frame", patterns);
+  const comparison = quantityConstraintMatch(query[0], "quantity-constraint-comparison-frame", patterns);
   if (!bound || !collection || !comparison) return unknown("unsupported-constraint-frame");
   if (bound.groups.bound_ref.toLowerCase() !== comparison.groups.query_ref.toLowerCase()) {
     return unknown("unbound-capacity-reference");
@@ -122,7 +122,7 @@ function quantityConstraintFor(prompt) {
       unitSpan: captureSpan(bound, "bound_unit", sentences[0].index)},
     aggregationProof: {kind: "explicit-sum-cue", surface: comparison.groups.aggregation,
       span: captureSpan(comparison, "aggregation", query.index)},
-    comparisonProof: {role: "quantity_constraint_relation_le", surface: comparison.groups.relation,
+    comparisonProof: {role: "quantity-constraint-relation-le", surface: comparison.groups.relation,
       span: captureSpan(comparison, "relation", query.index)},
     source: raw, sourceUtf8Bytes: new TextEncoder().encode(raw).length};
 }
@@ -133,7 +133,7 @@ function tryQuantityConstraint(prompt) {
   const language = detectLanguage(prompt);
   const render = intent => answerFor(intent, language) || answerFor(intent, "en");
   const unresolved = reason => ({intent: "quantity_constraint_unknown",
-    content: render("quantity_constraint_unknown"), confidence: 0.4,
+    content: render("quantity-constraint-unknown"), confidence: 0.4,
     evidence: ["quantity_constraint:unknown:" + reason,
       "quantity_constraint:frame:" + JSON.stringify(frame)],
     solverEvents: [solverEvent("quantity_constraint:frame", JSON.stringify(frame)),
@@ -148,7 +148,7 @@ function tryQuantityConstraint(prompt) {
     if (!exactInteger(total) || !exactInteger(difference)) return unresolved("inexact-integer");
     const holds = typeof difference === "bigint" ? difference <= 0n : difference <= 0;
     const intent = holds ? "quantity_constraint_within" : "quantity_constraint_exceeds";
-    let content = render(intent);
+    let content = render(holds ? "quantity-constraint-within" : "quantity-constraint-exceeds");
     for (const [key, value] of [["total", formatArithmeticResult(total)],
       ["bound", frame.bound.literal], ["unit", frame.bound.unitSurface]]) {
       content = String(content).split("{" + key + "}").join(value);
