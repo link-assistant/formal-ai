@@ -1,0 +1,38 @@
+{
+  "source": "1c46b2228ccaf81e33d92caf3b98441fa4fe04e8",
+  "runId": 41818336714,
+  "artifactId": 13315089476,
+  "zipSha256": "6129c0403fb794af13fe4f790bd09ed8382ada4e5d5313fcc717bb574cc903e7",
+  "completeDeserializedGraphCompared": true,
+  "localReserialization": false,
+  "registryByteIdentical": true,
+  "allowedChange": {
+    "path": "rust/tests/unit/specification/debug_session.rs",
+    "before": "6872fff807e6a28f8b04afc8e404b19046e57a8f1d6e1602e94ed700567ec421",
+    "after": "8da5534f8a41bab9b89b8dbd25bc93baa1d1e76f2c041c0f70a05e90b39dcaac"
+  },
+  "inputsVerified": 185,
+  "inputBytes": 4511843,
+  "total": 1184,
+  "cases": 221,
+  "unsupported": 963,
+  "files": [
+    {
+      "path": "scripts/lib/generated-native-programs.mjs",
+      "bytes": 119438,
+      "sha256": "c4b481931b1261952a77e01117e12173792383d8859339e9e4a569286188de11"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8",
+      "bytes": 1833819,
+      "sha256": "99727fae975a30f2973979ae75ec3c33602687e8ba09480637ea6132dc0dd236"
+    }
+  ],
+  "localNativeExecution": false,
+  "newNativeQualification": false,
+  "producerRun": "https://github.com/link-assistant/formal-ai/actions/runs/41818336714",
+  "producerJob": "https://github.com/link-assistant/formal-ai/actions/runs/41818336714/job/126534788903",
+  "scope": "Complete hosted baseline refresh with one reviewed source-manifest change; not native execution or full issue1483 acceptance",
+  "sourceGeneration": "Actual existing complete writer on hosted Linux; unchanged registry copied",
+  "validation": "Independent archive digest/member bounds, immutable Git and physical source inputs, and entire deserialized object graph comparison; original artifact bytes imported"
+}
