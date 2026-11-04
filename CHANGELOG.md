@@ -20,6 +20,12 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.355.33] - 2026-11-04
+
+Fix post-publication self-authoring when GitHub adds descendant jobs during pagination: discard the changing inventory and restart from page one at most three times, retaining the shared deadline, request limit, and exact publisher/source/attempt checks. Replay the observed 59-to-60 job-count race offline and refuse persistent churn or invalid job identities.
+
+Fix release freshness checks when GitHub reports a queued or waiting parent pipeline while its staged writer is running. Share nonterminal aggregate validation across all staged entry points while preserving exact current-job, runner, source, attempt and writer-group membership proof. Replay the observed failure and stale/foreign/missing-lease refusals in essential offline PR tests.
+
 ## [0.355.32] - 2026-11-04
 
 Formalize explicitly requested sums and inclusive bounds through the existing JavaScript and Rust calculators, preserving the original quantities and source spans. Decline unsupported conditions and mixed units, and keep aggregate concept questions outside the comparison handler. Preserve computed quantity evidence through the server projection, and keep the legacy worker within its existing budget through a separate quantity module. Add captured regression and ownership checks to the essential offline PR inventory; retain complete responses for reasoning acceptance.
