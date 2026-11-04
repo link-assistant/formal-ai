@@ -49,7 +49,8 @@ function nextDelimiter(text, cursor) {
  * `plain_closing_delimiter`. The input index is a JavaScript string offset.
  */
 export function previousChar(text, index) {
-  return Array.from(text.slice(0, index).slice(-2)).at(-1);
+  const before = Array.from(text.slice(0, index).slice(-2));
+  return before[before.length - 1];
 }
 
 function nextCompletePair(text, cursor, open, close) {

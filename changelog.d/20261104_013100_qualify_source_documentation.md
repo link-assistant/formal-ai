@@ -10,4 +10,4 @@
 ### Performance
 
 - Bound quote-predecessor character iteration to the final two UTF-16 units instead of materializing each complete prefix. Preserve Unicode, index coercion and quote-span behavior, with generated TypeScript and browser-worker counterparts.
-- A single captured terminal request replay retained identical response content while taking 5.46 seconds before the change and 2.57 seconds afterward. Deterministic work-bound and semantic tests protect the optimization without a wall-clock CI gate.
+- A single captured terminal request replay retained identical response content while taking 5.55 seconds before the change and 2.49 seconds afterward. Deterministic work-bound and semantic tests protect the optimization without a wall-clock CI gate.
