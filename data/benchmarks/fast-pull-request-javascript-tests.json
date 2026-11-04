@@ -174,6 +174,7 @@
     "rust/tests/web/literal-create-completion-evidence.test.mjs",
     "rust/tests/web/native-library-creation-qualification.test.mjs",
     "rust/tests/web/native-test-artifact.test.mjs",
-    "rust/tests/web/native-compilation-root-identity.test.mjs"
+    "rust/tests/web/native-compilation-root-identity.test.mjs",
+    "rust/tests/web/release-current-group-retry.test.mjs"
   ]
 }
