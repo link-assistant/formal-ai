@@ -266,3 +266,22 @@ test('ordinary Moon copula keeps its semantic identity beside quantity grammar',
   assert.equal(page.statementNotation(statement), "(moon wikidata_property_instance_of unknown:only unknown:natural unknown:satellite name:earth)");
   assert.equal(wasmAttempts, 0);
 });
+
+test('sense-specific quantity lexemes preserve cross-language meaning identities', () => {
+  const text = evaluate(host.context, "crateModule('crate/text_formalization.mjs')");
+  const translation = evaluate(host.context, "crateModule('crate/round_trip_translation.mjs')");
+  assert.equal(text.meaningIndex('hi').get('सीमा'), 'coding_bound');
+  assert.equal(text.meaningIndex('es').get('cantidades'), 'quantities');
+  for (const [surface, source, target, expected] of [
+    ['bounded', 'en', 'hi', 'coding_bound'],
+    ['数量', 'zh', 'es', 'quantities']
+  ]) {
+    const statement = text.clauseStatement(surface, source, null, false);
+    assert.deepEqual(Array.from(text.knownIds(statement)), [expected]);
+    const trip = translation.roundTrip(surface, source, target);
+    assert.equal(trip.knownTerms, 1);
+    assert.equal(trip.survivingTerms, 1);
+    assert.equal(trip.survives, true);
+  }
+  assert.equal(wasmAttempts, 0);
+});

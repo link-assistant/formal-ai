@@ -431,7 +431,7 @@ meanings
     license "CC BY 4.0"
     lexeme en limit
     lexeme ru "предел"
-    lexeme hi "सीमा"
+    lexeme hi "संख्यात्मक ऊपरी सीमा"
     lexeme zh "限额"
     lexeme es "límite"
 
@@ -472,7 +472,7 @@ meanings
     lexeme ru "величины"
     lexeme hi "राशियाँ"
     lexeme zh "数值"
-    lexeme es "cantidades"
+    lexeme es "valores"
 
   quantities
     defined-by quantity

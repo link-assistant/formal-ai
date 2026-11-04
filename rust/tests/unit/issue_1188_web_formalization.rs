@@ -418,3 +418,15 @@ fn scoped_grammar_patterns_do_not_replace_plain_lexical_meanings() {
             .any(|word| word == "is the")
     );
 }
+
+#[test]
+fn sense_specific_quantity_lexemes_preserve_other_lexical_identities() {
+    assert_eq!(
+        indexed_meaning("सीमा", "hi").as_deref(),
+        Some("coding_bound")
+    );
+    assert_eq!(
+        indexed_meaning("cantidades", "es").as_deref(),
+        Some("quantities")
+    );
+}
