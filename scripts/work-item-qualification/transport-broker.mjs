@@ -4,12 +4,14 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
 import {randomUUID} from 'node:crypto';
-export function startBroker({directory,policy,environment=process.env,observe,execute=null,capture=null}){
+export function startBroker({directory,policy,environment=process.env,observe,execute=null,capture=null,timeoutFor=requested=>requested}){
   const seen=new Set(), root='repos/'+policy.repository, knownPulls=new Set();
   let active=true, mutations=0, requests=0;
   const run=(file,args)=>{
-    if(execute)return execute(file,args);
-    const value=spawnSync(file,args,{env:environment,encoding:null,timeout:45000,maxBuffer:16*1024*1024});
+    const timeout=timeoutFor(45000,file);
+    assert(Number.isSafeInteger(timeout)&&timeout>0&&timeout<=45000,'invalid broker command timeout');
+    if(execute)return execute(file,args,{timeout});
+    const value=spawnSync(file,args,{env:environment,encoding:null,timeout,maxBuffer:16*1024*1024});
     capture?.({program:file,args,status:value.status,signal:value.signal,
       error:value.error?{code:value.error.code??null,message:value.error.message}:null},
       value.stdout??Buffer.alloc(0),value.stderr??Buffer.alloc(0));

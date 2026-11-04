@@ -324,8 +324,10 @@ jobs:
           node scripts/check-hardcoded-language.mjs
           node scripts/check-js-literals.mjs
           node scripts/assemble-requirements.mjs
+          node scripts/generate-requirement-status.mjs
           node scripts/check-requirement-status.mjs
           node scripts/render-status.mjs --check
+          node scripts/render-progressive-plan.mjs --check
           node scripts/mirror-package-data.mjs --check
   lint:
     name: Lint and Format Check (lane ${{ matrix.lane }})

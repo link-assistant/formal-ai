@@ -8,7 +8,7 @@ import {pathToFileURL} from 'node:url';
 import {createEvidenceClient} from './collect-test-replays.mjs';
 import {cleanupOwnerInput, waitForCleanupOwner} from './request-owned-hive-cleanup.mjs';
 import {effectOwnerArtifact, cleanupClaimName, validateCleanupCursor, prepareCleanupClaim, revalidateCleanupClaim, applyCleanupClaim,
-  readScanCursor, makeScanProgress} from './lib/generated-task-cleanup-journal.mjs';
+  readScanCursor, makeScanProgress, nonGatingCleanupState} from './lib/generated-task-cleanup-journal.mjs';
 const repository = 'link-assistant/formal-ai';
 /** A completed no-op trigger must not rescan all history or download old journals. */
 export async function triggeredHiveOwnerExists(reader, trigger) {
@@ -146,7 +146,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     process.stderr.write(`Owned cleanup: state=${outcome.state}; owner=${outcome.sourceRun}/${outcome.sourceAttempt}; `
       + `closed=${outcome.cleanupReceipt?.closed ?? 'unknown'}; retained=${outcome.cleanupReceipt?.retained ?? 'unknown'}; `
       + `delivery-credit=false\n`);
-    if (!['completed', 'not-started'].includes(outcome.state)) process.exitCode = 1;
+    if (!nonGatingCleanupState(outcome.state)) process.exitCode = 1;
   } else {
     const options = new Map();
     for (const arg of args) {

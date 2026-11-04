@@ -176,3 +176,251 @@ test('qualification credit requires a clean terminated client, including negativ
   }
   assert.equal(cleanQualificationPass(null),false);
 });
+
+
+// Run41768761745 exhausted the old180s pull cap before any client launch.
+import YAML from 'yaml';
+import {createWorkItemPhaseBudget} from '../../../scripts/work-item-qualification/phase-budget.mjs';
+
+function phaseFixture(elapsed = 5 * 60 * 1000) {
+  let clock = 1000;
+  const origin = Date.parse('2026-11-04T03:48:00Z');
+  const job = {
+    id: 321, run_id: 123,
+    name: 'Actual Hive agent work-item original-documentation',
+    status: 'in_progress', started_at: new Date(origin).toISOString()
+  };
+  const options = {
+    job, expectedName: job.name, expectedRun: 123,
+    wallNow: origin + elapsed, monotonicNow: () => clock
+  };
+  return {
+    job, options, budget: createWorkItemPhaseBudget(options),
+    advance: n => clock += n, set: n => clock = n
+  };
+}
+
+test('progressing pull can exceed180s within the25m job and3m reserve', () => {
+  const f = phaseFixture();
+  assert.equal(f.budget.allocate(600000, 'command:docker').timeoutMilliseconds, 600000);
+  f.advance(181000);
+  assert.equal(f.budget.snapshot().remainingMilliseconds, 17 * 60000 - 181000);
+  f.advance(419000);
+  assert.equal(f.budget.allocate(540000, 'command:docker').timeoutMilliseconds, 7 * 60000);
+  assert.equal(f.budget.snapshot().reserveMilliseconds, 180000);
+});
+
+test('exhaustion refuses before any command or hosted write starts', () => {
+  const f = phaseFixture(22 * 60000);
+  let effects = 0;
+  const execute = () => {
+    const allocation = f.budget.allocate(30000, 'command:gh');
+    effects++;
+    return allocation;
+  };
+  assert.throws(execute, /WorkItemPhaseBudgetExhausted/u);
+  assert.equal(effects, 0);
+  const last = phaseFixture(22 * 60000 - 1);
+  assert.equal(last.budget.allocate(540000, 'command:docker').timeoutMilliseconds, 1);
+  last.advance(1);
+  assert.throws(() => last.budget.allocate(540000, 'command:docker'), /BudgetExhausted/u);
+});
+
+test('invalid provenance, timestamps, caps and regressing clocks fail closed', () => {
+  const f = phaseFixture();
+  const changes = [
+    {id: 0}, {run_id: 124}, {name: 'foreign'}, {status: 'completed'},
+    {started_at: null}, {started_at: 'invalid'}, {started_at: '2026-11-05T03:48:00Z'}
+  ];
+  for (const change of changes) {
+    assert.throws(() => createWorkItemPhaseBudget({...f.options, job: {...f.job, ...change}}));
+  }
+  for (const cap of [0, -1, NaN, Infinity, 1.5, 1500001]) {
+    assert.throws(() => f.budget.allocate(cap, 'command:gh'));
+  }
+  assert.throws(() => f.budget.allocate(1000, 'untrusted phase'));
+  f.set(999);
+  assert.throws(() => f.budget.snapshot(), /MonotonicClock/u);
+});
+
+test('budget owns immutable job scalars and matches the actual workflow clock', () => {
+  const f = phaseFixture(), before = f.budget.snapshot();
+  Object.assign(f.job, {id: 999, run_id: 999, started_at: '2099-01-01T00:00:00Z'});
+  assert.deepEqual(f.budget.snapshot(), before);
+  assert(Object.isFrozen(f.budget));
+  assert(Object.isFrozen(before));
+  const workflow = YAML.parse(fs.readFileSync(
+    new URL('../../../.github/workflows/work-item-qualification.yml', import.meta.url), 'utf8'
+  ));
+  assert.equal(workflow.jobs.qualification['timeout-minutes'] * 60000, before.jobMilliseconds);
+  assert.equal(workflow.jobs.qualification['timeout-minutes'], 25);
+});
+
+async function brokerBudgetFixture(context, elapsed, execute) {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'work-item-budget-broker-'));
+  const f = phaseFixture(elapsed);
+  const broker = startBroker({
+    directory,
+    policy: {repository: owner.repository, issueNumber: 77, baseBranch: 'owned', baseCommit: hash},
+    observe: () => {},
+    timeoutFor: (cap, file) => f.budget.allocate(cap, 'broker:' + file).timeoutMilliseconds,
+    execute
+  });
+  context.after(() => {
+    broker.stop();
+    fs.rmSync(directory, {recursive: true, force: true});
+  });
+  fs.writeFileSync(directory + '/1.request.json', JSON.stringify({
+    kind: 'gh', args: ['api', 'repos/' + owner.repository + '/issues/77']
+  }));
+  const deadline = Date.now() + 2000;
+  while (!fs.existsSync(directory + '/1.response.json')) {
+    assert(Date.now() < deadline);
+    await new Promise(resolve => setTimeout(resolve, 10));
+  }
+  return JSON.parse(fs.readFileSync(directory + '/1.response.json'));
+}
+
+test('broker exhaustion refuses before its injected command executor', async context => {
+  const calls = [];
+  const response = await brokerBudgetFixture(context, 22 * 60000, (...args) => {
+    calls.push(args);
+    return {status: 0, stdout: Buffer.from('{}'), stderr: Buffer.alloc(0)};
+  });
+  assert.equal(response.status, 1);
+  assert.match(Buffer.from(response.stderr, 'base64').toString(), /WorkItemPhaseBudgetExhausted/u);
+  assert.deepEqual(calls, []);
+});
+
+test('broker passes the positive remaining750ms clamp to its command executor', async context => {
+  const calls = [];
+  const response = await brokerBudgetFixture(context, 22 * 60000 - 750, (...args) => {
+    calls.push(args);
+    return {status: 0, stdout: Buffer.from('{}'), stderr: Buffer.alloc(0)};
+  });
+  assert.equal(response.status, 0);
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0][0], 'gh');
+  assert.deepEqual(calls[0][2], {timeout: 750});
+});
+
+
+import {workItemIdentity} from '../../../scripts/work-item-qualification/policy.mjs';
+
+test('historical work-item roots do not request a later command-budget module', async () => {
+  const policyPath = 'scripts/work-item-qualification/policy.mjs';
+  const policy = "export const workItemRoots = ['legacy.js', '" + policyPath + "'];";
+  const members = new Map([[policyPath, Buffer.from(policy)], ['legacy.js', Buffer.from('old bytes')]]);
+  const reads = [];
+  const identity = await workItemIdentity({read: async name => {
+    reads.push(name);
+    assert(members.has(name), 'historical source cannot contain a later helper');
+    return members.get(name);
+  }});
+  const expected = ['legacy.js', policyPath].map(name => ({path: name, sha256: digest(members.get(name))}));
+  assert.equal(identity.policyHash, digest(JSON.stringify(expected)));
+  assert.deepEqual(reads, [policyPath, 'legacy.js']);
+});
+
+test('current source binds its newly declared phase helper without changing member order', async () => {
+  const policyPath = 'scripts/work-item-qualification/policy.mjs';
+  const phasePath = 'scripts/work-item-qualification/phase-budget.mjs';
+  const policy = "export const workItemRoots = ['" + phasePath + "', '" + policyPath + "'];";
+  const members = new Map([[policyPath, Buffer.from(policy)], [phasePath, Buffer.from('current helper')]]);
+  const identity = await workItemIdentity({read: async name => {
+    assert(members.has(name));
+    return members.get(name);
+  }});
+  const expected = [phasePath, policyPath].map(name => ({path: name, sha256: digest(members.get(name))}));
+  assert.equal(identity.policyHash, digest(JSON.stringify(expected)));
+});
+
+test('changed frozen policy cannot satisfy an existing owner seal; malformed lists never evaluate', async () => {
+  const policyPath = 'scripts/work-item-qualification/policy.mjs';
+  const original = "export const workItemRoots = ['legacy.js', '" + policyPath + "'];";
+  const identity = text => workItemIdentity({read: async name => Buffer.from(name === policyPath ? text : 'old bytes')});
+  const sealed = await identity(original), changed = await identity(original + '\n// changed policy');
+  assert.notEqual(sealed.policyHash, changed.policyHash);
+  assert.throws(() => requireWorkItemOwner({
+    owner: {...owner, policyHash: sealed.policyHash, inputHash: sealed.inputHash}, run, ...changed
+  }));
+  for (const list of ["['legacy.js']", "['../escape', '" + policyPath + "']",
+    "['legacy.js', 'legacy.js', '" + policyPath + "']", "[globalThis.unowned(), '" + policyPath + "']"]) {
+    await assert.rejects(identity('export const workItemRoots = ' + list + ';'));
+  }
+});
+
+
+import {knownProtectedWorkItemResidue}
+  from '../../../scripts/work-item-qualification/cleanup-contract.mjs';
+import {classifyCleanupResult, nonGatingCleanupState}
+  from '../../../scripts/lib/generated-task-cleanup-journal.mjs';
+
+async function protectedCleanupFixture() {
+  const f = fixture();
+  f.protect();
+  const protectedRow = await cleanupWorkItemReceipt(f.options());
+  const outcomes = owner.tools.flatMap(tool =>
+    ['original-documentation', 'renamed-components', 'contradicted-documentation', 'unsupported']
+      .map(task => ({tool, task, state: 'not-started'})));
+  Object.assign(outcomes[0], protectedRow);
+  const workItem = {
+    schema: 'formal-ai-work-item-cleanup-outcome/v1', run: owner.run, attempt: owner.attempt,
+    complete: false, deliveryCredit: false, retained: 1, outcomes
+  };
+  const result = {
+    cleanupReceipt: {complete: false, retained: 1, workItem},
+    applied: {results: outcomes.map(row => ({status: row.state}))}
+  };
+  return {f, protectedRow, workItem, result};
+}
+
+test('protected deferral requires actual post-close issue and PR observations', async () => {
+  const {f, protectedRow, workItem, result} = await protectedCleanupFixture();
+  assert.deepEqual(protectedRow.closure.issue, {number: 77, state: 'closed'});
+  assert.deepEqual(protectedRow.closure.pullRequest, {number: 78, state: 'closed'});
+  assert.equal(f.effects.filter(row => row.method === 'DELETE').length, 0);
+  assert.equal(knownProtectedWorkItemResidue(workItem, owner), true);
+  assert.equal(await classifyCleanupResult(result, owner), 'deferred-protected');
+  assert.equal(result.cleanupReceipt.complete, false);
+  assert.equal(workItem.deliveryCredit, false);
+  assert.equal(workItem.retained, 1);
+  assert.equal(nonGatingCleanupState('deferred-protected'), true);
+  assert.equal(nonGatingCleanupState('retained'), false);
+});
+
+test('unknown, early, foreign or unobserved residue remains gating', async () => {
+  const {workItem, result} = await protectedCleanupFixture();
+  const changes = [
+    row => delete row.closure,
+    row => row.closure.issue.state = 'open',
+    row => row.closure.pullRequest.state = 'open',
+    row => row.retained[0].reason = 'unknown',
+    row => row.retained[0].head = 'e'.repeat(40),
+    row => row.retained[0].branch = 'foreign',
+    row => row.retained = [row.retained[0].branch],
+    row => row.state = 'retained-uncertain'
+  ];
+  for (const change of changes) {
+    const changed = structuredClone(workItem);
+    change(changed.outcomes[0]);
+    assert.equal(knownProtectedWorkItemResidue(changed, owner), false);
+    assert.equal(await classifyCleanupResult({
+      ...result, cleanupReceipt: {...result.cleanupReceipt, workItem: changed}
+    }, owner), 'retained');
+  }
+  for (const changed of [
+    {...workItem, outcomes: workItem.outcomes.slice(1)},
+    {...workItem, outcomes: [...workItem.outcomes.slice(0, -1), workItem.outcomes[0]]},
+    {...workItem, retained: 0}, {...workItem, run: 999}
+  ]) assert.equal(knownProtectedWorkItemResidue(changed, owner), false);
+});
+
+test('uncertain effects retain precedence over known protected deferral', async () => {
+  const {result} = await protectedCleanupFixture();
+  assert.equal(await classifyCleanupResult({
+    ...result, applied: {results: [{status: 'mutation-uncertain'}]}
+  }, owner), 'uncertain');
+  assert.equal(await classifyCleanupResult(result, {...owner, taskMode: 'historical-1364'}), 'retained');
+  assert.equal(nonGatingCleanupState('uncertain'), false);
+});

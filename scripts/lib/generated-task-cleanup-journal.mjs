@@ -179,10 +179,7 @@ export async function applyCleanupClaim({reader, claimArtifactId, producer, clie
   try {
     const result = await finalize({runId: owner.run, expectedRunAttempt: owner.attempt,
       expectedProtocolHead: owner.protocolCommit, owner, apply: true, client});
-    const uncertain = result.applied?.results.some(row => row.status === 'mutation-uncertain'
-      || row.comment === 'uncertain-not-retried') === true;
-    return {...outcome, state: uncertain ? 'uncertain' : result.cleanupReceipt?.complete === true ? 'completed'
-      : result.cleanupReceipt?.noEffects === true ? 'not-started' : 'retained',
+    return {...outcome, state: await classifyCleanupResult(result, owner),
       cleanupReceipt: result.cleanupReceipt};
   } catch (error) {
     return {...outcome, state: error.code === 'OWNER_CHANGED_BEFORE_CLEANUP' ? 'retained' : 'uncertain',
@@ -235,4 +232,23 @@ export async function makeScanProgress({reader, producer, continuation, now = Da
   const day = new Date(now).toISOString().slice(0, 10);
   return {name: progressName(day), document: {schema: 'formal-ai-hive-cleanup-progress/v1',
     day, producer, cleanupPolicyHash: identity.policyHash, continuation}};
+}
+
+
+/** Classification cannot grant cleanup effects or turn retained residue into completion. */
+export async function classifyCleanupResult(result, owner) {
+  const uncertain = result.applied?.results.some(row => row.status === 'mutation-uncertain'
+    || row.comment === 'uncertain-not-retried') === true;
+  if (uncertain) return 'uncertain';
+  if (result.cleanupReceipt?.complete === true) return 'completed';
+  if (result.cleanupReceipt?.noEffects === true) return 'not-started';
+  if (owner.taskMode === 'work-item-1483') {
+    const {knownProtectedWorkItemResidue} = await import('../work-item-qualification/cleanup-contract.mjs');
+    if (knownProtectedWorkItemResidue(result.cleanupReceipt?.workItem, owner)) return 'deferred-protected';
+  }
+  return 'retained';
+}
+
+export function nonGatingCleanupState(state) {
+  return ['completed', 'not-started', 'deferred-protected'].includes(state);
 }

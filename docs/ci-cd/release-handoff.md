@@ -293,3 +293,9 @@ assertions stay identical. Rust scripts included by the native unit crate also
 belong to cargo fmt's source closure. Compiler/Clippy success alone does not
 qualify their formatting. Native tests and production release qualification must
 still pass on the replacement source; interrupted jobs earn no success credit.
+
+Live qualification runner and broker commands must share the authenticated job deadline and preserve a cleanup/upload reserve. A progressing image download may use a larger phase cap only within that existing window; later client and broker commands receive the remaining time. Authenticated GitHub metadata/source reads retain their separate reader bounds; this phase allocator does not claim to cover them. Do not add unbounded retries, silently substitute images, or extend the overall job limit to hide an acquisition failure. Capture the requested and effective bounds with the exact source/run identity.
+
+Verify issue closure separately from branch cleanup. Protected branches remain retained with their exact heads and no deletion attempt; this does not establish complete cleanup or task delivery. Unknown ownership, uncertain mutations and malformed receipts remain failures. Historical cleanup must derive its sealed root list from the frozen protocol source rather than assuming every current helper existed in an older run.
+
+Only verified protected-only branch residue may finish as `deferred-protected` without blocking release gates. The actual owned finalizer must first confirm issue/PR closure and bind each protected branch to its exact head. Keep cleanup incomplete, retained refs explicit and delivery credit false; mixed uncertainty and missing proof still fail. Existing immutable cleanup claims remain quarantined rather than being automatically retried.

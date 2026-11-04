@@ -5,7 +5,7 @@
 # requirements pinned only by a Rust test never grow (JavaScript first).
 progressive-plan-ratchet
   requirements 1456
-  recorded-ceiling 35
+  recorded-ceiling 33
   measured-ceiling 3
-  partial-ceiling 100
+  partial-ceiling 102
   rust-only-ceiling 920
