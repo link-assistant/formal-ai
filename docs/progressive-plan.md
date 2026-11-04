@@ -8,9 +8,9 @@ requirement is on a resolution level, and the next pass raises the lowest level 
 | Level | Meaning | Requirements |
 | ---: | --- | ---: |
 | 0 closed | superseded or withdrawn; no pass raises it | 8 |
-| 1 recorded | the row exists, nothing measures it yet | 35 |
+| 1 recorded | the row exists, nothing measures it yet | 33 |
 | 2 measured | a test pins it, but the row says it is not delivered | 3 |
-| 3 partial | delivered in part | 100 |
+| 3 partial | delivered in part | 102 |
 | 4 implemented | delivered, with a test | 1310 |
 | | **all** | **1456** |
 
@@ -26,7 +26,7 @@ The root the test that pins each requirement runs in (R1188-U29: the JavaScript 
 
 ## Next pass
 
-Level 1 (recorded): 35 requirement(s) to raise before any level above it is refined.
+Level 1 (recorded): 33 requirement(s) to raise before any level above it is refined.
 
 ### Level 1: recorded
 
@@ -36,7 +36,6 @@ Level 1 (recorded): 35 requirement(s) to raise before any level above it is refi
 - `docs/requirements/issue-1212-project-motto.md`: R1212-2, R1212-3, R1212-4, R1212-5, R1212-7, R1212-8
 - `docs/requirements/issue-1213-cryptographic-provenance.md`: R1213-1, R1213-2, R1213-3, R1213-4, R1213-5, R1213-6, R1213-7, R1213-8, R1213-9, R1213-10
 - `docs/requirements/issue-1220-structured-links-notation-logging.md`: R1220-1, R1220-2, R1220-3, R1220-4, R1220-5, R1220-6, R1220-7, R1220-8
-- `docs/requirements/issue-1483-evidence-to-useful-edit.md`: R1483-5, R1483-7
 
 ### Level 2: measured
 
@@ -68,4 +67,4 @@ Level 1 (recorded): 35 requirement(s) to raise before any level above it is refi
 - `docs/requirements/issue-1188-user-requirements.md`: R1188-U1, R1188-U2, R1188-U3, R1188-U4, R1188-U5, R1188-U6, R1188-U7, R1188-U8, R1188-U9, R1188-U13, R1188-U18, R1188-U19, R1188-U20, R1188-U21, R1188-U23, R1188-U27, R1188-U28, R1188-U29, R1188-U30
 - `docs/requirements/issue-1207-hive-mind-progressive-self-coding.md`: R1207-6, R1207-7
 - `docs/requirements/issue-1212-project-motto.md`: R1212-6
-- `docs/requirements/issue-1483-evidence-to-useful-edit.md`: R1483-1, R1483-2, R1483-3, R1483-4, R1483-6, R1483-8, R1483-9, R1483-10, R1483-11
+- `docs/requirements/issue-1483-evidence-to-useful-edit.md`: R1483-1, R1483-2, R1483-3, R1483-4, R1483-5, R1483-6, R1483-7, R1483-8, R1483-9, R1483-10, R1483-11
