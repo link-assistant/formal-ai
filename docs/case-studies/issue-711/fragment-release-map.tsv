@@ -933,6 +933,8 @@ changelog.d/20261103_200000_main-982-qualification.md	0.355.30
 changelog.d/20261103_230000_main-coding-proof-contracts.md	0.355.30
 changelog.d/20261104_002645_retry_release_observation_pairs.md	0.355.30
 changelog.d/20261104_011000_minimal-policy-checkout.md	0.355.30
+changelog.d/20261104_013100_qualify_source_documentation.md	0.355.31
+changelog.d/20261104_041000_bound_hosted_qualification.md	0.355.31
 changelog.d/20261104_043000_bound-release-controls-and-physical-witness.md	0.355.30
 changelog.d/20261104_054000_javascript_checkout_headroom.md	0.355.30
 changelog.d/20261104_064000_remove_relocated_parser_import.md	0.355.30
