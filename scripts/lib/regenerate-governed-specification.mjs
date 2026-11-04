@@ -13,6 +13,12 @@ const reader = 'scripts/lib/rust-specification-cases.mjs';
 const generator = 'scripts/lib/generate-native-specification-programs.mjs';
 const oldRoot = '797bdfc344c69094db88f2e76ee80b386a95f1e0a0aa93257ee0dd4e0c1b029b';
 const newRoot = '7a5810bcb594c76c0908fc9fd0365ad59513706260e23223ec621138743d3024';
+const oldUnitRegistry = 'a4920565b407a50ecb97128ab7f0224bf33d3f70eac9b71593d273a42d3fe01d';
+const newUnitRegistry = 'e865cca3fb2de22996a703221de87b5c9e790ff18357a3ac44c728334f58343f';
+const reviewedFixtures = new Map([
+  ['repo:rust/src/lib.rs', {before: oldRoot, after: newRoot, occurrences: 35}],
+  ['repo:rust/tests/unit/mod.rs', {before: oldUnitRegistry, after: newUnitRegistry, occurrences: 4}]
+]);
 const expectedBaseline = '4f0e43299b8e63de8a8dfef176e1559f45fb604ad0c6ce2d7d5f6f12c067fa79';
 const expectedRegistry = 'acf4a68fffb7661cdf10d0762919e128f9fc38e0ca84c1449cec576eae241ce7';
 const expectedReader = '861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca';
@@ -58,6 +64,14 @@ function assertCompleteInventory(before, after) {
   assert.equal(after.inventory.unsupported.length, before.inventory.unsupported.length);
   assert.deepEqual(after.sourceManifest, before.sourceManifest, 'Native specification source changed');
   let changed = 0;
+  const occurrences = new Map();
+  const expectedOccurrences = new Map([...reviewedFixtures.keys()].map(file => [file, 0]));
+  for (const item of before.inventory.cases) {
+    for (const fixture of item.program?.fixtures ?? []) {
+      if (expectedOccurrences.has(fixture.file))
+        expectedOccurrences.set(fixture.file, expectedOccurrences.get(fixture.file) + 1);
+    }
+  }
   for (let index = 0; index < before.inventory.cases.length; index++) {
     const oldCase = before.inventory.cases[index];
     const newCase = normalized.inventory.cases[index];
@@ -65,13 +79,21 @@ function assertCompleteInventory(before, after) {
     const fixtures = newCase.program?.fixtures ?? [];
     for (let fixture = 0; fixture < fixtures.length; fixture++) {
       const oldFixture = oldCase.program?.fixtures?.[fixture];
-      if (oldFixture?.sha256 === fixtures[fixture].sha256) continue;
-      assert.equal(oldFixture?.file, 'repo:rust/src/lib.rs', 'Unreviewed fixture change');
-      assert.equal(oldFixture.sha256, oldRoot);
-      changed += replaceReviewedRoot([fixtures[fixture]]);
+      const approved = reviewedFixtures.get(oldFixture?.file);
+      if (!approved) continue;
+      assert.equal(fixtures[fixture].file, oldFixture.file);
+      assert.equal(oldFixture.sha256, approved.before);
+      assert.equal(fixtures[fixture].sha256, approved.after);
+      fixtures[fixture].sha256 = approved.before;
+      occurrences.set(oldFixture.file, (occurrences.get(oldFixture.file) ?? 0) + 1);
+      changed++;
     }
   }
-  assert(changed > 0, 'Expected root fixture changes');
+  assert.equal(changed, 39, 'Reviewed complete fixture occurrence count');
+  for (const [file, approved] of reviewedFixtures)
+    assert.equal(expectedOccurrences.get(file), approved.occurrences, 'Sealed old owner occurrence count');
+  for (const [file, expected] of expectedOccurrences)
+    assert.equal(occurrences.get(file), expected, 'Every reviewed old occurrence must carry new identity');
   assert.deepEqual(normalized, before, 'Unreviewed complete inventory delta');
   return changed;
 }
@@ -83,6 +105,7 @@ export async function regenerateSpecificationWitness({repo, sourceCommit, pin}) 
   assert.equal(sha(bytes(repo, reader)), expectedReader);
   assert.equal(sha(bytes(repo, generator)), expectedGenerator);
   assert.equal(sha(bytes(repo, 'rust/src/lib.rs')), newRoot);
+  assert.equal(sha(bytes(repo, 'rust/tests/unit/mod.rs')), newUnitRegistry);
   const oldBaseline = deserialize(bytes(repo, baseline));
   const oldPrograms = (await import(pathToFileURL(full(repo, registry)))).GENERATED_NATIVE_PROGRAMS;
   const inputs = new Set([reader, generator, 'rust/src/lib.rs',
@@ -144,11 +167,19 @@ export async function regenerateSpecificationWitness({repo, sourceCommit, pin}) 
     bytes: bytes(repo, file).length, sha256: sha(bytes(repo, file))}));
   assert(files[0].bytes <= 262144 && files[1].bytes <= 3145728, 'Source artifact size bound');
   const manifest = {kind: 'specification-witness', source: sourceCommit, upstream: pin,
+    upstreamRole: 'prepared workflow context; not invoked by specification generator',
+    sourceGeneratorIdentity: {repositoryCommit: sourceCommit,
+      generator: {path: generator, sha256: expectedGenerator},
+      reader: {path: reader, sha256: expectedReader},
+      implementation: 'repository-owned source AST program generator and complete typed specification reader'},
     run: process.env.GITHUB_RUN_ID, attempt: process.env.GITHUB_RUN_ATTEMPT,
     inputsScope: 'selected pinned source witnesses; immutable source commit binds other generator reads',
     inputs: sourceInputs, before: {registry: expectedRegistry, baseline: expectedBaseline},
     reviewedRoot: {path: 'rust/src/lib.rs', before: oldRoot, after: newRoot},
-    completeInventoryUnchangedExceptReviewedRootWitness: true,
+    reviewedFixtureChanges: [...reviewedFixtures].map(([file, approved]) => ({
+      path: file.slice('repo:'.length), ...approved})),
+    generatedProgramsUnchangedExceptReviewedRootWitness: true,
+    completeInventoryUnchangedExceptReviewedFixtureWitnesses: true,
     generatedProgramCount: oldPrograms.length, registryChanges,
     total: refreshed.inventory.total, cases: refreshed.inventory.cases.length,
     unsupported: refreshed.inventory.unsupported.length, changedFixtureOccurrences, files};
