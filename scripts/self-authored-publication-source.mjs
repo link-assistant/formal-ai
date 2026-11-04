@@ -82,26 +82,40 @@ export function resolvePublishedProducer(cwd, environment, readGithub, clock = (
   const routes = contract.routes.filter(route => route.stepIdentifier === 'create-release' && route.event === run.event);
   assert.equal(routes.length, 1, 'one registered production publication operation required');
   const route = routes[0];
-  const jobs = [], identifiers = new Set();
-  let total;
-  for (let page = 1; page <= 50; page++) {
-    const response = get(base + 'actions/runs/' + run.id + '/attempts/' + run.run_attempt + '/jobs?per_page=20&page=' + page);
-    assert.ok(Number.isSafeInteger(response.total_count) && response.total_count >= 0 && response.total_count <= 1000);
-    total ??= response.total_count;
-    assert.equal(response.total_count, total, 'job inventory changed during observation');
-    assert.ok(Array.isArray(response.jobs) && response.jobs.length <= 20);
-    for (const job of response.jobs) {
-      assert.ok(Number.isSafeInteger(job.id) && job.id > 0 && !identifiers.has(job.id));
-      identifiers.add(job.id);
-      assert.equal(job.run_id, run.id);
-      assert.equal(job.run_attempt, run.run_attempt);
-      jobs.push(job);
+  // Descendants can be added while this same caller is still running. Discard a
+  // changing scan completely; only a complete stable scan may authenticate a job.
+  let jobs;
+  for (let observation = 1; observation <= 3; observation++) {
+    const observed = [], identifiers = new Set();
+    let total, changed = false;
+    for (let page = 1; page <= 50; page++) {
+      const response = get(base + 'actions/runs/' + run.id + '/attempts/' + run.run_attempt + '/jobs?per_page=20&page=' + page);
+      assert.ok(Number.isSafeInteger(response.total_count) && response.total_count >= 0 && response.total_count <= 1000);
+      assert.ok(Array.isArray(response.jobs) && response.jobs.length <= 20);
+      for (const job of response.jobs) {
+        assert.ok(Number.isSafeInteger(job.id) && job.id > 0 && !identifiers.has(job.id));
+        identifiers.add(job.id);
+        assert.equal(job.run_id, run.id);
+        assert.equal(job.run_attempt, run.run_attempt);
+        observed.push(job);
+      }
+      total ??= response.total_count;
+      if (response.total_count !== total) {
+        console.warn(JSON.stringify({operation: 'publication-job-inventory', observation,
+          page, initialTotal: total, observedTotal: response.total_count, decision: 'discard-and-restart'}));
+        changed = true;
+        break;
+      }
+      assert.ok(observed.length <= total);
+      if (observed.length === total) break;
+      assert.equal(response.jobs.length, 20, 'truncated job inventory refused');
     }
-    assert.ok(jobs.length <= total);
-    if (jobs.length === total) break;
-    assert.equal(response.jobs.length, 20, 'truncated job inventory refused');
+    if (changed) continue;
+    assert.equal(observed.length, total, 'complete bounded exact-attempt job inventory required');
+    jobs = observed;
+    break;
   }
-  assert.equal(jobs.length, total, 'complete bounded exact-attempt job inventory required');
+  assert.ok(jobs, 'job inventory changed during all three bounded observations');
   const publishers = jobs.filter(job => job.name === route.descendantName);
   assert.equal(publishers.length, 1, 'one exact registered final publisher required');
   const publisher = publishers[0];
