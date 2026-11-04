@@ -42,3 +42,39 @@ test('quote parser extraction preserves public bindings and exact nested span be
   assert.deepEqual(leafSpans('write «outer «inner» end»'), [{ text: 'outer «inner» end', start: 6, end: 25 }]);
   assert.deepEqual(leafSpans("don't open a quote"), []);
 });
+
+import { previousChar } from '../../../js/agentic/crate/quoted_segments.mjs';
+const previousCharReference = (text, index) => {
+  const before = Array.from(text.slice(0, index));
+  return before[before.length - 1];
+};
+
+test('predecessor semantics preserve UTF16 prefixes, coercions and lone surrogates', () => {
+  const text = 'a😀Ω\ud800z\udc00';
+  for (let index = -text.length - 1; index <= text.length + 1; index++)
+    assert.equal(previousChar(text, index), previousCharReference(text, index));
+  for (const index of [undefined, null, NaN, Infinity, -Infinity, 1.9, -1.9, '2'])
+    assert.equal(previousChar(text, index), previousCharReference(text, index));
+  for (const index of [Symbol('index'), 1n]) {
+    assert.throws(() => previousChar(text, index), TypeError);
+    assert.throws(() => previousCharReference(text, index), TypeError);
+  }
+  assert.equal(previousChar('a😀b', 3), '😀');
+  assert.equal(previousChar('a😀b', 2), '\ud83d');
+});
+
+test('predecessor character iteration is bounded independently of prefix length', () => {
+  const original = Array.from, visited = [];
+  Array.from = function(value, ...rest) {
+    if (typeof value === 'string') visited.push(value.length);
+    return Reflect.apply(original, this, [value, ...rest]);
+  };
+  try {
+    assert.equal(previousChar('Ω'.repeat(2048) + '😀', 2050), '😀');
+  } finally {
+    Array.from = original;
+  }
+  assert.ok(visited.length > 0);
+  assert.ok(visited.every(units => units <= 2));
+  assert.ok(visited.reduce((sum, n) => sum + n, 0) <= 2);
+});

@@ -1,0 +1,121 @@
+{
+  "schema": "maintained-js-source-documentation-qualification/v1",
+  "date": "2026-11-04",
+  "backendCommit": "0b18431d2a9baa1b147e94a17bbdf486d550f526",
+  "historicalSourceCommit": "4c18fa47059e19963601a35d749db5c493d4245f",
+  "originalIssue": "https://github.com/link-assistant/formal-ai/issues/1455",
+  "acceptanceIssue": "https://github.com/link-assistant/formal-ai/issues/1483",
+  "originalTaskSHA256": "59d54bb8e575b9ad035aa8e52a71a38d9b412a7d6fbbb40e028f22b1e48824c8",
+  "normalizedControllerTaskSHA256": "a50a0052e9c1b8f4d78bab8dbc5596e07c83736f9eb6497017120aca39ccec2d",
+  "completedSolutionSupplied": false,
+  "privateEngineOverlay": false,
+  "originalCase": {
+    "checks": {
+      "taskInputUnchanged": true,
+      "usefulPatch": true,
+      "preservedPrefix": true,
+      "literalRows": true,
+      "sourcesUnchanged": true,
+      "verifiedPartial": true,
+      "completeFalse": true,
+      "remainingIntegration": true,
+      "remainingDiscovery": true
+    },
+    "toolSequence": [
+      "read",
+      "read",
+      "read",
+      "read",
+      "edit",
+      "read",
+      "read",
+      "read",
+      "read"
+    ],
+    "beforeGuideSHA256": "2fe4fc583b22075c147636a3fc82e13dc4ff251133d028594b63e6763adca00b",
+    "afterGuideSHA256": "65f01525f1bc44b1ff8c540287e2b758f890cafcca1078d7bc97aeeb27bed70b",
+    "reason": "UsefulCandidateReadbackVerified",
+    "complete": false,
+    "verified": false,
+    "remainingWork": [
+      "independent-requirement-acceptance",
+      "independent-integration-semantics",
+      "consumer-discovery",
+      "source-resolution-unverified:js/web-search-component-entry.js"
+    ]
+  },
+  "heldOutCases": [
+    {
+      "id": "renamed-components-and-paths",
+      "syntheticDerivedFixture": true,
+      "checks": {
+        "originalCaseTaskUnchanged": true,
+        "usefulPatch": true,
+        "preservedPrefix": true,
+        "literalRows": true,
+        "sourcesUnchanged": true,
+        "freshPostimageCheck": true,
+        "physicalPostimageBound": true,
+        "honestGap": true,
+        "remainingIntegration": true,
+        "remainingDiscovery": true
+      },
+      "taskSHA256": "2a510e487d793636200761bcefb1a7423f5c9309da18aec72bf4f89ae22cca7c"
+    },
+    {
+      "id": "contradicted-version-intermediate",
+      "syntheticDerivedFixture": true,
+      "checks": {
+        "originalCaseTaskUnchanged": true,
+        "usefulPatch": true,
+        "preservedPrefix": true,
+        "literalRows": true,
+        "sourcesUnchanged": true,
+        "freshPostimageCheck": true,
+        "physicalPostimageBound": true,
+        "honestGap": true,
+        "remainingIntegration": true,
+        "remainingDiscovery": true,
+        "noFalseVersionProse": true
+      },
+      "taskSHA256": "c7efde20a2f4a9ae4b7b34066849db6b749c8ab4ff4829bbb18652107e609311"
+    },
+    {
+      "id": "contradicted-integration-wasm32",
+      "syntheticDerivedFixture": true,
+      "checks": {
+        "originalCaseTaskUnchanged": true,
+        "usefulPatch": true,
+        "preservedPrefix": true,
+        "literalRows": true,
+        "sourcesUnchanged": true,
+        "freshPostimageCheck": true,
+        "physicalPostimageBound": true,
+        "honestGap": true,
+        "remainingIntegration": true,
+        "remainingDiscovery": true,
+        "correctNativeOnlyDeclaredTarget": true,
+        "noAffirmativeFalseIntegration": true,
+        "noWholeComponentUnavailabilityInference": true,
+        "literalScopeNotice": true
+      },
+      "taskSHA256": "5a0692d815bd522d72c9e8e800eea2c3c9cc44650a176e298f2adab0c2862b5f"
+    },
+    {
+      "id": "renamed-current-NoOp",
+      "syntheticDerivedFixture": true,
+      "checks": {
+        "samePhysicalPostimage": true,
+        "noEditOrWrite": true,
+        "actualSourceReads": true,
+        "currentNoOp": true,
+        "completeFalse": true
+      },
+      "taskSHA256": "2a510e487d793636200761bcefb1a7423f5c9309da18aec72bf4f89ae22cca7c"
+    }
+  ],
+  "scope": "Offline maintained JavaScript planner and actual filesystem effects only. Direct client, ordinary Hive solve, native parity and full original-task acceptance are separate obligations.",
+  "implementationAuthorship": "No engine implementation was synthesized in these probes. The source-derived guide content was produced by the maintained planner; supplied helpers and later reviewer assertions receive zero independent implementation credit.",
+  "nativeExecutedLocally": false,
+  "fullIssueAcceptance": false
+}
