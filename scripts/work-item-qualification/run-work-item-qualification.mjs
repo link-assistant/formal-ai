@@ -7,6 +7,7 @@ import {createHash} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
 import {spawn} from 'node:child_process';
 import {createCommandCapture} from './command-capture.mjs';
+import {createWorkItemPhaseBudget} from './phase-budget.mjs';
 import {startBroker} from './transport-broker.mjs';
 import {checkDocumentationCandidate} from './independent-oracle.mjs';
 import {prepareFixture,taskNames,ownedTaskBody} from './fixtures.mjs';
@@ -40,10 +41,14 @@ const observations=[], resources={schema:'formal-ai-work-item-owned-task/v1',own
   repository,baseBranch:'e2e/work-item/'+owner.run+'/'+tool+'/'+task,baseCommit:null,
   issueNumber:null,pullRequestNumber:null,head:null,source:selection.source,phase:'preparing'};
 const save=()=>fs.writeFileSync(owned+'/resource.json',JSON.stringify(resources,null,2)+'\n');save();
+let phaseBudget;
 async function command(program,args,{cwd=root,environment=process.env,input,timeout=30000,requireSuccess=true}={}){
-  const value=await boundedCommand(program,args,{cwd,env:environment,input,timeout,
+  assert(phaseBudget,'authenticated job budget required before every command');
+  const allocation=phaseBudget.allocate(timeout,'command:'+program);
+  console.error('Work-item phase '+JSON.stringify(allocation));
+  const value=await boundedCommand(program,args,{cwd,env:environment,input,timeout:allocation.timeoutMilliseconds,
     stdoutLimitBytes:16*1024*1024,stderrLimitBytes:1024*1024});
-  captureCommand({program,args,status:value.status,signal:value.signal,timedOut:value.timed_out,
+  captureCommand({program,args,phaseBudget:allocation,status:value.status,signal:value.signal,timedOut:value.timed_out,
     cleanupComplete:value.cleanup_complete,elapsedNanoseconds:String(value.elapsedNs),
     error:value.error?{code:value.error.code??null,message:value.error.message}:null},value.stdout,value.stderr,input);
   observations.push({program,args,status:value.status,signal:value.signal,timedOut:value.timed_out,
@@ -64,7 +69,9 @@ const reader=githubReader({repository});
 const ownerJobs=await reader.read('repos/'+repository+'/actions/runs/'+owner.run+'/jobs?per_page=100&filter=latest');
 assert.equal(ownerJobs.jobs.length,ownerJobs.total_count);assert(ownerJobs.total_count<=100);
 const actualJobs=ownerJobs.jobs.filter(job=>job.name==='Actual Hive '+tool+' work-item '+task);
-assert.equal(actualJobs.length,1);resources.job=actualJobs[0].id;save();
+assert.equal(actualJobs.length,1);resources.job=actualJobs[0].id;
+phaseBudget=createWorkItemPhaseBudget({job:actualJobs[0],expectedName:'Actual Hive '+tool+' work-item '+task,expectedRun:owner.run});
+resources.phaseBudget=phaseBudget.snapshot();save();
 const fixture=await prepareFixture({task,source:selection.source,
   read:(commit,name)=>sourceBytes(reader,repository,commit,name)});
 const {files,guide}=fixture;
@@ -108,7 +115,7 @@ try{
   const {buildE2eSolveArgv}=await import(pathToFileURL(hive+'/scripts/e2e-hello-world.lib.mjs'));
   const {resolveDraftImages}=await import(pathToFileURL(hive+'/scripts/formal-ai-draft-image.lib.mjs'));
   const image=resolveDraftImages({version}).image;
-  await command('docker',['pull',image],{timeout:180000});
+  await command('docker',['pull',image],{timeout:600000});
   const imageId=JSON.parse((await command('docker',['image','inspect',image])).stdout)[0].Id;
   assert.match(imageId,/^sha256:[a-f0-9]{64}$/u);
   const binary=path.join(root,'rust/target/release/formal-ai'), binarySha256=sha(fs.readFileSync(binary));
@@ -121,7 +128,10 @@ try{
   const runtime={source:selection.source,hiveSource:selection.hiveSource,hiveVersion:version,image,imageId,binarySha256,
     actualVersion,transportSha256:sha(client),network:'none',model:'formal-ai',tool,authorshipCredit:0};
   fs.writeFileSync(raw+'/runtime.json',JSON.stringify(runtime,null,2));
-  broker=startBroker({directory:rpc,policy,capture:captureCommand,observe:value=>observations.push(value)});
+  broker=startBroker({directory:rpc,policy,capture:captureCommand,
+    timeoutFor:(requested,program)=>{const allocation=phaseBudget.allocate(requested,'broker:'+program);
+      observations.push({kind:'phase-budget',...allocation});return allocation.timeoutMilliseconds;},
+    observe:value=>observations.push(value)});
   resources.phase='solving';save();
   async function solve(url,pass){
     const passDirectory=path.join(raw,'pass-'+pass);fs.mkdirSync(passDirectory,{mode:0o777});fs.chmodSync(passDirectory,0o777);

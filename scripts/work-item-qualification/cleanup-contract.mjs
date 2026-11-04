@@ -95,9 +95,18 @@ export async function cleanupWorkItemReceipt({receipt,owner,run,jobs,api,expecte
     if(rules.some(rule=>rule.type==='deletion')){retained.push({branch,head:expected,reason:'protected-branch'});continue;}
     await api(root+'/git/refs/heads/'+encodeURIComponent(branch),{method:'DELETE'});
   }
-  assert.equal((await api(root+'/issues/'+receipt.issueNumber)).state,'closed');
-  if(receipt.pullRequestNumber)assert.equal((await api(root+'/pulls/'+receipt.pullRequestNumber)).state,'closed');
-  receipt.cleanup={state:retained.length?'protected-residue':'complete',outcome,retained};save(receipt);
+  const observedIssue=await api(root+'/issues/'+receipt.issueNumber);
+  assert.equal(observedIssue.number,receipt.issueNumber);assert.equal(observedIssue.state,'closed');
+  let observedPull=null;
+  if(receipt.pullRequestNumber){
+    observedPull=await api(root+'/pulls/'+receipt.pullRequestNumber);
+    assert.equal(observedPull.number,receipt.pullRequestNumber);assert.equal(observedPull.state,'closed');
+  }
+  const closure={schema:'work-item-cleanup-observed-closure/v1',
+    issue:{number:observedIssue.number,state:observedIssue.state},
+    pullRequest:observedPull?{number:observedPull.number,state:observedPull.state}:null,
+    branches:branches.map(branch=>({branch,head:branch===receipt.baseBranch?receipt.baseCommit:receipt.head}))};
+  receipt.cleanup={state:retained.length?'protected-residue':'complete',outcome,retained,closure};save(receipt);
   return receipt.cleanup;
 }
 /** Called by applyCleanupClaim only AFTER existing immutable claim publication/revalidation. */
@@ -157,4 +166,49 @@ export async function finalizeWorkItemRun({runId,expectedRunAttempt,expectedProt
     closed:result.outcomes.filter(row=>row.state==='complete').length,retained:result.retained,
     noEffects:result.outcomes.every(row=>row.state==='not-started'),workItem:result},
     applied:{results:result.outcomes.map(row=>({status:row.state==='retained-uncertain'?'mutation-uncertain':row.state}))}};
+}
+
+/** Only actual finalizer results enter here after authenticated owner/claim checks. */
+export function knownProtectedWorkItemResidue(result, owner) {
+  if (result?.schema !== 'formal-ai-work-item-cleanup-outcome/v1'
+    || result.run !== owner.run || result.attempt !== owner.attempt
+    || result.complete !== false || result.deliveryCredit !== false
+    || !Array.isArray(result.outcomes) || !Array.isArray(owner.tools)
+    || result.outcomes.length !== owner.tools.length * taskNames.length) return false;
+  const expected = new Set(owner.tools.flatMap(tool => taskNames.map(task => tool + '/' + task)));
+  let protectedRows = 0;
+  for (const row of result.outcomes) {
+    if (!expected.delete(row.tool + '/' + row.task)) return false;
+    if (row.state === 'complete' || row.state === 'not-started') continue;
+    if (row.state !== 'protected-residue' || !Array.isArray(row.retained)
+      || row.retained.length === 0) return false;
+    const closure = row.closure;
+    if (closure?.schema !== 'work-item-cleanup-observed-closure/v1'
+      || !Number.isSafeInteger(closure.issue?.number) || closure.issue.number <= 0
+      || closure.issue.state !== 'closed' || !Array.isArray(closure.branches)
+      || closure.branches.length < 1 || closure.branches.length > 2) return false;
+    const hasPull = closure.pullRequest !== null;
+    if (hasPull && (!Number.isSafeInteger(closure.pullRequest?.number)
+      || closure.pullRequest.number <= 0 || closure.pullRequest.state !== 'closed')) return false;
+    if (closure.branches.length !== (hasPull ? 2 : 1)) return false;
+    const base = 'e2e/work-item/' + owner.run + '/' + row.tool + '/' + row.task;
+    const branches = new Map();
+    for (const entry of closure.branches) {
+      if (!entry || typeof entry.branch !== 'string' || branches.has(entry.branch)
+        || !/^[a-f0-9]{40}$/u.test(entry.head ?? '')) return false;
+      if (entry.branch !== base && (!hasPull
+        || !new RegExp('^issue-' + closure.issue.number + '-[A-Za-z0-9-]+$').test(entry.branch))) return false;
+      branches.set(entry.branch, entry.head);
+    }
+    if (!branches.has(base)) return false;
+    const retained = new Set();
+    for (const entry of row.retained) {
+      if (!entry || typeof entry !== 'object' || entry.reason !== 'protected-branch'
+        || retained.has(entry.branch) || !branches.has(entry.branch)
+        || branches.get(entry.branch) !== entry.head) return false;
+      retained.add(entry.branch);
+    }
+    protectedRows++;
+  }
+  return expected.size === 0 && protectedRows > 0 && result.retained === protectedRows;
 }
