@@ -493,6 +493,14 @@ fn record_calculation(log: &mut EventLog, evaluated: &CalculationEvaluation) {
     }
 }
 
+pub(crate) fn try_arithmetic_with(
+    prompt: &str,
+    log: &mut EventLog,
+    fallback: fn(&str, &mut EventLog) -> Option<SymbolicAnswer>,
+) -> Option<SymbolicAnswer> {
+    try_answer(prompt, log).or_else(|| fallback(prompt, log))
+}
+
 pub(crate) fn try_answer(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
     let frame = for_prompt(prompt)?;
     let Ok(serialized) = serde_json::to_string(&frame) else {

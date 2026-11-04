@@ -166,7 +166,7 @@ fn assert_stage_sources(events: &[&Value], expected: &[(&str, &str, &str)]) {
         assert_eq!(
             text(event, "method_js_source"),
             if routed {
-                "js/worker/formal_ai_worker_arithmetic_and_numeric_lists.js:tryArithmetic"
+                "js/worker/formal_ai_worker_quantity_constraints.js:tryArithmetic"
             } else {
                 ""
             }
@@ -404,7 +404,7 @@ fn every_stage_carries_the_recipe_diagram_its_own_emitters_and_the_routed_method
         assert_eq!(rust, "rust/src/solver_dispatch.rs:handle_arithmetic");
         assert_eq!(
             js,
-            "js/worker/formal_ai_worker_arithmetic_and_numeric_lists.js:tryArithmetic"
+            "js/worker/formal_ai_worker_quantity_constraints.js:tryArithmetic"
         );
         let excerpt = text(&paused, "method_rust_excerpt");
         assert_excerpt(
