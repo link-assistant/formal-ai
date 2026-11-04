@@ -252,42 +252,211 @@ meanings
   quantity-constraint-bound-frame
     defined-by arithmetic_operation
     role quantity-constraint-bound-frame
+    precondition "A fully consumed bound sentence names one bound, an exact nonnegative integer and a resolvable unit."
+    effect "Capture the bound reference, quantity surface and original UTF-8 spans."
+    unit "not applicable"
+    example "The budget is 1200 ms."
     lexeme en "the {bound_ref} is {bound_amount} {bound_unit}"
+    lexeme ru "значение {bound_ref} составляет {bound_amount} {bound_unit}"
+    lexeme hi "{bound_ref} का मान {bound_amount} {bound_unit} है"
+    lexeme zh "{bound_ref}为{bound_amount} {bound_unit}"
+    lexeme es "{bound_ref} es {bound_amount} {bound_unit}"
   quantity-constraint-members-frame
     defined-by arithmetic_operation
     role quantity-constraint-members-frame
+    precondition "A fully consumed collection sentence explicitly lists one or more nonnegative quantities."
+    effect "Capture every listed quantity and its original source spans without inventing members."
+    unit "not applicable"
+    example "The amounts are 300 ms and 600 ms."
     lexeme en "the {members_ref} are {quantities}"
+    lexeme ru "{members_ref} равны {quantities}"
+    lexeme hi "{members_ref} {quantities} हैं"
+    lexeme zh "{members_ref}为{quantities}"
+    lexeme es "{members_ref} son {quantities}"
   quantity-constraint-comparison-frame
     defined-by arithmetic_operation
     role quantity-constraint-comparison-frame
+    precondition "The question explicitly requests an aggregate and an inclusive comparison with the same named bound."
+    effect "Bind the aggregate cue and comparison relation to their original source spans."
+    unit "not applicable"
+    example "Is their combined total within the budget?"
     lexeme en "is their {aggregation} {relation} the {query_ref}"
+    lexeme ru "верно ли, что {aggregation} {relation} {query_ref}"
+    lexeme hi "क्या {aggregation} {query_ref} {relation} है"
+    lexeme zh "是否{aggregation}{relation}{query_ref}"
+    lexeme es "¿es {aggregation} {relation} {query_ref}"
   quantity-constraint-ownership-frame
     defined-by comparison
     role quantity-constraint-ownership-frame
+    precondition "A comparison phrase contains a recognized inclusive relation and a bound reference."
+    effect "Own the stated comparison; unsupported conditions remain unresolved rather than becoming unit conversions."
+    unit "not applicable"
+    example "within the budget"
     lexeme en "{relation} the {query_ref}"
+    lexeme ru "{relation} {query_ref}"
+    lexeme hi "{query_ref} {relation}"
+    lexeme zh "{relation}{query_ref}"
+    lexeme es "{relation} {query_ref}"
   quantity-constraint-query-prefix
     defined-by inquiry
     role quantity-constraint-query-prefix
+    precondition "The phrase begins a comparison question in the language of its lexical entry."
+    effect "Recognize a question candidate without treating the prefix alone as a numeric proof."
+    unit "not applicable"
+    example "Is their combined total within the bound?"
     lexeme en "is their" "is the"
+    lexeme ru "верно ли, что"
+    lexeme hi "क्या"
+    lexeme zh "是否"
+    lexeme es "¿es"
   quantity-constraint-bound-reference
     defined-by arithmetic_operation
     role quantity-constraint-bound-reference
+    precondition "The term occupies a bound-reference slot in an explicit quantity constraint."
+    effect "Name the stated budget, limit, capacity or bound; require the same reference in the comparison."
+    unit "not applicable"
+    example "The bound is 10 kg."
     lexeme en budget limit capacity bound
+    lexeme ru "бюджета" "предела" "ёмкости" "верхней границы"
+    lexeme hi "बजट" "सीमा" "क्षमता" "ऊपरी सीमा"
+    lexeme zh "预算" "限额" "容量" "上界"
+    lexeme es "el presupuesto" "el límite" "la capacidad" "la cota"
   quantity-constraint-member-reference
     defined-by quantity
     role quantity-constraint-member-reference
+    precondition "The term occupies the collection-reference slot in an explicit quantity constraint."
+    effect "Name the explicitly listed amounts or quantities without implying scheduling order."
+    unit "not applicable"
+    example "The quantities are 4 kg and 6 kg."
     lexeme en amounts quantities
+    lexeme ru "значения" "величины"
+    lexeme hi "मात्राएँ" "राशियाँ"
+    lexeme zh "数值" "数量"
+    lexeme es "las cantidades" "los valores"
   quantity-constraint-explicit-sum
     defined-by addition
     role quantity-constraint-aggregate
+    effect "Select addition of the explicitly listed terms; do not infer addition from labels or scheduling."
+    unit "not applicable"
+    example "The amounts are 4 kg and 6 kg. Is their sum within the bound?"
     lexeme en sum "combined total"
+    lexeme ru "сумма" "общая сумма"
+    lexeme hi "योग" "संयुक्त योग"
+    lexeme zh "总和" "合计"
+    lexeme es "la suma" "el total combinado"
     precondition "the aggregate cue owns its source span; labels and scheduling do not imply addition"
   quantity-constraint-inclusive-bound
     defined-by comparison
     role quantity-constraint-relation-le
+    precondition "The explicitly requested sum and bound are resolved in one canonical unit."
+    unit "not applicable"
+    example "10 kg is within a bound of 10 kg."
     lexeme en within "at most" "no greater than"
+    lexeme ru "в пределах" "не более" "не больше"
+    lexeme hi "के भीतर" "से अधिक नहीं" "से ज़्यादा नहीं"
+    lexeme zh "不超过" "至多为" "不大于"
+    lexeme es "menor o igual que" "como máximo" "no mayor que"
     effect "compares the explicitly requested aggregate with an inclusive bound"
   quantity-constraint-list-conjunction
     defined-by addition
     role quantity-constraint-list-conjunction
+    precondition "The conjunction joins adjacent quantities inside an explicitly stated collection."
+    effect "Join the quantity list without adding a sequencing or execution-order claim."
+    unit "not applicable"
+    example "4 kg and 6 kg"
     lexeme en and
+    lexeme ru "и"
+    lexeme hi "और"
+    lexeme zh "和" "与"
+    lexeme es "y"
+
+  quantity-constraint-within
+    defined-by comparison
+    role quantity-constraint-outcome
+    precondition "An explicitly requested same-unit sum and bound are resolved, and the sum is less than or equal to the bound."
+    effect "Report an affirmative inclusive-comparison result while retaining the computed quantities and source evidence."
+    unit "not applicable"
+    example "The bound is 10 kg. The amounts are 4 kg and 6 kg. Is their sum within the bound? => Yes."
+    lexeme en "within the explicit bound"
+    lexeme ru "в пределах явно заданной границы"
+    lexeme hi "स्पष्ट सीमा के भीतर"
+    lexeme zh "不超过明确给出的界限"
+    lexeme es "dentro del límite explícito"
+
+  quantity-constraint-exceeds
+    defined-by comparison
+    role quantity-constraint-outcome
+    precondition "An explicitly requested same-unit sum and bound are resolved, and the sum is greater than the bound."
+    effect "Report a negative inclusive-comparison result while retaining the computed quantities and source evidence."
+    unit "not applicable"
+    example "The bound is 9 kg. The amounts are 4 kg and 6 kg. Is their sum within the bound? => No."
+    lexeme en "exceeds the explicit bound"
+    lexeme ru "превышает явно заданную границу"
+    lexeme hi "स्पष्ट सीमा से अधिक"
+    lexeme zh "超过明确给出的界限"
+    lexeme es "supera el límite explícito"
+
+  quantity-constraint-unknown
+    defined-by comparison
+    role quantity-constraint-outcome
+    precondition "The explicit comparison is owned, but a required quantity, unit, frame or arithmetic result is unresolved."
+    effect "Decline the comparison without emitting a true or false quantity verdict or an unrelated numeric conversion."
+    unit "not applicable"
+    example "The bound is 10 kg. The amounts depend on an unstated condition. Is their sum within the bound? => unresolved."
+    lexeme en "unresolved explicit comparison"
+    lexeme ru "неопределённое явное сравнение"
+    lexeme hi "अनिर्णीत स्पष्ट तुलना"
+    lexeme zh "尚未确定的明确比较"
+    lexeme es "comparación explícita sin resolver"
+
+  budget
+    defined-by limit
+    role quantity-constraint-bound-reference
+    precondition "The word is used as the bound reference inside a recognized explicit quantity constraint."
+    effect "Interpret this scoped reference as the stated upper bound, without inferring a financial plan or scheduling rule."
+    unit "not applicable"
+    example "The budget is 1200 ms. => the named upper bound is 1200 ms."
+    lexeme en budget
+    lexeme ru "бюджет"
+    lexeme hi "बजट"
+    lexeme zh "预算"
+    lexeme es "presupuesto"
+
+  capacity
+    defined-by limit
+    role quantity-constraint-bound-reference
+    precondition "The word is used as the bound reference inside a recognized explicit quantity constraint."
+    effect "Interpret this scoped reference as the maximum permitted quantity in the stated unit, not as evidence of execution order."
+    unit "not applicable"
+    example "The capacity is 10 kg. => the named upper bound is 10 kg."
+    lexeme en capacity
+    lexeme ru "ёмкость"
+    lexeme hi "क्षमता"
+    lexeme zh "容量"
+    lexeme es "capacidad"
+
+  amounts
+    defined-by quantity
+    role quantity-constraint-member-reference
+    precondition "The plural word names the explicitly listed members of a quantity constraint."
+    effect "Refer to the listed numeric quantities, each of which retains its own unit and source span."
+    unit "not applicable"
+    example "The amounts are 4 kg and 6 kg. => the two stated quantities are 4 kg and 6 kg."
+    lexeme en amounts
+    lexeme ru "величины"
+    lexeme hi "राशियाँ"
+    lexeme zh "数值"
+    lexeme es "cantidades"
+
+  quantities
+    defined-by quantity
+    role quantity-constraint-member-reference
+    precondition "The plural word names the explicitly listed members of a quantity constraint."
+    effect "Refer to the listed measurements without inventing missing members or their order of execution."
+    unit "not applicable"
+    example "The quantities are 4 kg and 6 kg. => the two stated quantities are 4 kg and 6 kg."
+    lexeme en quantities
+    lexeme ru "количества"
+    lexeme hi "मात्राएँ"
+    lexeme zh "数量"
+    lexeme es "cantidades"

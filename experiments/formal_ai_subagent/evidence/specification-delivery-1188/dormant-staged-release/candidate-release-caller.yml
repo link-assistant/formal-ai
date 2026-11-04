@@ -329,6 +329,7 @@ jobs:
           node scripts/render-status.mjs --check
           node scripts/render-progressive-plan.mjs --check
           node scripts/mirror-package-data.mjs --check
+          node scripts/check-fast-governance.mjs
   lint:
     name: Lint and Format Check (lane ${{ matrix.lane }})
     runs-on: ubuntu-latest

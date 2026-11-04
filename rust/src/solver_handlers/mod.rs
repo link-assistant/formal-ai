@@ -123,9 +123,6 @@ pub use {
     web_search_intent::web_search_query_for,
 };
 pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
-    if let Some(answer) = crate::quantity_constraint::try_answer(prompt, log) {
-        return Some(answer);
-    }
     if let Some(answer) = calculator_rate::try_calculator_rate_basis(prompt, log) {
         return Some(answer);
     }

@@ -831,6 +831,28 @@ roles
     kind predicate
   publish
     kind meaning
+  quantity-constraint-aggregate
+    kind predicate
+  quantity-constraint-bound-frame
+    kind meaning
+  quantity-constraint-bound-reference
+    kind meaning
+  quantity-constraint-comparison-frame
+    kind meaning
+  quantity-constraint-list-conjunction
+    kind meaning
+  quantity-constraint-member-reference
+    kind meaning
+  quantity-constraint-members-frame
+    kind meaning
+  quantity-constraint-outcome
+    kind predicate
+  quantity-constraint-ownership-frame
+    kind meaning
+  quantity-constraint-query-prefix
+    kind meaning
+  quantity-constraint-relation-le
+    kind predicate
   quantity_conversion_cue
     kind predicate
   reachability_operand_framing

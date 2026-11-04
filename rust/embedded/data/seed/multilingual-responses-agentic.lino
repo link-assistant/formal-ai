@@ -1300,3 +1300,52 @@ multilingual_responses
     intent quantity-constraint-unknown
     language en
     text "I cannot determine this comparison from the fully stated quantities and bound."
+
+  response quantity-constraint-within-ru
+    intent quantity-constraint-within
+    language ru
+    text "Да. Явно запрошенная сумма равна {total} {unit} и не превышает {bound} {unit}."
+  response quantity-constraint-within-hi
+    intent quantity-constraint-within
+    language hi
+    text "हाँ। स्पष्ट रूप से माँगा गया योग {total} {unit} है, जो {bound} {unit} से अधिक नहीं है।"
+  response quantity-constraint-within-zh
+    intent quantity-constraint-within
+    language zh
+    text "是。明确要求的总和为{total} {unit}，不超过{bound} {unit}。"
+  response quantity-constraint-within-es
+    intent quantity-constraint-within
+    language es
+    text "Sí. La suma solicitada explícitamente es {total} {unit} y no supera {bound} {unit}."
+  response quantity-constraint-exceeds-ru
+    intent quantity-constraint-exceeds
+    language ru
+    text "Нет. Явно запрошенная сумма равна {total} {unit} и превышает {bound} {unit}."
+  response quantity-constraint-exceeds-hi
+    intent quantity-constraint-exceeds
+    language hi
+    text "नहीं। स्पष्ट रूप से माँगा गया योग {total} {unit} है, जो {bound} {unit} से अधिक है।"
+  response quantity-constraint-exceeds-zh
+    intent quantity-constraint-exceeds
+    language zh
+    text "否。明确要求的总和为{total} {unit}，超过{bound} {unit}。"
+  response quantity-constraint-exceeds-es
+    intent quantity-constraint-exceeds
+    language es
+    text "No. La suma solicitada explícitamente es {total} {unit} y supera {bound} {unit}."
+  response quantity-constraint-unknown-ru
+    intent quantity-constraint-unknown
+    language ru
+    text "Я не могу определить результат этого сравнения по полностью указанным величинам и границе."
+  response quantity-constraint-unknown-hi
+    intent quantity-constraint-unknown
+    language hi
+    text "पूरी तरह बताई गई राशियों और सीमा से इस तुलना का परिणाम निर्धारित नहीं किया जा सकता।"
+  response quantity-constraint-unknown-zh
+    intent quantity-constraint-unknown
+    language zh
+    text "无法根据完整给出的数量和界限确定这个比较的结果。"
+  response quantity-constraint-unknown-es
+    intent quantity-constraint-unknown
+    language es
+    text "No puedo determinar esta comparación a partir de las cantidades y el límite completamente especificados."

@@ -11,7 +11,8 @@
         "holds": false,
         "total": 1860000,
         "bound": 1500000,
-        "unit": "ms"
+        "unit": "ms",
+        "content": "No. The explicit sum is 1860000 ms, which exceeds 1500000 ms."
       }
     },
     {
@@ -23,7 +24,8 @@
         "holds": true,
         "total": 900,
         "bound": 1200,
-        "unit": "ms"
+        "unit": "ms",
+        "content": "Yes. The explicit sum is 900 ms, which is at most 1200 ms."
       }
     },
     {
@@ -35,7 +37,8 @@
         "holds": true,
         "total": 10,
         "bound": 10,
-        "unit": "kg"
+        "unit": "kg",
+        "content": "Yes. The explicit sum is 10 kg, which is at most 10 kg."
       }
     },
     {
@@ -47,7 +50,8 @@
         "holds": false,
         "total": 10,
         "bound": 9,
-        "unit": "kg"
+        "unit": "kg",
+        "content": "No. The explicit sum is 10 kg, which exceeds 9 kg."
       }
     },
     {
@@ -59,7 +63,8 @@
         "holds": true,
         "total": 30,
         "bound": 60,
-        "unit": "s"
+        "unit": "s",
+        "content": "Yes. The explicit sum is 30 s, which is at most 60 s."
       }
     },
     {
@@ -71,7 +76,8 @@
         "holds": true,
         "total": 0,
         "bound": 0,
-        "unit": "ms"
+        "unit": "ms",
+        "content": "Yes. The explicit sum is 0 ms, which is at most 0 ms."
       }
     },
     {

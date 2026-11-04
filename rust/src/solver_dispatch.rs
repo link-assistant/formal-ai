@@ -86,7 +86,7 @@ fn handle_arithmetic(
     if shell_compose_claims(prompt) {
         return None;
     }
-    try_arithmetic(prompt, log)
+    crate::quantity_constraint::try_arithmetic_with(prompt, log, try_arithmetic)
 }
 
 fn handle_javascript_execution(

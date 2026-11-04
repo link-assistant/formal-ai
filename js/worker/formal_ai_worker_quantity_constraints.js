@@ -4,12 +4,12 @@
 
 // Explicit mathematical aggregates only; labels never imply execution order.
 function quantityConstraintRolePattern(role) {
-  return wordsForRole(role).slice().sort((a, b) => b.length - a.length)
+  return wordsForRoleInLanguages(role, ["en"]).slice().sort((a, b) => b.length - a.length)
     .map(word => escapeRegExp(word).replace(/\s+/gu, "\\s+")).join("|");
 }
 
 function quantityConstraintMatch(text, role, captures, whole = true) {
-  for (const template of wordsForRole(role)) {
+  for (const template of wordsForRoleInLanguages(role, ["en"])) {
     let source = "", valid = true;
     for (const part of template.split(/(\{[a-z_]+\})/gu)) {
       const slot = /^\{([a-z_]+)\}$/u.exec(part);
