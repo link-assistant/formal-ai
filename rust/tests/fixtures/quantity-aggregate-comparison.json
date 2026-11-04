@@ -1,0 +1,192 @@
+{
+  "schema": "explicit-aggregate-comparison-vectors/v1",
+  "contractSha256": "ee0cdb2373f536a95828aaafead0ea406bb8e8a3fc3a93841290d3553f81f4e7",
+  "cases": [
+    {
+      "id": "explicit-total-original-amounts",
+      "question": "The budget is 1500000 ms. The amounts are 600000 ms, 540000 ms, 540000 ms and 180000 ms. Is their combined total within the budget?",
+      "expected": {
+        "kind": "comparison",
+        "relation": "less-or-equal",
+        "holds": false,
+        "total": 1860000,
+        "bound": 1500000,
+        "unit": "ms"
+      }
+    },
+    {
+      "id": "explicit-total-renamed-amounts",
+      "question": "The limit is 1200 ms. The amounts are 200 ms, 300 ms and 400 ms. Is their combined total within the limit?",
+      "expected": {
+        "kind": "comparison",
+        "relation": "less-or-equal",
+        "holds": true,
+        "total": 900,
+        "bound": 1200,
+        "unit": "ms"
+      }
+    },
+    {
+      "id": "explicit-sum-equality",
+      "question": "The capacity is 10 kg. The quantities are 4 kg and 6 kg. Is their sum no greater than the capacity?",
+      "expected": {
+        "kind": "comparison",
+        "relation": "less-or-equal",
+        "holds": true,
+        "total": 10,
+        "bound": 10,
+        "unit": "kg"
+      }
+    },
+    {
+      "id": "explicit-sum-over-bound",
+      "question": "The capacity is 9 kg. The quantities are 4 kg and 6 kg. Is their combined total within the capacity?",
+      "expected": {
+        "kind": "comparison",
+        "relation": "less-or-equal",
+        "holds": false,
+        "total": 10,
+        "bound": 9,
+        "unit": "kg"
+      }
+    },
+    {
+      "id": "explicit-sum-different-unit",
+      "question": "The bound is 60 s. The amounts are 20 s and 10 s. Is their combined total at most the bound?",
+      "expected": {
+        "kind": "comparison",
+        "relation": "less-or-equal",
+        "holds": true,
+        "total": 30,
+        "bound": 60,
+        "unit": "s"
+      }
+    },
+    {
+      "id": "explicit-sum-zero-equality",
+      "question": "The bound is 0 ms. The quantities are 0 ms and 0 ms. Is their combined total within the bound?",
+      "expected": {
+        "kind": "comparison",
+        "relation": "less-or-equal",
+        "holds": true,
+        "total": 0,
+        "bound": 0,
+        "unit": "ms"
+      }
+    },
+    {
+      "id": "original-unordered-question-verbatim",
+      "question": "A job has a 1500000 ms limit. The proposed phase caps are 600000 ms for image acquisition, 540000 ms for the first pass, 540000 ms for the no-op pass, and 180000 ms for cleanup. Can all four phases use their full caps within the job limit?",
+      "expected": {
+        "kind": "unknown-or-conditional",
+        "reason": "aggregation-or-order-not-proved"
+      },
+      "historicalCaseUnchanged": true,
+      "safetyOnly": true
+    },
+    {
+      "id": "opaque-phase-caps",
+      "question": "A pipeline has a 1200 ms limit. Its stage caps are 200 ms, 300 ms and 400 ms. Can every stage use its full cap within the pipeline limit?",
+      "expected": {
+        "kind": "unknown-or-conditional",
+        "reason": "aggregation-or-order-not-proved"
+      },
+      "safetyOnly": true
+    },
+    {
+      "id": "elapsed-overlap",
+      "question": "The elapsed-time limit is 1000 ms. Two activities last 800 ms each and may overlap. Can both activities complete within the limit?",
+      "expected": {
+        "kind": "unknown-or-conditional",
+        "reason": "unresolved-overlap"
+      },
+      "safetyOnly": true
+    },
+    {
+      "id": "negated-quantifier",
+      "question": "The capacity is 9 kg. The quantities are 4 kg and 6 kg. Can all quantities NOT fit within the capacity?",
+      "expected": {
+        "kind": "unknown-or-conditional",
+        "reason": "ambiguous-negated-quantifier"
+      },
+      "safetyOnly": true
+    },
+    {
+      "id": "conditional-inclusion",
+      "question": "The limit is 1000 ms. The amounts are 400 ms and 800 ms. Include the second amount only if an unspecified check passes. Is the combined total within the limit?",
+      "expected": {
+        "kind": "unknown-or-conditional",
+        "reason": "conditional-aggregate-membership"
+      },
+      "safetyOnly": true
+    },
+    {
+      "id": "ambiguous-bound",
+      "question": "There are limits of 1000 ms and 2000 ms. The amounts are 400 ms and 800 ms. Is their combined total within the limit?",
+      "expected": {
+        "kind": "unknown-or-conditional",
+        "reason": "ambiguous-bound"
+      },
+      "safetyOnly": true
+    },
+    {
+      "id": "incompatible-units",
+      "question": "The bound is 1000 ms. The amounts are 400 ms and 8 kg. Is their combined total within the bound?",
+      "expected": {
+        "kind": "unknown-or-conditional",
+        "reason": "incompatible-dimensions"
+      },
+      "safetyOnly": true
+    },
+    {
+      "id": "mixed-compatible-units",
+      "question": "The bound is 2000 ms. The amounts are 400 ms and 1 s. Is their combined total within the bound?",
+      "expected": {
+        "kind": "unknown-or-conditional",
+        "reason": "conversion-outside-initial-subset"
+      },
+      "safetyOnly": true
+    },
+    {
+      "id": "unknown-amount",
+      "question": "The bound is 1000 ms. The amounts are 400 ms and an unknown duration. Is their combined total within the bound?",
+      "expected": {
+        "kind": "unknown-or-conditional",
+        "reason": "unknown-quantity"
+      },
+      "safetyOnly": true
+    },
+    {
+      "id": "contradicted-cardinality",
+      "question": "There are four amounts: 200 ms, 300 ms and 400 ms. The bound is 1200 ms. Is the sum of all four amounts within the bound?",
+      "expected": {
+        "kind": "unknown-or-conditional",
+        "reason": "unbound-cardinality"
+      },
+      "safetyOnly": true
+    },
+    {
+      "id": "conditional-bound",
+      "question": "The bound is 1000 ms if an unspecified cache is warm. The amounts are 400 ms and 800 ms. Is their combined total within the bound?",
+      "expected": {
+        "kind": "unknown-or-conditional",
+        "reason": "conditional-bound"
+      },
+      "safetyOnly": true
+    },
+    {
+      "id": "explicit-not-within",
+      "question": "The bound is 1000 ms. The quantities are 200 ms and 300 ms. Is their combined total NOT within the bound?",
+      "expected": {
+        "kind": "unknown-or-conditional",
+        "reason": "negated-comparison-outside-initial-subset"
+      },
+      "safetyOnly": true
+    }
+  ],
+  "arithmeticRegression": {
+    "question": "What is 600000 + 540000 + 540000 + 180000?",
+    "expectedContent": "600000 + 540000 + 540000 + 180000 = 1860000"
+  },
+  "rawUtf8SpanProperty": "Quantity/aggregate/comparison spans slice the original UTF-8 bytes exactly; NBSP whitespace variant preserves the same mathematical question."
+}

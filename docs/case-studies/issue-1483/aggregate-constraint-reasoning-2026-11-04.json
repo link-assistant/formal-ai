@@ -1,0 +1,84 @@
+{
+  "schema": "formal-ai-reasoning-source-qualification/v1",
+  "status": "javascript-source-qualified-native-parity-pending",
+  "base": "3941a6451a7a9cb2382dfe775bd1f55880547b10",
+  "baseline": "066cffea20793b734d25b0122cbed307871356d4",
+  "sourceHashes": [
+    {
+      "path": "js/worker/formal_ai_worker_arithmetic_and_numeric_lists.js",
+      "sha256": "e16dab701d396b4cf26ac3c19f3b29462a9887678ba9a90fb0de4c49f48a2160"
+    },
+    {
+      "path": "data/seed/meanings-calculator.lino",
+      "sha256": "d960cf5f6da71b7d197995c454b1c9ac28ad89873e2dfe292679eb8bb3e4a31d"
+    },
+    {
+      "path": "data/seed/multilingual-responses-agentic.lino",
+      "sha256": "8b0bf91a2fe49aee89793d160bdb4170f93ab3c607888071cb04cb45852d7b47"
+    },
+    {
+      "path": "rust/tests/fixtures/quantity-aggregate-comparison.json",
+      "sha256": "99620485c86a8715405f16f4520dad966394caf4e1d4d8234a7bf17b211af8de"
+    },
+    {
+      "path": "rust/tests/web/quantity-aggregate-comparison.test.mjs",
+      "sha256": "086f16dbf4c98b112fd01d73aa5f44022ddada90a3ffebdd00640f29b0c60826"
+    },
+    {
+      "path": "js/worker/formal_ai_worker_write_program_and_research.js",
+      "sha256": "ae8e75436a8ade6736595c30f1f74469f1e604336b00e55b6d8a9d9da8a4f40c"
+    },
+    {
+      "path": "ts/worker/formal_ai_worker_arithmetic_and_numeric_lists.ts",
+      "sha256": "e16dab701d396b4cf26ac3c19f3b29462a9887678ba9a90fb0de4c49f48a2160"
+    },
+    {
+      "path": "ts/worker/formal_ai_worker_write_program_and_research.ts",
+      "sha256": "ae8e75436a8ade6736595c30f1f74469f1e604336b00e55b6d8a9d9da8a4f40c"
+    },
+    {
+      "path": "data/benchmarks/fast-pull-request-javascript-tests.json",
+      "sha256": "d2fd309f1f41a7b9b2c034bfec9c5f41010394fd3612d5d2b9a7fbbdc477a102"
+    }
+  ],
+  "request": "The budget is 1500000 ms. The amounts are 600000 ms, 540000 ms, 540000 ms and 180000 ms. Is their combined total within the budget?",
+  "capability": "Explicitly aggregate nonnegative integer quantities in one canonical unit and compare the sum with a stated inclusive bound.",
+  "scope": [
+    "Finite seeded English bound/list/comparison frames; labels do not imply sequential execution.",
+    "Exact raw source, quantity surfaces and UTF-8 spans are retained with the typed result.",
+    "Existing JavaScript calculator CST evaluates the expression; no user answer or test oracle is loaded by the implementation.",
+    "Owned unsupported constraints decline; unrelated aggregate concept questions remain outside this handler."
+  ],
+  "baselineObservation": "The unmodified full JavaScript QA path returned an unparseable calculation error for the first explicitly aggregated question.",
+  "regressionsDiscovered": [
+    "A legacy admission predicate omitted recognized aggregate constraints without older domain cues.",
+    "Unit conversion could steal a conditional aggregate question or bind a quantity to the wrong unit.",
+    "An early test only excluded target verdicts and missed those unrelated numeric answers.",
+    "Aggregate words alone were insufficient ownership evidence for a comparison."
+  ],
+  "validation": {
+    "test": "rust/tests/web/quantity-aggregate-comparison.test.mjs",
+    "execution": "Actual maintained WorkerHost.solve through JavaScript, without the private source overlay.",
+    "tests": 23,
+    "passed": 23,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 2242.270625,
+    "externalDeadlineSeconds": 25,
+    "maxOldSpaceMiB": 384,
+    "localRustExecution": false,
+    "localWasmExecution": false,
+    "localDockerExecution": false,
+    "typeScript": "Both changed worker twins generated with scripts/translate-es.mjs; runtime parity remains for CI.",
+    "nativeParity": "pending"
+  },
+  "acceptance": {
+    "predeclaredSharedCases": 18,
+    "fullOriginalIssue1483": false,
+    "generalScheduling": false,
+    "generalMathematics": false,
+    "globalReasoningShare": "unmeasured",
+    "autonomousImplementationAuthorshipCredit": 0,
+    "implementation": "Externally specified bootstrap code applied through Formal AI; literal English edits retained separately."
+  }
+}
