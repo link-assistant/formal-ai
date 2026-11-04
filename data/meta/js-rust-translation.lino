@@ -15,7 +15,7 @@ js_rust_translation
   upstream link-foundation/meta-language
   commit eb0574d5528babd3b4aadece81590d8e2230b99b
   modules 156
-  translated_items 315
+  translated_items 316
   workaround_items 34
   inferred_signatures 2
   carried_items 2463
@@ -170,7 +170,7 @@ module js/agentic/crate/summarization_vocabulary.mjs translated 4 workaround 0 i
 module js/agentic/crate/task_decomposition.mjs translated 4 workaround 0 inferred 0 carried 35
 module js/agentic/crate/task_decomposition_stated_task.mjs translated 1 workaround 0 inferred 0 carried 8
 module js/agentic/crate/task_decomposition_tree.mjs translated 1 workaround 0 inferred 0 carried 15
-module js/agentic/crate/text_formalization.mjs translated 7 workaround 0 inferred 0 carried 61
+module js/agentic/crate/text_formalization.mjs translated 8 workaround 0 inferred 0 carried 61
 module js/agentic/crate/tool_call_validation.mjs translated 0 workaround 0 inferred 0 carried 3
 module js/agentic/crate/tool_scope.mjs translated 1 workaround 0 inferred 0 carried 22
 module js/agentic/crate/translation_formalization.mjs translated 4 workaround 0 inferred 0 carried 46
