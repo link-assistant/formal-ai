@@ -1,7 +1,7 @@
 import {before, test} from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {WorkerHost} from '../../../js/server/worker-host.mjs';
+import {WorkerHost, evaluate} from '../../../js/server/worker-host.mjs';
 import {parseLino, childrenNamed, childValue} from '../../../js/server/lino.mjs';
 import {encodeWord, parseLinks, textOf, writeLink} from '../../../js/logging/lino-codec.mjs';
 import {gapsFromDocuments} from '../../../scripts/lib/checks-language-parity.mjs';
@@ -227,3 +227,61 @@ for (const [language, question] of [
     assert.equal(wasmAttempts, 0);
   });
 }
+
+test('parser grammar lexemes stay scoped outside ordinary semantic indexes', () => {
+  const text = evaluate(host.context, "crateModule('crate/text_formalization.mjs')");
+  const seed = evaluate(host.context, "crateModule('crate/seed_meanings.mjs')");
+  const scoped = seed.meaningsWithRole(text.SCOPED_GRAMMAR_ROLE);
+  const expected = [
+    'quantity-constraint-bound-frame',
+    'quantity-constraint-members-frame',
+    'quantity-constraint-comparison-frame',
+    'quantity-constraint-ownership-frame',
+    'quantity-constraint-query-prefix',
+    'quantity-constraint-bound-reference',
+    'quantity-constraint-member-reference',
+    'quantity-constraint-explicit-sum',
+    'quantity-constraint-inclusive-bound',
+    'quantity-constraint-list-conjunction'
+  ];
+  for (const slug of expected) assert(scoped.some(entry => entry.slug === slug), slug);
+  for (const language of ['en', 'ru', 'hi', 'zh', 'es']) {
+    const index = text.meaningIndex(language);
+    for (const entry of scoped) {
+      assert(!Array.from(index.values()).includes(entry.slug), language + ':' + entry.slug);
+    }
+  }
+  assert(seed.wordsForRoleInLanguages('quantity-constraint-query-prefix', ['en']).includes('is the'));
+  assert(seed.wordsForRoleInLanguages('quantity-constraint-bound-reference', ['en']).includes('budget'));
+  assert(!text.functionWords('en').has('budget'));
+  assert(!text.functionWords('en').has('capacity'));
+  assert.equal(wasmAttempts, 0);
+});
+
+test('ordinary Moon copula keeps its semantic identity beside quantity grammar', () => {
+  const text = evaluate(host.context, "crateModule('crate/text_formalization.mjs')");
+  const page = evaluate(host.context, "crateModule('crate/page_formalization.mjs')");
+  assert.equal(text.meaningIndex('en').get('is the'), 'wikidata_property_instance_of');
+  const statement = text.clauseStatement('The Moon is the only natural satellite of Earth.', 'en', null, false);
+  assert.equal(page.statementNotation(statement), "(moon wikidata_property_instance_of unknown:only unknown:natural unknown:satellite name:earth)");
+  assert.equal(wasmAttempts, 0);
+});
+
+test('sense-specific quantity lexemes preserve cross-language meaning identities', () => {
+  const text = evaluate(host.context, "crateModule('crate/text_formalization.mjs')");
+  const translation = evaluate(host.context, "crateModule('crate/round_trip_translation.mjs')");
+  assert.equal(text.meaningIndex('hi').get('सीमा'), 'coding_bound');
+  assert.equal(text.meaningIndex('es').get('cantidades'), 'quantities');
+  for (const [surface, source, target, expected] of [
+    ['bounded', 'en', 'hi', 'coding_bound'],
+    ['数量', 'zh', 'es', 'quantities']
+  ]) {
+    const statement = text.clauseStatement(surface, source, null, false);
+    assert.deepEqual(Array.from(text.knownIds(statement)), [expected]);
+    const trip = translation.roundTrip(surface, source, target);
+    assert.equal(trip.knownTerms, 1);
+    assert.equal(trip.survivingTerms, 1);
+    assert.equal(trip.survives, true);
+  }
+  assert.equal(wasmAttempts, 0);
+});

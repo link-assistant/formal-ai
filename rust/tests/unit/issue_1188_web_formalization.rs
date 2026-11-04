@@ -13,8 +13,8 @@ use std::path::Path;
 use formal_ai::formalization::page::formalize_page;
 use formal_ai::formalization::statement_rendering::deformalize_statement;
 use formal_ai::formalization::text_statements::{
-    FUNCTION_WORD_ROLES, NEGATION_ROLE, Token, formalize_text, indexed_meaning, phrase_key,
-    statement_identity, tokens,
+    FUNCTION_WORD_ROLES, NEGATION_ROLE, SCOPED_GRAMMAR_ROLE, Token, formalize_text,
+    indexed_meaning, phrase_key, statement_identity, tokens,
 };
 use formal_ai::seed::{lexicon, parse_lino};
 
@@ -136,7 +136,8 @@ fn a_shared_surface_goes_to_more_languages_then_fewer_surfaces_then_declaration_
         let excluded = FUNCTION_WORD_ROLES
             .iter()
             .any(|role| meaning.has_role(role))
-            || meaning.has_role(NEGATION_ROLE);
+            || meaning.has_role(NEGATION_ROLE)
+            || meaning.has_role(SCOPED_GRAMMAR_ROLE);
         if excluded {
             continue;
         }
@@ -368,4 +369,64 @@ fn held_out_multilingual_budgets_preserve_exact_typed_currency_meaning() {
             case.language
         );
     }
+}
+
+#[test]
+fn scoped_grammar_patterns_do_not_replace_plain_lexical_meanings() {
+    assert_eq!(
+        indexed_meaning("is the", "en").as_deref(),
+        Some("wikidata_property_instance_of")
+    );
+    let scoped: Vec<_> = lexicon()
+        .meanings
+        .iter()
+        .filter(|meaning| meaning.has_role(SCOPED_GRAMMAR_ROLE))
+        .collect();
+    for expected in [
+        "quantity-constraint-bound-frame",
+        "quantity-constraint-members-frame",
+        "quantity-constraint-comparison-frame",
+        "quantity-constraint-ownership-frame",
+        "quantity-constraint-query-prefix",
+        "quantity-constraint-bound-reference",
+        "quantity-constraint-member-reference",
+        "quantity-constraint-explicit-sum",
+        "quantity-constraint-inclusive-bound",
+        "quantity-constraint-list-conjunction",
+    ] {
+        assert!(
+            scoped.iter().any(|meaning| meaning.slug == expected),
+            "{expected}"
+        );
+    }
+    for meaning in scoped {
+        for lexeme in &meaning.lexemes {
+            for word in &lexeme.words {
+                if let Some(key) = phrase_key(&word.text) {
+                    assert_ne!(
+                        indexed_meaning(&key, &lexeme.language).as_deref(),
+                        Some(meaning.slug.as_str())
+                    );
+                }
+            }
+        }
+    }
+    assert!(
+        lexicon()
+            .words_for_role_in_languages("quantity-constraint-query-prefix", &["en"])
+            .iter()
+            .any(|word| word == "is the")
+    );
+}
+
+#[test]
+fn sense_specific_quantity_lexemes_preserve_other_lexical_identities() {
+    assert_eq!(
+        indexed_meaning("सीमा", "hi").as_deref(),
+        Some("coding_bound")
+    );
+    assert_eq!(
+        indexed_meaning("cantidades", "es").as_deref(),
+        Some("quantities")
+    );
 }

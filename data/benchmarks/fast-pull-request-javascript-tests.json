@@ -178,6 +178,7 @@
     "rust/tests/web/release-current-group-retry.test.mjs",
     "rust/tests/web/quantity-aggregate-comparison.test.mjs",
     "rust/tests/web/server-evidence-links.test.mjs",
-    "rust/tests/web/generate-role-registry-js.test.mjs"
+    "rust/tests/web/generate-role-registry-js.test.mjs",
+    "rust/tests/web/debugger-client.test.mjs"
   ]
 }

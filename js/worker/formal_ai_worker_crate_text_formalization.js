@@ -52,6 +52,8 @@ const TEXT_FORMALIZATION_PATH = 'data/seed/text-formalization.lino';
 const FUNCTION_WORD_ROLES = Object.freeze(['translation_stop_word', 'statement_function_word']);
 /** Mirrors `NEGATION_ROLE` in rust/src/formalization/text_statements.rs: the lexicon role whose words deny a statement. */
 const NEGATION_ROLE = 'statement_negation_cue';
+/** Grammar lexemes belong to their owning parser, not the general semantic index. */
+const SCOPED_GRAMMAR_ROLE = 'scoped-grammar-pattern';
 /** Mirrors `LONGEST_PHRASE` in rust/src/formalization/text_statements.rs: the most words one lexicon surface may span. */
 const LONGEST_PHRASE = 4;
 /** Mirrors `LONGEST_HAN_WORD` in rust/src/formalization/text_statements.rs: the most characters one Han lexicon surface may span. */
@@ -184,7 +186,8 @@ function meaningIndex(language) {
   return cached(`text-formalization-index-${language}`, () => {
     const best = new Map();
     lexicon().forEach((entry, order) => {
-      if (FUNCTION_WORD_ROLES.some((role) => entry.roles.includes(role)) || entry.roles.includes(NEGATION_ROLE)) return;
+      if (FUNCTION_WORD_ROLES.some((role) => entry.roles.includes(role))
+        || entry.roles.includes(NEGATION_ROLE) || entry.roles.includes(SCOPED_GRAMMAR_ROLE)) return;
       const lexeme = entry.lexemes.find((candidate) => candidate.language === language);
       if (lexeme === undefined) return;
       const languages = new Set(entry.lexemes.map((candidate) => candidate.language)).size;
@@ -614,6 +617,7 @@ return Object.freeze({
   TEXT_FORMALIZATION_PATH,
   FUNCTION_WORD_ROLES,
   NEGATION_ROLE,
+  SCOPED_GRAMMAR_ROLE,
   LONGEST_PHRASE,
   LONGEST_HAN_WORD,
   SHORTEST_STEM,
