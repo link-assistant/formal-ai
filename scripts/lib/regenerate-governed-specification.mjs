@@ -57,45 +57,136 @@ function run(repo, args) {
   });
 }
 
+function normalizeNestedSourceWitnesses(before, after, normalized) {
+  const pairs = new WeakMap(), physicalOld = new WeakSet(), paths = [];
+  let physicalRecords = 0;
+  function visit(oldNode, newNode, location) {
+    if (!oldNode || typeof oldNode !== 'object') return;
+    if (!newNode || typeof newNode !== 'object') return;
+    let visited = pairs.get(oldNode);
+    if (!visited) { visited = new WeakSet(); pairs.set(oldNode, visited); }
+    if (visited.has(newNode)) return;
+    visited.add(newNode);
+    if (oldNode.path === 'rust/src/lib.rs' && oldNode.sha256 === oldRoot) {
+      assert.deepEqual(Object.keys(oldNode).sort(), ['path', 'sha256']);
+      assert.deepEqual(Object.keys(newNode).sort(), ['path', 'sha256']);
+      assert.equal(location[0], 'inventory');
+      assert.equal(location[1], 'cases');
+      assert.equal(location[3], 'program');
+      assert.equal(location[4], 'steps');
+      assert.equal(location.at(-3), 'binding');
+      assert.equal(location.at(-2), 'sourceWitnesses');
+      assert.match(location.at(-1), /^[0-9]+$/u);
+      assert.equal(newNode.path, oldNode.path);
+      assert.equal(newNode.sha256, newRoot, 'Every actual nested witness must carry new identity');
+      if (!physicalOld.has(oldNode)) { physicalOld.add(oldNode); physicalRecords++; }
+      paths.push(location);
+    }
+    for (const [key, value] of Object.entries(oldNode))
+      visit(value, newNode[key], [...location, key]);
+  }
+  visit(before, after, []);
+  assert.equal(physicalRecords, 42, 'Reviewed sealed-old nested witness census');
+  const normalizedTargets = new WeakSet();
+  for (const location of paths) {
+    const target = location.reduce((node, key) => node[key], normalized);
+    if (normalizedTargets.has(target)) continue;
+    assert.equal(target.sha256, newRoot);
+    target.sha256 = oldRoot;
+    normalizedTargets.add(target);
+  }
+  return {path: 'rust/src/lib.rs', before: oldRoot, after: newRoot, physicalRecords};
+}
+
+function scalarDifferenceReport(before, after) {
+  const pairs = new WeakMap(), details = [];
+  const digest = createHash('sha256');
+  let differences = 0, visitedPairs = 0, detailBytes = 0;
+  const preview = value => {
+    if (typeof value === 'string' && value.length > 96)
+      return {type: 'string', bytes: Buffer.byteLength(value), sha256: sha(value)};
+    if (typeof value === 'bigint') return {type: 'bigint', value: value.toString()};
+    if (value === undefined) return {type: 'undefined'};
+    if (value && typeof value === 'object') return {type: Array.isArray(value) ? 'array' : 'object'};
+    return value;
+  };
+  function difference(location, oldValue, newValue) {
+    const record = {path: location.join('/'), before: preview(oldValue), after: preview(newValue)};
+    differences++;
+    digest.update(JSON.stringify(record) + '\n');
+    const encodedBytes = Buffer.byteLength(JSON.stringify(record));
+    if (details.length < 128 && detailBytes + encodedBytes <= 65536) {
+      details.push(record); detailBytes += encodedBytes;
+    }
+  }
+  function visit(oldNode, newNode, location) {
+    if (Object.is(oldNode, newNode)) return;
+    if (!oldNode || !newNode || typeof oldNode !== 'object' || typeof newNode !== 'object') {
+      difference(location, oldNode, newNode); return;
+    }
+    let visited = pairs.get(oldNode);
+    if (!visited) { visited = new WeakSet(); pairs.set(oldNode, visited); }
+    if (visited.has(newNode)) return;
+    visited.add(newNode);
+    if (++visitedPairs > 200000) throw Error('ScalarDifferenceObjectBoundExceeded');
+    if (Array.isArray(oldNode) !== Array.isArray(newNode)) {
+      difference(location, oldNode, newNode); return;
+    }
+    for (const key of [...new Set([...Object.keys(oldNode), ...Object.keys(newNode)])].sort())
+      visit(oldNode[key], newNode[key], [...location, key]);
+  }
+  visit(before, after, []);
+  return {scope: 'complete paired physical object graph; bounded small-value details',
+    differences, visitedPairs, allDifferencesSha256: digest.digest('hex'),
+    detailsTruncated: differences > details.length, details};
+}
+
 function assertCompleteInventory(before, after) {
   const normalized = structuredClone(after);
-  assert.equal(after.inventory.total, before.inventory.total);
-  assert.equal(after.inventory.cases.length, before.inventory.cases.length, 'No case loss');
-  assert.equal(after.inventory.unsupported.length, before.inventory.unsupported.length);
-  assert.deepEqual(after.sourceManifest, before.sourceManifest, 'Native specification source changed');
-  let changed = 0;
-  const occurrences = new Map();
-  const expectedOccurrences = new Map([...reviewedFixtures.keys()].map(file => [file, 0]));
-  for (const item of before.inventory.cases) {
-    for (const fixture of item.program?.fixtures ?? []) {
-      if (expectedOccurrences.has(fixture.file))
-        expectedOccurrences.set(fixture.file, expectedOccurrences.get(fixture.file) + 1);
+  try {
+    assert.equal(after.inventory.total, before.inventory.total);
+    assert.equal(after.inventory.cases.length, before.inventory.cases.length, 'No case loss');
+    assert.equal(after.inventory.unsupported.length, before.inventory.unsupported.length);
+    assert.deepEqual(after.sourceManifest, before.sourceManifest, 'Native specification source changed');
+    let changed = 0;
+    const occurrences = new Map();
+    const expectedOccurrences = new Map([...reviewedFixtures.keys()].map(file => [file, 0]));
+    for (const item of before.inventory.cases) {
+      for (const fixture of item.program?.fixtures ?? []) {
+        if (expectedOccurrences.has(fixture.file))
+          expectedOccurrences.set(fixture.file, expectedOccurrences.get(fixture.file) + 1);
+      }
     }
-  }
-  for (let index = 0; index < before.inventory.cases.length; index++) {
-    const oldCase = before.inventory.cases[index];
-    const newCase = normalized.inventory.cases[index];
-    assert.equal(newCase.id, oldCase.id, 'Case identity/order changed');
-    const fixtures = newCase.program?.fixtures ?? [];
-    for (let fixture = 0; fixture < fixtures.length; fixture++) {
-      const oldFixture = oldCase.program?.fixtures?.[fixture];
-      const approved = reviewedFixtures.get(oldFixture?.file);
-      if (!approved) continue;
-      assert.equal(fixtures[fixture].file, oldFixture.file);
-      assert.equal(oldFixture.sha256, approved.before);
-      assert.equal(fixtures[fixture].sha256, approved.after);
-      fixtures[fixture].sha256 = approved.before;
-      occurrences.set(oldFixture.file, (occurrences.get(oldFixture.file) ?? 0) + 1);
-      changed++;
+    for (let index = 0; index < before.inventory.cases.length; index++) {
+      const oldCase = before.inventory.cases[index];
+      const newCase = normalized.inventory.cases[index];
+      assert.equal(newCase.id, oldCase.id, 'Case identity/order changed');
+      const fixtures = newCase.program?.fixtures ?? [];
+      for (let fixture = 0; fixture < fixtures.length; fixture++) {
+        const oldFixture = oldCase.program?.fixtures?.[fixture];
+        const approved = reviewedFixtures.get(oldFixture?.file);
+        if (!approved) continue;
+        assert.equal(fixtures[fixture].file, oldFixture.file);
+        assert.equal(oldFixture.sha256, approved.before);
+        assert.equal(fixtures[fixture].sha256, approved.after);
+        fixtures[fixture].sha256 = approved.before;
+        occurrences.set(oldFixture.file, (occurrences.get(oldFixture.file) ?? 0) + 1);
+        changed++;
+      }
     }
+    assert.equal(changed, 39, 'Reviewed complete fixture occurrence count');
+    for (const [file, approved] of reviewedFixtures)
+      assert.equal(expectedOccurrences.get(file), approved.occurrences, 'Sealed old owner occurrence count');
+    for (const [file, expected] of expectedOccurrences)
+      assert.equal(occurrences.get(file), expected, 'Every reviewed old occurrence must carry new identity');
+    const nestedSourceWitnessChanges = normalizeNestedSourceWitnesses(before, after, normalized);
+    assert.deepEqual(normalized, before, 'Unreviewed complete inventory delta');
+    return {changedFixtureOccurrences: changed, nestedSourceWitnessChanges};
+  } catch (error) {
+    console.error(JSON.stringify({phase: 'complete-inventory-remaining-scalar-differences',
+      ...scalarDifferenceReport(before, normalized)}));
+    throw error;
   }
-  assert.equal(changed, 39, 'Reviewed complete fixture occurrence count');
-  for (const [file, approved] of reviewedFixtures)
-    assert.equal(expectedOccurrences.get(file), approved.occurrences, 'Sealed old owner occurrence count');
-  for (const [file, expected] of expectedOccurrences)
-    assert.equal(occurrences.get(file), expected, 'Every reviewed old occurrence must carry new identity');
-  assert.deepEqual(normalized, before, 'Unreviewed complete inventory delta');
-  return changed;
 }
 
 export async function regenerateSpecificationWitness({repo, sourceCommit, pin}) {
@@ -155,7 +246,8 @@ export async function regenerateSpecificationWitness({repo, sourceCommit, pin}) 
     '--refresh-reviewed-baseline', '--reviewed-reader-sha=' + expectedReader,
     '--previous-baseline-sha=' + expectedBaseline]);
   const refreshed = deserialize(bytes(repo, baseline));
-  const changedFixtureOccurrences = assertCompleteInventory(oldBaseline, refreshed);
+  const {changedFixtureOccurrences, nestedSourceWitnessChanges} =
+    assertCompleteInventory(oldBaseline, refreshed);
   for (const input of sourceInputs) assert.equal(sha(bytes(repo, input.path)), input.sha256);
   const changed = execFileSync('git', ['diff', '--name-only', '--'], {
     cwd: repo, encoding: 'utf8', timeout: 10000, maxBuffer: 65536
@@ -182,7 +274,8 @@ export async function regenerateSpecificationWitness({repo, sourceCommit, pin}) 
     completeInventoryUnchangedExceptReviewedFixtureWitnesses: true,
     generatedProgramCount: oldPrograms.length, registryChanges,
     total: refreshed.inventory.total, cases: refreshed.inventory.cases.length,
-    unsupported: refreshed.inventory.unsupported.length, changedFixtureOccurrences, files};
+    unsupported: refreshed.inventory.unsupported.length, changedFixtureOccurrences,
+    nestedSourceWitnessChanges, files};
   const manifestBytes = Buffer.from(JSON.stringify(manifest, null, 2) + '\n');
   assert(manifestBytes.length <= 262144);
   assert(files.reduce((sum, file) => sum + file.bytes, manifestBytes.length) <= 3670016);
