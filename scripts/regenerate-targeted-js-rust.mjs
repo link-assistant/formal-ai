@@ -15,14 +15,20 @@ const {namedImports,resolveImport}=await import(pathToFileURL(path.join(repo,'sc
 const {renderBlockers}=await import(pathToFileURL(path.join(repo,'scripts/lib/translation-blockers.mjs')));
 const {selfTranslationSignatures}=await import(pathToFileURL(path.join(upstream,'js/src/self-translation.js')));
 const read=p=>fs.readFileSync(path.join(repo,p),'utf8');
-const targets=['js/agentic/crate/task_decomposition_stated_task.mjs','js/agentic/crate/solver_handlers_task_decomposition.mjs'];
+const targets=['js/agentic/crate/quoted_segments.mjs','js/agentic/crate/task_decomposition_stated_task.mjs'];
 const ledgerBefore=read(api.LEDGER_FILE),committed=api.parseLedger(ledgerBefore),scope=api.scopeModules();
+assert(targets.every(target=>scope.includes(target)),'Only existing registered modules may be regenerated');
+const companion=targets[1],companionProjectionBefore=read(api.projectionPath(companion));
 const untouched=new Map(scope.filter(module=>!targets.includes(module)).map(module=>[api.projectionPath(module),read(api.projectionPath(module))]));
 assert.equal(committed.commit,'eb0574d5528babd3b4aadece81590d8e2230b99b');
 const signatures=new Map();
 const inScope=new Set(scope);
 const dependencies=new Set();
 for(const target of targets) for(const entry of namedImports(read(target))) {const dep=resolveImport(target,entry.specifier,inScope);if(dep&&!targets.includes(dep))dependencies.add(dep);}
+assert.equal(dependencies.size,0,'Reviewed quote/stated targets have no registered same-directory dependencies');
+assert.deepEqual(namedImports(read(targets[0])),[{specifier:'../ascii_character.mjs',names:[{imported:'isAsciiAlphanumeric',local:'isAsciiAlphanumeric'}]}]);
+assert.deepEqual(namedImports(read(companion)),[{specifier:'../write_str.mjs',names:[{imported:'isAlphanumeric',local:'isAlphanumeric'},{imported:'trimEndMatches',local:'trimEndMatches'}]}]);
+for(const target of targets) for(const entry of namedImports(read(target))) assert.equal(resolveImport(target,entry.specifier,inScope),null,'Out-of-directory imports retain the normal unbound/carry policy');
 for(const dependency of dependencies){
  const projection=read(api.projectionPath(dependency));
  const measured=api.readProjection(projection);
@@ -66,6 +72,7 @@ try{
   console.log(JSON.stringify({phase:'translated',module:target,translated:measured.translated,workaround:measured.workaround,inferred:measured.inferred,carried:measured.carried,ms:result.ms}));
  }
 }finally{await worker.terminate();}
+assert.equal(results.get(companion).projection,companionProjectionBefore,'Unchanged stated-task companion projection bytes');
 const modules=scope.map(module=>results.get(module)??{...api.readProjection(read(api.projectionPath(module))),path:module,projection:read(api.projectionPath(module))});
 assert.deepEqual(api.regressions(committed.modules,modules),[]);
 for(const module of modules.filter(module=>!targets.includes(module.path))){
@@ -91,7 +98,7 @@ const identities=files.map(file=>({path:file,bytes:Buffer.byteLength(read(file))
 assert.equal(identities.length,4,'Only the four generated source files may be uploaded');
 assert(identities.every(file=>file.bytes<=262144),'Generated source file size bound');
 assert(identities.reduce((total,file)=>total+file.bytes,0)<=524288,'Generated source artifact size bound');
-const inputs=[...new Set([...targets,...dependencies,'scripts/regenerate-targeted-js-rust.mjs'])].map(file=>({path:file,sha256:createHash('sha256').update(read(file)).digest('hex')}));
+const inputs=[...new Set([...targets,...dependencies,'js/agentic/ascii_character.mjs','js/agentic/write_str.mjs','scripts/regenerate-targeted-js-rust.mjs'])].map(file=>({path:file,sha256:createHash('sha256').update(read(file)).digest('hex')}));
 const manifest={source:execFileSync('git',['rev-parse','HEAD'],{cwd:repo,encoding:'utf8'}).trim(),upstream:committed.commit,run:process.env.GITHUB_RUN_ID,attempt:process.env.GITHUB_RUN_ATTEMPT,inputs,files:identities};
 for(const file of files){const destination=path.join(output,file);fs.mkdirSync(path.dirname(destination),{recursive:true});fs.copyFileSync(path.join(repo,file),destination);}
 fs.writeFileSync(path.join(output,'manifest.json'),JSON.stringify(manifest,null,2)+'\n');
