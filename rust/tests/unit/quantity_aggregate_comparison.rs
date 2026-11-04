@@ -128,16 +128,9 @@ fn all_shared_aggregate_vectors_pass_through_the_full_solver() {
                     .contains(&format!("quantity_constraint:verdict:{holds}")),
                 "{id}"
             );
-            for key in ["total", "bound"] {
-                assert!(
-                    answer.answer.contains(&expected[key].to_string()),
-                    "{id}: {key}"
-                );
-            }
-            assert!(
-                answer
-                    .answer
-                    .contains(expected["unit"].as_str().expect("unit")),
+            assert_eq!(
+                answer.answer,
+                expected["content"].as_str().expect("exact expected answer"),
                 "{id}"
             );
             let actual =

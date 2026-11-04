@@ -98,7 +98,7 @@ function normalizeNestedSourceWitnesses(before, after, normalized) {
   return {path: 'rust/src/lib.rs', before: oldRoot, after: newRoot, physicalRecords};
 }
 
-function scalarDifferenceReport(before, after) {
+export function scalarDifferenceReport(before, after) {
   const pairs = new WeakMap(), details = [];
   const digest = createHash('sha256');
   let differences = 0, visitedPairs = 0, detailBytes = 0;
