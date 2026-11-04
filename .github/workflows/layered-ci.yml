@@ -74,7 +74,12 @@ on:
         required: false
         default: translations
         type: choice
-        options: [translations, specification-witness, debug-owner-baseline]
+        options: [translations, specification-witness, debug-owner-baseline, module-projection]
+      regeneration-module:
+        description: 'Exact tracked JS module; used only by module-projection regeneration'
+        required: false
+        default: ''
+        type: string
       pull-request:
         description: 'Pull request the dispatched checks report for'
         required: false
@@ -150,6 +155,7 @@ jobs:
       - name: Regenerate the selected source projections and verified census
         env:
           FORMAL_AI_REGENERATION_TARGET: ${{ inputs.regeneration-target || 'translations' }}
+          FORMAL_AI_REGENERATION_MODULE: ${{ inputs.regeneration-module }}
         run: node --max-old-space-size=384 scripts/regenerate-targeted-js-rust.mjs .meta-language
       - name: Preserve only generated source and its source/hash manifest
         uses: actions/upload-artifact@v7
