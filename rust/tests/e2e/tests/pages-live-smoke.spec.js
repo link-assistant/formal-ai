@@ -1,7 +1,7 @@
 // @ts-check
 // One live context verifies delivery and the real engine without a CDN load test.
 const { test, expect } = require('@playwright/test');
-const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
+const { PUBLIC_WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 const { withWorkerDiagnostics } = require('./support/worker-diagnostics');
 
 test('live Pages serves landing, native-engine chat, and documentation', async ({ page }, testInfo) => withWorkerDiagnostics(page, testInfo, async () => {
@@ -16,14 +16,16 @@ test('live Pages serves landing, native-engine chat, and documentation', async (
   expect(landing.status()).toBe(200);
   await expect(page.locator('[data-testid="landing-app-summary"]')).toBeVisible();
 
+  const startupStarted = Date.now();
   const app = await page.goto('./');
   expect(app.status()).toBe(200);
   await expect(page.locator('.app')).toBeVisible();
   expect(await page.evaluate(() => window.localStorage.getItem('formalAiDiagnosticJsFallback'))).not.toBe('1');
   await expect(page.locator('[data-testid="demo-status"]')).toHaveText('Manual mode');
   const input = page.locator('[data-testid="chat-composer-input"]');
-  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
+  await expect(input).toBeEnabled({ timeout: PUBLIC_WORKER_READY_TIMEOUT_MS });
   await expect(page.locator('.status')).toContainText('wasm worker');
+  console.log('LivePagesWorkerReady ' + JSON.stringify({ startupElapsedMs: Date.now() - startupStarted }));
 
   const messages = page.locator('[data-testid="chat-message"]');
   const before = await messages.count();

@@ -34,3 +34,25 @@ the real public deployment within its existing timeout, without retry hammering
 or suppressing 429 and runtime errors. Preserve real native-engine and delivery
 assertions. Hosted smoke acceptance remains required; local source controls do
 not execute or establish browser/WASM production success.
+
+## Cold public-worker readiness
+
+Main run 41882656145, job 126815222022, exhausted the localhost-calibrated
+20-second composer wait. Preserved diagnostics reported "loading worker", a
+disabled composer, no errors, and source 241e9fc5f9450bc8c25c42979508cf240434d042.
+The browser entry imports the module inventory serially; public CDN transport
+is part of this cold start. This establishes that startup exceeded the old bound,
+not observed eventual readiness or a browser acceptance pass.
+
+The public smoke allows one cold start up to 60 seconds within a 90-second test
+and a 180-second global cap. Local artifact waits retain their 20-second bound;
+the original full Pages configuration remains unchanged. There are still no
+retries and only one live context. Readiness, real WASM mode, the actual native
+arithmetic answer, HTTP failures and fallback refusals remain mandatory. A ready
+worker reports measured startup time. A failure preserves bounded pending network
+requests and recent completions, with query strings removed, along with runtime
+errors and the original assertion. Unit replays verify these oracles; the hosted
+live smoke must establish actual production readiness.
+
+Reducing serial public asset imports is deferred performance work. These timing
+allowances do not establish a faster worker or full public-matrix coverage.
