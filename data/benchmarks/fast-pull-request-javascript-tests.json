@@ -45,6 +45,8 @@
     "rust/tests/web/release-extension-producer-attempt.test.mjs",
     "rust/tests/web/inactive-desktop-publication.test.mjs",
     "rust/tests/web/verify-public-release-downloads.test.mjs",
+    "rust/tests/web/pages-live-rate-budget.test.mjs",
+    "rust/tests/web/worker-startup-diagnostics.test.mjs",
     "rust/tests/web/dependency-update-publication.test.mjs",
     "rust/tests/web/issue-1169-dependencies-latest-workflow.test.mjs",
     "rust/tests/web/dependencies-maintenance-workflow.test.mjs",
