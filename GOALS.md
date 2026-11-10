@@ -45,6 +45,12 @@ This project should build a practical, inspectable symbolic assistant before it 
 - When no reusable part exists, combine reasoning, random search, and evolutionary search according to the available compute budget instead of giving up; today implemented for arithmetic reachability (`rust/src/solver_search.rs`), a target for every other domain.
 - After verification, apply meaning-preserving transformation rules to shorten the answer and pick the smallest sufficient form.
 - Surface execution failures as `trace:execution_failure` links instead of retrying silently.
+- Make the recursive meta algorithm of the picture in the README the procedure that produces every answer, not only the trace recorded beside it ([#1550](https://github.com/link-assistant/formal-ai/issues/1550)).
+- Treat the requirements of a task as axioms, or statements with a high probability, of the formal system of the task context; infer details that stay unresolved from them with [relative-meta-logic](https://github.com/link-foundation/relative-meta-logic), using knowledge collected on the internet and previous experience of similar tasks as evidence ([#1552](https://github.com/link-assistant/formal-ai/issues/1552)).
+- Formalize each requirement into a test in the required programming language and run it before a draft is selected ([#1551](https://github.com/link-assistant/formal-ai/issues/1551)).
+- Study multiple options, calculate the probability or fit of each to the original requirements with relative-meta-logic, select the best automatically, plan the implementation, and execute every action of the plan in the target repository or folder ([#1552](https://github.com/link-assistant/formal-ai/issues/1552), [#1483](https://github.com/link-assistant/formal-ai/issues/1483)).
+- Use source code on GitHub by its licence: ideas only by default, a copy for a repository in the public domain, and a library or a licence-respecting copy of a file when the user asks or allows ([#1553](https://github.com/link-assistant/formal-ai/issues/1553)).
+- Replace every hardcoded solution of a supported task with a solution the meta algorithm produces ([#1554](https://github.com/link-assistant/formal-ai/issues/1554)).
 
 ## Configurable Solver Goals
 
@@ -55,6 +61,7 @@ This project should build a practical, inspectable symbolic assistant before it 
 - Make decomposition depth configurable so the loop does not spin forever on unsolvable problems.
 - Make agent mode opt-in by configuration, off by default, and only active in environments that declare isolation.
 - Make diagnostic visibility, offline mode, and source cache TTL configurable from environment variables and CLI flags.
+- When several options are valid, give the choice a switch that changes behaviour and list it in [solver switches](docs/configuration/solver.md) ([#1556](https://github.com/link-assistant/formal-ai/issues/1556)).
 - Keep the algorithm deterministic for a given config: "random guessing" must be seeded from the impulse content hash so the same prompt produces the same answer.
 
 ## Append-Only Event Log Goals
