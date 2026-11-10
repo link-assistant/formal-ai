@@ -1,0 +1,4476 @@
+[
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABFYGQQw",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 447,
+    "parent": null,
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Issue with dialog: интерфейс ужасен."
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABFYe3Qw",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "documentation"
+        },
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 453,
+    "parent": null,
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Moonshot tasks"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABFc6Slw",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "documentation"
+        },
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 483,
+    "parent": null,
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "We can add experimental fallback for formalization using small models"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 1561,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABFksCbg",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "documentation"
+        },
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 491,
+    "parent": {
+      "number": 1183,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Principle of least action"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABGb2gWQ",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "documentation"
+        },
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 557,
+    "parent": null,
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "On desktop/tablet size of screen we should use buttons embedded into the text field"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABIilWhg",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "documentation"
+        },
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 651,
+    "parent": null,
+    "subIssues": {
+      "nodes": [
+        {
+          "number": 654,
+          "state": "CLOSED"
+        },
+        {
+          "number": 655,
+          "state": "CLOSED"
+        },
+        {
+          "number": 656,
+          "state": "CLOSED"
+        },
+        {
+          "number": 657,
+          "state": "CLOSED"
+        },
+        {
+          "number": 658,
+          "state": "CLOSED"
+        },
+        {
+          "number": 659,
+          "state": "CLOSED"
+        },
+        {
+          "number": 660,
+          "state": "CLOSED"
+        },
+        {
+          "number": 661,
+          "state": "CLOSED"
+        },
+        {
+          "number": 662,
+          "state": "CLOSED"
+        },
+        {
+          "number": 663,
+          "state": "CLOSED"
+        },
+        {
+          "number": 664,
+          "state": "CLOSED"
+        },
+        {
+          "number": 665,
+          "state": "OPEN"
+        },
+        {
+          "number": 666,
+          "state": "OPEN"
+        },
+        {
+          "number": 667,
+          "state": "OPEN"
+        },
+        {
+          "number": 668,
+          "state": "OPEN"
+        },
+        {
+          "number": 669,
+          "state": "OPEN"
+        },
+        {
+          "number": 670,
+          "state": "OPEN"
+        },
+        {
+          "number": 671,
+          "state": "CLOSED"
+        },
+        {
+          "number": 672,
+          "state": "CLOSED"
+        },
+        {
+          "number": 673,
+          "state": "CLOSED"
+        },
+        {
+          "number": 674,
+          "state": "CLOSED"
+        },
+        {
+          "number": 698,
+          "state": "CLOSED"
+        },
+        {
+          "number": 699,
+          "state": "CLOSED"
+        },
+        {
+          "number": 700,
+          "state": "OPEN"
+        },
+        {
+          "number": 701,
+          "state": "CLOSED"
+        },
+        {
+          "number": 702,
+          "state": "CLOSED"
+        },
+        {
+          "number": 703,
+          "state": "CLOSED"
+        },
+        {
+          "number": 704,
+          "state": "CLOSED"
+        },
+        {
+          "number": 705,
+          "state": "CLOSED"
+        },
+        {
+          "number": 706,
+          "state": "CLOSED"
+        },
+        {
+          "number": 707,
+          "state": "CLOSED"
+        },
+        {
+          "number": 708,
+          "state": "CLOSED"
+        },
+        {
+          "number": 709,
+          "state": "CLOSED"
+        },
+        {
+          "number": 710,
+          "state": "CLOSED"
+        },
+        {
+          "number": 930,
+          "state": "CLOSED"
+        },
+        {
+          "number": 931,
+          "state": "CLOSED"
+        },
+        {
+          "number": 932,
+          "state": "CLOSED"
+        },
+        {
+          "number": 933,
+          "state": "CLOSED"
+        },
+        {
+          "number": 934,
+          "state": "OPEN"
+        },
+        {
+          "number": 935,
+          "state": "CLOSED"
+        },
+        {
+          "number": 936,
+          "state": "CLOSED"
+        },
+        {
+          "number": 937,
+          "state": "CLOSED"
+        },
+        {
+          "number": 938,
+          "state": "CLOSED"
+        },
+        {
+          "number": 939,
+          "state": "CLOSED"
+        },
+        {
+          "number": 940,
+          "state": "OPEN"
+        },
+        {
+          "number": 941,
+          "state": "CLOSED"
+        },
+        {
+          "number": 942,
+          "state": "CLOSED"
+        },
+        {
+          "number": 943,
+          "state": "CLOSED"
+        },
+        {
+          "number": 944,
+          "state": "CLOSED"
+        },
+        {
+          "number": 945,
+          "state": "CLOSED"
+        },
+        {
+          "number": 946,
+          "state": "CLOSED"
+        },
+        {
+          "number": 947,
+          "state": "CLOSED"
+        },
+        {
+          "number": 948,
+          "state": "CLOSED"
+        },
+        {
+          "number": 949,
+          "state": "CLOSED"
+        },
+        {
+          "number": 950,
+          "state": "CLOSED"
+        },
+        {
+          "number": 951,
+          "state": "OPEN"
+        },
+        {
+          "number": 952,
+          "state": "CLOSED"
+        },
+        {
+          "number": 953,
+          "state": "OPEN"
+        },
+        {
+          "number": 954,
+          "state": "OPEN"
+        },
+        {
+          "number": 955,
+          "state": "OPEN"
+        },
+        {
+          "number": 956,
+          "state": "CLOSED"
+        },
+        {
+          "number": 957,
+          "state": "CLOSED"
+        },
+        {
+          "number": 958,
+          "state": "CLOSED"
+        },
+        {
+          "number": 959,
+          "state": "CLOSED"
+        },
+        {
+          "number": 1021,
+          "state": "CLOSED"
+        },
+        {
+          "number": 1085,
+          "state": "CLOSED"
+        },
+        {
+          "number": 1162,
+          "state": "OPEN"
+        },
+        {
+          "number": 1183,
+          "state": "OPEN"
+        },
+        {
+          "number": 1561,
+          "state": "OPEN"
+        }
+      ]
+    },
+    "title": "Create issue for most critical missing features and items, that will help fully fulfill our vision and roadmap"
+  },
+  {
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 658,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "CLOSED"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABIi8Vig",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 665,
+    "parent": {
+      "number": 651,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E46: Installable offline PWA and npm package for the WASM engine"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 667,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABIi8WEw",
+    "issueType": {
+      "name": "Task"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 666,
+    "parent": {
+      "number": 651,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E47: Publish the VS Code extension to the Marketplace and Open VSX"
+  },
+  {
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 666,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABIi8WxQ",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 667,
+    "parent": {
+      "number": 651,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E48: Interactive step-by-step debugging view (R383)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABIi8YCw",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 668,
+    "parent": {
+      "number": 651,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E49: Shareable associative packages between instances (F6)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABIi8Yzg",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 669,
+    "parent": {
+      "number": 651,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E50: Cloud memory sync for the single-file bundle (F3)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABIi8ZWA",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 670,
+    "parent": {
+      "number": 651,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E51: Browser multi-language execution experiment via WebVM (F5)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABIwOAWw",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 700,
+    "parent": {
+      "number": 651,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E58: Universal measuring-unit support via link-foundation/si-units (plus the upstream filing from issue 439)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABJXywRQ",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 800,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Formal AI: Найди мне зарядку для ноутбука Acer Aspire 3 A325-45 на amazon.in"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABJtYpyQ",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 825,
+    "parent": null,
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Auto complete in all our UI where we have our own input boxes implementation"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABKApweQ",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        },
+        {
+          "name": "question"
+        }
+      ]
+    },
+    "number": 836,
+    "parent": null,
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Feature: warn the user when a request appears to be illegal (so they can reconsider)"
+  },
+  {
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 864,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "CLOSED"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABKJQ5gQ",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "documentation"
+        },
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 861,
+    "parent": null,
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Optional anonymous sentry issue reporting"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABKNCe0w",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 869,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Unknown prompt: Назначь мне встречу с Александром на 20:00 по Грузии"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABKN07ww",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 872,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Formal AI: `игры для малышей с открытым исходным кодом (абсолютно и полностью бесплатные) в App Store (iOS)`"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABLKYALA",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "documentation"
+        },
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 901,
+    "parent": null,
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Automate TRIZ principles and paradox/contradiction solutions in general"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 952,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "CLOSED"
+        },
+        {
+          "number": 951,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABLaw-xQ",
+    "issueType": {
+      "name": "Task"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 934,
+    "parent": {
+      "number": 651,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E82: Restart E39 — shrinking JS-worker budget, hard-fail WASM fallback, and slice-2 absorption (issue #658 continuation)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABLaxC9w",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 940,
+    "parent": {
+      "number": 651,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E88: Generate downloadable research documents (PDF/DOCX) from research prompts (#425 original ask)"
+  },
+  {
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 934,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABLaxKoA",
+    "issueType": {
+      "name": "Task"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 951,
+    "parent": {
+      "number": 651,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E99: Split main.jsx: components stay, the 200+ logic functions move to WASM calls or die as duplicates"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABLaxMIw",
+    "issueType": {
+      "name": "Task"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 953,
+    "parent": {
+      "number": 651,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E101: Move desktop tool-router permission/path-confinement logic into the Rust core; stop committing minified web bundles"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABLaxMyw",
+    "issueType": {
+      "name": "Task"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 954,
+    "parent": {
+      "number": 651,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E102: Reorganize src/ into directory modules; add a generated module map to ARCHITECTURE.md pinned by a doc test"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABLaxNwQ",
+    "issueType": {
+      "name": "Task"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 955,
+    "parent": {
+      "number": 651,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E103: Runtime hand-check suite — carry forward the 49 checks this audit could not verify statically"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABQG7OlQ",
+    "issueType": {
+      "name": "Task"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1084,
+    "parent": null,
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Published container images are linux/amd64 only (CI-CD best practice 13)"
+  },
+  {
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 1085,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "CLOSED"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABQNg4ew",
+    "issueType": {
+      "name": "Task"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1088,
+    "parent": {
+      "number": 1085,
+      "state": "CLOSED"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E110: Move evidence out of the source repository (#1085 D7)"
+  },
+  {
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 1085,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "CLOSED"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABQNg7oA",
+    "issueType": {
+      "name": "Task"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1090,
+    "parent": {
+      "number": 1085,
+      "state": "CLOSED"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E112: Finish or retire the traceability manual-confirmation column (#1085 D9)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABThRPew",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1154,
+    "parent": {
+      "number": 1162,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E119: codex re-plans the same gh issue view 78 times: progress.rs reads only the 'command' argument, Codex exec_command sends 'cmd' (Hive Mind 2026-09-27)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABThRQNA",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1155,
+    "parent": {
+      "number": 1162,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E120: an unauthenticated gh message was accepted as the issue body, so no fallback ran; validate reads, fall back to webfetch/REST/PR context, report honestly (Hive Mind 2026-09-27)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABThRRHg",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1156,
+    "parent": {
+      "number": 1162,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E121: Kotlin program prints Hello, World! twice and the verify script pins it; earlier Main.java printed the Kotlin source (0.352 regression)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABThRR-g",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1157,
+    "parent": {
+      "number": 1162,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E122: build artifact left untracked, non-idempotent commit chain, and a continuation re-does finished work (Hive Mind restart loop)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABThRSuw",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1158,
+    "parent": {
+      "number": 1162,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E123: read PR feedback, update the PR description and mark the PR ready, as a regular LLM does from the same prompt"
+  },
+  {
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 1163,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABThRTbA",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1159,
+    "parent": {
+      "number": 1162,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E124: a missing toolchain (scalac: not found) ends the run although rust/src/prerequisite/ and pinned publishers for scalac/kotlinc exist; wire prerequisite recovery into the agentic executor"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABThRUQg",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1160,
+    "parent": {
+      "number": 1162,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E125: accept Hive Mind's regular prompt and system prompt so Hive Mind can drop its Formal AI-specific prompt"
+  },
+  {
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 1485,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1484,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 1561,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABThRtZw",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1162,
+    "parent": {
+      "number": 651,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": [
+        {
+          "number": 1154,
+          "state": "OPEN"
+        },
+        {
+          "number": 1155,
+          "state": "OPEN"
+        },
+        {
+          "number": 1156,
+          "state": "OPEN"
+        },
+        {
+          "number": 1157,
+          "state": "OPEN"
+        },
+        {
+          "number": 1158,
+          "state": "OPEN"
+        },
+        {
+          "number": 1159,
+          "state": "OPEN"
+        },
+        {
+          "number": 1160,
+          "state": "OPEN"
+        },
+        {
+          "number": 1161,
+          "state": "CLOSED"
+        },
+        {
+          "number": 1207,
+          "state": "CLOSED"
+        },
+        {
+          "number": 3282,
+          "state": "CLOSED"
+        },
+        {
+          "number": 1220,
+          "state": "OPEN"
+        },
+        {
+          "number": 1328,
+          "state": "CLOSED"
+        },
+        {
+          "number": 1364,
+          "state": "OPEN"
+        }
+      ]
+    },
+    "title": "[Bug][P0] Complete Hello World issue-to-PR delivery through all Hive clients (E118)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 1185,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1178,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1168,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1165,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1164,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1159,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1561,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABT3caKA",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1163,
+    "parent": {
+      "number": 1183,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E128: the internet as formal knowledge: formalize any fetched page (text and code blocks) into links, search as the entry point for any need"
+  },
+  {
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 1167,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1163,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 1185,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1165,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1561,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABT3cbeg",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1164,
+    "parent": {
+      "number": 1183,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E129: code examples as formal knowledge: parse retrieved examples into the meta language, decompose into meaningful parts, generalize by deduplication, recompose"
+  },
+  {
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 1167,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1164,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1163,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 1554,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1561,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABT3cdSQ",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1165,
+    "parent": {
+      "number": 1183,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E130: put discovery on the production path: research_coding_skill_gap is test-only; write_program answers from three stored program sets (hello-world-programs.lino, stdout contracts, knowledge.rs ORACLE_SNAPSHOTS); make them a deletable, rediscoverable cache"
+  },
+  {
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 1487,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 1551,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1561,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABT3cecA",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1166,
+    "parent": {
+      "number": 1183,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "[Bug][P0] Preserve complete issue meaning in typed obligations and independent acceptance (E131)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 1185,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1165,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1164,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1561,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABT3cfvA",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1167,
+    "parent": {
+      "number": 1183,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "[Feature][P1] Apply useful source transformations through the meta-language with explicit contracts (E132)"
+  },
+  {
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 1163,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABT3chEA",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1168,
+    "parent": {
+      "number": 1183,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E133: generated code must use the latest versions discovered at generation time (workflows pin checkout v4.4.0, setup-java v5.7.0, Kotlin 2.3.10, Java 21 while LTS is 25)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABT3cicA",
+    "issueType": {
+      "name": "Task"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1169,
+    "parent": {
+      "number": 1183,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E134: every dependency of Formal AI at its latest release, enforced by a gate (links-notation 0.16→0.22, command-stream 0.16→1.1, 86 lockfile updates, npm, actions, base image)"
+  },
+  {
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 1489,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1483,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 1561,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABT3cjrQ",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1170,
+    "parent": {
+      "number": 1183,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "[Feature][P1] Formal AI drafts useful changes retained through review in its own development (E135)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABT3clFA",
+    "issueType": {
+      "name": "Task"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "documentation"
+        }
+      ]
+    },
+    "number": 1171,
+    "parent": {
+      "number": 1183,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E136: generated docs/llm-task-parity.md comparing every LLM task class with Formal AI's formal answer (first measurement: 0 of 34 useful, 3 wrong)"
+  },
+  {
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 1163,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1179,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABT3cuLQ",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1178,
+    "parent": {
+      "number": 1183,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E143: creative writing, brainstorming, planning and advice as constraint-based composition from formalized sources"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 1178,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1561,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABT3cvTg",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1179,
+    "parent": {
+      "number": 1183,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E144: fact checking over code, Git, GitHub and the internet with relative meta logic (statement-audit: 8,179 contradictions, all YAML-key false positives)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABT3cwdA",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1180,
+    "parent": {
+      "number": 1183,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E145: the repository's full history (commits, issues, PRs, reviews, CI runs) as formal context for reasoning"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABT3f8Cw",
+    "issueType": {
+      "name": "Task"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1182,
+    "parent": {
+      "number": 1183,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E147: move general logic out of Formal AI into our maintained dependencies: its own Links Notation parser (links-notation is declared but unused), 75 in-repo duplicate groups, ~6,000 lines owed to dependencies; continuous cross-organization audit"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABT3geDg",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1183,
+    "parent": {
+      "number": 651,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": [
+        {
+          "number": 1163,
+          "state": "OPEN"
+        },
+        {
+          "number": 1164,
+          "state": "OPEN"
+        },
+        {
+          "number": 1165,
+          "state": "OPEN"
+        },
+        {
+          "number": 1166,
+          "state": "OPEN"
+        },
+        {
+          "number": 1167,
+          "state": "OPEN"
+        },
+        {
+          "number": 1168,
+          "state": "OPEN"
+        },
+        {
+          "number": 1169,
+          "state": "OPEN"
+        },
+        {
+          "number": 1170,
+          "state": "OPEN"
+        },
+        {
+          "number": 1171,
+          "state": "OPEN"
+        },
+        {
+          "number": 1172,
+          "state": "CLOSED"
+        },
+        {
+          "number": 1173,
+          "state": "CLOSED"
+        },
+        {
+          "number": 1174,
+          "state": "CLOSED"
+        },
+        {
+          "number": 1175,
+          "state": "CLOSED"
+        },
+        {
+          "number": 1176,
+          "state": "CLOSED"
+        },
+        {
+          "number": 1177,
+          "state": "CLOSED"
+        },
+        {
+          "number": 1178,
+          "state": "OPEN"
+        },
+        {
+          "number": 1179,
+          "state": "OPEN"
+        },
+        {
+          "number": 1180,
+          "state": "OPEN"
+        },
+        {
+          "number": 1181,
+          "state": "CLOSED"
+        },
+        {
+          "number": 1182,
+          "state": "OPEN"
+        },
+        {
+          "number": 1184,
+          "state": "OPEN"
+        },
+        {
+          "number": 1185,
+          "state": "OPEN"
+        },
+        {
+          "number": 1186,
+          "state": "OPEN"
+        },
+        {
+          "number": 1187,
+          "state": "OPEN"
+        },
+        {
+          "number": 1212,
+          "state": "OPEN"
+        },
+        {
+          "number": 491,
+          "state": "OPEN"
+        },
+        {
+          "number": 1213,
+          "state": "OPEN"
+        }
+      ]
+    },
+    "title": "E127: a truly capable Formal AI: coding by discovery over the formalized internet, every LLM task class in formal form, fact checking with relative meta logic, self-coding via Hive Mind, dependencies latest and deduplicated (sub-issues)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 1185,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABT4iJXA",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1184,
+    "parent": {
+      "number": 1183,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E148: white-box derivation for every answer: derivation_id on every answer, a durable derivation record, and formal-ai explain <answer-id>"
+  },
+  {
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 1184,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1167,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1164,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1163,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 1561,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABT4jTxg",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1185,
+    "parent": {
+      "number": 1183,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E149: error-driven repair loop: formalize compiler/runtime diagnostics, search the error, apply the fix in the meta language, retry (today the executor stops at the first failed step)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 1561,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABT4j2uA",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1186,
+    "parent": {
+      "number": 1183,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E150: formalization as a user-facing task: formalize text into Links Notation, first-order logic, Lean and Rocq (via relative-meta-logic), with round-trip deformalization in en/ru/hi/zh"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABT9RgqQ",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1187,
+    "parent": {
+      "number": 1183,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "E151: GitHub credentials optional in every workflow: one AUTOMATION_TOKEN (or GitHub App) for all workloads, dispatched checks for bot pull requests, orphan-branch isolation without tokens"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 1561,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABVoaFVQ",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1189,
+    "parent": {
+      "number": 1207,
+      "state": "CLOSED"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Agentic read routes the abbreviation \"e.g.\" to a file read: every Hive Mind draft starts with \"Let me open e.g\""
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABWETn_w",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1190,
+    "parent": null,
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Unable to render rich display"
+  },
+  {
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 1486,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABWPQuhA",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1191,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "[Feature][P0] Keep JS-first CI fast and close the gap between PR feedback and main qualification"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABWTH6Lg",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1192,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Translation to English: the answer is not a translation in the requested language (formal-ai 0.352.1)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABWTITZg",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1193,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Translation to English: a translation request is answered with the placeholder \"response:translate\" (formal-ai 0.352.1)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABWTddsw",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1194,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Translation: short phrases of known words (job titles) are not translated, in both directions (formal-ai 0.352.1)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABXDrscA",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1203,
+    "parent": {
+      "number": 1207,
+      "state": "CLOSED"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "0.353.0–0.353.2 are on crates.io and ghcr ('latest' moved) but have no GitHub Release: publication is not atomic"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABXDrtdg",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1204,
+    "parent": {
+      "number": 1207,
+      "state": "CLOSED"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "0.353.2 full image is a bare OCI manifest, not an image index: dockerd logs 'failed to validate image signature' on every pull"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 1561,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABXDruWg",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1205,
+    "parent": {
+      "number": 1207,
+      "state": "CLOSED"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Agent mode: after a tool error Formal AI stops and asks 'Reply `Report issue`' instead of recovering (Hive Mind /agent, 0.352.1)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 1561,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABXDrvgA",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1206,
+    "parent": {
+      "number": 1207,
+      "state": "CLOSED"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Claude Code client: Formal AI ends the task after one WebFetch by echoing its output (num_turns 2, nothing committed; WebFetch gets the whole task prompt)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 1561,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABXF101g",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1208,
+    "parent": {
+      "number": 1207,
+      "state": "CLOSED"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "0.353.x writes derivation records into the caller's repository (data/cache/derivations/*.lino in cwd); Hive Mind pushed them as 10 recovery branches"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 1561,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABXF12dw",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1209,
+    "parent": {
+      "number": 1207,
+      "state": "CLOSED"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "0.353.1: every Hive Mind /agent draft ends planned_not_executed with Hive Mind's whole prompt as the goal (#1064 regression)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABXF14CA",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1210,
+    "parent": {
+      "number": 1207,
+      "state": "CLOSED"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Run a Formal AI draft through Hive Mind on every new formal-ai issue (issues: opened), with the complete session log attached"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 1561,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABXGSabg",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1211,
+    "parent": {
+      "number": 1207,
+      "state": "CLOSED"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "0.353.1 creates files named after words in the prompt ('e.g', 'formal-ai-draft.yml'), fills them with the fetched GitHub page text, and reports 'Created and verified'"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABXNjDJQ",
+    "issueType": {
+      "name": "Task"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "documentation"
+        }
+      ]
+    },
+    "number": 1212,
+    "parent": {
+      "number": 1183,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Motto: \"Don't know everything, know just enough to get to know anything\" in README, VISION, GOALS, crate, site and repo description; VISION step 7 must not ask for random/exhaustive search"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABXaW1vw",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1213,
+    "parent": {
+      "number": 1183,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": [
+        {
+          "number": 1214,
+          "state": "OPEN"
+        },
+        {
+          "number": 1215,
+          "state": "OPEN"
+        },
+        {
+          "number": 1216,
+          "state": "OPEN"
+        },
+        {
+          "number": 1217,
+          "state": "OPEN"
+        },
+        {
+          "number": 1218,
+          "state": "OPEN"
+        },
+        {
+          "number": 1219,
+          "state": "OPEN"
+        },
+        {
+          "number": 3334,
+          "state": "OPEN"
+        }
+      ]
+    },
+    "title": "Cryptographic provenance: prove Formal AI produced the changes with a hash chain over code, per-language sources, memory state per message and thinking traces (prototype)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABXaYcSQ",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1214,
+    "parent": {
+      "number": 1213,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Provenance: hash-chain every Formal AI edit and commit (edit and commit records, Formal-AI-Chain trailer)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABXaYgTw",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1215,
+    "parent": {
+      "number": 1213,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Provenance: separate per-language Merkle roots of the final source (Rust, JavaScript, …)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABXaYksA",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1216,
+    "parent": {
+      "number": 1213,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Provenance: hash the initial memory state and chain the memory state after every message sent or received (replayable)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABXaYopQ",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1217,
+    "parent": {
+      "number": 1213,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Provenance: persist thinking traces and derivations as chain records"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABXaYs5Q",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1218,
+    "parent": {
+      "number": 1213,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Provenance: fast hashing with BLAKE3 on CPU and an optional GPU backend (wgpu), same output on both"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABXaYxaA",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1219,
+    "parent": {
+      "number": 1213,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Provenance: verify-provenance command and signed seal (chain, trailer, blob match, minimum Formal AI share, replay)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABXacQEQ",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1220,
+    "parent": {
+      "number": 1162,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": [
+        {
+          "number": 3333,
+          "state": "OPEN"
+        }
+      ]
+    },
+    "title": "Logging: Formal AI server logs at debug and verbose by default, as pino-like structured Links Notation records instead of ad-hoc eprintln! and JSONL"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABXeUzNQ",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1222,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "0.353.3: formalizeText leaves job-application questions and answers unformalized (ru and en): no question kind, да/нет/yes/no not affirmation/denial, «450 000 ₽» split into two numbers"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABXeU0vg",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1223,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "0.353.3: job-application questions routed to capabilities («Есть ли у Вас опыт работы с API…») and identity («what are your salary expectations?»)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABYE0H6Q",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1235,
+    "parent": null,
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "JavaScript: expose provenance-preserving categorical evidence assessment for legal reasoning"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABYPySAg",
+    "issueType": {
+      "name": "Task"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1282,
+    "parent": null,
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "cross-org duplication findings (default credential layer)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABYkloHQ",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1330,
+    "parent": null,
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Detect that two questions have the same meaning with different wording (sameMeaning(a, b))"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABYrNruw",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1364,
+    "parent": {
+      "number": 1162,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Hive Mind 2026-10-20 (0.354.1): Hello World via /claude, /codex and /agent all failed (branch 'so', web_run {} ×210, build outputs left, invalid gh flags, scalac missing, exit code misread, workflow never planned): everything the next release must fix"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABaReT6g",
+    "issueType": {
+      "name": "Task"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "documentation"
+        },
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1446,
+    "parent": null,
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "Research & Implementation: Enhancing the Temperature and Randomization Mechanism via ProbabilityStore and Memory Dreaming"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 1491,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1170,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABbZfGNw",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1483,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "[Bug][P0] Work-item inspection stops before a useful edit: connect evidence, obligations, patch synthesis and independent checks"
+  },
+  {
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 3909,
+          "repository": {
+            "nameWithOwner": "link-assistant/hive-mind"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 1162,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABbZfG-g",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1484,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "[Bug][P0] Hive issue-created drafts run stale Formal AI: bind both selected sources to the actual serving runtime"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 1490,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1162,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABbZfHbg",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1485,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "[Bug][P0] Pending CI aborts unstarted Hive clients and cascades missing receipts: defer and resume before effects"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 1490,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1191,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABbZfIFg",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1486,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "[Feature][P0] Shorten coding feedback with source-keyed builds, small replay tests and reusable Hive image layers"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 1491,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1166,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABbZfVqw",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1487,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "[Bug][P0] Semantic identity loses operand order and logical connectives: preserve task meaning before planning or proving"
+  },
+  {
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 3910,
+          "repository": {
+            "nameWithOwner": "link-assistant/hive-mind"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 1491,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1490,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABbZfWKw",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        }
+      ]
+    },
+    "number": 1488,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "[Bug][P1] Draft health reports upload errors ahead of missing implementation: preserve structured primary outcomes"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 1491,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1170,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABbZfWnQ",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1489,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "[Feature][P1] Measure useful Formal AI draft contributions retained after human or LLM review"
+  },
+  {
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 3911,
+          "repository": {
+            "nameWithOwner": "link-assistant/hive-mind"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1486,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1488,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1485,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABbZfXDA",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        },
+        {
+          "name": "no-formal-ai-draft"
+        }
+      ]
+    },
+    "number": 1490,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "[Feature][P1] Schedule Formal AI drafts from native issue blockers without rebuilding every blocked backlog item"
+  },
+  {
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 1488,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1489,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1487,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1483,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABbZfXaA",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        },
+        {
+          "name": "no-formal-ai-draft"
+        }
+      ]
+    },
+    "number": 1491,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "[Feature][P2] Turn failed drafts and review corrections into verified repair rules that transfer to unseen tasks"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABbgOfEg",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        },
+        {
+          "name": "no-formal-ai-draft"
+        }
+      ]
+    },
+    "number": 1500,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "[Feature][P2] Complete verified Rust ↔ meta-language ↔ JavaScript production translation (final follow-up)"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABd5OhCA",
+    "issueType": {
+      "name": "Task"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "documentation"
+        },
+        {
+          "name": "enhancement"
+        }
+      ]
+    },
+    "number": 1548,
+    "parent": null,
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "We need to see what we do most wrong, that blocks our vision and plan to fix that"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 1556,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1554,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "id": "I_kwDOSbOoU88AAAABd8sJEQ",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        },
+        {
+          "name": "no-formal-ai-draft"
+        }
+      ]
+    },
+    "number": 1550,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "[Feature][P0] Run the recursive meta algorithm as the executor of every answer: tasks, tests, drafts and solutions at each level"
+  },
+  {
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 1166,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABd8sN3A",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        },
+        {
+          "name": "no-formal-ai-draft"
+        }
+      ]
+    },
+    "number": 1551,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "[Feature][P0] Formalize each requirement into a test in the requested programming language and run it before a draft is selected"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABd8sTfQ",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        },
+        {
+          "name": "no-formal-ai-draft"
+        }
+      ]
+    },
+    "number": 1552,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "[Feature][P1] Treat requirements as axioms: infer missing details and score options with relative-meta-logic"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABd8sZsg",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        },
+        {
+          "name": "no-formal-ai-draft"
+        }
+      ]
+    },
+    "number": 1553,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "[Feature][P1] Reuse source code found on GitHub according to its licence: ideas only, public-domain copy, library, or licence-respecting file copy"
+  },
+  {
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 1165,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1550,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABd8sfxQ",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        },
+        {
+          "name": "no-formal-ai-draft"
+        }
+      ]
+    },
+    "number": 1554,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "[Feature][P1] Replace hardcoded solutions with meta algorithm executions for every task already supported"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABd8skMw",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        },
+        {
+          "name": "no-formal-ai-draft"
+        }
+      ]
+    },
+    "number": 1555,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "[Feature][P2] Formalization and deformalization (naturalization) of natural language through the meta language must round-trip"
+  },
+  {
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 1550,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABd8soMw",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        },
+        {
+          "name": "no-formal-ai-draft"
+        }
+      ]
+    },
+    "number": 1556,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "[Feature][P2] Configuration switches between valid options must change behaviour and be documented"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABd8stRw",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        },
+        {
+          "name": "no-formal-ai-draft"
+        }
+      ]
+    },
+    "number": 1557,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "[Bug][P0] Draft summary is written in Spanish or Russian for an English issue: language markers match word prefixes"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABd8syyQ",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        },
+        {
+          "name": "no-formal-ai-draft"
+        }
+      ]
+    },
+    "number": 1558,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "[Bug][P0] File names from issue text are read at the workspace root and the session stops after three failed reads"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABd8s4Aw",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        },
+        {
+          "name": "no-formal-ai-draft"
+        }
+      ]
+    },
+    "number": 1559,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "[Bug][P0] A system prompt of one session is stored as a learned standing requirement and replayed in the summary of another repository's session"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABd8s9Pg",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        },
+        {
+          "name": "no-formal-ai-draft"
+        }
+      ]
+    },
+    "number": 1560,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "[Bug][P0] Work-item refusal is posted as raw JSON and the page chrome of a GitHub issue page is accepted as the issue text"
+  },
+  {
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 1211,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1209,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1208,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1206,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1205,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1189,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 491,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1186,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1185,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1179,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1170,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1167,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1166,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1165,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1164,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1163,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        },
+        {
+          "number": 1162,
+          "repository": {
+            "nameWithOwner": "link-assistant/formal-ai"
+          },
+          "state": "OPEN"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABd8vHaQ",
+    "issueType": {
+      "name": "Feature"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "enhancement"
+        },
+        {
+          "name": "no-formal-ai-draft"
+        }
+      ]
+    },
+    "number": 1561,
+    "parent": {
+      "number": 651,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": [
+        {
+          "number": 1558,
+          "state": "OPEN"
+        },
+        {
+          "number": 1560,
+          "state": "OPEN"
+        },
+        {
+          "number": 1557,
+          "state": "OPEN"
+        },
+        {
+          "number": 1559,
+          "state": "OPEN"
+        },
+        {
+          "number": 1484,
+          "state": "OPEN"
+        },
+        {
+          "number": 1485,
+          "state": "OPEN"
+        },
+        {
+          "number": 1486,
+          "state": "OPEN"
+        },
+        {
+          "number": 1191,
+          "state": "OPEN"
+        },
+        {
+          "number": 1550,
+          "state": "OPEN"
+        },
+        {
+          "number": 1487,
+          "state": "OPEN"
+        },
+        {
+          "number": 1551,
+          "state": "OPEN"
+        },
+        {
+          "number": 1483,
+          "state": "OPEN"
+        },
+        {
+          "number": 1553,
+          "state": "OPEN"
+        },
+        {
+          "number": 1552,
+          "state": "OPEN"
+        },
+        {
+          "number": 1488,
+          "state": "OPEN"
+        },
+        {
+          "number": 1489,
+          "state": "OPEN"
+        },
+        {
+          "number": 1490,
+          "state": "OPEN"
+        },
+        {
+          "number": 1554,
+          "state": "OPEN"
+        },
+        {
+          "number": 1556,
+          "state": "OPEN"
+        },
+        {
+          "number": 1491,
+          "state": "OPEN"
+        },
+        {
+          "number": 1500,
+          "state": "OPEN"
+        },
+        {
+          "number": 1555,
+          "state": "OPEN"
+        },
+        {
+          "number": 1192,
+          "state": "OPEN"
+        },
+        {
+          "number": 1193,
+          "state": "OPEN"
+        },
+        {
+          "number": 1194,
+          "state": "OPEN"
+        },
+        {
+          "number": 1222,
+          "state": "OPEN"
+        },
+        {
+          "number": 1223,
+          "state": "OPEN"
+        },
+        {
+          "number": 800,
+          "state": "OPEN"
+        },
+        {
+          "number": 869,
+          "state": "OPEN"
+        },
+        {
+          "number": 872,
+          "state": "OPEN"
+        },
+        {
+          "number": 1562,
+          "state": "OPEN"
+        }
+      ]
+    },
+    "title": "[Feature][P0] Critical blockers of the vision: coding by the recursive meta algorithm and general question answering"
+  },
+  {
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "id": "I_kwDOSbOoU88AAAABd9dnag",
+    "issueType": {
+      "name": "Bug"
+    },
+    "labels": {
+      "nodes": [
+        {
+          "name": "bug"
+        },
+        {
+          "name": "no-formal-ai-draft"
+        }
+      ]
+    },
+    "number": 1562,
+    "parent": {
+      "number": 1561,
+      "state": "OPEN"
+    },
+    "subIssues": {
+      "nodes": []
+    },
+    "title": "[Bug][P0] A work item that only cites a Hello World repository or a source file name receives a stored Hello World program, committed and reported as \"Created and verified\""
+  }
+]
