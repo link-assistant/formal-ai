@@ -30,5 +30,5 @@ query($owner:String!,$repo:String!,$endCursor:String){
 GRAPHQL
 
 gh api graphql --paginate -F owner="${owner}" -F repo="${repo}" -f query="${query}" \
-  --jq '.data.repository.issues.nodes[]' | jq -s 'sort_by(.number)' >"${out}"
+  --jq '.data.repository.issues.nodes[]' | jq -c -s 'sort_by(.number)' >"${out}"
 jq -r '"open issues: \(length); without a type: \([.[] | select(.issueType == null)] | length)"' "${out}"
