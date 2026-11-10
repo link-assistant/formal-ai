@@ -125,6 +125,11 @@ test('R1548-13/R1548-14/R1548-15: test repositories, failed attempts and reports
   const study = read(`${CASE}/README.md`);
   const repositories = section(study, '4. The three Hello World test repositories');
   for (const client of ['--tool agent', '--tool codex', '--tool claude']) assert.ok(repositories.includes(client), client);
+  // A repository of the case study is one the issue names, letter for letter.
+  const named = (text) => new Set(text.match(/konard\/test-hello-world-[0-9a-f-]+/g));
+  const asked = named(read('docs/architect-notes/2026-11-10-what-we-do-most-wrong.md'));
+  assert.equal(asked.size, 3);
+  assert.deepEqual([...named(study)].sort(), [...asked].sort());
   const attempts = section(study, '5. Failed attempts on real GitHub issues');
   assert.ok(attempts.includes('### 5.1 link-assistant/formal-ai'));
   assert.ok(attempts.includes('### 5.2 link-assistant/hive-mind'));

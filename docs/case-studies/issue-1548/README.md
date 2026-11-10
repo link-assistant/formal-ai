@@ -106,13 +106,14 @@ The issue asks to "check latest results (wait for finish, if not finished)".
 All three sessions were followed to their last comment. Orchestrator: solve
 v2.39.10; Formal AI 0.355.27 on the Hive Mind host. In all three repositories
 issue #1 is open, and every pull request comment is posted by the account of
-the repository owner.
+the repository owner. Asked again at 11:18:41Z: no comment and no push after
+the ones cited below, in any of the three.
 
 | Repository | Client | Final state | What is wrong |
 | --- | --- | --- | --- |
-| Scala, <https://github.com/konard/test-hello-world-019fb330-00e1-7cfc-b6d9-a8dce7a52f51/pull/2> | `--tool agent` | Failed: "No progress between sessions" (<https://github.com/konard/test-hello-world-019fb330-00e1-7cfc-b6d9-a8dce7a52f51/pull/2#issuecomment-6762953487>); draft; head `31809eba0`; 6 files, +1495/-0 | 2 of 4 check runs fail: job `run` of `run.yml`, started once by `pull_request` and once by `push`; a second workflow `Main.yml` was added and passes, the failing one was left; a 2 MB `agent-stream.jsonl` is committed; the description still says no file was changed |
+| Scala, <https://github.com/konard/test-hello-world-019fb330-00e1-73b9-955e-f357a1600d5b/pull/2> | `--tool agent` | Failed: "No progress between sessions" (<https://github.com/konard/test-hello-world-019fb330-00e1-73b9-955e-f357a1600d5b/pull/2#issuecomment-6762953487>); draft; head `31809eba0`; 6 files, +1495/-0 | 2 of 4 check runs fail: job `run` of `run.yml`, started once by `pull_request` and once by `push`; a second workflow `Main.yml` was added and passes, the failing one was left; a 2 MB `agent-stream.jsonl` is committed; the description still says no file was changed |
 | Rust, <https://github.com/konard/test-hello-world-019fb331-c107-78c7-8ff6-9f127a3c593c/pull/2> | `--tool codex` | Failed twice: "Auto-restart 5/5 - limit reached" (<https://github.com/konard/test-hello-world-019fb331-c107-78c7-8ff6-9f127a3c593c/pull/2#issuecomment-6763712572>, <https://github.com/konard/test-hello-world-019fb331-c107-78c7-8ff6-9f127a3c593c/pull/2#issuecomment-6763757247>); marked ready at 09:25:40; head `8972c2085`; 5 files, +16/-0 | 0 check runs: no workflow file on the branch; the workflow and the test script exist only on `recovery/issue-1-09b0c76bd0e4`; a compiled binary of 4.5 MB is committed; the pull request was marked ready 7 times and returned to draft 7 times in 14 minutes; six summaries carry the prompt of the Scala repository |
-| Kotlin, <https://github.com/konard/test-hello-world-019fb330-fa49-7d51-b5ba-33d2d9d85a79/pull/2> | `--tool claude` | "Ready to merge" (<https://github.com/konard/test-hello-world-019fb330-fa49-7d51-b5ba-33d2d9d85a79/pull/2#issuecomment-6763753979>); 4 of 4 checks pass; 7 files, +149/-0 | Two workflows that do the same; the session log is committed; title and description were not written by the session |
+| Kotlin, <https://github.com/konard/test-hello-world-019fb330-fa49-7c9d-a664-b7ea33bb698a/pull/2> | `--tool claude` | "Ready to merge" (<https://github.com/konard/test-hello-world-019fb330-fa49-7c9d-a664-b7ea33bb698a/pull/2#issuecomment-6763753979>); 4 of 4 checks pass; 7 files, +149/-0 | Two workflows that do the same; the session log is committed; title and description were not written by the session |
 
 The observation of the issue, "no Pull Request description was prepared, was not
 edited, and also CI/CD was not fixed", holds at the end of all three sessions for
