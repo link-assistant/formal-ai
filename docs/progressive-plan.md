@@ -10,9 +10,9 @@ requirement is on a resolution level, and the next pass raises the lowest level 
 | 0 closed | superseded or withdrawn; no pass raises it | 8 |
 | 1 recorded | the row exists, nothing measures it yet | 33 |
 | 2 measured | a test pins it, but the row says it is not delivered | 3 |
-| 3 partial | delivered in part | 102 |
-| 4 implemented | delivered, with a test | 1310 |
-| | **all** | **1456** |
+| 3 partial | delivered in part | 114 |
+| 4 implemented | delivered, with a test | 1317 |
+| | **all** | **1475** |
 
 ## JavaScript first
 
@@ -20,9 +20,9 @@ The root the test that pins each requirement runs in (R1188-U29: the JavaScript 
 
 | Pinned by | Requirements |
 | --- | ---: |
-| a JavaScript test | 454 |
+| a JavaScript test | 463 |
 | a Rust test only | 920 |
-| no test | 82 |
+| no test | 92 |
 
 ## Next pass
 
@@ -68,3 +68,4 @@ Level 1 (recorded): 33 requirement(s) to raise before any level above it is refi
 - `docs/requirements/issue-1207-hive-mind-progressive-self-coding.md`: R1207-6, R1207-7
 - `docs/requirements/issue-1212-project-motto.md`: R1212-6
 - `docs/requirements/issue-1483-evidence-to-useful-edit.md`: R1483-1, R1483-2, R1483-3, R1483-4, R1483-5, R1483-6, R1483-7, R1483-8, R1483-9, R1483-10, R1483-11
+- `docs/requirements/issue-1548-vision-blockers-and-plan.md`: R1548-2, R1548-3, R1548-4, R1548-5, R1548-6, R1548-7, R1548-8, R1548-9, R1548-10, R1548-11, R1548-14, R1548-16
