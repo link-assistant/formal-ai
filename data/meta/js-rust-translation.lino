@@ -15,10 +15,10 @@ js_rust_translation
   upstream link-foundation/meta-language
   commit eb0574d5528babd3b4aadece81590d8e2230b99b
   modules 156
-  translated_items 316
+  translated_items 320
   workaround_items 34
   inferred_signatures 2
-  carried_items 2463
+  carried_items 2476
   translated_modules 107
   fully_translated_modules 1
   refused_modules 49
@@ -76,7 +76,7 @@ module js/agentic/crate/intent_formalization_obligations.mjs translated 3 workar
 module js/agentic/crate/intent_formalization_requirements.mjs translated 0 workaround 0 inferred 0 carried 15
 module js/agentic/crate/issue_report.mjs translated 2 workaround 0 inferred 0 carried 0
 module js/agentic/crate/issue_report_title.mjs translated 2 workaround 0 inferred 0 carried 9
-module js/agentic/crate/language.mjs translated 3 workaround 1 inferred 0 carried 29
+module js/agentic/crate/language.mjs translated 7 workaround 1 inferred 0 carried 42
 module js/agentic/crate/least_action.mjs translated 1 workaround 0 inferred 0 carried 6
 module js/agentic/crate/links_format.mjs translated 0 workaround 3 inferred 0 carried 7
 module js/agentic/crate/links_substitution_query.mjs translated 0 workaround 0 inferred 0 carried 10
@@ -183,41 +183,41 @@ module js/worker/formal_ai_worker_meta_composite.js translated 0 workaround 0 in
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inferred 0 carried 42
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 26
 refusal "import of names its module does not translate" 339
-refusal "JSDoc type {…}" 215
+refusal "JSDoc type {…}" 216
 refusal "import from '…'" 209
-refusal "null" 188
+refusal "null" 189
 refusal "arrow function" 131
-refusal "type: unknown name (a sibling item or an import)" 117
+refusal "type: unknown name (a sibling item or an import)" 119
 refusal "function value …" 103
 refusal "new expression" 93
 refusal "object without a $ tag" 87
-refusal "regular expression" 63
+refusal "regular expression" 65
 refusal "method call .find()" 60
-refusal "method call .split()" 55
+refusal "method call .split()" 57
 refusal "method call .map()" 54
 refusal "method call .filter()" 51
 refusal "method call .some()" 48
-refusal "method call .slice()" 45
-refusal "Array.from" 43
+refusal "method call .slice()" 46
+refusal "Array.from" 44
 refusal "field access" 34
 refusal "method call .push()" 34
 refusal "method call .indexOf()" 31
 refusal "optional chaining" 30
 refusal "nullish coalescing" 28
-refusal "method call .replace()" 24
+refusal "method call .replace()" 25
 refusal "export …" 23
 refusal "syntax: malformed number" 21
 refusal "try statement" 19
 refusal "case test" 18
-refusal "undefined" 16
+refusal "undefined" 17
 refusal "typeof operator" 14
 refusal "method call .every()" 13
 refusal "method call .flatMap()" 13
 refusal "for with const" 12
+refusal "method call .codePointAt()" 11
 refusal "method call .join()" 11
 refusal "namespace property …" 11
 refusal "syntax: @param needs a type and a name" 11
-refusal "method call .codePointAt()" 10
 refusal "method call .reduce()" 10
 refusal "assignment" 9
 refusal "destructured parameter" 9

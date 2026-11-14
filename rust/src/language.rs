@@ -446,6 +446,14 @@ impl ScriptCounts {
     }
 }
 
+/// Whether `rule` claims `character`: inside its range, and a letter when the
+/// rule counts letters only. Mirrored by `ruleClaims` in
+/// `js/agentic/crate/language.mjs`.
+fn rule_claims(rule: &Rule, character: char) -> bool {
+    (rule.start..=rule.end).contains(&u32::from(character))
+        && (!rule.alphabetic_only || character.is_alphabetic())
+}
+
 fn count_scripts(prompt: &str, rules: &[Rule]) -> ScriptCounts {
     let mut counts = ScriptCounts {
         counts: Vec::new(),
@@ -453,11 +461,7 @@ fn count_scripts(prompt: &str, rules: &[Rule]) -> ScriptCounts {
         first: None,
     };
     for character in prompt.chars() {
-        let codepoint = u32::from(character);
-        let matched = rules.iter().find(|rule| {
-            (rule.start..=rule.end).contains(&codepoint)
-                && (!rule.alphabetic_only || character.is_alphabetic())
-        });
+        let matched = rules.iter().find(|rule| rule_claims(rule, character));
         match matched {
             Some(rule) => counts.bump(rule.script),
             None if character.is_alphabetic() => {
@@ -471,40 +475,61 @@ fn count_scripts(prompt: &str, rules: &[Rule]) -> ScriptCounts {
 }
 
 /// Whether a marker occurs in `normalized` at a position that counts.
-///
-/// A marker written in the shared fallback script only counts where it begins
-/// a word: Spanish "escribe" must not claim English "describe", and a word of
-/// a path or an identifier is no language's word (Spanish "formaliza" must not
-/// claim `intent_formalization.mjs`, PR #1188 G97). Markers in a script of
-/// their own may sit inside native morphology — Chinese "什么" following "是" —
-/// so they match anywhere, the way their languages write them.
 fn marker_present(normalized: &str, marker: &str, rules: &[Rule], fallback_script: &str) -> bool {
+    marker_count(normalized, marker, rules, fallback_script, 1) > 0
+}
+
+/// The occurrences of `marker` in `normalized` that count, up to `limit`.
+///
+/// A marker written in the shared fallback script only counts as a whole word:
+/// Spanish "escribe" must not claim English "describe", Spanish "formaliza"
+/// must not claim English "formalization" (issue #1557), and a word of a path
+/// or an identifier is no language's word (Spanish "formaliza" must not claim
+/// `intent_formalization.mjs`, PR #1188 G97). Markers in a script of their own
+/// may sit inside native morphology — Chinese "什么" following "是" — so they
+/// match anywhere, the way their languages write them. Mirrored by
+/// `markerCount` in `js/agentic/crate/language.mjs`.
+fn marker_count(
+    normalized: &str,
+    marker: &str,
+    rules: &[Rule],
+    fallback_script: &str,
+    limit: usize,
+) -> usize {
     let Some(first) = marker.chars().next() else {
-        return false;
+        return 0;
     };
-    let needs_word_start = rules.iter().any(|rule| {
-        rule.script == fallback_script
-            && (rule.start..=rule.end).contains(&u32::from(first))
-            && (!rule.alphabetic_only || first.is_alphabetic())
-    });
+    let whole_word = rules
+        .iter()
+        .any(|rule| rule.script == fallback_script && rule_claims(rule, first));
+    let mut found = 0;
     let mut from = 0;
-    while let Some(at) = normalized[from..].find(marker) {
+    while found < limit {
+        let Some(at) = normalized[from..].find(marker) else {
+            break;
+        };
         let start = from + at;
-        let word_start = normalized[..start]
-            .chars()
-            .next_back()
-            .is_none_or(|previous| !previous.is_alphabetic());
-        if !needs_word_start || (word_start && !in_identifier(normalized, start)) {
-            return true;
-        }
         from = start + marker.len();
+        if whole_word {
+            let word_start = normalized[..start]
+                .chars()
+                .next_back()
+                .is_none_or(|previous| !previous.is_alphabetic());
+            let word_end = normalized[from..]
+                .chars()
+                .next()
+                .is_none_or(|next| !next.is_alphabetic());
+            if !word_start || !word_end || in_identifier(normalized, start) {
+                continue;
+            }
+        }
+        found += 1;
     }
-    false
+    found
 }
 
 /// Whether the whitespace-delimited token around byte `at` of `text` is a path
-/// or an identifier: it holds `_`, `/` or `\`, or a `.` before a letter or a
-/// digit (a file extension). Mirrored by `inIdentifier` in
+/// or an identifier. Mirrored by `inIdentifier` in
 /// `js/agentic/crate/language.mjs`.
 fn in_identifier(text: &str, at: usize) -> bool {
     let start = text[..at]
@@ -515,7 +540,13 @@ fn in_identifier(text: &str, at: usize) -> bool {
     let end = text[at..]
         .find(char::is_whitespace)
         .map_or(text.len(), |index| at + index);
-    let token = &text[start..end];
+    identifier_token(&text[start..end])
+}
+
+/// Whether `token` is a path or an identifier: it holds `_`, `/` or `\`, or a
+/// `.` before a letter or a digit (a file extension). Mirrored by
+/// `identifierToken` in `js/agentic/crate/language.mjs`.
+fn identifier_token(token: &str) -> bool {
     token.contains(['_', '/', '\\'])
         || token.char_indices().any(|(index, character)| {
             character == '.'
@@ -630,4 +661,208 @@ fn detect_with(prompt: &str, rules: &[Rule]) -> Language {
         }
     }
     fallback
+}
+
+/// In prose, a registered script other than the fallback's wins once its
+/// letters reach a sixth of the fallback script's. Writers of other languages
+/// borrow fallback-script names and terms freely, and a fallback-script word
+/// spends several letters where an ideographic script spends one, so the
+/// fallback script must clearly outnumber a rival script to win (issue #1557).
+/// Mirrored by `PROSE_SCRIPT_WEIGHT` in `js/agentic/crate/language.mjs`.
+const PROSE_SCRIPT_WEIGHT: usize = 6;
+
+/// A language sharing the fallback script wins prose once its votes — its
+/// whole-word markers plus its words holding a letter of its own range — reach
+/// a tenth of the fallback-script words, so one marker or one accented name
+/// cannot outvote a document (issue #1557). Mirrored by `SHARED_SCRIPT_SHARE`.
+const SHARED_SCRIPT_SHARE: usize = 10;
+
+/// An opening quotation mark and the marks that close it.
+const QUOTATIONS: &[(char, &str)] = &[
+    ('"', "\""),
+    ('\u{201C}', "\u{201D}"),
+    ('\u{00AB}', "\u{00BB}"),
+    ('\u{201E}', "\u{201C}\u{201D}"),
+];
+
+/// Punctuation after which a quotation may open, besides whitespace.
+const QUOTATION_OPENERS_AFTER: &str = "([{|";
+
+/// A line without its closed `code` spans. Mirrored by `withoutCodeSpans`.
+fn without_code_spans(line: &str) -> String {
+    let parts: Vec<&str> = line.split('`').collect();
+    let last = parts.len() - 1;
+    parts
+        .iter()
+        .enumerate()
+        .filter(|(index, _)| index % 2 == 0 || *index == last)
+        .map(|(_, part)| *part)
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+/// A line without the quotations that open a token and close on the same
+/// line. A quote mark inside a token (`alt="Image"`) is markup, not a
+/// quotation. Mirrored by `withoutQuotations`.
+fn without_quotations(line: &str) -> String {
+    let characters: Vec<char> = line.chars().collect();
+    let mut kept = String::with_capacity(line.len());
+    let mut index = 0;
+    while index < characters.len() {
+        let character = characters[index];
+        let opens = index
+            .checked_sub(1)
+            .map(|previous| characters[previous])
+            .is_none_or(|previous| {
+                previous.is_whitespace() || QUOTATION_OPENERS_AFTER.contains(previous)
+            });
+        if opens
+            && let Some((_, closers)) = QUOTATIONS.iter().find(|(open, _)| *open == character)
+            && let Some(close) = characters[index + 1..]
+                .iter()
+                .position(|candidate| closers.contains(*candidate))
+        {
+            kept.push(' ');
+            index += close + 2;
+            continue;
+        }
+        kept.push(character);
+        index += 1;
+    }
+    kept
+}
+
+/// Whether a prose token is a URL, a path, an identifier or a `camelCase` name —
+/// words that are no language's. Mirrored by `proseNoise`.
+fn prose_noise(token: &str) -> bool {
+    token.contains("://")
+        || token.to_lowercase().starts_with("www.")
+        || identifier_token(token)
+        || token
+            .chars()
+            .zip(token.chars().skip(1))
+            .any(|(left, right)| left.is_lowercase() && right.is_uppercase())
+}
+
+/// The prose of a document: its lines without fenced code blocks, block
+/// quotations, code spans, quotations, URLs and identifiers (issue #1557).
+/// Mirrored by `proseOf` in `js/agentic/crate/language.mjs`.
+#[must_use]
+pub fn prose_of(text: &str) -> String {
+    let mut lines: Vec<String> = Vec::new();
+    let mut fenced = false;
+    for line in text.lines() {
+        let trimmed = line.trim_start();
+        if trimmed.starts_with("```") || trimmed.starts_with("~~~") {
+            fenced = !fenced;
+            continue;
+        }
+        if fenced || trimmed.starts_with('>') {
+            continue;
+        }
+        let cleaned = without_quotations(&without_code_spans(line));
+        let tokens: Vec<&str> = cleaned
+            .split_whitespace()
+            .filter(|token| !prose_noise(token))
+            .collect();
+        if !tokens.is_empty() {
+            lines.push(tokens.join(" "));
+        }
+    }
+    lines.join("\n")
+}
+
+/// The language sharing the fallback script that the prose votes for, if its
+/// votes reach [`SHARED_SCRIPT_SHARE`]. Mirrored by `sharedScriptLanguage`.
+fn shared_script_language(prose: &str, rules: &[Rule], fallback_script: &str) -> Option<Language> {
+    let normalized = prose.to_lowercase();
+    let words: Vec<&str> = normalized
+        .split(|character: char| !character.is_alphabetic())
+        .filter(|word| {
+            word.chars().any(|character| {
+                rules
+                    .iter()
+                    .any(|rule| rule.script == fallback_script && rule_claims(rule, character))
+            })
+        })
+        .collect();
+    let mut best: Option<(usize, Language)> = None;
+    for rule in rules
+        .iter()
+        .filter(|rule| rule.script == fallback_script && !rule.fallback)
+    {
+        let markers: usize = rule
+            .markers
+            .iter()
+            .map(|marker| {
+                marker_count(
+                    &normalized,
+                    &marker.to_lowercase(),
+                    rules,
+                    fallback_script,
+                    usize::MAX,
+                )
+            })
+            .sum();
+        let letters = words
+            .iter()
+            .filter(|word| word.chars().any(|character| rule_claims(rule, character)))
+            .count();
+        let votes = markers + letters;
+        if votes == 0 || votes * SHARED_SCRIPT_SHARE < words.len() {
+            continue;
+        }
+        if best.is_some_and(|(best_votes, _)| votes <= best_votes) {
+            continue;
+        }
+        best = Some((votes, Language(rule.language)));
+    }
+    best.map(|(_, language)| language)
+}
+
+/// The language of already-extracted prose, or `None` when it holds no letter.
+/// Mirrored by `proseLanguage`.
+fn prose_language(prose: &str, rules: &[Rule]) -> Option<Language> {
+    let fallback_script = fallback_script_of(rules);
+    let counts = count_scripts(prose, rules);
+    if counts.total() == 0 {
+        return None;
+    }
+    let fallback_count = counts.of(fallback_script);
+    if counts.other > fallback_count && counts.other >= counts.max_excluding(fallback_script) {
+        return Some(Language::Unknown);
+    }
+    let mut rival: Option<(usize, &'static str)> = None;
+    for rule in rules.iter().filter(|rule| rule.script != fallback_script) {
+        let count = counts.of(rule.script);
+        if count > 0 && rival.is_none_or(|(best, _)| count > best) {
+            rival = Some((count, rule.script));
+        }
+    }
+    if let Some((count, script)) = rival
+        && count * PROSE_SCRIPT_WEIGHT >= fallback_count
+    {
+        return Some(default_language_of(rules, script));
+    }
+    Some(
+        shared_script_language(prose, rules, fallback_script).unwrap_or_else(|| fallback_of(rules)),
+    )
+}
+
+/// Detect the language of a document — an issue body, a title, a user turn —
+/// from the proportion of its prose, or `None` when it holds no prose letter.
+///
+/// Unlike [`detect`], which reads a prompt whole, this drops fenced code,
+/// block quotations, code spans, quotations, URLs and identifiers first (see
+/// [`prose_of`]), then weighs scripts by their share of the remaining letters.
+/// A quoted Russian phrase in an English issue or a single Spanish marker
+/// therefore cannot outvote the rest of the document (issue #1557). A forced
+/// response language (issue #556) still wins. Mirrored by `detectProse` in
+/// `js/agentic/crate/language.mjs`.
+#[must_use]
+pub fn detect_prose(text: &str) -> Option<Language> {
+    if let Some(forced) = forced_language::get() {
+        return Some(forced);
+    }
+    with_rules(|rules| prose_language(&prose_of(text), rules))
 }
