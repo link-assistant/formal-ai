@@ -5,6 +5,8 @@
 // formal_ai_worker_crate_modules.js runs on first use.
 
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["write_str.mjs"] = (crateRequire) => {
+const { isAsciiAlphanumeric } = crateRequire("ascii_character.mjs");
+
 // Rust `str` / `char` semantics the write-side planner modules share
 // (agent "write" helper; no Rust module of its own). Offsets are JavaScript
 // string indices (UTF-16 code units); `utf8Offset` converts one to the UTF-8
@@ -22,11 +24,6 @@ function isWhitespace(character) {
 /** `char::is_alphanumeric`. @param {string|undefined} character */
 function isAlphanumeric(character) {
   return character !== undefined && ALPHANUMERIC.test(character);
-}
-
-/** `char::is_ascii_alphanumeric`. @param {string|undefined} character */
-function isAsciiAlphanumeric(character) {
-  return character !== undefined && /^[A-Za-z0-9]$/.test(character);
 }
 
 /** `char::is_ascii_digit`. @param {string|undefined} character */
@@ -189,7 +186,6 @@ function matchIndices(text, pattern) {
 return Object.freeze({
   isWhitespace,
   isAlphanumeric,
-  isAsciiAlphanumeric,
   isAsciiDigit,
   isAsciiPunctuation,
   isAscii,
@@ -213,5 +209,6 @@ return Object.freeze({
   matchIndices,
   lower,
   lines,
+  isAsciiAlphanumeric,
 });
 };

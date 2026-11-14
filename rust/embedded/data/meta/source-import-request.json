@@ -1,0 +1,5 @@
+{
+  "schema": "source-import-request/v1",
+  "scope": "bounded English named import addition to one existing JavaScript import; export/API resolution is not established",
+  "expression": "^\\s*In\\s+(?P<owner>[A-Za-z0-9_][A-Za-z0-9_./-]*\\.(?:mjs|js))\\s*,\\s*(?:please\\s+)?(?:add|insert|include)\\s+(?:the\\s+)?(?:missing\\s+)?named\\s+import\\s+(?P<binding>[A-Za-z_$][A-Za-z0-9_$]{0,127})\\s+from\\s+(?P<module>[A-Za-z0-9_./@-]+)\\s+to\\s+(?:the\\s+)?existing\\s+import(?:\\s+statement)?(?:\\s+from\\s+that\\s+module)?\\.\\s*(?:This\\s+fixes\\s+[^.\\r\\n]+\\.\\s*)?(?:Preserve\\s+all\\s+other\\s+(?:source\\s+and\\s+comments|content)\\.?)?\\s*$"
+}

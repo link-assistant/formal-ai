@@ -80,6 +80,79 @@ pub(super) fn parse_write_request(request: &str) -> Option<(String, String)> {
 }
 
 pub(super) fn parse_write_contract(request: &str) -> Option<LiteralWriteContract> {
+    let contract = recover_write_contract(request)?;
+    // A concrete substring edit cannot acquire whole-file authority from its operands.
+    if let Some(edit) = crate::agentic_coding::write_request::compose_edit_clauses(request) {
+        let data_action = edit
+            .spans
+            .is_some_and(|spans| contract.payload.contains(&spans[1].0));
+        if data_action && super::owned_goals::owns_declared_payload_domain(request, &contract) {
+            return Some(contract);
+        }
+        if independent_owned_write_statement(request, &contract, edit.spans.map(|spans| spans[1].0))
+        {
+            return Some(contract);
+        }
+        let operands = crate::normal_markov::quoted_segment_spans(request);
+        let old_operand = operands.iter().position(|span| span.text == edit.edit.1);
+        let owned_operands = old_operand.is_some_and(|index| {
+            operands
+                .iter()
+                .skip(index + 1)
+                .any(|span| span.text == edit.edit.2)
+        });
+        let whole_operation = edit.spans.is_some_and(|spans| {
+            crate::agentic_coding::literal_write_guard::whole_file_operation_at(
+                request,
+                spans[1].0,
+                &edit.edit.0,
+                spans[0].1,
+            )
+        });
+        if owned_operands || !whole_operation {
+            return None;
+        }
+    }
+    Some(contract)
+}
+
+fn independent_owned_write_statement(
+    request: &str,
+    contract: &LiteralWriteContract,
+    action_start: Option<usize>,
+) -> bool {
+    let Some(action_start) = action_start else {
+        return false;
+    };
+    let scoped = statement_scope(request);
+    for statement in prose_sentences(&scoped) {
+        let span = statement.span;
+        if contract.target_span.start < span.start
+            || contract.target_span.end > span.end
+            || contract.payload.start < span.start
+            || contract.payload.end > span.end
+        {
+            continue;
+        }
+        if span.contains(&action_start) {
+            return false;
+        }
+        let local = LiteralWriteContract {
+            target: contract.target.clone(),
+            content: contract.content.clone(),
+            target_span: contract.target_span.start - span.start
+                ..contract.target_span.end - span.start,
+            payload: contract.payload.start - span.start..contract.payload.end - span.start,
+        };
+        let Some(text) = request.get(span) else {
+            return false;
+        };
+        return super::owned_goals::owns_recovered_write_operation(text, &local);
+    }
+    false
+}
+
+fn recover_write_contract(request: &str) -> Option<LiteralWriteContract> {
     let toks = tokens(request);
     if let Some(literal) = literal_payload(request) {
         // A closed whole-file payload supplies the content. Only target cues
@@ -109,6 +182,35 @@ pub(super) fn parse_write_contract(request: &str) -> Option<LiteralWriteContract
 }
 
 /// Read `request` as a write delivered through one particular binding.
+fn marker_payload_start(request: &str, toks: &[Token<'_>], lead_end: usize) -> usize {
+    let separator_end = |from: usize| -> Option<usize> {
+        let tail = request.get(from..)?;
+        let trimmed = tail.trim_start_matches([' ', '\t']);
+        let separator = trimmed.chars().next()?;
+        matches!(separator, ':' | '：')
+            .then_some(from + tail.len() - trimmed.len() + separator.len_utf8())
+    };
+    let start = match (first_action_cue_start(toks), first_action_cue_end(toks)) {
+        (Some(start), Some(end))
+            if start >= lead_end
+                && request[lead_end..start]
+                    .chars()
+                    .all(|character| matches!(character, ' ' | '\t'))
+                && (request[start..end]
+                    .trim_end_matches([' ', '\t'])
+                    .ends_with(':')
+                    || request[start..end]
+                        .trim_end_matches([' ', '\t'])
+                        .ends_with('：')
+                    || separator_end(end).is_some()) =>
+        {
+            end
+        }
+        _ => lead_end,
+    };
+    separator_end(start).unwrap_or(start)
+}
+
 fn parse_write_request_bound(
     request: &str,
     toks: &[Token<'_>],
@@ -152,6 +254,7 @@ fn parse_write_request_bound(
         && !specification.is_some_and(|span| span.contains(&marker_end))
         && positions_share_statement(request, marker_end, clause_start)
     {
+        let marker_end = marker_payload_start(request, toks, marker_end);
         let marker_leads = marker_end <= clause_start;
         let statement_end = if marker_leads {
             end_of_statement(request, marker_end, clause_start)

@@ -1,0 +1,72 @@
+{
+  "schema": "formal-ai-discovery-ci-repair/v1",
+  "failure": {
+    "run": "https://github.com/link-assistant/formal-ai/actions/runs/41310824262",
+    "source": "ff05d89becf62b298a5be42dfc298bcf08885580",
+    "reason": "New abbreviated Rust binding info exceeded the existing native binding ceiling; the ceiling is unchanged."
+  },
+  "request": "In the file rust/src/agentic_coding/repository_documentation.rs, rename info to information everywhere it appears in this file. Preserve all other content.",
+  "method": "Actual JavaScript Formal AI planner with Read and real Bash tools; scratch proof precedes maintained application; no supplied source patch.",
+  "observations": [
+    {
+      "id": "rust-discovery-information",
+      "stage": "scratch",
+      "owner": "rust/src/agentic_coding/repository_documentation.rs",
+      "promptIdentity": "f0c2583161f0b10c33039972634d4e9e3cb985b4aac6d6c0a21e53e9cd03ea1c",
+      "stop": "final",
+      "tools": [
+        "read",
+        "bash",
+        "bash"
+      ],
+      "sourcePreIdentity": "71b1faa079d661d15af71fb68d671e9583763c3212bb06d590e70a044162695c",
+      "sourcePostIdentity": "c5827648c2c4f0270bfff5103bae0f1d43cd12827f4f58a1429e1a3056d6e60b",
+      "candidatePreservedBeforeOracle": true,
+      "qualification": {
+        "passed": true,
+        "exactIdentifierTokensOnly": true,
+        "renamedTokens": 25,
+        "allOtherBytesPreserved": true,
+        "syntaxValid": null,
+        "fullRustSyntaxCheck": false,
+        "runtimeProof": false
+      }
+    },
+    {
+      "id": "rust-discovery-information",
+      "stage": "maintained",
+      "owner": "rust/src/agentic_coding/repository_documentation.rs",
+      "promptIdentity": "f0c2583161f0b10c33039972634d4e9e3cb985b4aac6d6c0a21e53e9cd03ea1c",
+      "stop": "final",
+      "tools": [
+        "read",
+        "bash",
+        "bash"
+      ],
+      "sourcePreIdentity": "71b1faa079d661d15af71fb68d671e9583763c3212bb06d590e70a044162695c",
+      "sourcePostIdentity": "c5827648c2c4f0270bfff5103bae0f1d43cd12827f4f58a1429e1a3056d6e60b",
+      "candidatePreservedBeforeOracle": true,
+      "qualification": {
+        "passed": true,
+        "exactIdentifierTokensOnly": true,
+        "renamedTokens": 25,
+        "allOtherBytesPreserved": true,
+        "syntaxValid": null,
+        "fullRustSyntaxCheck": false,
+        "runtimeProof": false
+      }
+    }
+  ],
+  "policyBinding": {
+    "path": "scripts/work-item-qualification/source-quotation-claims.mjs",
+    "includedInQualificationPolicyIdentity": true,
+    "controlledTamperChangesPolicyIdentity": true,
+    "autonomousSynthesisCredit": 0
+  },
+  "ciEvidence": {
+    "realRustGrammarConsumerDiscovery": "passed",
+    "nativeCompilation": "main-only; pending",
+    "wholeTaskAcceptance": "pending"
+  },
+  "localRustExecution": false
+}

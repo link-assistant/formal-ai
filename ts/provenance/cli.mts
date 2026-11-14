@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Inspection is not trusted verification, replay, or autonomous authorship.
 import fileSystem from 'node:fs';
+import {checkedRuntimeFailureIdentity}from './runtime-failure-identity.mjs';
 import path from 'node:path';
 import {readBoundedFileBytes}from './bounded-file.mjs';
 import {verifyFullRepositoryProof}from './full-verifier.mjs';
@@ -27,10 +28,12 @@ try{
   if(filename===evidence||filename.startsWith(evidence+path.sep)
    ||filename===workspace||filename.startsWith(workspace+path.sep))throw Error('FullProofIndependentRequestRequired');
   try{process.stdout.write(encodeTyped(verifyFullRepositoryProof(request))+'\n');}
-  catch(error){process.stdout.write(encodeTyped({verification:'Unknown',trustedVerification:false,
+  catch(error){const runtimeFailure=checkedRuntimeFailureIdentity(error.runtimeFailure);process.stdout.write(encodeTyped({verification:'Unknown',trustedVerification:false,
    fullReplay:{verified:false},verificationGaps:[String(error.message)],
-   ...(process.env.FORMAL_AI_PROVENANCE_TRACE==='1'&&Array.isArray(error.missingRuntimeInputs)?
-    {verificationDiagnostics:{missingRuntimeInputCount:error.missingRuntimeInputCount,missingRuntimeInputs:error.missingRuntimeInputs}}:{})})+'\n');process.exitCode=2;}
+   ...(process.env.FORMAL_AI_PROVENANCE_TRACE==='1'&&(Array.isArray(error.missingRuntimeInputs)||runtimeFailure)?
+    {verificationDiagnostics:{...(Array.isArray(error.missingRuntimeInputs)?{
+     missingRuntimeInputCount:error.missingRuntimeInputCount,missingRuntimeInputs:error.missingRuntimeInputs}:{}),
+     ...(runtimeFailure?{runtimeFailure}:{})}}:{})})+'\n');process.exitCode=2;}
  }else if(argumentsList[0]==='verify-provenance'){
   process.stdout.write(encodeTyped({verification:'Unknown',trustedVerification:false,
    scope:'repository-proof-and-pinned-replay-unavailable',fullReplay:{verified:false},

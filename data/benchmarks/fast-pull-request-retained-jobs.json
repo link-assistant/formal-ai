@@ -36,7 +36,7 @@
     {
       "file": "release.yml",
       "id": "server-parity",
-      "payloadSha256": "0e57a59b3b1668b0448584360f1f57e401c444f726830916f40c694d5766bda0"
+      "payloadSha256": "316ea580775ee12857ea77751b094119019c53374c8adae9b0817604525e87a6"
     },
     {
       "file": "release.yml",
@@ -51,7 +51,7 @@
     {
       "file": "release.yml",
       "id": "build-artifacts",
-      "payloadSha256": "e34fe48b4405ed2877577639f5aa717c9c23a4e4c23d271610a97c823fcde538"
+      "payloadSha256": "1eae13e82ca5e66c54a93d3b9fa6ca16b983ddc8e5f25143b231518664c17034"
     },
     {
       "file": "release.yml",
@@ -71,7 +71,7 @@
     {
       "file": "layered-ci.yml",
       "id": "js-rust",
-      "payloadSha256": "a4eaa4f2615e60c7a51daefcdbb387e596103e0953c289736ea499bb3dd9fd59"
+      "payloadSha256": "b3eb40fd2d3184e1eb4ad1e1c98640b79bde4fe687615264dd5b16ab83a2cc86"
     },
     {
       "file": "layered-ci.yml",
@@ -106,7 +106,7 @@
     {
       "file": "benchmark-corpus-gate.yml",
       "id": "corpus-gate",
-      "payloadSha256": "4ef0431e795ac4274d2bea99ca1fe1720b60143e14205f2ccb9a299e3ef4f790"
+      "payloadSha256": "7df7bfd6f1de2f616ca0867586e257ecbe129898c1026026f1b9c1ccf64d0fcf"
     },
     {
       "file": "coding-ladder.yml",
@@ -126,7 +126,7 @@
     {
       "file": "desktop-release.yml",
       "id": "native-source",
-      "payloadSha256": "71a0f7143c27b8c4beee41a99c05d7cdb63fd09080912a47a9ad0b7af1579072"
+      "payloadSha256": "c6ee076010a919f3f391d85a6dc893ac286f4c53c4897bc6e12f32d8a9ede080"
     },
     {
       "file": "question-necessity-ratchet.yml",
@@ -156,7 +156,7 @@
     {
       "file": "source-scanner-qualification.yml",
       "id": "native",
-      "payloadSha256": "cf6c15374c6460c058e9fbfdc23030f0645063576a942e8c0c8249d123fbf1b6"
+      "payloadSha256": "b603eabdce9295f91c947e314ce26cfbfaee67b8b03c7ea8fbad5bc7a40f9dab"
     },
     {
       "file": "security.yml",
@@ -222,6 +222,16 @@
       "file": "proactive-failure-report-e2e.yml",
       "id": "agent-cli-failure-report",
       "payloadSha256": "44d64f4c75e0964c563d4b62d8d2a1cbd8a25830d513f7977164f781450de57e"
+    },
+    {
+      "file": "links.yml",
+      "id": "link-checker",
+      "payloadSha256": "d4dbf548c0d89a161c1af5cd41ce02b3c5c43f4cb602fa8bdaa7414b33d3e299"
+    },
+    {
+      "file": "coding-ladder.yml",
+      "id": "ladder-shard",
+      "payloadSha256": "29bdb55b943188fc6a660c42b64fb75d89748a028645e561aa1ba1d8e88a09bf"
     }
   ]
 }

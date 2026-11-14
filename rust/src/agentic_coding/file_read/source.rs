@@ -49,6 +49,24 @@ pub(super) fn source_read_answer(
         }
     }
     let reads = reads.into_iter().collect::<Option<Vec<_>>>()?;
+    if paths.len() == 1
+        && let FileReadMode::ExtractValue(key) = mode
+        && let Some(assessment) =
+            super::source_claims::source_scalar_assessment(request, &paths[0], key, progress)
+    {
+        let disposition = if assessment["status"] == "unknown" {
+            FinalDisposition::Unknown
+        } else {
+            FinalDisposition::Finding
+        };
+        return Some(record_with_role(
+            AgenticPlan::Final(assessment.to_string()),
+            disposition,
+            "source_scalar_assessed",
+            FinalPayloadRole::Finding,
+            result,
+        ));
+    }
     let complete = reads.iter().all(|read| read.complete);
     let contents = paths
         .iter()

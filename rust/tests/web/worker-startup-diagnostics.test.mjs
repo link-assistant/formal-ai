@@ -37,3 +37,33 @@ test('healthy smoke assertions incur no diagnostic evaluation or attachments', a
   assert.equal(await withWorkerDiagnostics(page, info, async () => 'real assertions passed'), 'real assertions passed');
   assert.equal(page.eventNames().length, 0);
 });
+
+test('silent pending worker request is recorded without private query data', async () => {
+  const page = new EventEmitter(), context = new EventEmitter();
+  page.context = () => context;
+  page.evaluate = async () => ({ status: 'loading worker', composerDisabled: true });
+  const pending = { url: () => 'https://example.test/worker/module.js?v=private-sample' };
+  const finished = { url: () => 'https://example.test/worker/ready.js?v=private-sample' };
+  let diagnostic;
+  const original = new Error('composer remained disabled'), previous = console.error;
+  console.error = () => {};
+  try {
+    await assert.rejects(withWorkerDiagnostics(page, { attach: async (_name, value) => {
+      diagnostic = JSON.parse(value.body);
+    } }, async () => {
+      context.emit('request', pending);
+      context.emit('request', finished);
+      context.emit('requestfinished', finished);
+      throw original;
+    }), error => error === original);
+  } finally { console.error = previous; }
+  assert.equal(diagnostic.state.status, 'loading worker');
+  assert.equal(diagnostic.events.length, 0);
+  assert.equal(diagnostic.network.observedRequests, 2);
+  assert.equal(diagnostic.network.finishedRequests, 1);
+  assert.deepEqual(diagnostic.network.pending.map(item => item.url), ['https://example.test/worker/module.js']);
+  assert.deepEqual(diagnostic.network.recentFinished, ['https://example.test/worker/ready.js']);
+  assert(!JSON.stringify(diagnostic).includes('private-sample'));
+  assert.equal(page.eventNames().length, 0);
+  assert.equal(context.eventNames().length, 0);
+});

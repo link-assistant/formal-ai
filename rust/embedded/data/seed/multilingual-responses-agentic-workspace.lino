@@ -22,7 +22,7 @@ multilingual_responses
   response response_coding_workspace_effect_observed_en
     intent coding_workspace_effect_observed
     language en
-    text "Created or updated and observed `{path}` through the workspace tools."
+    text "Completed the file change to `{path}` and observed its content through the workspace tools."
   response response_coding_workspace_effect_observed_ru
     intent coding_workspace_effect_observed
     language ru

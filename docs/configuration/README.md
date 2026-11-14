@@ -40,6 +40,8 @@ Windows stores native memory below `%APPDATA%\formal-ai\`; macOS and Linux use
   verification, decomposition, comparison, and replay.
 - [Out-of-box and passthrough modes](modes.md): engine selection, permissions,
   and `agent-commander`.
+- [Solver switches](solver.md): every `SolverConfig` switch, its values, and
+  whether it changes the answer or only the trace.
 - [Tools reference](tools.md): internal/external tools and capability routing.
 - [Memory](memory.md): the shared path, Docker mount, and synchronization.
 - [Server and API](server-api.md): agent mode, hosted tools, usage, and context.

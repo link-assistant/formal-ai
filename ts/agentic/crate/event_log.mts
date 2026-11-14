@@ -80,6 +80,8 @@ const PAYLOAD_KINDS = new Set([
   'verifiable_task:searched', 'verifiable_task:uncorroborated', 'verifiable_task:membership_source',
   'skill_learning_proposal', 'compiled_skill:replay', 'cache_hit',
   'calculation:engine', 'calculation:lino', 'method:learned:operations_verified',
+  'quantity_constraint:frame', 'quantity_constraint:verdict', 'quantity_constraint:unknown',
+  'quantity_constraint:expression', 'quantity_constraint:difference',
   'calendar:today', 'calendar:weekday', 'intent',
   'program_parameter:language', 'program_parameter:task', 'legacy_intent',
   'policy:agent_mode_required_for_tools', 'policy:package_permission_required',

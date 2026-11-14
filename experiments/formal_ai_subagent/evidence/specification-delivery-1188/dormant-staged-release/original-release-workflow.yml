@@ -118,10 +118,9 @@ jobs:
     needs: [detect-changes]
     if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
     steps:
-      - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-          fetch-depth: 0
+      - {uses: actions/checkout@v7, timeout-minutes: 2,
+         env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '30'},
+         with: {persist-credentials: false, fetch-depth: 0, filter: blob:none, sparse-checkout: "/scripts/check-changelog-fragment.mjs\n/Cargo.toml\n/rust/Cargo.toml\n/package.json\n", sparse-checkout-cone-mode: false}}
       - uses: actions/setup-node@v7
         with:
           node-version: 22
@@ -210,7 +209,7 @@ jobs:
   secrets-scan:
     name: Secrets Scan
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-secrets-scan
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -223,10 +222,8 @@ jobs:
         needs.detect-changes.outputs.pipeline-changed == 'true'
       )
     steps:
-      - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-          fetch-depth: 0
+      - {uses: actions/checkout@v7, timeout-minutes: 10, env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '20'},
+         with: {persist-credentials: false, fetch-depth: 0, filter: blob:none}}
       - name: Setup Node
         uses: actions/setup-node@v7
         with: {node-version: 22}
@@ -243,10 +240,8 @@ jobs:
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     if: github.event_name == 'pull_request'
     steps:
-      - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-          fetch-depth: 0
+      - {uses: actions/checkout@v7, timeout-minutes: 2, env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '20'},
+         with: {persist-credentials: false, fetch-depth: 1, filter: blob:none, sparse-checkout: "/scripts/ci-pull-request-admission.mjs\n/scripts/lib/documentation-paths.mjs\n/Cargo.toml\n/rust/Cargo.toml\n", sparse-checkout-cone-mode: false}}
       - name: Setup Rust
         if: github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')
         uses: dtolnay/rust-toolchain@stable
@@ -258,6 +253,7 @@ jobs:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_HEAD_REF: ${{ github.head_ref }}
           GITHUB_BASE_REF: ${{ github.base_ref }}
+          GH_TOKEN: ${{ github.token }}
         run: node scripts/ci-pull-request-admission.mjs version
   release-preflight:
     name: Release Preflight
@@ -302,9 +298,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
+      - {uses: actions/checkout@v7, timeout-minutes: 4,
+         env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '20'},
+         with: {persist-credentials: false, fetch-depth: 1, filter: blob:none, sparse-checkout: "/*\n!/dev/log/\n!/experiments/formal_ai_subagent/evidence/coordinator-1188/**/*.gz\n", sparse-checkout-cone-mode: false}}
       - uses: actions/setup-node@v7
         with:
           node-version: 22
@@ -313,10 +309,15 @@ jobs:
           node scripts/check-readable-code.mjs
           node scripts/check-file-size.mjs
           node scripts/check-ci-speed.mjs
+          node scripts/check-hardcoded-language.mjs
+          node scripts/check-js-literals.mjs
           node scripts/assemble-requirements.mjs
+          node scripts/generate-requirement-status.mjs
           node scripts/check-requirement-status.mjs
+          node scripts/render-status.mjs --check
+          node scripts/render-progressive-plan.mjs --check
           node scripts/mirror-package-data.mjs --check
-
+          node scripts/check-fast-governance.mjs
   lint:
     name: Lint and Format Check (lane ${{ matrix.lane }})
     runs-on: ubuntu-latest
@@ -659,16 +660,16 @@ jobs:
   server-parity:
     name: Server parity (JavaScript vs Rust)
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-server-parity
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     needs: [build-artifacts]
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.build-artifacts.result == 'success') }}
     steps:
-      - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
+      - {uses: actions/checkout@v7, timeout-minutes: 18,
+         env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '20'},
+         with: {persist-credentials: false}}
       - name: Setup Node
         uses: actions/setup-node@v7
         with:
@@ -1222,7 +1223,7 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-build-artifacts
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     needs: [detect-changes]
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' )) }}
     steps:
@@ -1241,11 +1242,21 @@ jobs:
         id: source
         run: printf 'commit=%s\n' "$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
       - name: Build binaries and test executables
-        run: cargo test --manifest-path rust/Cargo.toml --release --no-run --bins --tests --all-features
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo test --manifest-path rust/Cargo.toml --release --no-run --bins --tests --all-features --message-format=json \
+            | tee "$RUNNER_TEMP/native-build-messages.jsonl"
+      - name: Run compiled native creation fixtures
+        run: |
+          FORMAL_AI_DEADLINE_GRACE_SECONDS=5 scripts/run-with-deadline.sh 90 \
+            node scripts/run-native-coding-fixtures.mjs \
+            "$RUNNER_TEMP/native-build-messages.jsonl" "$RUNNER_TEMP/native-creation-fixtures.json"
+      - {name: Retain native creation fixture evidence, if: '${{ always() }}', uses: actions/upload-artifact@v7, with: {name: native-creation-fixture-qualification, path: "${{ runner.temp }}/native-build-messages.jsonl\n${{ runner.temp }}/native-creation-fixtures.json\n", if-no-files-found: warn, retention-days: 3}}
       - name: Collect the build artifacts
         run: bash scripts/collect-build-artifacts.sh
       - name: Bind native test artifacts to their actual build inputs
-        run: FORMAL_AI_DEADLINE_GRACE_SECONDS=5 scripts/run-with-deadline.sh 90 node scripts/native-test-artifact.mjs write-and-check dist/tests release all rust/tests/fixtures/released-client-requests/smoke-tests.json
+        run: FORMAL_AI_DEADLINE_GRACE_SECONDS=5 scripts/run-with-deadline.sh 300 node scripts/native-test-artifact.mjs write-and-check dist/tests release all rust/tests/fixtures/released-client-requests/smoke-tests.json
       - name: Capture complete current native agentic protocols
         timeout-minutes: 5
         run: node scripts/capture-native-agentic-protocol.mjs "$RUNNER_TEMP/native-agentic-protocol-captures" dist/formal-ai

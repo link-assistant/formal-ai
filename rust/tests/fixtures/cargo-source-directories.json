@@ -1,0 +1,174 @@
+{
+  "schema": "cargo-source-directory-cases/v1",
+  "cases": [
+    {
+      "name": "default is candidate only",
+      "owner": "rust/Cargo.toml",
+      "source": "[package]\nname = \"river\"\n",
+      "directories": [
+        "rust/src"
+      ],
+      "facts": [
+        {
+          "directory": "rust/src",
+          "basis": "conventional-src"
+        }
+      ]
+    },
+    {
+      "name": "explicit library and binary entrypoints",
+      "owner": "rust/Cargo.toml",
+      "source": "# Entrypoints only, not existence. 雪\n[lib]\npath = \"engine/lib.rs\"\n[[bin]]\nname = \"river-tool\"\npath = \"cli/main.rs\"\n",
+      "directories": [
+        "rust/cli",
+        "rust/engine",
+        "rust/src"
+      ],
+      "facts": [
+        {
+          "directory": "rust/cli",
+          "basis": "explicit-bin-path",
+          "sourcePath": "cli/main.rs"
+        },
+        {
+          "directory": "rust/engine",
+          "basis": "explicit-lib-path",
+          "sourcePath": "engine/lib.rs"
+        },
+        {
+          "directory": "rust/src",
+          "basis": "conventional-src"
+        }
+      ]
+    },
+    {
+      "name": "one directory retains both provenance bases",
+      "owner": "Cargo.toml",
+      "source": "[lib]\npath=\"src/lib.rs\"\n",
+      "directories": [
+        "src"
+      ],
+      "facts": [
+        {
+          "directory": "src",
+          "basis": "conventional-src"
+        },
+        {
+          "directory": "src",
+          "basis": "explicit-lib-path",
+          "sourcePath": "src/lib.rs"
+        }
+      ]
+    },
+    {
+      "name": "unrelated build and tests do not establish source targets",
+      "owner": "rust/Cargo.toml",
+      "source": "[package]\nname=\"river\"\nbuild=\"build.rs\"\n[[test]]\npath=\"tests/unit.rs\"\n",
+      "directories": [
+        "rust/src"
+      ],
+      "facts": [
+        {
+          "directory": "rust/src",
+          "basis": "conventional-src"
+        }
+      ]
+    },
+    {
+      "name": "relative owner traversal refused",
+      "owner": "../Cargo.toml",
+      "source": "",
+      "gap": "CargoSourceOwnerRequired"
+    },
+    {
+      "name": "hidden owner refused",
+      "owner": "rust/.private/Cargo.toml",
+      "source": "",
+      "gap": "CargoSourceOwnerRequired"
+    },
+    {
+      "name": "non Cargo filename refused",
+      "owner": "rust/manifest.toml",
+      "source": "",
+      "gap": "CargoSourceOwnerRequired"
+    },
+    {
+      "name": "invalid TOML refused",
+      "owner": "rust/Cargo.toml",
+      "source": "[lib\npath=\"src/lib.rs\"",
+      "gap": "CargoSourceLayoutUnsupported"
+    },
+    {
+      "name": "duplicate binary path refused",
+      "owner": "rust/Cargo.toml",
+      "source": "[[bin]]\npath=\"src/a.rs\"\npath=\"src/b.rs\"\n",
+      "gap": "CargoSourceLayoutUnsupported"
+    },
+    {
+      "name": "inline library layout explicitly unsupported",
+      "owner": "rust/Cargo.toml",
+      "source": "lib={path=\"src/lib.rs\"}\n",
+      "gap": "CargoSourceLayoutUnsupported"
+    },
+    {
+      "name": "dotted library layout explicitly unsupported",
+      "owner": "rust/Cargo.toml",
+      "source": "lib.path=\"src/lib.rs\"\n",
+      "gap": "CargoSourceLayoutUnsupported"
+    },
+    {
+      "name": "binary table shape unsupported",
+      "owner": "rust/Cargo.toml",
+      "source": "[bin]\npath=\"src/main.rs\"\n",
+      "gap": "CargoSourceLayoutUnsupported"
+    },
+    {
+      "name": "parent traversal path refused",
+      "owner": "rust/Cargo.toml",
+      "source": "[lib]\npath=\"../lib.rs\"\n",
+      "gap": "CargoSourcePathUnsupported"
+    },
+    {
+      "name": "absolute path refused",
+      "owner": "rust/Cargo.toml",
+      "source": "[lib]\npath=\"/tmp/lib.rs\"\n",
+      "gap": "CargoSourcePathUnsupported"
+    },
+    {
+      "name": "hidden path refused",
+      "owner": "rust/Cargo.toml",
+      "source": "[lib]\npath=\".private/lib.rs\"\n",
+      "gap": "CargoSourcePathUnsupported"
+    },
+    {
+      "name": "nested traversal path refused",
+      "owner": "rust/Cargo.toml",
+      "source": "[lib]\npath=\"src/../lib.rs\"\n",
+      "gap": "CargoSourcePathUnsupported"
+    },
+    {
+      "name": "non Rust path refused",
+      "owner": "rust/Cargo.toml",
+      "source": "[lib]\npath=\"src/lib.js\"\n",
+      "gap": "CargoSourcePathUnsupported"
+    },
+    {
+      "name": "manifest parent scope path refused",
+      "owner": "rust/Cargo.toml",
+      "source": "[lib]\npath=\"lib.rs\"\n",
+      "gap": "CargoSourcePathUnsupported"
+    },
+    {
+      "name": "backslash path refused",
+      "owner": "rust/Cargo.toml",
+      "source": "[lib]\npath=\"src\\\\lib.rs\"\n",
+      "gap": "CargoSourcePathUnsupported"
+    },
+    {
+      "name": "unique directory bound enforced",
+      "owner": "rust/Cargo.toml",
+      "source": "[[bin]]\npath=\"dir0/main.rs\"\n[[bin]]\npath=\"dir1/main.rs\"\n[[bin]]\npath=\"dir2/main.rs\"\n[[bin]]\npath=\"dir3/main.rs\"\n[[bin]]\npath=\"dir4/main.rs\"\n[[bin]]\npath=\"dir5/main.rs\"\n[[bin]]\npath=\"dir6/main.rs\"\n[[bin]]\npath=\"dir7/main.rs\"\n",
+      "gap": "CargoSourceDirectoryBudgetExceeded"
+    }
+  ]
+}

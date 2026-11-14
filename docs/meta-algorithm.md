@@ -6,6 +6,21 @@ ordered procedure that reproduces a deterministic chat intent handler for any
 language topic, together with a machine-readable recipe that stays grounded in
 the live source.
 
+**What this page is and is not.** The recipes below are checked descriptions of
+procedures that exist in the source, and the recursive-core recipe is executed
+to produce the same trace as the hand-written recorder. They are not yet the
+procedure that produces each answer: as audited on 2026-11-10 for
+[issue 1548](https://github.com/link-assistant/formal-ai/issues/1548), most
+answers come from a handler chosen by the formalized intent, and the one
+attempt, split and recompose procedure (`rust/src/recursive_execution.rs`) runs
+only for delegated work. The recursive meta algorithm of the picture in the
+README, as the executor of every answer, is owned by
+[#1550](https://github.com/link-assistant/formal-ai/issues/1550); the standing
+requirements are in
+[VISION.md](../VISION.md#requirements-are-axioms-options-are-scored-the-plan-is-executed)
+and the evidence is in
+[docs/case-studies/issue-1548](case-studies/issue-1548/README.md).
+
 The first fully-encoded instance is the **procedural how-to** topic (issue #444):
 a "how to X" request and its elaboration follow-up ("can you give me specific
 instructions?"). Its recipe lives at

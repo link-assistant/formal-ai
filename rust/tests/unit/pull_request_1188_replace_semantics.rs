@@ -10,6 +10,7 @@
 
 use std::collections::BTreeMap;
 
+use formal_ai::agentic_coding::tool_result::complete_owned_source_read_frame;
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use formal_ai::source_fetch::sha256_hex;
@@ -47,7 +48,7 @@ fn drive(prompt: &str, files: &[(&str, &str)]) -> Run {
         let result = match call.tool.as_str() {
             "read" => workspace
                 .get(&path)
-                .cloned()
+                .map(|source| complete_owned_source_read_frame(source))
                 .unwrap_or_else(|| "Error: file not found".to_owned()),
             "edit" => {
                 let old = arguments["oldString"].as_str().unwrap_or_default();
