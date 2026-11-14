@@ -768,7 +768,9 @@ fn repository_work_item_objective(plan: &GeneralChangePlan, progress: &Progress)
             {
                 return None;
             }
-            raw.trim().to_owned()
+            // A fetched page keeps its title and body; a page without a body
+            // is rejected so the REST and gh api reads run instead (issue #1560).
+            super::work_item_page::work_item_page_text(raw.trim())?
         };
         (!text.trim().is_empty()).then_some(text)
     })

@@ -152,6 +152,7 @@ import { guardedStep, isGuardRead } from './literal_write_guard.mjs';
 import { Progress, isWorkItemRead, qualifiedToolAttempt } from './progress.mjs';
 import { failedVerification, harnessReportedFailure, observedPayload, reportedExitCode, renderFailure, commandArgument, incompleteReceipt } from './tool_result.mjs';
 import { fill } from './work_item_steps.mjs';
+import { workItemPageText } from './work_item_page.mjs';
 import { observedRecoveryCommand, planRecovery } from './prerequisite_recovery.mjs';
 import { programContractAnswer } from './crate/coding_program_contract.mjs';
 import { planWorkItemEvidence, workItemEvidencePaths } from './work_item_evidence.mjs';
@@ -500,6 +501,11 @@ function repositoryWorkItemObjective(plan, progress) {
       // gh's title/body text is already extracted; raw HTML is not.
       if (/^\s*(?:<!doctype\s+html|<html\b)/iu.test(text)
         || /<body\b|<nav\b|<script\b/iu.test(text)) continue;
+      // A fetched page keeps its title and body; a page without a body is
+      // rejected so the REST and gh api reads run instead (issue #1560).
+      const page = workItemPageText(text);
+      if (page === null) continue;
+      text = page;
     }
     if (trim(text) !== '') return text;
   }

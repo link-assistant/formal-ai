@@ -133,6 +133,7 @@ mod wording;
 mod work_item_boundary_candidate;
 mod work_item_evidence;
 mod work_item_file_io;
+mod work_item_page;
 mod work_item_steps;
 mod workspace_change;
 mod workspace_computed_change;
