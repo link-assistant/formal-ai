@@ -574,8 +574,8 @@ pub(super) fn plan_work_item_boundary_step(
         ));
     };
     match plan_boundary_candidate_effect(candidate, messages, tools, task) {
-        BoundaryEffectOutcome::Pending(step) => {
-            Some(if super::file_read::read_policy_blocks_plan(task, &step) {
+        BoundaryEffectOutcome::Pending(step) => Some(
+            if super::file_read::user_read_policy_blocks_plan(messages, task, &step) {
                 finish(
                     "ReadPolicyRefused",
                     &observations,
@@ -586,8 +586,8 @@ pub(super) fn plan_work_item_boundary_step(
                 )
             } else {
                 step
-            })
-        }
+            },
+        ),
         BoundaryEffectOutcome::Effect(effect) => Some(finish(
             if effect["noOp"] == true {
                 "VerifiedNoOpAwaitingIndependentAcceptance"

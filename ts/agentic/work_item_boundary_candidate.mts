@@ -8,7 +8,7 @@ import { WorkItemFileProgress as Progress, fileIoReadStep, fileIoEffectStep, fil
 import { Capability } from './capability.mjs';
 import { jsonText, resolvedFinalAnswer, FinalDisposition } from './plan.mjs';
 import { clausesWithSpans } from './crate/obligation_ledger.mjs';
-import { readPolicyBlocksPlan } from './file_read/ownership.mjs';
+import { userReadPolicyBlocksPlan } from './file_read/ownership.mjs';
 const words = value => value.toLowerCase().replace(/[`'"()[\],;:]/gu, ' ').trim().replace(/\s+/gu, ' ');
 function grammar() {
   const parsed = parseLino(readText('data/meta/comparison-boundary-grammar.lino'));
@@ -446,7 +446,7 @@ export function planWorkItemBoundaryStep(task, messages, tools, workItem, pathsF
   if (!proposed.candidate) return finish(proposed.gap ?? 'BoundaryCandidateUnavailable', proposed);
   candidate = proposed.candidate;
   const next = planBoundaryCandidateEffect(candidate, messages, tools, task);
-  if (next.step) return readPolicyBlocksPlan(task, next.step) ? finish('ReadPolicyRefused') : next.step;
+  if (next.step) return userReadPolicyBlocksPlan(messages, task, next.step) ? finish('ReadPolicyRefused') : next.step;
   if (next.effect) {
     effect = next.effect;
     return finish(effect.noOp ? 'VerifiedNoOpAwaitingIndependentAcceptance' : 'UsefulCandidateAwaitingIndependentAcceptance');

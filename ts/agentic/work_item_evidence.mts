@@ -6,7 +6,7 @@ import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
 import { FinalDisposition, resolvedFinalAnswer, planOne, jsonText } from './plan.mjs';
 import { sha256Hex } from './crate/source_fetch.mjs';
-import { readPolicyBlocksPlan } from './file_read/ownership.mjs';
+import { userReadPolicyBlocksPlan } from './file_read/ownership.mjs';
 import { clausesWithSpans } from './crate/obligation_ledger.mjs';
 import { splitWhitespace } from './crate/rust_str.mjs';
 
@@ -65,7 +65,7 @@ export function planWorkItemEvidence(task, messages, tools, workItem = null) {
         filePath: path,
         file_path: path
       }));
-      return readPolicyBlocksPlan(task, step) ? finish('ReadPolicyRefused') : step;
+      return userReadPolicyBlocksPlan(messages, task, step) ? finish('ReadPolicyRefused') : step;
     }
     const complete = observed.error === null && observed.complete && typeof observed.source === 'string' && new TextEncoder().encode(observed.source).length <= 262144;
     observations.push({

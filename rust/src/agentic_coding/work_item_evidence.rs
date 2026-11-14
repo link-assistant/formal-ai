@@ -81,11 +81,13 @@ pub(super) fn plan_work_item_evidence(
                 read,
                 json!({"path":path,"filePath":path,"file_path":path}).to_string(),
             );
-            return Some(if super::file_read::read_policy_blocks_plan(task, &step) {
-                finish("ReadPolicyRefused", &observations)
-            } else {
-                step
-            });
+            return Some(
+                if super::file_read::user_read_policy_blocks_plan(messages, task, &step) {
+                    finish("ReadPolicyRefused", &observations)
+                } else {
+                    step
+                },
+            );
         };
         let complete = observed.error.is_none()
             && observed.complete
