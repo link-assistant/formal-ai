@@ -31,6 +31,7 @@ use support::{
 };
 
 mod apply;
+pub mod bounds;
 pub mod cues;
 pub use apply::apply_dreaming_plan;
 pub mod draft_failures;
