@@ -1,8 +1,9 @@
 //! Bounded source observations before an unsupported repository task stops.
-use super::final_result::{FinalDisposition, FinalResult, record};
+use super::final_result::{FinalDisposition, FinalResult};
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for};
 use super::progress::Progress;
 use super::source_manifest_facts::observed_manifest_facts;
+use super::work_item_report::{refusal, work_item_record_final};
 use crate::protocol::ChatMessage;
 use serde_json::json;
 
@@ -50,12 +51,19 @@ pub(super) fn plan_work_item_evidence(
     }
     let progress = Progress::scan(messages);
     let mut observations = Vec::new();
-    let mut finish = |reason: &str, observations: &[serde_json::Value]| {
-        let payload = json!({
+    // The work item is split into requirements before any evidence is read, so
+    // a refusal names the requirement it concerns (issue #1560).
+    let requirements = super::work_item_requirements::work_item_requirements(task)
+        .into_iter()
+        .map(|(text, (start, end))| json!({"text":text,"span":[start,end],"status":"unbound"}))
+        .collect::<Vec<_>>();
+    let mut finish = |reason: &str,
+                      observations: &[serde_json::Value],
+                      refused: Option<serde_json::Value>| {
+        let mut payload = json!({
             "schema":"repository-work-item-evidence/v1", "reason":reason,"workItem":work_item,
             "taskIdentity":crate::source_fetch::sha256_hex(task.as_bytes()),
-            "requirements":crate::obligation_ledger::clauses_with_spans(task).into_iter()
-                .map(|(text,(start,end))|json!({"text":text,"span":[start,end],"status":"unbound"})).collect::<Vec<_>>(),
+            "requirements":requirements,
             "decomposition":[
                 {"step":"collect_repository_evidence", "status":if reason == "EvidenceCollected" {"observed"} else {"incomplete"}},
                 {"step":"bind_requirements_to_source", "status":"unverified"},
@@ -65,8 +73,12 @@ pub(super) fn plan_work_item_evidence(
             "observations":observations, "coverage":"explicit-paths-only; at most eight files",
             "authored":false, "verified":false
         });
-        record(
-            AgenticPlan::Final(payload.to_string()),
+        if let Some(refused) = refused {
+            payload["refused"] = refused;
+        }
+        work_item_record_final(
+            payload,
+            task,
             FinalDisposition::Gap,
             "repository_work_item_evidence_gap",
             result,
@@ -75,7 +87,7 @@ pub(super) fn plan_work_item_evidence(
     for path in paths {
         let Some(observed) = progress.source_read_for(path) else {
             let Some(read) = tool_for(tools, Capability::Read) else {
-                return Some(finish("MissingReadTool", &observations));
+                return Some(finish("MissingReadTool", &observations, None));
             };
             let step = plan_one(
                 read,
@@ -83,7 +95,11 @@ pub(super) fn plan_work_item_evidence(
             );
             return Some(
                 if super::file_read::user_read_policy_blocks_plan(messages, task, &step) {
-                    finish("ReadPolicyRefused", &observations)
+                    finish(
+                        "ReadPolicyRefused",
+                        &observations,
+                        Some(refusal(&requirements, path)),
+                    )
                 } else {
                     step
                 },
@@ -114,8 +130,8 @@ pub(super) fn plan_work_item_evidence(
         }
         observations.push(observation);
         if !complete {
-            return Some(finish("IncompleteSourceObservation", &observations));
+            return Some(finish("IncompleteSourceObservation", &observations, None));
         }
     }
-    Some(finish("EvidenceCollected", &observations))
+    Some(finish("EvidenceCollected", &observations, None))
 }

@@ -4,10 +4,11 @@ import { observedManifestFacts } from './source_manifest_facts.mjs';
 import { Progress } from './progress.mjs';
 import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
-import { FinalDisposition, resolvedFinalAnswer, planOne, jsonText } from './plan.mjs';
+import { FinalDisposition, planOne, jsonText } from './plan.mjs';
 import { sha256Hex } from './crate/source_fetch.mjs';
 import { userReadPolicyBlocksPlan } from './file_read/ownership.mjs';
-import { clausesWithSpans } from './crate/obligation_ledger.mjs';
+import { workItemRequirements } from './work_item_requirements.mjs';
+import { refusal, workItemRecordFinal } from './work_item_report.mjs';
 import { splitWhitespace } from './crate/rust_str.mjs';
 
 /** File references are evidence candidates, never shell commands or write authority. */
@@ -27,16 +28,20 @@ export function planWorkItemEvidence(task, messages, tools, workItem = null) {
   if (!paths.length) return null;
   const progress = Progress.scan(messages),
     observations = [];
-  const finish = reason => resolvedFinalAnswer(jsonText({
+  // The work item is split into requirements before any evidence is read, so
+  // a refusal names the requirement it concerns (issue #1560).
+  const requirements = workItemRequirements(task).map(([text, span]) => ({
+    text,
+    span,
+    status: 'unbound'
+  }));
+  const finish = (reason, refused = null) => workItemRecordFinal({
     schema: 'repository-work-item-evidence/v1',
     reason,
     workItem,
     taskIdentity: sha256Hex(task),
-    requirements: clausesWithSpans(task).map(([text, span]) => ({
-      text,
-      span,
-      status: 'unbound'
-    })),
+    requirements,
+    ...(refused === null ? {} : { refused }),
     decomposition: [{
       step: 'collect_repository_evidence',
       status: reason === 'EvidenceCollected' ? 'observed' : 'incomplete'
@@ -54,7 +59,7 @@ export function planWorkItemEvidence(task, messages, tools, workItem = null) {
     coverage: 'explicit-paths-only; at most eight files',
     authored: false,
     verified: false
-  }), FinalDisposition.Gap, 'repository_work_item_evidence_gap');
+  }, task, FinalDisposition.Gap, 'repository_work_item_evidence_gap');
   for (const path of paths) {
     const observed = progress.sourceReadFor(path);
     if (!observed) {
@@ -65,7 +70,7 @@ export function planWorkItemEvidence(task, messages, tools, workItem = null) {
         filePath: path,
         file_path: path
       }));
-      return userReadPolicyBlocksPlan(messages, task, step) ? finish('ReadPolicyRefused') : step;
+      return userReadPolicyBlocksPlan(messages, task, step) ? finish('ReadPolicyRefused', refusal(requirements, path)) : step;
     }
     const complete = observed.error === null && observed.complete && typeof observed.source === 'string' && new TextEncoder().encode(observed.source).length <= 262144;
     observations.push({
