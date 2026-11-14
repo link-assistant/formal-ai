@@ -116,8 +116,10 @@ test('missing tool, failed and truncated reads terminate without repeating an ac
     const result = planWorkItemEvidence(task, messages, ['read', 'write']);
     assert.equal(result.kind, 'final');
     const report = JSON.parse(result.answer);
-    assert.equal(report.reason, 'IncompleteSourceObservation');
+    // A failed read with no search tool leaves the reference unresolved (issue #1558); a partial read stays incomplete.
+    assert.equal(report.reason, extra.is_error ? 'UnresolvedReferences' : 'IncompleteSourceObservation');
     assert.equal(report.observations[0].sourceIdentity, null);
+    if (extra.is_error) assert.deepEqual(report.unresolved, [{ reference: 'package.json', target: 'package.json', reason: 'SearchUnavailable' }]);
   }
 });
 test('paths are bounded, deduplicated and cannot become shell or traversal instructions', () => {

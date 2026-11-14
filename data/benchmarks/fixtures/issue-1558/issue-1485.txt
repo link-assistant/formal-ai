@@ -1,0 +1,47 @@
+[Bug][P0] Pending CI aborts unstarted Hive clients and cascades missing receipts: defer and resume before effects
+
+**Type:** Bug · **Priority:** P0
+
+## Reproduction and current behavior
+
+In [Original Hive run 40668396305](https://github.com/link-assistant/formal-ai/actions/runs/40668396305) on 2026-10-28, source authentication, build and image preparation passed. Claude delivered and passed [independent verification, job 122773758051](https://github.com/link-assistant/formal-ai/actions/runs/40668396305/job/122773758051).
+
+[Agent job 122765110686](https://github.com/link-assistant/formal-ai/actions/runs/40668396305/job/122765110686) and [Codex job 122765110642](https://github.com/link-assistant/formal-ai/actions/runs/40668396305/job/122765110642) stopped **before client execution**: a required scheduled task-ladder run, `40675356715`, became pending after initial admission. Revalidation correctly refused execution. Downstream verification/persistence then failed because claim/result artifacts did not exist.
+
+The current [hive-delivery-attempt.mjs](https://github.com/link-assistant/formal-ai/blob/528053940e8015d16752ee625cffcf15eedc0487/scripts/hive-delivery-attempt.mjs) asserts fresh admission before producing a distinct deferred receipt. This is an orchestration gap; the unstarted clients are not evidence of reasoning failure.
+
+## Outcome that unblocks development
+
+A candidate can wait for real prerequisites and resume safely, with every client outcome represented. Required CI remains required.
+
+## Implementation steps
+
+1. Add explicit pre-effect states: eligible, deferred on named prerequisites, refused, claimed/running, completed, and interrupted/unknown-after-effects.
+2. Persist a `deferred-before-effects` receipt before leaving an unclaimed client leg. Include exact source/attempt/client, prerequisite run IDs and statuses, timestamp and proof that no task effects were claimed.
+3. Make verification, persistence and aggregation consume this typed outcome rather than trying to download nonexistent claim/result artifacts.
+4. Resume or re-admit only when prerequisites for the same immutable candidate settle successfully. Respect effect ownership: never re-execute an already claimed leg just because a sibling was deferred.
+5. If a prerequisite fails or the selected source changes, emit refusal or a new attempt identity. Do not mutate old failed receipts into successful ones.
+6. Reuse existing claim, custody, protected-reference and cleanup controls. Avoid an unbounded sleep loop occupying a runner; use bounded rechecks and event-driven continuation where possible.
+
+## Acceptance
+
+- [ ] Replay the exact sequence: admission green; image prepared; required scheduled CI starts; two clients have not yet claimed effects.
+- [ ] Those clients do not run, receive zero execution credit, and leave valid deferred receipts naming the blocking run.
+- [ ] Downstream jobs report deferral without a cascade of missing-artifact exceptions.
+- [ ] Once prerequisites pass, only unclaimed clients execute; a completed sibling is not duplicated.
+- [ ] Failed prerequisites, changed source, ambiguous prior effects and duplicate delivery events are covered by negative tests.
+- [ ] One fresh hosted three-client attempt, including verified no-op repeats and independent assertions, finishes with truthful per-client results.
+- [ ] No pending, skipped or cancelled prerequisite is reclassified as passing.
+
+Related: #1162/#1364 and Hive #3630. This issue does not weaken admission policy.
+
+## Dependency contract
+
+**Blocked by:** none; this step can start independently.
+
+**Blocks:** #1490, #1162.
+
+Related umbrella issues provide context; their entire broader scope is not an implicit prerequisite.
+
+
+__formal_ai_exit=0
