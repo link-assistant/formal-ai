@@ -509,11 +509,18 @@ impl ShellEnvelope {
     }
 }
 
+/// A harness envelope frames the whole result. An envelope quoted inside
+/// source text (an issue body that shows a tool receipt) is data, not the
+/// receipt of this call (issue #1560).
+pub(super) fn untrusted_inner(text: &str) -> &str {
+    text.trim()
+        .strip_prefix("<untrusted_context>")
+        .and_then(|rest| rest.split_once("</untrusted_context>"))
+        .map_or(text, |(inside, _)| inside)
+}
+
 fn parse_shell_envelope(text: &str) -> Option<ShellEnvelope> {
-    let inner = text
-        .split_once("<untrusted_context>")
-        .and_then(|(_, rest)| rest.split_once("</untrusted_context>"))
-        .map_or(text, |(inside, _)| inside);
+    let inner = untrusted_inner(text);
     let lines = inner.lines().collect::<Vec<_>>();
     let mut exit_code = None;
     // A call the harness killed (a timeout) names its signal and no exit code
@@ -714,10 +721,7 @@ fn structured_content_text(structured: &Value) -> String {
 /// lines before the real `Output:` — so a recipe that answers with the command's
 /// output quotes the file, not the transport (issue #671).
 pub(super) fn strip_transport_envelope(text: &str) -> String {
-    let inner = text
-        .split_once("<untrusted_context>")
-        .and_then(|(_, rest)| rest.split_once("</untrusted_context>"))
-        .map_or(text, |(inside, _)| inside);
+    let inner = untrusted_inner(text);
     let lines = inner.lines().collect::<Vec<_>>();
     let output = lines.iter().position(|line| {
         let trimmed = line.trim();
