@@ -160,3 +160,6 @@ mod source_unary_consolidation;
 
 #[path = "literal_content_boundary.rs"]
 mod literal_content_boundary;
+
+#[path = "issue_1558_reference_resolution.rs"]
+mod issue_1558_reference_resolution;
