@@ -1,0 +1,13 @@
+2026-11-10T10:14:47Z	link-assistant/formal-ai#1550	created	Feature	[Feature][P0] Run the recursive meta algorithm as the executor of every answer: tasks, tests, drafts and solutions at each level
+2026-11-10T10:14:52Z	link-assistant/formal-ai#1551	created	Feature	[Feature][P0] Formalize each requirement into a test in the requested programming language and run it before a draft is selected
+2026-11-10T10:14:58Z	link-assistant/formal-ai#1552	created	Feature	[Feature][P1] Treat requirements as axioms: infer missing details and score options with relative-meta-logic
+2026-11-10T10:15:05Z	link-assistant/formal-ai#1553	created	Feature	[Feature][P1] Reuse source code found on GitHub according to its licence: ideas only, public-domain copy, library, or licence-respecting file copy
+2026-11-10T10:15:10Z	link-assistant/formal-ai#1554	created	Feature	[Feature][P1] Replace hardcoded solutions with meta algorithm executions for every task already supported
+2026-11-10T10:15:15Z	link-assistant/formal-ai#1555	created	Feature	[Feature][P2] Formalization and deformalization (naturalization) of natural language through the meta language must round-trip
+2026-11-10T10:15:19Z	link-assistant/formal-ai#1556	created	Feature	[Feature][P2] Configuration switches between valid options must change behaviour and be documented
+2026-11-10T10:15:24Z	link-assistant/formal-ai#1557	created	Bug	[Bug][P0] Draft summary is written in Spanish or Russian for an English issue: language markers match word prefixes
+2026-11-10T10:15:29Z	link-assistant/formal-ai#1558	created	Bug	[Bug][P0] File names from issue text are read at the workspace root and the session stops after three failed reads
+2026-11-10T10:15:34Z	link-assistant/formal-ai#1559	created	Bug	[Bug][P0] A system prompt of one session is stored as a learned standing requirement and replayed in the summary of another repository's session
+2026-11-10T10:15:39Z	link-assistant/formal-ai#1560	created	Bug	[Bug][P0] Work-item refusal is posted as raw JSON and the page chrome of a GitHub issue page is accepted as the issue text
+2026-11-10T10:17:54Z	link-assistant/formal-ai#1561	created	Feature	[Feature][P0] Critical blockers of the vision: coding by the recursive meta algorithm and general question answering
+2026-11-10T11:07:09Z	link-assistant/formal-ai#1562	created	Bug	[Bug][P0] A work item that only cites a Hello World repository or a source file name receives a stored Hello World program, committed and reported as "Created and verified"

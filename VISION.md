@@ -119,7 +119,7 @@ count of Rust lines measures an output: a more general meta algorithm may emit
 
 **The codebase is the main playground for formalization, naturalization and verified translation.**
 
-Formal AI uses its own code, comments, documentation and requirements as local knowledge for its general reasoning path. Source-linked formal statements connect documentation to actual code contracts. Its relative meta logic evaluates conditional and dependent evidence, including trusted public knowledge, to identify contradictions and determine which requirements are delivered, contradicted, partial or unknown. The latest authoritative requirement supersedes an earlier conflicting requirement for the same scope; compatible older obligations remain. Verified implementation changes signal documentation updates, while violations of current requirements signal implementation repairs.
+Formal AI uses its own code, comments, documentation and requirements as local knowledge for its general reasoning path. Source-linked formal statements connect documentation to actual code contracts. Its relative meta logic must evaluate conditional and dependent evidence, including trusted public knowledge, to identify contradictions and determine which requirements are delivered, contradicted, partial or unknown; today `rust/src/relative_meta_logic.rs`, modelled on [relative-meta-logic](https://github.com/link-foundation/relative-meta-logic), scores a statement against its sources and is not yet applied to requirements or to options ([#1552](https://github.com/link-assistant/formal-ai/issues/1552)). The latest authoritative requirement supersedes an earlier conflicting requirement for the same scope; compatible older obligations remain. Verified implementation changes signal documentation updates, while violations of current requirements signal implementation repairs.
 
 Formal AI translates documentation and comments into English, Russian, Hindi and Chinese through shared formal meanings. It selects wording across all four languages for the greatest measured probability of surviving round-trip translation, both for individual parts and whole documents. CI verifies source/content reconstruction, code/doc consistency, meaning preservation and repaired requirement violations. Probability, representation fidelity and proven behavior remain separate claims. See [the source-model doctrine](docs/requirements/doctrine-readable-recursive-source-and-comment-meta-language-2026-10-18.md).
 
@@ -331,6 +331,38 @@ Fetch and formalize only the trusted internet pages, documentation, code blocks 
 
 Failures are data: preserve failed builds, tests, tool calls and wrong answers with their causes, then use the evidence to revise the next attempt within its budget. Rank candidates by likelihood and simplicity, prefer logical and provable solutions, and retain why each candidate was selected or rejected. These are design requirements, not a claim that arbitrary task solving is already delivered. The [2026-10-15 architect note](docs/architect-notes/2026-10-15-know-just-enough.md) records the instruction verbatim.
 
+## Requirements are axioms, options are scored, the plan is executed
+
+Stated by the architect on 2026-11-10 ([note](docs/architect-notes/2026-11-10-what-we-do-most-wrong.md)):
+
+> Our requirements are like axioms or statements with high probability which
+> should define world model or formal system of the task context, meaning, we
+> should derive next logical statements from that.
+
+> Our system always should prefer to study multiple options, but in all cases,
+> it should calculate probability or fit to the original requirements based on
+> relative-meta-logic and automatically select best option, once selected it may
+> proceed with plan for implementation, and after plan for implementation is
+> defined enough it should be able to actually go and do all the actions in the
+> plan to actually implement it in the target repository or folder.
+
+The same recursive meta algorithm of the picture in the README carries every part of this:
+
+1. **Discover as it goes.** Reasoning discovers the information it needs while it reasons. Discovery uses trusted sources, takes just enough data to understand the task, and is cached automatically.
+2. **Split into specific requirements.** The task is split into specific requirements. Each requirement is an axiom, or a statement with a high probability, of the formal system of the task context.
+3. **Infer what is missing.** Details that stay unresolved after formalization are inferred from the original requirements with [relative-meta-logic](https://github.com/link-foundation/relative-meta-logic), in more than one way. Knowledge collected on the internet and previous experience of similar or typical tasks are evidence for that inference.
+4. **Formalize into tests.** Each requirement is formalized into a test in the required programming language.
+5. **Reproduce or generate.** An algorithm that exists on the internet is reproduced. When none exists, a new algorithm is generated by the same recursive meta algorithm: the task is split into parts, each part is solved separately, and parts of existing algorithms are reused.
+6. **Respect the licence of source code.** Source code on GitHub is a reference: its ideas are used, its files are not copied. A repository in the public domain may be copied. When the user asks or allows, other source code is used as a library where possible, or a file is copied in the way its licence permits.
+7. **Study multiple options and select.** Several options are studied. The probability or fit of each to the original requirements is calculated with relative-meta-logic, and the best option is selected automatically.
+8. **Plan, then execute.** The selected option becomes a plan for implementation. Once the plan is defined enough, every action in it is executed in the target repository or folder.
+9. **Formalization and deformalization.** Every step is supported in both directions through the meta language: formalization of natural language and of source code, and deformalization (naturalization) back.
+10. **Configuration.** When several options are valid, a configuration switch selects between them ([solver switches](docs/configuration/solver.md)).
+
+No task that Formal AI supports is exempt: a hardcoded solution is replaced by a solution that the meta algorithm produces.
+
+These are requirements, and the [2026-11-10 audit](docs/case-studies/issue-1548/README.md) measured how far the source is from each of them: the steps of the picture are recorded for every request but do not yet produce the answer ([#1550](https://github.com/link-assistant/formal-ai/issues/1550)); tests are not yet written in the required programming language and run before a draft is selected ([#1551](https://github.com/link-assistant/formal-ai/issues/1551)); relative-meta-logic is not yet applied to requirements or to options ([#1552](https://github.com/link-assistant/formal-ai/issues/1552)); source found on the internet has no licence decision ([#1553](https://github.com/link-assistant/formal-ai/issues/1553)); stored solutions still answer most supported tasks ([#1554](https://github.com/link-assistant/formal-ai/issues/1554)); most sentences do not survive formalization and deformalization ([#1555](https://github.com/link-assistant/formal-ai/issues/1555)); and several configuration switches change the trace and not the behaviour ([#1556](https://github.com/link-assistant/formal-ai/issues/1556)). The order of that work is in [#1561](https://github.com/link-assistant/formal-ai/issues/1561).
+
 ## Universal Problem-Solving Algorithm
 
 The reasoning loop above is the outer skeleton. The inner mechanics should be a single universal algorithm that does not assume prior knowledge of the task and works in the same shape for greetings, code generation, translation, source-checking, agent actions, or any future request:
@@ -362,6 +394,8 @@ The universal algorithm should be controlled by a small, explicit, persistable `
 - `offline` — whether external lookups are allowed (also honored from the `FORMAL_AI_OFFLINE` environment variable).
 - `cache_ttl_seconds` — TTL for cached external sources (default ≈ two months).
 - `temperature` — controls how aggressively the formalization step collapses multiple candidate interpretations into one. Lower values bias the solver toward the highest-scoring interpretation; higher values keep more interpretations alive and trigger clarifying questions or guesses, depending on `guess_probability`. Modelled on the softmax-temperature pattern used by neural networks, but applied to discrete Wikidata-anchored interpretations and symbolic probability evidence rather than neural logits.
+
+Every switch, its values, its default and whether it changes the answer or only the trace are listed in [solver switches](docs/configuration/solver.md).
 
 These knobs are deterministic: the same prompt with the same config produces the same answer. "Random guessing" is seeded from the impulse content hash so reproducibility is preserved.
 
