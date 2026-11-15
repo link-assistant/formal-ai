@@ -24,6 +24,7 @@ import { serverMessage } from './messages.mjs';
 import { jsonResponse, messageError, sseResponse } from './response.mjs';
 import { createChatCompletion, unsupportedModelResponse } from './openai.mjs';
 import { canonicalModelId, resolveModelId } from './seed.mjs';
+import { requestScope, runInRequestScope } from './standing-scope.mjs';
 
 const OUTPUT_TOKEN_LIMIT = 8192;
 const DEFAULT_AVG_UTF8_BYTES_PER_CHAR = 2;
@@ -373,12 +374,13 @@ export async function handleGeminiGenerateContent(ctx, request, stream) {
     return messageError(400, 'invalid_generate_content_request', { error: error.message });
   }
   const chatRequest = geminiToChatCompletionRequest(parsed, model);
-  const completion = await createChatCompletion(ctx, chatRequest);
+  const scope = requestScope({ body: request.body, messages: chatRequest.messages, tools: chatRequest.tools });
+  const completion = await runInRequestScope(scope, () => createChatCompletion(ctx, chatRequest));
   const response = geminiResponseFromChatCompletion(completion);
   const answer = response.candidates[0].content.parts
     .filter((part) => typeof part.text === 'string')
     .map((part) => part.text)
     .join('\n');
-  ctx.memory.recordExchange(chatRequest.messages, answer);
+  ctx.memory.recordExchange(chatRequest.messages, answer, null, scope);
   return stream ? sseResponse(geminiResponseSse(response)) : jsonResponse(200, response);
 }

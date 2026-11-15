@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use super::ChatMessage;
-use crate::engine::ThinkingStep;
+use crate::engine::{ThinkingStep, render_thinking_steps, stable_id};
 use serde_json::Value;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -215,4 +215,23 @@ pub struct ResponseUsage {
     pub input_tokens: u32,
     pub output_tokens: u32,
     pub total_tokens: u32,
+}
+
+/// The Responses `reasoning` item rendering `thinking_steps`, if any.
+pub(super) fn response_reasoning_item(
+    prompt: &str,
+    thinking_steps: &[ThinkingStep],
+) -> Option<ResponseOutputItem> {
+    let text = render_thinking_steps(thinking_steps);
+    if text.is_empty() {
+        return None;
+    }
+    Some(ResponseOutputItem::Reasoning(ResponseReasoningItem {
+        id: stable_id("rs", prompt),
+        kind: String::from("reasoning"),
+        summary: vec![ResponseReasoningSummaryText {
+            kind: String::from("summary_text"),
+            text,
+        }],
+    }))
 }
