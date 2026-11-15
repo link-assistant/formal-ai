@@ -16,7 +16,9 @@
 // passes the word kinds so this module does not import its caller.
 
 import { cached } from '../host.mjs';
-import { grammarVocabulary, structuralRuleValues } from './formalization_grammar.mjs';
+import { grammarRoot, grammarVocabulary, structuralRuleValues } from './formalization_grammar.mjs';
+import { containsCjk, meaning, words } from './seed_meanings.mjs';
+import { functionWords, negationCues, tokenize } from './summarization_vocabulary.mjs';
 import { byteOrder, isAlphabetic, isAlphanumeric, isNumeric, isWhitespace } from './rust_str.mjs';
 
 /** Mirrors `PROPOSITION_RULE` in rust/src/formalization/proposition_structure.rs. */
@@ -265,3 +267,147 @@ export function conjunctiveShape(structure) {
   return structure.shape.split(' ').every((token) => token === ShapeToken.Content || token === ShapeToken.Conjunction || token === '');
 }
 
+
+/** Mirrors `fn grammar_languages` in rust/src/formalization/proposition_structure.rs: the grammar language ids, in seed order. */
+const grammarLanguages = () => (grammarRoot()?.children ?? []).filter((node) => node.name === 'language').map((node) => node.value);
+
+/**
+ * Mirrors `fn surface_phrases` in rust/src/formalization/proposition_structure.rs: the phrases of every language a
+ * sentence handed to statement merging may use (it carries no language) — the connective and repetition phrases of
+ * every grammar language, then the lexicon words of the comparison and quantifier meanings; the first mark of a phrase
+ * wins, longest first. A mark is `{shape}`, `{repetition}` or `{comparison: {op, converse}}`.
+ */
+function surfacePhrases() {
+  return cached('proposition-structure-surface-phrases', () => {
+    const out = [];
+    const add = (phrase, mark) => {
+      const key = phrase.toLowerCase();
+      if (key === '' || out.some((seen) => seen.phrase === key)) return;
+      out.push({ phrase: key, length: Array.from(key).length, mark, index: out.length });
+    };
+    for (const language of grammarLanguages()) {
+      for (const entry of structurePhrases(language)) {
+        add(entry.phrase, entry.role === REPETITION ? { repetition: entry.kind } : { shape: entry.role });
+      }
+    }
+    const meanings = [];
+    for (const op of ORDERED_RELATIONS) {
+      for (const converse of [false, true]) {
+        const kind = converse ? `${op}${CONVERSE_SUFFIX}` : op;
+        for (const id of structuralRuleValues(COMPARISON_RULE, kind)) meanings.push([id, { comparison: { op, converse } }]);
+      }
+    }
+    for (const [kind, token] of [['universal-meaning', ShapeToken.Universal], ['existential-meaning', ShapeToken.Existential]]) {
+      for (const id of structuralRuleValues(PROPOSITION_RULE, kind)) meanings.push([id, { shape: token }]);
+    }
+    for (const [id, mark] of meanings) {
+      const found = meaning(id);
+      if (found !== null) for (const word of words(found)) add(word, mark);
+    }
+    return out.sort((left, right) => (right.length - left.length) || (left.index - right.index));
+  });
+}
+
+/** Mirrors `fn mark_item` in rust/src/formalization/proposition_structure.rs. */
+function markItem(entry, items, repetition) {
+  if (entry.mark.repetition !== undefined) repetition.push(entry.mark.repetition);
+  else if (entry.mark.comparison !== undefined) items.push({ comparison: entry.mark.comparison });
+  else items.push({ mark: entry.mark.shape });
+}
+
+/**
+ * Mirrors `fn cjk_items` in rust/src/formalization/proposition_structure.rs: at each character of a CJK run the
+ * longest CJK phrase, then the longest negation cue, opening there is read; the characters between them are one
+ * content item.
+ */
+function cjkItems(run, items, repetition) {
+  const phrases = surfacePhrases();
+  const cues = negationCues().filter(containsCjk).sort((left, right) => Array.from(right).length - Array.from(left).length);
+  const characters = Array.from(run);
+  let content = '';
+  const flush = () => {
+    if (content !== '') items.push({ content });
+    content = '';
+  };
+  let index = 0;
+  while (index < characters.length) {
+    const rest = characters.slice(index).join('');
+    const entry = phrases.find((candidate) => containsCjk(candidate.phrase) && rest.startsWith(candidate.phrase));
+    const cue = entry === undefined ? cues.find((candidate) => rest.startsWith(candidate)) : undefined;
+    if (entry !== undefined) {
+      flush();
+      markItem(entry, items, repetition);
+      index += entry.length;
+    } else if (cue !== undefined) {
+      flush();
+      items.push({ mark: ShapeToken.Negation });
+      index += Array.from(cue).length;
+    } else {
+      content += characters[index];
+      index += 1;
+    }
+  }
+  flush();
+}
+
+/** Mirrors `fn surface_items` in rust/src/formalization/proposition_structure.rs: `{items, repetition}`. */
+function surfaceItems(text) {
+  const phrases = surfacePhrases();
+  const tokens = tokenize(text);
+  const items = [];
+  const repetition = [];
+  for (let index = 0; index < tokens.length;) {
+    const found = phraseAt(tokens, index, phrases);
+    if (found !== null) {
+      markItem(found.entry, items, repetition);
+      index += found.width;
+      continue;
+    }
+    const token = tokens[index];
+    if (containsCjk(token)) cjkItems(token, items, repetition);
+    else if (negationCues().includes(token)) items.push({ mark: ShapeToken.Negation });
+    else if (!functionWords().includes(token)) items.push({ content: token });
+    index += 1;
+  }
+  return { items, repetition };
+}
+
+const pushShape = (shape, token) => {
+  if (!(token === ShapeToken.Content && shape[shape.length - 1] === ShapeToken.Content)) shape.push(token);
+};
+
+/**
+ * Mirrors `fn surface_structure` in rust/src/formalization/proposition_structure.rs: the language-free structure of
+ * `text` statement merging keys on, `{structure, scope}` — ordered relations (seeded operator symbols, and comparison
+ * words between their nearest content words), the `or` shape with negations dropped, explicit counts and unsupported
+ * structure, and the whole shape when a negation cue occurs.
+ */
+export function surfaceStructure(text) {
+  const { items, repetition } = surfaceItems(text);
+  const shape = [];
+  for (const item of items) pushShape(shape, item.mark ?? ShapeToken.Content);
+  while (shape[0] === ShapeToken.Conjunction) shape.shift();
+  while (shape.length > 0 && CONNECTIVES.some(([token]) => token === shape[shape.length - 1])) shape.pop();
+  const symbolic = symbolicRelations(text, []);
+  const relations = symbolic.relations.map((entry) => entry.text);
+  const unresolved = [...symbolic.unresolved];
+  items.forEach((item, position) => {
+    if (item.comparison === undefined) return;
+    const left = items.slice(0, position).reverse().find((candidate) => candidate.content !== undefined);
+    const right = items.slice(position + 1).find((candidate) => candidate.content !== undefined);
+    const { op, converse } = item.comparison;
+    if (left !== undefined && right !== undefined) relations.push(relation(op, converse, `symbol:${left.content}`, `symbol:${right.content}`).text);
+    else unresolved.push(`${Unresolved.RelationOperand}:${op}`);
+  });
+  const sorted = (values) => [...new Set(values)].sort(byteOrder);
+  const parts = [];
+  if (shape.includes(ShapeToken.Disjunction)) {
+    const positive = [];
+    for (const token of shape) if (token !== ShapeToken.Negation) pushShape(positive, token);
+    parts.push(`shape=${positive.join(' ')}`);
+  }
+  if (relations.length > 0) parts.push(`relations=${sorted(relations).join(' ')}`);
+  if (repetition.length > 0) parts.push(`repetition=${sorted(repetition).join(' ')}`);
+  if (unresolved.length > 0) parts.push(`unresolved=${sorted(unresolved).join(' ')}`);
+  return { structure: parts.join(';'), scope: shape.includes(ShapeToken.Negation) ? shape.join(' ') : '' };
+}

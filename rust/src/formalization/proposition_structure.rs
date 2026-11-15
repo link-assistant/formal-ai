@@ -646,3 +646,312 @@ pub fn conjunctive_shape(structure: &PropositionStructure) -> bool {
             || token.is_empty()
     })
 }
+
+/// The language-free structure of a raw sentence that statement merging keys
+/// on (issue #1487): `structure` holds what a denial shares with its
+/// assertion, `scope` where the negation stands.
+#[derive(Debug, Clone, Default, PartialEq, Eq, PartialOrd, Ord)]
+pub struct SurfaceStructure {
+    /// The `or` shape with negations dropped, the ordered relations, the
+    /// explicit counts and the unsupported structure (empty when none).
+    pub structure: String,
+    /// The whole connective and quantifier shape when the text holds a
+    /// negation cue (empty otherwise): `not universal _` (`not all tests
+    /// pass`) is not `universal _ not _` (`all tests do not pass`).
+    pub scope: String,
+}
+
+/// What a surface phrase marks.
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum SurfaceMark {
+    Shape(ShapeToken),
+    Repetition(String),
+    Comparison(RelationKind),
+}
+
+/// One phrase of the surface vocabulary, lowercased.
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct SurfacePhrase {
+    phrase: String,
+    length: usize,
+    mark: SurfaceMark,
+}
+
+/// One item of a sentence read with the surface vocabulary.
+enum SurfaceItem {
+    Mark(ShapeToken),
+    Content(String),
+    Comparison(RelationKind),
+}
+
+/// The ids of the grammar languages, in seed order.
+fn grammar_languages() -> Vec<String> {
+    super::grammar_root().map_or_else(Vec::new, |root| {
+        root.children
+            .iter()
+            .filter(|node| node.name == "language")
+            .map(|node| node.id.clone())
+            .collect()
+    })
+}
+
+/// The phrases of every language a sentence handed to statement merging may
+/// use — it carries no language: the connective and repetition phrases of
+/// every grammar language, then the lexicon words of the comparison and
+/// quantifier meanings; the first mark of a phrase wins, longest first.
+fn surface_phrases() -> &'static [SurfacePhrase] {
+    static PHRASES: OnceLock<Vec<SurfacePhrase>> = OnceLock::new();
+    PHRASES.get_or_init(|| {
+        let mut out: Vec<SurfacePhrase> = Vec::new();
+        let mut add = |phrase: &str, mark: SurfaceMark| {
+            let phrase = phrase.to_lowercase();
+            if phrase.is_empty() || out.iter().any(|seen| seen.phrase == phrase) {
+                return;
+            }
+            let length = phrase.chars().count();
+            out.push(SurfacePhrase {
+                phrase,
+                length,
+                mark,
+            });
+        };
+        for language in grammar_languages() {
+            for entry in structure_phrases(&language).iter() {
+                let mark = match entry.role {
+                    PhraseRole::Connective(token) => SurfaceMark::Shape(token),
+                    PhraseRole::Repetition => SurfaceMark::Repetition(entry.kind.clone()),
+                };
+                add(&entry.phrase, mark);
+            }
+        }
+        let lexicon = crate::seed::lexicon();
+        let mut meanings: Vec<(String, SurfaceMark)> = Vec::new();
+        for op in ORDERED_RELATIONS {
+            for converse in [false, true] {
+                let kind = if converse {
+                    format!("{op}{CONVERSE_SUFFIX}")
+                } else {
+                    op.to_owned()
+                };
+                for id in structural_rule_values(COMPARISON_RULE, &kind) {
+                    meanings.push((id, SurfaceMark::Comparison(RelationKind { op, converse })));
+                }
+            }
+        }
+        for (kind, token) in [
+            ("universal-meaning", ShapeToken::Universal),
+            ("existential-meaning", ShapeToken::Existential),
+        ] {
+            for id in structural_rule_values(PROPOSITION_RULE, kind) {
+                meanings.push((id, SurfaceMark::Shape(token)));
+            }
+        }
+        for (id, mark) in meanings {
+            if let Some(meaning) = lexicon.meaning(&id) {
+                for word in meaning.words() {
+                    add(word, mark.clone());
+                }
+            }
+        }
+        // A stable sort keeps declaration order among phrases of one length.
+        out.sort_by(|left, right| right.length.cmp(&left.length));
+        out
+    })
+}
+
+/// The longest surface phrase opening at token `start`, with its width in
+/// tokens ([`phrase_at`] over the surface vocabulary).
+fn surface_phrase_at<'a>(
+    tokens: &[String],
+    start: usize,
+    phrases: &'a [SurfacePhrase],
+) -> Option<(&'a SurfacePhrase, usize)> {
+    for entry in phrases {
+        let mut spaced = String::new();
+        let mut solid = String::new();
+        for (end, token) in tokens.iter().enumerate().skip(start) {
+            if end > start {
+                spaced.push(' ');
+            }
+            spaced.push_str(token);
+            solid.push_str(token);
+            if spaced == entry.phrase || solid == entry.phrase {
+                return Some((entry, end - start + 1));
+            }
+            if solid.chars().count() >= entry.length {
+                break;
+            }
+        }
+    }
+    None
+}
+
+fn mark_item(entry: &SurfacePhrase, items: &mut Vec<SurfaceItem>, repetition: &mut Vec<String>) {
+    match &entry.mark {
+        SurfaceMark::Shape(token) => items.push(SurfaceItem::Mark(*token)),
+        SurfaceMark::Repetition(kind) => repetition.push(kind.clone()),
+        SurfaceMark::Comparison(kind) => items.push(SurfaceItem::Comparison(*kind)),
+    }
+}
+
+fn flush_content(content: &mut String, items: &mut Vec<SurfaceItem>) {
+    if !content.is_empty() {
+        items.push(SurfaceItem::Content(std::mem::take(content)));
+    }
+}
+
+/// A CJK run packs several words: at each character the longest CJK phrase,
+/// then the longest negation cue, opening there is read; the characters
+/// between them are one content item.
+fn cjk_items(run: &str, items: &mut Vec<SurfaceItem>, repetition: &mut Vec<String>) {
+    let phrases = surface_phrases();
+    let mut cues: Vec<&String> = crate::summarization::vocabulary::negation_cues()
+        .iter()
+        .filter(|cue| crate::coding::contains_cjk(cue))
+        .collect();
+    cues.sort_by_key(|cue| std::cmp::Reverse(cue.chars().count()));
+    let characters: Vec<char> = run.chars().collect();
+    let mut content = String::new();
+    let mut index = 0;
+    while index < characters.len() {
+        let rest: String = characters[index..].iter().collect();
+        if let Some(entry) = phrases.iter().find(|entry| {
+            crate::coding::contains_cjk(&entry.phrase) && rest.starts_with(entry.phrase.as_str())
+        }) {
+            flush_content(&mut content, items);
+            mark_item(entry, items, repetition);
+            index += entry.length;
+        } else if let Some(cue) = cues.iter().find(|cue| rest.starts_with(cue.as_str())) {
+            flush_content(&mut content, items);
+            items.push(SurfaceItem::Mark(ShapeToken::Negation));
+            index += cue.chars().count();
+        } else {
+            content.push(characters[index]);
+            index += 1;
+        }
+    }
+    flush_content(&mut content, items);
+}
+
+/// `text` read with the statement-merge vocabulary and the surface phrases:
+/// its items and its explicit counts.
+fn surface_items(text: &str) -> (Vec<SurfaceItem>, Vec<String>) {
+    use crate::summarization::vocabulary::{function_words, negation_cues, tokenize};
+    let phrases = surface_phrases();
+    let tokens = tokenize(text);
+    let mut items = Vec::new();
+    let mut repetition = Vec::new();
+    let mut index = 0;
+    while index < tokens.len() {
+        if let Some((entry, width)) = surface_phrase_at(&tokens, index, phrases) {
+            mark_item(entry, &mut items, &mut repetition);
+            index += width;
+            continue;
+        }
+        let token = &tokens[index];
+        if crate::coding::contains_cjk(token) {
+            cjk_items(token, &mut items, &mut repetition);
+        } else if negation_cues().contains(token) {
+            items.push(SurfaceItem::Mark(ShapeToken::Negation));
+        } else if !function_words().contains(token) {
+            items.push(SurfaceItem::Content(token.clone()));
+        }
+        index += 1;
+    }
+    (items, repetition)
+}
+
+fn push_shape(shape: &mut Vec<ShapeToken>, token: ShapeToken) {
+    if !(token == ShapeToken::Content && shape.last() == Some(&ShapeToken::Content)) {
+        shape.push(token);
+    }
+}
+
+fn shape_slugs(shape: &[ShapeToken]) -> String {
+    shape
+        .iter()
+        .map(|token| token.slug())
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+const fn content_of(item: &SurfaceItem) -> Option<&String> {
+    match item {
+        SurfaceItem::Content(value) => Some(value),
+        SurfaceItem::Mark(_) | SurfaceItem::Comparison(_) => None,
+    }
+}
+
+/// The language-free structure of `text`: ordered relations (seeded operator
+/// symbols, and comparison words between their nearest content words), the
+/// `or` shape, explicit counts and the negation scope.
+#[must_use]
+pub fn surface_structure(text: &str) -> SurfaceStructure {
+    let (items, repetition) = surface_items(text);
+    let mut shape = Vec::new();
+    for item in &items {
+        let token = match item {
+            SurfaceItem::Mark(token) => *token,
+            SurfaceItem::Content(_) | SurfaceItem::Comparison(_) => ShapeToken::Content,
+        };
+        push_shape(&mut shape, token);
+    }
+    while shape.first() == Some(&ShapeToken::Conjunction) {
+        shape.remove(0);
+    }
+    while shape.last().is_some_and(|token| token.connective()) {
+        shape.pop();
+    }
+    let (symbolic, mut unresolved) = symbolic_relations(text, &[]);
+    let mut relations: Vec<String> = symbolic.into_iter().map(|entry| entry.text).collect();
+    for (position, item) in items.iter().enumerate() {
+        let SurfaceItem::Comparison(kind) = item else {
+            continue;
+        };
+        let left = items[..position].iter().rev().find_map(content_of);
+        let right = items[position + 1..].iter().find_map(content_of);
+        if let (Some(left), Some(right)) = (left, right) {
+            let entry = relation(
+                kind.op,
+                kind.converse,
+                format!("symbol:{left}"),
+                format!("symbol:{right}"),
+            );
+            relations.push(entry.text);
+        } else {
+            unresolved.push(format!(
+                "{}:{}",
+                Unresolved::RelationOperand.slug(),
+                kind.op
+            ));
+        }
+    }
+    let mut parts = Vec::new();
+    if shape.contains(&ShapeToken::Disjunction) {
+        let mut positive = Vec::new();
+        for token in shape.iter().copied() {
+            if token != ShapeToken::Negation {
+                push_shape(&mut positive, token);
+            }
+        }
+        parts.push(format!("shape={}", shape_slugs(&positive)));
+    }
+    if !relations.is_empty() {
+        parts.push(format!("relations={}", sorted(relations).join(" ")));
+    }
+    if !repetition.is_empty() {
+        parts.push(format!("repetition={}", sorted(repetition).join(" ")));
+    }
+    if !unresolved.is_empty() {
+        parts.push(format!("unresolved={}", sorted(unresolved).join(" ")));
+    }
+    let scope = if shape.contains(&ShapeToken::Negation) {
+        shape_slugs(&shape)
+    } else {
+        String::new()
+    };
+    SurfaceStructure {
+        structure: parts.join(";"),
+        scope,
+    }
+}
