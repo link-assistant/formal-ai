@@ -187,6 +187,7 @@
     "rust/tests/web/generate-role-registry-js.test.mjs",
     "rust/tests/web/debugger-client.test.mjs",
     "rust/tests/web/hive-draft-attempt-identity.test.mjs",
-    "rust/tests/web/hive-pre-effect-deferral.test.mjs"
+    "rust/tests/web/hive-pre-effect-deferral.test.mjs",
+    "rust/tests/web/issue-1487-proposition-identity.test.mjs"
   ]
 }

@@ -8,6 +8,7 @@ import { installNodeHost } from '../../js/agentic/node-host.mjs';
 import { formalizeText, statementStructure } from '../../js/agentic/crate/text_formalization.mjs';
 import { structureKey } from '../../js/agentic/crate/proposition_structure.mjs';
 import { checkedRelation, certifiesRestatement } from '../../js/agentic/crate/statement_relation.mjs';
+import { signatureKey, signatureOf } from '../../js/agentic/crate/summarization_dedup.mjs';
 await installNodeHost(new WorkerHost());
 const PATH = new URL('../../rust/tests/fixtures/proposition-structure-parity.json', import.meta.url);
 const structures = [
@@ -26,6 +27,14 @@ const relations = [
   ['Not all primes are odd.', 'All primes are not odd.'], ['1972', '1969 and 1972'], ['x + y * z', 'x + y * z'],
   ['x + y * z', 'x * y + z'],
 ];
+// Statement-merge signatures (summarization dedup): a raw sentence, no language.
+const signatures = [
+  'Compute a - b.', 'Compute b - a.', '1 < 2', '2 < 1', 'x <= y', '1 is less than 2.', '2 is less than 1.',
+  '2 is greater than 1.', '1 is at most 2.', 'The program returns true or false.', 'The program returns true and false.',
+  'The program does not return true or false.', 'Not all tests pass.', 'All tests do not pass.', 'Print hello twice.',
+  'Print hello.', 'The parser is fast.', 'The parser is not fast.', 'Не все тесты проходят.', 'Все тесты не проходят.',
+  'Программа возвращает истину или ложь.', '程序返回真或假。', 'प्रोग्राम सही या गलत लौटाता है।', 'Выведи привет дважды.',
+];
 const one = (text, language) => {
   const statements = formalizeText(text, language);
   if (statements.length !== 1) throw new Error(`expected one statement for ${text}, got ${statements.length}`);
@@ -39,6 +48,7 @@ const fixture = {
     const relation = checkedRelation(one(later, 'en'), one(earlier, 'en'));
     return { later, earlier, language: 'en', verdict: relation.verdict, reason: relation.reason, restates: certifiesRestatement(relation) };
   }),
+  signatures: signatures.map((text) => ({ text, key: signatureKey(signatureOf(text)) })),
 };
 const text = `${JSON.stringify(fixture, null, 2)}\n`;
 if (process.argv.includes('--write')) fs.writeFileSync(PATH, text);

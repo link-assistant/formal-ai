@@ -247,5 +247,103 @@
       "reason": "unsupported-structure",
       "restates": false
     }
+  ],
+  "signatures": [
+    {
+      "text": "Compute a - b.",
+      "key": "asserted:b compute|relations=minus(symbol:a,symbol:b)"
+    },
+    {
+      "text": "Compute b - a.",
+      "key": "asserted:b compute|relations=minus(symbol:b,symbol:a)"
+    },
+    {
+      "text": "1 < 2",
+      "key": "asserted:1 2|relations=less(symbol:1,symbol:2)"
+    },
+    {
+      "text": "2 < 1",
+      "key": "asserted:1 2|relations=less(symbol:2,symbol:1)"
+    },
+    {
+      "text": "x <= y",
+      "key": "asserted:x y|relations=less-or-equal(symbol:x,symbol:y)"
+    },
+    {
+      "text": "1 is less than 2.",
+      "key": "asserted:1 2 less|relations=less(symbol:1,symbol:2)"
+    },
+    {
+      "text": "2 is less than 1.",
+      "key": "asserted:1 2 less|relations=less(symbol:2,symbol:1)"
+    },
+    {
+      "text": "2 is greater than 1.",
+      "key": "asserted:1 2 greater|relations=less(symbol:1,symbol:2)"
+    },
+    {
+      "text": "1 is at most 2.",
+      "key": "asserted:1 2 most|relations=less-or-equal(symbol:1,symbol:2)"
+    },
+    {
+      "text": "The program returns true or false.",
+      "key": "asserted:false program returns true|shape=_ disjunction _"
+    },
+    {
+      "text": "The program returns true and false.",
+      "key": "asserted:false program returns true"
+    },
+    {
+      "text": "The program does not return true or false.",
+      "key": "denied:false program return true|shape=_ disjunction _|scope=_ not _ disjunction _"
+    },
+    {
+      "text": "Not all tests pass.",
+      "key": "denied:all pass tests|scope=not universal _"
+    },
+    {
+      "text": "All tests do not pass.",
+      "key": "denied:all pass tests|scope=universal _ not _"
+    },
+    {
+      "text": "Print hello twice.",
+      "key": "asserted:hello print twice|repetition=repetition-twice"
+    },
+    {
+      "text": "Print hello.",
+      "key": "asserted:hello print"
+    },
+    {
+      "text": "The parser is fast.",
+      "key": "asserted:fast parser"
+    },
+    {
+      "text": "The parser is not fast.",
+      "key": "denied:fast parser|scope=_ not _"
+    },
+    {
+      "text": "Не все тесты проходят.",
+      "key": "denied:все проходят тесты|scope=not universal _"
+    },
+    {
+      "text": "Все тесты не проходят.",
+      "key": "denied:все проходят тесты|scope=universal _ not _"
+    },
+    {
+      "text": "Программа возвращает истину или ложь.",
+      "key": "asserted:возвращает истину ложь программа|shape=_ disjunction _"
+    },
+    {
+      "text": "程序返回真或假。",
+      "key": "asserted:程序返回真假|shape=_ disjunction _"
+    },
+    {
+      "text": "प्रोग्राम सही या गलत लौटाता है।",
+      "key": "asserted:गलत प राम रोग लौटाता सही|shape=_ disjunction _"
+    },
+    {
+      "text": "Выведи привет дважды.",
+      "key": "asserted:выведи дважды привет|repetition=repetition-twice"
+    }
   ]
 }
