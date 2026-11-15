@@ -73,3 +73,17 @@ main-run 43710854189
       failed "ubuntu-latest moved to ubuntu-26.04 under an unchanged workflow"
       check rust/tests/web/runner-label-pinning.test.mjs
       marker "a moving label"
+main-run 41317019358
+  javascript-twin
+    regression debt-ratchet-literal-predicates
+      introduced-by "PR #1495, merged as 116e86043"
+      failed "Self-development status: literal-predicates measured 445 above ceiling 437"
+      check rust/tests/web/debt-ceiling-fast-lane.test.mjs
+      marker "41317019358"
+main-run 41804771645
+  javascript-twin
+    regression debt-ratchet-language-parity-gaps
+      introduced-by "PR #1542, merged as 438185d97"
+      failed "Self-development status: language-parity-gaps measured 52 above ceiling 42"
+      check rust/tests/web/debt-ceiling-fast-lane.test.mjs
+      marker "41804771645"
