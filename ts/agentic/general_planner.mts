@@ -7,7 +7,7 @@ import { generalChangePlanRecordHeader } from './append_contract.mjs';
 // (rust/src/agentic_coding/general_planner.rs, issue #654).
 //
 // A `GeneralChangePlan` is `{id, mode, goal, target, content, steps,
-// verification_command, terminal_state}`; `mode` is 'literal_file' |
+// verification_command, terminal_state, request_language}`; `mode` is 'literal_file' |
 // 'command_output' | 'repository_work_item' (the Rust `GeneralPlanMode::slug`)
 // and `terminal_state` is 'executed' | 'planned_not_executed'. A step is
 // `{capability, action, expected_evidence, command}`.
@@ -35,7 +35,7 @@ import { stableId } from './crate/engine_stable_identifier.mjs';
 import { formalizeIntent } from './crate/intent_formalization.mjs';
 import { withoutTrailingKnownModifier } from './crate/implementation_language.mjs';
 import { fencedBlock, LINO_FENCE_LANGUAGE } from './crate/issue_report.mjs';
-import { detect } from './crate/language.mjs';
+import { detect, detectProse } from './crate/language.mjs';
 import { localizedResponse } from './crate/seed.mjs';
 import { terminalCommandVocabulary } from './crate/seed_terminal_commands.mjs';
 import { resolveReference, workspace } from './crate/self_ast_census.mjs';
@@ -129,9 +129,27 @@ export function planLinksNotation(plan) {
   return out;
 }
 
+/** Mirrors `fn work_item_title_and_body`: `title`, a blank line, then `body`. */
+function workItemTitleAndBody(goal) {
+  const at = goal.indexOf('\n\n');
+  return at >= 0 && !goal.slice(0, at).includes('\n') ? [goal.slice(0, at), goal.slice(at + 2)] : ['', goal];
+}
+
+/**
+ * Mirrors `GeneralChangePlan::response_language`: a work item answers in the
+ * language of the user's own turn, then of its body's prose, then of its
+ * title's prose, and of its goal as a whole only when none holds prose, so
+ * one marker or one quotation cannot decide a document (issue #1557).
+ */
+export function planResponseLanguage(plan) {
+  if (plan.mode !== GeneralPlanMode.RepositoryWorkItem) return detect(plan.goal);
+  const [title, body] = workItemTitleAndBody(plan.goal);
+  return plan.request_language ?? detectProse(body) ?? detectProse(title) ?? detect(plan.goal);
+}
+
 /** Mirrors `GeneralChangePlan::planned_not_executed_answer`. */
 export function plannedNotExecutedAnswer(plan) {
-  const language = detect(plan.goal);
+  const language = planResponseLanguage(plan);
   return (localizedResponse('general_plan_repository_planned', language) ?? '')
     .split(TARGET_PLACEHOLDER).join(plan.target)
     .split('{plan_path}').join(PLAN_PATH)
@@ -263,6 +281,7 @@ export function composeGeneralChangePlan(fullRequest) {
     steps,
     verification_command: verificationCommand,
     terminal_state: PlanTerminalState.Executed,
+    request_language: null,
   };
 }
 
@@ -278,6 +297,9 @@ function composeRepositoryWorkPlan(request) {
   if (!opensWithReference && !mentionsBareRole(request, 'software_authoring_action')) return null;
   const responseLanguage = detect(request);
   const intent = formalizeIntent(request, responseLanguage);
+  // Issue #1557: a request that wraps the reference in words of its own is
+  // the user's turn, the strongest signal for the answer's language.
+  const requestLanguage = opensWithReference ? null : detectProse(request);
   return {
     id: stableId('repository_work_item_plan', `${intent.impulse_id}:${target}`),
     mode: GeneralPlanMode.RepositoryWorkItem,
@@ -290,6 +312,7 @@ function composeRepositoryWorkPlan(request) {
     ],
     verification_command: '',
     terminal_state: PlanTerminalState.PlannedNotExecuted,
+    request_language: requestLanguage,
   };
 }
 
