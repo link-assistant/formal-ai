@@ -105,6 +105,16 @@ test('issue 1486: a link into .github/workflows/ is read at its linked path and 
   assert.equal(record.reason, 'EvidenceCollected', plan.answer);
 });
 
+test('issue 1501: a bare README.md is the root file, not a deeper one whose directory shares a word with the text', async () => {
+  const deeper = 'experiments/formal_ai_subagent/evidence/specification-delivery-1188/compiled-first-slice/README.md';
+  const read1501 = issueRead('1501');
+  const answer = (tool, args) => (tool === 'glob' && args.pattern === '**/README.md' ? deeper + '\nREADME.md\n' : read1501(tool, args));
+  const { plan, read } = await drive([{ role: 'user', content: prompt(1501) }], tools, answer);
+  assert.ok(read.includes('README.md'), JSON.stringify(read));
+  assert.equal(read.includes(deeper), false, JSON.stringify(read));
+  reported(plan);
+});
+
 test('issue 1501 page: only the title and body are kept as the requirement text', () => {
   const text = workItemPageText(page1501);
   assert.ok(text.startsWith('Agent mode 0.355.27 misroutes common file requests'), text.slice(0, 200));

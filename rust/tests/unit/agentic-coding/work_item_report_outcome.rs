@@ -244,6 +244,34 @@ fn issue_1486_link_into_dot_github_is_read_at_its_linked_path() {
 }
 
 #[test]
+fn issue_1501_bare_readme_is_the_root_file_not_a_deeper_one_sharing_a_word() {
+    const DEEPER: &str = "experiments/formal_ai_subagent/evidence/specification-delivery-1188/compiled-first-slice/README.md";
+    let read_1501 = issue_read("1501");
+    let session = drive(
+        vec![ChatMessage::user(prompt(1501))],
+        &TOOLS,
+        move |tool, args| {
+            if tool == "glob" && args["pattern"] == "**/README.md" {
+                Some(format!("{DEEPER}\nREADME.md\n"))
+            } else {
+                read_1501(tool, args)
+            }
+        },
+    );
+    assert!(
+        session.read.iter().any(|path| path == "README.md"),
+        "{:?}",
+        session.read
+    );
+    assert!(
+        !session.read.iter().any(|path| path == DEEPER),
+        "{:?}",
+        session.read
+    );
+    reported(&session.final_answer);
+}
+
+#[test]
 fn issue_1501_page_keeps_only_its_title_and_body() {
     let text = work_item_page_text(PAGE_1501).expect("the page has a body");
     assert!(text.starts_with(TITLE_1501), "{}", &text[..200]);
