@@ -5,13 +5,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { parse } from 'yaml';
+import YAML from 'yaml';
 import { classifyStep, evaluateSlo, measureRun, metric, SLO_SCHEMA } from '../../../scripts/lib/ci-phase-timing.mjs';
 import { main } from '../../../scripts/ci-phase-timing.mjs';
 
 const root = new URL('../../../', import.meta.url);
 const readJson = path => JSON.parse(readFileSync(new URL(path, root), 'utf8'));
-const workflow = name => parse(readFileSync(new URL('.github/workflows/' + name, root), 'utf8'));
+const workflow = name => YAML.parse(readFileSync(new URL('.github/workflows/' + name, root), 'utf8'));
 const baseline = id => {
   const prefix = 'data/benchmarks/ci-phase-timing/baseline-runs/' + id;
   return { run: readJson(prefix + '-run.json'), jobs: readJson(prefix + '-jobs.json').jobs, artifacts: readJson(prefix + '-artifacts.json').artifacts };

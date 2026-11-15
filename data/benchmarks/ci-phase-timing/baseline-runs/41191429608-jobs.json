@@ -1,337 +1,51 @@
-{
- "jobs": [
-  {
-   "name": "build",
-   "conclusion": "success",
-   "created_at": "2026-10-31T10:07:06Z",
-   "started_at": "2026-10-31T10:08:33Z",
-   "completed_at": "2026-10-31T10:19:33Z",
-   "steps": [
-    {
-     "number": 1,
-     "name": "Set up job",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:08:34Z",
-     "completed_at": "2026-10-31T10:08:35Z"
-    },
-    {
-     "number": 2,
-     "name": "Set session evidence directory on the allocated runner",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:08:35Z",
-     "completed_at": "2026-10-31T10:08:35Z"
-    },
-    {
-     "number": 3,
-     "name": "Run actions/checkout@v7",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:08:35Z",
-     "completed_at": "2026-10-31T10:10:31Z"
-    },
-    {
-     "number": 4,
-     "name": "Run actions/setup-node@v7",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:10:31Z",
-     "completed_at": "2026-10-31T10:10:35Z"
-    },
-    {
-     "number": 5,
-     "name": "Resolve current Hive Mind main once for this attempt",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:10:35Z",
-     "completed_at": "2026-10-31T10:10:37Z"
-    },
-    {
-     "number": 6,
-     "name": "Checkout shared maintained Hive Mind decision and attempt",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:10:37Z",
-     "completed_at": "2026-10-31T10:11:36Z"
-    },
-    {
-     "number": 7,
-     "name": "Install shared automation dependencies",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:11:36Z",
-     "completed_at": "2026-10-31T10:11:43Z"
-    },
-    {
-     "number": 8,
-     "name": "Decide before building source",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:11:43Z",
-     "completed_at": "2026-10-31T10:11:45Z"
-    },
-    {
-     "number": 9,
-     "name": "Bind the current Hive source and its exact runtime version",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:11:45Z",
-     "completed_at": "2026-10-31T10:11:45Z"
-    },
-    {
-     "number": 10,
-     "name": "Resolve current main commit",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:11:45Z",
-     "completed_at": "2026-10-31T10:11:46Z"
-    },
-    {
-     "number": 11,
-     "name": "Checkout exact main source",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:11:46Z",
-     "completed_at": "2026-10-31T10:13:10Z"
-    },
-    {
-     "number": 12,
-     "name": "Restore shared Cargo registry without an extra cache writer",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:13:10Z",
-     "completed_at": "2026-10-31T10:13:29Z"
-    },
-    {
-     "number": 13,
-     "name": "Build current main binary in CI",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:13:29Z",
-     "completed_at": "2026-10-31T10:19:22Z"
-    },
-    {
-     "number": 14,
-     "name": "Record actual source version and binary digest",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:19:22Z",
-     "completed_at": "2026-10-31T10:19:22Z"
-    },
-    {
-     "number": 15,
-     "name": "Publish the single exact-main binary for the draft runner",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:19:22Z",
-     "completed_at": "2026-10-31T10:19:28Z"
-    },
-    {
-     "number": 16,
-     "name": "Stage complete redacted build evidence",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:19:28Z",
-     "completed_at": "2026-10-31T10:19:28Z"
-    },
-    {
-     "number": 17,
-     "name": "Retain main source and build evidence even on failure",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:19:28Z",
-     "completed_at": "2026-10-31T10:19:30Z"
-    },
-    {
-     "number": 30,
-     "name": "Post Restore shared Cargo registry without an extra cache writer",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:19:30Z",
-     "completed_at": "2026-10-31T10:19:30Z"
-    },
-    {
-     "number": 31,
-     "name": "Post Checkout exact main source",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:19:30Z",
-     "completed_at": "2026-10-31T10:19:30Z"
-    },
-    {
-     "number": 32,
-     "name": "Post Checkout shared maintained Hive Mind decision and attempt",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:19:30Z",
-     "completed_at": "2026-10-31T10:19:30Z"
-    },
-    {
-     "number": 33,
-     "name": "Post Run actions/setup-node@v7",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:19:30Z",
-     "completed_at": "2026-10-31T10:19:30Z"
-    },
-    {
-     "number": 34,
-     "name": "Post Run actions/checkout@v7",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:19:30Z",
-     "completed_at": "2026-10-31T10:19:30Z"
-    },
-    {
-     "number": 35,
-     "name": "Complete job",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:19:30Z",
-     "completed_at": "2026-10-31T10:19:30Z"
-    }
-   ]
-  },
-  {
-   "name": "draft",
-   "conclusion": "failure",
-   "created_at": "2026-10-31T10:19:34Z",
-   "started_at": "2026-10-31T10:19:36Z",
-   "completed_at": "2026-10-31T10:29:21Z",
-   "steps": [
-    {
-     "number": 1,
-     "name": "Set up job",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:19:36Z",
-     "completed_at": "2026-10-31T10:19:37Z"
-    },
-    {
-     "number": 2,
-     "name": "Set session evidence directory on the allocated runner",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:19:37Z",
-     "completed_at": "2026-10-31T10:19:37Z"
-    },
-    {
-     "number": 3,
-     "name": "Run actions/checkout@v7",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:19:37Z",
-     "completed_at": "2026-10-31T10:20:04Z"
-    },
-    {
-     "number": 4,
-     "name": "Run actions/setup-node@v7",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:20:04Z",
-     "completed_at": "2026-10-31T10:20:05Z"
-    },
-    {
-     "number": 5,
-     "name": "Restore source and build evidence",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:20:05Z",
-     "completed_at": "2026-10-31T10:20:05Z"
-    },
-    {
-     "number": 6,
-     "name": "Download the exact-main binary once",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:20:05Z",
-     "completed_at": "2026-10-31T10:20:08Z"
-    },
-    {
-     "number": 7,
-     "name": "Checkout shared maintained Hive Mind decision and attempt",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:20:08Z",
-     "completed_at": "2026-10-31T10:20:27Z"
-    },
-    {
-     "number": 8,
-     "name": "Install shared automation dependencies",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:20:27Z",
-     "completed_at": "2026-10-31T10:20:35Z"
-    },
-    {
-     "number": 9,
-     "name": "Free disk for the Hive Mind image",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:20:35Z",
-     "completed_at": "2026-10-31T10:22:21Z"
-    },
-    {
-     "number": 10,
-     "name": "Retain native and dialog payloads in the mounted session directory",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:22:21Z",
-     "completed_at": "2026-10-31T10:22:21Z"
-    },
-    {
-     "number": 11,
-     "name": "Attempt through shared Hive Mind scripts (including image pull retry)",
-     "conclusion": "failure",
-     "started_at": "2026-10-31T10:22:21Z",
-     "completed_at": "2026-10-31T10:29:15Z"
-    },
-    {
-     "number": 12,
-     "name": "Verify this attempt's exact pull request",
-     "conclusion": "failure",
-     "started_at": "2026-10-31T10:29:15Z",
-     "completed_at": "2026-10-31T10:29:17Z"
-    },
-    {
-     "number": 13,
-     "name": "Dispatch checks only after a useful draft is verified",
-     "conclusion": "skipped",
-     "started_at": "2026-10-31T10:29:17Z",
-     "completed_at": "2026-10-31T10:29:17Z"
-    },
-    {
-     "number": 14,
-     "name": "Retain failed build outcome while still publishing evidence",
-     "conclusion": "skipped",
-     "started_at": "2026-10-31T10:29:17Z",
-     "completed_at": "2026-10-31T10:29:17Z"
-    },
-    {
-     "number": 15,
-     "name": "Transfer only private diagnostic files to the artifact reader",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:29:17Z",
-     "completed_at": "2026-10-31T10:29:17Z"
-    },
-    {
-     "number": 16,
-     "name": "Stage complete redacted attempt evidence",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:29:17Z",
-     "completed_at": "2026-10-31T10:29:17Z"
-    },
-    {
-     "number": 17,
-     "name": "Upload complete session evidence on success and failure",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:29:17Z",
-     "completed_at": "2026-10-31T10:29:18Z"
-    },
-    {
-     "number": 18,
-     "name": "Link session artifact on the issue when no verified draft exists",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:29:18Z",
-     "completed_at": "2026-10-31T10:29:19Z"
-    },
-    {
-     "number": 34,
-     "name": "Post Checkout shared maintained Hive Mind decision and attempt",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:29:19Z",
-     "completed_at": "2026-10-31T10:29:19Z"
-    },
-    {
-     "number": 35,
-     "name": "Post Run actions/setup-node@v7",
-     "conclusion": "skipped",
-     "started_at": "2026-10-31T10:29:19Z",
-     "completed_at": "2026-10-31T10:29:19Z"
-    },
-    {
-     "number": 36,
-     "name": "Post Run actions/checkout@v7",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:29:19Z",
-     "completed_at": "2026-10-31T10:29:19Z"
-    },
-    {
-     "number": 37,
-     "name": "Complete job",
-     "conclusion": "success",
-     "started_at": "2026-10-31T10:29:19Z",
-     "completed_at": "2026-10-31T10:29:20Z"
-    }
-   ]
-  }
- ]
-}
+{"jobs":[
+    {"name":"build","conclusion":"success","created_at":"2026-10-31T10:07:06Z","started_at":"2026-10-31T10:08:33Z","completed_at":"2026-10-31T10:19:33Z","steps":[
+      {"number":1,"name":"Set up job","conclusion":"success","started_at":"2026-10-31T10:08:34Z","completed_at":"2026-10-31T10:08:35Z"},
+      {"number":2,"name":"Set session evidence directory on the allocated runner","conclusion":"success","started_at":"2026-10-31T10:08:35Z","completed_at":"2026-10-31T10:08:35Z"},
+      {"number":3,"name":"Run actions/checkout@v7","conclusion":"success","started_at":"2026-10-31T10:08:35Z","completed_at":"2026-10-31T10:10:31Z"},
+      {"number":4,"name":"Run actions/setup-node@v7","conclusion":"success","started_at":"2026-10-31T10:10:31Z","completed_at":"2026-10-31T10:10:35Z"},
+      {"number":5,"name":"Resolve current Hive Mind main once for this attempt","conclusion":"success","started_at":"2026-10-31T10:10:35Z","completed_at":"2026-10-31T10:10:37Z"},
+      {"number":6,"name":"Checkout shared maintained Hive Mind decision and attempt","conclusion":"success","started_at":"2026-10-31T10:10:37Z","completed_at":"2026-10-31T10:11:36Z"},
+      {"number":7,"name":"Install shared automation dependencies","conclusion":"success","started_at":"2026-10-31T10:11:36Z","completed_at":"2026-10-31T10:11:43Z"},
+      {"number":8,"name":"Decide before building source","conclusion":"success","started_at":"2026-10-31T10:11:43Z","completed_at":"2026-10-31T10:11:45Z"},
+      {"number":9,"name":"Bind the current Hive source and its exact runtime version","conclusion":"success","started_at":"2026-10-31T10:11:45Z","completed_at":"2026-10-31T10:11:45Z"},
+      {"number":10,"name":"Resolve current main commit","conclusion":"success","started_at":"2026-10-31T10:11:45Z","completed_at":"2026-10-31T10:11:46Z"},
+      {"number":11,"name":"Checkout exact main source","conclusion":"success","started_at":"2026-10-31T10:11:46Z","completed_at":"2026-10-31T10:13:10Z"},
+      {"number":12,"name":"Restore shared Cargo registry without an extra cache writer","conclusion":"success","started_at":"2026-10-31T10:13:10Z","completed_at":"2026-10-31T10:13:29Z"},
+      {"number":13,"name":"Build current main binary in CI","conclusion":"success","started_at":"2026-10-31T10:13:29Z","completed_at":"2026-10-31T10:19:22Z"},
+      {"number":14,"name":"Record actual source version and binary digest","conclusion":"success","started_at":"2026-10-31T10:19:22Z","completed_at":"2026-10-31T10:19:22Z"},
+      {"number":15,"name":"Publish the single exact-main binary for the draft runner","conclusion":"success","started_at":"2026-10-31T10:19:22Z","completed_at":"2026-10-31T10:19:28Z"},
+      {"number":16,"name":"Stage complete redacted build evidence","conclusion":"success","started_at":"2026-10-31T10:19:28Z","completed_at":"2026-10-31T10:19:28Z"},
+      {"number":17,"name":"Retain main source and build evidence even on failure","conclusion":"success","started_at":"2026-10-31T10:19:28Z","completed_at":"2026-10-31T10:19:30Z"},
+      {"number":30,"name":"Post Restore shared Cargo registry without an extra cache writer","conclusion":"success","started_at":"2026-10-31T10:19:30Z","completed_at":"2026-10-31T10:19:30Z"},
+      {"number":31,"name":"Post Checkout exact main source","conclusion":"success","started_at":"2026-10-31T10:19:30Z","completed_at":"2026-10-31T10:19:30Z"},
+      {"number":32,"name":"Post Checkout shared maintained Hive Mind decision and attempt","conclusion":"success","started_at":"2026-10-31T10:19:30Z","completed_at":"2026-10-31T10:19:30Z"},
+      {"number":33,"name":"Post Run actions/setup-node@v7","conclusion":"success","started_at":"2026-10-31T10:19:30Z","completed_at":"2026-10-31T10:19:30Z"},
+      {"number":34,"name":"Post Run actions/checkout@v7","conclusion":"success","started_at":"2026-10-31T10:19:30Z","completed_at":"2026-10-31T10:19:30Z"},
+      {"number":35,"name":"Complete job","conclusion":"success","started_at":"2026-10-31T10:19:30Z","completed_at":"2026-10-31T10:19:30Z"}
+    ]},
+    {"name":"draft","conclusion":"failure","created_at":"2026-10-31T10:19:34Z","started_at":"2026-10-31T10:19:36Z","completed_at":"2026-10-31T10:29:21Z","steps":[
+      {"number":1,"name":"Set up job","conclusion":"success","started_at":"2026-10-31T10:19:36Z","completed_at":"2026-10-31T10:19:37Z"},
+      {"number":2,"name":"Set session evidence directory on the allocated runner","conclusion":"success","started_at":"2026-10-31T10:19:37Z","completed_at":"2026-10-31T10:19:37Z"},
+      {"number":3,"name":"Run actions/checkout@v7","conclusion":"success","started_at":"2026-10-31T10:19:37Z","completed_at":"2026-10-31T10:20:04Z"},
+      {"number":4,"name":"Run actions/setup-node@v7","conclusion":"success","started_at":"2026-10-31T10:20:04Z","completed_at":"2026-10-31T10:20:05Z"},
+      {"number":5,"name":"Restore source and build evidence","conclusion":"success","started_at":"2026-10-31T10:20:05Z","completed_at":"2026-10-31T10:20:05Z"},
+      {"number":6,"name":"Download the exact-main binary once","conclusion":"success","started_at":"2026-10-31T10:20:05Z","completed_at":"2026-10-31T10:20:08Z"},
+      {"number":7,"name":"Checkout shared maintained Hive Mind decision and attempt","conclusion":"success","started_at":"2026-10-31T10:20:08Z","completed_at":"2026-10-31T10:20:27Z"},
+      {"number":8,"name":"Install shared automation dependencies","conclusion":"success","started_at":"2026-10-31T10:20:27Z","completed_at":"2026-10-31T10:20:35Z"},
+      {"number":9,"name":"Free disk for the Hive Mind image","conclusion":"success","started_at":"2026-10-31T10:20:35Z","completed_at":"2026-10-31T10:22:21Z"},
+      {"number":10,"name":"Retain native and dialog payloads in the mounted session directory","conclusion":"success","started_at":"2026-10-31T10:22:21Z","completed_at":"2026-10-31T10:22:21Z"},
+      {"number":11,"name":"Attempt through shared Hive Mind scripts (including image pull retry)","conclusion":"failure","started_at":"2026-10-31T10:22:21Z","completed_at":"2026-10-31T10:29:15Z"},
+      {"number":12,"name":"Verify this attempt's exact pull request","conclusion":"failure","started_at":"2026-10-31T10:29:15Z","completed_at":"2026-10-31T10:29:17Z"},
+      {"number":13,"name":"Dispatch checks only after a useful draft is verified","conclusion":"skipped","started_at":"2026-10-31T10:29:17Z","completed_at":"2026-10-31T10:29:17Z"},
+      {"number":14,"name":"Retain failed build outcome while still publishing evidence","conclusion":"skipped","started_at":"2026-10-31T10:29:17Z","completed_at":"2026-10-31T10:29:17Z"},
+      {"number":15,"name":"Transfer only private diagnostic files to the artifact reader","conclusion":"success","started_at":"2026-10-31T10:29:17Z","completed_at":"2026-10-31T10:29:17Z"},
+      {"number":16,"name":"Stage complete redacted attempt evidence","conclusion":"success","started_at":"2026-10-31T10:29:17Z","completed_at":"2026-10-31T10:29:17Z"},
+      {"number":17,"name":"Upload complete session evidence on success and failure","conclusion":"success","started_at":"2026-10-31T10:29:17Z","completed_at":"2026-10-31T10:29:18Z"},
+      {"number":18,"name":"Link session artifact on the issue when no verified draft exists","conclusion":"success","started_at":"2026-10-31T10:29:18Z","completed_at":"2026-10-31T10:29:19Z"},
+      {"number":34,"name":"Post Checkout shared maintained Hive Mind decision and attempt","conclusion":"success","started_at":"2026-10-31T10:29:19Z","completed_at":"2026-10-31T10:29:19Z"},
+      {"number":35,"name":"Post Run actions/setup-node@v7","conclusion":"skipped","started_at":"2026-10-31T10:29:19Z","completed_at":"2026-10-31T10:29:19Z"},
+      {"number":36,"name":"Post Run actions/checkout@v7","conclusion":"success","started_at":"2026-10-31T10:29:19Z","completed_at":"2026-10-31T10:29:19Z"},
+      {"number":37,"name":"Complete job","conclusion":"success","started_at":"2026-10-31T10:29:19Z","completed_at":"2026-10-31T10:29:20Z"}
+    ]}
+]}

@@ -12,7 +12,11 @@ name: Hive CI phase timing
 # guessed. A breach in every one of the latest `window` runs fails this job
 # with an `::error`: that red run is the alert. A single slow run is a warning.
 # Skipped steps contribute no seconds and no attempts.
-on:
+#
+# workflow_run is safe here: the job reads run, job and artifact metadata
+# through the API with a read-only token, checks out only the default branch,
+# and never downloads or executes anything the measured run produced.
+on: # zizmor: ignore[dangerous-triggers]
   workflow_run:
     branches: [main]
     workflows:
