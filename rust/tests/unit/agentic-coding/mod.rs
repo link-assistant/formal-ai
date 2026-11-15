@@ -165,3 +165,6 @@ mod literal_content_boundary;
 mod issue_1558_reference_resolution;
 #[path = "work_item_report_outcome.rs"]
 mod work_item_report_outcome;
+
+#[path = "work_item_leads.rs"]
+mod work_item_leads;

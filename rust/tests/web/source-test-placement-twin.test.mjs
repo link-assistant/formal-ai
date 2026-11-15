@@ -64,11 +64,15 @@ test('replay of the main-only failure: an inline mod tests in work_item_leads.rs
   });
 });
 
-test('the moved work_item_leads tests are registered from the module they test', () => {
+test('the moved work_item_leads tests live under tests/ and the module keeps none inline', () => {
+  // The fix shared with PR #1572: the tests moved to the integration suite.
   const source = readFileSync(join(ROOT, 'rust/src/agentic_coding/work_item_leads.rs'), 'utf8');
-  const registrations = externalTestRegistrations(join(ROOT, 'rust'), join(ROOT, 'rust/src/agentic_coding/work_item_leads.rs'), source);
-  assert.deepEqual(registrations.map(({ path }) => path.slice(path.indexOf('/rust/') + 1)),
-    ['rust/tests/unit/agentic-coding/work_item_leads.rs']);
+  assert.deepEqual(inlineTestViolations(join(ROOT, 'rust'), 'work_item_leads.rs', source), []);
+  const suite = readFileSync(join(ROOT, 'rust/tests/unit/agentic-coding/mod.rs'), 'utf8');
+  assert.match(suite, /#\[path = "work_item_leads\.rs"\]\nmod work_item_leads;/u);
+  const moved = readFileSync(join(ROOT, 'rust/tests/unit/agentic-coding/work_item_leads.rs'), 'utf8');
+  for (const name of ['leads_split_attachments_documents_and_related_pages', 'symbols_keep_compound_identifiers_only',
+    'symbol_matches_rank_sources_first_then_depth']) assert.match(moved, new RegExp(`fn ${name}\\(`, 'u'));
 });
 
 test('the attribute detector matches the Rust is_inline_test_marker', () => {

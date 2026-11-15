@@ -2,8 +2,8 @@
 // in the fast PR lane. Only main ran it, so PR #1559 added a top-level
 // examples/scoped-standing-requirements.mjs with a green pull request and main
 // then failed `the_crate_lives_under_rust`. The example now lives in
-// experiments/; this test fails any pull request that recreates a crate
-// directory at the top level.
+// rust/examples/ (the move shared with PR #1572); this test fails any pull
+// request that recreates a crate directory at the top level.
 
 import test from 'node:test';
 import assert from 'node:assert/strict';

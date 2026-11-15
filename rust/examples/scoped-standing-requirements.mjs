@@ -10,17 +10,17 @@
 // one's text. The chat user's "Always answer in Russian." is learned with that
 // user's scope and applied to that user's later conversations only.
 //
-// Usage: node experiments/scoped-standing-requirements.mjs
+// Usage: node rust/examples/scoped-standing-requirements.mjs
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-import { WorkerHost } from '../js/server/worker-host.mjs';
-import { createMemory } from '../js/server/memory.mjs';
-import { handleChatCompletions } from '../js/server/openai.mjs';
-import { runCoreDreamingOnce } from '../js/server/dreaming-runtime.mjs';
-import { memoizedReplay } from '../js/server/dreaming-replay.mjs';
-import { SyncStore } from '../js/server/memory-store.mjs';
+import { WorkerHost } from '../../js/server/worker-host.mjs';
+import { createMemory } from '../../js/server/memory.mjs';
+import { handleChatCompletions } from '../../js/server/openai.mjs';
+import { runCoreDreamingOnce } from '../../js/server/dreaming-runtime.mjs';
+import { memoizedReplay } from '../../js/server/dreaming-replay.mjs';
+import { SyncStore } from '../../js/server/memory-store.mjs';
 
 const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'formal-ai-scoped-requirements-'));
 const file = path.join(directory, 'memory.lino');

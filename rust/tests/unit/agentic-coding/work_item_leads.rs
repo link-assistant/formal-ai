@@ -1,8 +1,12 @@
-//! Unit tests of rust/src/agentic_coding/work_item_leads.rs (issue #1483),
-//! installed as its nested `tests` module so private helpers stay private.
-//! Issue #1191: they were an inline `mod tests` in src/, which main's
-//! `src_has_no_inline_unit_tests` rejects; no pull-request check saw it.
-use super::{symbol_matches, work_item_leads, work_item_symbols};
+//! Evidence leads of a work item that names no repository file (issue #1483).
+//!
+//! These pins used to live inline in `src/agentic_coding/work_item_leads.rs`;
+//! issue #1571 moved them here because `src/` must not carry inline unit tests
+//! (`ci_cd::source_test_placement::src_has_no_inline_unit_tests`).
+
+use formal_ai::agentic_coding::work_item_leads::{
+    symbol_matches, work_item_leads, work_item_symbols,
+};
 
 #[test]
 fn leads_split_attachments_documents_and_related_pages() {
