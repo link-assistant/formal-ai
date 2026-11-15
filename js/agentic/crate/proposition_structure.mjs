@@ -1,0 +1,267 @@
+// Issue #1487 — the proposition structure a statement keeps beyond its set of
+// terms: the order of the operands of a comparison or an operator, the
+// connectives (and/or), the quantifiers, the place of a negation among them,
+// and an explicit count of repetition. A statement identity made of a sorted
+// set of terms alone reads `2 < 1` as `1 < 2` and `true or false` as `true
+// and false`; this structure keeps them apart. Structure the reader does not
+// support is reported as unresolved, never guessed.
+//
+// Every connective, quantifier, comparison and operator is data: the
+// structural rules proposition-structure, comparison-relation and
+// symbolic-operator of data/seed/text-formalization.lino name the grammar
+// vocabulary kinds and lexicon meanings read here. The Rust twin is
+// rust/src/formalization/proposition_structure.rs.
+//
+// The module reads the words text_formalization.mjs produced; the caller
+// passes the word kinds so this module does not import its caller.
+
+import { cached } from '../host.mjs';
+import { grammarVocabulary, structuralRuleValues } from './formalization_grammar.mjs';
+import { byteOrder, isAlphabetic, isAlphanumeric, isNumeric, isWhitespace } from './rust_str.mjs';
+
+/** Mirrors `PROPOSITION_RULE` in rust/src/formalization/proposition_structure.rs. */
+export const PROPOSITION_RULE = 'proposition-structure';
+/** Mirrors `COMPARISON_RULE` in rust/src/formalization/proposition_structure.rs. */
+export const COMPARISON_RULE = 'comparison-relation';
+/** Mirrors `OPERATOR_RULE` in rust/src/formalization/proposition_structure.rs. */
+export const OPERATOR_RULE = 'symbolic-operator';
+/** Mirrors `ORDERED_RELATIONS` in rust/src/formalization/proposition_structure.rs: relations with a converse wording. */
+export const ORDERED_RELATIONS = Object.freeze(['less', 'less-or-equal']);
+/** Mirrors `PLAIN_OPERATORS` in rust/src/formalization/proposition_structure.rs. */
+export const PLAIN_OPERATORS = Object.freeze(['equal', 'not-equal', 'minus', 'plus', 'times', 'divide']);
+/** Mirrors `CONVERSE_SUFFIX` in rust/src/formalization/proposition_structure.rs. */
+export const CONVERSE_SUFFIX = '-converse';
+
+/** Mirrors `enum ShapeToken` in rust/src/formalization/proposition_structure.rs. */
+export const ShapeToken = Object.freeze({
+  Content: '_',
+  Negation: 'not',
+  Conjunction: 'conjunction',
+  Disjunction: 'disjunction',
+  Universal: 'universal',
+  Existential: 'existential',
+});
+
+/** Mirrors `enum Unresolved` in rust/src/formalization/proposition_structure.rs. */
+export const Unresolved = Object.freeze({ RelationOperand: 'relation-operand', OperatorChain: 'operator-chain' });
+
+const CONNECTIVES = Object.freeze([
+  [ShapeToken.Conjunction, 'conjunction-vocabulary'],
+  [ShapeToken.Disjunction, 'disjunction-vocabulary'],
+]);
+const REPETITION = 'repetition';
+
+/** Mirrors `fn structure_phrases` in rust/src/formalization/proposition_structure.rs: connective and repetition phrases of `language`, longest first. */
+export function structurePhrases(language) {
+  return cached(`proposition-structure-phrases-${language}`, () => {
+    const out = [];
+    const add = (role, kind) => {
+      for (const phrase of grammarVocabulary(language, kind)) out.push({ phrase: phrase.toLowerCase(), role, kind });
+    };
+    for (const [role, vocabulary] of CONNECTIVES) for (const kind of structuralRuleValues(PROPOSITION_RULE, vocabulary)) add(role, kind);
+    for (const kind of structuralRuleValues(PROPOSITION_RULE, 'repetition-vocabulary')) add(REPETITION, kind);
+    return out
+      .map((entry, index) => ({ ...entry, index, length: Array.from(entry.phrase).length }))
+      .sort((left, right) => (right.length - left.length) || (left.index - right.index));
+  });
+}
+
+/** Mirrors `fn quantifier_of` in rust/src/formalization/proposition_structure.rs: the quantifier a meaning id reads as, or null. */
+export function quantifierOf(id) {
+  if (structuralRuleValues(PROPOSITION_RULE, 'universal-meaning').includes(id)) return ShapeToken.Universal;
+  if (structuralRuleValues(PROPOSITION_RULE, 'existential-meaning').includes(id)) return ShapeToken.Existential;
+  return null;
+}
+
+/** Mirrors `fn relation_of` in rust/src/formalization/proposition_structure.rs: `{op, converse}` for a value of `rule`, or null. */
+export function relationOf(rule, value) {
+  const kinds = rule === COMPARISON_RULE ? ORDERED_RELATIONS : [...ORDERED_RELATIONS, ...PLAIN_OPERATORS];
+  for (const op of kinds) {
+    if (structuralRuleValues(rule, op).includes(value)) return { op, converse: false };
+    if (ORDERED_RELATIONS.includes(op) && structuralRuleValues(rule, op + CONVERSE_SUFFIX).includes(value)) return { op, converse: true };
+  }
+  return null;
+}
+
+/** Mirrors `fn operator_symbols` in rust/src/formalization/proposition_structure.rs: every seeded operator symbol, longest first. */
+export function operatorSymbols() {
+  return cached('proposition-structure-operators', () => {
+    const out = [];
+    for (const op of [...ORDERED_RELATIONS, ...PLAIN_OPERATORS]) {
+      for (const symbol of structuralRuleValues(OPERATOR_RULE, op)) out.push({ symbol, op, converse: false });
+      if (ORDERED_RELATIONS.includes(op)) {
+        for (const symbol of structuralRuleValues(OPERATOR_RULE, op + CONVERSE_SUFFIX)) out.push({ symbol, op, converse: true });
+      }
+    }
+    return out
+      .map((entry, index) => ({ ...entry, index, chars: Array.from(entry.symbol) }))
+      .sort((left, right) => (right.chars.length - left.chars.length) || (left.index - right.index));
+  });
+}
+
+/** Mirrors `fn relation` in rust/src/formalization/proposition_structure.rs: `{text: 'op(left,right)', operands}`, ordered unless the op commutes. */
+export function relation(op, converse, left, right) {
+  const [first, second] = converse ? [right, left] : [left, right];
+  const operands = structuralRuleValues(OPERATOR_RULE, 'commutative').includes(op) && byteOrder(second, first) < 0
+    ? [second, first] : [first, second];
+  return { text: `${op}(${operands[0]},${operands[1]})`, operands };
+}
+
+const lower = (text) => text.toLowerCase();
+
+/** Mirrors `fn operand_id` in rust/src/formalization/proposition_structure.rs: the term id written as `surface`, else a symbol id. */
+export function operandId(surface, terms) {
+  const key = lower(surface);
+  const term = terms.find((candidate) => lower(candidate.surface) === key);
+  return term === undefined ? `symbol:${key}` : term.id;
+}
+
+/** Mirrors `fn phrase_at` in rust/src/formalization/proposition_structure.rs: the longest structure phrase opening at `start`, with its width in words. */
+export function phraseAt(surfaces, start, phrases) {
+  for (const entry of phrases) {
+    let spaced = '';
+    let solid = '';
+    for (let end = start; end < surfaces.length; end += 1) {
+      spaced = end === start ? surfaces[end] : `${spaced} ${surfaces[end]}`;
+      solid += surfaces[end];
+      if (spaced === entry.phrase || solid === entry.phrase) return { entry, width: end - start + 1 };
+      if (Array.from(solid).length >= entry.length) break;
+    }
+  }
+  return null;
+}
+
+/** Mirrors `fn symbolic_items` in rust/src/formalization/proposition_structure.rs: operand runs, operator symbols and breaks of `text`. */
+export function symbolicItems(text) {
+  const chars = Array.from(text);
+  const symbols = operatorSymbols();
+  const items = [];
+  let spaced = false;
+  let position = 0;
+  while (position < chars.length) {
+    const character = chars[position];
+    if (isWhitespace(character)) {
+      spaced = true;
+      position += 1;
+      continue;
+    }
+    if (isAlphanumeric(character)) {
+      let end = position;
+      while (end < chars.length && (isAlphanumeric(chars[end])
+        || ((chars[end] === '.' || chars[end] === ',') && isNumeric(chars[end - 1]) && end + 1 < chars.length && isNumeric(chars[end + 1])))) end += 1;
+      items.push({ kind: 'operand', value: chars.slice(position, end).join(''), spaced });
+      position = end;
+    } else {
+      const symbol = symbols.find((entry) => entry.chars.every((part, offset) => chars[position + offset] === part));
+      if (symbol === undefined) {
+        items.push({ kind: 'break', value: character, spaced });
+        position += 1;
+      } else {
+        items.push({ kind: 'operator', value: symbol.symbol, op: symbol.op, converse: symbol.converse, spaced });
+        position += symbol.chars.length;
+      }
+    }
+    spaced = false;
+  }
+  return items;
+}
+
+/** Mirrors `fn joins_compound` in rust/src/formalization/proposition_structure.rs: `e-mail`, `and/or` are words, not operators. */
+export function joinsCompound(left, operator, right) {
+  if (!structuralRuleValues(OPERATOR_RULE, 'compound-joiner').includes(operator.value) || operator.spaced || right.spaced) return false;
+  const alphabetic = (value) => Array.from(value).every(isAlphabetic);
+  return alphabetic(left.value) && alphabetic(right.value)
+    && (Array.from(left.value).length > 1 || Array.from(right.value).length > 1);
+}
+
+/** Mirrors `fn symbolic_relations` in rust/src/formalization/proposition_structure.rs: the operator relations of `text` and what stays unresolved. */
+export function symbolicRelations(text, terms) {
+  const items = symbolicItems(text);
+  const relations = [];
+  const unresolved = [];
+  let previous = null;
+  items.forEach((item, index) => {
+    const left = items[index - 1];
+    const right = items[index + 1];
+    if (item.kind !== 'operator' || left?.kind !== 'operand' || right?.kind !== 'operand' || joinsCompound(left, item, right)) return;
+    relations.push(relation(item.op, item.converse, operandId(left.value, terms), operandId(right.value, terms)));
+    if (previous !== null && previous.index === index - 2 && previous.op !== item.op) unresolved.push(Unresolved.OperatorChain);
+    previous = { index, op: item.op };
+  });
+  return { relations, unresolved };
+}
+
+/**
+ * Mirrors `fn read_proposition_structure` in rust/src/formalization/proposition_structure.rs.
+ * `words` are the clause's words (text_formalization.readWords), `terms` its
+ * statement terms (their ids name operands), `kinds` `{meaning, negation, isTerm}`.
+ * Returns `{shape, significant, relations, operands, repetition, unresolved}`.
+ */
+export function readPropositionStructure(text, language, words, terms, kinds) {
+  const phrases = structurePhrases(language);
+  const surfaces = words.map((word) => lower(word.surface));
+  const roles = [];
+  const repetition = [];
+  for (let index = 0; index < words.length;) {
+    const found = phraseAt(surfaces, index, phrases);
+    if (found !== null) {
+      if (found.entry.role === REPETITION) repetition.push(found.entry.kind);
+      else roles.push({ token: found.entry.role, index });
+      index += found.width;
+      continue;
+    }
+    const word = words[index];
+    const quantifier = word.kind === kinds.meaning ? quantifierOf(word.id) : null;
+    if (word.kind === kinds.negation) roles.push({ token: ShapeToken.Negation, index });
+    else if (quantifier !== null) roles.push({ token: quantifier, index });
+    else if (kinds.isTerm(word.kind)) roles.push({ token: ShapeToken.Content, index, comparison: relationOf(COMPARISON_RULE, word.id) });
+    index += 1;
+  }
+  const { relations, unresolved } = symbolicRelations(text, terms);
+  const operand = (position, step) => {
+    for (let at = position + step; at >= 0 && at < roles.length; at += step) {
+      const role = roles[at];
+      if (role.token === ShapeToken.Content && !role.comparison) return operandId(words[role.index].surface, [...terms, words[role.index]]);
+    }
+    return null;
+  };
+  roles.forEach((role, position) => {
+    if (!role.comparison) return;
+    const left = operand(position, -1);
+    const right = operand(position, 1);
+    if (left === null || right === null) unresolved.push(`${Unresolved.RelationOperand}:${words[role.index].id}`);
+    else relations.push(relation(role.comparison.op, role.comparison.converse, left, right));
+  });
+  const tokens = [];
+  for (const role of roles) if (!(role.token === ShapeToken.Content && tokens[tokens.length - 1] === ShapeToken.Content)) tokens.push(role.token);
+  while (tokens[0] === ShapeToken.Conjunction) tokens.shift();
+  while (tokens.length > 0 && CONNECTIVES.some(([token]) => token === tokens[tokens.length - 1])) tokens.pop();
+  const has = (token) => tokens.includes(token);
+  const significant = has(ShapeToken.Disjunction) || has(ShapeToken.Universal) || has(ShapeToken.Existential)
+    || (has(ShapeToken.Negation) && has(ShapeToken.Conjunction));
+  const sorted = (values) => [...new Set(values)].sort(byteOrder);
+  return {
+    shape: tokens.join(' '),
+    significant,
+    relations: sorted(relations.map((entry) => entry.text)),
+    operands: sorted(relations.flatMap((entry) => entry.operands)),
+    repetition: sorted(repetition),
+    unresolved: sorted(unresolved),
+  };
+}
+
+/** Mirrors `fn structure_key` in rust/src/formalization/proposition_structure.rs: the part of a statement identity the structure adds ('' when none). */
+export function structureKey(structure) {
+  const parts = [];
+  if (structure.significant) parts.push(`shape=${structure.shape}`);
+  if (structure.relations.length > 0) parts.push(`relations=${structure.relations.join(' ')}`);
+  if (structure.repetition.length > 0) parts.push(`repetition=${structure.repetition.join(' ')}`);
+  if (structure.unresolved.length > 0) parts.push(`unresolved=${structure.unresolved.join(' ')}`);
+  return parts.join(';');
+}
+
+/** Mirrors `fn conjunctive_shape` in rust/src/formalization/proposition_structure.rs: only content joined by conjunctions. */
+export function conjunctiveShape(structure) {
+  return structure.shape.split(' ').every((token) => token === ShapeToken.Content || token === ShapeToken.Conjunction || token === '');
+}
+

@@ -13,6 +13,20 @@
 #                        another ending of the language, to reach the
 #                        dictionary form of an inflected word.
 #
+# Issue #1487 — the proposition structure a statement identity keeps
+# (js/agentic/crate/proposition_structure.mjs, its Rust twin
+# rust/src/formalization/proposition_structure.rs):
+#
+#   connective-conjunction / connective-disjunction  the words that join the
+#                        parts of one proposition with "and" or with "or";
+#   repetition-twice / repetition-thrice  an explicit count of an effect
+#                        ("print it twice"), never inferred from a repeated
+#                        mention.
+#
+# The structural rules proposition-structure, comparison-relation and
+# symbolic-operator name the kinds and lexicon meanings read as connectives,
+# quantifiers, ordered comparisons and operators.
+#
 # Function words and negation cues are not repeated here. They are the
 # translation_stop_word, statement_function_word and statement_negation_cue
 # roles of the meaning lexicon.
@@ -34,6 +48,42 @@ text-formalization
     template "(statement (terms {legacy}) (typed_meaning {typed}))"
   structural-rule answer-compatibility
     missing-reason "missing typed evidence"
+  structural-rule proposition-structure
+    conjunction-vocabulary "connective-conjunction"
+    disjunction-vocabulary "connective-disjunction"
+    repetition-vocabulary "repetition-twice"
+    repetition-vocabulary "repetition-thrice"
+    universal-meaning "quantifier_all"
+    existential-meaning "quantifier_any"
+  structural-rule comparison-relation
+    less "number_constraint_upper_strict"
+    less-converse "number_constraint_lower_strict"
+    less-or-equal "number_constraint_upper_inclusive"
+    less-or-equal "recurrence_less_equal"
+    less-or-equal-converse "number_constraint_lower_inclusive"
+  structural-rule symbolic-operator
+    less "<"
+    less-converse ">"
+    less-or-equal "<="
+    less-or-equal "≤"
+    less-or-equal-converse ">="
+    less-or-equal-converse "≥"
+    equal "=="
+    equal "="
+    not-equal "!="
+    not-equal "≠"
+    minus "-"
+    minus "−"
+    plus "+"
+    times "*"
+    times "×"
+    divide "/"
+    compound-joiner "-"
+    compound-joiner "/"
+    commutative "equal"
+    commutative "not-equal"
+    commutative "plus"
+    commutative "times"
   language en
     question-where "where"
     question-how-many "how many"
@@ -125,6 +175,10 @@ text-formalization
     inflection-ending "ed"
     inflection-ending "ing"
     inflection-ending "ly"
+    connective-conjunction "and"
+    connective-disjunction "or"
+    repetition-twice "twice"
+    repetition-thrice "thrice"
   language ru
     numeric-decimal ","
     numeric-group " "
@@ -287,6 +341,11 @@ text-formalization
     inflection-ending "о"
     inflection-ending "ь"
     inflection-ending "й"
+    connective-conjunction "и"
+    connective-disjunction "или"
+    connective-disjunction "либо"
+    repetition-twice "дважды"
+    repetition-thrice "трижды"
   language hi
     numeric-secondary-width "2"
     anaphor "वह"
@@ -312,6 +371,12 @@ text-formalization
     inflection-ending "ी"
     inflection-ending "ा"
     inflection-ending "े"
+    connective-conjunction "और"
+    connective-conjunction "तथा"
+    connective-disjunction "या"
+    connective-disjunction "अथवा"
+    repetition-twice "दो बार"
+    repetition-thrice "तीन बार"
   language zh
     anaphor "它"
     anaphor "他"
@@ -326,6 +391,14 @@ text-formalization
     clause-continuation "而"
     clause-continuation "且"
     clause-continuation "但"
+    connective-conjunction "和"
+    connective-conjunction "并且"
+    connective-conjunction "且"
+    connective-conjunction "与"
+    connective-disjunction "或者"
+    connective-disjunction "或"
+    repetition-twice "两次"
+    repetition-thrice "三次"
   language es
     numeric-decimal ","
     numeric-group "."
@@ -380,3 +453,9 @@ text-formalization
     inflection-ending "a"
     inflection-ending "o"
     inflection-ending "e"
+    connective-conjunction "y"
+    connective-conjunction "e"
+    connective-disjunction "o"
+    connective-disjunction "u"
+    repetition-twice "dos veces"
+    repetition-thrice "tres veces"

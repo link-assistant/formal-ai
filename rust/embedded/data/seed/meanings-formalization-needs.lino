@@ -289,6 +289,30 @@ meanings
     unit "compatibility status and reason"
     example "A missing question or answer produces unknown with reason missing typed evidence."
     grounding "js/agentic/crate/dialogue_formalization.mjs::answerCompatibility; rust/src/formalization/dialogue.rs::answer_compatibility"
+  proposition-structure
+    role action
+    defined-by output
+    precondition "A formalized statement carries connectives, quantifiers, an explicit count or comparison relations that a set of term identities cannot hold."
+    effect "Read the ordered proposition shape, the ordered relations and the explicit repetition from the seeded vocabulary and add them to the statement identity; structure the reader cannot bind stays an unresolved obligation instead of a guess."
+    unit "proposition shape, relations, repetition and unresolved obligations"
+    example "1 and 2 and 1 or 2 receive different shapes, and print hello twice keeps a repetition that print hello lacks."
+    grounding "js/agentic/crate/proposition_structure.mjs::readPropositionStructure; rust/src/formalization/proposition_structure.rs::read_proposition_structure"
+  comparison-relation
+    role action
+    defined-by output
+    precondition "A comparison word such as less than, greater than or at most joins two operands of a statement."
+    effect "Map the word to an ordered relation and its direction, swapping the operands of a converse word so a paraphrase and its original share one relation while reversed operands stay distinct."
+    unit "ordered relation over two operands"
+    example "2 is greater than 1 and 1 is less than 2 both read less(1,2); 2 is less than 1 reads less(2,1)."
+    grounding "js/agentic/crate/proposition_structure.mjs::relationOf; rust/src/formalization/proposition_structure.rs::relation_of"
+  symbolic-operator
+    role action
+    defined-by output
+    precondition "A statement writes a relation or arithmetic operator as a symbol between two operands."
+    effect "Read the symbol as the same relation its words name, keep operand order for non-commutative operators, sort the operands of commutative ones, and leave a chain of different operators unresolved because its grouping is not read."
+    unit "ordered relation over two operands"
+    example "a - b reads minus(a,b) and b - a reads minus(b,a); 1 < 2 reads less(1,2) like 1 is less than 2."
+    grounding "js/agentic/crate/proposition_structure.mjs::operatorSymbols; rust/src/formalization/proposition_structure.rs::operator_symbols"
   typed-statement-notation
     role action
     defined-by output
