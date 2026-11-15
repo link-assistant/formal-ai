@@ -16,11 +16,6 @@
 use crate::proof_engine::types::{Proof, ProofMethod, ProofStep, StepKind};
 use crate::seed::{ProofLibraryEntry, fill_template_once, proof_library};
 
-/// The first library theorem one of whose keywords occurs in `normalized`.
-pub(super) fn theorem_for(normalized: &str) -> Option<&'static ProofLibraryEntry> {
-    proof_library().theorem_for(normalized)
-}
-
 /// Localize a library theorem into a [`Proof`].
 pub(super) fn build_proof(entry: &ProofLibraryEntry, language: &str) -> Proof {
     Proof {

@@ -18,11 +18,13 @@
 //! plan and lists the missing inputs.
 
 pub mod arithmetic;
+pub mod claim_binding;
 pub mod decision;
 pub mod library;
 pub mod presenter;
 pub mod types;
 
+pub use claim_binding::ClaimBinding;
 pub use presenter::{render_outcome, render_outcome_with_config};
 pub use types::{Proof, ProofMethod, ProofOutcome, ProofRenderConfig, ProofStep, StepKind};
 
@@ -88,8 +90,20 @@ pub fn attempt_proof_with_config(
     // 3. Classical-theorem library lookup (Pythagoras, Euclid primes,
     //    √2 irrationality, Fermat's little theorem, Gödel's first
     //    incompleteness, Laplacian determinism).
-    if let Some(entry) = library::theorem_for(claim) {
+    //    The keyword only proposes the theorem; the claim is bound to its
+    //    proposition first (issue #1487), so a negated claim never receives
+    //    the theorem's proof as a success.
+    if let Some((entry, keyword)) = claim_binding::theorem_match(claim) {
         let proof = library::build_proof(entry, language);
+        match claim_binding::bind_theorem_claim(claim, keyword) {
+            ClaimBinding::Affirmed => {}
+            ClaimBinding::Negated if entry.refutes_negation => {
+                return refuted_negation(proof, language);
+            }
+            ClaimBinding::Negated | ClaimBinding::Unsupported => {
+                return unbound_claim_plan(prompt, language, config);
+            }
+        }
         if entry.id == "godel_first_incompleteness" && mentions_determinism {
             return mixed_godel_determinism(language, &proof);
         }
@@ -112,6 +126,30 @@ pub fn attempt_proof_with_config(
     // 5. Fallback: produce a proof plan that asks the user for an axiom
     //    set / definitions. This is never a refusal — it's an honest
     //    description of what the engine would do with the missing inputs.
+    let mut outcome = generic_partial_plan(prompt, language);
+    if config.guess_probability >= 0.6 {
+        enrich_partial_plan_with_deep_reasoning(&mut outcome, language);
+    }
+    outcome
+}
+
+/// A claim that denies a theorem marked `negation refuted`: the theorem's
+/// proof is the refutation, never a success for the claim.
+fn refuted_negation(proof: Proof, language: &str) -> ProofOutcome {
+    ProofOutcome::Disproven {
+        counterexample: crate::seed::proof_library().text(
+            "negated_theorem_refuted",
+            language,
+            &[("statement", &proof.statement)],
+        ),
+        method: proof.method,
+        partial_proof: Some(proof),
+    }
+}
+
+/// A claim whose negation scope around a theorem keyword is not read: the
+/// honest generic plan, neither the theorem's proof nor its refutation.
+fn unbound_claim_plan(prompt: &str, language: &str, config: ProofRenderConfig) -> ProofOutcome {
     let mut outcome = generic_partial_plan(prompt, language);
     if config.guess_probability >= 0.6 {
         enrich_partial_plan_with_deep_reasoning(&mut outcome, language);

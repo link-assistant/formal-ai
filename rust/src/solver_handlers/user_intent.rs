@@ -107,6 +107,9 @@ pub fn try_proof_request_with_config(
     if !crate::capability_routing::content_beyond_roles(&claim, PROOF_SCAFFOLD_ROLES) {
         log.append("proof_request:refusal", "no stated claim".to_owned());
     }
+    if let Some(binding) = crate::proof_engine::claim_binding::claim_binding(&claim) {
+        log.append("proof_binding", binding.slug().to_owned());
+    }
     let outcome = attempt_proof_with_config(
         prompt,
         &claim,

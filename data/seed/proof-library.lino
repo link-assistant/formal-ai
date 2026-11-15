@@ -7,7 +7,12 @@
 #             first theorem one of whose keyword substrings occurs in the
 #             normalized claim wins, so the order below is the lookup order.
 #             Each step names its kind (hypothesis, definition, axiom,
-#             inference, sub_proof, conclusion).
+#             inference, sub_proof, conclusion). A keyword only proposes the
+#             theorem; the claim around it is bound first (issue #1487): a
+#             negated claim never receives the theorem's proof as a success.
+#             `negation refuted` marks a theorem whose keywords state its
+#             proposition, so a claim that denies it is refuted by its proof;
+#             any other negated claim gets an honest proof plan.
 #   plan      a partial proof plan for a claim the engine cannot discharge
 #             yet, with the inputs it still needs from the reader. A step text
 #             may carry the {prompt} slot.
@@ -59,6 +64,7 @@ proof_library
       zh "故对一切直角三角形都有 a² + b² = c²。∎"
   theorem euclid_infinitude_of_primes
     method contradiction
+    negation refuted
     keyword "infinitely many primes"
     keyword "infinitely many prime numbers"
     keyword "infinitude of primes"
@@ -504,6 +510,11 @@ proof_library
     ru "Опровержение"
     hi "खंडन"
     zh "反驳"
+  template negated_theorem_refuted
+    en "The claim denies a proven theorem: {statement} The proof below refutes the claim."
+    ru "Утверждение отрицает доказанную теорему: {statement} Доказательство ниже опровергает утверждение."
+    hi "दावा एक सिद्ध प्रमेय का निषेध करता है: {statement} नीचे दिया गया प्रमाण दावे का खंडन करता है।"
+    zh "该命题否定了一条已证明的定理：{statement} 下面的证明驳倒了该命题。"
   template counterexample_label
     en "Counterexample"
     ru "Контрпример"
