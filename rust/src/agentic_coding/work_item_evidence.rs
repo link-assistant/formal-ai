@@ -6,7 +6,7 @@
 //! by file name, then ranked candidates. A failed read is recorded and the
 //! next action differs from it; a reference nothing resolves becomes an
 //! explicit unresolved item while the remaining evidence is still read.
-use super::final_result::{FinalDisposition, FinalResult, record};
+use super::final_result::{FinalDisposition, FinalResult};
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for};
 use super::progress::{Progress, ToolAttempt};
 use super::source_manifest_facts::observed_manifest_facts;
@@ -15,6 +15,7 @@ use super::work_item_references::{
     ranked_candidates, read_attempt_for, read_outcome, same_path, search_actions, search_matches,
     work_item_references, workspace_roots,
 };
+use super::work_item_report::{refusal, work_item_record_final};
 use crate::protocol::{ChatMessage, client_working_directory};
 use serde_json::json;
 
@@ -30,10 +31,12 @@ fn host_root() -> Option<String> {
         .and_then(|root| root.into_os_string().into_string().ok())
 }
 
-/// What the collector does next: plan one action, or finish with a reason.
+/// What the collector does next: plan one action, finish with a reason, or
+/// refuse the read of a path the user's turn forbids.
 enum Step {
     Plan(AgenticPlan),
     Finish(&'static str),
+    Refuse(String),
 }
 
 /// The evidence gathered so far, reported in the final payload.
@@ -119,10 +122,10 @@ fn read_step(read: &str, path: &str) -> AgenticPlan {
     )
 }
 
-fn plan_read(task: &str, read: &str, path: &str) -> Step {
+fn plan_read(messages: &[ChatMessage], task: &str, read: &str, path: &str) -> Step {
     let step = read_step(read, path);
-    if super::file_read::read_policy_blocks_plan(task, &step) {
-        Step::Finish("ReadPolicyRefused")
+    if super::file_read::user_read_policy_blocks_plan(messages, task, &step) {
+        Step::Refuse(path.to_owned())
     } else {
         Step::Plan(step)
     }
@@ -131,6 +134,7 @@ fn plan_read(task: &str, read: &str, path: &str) -> Step {
 /// Walk every reference in order and return the first action still owed, or the terminal reason.
 fn next_step(
     task: &str,
+    messages: &[ChatMessage],
     references: &[WorkItemReference],
     progress: &Progress,
     roots: &[String],
@@ -162,7 +166,7 @@ fn next_step(
         let mut failed: Vec<&str> = Vec::new();
         if exact_first {
             let Some(attempt) = read_attempt_for(progress, target, roots) else {
-                return plan_read(task, read, target);
+                return plan_read(messages, task, read, target);
             };
             match evidence.observe(reference, target, attempt, "exact") {
                 ReadOutcome::Failed => failed.push(target),
@@ -171,8 +175,12 @@ fn next_step(
                     continue;
                 }
             }
-        } else if super::file_read::read_policy_blocks_plan(task, &read_step(read, target)) {
-            return Step::Finish("ReadPolicyRefused");
+        } else if super::file_read::user_read_policy_blocks_plan(
+            messages,
+            task,
+            &read_step(read, target),
+        ) {
+            return Step::Refuse(target.to_owned());
         }
         let mut matches = None;
         for action in &searches {
@@ -230,7 +238,7 @@ fn next_step(
         let mut resolved = false;
         for candidate in tried {
             let Some(attempt) = read_attempt_for(progress, candidate, roots) else {
-                return plan_read(task, read, candidate);
+                return plan_read(messages, task, read, candidate);
             };
             let outcome = evidence.observe(reference, candidate, attempt, resolved_by);
             if outcome != ReadOutcome::Failed {
@@ -271,15 +279,29 @@ pub(super) fn plan_work_item_evidence(
     let progress = Progress::scan(messages);
     let roots = workspace_roots(client_working_directory(messages), host_root());
     let mut evidence = Evidence::default();
-    let reason = match next_step(task, &references, &progress, &roots, tools, &mut evidence) {
+    // The work item is split into requirements before any evidence is read, so
+    // a refusal names the requirement it concerns (issue #1560).
+    let requirements = super::work_item_requirements::work_item_requirements(task)
+        .into_iter()
+        .map(|(text, (start, end))| json!({"text":text,"span":[start,end],"status":"unbound"}))
+        .collect::<Vec<_>>();
+    let (reason, refused) = match next_step(
+        task,
+        messages,
+        &references,
+        &progress,
+        &roots,
+        tools,
+        &mut evidence,
+    ) {
         Step::Plan(plan) => return Some(plan),
-        Step::Finish(reason) => reason,
+        Step::Finish(reason) => (reason, None),
+        Step::Refuse(path) => ("ReadPolicyRefused", Some(refusal(&requirements, &path))),
     };
-    let payload = json!({
+    let mut payload = json!({
         "schema":"repository-work-item-evidence/v1", "reason":reason,"workItem":work_item,
         "taskIdentity":crate::source_fetch::sha256_hex(task.as_bytes()),
-        "requirements":crate::obligation_ledger::clauses_with_spans(task).into_iter()
-            .map(|(text,(start,end))|json!({"text":text,"span":[start,end],"status":"unbound"})).collect::<Vec<_>>(),
+        "requirements":requirements,
         "decomposition":[
             {"step":"collect_repository_evidence", "status":if reason == "EvidenceCollected" {"observed"} else {"incomplete"}},
             {"step":"bind_requirements_to_source", "status":"unverified"},
@@ -290,8 +312,12 @@ pub(super) fn plan_work_item_evidence(
         "coverage":"explicit-references; exact path, then file-name search; at most eight files",
         "authored":false, "verified":false
     });
-    Some(record(
-        AgenticPlan::Final(payload.to_string()),
+    if let Some(refused) = refused {
+        payload["refused"] = refused;
+    }
+    Some(work_item_record_final(
+        payload,
+        task,
         FinalDisposition::Gap,
         "repository_work_item_evidence_gap",
         result,

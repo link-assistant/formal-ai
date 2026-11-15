@@ -52,6 +52,7 @@ import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
 import { template } from '../../js/agentic/work_item_steps.mjs';
+import { workItemRecordOf } from '../../js/agentic/work_item_report.mjs';
 
 import { WorkerHost } from '../../js/server/worker-host.mjs';
 import { hasHost, host } from '../../js/agentic/host.mjs';
@@ -528,7 +529,7 @@ async function driveInternal(planChatStep, dir, prompt, {
       && sourceReferencePrerequisite === null && !researchReadPrerequisite) {
     const refusal = await maintainedPlanChatStep(messages, tools);
     if (refusal?.kind === 'final') {
-      return { transcript, answer: refusal.answer, stop: 'final', toolsAdvertised: tools };
+      return { transcript, answer: refusal.answer, record: workItemRecordOf(refusal), stop: 'final', toolsAdvertised: tools };
     }
     return { transcript, answer: null, stop: 'unowned-create-request', toolsAdvertised: tools };
   }
@@ -599,7 +600,7 @@ async function driveInternal(planChatStep, dir, prompt, {
       if (semanticRegression !== null) {
         const current = await maintainedResolvedStep(scoped,tools);
         if (!semanticRegression.current() || current?.kind !== 'final' || plan.answer !== current.answer) return {transcript,answer:null,stop:'unbound-semantic-regression-final',toolsAdvertised:tools};
-        return {transcript,answer:current.answer,stop:'final',toolsAdvertised:tools};
+        return {transcript,answer:current.answer,record:workItemRecordOf(current),stop:'final',toolsAdvertised:tools};
       }
       if (sourceReferencePrerequisite !== null) {
         return { transcript, answer: null, stop: 'source-reference-obligations-unresolved', toolsAdvertised: tools };
@@ -607,14 +608,14 @@ async function driveInternal(planChatStep, dir, prompt, {
       if (readOnlyOperation || sourceEditOperation) {
         const current = await maintainedResolvedStep(messages, tools);
         if (current?.kind !== 'final') return { transcript, answer: null, stop: 'unbound-read-operation', toolsAdvertised: tools };
-        return { transcript, answer: current.answer, stop: 'final', toolsAdvertised: tools };
+        return { transcript, answer: current.answer, record: workItemRecordOf(current), stop: 'final', toolsAdvertised: tools };
       }
       if (createContract !== null) {
         const ownedFinal = await maintainedResolvedStep(projectDriverHistory(messages,contracts), tools);
         if (ownedFinal?.kind !== 'final') return { transcript, answer: null, stop: 'unbound-create-operation', toolsAdvertised: tools };
-        return { transcript, answer: ownedFinal.answer, stop: 'final', toolsAdvertised: tools };
+        return { transcript, answer: ownedFinal.answer, record: workItemRecordOf(ownedFinal), stop: 'final', toolsAdvertised: tools };
       }
-      return { transcript, answer: plan.answer, stop: 'final', toolsAdvertised: tools };
+      return { transcript, answer: plan.answer, record: workItemRecordOf(plan), stop: 'final', toolsAdvertised: tools };
     }
     // Snapshot the complete batch before validation; getters cannot change executed arguments.
     const calls = plan.calls.map(call => Object.freeze({ tool: call.tool, arguments: call.arguments }));

@@ -50,7 +50,8 @@ export function workItemRepository(workItem) {
 }
 
 const baseName = path => path.slice(path.lastIndexOf('/') + 1);
-const validRelative = path => /^[A-Za-z0-9_-][A-Za-z0-9_./-]*$/u.test(path)
+// A segment may start with a dot (`.github/workflows/…`, issue #1560); `.` and `..` are never segments.
+const validRelative = path => /^[A-Za-z0-9_.-][A-Za-z0-9_./-]*$/u.test(path)
   && path.split('/').every(part => part && part !== '.' && part !== '..');
 
 /** A capitalized `Name.js` with no directory is a product name before it is a file. */
@@ -163,10 +164,14 @@ export function searchMatches(output, reference, roots) {
   return matches;
 }
 
-/** Candidates ordered by suffix match, then words shared with the reference's context, then depth. */
+/**
+ * Candidates ordered by suffix match, then words shared with the reference's context, then depth.
+ * The exact path always ranks first, so a bare `README.md` is the root file
+ * before a deeper one whose directory shares a word with the text (issue #1560).
+ */
 export function rankedCandidates(matches, reference) {
   const score = path => {
-    const suffix = reference.target.includes('/') && (path === reference.target || path.endsWith('/' + reference.target)) ? 1000 : 0;
+    const suffix = path === reference.target || (reference.target.includes('/') && path.endsWith('/' + reference.target)) ? 1000 : 0;
     const directories = path.split('/').slice(0, -1).join('/').toLowerCase().split(/[^a-z0-9]+/u).filter(Boolean);
     return suffix + directories.filter((part, index) => directories.indexOf(part) === index && reference.context.includes(part)).length;
   };

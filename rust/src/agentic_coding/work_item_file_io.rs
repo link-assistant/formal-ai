@@ -838,7 +838,8 @@ pub(super) fn file_io_read_step(
     task: &str,
 ) -> FileIoPlan {
     // Policy query only: never emit this conceptual Read or fabricate a receipt.
-    if super::file_read::read_policy_blocks_plan(
+    if super::file_read::user_read_policy_blocks_plan(
+        messages,
         task,
         &plan_one("read", json!({"filePath":path}).to_string()),
     ) {

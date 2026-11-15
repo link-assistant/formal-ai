@@ -10,7 +10,11 @@ import {createHash} from 'node:crypto';
 import {startBroker} from '../../../scripts/work-item-qualification/transport-broker.mjs';
 import {requireWorkItemOwner,cleanupWorkItemReceipt} from '../../../scripts/work-item-qualification/cleanup-contract.mjs';
 import {ownedTaskBody} from '../../../scripts/work-item-qualification/fixtures.mjs';
-import {explicitUnknownTerminal,cleanQualificationPass} from '../../../scripts/work-item-qualification/trace-oracle.mjs';
+import {explicitUnknownTerminal,cleanQualificationPass,replayedWorkItemRecord} from '../../../scripts/work-item-qualification/trace-oracle.mjs';
+import {WorkerHost} from '../../../js/server/worker-host.mjs';
+import {installNodeHost} from '../../../js/agentic/node-host.mjs';
+import {planChatStepResolved} from '../../../js/agentic/planner.mjs';
+import {workItemRecordOf,parsesAsJsonObject} from '../../../js/agentic/work_item_report.mjs';
 const digest=value=>createHash('sha256').update(value).digest('hex');
 const hash='a'.repeat(40),head='b'.repeat(40),policyHash='c'.repeat(64),inputHash='d'.repeat(64);
 const owner={schema:'formal-ai-hive-effect-owner/v1',taskMode:'work-item-1483',repository:'link-assistant/formal-ai',
@@ -96,6 +100,25 @@ test('unsupported oracle needs explicit final unknown evidence and false verific
     authored:false,verified:false,requirements:[{text:'unknown image',status:'unbound'}]}));
   assert.deepEqual([legacy.disposition,legacy.verified,legacy.unresolvedEvidence],['gap',false,true]);
   assert.equal(explicitUnknownTerminal(JSON.stringify({verified:true,terminalState:'gap',missingEvidence:[]})).unresolvedEvidence,false);
+});
+test('unsupported oracle recovers a work-item record by replaying the captured request, not by parsing the report',async()=>{
+  // Issue #1560: the answer is a localized report; the record is kept in the trace.
+  await installNodeHost(new WorkerHost({}));
+  const tools=['web_fetch','write_file','bash'],messages=[{role:'user',content:'Solve https://github.com/link-assistant/formal-ai/issues/1069 in this checkout as one whole task.'}];
+  const retrieval=await planChatStepResolved(messages,tools);assert.equal(retrieval.kind,'tool_calls');
+  messages.push({role:'assistant',tool_calls:[{id:'call-1',type:'function',function:{name:retrieval.calls[0].tool,arguments:retrieval.calls[0].arguments}}]},
+    {role:'tool',tool_call_id:'call-1',content:'Output: Issue #1069\n\nProduce a legitimate release with no fabricated evidence.\nAdding a bypass flag to check-self-development-release.rs is not acceptable.\n__formal_ai_exit=0\nExit Code: 0'});
+  const final=await planChatStepResolved(messages,tools);
+  assert.equal(final.kind,'final');assert.equal(parsesAsJsonObject(final.answer),false);
+  assert.equal(explicitUnknownTerminal(final.answer).disposition,'unknown');
+  const exchange={request_body:JSON.stringify({messages}),request_tools:tools};
+  const record=await replayedWorkItemRecord(exchange,final.answer,planChatStepResolved,workItemRecordOf);
+  assert.ok(record);assert.deepEqual(record,workItemRecordOf(final));
+  const terminal=explicitUnknownTerminal(final.answer,record);
+  assert.deepEqual([terminal.disposition,terminal.verified,terminal.unresolvedEvidence,terminal.terminal],['gap',false,true,'MissingReadTool']);
+  // A text the replay does not reproduce recovers no record.
+  assert.equal(await replayedWorkItemRecord(exchange,final.answer+' ',planChatStepResolved,workItemRecordOf),null);
+  assert.equal(await replayedWorkItemRecord({request_body:'not json',request_tools:tools},final.answer,planChatStepResolved,workItemRecordOf),null);
 });
 async function brokerFixture(fn){
   const directory=fs.mkdtempSync(path.join(os.tmpdir(),'work-item-broker-test-')),rpc=directory+'/rpc';fs.mkdirSync(rpc);

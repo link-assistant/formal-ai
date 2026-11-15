@@ -6,9 +6,10 @@ import { sentences } from './shell_command_policy.mjs';
 import { sha256Hex } from './crate/source_fetch.mjs';
 import { WorkItemFileProgress as Progress, fileIoReadStep, fileIoEffectStep, fileIoPendingStep } from './work_item_file_io.mjs';
 import { Capability } from './capability.mjs';
-import { jsonText, resolvedFinalAnswer, FinalDisposition } from './plan.mjs';
-import { clausesWithSpans } from './crate/obligation_ledger.mjs';
-import { readPolicyBlocksPlan } from './file_read/ownership.mjs';
+import { FinalDisposition } from './plan.mjs';
+import { workItemRequirements } from './work_item_requirements.mjs';
+import { refusal, workItemRecordFinal } from './work_item_report.mjs';
+import { userReadPolicyBlocksPlan } from './file_read/ownership.mjs';
 const words = value => value.toLowerCase().replace(/[`'"()[\],;:]/gu, ' ').trim().replace(/\s+/gu, ' ');
 function grammar() {
   const parsed = parseLino(readText('data/meta/comparison-boundary-grammar.lino'));
@@ -351,13 +352,15 @@ export function planWorkItemBoundaryStep(task, messages, tools, workItem, pathsF
     observations = [];
   let candidate = null,
     effect = null;
-  const finish = (reason, detail = null) => {
+  // The work item is split into requirements before any evidence is read; a
+  // requirement overlapping the bound clause awaits its independent check.
+  const obligations = workItemRequirements(task).map(([text, span]) => ({
+    text,
+    span,
+    status: span[0] < contract.sourceSpan[1] && span[1] > contract.sourceSpan[0] ? 'independent_check_pending' : 'unresolved'
+  }));
+  const finish = (reason, detail = null, refused = null) => {
     const authored = effect?.implementationChanged === true;
-    const obligations = clausesWithSpans(task).map(([text, span]) => ({
-      text,
-      span,
-      status: span[0] <= contract.sourceSpan[0] && span[1] >= contract.sourceSpan[1] ? 'independent_check_pending' : 'unresolved'
-    }));
     const candidateView = candidate ? {
       kind: candidate.kind,
       mode: candidate.mode,
@@ -377,7 +380,7 @@ export function planWorkItemBoundaryStep(task, messages, tools, workItem, pathsF
         status: effect?.verified === true ? 'passed' : 'pending'
       } : check)
     } : null;
-    return resolvedFinalAnswer(jsonText({
+    return workItemRecordFinal({
       schema: 'repository-work-item-controller/v1',
       transportDiagnostics: progress.transportDiagnostics,
       reason,
@@ -416,9 +419,12 @@ export function planWorkItemBoundaryStep(task, messages, tools, workItem, pathsF
         maximumEffects: 1,
         maximumEvidenceFiles: 2
       },
-      detail
-    }), FinalDisposition.Gap, 'repository_work_item_boundary');
+      detail,
+      ...(refused === null ? {} : { refused })
+    }, task, FinalDisposition.Gap, 'repository_work_item_boundary');
   };
+  const refuse = path => finish('ReadPolicyRefused', null, refusal(obligations, path));
+  const unplanned = (gap, path) => gap === 'ReadPolicyRefused' ? refuse(path) : finish(gap);
   const pending = fileIoPendingStep(progress, tools);
   if (pending) return pending.step ?? finish(pending.gap);
   const guard=boundaryAttemptGuard(progress,contract.target);
@@ -427,7 +433,7 @@ export function planWorkItemBoundaryStep(task, messages, tools, workItem, pathsF
     const observed = progress.sourceReadFor(path);
     if (!observed) {
       const planned = fileIoReadStep(messages, tools, path, task);
-      return planned.step ?? finish(planned.gap);
+      return planned.step ?? unplanned(planned.gap, path);
     }
     const isComplete = complete(observed),
       allowedAbsent = contract.allowMissing.includes(path) && observed.absent === true;
@@ -446,7 +452,7 @@ export function planWorkItemBoundaryStep(task, messages, tools, workItem, pathsF
   if (!proposed.candidate) return finish(proposed.gap ?? 'BoundaryCandidateUnavailable', proposed);
   candidate = proposed.candidate;
   const next = planBoundaryCandidateEffect(candidate, messages, tools, task);
-  if (next.step) return readPolicyBlocksPlan(task, next.step) ? finish('ReadPolicyRefused') : next.step;
+  if (next.step) return userReadPolicyBlocksPlan(messages, task, next.step) ? refuse(candidate.path) : next.step;
   if (next.effect) {
     effect = next.effect;
     return finish(effect.noOp ? 'VerifiedNoOpAwaitingIndependentAcceptance' : 'UsefulCandidateAwaitingIndependentAcceptance');

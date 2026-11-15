@@ -3,9 +3,10 @@
 // the derivation never confers authority or independent acceptance.
 import { WorkItemFileProgress, fileIoReadStep, fileIoEffectStep, fileIoPendingStep } from './work_item_file_io.mjs';
 import { Capability } from './capability.mjs';
-import { jsonText, resolvedFinalAnswer, FinalDisposition } from './plan.mjs';
+import { FinalDisposition } from './plan.mjs';
 import { sha256Hex } from './crate/source_fetch.mjs';
-import { clausesWithSpans } from './crate/obligation_ledger.mjs';
+import { workItemRequirements } from './work_item_requirements.mjs';
+import { refusal, workItemRecordFinal } from './work_item_report.mjs';
 const maximumBytes = 262144;
 function argumentsOf(attempt) {
   try {
@@ -28,18 +29,14 @@ export function planObservedDocumentation(task, messages, tools, contract, deriv
     target = contract?.target;
   const progress = WorkItemFileProgress.scan(messages),
     attempts = progress.attempts;
-  const requirements = clausesWithSpans(task).map(([text, span]) => ({
+  // The work item is split into requirements before any evidence is read, so
+  // a refusal names the requirement it concerns (issue #1560).
+  const requirements = workItemRequirements(task).map(([text, span]) => ({
     text,
     span,
     kind: 'source-documentation',
     status: 'unverified'
   }));
-  if (!requirements.length) requirements.push({
-    text: task,
-    span: [0, new TextEncoder().encode(task).length],
-    kind: 'source-documentation',
-    status: 'unverified'
-  });
   const state = {
     schema: contract?.schema ?? 'source-documentation-controller/v1',
     task,
@@ -59,17 +56,20 @@ export function planObservedDocumentation(task, messages, tools, contract, deriv
     verified: false,
     complete: false
   };
-  const finish = (reason, failure = false) => resolvedFinalAnswer(jsonText({
+  const finish = (reason, failure = false, refused = null) => workItemRecordFinal({
     ...state,
-    reason
-  }), failure ? FinalDisposition.Failure : FinalDisposition.Gap, 'source-documentation-controller');
+    reason,
+    ...(refused === null ? {} : { refused })
+  }, task, failure ? FinalDisposition.Failure : FinalDisposition.Gap, 'source-documentation-controller');
+  // A refused read names the path and the requirement it concerns.
+  const unplanned = (gap, path) => gap === 'ReadPolicyRefused' ? finish(gap, false, refusal(requirements, path)) : finish(gap);
   if (!Array.isArray(sources) || !sources.length || sources.length > 16 || !sources.every(ownedPath) || !ownedPath(target) || new Set([...sources, target]).size !== sources.length + 1 || typeof derive !== 'function') return finish('DocumentationContractInvalid', true);
   if (contract.authority !== 'owned') return finish(contract.authority ?? 'DocumentationActionUnowned');
   const pending = fileIoPendingStep(progress, tools);
   if (pending) return pending.step ?? finish(pending.gap);
   const read = path => {
     const planned = fileIoReadStep(messages, tools, path, task);
-    return planned.step ?? finish(planned.gap);
+    return planned.step ?? unplanned(planned.gap, path);
   };
   if (attempts.some(attempt => attempt.capability === Capability.Read && ownerOf(attempt) === null)) return finish('AmbiguousReadPathAttempt', true);
   const effects = attempts.map((attempt, index) => ({

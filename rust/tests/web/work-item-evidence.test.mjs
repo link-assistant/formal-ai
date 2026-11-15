@@ -6,6 +6,13 @@ import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
 import { planWorkItemEvidence, workItemEvidencePaths } from '../../../js/agentic/work_item_evidence.mjs';
 import { planChatStep } from '../../../js/agentic/planner.mjs';
+import { workItemRecordOf, parsesAsJsonObject } from '../../../js/agentic/work_item_report.mjs';
+function recorded(plan) {
+  assert.equal(parsesAsJsonObject(plan.answer), false, 'a work-item answer is a report, not a JSON object');
+  const record = plan.record ?? workItemRecordOf(plan);
+  assert.ok(record, 'a work-item final keeps its record');
+  return record;
+}
 const fixture = JSON.parse(readFileSync('data/benchmarks/fixtures/work-item-1455/failure.json', 'utf8'));
 before(async () => installNodeHost(new WorkerHost({
   WebAssembly: {
@@ -71,7 +78,7 @@ test('the evidence collector retains original task sources without claiming an i
   }
   const result = planWorkItemEvidence(fixture.title + '\n\n' + fixture.objective, messages, tools, fixture.issue);
   assert.equal(result.kind, 'final');
-  const evidence = JSON.parse(result.answer);
+  const evidence = recorded(result);
   assert.equal(evidence.reason, 'EvidenceCollected');
   assert.equal(evidence.workItem, fixture.issue);
   assert.equal(evidence.authored, false);
@@ -95,7 +102,7 @@ test('the evidence collector retains original task sources without claiming an i
 });
 test('missing tool, failed and truncated reads terminate without repeating an action or writing', () => {
   const task = 'Investigate package.json before implementing the requested integration.';
-  assert.equal(JSON.parse(planWorkItemEvidence(task, [], []).answer).reason, 'MissingReadTool');
+  assert.equal(recorded(planWorkItemEvidence(task, [], [])).reason, 'MissingReadTool');
   for (const extra of [{
     is_error: true
   }, {
@@ -115,7 +122,7 @@ test('missing tool, failed and truncated reads terminate without repeating an ac
     }, 'untrusted incomplete source', extra);
     const result = planWorkItemEvidence(task, messages, ['read', 'write']);
     assert.equal(result.kind, 'final');
-    const report = JSON.parse(result.answer);
+    const report = recorded(result);
     // A failed read with no search tool leaves the reference unresolved (issue #1558); a partial read stays incomplete.
     assert.equal(report.reason, extra.is_error ? 'UnresolvedReferences' : 'IncompleteSourceObservation');
     assert.equal(report.observations[0].sourceIdentity, null);
@@ -131,7 +138,7 @@ test('paths are bounded, deduplicated and cannot become shell or traversal instr
   assert.equal(planWorkItemEvidence('An unsupported obligation with no repository paths', [], ['read']), null);
 });
 test('read prohibitions and oversized observations remain unverified', () => {
-  assert.equal(JSON.parse(planWorkItemEvidence('Do not read package.json. Investigate package.json.', [], ['read']).answer).reason, 'ReadPolicyRefused');
+  assert.equal(recorded(planWorkItemEvidence('Do not read package.json. Investigate package.json.', [], ['read'])).reason, 'ReadPolicyRefused');
   const task = 'Investigate package.json.',
     messages = [{
       role: 'user',
@@ -147,7 +154,7 @@ test('read prohibitions and oversized observations remain unverified', () => {
       format: 'raw'
     }
   });
-  assert.equal(JSON.parse(planWorkItemEvidence(task, messages, ['read']).answer).reason, 'IncompleteSourceObservation');
+  assert.equal(recorded(planWorkItemEvidence(task, messages, ['read'])).reason, 'IncompleteSourceObservation');
 });
 test('source references preserve native Unicode separator semantics', () => {
   assert.deepEqual(workItemEvidencePaths('Inspect\u0085Cargo.toml.'), ['Cargo.toml']);
@@ -186,7 +193,7 @@ test('captured original issue with invalid evidence terminates without effects',
     observe(messages,call.tool,args,'observed source\n',{source_read:{path,success:true,complete:true,format:'raw'}});
   }
   const result=await planChatStep(messages,tools);
-  assert.equal(result.kind,'final');const state=JSON.parse(result.answer);
+  assert.equal(result.kind,'final');const state=recorded(result);
   assert.equal(state.schema,'repository-work-item-controller/v1');
   assert.equal(state.reason,'UnsupportedManifestDocumentationSource');
   for(const field of ['authored','verified','complete'])assert.equal(state[field],false);

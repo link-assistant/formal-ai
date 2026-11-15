@@ -9,6 +9,13 @@ import { drive } from '../../../experiments/js_dogfood/drive.mjs';
 import { planChatStep } from '../../../js/agentic/planner.mjs';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+import { workItemRecordOf, parsesAsJsonObject } from '../../../js/agentic/work_item_report.mjs';
+function recorded(plan) {
+  assert.equal(parsesAsJsonObject(plan.answer), false, 'a work-item answer is a report, not a JSON object');
+  const record = plan.record ?? workItemRecordOf(plan);
+  assert.ok(record, 'a work-item final keeps its record');
+  return record;
+}
 const blocked = () => {
   throw Error('LocalWasmExecutionForbidden');
 };
@@ -55,7 +62,7 @@ test('actual maintained planner owns typed Create regression with exclusive sour
   assert.equal(writes[0].semantic_creation.maintainedPlanMatch, true);
   assert.equal(fs.readFileSync(path.join(directory, 'src/range.mjs'), 'utf8'), source);
   assert.equal(fs.readFileSync(path.join(directory, 'tests/range.test.mjs'), 'utf8'), JSON.parse(writes[0].arguments).content);
-  const report = JSON.parse(result.answer);
+  const report = recorded(result);
   assert.equal(report.physicalReadbackVerified, true);
   assert.equal(report.independentlyAccepted, false);
 });

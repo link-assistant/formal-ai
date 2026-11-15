@@ -18,6 +18,7 @@ import path from 'node:path';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { ensureNodeHost } from '../../../js/server/node-host-install.mjs';
 import { runSession } from './helpers/issue-1558-session.mjs';
+import { parsesAsJsonObject } from '../../../js/agentic/work_item_report.mjs';
 
 const FIXTURES = 'data/benchmarks/fixtures/issue-1558';
 const ROOT = process.cwd();
@@ -64,7 +65,10 @@ function settled(session) {
     seen.add(key);
   }
   assert.equal(repeatedActionStop(session.messages), null, 'the transcript holds no repeated action');
-  const report = JSON.parse(session.final);
+  // Issue #1560: the answer is a localized report; the record stays on the planned result.
+  assert.equal(parsesAsJsonObject(session.final), false, session.final);
+  const report = session.record;
+  assert.ok(report, 'a work-item final keeps its record');
   assert.equal(report.schema, 'repository-work-item-evidence/v1');
   assert.equal(report.authored, false);
   assert.equal(report.verified, false);

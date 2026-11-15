@@ -6,7 +6,8 @@
 # conversational vocabulary. The `grounding` path names the shard the record
 # lives in -- engine diagnostics and evidence labels in the engine-reports
 # shard, constraint-check reasons in the creative-tasks shard, and the range
-# note in the TRIZ shard.
+# note in the TRIZ shard, and the localized report a repository work-item record
+# is rendered as in the agentic-workspace shard (issue #1560).
 meanings
   advice_forward_note
     defined-by answer
@@ -385,3 +386,91 @@ meanings
     unit "not applicable"
     example "derivation_record_ambiguous: use answer_0000000000000000@<record-digest>"
     grounding "data/seed/multilingual-responses-engine-reports.lino"
+  work-item-report-unchanged
+    defined-by answer
+    role localized_response_template
+    precondition "a repository work-item session ends without authoring any change"
+    effect "the report opens by naming the work item and the reason the session stopped, and says no repository file changed"
+    unit "not applicable"
+    example "Not completed: https://github.com/link-assistant/formal-ai/issues/1486. The session stopped at `EvidenceCollected` and changed no repository file."
+    grounding "data/seed/multilingual-responses-agentic-workspace.lino"
+  work-item-report-changed
+    defined-by answer
+    role localized_response_template
+    precondition "a repository work-item session ends after authoring a change that no independent check accepted"
+    effect "the report opens by naming the work item and the reason the session stopped, and says the change is unverified"
+    unit "not applicable"
+    example "Not verified: https://github.com/link-assistant/formal-ai/issues/1486. The session stopped at `UnverifiedChange` after a change that no independent check has accepted."
+    grounding "data/seed/multilingual-responses-agentic-workspace.lino"
+  work-item-report-request
+    defined-by answer
+    role localized_response_template
+    precondition "a work-item record names no work-item URL"
+    effect "the report names the user's request as its subject"
+    unit "not applicable"
+    example "the request"
+    grounding "data/seed/multilingual-responses-agentic-workspace.lino"
+  work-item-report-read
+    defined-by answer
+    role localized_response_template
+    precondition "a work-item session completely read one or more repository files"
+    effect "the report lists the files it read"
+    unit "not applicable"
+    example "Files read: `scripts/self-hosting-metric.rs`."
+    grounding "data/seed/multilingual-responses-agentic-workspace.lino"
+  work-item-report-read-none
+    defined-by answer
+    role localized_response_template
+    precondition "a work-item session read no repository file completely"
+    effect "the report says that no repository file was read"
+    unit "not applicable"
+    example "No repository file was read."
+    grounding "data/seed/multilingual-responses-agentic-workspace.lino"
+  work-item-report-refused
+    defined-by answer
+    role localized_response_template
+    precondition "the user's own turn forbids reading a path the work item needs"
+    effect "the report names the path that was not read and what is needed instead"
+    unit "not applicable"
+    example "Your request does not allow reading `secrets/token.txt`, so it was not read."
+    grounding "data/seed/multilingual-responses-agentic-workspace.lino"
+  work-item-report-concerns
+    defined-by answer
+    role localized_response_template
+    precondition "a refused path is named by one of the work item's requirements"
+    effect "the refusal names the number and text of the requirement it concerns"
+    unit "not applicable"
+    example "It concerns requirement 2: Do not read secrets/token.txt."
+    grounding "data/seed/multilingual-responses-agentic-workspace.lino"
+  work-item-report-missing-read-tool
+    defined-by answer
+    role localized_response_template
+    precondition "a work-item session needs evidence but the client offers no file-read tool"
+    effect "the report says a file-read tool is needed to collect evidence"
+    unit "not applicable"
+    example "The client offers no tool that reads files; such a tool is needed to collect evidence."
+    grounding "data/seed/multilingual-responses-agentic-workspace.lino"
+  work-item-report-requirements
+    defined-by answer
+    role localized_response_template
+    precondition "a work-item record carries requirements that remain unverified"
+    effect "the report heads the numbered list of unverified requirements with their count"
+    unit "not applicable"
+    example "Requirements not yet verified (3):"
+    grounding "data/seed/multilingual-responses-agentic-workspace.lino"
+  work-item-report-more
+    defined-by answer
+    role localized_response_template
+    precondition "a work-item record carries more requirements than the report lists"
+    effect "the report states how many requirements were not listed"
+    unit "not applicable"
+    example "and 4 more."
+    grounding "data/seed/multilingual-responses-agentic-workspace.lino"
+  work-item-report-trace
+    defined-by answer
+    role localized_response_template
+    precondition "a work-item record was rendered as a localized report"
+    effect "the report says the machine record is kept in the trace and names its schema"
+    unit "not applicable"
+    example "The machine record of this session (`repository-work-item-evidence/v1`) is kept in the trace, not in this answer."
+    grounding "data/seed/multilingual-responses-agentic-workspace.lino"

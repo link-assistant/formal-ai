@@ -10,6 +10,13 @@ import {WorkerHost} from '../../../js/server/worker-host.mjs';
 import {installNodeHost} from '../../../js/agentic/node-host.mjs';
 import {planChatStep} from '../../../js/agentic/planner.mjs';
 import {sourceImportContract} from '../../../js/agentic/source_import_binding.mjs';
+import { workItemRecordOf, parsesAsJsonObject } from '../../../js/agentic/work_item_report.mjs';
+function recorded(plan) {
+  assert.equal(parsesAsJsonObject(plan.answer), false, 'a work-item answer is a report, not a JSON object');
+  const record = plan.record ?? workItemRecordOf(plan);
+  assert.ok(record, 'a work-item final keeps its record');
+  return record;
+}
 const {parse}=createRequire(import.meta.url)('@babel/parser');
 const denied=()=>{throw Error('LocalProductWasmForbidden');};
 await installNodeHost(new WorkerHost({WebAssembly:{...WebAssembly,compile:denied,instantiate:denied,Module:denied,Instance:denied}}),{sourceUsageRustGrammar:false});
@@ -20,7 +27,7 @@ for(const entry of fixtures.cases)test(entry.name,async context=>{
  const target=path.join(root,entry.owner);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,entry.source);
  const contract=sourceImportContract(entry.task);assert.equal(contract.owner,entry.owner);assert.equal(contract.binding,entry.binding);assert.equal(contract.module,entry.module);
  const result=await drive(planChatStep,root,entry.task,{steps:6,tools:['read','edit','write'],allowedCommands:[]});
- assert.equal(result.stop,'final');const state=JSON.parse(result.answer),after=fs.readFileSync(target,'utf8');
+ assert.equal(result.stop,'final');const state=recorded(result),after=fs.readFileSync(target,'utf8');
  assert.equal(state.complete,false);assert.equal(state.verified,false);
  if(entry.gap){assert.equal(state.reason,entry.gap);assert.equal(after,entry.source);assert.ok(result.transcript.every(row=>row.tool==='read'));return;}
  const beforeAst=parse(entry.source,{sourceType:'module'}),afterAst=parse(after,{sourceType:'module'});
@@ -37,7 +44,7 @@ for(const entry of fixtures.cases)test(entry.name,async context=>{
  const originalImport=imports(beforeAst)[0];assert.ok(start>=originalImport.start&&start<=originalImport.end);
  assert.deepEqual(names.sort(),[...originalImport.specifiers.map(specifier=>specifier.local.name),entry.binding].sort());
  const again=await drive(planChatStep,root,entry.task,{steps:4,tools:['read','edit','write'],allowedCommands:[]});
- assert.equal(JSON.parse(again.answer).reason,'VerifiedNoOp');assert.deepEqual(again.transcript.map(row=>row.tool),['read']);assert.equal(fs.readFileSync(target,'utf8'),after);
+ assert.equal(recorded(again).reason,'VerifiedNoOp');assert.deepEqual(again.transcript.map(row=>row.tool),['read']);assert.equal(fs.readFileSync(target,'utf8'),after);
 });
 for(const prompt of ['Do not add a named import.','"In lib/tool.mjs, add a named import render from kit to the existing import."',
  'In ../tool.mjs, add a named import render from kit to the existing import.'])test('unowned or invalid import request: '+prompt,()=>assert.equal(sourceImportContract(prompt),null));

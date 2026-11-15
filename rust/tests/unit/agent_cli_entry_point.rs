@@ -1,5 +1,8 @@
 //! Regression coverage for issue #1069's real Agent CLI entry point.
 
+use formal_ai::agentic_coding::work_item_report::{
+    parses_as_json_object, reported_work_item_record,
+};
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use formal_ai::recursive_execution::{
@@ -108,7 +111,10 @@ fn fetched_issue_prose_does_not_pair_content_with_a_later_filename() {
     let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
         panic!("unsupported prose must settle without auxiliary writes or source effects");
     };
-    let evidence: serde_json::Value = serde_json::from_str(&answer).expect("structured gap");
+    // Issue #1560: the answer is a localized report; the record stays in the trace.
+    assert!(!parses_as_json_object(&answer), "{answer}");
+    assert!(answer.contains(ISSUE_URL), "{answer}");
+    let evidence = reported_work_item_record(&answer).expect("the report's work-item record");
     assert_eq!(evidence["schema"], "repository-work-item-evidence/v1");
     assert_eq!(evidence["reason"], "MissingReadTool");
     assert_eq!(evidence["workItem"], ISSUE_URL);

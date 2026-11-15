@@ -4,10 +4,11 @@ import { fileReadTaskFor } from './file_read.mjs';
 import { WorkItemFileProgress, fileIoReadStep, fileIoPendingStep, fileIoEffectStep } from './work_item_file_io.mjs';
 import { Capability } from './capability.mjs';
 import { readText, parseLino, host } from './host.mjs';
-import { jsonText, resolvedFinalAnswer, FinalDisposition } from './plan.mjs';
+import { FinalDisposition } from './plan.mjs';
 import { workItemEvidencePaths } from './work_item_evidence.mjs';
 import { sha256Hex } from './crate/source_fetch.mjs';
-import { clausesWithSpans } from './crate/obligation_ledger.mjs';
+import { workItemRequirements } from './work_item_requirements.mjs';
+import { refusal, workItemRecordFinal } from './work_item_report.mjs';
 import { sentences } from './shell_command_policy.mjs';
 import { quotedSegmentSpans, quoteFault } from './crate/normal_markov.mjs';
 import { conceptWords } from './source_documentation.mjs';
@@ -80,18 +81,14 @@ export function planOwnedSourceRepair(task, messages, tools, workItem = null) {
   if (!contract) return null;
   const progress = WorkItemFileProgress.scan(messages),
     attempts = progress.attempts;
-  const requirements = clausesWithSpans(task).map(([text, span]) => ({
+  // The work item is split into requirements before any evidence is read, so
+  // a refusal names the requirement it concerns (issue #1560).
+  const requirements = workItemRequirements(task).map(([text, span]) => ({
     text,
     span,
     kind: 'source-repair',
     status: 'unverified'
   }));
-  if (!requirements.length) requirements.push({
-    text: task,
-    span: [0, new TextEncoder().encode(task).length],
-    kind: 'source-repair',
-    status: 'unverified'
-  });
   const state = {
     schema: 'owned-source-repair/v1',
     task,
@@ -109,10 +106,13 @@ export function planOwnedSourceRepair(task, messages, tools, workItem = null) {
     verified: false,
     complete: false
   };
-  const finish = (reason, failure = false) => resolvedFinalAnswer(jsonText({
+  const finish = (reason, failure = false, refused = null) => workItemRecordFinal({
     ...state,
-    reason
-  }), failure ? FinalDisposition.Failure : FinalDisposition.Gap, 'owned-source-repair');
+    reason,
+    ...(refused === null ? {} : { refused })
+  }, task, failure ? FinalDisposition.Failure : FinalDisposition.Gap, 'owned-source-repair');
+  // A refused read names the path and the requirement it concerns.
+  const unplanned = (gap, path) => gap === 'ReadPolicyRefused' ? finish(gap, false, refusal(requirements, path)) : finish(gap);
   if (contract.authority !== 'owned') return finish(contract.authority);
   const pending = fileIoPendingStep(progress, tools);
   if (pending) return pending.step ?? finish(pending.gap);
@@ -136,7 +136,7 @@ export function planOwnedSourceRepair(task, messages, tools, workItem = null) {
   if (!prior.length) {
     const planned = fileIoReadStep(messages, tools, contract.owner, task);
     if (contract.operation === null && fileReadTaskFor(task) === null && planned.gap !== 'ReadPolicyRefused') return finish('SourceRepairOperatorUnavailable');
-    return planned.step ?? finish(planned.gap);
+    return planned.step ?? unplanned(planned.gap, contract.owner);
   }
   const original = complete(first?.attempt),
     latest = complete(prior.at(-1)?.attempt);
@@ -207,7 +207,7 @@ export function planOwnedSourceRepair(task, messages, tools, workItem = null) {
   const fresh = reads(attempts.length, effect.index).at(-1);
   if (!fresh) {
     const planned = fileIoReadStep(messages, tools, contract.owner, task);
-    return planned.step ?? finish(planned.gap);
+    return planned.step ?? unplanned(planned.gap, contract.owner);
   }
   const actual = complete(fresh.attempt);
   if (actual !== candidate.source) return finish('SourceRepairReadbackMismatch', true);

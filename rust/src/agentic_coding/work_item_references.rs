@@ -113,15 +113,12 @@ fn clean_parts(path: &str) -> bool {
     path.split('/').all(|part| !matches!(part, "" | "." | ".."))
 }
 
+/// A segment may start with a dot (`.github/workflows/…`, issue #1560); `.` and
+/// `..` are never segments.
 fn valid_relative(path: &str) -> bool {
-    let mut characters = path.chars();
-    characters
-        .next()
-        .is_some_and(|first| first.is_ascii_alphanumeric() || matches!(first, '_' | '-'))
-        && characters.all(|character| {
-            character.is_ascii_alphanumeric() || matches!(character, '_' | '.' | '/' | '-')
-        })
-        && clean_parts(path)
+    path.chars().all(|character| {
+        character.is_ascii_alphanumeric() || matches!(character, '_' | '.' | '/' | '-')
+    }) && clean_parts(path)
 }
 
 /// A capitalized `Name.js` with no directory is a product name before it is a file.
@@ -368,10 +365,12 @@ pub(super) fn search_matches(
 }
 
 /// Candidates ordered by suffix match, then words shared with the reference's context, then depth.
+/// The exact path always ranks first, so a bare `README.md` is the root file
+/// before a deeper one whose directory shares a word with the text (issue #1560).
 pub(super) fn ranked_candidates(matches: &[String], reference: &WorkItemReference) -> Vec<String> {
     let score = |path: &str| {
-        let suffix = if reference.target.contains('/')
-            && (path == reference.target || path.ends_with(&format!("/{}", reference.target)))
+        let suffix = if path == reference.target
+            || (reference.target.contains('/') && path.ends_with(&format!("/{}", reference.target)))
         {
             1000
         } else {

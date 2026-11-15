@@ -12,7 +12,7 @@ import { evidenceWindowStart } from './planner/continuation.mjs';
 import { sha256Hex } from './crate/source_fetch.mjs';
 import { quoteShellWord } from './portable/string_contracts.mjs';
 import { planOne, jsonText, writeArguments } from './plan.mjs';
-import { readPolicyBlocksPlan } from './file_read/ownership.mjs';
+import { userReadPolicyBlocksPlan } from './file_read/ownership.mjs';
 const PROGRAM = 'data/meta/work-item-file-io-program.cjs';
 const canonical = value => JSON.stringify(Object.fromEntries(Object.keys(value).sort().map(key => [key, value[key]])));
 const encode = text => {
@@ -161,7 +161,7 @@ export function fileIoSearchStep(messages, tools, directory, identifiers, task =
       gap: String(error.message)
     };
   }
-  if (readPolicyBlocksPlan(task, planOne('read', jsonText({
+  if (userReadPolicyBlocksPlan(messages, task, planOne('read', jsonText({
     filePath: directory
   })))) return {
     gap: 'ReadPolicyRefused'
@@ -647,7 +647,7 @@ function runStep(messages, tools, operation, path, before = null, after = null) 
 export function fileIoReadStep(messages, tools, path, task = '') {
   // Query existing Read policy before lowering to a Run transport. This query
   // is never emitted or inserted into the client transcript.
-  if (readPolicyBlocksPlan(task, planOne('read', jsonText({
+  if (userReadPolicyBlocksPlan(messages, task, planOne('read', jsonText({
     filePath: path
   })))) return {
     gap: 'ReadPolicyRefused'

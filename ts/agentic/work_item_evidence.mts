@@ -4,10 +4,11 @@ import { observedManifestFacts } from './source_manifest_facts.mjs';
 import { Progress } from './progress.mjs';
 import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
-import { FinalDisposition, resolvedFinalAnswer, planOne, jsonText } from './plan.mjs';
+import { FinalDisposition, planOne, jsonText } from './plan.mjs';
 import { sha256Hex } from './crate/source_fetch.mjs';
-import { readPolicyBlocksPlan } from './file_read/ownership.mjs';
-import { clausesWithSpans } from './crate/obligation_ledger.mjs';
+import { userReadPolicyBlocksPlan } from './file_read/ownership.mjs';
+import { workItemRequirements } from './work_item_requirements.mjs';
+import { refusal, workItemRecordFinal } from './work_item_report.mjs';
 import { clientWorkingDirectory } from './content.mjs';
 import { currentDirectory } from './host.mjs';
 import {
@@ -30,16 +31,20 @@ export function planWorkItemEvidence(task, messages, tools, workItem = null) {
     observations = [],
     unresolved = [],
     terms = [];
-  const finish = reason => resolvedFinalAnswer(jsonText({
+  // The work item is split into requirements before any evidence is read, so
+  // a refusal names the requirement it concerns (issue #1560).
+  const requirements = workItemRequirements(task).map(([text, span]) => ({
+    text,
+    span,
+    status: 'unbound'
+  }));
+  const finish = (reason, refused = null) => workItemRecordFinal({
     schema: 'repository-work-item-evidence/v1',
     reason,
     workItem,
     taskIdentity: sha256Hex(task),
-    requirements: clausesWithSpans(task).map(([text, span]) => ({
-      text,
-      span,
-      status: 'unbound'
-    })),
+    requirements,
+    ...(refused === null ? {} : { refused }),
     decomposition: [{
       step: 'collect_repository_evidence',
       status: reason === 'EvidenceCollected' ? 'observed' : 'incomplete'
@@ -59,7 +64,7 @@ export function planWorkItemEvidence(task, messages, tools, workItem = null) {
     coverage: 'explicit-references; exact path, then file-name search; at most eight files',
     authored: false,
     verified: false
-  }), FinalDisposition.Gap, 'repository_work_item_evidence_gap');
+  }, task, FinalDisposition.Gap, 'repository_work_item_evidence_gap');
   const read = toolFor(tools, Capability.Read);
   const readStep = path => planOne(read, jsonText({
     path,
@@ -68,7 +73,7 @@ export function planWorkItemEvidence(task, messages, tools, workItem = null) {
   }));
   const planRead = path => {
     const step = readStep(path);
-    return readPolicyBlocksPlan(task, step) ? finish('ReadPolicyRefused') : step;
+    return userReadPolicyBlocksPlan(messages, task, step) ? finish('ReadPolicyRefused', refusal(requirements, path)) : step;
   };
   const observe = (reference, path, attempt, resolvedBy) => {
     const observed = attempt.source_read;
@@ -122,8 +127,8 @@ export function planWorkItemEvidence(task, messages, tools, workItem = null) {
         continue;
       }
       failed.push(reference.target);
-    } else if (readPolicyBlocksPlan(task, readStep(reference.target))) {
-      return finish('ReadPolicyRefused');
+    } else if (userReadPolicyBlocksPlan(messages, task, readStep(reference.target))) {
+      return finish('ReadPolicyRefused', refusal(requirements, reference.target));
     }
     let matches = null;
     for (const action of searches) {

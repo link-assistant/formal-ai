@@ -7,6 +7,7 @@
 import { readFileSync, statSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
+import { workItemRecordOf } from '../../../../js/agentic/work_item_report.mjs';
 
 const FIXTURES = 'data/benchmarks/fixtures/issue-1558';
 const RECORDED_WORKSPACE = /\/tmp\/gh-issue-solver-1793442214945/gu;
@@ -67,7 +68,8 @@ export async function runSession({ worker, agenticOutcome, chatCompletionFromPla
     const outcome = await agenticOutcome({ worker, agentMode: true }, parsed, () => 'refused');
     if (outcome.kind !== 'planned') return { calls, final: null, stop: outcome.kind, messages: request.messages };
     const message = chatCompletionFromPlan({}, parsed, prompt, outcome.plan, 0).choices[0].message;
-    if (!message.tool_calls?.length) return { calls, final: message.content, stop: 'final', messages: request.messages };
+    // Issue #1560: the final is a localized report; its record stays on the planned result.
+    if (!message.tool_calls?.length) return { calls, final: message.content, record: workItemRecordOf(outcome.plan), stop: 'final', messages: request.messages };
     request.messages.push(message);
     for (const call of message.tool_calls) {
       const args = JSON.parse(call.function.arguments);
