@@ -18,7 +18,9 @@ import {
   INDEX_ORDER_SHARDING, capProblems, checkCiSpeed, criticalPaths, measuredProblems, orderProblems, shardingProblems,
   staleExceptionProblems,
 } from '../../../scripts/check-ci-speed.mjs';
-import { parseCiDurations, parseTestDurations, renderCiDurations } from '../../../scripts/lib/ci-speed-durations.mjs';
+import {
+  mergeJavaScriptDurations, parseCiDurations, parseJavaScriptFileEvents, parseTestDurations, renderCiDurations,
+} from '../../../scripts/lib/ci-speed-durations.mjs';
 import { parseSpeedPolicy } from '../../../scripts/lib/ci-speed-policy.mjs';
 import {
   durationLookup, isLongestFirst, parseReserved, partitionProblems, planShards,
@@ -223,6 +225,58 @@ describe('the measured records', () => {
     assert.equal(recorded.get('a::b'), 2.5);
     const log = '2026-10-08T09:00:00Z test a::b ... ok <1.250s>\ntest c::d ... FAILED <0.500s>\ntest e ... ok\n';
     assert.deepEqual([...parseReportTime(log)], [['a::b', 1.25], ['c::d', 0.5]]);
+  });
+
+  // Issue #1571: run 43730269695 killed js suite group 7 at its 360 s budget
+  // because the plan weighed unrecorded 70-150 s files at 0.1 s each.
+  test('js-tier [test-file] events give per-file seconds; only the file a budget kill caught is a lower bound', () => {
+    const at = (second) => `2026-11-15T15:46:${String(second).padStart(2, '0')}.0000000Z`;
+    const lines = [
+      `${at(0)} [test-file] queued w/slow.test.mjs`,
+      `${at(0)} [test-file] queued w/fast.test.mjs`,
+      `${at(0)} [test-file] queued w/done.test.mjs`,
+      `${at(0)} [test-file] started w/done.test.mjs`,
+      `${at(1)} [test-file] started w/slow.test.mjs`,
+      `${at(2)} [test-file] started w/fast.test.mjs`,
+      `${at(3)} [test-file] completed w/done.test.mjs {"duration_ms":2500}`,
+      `${at(50)} ##[error]The command was terminated after 360s, its full 360s execution budget.`,
+    ];
+    const killed = parseJavaScriptFileEvents(lines.join('\n'));
+    assert.deepEqual(killed.get('w/done.test.mjs'), { seconds: 2.5, complete: true });
+    // Summaries arrive in queue order, so fast.test.mjs may have passed behind slow.test.mjs.
+    assert.deepEqual(killed.get('w/slow.test.mjs'), { seconds: 49, complete: false });
+    assert.equal(killed.has('w/fast.test.mjs'), false);
+    assert.deepEqual([...parseJavaScriptFileEvents(lines.slice(0, -1).join('\n')).keys()], ['w/done.test.mjs']);
+  });
+
+  test('observed js seconds replace records, never lower a bound or a receipt, and set default-seconds', () => {
+    const table = [
+      '# generated',
+      'javascript-test-durations',
+      '  recorded 2026-10-08',
+      '  # old measurement of a',
+      '  test "a"',
+      '    seconds 50',
+      '  test "r"',
+      '    seconds 40',
+      '    receipt-sha256 abc',
+      '  test "b"',
+      '    seconds 10',
+      '',
+    ].join('\n');
+    const observed = new Map([
+      ['a', { seconds: 20, complete: true }], ['r', { seconds: 30, complete: true }],
+      ['b', { seconds: 5, complete: false }], ['new', { seconds: 80.04, complete: true }],
+      ['tiny', { seconds: 0.2, complete: true }], ['small', { seconds: 0.6, complete: true }],
+    ]);
+    const merged = mergeJavaScriptDurations(table, observed, { source: '7', recordedDate: '2026-11-15' });
+    assert.deepEqual([...parseTestDurations(merged)], [['new', 80], ['r', 40], ['a', 20], ['b', 10]]);
+    assert.match(merged, /^ {2}recorded 2026-11-15$/mu);
+    assert.match(merged, /^ {2}observed-run 7$/mu);
+    assert.match(merged, /^ {2}default-seconds 0\.4$/mu);
+    assert.match(merged, /seconds 40\n {4}receipt-sha256 abc/u);
+    assert.doesNotMatch(merged, /old measurement of a/u);
+    assert.equal(mergeJavaScriptDurations(merged, observed, { source: '7', recordedDate: '2026-11-15' }), merged);
   });
 });
 

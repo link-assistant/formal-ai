@@ -147,6 +147,15 @@ from GitHub with `gh`:
 | `data/meta/ci-durations.lino` | `node experiments/formal_ai_subagent/ci-durations.mjs --write [--branch B] [--runs N]` | The last N completed, non-cancelled runs of every workflow on the branch. It records each job's median and maximum minutes, and the run wall-clock. |
 | `data/meta/test-durations.lino` | `node experiments/formal_ai_subagent/ci-durations.mjs --tests --write [--run ID]` | The `Test (…)` job logs of a CI/CD Pipeline run with per-test times. |
 | `data/meta/javascript-test-durations.lino` | `node experiments/formal_ai_subagent/ci-durations.mjs --javascript-files --write` | Each suite file run alone on the local machine. Only the order carries over to CI. |
+| `data/meta/javascript-test-durations.lino` | `node experiments/formal_ai_subagent/ci-durations.mjs --javascript-ci-logs --run ID [--run ID ...] --write` | The `[test-file] completed … {"duration_ms":N}` lines of every `js tier` job of the given Layered CI runs, folded into the existing record. CI-observed seconds replace older records. A file the budget killed counts as a lower bound. Unrecorded files of at least 2 seconds are added. `default-seconds` becomes the mean of the rest (issue #1571). |
+
+Refresh the JavaScript record from CI after adding slow suite files. Before
+issue #1571, only 305 of the 853 suite files were recorded. Every other file
+weighed 0.1 s, so files of 70 to 150 s each could pile up on one group. Run
+43730269695 killed `js tier (… suite group 7)` at its 360 s budget that way.
+`[test-file]` summaries arrive in queue order, so a file that never reported
+may still have passed behind a slower one. Only the first unreported file of a
+killed group is taken as a lower bound.
 
 Per-test Rust times come from libtest's `--report-time`. On a stable
 toolchain that flag needs `RUSTC_BOOTSTRAP`, which reaches every process the
