@@ -4,7 +4,8 @@
 // merge link) and reversible (`splitMerged`).
 //
 // Representation: a `Polarity` is 'asserted' | 'denied'; a
-// `StatementSignature` is `{polarity, terms}`; a `SourcedStatement` is
+// `StatementSignature` is `{polarity, terms, structure, scope}` (issue #1487:
+// the structure and negation scope a sorted term set drops); a `SourcedStatement` is
 // `{statement, source, tier, semantic_terms}`; a `MergedStatement` is `{id,
 // signature, representative, variants}` with variants `{text, source, tier}`;
 // a `DedupReport` is `{statements, links, contradictions, sources}`. Rust's
@@ -12,6 +13,7 @@
 // order (`compareStrings`), not JavaScript's UTF-16 code unit order.
 
 import { stableId } from './engine_stable_identifier.mjs';
+import { surfaceStructure } from './proposition_structure.mjs';
 import { StatementKind, classifySentence, statement, weightForKind } from './summarization.mjs';
 import {
   functionWords, mentionsWord, negationCues, stripWords, tokenize,
@@ -57,7 +59,8 @@ export function signatureOf(text) {
   const tokens = tokenize(text);
   const content = stripWords(tokens, functionWords());
   const polarity = mentionsWord(content, negationCues()) ? Polarity.Denied : Polarity.Asserted;
-  return { polarity, terms: sortedUnique(stripWords(content, negationCues())) };
+  const { structure, scope } = surfaceStructure(text);
+  return { polarity, terms: sortedUnique(stripWords(content, negationCues())), structure, scope };
 }
 
 /**
@@ -67,17 +70,25 @@ export function signatureOf(text) {
  */
 export function signatureWithSemanticTerms(text, semanticTerms) {
   if (semanticTerms.length === 0) return signatureOf(text);
-  return { polarity: signatureOf(text).polarity, terms: sortedUnique(semanticTerms) };
+  return { ...signatureOf(text), terms: sortedUnique(semanticTerms) };
 }
 
-/** Mirrors `StatementSignature::negated`. */
+/** Mirrors `StatementSignature::negated`: same terms and structure, opposite sign, no scope. */
 export function negatedSignature(signature) {
-  return { polarity: flippedPolarity(signature.polarity), terms: [...signature.terms] };
+  return { polarity: flippedPolarity(signature.polarity), terms: [...signature.terms], structure: signature.structure, scope: '' };
 }
 
-/** Mirrors `StatementSignature::key`: `"asserted:fast is parser"`. */
+/** Mirrors `StatementSignature::denies`: opposite polarity over the same terms and structure. */
+export function signatureDenies(left, right) {
+  return left.polarity !== right.polarity && left.structure === right.structure
+    && left.terms.length === right.terms.length && left.terms.every((term, index) => term === right.terms[index]);
+}
+
+/** Mirrors `StatementSignature::key`: `"asserted:fast is parser"`, then `|structure` and `|scope=scope` when present. */
 export function signatureKey(signature) {
-  return `${signature.polarity}:${signature.terms.join(' ')}`;
+  const structure = signature.structure ? `|${signature.structure}` : '';
+  const scope = signature.scope ? `|scope=${signature.scope}` : '';
+  return `${signature.polarity}:${signature.terms.join(' ')}${structure}${scope}`;
 }
 
 /** Mirrors `StatementSignature::id`. */
@@ -92,7 +103,8 @@ export function signatureIsEmpty(signature) {
 
 /** `StatementSignature == StatementSignature`: Rust built-in `#[derive(PartialEq)]` on `StatementSignature`. */
 export function sameSignature(left, right) {
-  return left.polarity === right.polarity && left.terms.length === right.terms.length
+  return left.polarity === right.polarity && left.structure === right.structure && left.scope === right.scope
+    && left.terms.length === right.terms.length
     && left.terms.every((term, index) => term === right.terms[index]);
 }
 
@@ -181,7 +193,7 @@ export function splitMerged(report, id) {
   const node = report.statements[position];
   const replacements = node.variants.map((variant, index) => ({
     id: `${node.id}_${index}`,
-    signature: { polarity: node.signature.polarity, terms: [...node.signature.terms] },
+    signature: { ...node.signature, terms: [...node.signature.terms] },
     representative: { ...node.representative, text: variant.text },
     variants: [{ ...variant }],
   }));
@@ -196,8 +208,7 @@ function findContradictions(statements) {
   const out = [];
   for (const node of statements) {
     if (node.signature.polarity !== Polarity.Asserted || signatureIsEmpty(node.signature)) continue;
-    const denial = negatedSignature(node.signature);
-    const twin = statements.find((other) => sameSignature(other.signature, denial));
+    const twin = statements.find((other) => signatureDenies(other.signature, node.signature));
     if (twin !== undefined) out.push({ asserted: node.id, denied: twin.id, terms: [...node.signature.terms] });
   }
   return out;

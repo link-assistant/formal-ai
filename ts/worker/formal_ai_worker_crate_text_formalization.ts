@@ -46,6 +46,7 @@ const { typedMeaning, preserveTypedRendering, countSourceTerms, inheritNumericEv
 const { byteSlice, clauses, scriptOf, sentences } = crateRequire("crate/formalization_segment.mjs");
 const { byteOrder } = crateRequire("crate/rust_str.mjs");
 const { lexicon, meaning, meaningsWithRole } = crateRequire("crate/seed_meanings.mjs");
+const { readPropositionStructure, structureKey } = crateRequire("crate/proposition_structure.mjs");
 /** Mirrors `TEXT_FORMALIZATION_LINO` in rust/src/seed/embedded_registry.rs (the repository path it embeds). */
 const TEXT_FORMALIZATION_PATH = 'data/seed/text-formalization.lino';
 /** Mirrors `FUNCTION_WORD_ROLES` in rust/src/formalization/text_statements.rs: the lexicon roles whose words carry no term. */
@@ -507,16 +508,18 @@ function knownIds(statement) {
   return [...new Set(statementTerms(statement).filter((term) => isKnownKind(term.kind)).map((term) => term.id))]
     .sort(byteOrder);
 }
+const STRUCTURES = new WeakMap();
+/** Mirrors `fn statement_structure` in rust/src/formalization/text_statements.rs: operand order, connectives, quantifiers, repetition (#1487). */
+function statementStructure(statement) { const text = statement.text ?? '', seen = STRUCTURES.get(statement); if (seen?.text === text && seen.terms === statement.terms) return seen.structure; const structure = readPropositionStructure(text, statement.language, readWords(text, statement.language, true), statementTerms(statement), { meaning: WordKind.Meaning, negation: WordKind.Negation, isTerm: isTermKind }); STRUCTURES.set(statement, { text, terms: statement.terms, structure }); return structure; }
 /**
  * Mirrors `fn statement_identity` in rust/src/formalization/text_statements.rs: the formal identity of a statement, its
- * polarity, its subject and the set of its other terms. Two statements with
- * one identity say the same thing whatever their wording.
+ * polarity, its subject, the set of its other terms and the proposition structure a set loses (issue #1487).
  */
 function statementIdentity(statement) {
   const subject = statement.subject === null ? '' : statement.subject.id;
   const others = [...new Set(statement.terms.map((term) => term.id))].filter((id) => id !== subject).sort(byteOrder);
-  const legacy=`${statement.polarity}|${subject}|${others.join(' ')}`;
-  return typedMeaning(statement.dialogue)===null?legacy:legacy+'|'+typedMeaning(statement.dialogue);
+  const legacy=`${statement.polarity}|${subject}|${others.join(' ')}`, typed=typedMeaning(statement.dialogue)===null?legacy:legacy+'|'+typedMeaning(statement.dialogue), key=structureKey(statementStructure(statement));
+  return key===''?typed:`${typed}|structure:${key}`;
 }
 /** Mirrors `fn has_no_unknown` in rust/src/formalization/text_statements.rs: a statement of at least two terms, all of them known. */
 function hasNoUnknown(statement) {
@@ -643,6 +646,7 @@ return Object.freeze({
   statementTerms,
   contentIds,
   knownIds,
+  statementStructure,
   statementIdentity,
   hasNoUnknown,
   surfacesIn,
