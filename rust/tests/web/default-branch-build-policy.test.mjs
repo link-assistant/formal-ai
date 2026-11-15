@@ -57,6 +57,10 @@ test('the focused PR native check stays a lint-only check selected by compile in
   const called = workflow('native-type-check.yml');
   assert.deepEqual(Object.keys(called.on), ['workflow_call'], 'only release.yml selects it');
   assert.equal(called.env.RUSTFLAGS, '-Dwarnings', 'the same warnings-as-errors flags as main');
+  // superseded_read_only_work_releases_its_runners (step_budgets_within_job_clocks.rs) reads the
+  // called file's own top-level concurrency, before `jobs:`, not a job-level block.
+  const head = read('.github/workflows/native-type-check.yml').split('\njobs:\n')[0];
+  assert.match(head, /\nconcurrency:\n  group: \$\{\{ github\.workflow \}\}-\$\{\{ github\.ref \}\}-native-type-check\n  cancel-in-progress: \$\{\{ github\.ref != 'refs\/heads\/main' \}\}\n/u);
   const [check, ...others] = Object.values(called.jobs);
   assert.equal(others.length, 0);
   const runs = check.steps.map(step => step.run).filter(Boolean);
