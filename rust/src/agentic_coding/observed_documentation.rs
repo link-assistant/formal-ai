@@ -130,17 +130,18 @@ fn accept(
             negations: &negations,
         },
     );
-    let complete = facts_passed
-        && judged.iter().all(|row| row["status"] == "verified")
-        && as_strings(&state["remainingWork"])
-            .iter()
-            .all(|item| *item == "independent-requirement-acceptance");
+    // Every requirement verified over passing anchored facts is the requirement
+    // acceptance; work the record still names (semantics, coverage) stays open.
+    let accepted = facts_passed && judged.iter().all(|row| row["status"] == "verified");
+    let remaining: Vec<String> = as_strings(&state["remainingWork"])
+        .into_iter()
+        .filter(|item| !accepted || *item != "independent-requirement-acceptance")
+        .map(str::to_owned)
+        .collect();
     state["requirements"] = json!(judged);
     state["verified"] = json!(facts_passed);
-    state["complete"] = json!(complete);
-    if complete {
-        state["remainingWork"] = json!([]);
-    }
+    state["complete"] = json!(accepted && remaining.is_empty());
+    state["remainingWork"] = json!(remaining);
 }
 fn as_strings(value: &Value) -> Vec<&str> {
     value

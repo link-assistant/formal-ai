@@ -168,9 +168,11 @@ export function planObservedDocumentation(task, messages, tools, contract, deriv
       negations: policy?.negations ?? []
     });
     state.verified = anchored?.status === 'passed';
-    state.complete = state.verified && state.requirements.every(row => row.status === 'verified') &&
-      state.remainingWork.every(item => item === 'independent-requirement-acceptance');
-    if (state.complete) state.remainingWork = [];
+    // Every requirement verified over passing anchored facts is the requirement
+    // acceptance; work the record still names (semantics, coverage) stays open.
+    const accepted = state.verified && state.requirements.every(row => row.status === 'verified');
+    state.remainingWork = state.remainingWork.filter(item => !accepted || item !== 'independent-requirement-acceptance');
+    state.complete = accepted && state.remainingWork.length === 0;
   };
   if (claims.length) {
     state.claims = claims;
