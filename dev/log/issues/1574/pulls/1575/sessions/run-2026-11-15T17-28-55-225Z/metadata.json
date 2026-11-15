@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 3,
+  "collectedAt": "2026-11-15T17:28:55.225Z",
+  "issueNumber": "1574",
+  "prNumber": "1575",
+  "branchName": "issue-1574-a84df19adce0",
+  "tool": null,
+  "sessionId": null,
+  "rawCommand": null,
+  "developmentLogDirectory": "./dev/log/issues/1574/pulls/1575",
+  "caseStudyDirectory": "./docs/case-studies/issue-1574",
+  "artifacts": {
+    "solveLog": "./dev/log/issues/1574/pulls/1575/sessions/run-2026-11-15T17-28-55-225Z/solve.log",
+    "solveLogRange": {
+      "startByte": 0,
+      "endByte": 2955411
+    },
+    "sessionFiles": []
+  }
+}
