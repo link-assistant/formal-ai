@@ -19,7 +19,11 @@ fn read_then_change(prompt: &str, source: &str) -> Vec<(String, serde_json::Valu
         };
         let call = calls[0].clone();
         let id = format!("call_{index}");
-        let result = if call.tool == "read" { source } else { "" };
+        let result = if call.tool == "read" {
+            formal_ai::agentic_coding::tool_result::complete_owned_source_read_frame(source)
+        } else {
+            String::new()
+        };
         messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
             id.clone(),
             call.tool.clone(),

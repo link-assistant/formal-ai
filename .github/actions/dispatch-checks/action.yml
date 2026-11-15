@@ -82,12 +82,9 @@ runs:
 
         dispatched=""
         for workflow in $targets; do
-          # Only a workflow that declares the checks mode (the `mode` input
-          # with `options: [checks]`, issue #1187 R2) is dispatched. Any other
-          # dispatch trigger has its own meaning -- release.yml's cuts a
-          # release, self-authored-pull-request.yml's authors a change -- so
-          # it is reported, never called.
-          if ! grep -q 'options: \[checks\]' ".github/workflows/$workflow"; then
+          # Admit the declared checks-mode input structurally; other choices
+          # are never selected by this action. Unknown contracts fail closed.
+          if ! node scripts/lib/checks-dispatch-contract.mjs ".github/workflows/$workflow"; then
             echo "::warning::${workflow} declares no checks-mode workflow_dispatch; not dispatched"
             continue
           fi

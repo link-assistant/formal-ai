@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=c40c5d0d3542fadf8c86c7e6522a69e772bf0a840fcc3279610c20ebea2e2893 bytes=30721
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=394a0ffdbb74e840b9c2dc83d99b295a76a8f629b4ba45942d9947b9ceb65cc5 bytes=30922
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=6
 
@@ -52,6 +52,11 @@ pub static FUNCTION_WORD_ROLES: std::sync::LazyLock<Vec<String>> = std::sync::La
 // | /** Mirrors `NEGATION_ROLE` in rust/src/formalization/text_statements.rs: the lexicon role whose words deny a statement. */
 // | export const NEGATION_ROLE = 'statement_negation_cue';
 pub const NEGATION_ROLE: &str = "statement_negation_cue";
+
+// meta-language:translated JavaScript export_statement items=1 sha256=e1042fc0a398935864a2e221716cb150b4f8d1e1af11053d075a3873f589fedc
+// | /** Grammar lexemes belong to their owning parser, not the general semantic index. */
+// | export const SCOPED_GRAMMAR_ROLE = 'scoped-grammar-pattern';
+pub const SCOPED_GRAMMAR_ROLE: &str = "scoped-grammar-pattern";
 
 // meta-language:translated JavaScript export_statement items=1 sha256=53865a1c7f28f922404629d81d819692bc7382af5456d2bd3a23dba17df0ef80
 // | /** Mirrors `LONGEST_PHRASE` in rust/src/formalization/text_statements.rs: the most words one lexicon surface may span. */

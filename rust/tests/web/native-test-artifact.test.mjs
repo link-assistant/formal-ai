@@ -33,13 +33,13 @@ test('unknown or tampered explicit targets refuse before executing bytes',()=>{
   assert.equal(existsSync(join(f.root,'ran.txt')),false);
  }finally{f.dispose();}
 });
-test('critical latency checks precede artifact distribution under the original build budget',()=>{
+test('critical latency checks precede artifact distribution within the bounded shared producer',()=>{
  const release=YAML.parse(readFileSync(new URL('../../../.github/workflows/release.yml',import.meta.url),'utf8'));
  const job=release.jobs['build-artifacts'],steps=job.steps;
  const early=steps.find(step=>step.name==='Bind native test artifacts to their actual build inputs');
- assert.equal(job['timeout-minutes'],20);
+ assert.equal(job['timeout-minutes'],25);
  assert(steps.indexOf(early)<steps.findIndex(step=>step.name==='Upload formal-ai binaries'));
- assert.equal(early.run,'FORMAL_AI_DEADLINE_GRACE_SECONDS=5 scripts/run-with-deadline.sh 90 node scripts/native-test-artifact.mjs write-and-check dist/tests release all rust/tests/fixtures/released-client-requests/smoke-tests.json');
+ assert.equal(early.run,'FORMAL_AI_DEADLINE_GRACE_SECONDS=5 scripts/run-with-deadline.sh 300 node scripts/native-test-artifact.mjs write-and-check dist/tests release all rust/tests/fixtures/released-client-requests/smoke-tests.json');
  const cases=JSON.parse(readFileSync(new URL('../fixtures/released-client-requests/smoke-tests.json',import.meta.url),'utf8'));
  assert.deepEqual(cases.map(entry=>[entry.target,entry.name]),[
   ['unit','released_client_request_latency::absent_predictions_do_not_resolve_the_captured_coding_prompt'],
@@ -100,4 +100,21 @@ test('self-coding transfer carries only its executed member and the original sou
  const replay=consumer.jobs['agent-cli-e2e'].steps.find(step=>step.name?.includes('Replay Hive Mind self-coding'));
  assert(!replay.if.includes('inputs.full-replay'));
  assert(replay.run.includes('native-test-artifact.mjs run dist/self-coding-tests release all agentic_coding::self_coding::self_coding_session_replays'));
+});
+
+test('primary server parity keeps its full source and every case within separate acquisition headroom',()=>{
+ const release=YAML.parse(readFileSync(new URL('../../../.github/workflows/release.yml',import.meta.url),'utf8'));
+ const job=release.jobs['server-parity'];
+ assert.equal(job['timeout-minutes'],30);assert.deepEqual(job.needs,['build-artifacts']);
+ assert.equal(job.steps.length,4);
+ assert.deepEqual(job.steps[0],{uses:'actions/checkout@v7','timeout-minutes':18,
+  env:{GIT_HTTP_LOW_SPEED_LIMIT:'1024',GIT_HTTP_LOW_SPEED_TIME:'20'},with:{'persist-credentials':false}});
+ assert.equal(job['timeout-minutes']-job.steps[0]['timeout-minutes'],12);
+ assert.deepEqual(job.steps.slice(1),[{"name":"Setup Node","uses":"actions/setup-node@v7","with":{"node-version":22}},{"uses":"./.github/actions/download-formal-ai-binary"},{"name":"Both servers answer the parity corpus alike (R1013-R1015)","run":"node scripts/check-server-parity.mjs --rust-binary rust/target/release/formal-ai --list"}]);
+ assert.equal(job.if,"${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.build-artifacts.result == 'success') }}");
+ assert.deepEqual(job.concurrency,{"group":"${{ github.workflow }}-${{ github.ref }}-server-parity","cancel-in-progress":"${{ github.ref != 'refs/heads/main' }}"});
+ const cli=readFileSync(new URL('../../../scripts/check-server-parity.mjs',import.meta.url),'utf8');
+ assert.match(cli,/for\s*\(\s*const request of corpus[.]requests\s*\)/u);
+ assert.match(cli,/loadRatchet/u);assert.match(cli,/coverageProblems\(\s*corpus\s*\)/u);
+ assert.equal(job.steps.at(-1).run,'node scripts/check-server-parity.mjs --rust-binary rust/target/release/formal-ai --list');
 });

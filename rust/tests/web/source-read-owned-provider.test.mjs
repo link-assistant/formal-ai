@@ -94,10 +94,11 @@ for (const metadata of refusals) {
     const task = 'append file note.txt containing hello';
     assert.equal(planLiteralAdditionStep(task, messages('note.txt', result, task), ['read', 'write']).kind, 'final');
     const ledgerMetadata = metadata?.path === 'note.txt' ? { ...metadata, path: PLAN_PATH } : metadata;
-    const original = 'write 10 to 1.txt file';
+    const original = 'Set the contents of 1.txt to «10»';
     const ledger = planGeneralChangeStep(messages(PLAN_PATH, { ...result, source_read: ledgerMetadata }, original),
       ['read', 'write'], composeGeneralChangePlan(original));
     assert.equal(ledger.kind, 'final');
+    assertCreateRejectsRead(result, metadata);
   });
 }
 test('a genuine bound Missing receipt can plan both additive content and a first ledger event', () => {
@@ -107,7 +108,7 @@ test('a genuine bound Missing receipt can plan both additive content and a first
   const addition = planLiteralAdditionStep(task, messages('note.txt', result, task), ['read', 'write']);
   assert.equal(addition.calls[0].tool, 'write');
   assert.equal(JSON.parse(addition.calls[0].arguments).content, 'hello\n');
-  const original = 'write 10 to 1.txt file';
+  const original = 'Set the contents of 1.txt to «10»';
   const ledger = planGeneralChangeStep(messages(PLAN_PATH, { ...result, source_read: absence(PLAN_PATH) }, original),
     ['read', 'write'], composeGeneralChangePlan(original));
   assert.equal(ledger.calls[0].tool, 'write');
@@ -130,3 +131,23 @@ test('opaque source prerequisite reports inability to verify without inventing o
   assert.equal(plan.answer, renderSeededOutcome('file-addition-unverified', task, 'note.txt'));
   assert.equal(plan.calls, undefined);
 });
+
+function assertCreateRejectsRead(result, metadata) {
+  const directory = mkdtempSync(join(tmpdir(), 'formal-create-owned-read-'));
+  const task = 'write 10 to 1.txt file', target = '1.txt';
+  try {
+    const write = {tool: 'write', arguments: JSON.stringify({path: target, content: '10'})};
+    const writeResult = executeResult(directory, write);
+    const bound = metadata?.path === 'note.txt' ? {...metadata, path: target} : metadata;
+    const history = messages(target, {...result, source_read: bound}, task);
+    history.splice(1, 0,
+      {role: 'assistant', tool_calls: [{id: 'actual-create', type: 'function',
+        function: {name: write.tool, arguments: write.arguments}}]},
+      {role: 'tool', tool_call_id: 'actual-create', name: write.tool, ...writeResult});
+    const final = planGeneralChangeStep(history, ['read', 'write'], composeGeneralChangePlan(task));
+    assert.equal(final.kind, 'final');
+    assert.notEqual(final.result?.disposition, 'finding');
+    assert.equal(final.calls, undefined);
+    assert.equal(readFileSync(join(directory, target), 'utf8'), '10');
+  } finally { rmSync(directory, {recursive: true, force: true}); }
+}

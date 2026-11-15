@@ -76,7 +76,10 @@ pub(in crate::agentic_coding) fn evidence_window_start(messages: &[ChatMessage])
 /// itself a cue. The ladder's eight #1095 leaves were this second case -- the
 /// envelope path found nothing, the bare cue became the request, and the words
 /// "continue" and "next step" went to web search.
-pub(super) fn continued_agent_task(messages: &[ChatMessage], latest: &str) -> Option<String> {
+pub(in crate::agentic_coding) fn continued_agent_task(
+    messages: &[ChatMessage],
+    latest: &str,
+) -> Option<String> {
     if !is_continuation_cue(latest) {
         return None;
     }

@@ -143,3 +143,55 @@ test("a follow-up program edit carries the native execution report", async () =>
   assert.ok(answer.answer.includes(`\`\`\`\n\n${report}\n\nКак это работает:\n`), answer.answer);
   assert.ok(!answer.answer.includes("браузерная песочница"));
 });
+
+// The native event-log projection preserves only these declared quantity payloads.
+test("quantity evidence retains raw frames and exact computation payloads", () => {
+  const log = new EventLog();
+  const source = "The bound is 0 ms. The quantities are 0 ms and 0 ms. Is their sum within the bound?";
+  const values = new Map([
+    ["quantity_constraint:frame", JSON.stringify({status: "unknown", source, reason: "unsupported-constraint-frame"})],
+    ["quantity_constraint:verdict", "true"],
+    ["quantity_constraint:unknown", "unresolved-quantity-unit"],
+    ["quantity_constraint:expression", "0 + 0"],
+    ["quantity_constraint:difference", "0"],
+  ]);
+  for (const [kind, value] of values) log.append(kind, value);
+  const unknownId = log.append("quantity_constraint:unregistered", "opaque payload");
+  const links = buildEvidenceLinks(source, log, "response:quantity_constraint_unknown");
+  for (const [kind, value] of values) assert.ok(links.includes(kind + ":" + value));
+  assert.equal(JSON.parse(links.find(value => value.startsWith("quantity_constraint:frame:"))
+    .slice("quantity_constraint:frame:".length)).source, source);
+  assert.ok(links.includes("quantity_constraint:unregistered:" + unknownId));
+  assert.ok(!links.includes("quantity_constraint:unregistered:opaque payload"));
+});
+
+test("actual quantity solves retain frames and verdicts through the server projection", async () => {
+  const document = JSON.parse(readFileSync(path.join(REPO_ROOT,
+    "rust/tests/fixtures/quantity-aggregate-comparison.json"), "utf8"));
+  for (const id of ["explicit-sum-zero-equality", "explicit-total-original-amounts", "conditional-inclusion"]) {
+    const vector = document.cases.find(value => value.id === id);
+    assert.ok(vector, id);
+    const result = await host.solve(vector.question);
+    const projected = solverEvidenceLinks(result, []);
+    assert.ok(Array.isArray(projected));
+    const symbolic = await solveSymbolic({worker: host}, vector.question, []);
+    for (const links of [projected, symbolic.evidence_links]) {
+      const rows = links.filter(value => value.startsWith("quantity_constraint:frame:"));
+      assert.equal(rows.length, 1, id);
+      const frame = JSON.parse(rows[0].slice("quantity_constraint:frame:".length));
+      assert.equal(frame.source, vector.question, id);
+      if (vector.expected.kind === "comparison") {
+        assert.equal(frame.status, "supported", id);
+        assert.ok(links.includes("quantity_constraint:verdict:" + vector.expected.holds), id);
+        assert.ok(links.some(value => value.startsWith("quantity_constraint:expression:")), id);
+        assert.ok(links.some(value => value.startsWith("quantity_constraint:difference:")), id);
+      } else {
+        assert.equal(frame.status, "unknown", id);
+        assert.equal(typeof frame.reason, "string", id);
+        assert.ok(frame.reason.length > 0, id);
+        assert.ok(links.includes("quantity_constraint:unknown:" + frame.reason), id);
+        assert.ok(!links.some(value => value.startsWith("quantity_constraint:verdict:")), id);
+      }
+    }
+  }
+});

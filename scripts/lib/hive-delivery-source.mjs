@@ -84,7 +84,7 @@ export async function readWorkflowPolicy(reader, repository, source) {
 const identityCache = new WeakMap();
 /** Read only a literal path array from immutable source; historical code never executes. */
 export function declaredPolicyRoots(bytes, name, required) {
-  assert.ok(['policyRoots', 'cleanupRoots'].includes(name));
+  assert.ok(['policyRoots', 'cleanupRoots', 'workItemRoots'].includes(name));
   assert.ok(bytes.length > 0 && bytes.length <= 131072);
   const pattern = new RegExp('^(?:export )?const ' + name + ' = (\\[[\\s\\S]*?\\]);', 'gmu');
   const declarations = [...text(bytes).matchAll(pattern)];

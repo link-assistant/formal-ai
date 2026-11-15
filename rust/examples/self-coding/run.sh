@@ -55,9 +55,15 @@ config="$(printf '{\"provider\":{\"formalai\":{\"name\":\"Formal AI\",\"npm\":\"
 "$REPO_ROOT/scripts/classify-agent-cli-stderr.sh" "$agent_stderr"
 grep '^{' "$raw_events" >"$events"
 rm "$raw_events" "$agent_stderr"
-test "$(cat "$work/self-coding-result.txt")" = 'self-coding=passed'
+cmp -s "$work/self-coding-result.txt" <(printf %s 'self-coding=passed')
+cp "$work/self-coding-result.txt" "$OUT/self-coding-result.txt"
 git -C "$work" diff --no-index -- /dev/null self-coding-result.txt \
   >"$OUT/result.diff" || test "$?" -eq 1
-cp "$work/.formal-ai/general-change-plan.lino" "$OUT/general-change-plan.lino"
+if [[ -f "$work/.formal-ai/general-change-plan.lino" ]]; then
+  cp "$work/.formal-ai/general-change-plan.lino" "$OUT/general-change-plan.lino"
+else
+  rm -f "$OUT/general-change-plan.lino"
+fi
 "$BIN" agent --task "$TASK" --session-json "$OUT/session.json" >/dev/null
+node "$ROOT/examples/self-coding/verify-session.mjs" "$OUT/session.json" "$OUT/self-coding-result.txt"
 echo "self-coding replay passed"

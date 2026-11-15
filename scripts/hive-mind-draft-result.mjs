@@ -10,8 +10,9 @@ export function selectAttemptPullRequest(rows, {branch, repository, startedAt}) 
     && pr.state === 'OPEN' && Number.isInteger(pr.number) && pr.number > 0 && Date.parse(pr.createdAt) >= since);
   return matches.length === 1 ? matches[0] : null;
 }
-export function failureComment({runUrl, artifactUrl}) {
+export function failureComment({runUrl, artifactUrl, outcome}) {
   return 'Formal AI through Hive Mind did not produce a verified new draft PR in this attempt. '
+    + (/^[a-z][a-z-]{2,63}$/.test(outcome || '') ? 'Attempt outcome: `' + outcome + '` (zero capability credit). ' : '')
     + (artifactUrl ? '[Complete session evidence](' + artifactUrl + '). ' : 'The session artifact was unavailable; inspect the upload step. ')
     + '[Workflow run and build/attempt logs](' + runUrl + '). No draft was hand-fixed or merged.';
 }
@@ -72,7 +73,7 @@ export function main(env = process.env) {
   } else if (process.argv.includes('--failure')) {
     if (!/^[1-9][0-9]*$/.test(env.DRAFT_ISSUE_NUMBER || '')) throw Error('invalid issue number');
     const runUrl=(env.GITHUB_SERVER_URL || 'https://github.com')+'/'+repository+'/actions/runs/'+env.GITHUB_RUN_ID;
-    gh(['issue','comment',env.DRAFT_ISSUE_NUMBER,'--repo',repository,'--body',failureComment({runUrl,artifactUrl:env.DRAFT_ARTIFACT_URL})]);
+    gh(['issue','comment',env.DRAFT_ISSUE_NUMBER,'--repo',repository,'--body',failureComment({runUrl,artifactUrl:env.DRAFT_ARTIFACT_URL,outcome:env.DRAFT_ATTEMPT_OUTCOME})]);
   } else throw Error('expected --select or --failure');
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main();

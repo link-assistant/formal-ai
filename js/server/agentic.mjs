@@ -11,39 +11,43 @@ import { invalidArguments } from '../agentic/crate/tool_call_validation.mjs';
 import { serverMessage } from './messages.mjs';
 import { repeatedActionStop } from '../agentic/repetition_guard.mjs';
 import { observedPlanTerminal } from '../logging/terminal-events.mjs';
+import { workItemRecordOf } from '../agentic/work_item_report.mjs';
 import { currentDialogId } from './dialog-log.mjs';
 import { plainText, requestsToolExecution } from './chat-request.mjs';
 import { estimateTokens, stableId } from './ids.mjs';
 import { resolveModelId } from './seed.mjs';
-import { applyRetainedAmendments } from './standing-requirements.mjs';
-import { thinkingStep } from './thinking.mjs';
+import { appliedAmendmentSteps } from './standing-requirements.mjs';
+import { renderThinkingSteps, thinkingStep } from './thinking.mjs';
 import { clientWorkingDirectory } from '../agentic/content.mjs';
 import { toolActionNarration } from '../agentic/narration.mjs';
 import { ensureNodeHost } from './node-host-install.mjs';
 import { agenticMessage } from '../agentic/messages.mjs';
 import { planSymbolicCommandReroute } from '../agentic/command_reroute.mjs';
 import { suppliedFileAnswer } from '../agentic/file_read/supplied.mjs';
-import { planChatStep, toolCapability } from '../agentic/planner.mjs';
+import { planChatStepResolved, toolCapability } from '../agentic/planner.mjs';
 import { projectDeclaredCommandKeys } from '../agentic/tool_result.mjs';
 import { agenticToolPermissionDenial, findToolDefinition, isHostedToolDefinition, requestedToolNames, responseToolCallIdentity } from '../agentic/protocol_policy.mjs';
 import { customResponseToolInput, isCustomResponseTool, responseArgumentsForTool } from '../agentic/crate/protocol_responses.mjs';
 import { projectAppendContracts } from '../agentic/append_contract.mjs';
 import { ungroundedIdentityArguments } from '../agentic/crate/tool_scope.mjs';
+import { currentRequestScope, eventsInScope } from './standing-scope.mjs';
 
 /** Install the planner host over `ctx.worker` once (shared with js/server/solve.mjs). */
 async function ensureHost(ctx) {
   await ensureNodeHost(ctx);
 }
 function memoryEvents(ctx) {
-  return ctx.memory && typeof ctx.memory.events === 'function' ? ctx.memory.events() : [];
+  const events = ctx.memory && typeof ctx.memory.events === 'function' ? ctx.memory.events() : [];
+  // Issue #1559: a request sees only memory recorded in its own scope.
+  return eventsInScope(events, currentRequestScope());
 }
 
-/** `dreaming_application::amended_answer`. */
-function amendedAnswer(ctx, prompt, answer) {
-  return applyRetainedAmendments(prompt, {
-    answer,
-    evidence_links: []
-  }, memoryEvents(ctx)).answer;
+/**
+ * `dreaming_application::applied_amendment_steps`: the retained amendments a
+ * final agentic answer was given under, as trace steps (issue #1559 §5).
+ */
+function amendmentSteps(ctx, prompt) {
+  return appliedAmendmentSteps(prompt, memoryEvents(ctx));
 }
 
 /** `tool_permission_refusal_answer`. */
@@ -130,7 +134,7 @@ export async function agenticOutcome(ctx, request, refusal) {
   // else than `command`/`cmd`/`script` is read through that declared key.
   const messages = projectDeclaredCommandKeys(request.messages, request.tools);
   const scoped = projectAppendContracts(messages, request.tools);
-  const plan = await planChatStep(scoped, groundableToolNames(request, owned));
+  const plan = await planChatStepResolved(scoped, groundableToolNames(request, owned));
   const terminal = observedPlanTerminal(plan);
   ctx.logger?.log('debug', 'agent.plan', {
     component: 'agent',
@@ -159,10 +163,13 @@ function logPlanTerminal(ctx, plan) {
     reason: 'planned_not_executed',
     origin: 'client_execution_pending'
   };
+  // A work-item answer is a localized report; its record stays in the log (issue #1560).
+  const workItemRecord = workItemRecordOf(plan);
   ctx.logger?.log(terminal.reason === 'success' ? 'info' : 'debug', 'agent.terminal', {
     component: 'agent',
     dialog_id: currentDialogId(),
     ...terminal,
+    ...(workItemRecord === null ? {} : { work_item_record: workItemRecord }),
     scope: 'server_response',
     task_delivery: 'Unknown'
   });
@@ -280,13 +287,18 @@ export function chatCompletionFromPlan(ctx, request, prompt, plan, created) {
     };
     finishReason = 'tool_calls';
   } else {
-    const answer = amendedAnswer(ctx, prompt, plan.answer);
+    const answer = plan.answer;
     completionTokens = estimateTokens(answer);
     message = {
       role: 'assistant',
       content: answer,
       tool_calls: []
     };
+    const steps = amendmentSteps(ctx, prompt);
+    if (steps.length) {
+      const reasoning = renderThinkingSteps(steps);
+      Object.assign(message, { thinking_steps: steps, reasoning_content: reasoning, reasoning });
+    }
     finishReason = 'stop';
   }
   return {
@@ -384,6 +396,7 @@ export function responseFromPlan(ctx, request, chatRequest, prompt, plan, create
   const workspace = clientWorkingDirectory(chatRequest.messages);
   plan = bindPlan(ctx, chatRequest, plan, prompt, workspace);
   let output;
+  let evidenceLinks = [];
   let outputTokens;
   if (plan.kind === 'tool_calls') {
     const narration = toolActionNarration(prompt, plan.calls);
@@ -395,9 +408,13 @@ export function responseFromPlan(ctx, request, chatRequest, prompt, plan, create
       outputTokens += tokens;
     });
   } else {
-    const answer = amendedAnswer(ctx, prompt, plan.answer);
-    output = [outputMessage(answer)];
+    const answer = plan.answer;
+    const steps = amendmentSteps(ctx, prompt);
+    const message = outputMessage(answer);
+    if (steps.length) message.thinking_steps = steps;
+    output = [message];
     outputTokens = estimateTokens(answer);
+    evidenceLinks = steps.map((step) => step.source_event);
   }
   return {
     id: stableId('resp', prompt),
@@ -411,6 +428,6 @@ export function responseFromPlan(ctx, request, chatRequest, prompt, plan, create
       output_tokens: outputTokens,
       total_tokens: inputTokens + outputTokens
     },
-    evidence_links: []
+    evidence_links: evidenceLinks
   };
 }

@@ -4,6 +4,13 @@ import { createHash } from 'node:crypto';
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const blob = bytes => createHash('sha1').update(Buffer.concat([Buffer.from('blob ' + Buffer.byteLength(bytes) + '\0'), Buffer.from(bytes)])).digest('hex');
 const compiledContracts = new WeakSet();
+// Aggregate queue state alone grants no release authority. Exact running job and
+// current writer-group membership are independently required by every entry.
+function requireNonterminalCallerAggregate(run) {
+  assert.ok(['queued', 'in_progress', 'waiting', 'pending', 'requested'].includes(run.status),
+    'unsupported_caller_aggregate_status:invalid');
+  assert.ok(run.conclusion === null, 'terminal caller aggregate cannot authorize a current stage');
+}
 // Transport is installed by the provider; caller/env strings never grant receipt authority.
 export function createStagedAuthority(contract, read) {
   assert.ok(compiledContracts.has(contract), 'checked source compiler contract required');
@@ -30,7 +37,7 @@ export function createStagedAuthority(contract, read) {
     assert.equal(run.head_repository.full_name, expected.repository);
     assert.equal(run.head_sha, expected.head);
     assert.equal(run.head_branch, 'main');
-    assert.equal(run.status, 'in_progress');
+    requireNonterminalCallerAggregate(run);
     assert.equal(run.path, '.github/workflows/release.yml');
     assert.equal(run.event, route.event);
     const workflow = await get(base + '/workflows/' + run.workflow_id);
@@ -202,7 +209,7 @@ export async function observeCommandStagedContext({
     return snapshot;
   };
   const run = read(provider.runPath).body;
-  assert.equal(run.status, 'in_progress');
+  requireNonterminalCallerAggregate(run);
   assert.equal(run.head_branch, 'main');
   assert.equal(run.event, route.event);
   const workflow = read(provider.registered().workflow).body;
@@ -237,25 +244,27 @@ export function requireCurrentGroupMembership(contract,expected,route,group,jobs
 }
 
 // This shared identity evaluator is pure and returns no release context.
-export function requireExactCurrentGroupMember(expected,descendantName,writerGroup,group,jobs) {
+export function requireExactCurrentJob(expected,descendantName,jobs) {
  assert.equal(jobs.status,200);assert.ok(Array.isArray(jobs.body.jobs));
  assert.equal(jobs.body.total_count,jobs.body.jobs.length,'complete bounded job identities required');
- assert.equal(group.status,200);assert.equal(group.body.group_name,writerGroup);
- assert.ok(Array.isArray(group.body.group_members));
- assert.equal(group.body.total_count,group.body.group_members.length,'complete bounded group identities required');
  const activeJobs=jobs.body.jobs.filter(job=>job.name===descendantName&&job.runner_name===expected.runnerName&&job.status==='in_progress');
  assert.equal(activeJobs.length,1);const job=activeJobs[0];
  assert.ok(Number.isSafeInteger(job.id)&&job.id>0);assert.equal(String(job.run_id),expected.run);assert.equal(String(job.run_attempt),expected.attempt);assert.equal(job.head_sha,expected.head);
  assert.ok(Number.isSafeInteger(job.runner_id)&&job.runner_id>0);assert.equal(job.completed_at,null);assert.equal(job.url,'https://api.github.com/repos/'+expected.repository+'/actions/jobs/'+job.id);
+ const jobTime=Date.parse(jobs.observedAt);assert.ok(Number.isFinite(jobTime)&&Date.parse(job.started_at)<=jobTime);
+ return job;
+}
+export function requireExactCurrentGroupMember(expected,descendantName,writerGroup,group,jobs) {
+ const job=requireExactCurrentJob(expected,descendantName,jobs);
+ assert.equal(group.status,200);assert.equal(group.body.group_name,writerGroup);
+ assert.ok(Array.isArray(group.body.group_members));
+ assert.equal(group.body.total_count,group.body.group_members.length,'complete bounded group identities required');
  const members=group.body.group_members.filter(member=>member.status==='in_progress');assert.equal(members.length,1,'one exact active caller-group descendant required');const member=members[0];
  assert.equal(member.job_id,job.id);assert.equal(member.job_name,descendantName);assert.equal(String(member.run_id),expected.run);
  assert.equal(member.job_url,job.url);assert.equal(member.run_url,'https://api.github.com/repos/'+expected.repository+'/actions/runs/'+expected.run);
- const groupTime=Date.parse(group.observedAt),
-  jobTime=Date.parse(jobs.observedAt);
-  assert.ok(Number.isFinite(groupTime)&&Number.isFinite(jobTime)&&groupTime>=jobTime&&groupTime-jobTime<=5000,
+ const groupTime=Date.parse(group.observedAt),jobTime=Date.parse(jobs.observedAt);
+ assert.ok(Number.isFinite(groupTime)&&groupTime>=jobTime&&groupTime-jobTime<=5000,
   'bounded matching current observations required');
-  assert.ok(Date.parse(job.started_at)<=jobTime);
-
 }
 
 export async function observeCommandCurrentGroupStagedContext({
@@ -289,7 +298,7 @@ export async function observeCommandCurrentGroupStagedContext({
     return snapshot;
   };
   const run = read(provider.runPath).body;
-  assert.equal(run.status, 'in_progress');
+  requireNonterminalCallerAggregate(run);
   assert.equal(run.head_branch, 'main');
   assert.equal(run.event, route.event);
   const workflow = read(provider.registered().workflow).body;
@@ -306,11 +315,13 @@ export async function observeCommandCurrentGroupStagedContext({
     assert.ok(expectedSource);
     assert.equal(sha(bytes), expectedSource.sha256, 'immutable source bytes differ');
   }
-  const jobSnapshot=read(provider.registered().jobs);
+  const {jobs: jobSnapshot, group: groupSnapshot} = provider.readCurrentGroupPair(
+    snapshot => requireExactCurrentJob(expected, route.descendantName, snapshot));
+  provider.issued(jobSnapshot, provider.registered().jobs);
+  provider.issued(groupSnapshot, provider.registered().group);
   const jobs=jobSnapshot.body;
   const actual = jobs.jobs.filter(job => job.name === route.descendantName && job.runner_name === expected.runnerName && job.status === 'in_progress');
   assert.equal(actual.length, 1);
-  const groupSnapshot=read(provider.registered().group);
   requireCurrentGroupMembership(contract,expected,route,groupSnapshot,jobSnapshot);
   const lease = groupSnapshot.body.group_members.find(member=>member.status==='in_progress');
   assert.equal(lease.job_id, actual[0].id);

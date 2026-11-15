@@ -1,0 +1,4 @@
+stored amendments: [ { topic: 'topic=issue', rule_chars: 13710 } ]
+summary starts: "Summary: done.\n\nLearned standing requirement (issue): You are an AI issue solver using @link-assistant/agent. Prefer minimal local CPU, memory, and disk use dur"
+summary carries the Scala repository: true
+summary carries the Scala branch: true

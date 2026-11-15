@@ -1,5 +1,15 @@
 # Contributing to formal-ai
 
+## Development through Formal AI
+
+Follow [VISION.md](VISION.md): perform all development task actions through JavaScript Formal AI, including exploration, shell commands, tests and verification as well as edits. Give small natural-language tasks, let it execute actual tools, add focused regressions for observed failures, repair reusable causes and retry unchanged tasks before increasing difficulty.
+Retain requests, runtime and source identities, tool calls, failures, diffs and independent checks.
+Supplied patches, scripts, generators and literal replacements earn zero autonomous-authorship credit. Target at least 5% independently accepted Formal AI reasoning units per development batch: decompose tasks, compare strategies, research trusted public sources and fact-check against fresh evidence. Freeze the substantive unit list before outcomes; report attempted and accepted shares separately, retain failures and count supplied conclusions as zero. Retain complete responses and route traces for scored reasoning attempts. An ambiguity control passes only when the answer identifies what is unresolved or gives a justified conditional answer; an unrelated numeric result is a failure even when it avoids the target verdict. This reporting target does not add a release gate; see the reasoning contract in docs/requirements/doctrine-standing-doctrine-work-delegated-to-formal-ai-2026-10-07.md.
+Report unsupported work and terminal effects honestly; record externally authored bootstraps separately.
+Preserve readable CST, comments and unrelated content; verify JavaScript, TypeScript and Rust parity. Before pushing requirement changes, run the maintained JavaScript assembly, ledger-generation/schema and status-renderer checks: `node scripts/assemble-requirements.mjs`, `node scripts/generate-requirement-status.mjs`, `node scripts/check-requirement-status.mjs`, `node scripts/render-status.mjs --check`, and `node scripts/render-progressive-plan.mjs --check`. Every `.github/workflows/release.yml` change, including non-staged jobs such as Fast Linux, requires `node scripts/generate-staged-release.mjs --check-deployed`; if stale, perform a source-grounded canonical workflow/packet refresh and regenerate projections with the maintained JavaScript generator. Never hand-edit derived outputs or relax assertions. After changing covered crate modules, run the cheap source/projection currency check `node scripts/translate-js-rust.mjs --verify`; run upstream parser/WASM regeneration in hosted CI, with no local Rust execution.
+Use at most three subagents plus the coordinator; batch verified changes, bound retries and prioritize release delivery.
+Run only necessary JavaScript checks locally, sequentially; Rust compilation and tests run exclusively in CI. For HTTP client trials, pin `FORMAL_AI_SOURCE_USAGE_RUST_GRAMMAR=false` in the private server environment; direct host installation alone does not register the HTTP initializer policy.
+
 The [default-branch build policy](docs/ci-cd/default-branch-builds.md) governs
 CI changes: no application, Cargo or Docker builds or deployments on PRs, even
 through branch dispatch or legacy full-PR controls. Run necessary local JS tests
@@ -310,7 +320,7 @@ algorithm.
 
 #### A branch pays for what it changed
 
-The loop is only as fast as the CI bill it pays. One push to a feature branch
+Use [the current CI policy](docs/ci-cd/default-branch-builds.md): link parser regressions run by default and full live-link audits remain main-only opt-ins. A historical push to a feature branch
 cost about 310 job-minutes across 16 workflows, and a day of iterating on one
 branch cost roughly 4,600 — a budget every self-authored draft competes for.
 Two rules keep that down, and both are measured in
@@ -573,7 +583,7 @@ Removal from a public thread is not approval to retain another copy.
    npm run test:web
    ```
 
-   CI caps each test-matrix job at 10 minutes. Rust's built-in `cargo test` runner does not provide a portable global per-test timeout, so wrap long-running network, IO, or async tests with explicit test-level deadlines. If a repository adopts `cargo nextest`, configure runner deadlines with options such as `--slow-timeout` and `--leak-timeout`.
+   CI job budgets are explicit and workflow-specific; acquisition and setup must leave room for the unchanged test deadline. Rust's built-in `cargo test` runner does not provide a portable global per-test timeout, so wrap long-running network, IO, or async tests with explicit test-level deadlines. If a repository adopts `cargo nextest`, configure runner deadlines with options such as `--slow-timeout` and `--leak-timeout`.
 
    **Work in bulk; verify selectively.** Draft the whole change set — tests
    and code together — before running anything, then let it fail in its
@@ -618,7 +628,7 @@ Removal from a public thread is not approval to retain another copy.
    than deleting them. Production builds, application packaging and Pages deployment
    run only on main (including its independently authorized release consumers).
    FORMAL_AI_FULL_PR_CI cannot restore compilation on a PR or branch dispatch.
-   Main still builds and verifies production releases. Collect complete bounded
+   Main still builds and verifies production releases. Full Coding Ladder measurement is main-only opt-in (full-ladder=true or FORMAL_AI_FULL_CODING_LADDER=run); keep its fast consistency gate mandatory and award no deferred measurement credit. Collect complete bounded
    redacted CI logs, derive small behavioral unit fixtures with negative cases,
    and fix all available failures before the next push. Never grant execution
    credit to skipped suites or claim that offline emulation proves a live solve.
@@ -627,6 +637,8 @@ Removal from a public thread is not approval to retain another copy.
    necessary JavaScript test locally at a time; no Rust builds or tests locally.
    Regenerate canonical data mirrors with node scripts/mirror-package-data.mjs
    --write and commit them; fast lint checks byte equality before merge.
+   Use the ordered runner: Node CLI discovery may sort duration-ranked files alphabetically.
+   Prove execution order with isolated fixtures; retain per-file logs, coverage, concurrency and deadlines.
    Delivery includes green main CI and verified configured release artifacts.
    Keep the implementation, regression fixtures, requirements, vision, guidelines
    and handoff in the same working PR. Verify its exact current head before merge;
@@ -1485,4 +1497,4 @@ Releases are managed through GitHub releases. To trigger a release:
 
 Thank you for contributing!
 
-Prefer maintained generators, declarative transformations and bulk automation for source and documentation changes. Ask actual Formal AI to perform tasks it can solve. When it cannot, retain the failed ask and record the missing general capability with its independent expected outcome; improve that capability instead of silently substituting a hand-authored per-task answer. Supplied controllers and recipes remain automation with zero autonomous-authorship credit.
+Prefer maintained generators, declarative transformations and bulk automation for source and documentation changes. Ask actual Formal AI to perform tasks it can solve. When it cannot, retain the failed ask and record the missing general capability with its independent expected outcome; improve that capability instead of silently substituting a hand-authored per-task answer. Supplied controllers and recipes remain automation with zero autonomous-authorship credit. Follow the [fast source governance guideline](docs/guidelines/fast-source-governance.md) for seed contracts and PR preflight policy. Follow the [issue planning guideline](docs/guidelines/issue-planning.md) for issue types, native blockers, parent issues and status wording.

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-import {ownedSourceMaintenanceRequest} from '../../js/agentic/source_maintenance.mjs';
+import { writesWholeFile } from '../../js/agentic/literal_write_guard.mjs';
 import {createScopedSourceEditHost} from './scoped-source-edit-host.mjs';
+import {createBoundaryRegressionCreateHost} from './boundary-regression-create-host.mjs';
 // Drive the JavaScript Formal AI planner (`planChatStep`, the function the JS
 // server runs for /v1/chat/completions in agent mode) through a whole agentic
 // session in-process, executing every planned tool call against a real
@@ -26,20 +27,21 @@ import { queryOwnedInferredCommandPolicy, registeredSourceReferenceReadPlan, con
 import { moduleFunctionRequest } from '../../js/agentic/module_function.mjs';
 import { planCodingResearchStep } from '../../js/agentic/coding_research.mjs';
 import { sourceOwnedOptionalCommand } from '../../js/agentic/module_function.mjs';
-import { APPEND_MODE, appendDefinition, projectAppendContracts } from '../../js/agentic/append_contract.mjs';
+import { APPEND_MODE, projectAppendContracts } from '../../js/agentic/append_contract.mjs';
 import { atomicRecordAppend } from './atomic-record-append.mjs';
 import { exclusiveCreate } from './exclusive-create.mjs';
 import { ownsCompleteLiteralRequest, ownedAdditiveLiteralFrame, ownedDeclaredCreateFrame, goalLedger } from '../../js/agentic/planner/owned_goals.mjs';
 import { parseWriteContract, composeGeneralChangePlan } from '../../js/agentic/general_planner.mjs';
 import { planGeneralChangeStep } from '../../js/agentic/general_execution.mjs';
 import { planChatStep as maintainedPlanChatStep, planChatStepResolved as maintainedResolvedStep } from '../../js/agentic/planner.mjs';
-import { writesWholeFile } from '../../js/agentic/literal_write_guard.mjs';
+import {driverRequestAuthority,driverSourceEditAuthority,literalJournalCallsMatch,driverAppendContracts} from '../../js/provenance/literal-journal-authority.mjs';
 import { quotedSegmentSpans } from '../../js/agentic/crate/normal_markov.mjs';
 import { mentionsRole } from '../../js/agentic/crate/seed_meanings.mjs';
 import { normalizePrompt } from '../../js/agentic/crate/engine.mjs';
 import { collectionSummaryOwns } from '../../js/agentic/planner/collection_summary.mjs';
-import { bareSurfaces, deliveredWriteTarget, firstActionCueStart, rankedBindings, tokens } from '../../js/agentic/write_request.mjs';
+import { bareSurfaces, composeEditClauses, deliveredWriteTarget, firstActionCueStart, rankedBindings, tokens } from '../../js/agentic/write_request.mjs';
 import { ownedReadPaths, readPolicyBlocksPlan, modePathsForClause } from '../../js/agentic/file_read/ownership.mjs';
+import { hasTypedEvidenceDelivery, planEvidenceRecordStep } from '../../js/agentic/evidence_record.mjs';
 import { sentences } from '../../js/agentic/shell_command_policy.mjs';
 import { namesCallableArtifact } from '../../js/agentic/evidence_record/artifact_header.mjs';
 import { quoteFault } from '../../js/agentic/crate/normal_markov.mjs';
@@ -50,6 +52,7 @@ import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
 import { template } from '../../js/agentic/work_item_steps.mjs';
+import { workItemRecordOf } from '../../js/agentic/work_item_report.mjs';
 
 import { WorkerHost } from '../../js/server/worker-host.mjs';
 import { hasHost, host } from '../../js/agentic/host.mjs';
@@ -389,33 +392,8 @@ async function driveInternal(planChatStep, dir, prompt, {
   ];
   const transcript = [];
   // Private live request binding: no caller tool argument can grant creation.
-  const ownedCreate = ownedDeclaredCreateFrame(prompt);
-  const declaredGoals = goalLedger(prompt);
-  const collectionGoals = Array.isArray(declaredGoals) && collectionSummaryOwns(declaredGoals)
-    ? declaredGoals.slice(1) : declaredGoals;
-  const firstUnsupported = Array.isArray(collectionGoals) ? collectionGoals.findIndex(goal => goal.kind === 'unsupported') : -1;
-  const missingClause = firstUnsupported < 0 ? null : normalizePrompt(collectionGoals[firstUnsupported].clause);
-  const independentMissing = missingClause !== null && bareSurfaces('enumeration_cue').some(cue => {
-    const normalized = normalizePrompt(cue);
-    return missingClause.startsWith(normalized) && /[\s,，:：]/u.test(missingClause[normalized.length] ?? '');
-  });
-  const supportedGoals = Array.isArray(collectionGoals) && firstUnsupported > 0 && independentMissing
-    ? collectionGoals.slice(0, firstUnsupported) : collectionGoals;
-  const mixedGoals = Array.isArray(supportedGoals) && supportedGoals.some(goal => goal.kind === 'source_edit');
-  const collection = Array.isArray(supportedGoals) && supportedGoals.length > 0
-    && supportedGoals.every(goal => ['literal_file', 'source_edit'].includes(goal.kind)
-      && goal.sourceUnit === 'utf16' && prompt.slice(goal.span.start, goal.span.end) === goal.clause)
-    ? supportedGoals.filter(goal => goal.kind === 'literal_file').map(goal => {
-      const frame = ownedDeclaredCreateFrame(goal.clause);
-      return frame !== null && frame.target === goal.target && frame.content === goal.expected
-        ? Object.freeze({ ...frame, request: goal.clause }) : null;
-    }) : null;
-  const createContracts = ownedCreate !== null
-    ? [Object.freeze({ ...ownedCreate, request: prompt })]
-    : collection !== null && collection.every(frame => frame !== null)
-      && new Set(collection.map(frame => frame.target)).size === collection.length ? collection : [];
-  const createContract = createContracts[0] ?? null;
-  const maintenanceContract = ownedSourceMaintenanceRequest(prompt);
+  const {declaredGoals,mixedGoals,createContracts,createContract,literalJournal,boundaryContract,maintenanceContract} = driverRequestAuthority(prompt);
+  const regressionContract = boundaryContract?.mode === 'regression' ? boundaryContract : null;
   const maintenanceSession = maintenanceContract === null ? null : createScopedSourceEditHost({workspace:dir,ownedPath:maintenanceContract.target,maximumBytes:131072});
   const createdTargets = new Set();
   // Bounded path checks detect known replacement/aliases; they do not prove namespace atomicity.
@@ -440,15 +418,20 @@ async function driveInternal(planChatStep, dir, prompt, {
       return Object.freeze({ dev: String(value.dev), ino: String(value.ino), canonicalPath: realpathSync(dir) });
     } catch { return null; }
   }
-  const createWorkspace = createContract === null ? null : workspaceIdentity();
+  const createWorkspace = createContract === null && regressionContract === null && literalJournal === null ? null : workspaceIdentity();
   const sameWorkspace = () => {
     const current = workspaceIdentity();
     return current !== null && createWorkspace !== null
       && current.dev === createWorkspace.dev && current.ino === createWorkspace.ino
       && current.canonicalPath === createWorkspace.canonicalPath;
   };
-  if (createContract !== null && createWorkspace === null) {
+  if ((createContract !== null || regressionContract !== null || literalJournal !== null) && createWorkspace === null) {
     return { transcript, answer: null, stop: 'unsupported-create-workspace', toolsAdvertised: tools };
+  }
+  let semanticRegression = null;
+  if (regressionContract !== null) {
+    try { semanticRegression = createBoundaryRegressionCreateHost({workspace:createWorkspace.canonicalPath,contract:regressionContract,operation:host().comparisonBoundaryOperation}); }
+    catch { return {transcript,answer:null,stop:'unsupported-semantic-regression-workspace',toolsAdvertised:tools}; }
   }
   const rawCreate = parseWriteContract(prompt);
   const prefix = rawCreate === null ? '' : normalizePrompt(prompt.slice(0, rawCreate.targetSpan.start));
@@ -480,22 +463,39 @@ async function driveInternal(planChatStep, dir, prompt, {
       && mentionsRole('evidence-report-artifact-kind', clause.text);
   });
   if (readOnlyOperation && reportDelivery && readReportFrame === null) readOnlyOperation = false;
-  let sourceEditOperation = maintenanceContract !== null;
+  let sourceEditOperation = driverSourceEditAuthority(prompt,maintenanceContract);
+  const targetReadPlan = (plan, target) => plan?.kind === 'tool_calls'
+    && plan.calls.length > 0 && plan.calls.every(call => {
+      if (call.tool !== 'read' || !tools.includes(call.tool)) return false;
+      const args = argsOf(call);
+      return args !== null && typeof args === 'object' && !Array.isArray(args)
+        && Object.keys(args).length > 0
+        && Object.keys(args).every(key => ['filePath', 'file_path', 'path'].includes(key))
+        && Object.values(args).every(path => typeof path === 'string' && path === target);
+    });
   const firstGoal = Array.isArray(declaredGoals) ? declaredGoals[0] : null;
   if (createIntent && createContract === null && firstGoal?.kind === 'source_edit'
       && firstGoal.sourceUnit === 'utf16'
       && prompt.slice(firstGoal.span.start, firstGoal.span.end) === firstGoal.clause
       && rawCreate?.target === firstGoal.target) {
     const current = await maintainedResolvedStep(messages, tools);
-    sourceEditOperation = current?.kind === 'tool_calls' && current.calls.length > 0
-      && current.calls.every(call => {
-        if (call.tool !== 'read') return false;
-        const args = argsOf(call);
-        return args !== null && typeof args === 'object' && !Array.isArray(args)
-          && Object.keys(args).length > 0
-          && Object.keys(args).every(key => ['filePath', 'file_path', 'path'].includes(key))
-          && Object.values(args).every(path => path === firstGoal.target);
-      }) && !readPolicyBlocksPlan(prompt, current);
+    sourceEditOperation = targetReadPlan(current, firstGoal.target)
+      && !readPolicyBlocksPlan(prompt, current);
+  }
+  // A typed evidence delivery may follow an independent source edit. Its own
+  // owner must select the same source-bound Read as the maintained planner.
+  const evidenceEdit = createIntent && createContract === null && !sourceEditOperation
+    && hasTypedEvidenceDelivery(prompt) ? composeEditClauses(prompt) : null;
+  const quoted = quotedSegmentSpans(prompt);
+  if (evidenceEdit?.spans?.length > 0 && evidenceEdit.spans.every(([start, end]) =>
+      Number.isInteger(start) && Number.isInteger(end) && start >= 0 && end > start
+      && end <= prompt.length && !quoted.some(span => start >= span.start && start < span.end))) {
+    const owned = await planEvidenceRecordStep(prompt, messages, tools);
+    const current = await maintainedResolvedStep(messages, tools);
+    sourceEditOperation = targetReadPlan(owned, evidenceEdit.edit[0])
+      && targetReadPlan(current, evidenceEdit.edit[0])
+      && JSON.stringify(owned.calls) === JSON.stringify(current.calls)
+      && !readPolicyBlocksPlan(prompt, current);
   }
   // Reading declared source/acceptance inputs is a prerequisite, never write authority.
   const researchRequest = moduleFunctionRequest(prompt, { requireTestContract: false });
@@ -509,14 +509,14 @@ async function driveInternal(planChatStep, dir, prompt, {
         && keys.every(key => args[key] === args[keys[0]]);
     });
   let researchReadPrerequisite = false;
-  if (createIntent && createContract === null && !readOnlyOperation && !sourceEditOperation) {
+  if (createIntent && createContract === null && semanticRegression === null && !readOnlyOperation && !sourceEditOperation) {
     const owned = planCodingResearchStep(prompt, messages, tools);
     const current = await maintainedResolvedStep(messages, tools);
     researchReadPrerequisite = researchReadOwns(owned) && current?.kind === 'tool_calls'
       && JSON.stringify(owned.calls) === JSON.stringify(current.calls);
   }
   let sourceReferencePrerequisite = null;
-  if (createIntent && createContract === null && !readOnlyOperation && !sourceEditOperation) {
+  if (createIntent && createContract === null && semanticRegression === null && !readOnlyOperation && !sourceEditOperation) {
     const owned = registeredSourceReferenceReadPlan(prompt, policyWorkspace, tools);
     if (owned?.kind === 'OnlySourceReferenceReadPrerequisite'
         && owned.originalRequest === prompt && owned.mutationAuthority === false
@@ -525,11 +525,11 @@ async function driveInternal(planChatStep, dir, prompt, {
         && owned.plan.calls.every(call => call.tool === 'read' && tools.includes(call.tool))
         && !readPolicyBlocksPlan(prompt, owned.plan)) sourceReferencePrerequisite = owned;
   }
-  if (createIntent && createContract === null && !readOnlyOperation && !sourceEditOperation
+  if (createIntent && createContract === null && semanticRegression === null && !readOnlyOperation && !sourceEditOperation
       && sourceReferencePrerequisite === null && !researchReadPrerequisite) {
     const refusal = await maintainedPlanChatStep(messages, tools);
     if (refusal?.kind === 'final') {
-      return { transcript, answer: refusal.answer, stop: 'final', toolsAdvertised: tools };
+      return { transcript, answer: refusal.answer, record: workItemRecordOf(refusal), stop: 'final', toolsAdvertised: tools };
     }
     return { transcript, answer: null, stop: 'unowned-create-request', toolsAdvertised: tools };
   }
@@ -555,7 +555,7 @@ async function driveInternal(planChatStep, dir, prompt, {
     // The server's fall-through: no planned step means the solver answers and
     // the symbolic command reroute may still turn that answer into tool calls
     // (js/server/agentic.mjs commandReroutePlan).
-    const contracts = atomicRecordAppend && tools.includes('write') ? [appendDefinition('write')] : [];
+    const contracts = driverAppendContracts(tools,atomicRecordAppend);
 
     const scoped = projectDriverHistory(messages,contracts);
     if (sourceReferencePrerequisite !== null && step > 0
@@ -597,20 +597,25 @@ async function driveInternal(planChatStep, dir, prompt, {
       if (!matches) return { transcript, answer: null, stop: 'unbound-research-prerequisite', toolsAdvertised: tools };
     }
     if (plan.kind === 'final') {
+      if (semanticRegression !== null) {
+        const current = await maintainedResolvedStep(scoped,tools);
+        if (!semanticRegression.current() || current?.kind !== 'final' || plan.answer !== current.answer) return {transcript,answer:null,stop:'unbound-semantic-regression-final',toolsAdvertised:tools};
+        return {transcript,answer:current.answer,record:workItemRecordOf(current),stop:'final',toolsAdvertised:tools};
+      }
       if (sourceReferencePrerequisite !== null) {
         return { transcript, answer: null, stop: 'source-reference-obligations-unresolved', toolsAdvertised: tools };
       }
       if (readOnlyOperation || sourceEditOperation) {
         const current = await maintainedResolvedStep(messages, tools);
         if (current?.kind !== 'final') return { transcript, answer: null, stop: 'unbound-read-operation', toolsAdvertised: tools };
-        return { transcript, answer: current.answer, stop: 'final', toolsAdvertised: tools };
+        return { transcript, answer: current.answer, record: workItemRecordOf(current), stop: 'final', toolsAdvertised: tools };
       }
       if (createContract !== null) {
         const ownedFinal = await maintainedResolvedStep(projectDriverHistory(messages,contracts), tools);
         if (ownedFinal?.kind !== 'final') return { transcript, answer: null, stop: 'unbound-create-operation', toolsAdvertised: tools };
-        return { transcript, answer: ownedFinal.answer, stop: 'final', toolsAdvertised: tools };
+        return { transcript, answer: ownedFinal.answer, record: workItemRecordOf(ownedFinal), stop: 'final', toolsAdvertised: tools };
       }
-      return { transcript, answer: plan.answer, stop: 'final', toolsAdvertised: tools };
+      return { transcript, answer: plan.answer, record: workItemRecordOf(plan), stop: 'final', toolsAdvertised: tools };
     }
     // Snapshot the complete batch before validation; getters cannot change executed arguments.
     const calls = plan.calls.map(call => Object.freeze({ tool: call.tool, arguments: call.arguments }));
@@ -653,10 +658,28 @@ async function driveInternal(planChatStep, dir, prompt, {
         return { transcript, answer: null, stop: 'unbound-read-operation', toolsAdvertised: tools };
       }
     }
+    if (semanticRegression !== null) {
+      const current = await maintainedResolvedStep(scoped,tools);
+      const denial = current !== null && readPolicyBlocksPlan(prompt,current) ? 'semantic-regression-read-policy-refused' : semanticRegression.authorize(calls,current,scoped);
+      if (denial !== null) return {transcript,answer:null,stop:denial,toolsAdvertised:tools};
+    }
     const toolCalls = calls.map((call, index) => ({
       id: `c${step}_${index}`, type: 'function', function: { name: call.tool, arguments: call.arguments },
     }));
     const authorizedAppendCalls=new Set();
+    if (literalJournal !== null) {
+      if (!sameWorkspace()) return {transcript, answer:null, stop:'changed-create-workspace', toolsAdvertised:tools};
+      const current = await maintainedResolvedStep(projectDriverHistory(messages,contracts), tools);
+      const matches = literalJournalCallsMatch(literalJournal,calls,current);
+      if (!matches) return {transcript, answer:null, stop:'unbound-create-operation', toolsAdvertised:tools};
+      for (const call of calls) {
+        const args = argsOf(call);
+        if (call.tool !== 'write' || args?.append_mode === undefined) continue;
+        if (!atomicRecordAppend || args.append_mode !== APPEND_MODE)
+          return {transcript, answer:null, stop:'unbound-create-operation', toolsAdvertised:tools};
+        authorizedAppendCalls.add(call);
+      }
+    }
     if (createContract !== null && !sameWorkspace()) {
       return { transcript, answer: null, stop: 'changed-create-workspace', toolsAdvertised: tools };
     }
@@ -708,7 +731,7 @@ async function driveInternal(planChatStep, dir, prompt, {
       const observedPath=typeof writePath==='string'?within(dir,writePath):null;
       const before=capture&&observedPath?capture.before(observedPath):null;
       const toolBoundary=capture?.beforeTool(call)??null;
-      const creation = authorizedAppendCalls.has(call)?null:ownedCreation(call);
+      const creation = authorizedAppendCalls.has(call)?null:semanticRegression !== null ? semanticRegression.execute(call) : ownedCreation(call);
       if (creation?.source_creation?.success === true) createdTargets.add(creation.source_creation.path);
       const receipt = maintenanceSession !== null ? maintenanceSession.execute(call) : creation ?? (sourceSession
         ? sourceSession.executeResult(call, messages, () => executeResult(dir, call))

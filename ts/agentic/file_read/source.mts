@@ -3,6 +3,7 @@ import { sourceReadObservation, renderFailure } from '../tool_result.mjs';
 import { FinalDisposition, FinalPayloadRole, resolvedFinalAnswer } from '../plan.mjs';
 import { fileReadFinalAnswer } from './audit.mjs';
 import { readRecordForPath } from './records.mjs';
+import {sourceScalarAssessment} from './source_claims.mjs';
 
 /** Mirrors fn read_observation in file_read/source.rs. */
 export function readObservation(records, progress, path) {
@@ -20,6 +21,11 @@ export function sourceReadAnswer(paths, mode, records, progress, request) {
   if (failed >= 0) return resolvedFinalAnswer(renderFailure(paths[failed], reads[failed].error, request),
     FinalDisposition.Failure, 'file_read_observed');
   if (reads.some((read) => read === null)) return null;
+  if(paths.length===1&&mode.kind==='extract_value'){
+    const assessment=sourceScalarAssessment(request,paths[0],mode.key,progress);
+    if(assessment!==null)return resolvedFinalAnswer(JSON.stringify(assessment),
+      assessment.status==='unknown'?FinalDisposition.Unknown:FinalDisposition.Finding,'source_scalar_assessed');
+  }
   return resolvedFinalAnswer(fileReadFinalAnswer(mode, paths.map((path, index) => [path, reads[index].source ?? '']), request),
     reads.every((read) => read.complete) ? FinalDisposition.Finding : FinalDisposition.Unknown,
     'file_read_observed', mode.kind === 'audit' ? FinalPayloadRole.AuditReport : FinalPayloadRole.Finding);

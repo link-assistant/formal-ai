@@ -1,14 +1,14 @@
 // @ts-check
 // How long a spec waits for the chat composer to become enabled, which
 // happens when the browser worker reports ready (`workerReady` in
-// js/app/application-worker-hooks.jsx). Every composer-enabled wait uses this one
-// bound. The worker's cold start loads its modules, the seeds and the WASM
+// js/app/application-worker-hooks.jsx). Local-artifact composer waits use this bound; the public CDN smoke
+// uses its separately bounded cold-start allowance. The worker's cold start loads its modules, the seeds and the WASM
 // engine; with four Playwright workers on a four-vCPU runner it measured
 // about 7 s at the worst in CI (PR #1188), so 20 s leaves room for a loaded
 // runner while staying well inside the 30 s per-test timeout.
 const { test } = require('@playwright/test');
 
-const WORKER_READY_TIMEOUT_MS = 20_000;
+const { WORKER_READY_TIMEOUT_MS, PUBLIC_WORKER_READY_TIMEOUT_MS } = require('./worker-readiness-budget');
 
 /**
  * Give the running test room for one more cold worker start. A test that
@@ -21,4 +21,4 @@ function allowWorkerBoot() {
   info.setTimeout(info.timeout + WORKER_READY_TIMEOUT_MS);
 }
 
-module.exports = { WORKER_READY_TIMEOUT_MS, allowWorkerBoot };
+module.exports = { WORKER_READY_TIMEOUT_MS, PUBLIC_WORKER_READY_TIMEOUT_MS, allowWorkerBoot };

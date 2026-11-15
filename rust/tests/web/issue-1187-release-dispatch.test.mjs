@@ -16,11 +16,12 @@
 
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { chmodSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, copyFileSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import {checksDispatchContract} from "../../../scripts/lib/checks-dispatch-contract.mjs";
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
 const read = (relative) => readFileSync(path.join(REPO_ROOT, relative), "utf8");
@@ -233,22 +234,22 @@ esac
     });
     const dispatched = new Map(readFileSync(calls, "utf8").trim().split("\n").filter(Boolean)
       .map((line) => [line.split(" ")[2], line]));
+    assert.ok(dispatched.has("layered-ci.yml"), "actual multi-choice Layered CI must receive checks dispatch");
+    assert.ok(dispatched.has("self-development-status.yml"), "ordinary status workflow comments cannot suppress checks");
     for (const line of dispatched.values()) {
       assert.match(line, /--ref formal-ai\/self-authored-42 /);
       assert.match(line, /-f mode=checks -f pull-request=/);
     }
-    // Every pull_request workflow is dispatched except the three whose
-    // dispatch means something else (a release-asset publish, a credentialed
-    // benchmark, the authoring workflow itself).
-    const excluded = new Set(["desktop-release.yml", "external-benchmarks.yml", "self-authored-pull-request.yml"]);
+    // This independent inventory mirrors the explicit native policy exclusions.
+    // Never derive expected eligibility from the helper under test.
+    const excluded = new Set(["desktop-release.yml", "external-benchmarks.yml", "hive-original-delivery.yml",
+      "self-authored-pull-request.yml", "issue-1028-agent-ladder.yml"]);
     const pullRequestWorkflows = readdirSync(path.join(REPO_ROOT, ".github", "workflows"))
       .filter((name) => name.endsWith(".yml"))
       .filter((name) => /\n {2}pull_request:/.test(triggerBlock(read(`.github/workflows/${name}`)).replace(/^/, "\n")));
     assert.ok(pullRequestWorkflows.length > 5, "the repository has pull_request workflows");
     for (const name of pullRequestWorkflows) {
-      const trigger = triggerBlock(read(`.github/workflows/${name}`));
-      const declaresChecks = /workflow_dispatch:/.test(trigger) && /options: \[checks\]/.test(trigger);
-      assert.equal(dispatched.has(name), !excluded.has(name) && declaresChecks, `${name} dispatched: ${dispatched.has(name)}`);
+      assert.equal(dispatched.has(name), !excluded.has(name), `${name} dispatched: ${dispatched.has(name)}`);
     }
     assert.ok(dispatched.has("release.yml"), "release.yml is dispatched in checks mode");
     assert.match(readFileSync(output, "utf8"), /dispatched<<EOF\n[\s\S]*release\.yml/);
@@ -273,4 +274,99 @@ test('derived publication requires a declared successful guarded ancestor on eve
   assert.equal(guardedDependency('publish', jobs), false);
   jobs.set('manual', "    needs: [publish]\n    if: needs.publish.result == 'success'\n");
   assert.equal(guardedDependency('publish', jobs), false);
+});
+
+const dispatchFixture = (options = '[checks, regenerate-translations]', extra = '') => [
+  'name: Checks fixture', 'on:', '  pull_request:', '  workflow_dispatch:', '    inputs:',
+  '      mode:', '        type: choice', '        default: checks', '        options: ' + options,
+  '      pull-request:', '        type: string', extra, 'jobs:', '  check:', '    runs-on: ubuntu-latest',
+  '    steps:', '      - run: echo checks',
+].filter(Boolean).join('\n') + '\n';
+
+test('checks dispatch structurally recognizes effective defaults and rejects decoys', () => {
+  const valid = dispatchFixture();
+  assert.equal(checksDispatchContract(read('.github/workflows/layered-ci.yml')), true);
+  assert.equal(checksDispatchContract(valid), true);
+  assert.equal(checksDispatchContract(valid.replace("on:\n", "on:\n  # *after* &prose !not-a-tag <<: comment\n")), true);
+  assert.equal(checksDispatchContract(valid.replace("on:\n", "on: # valid trigger comment\n")), true);
+  assert.equal(checksDispatchContract(valid.replace('        default: checks\n', '')), true);
+  const block = valid.replace('        options: [checks, regenerate-translations]',
+    "        options:\n          - 'checks' # only dispatched value\n          - regenerate-translations");
+  assert.equal(checksDispatchContract(block), true);
+  const required = '      context:\n        type: string\n        required: true\n        default: safe';
+  assert.equal(checksDispatchContract(dispatchFixture('[checks]', required)), true);
+  const invalid = [
+    valid.replace('        type: choice', '        type: choice\n          forged: nested-body'),
+    valid.replace('      mode:', '      mode:\n        required: false\n          forged: nested-body'),
+    valid.replace('        options: [checks, regenerate-translations]',
+      '        options: [checks, regenerate-translations]\n        description: simple\n          forged: nested-body'),
+    valid.replace('[checks, regenerate-translations]', '[rechecks, regenerate-translations]'),
+    valid.replace('[checks, regenerate-translations]', '[checks, checks]'),
+    valid.replace('default: checks', 'default: regenerate-translations'),
+    valid.replace('[checks, regenerate-translations]', "'[checks]'"),
+    valid.replace('  pull_request:', '  pull_request_target:'),
+    valid.replace('      mode:', '      mode: &borrowed'),
+    valid.replace('    inputs:', '    inputs: {mode: checks}'),
+    valid.replace('      mode:', '      <<: *borrowed\n      mode:'),
+    valid.replace('      mode:', '\t  mode:'),
+    valid + 'on:\n  pull_request:\n',
+    valid.replace('    inputs:', '    inputs:\n    inputs:'),
+    valid.replace('      mode:', '      mode:\n      mode:'),
+    valid.replace('        default: checks', '        default: checks\n        default: checks'),
+    valid.replace('        options: [checks, regenerate-translations]',
+      '        options: [checks]\n        options: [checks]'),
+    valid.replace('        options: [checks, regenerate-translations]',
+      '        description: |\n          options: [checks]'),
+    valid.replace('        options: [checks, regenerate-translations]', '')
+      + '\n# options: [checks]\n',
+    valid.replace('        options: [checks, regenerate-translations]', '')
+      .replace('      - run: echo checks', '      - run: |\n          options: [checks]'),
+    dispatchFixture('[checks]', required.replace('\n        default: safe', '')),
+    dispatchFixture('[checks]', '      context:\n        type: boolean\n        required: true\n        default: nope'),
+    dispatchFixture('[checks]', '      context:\n        type: unknown\n        required: false'),
+  ];
+  for (const source of invalid) assert.equal(checksDispatchContract(source), false, source);
+});
+
+test('recording gh dispatches only structurally declared checks contracts in a scratch workflow set', () => {
+  const dir = scratch();
+  try {
+    mkdirSync(path.join(dir, '.github', 'workflows'), {recursive: true});
+    mkdirSync(path.join(dir, 'scripts', 'lib'), {recursive: true});
+    for (const name of ['checks-dispatch-contract.mjs', 'ci-speed-workflows.mjs']) {
+      copyFileSync(path.join(REPO_ROOT, 'scripts', 'lib', name), path.join(dir, 'scripts', 'lib', name));
+    }
+    const workflows = new Map([
+      ['valid.yml', dispatchFixture('[checks]')],
+      ['extended.yml', dispatchFixture()],
+      ['authoring.yml', dispatchFixture('[checks, author]').replace('default: checks', 'default: author')],
+      ['run-decoy.yml', dispatchFixture().replace('        options: [checks, regenerate-translations]', '')
+        .replace('      - run: echo checks', '      - run: |\n          options: [checks]')],
+      ['other-input.yml', dispatchFixture().replace('        options: [checks, regenerate-translations]',
+        '      decoy:\n        type: choice\n        options: [checks]')],
+    ]);
+    for (const [name, source] of workflows) writeFileSync(path.join(dir, '.github', 'workflows', name), source);
+    const calls = path.join(dir, 'calls'), output = path.join(dir, 'output');
+    writeFileSync(calls, '');
+    writeFileSync(output, '');
+    const gh = path.join(dir, 'gh');
+    writeFileSync(gh, '#!/usr/bin/env bash\nset -eu\ncase "$1 $2" in\n'
+      + '  "pr view") case "$*" in *headRefName*) echo bot/fixture ;; *headRefOid*) echo 0123456789abcdef ;; *) exit 71 ;; esac ;;\n'
+      + '  "workflow run") printf "%s\\n" "$*" >> "' + calls + '" ;;\n'
+      + '  *) exit 71 ;;\nesac\n');
+    chmodSync(gh, 0o755);
+    execFileSync('bash', ['-c', stepScript(read('.github/actions/dispatch-checks/action.yml'), 'dispatch')], {
+      cwd: dir,
+      env: {PATH: dir + ':' + process.env.PATH, PR_NUMBER: '42', WORKFLOWS: [...workflows.keys()].join(' '),
+        GH_TOKEN: 'private-fixture-token', REPOSITORY: 'fixture/repository', GITHUB_OUTPUT: output},
+      encoding: 'utf8', timeout: 10000,
+    });
+    const lines = readFileSync(calls, 'utf8').trim().split('\n').filter(Boolean);
+    assert.deepEqual(lines.map(line => line.split(' ')[2]).sort(), ['extended.yml', 'valid.yml']);
+    for (const line of lines) {
+      assert.match(line, /--ref bot\/fixture -f mode=checks -f pull-request=42$/u);
+      assert.equal(line.split('mode=').length - 1, 1);
+      assert.doesNotMatch(line, /mode=(?:author|regenerate-translations|publish|release)/u);
+    }
+  } finally { rmSync(dir, {recursive: true, force: true}); }
 });

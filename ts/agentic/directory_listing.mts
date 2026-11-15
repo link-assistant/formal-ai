@@ -1,3 +1,4 @@
+import {normalizeListing} from './file_command_contract.mjs';
 // Recognise a prose request to list the files in the current place: a port of
 // rust/src/agentic_coding/directory_listing.rs.
 
@@ -68,6 +69,7 @@ function isDirectoryOperand(token) {
  * @returns {string}
  */
 export function listedDirectory(task) {
+  task = normalizeListing(task).text;
   const excluded = new Set([...LISTED_SCOPE_ROLES, FUNCTION_WORD_ROLE].flatMap((role) => wordsForRole(role))
     .flatMap((surface) => splitWhitespace(surface.toLowerCase())));
   const places = wordsForRole(PLACE_ROLE).map(canonicalUnaryLower);

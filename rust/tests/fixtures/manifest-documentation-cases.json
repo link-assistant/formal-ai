@@ -1,0 +1,125 @@
+{
+  "forms": {
+    "manifestStart": "<!-- formal-ai-manifest-start: {source} -->",
+    "manifestEnd": "<!-- formal-ai-manifest-end: {source} -->",
+    "manifestTitle": "Dependency declarations from `{source}`:",
+    "manifestNotice": "These are literal manifest declarations; they do not establish executable runtime use.",
+    "manifestHeader": "| Dependency | Declared version | Dependency section | Target qualifier | Literal options |",
+    "manifestSeparator": "| --- | --- | --- | --- | --- |",
+    "manifestRow": "| `{name}` | `{version}` | `{section}` | `{target}` | `{options}` |",
+    "manifestAbsentVersion": "not declared",
+    "manifestUnqualifiedTarget": "unqualified"
+  },
+  "cases": [
+    {
+      "name": "all npm direct sections preserve literals",
+      "task": "Document dependencies with their versions and sections.",
+      "owner": "package.json",
+      "source": "{\"dependencies\": {\"river-kit\": \"^1.2.3\", \"unicode-kit\": \"\\u96ea$&$$$'{section}\"}, \"devDependencies\": {\"compiler-kit\": \"~2.0\"}, \"optionalDependencies\": {\"image-kit\": \"3.4\"}, \"peerDependencies\": {\"host-kit\": \">=1\"}, \"overrides\": {\"excluded-kit\": \"9\"}}",
+      "guide": "# Existing guide\n\nPreserve 雪.\n",
+      "rows": 5,
+      "contains": [
+        "`river-kit` | `^1.2.3` | `dependencies`",
+        "`unicode-kit` | `雪$&$$$'{section}` | `dependencies`",
+        "`compiler-kit` | `~2.0` | `devDependencies`",
+        "`image-kit` | `3.4` | `optionalDependencies`",
+        "`host-kit` | `>=1` | `peerDependencies`"
+      ],
+      "excludes": [
+        "excluded-kit"
+      ]
+    },
+    {
+      "name": "explicit literal dependency subset",
+      "task": "Document river-kit declarations.",
+      "owner": "package.json",
+      "source": "{\"dependencies\":{\"river-kit\":\"1\",\"other-kit\":\"2\"}}",
+      "guide": "# Existing\n",
+      "rows": 1,
+      "contains": [
+        "`river-kit` | `1`"
+      ],
+      "excludes": [
+        "`other-kit`"
+      ]
+    },
+    {
+      "name": "Cargo source qualifiers and literal options",
+      "task": "Document fetch-kit dependencies.",
+      "owner": "rust/Cargo.toml",
+      "source": "[target.'cfg(not(target_arch = \"wasm32\"))'.dependencies]\nfetch-kit = { version = \"0.3\", default-features = false, features = [\"search\"] }\n",
+      "guide": "# Existing\n",
+      "rows": 1,
+      "contains": [
+        "`fetch-kit` | `0.3` | `dependencies`",
+        "cfg(not(target_arch = \"wasm32\"))",
+        "\"default-features\":false",
+        "\"features\":[\"search\"]"
+      ]
+    },
+    {
+      "name": "version absent remains explicit",
+      "task": "Document dependencies.",
+      "owner": "Cargo.toml",
+      "source": "[dependencies]\nlocal-kit = { path = \"../local\" }\n",
+      "guide": "# Existing\n",
+      "rows": 1,
+      "contains": [
+        "`local-kit` | `not declared`",
+        "\"path\":\"../local\""
+      ]
+    },
+    {
+      "name": "row cap refusal",
+      "task": "Document dependencies.",
+      "owner": "package.json",
+      "source": "{\"dependencies\": {\"kit-0\": \"1\", \"kit-1\": \"1\", \"kit-2\": \"1\", \"kit-3\": \"1\", \"kit-4\": \"1\", \"kit-5\": \"1\", \"kit-6\": \"1\", \"kit-7\": \"1\", \"kit-8\": \"1\", \"kit-9\": \"1\", \"kit-10\": \"1\", \"kit-11\": \"1\", \"kit-12\": \"1\", \"kit-13\": \"1\", \"kit-14\": \"1\", \"kit-15\": \"1\", \"kit-16\": \"1\", \"kit-17\": \"1\", \"kit-18\": \"1\", \"kit-19\": \"1\", \"kit-20\": \"1\", \"kit-21\": \"1\", \"kit-22\": \"1\", \"kit-23\": \"1\", \"kit-24\": \"1\", \"kit-25\": \"1\", \"kit-26\": \"1\", \"kit-27\": \"1\", \"kit-28\": \"1\", \"kit-29\": \"1\", \"kit-30\": \"1\", \"kit-31\": \"1\", \"kit-32\": \"1\"}}",
+      "guide": "# Existing\n",
+      "gap": "ManifestDocumentationRowLimit"
+    },
+    {
+      "name": "Markdown cell injection refusal",
+      "task": "Document dependencies.",
+      "owner": "package.json",
+      "source": "{\"dependencies\":{\"river-kit\":\"1|forged\"}}",
+      "guide": "# Existing\n",
+      "gap": "UnsupportedManifestDocumentationValue"
+    },
+    {
+      "name": "control injection refusal",
+      "task": "Document dependencies.",
+      "owner": "package.json",
+      "source": "{\"dependencies\": {\"river-kit\": \"1\\u202e\"}}",
+      "guide": "# Existing\n",
+      "gap": "UnsupportedManifestDocumentationValue"
+    },
+    {
+      "name": "conflicting existing declaration refusal",
+      "task": "Document dependencies.",
+      "owner": "package.json",
+      "source": "{\"dependencies\":{\"river-kit\":\"2\"}}",
+      "guide": "# Existing\n| `river-kit` | `1` | `dependencies` |\n",
+      "gap": "ConflictingManifestDocumentation"
+    },
+    {
+      "name": "duplicate key source refusal",
+      "task": "Document dependencies.",
+      "owner": "package.json",
+      "source": "{\"dependencies\":{\"river-kit\":\"1\",\"river-kit\":\"2\"}}",
+      "guide": "# Existing\n",
+      "gap": "UnsupportedManifestDocumentationSource"
+    },
+    {
+      "name": "same dependency different direct sections",
+      "task": "Document dependencies.",
+      "owner": "package.json",
+      "source": "{\"dependencies\":{\"shared-kit\":\"1\"},\"devDependencies\":{\"shared-kit\":\"2\"}}",
+      "guide": "# Keep\n| `shared-kit` | `1` | `dependencies` |\n",
+      "rows": 2,
+      "contains": [
+        "`shared-kit` | `1` | `dependencies`",
+        "`shared-kit` | `2` | `devDependencies`"
+      ]
+    }
+  ]
+}

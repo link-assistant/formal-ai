@@ -1,0 +1,111 @@
+{
+  "schema": "formal-ai-complete-governed-source-regeneration/v1",
+  "status": "hosted-source-qualified-native-runtime-pending",
+  "sourceCommit": "88d799bf6bd7fa3ea7560b2c7428abbfc5637ef3",
+  "workflow": {
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/41801955660",
+    "run": 41801955660,
+    "attempt": 1,
+    "job": 126479622280,
+    "conclusion": "success"
+  },
+  "artifact": {
+    "id": 13306774830,
+    "compressedBytes": 347833,
+    "sha256": "7c441f22acfd382ad5d341940f7fdd955dffe2c1331130d8cf8da0deb25bcb45",
+    "manifestSha256": "8352ebe6de65ee5199205f49542856c11ad6f2a920ca9de0955e5f1af140a8d4"
+  },
+  "sourceGeneratorIdentity": {
+    "repositoryCommit": "88d799bf6bd7fa3ea7560b2c7428abbfc5637ef3",
+    "generator": {
+      "path": "scripts/lib/generate-native-specification-programs.mjs",
+      "sha256": "73cbc8a5f657f6048766019d3e9f484cd2ad503d6234de197d93e7799b028d28"
+    },
+    "reader": {
+      "path": "scripts/lib/rust-specification-cases.mjs",
+      "sha256": "861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca"
+    },
+    "implementation": "repository-owned source AST program generator and complete typed specification reader"
+  },
+  "preparedUpstreamContext": {
+    "commit": "eb0574d5528babd3b4aadece81590d8e2230b99b",
+    "role": "prepared workflow context; not invoked by specification generator"
+  },
+  "outputs": [
+    {
+      "path": "scripts/lib/generated-native-programs.mjs",
+      "bytes": 119438,
+      "sha256": "c4b481931b1261952a77e01117e12173792383d8859339e9e4a569286188de11"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8",
+      "bytes": 1833819,
+      "sha256": "1fbee3423873b3918b7c824d9f801e0b5bae24d64b8943e15b75504c67ad36cf"
+    }
+  ],
+  "sourceChanges": [
+    {
+      "path": "rust/src/lib.rs",
+      "before": "797bdfc344c69094db88f2e76ee80b386a95f1e0a0aa93257ee0dd4e0c1b029b",
+      "after": "7a5810bcb594c76c0908fc9fd0365ad59513706260e23223ec621138743d3024",
+      "occurrences": 35,
+      "reviewedContentChange": "+pub(crate) mod quantity_constraint;"
+    },
+    {
+      "path": "rust/tests/unit/mod.rs",
+      "before": "a4920565b407a50ecb97128ab7f0224bf33d3f70eac9b71593d273a42d3fe01d",
+      "after": "e865cca3fb2de22996a703221de87b5c9e790ff18357a3ac44c728334f58343f",
+      "occurrences": 4,
+      "reviewedContentChange": "+mod quantity_aggregate_comparison;"
+    }
+  ],
+  "verification": {
+    "selectedInputWitnessesVerifiedAgainstCommit": 205,
+    "inputScope": "Selected source witnesses, not an exhaustive filesystem read trace; the exact repository commit binds other reads.",
+    "generatedPrograms": 155,
+    "registryComparison": "Independently parse exported data with Babel; no generated JavaScript import or execution. All fields match after only reviewed library witness normalization.",
+    "completeBaselineComparison": "Deserialize the complete old and hosted V8 objects. Compare every field, case, refusal and source-manifest entry after only the reviewed fixture and typed-binding witness normalization. Import original hosted bytes without reserialization.",
+    "inventory": {
+      "total": 1184,
+      "cases": 221,
+      "unsupported": 963,
+      "unchanged": true
+    },
+    "fixtureWitnessOccurrences": 39,
+    "nestedTypedBindingWitnesses": {
+      "path": "rust/src/lib.rs",
+      "before": "797bdfc344c69094db88f2e76ee80b386a95f1e0a0aa93257ee0dd4e0c1b029b",
+      "after": "7a5810bcb594c76c0908fc9fd0365ad59513706260e23223ec621138743d3024",
+      "physicalRecords": 42
+    },
+    "casesRemoved": 0,
+    "algorithmOrProgramAstChangesAccepted": false,
+    "ceilingsRaised": false,
+    "localRustOrWasmExecuted": false,
+    "nativeRuntimeQualified": false
+  },
+  "priorRejectedRuns": [
+    {
+      "run": 41798189171,
+      "reason": "Installer requested an untracked npm lock; corrected to the committed frozen Bun recipe. Generators did not run."
+    },
+    {
+      "run": 41798800478,
+      "reason": "Complete comparison refused the additional unit-module registration witness until independently reviewed."
+    },
+    {
+      "run": 41799833879,
+      "reason": "Complete comparison refused nested typed-binding witness changes until the complete sealed source graph was audited."
+    }
+  ],
+  "pending": [
+    "New exact-head PR CI.",
+    "Native compile, lint and shared-vector execution on the default branch.",
+    "Full original issue #1483 semantic acceptance."
+  ],
+  "authorship": {
+    "transport": "Formal AI JavaScript executing reviewed generators and import checks",
+    "autonomousImplementationCredit": 0,
+    "globalReasoningShare": "unmeasured"
+  }
+}

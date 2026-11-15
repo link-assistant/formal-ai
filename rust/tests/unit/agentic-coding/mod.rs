@@ -1,4 +1,5 @@
 //! Tests grouped by agentic coding module evidence.
+mod host_workspace_creation_path;
 mod issue_1328_bounded_retries;
 mod issue_1438_literal_artifact;
 
@@ -142,6 +143,9 @@ mod module_function_signature_vectors;
 #[path = "coding_research_kernel.rs"]
 mod coding_research_kernel;
 
+#[path = "comparison_boundary.rs"]
+mod comparison_boundary;
+
 #[path = "coding_research_production.rs"]
 mod coding_research_production;
 
@@ -153,3 +157,11 @@ mod semantic_source_preflight;
 
 #[path = "source_unary_consolidation.rs"]
 mod source_unary_consolidation;
+
+#[path = "literal_content_boundary.rs"]
+mod literal_content_boundary;
+
+#[path = "issue_1558_reference_resolution.rs"]
+mod issue_1558_reference_resolution;
+#[path = "work_item_report_outcome.rs"]
+mod work_item_report_outcome;

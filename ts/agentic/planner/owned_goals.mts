@@ -4,16 +4,17 @@ import { writesWholeFile } from '../literal_write_guard.mjs';
 import { closedArithmeticDeclaration } from '../module_function.mjs';
 import { boundReadPaths, pendingReadCondition } from '../file_read/ownership.mjs';
 import { normalizePrompt } from '../crate/engine.mjs';
-import { unquotedPathTokens } from '../positional_edit.mjs';
+import { unquotedPathTokens, introducedBlock } from '../positional_edit.mjs';
 // Source-owned mixed actions share the existing obligation nodes and request replay.
-import { firstContentLeadEnd, firstRawPrefixLeadEnd, pinnedFirstLine, composeEditClauses, preferredBinding, tokens, firstActionCueStart, firstActionCueEnd, bareSurfaces, cleanCueToken, cleanPathToken, looksLikeFilePath } from '../write_request.mjs';
+import { firstContentLeadEnd, firstRawPrefixLeadEnd, pinnedFirstLine, composeEditClauses, withoutAllOccurrenceCues, preferredBinding, tokens, firstActionCueStart, firstActionCueEnd, bareSurfaces, cleanCueToken, cleanPathToken, looksLikeFilePath } from '../write_request.mjs';
 import { literalWriteOwnership, instructionView, composeGeneralChangePlan, parseWriteContract } from '../general_planner.mjs';
 import { sentences } from '../shell_command_policy.mjs';
 import { quotedSegmentSpans, quoteFault } from '../crate/normal_markov.mjs';
-import { nestedQuoteFault } from '../quote_nesting.mjs';
+import { nestedQuoteFault, wholePayloadEnd } from '../quote_nesting.mjs';
 import { leafNode } from '../crate/obligation_ledger.mjs';
 import { gapAnswer } from '../task_obligations.mjs';
-import { planBoundRequestSteps } from '../request_sequence.mjs';
+import { planBoundRequestSteps, requestSequence, sequenceSteps } from '../request_sequence.mjs';
+import { replaceClauses, replaceList, severalEditTargets, unplannedEditClause } from '../replace_list.mjs';
 import { FinalDisposition, canDeliverFinal, resolvedFinalAnswer } from '../plan.mjs';
 import { collectionSummaryOwns } from './collection_summary.mjs';
 
@@ -76,16 +77,86 @@ function literalTail(request, contract) {
     && (grammarTail(request.slice(target.end)) || suffixOwned);
 }
 
+function seededActionPrologue(text) {
+  if (quotedSegmentSpans(text).length > 0) return false;
+  const prologue = normalizePrompt(text);
+  return ['politeness_cue', 'enumeration_cue', 'file-edit-sequence-cue'].some(role =>
+    bareSurfaces(role).some(surface => normalizePrompt(surface) === prologue));
+}
+
+function ownedBlockEdit(request) {
+  const block = introducedBlock(request);
+  const edit = block === null ? null : composeEditClauses(request);
+  const head = block === null ? null : composeEditClauses(block.head);
+  return edit !== null && edit.spans === null && edit.edit[2] === block.text
+    && head !== null && head.spans !== null && head.edit[0] === edit.edit[0] && head.edit[1] === edit.edit[1]
+    && completeEditFrame(block.head, effectiveEditSpans(block.head, head));
+}
+
 function completeEditFrame(request, spans) {
+  const view = withoutAllOccurrenceCues(request);
   const ordered = [...spans].sort((left, right) => left[0] - right[0]);
   const grammar = text => /^[ \t\r\n.!?。！？।;；]*$/u.test(text);
+  const prefix = text => {
+    const cue = text.trim().replace(/[,.!?。！？।;；]+$/u, '').trim().toLowerCase();
+    return grammar(text) || seededActionPrologue(cue);
+  };
   let end = 0;
   for (const [start, next] of ordered) {
     if (!Number.isInteger(start) || !Number.isInteger(next) || start < 0
-      || next < start || next > request.length || !grammar(request.slice(end, Math.max(end, start)))) return false;
+      || next < start || next > request.length
+      || !(end === 0 ? prefix : grammar)(view.slice(end, Math.max(end, start)))) return false;
     end = Math.max(end, next);
   }
-  return grammar(request.slice(end));
+  return grammar(view.slice(end));
+}
+
+function effectiveEditSpans(request, edit) {
+  if (edit.spans === null) return null;
+  const [file, action] = edit.spans;
+  const operands = quotedSegmentSpans(request).filter(span => span.start >= action[0]
+    && span.end <= action[1] && !(span.start < file[1] && span.end > file[0]));
+  const [old, next] = operands;
+  if (old === undefined || next === undefined || old.text !== edit.edit[1]) return edit.spans;
+  let lead = request.slice(old.end, next.start);
+  if (file[0] >= old.end && file[1] <= next.start)
+    lead = request.slice(old.end, file[0]) + ' ' + request.slice(file[1], next.start);
+  if (!bareSurfaces('file_edit_new_lead_cue').includes(lead.trim().toLowerCase())) return edit.spans;
+  return [file, [action[0], wholePayloadEnd(request, next.start, next.end)]];
+}
+
+function supportedEditFrame(request) {
+  if (ownedBlockEdit(request)) return true;
+  const edit = composeEditClauses(request);
+  if (edit !== null && edit.spans !== null && completeEditFrame(request, effectiveEditSpans(request, edit))) return true;
+  const list = replaceList(request);
+  const clauses = list === null ? null : replaceClauses(request);
+  if (clauses === null) return false;
+  const named = clauses.map(clause => ({clause, edit: composeEditClauses(clause)}))
+    .find(part => part.edit !== null && part.edit.edit[0] === list.target && part.edit.spans !== null);
+  if (named === undefined) return false;
+  const fileClause = named.clause.slice(...named.edit.spans[0]);
+  return clauses.every(clause => {
+    const bound = composeEditClauses(clause) === null ? fileClause + ' ' + clause : clause;
+    const part = composeEditClauses(bound);
+    return part !== null && part.edit[0] === list.target && part.spans !== null && completeEditFrame(bound, effectiveEditSpans(bound, part));
+  });
+}
+
+function delegatedEditRequest(request) {
+  if (ownedBlockEdit(request) || severalEditTargets(request) !== null || unplannedEditClause(request) !== null) return true;
+  const sequence = sequenceSteps(request);
+  if (sequence !== null && sequence.every(supportedEditFrame)) return true;
+  const parts = requestSequence(request);
+  return parts !== null && parts.slice(1).every(supportedEditFrame);
+}
+
+function ownsEditRequestPrefix(request) {
+  const edit = composeEditClauses(request);
+  if (edit === null || edit.spans === null) return false;
+  const spans = effectiveEditSpans(request, edit);
+  const end = Math.max(...spans.map(span => span[1]));
+  return completeEditFrame(request.slice(0, end), spans);
 }
 
 /** Mirrors owns_complete_edit_request: a fully consumed Edit retains source bytes. */
@@ -97,8 +168,9 @@ export function ownsCompleteLiteralRequest(request) {
 
 export function ownsCompleteEditRequest(request) {
   if (ownsCompleteLiteralRequest(request)) return false;
+  if (ownedBlockEdit(request)) return true;
   const edit = composeEditClauses(request);
-  return edit !== null && edit.spans !== null && completeEditFrame(request, edit.spans);
+  return edit !== null && edit.spans !== null && completeEditFrame(request, effectiveEditSpans(request, edit));
 }
 
 export function instructionViewForRequest(request) {
@@ -108,6 +180,7 @@ export function instructionViewForRequest(request) {
 /** Mirrors fn goal_ledger: preserve raw UTF16 positions and the existing node's UTF8 source span. */
 export function goalLedger(request) {
   const contract = literalWriteOwnership(request);
+  if (contract === null && delegatedEditRequest(request)) return null;
   const closed = closedPayload(request, contract);
   const need = closed === null ? null : sourcePinnedLineNeed(request, closed.end, true);
   if (need !== null) {
@@ -136,7 +209,7 @@ export function goalLedger(request) {
     const literal = literalWriteOwnership(clause);
     const completeLiteral = literal !== null && literalTail(clause, literal) && !attributedActionPrefix(clause) && contractActionPrologue(clause, literal);
     const edit = completeLiteral ? null : composeEditClauses(clause);
-    const kind = completeLiteral ? 'literal_file' : edit !== null && edit.spans !== null && (literal === null || completeEditFrame(clause, edit.spans)) ? 'source_edit' : 'unsupported';
+    const kind = completeLiteral ? 'literal_file' : edit !== null && supportedEditFrame(clause) ? 'source_edit' : 'unsupported';
     const target = kind === 'source_edit' ? edit.edit[0] : literal?.target ?? edit?.edit[0] ?? null;
     const expectation = kind === 'literal_file' ? { kind: 'file_bytes', path: target, sha256: null }
       : { kind: 'underivable', reason: kind === 'source_edit' ? 'source-edit-preimage-required' : 'no_artifact_in_clause' };
@@ -145,7 +218,8 @@ export function goalLedger(request) {
   });
   if (goals.length === 0 || goals.length === 1 && goals[0].kind !== 'unsupported') return null;
   return contract !== null && contract.targetSpan.start >= contract.payload.end
-    || goals.some((goal) => literalWriteOwnership(goal.clause) !== null) ? goals : null;
+    || goals.some((goal) => literalWriteOwnership(goal.clause) !== null
+      || ownsEditRequestPrefix(goal.clause)) ? goals : null;
 }
 
 function goalGap(goal) {
@@ -177,7 +251,8 @@ export async function planGoalLedger(request, messages, toolNames, planFor) {
   if (missingIndex >= 0) {
     const missing = goals[missingIndex];
     if (hasContext) return goalGap(missing);
-    if (literalWriteOwnership(missing.clause) !== null) return goalGap(missing);
+    if (literalWriteOwnership(missing.clause) !== null
+      || ownsEditRequestPrefix(missing.clause)) return goalGap(missing);
     if (missingIndex === 0) {
       if (collectionSummaryOwns(goals)) {
         const plan = await planBoundRequestSteps(goals.slice(1).map(goal => goal.clause), messages, toolNames, planFor);
@@ -294,7 +369,7 @@ function contractActionPrologue(clause, contract) {
   const prologue = normalizePrompt(view.slice(0, start));
   return prologue === '' || sourceContextLabel(view.slice(0, start).trim()) || sourceContextWhitespaceSupported(view.slice(0, start))
     && contextGrammarPatterns('action-prologue').some(([prefix, suffix]) => prefix.test(view.slice(0, start)) && suffix.test(''))
-    || ['politeness_cue', 'enumeration_cue', 'file-edit-sequence-cue'].some((role) => bareSurfaces(role).some((surface) => normalizePrompt(surface) === prologue));
+    || seededActionPrologue(view.slice(0, start));
 }
 
 function declaredCreationPrologue(request, contract) {
@@ -302,6 +377,22 @@ function declaredCreationPrologue(request, contract) {
   if (words.length === 0 || !bareSurfaces('file_declared_noun').includes(cleanCueToken(words.at(-1).text))) return false;
   const prefix = normalizePrompt(words.map(word => cleanCueToken(word.text)).join(' '));
   return bareSurfaces('file_whole_write_action').some(surface => normalizePrompt(surface) === prefix);
+}
+
+/** Declared content is data only after the existing operation prologue owns it. */
+export function ownsRecoveredWriteOperation(request, contract) {
+  if (contract === null) return false;
+  const view = instructionView(request, contract);
+  return view !== null && quoteFault(request) === null && !attributedActionPrefix(request)
+    && (contractActionPrologue(request, contract) || declaredCreationPrologue(request, contract))
+    && writesWholeFile(view);
+}
+
+export function ownsDeclaredPayloadDomain(request, contract) {
+  if (contract === null) return false;
+  const lead = firstRawPrefixLeadEnd(request, 'file_write_content_lead');
+  return lead !== null && contract.targetSpan.end <= lead[0] && lead[1] <= contract.payload.start
+    && ownsRecoveredWriteOperation(request, contract);
 }
 
 /** Mirrors owned_declared_create_frame; classification does not grant filesystem authority. */

@@ -283,23 +283,46 @@ fn reconcile_file_observations(node: &mut ObligationNode, progress: &super::prog
     if plan.mode != super::general_planner::GeneralPlanMode::LiteralFile || &plan.target != path {
         return;
     }
-    let Some(raw) = progress.latest_run_output_for(&plan.verification_command) else {
-        return;
+    let record = if let Some(proof) =
+        super::general_execution::owned_creation_observation(&plan, progress)
+    {
+        let command = proof
+            .command
+            .unwrap_or_else(|| format!("{} {}", proof.tool, proof.arguments));
+        let mut record = Evidence::observed(
+            command,
+            vec![proof.target],
+            proof.exit_code,
+            proof.source.as_bytes(),
+            ObservationKind::FileBytes,
+            EvidenceSource::Harness,
+        );
+        record.produced_by = proof.method.to_owned();
+        record
+    } else {
+        if super::general_planner::owned_declared_create_frame(&plan.goal).is_some() {
+            return;
+        }
+        let Some(raw) = progress.latest_run_output_for(&plan.verification_command) else {
+            return;
+        };
+        if Some(raw.as_str())
+            != progress.latest_successful_run_output_for(&plan.verification_command)
+        {
+            return;
+        }
+        let Some(payload) = super::tool_result::observed_payload(raw) else {
+            return;
+        };
+        Evidence::observed(
+            &plan.verification_command,
+            vec![plan.target.clone()],
+            super::tool_result::reported_exit_code(raw),
+            payload.as_bytes(),
+            ObservationKind::FileBytes,
+            EvidenceSource::Harness,
+        )
     };
-    if Some(raw.as_str()) != progress.latest_successful_run_output_for(&plan.verification_command) {
-        return;
-    }
-    let Some(payload) = super::tool_result::observed_payload(raw) else {
-        return;
-    };
-    let record = Evidence::observed(
-        &plan.verification_command,
-        vec![plan.target.clone()],
-        super::tool_result::reported_exit_code(raw),
-        payload.as_bytes(),
-        ObservationKind::FileBytes,
-        EvidenceSource::Harness,
-    );
     let mut isolated = ObligationLedger {
         frame_id: stable_id("file_observation", &node.node_id),
         root: node.clone(),

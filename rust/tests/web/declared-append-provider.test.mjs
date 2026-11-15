@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {mkdtempSync, rmSync} from 'node:fs';
+import {mkdtempSync, readFileSync, rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {before, test} from 'node:test';
@@ -9,8 +9,10 @@ import {appendDefinition, projectAppendContracts} from '../../../js/agentic/appe
 import {composeGeneralChangePlan} from '../../../js/agentic/general_planner.mjs';
 import {planGeneralChangeStep} from '../../../js/agentic/general_execution.mjs';
 import {atomicRecordAppend} from '../../../experiments/js_dogfood/atomic-record-append.mjs';
+import {planChatStep} from '../../../js/agentic/planner.mjs';
+import {drive} from '../../../experiments/js_dogfood/drive.mjs';
 before(async () => {await installNodeHost(new WorkerHost());});
-const request = 'Create a file note.txt containing exactly: hello';
+const request = 'Set the contents of note.txt to exactly this content: hello';
 const tools = ['Bash', 'Write'];
 function session() {
   const messages = [{role: 'user', content: request}];
@@ -59,4 +61,17 @@ test('without a declared append provider the original shell fallback remains ava
   const result = planGeneralChangeStep(messages, tools, plan);
   assert.equal(result.calls[0].tool, 'Bash');
   assert.match(JSON.parse(result.calls[0].arguments).command, /general-change-plan/u);
+});
+
+test('original Create ignores optional append authority and verifies only the target', async () => {
+  const directory = mkdtempSync(join(tmpdir(), 'create-with-append-authority-'));
+  try {
+    const result = await drive(planChatStep, directory, 'Create a file note.txt containing exactly: hello',
+      {steps: 6, tools: ['write', 'read'], atomicRecordAppend: true});
+    assert.equal(result.stop, 'final', JSON.stringify(result));
+    assert.equal(readFileSync(join(directory, 'note.txt'), 'utf8'), 'hello');
+    assert.deepEqual(result.transcript.map(row => row.tool), ['write', 'read']);
+    assert(result.transcript.every(row => JSON.parse(row.arguments).append_mode === undefined));
+    assert.throws(() => readFileSync(join(directory, '.formal-ai/general-change-plan.lino')), /ENOENT/);
+  } finally {rmSync(directory, {recursive: true, force: true});}
 });

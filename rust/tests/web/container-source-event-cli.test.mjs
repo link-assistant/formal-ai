@@ -65,7 +65,7 @@ function fixture(t) {
   const gh = join(cwd, "bin/gh");
   writeFileSync(
     gh,
-    '#!/usr/bin/env node\nconst p=process.argv[3];const head=process.env.FIXTURE_HEAD;let result;if(p.endsWith("/releases/tags/v1.2.3"))result={tag_name:"v1.2.3",draft:false,prerelease:false,published_at:"2026-10-01T00:00:00Z"};else if(p.endsWith("/commits/main")||p.endsWith("/commits/v1.2.3"))result={sha:head};else if(p==="repos/fixture/repository")result={default_branch:"main"};else throw Error("unexpected fixture API "+p);console.log(JSON.stringify(result));\n',
+    '#!/usr/bin/env node\nconst args=process.argv.slice(2);if(args[0]!=="api"||!(args.length===2||(args.length===4&&args[1]==="--hostname"&&args[2]==="github.com")))throw Error("unexpected fixture API arguments");const p=args.at(-1);const head=process.env.FIXTURE_HEAD;let result;if(p==="repos/fixture/repository/releases/tags/v1.2.3")result={tag_name:"v1.2.3",draft:false,prerelease:false,published_at:"2026-10-01T00:00:00Z"};else if(p==="repos/fixture/repository/commits/main"||p==="repos/fixture/repository/commits/v1.2.3")result={sha:head};else if(p==="repos/fixture/repository")result={default_branch:"main"};else throw Error("unexpected fixture API "+p);console.log(JSON.stringify(result));\n',
   );
   chmodSync(gh, 0o755);
   const environment = {
@@ -111,6 +111,28 @@ function roundtrip(f, change = {}) {
   assert.deepEqual(JSON.parse(imported.stdout), record);
   return { record, bytes };
 }
+test("fixture GitHub API accepts only closed GET arguments and the pinned host", (t) => {
+  const f = fixture(t);
+  const endpoint = "repos/fixture/repository";
+  const invoke = (args) => spawnSync(process.execPath, [join(f.cwd, "bin/gh"), ...args], {
+    env: f.environment, encoding: "utf8",
+  });
+  for (const args of [["api", endpoint], ["api", "--hostname", "github.com", endpoint]]) {
+    const result = invoke(args);
+    assert.equal(result.status, 0, result.stderr);
+    assert.deepEqual(JSON.parse(result.stdout), {default_branch: "main"});
+  }
+  for (const args of [
+    ["api", "--hostname", "other.example", endpoint],
+    ["api", "--hostname", "github.com", "--hostname", "github.com", endpoint],
+    ["api", "--method", "POST", endpoint],
+    ["api", "-X", "GET", endpoint],
+    ["api", "--unknown", endpoint],
+    ["api", "repos/foreign/repository/releases/tags/v1.2.3"],
+    ["api", endpoint, "--hostname", "github.com"],
+    ["release", endpoint],
+  ]) assert.notEqual(invoke(args).status, 0, JSON.stringify(args));
+});
 test("real PR source seal and import bind event, actual Git head, base and same producer run", (t) => {
   const f = fixture(t);
   git(f.cwd, "checkout", "-b", "actual-pr");

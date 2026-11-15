@@ -92,9 +92,17 @@ test('unchanged continuation pings advance a literal plan without third repeated
 });
 test('a genuine earlier plan remains before the new append and target bytes',async()=>{
  const prior=planLinksNotation(composeGeneralChangePlan('Create `prior.txt` containing preserved history.'));
- const result=await replay(retention,null,{initial:{'.formal-ai/general-change-plan.lino':prior}});
+ const request='Set the contents of `policy/retention.md` to exactly this content: '+retentionBytes;
+ const result=await replay(request,null,{initial:{'.formal-ai/general-change-plan.lino':prior}});
  assert.equal(result.files.get('policy/retention.md'),retentionBytes);
  const history=result.files.get('.formal-ai/general-change-plan.lino');assert.ok(history.startsWith(prior));assert.ok(history.length>prior.length);assert.ok(result.final);
+});
+test('original Create preserves earlier history without appending a plan',async()=>{
+ const prior=planLinksNotation(composeGeneralChangePlan('Create `prior.txt` containing preserved history.'));
+ const result=await replay(retention,null,{initial:{'.formal-ai/general-change-plan.lino':prior}});
+ assert.equal(result.files.get('policy/retention.md'),retentionBytes);
+ assert.equal(result.files.get('.formal-ai/general-change-plan.lino'),prior);
+ assert.ok(result.final);
 });
 test('unchanged terse source fact retains the actual sentinel in result and proof',async()=>{
  const prompt='Verify that a leaf without an observable completion contract is never treated as independently checkable. Create `agent-ladder-effects/node.lino` with these exact field lines: `node_path=1.1`, `node_depth=5`, `node_kind=leaf`, and `result=` followed by at least four words that state the task result actually observed in this checkout. Leave supporting evidence in `.agent-ladder/node-proof.md`. The first line must be exactly `node_path=1.1`.';

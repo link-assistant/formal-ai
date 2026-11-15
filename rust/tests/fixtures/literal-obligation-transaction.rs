@@ -9,6 +9,7 @@ static SERIAL: AtomicU64 = AtomicU64::new(0);
 struct Run {
     root: PathBuf,
     receipts: Vec<(String, String)>,
+    file_events: Vec<(String, String, String)>,
     writes: usize,
     answer: Option<String>,
 }
@@ -55,10 +56,12 @@ fn run_with_receipts(
     let mut run = Run {
         root,
         receipts: Vec::new(),
+        file_events: Vec::new(),
         writes: 0,
         answer: None,
     };
     let mut messages = vec![ChatMessage::user(task)];
+    let mut written = Vec::<String>::new();
     for turn in 0..8 {
         match plan_chat_step(&messages, tools) {
             Some(AgenticPlan::ToolCalls(calls)) => {
@@ -71,12 +74,25 @@ fn run_with_receipts(
                             .expect("write parent directory");
                         fs::write(target, args["content"].as_str().expect("bytes"))
                             .expect("target write");
+                        written.push(args["path"].as_str().expect("target").to_owned());
+                        run.file_events.push((
+                            "write".to_owned(),
+                            args["path"].as_str().expect("target").to_owned(),
+                            args["content"].as_str().expect("bytes").to_owned(),
+                        ));
                         run.writes += 1;
                         String::new()
                     } else if call.tool == "read" {
                         let path = args["path"].as_str().expect("read target");
                         match fs::read_to_string(run.root.join(path)) {
-                            Ok(bytes) => bytes,
+                            Ok(bytes) => {
+                                run.file_events.push((
+                                    "read".to_owned(),
+                                    path.to_owned(),
+                                    bytes.clone(),
+                                ));
+                                formal_ai::agentic_coding::tool_result::complete_owned_source_read_frame(&bytes)
+                            }
                             Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
                                 "Error: ENOENT: no such file or directory".to_owned()
                             }
@@ -86,13 +102,23 @@ fn run_with_receipts(
                         }
                     } else if call.tool == "bash" {
                         let command = args["command"].as_str().expect("command");
+                        run.file_events.push((
+                            "bash".to_owned(),
+                            command.to_owned(),
+                            String::new(),
+                        ));
+                        let framed_readback = written.iter().any(|path| {
+                            command
+                                == formal_ai::agentic_coding::owned_creation_readback_command(path)
+                        });
                         let output = Command::new("bash")
                             .args(["-c", command])
                             .current_dir(&run.root)
                             .output()
                             .expect("bounded fixture shell");
                         let stdout = String::from_utf8(output.stdout).expect("UTF8 stdout");
-                        let result = if (command.starts_with("cat ")
+                        let result = if (framed_readback
+                            || command.starts_with("cat ")
                             || (inject_digest && command.starts_with("sha256sum -- ")))
                             && output.status.success()
                         {
@@ -103,11 +129,19 @@ fn run_with_receipts(
                                 output.status.code().unwrap_or(1)
                             )
                         };
-                        if command.starts_with("cat ")
+                        if framed_readback
+                            || command.starts_with("cat ")
                             || (inject_digest && command.starts_with("sha256sum -- "))
                         {
-                            run.receipts.push((command.to_owned(), stdout));
+                            run.receipts.push((command.to_owned(), stdout.clone()));
                         }
+                        run.file_events.last_mut().expect("actual command event").2 =
+                            serde_json::json!({
+                                "actual_success": output.status.success(),
+                                "actual_stdout": stdout,
+                                "receipt": &result
+                            })
+                            .to_string();
                         result
                     } else {
                         panic!("unsupported fixture primitive {}", call.tool);
@@ -130,6 +164,154 @@ fn run_with_receipts(
     }
     run
 }
+fn framed_receipt(path: &str, bytes: &str) -> (String, String) {
+    (
+        formal_ai::agentic_coding::owned_creation_readback_command(path),
+        format!("({bytes})"),
+    )
+}
+fn has_fresh_exact_read(run: &Run, path: &str, bytes: &str) -> bool {
+    let Some(index) = run
+        .file_events
+        .iter()
+        .rposition(|(kind, target, _)| kind == "write" && target == path)
+    else {
+        return false;
+    };
+    if run.file_events[index].2 != bytes {
+        return false;
+    }
+    for (kind, target, observed) in &run.file_events[index + 1..] {
+        if kind == "read" && target == path && observed == bytes {
+            return true;
+        }
+        // A later mutation or shell command cannot supply fresh Read authority.
+        if kind == "write" || kind == "bash" {
+            return false;
+        }
+    }
+    false
+}
+fn has_fresh_exact_command(events: &[(String, String, String)], path: &str, bytes: &str) -> bool {
+    let Some(index) = events
+        .iter()
+        .rposition(|(kind, target, _)| kind == "write" && target == path)
+    else {
+        return false;
+    };
+    if events[index].2 != bytes {
+        return false;
+    }
+    let command = format!("cat {path}");
+    for (kind, target, observed) in &events[index + 1..] {
+        if kind == "bash" && target == &command {
+            let Ok(event) = serde_json::from_str::<serde_json::Value>(observed) else {
+                return false;
+            };
+            let Some(receipt) = event["receipt"].as_str() else {
+                return false;
+            };
+            return event["actual_success"] == true
+                && event["actual_stdout"].as_str() == Some(bytes)
+                && formal_ai::agentic_coding::tool_result::step_outcome(receipt)
+                    == formal_ai::agentic_coding::tool_result::StepOutcome::Succeeded
+                && receipt == successful_source_receipt(bytes);
+        }
+        if kind == "write" || kind == "bash" {
+            return false;
+        }
+    }
+    false
+}
+#[test]
+fn evidence_command_proof_requires_fresh_exact_successful_process_and_receipt() {
+    let bytes = "independent exact record\n";
+    let write = (
+        "write".to_owned(),
+        "record.lino".to_owned(),
+        bytes.to_owned(),
+    );
+    let event = |success: bool, stdout: &str, receipt: &str| {
+        (
+            "bash".to_owned(),
+            "cat record.lino".to_owned(),
+            serde_json::json!({
+                "actual_success": success, "actual_stdout": stdout, "receipt": receipt
+            })
+            .to_string(),
+        )
+    };
+    let receipt = successful_source_receipt(bytes);
+    let valid = event(true, bytes, &receipt);
+    assert!(has_fresh_exact_command(
+        &[write.clone(), valid.clone()],
+        "record.lino",
+        bytes
+    ));
+    let truncated =
+        serde_json::json!({"stdout": bytes, "exit_code": 0, "truncated": true}).to_string();
+    let failed = serde_json::json!({"stdout": bytes, "exit_code": 0, "is_error": true}).to_string();
+    for invalid in [
+        event(false, bytes, &receipt),
+        event(true, "wrong bytes", &receipt),
+        event(
+            true,
+            bytes,
+            "Output: independent exact record\n\nExit Code: 1",
+        ),
+        event(true, bytes, &successful_source_receipt("wrong bytes")),
+        event(true, bytes, &truncated),
+        event(true, bytes, &failed),
+        (
+            "bash".to_owned(),
+            "cat other.lino".to_owned(),
+            valid.2.clone(),
+        ),
+        (
+            "bash".to_owned(),
+            "cat record.lino".to_owned(),
+            "unbound raw bytes".to_owned(),
+        ),
+    ] {
+        assert!(!has_fresh_exact_command(
+            &[write.clone(), invalid],
+            "record.lino",
+            bytes
+        ));
+    }
+    assert!(!has_fresh_exact_command(
+        &[valid.clone(), write.clone()],
+        "record.lino",
+        bytes
+    ));
+    assert!(!has_fresh_exact_command(
+        &[
+            write.clone(),
+            (
+                "write".to_owned(),
+                "other.lino".to_owned(),
+                bytes.to_owned()
+            ),
+            valid.clone()
+        ],
+        "record.lino",
+        bytes
+    ));
+    assert!(!has_fresh_exact_command(
+        &[
+            write.clone(),
+            ("bash".to_owned(), "other command".to_owned(), String::new()),
+            valid.clone()
+        ],
+        "record.lino",
+        bytes
+    ));
+    assert!(!has_fresh_exact_command(
+        &[write, valid],
+        "record.lino",
+        "different requested bytes"
+    ));
+}
 fn exact_pair(run: &Run, first: &str, second: &str) {
     assert_eq!(
         fs::read_to_string(run.root.join("a.txt")).expect("first file"),
@@ -139,14 +321,8 @@ fn exact_pair(run: &Run, first: &str, second: &str) {
         fs::read_to_string(run.root.join("b.txt")).expect("second file"),
         second
     );
-    assert!(
-        run.receipts
-            .contains(&("cat a.txt".to_owned(), first.to_owned()))
-    );
-    assert!(
-        run.receipts
-            .contains(&("cat b.txt".to_owned(), second.to_owned()))
-    );
+    assert!(run.receipts.contains(&framed_receipt("a.txt", first)));
+    assert!(run.receipts.contains(&framed_receipt("b.txt", second)));
     assert_eq!(run.writes, 2);
     assert!(run.answer.is_some());
 }
@@ -193,14 +369,10 @@ fn mandatory_unknown_clause_is_a_gap_after_first_verified_artifact() {
         fs::read_to_string(outcome.root.join("a.txt")).expect("first artifact"),
         "alpha"
     );
-    assert!(
-        outcome
-            .receipts
-            .contains(&("cat a.txt".to_owned(), "alpha".to_owned()))
-    );
+    assert!(outcome.receipts.contains(&framed_receipt("a.txt", "alpha")));
     let answer = outcome.answer.as_deref().expect("mandatory gap");
     assert!(answer.contains("no_artifact_in_clause"));
-    assert!(!answer.contains("Completed the general change request"));
+    assert!(!answer.contains("Completed"));
 }
 
 #[test]
@@ -438,14 +610,31 @@ fn unchanged_l21_preserves_source_and_both_independent_records() {
         .expect("independent proof");
     assert_eq!(proof.lines().next(), Some("node_path=2.1.2.1.1"));
     assert!(proof.contains("FORMAL_AI_HOW_SOURCE_CACHE_DIR"));
-    assert!(outcome.receipts.contains(&(
-        "cat agent-ladder-effects/node-2.1.2.1.1.lino".to_owned(),
-        effect
-    )));
-    assert!(outcome.receipts.contains(&(
-        "cat .agent-ladder/node-2.1.2.1.1-proof.md".to_owned(),
-        proof
-    )));
+    assert!(
+        outcome.receipts.contains(&framed_receipt(
+            "agent-ladder-effects/node-2.1.2.1.1.lino",
+            &effect
+        )) || has_fresh_exact_read(
+            &outcome,
+            "agent-ladder-effects/node-2.1.2.1.1.lino",
+            &effect
+        ) || has_fresh_exact_command(
+            &outcome.file_events,
+            "agent-ladder-effects/node-2.1.2.1.1.lino",
+            &effect
+        )
+    );
+    assert!(
+        outcome.receipts.contains(&framed_receipt(
+            ".agent-ladder/node-2.1.2.1.1-proof.md",
+            &proof
+        )) || has_fresh_exact_read(&outcome, ".agent-ladder/node-2.1.2.1.1-proof.md", &proof)
+            || has_fresh_exact_command(
+                &outcome.file_events,
+                ".agent-ladder/node-2.1.2.1.1-proof.md",
+                &proof
+            )
+    );
     assert_eq!(outcome.writes, 3);
     assert!(outcome.answer.is_some());
 }

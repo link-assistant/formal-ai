@@ -10,9 +10,11 @@ import { before, describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
-import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+import { ensureNodeHost } from '../../../js/server/node-host-install.mjs';
 
 let planChatStep;
+let planChatStepResolved;
+let projectPlan;
 let commandArgument;
 let commandArgumentKey;
 let projectDeclaredCommandKeys;
@@ -22,8 +24,9 @@ let parseChatRequest;
 const worker = new WorkerHost();
 
 before(async () => {
-  await installNodeHost(worker);
-  ({ planChatStep } = await import('../../../js/agentic/planner.mjs'));
+  await ensureNodeHost({worker}, {sourceUsageRustGrammar: false});
+  ({ planChatStep, planChatStepResolved } = await import('../../../js/agentic/planner.mjs'));
+  ({ projectPlan } = await import('../../../js/agentic/plan.mjs'));
   ({ commandArgument, commandArgumentKey, projectDeclaredCommandKeys } = await import(
     '../../../js/agentic/tool_result.mjs'
   ));
@@ -120,9 +123,11 @@ describe('issue #1154 one shell-argument reading (JavaScript root)', () => {
   test('R1154-1: the server entry applies the projection before planning', async () => {
     const body = { model: 'formal-ai', messages: transcript('shell', { shell_command: READ }), tools: [CUSTOM_SHELL] };
     const outcome = await agenticOutcome({ worker, agentMode: true }, parseChatRequest(JSON.stringify(body)), () => ({}));
-    const canonical = await planChatStep(transcript('shell', { command: READ }), ['shell']);
+    const canonicalMessages = transcript('shell', { command: READ });
+    const canonical = await planChatStepResolved(canonicalMessages, ['shell']);
     assert.equal(outcome.kind, 'planned', JSON.stringify(outcome));
     assert.deepEqual(outcome.plan, canonical);
+    assert.deepEqual(projectPlan(outcome.plan), await planChatStep(canonicalMessages, ['shell']));
   });
 
   test('R1154-3: the Codex `cmd` read drives execution instead of repeating', async () => {

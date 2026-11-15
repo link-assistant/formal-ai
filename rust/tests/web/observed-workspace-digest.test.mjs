@@ -32,9 +32,11 @@ test('grounded workspace edit verifies receipt payload, preserving actual failed
    if(next?.kind==='final'){answer=next.answer;break;}
    assert.equal(next?.kind,'tool_calls');const call=next.calls[0],args=JSON.parse(call.arguments);calls.push(call.tool);
    let output='';if(call.tool==='read')output=bytes;
+   if(call.tool==='read'||call.tool==='edit')assert.equal(args.path??args.filePath??args.file_path,'f.txt');
    if(call.tool==='edit')bytes=bytes.replace(args.oldString,()=>args.newString);
    if(call.tool==='bash')output=receipt(digest(bytes)+'  f.txt\n');
-   const id='call_'+step;messages.push({role:'assistant',content:'',tool_calls:[{id,type:'function',function:{name:call.tool,arguments:call.arguments}}]},{role:'tool',tool_call_id:id,content:output});
+   const id='call_'+step;messages.push({role:'assistant',content:'',tool_calls:[{id,type:'function',function:{name:call.tool,arguments:call.arguments}}]},{role:'tool',tool_call_id:id,name:call.tool,content:output,
+    ...(call.tool==='read'?{source_read:{path:'f.txt',success:true,complete:true,format:'raw'}}:{})});
   }
   assert.equal(bytes,'header\n报告 new\nfooter\n');assert.deepEqual(calls,['read','edit','bash']);
   assert.equal(answer.includes('Verification failed'),!successReceipts.includes(receipt));

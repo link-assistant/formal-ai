@@ -12,6 +12,8 @@
 
 import { EventLog, finalizeSimple } from './memory-answer.mjs';
 import { serverMessage } from './messages.mjs';
+import { isAnswerFormCue, isBoundedRule, isValidTopic } from './standing-requirement-bounds.mjs';
+import { thinkingStep } from './thinking.mjs';
 
 const AMENDMENT_KIND = 'meta_algorithm_amendment';
 const ANTICIPATION_SOURCE_KIND = 'anticipation_source';
@@ -24,7 +26,10 @@ function structuredValue(value, key) {
   return text.startsWith(`${key}=`) ? text.slice(key.length + 1) : text;
 }
 
-/** Mirrors `retained_amendments`: sorted by topic then id, adjacent repeats dropped. */
+/**
+ * Mirrors `retained_amendments`: the valid amendments (a real topic, a rule
+ * inside the bounds), sorted by topic then id, adjacent repeats dropped.
+ */
 export function retainedAmendments(events) {
   const amendments = [];
   for (const event of events) {
@@ -34,7 +39,10 @@ export function retainedAmendments(events) {
     if (topic === null || rule === null) continue;
     const trimmedTopic = String(topic).trim();
     const trimmedRule = String(rule).trim();
-    if (trimmedTopic && trimmedRule) amendments.push({ id: String(event.id), topic: trimmedTopic, rule: trimmedRule });
+    // Issue #1559: an amendment learned before the bounds existed — a pronoun
+    // topic, a whole prompt as its rule — is never applied.
+    if (!isValidTopic(trimmedTopic) || !isBoundedRule(trimmedRule)) continue;
+    amendments.push({ id: String(event.id), topic: trimmedTopic, rule: trimmedRule });
   }
   const order = (left, right) => (left < right ? -1 : left > right ? 1 : 0);
   amendments.sort((left, right) => order(left.topic, right.topic) || order(left.id, right.id));
@@ -69,9 +77,30 @@ export function topicMatches(prompt, topic) {
   return words.length > 1 && words.every((word) => containsToken(text, word));
 }
 
-/** Mirrors `matching_amendments`. */
+/**
+ * Mirrors `matching_amendments`. A requirement about the form of every answer
+ * ("Always answer in Russian", topic `answer`) matches every prompt in its
+ * scope; any other matches the prompts that name its topic.
+ */
 function matchingAmendments(prompt, amendments) {
-  return amendments.filter((amendment) => topicMatches(prompt, amendment.topic));
+  return amendments.filter((amendment) => isAnswerFormCue(amendment.topic.toLowerCase())
+    || topicMatches(prompt, amendment.topic));
+}
+
+/**
+ * Mirrors `applied_amendment_steps` (issue #1559 §5): the retained
+ * amendments an agentic final answer was given under, listed in the trace
+ * with an evidence link each — never appended to the answer an agent
+ * publishes outside the conversation.
+ */
+export function appliedAmendmentSteps(prompt, events) {
+  return matchingAmendments(prompt, retainedAmendments(events)).map((amendment, order) => thinkingStep(
+    order,
+    'match_rule',
+    `${STANDING_REQUIREMENT_INTENT}:${amendment.topic}`,
+    'high',
+    `${AMENDMENT_KIND}:${amendment.id}`,
+  ));
 }
 
 /** Mirrors `amendment_lines`. */

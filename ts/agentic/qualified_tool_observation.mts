@@ -137,7 +137,7 @@ export function qualifiedTranscriptFrames(messages, start) {
 }
 
 /** Mirrors fn canonical_creation_path: an exact round-trip of the maintained Add File producer. */
-export function canonicalCreationPath(raw) {
+export function canonicalCreation(raw) {
   const prefix = `${PATCH_BEGIN}\n${PATCH_ADD_FILE} `;
   const ending = `${PATCH_END}\n`;
   if (typeof raw !== 'string' || !raw.startsWith(prefix) || !raw.endsWith(ending)) return null;
@@ -146,9 +146,14 @@ export function canonicalCreationPath(raw) {
   const path = raw.slice(prefix.length, end);
   const body = raw.slice(end + 1, -ending.length);
   if (path === '' || !body.startsWith('+') || !body.endsWith('\n') || /\n(?!\+|$)/u.test(body)) return null;
-  const content = body.replace(/^\+/gmu, '');
+  const content = body.split('\n').slice(0, -1).map(line => line.slice(1)).join('\n') + '\n';
   return canonicalApplyPatchInput(JSON.stringify({
     path,
     content
-  })) === raw ? path : null;
+  })) === raw ? immutable({path, content}) : null;
+}
+
+/** Backwards-compatible target-only view of the exact decoded AddFile. */
+export function canonicalCreationPath(raw) {
+  return canonicalCreation(raw)?.path ?? null;
 }

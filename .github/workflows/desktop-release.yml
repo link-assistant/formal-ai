@@ -126,7 +126,7 @@ jobs:
           test "$(git rev-parse HEAD)" = "$NATIVE_PROTOCOL_COMMIT"
           protocol_dir="$RUNNER_TEMP/formal-ai-native-release-protocol"
           mkdir -p "$protocol_dir"
-          cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs "$protocol_dir/"
+          cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs scripts/resolve-package-release.mjs "$protocol_dir/"
           cp scripts/native-release-evidence.mjs scripts/build-selected-wasm.mjs "$protocol_dir/"
           echo "FORMAL_AI_NATIVE_PROTOCOL_DIR=$protocol_dir" >> "$GITHUB_ENV"
           node --input-type=module - "$protocol_dir" <<'NODE'
@@ -135,7 +135,7 @@ jobs:
           import {join} from 'node:path';
           import {execFileSync} from 'node:child_process';
           const directory=process.argv[2];
-          const files=['build-selected-wasm.mjs','native-release-source.mjs','native-release-artifact.mjs','native-release-evidence.mjs','native-release-trust.mjs'].map(name=>{
+          const files=['build-selected-wasm.mjs','native-release-source.mjs','native-release-artifact.mjs','native-release-evidence.mjs','native-release-trust.mjs','resolve-package-release.mjs'].map(name=>{
             const bytes=readFileSync(join(directory,name));
             return {name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};
           });
@@ -296,7 +296,7 @@ jobs:
           test "$(git rev-parse HEAD)" = "$NATIVE_PROTOCOL_COMMIT"
           protocol_dir="$RUNNER_TEMP/formal-ai-native-release-protocol"
           mkdir -p "$protocol_dir"
-          cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs "$protocol_dir/"
+          cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs scripts/resolve-package-release.mjs "$protocol_dir/"
           cp scripts/native-release-evidence.mjs scripts/build-selected-wasm.mjs scripts/run-with-budget-warning.sh "$protocol_dir/"
           echo "FORMAL_AI_NATIVE_PROTOCOL_DIR=$protocol_dir" >> "$GITHUB_ENV"
           node --input-type=module - "$protocol_dir" <<'NODE'
@@ -305,7 +305,7 @@ jobs:
           import {join} from 'node:path';
           import {execFileSync} from 'node:child_process';
           const directory=process.argv[2];
-          const files=['build-selected-wasm.mjs','native-release-source.mjs','native-release-artifact.mjs','native-release-evidence.mjs','native-release-trust.mjs'].map(name=>{
+          const files=['build-selected-wasm.mjs','native-release-source.mjs','native-release-artifact.mjs','native-release-evidence.mjs','native-release-trust.mjs','resolve-package-release.mjs'].map(name=>{
             const bytes=readFileSync(join(directory,name));
             return {name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};
           });
@@ -442,7 +442,7 @@ jobs:
           test "$(git rev-parse HEAD)" = "$NATIVE_PROTOCOL_COMMIT"
           protocol_dir="$RUNNER_TEMP/formal-ai-native-release-protocol"
           mkdir -p "$protocol_dir"
-          cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs "$protocol_dir/"
+          cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs scripts/resolve-package-release.mjs "$protocol_dir/"
           cp scripts/native-release-evidence.mjs scripts/build-selected-wasm.mjs "$protocol_dir/"
           cp desktop/scripts/prefetch-windows-packaging.mjs desktop/scripts/prefetch-builder-toolsets.mjs scripts/install-node-dependencies.sh "$protocol_dir/"
           echo "FORMAL_AI_PACKAGING_PROTOCOL_COMMIT=$NATIVE_PROTOCOL_COMMIT" >> "$GITHUB_ENV"
@@ -453,7 +453,7 @@ jobs:
           import {join} from 'node:path';
           import {execFileSync} from 'node:child_process';
           const directory=process.argv[2];
-          const files=['build-selected-wasm.mjs','native-release-source.mjs','native-release-artifact.mjs','native-release-evidence.mjs','native-release-trust.mjs'].map(name=>{
+          const files=['build-selected-wasm.mjs','native-release-source.mjs','native-release-artifact.mjs','native-release-evidence.mjs','native-release-trust.mjs','resolve-package-release.mjs'].map(name=>{
             const bytes=readFileSync(join(directory,name));
             return {name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};
           });
@@ -927,7 +927,7 @@ jobs:
           test "$(git rev-parse HEAD)" = "$NATIVE_PROTOCOL_COMMIT"
           protocol_dir="$RUNNER_TEMP/formal-ai-native-release-protocol"
           mkdir -p "$protocol_dir"
-          cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs "$protocol_dir/"
+          cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs scripts/resolve-package-release.mjs "$protocol_dir/"
           cp scripts/native-release-evidence.mjs scripts/build-selected-wasm.mjs "$protocol_dir/"
           echo "FORMAL_AI_NATIVE_PROTOCOL_DIR=$protocol_dir" >> "$GITHUB_ENV"
           node --input-type=module - "$protocol_dir" <<'NODE'
@@ -936,7 +936,7 @@ jobs:
           import {join} from 'node:path';
           import {execFileSync} from 'node:child_process';
           const directory=process.argv[2];
-          const files=['build-selected-wasm.mjs','native-release-source.mjs','native-release-artifact.mjs','native-release-evidence.mjs','native-release-trust.mjs'].map(name=>{
+          const files=['build-selected-wasm.mjs','native-release-source.mjs','native-release-artifact.mjs','native-release-evidence.mjs','native-release-trust.mjs','resolve-package-release.mjs'].map(name=>{
             const bytes=readFileSync(join(directory,name));
             return {name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};
           });
@@ -1078,7 +1078,7 @@ jobs:
           test "$(git rev-parse HEAD)" = "$NATIVE_PROTOCOL_COMMIT"
           protocol_dir="$RUNNER_TEMP/formal-ai-native-release-protocol"
           mkdir -p "$protocol_dir"
-          cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs "$protocol_dir/"
+          cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs scripts/resolve-package-release.mjs "$protocol_dir/"
           cp scripts/native-release-evidence.mjs scripts/build-selected-wasm.mjs "$protocol_dir/"
           echo "FORMAL_AI_NATIVE_PROTOCOL_DIR=$protocol_dir" >> "$GITHUB_ENV"
           node --input-type=module - "$protocol_dir" <<'NODE'
@@ -1087,7 +1087,7 @@ jobs:
           import {join} from 'node:path';
           import {execFileSync} from 'node:child_process';
           const directory=process.argv[2];
-          const files=['build-selected-wasm.mjs','native-release-source.mjs','native-release-artifact.mjs','native-release-evidence.mjs','native-release-trust.mjs'].map(name=>{
+          const files=['build-selected-wasm.mjs','native-release-source.mjs','native-release-artifact.mjs','native-release-evidence.mjs','native-release-trust.mjs','resolve-package-release.mjs'].map(name=>{
             const bytes=readFileSync(join(directory,name));
             return {name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};
           });
@@ -1231,7 +1231,7 @@ jobs:
           test "$(git rev-parse HEAD)" = "$NATIVE_PROTOCOL_COMMIT"
           protocol_dir="$RUNNER_TEMP/formal-ai-native-release-protocol"
           mkdir -p "$protocol_dir"
-          cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs "$protocol_dir/"
+          cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs scripts/resolve-package-release.mjs "$protocol_dir/"
           cp scripts/native-release-evidence.mjs scripts/build-selected-wasm.mjs "$protocol_dir/"
           cp scripts/release-advertisement.mjs scripts/release-protocol.mjs "$protocol_dir/"
           cp scripts/release-producer-output-receipt.mjs scripts/release-checksums.mjs "$protocol_dir/"
@@ -1245,7 +1245,7 @@ jobs:
           import {join} from 'node:path';
           import {execFileSync} from 'node:child_process';
           const directory=process.argv[2];
-          const files=['build-selected-wasm.mjs','native-release-source.mjs','native-release-artifact.mjs','native-release-evidence.mjs','native-release-trust.mjs'].map(name=>{
+          const files=['build-selected-wasm.mjs','native-release-source.mjs','native-release-artifact.mjs','native-release-evidence.mjs','native-release-trust.mjs','resolve-package-release.mjs'].map(name=>{
             const bytes=readFileSync(join(directory,name));
             return {name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};
           });

@@ -242,7 +242,8 @@ fn prompt_evidence_holds(kind: &str, prompt: &str, normalized: &str) -> Option<b
             !crate::solver_handlers::numeric_list::parse_numbers(&lowered).is_empty()
         }
         "calculation_expression" => {
-            !crate::calculation::calculation_expression_candidates(prompt).is_empty()
+            crate::quantity_constraint::owns_prompt(prompt)
+                || !crate::calculation::calculation_expression_candidates(prompt).is_empty()
         }
         "currency_rate_basis" => {
             crate::solver_handlers::calculator_rate::asks_for_usd_rate_basis(canonical)
@@ -265,7 +266,8 @@ fn prompt_evidence_holds(kind: &str, prompt: &str, normalized: &str) -> Option<b
         )
         .is_some(),
         "measured_quantity" => {
-            !crate::solver_handlers::numeric_list::parse_numbers(&lowered).is_empty()
+            !crate::quantity_constraint::owns_prompt(prompt)
+                && !crate::solver_handlers::numeric_list::parse_numbers(&lowered).is_empty()
                 && crate::solver_handlers::unit_conversion::unit_mentions(&lowered).len() == 2
         }
         "calendar_anchor" => {

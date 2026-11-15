@@ -1,0 +1,57 @@
+Solver-written "### Changes" block in the pull request description is never refreshed after it is written
+
+## What happens
+
+When a session leaves the placeholder description in place, the solver writes a fallback description with a "### Changes" block computed from the diff at that moment. Later runs on the same pull request never update or remove that block, so the description keeps a statement about the diff that is no longer true. The pull request is then marked ready for review, and in one case reported "Ready to merge", with that statement at the top.
+
+State on 2026-11-10 after three runs of solve v2.39.10 (GitHub API: `body`, `lastEditedAt`, `changedFiles`). The provider used in these runs is Formal AI; the block is written and left stale by the solver, independent of tool and model.
+
+| Pull request | "### Changes" block in the description | Description last edited | Real diff today | Final state |
+|---|---|---|---|---|
+| https://github.com/konard/test-hello-world-019fb331-c107-78c7-8ff6-9f127a3c593c/pull/2 | "- No files were changed by this pull request yet (it contains only the placeholder file the solver commits to open a pull request)" | 2026-08-08T15:39:22Z | 5 files, +16/-0 | ready for review |
+| https://github.com/konard/test-hello-world-019fb330-00e1-73b9-955e-f357a1600d5b/pull/2 | "- 1 file(s) modified", "- 1 line(s) added", "- 0 line(s) removed" | 2026-07-30T14:14:29Z | 6 files, +1495/-0 | draft |
+| https://github.com/konard/test-hello-world-019fb330-fa49-7c9d-a664-b7ea33bb698a/pull/2 | "- 1 file(s) modified", "- 1 line(s) added", "- 0 line(s) removed" | 2026-07-30T14:20:11Z | 7 files, +149/-0 | ready for review, comment "Ready to merge" |
+
+The "Ready to merge" comment on the third pull request: https://github.com/konard/test-hello-world-019fb330-fa49-7c9d-a664-b7ea33bb698a/pull/2#issuecomment-6763753979 (2026-11-10T09:25:28Z).
+
+In all three cases the block is more than three months old and the runs of 2026-11-10 did not touch the description.
+
+## Expected
+
+A statement about the diff that the solver wrote itself is either kept true or removed. Before a pull request is marked ready for review or reported mergeable, a solver-written "### Changes" block matches the current diff, or is gone. Text written by the agent or by a human stays untouched (the decision recorded in #2549).
+
+## Root cause
+
+Code read at 2.39.14 (commit b245deb62fbbca42625753587575416c50d81727). The evidence runs are 2.39.10; whether the cited lines are identical in 2.39.10 was not verified.
+
+- The fallback description is written only while the placeholder text is still present: [`src/solve.results.lib.mjs` lines 756-808](https://github.com/link-assistant/hive-mind/blob/b245deb62fbbca42625753587575416c50d81727/src/solve.results.lib.mjs#L756-L808), condition `if (hasPlaceholder && !argv.autoRestartOnNonUpdatedPullRequestDescription)`, with `PR_BODY_PLACEHOLDER_PATTERNS` at line 86. After the first write the placeholder is gone, so the branch never runs again for that pull request.
+- Lines 809-811 state the intent for the other case: "Issue #2549: a description the agent wrote is left as it is. Only the placeholder above is replaced ... No generated "Changes" section is appended". That rule covers agent-written text. It leaves no path that revisits the block the solver wrote.
+- The block comes from `formatChangeSummary` and `formatChangesSection` ([`src/pull-request-changes.lib.mjs` lines 345-375](https://github.com/link-assistant/hive-mind/blob/b245deb62fbbca42625753587575416c50d81727/src/pull-request-changes.lib.mjs#L345-L375)). The current code wraps it in `<!-- hive-mind:changes:start -->` / `<!-- hive-mind:changes:end -->` (lines 363-364). A search of `src/` shows these two markers are written here and read nowhere, so nothing can find and refresh the block.
+- The three descriptions above predate the markers: their blocks are unmarked. A refresh therefore also has to recognise the unmarked form.
+- `ensurePullRequestIsReady` (`src/pr-draft-state.lib.mjs` lines 400-427) checks the measured diff, not the description. Whether the code that posts "Ready to merge" reads the description was not verified; the observed result is that it was posted with the stale block in place.
+
+Not a clean example, checked and left out: https://github.com/link-assistant/formal-ai/pull/1549 carries a marked block "No files were changed by this pull request yet" with 3 changed files, but the block was written in the same run and the 3 files are files the solver itself adds (`.gitkeep` and the development log), which the solver's count excludes on purpose (`src/pull-request-changes.lib.mjs` lines 210-230, `isSolverBookkeepingFile`).
+
+## Suggested fix
+
+- At the end of every run, and before `ensurePullRequestIsReady` and the "Ready to merge" report, look for the solver's block in the description: first by the two markers, then by the unmarked legacy form (a "### Changes" heading followed only by lines produced by `formatChangeSummary`).
+- If found, replace it with a freshly computed block, or delete it when the description has other content. Do not touch anything outside the block.
+- If no solver block is present, do nothing (#2549 stays as decided).
+- Add a test: description with a stale marked block and a stale unmarked block, diff changes, run end rewrites only the block.
+
+## Evidence
+
+- `gh pr view 2 --repo <repo> --json body,changedFiles,additions,deletions,isDraft` and GraphQL `lastEditedAt` for the three pull requests in the table, read on 2026-11-10.
+- https://github.com/konard/test-hello-world-019fb330-fa49-7c9d-a664-b7ea33bb698a/pull/2#issuecomment-6763753979
+
+## Related issues
+
+- Related: #2318 (asked for the description to be regenerated from the real diff; state: not open).
+- Related: #2549 (asked not to append a list of changes to a finished description; state: not open).
+- The code cited above names #2549 as the reason an agent-written description is left alone. The block written by the solver itself is the case that neither of the two covers today.
+
+Reported from the analysis in https://github.com/link-assistant/formal-ai/issues/1548.
+
+
+
+__formal_ai_exit=0
