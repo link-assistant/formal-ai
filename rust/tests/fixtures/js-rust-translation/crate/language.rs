@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=bd26384c689b15d9bbd99a217ab3f830af3c312b9b1f8e2f75d36e081ee384a3 bytes=17868
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=77fc0b04e970edeb4632a8aecbec91a4d595134f3c38f6428a1ee9bc6a7df8bd bytes=18528
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds array-push items=1; string-methods items=1
 
@@ -339,6 +339,10 @@ pub const QUOTATION_OPENERS_AFTER: &str = "([{|";
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
 // formal-ai:blockers JSDoc type {…} | call of a sibling function
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal method call .indexOf()
+// formal-ai:blockers assignment of a field or element | call of a sibling function | destructuring | global call String() | method call .indexOf() | method call .slice() | nullish coalescing
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null

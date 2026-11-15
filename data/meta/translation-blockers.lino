@@ -11,7 +11,7 @@
 # `unlock` rows are the greedy order: lifting the constructs down to a row
 # together leaves `cumulative` items with nothing refused by this scan.
 translation_blockers
-  carried_items 2477
+  carried_items 2478
   scanned_clear 14
   blockers_per_item 0 14
   blockers_per_item 1 793
@@ -20,7 +20,7 @@ translation_blockers
   blockers_per_item 4 211
   blockers_per_item 5 205
   blockers_per_item 6 141
-  blockers_per_item 7 106
+  blockers_per_item 7 107
   blockers_per_item 8 84
   blockers_per_item 9 87
   blockers_per_item 10 61
@@ -47,7 +47,7 @@ translation_blockers
   blockers_per_item 35 1
   blockers_per_item 41 1
   blockers_per_item 43 1
-construct "call of a sibling function" items 914 only 36
+construct "call of a sibling function" items 915 only 36
 construct "field access" items 897 only 25
 construct "call of an imported function" items 665 only 17
 construct "null" items 589 only 5
@@ -56,14 +56,14 @@ construct "arrow function" items 361 only 2
 construct "import of names its module carries" items 339 only 339
 construct "method call .map()" items 281 only 0
 construct "method call .push()" items 278 only 4
-construct "method call .slice()" items 275 only 6
+construct "method call .slice()" items 276 only 6
 construct "method call .filter()" items 254 only 0
 construct "JSDoc type {…}" items 253 only 5
 construct "arrow callback of .map()" items 236 only 0
 construct "regular expression" items 236 only 35
 construct "sibling value" items 211 only 16
 construct "arrow callback of .filter()" items 201 only 0
-construct "nullish coalescing" items 200 only 0
+construct "nullish coalescing" items 201 only 0
 construct "import from outside the module directory" items 197 only 197
 construct "method call .join()" items 181 only 0
 construct "method call .some()" items 179 only 0
@@ -72,11 +72,11 @@ construct "undefined" items 165 only 0
 construct "method call .split()" items 152 only 0
 construct "arrow callback of .find()" items 150 only 0
 construct "method call .find()" items 144 only 0
-construct "assignment of a field or element" items 126 only 0
-construct "destructuring" items 126 only 0
+construct "assignment of a field or element" items 127 only 0
+construct "destructuring" items 127 only 0
 construct "method call .test()" items 123 only 0
 construct "imported value" items 118 only 2
-construct "global call String()" items 113 only 0
+construct "global call String()" items 114 only 0
 construct "Array.from" items 111 only 0
 construct "method call .has()" items 95 only 0
 construct "new Set" items 95 only 35
@@ -84,7 +84,7 @@ construct "method call .sort()" items 93 only 0
 construct "optional chaining" items 85 only 0
 construct "method call .replace()" items 82 only 0
 construct "method call .get()" items 72 only 0
-construct "method call .indexOf()" items 71 only 0
+construct "method call .indexOf()" items 72 only 0
 construct "arrow callback of .sort()" items 68 only 0
 construct "method call .every()" items 68 only 0
 construct "typeof operator" items 68 only 2
@@ -401,4 +401,4 @@ unlock 21 "undefined" unlocked 25 cumulative 1239
 unlock 22 "method call .join()" unlocked 21 cumulative 1260
 unlock 23 "Array.from" unlocked 27 cumulative 1287
 unlock 24 "destructuring" unlocked 18 cumulative 1305
-unlock 25 "assignment of a field or element" unlocked 30 cumulative 1335
+unlock 25 "assignment of a field or element" unlocked 31 cumulative 1336

@@ -152,12 +152,9 @@ impl GeneralChangePlan {
         if self.mode != GeneralPlanMode::RepositoryWorkItem {
             return crate::language::detect(&self.goal).slug();
         }
-        let (title, body) = work_item_title_and_body(&self.goal);
         self.request_language
             .filter(|_| crate::language::forced_response_language_slug().is_none())
-            .or_else(|| crate::language::detect_prose(body))
-            .or_else(|| crate::language::detect_prose(title))
-            .unwrap_or_else(|| crate::language::detect(&self.goal))
+            .unwrap_or_else(|| crate::language::detect_work_item(&self.goal))
             .slug()
     }
     /// Render the terminal answer of a plan that touched nothing the request
@@ -744,12 +741,6 @@ const fn capability_slug(capability: Capability) -> &'static str {
 /// Split a work-item goal into its title and body. The run joins a fetched
 /// issue as `title`, a blank line, then `body`; a goal of any other shape is
 /// all body. Mirrored by `workItemTitleAndBody`.
-fn work_item_title_and_body(goal: &str) -> (&str, &str) {
-    match goal.split_once("\n\n") {
-        Some((title, body)) if !title.contains('\n') => (title, body),
-        _ => ("", goal),
-    }
-}
 fn language(request: &str) -> &'static str {
     crate::language::detect(request).slug()
 }

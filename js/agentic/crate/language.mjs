@@ -434,6 +434,21 @@ export function detectProse(text) {
   return proseLanguage(proseOf(text), rules());
 }
 
+/**
+ * Mirrors `fn detect_work_item` in rust/src/language.rs: the language of a
+ * work item written as `title`, a blank line, then `body` — its body's prose,
+ * then its title's prose, and the whole text only when neither holds prose
+ * (issue #1557). The plan answer and the work-item report (#1483) share it.
+ * @param {string} goal
+ * @returns {string}
+ */
+export function detectWorkItem(goal) {
+  const text = String(goal);
+  const at = text.indexOf('\n\n');
+  const [title, body] = at >= 0 && !text.slice(0, at).includes('\n') ? [text.slice(0, at), text.slice(at + 2)] : ['', text];
+  return detectProse(body) ?? detectProse(title) ?? detect(text);
+}
+
 /** Mirrors `fn language_for_concept_slug` in rust/src/language.rs. */
 export function languageForConceptSlug(conceptSlug) {
   if (!conceptSlug.startsWith('language_')) return null;

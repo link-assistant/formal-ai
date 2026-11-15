@@ -35,7 +35,7 @@ import { stableId } from './crate/engine_stable_identifier.mjs';
 import { formalizeIntent } from './crate/intent_formalization.mjs';
 import { withoutTrailingKnownModifier } from './crate/implementation_language.mjs';
 import { fencedBlock, LINO_FENCE_LANGUAGE } from './crate/issue_report.mjs';
-import { detect, detectProse } from './crate/language.mjs';
+import { detect, detectProse, detectWorkItem } from './crate/language.mjs';
 import { localizedResponse } from './crate/seed.mjs';
 import { terminalCommandVocabulary } from './crate/seed_terminal_commands.mjs';
 import { resolveReference, workspace } from './crate/self_ast_census.mjs';
@@ -129,12 +129,6 @@ export function planLinksNotation(plan) {
   return out;
 }
 
-/** Mirrors `fn work_item_title_and_body`: `title`, a blank line, then `body`. */
-function workItemTitleAndBody(goal) {
-  const at = goal.indexOf('\n\n');
-  return at >= 0 && !goal.slice(0, at).includes('\n') ? [goal.slice(0, at), goal.slice(at + 2)] : ['', goal];
-}
-
 /**
  * Mirrors `GeneralChangePlan::response_language`: a work item answers in the
  * language of the user's own turn, then of its body's prose, then of its
@@ -143,8 +137,7 @@ function workItemTitleAndBody(goal) {
  */
 export function planResponseLanguage(plan) {
   if (plan.mode !== GeneralPlanMode.RepositoryWorkItem) return detect(plan.goal);
-  const [title, body] = workItemTitleAndBody(plan.goal);
-  return plan.request_language ?? detectProse(body) ?? detectProse(title) ?? detect(plan.goal);
+  return plan.request_language ?? detectWorkItem(plan.goal);
 }
 
 /** Mirrors `GeneralChangePlan::planned_not_executed_answer`. */

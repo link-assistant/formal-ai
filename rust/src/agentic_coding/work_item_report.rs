@@ -112,7 +112,7 @@ fn check_intent(check: &Value) -> &'static str {
 /// The localized report of a work-item record.
 #[must_use]
 pub fn work_item_report(record: &Value, task: &str) -> String {
-    let language = crate::language::detect(task).slug();
+    let language = crate::language::detect_work_item(task).slug();
     let subject = record["workItem"]
         .as_str()
         .filter(|item| !item.is_empty())

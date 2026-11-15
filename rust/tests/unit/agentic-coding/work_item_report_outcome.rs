@@ -466,3 +466,48 @@ fn a_verified_but_incomplete_record_lists_the_work_still_open() {
     record["remainingWork"] = json!([]);
     assert!(!work_item_report(&record, "Solve the issue.").contains("Work still open"));
 }
+
+/// Issue #1483: the report is in the language the plan answer uses (#1557) —
+/// the body's prose, then the title's — so an English issue quoting Russian
+/// phrases (1330) or under a Russian title (1396) is reported in English.
+#[test]
+fn the_work_item_report_of_issues_1330_and_1396_is_english() {
+    let fixture: Value = serde_json::from_str(include_str!(
+        "../../fixtures/issue-1557-attempted-issues.json"
+    ))
+    .expect("fixture");
+    let record = json!({
+        "schema": "repository-work-item-evidence/v1",
+        "reason": "EvidenceCollected",
+        "observations": [],
+        "requirements": []
+    });
+    let task = |item: &Value| {
+        format!(
+            "{}\n\n{}",
+            item["title"].as_str().unwrap_or_default(),
+            item["body"].as_str().unwrap_or_default()
+        )
+    };
+    for number in [1330, 1396] {
+        let issue = fixture["attempted"]
+            .as_array()
+            .and_then(|items| items.iter().find(|item| item["number"] == number))
+            .expect("AttemptedIssue");
+        let report = work_item_report(&record, &task(issue));
+        assert!(
+            report.starts_with("Not completed: "),
+            "issue {number}: {report}"
+        );
+    }
+    let russian = fixture["synthetic"]
+        .as_array()
+        .and_then(|items| {
+            items
+                .iter()
+                .find(|item| item["case"] == "a fully Russian issue")
+        })
+        .expect("RussianIssue");
+    let report = work_item_report(&record, &task(russian));
+    assert!(report.starts_with("Не выполнено: "), "{report}");
+}

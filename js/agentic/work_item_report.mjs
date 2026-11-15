@@ -5,7 +5,7 @@
 // (issue #1560).
 // Native twin: rust/src/agentic_coding/work_item_report.rs.
 import { localizedResponse } from './crate/seed.mjs';
-import { detect } from './crate/language.mjs';
+import { detectWorkItem } from './crate/language.mjs';
 import { resolvedFinalAnswer, observedFinalResult, FinalDisposition } from './final_result.mjs';
 import { trim } from './write_str.mjs';
 import { requirementNaming } from './work_item_requirements.mjs';
@@ -61,7 +61,7 @@ function checkIntent(check) {
 
 /** Mirrors `fn work_item_report`. */
 export function workItemReport(record, task) {
-  const language = detect(task);
+  const language = detectWorkItem(task);
   const subject = typeof record.workItem === 'string' && record.workItem !== ''
     ? record.workItem : filled('work-item-report-request', language, []);
   const reason = typeof record.reason === 'string' ? record.reason : 'Unknown';

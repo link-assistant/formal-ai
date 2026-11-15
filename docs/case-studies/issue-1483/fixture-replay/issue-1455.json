@@ -219,7 +219,7 @@
     "kind": "registered-process",
     "actualTool": "bash",
     "callId": "c2",
-    "requestIdentity": "84012a75e518fb83748eb0ddbfff09a609c3ea85544df43f16d27766a3363a5d",
+    "requestIdentity": "35da4d4c8d1cc8d1801c192fdc9a30a845f7fdd0a6d046eb095540e0d5fe8f30",
     "operation": "search",
     "actualExitCode": null,
     "pendingSession": null,
@@ -258,10 +258,10 @@
        "web_capture",
        "web_search"
       ],
-      "requestIdentity": "84012a75e518fb83748eb0ddbfff09a609c3ea85544df43f16d27766a3363a5d",
+      "requestIdentity": "35da4d4c8d1cc8d1801c192fdc9a30a845f7fdd0a6d046eb095540e0d5fe8f30",
       "status": "unknown",
       "complete": false,
-      "root": "/tmp/formal-ai-1483-MLIdwL/checkout",
+      "root": "<workspace-parent>/checkout",
       "searchGaps": null,
       "error": "FileIoSearchObservationUnavailable",
       "transport": {
@@ -442,10 +442,10 @@
        "web_capture",
        "web_search"
       ],
-      "requestIdentity": "84012a75e518fb83748eb0ddbfff09a609c3ea85544df43f16d27766a3363a5d",
+      "requestIdentity": "35da4d4c8d1cc8d1801c192fdc9a30a845f7fdd0a6d046eb095540e0d5fe8f30",
       "status": "unknown",
       "complete": false,
-      "root": "/tmp/formal-ai-1483-MLIdwL/checkout",
+      "root": "<workspace-parent>/checkout",
       "searchGaps": null,
       "error": "FileIoSearchObservationUnavailable",
       "transport": {
