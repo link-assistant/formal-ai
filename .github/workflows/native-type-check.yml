@@ -14,6 +14,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-native-type-check
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 env:
   CARGO_NET_RETRY: '10'
   CARGO_HTTP_MULTIPLEXING: 'false'
@@ -24,9 +28,6 @@ env:
 jobs:
   clippy:
     name: Rust compile inputs changed
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-native-type-check
-      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:
