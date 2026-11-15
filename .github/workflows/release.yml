@@ -88,6 +88,7 @@ jobs:
       pipeline-changed: ${{ steps.changes.outputs.pipeline-changed }}
       agentic-routing-changed: ${{ steps.changes.outputs.agentic-routing-changed }}
       any-code-changed: ${{ steps.changes.outputs.any-code-changed }}
+      native-type-check: ${{ steps.changes.outputs.native-type-check }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -331,6 +332,33 @@ jobs:
           node scripts/render-progressive-plan.mjs --check
           node scripts/mirror-package-data.mjs --check
           node scripts/check-fast-governance.mjs
+  # Issue #1191: PR #1497 passed every PR check and main then failed with E0308
+  # (run 43710854562), since no PR job compiled Rust. This is the one focused
+  # native check a PR runs: a type check, selected when a Rust compile input
+  # changed or the classification is unknown. It uploads nothing and records
+  # no receipt, so it is never native or release evidence; main still runs
+  # clippy, tests and every production build.
+  native-type-check:
+    name: Native type check (Rust compile inputs changed)
+    needs: [detect-changes]
+    if: ${{ !cancelled() && (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && (needs.detect-changes.result != 'success' || needs.detect-changes.outputs.native-type-check != 'false') }}
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-native-type-check
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions: {contents: read}
+    env: {CARGO_INCREMENTAL: '0', CARGO_TERM_COLOR: always}
+    steps:
+      - {uses: actions/checkout@v7, timeout-minutes: 4,
+         env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '20'},
+         with: {persist-credentials: false, fetch-depth: 1, filter: blob:none, sparse-checkout: "/*\n!/dev/log/\n!/experiments/\n", sparse-checkout-cone-mode: false}}
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/setup-sccache
+      - uses: ./.github/actions/cache-cargo-registry
+        with: {restore-only: 'true'}
+      - name: Type-check the library and binaries
+        run: cargo check --manifest-path rust/Cargo.toml --locked --lib --bins
   lint:
     name: Lint and Format Check (lane ${{ matrix.lane }})
     runs-on: ubuntu-latest
@@ -1091,7 +1119,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     if: always()
-    needs: [fast-pr-lint, hive-source-provenance, detect-changes, changelog, docker-build, docker-slim, secrets-scan,
+    needs: [fast-pr-lint, native-type-check, hive-source-provenance, detect-changes, changelog, docker-build, docker-slim, secrets-scan,
             version-check, release-preflight, base, lint, test, doc-tests, macos-core-tests, build,
             auto-release, manual-release, native-container-images,
             changelog-pr, test-e2e-local, test-agent-cli-e2e,

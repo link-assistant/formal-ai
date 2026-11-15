@@ -7,6 +7,25 @@ import {createHash} from 'node:crypto';
 import {isDocumentationPath} from './lib/documentation-paths.mjs';
 
 export const isDocumentation = isDocumentationPath;
+// Issue #1191: PR #1497 passed every PR check, then main failed with E0308 in
+// rust/src, because no PR job compiles Rust. `cargo check --lib --bins` reads
+// rust/ (src, build.rs, manifests, the embedded mirror), build.rs reads
+// data/seed/api-cache, and Cargo reads .cargo/ and the toolchain files. These
+// prefixes are proven NOT to be inputs, so a path outside them (unknown
+// included) selects the native type check: missing it costs a broken main.
+const NON_NATIVE_PREFIXES = ['docs/', 'changelog.d/', 'experiments/', 'dev/', 'examples/', 'analysis/',
+  'coverage/', 'js/', 'ts/', 'packages/', 'desktop/', 'vscode/', 'docker/', 'scripts/', 'rust/tests/',
+  'rust/examples/', '.formal-ai/', '.githooks/'];
+const NON_NATIVE_FILES = new Set(['package.json', 'bun.lock', '.bun-version', 'tsconfig.json', 'Dockerfile',
+  'Dockerfile.slim', 'compose.yaml', '.dockerignore', '.gitignore', '.gitattributes', '.gitkeep',
+  '.lycheeignore', '.pre-commit-config.yaml', '.secretlintrc.json', 'LICENSE']);
+export function nativeCompileInput(path) {
+  if (isDocumentation(path) || NON_NATIVE_FILES.has(path)) return false;
+  if (path.startsWith('data/')) return path.startsWith('data/seed/api-cache/');
+  // Its own job definition and the composite actions it runs stay inputs.
+  if (path.startsWith('.github/workflows/')) return path === '.github/workflows/release.yml';
+  return !NON_NATIVE_PREFIXES.some(prefix => path.startsWith(prefix));
+}
 // Classify conservatively: extra lightweight checks are cheaper than missed changes.
 export function admission(paths) {
   assert(Array.isArray(paths) && paths.every(path => typeof path === 'string'));
@@ -14,8 +33,9 @@ export function admission(paths) {
   const code = relevant.some(path => !isDocumentation(path));
   return Object.fromEntries(['rs-changed', 'toml-changed', 'docs-changed', 'workflow-changed',
     'pipeline-changed', 'agentic-routing-changed', 'any-code-changed', 'js-changed',
-    'ts-changed', 'rust-changed', 'release-pending'].map(key => [key,
-      key === 'release-pending' ? false : key === 'docs-changed' ? relevant.some(isDocumentation) : code]));
+    'ts-changed', 'rust-changed', 'release-pending', 'native-type-check'].map(key => [key,
+      key === 'release-pending' ? false : key === 'docs-changed' ? relevant.some(isDocumentation)
+        : key === 'native-type-check' ? paths.length === 0 || paths.some(nativeCompileInput) : code]));
 }
 export function versionIn(text) {
   const section = /^\[package\]\s*\n([\s\S]*?)(?=^\[|$(?![\s\S]))/mu.exec(text);

@@ -6,6 +6,15 @@ Maintainer requirements of 2026-10-31 supersede earlier full-PR build opt-ins.
   unit, coding, question-answering, reporting, policy and security checks. They
   never compile Cargo packages, Docker images, WASM or applications, and never
   deploy Pages. The old FORMAL_AI_FULL_PR_CI variable cannot override this rule.
+- One focused exception (#1191): `native-type-check` in release.yml runs
+  `cargo check --lib --bins` when a PR changes a Rust compile input (rust/src,
+  build.rs, manifests, embedded data, toolchain, release.yml or any unknown
+  path). PR #1497 passed every PR check, then main failed with E0308, because
+  JavaScript cannot see Rust types. It builds, tests, uploads and attests
+  nothing, saves no cache, publishes no outputs and is never native or release
+  evidence. Docs-only, JS-only, test-only and script-only PRs skip it. Its
+  selector is `nativeCompileInput()` in scripts/ci-pull-request-admission.mjs;
+  default-branch-build-policy.test.mjs pins the job and replays the E0308 PR.
 - Production builds run on the current default branch, main. Release-tag and
   workflow-completion consumers must independently authorize their source against
   main; a release event is not permission to compile arbitrary feature code.

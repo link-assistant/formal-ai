@@ -40,11 +40,58 @@ test('actual compiler, image, application and deployment entries refuse PR execu
       ];
       const heavy = job.steps?.some(step => buildCommands.some(pattern => pattern.test((step.run??'')+' '+(step.uses??''))));
       if (!heavy || file === 'release-staged.yml') continue; // Main-only prepare-source dominates every generated stage.
+      if (file === 'release.yml' && id === 'native-type-check') continue; // The one focused PR check (#1191), pinned below.
       assert(job.if,file+'/'+id+' needs explicit admission');
       assert.equal(Boolean(evaluate(job.if,'pull_request','refs/pull/1500/merge')),false,file+'/'+id);
       assert.equal(Boolean(evaluate(job.if,'workflow_dispatch','refs/heads/fix/example')),false,file+'/'+id+' dispatch');
     }
   }
+});
+// Issue #1191: the only PR job that runs the Rust compiler is a type check. It
+// must stay a type check (no build, test or upload), selected by compile inputs.
+test('the focused PR native type check stays a type check selected by compile inputs', () => {
+  const job = workflow('release.yml').jobs['native-type-check'];
+  const runs = job.steps.map(step => step.run).filter(Boolean);
+  assert.deepEqual(runs, ['cargo check --manifest-path rust/Cargo.toml --locked --lib --bins']);
+  assert(!job.steps.some(step => /upload-artifact|attest|cache@|cache\/save/u.test(step.uses ?? '')));
+  assert.deepEqual(job.steps.find(step => step.uses === './.github/actions/cache-cargo-registry').with, {'restore-only': 'true'});
+  assert.deepEqual(job.permissions, {contents: 'read'});
+  assert(job['timeout-minutes'] <= 20);
+  assert.equal(job.outputs, undefined, 'a type check publishes no evidence');
+  const selected = (event, ref, result, value) => Boolean(new Script(String(job.if).trim().replace(/^\$\{\{\s*|\s*\}\}$/gu, '')
+    .replace(/\.([a-zA-Z_][a-zA-Z0-9_-]*)/gu, (_, key) => '[' + JSON.stringify(key) + ']'))
+    .runInNewContext({github: {event_name: event, ref}, cancelled: () => false,
+      needs: {'detect-changes': {result, outputs: value === undefined ? {} : {'native-type-check': value}}}}, {timeout: 100}));
+  assert.equal(selected('pull_request', 'refs/pull/1/merge', 'success', 'true'), true);
+  assert.equal(selected('pull_request', 'refs/pull/1/merge', 'success', 'false'), false, 'docs-only and JS-only PRs skip it');
+  assert.equal(selected('pull_request', 'refs/pull/1/merge', 'failure', 'false'), true, 'an unknown classification is conservative');
+  assert.equal(selected('pull_request', 'refs/pull/1/merge', 'success', undefined), true);
+  assert.equal(selected('workflow_dispatch', 'refs/heads/fix/example', 'skipped', undefined), true);
+  assert.equal(selected('push', 'refs/heads/main', 'success', 'true'), false, 'main keeps its full lint and builds instead');
+  assert(workflow('release.yml').jobs['pipeline-status'].needs.includes('native-type-check'));
+  const native = paths => admission(paths)['native-type-check'];
+  for (const path of ['rust/src/proof_engine/types.rs', 'rust/build.rs', 'rust/Cargo.lock', 'rust/embedded/data/seed/a.lino',
+    'data/seed/api-cache/x.lino', '.cargo/config.toml', 'rust-toolchain.toml', '.github/workflows/release.yml',
+    '.github/actions/setup-sccache/action.yml', 'new-top-level/unknown.txt'])
+    assert.equal(native([path]), true, path);
+  for (const path of ['docs/a.md', 'README.md', 'changelog.d/x.md', 'js/app.js', 'rust/tests/web/a.test.mjs',
+    'rust/tests/unit/proof_request.rs', 'scripts/check-tests-as-docs.mjs', 'data/meta/x.lino', 'experiments/a/b.sh',
+    '.github/workflows/links.yml', 'package.json', 'bun.lock'])
+    assert.equal(native([path]), false, path);
+  assert.equal(native([]), true, 'an empty observation is unknown, so the check runs');
+});
+// The production-only failure this job closes: PR #1497 was green, then main
+// failed with E0308 in rust/src. Its own changed paths must select the check.
+test('replays main run 43710854562: the E0308 pull request selects the native type check', () => {
+  const replay = JSON.parse(readFileSync(new URL('../fixtures/issue-1191/native-type-check-e0308.json', import.meta.url), 'utf8'));
+  const {observedFailure: failure} = replay;
+  assert.equal(replay.schema, 'main-only-regression-replay/v1');
+  assert.equal(failure.greenPullRequest.checks.failure, 0, 'every PR check passed before the fix');
+  assert.equal(admission(replay.pullRequestPaths)['native-type-check'], true);
+  assert.equal(failure.compilerOutput[0], 'error[E0308]: mismatched types');
+  assert(failure.compilerOutput.includes('   --> src/solver_handlers/user_intent.rs:141:9'));
+  assert(failure.compilerOutput.at(-1).startsWith('error: could not compile `formal-ai` (lib)'), 'the library target is what --lib checks');
+  assert.equal(admission([replay.fixedBy.file])['native-type-check'], true);
 });
 test('recorded Docker cold rebuild is optional and cannot hold the production build behind another build', () => {
   const jobs = workflow('container-images.yml').jobs;
