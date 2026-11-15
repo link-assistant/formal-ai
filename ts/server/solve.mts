@@ -19,6 +19,7 @@ import { thinkingStepsFromEvents } from './solver-trace.mjs';
 import { answerLinksFromLog, solverLogFromWorker } from './answer-links.mjs';
 import { applyRetainedAmendments, solveWithStandingRequirements } from './standing-requirements.mjs';
 import { thinkingStep, thinkingStepsFromWorker } from './thinking.mjs';
+import { currentRequestScope, eventsInScope } from './standing-scope.mjs';
 
 export { estimateTokens, stableId };
 
@@ -161,7 +162,9 @@ async function solveBegun(ctx, prompt, history) {
 
 /** The store's `MemoryEvent`s the protocol surfaces answer with (`store.events()`). */
 function memoryEvents(ctx) {
-  return ctx.memory && typeof ctx.memory.events === 'function' ? ctx.memory.events() : [];
+  const events = ctx.memory && typeof ctx.memory.events === 'function' ? ctx.memory.events() : [];
+  // Issue #1559: a request sees only memory recorded in its own scope.
+  return eventsInScope(events, currentRequestScope());
 }
 
 /**

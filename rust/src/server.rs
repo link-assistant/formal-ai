@@ -17,7 +17,7 @@ use crate::mcp::handle_mcp_request;
 use crate::memory_sync::SyncStore;
 use crate::network_endpoint::{handle_links_query_request, handle_network_request};
 use crate::protocol::{
-    ChatCompletion, ChatCompletionRequest, ResponsesRequest, chat_exchange_to_record,
+    ChatCompletion, ChatCompletionRequest, ChatMessage, ResponsesRequest, chat_exchange_to_record,
     chat_tool_executions, create_chat_completion_with_solver_and_memory,
     create_response_with_solver_and_memory, messages_exchange_to_record,
     responses_exchange_to_record,
@@ -25,6 +25,9 @@ use crate::protocol::{
 use crate::responses_stream::responses_sse_response;
 use crate::seed::{canonical_model_id, merged_bundle, try_resolve_model_id};
 use crate::solver::{ExecutionSurface, SolverConfig, UniversalSolver};
+use crate::standing_scope::{
+    RequestScope, events_in_scope, is_instruction_prompt, recorded_scope_evidence, request_scope,
+};
 use crate::telegram::handle_telegram_webhook;
 
 mod conversation_reports;
@@ -128,10 +131,15 @@ pub fn handle_api_request_with_headers(
 /// Record a live chat exchange into the shared memory log (issue #540), never
 /// failing the request over it: a write error is logged and swallowed so the
 /// answer still reaches the client.
+///
+/// The exchange carries the scope of its request (issue #1559): a prompt that
+/// configures the session is recorded with the `instruction` role, and the
+/// `scope:` evidence keeps what one session teaches inside that session.
 fn record_exchange_best_effort(
     store: &mut SyncStore,
     exchange: Option<(String, String)>,
-    tools: &[crate::memory_sync::RecordedToolExecution],
+    messages: &[ChatMessage],
+    scope: &RequestScope,
 ) {
     let Some((prompt, answer)) = exchange else {
         return;
@@ -140,7 +148,12 @@ fn record_exchange_best_effort(
         crate::solver_config::flag_enabled("FORMAL_AI_TRACE_REQUESTS"),
     );
     phase("memory_recording_started");
-    if let Err(error) = store.record_chat_exchange_with_tools(&prompt, &answer, tools) {
+    let tools = chat_tool_executions(messages);
+    let evidence = recorded_scope_evidence(scope);
+    let instruction = is_instruction_prompt(&prompt, messages, scope);
+    if let Err(error) =
+        store.record_scoped_chat_exchange(&prompt, &answer, &tools, &evidence, instruction)
+    {
         crate::diagnostic!("error"; "[memory] failed to record live chat exchange: {error}");
     }
     phase("memory_recording_finished");
@@ -292,15 +305,17 @@ fn dispatch_api_request_with_auth(
                     }
                     let solver = http_solver();
                     let mut store = SyncStore::open();
+                    let scope = request_scope(body, &request.messages, !request.tools.is_empty());
                     let completion = create_chat_completion_with_solver_and_memory(
                         &request,
                         &solver,
-                        store.events(),
+                        &events_in_scope(store.events(), Some(&scope)),
                     );
                     record_exchange_best_effort(
                         &mut store,
                         chat_exchange_to_record(&request, &completion),
-                        &chat_tool_executions(&request.messages),
+                        &request.messages,
+                        &scope,
                     );
                     if request.stream {
                         let include_usage = request
@@ -322,12 +337,19 @@ fn dispatch_api_request_with_auth(
                     }
                     let solver = http_solver();
                     let mut store = SyncStore::open();
-                    let response =
-                        create_response_with_solver_and_memory(&request, &solver, store.events());
+                    let chat_request = request.to_chat_completion_request();
+                    let scope =
+                        request_scope(body, &chat_request.messages, !chat_request.tools.is_empty());
+                    let response = create_response_with_solver_and_memory(
+                        &request,
+                        &solver,
+                        &events_in_scope(store.events(), Some(&scope)),
+                    );
                     record_exchange_best_effort(
                         &mut store,
                         responses_exchange_to_record(&request, &response),
-                        &chat_tool_executions(&request.to_chat_completion_request().messages),
+                        &chat_request.messages,
+                        &scope,
                     );
                     if request.stream {
                         responses_sse_response(&response)
@@ -538,11 +560,12 @@ fn handle_gemini_generate_content_request(
             let solver = http_solver();
             let mut store = SyncStore::open();
             let chat_request = request.to_chat_completion_request(&model);
+            let scope = request_scope(body, &chat_request.messages, !chat_request.tools.is_empty());
             let response = create_gemini_generate_content_response_with_solver_and_memory(
                 &request,
                 &model,
                 &solver,
-                store.events(),
+                &events_in_scope(store.events(), Some(&scope)),
             );
             let answer = response["candidates"][0]["content"]["parts"]
                 .as_array()
@@ -554,7 +577,8 @@ fn handle_gemini_generate_content_request(
             record_exchange_best_effort(
                 &mut store,
                 messages_exchange_to_record(&chat_request.messages, &answer),
-                &chat_tool_executions(&chat_request.messages),
+                &chat_request.messages,
+                &scope,
             );
             if stream {
                 ApiHttpResponse {
@@ -858,8 +882,12 @@ fn handle_anthropic_messages_request(body: &str) -> ApiHttpResponse {
             let solver = http_solver();
             let mut store = SyncStore::open();
             let chat_request = request.to_chat_completion_request();
-            let message =
-                create_anthropic_message_with_solver_and_memory(&request, &solver, store.events());
+            let scope = request_scope(body, &chat_request.messages, !chat_request.tools.is_empty());
+            let message = create_anthropic_message_with_solver_and_memory(
+                &request,
+                &solver,
+                &events_in_scope(store.events(), Some(&scope)),
+            );
             let answer = message
                 .content
                 .iter()
@@ -872,7 +900,8 @@ fn handle_anthropic_messages_request(body: &str) -> ApiHttpResponse {
             record_exchange_best_effort(
                 &mut store,
                 messages_exchange_to_record(&chat_request.messages, &answer),
-                &chat_tool_executions(&chat_request.messages),
+                &chat_request.messages,
+                &scope,
             );
             if request.stream {
                 ApiHttpResponse {

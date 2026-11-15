@@ -15,6 +15,7 @@ import { memoryEvent } from './memory-store.mjs';
 import { candidateLinksNotation, discoverValidatedAlgorithms, tracesFromMemoryEvents } from './algorithm-discovery.mjs';
 import { draftFailureLessons } from './dreaming-draft-failures.mjs';
 import { eventTopic, learnFromMemory } from './dreaming-learning.mjs';
+import { GENERALIZED_SCOPE, SCOPE_PREFIX } from './standing-scope.mjs';
 import {
   DURABILITY, classifyEvent, isReclaimable, pressurePriority, reclaimableBytes, reconstructionRecord, usageCounts,
 } from './dreaming-retention.mjs';
@@ -315,7 +316,12 @@ function amendmentEvent(amendment) {
     outputs: `rule=${amendment.rule}`,
     demo_label: amendment.topic,
     conversation_title: amendment.topic,
-    evidence: [...amendment.source_requirement_ids, 'recipe:data/meta/dreaming-recipe.lino'],
+    evidence: [
+      ...amendment.source_requirement_ids,
+      ...(amendment.scope ?? []).map(([key, value]) => `${SCOPE_PREFIX}${key}=${value}`),
+      ...(amendment.generalized ? [GENERALIZED_SCOPE] : []),
+      'recipe:data/meta/dreaming-recipe.lino',
+    ],
   });
 }
 

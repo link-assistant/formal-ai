@@ -12,6 +12,9 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
+use super::bounds::{
+    bounded_statement, is_bounded_rule, is_valid_topic, rule_maximum_characters, statement_topic,
+};
 use super::lexicon::lexicon;
 use super::{
     DreamingCandidateTask, DreamingEventObservation, DreamingPattern, DreamingSynthesizedTask,
@@ -19,6 +22,7 @@ use super::{
 };
 use crate::dreaming_application::{RetainedAmendment, replay_answer_with_amendments};
 use crate::memory::MemoryEvent;
+use crate::standing_scope::{ScopePair, scope_key, scope_pairs};
 
 pub(super) struct LearningResult {
     pub topics: Vec<TopicFrequency>,
@@ -37,7 +41,7 @@ pub(super) fn learn_from_memory(
     let mut interactions: BTreeMap<String, usize> = BTreeMap::new();
     let mut task_counts: BTreeMap<String, usize> = BTreeMap::new();
     let mut requirement_counts: BTreeMap<String, usize> = BTreeMap::new();
-    let mut requirements: BTreeMap<(String, String), LearnedRequirement> = BTreeMap::new();
+    let mut requirements: BTreeMap<(String, String, String), LearnedRequirement> = BTreeMap::new();
     let mut specific_indices: BTreeMap<String, Vec<usize>> = BTreeMap::new();
     for (index, event) in events.iter().enumerate() {
         if event
@@ -62,15 +66,24 @@ pub(super) fn learn_from_memory(
                     .push(index);
             }
         }
-        if let Some(statement) = requirement_statement(event) {
+        let learned = requirement_statement(event).and_then(|statement| {
+            requirement_topic(event, &statement).map(|learned_topic| (learned_topic, statement))
+        });
+        if let Some((learned_topic, statement)) = learned {
             *requirement_counts.entry(topic.clone()).or_default() += 1;
+            let scope = scope_pairs(&event.evidence);
             let entry = requirements
-                .entry((topic.clone(), statement.to_lowercase()))
+                .entry((
+                    learned_topic.clone(),
+                    scope_key(&scope),
+                    statement.to_lowercase(),
+                ))
                 .or_insert_with(|| LearnedRequirement {
-                    topic: topic.clone(),
+                    topic: learned_topic,
                     statement: statement.clone(),
                     source_event_ids: Vec::new(),
                     occurrences: 0,
+                    scope,
                 });
             entry.occurrences += 1;
             if !event.id.is_empty() {
@@ -105,7 +118,14 @@ pub(super) fn learn_from_memory(
         &mut candidate_tasks,
     );
     let patterns = mine_patterns(events, observations);
-    let synthesized_tasks = synthesize_trials(&topics, &patterns, events, &amendments);
+    // A synthesized trial belongs to no one request, so it sees only amendments
+    // without scope.
+    let unscoped = amendments
+        .iter()
+        .filter(|amendment| amendment.scope.is_empty())
+        .cloned()
+        .collect::<Vec<_>>();
+    let synthesized_tasks = synthesize_trials(&topics, &patterns, events, &unscoped);
     LearningResult {
         topics,
         requirements,
@@ -124,6 +144,23 @@ pub(super) fn learn_from_memory(
 /// `inputs`). Significance is judged against the multilingual stopword list in
 /// the data lexicon, not an English-only constant.
 pub(super) fn event_topic(event: &MemoryEvent) -> Option<String> {
+    if let Some(topic) = metadata_topic(event) {
+        return Some(topic);
+    }
+    for raw in [event.content.as_deref(), event.inputs.as_deref()]
+        .into_iter()
+        .flatten()
+    {
+        if let Some(topic) = first_significant_word(raw) {
+            return Some(topic);
+        }
+    }
+    None
+}
+
+/// An explicit topic label of the event (conversation title, demo label,
+/// intent, tool).
+fn metadata_topic(event: &MemoryEvent) -> Option<String> {
     for raw in [
         event.conversation_title.as_deref(),
         event.demo_label.as_deref(),
@@ -136,14 +173,6 @@ pub(super) fn event_topic(event: &MemoryEvent) -> Option<String> {
         let normalized = raw.trim().to_lowercase();
         if !normalized.is_empty() && !is_topic_stopword(&normalized) {
             return Some(normalized);
-        }
-    }
-    for raw in [event.content.as_deref(), event.inputs.as_deref()]
-        .into_iter()
-        .flatten()
-    {
-        if let Some(topic) = first_significant_word(raw) {
-            return Some(topic);
         }
     }
     None
@@ -170,24 +199,151 @@ fn first_significant_word(text: &str) -> Option<String> {
         })
 }
 
+/// Roles whose text is never a user's standing requirement (issue #1559 §1):
+/// the assistant's own words, and system, developer or session instructions —
+/// including one a client delivered as the first user message.
+const NON_REQUIREMENT_ROLES: [&str; 4] = ["assistant", "system", "developer", "instruction"];
+
+/// The bounded requirement statement of a user's message: one sentence that
+/// carries a requirement cue, inside the size limit, naming no single task.
 fn requirement_statement(event: &MemoryEvent) -> Option<String> {
     if event.role.as_deref().is_some_and(|role| {
-        role.eq_ignore_ascii_case("assistant") || role.eq_ignore_ascii_case("system")
+        NON_REQUIREMENT_ROLES
+            .iter()
+            .any(|excluded| role.eq_ignore_ascii_case(excluded))
     }) {
         return None;
     }
-    let content = event.content.as_deref()?.trim();
-    statement_if_requirement(content)
+    bounded_statement(event.content.as_deref()?)
 }
 
-fn statement_if_requirement(content: &str) -> Option<String> {
-    let lowered = content.to_lowercase();
-    super::cues::requirement_cues()
+/// The explicit topic label, else the subject of the statement itself; never a
+/// pronoun or function word.
+fn requirement_topic(event: &MemoryEvent, statement: &str) -> Option<String> {
+    metadata_topic(event)
+        .or_else(|| statement_topic(statement))
+        .filter(|topic| is_valid_topic(topic))
+}
+
+/// The amendment id of `topic` in `scope`; a global amendment keeps the id it
+/// always had.
+fn amendment_identifier(topic: &str, scope: &[ScopePair]) -> String {
+    let key = scope_key(scope);
+    if key.is_empty() {
+        crate::engine::stable_id("amendment", topic)
+    } else {
+        crate::engine::stable_id("amendment", &format!("{topic}\u{0}{key}"))
+    }
+}
+
+/// Statements joined while the rule stays inside the bounds.
+fn bounded_rule<'a>(statements: impl IntoIterator<Item = &'a str>) -> String {
+    let limit = rule_maximum_characters();
+    let mut rule = String::new();
+    for statement in statements {
+        let next = if rule.is_empty() {
+            statement.to_owned()
+        } else {
+            format!("{rule}; {statement}")
+        };
+        if next.chars().count() <= limit {
+            rule = next;
+        }
+    }
+    rule
+}
+
+/// The amendment applies where `event` was made: every pair it carries equals
+/// the event's own.
+fn applies_to(amendment: &MetaAlgorithmAmendment, event: &MemoryEvent) -> bool {
+    let pairs = scope_pairs(&event.evidence);
+    amendment.scope.iter().all(|pair| pairs.contains(pair))
+}
+
+/// The amendments one event's replay sees.
+fn records_for(
+    amendments: &[MetaAlgorithmAmendment],
+    event: &MemoryEvent,
+) -> Vec<RetainedAmendment> {
+    amendments
         .iter()
-        .any(|cue| lowered.contains(cue.as_str()))
-        .then(|| content.to_owned())
+        .filter(|amendment| applies_to(amendment, event))
+        .map(retained_record)
+        .collect()
 }
 
+/// The specifics of the amendment's topic, in its scope, that its replay
+/// re-derives.
+fn covered_events(
+    amendment: &MetaAlgorithmAmendment,
+    events: &[MemoryEvent],
+    specific_indices: &BTreeMap<String, Vec<usize>>,
+) -> Vec<String> {
+    specific_indices
+        .get(&amendment.topic)
+        .map(Vec::as_slice)
+        .unwrap_or_default()
+        .iter()
+        .filter(|index| applies_to(amendment, &events[**index]))
+        .filter(|index| amendment_reproduces_specific(amendment, &events[**index]))
+        .map(|index| events[*index].id.clone())
+        .collect()
+}
+
+fn build_amendment(
+    topic: &str,
+    scope: &[ScopePair],
+    grouped: &[&LearnedRequirement],
+    generalized: bool,
+) -> MetaAlgorithmAmendment {
+    let mut sources: Vec<String> = Vec::new();
+    for requirement in grouped {
+        for id in &requirement.source_event_ids {
+            if !sources.contains(id) {
+                sources.push(id.clone());
+            }
+        }
+    }
+    MetaAlgorithmAmendment {
+        id: amendment_identifier(topic, scope),
+        topic: topic.to_owned(),
+        rule: bounded_rule(
+            grouped
+                .iter()
+                .map(|requirement| requirement.statement.as_str()),
+        ),
+        source_requirement_ids: sources,
+        covered_event_ids: Vec::new(),
+        scope: scope.to_vec(),
+        generalized,
+    }
+}
+
+/// The statements of one topic made in two or more distinct scopes: the
+/// candidates for one amendment that applies everywhere (issue #1559 §4).
+fn generalized_statements(grouped: &[&LearnedRequirement]) -> BTreeSet<String> {
+    let mut scopes_by_statement: BTreeMap<String, BTreeSet<String>> = BTreeMap::new();
+    for requirement in grouped {
+        let key = scope_key(&requirement.scope);
+        if key.is_empty() {
+            continue;
+        }
+        scopes_by_statement
+            .entry(requirement.statement.to_lowercase())
+            .or_default()
+            .insert(key);
+    }
+    scopes_by_statement
+        .into_iter()
+        .filter(|(_, scopes)| scopes.len() >= 2)
+        .map(|(statement, _)| statement)
+        .collect()
+}
+
+/// One amendment per topic and scope. A statement made in two or more scopes
+/// is generalized into the amendment without scope, which is kept only when
+/// its replay re-derives at least one stored task; otherwise the scoped
+/// amendments stay.
 fn generalize_amendments(
     events: &[MemoryEvent],
     requirements: &[LearnedRequirement],
@@ -200,41 +356,72 @@ fn generalize_amendments(
             .or_default()
             .push(requirement);
     }
-    by_topic
-        .into_iter()
-        .map(|(topic, requirements)| {
-            // A requirement stated in live chat must be learnable even when the
-            // topic has no reclaimable specifics yet (issue #540 §1/§2):
-            // organic stores start as raw messages plus durable `task` events,
-            // and the amendment simply covers nothing until reproducible
-            // specifics appear.
-            let indices = specific_indices
-                .get(&topic)
-                .map(Vec::as_slice)
-                .unwrap_or_default();
-            let rule = requirements
-                .iter()
-                .map(|requirement| requirement.statement.as_str())
-                .collect::<Vec<_>>()
-                .join("; ");
-            let mut amendment = MetaAlgorithmAmendment {
-                id: crate::engine::stable_id("amendment", &topic),
-                topic,
-                rule,
-                source_requirement_ids: requirements
-                    .iter()
-                    .flat_map(|requirement| requirement.source_event_ids.iter().cloned())
-                    .collect(),
-                covered_event_ids: Vec::new(),
-            };
-            amendment.covered_event_ids = indices
-                .iter()
-                .filter(|index| amendment_reproduces_specific(&amendment, &events[**index]))
-                .map(|index| events[*index].id.clone())
-                .collect();
-            amendment
-        })
-        .collect()
+    let mut amendments = Vec::new();
+    for (topic, grouped) in by_topic {
+        // A requirement stated in live chat must be learnable even when the
+        // topic has no reclaimable specifics yet (issue #540 §1/§2): organic
+        // stores start as raw messages plus durable `task` events, and the
+        // amendment simply covers nothing until reproducible specifics appear.
+        let general = generalized_statements(&grouped);
+        let unscoped = grouped
+            .iter()
+            .copied()
+            .filter(|requirement| requirement.scope.is_empty())
+            .collect::<Vec<_>>();
+        let mut generalized_away = BTreeSet::new();
+        if !general.is_empty() {
+            let mut lifted = unscoped.clone();
+            for requirement in &grouped {
+                let lowered = requirement.statement.to_lowercase();
+                if !requirement.scope.is_empty()
+                    && general.contains(&lowered)
+                    && !lifted
+                        .iter()
+                        .any(|entry| entry.statement.to_lowercase() == lowered)
+                {
+                    lifted.push(*requirement);
+                }
+            }
+            let mut candidate = build_amendment(&topic, &[], &lifted, true);
+            for requirement in &grouped {
+                if !requirement.scope.is_empty()
+                    && general.contains(&requirement.statement.to_lowercase())
+                {
+                    for id in &requirement.source_event_ids {
+                        if !candidate.source_requirement_ids.contains(id) {
+                            candidate.source_requirement_ids.push(id.clone());
+                        }
+                    }
+                }
+            }
+            candidate.covered_event_ids = covered_events(&candidate, events, specific_indices);
+            if !candidate.covered_event_ids.is_empty() {
+                amendments.push(candidate);
+                generalized_away = general;
+            }
+        }
+        if generalized_away.is_empty() && !unscoped.is_empty() {
+            amendments.push(build_amendment(&topic, &[], &unscoped, false));
+        }
+        let mut by_scope: BTreeMap<String, Vec<&LearnedRequirement>> = BTreeMap::new();
+        for requirement in &grouped {
+            let key = scope_key(&requirement.scope);
+            if key.is_empty() || generalized_away.contains(&requirement.statement.to_lowercase()) {
+                continue;
+            }
+            by_scope.entry(key).or_default().push(*requirement);
+        }
+        for scoped in by_scope.into_values() {
+            amendments.push(build_amendment(&topic, &scoped[0].scope, &scoped, false));
+        }
+    }
+    for amendment in &mut amendments {
+        if !amendment.generalized {
+            amendment.covered_event_ids = covered_events(amendment, events, specific_indices);
+        }
+    }
+    amendments.retain(|amendment| !amendment.rule.is_empty());
+    amendments
 }
 
 /// Coverage check via the production application path: the amendment covers a
@@ -264,7 +451,6 @@ fn replay_candidate_tasks(
     amendments: &[MetaAlgorithmAmendment],
     interactions: &BTreeMap<String, usize>,
 ) -> Vec<DreamingCandidateTask> {
-    let records = amendments.iter().map(retained_record).collect::<Vec<_>>();
     let mut candidates = events
         .iter()
         .enumerate()
@@ -273,9 +459,10 @@ fn replay_candidate_tasks(
             let topic = observations[index].topic.as_deref()?;
             let input = event.inputs.as_deref()?;
             let expected = event.outputs.as_deref()?;
-            // Production parity: the full retained set is offered and the same
-            // topic-matching gate used on live requests decides what applies.
-            let simulated = replay_answer_with_amendments(input, &records);
+            // Production parity: the retained set the event's own scope sees
+            // is offered and the same topic-matching gate used on live
+            // requests decides what applies.
+            let simulated = replay_answer_with_amendments(input, &records_for(amendments, event));
             Some(DreamingCandidateTask {
                 topic: topic.to_owned(),
                 source_event_id: event.id.clone(),
@@ -311,10 +498,12 @@ fn refine_amendments_from_failures(
     amendments: &mut Vec<MetaAlgorithmAmendment>,
     candidates: &mut [DreamingCandidateTask],
 ) {
-    let mut refined_topics: BTreeSet<String> = BTreeSet::new();
+    let empty = MemoryEvent::default();
+    let source_of = |id: &str| source_event(events, &empty, id);
+    let mut refined: BTreeSet<String> = BTreeSet::new();
     let failures = candidates
         .iter()
-        .filter(|candidate| !candidate.passed)
+        .filter(|candidate| !candidate.passed && is_valid_topic(&candidate.topic))
         .map(|candidate| {
             (
                 candidate.topic.clone(),
@@ -324,37 +513,49 @@ fn refine_amendments_from_failures(
         })
         .collect::<Vec<_>>();
     for (topic, source_event_id, expected_output) in failures {
-        let missing = missing_statements_for_topic(&expected_output, amendments, &topic);
+        let scope = scope_pairs(&source_of(&source_event_id).evidence);
+        let key = scope_key(&scope);
+        let position = amendments
+            .iter()
+            .position(|amendment| amendment.topic == topic && scope_key(&amendment.scope) == key);
+        let missing = missing_statements_for_topic(
+            &expected_output,
+            position.map(|position| &amendments[position]),
+            &topic,
+        );
         if missing.is_empty() {
             continue;
         }
-        let position = amendments
-            .iter()
-            .position(|amendment| amendment.topic == topic);
         let amendment = if let Some(position) = position {
             &mut amendments[position]
         } else {
             amendments.push(MetaAlgorithmAmendment {
-                id: crate::engine::stable_id("amendment", &topic),
+                id: amendment_identifier(&topic, &scope),
                 topic: topic.clone(),
                 rule: String::new(),
                 source_requirement_ids: Vec::new(),
                 covered_event_ids: Vec::new(),
+                scope: scope.clone(),
+                generalized: false,
             });
             amendments.last_mut().expect("just pushed")
         };
         for statement in missing {
-            if amendment.rule.is_empty() {
-                amendment.rule.clone_from(&statement);
+            let next = if amendment.rule.is_empty() {
+                statement.clone()
             } else {
-                amendment.rule.push_str("; ");
-                amendment.rule.push_str(&statement);
+                format!("{}; {statement}", amendment.rule)
+            };
+            if next.chars().count() > rule_maximum_characters() {
+                continue;
             }
+            amendment.rule = next;
             requirements.push(LearnedRequirement {
                 topic: topic.clone(),
                 statement,
                 source_event_ids: vec![source_event_id.clone()],
                 occurrences: 1,
+                scope: scope.clone(),
             });
         }
         if !source_event_id.is_empty()
@@ -362,29 +563,41 @@ fn refine_amendments_from_failures(
         {
             amendment.source_requirement_ids.push(source_event_id);
         }
-        refined_topics.insert(topic);
+        refined.insert(amendment.id.clone());
     }
-    if refined_topics.is_empty() {
+    if refined.is_empty() {
         return;
     }
-    let records = amendments.iter().map(retained_record).collect::<Vec<_>>();
     for candidate in candidates.iter_mut().filter(|candidate| !candidate.passed) {
+        let records = records_for(amendments, source_of(&candidate.source_event_id));
         candidate.simulated_output = replay_answer_with_amendments(&candidate.input, &records);
         candidate.passed =
             normalize(&candidate.simulated_output) == normalize(&candidate.expected_output);
     }
-    for amendment in amendments
-        .iter_mut()
-        .filter(|amendment| refined_topics.contains(&amendment.topic))
-    {
-        if let Some(indices) = specific_indices.get(&amendment.topic) {
-            amendment.covered_event_ids = indices
-                .iter()
-                .filter(|index| amendment_reproduces_specific(amendment, &events[**index]))
-                .map(|index| events[*index].id.clone())
-                .collect();
+    let covered = amendments
+        .iter()
+        .map(|amendment| {
+            (refined.contains(&amendment.id) && specific_indices.contains_key(&amendment.topic))
+                .then(|| covered_events(amendment, events, specific_indices))
+        })
+        .collect::<Vec<_>>();
+    for (amendment, covered) in amendments.iter_mut().zip(covered) {
+        if let Some(covered) = covered {
+            amendment.covered_event_ids = covered;
         }
     }
+    // A refinement whose every statement fell outside the bounds teaches
+    // nothing.
+    amendments.retain(|amendment| !amendment.rule.is_empty());
+}
+
+/// The stored event a candidate replayed, or an empty event without scope.
+fn source_event<'a>(
+    events: &'a [MemoryEvent],
+    empty: &'a MemoryEvent,
+    id: &str,
+) -> &'a MemoryEvent {
+    events.iter().find(|event| event.id == id).unwrap_or(empty)
 }
 
 /// Requirement statements present in a stored output but absent from the
@@ -393,15 +606,14 @@ fn refine_amendments_from_failures(
 /// application path, so they prove the statement was once in force. Free-form
 /// cue-bearing prose is deliberately excluded — an answer that merely *quotes*
 /// a requirement (for example the solver's fallback text echoing the prompt)
-/// must not fold that prose into the rule.
+/// must not fold that prose into the rule. A line over the bounds is never a
+/// statement (issue #1559 §2).
 fn missing_statements_for_topic(
     expected_output: &str,
-    amendments: &[MetaAlgorithmAmendment],
+    current: Option<&MetaAlgorithmAmendment>,
     topic: &str,
 ) -> Vec<String> {
-    let current_rule = amendments
-        .iter()
-        .find(|amendment| amendment.topic == topic)
+    let current_rule = current
         .map(|amendment| amendment.rule.to_lowercase())
         .unwrap_or_default();
     let marker = format!("learned standing requirement ({topic}):");
@@ -416,6 +628,7 @@ fn missing_statements_for_topic(
         }
         let statement = line[marker.len()..].trim().to_owned();
         if !statement.is_empty()
+            && is_bounded_rule(&statement)
             && !current_rule.contains(&statement.to_lowercase())
             && !statements.contains(&statement)
         {

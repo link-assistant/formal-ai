@@ -15,7 +15,8 @@
 //! [`solve_with_amendment_records`] core, so "covered by amendment" literally
 //! means "the production path re-derives the stored output".
 
-use crate::engine::SymbolicAnswer;
+use crate::dreaming::bounds::{is_answer_form_cue, is_bounded_rule, is_valid_topic};
+use crate::engine::{SymbolicAnswer, ThinkingStep};
 use crate::memory::MemoryEvent;
 use crate::solver::{ConversationTurn, UniversalSolver};
 
@@ -31,7 +32,9 @@ pub struct RetainedAmendment {
 ///
 /// New records use `inputs` and `outputs` as the machine-readable topic/rule
 /// fields; `demo_label` and `content` remain backwards-compatible projections
-/// for existing stores.
+/// for existing stores. Only valid amendments are read: an amendment learned
+/// before the bounds existed — a pronoun topic, a whole prompt as its rule
+/// (issue #1559) — is never applied.
 #[must_use]
 pub fn retained_amendments(events: &[MemoryEvent]) -> Vec<RetainedAmendment> {
     let mut amendments = events
@@ -44,7 +47,7 @@ pub fn retained_amendments(events: &[MemoryEvent]) -> Vec<RetainedAmendment> {
             let rule = structured_value(event.outputs.as_deref(), "rule")
                 .or(event.content.as_deref())?
                 .trim();
-            (!topic.is_empty() && !rule.is_empty()).then(|| RetainedAmendment {
+            (is_valid_topic(topic) && is_bounded_rule(rule)).then(|| RetainedAmendment {
                 id: event.id.clone(),
                 topic: topic.to_owned(),
                 rule: rule.to_owned(),
@@ -128,29 +131,51 @@ pub fn apply_retained_amendments(
     append_amendments(answer, &matching_amendments(prompt, &amendments));
 }
 
-/// Apply retained requirements to a plain final answer, including agentic
-/// final responses that do not pass through [`SymbolicAnswer`].
+/// The retained amendments an agentic final answer was given under, as trace
+/// steps with an evidence link each (issue #1559 §5).
+///
+/// An agent publishes its final answer outside the conversation (a pull
+/// request description, an issue comment), so the amendment text is never
+/// appended to it; the trace lists which learned requirement applied and
+/// where it came from.
 #[must_use]
-pub fn amended_answer(prompt: &str, answer: &str, events: &[MemoryEvent]) -> String {
+pub fn applied_amendment_steps(prompt: &str, events: &[MemoryEvent]) -> Vec<ThinkingStep> {
     let amendments = retained_amendments(events);
-    let matching = matching_amendments(prompt, &amendments);
-    if matching.is_empty() {
-        answer.to_owned()
-    } else {
-        format!("{answer}\n\n{}", amendment_lines(&matching))
-    }
+    matching_amendments(prompt, &amendments)
+        .into_iter()
+        .enumerate()
+        .map(|(order, amendment)| {
+            ThinkingStep::new(
+                u32::try_from(order).unwrap_or(u32::MAX),
+                "match_rule",
+                amendment_trace(amendment),
+                "high",
+                format!("meta_algorithm_amendment:{}", amendment.id),
+            )
+        })
+        .collect()
+}
+
+/// The machine-readable trace detail of one applied amendment:
+/// `standing_requirement:<topic>`.
+fn amendment_trace(amendment: &RetainedAmendment) -> String {
+    format!("{STANDING_REQUIREMENT_INTENT}:{}", amendment.topic)
 }
 
 /// Amendments whose topic matches the task — the single selection rule shared by
 /// every application path, so no surface can drift into its own notion of
-/// "covered".
+/// "covered". A requirement about the form of every answer ("Always answer in
+/// Russian", topic `answer`) matches every prompt in its scope.
 fn matching_amendments<'a>(
     prompt: &str,
     amendments: &'a [RetainedAmendment],
 ) -> Vec<&'a RetainedAmendment> {
     amendments
         .iter()
-        .filter(|amendment| topic_matches(prompt, &amendment.topic))
+        .filter(|amendment| {
+            is_answer_form_cue(&amendment.topic.to_lowercase())
+                || topic_matches(prompt, &amendment.topic)
+        })
         .collect()
 }
 
