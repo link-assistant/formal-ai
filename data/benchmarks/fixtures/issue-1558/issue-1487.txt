@@ -1,0 +1,78 @@
+[Bug][P0] Semantic identity loses operand order and logical connectives: preserve task meaning before planning or proving
+
+**Type:** Bug · **Priority:** P0
+
+## Reproducible problem
+
+Read-only JavaScript probes at Formal AI `528053940e8015d16752ee625cffcf15eedc0487` found:
+
+| Input pair / request | Observed result |
+| --- | --- |
+| `1 is less than 2.` versus `2 is less than 1.` | `restates` returned true; the reversed statement could be removed as a duplicate |
+| `The program returns true or false.` versus `The program returns true and false.` | Same statement identity |
+| `Prove there are not infinitely many primes.` through the worker | `proof_outcome: proven` while the returned argument proves the positive infinitely-many-primes proposition |
+
+The final case is wrong proposition binding, not a valid proof of a false theorem.
+
+Inspect [text_formalization.mjs](https://github.com/link-assistant/formal-ai/blob/528053940e8015d16752ee625cffcf15eedc0487/js/agentic/crate/text_formalization.mjs), [dependency_summarization.mjs](https://github.com/link-assistant/formal-ai/blob/528053940e8015d16752ee625cffcf15eedc0487/js/agentic/crate/dependency_summarization.mjs), and [formal_ai_worker_calendar_and_proofs.js](https://github.com/link-assistant/formal-ai/blob/528053940e8015d16752ee625cffcf15eedc0487/js/worker/formal_ai_worker_calendar_and_proofs.js). Typed obligation/dialogue/quantity components already exist; this issue is about unsafe shared identity/dispatch fallbacks and their production callers.
+
+## Why it blocks coding
+
+An executor cannot correctly synthesize `a < b`, preserve a negated condition, distinguish one output from two, or verify the requested behavior if different propositions collapse before planning. More passing generated tests would then reinforce the wrong interpretation.
+
+Related: #1166 obligation formalization, #1330 sameMeaning, #1156 output cardinality.
+
+## Implementation steps
+
+1. Preserve ordered semantic roles, literal values/types, polarity, conjunction/disjunction, quantifiers and scope in the supported typed representation. Unsupported structure must remain unresolved rather than being silently omitted from identity.
+2. Separate candidate retrieval/similarity from checked equivalence and entailment. A bag/set of recognized terms may retrieve a candidate; it cannot certify that two statements mean the same thing.
+3. Bind each task-critical proposition to original source spans and each proof/check to the exact proposition identifier, assumptions and result. Positive theorem recognition must not answer a negated request.
+4. Audit deduplication, summarization, request routing, task formalization and proof selection for callers that promote lexical overlap into equivalence.
+5. Keep observational tests, checked proof and unresolved interpretation distinct in machine-readable results.
+6. Reuse existing parsers/typed semantics and shared cross-runtime fixtures; do not grow a list of special cases for these sentences.
+
+## Acceptance
+
+- [ ] The two ordered-comparison statements and the conjunction/disjunction pair remain distinct and are not deduplicated.
+- [ ] A negated theorem request never receives success for the positive theorem. Return an appropriate counterexample/refutation or honest unsupported result with the request binding intact.
+- [ ] Positive paraphrases in the supported subset still unify when a checked interpretation justifies it.
+- [ ] New tests cover `a-b` versus `b-a`, `<` versus `<=`, `and` versus `or`, negation scope, and repeated mention versus an explicit instruction to perform an effect twice.
+- [ ] Coding acceptance demonstrates that these distinctions survive issue text → obligation graph → candidate patch → independent test.
+- [ ] Unrecognized grammar keeps unresolved obligations; it cannot yield an empty but supposedly proved specification.
+- [ ] JS/TS and native implementations agree on shared fixtures, with native verification in CI.
+
+This is a finite soundness repair for supported semantics, not a requirement to solve unrestricted natural-language understanding before useful coding can begin.
+
+## Minimal local JavaScript probe
+
+Run from the repository root (no native build or network required):
+
+```js
+import { WorkerHost } from './js/server/worker-host.mjs';
+import { installNodeHost } from './js/agentic/node-host.mjs';
+import { formalizeText, statementIdentity } from './js/agentic/crate/text_formalization.mjs';
+import { restates } from './js/agentic/crate/dependency_summarization.mjs';
+const worker = new WorkerHost();
+await installNodeHost(worker);
+const [a] = formalizeText('1 is less than 2.', 'en');
+const [b] = formalizeText('2 is less than 1.', 'en');
+console.log(restates(b, a)); // currently true
+const [c] = formalizeText('The program returns true or false.', 'en');
+const [d] = formalizeText('The program returns true and false.', 'en');
+console.log(statementIdentity(c) === statementIdentity(d)); // currently true
+const answer = await worker.solve('Prove there are not infinitely many primes.');
+console.log(answer.intent, answer.evidence); // currently proof_request / proof_outcome:proven
+```
+
+The ordered-comparison statement IDs themselves differ; the unsafe term-set entailment fallback still makes `restates` return true. Preserve that distinction when locating the fix.
+
+## Dependency contract
+
+**Blocked by:** none; this step can start independently.
+
+**Blocks:** #1491, #1166.
+
+Related umbrella issues provide context; their entire broader scope is not an implicit prerequisite.
+
+
+__formal_ai_exit=0

@@ -132,6 +132,7 @@ mod web_research;
 mod wording;
 mod work_item_boundary_candidate;
 mod work_item_evidence;
+mod work_item_references;
 mod work_item_file_io;
 mod work_item_steps;
 mod workspace_change;
