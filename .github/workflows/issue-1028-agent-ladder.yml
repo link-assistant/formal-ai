@@ -259,7 +259,11 @@ jobs:
   composites:
     name: Agent CLI composite ${{ matrix.leg.id }}
     needs: [plan, leaf-evidence]
-    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.plan.result == 'success' && needs.plan.outputs.already-green != 'true' && needs.plan.outputs.composites != '[]') }}
+    # Issue #1569: only on validated leaves. Run 42472083551 started all 16
+    # composite legs after leaf-evidence had failed; each failed on the leaf
+    # artifact that was never uploaded, burying the one real failure under 16
+    # secondary ones. The compare job still reports skipped legs as missing.
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.plan.result == 'success' && needs.leaf-evidence.result == 'success' && needs.plan.outputs.already-green != 'true' && needs.plan.outputs.composites != '[]') }}
     runs-on: ubuntu-latest
     # One composite per machine; verification consumes only the current
     # run's two validated child effects and diffs.
