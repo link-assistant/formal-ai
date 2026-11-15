@@ -548,7 +548,16 @@ export function knownIds(statement) {
 
 const STRUCTURES = new WeakMap();
 /** Mirrors `fn statement_structure` in rust/src/formalization/text_statements.rs: operand order, connectives, quantifiers, repetition (#1487). */
-export function statementStructure(statement) { const text = statement.text ?? '', seen = STRUCTURES.get(statement); if (seen?.text === text && seen.terms === statement.terms) return seen.structure; const structure = readPropositionStructure(text, statement.language, readWords(text, statement.language, true), statementTerms(statement), { meaning: WordKind.Meaning, negation: WordKind.Negation, isTerm: isTermKind }); STRUCTURES.set(statement, { text, terms: statement.terms, structure }); return structure; }
+export function statementStructure(statement) {
+  const text = statement.text ?? '';
+  const seen = STRUCTURES.get(statement);
+  if (seen?.text === text && seen.terms === statement.terms) return seen.structure;
+  const words = readWords(text, statement.language, true);
+  const kinds = { meaning: WordKind.Meaning, negation: WordKind.Negation, isTerm: isTermKind };
+  const structure = readPropositionStructure(text, statement.language, words, statementTerms(statement), kinds);
+  STRUCTURES.set(statement, { text, terms: statement.terms, structure });
+  return structure;
+}
 
 /**
  * Mirrors `fn statement_identity` in rust/src/formalization/text_statements.rs: the formal identity of a statement, its
