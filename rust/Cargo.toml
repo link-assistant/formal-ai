@@ -194,7 +194,7 @@ strip = true
 
 # Safe no-follow/identity adapters reuse already-locked audited platform crates.
 [target.'cfg(unix)'.dependencies]
-rustix = { version = "1.1.6", features = ["fs", "process"] }
+rustix = { version = "1.1.5", features = ["fs", "process"] }
 
 [target.'cfg(windows)'.dependencies]
 winapi-util = "0.1.11"
