@@ -1,0 +1,52 @@
+[Bug][P0] Hive issue-created drafts run stale Formal AI: bind both selected sources to the actual serving runtime
+
+**Type:** Bug · **Priority:** P0
+
+## Problem and current evidence
+
+Formal AI's issue workflow now builds current main, but Hive Mind's own issue-created draft path can still run the backend baked into an older image.
+
+The [2026-10-30 Hive draft, run 41081977243/job 124153176671](https://github.com/link-assistant/hive-mind/actions/runs/41081977243/job/124153176671), for hive-mind#3863, reported wrapper and serving backend **0.355.15** around 15:41 UTC. [Formal AI v0.355.23](https://github.com/link-assistant/formal-ai/releases/tag/v0.355.23) had been published at 04:10:32 UTC that day.
+
+At reviewed Hive source `279ac05609d2a791c184c4f9fe7ee071e40ef6a4`:
+- [Dockerfile](https://github.com/link-assistant/hive-mind/blob/279ac05609d2a791c184c4f9fe7ee071e40ef6a4/Dockerfile) defaults `FORMAL_AI_VERSION=0.355.15`.
+- [formal-ai-draft.mjs](https://github.com/link-assistant/hive-mind/blob/279ac05609d2a791c184c4f9fe7ee071e40ef6a4/scripts/formal-ai-draft.mjs) mounts a different binary only when explicitly supplied.
+- [formal-ai-draft-image.lib.mjs](https://github.com/link-assistant/hive-mind/blob/279ac05609d2a791c184c4f9fe7ee071e40ef6a4/scripts/formal-ai-draft-image.lib.mjs) permits fallback from the exact Hive image to `latest`.
+
+The serving-version probe already exists. The missing guarantee is selection and custody of the intended runtime, not printing another version string. A one-time version bump only postpones the same defect.
+
+## Outcome that unblocks development
+
+Every live issue-created attempt measures the intended current Formal AI and Hive implementation. Historical replays remain pinned and explicitly historical.
+
+## Implementation steps
+
+1. Define a shared attempt identity containing Formal AI source SHA, Hive source SHA, package versions, binary digest, image digest, client/adapter versions and selection timestamp.
+2. Resolve current sources once at live-attempt admission. Obtain authenticated artifacts for those exact sources, or build once when absent. Reuse the existing Formal AI caller-binary mount protocol and provenance checks.
+3. Verify the actual process and serving endpoint match the selected artifacts before accepting work. Version equality alone is insufficient when different source commits share a version.
+4. Apply this contract to both repositories' issue-open paths. Track the cross-repository change here and link the corresponding Hive PR; a Formal AI-only change cannot close the integration requirement.
+5. Eliminate silent fallback to an unqualified image/backend. Unavailable artifacts produce a typed infrastructure/deferred outcome, preserving evidence and zero capability credit.
+6. Distinguish live current-source evaluation, published-release qualification, and historical pinned replay in receipts and dashboards.
+
+## Acceptance
+
+- [ ] Build a Hive image, advance Formal AI, then open a new issue: the next live draft runs the newly selected Formal AI source without rebuilding the entire Hive base merely to update its backend.
+- [ ] Compare selected source, authenticated binary/image identity and actual serving identity; mismatches are rejected before task effects.
+- [ ] Missing exact images/artifacts cannot silently become `latest`.
+- [ ] Current-source selection happens once per attempt and survives retries; a new source selection creates a new attempt identity.
+- [ ] Both repositories demonstrate the same contract in issue-created workflows.
+- [ ] Historical replay fixtures remain reproducible and cannot be reported as current-source success.
+- [ ] Fast tests cover source drift and stale/missing artifact cases; one hosted attempt verifies the complete integration.
+
+Related: #1210, #1162, #1364; Hive #2207/#2208 address older lifecycle/version-reporting concerns, which should not be reimplemented.
+
+## Dependency contract
+
+**Blocked by:** none; this step can start independently.
+
+**Blocks:** #1162.
+
+Related umbrella issues provide context; their entire broader scope is not an implicit prerequisite.
+
+
+__formal_ai_exit=0

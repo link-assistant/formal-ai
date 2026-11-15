@@ -1,0 +1,45 @@
+[Bug][P1] Draft health reports upload errors ahead of missing implementation: preserve structured primary outcomes
+
+**Type:** Bug · **Priority:** P1
+
+## Evidence
+
+In [Hive run 41081977243/job 124153176671](https://github.com/link-assistant/hive-mind/actions/runs/41081977243/job/124153176671), Formal AI returned `planned_not_executed`, and Hive reported no useful change with exit 5. Optional log publication then encountered HTTP 403 errors. The workflow annotation selected a username/upload error, while its separate session-artifact upload succeeded.
+
+The current [firstErrorLine helper](https://github.com/link-assistant/hive-mind/blob/279ac05609d2a791c184c4f9fe7ee071e40ef6a4/scripts/formal-ai-draft.lib.mjs) selects the first marked error line; [formal-ai-draft.mjs](https://github.com/link-assistant/hive-mind/blob/279ac05609d2a791c184c4f9fe7ee071e40ef6a4/scripts/formal-ai-draft.mjs) uses it for the draft annotation. Health grouping can therefore classify a missing implementation as a credentials/upload problem.
+
+The underlying issue hive-mind#3863 contains screenshots and the run used an older backend. Preserve these limitations in its evidence; do not infer an unseen root cause from its title alone.
+
+## Outcome that unblocks development
+
+Failure episodes identify what capability or infrastructure step actually prevented progress, so the next patch and learned rule target the right problem.
+
+## Implementation steps
+
+1. Emit a structured attempt outcome with separate fields for task/obligation acceptance, solver terminal state, process status, runtime identity, infrastructure status and evidence-publication status.
+2. Define primary classification from the requested effect and actual execution stage. A successful artifact upload does not make the task succeed; a failed optional gist upload does not replace the recorded task failure.
+3. Preserve `planned_not_executed`, unsupported/missing evidence, incorrect implementation, tool/runtime failure, and deferred-before-effects as distinct outcomes.
+4. Make both repositories' workflow annotations and health reports read the structured outcome. Keep a clearly marked legacy fallback for old logs.
+5. Retain sanitized session artifacts and exact run/job links even when optional external uploads fail. Do not add credentials merely to make optional diagnostics look green.
+6. Keep first-attempt no-change distinct from verified no-op continuation. Preserve existing repeat semantics.
+
+## Acceptance
+
+- [ ] Replay the October 30 log: task outcome is no requested implementation, process exit is 5, upload 403 is secondary, and retained Actions evidence is reported as available.
+- [ ] Grouping multiple such runs identifies the repeated capability gap rather than only the upload symptom.
+- [ ] A compiler failure, a missing-evidence task, a pre-effect CI deferral, a successful implementation with upload failure, and an already-correct no-op task have different truthful reports.
+- [ ] No logs/marker-only PR receives implementation credit.
+- [ ] Add small offline contract/replay tests and verify one new hosted attempt in each integration path.
+
+Related: #1210, #1220; Hive #3248/#3333. Coordinate the shared Hive helper change and Formal AI consumer change in linked PRs.
+
+## Dependency contract
+
+**Blocked by:** none; this step can start independently.
+
+**Blocks:** #1490, #1491.
+
+Related umbrella issues provide context; their entire broader scope is not an implicit prerequisite.
+
+
+__formal_ai_exit=0
