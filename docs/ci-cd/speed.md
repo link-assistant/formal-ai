@@ -341,3 +341,129 @@ tree; no speculative sparse exclusions were made. Restore automatic full
 measurement after reviewed source/artifact acquisition and the complete suite
 fit the existing job cap with reserve, followed by a selected full run passing
 every shard, complete merge and the unchanged ratchet. No new floor is claimed.
+
+## Hive feedback loop (issue #1486)
+
+A Hive draft or three-client delivery used to repeat its most expensive work
+on every attempt and every leg. Measured from the recorded runs (kept as
+replayable API fixtures in
+[`data/benchmarks/ci-phase-timing/baseline-runs/`](../../data/benchmarks/ci-phase-timing/baseline-runs/)):
+
+| Run | Phase | Before |
+| --- | --- | --- |
+| Draft 41191429608 | queue / checkout / compile / solver | 87 s / 305 s / 353 s cold Cargo build / 414 s (failed) |
+| Delivery 40475832633 | image preparation (build 887 s + free disk 65 s) | 952 s |
+| Delivery 40475832633 | image download per leg (codex / agent / claude) | 1882 s / 1187 s / 571 s |
+| Delivery 40475832633 | image load per leg | 310 s / 406 s / 369 s |
+| Delivery 40475832633 | candidate archive per leg | 8.48 GB, three times |
+| Delivery 40475832633 | wall time | 4734 s for 3 useful attempts |
+
+### Phases, bytes and objectives
+
+`scripts/ci-phase-timing.mjs` splits a completed run into queue, runner,
+checkout, install, compile, image preparation, image transfer, image load,
+solver, verification and publication from the Actions API. It also records
+artifact, image-bundle and image-transfer bytes and the total, useful and
+skipped solver attempts. A skipped step adds no seconds and no attempt. An
+expired artifact is reported as unknown, never as zero bytes.
+
+`.github/workflows/ci-phase-timing.yml` runs on every executed default-branch
+draft or delivery completion, while the one-day image artifact still exists,
+and once a day. It writes the per-phase table to the step summary and keeps the
+JSON for 90 days. The objectives in
+[`slo.json`](../../data/benchmarks/ci-phase-timing/slo.json) apply per run that
+executed a solver:
+
+| Objective | Limit | Baseline |
+| --- | --- | --- |
+| draft queue | 300 s | 87 s |
+| draft compile, warm (shared build reused) | 60 s | none: every draft compiled |
+| draft compile, cold | 720 s | 353 s |
+| draft wall | 1800 s | 1337 s |
+| delivery image preparation | 1200 s | 952 s |
+| delivery image transfer, per leg | 300 s | 1882 s |
+| delivery image load and base pull, per leg | 600 s | 407 s |
+| delivery image bundle | 2 GiB (every run) | 8.48 GB |
+| delivery wall | 3600 s | 4734 s |
+
+A breach in every one of the latest three applicable runs fails the job with an
+`::error`; that red run is the alert. A single breach is a warning. Measure a
+run or replay the baselines offline with:
+
+    node scripts/ci-phase-timing.mjs measure --run <id>
+    node scripts/ci-phase-timing.mjs check --fixtures data/benchmarks/ci-phase-timing/baseline-runs
+
+### Focused offline checks first
+
+[`focused-test-map.json`](../../data/benchmarks/focused-test-map.json) maps
+components and captured failure reasons to their offline tests.
+`node scripts/select-focused-tests.mjs --base origin/main --run` runs only the
+mapped tests, one at a time. `scripts/extract-draft-replay.mjs` turns a
+downloaded draft session artifact into a fixture under
+`data/benchmarks/fixtures/draft-replays/`, and `draft-request-replay.test.mjs`
+replays it with no Docker, release or Rust compilation. The captured run
+41191429608 (`ReadPolicyRefused`) fails on its source and passes on the fix;
+`experiments/issue-1486/replay-on-captured-source.sh` reproduces both.
+
+### One build per identity
+
+A draft computes its build identity from the source tree, `rustc -vV`, target,
+profile, features, binary, `Cargo.lock` digest and the build recipe
+(`scripts/lib/formal-ai-build-identity.mjs`). The earliest live, authenticated
+claim for that key builds; the others wait for its product (at most 600 s) and
+verify the producer workflow, branch, event and repository, the identity, and
+the binary's SHA-256 and size before using it. A failed build publishes no
+product. A stale, poisoned, incomplete or mismatched product is rejected, and
+the consumer builds for itself.
+
+### Image layers: transfer only what the candidate adds
+
+The task image is built `FROM` the runtime image pinned by digest. The bundle
+now carries a delta archive that omits the base layers the candidate inherits
+as an exact prefix (`scripts/lib/oci-delta-archive.mjs`, bundle schema
+`formal-ai-hive-image-bundle/v2`). Each leg pulls the base by digest, checks
+its image ID and layer diffIDs against the producer's identity, loads the
+delta, and still requires the exact producer image ID. A missing or different
+base fails the load. A cached image is never substituted for the candidate.
+When the delta cannot be proven (base not a prefix, base not pinned, the
+containerd store's blob names, or an incomplete stream), the full archive ships
+and the bundle records why.
+
+`experiments/issue-1486/delta-image-probe.sh` shows the mechanism locally on a
+small base: the full archive was 3,976,226 bytes and the delta 203,335 bytes.
+The delta loaded to the exact candidate ID, and without its base the load
+failed with the missing blob. The delivery base, `konard/hive-mind-dind`, is
+87 layers and 9.43 GB compressed (amd64 registry manifest), so nearly all of
+the 8.48 GB per-leg transfer is base layers.
+
+Cold and warm tradeoffs:
+
+- A fresh hosted runner has no layers, so each leg now pulls the base from the
+  registry instead of the Actions artifact store. The registry is usually
+  faster than the artifact store and the pull is digest-verified.
+- Registry rate limits and outages become a dependency of every leg. A failed
+  pull fails the leg closed; it never falls back to an unverified image.
+- A warm runner, or a later stage on the same runner, reuses the base layers
+  from the local store by content address.
+- The image job still builds the candidate once per run. The delta saves the
+  per-leg upload and download, not the build.
+
+### Sequential or parallel clients
+
+The three clients stay parallel. A leg spends about 25 minutes before its
+solver (image download 571–1882 s, load 310–406 s, plus checkout and claims)
+and 364–407 s solving. Run sequentially on one runner, setup plus three solves
+would exceed the 30-minute job limit even with the delta transfer. It would
+also share one Docker daemon and disk between clients that are now isolated
+and judged independently. The delta removes the duplicated cost instead.
+
+### What stays at its boundary
+
+Full oracles, native qualification, independent verification, the effect
+claims and publication are unchanged. Pull requests still compile no Rust and
+build no Docker image, so the after-measurements come from the first
+default-branch draft and delivery runs measured by `ci-phase-timing.yml`.
+The delivery job keeps its recorded 55-minute exception until those
+measurements show it fits under 30 minutes. Each draft keeps its own
+`hive-mind-draft-session-<issue>-<attempt>` artifact and outcome, and each
+delivery leg keeps its own claim, result and evidence.

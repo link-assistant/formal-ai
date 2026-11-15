@@ -26,6 +26,8 @@ jobs:
     permissions:
       contents: read
       issues: read
+      # Issue #1486: list and download the authenticated shared build artifact.
+      actions: read
     outputs:
       should_run: ${{ steps.decide.outputs.should_run || (job.status == 'failure' && 'true') || 'false' }}
       decision_code: ${{ steps.decide.outputs.decision_code }}
@@ -38,6 +40,8 @@ jobs:
       binary_artifact_id: ${{ steps.binary-artifact.outputs.artifact-id }}
       attempt_id: ${{ steps.identity.outputs.attempt_id }}
       attempt_identity: ${{ steps.identity.outputs.attempt_identity }}
+      build_key: ${{ steps.build-identity.outputs.key }}
+      build_mode: ${{ steps.shared-verify.outputs.reused == 'true' && 'reuse' || 'build' }}
     # The default token suppresses automatic PR-event fanout, so even with
     # optional app credentials configured elsewhere, evidence-only drafts
     # cannot start the matrix before the complete-diff admission check.
@@ -120,14 +124,64 @@ jobs:
           ref: ${{ steps.source.outputs.sha }}
           path: .formal-ai-source
           persist-credentials: false
-      - name: Restore shared Cargo registry without an extra cache writer
+      # Issue #1486: build once per source/toolchain/target/features/lockfile identity.
+      # The earliest live claim produces; other drafts reuse its authenticated
+      # artifact, and a failed, stale, poisoned or incomplete one is never reused.
+      - id: build-identity
+        name: Compute the effective Formal AI build identity
         if: steps.decide.outputs.should_run == 'true'
+        run: |
+          node scripts/formal-ai-shared-build.mjs identity --source .formal-ai-source --out "$RUNNER_TEMP/formal-ai-build-identity.json"
+          cp "$RUNNER_TEMP/formal-ai-build-identity.json" "$FORMAL_AI_DRAFT_LOG_DIR/build-identity.json"
+      - name: Claim the build identity for this draft
+        if: steps.decide.outputs.should_run == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: formal-ai-build-claim-${{ steps.build-identity.outputs.key }}
+          path: ${{ runner.temp }}/formal-ai-build-identity.json
+          if-no-files-found: error
+          retention-days: 1
+        # A re-run attempt keeps its first attempt's claim; artifacts are never overwritten.
+        continue-on-error: true
+      - id: shared-build
+        name: Reuse or await the single producer of this build identity
+        if: steps.decide.outputs.should_run == 'true'
+        timeout-minutes: 12
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/formal-ai-shared-build.mjs resolve --identity "$RUNNER_TEMP/formal-ai-build-identity.json" | tee -a "$FORMAL_AI_DRAFT_LOG_DIR/shared-build.txt"
+      - name: Download the authenticated shared build
+        if: steps.shared-build.outputs.mode == 'reuse'
+        # A missing or broken artifact falls back to this draft's own build.
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ steps.shared-build.outputs.artifact_id }}
+          run-id: ${{ steps.shared-build.outputs.producer_run_id }}
+          github-token: ${{ github.token }}
+          merge-multiple: true
+          path: ${{ runner.temp }}/formal-ai-shared-build
+      - id: shared-verify
+        name: Verify the shared build's producer, identity and digest
+        if: steps.shared-build.outputs.mode == 'reuse'
+        continue-on-error: true
+        env:
+          PRODUCER_RUN_ID: ${{ steps.shared-build.outputs.producer_run_id }}
+        run: |
+          node scripts/formal-ai-shared-build.mjs verify --identity "$RUNNER_TEMP/formal-ai-build-identity.json" --dir "$RUNNER_TEMP/formal-ai-shared-build" --producer-run "$PRODUCER_RUN_ID" | tee -a "$FORMAL_AI_DRAFT_LOG_DIR/shared-build.txt"
+          mkdir -p .formal-ai-source/target/release
+          install -m 0755 "$RUNNER_TEMP/formal-ai-shared-build/formal-ai" .formal-ai-source/target/release/formal-ai
+          echo "reused=true" >> "$GITHUB_OUTPUT"
+      - name: Restore shared Cargo registry without an extra cache writer
+        if: steps.decide.outputs.should_run == 'true' && steps.shared-verify.outputs.reused != 'true'
         uses: ./.github/actions/cache-cargo-registry
         with:
           restore-only: "true"
       - id: build-command
         name: Build current main binary in CI
-        if: steps.decide.outputs.should_run == 'true'
+        if: steps.decide.outputs.should_run == 'true' && steps.shared-verify.outputs.reused != 'true'
         working-directory: .formal-ai-source
         run: FORMAL_AI_DEADLINE_GRACE_SECONDS=30 bash "$GITHUB_WORKSPACE/scripts/run-with-session-evidence.sh" 1320 build cargo build --manifest-path rust/Cargo.toml --target-dir target --release --locked --bin formal-ai
         shell: bash
@@ -150,6 +204,7 @@ jobs:
           FORMAL_AI_DRAFT_ISSUE: ${{ steps.decide.outputs.issue_number || github.event.issue.number || inputs.issue_number }}
           FORMAL_AI_SELECTED_SHA: ${{ steps.source.outputs.sha }}
           FORMAL_AI_BINARY: ${{ github.workspace }}/.formal-ai-source/target/release/formal-ai
+          FORMAL_AI_BINARY_SOURCE: ${{ steps.shared-verify.outputs.reused == 'true' && 'shared-build' || 'build' }}
           HIVE_MIND_SOURCE_SHA: ${{ steps.hive-source.outputs.sha }}
           HIVE_MIND_IMAGE: ${{ steps.hive-version.outputs.image }}
         run: |
@@ -163,6 +218,22 @@ jobs:
           path: .formal-ai-source/target/release/formal-ai
           if-no-files-found: error
           retention-days: 1
+      - name: Describe the successful build for other drafts of the same identity
+        if: steps.build-command.outcome == 'success'
+        run: |
+          mkdir -p "$RUNNER_TEMP/formal-ai-build-product"
+          install -m 0755 .formal-ai-source/target/release/formal-ai "$RUNNER_TEMP/formal-ai-build-product/formal-ai"
+          node scripts/formal-ai-shared-build.mjs manifest --identity "$RUNNER_TEMP/formal-ai-build-identity.json" --binary "$RUNNER_TEMP/formal-ai-build-product/formal-ai" --out "$RUNNER_TEMP/formal-ai-build-product/formal-ai-build.json"
+      - name: Publish the authenticated build product once per identity
+        if: steps.build-command.outcome == 'success'
+        uses: actions/upload-artifact@v7
+        with:
+          name: formal-ai-build-${{ steps.build-identity.outputs.key }}
+          path: ${{ runner.temp }}/formal-ai-build-product
+          if-no-files-found: error
+          retention-days: 3
+        # The per-run binary above is the draft's custody; this copy only serves other drafts.
+        continue-on-error: true
       - name: Stage complete redacted build evidence
         if: ${{ always() && (steps.decide.outputs.should_run == 'true' || failure()) }}
         env:

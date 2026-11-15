@@ -36,7 +36,7 @@ export function main(env = process.env, argv = process.argv.slice(2), io = {insp
       identity = selectAttemptIdentity({
         repository: env.GITHUB_REPOSITORY, issue: env.FORMAL_AI_DRAFT_ISSUE,
         formalAi: {sourceSha: env.FORMAL_AI_SELECTED_SHA, checkedOutSha: io.gitHead(env.FORMAL_AI_SOURCE_DIR ?? '.formal-ai-source'),
-          version: versionOf(binary?.version), binarySha256: binary?.sha256, binaryBytes: binary?.bytes ?? null, binarySource: 'build'},
+          version: versionOf(binary?.version), binarySha256: binary?.sha256, binaryBytes: binary?.bytes ?? null, binarySource: env.FORMAL_AI_BINARY_SOURCE || 'build'},
         hive: {sourceSha: env.HIVE_MIND_SOURCE_SHA, checkedOutSha: io.gitHead(env.HIVE_MIND_DIR ?? '.hive-mind'), version: hivePackage?.version, image: env.HIVE_MIND_IMAGE},
         selected: {at: env.FORMAL_AI_SELECTED_AT || new Date().toISOString(), runId: env.GITHUB_RUN_ID ?? null, runAttempt: env.GITHUB_RUN_ATTEMPT ?? null,
           runUrl: env.GITHUB_RUN_ID ? (env.GITHUB_SERVER_URL ?? 'https://github.com') + '/' + env.GITHUB_REPOSITORY + '/actions/runs/' + env.GITHUB_RUN_ID : null},
