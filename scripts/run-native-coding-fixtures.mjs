@@ -29,9 +29,24 @@ export function selectLibraryTestArtifact(messages, repository) {
   assert.equal(selected.manifest_path, path.join(root, 'rust/Cargo.toml'));
   const executable = selected.executable;
   assert.ok(path.isAbsolute(executable) && path.resolve(executable) === executable, 'noncanonical executable');
-  assert.equal(path.dirname(executable), path.join(root, 'rust/target/release/deps'), 'foreign executable root');
-  assert.match(path.basename(executable), /^formal_ai-[a-f0-9]+$/u);
+  assert.ok(isReleaseTestExecutable(executable, root, 'formal_ai'), 'foreign executable root');
   return executable;
+}
+
+/**
+ * Whether `executable` is the release test executable of `target` that Cargo
+ * placed under `<root>/rust/target`. Cargo up to Rust 1.99 writes it as
+ * `release/deps/<target>-<hash>`; from Rust 1.100 (the new build-dir layout,
+ * issue #1569) it writes it as `release/build/formal-ai/<hash>/out/<target>-<hash>`,
+ * the directory hash equal to the file hash. Any other place is foreign.
+ */
+export function isReleaseTestExecutable(executable, root, target) {
+  const release = path.join(path.resolve(root), 'rust/target/release');
+  const name = path.basename(executable).match(/^(?<target>[A-Za-z0-9_]+)-(?<hash>[a-f0-9]+)$/u);
+  if (!name || name.groups.target !== target) return false;
+  const directory = path.dirname(executable);
+  return directory === path.join(release, 'deps')
+    || directory === path.join(release, 'build', 'formal-ai', name.groups.hash, 'out');
 }
 
 export function declaredCreationTestNames(source) {
