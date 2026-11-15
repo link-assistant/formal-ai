@@ -79,7 +79,9 @@ test('download warning suppression is narrow and concurrency distinguishes build
  const jobs=workflowJobs(workflow);
  assert.match(jobs.find(job=>job.id==='build').body,/hive-mind-draft-build-.*github.ref/);
  assert.match(jobs.find(job=>job.id==='build').body,/cancel-in-progress: true/);
- assert.equal((workflow.match(/NODE_OPTIONS: --disable-warning=DEP0005/g)||[]).length,2);
+ // One narrow suppression per artifact download (issue #1486 added the shared build download).
+ assert.equal((workflow.match(/NODE_OPTIONS: --disable-warning=DEP0005/g)||[]).length,(workflow.match(/uses: actions\/download-artifact@/g)||[]).length);
+ assert.equal((workflow.match(/uses: actions\/download-artifact@/g)||[]).length,3);
  assert.doesNotMatch(workflow,/--no-deprecation|--no-warnings|NODE_NO_WARNINGS/);
 });
 
