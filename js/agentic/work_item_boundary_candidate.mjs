@@ -10,6 +10,9 @@ import { FinalDisposition } from './plan.mjs';
 import { workItemRequirements } from './work_item_requirements.mjs';
 import { refusal, workItemRecordFinal } from './work_item_report.mjs';
 import { userReadPolicyBlocksPlan } from './file_read/ownership.mjs';
+import { toolFor } from './capability_router.mjs';
+import { planOne, jsonText } from './plan.mjs';
+import { commandArgument } from './tool_result.mjs';
 const words = value => value.toLowerCase().replace(/[`'"()[\],;:]/gu, ' ').trim().replace(/\s+/gu, ' ');
 function grammar() {
   const parsed = parseLino(readText('data/meta/comparison-boundary-grammar.lino'));
@@ -340,6 +343,71 @@ export function planBoundaryCandidateEffect(candidate, messages, tools, task = '
   return fileIoEffectStep(messages, tools, candidate.path, candidate.before, candidate.after);
 }
 
+/** Markers a contract check prints; neither contains a character a transport escapes. */
+const SAMPLE_MARKER = /formal-ai-contract-check: (passed|failed) ([0-9]+)\/([0-9]+)/u;
+const REGRESSION_MARKER = /formal-ai-regression-test: (passed|failed)/u;
+const IDENTIFIER = /^[A-Za-z_$][A-Za-z0-9_$]*$/u;
+
+/**
+ * The contract-derived check of a candidate (issue #1483). Its samples apply
+ * the REQUESTED bound and inclusivity to the signature of the source observed
+ * before any effect, never to the candidate, and run against the current
+ * artifact through the Run tool: a repair that missed the bound fails it.
+ * A regression candidate also runs its own test file. Null when no Run tool is
+ * advertised or the samples cannot be derived; the check then stays pending.
+ */
+export function boundaryContractCheck(contract, observations, operation, tools) {
+  const run = toolFor(tools, Capability.Run);
+  if (run === null || !contract || typeof operation !== 'function') return null;
+  const source = observations instanceof Map ? observations.get(contract.owner) : observations?.[contract.owner];
+  if (!complete(source)) return null;
+  let derived;
+  try {
+    derived = operation({
+      source: source.source,
+      owner: contract.owner,
+      declaration: contract.declaration,
+      bound: contract.bound,
+      inclusive: contract.inclusive,
+      mode: 'regression',
+      testOwner: contract.mode === 'regression' ? contract.target : contract.owner.replace(/\.(m?js)$/u, '.formal-ai-check.$1')
+    });
+  } catch {
+    return null;
+  }
+  const samples = derived?.samples, declaration = derived?.verification?.declaration;
+  if (!Array.isArray(samples) || !samples.length || samples.length > 32 || typeof declaration !== 'string' || !IDENTIFIER.test(declaration)
+    || samples.some(sample => !Array.isArray(sample?.args) || sample.args.some(value => !Number.isFinite(value)) || typeof sample.expected !== 'boolean')) return null;
+  const rows = JSON.stringify(samples.map(sample => ({ args: sample.args, expected: sample.expected })));
+  const script = `import {${declaration} as f} from "./${contract.owner}";const s=${rows};`
+    + 'const bad=s.filter(x=>f(...x.args)!==x.expected);'
+    + 'console.log("formal-ai-contract-check: "+(bad.length?"failed ":"passed ")+(s.length-bad.length)+"/"+s.length);'
+    + 'process.exitCode=bad.length?1:0;';
+  const sampleCommand = `node --input-type=module -e '${script}'`;
+  const command = contract.mode === 'regression'
+    ? `node --test '${contract.target}' >/dev/null 2>&1 && echo "formal-ai-regression-test: passed" || echo "formal-ai-regression-test: failed"; ${sampleCommand}`
+    : sampleCommand;
+  return { tool: run, command, samples: samples.length, declaration };
+}
+
+/** The outcome of an executed contract check: passed, failed, or unavailable when its marker is missing. */
+export function boundaryCheckOutcome(check, attempt) {
+  const text = String(attempt?.raw_receipt ?? attempt?.detail ?? '');
+  const samples = SAMPLE_MARKER.exec(text);
+  if (samples === null || Number(samples[3]) !== check.samples) return 'unavailable';
+  if (check.command.startsWith('node --test ')) {
+    const regression = REGRESSION_MARKER.exec(text);
+    if (regression === null) return 'unavailable';
+    if (regression[1] === 'failed') return 'failed';
+  }
+  return samples[1];
+}
+
+/** The latest Run attempt of exactly `command`. */
+function checkAttemptFor(progress, command) {
+  return [...progress.attempts].reverse().find(attempt => attempt.capability === Capability.Run && commandArgument(attempt.arguments) === command) ?? null;
+}
+
 /** Production route wrapper. Call for the actual fetched objective before the
  * generic failure/read fallback, so a requested NEW test's proven ENOENT can be
  * treated as target precondition rather than a work-item transport failure.
@@ -351,7 +419,8 @@ export function planWorkItemBoundaryStep(task, messages, tools, workItem, pathsF
   const progress = Progress.scan(messages),
     observations = [];
   let candidate = null,
-    effect = null;
+    effect = null,
+    contractCheck = null;
   // The work item is split into requirements before any evidence is read; a
   // requirement overlapping the bound clause awaits its independent check.
   const obligations = workItemRequirements(task).map(([text, span]) => ({
@@ -361,6 +430,10 @@ export function planWorkItemBoundaryStep(task, messages, tools, workItem, pathsF
   }));
   const finish = (reason, detail = null, refused = null) => {
     const authored = effect?.implementationChanged === true;
+    // Only an executed, contract-derived check discharges the bound requirement.
+    const checked = effect?.verified === true && contractCheck?.status === 'passed';
+    if (checked) for (const obligation of obligations) if (obligation.status === 'independent_check_pending') obligation.status = 'verified';
+    const allVerified = checked && obligations.length > 0 && obligations.every(obligation => obligation.status === 'verified');
     const candidateView = candidate ? {
       kind: candidate.kind,
       mode: candidate.mode,
@@ -375,10 +448,14 @@ export function planWorkItemBoundaryStep(task, messages, tools, workItem, pathsF
         kind: 'complete-readable-cst',
         identity: sha256Hex(JSON.stringify(candidate.sourceModel))
       },
-      checks: candidate.checks.map(check => check.kind === 'physical-readback' ? {
+      checks: [...candidate.checks.map(check => check.kind === 'physical-readback' ? {
         ...check,
         status: effect?.verified === true ? 'passed' : 'pending'
-      } : check)
+      } : check.kind === 'independent-task-acceptance' && contractCheck !== null ? {
+        ...check,
+        status: contractCheck.status,
+        detail: 'contract-derived-execution'
+      } : check), ...(contractCheck === null ? [] : [contractCheck])]
     } : null;
     return workItemRecordFinal({
       schema: 'repository-work-item-controller/v1',
@@ -394,14 +471,14 @@ export function planWorkItemBoundaryStep(task, messages, tools, workItem, pathsF
       checks: candidateView?.checks ?? [],
       effects: effect ? [effect] : [],
       authored,
-      verified: false,
-      independentlyAccepted: false,
-      complete: false,
+      verified: checked,
+      independentlyAccepted: checked,
+      complete: allVerified,
       physicalReadbackVerified: effect?.verified === true,
       noOp: effect?.noOp === true,
       usefulChange: {
         observed: authored,
-        independentlyAccepted: false,
+        independentlyAccepted: checked && authored,
         paths: authored ? [contract.target] : []
       },
       authorshipBoundary: {
@@ -410,7 +487,7 @@ export function planWorkItemBoundaryStep(task, messages, tools, workItem, pathsF
         autonomousCredit: 0,
         laterReviewerWork: 'not-observed'
       },
-      remainingWork: obligations.map(obligation => ({
+      remainingWork: obligations.filter(obligation => obligation.status !== 'verified').map(obligation => ({
         text: obligation.text,
         span: obligation.span,
         reason: obligation.status === 'independent_check_pending' ? 'independent-requirement-acceptance-required' : 'unsupported-or-unbound-obligation'
@@ -421,7 +498,7 @@ export function planWorkItemBoundaryStep(task, messages, tools, workItem, pathsF
       },
       detail,
       ...(refused === null ? {} : { refused })
-    }, task, FinalDisposition.Gap, 'repository_work_item_boundary');
+    }, task, allVerified ? FinalDisposition.Finding : FinalDisposition.Gap, 'repository_work_item_boundary');
   };
   const refuse = path => finish('ReadPolicyRefused', null, refusal(obligations, path));
   const unplanned = (gap, path) => gap === 'ReadPolicyRefused' ? refuse(path) : finish(gap);
@@ -455,7 +532,16 @@ export function planWorkItemBoundaryStep(task, messages, tools, workItem, pathsF
   if (next.step) return userReadPolicyBlocksPlan(messages, task, next.step) ? refuse(candidate.path) : next.step;
   if (next.effect) {
     effect = next.effect;
-    return finish(effect.noOp ? 'VerifiedNoOpAwaitingIndependentAcceptance' : 'UsefulCandidateAwaitingIndependentAcceptance');
+    const awaiting = effect.noOp ? 'VerifiedNoOpAwaitingIndependentAcceptance' : 'UsefulCandidateAwaitingIndependentAcceptance';
+    // The readback-verified artifact is then executed against samples derived from the contract.
+    const check = boundaryContractCheck(contract, boundaryCandidateObservations(contract, messages), operation, tools);
+    if (check === null) return finish(awaiting);
+    const attempt = checkAttemptFor(progress, check.command);
+    if (attempt === null) return planOne(check.tool, jsonText({ command: check.command }));
+    const status = boundaryCheckOutcome(check, attempt);
+    contractCheck = { kind: 'contract-derived-execution', command: check.command, samples: check.samples, declaration: check.declaration, status };
+    if (status === 'passed') return finish(effect.noOp ? 'VerifiedNoOp' : 'UsefulChangeVerified');
+    return finish(status === 'failed' ? 'IndependentCheckFailed' : 'IndependentCheckUnavailable', { check: contractCheck });
   }
   return finish(next.failure ?? next.gap ?? 'BoundaryExecutionUnresolved', next);
 }

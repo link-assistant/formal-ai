@@ -108,3 +108,43 @@ test('ambiguous reads or edits and unrelated mutations terminate before another 
     assert.equal(report.detail.budget.observed,variant==='totalBudget'?2:variant==='ambiguousRead'?0:1);
   }
 });
+
+// Issue #1483: with a Run tool the readback-verified artifact is executed
+// against samples derived from the requested bound (not from the candidate);
+// only that executed check verifies the bound requirement.
+test('a Run tool executes the contract-derived check; a replay is a verified no-op',async()=>{
+  const directory=mkdtempSync(join(tmpdir(),'formal-ai-boundary-check-'));
+  try{
+    mkdirSync(join(directory,'src'));writeFileSync(join(directory,'src/ceiling.mjs'),source);
+    const result=await drive(planChatStep,directory,task,{steps:12,tools:['read','edit','write','bash']});
+    assert.equal(result.stop,'final');
+    assert.deepEqual(result.transcript.map(row=>row.tool),['read','edit','read','bash']);
+    const report=recorded(result);
+    assert.equal(report.reason,'UsefulChangeVerified');
+    assert.equal(report.verified,true);assert.equal(report.authored,true);assert.equal(report.complete,true);
+    const check=report.checks.find(row=>row.kind==='contract-derived-execution');
+    assert.equal(check.status,'passed');assert.equal(check.declaration,'accepts');
+    assert.ok(report.requirements.every(row=>row.status==='verified'));
+    assert.deepEqual(report.remainingWork,[]);
+    const replay=await drive(planChatStep,directory,task,{steps:8,tools:['read','edit','write','bash']});
+    assert.deepEqual(replay.transcript.map(row=>row.tool),['read','bash']);
+    const replayed=recorded(replay);
+    assert.equal(replayed.reason,'VerifiedNoOp');assert.equal(replayed.noOp,true);
+    assert.equal(replayed.authored,false);assert.equal(replayed.verified,true);
+  }finally{rmSync(directory,{recursive:true,force:true});}
+});
+
+test('a regression test over a source that contradicts the requested bound fails its check',async()=>{
+  const directory=mkdtempSync(join(tmpdir(),'formal-ai-boundary-regression-check-'));
+  const regression='Add a regression test in test/ceiling.test.mjs for the upper bound of function accepts in src/ceiling.mjs: the maximum is inclusive.';
+  try{
+    mkdirSync(join(directory,'src'));mkdirSync(join(directory,'test'));writeFileSync(join(directory,'src/ceiling.mjs'),source);
+    const result=await drive(planChatStep,directory,regression,{steps:12,tools:['read','edit','write','bash']});
+    assert.equal(result.stop,'final');
+    const report=recorded(result);
+    assert.equal(report.reason,'IndependentCheckFailed');
+    assert.equal(report.verified,false);assert.equal(report.complete,false);
+    assert.equal(report.checks.find(row=>row.kind==='contract-derived-execution').status,'failed');
+    assert.ok(report.requirements.every(row=>row.status!=='verified'));
+  }finally{rmSync(directory,{recursive:true,force:true});}
+});
