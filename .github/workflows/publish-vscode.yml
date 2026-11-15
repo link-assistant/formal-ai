@@ -73,7 +73,7 @@ concurrency:
   queue: max
 jobs:
   resolve:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 6
     outputs:
       tag: ${{ steps.release.outputs.tag }}
@@ -125,7 +125,7 @@ jobs:
   publish:
     needs: resolve
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.resolve.outputs.build == 'true') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
       contents: read
@@ -217,7 +217,7 @@ jobs:
       - publish
     if: ${{ !cancelled() && needs.publish.result == 'success' &&
       needs.resolve.outputs.publish == 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
       contents: read

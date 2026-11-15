@@ -60,7 +60,7 @@ permissions:
 jobs:
   actionlint:
     name: Actionlint
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     concurrency:
       group: check-${{ github.workflow }}-${{ github.ref }}-actionlint
@@ -125,7 +125,7 @@ jobs:
 
   zizmor:
     name: Zizmor
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # Issue #1017: a job cap must be a backstop, not the mechanism that reports
     # the failure -- `timeout-minutes` cancels a job, and a cancelled job is not
     # a red check. This audit takes seconds; ten minutes is unreachable except

@@ -165,3 +165,137 @@ export function median(values) {
 
 /** Minutes rounded to one decimal. */
 export const roundMinutes = (minutes) => Math.round(minutes * 10) / 10;
+
+/**
+ * Seconds per JavaScript suite file from the `[test-file]` events that
+ * `scripts/run-ordered-javascript-tests.mjs` prints in a Layered CI js-tier job
+ * log (issue #1571). A `completed` (or `failed`) event carries the file's own
+ * `duration_ms`.
+ *
+ * When the job's budget kills the run, some files started and never reported.
+ * Node's `run()` reports file summaries in queue order, so a fast file queued
+ * after a slow one stays unreported until the slow one finishes: a missing
+ * summary does not mean a file was still running. Only the first unreported
+ * file in queue order is certainly still running when the log ends; the time
+ * from its `started` line to the last timestamped line is a lower bound for it,
+ * marked `complete: false`, taken only when `run-with-budget-warning.sh`
+ * reported the kill. The other unreported files are left out. GitHub
+ * prefixes every job-log line with an ISO timestamp, which makes the bound
+ * computable.
+ */
+export function parseJavaScriptFileEvents(log) {
+  const files = new Map();
+  const started = new Map();
+  const queued = [];
+  let last = null;
+  for (const line of log.split('\n')) {
+    const stamp = line.match(/^﻿?(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z) /u);
+    if (stamp) last = Date.parse(stamp[1]);
+    const event = line.match(/\[test-file\] (queued|started|completed|failed) (\S+)(?: (\{.*\}))?\s*$/u);
+    if (!event) continue;
+    const [, state, file, payload] = event;
+    if (state === 'queued') {
+      queued.push(file);
+      continue;
+    }
+    if (state === 'started') {
+      if (stamp) started.set(file, Date.parse(stamp[1]));
+      continue;
+    }
+    let milliseconds = null;
+    try {
+      milliseconds = JSON.parse(payload ?? 'null')?.duration_ms ?? null;
+    } catch {
+      milliseconds = null;
+    }
+    started.delete(file);
+    if (!Number.isFinite(milliseconds) || milliseconds < 0) continue;
+    const seconds = milliseconds / 1000;
+    const previous = files.get(file);
+    if (!previous || seconds > previous.seconds) files.set(file, { seconds, complete: true });
+  }
+  // A file can pass without a summary event of its own (run 43730269695 group
+  // 2 printed `✔ rust/tests/web/server-dialog-lino.test.mjs` and no summary),
+  // so a bound is taken only from a log whose budget actually killed the run.
+  const killed = /was terminated after \d+s, its full \d+s execution budget/u.test(log);
+  const blocking = queued.find((file) => started.has(file) && !files.has(file));
+  if (killed && last !== null && blocking) {
+    files.set(blocking, { seconds: Math.max(0, (last - started.get(blocking)) / 1000), complete: false });
+  }
+  return files;
+}
+
+/**
+ * Fold observed seconds into a `javascript-test-durations` record (issue #1571).
+ *
+ * The js-tier plan used to weigh every unrecorded suite file at 0.1 s, and only
+ * about a third of the files were recorded. A shard collecting several
+ * unrecorded files that take 40 to 150 s each ran far past its 360 s budget
+ * (run 43730269695, suite group 7 of 8: 29 files never reported). This function:
+ *
+ * - replaces a recorded file's seconds with what CI observed for it, since the
+ *   plan runs under those same conditions, and drops the comment and receipt
+ *   lines that described the older measurement. Two observations only ever
+ *   raise a value: a file the budget killed (its seconds are a lower bound),
+ *   and a file whose record carries a receipt (a receipt pins the exact
+ *   seconds it measured, and only its own importer may restate them);
+ * - adds every unrecorded file observed at or above `floor` seconds;
+ * - writes `default-seconds`, the mean of the observed files left unrecorded,
+ *   which is the weight the planner gives a file it has no record for.
+ *
+ * The result is sorted longest first and is a pure function of its inputs.
+ */
+export function mergeJavaScriptDurations(text, observed, { source, floor = 2, recordedDate } = {}) {
+  const lines = text.replace(/\n$/u, '').split('\n');
+  const firstTest = lines.findIndex((line) => /^ {2}test /u.test(line));
+  let headerEnd = firstTest < 0 ? lines.length : firstTest;
+  while (headerEnd > 0 && /^\s*#/u.test(lines[headerEnd - 1])) headerEnd -= 1;
+  const note = '  # observed-run: Layered CI runs whose js-tier `[test-file]` seconds were folded in (issue #1571).';
+  const header = lines.slice(0, headerEnd)
+    .filter((line) => line !== note && !/^ {2}(default-seconds|observed-run) /u.test(line));
+  const entries = [];
+  let comments = [];
+  for (let index = headerEnd; index < lines.length; index += 1) {
+    const line = lines[index];
+    const test = line.match(/^ {2}test "((?:[^"\\]|\\.)*)"$/u);
+    if (test) {
+      const value = lines[index + 1]?.match(/^ {4}seconds (\d+(?:\.\d+)?)$/u);
+      if (!value) throw new Error(`test "${test[1]}" has no seconds line`);
+      const extra = [];
+      index += 1;
+      while (/^ {4}\S/u.test(lines[index + 1] ?? '')) extra.push(lines[(index += 1)]);
+      entries.push({ file: test[1], seconds: Number(value[1]), text: value[1], comments, extra });
+      comments = [];
+    } else if (line.trim()) {
+      comments.push(line);
+    }
+  }
+  const byFile = new Map(entries.map((entry) => [entry.file, entry]));
+  const round = (value) => Math.round(value * 10) / 10;
+  const unrecorded = [];
+  for (const [file, { seconds, complete = true }] of [...observed].sort(([left], [right]) => left.localeCompare(right))) {
+    const entry = byFile.get(file);
+    if (entry) {
+      const replace = round(seconds) > entry.seconds
+        || (complete && entry.extra.length === 0 && round(seconds) !== entry.seconds);
+      if (replace) {
+        Object.assign(entry, { seconds: round(seconds), text: String(round(seconds)), comments: [], extra: [] });
+      }
+    } else if (seconds >= floor) {
+      const added = { file, seconds: round(seconds), text: String(round(seconds)), comments: [], extra: [] };
+      entries.push(added);
+      byFile.set(file, added);
+    } else {
+      unrecorded.push(seconds);
+    }
+  }
+  entries.sort((left, right) => right.seconds - left.seconds || left.file.localeCompare(right.file));
+  const out = header.map((line) => (recordedDate && /^ {2}recorded /u.test(line) ? `  recorded ${recordedDate}` : line));
+  if (source) out.push(note, `  observed-run ${source}`);
+  if (unrecorded.length) {
+    const mean = unrecorded.reduce((sum, value) => sum + value, 0) / unrecorded.length;
+    out.push(`  default-seconds ${Math.max(0.1, Math.round(mean * 100) / 100)}`);
+  }
+  for (const entry of entries) out.push(...entry.comments, `  test "${entry.file}"`, `    seconds ${entry.text}`, ...entry.extra);
+  return `${out.join('\n')}\n`;
+}

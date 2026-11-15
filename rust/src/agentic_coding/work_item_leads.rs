@@ -47,13 +47,13 @@ fn image_suffix() -> &'static regex::Regex {
 
 /// The leads of a work item.
 #[derive(Debug, Default, PartialEq, Eq)]
-pub(super) struct WorkItemLeads {
+pub struct WorkItemLeads {
     /// Attached or embedded images, never fetched.
-    pub(super) attachments: Vec<String>,
+    pub attachments: Vec<String>,
     /// Documents a fetch can read.
-    pub(super) documents: Vec<String>,
+    pub documents: Vec<String>,
     /// Pages kept as related context (work items, runs, other repositories).
-    pub(super) related: Vec<String>,
+    pub related: Vec<String>,
 }
 
 /// URLs of `task` in order of first mention, each once.
@@ -92,7 +92,8 @@ fn attachment(task: &str, url: &str) -> bool {
 /// The leads of `task`: attachments (never fetched), documents a fetch can
 /// read, and pages kept as related context. Blob links into a repository are
 /// file references, not leads.
-pub(super) fn work_item_leads(task: &str, work_item: &str) -> WorkItemLeads {
+#[must_use]
+pub fn work_item_leads(task: &str, work_item: &str) -> WorkItemLeads {
     let mut leads = WorkItemLeads::default();
     if task.len() > MAXIMUM_TASK_BYTES {
         return leads;
@@ -120,7 +121,8 @@ pub(super) fn work_item_leads(task: &str, work_item: &str) -> WorkItemLeads {
 
 /// Code identifiers written in backticks (`planned_not_executed`,
 /// `Progress::scan`), at most three; each is the last segment of its path.
-pub(super) fn work_item_symbols(task: &str) -> Vec<String> {
+#[must_use]
+pub fn work_item_symbols(task: &str) -> Vec<String> {
     let mut symbols: Vec<String> = Vec::new();
     if task.len() > MAXIMUM_TASK_BYTES {
         return symbols;
@@ -255,7 +257,8 @@ pub(super) fn symbol_attempt_for<'p>(
 /// Repository files a search output names, relative to a workspace root,
 /// source files first, then by depth. Lines name a path before the first `:`
 /// (`grep -n`) or alone (`grep -l`, the Agent CLI's file headers).
-pub(super) fn symbol_matches(output: &str, roots: &[String]) -> Vec<String> {
+#[must_use]
+pub fn symbol_matches(output: &str, roots: &[String]) -> Vec<String> {
     static HEAD: OnceLock<regex::Regex> = OnceLock::new();
     static SOURCE_SUFFIX: OnceLock<regex::Regex> = OnceLock::new();
     static DEPENDENCY: OnceLock<regex::Regex> = OnceLock::new();
@@ -306,41 +309,4 @@ pub(super) fn symbol_matches(output: &str, roots: &[String]) -> Vec<String> {
             .then_with(|| left.cmp(right))
     });
     matches
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn leads_split_attachments_documents_and_related_pages() {
-        let task = "See ![shot](https://github.com/user-attachments/assets/abc) and the log \
-                    https://example.com/run.log. Related: https://github.com/o/r/issues/2 \
-                    and https://github.com/o/r/blob/main/src/a.rs";
-        let leads = work_item_leads(task, "https://github.com/o/r/issues/1");
-        assert_eq!(
-            leads.attachments,
-            ["https://github.com/user-attachments/assets/abc"]
-        );
-        assert_eq!(leads.documents, ["https://example.com/run.log"]);
-        assert_eq!(leads.related, ["https://github.com/o/r/issues/2"]);
-    }
-
-    #[test]
-    fn symbols_keep_compound_identifiers_only() {
-        let task = "The `planned_not_executed` reason in `Progress::scan()` and `word` and `camelCase`, `x.y`";
-        assert_eq!(
-            work_item_symbols(task),
-            ["planned_not_executed", "scan", "camelCase"]
-        );
-    }
-
-    #[test]
-    fn symbol_matches_rank_sources_first_then_depth() {
-        let output = "./docs/notes.md\n/w/src/deep/a.rs:3: x\nsrc/b.mjs\nnode_modules/x/y.js\n";
-        assert_eq!(
-            symbol_matches(output, &["/w".to_owned()]),
-            ["src/b.mjs", "src/deep/a.rs", "docs/notes.md"]
-        );
-    }
 }

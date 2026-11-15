@@ -91,7 +91,7 @@ jobs:
   build:
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true) }}
     name: Build formal-ai
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     outputs:
       already-green: ${{ steps.ledger.outputs.already-green }}
@@ -141,7 +141,7 @@ jobs:
     # strategy error rather than an empty run. The ledger's own skip therefore
     # has to reach this job too, or a hit turns the workflow red.
     if: ${{ needs.build.outputs.already-green != 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     strategy:
       # Every leg reports independently: a Gemini upstream change must not hide
@@ -304,7 +304,7 @@ jobs:
   replay:
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true) }}
     name: Replay recorded sessions
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     env:
       GIT_HTTP_LOW_SPEED_LIMIT: '1024'
@@ -325,7 +325,7 @@ jobs:
     needs: [build, matrix]
     # Issue #1111: nothing to learn from when the legs did not run.
     if: ${{ needs.build.outputs.already-green != 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - name: Download formal-ai binary
@@ -376,7 +376,7 @@ jobs:
   summary:
     name: Matrix summary
     needs: [build, matrix, replay, learn]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # Issue #1017: the only job in the repository without a cap. It inherits
     # GitHub's 360-minute default, so a runner that wedges while evaluating this
     # gate holds a billable job for six hours and reports `cancelled` at the end.

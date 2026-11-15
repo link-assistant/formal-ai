@@ -234,7 +234,11 @@ impl Progress {
                     {
                         failed_work_item_reads.push((url.clone(), reason));
                     } else if failure.is_none()
-                        && let Some(text) = super::tool_result::normalized_payload(&raw)
+                        // The receipt check above already rejected failed
+                        // reads; the body itself may name errors (issue 1488
+                        // quotes "exit 5" and "HTTP 403"), so it is taken as
+                        // observed, like the JavaScript twin (issue #1571).
+                        && let Some(text) = super::tool_result::observed_payload(&raw)
                             .filter(|text| !text.trim().is_empty())
                     {
                         fetched_pages.push((url, without_exit_sentinel(&text, command)));

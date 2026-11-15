@@ -24,7 +24,7 @@ jobs:
   cycle:
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) }}
     name: Replay the recorded frontier in proposal mode
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
@@ -33,19 +33,25 @@ jobs:
 
       - uses: dtolnay/rust-toolchain@stable
 
+      # The crate lives under rust/; without `workspaces` the action looks for
+      # a root Cargo.toml, fails `cargo metadata` and caches nothing (#1571).
       - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: rust -> target
 
       - name: Run one learning cycle
         run: |
           set -euo pipefail
           mkdir -p learning-cycle
+          # stderr is captured for the artifact; print it on every exit so a
+          # failed build or run shows its error instead of a bare exit 101.
+          trap 'cat learning-cycle/run.log 2>/dev/null || true' EXIT
           cargo run --manifest-path rust/Cargo.toml --release --bin formal-ai -- \
             learn cycle --frontier google-trends --dry-run \
             > learning-cycle/run.lino 2> learning-cycle/run.log
           cargo run --manifest-path rust/Cargo.toml --release --bin formal-ai -- \
             learn cycle --frontier google-trends --dry-run --proposals \
             > learning-cycle/proposals.lino 2>> learning-cycle/run.log
-          cat learning-cycle/run.log
 
       - name: Assert the run stayed proposal-only and human-gated
         run: |

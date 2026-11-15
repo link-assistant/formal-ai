@@ -67,8 +67,8 @@ export function prepareDraftEvidence({source,destination,env=process.env,maxFile
   }
  }catch{unavailable.push({path:'.',reason:'session_directory_unavailable'});}
  const required=[];
- if(env.DRAFT_BUILD_OUTCOME&&env.DRAFT_BUILD_OUTCOME!=='skipped')required.push('build.log','build-outcome.json');
- if(env.DRAFT_ATTEMPT_OUTCOME&&env.DRAFT_ATTEMPT_OUTCOME!=='skipped')required.push('attempt.log','attempt-outcome.json','draft-diagnostics-adapter.json');
+ if(env.DRAFT_BUILD_OUTCOME&&env.DRAFT_BUILD_OUTCOME!=='skipped')required.push('build.capture.jsonl','build-outcome.json');
+ if(env.DRAFT_ATTEMPT_OUTCOME&&env.DRAFT_ATTEMPT_OUTCOME!=='skipped')required.push('attempt.capture.jsonl','attempt-outcome.json','draft-diagnostics-adapter.json');
  const paths=new Set(files.map(file=>file.path));
  receipt.missingRequired=required.filter(name=>!paths.has(name));
  receipt.completeAvailableFileCapture=unavailable.length===0;

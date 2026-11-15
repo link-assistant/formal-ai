@@ -93,7 +93,7 @@ jobs:
     uses: ./.github/workflows/pull-request-check-profile.yml
   ladder-scope:
     name: Coding ladder measurement scope
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 1
     steps:
       - name: Record complete measurement selection without awarding coverage
@@ -108,7 +108,7 @@ jobs:
   ladder-binary:
     if: ${{ ((github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true)) && (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main' && (vars.FORMAL_AI_FULL_CODING_LADDER == 'run' || (github.event_name == 'workflow_dispatch' && inputs['full-ladder'] == true))) }}
     name: Coding ladder binary
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # A cold release build measured 4.4-5.6 minutes; a cache hit is seconds.
     timeout-minutes: 30
     steps:
@@ -124,7 +124,7 @@ jobs:
     if: ${{ ((github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main')))) && (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main' && (vars.FORMAL_AI_FULL_CODING_LADDER == 'run' || (github.event_name == 'workflow_dispatch' && inputs['full-ladder'] == true))) }}
     name: Coding ladder shard ${{ matrix.shard }}
     needs: [ladder-binary]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # 1200s of budget under a 30-minute cap is 66.7%, inside the 70% share
     # issue #1081 allows. All 130 tasks measured 17.7-23.1 minutes in one job,
     # so a fifth is ~4-5 minutes (8.6 at most, PR #1188); the budget is four times that, for a shard
@@ -181,7 +181,7 @@ jobs:
     # Not `always()`: a run superseded by a newer push is the one
     # cancellation that is not a defect, and it skips the verdict.
     if: ${{ ((github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled())) && (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main' && (vars.FORMAL_AI_FULL_CODING_LADDER == 'run' || (github.event_name == 'workflow_dispatch' && inputs['full-ladder'] == true))) }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7

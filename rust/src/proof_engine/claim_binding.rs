@@ -82,7 +82,7 @@ pub fn negation_cue_count(text: &str) -> usize {
     let mut count = 0;
     for token in tokenize(text) {
         if !crate::coding::contains_cjk(&token) {
-            if cues.iter().any(|cue| *cue == token) {
+            if cues.contains(&token) {
                 count += 1;
             }
             continue;
