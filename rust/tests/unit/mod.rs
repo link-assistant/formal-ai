@@ -330,6 +330,7 @@ mod web_engine_core;
 #[path = "../fixtures/source-read-provenance.rs"]
 mod source_read_provenance;
 
+mod meta_executor_census;
 mod meta_executor_parity;
 mod proposition_structure_parity;
 mod provenance_snapshot;
