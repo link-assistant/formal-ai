@@ -162,11 +162,11 @@ jobs:
         with:
           persist-credentials: false
 
+      # Retries an install that ends without a Bun and verifies it (issue #1569).
       - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+        uses: ./.github/actions/setup-bun-verified
         with:
-          bun-version-file: .bun-version
-          no-cache: true
+          no-cache: 'true'
 
       # Each leaf's edit is compiled by verify-node.sh; the dependency crates
       # are the same on every leg, so the first leaf of each leg restores them
@@ -285,11 +285,11 @@ jobs:
         with:
           persist-credentials: false
 
+      # Retries an install that ends without a Bun and verifies it (issue #1569).
       - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+        uses: ./.github/actions/setup-bun-verified
         with:
-          bun-version-file: .bun-version
-          no-cache: true
+          no-cache: 'true'
 
       # Each leaf's edit is compiled by verify-node.sh; the dependency crates
       # are the same on every leg, so the first leaf of each leg restores them

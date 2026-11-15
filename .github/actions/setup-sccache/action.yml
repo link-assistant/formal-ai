@@ -9,8 +9,20 @@ inputs:
 runs:
   using: composite
   steps:
+    # The cache is an accelerator, never the subject of a job (issue #1569).
+    # On 2026-11-08 two agent-ladder leaves (run 42472083551) failed here:
+    # the sccache release download answered HTTP 503 and 502 after
+    # @actions/tool-cache had already retried it. The jobs never reached
+    # their own steps, and the action's post step then failed again with
+    # "Unable to locate executable file: undefined" because SCCACHE_PATH was
+    # never set. `continue-on-error` covers both: the runner clones the step,
+    # flag included, for its post stage. A missing binary is handled by the
+    # compiler probe below, which already falls back to the real compiler
+    # (issue #1031) and says so in a warning.
     - name: Install sccache
+      id: install
       if: inputs.install != 'false'
+      continue-on-error: true
       uses: mozilla-actions/sccache-action@v0.0.11
       with:
         # v0.17.0 expands Rust response files before spawning rustc and can
@@ -77,8 +89,13 @@ runs:
     # listening -- so this is safe to keep even once the cause is confirmed.
     - name: Start the sccache server
       shell: bash
+      env:
+        SCCACHE_INSTALL_OUTCOME: ${{ steps.install.outcome }}
       run: |
         set -euo pipefail
+        if [ "${SCCACHE_INSTALL_OUTCOME:-}" = failure ]; then
+          echo "::warning title=sccache install failed::The sccache download failed; this job builds without the compiler cache (issue #1569)."
+        fi
         probe_log="$(mktemp)"
         trap 'rm -f "$probe_log"' EXIT
         sccache --start-server > "$probe_log" 2>&1 || true
