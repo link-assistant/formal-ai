@@ -7,11 +7,11 @@ use super::{
 
 fn recorded(issue: u32) -> &'static str {
     match issue {
-        1484 => include_str!("../../../../data/benchmarks/fixtures/issue-1558/issue-1484.txt"),
-        1485 => include_str!("../../../../data/benchmarks/fixtures/issue-1558/issue-1485.txt"),
-        1487 => include_str!("../../../../data/benchmarks/fixtures/issue-1558/issue-1487.txt"),
-        1488 => include_str!("../../../../data/benchmarks/fixtures/issue-1558/issue-1488.txt"),
-        1507 => include_str!("../../../../data/benchmarks/fixtures/issue-1558/issue-1507.txt"),
+        1484 => include_str!("../../fixtures/issue-1558/issue-1484.txt"),
+        1485 => include_str!("../../fixtures/issue-1558/issue-1485.txt"),
+        1487 => include_str!("../../fixtures/issue-1558/issue-1487.txt"),
+        1488 => include_str!("../../fixtures/issue-1558/issue-1488.txt"),
+        1507 => include_str!("../../fixtures/issue-1558/issue-1507.txt"),
         _ => panic!("no recorded issue {issue}"),
     }
 }

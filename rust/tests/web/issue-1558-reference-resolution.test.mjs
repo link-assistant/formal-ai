@@ -19,7 +19,7 @@ import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { ensureNodeHost } from '../../../js/server/node-host-install.mjs';
 import { runSession } from './helpers/issue-1558-session.mjs';
 
-const FIXTURES = 'data/benchmarks/fixtures/issue-1558';
+const FIXTURES = 'rust/tests/fixtures/issue-1558';
 const ROOT = process.cwd();
 const worker = new WorkerHost();
 let entry;

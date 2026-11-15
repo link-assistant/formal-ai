@@ -23,7 +23,7 @@ try {
   await ensureNodeHost({ worker }, { sourceUsageRustGrammar: false });
   const { agenticOutcome, chatCompletionFromPlan } = await import('../../js/server/agentic.mjs');
   const { parseChatRequest } = await import('../../js/server/chat-request.mjs');
-  const issueText = readFileSync('data/benchmarks/fixtures/issue-1558/hive-mind-4033.txt', 'utf8');
+  const issueText = readFileSync('rust/tests/fixtures/issue-1558/hive-mind-4033.txt', 'utf8');
   const session = await runSession({ worker, agenticOutcome, chatCompletionFromPlan, parseChatRequest }, 4033, root, { issueText, repository: 'link-assistant/hive-mind' });
   console.log('stop:', session.stop);
   for (const call of session.calls) console.log(' ', call.tool, call.arguments.replaceAll(root, '<ws>'), call.answer ? (call.answer.failed ? 'FAILED' : `${call.answer.content.length} bytes`) : 'UNEMULATED');
