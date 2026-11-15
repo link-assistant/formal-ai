@@ -233,6 +233,7 @@ pub mod source_fetch;
 pub mod source_reconstruction;
 pub mod source_research;
 pub mod source_walk;
+pub mod standing_scope;
 pub mod statement_audit;
 pub mod statement_verification;
 pub mod storage_policy;
@@ -306,9 +307,9 @@ pub use dreaming::{
     compose_recipe_with_amendments, plan_memory_dreaming, render_dreaming_plan,
 };
 pub use dreaming_application::{
-    RetainedAmendment, amended_answer, apply_retained_amendments, replay_answer_with_amendments,
-    retained_amendments, solve_with_amendment_records, solve_with_standing_requirements,
-    topic_matches,
+    RetainedAmendment, applied_amendment_steps, apply_retained_amendments,
+    replay_answer_with_amendments, retained_amendments, solve_with_amendment_records,
+    solve_with_standing_requirements, topic_matches,
 };
 pub use dreaming_runtime::{
     ForegroundActivity, core_is_idle, dreaming_disabled, run_core_dreaming_once,

@@ -1,0 +1,34 @@
+dream: {
+  removed_events: 0,
+  estimated_reclaimed_bytes: 0,
+  learned_amendments: 2,
+  learned_patterns: 1,
+  recorded_failures: 2,
+  recorded_trials: 0,
+  learned_algorithm_candidates: 0
+}
+[
+  [
+    'amendment_066472f52adf3447',
+    'topic=answer',
+    'rule=Always answer in Russian.',
+    [
+      'chat_user_21c5937c652a30b9',
+      'scope:user=alice',
+      'recipe:data/meta/dreaming-recipe.lino'
+    ],
+    undefined
+  ],
+  [
+    'amendment_80fda0d235c89194',
+    'topic=answer',
+    'rule=Always answer in Russian.',
+    [
+      'chat_user_353609463c69087e',
+      'scope:user=bob',
+      'recipe:data/meta/dreaming-recipe.lino'
+    ],
+    undefined
+  ]
+]
+carol: 2 + 2 = 4

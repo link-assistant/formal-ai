@@ -716,6 +716,16 @@ losing the original bytes. To retain those tool calls beyond the current client
 conversation, start the server with `FORMAL_AI_MEMORY_PATH=memory.lino`; completed
 tool names, arguments, and raw outputs are then appended to the durable memory log.
 
+Standing requirements learned from that log are scoped (issue #1559). A user
+who declares themselves (OpenAI `user`, Anthropic `metadata.user_id`) and says
+"Always answer in Russian." gets that rule in their later conversations only.
+An agent session, meaning a request that carries tools, keeps what it teaches
+inside its own repository and session, so agents sharing one store do not see
+each other's requirements; set `FORMAL_AI_SHARE_STANDING_REQUIREMENTS=1` to share
+them. A prompt that configures a session ("You are an AI issue solver…") is
+never learned as a requirement. Agentic final answers list the requirements they
+applied in `thinking_steps` and `evidence_links`, never in their text.
+
 Example Telegram webhook update:
 
 ```bash

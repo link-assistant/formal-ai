@@ -225,6 +225,11 @@ const LEXICON_KEYS = {
   cache_kind_cue: 'cache_kind_cues',
   cache_tool_cue: 'cache_tool_cues',
   intermediate_kind_cue: 'intermediate_kind_cues',
+  'instruction-opener': 'instruction_openers',
+  'answer-form-cue': 'answer_form_cues',
+  'task-reference-word': 'task_reference_words',
+  'relative-path-prefix': 'relative_path_prefixes',
+  'rule-maximum-characters': 'rule_maximum_characters',
 };
 
 /** Mirrors rust/src/dreaming/lexicon.rs `parse_lexicon`. */

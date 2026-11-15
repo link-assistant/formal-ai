@@ -17,6 +17,7 @@ import { responsesSse } from './responses-stream.mjs';
 import { resolveModelId } from './seed.mjs';
 import { answerFromMemory, estimateTokens, solveWithMemory, stableId, toolCallRefusalAnswer } from './solve.mjs';
 import { renderThinkingSteps } from './thinking.mjs';
+import { requestScope, runInRequestScope } from './standing-scope.mjs';
 
 /** `response_reasoning_item`: the rendered trace as a `reasoning` output item. */
 function responseReasoningItem(prompt, thinkingSteps) {
@@ -105,8 +106,10 @@ export async function handleResponses(ctx, request) {
   }
   const unsupported = unsupportedModelResponse(parsed.model);
   if (unsupported) return unsupported;
-  const response = await createResponse(ctx, parsed);
-  ctx.memory.recordExchange(toChatCompletionRequest(parsed).messages, responseAnswerText(response));
+  const chat = toChatCompletionRequest(parsed);
+  const scope = requestScope({ body: request.body, messages: chat.messages, tools: chat.tools });
+  const response = await runInRequestScope(scope, () => createResponse(ctx, parsed));
+  ctx.memory.recordExchange(chat.messages, responseAnswerText(response), null, scope);
   if (parsed.stream) return responsesSse(response);
   return jsonResponse(200, response);
 }
