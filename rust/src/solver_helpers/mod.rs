@@ -177,21 +177,22 @@ pub fn record_decomposition(
         return record_sub_impulses(log, independent_parts, true);
     }
 
-    let lower = prompt.to_lowercase();
-    let triggers = [" and ", " with tests", " with benchmarks", "; "];
-    if !triggers.iter().any(|trigger| lower.contains(trigger)) {
+    // Issue #1550: the split is the recursive procedure's own task tree
+    // (`crate::meta_executor::plan_tasks`) over the obligations and the
+    // relations the shared grammar names (sequence, alternative, aggregation)
+    // in every supported language, within the configured depth. An atomic
+    // request has no sub-impulses.
+    let seed_bounds =
+        crate::meta_executor::decomposition_bounds(crate::meta_executor::BoundOverrides::default());
+    let bounds = crate::meta_executor::decomposition_bounds(crate::meta_executor::BoundOverrides {
+        depth: Some(seed_bounds.depth.min(u32::from(max_depth))),
+        ..crate::meta_executor::BoundOverrides::default()
+    });
+    let root = crate::meta_executor::plan_tasks(prompt, language.slug(), bounds);
+    if root.children.is_empty() {
         return Vec::new();
     }
-
-    let parts: Vec<String> = prompt
-        .split([',', ';'])
-        .flat_map(|chunk| chunk.split(" and "))
-        .flat_map(|chunk| chunk.split(" with "))
-        .map(str::trim)
-        .filter(|chunk| !chunk.is_empty())
-        .map(str::to_owned)
-        .collect();
-    record_sub_impulses(log, parts, false)
+    record_sub_impulses(log, crate::meta_executor::task_leaves(&root), false)
 }
 
 fn record_sub_impulses(
