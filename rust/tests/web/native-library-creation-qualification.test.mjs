@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import fs from 'node:fs';
-import {selectLibraryTestArtifact, declaredCreationTestNames, verifyCreationTestInventory}
+import {selectLibraryTestArtifact, declaredCreationTestNames, verifyCreationTestInventory, isReleaseTestExecutable}
   from '../../../scripts/run-native-coding-fixtures.mjs';
 
 const root = '/private/tmp/source-bound-cargo-fixture';
@@ -20,6 +20,27 @@ test('selects the compiled library test instead of a same-named binary target', 
     executable: root + '/rust/target/release/deps/formal_ai-deadbeef'});
   assert.equal(selectLibraryTestArtifact(encoded(messages), root), executable);
   assert.equal(selectLibraryTestArtifact('macro note\n' + encoded(messages) + 'finished note\n', root), executable);
+});
+
+test('selects the library test from the Rust 1.100 build-dir layout (issue #1569)', () => {
+  // Run 43671213344 (Rust 1.100.0) wrote the executable here; the old
+  // deps-only check refused it as foreign and failed every main pipeline.
+  const moved = root + '/rust/target/release/build/formal-ai/6f015c2bd7cebe89/out/formal_ai-6f015c2bd7cebe89';
+  const messages = rows(); messages[0].executable = moved;
+  assert.equal(selectLibraryTestArtifact(encoded(messages), root), moved);
+  assert.equal(isReleaseTestExecutable(executable, root, 'formal_ai'), true);
+  for (const foreign of [
+    root + '/rust/target/release/build/formal-ai/0000000000000000/out/formal_ai-6f015c2bd7cebe89',
+    root + '/rust/target/release/build/other/6f015c2bd7cebe89/out/formal_ai-6f015c2bd7cebe89',
+    root + '/rust/target/debug/build/formal-ai/6f015c2bd7cebe89/out/formal_ai-6f015c2bd7cebe89',
+    root + '/rust/target/release/build/formal-ai/6f015c2bd7cebe89/formal_ai-6f015c2bd7cebe89',
+    root + '/rust/target/release/build/formal-ai/6f015c2bd7cebe89/out/other-6f015c2bd7cebe89',
+    '/foreign/rust/target/release/build/formal-ai/6f015c2bd7cebe89/out/formal_ai-6f015c2bd7cebe89',
+  ]) {
+    assert.equal(isReleaseTestExecutable(foreign, root, 'formal_ai'), false, foreign);
+    const refused = rows(); refused[0].executable = foreign;
+    assert.throws(() => selectLibraryTestArtifact(encoded(refused), root), /foreign executable root/u, foreign);
+  }
 });
 
 test('refuses failed, absent, ambiguous, foreign and incomplete Cargo identities', () => {

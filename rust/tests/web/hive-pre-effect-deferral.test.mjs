@@ -128,7 +128,11 @@ test('downstream verification, ledger and acceptance report the deferral without
     try {
       const decisions = {claude: {action: 'reuse', testedHead: source, run: 1, attempt: 1},
         agent: {action: 'execute', testedHead: source, ordinal: 1}, codex: {action: 'execute', testedHead: source, ordinal: 1}};
-      const result = await aggregateAcceptance({...environment, HIVE_CLIENT_OUTCOMES: outcomes}, {reader: {}, plan: async () => decisions});
+      const notices = [];
+      const result = await aggregateAcceptance({...environment, HIVE_CLIENT_OUTCOMES: outcomes},
+        {reader: {}, plan: async () => decisions, log: line => notices.push(line)});
+      assert.deepEqual(notices, ['::notice title=Hive clients deferred before effects::agent, codex did not run and received no credit;'
+        + ' the same candidate resumes after its prerequisites succeed']);
       assert.equal(result.complete, false);
       assert.equal(result.deferred, true);
       assert.equal(result.authorshipCredit, 0);

@@ -15,7 +15,9 @@
 //! `data/cache/` and `data/source-cache/` (the git-ignored store fetched
 //! pages are written to at run time) and the issue bodies captured verbatim
 //! under `data/benchmarks/issue-requirements/` (PR #1188 R1188-U20) is not
-//! generated code and is not scanned.
+//! generated code and is not scanned; neither are the GitHub API run, job and
+//! artifact records captured under `data/benchmarks/ci-phase-timing/baseline-runs/`
+//! (PR #1498), whose step names quote the action refs a past run resolved.
 //!
 //! This gate is red on a tree whose templates still carry the literals; the
 //! same change that rewrites them to `{placeholders}` (R6) turns it green.
@@ -87,7 +89,12 @@ fn usage(message: &str) -> ! {
 ///
 /// A bare name matches a directory of that name at any depth; a path matches
 /// that directory under `data/`.
-const CAPTURED_EVIDENCE: [&str; 3] = ["cache", "source-cache", "benchmarks/issue-requirements"];
+const CAPTURED_EVIDENCE: [&str; 4] = [
+    "cache",
+    "source-cache",
+    "benchmarks/issue-requirements",
+    "benchmarks/ci-phase-timing/baseline-runs",
+];
 
 /// Every memorized pin under `data/`, captured evidence excluded.
 pub fn scan_data(data: &Path) -> Vec<Finding> {

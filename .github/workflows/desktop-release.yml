@@ -352,8 +352,11 @@ jobs:
         with: {workspaces: "rust -> ../target", cache-on-failure: 'true',
           cache-workspace-crates: 'false', cache-all-crates: 'false', cache-bin: 'false',
           key: "intel-native-default-${{ matrix.target }}-${{ needs.native-source.outputs.toolchain }}"}
+      # A failed sccache download must not fail the release build: the shared
+      # setup below falls back to the real compiler (issues #1031, #1569).
       - name: Cache Rust compiler outputs
         if: runner.os != 'Windows' && matrix.target != 'x86_64-apple-darwin'
+        continue-on-error: true
         uses: mozilla-actions/sccache-action@v0.0.11
         with:
           version: v0.16.0

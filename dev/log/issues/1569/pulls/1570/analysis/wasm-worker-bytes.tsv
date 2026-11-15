@@ -1,0 +1,9 @@
+# Local rebuilds of js/formal_ai_worker.wasm with the exact wasmCompilerArguments flags (2026-11-15).
+# sources	rustc	sha256	note
+5062e4f0 (main run 43658508394)	1.100.0 (0ef1bc386)	c4528daaf5558ba693153a875a3f6743e20f26b80d7a200588ded74c39516e28	equals the CI artifact formal-ai-worker-wasm of run 43658508394: the build is reproducible locally
+c50eedf30^ (last tree before the 11-14 language changes)	1.100.0 (0ef1bc386)	c4528daaf5558ba693153a875a3f6743e20f26b80d7a200588ded74c39516e28	same bytes as 5062e4f0: no input change between them
+c50eedf30^	1.99.1 (58cf8f9c3)	4d5d3fd068841699ddc6f5f318e6b3d5a8306afdfbd259b579e4ab4a6badec89	equals the committed binary (752da53be, 2026-10-16) and the receipt of main run 42062109916 (2026-11-05, rustc 1.99.1)
+c50eedf30^	1.99.0 (b940084d7)	801fc9c85d40d4c0b460a3c8f3726611d0512125ca5083c226eb39da88a374df	a patch release alone changes the bytes
+752da53be / f737adb6e / 69dcae569	1.99.0 (b940084d7)	801fc9c85d40d4c0b460a3c8f3726611d0512125ca5083c226eb39da88a374df	the 10-21 input edits did not change the bytes
+37be2669d (PR head, inputs = origin/main 0212e13a4)	1.99.1 (58cf8f9c3)	9e1cc04e415d8ded96d7245b87b9faa1b95fc0f107410cd2e3f49680c43a44fe	input drift alone (c50eedf30, 0bb8317e0, 29a8be67e) breaks the gate even on the old compiler
+37be2669d	1.100.0 (0ef1bc386)	856629870a9ce099af5a803f850085e5b12590aa4a83c51306589ed31892374b	committed by this PR (311725 bytes)

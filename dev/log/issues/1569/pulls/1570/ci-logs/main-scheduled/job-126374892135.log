@@ -1,0 +1,713 @@
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	﻿2026-11-04T03:47:36.7265179Z Current runner version: '2.338.2'
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7289312Z ##[group]Runner Image Provisioner
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7290247Z Hosted Compute Agent
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7290886Z Version: 20261021.618
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7291660Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7292427Z Build Date: 2026-10-21T00:45:21Z
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7293564Z Worker ID: {aef22f1f-27ec-458b-86c8-c30c5c16f747}
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7294390Z Region: westcentralus
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7295002Z Cloud: Azure
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7295648Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7297176Z ##[group]Operating System
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7297887Z Ubuntu
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7299027Z 24.04.5
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7299611Z LTS
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7300557Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7301771Z ##[group]Runner Image
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7303022Z Image: ubuntu-24.04
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7304216Z Version: 20261025.353.1
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7306529Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261025.353/images/ubuntu/Ubuntu2404-Readme.md
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7309942Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261025.353
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7311689Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7313450Z ##[group]GITHUB_TOKEN Permissions
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7316188Z Actions: read
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7317295Z Contents: write
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7318258Z Issues: write
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7319067Z Metadata: read
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7319732Z PullRequests: write
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7320405Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7322557Z Secret source: Actions
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7323586Z Cache mode: write
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7324441Z Prepare workflow directory
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7854832Z Prepare all required actions
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.7903081Z Getting action download info
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.0731427Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.1856678Z Download action repository 'actions/setup-node@v7' (SHA:949feb2413d6458794dcd2491c4babbbce0c15c1)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.2712562Z Download action repository 'oven-sh/setup-bun@v2' (SHA:0c5077e51419868618aeaa5fe8019c62421857d6)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.7124548Z Download action repository 'actions/download-artifact@v8' (SHA:9000827ccba6bdab643e8b6fd33ac0654aef8333)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.2604802Z Download action repository 'actions/upload-artifact@v7' (SHA:cf430e030ddbb5b0abf93d22962f4752f3646cd9)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.4576794Z Complete job name: Actual Hive codex work-item contradicted-documentation
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5515035Z ##[group]Run actions/checkout@v7
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5516025Z with:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5516564Z   ref: e5ade3914a593fcf93a6a85a84e47bd18abd7793
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5517261Z   persist-credentials: false
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5517875Z   repository: link-assistant/formal-ai
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5522497Z   token: ***
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5522990Z   ssh-strict: true
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5523492Z   ssh-user: git
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5523979Z   clean: true
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5524511Z   sparse-checkout-cone-mode: true
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5525101Z   fetch-depth: 1
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5525589Z   fetch-tags: false
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5526102Z   show-progress: true
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5526619Z   lfs: false
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5527098Z   submodules: false
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5527610Z   set-safe-directory: true
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5528324Z   allow-unsafe-pr-checkout: false
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5529194Z env:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5529675Z   E2E_TOOL: codex
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5530311Z   WORK_ITEM_TASK: contradicted-documentation
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5530963Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.8785652Z Syncing repository: link-assistant/formal-ai
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.8787803Z ##[group]Getting Git version info
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.8789030Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.8790297Z [command]/usr/bin/git version
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.8905299Z git version 2.56.0
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.8931085Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.8952949Z Temporarily overriding HOME='/home/runner/work/_temp/d051e6e7-d409-4fb3-8b33-9c4cc9e49d0b' before making global git config changes
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.8955991Z Adding repository directory to the temporary git global config as a safe directory
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.8961197Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9022370Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9027813Z ##[group]Determining repository object format
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9029856Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9031324Z ##[group]Initializing the repository
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9034659Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9163628Z hint: Using 'master' as the name for the initial branch. This default branch name
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9165897Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9167162Z hint: to use in all of your new repositories, which will suppress this warning,
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9168349Z hint: call:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9168878Z hint:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9169507Z hint: 	git config --global init.defaultBranch <name>
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9170229Z hint:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9170912Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9171984Z hint: 'development'. The just-created branch can be renamed via this command:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9172845Z hint:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9173332Z hint: 	git branch -m <name>
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9173909Z hint:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9174638Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9204431Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9219105Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9276851Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9278557Z ##[group]Disabling automatic garbage collection
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9300551Z [command]/usr/bin/git config --local gc.auto 0
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9368938Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9370530Z ##[group]Setting up auth
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9371580Z Removing SSH command configuration
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9376450Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9426148Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9861053Z Removing HTTP extra header
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9866593Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.9912392Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:39.0152867Z Removing includeIf entries pointing to credentials config files
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:39.0158310Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:39.0210423Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:39.0466338Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-936adaaa-3554-40d8-9117-a68395d9efb3.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:39.0515232Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-936adaaa-3554-40d8-9117-a68395d9efb3.config
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:39.0574532Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-936adaaa-3554-40d8-9117-a68395d9efb3.config
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:39.0619300Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-936adaaa-3554-40d8-9117-a68395d9efb3.config
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:39.0663681Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-936adaaa-3554-40d8-9117-a68395d9efb3.config
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:39.0704498Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:39.0705352Z ##[group]Fetching the repository
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:39.0710521Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin e5ade3914a593fcf93a6a85a84e47bd18abd7793
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:56.5250100Z From https://github.com/link-assistant/formal-ai
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:56.5250883Z  * branch              e5ade3914a593fcf93a6a85a84e47bd18abd7793 -> FETCH_HEAD
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:56.5260766Z [command]/usr/bin/git rev-parse --verify --quiet e5ade3914a593fcf93a6a85a84e47bd18abd7793^{object}
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:56.5303553Z e5ade3914a593fcf93a6a85a84e47bd18abd7793
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:56.5309122Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:56.5310033Z ##[group]Determining the checkout info
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:56.5311521Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:56.5315481Z [command]/usr/bin/git sparse-checkout disable
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:56.5383945Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:56.5427570Z ##[group]Checking out the ref
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:56.5433034Z [command]/usr/bin/git checkout --progress --force e5ade3914a593fcf93a6a85a84e47bd18abd7793
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:57.6247500Z Updating files:  11% (8704/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:57.8216138Z Updating files:  12% (8882/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:58.4142048Z Updating files:  13% (9622/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:58.6181145Z Updating files:  14% (10362/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:58.7539440Z Updating files:  14% (10491/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:58.9507218Z Updating files:  15% (11102/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:59.0554928Z Updating files:  16% (11843/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:59.1174030Z Updating files:  17% (12583/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:59.2274196Z Updating files:  18% (13323/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:59.3581747Z Updating files:  19% (14063/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:59.5637312Z Updating files:  20% (14803/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:59.6190692Z Updating files:  21% (15543/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:59.6681597Z Updating files:  21% (15857/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:59.7605191Z Updating files:  22% (16283/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:59.8415826Z Updating files:  23% (17023/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:59.9179829Z Updating files:  24% (17764/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.0152035Z Updating files:  25% (18504/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.0936314Z Updating files:  26% (19244/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.1823347Z Updating files:  27% (19984/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.2263335Z Updating files:  28% (20724/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.2839806Z Updating files:  29% (21464/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.3310680Z Updating files:  30% (22204/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.3699482Z Updating files:  31% (22945/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.4288343Z Updating files:  32% (23685/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.4669382Z Updating files:  33% (24425/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.4939824Z Updating files:  34% (25165/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.5817636Z Updating files:  35% (25905/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.6252008Z Updating files:  36% (26645/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.6351694Z Updating files:  36% (27227/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.8171833Z Updating files:  37% (27385/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.8623877Z Updating files:  38% (28125/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.8987647Z Updating files:  39% (28866/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.9392500Z Updating files:  40% (29606/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.9765315Z Updating files:  41% (30346/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.0272409Z Updating files:  42% (31086/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.0633226Z Updating files:  43% (31826/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.1095482Z Updating files:  44% (32566/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.1971038Z Updating files:  45% (33306/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.2554242Z Updating files:  46% (34046/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.2897086Z Updating files:  47% (34787/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.3344385Z Updating files:  48% (35527/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.3718581Z Updating files:  49% (36267/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.4251700Z Updating files:  50% (37007/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.4547243Z Updating files:  51% (37747/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.4950966Z Updating files:  52% (38487/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.5313211Z Updating files:  53% (39227/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.5919546Z Updating files:  54% (39968/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.6160374Z Updating files:  55% (40708/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.6234311Z Updating files:  55% (41292/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.6663961Z Updating files:  56% (41448/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.6992570Z Updating files:  57% (42188/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.7595466Z Updating files:  58% (42928/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.8286901Z Updating files:  59% (43668/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.8782744Z Updating files:  60% (44408/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.9136824Z Updating files:  61% (45148/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.9676994Z Updating files:  62% (45889/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.0367035Z Updating files:  63% (46629/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.1215412Z Updating files:  64% (47369/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.1685566Z Updating files:  65% (48109/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.2097589Z Updating files:  66% (48849/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.2617592Z Updating files:  67% (49589/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.2937543Z Updating files:  68% (50329/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.3896361Z Updating files:  69% (51069/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.4162153Z Updating files:  70% (51810/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.4426531Z Updating files:  71% (52550/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.4700479Z Updating files:  72% (53290/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.5034181Z Updating files:  73% (54030/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.5310045Z Updating files:  74% (54770/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.5622070Z Updating files:  75% (55510/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.6161204Z Updating files:  76% (56250/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.6301228Z Updating files:  76% (56823/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.6816997Z Updating files:  77% (56991/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.7563751Z Updating files:  78% (57731/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.8065389Z Updating files:  79% (58471/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.9622466Z Updating files:  80% (59211/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.0672765Z Updating files:  81% (59951/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.1377036Z Updating files:  82% (60691/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.2089882Z Updating files:  83% (61431/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.3062421Z Updating files:  84% (62171/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.3786848Z Updating files:  85% (62912/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.4228549Z Updating files:  86% (63652/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.6100187Z Updating files:  87% (64392/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.6159062Z Updating files:  88% (65132/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.6802176Z Updating files:  88% (65263/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.7386427Z Updating files:  89% (65872/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.7984511Z Updating files:  90% (66612/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.8459293Z Updating files:  91% (67352/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.9130655Z Updating files:  92% (68092/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.9678773Z Updating files:  93% (68833/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.0354079Z Updating files:  94% (69573/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.0876243Z Updating files:  95% (70313/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.1446743Z Updating files:  96% (71053/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.1959725Z Updating files:  97% (71793/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.2500150Z Updating files:  98% (72533/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.3176492Z Updating files:  99% (73273/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.3177096Z Updating files: 100% (74013/74013)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.3177702Z Updating files: 100% (74013/74013), done.
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4010872Z Note: switching to 'e5ade3914a593fcf93a6a85a84e47bd18abd7793'.
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4011365Z 
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4012259Z You are in 'detached HEAD' state. You can look around, make experimental
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4012832Z changes and commit them, and you can discard any commits you make in this
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4013372Z state without impacting any branches by switching back to a branch.
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4013692Z 
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4014174Z If you want to create a new branch to retain commits you create, you may
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4014675Z do so (now or later) by using -c with the switch command. Example:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4014985Z 
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4015105Z   git switch -c <new-branch-name>
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4015293Z 
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4015405Z Or undo this operation with:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4015583Z 
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4015674Z   git switch -
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4015808Z 
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4016056Z Turn off this advice by setting config variable advice.detachedHead to false
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4016410Z 
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4016542Z HEAD is now at e5ade391 chore: release v0.355.30
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4239603Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4296956Z [command]/usr/bin/git log -1 --format=%H
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4337446Z e5ade3914a593fcf93a6a85a84e47bd18abd7793
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4349690Z ##[group]Removing auth
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4350262Z Removing SSH command configuration
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4352241Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4395906Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4766386Z Removing HTTP extra header
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4771148Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4817909Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.5187534Z Removing includeIf entries pointing to credentials config files
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.5192883Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.5233189Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.5234086Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.5234828Z includeif.gitdir:/github/workspace/.git.path
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.5235429Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.5270775Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.5307937Z /home/runner/work/_temp/git-credentials-936adaaa-3554-40d8-9117-a68395d9efb3.config
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.5322388Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-936adaaa\-3554\-40d8\-9117\-a68395d9efb3\.config
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.5370367Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.5406261Z /home/runner/work/_temp/git-credentials-936adaaa-3554-40d8-9117-a68395d9efb3.config
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.5423508Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-936adaaa\-3554\-40d8\-9117\-a68395d9efb3\.config
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.5472414Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.5509194Z /github/runner_temp/git-credentials-936adaaa-3554-40d8-9117-a68395d9efb3.config
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.5516965Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-936adaaa\-3554\-40d8\-9117\-a68395d9efb3\.config
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.5564928Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.5599794Z /github/runner_temp/git-credentials-936adaaa-3554-40d8-9117-a68395d9efb3.config
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.5606933Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-936adaaa\-3554\-40d8\-9117\-a68395d9efb3\.config
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.5651888Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.6018847Z Removing credentials config '/home/runner/work/_temp/git-credentials-936adaaa-3554-40d8-9117-a68395d9efb3.config'
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.6027442Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.6285343Z ##[group]Run actions/setup-node@v7
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.6285632Z with:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.6285827Z   node-version: 24
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.6286039Z   check-latest: false
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.6289160Z   token: ***
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.6289401Z   package-manager-cache: true
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.6289646Z env:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.6289826Z   E2E_TOOL: codex
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.6290059Z   WORK_ITEM_TASK: contradicted-documentation
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.6290345Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.7621481Z Found in cache @ /opt/hostedtoolcache/node/24.22.1/x64
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.8599354Z ##[group]Environment details
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2573237Z node: v24.22.1
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2573666Z npm: 11.19.1
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2574044Z yarn: 1.22.22
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2574890Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2776356Z ##[group]Run oven-sh/setup-bun@v2
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2776644Z with:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2776859Z   bun-version-file: .bun-version
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2777109Z   no-cache: false
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2779991Z   token: ***
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2780191Z env:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2780373Z   E2E_TOOL: codex
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2780613Z   WORK_ITEM_TASK: contradicted-documentation
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2780899Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.4507189Z Obtained version 1.4.2 from .bun-version
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.6525220Z Cache hit for: bun-gmoqYqdUbaYsI0KujeXt7Zg/p0I=
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.6652196Z Received 35684137 of 35684137 (100.0%), 41.7 MBs/sec
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.6652909Z Cache Size: ~34 MB (35684137 B)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.6684201Z [command]/usr/bin/tar -xf /home/runner/work/_temp/85b31b21-70eb-481b-9563-e3211fcd340f/cache.tzst -P -C /home/runner/work/formal-ai/formal-ai --use-compress-program unzstd
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.8179025Z Cache restored successfully
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.8201827Z [command]/home/runner/.bun/bin/bun --revision
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.8267780Z 1.4.2+744846f84
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.8274948Z Using a cached version of Bun: 1.4.2+744846f84
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.8441436Z ##[group]Run bun install --frozen-lockfile --ignore-scripts
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.8441968Z ^[[36;1mbun install --frozen-lockfile --ignore-scripts^[[0m
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.8473067Z shell: /usr/bin/bash -e {0}
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.8473336Z env:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.8473528Z   E2E_TOOL: codex
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.8473775Z   WORK_ITEM_TASK: contradicted-documentation
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.8474071Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.8565918Z bun install v1.4.2 (744846f84)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7535566Z 
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7536647Z + @babel/traverse@8.0.7
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7558744Z + @babel/parser@8.0.7
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7559254Z + @chakra-ui/react@3.37.0
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7559714Z + @emotion/react@11.14.0
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7560226Z + @link-assistant/web-search@0.11.1
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7560714Z + dompurify@3.4.17
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7561101Z + lino-i18n@0.4.0
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7561459Z + marked@18.1.1
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7561814Z + mermaid@12.2.0
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7562290Z + react@19.3.1
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7562664Z + react-dom@19.3.1
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7563040Z + tesseract.js@7.0.0
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7563266Z 
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7563511Z 394 packages installed [1.90s]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7682767Z ##[group]Run actions/checkout@v7
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7683054Z with:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7683287Z   repository: link-assistant/hive-mind
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7683595Z   ref: 4ac40597b70aa411d00c9a645f10484e5f04f57e
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7683889Z   path: .hive-mind
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7684121Z   persist-credentials: false
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7686801Z   token: ***
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7687008Z   ssh-strict: true
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7687397Z   ssh-user: git
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7687603Z   clean: true
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7687824Z   sparse-checkout-cone-mode: true
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7688349Z   fetch-depth: 1
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7688568Z   fetch-tags: false
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7688800Z   show-progress: true
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7689015Z   lfs: false
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7689205Z   submodules: false
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7689740Z   set-safe-directory: true
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7690206Z   allow-unsafe-pr-checkout: false
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7690477Z env:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7690693Z   E2E_TOOL: codex
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7690930Z   WORK_ITEM_TASK: contradicted-documentation
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.7691215Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8538869Z Syncing repository: link-assistant/hive-mind
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8546348Z ##[group]Getting Git version info
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8547523Z Working directory is '/home/runner/work/formal-ai/formal-ai/.hive-mind'
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8595788Z [command]/usr/bin/git version
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8641116Z git version 2.56.0
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8662418Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8673415Z Temporarily overriding HOME='/home/runner/work/_temp/ea8e464b-ccdd-43af-bc43-f3c959d8db96' before making global git config changes
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8674980Z Adding repository directory to the temporary git global config as a safe directory
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8680261Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai/.hive-mind
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8716063Z ##[group]Determining repository object format
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8717784Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8718669Z ##[group]Initializing the repository
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8722642Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai/.hive-mind
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8770570Z hint: Using 'master' as the name for the initial branch. This default branch name
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8772707Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8773963Z hint: to use in all of your new repositories, which will suppress this warning,
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8774959Z hint: call:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8775489Z hint:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8776190Z hint: 	git config --global init.defaultBranch <name>
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8776875Z hint:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8777696Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8779155Z hint: 'development'. The just-created branch can be renamed via this command:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8779991Z hint:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8780522Z hint: 	git branch -m <name>
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8781088Z hint:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8781951Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8784035Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.hive-mind/.git/
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8786284Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/hive-mind
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8820398Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8821058Z ##[group]Disabling automatic garbage collection
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8826472Z [command]/usr/bin/git config --local gc.auto 0
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8893337Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8893984Z ##[group]Setting up auth
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8894581Z Removing SSH command configuration
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8901162Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.8942975Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9202775Z Removing HTTP extra header
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9209187Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9252465Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9533924Z Removing includeIf entries pointing to credentials config files
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9552598Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9599889Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9849491Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-86d2887f-3ea1-418c-9f17-aa48640cd6a3.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9899403Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git.path /home/runner/work/_temp/git-credentials-86d2887f-3ea1-418c-9f17-aa48640cd6a3.config
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9941728Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-86d2887f-3ea1-418c-9f17-aa48640cd6a3.config
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9985723Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.hive-mind/.git.path /github/runner_temp/git-credentials-86d2887f-3ea1-418c-9f17-aa48640cd6a3.config
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0029300Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.hive-mind/.git/worktrees/*.path /github/runner_temp/git-credentials-86d2887f-3ea1-418c-9f17-aa48640cd6a3.config
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0071788Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0072448Z ##[group]Fetching the repository
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0079447Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 4ac40597b70aa411d00c9a645f10484e5f04f57e
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:24.9834191Z From https://github.com/link-assistant/hive-mind
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:24.9834908Z  * branch            4ac40597b70aa411d00c9a645f10484e5f04f57e -> FETCH_HEAD
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:24.9844442Z [command]/usr/bin/git rev-parse --verify --quiet 4ac40597b70aa411d00c9a645f10484e5f04f57e^{object}
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:24.9882920Z 4ac40597b70aa411d00c9a645f10484e5f04f57e
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:24.9887212Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:24.9887612Z ##[group]Determining the checkout info
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:24.9888513Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:24.9894298Z [command]/usr/bin/git sparse-checkout disable
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:25.0056239Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:25.0105127Z ##[group]Checking out the ref
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:25.0111669Z [command]/usr/bin/git checkout --progress --force 4ac40597b70aa411d00c9a645f10484e5f04f57e
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.3308192Z Updating files:  22% (2175/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.4624611Z Updating files:  23% (2185/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.5016737Z Updating files:  24% (2280/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.5349768Z Updating files:  25% (2374/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.5599175Z Updating files:  26% (2469/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.6392214Z Updating files:  27% (2564/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.6867164Z Updating files:  28% (2659/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.7038799Z Updating files:  29% (2754/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.7911847Z Updating files:  30% (2849/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.8937858Z Updating files:  31% (2944/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.9552419Z Updating files:  32% (3039/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.0324956Z Updating files:  33% (3134/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.1113202Z Updating files:  33% (3197/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.1810074Z Updating files:  34% (3229/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.2645976Z Updating files:  35% (3324/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.3257539Z Updating files:  36% (3419/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.3702220Z Updating files:  37% (3514/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.4412566Z Updating files:  38% (3609/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.5063197Z Updating files:  39% (3704/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.5361527Z Updating files:  40% (3799/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.5664524Z Updating files:  41% (3894/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.6095408Z Updating files:  42% (3989/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.6279545Z Updating files:  43% (4084/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.7276295Z Updating files:  44% (4179/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.7590336Z Updating files:  45% (4274/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.8446499Z Updating files:  46% (4369/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.8542988Z Updating files:  47% (4464/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.8892420Z Updating files:  48% (4559/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.9070554Z Updating files:  49% (4654/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.9371249Z Updating files:  50% (4748/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.9463743Z Updating files:  51% (4843/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.0312976Z Updating files:  52% (4938/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.0467790Z Updating files:  52% (5013/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.0884861Z Updating files:  53% (5033/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.2146906Z Updating files:  54% (5128/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.2345007Z Updating files:  55% (5223/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.2626197Z Updating files:  56% (5318/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.3330039Z Updating files:  57% (5413/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.3476288Z Updating files:  58% (5508/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.3630905Z Updating files:  59% (5603/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.4344947Z Updating files:  60% (5698/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.4420764Z Updating files:  61% (5793/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.4469409Z Updating files:  62% (5888/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.4604806Z Updating files:  63% (5983/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.5789863Z Updating files:  64% (6078/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.6782937Z Updating files:  65% (6173/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.7504203Z Updating files:  66% (6268/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.7826460Z Updating files:  67% (6363/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.7958291Z Updating files:  68% (6458/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8978957Z Updating files:  69% (6553/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.9169364Z Updating files:  70% (6648/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.1175217Z Updating files:  71% (6743/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.1764125Z Updating files:  71% (6758/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.2242672Z Updating files:  72% (6838/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.2489829Z Updating files:  73% (6933/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.2539079Z Updating files:  74% (7028/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.2601370Z Updating files:  75% (7122/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.2647234Z Updating files:  76% (7217/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.2708552Z Updating files:  77% (7312/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.3177066Z Updating files:  78% (7407/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.3225092Z Updating files:  79% (7502/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.3293045Z Updating files:  80% (7597/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.3341040Z Updating files:  81% (7692/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.3391995Z Updating files:  82% (7787/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.3439232Z Updating files:  83% (7882/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.3488530Z Updating files:  84% (7977/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.3549056Z Updating files:  85% (8072/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.3622149Z Updating files:  86% (8167/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.3699093Z Updating files:  87% (8262/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.3784784Z Updating files:  88% (8357/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.3867208Z Updating files:  89% (8452/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.3959717Z Updating files:  90% (8547/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4048281Z Updating files:  91% (8642/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4119277Z Updating files:  92% (8737/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4191524Z Updating files:  93% (8832/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4267162Z Updating files:  94% (8927/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4351096Z Updating files:  95% (9022/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4426782Z Updating files:  96% (9117/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4503417Z Updating files:  97% (9212/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4587507Z Updating files:  98% (9307/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4662309Z Updating files:  99% (9402/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4663148Z Updating files: 100% (9496/9496)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4664399Z Updating files: 100% (9496/9496), done.
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4772923Z Note: switching to '4ac40597b70aa411d00c9a645f10484e5f04f57e'.
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4773427Z 
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4773836Z You are in 'detached HEAD' state. You can look around, make experimental
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4774873Z changes and commit them, and you can discard any commits you make in this
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4775847Z state without impacting any branches by switching back to a branch.
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4776622Z 
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4777103Z If you want to create a new branch to retain commits you create, you may
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4778290Z do so (now or later) by using -c with the switch command. Example:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4778591Z 
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4778743Z   git switch -c <new-branch-name>
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4778929Z 
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4779062Z Or undo this operation with:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4779232Z 
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4779322Z   git switch -
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4779521Z 
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4780076Z Turn off this advice by setting config variable advice.detachedHead to false
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4780621Z 
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4780865Z HEAD is now at 4ac4059 2.39.11
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.4985616Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.5044686Z [command]/usr/bin/git log -1 --format=%H
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.5089788Z 4ac40597b70aa411d00c9a645f10484e5f04f57e
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.5101019Z ##[group]Removing auth
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.5101582Z Removing SSH command configuration
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.5105936Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.5153138Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.5414798Z Removing HTTP extra header
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.5420565Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.5466170Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.5721182Z Removing includeIf entries pointing to credentials config files
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.5724647Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.5761257Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git.path
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.5762173Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git/worktrees/*.path
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.5763280Z includeif.gitdir:/github/workspace/.hive-mind/.git.path
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.5764281Z includeif.gitdir:/github/workspace/.hive-mind/.git/worktrees/*.path
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.5771276Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git.path
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.5808726Z /home/runner/work/_temp/git-credentials-86d2887f-3ea1-418c-9f17-aa48640cd6a3.config
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.5819858Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-86d2887f\-3ea1\-418c\-9f17\-aa48640cd6a3\.config
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.5867074Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git/worktrees/*.path
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.5902335Z /home/runner/work/_temp/git-credentials-86d2887f-3ea1-418c-9f17-aa48640cd6a3.config
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.5911143Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-86d2887f\-3ea1\-418c\-9f17\-aa48640cd6a3\.config
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.5965328Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.hive-mind/.git.path
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.6001519Z /github/runner_temp/git-credentials-86d2887f-3ea1-418c-9f17-aa48640cd6a3.config
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.6011933Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.hive-mind/.git.path \/github\/runner_temp\/git\-credentials\-86d2887f\-3ea1\-418c\-9f17\-aa48640cd6a3\.config
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.6058405Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.hive-mind/.git/worktrees/*.path
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.6092946Z /github/runner_temp/git-credentials-86d2887f-3ea1-418c-9f17-aa48640cd6a3.config
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.6101856Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.hive-mind/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-86d2887f\-3ea1\-418c\-9f17\-aa48640cd6a3\.config
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.6147597Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.6399470Z Removing credentials config '/home/runner/work/_temp/git-credentials-86d2887f-3ea1-418c-9f17-aa48640cd6a3.config'
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.6409046Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.6540381Z ##[group]Run npm ci --omit=dev --ignore-scripts --no-audit --no-fund
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.6540928Z ^[[36;1mnpm ci --omit=dev --ignore-scripts --no-audit --no-fund^[[0m
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.6561348Z shell: /usr/bin/bash -e {0}
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.6561596Z env:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.6561788Z   E2E_TOOL: codex
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.6562035Z   WORK_ITEM_TASK: contradicted-documentation
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.6562334Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:35.5823817Z 
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:35.5824454Z added 277 packages in 6s
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:35.6524810Z ##[group]Run actions/download-artifact@v8
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:35.6525132Z with:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:35.6525356Z   name: work-item-current-binary
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:35.6525625Z   path: rust/target/release
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:35.6525873Z   merge-multiple: false
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:35.6526118Z   repository: link-assistant/formal-ai
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:35.6526392Z   run-id: 41768761745
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:35.6526613Z   skip-decompress: false
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:35.6526848Z   digest-mismatch: error
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:35.6527071Z env:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:35.6527254Z   E2E_TOOL: codex
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:35.6527587Z   WORK_ITEM_TASK: contradicted-documentation
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:35.6527954Z   NODE_OPTIONS: --disable-warning=DEP0005
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:35.6528612Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:35.7971487Z Downloading single artifact
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:35.9981888Z Preparing to download the following artifacts:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:35.9983598Z - work-item-current-binary (ID: 13294610319, Size: 69056033, Expected Digest: sha256:6ffee4339de5d622387e44c13786fbd5b8d15f23e9f633d168dcfa4414aace37)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:36.3811245Z Redirecting to blob download url: https://productionresultssa30.blob.core.windows.net/actions-results/828f7d1e-1031-4911-9d18-c7b809f30116/workflow-job-run-54ba12fa-99e8-51a8-807f-eba566801b41/artifacts/a54b978306d9bcea8fcba22525c1447de6d0bbc0827bde1273260bc8c684a0ac.zip
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:36.3813424Z Starting download of artifact to: /home/runner/work/formal-ai/formal-ai/rust/target/release
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.6918986Z SHA256 digest of downloaded artifact is 6ffee4339de5d622387e44c13786fbd5b8d15f23e9f633d168dcfa4414aace37
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.6920109Z Artifact download completed successfully.
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.6920739Z Total of 1 artifact(s) downloaded
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.6921327Z Download artifact has finished successfully
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.7062373Z ##[group]Run chmod 0755 rust/target/release/formal-ai
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.7062824Z ^[[36;1mchmod 0755 rust/target/release/formal-ai^[[0m
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.7083332Z shell: /usr/bin/bash -e {0}
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.7083603Z env:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.7083802Z   E2E_TOOL: codex
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.7084062Z   WORK_ITEM_TASK: contradicted-documentation
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.7084372Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.7238977Z ##[group]Run actions/download-artifact@v8
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.7239328Z with:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.7239547Z   name: work-item-admission
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.7239859Z   path: /home/runner/work/_temp/work-item-admission
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.7240190Z   merge-multiple: false
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.7240465Z   repository: link-assistant/formal-ai
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.7240751Z   run-id: 41768761745
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.7240986Z   skip-decompress: false
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.7241235Z   digest-mismatch: error
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.7241469Z env:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.7241657Z   E2E_TOOL: codex
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.7241901Z   WORK_ITEM_TASK: contradicted-documentation
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.7242435Z   NODE_OPTIONS: --disable-warning=DEP0005
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.7242718Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.8658184Z Downloading single artifact
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.0933665Z Preparing to download the following artifacts:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.0935485Z - work-item-admission (ID: 13294570596, Size: 5109, Expected Digest: sha256:2d2c9d271fe2fb41d7460d1c46db98750e7cafc1b7603c980a5df08c1e3f33ec)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.5046674Z Redirecting to blob download url: https://productionresultssa30.blob.core.windows.net/actions-results/828f7d1e-1031-4911-9d18-c7b809f30116/workflow-job-run-54ba12fa-99e8-51a8-807f-eba566801b41/artifacts/c575c32ad6d3499ce047f0ad9b36cd002252dc29e27a9d883e1f9c38cf8dd8af.zip
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.5049268Z Starting download of artifact to: /home/runner/work/_temp/work-item-admission
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.7125525Z SHA256 digest of downloaded artifact is 2d2c9d271fe2fb41d7460d1c46db98750e7cafc1b7603c980a5df08c1e3f33ec
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.7126587Z Artifact download completed successfully.
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.7127253Z Total of 1 artifact(s) downloaded
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.7131073Z Download artifact has finished successfully
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.7246429Z ##[group]Run node scripts/work-item-qualification/run-work-item-qualification.mjs
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.7247065Z ^[[36;1mnode scripts/work-item-qualification/run-work-item-qualification.mjs^[[0m
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.7267230Z shell: /usr/bin/bash -e {0}
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.7267500Z env:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.7267704Z   E2E_TOOL: codex
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.7268235Z   WORK_ITEM_TASK: contradicted-documentation
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.7271223Z   GH_TOKEN: ***
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.7271609Z   WORK_ITEM_SELECTION: /home/runner/work/_temp/work-item-admission/selection.json
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.7272154Z   WORK_ITEM_OWNER: /home/runner/work/_temp/work-item-admission/owner.json
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.7272533Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:45.9207599Z node:internal/modules/run_main:107
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:45.9208612Z     triggerUncaughtException(
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:45.9543725Z     ^
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:45.9543950Z 
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:45.9544732Z AssertionError [ERR_ASSERTION]: command failed: docker; inspect retained status and logs
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:45.9546264Z     at command (file:///home/runner/work/formal-ai/formal-ai/scripts/work-item-qualification/run-work-item-qualification.mjs:51:21)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:45.9547802Z     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:45.9549485Z     at async file:///home/runner/work/formal-ai/formal-ai/scripts/work-item-qualification/run-work-item-qualification.mjs:111:3 {
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:45.9550481Z   generatedMessage: false,
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:45.9550986Z   code: 'ERR_ASSERTION',
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:45.9551427Z   actual: false,
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:45.9551815Z   expected: true,
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:45.9552214Z   operator: '==',
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:45.9552601Z   diff: 'simple'
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:45.9552967Z }
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:45.9553092Z 
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:45.9553194Z Node.js v24.22.1
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:46.0077216Z ##[error]Process completed with exit code 1.
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:46.1605864Z ##[group]Run actions/upload-artifact@v7
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:46.1606342Z with:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:46.1606794Z   name: work-item-resource-codex-contradicted-documentation
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:46.1607685Z   path: /home/runner/work/_temp/work-item-codex-contradicted-documentation/publish/resource.json
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:46.1608896Z   if-no-files-found: error
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:46.1609268Z   retention-days: 90
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:46.1609611Z   compression-level: 6
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:46.1609950Z   overwrite: false
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:46.1610295Z   include-hidden-files: false
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:46.1610672Z   archive: true
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:46.1610978Z env:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:46.1611267Z   E2E_TOOL: codex
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:46.1611667Z   WORK_ITEM_TASK: contradicted-documentation
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:46.1612107Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:46.4276076Z With the provided path, there will be 1 file uploaded
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:46.4300900Z Artifact name is valid!
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:46.4302677Z Root directory input is valid!
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:46.9623899Z Uploading artifact: work-item-resource-codex-contradicted-documentation.zip
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:46.9625012Z Beginning upload of artifact content to blob storage
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.1345233Z Uploaded bytes 751
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.1927383Z Finished uploading artifact content to blob storage!
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.1929031Z SHA256 digest of uploaded artifact is 39a7b233c838e23758d382a7040b3afe8ff36423d05f0c711741efb0d645d693
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.1930126Z Finalizing artifact upload
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.7534144Z Artifact work-item-resource-codex-contradicted-documentation successfully finalized. Artifact ID 13294307231
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.7536319Z Artifact work-item-resource-codex-contradicted-documentation has been successfully uploaded! Final size is 751 bytes. Artifact ID is 13294307231
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.7538550Z Artifact download URL: https://github.com/link-assistant/formal-ai/actions/runs/41768761745/artifacts/13294307231
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.8051430Z ##[group]Run actions/upload-artifact@v7
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.8051956Z with:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.8052413Z   name: work-item-codex-contradicted-documentation
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.8053250Z   path: /home/runner/work/_temp/work-item-codex-contradicted-documentation/publish
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.8053989Z   if-no-files-found: error
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.8054352Z   retention-days: 90
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.8054693Z   compression-level: 6
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.8055034Z   overwrite: false
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.8055367Z   include-hidden-files: false
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.8055741Z   archive: true
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.8056047Z env:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.8056364Z   E2E_TOOL: codex
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.8056796Z   WORK_ITEM_TASK: contradicted-documentation
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.8057317Z ##[endgroup]
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.9667069Z With the provided path, there will be 40 files uploaded
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.9673312Z Artifact name is valid!
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.9674173Z Root directory input is valid!
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.2737841Z Uploading artifact: work-item-codex-contradicted-documentation.zip
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.2778751Z Beginning upload of artifact content to blob storage
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.6471956Z Uploaded bytes 42599
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.7073540Z Finished uploading artifact content to blob storage!
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.7075019Z SHA256 digest of uploaded artifact is b78aef593b435275a8eaa5d590187b2838266e4d046884844a0a1dffb47a0a89
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.7076215Z Finalizing artifact upload
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.2859921Z Artifact work-item-codex-contradicted-documentation successfully finalized. Artifact ID 13294770315
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.2861423Z Artifact work-item-codex-contradicted-documentation has been successfully uploaded! Final size is 42599 bytes. Artifact ID is 13294770315
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.2862783Z Artifact download URL: https://github.com/link-assistant/formal-ai/actions/runs/41768761745/artifacts/13294770315
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.3151326Z Post job cleanup.
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.4202728Z [command]/usr/bin/git version
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.4262984Z git version 2.56.0
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.4309190Z Temporarily overriding HOME='/home/runner/work/_temp/9d0cb910-faad-4d9b-8d0b-6986c933f0ea' before making global git config changes
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.4311265Z Adding repository directory to the temporary git global config as a safe directory
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.4318567Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai/.hive-mind
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.4376934Z Removing SSH command configuration
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.4394543Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.4438369Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.4767472Z Removing HTTP extra header
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.4776481Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.4860254Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.5327655Z Removing includeIf entries pointing to credentials config files
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.5328986Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.5376955Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.5944981Z Post job cleanup.
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.7097912Z [command]/usr/bin/git version
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.7169517Z git version 2.56.0
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.7214396Z Temporarily overriding HOME='/home/runner/work/_temp/62de5fdb-f3a1-4950-8934-521ef107aa20' before making global git config changes
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.7216134Z Adding repository directory to the temporary git global config as a safe directory
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.7222284Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.7291747Z Removing SSH command configuration
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.7298616Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.7344733Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.7870663Z Removing HTTP extra header
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.7871552Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.7932277Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.8379363Z Removing includeIf entries pointing to credentials config files
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.8388935Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.8441853Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Actual Hive codex work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.9032232Z Cleaning up orphan processes

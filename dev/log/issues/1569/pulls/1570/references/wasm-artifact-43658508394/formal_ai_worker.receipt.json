@@ -1,0 +1,483 @@
+{
+  "schema": "selected-source-wasm/v1",
+  "sourceCommit": "5062e4f0fea4bace63200ad2c6a593715eb36b3f",
+  "sourceTree": "312939b5cf846765e784a9fcd5e2b6b12124d0a8",
+  "packageVersion": "0.355.34",
+  "identity": {
+    "repository": "link-assistant/formal-ai",
+    "run": "43658508394",
+    "attempt": "1",
+    "job": "lint",
+    "event": "push",
+    "workflowCommit": "5062e4f0fea4bace63200ad2c6a593715eb36b3f"
+  },
+  "target": "wasm32-unknown-unknown",
+  "compiler": "rustc 1.100.0 (0ef1bc386 2026-11-09)\nbinary: rustc\ncommit-hash: 0ef1bc386059596dada8fb65b50425aab2ea637a\ncommit-date: 2026-11-09\nhost: x86_64-unknown-linux-gnu\nrelease: 1.100.0\nLLVM version: 23.1.5\n",
+  "compilerCommit": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+  "targetLibraries": {
+    "files": [
+      {
+        "name": "libaddr2line-84f1651f6efd406a.rlib",
+        "bytes": 22114,
+        "sha256": "3d1c926787224195ef60513c3f4c2699ab41691fb3e29f7b8d6e33573a8dd6d2"
+      },
+      {
+        "name": "libaddr2line-84f1651f6efd406a.rmeta",
+        "bytes": 492555,
+        "sha256": "7ad0be1602f39dc856e504a3a5e237947e1c36ef510b0848e2f21c1bd9cf211b"
+      },
+      {
+        "name": "libadler2-9fba17fb8c13d531.rlib",
+        "bytes": 7618,
+        "sha256": "1f1e6b7bf3a7489bc283f9164620930516514ed32039e1b4bf7c46f4a0526285"
+      },
+      {
+        "name": "libadler2-9fba17fb8c13d531.rmeta",
+        "bytes": 20748,
+        "sha256": "a5ffec12ecff9b4bd39015e193a4ad0cbc5713245b059e64fb113175e1335199"
+      },
+      {
+        "name": "liballoc-ab81530b40c845b6.rlib",
+        "bytes": 714812,
+        "sha256": "f7ab1ce49c2f853c277f5844c882adcca6469d3711635bce407a1d0afc8eca63"
+      },
+      {
+        "name": "liballoc-ab81530b40c845b6.rmeta",
+        "bytes": 8796088,
+        "sha256": "19d360c6e806c00655d7e728d2d668b1b661104cb3566ea499c63adfff6663f7"
+      },
+      {
+        "name": "libcfg_if-b873516b5d4e3892.rlib",
+        "bytes": 3740,
+        "sha256": "d586272da71c93d04c82d1e900a95516e5bd713c20a8b4d6de4671cbd11bcb08"
+      },
+      {
+        "name": "libcfg_if-b873516b5d4e3892.rmeta",
+        "bytes": 5606,
+        "sha256": "af153251aa278e05920f0abd27d2ad129852fb171679282d7fe42c7e5552a8da"
+      },
+      {
+        "name": "libcompiler_builtins-c5644d05a9e6c9f7.rlib",
+        "bytes": 4648674,
+        "sha256": "ce58e6da39ef12b45ec2a8239c4f2040ebe737c6082c03b27fe088b1b342e34a"
+      },
+      {
+        "name": "libcompiler_builtins-c5644d05a9e6c9f7.rmeta",
+        "bytes": 1953006,
+        "sha256": "04e60e8319488cd9a09d495a1cd4c40a3a1dd7f28fcc58c9ca5095476cfa4bb3"
+      },
+      {
+        "name": "libcore-e7a1bef50de0a44d.rlib",
+        "bytes": 2514118,
+        "sha256": "7c2569293f728bffda1f68f2c4bab7c8fa49c238923138173a6827c4676f00d7"
+      },
+      {
+        "name": "libcore-e7a1bef50de0a44d.rmeta",
+        "bytes": 46017426,
+        "sha256": "de6f59194b351e720b66f300172efe42c479d312411c7562419e08867f8140ca"
+      },
+      {
+        "name": "libdlmalloc-32ad93600425a795.rlib",
+        "bytes": 9360,
+        "sha256": "460fed0834f7f72af25e6c4a7aab0d48c543a903ce54dacd173eb6e216a5ac85"
+      },
+      {
+        "name": "libdlmalloc-32ad93600425a795.rmeta",
+        "bytes": 504557,
+        "sha256": "64a804692656ae7d1db0c0d51908f767aec4882db220fa72870138e12e434483"
+      },
+      {
+        "name": "libgetopts-0b5ed27fe602bcc0.rlib",
+        "bytes": 521426,
+        "sha256": "6fc66f5e1659d68b782b9989a9cc695e20b6468dcb0487aa030dd491ba9da6b9"
+      },
+      {
+        "name": "libgetopts-0b5ed27fe602bcc0.rmeta",
+        "bytes": 220675,
+        "sha256": "fbe853f43dc4afb98b4744dd79d25f4f278242adb3cc966a5e141691431189f5"
+      },
+      {
+        "name": "libgimli-19d3bfbec6d6c261.rlib",
+        "bytes": 909226,
+        "sha256": "d7ccd0a6ad06b1f089c0a3cf4e3a2160dd866b6ec0cb8b91fc7b3120954216cd"
+      },
+      {
+        "name": "libgimli-19d3bfbec6d6c261.rmeta",
+        "bytes": 5949476,
+        "sha256": "2ba1c1c15a018510d2143f2b05ae125b5f267d546dcabb2d6dd20355e83a84db"
+      },
+      {
+        "name": "libhashbrown-25d7ceb1775328bc.rlib",
+        "bytes": 20126,
+        "sha256": "48cda272c01e6f01b13b00c10b24837242ce68f0464396ad48cc365b1ac101c5"
+      },
+      {
+        "name": "libhashbrown-25d7ceb1775328bc.rmeta",
+        "bytes": 1773695,
+        "sha256": "59f8137790fc562366912936cacd468d62d27a9765cd7139d178b76edc092b9c"
+      },
+      {
+        "name": "liblibc-a944a4283e9a9c27.rlib",
+        "bytes": 3714,
+        "sha256": "6f0c5d31a539f486bc47d910a3123152e52531bc37a3cd9124e6af2127d0ac07"
+      },
+      {
+        "name": "liblibc-a944a4283e9a9c27.rmeta",
+        "bytes": 38510,
+        "sha256": "46ffd4f2fb32da8a9c73076b0ff073549c05286934cea486ef25c4adc67c0e69"
+      },
+      {
+        "name": "libmemchr-c847e57a0dbd73b0.rlib",
+        "bytes": 124288,
+        "sha256": "97fdfd6e9f0efc3b6c727410a49357315d161ab53cc59216864a5448061d72ed"
+      },
+      {
+        "name": "libmemchr-c847e57a0dbd73b0.rmeta",
+        "bytes": 614472,
+        "sha256": "cb90ee54aabbc61772c9ed542b583a25ff5820adec8900cf6b3d752f3bd220a1"
+      },
+      {
+        "name": "libminiz_oxide-9385dbdae27c6584.rlib",
+        "bytes": 85510,
+        "sha256": "7d0a157c46a2b7e297bad62d745bee8ae31baee41ba1739c5ead42fc0487564a"
+      },
+      {
+        "name": "libminiz_oxide-9385dbdae27c6584.rmeta",
+        "bytes": 128572,
+        "sha256": "94942833c49902b723043dd8577d9ada37dbf74efa3cc8a8f14fd406f34f0f8e"
+      },
+      {
+        "name": "libobject-6fba9f3e6811ae70.rlib",
+        "bytes": 238920,
+        "sha256": "8e920f9da15d2f93262dba48981ac474a72c47a6a06eb5324660747844dee3c3"
+      },
+      {
+        "name": "libobject-6fba9f3e6811ae70.rmeta",
+        "bytes": 9013465,
+        "sha256": "5789eb7b65b5b08851b2902477f116808d0456fc0df5987a0e3e850d7e2eb30c"
+      },
+      {
+        "name": "libpanic_abort-ac652dd62339478e.rlib",
+        "bytes": 7714,
+        "sha256": "493c5ff257f3cfbc741c4f1599a2667916f58acd464a84a1fa03fa53f81e649b"
+      },
+      {
+        "name": "libpanic_abort-ac652dd62339478e.rmeta",
+        "bytes": 2994,
+        "sha256": "5e7759bc6a22eef45f8df7cd603edde06df1c9ef3f46f498f963e77dc5c4eaf2"
+      },
+      {
+        "name": "libpanic_unwind-bf91fe6f2a5f3aac.rlib",
+        "bytes": 23596,
+        "sha256": "24363d1e4da1e2aab226164e52b921de27b904fc0d24d42c118c4c6c15b4a52d"
+      },
+      {
+        "name": "libpanic_unwind-bf91fe6f2a5f3aac.rmeta",
+        "bytes": 8066,
+        "sha256": "303cc04f52a879fdf6811d5d1cfef67d27d2b3fe65f1d736b1a86b0840ebb3dd"
+      },
+      {
+        "name": "libproc_macro-2df4bd4fe55c44bf.rlib",
+        "bytes": 3333432,
+        "sha256": "9a4319adca51a554523f4d0bf2db028179e367ff2509a4af3154292a3567afad"
+      },
+      {
+        "name": "libproc_macro-2df4bd4fe55c44bf.rmeta",
+        "bytes": 1145189,
+        "sha256": "a073e62a73a3da5aaf20817533a8a9e6dc5897eccfecf6b3e2e516485986c34e"
+      },
+      {
+        "name": "librustc_demangle-b5d55718cc907ef9.rlib",
+        "bytes": 202360,
+        "sha256": "ba58f52e5aa58ac4bc2d816c37d1f242b066f94aecad6c2e6f1ba388f4e96588"
+      },
+      {
+        "name": "librustc_demangle-b5d55718cc907ef9.rmeta",
+        "bytes": 90220,
+        "sha256": "dd1f2f5efb5028cd5f8172e60d27a7dde3c87256766ef026a6823d591eb3a2b5"
+      },
+      {
+        "name": "librustc_literal_escaper-b076da9b39298286.rlib",
+        "bytes": 3888,
+        "sha256": "d11c37771994d0fb2daa35d30953112e55f43dd4dfc43c651793b1f05f937be6"
+      },
+      {
+        "name": "librustc_literal_escaper-b076da9b39298286.rmeta",
+        "bytes": 123559,
+        "sha256": "8c164fff2f923d633b63fcc1b903899df1d0594dac6ea07aed19644fbb2866d4"
+      },
+      {
+        "name": "librustc_std_workspace_alloc-09764d0e6fdedcd6.rlib",
+        "bytes": 3924,
+        "sha256": "c3b5f97b161bb8329658abf1ab80fd3ddf87d76196d052ed5625aa862fc2508e"
+      },
+      {
+        "name": "librustc_std_workspace_alloc-09764d0e6fdedcd6.rmeta",
+        "bytes": 2262,
+        "sha256": "3d3d6213b8be30243b46e735be696d82eac61c424ed3424353d448dcad4315f0"
+      },
+      {
+        "name": "librustc_std_workspace_core-d0e60db8c2502cba.rlib",
+        "bytes": 3914,
+        "sha256": "968dce9d9f982612419ac61392cc4014f105ceb242faadc5f995acbcf496fe44"
+      },
+      {
+        "name": "librustc_std_workspace_core-d0e60db8c2502cba.rmeta",
+        "bytes": 6369,
+        "sha256": "dd7fd2324b7adef1161bf1788889d65816d82a361c81825f6a9e382a1e639b7e"
+      },
+      {
+        "name": "librustc_std_workspace_std-22639d3ec738a657.rlib",
+        "bytes": 3906,
+        "sha256": "0e6cb329b7b366b8c95d2485a1b527bf0e2690be3fd941096422fd23fa03a5e7"
+      },
+      {
+        "name": "librustc_std_workspace_std-22639d3ec738a657.rmeta",
+        "bytes": 7983,
+        "sha256": "ae63ca4527c7dc507c1a37c09394089e15bc2f404bbab44668fe581ab9c6ed46"
+      },
+      {
+        "name": "libstd-13f02d346f975d75.rlib",
+        "bytes": 2848728,
+        "sha256": "77445bc767d4cd6c879aeeeaae3d50bceb31f1525590bb39b531f04ebc90b9af"
+      },
+      {
+        "name": "libstd-13f02d346f975d75.rmeta",
+        "bytes": 5971477,
+        "sha256": "64a4762119c353d71054d7a9a688a50ba6b185d8c3cbd7d68da86623fae571df"
+      },
+      {
+        "name": "libstd_detect-1efefd16cbae15e3.rlib",
+        "bytes": 3796,
+        "sha256": "f5a1f7a018d022713f5d03103967268ef403b397f121440c521b1d55f3b4cd6e"
+      },
+      {
+        "name": "libstd_detect-1efefd16cbae15e3.rmeta",
+        "bytes": 222275,
+        "sha256": "7c797e4cd39a076d69b8d6d97b795e3dd90999de6efd5d4e47c396ec8231d8ea"
+      },
+      {
+        "name": "libsysroot-89ec8639c21eca6d.rlib",
+        "bytes": 3766,
+        "sha256": "97e3c54b57ad603cedf5e9e65bfbc5fc5b1aa34386cef9d0ba8218786d0f5965"
+      },
+      {
+        "name": "libsysroot-89ec8639c21eca6d.rmeta",
+        "bytes": 2122,
+        "sha256": "eec5a9f1d35a02a452ca80cc906b9cc5cb47155fc94d480efaa00e0862766b9c"
+      },
+      {
+        "name": "libtest-9c6e57be5cdb5a06.rlib",
+        "bytes": 3764388,
+        "sha256": "0bd90ba4a3ff51cfc2e1b96d22513416f0fd9e26a75df9dac63d1a359c05b81a"
+      },
+      {
+        "name": "libtest-9c6e57be5cdb5a06.rmeta",
+        "bytes": 1014240,
+        "sha256": "f8a0c6d2c05393d4d58bc3b1ffc286fc02d807f96f5975f806df7112449764c8"
+      },
+      {
+        "name": "libunwind-b77897d15b92bb56.rlib",
+        "bytes": 5442,
+        "sha256": "1e9c063c7a3b1e4e7b3f90ced7d36a7f9beafe3cedcfcd4b54c17b7134a97cbb"
+      },
+      {
+        "name": "libunwind-b77897d15b92bb56.rmeta",
+        "bytes": 16479,
+        "sha256": "ff3b9bc45137bf9340252f8024ca55831471cdaa97bcf86e1043c16f85bbf91a"
+      }
+    ],
+    "sha256": "9b355585921750fc5915d4846c2353128672d2f559f8f142de96bf52c2096420"
+  },
+  "arguments": [
+    "-D",
+    "warnings",
+    "--edition=2024",
+    "--target",
+    "wasm32-unknown-unknown",
+    "--crate-type",
+    "cdylib",
+    "-C",
+    "opt-level=z",
+    "-C",
+    "panic=abort",
+    "-C",
+    "lto=fat",
+    "-C",
+    "codegen-units=1",
+    "-C",
+    "strip=symbols",
+    "-C",
+    "link-arg=-s",
+    "--emit=link,dep-info=js/formal_ai_worker.d",
+    "js/wasm-worker/src/lib.rs",
+    "-o",
+    "js/formal_ai_worker.wasm"
+  ],
+  "inputs": [
+    {
+      "path": "js/wasm-worker/build.sh",
+      "gitBlob": "eae9c89186152a81d6802cbf981e0191511beab6",
+      "bytes": 327,
+      "sha256": "288e45176ee8c4ac02fb1a6b60bbad8f4b0df60a9fd8a5d8937a948dae610ae3"
+    },
+    {
+      "path": "js/wasm-worker/src/formal_statement_worker.rs",
+      "gitBlob": "8f09c7d50d8883d105621dcdbef7fb937fca7dce",
+      "bytes": 12385,
+      "sha256": "88f1e2a0ed0868f076c088116b8310e2f0fa0f7aa02b9b65d543e7ff74ac847b"
+    },
+    {
+      "path": "js/wasm-worker/src/lib.rs",
+      "gitBlob": "a6f0a9da0fa80eebef026c1d73ae1e57cb95fcd2",
+      "bytes": 31495,
+      "sha256": "11028ba2dc3aa44d2e8446d4b211038b6f2316cf8fa457c20e3da8f41994da84"
+    },
+    {
+      "path": "js/wasm-worker/src/memory_query_worker.rs",
+      "gitBlob": "7a78e6cde8e69f02d4aa674347a4164ff936780f",
+      "bytes": 24769,
+      "sha256": "196267d6186d51d83e4270bca0f4b267071fd5a64ad5056775ef2797dca4c363"
+    },
+    {
+      "path": "js/wasm-worker/src/proof_translation_worker.rs",
+      "gitBlob": "fec4de0ce78e86825e2240c6d1b92f621741fe26",
+      "bytes": 2546,
+      "sha256": "2f0ae4833c006a324303a8db421744b6e1c32e2cedc03e624707280617bec832"
+    },
+    {
+      "path": "rust/Cargo.toml",
+      "gitBlob": "72326be984f337965964026b08bb46b509dbd0a0",
+      "bytes": 7419,
+      "sha256": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795"
+    },
+    {
+      "path": "rust/embedded/data/seed/language-detection.lino",
+      "gitBlob": "81c93fe929532e27aa863c7fab929df086db1352",
+      "bytes": 2152,
+      "sha256": "864a8b2202187c98c2c77e8ad23bb81af7dcfdccf42bc9807dd63407ab7c5f45"
+    },
+    {
+      "path": "rust/embedded/data/seed/languages.lino",
+      "gitBlob": "7b3bd60808d4abafad76f96d0213376b1b891151",
+      "bytes": 3316,
+      "sha256": "8192a5af2a48fc1908656bb205d54e225b0782d261ab9afedd46e1cea9fc2f78"
+    },
+    {
+      "path": "rust/embedded/data/seed/meanings-statement-merge.lino",
+      "gitBlob": "102417f318efb4b4375a1bca54dcedbcedaf8f66",
+      "bytes": 8647,
+      "sha256": "01dd9ef3dd6ffbac6faad7cb49b441f853a6cf09691181f3c186bc42ea64375f"
+    },
+    {
+      "path": "rust/embedded/data/seed/meanings-wikidata.lino",
+      "gitBlob": "1ebb1b928acded0ac92119055a44f3bfe15ce4a5",
+      "bytes": 8843,
+      "sha256": "ee6201dbf16fb2482f1c016f23710e974126b02852ee314679480ec827baf35c"
+    },
+    {
+      "path": "rust/embedded/data/seed/search-fusion-language-grammar.lino",
+      "gitBlob": "712365d049777a80306d577261a1ef8e1dfcba70",
+      "bytes": 297,
+      "sha256": "d993b339f337f46861c87ac7a0403dfd1e58d83ae128706fb51fb5ee59bffe0b"
+    },
+    {
+      "path": "rust/embedded/data/seed/unknown-openers.lino",
+      "gitBlob": "157586f94539bb6b0dd9c3a6196f50f213d60d87",
+      "bytes": 2024,
+      "sha256": "1eab909c38f7b4a333afc0c884b189288954a9ab06e06dfdd1d33dedc403e971"
+    },
+    {
+      "path": "rust/src/arithmetic_word_tables.rs",
+      "gitBlob": "30b959ffe905a36ca9d025e759c1198db47718ab",
+      "bytes": 3316,
+      "sha256": "a56f57e1cb1d34512f8035029c1b7eb448a50b8667199aac262a74f26497b334"
+    },
+    {
+      "path": "rust/src/arithmetic.rs",
+      "gitBlob": "5bb8e7f11a104f4cf27fe6da95124191676d6471",
+      "bytes": 27984,
+      "sha256": "244e6b63c13c3419a6022703ace52989af8e4790185647fdb71cc2ef51f0496b"
+    },
+    {
+      "path": "rust/src/callback_values/nonempty.rs",
+      "gitBlob": "a49c998c33454ef2ac80a2452ee16cb65e47e800",
+      "bytes": 522,
+      "sha256": "8095d641db17908d47b1a7add47e2678091d834543afc14f12deebc3ec41a532"
+    },
+    {
+      "path": "rust/src/language.rs",
+      "gitBlob": "86b1bb166acb284b417a1675e99e1e613ab02507",
+      "bytes": 23053,
+      "sha256": "21da474880e1e1f6f246c876c069e1da42470e1c03b82f28bba15be6824f8837"
+    },
+    {
+      "path": "rust/src/memory_query_language/graphql.rs",
+      "gitBlob": "90ebf74803e5115859acebb058f972f9f9973f30",
+      "bytes": 15940,
+      "sha256": "f5dac767c80a5c1cc5d8dbf45f5771648651df1ebd8824f5fe7bcc8ded0b66a4"
+    },
+    {
+      "path": "rust/src/memory_query_language/mod.rs",
+      "gitBlob": "e1d3c685bc7fff047dcd7d63a2946778cedd729d",
+      "bytes": 23918,
+      "sha256": "345d479ea1fbc316f2e8eedee5d2252f9f616a7c493648e7a986ffb8c5f6b594"
+    },
+    {
+      "path": "rust/src/memory_query_language/sql.rs",
+      "gitBlob": "a330771705baf51e83c64578c6099fcf8bbf1e98",
+      "bytes": 11430,
+      "sha256": "1179bd01015c1276b255db996b77f4848c69d522385bace32b062cdf005ca971"
+    },
+    {
+      "path": "rust/src/memory_query_language/syntax.rs",
+      "gitBlob": "74b1cc8d7011d6d219b78d7898dcd84f09fea6f4",
+      "bytes": 8483,
+      "sha256": "3c2100b0681e44c8c4be702253a2116142123ea7d0555bf7777924f0cd2dd577"
+    },
+    {
+      "path": "rust/src/proof_program/core.rs",
+      "gitBlob": "3a1e875c4e43a0869fce95a6287515af42034618",
+      "bytes": 6001,
+      "sha256": "ce0a36a75d17c1b929ffe3d2c2398a47705eeb28ce026c9c50f9e1ba6c5c107f"
+    },
+    {
+      "path": "rust/src/search_fusion_grammar.rs",
+      "gitBlob": "f4dc4a80ab041983767342d3c34ac33a10d4d28c",
+      "bytes": 1561,
+      "sha256": "5a8d8ec41f0937a3a68334508183d51eb809582bc60f2ec3276de93eb0e723cd"
+    },
+    {
+      "path": "rust/src/seed/parser.rs",
+      "gitBlob": "25e595d428b8e6cdc96f7f01260a0620623708e0",
+      "bytes": 29590,
+      "sha256": "2560698787d1e123c317a2744110e11038979a7d6756e3d86a04afd10159e240"
+    },
+    {
+      "path": "rust/src/web_engine_core.rs",
+      "gitBlob": "166acaa45e9a86f9350a4d0f5ac59f1bcff5cc7b",
+      "bytes": 18300,
+      "sha256": "f9b487f9622e579ff880affc8182a4b087646df83aec3417b3ed65a553ea5934"
+    },
+    {
+      "path": "rust/src/web_search_core.rs",
+      "gitBlob": "53a71f1354b1166de0175eb2242b062930fa080b",
+      "bytes": 25539,
+      "sha256": "318c05ce0889d9b1cc9bf0b3582ccdb1bf0f4d023fd11b71a3cc75c195942379"
+    },
+    {
+      "path": "rust/src/web_search_fusion_core.rs",
+      "gitBlob": "6bb9f3c02df93c43cbf7cc7c40a1b48492a4a7b9",
+      "bytes": 28860,
+      "sha256": "8ce7747e618250222249354e2e4de9120fe365614d5f48ca05021852b8215a46"
+    }
+  ],
+  "protocolSha256": "f46100d6058e169dafb542c7636e267d41c2bb6ba9602b6ed31f0140c193ea1c",
+  "dependencyInfoSha256": "fbc411b758370fe560add4431fa4e4c5a41d52b3a12993f4c91022792f416a61",
+  "output": {
+    "path": "formal_ai_worker.wasm",
+    "bytes": 311231,
+    "sha256": "c4528daaf5558ba693153a875a3f6743e20f26b80d7a200588ded74c39516e28"
+  },
+  "nativeCompilationEvidence": true
+}

@@ -1,0 +1,315 @@
+Agent CLI ladder depth-1-1	UNKNOWN STEP	﻿2026-11-08T10:39:50.1858669Z Current runner version: '2.338.2'
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1879729Z ##[group]Runner Image Provisioner
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1880445Z Hosted Compute Agent
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1880908Z Version: 20261028.624
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1881482Z Commit: 54898b74c23fde5556c9b3c3a2290865feef0dfe
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1882064Z Build Date: 2026-10-28T21:51:42Z
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1882635Z Worker ID: {a83f900b-4eeb-48bd-910c-f9e5e598640d}
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1883422Z Region: westus3
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1883852Z Cloud: Azure
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1884349Z ##[endgroup]
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1885703Z ##[group]Operating System
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1886265Z Ubuntu
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1886746Z 26.04.1
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1887172Z LTS
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1887631Z ##[endgroup]
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1888087Z ##[group]Runner Image
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1888840Z Image: ubuntu-26.04
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1889414Z Version: 20261101.186.1
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1890399Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261101.186/images/ubuntu/Ubuntu2604-Readme.md
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1891698Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261101.186
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1892549Z ##[endgroup]
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1893777Z ##[group]GITHUB_TOKEN Permissions
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1895606Z Contents: read
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1896118Z Metadata: read
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1896577Z ##[endgroup]
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1898555Z Secret source: Actions
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1899412Z Cache mode: write
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.1900308Z Prepare workflow directory
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.2380701Z Prepare all required actions
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.2419986Z Getting action download info
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.5309090Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:50.6288755Z Download action repository 'oven-sh/setup-bun@v2' (SHA:0c5077e51419868618aeaa5fe8019c62421857d6)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.1277509Z Download action repository 'dtolnay/rust-toolchain@stable' (SHA:b725eda525362e7cf34af9a7243cac1e3f01a7ec)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.3357484Z Download action repository 'actions/upload-artifact@v7' (SHA:cf430e030ddbb5b0abf93d22962f4752f3646cd9)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.5289536Z Complete job name: Agent CLI ladder depth-1-1
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.5929509Z ##[group]Run actions/checkout@v7
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.5930162Z with:
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.5930535Z   persist-credentials: false
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.5930994Z   repository: link-assistant/formal-ai
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.5934114Z   token: ***
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.5934470Z   ssh-strict: true
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.5934820Z   ssh-user: git
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.5935157Z   clean: true
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.5935518Z   sparse-checkout-cone-mode: true
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.5935951Z   fetch-depth: 1
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.5936298Z   fetch-tags: false
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.5936663Z   show-progress: true
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.5937027Z   lfs: false
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.5937360Z   submodules: false
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.5937733Z   set-safe-directory: true
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.5938130Z   allow-unsafe-pr-checkout: false
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.5938720Z env:
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.5939042Z   TREE_DEPTH: 1
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.5939381Z   NODE_FILTER: 1
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.5939848Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.5940401Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.5940887Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.5941267Z ##[endgroup]
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.7933641Z Syncing repository: link-assistant/formal-ai
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.7935193Z ##[group]Getting Git version info
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.7935828Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.7936726Z [command]/usr/bin/git version
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.7954696Z git version 2.56.0
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.7970112Z ##[endgroup]
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.7987795Z Temporarily overriding HOME='/home/runner/work/_temp/6c47d0c9-a5bd-47b2-93ed-fe5c9abeb1d9' before making global git config changes
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.7990292Z Adding repository directory to the temporary git global config as a safe directory
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.7992840Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8034796Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8038298Z ##[group]Determining repository object format
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8039528Z ##[endgroup]
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8040457Z ##[group]Initializing the repository
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8042483Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8118131Z hint: Using 'master' as the name for the initial branch. This default branch name
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8119786Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8121416Z hint: to use in all of your new repositories, which will suppress this warning,
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8122663Z hint: call:
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8123606Z hint:
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8124245Z hint: 	git config --global init.defaultBranch <name>
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8124987Z hint:
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8125774Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8127260Z hint: 'development'. The just-created branch can be renamed via this command:
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8128421Z hint:
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8128977Z hint: 	git branch -m <name>
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8129682Z hint:
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8130610Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8132210Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8139087Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8181378Z ##[endgroup]
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8182394Z ##[group]Disabling automatic garbage collection
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8185635Z [command]/usr/bin/git config --local gc.auto 0
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8215355Z ##[endgroup]
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8216551Z ##[group]Setting up auth
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8217354Z Removing SSH command configuration
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8221272Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8252462Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8598886Z Removing HTTP extra header
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8604030Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8632840Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8859079Z Removing includeIf entries pointing to credentials config files
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8863787Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.8892112Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.9124360Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-0b01b000-2c98-49ca-86f4-c2e94dee710e.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.9157707Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-0b01b000-2c98-49ca-86f4-c2e94dee710e.config
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.9262577Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-0b01b000-2c98-49ca-86f4-c2e94dee710e.config
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.9266018Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-0b01b000-2c98-49ca-86f4-c2e94dee710e.config
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.9270309Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-0b01b000-2c98-49ca-86f4-c2e94dee710e.config
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.9274343Z ##[endgroup]
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.9275357Z ##[group]Fetching the repository
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:39:51.9277623Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +70935ad8e2a12bc2148eef74722749290c2edb66:refs/remotes/origin/main
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:11.7327231Z From https://github.com/link-assistant/formal-ai
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:11.7327786Z  * [new ref]           70935ad8e2a12bc2148eef74722749290c2edb66 -> origin/main
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:11.7336206Z [command]/usr/bin/git branch --list --remote origin/main
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:11.7361492Z   origin/main
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:11.7368419Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:11.7389487Z 70935ad8e2a12bc2148eef74722749290c2edb66
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:11.7393225Z ##[endgroup]
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:11.7393774Z ##[group]Determining the checkout info
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:11.7394467Z ##[endgroup]
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:11.7396893Z [command]/usr/bin/git sparse-checkout disable
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:11.7438723Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:11.7465341Z ##[group]Checking out the ref
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:11.7468523Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:12.8154519Z Updating files:  12% (9582/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:13.3309719Z Updating files:  13% (9626/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:13.6240284Z Updating files:  14% (10366/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:13.7926731Z Updating files:  15% (11107/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:13.8053849Z Updating files:  16% (11847/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:13.8804935Z Updating files:  16% (12051/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:13.9306329Z Updating files:  17% (12587/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:14.0267127Z Updating files:  18% (13328/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:14.1380399Z Updating files:  19% (14068/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:14.3225548Z Updating files:  20% (14809/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:14.4077889Z Updating files:  21% (15549/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:14.4828108Z Updating files:  22% (16290/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:14.5520373Z Updating files:  23% (17030/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:14.7450313Z Updating files:  24% (17770/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:14.8054650Z Updating files:  25% (18511/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:14.8232622Z Updating files:  25% (18987/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:14.8881171Z Updating files:  26% (19251/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:14.9621716Z Updating files:  27% (19992/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:14.9917176Z Updating files:  28% (20732/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:15.0389883Z Updating files:  29% (21472/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:15.0782897Z Updating files:  30% (22213/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:15.1096162Z Updating files:  31% (22953/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:15.1586429Z Updating files:  32% (23694/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:15.1895969Z Updating files:  33% (24434/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:15.2104585Z Updating files:  34% (25174/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:15.2848911Z Updating files:  35% (25915/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:15.3288833Z Updating files:  36% (26655/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:15.4847694Z Updating files:  37% (27396/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:15.5213470Z Updating files:  38% (28136/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:15.5502544Z Updating files:  39% (28876/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:15.5780352Z Updating files:  40% (29617/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:15.6050216Z Updating files:  41% (30357/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:15.6461687Z Updating files:  42% (31098/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:15.6750125Z Updating files:  43% (31838/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:15.7128313Z Updating files:  44% (32579/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:15.7860125Z Updating files:  45% (33319/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:15.8065445Z Updating files:  46% (34059/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:15.8321220Z Updating files:  46% (34239/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:15.9553843Z Updating files:  47% (34800/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:15.9870413Z Updating files:  48% (35540/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.0169975Z Updating files:  49% (36281/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.0620263Z Updating files:  50% (37021/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.0850498Z Updating files:  51% (37761/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.1174046Z Updating files:  52% (38502/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.1457362Z Updating files:  53% (39242/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.1960558Z Updating files:  54% (39983/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.2206048Z Updating files:  55% (40723/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.2512657Z Updating files:  56% (41463/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.2769830Z Updating files:  57% (42204/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.3299660Z Updating files:  58% (42944/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.3891143Z Updating files:  59% (43685/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.4293929Z Updating files:  60% (44425/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.4617452Z Updating files:  61% (45166/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.5051276Z Updating files:  62% (45906/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.5579528Z Updating files:  63% (46646/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.6299527Z Updating files:  64% (47387/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.6689460Z Updating files:  65% (48127/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.7043303Z Updating files:  66% (48868/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.7470214Z Updating files:  67% (49608/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.7724108Z Updating files:  68% (50348/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.8081584Z Updating files:  69% (51089/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.8548852Z Updating files:  69% (51223/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.8756652Z Updating files:  70% (51829/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.8962121Z Updating files:  71% (52570/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.9175429Z Updating files:  72% (53310/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.9446314Z Updating files:  73% (54050/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.9673815Z Updating files:  74% (54791/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:16.9916257Z Updating files:  75% (55531/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:17.0442033Z Updating files:  76% (56272/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:17.1984286Z Updating files:  77% (57012/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:17.2602205Z Updating files:  78% (57752/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:17.3021294Z Updating files:  79% (58493/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:17.4365470Z Updating files:  80% (59233/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:17.5270212Z Updating files:  81% (59974/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:17.5866330Z Updating files:  82% (60714/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:17.6466719Z Updating files:  83% (61455/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:17.7300752Z Updating files:  84% (62195/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:17.7849539Z Updating files:  85% (62935/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:17.8053431Z Updating files:  86% (63676/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:17.8202367Z Updating files:  86% (64116/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:17.9791992Z Updating files:  87% (64416/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.0666162Z Updating files:  88% (65157/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.1140807Z Updating files:  89% (65897/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.1625092Z Updating files:  90% (66637/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.2023622Z Updating files:  91% (67378/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.2589293Z Updating files:  92% (68118/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.3039129Z Updating files:  93% (68859/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.3588124Z Updating files:  94% (69599/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.4028570Z Updating files:  95% (70339/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.4497019Z Updating files:  96% (71080/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.4927873Z Updating files:  97% (71820/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.5355980Z Updating files:  98% (72561/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.5804787Z Updating files:  99% (73301/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.5805165Z Updating files: 100% (74041/74041)
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.5806061Z Updating files: 100% (74041/74041), done.
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.6619850Z Switched to a new branch 'main'
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.6621002Z branch 'main' set up to track 'origin/main'.
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.6810762Z ##[endgroup]
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.6855114Z [command]/usr/bin/git log -1 --format=%H
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.6881217Z 70935ad8e2a12bc2148eef74722749290c2edb66
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.6889218Z ##[group]Removing auth
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.6889552Z Removing SSH command configuration
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.6892547Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.6955529Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.7304594Z Removing HTTP extra header
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.7307880Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.7337129Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.7683674Z Removing includeIf entries pointing to credentials config files
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.7690680Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.7709748Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.7710371Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.7710935Z includeif.gitdir:/github/workspace/.git.path
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.7711408Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.7717607Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.7740304Z /home/runner/work/_temp/git-credentials-0b01b000-2c98-49ca-86f4-c2e94dee710e.config
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.7746715Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-0b01b000\-2c98\-49ca\-86f4\-c2e94dee710e\.config
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.8174442Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.8200616Z /home/runner/work/_temp/git-credentials-0b01b000-2c98-49ca-86f4-c2e94dee710e.config
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.8207765Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-0b01b000\-2c98\-49ca\-86f4\-c2e94dee710e\.config
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.8850427Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.8875065Z /github/runner_temp/git-credentials-0b01b000-2c98-49ca-86f4-c2e94dee710e.config
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.8880610Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-0b01b000\-2c98\-49ca\-86f4\-c2e94dee710e\.config
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.9110697Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.9127656Z /github/runner_temp/git-credentials-0b01b000-2c98-49ca-86f4-c2e94dee710e.config
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.9132849Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-0b01b000\-2c98\-49ca\-86f4\-c2e94dee710e\.config
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.9500146Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.9838460Z Removing credentials config '/home/runner/work/_temp/git-credentials-0b01b000-2c98-49ca-86f4-c2e94dee710e.config'
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:18.9848131Z ##[endgroup]
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:19.0679628Z ##[group]Run oven-sh/setup-bun@v2
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:19.0679855Z with:
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:19.0680035Z   bun-version-file: .bun-version
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:19.0680237Z   no-cache: true
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:19.0682087Z   token: ***
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:19.0682248Z env:
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:19.0682402Z   TREE_DEPTH: 1
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:19.0682565Z   NODE_FILTER: 1
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:19.0682774Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:19.0683179Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:19.0683413Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:19.0683603Z ##[endgroup]
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:19.2185840Z Obtained version 1.4.2 from .bun-version
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:19.2199164Z Downloading a new version of Bun: https://github.com/oven-sh/bun/releases/download/bun-v1.4.2/bun-linux-x64.zip
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:34.8078118Z Unexpected HTTP response: 502
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:40:34.8078562Z Waiting 15 seconds before trying again
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:12.3796461Z Unexpected HTTP response: 503
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:12.3796839Z Waiting 20 seconds before trying again
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.5894570Z ##[error]Error: Unexpected HTTP response: 502
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6010771Z ##[group]Run scripts/dump-agent-cli-evidence.sh "$OUT"
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6011149Z ^[[36;1mscripts/dump-agent-cli-evidence.sh "$OUT"^[[0m
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6062170Z shell: /usr/bin/bash -e {0}
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6062389Z env:
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6062549Z   TREE_DEPTH: 1
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6062719Z   NODE_FILTER: 1
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6062947Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6063451Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6063690Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6063875Z ##[endgroup]
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6184585Z no Agent CLI evidence at /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6185239Z no Agent CLI evidence files found; the harness may have failed before it wrote any
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6238775Z ##[group]Run actions/upload-artifact@v7
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6238999Z with:
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6239195Z   name: issue-1028-agent-cli-binary-tree-depth-1-1
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6239489Z   path: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6239750Z   retention-days: 3
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6239930Z   if-no-files-found: error
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6240116Z   compression-level: 6
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6240289Z   overwrite: false
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6240460Z   include-hidden-files: false
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6240657Z   archive: true
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6240815Z env:
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6240967Z   TREE_DEPTH: 1
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6241123Z   NODE_FILTER: 1
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6241329Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6241614Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6241842Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.6242017Z ##[endgroup]
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.7355065Z ##[error]No files were found with the provided path: /home/runner/work/formal-ai/formal-ai/agent-tree-run. No artifacts will be uploaded.
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.7612567Z Post job cleanup.
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.8359734Z [command]/usr/bin/git version
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.8407573Z git version 2.56.0
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.8438013Z Temporarily overriding HOME='/home/runner/work/_temp/576f7bda-85df-4cb8-8ab4-6d177b55adfc' before making global git config changes
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.8438715Z Adding repository directory to the temporary git global config as a safe directory
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.8441948Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.8473501Z Removing SSH command configuration
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.8478729Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.8510743Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.8953726Z Removing HTTP extra header
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.8973656Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.9016961Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.9347355Z Removing includeIf entries pointing to credentials config files
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.9352662Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.9384507Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Agent CLI ladder depth-1-1	UNKNOWN STEP	2026-11-08T10:42:32.9912496Z Cleaning up orphan processes

@@ -1,0 +1,30 @@
+132754127556 success Version Modification Check
+132754127765 success base / Pin base commit
+132754127845 success Release Preflight
+132754127847 success Detect Changes
+132754128005 success Fast Linux source and requirement checks
+132754128022 success hive-source-provenance / Hive source event provenance
+132754128851 skipped Create Changelog PR
+132754193868 success Secrets Scan
+132754193874 success Changelog Fragment Check
+132754194582 skipped E2E Tests (local web app)
+132754194891 skipped Build binaries and tests
+132754195014 skipped native-response-observations
+132754195064 skipped Box Image Projects (${{ matrix.language }})
+132754195297 skipped E2E Tests (agent CLI ↔ formal-ai)
+132754195304 skipped Docker Image Build & Runtime Check
+132754195687 skipped Slim Docker build and runtime
+132754195855 skipped Server parity (JavaScript vs Rust)
+132754210121 skipped Lint and Format Check (lane ${{ matrix.lane }})
+132754210597 skipped Test (${{ matrix.os }} / ${{ matrix.test-suite }})${{ ((matrix.shard && format(' shard {0}/{1}', matrix.shard, matrix.shards)) || '') }}
+132754210631 skipped Build Package
+132754210711 skipped Default-feature documentation tests
+132754210974 skipped macOS Core Tests
+132754406377 success Pipeline Status
+132754406477 skipped self-authored-after-publication
+132754406761 skipped Instant Release
+132754406773 skipped Native full and slim container publication
+132754406790 skipped Auto Release
+132754406946 skipped Deploy Web App to GitHub Pages
+132754407052 skipped E2E Tests (GitHub Pages)
+132754407073 skipped Build GitHub Pages artifact
