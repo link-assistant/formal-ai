@@ -9,9 +9,7 @@ import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 import { workItemRecordOf } from '../../../../js/agentic/work_item_report.mjs';
 
-// Test fixtures, not data: the recorded Agent CLI system prompt quotes Hello
-// World programs, which the data/ no-memorization ratchet (R1165-8) counts.
-const FIXTURES = 'rust/tests/fixtures/issue-1558';
+const FIXTURES = 'data/benchmarks/fixtures/issue-1558';
 const RECORDED_WORKSPACE = /\/tmp\/gh-issue-solver-1793442214945/gu;
 export const ISSUES = [1484, 1485, 1487, 1488, 1507];
 

@@ -20,7 +20,7 @@ import { ensureNodeHost } from '../../../js/server/node-host-install.mjs';
 import { runSession } from './helpers/issue-1558-session.mjs';
 import { parsesAsJsonObject } from '../../../js/agentic/work_item_report.mjs';
 
-const FIXTURES = 'rust/tests/fixtures/issue-1558';
+const FIXTURES = 'data/benchmarks/fixtures/issue-1558';
 const ROOT = process.cwd();
 const worker = new WorkerHost();
 let entry;
