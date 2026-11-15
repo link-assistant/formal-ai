@@ -279,6 +279,11 @@ jobs:
     # the requirement audit added 54 suites, so the files then split four ways.
     # Source c7ffbd8a later exhausted shards 2/4 and 4/4 at the unchanged
     # 360s deadline; eight source-derived shards retain every file exactly once.
+    # Issue #1569: PR #1478 ran the fast PR inventory as one group when it took
+    # 77s. By run 43693412224 (2026-11-15) it was 1283s of test time on four
+    # cores and the single group was terminated at 361s; other PRs that day
+    # took 220s and 279s with the 75% budget warning. PRs now split the
+    # selected files over two longest-first groups.
     timeout-minutes: 12
     concurrency:
       group: check-${{ github.workflow }}-${{ github.ref }}-js-${{ matrix.shard }}
@@ -286,7 +291,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: ${{ fromJSON((github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && '[1]' || '[1,2,3,4,5,6,7,8]') }}
+        shard: ${{ fromJSON((github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && '[1,2]' || '[1,2,3,4,5,6,7,8]') }}
     steps:
       - uses: actions/checkout@v7
         timeout-minutes: 5
@@ -408,7 +413,7 @@ jobs:
       - name: Run this shard of the JavaScript suites
         env:
           SHARD: ${{ matrix.shard }}
-          SHARDS: ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && 1 || 8 }}
+          SHARDS: ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && 2 || 8 }}
           FAST_PR_PROFILE: ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) }}
           TEST_BUDGET_SECONDS: 360
           TEST_WARN_RATIO_PERCENT: 75
