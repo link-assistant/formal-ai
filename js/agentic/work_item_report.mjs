@@ -31,14 +31,38 @@ export function refusal(requirements, path) {
   return { path, requirement: requirementNaming(requirements, path) };
 }
 
+/**
+ * Mirrors `fn headline_intent`: an independently accepted change, a verified
+ * no-op, an unaccepted change, or no change (issue #1483).
+ */
+function headlineIntent(record) {
+  if (record.verified === true) return record.authored === true ? 'work-item-report-accepted' : 'work-item-report-no-op';
+  return record.authored === true ? 'work-item-report-changed' : 'work-item-report-unchanged';
+}
+
+/** Mirrors `fn changed_paths`: the paths of the record's effects, each once. */
+function changedPaths(record) {
+  const paths = [];
+  for (const effect of Array.isArray(record.effects) ? record.effects : []) {
+    if (typeof effect?.path === 'string' && !paths.includes(effect.path)) paths.push(effect.path);
+  }
+  return paths;
+}
+
+/** Mirrors `fn check_intent`: a check passed, failed, or was not run. */
+function checkIntent(check) {
+  if (check.passed === true || check.status === 'passed') return 'work-item-report-check-passed';
+  if (check.passed === false || check.status === 'failed') return 'work-item-report-check-failed';
+  return 'work-item-report-check-pending';
+}
+
 /** Mirrors `fn work_item_report`. */
 export function workItemReport(record, task) {
   const language = detect(task);
   const subject = typeof record.workItem === 'string' && record.workItem !== ''
     ? record.workItem : filled('work-item-report-request', language, []);
   const reason = typeof record.reason === 'string' ? record.reason : 'Unknown';
-  const paragraphs = [filled(record.authored === true ? 'work-item-report-changed' : 'work-item-report-unchanged',
-    language, [['subject', subject], ['reason', reason]])];
+  const paragraphs = [filled(headlineIntent(record), language, [['subject', subject], ['reason', reason]])];
   const read = [];
   for (const observation of Array.isArray(record.observations) ? record.observations : []) {
     if (observation?.complete === true && typeof observation.path === 'string' && !read.includes(observation.path)) read.push(observation.path);
@@ -46,6 +70,24 @@ export function workItemReport(record, task) {
   paragraphs.push(read.length
     ? filled('work-item-report-read', language, [['paths', read.map(path => '`' + path + '`').join(', ')]])
     : filled('work-item-report-read-none', language, []));
+  const changed = record.authored === true ? changedPaths(record) : [];
+  if (changed.length) paragraphs.push(filled('work-item-report-effects', language, [['paths', changed.map(path => '`' + path + '`').join(', ')]]));
+  const checks = (Array.isArray(record.checks) ? record.checks : []).filter(check => typeof check?.kind === 'string');
+  if (checks.length) {
+    paragraphs.push(filled('work-item-report-checks', language,
+      [['checks', checks.map(check => filled(checkIntent(check), language, [['kind', check.kind]])).join('; ')]]));
+  }
+  const unresolved = (Array.isArray(record.unresolved) ? record.unresolved : []).filter(row => typeof row?.reference === 'string');
+  if (unresolved.length) {
+    const lines = [filled('work-item-report-unresolved', language, [['count', String(unresolved.length)]])];
+    for (const row of unresolved.slice(0, LISTED_REQUIREMENTS)) {
+      lines.push('- `' + requirementLine(row.reference) + '`: `' + (typeof row.reason === 'string' ? row.reason : 'Unknown') + '`');
+    }
+    if (unresolved.length > LISTED_REQUIREMENTS) {
+      lines.push(filled('work-item-report-more', language, [['count', String(unresolved.length - LISTED_REQUIREMENTS)]]));
+    }
+    paragraphs.push(lines.join('\n'));
+  }
   const requirements = Array.isArray(record.requirements) ? record.requirements : [];
   if (typeof record.refused?.path === 'string') {
     let refused = filled('work-item-report-refused', language, [['path', record.refused.path]]);
@@ -58,13 +100,17 @@ export function workItemReport(record, task) {
   } else if (reason === 'MissingReadTool') {
     paragraphs.push(filled('work-item-report-missing-read-tool', language, []));
   }
-  if (requirements.length) {
-    const lines = [filled('work-item-report-requirements', language, [['count', String(requirements.length)]])];
-    requirements.slice(0, LISTED_REQUIREMENTS).forEach((requirement, index) => {
+  // Requirements keep their numbers; only those not yet verified are listed.
+  const open = requirements.map((requirement, index) => ({ requirement, index })).filter(row => row.requirement?.status !== 'verified');
+  if (requirements.length && !open.length) {
+    paragraphs.push(filled('work-item-report-requirements-verified', language, [['count', String(requirements.length)]]));
+  } else if (open.length) {
+    const lines = [filled('work-item-report-requirements', language, [['count', String(open.length)]])];
+    for (const { requirement, index } of open.slice(0, LISTED_REQUIREMENTS)) {
       lines.push(String(index + 1) + '. ' + requirementLine(requirement?.text ?? ''));
-    });
-    if (requirements.length > LISTED_REQUIREMENTS) {
-      lines.push(filled('work-item-report-more', language, [['count', String(requirements.length - LISTED_REQUIREMENTS)]]));
+    }
+    if (open.length > LISTED_REQUIREMENTS) {
+      lines.push(filled('work-item-report-more', language, [['count', String(open.length - LISTED_REQUIREMENTS)]]));
     }
     paragraphs.push(lines.join('\n'));
   }

@@ -474,3 +474,75 @@ meanings
     unit "not applicable"
     example "The machine record of this session (`repository-work-item-evidence/v1`) is kept in the trace, not in this answer."
     grounding "data/seed/multilingual-responses-agentic-workspace.lino"
+  work-item-report-accepted
+    defined-by answer
+    role localized_response_template
+    precondition "a repository work-item session ends after a change that an executed independent check accepted"
+    effect "the report opens by naming the work item and the reason the session stopped, and says an independent check accepted the change"
+    unit "not applicable"
+    example "Done: the request. The session stopped at `UsefulChangeVerified` after a change that an independent check accepted."
+    grounding "data/seed/multilingual-responses-agentic-workspace.lino"
+  work-item-report-no-op
+    defined-by answer
+    role localized_response_template
+    precondition "a repository work-item session finds the requested state already present and an independent check accepts it"
+    effect "the report opens by naming the work item and says no change was needed because the current files were accepted"
+    unit "not applicable"
+    example "Already done: the request. The session stopped at `VerifiedNoOp`: an independent check accepted the current files, so no change was needed."
+    grounding "data/seed/multilingual-responses-agentic-workspace.lino"
+  work-item-report-effects
+    defined-by answer
+    role localized_response_template
+    precondition "a work-item session changed one or more repository files"
+    effect "the report lists the files the session changed"
+    unit "not applicable"
+    example "Files changed: `src/ceiling.mjs`."
+    grounding "data/seed/multilingual-responses-agentic-workspace.lino"
+  work-item-report-checks
+    defined-by answer
+    role localized_response_template
+    precondition "a work-item record carries one or more checks"
+    effect "the report lists each check with its outcome"
+    unit "not applicable"
+    example "Checks: `contract-derived-execution` passed."
+    grounding "data/seed/multilingual-responses-agentic-workspace.lino"
+  work-item-report-check-passed
+    defined-by answer
+    role localized_response_template
+    precondition "a work-item check passed"
+    effect "the report names the check and says it passed"
+    unit "not applicable"
+    example "`contract-derived-execution` passed"
+    grounding "data/seed/multilingual-responses-agentic-workspace.lino"
+  work-item-report-check-failed
+    defined-by answer
+    role localized_response_template
+    precondition "a work-item check failed"
+    effect "the report names the check and says it failed"
+    unit "not applicable"
+    example "`contract-derived-execution` failed"
+    grounding "data/seed/multilingual-responses-agentic-workspace.lino"
+  work-item-report-check-pending
+    defined-by answer
+    role localized_response_template
+    precondition "a work-item check was required but not executed"
+    effect "the report names the check and says it was not run"
+    unit "not applicable"
+    example "`independent-task-acceptance` not run"
+    grounding "data/seed/multilingual-responses-agentic-workspace.lino"
+  work-item-report-unresolved
+    defined-by answer
+    role localized_response_template
+    precondition "a work-item record keeps evidence it could not resolve, such as an attachment or an unavailable read"
+    effect "the report heads the list of unresolved evidence and the reason for each with their count"
+    unit "not applicable"
+    example "Evidence left unresolved (1):"
+    grounding "data/seed/multilingual-responses-agentic-workspace.lino"
+  work-item-report-requirements-verified
+    defined-by answer
+    role localized_response_template
+    precondition "every requirement of a work-item record was verified"
+    effect "the report says all requirements were verified and how many there were"
+    unit "not applicable"
+    example "All requirements were verified (2)."
+    grounding "data/seed/multilingual-responses-agentic-workspace.lino"

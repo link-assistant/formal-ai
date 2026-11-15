@@ -78,7 +78,8 @@ function contextWords(task, offset, length) {
  */
 export function workItemReferences(task, workItem = null) {
   const tokens = workItemEvidencePaths(task, true);
-  if (!tokens.length) return [];
+  // A blob link names a file even when the text writes no path (issue #1483).
+  if (!tokens.length && !/https:\/\/github\.com\/[^\s]+\/blob\//u.test(task)) return [];
   const home = workItemRepository(workItem);
   const links = [];
   for (const match of task.matchAll(BLOB_LINK)) {

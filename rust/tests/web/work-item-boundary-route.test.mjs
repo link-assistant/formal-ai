@@ -126,11 +126,18 @@ test('a Run tool executes the contract-derived check; a replay is a verified no-
     assert.equal(check.status,'passed');assert.equal(check.declaration,'accepts');
     assert.ok(report.requirements.every(row=>row.status==='verified'));
     assert.deepEqual(report.remainingWork,[]);
+    // The localized report states the accepted change, its file and every check outcome.
+    assert.match(result.answer,/^Done: the request\. The session stopped at `UsefulChangeVerified`/u);
+    assert.ok(result.answer.includes('Files changed: `src/ceiling.mjs`.'));
+    assert.ok(result.answer.includes('`contract-derived-execution` passed'));
+    assert.ok(result.answer.includes('All requirements were verified (1).'));
+    assert.ok(!result.answer.includes('not yet verified'));
     const replay=await drive(planChatStep,directory,task,{steps:8,tools:['read','edit','write','bash']});
     assert.deepEqual(replay.transcript.map(row=>row.tool),['read','bash']);
     const replayed=recorded(replay);
     assert.equal(replayed.reason,'VerifiedNoOp');assert.equal(replayed.noOp,true);
     assert.equal(replayed.authored,false);assert.equal(replayed.verified,true);
+    assert.match(replay.answer,/^Already done: the request\./u);assert.ok(!replay.answer.includes('Files changed'));
   }finally{rmSync(directory,{recursive:true,force:true});}
 });
 
@@ -146,5 +153,8 @@ test('a regression test over a source that contradicts the requested bound fails
     assert.equal(report.verified,false);assert.equal(report.complete,false);
     assert.equal(report.checks.find(row=>row.kind==='contract-derived-execution').status,'failed');
     assert.ok(report.requirements.every(row=>row.status!=='verified'));
+    assert.match(result.answer,/^Not verified: the request\. The session stopped at `IndependentCheckFailed`/u);
+    assert.ok(result.answer.includes('`contract-derived-execution` failed'));
+    assert.ok(result.answer.includes('Requirements not yet verified (1):\n1. '));
   }finally{rmSync(directory,{recursive:true,force:true});}
 });
