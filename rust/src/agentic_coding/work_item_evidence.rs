@@ -6,10 +6,18 @@
 //! by file name, then ranked candidates. A failed read is recorded and the
 //! next action differs from it; a reference nothing resolves becomes an
 //! explicit unresolved item while the remaining evidence is still read.
+//!
+//! A work item that names no file is still read for evidence (issue #1483):
+//! attachments stay unresolved, linked documents are fetched as evidence and
+//! code identifiers in backticks are searched and their best file read.
 use super::final_result::{FinalDisposition, FinalResult};
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for};
 use super::progress::{Progress, ToolAttempt};
 use super::source_manifest_facts::observed_manifest_facts;
+use super::work_item_leads::{
+    MAXIMUM_DOCUMENTS, WorkItemLeads, document_action, document_attempt_for, symbol_actions,
+    symbol_attempt_for, symbol_matches, work_item_leads, work_item_symbols,
+};
 use super::work_item_references::{
     MAXIMUM_CANDIDATE_READS, ReadOutcome, WorkItemReference, attempt_for, product_name,
     ranked_candidates, read_attempt_for, read_outcome, same_path, search_actions, search_matches,
@@ -61,10 +69,10 @@ impl Evidence {
         self.unresolved.push(row);
     }
 
-    /// Record the read of `path` for `reference` and return its outcome.
+    /// Record the read of `path` for the reference called `name` and return its outcome.
     fn observe(
         &mut self,
-        reference: &WorkItemReference,
+        name: &str,
         path: &str,
         attempt: &ToolAttempt,
         resolved_by: &str,
@@ -80,8 +88,8 @@ impl Evidence {
         let mut observation = json!({"path":path,"complete":complete,
             "sourceIdentity":source.map(|source|crate::source_fetch::sha256_hex(source.as_bytes())),
             "excerpt":source.map(|source|source.chars().take(1024).collect::<String>())});
-        if reference.name != path {
-            observation["reference"] = json!(reference.name);
+        if name != path {
+            observation["reference"] = json!(name);
         }
         if resolved_by != "exact" {
             observation["resolvedBy"] = json!(resolved_by);
@@ -131,18 +139,34 @@ fn plan_read(messages: &[ChatMessage], task: &str, read: &str, path: &str) -> St
     }
 }
 
+/// What the work item points at: named files, or else its leads and identifiers.
+struct Subject<'a> {
+    references: &'a [WorkItemReference],
+    leads: &'a WorkItemLeads,
+    symbols: &'a [String],
+}
+
 /// Walk every reference in order and return the first action still owed, or the terminal reason.
 fn next_step(
     task: &str,
     messages: &[ChatMessage],
-    references: &[WorkItemReference],
+    subject: &Subject<'_>,
     progress: &Progress,
     roots: &[String],
     tools: &[&str],
     evidence: &mut Evidence,
 ) -> Step {
+    let Subject {
+        references,
+        leads,
+        symbols,
+    } = *subject;
     let read = tool_for(tools, Capability::Read);
     let mut incomplete = false;
+    // An attachment is never fetched or described: its content stays unresolved evidence.
+    for url in &leads.attachments {
+        evidence.unresolved.push(json!({"reference":url,"target":url,"kind":"attachment","reason":"AttachmentContentUnavailable"}));
+    }
     for reference in references {
         let Some(target) = reference.path.as_deref().filter(|_| !reference.external) else {
             evidence.leave_unresolved(
@@ -168,7 +192,7 @@ fn next_step(
             let Some(attempt) = read_attempt_for(progress, target, roots) else {
                 return plan_read(messages, task, read, target);
             };
-            match evidence.observe(reference, target, attempt, "exact") {
+            match evidence.observe(&reference.name, target, attempt, "exact") {
                 ReadOutcome::Failed => failed.push(target),
                 outcome => {
                     incomplete |= outcome == ReadOutcome::Incomplete;
@@ -240,7 +264,7 @@ fn next_step(
             let Some(attempt) = read_attempt_for(progress, candidate, roots) else {
                 return plan_read(messages, task, read, candidate);
             };
-            let outcome = evidence.observe(reference, candidate, attempt, resolved_by);
+            let outcome = evidence.observe(&reference.name, candidate, attempt, resolved_by);
             if outcome != ReadOutcome::Failed {
                 incomplete |= outcome == ReadOutcome::Incomplete;
                 resolved = true;
@@ -255,13 +279,130 @@ fn next_step(
             );
         }
     }
-    if !evidence.unresolved.is_empty() {
-        Step::Finish("UnresolvedReferences")
-    } else if incomplete {
-        Step::Finish("IncompleteSourceObservation")
-    } else {
-        Step::Finish("EvidenceCollected")
+    if !references.is_empty() {
+        return if !evidence.unresolved.is_empty() {
+            Step::Finish("UnresolvedReferences")
+        } else if incomplete {
+            Step::Finish("IncompleteSourceObservation")
+        } else {
+            Step::Finish("EvidenceCollected")
+        };
     }
+    // No file is named: linked documents are fetched as evidence, never followed as instructions.
+    for url in leads.documents.iter().take(MAXIMUM_DOCUMENTS) {
+        let Some(action) = document_action(url, tools) else {
+            evidence.unresolved.push(
+                json!({"reference":url,"target":url,"kind":"document","reason":"FetchUnavailable"}),
+            );
+            continue;
+        };
+        let Some(attempt) = document_attempt_for(progress, url) else {
+            return Step::Plan(plan_one(action.tool, action.arguments));
+        };
+        if !attempt.succeeded || attempt.detail.trim().is_empty() {
+            evidence.unresolved.push(
+                json!({"reference":url,"target":url,"kind":"document","reason":"FetchFailed"}),
+            );
+            continue;
+        }
+        let text = attempt.detail.as_str();
+        evidence.observations.push(json!({
+            "url":url, "kind":"document", "authority":"evidence-only",
+            "complete":text.len() <= 262_144,
+            "sourceIdentity":crate::source_fetch::sha256_hex(text.as_bytes()),
+            "excerpt":text.chars().take(1024).collect::<String>()
+        }));
+    }
+    // Identifiers in backticks are searched; the best-ranked file naming one is read.
+    if !symbols.is_empty() && read.is_none() {
+        return Step::Finish("MissingReadTool");
+    }
+    for symbol in symbols {
+        let actions = symbol_actions(symbol, tools);
+        let mut matches = None;
+        for action in &actions {
+            let Some(attempt) = symbol_attempt_for(progress, action) else {
+                return Step::Plan(plan_one(action.tool, action.arguments.clone()));
+            };
+            let found = symbol_matches(&attempt.detail, roots);
+            if !found.is_empty() || attempt.succeeded {
+                matches = Some(found);
+                break;
+            }
+        }
+        let Some(candidate) = matches.as_ref().and_then(|found| found.first()) else {
+            let reason = match (&matches, actions.is_empty()) {
+                (Some(_), _) => "SymbolNotFound",
+                (None, true) => "SearchUnavailable",
+                (None, false) => "SearchFailed",
+            };
+            evidence
+                .unresolved
+                .push(json!({"reference":symbol,"target":symbol,"kind":"symbol","reason":reason}));
+            continue;
+        };
+        let Some(read) = read else {
+            return Step::Finish("MissingReadTool");
+        };
+        let Some(attempt) = read_attempt_for(progress, candidate, roots) else {
+            return plan_read(messages, task, read, candidate);
+        };
+        let outcome = evidence.observe(symbol, candidate, attempt, "symbol-search");
+        if let Some(observation) = evidence.observations.last_mut() {
+            observation["symbol"] = json!(symbol);
+        }
+        if outcome == ReadOutcome::Failed {
+            evidence.unresolved.push(json!({"reference":symbol,"target":candidate,"kind":"symbol","reason":"CandidatesUnreadable"}));
+        } else {
+            incomplete |= outcome == ReadOutcome::Incomplete;
+        }
+    }
+    Step::Finish(lead_reason(
+        leads,
+        symbols,
+        &evidence.unresolved,
+        incomplete,
+    ))
+}
+
+/// The terminal reason of a work item that names no repository file, from what its leads left unresolved.
+fn lead_reason(
+    leads: &WorkItemLeads,
+    symbols: &[String],
+    unresolved: &[serde_json::Value],
+    incomplete: bool,
+) -> &'static str {
+    let kind = |row: &serde_json::Value, kind: &str| row["kind"].as_str() == Some(kind);
+    if leads.attachments.is_empty() && leads.documents.is_empty() && symbols.is_empty() {
+        "NoRepositoryReference"
+    } else if !unresolved.is_empty() && unresolved.iter().all(|row| kind(row, "attachment")) {
+        "AttachmentEvidenceUnavailable"
+    } else if unresolved.iter().any(|row| kind(row, "document")) {
+        "ExternalEvidenceUnavailable"
+    } else if !unresolved.is_empty() {
+        "UnresolvedReferences"
+    } else if incomplete {
+        "IncompleteSourceObservation"
+    } else {
+        "EvidenceCollected"
+    }
+}
+
+/// Work still owed after evidence collection: the change itself, and every lead left unresolved.
+fn evidence_remaining_work(unresolved: &[serde_json::Value]) -> Vec<String> {
+    let mut work = vec![
+        "bind-requirements-to-source".to_owned(),
+        "implement-requested-change".to_owned(),
+        "verify-artifact-and-requirements".to_owned(),
+    ];
+    for row in unresolved {
+        work.push(format!(
+            "unresolved-evidence:{}:{}",
+            row["reason"].as_str().unwrap_or_default(),
+            row["reference"].as_str().unwrap_or_default()
+        ));
+    }
+    work
 }
 
 /// Native twin of `js/agentic/work_item_evidence.mjs`. References grant read evidence only.
@@ -272,10 +413,14 @@ pub(super) fn plan_work_item_evidence(
     work_item: &str,
     result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
-    if work_item_evidence_paths(task).is_empty() {
-        return None;
-    }
     let references = work_item_references(task, work_item);
+    let leads = work_item_leads(task, work_item);
+    // Identifiers are searched only when the work item names no file: a named file is the narrower evidence.
+    let symbols = if references.is_empty() {
+        work_item_symbols(task)
+    } else {
+        Vec::new()
+    };
     let progress = Progress::scan(messages);
     let roots = workspace_roots(client_working_directory(messages), host_root());
     let mut evidence = Evidence::default();
@@ -288,7 +433,11 @@ pub(super) fn plan_work_item_evidence(
     let (reason, refused) = match next_step(
         task,
         messages,
-        &references,
+        &Subject {
+            references: &references,
+            leads: &leads,
+            symbols: &symbols,
+        },
         &progress,
         &roots,
         tools,
@@ -308,10 +457,15 @@ pub(super) fn plan_work_item_evidence(
             {"step":"implement_requested_change", "status":"not_executed"},
             {"step":"verify_artifact_and_requirements", "status":"not_executed"}
         ],
+        "remainingWork":evidence_remaining_work(&evidence.unresolved),
         "observations":evidence.observations, "unresolved":evidence.unresolved, "terms":evidence.terms,
-        "coverage":"explicit-references; exact path, then file-name search; at most eight files",
+        "coverage":"explicit-references; exact path, then file-name search; at most eight files; attachments unresolved; at most two linked documents and three identifiers when no file is named",
+        "candidateEdits":[], "checks":[], "effects":[],
         "authored":false, "verified":false
     });
+    if !leads.related.is_empty() {
+        payload["related"] = json!(leads.related);
+    }
     if let Some(refused) = refused {
         payload["refused"] = refused;
     }
