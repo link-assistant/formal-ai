@@ -47,6 +47,7 @@ pub use coding::python_render;
 pub use coding::python_signature;
 pub use coding::recurrence as coding_recurrence;
 pub use coding::task_spec as coding_task_spec;
+pub use coding::unread_structure;
 pub mod authoring_loop;
 pub mod behavior_delta;
 pub mod bounded_process;

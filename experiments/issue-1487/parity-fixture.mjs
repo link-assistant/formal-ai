@@ -9,6 +9,7 @@ import { formalizeText, statementStructure } from '../../js/agentic/crate/text_f
 import { structureKey } from '../../js/agentic/crate/proposition_structure.mjs';
 import { checkedRelation, certifiesRestatement } from '../../js/agentic/crate/statement_relation.mjs';
 import { signatureKey, signatureOf } from '../../js/agentic/crate/summarization_dedup.mjs';
+import { unreadStructure } from '../../js/agentic/crate/unread_structure.mjs';
 await installNodeHost(new WorkerHost());
 const PATH = new URL('../../rust/tests/fixtures/proposition-structure-parity.json', import.meta.url);
 const structures = [
@@ -35,6 +36,18 @@ const signatures = [
   'Print hello.', 'The parser is fast.', 'The parser is not fast.', 'Не все тесты проходят.', 'Все тесты не проходят.',
   'Программа возвращает истину или ложь.', '程序返回真或假。', 'प्रोग्राम सही या गलत लौटाता है।', 'Выведи привет дважды.',
 ];
+// Coding requirements against the coding-structure meanings a synthesis
+// discovered: the residual structure no discovered part reads.
+const VOWELS = ['reduce_count', 'vowel_character_class'];
+const unread = [
+  ['Return the number of vowels in the text.', VOWELS], ['Return twice the number of vowels in the text.', VOWELS],
+  ['Return the number of vowels in the text twice.', VOWELS],
+  ['Return the number of characters that are not vowels in the text.', VOWELS],
+  ['Return the number of vowels or digits in the text.', VOWELS],
+  ['Return a - b.', []], ['Return b - a.', []], ['Return whether a < b.', []], ['Return whether a <= b.', []],
+  ['Print "a or b".', ['print_stdout']], ['Write below_zero(values) that returns the sum of values.', ['reduce_sum']],
+  ['Return the reverse-sorted list.', []], ['Верни количество гласных дважды.', VOWELS], ['返回元音或数字的数量。', VOWELS],
+];
 const one = (text, language) => {
   const statements = formalizeText(text, language);
   if (statements.length !== 1) throw new Error(`expected one statement for ${text}, got ${statements.length}`);
@@ -49,6 +62,7 @@ const fixture = {
     return { later, earlier, language: 'en', verdict: relation.verdict, reason: relation.reason, restates: certifiesRestatement(relation) };
   }),
   signatures: signatures.map((text) => ({ text, key: signatureKey(signatureOf(text)) })),
+  unread: unread.map(([text, ids]) => ({ text, ids, unread: unreadStructure(text, ids) })),
 };
 const text = `${JSON.stringify(fixture, null, 2)}\n`;
 if (process.argv.includes('--write')) fs.writeFileSync(PATH, text);

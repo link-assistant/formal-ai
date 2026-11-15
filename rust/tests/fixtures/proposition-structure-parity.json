@@ -345,5 +345,102 @@
       "text": "Выведи привет дважды.",
       "key": "asserted:выведи дважды привет|repetition=repetition-twice"
     }
+  ],
+  "unread": [
+    {
+      "text": "Return the number of vowels in the text.",
+      "ids": [
+        "reduce_count",
+        "vowel_character_class"
+      ],
+      "unread": ""
+    },
+    {
+      "text": "Return twice the number of vowels in the text.",
+      "ids": [
+        "reduce_count",
+        "vowel_character_class"
+      ],
+      "unread": "repetition=repetition-twice"
+    },
+    {
+      "text": "Return the number of vowels in the text twice.",
+      "ids": [
+        "reduce_count",
+        "vowel_character_class"
+      ],
+      "unread": "repetition=repetition-twice"
+    },
+    {
+      "text": "Return the number of characters that are not vowels in the text.",
+      "ids": [
+        "reduce_count",
+        "vowel_character_class"
+      ],
+      "unread": "scope=_ not _"
+    },
+    {
+      "text": "Return the number of vowels or digits in the text.",
+      "ids": [
+        "reduce_count",
+        "vowel_character_class"
+      ],
+      "unread": "shape=_ disjunction _"
+    },
+    {
+      "text": "Return a - b.",
+      "ids": [],
+      "unread": "relations=minus(symbol:a,symbol:b)"
+    },
+    {
+      "text": "Return b - a.",
+      "ids": [],
+      "unread": "relations=minus(symbol:b,symbol:a)"
+    },
+    {
+      "text": "Return whether a < b.",
+      "ids": [],
+      "unread": "relations=less(symbol:a,symbol:b)"
+    },
+    {
+      "text": "Return whether a <= b.",
+      "ids": [],
+      "unread": "relations=less-or-equal(symbol:a,symbol:b)"
+    },
+    {
+      "text": "Print \"a or b\".",
+      "ids": [
+        "print_stdout"
+      ],
+      "unread": ""
+    },
+    {
+      "text": "Write below_zero(values) that returns the sum of values.",
+      "ids": [
+        "reduce_sum"
+      ],
+      "unread": ""
+    },
+    {
+      "text": "Return the reverse-sorted list.",
+      "ids": [],
+      "unread": ""
+    },
+    {
+      "text": "Верни количество гласных дважды.",
+      "ids": [
+        "reduce_count",
+        "vowel_character_class"
+      ],
+      "unread": "repetition=repetition-twice"
+    },
+    {
+      "text": "返回元音或数字的数量。",
+      "ids": [
+        "reduce_count",
+        "vowel_character_class"
+      ],
+      "unread": "shape=_ disjunction _"
+    }
   ]
 }

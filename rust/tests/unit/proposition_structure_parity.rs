@@ -1,16 +1,19 @@
-//! Issue #1487: the native proposition structure, checked statement relation
-//! and statement-merge signature agree with the browser (JavaScript) reader on
-//! the shared fixture `rust/tests/fixtures/proposition-structure-parity.json`.
+//! Issue #1487: the native proposition structure, checked statement relation,
+//! statement-merge signature and unread coding-requirement structure agree
+//! with the browser (JavaScript) reader on the shared fixture
+//! `rust/tests/fixtures/proposition-structure-parity.json`.
 //!
 //! The fixture is written from the JavaScript modules by
 //! `node experiments/issue-1487/parity-fixture.mjs --write`; the JavaScript
-//! test `rust/tests/web/issue-1487-proposition-identity.test.mjs` checks the
-//! same file, so a drift on either side fails one of the two suites.
+//! tests `rust/tests/web/issue-1487-proposition-identity.test.mjs` and
+//! `rust/tests/web/issue-1487-coding-acceptance.test.mjs` check the same file,
+//! so a drift on either side fails one of the suites.
 
 use formal_ai::formalization::proposition_structure::structure_key;
 use formal_ai::formalization::statement_relation::{certifies_restatement, checked_relation};
 use formal_ai::formalization::text_statements::{Statement, formalize_text, statement_structure};
 use formal_ai::summarization::StatementSignature;
+use formal_ai::unread_structure::unread_structure;
 use serde_json::Value;
 
 const FIXTURE: &str = include_str!("../fixtures/proposition-structure-parity.json");
@@ -111,4 +114,25 @@ fn ordered_and_connective_pairs_keep_distinct_signatures() {
     let asserted = StatementSignature::of("The parser is fast.");
     let denied = StatementSignature::of("The parser is not fast.");
     assert!(denied.denies(&asserted), "a plain denial still contradicts");
+}
+
+#[test]
+fn unread_coding_structure_matches_the_javascript_reader() {
+    let fixture = fixture();
+    let unread = entries(&fixture, "unread");
+    assert!(!unread.is_empty());
+    for entry in unread {
+        let text = field(entry, "text");
+        let ids: Vec<&str> = entry["ids"]
+            .as_array()
+            .unwrap_or_else(|| panic!("fixture entry {entry} lacks array ids"))
+            .iter()
+            .map(|id| id.as_str().expect("meaning ids are strings"))
+            .collect();
+        assert_eq!(
+            unread_structure(text, &ids),
+            field(entry, "unread"),
+            "unread structure of {text:?} under {ids:?}"
+        );
+    }
 }
