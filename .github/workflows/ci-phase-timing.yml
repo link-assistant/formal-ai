@@ -1,0 +1,83 @@
+name: Hive CI phase timing
+
+# Issue #1486. A Hive draft or three-client delivery spends its feedback time in
+# distinct phases: queue, checkout, install, compile, image preparation,
+# transfer and load, the solver, verification and publication. This workflow
+# splits each completed default-branch run into those phases from the Actions
+# API, records the bytes the run moved and how many solver attempts were
+# useful, and judges the numbers against data/benchmarks/ci-phase-timing/slo.json.
+#
+# It runs right after each measured run completes, while the one-day image and
+# binary artifacts still exist, so their bytes are measured rather than
+# guessed. A breach in every one of the latest `window` runs fails this job
+# with an `::error`: that red run is the alert. A single slow run is a warning.
+# Skipped steps contribute no seconds and no attempts.
+#
+# workflow_run is safe here: the job reads run, job and artifact metadata
+# through the API with a read-only token, checks out only the default branch,
+# and never downloads or executes anything the measured run produced.
+on: # zizmor: ignore[dangerous-triggers]
+  workflow_run:
+    branches: [main]
+    workflows:
+      - Hive Mind draft
+      - Original Hive Mind three-client delivery
+    types:
+      - completed
+  schedule:
+    # Daily trend check, so a regression is still reported when no run
+    # completed today.
+    - cron: '29 5 * * *'
+  workflow_dispatch:
+    inputs:
+      runs:
+        description: 'How many recent completed runs of each workflow to sample'
+        required: false
+        default: '30'
+
+permissions:
+  # Run, job and artifact records only. Nothing here writes.
+  actions: read
+  contents: read
+
+concurrency:
+  group: hive-ci-phase-timing-${{ github.event.workflow_run.id || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  measure:
+    # The delivery workflow is admitted on every completion on main and skips
+    # all of its jobs for most of them; those runs have no phases to measure.
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion != 'skipped') }}
+    name: Measure Hive draft and delivery phases
+    runs-on: ubuntu-24.04
+    # About one API request per sampled run plus three for the measured run.
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Measure the completed run per phase, bytes and useful attempts
+        if: ${{ github.event_name == 'workflow_run' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MEASURED_RUN: ${{ github.event.workflow_run.id }}
+        run: node scripts/ci-phase-timing.mjs measure --run "$MEASURED_RUN" --out ci-phase-timing-run.json
+      - name: Alert when an objective is breached in every recent run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          # A dispatch input is untrusted text; it is read as a variable, not
+          # spliced into the command line.
+          SAMPLE_RUNS: ${{ inputs.runs || '30' }}
+        run: node scripts/ci-phase-timing.mjs check --runs "$SAMPLE_RUNS" --out ci-phase-timing-window.json
+      - name: Publish the measurements behind the verdict
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: ci-phase-timing-${{ github.event.workflow_run.id || github.run_id }}
+          path: ci-phase-timing-*.json
+          if-no-files-found: warn
+          retention-days: 90
