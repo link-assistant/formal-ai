@@ -88,6 +88,7 @@ jobs:
       pipeline-changed: ${{ steps.changes.outputs.pipeline-changed }}
       agentic-routing-changed: ${{ steps.changes.outputs.agentic-routing-changed }}
       any-code-changed: ${{ steps.changes.outputs.any-code-changed }}
+      native-type-check: ${{ steps.changes.outputs.native-type-check }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -134,8 +135,7 @@ jobs:
          env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '30'},
          with: {persist-credentials: false, fetch-depth: 0, filter: blob:none, sparse-checkout: "/scripts/check-changelog-fragment.mjs\n/Cargo.toml\n/rust/Cargo.toml\n/package.json\n", sparse-checkout-cone-mode: false}}
       - uses: actions/setup-node@v7
-        with:
-          node-version: 22
+        with: {node-version: 22}
       - name: Check for changelog fragments
         env:
           GITHUB_BASE_REF: ${{ github.base_ref }}
@@ -313,16 +313,7 @@ jobs:
       - {uses: actions/checkout@v7, timeout-minutes: 4,
          env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '20'},
          with: {persist-credentials: false, fetch-depth: 1, filter: blob:none, sparse-checkout: "/*\n!/dev/log/\n!/experiments/formal_ai_subagent/evidence/coordinator-1188/**/*.gz\n", sparse-checkout-cone-mode: false}}
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 22
-      - name: Setup the pinned installer for the workflow YAML reader
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: .bun-version
-      - name: Install locked dependencies without lifecycle scripts
-        timeout-minutes: 2
-        run: bun install --frozen-lockfile --ignore-scripts
+      - {uses: actions/setup-node@v7, with: {node-version: 22}}
       - name: Validate source readability, CI budgets and requirements without a native build
         run: |
           node scripts/check-readable-code.mjs
@@ -330,6 +321,7 @@ jobs:
           node scripts/check-ci-speed.mjs
           node scripts/check-hardcoded-language.mjs
           node scripts/check-js-literals.mjs
+          node scripts/check-tests-as-docs.mjs
           node scripts/assemble-requirements.mjs
           node scripts/generate-requirement-status.mjs
           node scripts/check-requirement-status.mjs
@@ -338,6 +330,13 @@ jobs:
           node scripts/mirror-package-data.mjs --check
           node scripts/check-fast-governance.mjs
           node scripts/check-runner-labels.mjs
+  # Issue #1191: the one focused PR native check (main's clippy profile); never native or release evidence.
+  native-type-check:
+    name: Native type and lint check
+    needs: [detect-changes]
+    if: ${{ !cancelled() && (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && (needs.detect-changes.result != 'success' || needs.detect-changes.outputs.native-type-check != 'false') }}
+    uses: ./.github/workflows/native-type-check.yml
+    permissions: {contents: read}
   lint:
     name: Lint and Format Check (lane ${{ matrix.lane }})
     runs-on: ubuntu-24.04
@@ -662,16 +661,14 @@ jobs:
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.lint.result == 'success' && needs.test.result == 'success' && (needs.macos-core-tests.result == 'success' || needs.macos-core-tests.result == 'skipped')) }}
     steps:
       - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
+        with: {persist-credentials: false}
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
       - uses: ./.github/actions/setup-sccache
       - name: Install rust-script
         run: bash scripts/install-rust-script.sh
       - uses: ./.github/actions/cache-cargo-registry
-        with:
-          prefix: build-
+        with: {prefix: build-}
       - uses: ./.github/actions/download-formal-ai-binary
       - name: Check package
         run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai --no-verify
@@ -790,8 +787,7 @@ jobs:
     steps:
       # Create-pull-request pushes the generated release branch after workflow_dispatch, so issue #1079 retains persist-credentials for that action.
       - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
+        with: {fetch-depth: 0}
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
       - name: Install rust-script
@@ -851,16 +847,14 @@ jobs:
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' )) }}
     steps:
       - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
+        with: {persist-credentials: false}
       - name: Free up runner disk space
         run: bash scripts/free-runner-disk.sh
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
       - uses: ./.github/actions/setup-sccache
       - uses: ./.github/actions/cache-cargo-registry
-        with:
-          prefix: artifacts-
+        with: {prefix: artifacts-}
       - name: Pin actual native test producer source commit
         id: source
         run: printf 'commit=%s\n' "$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
@@ -929,8 +923,7 @@ jobs:
         language: [rust, python, javascript, typescript, go, java, ruby]
     steps:
       - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
+        with: {persist-credentials: false}
       - name: Skip when identical inputs already passed
         id: ledger
         uses: ./.github/actions/green-ledger
@@ -1008,8 +1001,7 @@ jobs:
       - name: Deploy Pages artifact
         id: deployment
         uses: actions/deploy-pages@v5
-        with:
-          timeout: 600000
+        with: {timeout: 600000}
         env:
           # deploy-pages upstream issue #434 tracks its core punycode deprecation.
           NODE_OPTIONS: --disable-warning=DEP0040
@@ -1026,8 +1018,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
+        with: {persist-credentials: false}
       - name: Setup Node.js
         uses: actions/setup-node@v7
         with:
@@ -1098,7 +1089,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     if: always()
-    needs: [fast-pr-lint, hive-source-provenance, detect-changes, changelog, docker-build, docker-slim, secrets-scan,
+    needs: [fast-pr-lint, native-type-check, hive-source-provenance, detect-changes, changelog, docker-build, docker-slim, secrets-scan,
             version-check, release-preflight, base, lint, test, doc-tests, macos-core-tests, build,
             auto-release, manual-release, native-container-images,
             changelog-pr, test-e2e-local, test-agent-cli-e2e,

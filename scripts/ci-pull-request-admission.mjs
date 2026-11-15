@@ -25,7 +25,7 @@ export function nativeCompileInput(path) {
   if (isDocumentation(path) || NON_NATIVE_FILES.has(path)) return false;
   if (path.startsWith('data/')) return path.startsWith('data/seed/api-cache/');
   // Its own job definition and the composite actions it runs stay inputs.
-  if (path.startsWith('.github/workflows/')) return path === '.github/workflows/release.yml';
+  if (path.startsWith('.github/workflows/')) return ['release.yml', 'native-type-check.yml'].some(file => path === '.github/workflows/' + file);
   return !NON_NATIVE_PREFIXES.some(prefix => path.startsWith(prefix));
 }
 // Classify conservatively: extra lightweight checks are cheaper than missed changes.

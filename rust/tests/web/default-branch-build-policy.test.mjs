@@ -40,7 +40,7 @@ test('actual compiler, image, application and deployment entries refuse PR execu
       ];
       const heavy = job.steps?.some(step => buildCommands.some(pattern => pattern.test((step.run??'')+' '+(step.uses??''))));
       if (!heavy || file === 'release-staged.yml') continue; // Main-only prepare-source dominates every generated stage.
-      if (file === 'release.yml' && id === 'native-type-check') continue; // The one focused PR check (#1191), pinned below.
+      if (file === 'native-type-check.yml') continue; // The one focused PR check (#1191), pinned below.
       assert(job.if,file+'/'+id+' needs explicit admission');
       assert.equal(Boolean(evaluate(job.if,'pull_request','refs/pull/1500/merge')),false,file+'/'+id);
       assert.equal(Boolean(evaluate(job.if,'workflow_dispatch','refs/heads/fix/example')),false,file+'/'+id+' dispatch');
@@ -52,14 +52,21 @@ test('actual compiler, image, application and deployment entries refuse PR execu
 // upload), selected by compile inputs.
 test('the focused PR native check stays a lint-only check selected by compile inputs', () => {
   const job = workflow('release.yml').jobs['native-type-check'];
-  const runs = job.steps.map(step => step.run).filter(Boolean);
-  assert.deepEqual(runs, ['bash scripts/ci-clippy-profile.sh --library-and-binaries']);
-  assert.deepEqual(job.steps.find(step => step.uses === 'dtolnay/rust-toolchain@stable').with, {components: 'clippy'});
-  assert(!job.steps.some(step => /upload-artifact|attest|cache@|cache\/save/u.test(step.uses ?? '')));
-  assert.deepEqual(job.steps.find(step => step.uses === './.github/actions/cache-cargo-registry').with, {'restore-only': 'true'});
+  assert.equal(job.uses, './.github/workflows/native-type-check.yml');
   assert.deepEqual(job.permissions, {contents: 'read'});
-  assert(job['timeout-minutes'] <= 20);
-  assert.equal(job.outputs, undefined, 'a lint check publishes no evidence');
+  const called = workflow('native-type-check.yml');
+  assert.deepEqual(Object.keys(called.on), ['workflow_call'], 'only release.yml selects it');
+  assert.equal(called.env.RUSTFLAGS, '-Dwarnings', 'the same warnings-as-errors flags as main');
+  const [check, ...others] = Object.values(called.jobs);
+  assert.equal(others.length, 0);
+  const runs = check.steps.map(step => step.run).filter(Boolean);
+  assert.deepEqual(runs, ['bash scripts/ci-clippy-profile.sh --library-and-binaries']);
+  assert.deepEqual(check.steps.find(step => step.uses === 'dtolnay/rust-toolchain@stable').with, {components: 'clippy'});
+  assert(!check.steps.some(step => /upload-artifact|attest|cache@|cache\/save/u.test(step.uses ?? '')));
+  assert.deepEqual(check.steps.find(step => step.uses === './.github/actions/cache-cargo-registry').with, {'restore-only': 'true'});
+  assert.deepEqual(check.permissions, {contents: 'read'});
+  assert(check['timeout-minutes'] <= 20);
+  assert.equal(check.outputs ?? called.on.workflow_call?.outputs, undefined, 'a lint check publishes no evidence');
   const selected = (event, ref, result, value) => Boolean(new Script(String(job.if).trim().replace(/^\$\{\{\s*|\s*\}\}$/gu, '')
     .replace(/\.([a-zA-Z_][a-zA-Z0-9_-]*)/gu, (_, key) => '[' + JSON.stringify(key) + ']'))
     .runInNewContext({github: {event_name: event, ref}, cancelled: () => false,
@@ -73,7 +80,7 @@ test('the focused PR native check stays a lint-only check selected by compile in
   assert(workflow('release.yml').jobs['pipeline-status'].needs.includes('native-type-check'));
   const native = paths => admission(paths)['native-type-check'];
   for (const path of ['rust/src/proof_engine/types.rs', 'rust/build.rs', 'rust/Cargo.lock', 'rust/embedded/data/seed/a.lino',
-    'data/seed/api-cache/x.lino', '.cargo/config.toml', 'rust-toolchain.toml', '.github/workflows/release.yml',
+    'data/seed/api-cache/x.lino', '.cargo/config.toml', 'rust-toolchain.toml', '.github/workflows/release.yml', '.github/workflows/native-type-check.yml',
     '.github/actions/setup-sccache/action.yml', 'scripts/ci-clippy-profile.sh', 'clippy.toml', 'new-top-level/unknown.txt'])
     assert.equal(native([path]), true, path);
   for (const path of ['docs/a.md', 'README.md', 'changelog.d/x.md', 'js/app.js', 'rust/tests/web/a.test.mjs',
