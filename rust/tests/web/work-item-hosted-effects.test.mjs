@@ -100,6 +100,15 @@ test('unsupported oracle needs explicit final unknown evidence and false verific
     authored:false,verified:false,requirements:[{text:'unknown image',status:'unbound'}]}));
   assert.deepEqual([legacy.disposition,legacy.verified,legacy.unresolvedEvidence],['gap',false,true]);
   assert.equal(explicitUnknownTerminal(JSON.stringify({verified:true,terminalState:'gap',missingEvidence:[]})).unresolvedEvidence,false);
+  // Issue #1483: every evidence terminal is a gap, and a named gap travels with it.
+  for(const reason of ['NoRepositoryReference','AttachmentEvidenceUnavailable','ExternalEvidenceUnavailable','RelatedEvidenceUnread']){
+    const terminal=explicitUnknownTerminal(JSON.stringify({schema:'repository-work-item-evidence/v1',reason,authored:false,verified:false,
+      requirements:[{text:'read the referenced page',status:'unbound'}],unresolved:[{kind:'related'}]}));
+    assert.deepEqual([terminal.disposition,terminal.terminal,terminal.gap],['gap',reason,null],reason);
+  }
+  const named=explicitUnknownTerminal(JSON.stringify({schema:'repository-work-item-evidence/v1',reason:'EvidenceCollected',gap:'RequestedInterfaceAbsent',
+    authored:false,verified:false,requirements:[],unresolved:[]}));
+  assert.deepEqual([named.disposition,named.gap,named.unresolvedEvidence],['gap','RequestedInterfaceAbsent',false]);
 });
 test('unsupported oracle recovers a work-item record by replaying the captured request, not by parsing the report',async()=>{
   // Issue #1560: the answer is a localized report; the record is kept in the trace.
