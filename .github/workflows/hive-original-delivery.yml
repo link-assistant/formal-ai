@@ -9,6 +9,9 @@ on: # zizmor: ignore[dangerous-triggers]
       - "*"
       - "!Original Hive Mind three-client delivery"
       - "!Finalize original Hive generated tasks"
+      # Issue #1486: the phase-timing reader measures this workflow; its own
+      # completion must not admit another delivery run.
+      - "!Hive CI phase timing"
     types:
       - completed
   workflow_dispatch:
@@ -251,7 +254,9 @@ jobs:
           path: ${{ runner.temp }}/hive-original-evidence/released-lifecycle.json
           if-no-files-found: error
           retention-days: 90
-      - uses: actions/upload-artifact@v7
+      # Issue #1486: named so CI phase timing measures the image transfer.
+      - name: Publish the same-run task image delta
+        uses: actions/upload-artifact@v7
         with:
           name: hive-same-source-task-image
           path: ${{ runner.temp }}/hive-image-bundle
@@ -377,7 +382,8 @@ jobs:
         run: npm ci --omit=dev --ignore-scripts --no-audit --no-fund
       - name: Prepare reviewed Hive workflow-log transport
         run: node .hive-protocol/scripts/prepare-hive-original-delivery.mjs
-      - uses: actions/download-artifact@v8
+      - name: Download the same-run task image delta
+        uses: actions/download-artifact@v8
         env:
           NODE_OPTIONS: --disable-warning=DEP0005
         with:
