@@ -83,7 +83,10 @@ export function workItemRecordFinal(record, task, disposition, origin) {
   return final;
 }
 
-/** The work-item record behind a final plan, or `null` (trace and tests). */
+/**
+ * Mirrors `reported_work_item_record`: the work-item record behind a final
+ * plan, or `null` (trace and tests).
+ */
 export function workItemRecordOf(plan) {
   return observedFinalResult(plan)?.record ?? null;
 }
