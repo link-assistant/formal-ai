@@ -1,0 +1,120 @@
+pass | Cargo audit
+pass | Changelog Fragment Check
+pass | Declare temporary coverage scope
+pass | Dependency Review
+pass | Detect Changes
+pass | Detect Changes
+pass | Detect tier changes
+pass | Fast Linux source and requirement checks
+pass | Link parser regressions
+pass | Pipeline Status
+pass | Release Preflight
+pass | Secrets Scan
+pass | Version Modification Check
+pass | base / Pin base commit
+pass | base / Pin base commit
+pass | documentation-policy
+pass | hive-source-provenance / Hive source event provenance
+pass | javascript
+pass | js tier (node --check over js, suite group 1)
+pass | pr-check-profile / profile
+pass | pr-check-profile / profile
+pass | pr-check-profile / profile
+pass | pr-check-profile / profile
+pass | pr-check-profile / profile
+pass | pr-check-profile / profile
+pass | pr-check-profile / profile
+pass | pr-check-profile / profile
+pass | pr-check-profile / profile
+pass | pr-check-profile / profile
+pass | pr-check-profile / profile
+pass | resolve
+pass | resolve
+pass | resolve
+pass | ts tier (js<->ts file-set parity)
+skipping | Agent CLI composite ${{ matrix.leg.id }}
+skipping | Agent CLI ladder ${{ matrix.leg.id }}
+skipping | Audit explicit owner without mutations
+skipping | Auto Release
+skipping | Box Image Projects (${{ matrix.language }})
+skipping | Browser Code Coverage
+skipping | Browser coverage shard ${{ matrix.shard }}
+skipping | Build ${{ matrix.label }}
+skipping | Build CLI ${{ matrix.label }}
+skipping | Build GitHub Pages artifact
+skipping | Build Package
+skipping | Build binaries and tests
+skipping | Build formal-ai
+skipping | Build full source content (${{ matrix.shard }})
+skipping | Build instrumented test executables
+skipping | Build the corpus gate binary
+skipping | Check Links
+skipping | Code Coverage (merged shards)
+skipping | CodeQL (${{ matrix.language }})
+skipping | Compare the measured ladder with the record
+skipping | Corpus shard ${{ matrix.shard }}
+skipping | Coverage shard ${{ matrix.shard }}
+skipping | Create Changelog PR
+skipping | Default-feature documentation tests
+skipping | Deploy Web App to GitHub Pages
+skipping | Docker Image Build & Runtime Check
+skipping | E2E (${{ matrix.client }})
+skipping | E2E Tests (GitHub Pages)
+skipping | E2E Tests (agent CLI ↔ formal-ai)
+skipping | E2E Tests (local web app)
+skipping | Evidence Check Status
+skipping | Explicit server parity diagnostic from existing main binary
+skipping | Explicit source-only translation regeneration
+skipping | Full source network serialization (${{ matrix.shard }}/16)
+skipping | Hosted workspace compiler discovery and original one-line oracle
+skipping | Instant Release
+skipping | Learn reusable client contracts
+skipping | Lint and Format Check (lane ${{ matrix.lane }})
+skipping | Matrix summary
+skipping | Native full and slim container publication
+skipping | Package VS Code extension (.vsix)
+skipping | Plan the Agent CLI ladder
+skipping | Plan upstream shards
+skipping | Produce native ${{ matrix.target }}
+skipping | Publish SHA256SUMS.txt + provenance
+skipping | Question necessity ratchet (issue #920)
+skipping | Replay recorded sessions
+skipping | Resolve target release
+skipping | Run upstream suites
+skipping | Select exact native release source
+skipping | Self-Hosting Evidence Check
+skipping | Self-development floor and debt ratchet since the last tag
+skipping | Server parity (JavaScript vs Rust)
+skipping | Slim Docker build and runtime
+skipping | Test (${{ matrix.os }} / ${{ matrix.test-suite }})${{ ((matrix.shard && format(' shard {0}/{1}', matrix.shard, matrix.shards)) || '') }}
+skipping | Total of upstream shards
+skipping | Upstream shard ${{ matrix.window.offset }}
+skipping | Validate the current-run leaf evidence
+skipping | Verify monotonic ledger
+skipping | Verify source-content receipts
+skipping | agent-cli-failure-report
+skipping | attach
+skipping | authoritative-publication
+skipping | independent-full
+skipping | js -> rust leg (meta-language self-translation)
+skipping | macOS Core Tests
+skipping | merge
+skipping | native
+skipping | native
+skipping | native-response-observations
+skipping | no benchmark prompt reaches the unknown opener (all shards)
+skipping | package
+skipping | packets
+skipping | prepare
+skipping | provers (real Lean 4 and Rocq compile, R1186-4)
+skipping | publish
+skipping | publish-images
+skipping | regenerate
+skipping | resolve
+skipping | rust tier (dogfood regeneration gate)
+skipping | self-authored-after-publication
+skipping | server parity (JavaScript server vs Rust server)
+skipping | source
+skipping | stock-rust-install
+skipping | sweep
+skipping | validate-images

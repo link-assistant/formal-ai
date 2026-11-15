@@ -120,6 +120,30 @@ fn captured_issue_bodies_are_not_generated_code() {
     assert!(scan_data(&data).is_empty());
 }
 
+/// The CI phase-timing baselines are GitHub API job records captured from past
+/// runs (PR #1498); a step named after the action ref it ran is evidence. Issue
+/// #1569: they turned the main lint gate red because the list lacked them.
+#[test]
+fn captured_ci_run_records_are_not_generated_code() {
+    let data = fixture_tree(
+        "ci-runs",
+        &[(
+            "benchmarks/ci-phase-timing/baseline-runs/40475832633-jobs.json",
+            "{\"name\":\"Run coursier/setup-action@648df969f41ef15fda2baba8b37f9fa3d16390a3\"}\n",
+        )],
+    );
+    assert!(scan_data(&data).is_empty());
+    // The exclusion is that directory, not any `baseline-runs` elsewhere.
+    let data = fixture_tree(
+        "ci-runs-elsewhere",
+        &[(
+            "benchmarks/baseline-runs/jobs.json",
+            "{\"name\":\"Run coursier/setup-action@648df969f41ef15fda2baba8b37f9fa3d16390a3\"}\n",
+        )],
+    );
+    assert_eq!(scan_data(&data).len(), 1);
+}
+
 /// R1168-6/R1168-7: both templates now carry `{placeholders}` only, so the
 /// repository's own `data/` scans clean.
 #[test]

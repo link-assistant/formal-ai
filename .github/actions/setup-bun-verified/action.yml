@@ -1,0 +1,73 @@
+name: Setup Bun (verified)
+description: Install the pinned Bun, retry once when the installer ends without a Bun, and refuse to continue without one.
+
+# Issue #1569: on 2026-11-08 the agent-ladder leaf depth-3-1.2.1 (run
+# 42472083551, job 128705134739) logged "Downloading a new version of Bun"
+# and nothing else for two minutes, after which oven-sh/setup-bun reported
+# success. It had set no output and printed no error, and its post step was
+# skipped. The next step then failed with "bun: command not found". The
+# action's entry point (src/index.ts at 0c5077e5) ends the process only in
+# `.then` or `.catch`; when the download neither resolves nor rejects, Node
+# drains its event loop and exits with status 0. The job then failed on the
+# step after, which blamed the wrong step.
+#
+# `bun-path` is set only on the success path, so an empty value means the
+# install did not finish. The first attempt may fail. The second may not, and
+# the last step proves `bun` runs before the caller's steps rely on it.
+inputs:
+  bun-version-file:
+    description: The file that pins the Bun version.
+    default: .bun-version
+  no-cache:
+    description: Forwarded to oven-sh/setup-bun.
+    default: 'false'
+
+outputs:
+  bun-path:
+    description: The installed Bun executable.
+    value: ${{ steps.first.outputs.bun-path || steps.second.outputs.bun-path }}
+
+runs:
+  using: composite
+  steps:
+    - id: first
+      uses: oven-sh/setup-bun@v2
+      continue-on-error: true
+      with:
+        bun-version-file: ${{ inputs.bun-version-file }}
+        no-cache: ${{ inputs.no-cache }}
+
+    - name: Back off before the second Bun install
+      if: ${{ !cancelled() && steps.first.outputs.bun-path == '' }}
+      shell: bash
+      env:
+        FIRST_OUTCOME: ${{ steps.first.outcome }}
+      run: |
+        echo "::warning title=Bun install retried::oven-sh/setup-bun ended (${FIRST_OUTCOME}) without reporting an installed Bun; retrying once (issue #1569)."
+        sleep 5
+
+    - id: second
+      if: ${{ !cancelled() && steps.first.outputs.bun-path == '' }}
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version-file: ${{ inputs.bun-version-file }}
+        no-cache: ${{ inputs.no-cache }}
+
+    - name: Verify Bun runs
+      shell: bash
+      env:
+        BUN_VERSION_FILE: ${{ inputs.bun-version-file }}
+      run: |
+        set -euo pipefail
+        if ! command -v bun > /dev/null 2>&1; then
+          echo "::error title=Bun is not installed::oven-sh/setup-bun finished without putting bun on PATH; the steps that need Bun would fail with 'bun: command not found' (issue #1569)."
+          exit 1
+        fi
+        actual="$(bun --version)"
+        expected="$(tr -d '[:space:]' < "${BUN_VERSION_FILE}")"
+        # Only an exact pin can be compared; a range or tag is resolved by setup-bun.
+        if [[ "${expected}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] && [ "${actual}" != "${expected}" ]; then
+          echo "::error title=Bun version mismatch::${BUN_VERSION_FILE} pins ${expected} and bun --version reports ${actual}."
+          exit 1
+        fi
+        echo "bun ${actual} at $(command -v bun)"

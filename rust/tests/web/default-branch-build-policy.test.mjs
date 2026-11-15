@@ -64,9 +64,14 @@ test('recorded Docker cold rebuild is optional and cannot hold the production bu
     assert.match(publish.steps.find(s=>s.name==='Publish to Crates.io').run,/--verified-build true/u);
   }
 });
-test('PRs use one JS unit group; full main inventory retains its measured shard plan', () => {
+// Issue #1569: one PR group outgrew its 360s budget (run 43693412224), so the
+// fast inventory splits over two groups, and the step divides by the same count.
+test('PRs split the fast JS inventory over two groups; full main inventory retains its measured shard plan', () => {
   const job=workflow('layered-ci.yml').jobs.js;
-  assert.deepEqual(Array.from(evaluate(job.strategy.matrix.shard,'pull_request','refs/pull/1500/merge')),[1]);
+  assert.deepEqual(Array.from(evaluate(job.strategy.matrix.shard,'pull_request','refs/pull/1500/merge')),[1,2]);
+  const shards=job.steps.find(s=>s.name==='Run this shard of the JavaScript suites').env.SHARDS;
+  assert.equal(evaluate(shards,'pull_request','refs/pull/1500/merge'),2);
+  assert.equal(evaluate(shards,'push','refs/heads/main'),8);
   assert.equal(evaluate(job.strategy.matrix.shard,'push','refs/heads/main').length,8);
   for (const file of ['release.yml','layered-ci.yml','coverage.yml']) {
     const jobs=workflow(file).jobs, job=jobs.changes??jobs['detect-changes'];

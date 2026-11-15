@@ -16,8 +16,18 @@ test('local constructor aliases and spawned child provenance survive chains',()=
   assert.deepEqual(auditor.rust('use std::process::Command; fn run() { let mut child=Command::new("x").spawn().expect("spawn"); child.wait_with_output(); }').violations.map(value=>value.operation),['wait_with_output']);
 });
 test('eight original domain status boundaries remain non-process',()=>{
-  const sites=[['cli_solve.rs',462],['cli_memory.rs',77],['skill_ledger.rs',267],['dreaming.rs',761],['algorithm_discovery.rs',164],['algorithm_discovery.rs',350],['external_benchmarks/mod.rs',329],['coding/concept_discovery.rs',248]];
-  for(const [filename,line] of sites){const source=fs.readFileSync(path.join(root,'rust/src',filename),'utf8');const result=auditor.rust(source);assert.equal(result.violations.some(value=>value.line===line),false,filename+':'+line);assert.ok(result.unresolved.some(value=>value.line===line),filename+':'+line+' must actually be observed');}
+  // Each site is located by a source anchor that occurs exactly once in its
+  // file, not by a pinned line number: a pinned number went stale when an
+  // unrelated edit above it moved the site (issue #1569, dreaming.rs 761 -> 778).
+  const sites=[['cli_solve.rs','trace.status(COMMIT_STAGE) != Some'],['cli_memory.rs','"status": error.status()'],['skill_ledger.rs','status: gate.status()'],['dreaming.rs','format!("status={}", candidate.status())'],['algorithm_discovery.rs','Some(self.status())'],['algorithm_discovery.rs','!= candidate.status()'],['external_benchmarks/mod.rs','trace.status(BENCHMARK_COMMIT_STAGE) == Some'],['coding/concept_discovery.rs','Some(need.status())']];
+  for(const [filename,anchor] of sites){
+    const source=fs.readFileSync(path.join(root,'rust/src',filename),'utf8');
+    const lines=source.split('\n').flatMap((text,index)=>text.includes(anchor)?[index+1]:[]);
+    assert.equal(lines.length,1,filename+' must hold the anchor '+JSON.stringify(anchor)+' exactly once');
+    const [line]=lines;const result=auditor.rust(source);
+    assert.equal(result.violations.some(value=>value.line===line),false,filename+':'+line);
+    assert.ok(result.unresolved.some(value=>value.line===line),filename+':'+line+' must actually be observed');
+  }
 });
 test('terminal allowance requires the exact two terminal predicates and consequence',()=>{
  const prefix='use std::process::Command; fn run() { let mut command=Command::new("x"); ';

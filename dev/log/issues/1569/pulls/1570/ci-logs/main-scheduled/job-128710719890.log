@@ -1,0 +1,1072 @@
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	﻿2026-11-08T11:01:14.0791114Z Current runner version: '2.338.2'
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0825734Z ##[group]Runner Image Provisioner
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0827064Z Hosted Compute Agent
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0827954Z Version: 20261028.624
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0829323Z Commit: 54898b74c23fde5556c9b3c3a2290865feef0dfe
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0830549Z Build Date: 2026-10-28T21:51:42Z
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0831552Z Worker ID: {1493084f-8f3f-4905-a175-aeda46f2abed}
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0832769Z Region: eastus3
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0833571Z Cloud: Azure
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0834516Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0836618Z ##[group]Operating System
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0837483Z Ubuntu
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0838562Z 26.04.1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0839020Z LTS
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0839843Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0840364Z ##[group]Runner Image
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0840913Z Image: ubuntu-26.04
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0841441Z Version: 20261101.186.1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0842611Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261101.186/images/ubuntu/Ubuntu2604-Readme.md
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0844037Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261101.186
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0844885Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0845948Z ##[group]GITHUB_TOKEN Permissions
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0848226Z Contents: read
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0848874Z Metadata: read
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0849714Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0851943Z Secret source: Actions
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0852783Z Cache mode: write
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.0853603Z Prepare workflow directory
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.1633464Z Prepare all required actions
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.1711404Z Getting action download info
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.4112903Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.5245479Z Download action repository 'oven-sh/setup-bun@v2' (SHA:0c5077e51419868618aeaa5fe8019c62421857d6)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.7828828Z Download action repository 'dtolnay/rust-toolchain@stable' (SHA:b725eda525362e7cf34af9a7243cac1e3f01a7ec)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:14.9085304Z Download action repository 'actions/download-artifact@v8' (SHA:9000827ccba6bdab643e8b6fd33ac0654aef8333)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.1832992Z Download action repository 'actions/upload-artifact@v7' (SHA:cf430e030ddbb5b0abf93d22962f4752f3646cd9)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.3950027Z Complete job name: Agent CLI composite depth-4-1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.4738603Z ##[group]Run actions/checkout@v7
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.4739767Z with:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.4740275Z   persist-credentials: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.4740854Z   repository: link-assistant/formal-ai
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.4745002Z   token: ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.4745463Z   ssh-strict: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.4745934Z   ssh-user: git
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.4746392Z   clean: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.4746874Z   sparse-checkout-cone-mode: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.4747482Z   fetch-depth: 1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.4747954Z   fetch-tags: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.4748447Z   show-progress: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.4748948Z   lfs: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.4749546Z   submodules: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.4750028Z   set-safe-directory: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.4750572Z   allow-unsafe-pr-checkout: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.4751383Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.4751819Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.4752287Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.4752944Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.4753681Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.4754307Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.4754803Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8038209Z Syncing repository: link-assistant/formal-ai
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8041468Z ##[group]Getting Git version info
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8042467Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8043477Z [command]/usr/bin/git version
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8064045Z git version 2.56.0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8089614Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8100874Z Temporarily overriding HOME='/home/runner/work/_temp/3710eec4-f585-41a7-b82a-7b1c1b510b4c' before making global git config changes
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8103705Z Adding repository directory to the temporary git global config as a safe directory
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8105776Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8182740Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8186386Z ##[group]Determining repository object format
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8188183Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8190083Z ##[group]Initializing the repository
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8195112Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8335223Z hint: Using 'master' as the name for the initial branch. This default branch name
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8337980Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8340835Z hint: to use in all of your new repositories, which will suppress this warning,
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8342864Z hint: call:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8343962Z hint:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8345148Z hint: 	git config --global init.defaultBranch <name>
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8346470Z hint:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8347749Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8349991Z hint: 'development'. The just-created branch can be renamed via this command:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8351629Z hint:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8352619Z hint: 	git branch -m <name>
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8353760Z hint:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8355188Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8357439Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8363248Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8426986Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8428343Z ##[group]Disabling automatic garbage collection
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8431588Z [command]/usr/bin/git config --local gc.auto 0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8470138Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8472218Z ##[group]Setting up auth
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8473458Z Removing SSH command configuration
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8475385Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.8512782Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.9020601Z Removing HTTP extra header
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.9022395Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.9056283Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.9298626Z Removing includeIf entries pointing to credentials config files
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.9304030Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.9347346Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.9607536Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-f3575798-fde0-497f-8c2e-0faafa1611f7.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.9646198Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-f3575798-fde0-497f-8c2e-0faafa1611f7.config
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.9678589Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-f3575798-fde0-497f-8c2e-0faafa1611f7.config
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.9714612Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-f3575798-fde0-497f-8c2e-0faafa1611f7.config
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.9745778Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-f3575798-fde0-497f-8c2e-0faafa1611f7.config
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.9775198Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.9776612Z ##[group]Fetching the repository
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:15.9784241Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +70935ad8e2a12bc2148eef74722749290c2edb66:refs/remotes/origin/main
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:34.9527762Z From https://github.com/link-assistant/formal-ai
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:34.9528486Z  * [new ref]           70935ad8e2a12bc2148eef74722749290c2edb66 -> origin/main
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:34.9543353Z [command]/usr/bin/git branch --list --remote origin/main
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:34.9570072Z   origin/main
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:34.9578356Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:34.9604646Z 70935ad8e2a12bc2148eef74722749290c2edb66
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:34.9607882Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:34.9608802Z ##[group]Determining the checkout info
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:34.9610085Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:34.9616414Z [command]/usr/bin/git sparse-checkout disable
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:34.9673017Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:34.9704953Z ##[group]Checking out the ref
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:34.9710166Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:36.1124027Z Updating files:  12% (9543/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:36.7178290Z Updating files:  13% (9626/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:37.0512403Z Updating files:  14% (10366/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:37.0724271Z Updating files:  14% (11098/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:37.2566128Z Updating files:  15% (11107/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:37.3508250Z Updating files:  16% (11847/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:37.4011552Z Updating files:  17% (12587/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:37.5009974Z Updating files:  18% (13328/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:37.6238318Z Updating files:  19% (14068/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:37.8296796Z Updating files:  20% (14809/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:37.9256600Z Updating files:  21% (15549/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:38.0080041Z Updating files:  22% (16290/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:38.0363699Z Updating files:  23% (17030/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:38.0780199Z Updating files:  23% (17521/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:38.1394198Z Updating files:  24% (17770/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:38.2216089Z Updating files:  25% (18511/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:38.2878773Z Updating files:  26% (19251/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:38.3604030Z Updating files:  27% (19992/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:38.3846238Z Updating files:  28% (20732/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:38.4289840Z Updating files:  29% (21472/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:38.4645379Z Updating files:  30% (22213/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:38.4909232Z Updating files:  31% (22953/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:38.5376268Z Updating files:  32% (23694/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:38.5642737Z Updating files:  33% (24434/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:38.5795168Z Updating files:  34% (25174/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:38.6563603Z Updating files:  35% (25915/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:38.6970962Z Updating files:  36% (26655/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:38.8623001Z Updating files:  37% (27396/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:38.8951043Z Updating files:  38% (28136/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:38.9188421Z Updating files:  39% (28876/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:38.9414103Z Updating files:  40% (29617/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:38.9629865Z Updating files:  41% (30357/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.0011925Z Updating files:  42% (31098/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.0244037Z Updating files:  43% (31838/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.0369471Z Updating files:  44% (32579/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.0585080Z Updating files:  44% (32899/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.1341381Z Updating files:  45% (33319/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.1774211Z Updating files:  46% (34059/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.2048920Z Updating files:  47% (34800/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.2321033Z Updating files:  48% (35540/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.2570145Z Updating files:  49% (36281/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.2987534Z Updating files:  50% (37021/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.3159964Z Updating files:  51% (37761/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.3442841Z Updating files:  52% (38502/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.3680339Z Updating files:  53% (39242/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.4168979Z Updating files:  54% (39983/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.4359018Z Updating files:  55% (40723/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.4610711Z Updating files:  56% (41463/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.4809474Z Updating files:  57% (42204/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.5364575Z Updating files:  58% (42944/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.6044193Z Updating files:  59% (43685/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.6418110Z Updating files:  60% (44425/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.6646200Z Updating files:  61% (45166/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.7054466Z Updating files:  62% (45906/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.7610702Z Updating files:  63% (46646/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.8419527Z Updating files:  64% (47387/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.8787592Z Updating files:  65% (48127/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.9099169Z Updating files:  66% (48868/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.9475978Z Updating files:  67% (49608/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:39.9663872Z Updating files:  68% (50348/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:40.0364439Z Updating files:  69% (51089/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:40.0520126Z Updating files:  69% (51292/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:40.0674915Z Updating files:  70% (51829/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:40.0823650Z Updating files:  71% (52570/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:40.0974551Z Updating files:  72% (53310/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:40.1196597Z Updating files:  73% (54050/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:40.1355962Z Updating files:  74% (54791/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:40.1542137Z Updating files:  75% (55531/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:40.2042011Z Updating files:  76% (56272/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:40.2407864Z Updating files:  77% (57012/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:40.3100624Z Updating files:  78% (57752/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:40.3475709Z Updating files:  79% (58493/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:40.4762074Z Updating files:  80% (59233/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:40.5710782Z Updating files:  81% (59974/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:40.6430133Z Updating files:  82% (60714/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:40.7097816Z Updating files:  83% (61455/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:40.7978177Z Updating files:  84% (62195/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:40.8535622Z Updating files:  85% (62935/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:40.8860288Z Updating files:  86% (63676/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.0391885Z Updating files:  87% (64416/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.0649597Z Updating files:  87% (64923/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.1253638Z Updating files:  88% (65157/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.1700738Z Updating files:  89% (65897/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.2179725Z Updating files:  90% (66637/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.2558106Z Updating files:  91% (67378/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.3275941Z Updating files:  92% (68118/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.3744091Z Updating files:  93% (68859/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.4287820Z Updating files:  94% (69599/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.4693047Z Updating files:  95% (70339/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.5141389Z Updating files:  96% (71080/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.5551501Z Updating files:  97% (71820/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.5970601Z Updating files:  98% (72561/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.6400495Z Updating files:  99% (73301/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.6401258Z Updating files: 100% (74041/74041)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.6401994Z Updating files: 100% (74041/74041), done.
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.8907674Z Switched to a new branch 'main'
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.8908322Z branch 'main' set up to track 'origin/main'.
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.9053997Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.9095041Z [command]/usr/bin/git log -1 --format=%H
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.9122253Z 70935ad8e2a12bc2148eef74722749290c2edb66
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.9134804Z ##[group]Removing auth
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.9135250Z Removing SSH command configuration
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.9137235Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.9168806Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.9527282Z Removing HTTP extra header
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.9538286Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.9565424Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.9928926Z Removing includeIf entries pointing to credentials config files
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.9932470Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.9965937Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.9967024Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.9968045Z includeif.gitdir:/github/workspace/.git.path
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.9968872Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:41.9975214Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.0001380Z /home/runner/work/_temp/git-credentials-f3575798-fde0-497f-8c2e-0faafa1611f7.config
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.0011780Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-f3575798\-fde0\-497f\-8c2e\-0faafa1611f7\.config
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.0341025Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.0375481Z /home/runner/work/_temp/git-credentials-f3575798-fde0-497f-8c2e-0faafa1611f7.config
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.0397681Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-f3575798\-fde0\-497f\-8c2e\-0faafa1611f7\.config
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.0429652Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.0453606Z /github/runner_temp/git-credentials-f3575798-fde0-497f-8c2e-0faafa1611f7.config
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.0462571Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-f3575798\-fde0\-497f\-8c2e\-0faafa1611f7\.config
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.0496049Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.0518067Z /github/runner_temp/git-credentials-f3575798-fde0-497f-8c2e-0faafa1611f7.config
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.0527070Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-f3575798\-fde0\-497f\-8c2e\-0faafa1611f7\.config
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.0799886Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.1172325Z Removing credentials config '/home/runner/work/_temp/git-credentials-f3575798-fde0-497f-8c2e-0faafa1611f7.config'
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.1179005Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.1495335Z ##[group]Run oven-sh/setup-bun@v2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.1495606Z with:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.1495815Z   bun-version-file: .bun-version
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.1496064Z   no-cache: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.1498543Z   token: ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.1498748Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.1498933Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.1499243Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.1499521Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.1499882Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.1500170Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.1500545Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.3877995Z Obtained version 1.4.2 from .bun-version
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:42.3895115Z Downloading a new version of Bun: https://github.com/oven-sh/bun/releases/download/bun-v1.4.2/bun-linux-x64.zip
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:43.0053215Z [command]/usr/bin/unzip -o -q /home/runner/work/_temp/7b215000-312f-49f5-b9fb-11611f314e23.zip
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:43.6477127Z [command]/home/runner/.bun/bin/bun --revision
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:43.6517642Z 1.4.2+744846f84
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:43.6664126Z Prepare all required actions
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:43.6664680Z Getting action download info
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:43.8824566Z Download action repository 'mozilla-actions/sccache-action@v0.0.11' (SHA:fc920bf0ec8de6ee65d409111f7ec508035751ba)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.0972245Z ##[group]Run ./.github/actions/setup-sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.0972523Z with:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.0972715Z   install: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.0972899Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.0973069Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.0973267Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.0973555Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.0973891Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.0974173Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.0974387Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.1037694Z ##[start-action display=Install sccache;id=__self.__mozilla-actions_sccache-action]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.1181464Z ##[group]Run mozilla-actions/sccache-action@v0.0.11
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.1181834Z with:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.1182018Z   version: v0.16.0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.1184447Z   token: ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.1184658Z   disable_annotations: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.1184883Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.1185062Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.1185265Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.1185533Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.1185874Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.1186156Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.1186385Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.2032991Z try to setup sccache version: v0.16.0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.2055994Z sccache download from url: https://github.com/mozilla/sccache/releases/download/v0.16.0/sccache-v0.16.0-x86_64-unknown-linux-musl.tar.gz
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.7057186Z Correct checksum: aec995a83ad3dff3d14b6314e08858b7b73d35ca85a5bcf3d3a9ec07dee35588
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.7175341Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/402fc8bd-dace-49b6-8125-1211df2f3456 -f /home/runner/work/_temp/7afe7f99-1c61-4404-8356-c38782c1cf04
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8339739Z sccache extracted to: /home/runner/work/_temp/402fc8bd-dace-49b6-8125-1211df2f3456
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8494471Z sccache cached to: /opt/hostedtoolcache/sccache/0.16.0/x64
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8585714Z ##[end-action id=__self.__mozilla-actions_sccache-action;outcome=success;conclusion=success;duration_ms=754]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8588857Z ##[start-action display=Enable sccache for Rust;id=__self.__run]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8620412Z ##[group]Run echo "SCCACHE_GHA_ENABLED=$SCCACHE_GHA_ENABLED" >> "$GITHUB_ENV"
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8621077Z ^[[36;1mecho "SCCACHE_GHA_ENABLED=$SCCACHE_GHA_ENABLED" >> "$GITHUB_ENV"^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8621655Z ^[[36;1mecho "SCCACHE_IGNORE_SERVER_IO_ERROR=$SCCACHE_IGNORE_SERVER_IO_ERROR" >> "$GITHUB_ENV"^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8622140Z ^[[36;1mecho "RUSTC_WRAPPER=$RUSTC_WRAPPER" >> "$GITHUB_ENV"^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8656035Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8656376Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8656571Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8656791Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8657066Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8657410Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8657694Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8657985Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8658320Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8658946Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8722346Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8722599Z   SCCACHE_GHA_ENABLED: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8722839Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8723086Z   RUSTC_WRAPPER: sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8723305Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8817732Z ##[end-action id=__self.__run;outcome=success;conclusion=success;duration_ms=22]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8820253Z ##[start-action display=Enable opt-in sccache diagnostics;id=__self.__run_2]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8840571Z ##[end-action id=__self.__run_2;outcome=skipped;conclusion=skipped;duration_ms=0]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8842824Z ##[start-action display=Start the sccache server;id=__self.__run_3]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8858722Z ##[group]Run set -euo pipefail
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8859209Z ^[[36;1mset -euo pipefail^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8859463Z ^[[36;1mprobe_log="$(mktemp)"^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8859721Z ^[[36;1mtrap 'rm -f "$probe_log"' EXIT^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8860055Z ^[[36;1msccache --start-server > "$probe_log" 2>&1 || true^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8860489Z ^[[36;1m# A successful compiler probe also accepts an already-running server.^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8860911Z ^[[36;1mif sccache rustc -vV >> "$probe_log" 2>&1; then^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8861255Z ^[[36;1m  echo "sccache compiler probe succeeded"^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8861536Z ^[[36;1melse^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8861770Z ^[[36;1m  echo "RUSTC_WRAPPER=" >> "$GITHUB_ENV"^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8862415Z ^[[36;1m  echo "::warning title=sccache unavailable::Compiler-cache probe failed; subsequent Cargo steps use the real compiler without cache (issue #1031)."^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8863009Z ^[[36;1mfi^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8863408Z ^[[36;1msccache --show-stats >> "$probe_log" 2>&1 || echo "::warning::sccache statistics unavailable (issue #1031)."^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8863971Z ^[[36;1m# Read only the completed file; no cache process writes into this pipe.^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8864464Z ^[[36;1m# Cache errors can contain signed URLs, so redact their complete values.^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8864974Z ^[[36;1mhead -c 65536 "$probe_log" | sed -E 's#https?://[^[:space:]]+#<cache-url-redacted>#g'^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8894357Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8894679Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8894866Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8895063Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8895351Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8895688Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8895968Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8896264Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8896591Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8896975Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8961058Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8961320Z   SCCACHE_GHA_ENABLED: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8961584Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8961838Z   RUSTC_WRAPPER: sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:44.8962053Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2701124Z sccache compiler probe succeeded
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2749684Z sccache: Starting the server...
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2750254Z sccache: Listening on address 127.0.0.1:4226
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2750770Z rustc 1.99.1 (58cf8f9c3 2026-10-13)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2751227Z binary: rustc
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2751655Z commit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2752165Z commit-date: 2026-10-13
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2752562Z host: x86_64-unknown-linux-gnu
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2752961Z release: 1.99.1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2753285Z LLVM version: 23.1.1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2753664Z Compile requests                      1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2753987Z Compile requests executed             0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2754286Z Cache hits                            0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2754573Z Cache misses                          0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2755216Z Cache hits rate                       -
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2755526Z Cache timeouts                        0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2755836Z Cache read errors                     0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2756136Z Forced recaches                       0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2756436Z Cache write errors                    0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2756746Z Cache errors                          0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2757164Z Compilations                          0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2757466Z Compilation failures                  0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2757777Z Non-cacheable compilations            0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2758085Z Non-cacheable calls                   1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2758391Z Non-compilation calls                 0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2758695Z Unsupported compiler calls            0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2759003Z Average cache write               0.000 s
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2759563Z Average compiler                  0.000 s
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2759886Z Average cache read hit            0.000 s
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2760214Z Failed distributed compilations       0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2760419Z 
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2760576Z Non-cacheable reasons:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2760956Z missing input                         1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2761149Z 
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2761595Z Cache location                  ghac, name: 90541733aa72480a9e77ce99e66fc1cfabfa835d74c751408eb0351b7adcec6b, prefix: /sccache/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2762234Z Base directories                (none)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2762543Z Version (client)                0.16.0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2770071Z ##[end-action id=__self.__run_3;outcome=success;conclusion=success;duration_ms=4392]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2918761Z ##[group]Run dtolnay/rust-toolchain@stable
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2919225Z with:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2919454Z   toolchain: stable
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2919650Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2919838Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2920033Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2920322Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2920672Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2920956Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2921251Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2921594Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2921983Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2985414Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2985664Z   SCCACHE_GHA_ENABLED: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2985902Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2986149Z   RUSTC_WRAPPER: sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2986423Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.2996839Z ##[start-action display=Parse toolchain version;id=__dtolnay_rust-toolchain.parse]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3013260Z ##[group]Run if [[ -z $toolchain ]]; then
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3013591Z ^[[36;1mif [[ -z $toolchain ]]; then^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3014078Z ^[[36;1m  # GitHub does not enforce `required: true` inputs itself. https://github.com/actions/runner/issues/1070^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3014607Z ^[[36;1m  echo "'toolchain' is a required input" >&2^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3014892Z ^[[36;1m  exit 1^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3015207Z ^[[36;1melif [[ $toolchain =~ ^stable' '[0-9]+' '(year|month|week|day)s?' 'ago$ ]]; then^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3015596Z ^[[36;1m  if [[ Linux == macOS ]]; then^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3016091Z ^[[36;1m    echo "toolchain=1.$((($(date -v-$(sed 's/stable \([0-9]*\) \(.\).*/\1\2/' <<< $toolchain) +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3016572Z ^[[36;1m  else^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3016972Z ^[[36;1m    echo "toolchain=1.$((($(date --date "${toolchain#stable }" +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3017410Z ^[[36;1m  fi^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3017782Z ^[[36;1melif [[ $toolchain =~ ^stable' 'minus' '[0-9]+' 'releases?$ ]]; then^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3018319Z ^[[36;1m  echo "toolchain=1.$((($(date +%s)/60/60/24-16569)/7/6-${toolchain//[^0-9]/}))" >> $GITHUB_OUTPUT^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3018884Z ^[[36;1melif [[ $toolchain =~ ^1\.[0-9]+$ ]]; then^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3019616Z ^[[36;1m  echo "toolchain=1.$((i=${toolchain#1.}, c=($(date +%s)/60/60/24-16569)/7/6, i+9*i*(10*i<=c)+90*i*(100*i<=c)))" >> $GITHUB_OUTPUT^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3020090Z ^[[36;1melse^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3020289Z ^[[36;1m  delimiter=EOF^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3020585Z ^[[36;1m  while [[ $toolchain == *$delimiter* ]]; do delimiter+=_; done^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3021062Z ^[[36;1m  printf 'toolchain<<%s\n%s\n%s\n' "$delimiter" "$toolchain" "$delimiter" >> $GITHUB_OUTPUT^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3021464Z ^[[36;1mfi^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3050585Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3050914Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3051105Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3051319Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3051596Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3051952Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3052253Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3052550Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3052884Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3053265Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3113247Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3113494Z   SCCACHE_GHA_ENABLED: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3113738Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3114002Z   RUSTC_WRAPPER: sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3114226Z   toolchain: stable
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3114782Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3191342Z ##[end-action id=__dtolnay_rust-toolchain.parse;outcome=success;conclusion=success;duration_ms=19]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3196497Z ##[start-action display=Set $CARGO_HOME;id=__dtolnay_rust-toolchain.__run]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3213179Z ##[group]Run echo CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3213661Z ^[[36;1mecho CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3242901Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3243228Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3243414Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3243621Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3243893Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3244235Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3244518Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3244813Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3245157Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3245541Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3304750Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3305002Z   SCCACHE_GHA_ENABLED: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3305239Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3305509Z   RUSTC_WRAPPER: sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3305741Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3364980Z ##[end-action id=__dtolnay_rust-toolchain.__run;outcome=success;conclusion=success;duration_ms=16]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3367301Z ##[start-action display=Install rustup if needed;id=__dtolnay_rust-toolchain.__run_2]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3384820Z ##[group]Run if ! command -v rustup &>/dev/null; then
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3385212Z ^[[36;1mif ! command -v rustup &>/dev/null; then^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3385918Z ^[[36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3386623Z ^[[36;1m  echo "$CARGO_HOME/bin" >> $GITHUB_PATH^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3386896Z ^[[36;1mfi^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3416419Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3416764Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3416956Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3417158Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3417618Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3417968Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3418251Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3418546Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3418879Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3419469Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3484114Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3484412Z   SCCACHE_GHA_ENABLED: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3484650Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3484917Z   RUSTC_WRAPPER: sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3485150Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3485378Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3544223Z ##[end-action id=__dtolnay_rust-toolchain.__run_2;outcome=success;conclusion=success;duration_ms=17]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3546637Z ##[start-action display=Install rustup if needed on windows;id=__dtolnay_rust-toolchain.__run_3]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3551440Z ##[end-action id=__dtolnay_rust-toolchain.__run_3;outcome=skipped;conclusion=skipped;duration_ms=0]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3565423Z ##[start-action display=rustup toolchain install stable;id=__dtolnay_rust-toolchain.__run_4]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3581188Z ##[group]Run set -f  # split targets and components on commas and whitespace, without glob expansion
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3581855Z ^[[36;1mset -f  # split targets and components on commas and whitespace, without glob expansion^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3582261Z ^[[36;1mflags=()^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3582656Z ^[[36;1mfor t in ${targets//,/ }; do flags+=(--target "$t"); done^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3583054Z ^[[36;1mfor c in ${components//,/ }; do flags+=(--component "$c"); done^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3583545Z ^[[36;1mif [[ $toolchain == nightly && -n $components ]]; then flags+=(--allow-downgrade); fi^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3583940Z ^[[36;1mlog=$(mktemp)^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3584175Z ^[[36;1mtrap 'rm -f "$log"' EXIT^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3584423Z ^[[36;1mfor attempt in 1 2 3 4 5; do^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3584954Z ^[[36;1m  if rustup toolchain install "$toolchain" "${flags[@]}" --profile minimal --no-self-update --force-non-host 2>&1 | tee "$log"; then^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3585475Z ^[[36;1m    break^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3585660Z ^[[36;1m  else^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3585848Z ^[[36;1m    status=$?^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3586042Z ^[[36;1m  fi^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3586319Z ^[[36;1m  if [[ $attempt == 5 ]] || ! grep -Fq 'checksum failed for ' "$log" \^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3586835Z ^[[36;1m      || ! grep -Fq 'this is likely due to an ongoing update of the official release server' "$log"; then^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3587270Z ^[[36;1m    exit "$status"^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3587480Z ^[[36;1m  fi^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3587812Z ^[[36;1m  echo "Retrying rustup toolchain install in 30 seconds (retry $attempt of 4)" >&2^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3588211Z ^[[36;1m  sleep 30^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3588408Z ^[[36;1mdone^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3617437Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3617763Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3617961Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3618156Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3618434Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3618776Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3619233Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3619542Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3619882Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3620289Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3685229Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3685490Z   SCCACHE_GHA_ENABLED: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3685725Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3685979Z   RUSTC_WRAPPER: sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3686223Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3686757Z   toolchain: stable
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3686949Z   targets: 
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3687133Z   components: 
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3687364Z   RUSTUP_PERMIT_COPY_RENAME: 1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.3687598Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.4423242Z info: syncing channel updates for stable-x86_64-unknown-linux-gnu
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.5705937Z 
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.5780151Z   stable-x86_64-unknown-linux-gnu unchanged - rustc 1.99.1 (58cf8f9c3 2026-10-13)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.5780731Z 
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.5845093Z ##[end-action id=__dtolnay_rust-toolchain.__run_4;outcome=success;conclusion=success;duration_ms=227]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.5851198Z ##[start-action display=rustup default stable;id=__dtolnay_rust-toolchain.__run_5]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.5866001Z ##[group]Run rustup default "$toolchain" --force-non-host
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.5866396Z ^[[36;1mrustup default "$toolchain" --force-non-host^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.5895972Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.5896327Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.5896517Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.5896714Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.5896986Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.5897326Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.5897603Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.5897895Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.5898225Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.5898616Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.5965812Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.5966616Z   SCCACHE_GHA_ENABLED: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.5966877Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.5967132Z   RUSTC_WRAPPER: sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.5967367Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.5967603Z   toolchain: stable
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.5967810Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6063128Z info: using existing install for stable-x86_64-unknown-linux-gnu
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6083302Z info: default toolchain set to stable-x86_64-unknown-linux-gnu
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6083611Z 
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6155924Z   stable-x86_64-unknown-linux-gnu unchanged - rustc 1.99.1 (58cf8f9c3 2026-10-13)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6156542Z 
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6170948Z ##[end-action id=__dtolnay_rust-toolchain.__run_5;outcome=success;conclusion=success;duration_ms=31]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6174097Z ##[start-action display=Create cachekey;id=__dtolnay_rust-toolchain.rustc-version]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6188979Z ##[group]Run DATE=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6190121Z ^[[36;1mDATE=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6190756Z ^[[36;1mHASH=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-hash: //p')^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6191262Z ^[[36;1mecho "cachekey=$(echo $DATE$HASH | head -c12)" >> $GITHUB_OUTPUT^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6221103Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6221437Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6221629Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6221830Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6222111Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6222453Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6222737Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6223030Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6223381Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6223774Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6319246Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6319617Z   SCCACHE_GHA_ENABLED: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6319872Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6320508Z   RUSTC_WRAPPER: sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6320744Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6320992Z   toolchain: stable
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6321191Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6661307Z ##[end-action id=__dtolnay_rust-toolchain.rustc-version;outcome=success;conclusion=success;duration_ms=48]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6663721Z ##[start-action display=Disable incremental compilation;id=__dtolnay_rust-toolchain.__run_6]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6678751Z ##[group]Run if [ -z "${CARGO_INCREMENTAL+set}" ]; then
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6679474Z ^[[36;1mif [ -z "${CARGO_INCREMENTAL+set}" ]; then^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6679880Z ^[[36;1m  echo CARGO_INCREMENTAL=0 >> $GITHUB_ENV^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6680166Z ^[[36;1mfi^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6709648Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6709970Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6710162Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6710363Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6710638Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6710997Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6711295Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6711587Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6711914Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6712300Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6776550Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6776803Z   SCCACHE_GHA_ENABLED: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6777047Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6777298Z   RUSTC_WRAPPER: sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6777873Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6778130Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6837287Z ##[end-action id=__dtolnay_rust-toolchain.__run_6;outcome=success;conclusion=success;duration_ms=17]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6839991Z ##[start-action display=Enable colors in Cargo output;id=__dtolnay_rust-toolchain.__run_7]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6855636Z ##[group]Run if [ -z "${CARGO_TERM_COLOR+set}" ]; then
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6856006Z ^[[36;1mif [ -z "${CARGO_TERM_COLOR+set}" ]; then^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6856333Z ^[[36;1m  echo CARGO_TERM_COLOR=always >> $GITHUB_ENV^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6856617Z ^[[36;1mfi^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6886124Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6886460Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6886654Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6886854Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6887134Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6887476Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6887794Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6888084Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6888419Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6888805Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6949571Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6949854Z   SCCACHE_GHA_ENABLED: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6950107Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6950365Z   RUSTC_WRAPPER: sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6950602Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6950849Z   CARGO_INCREMENTAL: 0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.6951061Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7010482Z ##[end-action id=__dtolnay_rust-toolchain.__run_7;outcome=success;conclusion=success;duration_ms=16]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7013941Z ##[start-action display=Enable Cargo sparse registry;id=__dtolnay_rust-toolchain.__run_8]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7030570Z ##[group]Run # implemented in 1.66, stabilized in 1.68, made default in 1.70
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7031107Z ^[[36;1m# implemented in 1.66, stabilized in 1.68, made default in 1.70^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7031780Z ^[[36;1mif [ -z "${CARGO_REGISTRIES_CRATES_IO_PROTOCOL+set}" -o -f "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol ]; then^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7032489Z ^[[36;1m  if rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.6[89]\.'; then^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7033174Z ^[[36;1m    touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7033681Z ^[[36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse >> $GITHUB_ENV^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7034168Z ^[[36;1m  elif rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.6[67]\.'; then^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7034710Z ^[[36;1m    touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7035198Z ^[[36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=git >> $GITHUB_ENV^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7035532Z ^[[36;1m  fi^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7035728Z ^[[36;1mfi^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7064684Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7065009Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7065200Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7065404Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7065688Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7066047Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7066328Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7066620Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7066946Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7067345Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7132120Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7132379Z   SCCACHE_GHA_ENABLED: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7132619Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7132872Z   RUSTC_WRAPPER: sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7133395Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7133636Z   CARGO_INCREMENTAL: 0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7133852Z   CARGO_TERM_COLOR: always
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7134068Z   toolchain: stable
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7134268Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7421143Z ##[end-action id=__dtolnay_rust-toolchain.__run_8;outcome=success;conclusion=success;duration_ms=40]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7424410Z ##[start-action display=Work around spurious network errors in curl 8.0;id=__dtolnay_rust-toolchain.__run_9]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7439024Z ##[group]Run # https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7440037Z ^[[36;1m# https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7440646Z ^[[36;1mif rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.7[01]\.'; then^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7441105Z ^[[36;1m  echo CARGO_HTTP_MULTIPLEXING=false >> $GITHUB_ENV^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7441417Z ^[[36;1mfi^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7470861Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7471195Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7471422Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7471628Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7471906Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7472260Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7472537Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7472828Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7473153Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7473545Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7536882Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7537134Z   SCCACHE_GHA_ENABLED: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7537437Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7537684Z   RUSTC_WRAPPER: sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7537914Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7538161Z   CARGO_INCREMENTAL: 0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7538378Z   CARGO_TERM_COLOR: always
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7538589Z   toolchain: stable
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7538787Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7709424Z ##[end-action id=__dtolnay_rust-toolchain.__run_9;outcome=success;conclusion=success;duration_ms=28]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7713990Z ##[start-action display=rustc +stable --version --verbose;id=__dtolnay_rust-toolchain.__run_10]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7728376Z ##[group]Run rustc +"$toolchain" --version --verbose
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7728744Z ^[[36;1mrustc +"$toolchain" --version --verbose^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7757719Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7758051Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7758240Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7758443Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7758717Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7759200Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7759645Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7759939Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7760277Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7760669Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7824150Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7824431Z   SCCACHE_GHA_ENABLED: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7824696Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7824968Z   RUSTC_WRAPPER: sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7825212Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7825465Z   CARGO_INCREMENTAL: 0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7825687Z   CARGO_TERM_COLOR: always
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7825921Z   toolchain: stable
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7826125Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7982963Z rustc 1.99.1 (58cf8f9c3 2026-10-13)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7983440Z binary: rustc
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7983824Z commit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7984288Z commit-date: 2026-10-13
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7984996Z host: x86_64-unknown-linux-gnu
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7985352Z release: 1.99.1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.7985659Z LLVM version: 23.1.1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.8010184Z ##[end-action id=__dtolnay_rust-toolchain.__run_10;outcome=success;conclusion=success;duration_ms=29]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.8095968Z Prepare all required actions
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.8096443Z Getting action download info
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.8941498Z Download action repository 'actions/cache@v6' (SHA:55cc8345863c7cc4c66a329aec7e433d2d1c52a9)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9887875Z ##[group]Run ./.github/actions/formal-ai-binary
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9888172Z with:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9888384Z   cache-key-prefix: formal-ai-binary
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9888632Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9888808Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9888999Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9889431Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9889770Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9890052Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9890350Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9890685Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9891144Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9951521Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9951815Z   SCCACHE_GHA_ENABLED: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9952078Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9952361Z   RUSTC_WRAPPER: sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9952604Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9952846Z   CARGO_INCREMENTAL: 0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9953054Z   CARGO_TERM_COLOR: always
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9953273Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9959688Z ##[start-action display=Key the binary by the sources it is built from;id=__self_2.key]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9974543Z ##[group]Run set -euo pipefail
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9974863Z ^[[36;1mset -euo pipefail^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9975206Z ^[[36;1m# The three-root layout (issue #1138 L1) put the crate under rust/; a^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9975679Z ^[[36;1m# root-level pathspec matches nothing there, the digest collapses to^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9976122Z ^[[36;1m# the hash of empty input, and every push then restores one stale^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9976559Z ^[[36;1m# binary no matter which sources changed. Fail the step if the^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9977107Z ^[[36;1m# pathspec goes empty again instead of caching on nothing.^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9977541Z ^[[36;1m# The binary also `include_str!`s the seed mirror under rust/embedded/^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9977988Z ^[[36;1m# and build.rs bundles data/seed/api-cache/; leaving them out of the^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9978443Z ^[[36;1m# key let a seed-only push restore the binary of the previous seed, and^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9978873Z ^[[36;1m# server parity then saw a stale `/v1/bundle` (PR #1188).^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9979649Z ^[[36;1mentries=$(git ls-files -s rust/src rust/embedded rust/Cargo.toml rust/Cargo.lock rust/build.rs data/seed/api-cache)^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9980149Z ^[[36;1m[ -n "$entries" ]^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9980466Z ^[[36;1mdigest=$(printf '%s\n' "$entries" | git hash-object --stdin)^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9980839Z ^[[36;1mecho "digest=$digest" >> "$GITHUB_OUTPUT"^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:49.9981137Z ^[[36;1mecho "source digest: $digest"^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0009864Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0010193Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0010380Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0010582Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0010854Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0011192Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0011488Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0011786Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0012119Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0012512Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0070422Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0070708Z   SCCACHE_GHA_ENABLED: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0070993Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0071287Z   RUSTC_WRAPPER: sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0071895Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0072188Z   CARGO_INCREMENTAL: 0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0072426Z   CARGO_TERM_COLOR: always
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0072666Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0369866Z source digest: 33b0cb6e9b6863250acd41e9d4632e31f2934629
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0376048Z ##[end-action id=__self_2.key;outcome=success;conclusion=success;duration_ms=41]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0378297Z ##[start-action display=Restore the binary built from these sources;id=__self_2.cache]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0411954Z ##[group]Run actions/cache@v6
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0412183Z with:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0412384Z   path: rust/target/release/formal-ai
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0412756Z   key: formal-ai-binary-Linux-33b0cb6e9b6863250acd41e9d4632e31f2934629
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0413134Z   enableCrossOsArchive: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0413374Z   fail-on-cache-miss: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0413598Z   lookup-only: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0413800Z   save-always: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0413989Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0414182Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0414383Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0414650Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0414985Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0415275Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0415562Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0415888Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0416276Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0480494Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0480747Z   SCCACHE_GHA_ENABLED: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0480984Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0481232Z   RUSTC_WRAPPER: sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0481458Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0481710Z   CARGO_INCREMENTAL: 0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0481922Z   CARGO_TERM_COLOR: always
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.0482139Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.2814821Z Cache hit for: formal-ai-binary-Linux-33b0cb6e9b6863250acd41e9d4632e31f2934629
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.8108204Z Received 66079583 of 66079583 (100.0%), 141.9 MBs/sec
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.8108822Z Cache Size: ~63 MB (66079583 B)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:50.8231264Z [command]/usr/bin/tar -xf /home/runner/work/_temp/2233ec0c-daa3-4309-bf11-25d460f6a6b3/cache.tzst -P -C /home/runner/work/formal-ai/formal-ai --use-compress-program unzstd
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.1659396Z Cache restored successfully
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.1911310Z Cache restored from key: formal-ai-binary-Linux-33b0cb6e9b6863250acd41e9d4632e31f2934629
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.1995715Z ##[end-action id=__self_2.cache;outcome=success;conclusion=success;duration_ms=1161]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.1997942Z ##[start-action display=Setup Rust;id=__self_2.__dtolnay_rust-toolchain]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2003217Z ##[end-action id=__self_2.__dtolnay_rust-toolchain;outcome=skipped;conclusion=skipped;duration_ms=0]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2005026Z ##[start-action display=Run ./.github/actions/setup-sccache;id=__self_2.__self]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2008703Z ##[end-action id=__self_2.__self;outcome=skipped;conclusion=skipped;duration_ms=0]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2010782Z ##[start-action display=Run ./.github/actions/cache-cargo-registry;id=__self_2.__self_2]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2014455Z ##[end-action id=__self_2.__self_2;outcome=skipped;conclusion=skipped;duration_ms=0]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2015941Z ##[start-action display=Build formal-ai;id=__self_2.__run]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2019620Z ##[end-action id=__self_2.__run;outcome=skipped;conclusion=skipped;duration_ms=0]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2021859Z ##[start-action display=Report which binary this is;id=__self_2.__run_2]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2037593Z ##[group]Run set -euo pipefail
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2037880Z ^[[36;1mset -euo pipefail^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2038163Z ^[[36;1mchmod +x rust/target/release/formal-ai^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2038492Z ^[[36;1mprintf 'formal-ai %s (cache hit: %s)\n' \^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2039005Z ^[[36;1m  "$(rust/target/release/formal-ai --version)" "$CACHE_HIT"^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2067903Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2068240Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2068434Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2068653Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2068932Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2069579Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2069868Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2070181Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2070517Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2070919Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2136004Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2136313Z   SCCACHE_GHA_ENABLED: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2136590Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2136898Z   RUSTC_WRAPPER: sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2137185Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2137480Z   CARGO_INCREMENTAL: 0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2137727Z   CARGO_TERM_COLOR: always
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2137974Z   CACHE_HIT: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2138188Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2253711Z formal-ai formal-ai 0.355.34 (cache hit: true)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2259860Z ##[end-action id=__self_2.__run_2;outcome=success;conclusion=success;duration_ms=23]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2284599Z ##[group]Run bun add -g @link-assistant/agent@0.26.0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2285024Z ^[[36;1mbun add -g @link-assistant/agent@0.26.0^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2315409Z shell: /usr/bin/bash -e {0}
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2315673Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2315867Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2316071Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2316360Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2316704Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2316990Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2317294Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2317796Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2318191Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2378924Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2379291Z   SCCACHE_GHA_ENABLED: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2379549Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2379868Z   RUSTC_WRAPPER: sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2380108Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2380357Z   CARGO_INCREMENTAL: 0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2380575Z   CARGO_TERM_COLOR: always
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2380796Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2455801Z bun add v1.4.2 (744846f84)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:51.2468058Z Resolving dependencies
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.5635766Z Resolved, downloaded and extracted [1951]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8050514Z Saved lockfile
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8050882Z 
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8051200Z installed @link-assistant/agent@0.26.0 with binaries:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8051891Z  - agent
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8052163Z 
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8052381Z 513 packages installed [1.56s]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8052744Z 
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8053111Z Blocked 2 postinstalls. Run `bun pm -g untrusted` for details.
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8124500Z ##[group]Run node scripts/agent-cli-bash-receipts.mjs "$(command -v agent)"
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8125024Z ^[[36;1mnode scripts/agent-cli-bash-receipts.mjs "$(command -v agent)"^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8154507Z shell: /usr/bin/bash -e {0}
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8154764Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8154951Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8155157Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8155440Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8155787Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8156073Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8156379Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8156720Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8157115Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8219348Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8219632Z   SCCACHE_GHA_ENABLED: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8219955Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8220212Z   RUSTC_WRAPPER: sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8220448Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8220703Z   CARGO_INCREMENTAL: 0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8220921Z   CARGO_TERM_COLOR: always
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:52.8221143Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5178581Z {"version":"0.26.0","already_installed":false,"bash_sha256":"ad35c659dab7da56ffd15f2fe3eada729922a8186340d1c22eb4c53cf9cfe55e","helper_sha256":"2136ed3191d06e30f6aa61cb37c7e4c6236299d073a327140da3a6b2711ed77c","original_sha256":"f8e74577db978d9fda233b6e2e80d6cd0096d6727ade041dd32c248dd859f07a"}
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5315280Z ##[group]Run actions/download-artifact@v8
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5315761Z with:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5316112Z   name: issue-1028-agent-cli-current-leaves
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5316658Z   path: /home/runner/work/_temp/current-leaves
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5317144Z   merge-multiple: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5317589Z   repository: link-assistant/formal-ai
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5318028Z   run-id: 42472083551
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5318391Z   skip-decompress: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5318728Z   digest-mismatch: error
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5319013Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5319605Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5319818Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5320094Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5320451Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5320736Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5321037Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5321424Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5321825Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5385049Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5385870Z   SCCACHE_GHA_ENABLED: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5386232Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5386631Z   RUSTC_WRAPPER: sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5386866Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5387112Z   CARGO_INCREMENTAL: 0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5387331Z   CARGO_TERM_COLOR: always
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5387590Z   NODE_OPTIONS: --disable-warning=DEP0005
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.5387859Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.6759962Z Downloading single artifact
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8039011Z ##[error]Unable to download artifact(s): Artifact not found for name: issue-1028-agent-cli-current-leaves
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	        Please ensure that your artifact is not expired and the artifact was uploaded using a compatible version of toolkit/upload-artifact.
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	        For more information, visit the GitHub Artifacts FAQ: https://github.com/actions/toolkit/blob/main/packages/artifact/docs/faq.md
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8126681Z ##[group]Run scripts/dump-agent-cli-evidence.sh "$OUT"
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8127082Z ^[[36;1mscripts/dump-agent-cli-evidence.sh "$OUT"^[[0m
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8156159Z shell: /usr/bin/bash -e {0}
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8156418Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8156613Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8156830Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8157193Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8157548Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8157840Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8158151Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8158499Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8158899Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8221342Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8221602Z   SCCACHE_GHA_ENABLED: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8221858Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8222189Z   RUSTC_WRAPPER: sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8222421Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8222681Z   CARGO_INCREMENTAL: 0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8222898Z   CARGO_TERM_COLOR: always
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8223122Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8314088Z no Agent CLI evidence at /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8314900Z no Agent CLI evidence files found; the harness may have failed before it wrote any
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8360865Z ##[group]Run actions/upload-artifact@v7
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8361151Z with:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8361418Z   name: issue-1028-agent-cli-binary-tree-depth-4-1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8361821Z   path: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8362139Z   retention-days: 3
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8362353Z   if-no-files-found: error
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8362579Z   compression-level: 6
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8362799Z   overwrite: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8363010Z   include-hidden-files: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8363242Z   archive: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8363428Z env:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8363609Z   TREE_DEPTH: 4
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8363826Z   NODE_FILTER: 1.2.2.2
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8364091Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8364427Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8364707Z   AUTHORED_RULES: disabled
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8365038Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8365375Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8365773Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8429440Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8429712Z   SCCACHE_GHA_ENABLED: true
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8429958Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8430218Z   RUSTC_WRAPPER: sccache
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8430449Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8430698Z   CARGO_INCREMENTAL: 0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8430911Z   CARGO_TERM_COLOR: always
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.8431141Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:54.9797622Z ##[error]No files were found with the provided path: /home/runner/work/formal-ai/formal-ai/agent-tree-run. No artifacts will be uploaded.
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.0028314Z Post job cleanup.
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.0032518Z ##[start-action display=Restore the binary built from these sources;id=__802a9740-b5d7-48d0-b460-5d493944dd0b.cache]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.0034688Z ##[end-action id=__802a9740-b5d7-48d0-b460-5d493944dd0b.cache;outcome=skipped;conclusion=skipped;duration_ms=0]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.0108522Z Post job cleanup.
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.0111826Z ##[start-action display=Install sccache;id=__5003279a-9867-41c8-86c5-200a7d658b1e.__mozilla-actions_sccache-action]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.0157793Z Post job cleanup.
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1027047Z ##[group]Get human-readable stats
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1045909Z [command]/opt/hostedtoolcache/sccache/0.16.0/x64/sccache --show-stats
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1103162Z Compile requests                      1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1103710Z Compile requests executed             0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1104200Z Cache hits                            0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1104641Z Cache misses                          0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1105124Z Cache hits rate                       -
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1105587Z Cache timeouts                        0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1106029Z Cache read errors                     0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1106450Z Forced recaches                       0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1106916Z Cache write errors                    0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1107463Z Cache errors                          0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1107926Z Compilations                          0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1108372Z Compilation failures                  0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1108862Z Non-cacheable compilations            0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1109499Z Non-cacheable calls                   1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1109938Z Non-compilation calls                 0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1110339Z Unsupported compiler calls            0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1110773Z Average cache write               0.000 s
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1111297Z Average compiler                  0.000 s
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1111749Z Average cache read hit            0.000 s
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1112222Z Failed distributed compilations       0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1112542Z 
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1112702Z Non-cacheable reasons:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1113109Z missing input                         1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1113395Z 
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1114076Z Cache location                  ghac, name: 90541733aa72480a9e77ce99e66fc1cfabfa835d74c751408eb0351b7adcec6b, prefix: /sccache/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1115004Z Base directories                (none)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1115409Z Version (client)                0.16.0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1125996Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1126721Z ##[group]Get JSON stats
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1130249Z [command]/opt/hostedtoolcache/sccache/0.16.0/x64/sccache --show-stats --stats-format=json
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1176439Z {"stats":{"compile_requests":1,"requests_unsupported_compiler":0,"requests_not_compile":0,"requests_not_cacheable":1,"requests_executed":0,"cache_errors":{"counts":{},"adv_counts":{}},"cache_hits":{"counts":{},"adv_counts":{}},"cache_misses":{"counts":{},"adv_counts":{}},"cache_timeouts":0,"cache_read_errors":0,"non_cacheable_compilations":0,"forced_recaches":0,"cache_write_errors":0,"cache_writes":0,"cache_write_duration":{"secs":0,"nanos":0},"cache_read_hit_duration":{"secs":0,"nanos":0},"compilations":0,"compiler_write_duration":{"secs":0,"nanos":0},"compile_fails":0,"not_cached":{"missing input":1},"dist_compiles":{},"dist_errors":0,"multi_level":null},"cache_location":"ghac, name: 90541733aa72480a9e77ce99e66fc1cfabfa835d74c751408eb0351b7adcec6b, prefix: /sccache/","cache_size":null,"max_cache_size":null,"use_preprocessor_cache_mode":false,"version":"0.16.0","basedirs":[]}
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1182524Z ##[endgroup]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1185452Z ##[notice]0% - 0 hits, 0 misses, 0 errors
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1185902Z 
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1186081Z Full human-readable stats:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1186525Z Compile requests                      1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1187447Z Compile requests executed             0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1187936Z Cache hits                            0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1188407Z Cache misses                          0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1188877Z Cache hits rate                       -
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1189914Z Cache timeouts                        0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1190386Z Cache read errors                     0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1191138Z Forced recaches                       0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1191627Z Cache write errors                    0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1192110Z Cache errors                          0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1192584Z Compilations                          0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1193067Z Compilation failures                  0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1193564Z Non-cacheable compilations            0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1194071Z Non-cacheable calls                   1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1194556Z Non-compilation calls                 0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1195053Z Unsupported compiler calls            0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1195571Z Average cache write               0.000 s
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1196079Z Average compiler                  0.000 s
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1196591Z Average cache read hit            0.000 s
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1197110Z Failed distributed compilations       0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1197451Z 
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1197617Z Non-cacheable reasons:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1198042Z missing input                         1
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1198364Z 
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1199038Z Cache location                  ghac, name: 90541733aa72480a9e77ce99e66fc1cfabfa835d74c751408eb0351b7adcec6b, prefix: /sccache/
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1200663Z Base directories                (none)
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1201159Z Version (client)                0.16.0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1201470Z 
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1293234Z ##[end-action id=__5003279a-9867-41c8-86c5-200a7d658b1e.__mozilla-actions_sccache-action;outcome=success;conclusion=success;duration_ms=118]
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.1364573Z Post job cleanup.
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.2269731Z [command]/usr/bin/git version
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.2327266Z git version 2.56.0
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.2364640Z Temporarily overriding HOME='/home/runner/work/_temp/a5a3d8e0-5b37-48ad-b63c-835793eadaca' before making global git config changes
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.2365948Z Adding repository directory to the temporary git global config as a safe directory
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.2371219Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.2406657Z Removing SSH command configuration
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.2415006Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.2453713Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.2830025Z Removing HTTP extra header
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.2836215Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.2883695Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.3260063Z Removing includeIf entries pointing to credentials config files
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.3270317Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.3301479Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.3813317Z Cleaning up orphan processes
+Agent CLI composite depth-4-1.2.2.2	UNKNOWN STEP	2026-11-08T11:01:55.4135169Z Terminate orphan process: pid (2561) (sccache)

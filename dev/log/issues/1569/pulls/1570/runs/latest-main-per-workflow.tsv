@@ -1,0 +1,60 @@
+Agent CLI E2E	.github/workflows/agent-cli-e2e.yml					
+Agentic CLI Matrix	.github/workflows/agentic-cli-matrix.yml	43692237280	push	success	2026-11-15T07:57:21Z	0212e13a
+Benchmark Corpus Gate	.github/workflows/benchmark-corpus-gate.yml	43692237341	push	success	2026-11-15T07:57:21Z	0212e13a
+Hive CI phase timing	.github/workflows/ci-phase-timing.yml	43693285375	workflow_run	skipped	2026-11-15T08:10:50Z	0212e13a
+Coding Ladder	.github/workflows/coding-ladder.yml	43671213335	push	success	2026-11-15T03:11:23Z	57b7a3b6
+container-images	.github/workflows/container-images.yml	38832657186	workflow_dispatch	success	2026-10-16T00:59:51Z	f7718d8b
+Coverage	.github/workflows/coverage.yml	43692237245	push	success	2026-11-15T07:57:21Z	0212e13a
+Cross-organization duplication	.github/workflows/cross-org-duplication.yml	42621869456	schedule	success	2026-11-09T13:01:39Z	70935ad8
+dependencies-latest	.github/workflows/dependencies-latest.yml	43594031456	schedule	failure	2026-11-14T12:16:57Z	70935ad8
+Desktop Release	.github/workflows/desktop-release.yml	43693150641	workflow_run	success	2026-11-15T08:09:05Z	0212e13a
+Check slim Docker runtime	.github/workflows/docker-slim.yml					
+Documentation policy	.github/workflows/documentation-policy.yml	43692237203	push	success	2026-11-15T07:57:21Z	0212e13a
+e2e-isolation	.github/workflows/e2e-isolation.yml					
+E2E Tests (local web app)	.github/workflows/e2e-local.yml					
+Self-hosting evidence	.github/workflows/evidence-check.yml					
+External Benchmarks	.github/workflows/external-benchmarks.yml	42621251488	schedule	failure	2026-11-09T12:57:09Z	70935ad8
+Observe read-only GitHub authorization profiles	.github/workflows/github-readonly-authorization-fixture.yml					
+Retain Hive Mind draft job logs	.github/workflows/hive-mind-draft-logs.yml	43692672232	workflow_run	success	2026-11-15T08:02:59Z	0212e13a
+Hive Mind draft	.github/workflows/hive-mind-draft.yml	43691120627	issues	failure	2026-11-15T07:42:15Z	57b7a3b6
+Finalize original Hive generated tasks	.github/workflows/hive-original-delivery-finalize.yml	43693285321	workflow_run	success	2026-11-15T08:10:50Z	0212e13a
+Original Hive Mind three-client delivery	.github/workflows/hive-original-delivery.yml	43693281151	workflow_run	skipped	2026-11-15T08:10:46Z	0212e13a
+Hive source event provenance	.github/workflows/hive-source-provenance.yml					
+Issue 1028 Agent CLI binary-tree ladder	.github/workflows/issue-1028-agent-ladder.yml	42472083551	schedule	failure	2026-11-08T10:35:34Z	70935ad8
+Job Headroom	.github/workflows/job-headroom.yml	42624594054	schedule	failure	2026-11-09T13:20:21Z	70935ad8
+Layered CI	.github/workflows/layered-ci.yml	43692237186	push	failure	2026-11-15T07:57:21Z	0212e13a
+Learning cycle (proposal only)	.github/workflows/learning-cycle.yml	43585104200	schedule	success	2026-11-14T10:24:04Z	70935ad8
+Broken Link Checker	.github/workflows/links.yml	43692237170	push	success	2026-11-15T07:57:21Z	0212e13a
+macOS Core Tests	.github/workflows/macos-core-tests.yml					
+Native whole-response observations	.github/workflows/native-response-observations.yml					
+Build GitHub Pages artifact	.github/workflows/pages-artifact.yml					
+Pin base commit	.github/workflows/pin-base-commit.yml					
+Proactive failure report Agent CLI E2E	.github/workflows/proactive-failure-report-e2e.yml					
+Resolve provenance native dependencies	.github/workflows/provenance-native-dependencies.yml					
+Native provenance interoperability and performance	.github/workflows/provenance-native.yml					
+Publish browser engine	.github/workflows/publish-engine.yml	43693150426	workflow_run	success	2026-11-15T08:09:05Z	0212e13a
+Publish source networks	.github/workflows/publish-source-networks.yml	43693150579	workflow_run	success	2026-11-15T08:09:05Z	0212e13a
+Publish VS Code extension	.github/workflows/publish-vscode.yml	43692237238	push	success	2026-11-15T07:57:21Z	0212e13a
+Pull request coverage profile	.github/workflows/pull-request-check-profile.yml					
+Question necessity ratchet	.github/workflows/question-necessity-ratchet.yml	43671213240	push	success	2026-11-15T03:11:23Z	57b7a3b6
+Regenerate native session projections	.github/workflows/regenerate-native-session-projections.yml					
+Verify full readable source content	.github/workflows/regenerate-self-ast-census.yml					
+Controlled text artifact reusable fixture	.github/workflows/release-runtime-fixture-callee.yml					
+Harmless reusable release runtime fixture	.github/workflows/release-runtime-fixture.yml					
+Staged release candidate	.github/workflows/release-staged.yml					
+CI/CD Pipeline	.github/workflows/release.yml	43692237432	push	failure	2026-11-15T07:57:21Z	0212e13a
+Security	.github/workflows/security.yml	43692237230	push	success	2026-11-15T07:57:21Z	0212e13a
+Self-authored backlog	.github/workflows/self-authored-backlog.yml	43603384144	schedule	success	2026-11-14T14:09:31Z	70935ad8
+Self-authored pull request	.github/workflows/self-authored-pull-request.yml	43691120763	issues	skipped	2026-11-15T07:42:15Z	57b7a3b6
+Self-development status	.github/workflows/self-development-status.yml	43692237246	push	success	2026-11-15T07:57:21Z	0212e13a
+Source scanner qualification and debt inventory	.github/workflows/source-scanner-qualification.yml	43692237171	push	success	2026-11-15T07:57:21Z	0212e13a
+Guarded staged release authority refusal	.github/workflows/staged-release-authority-fixture.yml					
+Stock Rust Install	.github/workflows/stock-rust-install.yml	43692237310	push	success	2026-11-15T07:57:21Z	0212e13a
+Summarization Ratchet	.github/workflows/summarization-ratchet.yml	43658508138	push	success	2026-11-15T00:30:30Z	5062e4f0
+Task Ladder	.github/workflows/task-ladder.yml	43671213238	push	success	2026-11-15T03:11:23Z	57b7a3b6
+Verify Public Release Downloads	.github/workflows/verify-release-downloads.yml	43693217652	workflow_run	success	2026-11-15T08:10:00Z	0212e13a
+Web UI boundary	.github/workflows/web-ui-boundary.yml	39971329794	push	success	2026-10-23T14:38:17Z	ab146dfa
+Work-item useful-edit hosted qualification	.github/workflows/work-item-qualification.yml	41768761745	workflow_dispatch	failure	2026-11-04T03:42:23Z	e5ade391
+Workflows	.github/workflows/workflows.yml	43692237232	push	success	2026-11-15T07:57:21Z	0212e13a
+Write-Effect Ladder	.github/workflows/write-effect-ladder.yml	43671213340	push	success	2026-11-15T03:11:23Z	57b7a3b6
+Dependency Graph	dynamic/dependabot/update-graph	31914675335	dynamic	success	2026-08-15T23:25:11Z	d15d9658

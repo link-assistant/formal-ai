@@ -145,6 +145,12 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p ci-logs
+          # Issue #1569: one failing suite must not hide the others. Under
+          # `set -e` the first failure ended the loop: every weekly run from
+          # 2026-10-26 to 2026-11-02 stopped after humaneval (12/20), so the
+          # other nine suites produced no result at all. Every selected suite
+          # runs now, each failure is named, and the step still fails.
+          failed=''
           run_suite() {
             ./rust/target/release/formal-ai benchmark run \
               --suite "$1" \
@@ -153,22 +159,33 @@ jobs:
               --allow-install \
               --append \
               --learning-report "target/formal-ai-benchmarks/learning/$1.lino" \
-              --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino
+              --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino || {
+              echo "::error title=External benchmark $1 failed::formal-ai benchmark run --suite $1 exited non-zero; the remaining suites still ran"
+              failed="${failed} $1"
+            }
           }
-          if [[ "${BENCHMARK_SUITE}" == 'all' ]]; then
-            for suite in humaneval mbpp gsm8k math object_counting coedit egg_math editeval; do
-              run_suite "${suite}" "${BENCHMARK_SLICE}"
-            done
-            run_suite ascent_transitive_closure 5
-            run_suite swebench_lite "${SWE_BENCH_SLICE}"
-          elif [[ "${BENCHMARK_SUITE}" == 'swebench_lite' ]]; then
-            run_suite "${BENCHMARK_SUITE}" "${SWE_BENCH_SLICE}"
-          elif [[ "${BENCHMARK_SUITE}" == 'ascent_transitive_closure' ]]; then
-            run_suite "${BENCHMARK_SUITE}" 5
-          else
-            run_suite "${BENCHMARK_SUITE}" "${BENCHMARK_SLICE}"
-          fi 2>&1 | tee ci-logs/external-benchmarks.log
+          status=0
+          {
+            if [[ "${BENCHMARK_SUITE}" == 'all' ]]; then
+              for suite in humaneval mbpp gsm8k math object_counting coedit egg_math editeval; do
+                run_suite "${suite}" "${BENCHMARK_SLICE}"
+              done
+              run_suite ascent_transitive_closure 5
+              run_suite swebench_lite "${SWE_BENCH_SLICE}"
+            elif [[ "${BENCHMARK_SUITE}" == 'swebench_lite' ]]; then
+              run_suite "${BENCHMARK_SUITE}" "${SWE_BENCH_SLICE}"
+            elif [[ "${BENCHMARK_SUITE}" == 'ascent_transitive_closure' ]]; then
+              run_suite "${BENCHMARK_SUITE}" 5
+            else
+              run_suite "${BENCHMARK_SUITE}" "${BENCHMARK_SLICE}"
+            fi
+            if [[ -n "${failed}" ]]; then
+              echo "failed suites:${failed}"
+              exit 1
+            fi
+          } 2>&1 | tee ci-logs/external-benchmarks.log || status=$?
           grep -E '^suite=' ci-logs/external-benchmarks.log >> "${GITHUB_STEP_SUMMARY}"
+          exit "${status}"
 
       - name: Verify the monotonic ratchet
         run: |

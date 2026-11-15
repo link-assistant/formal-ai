@@ -1,0 +1,41 @@
+dependencies-latest	schedule	70935ad8	2026-11-14T12:16:57Z	failure
+  job 132444622868 update
+External Benchmarks	schedule	70935ad8	2026-11-09T12:57:09Z	failure
+  job 129173661788 Run upstream suites
+Issue 1028 Agent CLI binary-tree ladder	schedule	70935ad8	2026-11-08T10:35:34Z	failure
+  job 128705134624 Agent CLI ladder depth-1-2
+  job 128705134691 Agent CLI ladder depth-1-1
+  job 128705134739 Agent CLI ladder depth-3-1.2.1
+  job 128710541822 Validate the current-run leaf evidence
+  job 128710719890 Agent CLI composite depth-4-1.2.2.2
+  job 128710719896 Agent CLI composite depth-4-1.2.1.2
+  job 128710719902 Agent CLI composite depth-4-1.2.1.1
+  job 128710719933 Agent CLI composite depth-4-1.2.2.1
+  job 128710719935 Agent CLI composite depth-4-1.1.2.1
+  job 128710719940 Agent CLI composite depth-4-2.1.1.2
+  job 128710719967 Agent CLI composite depth-4-1.1.2.2
+  job 128710719984 Agent CLI composite depth-4-2.2.2.2
+  job 128710719986 Agent CLI composite depth-4-1.1.1.1
+  job 128710720074 Agent CLI composite depth-4-1.1.1.2
+  job 128710720131 Agent CLI composite depth-4-2.2.1.1
+  job 128710720132 Agent CLI composite depth-4-2.1.1.1
+  job 128710720182 Agent CLI composite depth-4-2.1.2.1
+  job 128710720186 Agent CLI composite depth-4-2.2.2.1
+  job 128710720201 Agent CLI composite depth-4-2.1.2.2
+  job 128710720231 Agent CLI composite depth-4-2.2.1.2
+  job 128712025335 Compare the measured ladder with the record
+Job Headroom	schedule	70935ad8	2026-11-09T13:20:21Z	failure
+  job 129184985116 Audit job timeout headroom
+Work-item useful-edit hosted qualification	workflow_dispatch	e5ade391	2026-11-04T03:42:23Z	failure
+  job 126374892086 Actual Hive agent work-item contradicted-documentation
+  job 126374892087 Actual Hive agent work-item original-documentation
+  job 126374892120 Actual Hive claude work-item unsupported
+  job 126374892127 Actual Hive agent work-item unsupported
+  job 126374892135 Actual Hive codex work-item contradicted-documentation
+  job 126374892142 Actual Hive agent work-item renamed-components
+  job 126374892144 Actual Hive claude work-item renamed-components
+  job 126374892156 Actual Hive claude work-item original-documentation
+  job 126374892171 Actual Hive claude work-item contradicted-documentation
+  job 126374892194 Actual Hive codex work-item renamed-components
+  job 126374892201 Actual Hive codex work-item unsupported
+  job 126374892307 Actual Hive codex work-item original-documentation
