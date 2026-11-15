@@ -305,6 +305,14 @@ meanings
     unit "ordered relation over two operands"
     example "2 is greater than 1 and 1 is less than 2 both read less(1,2); 2 is less than 1 reads less(2,1)."
     grounding "js/agentic/crate/proposition_structure.mjs::relationOf; rust/src/formalization/proposition_structure.rs::relation_of"
+  task-decomposition
+    role action
+    defined-by output
+    precondition "A request names more than one obligation joined by a sequence, alternative or aggregation connective of the seeded vocabulary."
+    effect "Split the request into a task tree within the seeded depth, breadth and budget bounds, derive a test per task, draft by cache, derivation and composition, select the passing draft of least action and compose the children by their relation; a task no draft passes stays an explicit unresolved result."
+    unit "task tree with tests, drafts, selection and composition"
+    example "Translate hello to French, then count the letters and report the vowels reads sequence(leaf,aggregation(leaf,leaf)) in English, Russian, Hindi and Chinese alike."
+    grounding "js/agentic/crate/meta_executor.mjs::executeProcedure; rust/src/meta_executor.rs::execute_procedure"
   symbolic-operator
     role action
     defined-by output
