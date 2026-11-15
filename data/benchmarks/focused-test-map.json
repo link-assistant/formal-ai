@@ -25,6 +25,28 @@
       ]
     },
     {
+      "id": "work-item-evidence-gap",
+      "reasons": ["EvidenceCollected", "NoRepositoryReference", "AttachmentEvidenceUnavailable", "ExternalEvidenceUnavailable", "RelatedEvidenceUnread"],
+      "description": "A work item whose evidence collection ended without an edit must name the narrowest gap it leaves (the ten planned-not-executed fixtures of issue #1483).",
+      "tests": [
+        "rust/tests/web/work-item-evidence.test.mjs",
+        "rust/tests/web/work-item-report-outcome.test.mjs",
+        "rust/tests/web/work-item-hosted-effects.test.mjs"
+      ]
+    },
+    {
+      "id": "work-item-edit-and-check",
+      "reasons": ["IndependentCheckFailed", "FileIoProcessStatusUnknown", "ContradictedIntegrationClaim"],
+      "description": "A work item that reaches a change must end with the smallest checkable edit, a contract-derived independent check and a verified no-op repeat, through the Agent, Claude and Codex adapters (issue #1483).",
+      "tests": [
+        "rust/tests/web/work-item-boundary-route.test.mjs",
+        "rust/tests/web/work-item-adapter-sessions.test.mjs",
+        "rust/tests/web/work-item-file-io.test.mjs",
+        "rust/tests/web/repository-documentation.test.mjs",
+        "rust/tests/web/repository-consumer-discovery.test.mjs"
+      ]
+    },
+    {
       "id": "hive-draft-adapter",
       "reasons": [],
       "description": "The draft adapter, attempt identity, evidence capture or result publication.",
@@ -76,7 +98,9 @@
     }
   ],
   "components": [
-    { "prefixes": ["js/agentic/work_item_", "js/agentic/file_read/", "js/agentic/planner.mjs"], "families": ["work-item-read-policy", "work-item-reference-resolution"] },
+    { "prefixes": ["js/agentic/work_item_", "js/agentic/file_read/", "js/agentic/planner.mjs"], "families": ["work-item-read-policy", "work-item-reference-resolution", "work-item-evidence-gap", "work-item-edit-and-check"] },
+    { "prefixes": ["js/agentic/documentation_acceptance.mjs", "js/agentic/observed_documentation.mjs", "js/agentic/source_repair.mjs"], "families": ["work-item-edit-and-check"] },
+    { "prefixes": ["scripts/work-item-qualification/"], "families": ["work-item-evidence-gap"] },
     { "prefixes": ["data/benchmarks/fixtures/draft-replays/", "scripts/lib/draft-replay.mjs", "scripts/extract-draft-replay.mjs"], "families": ["work-item-read-policy", "work-item-reference-resolution"] },
     { "prefixes": [".github/workflows/hive-mind-draft.yml"], "families": ["hive-draft-adapter", "shared-build-custody", "ci-phase-timing", "workflow-policy"] },
     { "prefixes": ["scripts/hive-draft-attempt.mjs", "scripts/hive-mind-draft-result.mjs", "scripts/prepare-hive-draft-evidence.mjs", ".hive-mind/"], "families": ["hive-draft-adapter"] },
