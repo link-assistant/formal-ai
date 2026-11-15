@@ -1,0 +1,13 @@
+[
+  [
+    'amendment_9ee722ec3834c59b',
+    'topic=latex',
+    'rule=Always include a LaTeX verification step.',
+    [
+      'req-alice',
+      'req-bob',
+      'scope:generalized',
+      'recipe:data/meta/dreaming-recipe.lino'
+    ]
+  ]
+]
