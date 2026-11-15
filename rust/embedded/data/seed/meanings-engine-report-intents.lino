@@ -482,7 +482,7 @@ meanings
     unit "not applicable"
     example "Done: the request. The session stopped at `UsefulChangeVerified` after a change that an independent check accepted."
     grounding "data/seed/multilingual-responses-agentic-workspace.lino"
-  work-item-report-no-op
+  work-item-report-no-change-needed
     defined-by answer
     role localized_response_template
     precondition "a repository work-item session finds the requested state already present and an independent check accepts it"
@@ -498,7 +498,7 @@ meanings
     unit "not applicable"
     example "Partly done: the request. The session stopped at `UsefulCandidateReadbackVerified` after a change that an independent check accepted; the requirements listed below are not yet verified."
     grounding "data/seed/multilingual-responses-agentic-workspace.lino"
-  work-item-report-partial-no-op
+  work-item-report-partial-no-change-needed
     defined-by answer
     role localized_response_template
     precondition "a repository work-item session finds part of the requested state already present, an independent check accepts it, and other requirements stay unverified"

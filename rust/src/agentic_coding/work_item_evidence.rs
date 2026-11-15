@@ -413,7 +413,12 @@ pub(super) fn plan_work_item_evidence(
     work_item: &str,
     result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
-    let references = work_item_references(task, work_item);
+    let named = !work_item_evidence_paths(task).is_empty();
+    let references = if named {
+        work_item_references(task, work_item)
+    } else {
+        Vec::new()
+    };
     let leads = work_item_leads(task, work_item);
     // Identifiers are searched only when the work item names no file: a named file is the narrower evidence.
     let symbols = if references.is_empty() {
@@ -421,6 +426,10 @@ pub(super) fn plan_work_item_evidence(
     } else {
         Vec::new()
     };
+    // A work item with neither a file nor a lead is left to the general planner.
+    if !named && leads.attachments.is_empty() && leads.documents.is_empty() && symbols.is_empty() {
+        return None;
+    }
     let progress = Progress::scan(messages);
     let roots = workspace_roots(client_working_directory(messages), host_root());
     let mut evidence = Evidence::default();

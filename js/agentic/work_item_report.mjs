@@ -38,8 +38,8 @@ export function refusal(requirements, path) {
  */
 function headlineIntent(record) {
   // A verified change that leaves requirements unverified is partial, never done.
-  if (record.verified === true && record.complete !== true) return record.authored === true ? 'work-item-report-partial' : 'work-item-report-partial-no-op';
-  if (record.verified === true) return record.authored === true ? 'work-item-report-accepted' : 'work-item-report-no-op';
+  if (record.verified === true && record.complete !== true) return record.authored === true ? 'work-item-report-partial' : 'work-item-report-partial-no-change-needed';
+  if (record.verified === true) return record.authored === true ? 'work-item-report-accepted' : 'work-item-report-no-change-needed';
   return record.authored === true ? 'work-item-report-changed' : 'work-item-report-unchanged';
 }
 

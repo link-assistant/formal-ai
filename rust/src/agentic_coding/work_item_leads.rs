@@ -151,6 +151,23 @@ pub(super) fn work_item_symbols(task: &str) -> Vec<String> {
     symbols
 }
 
+/// The command template `key` of data/meta/work-item-check-commands.json,
+/// each `{name}` replaced by its value.
+pub(super) fn work_item_command(key: &str, values: &[(&str, &str)]) -> String {
+    static COMMANDS: OnceLock<serde_json::Value> = OnceLock::new();
+    let commands = COMMANDS.get_or_init(|| {
+        serde_json::from_str(include_str!(
+            "../../embedded/data/meta/work-item-check-commands.json"
+        ))
+        .expect("StaticWorkItemCheckCommands")
+    });
+    let mut text = commands[key].as_str().unwrap_or_default().to_owned();
+    for (name, value) in values {
+        text = text.replace(&format!("{{{name}}}"), value);
+    }
+    text
+}
+
 /// The fetch of a document lead, when a fetch tool is advertised.
 pub(super) fn document_action<'a>(url: &str, tools: &[&'a str]) -> Option<SearchAction<'a>> {
     tool_for(tools, Capability::Fetch).map(|fetch| SearchAction {
@@ -194,9 +211,7 @@ pub(super) fn symbol_actions<'a>(symbol: &str, tools: &[&'a str]) -> Vec<SearchA
         });
     }
     if let Some(run) = tool_for(tools, Capability::Run) {
-        let command = format!(
-            "grep -rIlw --exclude-dir=node_modules --exclude-dir=.git -e '{symbol}' . | head -n 20"
-        );
+        let command = work_item_command("symbolSearch", &[("symbol", symbol)]);
         actions.push(SearchAction {
             tool: run,
             capability: Capability::Run,
@@ -304,7 +319,7 @@ mod tests {
 
     #[test]
     fn symbols_keep_compound_identifiers_only() {
-        let task = "The `planned_not_executed` reason in `Progress::scan()` and `word` and `camelCase`, `x.y`.";
+        let task = "The `planned_not_executed` reason in `Progress::scan()` and `word` and `camelCase`, `x.y`";
         assert_eq!(
             work_item_symbols(task),
             ["planned_not_executed", "scan", "camelCase"]

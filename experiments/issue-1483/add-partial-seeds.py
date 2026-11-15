@@ -9,7 +9,7 @@ entries = [
   "a repository work-item session ends after a change that an executed independent check accepted while other requirements stay unverified",
   "the report opens by naming the work item and the reason the session stopped, says an independent check accepted the change, and says the listed requirements are not yet verified",
   "Partly done: the request. The session stopped at `UsefulCandidateReadbackVerified` after a change that an independent check accepted; the requirements listed below are not yet verified."),
- ("work-item-report-partial-no-op", {
+ ("work-item-report-partial-no-change-needed", {
   "en": "Partly done already: {subject}. The session stopped at `{reason}`: an independent check accepted the current files, so no change was made; the requirements listed below are not yet verified.",
   "ru": "Уже частично выполнено: {subject}. Сеанс остановился на `{reason}`: независимая проверка приняла текущие файлы, поэтому изменений не было; перечисленные ниже требования ещё не проверены.",
   "hi": "पहले से आंशिक रूप से पूरा: {subject}। सत्र `{reason}` पर रुका: एक स्वतंत्र जाँच ने मौजूदा फ़ाइलों को स्वीकार किया, इसलिए कोई बदलाव नहीं किया गया; नीचे दी गई आवश्यकताएँ अभी सत्यापित नहीं हैं।",
@@ -43,6 +43,6 @@ def insert_after(path, anchor, block):
     open(path, "w", encoding="utf-8").write("\n".join(lines))
     print("updated", path)
 for path in ["data/seed/multilingual-responses-agentic-workspace.lino", "rust/embedded/data/seed/multilingual-responses-agentic-workspace.lino"]:
-    insert_after(path, "  response response-work-item-report-no-op-es", responses())
+    insert_after(path, "  response response-work-item-report-no-change-needed-es", responses())
 for path in ["data/seed/meanings-engine-report-intents.lino", "rust/embedded/data/seed/meanings-engine-report-intents.lino"]:
-    insert_after(path, "  work-item-report-no-op", meanings())
+    insert_after(path, "  work-item-report-no-change-needed", meanings())

@@ -77,9 +77,9 @@ fn headline_intent(record: &Value) -> &'static str {
     let complete = record["complete"] == json!(true);
     match (verified, complete, record["authored"] == json!(true)) {
         (true, true, true) => "work-item-report-accepted",
-        (true, true, false) => "work-item-report-no-op",
+        (true, true, false) => "work-item-report-no-change-needed",
         (true, false, true) => "work-item-report-partial",
-        (true, false, false) => "work-item-report-partial-no-op",
+        (true, false, false) => "work-item-report-partial-no-change-needed",
         (false, _, true) => "work-item-report-changed",
         (false, _, false) => "work-item-report-unchanged",
     }

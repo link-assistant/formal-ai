@@ -13,6 +13,7 @@ import { userReadPolicyBlocksPlan } from './file_read/ownership.mjs';
 import { toolFor } from './capability_router.mjs';
 import { planOne, jsonText } from './plan.mjs';
 import { commandArgument } from './tool_result.mjs';
+import { workItemCommand } from './work_item_leads.mjs';
 const words = value => value.toLowerCase().replace(/[`'"()[\],;:]/gu, ' ').trim().replace(/\s+/gu, ' ');
 function grammar() {
   const parsed = parseLino(readText('data/meta/comparison-boundary-grammar.lino'));
@@ -383,11 +384,12 @@ export function boundaryContractCheck(contract, observations, operation, tools) 
     + 'const bad=s.filter(x=>f(...x.args)!==x.expected);'
     + 'console.log("formal-ai-contract-check: "+(bad.length?"failed ":"passed ")+(s.length-bad.length)+"/"+s.length);'
     + 'process.exitCode=bad.length?1:0;';
-  const sampleCommand = `node --input-type=module -e '${script}'`;
-  const command = contract.mode === 'regression'
-    ? `node --test '${contract.target}' >/dev/null 2>&1 && echo "formal-ai-regression-test: passed" || echo "formal-ai-regression-test: failed"; ${sampleCommand}`
+  const sampleCommand = workItemCommand('contractSampleCheck', [['script', script]]);
+  const regression = contract.mode === 'regression';
+  const command = regression
+    ? workItemCommand('regressionTestCheck', [['testOwner', contract.target], ['sampleCommand', sampleCommand]])
     : sampleCommand;
-  return { tool: run, command, samples: samples.length, declaration };
+  return { tool: run, command, samples: samples.length, declaration, regression };
 }
 
 /** The outcome of an executed contract check: passed, failed, or unavailable when its marker is missing. */
@@ -395,7 +397,7 @@ export function boundaryCheckOutcome(check, attempt) {
   const text = String(attempt?.raw_receipt ?? attempt?.detail ?? '');
   const samples = SAMPLE_MARKER.exec(text);
   if (samples === null || Number(samples[3]) !== check.samples) return 'unavailable';
-  if (check.command.startsWith('node --test ')) {
+  if (check.regression === true) {
     const regression = REGRESSION_MARKER.exec(text);
     if (regression === null) return 'unavailable';
     if (regression[1] === 'failed') return 'failed';

@@ -10,6 +10,7 @@
 // followed.
 
 import { Capability } from './capability.mjs';
+import commands from '../../data/meta/work-item-check-commands.json' with { type: 'json' };
 import { toolFor } from './capability_router.mjs';
 import { fetchArguments, jsonText } from './plan.mjs';
 import { commandArgument } from './tool_result.mjs';
@@ -113,7 +114,7 @@ export function symbolActions(symbol, tools) {
     actions.push({
       tool: run,
       capability: Capability.Run,
-      arguments: jsonText({ command: `grep -rIlw --exclude-dir=node_modules --exclude-dir=.git -e '${symbol}' . | head -n 20` })
+      arguments: jsonText({ command: workItemCommand('symbolSearch', [['symbol', symbol]]) })
     });
   }
   return actions;
@@ -159,4 +160,11 @@ export function symbolMatches(output, roots) {
     .map(path => ({ path, rank: rank(path), depth: path.split('/').length }))
     .sort((left, right) => left.rank - right.rank || left.depth - right.depth || (left.path < right.path ? -1 : left.path > right.path ? 1 : 0))
     .map(row => row.path);
+}
+
+/** Mirrors `fn work_item_command`: the command template `key` of data/meta/work-item-check-commands.json, filled with `values`. */
+export function workItemCommand(key, values) {
+  let text = typeof commands[key] === 'string' ? commands[key] : '';
+  for (const [name, value] of values) text = text.split('{' + name + '}').join(value);
+  return text;
 }

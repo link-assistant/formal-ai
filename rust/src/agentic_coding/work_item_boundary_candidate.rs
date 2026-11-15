@@ -9,6 +9,7 @@ use super::work_item_file_io::{
     FileIoPlan, WorkItemFileProgress as Progress, file_io_effect_step, file_io_pending_step,
     file_io_read_step,
 };
+use super::work_item_leads::work_item_command;
 use super::work_item_report::{refusal, work_item_record_final};
 use crate::protocol::ChatMessage;
 use crate::seed::parser::parse_lino;
@@ -462,6 +463,8 @@ pub(super) struct BoundaryContractCheck<'a> {
     pub(super) command: String,
     pub(super) samples: usize,
     pub(super) declaration: String,
+    /// Whether the command also runs the candidate's own regression test.
+    pub(super) regression: bool,
 }
 
 fn identifier(text: &str) -> bool {
@@ -536,10 +539,14 @@ pub(super) fn boundary_contract_check<'a>(
          console.log(\"formal-ai-contract-check: \"+(bad.length?\"failed \":\"passed \")+(s.length-bad.length)+\"/\"+s.length);\
          process.exitCode=bad.length?1:0;"
     );
-    let sample_command = format!("node --input-type=module -e '{script}'");
+    let sample_command = work_item_command("contractSampleCheck", &[("script", script.as_str())]);
     let command = if regression {
-        format!(
-            "node --test '{test_owner}' >/dev/null 2>&1 && echo \"formal-ai-regression-test: passed\" || echo \"formal-ai-regression-test: failed\"; {sample_command}"
+        work_item_command(
+            "regressionTestCheck",
+            &[
+                ("testOwner", test_owner.as_str()),
+                ("sampleCommand", sample_command.as_str()),
+            ],
         )
     } else {
         sample_command
@@ -549,6 +556,7 @@ pub(super) fn boundary_contract_check<'a>(
         command,
         samples: samples.len(),
         declaration: declaration.to_owned(),
+        regression,
     })
 }
 
@@ -573,7 +581,7 @@ pub(super) fn boundary_check_outcome(
     if samples[3].parse::<usize>().ok() != Some(check.samples) {
         return "unavailable";
     }
-    if check.command.starts_with("node --test ") {
+    if check.regression {
         let Some(outcome) = regression.captures(text) else {
             return "unavailable";
         };
@@ -804,8 +812,8 @@ pub(super) fn plan_work_item_boundary_step(
             },
         ),
         BoundaryEffectOutcome::Effect(effect) => {
-            let no_op = effect["noOp"] == true;
-            let awaiting = if no_op {
+            let unchanged = effect["noOp"] == true;
+            let awaiting = if unchanged {
                 "VerifiedNoOpAwaitingIndependentAcceptance"
             } else {
                 "UsefulCandidateAwaitingIndependentAcceptance"
@@ -831,7 +839,7 @@ pub(super) fn plan_work_item_boundary_step(
             let executed = json!({"kind":"contract-derived-execution","command":check.command,
                 "samples":check.samples,"declaration":check.declaration,"status":status});
             let (reason, detail) = match status {
-                "passed" if no_op => ("VerifiedNoOp", Value::Null),
+                "passed" if unchanged => ("VerifiedNoOp", Value::Null),
                 "passed" => ("UsefulChangeVerified", Value::Null),
                 "failed" => ("IndependentCheckFailed", json!({"check":executed})),
                 _ => ("IndependentCheckUnavailable", json!({"check":executed})),

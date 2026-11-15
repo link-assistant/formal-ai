@@ -43,10 +43,13 @@ function evidenceRemainingWork(unresolved) {
 }
 
 export function planWorkItemEvidence(task, messages, tools, workItem = null) {
-  const references = workItemReferences(task, workItem);
+  const named = workItemEvidencePaths(task).length > 0;
+  const references = named ? workItemReferences(task, workItem) : [];
   const leads = workItemLeads(task, workItem);
   // Identifiers are searched only when the work item names no file: a named file is the narrower evidence.
   const symbols = references.length ? [] : workItemSymbols(task);
+  // A work item with neither a file nor a lead is left to the general planner.
+  if (!named && !leads.attachments.length && !leads.documents.length && !symbols.length) return null;
   const progress = Progress.scan(messages),
     roots = workspaceRoots(clientWorkingDirectory(messages), hostRoot()),
     observations = [],

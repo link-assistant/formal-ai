@@ -10,7 +10,7 @@ entries = [
   "a repository work-item session ends after a change that an executed independent check accepted",
   "the report opens by naming the work item and the reason the session stopped, and says an independent check accepted the change",
   "Done: the request. The session stopped at `UsefulChangeVerified` after a change that an independent check accepted."),
- ("work-item-report-no-op", {
+ ("work-item-report-no-change-needed", {
   "en": "Already done: {subject}. The session stopped at `{reason}`: an independent check accepted the current files, so no change was needed.",
   "ru": "Уже выполнено: {subject}. Сеанс остановился на `{reason}`: независимая проверка приняла текущие файлы, поэтому изменение не понадобилось.",
   "hi": "पहले से पूरा: {subject}। सत्र `{reason}` पर रुका: एक स्वतंत्र जाँच ने मौजूदा फ़ाइलों को स्वीकार किया, इसलिए किसी बदलाव की ज़रूरत नहीं थी।",
