@@ -135,12 +135,14 @@ jobs:
           persist-credentials: false
           fetch-depth: 1
           filter: blob:none
+          # `Cargo.lock` with no leading slash matches every committed lockfile
+          # at any depth; the audit covers each one (#1571).
           sparse-checkout: |
             /.cargo/
             /rust/
             /scripts/check-rust-dependencies.sh
             /Cargo.toml
-            /Cargo.lock
+            Cargo.lock
             /README.md
             /LICENSE
           sparse-checkout-cone-mode: false

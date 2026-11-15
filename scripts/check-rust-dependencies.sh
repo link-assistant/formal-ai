@@ -147,3 +147,24 @@ fi
 # entry at all: the only way past this line is to change the lockfile.
 echo "Auditing $lock"
 cargo audit --file "$lock" --deny warnings
+
+# Issue #1571: the audit read only rust/Cargo.lock, so the committed lockfile
+# of a standalone experiment crate kept rustls 0.23.43 (four advisories), the
+# yanked chacha20 0.10.1 and five more advisories while this job stayed green;
+# only Dependabot reported the rustls ones. Like check-javascript-dependencies.sh,
+# discover every committed lockfile, and fail when one is committed but not
+# checked out instead of skipping it silently. Those lockfiles ship nothing:
+# they pin historical versions on purpose (the issue #1017 reproducer pins
+# meta-language 0.58.1), so a vulnerability, an unsound crate or a yanked
+# release fails here, and an `unmaintained` notice with no fixed release is
+# reported but does not fail.
+while IFS= read -r each; do
+  [[ "$each" != "$lock" ]] || continue
+  if [[ ! -f "$each" ]]; then
+    echo "::error::$each is committed but not checked out, so its dependencies would go unaudited."
+    echo "  Add it to the security workflow's sparse checkout."
+    exit 1
+  fi
+  echo "Auditing $each"
+  cargo audit --file "$each" --deny unsound --deny yanked
+done < <(git ls-files -- 'Cargo.lock' '*/Cargo.lock')

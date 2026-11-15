@@ -2,6 +2,7 @@
 // Workflow text is read directly so the check needs no installed package.
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {execFileSync} from 'node:child_process';
 import {existsSync,readdirSync,readFileSync} from 'node:fs';
 
 const root=new URL('../../../',import.meta.url);
@@ -87,4 +88,16 @@ test('every runtime package in the desktop and VS Code locks accepts the Node 24
   assert.match(manifest.dependencies['@link-assistant/web-capture'],/^\^1\./u);
   assert.match(manifest['@link-assistant/web-capture//'],/^blocked: https:\/\/github\.com\/link-assistant\/web-capture\/issues\/191 /u);
  }
+});
+
+// Dependabot reported rustls 0.23.43 in experiments/issue-1017-.../Cargo.lock
+// while the Cargo audit read only rust/Cargo.lock and stayed green. Which
+// lockfiles the job checks out is pinned in fast-pull-request-production-profile.
+test('the Cargo audit discovers every committed Cargo.lock and holds unshipped ones to vulnerabilities, unsound and yanked',()=>{
+ const locks=execFileSync('git',['ls-files','--','Cargo.lock','*/Cargo.lock'],{cwd:root,encoding:'utf8'}).trim().split('\n');
+ assert.ok(locks.includes('rust/Cargo.lock')&&locks.length>1,locks.join(', '));
+ const script=readFileSync(new URL('scripts/check-rust-dependencies.sh',root),'utf8');
+ assert.match(script,/done < <\(git ls-files -- 'Cargo\.lock' '\*\/Cargo\.lock'\)/u);
+ assert.match(script,/cargo audit --file "\$each" --deny unsound --deny yanked/u);
+ assert.match(script,/::error::\$each is committed but not checked out/u);
 });
