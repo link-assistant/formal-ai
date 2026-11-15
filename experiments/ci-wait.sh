@@ -6,6 +6,6 @@ while true; do
   pending=$(echo "$out" | jq -r '[.[]|select(.status!="completed")]|length' 2>/dev/null)
   failed=$(echo "$out" | jq -r '[.[]|select(.status=="completed" and .conclusion!="success" and .conclusion!="skipped")|.name]|join(",")' 2>/dev/null)
   echo "$(date +%H:%M:%S) pending=$pending failed=[$failed]"
-  if [ "$pending" = "0" ]; then echo "$out" | jq -c '.[]'; break; fi
+  if [ "$pending" = "0" ] && [ "$(echo "$out" | jq length)" != "0" ]; then echo "$out" | jq -c '.[]'; break; fi
   sleep 120
 done
