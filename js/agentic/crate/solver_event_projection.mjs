@@ -40,6 +40,7 @@ const IMPULSE = 'impulse';
 const LANGUAGE = 'language';
 const ROUTE = 'intent_formalization:route';
 const CANDIDATE = 'candidate';
+const INTENT = 'intent';
 const META_RESPONSE = 'response:meta_reasoner';
 const DISPATCH_STEP = 'dispatch_handler';
 const UNKNOWN_RULE_SELECTION = 'initial unknown reason no_seed_route next try_rule_synthesis';
@@ -96,10 +97,12 @@ export function nativeSolverLog(result, recordCore = null) {
     log.push({ kind: 'search:local', payload: prompt });
     if (!SEEDED_RULE_ROUTES.has(record.route)) log.push({ kind: 'selected_rule', payload: UNKNOWN_RULE_SELECTION });
   }
-  // `finalize_simple` logs its `candidate` only when none is logged yet: the
-  // worker logs one in its tail, which the formalization candidate replaces.
+  // `finalize_simple` logs its `candidate` (the intent) only when none is
+  // logged yet: the worker logs one in its tail, which the formalization
+  // candidate replaces. The candidates a method drafted (issue #1550) stay.
   const logged = log.some((event) => event.kind === CANDIDATE);
-  log.push(...(logged ? rest.filter((event) => event.kind !== CANDIDATE) : rest));
+  const intent = rest.find((event) => event.kind === INTENT)?.payload;
+  log.push(...(logged ? rest.filter((event) => event.kind !== CANDIDATE || event.payload !== intent) : rest));
   const method = metaAnswer ? null : dispatchedMethod(result);
   if (method) log.push({ kind: 'method', payload: method });
   return log;

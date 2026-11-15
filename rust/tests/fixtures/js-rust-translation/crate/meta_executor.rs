@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=8c2cbf72636dff34b4147ee540fab303eaef238a33937b4237f9d78c3b0b77d8 bytes=19632
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=5de8cf7793187a4fcacbca9eeac56d197454399a7e4146c651f481d057e90513 bytes=21067
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=5
 
@@ -111,6 +111,14 @@ pub static META_EXEC_EVENT_KINDS: std::sync::LazyLock<Vec<String>> = std::sync::
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
 // formal-ai:blockers arrow callback of .some() | call of a sibling function | call of an imported function | field access | global call Boolean() | global call String() | imported value | let without a value | method call .push() | method call .some() | null | nullish coalescing | object without a $ tag | optional chaining
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal null
+// formal-ai:blockers call of a sibling function | field access | global call String() | method call .join() | null | nullish coalescing | object without a $ tag
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal method call .lastIndexOf()
+// formal-ai:blockers global call String() | method call .indexOf() | method call .lastIndexOf() | method call .push() | method call .slice() | nullish coalescing
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .filter()

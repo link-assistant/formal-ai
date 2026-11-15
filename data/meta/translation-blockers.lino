@@ -11,7 +11,7 @@
 # `unlock` rows are the greedy order: lifting the constructs down to a row
 # together leaves `cumulative` items with nothing refused by this scan.
 translation_blockers
-  carried_items 2571
+  carried_items 2573
   scanned_clear 15
   blockers_per_item 0 15
   blockers_per_item 1 819
@@ -19,8 +19,8 @@ translation_blockers
   blockers_per_item 3 303
   blockers_per_item 4 222
   blockers_per_item 5 213
-  blockers_per_item 6 143
-  blockers_per_item 7 111
+  blockers_per_item 6 144
+  blockers_per_item 7 112
   blockers_per_item 8 86
   blockers_per_item 9 91
   blockers_per_item 10 63
@@ -33,9 +33,9 @@ translation_blockers
   blockers_per_item 17 11
   blockers_per_item 18 7
   blockers_per_item 19 8
-  blockers_per_item 20 7
+  blockers_per_item 20 6
   blockers_per_item 21 6
-  blockers_per_item 22 2
+  blockers_per_item 22 3
   blockers_per_item 23 3
   blockers_per_item 24 3
   blockers_per_item 25 2
@@ -47,37 +47,37 @@ translation_blockers
   blockers_per_item 35 1
   blockers_per_item 41 1
   blockers_per_item 43 1
-construct "call of a sibling function" items 944 only 37
-construct "field access" items 936 only 25
+construct "call of a sibling function" items 945 only 37
+construct "field access" items 937 only 25
 construct "call of an imported function" items 695 only 20
-construct "null" items 609 only 5
-construct "object without a $ tag" items 562 only 26
+construct "null" items 610 only 5
+construct "object without a $ tag" items 563 only 26
 construct "arrow function" items 382 only 2
 construct "import of names its module carries" items 356 only 356
-construct "method call .push()" items 298 only 4
+construct "method call .push()" items 299 only 4
 construct "method call .map()" items 296 only 0
-construct "method call .slice()" items 284 only 6
+construct "method call .slice()" items 285 only 6
 construct "method call .filter()" items 262 only 0
 construct "JSDoc type {…}" items 261 only 5
 construct "arrow callback of .map()" items 250 only 0
 construct "regular expression" items 237 only 35
 construct "sibling value" items 228 only 17
-construct "nullish coalescing" items 210 only 0
+construct "nullish coalescing" items 212 only 0
 construct "arrow callback of .filter()" items 207 only 0
 construct "import from outside the module directory" items 200 only 200
-construct "method call .join()" items 194 only 0
+construct "method call .join()" items 195 only 0
 construct "method call .some()" items 184 only 0
 construct "arrow callback of .some()" items 178 only 0
 construct "undefined" items 174 only 0
-construct "arrow callback of .find()" items 161 only 0
-construct "method call .find()" items 155 only 0
+construct "arrow callback of .find()" items 162 only 0
+construct "method call .find()" items 156 only 0
 construct "method call .split()" items 153 only 0
 construct "destructuring" items 133 only 0
 construct "assignment of a field or element" items 130 only 0
 construct "Array.from" items 126 only 0
 construct "imported value" items 126 only 2
+construct "global call String()" items 124 only 0
 construct "method call .test()" items 124 only 0
-construct "global call String()" items 122 only 0
 construct "method call .sort()" items 102 only 0
 construct "new Set" items 97 only 35
 construct "method call .has()" items 95 only 0
@@ -85,8 +85,8 @@ construct "optional chaining" items 93 only 0
 construct "method call .replace()" items 82 only 0
 construct "arrow callback of .sort()" items 75 only 0
 construct "method call .every()" items 75 only 0
+construct "method call .indexOf()" items 75 only 0
 construct "method call .get()" items 74 only 0
-construct "method call .indexOf()" items 74 only 0
 construct "typeof operator" items 68 only 2
 construct "new Map" items 67 only 5
 construct "arrow callback of .every()" items 63 only 0
@@ -126,8 +126,8 @@ construct "default or namespace import" items 12 only 12
 construct "global call Boolean()" items 12 only 0
 construct "in operator" items 12 only 0
 construct "method call .findIndex()" items 12 only 0
+construct "method call .lastIndexOf()" items 11 only 0
 construct "arrow callback of .from()" items 10 only 0
-construct "method call .lastIndexOf()" items 10 only 0
 construct "method call .padStart()" items 10 only 0
 construct "method call .values()" items 10 only 0
 construct "new DispatchError" items 10 only 1
@@ -404,7 +404,7 @@ unlock 18 "global call String()" unlocked 28 cumulative 1196
 unlock 19 "method call .replace()" unlocked 28 cumulative 1224
 unlock 20 "method call .indexOf()" unlocked 29 cumulative 1253
 unlock 21 "undefined" unlocked 26 cumulative 1279
-unlock 22 "method call .join()" unlocked 23 cumulative 1302
-unlock 23 "Array.from" unlocked 28 cumulative 1330
-unlock 24 "destructuring" unlocked 20 cumulative 1350
-unlock 25 "assignment of a field or element" unlocked 31 cumulative 1381
+unlock 22 "method call .join()" unlocked 24 cumulative 1303
+unlock 23 "Array.from" unlocked 28 cumulative 1331
+unlock 24 "destructuring" unlocked 20 cumulative 1351
+unlock 25 "assignment of a field or element" unlocked 31 cumulative 1382

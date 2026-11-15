@@ -45,8 +45,8 @@ use crate::solver_formalization::{record_formalization, record_formalization_sel
 use crate::solver_handler_oracle::try_unsupported_write_program;
 use crate::solver_handlers::{finalize_simple, try_program_blueprint};
 use crate::solver_helpers::{
-    confidence_for, record_candidates, record_decomposition, record_validation,
-    unresolved_surfaces_present,
+    confidence_for, record_answer_test, record_candidates, record_decomposition, record_selection,
+    record_validation, unresolved_surfaces_present,
 };
 use crate::solver_synthesis::try_synthesize_from_sub_results;
 use crate::solver_unknown_reasoning::{UnknownReasoningConfig, answer_unknown_prompt};
@@ -525,13 +525,7 @@ impl UniversalSolver {
                 );
             }
 
-            if let Some(answer) = try_synthesize_from_sub_results(
-                prompt,
-                &mut log,
-                &sub_results,
-                probability_store,
-                self.config,
-            ) {
+            if let Some(answer) = try_synthesize_from_sub_results(prompt, &mut log, &sub_results) {
                 return answer;
             }
 
@@ -609,7 +603,6 @@ impl UniversalSolver {
                     );
                 }
                 let intent = language_aware_intent_for(&rule, language);
-                record_candidates(&mut log, prompt, &intent);
                 if let Some(choice) = record_validation(&mut log, prompt) {
                     let response_link = response_link_for_intent(&rule, &intent);
                     return finalize_simple(
@@ -787,15 +780,8 @@ impl UniversalSolver {
                 }
             }
 
-            record_candidates(&mut log, prompt, &intent);
-
             let validation_choice = record_validation(&mut log, prompt);
-            if validation_choice.is_none() && log.first_of("validation").is_none() {
-                log.append(
-                    "validation",
-                    "accepted_without_extra_constraints".to_owned(),
-                );
-            }
+            record_candidates(&mut log, &intent);
             let prior = coding_guidance::history_has_prior_code(history);
             let base_answer = match (&validation_choice, &rule) {
                 (Some(choice), SelectedRule::Unknown) => choice.answer.clone(),
@@ -807,12 +793,13 @@ impl UniversalSolver {
                 }
                 _ => base_answer,
             };
+            record_answer_test(&mut log, &intent, &base_answer);
             let base_answer = crate::question_necessity::enforce_questions(&base_answer, &mut log);
 
             let response_link = response_link_for_intent(&rule, &intent);
             log.append("response", response_link.clone());
 
-            log.append("trace:simplification", "smallest_sufficient".to_owned());
+            record_selection(&mut log, &intent);
             let trace_id = log.append("trace", intent.clone());
 
             let evidence_links = build_evidence_links(prompt, &log, &response_link);

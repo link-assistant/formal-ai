@@ -349,20 +349,12 @@ fn looks_like_independent_impulse(segment: &str) -> bool {
             .any(|relevant| relevant.starts_with("handler:"))
 }
 
-pub fn record_candidates(log: &mut EventLog, prompt: &str, intent: &str) {
-    let lower = prompt.to_lowercase();
-    if lower.contains("suggest a name") || lower.contains("suggest names") {
-        for candidate in ["LinkLight", "Doublet", "FormalLeaf"] {
-            log.append("candidate", candidate.to_owned());
-        }
-        return;
+/// Issue #1550: the turn's own candidate, the intent its dispatch derived,
+/// unless a method of the turn already proposed candidates.
+pub fn record_candidates(log: &mut EventLog, intent: &str) {
+    if log.first_of("candidate").is_none() {
+        log.append("candidate", intent.to_owned());
     }
-    if lower.contains("pick a") || lower.contains("choose a") {
-        log.append("candidate", "primary".to_owned());
-        log.append("candidate", "secondary".to_owned());
-        return;
-    }
-    log.append("candidate", intent.to_owned());
 }
 
 #[derive(Debug, Clone)]
@@ -370,46 +362,51 @@ pub struct ValidationChoice {
     pub answer: String,
 }
 
+/// Issue #1550: run the test of a number-property interval request on each
+/// number of the interval in order, recording every number as a candidate and
+/// every executed test with its verdict (`number_property_prime(15)=false`),
+/// and choose the first number that passes. `None` when the prompt is not
+/// such a request or no number passes.
 pub fn record_validation(log: &mut EventLog, prompt: &str) -> Option<ValidationChoice> {
-    let lower = prompt.to_lowercase();
-    if lower.contains("prime") {
-        if let Some((low, high)) = extract_range(&lower) {
-            for candidate in low..=high {
-                if is_prime(candidate) {
-                    let answer = format!("{candidate}");
-                    log.append("validation", format!("prime_between_{low}_and_{high}"));
-                    return Some(ValidationChoice { answer });
-                }
-            }
+    let (property, low, high) = crate::solver_handlers::property_interval(prompt)?;
+    for candidate in low..=high {
+        let passed = crate::solver_handlers::has_property(candidate);
+        log.append("candidate", candidate.to_string());
+        log.append("validation", format!("{property}({candidate})={passed}"));
+        if passed {
+            return Some(ValidationChoice {
+                answer: candidate.to_string(),
+            });
         }
-        log.append("validation", "no_prime_in_range".to_owned());
     }
     None
 }
 
-pub fn extract_range(lower: &str) -> Option<(u64, u64)> {
-    let numbers: Vec<u64> = lower
-        .split(|character: char| !character.is_ascii_digit())
-        .filter_map(|token| token.parse::<u64>().ok())
-        .collect();
-    match numbers.as_slice() {
-        [low, high] if low <= high => Some((*low, *high)),
-        _ => None,
+/// Issue #1550: the leaf test the turn's answer executed, unless a method of
+/// the turn already recorded its own validation.
+pub fn record_answer_test(log: &mut EventLog, intent: &str, answer: &str) {
+    if log.first_of("validation").is_none() {
+        log.append(
+            "validation",
+            crate::meta_executor::answer_validation(intent, answer),
+        );
     }
 }
 
-pub const fn is_prime(value: u64) -> bool {
-    if value < 2 {
-        return false;
+/// Issue #1550: the selection among the turn's candidates by their executed
+/// tests, unless a method of the turn already recorded its selection.
+pub fn record_selection(log: &mut EventLog, intent: &str) {
+    if log.first_of("trace:simplification").is_some() {
+        return;
     }
-    let mut divisor: u64 = 2;
-    while divisor.saturating_mul(divisor) <= value {
-        if value.is_multiple_of(divisor) {
-            return false;
-        }
-        divisor += 1;
-    }
-    true
+    let validations: Vec<String> = log
+        .events()
+        .iter()
+        .filter(|event| event.kind == "validation")
+        .map(|event| event.payload.clone())
+        .collect();
+    let record = crate::meta_executor::selection_record(&validations, intent);
+    log.append("trace:simplification", record);
 }
 
 pub fn extract_quoted_phrase(text: &str) -> Option<String> {

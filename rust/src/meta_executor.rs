@@ -475,6 +475,50 @@ pub fn run_task_test(
     }
 }
 
+/// Issue #1550: the executed leaf test of the turn's answer.
+///
+/// The `validation` payload names the executed checks, the candidate they ran
+/// on and the verdict (`answered(greeting)=true`).
+#[must_use]
+pub fn answer_validation(intent: &str, content: &str) -> String {
+    let test = TaskTest {
+        task: intent.to_owned(),
+        checks: vec![rule_value("leaf-check")],
+        requires: None,
+    };
+    let draft = Draft {
+        intent: intent.to_owned(),
+        content: content.to_owned(),
+        confidence: 0.0,
+    };
+    let verdict = run_task_test(&test, Some(&draft), &[]);
+    format!(
+        "{}({intent})={}",
+        verdict.executed.join("+"),
+        verdict.passed
+    )
+}
+
+/// Issue #1550: the selection among the turn's candidates by their executed tests.
+///
+/// The `trace:simplification` payload names the candidate of the first
+/// passing test and how many of the executed tests passed (`17=1/4`), or
+/// `fallback` when none passed (`unknown=0/1`).
+#[must_use]
+pub fn selection_record(validations: &[String], fallback: &str) -> String {
+    let passing: Vec<&str> = validations
+        .iter()
+        .filter_map(|validation| {
+            let (subject, verdict) = validation.rsplit_once('=')?;
+            verdict.parse::<bool>().ok().filter(|passed| *passed)?;
+            let (_, candidate) = subject.strip_suffix(')')?.split_once('(')?;
+            Some(candidate)
+        })
+        .collect();
+    let chosen = passing.first().copied().unwrap_or(fallback);
+    format!("{chosen}={}/{}", passing.len(), validations.len().max(1))
+}
+
 fn compose(node: &TaskNode, test: &TaskTest, child_outcomes: &[TaskOutcome]) -> Option<Candidate> {
     let resolved: Vec<&Candidate> = child_outcomes
         .iter()

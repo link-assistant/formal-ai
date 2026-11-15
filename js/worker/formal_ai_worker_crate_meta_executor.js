@@ -3,7 +3,6 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/meta_executor.mjs"] = (crateRequire) => {
 // Issue #1550 — the recursive procedure every answer goes through, in both
 // runtimes (the Rust twin is rust/src/meta_executor.rs). At every level it
@@ -27,15 +26,12 @@
 // data/seed/text-formalization.lino. The events this module emits contain
 // only integers and strings derived from the request, so the JavaScript and
 // native runtimes emit the same sequence for the same request and host.
-
 const { grammarVocabulary, structuralRuleValues } = crateRequire("crate/formalization_grammar.mjs");
 const { rankByLeastAction } = crateRequire("crate/least_action.mjs");
 const { attemptFailed, attemptPassed, recursiveLeaf, solveRecursively } = crateRequire("crate/recursive_execution.mjs");
 const { containsCjk } = crateRequire("crate/seed_meanings.mjs");
 const { isAlphanumeric, isWhitespace, trimMatches } = crateRequire("crate/rust_str.mjs");
-
 const RULE = 'task-decomposition';
-
 /** The event kinds, in the order a level emits them. */
 const META_EXEC_EVENT_KINDS = Object.freeze([
   'meta_exec:bounds',
@@ -47,28 +43,23 @@ const META_EXEC_EVENT_KINDS = Object.freeze([
   'meta_exec:unresolved',
   'meta_exec:result',
 ]);
-
 function ruleValues(kind) {
   return structuralRuleValues(RULE, kind);
 }
-
 function ruleValue(kind) {
   const values = ruleValues(kind);
   if (values.length !== 1) throw Error('unique_task_decomposition_fact');
   return values[0];
 }
-
 function ruleNumber(kind) {
   const text = ruleValue(kind);
   if (!/^[0-9]+$/.test(text)) throw Error('task_decomposition_number');
   return Number(text);
 }
-
 /** The relations a level is split by, in precedence order. */
 function decompositionRelations() {
   return ruleValues('relation');
 }
-
 /**
  * The recursion bounds: the seed's values unless the caller overrides one.
  * @param {{depth?: number, breadth?: number, budget?: number}} [overrides]
@@ -84,15 +75,12 @@ function decompositionBounds(overrides = {}) {
     budget: pick('budget', 'budget-bound'),
   };
 }
-
 function renderFields(fields) {
   return fields.map(([name, value]) => `${name}=${value}`).join(' ');
 }
-
 function emit(state, kind, fields) {
   state.events.push({ kind, payload: renderFields(fields) });
 }
-
 function quotedMask(characters) {
   const pairs = ruleValues('quote-pair').map((pair) => Array.from(pair));
   if (pairs.some((pair) => pair.length !== 2)) throw Error('task_decomposition_quote_pair');
@@ -114,7 +102,6 @@ function quotedMask(characters) {
   }
   return mask;
 }
-
 function markerMatches(lowered, original, mask, at, marker, cjk) {
   const end = at + marker.length;
   if (end > lowered.length) return false;
@@ -127,13 +114,11 @@ function markerMatches(lowered, original, mask, at, marker, cjk) {
     && isAlphanumeric(original[end])) return false;
   return true;
 }
-
 function cleanPart(characters) {
   const edges = ruleValues('edge-punctuation');
   return trimMatches(characters.join(''), (character) =>
     isWhitespace(character) || edges.includes(character));
 }
-
 /**
  * One level of the split: the first relation, in precedence order, whose
  * connectives cut the request into at least two non-empty parts. Text inside
@@ -176,7 +161,6 @@ function splitRequest(text, language) {
   }
   return null;
 }
-
 /**
  * The task tree of a request: a task splits while a relation applies and the
  * depth and breadth bounds allow; otherwise it is atomic and says why.
@@ -202,19 +186,16 @@ function planTasks(text, language, bounds, depth = 0, id = 't0') {
   }
   return node;
 }
-
 /** The text of every atomic task, left to right. */
 function taskLeaves(node) {
   return node.children.length ? node.children.flatMap(taskLeaves) : [node.text];
 }
-
 /** The shape of a task tree without its words: `sequence(leaf,aggregation(leaf,leaf))`. */
 function decompositionShape(node) {
   return node.children.length
     ? `${node.relation}(${node.children.map(decompositionShape).join(',')})`
     : 'leaf';
 }
-
 /**
  * The test of a task, as a value: the checks it executes and, for a
  * composite task, how many of its sub-tasks must pass.
@@ -229,12 +210,10 @@ function deriveTaskTest(node) {
   }
   return { task: node.id, checks, requires };
 }
-
 function childrenSatisfy(test, childOutcomes) {
   const resolved = childOutcomes.filter((outcome) => outcome.status === 'resolved').length;
   return test.requires === 'any' ? resolved >= 1 : resolved === childOutcomes.length;
 }
-
 /**
  * Execute a task test against one candidate. Returns every check executed and
  * the first one that failed.
@@ -259,7 +238,34 @@ function runTaskTest(test, candidate, childOutcomes) {
   }
   return { passed: failed === null, failed, executed };
 }
-
+/**
+ * Issue #1550: execute the leaf test of the turn's task on its answer and
+ * return what ran as a `validation` payload: the executed checks, the
+ * candidate they ran on and the verdict (`answered(greeting)=true`).
+ */
+function answerValidation(intent, content) {
+  const test = { task: String(intent), checks: [ruleValue('leaf-check')], requires: null };
+  const verdict = runTaskTest(test, { intent: String(intent), content: String(content ?? ''), confidence: 0 }, []);
+  return `${verdict.executed.join('+')}(${intent})=${verdict.passed}`;
+}
+/**
+ * Issue #1550: the selection among the turn's candidates by their executed
+ * tests, as a `trace:simplification` payload: the candidate of the first
+ * passing test and how many of the executed tests passed (`17=1/4`), or
+ * `fallback` when none passed (`unknown=0/1`).
+ */
+function selectionRecord(validations, fallback) {
+  const passing = [];
+  for (const validation of validations) {
+    const at = validation.lastIndexOf('=');
+    if (at < 0 || validation.slice(at + 1) !== String(true)) continue;
+    const subject = validation.slice(0, at);
+    const open = subject.indexOf('(');
+    if (!subject.endsWith(')') || open < 0) continue;
+    passing.push(subject.slice(open + 1, -1));
+  }
+  return `${passing[0] ?? fallback}=${passing.length}/${Math.max(validations.length, 1)}`;
+}
 function compose(node, test, childOutcomes) {
   const resolved = childOutcomes.filter((outcome) => outcome.status === 'resolved');
   if (!childrenSatisfy(test, childOutcomes) || resolved.length === 0) return null;
@@ -277,7 +283,6 @@ function compose(node, test, childOutcomes) {
     parts: chosen.map((outcome) => outcome.task),
   };
 }
-
 function draftOf(method, steps, raw) {
   if (!raw) return null;
   return {
@@ -289,7 +294,6 @@ function draftOf(method, steps, raw) {
     source: raw,
   };
 }
-
 async function runTask(node, host, state, options) {
   emit(state, 'meta_exec:task', [
     ['id', node.id],
@@ -314,7 +318,6 @@ async function runTask(node, host, state, options) {
   for (const child of node.children) {
     childOutcomes.push(await runTask(child, host, state, options));
   }
-
   const candidates = [];
   const remembered = state.memo.get(node.text) ?? (host.cached ? await host.cached(node.text, node) : null);
   const cached = draftOf('cache', ruleNumber('cache-cost'), remembered);
@@ -338,7 +341,6 @@ async function runTask(node, host, state, options) {
     ]);
     if (composition) candidates.push(composition);
   }
-
   const ranked = [];
   for (const candidate of candidates) {
     const verdict = runTaskTest(test, candidate, childOutcomes);
@@ -385,7 +387,6 @@ async function runTask(node, host, state, options) {
   state.memo.set(node.text, selected.source ?? selected);
   return { task: node.id, status: 'resolved', reason: null, candidate: selected, fallback };
 }
-
 /**
  * Run the whole procedure on one request.
  *
@@ -418,13 +419,13 @@ async function executeProcedure(request, host, options = {}) {
   ]);
   return { bounds, root, outcome, events: state.events };
 }
-
 /**
  * Issue #1550 step 1: the in-process executor of `solveRecursively`
  * (recursive_execution.mjs). One attempt runs the whole procedure on the
  * task's goal; the procedure splits by the grammar itself, so the executor
  * never splits a failure again and never extends a tool. The external-CLI
  * executor of orchestration stays one more executor of the same protocol.
+ * Mirrors `struct InProcessExecutor` of rust/src/meta_executor/production.rs.
  */
 function inProcessExecutor(host, language, options = {}) {
   const executor = {
@@ -441,7 +442,6 @@ function inProcessExecutor(host, language, options = {}) {
   };
   return executor;
 }
-
 /**
  * The single production entry: `solveRecursively` over the turn as the root
  * task, executed in process. Returns the procedure's run.
@@ -454,14 +454,11 @@ async function solveTurn(request, host, options = {}) {
   await solveRecursively(recursiveLeaf('t0', String(request.text)), executor);
   return executor.run;
 }
-
 let nesting = 0;
-
 /** Whether a sub-task solve is running, so the solver starts no nested run. */
 function isNested() {
   return nesting > 0;
 }
-
 /**
  * Run `body` as a sub-task solve: `isNested()` holds while it runs.
  * @param {() => Promise<any>} body
@@ -474,10 +471,8 @@ async function nested(body) {
     nesting -= 1;
   }
 }
-
 const answerDraft = (answer) =>
   answer ? { intent: answer.intent, content: answer.content, confidence: answer.confidence } : null;
-
 /**
  * Every answer goes through the procedure: the turn is the root task, its
  * direct derivation is `answer` (what the solver already derived), every
@@ -513,7 +508,6 @@ async function solveAnswer(request, answer, solveSubTask, options = {}) {
     : {};
   return { answer: { ...adopted, ...solverEvents, metaExecution }, run };
 }
-
 return Object.freeze({
   META_EXEC_EVENT_KINDS,
   decompositionRelations,
@@ -524,6 +518,8 @@ return Object.freeze({
   decompositionShape,
   deriveTaskTest,
   runTaskTest,
+  answerValidation,
+  selectionRecord,
   executeProcedure,
   inProcessExecutor,
   solveTurn,

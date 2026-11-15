@@ -40,12 +40,7 @@ pub(super) fn handle_primality(prompt: &str, log: &mut EventLog) -> Option<Symbo
     if !names_property {
         return None;
     }
-    let normalized = crate::web_engine_core::normalize_prompt(prompt);
-    let vocabulary = crate::seed::operation_vocabulary();
-    if ["code_request", "function", "implement"]
-        .into_iter()
-        .any(|slug| vocabulary.matches(slug, &normalized))
-    {
+    if is_code_request(prompt) {
         return None;
     }
     let number = lowered[start..end].parse::<u64>().ok()?;
@@ -95,6 +90,47 @@ pub(super) fn handle_primality(prompt: &str, log: &mut EventLog) -> Option<Symbo
         &body,
         1.0,
     ))
+}
+
+/// A code request ("write a function that checks whether 97 is prime") is
+/// left to the coding handlers.
+fn is_code_request(prompt: &str) -> bool {
+    let normalized = crate::web_engine_core::normalize_prompt(prompt);
+    let vocabulary = crate::seed::operation_vocabulary();
+    ["code_request", "function", "implement"]
+        .into_iter()
+        .any(|slug| vocabulary.matches(slug, &normalized))
+}
+
+/// Issue #1550: the number property and the bounds of an interval request
+/// ("pick a prime between 14 and 18", "выбери простое число от 24 до 30"):
+/// the property is the seeded meaning the prompt names, the bounds are its
+/// only two whole numbers. Code requests, reversed bounds and bounds above
+/// [`MAX_TESTED`] are not interval requests.
+pub(crate) fn property_interval(prompt: &str) -> Option<(&'static str, u64, u64)> {
+    let lowered = prompt.to_lowercase();
+    let names_property = lexicon()
+        .meaning(PRIME_SLUG)?
+        .words()
+        .any(|word| contains_term(&lowered, word));
+    if !names_property || is_code_request(prompt) {
+        return None;
+    }
+    let numbers: Vec<u64> = lowered
+        .split(|character: char| !character.is_ascii_digit())
+        .filter(|token| !token.is_empty())
+        .map(|token| token.parse::<u64>().ok())
+        .collect::<Option<_>>()?;
+    match numbers.as_slice() {
+        [low, high] if low <= high && *high <= MAX_TESTED => Some((PRIME_SLUG, *low, *high)),
+        _ => None,
+    }
+}
+
+/// Whether `number` has the property of [`property_interval`]: trial
+/// division up to its square root.
+pub(crate) fn has_property(number: u64) -> bool {
+    number >= 2 && smallest_factor(number, number.isqrt()).is_none()
 }
 
 /// The byte span of the prompt's only standalone whole number, or `None` when

@@ -253,6 +253,36 @@ export function runTaskTest(test, candidate, childOutcomes) {
   return { passed: failed === null, failed, executed };
 }
 
+/**
+ * Issue #1550: execute the leaf test of the turn's task on its answer and
+ * return what ran as a `validation` payload: the executed checks, the
+ * candidate they ran on and the verdict (`answered(greeting)=true`).
+ */
+export function answerValidation(intent, content) {
+  const test = { task: String(intent), checks: [ruleValue('leaf-check')], requires: null };
+  const verdict = runTaskTest(test, { intent: String(intent), content: String(content ?? ''), confidence: 0 }, []);
+  return `${verdict.executed.join('+')}(${intent})=${verdict.passed}`;
+}
+
+/**
+ * Issue #1550: the selection among the turn's candidates by their executed
+ * tests, as a `trace:simplification` payload: the candidate of the first
+ * passing test and how many of the executed tests passed (`17=1/4`), or
+ * `fallback` when none passed (`unknown=0/1`).
+ */
+export function selectionRecord(validations, fallback) {
+  const passing = [];
+  for (const validation of validations) {
+    const at = validation.lastIndexOf('=');
+    if (at < 0 || validation.slice(at + 1) !== String(true)) continue;
+    const subject = validation.slice(0, at);
+    const open = subject.indexOf('(');
+    if (!subject.endsWith(')') || open < 0) continue;
+    passing.push(subject.slice(open + 1, -1));
+  }
+  return `${passing[0] ?? fallback}=${passing.length}/${Math.max(validations.length, 1)}`;
+}
+
 function compose(node, test, childOutcomes) {
   const resolved = childOutcomes.filter((outcome) => outcome.status === 'resolved');
   if (!childrenSatisfy(test, childOutcomes) || resolved.length === 0) return null;
@@ -418,6 +448,7 @@ export async function executeProcedure(request, host, options = {}) {
  * task's goal; the procedure splits by the grammar itself, so the executor
  * never splits a failure again and never extends a tool. The external-CLI
  * executor of orchestration stays one more executor of the same protocol.
+ * Mirrors `struct InProcessExecutor` of rust/src/meta_executor/production.rs.
  */
 export function inProcessExecutor(host, language, options = {}) {
   const executor = {

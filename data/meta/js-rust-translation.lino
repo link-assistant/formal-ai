@@ -15,10 +15,10 @@ js_rust_translation
   upstream link-foundation/meta-language
   commit eb0574d5528babd3b4aadece81590d8e2230b99b
   modules 161
-  translated_items 332
+  translated_items 333
   workaround_items 36
   inferred_signatures 3
-  carried_items 2571
+  carried_items 2573
   translated_modules 112
   fully_translated_modules 1
   refused_modules 49
@@ -86,7 +86,7 @@ module js/agentic/crate/literal_content.mjs translated 0 workaround 0 inferred 0
 module js/agentic/crate/literal_instruction_view.mjs translated 0 workaround 0 inferred 0 carried 1
 module js/agentic/crate/memory.mjs translated 5 workaround 0 inferred 0 carried 19
 module js/agentic/crate/meta_core.mjs translated 2 workaround 0 inferred 0 carried 31
-module js/agentic/crate/meta_executor.mjs translated 2 workaround 0 inferred 0 carried 33
+module js/agentic/crate/meta_executor.mjs translated 2 workaround 0 inferred 0 carried 35
 module js/agentic/crate/meta_frame.mjs translated 6 workaround 0 inferred 0 carried 47
 module js/agentic/crate/meta_translate.mjs translated 1 workaround 1 inferred 0 carried 8
 module js/agentic/crate/method_registry.mjs translated 9 workaround 0 inferred 0 carried 22
@@ -147,7 +147,7 @@ module js/agentic/crate/sequences.mjs translated 1 workaround 0 inferred 0 carri
 module js/agentic/crate/skill_compiler.mjs translated 2 workaround 0 inferred 0 carried 12
 module js/agentic/crate/skill_procedure.mjs translated 10 workaround 0 inferred 0 carried 37
 module js/agentic/crate/skill_procedure_artifact.mjs translated 1 workaround 1 inferred 0 carried 18
-module js/agentic/crate/solver_event_projection.mjs translated 7 workaround 0 inferred 0 carried 8
+module js/agentic/crate/solver_event_projection.mjs translated 8 workaround 0 inferred 0 carried 8
 module js/agentic/crate/solver_formalization.mjs translated 4 workaround 0 inferred 0 carried 21
 module js/agentic/crate/solver_handlers_benchmark_prompts.mjs translated 1 workaround 0 inferred 0 carried 11
 module js/agentic/crate/solver_handlers_task_decomposition.mjs translated 7 workaround 0 inferred 0 carried 13
@@ -190,7 +190,7 @@ module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 in
 refusal "import of names its module does not translate" 356
 refusal "JSDoc type {…}" 219
 refusal "import from '…'" 212
-refusal "null" 193
+refusal "null" 194
 refusal "arrow function" 137
 refusal "type: unknown name (a sibling item or an import)" 122
 refusal "function value …" 110
@@ -234,6 +234,7 @@ refusal "method call .has()" 5
 refusal "method call .sort()" 5
 refusal "throw new …" 5
 refusal "Object.keys" 4
+refusal "method call .lastIndexOf()" 4
 refusal "syntax: unsupported template escape" 4
 refusal "throw of a non-error value" 4
 refusal "top-level class statement" 4
@@ -243,7 +244,6 @@ refusal "Object.prototype.hasOwnProperty.call" 3
 refusal "call of a computed function" 3
 refusal "let …" 3
 refusal "method call .forEach()" 3
-refusal "method call .lastIndexOf()" 3
 refusal "method call .repeat()" 3
 refusal "method call .toFixed()" 3
 refusal "several declarators" 3

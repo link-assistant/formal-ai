@@ -28,6 +28,7 @@ use super::calendar::contains_term;
 use super::numeric_list::parse_numbers;
 
 mod primality;
+pub(crate) use primality::{has_property, property_interval};
 mod word_relations;
 
 /// Seed meaning slugs carrying the word-problem markers of issue #1176.

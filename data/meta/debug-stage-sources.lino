@@ -176,10 +176,9 @@ debug_stage_sources
     rust "rust/src/solver_handlers/web_requests.rs" try_url_navigate
   event "validation"
     step rule_verification
-    rust "rust/src/solver.rs" solve_with_history_probability_store_and_intent_cache
-    rust "rust/src/solver_handlers/mod.rs" finalize_simple
+    rust "rust/src/solver_helpers/mod.rs" record_answer_test
     rust "rust/src/solver_helpers/mod.rs" record_validation
-    rust "rust/src/solver_synthesis.rs" finalize_composed_candidate
+    rust "rust/src/solver_synthesis.rs" try_synthesize_from_sub_results
     js "js/worker/formal_ai_worker_candidate_validation.js" solverPrimeIntervalValidation
     js "js/worker/formal_ai_worker_solver_events.js" solverEventLog
   event "web_search:request"
