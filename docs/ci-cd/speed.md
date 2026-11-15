@@ -182,7 +182,7 @@ The 2026-10-28 fast PR policy supersedes the earlier all-integrations-on-PR
 profile: Linux JavaScript/TypeScript behavior and consistency checks remain on
 PRs; native production compilation/tests, package and image builds, native parity,
 source-network serialization, native measurement and broad benchmark/client integration jobs are
-retained for main. FORMAL_AI_FULL_PR_CI no longer restores builds on PRs or
+retained for main; complete Coding Ladder measurement requires explicit opt-in. FORMAL_AI_FULL_PR_CI no longer restores builds on PRs or
 branch dispatches. Main retains production builds, native tests, critical coding
 integration and public-download checks. Browser E2E and box-language integration
 are retained behind FORMAL_AI_FULL_INTEGRATION=run on main. The profile notice
@@ -321,3 +321,23 @@ Source-transport changes must run native-release-workflow,
 relocated-build-stage-controls and packaging-console-retention in the fast inventory. These preserve pinned
 protocol ordering, complete-history custody, compiler/default-feature contracts
 and packaging receipt checks without compiling native code.
+
+The complete 130-task Coding Ladder is temporary main-only opt-in with dispatch
+full-ladder=true or FORMAL_AI_FULL_CODING_LADDER=run. All five shard bodies, task
+bytes, verifiers, committed results and strict ratchet are retained. Ordinary
+main lint still runs the registered fast consistency gate, while native full
+eight/specification four shards and critical Agent coding/reporting remain
+required. Deferral produces no new authoring measurement, benchmark score or
+acceptance credit. Generic checks dispatches do not select the benchmark.
+
+Observed main source 101992d84e7b12c843722992050585192dfc3996, Coding Ladder
+run 41716378897 job 126199941930: acquisition took 1,121 seconds; the suite ran
+746 seconds before its unchanged 30-minute job cap cancelled it, before the
+1,200-second suite budget could expire. Its 21 printed baseline outcomes
+(19 FAIL, 2 PASS) are incomplete observations, not a completed score or ratchet
+qualification. The aggregate correctly rejected the cancelled shard. Exact-base
+task clones and arbitrary repository verifiers require the complete tracked
+tree; no speculative sparse exclusions were made. Restore automatic full
+measurement after reviewed source/artifact acquisition and the complete suite
+fit the existing job cap with reserve, followed by a selected full run passing
+every shard, complete merge and the unchanged ratchet. No new floor is claimed.

@@ -22,6 +22,7 @@ import { createHash } from 'node:crypto';
 
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+import {completeOwnedSourceReadFrame} from '../../../js/agentic/tool_result.mjs';
 
 let planChatStep;
 
@@ -44,7 +45,8 @@ async function drive(prompt, files) {
     const args = JSON.parse(call.arguments);
     const path = args.filePath ?? args.path;
     let result = '';
-    if (call.tool === 'read') result = workspace[path] ?? 'Error: file not found';
+    if (call.tool === 'read') result = Object.hasOwn(workspace,path)
+      ? completeOwnedSourceReadFrame(workspace[path]) : 'Error: file not found';
     if (call.tool === 'edit') workspace[path] = workspace[path].replace(args.oldString, () => args.newString);
     if (call.tool === 'write') workspace[path] = args.content;
     if (call.tool === 'bash') {

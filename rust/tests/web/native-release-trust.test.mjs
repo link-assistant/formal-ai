@@ -6,7 +6,35 @@ import {mkdtempSync,writeFileSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {validatePublishedStableSource,validateSelectedSourceAuthority} from '../../../scripts/native-release-trust.mjs';
-const git=(cwd,...args)=>execFileSync('git',args,{cwd,encoding:'utf8',stdio:'pipe'}).trim();
+const gitEnvironment=()=>({...process.env,GIT_CONFIG_COUNT:'1',
+ GIT_CONFIG_KEY_0:'core.hooksPath',GIT_CONFIG_VALUE_0:'/dev/null'});
+const git=(cwd,...args)=>execFileSync('git',args,{cwd,encoding:'utf8',stdio:'pipe',env:gitEnvironment()}).trim();
+function writeGithubPreload(file) {
+ writeFileSync(file,`
+ import childProcess from 'node:child_process';
+ import {syncBuiltinESMExports} from 'node:module';
+ import {appendFileSync} from 'node:fs';
+ const original=childProcess.execFileSync;
+ const originalSpawn=childProcess.spawnSync;
+ const endpoints=JSON.parse(process.env.FORMAL_AI_TRUST_FIXTURE_ENDPOINTS);
+ function metadata(args,options){
+  const normalized=args.length===4&&args[1]==='--hostname'&&args[2]==='github.com'
+   ?[args[0],args[3]]:args;
+  if(normalized.length!==2||normalized[0]!=='api'||!Object.hasOwn(endpoints,normalized[1]))
+   throw Error('unexpected metadata endpoint or mutating gh arguments');
+  if(process.env.FORMAL_AI_TRUST_FIXTURE_OBSERVED)
+   appendFileSync(process.env.FORMAL_AI_TRUST_FIXTURE_OBSERVED,JSON.stringify(normalized[1])+String.fromCharCode(10));
+  const bytes=Buffer.from(JSON.stringify(endpoints[normalized[1]]));
+  return options.encoding?bytes.toString(options.encoding):bytes;
+ }
+ childProcess.execFileSync=(command,args,options)=>
+  command==='gh'?metadata(args,options):original(command,args,options);
+ childProcess.spawnSync=(command,args,options)=>command==='gh'
+  ?{status:0,signal:null,stdout:metadata(args,options),stderr:Buffer.alloc(0)}
+  :originalSpawn(command,args,options);
+ syncBuiltinESMExports();
+ `);
+}
 function fixture(t){
  const cwd=mkdtempSync(join(tmpdir(),'release-trust-'));t.after(()=>rmSync(cwd,{recursive:true,force:true}));
  git(cwd,'init','--initial-branch=main');git(cwd,'config','user.name','Fixture');git(cwd,'config','user.email','fixture@example.invalid');
@@ -59,25 +87,11 @@ test('actual publication CLI requests exact repository metadata and preserves ta
  const preload=join(f.cwd,'preload.mjs');
  const observed=join(f.cwd,'endpoints.jsonl');
  const output=join(f.cwd,'github-env');
- writeFileSync(preload,`
- import childProcess from 'node:child_process';
- import {syncBuiltinESMExports} from 'node:module';
- import {appendFileSync} from 'node:fs';
- const original=childProcess.execFileSync;
- const endpoints=JSON.parse(process.env.FORMAL_AI_TRUST_FIXTURE_ENDPOINTS);
- childProcess.execFileSync=(command,args,options)=>{
-  if(command!=='gh')return original(command,args,options);
-  if(args.length!==2||args[0]!=='api')throw Error('unexpected gh invocation');
-  appendFileSync(process.env.FORMAL_AI_TRUST_FIXTURE_OBSERVED,JSON.stringify(args[1])+String.fromCharCode(10));
-  if(!Object.hasOwn(endpoints,args[1]))throw Error('malformed repository endpoint '+args[1]);
-  return JSON.stringify(endpoints[args[1]]);
- };
- syncBuiltinESMExports();
- `);
+ writeGithubPreload(preload);
  const helper=fileURLToPath(new URL('../../../scripts/native-release-trust.mjs',import.meta.url));
  const result=spawnSync(process.execPath,['--import',preload,helper],{
   cwd:f.cwd,encoding:'utf8',timeout:15000,maxBuffer:1048576,
-  env:{...process.env,NATIVE_RELEASE_TAG:f.options.tag,NATIVE_REPOSITORY:repository,GITHUB_ENV:output,
+  env:{...gitEnvironment(),NATIVE_RELEASE_TAG:f.options.tag,NATIVE_REPOSITORY:repository,GITHUB_ENV:output,
    FORMAL_AI_TRUST_FIXTURE_ENDPOINTS:JSON.stringify(endpoints),FORMAL_AI_TRUST_FIXTURE_OBSERVED:observed},
  });
  assert.equal(result.status,0,'malformed repository endpoint regression: '+result.stderr);
@@ -95,22 +109,16 @@ test('actual publication CLI refuses mismatched independently published source',
  const f=fixture(t);git(f.cwd,'remote','add','origin',f.cwd);
  const preload=join(f.cwd,'mismatch.mjs');
  const output=join(f.cwd,'github-env');
- writeFileSync(preload,`
- import childProcess from 'node:child_process';import {syncBuiltinESMExports} from 'node:module';
- const original=childProcess.execFileSync;
- childProcess.execFileSync=(command,args,options)=>{
-  if(command!=='gh')return original(command,args,options);
-  if(args[1]==='repos/fixture/repository/releases/tags/v1.2.3')return JSON.stringify({tag_name:'v9.9.9',draft:false,prerelease:false,published_at:'2026-10-01T00:00:00Z'});
-  if(args[1]==='repos/fixture/repository')return JSON.stringify({default_branch:'main'});
-  if(args[1]==='repos/fixture/repository/commits/main')return JSON.stringify({sha:process.env.FORMAL_AI_TRUST_FIXTURE_DEFAULT});
-  if(args[1]==='repos/fixture/repository/commits/v1.2.3')return JSON.stringify({sha:process.env.FORMAL_AI_TRUST_FIXTURE_RELEASE});
-  throw Error('unexpected repository endpoint '+args[1]);
- };syncBuiltinESMExports();
- `);
+ writeGithubPreload(preload);
  const helper=fileURLToPath(new URL('../../../scripts/native-release-trust.mjs',import.meta.url));
  const result=spawnSync(process.execPath,['--import',preload,helper],{cwd:f.cwd,encoding:'utf8',timeout:15000,
-  env:{...process.env,NATIVE_RELEASE_TAG:f.options.tag,NATIVE_REPOSITORY:'fixture/repository',GITHUB_ENV:output,
-   FORMAL_AI_TRUST_FIXTURE_DEFAULT:f.options.defaultCommit,FORMAL_AI_TRUST_FIXTURE_RELEASE:f.options.releaseCommit}});
+  env:{...gitEnvironment(),NATIVE_RELEASE_TAG:f.options.tag,NATIVE_REPOSITORY:'fixture/repository',GITHUB_ENV:output,
+   FORMAL_AI_TRUST_FIXTURE_ENDPOINTS:JSON.stringify({
+    'repos/fixture/repository/releases/tags/v1.2.3':{...f.options.release,tag_name:'v9.9.9'},
+    'repos/fixture/repository':{default_branch:'main'},
+    'repos/fixture/repository/commits/main':{sha:f.options.defaultCommit},
+    'repos/fixture/repository/commits/v1.2.3':{sha:f.options.releaseCommit}
+   })}});
  assert.notEqual(result.status,0);assert.equal(existsSync(output),false);
  assert.match(result.stderr,/v9\.9\.9/u);
 });

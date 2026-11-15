@@ -9,6 +9,7 @@ import {readBoundedFileBytes}from './bounded-file.mjs';
 import {verifyDriveEvidence,regularEvidenceBytes,retainedEvidenceBytes,firstEvidenceRecord}from './verify-drive.mjs';
 import {encodeTyped,decodeTyped}from '../logging/typed-codec.mjs';
 import {blake3Hex}from '../crypto/blake3.mjs';
+import {requirePinnedLoadedSources}from './pinned-source-comparison.mjs';
 export function verifyPinnedFreshReplay(options){
  if(!options||typeof options!=='object')throw Error('PinnedReplayRequestRequired');
  const {directory,workspace,expectedAnchor,trustedPublicKey,expectedRuntimeSha256,expectedSourceIdentity,expectedTaskURL}=options;
@@ -59,15 +60,10 @@ export function verifyPinnedFreshReplay(options){
    ||fresh.result.recomputation.outputCount<1)throw Error('PinnedReplayRecomputationIncomplete');
   if(encodeTyped(context.bootstrapArtifacts)!==encodeTyped(fresh.custody.bootstrap))throw Error('PinnedReplayBootstrapChanged');
   const actualSources=collectRuntimeObservation(path.join(fresh.directory,'transport')).sources;
-  const actualKeys=new Set(actualSources.map(entry=>entry.url+'\0'+entry.format+'\0'+entry.blake3));
   const originalRuntime=fileSystem.realpathSync(path.dirname(path.dirname(path.resolve(directory))));
   const freshRuntime=fileSystem.realpathSync(fresh.directory);
-  for(const entry of expectedSources){
-   const filename=fileURLToPath(entry.url),relative=path.relative(originalRuntime,filename);
-   const owned=context.bootstrapArtifacts.some(artifact=>artifact.file===relative);
-   const address=owned?new URL(relative,new URL('file://'+freshRuntime+'/')).href:entry.url;
-   if(!actualKeys.has(address+'\0'+entry.format+'\0'+entry.blake3))throw Error('PinnedReplayLoadedSourceMismatch');
-  }
+  requirePinnedLoadedSources(expectedSources,actualSources,{originalRuntime,freshRuntime,
+   bootstrapArtifacts:context.bootstrapArtifacts,repository:fileURLToPath(new URL('../../',import.meta.url))});
   return {schema:'formal-ai-pinned-fresh-replay-v1',taskURL:expectedTaskURL,
    runtime:{sha256:expectedRuntimeSha256,version:executable.version},sourceIdentity:expectedSourceIdentity,sourceCount,
    recomputation:fresh.result.recomputation,

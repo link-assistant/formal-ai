@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
 import {writeFileSync} from 'node:fs';
 import {pathToFileURL} from 'node:url';
+import {readGithubJson} from './resolve-package-release.mjs';
 const git=(cwd,args)=>execFileSync('git',args,{cwd,encoding:'utf8',timeout:30000}).trim();
 const stableTag=/^v(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)$/u;
 const commit=value=>assert.match(value,/^[a-f0-9]{40}$/u);
@@ -17,7 +18,13 @@ export function validatePublishedStableSource(cwd,{tag,release,defaultCommit,rel
 }
 export function authorizePublishedStableSource(cwd,{tag,repository}) {
  assert.match(tag,stableTag);assert.match(repository,/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/u);
- const api=path=>JSON.parse(execFileSync('gh',['api','repos/'+repository+(path?'/'+path:'')],{encoding:'utf8',timeout:20000,maxBuffer:1024*1024}));
+ // Each authorization owns one bounded, monotonic metadata deadline.
+ const now=()=>Math.floor(performance.now());
+ const deadlineMilliseconds=now()+90000;
+ const api=path=>readGithubJson('repos/'+repository+(path?'/'+path:''),{
+  hostname:'github.com',timeout:20000,maxBuffer:1024*1024,
+  retryTimeouts:true,deadlineMilliseconds,now
+ });
  const release=api('releases/tags/'+encodeURIComponent(tag));
  const branch=api('').default_branch;assert.ok(typeof branch==='string'&&branch.length>0);
  const defaultCommit=api('commits/'+encodeURIComponent(branch)).sha;

@@ -152,8 +152,10 @@ async function unresolvedResearchQueryWith(messages, unresolved) {
   if (task === null) return null;
   const preceding = messages.slice(0, Math.max(0, messages.length - 1));
   if (!(await unresolved(task)) || await isConversationMetaRequest(task, preceding)) return null;
+  const blocks = requestBlocks(task);
+  if (blocks.length === 1 && blocks[0] === task) return trimQuestionPunctuation(trim(task));
   let stated = task;
-  for (const block of requestBlocks(task)) {
+  for (const block of blocks) {
     if (await unresolved(block)) {
       stated = block;
       break;

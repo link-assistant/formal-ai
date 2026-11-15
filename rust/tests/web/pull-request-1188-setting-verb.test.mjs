@@ -32,6 +32,7 @@ async function drive(prompt, source) {
     if (!plan || plan.kind === 'final') return { calls, file, answer: plan ? plan.answer : null };
     const [call] = plan.calls;
     const args = JSON.parse(call.arguments);
+    if (call.tool === 'read' || call.tool === 'edit') assert.equal(args.path ?? args.filePath ?? args.file_path, 'cfg.toml');
     let result = '';
     if (call.tool === 'read') result = file;
     if (call.tool === 'edit') file = file.replace(args.oldString, () => args.newString);
@@ -39,7 +40,8 @@ async function drive(prompt, source) {
     calls.push(call.tool);
     const id = `call_${step}`;
     messages.push({ role: 'assistant', content: '', tool_calls: [{ id, type: 'function', function: { name: call.tool, arguments: call.arguments } }] });
-    messages.push({ role: 'tool', tool_call_id: id, content: result });
+    messages.push({ role: 'tool', tool_call_id: id, name: call.tool, content: result,
+      ...(call.tool === 'read' ? {source_read: {path: 'cfg.toml', success: true, complete: true, format: 'raw'}} : {}) });
   }
   return { calls, file, answer: null };
 }

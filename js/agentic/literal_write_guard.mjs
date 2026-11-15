@@ -15,6 +15,7 @@
 // rust/src/agentic_coding/literal_write_guard.rs.
 
 import { Capability } from './capability.mjs';
+import { unquotedPathTokens } from './positional_edit.mjs';
 import { toolFor } from './capability_router.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
 import { detect } from './crate/language.mjs';
@@ -42,12 +43,43 @@ const LITERAL_FILE = 'literal_file';
  * @param {string} request
  */
 export function writesWholeFile(request) {
-  if (mentionsRole(ROLE_OVERWRITE_CONSENT, normalizePrompt(request))) return true;
-  const toks = tokens(request);
-  if (declaresFile(request, toks)) return true;
+  const instruction = instructionOutsideQuotes(request);
+  if (mentionsRole(ROLE_OVERWRITE_CONSENT, normalizePrompt(instruction))) return true;
+  if (declaresFile(instruction, unquotedPathTokens(request))) return true;
+  const toks = tokens(instruction);
   const start = firstActionCueStart(toks);
   const end = firstActionCueEnd(toks);
-  return start !== null && end !== null && mentionsRole(ROLE_WHOLE_WRITE, normalizePrompt(request.slice(start, end)));
+  return start !== null && end !== null && mentionsRole(ROLE_WHOLE_WRITE, normalizePrompt(instruction.slice(start, end)));
+}
+
+function instructionOutsideQuotes(request) {
+  return quotedSegmentSpans(request).reduceRight((text, span) =>
+    text.slice(0, span.start) + ' '.repeat(span.end - span.start) + text.slice(span.end), request);
+}
+
+/** The requested edit action itself must own a whole-file operation. */
+export function wholeFileOperationAt(request, actionStart, target, targetEnd) {
+  const instruction = instructionOutsideQuotes(request);
+  const actionTokens = tokens(instruction);
+  const firstWriteAction = firstActionCueStart(actionTokens);
+  if (firstWriteAction !== null && firstWriteAction < actionStart) return false;
+  const action = actionTokens.find(token => token.start === actionStart);
+  if (action === undefined) return false;
+  if (declaresFile(instruction, unquotedPathTokens(request))) return true;
+  if (mentionsRole(ROLE_WHOLE_WRITE, normalizePrompt(action.text))) return true;
+  const suffix = unquotedPathTokens(request).filter(token => token.start >= actionStart);
+  return bareSurfaces(ROLE_OVERWRITE_CONSENT).some(cue => {
+    const prefix = tokens(cue);
+    if (prefix.length === 0 || prefix.length > suffix.length
+      || !prefix.every((token, index) => cleanCueToken(token.text) === cleanCueToken(suffix[index].text))) return false;
+    let destination = prefix.length;
+    const word = cleanCueToken(suffix[destination]?.text ?? "");
+    if (bareSurfaces("request_function_word").includes(word)
+      && !bareSurfaces("file_edit_new_lead_cue").includes(word)) destination += 1;
+    if (bareSurfaces(ROLE_DECLARED_NOUN).includes(cleanCueToken(suffix[destination]?.text ?? ""))) destination += 1;
+    return suffix[destination] !== undefined && suffix[destination].end === targetEnd
+      && cleanPathToken(suffix[destination].text) === target;
+  });
 }
 
 /**

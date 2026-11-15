@@ -33,7 +33,7 @@ export class GithubObservationUnavailable extends Error {
 
 export function readGithubJson(endpoint, {
   hostname, timeout = 30000, maxBuffer = 2097152, environment = process.env,
-  transport = executeGithubRead,
+  transport = executeGithubRead, retryTimeouts = false, deadlineMilliseconds, now = Date.now,
   pause = milliseconds => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, milliseconds),
   report = record => console.error(JSON.stringify(record)),
 } = {}) {
@@ -41,26 +41,53 @@ export function readGithubJson(endpoint, {
   assert(Number.isSafeInteger(timeout) && timeout > 0 && timeout <= 30000);
   assert(Number.isSafeInteger(maxBuffer) && maxBuffer > 0 && maxBuffer <= 2097152);
   assert(hostname === undefined || hostname === 'github.com');
+  assert(typeof retryTimeouts === 'boolean' && typeof now === 'function');
+  assert(deadlineMilliseconds === undefined || Number.isSafeInteger(deadlineMilliseconds) && deadlineMilliseconds >= 0);
   const args = ['api', ...(hostname ? ['--hostname', hostname] : []), endpoint];
   const env = hostname ? {...environment, GH_HOST: hostname} : environment;
   const redact = value => environment.GH_TOKEN ? value.replaceAll(environment.GH_TOKEN, '***') : value;
+  let lastDetail;
+  const remaining = () => {
+    const time = now();
+    assert(Number.isSafeInteger(time) && time >= 0, 'GitHub observation clock must report finite milliseconds');
+    return deadlineMilliseconds === undefined ? Infinity : deadlineMilliseconds - time;
+  };
+  const expired = () => {
+    const detail = {operation: 'github-json-read', endpoint, attempt: 0, ...lastDetail,
+      reason: 'deadline-expired', deadlineMilliseconds};
+    report(detail);
+    throw new GithubObservationUnavailable(detail);
+  };
   for (let attempt = 1; attempt <= 3; attempt++) {
-    const result = transport('gh', args, {env, timeout, maxBuffer});
+    const available = remaining();
+    if (available <= 0) expired();
+    // Only GET-shaped gh arguments exist here; no input, fields, shell or mutation method is accepted.
+    const result = transport('gh', args, {env, timeout: Math.min(timeout, available), maxBuffer});
     const stderr = redact(result.stderr?.toString('utf8') ?? '');
     const clean = result.cleanup_complete === true && !result.error && !result.signal && !result.timed_out;
+    const errorDetails = result.error ? Object.fromEntries(['name', 'message', 'errno', 'syscall']
+      .filter(key => ['string', 'number', 'boolean'].includes(typeof result.error[key]))
+      .map(key => [key, typeof result.error[key] === 'string' ? redact(result.error[key]).slice(-2048) : result.error[key]])) : undefined;
+    const detail = {operation: 'github-json-read', endpoint, attempt, status: result.status,
+      signal: result.signal, timedOut: result.timed_out, cleanupComplete: result.cleanup_complete,
+      error: result.error?.code, errorDetails,
+      stdout: redact(result.stdout?.toString('utf8') ?? '').slice(-2048), stderr: stderr.slice(-2048)};
+    lastDetail = detail;
+    if (remaining() <= 0) expired();
     if (clean && result.status === 0) {
       assert(result.stdout.length <= maxBuffer, 'GitHub observation response exceeds its byte bound');
       return JSON.parse(new TextDecoder('utf-8', {fatal: true}).decode(result.stdout));
     }
-    const detail = {operation: 'github-json-read', endpoint, attempt, status: result.status,
-      signal: result.signal, timedOut: result.timed_out, cleanupComplete: result.cleanup_complete,
-      error: result.error?.code, stderr: stderr.slice(-2048)};
     report(detail);
-    const unavailable = clean && transientGithubServerFailure(stderr);
+    const capturedTimeout = retryTimeouts && result.status === null && result.timed_out === true
+      && result.error?.code === 'ETIMEDOUT' && ['SIGTERM', 'SIGKILL'].includes(result.signal)
+      && !/\bHTTP [45][0-9]{2}\b/u.test(stderr);
+    const unavailable = clean && transientGithubServerFailure(stderr) || capturedTimeout;
     if (unavailable && attempt === 3) throw new GithubObservationUnavailable(detail);
-    assert(unavailable,
-      'bounded GitHub observation failed: ' + JSON.stringify(detail));
-    pause(attempt * 2000);
+    assert(unavailable, 'bounded GitHub observation failed: ' + JSON.stringify(detail));
+    const delayBudget = remaining();
+    if (delayBudget <= 0) expired();
+    pause(Math.min(attempt * 2000, delayBudget));
   }
 }
 

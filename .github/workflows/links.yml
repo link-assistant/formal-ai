@@ -33,6 +33,11 @@ on:
   # (.github/actions/dispatch-checks); mode and pull-request are its inputs.
   workflow_dispatch:
     inputs:
+      live-audit:
+        description: 'Run the full live-link audit on main'
+        required: false
+        default: false
+        type: boolean
       mode:
         description: 'checks: run the pull-request checks on the dispatched branch'
         required: false
@@ -57,8 +62,41 @@ env:
   GIT_CONFIG_VALUE_0: main
 
 jobs:
+  link-parser-checks:
+    name: Link parser regressions
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-link-parser-checks
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        timeout-minutes: 2
+        env:
+          GIT_HTTP_LOW_SPEED_LIMIT: '1024'
+          GIT_HTTP_LOW_SPEED_TIME: '20'
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            /scripts/
+            /package.json
+            /.lycheeignore
+          sparse-checkout-cone-mode: false
+
+      - name: Test Web Archive report parser
+        run: |
+          node --test \
+            scripts/check-web-archive.test.mjs \
+            scripts/recheck-broken-links.test.mjs \
+            scripts/recheck-transient-http.test.mjs
+
   link-checker:
     name: Check Links
+    if: ${{ github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main' && (vars.FORMAL_AI_FULL_LINK_CHECKS == 'run' || (github.event_name == 'workflow_dispatch' && inputs['live-audit'] == true)) }}
     runs-on: ubuntu-latest
     # Typical run: <1min with lychee cache. 10min prevents slow
     # external hosts or Wayback Machine probes from hanging the workflow.

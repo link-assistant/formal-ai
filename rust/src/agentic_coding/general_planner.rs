@@ -105,6 +105,13 @@ pub struct GeneralChangePlan {
     /// answer for a plan that reaches [`PlanTerminalState::PlannedNotExecuted`].
     pub verification_command: String,
     pub terminal_state: PlanTerminalState,
+    /// Issue #1557: the language of the user's own turn, when a work-item
+    /// request carries prose of its own besides the reference. It is the
+    /// strongest signal for the answer's language, ahead of the work item's
+    /// body and title. `None` for every other plan, and for a request that
+    /// opens with the reference (Hive Mind's objective field), whose wording
+    /// is a template rather than the user's.
+    pub request_language: Option<crate::language::Language>,
 }
 impl GeneralChangePlan {
     /// Render the plan shape consumed by the driver and documented by the meta fixture.
@@ -131,12 +138,34 @@ impl GeneralChangePlan {
         }
         out
     }
+    /// The slug of the language this plan's answers speak.
+    ///
+    /// A work item's goal is the fetched title and body once the run has read
+    /// it, and the language of a whole document must not be decided by one
+    /// marker or one quotation (issue #1557). So a work item prefers the
+    /// explicit signals in order: the user's own turn, then the body's prose,
+    /// then the title's prose; the goal as a whole decides only when none of
+    /// them holds prose. Every other plan answers in its request's language.
+    /// Mirrored by `planResponseLanguage` in `js/agentic/general_planner.mjs`.
+    #[must_use]
+    pub fn response_language(&self) -> &'static str {
+        if self.mode != GeneralPlanMode::RepositoryWorkItem {
+            return crate::language::detect(&self.goal).slug();
+        }
+        let (title, body) = work_item_title_and_body(&self.goal);
+        self.request_language
+            .filter(|_| crate::language::forced_response_language_slug().is_none())
+            .or_else(|| crate::language::detect_prose(body))
+            .or_else(|| crate::language::detect_prose(title))
+            .unwrap_or_else(|| crate::language::detect(&self.goal))
+            .slug()
+    }
     /// Render the terminal answer of a plan that touched nothing the request
     /// named: planned, not executed (issue #904).
     #[must_use]
     pub fn planned_not_executed_answer(&self) -> String {
         const BODY_PLACEHOLDER: &str = concat!("{", "plan", "}");
-        let language = crate::language::detect(&self.goal).slug();
+        let language = self.response_language();
         seed::localized_response("general_plan_repository_planned", language)
             .unwrap_or_default()
             .replace(TARGET_PLACEHOLDER, &self.target)
@@ -373,6 +402,7 @@ pub fn compose_general_change_plan(full_request: &str) -> Option<GeneralChangePl
         // The verification command observes the file the request named, not the
         // plan record this run wrote, so the plan really is executed.
         terminal_state: PlanTerminalState::Executed,
+        request_language: None,
     })
 }
 fn compose_repository_work_plan(request: &str) -> Option<GeneralChangePlan> {
@@ -392,6 +422,13 @@ fn compose_repository_work_plan(request: &str) -> Option<GeneralChangePlan> {
     }
     let response_language = language(request);
     let intent = formalize_intent(request, response_language, None);
+    // Issue #1557: a request that wraps the reference in words of its own is
+    // the user's turn, the strongest signal for the answer's language.
+    let request_language = if opens_with_reference {
+        None
+    } else {
+        crate::language::detect_prose(request)
+    };
     Some(GeneralChangePlan {
         id: stable_id(
             "repository_work_item_plan",
@@ -413,6 +450,7 @@ fn compose_repository_work_plan(request: &str) -> Option<GeneralChangePlan> {
         ],
         verification_command: String::new(),
         terminal_state: PlanTerminalState::PlannedNotExecuted,
+        request_language,
     })
 }
 /// One step of a repository work-item plan, with its seeded action and
@@ -701,6 +739,15 @@ const fn capability_slug(capability: Capability) -> &'static str {
         Capability::ReadMany => "ReadMany",
         Capability::MultiEdit => "MultiEdit",
         Capability::AskUser => "AskUser",
+    }
+}
+/// Split a work-item goal into its title and body. The run joins a fetched
+/// issue as `title`, a blank line, then `body`; a goal of any other shape is
+/// all body. Mirrored by `workItemTitleAndBody`.
+fn work_item_title_and_body(goal: &str) -> (&str, &str) {
+    match goal.split_once("\n\n") {
+        Some((title, body)) if !title.contains('\n') => (title, body),
+        _ => ("", goal),
     }
 }
 fn language(request: &str) -> &'static str {

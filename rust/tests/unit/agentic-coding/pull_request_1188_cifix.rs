@@ -163,5 +163,11 @@ fn unavailable_auxiliary_append_does_not_block_a_write_only_client_target() {
         panic!("unavailable persistence must be reported honestly");
     };
     assert!(!answer.contains("Completed the general change request"));
-    assert!(answer.contains(".formal-ai/general-change-plan.lino"));
+    assert_eq!(
+        answer,
+        formal_ai::seed::localized_response("coding_workspace_written_unverified", "en")
+            .expect("maintained unverified-write response")
+            .replace("{path}", "hello.txt")
+    );
+    assert!(!answer.contains(".formal-ai/general-change-plan.lino"));
 }

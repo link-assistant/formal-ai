@@ -257,3 +257,38 @@ test(`${aggregateStatus} aggregate cannot substitute controller identity or bypa
 });
 
 }
+
+// Captured main run 41833220718/job 126637298693: 60 !== 59 during pagination.
+test('growing job inventory restarts from page one and bounds unstable observations', () => {
+  const endpoint = base + 'actions/runs/41/attempts/2/jobs?per_page=20&page=';
+  for (const mode of ['settles', 'churns', 'foreign-attempt', 'duplicate']) {
+    const current = fixture();
+    const ordinary = Array.from({length: 59}, (_, index) => ({...current.publisher,
+      id: 100 + index, name: 'ordinary job ' + index}));
+    const complete = [...ordinary, current.publisher];
+    let observations = 0, jobReads = 0;
+    const read = path => {
+      if (!path.startsWith(endpoint)) return current.read(path);
+      const page = Number(path.slice(endpoint.length));
+      if (page === 1) observations++;
+      jobReads++;
+      const changing = mode === 'churns' || observations === 1;
+      const total_count = changing && page === 1 ? 59 : 60;
+      const jobs = structuredClone(complete.slice((page - 1) * 20, page * 20));
+      if (page === 2 && mode === 'foreign-attempt') jobs[0].run_attempt = 3;
+      if (page === 2 && mode === 'duplicate') jobs[0].id = complete[0].id;
+      return {total_count, jobs};
+    };
+    if (mode === 'settles') {
+      assert.equal(resolvePublishedProducer(cwd, environment, read).publisherJob, 73);
+      assert.equal(observations, 2);
+      assert.equal(jobReads, 5);
+    } else {
+      assert.throws(() => resolvePublishedProducer(cwd, environment, read),
+        mode === 'churns' ? /all three bounded observations/u : undefined);
+      assert.equal(observations, mode === 'churns' ? 3 : 1);
+      assert.equal(jobReads, mode === 'churns' ? 6 : 2);
+      assert.ok(current.calls.every(path => !path.includes('/releases') && !path.includes('/commits/')));
+    }
+  }
+});

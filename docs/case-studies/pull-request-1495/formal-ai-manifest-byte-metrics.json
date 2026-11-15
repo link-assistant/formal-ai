@@ -1,0 +1,25 @@
+{
+  "schema": "formal-ai-manifest-leaf-byte-metrics/v1",
+  "scope": "Only the accepted frozen two-file manifest declaration leaf; no global efficiency counter.",
+  "instructionUtf8Bytes": 340,
+  "originalManifestObservedUtf8Bytes": 2081,
+  "originalGuideObservedUtf8Bytes": 10806,
+  "originalInputsObservedUtf8Bytes": 12887,
+  "actualGuideUtf8NetDelta": 1190,
+  "rawUsefulArtifactSha256": "e8517865df22bf076fb3f747b7764021bdcc5c99ddd791a698727630db782620",
+  "originalGuideSha256": "2fe4fc583b22075c147636a3fc82e13dc4ff251133d028594b63e6763adca00b",
+  "sourceManifestSha256": "7719887e1ddef6d01246c4c462ae0c1e007cae2d84f89e9850c745855a464a77",
+  "diagnosticAndTraceOutputUsefulBytes": 0,
+  "classification": "instruction expansion / evidence compression",
+  "interpretation": "Useful artifact is the independently checked guide; all diagnostics, traces, provenance and transport receipts earn zero useful artifact bytes.",
+  "qualityQualification": "Exact12 actual name/version/section declarations, complete original guide preservation, unchanged manifest, no added runtime-use claims; fresh repeat no write.",
+  "limits": [
+    "UTF8 byte metrics only, not tokens",
+    "No inference about actual API bills or monetary cost",
+    "No token/cost reduction claim",
+    "No quality padding or global capability/efficiency rate claim"
+  ],
+  "candidateEvidencePreservedBeforeReview": true,
+  "sourceEditsForTelemetry": false,
+  "newTaskRunsForTelemetry": false
+}

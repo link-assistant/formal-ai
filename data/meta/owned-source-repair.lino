@@ -1,0 +1,27 @@
+owned-source-repair
+  action fix
+  action repair
+  action correct
+  prefix please
+  negation not
+  negation never
+  negation without
+  negation "don't"
+  key-cue key
+  key-cue keys
+  key-cue name
+  key-cue names
+  binding-cue binding
+  binding-cue bindings
+  dictionary-scope-cue own
+  dictionary-scope-cue dictionary
+  dictionary-scope-cue prototype
+  dictionary-scope-cue legal
+  dictionary-scope-cue arbitrary
+  dictionary-relation-cue retain
+  dictionary-relation-cue retains
+  dictionary-relation-cue store
+  dictionary-relation-cue stores
+  dictionary-relation-cue represent
+  dictionary-relation-cue preserve
+  dictionary-relation-cue keep

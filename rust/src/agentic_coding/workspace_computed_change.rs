@@ -9,28 +9,19 @@
 //! append (`Append the line 'third line' to notes.txt.`) reached the
 //! general-change fallback and was written as the *whole* file.
 
-use super::code_artifact::source_from_read_result;
-use super::code_task::render_seeded_outcome;
-use super::final_result::FinalResult;
 use super::general_planner::compose_edit_request;
-use super::intent_router::edit_arguments;
 use super::line_removal::{
     bare_line, removed_declarations, removed_line_indices, removed_lines, removed_literal,
 };
-use super::planner::{AgenticPlan, Capability, plan_one, tool_for, write_arguments};
-use super::workspace_change::{
-    VerifiedChange, changed_lines_edit, identifier_tokens, plan_digest_verification,
-    read_arguments, result_for_edit, result_for_path,
-};
+use super::workspace_change::{changed_lines_edit, identifier_tokens};
 use super::workspace_line_operation::{
-    LineOperation, drops_most_of_file, grounded_line_operation, named_target_and_payloads,
+    LineOperation, grounded_line_operation, named_target_and_payloads,
 };
 use super::write_request::{
     bare_surfaces, clean_cue_token, clean_path_token, looks_like_file_path, safe_relative_path,
     tokens,
 };
 use crate::normal_markov::{quoted_segment_spans, quoted_segments};
-use crate::protocol::ChatMessage;
 use crate::seed;
 use crate::workspace_change_learning::{
     RewriteScope, execute_scoped_workspace_rewrite, is_identifier_word,
@@ -815,85 +806,8 @@ impl ComputedChange {
 }
 
 /// Read, compute, edit (or write), check the digest, state the change.
-pub(super) fn plan_computed_change_step(
-    task: &str,
-    current_turn: &[ChatMessage],
-    tool_names: &[&str],
-    change: &ComputedChange,
-    result: &mut Option<FinalResult>,
-) -> Option<AgenticPlan> {
-    let target = change.target.as_str();
-    let Some(read) = result_for_path(current_turn, Capability::Read, target, None) else {
-        let tool = tool_for(tool_names, Capability::Read)?;
-        return Some(plan_one(tool, read_arguments(target)));
-    };
-    // A read that came back as the client's file block is the file, whatever
-    // its text says: a ledger that quotes error lines is not a missing file.
-    let missing = super::code_artifact::source_from_agent_read_result(&read).is_none()
-        && super::tool_result::failure_message(&read, false, true).is_some();
-    let source = if missing {
-        String::new()
-    } else {
-        source_from_read_result(&read)
-    };
-    if let Some(answer) = super::edit_scope::scoped_decline(task, target, &source) {
-        return Some(AgenticPlan::Final(answer));
-    }
-    let Some(updated) = change
-        .compute(&source, missing)
-        .filter(|updated| *updated != source)
-    else {
-        // Text the change names that the file no longer holds is the answer (G87).
-        let absent = if missing {
-            None
-        } else {
-            change.absent_text_answer(task, &source)
-        };
-        return Some(AgenticPlan::Final(match absent {
-            Some(answer) => answer,
-            None => render_seeded_outcome("coding_workspace_verification_failed", task, target)?,
-        }));
-    };
-    // A change that would drop most of the file is refused unless its request
-    // states that extent (PR #1188 T29).
-    if !change.bounded() && drops_most_of_file(&source, &updated) {
-        return Some(AgenticPlan::Final(render_seeded_outcome(
-            "coding_workspace_fragment_refused",
-            task,
-            target,
-        )?));
-    }
-    let (intent, reported) = change.reported(&source);
-    let slots: Vec<(&str, &str)> = reported
-        .iter()
-        .map(|(slot, value)| (*slot, value.as_str()))
-        .collect();
-    let values = change.reported_values(&source);
-    let list_slots: Vec<(&str, &[String])> = values
-        .as_deref()
-        .map(|values| vec![(concat!("{", "old", "}"), values)])
-        .unwrap_or_default();
-    let verified = VerifiedChange {
-        target,
-        expected: &updated,
-        intent,
-        slots: &slots,
-        list_slots: &list_slots,
-    };
-    if let Some((old, new)) = change.edit(&source, &updated)
-        && let Some(tool) = tool_for(tool_names, Capability::Edit)
-    {
-        if result_for_edit(current_turn, target, &old, &new).is_none() {
-            return Some(plan_one(tool, edit_arguments(target, &old, &new)));
-        }
-        return plan_digest_verification(task, current_turn, tool_names, &verified, result);
-    }
-    if result_for_path(current_turn, Capability::Write, target, Some(&updated)).is_none() {
-        let tool = tool_for(tool_names, Capability::Write)?;
-        return Some(plan_one(tool, write_arguments(target, &updated)));
-    }
-    plan_digest_verification(task, current_turn, tool_names, &verified, result)
-}
+mod execution;
+pub(super) use execution::plan_computed_change_step;
 
 /// `Append the line third to notes.txt`: no quoted text, one path, and the
 /// seeded `file_edit_line_lead`; the line is the words after the lead up to

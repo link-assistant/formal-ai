@@ -1,0 +1,56 @@
+{
+  "schema": "file-command-grammar/v1",
+  "scope": "bounded English read-only file operations; no general shell or coding claim",
+  "listingAdjectives": [
+    "current",
+    "this",
+    "working"
+  ],
+  "listingVerbs": [
+    "list",
+    "show",
+    "display",
+    "print",
+    "enumerate"
+  ],
+  "adjectiveExpression": "(?:^|\\s)(?P<adjective>[A-Za-z]{4,32})\\s+(?:directory|folder)\\b",
+  "controlCharacters": [
+    ";",
+    "&",
+    "|",
+    "<",
+    ">",
+    "`",
+    "\n",
+    "\r"
+  ],
+  "substitutionOpening": "$(",
+  "patterns": [
+    {
+      "operation": "unsupported",
+      "reason": "UnsupportedBulkDeletion",
+      "expression": "^\\s*(?:please\\s+)?(?:delete|remove|erase)\\s+(?:all(?:\\s+the)?|every)\\s+files?(?:\\s+in\\s+.+)?[.!?]?\\s*$"
+    },
+    {
+      "operation": "head",
+      "expression": "^\\s*(?:please\\s+)?(?:show|print|display|read)(?:\\s+me)?\\s+(?:the\\s+)?first\\s+(?P<count>[0-9]+)\\s+lines?(?:\\s+(?:of|from|in))?\\s+(?P<path>\"[^\"]+\"|'[^']+'|[A-Za-z0-9_./-]+)[.!?]?\\s*$"
+    },
+    {
+      "operation": "search",
+      "expression": "^\\s*(?:please\\s+)?(?:search|find|grep|look)(?:\\s+for)?\\s+(?P<query>.+?)\\s+in\\s+(?:(?:all(?:\\s+the)?|every)\\s+files?|(?P<path>\"[^\"]+\"|'[^']+'|[A-Za-z0-9_./-]+))[.!?]?\\s*$"
+    },
+    {
+      "operation": "count",
+      "expression": "^\\s*(?:please\\s+)?(?:how\\s+many|count(?:\\s+the)?|number\\s+of)\\s+files?(?:\\s+are)?(?:\\s+in)?(?:\\s+(?:the\\s+)?(?:(?:current|this|working)\\s+(?:directory|folder)|here|(?P<path>\"[^\"]+\"|'[^']+'|[A-Za-z0-9_./-]+)))?[.!?]?\\s*$"
+    },
+    {
+      "operation": "listing",
+      "expression": "^\\s*(?:please\\s+)?(?:list|show|display|print|enumerate)(?:\\s+me)?\\s+(?:(?:the\\s+)?list\\s+of\\s+)?(?:the\\s+)?(?:files|entries|contents)(?:\\s+(?:in|of|from))?\\s+(?:the\\s+)?(?:current|this|working)\\s+(?:directory|folder)[.!?]?\\s*$"
+    },
+    {
+      "operation": "unsupported",
+      "reason": "UnresolvedFileCommand",
+      "expression": "^\\s*(?:please\\s+)?(?:delete|remove|erase|search|find|count|show|print|display|read)\\b[^\\r\\n]*(?:\\ball\\s+files\\b|\\bfirst\\s+-?[0-9]+\\s+lines?\\b)[^\\r\\n]*$"
+    }
+  ]
+}

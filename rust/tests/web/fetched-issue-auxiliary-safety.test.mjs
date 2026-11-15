@@ -14,7 +14,8 @@ import { executeResult } from '../../../experiments/js_dogfood/drive.mjs';
 const task = 'Solve https://github.com/link-assistant/formal-ai/issues/1069 in this checkout as one whole task.';
 const prose = 'Produce a legitimate release with no fabricated evidence.\nAdding a bypass flag to check-self-development-release.rs is not acceptable.';
 const tools = ['web_fetch', 'write_file', 'bash'];
-const auxiliaryTask = 'Create observation.txt containing exactly "auxiliary evidence".';
+// Journal receipt authority applies to the legacy replacement owner; complete Create owns only its target.
+const auxiliaryTask = 'Set the contents of observation.txt to «auxiliary evidence»';
 before(async () => { await installNodeHost(new WorkerHost()); });
 function append(messages, call, observation) {
   const id = 'actual-' + messages.length;

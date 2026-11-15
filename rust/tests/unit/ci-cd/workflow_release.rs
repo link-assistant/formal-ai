@@ -521,12 +521,21 @@ fn lint_job_gates_on_workflow_shell_and_clippy_findings() {
     let workflow = ci_surface();
     let lint = job_block(&workflow, "lint");
 
+    assert!(lint.contains("bash scripts/ci-clippy-profile.sh"));
+    let profile = fs::read_to_string(format!(
+        "{}/../scripts/ci-clippy-profile.sh",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .expect("shared Clippy profile");
     assert!(
-        lint.contains("cargo clippy --manifest-path rust/Cargo.toml --lib --bins --tests --all-features -- -D warnings"),
+        profile.contains("cargo clippy --manifest-path rust/Cargo.toml --lib --bins --tests --all-features -- -D warnings"),
         "clippy must lint executable test targets and fail the job on findings"
     );
+    for lint in ["correctness", "suspicious", "perf"] {
+        assert!(profile.contains(&format!("-D clippy::{lint}")));
+    }
     assert!(
-        lint.contains("cargo check --manifest-path rust/Cargo.toml --examples --all-features"),
+        profile.contains("cargo check --manifest-path rust/Cargo.toml --examples --all-features"),
         "examples must be compile-checked without linking every standalone binary (issue #534)"
     );
     assert!(
@@ -748,7 +757,9 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // `evidence_check_workflow_caps_its_job_and_installs_rust_script_with_the_retry_wrapper`.
         ("docker-build", 30),
         ("docker-slim", 0),
-        ("secrets-scan", 10),
+        // PR #1523: 597s checkout left only 5s for the clean scanner before cancellation.
+        // Keep full history/tree and reserve five bounded minutes after acquisition.
+        ("secrets-scan", 15),
         ("version-check", 5),
         // Issue #1081 (D15): probes every publishing credential with a write
         // before the pipeline spends 90 minutes building what it cannot
@@ -815,7 +826,7 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         ("build", 20),
         // R1015: the JavaScript server answers the parity corpus as the
         // release binary does; it reuses build-artifacts' binary, so no compile.
-        ("server-parity", 15),
+        ("server-parity", 30),
         // Issue #1076 (D5): raised from 60. Worst case 50.6 min over 400
         // `main` runs, 84.4% of that cap -- and the 45-minute GHCR budget that
         // owns the real deadline could never have fired inside it, since the
@@ -843,7 +854,7 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         ("test-agent-cli-e2e", 0),
         // Issue #1012: the shared release binary is built once before the seven
         // Box image legs, avoiding seven identical cache restores and builds.
-        ("build-artifacts", 20),
+        ("build-artifacts", 25),
         ("native-response-observations", 0),
         // Issue #932: per-language matrix leg that pulls one link-foundation/box
         // image, generates the project from solver answers and runs the

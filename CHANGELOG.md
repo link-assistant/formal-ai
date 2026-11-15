@@ -20,6 +20,197 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.355.34] - 2026-11-05
+
+Give the single public Pages smoke a bounded cold-CDN worker allowance while preserving real WASM and answer assertions, keeping local waits and the original full suite unchanged. Reduce its overall cap and record startup duration plus bounded pending-request diagnostics so a slow or failed worker has an actionable cause.
+
+## [0.355.33] - 2026-11-04
+
+Fix post-publication self-authoring when GitHub adds descendant jobs during pagination: discard the changing inventory and restart from page one at most three times, retaining the shared deadline, request limit, and exact publisher/source/attempt checks. Replay the observed 59-to-60 job-count race offline and refuse persistent churn or invalid job identities.
+
+Fix release freshness checks when GitHub reports a queued or waiting parent pipeline while its staged writer is running. Share nonterminal aggregate validation across all staged entry points while preserving exact current-job, runner, source, attempt and writer-group membership proof. Replay the observed failure and stale/foreign/missing-lease refusals in essential offline PR tests.
+
+## [0.355.32] - 2026-11-04
+
+Formalize explicitly requested sums and inclusive bounds through the existing JavaScript and Rust calculators, preserving the original quantities and source spans. Decline unsupported conditions and mixed units, and keep aggregate concept questions outside the comparison handler. Preserve computed quantity evidence through the server projection, and keep the legacy worker within its existing budget through a separate quantity module. Add captured regression and ownership checks to the essential offline PR inventory; retain complete responses for reasoning acceptance.
+
+Complete quantity seed metadata, role declarations and localized dictionaries; preserve backend input scope, strengthen exact QA answers, correct debug source ownership and move cheap governance checks into the fast PR preflight.
+
+Fix quantity routing source provenance and grammar scope without weakening formalization quality checks.
+
+## [0.355.31] - 2026-11-04
+
+### Tests
+
+- Verify dependency versions, native target constraints, literal feature options and imported-call excerpts in the guide actually written by the maintained planner.
+
+### Documentation
+
+- Record bounded original-task and held-out documentation probes, including an independently checked useful partial edit through the actual Agent client and the maintained JavaScript backend.
+- Keep ordinary Hive execution, remaining clients, production orchestration and full integration acceptance explicitly pending. Preserve incomplete attempts and distinguish supplied scaffolding from source-derived work.
+
+### Performance
+
+- Bound quote-predecessor character iteration to the final two UTF-16 units instead of materializing each complete prefix. Preserve Unicode, index coercion and quote-span behavior, with generated TypeScript and browser-worker counterparts.
+- A single captured terminal request replay retained identical response content while taking 5.55 seconds before the change and 2.49 seconds afterward. Deterministic work-bound and semantic tests protect the optimization without a wall-clock CI gate.
+
+Fix stale requirement verdict projections and check their freshness in the fast JavaScript PR gate. Bound live work-item runner and broker commands by the authenticated job deadline, allow progressing image acquisition within that window, and reserve time for cleanup and evidence upload. Preserve historical cleanup ownership when the current policy gains a new helper. Retain the failed acquisition logs and truthful test-issue/protected-branch outcomes; full client acceptance remains pending. Verified protected-only branch residue is explicitly deferred after issue/PR closure; it remains incomplete and grants no delivery credit, while uncertain cleanup still fails.
+
+## [0.355.30] - 2026-11-04
+
+### Fixed
+- Add a trusted JavaScript-only server grammar setting, verify declared literal creates against fresh target reads, preserve failed-command output streams, and report missing edit capabilities explicitly.
+- Bound source-authority metadata read retries with one shared deadline and preserve exact resolver dependency custody in detached release protocols.
+
+- Authenticate each signed artifact against its actual successful producer attempt after partial reruns, preserving exact digest, source, workflow and ref checks.
+
+### Fixed
+- Verify literal file changes across dedicated Read and shell clients, preserve exact content, and reconcile all artifact obligations.
+- Reuse qualified observations safely across dependent edits and retain specialized editing capability routing.
+- Prevent source payloads and overwrite permission from authorizing unintended whole-file changes; bind journal effects to the current plan before execution.
+- Run inexpensive JavaScript source-policy checks on pull requests while retaining full production qualification.
+
+### Fixed
+- Preserve an owned empty-string fallback in the native statement-aware write guard so the coding runtime can compile.
+- Keep unsupported edit tails explicit, and admit typed source-edit evidence only through its maintained guarded plan.
+- Share request-authority checks between live execution and fresh replay, with strict loaded-source comparison and bounded mismatch diagnostics.
+- Use hyphenated names for new verification messages without increasing notation debt.
+
+# Fix independent evidence receipt verification
+
+- Record the actual child status, stdout and reported receipt for fixture shell actions.
+- Accept fresh exact successful ordinary cat readbacks for the unchanged L21 effect and proof records, with negative controls for stale, failed, truncated and mismatched observations.
+- Record the initial 5% independent reasoning and fact-checking delegation target separately from tool execution and code authorship.
+- Route JavaScript task-decomposition questions through the existing native algorithm and shared seeded wording, with exact TypeScript mirrors.
+- Assess finite JSON scalar claims against fresh complete Read evidence as supported, contradicted or unknown, retaining claim/source identities and spans.
+- Add an explicit hosted source-generation mode that regenerates the affected translation projections without starting native builds or publication.
+- Keep measured full-solver/filesystem scenarios on main and retain fast ownership, operand, and header contracts on pull requests; preserve all integration bodies and the existing execution budget.
+- Report actual per-file completion and duration from Node 22+ test summaries.
+
+Fix exact literal content markers and preserve their final newline through Agent creation. Bind scoped AddFile creation to actual qualified preflight, mutation and fresh readback evidence; report unavailable capabilities without claiming unexecuted effects. Keep JavaScript, TypeScript and Rust contracts paired.
+
+Refresh the generated progressive requirements plan and include its lightweight regression in fast PR checks after the stale projection failed on main.
+
+Restore checks-only bot dispatch when a workflow declares additional explicit modes, and align native CI contracts with the isolated source-generation mode. Keep publication and source-generation opt-ins independent from ordinary checks.
+
+Preserve separate proofs for disjoint literal files explicitly declared by the same standing request, and retain original failed Write receipts so transport/precondition failures remain terminal failures. Unknown, pending and same-target effects still invalidate proof.
+
+Retire the unused legacy post-write command receipt adapter after creation proof moved to scoped mutation/readback evidence. Remove the matching JavaScript wrapper and regenerate TypeScript. Preserve the active receipt type and read-only verification helpers, restoring warning-clean native compilation without suppressing the lint.
+
+Verify declared literal-file Agent scenarios through actual bound writes, fresh reads, terminal completion and exact sandbox bytes. Retain minimum-round checks for other scenarios and compilation/execution requirements for generated programs. Add offline protocol regressions for shorter successful creation and false-completion refusals.
+
+Move native path regressions into the registered test tree and execute scoped creation library fixtures from the existing compiler output, with exact Cargo target and test-inventory checks.
+
+Restore complete source edit clauses, initialize replay authority inside its source session, and recognize bound native literal-file observations while retaining exact program verification. Add bounded child failure diagnostics and regression coverage for truthful write failure reporting.
+
+Preserve provider append contracts during replay and update current proof fixtures while keeping historical captures unchanged. Verify supported source edits with fresh Read evidence, retain matched edit failures and repeated-objective context, and correct literal payload boundaries. Keep translations and status projections current and cover captured failures in fast PR checks.
+
+Reacquire a fresh jobs and concurrency-group observation pair after a bounded
+release transport failure. Keep the shared deadline, exact caller ownership and
+freshness checks, and refuse semantic errors before any retry.
+
+# CI source acquisition
+
+Acquire the complete documentation-policy input closure without materializing unrelated source and evidence. Preserve all existing checks and finite deadlines, and guard imported modules, the full workflow census and locked parser inputs with a focused JavaScript regression.
+
+Layered JavaScript also avoids historical development-log hydration while retaining the real learning-report fixture and every existing suite. Test actual Git sparse selection without increasing execution budgets.
+
+Give the main-only native producer a finite 25-minute allocation after observed source acquisition and successful compilation consumed its old twenty-minute clock before artifact uploads finished. Preserve complete tracked-source witnesses, all producer operations and PR budgets.
+
+Keep version-base and changelog admission metadata-only, preserve every measured source file in fast checks, and bound original-Hive cleanup preparation checkout without changing trusted revisions or cleanup permissions. Capture the observed acquisition failures in focused offline regressions.
+
+Reserve realistic acquisition phases inside unchanged fast-check and cleanup job clocks while retaining reviewed source inputs and all validation time.
+
+Read the base manifest through source-verified GitData objects under one fifteen-second deadline using the existing Actions read token. Narrow Cargo-audit checkout while preserving Rust target discovery, ignore proofs and advisory warnings.
+
+Retain the full live-link audit as a main-only opt-in and keep its unchanged
+parser regressions mandatory with a small checkout. Record the policy in vision,
+contributor guidance and requirements; scope the native budget test to its named
+job rather than the first timeout in the workflow.
+
+Retain full-history and full-tree secret scanning while filtering unrelated
+historical blob downloads. Reserve a bounded scan allowance after checkout
+so source acquisition cannot consume the entire secrets job budget.
+
+Keep full physical native test-input verification while reading files in
+bounded chunks and reporting aggregate phase progress. Reserve a finite
+artifact-binding allowance without dropping any tracked input or smoke check.
+
+Acquire only reviewed VS Code resolver and corpus-aggregate inputs, preserve
+publication/aggregation policy, and include the corrected producer-budget and
+physical-identity regressions in fast pull-request coverage.
+
+Preserve the full real Coding Ladder behind explicit main-only opt-in while
+keeping default consistency and mandatory native coding/reporting gates.
+Narrow only the public-download controller checkout; all actual public
+asset verification jobs remain unchanged.
+
+Bound JavaScript and primary server-parity source acquisition separately from
+their unchanged test workloads. Keep finite checkout and job deadlines, complete
+parity inputs and every release operation. Replace the stale link-parser command
+count with structural trigger and job checks, retaining the native regression.
+
+Remove the obsolete parent-module import after extracting the structural link
+parser policy test, so native test targets compile under warnings-as-errors.
+Keep the child module's used import and every policy assertion unchanged.
+
+Share source-classification initialization between live capture and strict replay without changing pinned rule data. Restore complete-source evidence in coding test providers and their Rust twins, retain exact timeout-answer and HTTP plan-journal coverage, and include the captured coding regressions in fast PR checks. Keep the physical two-capture Create integration on main while retaining its unit cases in PR qualification.
+
+Regenerate runtime feature coverage from its authoritative sources and check the committed projection in fast PR tests. Add bounded phase timing diagnostics to native artifact binding while preserving physical source checks, smoke tests and the existing deadline.
+
+Preserve raw Edit receipts for exact preimage matching and consume instruction-header colon separators without changing authored payload punctuation. Align native coding fixtures with complete-source Read evidence and accept actual fresh post-write Read proofs. Retain the original Read-only Set verification regression as explicit release-first debt, with active honest-gap and separate-Read coverage. Execute JavaScript CI suites in the duration planner's actual order instead of allowing Node CLI discovery to sort them alphabetically, retaining all tests and the existing budget. Avoid redundant identical-block research analysis while preserving history guards; retain the full solver integration on main and use explicit routing emulation in fast PRs. Report DRY language-coverage gaps and existing scanner debt in CI, and require periodic review for shared invariants.
+
+Bind relative creation requirements to exact absolute tool paths under the host process workspace, preserving raw arguments, receipts and fresh verification requirements. Keep foreign roots, ambiguous aliases, traversal and unavailable host bindings refused. Interpret complete GitHub expression wrappers in layered workflow assertions without weakening path predicates or dependency checks.
+
+## [0.355.29] - 2026-11-02
+
+### Fixed
+- Keep issue-specific Hive draft attempts outside release CI admission, while retaining strict source, publisher and commit-check requirements.
+
+## [0.355.28] - 2026-11-01
+
+Fix agent file-command routing for directory typos, literal search, bounded counts and line-limited reads; reject unsupported deletion and compound shell input. Preserve dedicated tool priority and source-repair ownership. Restore native build and captured main-CI regressions, and add a guarded source-derived named-import edit.
+
+### Fixed
+- Connect bounded repository observations to source-derived documentation and concrete-syntax interval edits, with guarded effects, fresh readback and explicit pending independent acceptance.
+- Preserve literal replacement metacharacters in source-derived documentation, matching native string replacement behavior.
+- Add opt-in default-branch work-item qualification with authenticated released runtimes, isolated GitHub transport, complete bounded process logs and truthful cleanup of owned test issues. General work-item coding and original multi-file integration documentation acceptance remain pending.
+
+Restore CI gate citations and fast metadata validation; preserve local path discovery and client Read aliases. Retain bounded server parity failure diagnostics and support CI-only replay from an existing main binary. Move native regressions outside production source without deleting their coverage. Keep parity request sockets open until asynchronous HTTP responses finish.
+
+Retain validated consumer-search diagnostics and report a terminal verification gap when an edit host lacks a Run tool, preventing an unrelated unchanged-file claim.
+
+# Fixed
+
+- Restore the relocated native test fixture path, align CI dependency and disk-policy checks with their actual shared owners, and keep compiler-only explanations out of user-facing prose detection.
+
+# Fixed
+
+- Keep quoted edit payloads from becoming documentation instructions, and align current native and CI policy regressions with the maintained controller and shared lint profile.
+
+## [0.355.27] - 2026-10-31
+
+### Fixed
+- Keep the shared npm alias fixture compatible with strict main Clippy checks without changing its test cases or dependency-policy behavior.
+
+### Fixed
+- Apply the exact main rustfmt output to the shared npm alias fixture while preserving its strict Clippy-compatible behavior.
+
+### Fixed
+- Regenerate complete governed specification objects after package-manifest changes and check complete source parity during fast PR validation.
+
+### Changed
+- Restrict production compilation and deployments to main and authorized release consumers; use JavaScript for lightweight PR admission and one group of selected unit tests.
+- Avoid redundant Cargo package compilation and make independent Docker cold builds, browser E2E and box-language integration explicit main-only qualifications.
+
+### Fixed
+- Derive the PR timeout bound without a stale manual counter and correctly check npm alias publishers and local package dependencies against the registry snapshot.
+- Update the isolated matcher compatibility package and consumer locks to the verified upstream minimatch 11.0.3 release.
+
+### Fixed
+- Resolve patched matcher dependencies for desktop, extension and browser-test tooling while preserving legacy CommonJS and modern ESM APIs.
+- Update main-only coverage, sparse-checkout and staged-release fixtures for the fast PR policy, preserve the vision motto placement, and run the captured regressions in fast PR checks.
+
 ## [0.355.26] - 2026-10-30
 
 ### Fixed

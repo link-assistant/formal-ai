@@ -8,6 +8,8 @@ import {WorkerHost} from '../../../js/server/worker-host.mjs';
 import {installNodeHost} from '../../../js/agentic/node-host.mjs';
 import {composeGeneralChangePlan, PLAN_PATH} from '../../../js/agentic/general_planner.mjs';
 import {planGeneralChangeStep} from '../../../js/agentic/general_execution.mjs';
+import {planChatStep} from '../../../js/agentic/planner.mjs';
+import {drive} from '../../../experiments/js_dogfood/drive.mjs';
 before(async () => {await installNodeHost(new WorkerHost());});
 const cases = [
   ['Create file ci-diagnostic-audit-invariant.md containing CI diagnostics are classified, actionable causes are fixed, and uncertain cache backends expose opt-in tracing',
@@ -21,7 +23,8 @@ function record(messages, call, content) {
     function: {name: call.tool, arguments: call.arguments}}]});
   messages.push({role: 'tool', name: call.tool, tool_call_id: id, content});
 }
-for (const [request, target, expected] of cases) test('allowlisted command preserves requested write: ' + target, () => {
+for (const [original, target, expected] of cases) test('allowlisted command preserves requested write: ' + target, () => {
+  const request = original.replace(/^Create file (\S+) containing /u, 'Set the contents of $1 to exactly this content: ');
   const directory = mkdtempSync(join(tmpdir(), 'allowlisted-journal-boundary-'));
   try {
     const messages = [{role: 'user', content: request}], plan = composeGeneralChangePlan(request);
@@ -50,10 +53,24 @@ for (const [request, target, expected] of cases) test('allowlisted command prese
   } finally {rmSync(directory, {recursive: true, force: true});}
 });
 test('a source-owned shell alias still retains exact atomic journal operation', () => {
-  const request = cases[0][0], plan = composeGeneralChangePlan(request);
+  const request = cases[0][0].replace(/^Create file (\S+) containing /u, 'Set the contents of $1 to exactly this content: '), plan = composeGeneralChangePlan(request);
   const next = planGeneralChangeStep([{role: 'user', content: request}], ['write_file', 'Bash'], plan);
   assert.equal(next.calls[0].tool, 'Bash');
   const command = JSON.parse(next.calls[0].arguments).command;
   assert.ok(command.startsWith('mkdir -p -- .formal-ai && '));
   assert.ok(command.includes('awk -v identity='));
+});
+
+test('original Create stays target-only when a command journal is also advertised', async () => {
+  const directory = mkdtempSync(join(tmpdir(), 'create-with-command-journal-'));
+  try {
+    const [request, target, expected] = cases[0];
+    const result = await drive(planChatStep, directory, request,
+      {steps: 6, tools: ['write', 'read', 'bash'], atomicRecordAppend: true});
+    assert.equal(result.stop, 'final', JSON.stringify(result));
+    assert.equal(readFileSync(join(directory, target), 'utf8'), expected);
+    assert.deepEqual(result.transcript.map(row => row.tool), ['write', 'read']);
+    assert(result.transcript.some(row => row.source_read?.path === target && row.source_read.success));
+    assert.throws(() => readFileSync(join(directory, PLAN_PATH)), /ENOENT/);
+  } finally {rmSync(directory, {recursive: true, force: true});}
 });

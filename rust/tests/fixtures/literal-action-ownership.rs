@@ -6,6 +6,7 @@ const TOOLS: &[&str] = &["read", "write", "edit", "bash", "grep"];
 struct Observation {
     workspace: ToolWorkspace,
     calls: Vec<(String, String)>,
+    observations: Vec<ChatMessage>,
     answer: Option<String>,
 }
 fn observe(task: &str, initial: &[(&str, &str)], tools: &[&str], turns: usize) -> Observation {
@@ -18,6 +19,7 @@ fn observe(task: &str, initial: &[(&str, &str)], tools: &[&str], turns: usize) -
     let mut out = Observation {
         workspace,
         calls: Vec::new(),
+        observations: Vec::new(),
         answer: None,
     };
     let mut messages = vec![ChatMessage::user(task)];
@@ -28,6 +30,7 @@ fn observe(task: &str, initial: &[(&str, &str)], tools: &[&str], turns: usize) -
                     let id = format!("owned-{turn}-{index}");
                     let result = out.workspace.execute(&id, &call);
                     out.calls.push((call.tool.clone(), call.arguments.clone()));
+                    out.observations.push(result.clone());
                     messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
                         &id,
                         &call.tool,
@@ -46,15 +49,71 @@ fn observe(task: &str, initial: &[(&str, &str)], tools: &[&str], turns: usize) -
     out
 }
 fn verified(out: &Observation, path: &str) {
-    assert!(
-        out.calls.iter().any(|(tool, arguments)| {
-            let arguments: serde_json::Value = serde_json::from_str(arguments).expect("arguments");
-            tool == "bash"
-                && [format!("cat {path}"), format!("sha256sum -- {path}")]
+    assert_eq!(out.calls.len(), out.observations.len());
+    let expected = out.workspace.read(path).expect("physical verified bytes");
+    let write = out
+        .calls
+        .iter()
+        .rposition(|(tool, arguments)| {
+            let args: serde_json::Value = serde_json::from_str(arguments).expect("arguments");
+            matches!(tool.as_str(), "write" | "edit")
+                && ["path", "filePath", "file_path"]
                     .iter()
-                    .any(|command| arguments["command"].as_str() == Some(command.as_str()))
-        }),
-        "independent verification for {path}"
+                    .any(|key| args[*key].as_str() == Some(path))
+        })
+        .expect("actual target mutation before verification");
+    assert!(
+        out.calls
+            .iter()
+            .enumerate()
+            .any(|(index, (tool, arguments))| {
+                if index <= write {
+                    return false;
+                }
+                let args: serde_json::Value = serde_json::from_str(arguments).expect("arguments");
+                let observation = &out.observations[index];
+                if observation.is_error {
+                    return false;
+                }
+                let raw = observation.content.plain_text();
+                if tool == "read"
+                    && ["path", "filePath", "file_path"]
+                        .iter()
+                        .any(|key| args[*key].as_str() == Some(path))
+                {
+                    let source = formal_ai::agentic_coding::tool_result::source_read_observation(
+                        &raw,
+                        observation.is_error,
+                        observation.source_read.as_ref(),
+                        path,
+                    );
+                    return source.error.is_none()
+                        && source.complete
+                        && source.source.as_deref() == Some(expected.as_str());
+                }
+                if tool != "bash" {
+                    return false;
+                }
+                let Ok(receipt) = serde_json::from_str::<serde_json::Value>(&raw) else {
+                    return false;
+                };
+                if receipt["exit_code"] != 0
+                    || receipt["complete"] != true
+                    || receipt["timed_out"] == true
+                    || receipt["is_error"] == true
+                    || receipt["truncated"] == true
+                {
+                    return false;
+                }
+                let stdout = receipt["stdout"].as_str().unwrap_or_default();
+                if args["command"].as_str() == Some(format!("sha256sum -- {path}").as_str()) {
+                    return stdout
+                        == format!("{}  {path}\n", formal_ai::sha256_hex(expected.as_bytes()));
+                }
+                args["command"].as_str() == Some(format!("cat {path}").as_str())
+                    && stdout == expected
+            }),
+        "fresh complete actual observation for {path}"
     );
 }
 #[test]

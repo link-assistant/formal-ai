@@ -15,6 +15,10 @@ import { createHash } from 'node:crypto';
 
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+import {completeOwnedSourceReadFrame} from '../../../js/agentic/tool_result.mjs';
+import {Progress} from '../../../js/agentic/progress.mjs';
+import {Capability} from '../../../js/agentic/capability.mjs';
+import {editArguments} from '../../../js/agentic/intent_router.mjs';
 
 let planChatStep;
 let composeEditRequest;
@@ -29,7 +33,7 @@ const THREE = 'one\ntwo\nthree\n';
 const LINO = 'meanings\n  table a\n    row x\n  b\nc\n';
 
 /** Run `prompt` over one file `name` holding `source`; the tools act as the Agent CLI's do. */
-async function drive(prompt, source, name) {
+async function drive(prompt, source, name, format = 'inline') {
   let file = source;
   const messages = [{ role: 'user', content: prompt }];
   const calls = [];
@@ -39,14 +43,18 @@ async function drive(prompt, source, name) {
     const [call] = plan.calls;
     const args = JSON.parse(call.arguments);
     let result = '';
-    if (call.tool === 'read') result = file;
+    const requested = args.filePath ?? args.file_path ?? args.path;
+    const missingRead = call.tool === 'read' && requested !== name;
+    if (call.tool === 'read') result = missingRead
+      ? 'Error: File not found: ' + requested : format === 'sidecar' ? file : completeOwnedSourceReadFrame(file);
     if (call.tool === 'edit') file = file.replace(args.oldString, () => args.newString);
     if (call.tool === 'write') file = args.content;
     if (call.tool === 'bash') result = `${createHash('sha256').update(file).digest('hex')}  ${name}\n`;
     calls.push(call.tool === 'bash' ? args.command : call.tool);
     const id = `call_${step}`;
     messages.push({ role: 'assistant', content: '', tool_calls: [{ id, type: 'function', function: { name: call.tool, arguments: call.arguments } }] });
-    messages.push({ role: 'tool', tool_call_id: id, content: result });
+    messages.push({ role: 'tool', tool_call_id: id, content: result, ...(missingRead ? {is_error:true} : {}),
+      ...(call.tool === 'read' && !missingRead && format === 'sidecar' ? {source_read:{path:name,success:true,complete:true,format:'raw'}} : {}) });
   }
   return { calls, file, answer: null };
 }
@@ -196,5 +204,51 @@ describe('an article between the target cues is no part of the new text (G98)', 
   test('the edit writes the new text alone', async () => {
     const { file } = await drive("Change 'two' to 'deux' in the file f.txt.", THREE, 'f.txt');
     assert.equal(file, 'one\ndeux\nthree\n');
+  });
+});
+
+describe('source provider complete formats preserve exact qualified source bytes',()=>{
+  const source='old\nsecond\n';
+  function observed(format,negative=null){
+    const args=JSON.stringify({path:'f.txt'});
+    const raw=format==='inline'?completeOwnedSourceReadFrame(source):source;
+    const metadata=format==='sidecar'?{source_read:{path:'f.txt',success:true,complete:negative!=='incomplete',format:'raw'}}:{};
+    return [{role:'user',content:'In f.txt replace «old» with «new».'},
+      {role:'assistant',tool_calls:[{id:'format-read',type:'function',function:{name:'read',arguments:args}}]},
+      {role:'tool',tool_call_id:'format-read',content:negative==='truncated'?raw.replace('total 3 lines','total 999 lines'):raw,...metadata,...(negative==='failed'?{is_error:true}:{})}];
+  }
+  test('inline frames and sidecar metadata both preserve complete exact preimages',()=>{
+    for(const format of ['inline','sidecar']){
+      const messages=observed(format);
+      assert.equal(Progress.scan(messages).freshSourceReadFor('f.txt')?.source,source,format);
+      messages.push({role:'assistant',tool_calls:[{id:'format-edit',type:'function',function:{name:'edit',arguments:editArguments('f.txt','old','new')}}]},
+        {role:'tool',tool_call_id:'format-edit',content:''});
+      assert.equal(Progress.scan(messages).sourceReadBeforeLatestMutationFor('f.txt',Capability.Edit)?.source,source,format);
+    }
+  });
+  test('failed incomplete and truncated observations remain unqualified',()=>{
+    for(const [format,negative]of [['inline','truncated'],['inline','failed'],['sidecar','failed'],['sidecar','incomplete']]){
+      const messages=observed(format,negative);
+      assert.equal(Progress.scan(messages).freshSourceReadFor('f.txt'),null,format+negative);
+      messages.push({role:'assistant',tool_calls:[{id:'format-edit',type:'function',function:{name:'edit',arguments:editArguments('f.txt','old','new')}}]},
+        {role:'tool',tool_call_id:'format-edit',content:''});
+      assert.equal(Progress.scan(messages).sourceReadBeforeLatestMutationFor('f.txt',Capability.Edit),null,format+negative);
+    }
+  });
+  test('inline and sidecar source resembling provider envelopes remains authored file data',async()=>{
+    for(const bytes of [JSON.stringify({stdout:'one\ntwo\n',exit_code:0})+'\n','<content>\n001: one\n002: two\n</content>\n']) {
+    for(const format of ['inline','sidecar']){
+      const result=await drive('Delete the first line of f.txt.',bytes,'f.txt',format);
+      assert.equal(result.file,bytes.slice(bytes.indexOf('\n')+1),format);
+      assert.equal(result.answer,'Deleted line(s) 1 of `f.txt` and observed the result.',format);
+    }
+    }
+  });
+  test('a missing requested file is not wrapped as a successful complete read',async()=>{
+    const result=await drive('Delete the last line of missing.txt.',source,'f.txt');
+    assert.equal(result.file,source);
+    assert.ok(!result.calls.includes('edit'));
+    assert.ok(!result.calls.includes('write'));
+    assert.ok(!/observed the result/u.test(result.answer??''));
   });
 });

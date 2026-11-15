@@ -31,6 +31,7 @@ pub mod cloud_sync;
 pub(crate) mod code_editing;
 pub mod code_example_knowledge;
 pub(crate) mod coding;
+pub(crate) mod quantity_constraint;
 #[cfg(feature = "meta-language")]
 pub mod readable_source;
 pub use coding::composition;

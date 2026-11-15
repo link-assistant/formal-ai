@@ -112,7 +112,9 @@ describe('workspace content search greps the named identifier', () => {
     assert.equal(JSON.parse(plan.calls[0].arguments).command, "grep -rnHF --exclude-dir=.git -- 'return a' 'lib'");
   });
 
-  test('a named file is the scope, and a request to change the uses is not a search', async () => {
+  test('a named file is the scope, and a request to change the uses is not a search', {
+    skip: process.env.FAST_PR_PROFILE === 'true' ? 'full worker solver integration runs on main; emulated routing units run on pull requests' : false,
+  }, async () => {
     const scoped = await planChatStep(conversation('Count the lines containing foo in f.txt.'), REDUCED_TOOLS);
     assert.equal(JSON.parse(scoped.calls[0].arguments).command, "grep -rnHw --exclude-dir=.git -- 'foo' 'f.txt'");
     for (const prompt of ['Rename all usages of add to plus.', 'Remove all uses of add.']) {
@@ -283,10 +285,33 @@ describe('a literal-file write never replaces an existing file unasked', () => {
     assert.equal(kept.get('notes.txt'), 'old');
     assert.match(answer, /^Left `notes\.txt` unchanged/u);
     const replaced = new Map([['a.txt', 'old']]);
-    const { calls } = await run('Create a file a.txt containing hello', replaced);
+    const { calls } = await run('Set the contents of a.txt to exactly this content: hello', replaced);
     assert.equal(calls[0], 'append .formal-ai/general-change-plan.lino');
     assert.equal(replaced.get('a.txt'), 'hello');
   });
+});
+
+// Full physical capture/replay integration stays on main; PRs retain this file's unit cases.
+test('original Create preserves an existing physical target and creates a fresh target without a journal', {
+  skip: process.env.FAST_PR_PROFILE === 'true' ? 'physical capture integration runs on main' : false,
+}, async () => {
+  const {mkdtempSync, writeFileSync, readFileSync, existsSync, rmSync} = await import('node:fs');
+  const {join} = await import('node:path');
+  const {tmpdir} = await import('node:os');
+  const {drive} = await import('../../../experiments/js_dogfood/drive.mjs');
+  const directory = mkdtempSync(join(tmpdir(), 'workspace-original-create-'));
+  try {
+    writeFileSync(join(directory, 'existing.txt'), 'old');
+    await drive(planChatStep, directory, 'Create a file existing.txt containing hello',
+      {steps: 6, tools: ['write', 'read']});
+    assert.equal(readFileSync(join(directory, 'existing.txt'), 'utf8'), 'old');
+    const fresh = await drive(planChatStep, directory, 'Create a file fresh.txt containing hello',
+      {steps: 6, tools: ['write', 'read']});
+    assert.equal(fresh.stop, 'final', JSON.stringify(fresh));
+    assert.equal(readFileSync(join(directory, 'fresh.txt'), 'utf8'), 'hello');
+    assert(fresh.transcript.some(row => row.source_creation?.success === true));
+    assert.equal(existsSync(join(directory, '.formal-ai/general-change-plan.lino')), false);
+  } finally {rmSync(directory, {recursive: true, force: true});}
 });
 
 // T98 (gap G29): "List the files in src." listed the workspace root. The
