@@ -158,10 +158,18 @@ impl IntentFormalizationCache {
         self.records.is_empty()
     }
 
+    /// The cached record of this request, if one was formalized.
+    ///
+    /// Issue #1487: the impulse id is keyed on the normalized prompt, which
+    /// drops operators and punctuation, so `a < b` and `a <= b` (or `a - b`
+    /// and `a + b`) share one id. Sharing an id is retrieval, not identity: a
+    /// cached record answers only the request it was formalized from.
     #[must_use]
     pub fn get(&self, prompt: &str) -> Option<&IntentFormalization> {
         let id = impulse_id_for(prompt);
-        self.records.get(&id)
+        self.records
+            .get(&id)
+            .filter(|formalization| same_request(&formalization.source_text, prompt))
     }
 
     pub fn formalize_or_insert(
@@ -170,16 +178,19 @@ impl IntentFormalizationCache {
         language: &str,
         candidate: Option<&FormalizationCandidate>,
     ) -> IntentFormalizationCacheEntry {
-        let id = impulse_id_for(prompt);
-        if let Some(formalization) = self.records.get(&id) {
+        if let Some(formalization) = self.get(prompt) {
             return IntentFormalizationCacheEntry {
                 formalization: formalization.clone(),
                 cache_hit: true,
             };
         }
 
+        // A different request under the same impulse id keeps the first
+        // record; this one is formalized afresh every time (issue #1487).
         let formalization = formalize_intent(prompt, language, candidate);
-        self.records.insert(id, formalization.clone());
+        self.records
+            .entry(impulse_id_for(prompt))
+            .or_insert_with(|| formalization.clone());
         IntentFormalizationCacheEntry {
             formalization,
             cache_hit: false,
@@ -224,6 +235,12 @@ impl UniversalSolver {
 #[must_use]
 pub fn impulse_id_for(prompt: &str) -> String {
     stable_id("impulse", &normalize_prompt(prompt))
+}
+
+/// Whether two prompts are the same request: equal up to whitespace. Case,
+/// operators, punctuation and quoted literals all stay significant (#1487).
+fn same_request(left: &str, right: &str) -> bool {
+    left.split_whitespace().eq(right.split_whitespace())
 }
 
 #[must_use]
