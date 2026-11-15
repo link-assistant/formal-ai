@@ -24,6 +24,7 @@ import { AsyncLocalStorage } from 'node:async_hooks';
 
 import { lexicon, splitWhitespace } from './dreaming-support.mjs';
 import { stableId } from './ids.mjs';
+import { isSessionInstruction } from './standing-requirement-bounds.mjs';
 
 export const SCOPE_PREFIX = 'scope:';
 /** The evidence entry of an amendment generalized from several scopes and verified by replay. */
@@ -31,7 +32,6 @@ export const GENERALIZED_SCOPE = 'scope:generalized';
 /** The scope keys in their canonical order. */
 export const SCOPE_KEYS = ['user', 'repository', 'session'];
 const SHARE_ENV = 'FORMAL_AI_SHARE_STANDING_REQUIREMENTS';
-const AMENDMENT_KIND = 'meta_algorithm_amendment';
 const URL_TRAILING = new Set([')', ']', '}', '>', '"', "'", '`', ',', ';', ':', '!', '?', '.']);
 
 const storage = new AsyncLocalStorage();
@@ -156,10 +156,27 @@ export function inScope(pairs, scope) {
 
 /**
  * Mirrors rust/src/standing_scope.rs `events_in_scope`: memory as one request
- * sees it — amendments scoped elsewhere are dropped. With no request scope
- * (an internal caller), every scoped amendment is dropped.
+ * sees it (issue #1559 §6) — events recorded in another scope, and amendments
+ * learned there, are dropped. With no request scope (an internal caller),
+ * every scoped event is dropped.
  */
 export function eventsInScope(events, scope) {
-  if (!events.some((event) => event.kind === AMENDMENT_KIND && scopePairs(event.evidence).length > 0)) return events;
-  return events.filter((event) => event.kind !== AMENDMENT_KIND || inScope(scopePairs(event.evidence), scope));
+  if (!events.some((event) => scopePairs(event.evidence).length > 0)) return events;
+  return events.filter((event) => inScope(scopePairs(event.evidence), scope));
+}
+
+/**
+ * Mirrors rust/src/standing_scope.rs `is_instruction_prompt`: the recorded
+ * prompt configures the session rather than stating a user requirement — it
+ * opens like a system prompt, or it is the first user message of an agent
+ * session that carries no system message (a client delivering its system
+ * prompt as the first user turn, issue #1559 §1).
+ */
+export function isInstructionPrompt(prompt, messages, scope) {
+  if (isSessionInstruction(prompt)) return true;
+  if (!scope || !scope.agent_session) return false;
+  const roles = messages.map((message) => String(message.role).toLowerCase());
+  if (roles.includes('system') || roles.includes('developer')) return false;
+  const first = messages.find((message) => String(message.role).toLowerCase() === 'user');
+  return first !== undefined && messageText(first).trim() === String(prompt).trim();
 }
