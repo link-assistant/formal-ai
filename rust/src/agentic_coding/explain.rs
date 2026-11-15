@@ -25,7 +25,7 @@
 
 use std::sync::OnceLock;
 
-use crate::self_explanation::{SystemExplanation, canonical_explanation};
+use crate::self_explanation::{canonical_explanation, SystemExplanation};
 
 /// The workspace path the planner writes the generated explanation document to.
 pub const EXPLAIN_PATH: &str = "how-formal-ai-works.lino";
@@ -46,7 +46,8 @@ fn cached_explanation() -> &'static SystemExplanation {
 /// The router recognises the intent from the words, not a hardcoded string.
 /// Deliberately avoids the source-links keywords ("recompile", whole-source-to-links
 /// "and back") and the ledger keywords so the self-inspection recipes never collide.
-pub const EXPLAIN_TASK: &str = "Explain how Formal AI itself works, and ground the answer in its own source \
+pub const EXPLAIN_TASK: &str =
+    "Explain how Formal AI itself works, and ground the answer in its own source \
      files, data artifacts, and tests rather than prose documentation.";
 
 /// Keywords that mark a user turn as the self-explanation recipe.

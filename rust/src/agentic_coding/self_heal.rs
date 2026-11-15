@@ -19,7 +19,7 @@
 
 use std::sync::OnceLock;
 
-use crate::self_healing::{RepairCase, canonical_case};
+use crate::self_healing::{canonical_case, RepairCase};
 
 /// The workspace path the planner writes the generated repair-case document to.
 pub const SELF_HEAL_PATH: &str = "self-healing-case.lino";
@@ -41,7 +41,8 @@ fn cached_case() -> &'static RepairCase {
 /// The router recognises the intent from the words, not a hardcoded string.
 /// Deliberately avoids the self-AST keywords ("cst/ast", "abstract-syntax",
 /// "reason about itself") so the two self-inspection recipes never collide.
-pub const SELF_HEAL_TASK: &str = "When you cannot answer an input, run your self-healing loop: reason about the \
+pub const SELF_HEAL_TASK: &str =
+    "When you cannot answer an input, run your self-healing loop: reason about the \
      failure, map it onto the source that would change with a source-to-links \
      round-trip, learn a benchmark-gated lesson, and record the repair case in \
      Links Notation for human approval.";

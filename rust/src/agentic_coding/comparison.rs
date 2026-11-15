@@ -2,7 +2,7 @@
 
 use serde_json::json;
 
-use super::planner::{AgenticPlan, Capability, plan_one, tool_for};
+use super::planner::{plan_one, tool_for, AgenticPlan, Capability};
 use crate::protocol::ChatMessage;
 use crate::seed;
 

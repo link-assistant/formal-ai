@@ -29,8 +29,8 @@ use std::fmt::Write as _;
 use std::sync::OnceLock;
 
 use crate::question_generation::{
-    GeneratedQuestionClass, LogicalMeaningClass, QuestionAcceptance, QuestionGenerationConfig,
-    QuestionGenerator, QuestionGrammarClass, generated_question_answers,
+    generated_question_answers, GeneratedQuestionClass, LogicalMeaningClass, QuestionAcceptance,
+    QuestionGenerationConfig, QuestionGenerator, QuestionGrammarClass,
 };
 
 /// The workspace path the planner writes the generated catalog document to, and the
@@ -161,7 +161,8 @@ fn build_catalog() -> QuestionCatalog {
 /// Deliberately avoids the sibling recipes' keywords (no "formalize", no "self-heal",
 /// no "ledger", no "repair strategy") so the recipes never collide: this recipe is the
 /// *generate-and-answer* capability that enumerates questions and answers them.
-pub const QUESTION_CATALOG_TASK: &str = "Generate all possible questions from smallest to largest, drawing words from the \
+pub const QUESTION_CATALOG_TASK: &str =
+    "Generate all possible questions from smallest to largest, drawing words from the \
      frequency-tiered vocabulary, classify each candidate as grammatical or not and, \
      among the grammatical ones, logically meaningful or not, then answer the meaningful \
      ones and record the whole question catalog in Links Notation.";

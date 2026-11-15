@@ -8,7 +8,8 @@
 use super::learning_report::LearningReport;
 
 pub const ASSOCIATIVE_LEARNING_PATH: &str = "associative-learning-report.lino";
-pub const ASSOCIATIVE_LEARNING_TASK: &str = "Use Formal AI auto-learning to inspect the persisted issue 686 memory as an associative links network, perform bounded multi-hop recall, rank expressions by reads, writes, incoming links, and outgoing links, retain validation warnings, and write associative-learning-report.lino.";
+pub const ASSOCIATIVE_LEARNING_TASK: &str =
+    "Use Formal AI auto-learning to inspect the persisted issue 686 memory as an associative links network, perform bounded multi-hop recall, rank expressions by reads, writes, incoming links, and outgoing links, retain validation warnings, and write associative-learning-report.lino.";
 
 pub static REPORT: LearningReport = LearningReport {
     head: "associative_learning_report",

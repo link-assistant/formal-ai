@@ -8,21 +8,8 @@ pub fn safe_tap_count(value: f64) -> bool {
 }
 
 #[must_use]
-pub fn tap_verification_decision(
-    complete: bool,
-    tests: f64,
-    passed: f64,
-    failed: f64,
-    skipped: f64,
-    cancelled: f64,
-) -> String {
-    if !complete
-        || !safe_tap_count(tests)
-        || !safe_tap_count(passed)
-        || !safe_tap_count(failed)
-        || !safe_tap_count(skipped)
-        || !safe_tap_count(cancelled)
-    {
+pub fn tap_verification_decision(complete: bool, tests: f64, passed: f64, failed: f64, skipped: f64, cancelled: f64) -> String {
+    if !complete || !safe_tap_count(tests) || !safe_tap_count(passed) || !safe_tap_count(failed) || !safe_tap_count(skipped) || !safe_tap_count(cancelled) {
         "VerificationReceiptIncomplete".to_string()
     } else if tests == 0.0 || passed == 0.0 || skipped >= tests {
         "NoTestsExecuted".to_string()
@@ -35,10 +22,7 @@ pub fn tap_verification_decision(
 
 #[must_use]
 pub fn tap_counter_syntax_valid(recognized_count: f64, valid_count: f64) -> bool {
-    safe_tap_count(recognized_count)
-        && safe_tap_count(valid_count)
-        && recognized_count <= 1.0
-        && recognized_count == valid_count
+    safe_tap_count(recognized_count) && safe_tap_count(valid_count) && recognized_count <= 1.0 && recognized_count == valid_count
 }
 
 #[must_use]
@@ -47,12 +31,7 @@ pub fn source_capture_unique_accepted(count: f64) -> bool {
 }
 
 #[must_use]
-pub fn source_capture_declaration_accepted(
-    identity: bool,
-    fetch: bool,
-    requested: bool,
-    declarations: f64,
-) -> bool {
+pub fn source_capture_declaration_accepted(identity: bool, fetch: bool, requested: bool, declarations: f64) -> bool {
     identity && fetch && requested && source_capture_unique_accepted(declarations)
 }
 
@@ -72,42 +51,16 @@ pub fn source_capture_text_accepted(observed: bool, length: f64, maximum: f64) -
 }
 
 #[must_use]
-pub fn source_capture_timestamp_text_accepted(
-    observed: bool,
-    decimal: bool,
-    leading_zero: bool,
-    length: f64,
-) -> bool {
+pub fn source_capture_timestamp_text_accepted(observed: bool, decimal: bool, leading_zero: bool, length: f64) -> bool {
     source_capture_text_accepted(observed, length, 20.0) && decimal && !leading_zero
 }
 
 #[must_use]
-pub fn source_capture_trust_accepted(
-    record: bool,
-    fields: f64,
-    score_observed: bool,
-    score: f64,
-    policy_observed: bool,
-    policy_length: f64,
-) -> bool {
-    record
-        && fields == 2.0
-        && score_observed
-        && (-9_007_199_254_740_991.0..=9_007_199_254_740_991.0).contains(&score)
-        && source_capture_text_accepted(policy_observed, policy_length, 256.0)
+pub fn source_capture_trust_accepted(record: bool, fields: f64, score_observed: bool, score: f64, policy_observed: bool, policy_length: f64) -> bool {
+    record && fields == 2.0 && score_observed && (-9_007_199_254_740_991.0..=9_007_199_254_740_991.0).contains(&score) && source_capture_text_accepted(policy_observed, policy_length, 256.0)
 }
 
 #[must_use]
-pub fn source_capture_licence_accepted(
-    record: bool,
-    fields: f64,
-    name_observed: bool,
-    name_length: f64,
-    url_observed: bool,
-    url_length: f64,
-) -> bool {
-    record
-        && fields == 2.0
-        && source_capture_text_accepted(name_observed, name_length, 256.0)
-        && source_capture_text_accepted(url_observed, url_length, 2048.0)
+pub fn source_capture_licence_accepted(record: bool, fields: f64, name_observed: bool, name_length: f64, url_observed: bool, url_length: f64) -> bool {
+    record && fields == 2.0 && source_capture_text_accepted(name_observed, name_length, 256.0) && source_capture_text_accepted(url_observed, url_length, 2048.0)
 }
