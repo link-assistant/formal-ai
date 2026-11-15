@@ -14,7 +14,7 @@ const directory=mkdtempSync(join(tmpdir(),'formal-ai-regression-'));
 const source=process.env.BROKEN?`export function accepts(value,minimum,maximum) {\n  return value >= minimum && value < maximum;\n}\n`:`export function accepts(value,minimum,maximum) {\n  return value >= minimum && value <= maximum;\n}\n`;
 mkdirSync(join(directory,'src'));mkdirSync(join(directory,'test'));writeFileSync(join(directory,'src/ceiling.mjs'),source);
 const task=process.argv[2]??'Add a regression test in test/ceiling.test.mjs for the upper bound of function accepts in src/ceiling.mjs: the maximum is inclusive.';
-const result=await drive(planChatStep,directory,task,{steps:12,tools:['read','edit','write','bash'],allowedCommands:['node']});
+const result=await drive(planChatStep,directory,task,{steps:12,tools:['read','edit','write','bash']});
 console.log(result.stop, result.transcript.map(row=>row.tool+' '+JSON.stringify(row.arguments??'').slice(0,120)));
 console.log(String(result.answer).slice(0,1500));
 console.log(JSON.stringify(result.record??workItemRecordOf(result),null,1)?.slice(0,3000));

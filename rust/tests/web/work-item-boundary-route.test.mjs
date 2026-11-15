@@ -8,6 +8,7 @@ import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import {pathToFileURL} from 'node:url';
 import {createHash} from 'node:crypto';
+import {spawnSync} from 'node:child_process';
 import {WorkerHost} from '../../../js/server/worker-host.mjs';
 import {installNodeHost} from '../../../js/agentic/node-host.mjs';
 import {planChatStep} from '../../../js/agentic/planner.mjs';
@@ -138,6 +139,32 @@ test('a Run tool executes the contract-derived check; a replay is a verified no-
     assert.equal(replayed.reason,'VerifiedNoOp');assert.equal(replayed.noOp,true);
     assert.equal(replayed.authored,false);assert.equal(replayed.verified,true);
     assert.match(replay.answer,/^Already done: the request\./u);assert.ok(!replay.answer.includes('Files changed'));
+  }finally{rmSync(directory,{recursive:true,force:true});}
+});
+
+test('a regression test over a source that meets the requested bound is written, passes on its own and replays as a no-op',async()=>{
+  const directory=mkdtempSync(join(tmpdir(),'formal-ai-boundary-regression-pass-'));
+  const regression='Add a regression test in test/ceiling.test.mjs for the upper bound of function accepts in src/ceiling.mjs: the maximum is inclusive.';
+  const inclusive=source.replace('value < maximum','value <= maximum');
+  try{
+    mkdirSync(join(directory,'src'));mkdirSync(join(directory,'test'));writeFileSync(join(directory,'src/ceiling.mjs'),inclusive);
+    const result=await drive(planChatStep,directory,regression,{steps:12,tools:['read','edit','write','bash']});
+    assert.equal(result.stop,'final');
+    const report=recorded(result);
+    assert.equal(report.reason,'UsefulChangeVerified');
+    assert.equal(report.verified,true);assert.equal(report.authored,true);assert.equal(report.complete,true);
+    assert.equal(report.checks.find(row=>row.kind==='contract-derived-execution').status,'passed');
+    assert.ok(report.requirements.every(row=>row.status==='verified'));
+    assert.match(result.answer,/^Done: the request\. The session stopped at `UsefulChangeVerified`/u);
+    assert.ok(result.answer.includes('Files changed: `test/ceiling.test.mjs`.'));
+    assert.equal(readFileSync(join(directory,'src/ceiling.mjs'),'utf8'),inclusive,'the source under test is not touched');
+    // The written test is run by plain node, outside the controller.
+    const run=spawnSync(process.execPath,['--test',join(directory,'test/ceiling.test.mjs')],{encoding:'utf8',timeout:60000});
+    assert.equal(run.status,0,run.stdout+run.stderr);
+    const replay=await drive(planChatStep,directory,regression,{steps:8,tools:['read','edit','write','bash']});
+    const replayed=recorded(replay);
+    assert.equal(replayed.reason,'VerifiedNoOp');assert.equal(replayed.noOp,true);assert.equal(replayed.authored,false);
+    assert.ok(!replay.answer.includes('Files changed'));
   }finally{rmSync(directory,{recursive:true,force:true});}
 });
 
