@@ -430,9 +430,7 @@ pub fn symbolic_items(text: &str) -> Vec<SymbolicItem> {
 pub fn joins_compound(left: &SymbolicItem, operator: &SymbolicItem, right: &SymbolicItem) -> bool {
     if operator.spaced
         || right.spaced
-        || !structural_rule_values(OPERATOR_RULE, "compound-joiner")
-            .iter()
-            .any(|joiner| *joiner == operator.value)
+        || !structural_rule_values(OPERATOR_RULE, "compound-joiner").contains(&operator.value)
     {
         return false;
     }
