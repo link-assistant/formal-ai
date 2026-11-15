@@ -317,6 +317,13 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
+      - name: Setup the pinned installer for the workflow YAML reader
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - name: Install locked dependencies without lifecycle scripts
+        timeout-minutes: 2
+        run: bun install --frozen-lockfile --ignore-scripts
       - name: Validate source readability, CI budgets and requirements without a native build
         run: |
           node scripts/check-readable-code.mjs
@@ -332,6 +339,7 @@ jobs:
           node scripts/render-progressive-plan.mjs --check
           node scripts/mirror-package-data.mjs --check
           node scripts/check-fast-governance.mjs
+          node scripts/check-runner-labels.mjs
   # Issue #1191: PR #1497 passed every PR check, then main failed with E0308
   # (run 43710854562) and, once that was fixed, with clippy::manual_contains
   # (run 43730270231), since no PR job ran rustc. This is the one focused
@@ -346,7 +354,7 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-native-type-check
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions: {contents: read}
     env: {CARGO_INCREMENTAL: '0', CARGO_TERM_COLOR: always}

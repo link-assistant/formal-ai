@@ -304,6 +304,13 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
+      - name: Setup the pinned installer for the workflow YAML reader
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - name: Install locked dependencies without lifecycle scripts
+        timeout-minutes: 2
+        run: bun install --frozen-lockfile --ignore-scripts
       - name: Validate source readability, CI budgets and requirements without a native build
         run: |
           node scripts/check-readable-code.mjs
@@ -318,6 +325,7 @@ jobs:
           node scripts/render-progressive-plan.mjs --check
           node scripts/mirror-package-data.mjs --check
           node scripts/check-fast-governance.mjs
+          node scripts/check-runner-labels.mjs
   lint:
     name: Lint and Format Check (lane ${{ matrix.lane }})
     runs-on: ubuntu-24.04
