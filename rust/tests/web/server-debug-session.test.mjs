@@ -54,6 +54,7 @@ const EVENT_LOG = "js/worker/formal_ai_worker_solver_events.js:solverEventLog";
 const ARITHMETIC = "rust/src/solver_handlers/mod.rs:try_arithmetic";
 const CALCULATION_EVENTS = "js/worker/formal_ai_worker_solver_events.js:solverCalculationEvents";
 const FINALIZE = "rust/src/solver_handlers/mod.rs:finalize_simple";
+const ANSWER_TEST = "rust/src/solver_helpers/mod.rs:record_answer_test";
 const INTENT_RECORD = ["rust/src/intent_formalization.rs:record_intent_formalization",
   "js/agentic/crate/intent_formalization.mjs:recordIntentFormalization"];
 
@@ -67,7 +68,7 @@ const TWO_PLUS_TWO = [
   ["compute_expression", ARITHMETIC, CALCULATION_EVENTS],
   ["compute_steps", ARITHMETIC, CALCULATION_EVENTS],
   ["dispatch_handler", FINALIZE, EVENT_LOG],
-  ["rule_verification", FINALIZE, EVENT_LOG],
+  ["rule_verification", ANSWER_TEST, EVENT_LOG],
   ["deformalize", FINALIZE, EVENT_LOG],
 ];
 
@@ -461,7 +462,7 @@ test("actual browser validation emitter has a nonempty physical source and excer
   const result = await new WorkerHost().solve("What is 2 + 2?");
   const validation = result.solverEvents.filter((event) => event.kind === "validation");
   assert.equal(validation.length, 1);
-  assert.equal(validation[0].payload, "accepted_without_extra_constraints");
+  assert.equal(validation[0].payload, "answered(calculation)=true");
   const steps = symbolicFromWorker(result).thinking_steps;
   assert.deepEqual(steps.map((stage) => stage.step), TWO_PLUS_TWO.map(([step]) => step));
   const index = steps.findIndex((stage) => stage.step === "rule_verification");
@@ -470,7 +471,7 @@ test("actual browser validation emitter has a nonempty physical source and excer
   const provenance = describeTurn(steps).stages[index];
   for (const [runtime, expected, definition] of [
     ["js", EVENT_LOG, /function solverEventLog\(/u],
-    ["rust", FINALIZE, /fn finalize_simple\(/u],
+    ["rust", ANSWER_TEST, /fn record_answer_test\(/u],
   ]) {
     const site = provenance[runtime];
     assert.ok(site, runtime + " has an actual emitter");
@@ -480,5 +481,5 @@ test("actual browser validation emitter has a nonempty physical source and excer
     assert.ok(site.excerpt.length > 0);
     assertExcerpt(source, site.line, site.excerpt, definition);
   }
-  assert.ok(provenance.js.excerpt.includes("events.push(solverEvent(SOLVER_EVENT_VALIDATION, SOLVER_VALIDATION_ACCEPTED))"));
+  assert.ok(provenance.js.excerpt.includes("procedure.answerValidation(answer.intent, answer.content)"));
 });

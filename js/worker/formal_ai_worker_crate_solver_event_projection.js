@@ -3,7 +3,6 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/solver_event_projection.mjs"] = (crateRequire) => {
 // The native solver's event log for one server turn (R1013, server parity):
 // the worker's own log (js/worker/formal_ai_worker_solver_events.js: the
@@ -31,27 +30,24 @@
 // worker marks them like `try_meta_answer` ones, so they get no meta core),
 // `requirement_contradiction`, and the decomposition / rule-synthesis events
 // of prompts that construct a rule.
-
 const { realm } = crateRequire("host.mjs");
 const { formalizeIntentRecord, recordIntentFormalization } = crateRequire("crate/intent_formalization.mjs");
 const { methodForRoute, methodRegistry } = crateRequire("crate/method_registry.mjs");
 const { recordFormalization, recordFormalizationSelection, selectFormalizationCandidate, selectedCandidate } = crateRequire("crate/solver_formalization.mjs");
 const { formalizePromptCandidates } = crateRequire("crate/translation_formalization.mjs");
-
 const IMPULSE = 'impulse';
 const LANGUAGE = 'language';
 const ROUTE = 'intent_formalization:route';
 const CANDIDATE = 'candidate';
+const INTENT = 'intent';
 const META_RESPONSE = 'response:meta_reasoner';
 const DISPATCH_STEP = 'dispatch_handler';
 const UNKNOWN_RULE_SELECTION = 'initial unknown reason no_seed_route next try_rule_synthesis';
-
 /** The routes `select_rule_for_intent` (rust/src/intent_formalization.rs) maps to a rule other than `Unknown`. */
 const SEEDED_RULE_ROUTES = new Set([
   'greeting', 'wellbeing', 'farewell', 'test_status', 'courtesy_response',
   'assistant_free_time', 'assistant_name', 'identity', 'write_program',
 ]);
-
 /**
  * The registry method a worker answer came from: the handler-table row the
  * dispatch step names, as the seed slug the native registry lists, or null.
@@ -67,7 +63,6 @@ function dispatchedMethod(result) {
   const method = methodForRoute(methodRegistry(), slug);
   return method && method.name === slug ? slug : null;
 }
-
 /**
  * Mirrors `fn solve_with_history_probability_store_and_intent_cache` in rust/src/solver.rs: native-order worker events
  * (`result.solverEvents`) with the formalization, intent-formalization and
@@ -98,15 +93,16 @@ function nativeSolverLog(result, recordCore = null) {
     log.push({ kind: 'search:local', payload: prompt });
     if (!SEEDED_RULE_ROUTES.has(record.route)) log.push({ kind: 'selected_rule', payload: UNKNOWN_RULE_SELECTION });
   }
-  // `finalize_simple` logs its `candidate` only when none is logged yet: the
-  // worker logs one in its tail, which the formalization candidate replaces.
+  // `finalize_simple` logs its `candidate` (the intent) only when none is
+  // logged yet: the worker logs one in its tail, which the formalization
+  // candidate replaces. The candidates a method drafted (issue #1550) stay.
   const logged = log.some((event) => event.kind === CANDIDATE);
-  log.push(...(logged ? rest.filter((event) => event.kind !== CANDIDATE) : rest));
+  const intent = rest.find((event) => event.kind === INTENT)?.payload;
+  log.push(...(logged ? rest.filter((event) => event.kind !== CANDIDATE || event.payload !== intent) : rest));
   const method = metaAnswer ? null : dispatchedMethod(result);
   if (method) log.push({ kind: 'method', payload: method });
   return log;
 }
-
 return Object.freeze({
   nativeSolverLog,
 });

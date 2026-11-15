@@ -1,0 +1,964 @@
+{
+  "schema": "meta-executor-parity/v1",
+  "cases": [
+    {
+      "name": "two-level-en",
+      "text": "Translate hello to French, then count the letters and report the vowels",
+      "language": "en",
+      "answers": {
+        "Translate hello to French, then count the letters and report the vowels": {
+          "intent": "unknown",
+          "content": "",
+          "confidence": 0
+        },
+        "Translate hello to French": {
+          "intent": "answered",
+          "content": "bonjour",
+          "confidence": 1
+        },
+        "count the letters and report the vowels": {
+          "intent": "unknown",
+          "content": "",
+          "confidence": 0
+        },
+        "count the letters": {
+          "intent": "answered",
+          "content": "5",
+          "confidence": 1
+        },
+        "report the vowels": {
+          "intent": "answered",
+          "content": "e, o",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "sequence(leaf,aggregation(leaf,leaf))",
+        "leaves": [
+          "Translate hello to French",
+          "count the letters",
+          "report the vowels"
+        ],
+        "status": "resolved",
+        "content": "bonjour\n\n5\n\ne, o",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=sequence children=2 atomic=- text=Translate hello to French, then count the letters and report the vowels",
+          "meta_exec:test task=t0 checks=answered,children:sequence requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=Translate hello to French",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=7 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=7 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=aggregation children=2 atomic=- text=count the letters and report the vowels",
+          "meta_exec:test task=t0.2 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.2.1 depth=2 relation=- children=0 atomic=no_relation text=count the letters",
+          "meta_exec:test task=t0.2.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.2.1 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2.1 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:task id=t0.2.2 depth=2 relation=- children=0 atomic=no_relation text=report the vowels",
+          "meta_exec:test task=t0.2.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2.2 method=derivation steps=2 code_units=4 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2.2 method=derivation reason=least_action steps=2 code_units=4 passing=1/1",
+          "meta_exec:compose task=t0.2 relation=aggregation children=t0.2.1,t0.2.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=0 executed=answered,children:aggregation passed=false failed=answered",
+          "meta_exec:draft task=t0.2 method=composition steps=5 code_units=7 executed=answered,children:aggregation passed=true failed=-",
+          "meta_exec:select task=t0.2 method=composition reason=least_action steps=5 code_units=7 passing=1/2",
+          "meta_exec:compose task=t0 relation=sequence children=t0.1,t0.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0 method=derivation steps=2 code_units=0 executed=answered,children:sequence passed=false failed=answered",
+          "meta_exec:draft task=t0 method=composition steps=8 code_units=16 executed=answered,children:sequence passed=true failed=-",
+          "meta_exec:select task=t0 method=composition reason=least_action steps=8 code_units=16 passing=1/2",
+          "meta_exec:result task=t0 status=resolved method=composition budget_left=3"
+        ]
+      }
+    },
+    {
+      "name": "two-level-ru",
+      "text": "Переведи привет на французский, затем посчитай буквы и назови гласные",
+      "language": "ru",
+      "answers": {
+        "Переведи привет на французский, затем посчитай буквы и назови гласные": {
+          "intent": "unknown",
+          "content": "",
+          "confidence": 0
+        },
+        "Переведи привет на французский": {
+          "intent": "answered",
+          "content": "bonjour",
+          "confidence": 1
+        },
+        "посчитай буквы и назови гласные": {
+          "intent": "unknown",
+          "content": "",
+          "confidence": 0
+        },
+        "посчитай буквы": {
+          "intent": "answered",
+          "content": "5",
+          "confidence": 1
+        },
+        "назови гласные": {
+          "intent": "answered",
+          "content": "e, o",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "sequence(leaf,aggregation(leaf,leaf))",
+        "leaves": [
+          "Переведи привет на французский",
+          "посчитай буквы",
+          "назови гласные"
+        ],
+        "status": "resolved",
+        "content": "bonjour\n\n5\n\ne, o",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=sequence children=2 atomic=- text=Переведи привет на французский, затем посчитай буквы и назови гласные",
+          "meta_exec:test task=t0 checks=answered,children:sequence requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=Переведи привет на французский",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=7 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=7 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=aggregation children=2 atomic=- text=посчитай буквы и назови гласные",
+          "meta_exec:test task=t0.2 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.2.1 depth=2 relation=- children=0 atomic=no_relation text=посчитай буквы",
+          "meta_exec:test task=t0.2.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.2.1 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2.1 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:task id=t0.2.2 depth=2 relation=- children=0 atomic=no_relation text=назови гласные",
+          "meta_exec:test task=t0.2.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2.2 method=derivation steps=2 code_units=4 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2.2 method=derivation reason=least_action steps=2 code_units=4 passing=1/1",
+          "meta_exec:compose task=t0.2 relation=aggregation children=t0.2.1,t0.2.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=0 executed=answered,children:aggregation passed=false failed=answered",
+          "meta_exec:draft task=t0.2 method=composition steps=5 code_units=7 executed=answered,children:aggregation passed=true failed=-",
+          "meta_exec:select task=t0.2 method=composition reason=least_action steps=5 code_units=7 passing=1/2",
+          "meta_exec:compose task=t0 relation=sequence children=t0.1,t0.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0 method=derivation steps=2 code_units=0 executed=answered,children:sequence passed=false failed=answered",
+          "meta_exec:draft task=t0 method=composition steps=8 code_units=16 executed=answered,children:sequence passed=true failed=-",
+          "meta_exec:select task=t0 method=composition reason=least_action steps=8 code_units=16 passing=1/2",
+          "meta_exec:result task=t0 status=resolved method=composition budget_left=3"
+        ]
+      }
+    },
+    {
+      "name": "two-level-hi",
+      "text": "हैलो का फ्रेंच में अनुवाद करो, फिर अक्षर गिनो और स्वर बताओ",
+      "language": "hi",
+      "answers": {
+        "हैलो का फ्रेंच में अनुवाद करो, फिर अक्षर गिनो और स्वर बताओ": {
+          "intent": "unknown",
+          "content": "",
+          "confidence": 0
+        },
+        "हैलो का फ्रेंच में अनुवाद करो": {
+          "intent": "answered",
+          "content": "bonjour",
+          "confidence": 1
+        },
+        "अक्षर गिनो और स्वर बताओ": {
+          "intent": "unknown",
+          "content": "",
+          "confidence": 0
+        },
+        "अक्षर गिनो": {
+          "intent": "answered",
+          "content": "5",
+          "confidence": 1
+        },
+        "स्वर बताओ": {
+          "intent": "answered",
+          "content": "e, o",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "sequence(leaf,aggregation(leaf,leaf))",
+        "leaves": [
+          "हैलो का फ्रेंच में अनुवाद करो",
+          "अक्षर गिनो",
+          "स्वर बताओ"
+        ],
+        "status": "resolved",
+        "content": "bonjour\n\n5\n\ne, o",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=sequence children=2 atomic=- text=हैलो का फ्रेंच में अनुवाद करो, फिर अक्षर गिनो और स्वर बताओ",
+          "meta_exec:test task=t0 checks=answered,children:sequence requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=हैलो का फ्रेंच में अनुवाद करो",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=7 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=7 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=aggregation children=2 atomic=- text=अक्षर गिनो और स्वर बताओ",
+          "meta_exec:test task=t0.2 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.2.1 depth=2 relation=- children=0 atomic=no_relation text=अक्षर गिनो",
+          "meta_exec:test task=t0.2.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.2.1 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2.1 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:task id=t0.2.2 depth=2 relation=- children=0 atomic=no_relation text=स्वर बताओ",
+          "meta_exec:test task=t0.2.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2.2 method=derivation steps=2 code_units=4 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2.2 method=derivation reason=least_action steps=2 code_units=4 passing=1/1",
+          "meta_exec:compose task=t0.2 relation=aggregation children=t0.2.1,t0.2.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=0 executed=answered,children:aggregation passed=false failed=answered",
+          "meta_exec:draft task=t0.2 method=composition steps=5 code_units=7 executed=answered,children:aggregation passed=true failed=-",
+          "meta_exec:select task=t0.2 method=composition reason=least_action steps=5 code_units=7 passing=1/2",
+          "meta_exec:compose task=t0 relation=sequence children=t0.1,t0.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0 method=derivation steps=2 code_units=0 executed=answered,children:sequence passed=false failed=answered",
+          "meta_exec:draft task=t0 method=composition steps=8 code_units=16 executed=answered,children:sequence passed=true failed=-",
+          "meta_exec:select task=t0 method=composition reason=least_action steps=8 code_units=16 passing=1/2",
+          "meta_exec:result task=t0 status=resolved method=composition budget_left=3"
+        ]
+      }
+    },
+    {
+      "name": "two-level-zh",
+      "text": "把你好翻译成法语，然后数字母并且列出元音",
+      "language": "zh",
+      "answers": {
+        "把你好翻译成法语，然后数字母并且列出元音": {
+          "intent": "unknown",
+          "content": "",
+          "confidence": 0
+        },
+        "把你好翻译成法语": {
+          "intent": "answered",
+          "content": "bonjour",
+          "confidence": 1
+        },
+        "数字母并且列出元音": {
+          "intent": "unknown",
+          "content": "",
+          "confidence": 0
+        },
+        "数字母": {
+          "intent": "answered",
+          "content": "5",
+          "confidence": 1
+        },
+        "列出元音": {
+          "intent": "answered",
+          "content": "e, o",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "sequence(leaf,aggregation(leaf,leaf))",
+        "leaves": [
+          "把你好翻译成法语",
+          "数字母",
+          "列出元音"
+        ],
+        "status": "resolved",
+        "content": "bonjour\n\n5\n\ne, o",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=sequence children=2 atomic=- text=把你好翻译成法语，然后数字母并且列出元音",
+          "meta_exec:test task=t0 checks=answered,children:sequence requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=把你好翻译成法语",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=7 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=7 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=aggregation children=2 atomic=- text=数字母并且列出元音",
+          "meta_exec:test task=t0.2 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.2.1 depth=2 relation=- children=0 atomic=no_relation text=数字母",
+          "meta_exec:test task=t0.2.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.2.1 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2.1 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:task id=t0.2.2 depth=2 relation=- children=0 atomic=no_relation text=列出元音",
+          "meta_exec:test task=t0.2.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2.2 method=derivation steps=2 code_units=4 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2.2 method=derivation reason=least_action steps=2 code_units=4 passing=1/1",
+          "meta_exec:compose task=t0.2 relation=aggregation children=t0.2.1,t0.2.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=0 executed=answered,children:aggregation passed=false failed=answered",
+          "meta_exec:draft task=t0.2 method=composition steps=5 code_units=7 executed=answered,children:aggregation passed=true failed=-",
+          "meta_exec:select task=t0.2 method=composition reason=least_action steps=5 code_units=7 passing=1/2",
+          "meta_exec:compose task=t0 relation=sequence children=t0.1,t0.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0 method=derivation steps=2 code_units=0 executed=answered,children:sequence passed=false failed=answered",
+          "meta_exec:draft task=t0 method=composition steps=8 code_units=16 executed=answered,children:sequence passed=true failed=-",
+          "meta_exec:select task=t0 method=composition reason=least_action steps=8 code_units=16 passing=1/2",
+          "meta_exec:result task=t0 status=resolved method=composition budget_left=3"
+        ]
+      }
+    },
+    {
+      "name": "two-level-es",
+      "text": "Traduce hola al francés, luego cuenta las letras y nombra las vocales",
+      "language": "es",
+      "answers": {
+        "Traduce hola al francés, luego cuenta las letras y nombra las vocales": {
+          "intent": "unknown",
+          "content": "",
+          "confidence": 0
+        },
+        "Traduce hola al francés": {
+          "intent": "answered",
+          "content": "bonjour",
+          "confidence": 1
+        },
+        "cuenta las letras y nombra las vocales": {
+          "intent": "unknown",
+          "content": "",
+          "confidence": 0
+        },
+        "cuenta las letras": {
+          "intent": "answered",
+          "content": "5",
+          "confidence": 1
+        },
+        "nombra las vocales": {
+          "intent": "answered",
+          "content": "e, o",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "sequence(leaf,aggregation(leaf,leaf))",
+        "leaves": [
+          "Traduce hola al francés",
+          "cuenta las letras",
+          "nombra las vocales"
+        ],
+        "status": "resolved",
+        "content": "bonjour\n\n5\n\ne, o",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=sequence children=2 atomic=- text=Traduce hola al francés, luego cuenta las letras y nombra las vocales",
+          "meta_exec:test task=t0 checks=answered,children:sequence requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=Traduce hola al francés",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=7 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=7 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=aggregation children=2 atomic=- text=cuenta las letras y nombra las vocales",
+          "meta_exec:test task=t0.2 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.2.1 depth=2 relation=- children=0 atomic=no_relation text=cuenta las letras",
+          "meta_exec:test task=t0.2.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.2.1 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2.1 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:task id=t0.2.2 depth=2 relation=- children=0 atomic=no_relation text=nombra las vocales",
+          "meta_exec:test task=t0.2.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2.2 method=derivation steps=2 code_units=4 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2.2 method=derivation reason=least_action steps=2 code_units=4 passing=1/1",
+          "meta_exec:compose task=t0.2 relation=aggregation children=t0.2.1,t0.2.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=0 executed=answered,children:aggregation passed=false failed=answered",
+          "meta_exec:draft task=t0.2 method=composition steps=5 code_units=7 executed=answered,children:aggregation passed=true failed=-",
+          "meta_exec:select task=t0.2 method=composition reason=least_action steps=5 code_units=7 passing=1/2",
+          "meta_exec:compose task=t0 relation=sequence children=t0.1,t0.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0 method=derivation steps=2 code_units=0 executed=answered,children:sequence passed=false failed=answered",
+          "meta_exec:draft task=t0 method=composition steps=8 code_units=16 executed=answered,children:sequence passed=true failed=-",
+          "meta_exec:select task=t0 method=composition reason=least_action steps=8 code_units=16 passing=1/2",
+          "meta_exec:result task=t0 status=resolved method=composition budget_left=3"
+        ]
+      }
+    },
+    {
+      "name": "withheld-sub-task-test",
+      "text": "Translate hello to French, then count the letters and report the vowels",
+      "language": "en",
+      "answers": {
+        "Translate hello to French, then count the letters and report the vowels": {
+          "intent": "unknown",
+          "content": "",
+          "confidence": 0
+        },
+        "Translate hello to French": {
+          "intent": "answered",
+          "content": "bonjour",
+          "confidence": 1
+        },
+        "count the letters and report the vowels": {
+          "intent": "unknown",
+          "content": "",
+          "confidence": 0
+        },
+        "count the letters": {
+          "intent": "answered",
+          "content": "5",
+          "confidence": 1
+        },
+        "report the vowels": {
+          "intent": "answered",
+          "content": "e, o",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [
+        "t0.2.1"
+      ],
+      "bounds": {},
+      "expected": {
+        "shape": "sequence(leaf,aggregation(leaf,leaf))",
+        "leaves": [
+          "Translate hello to French",
+          "count the letters",
+          "report the vowels"
+        ],
+        "status": "unresolved",
+        "content": null,
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=sequence children=2 atomic=- text=Translate hello to French, then count the letters and report the vowels",
+          "meta_exec:test task=t0 checks=answered,children:sequence requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=Translate hello to French",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=7 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=7 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=aggregation children=2 atomic=- text=count the letters and report the vowels",
+          "meta_exec:test task=t0.2 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.2.1 depth=2 relation=- children=0 atomic=no_relation text=count the letters",
+          "meta_exec:test task=t0.2.1 checks=- withheld=true",
+          "meta_exec:unresolved task=t0.2.1 reason=no_test",
+          "meta_exec:task id=t0.2.2 depth=2 relation=- children=0 atomic=no_relation text=report the vowels",
+          "meta_exec:test task=t0.2.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2.2 method=derivation steps=2 code_units=4 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2.2 method=derivation reason=least_action steps=2 code_units=4 passing=1/1",
+          "meta_exec:compose task=t0.2 relation=aggregation children=t0.2.1,t0.2.2 resolved=1/2 built=false",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=0 executed=answered,children:aggregation passed=false failed=answered",
+          "meta_exec:unresolved task=t0.2 reason=children",
+          "meta_exec:compose task=t0 relation=sequence children=t0.1,t0.2 resolved=1/2 built=false",
+          "meta_exec:draft task=t0 method=derivation steps=2 code_units=0 executed=answered,children:sequence passed=false failed=answered",
+          "meta_exec:unresolved task=t0 reason=children",
+          "meta_exec:result task=t0 status=unresolved method=- budget_left=4"
+        ]
+      }
+    },
+    {
+      "name": "withheld-sub-task-test-zh",
+      "text": "把你好翻译成法语，然后数字母并且列出元音",
+      "language": "zh",
+      "answers": {
+        "把你好翻译成法语，然后数字母并且列出元音": {
+          "intent": "unknown",
+          "content": "",
+          "confidence": 0
+        },
+        "把你好翻译成法语": {
+          "intent": "answered",
+          "content": "bonjour",
+          "confidence": 1
+        },
+        "数字母并且列出元音": {
+          "intent": "unknown",
+          "content": "",
+          "confidence": 0
+        },
+        "数字母": {
+          "intent": "answered",
+          "content": "5",
+          "confidence": 1
+        },
+        "列出元音": {
+          "intent": "answered",
+          "content": "e, o",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [
+        "t0.1"
+      ],
+      "bounds": {},
+      "expected": {
+        "shape": "sequence(leaf,aggregation(leaf,leaf))",
+        "leaves": [
+          "把你好翻译成法语",
+          "数字母",
+          "列出元音"
+        ],
+        "status": "unresolved",
+        "content": null,
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=sequence children=2 atomic=- text=把你好翻译成法语，然后数字母并且列出元音",
+          "meta_exec:test task=t0 checks=answered,children:sequence requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=把你好翻译成法语",
+          "meta_exec:test task=t0.1 checks=- withheld=true",
+          "meta_exec:unresolved task=t0.1 reason=no_test",
+          "meta_exec:task id=t0.2 depth=1 relation=aggregation children=2 atomic=- text=数字母并且列出元音",
+          "meta_exec:test task=t0.2 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.2.1 depth=2 relation=- children=0 atomic=no_relation text=数字母",
+          "meta_exec:test task=t0.2.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.2.1 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2.1 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:task id=t0.2.2 depth=2 relation=- children=0 atomic=no_relation text=列出元音",
+          "meta_exec:test task=t0.2.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2.2 method=derivation steps=2 code_units=4 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2.2 method=derivation reason=least_action steps=2 code_units=4 passing=1/1",
+          "meta_exec:compose task=t0.2 relation=aggregation children=t0.2.1,t0.2.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=0 executed=answered,children:aggregation passed=false failed=answered",
+          "meta_exec:draft task=t0.2 method=composition steps=5 code_units=7 executed=answered,children:aggregation passed=true failed=-",
+          "meta_exec:select task=t0.2 method=composition reason=least_action steps=5 code_units=7 passing=1/2",
+          "meta_exec:compose task=t0 relation=sequence children=t0.1,t0.2 resolved=1/2 built=false",
+          "meta_exec:draft task=t0 method=derivation steps=2 code_units=0 executed=answered,children:sequence passed=false failed=answered",
+          "meta_exec:unresolved task=t0 reason=children",
+          "meta_exec:result task=t0 status=unresolved method=- budget_left=4"
+        ]
+      }
+    },
+    {
+      "name": "direct-derivation-wins-when-it-passes",
+      "text": "Translate hello to French, then count the letters and report the vowels",
+      "language": "en",
+      "answers": {
+        "Translate hello to French, then count the letters and report the vowels": {
+          "intent": "answered",
+          "content": "bonjour; 5; e, o",
+          "confidence": 1
+        },
+        "Translate hello to French": {
+          "intent": "answered",
+          "content": "bonjour",
+          "confidence": 1
+        },
+        "count the letters and report the vowels": {
+          "intent": "unknown",
+          "content": "",
+          "confidence": 0
+        },
+        "count the letters": {
+          "intent": "answered",
+          "content": "5",
+          "confidence": 1
+        },
+        "report the vowels": {
+          "intent": "answered",
+          "content": "e, o",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "sequence(leaf,aggregation(leaf,leaf))",
+        "leaves": [
+          "Translate hello to French",
+          "count the letters",
+          "report the vowels"
+        ],
+        "status": "resolved",
+        "content": "bonjour; 5; e, o",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=sequence children=2 atomic=- text=Translate hello to French, then count the letters and report the vowels",
+          "meta_exec:test task=t0 checks=answered,children:sequence requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=Translate hello to French",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=7 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=7 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=aggregation children=2 atomic=- text=count the letters and report the vowels",
+          "meta_exec:test task=t0.2 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.2.1 depth=2 relation=- children=0 atomic=no_relation text=count the letters",
+          "meta_exec:test task=t0.2.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.2.1 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2.1 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:task id=t0.2.2 depth=2 relation=- children=0 atomic=no_relation text=report the vowels",
+          "meta_exec:test task=t0.2.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2.2 method=derivation steps=2 code_units=4 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2.2 method=derivation reason=least_action steps=2 code_units=4 passing=1/1",
+          "meta_exec:compose task=t0.2 relation=aggregation children=t0.2.1,t0.2.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=0 executed=answered,children:aggregation passed=false failed=answered",
+          "meta_exec:draft task=t0.2 method=composition steps=5 code_units=7 executed=answered,children:aggregation passed=true failed=-",
+          "meta_exec:select task=t0.2 method=composition reason=least_action steps=5 code_units=7 passing=1/2",
+          "meta_exec:compose task=t0 relation=sequence children=t0.1,t0.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0 method=derivation steps=2 code_units=16 executed=answered,children:sequence passed=true failed=-",
+          "meta_exec:draft task=t0 method=composition steps=8 code_units=16 executed=answered,children:sequence passed=true failed=-",
+          "meta_exec:select task=t0 method=derivation reason=least_action steps=2 code_units=16 passing=2/2",
+          "meta_exec:result task=t0 status=resolved method=derivation budget_left=3"
+        ]
+      }
+    },
+    {
+      "name": "cache-row-is-the-least-action",
+      "text": "Translate hello to French, then count the letters and report the vowels",
+      "language": "en",
+      "answers": {
+        "Translate hello to French, then count the letters and report the vowels": {
+          "intent": "unknown",
+          "content": "",
+          "confidence": 0
+        },
+        "Translate hello to French": {
+          "intent": "answered",
+          "content": "bonjour",
+          "confidence": 1
+        },
+        "count the letters and report the vowels": {
+          "intent": "unknown",
+          "content": "",
+          "confidence": 0
+        },
+        "count the letters": {
+          "intent": "answered",
+          "content": "5",
+          "confidence": 1
+        },
+        "report the vowels": {
+          "intent": "answered",
+          "content": "e, o",
+          "confidence": 1
+        }
+      },
+      "cached": {
+        "count the letters": {
+          "intent": "answered",
+          "content": "5",
+          "confidence": 1
+        }
+      },
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "sequence(leaf,aggregation(leaf,leaf))",
+        "leaves": [
+          "Translate hello to French",
+          "count the letters",
+          "report the vowels"
+        ],
+        "status": "resolved",
+        "content": "bonjour\n\n5\n\ne, o",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=sequence children=2 atomic=- text=Translate hello to French, then count the letters and report the vowels",
+          "meta_exec:test task=t0 checks=answered,children:sequence requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=Translate hello to French",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=7 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=7 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=aggregation children=2 atomic=- text=count the letters and report the vowels",
+          "meta_exec:test task=t0.2 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.2.1 depth=2 relation=- children=0 atomic=no_relation text=count the letters",
+          "meta_exec:test task=t0.2.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.2.1 method=cache steps=1 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:draft task=t0.2.1 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2.1 method=cache reason=least_action steps=1 code_units=1 passing=2/2",
+          "meta_exec:task id=t0.2.2 depth=2 relation=- children=0 atomic=no_relation text=report the vowels",
+          "meta_exec:test task=t0.2.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2.2 method=derivation steps=2 code_units=4 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2.2 method=derivation reason=least_action steps=2 code_units=4 passing=1/1",
+          "meta_exec:compose task=t0.2 relation=aggregation children=t0.2.1,t0.2.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=0 executed=answered,children:aggregation passed=false failed=answered",
+          "meta_exec:draft task=t0.2 method=composition steps=4 code_units=7 executed=answered,children:aggregation passed=true failed=-",
+          "meta_exec:select task=t0.2 method=composition reason=least_action steps=4 code_units=7 passing=1/2",
+          "meta_exec:compose task=t0 relation=sequence children=t0.1,t0.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0 method=derivation steps=2 code_units=0 executed=answered,children:sequence passed=false failed=answered",
+          "meta_exec:draft task=t0 method=composition steps=7 code_units=16 executed=answered,children:sequence passed=true failed=-",
+          "meta_exec:select task=t0 method=composition reason=least_action steps=7 code_units=16 passing=1/2",
+          "meta_exec:result task=t0 status=resolved method=composition budget_left=3"
+        ]
+      }
+    },
+    {
+      "name": "depth-bound",
+      "text": "Translate hello to French, then count the letters and report the vowels",
+      "language": "en",
+      "answers": {
+        "Translate hello to French, then count the letters and report the vowels": {
+          "intent": "unknown",
+          "content": "",
+          "confidence": 0
+        },
+        "Translate hello to French": {
+          "intent": "answered",
+          "content": "bonjour",
+          "confidence": 1
+        },
+        "count the letters and report the vowels": {
+          "intent": "unknown",
+          "content": "",
+          "confidence": 0
+        },
+        "count the letters": {
+          "intent": "answered",
+          "content": "5",
+          "confidence": 1
+        },
+        "report the vowels": {
+          "intent": "answered",
+          "content": "e, o",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {
+        "depth": 1
+      },
+      "expected": {
+        "shape": "sequence(leaf,leaf)",
+        "leaves": [
+          "Translate hello to French",
+          "count the letters and report the vowels"
+        ],
+        "status": "unresolved",
+        "content": null,
+        "events": [
+          "meta_exec:bounds depth=1 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=sequence children=2 atomic=- text=Translate hello to French, then count the letters and report the vowels",
+          "meta_exec:test task=t0 checks=answered,children:sequence requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=Translate hello to French",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=7 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=7 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=- children=0 atomic=depth_bound text=count the letters and report the vowels",
+          "meta_exec:test task=t0.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=0 executed=answered passed=false failed=answered",
+          "meta_exec:unresolved task=t0.2 reason=no_passing_draft",
+          "meta_exec:compose task=t0 relation=sequence children=t0.1,t0.2 resolved=1/2 built=false",
+          "meta_exec:draft task=t0 method=derivation steps=2 code_units=0 executed=answered,children:sequence passed=false failed=answered",
+          "meta_exec:unresolved task=t0 reason=children",
+          "meta_exec:result task=t0 status=unresolved method=- budget_left=5"
+        ]
+      }
+    },
+    {
+      "name": "breadth-bound",
+      "text": "Translate hello to French, then count the letters and report the vowels",
+      "language": "en",
+      "answers": {
+        "Translate hello to French, then count the letters and report the vowels": {
+          "intent": "unknown",
+          "content": "",
+          "confidence": 0
+        },
+        "Translate hello to French": {
+          "intent": "answered",
+          "content": "bonjour",
+          "confidence": 1
+        },
+        "count the letters and report the vowels": {
+          "intent": "unknown",
+          "content": "",
+          "confidence": 0
+        },
+        "count the letters": {
+          "intent": "answered",
+          "content": "5",
+          "confidence": 1
+        },
+        "report the vowels": {
+          "intent": "answered",
+          "content": "e, o",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {
+        "breadth": 1
+      },
+      "expected": {
+        "shape": "leaf",
+        "leaves": [
+          "Translate hello to French, then count the letters and report the vowels"
+        ],
+        "status": "unresolved",
+        "content": null,
+        "events": [
+          "meta_exec:bounds depth=2 breadth=1 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=- children=0 atomic=breadth_bound text=Translate hello to French, then count the letters and report the vowels",
+          "meta_exec:test task=t0 checks=answered requires=-",
+          "meta_exec:draft task=t0 method=derivation steps=2 code_units=0 executed=answered passed=false failed=answered",
+          "meta_exec:unresolved task=t0 reason=no_passing_draft",
+          "meta_exec:result task=t0 status=unresolved method=- budget_left=7"
+        ]
+      }
+    },
+    {
+      "name": "budget-bound",
+      "text": "Translate hello to French, then count the letters and report the vowels",
+      "language": "en",
+      "answers": {
+        "Translate hello to French, then count the letters and report the vowels": {
+          "intent": "unknown",
+          "content": "",
+          "confidence": 0
+        },
+        "Translate hello to French": {
+          "intent": "answered",
+          "content": "bonjour",
+          "confidence": 1
+        },
+        "count the letters and report the vowels": {
+          "intent": "unknown",
+          "content": "",
+          "confidence": 0
+        },
+        "count the letters": {
+          "intent": "answered",
+          "content": "5",
+          "confidence": 1
+        },
+        "report the vowels": {
+          "intent": "answered",
+          "content": "e, o",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {
+        "budget": 2
+      },
+      "expected": {
+        "shape": "sequence(leaf,aggregation(leaf,leaf))",
+        "leaves": [
+          "Translate hello to French",
+          "count the letters",
+          "report the vowels"
+        ],
+        "status": "unresolved",
+        "content": null,
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=2",
+          "meta_exec:task id=t0 depth=0 relation=sequence children=2 atomic=- text=Translate hello to French, then count the letters and report the vowels",
+          "meta_exec:test task=t0 checks=answered,children:sequence requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=Translate hello to French",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=7 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=7 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=aggregation children=2 atomic=- text=count the letters and report the vowels",
+          "meta_exec:test task=t0.2 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.2.1 depth=2 relation=- children=0 atomic=no_relation text=count the letters",
+          "meta_exec:test task=t0.2.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.2.1 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2.1 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:task id=t0.2.2 depth=2 relation=- children=0 atomic=no_relation text=report the vowels",
+          "meta_exec:test task=t0.2.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2.2 method=derivation skipped=budget",
+          "meta_exec:unresolved task=t0.2.2 reason=budget",
+          "meta_exec:compose task=t0.2 relation=aggregation children=t0.2.1,t0.2.2 resolved=1/2 built=false",
+          "meta_exec:draft task=t0.2 method=derivation skipped=budget",
+          "meta_exec:unresolved task=t0.2 reason=budget",
+          "meta_exec:compose task=t0 relation=sequence children=t0.1,t0.2 resolved=1/2 built=false",
+          "meta_exec:draft task=t0 method=derivation skipped=budget",
+          "meta_exec:unresolved task=t0 reason=budget",
+          "meta_exec:result task=t0 status=unresolved method=- budget_left=0"
+        ]
+      }
+    },
+    {
+      "name": "alternative-takes-the-first-passing-sub-task",
+      "text": "Answer in Klingon or answer in French",
+      "language": "en",
+      "answers": {
+        "answer in Klingon": {
+          "intent": "unknown",
+          "content": "",
+          "confidence": 0
+        },
+        "answer in French": {
+          "intent": "answered",
+          "content": "Bonjour",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "alternative(leaf,leaf)",
+        "leaves": [
+          "Answer in Klingon",
+          "answer in French"
+        ],
+        "status": "resolved",
+        "content": "Bonjour",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=alternative children=2 atomic=- text=Answer in Klingon or answer in French",
+          "meta_exec:test task=t0 checks=answered,children:alternative requires=any",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=Answer in Klingon",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:unresolved task=t0.1 reason=no_draft",
+          "meta_exec:task id=t0.2 depth=1 relation=- children=0 atomic=no_relation text=answer in French",
+          "meta_exec:test task=t0.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=7 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2 method=derivation reason=least_action steps=2 code_units=7 passing=1/1",
+          "meta_exec:compose task=t0 relation=alternative children=t0.1,t0.2 resolved=1/2 built=true",
+          "meta_exec:draft task=t0 method=composition steps=3 code_units=7 executed=answered,children:alternative passed=true failed=-",
+          "meta_exec:select task=t0 method=composition reason=least_action steps=3 code_units=7 passing=1/1",
+          "meta_exec:result task=t0 status=resolved method=composition budget_left=5"
+        ]
+      }
+    },
+    {
+      "name": "quoted-connective-is-not-split",
+      "text": "Переведи «соль и перец» на английский",
+      "language": "ru",
+      "answers": {
+        "Переведи «соль и перец» на английский": {
+          "intent": "answered",
+          "content": "salt and pepper",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "leaf",
+        "leaves": [
+          "Переведи «соль и перец» на английский"
+        ],
+        "status": "resolved",
+        "content": "salt and pepper",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=- children=0 atomic=no_relation text=Переведи «соль и перец» на английский",
+          "meta_exec:test task=t0 checks=answered requires=-",
+          "meta_exec:draft task=t0 method=derivation steps=2 code_units=15 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0 method=derivation reason=least_action steps=2 code_units=15 passing=1/1",
+          "meta_exec:result task=t0 status=resolved method=derivation budget_left=7"
+        ]
+      }
+    },
+    {
+      "name": "atomic-request",
+      "text": "What is the capital of France?",
+      "language": "en",
+      "answers": {
+        "What is the capital of France?": {
+          "intent": "answered",
+          "content": "Paris",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "leaf",
+        "leaves": [
+          "What is the capital of France?"
+        ],
+        "status": "resolved",
+        "content": "Paris",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=- children=0 atomic=no_relation text=What is the capital of France?",
+          "meta_exec:test task=t0 checks=answered requires=-",
+          "meta_exec:draft task=t0 method=derivation steps=2 code_units=5 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0 method=derivation reason=least_action steps=2 code_units=5 passing=1/1",
+          "meta_exec:result task=t0 status=resolved method=derivation budget_left=7"
+        ]
+      }
+    }
+  ]
+}

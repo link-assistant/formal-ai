@@ -13,10 +13,10 @@ use crate::calculation::evaluate_calculation;
 use crate::engine::{SymbolicAnswer, answer_links_notation, stable_id};
 use crate::event_log::{EventLog, build_evidence_links};
 use crate::intent_formalization::IntentFormalizationCache;
-use crate::probability::{
-    ProbabilityCandidate, ProbabilityRankingConfig, ProbabilityStore, rank_probability_candidates,
-};
-use crate::solver::{SolverConfig, UniversalSolver};
+use crate::least_action::{ActionCost, SolutionCandidate, rank_by_least_action};
+use crate::meta_executor::{Draft, TaskOutcome, TaskTest, Verdict, run_task_test};
+use crate::probability::ProbabilityStore;
+use crate::solver::UniversalSolver;
 use crate::solver_helpers::DecomposedSubImpulse;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -36,7 +36,11 @@ struct ComposedCandidate {
     answer: String,
     response_link: String,
     confidence: f32,
-    prior_score: f32,
+    /// Issue #1550 step 6: the relation of the decomposition the composer
+    /// follows (`sequence`, `aggregation`), which names the parent test.
+    relation: &'static str,
+    /// The structural steps of the composition: its least-action cost.
+    steps: u32,
     source_result_ids: Vec<String>,
 }
 
@@ -77,29 +81,43 @@ impl UniversalSolver {
         let mut sub_config = self.config;
         sub_config.max_decomposition_depth -= 1;
         let sub_solver = Self::new(sub_config);
+        // Issue #1550 step 8: the breadth bound of the seed's
+        // `task-decomposition` rule, the bound `meta_exec:bounds` traces.
+        let breadth = crate::meta_executor::decomposition_bounds(
+            crate::meta_executor::BoundOverrides::default(),
+        )
+        .breadth;
         sub_impulses
             .iter()
-            .take(6)
+            .take(usize::try_from(breadth).unwrap_or(usize::MAX))
             .filter(|sub_impulse| !sub_impulse.text.trim().is_empty())
             .map(|sub_impulse| {
-                let answer = sub_solver.solve_with_history_probability_store_and_intent_cache(
-                    &sub_impulse.text,
-                    &[],
-                    probability_store,
-                    intent_cache,
-                );
+                // Issue #1550: a sub-impulse solve is a nested solve; it
+                // starts no recursive procedure of its own.
+                let answer = crate::meta_executor::nested(|| {
+                    sub_solver.solve_with_history_probability_store_and_intent_cache(
+                        &sub_impulse.text,
+                        &[],
+                        probability_store,
+                        intent_cache,
+                    )
+                });
                 record_solved_sub_impulse(log, sub_impulse, &answer)
             })
             .collect()
     }
 }
 
+/// Compose the solved sub-results by the structure of the decomposition.
+///
+/// Issue #1550 step 6: every composition runs the parent test (the leaf check
+/// on the composed answer and the relation's check over the sub-results), and
+/// the passing compositions are ranked by least action over their structural
+/// cost. No composer carries a fixed prior.
 pub fn try_synthesize_from_sub_results(
     prompt: &str,
     log: &mut EventLog,
     sub_results: &[SolvedSubImpulse],
-    probability_store: &ProbabilityStore,
-    config: SolverConfig,
 ) -> Option<SymbolicAnswer> {
     if sub_results.is_empty() {
         return None;
@@ -121,6 +139,8 @@ pub fn try_synthesize_from_sub_results(
         return None;
     }
 
+    let children = child_outcomes(sub_results);
+    let mut ranked = Vec::with_capacity(candidates.len());
     for candidate in &candidates {
         log.append(
             "candidate",
@@ -130,31 +150,111 @@ pub fn try_synthesize_from_sub_results(
                 candidate.source_result_ids.join(",")
             ),
         );
+        let verdict = parent_verdict(candidate, &children);
+        log.append(
+            "validation",
+            format!(
+                "{}({})={}",
+                verdict.executed.join("+"),
+                candidate.intent,
+                verdict.passed
+            ),
+        );
+        ranked.push(SolutionCandidate {
+            id: candidate.target.clone(),
+            solves_entire_range: verdict.passed,
+            cost: ActionCost {
+                steps: candidate.steps,
+                code_units: u32::try_from(candidate.answer.chars().count()).unwrap_or(u32::MAX),
+                compute_ms: 0,
+                memory_kb: 0,
+            },
+        });
     }
 
-    let probability_candidates = candidates
-        .iter()
-        .map(|candidate| ProbabilityCandidate::new(candidate.target.clone(), candidate.prior_score))
-        .collect::<Vec<_>>();
-    let ranking = rank_probability_candidates(
-        &probability_candidates,
-        probability_store,
-        ProbabilityRankingConfig {
-            temperature: config.temperature,
-            offline: config.offline,
-            markov_from: Some(String::from("synthesis")),
-            ..ProbabilityRankingConfig::default()
-        }
-        .with_decision_policy(config.probability_policy),
-    );
-    log.append("probability:ranking", ranking.trace_summary());
-
-    let selected_target = ranking.ranked.first()?.target.as_str();
+    let order = rank_by_least_action(&ranked);
+    let Some(best) = order.first() else {
+        log.append(
+            "composition:unresolved",
+            format!("no_passing_composition=0/{}", candidates.len()),
+        );
+        return None;
+    };
     let selected = candidates
         .iter()
-        .find(|candidate| candidate.target == selected_target)?;
+        .find(|candidate| candidate.target == best.id)?;
     log.append("composition:selected", selected.target.clone());
+    log.append(
+        "composition:reason",
+        [
+            ("reason", "least_action".to_owned()),
+            ("relation", selected.relation.to_owned()),
+            ("steps", best.cost.steps.to_string()),
+            ("code_units", best.cost.code_units.to_string()),
+            ("passing", format!("{}/{}", order.len(), candidates.len())),
+        ]
+        .iter()
+        .map(|(name, value)| format!("{name}={value}"))
+        .collect::<Vec<_>>()
+        .join(" "),
+    );
     Some(finalize_composed_candidate(prompt, log, selected))
+}
+
+/// The outcome of each sub-result under its own leaf test.
+fn child_outcomes(sub_results: &[SolvedSubImpulse]) -> Vec<TaskOutcome> {
+    sub_results
+        .iter()
+        .map(|result| {
+            let test = TaskTest {
+                task: result.impulse_id.clone(),
+                checks: crate::formalization::structural_rule_values(
+                    "task-decomposition",
+                    "leaf-check",
+                ),
+                requires: None,
+            };
+            let draft = Draft {
+                intent: result.intent.clone(),
+                content: result.answer.clone(),
+                confidence: 0.0,
+            };
+            let resolved = run_task_test(&test, Some(&draft), &[]).passed;
+            TaskOutcome {
+                task: result.impulse_id.clone(),
+                status: if resolved { "resolved" } else { "unresolved" },
+                reason: None,
+                candidate: None,
+                fallback: None,
+            }
+        })
+        .collect()
+}
+
+/// The parent test of one composition: the leaf check on its answer and the
+/// children check of its relation over the sub-results.
+fn parent_verdict(candidate: &ComposedCandidate, children: &[TaskOutcome]) -> Verdict {
+    let rule =
+        |kind: &str| crate::formalization::structural_rule_values("task-decomposition", kind);
+    let mut checks = rule("leaf-check");
+    checks.extend(
+        rule("composite-check")
+            .into_iter()
+            .map(|check| format!("{check}:{}", candidate.relation)),
+    );
+    let test = TaskTest {
+        task: candidate.target.clone(),
+        checks,
+        requires: rule(&format!("{}-requires", candidate.relation))
+            .into_iter()
+            .next(),
+    };
+    let draft = Draft {
+        intent: candidate.intent.clone(),
+        content: candidate.answer.clone(),
+        confidence: candidate.confidence,
+    };
+    run_task_test(&test, Some(&draft), children)
 }
 
 fn compose_algebra_substitution(
@@ -195,10 +295,12 @@ fn compose_algebra_substitution(
         log.append("composition:steps", evaluation.steps.len().to_string());
     }
 
+    // A sequence: each assignment, the substitution, then each evaluation step.
+    let steps = assignments.len() + 1 + evaluation.steps.len();
     Some(candidate(
         "algebra_substitution",
         evaluation.formatted,
-        1.15,
+        ("sequence", steps),
         sub_results,
     ))
 }
@@ -234,10 +336,12 @@ fn compose_remainder_sale(
     if !evaluation.steps.is_empty() {
         log.append("composition:steps", evaluation.steps.len().to_string());
     }
+    // A sequence: each consumed quantity is subtracted, then the price applies.
+    let steps = quantities.len() - 1 + evaluation.steps.len();
     Some(candidate(
         "arithmetic_word_problem",
         evaluation.formatted,
-        1.05,
+        ("sequence", steps),
         sub_results,
     ))
 }
@@ -269,10 +373,12 @@ fn compose_compound_response(
                 .join(",")
         ),
     );
+    // An aggregation: one step per independent part.
+    let steps = answers.len();
     Some(candidate(
         "compound_response",
         answers.join("\n\n"),
-        0.9,
+        ("aggregation", steps),
         sub_results,
     ))
 }
@@ -280,7 +386,7 @@ fn compose_compound_response(
 fn candidate(
     intent: &str,
     answer: String,
-    prior_score: f32,
+    (relation, steps): (&'static str, usize),
     sub_results: &[SolvedSubImpulse],
 ) -> ComposedCandidate {
     let source_result_ids = sub_results
@@ -297,7 +403,8 @@ fn candidate(
         intent: intent.to_owned(),
         answer,
         confidence: 1.0,
-        prior_score,
+        relation,
+        steps: u32::try_from(steps).unwrap_or(u32::MAX),
         source_result_ids,
     }
 }
@@ -309,14 +416,9 @@ fn finalize_composed_candidate(
 ) -> SymbolicAnswer {
     let answer = crate::question_necessity::enforce_questions(&candidate.answer, log);
     log.append("intent", candidate.intent.clone());
-    if log.first_of("validation").is_none() {
-        log.append(
-            "validation",
-            "composition_replays_sub_result_links".to_owned(),
-        );
-    }
+    crate::solver_helpers::record_answer_test(log, &candidate.intent, &answer);
     log.append("response", candidate.response_link.clone());
-    log.append("trace:simplification", "smallest_sufficient".to_owned());
+    crate::solver_helpers::record_selection(log, &candidate.intent);
     let trace_id = log.append("trace", candidate.intent.clone());
     let evidence_links = build_evidence_links(prompt, log, &candidate.response_link);
     let links_notation = answer_links_notation(prompt, &candidate.intent, &answer, log, &trace_id);

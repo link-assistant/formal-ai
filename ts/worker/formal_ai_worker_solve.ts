@@ -24,7 +24,8 @@ async function solve(prompt, history, prefs, userContext = {}, memory = [], opti
     const diagnostic = await tryDiagnosticMarker(prompt, (inner) => solve(inner, history, prefs, userContext, memory, options));
     if (diagnostic) return diagnostic;
     const answer = await solveImpl(prompt, history, prefs, userContext, memory, options);
-    return metaAttachLearned(await metaResolveImpasse(prompt, answer, prefs));
+    const subTask = async (text) => metaResolveImpasse(text, await solveImpl(text, history, prefs, userContext, memory, options), prefs);
+    return metaAttachLearned(await metaRunProcedure(prompt, await metaResolveImpasse(prompt, answer, prefs), subTask));
   } finally {
     setForcedResponseLanguage(previousForced);
   }

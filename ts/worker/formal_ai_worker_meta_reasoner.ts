@@ -361,6 +361,7 @@ function metaDocHypotheses(word, language) {
 function metaGround(word, context, depth, stack) {
   const trace = context.trace;
   const indent = depth > 0 ? `${"↳".repeat(depth)} ` : "";
+  const opensGlosses = depth + 1 < META_BOUNDS.groundDepth; // its gloss words sit one level deeper, within the bound
   if (stack.includes(word)) {
     trace.emit("impasse", `${indent}cycle ${stack.concat(word).join(" → ")}`);
     return { word, status: "open", origin: "cycle", hypotheses: [], needs: [] };
@@ -391,13 +392,13 @@ function metaGround(word, context, depth, stack) {
   }
   // A word in a degree of comparison is its stem's measure and the degree's
   // selection ("longest": long, superlative), read before its own entry.
-  const degree = depth === 0 ? metaGroundDegree(word, context, stack, indent) : { grounding: null, needs: [] };
+  const degree = opensGlosses ? metaGroundDegree(word, context, stack, indent) : { grounding: null, needs: [] };
   if (degree.grounding) return degree.grounding;
   const senses = context.knowledge.get(word) || [];
   // Captures ground only the request's own words. A gloss word is grounded
   // from documentation and the request alone, so meaning cannot drift
   // through chains of loosely related senses.
-  if (senses.length && depth === 0) {
+  if (senses.length && opensGlosses) {
     trace.emit("subgoal", `${indent}understand ${word} through ${senses.length} gloss(es)`);
     const frameMarkers = metaCueMarkers("artifact");
     // The word names the artifact's frame when a salient gloss is mostly
@@ -459,7 +460,7 @@ function metaGround(word, context, depth, stack) {
     trace.emit("impasse", metaNote("no_gloss", { indent, word }));
     return { word, status: "open", origin: "capture", hypotheses: [], needs: deeperNeeds.concat(degree.needs.filter((need) => !deeperNeeds.includes(need))) };
   }
-  if (depth > 0) return { word, status: "open", origin: "none", hypotheses: [], needs: [] };
+  if (!opensGlosses) return { word, status: "open", origin: "none", hypotheses: [], needs: [] };
   if (!context.knowledge.has(word)) {
     trace.emit("impasse", metaNote("lookup_needed", { word }));
     return { word, status: "open", origin: "none", hypotheses: [], needs: [word].concat(degree.needs) };

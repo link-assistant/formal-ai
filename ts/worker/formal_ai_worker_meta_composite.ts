@@ -153,3 +153,7 @@ function metaAttachLearned(answer) {
   const operation = metaTakeLearned();
   return operation ? { ...answer, memoryOperation: operation } : answer;
 }
+
+// Issue #1550: every answer goes through the recursive procedure (crate/meta_executor.mjs).
+const metaRunProcedure = async (prompt, answer, subTask) => (await crateModule("crate/meta_executor.mjs")
+  .solveAnswer({ text: prompt, language: detectLanguage(prompt) }, answer, subTask)).answer;
