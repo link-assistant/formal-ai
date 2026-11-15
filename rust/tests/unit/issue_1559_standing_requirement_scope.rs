@@ -12,7 +12,7 @@ use std::path::PathBuf;
 
 use formal_ai::dreaming::bounds::{
     bounded_statement, contains_task_identifier, is_session_instruction, is_topic_stopword,
-    is_valid_topic, rule_max_chars, statement_topic,
+    is_valid_topic, rule_maximum_characters, statement_topic,
 };
 use formal_ai::standing_scope::{
     RequestScope, events_in_scope, recorded_scope_evidence, repository_of, request_scope,
@@ -34,7 +34,7 @@ const RUST_BRANCH: &str = "issue-1-09b0c76bd0e4";
 const SCALA_PROMPT: &str = include_str!("../fixtures/issue-1559/scala-solver-prompt.txt");
 const AMENDMENT_LINE: &str = "Learned standing requirement";
 const AGENT_SYSTEM: &str = "You are Agent, the best coding agent on the planet.";
-const SHARE_ENV: &str = "FORMAL_AI_SHARE_STANDING_REQUIREMENTS";
+const SHARE_VARIABLE: &str = "FORMAL_AI_SHARE_STANDING_REQUIREMENTS";
 
 fn rust_prompt() -> String {
     SCALA_PROMPT
@@ -113,7 +113,7 @@ impl Host {
                 ("FORMAL_AI_DIALOG_LOG_DIR", Some(dialogs.as_os_str())),
                 ("FORMAL_AI_AGENT_MODE", agent),
                 ("FORMAL_AI_RECORD_CHAT", None),
-                (SHARE_ENV, None),
+                (SHARE_VARIABLE, None),
             ],
             || handle_api_request("POST", "/v1/chat/completions", &body),
         );
@@ -190,7 +190,7 @@ fn assert_bounded_amendments(events: &[MemoryEvent]) {
             "pronoun or function-word topic stored: {topic}"
         );
         assert!(
-            rule.chars().count() <= rule_max_chars(),
+            rule.chars().count() <= rule_maximum_characters(),
             "rule over the limit: {}",
             rule.len()
         );
@@ -212,7 +212,7 @@ fn assert_bounded_amendments(events: &[MemoryEvent]) {
 
 fn user_scope(user: &str, messages: &[ChatMessage]) -> RequestScope {
     let body = json!({"user": user}).to_string();
-    temp_env::with_var(SHARE_ENV, None::<&str>, || {
+    temp_env::with_var(SHARE_VARIABLE, None::<&str>, || {
         request_scope(&body, messages, true)
     })
 }
@@ -225,7 +225,7 @@ fn the_solver_prompt_opens_like_a_session_instruction_and_yields_no_bounded_stat
     // with a task identifier in it.
     let body = SCALA_PROMPT.lines().skip(1).collect::<Vec<_>>().join("\n");
     if let Some(statement) = bounded_statement(&body) {
-        assert!(statement.chars().count() <= rule_max_chars());
+        assert!(statement.chars().count() <= rule_maximum_characters());
         assert!(!contains_task_identifier(&statement), "{statement}");
     }
     assert_eq!(
@@ -376,7 +376,7 @@ fn replaying_the_two_recorded_prompts_shows_no_text_of_the_first_prompt_in_the_s
         ChatMessage::assistant("Implemented the greeting."),
         ChatMessage::user("Summarize the work: run ls in the terminal"),
     ];
-    let scope = temp_env::with_var(SHARE_ENV, None::<&str>, || {
+    let scope = temp_env::with_var(SHARE_VARIABLE, None::<&str>, || {
         request_scope("{}", &messages, true)
     });
     let request: ChatCompletionRequest = serde_json::from_value(json!({
@@ -443,7 +443,7 @@ fn a_requirement_stated_inside_one_agent_session_stays_in_that_session() {
     );
     assert_bounded_amendments(&events);
 
-    let (scala, rust) = temp_env::with_var(SHARE_ENV, None::<&str>, || {
+    let (scala, rust) = temp_env::with_var(SHARE_VARIABLE, None::<&str>, || {
         (
             request_scope("{}", &session(SCALA_PROMPT), true),
             request_scope("{}", &session(&rust_prompt()), true),
@@ -473,7 +473,7 @@ fn a_requirement_stated_inside_one_agent_session_stays_in_that_session() {
 #[test]
 fn sharing_standing_requirements_between_agent_sessions_is_an_explicit_opt_in() {
     let messages = session(SCALA_PROMPT);
-    let isolated = temp_env::with_var(SHARE_ENV, None::<&str>, || {
+    let isolated = temp_env::with_var(SHARE_VARIABLE, None::<&str>, || {
         request_scope("{}", &messages, true)
     });
     assert_eq!(
@@ -483,7 +483,7 @@ fn sharing_standing_requirements_between_agent_sessions_is_an_explicit_opt_in() 
             .collect::<Vec<_>>(),
         ["scope:repository", "scope:session"]
     );
-    let shared = temp_env::with_var(SHARE_ENV, Some("1"), || {
+    let shared = temp_env::with_var(SHARE_VARIABLE, Some("1"), || {
         request_scope("{}", &messages, true)
     });
     assert!(recorded_scope_evidence(&shared).is_empty());
@@ -491,7 +491,7 @@ fn sharing_standing_requirements_between_agent_sessions_is_an_explicit_opt_in() 
         recorded_scope_evidence(&user_scope("alice", &messages)),
         ["scope:user=alice"]
     );
-    let chat = temp_env::with_var(SHARE_ENV, None::<&str>, || {
+    let chat = temp_env::with_var(SHARE_VARIABLE, None::<&str>, || {
         request_scope("{}", &messages, false)
     });
     assert!(recorded_scope_evidence(&chat).is_empty());
@@ -702,10 +702,9 @@ fn an_agentic_final_answer_lists_applied_amendments_in_its_trace_never_in_its_te
             .collect::<Vec<_>>(),
         ["meta_algorithm_amendment:amendment_scoped_answer"]
     );
-    assert!(
-        message.thinking_steps[0]
-            .detail
-            .contains("learned standing requirement (answer)")
+    assert_eq!(
+        message.thinking_steps[0].detail,
+        "standing_requirement:answer"
     );
     assert!(!message.reasoning_content.is_empty());
     assert!(

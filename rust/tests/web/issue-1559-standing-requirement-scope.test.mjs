@@ -21,7 +21,7 @@ import { createMemory } from '../../../js/server/memory.mjs';
 import { SyncStore, memoryEvent } from '../../../js/server/memory-store.mjs';
 import { handleChatCompletions } from '../../../js/server/openai.mjs';
 import {
-  boundedStatement, containsTaskIdentifier, isSessionInstruction, isTopicStopword, isValidTopic, ruleMaxChars,
+  boundedStatement, containsTaskIdentifier, isSessionInstruction, isTopicStopword, isValidTopic, ruleMaximumCharacters,
   statementTopic,
 } from '../../../js/server/standing-requirement-bounds.mjs';
 import { applyRetainedAmendments, retainedAmendments } from '../../../js/server/standing-requirements.mjs';
@@ -93,7 +93,7 @@ function assertBoundedAmendments(events) {
     const rule = valueOf(amendment.outputs, 'rule');
     assert.ok(isValidTopic(topic), `pronoun or function-word topic stored: ${topic}`);
     assert.equal(isTopicStopword(topic.toLowerCase()) && topic.toLowerCase() !== 'answer', false, topic);
-    assert.ok([...rule].length <= ruleMaxChars(), `rule over the limit: ${rule.length}`);
+    assert.ok([...rule].length <= ruleMaximumCharacters(), `rule over the limit: ${rule.length}`);
     assert.ok(!containsTaskIdentifier(rule), `rule names one task: ${rule}`);
     for (const identifier of [SCALA_REPOSITORY, SCALA_BRANCH, RUST_REPOSITORY, RUST_BRANCH, 'You are an AI issue solver']) {
       assert.ok(!rule.includes(identifier), `rule carries ${identifier}`);
@@ -109,7 +109,7 @@ test('the solver prompt opens like a session instruction and yields no bounded s
   const body = SCALA_PROMPT.split('\n').slice(1).join('\n');
   const statement = boundedStatement(body);
   if (statement !== null) {
-    assert.ok([...statement].length <= ruleMaxChars());
+    assert.ok([...statement].length <= ruleMaximumCharacters());
     assert.equal(containsTaskIdentifier(statement), false, statement);
   }
   assert.equal(boundedStatement(`Always push only to branch ${SCALA_BRANCH}.`), null);
@@ -304,7 +304,8 @@ test('an agentic final answer lists applied amendments in its trace, never in it
   const message = chat.choices[0].message;
   assert.equal(message.content, plan.answer);
   assert.deepEqual(message.thinking_steps.map((step) => step.source_event), ['meta_algorithm_amendment:amendment_scoped_answer']);
-  assert.match(message.reasoning_content, /learned standing requirement \(answer\)/u);
+  assert.equal(message.thinking_steps[0].detail, 'standing_requirement:answer');
+  assert.notEqual(message.reasoning_content, '');
   assert.equal(message.reasoning_content.includes('Always answer in Russian'), false);
 
   const response = runInRequestScope(alice, () => responseFromPlan(ctx, request, request, 'Summarize the work.', plan, 1));

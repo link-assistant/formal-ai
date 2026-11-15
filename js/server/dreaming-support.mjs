@@ -225,10 +225,10 @@ const LEXICON_KEYS = {
   cache_kind_cue: 'cache_kind_cues',
   cache_tool_cue: 'cache_tool_cues',
   intermediate_kind_cue: 'intermediate_kind_cues',
-  instruction_opener: 'instruction_openers',
-  answer_form_cue: 'answer_form_cues',
-  task_reference_word: 'task_reference_words',
-  rule_max_chars: 'rule_max_chars',
+  'instruction-opener': 'instruction_openers',
+  'answer-form-cue': 'answer_form_cues',
+  'task-reference-word': 'task_reference_words',
+  'rule-maximum-characters': 'rule_maximum_characters',
 };
 
 /** Mirrors rust/src/dreaming/lexicon.rs `parse_lexicon`. */

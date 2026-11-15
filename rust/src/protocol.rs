@@ -965,7 +965,7 @@ fn response_from_symbolic(
         }],
         thinking_steps: thinking_steps.clone(),
     })];
-    if let Some(reasoning) = response_reasoning_item(prompt, &thinking_steps) {
+    if let Some(reasoning) = output::response_reasoning_item(prompt, &thinking_steps) {
         output.push(reasoning);
     }
 
@@ -985,22 +985,4 @@ fn response_from_symbolic(
         derivation_id: Some(derivation_id),
         thinking_steps,
     }
-}
-
-fn response_reasoning_item(
-    prompt: &str,
-    thinking_steps: &[ThinkingStep],
-) -> Option<ResponseOutputItem> {
-    let text = render_thinking_steps(thinking_steps);
-    if text.is_empty() {
-        return None;
-    }
-    Some(ResponseOutputItem::Reasoning(ResponseReasoningItem {
-        id: stable_id("rs", prompt),
-        kind: String::from("reasoning"),
-        summary: vec![ResponseReasoningSummaryText {
-            kind: String::from("summary_text"),
-            text,
-        }],
-    }))
 }

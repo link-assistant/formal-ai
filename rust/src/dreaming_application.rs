@@ -156,9 +156,10 @@ pub fn applied_amendment_steps(prompt: &str, events: &[MemoryEvent]) -> Vec<Thin
         .collect()
 }
 
-/// The trace detail of one applied amendment.
+/// The machine-readable trace detail of one applied amendment:
+/// `standing_requirement:<topic>`.
 fn amendment_trace(amendment: &RetainedAmendment) -> String {
-    format!("learned standing requirement ({})", amendment.topic)
+    format!("{STANDING_REQUIREMENT_INTENT}:{}", amendment.topic)
 }
 
 /// Amendments whose topic matches the task — the single selection rule shared by

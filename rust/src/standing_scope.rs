@@ -37,7 +37,7 @@ pub const SCOPE_PREFIX: &str = "scope:";
 pub const GENERALIZED_SCOPE: &str = "scope:generalized";
 /// The scope keys in their canonical order.
 pub const SCOPE_KEYS: [&str; 3] = ["user", "repository", "session"];
-const SHARE_ENV: &str = "FORMAL_AI_SHARE_STANDING_REQUIREMENTS";
+const SHARE_VARIABLE: &str = "FORMAL_AI_SHARE_STANDING_REQUIREMENTS";
 const URL_TRAILING: [char; 13] = [
     ')', ']', '}', '>', '"', '\'', '`', ',', ';', ':', '!', '?', '.',
 ];
@@ -121,7 +121,7 @@ pub fn repository_of(text: &str) -> Option<String> {
 /// The operator asked agent sessions to share what they learn.
 #[must_use]
 pub fn sharing_requested() -> bool {
-    std::env::var(SHARE_ENV)
+    std::env::var(SHARE_VARIABLE)
         .is_ok_and(|value| matches!(value.trim().to_lowercase().as_str(), "1" | "true" | "yes"))
 }
 

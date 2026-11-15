@@ -13,7 +13,7 @@ use super::cues::requirement_cues;
 use super::lexicon::lexicon;
 
 /// The rule length limit used when the lexicon configures none.
-pub const DEFAULT_RULE_MAX_CHARS: usize = 240;
+pub const DEFAULT_RULE_MAXIMUM_CHARACTERS: usize = 240;
 
 const SENTENCE_END: [char; 3] = ['.', '!', '?'];
 const HARD_SENTENCE_END: [char; 5] = ['\n', '。', '！', '？', '।'];
@@ -28,15 +28,15 @@ fn is_digits(text: &str) -> bool {
 
 /// The configured rule length limit in characters.
 #[must_use]
-pub fn rule_max_chars() -> usize {
+pub fn rule_maximum_characters() -> usize {
     lexicon()
-        .rule_max_chars
+        .rule_maximum_characters
         .last()
         .map(|raw| raw.trim())
         .filter(|raw| is_digits(raw))
         .and_then(|raw| raw.parse::<usize>().ok())
         .filter(|limit| *limit > 0)
-        .unwrap_or(DEFAULT_RULE_MAX_CHARS)
+        .unwrap_or(DEFAULT_RULE_MAXIMUM_CHARACTERS)
 }
 
 fn starts_with_opener(lowered: &str, opener: &str) -> bool {
@@ -203,7 +203,7 @@ pub fn contains_task_identifier(text: &str) -> bool {
 pub fn is_bounded_rule(text: &str) -> bool {
     let rule = text.trim();
     !rule.is_empty()
-        && rule.chars().count() <= rule_max_chars()
+        && rule.chars().count() <= rule_maximum_characters()
         && !is_session_instruction(rule)
         && !contains_task_identifier(rule)
 }

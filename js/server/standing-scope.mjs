@@ -31,7 +31,7 @@ export const SCOPE_PREFIX = 'scope:';
 export const GENERALIZED_SCOPE = 'scope:generalized';
 /** The scope keys in their canonical order. */
 export const SCOPE_KEYS = ['user', 'repository', 'session'];
-const SHARE_ENV = 'FORMAL_AI_SHARE_STANDING_REQUIREMENTS';
+const SHARE_VARIABLE = 'FORMAL_AI_SHARE_STANDING_REQUIREMENTS';
 const URL_TRAILING = new Set([')', ']', '}', '>', '"', "'", '`', ',', ';', ':', '!', '?', '.']);
 
 const storage = new AsyncLocalStorage();
@@ -96,7 +96,7 @@ export function repositoryOf(text) {
 
 /** Mirrors rust/src/standing_scope.rs `sharing_requested`. */
 export function sharingRequested(env = process.env) {
-  const value = String(env[SHARE_ENV] ?? '').trim().toLowerCase();
+  const value = String(env[SHARE_VARIABLE] ?? '').trim().toLowerCase();
   return value === '1' || value === 'true' || value === 'yes';
 }
 

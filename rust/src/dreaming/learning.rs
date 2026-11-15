@@ -13,7 +13,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 use super::bounds::{
-    bounded_statement, is_bounded_rule, is_valid_topic, rule_max_chars, statement_topic,
+    bounded_statement, is_bounded_rule, is_valid_topic, rule_maximum_characters, statement_topic,
 };
 use super::lexicon::lexicon;
 use super::{
@@ -227,7 +227,7 @@ fn requirement_topic(event: &MemoryEvent, statement: &str) -> Option<String> {
 
 /// The amendment id of `topic` in `scope`; a global amendment keeps the id it
 /// always had.
-fn amendment_id(topic: &str, scope: &[ScopePair]) -> String {
+fn amendment_identifier(topic: &str, scope: &[ScopePair]) -> String {
     let key = scope_key(scope);
     if key.is_empty() {
         crate::engine::stable_id("amendment", topic)
@@ -238,7 +238,7 @@ fn amendment_id(topic: &str, scope: &[ScopePair]) -> String {
 
 /// Statements joined while the rule stays inside the bounds.
 fn bounded_rule<'a>(statements: impl IntoIterator<Item = &'a str>) -> String {
-    let limit = rule_max_chars();
+    let limit = rule_maximum_characters();
     let mut rule = String::new();
     for statement in statements {
         let next = if rule.is_empty() {
@@ -305,7 +305,7 @@ fn build_amendment(
         }
     }
     MetaAlgorithmAmendment {
-        id: amendment_id(topic, scope),
+        id: amendment_identifier(topic, scope),
         topic: topic.to_owned(),
         rule: bounded_rule(
             grouped
@@ -530,7 +530,7 @@ fn refine_amendments_from_failures(
             &mut amendments[position]
         } else {
             amendments.push(MetaAlgorithmAmendment {
-                id: amendment_id(&topic, &scope),
+                id: amendment_identifier(&topic, &scope),
                 topic: topic.clone(),
                 rule: String::new(),
                 source_requirement_ids: Vec::new(),
@@ -546,7 +546,7 @@ fn refine_amendments_from_failures(
             } else {
                 format!("{}; {statement}", amendment.rule)
             };
-            if next.chars().count() > rule_max_chars() {
+            if next.chars().count() > rule_maximum_characters() {
                 continue;
             }
             amendment.rule = next;

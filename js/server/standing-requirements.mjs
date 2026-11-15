@@ -97,7 +97,7 @@ export function appliedAmendmentSteps(prompt, events) {
   return matchingAmendments(prompt, retainedAmendments(events)).map((amendment, order) => thinkingStep(
     order,
     'match_rule',
-    serverMessage('standing_requirement_trace', { topic: amendment.topic }),
+    `${STANDING_REQUIREMENT_INTENT}:${amendment.topic}`,
     'high',
     `${AMENDMENT_KIND}:${amendment.id}`,
   ));

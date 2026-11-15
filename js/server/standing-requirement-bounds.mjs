@@ -14,7 +14,7 @@ import {
 } from './dreaming-support.mjs';
 
 /** The rule length limit used when the lexicon configures none. */
-export const DEFAULT_RULE_MAX_CHARS = 240;
+export const DEFAULT_RULE_MAXIMUM_CHARACTERS = 240;
 
 const SENTENCE_END = new Set(['.', '!', '?']);
 const HARD_SENTENCE_END = new Set(['\n', '。', '！', '？', '।']);
@@ -29,11 +29,11 @@ const UNSPACED_SCRIPT = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/
 const charCount = (text) => [...String(text)].length;
 const isWhitespace = (character) => WHITESPACE.test(character);
 
-/** Mirrors rust/src/dreaming/bounds.rs `rule_max_chars`. */
-export function ruleMaxChars() {
-  const raw = lexicon().rule_max_chars.at(-1);
+/** Mirrors rust/src/dreaming/bounds.rs `rule_maximum_characters`. */
+export function ruleMaximumCharacters() {
+  const raw = lexicon().rule_maximum_characters.at(-1);
   const parsed = raw !== undefined && DIGITS.test(trim(raw)) ? Number(trim(raw)) : 0;
-  return parsed > 0 ? parsed : DEFAULT_RULE_MAX_CHARS;
+  return parsed > 0 ? parsed : DEFAULT_RULE_MAXIMUM_CHARACTERS;
 }
 
 /** Mirrors rust/src/dreaming/bounds.rs `starts_with_opener`. */
@@ -141,7 +141,7 @@ export function containsTaskIdentifier(text) {
 export function isBoundedRule(text) {
   const rule = trim(String(text ?? ''));
   return rule !== ''
-    && charCount(rule) <= ruleMaxChars()
+    && charCount(rule) <= ruleMaximumCharacters()
     && !isSessionInstruction(rule)
     && !containsTaskIdentifier(rule);
 }

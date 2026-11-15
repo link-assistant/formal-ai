@@ -15,7 +15,7 @@ import {
   trimMatches,
 } from './dreaming-support.mjs';
 import {
-  boundedStatement, isBoundedRule, isValidTopic, ruleMaxChars, statementTopic,
+  boundedStatement, isBoundedRule, isValidTopic, ruleMaximumCharacters, statementTopic,
 } from './standing-requirement-bounds.mjs';
 import { inScope, scopeKey, scopePairs } from './standing-scope.mjs';
 
@@ -102,15 +102,15 @@ function scopeOf(event) {
   return Object.fromEntries(scopePairs(event.evidence));
 }
 
-/** Mirrors rust/src/dreaming/learning.rs `amendment_id`. */
-function amendmentId(topic, scope) {
+/** Mirrors rust/src/dreaming/learning.rs `amendment_identifier`. */
+function amendmentIdentifier(topic, scope) {
   const key = scopeKey(scope);
   return key ? stableId('amendment', `${topic}\u0000${key}`) : stableId('amendment', topic);
 }
 
 /** Mirrors rust/src/dreaming/learning.rs `bounded_rule`: statements joined while the rule stays in bounds. */
 function boundedRule(statements) {
-  const limit = ruleMaxChars();
+  const limit = ruleMaximumCharacters();
   let rule = '';
   for (const statement of statements) {
     const next = rule ? `${rule}; ${statement}` : statement;
@@ -159,10 +159,10 @@ function coveredEvents(amendment, events, specificIndices, replay) {
 function buildAmendment(topic, scope, grouped, generalized) {
   const sources = [];
   for (const requirement of grouped) {
-    for (const id of requirement.source_event_ids) if (!sources.includes(id)) sources.push(id);
+    for (const identifier of requirement.source_event_ids) if (!sources.includes(identifier)) sources.push(identifier);
   }
   return {
-    id: amendmentId(topic, scope),
+    id: amendmentIdentifier(topic, scope),
     topic,
     rule: boundedRule(grouped.map((requirement) => requirement.statement)),
     source_requirement_ids: sources,
@@ -217,8 +217,8 @@ function generalizeAmendments(events, requirements, specificIndices, replay) {
       const candidate = buildAmendment(topic, [], lifted, true);
       for (const requirement of grouped) {
         if (requirement.scope.length > 0 && general.has(requirement.statement.toLowerCase())) {
-          for (const id of requirement.source_event_ids) {
-            if (!candidate.source_requirement_ids.includes(id)) candidate.source_requirement_ids.push(id);
+          for (const identifier of requirement.source_event_ids) {
+            if (!candidate.source_requirement_ids.includes(identifier)) candidate.source_requirement_ids.push(identifier);
           }
         }
       }
@@ -301,9 +301,9 @@ function missingStatementsForTopic(expectedOutput, current, topic) {
 
 /** Mirrors rust/src/dreaming/learning.rs `refine_amendments_from_failures`. */
 function refineAmendmentsFromFailures(events, specificIndices, requirements, amendments, candidates, replay) {
-  const eventById = new Map();
-  for (const event of events) if (event.id && !eventById.has(event.id)) eventById.set(event.id, event);
-  const sourceOf = (candidate) => eventById.get(candidate.source_event_id) ?? {};
+  const eventByIdentifier = new Map();
+  for (const event of events) if (event.id && !eventByIdentifier.has(event.id)) eventByIdentifier.set(event.id, event);
+  const sourceOf = (candidate) => eventByIdentifier.get(candidate.source_event_id) ?? {};
   const refined = new Set();
   const failures = candidates.filter((candidate) => !candidate.passed && isValidTopic(candidate.topic))
     .map((candidate) => [candidate.topic, candidate.source_event_id, candidate.expected_output, sourceOf(candidate)]);
@@ -315,13 +315,13 @@ function refineAmendmentsFromFailures(events, specificIndices, requirements, ame
     if (missing.length === 0) continue;
     if (!amendment) {
       amendment = {
-        id: amendmentId(topic, scope), topic, rule: '', source_requirement_ids: [], covered_event_ids: [], scope, generalized: false,
+        id: amendmentIdentifier(topic, scope), topic, rule: '', source_requirement_ids: [], covered_event_ids: [], scope, generalized: false,
       };
       amendments.push(amendment);
     }
     for (const statement of missing) {
       const next = amendment.rule ? `${amendment.rule}; ${statement}` : statement;
-      if ([...next].length > ruleMaxChars()) continue;
+      if ([...next].length > ruleMaximumCharacters()) continue;
       amendment.rule = next;
       requirements.push({ topic, statement, source_event_ids: [sourceEventId], occurrences: 1, scope });
     }
