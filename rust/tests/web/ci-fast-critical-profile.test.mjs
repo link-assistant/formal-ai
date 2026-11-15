@@ -102,7 +102,7 @@ test('dependency validation dispatch is read-only unless creation is explicit', 
   }
 });
 
-test('automatic real-client admission ignores feature branches while retaining main readiness tails', () => {
+test('automatic real-client admission ignores feature branches and pull-request runs while every main completion can resume a deferral', () => {
   const workflow = read('.github/workflows/hive-original-delivery.yml');
   assert.deepEqual(workflow.on.workflow_run.branches, ['main']);
   assert(workflow.on.workflow_dispatch.inputs['pull-request']);
@@ -112,11 +112,20 @@ test('automatic real-client admission ignores feature branches while retaining m
     ['push','main','Coverage','success',true],
     ['workflow_run','main','Verify Public Release Downloads','success',true],
     ['pull_request','feature','Coverage','success',false],
-    ['schedule','main','dependencies-latest','success',false],
-    ['push','main','Coverage','failure',false],
-    ['workflow_run','main','Desktop Release','success',false],
+    ['pull_request','main','Coverage','success',false],
+    ['pull_request_target','main','Coverage','failure',false],
+    // #1485: any terminal non-pull-request main run may be the prerequisite a deferred
+    // candidate is waiting on. Admission stays read-only and the script decides: a
+    // failed, cancelled or skipped run refuses that candidate and never admits it.
+    ['schedule','main','dependencies-latest','success',true],
+    ['schedule','main','Task ladder','cancelled',true],
+    ['push','main','Coverage','failure',true],
+    ['workflow_run','main','Desktop Release','success',true],
+    ['push','feature','Coverage','success',false],
   ]) {
     assert.equal(evaluate(expression, {vars: {FORMAL_AI_REAL_GITHUB_E2E: 'true'}, github: {event_name:'workflow_run',event:{workflow_run:{event,head_branch:branch,name,conclusion}}}}), expected);
+    // The real-effect opt-in still gates every automatic route.
+    assert.equal(evaluate(expression, {vars: {}, github: {event_name:'workflow_run',event:{workflow_run:{event,head_branch:branch,name,conclusion}}}}), false);
   }
 });
 
