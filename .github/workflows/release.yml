@@ -418,10 +418,7 @@ jobs:
         run: rust-script scripts/run-ci-gates.rs --stage web
   test:
     name: Test (${{ matrix.os }} / ${{ matrix.test-suite }})${{ matrix.shard && format(' shard {0}/{1}', matrix.shard, matrix.shards) || '' }}
-    # The `os` key names the leg (job names, duration data, unit-tests-<os> checks);
-    # the runner is pinned, because `ubuntu-latest` moves to Ubuntu 26 and
-    # annotated every job with the migration notice (issue #1571).
-    runs-on: ${{ matrix.os == 'ubuntu-latest' && 'ubuntu-24.04' || matrix.os }}
+    runs-on: ${{ matrix.os == 'ubuntu-latest' && 'ubuntu-24.04' || matrix.os }} # `os` only names the leg; the image is pinned (#1571)
     timeout-minutes: 30
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.os }}-${{ matrix.test-suite }}-${{ matrix.shard || 1 }}

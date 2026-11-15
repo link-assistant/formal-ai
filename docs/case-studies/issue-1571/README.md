@@ -107,6 +107,12 @@ Every job on `main` at `7837d50` carried the notice that `ubuntu-latest` moves t
 
 **Fix:** pin `ubuntu-24.04` and `windows-2025`. The release matrix keeps `os: ubuntu-latest` only as the leg's *name*, because job names, duration data and the `unit-tests-<os>` checks depend on it, and maps it to the pinned image in `runs-on`.
 
+Three things followed from the pin:
+
+- The canonical release original `original-release-workflow.yml` was exactly at its 1500-line cap. A three-line comment pushed it to 1503 lines, and the fast lint on `ec8562ef5` failed (run 43741781733). The comment is now a trailing comment on the `runs-on` line. The sha in `stage-source-coverage.json` is refreshed, and the projections are regenerated with `generate-staged-release.mjs --write --deployed`. `--check-deployed` passes.
+- Three tests pin reviewed digests or structures of jobs whose only change is the runner: `ci-fast-critical-profile`, `verify-public-release-downloads` and `browser-engine-release-integration`. They keep their reviewed baselines. Each now asserts that the job runs on `ubuntu-24.04`, then checks the baseline with only that field restored. Restoring it reproduces each baseline hash exactly, so the pin is the only difference.
+- The pull-request CI did not run these JavaScript tests (§5.1). They were run locally, one file at a time.
+
 ### 4.9 `@link-assistant/web-capture` 2.x on Node 24 runtimes (`ec8562ef5`)
 
 The daily dependency run moved web-capture to 2.x in the desktop and VS Code manifests. web-capture 2.0.0–2.0.2 declares `engines.node >=26.10.0`, set in its commit `b055a3058` "refresh locked tooling". The runtimes that load it are older:
