@@ -53,7 +53,8 @@ test('fast inventory retains coding, questions, reports and captured CI failure 
     'github-json-observation','self-authored-publication-source','hive-pre-effect-deferral',
     // Issue #1569: each of these failed only on main, after its PR passed.
     'issue-1165-no-memorization','bounded-subprocess-boundaries','dependency-summarization',
-    'native-library-creation-qualification','issue-1569-collect-build-artifacts','issue-1569-ordered-module-lists'])
+    'native-library-creation-qualification','issue-1569-collect-build-artifacts','issue-1569-ordered-module-lists',
+    'issue-1569-generated-version-literals'])
     assert(selected.includes('rust/tests/web/'+name+'.test.mjs'),name);
   for(const files of [[],['../outside.test.mjs'],[selected[0],selected[0]],['rust/tests/web/missing.test.mjs']])
     assert.throws(()=>selectFastTests({schema:'fast-pr-javascript-tests/v1',files}));
