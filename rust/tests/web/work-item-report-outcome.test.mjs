@@ -1,3 +1,19 @@
+// Issue #1483: a partial result names the work it leaves open, and a
+// complete one lists none.
+test('a verified but incomplete record lists the work still open', () => {
+  const record = {
+    schema: 'repository-work-item-controller/v1', reason: 'UsefulCandidateReadbackVerified', observations: [],
+    verified: true, complete: false, authored: true,
+    remainingWork: ['independent-requirement-acceptance', 'consumer-discovery', 'independent-integration-semantics'],
+    requirements: [{ text: 'Document the manifest rows.', status: 'verified' }, { text: 'Explain the trade-offs.', status: 'unverified' }],
+  };
+  const report = workItemReport(record, 'Solve the issue.');
+  assert.match(report, /\nWork still open \(2\):\n- `consumer-discovery`\n- `independent-integration-semantics`\n/u);
+  assert.ok(!report.includes('`independent-requirement-acceptance`'));
+  assert.ok(report.indexOf('Work still open') < report.indexOf('2. Explain the trade-offs.'));
+  const done = workItemReport({ ...record, complete: true, remainingWork: [] }, 'Solve the issue.');
+  assert.ok(!done.includes('Work still open'));
+});
 // Issue #1560 outcome: a Hive Mind session on issues 1486, 1489 and 1501
 // reads repository files instead of refusing every read; a work-item final is
 // a localized report, never a JSON object; a fetched issue page yields only its

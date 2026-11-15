@@ -431,3 +431,38 @@ fn the_headline_separates_done_partly_done_changed_and_unchanged_records() {
         assert!(!unchanged.starts_with(prefix), "{unchanged}");
     }
 }
+
+/// Issue #1483: a partial result names the work it leaves open, and a
+/// complete one lists none.
+#[test]
+fn a_verified_but_incomplete_record_lists_the_work_still_open() {
+    let mut record = json!({
+        "schema": "repository-work-item-controller/v1",
+        "reason": "UsefulCandidateReadbackVerified",
+        "observations": [],
+        "verified": true,
+        "complete": false,
+        "authored": true,
+        "remainingWork": ["independent-requirement-acceptance", "consumer-discovery", "independent-integration-semantics"],
+        "requirements": [
+            {"text": "Document the manifest rows.", "status": "verified"},
+            {"text": "Explain the trade-offs.", "status": "unverified"}
+        ]
+    });
+    let report = work_item_report(&record, "Solve the issue.");
+    assert!(
+        report.contains(
+            "\nWork still open (2):\n- `consumer-discovery`\n- `independent-integration-semantics`\n"
+        ),
+        "{report}"
+    );
+    assert!(!report.contains("`independent-requirement-acceptance`"));
+    let open = report.find("Work still open").expect("RemainingWork");
+    let listed = report
+        .find("2. Explain the trade-offs.")
+        .expect("OpenRequirement");
+    assert!(open < listed);
+    record["complete"] = json!(true);
+    record["remainingWork"] = json!([]);
+    assert!(!work_item_report(&record, "Solve the issue.").contains("Work still open"));
+}

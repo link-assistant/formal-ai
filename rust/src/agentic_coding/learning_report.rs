@@ -28,7 +28,7 @@
 
 use std::fmt::Write as _;
 
-use super::document_recipe::{plan_document_recipe, DocumentRecipe};
+use super::document_recipe::{DocumentRecipe, plan_document_recipe};
 use super::planner::AgenticPlan;
 use super::{
     associative_learning, code_rewrite_learning, execution_learning, external_benchmark_learning,

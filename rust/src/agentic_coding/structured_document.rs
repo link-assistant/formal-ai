@@ -70,17 +70,11 @@ pub(super) fn plan_step(
                 )
             }));
         }
-        return Some(plan_one(
-            read_tool,
-            read_arguments(&specification.output),
-        ));
+        return Some(plan_one(read_tool, read_arguments(&specification.output)));
     }
 
     let Some(source) = progress.successful_read_output_for(&specification.input) else {
-        return Some(plan_one(
-            read_tool,
-            read_arguments(&specification.input),
-        ));
+        return Some(plan_one(read_tool, read_arguments(&specification.input)));
     };
     let source = super::code_artifact::source_from_read_result(source);
     let content = render(&specification, &source);
@@ -118,9 +112,7 @@ fn recognise(task: &str) -> Option<Specification> {
     // the input must occur in the sentence that states the inspection.
     let output = paths
         .iter()
-        .find(|path| {
-            is_lino_path(path) && super::write_request::is_stated_write_target(task, path)
-        })
+        .find(|path| is_lino_path(path) && super::write_request::is_stated_write_target(task, path))
         .cloned()
         .or_else(|| composed_output_path(task))?;
     let input = inspected_source_path(task, &output)?;
@@ -136,7 +128,9 @@ fn recognise(task: &str) -> Option<Specification> {
     // stay confined to this declaration so later provenance prose cannot add
     // an accidental generic `source` field.
     let schema_clause = task.split_once(root).map(|(_, after_root)| {
-        let declaration = after_root.split_once('.').map_or(after_root, |(head, _)| head);
+        let declaration = after_root
+            .split_once('.')
+            .map_or(after_root, |(head, _)| head);
         format!("{root}{declaration}")
     })?;
     (!fields.is_empty()).then(|| Specification {
@@ -228,7 +222,12 @@ fn render(specification: &Specification, source: &str) -> String {
         "sha256",
         Some(&crate::source_fetch::sha256_hex(source.as_bytes())),
     );
-    push_lino_node(&mut out, 4, "root", tree.children.first().map(|node| node.name.as_str()));
+    push_lino_node(
+        &mut out,
+        4,
+        "root",
+        tree.children.first().map(|node| node.name.as_str()),
+    );
     let fields = requested_fields(specification, &tree);
     let scopes = collection_scopes(specification, &tree);
     for scope in scopes {
@@ -252,15 +251,9 @@ fn render(specification: &Specification, source: &str) -> String {
 /// registered translations). The record kind is discovered from repeated
 /// direct children of the inspected root, preferring a kind named by the
 /// caller. Otherwise the entire parsed tree is one derivation scope.
-fn collection_scopes<'a>(
-    specification: &Specification,
-    tree: &'a LinoNode,
-) -> Vec<&'a LinoNode> {
+fn collection_scopes<'a>(specification: &Specification, tree: &'a LinoNode) -> Vec<&'a LinoNode> {
     let normalized = crate::engine::normalize_prompt(&specification.schema_clause);
-    let asks_for_index = specification
-        .root
-        .split('_')
-        .any(|token| token == "index");
+    let asks_for_index = specification.root.split('_').any(|token| token == "index");
     let asks_for_every = crate::seed::lexicon()
         .meaning("quantifier_all")
         .is_some_and(|meaning| meaning.evidenced_in(&normalized));

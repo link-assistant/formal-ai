@@ -21,7 +21,7 @@
 
 use std::sync::OnceLock;
 
-use crate::learning_ledger::{canonical_ledger, LearningLedger};
+use crate::learning_ledger::{LearningLedger, canonical_ledger};
 
 /// The workspace path the planner writes the generated ledger document to.
 pub const LEDGER_PATH: &str = "learning-ledger.lino";
@@ -43,8 +43,7 @@ fn cached_ledger() -> &'static LearningLedger {
 /// Deliberately avoids the self-healing keywords ("self-heal", "auto learning",
 /// "repair case") so the two auto-learning recipes never collide: this recipe is
 /// the *promotion* step that follows an already-reviewed repair case.
-pub const LEDGER_TASK: &str =
-    "Promote the approved lesson into your learning ledger and record the approved \
+pub const LEDGER_TASK: &str = "Promote the approved lesson into your learning ledger and record the approved \
      learning record in Links Notation so a repeated failure is answered from the \
      ledger next time.";
 

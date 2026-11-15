@@ -25,7 +25,7 @@
 
 use std::sync::OnceLock;
 
-use crate::change_request::{canonical_change_request, ChangeRequest};
+use crate::change_request::{ChangeRequest, canonical_change_request};
 
 /// The workspace path the planner writes the generated pull-request document to.
 pub const CHANGE_PATH: &str = "requested-change.lino";
@@ -48,8 +48,7 @@ fn cached_change_request() -> &'static ChangeRequest {
 /// ledger keywords ("promote", "ledger"), the explain keywords ("how … works"), and
 /// the source-links keywords ("recompile", whole-source-to-links) so the recipes never
 /// collide: this recipe is the *user-initiated change* to Formal AI itself.
-pub const CHANGE_TASK: &str =
-    "I want to change Formal AI itself: please add a new capability to the system, and \
+pub const CHANGE_TASK: &str = "I want to change Formal AI itself: please add a new capability to the system, and \
      route my request through the same human-gated review loop that produces a \
      requirement, a test, and a patch plan I can review as a pull request.";
 

@@ -26,7 +26,7 @@
 
 use std::sync::OnceLock;
 
-use crate::rebuild_plan::{canonical_rebuild_plan, RebuildPlan};
+use crate::rebuild_plan::{RebuildPlan, canonical_rebuild_plan};
 
 /// The workspace path the planner writes the generated rebuild-and-reattach plan to.
 pub const REBUILD_PATH: &str = "rebuild-and-reattach.lino";
@@ -51,8 +51,7 @@ fn cached_rebuild_plan() -> &'static RebuildPlan {
 /// self-healing "heal"/"learn a" fallback, and the ledger/explain/repair-strategy
 /// keywords, so the recipes never collide: this recipe keys on *reattaching* the rebuilt
 /// worker to the UI.
-pub const REBUILD_TASK: &str =
-    "An improvement to Formal AI was accepted — now rebuild it and reattach the improved \
+pub const REBUILD_TASK: &str = "An improvement to Formal AI was accepted — now rebuild it and reattach the improved \
      WebAssembly worker to the UI: give me the ordered, reversible steps to regenerate \
      the worker, reattach it to the browser UI, hot-swap the local server, and verify \
      the UI uses the accepted version.";

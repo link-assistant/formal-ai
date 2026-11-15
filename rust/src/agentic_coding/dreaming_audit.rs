@@ -14,8 +14,7 @@ use crate::dreaming::lexicon::load_data_document;
 
 pub const DREAMING_AUDIT_PATH: &str = "dreaming-gap-analysis.lino";
 
-pub const DREAMING_AUDIT_TASK: &str =
-    "Audit issue 540 dreaming through Formal AI: inspect the grounded dreaming meta-algorithm, \
+pub const DREAMING_AUDIT_TASK: &str = "Audit issue 540 dreaming through Formal AI: inspect the grounded dreaming meta-algorithm, \
      identify every implementation gap from amendment application through replay, pattern \
      learning, storage consent, and idle runtime, then record the generalization that resolves \
      each gap as Links Notation in dreaming-gap-analysis.lino.";

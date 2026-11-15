@@ -31,7 +31,7 @@
 use std::fmt::Write as _;
 use std::sync::OnceLock;
 
-use crate::repair_strategy::{canonical_strategies, RepairStrategy};
+use crate::repair_strategy::{RepairStrategy, canonical_strategies};
 
 /// The workspace path the planner writes the generated repair-strategies document to,
 /// and the committed byte-for-byte artifact under `data/meta/`.
@@ -57,8 +57,7 @@ fn cached_strategies() -> &'static [RepairStrategy] {
 /// ("how … works"), and the change-request keywords ("change Formal AI", a
 /// capability/feature/support change) so the recipes never collide: this recipe is the
 /// *general classifier* that decides which part to repair for every failure class.
-pub const REPAIR_STRATEGY_TASK: &str =
-    "Classify a failure and decide which part to repair: given a failure trace the \
+pub const REPAIR_STRATEGY_TASK: &str = "Classify a failure and decide which part to repair: given a failure trace the \
      system could not answer, determine whether the repair is a solver method, a data \
      record, or a test change, then compose the grounded, human-gated repair strategy \
      for it — for every class of failure, not just one.";

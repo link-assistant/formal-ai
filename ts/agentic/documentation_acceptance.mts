@@ -59,9 +59,12 @@ export function sourceAnchoredFacts(facts, sources, artifact) {
   let unavailable = false;
   for (const fact of Array.isArray(facts) ? facts : []) {
     if (fact?.kind === 'manifest-declaration') {
+      // A declaration without a literal version (a path or workspace
+      // dependency) is anchored by its name; its row still needs the section.
       const source = sourceOf(fact.manifest);
-      const values = [fact.name, fact.version, fact.section];
-      if (source === null || !source.includes(fact.name) || !source.includes(fact.version)) missing.push({ kind: fact.kind, path: fact.manifest, name: fact.name, place: 'source' });
+      const anchors = [fact.name, fact.version].filter(value => typeof value === 'string');
+      const values = [...anchors, fact.section];
+      if (source === null || !anchors.every(value => source.includes(value))) missing.push({ kind: fact.kind, path: fact.manifest, name: fact.name, place: 'source' });
       else if (!rows.some(row => values.every(value => row.includes(value)))) missing.push({ kind: fact.kind, path: fact.manifest, name: fact.name, place: 'artifact' });
     } else if (fact?.kind === 'observed-source-usage') {
       const source = sourceOf(fact.owner);

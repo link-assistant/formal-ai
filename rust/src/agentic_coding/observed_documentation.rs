@@ -1,6 +1,11 @@
 //! Shared observed-source documentation custody. Manual native projection only.
+use super::documentation_acceptance::{
+    RequirementEvidence, added_lines_diff, documentation_claims, judged_claims,
+    judged_requirements, preserved_preimage, source_anchored_facts,
+};
 use super::final_result::{FinalDisposition, FinalResult};
 use super::planner::{AgenticPlan, Capability};
+use super::source_documentation::source_documentation_policy;
 use super::work_item_file_io::{
     FileIoAttempt, FileIoPlan, WorkItemFileProgress, file_io_effect_step, file_io_pending_step,
     file_io_read_step,
@@ -68,6 +73,83 @@ fn latest_read<'a>(
 ) -> Option<(usize, &'a FileIoAttempt)> {
     reads(attempts, path, before, after).into_iter().next_back()
 }
+/// The output was produced by the supplied documentation derivation, not
+/// written autonomously; later reviewer work is not observed.
+fn authorship_boundary(observed: bool) -> Value {
+    json!({"mechanism":"supplied-documentation-derivation","targetOutputObserved":observed,
+        "autonomousCredit":0,"laterReviewerWork":"not-observed"})
+}
+/// The policy words that ask to keep existing content, and their negations.
+fn policy_words(policy: Option<&Value>, name: &str) -> Vec<String> {
+    policy
+        .and_then(|policy| policy[name].as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(Value::as_str)
+        .map(str::to_owned)
+        .collect()
+}
+/// Independent acceptance of `artifact`: anchored facts, the preservation
+/// check and the status of each requirement decide verified and complete.
+fn accept(
+    state: &mut Value,
+    requirements: &[Value],
+    evidence: (&[Value], &[Value], &str),
+    artifact: &str,
+    preservation: Option<Value>,
+) {
+    let (claims, frozen_sources, target) = evidence;
+    let facts = state.get("facts").cloned();
+    let anchored = facts
+        .as_ref()
+        .map(|facts| source_anchored_facts(facts, frozen_sources, artifact));
+    let checks = state["checks"].as_array_mut().expect("DocumentationChecks");
+    if let Some(anchored) = &anchored {
+        checks.push(anchored.clone());
+    }
+    if let Some(preservation) = &preservation {
+        checks.push(preservation.clone());
+    }
+    let policy = source_documentation_policy();
+    let preserve = policy_words(policy.as_ref(), "preserve");
+    let negations = policy_words(policy.as_ref(), "negations");
+    let facts_passed = anchored
+        .as_ref()
+        .is_some_and(|anchored| anchored["status"] == "passed");
+    let judged = judged_requirements(
+        requirements,
+        &RequirementEvidence {
+            facts: facts.as_ref().unwrap_or(&Value::Null),
+            claims,
+            target,
+            facts_passed,
+            preservation: preservation
+                .as_ref()
+                .and_then(|preservation| preservation["status"].as_str()),
+            preserve: &preserve,
+            negations: &negations,
+        },
+    );
+    let complete = facts_passed
+        && judged.iter().all(|row| row["status"] == "verified")
+        && as_strings(&state["remainingWork"])
+            .iter()
+            .all(|item| *item == "independent-requirement-acceptance");
+    state["requirements"] = json!(judged);
+    state["verified"] = json!(facts_passed);
+    state["complete"] = json!(complete);
+    if complete {
+        state["remainingWork"] = json!([]);
+    }
+}
+fn as_strings(value: &Value) -> Vec<&str> {
+    value
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter_map(Value::as_str)
+        .collect()
+}
 fn finish(
     state: &Value,
     reason: &str,
@@ -98,6 +180,8 @@ fn finish_refused(
         state["task"].as_str().unwrap_or_default(),
         if failure {
             FinalDisposition::Failure
+        } else if state["complete"] == json!(true) {
+            FinalDisposition::Finding
         } else {
             FinalDisposition::Gap
         },
@@ -162,7 +246,7 @@ pub(super) fn plan_observed_documentation(
     let mut state = json!({"schema":schema,"task":task,"taskIdentity":sha256_hex(task.as_bytes()),
         "workItem":contract.get("workItem").cloned().unwrap_or(Value::Null),"requirements":requirements,
         "source":single_source,"sources":sources_value,"target":target_value,
-        "observations":[],"candidateEdits":[],"checks":[],"effects":[],
+        "observations":[],"candidateEdits":[],"checks":[],"effects":[],"unresolved":[],
         "remainingWork":["independent-requirement-acceptance"],
         "transportDiagnostics":progress.transport_diagnostics(),"authored":false,"verified":false,"complete":false});
     for key in ["sources", "target"] {
@@ -316,6 +400,57 @@ pub(super) fn plan_observed_documentation(
             }
         }
     }
+    // Independent acceptance (issue #1483): the task's version claims are judged
+    // against the observed declarations before any edit, and the artifact is
+    // checked against the raw sources, never against the derivation's word.
+    let claims = state.get("facts").map_or_else(Vec::new, |facts| {
+        judged_claims(&documentation_claims(task), facts)
+    });
+    if !claims.is_empty() {
+        let count = |status: &str| {
+            claims
+                .iter()
+                .filter(|claim| claim["status"] == status)
+                .count()
+        };
+        let contradicted = count("contradicted");
+        let claims_status = if contradicted > 0 { "failed" } else { "passed" };
+        state["claims"] = json!(claims);
+        state["checks"]
+            .as_array_mut()
+            .expect("DocumentationChecks")
+            .push(json!({"kind":"task-claims","status":claims_status,
+                "confirmed":count("confirmed"),"contradicted":contradicted,"unobserved":count("unobserved")}));
+        if contradicted > 0 {
+            // A contradicted claim is rejected: no edit documents it, and the
+            // requirements naming it are contradicted rather than left open.
+            state["unresolved"] = json!(claims
+                .iter()
+                .filter(|claim| claim["status"] == "contradicted")
+                .map(|claim| json!({"reference":claim["reference"],"reason":"ContradictedIntegrationClaim","observed":claim["observed"]}))
+                .collect::<Vec<_>>());
+            let facts = state.get("facts").cloned().unwrap_or(Value::Null);
+            state["requirements"] = json!(judged_requirements(
+                &requirements,
+                &RequirementEvidence {
+                    facts: &facts,
+                    claims: &claims,
+                    target,
+                    facts_passed: false,
+                    preservation: None,
+                    preserve: &[],
+                    negations: &[],
+                },
+            ));
+            return finish(
+                &state,
+                "ContradictedIntegrationClaim",
+                effect.is_some(),
+                result,
+            );
+        }
+    }
+    let (preservation, added) = preserved_preimage(guide, content);
     if let Some((index, edit)) = effect {
         let argument_values = arguments_of(edit).unwrap_or(Value::Null);
         let old = argument_alias(
@@ -327,7 +462,8 @@ pub(super) fn plan_observed_documentation(
             &["newString", "new_string", "new_str", "new"],
         );
         state["candidateEdits"].as_array_mut().expect("DocumentationCandidateEdits").push(
-            json!({"path":target,"preimageIdentity":sha256_hex(guide.as_bytes()),"postimageIdentity":sha256_hex(content.as_bytes())}));
+            json!({"path":target,"preimageIdentity":sha256_hex(guide.as_bytes()),"postimageIdentity":sha256_hex(content.as_bytes()),
+                "diff":added_lines_diff(&added)}));
         if old.as_deref() != Some(guide) || next.as_deref() != Some(content) || next == old {
             return finish(&state, "UnrelatedEditCandidate", true, result);
         }
@@ -368,6 +504,15 @@ pub(super) fn plan_observed_documentation(
             .as_array_mut()
             .expect("DocumentationChecks")
             .push(json!({"kind":"source-freshness-and-exact-postimage","passed":true}));
+        state["authored"] = json!(true);
+        state["authorshipBoundary"] = authorship_boundary(true);
+        accept(
+            &mut state,
+            &requirements,
+            (claims.as_slice(), frozen_sources.as_slice(), target),
+            content,
+            Some(preservation),
+        );
         return finish(&state, "UsefulCandidateReadbackVerified", false, result);
     }
     if content == guide {
@@ -375,6 +520,14 @@ pub(super) fn plan_observed_documentation(
             .as_array_mut()
             .expect("DocumentationChecks")
             .push(json!({"kind":"source-bound-noop","passed":true}));
+        state["authorshipBoundary"] = authorship_boundary(false);
+        accept(
+            &mut state,
+            &requirements,
+            (claims.as_slice(), frozen_sources.as_slice(), target),
+            guide,
+            None,
+        );
         return finish(&state, "VerifiedNoOp", false, result);
     }
     resolve_plan(
