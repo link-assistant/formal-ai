@@ -133,12 +133,12 @@ pub fn attempt_proof_with_config(
     outcome
 }
 
-/// A claim that denies a theorem marked `negation refuted`: the theorem's
+/// A claim that denies a theorem marked `negation contradiction`: the theorem's
 /// proof is the refutation, never a success for the claim.
 fn refuted_negation(proof: Proof, language: &str) -> ProofOutcome {
     ProofOutcome::Disproven {
         counterexample: crate::seed::proof_library().text(
-            "negated_theorem_refuted",
+            "negated-theorem-refuted",
             language,
             &[("statement", &proof.statement)],
         ),

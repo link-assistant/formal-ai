@@ -69,18 +69,18 @@ export function structurePhrases(language) {
 }
 
 /** Mirrors `fn quantifier_of` in rust/src/formalization/proposition_structure.rs: the quantifier a meaning id reads as, or null. */
-export function quantifierOf(id) {
-  if (structuralRuleValues(PROPOSITION_RULE, 'universal-meaning').includes(id)) return ShapeToken.Universal;
-  if (structuralRuleValues(PROPOSITION_RULE, 'existential-meaning').includes(id)) return ShapeToken.Existential;
+export function quantifierOf(identifier) {
+  if (structuralRuleValues(PROPOSITION_RULE, 'universal-meaning').includes(identifier)) return ShapeToken.Universal;
+  if (structuralRuleValues(PROPOSITION_RULE, 'existential-meaning').includes(identifier)) return ShapeToken.Existential;
   return null;
 }
 
 /** Mirrors `fn relation_of` in rust/src/formalization/proposition_structure.rs: `{op, converse}` for a value of `rule`, or null. */
 export function relationOf(rule, value) {
   const kinds = rule === COMPARISON_RULE ? ORDERED_RELATIONS : [...ORDERED_RELATIONS, ...PLAIN_OPERATORS];
-  for (const op of kinds) {
-    if (structuralRuleValues(rule, op).includes(value)) return { op, converse: false };
-    if (ORDERED_RELATIONS.includes(op) && structuralRuleValues(rule, op + CONVERSE_SUFFIX).includes(value)) return { op, converse: true };
+  for (const operator of kinds) {
+    if (structuralRuleValues(rule, operator).includes(value)) return { op: operator, converse: false };
+    if (ORDERED_RELATIONS.includes(operator) && structuralRuleValues(rule, operator + CONVERSE_SUFFIX).includes(value)) return { op: operator, converse: true };
   }
   return null;
 }
@@ -89,10 +89,10 @@ export function relationOf(rule, value) {
 export function operatorSymbols() {
   return cached('proposition-structure-operators', () => {
     const out = [];
-    for (const op of [...ORDERED_RELATIONS, ...PLAIN_OPERATORS]) {
-      for (const symbol of structuralRuleValues(OPERATOR_RULE, op)) out.push({ symbol, op, converse: false });
-      if (ORDERED_RELATIONS.includes(op)) {
-        for (const symbol of structuralRuleValues(OPERATOR_RULE, op + CONVERSE_SUFFIX)) out.push({ symbol, op, converse: true });
+    for (const operator of [...ORDERED_RELATIONS, ...PLAIN_OPERATORS]) {
+      for (const symbol of structuralRuleValues(OPERATOR_RULE, operator)) out.push({ symbol, op: operator, converse: false });
+      if (ORDERED_RELATIONS.includes(operator)) {
+        for (const symbol of structuralRuleValues(OPERATOR_RULE, operator + CONVERSE_SUFFIX)) out.push({ symbol, op: operator, converse: true });
       }
     }
     return out
@@ -102,17 +102,17 @@ export function operatorSymbols() {
 }
 
 /** Mirrors `fn relation` in rust/src/formalization/proposition_structure.rs: `{text: 'op(left,right)', operands}`, ordered unless the op commutes. */
-export function relation(op, converse, left, right) {
+export function relation(operator, converse, left, right) {
   const [first, second] = converse ? [right, left] : [left, right];
-  const operands = structuralRuleValues(OPERATOR_RULE, 'commutative').includes(op) && byteOrder(second, first) < 0
+  const operands = structuralRuleValues(OPERATOR_RULE, 'commutative').includes(operator) && byteOrder(second, first) < 0
     ? [second, first] : [first, second];
-  return { text: `${op}(${operands[0]},${operands[1]})`, operands };
+  return { text: `${operator}(${operands[0]},${operands[1]})`, operands };
 }
 
 const lower = (text) => text.toLowerCase();
 
 /** Mirrors `fn operand_id` in rust/src/formalization/proposition_structure.rs: the term id written as `surface`, else a symbol id. */
-export function operandId(surface, terms) {
+export function operandIdentifier(surface, terms) {
   const key = lower(surface);
   const term = terms.find((candidate) => lower(candidate.surface) === key);
   return term === undefined ? `symbol:${key}` : term.id;
@@ -186,7 +186,7 @@ export function symbolicRelations(text, terms) {
     const left = items[index - 1];
     const right = items[index + 1];
     if (item.kind !== 'operator' || left?.kind !== 'operand' || right?.kind !== 'operand' || joinsCompound(left, item, right)) return;
-    relations.push(relation(item.op, item.converse, operandId(left.value, terms), operandId(right.value, terms)));
+    relations.push(relation(item.op, item.converse, operandIdentifier(left.value, terms), operandIdentifier(right.value, terms)));
     if (previous !== null && previous.index === index - 2 && previous.op !== item.op) unresolved.push(Unresolved.OperatorChain);
     previous = { index, op: item.op };
   });
@@ -223,7 +223,7 @@ export function readPropositionStructure(text, language, words, terms, kinds) {
   const operand = (position, step) => {
     for (let at = position + step; at >= 0 && at < roles.length; at += step) {
       const role = roles[at];
-      if (role.token === ShapeToken.Content && !role.comparison) return operandId(words[role.index].surface, [...terms, words[role.index]]);
+      if (role.token === ShapeToken.Content && !role.comparison) return operandIdentifier(words[role.index].surface, [...terms, words[role.index]]);
     }
     return null;
   };
@@ -291,17 +291,17 @@ function surfacePhrases() {
       }
     }
     const meanings = [];
-    for (const op of ORDERED_RELATIONS) {
+    for (const operator of ORDERED_RELATIONS) {
       for (const converse of [false, true]) {
-        const kind = converse ? `${op}${CONVERSE_SUFFIX}` : op;
-        for (const id of structuralRuleValues(COMPARISON_RULE, kind)) meanings.push([id, { comparison: { op, converse } }]);
+        const kind = converse ? `${operator}${CONVERSE_SUFFIX}` : operator;
+        for (const identifier of structuralRuleValues(COMPARISON_RULE, kind)) meanings.push([identifier, { comparison: { op: operator, converse } }]);
       }
     }
     for (const [kind, token] of [['universal-meaning', ShapeToken.Universal], ['existential-meaning', ShapeToken.Existential]]) {
-      for (const id of structuralRuleValues(PROPOSITION_RULE, kind)) meanings.push([id, { shape: token }]);
+      for (const identifier of structuralRuleValues(PROPOSITION_RULE, kind)) meanings.push([identifier, { shape: token }]);
     }
-    for (const [id, mark] of meanings) {
-      const found = meaning(id);
+    for (const [identifier, mark] of meanings) {
+      const found = meaning(identifier);
       if (found !== null) for (const word of words(found)) add(word, mark);
     }
     return out.sort((left, right) => (right.length - left.length) || (left.index - right.index));

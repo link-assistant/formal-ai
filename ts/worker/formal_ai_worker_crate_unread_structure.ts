@@ -31,8 +31,8 @@ const { byteOrder, isAlphabetic, isAlphanumeric, lower, trim } = crateRequire("c
 /** Mirrors `fn claimed_surfaces` in rust/src/coding/unread_structure.rs: lower-cased surfaces of the meanings `ids`, longest first. */
 function claimedSurfaces(ids) {
   const out = [];
-  for (const id of ids) {
-    const found = meaning(id);
+  for (const identifier of ids) {
+    const found = meaning(identifier);
     if (!found) continue;
     for (const form of wordForms(found)) {
       const surface = trim(lower(String(form.text)));

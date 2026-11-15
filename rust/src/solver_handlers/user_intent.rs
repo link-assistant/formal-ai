@@ -132,18 +132,13 @@ pub fn try_proof_request_with_config(
     if matches!(outcome, ProofOutcome::PartialPlan { .. }) {
         body.push_str(&pipeline_footer(language));
     }
-    let confidence = match &outcome {
-        ProofOutcome::Proven { .. } | ProofOutcome::Disproven { .. } => 0.85,
-        ProofOutcome::PartialPlan { .. } => 0.6,
-        ProofOutcome::Inconclusive { .. } => 0.4,
-    };
     Some(finalize_simple(
         prompt,
         log,
         "proof_request",
         "response:proof_request",
         &body,
-        confidence,
+        outcome.confidence(),
     ))
 }
 

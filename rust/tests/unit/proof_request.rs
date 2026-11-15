@@ -646,7 +646,7 @@ fn proof_claims_bind_to_the_exact_theorem_proposition() {
 }
 
 /// Issue #1487: "Prove there are not infinitely many primes." must never get
-/// Euclid's positive success; the library marks the theorem `negation refuted`,
+/// Euclid's positive success; the library marks the theorem `negation contradiction`,
 /// so the request is refuted by Euclid's proof.
 #[test]
 fn negated_theorem_request_is_refuted_never_proven() {

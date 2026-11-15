@@ -7,7 +7,7 @@
 //                asks for the theorem itself;
 // * negated      exactly one negation cue before the keyword, none after it,
 //                and only function words after it: the request asks for the
-//                theorem's negation, which a theorem marked `negation refuted`
+//                theorem's negation, which a theorem marked `negation contradiction`
 //                refutes;
 // * unsupported  any other placement or count of negation cues: the scope is
 //                not read, so the theorem is neither proven nor refuted.
@@ -38,7 +38,7 @@ export function libraryTheorems() {
         id: canonicalUnaryValue(node),
         method: field('method')[0] ?? '',
         keywords: Object.freeze(field('keyword')),
-        refutesNegation: field('negation').includes('refuted'),
+        refutesNegation: field('negation').includes('contradiction'),
       });
     });
   });

@@ -9,7 +9,7 @@
 //!   the request asks for the theorem itself;
 //! * [`ClaimBinding::Negated`] — exactly one negation cue before the keyword,
 //!   none after it, and only function words after it: the request asks for
-//!   the theorem's negation, which a theorem marked `negation refuted`
+//!   the theorem's negation, which a theorem marked `negation contradiction`
 //!   refutes;
 //! * [`ClaimBinding::Unsupported`] — any other placement or count of negation
 //!   cues: the scope is not read, so the theorem is neither proven nor

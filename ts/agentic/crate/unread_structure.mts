@@ -24,8 +24,8 @@ import { byteOrder, isAlphabetic, isAlphanumeric, lower, trim } from './rust_str
 /** Mirrors `fn claimed_surfaces` in rust/src/coding/unread_structure.rs: lower-cased surfaces of the meanings `ids`, longest first. */
 export function claimedSurfaces(ids) {
   const out = [];
-  for (const id of ids) {
-    const found = meaning(id);
+  for (const identifier of ids) {
+    const found = meaning(identifier);
     if (!found) continue;
     for (const form of wordForms(found)) {
       const surface = trim(lower(String(form.text)));

@@ -60,7 +60,7 @@ function proofLibraryTheoremStatement(id, language) {
 }
 function euclidNegationRefutationBody(language) {
   const text = (id, values) => proofLibraryText(id, language, values), statement = proofLibraryTheoremStatement("euclid_infinitude_of_primes", language);
-  return `${text("disproof_heading")} (${text("method_intro")}: ${text("method_contradiction")}).\n\n${text("counterexample_label")}: ${text("negated_theorem_refuted", { statement })}\n\n${euclidPrimeProofBody(language)}`;
+  return `${text("disproof_heading")} (${text("method_intro")}: ${text("method_contradiction")}).\n\n${text("counterexample_label")}: ${text("negated-theorem-refuted", { statement })}\n\n${euclidPrimeProofBody(language)}`;
 }
 function euclidPrimeProofBody(language) {
   if (language === "ru") {

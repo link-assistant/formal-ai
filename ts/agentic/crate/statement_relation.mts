@@ -73,8 +73,8 @@ export function checkedRelation(later, earlier) {
   if (!conjunctiveShape(left) || !conjunctiveShape(right)) return answer(RelationVerdict.Distinct, RelationReason.NonConjunctive);
   if (!same(left.repetition, right.repetition)) return answer(RelationVerdict.Distinct, RelationReason.Repetition);
   if (!within(left.relations, right.relations)) return answer(RelationVerdict.Distinct, RelationReason.Relations);
-  const ids = contentIds(later);
-  if (ids.length > 0 && within(ids, contentIds(earlier))) return answer(RelationVerdict.Entailed, RelationReason.ConjunctionElimination);
+  const laterIdentifiers = contentIds(later);
+  if (laterIdentifiers.length > 0 && within(laterIdentifiers, contentIds(earlier))) return answer(RelationVerdict.Entailed, RelationReason.ConjunctionElimination);
   return answer(RelationVerdict.Distinct, RelationReason.Terms);
 }
 

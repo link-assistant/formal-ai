@@ -90,8 +90,8 @@ same reading, so the program passed them and the answer looked verified.
   opposite polarity.
 - `theorem_claim_binding` binds a proof request to the seeded proof-library
   proposition. A negated claim is refuted when the library marks the theorem
-  `negation refuted`. A negation whose scope is not read gets a partial plan.
-  Every answer carries `proof_binding:*` evidence.
+  `negation contradiction`. A negation whose scope is not read gets a partial
+  plan. Every answer carries `proof_binding:*` evidence.
 - The intent-formalization cache answers only the same request, up to
   whitespace.
 - `unread_structure` computes the structure left in a coding requirement after
