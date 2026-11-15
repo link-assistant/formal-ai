@@ -490,6 +490,22 @@ meanings
     unit "not applicable"
     example "Already done: the request. The session stopped at `VerifiedNoOp`: an independent check accepted the current files, so no change was needed."
     grounding "data/seed/multilingual-responses-agentic-workspace.lino"
+  work-item-report-partial
+    defined-by answer
+    role localized_response_template
+    precondition "a repository work-item session ends after a change that an executed independent check accepted while other requirements stay unverified"
+    effect "the report opens by naming the work item and the reason the session stopped, says an independent check accepted the change, and says the listed requirements are not yet verified"
+    unit "not applicable"
+    example "Partly done: the request. The session stopped at `UsefulCandidateReadbackVerified` after a change that an independent check accepted; the requirements listed below are not yet verified."
+    grounding "data/seed/multilingual-responses-agentic-workspace.lino"
+  work-item-report-partial-no-op
+    defined-by answer
+    role localized_response_template
+    precondition "a repository work-item session finds part of the requested state already present, an independent check accepts it, and other requirements stay unverified"
+    effect "the report opens by naming the work item, says no change was made because the current files were accepted, and says the listed requirements are not yet verified"
+    unit "not applicable"
+    example "Partly done already: the request. The session stopped at `VerifiedNoOp`: an independent check accepted the current files, so no change was made; the requirements listed below are not yet verified."
+    grounding "data/seed/multilingual-responses-agentic-workspace.lino"
   work-item-report-effects
     defined-by answer
     role localized_response_template

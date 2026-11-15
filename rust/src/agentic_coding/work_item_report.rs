@@ -69,17 +69,19 @@ pub(super) fn refusal(requirements: &[Value], path: &str) -> Value {
     json!({"path":path,"requirement":requirement_naming(requirements, path)})
 }
 
-/// An independently accepted change, a verified no-op, an unaccepted change,
-/// or no change (issue #1483).
+/// An independently accepted change, a verified no-op, either of them partial
+/// while requirements stay unverified, an unaccepted change, or no change
+/// (issue #1483).
 fn headline_intent(record: &Value) -> &'static str {
-    match (
-        record["verified"] == json!(true),
-        record["authored"] == json!(true),
-    ) {
-        (true, true) => "work-item-report-accepted",
-        (true, false) => "work-item-report-no-op",
-        (false, true) => "work-item-report-changed",
-        (false, false) => "work-item-report-unchanged",
+    let verified = record["verified"] == json!(true);
+    let complete = record["complete"] == json!(true);
+    match (verified, complete, record["authored"] == json!(true)) {
+        (true, true, true) => "work-item-report-accepted",
+        (true, true, false) => "work-item-report-no-op",
+        (true, false, true) => "work-item-report-partial",
+        (true, false, false) => "work-item-report-partial-no-op",
+        (false, _, true) => "work-item-report-changed",
+        (false, _, false) => "work-item-report-unchanged",
     }
 }
 

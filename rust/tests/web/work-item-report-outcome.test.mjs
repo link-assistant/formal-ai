@@ -179,3 +179,15 @@ test('a refusal names the requirement it concerns in the localized report', () =
   assert.match(report, /Do not read secrets\/token\.txt\. It holds a credential\./);
   assert.match(report, /ReadPolicyRefused/);
 });
+
+// Issue #1483: a verified change that leaves requirements unverified is
+// partial; only a complete record is "done".
+test('the headline separates done, partly done, changed and unchanged records', () => {
+  const headline = record => workItemReport({ schema: 'source-documentation-controller/v1', reason: 'R', observations: [], ...record }, 'Solve the issue.').split('\n')[0];
+  assert.match(headline({ verified: true, complete: true, authored: true }), /^Done: /u);
+  assert.match(headline({ verified: true, complete: true, authored: false }), /^Already done: /u);
+  assert.match(headline({ verified: true, complete: false, authored: true }), /^Partly done: /u);
+  assert.match(headline({ verified: true, complete: false, authored: false }), /^Partly done already: /u);
+  assert.match(headline({ verified: false, complete: false, authored: true }), /^Not verified: /u);
+  assert.doesNotMatch(headline({ verified: false, complete: false, authored: false }), /^(Done|Partly done|Already done)/u);
+});

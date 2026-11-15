@@ -404,3 +404,30 @@ fn a_refusal_names_the_requirement_it_concerns_in_the_localized_report() {
     assert!(report.contains("Do not read secrets/token.txt. It holds a credential."));
     assert!(report.contains("ReadPolicyRefused"));
 }
+
+/// Issue #1483: a verified change that leaves requirements unverified is
+/// partial; only a complete record is "done".
+#[test]
+fn the_headline_separates_done_partly_done_changed_and_unchanged_records() {
+    let headline = |verified: bool, complete: bool, authored: bool| {
+        let record = json!({
+            "schema": "source-documentation-controller/v1",
+            "reason": "R",
+            "observations": [],
+            "verified": verified,
+            "complete": complete,
+            "authored": authored
+        });
+        let report = work_item_report(&record, "Solve the issue.");
+        report.lines().next().unwrap_or_default().to_owned()
+    };
+    assert!(headline(true, true, true).starts_with("Done: "));
+    assert!(headline(true, true, false).starts_with("Already done: "));
+    assert!(headline(true, false, true).starts_with("Partly done: "));
+    assert!(headline(true, false, false).starts_with("Partly done already: "));
+    assert!(headline(false, false, true).starts_with("Not verified: "));
+    let unchanged = headline(false, false, false);
+    for prefix in ["Done", "Partly done", "Already done"] {
+        assert!(!unchanged.starts_with(prefix), "{unchanged}");
+    }
+}

@@ -33,9 +33,12 @@ export function refusal(requirements, path) {
 
 /**
  * Mirrors `fn headline_intent`: an independently accepted change, a verified
- * no-op, an unaccepted change, or no change (issue #1483).
+ * no-op, either of them partial while requirements stay unverified, an
+ * unaccepted change, or no change (issue #1483).
  */
 function headlineIntent(record) {
+  // A verified change that leaves requirements unverified is partial, never done.
+  if (record.verified === true && record.complete !== true) return record.authored === true ? 'work-item-report-partial' : 'work-item-report-partial-no-op';
   if (record.verified === true) return record.authored === true ? 'work-item-report-accepted' : 'work-item-report-no-op';
   return record.authored === true ? 'work-item-report-changed' : 'work-item-report-unchanged';
 }
