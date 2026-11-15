@@ -85,9 +85,11 @@ pub fn running_under_cargo_test() -> bool {
 
 /// Whether an executable path names a libtest harness this repository builds.
 ///
-/// Covers both layouts in use: `target/<profile>/deps/<target>-<hash>` from a
-/// plain `cargo test`, and `dist/tests/<target>` from the prebuilt binaries
-/// issue #1055 introduced. The shipped binary is `formal-ai`, which is not a
+/// Covers the layouts in use: `target/<profile>/deps/<target>-<hash>` from a
+/// plain `cargo test` before Rust 1.100,
+/// `target/<profile>/build/<package>/<hash>/out/<target>-<hash>` from Rust 1.100
+/// on, and `dist/tests/<target>` from the prebuilt binaries issue #1055
+/// introduced. The shipped binary is `formal-ai`, which is not a
 /// test target name, so it is never matched.
 #[must_use]
 pub fn is_test_executable(executable: &std::path::Path) -> bool {
@@ -101,6 +103,28 @@ pub fn is_test_executable(executable: &std::path::Path) -> bool {
             .parent()
             .and_then(std::path::Path::file_name)
             .is_some_and(|parent| parent == OsStr::new("deps"))
+        || in_build_dir_layout(executable, name)
+}
+
+/// Whether `executable` sits where Rust 1.100's build-dir layout puts a test
+/// binary: `target/<profile>/build/<package>/<hash>/out/<target>-<hash>`, the
+/// directory hash equal to the file's. Issue #1569: that release moved test
+/// binaries out of `deps/`, so the per-file integration binaries stopped being
+/// recognised and shared the user's memory store again.
+fn in_build_dir_layout(executable: &std::path::Path, name: &str) -> bool {
+    let Some((_, hash)) = name.rsplit_once('-') else {
+        return false;
+    };
+    let mut ancestors = executable
+        .ancestors()
+        .skip(1)
+        .map(std::path::Path::file_name);
+    !hash.is_empty()
+        && hash.bytes().all(|byte| byte.is_ascii_hexdigit())
+        && ancestors.next() == Some(Some(OsStr::new("out")))
+        && ancestors.next() == Some(Some(OsStr::new(hash)))
+        && ancestors.next().flatten().is_some()
+        && ancestors.next() == Some(Some(OsStr::new("build")))
 }
 
 #[must_use]

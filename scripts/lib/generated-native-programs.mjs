@@ -1021,7 +1021,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":948,"end":1009
 "formal_ai::shared_memory::MEMORY_PATH_ENV","canonicalPath":"formal_ai::shared_memory::MEMORY_PATH_ENV","kind":
 "nativeConstant","nativeType":"&str","returnType":"string","value":"FORMAL_AI_MEMORY_PATH","nativeSourceQualified":true,
 "nativeBorrowedConstantQualified":true,"sourceSpan":{"start":93,"end":151},"sourceWitnesses":[{"path":
-"rust/src/shared_memory.rs","sha256":"093df7e7d711488950900841ddbe826b01467a96fdb7bf633c13af7d81340cfc"},{"path":
+"rust/src/shared_memory.rs","sha256":"59e6b000cfeb2135f6f35080ad2aa651b7ee2eb05179c495dba39ae44b94aa27"},{"path":
 "rust/src/lib.rs","sha256":"3d3e84d1a7cd0ebb68085841c5a064e1fd00cdc376dc53ccd55da099a11c92b3"}],"maintainedMeta":
 "(constant MEMORY-PATH-ENV (exported) (type string) (value (string FORMAL_AI_MEMORY_PATH)))","maintainedJavaScript":
 "export const MEMORY_PATH_ENV = 'FORMAL_AI_MEMORY_PATH';","maintainedTranslationSha256":
@@ -1029,7 +1029,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":948,"end":1009
 :"formal_ai::shared_memory::MEMORY_PATH_ENV","kind":"nativeConstant","nativeType":"&str","returnType":"string","value":
 "FORMAL_AI_MEMORY_PATH","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":93,
 "end":151},"sourceWitnesses":[{"path":"rust/src/shared_memory.rs","sha256":
-"093df7e7d711488950900841ddbe826b01467a96fdb7bf633c13af7d81340cfc"},{"path":"rust/src/lib.rs","sha256":
+"59e6b000cfeb2135f6f35080ad2aa651b7ee2eb05179c495dba39ae44b94aa27"},{"path":"rust/src/lib.rs","sha256":
 "3d3e84d1a7cd0ebb68085841c5a064e1fd00cdc376dc53ccd55da099a11c92b3"}],"maintainedMeta":
 "(constant MEMORY-PATH-ENV (exported) (type string) (value (string FORMAL_AI_MEMORY_PATH)))","maintainedJavaScript":
 "export const MEMORY_PATH_ENV = 'FORMAL_AI_MEMORY_PATH';","maintainedTranslationSha256":
@@ -1037,7 +1037,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":948,"end":1009
 "formal_ai::shared_memory::MEMORY_DIRECTORY_NAME","canonicalPath":"formal_ai::shared_memory::MEMORY_DIRECTORY_NAME",
 "kind":"nativeConstant","nativeType":"&str","returnType":"string","value":".formal-ai","nativeSourceQualified":true,
 "nativeBorrowedConstantQualified":true,"sourceSpan":{"start":152,"end":205},"sourceWitnesses":[{"path":
-"rust/src/shared_memory.rs","sha256":"093df7e7d711488950900841ddbe826b01467a96fdb7bf633c13af7d81340cfc"},{"path":
+"rust/src/shared_memory.rs","sha256":"59e6b000cfeb2135f6f35080ad2aa651b7ee2eb05179c495dba39ae44b94aa27"},{"path":
 "rust/src/lib.rs","sha256":"3d3e84d1a7cd0ebb68085841c5a064e1fd00cdc376dc53ccd55da099a11c92b3"}],"maintainedMeta":
 "(constant MEMORY-DIRECTORY-NAME (exported) (type string) (value (string .formal-ai)))","maintainedJavaScript":
 "export const MEMORY_DIRECTORY_NAME = '.formal-ai';","maintainedTranslationSha256":
@@ -1045,7 +1045,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":948,"end":1009
 ,"canonicalPath":"formal_ai::shared_memory::MEMORY_FILE_NAME","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"memory.lino","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start"
 :206,"end":255},"sourceWitnesses":[{"path":"rust/src/shared_memory.rs","sha256":
-"093df7e7d711488950900841ddbe826b01467a96fdb7bf633c13af7d81340cfc"},{"path":"rust/src/lib.rs","sha256":
+"59e6b000cfeb2135f6f35080ad2aa651b7ee2eb05179c495dba39ae44b94aa27"},{"path":"rust/src/lib.rs","sha256":
 "3d3e84d1a7cd0ebb68085841c5a064e1fd00cdc376dc53ccd55da099a11c92b3"}],"maintainedMeta":
 "(constant MEMORY-FILE-NAME (exported) (type string) (value (string memory.lino)))","maintainedJavaScript":
 "export const MEMORY_FILE_NAME = 'memory.lino';","maintainedTranslationSha256":
