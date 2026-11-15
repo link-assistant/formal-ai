@@ -97,6 +97,14 @@ for (const number of ['1486', '1489', '1501']) {
   });
 }
 
+test('issue 1486: a link into .github/workflows/ is read at its linked path and nothing is left unresolved', async () => {
+  const { plan, read } = await drive([{ role: 'user', content: prompt(1486) }], tools, issueRead('1486'));
+  assert.ok(read.includes('.github/workflows/hive-mind-draft.yml'), JSON.stringify(read));
+  const record = reported(plan);
+  assert.deepEqual(record.unresolved, [], JSON.stringify(record.unresolved));
+  assert.equal(record.reason, 'EvidenceCollected', plan.answer);
+});
+
 test('issue 1501 page: only the title and body are kept as the requirement text', () => {
   const text = workItemPageText(page1501);
   assert.ok(text.startsWith('Agent mode 0.355.27 misroutes common file requests'), text.slice(0, 200));

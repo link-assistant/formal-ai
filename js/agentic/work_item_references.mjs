@@ -50,7 +50,8 @@ export function workItemRepository(workItem) {
 }
 
 const baseName = path => path.slice(path.lastIndexOf('/') + 1);
-const validRelative = path => /^[A-Za-z0-9_-][A-Za-z0-9_./-]*$/u.test(path)
+// A segment may start with a dot (`.github/workflows/…`, issue #1560); `.` and `..` are never segments.
+const validRelative = path => /^[A-Za-z0-9_.-][A-Za-z0-9_./-]*$/u.test(path)
   && path.split('/').every(part => part && part !== '.' && part !== '..');
 
 /** A capitalized `Name.js` with no directory is a product name before it is a file. */

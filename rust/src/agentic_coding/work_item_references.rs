@@ -113,15 +113,12 @@ fn clean_parts(path: &str) -> bool {
     path.split('/').all(|part| !matches!(part, "" | "." | ".."))
 }
 
+/// A segment may start with a dot (`.github/workflows/…`, issue #1560); `.` and
+/// `..` are never segments.
 fn valid_relative(path: &str) -> bool {
-    let mut characters = path.chars();
-    characters
-        .next()
-        .is_some_and(|first| first.is_ascii_alphanumeric() || matches!(first, '_' | '-'))
-        && characters.all(|character| {
-            character.is_ascii_alphanumeric() || matches!(character, '_' | '.' | '/' | '-')
-        })
-        && clean_parts(path)
+    path.chars().all(|character| {
+        character.is_ascii_alphanumeric() || matches!(character, '_' | '.' | '/' | '-')
+    }) && clean_parts(path)
 }
 
 /// A capitalized `Name.js` with no directory is a product name before it is a file.

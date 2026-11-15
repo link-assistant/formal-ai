@@ -3,6 +3,7 @@
 // Usage: node experiments/issue-1560/session-outcome.mjs <number> [steps]
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+import { execFileSync } from 'node:child_process';
 import { WorkerHost } from '../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../js/agentic/node-host.mjs';
 import { planChatStepResolved } from '../../js/agentic/planner.mjs';
@@ -15,6 +16,7 @@ const number = process.argv[2];
 const issue = JSON.parse(readFileSync(join(fixtures, 'issues.json'), 'utf8')).issues[number];
 const prompt = readFileSync(join(fixtures, 'hive-mind-prompt.txt'), 'utf8').split('{number}').join(number).split('{pull}').join(String(Number(number) + 1)).split('{branch}').join('0123456789ab');
 const tools = ['bash', 'read', 'glob', 'grep', 'list', 'edit', 'write', 'task', 'webfetch', 'websearch', 'codesearch', 'batch', 'todowrite', 'todoread'];
+const tracked = execFileSync('git', ['ls-files'], { cwd: root, encoding: 'utf8', maxBuffer: 1 << 28 }).split('\n').filter(Boolean);
 const messages = [{ role: 'user', content: prompt }];
 for (let step = 0; step < Number(process.argv[3] ?? 40); step += 1) {
   const plan = await planChatStepResolved(messages, tools);
@@ -28,7 +30,11 @@ for (let step = 0; step < Number(process.argv[3] ?? 40); step += 1) {
   const path = args.filePath ?? args.file_path ?? args.path;
   let content = '';
   if (call.tool === 'bash' && /gh (issue|api) /.test(args.command ?? '')) content = issue.title + '\n\n' + issue.body + '\n\n__formal_ai_exit=0\n';
-  else if (call.tool === 'read') {
+  else if (call.tool === 'glob') {
+    // Answer `**/<name>` from the tracked files, the way a client's glob tool would.
+    const name = String(args.pattern ?? '').replace(/^\*\*\//u, '');
+    content = tracked.filter(file => file === name || file.endsWith('/' + name)).join('\n');
+  } else if (call.tool === 'read') {
     const full = join(root, String(path));
     content = existsSync(full) && statSync(full).isFile() ? completeOwnedSourceReadFrame(readFileSync(full, 'utf8')) : 'Error: File not found: ' + path;
   }

@@ -220,6 +220,30 @@ fn hive_mind_sessions_read_a_repository_file_and_do_not_refuse_the_read() {
 }
 
 #[test]
+fn issue_1486_link_into_dot_github_is_read_at_its_linked_path() {
+    let session = drive(
+        vec![ChatMessage::user(prompt(1486))],
+        &TOOLS,
+        issue_read("1486"),
+    );
+    assert!(
+        session
+            .read
+            .iter()
+            .any(|path| path == ".github/workflows/hive-mind-draft.yml"),
+        "{:?}",
+        session.read
+    );
+    let record = reported(&session.final_answer);
+    assert_eq!(record["unresolved"], json!([]), "{record}");
+    assert_eq!(
+        record["reason"], "EvidenceCollected",
+        "{}",
+        session.final_answer
+    );
+}
+
+#[test]
 fn issue_1501_page_keeps_only_its_title_and_body() {
     let text = work_item_page_text(PAGE_1501).expect("the page has a body");
     assert!(text.starts_with(TITLE_1501), "{}", &text[..200]);
