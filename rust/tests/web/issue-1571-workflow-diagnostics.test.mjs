@@ -39,3 +39,25 @@ test('the learning cycle prints its captured stderr on every exit, so a failed c
  assert.ok(trap>=0,run);
  assert.ok(trap<run.indexOf('cargo run'),'the trap is installed before the first cargo run');
 });
+
+// GitHub annotated every job of main run 7837d50 (95 notices) with "The
+// ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026"
+// (actions/runner-images#14748). A floating label changes the OS under a
+// green build, so every job names an image version.
+test('every job runs on a pinned runner image, never a floating *-latest label',()=>{
+ const floating=/\b(?:ubuntu|windows|macos)-latest\b/u,unpinned=[];
+ for(const {name,text} of workflows)for(const match of text.matchAll(/^\s*runs-on:\s*(.+)$/gmu)){
+  const value=match[1].trim(),where=`${name}:${text.slice(0,match.index).split('\n').length}`;
+  if(!value.includes('${{')){if(floating.test(value))unpinned.push(`${where} ${value}`);continue;}
+  // A matrix-driven runner: every value of that matrix key must be pinned,
+  // or the expression must map the floating name to a pinned image.
+  for(const [,key] of value.matchAll(/matrix\.([\w-]+)/gu))
+   for(const [,label] of text.matchAll(new RegExp(`(?:^|[{,])\\s*-?\\s*${key}:\\s*["']?([\\w.-]+)`,'gmu')))
+    if(floating.test(label)&&!value.includes(`matrix.${key} == '${label}' && '`))unpinned.push(`${where} ${key}=${label}`);
+ }
+ assert.deepEqual(unpinned,[]);
+ // Lookup tables that name the runner a build ran on use pinned images too.
+ const tables=workflows.flatMap(({name,text})=>[...text.matchAll(/^\s*\[[\w-]+\]="([^"]+)"$/gmu)]
+  .filter(([,label])=>floating.test(label)).map(([line])=>`${name}: ${line.trim()}`));
+ assert.deepEqual(tables,[]);
+});

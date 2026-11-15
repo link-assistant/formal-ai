@@ -70,7 +70,7 @@ jobs:
     uses: ./.github/workflows/hive-source-provenance.yml
   detect-changes:
     name: Detect Changes
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     # Checkout retries must fit this unchanged job clock.
     env:
@@ -122,7 +122,7 @@ jobs:
           fi
   changelog:
     name: Changelog Fragment Check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-changelog
@@ -142,7 +142,7 @@ jobs:
         run: node scripts/check-changelog-fragment.mjs
   docker-build:
     name: Docker Image Build & Runtime Check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       packages: read
@@ -220,7 +220,7 @@ jobs:
       contents: read
   secrets-scan:
     name: Secrets Scan
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-secrets-scan
@@ -245,7 +245,7 @@ jobs:
         run: bash scripts/check-secrets.sh
   version-check:
     name: Version Modification Check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-version-check
@@ -269,7 +269,7 @@ jobs:
         run: node scripts/ci-pull-request-admission.mjs version
   release-preflight:
     name: Release Preflight
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-release-preflight
@@ -307,7 +307,7 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-fast-pr-lint
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - {uses: actions/checkout@v7, timeout-minutes: 4,
@@ -332,7 +332,7 @@ jobs:
           node scripts/check-fast-governance.mjs
   lint:
     name: Lint and Format Check (lane ${{ matrix.lane }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -418,7 +418,10 @@ jobs:
         run: rust-script scripts/run-ci-gates.rs --stage web
   test:
     name: Test (${{ matrix.os }} / ${{ matrix.test-suite }})${{ matrix.shard && format(' shard {0}/{1}', matrix.shard, matrix.shards) || '' }}
-    runs-on: ${{ matrix.os }}
+    # The `os` key names the leg (job names, duration data, unit-tests-<os> checks);
+    # the runner is pinned, because `ubuntu-latest` moves to Ubuntu 26 and
+    # annotated every job with the migration notice (issue #1571).
+    runs-on: ${{ matrix.os == 'ubuntu-latest' && 'ubuntu-24.04' || matrix.os }}
     timeout-minutes: 30
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.os }}-${{ matrix.test-suite }}-${{ matrix.shard || 1 }}
@@ -579,7 +582,7 @@ jobs:
             bash scripts/run-prebuilt-tests.sh
   doc-tests:
     name: Default-feature documentation tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
       contents: read
@@ -645,7 +648,7 @@ jobs:
       contents: read
   build:
     name: Build Package
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-build
@@ -671,7 +674,7 @@ jobs:
         run: rust-script scripts/check-crate-package-size.rs
   server-parity:
     name: Server parity (JavaScript vs Rust)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-server-parity
@@ -774,7 +777,7 @@ jobs:
       group: formal-ai-repository-writes
       queue: max
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'changelog-pr' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: write
@@ -837,7 +840,7 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-build-artifacts
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     needs: [detect-changes]
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' )) }}
@@ -910,7 +913,7 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-box-language-projects-${{ matrix.language }}
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     needs: [detect-changes, build-artifacts]
     if: ${{ vars.FORMAL_AI_FULL_INTEGRATION == 'run' && (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.build-artifacts.result == 'success' && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' )) }}
@@ -985,7 +988,7 @@ jobs:
         (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
         (github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant' && github.ref == 'refs/heads/main')
       )
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:
       contents: read
@@ -1014,7 +1017,7 @@ jobs:
     if: |
       !cancelled() &&
       needs.deploy-pages.result == 'success'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
@@ -1087,7 +1090,7 @@ jobs:
       tag: ${{ needs.auto-release.outputs.container-tag || needs.manual-release.outputs.container-tag }}
   pipeline-status:
     name: Pipeline Status
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     if: always()
     needs: [fast-pr-lint, hive-source-provenance, detect-changes, changelog, docker-build, docker-slim, secrets-scan,

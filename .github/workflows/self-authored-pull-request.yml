@@ -68,7 +68,7 @@ jobs:
     name: Formal AI authors a change and opens the pull request
     # PRs exercise the captured JavaScript tests; live authoring stays on its explicit routes.
     if: github.event_name != 'pull_request' && (github.event_name != 'issues' || github.event.label.name == 'formal-ai-solve')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     concurrency:
       group: formal-ai-repository-writes

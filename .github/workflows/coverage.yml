@@ -78,7 +78,7 @@ jobs:
   # not, so both workflows call the same scripts/detect-code-changes.rs.
   detect-changes:
     name: Detect Changes
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     # Checkout retries must fit this unchanged job clock.
     env:
@@ -123,7 +123,7 @@ jobs:
           fi
   coverage-policy:
     name: Declare temporary coverage scope
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     outputs:
       run: ${{ steps.scope.outputs.run }}
@@ -172,7 +172,7 @@ jobs:
   #                   the ratchet sees the whole-suite number.
   coverage-build:
     name: Build instrumented test executables
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # Run 37957603076 on source 8abb066db: the complete producer took 1393s,
     # including a 670s instrumented compile and all executable uploads.
     # A 1260s compile deadline is 70% of this 30-minute cap; compilation
@@ -263,7 +263,7 @@ jobs:
 
   coverage-shard:
     name: Coverage shard ${{ matrix.shard }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # Keep the 1200s execution budget and 30-minute job cap unchanged.
     # Thirty-two partitions distribute the complete instrumented inventory;
     # fresh CI must establish completion under the existing deadlines.
@@ -479,7 +479,7 @@ jobs:
     # A new display name on purpose: scripts/check-job-headroom.rs matches
     # measured jobs to caps by name, and the one-job history under the old
     # name would be judged against this short verdict job's cap.
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # 900s of budget under a 25-minute cap is 60%. The report reads the same
     # objects a single run's report read; the ratchet, the uploads and the
     # downloads fit in the remainder.
@@ -625,7 +625,7 @@ jobs:
   # both would be a number nobody can act on.
   browser-coverage-shard:
     name: Browser coverage shard ${{ matrix.shard }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     needs: [coverage-policy, detect-changes]
     strategy:
@@ -686,7 +686,7 @@ jobs:
 
   browser-coverage:
     name: Browser Code Coverage
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     needs: [coverage-policy, detect-changes, browser-coverage-shard]
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.coverage-policy.outputs.run == 'true' && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.workflow-changed == 'true' )) }}

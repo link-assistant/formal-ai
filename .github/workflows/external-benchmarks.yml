@@ -68,7 +68,7 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-ratchet
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
@@ -99,7 +99,7 @@ jobs:
       group: formal-ai-repository-writes
       queue: max
     if: github.event_name != 'pull_request' && !inputs.shard_size && (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main')))
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 90
     permissions:
       contents: write
@@ -262,7 +262,7 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.suite }}-shard-plan
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (github.event_name == 'workflow_dispatch' && inputs.shard_size) }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     outputs:
       windows: ${{ steps.plan.outputs.windows }}
@@ -304,7 +304,7 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.suite }}-shard-${{ matrix.window.offset }}
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     needs: shard-plan
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     strategy:
       fail-fast: false
@@ -358,7 +358,7 @@ jobs:
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     needs: [shard-plan, upstream-shard]
     if: ${{ !cancelled() && needs.shard-plan.result == 'success' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/download-artifact@v8
