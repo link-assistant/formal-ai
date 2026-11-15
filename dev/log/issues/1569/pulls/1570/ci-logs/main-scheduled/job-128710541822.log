@@ -1,0 +1,289 @@
+Validate the current-run leaf evidence	UNKNOWN STEP	﻿2026-11-08T11:00:31.9011234Z Current runner version: '2.338.2'
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9038054Z ##[group]Runner Image Provisioner
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9038978Z Hosted Compute Agent
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9039979Z Version: 20261028.624
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9040652Z Commit: 54898b74c23fde5556c9b3c3a2290865feef0dfe
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9041450Z Build Date: 2026-10-28T21:51:42Z
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9042172Z Worker ID: {27a61184-ce87-49e7-a357-5176ada382ef}
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9042916Z Region: westus
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9043545Z Cloud: Azure
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9044081Z ##[endgroup]
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9045675Z ##[group]Operating System
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9046343Z Ubuntu
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9046898Z 26.04.1
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9047504Z LTS
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9048022Z ##[endgroup]
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9048554Z ##[group]Runner Image
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9049222Z Image: ubuntu-26.04
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9049994Z Version: 20261101.186.1
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9051443Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261101.186/images/ubuntu/Ubuntu2604-Readme.md
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9052963Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261101.186
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9054008Z ##[endgroup]
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9055531Z ##[group]GITHUB_TOKEN Permissions
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9057853Z Contents: read
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9058461Z Metadata: read
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9059110Z ##[endgroup]
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9061511Z Secret source: Actions
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9062497Z Cache mode: write
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9063248Z Prepare workflow directory
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9629937Z Prepare all required actions
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:31.9680281Z Getting action download info
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:32.3208297Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:32.4472141Z Download action repository 'actions/download-artifact@v8' (SHA:9000827ccba6bdab643e8b6fd33ac0654aef8333)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:32.7883432Z Download action repository 'actions/upload-artifact@v7' (SHA:cf430e030ddbb5b0abf93d22962f4752f3646cd9)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:32.9449322Z Complete job name: Validate the current-run leaf evidence
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.0292800Z ##[group]Run actions/checkout@v7
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.0293711Z with:
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.0294158Z   persist-credentials: false
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.0294713Z   repository: link-assistant/formal-ai
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.0298762Z   token: ***
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.0299204Z   ssh-strict: true
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.0299819Z   ssh-user: git
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.0300251Z   clean: true
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.0300699Z   sparse-checkout-cone-mode: true
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.0301233Z   fetch-depth: 1
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.0301681Z   fetch-tags: false
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.0302178Z   show-progress: true
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.0302624Z   lfs: false
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.0303030Z   submodules: false
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.0303474Z   set-safe-directory: true
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.0303985Z   allow-unsafe-pr-checkout: false
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.0304748Z env:
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.0305147Z   NODE_FILTER: 
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.0305593Z ##[endgroup]
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3296738Z Syncing repository: link-assistant/formal-ai
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3300152Z ##[group]Getting Git version info
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3301184Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3302466Z [command]/usr/bin/git version
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3310210Z git version 2.56.0
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3335020Z ##[endgroup]
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3346956Z Temporarily overriding HOME='/home/runner/work/_temp/db6d1a4a-d263-401e-ae8d-a2b69c8b5a65' before making global git config changes
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3350082Z Adding repository directory to the temporary git global config as a safe directory
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3354253Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3434102Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3438063Z ##[group]Determining repository object format
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3439995Z ##[endgroup]
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3442003Z ##[group]Initializing the repository
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3444711Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3583098Z hint: Using 'master' as the name for the initial branch. This default branch name
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3585181Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3587023Z hint: to use in all of your new repositories, which will suppress this warning,
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3588495Z hint: call:
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3589352Z hint:
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3590546Z hint: 	git config --global init.defaultBranch <name>
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3591760Z hint:
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3592918Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3594725Z hint: 'development'. The just-created branch can be renamed via this command:
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3596119Z hint:
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3596936Z hint: 	git branch -m <name>
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3598014Z hint:
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3599533Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3601543Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3607399Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3667769Z ##[endgroup]
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3669112Z ##[group]Disabling automatic garbage collection
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3671775Z [command]/usr/bin/git config --local gc.auto 0
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3712131Z ##[endgroup]
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3714130Z ##[group]Setting up auth
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3715189Z Removing SSH command configuration
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3718406Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.3777082Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.4304479Z Removing HTTP extra header
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.4311463Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.4349110Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.4634500Z Removing includeIf entries pointing to credentials config files
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.4641611Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.4683072Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.4981139Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-a7d8d5da-baa6-47ca-a4bd-e00bd4845ee4.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.5024693Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-a7d8d5da-baa6-47ca-a4bd-e00bd4845ee4.config
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.5060425Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-a7d8d5da-baa6-47ca-a4bd-e00bd4845ee4.config
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.5100758Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-a7d8d5da-baa6-47ca-a4bd-e00bd4845ee4.config
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.5135664Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-a7d8d5da-baa6-47ca-a4bd-e00bd4845ee4.config
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.5172233Z ##[endgroup]
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.5173581Z ##[group]Fetching the repository
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:33.5178486Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +70935ad8e2a12bc2148eef74722749290c2edb66:refs/remotes/origin/main
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:59.7549345Z From https://github.com/link-assistant/formal-ai
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:59.7551088Z  * [new ref]           70935ad8e2a12bc2148eef74722749290c2edb66 -> origin/main
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:59.7569226Z [command]/usr/bin/git branch --list --remote origin/main
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:59.7589244Z   origin/main
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:59.7597626Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:59.7623240Z 70935ad8e2a12bc2148eef74722749290c2edb66
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:59.7627524Z ##[endgroup]
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:59.7628294Z ##[group]Determining the checkout info
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:59.7629207Z ##[endgroup]
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:59.7632682Z [command]/usr/bin/git sparse-checkout disable
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:59.7690966Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:59.7723341Z ##[group]Checking out the ref
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:00:59.7729227Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:00.8958560Z Updating files:  11% (8230/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:01.1010163Z Updating files:  12% (8885/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:01.7110004Z Updating files:  13% (9626/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:01.8421436Z Updating files:  14% (10366/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:02.0653467Z Updating files:  14% (10451/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:02.2680224Z Updating files:  15% (11107/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:02.3757720Z Updating files:  16% (11847/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:02.4398346Z Updating files:  17% (12587/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:02.5533977Z Updating files:  18% (13328/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:02.6872365Z Updating files:  19% (14068/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:02.8418378Z Updating files:  20% (14809/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:02.8984071Z Updating files:  20% (15405/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:03.0025503Z Updating files:  21% (15549/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:03.0964641Z Updating files:  22% (16290/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:03.1799697Z Updating files:  23% (17030/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:03.2569227Z Updating files:  24% (17770/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:03.3527618Z Updating files:  25% (18511/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:03.4361374Z Updating files:  26% (19251/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:03.5255349Z Updating files:  27% (19992/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:03.5648943Z Updating files:  28% (20732/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:03.6265510Z Updating files:  29% (21472/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:03.6783308Z Updating files:  30% (22213/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:03.7192836Z Updating files:  31% (22953/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:03.7803158Z Updating files:  32% (23694/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:03.8203405Z Updating files:  33% (24434/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:03.8418844Z Updating files:  34% (25174/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:03.8488369Z Updating files:  34% (25737/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:03.9396176Z Updating files:  35% (25915/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:03.9960992Z Updating files:  36% (26655/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:04.1804403Z Updating files:  37% (27396/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:04.2312262Z Updating files:  38% (28136/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:04.2692916Z Updating files:  39% (28876/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:04.3062344Z Updating files:  40% (29617/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:04.3416801Z Updating files:  41% (30357/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:04.3936910Z Updating files:  42% (31098/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:04.4310374Z Updating files:  43% (31838/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:04.4808005Z Updating files:  44% (32579/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:04.5726626Z Updating files:  45% (33319/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:04.6303126Z Updating files:  46% (34059/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:04.6694368Z Updating files:  47% (34800/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:04.7097445Z Updating files:  48% (35540/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:04.7488752Z Updating files:  49% (36281/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:04.8050150Z Updating files:  50% (37021/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:04.8365703Z Updating files:  51% (37761/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:04.8419278Z Updating files:  52% (38502/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:04.8793274Z Updating files:  52% (38557/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:04.9169224Z Updating files:  53% (39242/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:04.9802327Z Updating files:  54% (39983/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:05.0134014Z Updating files:  55% (40723/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:05.0530754Z Updating files:  56% (41463/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:05.0871965Z Updating files:  57% (42204/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:05.1464724Z Updating files:  58% (42944/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:05.2288715Z Updating files:  59% (43685/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:05.2890094Z Updating files:  60% (44425/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:05.3274243Z Updating files:  61% (45166/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:05.3832074Z Updating files:  62% (45906/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:05.4508187Z Updating files:  63% (46646/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:05.5394116Z Updating files:  64% (47387/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:05.5896153Z Updating files:  65% (48127/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:05.6333704Z Updating files:  66% (48868/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:05.6872449Z Updating files:  67% (49608/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:05.7210460Z Updating files:  68% (50348/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:05.8206444Z Updating files:  69% (51089/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:05.8418102Z Updating files:  70% (51829/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:05.8494584Z Updating files:  70% (52357/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:05.8781384Z Updating files:  71% (52570/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:05.9069346Z Updating files:  72% (53310/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:05.9421716Z Updating files:  73% (54050/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:05.9723036Z Updating files:  74% (54791/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:06.0141093Z Updating files:  75% (55531/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:06.0965454Z Updating files:  76% (56272/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:06.1473856Z Updating files:  77% (57012/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:06.2241412Z Updating files:  78% (57752/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:06.2755062Z Updating files:  79% (58493/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:06.4389987Z Updating files:  80% (59233/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:06.5475160Z Updating files:  81% (59974/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:06.6253305Z Updating files:  82% (60714/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:06.7009948Z Updating files:  83% (61455/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:06.8025421Z Updating files:  84% (62195/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:06.8421818Z Updating files:  85% (62935/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:06.8725431Z Updating files:  85% (63389/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:06.9187657Z Updating files:  86% (63676/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:07.1163913Z Updating files:  87% (64416/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:07.1940805Z Updating files:  88% (65157/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:07.2568904Z Updating files:  89% (65897/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:07.3217953Z Updating files:  90% (66637/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:07.3815056Z Updating files:  91% (67378/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:07.4486971Z Updating files:  92% (68118/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:07.5076929Z Updating files:  93% (68859/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:07.5778431Z Updating files:  94% (69599/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:07.6341757Z Updating files:  95% (70339/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:07.7366799Z Updating files:  96% (71080/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:07.7906221Z Updating files:  97% (71820/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:07.8416567Z Updating files:  98% (72561/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:07.8504108Z Updating files:  98% (73219/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:07.9102058Z Updating files:  99% (73301/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:07.9102633Z Updating files: 100% (74041/74041)
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:07.9103092Z Updating files: 100% (74041/74041), done.
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.0348520Z Switched to a new branch 'main'
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.0351746Z branch 'main' set up to track 'origin/main'.
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.0601023Z ##[endgroup]
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.0657889Z [command]/usr/bin/git log -1 --format=%H
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.0694666Z 70935ad8e2a12bc2148eef74722749290c2edb66
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.0709288Z ##[group]Removing auth
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.0710085Z Removing SSH command configuration
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.0716690Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.0758360Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.1271999Z Removing HTTP extra header
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.1276908Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.1316122Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.1768340Z Removing includeIf entries pointing to credentials config files
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.1800904Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.1802893Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.1804008Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.1805080Z includeif.gitdir:/github/workspace/.git.path
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.1805905Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.1822561Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.1849718Z /home/runner/work/_temp/git-credentials-a7d8d5da-baa6-47ca-a4bd-e00bd4845ee4.config
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.1859700Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-a7d8d5da\-baa6\-47ca\-a4bd\-e00bd4845ee4\.config
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.1907458Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.1941289Z /home/runner/work/_temp/git-credentials-a7d8d5da-baa6-47ca-a4bd-e00bd4845ee4.config
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.1963552Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-a7d8d5da\-baa6\-47ca\-a4bd\-e00bd4845ee4\.config
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.2011112Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.2034929Z /github/runner_temp/git-credentials-a7d8d5da-baa6-47ca-a4bd-e00bd4845ee4.config
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.2044874Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-a7d8d5da\-baa6\-47ca\-a4bd\-e00bd4845ee4\.config
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.2086599Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.2115465Z /github/runner_temp/git-credentials-a7d8d5da-baa6-47ca-a4bd-e00bd4845ee4.config
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.2124146Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-a7d8d5da\-baa6\-47ca\-a4bd\-e00bd4845ee4\.config
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.2363336Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.2815384Z Removing credentials config '/home/runner/work/_temp/git-credentials-a7d8d5da-baa6-47ca-a4bd-e00bd4845ee4.config'
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.2841193Z ##[endgroup]
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.3330711Z ##[group]Run bash scripts/check-shard-results.sh
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.3331460Z ^[[36;1mbash scripts/check-shard-results.sh^[[0m
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.3399902Z shell: /usr/bin/bash -e {0}
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.3400330Z env:
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.3400659Z   NODE_FILTER: 
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.3415484Z   NEEDS_JSON: {
+Validate the current-run leaf evidence	UNKNOWN STEP	  "plan": {
+Validate the current-run leaf evidence	UNKNOWN STEP	    "result": "success",
+Validate the current-run leaf evidence	UNKNOWN STEP	    "outputs": {
+Validate the current-run leaf evidence	UNKNOWN STEP	      "already-green": "false",
+Validate the current-run leaf evidence	UNKNOWN STEP	      "legs": "[{\"depth\":5,\"filter\":\"1.1.1.1\",\"id\":\"depth-5-1.1.1.1\",\"nodes\":[\"1.1.1.1.1\",\"1.1.1.1.2\"]},{\"depth\":5,\"filter\":\"1.1.1.2\",\"id\":\"depth-5-1.1.1.2\",\"nodes\":[\"1.1.1.2.1\",\"1.1.1.2.2\"]},{\"depth\":5,\"filter\":\"1.1.2.1\",\"id\":\"depth-5-1.1.2.1\",\"nodes\":[\"1.1.2.1.1\",\"1.1.2.1.2\"]},{\"depth\":5,\"filter\":\"1.1.2.2\",\"id\":\"depth-5-1.1.2.2\",\"nodes\":[\"1.1.2.2.1\",\"1.1.2.2.2\"]},{\"depth\":5,\"filter\":\"1.2.1.1\",\"id\":\"depth-5-1.2.1.1\",\"nodes\":[\"1.2.1.1.1\",\"1.2.1.1.2\"]},{\"depth\":5,\"filter\":\"1.2.1.2\",\"id\":\"depth-5-1.2.1.2\",\"nodes\":[\"1.2.1.2.1\",\"1.2.1.2.2\"]},{\"depth\":5,\"filter\":\"1.2.2.1\",\"id\":\"depth-5-1.2.2.1\",\"nodes\":[\"1.2.2.1.1\",\"1.2.2.1.2\"]},{\"depth\":5,\"filter\":\"1.2.2.2\",\"id\":\"depth-5-1.2.2.2\",\"nodes\":[\"1.2.2.2.1\",\"1.2.2.2.2\"]},{\"depth\":5,\"filter\":\"2.1.1.1\",\"id\":\"depth-5-2.1.1.1\",\"nodes\":[\"2.1.1.1.1\",\"2.1.1.1.2\"]},{\"depth\":5,\"filter\":\"2.1.1.2\",\"id\":\"depth-5-2.1.1.2\",\"nodes\":[\"2.1.1.2.1\",\"2.1.1.2.2\"]},{\"depth\":5,\"filter\":\"2.1.2.1\",\"id\":\"depth-5-2.1.2.1\",\"nodes\":[\"2.1.2.1.1\",\"2.1.2.1.2\"]},{\"depth\":5,\"filter\":\"2.1.2.2\",\"id\":\"depth-5-2.1.2.2\",\"nodes\":[\"2.1.2.2.1\",\"2.1.2.2.2\"]},{\"depth\":5,\"filter\":\"2.2.1.1\",\"id\":\"depth-5-2.2.1.1\",\"nodes\":[\"2.2.1.1.1\",\"2.2.1.1.2\"]},{\"depth\":5,\"filter\":\"2.2.1.2\",\"id\":\"depth-5-2.2.1.2\",\"nodes\":[\"2.2.1.2.1\",\"2.2.1.2.2\"]},{\"depth\":5,\"filter\":\"2.2.2.1\",\"id\":\"depth-5-2.2.2.1\",\"nodes\":[\"2.2.2.1.1\",\"2.2.2.1.2\"]},{\"depth\":5,\"filter\":\"2.2.2.2\",\"id\":\"depth-5-2.2.2.2\",\"nodes\":[\"2.2.2.2.1\",\"2.2.2.2.2\"]},{\"depth\":3,\"filter\":\"1.1.1\",\"id\":\"depth-3-1.1.1\",\"nodes\":[\"1.1.1\"]},{\"depth\":3,\"filter\":\"1.1.2\",\"id\":\"depth-3-1.1.2\",\"nodes\":[\"1.1.2\"]},{\"depth\":3,\"filter\":\"1.2.1\",\"id\":\"depth-3-1.2.1\",\"nodes\":[\"1.2.1\"]},{\"depth\":3,\"filter\":\"1.2.2\",\"id\":\"depth-3-1.2.2\",\"nodes\":[\"1.2.2\"]},{\"depth\":3,\"filter\":\"2.1.1\",\"id\":\"depth-3-2.1.1\",\"nodes\":[\"2.1.1\"]},{\"depth\":3,\"filter\":\"2.1.2\",\"id\":\"depth-3-2.1.2\",\"nodes\":[\"2.1.2\"]},{\"depth\":3,\"filter\":\"2.2.1\",\"id\":\"depth-3-2.2.1\",\"nodes\":[\"2.2.1\"]},{\"depth\":3,\"filter\":\"2.2.2\",\"id\":\"depth-3-2.2.2\",\"nodes\":[\"2.2.2\"]},{\"depth\":2,\"filter\":\"1.1\",\"id\":\"depth-2-1.1\",\"nodes\":[\"1.1\"]},{\"depth\":2,\"filter\":\"1.2\",\"id\":\"depth-2-1.2\",\"nodes\":[\"1.2\"]},{\"depth\":2,\"filter\":\"2.1\",\"id\":\"depth-2-2.1\",\"nodes\":[\"2.1\"]},{\"depth\":2,\"filter\":\"2.2\",\"id\":\"depth-2-2.2\",\"nodes\":[\"2.2\"]},{\"depth\":1,\"filter\":\"1\",\"id\":\"depth-1-1\",\"nodes\":[\"1\"]},{\"depth\":1,\"filter\":\"2\",\"id\":\"depth-1-2\",\"nodes\":[\"2\"]},{\"depth\":0,\"filter\":\"R\",\"id\":\"depth-0-R\",\"nodes\":[\"R\"]}]",
+Validate the current-run leaf evidence	UNKNOWN STEP	      "leg-count": "47",
+Validate the current-run leaf evidence	UNKNOWN STEP	      "composites": "[{\"depth\":4,\"filter\":\"1.1.1.1\",\"id\":\"depth-4-1.1.1.1\",\"nodes\":[\"1.1.1.1\"]},{\"depth\":4,\"filter\":\"1.1.1.2\",\"id\":\"depth-4-1.1.1.2\",\"nodes\":[\"1.1.1.2\"]},{\"depth\":4,\"filter\":\"1.1.2.1\",\"id\":\"depth-4-1.1.2.1\",\"nodes\":[\"1.1.2.1\"]},{\"depth\":4,\"filter\":\"1.1.2.2\",\"id\":\"depth-4-1.1.2.2\",\"nodes\":[\"1.1.2.2\"]},{\"depth\":4,\"filter\":\"1.2.1.1\",\"id\":\"depth-4-1.2.1.1\",\"nodes\":[\"1.2.1.1\"]},{\"depth\":4,\"filter\":\"1.2.1.2\",\"id\":\"depth-4-1.2.1.2\",\"nodes\":[\"1.2.1.2\"]},{\"depth\":4,\"filter\":\"1.2.2.1\",\"id\":\"depth-4-1.2.2.1\",\"nodes\":[\"1.2.2.1\"]},{\"depth\":4,\"filter\":\"1.2.2.2\",\"id\":\"depth-4-1.2.2.2\",\"nodes\":[\"1.2.2.2\"]},{\"depth\":4,\"filter\":\"2.1.1.1\",\"id\":\"depth-4-2.1.1.1\",\"nodes\":[\"2.1.1.1\"]},{\"depth\":4,\"filter\":\"2.1.1.2\",\"id\":\"depth-4-2.1.1.2\",\"nodes\":[\"2.1.1.2\"]},{\"depth\":4,\"filter\":\"2.1.2.1\",\"id\":\"depth-4-2.1.2.1\",\"nodes\":[\"2.1.2.1\"]},{\"depth\":4,\"filter\":\"2.1.2.2\",\"id\":\"depth-4-2.1.2.2\",\"nodes\":[\"2.1.2.2\"]},{\"depth\":4,\"filter\":\"2.2.1.1\",\"id\":\"depth-4-2.2.1.1\",\"nodes\":[\"2.2.1.1\"]},{\"depth\":4,\"filter\":\"2.2.1.2\",\"id\":\"depth-4-2.2.1.2\",\"nodes\":[\"2.2.1.2\"]},{\"depth\":4,\"filter\":\"2.2.2.1\",\"id\":\"depth-4-2.2.2.1\",\"nodes\":[\"2.2.2.1\"]},{\"depth\":4,\"filter\":\"2.2.2.2\",\"id\":\"depth-4-2.2.2.2\",\"nodes\":[\"2.2.2.2\"]}]"
+Validate the current-run leaf evidence	UNKNOWN STEP	    }
+Validate the current-run leaf evidence	UNKNOWN STEP	  },
+Validate the current-run leaf evidence	UNKNOWN STEP	  "ladder": {
+Validate the current-run leaf evidence	UNKNOWN STEP	    "result": "failure",
+Validate the current-run leaf evidence	UNKNOWN STEP	    "outputs": {}
+Validate the current-run leaf evidence	UNKNOWN STEP	  }
+Validate the current-run leaf evidence	UNKNOWN STEP	}
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.3431490Z   JOBS: plan ladder
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.3431735Z   CHECK: Agent CLI ladder primary wave
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.3432145Z ##[endgroup]
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.4045096Z ##[error]not every shard succeeded (ladder=failure). A failed, timed-out (cancelled) or skipped shard is a missing measurement, never a pass.
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.4057127Z ##[error]Process completed with exit code 1.
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.4447479Z Post job cleanup.
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.5311062Z [command]/usr/bin/git version
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.5370554Z git version 2.56.0
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.5411065Z Temporarily overriding HOME='/home/runner/work/_temp/65971dd8-2204-4ea4-a0b6-d8affe223032' before making global git config changes
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.5412536Z Adding repository directory to the temporary git global config as a safe directory
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.5418186Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.5463265Z Removing SSH command configuration
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.5467380Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.5511138Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.6055326Z Removing HTTP extra header
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.6072601Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.6137073Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.6657826Z Removing includeIf entries pointing to credentials config files
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.6664940Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.6702859Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Validate the current-run leaf evidence	UNKNOWN STEP	2026-11-08T11:01:08.7290045Z Cleaning up orphan processes
