@@ -1,7 +1,7 @@
 // Issue #1483: drive the boundary-repair work item through the Claude
 // (Anthropic Messages) and Codex (Responses) adapters without an LLM,
 // executing each returned tool call against a scratch workspace.
-import {mkdtempSync,mkdirSync,writeFileSync,readFileSync,rmSync} from 'node:fs';
+import {mkdtempSync,mkdirSync,writeFileSync,readFileSync,rmSync,chmodSync} from 'node:fs';
 import {join,isAbsolute} from 'node:path';
 import {tmpdir} from 'node:os';
 import {spawnSync} from 'node:child_process';
@@ -31,8 +31,8 @@ export function adapterTools(protocol){
     {type:'custom',name:'apply_patch',description:'Apply a source patch in the client workspace'}];
 }
 function resolveIn(directory,path){return isAbsolute(path)?path:join(directory,path);}
-function shell(directory,command){
-  const run=spawnSync('bash',['-c',command],{cwd:directory,encoding:'utf8',timeout:60000});
+function shell(directory,command,env){
+  const run=spawnSync('bash',['-c',command],{cwd:directory,encoding:'utf8',timeout:60000,env:env??process.env});
   return {status:run.status??1,stdout:run.stdout??'',stderr:run.stderr??''};
 }
 /** Applies one Codex `*** Update File`/`*** Add File` patch with exact hunks. */
@@ -62,15 +62,15 @@ function applyPatch(directory,input){
   }
   return {status:0,stdout:'Done!\n'+changed.map(path=>'M '+path).join('\n')+'\n',stderr:''};
 }
-function execute(directory,call){
+function execute(directory,call,env){
   const {name,args}=call;
   if(name==='Read'){try{return {status:0,stdout:readFileSync(resolveIn(directory,args.file_path),'utf8').split('\n').map((line,i)=>String(i+1).padStart(6)+'\t'+line).join('\n'),stderr:''};}catch(error){return {status:1,stdout:'',stderr:String(error.message)};}}
   if(name==='Edit'){const file=resolveIn(directory,args.file_path);const content=readFileSync(file,'utf8');
     if(!content.includes(args.old_string))return {status:1,stdout:'',stderr:'old_string not found'};
     writeFileSync(file,content.replace(args.old_string,args.new_string));return {status:0,stdout:`The file ${args.file_path} has been updated.`,stderr:''};}
   if(name==='Write'){writeFileSync(resolveIn(directory,args.file_path),args.content);return {status:0,stdout:`File created successfully at: ${args.file_path}`,stderr:''};}
-  if(name==='Bash')return shell(directory,args.command);
-  if(name==='exec_command')return shell(directory,args.cmd);
+  if(name==='Bash')return shell(directory,args.command,env);
+  if(name==='exec_command')return shell(directory,args.cmd,env);
   if(name==='apply_patch')return applyPatch(directory,args.input);
   return {status:1,stdout:'',stderr:'unknown tool '+name};
 }
@@ -94,18 +94,19 @@ function append(protocol,history,turn,results){
     output:call.custom?result.stdout+result.stderr:JSON.stringify({exit_code:result.status,stdout:result.stdout,stderr:result.stderr})})));
 }
 /** Runs one adapter session to its final message; returns the tool trail and the final text. */
-export async function adapterSession(protocol,directory,task,{steps=12,tools:only=null}={}){
+export async function adapterSession(protocol,directory,task,{steps=12,tools:only=null,system:clientSystem='',env=null}={}){
   const context={worker:new WorkerHost(),agentMode:true,memory:createMemory({...process.env,FORMAL_AI_MEMORY_PATH:join(directory,'..','memory-'+protocol+'.lino')})};
   await ensureNodeHost(context,{sourceUsageRustGrammar:false});
   const tools=adapterTools(protocol).filter(tool=>only===null||only.includes(tool.name));
   // The client states its working directory in its system prompt, as Claude Code and Codex do.
-  const system=`<env>\nWorking directory: ${directory}\n</env>`;
+  // A Hive system prompt (when given) precedes that block, as the client sends both.
+  const system=(clientSystem?clientSystem+'\n\n':'')+`<env>\nWorking directory: ${directory}\n</env>`;
   const history=protocol==='claude'?[{role:'user',content:task}]:[{role:'user',content:[{type:'input_text',text:task}]}];
   const trail=[];
   for(let step=0;step<steps;step++){
     const turn=await next(context,protocol,history,tools,system);
     if(!turn.calls.length)return {final:turn.final,trail};
-    const results=turn.calls.map(call=>({call,result:execute(directory,call)}));
+    const results=turn.calls.map(call=>({call,result:execute(directory,call,env)}));
     for(const {call,result} of results)trail.push({tool:call.name,status:result.status,args:call.args});
     append(protocol,history,turn,results);
   }
@@ -115,4 +116,26 @@ export function boundaryWorkspace(){
   const root=mkdtempSync(join(tmpdir(),'formal-ai-adapter-'));const directory=join(root,'workspace');
   mkdirSync(join(directory,'src'),{recursive:true});writeFileSync(join(directory,'src/ceiling.mjs'),source);
   return {root,directory,dispose:()=>rmSync(root,{recursive:true,force:true})};
+}
+const hiveFixtures=new URL('../../../../data/benchmarks/fixtures/work-item-1483/',import.meta.url).pathname;
+/** The ordinary Hive Mind system and user prompts of `protocol` (recorded from
+ * hive-mind 2.39.10), filled for an issue whose text is not in the prompt. */
+export function hivePrompts(protocol,values){
+  const fill=text=>text.replace(/\{(issue_url|issue|pull_url|pull|branch|workspace_tmp|workspace|owner|repo)\}/gu,(_,key)=>String(values[key]));
+  return {system:fill(readFileSync(join(hiveFixtures,`hive-${protocol}-system.txt`),'utf8')),user:fill(readFileSync(join(hiveFixtures,`hive-${protocol}-user.txt`),'utf8'))};
+}
+/** A `gh` on PATH that answers `gh issue view <url> --json <field> --jq .<field>`
+ * from `issue`, as GitHub would, and logs each invocation; nothing leaves the host. */
+export function ghShim(root,issue){
+  const bin=join(root,'bin'),log=join(root,'gh.log');mkdirSync(bin,{recursive:true});
+  writeFileSync(join(root,'issue.json'),JSON.stringify(issue));
+  writeFileSync(join(bin,'gh'),`#!/usr/bin/env node
+const fs=require('fs');const a=process.argv.slice(2);fs.appendFileSync(${JSON.stringify(log)},a.join(' ')+'\\n');
+const issue=JSON.parse(fs.readFileSync(${JSON.stringify(join(root,'issue.json'))},'utf8'));
+const at=a.indexOf('--json'),field=a[at+1];
+if(a[0]!=='issue'||a[1]!=='view'||at<0||!(field in issue)){console.error('unsupported: gh '+a.join(' '));process.exit(1);}
+console.log(issue[field]);
+`);
+  chmodSync(join(bin,'gh'),0o755);
+  return {env:{...process.env,PATH:bin+':'+process.env.PATH},calls:()=>readFileSync(log,'utf8').trim().split('\n')};
 }

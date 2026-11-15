@@ -5,7 +5,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {join} from 'node:path';
-import {adapterSession,boundaryWorkspace,boundaryTask} from './helpers/work-item-adapter-session.mjs';
+import {adapterSession,boundaryWorkspace,boundaryTask,hivePrompts,ghShim} from './helpers/work-item-adapter-session.mjs';
 
 const repaired='  return value >= minimum && value <= maximum;\n';
 for(const protocol of ['claude','codex']){
@@ -45,3 +45,31 @@ test('claude without a Run tool: an uncertified Read stays an explicit gap and n
     assert.equal(readFileSync(join(workspace.directory,'src/ceiling.mjs'),'utf8'),before);
   }finally{workspace.dispose();}
 });
+// The ordinary Hive Mind prompts name only the issue address; the controller
+// reads the issue itself. Its title restates the defect without a bound
+// contract, so it stays an open requirement and the report is partial.
+for(const protocol of ['claude','codex']){
+  test(`${protocol} with the ordinary Hive prompts: the fetched issue ends with a checked edit, then a verified no-op`,{timeout:120000},async()=>{
+    const workspace=boundaryWorkspace();
+    try{
+      const url='https://github.com/example/ceiling/issues/7';
+      const gh=ghShim(workspace.root,{title:'Ceiling check excludes the maximum',body:boundaryTask});
+      const prompts=hivePrompts(protocol,{issue_url:url,issue:7,pull_url:'https://github.com/example/ceiling/pull/8',pull:8,
+        branch:'issue-7-0123456789ab',workspace:workspace.directory,workspace_tmp:join(workspace.root,'tmp'),owner:'example',repo:'ceiling'});
+      assert.ok(!prompts.user.includes(boundaryTask)&&!prompts.system.includes(boundaryTask));
+      const first=await adapterSession(protocol,workspace.directory,prompts.user,{system:prompts.system,env:gh.env});
+      assert.match(JSON.stringify(first.trail[0].args),/gh issue view/u);
+      assert.match(first.final,/^Partly done: https:\/\/github\.com\/example\/ceiling\/issues\/7\. The session stopped at `UsefulChangeVerified`/u,first.final);
+      assert.ok(first.final.includes('Files changed: `src/ceiling.mjs`.')&&first.final.includes('`contract-derived-execution` passed'));
+      assert.ok(first.final.includes('1. Ceiling check excludes the maximum'),first.final);
+      assert.ok(first.trail.every(row=>row.status===0),JSON.stringify(first.trail));
+      const after=readFileSync(join(workspace.directory,'src/ceiling.mjs'),'utf8');
+      assert.ok(after.includes(repaired),after);
+      const repeat=await adapterSession(protocol,workspace.directory,prompts.user,{system:prompts.system,env:gh.env});
+      assert.match(repeat.final,/^Partly done already: .* The session stopped at `VerifiedNoOp`/u,repeat.final);
+      assert.ok(!repeat.final.includes('Files changed'));
+      assert.equal(readFileSync(join(workspace.directory,'src/ceiling.mjs'),'utf8'),after);
+      assert.ok(gh.calls().every(call=>call.startsWith('issue view '+url+' --json ')),gh.calls().join('\n'));
+    }finally{workspace.dispose();}
+  });
+}
