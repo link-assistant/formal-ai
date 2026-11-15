@@ -210,6 +210,10 @@ test('JavaScript checkout keeps source and the real learning fixture while omitt
   const omitted=['dev/log/issues/781/pulls/803/sessions/old/solve.log',
     'experiments/formal_ai_subagent/evidence/coordinator-1188/raw/archive.jsonl.gz'];
   assert.deepEqual(checkoutSelection(patterns,[...retained,...omitted]),retained);
+  // Issue #1571: the audit covers every committed Cargo.lock, so each one is checked out.
+  const locks=execFileSync('git',['ls-files','--cached','-z','--','Cargo.lock','*/Cargo.lock'],{encoding:'utf8',timeout:5000})
+    .split('\0').filter(Boolean);
+  assert.ok(locks.length>1);assert.deepEqual(checkoutSelection(patterns,locks),locks);
 });
 
 
@@ -251,7 +255,7 @@ test('fast source checkout retains every measured tracked source while excluding
 
 test('Cargo security acquisition retains the full crate and audit proofs without unrelated evidence', () => {
   const job=workflow('security.yml').jobs['cargo-audit'];
-  const patterns='/.cargo/\n/rust/\n/scripts/check-rust-dependencies.sh\n/Cargo.toml\n/Cargo.lock\n/README.md\n/LICENSE\n';
+  const patterns='/.cargo/\n/rust/\n/scripts/check-rust-dependencies.sh\n/Cargo.toml\nCargo.lock\n/README.md\n/LICENSE\n';
   function check(value){
     assert.equal(value['timeout-minutes'],10);assert.equal(value.steps.length,4);
     const step=value.steps[0];assert.equal(step.uses,'actions/checkout@v7');assert.equal(step['timeout-minutes'],2);
@@ -279,7 +283,8 @@ test('Cargo security acquisition retains the full crate and audit proofs without
   assert.ok(tracked.length>0);assert.deepEqual(checkoutSelection(patterns,tracked),tracked);
   const retained=['rust/Cargo.toml','rust/Cargo.lock','rust/build.rs','rust/src/lib.rs','rust/src/main.rs',
     'rust/tests/unit/mod.rs','rust/tests/integration/mod.rs','rust/tests/source/mod.rs',
-    '.cargo/audit.toml','scripts/check-rust-dependencies.sh','Cargo.toml','Cargo.lock','README.md','LICENSE'];
+    '.cargo/audit.toml','scripts/check-rust-dependencies.sh','Cargo.toml','Cargo.lock','README.md','LICENSE',
+    'experiments/issue-1017-meta-language-quadratic/Cargo.lock'];
   const omitted=['dev/log/issues/1079/pulls/1080/upstream-reports/evidence.log',
     'experiments/formal_ai_subagent/evidence/coordinator-1188/trace.gz','docs/case-studies/history.log'];
   assert.deepEqual(checkoutSelection(patterns,[...retained,...omitted]),retained);

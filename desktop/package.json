@@ -33,6 +33,7 @@
     "electron-builder": "^26.17.0"
   },
   "command-stream//": "blocked: https://github.com/advisories/GHSA-vfj7-8cjw-p6xm (1.6.0+ and 2.0.0 depend on shelljs, whose fast-glob > micromatch > braces chain has no patched release; 1.5.0 is the newest that audits clean)",
+  "@link-assistant/web-capture//": "blocked: https://github.com/link-assistant/web-capture/issues/191 (2.0.0+ declares engines node >=26.10.0; Electron 44 embeds Node 24.22.2, VS Code runs Node 24, and desktop builds use Node 22, so 1.12.0 is the newest release whose engines match)",
   "browser-commander//": "blocked: https://github.com/link-assistant/web-capture/issues/160 (0.21+ launches the installed Chrome over CDP by default; web-capture 1.11.2 does not pass launch: 'engine', so 0.20.0 is the newest override it runs on)",
   "@kreuzberg/html-to-markdown-node//": "blocked: https://github.com/xberg-io/html-to-markdown/issues/459 (every release after 3.5.5, through 3.7.2, declares linux musl optional packages that npm does not have)",
   "overrides": {

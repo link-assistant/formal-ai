@@ -16,13 +16,19 @@
 // - `--playwright-files`: per spec file of the local web E2E suite, the seconds
 //   its tests took in the latest `E2E Tests (local web app)` jobs (Playwright's
 //   list reporter prints each test's time), written to
-//   `data/meta/playwright-test-durations.lino` for that suite's shard plan.
+//   `data/meta/playwright-test-durations.lino` for that suite's shard plan;
+// - `--javascript-ci-logs`: per suite file, the seconds the Layered CI js-tier
+//   jobs of a run reported in their `[test-file] completed` lines (issue #1571),
+//   folded into `data/meta/javascript-test-durations.lino`: slower files are
+//   raised, unrecorded files of at least 2 s are added, and `default-seconds`
+//   becomes the mean of the rest. `--log <file>` reads saved job logs instead.
 //
 // Usage:
 //   node experiments/formal_ai_subagent/ci-durations.mjs [--branch B] [--runs N] [--write]
 //   node experiments/formal_ai_subagent/ci-durations.mjs --tests [--run ID ...] [--write]
 //   node experiments/formal_ai_subagent/ci-durations.mjs --javascript-files [--write]
 //   node experiments/formal_ai_subagent/ci-durations.mjs --playwright-files [--run ID ...] [--write]
+//   node experiments/formal_ai_subagent/ci-durations.mjs --javascript-ci-logs (--run ID ... | --log FILE ...) [--write]
 //
 // Without `--write` it prints what it would write. It only reads from GitHub.
 // Cancelled runs and skipped jobs are left out: they say nothing about how
@@ -30,11 +36,13 @@
 // matches is a renamed or removed job, and is left out too.
 
 import { execFileSync, spawnSync } from 'node:child_process';
-import { readdirSync, writeFileSync } from 'node:fs';
+import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { median, renderCiDurations, roundMinutes } from '../../scripts/lib/ci-speed-durations.mjs';
+import {
+  median, mergeJavaScriptDurations, parseJavaScriptFileEvents, renderCiDurations, roundMinutes,
+} from '../../scripts/lib/ci-speed-durations.mjs';
 import { jobIdForDisplayName, readWorkflows } from '../../scripts/lib/ci-speed-workflows.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
@@ -59,6 +67,18 @@ function gh(args) {
   return execFileSync('gh', args, { cwd: ROOT, encoding: 'utf8', maxBuffer: 1 << 28 });
 }
 const api = (path) => JSON.parse(gh(['api', path]));
+/**
+ * A job's log as plain text. Job logs carry the ANSI colours of the tools that
+ * wrote them, and newer `gh` refuses to print a response with terminal escape
+ * sequences unless asked to, so without the flag every log read failed and the
+ * modes below found no lines at all (issue #1571). The escapes are stripped
+ * here, so the parsers see what a terminal would show.
+ */
+function jobLog(jobId) {
+  const raw = gh(['api', '--allow-escape-sequences', `repos/{owner}/{repo}/actions/jobs/${jobId}/logs`]);
+  // eslint-disable-next-line no-control-regex
+  return raw.replace(/\u001b\[[0-9;?]*[ -/]*[@-~]/gu, '');
+}
 const minutesBetween = (start, end) => (Date.parse(end) - Date.parse(start)) / 60000;
 
 function currentBranch() {
@@ -177,8 +197,9 @@ function measureTests() {
       if (!/^Test \(/.test(job.name) || job.conclusion === 'skipped') continue;
       let log = '';
       try {
-        log = gh(['api', `repos/{owner}/{repo}/actions/jobs/${job.id}/logs`]);
-      } catch {
+        log = jobLog(job.id);
+      } catch (error) {
+        process.stderr.write(`skipped job ${job.id} (${job.name}): ${error.message.split('\n')[0]}\n`);
         continue;
       }
       for (const [name, value] of parseReportTime(log)) seconds.set(name, Math.max(seconds.get(name) ?? 0, value));
@@ -269,8 +290,9 @@ function measurePlaywrightFiles() {
       if (!/local web app/.test(job.name) || !['success', 'failure'].includes(job.conclusion)) continue;
       let log = '';
       try {
-        log = gh(['api', `repos/{owner}/{repo}/actions/jobs/${job.id}/logs`]);
-      } catch {
+        log = jobLog(job.id);
+      } catch (error) {
+        process.stderr.write(`skipped job ${job.id} (${job.name}): ${error.message.split('\n')[0]}\n`);
         continue;
       }
       const measured = parsePlaywrightList(log);
@@ -302,11 +324,54 @@ function measurePlaywrightFiles() {
   return `${lines.join('\n')}\n`;
 }
 
+/**
+ * Fold the per-file seconds of a Layered CI run's js-tier jobs into the js
+ * durations record (issue #1571). Every suite group of the run is read, since
+ * together they ran every file once; the file a budget kill caught running
+ * counts with the time it had already run, a lower bound.
+ */
+function measureJavaScriptCiLogs() {
+  const observed = new Map();
+  const merge = (log) => {
+    for (const [file, value] of parseJavaScriptFileEvents(log)) {
+      const previous = observed.get(file);
+      if (!previous || value.seconds > previous.seconds) observed.set(file, value);
+    }
+  };
+  const runIds = options('--run');
+  for (const path of options('--log')) merge(readFileSync(path, 'utf8'));
+  for (const runId of runIds) {
+    for (const job of runJobs(runId)) {
+      if (!/^js tier\b/.test(job.name) || job.conclusion === 'skipped' || job.conclusion === 'cancelled') continue;
+      try {
+        merge(jobLog(job.id));
+      } catch (error) {
+        process.stderr.write(`skipped job ${job.id} (${job.name}): ${error.message.split('\n')[0]}\n`);
+      }
+    }
+  }
+  if (observed.size === 0) throw new Error('no [test-file] lines in the given js-tier logs; pass --run ID or --log FILE');
+  const lowerBounds = [...observed].filter(([, value]) => !value.complete).map(([file]) => file);
+  process.stderr.write(`observed ${observed.size} file(s), ${lowerBounds.length} as lower bounds (running when the budget killed the job)\n`);
+  return mergeJavaScriptDurations(readFileSync(JAVASCRIPT_OUTPUT, 'utf8'), observed, {
+    source: runIds.join(' ') || undefined,
+    recordedDate: new Date().toISOString().slice(0, 10),
+  });
+}
+
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const modes = [['--tests', 'tests'], ['--javascript-files', 'javascript'], ['--playwright-files', 'playwright']];
+  const modes = [
+    ['--tests', 'tests'], ['--javascript-files', 'javascript'], ['--playwright-files', 'playwright'],
+    ['--javascript-ci-logs', 'javascriptCi'],
+  ];
   const mode = modes.find(([flag]) => argv.includes(flag))?.[1] ?? 'jobs';
-  const output = { tests: TESTS_OUTPUT, javascript: JAVASCRIPT_OUTPUT, playwright: PLAYWRIGHT_OUTPUT, jobs: JOBS_OUTPUT }[mode];
-  const measure = { tests: measureTests, javascript: measureJavaScriptFiles, playwright: measurePlaywrightFiles, jobs: measureJobs };
+  const output = {
+    tests: TESTS_OUTPUT, javascript: JAVASCRIPT_OUTPUT, javascriptCi: JAVASCRIPT_OUTPUT, playwright: PLAYWRIGHT_OUTPUT, jobs: JOBS_OUTPUT,
+  }[mode];
+  const measure = {
+    tests: measureTests, javascript: measureJavaScriptFiles, javascriptCi: measureJavaScriptCiLogs,
+    playwright: measurePlaywrightFiles, jobs: measureJobs,
+  };
   const text = measure[mode]();
   if (argv.includes('--write')) {
     writeFileSync(output, text);

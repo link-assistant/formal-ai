@@ -286,6 +286,10 @@ egg = \"0.10.0\"
     );
     let rewritten = rewrite_cargo_line(text, &dependency("egg", "0.10.0", 3), "0.11.0");
     assert!(rewritten.contains("egg = \"0.11.0\""), "{rewritten}");
+    // crates.io reports `toml_edit` as `0.25.19+spec-1.1.0`; the requirement
+    // drops the build metadata Cargo would ignore with a warning (#1571).
+    let rewritten = rewrite_cargo_line(text, &dependency("egg", "0.10.0", 3), "0.25.19+spec-1.1.0");
+    assert!(rewritten.contains("egg = \"0.25.19\"\n"), "{rewritten}");
 
     let json = "{\n  \"dependencies\": {\n    \"marked\": \"^18.0.11\"\n  }\n}\n";
     let dependency = Dependency {

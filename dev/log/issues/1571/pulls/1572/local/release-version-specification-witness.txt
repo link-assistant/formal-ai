@@ -1,0 +1,17 @@
+✔ all actual Cargo witnesses change together while all other fields remain exact (6.466803ms)
+✔ version refresh refuses case drift (7.738135ms)
+✔ version refresh refuses assertion drift (1.913228ms)
+✔ version refresh refuses unsupported drift (1.700272ms)
+✔ version refresh refuses scope drift (2.158295ms)
+✔ version refresh refuses native drift (1.653845ms)
+✔ version refresh refuses stale drift (1.721311ms)
+✔ version refresh refuses drop drift (1.694321ms)
+✔ dependency changes cannot become version witness maintenance (4.613125ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 200.054363

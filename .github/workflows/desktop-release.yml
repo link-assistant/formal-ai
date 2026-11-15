@@ -404,11 +404,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { os: ubuntu-24.04,     ebflag: "--linux", label: "linux-x64", target: x86_64-unknown-linux-gnu, binext: "",     capmin: 30 }
+          - { os: ubuntu-24.04,    ebflag: "--linux", label: "linux-x64", target: x86_64-unknown-linux-gnu, binext: "",     capmin: 30 }
           - { os: ubuntu-24.04-arm, ebflag: "--linux", label: "linux-arm64", target: aarch64-unknown-linux-gnu, binext: "",     capmin: 30 }
           - { os: macos-15-intel,   ebflag: "--mac",   label: "macos-x64", target: x86_64-apple-darwin, binext: "",     capmin: 30 }
           - { os: macos-15,         ebflag: "--mac",   label: "macos-arm64", target: aarch64-apple-darwin, binext: "",     capmin: 30 }
-          - { os: windows-2025,     ebflag: "--win",   label: "windows-x64", target: x86_64-pc-windows-msvc, binext: ".exe", capmin: 30 }
+          - { os: windows-2025,   ebflag: "--win",   label: "windows-x64", target: x86_64-pc-windows-msvc, binext: ".exe", capmin: 30 }
           - { os: windows-11-arm,   ebflag: "--win",   label: "windows-arm64", target: aarch64-pc-windows-msvc, binext: ".exe", capmin: 30 }
     runs-on: ${{ matrix.os }}
     timeout-minutes: ${{ matrix.capmin }}
@@ -898,11 +898,11 @@ jobs:
         # package and startup-smoke the selected executable without compiling.
         # Run 37914168811 measured all five complete jobs at 55–123 seconds.
         include:
-          - { os: ubuntu-24.04,     target: x86_64-unknown-linux-musl, label: cli-linux-x64,   binext: "",   archive: tar.gz, capmin: 30 }
+          - { os: ubuntu-24.04,    target: x86_64-unknown-linux-musl, label: cli-linux-x64,   binext: "",   archive: tar.gz, capmin: 30 }
           - { os: ubuntu-24.04-arm, target: aarch64-unknown-linux-musl, label: cli-linux-arm64, binext: "",   archive: tar.gz, capmin: 30 }
           - { os: macos-15-intel,   target: x86_64-apple-darwin,        label: cli-macos-x64,   binext: "",   archive: tar.gz, capmin: 30 }
           - { os: macos-15,         target: aarch64-apple-darwin,        label: cli-macos-arm64, binext: "",   archive: tar.gz, capmin: 30 }
-          - { os: windows-2025,     target: x86_64-pc-windows-msvc,      label: cli-windows-x64, binext: ".exe", archive: zip,  capmin: 30 }
+          - { os: windows-2025,   target: x86_64-pc-windows-msvc,      label: cli-windows-x64, binext: ".exe", archive: zip,  capmin: 30 }
     runs-on: ${{ matrix.os }}
     timeout-minutes: ${{ matrix.capmin }}
     permissions:

@@ -26,12 +26,11 @@ def plan(mode, prefix=""):
     legs, composites = [], []
     for depth in levels:
         selected = [node for node in nodes(depth) if focused(node, prefix)]
-        groups = {}
+        # One node per leg. Depth-5 legs once held two sibling leaves, and the
+        # first one compiled the crate cold: 1196s of the 1200s tree budget in
+        # run 42472083551 (issue #1571). A single leaf measured at most ~700s.
         for node in selected:
-            key = node.rsplit(".", 1)[0] if depth == 5 and "." in node and prefix != node else node
-            groups.setdefault(key, []).append(node)
-        for key, members in groups.items():
-            leg = {"depth": depth, "filter": key, "id": f"depth-{depth}-{key}", "nodes": members}
+            leg = {"depth": depth, "filter": node, "id": f"depth-{depth}-{node}", "nodes": [node]}
             (composites if mode == "all" and depth == 4 else legs).append(leg)
     return {"requested_depth": mode, "node_filter": prefix or "none", "legs": legs,
             "composites": composites, "expected_nodes": expected}
