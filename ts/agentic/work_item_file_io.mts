@@ -12,7 +12,7 @@ import { evidenceWindowStart } from './planner/continuation.mjs';
 import { sha256Hex } from './crate/source_fetch.mjs';
 import { quoteShellWord } from './portable/string_contracts.mjs';
 import { planOne, jsonText, writeArguments } from './plan.mjs';
-import { readPolicyBlocksPlan } from './file_read/ownership.mjs';
+import { userReadPolicyBlocksPlan } from './file_read/ownership.mjs';
 const PROGRAM = 'data/meta/work-item-file-io-program.cjs';
 const canonical = value => JSON.stringify(Object.fromEntries(Object.keys(value).sort().map(key => [key, value[key]])));
 const encode = text => {
@@ -161,7 +161,7 @@ export function fileIoSearchStep(messages, tools, directory, identifiers, task =
       gap: String(error.message)
     };
   }
-  if (readPolicyBlocksPlan(task, planOne('read', jsonText({
+  if (userReadPolicyBlocksPlan(messages, task, planOne('read', jsonText({
     filePath: directory
   })))) return {
     gap: 'ReadPolicyRefused'
@@ -464,7 +464,9 @@ export class WorkItemFileProgress {
         continue;
       }
       const receipt = receiptFor(request, completed.output),
-        code = completed.parts?.code;
+        // The registered program emits a non-failed receipt only with exit status 0, so a
+        // transport that reports no exit code (an Anthropic Bash result) is read from it.
+        code = completed.parts?.code ?? (receipt !== null && receipt.state !== 'failed' ? 0 : null);
       if (code === 0 && receipt && request.value.operation === 'root' && receipt.state === 'observed-root' && rootPath(receipt.root)) {
         if (root !== null && root !== undefined && root !== receipt.root) gap = 'FileIoRootContextContradicted';else root = receipt.root;
         continue;
@@ -647,7 +649,7 @@ function runStep(messages, tools, operation, path, before = null, after = null) 
 export function fileIoReadStep(messages, tools, path, task = '') {
   // Query existing Read policy before lowering to a Run transport. This query
   // is never emitted or inserted into the client transcript.
-  if (readPolicyBlocksPlan(task, planOne('read', jsonText({
+  if (userReadPolicyBlocksPlan(messages, task, planOne('read', jsonText({
     filePath: path
   })))) return {
     gap: 'ReadPolicyRefused'
@@ -659,6 +661,20 @@ export function fileIoReadStep(messages, tools, path, task = '') {
   return read ? {
     step: planOne(read, readArguments(path))
   } : runStep(messages, tools, 'read', path);
+}
+/**
+ * A client Read that succeeded but carries no completeness proof (a Claude
+ * Code numbered listing, say) is read once more through the registered Run
+ * transport, whose receipt certifies the bytes. Any other read outcome, or no
+ * Run tool, leaves the observation incomplete.
+ */
+export function fileIoCertifiedReadStep(messages, tools, path) {
+  const progress = WorkItemFileProgress.scan(messages);
+  const latest = [...progress.attempts].reverse().find(attempt => attempt.capability === Capability.Read && argumentsObject(attempt)?.filePath === path);
+  const observed = latest?.source_read ?? null;
+  if (observed === null || observed.complete || observed.absent || observed.error !== null
+    || latest.transport?.kind === 'registered-run-file-io' || !shellCommandTool(tools)) return null;
+  return runStep(messages, tools, 'read', path).step ?? null;
 }
 export function fileIoEffectStep(messages, tools, path, before, after) {
   if (typeof after !== 'string' || new TextEncoder().encode(after).length > 131072) return {

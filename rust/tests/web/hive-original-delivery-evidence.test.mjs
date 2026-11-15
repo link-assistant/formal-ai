@@ -186,7 +186,9 @@ test('genuine image, solve and independent verification phases use same-run hand
   assert.equal(stage.with.path, staged.with.path + '/publish', 'only sanitized explicit export is uploaded');
   assert.equal(final.with.name, 'hive-original-${{ matrix.tool }}-evidence');
   assert.equal(stage.if, "${{ !cancelled() && steps.claim.outputs.execute == 'true' }}");
-  assert.equal(final.if, '${{ !cancelled() }}');
+  // Evidence is retained for every claimed leg, including a failed oracle; a deferred leg has none (#1485).
+  assert.equal(final.if, "${{ !cancelled() && steps.outcome.outputs.verify == 'true' }}");
+  assert.equal(staged.if, "${{ steps.outcome.outputs.verify == 'true' }}");
   for (const upload of [stage, final]) {
     assert.equal(upload.with['if-no-files-found'], 'error');
     assert.equal(upload.with['include-hidden-files'], false);
@@ -329,8 +331,10 @@ test('only Codex installs Rust and resolves the actual compiler before the uncha
   const resolved = steps.indexOf(resolve);
   const independent = steps.findIndex(step => step.name === 'Independently compile delivered source and require exactly one output line');
   assert.ok(setup >= 0 && setup < resolved && resolved < independent);
-  assert.equal(steps[setup].if, "matrix.tool == 'codex'");
-  assert.equal(resolve.if, "matrix.tool == 'codex'");
+  // Only a claimed leg is verified (#1485); a deferred or refused leg has no delivered source.
+  assert.equal(steps[setup].if, "${{ steps.outcome.outputs.verify == 'true' && matrix.tool == 'codex' }}");
+  assert.equal(resolve.if, "${{ steps.outcome.outputs.verify == 'true' && matrix.tool == 'codex' }}");
+  assert.equal(steps[independent].if, "${{ steps.outcome.outputs.verify == 'true' }}");
   assert.equal(steps[independent].run, 'node .hive-protocol/scripts/check-hive-original-delivery.mjs');
   assert.match(resolve.run, /rustup which rustc/);
   assert.match(resolve.run, /test -x "\$hive_rust_compiler"/);
@@ -438,7 +442,7 @@ for (const options of [{
 test('real effects require current complete CI admission and immutable pre-effect claims; cleanup remains independently discoverable', () => {
   const workflow = parse(readFileSync(new URL('.github/workflows/hive-original-delivery.yml', new URL('../../../', import.meta.url)), 'utf8'));
   assert.equal(workflow.on.pull_request, undefined);
-  assert.deepEqual(workflow.on.workflow_run.workflows, ['*', '!Original Hive Mind three-client delivery', '!Finalize original Hive generated tasks']);
+  assert.deepEqual(workflow.on.workflow_run.workflows, ['*', '!Original Hive Mind three-client delivery', '!Finalize original Hive generated tasks', '!Hive CI phase timing']);
   assert.equal(workflow.concurrency['cancel-in-progress'], false);
   assert.equal(workflow.jobs.build.needs, 'admission');
   assert.match(workflow.jobs.build.if, /admitted/);

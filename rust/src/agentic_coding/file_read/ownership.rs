@@ -492,6 +492,17 @@ pub(in crate::agentic_coding) fn owned_read_paths(prompt: &str, role: &str) -> V
         paths
     }
 }
+/// A fetched work item states requirements, not read instructions: only the
+/// user's own turn governs reads, and the task stands in for it only when the
+/// transcript has no user turn (issue #1560).
+pub(in crate::agentic_coding) fn user_read_policy_blocks_plan(
+    messages: &[crate::protocol::ChatMessage],
+    task: &str,
+    plan: &AgenticPlan,
+) -> bool {
+    let request = crate::protocol::latest_user_request(messages);
+    read_policy_blocks_plan(request.as_deref().unwrap_or(task), plan)
+}
 pub(in crate::agentic_coding) fn read_policy_blocks_plan(prompt: &str, plan: &AgenticPlan) -> bool {
     let prompt = read_request_envelope(prompt).map_or(prompt, |(text, _, _)| text);
     let scopes = negative_read_objects(prompt);

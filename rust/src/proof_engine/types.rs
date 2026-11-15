@@ -190,6 +190,17 @@ impl ProofOutcome {
         }
     }
 
+    /// Confidence of the proof answer: a decided claim (proven or refuted)
+    /// above a partial plan, above an inconclusive reading.
+    #[must_use]
+    pub const fn confidence(&self) -> f64 {
+        match self {
+            Self::Proven { .. } | Self::Disproven { .. } => 0.85,
+            Self::PartialPlan { .. } => 0.6,
+            Self::Inconclusive { .. } => 0.4,
+        }
+    }
+
     /// Method label for the trace (where applicable).
     #[must_use]
     pub const fn method(&self) -> Option<ProofMethod> {

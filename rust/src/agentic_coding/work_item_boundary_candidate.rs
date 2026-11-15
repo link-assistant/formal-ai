@@ -1,14 +1,16 @@
 //! Native counterpart of work_item_boundary_candidate.mjs. The controller owns
 //! the whole task ledger; this module handles one seeded structural leaf only.
 use super::comparison_boundary::observed_comparison_boundary_operation;
-use super::final_result::{FinalDisposition, FinalResult, record};
-use super::planner::{AgenticPlan, Capability};
+use super::final_result::{FinalDisposition, FinalResult};
+use super::planner::{AgenticPlan, Capability, plan_one, tool_for};
 use super::shell_command_policy::sentences;
-use super::tool_result::{SourceReadObservation, SourceReadStatus};
+use super::tool_result::{SourceReadObservation, SourceReadStatus, command_argument};
 use super::work_item_file_io::{
-    FileIoPlan, WorkItemFileProgress as Progress, file_io_effect_step, file_io_pending_step,
-    file_io_read_step,
+    FileIoPlan, WorkItemFileProgress as Progress, file_io_certified_read_step, file_io_effect_step,
+    file_io_pending_step, file_io_read_step,
 };
+use super::work_item_leads::work_item_command;
+use super::work_item_report::{refusal, work_item_record_final};
 use crate::protocol::ChatMessage;
 use crate::seed::parser::parse_lino;
 use serde_json::{Value, json};
@@ -454,6 +456,161 @@ fn lower_file_io(plan: FileIoPlan) -> BoundaryEffectOutcome {
     }
 }
 
+/// The contract-derived check of a candidate (issue #1483): a command for the
+/// Run tool, the number of samples it executes and the declaration it imports.
+pub(super) struct BoundaryContractCheck<'a> {
+    pub(super) tool: &'a str,
+    pub(super) command: String,
+    pub(super) samples: usize,
+    pub(super) declaration: String,
+    /// Whether the command also runs the candidate's own regression test.
+    pub(super) regression: bool,
+}
+
+fn identifier(text: &str) -> bool {
+    let mut characters = text.chars();
+    characters
+        .next()
+        .is_some_and(|first| first.is_ascii_alphabetic() || first == '_' || first == '$')
+        && characters.all(|character| character.is_ascii_alphanumeric() || "_$".contains(character))
+}
+
+/// Mirrors `boundaryContractCheck`. Its samples apply the REQUESTED bound and
+/// inclusivity to the signature of the source observed before any effect,
+/// never to the candidate, and run against the current artifact through the
+/// Run tool: a repair that missed the bound fails it. A regression candidate
+/// also runs its own test file. None when no Run tool is advertised or the
+/// samples cannot be derived; the check then stays pending.
+pub(super) fn boundary_contract_check<'a>(
+    contract: &Value,
+    progress: &Progress,
+    tools: &[&'a str],
+) -> Option<BoundaryContractCheck<'a>> {
+    let run = tool_for(tools, Capability::Run)?;
+    let owner = contract["owner"].as_str()?;
+    let observations = boundary_candidate_observations(contract, progress);
+    let source = complete(observations.get(owner).copied().flatten())?;
+    let regression = contract["mode"].as_str() == Some("regression");
+    let test_owner = if regression {
+        contract["target"].as_str()?.to_owned()
+    } else if let Some(stem) = owner.strip_suffix(".mjs") {
+        format!("{stem}.formal-ai-check.mjs")
+    } else if let Some(stem) = owner.strip_suffix(".js") {
+        format!("{stem}.formal-ai-check.js")
+    } else {
+        owner.to_owned()
+    };
+    let request = json!({"source":source,"owner":owner,"declaration":contract["declaration"],"bound":contract["bound"],
+        "inclusive":contract["inclusive"],"mode":"regression","testOwner":test_owner});
+    let derived = observed_comparison_boundary_operation(&request).ok()?;
+    let samples = derived["samples"].as_array()?;
+    let declaration = derived["verification"]["declaration"].as_str()?;
+    if samples.is_empty() || samples.len() > 32 || !identifier(declaration) {
+        return None;
+    }
+    // Numbers print as JavaScript prints them, so both twins emit the same command.
+    let mut rows = Vec::with_capacity(samples.len());
+    for sample in samples {
+        let arguments = sample["args"]
+            .as_array()?
+            .iter()
+            // `+ 0.0` turns a negative zero into the zero JavaScript prints.
+            .map(|value| {
+                value
+                    .as_f64()
+                    .filter(|number| number.is_finite())
+                    .map(|number| number + 0.0)
+            })
+            .collect::<Option<Vec<f64>>>()?;
+        let expected = sample["expected"].as_bool()?;
+        let arguments = arguments
+            .iter()
+            .map(ToString::to_string)
+            .collect::<Vec<_>>()
+            .join(",");
+        rows.push(format!(
+            "{{\"args\":[{arguments}],\"expected\":{expected}}}"
+        ));
+    }
+    let rows = format!("[{}]", rows.join(","));
+    let script = format!(
+        "import {{{declaration} as f}} from \"./{owner}\";const s={rows};\
+         const bad=s.filter(x=>f(...x.args)!==x.expected);\
+         console.log(\"formal-ai-contract-check: \"+(bad.length?\"failed \":\"passed \")+(s.length-bad.length)+\"/\"+s.length);\
+         process.exitCode=bad.length?1:0;"
+    );
+    let sample_command = work_item_command("contractSampleCheck", &[("script", script.as_str())]);
+    let command = if regression {
+        work_item_command(
+            "regressionTestCheck",
+            &[
+                ("testOwner", test_owner.as_str()),
+                ("sampleCommand", sample_command.as_str()),
+            ],
+        )
+    } else {
+        sample_command
+    };
+    Some(BoundaryContractCheck {
+        tool: run,
+        command,
+        samples: samples.len(),
+        declaration: declaration.to_owned(),
+        regression,
+    })
+}
+
+/// The outcome of an executed contract check: passed, failed, or unavailable when its marker is missing.
+pub(super) fn boundary_check_outcome(
+    check: &BoundaryContractCheck<'_>,
+    attempt: &super::work_item_file_io::FileIoAttempt,
+) -> &'static str {
+    static SAMPLE: std::sync::OnceLock<regex::Regex> = std::sync::OnceLock::new();
+    static REGRESSION: std::sync::OnceLock<regex::Regex> = std::sync::OnceLock::new();
+    let sample = SAMPLE.get_or_init(|| {
+        regex::Regex::new(r"formal-ai-contract-check: (passed|failed) ([0-9]+)/([0-9]+)")
+            .expect("StaticCheckMarker")
+    });
+    let regression = REGRESSION.get_or_init(|| {
+        regex::Regex::new(r"formal-ai-regression-test: (passed|failed)").expect("StaticCheckMarker")
+    });
+    let text = attempt.raw_receipt.as_deref().unwrap_or(&attempt.detail);
+    let Some(samples) = sample.captures(text) else {
+        return "unavailable";
+    };
+    if samples[3].parse::<usize>().ok() != Some(check.samples) {
+        return "unavailable";
+    }
+    if check.regression {
+        let Some(outcome) = regression.captures(text) else {
+            return "unavailable";
+        };
+        if &outcome[1] == "failed" {
+            return "failed";
+        }
+    }
+    if &samples[1] == "passed" {
+        "passed"
+    } else {
+        "failed"
+    }
+}
+
+/// The latest Run attempt of exactly `command`.
+fn check_attempt_for<'p>(
+    progress: &'p Progress,
+    command: &str,
+) -> Option<&'p super::work_item_file_io::FileIoAttempt> {
+    progress.research_attempts().iter().rev().find(|attempt| {
+        attempt.capability == Capability::Run
+            && attempt
+                .arguments
+                .as_deref()
+                .and_then(command_argument)
+                .is_some_and(|argument| argument == command)
+    })
+}
+
 /// Native whole-route wrapper. The work-item router invokes this before its
 /// generic latest-failure/read fallback. Whole-task status remains Gap until a
 /// separate independent checker, outside this candidate, accepts requirements.
@@ -468,21 +625,47 @@ pub(super) fn plan_work_item_boundary_step(
     let contract = boundary_work_item_contract(task, paths_for_clause)?;
     let progress = Progress::scan(messages);
     let mut observations = Vec::new();
-    let finish = |reason: &str,
-                  observations: &[Value],
-                  candidate: Option<&Value>,
-                  effect: Option<&Value>,
-                  detail: Value,
-                  result: &mut Option<FinalResult>| {
+    // The work item is split into requirements before any evidence is read; a
+    // requirement overlapping the bound clause awaits its independent check.
+    let source_start = contract["sourceSpan"][0].as_u64().unwrap_or(u64::MAX);
+    let source_end = contract["sourceSpan"][1].as_u64().unwrap_or(u64::MAX);
+    let requirements=super::work_item_requirements::work_item_requirements(task).into_iter().map(|(text,(start,end))|json!({
+        "text":text,"span":[start,end],"status":if (start as u64)<source_end&&(end as u64)>source_start{"independent_check_pending"}else{"unresolved"}
+    })).collect::<Vec<_>>();
+    let finish_with = |reason: &str,
+                       observations: &[Value],
+                       candidate: Option<&Value>,
+                       (effect, contract_check): (Option<&Value>, Option<&Value>),
+                       detail: Value,
+                       refused: Option<Value>,
+                       result: &mut Option<FinalResult>| {
         let authored = effect.is_some_and(|value| value["implementationChanged"] == true);
-        let source_start = contract["sourceSpan"][0].as_u64().unwrap_or(u64::MAX);
-        let source_end = contract["sourceSpan"][1].as_u64().unwrap_or(u64::MAX);
-        let requirements=crate::obligation_ledger::clauses_with_spans(task).into_iter().map(|(text,(start,end))|json!({
-            "text":text,"span":[start,end],"status":if (start as u64)<=source_start&&(end as u64)>=source_end{"independent_check_pending"}else{"unresolved"}
-        })).collect::<Vec<_>>();
+        // Only an executed, contract-derived check discharges the bound requirement.
+        let checked = effect.is_some_and(|value| value["verified"] == true)
+            && contract_check.is_some_and(|check| check["status"] == "passed");
+        let mut requirements = requirements.clone();
+        if checked {
+            for requirement in &mut requirements {
+                if requirement["status"] == "independent_check_pending" {
+                    requirement["status"] = json!("verified");
+                }
+            }
+        }
+        let all_verified = checked
+            && !requirements.is_empty()
+            && requirements
+                .iter()
+                .all(|value| value["status"] == "verified");
         let candidate_view=candidate.map(|candidate| {
             let mut checks=candidate["checks"].as_array().cloned().unwrap_or_default();
-            for check in &mut checks {if check["kind"]=="physical-readback"{check["status"]=json!(if effect.is_some_and(|value|value["verified"]==true){"passed"}else{"pending"});}}
+            for check in &mut checks {
+                if check["kind"]=="physical-readback"{check["status"]=json!(if effect.is_some_and(|value|value["verified"]==true){"passed"}else{"pending"});}
+                else if let Some(executed) = contract_check.filter(|_| check["kind"]=="independent-task-acceptance") {
+                    check["status"] = executed["status"].clone();
+                    check["detail"] = json!("contract-derived-execution");
+                }
+            }
+            checks.extend(contract_check.cloned());
             json!({"kind":candidate["kind"],"mode":candidate["mode"],"path":candidate["path"],
                 "beforeIdentity":candidate["beforeIdentity"],"afterIdentity":candidate["afterIdentity"],
                 "sourceIdentity":candidate["sourceIdentity"],"sourceOwner":candidate["sourceOwner"],
@@ -493,19 +676,58 @@ pub(super) fn plan_work_item_boundary_step(
             .as_ref()
             .map(|value| value["checks"].clone())
             .unwrap_or_else(|| json!([]));
-        let remaining=requirements.iter().map(|value|json!({"text":value["text"],"span":value["span"],"reason":if value["status"]=="independent_check_pending"{"independent-requirement-acceptance-required"}else{"unsupported-or-unbound-obligation"}})).collect::<Vec<_>>();
-        let payload = json!({"schema":"repository-work-item-controller/v1","transportDiagnostics":progress.transport_diagnostics(),"reason":reason,"workItem":work_item,
+        let remaining=requirements.iter().filter(|value|value["status"]!="verified").map(|value|json!({"text":value["text"],"span":value["span"],"reason":if value["status"]=="independent_check_pending"{"independent-requirement-acceptance-required"}else{"unsupported-or-unbound-obligation"}})).collect::<Vec<_>>();
+        let mut payload = json!({"schema":"repository-work-item-controller/v1","transportDiagnostics":progress.transport_diagnostics(),"reason":reason,"workItem":work_item,
             "taskIdentity":digest(task),"requirements":requirements,"supportedSubset":"finite-number-interval-boundary-and-regression",
             "boundContract":contract,"observations":observations,"candidate":candidate_view,"checks":checks,
-            "effects":effect.into_iter().collect::<Vec<_>>(),"authored":authored,"verified":false,"independentlyAccepted":false,"complete":false,
+            "effects":effect.into_iter().collect::<Vec<_>>(),"authored":authored,"verified":checked,"independentlyAccepted":checked,"complete":all_verified,
             "physicalReadbackVerified":effect.is_some_and(|value|value["verified"]==true),"noOp":effect.is_some_and(|value|value["noOp"]==true),
-            "usefulChange":{"observed":authored,"independentlyAccepted":false,"paths":if authored{vec![contract["target"].clone()]}else{Vec::new()}},
+            "usefulChange":{"observed":authored,"independentlyAccepted":checked&&authored,"paths":if authored{vec![contract["target"].clone()]}else{Vec::new()}},
             "authorshipBoundary":{"mechanism":"supplied-generic-structural-operation","targetOutputObserved":authored,"autonomousCredit":0,"laterReviewerWork":"not-observed"},
             "remainingWork":remaining,"budget":{"maximumEffects":1,"maximumEvidenceFiles":2},"detail":detail});
-        record(
-            AgenticPlan::Final(payload.to_string()),
-            FinalDisposition::Gap,
+        if let Some(refused) = refused {
+            payload["refused"] = refused;
+        }
+        work_item_record_final(
+            payload,
+            task,
+            if all_verified {
+                FinalDisposition::Finding
+            } else {
+                FinalDisposition::Gap
+            },
             "repository_work_item_boundary",
+            result,
+        )
+    };
+    let finish = |reason: &str,
+                  observations: &[Value],
+                  candidate: Option<&Value>,
+                  effect: Option<&Value>,
+                  detail: Value,
+                  result: &mut Option<FinalResult>| {
+        finish_with(
+            reason,
+            observations,
+            candidate,
+            (effect, None),
+            detail,
+            None,
+            result,
+        )
+    };
+    // A refused read names the path and the requirement it concerns.
+    let refuse = |path: &str,
+                  observations: &[Value],
+                  candidate: Option<&Value>,
+                  result: &mut Option<FinalResult>| {
+        finish_with(
+            "ReadPolicyRefused",
+            observations,
+            candidate,
+            (None, None),
+            Value::Null,
+            Some(refusal(&requirements, path)),
             result,
         )
     };
@@ -533,6 +755,9 @@ pub(super) fn plan_work_item_boundary_step(
         let Some(observed) = progress.source_read_for(path) else {
             return Some(match file_io_read_step(messages, tools, path, task) {
                 FileIoPlan::Pending(step) => step,
+                FileIoPlan::Gap(reason) if reason == "ReadPolicyRefused" => {
+                    refuse(path, &observations, None, result)
+                }
                 FileIoPlan::Gap(reason) => {
                     finish(&reason, &observations, None, None, Value::Null, result)
                 }
@@ -550,6 +775,9 @@ pub(super) fn plan_work_item_boundary_step(
         };
         observations.push(json!({"path":path,"complete":source.is_some(),"absent":observed.absent,"error":observed.error,"status":status,"sourceIdentity":source.map(digest)}));
         if source.is_none() && !allowed_absent {
+            if let Some(step) = file_io_certified_read_step(messages, tools, path) {
+                return Some(step);
+            }
             return Some(finish(
                 "IncompleteSourceObservation",
                 &observations,
@@ -574,32 +802,61 @@ pub(super) fn plan_work_item_boundary_step(
         ));
     };
     match plan_boundary_candidate_effect(candidate, messages, tools, task) {
-        BoundaryEffectOutcome::Pending(step) => {
-            Some(if super::file_read::read_policy_blocks_plan(task, &step) {
-                finish(
-                    "ReadPolicyRefused",
+        BoundaryEffectOutcome::Pending(step) => Some(
+            if super::file_read::user_read_policy_blocks_plan(messages, task, &step) {
+                refuse(
+                    candidate["path"].as_str().unwrap_or_default(),
                     &observations,
                     Some(candidate),
-                    None,
-                    Value::Null,
                     result,
                 )
             } else {
                 step
-            })
-        }
-        BoundaryEffectOutcome::Effect(effect) => Some(finish(
-            if effect["noOp"] == true {
+            },
+        ),
+        BoundaryEffectOutcome::Effect(effect) => {
+            let unchanged = effect["noOp"] == true;
+            let awaiting = if unchanged {
                 "VerifiedNoOpAwaitingIndependentAcceptance"
             } else {
                 "UsefulCandidateAwaitingIndependentAcceptance"
-            },
-            &observations,
-            Some(candidate),
-            Some(&effect),
-            Value::Null,
-            result,
-        )),
+            };
+            // The readback-verified artifact is then executed against samples derived from the contract.
+            let Some(check) = boundary_contract_check(&contract, &progress, tools) else {
+                return Some(finish(
+                    awaiting,
+                    &observations,
+                    Some(candidate),
+                    Some(&effect),
+                    Value::Null,
+                    result,
+                ));
+            };
+            let Some(attempt) = check_attempt_for(&progress, &check.command) else {
+                return Some(plan_one(
+                    check.tool,
+                    json!({"command":check.command}).to_string(),
+                ));
+            };
+            let status = boundary_check_outcome(&check, attempt);
+            let executed = json!({"kind":"contract-derived-execution","command":check.command,
+                "samples":check.samples,"declaration":check.declaration,"status":status});
+            let (reason, detail) = match status {
+                "passed" if unchanged => ("VerifiedNoOp", Value::Null),
+                "passed" => ("UsefulChangeVerified", Value::Null),
+                "failed" => ("IndependentCheckFailed", json!({"check":executed})),
+                _ => ("IndependentCheckUnavailable", json!({"check":executed})),
+            };
+            Some(finish_with(
+                reason,
+                &observations,
+                Some(candidate),
+                (Some(&effect), Some(&executed)),
+                detail,
+                None,
+                result,
+            ))
+        }
         BoundaryEffectOutcome::Gap(reason) => Some(finish(
             &reason,
             &observations,

@@ -1,0 +1,2 @@
+#1455 calls=11 json=false reason=UsefulCandidateReadbackVerified disposition=gap changed=["M docs/associative-tech-stack.md"]
+  Partly done: https://github.com/link-assistant/formal-ai/issues/1455. The session stopped at `UsefulCandidateReadbackVerified` after a change that an independent check accepted; the requirements and work listed below are

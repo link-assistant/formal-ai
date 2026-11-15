@@ -1,0 +1,60 @@
+352497900	Agent CLI E2E	.github/workflows/agent-cli-e2e.yml	active
+317081228	Agentic CLI Matrix	.github/workflows/agentic-cli-matrix.yml	active
+365467481	Benchmark Corpus Gate	.github/workflows/benchmark-corpus-gate.yml	active
+418966775	Hive CI phase timing	.github/workflows/ci-phase-timing.yml	active
+360230817	Coding Ladder	.github/workflows/coding-ladder.yml	active
+371348562	container-images	.github/workflows/container-images.yml	active
+327489828	Coverage	.github/workflows/coverage.yml	active
+381952158	Cross-organization duplication	.github/workflows/cross-org-duplication.yml	active
+381952159	dependencies-latest	.github/workflows/dependencies-latest.yml	active
+285976160	Desktop Release	.github/workflows/desktop-release.yml	active
+381952160	Check slim Docker runtime	.github/workflows/docker-slim.yml	active
+400425529	Documentation policy	.github/workflows/documentation-policy.yml	active
+371348548	e2e-isolation	.github/workflows/e2e-isolation.yml	active
+367697015	E2E Tests (local web app)	.github/workflows/e2e-local.yml	active
+356249542	Self-hosting evidence	.github/workflows/evidence-check.yml	active
+322514347	External Benchmarks	.github/workflows/external-benchmarks.yml	active
+380484532	Observe read-only GitHub authorization profiles	.github/workflows/github-readonly-authorization-fixture.yml	active
+399081117	Retain Hive Mind draft job logs	.github/workflows/hive-mind-draft-logs.yml	active
+386917813	Hive Mind draft	.github/workflows/hive-mind-draft.yml	active
+392761102	Finalize original Hive generated tasks	.github/workflows/hive-original-delivery-finalize.yml	active
+388452672	Original Hive Mind three-client delivery	.github/workflows/hive-original-delivery.yml	active
+392761104	Hive source event provenance	.github/workflows/hive-source-provenance.yml	active
+341318034	Issue 1028 Agent CLI binary-tree ladder	.github/workflows/issue-1028-agent-ladder.yml	active
+351187239	Job Headroom	.github/workflows/job-headroom.yml	active
+366859257	Layered CI	.github/workflows/layered-ci.yml	active
+323367137	Learning cycle (proposal only)	.github/workflows/learning-cycle.yml	active
+332228384	Broken Link Checker	.github/workflows/links.yml	active
+335279816	macOS Core Tests	.github/workflows/macos-core-tests.yml	active
+381952163	Native whole-response observations	.github/workflows/native-response-observations.yml	active
+381952165	Build GitHub Pages artifact	.github/workflows/pages-artifact.yml	active
+336556509	Pin base commit	.github/workflows/pin-base-commit.yml	active
+325899575	Proactive failure report Agent CLI E2E	.github/workflows/proactive-failure-report-e2e.yml	active
+388383054	Resolve provenance native dependencies	.github/workflows/provenance-native-dependencies.yml	active
+388405317	Native provenance interoperability and performance	.github/workflows/provenance-native.yml	active
+378936332	Publish browser engine	.github/workflows/publish-engine.yml	active
+379316407	Publish source networks	.github/workflows/publish-source-networks.yml	active
+378936333	Publish VS Code extension	.github/workflows/publish-vscode.yml	active
+399535312	Pull request coverage profile	.github/workflows/pull-request-check-profile.yml	active
+333966984	Question necessity ratchet	.github/workflows/question-necessity-ratchet.yml	active
+380705702	Regenerate native session projections	.github/workflows/regenerate-native-session-projections.yml	active
+352543601	Verify full readable source content	.github/workflows/regenerate-self-ast-census.yml	active
+381952169	Controlled text artifact reusable fixture	.github/workflows/release-runtime-fixture-callee.yml	active
+380107171	Harmless reusable release runtime fixture	.github/workflows/release-runtime-fixture.yml	active
+381952172	Staged release candidate	.github/workflows/release-staged.yml	active
+275256427	CI/CD Pipeline	.github/workflows/release.yml	active
+332228385	Security	.github/workflows/security.yml	active
+354946568	Self-authored backlog	.github/workflows/self-authored-backlog.yml	active
+352883707	Self-authored pull request	.github/workflows/self-authored-pull-request.yml	active
+354946571	Self-development status	.github/workflows/self-development-status.yml	active
+387633087	Source scanner qualification and debt inventory	.github/workflows/source-scanner-qualification.yml	active
+380484533	Guarded staged release authority refusal	.github/workflows/staged-release-authority-fixture.yml	active
+331374636	Stock Rust Install	.github/workflows/stock-rust-install.yml	active
+327482558	Summarization Ratchet	.github/workflows/summarization-ratchet.yml	active
+320037327	Task Ladder	.github/workflows/task-ladder.yml	active
+387476366	Verify Public Release Downloads	.github/workflows/verify-release-downloads.yml	active
+371348614	Web UI boundary	.github/workflows/web-ui-boundary.yml	active
+403619268	Work-item useful-edit hosted qualification	.github/workflows/work-item-qualification.yml	active
+350899483	Workflows	.github/workflows/workflows.yml	active
+327282672	Write-Effect Ladder	.github/workflows/write-effect-ladder.yml	active
+335009275	Dependency Graph	dynamic/dependabot/update-graph	active

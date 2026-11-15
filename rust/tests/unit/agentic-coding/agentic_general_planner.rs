@@ -1,4 +1,7 @@
 use formal_ai::agentic_coding::general_planner::{PLAN_PATH, compose_general_change_plan};
+use formal_ai::agentic_coding::work_item_report::{
+    parses_as_json_object, reported_work_item_record,
+};
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step, run_agentic_task};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 
@@ -282,10 +285,13 @@ fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() 
     )
     .expect("the owned offline issue body");
     assert_eq!(outcome.steps[1].result, body);
-    let evidence: serde_json::Value =
-        serde_json::from_str(&outcome.final_answer).expect("structured unsupported-work-item gap");
+    // The answer is the localized report; the record stays in the trace and a
+    // fetched issue body never refuses a read on the user's behalf (#1560).
+    assert!(!parses_as_json_object(&outcome.final_answer));
+    let evidence = reported_work_item_record(&outcome.final_answer)
+        .expect("structured unsupported-work-item gap");
     assert_eq!(evidence["schema"], "repository-work-item-evidence/v1");
-    assert_eq!(evidence["reason"], "ReadPolicyRefused");
+    assert_ne!(evidence["reason"], "ReadPolicyRefused");
     assert_eq!(evidence["authored"], false);
     assert_eq!(evidence["verified"], false);
     assert_eq!(evidence["decomposition"][2]["status"], "not_executed");
@@ -359,7 +365,9 @@ fn original_documentation_issue_with_invalid_evidence_never_claims_implementatio
     let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
         panic!("bounded evidence collection must terminate")
     };
-    let evidence: serde_json::Value = serde_json::from_str(&answer).expect("structured evidence");
+    // Issue #1560: the answer is a localized report; the record stays in the trace.
+    assert!(!parses_as_json_object(&answer), "{answer}");
+    let evidence = reported_work_item_record(&answer).expect("the report's work-item record");
     assert_eq!(evidence["schema"], "repository-work-item-controller/v1");
     assert_eq!(evidence["reason"], "UnsupportedManifestDocumentationSource");
     assert_eq!(evidence["complete"], false);

@@ -801,11 +801,20 @@ const HELLO_WORLD_PROGRAM_LITERALS_MAX: usize = 1;
 /// as their authors wrote them; the 5 are code the issues quote (issues 408,
 /// 1156 and 1188), read as requirements and never answered from.
 ///
+/// The Agent CLI request captured for issue #1558 (PR #1563) is the request
+/// body the agent sent, recorded verbatim; the 4 are the vendor TodoWrite tool
+/// description's own example (`print("Hello World")` and its prose), part of
+/// the agent's tool schema, never an answer Formal AI gives.
+///
 /// Each is counted on its own ratchet so the source data stays visible and
 /// cannot grow without a new capture.
-const SOURCE_CAPTURES: [(&str, usize); 2] = [
+const SOURCE_CAPTURES: [(&str, usize); 3] = [
     ("data/seed/coding-documentation-captures.lino", 23),
     ("data/benchmarks/issue-requirements/", 5),
+    (
+        "data/benchmarks/fixtures/issue-1558/agent-cli-request.json",
+        4,
+    ),
 ];
 
 /// The index of the capture a repository-relative path belongs to (mirrors

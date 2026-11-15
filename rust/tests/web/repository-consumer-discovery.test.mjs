@@ -12,6 +12,13 @@ import {WorkerHost} from '../../../js/server/worker-host.mjs';
 import {installNodeHost} from '../../../js/agentic/node-host.mjs';
 import {host,installHost} from '../../../js/agentic/host.mjs';
 import {fileIoCommand,fileIoSearchCommand} from '../../../js/agentic/work_item_file_io.mjs';
+import { workItemRecordOf, parsesAsJsonObject } from '../../../js/agentic/work_item_report.mjs';
+function recorded(plan) {
+  assert.equal(parsesAsJsonObject(plan.answer), false, 'a work-item answer is a report, not a JSON object');
+  const record = plan.record ?? workItemRecordOf(plan);
+  assert.ok(record, 'a work-item final keeps its record');
+  return record;
+}
 const blocked=()=>{throw Error('LocalProductWasmForbidden');};
 await installNodeHost(new WorkerHost({WebAssembly:{...WebAssembly,compile:blocked,instantiate:blocked,Module:blocked,Instance:blocked}}),{sourceUsageRustGrammar:process.env.CI==='true'});
 const baselineHost=host();
@@ -62,7 +69,7 @@ async function run(root,variant){
    }
   }});
  assert.equal(result.stop,'final');
- return {...result,state:JSON.parse(result.answer),search,interference};
+ return {...result,state:recorded(result),search,interference};
 }
 test('real bounded search uses dependency alias and fresh reads before a mocked syntax witness',async context=>{
  const root=workspace(context),result=await run(root);
@@ -73,7 +80,11 @@ test('real bounded search uses dependency alias and fresh reads before a mocked 
  assert.deepEqual(discovery.confirmedOwners,['native/src/lib.rs']);
  assert.equal(discovery.candidates.find(row=>row.path==='native/src/comment.rs').syntaxConfirmed,false);
  assert.ok(fs.readFileSync(path.join(root,'docs/runtime.md'),'utf8').startsWith(guide));
- assert.equal(result.state.complete,false);assert.equal(result.state.verified,false);
+ // The edit passes the textual source-anchored check; the mocked syntax witness
+ // grants no semantic acceptance, so integration semantics stays open (#1483).
+ assert.equal(result.state.verified,true);assert.equal(result.state.complete,false);
+ assert.ok(result.state.remainingWork.includes('independent-integration-semantics'),JSON.stringify(result.state.remainingWork));
+ assert.ok(!result.state.remainingWork.includes('independent-requirement-acceptance'));
 });
 test('changing a searched source before its read refuses custody without an edit',async context=>{
  const root=workspace(context),result=await run(root,'changed-before-read');
@@ -110,6 +121,10 @@ test('CI real Rust grammar confirms the discovered consumer without granting sem
  const discovery=result.state.facts.find(row=>row.kind==='observed-consumer-discovery');
  assert.deepEqual(discovery.confirmedOwners,['native/src/lib.rs']);
  assert.equal(discovery.candidates.find(row=>row.path==='native/src/comment.rs').syntaxConfirmed,false);
- assert.equal(result.state.complete,false);assert.equal(result.state.verified,false);
+ // The edit passes the textual source-anchored check; the mocked syntax witness
+ // grants no semantic acceptance, so integration semantics stays open (#1483).
+ assert.equal(result.state.verified,true);assert.equal(result.state.complete,false);
+ assert.ok(result.state.remainingWork.includes('independent-integration-semantics'),JSON.stringify(result.state.remainingWork));
+ assert.ok(!result.state.remainingWork.includes('independent-requirement-acceptance'));
  assert.equal(result.transcript.filter(row=>row.tool==='edit').length,1);
 });

@@ -1,5 +1,5 @@
 //! Manual native projection of owned source-repair intake; CI-only qualification.
-use super::final_result::{FinalDisposition, FinalResult, record};
+use super::final_result::{FinalDisposition, FinalResult};
 use super::planner::{AgenticPlan, Capability};
 use super::shell_command_policy::sentences;
 use super::source_dictionary_binding::derive_own_key_dictionary_repair;
@@ -9,8 +9,9 @@ use super::work_item_file_io::FileIoAttempt;
 use super::work_item_file_io::{
     FileIoPlan, WorkItemFileProgress, file_io_effect_step, file_io_pending_step, file_io_read_step,
 };
+use super::work_item_report::{refusal, work_item_record_final};
+use super::work_item_requirements::work_item_requirements;
 use crate::normal_markov::{quote_fault, quoted_segment_spans};
-use crate::obligation_ledger::clauses_with_spans;
 use crate::protocol::ChatMessage;
 use crate::seed::parser::parse_lino;
 use crate::source_fetch::sha256_hex;
@@ -138,10 +139,28 @@ fn finish(
     failure: bool,
     result: &mut Option<FinalResult>,
 ) -> AgenticPlan {
+    finish_refused(state, reason, failure, None, result)
+}
+/// The record is rendered as a localized answer; a refused read names the
+/// path and the requirement it concerns (issue #1560).
+fn finish_refused(
+    state: &Value,
+    reason: &str,
+    failure: bool,
+    refused: Option<&str>,
+    result: &mut Option<FinalResult>,
+) -> AgenticPlan {
     let mut payload = state.clone();
     payload["reason"] = json!(reason);
-    record(
-        AgenticPlan::Final(payload.to_string()),
+    if let Some(path) = refused {
+        let requirements = state["requirements"]
+            .as_array()
+            .map_or(&[][..], Vec::as_slice);
+        payload["refused"] = refusal(requirements, path);
+    }
+    work_item_record_final(
+        payload,
+        state["task"].as_str().unwrap_or_default(),
         if failure {
             FinalDisposition::Failure
         } else {
@@ -157,6 +176,20 @@ fn io(plan: FileIoPlan, state: &Value, result: &mut Option<FinalResult>) -> Agen
         FileIoPlan::Gap(reason) => finish(state, &reason, false, result),
     }
 }
+/// A read of `path`; a refused read names the path.
+fn read_io(
+    plan: FileIoPlan,
+    path: &str,
+    state: &Value,
+    result: &mut Option<FinalResult>,
+) -> AgenticPlan {
+    match plan {
+        FileIoPlan::Gap(reason) if reason == "ReadPolicyRefused" => {
+            finish_refused(state, &reason, false, Some(path), result)
+        }
+        plan => io(plan, state, result),
+    }
+}
 pub(super) fn plan_owned_source_repair(
     task: &str,
     messages: &[ChatMessage],
@@ -167,12 +200,9 @@ pub(super) fn plan_owned_source_repair(
     let contract = source_repair_contract(task)?;
     let progress = WorkItemFileProgress::scan(messages);
     let attempts = progress.research_attempts();
-    let mut requirements: Vec<_>=clauses_with_spans(task).into_iter().map(|(text,(start,end))|json!({"text":text,"span":[start,end],"kind":"source-repair","status":"unverified"})).collect();
-    if requirements.is_empty() {
-        requirements.push(
-            json!({"text":task,"span":[0,task.len()],"kind":"source-repair","status":"unverified"}),
-        );
-    }
+    // The work item is split into requirements before any evidence is read, so
+    // a refusal names the requirement it concerns (issue #1560).
+    let requirements: Vec<_>=work_item_requirements(task).into_iter().map(|(text,(start,end))|json!({"text":text,"span":[start,end],"kind":"source-repair","status":"unverified"})).collect();
     let mut state = json!({"schema":"owned-source-repair/v1","task":task,"taskIdentity":sha256_hex(task.as_bytes()),"workItem":work_item,"source":contract["owner"],"target":contract["owner"],"requirements":requirements,"observations":[],"candidateEdits":[],"checks":[],"effects":[],"remainingWork":["source-repair-operation","independent-requirement-acceptance"],"authored":false,"verified":false,"complete":false});
     if contract["authority"] != "owned" {
         return Some(finish(
@@ -236,7 +266,7 @@ pub(super) fn plan_owned_source_repair(
                 result,
             ));
         }
-        return Some(io(planned, &state, result));
+        return Some(read_io(planned, owner, &state, result));
     }
     let original = prior.iter().find_map(|(_, attempt)| complete(attempt));
     let latest = prior.last().and_then(|(_, attempt)| complete(attempt));
@@ -351,8 +381,9 @@ pub(super) fn plan_owned_source_repair(
     }
     let fresh = reads(attempts.len(), Some(effect_index));
     let Some((_, fresh)) = fresh.last() else {
-        return Some(io(
+        return Some(read_io(
             file_io_read_step(messages, tools, owner, task),
+            owner,
             &state,
             result,
         ));

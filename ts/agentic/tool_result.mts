@@ -478,9 +478,15 @@ function envelopeResult(envelope) {
   return result('', error, 'text', envelope.exit_code);
 }
 
+/**
+ * Mirrors `fn untrusted_inner`: a harness envelope frames the whole result.
+ * An envelope quoted inside source text (an issue body that shows a tool
+ * receipt) is data, not the receipt of this call (issue #1560).
+ */
 function untrustedInner(text) {
-  const open = splitOnce(text, '<untrusted_context>');
-  const close = open && splitOnce(open[1], '</untrusted_context>');
+  const framed = trim(text);
+  if (!framed.startsWith('<untrusted_context>')) return text;
+  const close = splitOnce(framed.slice('<untrusted_context>'.length), '</untrusted_context>');
   return close ? close[0] : text;
 }
 

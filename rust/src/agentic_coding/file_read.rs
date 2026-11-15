@@ -5,7 +5,7 @@ mod audit;
 mod ownership;
 pub(super) use ownership::{
     bound_read_paths, owned_read_paths, pending_read_condition, read_policy_blocks_plan,
-    read_request_envelope,
+    read_request_envelope, user_read_policy_blocks_plan,
 };
 mod exact;
 mod records;

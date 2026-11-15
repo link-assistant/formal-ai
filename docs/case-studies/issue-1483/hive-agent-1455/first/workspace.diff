@@ -1,0 +1,40 @@
+diff --git a/docs/associative-tech-stack.md b/docs/associative-tech-stack.md
+index 240a42dd6..737490462 100644
+--- a/docs/associative-tech-stack.md
++++ b/docs/associative-tech-stack.md
+@@ -230,3 +230,35 @@ When an integration changes, update this guide from executable evidence:
+ The project catalog in `data/seed/projects.lino` records a wider ecosystem for
+ discovery. Catalog membership alone is not evidence that a component executes
+ inside Formal AI.
++
++<!-- formal-ai-manifest-start: rust/Cargo.toml -->
++Dependency declarations from `rust/Cargo.toml`:
++These are literal manifest declarations; they do not establish executable runtime use.
++| Dependency | Declared version | Dependency section | Target qualifier | Literal options |
++| --- | --- | --- | --- | --- |
++| `command-stream` | `1.5` | `dependencies` | `unqualified` | `{}` |
++| `web-capture` | `0.3.37` | `dependencies` | `cfg(not(target_arch = "wasm32"))` | `{"default-features":false,"features":["search"]}` |
++| `web-search` | `0.6.0` | `dependencies` | `cfg(not(target_arch = "wasm32"))` | `{"default-features":false,"features":["merge"]}` |
++<!-- formal-ai-manifest-end: rust/Cargo.toml -->
++
++<!-- formal-ai-manifest-start: package.json -->
++Dependency declarations from `package.json`:
++These are literal manifest declarations; they do not establish executable runtime use.
++| Dependency | Declared version | Dependency section | Target qualifier | Literal options |
++| --- | --- | --- | --- | --- |
++| `@link-assistant/web-search` | `0.11.1` | `dependencies` | `unqualified` | `{}` |
++<!-- formal-ai-manifest-end: package.json -->
++
++Source syntax observed in `js/web-search-component-entry.js`:
++
++Imported `getDefaultProviderIds` from `@link-assistant/web-search` is called in `js/web-search-component-entry.js`; the following excerpt records its syntax.
++
++```javascript
++getDefaultProviderIds()
++```
++
++Imported `mergeResults` from `@link-assistant/web-search` is called in `js/web-search-component-entry.js`; the following excerpt records its syntax.
++
++```javascript
++mergeResults(grouped, { strategy: "rrf", rrfK: k, removeDuplicates: true })
++```

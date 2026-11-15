@@ -12,6 +12,9 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
 
 use formal_ai::agentic_coding::repetition_guard::repeated_action_stop;
+use formal_ai::agentic_coding::work_item_report::{
+    latest_work_item_record, parses_as_json_object, reported_work_item_record,
+};
 use formal_ai::protocol::{ChatCompletionRequest, ChatMessage, create_chat_completion_with_solver};
 use formal_ai::{SolverConfig, UniversalSolver};
 use serde_json::Value;
@@ -276,7 +279,11 @@ fn settled(session: &Session) -> Value {
         None,
         "the transcript holds no repeated action"
     );
-    let report: Value = serde_json::from_str(answer).expect("a structured evidence report");
+    // Issue #1560: the answer is a localized report; the record stays in the trace.
+    assert!(!parses_as_json_object(answer), "{answer}");
+    let report = reported_work_item_record(answer)
+        .or_else(latest_work_item_record)
+        .expect("a structured evidence report");
     assert_eq!(report["schema"], "repository-work-item-evidence/v1");
     assert_eq!(report["authored"], false);
     assert_eq!(report["verified"], false);

@@ -6,6 +6,13 @@ import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
 import { planWorkItemEvidence, workItemEvidencePaths } from '../../../js/agentic/work_item_evidence.mjs';
 import { planChatStep } from '../../../js/agentic/planner.mjs';
+import { workItemRecordOf, parsesAsJsonObject } from '../../../js/agentic/work_item_report.mjs';
+function recorded(plan) {
+  assert.equal(parsesAsJsonObject(plan.answer), false, 'a work-item answer is a report, not a JSON object');
+  const record = plan.record ?? workItemRecordOf(plan);
+  assert.ok(record, 'a work-item final keeps its record');
+  return record;
+}
 const fixture = JSON.parse(readFileSync('data/benchmarks/fixtures/work-item-1455/failure.json', 'utf8'));
 before(async () => installNodeHost(new WorkerHost({
   WebAssembly: {
@@ -71,7 +78,7 @@ test('the evidence collector retains original task sources without claiming an i
   }
   const result = planWorkItemEvidence(fixture.title + '\n\n' + fixture.objective, messages, tools, fixture.issue);
   assert.equal(result.kind, 'final');
-  const evidence = JSON.parse(result.answer);
+  const evidence = recorded(result);
   assert.equal(evidence.reason, 'EvidenceCollected');
   assert.equal(evidence.workItem, fixture.issue);
   assert.equal(evidence.authored, false);
@@ -95,7 +102,7 @@ test('the evidence collector retains original task sources without claiming an i
 });
 test('missing tool, failed and truncated reads terminate without repeating an action or writing', () => {
   const task = 'Investigate package.json before implementing the requested integration.';
-  assert.equal(JSON.parse(planWorkItemEvidence(task, [], []).answer).reason, 'MissingReadTool');
+  assert.equal(recorded(planWorkItemEvidence(task, [], [])).reason, 'MissingReadTool');
   for (const extra of [{
     is_error: true
   }, {
@@ -115,7 +122,7 @@ test('missing tool, failed and truncated reads terminate without repeating an ac
     }, 'untrusted incomplete source', extra);
     const result = planWorkItemEvidence(task, messages, ['read', 'write']);
     assert.equal(result.kind, 'final');
-    const report = JSON.parse(result.answer);
+    const report = recorded(result);
     // A failed read with no search tool leaves the reference unresolved (issue #1558); a partial read stays incomplete.
     assert.equal(report.reason, extra.is_error ? 'UnresolvedReferences' : 'IncompleteSourceObservation');
     assert.equal(report.observations[0].sourceIdentity, null);
@@ -131,7 +138,7 @@ test('paths are bounded, deduplicated and cannot become shell or traversal instr
   assert.equal(planWorkItemEvidence('An unsupported obligation with no repository paths', [], ['read']), null);
 });
 test('read prohibitions and oversized observations remain unverified', () => {
-  assert.equal(JSON.parse(planWorkItemEvidence('Do not read package.json. Investigate package.json.', [], ['read']).answer).reason, 'ReadPolicyRefused');
+  assert.equal(recorded(planWorkItemEvidence('Do not read package.json. Investigate package.json.', [], ['read'])).reason, 'ReadPolicyRefused');
   const task = 'Investigate package.json.',
     messages = [{
       role: 'user',
@@ -147,7 +154,7 @@ test('read prohibitions and oversized observations remain unverified', () => {
       format: 'raw'
     }
   });
-  assert.equal(JSON.parse(planWorkItemEvidence(task, messages, ['read']).answer).reason, 'IncompleteSourceObservation');
+  assert.equal(recorded(planWorkItemEvidence(task, messages, ['read'])).reason, 'IncompleteSourceObservation');
 });
 test('source references preserve native Unicode separator semantics', () => {
   assert.deepEqual(workItemEvidencePaths('Inspect\u0085Cargo.toml.'), ['Cargo.toml']);
@@ -186,7 +193,7 @@ test('captured original issue with invalid evidence terminates without effects',
     observe(messages,call.tool,args,'observed source\n',{source_read:{path,success:true,complete:true,format:'raw'}});
   }
   const result=await planChatStep(messages,tools);
-  assert.equal(result.kind,'final');const state=JSON.parse(result.answer);
+  assert.equal(result.kind,'final');const state=recorded(result);
   assert.equal(state.schema,'repository-work-item-controller/v1');
   assert.equal(state.reason,'UnsupportedManifestDocumentationSource');
   for(const field of ['authored','verified','complete'])assert.equal(state[field],false);
@@ -194,4 +201,75 @@ test('captured original issue with invalid evidence terminates without effects',
   assert.equal(state.workItem,fixture.issue);assert.deepEqual(state.observations.map(row=>row.path),paths);
   assert.ok(state.requirements.length>0);assert.ok(state.requirements.every(row=>row.status==='unverified'));
   for(const row of state.observations){assert.equal(row.complete,true);assert.equal(row.sourceIdentity,createHash('sha256').update('observed source\n').digest('hex'));}
+});
+// Issue #1483: a completed evidence collection names the narrowest gap it
+// leaves, and a work item that links only related pages names them.
+function collected(task, path, source) {
+  const messages = [{ role: 'user', content: task }];
+  observe(messages, 'read', { path }, source, { source_read: { path, success: true, complete: true, format: 'raw', source } });
+  const result = planWorkItemEvidence(task, messages, ['read', 'write']);
+  assert.equal(result.kind, 'final');
+  return { record: recorded(result), answer: result.answer };
+}
+test('an interface the requirements ask for and no read source defines is the named gap', () => {
+  const task = 'Add a categorical interface to js/rules.mjs.\n\nProposed addition: assessContext(evidence) returning supported or unknown.';
+  const { record, answer } = collected(task, 'js/rules.mjs', 'export function aggregate(evidence) { return evidence; }\n');
+  assert.equal(record.reason, 'EvidenceCollected');
+  assert.equal(record.gap, 'RequestedInterfaceAbsent');
+  assert.ok(record.remainingWork.includes('create-interface:assessContext'), JSON.stringify(record.remainingWork));
+  assert.ok(!record.remainingWork.includes('implement-requested-change'));
+  assert.match(answer, /Narrowest open gap: `RequestedInterfaceAbsent`\./u);
+  assert.match(answer, /- `create-interface:assessContext`/u);
+});
+test('an interface the read source already defines leaves the files no change recipe covers', () => {
+  const task = 'Change js/rules.mjs so that aggregate(evidence) keeps provenance.';
+  const { record } = collected(task, 'js/rules.mjs', 'export function aggregate(evidence) { return evidence; }\n');
+  assert.equal(record.gap, 'NoChangeRecipe');
+  assert.ok(record.remainingWork.includes('change-recipe-unavailable:js/rules.mjs'), JSON.stringify(record.remainingWork));
+});
+test('a work item that links only related pages names each as unresolved evidence', () => {
+  const task = 'Organize the blockers.\n\nSee https://github.com/example/other/issues/1 and https://github.com/example/tool.';
+  const result = planWorkItemEvidence(task, [{ role: 'user', content: task }], ['read', 'write'], 'https://github.com/example/project/issues/9');
+  assert.equal(result.kind, 'final');
+  const record = recorded(result);
+  assert.equal(record.reason, 'RelatedEvidenceUnread');
+  assert.deepEqual(record.unresolved.map(row => [row.reference, row.kind, row.reason]), [
+    ['https://github.com/example/other/issues/1', 'related', 'RelatedPageNotRead'],
+    ['https://github.com/example/tool', 'related', 'RelatedPageNotRead']]);
+  assert.equal(record.gap, undefined);
+  assert.match(result.answer, /`RelatedEvidenceUnread`/u);
+  assert.equal(planWorkItemEvidence('Organize the blockers.', [], ['read']), null, 'a work item with no lead is left to the general planner');
+});
+// The frozen issue bodies of #1395, #1396 and #1438 (work-item-1483 fixtures):
+// attachments are named, never described; a linked document that cannot be
+// fetched is named; neither ends in an unexplained stop or a write.
+const frozen = JSON.parse(readFileSync('data/benchmarks/fixtures/work-item-1483/issues.json', 'utf8')).issues;
+function leadsOf(number) {
+  const issue = frozen[number], task = issue.title + '\n\n' + issue.body, messages = [{ role: 'user', content: task }];
+  const tools = [];
+  for (let step = 0; step < 12; step += 1) {
+    const plan = planWorkItemEvidence(task, messages, ['read', 'grep', 'glob', 'webfetch', 'write'], issue.url);
+    assert.ok(plan, `issue ${number} is a work item with leads`);
+    if (plan.kind === 'final') return { record: recorded(plan), answer: plan.answer, tools };
+    const call = plan.calls[0];
+    tools.push(call.tool);
+    observe(messages, call.tool, JSON.parse(call.arguments), call.tool === 'webfetch' ? 'Error: network access is not available' : 'Error: File not found');
+  }
+  assert.fail(`issue ${number} did not end within 12 steps`);
+}
+test('the attachments of issues 1395 and 1396 are the named gap, never described', () => {
+  for (const [number, count] of [['1395', 1], ['1396', 2]]) {
+    const { record, answer, tools } = leadsOf(number);
+    assert.equal(record.reason, 'AttachmentEvidenceUnavailable', number);
+    assert.deepEqual(record.unresolved.map(row => [row.kind, row.reason]), Array(count).fill(['attachment', 'AttachmentContentUnavailable']), number);
+    assert.ok(!tools.includes('write') && !tools.includes('edit'), number);
+    assert.match(answer, /`AttachmentEvidenceUnavailable`/u);
+  }
+});
+test('the linked document of issue 1438 that cannot be fetched is the named gap', () => {
+  const { record, answer, tools } = leadsOf('1438');
+  assert.deepEqual(tools, ['webfetch']);
+  assert.equal(record.reason, 'ExternalEvidenceUnavailable');
+  assert.deepEqual(record.unresolved.map(row => [row.kind, row.reason]), [['document', 'FetchFailed']]);
+  assert.match(answer, /`ExternalEvidenceUnavailable`/u);
 });

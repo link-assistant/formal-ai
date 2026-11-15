@@ -299,3 +299,40 @@ fn intent_formalization_cache_exports_to_durable_links_store() {
     assert!(exported.contains("intent_formalization"), "{exported}");
     assert!(exported.contains("kind \\\"task\\\""), "{exported}");
 }
+
+#[test]
+fn intent_formalization_cache_keeps_operator_distinct_requests_apart() {
+    // Issue #1487: `a < b` and `a <= b` normalize to the same words, so they
+    // share an impulse id; the cache must not hand one request the other's
+    // record. A repeated request (up to whitespace) still hits.
+    let mut cache = IntentFormalizationCache::new();
+    let pairs = [
+        (
+            "Write a JavaScript function that returns whether a < b.",
+            "Write a JavaScript function that returns whether a <= b.",
+        ),
+        (
+            "Write a JavaScript function that returns a - b.",
+            "Write a JavaScript function that returns a + b.",
+        ),
+    ];
+    for (first, second) in pairs {
+        assert_eq!(
+            formal_ai::impulse_id_for(first),
+            formal_ai::impulse_id_for(second)
+        );
+        let earlier = cache.formalize_or_insert(first, "en", None);
+        assert!(!earlier.cache_hit, "{first}");
+        let later = cache.formalize_or_insert(second, "en", None);
+        assert!(!later.cache_hit, "{second} reused {first}");
+        assert_eq!(later.formalization.source_text, second);
+        assert_eq!(
+            cache.get(second).map(|record| record.source_text.as_str()),
+            None,
+            "{second}"
+        );
+        let repeated = cache.formalize_or_insert(&format!("  {first}  "), "en", None);
+        assert!(repeated.cache_hit, "{first} repeated");
+        assert_eq!(repeated.formalization.source_text, first);
+    }
+}

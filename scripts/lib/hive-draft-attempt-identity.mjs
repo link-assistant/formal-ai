@@ -19,15 +19,25 @@ export const ATTEMPT_OUTCOMES = Object.freeze({
   mismatch: 'identity-mismatch',
   servingUnverified: 'serving-identity-unverified',
 });
-/** Session files written next to Hive Mind's own attempt-identity.json/attempt-record.json. */
+/**
+ * Session files written next to Hive Mind's own attempt-identity.json/attempt-record.json.
+ *
+ * Issue #1569: Hive Mind's typed outcome must not be named `<phase>-outcome.json`. The same directory
+ * receives `scripts/capture-draft-command.mjs`'s own `attempt-outcome.json` capture record
+ * (`draft-command-outcome/v1`), which it rewrites when the attempt ends. Under the old name every
+ * attempt read that record as a Hive outcome and was reported as `deferred-infrastructure`,
+ * "Hive Mind ended the attempt before solve", even when solve ran (run 43691120627).
+ */
 export const FILES = Object.freeze({
   identity: 'formal-ai-attempt-identity.json',
   outcome: 'formal-ai-attempt-outcome.json',
   receipt: 'formal-ai-attempt-receipt.json',
   hiveIdentity: 'attempt-identity.json',
   hiveRecord: 'attempt-record.json',
-  hiveOutcome: 'attempt-outcome.json',
+  hiveOutcome: 'attempt-hive-outcome.json',
 });
+/** The schema of the capture record `capture-draft-command.mjs` writes; never a Hive Mind outcome. */
+export const CAPTURE_OUTCOME_SCHEMA = 'draft-command-outcome/v1';
 const SHA1 = /^[0-9a-f]{40}$/u;
 const SHA256 = /^[0-9a-f]{64}$/u;
 const SEMVER = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/u;
@@ -134,6 +144,8 @@ export function verifyHiveAttempt({identity, hiveIdentity = null, hiveRecord = n
     const receipt = {...base, outcome, servingVerified: outcome === ATTEMPT_OUTCOMES.verified, ...extra};
     return {...receipt, currentSourceCredit: currentSourceCredit(receipt)};
   };
+  // A capture record is the wrapper's account of the process, not Hive Mind's verdict on the attempt.
+  if (hiveOutcome?.schema === CAPTURE_OUTCOME_SCHEMA) hiveOutcome = null;
   if (hiveOutcome) return result([ATTEMPT_OUTCOMES.deferred, ATTEMPT_OUTCOMES.mismatch].includes(hiveOutcome.outcome) ? hiveOutcome.outcome : ATTEMPT_OUTCOMES.deferred, {reason: String(hiveOutcome.message ?? 'Hive Mind ended the attempt before solve')});
   if (!hiveIdentity || !hiveRecord)
     return result(ATTEMPT_OUTCOMES.servingUnverified, {reason: 'the shared Hive Mind checkout produced no ' + (hiveIdentity ? FILES.hiveRecord : FILES.hiveIdentity) + '; it predates the attempt identity contract (link-assistant/hive-mind#3909)'});

@@ -1,0 +1,112 @@
+check_run_id	check	level	location	message
+132748183724	no benchmark prompt reaches the unknown opener (all shards)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132748031492	resolve	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132747822066	Resolve target release	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132747821361	resolve	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132747820957	resolve	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132747778405	Pipeline Status	failure	.github:150	Process completed with exit code 1.
+132747778405	Pipeline Status	failure	.github:149	Pipeline failed. Failing jobs: lint, build-artifacts
+132747778405	Pipeline Status	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132747737864	Matrix summary	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132747682221	Learn reusable client contracts	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132746400053	Measure Hive draft and delivery phases	warning	.github:86	delivery-wall exceeded 3600 in 1 of 1 runs (40668396305=3620)
+132746400053	Measure Hive draft and delivery phases	warning	.github:85	delivery-image-transfer-per-leg exceeded 300 in 1 of 1 runs (40668396305=491)
+132746400053	Measure Hive draft and delivery phases	warning	.github:84	delivery-image-prep exceeded 1200 in 1 of 1 runs (40668396305=1651)
+132745691809	Corpus shard 3	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745691807	Corpus shard 6	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745691799	Corpus shard 5	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745691778	Corpus shard 2	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745691762	Corpus shard 1	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745691760	Corpus shard 4	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745687557	Lint and Format Check (lane 3)	notice	.github:47	100% - 671 hits, 0 misses, 0 errors
+132745687557	Lint and Format Check (lane 3)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745687542	Lint and Format Check (lane 2)	notice	.github:47	100% - 671 hits, 0 misses, 0 errors
+132745687542	Lint and Format Check (lane 2)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745687497	Default-feature documentation tests	notice	.github:47	100% - 618 hits, 0 misses, 0 errors
+132745687497	Default-feature documentation tests	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745687489	Lint and Format Check (lane 4)	notice	.github:47	100% - 1117 hits, 0 misses, 0 errors
+132745687489	Lint and Format Check (lane 4)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745687459	Build binaries and tests	notice	.github:47	100% - 652 hits, 0 misses, 0 errors
+132745687459	Build binaries and tests	warning	.github:36	No files were found with the provided path: /home/runner/work/_temp/native-agentic-protocol-captures. No artifacts will be uploaded.
+132745687459	Build binaries and tests	failure	.github:56	Process completed with exit code 1.
+132745687459	Build binaries and tests	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745687455	Lint and Format Check (lane 1)	notice	.github:49	100% - 921 hits, 0 misses, 0 errors
+132745687455	Lint and Format Check (lane 1)	failure	.github:2157	Process completed with exit code 1.
+132745687455	Lint and Format Check (lane 1)	failure	.github:2156	2 gate(s) failed in stage `rust`: check-generated-version-literals, check-ordered-lists-are-canonical
+132745687455	Lint and Format Check (lane 1)	failure	.github:1029	gate `check-ordered-lists-are-canonical` failed (exit status: 1); see data/meta/ci-gates/check-ordered-lists-are-canonical.lino
+132745687455	Lint and Format Check (lane 1)	failure	.github:1025	1 ordered list(s) are not in canonical order.
+132745687455	Lint and Format Check (lane 1)	failure	.github:794	gate `check-generated-version-literals` failed (exit status: 1); see data/meta/ci-gates/check-generated-version-literals.lino
+132745687455	Lint and Format Check (lane 1)	notice	data/cache/wordnet/en:0	Closure-driven cache bucket holds 713 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+132745687455	Lint and Format Check (lane 1)	notice	data/cache/wiktionary/en:0	Closure-driven cache bucket holds 254 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+132745687455	Lint and Format Check (lane 1)	notice	data/cache/wikidata/entity:0	Closure-driven cache bucket holds 469 records (cap 128). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every record must stay referenced.
+132745687455	Lint and Format Check (lane 1)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745687442	Secrets Scan	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745494473	E2E (cursor)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745494455	E2E (grok)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745494454	E2E (agent)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745494448	E2E (gemini)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745494445	E2E (opencode-desktop)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745494438	E2E (t3code)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745494434	E2E (aider)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745494426	E2E (opencode-vscode)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745494423	E2E (qwen)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745494420	E2E (claude)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745494419	E2E (opencode)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745494413	E2E (codex)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745299778	js tier (node --check over js, suite group 5)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745299717	js tier (node --check over js, suite group 7)	failure	.github:1674	Process completed with exit code 1.
+132745299717	js tier (node --check over js, suite group 7)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745299703	js tier (node --check over js, suite group 4)	failure	.github:1613	Process completed with exit code 1.
+132745299703	js tier (node --check over js, suite group 4)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745299674	js tier (node --check over js, suite group 1)	failure	.github:1080	no attempt identity was admitted by the build job; nothing is run on an unselected backend
+132745299674	js tier (node --check over js, suite group 1)	failure	.github:1079	the admitted Formal AI binary of aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa is unavailable; the attempt is deferred rather than run on another backend
+132745299674	js tier (node --check over js, suite group 1)	failure	.github:1078	the Formal AI binary hashes to dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd, but the attempt admitted cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+132745299674	js tier (node --check over js, suite group 1)	failure	.github:122	no attempt identity was admitted by the build job; nothing is run on an unselected backend
+132745299674	js tier (node --check over js, suite group 1)	failure	.github:121	the admitted Formal AI binary of aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa is unavailable; the attempt is deferred rather than run on another backend
+132745299674	js tier (node --check over js, suite group 1)	failure	.github:120	the Formal AI binary hashes to dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd, but the attempt admitted cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+132745299674	js tier (node --check over js, suite group 1)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745299651	js tier (node --check over js, suite group 8)	failure	.github:1696	Process completed with exit code 1.
+132745299651	js tier (node --check over js, suite group 8)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745299640	js tier (node --check over js, suite group 2)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745299631	js tier (node --check over js, suite group 3)	notice	.github:1208	agent, codex did not run and received no credit; the same candidate resumes after its prerequisites succeed
+132745299631	js tier (node --check over js, suite group 3)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745299618	js tier (node --check over js, suite group 6)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745202808	publish	warning	.github:118	This extension consists of 1538 files, out of which 282 are JavaScript files. For performance reasons, you should bundle your extension: https://aka.ms/vscode-bundle-extension. You should also exclude unnecessary files by adding them to your .vscodeignore: https://aka.ms/vscode-vscodeignore.
+132745202808	publish	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745135251	Release Preflight	warning	.github:29	2 verified, 1 unknown -- proceeding, but the unknown probes above did not confirm anything
+132745135251	Release Preflight	warning	.github:28	UNKNOWN: crates.io publish token -- token present; crates.io offers no token-accepting read endpoint (GET /api/v1/me is cookie-only), so only `cargo publish` can prove it
+132745135251	Release Preflight	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745135092	Detect Changes	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745134049	Build the corpus gate binary	notice	.github:47	100% - 618 hits, 0 misses, 0 errors
+132745134049	Build the corpus gate binary	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133930	Full source network serialization (7/16)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133924	Full source network serialization (8/16)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133915	Full source network serialization (1/16)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133908	Full source network serialization (14/16)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133886	Full source network serialization (0/16)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133861	Full source network serialization (15/16)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133836	Build formal-ai	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133807	Full source network serialization (9/16)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133799	Actionlint	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133781	Full source network serialization (3/16)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133760	Detect Changes	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133744	Full source network serialization (11/16)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133690	Replay recorded sessions	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133651	Full source network serialization (12/16)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133635	stock-rust-install	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133612	CodeQL (actions)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133609	Full source network serialization (6/16)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133608	Full source network serialization (13/16)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133603	Full source network serialization (2/16)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133600	Full source network serialization (10/16)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133596	Zizmor	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133594	Full source network serialization (4/16)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133578	Full source network serialization (5/16)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133574	Self-development floor and debt ratchet since the last tag	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133566	Declare temporary coverage scope	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133539	Cargo audit	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133512	resolve	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133417	Detect tier changes	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133355	CodeQL (rust)	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133351	documentation-policy	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+132745133348	Link parser regressions	notice	.github:1	"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"

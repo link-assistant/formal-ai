@@ -152,6 +152,8 @@ import { guardedStep, isGuardRead } from './literal_write_guard.mjs';
 import { Progress, isWorkItemRead, qualifiedToolAttempt } from './progress.mjs';
 import { failedVerification, harnessReportedFailure, observedPayload, reportedExitCode, renderFailure, commandArgument, incompleteReceipt } from './tool_result.mjs';
 import { fill } from './work_item_steps.mjs';
+import { workItemPageText } from './work_item_page.mjs';
+import { reportedWorkItemFinal } from './work_item_report.mjs';
 import { observedRecoveryCommand, planRecovery } from './prerequisite_recovery.mjs';
 import { programContractAnswer } from './crate/coding_program_contract.mjs';
 import { planWorkItemEvidence, workItemEvidencePaths } from './work_item_evidence.mjs';
@@ -176,7 +178,13 @@ export function planWorkItemChangeStep(messages, toolNames, plan) {
 
 const command = (text) => jsonText({ command: text });
 
+/** A work-item session's terminal is a localized report, never JSON (issue #1560). */
 function generalChangeStep(messages, toolNames, plan, resolvedFromWorkItem) {
+  const step = changeStep(messages, toolNames, plan, resolvedFromWorkItem);
+  return resolvedFromWorkItem || plan.mode === GeneralPlanMode.RepositoryWorkItem ? reportedWorkItemFinal(step, plan.goal ?? '') : step;
+}
+
+function changeStep(messages, toolNames, plan, resolvedFromWorkItem) {
   // A literal-file write reads its target first unless the request names a
   // whole-file write, and never replaces an existing file unasked (PR #1188 T96).
   const guarded = guardedStep(plan, messages, toolNames);
@@ -499,6 +507,11 @@ function repositoryWorkItemObjective(plan, progress) {
       // gh's title/body text is already extracted; raw HTML is not.
       if (/^\s*(?:<!doctype\s+html|<html\b)/iu.test(text)
         || /<body\b|<nav\b|<script\b/iu.test(text)) continue;
+      // A fetched page keeps its title and body; a page without a body is
+      // rejected so the REST and gh api reads run instead (issue #1560).
+      const page = workItemPageText(text);
+      if (page === null) continue;
+      text = page;
     }
     if (trim(text) !== '') return text;
   }

@@ -8,12 +8,20 @@ import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import {pathToFileURL} from 'node:url';
 import {createHash} from 'node:crypto';
+import {spawnSync} from 'node:child_process';
 import {WorkerHost} from '../../../js/server/worker-host.mjs';
 import {installNodeHost} from '../../../js/agentic/node-host.mjs';
 import {planChatStep} from '../../../js/agentic/planner.mjs';
 import {drive} from '../../../experiments/js_dogfood/drive.mjs';
 import {planWorkItemBoundaryStep} from '../../../js/agentic/work_item_boundary_candidate.mjs';
 import {workItemEvidencePaths} from '../../../js/agentic/work_item_evidence.mjs';
+import { workItemRecordOf, parsesAsJsonObject } from '../../../js/agentic/work_item_report.mjs';
+function recorded(plan) {
+  assert.equal(parsesAsJsonObject(plan.answer), false, 'a work-item answer is a report, not a JSON object');
+  const record = plan.record ?? workItemRecordOf(plan);
+  assert.ok(record, 'a work-item final keeps its record');
+  return record;
+}
 before(async()=>installNodeHost(new WorkerHost({WebAssembly:{
   compile(){throw Error('LocalProductWasmForbidden');},instantiate(){throw Error('LocalProductWasmForbidden');},
 }})));
@@ -33,7 +41,7 @@ test('production planner/drive performs a guarded structural leaf and retains ex
     const result=await drive(planChatStep,directory,task,{steps:12,tools:['read','edit','write'],allowedCommands:[]});
     assert.equal(result.stop,'final');
     assert.deepEqual(result.transcript.map(row=>row.tool),['read','edit','read']);
-    const report=JSON.parse(result.answer);
+    const report=recorded(result);
     assert.equal(report.schema,'repository-work-item-controller/v1');
     assert.equal(report.taskIdentity,digest(task));assert.equal(report.workItem,null);
     assert.equal(report.physicalReadbackVerified,true);assert.equal(report.authored,true);
@@ -49,7 +57,7 @@ test('production planner/drive performs a guarded structural leaf and retains ex
     assert.ok(after.includes('export function untouched(value) { return value * 3; }'));
     const replay=await drive(planChatStep,directory,task,{steps:8,tools:['read','edit','write'],allowedCommands:[]});
     assert.equal(replay.stop,'final');assert.deepEqual(replay.transcript.map(row=>row.tool),['read']);
-    const replayReport=JSON.parse(replay.answer);assert.equal(replayReport.noOp,true);assert.equal(replayReport.authored,false);
+    const replayReport=recorded(replay);assert.equal(replayReport.noOp,true);assert.equal(replayReport.authored,false);
     assert.equal(readFileSync(join(directory,'src/ceiling.mjs'),'utf8'),after);
   }finally{rmSync(directory,{recursive:true,force:true});}
 });
@@ -62,7 +70,7 @@ test('an unsupported expression stays an explicit gap with no physical edit',asy
     const result=await drive(planChatStep,directory,task,{steps:8,tools:['read','edit','write'],allowedCommands:[]});
     assert.equal(result.stop,'final');assert.deepEqual(result.transcript.map(row=>row.tool),['read']);
     assert.equal(readFileSync(join(directory,'src/ceiling.mjs'),'utf8'),unsupported);
-    const report=JSON.parse(result.answer);assert.equal(report.verified,false);assert.equal(report.authored,false);
+    const report=recorded(result);assert.equal(report.verified,false);assert.equal(report.authored,false);
     assert.equal(report.complete,false);assert.ok(report.remainingWork.length>0);
   }finally{rmSync(directory,{recursive:true,force:true});}
 });
@@ -95,9 +103,85 @@ test('ambiguous reads or edits and unrelated mutations terminate before another 
     }
     const plan=planWorkItemBoundaryStep(task,messages,['read','edit','write'],null,workItemEvidencePaths);
     assert.equal(plan.kind,'final',variant);
-    const report=JSON.parse(plan.answer);
+    const report=recorded(plan);
     assert.equal(report.reason,expected,variant);assert.equal(report.authored,false);
     assert.equal(report.physicalReadbackVerified,false);assert.equal(report.complete,false);
     assert.equal(report.detail.budget.observed,variant==='totalBudget'?2:variant==='ambiguousRead'?0:1);
   }
+});
+
+// Issue #1483: with a Run tool the readback-verified artifact is executed
+// against samples derived from the requested bound (not from the candidate);
+// only that executed check verifies the bound requirement.
+test('a Run tool executes the contract-derived check; a replay is a verified no-op',async()=>{
+  const directory=mkdtempSync(join(tmpdir(),'formal-ai-boundary-check-'));
+  try{
+    mkdirSync(join(directory,'src'));writeFileSync(join(directory,'src/ceiling.mjs'),source);
+    const result=await drive(planChatStep,directory,task,{steps:12,tools:['read','edit','write','bash']});
+    assert.equal(result.stop,'final');
+    assert.deepEqual(result.transcript.map(row=>row.tool),['read','edit','read','bash']);
+    const report=recorded(result);
+    assert.equal(report.reason,'UsefulChangeVerified');
+    assert.equal(report.verified,true);assert.equal(report.authored,true);assert.equal(report.complete,true);
+    const check=report.checks.find(row=>row.kind==='contract-derived-execution');
+    assert.equal(check.status,'passed');assert.equal(check.declaration,'accepts');
+    assert.ok(report.requirements.every(row=>row.status==='verified'));
+    assert.deepEqual(report.remainingWork,[]);
+    // The localized report states the accepted change, its file and every check outcome.
+    assert.match(result.answer,/^Done: the request\. The session stopped at `UsefulChangeVerified`/u);
+    assert.ok(result.answer.includes('Files changed: `src/ceiling.mjs`.'));
+    assert.ok(result.answer.includes('`contract-derived-execution` passed'));
+    assert.ok(result.answer.includes('All requirements were verified (1).'));
+    assert.ok(!result.answer.includes('not yet verified'));
+    const replay=await drive(planChatStep,directory,task,{steps:8,tools:['read','edit','write','bash']});
+    assert.deepEqual(replay.transcript.map(row=>row.tool),['read','bash']);
+    const replayed=recorded(replay);
+    assert.equal(replayed.reason,'VerifiedNoOp');assert.equal(replayed.noOp,true);
+    assert.equal(replayed.authored,false);assert.equal(replayed.verified,true);
+    assert.match(replay.answer,/^Already done: the request\./u);assert.ok(!replay.answer.includes('Files changed'));
+  }finally{rmSync(directory,{recursive:true,force:true});}
+});
+
+test('a regression test over a source that meets the requested bound is written, passes on its own and replays as a no-op',async()=>{
+  const directory=mkdtempSync(join(tmpdir(),'formal-ai-boundary-regression-pass-'));
+  const regression='Add a regression test in test/ceiling.test.mjs for the upper bound of function accepts in src/ceiling.mjs: the maximum is inclusive.';
+  const inclusive=source.replace('value < maximum','value <= maximum');
+  try{
+    mkdirSync(join(directory,'src'));mkdirSync(join(directory,'test'));writeFileSync(join(directory,'src/ceiling.mjs'),inclusive);
+    const result=await drive(planChatStep,directory,regression,{steps:12,tools:['read','edit','write','bash']});
+    assert.equal(result.stop,'final');
+    const report=recorded(result);
+    assert.equal(report.reason,'UsefulChangeVerified');
+    assert.equal(report.verified,true);assert.equal(report.authored,true);assert.equal(report.complete,true);
+    assert.equal(report.checks.find(row=>row.kind==='contract-derived-execution').status,'passed');
+    assert.ok(report.requirements.every(row=>row.status==='verified'));
+    assert.match(result.answer,/^Done: the request\. The session stopped at `UsefulChangeVerified`/u);
+    assert.ok(result.answer.includes('Files changed: `test/ceiling.test.mjs`.'));
+    assert.equal(readFileSync(join(directory,'src/ceiling.mjs'),'utf8'),inclusive,'the source under test is not touched');
+    // The written test is run by plain node, outside the controller.
+    const run=spawnSync(process.execPath,['--test',join(directory,'test/ceiling.test.mjs')],{encoding:'utf8',timeout:60000});
+    assert.equal(run.status,0,run.stdout+run.stderr);
+    const replay=await drive(planChatStep,directory,regression,{steps:8,tools:['read','edit','write','bash']});
+    const replayed=recorded(replay);
+    assert.equal(replayed.reason,'VerifiedNoOp');assert.equal(replayed.noOp,true);assert.equal(replayed.authored,false);
+    assert.ok(!replay.answer.includes('Files changed'));
+  }finally{rmSync(directory,{recursive:true,force:true});}
+});
+
+test('a regression test over a source that contradicts the requested bound fails its check',async()=>{
+  const directory=mkdtempSync(join(tmpdir(),'formal-ai-boundary-regression-check-'));
+  const regression='Add a regression test in test/ceiling.test.mjs for the upper bound of function accepts in src/ceiling.mjs: the maximum is inclusive.';
+  try{
+    mkdirSync(join(directory,'src'));mkdirSync(join(directory,'test'));writeFileSync(join(directory,'src/ceiling.mjs'),source);
+    const result=await drive(planChatStep,directory,regression,{steps:12,tools:['read','edit','write','bash']});
+    assert.equal(result.stop,'final');
+    const report=recorded(result);
+    assert.equal(report.reason,'IndependentCheckFailed');
+    assert.equal(report.verified,false);assert.equal(report.complete,false);
+    assert.equal(report.checks.find(row=>row.kind==='contract-derived-execution').status,'failed');
+    assert.ok(report.requirements.every(row=>row.status!=='verified'));
+    assert.match(result.answer,/^Not verified: the request\. The session stopped at `IndependentCheckFailed`/u);
+    assert.ok(result.answer.includes('`contract-derived-execution` failed'));
+    assert.ok(result.answer.includes('Requirements not yet verified (1):\n1. '));
+  }finally{rmSync(directory,{recursive:true,force:true});}
 });

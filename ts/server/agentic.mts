@@ -11,6 +11,7 @@ import { invalidArguments } from '../agentic/crate/tool_call_validation.mjs';
 import { serverMessage } from './messages.mjs';
 import { repeatedActionStop } from '../agentic/repetition_guard.mjs';
 import { observedPlanTerminal } from '../logging/terminal-events.mjs';
+import { workItemRecordOf } from '../agentic/work_item_report.mjs';
 import { currentDialogId } from './dialog-log.mjs';
 import { plainText, requestsToolExecution } from './chat-request.mjs';
 import { estimateTokens, stableId } from './ids.mjs';
@@ -162,10 +163,13 @@ function logPlanTerminal(ctx, plan) {
     reason: 'planned_not_executed',
     origin: 'client_execution_pending'
   };
+  // A work-item answer is a localized report; its record stays in the log (issue #1560).
+  const workItemRecord = workItemRecordOf(plan);
   ctx.logger?.log(terminal.reason === 'success' ? 'info' : 'debug', 'agent.terminal', {
     component: 'agent',
     dialog_id: currentDialogId(),
     ...terminal,
+    ...(workItemRecord === null ? {} : { work_item_record: workItemRecord }),
     scope: 'server_response',
     task_delivery: 'Unknown'
   });

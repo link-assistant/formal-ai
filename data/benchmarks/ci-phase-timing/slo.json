@@ -1,0 +1,25 @@
+{
+  "schema": "formal-ai-ci-phase-slo/v1",
+  "issue": 1486,
+  "window": 3,
+  "objectives": [
+    { "id": "draft-queue", "workflow": "Hive Mind draft", "workflowFile": "hive-mind-draft.yml", "metric": "queue.maxSeconds", "max": 300,
+      "baseline": { "run": 41191429608, "value": 87 } },
+    { "id": "draft-compile-warm", "workflow": "Hive Mind draft", "workflowFile": "hive-mind-draft.yml", "metric": "phase.compile.maxJobSeconds", "max": 60,
+      "when": { "compile.mode": "reuse" }, "baseline": { "note": "no same-identity reuse existed before issue #1486; every draft compiled" } },
+    { "id": "draft-compile-cold", "workflow": "Hive Mind draft", "workflowFile": "hive-mind-draft.yml", "metric": "phase.compile.maxJobSeconds", "max": 720,
+      "when": { "compile.mode": "build" }, "baseline": { "run": 41191429608, "value": 353 } },
+    { "id": "draft-wall", "workflow": "Hive Mind draft", "workflowFile": "hive-mind-draft.yml", "metric": "wallSeconds", "max": 1800,
+      "when": { "attempts.total": { "min": 1 } }, "baseline": { "run": 41191429608, "value": 1337 } },
+    { "id": "delivery-image-prep", "workflow": "Original Hive Mind three-client delivery", "workflowFile": "hive-original-delivery.yml",
+      "metric": "phase.image-prep.maxJobSeconds", "max": 1200, "when": { "attempts.total": { "min": 1 } }, "baseline": { "run": 40475832633, "value": 952 } },
+    { "id": "delivery-image-transfer-per-leg", "workflow": "Original Hive Mind three-client delivery", "workflowFile": "hive-original-delivery.yml",
+      "metric": "phase.image-transfer.maxJobSeconds", "max": 300, "when": { "attempts.total": { "min": 1 } }, "baseline": { "run": 40475832633, "value": 1882 } },
+    { "id": "delivery-image-load-per-leg", "workflow": "Original Hive Mind three-client delivery", "workflowFile": "hive-original-delivery.yml",
+      "metric": "phase.image-load.maxJobSeconds", "max": 600, "when": { "attempts.total": { "min": 1 } }, "baseline": { "run": 40475832633, "value": 407 } },
+    { "id": "delivery-image-bundle-bytes", "workflow": "Original Hive Mind three-client delivery", "workflowFile": "hive-original-delivery.yml",
+      "metric": "bytes.imageBundle", "max": 2147483648, "window": 1, "baseline": { "note": "8.48 GB full candidate archive per leg before issue #1486 (artifact expired; from the image job log)" } },
+    { "id": "delivery-wall", "workflow": "Original Hive Mind three-client delivery", "workflowFile": "hive-original-delivery.yml", "metric": "wallSeconds", "max": 3600,
+      "when": { "attempts.total": { "min": 1 } }, "baseline": { "run": 40475832633, "value": 4734 } }
+  ]
+}

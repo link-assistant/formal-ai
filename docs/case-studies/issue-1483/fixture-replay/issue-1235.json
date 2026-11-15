@@ -1,0 +1,110 @@
+{
+ "calls": [
+  "bash {\"command\":\"gh issue view 'https://github.com/link-assistant/formal-ai/issues/1235' --json title --jq .title && echo && gh issue view 'https://github.com/link-a",
+  "read {\"filePath\":\"js/agentic/crate/relative_meta_logic.mjs\",\"file_path\":\"js/agentic/crate/relative_meta_logic.mjs\",\"path\":\"js/agentic/crate/relative_meta_logic.mjs\"}"
+ ],
+ "answer": "Not completed: https://github.com/link-assistant/formal-ai/issues/1235. The session stopped at `EvidenceCollected` and changed no repository file.\n\nFiles read: `js/agentic/crate/relative_meta_logic.mjs`.\n\nNarrowest open gap: `RequestedInterfaceAbsent`.\n\nWork still open (3):\n- `bind-requirements-to-source`\n- `create-interface:assessLegalContext`\n- `verify-artifact-and-requirements`\n\nRequirements not yet verified (6):\n1. JavaScript: expose provenance-preserving categorical evidence assessment for legal reasoning\n2. The JavaScript relative meta-logic component at fd5bfaced85262a51b341fb2b25c79e507423ca3 aggregates probabilistic evidence, but legal source absence, contradict…\n3. Downstream work: https://github.com/link-assistant/legal/pull/2 (issue https://github.com/link-assistant/legal/issues/1).\n4. Proposed addition: assessLegalContext(evidence) returning supported / contradicted / conflict / unknown, with provenance labels. Empty input must remain unknown…\n5. We are developing a patch against js/agentic/crate/relative_meta_logic.mjs in the downstream PR, kept as a patch with the pinned source checksum, and determinis…\n6. Upstream incorporation would remove the temporary patch and support other deterministic applications. Broader automatic semantic formalization of legislation re…\n\nThe machine record of this session (`repository-work-item-evidence/v1`) is kept in the trace, not in this answer.",
+ "disposition": "gap",
+ "record": {
+  "schema": "repository-work-item-evidence/v1",
+  "reason": "EvidenceCollected",
+  "gap": "RequestedInterfaceAbsent",
+  "workItem": "https://github.com/link-assistant/formal-ai/issues/1235",
+  "taskIdentity": "a9d3e0b7197a3266bc968d54f3f8385d6ea36658bc32196000164171a9a54623",
+  "requirements": [
+   {
+    "text": "JavaScript: expose provenance-preserving categorical evidence assessment for legal reasoning",
+    "span": [
+     0,
+     92
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "The JavaScript relative meta-logic component at fd5bfaced85262a51b341fb2b25c79e507423ca3 aggregates probabilistic evidence, but legal source absence, contradictions and contextual applicability need an explicit categorical interface.",
+    "span": [
+     94,
+     327
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Downstream work: https://github.com/link-assistant/legal/pull/2 (issue https://github.com/link-assistant/legal/issues/1).",
+    "span": [
+     329,
+     450
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Proposed addition: assessLegalContext(evidence) returning supported / contradicted / conflict / unknown, with provenance labels. Empty input must remain unknown; opposing source stances must remain a conflict. A probability must not be presented as proof of legal validity.",
+    "span": [
+     452,
+     725
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "We are developing a patch against js/agentic/crate/relative_meta_logic.mjs in the downstream PR, kept as a patch with the pinned source checksum, and deterministic tests for exceptions, missing facts, dates, jurisdiction, conflicting rules and source drift. Executable rules require reviewed semantics and exact source spans. Surface modal extraction is explicitly unverified. This does not claim to solve arbitrary legal reasoning.",
+    "span": [
+     727,
+     1159
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Upstream incorporation would remove the temporary patch and support other deterministic applications. Broader automatic semantic formalization of legislation remains an unresolved capability requirement.",
+    "span": [
+     1161,
+     1364
+    ],
+    "status": "unbound"
+   }
+  ],
+  "decomposition": [
+   {
+    "step": "collect_repository_evidence",
+    "status": "observed"
+   },
+   {
+    "step": "bind_requirements_to_source",
+    "status": "unverified"
+   },
+   {
+    "step": "implement_requested_change",
+    "status": "not_executed"
+   },
+   {
+    "step": "verify_artifact_and_requirements",
+    "status": "not_executed"
+   }
+  ],
+  "observations": [
+   {
+    "path": "js/agentic/crate/relative_meta_logic.mjs",
+    "complete": true,
+    "sourceIdentity": "332217acd917fb61fc58cbe8e2762eb6166ab055a4c9f63c1e10c1eb8e2b1a25",
+    "excerpt": "// `crate::relative_meta_logic` (rust/src/relative_meta_logic.rs): relative\n// statement probability, modelled on link-foundation/relative-meta-logic.\n// Pure arithmetic over caller-supplied evidence: no clocks, no randomness.\n//\n// Representation (no classes, so the translator's portable subset applies): a\n// `TruthValue` is a plain number already clamped to `[0, 1]` and snapped to\n// the six-decimal grid (build one with `truthValue`; the `get()` of Rust is the\n// identity); a `SourceTier` and a `Stance` are their slug strings; a\n// `RelativeEvidence` is `{source_label, tier, stance, strength}` and a\n// `StatementAssessment` is `{statement, prior, support, contradiction,\n// posterior, ignored_sources}`.\n\n/** Mirrors `TRUTH_VALUE_DECIMALS` in rust/src/relative_meta_logic.rs. */\nconst TRUTH_VALUE_DECIMALS = 6;\n\n/** Mirrors `ASSUMED_TRUE_PRIOR` in rust/src/relative_meta_logic.rs. */\nexport const ASSUMED_TRUE_PRIOR = 0.6;\n\n/** Mirrors `TruthValue::{FALSE, TRUE, UNKNOWN}` in rust/src/relative_meta_logic.rs. */\nex"
+   }
+  ],
+  "unresolved": [],
+  "terms": [],
+  "related": [
+   "https://github.com/link-assistant/legal/pull/2",
+   "https://github.com/link-assistant/legal/issues/1"
+  ],
+  "coverage": "explicit-references; exact path, then file-name search; at most eight files; attachments unresolved; at most two linked documents and three identifiers when no file is named",
+  "candidateEdits": [],
+  "checks": [],
+  "effects": [],
+  "remainingWork": [
+   "bind-requirements-to-source",
+   "create-interface:assessLegalContext",
+   "verify-artifact-and-requirements"
+  ],
+  "authored": false,
+  "verified": false
+ },
+ "changed": [],
+ "diff": ""
+}

@@ -129,10 +129,19 @@ export function planLinksNotation(plan) {
   return out;
 }
 
-/** Mirrors `fn work_item_title_and_body`: `title`, a blank line, then `body`. */
-function workItemTitleAndBody(goal) {
-  const at = goal.indexOf('\n\n');
-  return at >= 0 && !goal.slice(0, at).includes('\n') ? [goal.slice(0, at), goal.slice(at + 2)] : ['', goal];
+/**
+ * Mirrors `fn work_item_language`: the run joins a fetched issue as `title`,
+ * a blank line, then `body`. The body's prose decides, then the title's prose,
+ * and the whole goal only when neither holds prose (issue #1557). The plan
+ * answer and the work-item report (issue #1483) share it.
+ * @param {string} goal
+ * @returns {string}
+ */
+export function workItemLanguage(goal) {
+  const text = String(goal);
+  const at = text.indexOf('\n\n');
+  const [title, body] = at >= 0 && !text.slice(0, at).includes('\n') ? [text.slice(0, at), text.slice(at + 2)] : ['', text];
+  return detectProse(body) ?? detectProse(title) ?? detect(text);
 }
 
 /**
@@ -143,8 +152,7 @@ function workItemTitleAndBody(goal) {
  */
 export function planResponseLanguage(plan) {
   if (plan.mode !== GeneralPlanMode.RepositoryWorkItem) return detect(plan.goal);
-  const [title, body] = workItemTitleAndBody(plan.goal);
-  return plan.request_language ?? detectProse(body) ?? detectProse(title) ?? detect(plan.goal);
+  return plan.request_language ?? workItemLanguage(plan.goal);
 }
 
 /** Mirrors `GeneralChangePlan::planned_not_executed_answer`. */

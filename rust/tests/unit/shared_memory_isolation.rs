@@ -19,6 +19,10 @@ fn both_test_layouts_are_recognised() {
         // A plain `cargo test`.
         "/repo/target/debug/deps/unit-70a1c6defe99c803",
         "/repo/target/release/deps/integration-abc123",
+        // Rust 1.100's build-dir layout (issue #1569), for a per-file
+        // integration binary whose name is not a `[[test]]` target.
+        "/repo/target/release/build/formal-ai/dab1437f3cc0b8fb/out/codex_provider_configuration-dab1437f3cc0b8fb",
+        "/repo/target/debug/build/formal-ai/6f015c2bd7cebe89/out/issue_660_cli-6f015c2bd7cebe89",
         // The prebuilt binaries issue #1055 introduced, run by
         // `scripts/run-prebuilt-tests.sh`. This is the exact path that failed
         // in CI when the check looked only for `target/*/deps`.
@@ -48,6 +52,24 @@ fn a_shipped_binary_is_not_recognised_as_a_test() {
         assert!(
             !formal_ai::is_test_executable(Path::new(shipped)),
             "{shipped} was mistaken for a test binary"
+        );
+    }
+}
+
+#[test]
+fn the_build_dir_layout_needs_the_hash_in_both_places() {
+    // Issue #1569: only Cargo's own `build/<package>/<hash>/out/<name>-<hash>`
+    // shape counts; a look-alike path does not divert the memory store.
+    for not_a_test in [
+        "/repo/target/release/build/formal-ai/0000000000000000/out/issue_660_cli-6f015c2bd7cebe89",
+        "/repo/target/release/other/formal-ai/6f015c2bd7cebe89/out/issue_660_cli-6f015c2bd7cebe89",
+        "/repo/target/release/build/formal-ai/6f015c2bd7cebe89/issue_660_cli-6f015c2bd7cebe89",
+        "/repo/target/release/build/formal-ai/zz/out/issue_660_cli-zz",
+        "/opt/build/formal-ai/ai/out/formal-ai",
+    ] {
+        assert!(
+            !formal_ai::is_test_executable(Path::new(not_a_test)),
+            "{not_a_test} was mistaken for a test binary"
         );
     }
 }

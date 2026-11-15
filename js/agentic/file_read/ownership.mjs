@@ -12,6 +12,7 @@ import { tokens } from '../write_request.mjs';
 import { cleanFileToken, looksLikeLocalFilePath, fileReadTaskFor } from '../file_read.mjs';
 import { sentences } from '../shell_command_policy.mjs';
 import { samePath } from './records.mjs';
+import { latestUserRequest } from '../content.mjs';
 const FUNCTION_ROLES = ['request_function_word', 'enumeration_cue'];
 const OBJECT_ROLE = 'file-read-object-noun';
 const READ_ROLE = 'file_read_action_cue';
@@ -209,6 +210,15 @@ export function ownedReadPaths(prompt,role) {
   prompt = readRequestEnvelope(prompt)?.text ?? prompt;
   const paths=boundReadPaths(prompt,role);
   return unboundEffectOperation(prompt)||pendingReadCondition(prompt,role)?[]:paths;
+}
+/**
+ * Mirrors `fn user_read_policy_blocks_plan`: a fetched work item states
+ * requirements, not read instructions. Only the user's own turn governs
+ * reads; the task stands in for it only when the transcript has no user turn
+ * (issue #1560).
+ */
+export function userReadPolicyBlocksPlan(messages,task,plan) {
+  return readPolicyBlocksPlan(latestUserRequest(messages)??task,plan);
 }
 /** Refuse planned file reads whose immutable policy scope is violated or unproved. */
 export function readPolicyBlocksPlan(prompt,plan) {

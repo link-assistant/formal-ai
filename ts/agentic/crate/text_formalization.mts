@@ -42,6 +42,7 @@ import {typedMeaning,preserveTypedRendering,countSourceTerms,inheritNumericEvide
 import { byteSlice, clauses, scriptOf, sentences } from './formalization_segment.mjs';
 import { byteOrder } from './rust_str.mjs';
 import { lexicon, meaning, meaningsWithRole } from './seed_meanings.mjs';
+import { readPropositionStructure, structureKey } from './proposition_structure.mjs';
 
 /** Mirrors `TEXT_FORMALIZATION_LINO` in rust/src/seed/embedded_registry.rs (the repository path it embeds). */
 export const TEXT_FORMALIZATION_PATH = 'data/seed/text-formalization.lino';
@@ -545,16 +546,28 @@ export function knownIds(statement) {
     .sort(byteOrder);
 }
 
+const STRUCTURES = new WeakMap();
+/** Mirrors `fn statement_structure` in rust/src/formalization/text_statements.rs: operand order, connectives, quantifiers, repetition (#1487). */
+export function statementStructure(statement) {
+  const text = statement.text ?? '';
+  const seen = STRUCTURES.get(statement);
+  if (seen?.text === text && seen.terms === statement.terms) return seen.structure;
+  const words = readWords(text, statement.language, true);
+  const kinds = { meaning: WordKind.Meaning, negation: WordKind.Negation, isTerm: isTermKind };
+  const structure = readPropositionStructure(text, statement.language, words, statementTerms(statement), kinds);
+  STRUCTURES.set(statement, { text, terms: statement.terms, structure });
+  return structure;
+}
+
 /**
  * Mirrors `fn statement_identity` in rust/src/formalization/text_statements.rs: the formal identity of a statement, its
- * polarity, its subject and the set of its other terms. Two statements with
- * one identity say the same thing whatever their wording.
+ * polarity, its subject, the set of its other terms and the proposition structure a set loses (issue #1487).
  */
 export function statementIdentity(statement) {
   const subject = statement.subject === null ? '' : statement.subject.id;
   const others = [...new Set(statement.terms.map((term) => term.id))].filter((id) => id !== subject).sort(byteOrder);
-  const legacy=`${statement.polarity}|${subject}|${others.join(' ')}`;
-  return typedMeaning(statement.dialogue)===null?legacy:legacy+'|'+typedMeaning(statement.dialogue);
+  const legacy=`${statement.polarity}|${subject}|${others.join(' ')}`, typed=typedMeaning(statement.dialogue)===null?legacy:legacy+'|'+typedMeaning(statement.dialogue), key=structureKey(statementStructure(statement));
+  return key===''?typed:`${typed}|structure:${key}`;
 }
 
 /** Mirrors `fn has_no_unknown` in rust/src/formalization/text_statements.rs: a statement of at least two terms, all of them known. */

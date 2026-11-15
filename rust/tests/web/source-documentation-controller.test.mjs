@@ -10,6 +10,13 @@ import { deriveSourceDocumentation, planSourceDocumentationStep } from '../../..
 import { createHash } from 'node:crypto';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+import { workItemRecordOf, parsesAsJsonObject } from '../../../js/agentic/work_item_report.mjs';
+function recorded(plan) {
+  assert.equal(parsesAsJsonObject(plan.answer), false, 'a work-item answer is a report, not a JSON object');
+  const record = plan.record ?? workItemRecordOf(plan);
+  assert.ok(record, 'a work-item final keeps its record');
+  return record;
+}
 const blocked = () => {
   throw Error('LocalWasmExecutionForbidden');
 };
@@ -76,7 +83,7 @@ function observedHistory(task = prompt, sourceText = source, guideText = guide) 
   });
   return messages;
 }
-const reason = plan => JSON.parse(plan.answer).reason;
+const reason = plan => recorded(plan).reason;
 test('ordinary maintained planner produces source-derived guide edit then verified no-op', async context => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'source-documentation-'));
   context.after(() => fs.rmSync(directory, {
@@ -96,19 +103,24 @@ test('ordinary maintained planner produces source-derived guide edit then verifi
   assert.equal(fs.readFileSync(path.join(directory, 'project-spec.json'), 'utf8'), source);
   assert.deepEqual(first.transcript.map(entry => entry.tool), ['read', 'read', 'edit', 'read', 'read']);
   assert.deepEqual(first.transcript.filter(entry => entry.tool === 'read').map(entry => JSON.parse(entry.arguments).filePath), ['project-spec.json', 'onboarding.md', 'project-spec.json', 'onboarding.md']);
-  const state = JSON.parse(first.answer);
+  const state = recorded(first);
   assert.equal(state.reason, 'UsefulCandidateReadbackVerified');
   assert.equal(state.task, prompt);
-  assert.equal(state.authored, false);
+  // The edit is authored and its readback preserves the guide, but a single
+  // key binding carries no facts an independent check can anchor (issue #1483).
+  assert.equal(state.authored, true);
   assert.equal(state.verified, false);
   assert.equal(state.complete, false);
+  assert.equal(state.authorshipBoundary.autonomousCredit, 0);
+  assert.equal(state.checks.find(check => check.kind === 'preimage-preserved')?.status, 'passed');
+  assert.ok(state.candidateEdits[0].diff.lines.some(line => line.startsWith('+') && line.includes(JSON.parse(source).packageManager)));
   for (const requirement of state.requirements) assert.equal(Buffer.from(prompt).subarray(...requirement.span).toString(), requirement.text);
   const again = await drive(planChatStep, directory, prompt, {
     steps: 8,
     tools,
     allowedCommands: []
   });
-  assert.equal(JSON.parse(again.answer).reason, 'VerifiedNoOp');
+  assert.equal(recorded(again).reason, 'VerifiedNoOp');
   assert.equal(again.transcript.some(entry => entry.tool === 'edit'), false);
   assert.equal(fs.readFileSync(path.join(directory, 'onboarding.md'), 'utf8'), after);
 });
@@ -191,7 +203,7 @@ test('Unicode original task/source retain byte spans and fetched work-item ident
     });
   const template = 'Setup declaration from `{source}`: use `{value}` for {concept}.';
   const completed = deriveSourceDocumentation(task, 'project-spec.json', sourceText, guide, template).content;
-  const state = JSON.parse(planSourceDocumentationStep(task, observedHistory(task, sourceText, completed), tools, 'https://example.invalid/issues/8').answer);
+  const state = recorded(planSourceDocumentationStep(task, observedHistory(task, sourceText, completed), tools, 'https://example.invalid/issues/8'));
   assert.equal(state.reason, 'VerifiedNoOp');
   assert.equal(state.task, task);
   assert.equal(state.workItem, 'https://example.invalid/issues/8');

@@ -229,7 +229,8 @@ pub(super) fn step(
     let Some(identifiers) = specification(directory, identifiers) else {
         return FileIoPlan::Gap("FileIoSearchScopeRequired".to_owned());
     };
-    if super::super::file_read::read_policy_blocks_plan(
+    if super::super::file_read::user_read_policy_blocks_plan(
+        messages,
         task,
         &plan_one("read", json!({"filePath":directory}).to_string()),
     ) {

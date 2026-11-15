@@ -8,6 +8,13 @@ import { drive } from '../../../experiments/js_dogfood/drive.mjs';
 import { planChatStep } from '../../../js/agentic/planner.mjs';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+import { workItemRecordOf, parsesAsJsonObject } from '../../../js/agentic/work_item_report.mjs';
+function recorded(plan) {
+  assert.equal(parsesAsJsonObject(plan.answer), false, 'a work-item answer is a report, not a JSON object');
+  const record = plan.record ?? workItemRecordOf(plan);
+  assert.ok(record, 'a work-item final keeps its record');
+  return record;
+}
 const denied = () => {
   throw Error('LocalProductWasmForbidden');
 };
@@ -47,13 +54,27 @@ test('original pre-fix work item produces useful partial documentation and a ver
   for (const file of fixture.files) assert.equal(hash(file.source), file.sha256);
   const root = workspace(context),
     result = await run(root, task),
-    state = JSON.parse(result.answer);
+    state = recorded(result);
   assert.equal(result.stop, 'final');
   assert.equal(state.reason, 'UsefulCandidateReadbackVerified');
   assert.equal(state.schema, 'repository-work-item-controller/v1');
+  // The edit is authored and independently accepted against the raw sources;
+  // integration semantics stay open, so the result is partial (issue #1483).
   assert.equal(state.complete, false);
-  assert.equal(state.verified, false);
-  assert.equal(state.authored, false);
+  assert.equal(state.verified, true);
+  assert.equal(state.authored, true);
+  assert.match(result.answer, /^Partly done:/u);
+  const status = kind => state.checks.find(check => check.kind === kind)?.status;
+  assert.equal(status('task-claims'), 'passed');
+  assert.equal(status('source-anchored-facts'), 'passed');
+  assert.equal(status('preimage-preserved'), 'passed');
+  assert.deepEqual(state.claims.map(claim => [claim.name, claim.status]), [['command-stream', 'confirmed'], ['web-capture', 'confirmed'], ['web-search', 'confirmed'], ['@link-assistant/web-search', 'confirmed']]);
+  const verified = state.requirements.filter(row => row.status === 'verified').map(row => row.text);
+  assert.ok(verified.some(text => text.includes('`command-stream = "1.5"`')), 'the manifest requirement is verified');
+  assert.ok(verified.some(text => text.includes('`getDefaultProviderIds`')), 'the source-usage requirement is verified');
+  assert.ok(state.requirements.some(row => row.status === 'unverified' && row.text.includes('relationship to knowledge acquisition')), 'semantic requirements stay open');
+  assert.deepEqual(state.authorshipBoundary, { mechanism: 'supplied-documentation-derivation', targetOutputObserved: true, autonomousCredit: 0, laterReviewerWork: 'not-observed' });
+  assert.ok(state.candidateEdits[0].diff.lines.includes('+| `command-stream` | `1.5` | `dependencies` | `unqualified` | `{}` |'));
   assert.ok(state.remainingWork.includes('consumer-discovery'));
   assert.ok(state.remainingWork.includes('independent-integration-semantics'));
   const original = fixture.files.find(file => file.path.endsWith('.md')),
@@ -75,10 +96,30 @@ test('original pre-fix work item produces useful partial documentation and a ver
   for (const name of ['getDefaultProviderIds', 'mergeResults']) assert.ok(usage.calls.some(call => call.imported === name), name);
   for (const file of fixture.files.filter(file => file.path !== original.path)) assert.equal(hash(fs.readFileSync(path.join(root, file.path))), file.sha256);
   assert.equal(result.transcript.filter(row => row.tool === 'edit').length, 1);
-  const again = await run(root, task);
-  assert.equal(JSON.parse(again.answer).reason, 'VerifiedNoOp');
+  const again = await run(root, task),
+    repeated = recorded(again);
+  assert.equal(repeated.reason, 'VerifiedNoOp');
+  assert.equal(repeated.verified, true);
+  assert.equal(repeated.authored, false);
+  assert.match(again.answer, /^Partly done already:/u);
   assert.ok(again.transcript.every(row => row.tool === 'read'));
   assert.equal(fs.readFileSync(path.join(root, original.path), 'utf8'), guide);
+});
+test('a version claim the manifest contradicts is rejected before any edit', async context => {
+  const contradicted = task.replace('`command-stream = "1.5"`', '`command-stream = "1.9"`');
+  assert.notEqual(contradicted, task);
+  const root = workspace(context),
+    result = await run(root, contradicted),
+    state = recorded(result);
+  assert.equal(state.reason, 'ContradictedIntegrationClaim');
+  assert.equal(state.authored, false);
+  assert.equal(state.verified, false);
+  assert.ok(result.transcript.every(row => row.tool === 'read'));
+  for (const file of fixture.files) assert.equal(hash(fs.readFileSync(path.join(root, file.path))), file.sha256);
+  assert.deepEqual(state.unresolved, [{ reference: 'command-stream = "1.9"', reason: 'ContradictedIntegrationClaim', observed: ['1.5'] }]);
+  assert.equal(state.checks.find(check => check.kind === 'task-claims')?.status, 'failed');
+  assert.ok(state.requirements.some(row => row.status === 'contradicted' && row.text.includes('`command-stream = "1.9"`')));
+  assert.match(result.answer, /`command-stream = "1\.9"`: `ContradictedIntegrationClaim`/u);
 });
 test('renamed paths and an unrelated component use observed declarations and aliased calls', async context => {
   const files = [{
@@ -94,7 +135,7 @@ test('renamed paths and an unrelated component use observed declarations and ali
   const root = workspace(context, files),
     prompt = 'Document the ribbon-core dependency in docs/runtime.md based on native/Project.toml and web/client.mjs. Preserve the existing guide and include observed declarations and imported calls.';
   const result = await run(root, prompt),
-    state = JSON.parse(result.answer);
+    state = recorded(result);
   assert.equal(state.reason, 'UsefulCandidateReadbackVerified');
   const guide = fs.readFileSync(path.join(root, 'docs/runtime.md'), 'utf8');
   assert.ok(guide.startsWith(files[2].source));
@@ -103,6 +144,12 @@ test('renamed paths and an unrelated component use observed declarations and ali
   assert.ok(guide.includes('`decode`'));
   assert.ok(!guide.includes('command-stream'));
   assert.ok(state.facts.some(row => row.calls?.some(call => call.binding === 'readPacket')));
+  // Held-out paths and component: the same independent checks accept the edit,
+  // and its one requirement is verified because every term it names is established.
+  assert.equal(state.verified, true);
+  assert.equal(state.checks.find(check => check.kind === 'source-anchored-facts')?.status, 'passed');
+  assert.equal(state.checks.find(check => check.kind === 'preimage-preserved')?.status, 'passed');
+  assert.deepEqual(state.requirements.map(row => row.status), ['verified']);
 });
 test('invalid manifest evidence and negated documentation instructions never write', async context => {
   const files = [{
@@ -119,8 +166,19 @@ test('invalid manifest evidence and negated documentation instructions never wri
   for (const prompt of ['Document dependencies from one.json and two.json in guide.md. Preserve existing text.', 'Do not document dependencies from one.json or two.json in guide.md. Preserve existing text.']) {
     const result = await run(root, prompt);
     assert.equal(result.stop, 'final');
-    assert.equal(JSON.parse(result.answer).verified, false);
+    assert.equal(recorded(result).verified, false);
     assert.ok(result.transcript.every(row => row.tool === 'read'));
     assert.equal(fs.readFileSync(path.join(root, 'guide.md'), 'utf8'), files[2].source);
   }
+});
+test('a consumer-search coverage record is skipped by the anchored-facts check, not read as unavailable', async () => {
+  const { sourceAnchoredFacts } = await import('../../../js/agentic/documentation_acceptance.mjs');
+  const sources = [{ path: 'package.json', source: '{"dependencies":{"river":"1.2.3"}}' }];
+  const declaration = { kind: 'manifest-declaration', manifest: 'package.json', name: 'river', version: '1.2.3', section: 'dependencies' };
+  const coverage = { kind: 'observed-consumer-discovery', state: 'incomplete', gaps: ['search-truncated'] };
+  const artifact = '| river | 1.2.3 | dependencies |\n';
+  const anchored = sourceAnchoredFacts([declaration, coverage], sources, artifact);
+  assert.deepEqual([anchored.status, anchored.checked, anchored.missing], ['passed', 1, []]);
+  assert.equal(sourceAnchoredFacts([declaration, { kind: 'unknown-fact' }], sources, artifact).status, 'unavailable');
+  assert.equal(sourceAnchoredFacts([coverage], sources, artifact).status, 'unavailable');
 });

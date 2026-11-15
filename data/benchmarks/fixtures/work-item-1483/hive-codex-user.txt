@@ -1,0 +1,8 @@
+Issue to solve: {issue_url}
+Your prepared branch: {branch}
+Your prepared working directory: {workspace}
+Your prepared tmp directory for logs and downloads: {workspace_tmp}
+Your prepared Pull Request: {pull_url}
+
+Do not stop until every requirement of the issue and all required sub-issues is fully implemented and verified in this single pull request, in the widest requested scope, with no requested work deferred; work that is truly blocked must be reported as blocked and left unfinished, never presented as done.
+Proceed.

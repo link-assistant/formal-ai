@@ -1,0 +1,113 @@
+{
+  "schema": "focused-test-map/v1",
+  "purpose": "Issue #1486: the focused offline tests and policy checks to run before any Rust compilation, Docker image or Hive solve. A changed component or a captured failure family selects them through scripts/select-focused-tests.mjs. Every captured draft replay names a family listed here.",
+  "families": [
+    {
+      "id": "work-item-read-policy",
+      "reasons": ["ReadPolicyRefused"],
+      "description": "The planner refused a repository read on a work item (captured in run 41191429608 for issue #1486).",
+      "tests": [
+        "rust/tests/web/draft-request-replay.test.mjs",
+        "rust/tests/web/work-item-report-outcome.test.mjs",
+        "rust/tests/web/work-item-evidence.test.mjs",
+        "rust/tests/web/file-read-shared-cues.test.mjs"
+      ]
+    },
+    {
+      "id": "work-item-reference-resolution",
+      "reasons": ["UnresolvedReferences", "MissingReadTool", "IncompleteSourceObservation"],
+      "description": "A work-item reference was not resolved to a repository file, or no read tool was offered.",
+      "tests": [
+        "rust/tests/web/draft-request-replay.test.mjs",
+        "rust/tests/web/work-item-report-outcome.test.mjs",
+        "rust/tests/web/work-item-evidence.test.mjs",
+        "rust/tests/web/work-item-target-binding.test.mjs"
+      ]
+    },
+    {
+      "id": "work-item-evidence-gap",
+      "reasons": ["EvidenceCollected", "NoRepositoryReference", "AttachmentEvidenceUnavailable", "ExternalEvidenceUnavailable", "RelatedEvidenceUnread"],
+      "description": "A work item whose evidence collection ended without an edit must name the narrowest gap it leaves (the ten planned-not-executed fixtures of issue #1483).",
+      "tests": [
+        "rust/tests/web/work-item-evidence.test.mjs",
+        "rust/tests/web/work-item-report-outcome.test.mjs",
+        "rust/tests/web/work-item-hosted-effects.test.mjs"
+      ]
+    },
+    {
+      "id": "work-item-edit-and-check",
+      "reasons": ["IndependentCheckFailed", "FileIoProcessStatusUnknown", "ContradictedIntegrationClaim"],
+      "description": "A work item that reaches a change must end with the smallest checkable edit, a contract-derived independent check and a verified no-op repeat, through the Agent, Claude and Codex adapters (issue #1483).",
+      "tests": [
+        "rust/tests/web/work-item-boundary-route.test.mjs",
+        "rust/tests/web/work-item-adapter-sessions.test.mjs",
+        "rust/tests/web/work-item-file-io.test.mjs",
+        "rust/tests/web/repository-documentation.test.mjs",
+        "rust/tests/web/repository-consumer-discovery.test.mjs"
+      ]
+    },
+    {
+      "id": "hive-draft-adapter",
+      "reasons": [],
+      "description": "The draft adapter, attempt identity, evidence capture or result publication.",
+      "tests": [
+        "rust/tests/web/hive-mind-draft-workflow.test.mjs",
+        "rust/tests/web/hive-draft-attempt-identity.test.mjs",
+        "rust/tests/web/hive-draft-logs.test.mjs"
+      ]
+    },
+    {
+      "id": "shared-build-custody",
+      "reasons": [],
+      "description": "One Formal AI binary build per source/toolchain/target/features/lockfile identity, with producer and digest authentication.",
+      "tests": [
+        "rust/tests/web/formal-ai-shared-build.test.mjs",
+        "rust/tests/web/hive-mind-draft-workflow.test.mjs"
+      ]
+    },
+    {
+      "id": "hive-image-transport",
+      "reasons": [],
+      "description": "The same-source Hive task image handoff: the digest-pinned base plus the changing delta layers.",
+      "tests": [
+        "rust/tests/web/hive-image-delta.test.mjs",
+        "rust/tests/web/hive-delivery-bundle.test.mjs",
+        "rust/tests/web/hive-image-operational-preflight.test.mjs"
+      ]
+    },
+    {
+      "id": "ci-phase-timing",
+      "reasons": [],
+      "description": "Per-phase time, transferred bytes, useful attempts and the service-level targets.",
+      "tests": [
+        "rust/tests/web/ci-phase-timing.test.mjs"
+      ]
+    },
+    {
+      "id": "workflow-policy",
+      "reasons": [],
+      "description": "Workflow timeouts, the default-branch build policy and the fast pull-request profile.",
+      "tests": [
+        "rust/tests/web/ci-speed.test.mjs",
+        "rust/tests/web/default-branch-build-policy.test.mjs",
+        "rust/tests/web/focused-test-map.test.mjs"
+      ],
+      "checks": [
+        ["node", "scripts/check-ci-speed.mjs"]
+      ]
+    }
+  ],
+  "components": [
+    { "prefixes": ["js/agentic/work_item_", "js/agentic/file_read/", "js/agentic/planner.mjs"], "families": ["work-item-read-policy", "work-item-reference-resolution", "work-item-evidence-gap", "work-item-edit-and-check"] },
+    { "prefixes": ["js/agentic/documentation_acceptance.mjs", "js/agentic/observed_documentation.mjs", "js/agentic/source_repair.mjs"], "families": ["work-item-edit-and-check"] },
+    { "prefixes": ["scripts/work-item-qualification/"], "families": ["work-item-evidence-gap"] },
+    { "prefixes": ["data/benchmarks/fixtures/draft-replays/", "scripts/lib/draft-replay.mjs", "scripts/extract-draft-replay.mjs"], "families": ["work-item-read-policy", "work-item-reference-resolution"] },
+    { "prefixes": [".github/workflows/hive-mind-draft.yml"], "families": ["hive-draft-adapter", "shared-build-custody", "ci-phase-timing", "workflow-policy"] },
+    { "prefixes": ["scripts/hive-draft-attempt.mjs", "scripts/hive-mind-draft-result.mjs", "scripts/prepare-hive-draft-evidence.mjs", ".hive-mind/"], "families": ["hive-draft-adapter"] },
+    { "prefixes": ["scripts/formal-ai-shared-build.mjs", "scripts/lib/formal-ai-build-identity.mjs"], "families": ["shared-build-custody"] },
+    { "prefixes": [".github/workflows/hive-original-delivery.yml"], "families": ["hive-image-transport", "ci-phase-timing", "workflow-policy"] },
+    { "prefixes": ["scripts/build-hive-original-delivery-image.mjs", "scripts/lib/hive-delivery-bundle.mjs", "scripts/lib/oci-delta-archive.mjs"], "families": ["hive-image-transport"] },
+    { "prefixes": ["scripts/ci-phase-timing.mjs", "scripts/lib/ci-phase-timing.mjs", "data/benchmarks/ci-phase-timing/"], "families": ["ci-phase-timing"] },
+    { "prefixes": [".github/workflows/", "data/meta/ci-speed.lino", "data/benchmarks/focused-test-map.json", "scripts/select-focused-tests.mjs"], "families": ["workflow-policy"] }
+  ]
+}

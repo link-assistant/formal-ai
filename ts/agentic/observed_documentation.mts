@@ -3,9 +3,12 @@
 // the derivation never confers authority or independent acceptance.
 import { WorkItemFileProgress, fileIoReadStep, fileIoEffectStep, fileIoPendingStep } from './work_item_file_io.mjs';
 import { Capability } from './capability.mjs';
-import { jsonText, resolvedFinalAnswer, FinalDisposition } from './plan.mjs';
+import { FinalDisposition } from './plan.mjs';
 import { sha256Hex } from './crate/source_fetch.mjs';
-import { clausesWithSpans } from './crate/obligation_ledger.mjs';
+import { workItemRequirements } from './work_item_requirements.mjs';
+import { refusal, workItemRecordFinal } from './work_item_report.mjs';
+import { sourceDocumentationPolicy } from './source_documentation_policy.mjs';
+import { documentationClaims, judgedClaims, sourceAnchoredFacts, preservedPreimage, addedLinesDiff, judgedRequirements } from './documentation_acceptance.mjs';
 const maximumBytes = 262144;
 function argumentsOf(attempt) {
   try {
@@ -23,23 +26,29 @@ const ownerOf = attempt => alias(argumentsOf(attempt), ['filePath', 'file_path',
 const complete = attempt => attempt?.succeeded === true && attempt.source_read?.error === null && attempt.source_read.complete === true &&
          typeof attempt.source_read.source === 'string' && new TextEncoder().encode(attempt.source_read.source).length <= maximumBytes ? attempt.source_read.source : null;
 const ownedPath = path => typeof path === 'string' && /^[A-Za-z0-9_][A-Za-z0-9_./-]*$/u.test(path) && path.split('/').every(part => part !== '' && part !== '.' && part !== '..');
+/**
+ * The output was produced by the supplied documentation derivation, not
+ * written autonomously; later reviewer work is not observed.
+ */
+const authorshipBoundary = observed => ({
+  mechanism: 'supplied-documentation-derivation',
+  targetOutputObserved: observed,
+  autonomousCredit: 0,
+  laterReviewerWork: 'not-observed'
+});
 export function planObservedDocumentation(task, messages, tools, contract, derive) {
   const sources = contract?.sources,
     target = contract?.target;
   const progress = WorkItemFileProgress.scan(messages),
     attempts = progress.attempts;
-  const requirements = clausesWithSpans(task).map(([text, span]) => ({
+  // The work item is split into requirements before any evidence is read, so
+  // a refusal names the requirement it concerns (issue #1560).
+  const requirements = workItemRequirements(task).map(([text, span]) => ({
     text,
     span,
     kind: 'source-documentation',
     status: 'unverified'
   }));
-  if (!requirements.length) requirements.push({
-    text: task,
-    span: [0, new TextEncoder().encode(task).length],
-    kind: 'source-documentation',
-    status: 'unverified'
-  });
   const state = {
     schema: contract?.schema ?? 'source-documentation-controller/v1',
     task,
@@ -53,23 +62,27 @@ export function planObservedDocumentation(task, messages, tools, contract, deriv
     candidateEdits: [],
     checks: [],
     effects: [],
+    unresolved: [],
     remainingWork: ['independent-requirement-acceptance'],
     transportDiagnostics: progress.transportDiagnostics,
     authored: false,
     verified: false,
     complete: false
   };
-  const finish = (reason, failure = false) => resolvedFinalAnswer(jsonText({
+  const finish = (reason, failure = false, refused = null) => workItemRecordFinal({
     ...state,
-    reason
-  }), failure ? FinalDisposition.Failure : FinalDisposition.Gap, 'source-documentation-controller');
+    reason,
+    ...(refused === null ? {} : { refused })
+  }, task, failure ? FinalDisposition.Failure : state.complete ? FinalDisposition.Finding : FinalDisposition.Gap, 'source-documentation-controller');
+  // A refused read names the path and the requirement it concerns.
+  const unplanned = (gap, path) => gap === 'ReadPolicyRefused' ? finish(gap, false, refusal(requirements, path)) : finish(gap);
   if (!Array.isArray(sources) || !sources.length || sources.length > 16 || !sources.every(ownedPath) || !ownedPath(target) || new Set([...sources, target]).size !== sources.length + 1 || typeof derive !== 'function') return finish('DocumentationContractInvalid', true);
   if (contract.authority !== 'owned') return finish(contract.authority ?? 'DocumentationActionUnowned');
   const pending = fileIoPendingStep(progress, tools);
   if (pending) return pending.step ?? finish(pending.gap);
   const read = path => {
     const planned = fileIoReadStep(messages, tools, path, task);
-    return planned.step ?? finish(planned.gap);
+    return planned.step ?? unplanned(planned.gap, path);
   };
   if (attempts.some(attempt => attempt.capability === Capability.Read && ownerOf(attempt) === null)) return finish('AmbiguousReadPathAttempt', true);
   const effects = attempts.map((attempt, index) => ({
@@ -136,6 +149,54 @@ export function planObservedDocumentation(task, messages, tools, contract, deriv
   };
   if (derived.facts) state.facts = derived.facts;
   if (derived.remainingWork) state.remainingWork = [...new Set([...state.remainingWork, ...derived.remainingWork])];
+  // Independent acceptance (issue #1483): the task's version claims are judged
+  // against the observed declarations before any edit, and the artifact is
+  // checked against the raw sources, never against the derivation's word.
+  const policy = sourceDocumentationPolicy();
+  const claims = state.facts ? judgedClaims(documentationClaims(task), state.facts) : [];
+  const accept = (artifact, preservation) => {
+    const anchored = state.facts ? sourceAnchoredFacts(state.facts, frozenSources, artifact) : null;
+    if (anchored) state.checks.push(anchored);
+    if (preservation) state.checks.push(preservation);
+    state.requirements = judgedRequirements(requirements, {
+      facts: state.facts,
+      claims,
+      target,
+      factsPassed: anchored?.status === 'passed',
+      preservation: preservation?.status ?? null,
+      preserve: policy?.preserve ?? [],
+      negations: policy?.negations ?? []
+    });
+    state.verified = anchored?.status === 'passed';
+    // Every requirement verified over passing anchored facts is the requirement
+    // acceptance; work the record still names (semantics, coverage) stays open.
+    const accepted = state.verified && state.requirements.every(row => row.status === 'verified');
+    state.remainingWork = state.remainingWork.filter(item => !accepted || item !== 'independent-requirement-acceptance');
+    state.complete = accepted && state.remainingWork.length === 0;
+  };
+  if (claims.length) {
+    state.claims = claims;
+    const contradicted = claims.filter(claim => claim.status === 'contradicted');
+    state.checks.push({
+      kind: 'task-claims',
+      status: contradicted.length ? 'failed' : 'passed',
+      confirmed: claims.filter(claim => claim.status === 'confirmed').length,
+      contradicted: contradicted.length,
+      unobserved: claims.filter(claim => claim.status === 'unobserved').length
+    });
+    if (contradicted.length) {
+      // A contradicted claim is rejected: no edit documents it, and the
+      // requirements naming it are contradicted rather than left open.
+      state.unresolved = contradicted.map(claim => ({
+        reference: claim.reference,
+        reason: 'ContradictedIntegrationClaim',
+        observed: claim.observed
+      }));
+      state.requirements = judgedRequirements(requirements, { facts: state.facts, claims, target, factsPassed: false, preservation: null, preserve: [], negations: [] });
+      return finish('ContradictedIntegrationClaim', effect !== null);
+    }
+  }
+  const preserved = preservedPreimage(guide, derived.content);
   if (effect) {
     const argumentsValue = argumentsOf(effect.attempt),
       old = alias(argumentsValue, ['oldString', 'old_string', 'old_str', 'old']),
@@ -143,7 +204,8 @@ export function planObservedDocumentation(task, messages, tools, contract, deriv
     state.candidateEdits.push({
       path: target,
       preimageIdentity: sha256Hex(guide),
-      postimageIdentity: sha256Hex(derived.content)
+      postimageIdentity: sha256Hex(derived.content),
+      diff: addedLinesDiff(preserved.added)
     });
     if (old !== guide || next !== derived.content || next === old) return finish('UnrelatedEditCandidate', true);
     if (!effect.attempt.succeeded) return finish('CandidateEditFailed', true);
@@ -169,6 +231,9 @@ export function planObservedDocumentation(task, messages, tools, contract, deriv
       kind: 'source-freshness-and-exact-postimage',
       passed: true
     });
+    state.authored = true;
+    state.authorshipBoundary = authorshipBoundary(true);
+    accept(actual, preserved.check);
     return finish('UsefulCandidateReadbackVerified');
   }
   if (derived.content === guide) {
@@ -176,6 +241,8 @@ export function planObservedDocumentation(task, messages, tools, contract, deriv
       kind: 'source-bound-noop',
       passed: true
     });
+    state.authorshipBoundary = authorshipBoundary(false);
+    accept(guide, null);
     return finish('VerifiedNoOp');
   }
   const planned = fileIoEffectStep(messages, tools, target, guide, derived.content);
