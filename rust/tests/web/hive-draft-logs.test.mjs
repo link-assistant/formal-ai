@@ -42,13 +42,32 @@ test('complete console capture preserves middle output, stderr and the failing c
   'process.stdout.write("α😀".repeat(20000)+"\\nMIDDLE-ERROR\\n"+"z".repeat(100000)+"\\n");process.stderr.write("stderr failure\\n");process.exitCode=7;'],
   {cwd:root,env:{...process.env,FORMAL_AI_DRAFT_LOG_DIR:directory},encoding:'utf8',timeout:15000,maxBuffer:1048576});
  assert.equal(result.status,7,result.stderr);assert(!result.error);
- const capture=fs.readFileSync(path.join(directory,'attempt.log'),'utf8');
+ const capture=fs.readFileSync(path.join(directory,'attempt.capture.jsonl'),'utf8');
  const chunks=capture.trimEnd().split('\n').map(line=>JSON.parse(line));
  assert(Buffer.from(chunks.filter(row=>row.stream==='stdout').map(row=>row.content).join('')).equals(Buffer.from(payload)));
  assert.equal(chunks.filter(row=>row.stream==='stderr').map(row=>row.content).join(''),'stderr failure\n');
- assert(fs.readFileSync(path.join(directory,'attempt.stdout.log')).equals(Buffer.from(payload)));
+ assert(fs.readFileSync(path.join(directory,'attempt.stdout.txt')).equals(Buffer.from(payload)));
  const receipt=JSON.parse(fs.readFileSync(path.join(directory,'attempt-outcome.json'),'utf8'));
  assert.equal(receipt.exitCode,7);assert.equal(receipt.captureExitCode,0);assert.equal(receipt.completeConsoleCapture,true);
+});
+test('the capture writes no *.log, so the shared runner still reads the solve log as the newest one (issue #1571)',t=>{
+ // The shared runner (link-assistant/hive-mind scripts/formal-ai-draft.mjs)
+ // explains a red draft from the newest `*.log` in this directory. The child
+ // below does the same after the capture has recorded later output, like the
+ // runner does after `docker run` exits. Draft run 43730396084 picked the
+ // capture and reported "docker run exited 5 without a session log error".
+ const directory=workspace(t);
+ const child=`const fs=require("node:fs"),path=require("node:path"),dir=process.env.FORMAL_AI_DRAFT_LOG_DIR;
+  fs.writeFileSync(path.join(dir,"solve-2026-11-15T15-47-52-638Z.log"),"[2026-11-15T15:49:46.313Z] [WARNING] \u26a0\ufe0f  Finished without changes: the session produced no change\\n");
+  process.stderr.write("later output\\n");process.stdout.write("later output\\n");
+  setTimeout(()=>{const newest=fs.readdirSync(dir).filter(name=>name.endsWith(".log"))
+   .sort((a,b)=>fs.statSync(path.join(dir,b)).mtimeMs-fs.statSync(path.join(dir,a)).mtimeMs);
+   process.stdout.write("logs="+newest.join(",")+"\\n");},200);`;
+ const result=spawnSync('bash',['scripts/run-with-session-evidence.sh','10','attempt',process.execPath,'-e',child],
+  {cwd:root,env:{...process.env,FORMAL_AI_DRAFT_LOG_DIR:directory},encoding:'utf8',timeout:15000,maxBuffer:65536});
+ assert.equal(result.status,0,result.stderr);
+ assert.match(result.stdout,/^logs=solve-2026-11-15T15-47-52-638Z\.log$/mu);
+ assert.deepEqual(fs.readdirSync(directory).filter(name=>name.endsWith('.log')),['solve-2026-11-15T15-47-52-638Z.log']);
 });
 test('deadline expiration leaves the partial session and explicit exit 124 receipt',t=>{
  const directory=workspace(t);
@@ -66,7 +85,7 @@ test('artifact staging preserves complete UTF-8 payloads while removing credenti
  const content='α😀'.repeat(20000)+'\nEXACT-MIDDLE\n'+'x'.repeat(200000)+'\n';
  fs.writeFileSync(path.join(source,'formal-ai-native/native.jsonl'),JSON.stringify({content})+'\n');
  fs.writeFileSync(path.join(source,'formal-ai-dialog/dialog.lino'),'actual dialog\n');
- fs.writeFileSync(path.join(source,'attempt.log'),'failure opaque-secret-value alice@example.invalid /Users/alice/private\n');
+ fs.writeFileSync(path.join(source,'attempt.capture.jsonl'),JSON.stringify({stream:'stderr',sequence:1,content:'failure opaque-secret-value alice@example.invalid /Users/alice/private\n'})+'\n');
  fs.writeFileSync(path.join(source,'attempt-outcome.json'),JSON.stringify({state:'finished',captureExitCode:0,completeConsoleCapture:true}));
  fs.writeFileSync(path.join(source,'draft-diagnostics-adapter.json'),'{}\n');
  fs.writeFileSync(path.join(source,'capture-manifest.json'),'{"priorBuild":true}\n');
@@ -74,7 +93,7 @@ test('artifact staging preserves complete UTF-8 payloads while removing credenti
  assert.equal(receipt.complete,true);assert.equal(receipt.fullModelEvidence,true);
  assert.equal(JSON.parse(fs.readFileSync(path.join(destination,'formal-ai-native/native.jsonl'),'utf8')).content,content);
  assert.equal(fs.readFileSync(path.join(destination,'build-capture-manifest.json'),'utf8'),'{"priorBuild":true}\n');
- const safe=fs.readFileSync(path.join(destination,'attempt.log'),'utf8');
+ const safe=fs.readFileSync(path.join(destination,'attempt.capture.jsonl'),'utf8');
  assert(!safe.includes('opaque-secret-value'));assert(!safe.includes('alice'));assert.match(safe,/failure/);
  assert.equal(receipt.taskAcceptance,false);
 });
@@ -88,7 +107,7 @@ test('links, byte budgets, missing files and interrupted capture are explicit in
  assert.equal(receipt.complete,false);assert.equal(receipt.fullModelEvidence,false);
  assert(receipt.unavailable.some(row=>row.reason==='non_regular_or_linked_file'));
  assert(receipt.unavailable.some(row=>row.reason==='explicit_byte_budget_exhausted'));
- assert(receipt.missingRequired.includes('attempt.log'));assert.deepEqual(receipt.incompleteProcesses,['attempt-outcome.json']);
+ assert(receipt.missingRequired.includes('attempt.capture.jsonl'));assert.deepEqual(receipt.incompleteProcesses,['attempt-outcome.json']);
  assert(!fs.existsSync(path.join(destination,'linked.log')));assert(!fs.existsSync(path.join(destination,'big.log')));
 });
 function apiFixture({wrongHead=false,truncated=false}={}){
