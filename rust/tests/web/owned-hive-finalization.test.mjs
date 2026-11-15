@@ -371,6 +371,9 @@ test('terminal cancelled owners can recover isolated fixtures; foreign owners ca
   assert.equal(eligible('workflow_run','failure'),true);
   assert.equal(eligible('workflow_run','success'),true);
   assert.equal(eligible('workflow_run','success','foreign/repo'),false);
+  // #1191: a wholly skipped delivery claimed no effects; schedule recovery remains.
+  assert.equal(eligible('workflow_run','skipped'),false);
+  assert.equal(eligible('schedule','skipped'),true);
   assert.equal(eligible('schedule','cancelled'),true);
 });
 
@@ -398,7 +401,7 @@ test('prepare acquisition preserves trusted source, custody gates and the comple
   const patterns='/*\n!/dev/log/\n!/experiments/formal_ai_subagent/evidence/coordinator-1188/**/*.gz\n';
   function check(job){
     assert.equal(job['timeout-minutes'],10);assert.equal(job.permissions,undefined);
-    assert.equal(digest(job.if),'9c0227a31cfd009b69321dc7ce30a1d2065a18d156f170f9d4ae940abe13961f');
+    assert.equal(digest(job.if),'bf292a98dbf9f0e0b451de19ed5ab0ad8c53e1d3e349bd03c99901239013fcc6'); // #1191 skipped-delivery gate
     assert.equal(digest(JSON.stringify(job.steps.slice(1))),'91204467397f2eed32a328ebeb5de3c68aa493b41109cac23fe961b2612d6859');
     const checkouts=job.steps.filter(step=>step.uses?.startsWith('actions/checkout@'));
     assert.equal(checkouts.length,1);const checkout=checkouts[0];

@@ -7,6 +7,7 @@ import {tmpdir} from 'node:os';
 import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {Script} from 'node:vm';
+import {builtinModules} from 'node:module';
 import YAML from 'yaml';
 import {admission, changedPaths, checkVersions, readBaseManifest} from '../../../scripts/ci-pull-request-admission.mjs';
 const read = path => readFileSync(path, 'utf8');
@@ -40,11 +41,98 @@ test('actual compiler, image, application and deployment entries refuse PR execu
       ];
       const heavy = job.steps?.some(step => buildCommands.some(pattern => pattern.test((step.run??'')+' '+(step.uses??''))));
       if (!heavy || file === 'release-staged.yml') continue; // Main-only prepare-source dominates every generated stage.
+      if (file === 'native-type-check.yml') continue; // The one focused PR check (#1191), pinned below.
       assert(job.if,file+'/'+id+' needs explicit admission');
       assert.equal(Boolean(evaluate(job.if,'pull_request','refs/pull/1500/merge')),false,file+'/'+id);
       assert.equal(Boolean(evaluate(job.if,'workflow_dispatch','refs/heads/fix/example')),false,file+'/'+id+' dispatch');
     }
   }
+});
+// Issue #1191: the only PR job that runs the Rust compiler is main's clippy
+// profile on the library and binaries. It must stay a check (no build, test or
+// upload), selected by compile inputs.
+test('the focused PR native check stays a lint-only check selected by compile inputs', () => {
+  const job = workflow('release.yml').jobs['native-type-check'];
+  assert.equal(job.uses, './.github/workflows/native-type-check.yml');
+  assert.deepEqual(job.permissions, {contents: 'read'});
+  const called = workflow('native-type-check.yml');
+  assert.deepEqual(Object.keys(called.on), ['workflow_call'], 'only release.yml selects it');
+  assert.equal(called.env.RUSTFLAGS, '-Dwarnings', 'the same warnings-as-errors flags as main');
+  // superseded_read_only_work_releases_its_runners (step_budgets_within_job_clocks.rs) reads the
+  // called file's own top-level concurrency, before `jobs:`, not a job-level block.
+  const head = read('.github/workflows/native-type-check.yml').split('\njobs:\n')[0];
+  assert.match(head, /\nconcurrency:\n  group: \$\{\{ github\.workflow \}\}-\$\{\{ github\.ref \}\}-native-type-check\n  cancel-in-progress: \$\{\{ github\.ref != 'refs\/heads\/main' \}\}\n/u);
+  const [check, ...others] = Object.values(called.jobs);
+  assert.equal(others.length, 0);
+  const runs = check.steps.map(step => step.run).filter(Boolean);
+  assert.deepEqual(runs, ['bash scripts/ci-clippy-profile.sh --library-and-binaries']);
+  assert.deepEqual(check.steps.find(step => step.uses === 'dtolnay/rust-toolchain@stable').with, {components: 'clippy'});
+  assert(!check.steps.some(step => /upload-artifact|attest|cache@|cache\/save/u.test(step.uses ?? '')));
+  assert.deepEqual(check.steps.find(step => step.uses === './.github/actions/cache-cargo-registry').with, {'restore-only': 'true'});
+  assert.deepEqual(check.permissions, {contents: 'read'});
+  assert(check['timeout-minutes'] <= 20);
+  assert.equal(check.outputs ?? called.on.workflow_call?.outputs, undefined, 'a lint check publishes no evidence');
+  const selected = (event, ref, result, value) => Boolean(new Script(String(job.if).trim().replace(/^\$\{\{\s*|\s*\}\}$/gu, '')
+    .replace(/\.([a-zA-Z_][a-zA-Z0-9_-]*)/gu, (_, key) => '[' + JSON.stringify(key) + ']'))
+    .runInNewContext({github: {event_name: event, ref}, cancelled: () => false,
+      needs: {'detect-changes': {result, outputs: value === undefined ? {} : {'native-type-check': value}}}}, {timeout: 100}));
+  assert.equal(selected('pull_request', 'refs/pull/1/merge', 'success', 'true'), true);
+  assert.equal(selected('pull_request', 'refs/pull/1/merge', 'success', 'false'), false, 'docs-only and JS-only PRs skip it');
+  assert.equal(selected('pull_request', 'refs/pull/1/merge', 'failure', 'false'), true, 'an unknown classification is conservative');
+  assert.equal(selected('pull_request', 'refs/pull/1/merge', 'success', undefined), true);
+  assert.equal(selected('workflow_dispatch', 'refs/heads/fix/example', 'skipped', undefined), true);
+  assert.equal(selected('push', 'refs/heads/main', 'success', 'true'), false, 'main keeps its full lint and builds instead');
+  assert(workflow('release.yml').jobs['pipeline-status'].needs.includes('native-type-check'));
+  const native = paths => admission(paths)['native-type-check'];
+  for (const path of ['rust/src/proof_engine/types.rs', 'rust/build.rs', 'rust/Cargo.lock', 'rust/embedded/data/seed/a.lino',
+    'data/seed/api-cache/x.lino', '.cargo/config.toml', 'rust-toolchain.toml', '.github/workflows/release.yml', '.github/workflows/native-type-check.yml',
+    '.github/actions/setup-sccache/action.yml', 'scripts/ci-clippy-profile.sh', 'clippy.toml', 'new-top-level/unknown.txt'])
+    assert.equal(native([path]), true, path);
+  for (const path of ['docs/a.md', 'README.md', 'changelog.d/x.md', 'js/app.js', 'rust/tests/web/a.test.mjs',
+    'rust/tests/unit/proof_request.rs', 'scripts/check-tests-as-docs.mjs', 'data/meta/x.lino', 'experiments/a/b.sh',
+    '.github/workflows/links.yml', 'package.json', 'bun.lock'])
+    assert.equal(native([path]), false, path);
+  assert.equal(native([]), true, 'an empty observation is unknown, so the check runs');
+});
+// The production-only failure this job closes: PR #1497 was green, then main
+// failed with E0308 in rust/src. Its own changed paths must select the check.
+test('replays main run 43710854562: the E0308 pull request selects the native type check', () => {
+  const replay = JSON.parse(readFileSync(new URL('../fixtures/issue-1191/native-type-check-e0308.json', import.meta.url), 'utf8'));
+  const {observedFailure: failure} = replay;
+  assert.equal(replay.schema, 'main-only-regression-replay/v1');
+  assert.equal(failure.greenPullRequest.checks.failure, 0, 'every PR check passed before the fix');
+  assert.equal(admission(replay.pullRequestPaths)['native-type-check'], true);
+  assert.equal(failure.compilerOutput[0], 'error[E0308]: mismatched types');
+  assert(failure.compilerOutput.includes('   --> src/solver_handlers/user_intent.rs:141:9'));
+  assert(failure.compilerOutput.at(-1).startsWith('error: could not compile `formal-ai` (lib)'), 'the library target is what --lib checks');
+  assert.equal(admission([replay.fixedBy.file])['native-type-check'], true);
+  // Clippy stopped at E0308; once fixed, the same PR's lines failed clippy::perf.
+  const lint = replay.followUpFailure;
+  assert.equal(lint.gate, 'run_clippy');
+  assert.equal(lint.clippyOutput.filter(line => line.startsWith('error: using `contains()`')).length, 2);
+  assert(lint.clippyOutput.includes('    = note: `-D clippy::manual-contains` implied by `-D clippy::perf`'));
+  for (const file of ['rust/src/formalization/proposition_structure.rs', 'rust/src/proof_engine/claim_binding.rs']) {
+    assert(replay.pullRequestPaths.includes(file), file);
+    assert.doesNotMatch(readFileSync(new URL('../../../' + file, import.meta.url), 'utf8'), /\.iter\(\)\s*\.any\(\|(joiner|cue)\| \*(joiner|cue) == /u);
+  }
+});
+// The PR mode must lint exactly as main's run_clippy gate does, minus the test
+// and example targets: same deny list, same deferred style categories.
+test('the PR clippy mode runs main\'s lint flags on the library and binaries only', () => {
+  const bin = mkdtempSync(join(tmpdir(), 'fake-cargo-'));
+  try {
+    writeFileSync(join(bin, 'cargo'), '#!/bin/sh\necho "cargo $*"\n', {mode: 0o755});
+    const profile = mode => spawnSync('bash', ['scripts/ci-clippy-profile.sh', ...mode], {
+      cwd: resolve(import.meta.dirname, '../../..'), encoding: 'utf8',
+      env: {...process.env, PATH: bin + ':' + process.env.PATH, FORMAL_AI_STRICT_STYLE_LINTS: ''}});
+    const main = profile([]), pull = profile(['--library-and-binaries']);
+    assert.equal(main.status, 0, main.stderr); assert.equal(pull.status, 0, pull.stderr);
+    const commands = run => run.stdout.split('\n').filter(line => line.startsWith('cargo '));
+    const [mainClippy, mainExamples] = commands(main);
+    assert.match(mainExamples, /^cargo check .*--examples/u);
+    assert.deepEqual(commands(pull), [mainClippy.replace(' --lib --bins --tests ', ' --locked --lib --bins ')]);
+    assert.match(mainClippy, / -- -D warnings -A clippy::pedantic .* -D clippy::perf$/u);
+  } finally { rmSync(bin, {recursive: true, force: true}); }
 });
 test('recorded Docker cold rebuild is optional and cannot hold the production build behind another build', () => {
   const jobs = workflow('container-images.yml').jobs;
@@ -334,4 +422,30 @@ test('base source diagnostics retain public identity and redact unavailable resp
   assert.equal(failed.length,1);assert.equal(failed[0].outcome,'unavailable');
   assert.equal(failed[0].phase,'ref');assert.equal(failed[0].status,200);assert.equal(failed[0].requests,1);
   assert.equal(failed[0].reason,'invalid base source JSON');
+});
+
+// Issue #1191: the fast lint job has no dependency install step, so every
+// script it runs, and everything those scripts import, may load only Node
+// built-ins and repository files. PR #1573's first push failed here when
+// scripts/check-runner-labels.mjs (which imports `yaml`) was added to it.
+test('the fast PR lint job runs only scripts that need no installed package', () => {
+  const job = workflow('release.yml').jobs['fast-pr-lint'];
+  assert.ok(!job.steps.some(step => /\b(bun|npm|pnpm|yarn) (install|ci)\b/u.test(step.run ?? '')), 'the fast lint job installs no packages');
+  const entries = job.steps.flatMap(step => [...(step.run ?? '').matchAll(/\bnode (scripts\/[\w./-]+\.mjs)/gu)].map(match => match[1]));
+  assert.ok(entries.length >= 5, 'the fast lint job runs its node scripts');
+  // Only static imports load with the script; a lazy `import()` runs only on the path that needs it.
+  const builtins = new Set(builtinModules);
+  const seen = new Set(), bare = [];
+  const visit = path => {
+    if (seen.has(path)) return;
+    seen.add(path);
+    for (const match of read(path).matchAll(/^\s*(?:import|export)\b[^'"`;()=]*?\bfrom\s*['"]([^'"]+)['"]|^\s*import\s*['"]([^'"]+)['"]/gmu)) {
+      const specifier = match[1] ?? match[2];
+      if (specifier.startsWith('node:') || builtins.has(specifier)) continue;
+      if (specifier.startsWith('.')) visit(join(path, '..', specifier).replaceAll('\\', '/'));
+      else bare.push(`${path} imports ${specifier}`);
+    }
+  };
+  entries.forEach(visit);
+  assert.deepEqual(bare, [], 'scripts reachable from the fast lint job import installed packages');
 });

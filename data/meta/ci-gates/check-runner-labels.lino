@@ -1,0 +1,6 @@
+# One CI gate, one file (issue #991).
+ci_gate check-runner-labels
+  stage web
+  description "Every runner label in .github/workflows and .github/actions is pinned: a runs-on (literal, list, runner group or matrix value) ending in -latest fails, and a runs-on the check cannot resolve fails closed."
+  run "node scripts/check-runner-labels.mjs"
+  justification "Issue #1191 (requirement 9): ubuntu-latest and windows-latest move to a new image on GitHub's schedule, so the same commit could build on a different OS between two runs; without this gate a new workflow could reintroduce a moving label unnoticed."

@@ -1,0 +1,89 @@
+# Production-only regressions: failures that main recorded after a green pull
+# request (issue #1191). Each one names the narrowest pre-merge check that now
+# replays it, so the same change fails before merge.
+# rust/tests/web/main-only-regression-ledger.test.mjs checks that every check
+# file exists and runs in the fast pull-request inventory, that a named
+# workflow is the reusable native check release.yml calls on pull requests,
+# and that the check still carries the replay marker.
+#
+# Regressions are grouped by the main run that recorded them, then by the kind
+# of pre-merge check that now replays them:
+#   javascript-twin   a JavaScript twin of a Rust gate, in the fast pull-request lane
+#   workflow-policy   a workflow or layout policy test, in the fast pull-request lane
+#   focused-native    the CI-only pull-request native check (never native or release evidence)
+main-run 43710854562
+  focused-native
+    regression rust-source-e0308
+      introduced-by "PR #1497"
+      failed "cargo build: error[E0308] mismatched types in rust/src"
+      workflow .github/workflows/native-type-check.yml
+      check rust/tests/web/default-branch-build-policy.test.mjs
+      marker "replays main run 43710854562"
+  javascript-twin
+    regression tests-as-documentation-loose-only
+      introduced-by "commit 686367d20"
+      failed "scripts/check-tests-as-docs.rs: a loose-only test at 686367d20"
+      check rust/tests/web/tests-as-documentation-twin.test.mjs
+      marker "686367d20"
+main-run 43730270231
+  focused-native
+    regression clippy-manual-contains
+      introduced-by "PR #1497"
+      failed "run_clippy: clippy::manual_contains in proposition_structure.rs"
+      workflow .github/workflows/native-type-check.yml
+      check rust/tests/web/default-branch-build-policy.test.mjs
+      marker "clippy::perf"
+  javascript-twin
+    regression module-map-standing-scope
+      introduced-by "PR #1559"
+      failed "issue_954_module_map: the_module_map_equals_the_librs_mod_list"
+      check rust/tests/web/module-map-twin.test.mjs
+      marker "43730270231"
+    regression inline-tests-work-item-leads
+      introduced-by "PR #1483"
+      failed "source_test_placement: src_has_no_inline_unit_tests"
+      check rust/tests/web/source-test-placement-twin.test.mjs
+      marker "work_item_leads.rs"
+    regression work-item-read-normalized-payload
+      introduced-by "PR #1567 (issue #1558), merged as 7837d5073"
+      failed "issue_1558_reference_resolution: issue 1488 body dropped by normalized_payload"
+      check rust/tests/web/main-only-planner-twins.test.mjs
+      marker "observed_payload"
+    regression issue-698-planner-expectation
+      introduced-by "PR #1564 (issue #1560)"
+      failed "agentic_general_planner: issue-698 driver now reads industry-suite.lino"
+      check rust/tests/web/main-only-planner-twins.test.mjs
+      marker "industry-suite.lino"
+  workflow-policy
+    regression top-level-examples
+      introduced-by "PR #1559"
+      failed "issue_1138_three_source_roots: the_crate_lives_under_rust"
+      check rust/tests/web/three-source-roots-layout.test.mjs
+      marker "the_crate_lives_under_rust"
+main-run 43710854189
+  javascript-twin
+    regression plan-event-lock-uutils-mkdir
+      introduced-by "the ubuntu-26.04 runner image"
+      failed "general_change_plan event appended twice on ubuntu-26.04 (uutils mkdir)"
+      check rust/tests/web/general-plan-event-append.test.mjs
+      marker "43710854189"
+  workflow-policy
+    regression moving-runner-label
+      introduced-by "the ubuntu-latest alias moving to ubuntu-26.04"
+      failed "ubuntu-latest moved to ubuntu-26.04 under an unchanged workflow"
+      check rust/tests/web/runner-label-pinning.test.mjs
+      marker "a moving label"
+main-run 41317019358
+  javascript-twin
+    regression debt-ratchet-literal-predicates
+      introduced-by "PR #1495, merged as 116e86043"
+      failed "Self-development status: literal-predicates measured 445 above ceiling 437"
+      check rust/tests/web/debt-ceiling-fast-lane.test.mjs
+      marker "41317019358"
+main-run 41804771645
+  javascript-twin
+    regression debt-ratchet-language-parity-gaps
+      introduced-by "PR #1542, merged as 438185d97"
+      failed "Self-development status: language-parity-gaps measured 52 above ceiling 42"
+      check rust/tests/web/debt-ceiling-fast-lane.test.mjs
+      marker "41804771645"

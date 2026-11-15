@@ -5,7 +5,7 @@
     "id-token": "write"
   },
   "resolve": {
-    "runs-on": "ubuntu-latest",
+    "runs-on": "ubuntu-24.04",
     "timeout-minutes": 5,
     "if": "github.event_name != 'workflow_run' || (github.event.workflow_run.head_branch == 'main' &&\n github.event.workflow_run.head_repository.full_name == github.repository &&\n github.event.workflow_run.conclusion != 'cancelled' &&\n github.event.workflow_run.conclusion != 'skipped')",
     "outputs": {

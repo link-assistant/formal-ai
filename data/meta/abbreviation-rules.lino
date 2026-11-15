@@ -47,6 +47,8 @@ abbreviation-rules
       reason "the browser worker's generated copies of js/agentic/crate modules (scripts/generate-worker-crate-modules.mjs), named and spelled as their sources"
     fixed-name lib
       reason "the stem of the crate root file Rust fixes (src/lib.rs), and of a script directory's lib.sh by the same convention"
+    fixed-name check-tests-as-docs
+      reason "the gate name data/meta/architecture-principles.lino enforces, which scripts/lib/checks-twin-parity.mjs fixes for both scripts/check-tests-as-docs.rs and its JavaScript twin scripts/check-tests-as-docs.mjs (issue #1191); a rename moves both scripts, the gate and the principles together"
   bindings js
     excluded js/vendor
       reason "third-party code, kept byte for byte"

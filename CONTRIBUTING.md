@@ -1348,6 +1348,48 @@ honest reason if the collision is genuinely semantic. A deferral with a stated
 reason is a decision; an uncovered path is an omission, and CI treats them
 differently.
 
+## The single push gate (issue #1191)
+
+Every push starts the whole pull-request matrix again. A push that fixes only
+some of the previous run's failures pays that cost once per round trip.
+Pull request #1188 needed 100 commits and 11 `CI/CD Pipeline` runs, and none of
+them was green. Human and AI contributors therefore follow one push gate, which
+[AGENTS.md](AGENTS.md) restates for agents:
+
+1. **Drafting sub-agents never push.** They commit locally or hand back a diff.
+2. **One CI/CD agent pushes, once per round.** That agent first collects every
+   actionable failure of the latest run on the current head
+   (`gh run list --branch <branch>`, then `gh run view <id> --log-failed`). It
+   fixes all of them in one batch and pushes once.
+3. **Never push while a run is in progress on the branch.**
+   `gh run list --branch <branch> --status in_progress` and `--status queued`
+   must both be empty, unless you are deliberately superseding an older head.
+   The protected-main and superseded-pull-request concurrency groups stay as
+   they are; this rule keeps them from being used as a retry loop.
+4. **Run the JavaScript checks locally before the push.** Run the test files
+   next to the change one at a time
+   (`timeout 600 node --test --test-concurrency=1 <file>`). Also run the
+   JavaScript twins of the gates the change touches
+   (`node experiments/formal_ai_subagent/local-gates.mjs --only <gate>`). Run
+   the whole set, without `--only`, before a push that changes shared data.
+5. **No full local Rust build unless the change is Rust-only.** CI compiles
+   Rust: the focused `native-type-check` job on pull requests, and the full
+   matrix on main. `rustfmt --check <file>` needs no build.
+6. **When a Rust-only change has to be built locally, keep the build bounded.**
+   - Share one target directory across worktrees and agents
+     (`CARGO_TARGET_DIR=$HOME/.cache/formal-ai-target`).
+   - Turn off the incremental cache (`CARGO_INCREMENTAL=0`).
+   - Limit the jobs (`CARGO_BUILD_JOBS=2`, or `CARGO_TEST_JOBS=2` for
+     `scripts/cargo-test.sh`).
+   - Prune old artifacts afterwards (`scripts/prune-build-cache.sh`). The
+     script follows `CARGO_TARGET_DIR` and caps the tree at 4 GB locally.
+
+When main fails after a green pull request, record the failure in
+[`data/meta/main-only-regressions.lino`](data/meta/main-only-regressions.lino)
+together with the narrowest pre-merge check that now replays it.
+`rust/tests/web/main-only-regression-ledger.test.mjs` keeps each named check in
+the fast pull-request lane.
+
 ## Pull Request Process
 
 1. Run only the tests next to your change locally (`node --test <file>`) and
@@ -1415,59 +1457,8 @@ Fragments are automatically collected into CHANGELOG.md during the release proce
 
 ## Project Structure
 
-```
-.
-├── .github/workflows/    # GitHub Actions CI/CD
-├── analysis/             # Ad-hoc analysis notes
-├── changelog.d/          # Changelog fragments
-│   ├── README.md         # Fragment instructions
-│   └── *.md              # Individual changelog fragments
-├── data/                 # Canonical knowledge surface (Links Notation)
-│   ├── seed/             # Seed data every interface reads (see "Data is the interface")
-│   ├── meta/             # Grounded meta-algorithm recipes and lexicons
-│   ├── benchmarks/       # Benchmark suites and license provenance
-│   ├── cache/            # Precached external sources (Wikidata, …)
-│   └── parity/           # Cross-runtime parity fixtures
-├── desktop/              # Electron desktop shell
-├── docs/                 # Case studies, design notes, diagrams, guides
-│   ├── requirements-traceability.md  # One delivery row per requirement ID
-│   ├── benchmarks.md     # Every benchmark suite, its license, and honest scores
-│   ├── meta-algorithm.md # The grounded meta-algorithm and its procedures
-│   └── architect-notes/  # Dated notes from the architect, indexed in README.md
-├── rust/examples/             # Usage examples
-├── experiments/          # Verification harnesses and one-off experiments
-├── scripts/              # Rust scripts (via rust-script) and installers
-├── rust/src/
-│   ├── lib.rs            # Library entry point
-│   ├── main.rs           # Binary entry point
-│   ├── solver.rs         # UniversalSolver — the 11-step loop
-│   ├── solver_handlers/  # Handler family invoked through the method registry
-│   ├── agentic_coding/   # Agentic-CLI planner, recipes, and driver
-│   ├── proof_engine/     # Decision procedures
-│   ├── summarization/    # Formalize → summarize → deformalize pipeline
-│   ├── translation/      # Formalization and translation through meanings
-│   ├── seed/             # Seed loading, lexicon, and role constants
-│   └── web/              # Browser demo: UI, worker/, and wasm-worker/
-├── rust/tests/                # Unit, integration, source-mirror, and e2e tests
-├── vscode/               # VS Code extension (desktop and web)
-├── .gitignore            # Git ignore patterns
-├── .pre-commit-config.yaml  # Pre-commit hooks
-├── ARCHITECTURE.md       # How the implemented pipeline is wired
-├── build.rs              # Build script
-├── Cargo.toml            # Project configuration
-├── CHANGELOG.md          # Project changelog
-├── compose.yaml          # Docker Compose profiles
-├── CONTRIBUTING.md       # This file
-├── Dockerfile            # Docker-in-Docker Telegram runtime
-├── GOALS.md              # What counts as success
-├── LICENSE               # Unlicense (public domain)
-├── NON-GOALS.md          # What we explicitly do not build
-├── package.json          # Web/desktop/VS Code tooling scripts
-├── README.md             # Project README
-├── REQUIREMENTS.md       # Issue-by-issue requirement matrix
-├── ROADMAP.md            # Requirement-level implementation status
-└── VISION.md             # Standing guideline and long-term direction; read first
-```
+The top-level layout is in
+[docs/development/project-structure.md](docs/development/project-structure.md).
 
 ## Release Process
 

@@ -1,0 +1,6 @@
+# One CI gate, one file (issue #991); `rust-script scripts/run-ci-gates.rs --stage <stage>` runs it.
+ci_gate check-generate-module-map-js-twin
+  stage rust
+  description "scripts/generate-module-map.mjs renders exactly the module-map section scripts/generate-module-map.rs renders, with the same exit code, so the fast pull-request inventory (module-map-twin.test.mjs) enforces the module map without compiling Rust."
+  run "node scripts/lib/checks-twin-parity.mjs generate-module-map"
+  justification "The Rust generator and issue_954_module_map ran only on main, so PR #1559 added pub mod standing_scope with a green pull request and main CI/CD Pipeline run 43730270231 then failed (#1191); a twin that drifted from the Rust rendering would pass a map main rejects."

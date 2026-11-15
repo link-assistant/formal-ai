@@ -1,0 +1,343 @@
+[
+  {
+    "number": 1570,
+    "title": "fix(ci): remove CI/CD false positives, false negatives, warnings and errors (#1569)",
+    "createdAt": "2026-11-15T07:44:40Z",
+    "mergedAt": "2026-11-15T09:47:39Z",
+    "commits": 27,
+    "additions": 187544,
+    "deletions": 71,
+    "pushes": 13,
+    "runs": {
+      "total": 258,
+      "success": 204,
+      "skipped": 9,
+      "cancelled": 10,
+      "failure": 35
+    },
+    "heavy": {
+      "total": 39,
+      "success": 26,
+      "cancelled": 2,
+      "failure": 11
+    },
+    "pipeline": {
+      "total": 13,
+      "success": 8,
+      "cancelled": 1,
+      "failure": 4
+    },
+    "jobMinutes": 85,
+    "jobListings": "39/39",
+    "runsPerPush": 19.8,
+    "firstFailureMin": 105,
+    "firstGreenHours": 0.9,
+    "mergeHours": 2
+  },
+  {
+    "number": 1568,
+    "title": "fix(work-item): sessions end with an independently checked edit or a named gap, never after inspection alone (#1483)",
+    "createdAt": "2026-11-15T07:06:30Z",
+    "mergedAt": "2026-11-15T11:50:24Z",
+    "commits": 31,
+    "additions": 10692,
+    "deletions": 167,
+    "pushes": 25,
+    "runs": {
+      "total": 562,
+      "success": 459,
+      "skipped": 38,
+      "failure": 11,
+      "cancelled": 54
+    },
+    "heavy": {
+      "total": 75,
+      "success": 48,
+      "failure": 11,
+      "cancelled": 16
+    },
+    "pipeline": {
+      "total": 25,
+      "success": 17,
+      "cancelled": 4,
+      "failure": 4
+    },
+    "jobMinutes": 262,
+    "jobListings": "75/75",
+    "runsPerPush": 22.5,
+    "firstFailureMin": 5.6,
+    "firstGreenHours": 1.2,
+    "mergeHours": 4.7
+  },
+  {
+    "number": 1566,
+    "title": "fix(dreaming): never learn a session's system prompt as a standing requirement; scope amendments and keep them out of final answers (#1559)",
+    "createdAt": "2026-11-14T23:34:49Z",
+    "mergedAt": "2026-11-15T02:10:21Z",
+    "commits": 15,
+    "additions": 5182,
+    "deletions": 492,
+    "pushes": 8,
+    "runs": {
+      "total": 161,
+      "success": 134,
+      "failure": 10,
+      "cancelled": 17
+    },
+    "heavy": {
+      "total": 24,
+      "success": 13,
+      "failure": 8,
+      "cancelled": 3
+    },
+    "pipeline": {
+      "total": 8,
+      "success": 4,
+      "failure": 3,
+      "cancelled": 1
+    },
+    "jobMinutes": 54,
+    "jobListings": "24/24",
+    "runsPerPush": 20.1,
+    "firstFailureMin": 4.1,
+    "firstGreenHours": 2.4,
+    "mergeHours": 2.6
+  },
+  {
+    "number": 1565,
+    "title": "fix(language): answer an English issue in English: whole-word markers and prose-based work-item language (#1557)",
+    "createdAt": "2026-11-14T23:29:26Z",
+    "mergedAt": "2026-11-15T01:26:21Z",
+    "commits": 14,
+    "additions": 2027,
+    "deletions": 189,
+    "pushes": 8,
+    "runs": {
+      "total": 167,
+      "failure": 7,
+      "success": 128,
+      "cancelled": 25,
+      "skipped": 7
+    },
+    "heavy": {
+      "total": 24,
+      "success": 13,
+      "failure": 5,
+      "cancelled": 6
+    },
+    "pipeline": {
+      "total": 8,
+      "failure": 2,
+      "success": 4,
+      "cancelled": 2
+    },
+    "jobMinutes": 50,
+    "jobListings": "24/24",
+    "runsPerPush": 20.9,
+    "firstFailureMin": 2.9,
+    "firstGreenHours": 1.8,
+    "mergeHours": 1.9
+  },
+  {
+    "number": 1564,
+    "title": "fix: render work-item records as localized reports, read policy over the user turn, and keep only an issue page's title and body",
+    "createdAt": "2026-11-14T23:24:26Z",
+    "mergedAt": "2026-11-15T03:11:20Z",
+    "commits": 20,
+    "additions": 3988,
+    "deletions": 272,
+    "pushes": 8,
+    "runs": {
+      "total": 178,
+      "success": 155,
+      "failure": 6,
+      "skipped": 15,
+      "cancelled": 2
+    },
+    "heavy": {
+      "total": 24,
+      "success": 18,
+      "failure": 4,
+      "cancelled": 2
+    },
+    "pipeline": {
+      "total": 8,
+      "failure": 2,
+      "success": 6
+    },
+    "jobMinutes": 63,
+    "jobListings": "24/24",
+    "runsPerPush": 22.3,
+    "firstFailureMin": 1.5,
+    "firstGreenHours": 2.7,
+    "mergeHours": 3.8
+  },
+  {
+    "number": 1563,
+    "title": "fix(agentic): resolve file names from a work item before reading them, and never plan the same read twice (#1558)",
+    "createdAt": "2026-11-14T23:19:33Z",
+    "mergedAt": "2026-11-15T01:24:28Z",
+    "commits": 8,
+    "additions": 3435,
+    "deletions": 164,
+    "pushes": 7,
+    "runs": {
+      "total": 155,
+      "success": 132,
+      "skipped": 13,
+      "failure": 7,
+      "cancelled": 3
+    },
+    "heavy": {
+      "total": 21,
+      "success": 16,
+      "failure": 4,
+      "cancelled": 1
+    },
+    "pipeline": {
+      "total": 7,
+      "success": 5,
+      "failure": 2
+    },
+    "jobMinutes": 52,
+    "jobListings": "21/21",
+    "runsPerPush": 22.1,
+    "firstFailureMin": 0.9,
+    "firstGreenHours": 1,
+    "mergeHours": 2.1
+  },
+  {
+    "number": 1549,
+    "title": "docs: audit what blocks the vision, correct the documents, and organize the blockers under one parent issue (#1548)",
+    "createdAt": "2026-11-10T06:04:43Z",
+    "mergedAt": "2026-11-14T20:42:42Z",
+    "commits": 17,
+    "additions": 6679,
+    "deletions": 29,
+    "pushes": 7,
+    "runs": {
+      "total": 97,
+      "success": 31,
+      "cancelled": 33,
+      "failure": 33
+    },
+    "heavy": {
+      "total": 21,
+      "success": 5,
+      "cancelled": 7,
+      "failure": 9
+    },
+    "pipeline": {
+      "total": 7,
+      "success": 1,
+      "cancelled": 3,
+      "failure": 3
+    },
+    "jobMinutes": 63,
+    "jobListings": "21/21",
+    "runsPerPush": 13.9,
+    "firstFailureMin": 6636.7,
+    "firstGreenHours": 6.4,
+    "mergeHours": 110.6
+  },
+  {
+    "number": 1502,
+    "title": "Fix file-command intent routing and main qualification regressions",
+    "createdAt": "2026-11-01T13:05:15Z",
+    "mergedAt": "2026-11-01T16:20:24Z",
+    "commits": 6,
+    "additions": 6953,
+    "deletions": 79,
+    "pushes": 4,
+    "runs": {
+      "total": 56,
+      "success": 22,
+      "skipped": 1,
+      "failure": 33
+    },
+    "heavy": {
+      "total": 12,
+      "success": 3,
+      "failure": 9
+    },
+    "pipeline": {
+      "total": 4,
+      "success": 1,
+      "failure": 3
+    },
+    "jobMinutes": 8,
+    "jobListings": "12/12",
+    "runsPerPush": 14,
+    "firstFailureMin": 193.7,
+    "firstGreenHours": 3.2,
+    "mergeHours": 3.3
+  },
+  {
+    "number": 1498,
+    "title": "feat: shorten Hive coding feedback with phase timing and SLOs, offline replay tests, one build per identity and delta image layers (#1486)",
+    "createdAt": "2026-10-31T10:27:34Z",
+    "mergedAt": "2026-11-15T07:57:19Z",
+    "commits": 12,
+    "additions": 6848,
+    "deletions": 18,
+    "pushes": 11,
+    "runs": {
+      "total": 166,
+      "failure": 45,
+      "success": 120,
+      "cancelled": 1
+    },
+    "heavy": {
+      "total": 33,
+      "failure": 19,
+      "success": 13,
+      "cancelled": 1
+    },
+    "pipeline": {
+      "total": 11,
+      "failure": 8,
+      "success": 3
+    },
+    "jobMinutes": 39,
+    "jobListings": "33/33",
+    "runsPerPush": 15.1,
+    "firstFailureMin": 1.2,
+    "firstGreenHours": 356.6,
+    "mergeHours": 357.5
+  },
+  {
+    "number": 1188,
+    "title": "Bulk QA, reasoning and coding fixes; recursive meta reasoner; JS server parity",
+    "createdAt": "2026-09-30T11:12:19Z",
+    "mergedAt": "2026-10-12T08:45:30Z",
+    "commits": 1116,
+    "additions": 1660645,
+    "deletions": 203007,
+    "pushes": 159,
+    "runs": {
+      "total": 3676,
+      "failure": 541,
+      "success": 1989,
+      "cancelled": 1134,
+      "skipped": 12
+    },
+    "heavy": {
+      "total": 477,
+      "failure": 186,
+      "success": 40,
+      "cancelled": 251
+    },
+    "pipeline": {
+      "total": 159,
+      "failure": 74,
+      "cancelled": 84,
+      "success": 1
+    },
+    "jobMinutes": 21576,
+    "jobListings": "400/477",
+    "runsPerPush": 23.1,
+    "firstFailureMin": 10.2,
+    "firstGreenHours": 285.4,
+    "mergeHours": 285.6
+  }
+]

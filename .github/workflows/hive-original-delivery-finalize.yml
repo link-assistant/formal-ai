@@ -97,8 +97,13 @@ jobs:
           if-no-files-found: error
           retention-days: 7
   prepare:
+    # A delivery whose every job was skipped never started an effect owner and
+    # cannot have uploaded its claim artifact, so preparing it only billed a
+    # no-op runner (85 such runs in 8 hours, #1191). Failed and cancelled owners
+    # still prepare here, and the quarter-hourly schedule still recovers all.
     if: ${{ (github.event_name == 'workflow_dispatch' && inputs.cleanup == true
       && github.ref == 'refs/heads/main') || github.event_name == 'schedule' || (github.event_name == 'workflow_run'
+      && github.event.workflow_run.conclusion != 'skipped'
       && github.event.workflow_run.head_repository.full_name ==
       github.repository) }}
     runs-on: ubuntu-24.04

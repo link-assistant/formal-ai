@@ -1,0 +1,24 @@
+{
+  "schema": "main-only-regression-replay/v1",
+  "issue": 1191,
+  "gate": "check-tests-as-docs",
+  "observedFailure": {
+    "workflow": "CI/CD Pipeline",
+    "run": 43710854562,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/43710854562",
+    "job": "Lint and Format Check (lane 1)",
+    "commit": "686367d20",
+    "report": "Behavioural tests asserting on an answer without showing it:\n\n  rust/tests/unit/proof_request.rs::negated_theorem_request_is_refuted_never_proven"
+  },
+  "fixedBy": {
+    "commit": "10edee05b",
+    "blob": "c3b25bdcebb9e86e6ed6c856dba8c43f8070a264"
+  },
+  "path": "rust/tests/unit/proof_request.rs",
+  "sourceBlob": "5d5df21c0fd8b0aea56224b260a359c7139435cd",
+  "expectedEntry": {
+    "file": "rust/tests/unit/proof_request.rs",
+    "test": "negated_theorem_request_is_refuted_never_proven"
+  },
+  "source": "/// Issue #1487: \"Prove there are not infinitely many primes.\" must never get\n/// Euclid's positive success; the library marks the theorem `negation contradiction`,\n/// so the request is refuted by Euclid's proof.\n#[test]\nfn negated_theorem_request_is_refuted_never_proven() {\n    use formal_ai::proof_engine::{ProofOutcome, attempt_proof};\n    for (language, claim) in [\n        (\"en\", \"there are not infinitely many primes\"),\n        (\"zh\", \"不存在无穷多素数\"),\n    ] {\n        let outcome = attempt_proof(claim, claim, language, false, false);\n        let ProofOutcome::Disproven {\n            counterexample,\n            partial_proof,\n            ..\n        } = &outcome\n        else {\n            panic!(\"negated theorem {claim:?} must be refuted, got {outcome:?}\");\n        };\n        assert!(\n            partial_proof.is_some(),\n            \"the refutation carries Euclid's proof\"\n        );\n        assert!(!counterexample.contains(\"{statement}\"), \"{counterexample}\");\n    }\n    let response = FormalAiEngine.answer(\"Prove there are not infinitely many primes.\");\n    assert_eq!(response.intent, \"proof_request\");\n    assert!(\n        response.answer.contains(\"Disproof\") && response.answer.contains(\"denies a proven theorem\"),\n        \"negated request should be refuted, got: {}\",\n        response.answer\n    );\n    assert!(\n        !response.answer.starts_with(\"Proof (\") && !response.answer.contains(\"\\nProof (\"),\n        \"negated request must not be presented as a proof of itself, got: {}\",\n        response.answer\n    );\n}\n"
+}
