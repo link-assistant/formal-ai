@@ -66,11 +66,11 @@ function withFixture(fn, mode = 'all', filter = '', rules = true) {
   const f = fixture(mode, filter, rules);try { fn(f); } finally { rmSync(f.folder, { recursive: true, force: true }); }
 }
 
-test('all mode plans exactly 63 original corpus nodes in 31 independent and 16 dependent legs', () => {
+test('all mode plans exactly 63 original corpus nodes in 47 independent and 16 dependent single-node legs', () => {
   const plan = planned();assert.equal(plan.expected_nodes.length, 63);
-  assert.equal(plan.legs.length, 31);assert.equal(plan.composites.length, 16);
+  assert.equal(plan.legs.length, 47);assert.equal(plan.composites.length, 16);
   assert.equal(new Set([...plan.legs, ...plan.composites].flatMap(leg => leg.nodes)).size, 63);
-  assert.ok(plan.legs.every(leg => leg.nodes.length <= 2 && leg.depth !== 4));
+  assert.ok(plan.legs.every(leg => leg.nodes.length === 1 && leg.depth !== 4));
   assert.ok(plan.composites.every(leg => leg.depth === 4 && leg.nodes.length === 1));
 });
 test('every binary subtree preserves its exact all-mode count and leg membership', () => {
@@ -80,14 +80,18 @@ test('every binary subtree preserves its exact all-mode count and leg membership
     assert.deepEqual(new Set([...plan.legs,...plan.composites].flatMap(leg => leg.nodes)),new Set(plan.expected_nodes));
   }
 });
-test('depth-five plan preserves 32 leaves in 16 pairs and a filtered single leaf', () => {
-  assert.equal(planned('5').legs.length,16);const p = planned('5','1.1.1.1.1');
+// Issue #1571: a two-leaf leg compiled the crate cold for its first leaf and
+// used 1196s of its 1200s budget, so every leaf is its own leg.
+test('depth-five plan preserves 32 leaves in 32 single-leaf legs and a filtered single leaf', () => {
+  const legs=planned('5').legs;assert.equal(legs.length,32);
+  assert.ok(legs.every(leg=>leg.nodes.length===1&&leg.filter===leg.nodes[0]&&leg.id===`depth-5-${leg.nodes[0]}`));
+  const p = planned('5','1.1.1.1.1');
   assert.deepEqual(p.legs[0].nodes,['1.1.1.1.1']);assert.equal(p.legs[0].filter,'1.1.1.1.1');
 });
 test('invalid depths, filters and empty selections fail rather than validate no work', () => {
   for (const args of [['6'],['all','../escape'],['3','1.1.1.1']]) assert.notEqual(python('plan-legs.py',args).status,0);
 });
-for (const rules of [true,false]) test(`the 47-leg join preserves all 63 nodes and actual corpus bytes with rules=${rules}`, () => withFixture(f => {
+for (const rules of [true,false]) test(`the 63-leg join preserves all 63 nodes and actual corpus bytes with rules=${rules}`, () => withFixture(f => {
   const result = combine(f);assert.equal(result.status,0,result.stderr);
   assert.equal(readFileSync(join(f.output,'tree.tsv'),'utf8'),f.tree);
   assert.equal(readFileSync(join(f.output,'leaves.tsv'),'utf8'),f.leaves);
@@ -117,7 +121,7 @@ const invalid = {
 for (const [name,mutate] of Object.entries(invalid)) test(`join rejects ${name}`,()=>withFixture(f=>{mutate(f);assert.notEqual(combine(f).status,0);}));
 test('a filtered all-mode join retains the complete requested subtree',()=>withFixture(f=>assert.equal(combine(f).status,0),'all','2.1'));
 test('child import copies only the two declared leaves and rejects foreign source identity',()=>withFixture(f=>{
-  assert.equal(combine(f).status,0);const parent=f.legs[0].filter;const target=join(f.folder,'composite');mkdirSync(target);
+  assert.equal(combine(f).status,0);const parent=f.legs[0].nodes[0].replace(/\.[12]$/u,'');const target=join(f.folder,'composite');mkdirSync(target);
   writeFileSync(join(target,'tree.tsv'),f.tree);writeFileSync(join(target,'leaves.tsv'),f.leaves);
   writeFileSync(join(target,'selected.tsv'),f.rows.get(parent)+'\n');
   const args=[f.output,target,'a'.repeat(40),'b'.repeat(40),'true'];
@@ -129,13 +133,13 @@ test('child import copies only the two declared leaves and rejects foreign sourc
 function importTarget(f) {
   const target=join(f.folder,'import-target');mkdirSync(target);
   writeFileSync(join(target,'tree.tsv'),f.tree);writeFileSync(join(target,'leaves.tsv'),f.leaves);
-  writeFileSync(join(target,'selected.tsv'),f.rows.get(f.legs[0].filter)+'\n');
+  writeFileSync(join(target,'selected.tsv'),f.rows.get(f.legs[0].nodes[0].replace(/\.[12]$/u,''))+'\n');
   return [f.output,target,'a'.repeat(40),'b'.repeat(40),'true'];
 }
 test('failed leaf evidence remains a measured failure and is never imported as verified',()=>withFixture(f=>{
   const leg=f.legs[0], dir=join(f.shards,leg.id), failed=leg.nodes[0];
   const log=join(dir,'run.log');writeFileSync(log,readFileSync(log,'utf8').replace(failed+'\tPASS',failed+'\tFAIL'));
-  editResult(dir,'failures','1');editResult(dir,'leaf_nodes_passing','1');editResult(dir,'deepest_passing_level','none');
+  editResult(dir,'failures','1');editResult(dir,'leaf_nodes_passing',String(leg.nodes.length-1));editResult(dir,'deepest_passing_level','none');
   const joined=combine(f);assert.equal(joined.status,0,joined.stderr);assert.match(joined.stdout,/leaf_nodes_passing "31"/);
   const imported=python('import-children.py',importTarget(f));assert.equal(imported.status,0,imported.stderr);
   assert.equal(imported.stdout.trimEnd().split('\n').length,1);assert.ok(!imported.stdout.includes(failed));
@@ -167,10 +171,10 @@ test('measured ladder retirement caps each wave and records the new static DAG',
   const workflow=readFileSync(join(root,'.github/workflows/issue-1028-agent-ladder.yml'),'utf8');
   const jobs=new Map(workflowJobs(workflow).map(job=>[job.id,job]));
   const longest=id=>Math.max(0,...jobs.get(id).needs.map(longest))+Math.max(...jobs.get(id).timeoutValues);
-  assert.equal(longest('compare'),135);
-  assert.equal(jobs.get('ladder').timeoutValues[0],45);
+  assert.equal(longest('compare'),120);
+  assert.equal(jobs.get('ladder').timeoutValues[0],30);
   assert.equal(jobs.get('composites').timeoutValues[0],30);
-  assert.match(jobs.get('ladder').body,/TEST_BUDGET_SECONDS: 1800/);
+  assert.match(jobs.get('ladder').body,/TEST_BUDGET_SECONDS: 1200/);
   assert.match(jobs.get('ladder').body,/run-with-budget-warning\.sh/);
   const policy=readFileSync(join(root,'data/meta/ci-speed.lino'),'utf8');
   assert.doesNotMatch(policy,/workflow "\.github\/workflows\/issue-1028-agent-ladder\.yml"/);
