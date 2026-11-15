@@ -9,8 +9,11 @@
 
 use crate::obligation_ledger::clauses_with_spans;
 
+/// A fence opens with three backticks or three tildes.
 fn is_fence(line: &str) -> bool {
-    line.starts_with("```") || line.starts_with("~~~")
+    ['`', '~']
+        .into_iter()
+        .any(|mark| line.chars().take(3).eq(std::iter::repeat_n(mark, 3)))
 }
 
 fn is_heading(line: &str) -> bool {
