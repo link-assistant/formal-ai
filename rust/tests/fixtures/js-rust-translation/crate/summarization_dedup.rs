@@ -1,10 +1,14 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=8b9c98654af2784e6e2f6fb7496ebb7d5f8d12bbef8fc5b5b730f82e0ae6f49d bytes=9702
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=666373241f72d2d34420f9853a7b9d802b35f102e805eb6e91a1cf0d6c65918b bytes=10579
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
-// formal-ai:workarounds import-pruning items=0 carried=3
+// formal-ai:workarounds import-pruning items=0 carried=4
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import of names its module carries
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
@@ -36,15 +40,19 @@
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal function value …
-// formal-ai:blockers call of a sibling function | call of an imported function | object without a $ tag | sibling value
+// formal-ai:blockers call of a sibling function | call of an imported function | destructuring | object without a $ tag | sibling value
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal object spread
+// formal-ai:blockers call of a sibling function | object spread | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
 // formal-ai:blockers call of a sibling function | field access | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
-// formal-ai:refusal object without a $ tag
-// formal-ai:blockers call of a sibling function | field access | object without a $ tag
+// formal-ai:refusal method call .every()
+// formal-ai:blockers arrow callback of .every() | field access | method call .every()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .join()
