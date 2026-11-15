@@ -7,7 +7,7 @@ use crate::agentic_coding::command_reroute::plan_symbolic_command_reroute;
 use crate::agentic_coding::narration::tool_action_narration;
 use crate::agentic_coding::planner::{AgenticPlan, plan_chat_step};
 use crate::dreaming_application::{
-    amended_answer, apply_retained_amendments, solve_with_standing_requirements,
+    applied_amendment_steps, apply_retained_amendments, solve_with_standing_requirements,
 };
 use crate::engine::{
     FormalAiEngine, SymbolicAnswer, ThinkingStep, estimate_tokens, render_thinking_steps, stable_id,
@@ -671,13 +671,18 @@ fn chat_completion_from_plan(
             )
         }
         AgenticPlan::Final(answer) => {
-            let answer = amended_answer(prompt, &answer, memory_events);
+            // Issue #1559 §5: the final answer is published outside the
+            // conversation, so applied amendments go to the trace, not the text.
             let completion_tokens = estimate_tokens(&answer);
-            (
-                ChatMessage::assistant(answer),
-                String::from("stop"),
-                completion_tokens,
-            )
+            let mut message = ChatMessage::assistant(answer);
+            let steps = applied_amendment_steps(prompt, memory_events);
+            if !steps.is_empty() {
+                let reasoning = render_thinking_steps(&steps);
+                message.thinking_steps = steps;
+                message.reasoning_content.clone_from(&reasoning);
+                message.reasoning = reasoning;
+            }
+            (message, String::from("stop"), completion_tokens)
         }
     };
 
@@ -812,6 +817,7 @@ fn response_from_plan(
         prompt,
         workspace.as_deref(),
     );
+    let mut evidence_links = Vec::new();
     let (output, output_tokens) = match plan {
         AgenticPlan::ToolCalls(calls) => {
             let narration = tool_action_narration(prompt, &calls);
@@ -901,8 +907,11 @@ fn response_from_plan(
             (items, output_tokens)
         }
         AgenticPlan::Final(answer) => {
-            let answer = amended_answer(prompt, &answer, memory_events);
+            // Issue #1559 §5: applied amendments are listed in the trace and
+            // as evidence links, never appended to the published answer.
             let output_tokens = estimate_tokens(&answer);
+            let steps = applied_amendment_steps(prompt, memory_events);
+            evidence_links = steps.iter().map(|step| step.source_event.clone()).collect();
             let message = ResponseOutputItem::Message(ResponseOutputMessage {
                 id: stable_id("msg", &answer),
                 kind: String::from("message"),
@@ -911,7 +920,7 @@ fn response_from_plan(
                     kind: String::from("output_text"),
                     text: answer,
                 }],
-                thinking_steps: Vec::new(),
+                thinking_steps: steps,
             });
             (vec![message], output_tokens)
         }
@@ -929,7 +938,7 @@ fn response_from_plan(
             output_tokens,
             total_tokens: input_tokens.saturating_add(output_tokens),
         },
-        evidence_links: Vec::new(),
+        evidence_links,
         derivation_id: None,
         thinking_steps: Vec::new(),
     }

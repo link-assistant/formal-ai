@@ -174,8 +174,6 @@ server_messages
     text "Learned standing requirement ({topic}): {rule}"
   message standing_requirement_trace
     text "learned standing requirement ({topic})"
-  message standing_requirement_trace
-    text "learned standing requirement ({topic})"
   message memory_request_history_title
     text "Current request"
   message execution_unsupported_start_isolation
