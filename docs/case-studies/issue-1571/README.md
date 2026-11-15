@@ -129,6 +129,10 @@ npm printed `EBADENGINE` twice. That is only a warning, so the run would have sh
 - `rust/tests/web/issue-1571-workflow-diagnostics.test.mjs` parses every runtime entry of both lockfiles and fails when an `engines.node` floor is above Node 24.21.0, which is what Electron 44.7.0 embeds (the `^44.7.0` floor in `desktop/package.json`).
 - I verified that the test fails when the lock's web-capture engine is set to `>=26.10.0`.
 
+The governed specification witness (`experiments/…/unicode-identifier-identity/governed-baseline.v8`) embeds the exact bytes and sha256 of both manifests. Layered CI for `ec8562ef5` was superseded before its JavaScript shards finished, so the stale witness first failed on `dec1acfdb` (run 43743807130: `rust-specification-fixture-integrity` and `rust-specification-unicode-identifiers`).
+
+Before refreshing it, `experiments/issue-1571/governed-witness-delta.mjs` listed every field that differs between the committed witness and a regenerated one. The 16 differences are the `desktop/package.json` and `vscode/package.json` hashes, plus the eight cases that embed those files' text. The committed text matched `main`'s manifests byte for byte. The witness was then rewritten with the test's own `--refresh-reviewed-baseline` mode, and the delta is now 0.
+
 ### 4.10 Cargo audit read one lock of two (`be46692e3`)
 
 `scripts/check-rust-dependencies.sh` audited only `rust/Cargo.lock`. The committed issue #1017 reproducer `experiments/issue-1017-meta-language-quadratic/Cargo.lock` had:
