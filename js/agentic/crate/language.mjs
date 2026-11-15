@@ -298,8 +298,9 @@ const PROSE_SCRIPT_WEIGHT = 6;
 
 /**
  * Mirrors `SHARED_SCRIPT_SHARE`: a language sharing the fallback script wins
- * prose once its votes reach a tenth of the fallback-script words, so one
- * marker or one accented name cannot outvote a document (issue #1557).
+ * prose once its votes reach a tenth of the fallback-script words, and a lone
+ * vote must be half of them, so one marker or one accented name cannot outvote
+ * a document or a short sentence (issue #1557).
  */
 const SHARED_SCRIPT_SHARE = 10;
 
@@ -340,10 +341,19 @@ function withoutQuotations(line) {
   return kept.join('');
 }
 
+/** Mirrors `fn registry_list`: the quoted items of the registry's first `key` line. */
+function registryList(key) {
+  for (const line of rustLines(readText('data/seed/language-detection.lino'))) {
+    const [name, value] = splitOnce(line.trimStart(), ' ') ?? ['', ''];
+    if (name === key) return parseQuotedList(value);
+  }
+  return [];
+}
+
 /** Mirrors `fn prose_noise`: a URL, a path, an identifier or a camelCase name. */
-function proseNoise(token) {
-  return token.includes('://')
-    || token.toLowerCase().startsWith('www.')
+function proseNoise(token, links) {
+  const lowered = token.toLowerCase();
+  return links.some((link) => lowered.includes(link))
     || identifierToken(token)
     || /\p{Lowercase}\p{Uppercase}/u.test(token);
 }
@@ -354,17 +364,19 @@ function proseNoise(token) {
  */
 export function proseOf(text) {
   const lines = [];
+  const fences = registryList('fence-markers');
+  const links = registryList('link-markers');
   let fenced = false;
   for (const line of rustLines(String(text))) {
     const trimmed = line.replace(/^\p{White_Space}+/u, '');
-    if (trimmed.startsWith('```') || trimmed.startsWith('~~~')) {
+    if (fences.some((fence) => trimmed.startsWith(fence))) {
       fenced = !fenced;
       continue;
     }
     if (fenced || trimmed.startsWith('>')) continue;
     const tokens = withoutQuotations(withoutCodeSpans(line))
       .split(/\p{White_Space}+/u)
-      .filter((token) => token && !proseNoise(token));
+      .filter((token) => token && !proseNoise(token, links));
     if (tokens.length) lines.push(tokens.join(' '));
   }
   return lines.join('\n');
@@ -383,7 +395,10 @@ function sharedScriptLanguage(prose, all, fallbackScript) {
       sum + markerCount(normalized, marker.toLowerCase(), all, fallbackScript, Infinity), 0);
     const letters = words.filter((word) => Array.from(word).some((character) => ruleClaims(rule, character))).length;
     const votes = markers + letters;
-    if (votes === 0 || votes * SHARED_SCRIPT_SHARE < words.length) continue;
+    // A lone vote (one marker or one accented loanword such as "café")
+    // decides only a text it is at least half of.
+    const lone = votes === 1 && votes * 2 < words.length;
+    if (votes === 0 || lone || votes * SHARED_SCRIPT_SHARE < words.length) continue;
     if (best && votes <= best[0]) continue;
     best = [votes, rule.language];
   }

@@ -93,6 +93,10 @@ test('a single marker or a quotation does not outvote the rest of the prose', ()
   assert.equal(detectProse('Please describe how the escribe command and the build pipeline should behave together.'), 'en');
   assert.equal(detectProse('Fix the greeting: the bot said «Привет, как дела?» and then stopped answering.'), 'en');
   assert.equal(proseOf('See `код` and "цитата" at https://пример.рф/путь'), 'See and at');
+  // A lone accented loanword does not flip a short English sentence, while a
+  // short Spanish one still reads as Spanish.
+  assert.equal(detectProse('Please fix the café bug in this issue'), 'en');
+  for (const text of ['hola', 'gracias', 'formaliza esto', '¿cómo estás?']) assert.equal(detectProse(text), 'es', text);
 });
 
 test('the existing es, ru, hi and zh detections are unchanged', () => {

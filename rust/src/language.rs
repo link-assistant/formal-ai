@@ -673,8 +673,9 @@ const PROSE_SCRIPT_WEIGHT: usize = 6;
 
 /// A language sharing the fallback script wins prose once its votes — its
 /// whole-word markers plus its words holding a letter of its own range — reach
-/// a tenth of the fallback-script words, so one marker or one accented name
-/// cannot outvote a document (issue #1557). Mirrored by `SHARED_SCRIPT_SHARE`.
+/// a tenth of the fallback-script words, and a lone vote must be half of
+/// them, so one marker or one accented name cannot outvote a document or a
+/// short sentence (issue #1557). Mirrored by `SHARED_SCRIPT_SHARE`.
 const SHARED_SCRIPT_SHARE: usize = 10;
 
 /// An opening quotation mark and the marks that close it.
@@ -732,11 +733,21 @@ fn without_quotations(line: &str) -> String {
     kept
 }
 
+/// The quoted items of the registry's first `key` line — the `prose_syntax`
+/// record's fence and link markers (issue #1557). Mirrored by `registryList`.
+fn registry_list(key: &str) -> Vec<&'static str> {
+    LANGUAGE_DETECTION
+        .lines()
+        .filter_map(|line| line.trim_start().split_once(' '))
+        .find(|(name, _)| *name == key)
+        .map_or_else(Vec::new, |(_, value)| parse_quoted_list(value))
+}
+
 /// Whether a prose token is a URL, a path, an identifier or a `camelCase` name —
 /// words that are no language's. Mirrored by `proseNoise`.
-fn prose_noise(token: &str) -> bool {
-    token.contains("://")
-        || token.to_lowercase().starts_with("www.")
+fn prose_noise(token: &str, links: &[&str]) -> bool {
+    let lowered = token.to_lowercase();
+    links.iter().any(|link| lowered.contains(*link))
         || identifier_token(token)
         || token
             .chars()
@@ -750,10 +761,12 @@ fn prose_noise(token: &str) -> bool {
 #[must_use]
 pub fn prose_of(text: &str) -> String {
     let mut lines: Vec<String> = Vec::new();
+    let fences = registry_list("fence-markers");
+    let links = registry_list("link-markers");
     let mut fenced = false;
     for line in text.lines() {
         let trimmed = line.trim_start();
-        if trimmed.starts_with("```") || trimmed.starts_with("~~~") {
+        if fences.iter().any(|fence| trimmed.starts_with(*fence)) {
             fenced = !fenced;
             continue;
         }
@@ -763,7 +776,7 @@ pub fn prose_of(text: &str) -> String {
         let cleaned = without_quotations(&without_code_spans(line));
         let tokens: Vec<&str> = cleaned
             .split_whitespace()
-            .filter(|token| !prose_noise(token))
+            .filter(|token| !prose_noise(token, &links))
             .collect();
         if !tokens.is_empty() {
             lines.push(tokens.join(" "));
@@ -809,7 +822,10 @@ fn shared_script_language(prose: &str, rules: &[Rule], fallback_script: &str) ->
             .filter(|word| word.chars().any(|character| rule_claims(rule, character)))
             .count();
         let votes = markers + letters;
-        if votes == 0 || votes * SHARED_SCRIPT_SHARE < words.len() {
+        // A lone vote (one marker or one accented loanword such as "café")
+        // decides only a text it is at least half of.
+        let lone = votes == 1 && votes * 2 < words.len();
+        if votes == 0 || lone || votes * SHARED_SCRIPT_SHARE < words.len() {
             continue;
         }
         if best.is_some_and(|(best_votes, _)| votes <= best_votes) {
