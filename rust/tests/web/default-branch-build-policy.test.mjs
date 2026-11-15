@@ -47,17 +47,19 @@ test('actual compiler, image, application and deployment entries refuse PR execu
     }
   }
 });
-// Issue #1191: the only PR job that runs the Rust compiler is a type check. It
-// must stay a type check (no build, test or upload), selected by compile inputs.
-test('the focused PR native type check stays a type check selected by compile inputs', () => {
+// Issue #1191: the only PR job that runs the Rust compiler is main's clippy
+// profile on the library and binaries. It must stay a check (no build, test or
+// upload), selected by compile inputs.
+test('the focused PR native check stays a lint-only check selected by compile inputs', () => {
   const job = workflow('release.yml').jobs['native-type-check'];
   const runs = job.steps.map(step => step.run).filter(Boolean);
-  assert.deepEqual(runs, ['cargo check --manifest-path rust/Cargo.toml --locked --lib --bins']);
+  assert.deepEqual(runs, ['bash scripts/ci-clippy-profile.sh --library-and-binaries']);
+  assert.deepEqual(job.steps.find(step => step.uses === 'dtolnay/rust-toolchain@stable').with, {components: 'clippy'});
   assert(!job.steps.some(step => /upload-artifact|attest|cache@|cache\/save/u.test(step.uses ?? '')));
   assert.deepEqual(job.steps.find(step => step.uses === './.github/actions/cache-cargo-registry').with, {'restore-only': 'true'});
   assert.deepEqual(job.permissions, {contents: 'read'});
   assert(job['timeout-minutes'] <= 20);
-  assert.equal(job.outputs, undefined, 'a type check publishes no evidence');
+  assert.equal(job.outputs, undefined, 'a lint check publishes no evidence');
   const selected = (event, ref, result, value) => Boolean(new Script(String(job.if).trim().replace(/^\$\{\{\s*|\s*\}\}$/gu, '')
     .replace(/\.([a-zA-Z_][a-zA-Z0-9_-]*)/gu, (_, key) => '[' + JSON.stringify(key) + ']'))
     .runInNewContext({github: {event_name: event, ref}, cancelled: () => false,
@@ -72,7 +74,7 @@ test('the focused PR native type check stays a type check selected by compile in
   const native = paths => admission(paths)['native-type-check'];
   for (const path of ['rust/src/proof_engine/types.rs', 'rust/build.rs', 'rust/Cargo.lock', 'rust/embedded/data/seed/a.lino',
     'data/seed/api-cache/x.lino', '.cargo/config.toml', 'rust-toolchain.toml', '.github/workflows/release.yml',
-    '.github/actions/setup-sccache/action.yml', 'new-top-level/unknown.txt'])
+    '.github/actions/setup-sccache/action.yml', 'scripts/ci-clippy-profile.sh', 'clippy.toml', 'new-top-level/unknown.txt'])
     assert.equal(native([path]), true, path);
   for (const path of ['docs/a.md', 'README.md', 'changelog.d/x.md', 'js/app.js', 'rust/tests/web/a.test.mjs',
     'rust/tests/unit/proof_request.rs', 'scripts/check-tests-as-docs.mjs', 'data/meta/x.lino', 'experiments/a/b.sh',
@@ -92,6 +94,33 @@ test('replays main run 43710854562: the E0308 pull request selects the native ty
   assert(failure.compilerOutput.includes('   --> src/solver_handlers/user_intent.rs:141:9'));
   assert(failure.compilerOutput.at(-1).startsWith('error: could not compile `formal-ai` (lib)'), 'the library target is what --lib checks');
   assert.equal(admission([replay.fixedBy.file])['native-type-check'], true);
+  // Clippy stopped at E0308; once fixed, the same PR's lines failed clippy::perf.
+  const lint = replay.followUpFailure;
+  assert.equal(lint.gate, 'run_clippy');
+  assert.equal(lint.clippyOutput.filter(line => line.startsWith('error: using `contains()`')).length, 2);
+  assert(lint.clippyOutput.includes('    = note: `-D clippy::manual-contains` implied by `-D clippy::perf`'));
+  for (const file of ['rust/src/formalization/proposition_structure.rs', 'rust/src/proof_engine/claim_binding.rs']) {
+    assert(replay.pullRequestPaths.includes(file), file);
+    assert.doesNotMatch(readFileSync(new URL('../../../' + file, import.meta.url), 'utf8'), /\.iter\(\)\s*\.any\(\|(joiner|cue)\| \*(joiner|cue) == /u);
+  }
+});
+// The PR mode must lint exactly as main's run_clippy gate does, minus the test
+// and example targets: same deny list, same deferred style categories.
+test('the PR clippy mode runs main\'s lint flags on the library and binaries only', () => {
+  const bin = mkdtempSync(join(tmpdir(), 'fake-cargo-'));
+  try {
+    writeFileSync(join(bin, 'cargo'), '#!/bin/sh\necho "cargo $*"\n', {mode: 0o755});
+    const profile = mode => spawnSync('bash', ['scripts/ci-clippy-profile.sh', ...mode], {
+      cwd: resolve(import.meta.dirname, '../../..'), encoding: 'utf8',
+      env: {...process.env, PATH: bin + ':' + process.env.PATH, FORMAL_AI_STRICT_STYLE_LINTS: ''}});
+    const main = profile([]), pull = profile(['--library-and-binaries']);
+    assert.equal(main.status, 0, main.stderr); assert.equal(pull.status, 0, pull.stderr);
+    const commands = run => run.stdout.split('\n').filter(line => line.startsWith('cargo '));
+    const [mainClippy, mainExamples] = commands(main);
+    assert.match(mainExamples, /^cargo check .*--examples/u);
+    assert.deepEqual(commands(pull), [mainClippy.replace(' --lib --bins --tests ', ' --locked --lib --bins ')]);
+    assert.match(mainClippy, / -- -D warnings -A clippy::pedantic .* -D clippy::perf$/u);
+  } finally { rmSync(bin, {recursive: true, force: true}); }
 });
 test('recorded Docker cold rebuild is optional and cannot hold the production build behind another build', () => {
   const jobs = workflow('container-images.yml').jobs;

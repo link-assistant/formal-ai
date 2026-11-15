@@ -332,14 +332,15 @@ jobs:
           node scripts/render-progressive-plan.mjs --check
           node scripts/mirror-package-data.mjs --check
           node scripts/check-fast-governance.mjs
-  # Issue #1191: PR #1497 passed every PR check and main then failed with E0308
-  # (run 43710854562), since no PR job compiled Rust. This is the one focused
-  # native check a PR runs: a type check, selected when a Rust compile input
-  # changed or the classification is unknown. It uploads nothing and records
-  # no receipt, so it is never native or release evidence; main still runs
-  # clippy, tests and every production build.
+  # Issue #1191: PR #1497 passed every PR check, then main failed with E0308
+  # (run 43710854562) and, once that was fixed, with clippy::manual_contains
+  # (run 43730270231), since no PR job ran rustc. This is the one focused
+  # native check a PR runs: main's clippy profile on the library and binaries,
+  # selected when a Rust compile input changed or the classification is
+  # unknown. It uploads nothing and records no receipt, so it is never native
+  # or release evidence; main still runs full lint, tests and every build.
   native-type-check:
-    name: Native type check (Rust compile inputs changed)
+    name: Native type and lint check (Rust compile inputs changed)
     needs: [detect-changes]
     if: ${{ !cancelled() && (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && (needs.detect-changes.result != 'success' || needs.detect-changes.outputs.native-type-check != 'false') }}
     concurrency:
@@ -354,11 +355,12 @@ jobs:
          env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '20'},
          with: {persist-credentials: false, fetch-depth: 1, filter: blob:none, sparse-checkout: "/*\n!/dev/log/\n!/experiments/\n", sparse-checkout-cone-mode: false}}
       - uses: dtolnay/rust-toolchain@stable
+        with: {components: clippy}
       - uses: ./.github/actions/setup-sccache
       - uses: ./.github/actions/cache-cargo-registry
         with: {restore-only: 'true'}
-      - name: Type-check the library and binaries
-        run: cargo check --manifest-path rust/Cargo.toml --locked --lib --bins
+      - name: Type-check and lint the library and binaries
+        run: bash scripts/ci-clippy-profile.sh --library-and-binaries
   lint:
     name: Lint and Format Check (lane ${{ matrix.lane }})
     runs-on: ubuntu-latest

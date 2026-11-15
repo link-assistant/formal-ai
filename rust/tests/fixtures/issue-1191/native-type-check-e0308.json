@@ -48,6 +48,44 @@
     "before": "    pub const fn confidence(&self) -> f64 {",
     "after": "    pub const fn confidence(&self) -> f32 {"
   },
+  "followUpFailure": {
+    "note": "Clippy stops at the first type error, so main showed these two lints only after 92ca9ea76 fixed E0308. Both lines came from PR #1497 too.",
+    "workflow": "CI/CD Pipeline",
+    "run": 43730270231,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/43730270231",
+    "job": "Lint and Format Check (lane 1)",
+    "gate": "run_clippy",
+    "commit": "7837d5073",
+    "introducedBy": [
+      "0918cda1c",
+      "4651b47ab"
+    ],
+    "clippyOutput": [
+      "error: using `contains()` instead of `iter().any()` is more efficient",
+      "   --> src/formalization/proposition_structure.rs:433:13",
+      "    |",
+      "433 |           || !structural_rule_values(OPERATOR_RULE, \"compound-joiner\")",
+      "    |  _____________^",
+      "434 | |             .iter()",
+      "435 | |             .any(|joiner| *joiner == operator.value)",
+      "    | |____________________________________________________^ help: try: `structural_rule_values(OPERATOR_RULE, \"compound-joiner\").contains(&operator.value)`",
+      "    |",
+      "    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.100.0/index.html#manual_contains",
+      "    = note: `-D clippy::manual-contains` implied by `-D clippy::perf`",
+      "    = help: to override `-D clippy::perf` add `#[allow(clippy::manual_contains)]`",
+      "",
+      "error: using `contains()` instead of `iter().any()` is more efficient",
+      "  --> src/proof_engine/claim_binding.rs:85:16",
+      "   |",
+      "85 |             if cues.iter().any(|cue| *cue == token) {",
+      "   |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: try: `cues.contains(&token)`",
+      "   |",
+      "   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.100.0/index.html#manual_contains",
+      "",
+      "error: could not compile `formal-ai` (lib) due to 2 previous errors",
+      "error: could not compile `formal-ai` (lib test) due to 2 previous errors"
+    ]
+  },
   "why": "Type checking needs rustc: JavaScript cannot see that an f64 reaches a parameter typed f32, so this gap gets a focused CI-only native check rather than a JS twin.",
   "pullRequestPaths": [
     "changelog.d/20261115_140000_proposition_identity.md",
