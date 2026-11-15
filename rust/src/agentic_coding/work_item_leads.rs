@@ -31,6 +31,15 @@ fn url_pattern() -> &'static regex::Regex {
     pattern(&URL, r#"https?://[^\s<>"'`)\]]+"#)
 }
 
+/// An image GitHub hosts for an attachment or an embedded screenshot.
+fn hosted_image() -> &'static regex::Regex {
+    static HOSTED: OnceLock<regex::Regex> = OnceLock::new();
+    pattern(
+        &HOSTED,
+        r"^https://(?:github\.com/user-attachments/|(?:private-)?user-images\.githubusercontent\.com/)",
+    )
+}
+
 fn image_suffix() -> &'static regex::Regex {
     static IMAGE: OnceLock<regex::Regex> = OnceLock::new();
     pattern(&IMAGE, r"(?i)\.(?:png|jpe?g|gif|webp|svg|bmp)(?:[?#].*)?$")
@@ -64,9 +73,7 @@ fn urls(task: &str) -> Vec<String> {
 
 /// Whether `url` is an image the issue attached or embedded.
 fn attachment(task: &str, url: &str) -> bool {
-    if url.starts_with("https://github.com/user-attachments/")
-        || url.starts_with("https://user-images.githubusercontent.com/")
-        || url.starts_with("https://private-user-images.githubusercontent.com/")
+    if hosted_image().is_match(url)
         || image_suffix().is_match(url)
         || task.contains(&format!("src=\"{url}"))
         || task.contains(&format!("src='{url}"))
@@ -91,7 +98,9 @@ pub(super) fn work_item_leads(task: &str, work_item: &str) -> WorkItemLeads {
         return leads;
     }
     static BLOB: OnceLock<regex::Regex> = OnceLock::new();
+    static HOSTED_PAGE: OnceLock<regex::Regex> = OnceLock::new();
     let blob = pattern(&BLOB, r"^https://github\.com/[^/]+/[^/]+/blob/");
+    let hosted_page = pattern(&HOSTED_PAGE, r"^https://github\.com/");
     for url in urls(task) {
         if !work_item.is_empty() && url == work_item {
             continue;
@@ -100,7 +109,7 @@ pub(super) fn work_item_leads(task: &str, work_item: &str) -> WorkItemLeads {
             leads.attachments.push(url);
         } else if blob.is_match(&url) {
             continue;
-        } else if url.starts_with("https://github.com/") {
+        } else if hosted_page.is_match(&url) {
             leads.related.push(url);
         } else {
             leads.documents.push(url);
