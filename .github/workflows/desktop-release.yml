@@ -46,7 +46,7 @@ env:
 jobs:
   resolve:
     name: Resolve target release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-resolve${{ github.event_name != 'pull_request' && format('-{0}', github.run_id) || '' }}
@@ -97,7 +97,7 @@ jobs:
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     needs: [resolve, base]
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true')) }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     outputs:
       commit: ${{ steps.seal.outputs.commit }}
@@ -263,13 +263,13 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { os: ubuntu-latest, target: x86_64-unknown-linux-gnu, binext: "", capmin: 30 }
+          - { os: ubuntu-24.04, target: x86_64-unknown-linux-gnu, binext: "", capmin: 30 }
           - { os: ubuntu-24.04-arm, target: aarch64-unknown-linux-gnu, binext: "", capmin: 30 }
-          - { os: ubuntu-latest, target: x86_64-unknown-linux-musl, binext: "", capmin: 30 }
+          - { os: ubuntu-24.04, target: x86_64-unknown-linux-musl, binext: "", capmin: 30 }
           - { os: ubuntu-24.04-arm, target: aarch64-unknown-linux-musl, binext: "", capmin: 30 }
           - { os: macos-15-intel, target: x86_64-apple-darwin, binext: "", capmin: 45 }
           - { os: macos-15, target: aarch64-apple-darwin, binext: "", capmin: 30 }
-          - { os: windows-latest, target: x86_64-pc-windows-msvc, binext: ".exe", capmin: 30 }
+          - { os: windows-2025, target: x86_64-pc-windows-msvc, binext: ".exe", capmin: 30 }
           - { os: windows-11-arm, target: aarch64-pc-windows-msvc, binext: ".exe", capmin: 30 }
     defaults:
       run:
@@ -404,11 +404,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { os: ubuntu-latest,    ebflag: "--linux", label: "linux-x64", target: x86_64-unknown-linux-gnu, binext: "",     capmin: 30 }
+          - { os: ubuntu-24.04,     ebflag: "--linux", label: "linux-x64", target: x86_64-unknown-linux-gnu, binext: "",     capmin: 30 }
           - { os: ubuntu-24.04-arm, ebflag: "--linux", label: "linux-arm64", target: aarch64-unknown-linux-gnu, binext: "",     capmin: 30 }
           - { os: macos-15-intel,   ebflag: "--mac",   label: "macos-x64", target: x86_64-apple-darwin, binext: "",     capmin: 30 }
           - { os: macos-15,         ebflag: "--mac",   label: "macos-arm64", target: aarch64-apple-darwin, binext: "",     capmin: 30 }
-          - { os: windows-latest,   ebflag: "--win",   label: "windows-x64", target: x86_64-pc-windows-msvc, binext: ".exe", capmin: 30 }
+          - { os: windows-2025,     ebflag: "--win",   label: "windows-x64", target: x86_64-pc-windows-msvc, binext: ".exe", capmin: 30 }
           - { os: windows-11-arm,   ebflag: "--win",   label: "windows-arm64", target: aarch64-pc-windows-msvc, binext: ".exe", capmin: 30 }
     runs-on: ${{ matrix.os }}
     timeout-minutes: ${{ matrix.capmin }}
@@ -898,11 +898,11 @@ jobs:
         # package and startup-smoke the selected executable without compiling.
         # Run 37914168811 measured all five complete jobs at 55–123 seconds.
         include:
-          - { os: ubuntu-latest,    target: x86_64-unknown-linux-musl, label: cli-linux-x64,   binext: "",   archive: tar.gz, capmin: 30 }
+          - { os: ubuntu-24.04,     target: x86_64-unknown-linux-musl, label: cli-linux-x64,   binext: "",   archive: tar.gz, capmin: 30 }
           - { os: ubuntu-24.04-arm, target: aarch64-unknown-linux-musl, label: cli-linux-arm64, binext: "",   archive: tar.gz, capmin: 30 }
           - { os: macos-15-intel,   target: x86_64-apple-darwin,        label: cli-macos-x64,   binext: "",   archive: tar.gz, capmin: 30 }
           - { os: macos-15,         target: aarch64-apple-darwin,        label: cli-macos-arm64, binext: "",   archive: tar.gz, capmin: 30 }
-          - { os: windows-latest,   target: x86_64-pc-windows-msvc,      label: cli-windows-x64, binext: ".exe", archive: zip,  capmin: 30 }
+          - { os: windows-2025,     target: x86_64-pc-windows-msvc,      label: cli-windows-x64, binext: ".exe", archive: zip,  capmin: 30 }
     runs-on: ${{ matrix.os }}
     timeout-minutes: ${{ matrix.capmin }}
     permissions:
@@ -1058,7 +1058,7 @@ jobs:
       queue: max
     # Same skipped-dependency handling as `build`; see the comment there.
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.native-source.result == 'success' &&  (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true')) }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:
       contents: write
@@ -1214,7 +1214,7 @@ jobs:
     # covering whichever one or two arches happened to finish (issue #812).
     # Never on pull requests: there is no release to publish checksums to.
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && github.event_name != 'pull_request' && needs.resolve.outputs.should_build == 'true') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       actions: write
@@ -1388,18 +1388,18 @@ jobs:
           # full matrix here claimed builds that never happened whenever an arch
           # failed under fail-fast: false.
           declare -A builder_of=(
-            [linux-x64]="ubuntu-latest"
+            [linux-x64]="ubuntu-24.04"
             [linux-arm64]="ubuntu-24.04-arm"
             [macos-x64]="macos-15-intel"
             [macos-arm64]="macos-15"
-            [windows-x64]="windows-latest"
+            [windows-x64]="windows-2025"
             [windows-arm64]="windows-11-arm"
-            [cli-linux-x64]="ubuntu-latest"
+            [cli-linux-x64]="ubuntu-24.04"
             [cli-linux-arm64]="ubuntu-24.04-arm"
             [cli-macos-x64]="macos-15-intel"
             [cli-macos-arm64]="macos-15"
-            [cli-windows-x64]="windows-latest"
-            [vscode]="ubuntu-latest"
+            [cli-windows-x64]="windows-2025"
+            [vscode]="ubuntu-24.04"
           )
           built=()
           missing=()

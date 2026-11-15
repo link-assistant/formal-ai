@@ -89,7 +89,7 @@ jobs:
     # Schedule and explicit workflow_dispatch mode=benchmark retain the entire evaluation DAG.
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'benchmark')) }}
     name: Plan the Agent CLI ladder
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     outputs:
       already-green: ${{ steps.ledger.outputs.already-green }}
@@ -139,7 +139,7 @@ jobs:
     name: Agent CLI ladder ${{ matrix.leg.id }}
     needs: [plan]
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (needs.plan.result == 'success' && needs.plan.outputs.already-green != 'true') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # Both complete cold all-mode runs (37870805740 and 37870809771)
     # measured every full job and step below 30 minutes, including setup and
     # upload. Maximum full jobs: 1110s disabled, 1024s enabled. This retires
@@ -217,7 +217,7 @@ jobs:
     name: Validate the current-run leaf evidence
     needs: [plan, ladder]
     if: ${{ !cancelled() && needs.plan.result == 'success' && needs.plan.outputs.already-green != 'true' && needs.plan.outputs.composites != '[]' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     env:
       NODE_FILTER: ${{ inputs.node_filter || '' }}
@@ -264,7 +264,7 @@ jobs:
     # artifact that was never uploaded, burying the one real failure under 16
     # secondary ones. The compare job still reports skipped legs as missing.
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.plan.result == 'success' && needs.leaf-evidence.result == 'success' && needs.plan.outputs.already-green != 'true' && needs.plan.outputs.composites != '[]') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # One composite per machine; verification consumes only the current
     # run's two validated child effects and diffs.
     timeout-minutes: 30
@@ -351,7 +351,7 @@ jobs:
     # Not `always()`: a run superseded by a newer push is the one
     # cancellation that is not a defect, and it skips the verdict.
     if: ${{ !cancelled() && needs.plan.result == 'success' && needs.plan.outputs.already-green != 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     env:
       TREE_DEPTH: ${{ inputs.depth || (github.event_name == 'schedule' && 'all') || '5' }}

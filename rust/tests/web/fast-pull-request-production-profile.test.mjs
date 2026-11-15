@@ -360,7 +360,7 @@ test('live link integration is explicit main-only while parser regressions stay 
 test('secrets scanning retains full history and every current file within separate finite phases', () => {
   const document=workflow('release.yml'),job=document.jobs['secrets-scan'];
   const verify=value=>{
-    assert.equal(value.name,'Secrets Scan');assert.equal(value['runs-on'],'ubuntu-latest');
+    assert.equal(value.name,'Secrets Scan');assert.equal(value['runs-on'],'ubuntu-24.04');
     assert.equal(value['timeout-minutes'],15);assert.deepEqual(value.needs,['detect-changes']);
     assert.equal(value.steps.length,3);assert.equal(value.permissions,undefined);
     const checkout=value.steps[0];

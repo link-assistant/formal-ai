@@ -51,7 +51,7 @@ permissions: {}
 jobs:
   isolate:
     name: orphan-branch run (${{ inputs.purpose }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # The workload is a placeholder today; the cap keeps a hung `gh` call
     # from inheriting the 360-minute default (issue #1017).
     timeout-minutes: 20

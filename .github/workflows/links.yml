@@ -64,7 +64,7 @@ env:
 jobs:
   link-parser-checks:
     name: Link parser regressions
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 3
     concurrency:
       group: check-${{ github.workflow }}-${{ github.ref }}-link-parser-checks
@@ -97,7 +97,7 @@ jobs:
   link-checker:
     name: Check Links
     if: ${{ github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main' && (vars.FORMAL_AI_FULL_LINK_CHECKS == 'run' || (github.event_name == 'workflow_dispatch' && inputs['live-audit'] == true)) }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # Typical run: <1min with lychee cache. 10min prevents slow
     # external hosts or Wayback Machine probes from hanging the workflow.
     timeout-minutes: 10

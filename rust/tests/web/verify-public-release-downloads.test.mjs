@@ -410,5 +410,5 @@ test('download resolution hydrates only its reviewed controller inputs while pub
   // Reviewed main101992d baseline: acquisition changes cannot alter actual downstream verification.
   const downstream = source.slice(source.indexOf('\n  all-public-bytes:\n'));
   assert.notEqual(source.indexOf('\n  all-public-bytes:\n'), -1);
-  assert.equal(createHash('sha256').update(downstream).digest('hex'), '11977c67b61a050577b42afa0ea0f0f37bc321e03601bd66e1b5e03d3b8f4018');
+  assert.equal(createHash('sha256').update(downstream).digest('hex'), 'f5f34718a7dc76370f9981ea75766d5b0e0ae21c9e0dc2fba60ca3b0e8fab4cc');
 });

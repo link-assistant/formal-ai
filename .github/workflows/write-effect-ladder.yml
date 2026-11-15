@@ -96,7 +96,7 @@ jobs:
   write-effect-ladder:
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true) }}
     name: 'Write-Effect Ladder (issue #916 rungs)'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # A release build of the server plus one request/execute/observe round trip
     # per rung; the build dominates and starts cold.
     timeout-minutes: 25
