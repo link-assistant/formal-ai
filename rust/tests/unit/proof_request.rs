@@ -614,3 +614,101 @@ fn decision_proofs_are_worded_in_the_readers_language() {
         proof.conclusion
     );
 }
+
+/// Issue #1487: a theorem keyword only retrieves the theorem; the claim around
+/// it decides whether the request asks for the theorem, its negation, or
+/// something whose negation scope is not read.
+#[test]
+fn proof_claims_bind_to_the_exact_theorem_proposition() {
+    use formal_ai::proof_engine::ClaimBinding;
+    use formal_ai::proof_engine::claim_binding::claim_binding;
+    let cases = [
+        ("there are infinitely many primes", ClaimBinding::Affirmed),
+        (
+            "there are not infinitely many primes",
+            ClaimBinding::Negated,
+        ),
+        ("不存在无穷多素数", ClaimBinding::Negated),
+        ("素数有无穷多个", ClaimBinding::Affirmed),
+        (
+            "it is not true that there are not infinitely many primes",
+            ClaimBinding::Unsupported,
+        ),
+        (
+            "there are infinitely many primes that are not even",
+            ClaimBinding::Unsupported,
+        ),
+    ];
+    for (claim, expected) in cases {
+        assert_eq!(claim_binding(claim), Some(expected), "claim {claim:?}");
+    }
+    assert_eq!(claim_binding("1 + 1 = 2"), None);
+}
+
+/// Issue #1487: "Prove there are not infinitely many primes." must never get
+/// Euclid's positive success; the library marks the theorem `negation refuted`,
+/// so the request is refuted by Euclid's proof.
+#[test]
+fn negated_theorem_request_is_refuted_never_proven() {
+    use formal_ai::proof_engine::{ProofOutcome, attempt_proof};
+    for (language, claim) in [
+        ("en", "there are not infinitely many primes"),
+        ("zh", "不存在无穷多素数"),
+    ] {
+        let outcome = attempt_proof(claim, claim, language, false, false);
+        let ProofOutcome::Disproven {
+            counterexample,
+            partial_proof,
+            ..
+        } = &outcome
+        else {
+            panic!("negated theorem {claim:?} must be refuted, got {outcome:?}");
+        };
+        assert!(
+            partial_proof.is_some(),
+            "the refutation carries Euclid's proof"
+        );
+        assert!(!counterexample.contains("{statement}"), "{counterexample}");
+    }
+    let response = FormalAiEngine.answer("Prove there are not infinitely many primes.");
+    assert_eq!(response.intent, "proof_request");
+    assert!(
+        response.answer.contains("Disproof") && response.answer.contains("denies a proven theorem"),
+        "negated request should be refuted, got: {}",
+        response.answer
+    );
+    assert!(
+        !response.answer.starts_with("Proof (") && !response.answer.contains("\nProof ("),
+        "negated request must not be presented as a proof of itself, got: {}",
+        response.answer
+    );
+}
+
+/// Issue #1487: a claim whose negation scope around the theorem keyword is not
+/// read (double negation, a negated qualifier) gets the honest partial plan,
+/// neither the theorem's proof nor its refutation.
+#[test]
+fn unread_negation_scope_returns_partial_plan() {
+    use formal_ai::proof_engine::{ProofOutcome, attempt_proof};
+    for claim in [
+        "it is not true that there are not infinitely many primes",
+        "there are infinitely many primes that are not even",
+    ] {
+        let outcome = attempt_proof(claim, claim, "en", false, false);
+        assert!(
+            matches!(outcome, ProofOutcome::PartialPlan { .. }),
+            "claim {claim:?} should stay unresolved, got {outcome:?}"
+        );
+    }
+    let affirmed = attempt_proof(
+        "there are infinitely many primes",
+        "there are infinitely many primes",
+        "en",
+        false,
+        false,
+    );
+    assert!(
+        matches!(affirmed, ProofOutcome::Proven { .. }),
+        "{affirmed:?}"
+    );
+}

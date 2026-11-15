@@ -46,31 +46,21 @@ function extractProofClaim(normalized) {
   }
   return trimmed;
 }
-function matchesEuclidPrimeClaim(claim) {
-  const lower = String(claim || "").toLowerCase();
-  return (
-    lower.includes("infinitely many primes") ||
-    lower.includes("infinitely many prime numbers") ||
-    lower.includes("infinitude of primes") ||
-    lower.includes("prime numbers are infinite") ||
-    lower.includes("euclid") ||
-    lower.includes("евклид") ||
-    (lower.includes("прост") && lower.includes("бесконеч")) ||
-    lower.includes("अनंत अभाज्य") ||
-    lower.includes("अनन्त अभाज्य") ||
-    lower.includes("अभाज्य संख्याएँ अनंत") ||
-    lower.includes("अभाज्य संख्याएं अनंत") ||
-    lower.includes("अभाज्य संख्याएँ अनन्त") ||
-    lower.includes("अभाज्य संख्याएं अनन्त") ||
-    lower.includes("无穷多素数") ||
-    lower.includes("无穷多个素数") ||
-    lower.includes("素数有无穷") ||
-    lower.includes("素数无穷") ||
-    lower.includes("無窮多素數") ||
-    lower.includes("素數有無窮") ||
-    lower.includes("素數無窮") ||
-    lower.includes("欧几里得")
-  );
+// Issue #1487: a proof-library keyword only retrieves a theorem; the negation cues around it bind the request to the
+// theorem, its negation, or nothing (Rust `proof_engine::claim_binding`, `refuted_negation`).
+function proofClaimBinding(claim) {
+  const crate = crateModule("crate/theorem_claim_binding.mjs"), text = String(claim || "").toLowerCase(), match = crate.theoremMatch(text);
+  return match && { theorem: match.theorem, binding: crate.bindTheoremClaim(text, match.keyword), slugs: crate.ClaimBinding };
+}
+function proofLibraryTheoremStatement(id, language) {
+  const section = parseLinoTree(seedRawText(SEED_RAW, "proof-library.lino")).children.find((child) => child.name === "proof_library");
+  const theorem = section && section.children.find((child) => child.name === "theorem" && child.value === id);
+  const statement = theorem && theorem.children.find((child) => child.name === "statement");
+  return statement ? proofLibrarySurface(statement, language) : "";
+}
+function euclidNegationRefutationBody(language) {
+  const text = (id, values) => proofLibraryText(id, language, values), statement = proofLibraryTheoremStatement("euclid_infinitude_of_primes", language);
+  return `${text("disproof_heading")} (${text("method_intro")}: ${text("method_contradiction")}).\n\n${text("counterexample_label")}: ${text("negated_theorem_refuted", { statement })}\n\n${euclidPrimeProofBody(language)}`;
 }
 function euclidPrimeProofBody(language) {
   if (language === "ru") {
@@ -203,18 +193,15 @@ function tryProofRequest(prompt, normalized, language) {
   if (lead && isGreetingPrompt(normalizePrompt(lead.greeting), lead.greeting)) normalized = normalizePrompt(lead.remainder);
   if (!hasProofRequestShape(normalized)) return null;
   const claim = extractProofClaim(normalized);
-  if (matchesEuclidPrimeClaim(claim)) {
+  const bound = proofClaimBinding(claim), bindingEvidence = bound ? [`proof_binding:${bound.binding}`] : [];
+  const refuted = Boolean(bound) && bound.binding === bound.slugs.Negated && bound.theorem.refutesNegation;
+  if (bound && bound.theorem.id === "euclid_infinitude_of_primes" && (refuted || bound.binding === bound.slugs.Affirmed)) {
     return {
       intent: "proof_request",
-      content: euclidPrimeProofBody(language),
+      content: refuted ? euclidNegationRefutationBody(language) : euclidPrimeProofBody(language),
       confidence: 0.85,
-      evidence: [
-        "policy:proof_request",
-        "pipeline:planned:relative-meta-logic",
-        "proof_outcome:proven",
-        "proof_method:contradiction",
-        `language:${language}`,
-      ],
+      evidence: ["policy:proof_request", "pipeline:planned:relative-meta-logic", ...bindingEvidence,
+        refuted ? "proof_outcome:disproven" : "proof_outcome:proven", "proof_method:contradiction", `language:${language}`],
     };
   }
   return {
@@ -224,6 +211,7 @@ function tryProofRequest(prompt, normalized, language) {
     evidence: [
       "policy:proof_request",
       "pipeline:planned:relative-meta-logic",
+      ...bindingEvidence,
       "proof_outcome:partial_plan",
       `language:${language}`,
     ].concat(claimEvidenceStatedClaim(claim) ? [] : ["proof_request:refusal:no stated claim"]), // #1175 R3
