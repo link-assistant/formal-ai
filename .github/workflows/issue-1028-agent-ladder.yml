@@ -144,7 +144,16 @@ jobs:
     # measured every full job and step below 30 minutes, including setup and
     # upload. Maximum full jobs: 1110s disabled, 1024s enabled. This retires
     # the old 135-minute exception; semantic task failures remain visible.
-    timeout-minutes: 30
+    #
+    # Issue #1571: the weekly step-budget audit (run 42624594054) then measured
+    # the tree step at 1196s of its 1200s budget (leg depth-5-1.1.2.1, run
+    # 42472083551): its first leaf compiled the crate cold, `cargo check --lib`
+    # 153s and the unit-test binary 548s, because sccache wrote 706 of 877
+    # misses as errors and hit 0% for Rust (issue #1081, D9). A budget the work
+    # reaches is the deadline, not the warning, so the budget and this cap rise
+    # together: 1800s of 2700s keeps the 70% budget share, and the 1196s worst
+    # case reads 66% of it, under the 70% warning band.
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
@@ -194,7 +203,7 @@ jobs:
         id: tree
         env:
           AGENT: agent
-          TEST_BUDGET_SECONDS: 1200
+          TEST_BUDGET_SECONDS: 1800
         run: |
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "Agent CLI primary verification" \

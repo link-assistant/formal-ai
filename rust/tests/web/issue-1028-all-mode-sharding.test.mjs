@@ -167,10 +167,10 @@ test('measured ladder retirement caps each wave and records the new static DAG',
   const workflow=readFileSync(join(root,'.github/workflows/issue-1028-agent-ladder.yml'),'utf8');
   const jobs=new Map(workflowJobs(workflow).map(job=>[job.id,job]));
   const longest=id=>Math.max(0,...jobs.get(id).needs.map(longest))+Math.max(...jobs.get(id).timeoutValues);
-  assert.equal(longest('compare'),120);
-  assert.equal(jobs.get('ladder').timeoutValues[0],30);
+  assert.equal(longest('compare'),135);
+  assert.equal(jobs.get('ladder').timeoutValues[0],45);
   assert.equal(jobs.get('composites').timeoutValues[0],30);
-  assert.match(jobs.get('ladder').body,/TEST_BUDGET_SECONDS: 1200/);
+  assert.match(jobs.get('ladder').body,/TEST_BUDGET_SECONDS: 1800/);
   assert.match(jobs.get('ladder').body,/run-with-budget-warning\.sh/);
   const policy=readFileSync(join(root,'data/meta/ci-speed.lino'),'utf8');
   assert.doesNotMatch(policy,/workflow "\.github\/workflows\/issue-1028-agent-ladder\.yml"/);
