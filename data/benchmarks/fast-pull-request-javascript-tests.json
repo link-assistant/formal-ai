@@ -210,6 +210,7 @@
     "rust/tests/web/owned-hive-finalization.test.mjs",
     "rust/tests/web/tests-as-docs-twin.test.mjs",
     "rust/tests/web/runner-label-pinning.test.mjs",
-    "rust/tests/web/module-map-twin.test.mjs"
+    "rust/tests/web/module-map-twin.test.mjs",
+    "rust/tests/web/source-test-placement-twin.test.mjs"
   ]
 }
