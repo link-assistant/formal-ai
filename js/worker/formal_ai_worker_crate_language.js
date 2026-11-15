@@ -3,6 +3,7 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
+
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/language.mjs"] = (crateRequire) => {
 // Seed-driven language detection: a port of rust/src/language.rs.
 //
@@ -11,28 +12,35 @@
 // embeds. A `Language` is its slug string; `Language::Unknown` is 'unknown'.
 // The forced response language (issue #556) is a per-solve native slot the
 // planner never sets, so `detect` here never honours one.
+
 const { lower: canonicalUnaryLower } = crateRequire("crate/rust_str.mjs");
 const { cached, readText } = crateRequire("host.mjs");
 const { rustLines } = crateRequire("content.mjs");
+
 const UNKNOWN = 'unknown';
 const ENGLISH = 'en';
+
 const ALPHABETIC = /\p{Alphabetic}/u;
 const isAlphabetic = (character) => ALPHABETIC.test(character);
+
 /** Mirrors `fn unquote` in rust/src/language.rs. */
 function unquote(value) {
   return value.length >= 2 && value.startsWith('"') && value.endsWith('"') ? value.slice(1, -1) : value;
 }
+
 /** Rust `str::split_once(' ')`. */
 function splitOnce(text, separator) {
   const at = text.indexOf(separator);
   return at < 0 ? null : [text.slice(0, at), text.slice(at + separator.length)];
 }
+
 /** Mirrors `fn parse_codepoint`. */
 function parseCodepoint(value) {
   const digits = value.startsWith('0x') || value.startsWith('0X') ? value.slice(2) : null;
   if (digits === null || !/^[0-9a-fA-F]+$/.test(digits)) return 0;
   return parseInt(digits, 16);
 }
+
 /** Mirrors `fn parse_quoted_list`. @param {string} value */
 function parseQuotedList(value) {
   const items = [];
@@ -46,6 +54,7 @@ function parseQuotedList(value) {
   }
   return items;
 }
+
 /** Mirrors `fn parse_rules` (cached like the Rust `OnceLock`). */
 function rules() {
   return cached('language-detection-rules', () => {
@@ -72,25 +81,31 @@ function rules() {
     return out.filter((rule) => rule.language);
   });
 }
+
 function ruleClaims(rule, character) {
   const codepoint = character.codePointAt(0);
   return codepoint >= rule.start && codepoint <= rule.end && (!rule.alphabetic_only || isAlphabetic(character));
 }
+
 /** Mirrors `fn from_slug`: the slug when the registry declares it, else null. */
 function languageFromSlug(slug) {
   return rules().find((rule) => rule.language === slug)?.language ?? null;
 }
+
 /** Mirrors `fn registered_languages`. */
 function registeredLanguages() {
   return rules().map((rule) => rule.language);
 }
+
 /** Mirrors `fn fallback_language`. */
 function fallbackLanguage() {
   return fallbackOf(rules());
 }
+
 function ledgerLines() {
   return cached('language-ledger-lines', () => rustLines(readText('data/seed/languages.lino')));
 }
+
 /** Mirrors `fn uses_postpositions` in rust/src/language.rs. */
 function usesPostpositions(slug) {
   let current = null;
@@ -103,6 +118,7 @@ function usesPostpositions(slug) {
   }
   return false;
 }
+
 /** Mirrors `fn language_name` in rust/src/language.rs. */
 function languageName(slug) {
   let current = null;
@@ -114,6 +130,7 @@ function languageName(slug) {
   }
   return null;
 }
+
 /** Mirrors `fn surface_matches_language` in rust/src/language.rs. */
 function surfaceMatchesLanguage(surface, slug) {
   const all = rules();
@@ -123,18 +140,22 @@ function surfaceMatchesLanguage(surface, slug) {
     .filter((candidate) => candidate.script === rule.script)
     .some((candidate) => Array.from(surface).some((character) => ruleClaims(candidate, character)));
 }
+
 function fallbackOf(all) {
   return all.find((rule) => rule.fallback)?.language ?? ENGLISH;
 }
+
 function fallbackScriptOf(all) {
   return all.find((rule) => rule.fallback)?.script ?? '';
 }
+
 /** Mirrors `fn default_language_of`. */
 function defaultLanguageOf(all, script) {
   const rule = all.find((candidate) => candidate.script === script && candidate.fallback)
     ?? all.find((candidate) => candidate.script === script);
   return rule ? rule.language : fallbackOf(all);
 }
+
 /** Mirrors `struct ScriptCounts` + `fn count_scripts`. */
 function countScripts(prompt, all) {
   const counts = { counts: [], other: 0, first: null };
@@ -152,10 +173,28 @@ function countScripts(prompt, all) {
   }
   return counts;
 }
+
 const countOf = (counts, script) => counts.counts.find(([name]) => name === script)?.[1] ?? 0;
 const maxExcluding = (counts, script) =>
   counts.counts.filter(([name]) => name !== script).reduce((max, [, count]) => Math.max(max, count), 0);
 const total = (counts) => counts.counts.reduce((sum, [, count]) => sum + count, 0) + counts.other;
+
+const WHITE_SPACE = /\p{White_Space}/u;
+const isWhitespace = (character) => WHITE_SPACE.test(character);
+
+/** The code point that ends just before UTF-16 index `at`, or undefined. */
+function charBefore(text, at) {
+  if (at <= 0) return undefined;
+  const low = text.charCodeAt(at - 1);
+  return at >= 2 && low >= 0xdc00 && low <= 0xdfff ? text.slice(at - 2, at) : text[at - 1];
+}
+
+/** The code point that starts at UTF-16 index `at`, or undefined. */
+function charAt(text, at) {
+  const codepoint = text.codePointAt(at);
+  return codepoint === undefined ? undefined : String.fromCodePoint(codepoint);
+}
+
 /**
  * Mirrors `fn in_identifier`: whether the whitespace-delimited token around
  * `at` is a path or an identifier (`_`, `/`, `\`, or a `.` before a letter or
@@ -163,26 +202,44 @@ const total = (counts) => counts.counts.reduce((sum, [, count]) => sum + count, 
  */
 function inIdentifier(text, at) {
   let start = at;
-  while (start > 0 && !/\s/u.test(text[start - 1])) start -= 1;
+  while (start > 0 && !isWhitespace(text[start - 1])) start -= 1;
   let end = at;
-  while (end < text.length && !/\s/u.test(text[end])) end += 1;
-  return /[_/\\]|\.[\p{Alphabetic}\p{N}]/u.test(text.slice(start, end));
+  while (end < text.length && !isWhitespace(text[end])) end += 1;
+  return identifierToken(text.slice(start, end));
 }
+
+/** Mirrors `fn identifier_token`. */
+function identifierToken(token) {
+  return /[_/\\]|\.[\p{Alphabetic}\p{N}]/u.test(token);
+}
+
+/** Mirrors `fn marker_count`: the occurrences of `marker` that count. */
+function markerCount(normalized, marker, all, fallbackScript, limit) {
+  const first = Array.from(marker)[0];
+  if (first === undefined) return 0;
+  const wholeWord = all.some((rule) => rule.script === fallbackScript && ruleClaims(rule, first));
+  let found = 0;
+  for (let from = 0; found < limit;) {
+    const at = normalized.indexOf(marker, from);
+    if (at < 0) break;
+    from = at + marker.length;
+    if (wholeWord) {
+      const previous = charBefore(normalized, at);
+      const next = charAt(normalized, from);
+      const wordStart = previous === undefined || !isAlphabetic(previous);
+      const wordEnd = next === undefined || !isAlphabetic(next);
+      if (!wordStart || !wordEnd || inIdentifier(normalized, at)) continue;
+    }
+    found += 1;
+  }
+  return found;
+}
+
 /** Mirrors `fn marker_present`. */
 function markerPresent(normalized, marker, all, fallbackScript) {
-  const first = Array.from(marker)[0];
-  if (first === undefined) return false;
-  const needsWordStart = all.some((rule) => rule.script === fallbackScript && ruleClaims(rule, first));
-  let from = 0;
-  for (;;) {
-    const at = normalized.indexOf(marker, from);
-    if (at < 0) return false;
-    const previous = Array.from(normalized.slice(0, at)).pop();
-    const wordStart = previous === undefined || !isAlphabetic(previous);
-    if (!needsWordStart || (wordStart && !inIdentifier(normalized, at))) return true;
-    from = at + marker.length;
-  }
+  return markerCount(normalized, marker, all, fallbackScript, 1) > 0;
 }
+
 /** Mirrors `fn marker_language`. */
 function markerLanguage(prompt, all, counts, fallbackScript) {
   const normalized = prompt.toLowerCase();
@@ -199,6 +256,7 @@ function markerLanguage(prompt, all, counts, fallbackScript) {
   }
   return best ? best[1] : null;
 }
+
 /** Mirrors `fn detect_with`. */
 function detectWith(prompt, all) {
   const fallback = fallbackOf(all);
@@ -224,6 +282,7 @@ function detectWith(prompt, all) {
   }
   return fallback;
 }
+
 /**
  * Mirrors `fn detect` in rust/src/language.rs: the dominant language's slug,
  * or 'unknown'. The forced-language slot is never set on the planner path.
@@ -233,6 +292,155 @@ function detectWith(prompt, all) {
 function detect(prompt) {
   return detectWith(String(prompt), rules());
 }
+
+/**
+ * Mirrors `PROSE_SCRIPT_WEIGHT`: in prose, a registered script other than the
+ * fallback's wins once its letters reach a sixth of the fallback script's.
+ * Writers of other languages borrow fallback-script names and terms freely,
+ * and a fallback-script word spends several letters where an ideographic
+ * script spends one, so the fallback script must clearly outnumber a rival
+ * script to win (issue #1557).
+ */
+const PROSE_SCRIPT_WEIGHT = 6;
+
+/**
+ * Mirrors `SHARED_SCRIPT_SHARE`: a language sharing the fallback script wins
+ * prose once its votes reach a tenth of the fallback-script words, and a lone
+ * vote must be half of them, so one marker or one accented name cannot outvote
+ * a document or a short sentence (issue #1557).
+ */
+const SHARED_SCRIPT_SHARE = 10;
+
+/** Mirrors `QUOTATIONS`: an opening quotation mark and its closing marks. */
+const QUOTATIONS = [['"', '"'], ['\u201C', '\u201D'], ['\u00AB', '\u00BB'], ['\u201E', '\u201C\u201D']];
+
+/** Mirrors `QUOTATION_OPENERS_AFTER`: punctuation a quotation may open after. */
+const QUOTATION_OPENERS_AFTER = '([{|';
+
+/** Mirrors `fn without_code_spans`: drop each closed `code` span of a line. */
+function withoutCodeSpans(line) {
+  const parts = line.split('`');
+  return parts.filter((_, index) => index % 2 === 0 || index === parts.length - 1).join(' ');
+}
+
+/**
+ * Mirrors `fn without_quotations`: drop each quotation that opens a token and
+ * closes on the same line. A quote mark inside a token (`alt="Image"`) is
+ * markup, not a quotation.
+ */
+function withoutQuotations(line) {
+  const characters = Array.from(line);
+  const kept = [];
+  for (let index = 0; index < characters.length; index += 1) {
+    const character = characters[index];
+    const pair = QUOTATIONS.find(([open]) => open === character);
+    const previous = characters[index - 1];
+    if (pair && (previous === undefined || isWhitespace(previous) || QUOTATION_OPENERS_AFTER.includes(previous))) {
+      const close = characters.findIndex((candidate, at) => at > index && pair[1].includes(candidate));
+      if (close > index) {
+        kept.push(' ');
+        index = close;
+        continue;
+      }
+    }
+    kept.push(character);
+  }
+  return kept.join('');
+}
+
+/** Mirrors `fn registry_list`: the quoted items of the registry's first `key` line. */
+function registryList(key) {
+  for (const line of rustLines(readText('data/seed/language-detection.lino'))) {
+    const [name, value] = splitOnce(line.trimStart(), ' ') ?? ['', ''];
+    if (name === key) return parseQuotedList(value);
+  }
+  return [];
+}
+
+/** Mirrors `fn prose_noise`: a URL, a path, an identifier or a camelCase name. */
+function proseNoise(token, links) {
+  const lowered = token.toLowerCase();
+  return links.some((link) => lowered.includes(link))
+    || identifierToken(token)
+    || /\p{Lowercase}\p{Uppercase}/u.test(token);
+}
+
+/**
+ * Mirrors `fn prose_of`: the prose of a document — its lines without fenced
+ * code blocks, block quotations, code spans, quotations, URLs and identifiers.
+ */
+function proseOf(text) {
+  const lines = [];
+  const fences = registryList('fence-markers');
+  const links = registryList('link-markers');
+  let fenced = false;
+  for (const line of rustLines(String(text))) {
+    const trimmed = line.replace(/^\p{White_Space}+/u, '');
+    if (fences.some((fence) => trimmed.startsWith(fence))) {
+      fenced = !fenced;
+      continue;
+    }
+    if (fenced || trimmed.startsWith('>')) continue;
+    const tokens = withoutQuotations(withoutCodeSpans(line))
+      .split(/\p{White_Space}+/u)
+      .filter((token) => token && !proseNoise(token, links));
+    if (tokens.length) lines.push(tokens.join(' '));
+  }
+  return lines.join('\n');
+}
+
+/** Mirrors `fn shared_script_language`. */
+function sharedScriptLanguage(prose, all, fallbackScript) {
+  const normalized = prose.toLowerCase();
+  const words = normalized
+    .split(/[^\p{Alphabetic}]+/u)
+    .filter((word) => Array.from(word).some((character) =>
+      all.some((rule) => rule.script === fallbackScript && ruleClaims(rule, character))));
+  let best = null;
+  for (const rule of all.filter((candidate) => candidate.script === fallbackScript && !candidate.fallback)) {
+    const markers = rule.markers.reduce((sum, marker) =>
+      sum + markerCount(normalized, marker.toLowerCase(), all, fallbackScript, Infinity), 0);
+    const letters = words.filter((word) => Array.from(word).some((character) => ruleClaims(rule, character))).length;
+    const votes = markers + letters;
+    // A lone vote (one marker or one accented loanword such as "café")
+    // decides only a text it is at least half of.
+    const lone = votes === 1 && votes * 2 < words.length;
+    if (votes === 0 || lone || votes * SHARED_SCRIPT_SHARE < words.length) continue;
+    if (best && votes <= best[0]) continue;
+    best = [votes, rule.language];
+  }
+  return best ? best[1] : null;
+}
+
+/** Mirrors `fn prose_language`. */
+function proseLanguage(prose, all) {
+  const fallbackScript = fallbackScriptOf(all);
+  const counts = countScripts(prose, all);
+  if (total(counts) === 0) return null;
+  const fallbackCount = countOf(counts, fallbackScript);
+  if (counts.other > fallbackCount && counts.other >= maxExcluding(counts, fallbackScript)) return UNKNOWN;
+  let rival = null;
+  for (const rule of all) {
+    if (rule.script === fallbackScript) continue;
+    const count = countOf(counts, rule.script);
+    if (count > 0 && (rival === null || count > rival[0])) rival = [count, rule.script];
+  }
+  if (rival && rival[0] * PROSE_SCRIPT_WEIGHT >= fallbackCount) return defaultLanguageOf(all, rival[1]);
+  return sharedScriptLanguage(prose, all, fallbackScript) ?? fallbackOf(all);
+}
+
+/**
+ * Mirrors `fn detect_prose` in rust/src/language.rs: the language of a
+ * document decided by the proportion of its prose, or null when the document
+ * holds no prose letters. Code, quotations, URLs and identifiers do not vote,
+ * so a quoted phrase or a single marker cannot outvote the rest (issue #1557).
+ * @param {string} text
+ * @returns {string | null}
+ */
+function detectProse(text) {
+  return proseLanguage(proseOf(text), rules());
+}
+
 /** Mirrors `fn language_for_concept_slug` in rust/src/language.rs. */
 function languageForConceptSlug(conceptSlug) {
   if (!conceptSlug.startsWith('language_')) return null;
@@ -248,6 +456,7 @@ function languageForConceptSlug(conceptSlug) {
   });
   return rule ? rule.language : null;
 }
+
 return Object.freeze({
   UNKNOWN,
   ENGLISH,
@@ -258,6 +467,8 @@ return Object.freeze({
   languageName,
   surfaceMatchesLanguage,
   detect,
+  proseOf,
+  detectProse,
   languageForConceptSlug,
 });
 };

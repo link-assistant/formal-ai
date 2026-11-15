@@ -145,7 +145,7 @@ import { normalizePrompt } from './crate/engine.mjs';
 import { plainText } from './content.mjs';
 import {
   GeneralPlanMode, PLAN_PATH, composeGeneralChangePlan, planLinksNotation, plannedNotExecutedAnswer,
-  repositoryWorkReference, shellQuote,
+  planResponseLanguage, repositoryWorkReference, shellQuote,
 } from './general_planner.mjs';
 import { FinalDisposition, finalAnswer, jsonText, planOne, resolvedFinalAnswer, writeArguments } from './plan.mjs';
 import { guardedStep, isGuardRead } from './literal_write_guard.mjs';
@@ -158,7 +158,6 @@ import { observedRecoveryCommand, planRecovery } from './prerequisite_recovery.m
 import { programContractAnswer } from './crate/coding_program_contract.mjs';
 import { planWorkItemEvidence, workItemEvidencePaths } from './work_item_evidence.mjs';
 import { fencedBlock, LINO_FENCE_LANGUAGE } from './crate/issue_report.mjs';
-import { detect } from './crate/language.mjs';
 import { localizedResponse } from './crate/seed.mjs';
 import { isAsciiDigit, splitWhitespace, trim, trimEndMatches, charIn } from './write_str.mjs';
 
@@ -562,7 +561,7 @@ function workItemCompletion(plan, progress) {
 }
 
 function generalPlanCompleted(plan) {
-  const language = detect(plan.goal);
+  const language = planResponseLanguage(plan);
   return (localizedResponse('general_plan_completed', language) ?? '')
     .split('{target}').join(plan.target)
     .split('{command}').join(plan.verification_command)
@@ -599,7 +598,7 @@ function capabilityLabel(capability) {
 }
 
 function generalPlanMismatch(plan, observed) {
-  const language = detect(plan.goal);
+  const language = planResponseLanguage(plan);
   const expected = plan.mode === GeneralPlanMode.RepositoryWorkItem ? planLinksNotation(plan) : plan.content;
   return (localizedResponse('general_plan_verification_mismatch', language) ?? '')
     .split('{target}').join(plan.target)
@@ -608,7 +607,7 @@ function generalPlanMismatch(plan, observed) {
 }
 
 function generalPlanUnverified(plan) {
-  const language = detect(plan.goal);
+  const language = planResponseLanguage(plan);
   return (localizedResponse('general_plan_unverified', language) ?? '')
     .split('{target}').join(plan.target)
     .split('{command}').join(plan.verification_command);

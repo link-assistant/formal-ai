@@ -58,14 +58,14 @@ export function explicitUnknownTerminal(text,workItemRecord=null){
   const state=record.state&&typeof record.state==='object'?record.state:record;
   const verified=state.verified??state.taskVerified??record.verified??record.taskVerified??null;
   if(record.schema==='repository-work-item-evidence/v1'&&record.verified===false&&record.authored===false
-    &&['EvidenceCollected','MissingReadTool','ReadPolicyRefused','IncompleteSourceObservation'].includes(record.reason)){
+    &&['EvidenceCollected','MissingReadTool','ReadPolicyRefused','IncompleteSourceObservation','UnresolvedReferences'].includes(record.reason)){
     const unbound=Array.isArray(record.requirements)?record.requirements.filter(row=>row.status==='unbound'):[];
-    return {schema:record.schema,disposition:'gap',verified:false,unresolvedEvidence:unbound.length>0,
+    return {schema:record.schema,disposition:'gap',verified:false,unresolvedEvidence:unbound.length>0||(Array.isArray(record.unresolved)&&record.unresolved.length>0),
       terminal:record.reason,missingEvidenceCount:unbound.length,evidenceKind:'legacy-unbound-requirements',attachmentContentsInferred:false};
   }
   const terminal=state.terminalState??state.terminal_state??state.status??record.reason;
   const gaps=['gap','unresolved','unsupported','evidence_unavailable','MissingEvidence','UnavailableEvidence',
-    'IncompleteSourceObservation','MissingReadTool','unsupported_evidence'];
+    'IncompleteSourceObservation','MissingReadTool','UnresolvedReferences','unsupported_evidence'];
   const missing=[...(Array.isArray(state.missingEvidence)?state.missingEvidence:[]),
     ...(Array.isArray(state.unresolvedEvidence)?state.unresolvedEvidence:[]),
     ...(Array.isArray(state.evidence)?state.evidence.filter(row=>['unavailable','missing','unknown','unresolved'].includes(row.status)):[])];

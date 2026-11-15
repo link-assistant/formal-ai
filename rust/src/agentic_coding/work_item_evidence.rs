@@ -1,172 +1,97 @@
 //! Bounded source observations before an unsupported repository task stops.
+//! Native twin of `js/agentic/work_item_evidence.mjs`.
+//!
+//! Each file name the work item mentions is resolved through
+//! `work_item_references` (issue #1558): the exact path first, then a search
+//! by file name, then ranked candidates. A failed read is recorded and the
+//! next action differs from it; a reference nothing resolves becomes an
+//! explicit unresolved item while the remaining evidence is still read.
 use super::final_result::{FinalDisposition, FinalResult};
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for};
-use super::progress::Progress;
+use super::progress::{Progress, ToolAttempt};
 use super::source_manifest_facts::observed_manifest_facts;
+use super::work_item_references::{
+    MAXIMUM_CANDIDATE_READS, ReadOutcome, WorkItemReference, attempt_for, product_name,
+    ranked_candidates, read_attempt_for, read_outcome, same_path, search_actions, search_matches,
+    work_item_references, workspace_roots,
+};
 use super::work_item_report::{refusal, work_item_record_final};
-use crate::protocol::ChatMessage;
+use crate::protocol::{ChatMessage, client_working_directory};
 use serde_json::json;
 
 /// Parse bounded explicit source references without granting effect authority.
 pub(super) fn work_item_evidence_paths(task: &str) -> Vec<&str> {
-    if task.len() > 32_768 {
-        return Vec::new();
-    }
-    let pattern = regex::Regex::new(
-        r"^[A-Za-z0-9_-][A-Za-z0-9_./-]*\.(md|toml|json|rs|mjs|js|ts|yml|yaml|lino)$",
-    )
-    .expect("StaticWorkItemPathPattern");
-    let mut paths = Vec::new();
-    for word in
-        task.split(|character: char| character.is_whitespace() || "`\'\"()[],;".contains(character))
-    {
-        let path = word
-            .trim_start_matches(['`', '\'', '"', '(', '['])
-            .trim_end_matches(['`', '\'', '"', ')', ',', '.', ';', ':', ']']);
-        if !pattern.is_match(path)
-            || path.split('/').any(|part| matches!(part, "" | "." | ".."))
-            || paths.contains(&path)
-        {
-            continue;
-        }
-        paths.push(path);
-        if paths.len() == 8 {
-            break;
-        }
-    }
-    paths
+    super::work_item_references::work_item_evidence_paths(task, false)
 }
 
-/// The repository paths of the work item's own GitHub blob links.
-fn blob_paths<'a>(task: &'a str, work_item: &str) -> Vec<&'a str> {
-    let Some((owner, repository)) =
-        work_item
-            .strip_prefix("https://github.com/")
-            .and_then(|rest| {
-                let mut parts = rest.splitn(3, '/');
-                let owner = parts.next().filter(|part| !part.is_empty())?;
-                let repository = parts.next().filter(|part| !part.is_empty())?;
-                parts.next().map(|_| (owner, repository))
-            })
-    else {
-        return Vec::new();
-    };
-    let prefix = format!("https://github.com/{owner}/{repository}/blob/");
-    task.split(|character: char| character.is_whitespace() || "`'\"()[],;<>".contains(character))
-        .filter_map(|word| word.strip_prefix(prefix.as_str()))
-        .filter_map(|rest| rest.split(['#', '?']).next())
-        .filter_map(|rest| rest.split_once('/'))
-        .filter(|(reference, path)| !reference.is_empty() && !path.is_empty())
-        .map(|(_, path)| path)
-        .collect()
+/// The host root a relative read falls back to when the client names no workspace.
+fn host_root() -> Option<String> {
+    std::env::current_dir()
+        .ok()
+        .and_then(|root| root.into_os_string().into_string().ok())
 }
 
-/// A bare file name that the work item's own GitHub link places in the
-/// repository is read at the linked path, so a link label is not taken for a
-/// file at the root (issue #1560). A label whose linked path is not an
-/// evidence path is dropped.
-pub(super) fn linked_evidence_paths<'a>(task: &'a str, work_item: &str) -> Vec<&'a str> {
-    let linked = blob_paths(task, work_item);
-    let mut paths = Vec::new();
-    for path in work_item_evidence_paths(task) {
-        let target = if path.contains('/') {
-            path
-        } else {
-            linked
-                .iter()
-                .copied()
-                .find(|candidate| candidate.ends_with(&format!("/{path}")))
-                .unwrap_or(path)
-        };
-        if target != path && work_item_evidence_paths(target).first() != Some(&target) {
-            continue;
-        }
-        if !paths.contains(&target) {
-            paths.push(target);
-        }
-    }
-    paths
+/// What the collector does next: plan one action, finish with a reason, or
+/// refuse the read of a path the user's turn forbids.
+enum Step {
+    Plan(AgenticPlan),
+    Finish(&'static str),
+    Refuse(String),
 }
 
-/// Native twin of `js/agentic/work_item_evidence.mjs`. References grant read evidence only.
-pub(super) fn plan_work_item_evidence(
-    task: &str,
-    messages: &[ChatMessage],
-    tools: &[&str],
-    work_item: &str,
-    result: &mut Option<FinalResult>,
-) -> Option<AgenticPlan> {
-    let paths = linked_evidence_paths(task, work_item);
-    if paths.is_empty() {
-        return None;
-    }
-    let progress = Progress::scan(messages);
-    let mut observations = Vec::new();
-    // The work item is split into requirements before any evidence is read, so
-    // a refusal names the requirement it concerns (issue #1560).
-    let requirements = super::work_item_requirements::work_item_requirements(task)
-        .into_iter()
-        .map(|(text, (start, end))| json!({"text":text,"span":[start,end],"status":"unbound"}))
-        .collect::<Vec<_>>();
-    let mut finish = |reason: &str,
-                      observations: &[serde_json::Value],
-                      refused: Option<serde_json::Value>| {
-        let mut payload = json!({
-            "schema":"repository-work-item-evidence/v1", "reason":reason,"workItem":work_item,
-            "taskIdentity":crate::source_fetch::sha256_hex(task.as_bytes()),
-            "requirements":requirements,
-            "decomposition":[
-                {"step":"collect_repository_evidence", "status":if reason == "EvidenceCollected" {"observed"} else {"incomplete"}},
-                {"step":"bind_requirements_to_source", "status":"unverified"},
-                {"step":"implement_requested_change", "status":"not_executed"},
-                {"step":"verify_artifact_and_requirements", "status":"not_executed"}
-            ],
-            "observations":observations, "coverage":"explicit-paths-only; at most eight files",
-            "authored":false, "verified":false
-        });
-        if let Some(refused) = refused {
-            payload["refused"] = refused;
+/// The evidence gathered so far, reported in the final payload.
+#[derive(Default)]
+struct Evidence {
+    observations: Vec<serde_json::Value>,
+    unresolved: Vec<serde_json::Value>,
+    terms: Vec<String>,
+}
+
+impl Evidence {
+    fn leave_unresolved(
+        &mut self,
+        reference: &WorkItemReference,
+        reason: &str,
+        extra: Option<(&str, serde_json::Value)>,
+    ) {
+        let mut row = json!({"reference":reference.name,"target":reference.target,"reason":reason});
+        if let Some((key, value)) = extra {
+            row[key] = value;
         }
-        work_item_record_final(
-            payload,
-            task,
-            FinalDisposition::Gap,
-            "repository_work_item_evidence_gap",
-            result,
-        )
-    };
-    for path in paths {
-        let Some(observed) = progress.source_read_for(path) else {
-            let Some(read) = tool_for(tools, Capability::Read) else {
-                return Some(finish("MissingReadTool", &observations, None));
-            };
-            let step = plan_one(
-                read,
-                json!({"path":path,"filePath":path,"file_path":path}).to_string(),
-            );
-            return Some(
-                if super::file_read::user_read_policy_blocks_plan(messages, task, &step) {
-                    finish(
-                        "ReadPolicyRefused",
-                        &observations,
-                        Some(refusal(&requirements, path)),
-                    )
-                } else {
-                    step
-                },
-            );
-        };
-        let complete = observed.error.is_none()
-            && observed.complete
-            && observed
-                .source
-                .as_ref()
-                .is_some_and(|source| source.len() <= 262_144);
-        let source = observed.source.as_deref().unwrap_or_default();
+        self.unresolved.push(row);
+    }
+
+    /// Record the read of `path` for `reference` and return its outcome.
+    fn observe(
+        &mut self,
+        reference: &WorkItemReference,
+        path: &str,
+        attempt: &ToolAttempt,
+        resolved_by: &str,
+    ) -> ReadOutcome {
+        let outcome = read_outcome(attempt);
+        let failed = outcome == ReadOutcome::Failed;
+        let source = attempt
+            .source_observation()
+            .filter(|observed| !failed && observed.complete)
+            .and_then(|observed| observed.source.as_deref())
+            .filter(|source| source.len() <= 262_144);
+        let complete = source.is_some();
         let mut observation = json!({"path":path,"complete":complete,
-            "sourceIdentity":complete.then(||crate::source_fetch::sha256_hex(source.as_bytes())),
-            "excerpt":complete.then(||source.chars().take(1024).collect::<String>())});
-        if complete && (path.ends_with(".json") || path.ends_with(".toml")) {
+            "sourceIdentity":source.map(|source|crate::source_fetch::sha256_hex(source.as_bytes())),
+            "excerpt":source.map(|source|source.chars().take(1024).collect::<String>())});
+        if reference.name != path {
+            observation["reference"] = json!(reference.name);
+        }
+        if resolved_by != "exact" {
+            observation["resolvedBy"] = json!(resolved_by);
+        }
+        if failed {
+            observation["readFailed"] = json!(true);
+        }
+        if let Some(source) = source
+            && (path.ends_with(".toml") || path.ends_with(".json"))
+        {
             match observed_manifest_facts(path, source) {
                 Ok(facts) => {
                     observation["manifestFacts"] = json!(facts);
@@ -179,10 +104,222 @@ pub(super) fn plan_work_item_evidence(
                 }
             }
         }
-        observations.push(observation);
-        if !complete {
-            return Some(finish("IncompleteSourceObservation", &observations, None));
+        self.observations.push(observation);
+        if failed {
+            ReadOutcome::Failed
+        } else if complete {
+            ReadOutcome::Complete
+        } else {
+            ReadOutcome::Incomplete
         }
     }
-    Some(finish("EvidenceCollected", &observations, None))
+}
+
+fn read_step(read: &str, path: &str) -> AgenticPlan {
+    plan_one(
+        read,
+        json!({"path":path,"filePath":path,"file_path":path}).to_string(),
+    )
+}
+
+fn plan_read(messages: &[ChatMessage], task: &str, read: &str, path: &str) -> Step {
+    let step = read_step(read, path);
+    if super::file_read::user_read_policy_blocks_plan(messages, task, &step) {
+        Step::Refuse(path.to_owned())
+    } else {
+        Step::Plan(step)
+    }
+}
+
+/// Walk every reference in order and return the first action still owed, or the terminal reason.
+fn next_step(
+    task: &str,
+    messages: &[ChatMessage],
+    references: &[WorkItemReference],
+    progress: &Progress,
+    roots: &[String],
+    tools: &[&str],
+    evidence: &mut Evidence,
+) -> Step {
+    let read = tool_for(tools, Capability::Read);
+    let mut incomplete = false;
+    for reference in references {
+        let Some(target) = reference.path.as_deref().filter(|_| !reference.external) else {
+            evidence.leave_unresolved(
+                reference,
+                "OutsideRepository",
+                Some(("repository", json!(reference.repository))),
+            );
+            continue;
+        };
+        let Some(read) = read else {
+            return Step::Finish("MissingReadTool");
+        };
+        let searches = search_actions(reference, tools);
+        let product = product_name(target);
+        // The exact path is read first unless the name is bare and a name search can find it without a failed read.
+        let exact_first = !product
+            && (target.contains('/')
+                || !searches
+                    .iter()
+                    .any(|action| action.capability == Capability::Glob));
+        let mut failed: Vec<&str> = Vec::new();
+        if exact_first {
+            let Some(attempt) = read_attempt_for(progress, target, roots) else {
+                return plan_read(messages, task, read, target);
+            };
+            match evidence.observe(reference, target, attempt, "exact") {
+                ReadOutcome::Failed => failed.push(target),
+                outcome => {
+                    incomplete |= outcome == ReadOutcome::Incomplete;
+                    continue;
+                }
+            }
+        } else if super::file_read::user_read_policy_blocks_plan(
+            messages,
+            task,
+            &read_step(read, target),
+        ) {
+            return Step::Refuse(target.to_owned());
+        }
+        let mut matches = None;
+        for action in &searches {
+            let Some(attempt) = attempt_for(progress, action) else {
+                return Step::Plan(plan_one(action.tool, action.arguments.clone()));
+            };
+            let found = search_matches(&attempt.detail, reference, roots);
+            if !found.is_empty() || attempt.succeeded {
+                matches = Some(found);
+                break;
+            }
+        }
+        let Some(matches) = matches else {
+            if product {
+                evidence.terms.push(reference.name.clone());
+            } else {
+                let reason = if searches.is_empty() {
+                    "SearchUnavailable"
+                } else {
+                    "SearchFailed"
+                };
+                evidence.leave_unresolved(reference, reason, None);
+            }
+            continue;
+        };
+        let readable = matches
+            .iter()
+            .filter(|path| {
+                !failed
+                    .iter()
+                    .any(|prior| path.as_str() == *prior || same_path(path, prior, roots))
+            })
+            .cloned()
+            .collect::<Vec<_>>();
+        let candidates = ranked_candidates(&readable, reference);
+        if candidates.is_empty() {
+            if product && matches.is_empty() {
+                evidence.terms.push(reference.name.clone());
+            } else {
+                let reason = if matches.is_empty() {
+                    "NotFound"
+                } else {
+                    "CandidatesUnreadable"
+                };
+                evidence.leave_unresolved(reference, reason, None);
+            }
+            continue;
+        }
+        let resolved_by = if candidates.len() == 1 {
+            "unique-name-match"
+        } else {
+            "ranked-name-match"
+        };
+        let tried = &candidates[..candidates.len().min(MAXIMUM_CANDIDATE_READS)];
+        let mut resolved = false;
+        for candidate in tried {
+            let Some(attempt) = read_attempt_for(progress, candidate, roots) else {
+                return plan_read(messages, task, read, candidate);
+            };
+            let outcome = evidence.observe(reference, candidate, attempt, resolved_by);
+            if outcome != ReadOutcome::Failed {
+                incomplete |= outcome == ReadOutcome::Incomplete;
+                resolved = true;
+                break;
+            }
+        }
+        if !resolved {
+            evidence.leave_unresolved(
+                reference,
+                "CandidatesUnreadable",
+                Some(("candidates", json!(tried))),
+            );
+        }
+    }
+    if !evidence.unresolved.is_empty() {
+        Step::Finish("UnresolvedReferences")
+    } else if incomplete {
+        Step::Finish("IncompleteSourceObservation")
+    } else {
+        Step::Finish("EvidenceCollected")
+    }
+}
+
+/// Native twin of `js/agentic/work_item_evidence.mjs`. References grant read evidence only.
+pub(super) fn plan_work_item_evidence(
+    task: &str,
+    messages: &[ChatMessage],
+    tools: &[&str],
+    work_item: &str,
+    result: &mut Option<FinalResult>,
+) -> Option<AgenticPlan> {
+    if work_item_evidence_paths(task).is_empty() {
+        return None;
+    }
+    let references = work_item_references(task, work_item);
+    let progress = Progress::scan(messages);
+    let roots = workspace_roots(client_working_directory(messages), host_root());
+    let mut evidence = Evidence::default();
+    // The work item is split into requirements before any evidence is read, so
+    // a refusal names the requirement it concerns (issue #1560).
+    let requirements = super::work_item_requirements::work_item_requirements(task)
+        .into_iter()
+        .map(|(text, (start, end))| json!({"text":text,"span":[start,end],"status":"unbound"}))
+        .collect::<Vec<_>>();
+    let (reason, refused) = match next_step(
+        task,
+        messages,
+        &references,
+        &progress,
+        &roots,
+        tools,
+        &mut evidence,
+    ) {
+        Step::Plan(plan) => return Some(plan),
+        Step::Finish(reason) => (reason, None),
+        Step::Refuse(path) => ("ReadPolicyRefused", Some(refusal(&requirements, &path))),
+    };
+    let mut payload = json!({
+        "schema":"repository-work-item-evidence/v1", "reason":reason,"workItem":work_item,
+        "taskIdentity":crate::source_fetch::sha256_hex(task.as_bytes()),
+        "requirements":requirements,
+        "decomposition":[
+            {"step":"collect_repository_evidence", "status":if reason == "EvidenceCollected" {"observed"} else {"incomplete"}},
+            {"step":"bind_requirements_to_source", "status":"unverified"},
+            {"step":"implement_requested_change", "status":"not_executed"},
+            {"step":"verify_artifact_and_requirements", "status":"not_executed"}
+        ],
+        "observations":evidence.observations, "unresolved":evidence.unresolved, "terms":evidence.terms,
+        "coverage":"explicit-references; exact path, then file-name search; at most eight files",
+        "authored":false, "verified":false
+    });
+    if let Some(refused) = refused {
+        payload["refused"] = refused;
+    }
+    Some(work_item_record_final(
+        payload,
+        task,
+        FinalDisposition::Gap,
+        "repository_work_item_evidence_gap",
+        result,
+    ))
 }

@@ -9,55 +9,28 @@ import { sha256Hex } from './crate/source_fetch.mjs';
 import { userReadPolicyBlocksPlan } from './file_read/ownership.mjs';
 import { workItemRequirements } from './work_item_requirements.mjs';
 import { refusal, workItemRecordFinal } from './work_item_report.mjs';
-import { splitWhitespace } from './crate/rust_str.mjs';
+import { clientWorkingDirectory } from './content.mjs';
+import { currentDirectory } from './host.mjs';
+import {
+  attemptFor, productName, rankedCandidates, readAttemptFor, readOutcome, samePath, searchActions, searchMatches,
+  workItemEvidencePaths, workItemReferences, workspaceRoots, MAXIMUM_CANDIDATE_READS
+} from './work_item_references.mjs';
 
-/** File references are evidence candidates, never shell commands or write authority. */
-export function workItemEvidencePaths(task) {
-  if (new TextEncoder().encode(task).length > 32768) return [];
-  const paths = [];
-  for (const word of splitWhitespace(task).flatMap(part => part.split(/[`'"()[\],;]+/u))) {
-    const path = word.replace(/^[`'"(\[]+|[`'"),.;:\]]+$/gu, '');
-    if (!/^[A-Za-z0-9_-][A-Za-z0-9_./-]*\.(?:md|toml|json|rs|mjs|js|ts|yml|yaml|lino)$/u.test(path) || path.split('/').some(part => !part || part === '.' || part === '..') || paths.includes(path)) continue;
-    paths.push(path);
-    if (paths.length === 8) break;
-  }
-  return paths;
+export { workItemEvidencePaths };
+
+/** The host root a relative read falls back to when the client names no workspace. */
+function hostRoot() {
+  try { return currentDirectory(); } catch { return null; }
 }
-/** Mirrors `fn blob_paths`: the repository paths of the work item's own GitHub blob links. */
-function blobPaths(task, workItem) {
-  const repository = /^https:\/\/github\.com\/([^/\s]+\/[^/\s]+)\//u.exec(workItem ?? '')?.[1];
-  if (repository === undefined) return [];
-  const prefix = 'https://github.com/' + repository + '/blob/';
-  const paths = [];
-  for (const word of splitWhitespace(task).flatMap(part => part.split(/[`'"()[\],;<>]+/u))) {
-    if (!word.startsWith(prefix)) continue;
-    const rest = word.slice(prefix.length).split(/[#?]/u)[0];
-    const slash = rest.indexOf('/');
-    if (slash > 0 && slash < rest.length - 1) paths.push(rest.slice(slash + 1));
-  }
-  return paths;
-}
-/**
- * Mirrors `fn linked_evidence_paths`: a bare file name that the work item's own
- * GitHub link places in the repository is read at the linked path, so a link
- * label is not taken for a file at the root (issue #1560). A label whose
- * linked path is not an evidence path is dropped.
- */
-export function linkedEvidencePaths(task, workItem = null) {
-  const linked = blobPaths(task, workItem);
-  const paths = [];
-  for (const path of workItemEvidencePaths(task)) {
-    const target = path.includes('/') ? path : linked.find(candidate => candidate.endsWith('/' + path)) ?? path;
-    if (target !== path && workItemEvidencePaths(target)[0] !== target) continue;
-    if (!paths.includes(target)) paths.push(target);
-  }
-  return paths;
-}
+
 export function planWorkItemEvidence(task, messages, tools, workItem = null) {
-  const paths = linkedEvidencePaths(task, workItem);
-  if (!paths.length) return null;
+  if (!workItemEvidencePaths(task).length) return null;
+  const references = workItemReferences(task, workItem);
   const progress = Progress.scan(messages),
-    observations = [];
+    roots = workspaceRoots(clientWorkingDirectory(messages), hostRoot()),
+    observations = [],
+    unresolved = [],
+    terms = [];
   // The work item is split into requirements before any evidence is read, so
   // a refusal names the requirement it concerns (issue #1560).
   const requirements = workItemRequirements(task).map(([text, span]) => ({
@@ -86,32 +59,37 @@ export function planWorkItemEvidence(task, messages, tools, workItem = null) {
       status: 'not_executed'
     }],
     observations,
-    coverage: 'explicit-paths-only; at most eight files',
+    unresolved,
+    terms,
+    coverage: 'explicit-references; exact path, then file-name search; at most eight files',
     authored: false,
     verified: false
   }, task, FinalDisposition.Gap, 'repository_work_item_evidence_gap');
-  for (const path of paths) {
-    const observed = progress.sourceReadFor(path);
-    if (!observed) {
-      const read = toolFor(tools, Capability.Read);
-      if (read === null) return finish('MissingReadTool');
-      const step = planOne(read, jsonText({
-        path,
-        filePath: path,
-        file_path: path
-      }));
-      return userReadPolicyBlocksPlan(messages, task, step) ? finish('ReadPolicyRefused', refusal(requirements, path)) : step;
-    }
-    const complete = observed.error === null && observed.complete && typeof observed.source === 'string' && new TextEncoder().encode(observed.source).length <= 262144;
-    observations.push({
+  const read = toolFor(tools, Capability.Read);
+  const readStep = path => planOne(read, jsonText({
+    path,
+    filePath: path,
+    file_path: path
+  }));
+  const planRead = path => {
+    const step = readStep(path);
+    return userReadPolicyBlocksPlan(messages, task, step) ? finish('ReadPolicyRefused', refusal(requirements, path)) : step;
+  };
+  const observe = (reference, path, attempt, resolvedBy) => {
+    const observed = attempt.source_read;
+    const failed = readOutcome(attempt) === 'failed';
+    const complete = !failed && observed.complete && typeof observed.source === 'string' && new TextEncoder().encode(observed.source).length <= 262144;
+    const observation = {
       path,
       complete,
       sourceIdentity: complete ? sha256Hex(observed.source) : null,
       excerpt: complete ? Array.from(observed.source).slice(0, 1024).join('') : null
-    });
-    if (!complete) return finish('IncompleteSourceObservation');
-    if (path.endsWith('.toml') || path.endsWith('.json')) {
-      const observation = observations.at(-1);
+    };
+    if (reference.name !== path) observation.reference = reference.name;
+    if (resolvedBy !== 'exact') observation.resolvedBy = resolvedBy;
+    if (failed) observation.readFailed = true;
+    observations.push(observation);
+    if (complete && (path.endsWith('.toml') || path.endsWith('.json'))) {
       try {
         observation.manifestFacts = observedManifestFacts(path, observed.source);
         observation.factScope = 'literal-declarations-only; executable use remains unverified';
@@ -120,6 +98,72 @@ export function planWorkItemEvidence(task, messages, tools, workItem = null) {
         observation.factGap = 'UnsupportedOrInvalidManifest';
       }
     }
+    return failed ? 'failed' : complete ? 'complete' : 'incomplete';
+  };
+  const leaveUnresolved = (reference, reason, extra = {}) => unresolved.push({
+    reference: reference.name,
+    target: reference.target,
+    reason,
+    ...extra
+  });
+  let incomplete = false;
+  for (const reference of references) {
+    if (reference.external) {
+      leaveUnresolved(reference, 'OutsideRepository', { repository: reference.repository });
+      continue;
+    }
+    if (read === null) return finish('MissingReadTool');
+    const searches = searchActions(reference, tools);
+    const product = productName(reference.target);
+    // The exact path is read first unless the name is bare and a name search can find it without a failed read.
+    const exactFirst = !product && (reference.target.includes('/') || !searches.some(action => action.capability === Capability.Glob));
+    const failed = [];
+    if (exactFirst) {
+      const attempt = readAttemptFor(progress, reference.target, roots);
+      if (attempt === null) return planRead(reference.target);
+      const outcome = observe(reference, reference.target, attempt, 'exact');
+      if (outcome !== 'failed') {
+        incomplete ||= outcome === 'incomplete';
+        continue;
+      }
+      failed.push(reference.target);
+    } else if (userReadPolicyBlocksPlan(messages, task, readStep(reference.target))) {
+      return finish('ReadPolicyRefused', refusal(requirements, reference.target));
+    }
+    let matches = null;
+    for (const action of searches) {
+      const attempt = attemptFor(progress, action);
+      if (attempt === null) return planOne(action.tool, action.arguments);
+      const found = searchMatches(attempt.detail, reference, roots);
+      if (found.length || attempt.succeeded) {
+        matches = found;
+        break;
+      }
+    }
+    if (matches === null) {
+      if (product) terms.push(reference.name);
+      else leaveUnresolved(reference, searches.length ? 'SearchFailed' : 'SearchUnavailable');
+      continue;
+    }
+    const candidates = rankedCandidates(matches.filter(path => !failed.some(prior => prior === path || samePath(path, prior, roots))), reference);
+    if (!candidates.length) {
+      if (product && !matches.length) terms.push(reference.name);
+      else leaveUnresolved(reference, matches.length ? 'CandidatesUnreadable' : 'NotFound');
+      continue;
+    }
+    let resolved = false;
+    for (const candidate of candidates.slice(0, MAXIMUM_CANDIDATE_READS)) {
+      const attempt = readAttemptFor(progress, candidate, roots);
+      if (attempt === null) return planRead(candidate);
+      const outcome = observe(reference, candidate, attempt, candidates.length === 1 ? 'unique-name-match' : 'ranked-name-match');
+      if (outcome !== 'failed') {
+        incomplete ||= outcome === 'incomplete';
+        resolved = true;
+        break;
+      }
+    }
+    if (!resolved) leaveUnresolved(reference, 'CandidatesUnreadable', { candidates: candidates.slice(0, MAXIMUM_CANDIDATE_READS) });
   }
-  return finish('EvidenceCollected');
+  if (unresolved.length) return finish('UnresolvedReferences');
+  return finish(incomplete ? 'IncompleteSourceObservation' : 'EvidenceCollected');
 }
