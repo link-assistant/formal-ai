@@ -58,10 +58,12 @@ export function explicitUnknownTerminal(text,workItemRecord=null){
   const state=record.state&&typeof record.state==='object'?record.state:record;
   const verified=state.verified??state.taskVerified??record.verified??record.taskVerified??null;
   if(record.schema==='repository-work-item-evidence/v1'&&record.verified===false&&record.authored===false
-    &&['EvidenceCollected','MissingReadTool','ReadPolicyRefused','IncompleteSourceObservation','UnresolvedReferences'].includes(record.reason)){
+    &&['EvidenceCollected','MissingReadTool','ReadPolicyRefused','IncompleteSourceObservation','UnresolvedReferences',
+      'NoRepositoryReference','AttachmentEvidenceUnavailable','ExternalEvidenceUnavailable','RelatedEvidenceUnread'].includes(record.reason)){
     const unbound=Array.isArray(record.requirements)?record.requirements.filter(row=>row.status==='unbound'):[];
+    // Issue #1483: the narrowest named gap a completed collection leaves travels with the terminal.
     return {schema:record.schema,disposition:'gap',verified:false,unresolvedEvidence:unbound.length>0||(Array.isArray(record.unresolved)&&record.unresolved.length>0),
-      terminal:record.reason,missingEvidenceCount:unbound.length,evidenceKind:'legacy-unbound-requirements',attachmentContentsInferred:false};
+      terminal:record.reason,gap:typeof record.gap==='string'?record.gap:null,missingEvidenceCount:unbound.length,evidenceKind:'legacy-unbound-requirements',attachmentContentsInferred:false};
   }
   const terminal=state.terminalState??state.terminal_state??state.status??record.reason;
   const gaps=['gap','unresolved','unsupported','evidence_unavailable','MissingEvidence','UnavailableEvidence',

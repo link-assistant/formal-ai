@@ -191,10 +191,20 @@ struct Mention<'a> {
     link: Option<usize>,
 }
 
+/// Whether `task` links a file inside a GitHub repository.
+fn has_blob_link(task: &str) -> bool {
+    static BLOB: OnceLock<regex::Regex> = OnceLock::new();
+    BLOB.get_or_init(|| {
+        regex::Regex::new(r"https://github\.com/[^\s]+/blob/").expect("StaticBlobPattern")
+    })
+    .is_match(task)
+}
+
 /// The file references of `task`, in order of first mention.
 pub(super) fn work_item_references(task: &str, work_item: &str) -> Vec<WorkItemReference> {
     let tokens = work_item_evidence_paths(task, true);
-    if tokens.is_empty() {
+    // A blob link names a file even when the text writes no path (issue #1483).
+    if tokens.is_empty() && !has_blob_link(task) {
         return Vec::new();
     }
     let home = work_item_repository(work_item);

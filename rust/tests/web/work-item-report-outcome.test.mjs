@@ -1,3 +1,32 @@
+// Issue #1483: a partial result names the work it leaves open, and a
+// complete one lists none.
+test('a verified but incomplete record lists the work still open', () => {
+  const record = {
+    schema: 'repository-work-item-controller/v1', reason: 'UsefulCandidateReadbackVerified', observations: [],
+    verified: true, complete: false, authored: true,
+    remainingWork: ['independent-requirement-acceptance', 'consumer-discovery', 'independent-integration-semantics'],
+    requirements: [{ text: 'Document the manifest rows.', status: 'verified' }, { text: 'Explain the trade-offs.', status: 'unverified' }],
+  };
+  const report = workItemReport(record, 'Solve the issue.');
+  assert.match(report, /\nWork still open \(2\):\n- `consumer-discovery`\n- `independent-integration-semantics`\n/u);
+  assert.ok(!report.includes('`independent-requirement-acceptance`'));
+  assert.ok(report.indexOf('Work still open') < report.indexOf('2. Explain the trade-offs.'));
+  const done = workItemReport({ ...record, complete: true, remainingWork: [] }, 'Solve the issue.');
+  assert.ok(!done.includes('Work still open'));
+});
+// Issue #1483: the report is in the language the plan answer uses (#1557) —
+// the body's prose, then the title's — so an English issue quoting Russian
+// phrases (1330) or under a Russian title (1396) is reported in English.
+test('the work-item report of issues 1330 and 1396 is English, a Russian issue is Russian', () => {
+  const fixture = JSON.parse(readFileSync(new URL('../fixtures/issue-1557-attempted-issues.json', import.meta.url), 'utf8'));
+  const record = { schema: 'repository-work-item-evidence/v1', reason: 'EvidenceCollected', observations: [], requirements: [] };
+  for (const number of [1330, 1396]) {
+    const { title, body } = fixture.attempted.find(item => item.number === number);
+    assert.match(workItemReport(record, `${title}\n\n${body}`), /^Not completed: /u, `issue ${number}`);
+  }
+  const russian = fixture.synthetic.find(item => item.case === 'a fully Russian issue');
+  assert.match(workItemReport(record, `${russian.title}\n\n${russian.body}`), /^Не выполнено: /u);
+});
 // Issue #1560 outcome: a Hive Mind session on issues 1486, 1489 and 1501
 // reads repository files instead of refusing every read; a work-item final is
 // a localized report, never a JSON object; a fetched issue page yields only its
@@ -178,4 +207,16 @@ test('a refusal names the requirement it concerns in the localized report', () =
   assert.match(report, /secrets\/token\.txt/);
   assert.match(report, /Do not read secrets\/token\.txt\. It holds a credential\./);
   assert.match(report, /ReadPolicyRefused/);
+});
+
+// Issue #1483: a verified change that leaves requirements unverified is
+// partial; only a complete record is "done".
+test('the headline separates done, partly done, changed and unchanged records', () => {
+  const headline = record => workItemReport({ schema: 'source-documentation-controller/v1', reason: 'R', observations: [], ...record }, 'Solve the issue.').split('\n')[0];
+  assert.match(headline({ verified: true, complete: true, authored: true }), /^Done: /u);
+  assert.match(headline({ verified: true, complete: true, authored: false }), /^Already done: /u);
+  assert.match(headline({ verified: true, complete: false, authored: true }), /^Partly done: /u);
+  assert.match(headline({ verified: true, complete: false, authored: false }), /^Partly done already: /u);
+  assert.match(headline({ verified: false, complete: false, authored: true }), /^Not verified: /u);
+  assert.doesNotMatch(headline({ verified: false, complete: false, authored: false }), /^(Done|Partly done|Already done)/u);
 });

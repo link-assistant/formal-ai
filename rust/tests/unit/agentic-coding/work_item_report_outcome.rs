@@ -404,3 +404,110 @@ fn a_refusal_names_the_requirement_it_concerns_in_the_localized_report() {
     assert!(report.contains("Do not read secrets/token.txt. It holds a credential."));
     assert!(report.contains("ReadPolicyRefused"));
 }
+
+/// Issue #1483: a verified change that leaves requirements unverified is
+/// partial; only a complete record is "done".
+#[test]
+fn the_headline_separates_done_partly_done_changed_and_unchanged_records() {
+    let headline = |verified: bool, complete: bool, authored: bool| {
+        let record = json!({
+            "schema": "source-documentation-controller/v1",
+            "reason": "R",
+            "observations": [],
+            "verified": verified,
+            "complete": complete,
+            "authored": authored
+        });
+        let report = work_item_report(&record, "Solve the issue.");
+        report.lines().next().unwrap_or_default().to_owned()
+    };
+    assert!(headline(true, true, true).starts_with("Done: "));
+    assert!(headline(true, true, false).starts_with("Already done: "));
+    assert!(headline(true, false, true).starts_with("Partly done: "));
+    assert!(headline(true, false, false).starts_with("Partly done already: "));
+    assert!(headline(false, false, true).starts_with("Not verified: "));
+    let unchanged = headline(false, false, false);
+    for prefix in ["Done", "Partly done", "Already done"] {
+        assert!(!unchanged.starts_with(prefix), "{unchanged}");
+    }
+}
+
+/// Issue #1483: a partial result names the work it leaves open, and a
+/// complete one lists none.
+#[test]
+fn a_verified_but_incomplete_record_lists_the_work_still_open() {
+    let mut record = json!({
+        "schema": "repository-work-item-controller/v1",
+        "reason": "UsefulCandidateReadbackVerified",
+        "observations": [],
+        "verified": true,
+        "complete": false,
+        "authored": true,
+        "remainingWork": ["independent-requirement-acceptance", "consumer-discovery", "independent-integration-semantics"],
+        "requirements": [
+            {"text": "Document the manifest rows.", "status": "verified"},
+            {"text": "Explain the trade-offs.", "status": "unverified"}
+        ]
+    });
+    let report = work_item_report(&record, "Solve the issue.");
+    assert!(
+        report.contains(
+            "\nWork still open (2):\n- `consumer-discovery`\n- `independent-integration-semantics`\n"
+        ),
+        "{report}"
+    );
+    assert!(!report.contains("`independent-requirement-acceptance`"));
+    let open = report.find("Work still open").expect("RemainingWork");
+    let listed = report
+        .find("2. Explain the trade-offs.")
+        .expect("OpenRequirement");
+    assert!(open < listed);
+    record["complete"] = json!(true);
+    record["remainingWork"] = json!([]);
+    assert!(!work_item_report(&record, "Solve the issue.").contains("Work still open"));
+}
+
+/// Issue #1483: the report is in the language the plan answer uses (#1557) —
+/// the body's prose, then the title's — so an English issue quoting Russian
+/// phrases (1330) or under a Russian title (1396) is reported in English.
+#[test]
+fn the_work_item_report_of_issues_1330_and_1396_is_english() {
+    let fixture: Value = serde_json::from_str(include_str!(
+        "../../fixtures/issue-1557-attempted-issues.json"
+    ))
+    .expect("fixture");
+    let record = json!({
+        "schema": "repository-work-item-evidence/v1",
+        "reason": "EvidenceCollected",
+        "observations": [],
+        "requirements": []
+    });
+    let task = |item: &Value| {
+        format!(
+            "{}\n\n{}",
+            item["title"].as_str().unwrap_or_default(),
+            item["body"].as_str().unwrap_or_default()
+        )
+    };
+    for number in [1330, 1396] {
+        let issue = fixture["attempted"]
+            .as_array()
+            .and_then(|items| items.iter().find(|item| item["number"] == number))
+            .expect("AttemptedIssue");
+        let report = work_item_report(&record, &task(issue));
+        assert!(
+            report.starts_with("Not completed: "),
+            "issue {number}: {report}"
+        );
+    }
+    let russian = fixture["synthetic"]
+        .as_array()
+        .and_then(|items| {
+            items
+                .iter()
+                .find(|item| item["case"] == "a fully Russian issue")
+        })
+        .expect("RussianIssue");
+    let report = work_item_report(&record, &task(russian));
+    assert!(report.starts_with("Не выполнено: "), "{report}");
+}

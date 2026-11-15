@@ -89,11 +89,13 @@ fn usage(message: &str) -> ! {
 ///
 /// A bare name matches a directory of that name at any depth; a path matches
 /// that directory under `data/`.
-const CAPTURED_EVIDENCE: [&str; 4] = [
+const CAPTURED_EVIDENCE: [&str; 5] = [
     "cache",
     "source-cache",
     "benchmarks/issue-requirements",
     "benchmarks/ci-phase-timing/baseline-runs",
+    // Issue titles and bodies frozen from the REST API (#1483).
+    "benchmarks/fixtures/work-item-1483",
 ];
 
 /// Every memorized pin under `data/`, captured evidence excluded.

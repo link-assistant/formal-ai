@@ -1,0 +1,23 @@
+#1235 calls=2 json=false reason=EvidenceCollected disposition=gap changed=[]
+  Not completed: https://github.com/link-assistant/formal-ai/issues/1235. The session stopped at `EvidenceCollected` and changed no repository file.
+#1330 calls=5 json=false reason=EvidenceCollected disposition=gap changed=[]
+  Not completed: https://github.com/link-assistant/formal-ai/issues/1330. The session stopped at `EvidenceCollected` and changed no repository file.
+#1364 calls=4 json=false reason=UnresolvedReferences disposition=gap changed=[]
+  Not completed: https://github.com/link-assistant/formal-ai/issues/1364. The session stopped at `UnresolvedReferences` and changed no repository file.
+#1395 calls=1 json=false reason=AttachmentEvidenceUnavailable disposition=gap changed=[]
+  Not completed: https://github.com/link-assistant/formal-ai/issues/1395. The session stopped at `AttachmentEvidenceUnavailable` and changed no repository file.
+#1396 calls=1 json=false reason=AttachmentEvidenceUnavailable disposition=gap changed=[]
+  Not completed: https://github.com/link-assistant/formal-ai/issues/1396. The session stopped at `AttachmentEvidenceUnavailable` and changed no repository file.
+#1438 calls=2 json=false reason=ExternalEvidenceUnavailable disposition=gap changed=[]
+  Not completed: https://github.com/link-assistant/formal-ai/issues/1438. The session stopped at `ExternalEvidenceUnavailable` and changed no repository file.
+#1446 calls=8 json=false reason=EvidenceCollected disposition=gap changed=[]
+  Not completed: https://github.com/link-assistant/formal-ai/issues/1446. The session stopped at `EvidenceCollected` and changed no repository file.
+#1455 calls=11 json=false reason=UsefulCandidateReadbackVerified disposition=gap changed=["M docs/associative-tech-stack.md"]
+  Partly done: https://github.com/link-assistant/formal-ai/issues/1455. The session stopped at `UsefulCandidateReadbackVerified` after a change that an independent check accepted; the requirements and work listed below are
+#1483 calls=3 json=false reason=EvidenceCollected disposition=gap changed=[]
+  Not completed: https://github.com/link-assistant/formal-ai/issues/1483. The session stopped at `EvidenceCollected` and changed no repository file.
+#1548 calls=1 json=false reason=RelatedEvidenceUnread disposition=gap changed=[]
+  Not completed: https://github.com/link-assistant/formal-ai/issues/1548. The session stopped at `RelatedEvidenceUnread` and changed no repository file.
+# #1455 replayed on its pre-fix checkout 3c592625d (--at 3c592625d):
+#1455 calls=11 json=false reason=UsefulCandidateReadbackVerified disposition=gap changed=["M docs/associative-tech-stack.md"]
+  Partly done: https://github.com/link-assistant/formal-ai/issues/1455. The session stopped at `UsefulCandidateReadbackVerified` after a change that an independent check accepted; the requirements and work listed below are

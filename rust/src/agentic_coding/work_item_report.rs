@@ -69,10 +69,50 @@ pub(super) fn refusal(requirements: &[Value], path: &str) -> Value {
     json!({"path":path,"requirement":requirement_naming(requirements, path)})
 }
 
+/// An independently accepted change, a verified no-op, either of them partial
+/// while requirements stay unverified, an unaccepted change, or no change
+/// (issue #1483).
+fn headline_intent(record: &Value) -> &'static str {
+    let verified = record["verified"] == json!(true);
+    let complete = record["complete"] == json!(true);
+    match (verified, complete, record["authored"] == json!(true)) {
+        (true, true, true) => "work-item-report-accepted",
+        (true, true, false) => "work-item-report-no-change-needed",
+        (true, false, true) => "work-item-report-partial",
+        (true, false, false) => "work-item-report-partial-no-change-needed",
+        (false, _, true) => "work-item-report-changed",
+        (false, _, false) => "work-item-report-unchanged",
+    }
+}
+
+/// The paths of the record's effects, each once.
+fn changed_paths(record: &Value) -> Vec<&str> {
+    let mut paths: Vec<&str> = Vec::new();
+    for effect in record["effects"].as_array().into_iter().flatten() {
+        if let Some(path) = effect["path"].as_str()
+            && !paths.contains(&path)
+        {
+            paths.push(path);
+        }
+    }
+    paths
+}
+
+/// A check passed, failed, or was not run.
+fn check_intent(check: &Value) -> &'static str {
+    if check["passed"] == json!(true) || check["status"] == json!("passed") {
+        "work-item-report-check-passed"
+    } else if check["passed"] == json!(false) || check["status"] == json!("failed") {
+        "work-item-report-check-failed"
+    } else {
+        "work-item-report-check-pending"
+    }
+}
+
 /// The localized report of a work-item record.
 #[must_use]
 pub fn work_item_report(record: &Value, task: &str) -> String {
-    let language = crate::language::detect(task).slug();
+    let language = super::general_planner::work_item_language(task).slug();
     let subject = record["workItem"]
         .as_str()
         .filter(|item| !item.is_empty())
@@ -81,13 +121,8 @@ pub fn work_item_report(record: &Value, task: &str) -> String {
             str::to_owned,
         );
     let reason = record["reason"].as_str().unwrap_or("Unknown");
-    let headline = if record["authored"] == json!(true) {
-        "work-item-report-changed"
-    } else {
-        "work-item-report-unchanged"
-    };
     let mut paragraphs = vec![filled(
-        headline,
+        headline_intent(record),
         language,
         &[("subject", &subject), ("reason", reason)],
     )];
@@ -110,6 +145,109 @@ pub fn work_item_report(record: &Value, task: &str) -> String {
             .join(", ");
         filled("work-item-report-read", language, &[("paths", &paths)])
     });
+    let changed = if record["authored"] == json!(true) {
+        changed_paths(record)
+    } else {
+        Vec::new()
+    };
+    if !changed.is_empty() {
+        let paths = changed
+            .iter()
+            .map(|path| format!("`{path}`"))
+            .collect::<Vec<_>>()
+            .join(", ");
+        paragraphs.push(filled(
+            "work-item-report-effects",
+            language,
+            &[("paths", &paths)],
+        ));
+    }
+    let checks = record["checks"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter_map(|check| {
+            check["kind"]
+                .as_str()
+                .map(|kind| filled(check_intent(check), language, &[("kind", kind)]))
+        })
+        .collect::<Vec<_>>();
+    if !checks.is_empty() {
+        paragraphs.push(filled(
+            "work-item-report-checks",
+            language,
+            &[("checks", &checks.join("; "))],
+        ));
+    }
+    let unresolved = record["unresolved"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter(|row| row["reference"].is_string())
+        .collect::<Vec<_>>();
+    if !unresolved.is_empty() {
+        let count = unresolved.len().to_string();
+        let mut lines = vec![filled(
+            "work-item-report-unresolved",
+            language,
+            &[("count", &count)],
+        )];
+        for row in unresolved.iter().take(LISTED_REQUIREMENTS) {
+            lines.push(format!(
+                "- `{}`: `{}`",
+                requirement_line(row["reference"].as_str().unwrap_or_default()),
+                row["reason"].as_str().unwrap_or("Unknown")
+            ));
+        }
+        if unresolved.len() > LISTED_REQUIREMENTS {
+            let more = (unresolved.len() - LISTED_REQUIREMENTS).to_string();
+            lines.push(filled(
+                "work-item-report-more",
+                language,
+                &[("count", &more)],
+            ));
+        }
+        paragraphs.push(lines.join("\n"));
+    }
+    // A named gap is the narrowest reason no change was made (issue #1483).
+    let gap = record["gap"].as_str();
+    if let Some(gap) = gap {
+        paragraphs.push(filled("work-item-report-gap", language, &[("gap", gap)]));
+    }
+    // A partial result, or a named gap, names the work it leaves open; requirement rows are listed below.
+    let remaining = if (record["verified"] == json!(true) && record["complete"] != json!(true))
+        || gap.is_some()
+    {
+        record["remainingWork"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .filter_map(Value::as_str)
+            .filter(|item| *item != "independent-requirement-acceptance")
+            .collect::<Vec<_>>()
+    } else {
+        Vec::new()
+    };
+    if !remaining.is_empty() {
+        let count = remaining.len().to_string();
+        let mut lines = vec![filled(
+            "work-item-report-remaining",
+            language,
+            &[("count", &count)],
+        )];
+        for item in remaining.iter().take(LISTED_REQUIREMENTS) {
+            lines.push(format!("- `{}`", requirement_line(item)));
+        }
+        if remaining.len() > LISTED_REQUIREMENTS {
+            let more = (remaining.len() - LISTED_REQUIREMENTS).to_string();
+            lines.push(filled(
+                "work-item-report-more",
+                language,
+                &[("count", &more)],
+            ));
+        }
+        paragraphs.push(lines.join("\n"));
+    }
     let requirements = record["requirements"]
         .as_array()
         .map_or(&[][..], Vec::as_slice);
@@ -133,22 +271,35 @@ pub fn work_item_report(record: &Value, task: &str) -> String {
     } else if reason == "MissingReadTool" {
         paragraphs.push(filled("work-item-report-missing-read-tool", language, &[]));
     }
-    if !requirements.is_empty() {
+    // Requirements keep their numbers; only those not yet verified are listed.
+    let open = requirements
+        .iter()
+        .enumerate()
+        .filter(|(_, requirement)| requirement["status"].as_str() != Some("verified"))
+        .collect::<Vec<_>>();
+    if !requirements.is_empty() && open.is_empty() {
         let count = requirements.len().to_string();
+        paragraphs.push(filled(
+            "work-item-report-requirements-verified",
+            language,
+            &[("count", &count)],
+        ));
+    } else if !open.is_empty() {
+        let count = open.len().to_string();
         let mut lines = vec![filled(
             "work-item-report-requirements",
             language,
             &[("count", &count)],
         )];
-        for (index, requirement) in requirements.iter().take(LISTED_REQUIREMENTS).enumerate() {
+        for (index, requirement) in open.iter().take(LISTED_REQUIREMENTS) {
             lines.push(format!(
                 "{}. {}",
                 index + 1,
                 requirement_line(requirement["text"].as_str().unwrap_or_default())
             ));
         }
-        if requirements.len() > LISTED_REQUIREMENTS {
-            let more = (requirements.len() - LISTED_REQUIREMENTS).to_string();
+        if open.len() > LISTED_REQUIREMENTS {
+            let more = (open.len() - LISTED_REQUIREMENTS).to_string();
             lines.push(filled(
                 "work-item-report-more",
                 language,

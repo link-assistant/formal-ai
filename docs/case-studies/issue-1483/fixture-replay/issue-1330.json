@@ -1,0 +1,808 @@
+{
+ "calls": [
+  "bash {\"command\":\"gh issue view 'https://github.com/link-assistant/formal-ai/issues/1330' --json title --jq .title && echo && gh issue view 'https://github.com/link-a",
+  "read {\"filePath\":\"rust/Cargo.toml\",\"file_path\":\"rust/Cargo.toml\",\"path\":\"rust/Cargo.toml\"}",
+  "read {\"filePath\":\"rust/src/seed/meanings.rs\",\"file_path\":\"rust/src/seed/meanings.rs\",\"path\":\"rust/src/seed/meanings.rs\"}",
+  "read {\"filePath\":\"rust/src/cue_lexicon.rs\",\"file_path\":\"rust/src/cue_lexicon.rs\",\"path\":\"rust/src/cue_lexicon.rs\"}",
+  "read {\"filePath\":\"rust/src/summarization/dedup.rs\",\"file_path\":\"rust/src/summarization/dedup.rs\",\"path\":\"rust/src/summarization/dedup.rs\"}"
+ ],
+ "answer": "Not completed: https://github.com/link-assistant/formal-ai/issues/1330. The session stopped at `EvidenceCollected` and changed no repository file.\n\nFiles read: `rust/Cargo.toml`, `rust/src/seed/meanings.rs`, `rust/src/cue_lexicon.rs`, `rust/src/summarization/dedup.rs`.\n\nNarrowest open gap: `RequestedInterfaceAbsent`.\n\nWork still open (4):\n- `bind-requirements-to-source`\n- `create-interface:sameMeaning`\n- `create-interface:same_meaning`\n- `verify-artifact-and-requirements`\n\nRequirements not yet verified (29):\n1. Detect that two questions have the same meaning with different wording (sameMeaning(a, b))\n2. [meta-sovereign](https://github.com/link-foundation/meta-sovereign) (a local, open-source messenger client) learns which questions were asked in a conversation …\n3. formal-ai has no API for comparing two arbitrary natural-language questions and deciding whether they convey the same intent. A `sameMeaning(a, b) -> { same: bo…\n4. `98f7808d49583e1e7932d133355445d8fdfb91f9` (default branch at time of evaluation)\n5. OS: macOS Darwin 24.6.0 (arm64)\n6. Rust: 1.99.1 (58cf8f9c3 2026-10-13), installed via `rustup toolchain install 1.99`\n7. Node: v24.18.0\n8. formal-ai version: 0.355.0\nand 21 more.\n\nThe machine record of this session (`repository-work-item-evidence/v1`) is kept in the trace, not in this answer.",
+ "disposition": "gap",
+ "record": {
+  "schema": "repository-work-item-evidence/v1",
+  "reason": "EvidenceCollected",
+  "gap": "RequestedInterfaceAbsent",
+  "workItem": "https://github.com/link-assistant/formal-ai/issues/1330",
+  "taskIdentity": "a1406bc0fc67d4360d75daa7ee64758a136dc104c60c8bf5032954a668771b60",
+  "requirements": [
+   {
+    "text": "Detect that two questions have the same meaning with different wording (sameMeaning(a, b))",
+    "span": [
+     0,
+     90
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "[meta-sovereign](https://github.com/link-foundation/meta-sovereign) (a local, open-source messenger client) learns which questions were asked in a conversation and wants to treat questions with the same meaning but different wording as one (its requirement R-Y54). We tried the latest formal-ai locally for this; the examples below are synthetic.",
+    "span": [
+     219,
+     565
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "formal-ai has no API for comparing two arbitrary natural-language questions and deciding whether they convey the same intent. A `sameMeaning(a, b) -> { same: boolean, confidence: number }` function is needed, working for both Russian and English.",
+    "span": [
+     579,
+     825
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "`98f7808d49583e1e7932d133355445d8fdfb91f9` (default branch at time of evaluation)",
+    "span": [
+     838,
+     919
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "OS: macOS Darwin 24.6.0 (arm64)",
+    "span": [
+     939,
+     970
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Rust: 1.99.1 (58cf8f9c3 2026-10-13), installed via `rustup toolchain install 1.99`",
+    "span": [
+     973,
+     1055
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Node: v24.18.0",
+    "span": [
+     1058,
+     1072
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "formal-ai version: 0.355.0",
+    "span": [
+     1075,
+     1101
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "```bash\n# build (one-time):\nrustup toolchain install 1.99\nrustup override set 1.99   # inside formal-ai repo\ncargo +1.99 run --manifest-path rust/Cargo.toml --bin formal-ai -- --help\n\n# per-prompt test used:\ncargo +1.99 run --manifest-path rust/Cargo.toml --bin formal-ai -- \\\n  chat --prompt \"На вы?\" --format text --silent\n```",
+    "span": [
+     1122,
+     1454
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "No dedicated same-meaning endpoint exists. The evaluation ran each prompt individually via `chat` and compared the raw text outputs.",
+    "span": [
+     1456,
+     1588
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "| # | Prompt A | Prompt B | Expected | A response (summary) | B response (summary) | Result |\n|---|----------|----------|----------|----------------------|----------------------|--------|\n| 1 | \"На вы?\" | \"Можно к вам на вы обращаться?\" | same | lookup failure (no cached data for \"На вы\") | unknown rule | FAIL — routes to different handlers |\n| 2 | \"Можно на ты?\" | \"Давай на ты?\" | same | lookup failure (topic \"Можно\") | lookup failure (topic \"Давай\") | FAIL — different lookup keys, same underlying intent ignored |\n| 3 | \"Where do you work?\" | \"What company are you at?\" | same | lookup failure (no cached data) | self-identity response: \"I am formal-ai…\" | FAIL — completely different routes |\n| 4 | \"Кем ты работаешь?\" | \"Чем занимаешься по работе?\" | same | unknown | unknown | FAIL — both unknown, equivalence not detected |\n| 5 | \"Do you have a LinkedIn?\" | \"Can you send me your LinkedIn profile?\" | same | unknown | **misroutes to `list_dir`** capability | FAIL — wrong route on B; intent not recognised |\n| 6 | \"Когда созвонимся?\" | \"В какое время удобно поговорить?\" | same | unknown | unknown | FAIL — both unknown, equivalence not detected |\n| 7 | \"На вы?\" | \"На ты?\" | different | lookup failure \"На вы\" | lookup failure \"На ты\" | ACCIDENTAL PASS — different only because lookup keys differ, not due to semantic comparison |\n| 8 | \"Where do you work?\" | \"Where do you live?\" | different | lookup failure \"Where do you work\" | lookup failure \"Where do you live\" | ACCIDENTAL PASS — same reason |\n| 9 | \"Когда созвонимся?\" | \"Зачем созваниваться?\" | different | unknown | unknown | ACCIDENTAL PASS — both unknown; no semantic differentiation |",
+    "span": [
+     1627,
+     3492
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Summary: 0 of 9 pairs correctly handled by semantic reasoning. The 3 \"different\" pairs appear correct only by coincidence (the lookup key or the boilerplate intro differs); the system performs no actual equivalence comparison.",
+    "span": [
+     3494,
+     3720
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "```bash\ngit clone --depth 1 https://github.com/link-assistant/formal-ai repo\ncd repo\nrustup toolchain install 1.99 && rustup override set 1.99\ncargo +1.99 run --manifest-path rust/Cargo.toml --bin formal-ai -- \\\n  chat --prompt \"Where do you work?\" --format text --silent\n# → \"No captured provider response is available for `Where do you work`.\"\n\ncargo +1.99 run --manifest-path rust/Cargo.toml --bin formal-ai -- \\\n  chat --prompt \"What company are you at?\" --format text --silent\n# → \"I am formal-ai, a deterministic symbolic AI implementation…\"\n```",
+    "span": [
+     3747,
+     4304
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "These two questions mean the same thing but produce entirely different responses from different handlers.",
+    "span": [
+     4306,
+     4411
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "A second sharp failure:",
+    "span": [
+     4413,
+     4436
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "```bash\ncargo +1.99 run --manifest-path rust/Cargo.toml --bin formal-ai -- \\\n  chat --prompt \"Can you send me your LinkedIn profile?\" --format text --silent\n# → \"This request routes to the `list_dir` capability, but this chat surface does not expose the required `shell` tool.\"\n```",
+    "span": [
+     4438,
+     4721
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "\"Can you send me your LinkedIn profile?\" is wrongly routed to `list_dir`.",
+    "span": [
+     4723,
+     4796
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "A deterministic, symbolic `sameMeaning(a, b)` function that:",
+    "span": [
+     4822,
+     4882
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Formalises both inputs into intent frames using the existing meanings lexicon\n   (`rust/src/seed/meanings.rs`) and the multilingual cue lexicon\n   (`rust/src/cue_lexicon.rs`).",
+    "span": [
+     4887,
+     5062
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Compares the resulting frames structurally — same intent type, same\n   subject slot, compatible argument types.",
+    "span": [
+     5066,
+     5179
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Returns `{ same: bool, confidence: f64, intent_a: String, intent_b: String }`\n   so the caller can inspect the reasoning.",
+    "span": [
+     5183,
+     5304
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Works for at least Russian and English (the two main languages in the\n   existing test matrix).",
+    "span": [
+     5308,
+     5403
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Suggested Rust signature:",
+    "span": [
+     5405,
+     5430
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "```rust\npub fn same_meaning(a: &str, b: &str) -> SameMeaningResult;\n\npub struct SameMeaningResult {\n    pub same: bool,\n    pub confidence: f64,   // 0.0–1.0\n    pub intent_a: String,  // canonical intent label for `a`\n    pub intent_b: String,  // canonical intent label for `b`\n}\n```",
+    "span": [
+     5432,
+     5719
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Suggested CLI surface:",
+    "span": [
+     5721,
+     5743
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "```bash\nformal-ai same-meaning --a \"Where do you work?\" --b \"What company are you at?\"\n# → { \"same\": true, \"confidence\": 0.92, \"intent_a\": \"ask_employer\", \"intent_b\": \"ask_employer\" }\n```",
+    "span": [
+     5745,
+     5934
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "And a corresponding HTTP endpoint:",
+    "span": [
+     5936,
+     5970
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "```\nPOST /api/openai/v1/same-meaning\n{ \"a\": \"...\", \"b\": \"...\" }\n→ { \"same\": true, \"confidence\": 0.92, \"intent_a\": \"...\", \"intent_b\": \"...\" }\n```",
+    "span": [
+     5972,
+     6118
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "The existing `StatementSignature::with_semantic_terms` in\n`rust/src/summarization/dedup.rs` and the `RouteIntent` logic in\n`rust/src/capability_routing/` are good starting points: they already group\nsemantically equivalent phrasings for tool routing and statement deduplication.\nExtending that logic to the general two-prompt case would close this gap without\nneural inference.",
+    "span": [
+     6120,
+     6497
+    ],
+    "status": "unbound"
+   }
+  ],
+  "decomposition": [
+   {
+    "step": "collect_repository_evidence",
+    "status": "observed"
+   },
+   {
+    "step": "bind_requirements_to_source",
+    "status": "unverified"
+   },
+   {
+    "step": "implement_requested_change",
+    "status": "not_executed"
+   },
+   {
+    "step": "verify_artifact_and_requirements",
+    "status": "not_executed"
+   }
+  ],
+  "observations": [
+   {
+    "path": "rust/Cargo.toml",
+    "complete": true,
+    "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+    "excerpt": "[package]\nname = \"formal-ai\"\nversion = \"0.355.34\"\nedition = \"2024\"\ndescription = \"Don't know everything, know just enough to get to know anything\"\nreadme = \"../README.md\"\nlicense = \"Unlicense\"\nkeywords = [\"formal-ai\", \"symbolic-ai\", \"openai\", \"links\"]\ncategories = [\"command-line-utilities\", \"web-programming::http-server\"]\nrepository = \"https://github.com/link-assistant/formal-ai\"\ndocumentation = \"https://github.com/link-assistant/formal-ai\"\nrust-version = \"1.99\"\ninclude = [\n    \"/Cargo.lock\",\n    \"/Cargo.toml\",\n    \"../LICENSE\",\n    \"../README.md\",\n    \"/build.rs\",\n    \"/embedded/**\",\n    \"/src/**\",\n]\nbuild = \"build.rs\"\n\n# docs.rs sets DOCS_RS while building dependencies. meta-language currently\n# pulls lindera-jieba, whose DOCS_RS build path is broken upstream\n# (lindera/lindera#750). Keep the complete engine enabled for every normal build,\n# while letting docs.rs render this crate's API without executing that transitive\n# build script.\n[package.metadata.docs.rs]\nno-default-features = true\n\n# Issue #1181: th",
+    "manifestFacts": [
+     {
+      "kind": "cargo-feature",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "features",
+      "name": "default",
+      "enables": [
+       "doublets-native",
+       "equality-saturation",
+       "meta-language"
+      ]
+     },
+     {
+      "kind": "cargo-feature",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "features",
+      "name": "doublets-native",
+      "enables": [
+       "dep:link-cli"
+      ]
+     },
+     {
+      "kind": "cargo-feature",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "features",
+      "name": "equality-saturation",
+      "enables": [
+       "dep:egg"
+      ]
+     },
+     {
+      "kind": "cargo-feature",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "features",
+      "name": "meta-language",
+      "enables": [
+       "dep:meta-language"
+      ]
+     },
+     {
+      "kind": "cargo-feature",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "features",
+      "name": "provenance-gpu",
+      "enables": [
+       "dep:wgpu",
+       "dep:pollster"
+      ]
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "name": "base64",
+      "version": "0.23"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "name": "clap",
+      "version": "4.6",
+      "options": {
+       "features": [
+        "derive",
+        "env"
+       ]
+      }
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "name": "command-stream",
+      "version": "1.5"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "name": "egg",
+      "version": "0.11.0",
+      "options": {
+       "default-features": false,
+       "features": [
+        "deterministic"
+       ],
+       "optional": true
+      }
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "name": "fs2",
+      "version": "0.4"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "name": "kamadak-exif",
+      "version": "0.6.1"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "name": "link-calculator",
+      "version": "0.22.0"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "name": "links-notation",
+      "version": "0.23.0"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "name": "lino-arguments",
+      "version": "0.4.0"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "name": "lino-objects-codec",
+      "version": "0.8.0"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "name": "meta-language",
+      "version": "1.0.0",
+      "options": {
+       "optional": true
+      }
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "name": "nom",
+      "version": "8"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "name": "regex",
+      "version": "1"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "name": "serde",
+      "version": "1",
+      "options": {
+       "features": [
+        "derive"
+       ]
+      }
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "name": "serde_json",
+      "version": "1",
+      "options": {
+       "features": [
+        "float_roundtrip"
+       ]
+      }
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "name": "sha2",
+      "version": "0.11"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "name": "shell-words",
+      "version": "1.1.1"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "name": "thread-priority",
+      "version": "3.1.1"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "name": "tokio",
+      "version": "1.53.3",
+      "options": {
+       "features": [
+        "rt",
+        "time"
+       ]
+      }
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "name": "toml_edit",
+      "version": "0.25.15"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "name": "unicode-general-category",
+      "version": "1.1"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "name": "unicode-normalization",
+      "version": "0.1"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "name": "url",
+      "version": "2.5.8"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "name": "walkdir",
+      "version": "2"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "name": "which",
+      "version": "8"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "target": "cfg(not(target_arch = \"wasm32\"))",
+      "name": "async-trait",
+      "version": "0.1"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "target": "cfg(not(target_arch = \"wasm32\"))",
+      "name": "blake3",
+      "version": "1.8.7",
+      "options": {
+       "features": [
+        "rayon"
+       ]
+      }
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "target": "cfg(not(target_arch = \"wasm32\"))",
+      "name": "bytes",
+      "version": "1"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "target": "cfg(not(target_arch = \"wasm32\"))",
+      "name": "link-cli",
+      "version": "1.0.0",
+      "options": {
+       "optional": true
+      }
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "target": "cfg(not(target_arch = \"wasm32\"))",
+      "name": "pollster",
+      "version": "0.4.0",
+      "options": {
+       "optional": true
+      }
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "target": "cfg(not(target_arch = \"wasm32\"))",
+      "name": "ring",
+      "version": "0.17"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "target": "cfg(not(target_arch = \"wasm32\"))",
+      "name": "tokio",
+      "version": "1.53.3",
+      "options": {
+       "features": [
+        "process",
+        "io-util",
+        "signal"
+       ]
+      }
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "target": "cfg(not(target_arch = \"wasm32\"))",
+      "name": "tracing",
+      "version": "0.1.44"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "target": "cfg(not(target_arch = \"wasm32\"))",
+      "name": "tungstenite",
+      "version": "0.30"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "target": "cfg(not(target_arch = \"wasm32\"))",
+      "name": "web-capture",
+      "version": "0.3.37",
+      "options": {
+       "default-features": false,
+       "features": [
+        "search"
+       ]
+      }
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "target": "cfg(not(target_arch = \"wasm32\"))",
+      "name": "web-search",
+      "version": "0.6.0",
+      "options": {
+       "default-features": false,
+       "features": [
+        "merge"
+       ]
+      }
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "target": "cfg(not(target_arch = \"wasm32\"))",
+      "name": "webrtc",
+      "version": "0.21"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "target": "cfg(not(target_arch = \"wasm32\"))",
+      "name": "wgpu",
+      "version": "30.0.1",
+      "options": {
+       "optional": true
+      }
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "target": "cfg(unix)",
+      "name": "rustix",
+      "version": "1.1.5",
+      "options": {
+       "features": [
+        "fs",
+        "process"
+       ]
+      }
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "target": "cfg(windows)",
+      "name": "winapi-util",
+      "version": "0.1.11"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dependencies",
+      "target": "cfg(windows)",
+      "name": "windows-sys",
+      "version": "0.61.2",
+      "options": {
+       "features": [
+        "Win32_Storage_FileSystem"
+       ]
+      }
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dev-dependencies",
+      "name": "lino-objects-codec",
+      "version": "0.8.0"
+     },
+     {
+      "kind": "manifest-declaration",
+      "manifest": "rust/Cargo.toml",
+      "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+      "section": "dev-dependencies",
+      "name": "temp-env",
+      "version": "0.3.6"
+     }
+    ],
+    "factScope": "literal-declarations-only; executable use remains unverified"
+   },
+   {
+    "path": "rust/src/seed/meanings.rs",
+    "complete": true,
+    "sourceIdentity": "a5860d1ba8545aebebc0efd0ce19c11c6d46eea65afd723806640d6a93c91ad0",
+    "excerpt": "//! Language-independent *meaning* lexicon (issue #386).\n//!\n//! The solver must never recognise a user prompt by matching a hardcoded list\n//! of words in one language. Instead it references **meanings** — concepts that\n//! exist independently of any language and are *self-describing*: every meaning\n//! is `defined_by` other meanings (a closed, mutually-referential graph in the\n//! spirit of <https://github.com/link-foundation/relative-meta-logic>) and can\n//! be anchored to real lexical data via source ids.\n//!\n//! A meaning declares the semantic `role`s it can play when read in a prompt\n//! (e.g. a sort is both a `program_artifact` a follow-up can refer to and a\n//! `program_modification` a follow-up can request). Its `lexeme` blocks list\n//! the surface words that *evidence* it, per language. Those surfaces are\n//! stored as lexeme-style ids with optional `codepoints` metadata; compatibility\n//! descriptions are generated by the parser instead of authored in the seed.\n//! Recognition code asks the lexicon"
+   },
+   {
+    "path": "rust/src/cue_lexicon.rs",
+    "complete": true,
+    "sourceIdentity": "a7baaf6eee9179b8511105c1dffa1665a43c13e015612128e9b2ac362f9895c7",
+    "excerpt": "//! Issue #559 (R341): natural-language recognition cues as first-class link data.\n//!\n//! The meta core's first step turns a message into a problem frame, and part of\n//! that is recognizing which handler family a phrase points at. Historically the\n//! cue lists that drive that recognition lived as inline Rust string literals in\n//! [`crate::intent_formalization`] — a hardcoded list of arithmetic operators, of\n//! web-search verbs, of the fourteen text-manipulation operations, and so on. The\n//! issue asks to generalize away from hardcoded specific intents; R97/R103 already\n//! moved most surface vocabulary into seed data.\n//!\n//! This module finishes that migration for the meta core's cue lists. It loads\n//! `data/meta/cue-lexicon.lino`, where every cue is a reviewable link grouped into\n//! a named [`CueSet`] that declares its [`CueMatch`] mode. The Rust code keeps only\n//! the structural glue — digit presence, AND/OR composition, which input each set\n//! is tested against — and reads the cue strings from h"
+   },
+   {
+    "path": "rust/src/summarization/dedup.rs",
+    "complete": true,
+    "sourceIdentity": "130ce585d944f4d9d728ac4a2f3ad7caf8881bf9a6b2c5e12ed2940a83929b38",
+    "excerpt": "//! Statement-level deduplication over a set of sourced observations.\n//!\n//! Issue #844 asks for a merge that is *conservative*, *explainable*, and\n//! *reversible*:\n//!\n//! - **Conservative.** Two statements merge only when they reduce to the same\n//!   [`StatementSignature`] — the same polarity over the same set of content\n//!   terms. Terms are lowercased whole tokens with the seed's function words\n//!   dropped; nothing is stemmed, and no synonym table is consulted. \"The\n//!   parser is fast\" merges with \"Parser is fast\" and with \"the fast parser\",\n//!   but never with \"the parser is fast enough\" (an extra term) nor with \"all\n//!   tests pass\" vs \"some tests pass\" (quantifiers are content, not function\n//!   words).\n//! - **Explainable.** Every absorbed statement produces a [`MergeLink`]\n//!   naming the representative it folded into and the signature they share, so\n//!   \"asserted by 9 of 11 sources\" can always be traced back to the exact\n//!   sentences and sources behind it.\n//! - **Reversible.** [`De"
+   }
+  ],
+  "unresolved": [],
+  "terms": [],
+  "related": [
+   "https://github.com/link-foundation/meta-sovereign",
+   "https://github.com/link-assistant/formal-ai"
+  ],
+  "coverage": "explicit-references; exact path, then file-name search; at most eight files; attachments unresolved; at most two linked documents and three identifiers when no file is named",
+  "candidateEdits": [],
+  "checks": [],
+  "effects": [],
+  "remainingWork": [
+   "bind-requirements-to-source",
+   "create-interface:sameMeaning",
+   "create-interface:same_meaning",
+   "verify-artifact-and-requirements"
+  ],
+  "authored": false,
+  "verified": false
+ },
+ "changed": [],
+ "diff": ""
+}

@@ -1,0 +1,2 @@
+issue view https://github.com/link-assistant/formal-ai/issues/1455 --json title --jq .title
+issue view https://github.com/link-assistant/formal-ai/issues/1455 --json body --jq .body

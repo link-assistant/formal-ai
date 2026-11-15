@@ -28,6 +28,8 @@ export const CAPTURED_EVIDENCE = [
   'source-cache',
   'benchmarks/issue-requirements',
   'benchmarks/ci-phase-timing/baseline-runs',
+  // Issue titles and bodies frozen from the REST API (#1483).
+  'benchmarks/fixtures/work-item-1483',
 ];
 
 const isHex = (byte) => (byte >= 0x30 && byte <= 0x39) || (byte >= 0x41 && byte <= 0x46) || (byte >= 0x61 && byte <= 0x66);

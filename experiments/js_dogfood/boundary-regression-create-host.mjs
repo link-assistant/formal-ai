@@ -4,7 +4,8 @@ import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { createScopedSourceEditHost } from './scoped-source-edit-host.mjs';
 import { exclusiveCreate } from './exclusive-create.mjs';
-import { boundaryCandidateObservations, deriveBoundaryWorkItemCandidate } from '../../js/agentic/work_item_boundary_candidate.mjs';
+import { boundaryCandidateObservations, boundaryContractCheck, deriveBoundaryWorkItemCandidate } from '../../js/agentic/work_item_boundary_candidate.mjs';
+import { shellCapture } from './shell-capture.mjs';
 const aliases = ['filePath', 'file_path', 'path'];
 const hash = text => createHash('sha256').update(text, 'utf8').digest('hex');
 const failure = (code, target = null) => ({
@@ -141,6 +142,13 @@ export function createBoundaryRegressionCreateHost({
       });
       return null;
     }
+    // Besides reads and the one creation, only the planner's own contract-derived check may run (issue #1483).
+    if (call.tool === 'bash') {
+      const check = boundaryContractCheck(contract, boundaryCandidateObservations(contract, messages), operation, ['bash']);
+      if (!check || argumentsOf(call)?.command !== check.command || Object.keys(argumentsOf(call)).length !== 1) return 'UndeclaredSemanticRegressionEffect';
+      authorized.set(call, { kind: 'check', command: check.command });
+      return null;
+    }
     if (call.tool !== 'write' || creationAttempted) return 'UndeclaredSemanticRegressionEffect';
     const argumentsValue = boundArguments(call, [...aliases, 'content'], contract.target);
     if (!argumentsValue || typeof argumentsValue.content !== 'string') return 'UnboundSemanticRegressionWrite';
@@ -163,6 +171,7 @@ export function createBoundaryRegressionCreateHost({
     try {
       if (!current()) return failure('ChangedSemanticRegressionWorkspace');
       if (permission.kind === 'read') return permission.owner === contract.owner ? sourceReader.execute(canonicalRead(contract.owner)) : readTarget();
+      if (permission.kind === 'check') return { content: shellCapture(permission.command, { cwd: root, timeoutMs: 60000 }) };
       if (creationAttempted) return failure('SemanticRegressionCreationAlreadyAttempted');
       creationAttempted = true;
       const source = sourceReader.execute(canonicalRead(contract.owner));

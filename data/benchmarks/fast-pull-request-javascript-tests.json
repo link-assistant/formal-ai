@@ -96,6 +96,7 @@
     "rust/tests/web/coding-research-namespace.test.mjs",
     "rust/tests/web/source-manifest-facts.test.mjs",
     "rust/tests/web/work-item-file-io.test.mjs",
+    "rust/tests/web/work-item-adapter-sessions.test.mjs",
     "rust/tests/web/manifest-documentation.test.mjs",
     "rust/tests/web/observed-source-usage.test.mjs",
     "rust/tests/web/released-client-request-latency.test.mjs",

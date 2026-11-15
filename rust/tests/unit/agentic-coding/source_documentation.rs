@@ -127,9 +127,27 @@ fn controller_requires_source_freshness_then_target_and_keeps_acceptance_unknown
     let state = answer(next(&messages));
     assert_eq!(state["reason"], "UsefulCandidateReadbackVerified");
     assert_eq!(state["task"], TASK);
-    assert_eq!(state["authored"], false);
+    // The edit is authored and its readback preserves the guide, but a single
+    // key binding carries no facts an independent check can anchor (issue #1483).
+    assert_eq!(state["authored"], true);
     assert_eq!(state["verified"], false);
     assert_eq!(state["complete"], false);
+    assert_eq!(state["authorshipBoundary"]["autonomousCredit"], 0);
+    assert!(
+        state["checks"]
+            .as_array()
+            .expect("checks")
+            .iter()
+            .any(|check| check["kind"] == "preimage-preserved" && check["status"] == "passed")
+    );
+    assert!(
+        state["candidateEdits"][0]["diff"]["lines"]
+            .as_array()
+            .expect("diff")
+            .iter()
+            .filter_map(Value::as_str)
+            .any(|line| line.starts_with('+') && line.contains("pnpm@10.17.1"))
+    );
     for requirement in state["requirements"].as_array().expect("requirements") {
         let span = requirement["span"].as_array().expect("span");
         let start = usize::try_from(span[0].as_u64().expect("start")).expect("start size");
