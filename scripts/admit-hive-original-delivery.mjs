@@ -5,12 +5,14 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
+import { isDeepStrictEqual } from 'node:util';
 import { policyIdentity, readWorkflowPolicy } from './lib/hive-delivery-source.mjs';
-import { planClients } from './lib/hive-delivery-journal.mjs';
+import { planClients, artifactJson } from './lib/hive-delivery-journal.mjs';
+import { wakeupName, wakeupRecord, validateWakeup, nextContinuation, maxContinuations } from './lib/hive-delivery-deferral.mjs';
 import { observePublishedAdmission, latePublishedBindingDecision } from './lib/hive-delivery-release.mjs';
 import { boundedCommand } from '../js/server/bounded-command.mjs';
 import { createTreeReader } from './lib/hive-delivery-trees.mjs';
-import { authenticatePullRequest, applicableWorkflows, ciAdmission, deliveryWorkflow, admissionPolicy } from './lib/hive-delivery-admission.mjs';
+import { authenticatePullRequest, applicableWorkflows, ciAdmission, ciAdmissionDecision, deliveryWorkflow, admissionPolicy } from './lib/hive-delivery-admission.mjs';
 const maximumBytes = 4 * 1024 * 1024;
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 export function githubReader({
@@ -226,7 +228,11 @@ export async function observeAdmission({
     authorshipCredit: 0
   };
 }
-/** Revalidate source and all CI immediately before credentials; source-qualified obligations remain immutable. */
+/**
+ * Revalidate source and all CI immediately before credentials; source-qualified obligations remain immutable.
+ * Ordinary non-admission is typed (#1485): a pending prerequisite keeps its blockedBy run and a changed
+ * candidate is 'source-changed'. Malformed or unauthenticated data still throws.
+ */
 export async function recheckAdmission({
   selection,
   repository,
@@ -236,21 +242,32 @@ export async function recheckAdmission({
 }) {
   assert.equal(selection.schema, admissionPolicy);
   assert.equal(selection.admitted, true);
+  const changed = {admitted: false, reason: 'source-changed'};
   if (selection.selected.event === 'published-release') {
+    const verifiedRunId = selection.publicDownloadVerification.run;
+    const latest = await reader.read('repos/' + repository + '/actions/workflows/verify-release-downloads.yml/runs?per_page=1');
+    assert.ok(Array.isArray(latest.workflow_runs) && latest.workflow_runs.length === 1, 'bounded latest producer metadata');
+    if (latest.workflow_runs[0].id !== verifiedRunId) return {...changed, supersededBy: latest.workflow_runs[0].id};
     const current = await observePublishedAdmission({
       repository,
       reader,
-      verifiedRunId: selection.publicDownloadVerification.run
+      verifiedRunId
     });
-    assert.equal(current.admitted, true, 'published CI revalidation denied: ' + JSON.stringify({
-      reason: current.reason, blockedBy: current.blockedBy
-    }));
-    assert.deepEqual(current.selected, selection.selected);
-    assert.deepEqual(current.publishedRuntime, selection.publishedRuntime);
+    if (!current.admitted) return {
+      admitted: false,
+      reason: current.reason,
+      ...(current.blockedBy ? {blockedBy: current.blockedBy} : {})
+    };
+    if (!isDeepStrictEqual(current.selected, selection.selected) || !isDeepStrictEqual(current.publishedRuntime, selection.publishedRuntime)) return changed;
     return {
       ...selection,
       ci: current.ci
     };
+  }
+  if (eventName === 'workflow_dispatch') {
+    // A closed, merged or moved pull request is a changed candidate, not malformed custody.
+    const current = await reader.read('repos/' + repository + '/pulls/' + selection.selected.number);
+    if (current.state !== 'open' || current.merged !== false || current.head?.sha !== selection.selected.source) return changed;
   }
   const selected = await selectPullRequest({
     repository,
@@ -258,29 +275,24 @@ export async function recheckAdmission({
     event,
     reader
   });
-  assert.deepEqual(selected, selection.selected, 'source changed after preparation');
+  if (selected === null ||!isDeepStrictEqual(selected, selection.selected)) return changed;
   const runs = await reader.pages('repos/' + repository + '/actions/runs?head_sha=' + selected.source, 'workflow_runs');
   for (const run of runs) {
     assert.equal(run.repository.full_name, repository);
     assert.equal(run.head_repository.full_name, repository);
   }
-  try {
-    return {
-      ...selection,
-      ci: ciAdmission({
-        source: selected.source,
-        expected: selection.expected,
-        runs,
-        complete: true
-      })
-    };
-  } catch (error) {
-    return {
-      admitted: false,
-      reason: error.message,
-      selected
-    };
-  }
+  if (runs.length === 0) return {admitted: false, reason: 'missing applicable CI ' + selection.expected[0], selected};
+  const decision = ciAdmissionDecision({
+    source: selected.source,
+    expected: selection.expected,
+    runs,
+    complete: true
+  });
+  if (!decision.admitted) return {...decision, selected};
+  return {
+    ...selection,
+    ci: decision.ci
+  };
 }
 /** A late event is only a read-only wakeup; it cannot select a different release source. */
 export function isLatePublishedCompletion(trigger, repository) {
@@ -291,6 +303,69 @@ export function isLatePublishedCompletion(trigger, repository) {
     && Number.isSafeInteger(trigger.run_attempt) && trigger.run_attempt > 0
     && /^[a-f0-9]{40}$/u.test(trigger.head_sha ?? '')
     && typeof trigger.path === 'string';
+}
+const wakeupRoles = ['claude', 'agent', 'codex', 'admission'];
+export const wakeupMember = role => 'wakeup-' + role + '.json';
+/**
+ * Event-driven continuation (#1485). When a run that blocked a published candidate
+ * completes, find the wakeup records that named it. Each record is a tiny artifact
+ * produced by this exact delivery workflow from a protocol on main. The resumed
+ * admission is a full admission of the same immutable candidate: a superseded
+ * producer or a different selection is a refusal with a new attempt identity, and a
+ * failed, cancelled or skipped prerequisite is a refusal, never a pass.
+ */
+export async function observeDeferredWakeups({repository, reader, trigger}) {
+  if (trigger.head_branch !== 'main' || trigger.status !== 'completed' || trigger.path === deliveryWorkflow
+    || ['pull_request', 'pull_request_target'].includes(trigger.event)) return null;
+  const main = await reader.read('repos/' + repository + '/git/ref/heads/main');
+  const wakeups = [];
+  for (const role of wakeupRoles) {
+    const artifacts = await reader.pages('repos/' + repository + '/actions/artifacts?name=' + encodeURIComponent(wakeupName(trigger.id, role)), 'artifacts');
+    assert.ok(Array.isArray(artifacts), 'wakeup artifact census');
+    // Equivalent records for one blocking run are bounded; the newest few suffice.
+    for (const metadata of artifacts.filter(value => value.expired === false).slice(0, 4)) {
+      assert.equal(metadata.name, wakeupName(trigger.id, role));
+      const producer = await reader.read('repos/' + repository + '/actions/runs/' + metadata.workflow_run.id);
+      assert.equal(producer.id, metadata.workflow_run.id);
+      assert.equal(producer.repository.full_name, repository);
+      assert.equal(producer.head_repository.full_name, repository);
+      assert.equal(producer.path, deliveryWorkflow, 'wakeup produced by the delivery workflow');
+      assert.ok(['workflow_run', 'workflow_dispatch'].includes(producer.event));
+      assert.equal(producer.head_sha, metadata.workflow_run.head_sha);
+      const ancestry = await reader.read('repos/' + repository + '/compare/' + producer.head_sha + '...' + main.object.sha);
+      assert.ok(['ahead', 'identical'].includes(ancestry.status), 'wakeup producer protocol from main');
+      const value = validateWakeup(await artifactJson(reader, repository, metadata, wakeupMember(role)), {repository, trigger});
+      assert.equal(value.run, producer.id);
+      assert.equal(value.role, role);
+      wakeups.push(value);
+    }
+  }
+  if (wakeups.length === 0) return null;
+  // Only the newest public producer can still be admitted; older candidates are superseded below.
+  const candidate = wakeups.map(value => value.candidate).sort((left, right) => right.verifiedRun - left.verifiedRun)[0];
+  const generation = Math.max(...wakeups.map(value => value.generation));
+  const resume = {trigger: trigger.id, triggerAttempt: trigger.run_attempt, generation,
+    roles: [...new Set(wakeups.filter(value => isDeepStrictEqual(value.candidate, candidate)).map(value => value.role))].sort()};
+  if (trigger.conclusion !== 'success') return {admitted: false, reason: 'prerequisite-failed', candidate, resume,
+    blockedBy: {run: trigger.id, attempt: trigger.run_attempt, path: trigger.path, event: trigger.event,
+      status: 'completed', conclusion: trigger.conclusion}};
+  const latest = await reader.read('repos/' + repository + '/actions/workflows/verify-release-downloads.yml/runs?per_page=1');
+  assert.ok(Array.isArray(latest.workflow_runs) && latest.workflow_runs.length === 1, 'bounded latest producer metadata');
+  if (latest.workflow_runs[0].id !== candidate.verifiedRun) return {admitted: false, reason: 'source-changed',
+    requiresNewAttemptIdentity: true, supersededBy: latest.workflow_runs[0].id, candidate, resume};
+  const published = await observePublishedAdmission({repository, reader, verifiedRunId: candidate.verifiedRun});
+  if (published.admitted && (published.selected.source !== candidate.source || published.selected.scope !== candidate.scope)) {
+    return {admitted: false, reason: 'source-changed', requiresNewAttemptIdentity: true, candidate, resume};
+  }
+  return {...published, resume};
+}
+/** Wakeup for an admission that deferred a published candidate on a pending run, bounded by generation. */
+export function admissionWakeup(result, {repository, run, attempt, observedAt}) {
+  if (result.admitted || !result.candidate || !result.blockedBy || result.blockedBy.status === 'completed') return null;
+  const generation = nextContinuation(result);
+  if (generation === null) return null;
+  return wakeupRecord({repository, run, attempt, role: 'admission', candidate: result.candidate,
+    prerequisites: [result.blockedBy], observedAt, generation});
 }
 /** Only an authenticated public producer selects release bytes; late CI only rechecks eligibility. */
 export async function observeEligibleAdmission(options) {
@@ -305,11 +380,14 @@ export async function observeEligibleAdmission(options) {
     const trigger = await reader.read('repos/' + repository + '/actions/runs/' + event.workflow_run.id);
     assert.equal(trigger.repository.full_name, repository);
     assert.equal(trigger.head_repository.full_name, repository);
+    const resumed = trigger.path === '.github/workflows/verify-release-downloads.yml' ? null
+      : await observeDeferredWakeups({repository, reader, trigger});
     if (trigger.path === '.github/workflows/verify-release-downloads.yml' && trigger.status === 'completed' && trigger.conclusion === 'success') result = await observePublishedAdmission({
       repository,
       reader,
       verifiedRunId: trigger.id
     });
+    else if (resumed) result = resumed;
     else if (isLatePublishedCompletion(trigger, repository)) {
       const latest = await reader.read('repos/' + repository + '/actions/workflows/verify-release-downloads.yml/runs?per_page=1');
       assert.ok(Array.isArray(latest.workflow_runs) && latest.workflow_runs.length <= 1, 'bounded latest producer metadata');
@@ -382,6 +460,21 @@ export async function main(environment = process.env) {
     attempt: environment.GITHUB_RUN_ATTEMPT,
     protocol: environment.GITHUB_WORKFLOW_SHA
   };
+  let wakeup = null;
+  if (mode === 'admit') {
+    if (!result.admitted && result.candidate && result.blockedBy && result.blockedBy.status !== 'completed'
+      && nextContinuation(result) === null) {
+      result.reason = 'continuation-budget-exhausted';
+      result.continuationLimit = maxContinuations;
+    }
+    wakeup = admissionWakeup(result, {repository, run: Number(environment.GITHUB_RUN_ID),
+      attempt: Number(environment.GITHUB_RUN_ATTEMPT), observedAt: Date.now()});
+    if (wakeup) {
+      result.wakeup = {name: wakeupName(wakeup.prerequisites[0].run, 'admission'), generation: wakeup.generation};
+      fs.writeFileSync(path.join(path.dirname(environment.HIVE_ADMISSION_OUTPUT), wakeupMember('admission')),
+        JSON.stringify(wakeup, null, 2) + '\n', {flag: 'wx', mode: 0o600});
+    }
+  }
   const destination = environment.HIVE_ADMISSION_OUTPUT;
   assert.ok(destination && path.isAbsolute(destination));
   fs.mkdirSync(path.dirname(destination), {
@@ -395,7 +488,7 @@ export async function main(environment = process.env) {
     mode: 0o600
   });
   if (environment.GITHUB_OUTPUT) {
-    const lines = ['admitted=' + result.admitted];
+    const lines = ['admitted=' + result.admitted, 'wakeup_name=' + (result.wakeup?.name ?? '')];
     if (result.admitted) {
       const tools = Object.entries(result.clients).filter(([, decision]) => decision.action === 'execute').map(([tool]) => tool);
       lines.push('source=' + result.selected.source,
