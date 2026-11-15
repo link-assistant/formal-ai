@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=b91ef2b5a883dd28d9aacaae533fd3f5b0033adf81be95670374788e4d1b4ac2 bytes=17155
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=bd26384c689b15d9bbd99a217ab3f830af3c312b9b1f8e2f75d36e081ee384a3 bytes=17868
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds array-push items=1; string-methods items=1
 
@@ -291,8 +291,9 @@ pub const PROSE_SCRIPT_WEIGHT: f64 = 6f64;
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=244d22c00d431a177f91cc651ce6cea6827c8ae7c60ff909a0e05921987bf5bf
 // | /**
 // |  * Mirrors `SHARED_SCRIPT_SHARE`: a language sharing the fallback script wins
-// |  * prose once its votes reach a tenth of the fallback-script words, so one
-// |  * marker or one accented name cannot outvote a document (issue #1557).
+// |  * prose once its votes reach a tenth of the fallback-script words, and a lone
+// |  * vote must be half of them, so one marker or one accented name cannot outvote
+// |  * a document or a short sentence (issue #1557).
 // |  */
 // | const SHARED_SCRIPT_SHARE = 10;
 pub const SHARED_SCRIPT_SHARE: f64 = 10f64;
@@ -316,12 +317,16 @@ pub const QUOTATION_OPENERS_AFTER: &str = "([{|";
 // formal-ai:blockers Array.from | QUOTATIONS.find | QUOTATION_OPENERS_AFTER.includes | arrow callback of .find() | arrow callback of .findIndex() | call of a sibling function | method call .findIndex() | method call .join() | method call .push() | undefined
 
 // meta-language:carried JavaScript function_declaration (unsupported)
-// formal-ai:refusal regular expression
-// formal-ai:blockers call of a sibling function | method call .test() | regular expression
+// formal-ai:refusal array destructuring
+// formal-ai:blockers assignment of a field or element | call of a sibling function | call of an imported function | destructuring | nullish coalescing
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal method call .some()
+// formal-ai:blockers arrow callback of .some() | call of a sibling function | method call .some() | method call .test() | regular expression
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .replace()
-// formal-ai:blockers arrow callback of .filter() | call of a sibling function | call of an imported function | method call .filter() | method call .join() | method call .push() | method call .replace() | method call .split() | regular expression
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .some() | call of a sibling function | call of an imported function | method call .filter() | method call .join() | method call .push() | method call .replace() | method call .some() | method call .split() | regular expression
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .split()

@@ -18,7 +18,7 @@ js_rust_translation
   translated_items 320
   workaround_items 34
   inferred_signatures 2
-  carried_items 2476
+  carried_items 2477
   translated_modules 107
   fully_translated_modules 1
   refused_modules 49
@@ -76,7 +76,7 @@ module js/agentic/crate/intent_formalization_obligations.mjs translated 3 workar
 module js/agentic/crate/intent_formalization_requirements.mjs translated 0 workaround 0 inferred 0 carried 15
 module js/agentic/crate/issue_report.mjs translated 2 workaround 0 inferred 0 carried 0
 module js/agentic/crate/issue_report_title.mjs translated 2 workaround 0 inferred 0 carried 9
-module js/agentic/crate/language.mjs translated 7 workaround 1 inferred 0 carried 42
+module js/agentic/crate/language.mjs translated 7 workaround 1 inferred 0 carried 43
 module js/agentic/crate/least_action.mjs translated 1 workaround 0 inferred 0 carried 6
 module js/agentic/crate/links_format.mjs translated 0 workaround 3 inferred 0 carried 7
 module js/agentic/crate/links_substitution_query.mjs translated 0 workaround 0 inferred 0 carried 10
@@ -191,12 +191,12 @@ refusal "type: unknown name (a sibling item or an import)" 119
 refusal "function value …" 103
 refusal "new expression" 93
 refusal "object without a $ tag" 87
-refusal "regular expression" 65
+refusal "regular expression" 64
 refusal "method call .find()" 60
 refusal "method call .split()" 57
 refusal "method call .map()" 54
 refusal "method call .filter()" 51
-refusal "method call .some()" 48
+refusal "method call .some()" 49
 refusal "method call .slice()" 46
 refusal "Array.from" 44
 refusal "field access" 34
@@ -222,8 +222,8 @@ refusal "method call .reduce()" 10
 refusal "assignment" 9
 refusal "destructured parameter" 9
 refusal "object spread" 9
+refusal "array destructuring" 7
 refusal "Array.isArray" 6
-refusal "array destructuring" 6
 refusal "syntax: unterminated string literal" 6
 refusal "method call .has()" 5
 refusal "method call .sort()" 5
