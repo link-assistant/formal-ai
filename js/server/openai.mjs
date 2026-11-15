@@ -16,6 +16,7 @@ import { learningTraceFromSymbolicAnswer } from './self-improvement.mjs';
 import { canonicalModelId, resolveModelId, tryResolveModelId } from './seed.mjs';
 import { answerFromMemory, estimateTokens, solveWithMemory, stableId, toolCallRefusalAnswer } from './solve.mjs';
 import { renderThinkingSteps } from './thinking.mjs';
+import { requestScope, runInRequestScope } from './standing-scope.mjs';
 
 /** Seconds since the epoch, never 0 (`response_timestamp`). */
 export function responseTimestamp() {
@@ -179,8 +180,9 @@ export async function handleChatCompletions(ctx, request) {
   }
   const unsupported = unsupportedModelResponse(chat.model);
   if (unsupported) return unsupported;
-  const completion = await createChatCompletion(ctx, chat);
-  ctx.memory.recordExchange(chat.messages, plainText(completion.choices[0]?.message.content ?? ''));
+  const scope = requestScope({ body: request.body, messages: chat.messages, tools: chat.tools });
+  const completion = await runInRequestScope(scope, () => createChatCompletion(ctx, chat));
+  ctx.memory.recordExchange(chat.messages, plainText(completion.choices[0]?.message.content ?? ''), null, scope);
   if (chat.stream) return chatCompletionSse(completion, Boolean(chat.stream_options?.include_usage));
   return jsonResponse(200, chatCompletionJson(completion));
 }

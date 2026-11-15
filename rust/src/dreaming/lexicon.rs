@@ -26,6 +26,19 @@ pub struct DreamingLexicon {
     pub cache_kind_cues: Vec<String>,
     pub cache_tool_cues: Vec<String>,
     pub intermediate_kind_cues: Vec<String>,
+    /// Openings of a system or developer instruction delivered as a user
+    /// message (issue #1559); such a message is never a learned requirement.
+    pub instruction_openers: Vec<String>,
+    /// Verbs of a requirement on the answer itself ("always answer in
+    /// Russian"); such a requirement applies to every task inside its scope.
+    pub answer_form_cues: Vec<String>,
+    /// Words that, followed by a number, name one task (`issue 12`, `PR #3`).
+    pub task_reference_words: Vec<String>,
+    /// Openings of a relative path (`./src`, `~/repo`), which names a file of
+    /// one checkout rather than a standing requirement.
+    pub relative_path_prefixes: Vec<String>,
+    /// The configured maximum length, in characters, of a learned rule.
+    pub rule_maximum_characters: Vec<String>,
 }
 
 impl DreamingLexicon {
@@ -39,6 +52,11 @@ impl DreamingLexicon {
             "cache_kind_cue" => self.cache_kind_cues.push(value),
             "cache_tool_cue" => self.cache_tool_cues.push(value),
             "intermediate_kind_cue" => self.intermediate_kind_cues.push(value),
+            "instruction-opener" => self.instruction_openers.push(value),
+            "answer-form-cue" => self.answer_form_cues.push(value),
+            "task-reference-word" => self.task_reference_words.push(value),
+            "relative-path-prefix" => self.relative_path_prefixes.push(value),
+            "rule-maximum-characters" => self.rule_maximum_characters.push(value),
             _ => {}
         }
     }

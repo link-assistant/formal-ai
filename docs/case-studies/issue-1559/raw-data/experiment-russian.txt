@@ -1,0 +1,27 @@
+teach: Russian (in russian): Здравствуйте! Чем могу помочь?
+dream: {
+  removed_events: 0,
+  estimated_reclaimed_bytes: 0,
+  learned_amendments: 1,
+  learned_patterns: 0,
+  recorded_failures: 1,
+  recorded_trials: 0,
+  learned_algorithm_candidates: 0
+}
+amendments: [
+  [
+    'amendment_066472f52adf3447',
+    'topic=answer',
+    'rule=Always answer in Russian.',
+    [
+      'chat_user_21c5937c652a30b9',
+      'scope:user=alice',
+      'recipe:data/meta/dreaming-recipe.lino'
+    ]
+  ]
+]
+alice later: 2 + 2 = 4
+
+Learned standing requirement (answer): Always answer in Russian.
+bob later: 2 + 2 = 4
+anonymous later: 2 + 2 = 4
