@@ -1,0 +1,16 @@
+✔ the full original resolver rejects a release rebased onto newer main; no ancestor fallback (290.44309ms)
+✔ physical exact main and recorded own version child survive a harmless retry or already completed push (516.625181ms)
+✔ physical stale main refuses before mutation, before commit and before retry; changed child/tree refuse (2779.319604ms)
+✔ spoofed caller, identity, event, origin and recorded source fail closed (245.691902ms)
+✔ original Rust producer invokes guards before mutations and keeps rebase confined to non-CI CLI (2.23058ms)
+✔ staged executable source or Cargo dependency drift cannot be recorded as the own version child (524.171908ms)
+✔ version child admits bounded ledger parts and rejects sibling source and nested paths (737.906349ms)
+✔ physical version-child validation preserves LF and CRLF Cargo bytes and exact witness scope (4187.927228ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9432.195751
