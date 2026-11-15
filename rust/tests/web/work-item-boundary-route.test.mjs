@@ -14,6 +14,13 @@ import {planChatStep} from '../../../js/agentic/planner.mjs';
 import {drive} from '../../../experiments/js_dogfood/drive.mjs';
 import {planWorkItemBoundaryStep} from '../../../js/agentic/work_item_boundary_candidate.mjs';
 import {workItemEvidencePaths} from '../../../js/agentic/work_item_evidence.mjs';
+import { workItemRecordOf, parsesAsJsonObject } from '../../../js/agentic/work_item_report.mjs';
+function recorded(plan) {
+  assert.equal(parsesAsJsonObject(plan.answer), false, 'a work-item answer is a report, not a JSON object');
+  const record = plan.record ?? workItemRecordOf(plan);
+  assert.ok(record, 'a work-item final keeps its record');
+  return record;
+}
 before(async()=>installNodeHost(new WorkerHost({WebAssembly:{
   compile(){throw Error('LocalProductWasmForbidden');},instantiate(){throw Error('LocalProductWasmForbidden');},
 }})));
@@ -33,7 +40,7 @@ test('production planner/drive performs a guarded structural leaf and retains ex
     const result=await drive(planChatStep,directory,task,{steps:12,tools:['read','edit','write'],allowedCommands:[]});
     assert.equal(result.stop,'final');
     assert.deepEqual(result.transcript.map(row=>row.tool),['read','edit','read']);
-    const report=JSON.parse(result.answer);
+    const report=recorded(result);
     assert.equal(report.schema,'repository-work-item-controller/v1');
     assert.equal(report.taskIdentity,digest(task));assert.equal(report.workItem,null);
     assert.equal(report.physicalReadbackVerified,true);assert.equal(report.authored,true);
@@ -49,7 +56,7 @@ test('production planner/drive performs a guarded structural leaf and retains ex
     assert.ok(after.includes('export function untouched(value) { return value * 3; }'));
     const replay=await drive(planChatStep,directory,task,{steps:8,tools:['read','edit','write'],allowedCommands:[]});
     assert.equal(replay.stop,'final');assert.deepEqual(replay.transcript.map(row=>row.tool),['read']);
-    const replayReport=JSON.parse(replay.answer);assert.equal(replayReport.noOp,true);assert.equal(replayReport.authored,false);
+    const replayReport=recorded(replay);assert.equal(replayReport.noOp,true);assert.equal(replayReport.authored,false);
     assert.equal(readFileSync(join(directory,'src/ceiling.mjs'),'utf8'),after);
   }finally{rmSync(directory,{recursive:true,force:true});}
 });
@@ -62,7 +69,7 @@ test('an unsupported expression stays an explicit gap with no physical edit',asy
     const result=await drive(planChatStep,directory,task,{steps:8,tools:['read','edit','write'],allowedCommands:[]});
     assert.equal(result.stop,'final');assert.deepEqual(result.transcript.map(row=>row.tool),['read']);
     assert.equal(readFileSync(join(directory,'src/ceiling.mjs'),'utf8'),unsupported);
-    const report=JSON.parse(result.answer);assert.equal(report.verified,false);assert.equal(report.authored,false);
+    const report=recorded(result);assert.equal(report.verified,false);assert.equal(report.authored,false);
     assert.equal(report.complete,false);assert.ok(report.remainingWork.length>0);
   }finally{rmSync(directory,{recursive:true,force:true});}
 });
@@ -95,7 +102,7 @@ test('ambiguous reads or edits and unrelated mutations terminate before another 
     }
     const plan=planWorkItemBoundaryStep(task,messages,['read','edit','write'],null,workItemEvidencePaths);
     assert.equal(plan.kind,'final',variant);
-    const report=JSON.parse(plan.answer);
+    const report=recorded(plan);
     assert.equal(report.reason,expected,variant);assert.equal(report.authored,false);
     assert.equal(report.physicalReadbackVerified,false);assert.equal(report.complete,false);
     assert.equal(report.detail.budget.observed,variant==='totalBudget'?2:variant==='ambiguousRead'?0:1);

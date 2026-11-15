@@ -15,14 +15,27 @@ const LISTED_REQUIREMENTS: usize = 8;
 const REQUIREMENT_CHARS: usize = 160;
 
 thread_local! {
-    static LATEST_RECORD: RefCell<Option<Value>> = const { RefCell::new(None) };
+    static LATEST_RECORD: RefCell<Option<(String, Value)>> = const { RefCell::new(None) };
 }
 
 /// The record behind the latest work-item report rendered on this thread; the
 /// in-process view of the trace for callers and tests.
 #[must_use]
 pub fn latest_work_item_record() -> Option<Value> {
-    LATEST_RECORD.with(|latest| latest.borrow().clone())
+    LATEST_RECORD.with(|latest| latest.borrow().as_ref().map(|(_, record)| record.clone()))
+}
+
+/// The record behind `answer` when `answer` is exactly the latest work-item
+/// report rendered on this thread.
+#[must_use]
+pub fn reported_work_item_record(answer: &str) -> Option<Value> {
+    LATEST_RECORD.with(|latest| {
+        latest
+            .borrow()
+            .as_ref()
+            .filter(|(report, _)| report == answer)
+            .map(|(_, record)| record.clone())
+    })
 }
 
 fn filled(intent: &str, language: &str, values: &[(&str, &str)]) -> String {
@@ -33,16 +46,21 @@ fn filled(intent: &str, language: &str, values: &[(&str, &str)]) -> String {
     text
 }
 
-/// The first line, at most 160 characters.
+/// The lines joined into one, at most 160 characters.
 fn requirement_line(text: &str) -> String {
-    let first = text.split('\n').next().unwrap_or_default().trim();
-    if first.chars().count() > REQUIREMENT_CHARS {
+    let line = text
+        .split('\n')
+        .map(str::trim)
+        .filter(|part| !part.is_empty())
+        .collect::<Vec<_>>()
+        .join(" ");
+    if line.chars().count() > REQUIREMENT_CHARS {
         format!(
             "{}…",
-            first.chars().take(REQUIREMENT_CHARS).collect::<String>()
+            line.chars().take(REQUIREMENT_CHARS).collect::<String>()
         )
     } else {
-        first.to_owned()
+        line
     }
 }
 
@@ -158,7 +176,7 @@ pub(super) fn work_item_record_final(
 ) -> AgenticPlan {
     let report = work_item_report(&work_item_record, task);
     super::planner::trace_route_with("work_item_record", || Some(&work_item_record));
-    LATEST_RECORD.with(|latest| *latest.borrow_mut() = Some(work_item_record));
+    LATEST_RECORD.with(|latest| *latest.borrow_mut() = Some((report.clone(), work_item_record)));
     record(AgenticPlan::Final(report), disposition, origin, result)
 }
 

@@ -9,6 +9,13 @@ import { planChatStep } from '../../../js/agentic/planner.mjs';
 import { drive } from '../../../experiments/js_dogfood/drive.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
+import { workItemRecordOf, parsesAsJsonObject } from '../../../js/agentic/work_item_report.mjs';
+function recorded(plan) {
+  assert.equal(parsesAsJsonObject(plan.answer), false, 'a work-item answer is a report, not a JSON object');
+  const record = plan.record ?? workItemRecordOf(plan);
+  assert.ok(record, 'a work-item final keeps its record');
+  return record;
+}
 const blocked = () => {
   throw Error('LocalWasmExecutionForbidden');
 };
@@ -52,7 +59,7 @@ test('actual maintained planner reads owned repair before formalizing embedded c
   assert.deepEqual(result.transcript.map(row => row.tool), ['read']);
   assert.equal(JSON.parse(result.transcript[0].arguments).filePath, entry.owner);
   assert.equal(fs.readFileSync(owner, 'utf8'), source);
-  const state = JSON.parse(result.answer);
+  const state = recorded(result);
   assert.equal(state.reason, 'DictionaryBindingUnsupported');
   assert.equal(state.task, entry.task);
   assert.equal(state.complete, false);
@@ -66,7 +73,7 @@ test('owned repair obeys existing no-read policy', async () => {
     role: 'user',
     content: task
   }], ['read', 'edit', 'write']);
-  assert.equal(JSON.parse(plan.answer).reason, 'ReadPolicyRefused');
+  assert.equal(recorded(plan).reason, 'ReadPolicyRefused');
 });
 const goalFixture = JSON.parse(fs.readFileSync(new URL('../fixtures/source-repair-goal-cases.json', import.meta.url), 'utf8'));
 for (const entry of goalFixture.cases) test(entry.name, () => {
@@ -88,7 +95,7 @@ test('wrong goals read eligible source then remain unsupported without mutation'
       allowedCommands: []
     });
     assert.deepEqual(result.transcript.map(row => row.tool), ['read']);
-    assert.equal(JSON.parse(result.answer).reason, 'SourceRepairOperatorUnavailable');
+    assert.equal(recorded(result).reason, 'SourceRepairOperatorUnavailable');
     assert.equal(fs.readFileSync(target, 'utf8'), goalFixture.eligibleSource);
   }
 });

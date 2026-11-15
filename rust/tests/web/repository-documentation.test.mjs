@@ -8,6 +8,13 @@ import { drive } from '../../../experiments/js_dogfood/drive.mjs';
 import { planChatStep } from '../../../js/agentic/planner.mjs';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+import { workItemRecordOf, parsesAsJsonObject } from '../../../js/agentic/work_item_report.mjs';
+function recorded(plan) {
+  assert.equal(parsesAsJsonObject(plan.answer), false, 'a work-item answer is a report, not a JSON object');
+  const record = plan.record ?? workItemRecordOf(plan);
+  assert.ok(record, 'a work-item final keeps its record');
+  return record;
+}
 const denied = () => {
   throw Error('LocalProductWasmForbidden');
 };
@@ -47,7 +54,7 @@ test('original pre-fix work item produces useful partial documentation and a ver
   for (const file of fixture.files) assert.equal(hash(file.source), file.sha256);
   const root = workspace(context),
     result = await run(root, task),
-    state = JSON.parse(result.answer);
+    state = recorded(result);
   assert.equal(result.stop, 'final');
   assert.equal(state.reason, 'UsefulCandidateReadbackVerified');
   assert.equal(state.schema, 'repository-work-item-controller/v1');
@@ -76,7 +83,7 @@ test('original pre-fix work item produces useful partial documentation and a ver
   for (const file of fixture.files.filter(file => file.path !== original.path)) assert.equal(hash(fs.readFileSync(path.join(root, file.path))), file.sha256);
   assert.equal(result.transcript.filter(row => row.tool === 'edit').length, 1);
   const again = await run(root, task);
-  assert.equal(JSON.parse(again.answer).reason, 'VerifiedNoOp');
+  assert.equal(recorded(again).reason, 'VerifiedNoOp');
   assert.ok(again.transcript.every(row => row.tool === 'read'));
   assert.equal(fs.readFileSync(path.join(root, original.path), 'utf8'), guide);
 });
@@ -94,7 +101,7 @@ test('renamed paths and an unrelated component use observed declarations and ali
   const root = workspace(context, files),
     prompt = 'Document the ribbon-core dependency in docs/runtime.md based on native/Project.toml and web/client.mjs. Preserve the existing guide and include observed declarations and imported calls.';
   const result = await run(root, prompt),
-    state = JSON.parse(result.answer);
+    state = recorded(result);
   assert.equal(state.reason, 'UsefulCandidateReadbackVerified');
   const guide = fs.readFileSync(path.join(root, 'docs/runtime.md'), 'utf8');
   assert.ok(guide.startsWith(files[2].source));
@@ -119,7 +126,7 @@ test('invalid manifest evidence and negated documentation instructions never wri
   for (const prompt of ['Document dependencies from one.json and two.json in guide.md. Preserve existing text.', 'Do not document dependencies from one.json or two.json in guide.md. Preserve existing text.']) {
     const result = await run(root, prompt);
     assert.equal(result.stop, 'final');
-    assert.equal(JSON.parse(result.answer).verified, false);
+    assert.equal(recorded(result).verified, false);
     assert.ok(result.transcript.every(row => row.tool === 'read'));
     assert.equal(fs.readFileSync(path.join(root, 'guide.md'), 'utf8'), files[2].source);
   }

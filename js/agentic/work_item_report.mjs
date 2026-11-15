@@ -19,11 +19,11 @@ function filled(intent, language, values) {
   return text;
 }
 
-/** Mirrors `fn requirement_line`: the first line, at most 160 characters. */
+/** Mirrors `fn requirement_line`: the lines joined into one, at most 160 characters. */
 function requirementLine(text) {
-  const first = trim(String(text).split('\n')[0]);
-  const characters = Array.from(first);
-  return characters.length > REQUIREMENT_CHARS ? characters.slice(0, REQUIREMENT_CHARS).join('') + '…' : first;
+  const line = String(text).split('\n').map(trim).filter(part => part !== '').join(' ');
+  const characters = Array.from(line);
+  return characters.length > REQUIREMENT_CHARS ? characters.slice(0, REQUIREMENT_CHARS).join('') + '…' : line;
 }
 
 /** Mirrors `fn refusal`: the path a refusal concerns and the requirement naming it. */
