@@ -52,79 +52,29 @@ function proofClaimBinding(claim) {
   const crate = crateModule("crate/theorem_claim_binding.mjs"), text = String(claim || "").toLowerCase(), match = crate.theoremMatch(text);
   return match && { theorem: match.theorem, binding: crate.bindTheoremClaim(text, match.keyword), slugs: crate.ClaimBinding };
 }
-function proofLibraryTheoremStatement(id, language) {
+// A seeded theorem's statement, steps and conclusion in `language` (Rust `proof_engine::library::build_proof`).
+function proofLibraryTheoremProof(id, language) {
   const section = parseLinoTree(seedRawText(SEED_RAW, "proof-library.lino")).children.find((child) => child.name === "proof_library");
   const theorem = section && section.children.find((child) => child.name === "theorem" && child.value === id);
-  const statement = theorem && theorem.children.find((child) => child.name === "statement");
-  return statement ? proofLibrarySurface(statement, language) : "";
+  const surface = (name) => { const node = theorem && theorem.children.find((child) => child.name === name); return node ? proofLibrarySurface(node, language) : ""; };
+  const steps = theorem ? theorem.children.filter((child) => child.name === "step").map((step) => ({ kind: step.value, text: proofLibrarySurface(step, language) })) : [];
+  return { method: theorem ? theorem.children.find((child) => child.name === "method").value : "contradiction", statement: surface("statement"), steps, conclusion: surface("conclusion") };
 }
+// The theorem's proof is the refutation, never a success for the negated claim: Rust `refuted_negation`, rendered as
+// `render_outcome_with_config` renders `ProofOutcome::Disproven` and compacted as `enforce_questions` compacts it, so
+// no "Proof (" heading presents the request as proven.
 function euclidNegationRefutationBody(language) {
-  const text = (id, values) => proofLibraryText(id, language, values), statement = proofLibraryTheoremStatement("euclid_infinitude_of_primes", language);
-  return `${text("disproof_heading")} (${text("method_intro")}: ${text("method_contradiction")}).\n\n${text("counterexample_label")}: ${text("negated-theorem-refuted", { statement })}\n\n${euclidPrimeProofBody(language)}`;
+  const proof = proofLibraryTheoremProof("euclid_infinitude_of_primes", language);
+  const counterexample = proofLibraryText("negated-theorem-refuted", language, { statement: proof.statement });
+  const core = `${proofPresenterMethodLine("disproof_heading", language, proof.method)}\n\n${proofLibraryText("counterexample_label", language)}: ${counterexample}\n\n${proofPresenterSteps(proof.steps, language)}\n${proof.conclusion}`;
+  return numberConstraintCompactBody(`${proofPresenterInterpretation(false, proof.statement, language, proof.method)}\n\n${core}\n\n${proofPresenterDisprovenFollowUps(language)}`);
 }
+// The theorem's proof, rendered as `render_outcome_with_config` renders `ProofOutcome::Proven`; with no question to
+// authorize, `enforce_questions` leaves it uncompacted.
 function euclidPrimeProofBody(language) {
-  if (language === "ru") {
-    return [
-      "Как я понял запрос: трактуем запрос как формальное утверждение «Простых чисел бесконечно много.» и доказываем методом «от противного» в relative-meta-logic.",
-      "",
-      "Доказательство (метод: от противного).",
-      "",
-      "Утверждение: Простых чисел бесконечно много.",
-      "1. Работаем в элементарной теории чисел, формализуемой в арифметике Пеано (PA): простое число — это целое число больше 1, положительные делители которого только 1 и оно само. В доказательстве используется теорема PA: у каждого целого числа больше 1 есть простой делитель; это формальный контекст для тактики от противного в relative-meta-logic.",
-      "2. Предположим противное: простых чисел конечное число; обозначим их p₁, p₂, …, pₙ.",
-      "3. Рассмотрим число N = p₁·p₂·…·pₙ + 1. Это целое число, большее единицы.",
-      "4. По основной теореме арифметики у N есть простой делитель q. Если q = pᵢ для некоторого i, то pᵢ делит и p₁·p₂·…·pₙ, и N, а значит делит их разность, равную 1 — противоречие.",
-      "5. Значит, q — простое число, не входящее в список p₁, …, pₙ, что противоречит предположению о полноте списка.",
-      "",
-      "Предположение несостоятельно, следовательно простых чисел бесконечно много. ∎",
-    ].join("\n");
-  }
-  if (language === "hi") {
-    return [
-      "मैंने प्रश्न को कैसे समझा: प्रश्न को औपचारिक कथन \"अभाज्य संख्याएँ अनंत हैं।\" मानकर relative-meta-logic में \"विरोधाभास\" विधि से प्रमाणित कर रहे हैं।",
-      "",
-      "प्रमाण (विधि: विरोधाभास)।",
-      "",
-      "कथन: अभाज्य संख्याएँ अनंत हैं।",
-      "1. हम प्राथमिक संख्या-सिद्धांत में काम करते हैं, जिसे Peano arithmetic (PA) में औपचारिक किया जा सकता है: अभाज्य वह पूर्णांक है जो 1 से बड़ा है और जिसके धनात्मक भाजक केवल 1 और वही संख्या हैं। प्रमाण PA के इस प्रमेय का उपयोग करता है कि 1 से बड़े हर पूर्णांक का कोई अभाज्य भाजक होता है; यही relative-meta-logic की contradiction युक्ति का औपचारिक संदर्भ है।",
-      "2. विरोधाभास हेतु मान लीजिए कि अभाज्य संख्याएँ केवल सीमित संख्या में हैं: p₁, p₂, …, pₙ।",
-      "3. संख्या N = p₁·p₂·…·pₙ + 1 लीजिए। N एक से बड़ा पूर्णांक है।",
-      "4. अंकगणित की मूल प्रमेय से N का कोई अभाज्य भाजक q है। यदि किसी i के लिए q = pᵢ हो, तो pᵢ संख्या p₁·p₂·…·pₙ और N दोनों को विभाजित करेगा, अर्थात उनका अंतर 1 भी विभाजित करेगा — असंभव।",
-      "5. अतः q एक ऐसा अभाज्य है जो सूची p₁, …, pₙ में नहीं है, जो सूची के पूर्ण होने की परिकल्पना का खंडन करता है।",
-      "",
-      "अतः परिकल्पना असत्य है और अभाज्य संख्याएँ अनंत हैं। ∎",
-    ].join("\n");
-  }
-  if (language === "zh") {
-    return [
-      "对问题的理解: 把问题视为形式命题“素数有无穷多个。”, 在 relative-meta-logic 中用“反证法”方法证明。",
-      "",
-      "证明 (方法: 反证法)。",
-      "",
-      "命题: 素数有无穷多个。",
-      "1. 在可由 Peano arithmetic (PA) 形式化的初等数论中工作: 素数是大于 1 的整数, 其正因数只有 1 和自身。证明使用 PA 中的定理: 每个大于 1 的整数都有素因数; 这就是 relative-meta-logic 反证策略的形式上下文。",
-      "2. 假设素数仅有有限多个, 记为 p₁、p₂、…、pₙ。",
-      "3. 构造数 N = p₁·p₂·…·pₙ + 1。N 是大于 1 的整数。",
-      "4. 由算术基本定理, N 有一个素因数 q。若 q = pᵢ, 则 pᵢ 同时整除 p₁·p₂·…·pₙ 与 N, 因而整除二者之差 1, 矛盾。",
-      "5. 因此 q 是不在 p₁, …, pₙ 中的素数, 与假设矛盾。",
-      "",
-      "假设不成立, 故素数有无穷多个。∎",
-    ].join("\n");
-  }
-  return [
-    "How I interpreted the request: treating the request as the formal claim \"There are infinitely many prime numbers.\" and discharging it by contradiction inside relative-meta-logic.",
-    "",
-    "Proof (method: contradiction).",
-    "",
-    "Statement: There are infinitely many prime numbers.",
-    "1. Work in elementary number theory, formalizable in Peano arithmetic (PA): a prime is an integer greater than 1 whose only positive divisors are 1 and itself. The proof uses the PA theorem that every integer greater than 1 has a prime divisor; this is the formal context for the relative-meta-logic contradiction tactic.",
-    "2. Assume for contradiction that only finitely many primes exist; call them p₁, p₂, …, pₙ.",
-    "3. Form the number N = p₁·p₂·…·pₙ + 1. Then N is an integer greater than 1.",
-    "4. By the fundamental theorem of arithmetic, N has a prime divisor q. If q = pᵢ for some i, then pᵢ divides both p₁·p₂·…·pₙ and N, so pᵢ divides their difference, which is 1 — impossible.",
-    "5. Hence q is a prime not in the list p₁, …, pₙ, contradicting the assumption that the list was complete.",
-    "",
-    "The assumption fails, so there are infinitely many primes. ∎",
-  ].join("\n");
+  const proof = proofLibraryTheoremProof("euclid_infinitude_of_primes", language);
+  const core = `${proofPresenterMethodLine("proof_heading", language, proof.method)}\n\n${proofLibraryText("statement_label", language)}: ${proof.statement}\n${proofPresenterSteps(proof.steps, language)}\n${proof.conclusion}`;
+  return `${proofPresenterInterpretation(true, proof.statement, language, proof.method)}\n\n${core}`;
 }
 
 function genericProofPlanBody(prompt, language) {

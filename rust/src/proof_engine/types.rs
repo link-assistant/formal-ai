@@ -193,7 +193,7 @@ impl ProofOutcome {
     /// Confidence of the proof answer: a decided claim (proven or refuted)
     /// above a partial plan, above an inconclusive reading.
     #[must_use]
-    pub const fn confidence(&self) -> f64 {
+    pub const fn confidence(&self) -> f32 {
         match self {
             Self::Proven { .. } | Self::Disproven { .. } => 0.85,
             Self::PartialPlan { .. } => 0.6,

@@ -115,6 +115,12 @@ describe('issue #1487 statement-merge signatures', () => {
   });
 });
 
+// The exact answers, identical to the native ones in rust/tests/unit/proof_request.rs
+// (`negated_theorem_request_is_refuted_never_proven`, `seeded_euclid_proof_renders_with_seeded_labels`): both runtimes
+// render the seeded Euclid proof, and a negated request receives it only as the refutation.
+const EUCLID_PROOF_ANSWER = "How I interpreted the request: treating the request as the formal claim \"There are infinitely many prime numbers.\" and discharging it by proof by contradiction inside relative-meta-logic.\n\nProof (method: proof by contradiction).\n\nStatement: There are infinitely many prime numbers.\n\n1. Definition: Work in elementary number theory, formalizable in Peano arithmetic (PA): a prime is an integer greater than 1 whose only positive divisors are 1 and itself. The proof uses the PA theorem that every integer greater than 1 has a prime divisor; this is the formal context for the relative-meta-logic contradiction tactic.\n2. Hypothesis: Assume for contradiction that only finitely many primes exist; call them p₁, p₂, …, pₙ.\n3. Inference: Form the number N = p₁·p₂·…·pₙ + 1. Then N is an integer greater than 1.\n4. Inference: By the fundamental theorem of arithmetic, N has a prime divisor q. If q = pᵢ for some i, then pᵢ divides both p₁·p₂·…·pₙ and N, so pᵢ divides their difference, which is 1 — impossible.\n5. Inference: Hence q is a prime not in the list p₁, …, pₙ, contradicting the assumption that the list was complete.\nThe assumption fails, so there are infinitely many primes. ∎";
+const EUCLID_REFUTATION_ANSWER = "How I interpreted the request: treating the request as a claim to be refuted; applying proof by contradiction and producing a counterexample.\n\nDisproof (method: proof by contradiction).\n\nCounterexample: The claim denies a proven theorem: There are infinitely many prime numbers. The proof below refutes the claim.\n\n1. Definition: Work in elementary number theory, formalizable in Peano arithmetic (PA): a prime is an integer greater than 1 whose only positive divisors are 1 and itself. The proof uses the PA theorem that every integer greater than 1 has a prime divisor; this is the formal context for the relative-meta-logic contradiction tactic.\n2. Hypothesis: Assume for contradiction that only finitely many primes exist; call them p₁, p₂, …, pₙ.\n3. Inference: Form the number N = p₁·p₂·…·pₙ + 1. Then N is an integer greater than 1.\n4. Inference: By the fundamental theorem of arithmetic, N has a prime divisor q. If q = pᵢ for some i, then pᵢ divides both p₁·p₂·…·pₙ and N, so pᵢ divides their difference, which is 1 — impossible.\n5. Inference: Hence q is a prime not in the list p₁, …, pₙ, contradicting the assumption that the list was complete.\nThe assumption fails, so there are infinitely many primes. ∎\n\nClarifying questions:\n1. do you want to weaken the claim into a checkable form (e.g. replace equality with an inequality, or restrict the domain)?\n2.";
+
 describe('issue #1487 proof requests bind to the theorem proposition', () => {
   it('binds affirmed, negated and unread-scope claims', () => {
     const cases = [
@@ -132,6 +138,8 @@ describe('issue #1487 proof requests bind to the theorem proposition', () => {
 
   it('never answers a negated theorem request with the positive proof', async () => {
     const proven = await host.solve('Prove that there are infinitely many primes.');
+    assert.equal(proven.content, EUCLID_PROOF_ANSWER);
+    assert.equal((await host.solve('Prove there are not infinitely many primes.')).content, EUCLID_REFUTATION_ANSWER);
     assert.ok(proven.evidence.includes('proof_outcome:proven'), JSON.stringify(proven.evidence));
     assert.ok(proven.evidence.includes('proof_binding:affirmed'), JSON.stringify(proven.evidence));
     for (const prompt of ['Prove there are not infinitely many primes.', '证明不存在无穷多素数。']) {
@@ -139,6 +147,7 @@ describe('issue #1487 proof requests bind to the theorem proposition', () => {
       assert.ok(response.evidence.includes('proof_binding:negated'), `${prompt}: ${JSON.stringify(response.evidence)}`);
       assert.ok(response.evidence.includes('proof_outcome:disproven'), `${prompt}: ${JSON.stringify(response.evidence)}`);
       assert.ok(!response.evidence.includes('proof_outcome:proven'), prompt);
+      assert.ok(!/(^|\n)(Proof|证明) \(/u.test(response.content), `${prompt} must not be presented as proven: ${response.content}`);
     }
     for (const prompt of ['Prove that it is not true that there are not infinitely many primes.', 'Prove there are infinitely many primes that are not even.', 'Докажи что простых чисел не бесконечно много.']) {
       const response = await host.solve(prompt);
