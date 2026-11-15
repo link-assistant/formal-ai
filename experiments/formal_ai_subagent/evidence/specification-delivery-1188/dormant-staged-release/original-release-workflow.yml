@@ -317,7 +317,6 @@ jobs:
           node scripts/render-progressive-plan.mjs --check
           node scripts/mirror-package-data.mjs --check
           node scripts/check-fast-governance.mjs
-          node scripts/check-runner-labels.mjs
   # Issue #1191: the one focused PR native check (main's clippy profile); never native or release evidence.
   native-type-check:
     name: Native type and lint check

@@ -70,7 +70,7 @@ rather than re-implemented.
 | 6. A check that no workflow starts Rust without the gate | `default-branch-build-policy.test.mjs`: "all former heavy PR overrides remain closed" and "actual compiler, image, application and deployment entries refuse PR execution". |
 | 7. Required status checks on main | **Blocked on a maintainer action** (section 5). The weekly status job now fails on main with the exact command. |
 | 8. Single push gate | Done: `AGENTS.md`, `CLAUDE.md`, CONTRIBUTING.md "The single push gate (issue #1191)"; `scripts/prune-build-cache.sh` follows a shared `CARGO_TARGET_DIR`. |
-| 9. Pin runner labels | Done: every workflow; `scripts/check-runner-labels.mjs` rejects `-latest` in the fast lane. |
+| 9. Pin runner labels | Done: every workflow; `scripts/check-runner-labels.mjs` rejects `-latest` in the fast PR JavaScript tests and the `web` gate stage. |
 | 10. Self-development status green 7 days | Verified: 20 of 20 runs on main since 2026-11-08 were green. Root causes in section 4. |
 | 11. Stale pull requests | Done: #887, #652, #646, #644 and #643 closed with a reason each; weekly report in `job-headroom.yml`. |
 | 12. This case study with before/after numbers | This document. |

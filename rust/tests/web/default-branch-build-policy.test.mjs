@@ -7,6 +7,7 @@ import {tmpdir} from 'node:os';
 import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {Script} from 'node:vm';
+import {builtinModules} from 'node:module';
 import YAML from 'yaml';
 import {admission, changedPaths, checkVersions, readBaseManifest} from '../../../scripts/ci-pull-request-admission.mjs';
 const read = path => readFileSync(path, 'utf8');
@@ -421,4 +422,30 @@ test('base source diagnostics retain public identity and redact unavailable resp
   assert.equal(failed.length,1);assert.equal(failed[0].outcome,'unavailable');
   assert.equal(failed[0].phase,'ref');assert.equal(failed[0].status,200);assert.equal(failed[0].requests,1);
   assert.equal(failed[0].reason,'invalid base source JSON');
+});
+
+// Issue #1191: the fast lint job has no dependency install step, so every
+// script it runs, and everything those scripts import, may load only Node
+// built-ins and repository files. PR #1573's first push failed here when
+// scripts/check-runner-labels.mjs (which imports `yaml`) was added to it.
+test('the fast PR lint job runs only scripts that need no installed package', () => {
+  const job = workflow('release.yml').jobs['fast-pr-lint'];
+  assert.ok(!job.steps.some(step => /\b(bun|npm|pnpm|yarn) (install|ci)\b/u.test(step.run ?? '')), 'the fast lint job installs no packages');
+  const entries = job.steps.flatMap(step => [...(step.run ?? '').matchAll(/\bnode (scripts\/[\w./-]+\.mjs)/gu)].map(match => match[1]));
+  assert.ok(entries.length >= 5, 'the fast lint job runs its node scripts');
+  // Only static imports load with the script; a lazy `import()` runs only on the path that needs it.
+  const builtins = new Set(builtinModules);
+  const seen = new Set(), bare = [];
+  const visit = path => {
+    if (seen.has(path)) return;
+    seen.add(path);
+    for (const match of read(path).matchAll(/^\s*(?:import|export)\b[^'"`;()=]*?\bfrom\s*['"]([^'"]+)['"]|^\s*import\s*['"]([^'"]+)['"]/gmu)) {
+      const specifier = match[1] ?? match[2];
+      if (specifier.startsWith('node:') || builtins.has(specifier)) continue;
+      if (specifier.startsWith('.')) visit(join(path, '..', specifier).replaceAll('\\', '/'));
+      else bare.push(`${path} imports ${specifier}`);
+    }
+  };
+  entries.forEach(visit);
+  assert.deepEqual(bare, [], 'scripts reachable from the fast lint job import installed packages');
 });
