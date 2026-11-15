@@ -117,7 +117,11 @@ test('CLI admits once, then refuses a swapped artifact with a typed outcome file
   const env = {FORMAL_AI_DRAFT_LOG_DIR: dir, GITHUB_OUTPUT: outputs, GITHUB_REPOSITORY: 'link-assistant/formal-ai', GITHUB_RUN_ID: '7', GITHUB_RUN_ATTEMPT: '1',
     FORMAL_AI_DRAFT_ISSUE: '1484', FORMAL_AI_SELECTED_SHA: formalSha, FORMAL_AI_SELECTED_AT: '2026-11-15T00:00:00Z', FORMAL_AI_BINARY: 'built',
     HIVE_MIND_DIR: hiveDir, HIVE_MIND_SOURCE_SHA: hiveSha, HIVE_MIND_IMAGE: 'konard/hive-mind:2.40.4'};
-  const io = binaries => ({gitHead: dir => (dir === hiveDir ? hiveSha : formalSha), inspectBinary: name => binaries[name] ?? null});
+  // Issue #1569: the CLI's job-log lines are collected, so the refusals below are asserted here instead of
+  // surfacing as `##[error]` annotations on the passing js tier.
+  const logged = [];
+  const io = binaries => ({gitHead: dir => (dir === hiveDir ? hiveSha : formalSha), inspectBinary: name => binaries[name] ?? null,
+    log: line => logged.push(line)});
   const identity = main(env, ['--select'], io({built: {sha256: digest, bytes: 10, version: 'formal-ai 0.355.29'}}));
   assert.equal(process.exitCode ?? 0, 0);
   assert.deepEqual(JSON.parse(fs.readFileSync(path.join(dir, FILES.identity), 'utf8')), identity);
@@ -133,6 +137,10 @@ test('CLI admits once, then refuses a swapped artifact with a typed outcome file
   assert.equal(main(draftEnv, ['--verify-custody'], io({})).outcome, ATTEMPT_OUTCOMES.deferred);
   assert.equal(main({...draftEnv, FORMAL_AI_ATTEMPT_IDENTITY: ''}, ['--verify-custody'], io({})).outcome, ATTEMPT_OUTCOMES.deferred);
   process.exitCode = 0;
+  const errors = logged.filter(entry => entry.startsWith('::error '));
+  assert.equal(errors.length, 3, logged.join('\n'));
+  assert.match(errors[0], /^::error title=Formal AI draft identity-mismatch::/u);
+  assert.match(errors[2], /no attempt identity was admitted by the build job/u);
   fs.writeFileSync(path.join(dir, FILES.hiveIdentity), JSON.stringify(hiveIdentityFor(identity)));
   fs.writeFileSync(path.join(dir, FILES.hiveRecord), JSON.stringify(hiveRecordFor(identity)));
   assert.equal(main(draftEnv, ['--verify-hive'], io({})).id, identity.id);
