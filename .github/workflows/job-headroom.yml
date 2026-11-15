@@ -48,6 +48,8 @@ permissions:
   # `actions: read` is what the run and job records need. Nothing here writes.
   actions: read
   contents: read
+  # Issue #1191 R11: the stale pull-request report lists open pull requests.
+  pull-requests: read
 
 concurrency:
   group: job-headroom
@@ -118,6 +120,26 @@ jobs:
           rust-script scripts/check-head-pipeline-coverage.rs \
             --branch "${SAMPLE_BRANCH}" --depth 10 --json head-pipeline-coverage.json
 
+      # Issue #1191 R11. Five pull requests sat open and conflicting for
+      # months (#887, #652, #646, #644, #643) and nothing said so. This step
+      # reports every open pull request idle for 30 days in the step summary,
+      # with one warning each. It is a report: it never turns the job red.
+      - name: Report stale open pull requests
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/report-stale-pull-requests.mjs --days 30 --json stale-pull-requests.json
+      # Issue #1191 R7. Requiring checks on main needs an admin, so this step
+      # changes nothing. It is red on main until the ruleset requires the
+      # JavaScript stage, the Rust stage and `Pipeline Status`, and its error
+      # prints the exact `gh api` command. Pull requests run only its fixture
+      # test (rust/tests/web/stale-pull-request-report.test.mjs).
+      - name: Check main requires the JavaScript stage, the Rust stage and Pipeline Status
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/check-required-status-checks.mjs --branch main
+
       - name: Publish the measurements behind the verdict
         if: always()
         uses: actions/upload-artifact@v7
@@ -126,4 +148,5 @@ jobs:
           path: |
             job-durations.tsv
             head-pipeline-coverage.json
+            stale-pull-requests.json
           retention-days: 90

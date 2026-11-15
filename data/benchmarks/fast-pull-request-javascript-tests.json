@@ -216,6 +216,7 @@
     "rust/tests/web/main-only-planner-twins.test.mjs",
     "rust/tests/web/main-only-regression-ledger.test.mjs",
     "rust/tests/web/push-gate-rules.test.mjs",
-    "rust/tests/web/debt-ceiling-fast-lane.test.mjs"
+    "rust/tests/web/debt-ceiling-fast-lane.test.mjs",
+    "rust/tests/web/stale-pull-request-report.test.mjs"
   ]
 }
