@@ -35,41 +35,41 @@ export function refusal(requirements, path) {
 export function workItemReport(record, task) {
   const language = detect(task);
   const subject = typeof record.workItem === 'string' && record.workItem !== ''
-    ? record.workItem : filled('work_item_report_request', language, []);
+    ? record.workItem : filled('work-item-report-request', language, []);
   const reason = typeof record.reason === 'string' ? record.reason : 'Unknown';
-  const paragraphs = [filled(record.authored === true ? 'work_item_report_changed' : 'work_item_report_unchanged',
+  const paragraphs = [filled(record.authored === true ? 'work-item-report-changed' : 'work-item-report-unchanged',
     language, [['subject', subject], ['reason', reason]])];
   const read = [];
   for (const observation of Array.isArray(record.observations) ? record.observations : []) {
     if (observation?.complete === true && typeof observation.path === 'string' && !read.includes(observation.path)) read.push(observation.path);
   }
   paragraphs.push(read.length
-    ? filled('work_item_report_read', language, [['paths', read.map(path => '`' + path + '`').join(', ')]])
-    : filled('work_item_report_read_none', language, []));
+    ? filled('work-item-report-read', language, [['paths', read.map(path => '`' + path + '`').join(', ')]])
+    : filled('work-item-report-read-none', language, []));
   const requirements = Array.isArray(record.requirements) ? record.requirements : [];
   if (typeof record.refused?.path === 'string') {
-    let refused = filled('work_item_report_refused', language, [['path', record.refused.path]]);
+    let refused = filled('work-item-report-refused', language, [['path', record.refused.path]]);
     const index = record.refused.requirement;
     if (Number.isInteger(index) && index >= 0 && index < requirements.length) {
-      refused += ' ' + filled('work_item_report_concerns', language,
+      refused += ' ' + filled('work-item-report-concerns', language,
         [['number', String(index + 1)], ['requirement', requirementLine(requirements[index].text)]]);
     }
     paragraphs.push(refused);
   } else if (reason === 'MissingReadTool') {
-    paragraphs.push(filled('work_item_report_missing_read_tool', language, []));
+    paragraphs.push(filled('work-item-report-missing-read-tool', language, []));
   }
   if (requirements.length) {
-    const lines = [filled('work_item_report_requirements', language, [['count', String(requirements.length)]])];
+    const lines = [filled('work-item-report-requirements', language, [['count', String(requirements.length)]])];
     requirements.slice(0, LISTED_REQUIREMENTS).forEach((requirement, index) => {
       lines.push(String(index + 1) + '. ' + requirementLine(requirement?.text ?? ''));
     });
     if (requirements.length > LISTED_REQUIREMENTS) {
-      lines.push(filled('work_item_report_more', language, [['count', String(requirements.length - LISTED_REQUIREMENTS)]]));
+      lines.push(filled('work-item-report-more', language, [['count', String(requirements.length - LISTED_REQUIREMENTS)]]));
     }
     paragraphs.push(lines.join('\n'));
   }
   const schema = typeof record.schema === 'string' ? record.schema : 'work-item-record';
-  paragraphs.push(filled('work_item_report_trace', language, [['schema', schema]]));
+  paragraphs.push(filled('work-item-report-trace', language, [['schema', schema]]));
   return paragraphs.join('\n\n');
 }
 

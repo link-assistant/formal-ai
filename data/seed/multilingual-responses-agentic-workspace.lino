@@ -699,223 +699,223 @@ multilingual_responses
     intent file-read-line-slice-unavailable
     language es
     text "No se puede leer el intervalo solicitado de `{path}`: no hay líneas seleccionadas disponibles."
-  response response_work_item_report_unchanged_en
-    intent work_item_report_unchanged
+  response response-work-item-report-unchanged-en
+    intent work-item-report-unchanged
     language en
     text "Not completed: {subject}. The session stopped at `{reason}` and changed no repository file."
-  response response_work_item_report_unchanged_ru
-    intent work_item_report_unchanged
+  response response-work-item-report-unchanged-ru
+    intent work-item-report-unchanged
     language ru
     text "Не выполнено: {subject}. Сеанс остановился на `{reason}` и не изменил ни одного файла репозитория."
-  response response_work_item_report_unchanged_hi
-    intent work_item_report_unchanged
+  response response-work-item-report-unchanged-hi
+    intent work-item-report-unchanged
     language hi
     text "पूरा नहीं हुआ: {subject}। सत्र `{reason}` पर रुका और रिपॉज़िटरी की कोई फ़ाइल नहीं बदली।"
-  response response_work_item_report_unchanged_zh
-    intent work_item_report_unchanged
+  response response-work-item-report-unchanged-zh
+    intent work-item-report-unchanged
     language zh
     text "未完成：{subject}。会话停在 `{reason}`，没有更改任何仓库文件。"
-  response response_work_item_report_unchanged_es
-    intent work_item_report_unchanged
+  response response-work-item-report-unchanged-es
+    intent work-item-report-unchanged
     language es
     text "No completado: {subject}. La sesión se detuvo en `{reason}` y no cambió ningún archivo del repositorio."
-  response response_work_item_report_changed_en
-    intent work_item_report_changed
+  response response-work-item-report-changed-en
+    intent work-item-report-changed
     language en
     text "Not verified: {subject}. The session stopped at `{reason}` after a change that no independent check has accepted."
-  response response_work_item_report_changed_ru
-    intent work_item_report_changed
+  response response-work-item-report-changed-ru
+    intent work-item-report-changed
     language ru
     text "Не проверено: {subject}. Сеанс остановился на `{reason}` после изменения, которое не принято ни одной независимой проверкой."
-  response response_work_item_report_changed_hi
-    intent work_item_report_changed
+  response response-work-item-report-changed-hi
+    intent work-item-report-changed
     language hi
     text "सत्यापित नहीं: {subject}। सत्र `{reason}` पर एक ऐसे बदलाव के बाद रुका जिसे किसी स्वतंत्र जाँच ने स्वीकार नहीं किया है।"
-  response response_work_item_report_changed_zh
-    intent work_item_report_changed
+  response response-work-item-report-changed-zh
+    intent work-item-report-changed
     language zh
     text "未验证：{subject}。会话在一次尚未被任何独立检查接受的更改之后停在 `{reason}`。"
-  response response_work_item_report_changed_es
-    intent work_item_report_changed
+  response response-work-item-report-changed-es
+    intent work-item-report-changed
     language es
     text "No verificado: {subject}. La sesión se detuvo en `{reason}` tras un cambio que ninguna comprobación independiente ha aceptado."
-  response response_work_item_report_request_en
-    intent work_item_report_request
+  response response-work-item-report-request-en
+    intent work-item-report-request
     language en
     text "the request"
-  response response_work_item_report_request_ru
-    intent work_item_report_request
+  response response-work-item-report-request-ru
+    intent work-item-report-request
     language ru
     text "запрос"
-  response response_work_item_report_request_hi
-    intent work_item_report_request
+  response response-work-item-report-request-hi
+    intent work-item-report-request
     language hi
     text "अनुरोध"
-  response response_work_item_report_request_zh
-    intent work_item_report_request
+  response response-work-item-report-request-zh
+    intent work-item-report-request
     language zh
     text "该请求"
-  response response_work_item_report_request_es
-    intent work_item_report_request
+  response response-work-item-report-request-es
+    intent work-item-report-request
     language es
     text "la solicitud"
-  response response_work_item_report_read_en
-    intent work_item_report_read
+  response response-work-item-report-read-en
+    intent work-item-report-read
     language en
     text "Files read: {paths}."
-  response response_work_item_report_read_ru
-    intent work_item_report_read
+  response response-work-item-report-read-ru
+    intent work-item-report-read
     language ru
     text "Прочитанные файлы: {paths}."
-  response response_work_item_report_read_hi
-    intent work_item_report_read
+  response response-work-item-report-read-hi
+    intent work-item-report-read
     language hi
     text "पढ़ी गई फ़ाइलें: {paths}।"
-  response response_work_item_report_read_zh
-    intent work_item_report_read
+  response response-work-item-report-read-zh
+    intent work-item-report-read
     language zh
     text "已读取的文件：{paths}。"
-  response response_work_item_report_read_es
-    intent work_item_report_read
+  response response-work-item-report-read-es
+    intent work-item-report-read
     language es
     text "Archivos leídos: {paths}."
-  response response_work_item_report_read_none_en
-    intent work_item_report_read_none
+  response response-work-item-report-read-none-en
+    intent work-item-report-read-none
     language en
     text "No repository file was read."
-  response response_work_item_report_read_none_ru
-    intent work_item_report_read_none
+  response response-work-item-report-read-none-ru
+    intent work-item-report-read-none
     language ru
     text "Ни один файл репозитория не был прочитан."
-  response response_work_item_report_read_none_hi
-    intent work_item_report_read_none
+  response response-work-item-report-read-none-hi
+    intent work-item-report-read-none
     language hi
     text "रिपॉज़िटरी की कोई फ़ाइल नहीं पढ़ी गई।"
-  response response_work_item_report_read_none_zh
-    intent work_item_report_read_none
+  response response-work-item-report-read-none-zh
+    intent work-item-report-read-none
     language zh
     text "没有读取任何仓库文件。"
-  response response_work_item_report_read_none_es
-    intent work_item_report_read_none
+  response response-work-item-report-read-none-es
+    intent work-item-report-read-none
     language es
     text "No se leyó ningún archivo del repositorio."
-  response response_work_item_report_refused_en
-    intent work_item_report_refused
+  response response-work-item-report-refused-en
+    intent work-item-report-refused
     language en
     text "Your request does not allow reading `{path}`, so it was not read. Reading it, or another source for the same facts, is needed to continue."
-  response response_work_item_report_refused_ru
-    intent work_item_report_refused
+  response response-work-item-report-refused-ru
+    intent work-item-report-refused
     language ru
     text "Ваш запрос не разрешает читать `{path}`, поэтому файл не прочитан. Чтобы продолжить, нужно прочитать его или другой источник тех же сведений."
-  response response_work_item_report_refused_hi
-    intent work_item_report_refused
+  response response-work-item-report-refused-hi
+    intent work-item-report-refused
     language hi
     text "आपका अनुरोध `{path}` पढ़ने की अनुमति नहीं देता, इसलिए इसे नहीं पढ़ा गया। आगे बढ़ने के लिए इसे या उन्हीं तथ्यों का कोई दूसरा स्रोत पढ़ना ज़रूरी है।"
-  response response_work_item_report_refused_zh
-    intent work_item_report_refused
+  response response-work-item-report-refused-zh
+    intent work-item-report-refused
     language zh
     text "你的请求不允许读取 `{path}`，因此没有读取它。要继续，需要读取它或提供相同事实的其他来源。"
-  response response_work_item_report_refused_es
-    intent work_item_report_refused
+  response response-work-item-report-refused-es
+    intent work-item-report-refused
     language es
     text "Tu solicitud no permite leer `{path}`, así que no se leyó. Para continuar hay que leerlo, u otra fuente de los mismos datos."
-  response response_work_item_report_concerns_en
-    intent work_item_report_concerns
+  response response-work-item-report-concerns-en
+    intent work-item-report-concerns
     language en
     text "It concerns requirement {number}: {requirement}"
-  response response_work_item_report_concerns_ru
-    intent work_item_report_concerns
+  response response-work-item-report-concerns-ru
+    intent work-item-report-concerns
     language ru
     text "Он относится к требованию {number}: {requirement}"
-  response response_work_item_report_concerns_hi
-    intent work_item_report_concerns
+  response response-work-item-report-concerns-hi
+    intent work-item-report-concerns
     language hi
     text "यह आवश्यकता {number} से संबंधित है: {requirement}"
-  response response_work_item_report_concerns_zh
-    intent work_item_report_concerns
+  response response-work-item-report-concerns-zh
+    intent work-item-report-concerns
     language zh
     text "它涉及第 {number} 项需求：{requirement}"
-  response response_work_item_report_concerns_es
-    intent work_item_report_concerns
+  response response-work-item-report-concerns-es
+    intent work-item-report-concerns
     language es
     text "Se refiere al requisito {number}: {requirement}"
-  response response_work_item_report_missing_read_tool_en
-    intent work_item_report_missing_read_tool
+  response response-work-item-report-missing-read-tool-en
+    intent work-item-report-missing-read-tool
     language en
     text "The client offers no tool that reads files; such a tool is needed to collect evidence."
-  response response_work_item_report_missing_read_tool_ru
-    intent work_item_report_missing_read_tool
+  response response-work-item-report-missing-read-tool-ru
+    intent work-item-report-missing-read-tool
     language ru
     text "Клиент не предоставляет инструмент для чтения файлов; он нужен, чтобы собрать сведения."
-  response response_work_item_report_missing_read_tool_hi
-    intent work_item_report_missing_read_tool
+  response response-work-item-report-missing-read-tool-hi
+    intent work-item-report-missing-read-tool
     language hi
     text "क्लाइंट फ़ाइलें पढ़ने का कोई टूल नहीं देता; प्रमाण जुटाने के लिए ऐसा टूल ज़रूरी है।"
-  response response_work_item_report_missing_read_tool_zh
-    intent work_item_report_missing_read_tool
+  response response-work-item-report-missing-read-tool-zh
+    intent work-item-report-missing-read-tool
     language zh
     text "客户端没有提供读取文件的工具；收集证据需要这样的工具。"
-  response response_work_item_report_missing_read_tool_es
-    intent work_item_report_missing_read_tool
+  response response-work-item-report-missing-read-tool-es
+    intent work-item-report-missing-read-tool
     language es
     text "El cliente no ofrece ninguna herramienta para leer archivos; se necesita una para reunir evidencia."
-  response response_work_item_report_requirements_en
-    intent work_item_report_requirements
+  response response-work-item-report-requirements-en
+    intent work-item-report-requirements
     language en
     text "Requirements not yet verified ({count}):"
-  response response_work_item_report_requirements_ru
-    intent work_item_report_requirements
+  response response-work-item-report-requirements-ru
+    intent work-item-report-requirements
     language ru
     text "Ещё не проверенные требования ({count}):"
-  response response_work_item_report_requirements_hi
-    intent work_item_report_requirements
+  response response-work-item-report-requirements-hi
+    intent work-item-report-requirements
     language hi
     text "अभी तक असत्यापित आवश्यकताएँ ({count}):"
-  response response_work_item_report_requirements_zh
-    intent work_item_report_requirements
+  response response-work-item-report-requirements-zh
+    intent work-item-report-requirements
     language zh
     text "尚未验证的需求（{count}）："
-  response response_work_item_report_requirements_es
-    intent work_item_report_requirements
+  response response-work-item-report-requirements-es
+    intent work-item-report-requirements
     language es
     text "Requisitos aún no verificados ({count}):"
-  response response_work_item_report_more_en
-    intent work_item_report_more
+  response response-work-item-report-more-en
+    intent work-item-report-more
     language en
     text "and {count} more."
-  response response_work_item_report_more_ru
-    intent work_item_report_more
+  response response-work-item-report-more-ru
+    intent work-item-report-more
     language ru
     text "и ещё {count}."
-  response response_work_item_report_more_hi
-    intent work_item_report_more
+  response response-work-item-report-more-hi
+    intent work-item-report-more
     language hi
     text "और {count} अन्य।"
-  response response_work_item_report_more_zh
-    intent work_item_report_more
+  response response-work-item-report-more-zh
+    intent work-item-report-more
     language zh
     text "另有 {count} 项。"
-  response response_work_item_report_more_es
-    intent work_item_report_more
+  response response-work-item-report-more-es
+    intent work-item-report-more
     language es
     text "y {count} más."
-  response response_work_item_report_trace_en
-    intent work_item_report_trace
+  response response-work-item-report-trace-en
+    intent work-item-report-trace
     language en
     text "The machine record of this session (`{schema}`) is kept in the trace, not in this answer."
-  response response_work_item_report_trace_ru
-    intent work_item_report_trace
+  response response-work-item-report-trace-ru
+    intent work-item-report-trace
     language ru
     text "Машинная запись этого сеанса (`{schema}`) хранится в трассировке, а не в этом ответе."
-  response response_work_item_report_trace_hi
-    intent work_item_report_trace
+  response response-work-item-report-trace-hi
+    intent work-item-report-trace
     language hi
     text "इस सत्र का मशीन रिकॉर्ड (`{schema}`) इस उत्तर में नहीं, ट्रेस में रखा गया है।"
-  response response_work_item_report_trace_zh
-    intent work_item_report_trace
+  response response-work-item-report-trace-zh
+    intent work-item-report-trace
     language zh
     text "本次会话的机器记录（`{schema}`）保存在追踪中，而不是在这个回答里。"
-  response response_work_item_report_trace_es
-    intent work_item_report_trace
+  response response-work-item-report-trace-es
+    intent work-item-report-trace
     language es
     text "El registro de máquina de esta sesión (`{schema}`) se guarda en la traza, no en esta respuesta."

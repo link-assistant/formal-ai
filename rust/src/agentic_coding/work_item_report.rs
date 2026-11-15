@@ -77,14 +77,14 @@ pub fn work_item_report(record: &Value, task: &str) -> String {
         .as_str()
         .filter(|item| !item.is_empty())
         .map_or_else(
-            || filled("work_item_report_request", language, &[]),
+            || filled("work-item-report-request", language, &[]),
             str::to_owned,
         );
     let reason = record["reason"].as_str().unwrap_or("Unknown");
     let headline = if record["authored"] == json!(true) {
-        "work_item_report_changed"
+        "work-item-report-changed"
     } else {
-        "work_item_report_unchanged"
+        "work-item-report-unchanged"
     };
     let mut paragraphs = vec![filled(
         headline,
@@ -101,20 +101,20 @@ pub fn work_item_report(record: &Value, task: &str) -> String {
         }
     }
     paragraphs.push(if read.is_empty() {
-        filled("work_item_report_read_none", language, &[])
+        filled("work-item-report-read-none", language, &[])
     } else {
         let paths = read
             .iter()
             .map(|path| format!("`{path}`"))
             .collect::<Vec<_>>()
             .join(", ");
-        filled("work_item_report_read", language, &[("paths", &paths)])
+        filled("work-item-report-read", language, &[("paths", &paths)])
     });
     let requirements = record["requirements"]
         .as_array()
         .map_or(&[][..], Vec::as_slice);
     if let Some(path) = record["refused"]["path"].as_str() {
-        let mut refused = filled("work_item_report_refused", language, &[("path", path)]);
+        let mut refused = filled("work-item-report-refused", language, &[("path", path)]);
         if let Some(index) = record["refused"]["requirement"]
             .as_u64()
             .and_then(|index| usize::try_from(index).ok())
@@ -124,19 +124,19 @@ pub fn work_item_report(record: &Value, task: &str) -> String {
             let line = requirement_line(requirements[index]["text"].as_str().unwrap_or_default());
             refused.push(' ');
             refused.push_str(&filled(
-                "work_item_report_concerns",
+                "work-item-report-concerns",
                 language,
                 &[("number", &number), ("requirement", &line)],
             ));
         }
         paragraphs.push(refused);
     } else if reason == "MissingReadTool" {
-        paragraphs.push(filled("work_item_report_missing_read_tool", language, &[]));
+        paragraphs.push(filled("work-item-report-missing-read-tool", language, &[]));
     }
     if !requirements.is_empty() {
         let count = requirements.len().to_string();
         let mut lines = vec![filled(
-            "work_item_report_requirements",
+            "work-item-report-requirements",
             language,
             &[("count", &count)],
         )];
@@ -150,7 +150,7 @@ pub fn work_item_report(record: &Value, task: &str) -> String {
         if requirements.len() > LISTED_REQUIREMENTS {
             let more = (requirements.len() - LISTED_REQUIREMENTS).to_string();
             lines.push(filled(
-                "work_item_report_more",
+                "work-item-report-more",
                 language,
                 &[("count", &more)],
             ));
@@ -159,7 +159,7 @@ pub fn work_item_report(record: &Value, task: &str) -> String {
     }
     let schema = record["schema"].as_str().unwrap_or("work-item-record");
     paragraphs.push(filled(
-        "work_item_report_trace",
+        "work-item-report-trace",
         language,
         &[("schema", schema)],
     ));

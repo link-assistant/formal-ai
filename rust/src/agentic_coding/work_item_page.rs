@@ -80,13 +80,13 @@ pub(super) fn decode_entities(text: &str) -> String {
 
 /// The title suffix or a chrome line marks a site page.
 pub(super) fn is_work_item_page(raw: &str) -> bool {
-    let chrome = alternatives("page_chrome_lines");
+    let chrome = alternatives("page-chrome-lines");
     let first = raw
         .lines()
         .map(str::trim)
         .find(|line| !line.is_empty())
         .unwrap_or("");
-    first.ends_with(&fill("page_title_suffix", &[]))
+    first.ends_with(&fill("page-title-suffix", &[]))
         || raw
             .lines()
             .map(str::trim)
@@ -94,8 +94,8 @@ pub(super) fn is_work_item_page(raw: &str) -> bool {
 }
 
 fn page_title(first: &str) -> String {
-    let suffix = fill("page_title_suffix", &[]);
-    let separator = fill("page_title_separator", &[]);
+    let suffix = fill("page-title-suffix", &[]);
+    let separator = fill("page-title-separator", &[]);
     let named = first.strip_suffix(suffix.as_str()).unwrap_or(first);
     let parts = named.split(separator.as_str()).collect::<Vec<_>>();
     // "<title> · Issue #N · owner/repo": the last two parts are the page's address.
@@ -118,7 +118,7 @@ fn earliest(text: &str, markers: &[String], from: usize) -> Option<(usize, usize
 }
 
 fn body_lines(text: &str) -> String {
-    let end_lines = alternatives("page_body_end_lines");
+    let end_lines = alternatives("page-body-end-lines");
     let mut kept: Vec<&str> = Vec::new();
     for line in text.lines().map(str::trim) {
         if end_lines.iter().any(|marker| marker == line) {
@@ -144,10 +144,10 @@ pub fn work_item_page_text(raw: &str) -> Option<String> {
         return Some(raw.to_owned());
     }
     let text = decode_entities(raw);
-    let (start, length) = earliest(&text, &alternatives("page_body_start"), 0)?;
+    let (start, length) = earliest(&text, &alternatives("page-body-start"), 0)?;
     let from = start + length;
     let end =
-        earliest(&text, &alternatives("page_body_end"), from).map_or(text.len(), |(at, _)| at);
+        earliest(&text, &alternatives("page-body-end"), from).map_or(text.len(), |(at, _)| at);
     let body = body_lines(&text[from..end]);
     if body.is_empty() {
         return None;

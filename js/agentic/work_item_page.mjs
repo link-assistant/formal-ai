@@ -27,13 +27,13 @@ export function decodeEntities(text) {
 export function isWorkItemPage(raw) {
   const lines = rustLines(raw).map(line => trim(line));
   const first = lines.find(line => line !== '') ?? '';
-  const chrome = alternatives('page_chrome_lines');
-  return first.endsWith(fill('page_title_suffix', [])) || lines.some(line => chrome.includes(line));
+  const chrome = alternatives('page-chrome-lines');
+  return first.endsWith(fill('page-title-suffix', [])) || lines.some(line => chrome.includes(line));
 }
 
 function pageTitle(first) {
-  const suffix = fill('page_title_suffix', []);
-  const separator = fill('page_title_separator', []);
+  const suffix = fill('page-title-suffix', []);
+  const separator = fill('page-title-separator', []);
   const named = first.endsWith(suffix) ? first.slice(0, first.length - suffix.length) : first;
   const parts = named.split(separator);
   // "<title> · Issue #N · owner/repo": the last two parts are the page's address.
@@ -51,7 +51,7 @@ function earliest(text, markers, from) {
 
 function bodyLines(text) {
   const kept = [];
-  const endLines = alternatives('page_body_end_lines');
+  const endLines = alternatives('page-body-end-lines');
   for (const raw of rustLines(text)) {
     const line = trim(raw);
     if (endLines.includes(line)) break;
@@ -70,12 +70,12 @@ function bodyLines(text) {
 export function workItemPageText(raw) {
   if (!isWorkItemPage(raw)) return raw;
   const text = decodeEntities(raw);
-  const startMarkers = alternatives('page_body_start');
+  const startMarkers = alternatives('page-body-start');
   const start = earliest(text, startMarkers, 0);
   if (start === null) return null;
   const marker = startMarkers.find(candidate => text.startsWith(candidate, start));
   const from = start + marker.length;
-  const end = earliest(text, alternatives('page_body_end'), from);
+  const end = earliest(text, alternatives('page-body-end'), from);
   const body = bodyLines(text.slice(from, end ?? text.length));
   if (body === '') return null;
   const first = rustLines(text).map(line => trim(line)).find(line => line !== '') ?? '';
