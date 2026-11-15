@@ -88,14 +88,34 @@ export function requireSourceBinaryIdentity(identity, expected, inputs) {
     tree: expected.sourceTree
   });
 }
+// Issue #1486: v2 adds `transport`. A delta archive omits the layers of the
+// runtime base it was built FROM; the consumer pulls that base by the exact
+// RepoDigest and image ID the producer recorded, never an arbitrary cache.
+export const IMAGE_BUNDLE_SCHEMA = 'formal-ai-hive-image-bundle/v2';
+export const IMAGE_BUNDLE_SCHEMAS = Object.freeze(['formal-ai-hive-image-bundle/v1', IMAGE_BUNDLE_SCHEMA]);
+export function requireImageTransport(transport, identity) {
+  assert.ok(transport && ['delta', 'full'].includes(transport.mode), 'image transport mode');
+  if (transport.mode === 'full') {
+    assert.equal(transport.base, undefined, 'a full archive names no base');
+    return transport;
+  }
+  const base = transport.base ?? {};
+  assert.match(base.ref ?? '', /@sha256:[a-f0-9]{64}$/u, 'delta base pinned by digest');
+  assert.ok((identity.runtimeImageDigests ?? []).includes(base.ref), 'delta base is the recorded runtime image digest');
+  assert.equal(base.imageId, identity.runtimeImageId, 'delta base is the recorded runtime image');
+  assert.ok(Array.isArray(base.diffIds) && base.diffIds.length > 0 && base.diffIds.every(diffId => /^sha256:[a-f0-9]{64}$/u.test(diffId)), 'delta base layers');
+  assert.ok(Number.isInteger(transport.candidateLayers) && transport.candidateLayers > base.diffIds.length, 'delta candidate adds layers');
+  return transport;
+}
 export function requireImageBundle(manifest, {
   directory,
   expected,
   inputs
 }) {
-  assert.equal(manifest.schema, 'formal-ai-hive-image-bundle/v1');
+  assert.ok(IMAGE_BUNDLE_SCHEMAS.includes(manifest.schema), 'image bundle schema ' + manifest.schema);
   assert.match(manifest.imageId ?? '', /^sha256:[a-f0-9]{64}$/u);
   requireSourceBinaryIdentity(manifest.identity, expected, inputs);
+  if (manifest.schema === IMAGE_BUNDLE_SCHEMA) requireImageTransport(manifest.transport, manifest.identity);
   assert.equal(fileDigest(path.join(directory, 'candidate.tar.gz')), manifest.archiveSha256, 'same-run image archive digest');
   return manifest.identity;
 }
