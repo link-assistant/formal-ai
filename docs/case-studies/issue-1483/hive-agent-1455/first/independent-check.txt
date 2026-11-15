@@ -1,0 +1,12 @@
+pass  only docs/associative-tech-stack.md changes
+pass  preimage preserved (no removed lines)
+pass  Cargo.toml declares command-stream  ("1.5")
+pass  Cargo.toml declares web-capture  ({ version = "0.3.37", default-features = false, features = ["search"] })
+pass  Cargo.toml declares web-search  ({ version = "0.6.0", default-features = false, features = ["merge"] })
+pass  package.json declares @link-assistant/web-search  (0.11.1)
+pass  js/web-search-component-entry.js imports getDefaultProviderIds from @link-assistant/web-search and contains the excerpt  (getDefaultProviderIds())
+pass  js/web-search-component-entry.js imports mergeResults from @link-assistant/web-search and contains the excerpt  (mergeResults(grouped, { strategy: "rrf", rrfK: k, removeDuplicates: true }))
+pass  issue component command-stream documented
+pass  issue component web-capture documented
+pass  issue component web-search documented
+11/11 checks passed at 3c592625d

@@ -1,0 +1,4 @@
+🧠 Formal AI: local wrapper version 0.355.27 (minimum 0.336.0)
+🧠 Formal AI: using the configured server http://127.0.0.1:18483
+🧠 Formal AI: serving backend 0.355.34 at http://127.0.0.1:18483
+🧠 Formal AI: local wrapper 0.355.27 differs from the serving backend 0.355.34; provenance records the backend
