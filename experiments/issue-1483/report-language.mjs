@@ -4,11 +4,12 @@
 import {readFileSync} from 'node:fs';
 import {WorkerHost} from '../../js/server/worker-host.mjs';
 import {installNodeHost} from '../../js/agentic/node-host.mjs';
-import {detect,detectProse,detectWorkItem} from '../../js/agentic/crate/language.mjs';
+import {detect,detectProse} from '../../js/agentic/crate/language.mjs';
+import {workItemLanguage} from '../../js/agentic/general_planner.mjs';
 await installNodeHost(new WorkerHost({}));
 const root=new URL('../../',import.meta.url).pathname;
 const {issues}=JSON.parse(readFileSync(root+'data/benchmarks/fixtures/work-item-1483/issues.json','utf8'));
 for(const [number,issue] of Object.entries(issues)){
   const task=`${issue.title}\n\n${issue.body}`;
-  console.log(`#${number} detect=${detect(task)} detectProse=${detectProse(task)} detectWorkItem=${detectWorkItem(task)}`);
+  console.log(`#${number} detect=${detect(task)} detectProse=${detectProse(task)} workItemLanguage=${workItemLanguage(task)}`);
 }

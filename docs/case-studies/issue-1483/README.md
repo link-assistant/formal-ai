@@ -46,8 +46,8 @@ machine record, diff).
 No session ends in "repository work not executed" any more. Each one either edits
 and checks, or names the narrowest gap it leaves. Every report is in English, the
 language of the issue bodies. Issues 1330 and 1396 used to be reported in Russian;
-the report now applies the planner's prose-language rule from #1557 (`detectWorkItem`
-/ `detect_work_item`).
+the report now applies the planner's prose-language rule from #1557 (`workItemLanguage`
+/ `work_item_language` in `general_planner`).
 
 ## #1455 on its pre-fix checkout
 

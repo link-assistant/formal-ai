@@ -882,19 +882,3 @@ pub fn detect_prose(text: &str) -> Option<Language> {
     }
     with_rules(|rules| prose_language(&prose_of(text), rules))
 }
-
-/// The language of a work item written as `title`, a blank line, then `body`:
-/// its body's prose, then its title's prose, and the whole text only when
-/// neither holds prose (issue #1557). The plan answer and the work-item report
-/// (issue #1483) share it. Mirrored by `detectWorkItem` in
-/// `js/agentic/crate/language.mjs`.
-#[must_use]
-pub fn detect_work_item(goal: &str) -> Language {
-    let (title, body) = match goal.split_once("\n\n") {
-        Some((title, body)) if !title.contains('\n') => (title, body),
-        _ => ("", goal),
-    };
-    detect_prose(body)
-        .or_else(|| detect_prose(title))
-        .unwrap_or_else(|| detect(goal))
-}

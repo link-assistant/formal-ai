@@ -154,7 +154,7 @@ impl GeneralChangePlan {
         }
         self.request_language
             .filter(|_| crate::language::forced_response_language_slug().is_none())
-            .unwrap_or_else(|| crate::language::detect_work_item(&self.goal))
+            .unwrap_or_else(|| work_item_language(&self.goal))
             .slug()
     }
     /// Render the terminal answer of a plan that touched nothing the request
@@ -738,9 +738,21 @@ const fn capability_slug(capability: Capability) -> &'static str {
         Capability::AskUser => "AskUser",
     }
 }
-/// Split a work-item goal into its title and body. The run joins a fetched
-/// issue as `title`, a blank line, then `body`; a goal of any other shape is
-/// all body. Mirrored by `workItemTitleAndBody`.
+/// The language of a work-item goal. The run joins a fetched issue as `title`,
+/// a blank line, then `body`, and a goal of any other shape is all body. The
+/// body's prose decides, then the title's prose, and the whole goal only when
+/// neither holds prose (issue #1557). The plan answer and the work-item report
+/// (issue #1483) share it. Mirrored by `workItemLanguage`.
+#[must_use]
+pub fn work_item_language(goal: &str) -> crate::language::Language {
+    let (title, body) = match goal.split_once("\n\n") {
+        Some((title, body)) if !title.contains('\n') => (title, body),
+        _ => ("", goal),
+    };
+    crate::language::detect_prose(body)
+        .or_else(|| crate::language::detect_prose(title))
+        .unwrap_or_else(|| crate::language::detect(goal))
+}
 fn language(request: &str) -> &'static str {
     crate::language::detect(request).slug()
 }

@@ -35,7 +35,7 @@ import { stableId } from './crate/engine_stable_identifier.mjs';
 import { formalizeIntent } from './crate/intent_formalization.mjs';
 import { withoutTrailingKnownModifier } from './crate/implementation_language.mjs';
 import { fencedBlock, LINO_FENCE_LANGUAGE } from './crate/issue_report.mjs';
-import { detect, detectProse, detectWorkItem } from './crate/language.mjs';
+import { detect, detectProse } from './crate/language.mjs';
 import { localizedResponse } from './crate/seed.mjs';
 import { terminalCommandVocabulary } from './crate/seed_terminal_commands.mjs';
 import { resolveReference, workspace } from './crate/self_ast_census.mjs';
@@ -130,6 +130,21 @@ export function planLinksNotation(plan) {
 }
 
 /**
+ * Mirrors `fn work_item_language`: the run joins a fetched issue as `title`,
+ * a blank line, then `body`. The body's prose decides, then the title's prose,
+ * and the whole goal only when neither holds prose (issue #1557). The plan
+ * answer and the work-item report (issue #1483) share it.
+ * @param {string} goal
+ * @returns {string}
+ */
+export function workItemLanguage(goal) {
+  const text = String(goal);
+  const at = text.indexOf('\n\n');
+  const [title, body] = at >= 0 && !text.slice(0, at).includes('\n') ? [text.slice(0, at), text.slice(at + 2)] : ['', text];
+  return detectProse(body) ?? detectProse(title) ?? detect(text);
+}
+
+/**
  * Mirrors `GeneralChangePlan::response_language`: a work item answers in the
  * language of the user's own turn, then of its body's prose, then of its
  * title's prose, and of its goal as a whole only when none holds prose, so
@@ -137,7 +152,7 @@ export function planLinksNotation(plan) {
  */
 export function planResponseLanguage(plan) {
   if (plan.mode !== GeneralPlanMode.RepositoryWorkItem) return detect(plan.goal);
-  return plan.request_language ?? detectWorkItem(plan.goal);
+  return plan.request_language ?? workItemLanguage(plan.goal);
 }
 
 /** Mirrors `GeneralChangePlan::planned_not_executed_answer`. */
