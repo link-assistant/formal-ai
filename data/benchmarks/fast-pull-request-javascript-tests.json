@@ -211,6 +211,7 @@
     "rust/tests/web/tests-as-docs-twin.test.mjs",
     "rust/tests/web/runner-label-pinning.test.mjs",
     "rust/tests/web/module-map-twin.test.mjs",
-    "rust/tests/web/source-test-placement-twin.test.mjs"
+    "rust/tests/web/source-test-placement-twin.test.mjs",
+    "rust/tests/web/three-source-roots-layout.test.mjs"
   ]
 }

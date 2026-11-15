@@ -10,7 +10,7 @@
 // one's text. The chat user's "Always answer in Russian." is learned with that
 // user's scope and applied to that user's later conversations only.
 //
-// Usage: node examples/scoped-standing-requirements.mjs
+// Usage: node experiments/scoped-standing-requirements.mjs
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
