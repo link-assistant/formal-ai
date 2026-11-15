@@ -24,9 +24,8 @@ const SOLVER_EVENT_VALIDATION = "validation";
 const SOLVER_EVENT_CANDIDATE = "candidate";
 const SOLVER_EVENT_LOG_MODULE = "crate/event_log.mjs";
 const SOLVER_EVENT_PROJECTION_MODULE = "crate/solver_event_projection.mjs";
-const SOLVER_VALIDATION_ACCEPTED = "accepted_without_extra_constraints";
 const SOLVER_EVENT_SIMPLIFICATION = "trace:simplification";
-const SOLVER_SIMPLIFICATION_SMALLEST = "smallest_sufficient";
+const SOLVER_META_EXECUTOR_MODULE = "crate/meta_executor.mjs";
 const SOLVER_RESPONSE_PREFIX = "response:";
 const SOLVER_META_RESPONSE_LINK = "response:meta_reasoner";
 const SOLVER_ENGINE_LINK_CALCULATOR = "link-calculator";
@@ -315,12 +314,15 @@ function solverEventLog(prompt, answer) {
   if (!events.some((event) => event.kind === SOLVER_EVENT_CANDIDATE)) {
     events.push(solverEvent(SOLVER_EVENT_CANDIDATE, answer.intent));
   }
+  // Issue #1550: `record_answer_test` and `record_selection` of the turn.
+  const procedure = crateModule(SOLVER_META_EXECUTOR_MODULE);
   if (!events.some((event) => event.kind === SOLVER_EVENT_VALIDATION)) {
-    events.push(solverEvent(SOLVER_EVENT_VALIDATION, SOLVER_VALIDATION_ACCEPTED));
+    events.push(solverEvent(SOLVER_EVENT_VALIDATION, procedure.answerValidation(answer.intent, answer.content)));
   }
   events.push(solverEvent("response", answer.responseLink || `${SOLVER_RESPONSE_PREFIX}${answer.intent}`));
   // The `finalize_simple` tail; the `trace` link is the Telegram `/trace` footer.
-  events.push(solverEvent(SOLVER_EVENT_SIMPLIFICATION, SOLVER_SIMPLIFICATION_SMALLEST));
+  const validations = events.filter((event) => event.kind === SOLVER_EVENT_VALIDATION).map((event) => event.payload);
+  events.push(solverEvent(SOLVER_EVENT_SIMPLIFICATION, procedure.selectionRecord(validations, answer.intent)));
   events.push(solverEvent("trace", answer.intent));
   return events;
 }

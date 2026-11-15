@@ -673,6 +673,32 @@ general attempt, split and recompose procedure ready for an internal executor;
 and the planner reports `planned_not_executed` instead of claiming a change it
 did not make.
 
+## Issue #1550 The Recursive Procedure Produces Every Answer (PR #1576)
+
+Status 2026-11-15; where it disagrees with the two #1550 rows of the audit
+table above, this section is current.
+
+- Both runtimes answer through one recursive procedure: the native entry
+  `solve_with_history_probability_store_and_intent_cache` hands its draft to
+  `run_meta_procedure` (`rust/src/meta_executor/production.rs`), which runs
+  `solve_recursively` with the in-process executor; the worker's `solve` ends
+  in `metaRunProcedure` (`js/worker/formal_ai_worker_meta_composite.js`). At
+  every level the procedure splits by the task tree, derives a test, drafts,
+  selects by least action, composes by structure and recurses within bounds
+  that are data (`data/seed/text-formalization.lino`) and the first trace event.
+- The census (`rust/tests/unit/meta_executor_census.rs`,
+  `rust/tests/web/issue-1550-procedure-census.test.mjs` and the specification
+  gate) fails when a corpus answer skips the procedure or a new early return
+  appears; the cascade's former early returns are the procedure's
+  direct-derivation method.
+- `record_meta_core_execution` (dead code) is deleted; the meta reasoner's
+  declared `groundDepth` / `ground_depth` bound now decides how deep glosses are
+  grounded in both runtimes. `rust/src/recipe_interpreter.rs` stays: it replays
+  the problem-frame, work-unit and ledger recording pass, events the executed
+  procedure does not emit.
+- README.md and `docs/meta-algorithm.md` carry the same stage and entry tables,
+  checked against the code by `rust/tests/web/issue-1550-procedure-documentation.test.mjs`.
+
 ## Verification Contract
 
 When any roadmap item changes, the PR should update the corresponding rows in

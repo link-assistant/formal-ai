@@ -127,6 +127,13 @@ fn push_unique(sink: &mut Vec<String>, values: &[String]) {
     }
 }
 
+/// True when a word at `depth` is grounded through its own glosses (and asks
+/// for a lookup when it has none): the gloss words it opens sit one level
+/// deeper, which must stay within `BOUNDS.ground_depth` levels.
+fn opens_glosses(depth: usize) -> bool {
+    depth + 1 < BOUNDS.ground_depth
+}
+
 fn indent_for(depth: usize) -> String {
     if depth > 0 {
         ["↳".repeat(depth), String::from(" ")].concat()
@@ -217,7 +224,7 @@ pub fn ground(word: &str, context: &mut Context<'_>, depth: usize, stack: &[Stri
     // A word in a degree of comparison is its stem's measure and the
     // degree's selection ("longest": long, superlative), read before its own
     // entry.
-    let (degree, degree_needs) = if depth == 0 {
+    let (degree, degree_needs) = if opens_glosses(depth) {
         ground_degree(word, context, stack, &indent)
     } else {
         (None, Vec::new())
@@ -230,14 +237,14 @@ pub fn ground(word: &str, context: &mut Context<'_>, depth: usize, stack: &[Stri
     // Captures ground only the request's own words. A gloss word is grounded
     // from documentation and the request alone, so meaning cannot drift
     // through chains of loosely related senses.
-    if !senses.is_empty() && depth == 0 {
+    if !senses.is_empty() && opens_glosses(depth) {
         let mut grounding = ground_through_glosses(word, senses, context, depth, stack, &indent);
         if grounding.status == "open" {
             push_unique(&mut grounding.needs, &degree_needs);
         }
         return grounding;
     }
-    if depth > 0 {
+    if !opens_glosses(depth) {
         return Grounding::open(word, "none", Vec::new());
     }
     if !knowledge.contains_key(word) {

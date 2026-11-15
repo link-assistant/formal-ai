@@ -188,6 +188,7 @@ function creativeAnswer(intent, handler, body, confidence, trace, language) {
     confidence: confidence,
     evidence: [`handler:${handler}`].concat(trace, [`response:${intent}`, `language:${language}`]),
     trace: trace,
+    solverEvents: trace.filter((entry) => entry.startsWith("candidate:")).map((entry) => solverEvent("candidate", entry.slice(10))),
   };
 }
 

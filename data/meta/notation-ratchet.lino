@@ -27,9 +27,17 @@
 # member spelled with `-` alone would mix two conventions in one family; it
 # converts with its readers in the intents-and-roles pass. The 25 new response
 # records of the same change are already written with `-`.
+#
+# On 2026-11-15 data/meta underscore-names was raised from 2067 to 2069 for
+# issue #1550 (PR #1576). The two names are Rust functions that
+# data/meta/debug-stage-sources.lino, a table generated from the source tree,
+# now lists as the emitters of the validation stage: record_answer_test and
+# try_synthesize_from_sub_results, which record the executed test of an answer.
+# Rust spells function names with `_`, so the generated table cannot write them
+# with `-`; no hand-written record gained a `_` name.
 notation-ratchet
   scope data/meta
-    underscore-names 2067
+    underscore-names 2069
     abbreviated-names 198
     duplicated-blocks 9
     repeated-fields 78

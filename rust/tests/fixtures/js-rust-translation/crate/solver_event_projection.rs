@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=04d42561767c6c0d5bec83098d90889f7291e98f76d50a807093084af4344273 bytes=5850
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=fd6e2b084d25d7080f9badb4633a758448ed475e78eab21691f4b9d1a0192428 bytes=6044
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=4
 
@@ -42,6 +42,10 @@ pub const ROUTE: &str = "intent_formalization:route";
 // | const CANDIDATE = 'candidate';
 pub const CANDIDATE: &str = "candidate";
 
+// meta-language:translated JavaScript lexical_declaration items=1 sha256=35a34ecd91691f15b758c203a739c3348b98c315e6802ddfc0dbcae4b8a0c4f6
+// | const INTENT = 'intent';
+pub const INTENT: &str = "intent";
+
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=f4259bab73fe7066d4c7a76523f11df19d00adfbb8a73522c2f4f44eeff6a067
 // | const META_RESPONSE = 'response:meta_reasoner';
 pub const META_RESPONSE: &str = "response:meta_reasoner";
@@ -64,4 +68,4 @@ pub const UNKNOWN_RULE_SELECTION: &str = "initial unknown reason no_seed_route n
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
-// formal-ai:blockers Array.isArray | JSDoc type {…} | arrow callback of .filter() | arrow callback of .map() | arrow callback of .some() | call of a sibling function | call of an imported function | field access | global call String() | method call .filter() | method call .has() | method call .map() | method call .push() | method call .slice() | method call .some() | null | nullish coalescing | object without a $ tag | optional chaining | sibling value
+// formal-ai:blockers Array.isArray | JSDoc type {…} | arrow callback of .filter() | arrow callback of .find() | arrow callback of .map() | arrow callback of .some() | call of a sibling function | call of an imported function | field access | global call String() | method call .filter() | method call .find() | method call .has() | method call .map() | method call .push() | method call .slice() | method call .some() | null | nullish coalescing | object without a $ tag | optional chaining | sibling value

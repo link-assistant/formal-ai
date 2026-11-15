@@ -26,7 +26,11 @@
 //! foundation for eventually driving the pipeline *from* the recipe rather than
 //! from a parallel hand-written sequence (issue #558 will take the analogous step
 //! for Rust recompilation). The interpreter changes no routing and no answer; it
-//! is a second, data-driven way to produce the same trace-only artifacts (R13).
+//! is a second, data-driven way to produce the recording pass's artifacts (R13).
+//! Answers come from the recursive procedure of [`crate::meta_executor`] (issue
+//! #1550), whose `meta_exec:*` events are not these: the problem frame, the
+//! work-unit tree and the ledgers are recorded only here and by
+//! `record_meta_core`, so this pass is not a stub of the executed stages.
 
 use crate::event_log::EventLog;
 use crate::intent_formalization::IntentFormalization;

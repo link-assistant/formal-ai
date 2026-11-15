@@ -136,6 +136,7 @@ pub mod memory_sync;
 pub(crate) mod meta_algorithm_builder;
 pub mod meta_construction;
 pub(crate) mod meta_core;
+pub mod meta_executor;
 pub mod meta_frame;
 pub(crate) mod meta_method_answers;
 pub(crate) mod meta_method_dispatch;

@@ -77,11 +77,36 @@ export function regressionMessages(recorded, state, unsupported = []) {
   return messages;
 }
 
+/**
+ * Issue #1550 (acceptance criterion c): record every prompt whose worker answer
+ * does not carry the recursive procedure's `metaExecution`, so no answer of the
+ * specification corpus is produced by a path that skips the procedure.
+ * @param {{solve: Function}} host
+ * @returns {Array<string>} filled as the host answers
+ */
+export function censusProcedure(host) {
+  const bypassed = [];
+  const solve = host.solve.bind(host);
+  host.solve = async (prompt, ...rest) => {
+    const answer = await solve(prompt, ...rest);
+    if (!answer?.metaExecution) bypassed.push(String(prompt));
+    return answer;
+  };
+  return bypassed;
+}
+
 async function main(argv) {
   const root = join(dirname(fileURLToPath(import.meta.url)), '..');
   const { total, cases, unsupported } = specificationCases(root);
-  const failing = await failingCases(new WorkerHost(), cases);
+  const host = new WorkerHost();
+  const bypassed = censusProcedure(host);
+  const failing = await failingCases(host, cases);
   const state = { total, carried: cases.length, passing: cases.length - failing.size, failing };
+  // Issue #1550 (criterion c): no answer of the corpus skips the recursive procedure.
+  for (const prompt of bypassed) {
+    console.error(`::error file=js/worker/formal_ai_worker_solve.js::answer without the recursive procedure (no metaExecution) for ${JSON.stringify(prompt.slice(0, 120))}`);
+  }
+  if (bypassed.length) return 1;
   const recorded = parseRecord(readFileSync(join(root, RECORD), 'utf8'));
   console.log(`specification in JavaScript: ${total} tests, ${state.carried} carried, ${state.passing} pass in the worker`);
   if (argv.includes('--list')) {

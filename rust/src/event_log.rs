@@ -416,9 +416,9 @@ fn curate_thinking_event(
         "coreference" | "program_coreference" => keep("coreference_binding", "", "detailed"),
         "modifier_detection" | "program_modifiers" => keep("modifier_detection", "", "detailed"),
         "rule_construction" => keep("rule_construction", "", "detailed"),
-        // The validation payload is an internal acceptance reason
-        // (`accepted_without_extra_constraints`); surface a clean verification
-        // step without the meta-language token.
+        // The validation payload is the executed test of the turn
+        // (`answered(intent)=true`, `number_property_prime(17)=true`); surface
+        // a clean verification step without the meta-language token.
         "validation" => keep("rule_verification", "", "detailed"),
         _ if kind.starts_with("tool_") => keep("invoke_tool", detail, "detailed"),
         _ if kind.starts_with("agent_mode") || kind == "action_log" => {
