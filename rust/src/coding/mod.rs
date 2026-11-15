@@ -40,6 +40,7 @@ pub mod recurrence;
 pub mod rosetta_request;
 pub mod synthesis_runtime;
 pub mod task_spec;
+pub mod unread_structure;
 
 pub use catalog::*;
 pub use cst::validated_program_cst;

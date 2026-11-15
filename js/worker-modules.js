@@ -97,6 +97,7 @@ self.FORMAL_AI_WORKER_MODULES = Object.freeze([
   "worker/formal_ai_worker_crate_theorem_claim_binding.js",
   "worker/formal_ai_worker_crate_translation_formalization.js",
   "worker/formal_ai_worker_crate_typed_meaning.js",
+  "worker/formal_ai_worker_crate_unread_structure.js",
   "worker/formal_ai_worker_crate_write_lexicon.js",
   "worker/formal_ai_worker_crate_write_lino.js",
   "worker/formal_ai_worker_crate_write_str.js",

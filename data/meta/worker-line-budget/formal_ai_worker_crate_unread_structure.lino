@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_crate_unread_structure.js"
+  ceiling 145
+  rationale "First-publication exact source-owned factory (issue #1487)."
