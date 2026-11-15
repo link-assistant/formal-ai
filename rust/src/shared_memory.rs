@@ -103,7 +103,7 @@ pub fn is_test_executable(executable: &std::path::Path) -> bool {
             .parent()
             .and_then(std::path::Path::file_name)
             .is_some_and(|parent| parent == OsStr::new("deps"))
-        || in_build_dir_layout(executable, name)
+        || in_build_directory_layout(executable, name)
 }
 
 /// Whether `executable` sits where Rust 1.100's build-dir layout puts a test
@@ -111,7 +111,7 @@ pub fn is_test_executable(executable: &std::path::Path) -> bool {
 /// directory hash equal to the file's. Issue #1569: that release moved test
 /// binaries out of `deps/`, so the per-file integration binaries stopped being
 /// recognised and shared the user's memory store again.
-fn in_build_dir_layout(executable: &std::path::Path, name: &str) -> bool {
+fn in_build_directory_layout(executable: &std::path::Path, name: &str) -> bool {
     let Some((_, hash)) = name.rsplit_once('-') else {
         return false;
     };
