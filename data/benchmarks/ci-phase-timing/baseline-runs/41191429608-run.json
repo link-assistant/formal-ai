@@ -1,0 +1,12 @@
+{
+ "id": 41191429608,
+ "name": "Hive Mind draft",
+ "event": "issues",
+ "head_branch": "main",
+ "head_sha": "edf219e604cb9c244abaaed3115ce2fc1277e427",
+ "run_attempt": 1,
+ "conclusion": "failure",
+ "created_at": "2026-10-31T10:07:05Z",
+ "run_started_at": "2026-10-31T10:07:05Z",
+ "updated_at": "2026-10-31T10:29:22Z"
+}
