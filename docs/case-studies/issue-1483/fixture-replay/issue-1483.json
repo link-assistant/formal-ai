@@ -1,0 +1,268 @@
+{
+ "calls": [
+  "bash {\"command\":\"gh issue view 'https://github.com/link-assistant/formal-ai/issues/1483' --json title --jq .title && echo && gh issue view 'https://github.com/link-a",
+  "grep {\"pattern\":\"planned_not_executed\",\"query\":\"planned_not_executed\"}",
+  "read {\"filePath\":\"data/benchmarks/self-coding-ci-observations.json\",\"file_path\":\"data/benchmarks/self-coding-ci-observations.json\",\"path\":\"data/benchmarks/self-codin"
+ ],
+ "answer": "Not completed: https://github.com/link-assistant/formal-ai/issues/1483. The session stopped at `EvidenceCollected` and changed no repository file.\n\nFiles read: `data/benchmarks/self-coding-ci-observations.json`.\n\nNarrowest open gap: `NoChangeRecipe`.\n\nWork still open (3):\n- `bind-requirements-to-source`\n- `change-recipe-unavailable:data/benchmarks/self-coding-ci-observations.json`\n- `verify-artifact-and-requirements`\n\nRequirements not yet verified (25):\n1. [Bug][P0] Work-item inspection stops before a useful edit: connect evidence, obligations, patch synthesis and independent checks\n2. **Type:** Bug · **Priority:** P0\n3. The normal issue-to-draft path can inspect a work item but still cannot construct the requested change. This is the highest-priority capability gap for Formal A…\n4. In [issue #1455](https://github.com/link-assistant/formal-ai/issues/1455), the task named real dependencies and source files and requested a guide update. [Run …\n5. PR #1461 subsequently repaired the guide and added bounded repository evidence inspection. The [current handoff](https://github.com/link-assistant/formal-ai/blo…\n6. Related owners: #1209, #1165, #1167, #1183 and #1170. Reuse the current work-item executor, obligation ledger, source representation, meta reasoner and repair l…\n7. Given an ordinary issue and a checkout, Formal AI produces at least one independently useful requested patch or regression test, with unresolved requirements ex…\n8. Make the production work-item controller carry one state throughout: task identity and source spans; typed obligations; observed facts and uncertainty; missing …\nand 17 more.\n\nThe machine record of this session (`repository-work-item-evidence/v1`) is kept in the trace, not in this answer.",
+ "disposition": "gap",
+ "record": {
+  "schema": "repository-work-item-evidence/v1",
+  "reason": "EvidenceCollected",
+  "gap": "NoChangeRecipe",
+  "workItem": "https://github.com/link-assistant/formal-ai/issues/1483",
+  "taskIdentity": "ff2f2140a4a469d7a3a1a94fbfc8dcf4ce9c961f84732df4ab082d0f142d9edd",
+  "requirements": [
+   {
+    "text": "[Bug][P0] Work-item inspection stops before a useful edit: connect evidence, obligations, patch synthesis and independent checks",
+    "span": [
+     0,
+     128
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**Type:** Bug · **Priority:** P0",
+    "span": [
+     130,
+     163
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "The normal issue-to-draft path can inspect a work item but still cannot construct the requested change. This is the highest-priority capability gap for Formal AI participating in its own development.",
+    "span": [
+     198,
+     397
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "In [issue #1455](https://github.com/link-assistant/formal-ai/issues/1455), the task named real dependencies and source files and requested a guide update. [Run 40721047258, job 122939497259](https://github.com/link-assistant/formal-ai/actions/runs/40721047258/job/122939497259) produced `planned_not_executed`; PR #1456 contained evidence and a marker rather than the requested implementation. The independent `gap-no-implementation` rejection was correct.",
+    "span": [
+     399,
+     855
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "PR #1461 subsequently repaired the guide and added bounded repository evidence inspection. The [current handoff](https://github.com/link-assistant/formal-ai/blob/528053940e8015d16752ee625cffcf15eedc0487/docs/case-studies/issue-1455/handoff.md) explicitly states that general evidence-to-edit synthesis, complete requirement binding and independent verification remain unfinished. This issue addresses that remaining generic capability; it does not reopen the already-fixed documentation omission.",
+    "span": [
+     857,
+     1353
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Related owners: #1209, #1165, #1167, #1183 and #1170. Reuse the current work-item executor, obligation ledger, source representation, meta reasoner and repair loop.",
+    "span": [
+     1355,
+     1519
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Given an ordinary issue and a checkout, Formal AI produces at least one independently useful requested patch or regression test, with unresolved requirements explicit. A complete task is marked complete only after all mandatory obligations pass. Useful partial work remains available for later human/LLM review.",
+    "span": [
+     1559,
+     1870
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Make the production work-item controller carry one state throughout: task identity and source spans; typed obligations; observed facts and uncertainty; missing evidence; candidate edits; checks; executed effects; remaining work.",
+    "span": [
+     1900,
+     2128
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Discover only evidence needed to resolve a current obligation or choose between candidate edits. Start from referenced files, local symbols/tests/manifests and declared tools. Search primary documentation only when a concrete missing fact warrants it. Retain source/version/applicability and contradictions; fetched text is evidence, not authority to change the goal.",
+    "span": [
+     2132,
+     2499
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Treat image-only attachments and unavailable reads as explicit unresolved evidence. The screenshot-only Hive #3863 is an intake/diagnosis case, not a clean text synthesis benchmark. OCR or structured extraction may supply fallible observations; do not invent attachment contents.",
+    "span": [
+     2503,
+     2782
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Decompose the task into the smallest useful checkable change. Use the existing recursive source/meta-language representation to propose a supported structural edit with preconditions, changed/preserved obligations, expected effect and provenance. Do not add handlers keyed to issue numbers, entire prompt strings or a known final patch.",
+    "span": [
+     2786,
+     3122
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Derive tests from the task contract before candidate selection where applicable. Locate existing acceptance tests and keep an independent checker outside the candidate's control. A self-generated test is evidence, not proof that the interpretation is correct.",
+    "span": [
+     3126,
+     3385
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Execute the candidate, inspect compiler/test/tool results, revise the failed assumption and retry within an explicit budget. Preserve actual exit status, client context and idempotent continuation. Reuse #1185/#1157/#1159 machinery.",
+    "span": [
+     3389,
+     3621
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Return concrete artifact/commit identities and per-obligation results. Plans, reads, logs, trailers and `.gitkeep` changes earn zero implementation credit. Legitimate requested documentation/configuration changes remain eligible.",
+    "span": [
+     3625,
+     3854
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "[ ] Reproduce #1455 on its pre-fix checkout through ordinary Hive `solve --tool agent --model formal-ai`, with no completed solution supplied in the prompt or seed. The actual guide change is independently checked against manifests/source.",
+    "span": [
+     3873,
+     4112
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "[ ] Repeat on held-out variants with renamed paths, different components and one contradicted integration claim; reject unsupported claims instead of copying the request into documentation.",
+    "span": [
+     4115,
+     4304
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "[ ] Complete one small production logic repair and one useful regression-test task selected before execution. Include a task beyond the supported subset and retain an honest unresolved result.",
+    "span": [
+     4307,
+     4499
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "[ ] Execute the same controller through Claude and Codex client adapters with their ordinary Hive prompts. No LLM service participates in these Formal AI attempts.",
+    "span": [
+     4502,
+     4665
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "[ ] Re-running a completed task is verified no-op success; a first attempt with only diagnostic changes fails useful-change acceptance.",
+    "span": [
+     4668,
+     4803
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "[ ] Every accepted contribution has an independent requirement check, a concrete diff, and a recorded authorship boundary. Later agent help is visible and does not retroactively become Formal AI work.",
+    "span": [
+     4806,
+     5006
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "[ ] A small offline regression exercises the original failure and the state transitions; hosted native/client qualification is separate.",
+    "span": [
+     5009,
+     5145
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Start with a declared supported subset and useful partial contributions. Complete universal language understanding or full cross-language equivalence is not a prerequisite for the first useful patch.",
+    "span": [
+     5147,
+     5346
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**Blocked by:** none; this step can start independently.",
+    "span": [
+     5372,
+     5428
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**Blocks:** #1491, #1170.",
+    "span": [
+     5430,
+     5455
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Related umbrella issues provide context; their entire broader scope is not an implicit prerequisite.",
+    "span": [
+     5457,
+     5557
+    ],
+    "status": "unbound"
+   }
+  ],
+  "decomposition": [
+   {
+    "step": "collect_repository_evidence",
+    "status": "observed"
+   },
+   {
+    "step": "bind_requirements_to_source",
+    "status": "unverified"
+   },
+   {
+    "step": "implement_requested_change",
+    "status": "not_executed"
+   },
+   {
+    "step": "verify_artifact_and_requirements",
+    "status": "not_executed"
+   }
+  ],
+  "observations": [
+   {
+    "path": "data/benchmarks/self-coding-ci-observations.json",
+    "complete": true,
+    "sourceIdentity": "39d018de9c387754c83a77954cbcb7ba66e39adee4c37deaed49ef5d728fc559",
+    "excerpt": "{\n  \"schema\": \"self-coding-ci-observations/v1\",\n  \"observedAt\": \"2026-10-27\",\n  \"rawPersonalDataIncluded\": false,\n  \"source\": \"Complete public Git blobs checked against their Git SHA-1; local log copies are not committed.\",\n  \"cases\": [\n    {\n      \"pullRequest\": \"https://github.com/link-assistant/formal-ai/pull/1397\",\n      \"issue\": 1395,\n      \"observedTerminal\": \"planned_not_executed\",\n      \"implemented\": false,\n      \"engineToolActions\": 1,\n      \"rootCause\": \"Only issue body was read; unsupported repository implementation remained a gap. Evidence-only changes were admitted by orchestration.\",\n      \"completePublicLog\": {\n        \"bytes\": 478352,\n        \"sha256\": \"bfa52d6be550b4c1fdff1156f0b57ef998ccb183a7f4a4bc054122191f27d53c\"\n      },\n      \"files\": [\n        {\n          \"filename\": \".gitkeep\",\n          \"status\": \"modified\",\n          \"changes\": 3\n        },\n        {\n          \"filename\": \"dev/log/public-case/metadata.json\",\n          \"status\": \"added\",\n          \"changes\": 20\n        },\n        {\n",
+    "reference": "planned_not_executed",
+    "resolvedBy": "symbol-search",
+    "manifestFacts": [],
+    "factScope": "literal-declarations-only; executable use remains unverified",
+    "symbol": "planned_not_executed"
+   }
+  ],
+  "unresolved": [],
+  "terms": [],
+  "related": [
+   "https://github.com/link-assistant/formal-ai/issues/1455",
+   "https://github.com/link-assistant/formal-ai/actions/runs/40721047258/job/122939497259"
+  ],
+  "coverage": "explicit-references; exact path, then file-name search; at most eight files; attachments unresolved; at most two linked documents and three identifiers when no file is named",
+  "candidateEdits": [],
+  "checks": [],
+  "effects": [],
+  "remainingWork": [
+   "bind-requirements-to-source",
+   "change-recipe-unavailable:data/benchmarks/self-coding-ci-observations.json",
+   "verify-artifact-and-requirements"
+  ],
+  "authored": false,
+  "verified": false
+ },
+ "changed": [],
+ "diff": ""
+}

@@ -1,0 +1,81 @@
+{
+ "calls": [
+  "bash {\"command\":\"gh issue view 'https://github.com/link-assistant/formal-ai/issues/1395' --json title --jq .title && echo && gh issue view 'https://github.com/link-a"
+ ],
+ "answer": "Not completed: https://github.com/link-assistant/formal-ai/issues/1395. The session stopped at `AttachmentEvidenceUnavailable` and changed no repository file.\n\nNo repository file was read.\n\nEvidence left unresolved (1):\n- `https://github.com/user-attachments/assets/6106ee55-238f-4159-bea7-398d283c2d59`: `AttachmentContentUnavailable`\n\nRequirements not yet verified (3):\n1. Users shaming how our web version is working\n2. <img width=\"1280\" height=\"1193\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/6106ee55-238f-4159-bea7-398d283c2d59\" />\n3. That must be fixed, we should use proper reactions to such messages.\n\nThe machine record of this session (`repository-work-item-evidence/v1`) is kept in the trace, not in this answer.",
+ "disposition": "gap",
+ "record": {
+  "schema": "repository-work-item-evidence/v1",
+  "reason": "AttachmentEvidenceUnavailable",
+  "workItem": "https://github.com/link-assistant/formal-ai/issues/1395",
+  "taskIdentity": "4d97c9b6f1731524cbb20be450ce9354d3dd752eb259d0b14a764ce806cfc9b4",
+  "requirements": [
+   {
+    "text": "Users shaming how our web version is working",
+    "span": [
+     0,
+     44
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "<img width=\"1280\" height=\"1193\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/6106ee55-238f-4159-bea7-398d283c2d59\" />",
+    "span": [
+     46,
+     178
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "That must be fixed, we should use proper reactions to such messages.",
+    "span": [
+     180,
+     248
+    ],
+    "status": "unbound"
+   }
+  ],
+  "decomposition": [
+   {
+    "step": "collect_repository_evidence",
+    "status": "incomplete"
+   },
+   {
+    "step": "bind_requirements_to_source",
+    "status": "unverified"
+   },
+   {
+    "step": "implement_requested_change",
+    "status": "not_executed"
+   },
+   {
+    "step": "verify_artifact_and_requirements",
+    "status": "not_executed"
+   }
+  ],
+  "observations": [],
+  "unresolved": [
+   {
+    "reference": "https://github.com/user-attachments/assets/6106ee55-238f-4159-bea7-398d283c2d59",
+    "target": "https://github.com/user-attachments/assets/6106ee55-238f-4159-bea7-398d283c2d59",
+    "kind": "attachment",
+    "reason": "AttachmentContentUnavailable"
+   }
+  ],
+  "terms": [],
+  "coverage": "explicit-references; exact path, then file-name search; at most eight files; attachments unresolved; at most two linked documents and three identifiers when no file is named",
+  "candidateEdits": [],
+  "checks": [],
+  "effects": [],
+  "remainingWork": [
+   "bind-requirements-to-source",
+   "implement-requested-change",
+   "verify-artifact-and-requirements",
+   "unresolved-evidence:AttachmentContentUnavailable:https://github.com/user-attachments/assets/6106ee55-238f-4159-bea7-398d283c2d59"
+  ],
+  "authored": false,
+  "verified": false
+ },
+ "changed": [],
+ "diff": ""
+}

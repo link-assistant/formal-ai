@@ -1,0 +1,517 @@
+{
+ "calls": [
+  "bash {\"command\":\"gh issue view 'https://github.com/link-assistant/formal-ai/issues/1455' --json title --jq .title && echo && gh issue view 'https://github.com/link-a",
+  "read {\"filePath\":\"rust/Cargo.toml\",\"file_path\":\"rust/Cargo.toml\",\"path\":\"rust/Cargo.toml\"}",
+  "bash {\"command\":\"node -e ''\\\\''use strict'\\\\'';\\n\\n// Registered source, embedded byte-for-byte by JS readText / Rust include_str.\\n// Source file bytes are data. No",
+  "read {\"filePath\":\"package.json\",\"file_path\":\"package.json\",\"path\":\"package.json\"}",
+  "read {\"filePath\":\"js/web-search-component-entry.js\",\"file_path\":\"js/web-search-component-entry.js\",\"path\":\"js/web-search-component-entry.js\"}",
+  "read {\"filePath\":\"docs/associative-tech-stack.md\",\"file_path\":\"docs/associative-tech-stack.md\",\"path\":\"docs/associative-tech-stack.md\"}",
+  "edit {\"filePath\":\"docs/associative-tech-stack.md\",\"newString\":\"# Associative technology stack\\n\\nFormal AI stores inspectable knowledge as a links network with Links",
+  "read {\"filePath\":\"rust/Cargo.toml\",\"file_path\":\"rust/Cargo.toml\",\"path\":\"rust/Cargo.toml\"}",
+  "read {\"filePath\":\"package.json\",\"file_path\":\"package.json\",\"path\":\"package.json\"}",
+  "read {\"filePath\":\"js/web-search-component-entry.js\",\"file_path\":\"js/web-search-component-entry.js\",\"path\":\"js/web-search-component-entry.js\"}",
+  "read {\"filePath\":\"docs/associative-tech-stack.md\",\"file_path\":\"docs/associative-tech-stack.md\",\"path\":\"docs/associative-tech-stack.md\"}"
+ ],
+ "answer": "Partly done: https://github.com/link-assistant/formal-ai/issues/1455. The session stopped at `UsefulCandidateReadbackVerified` after a change that an independent check accepted; the requirements and work listed below are still open.\n\nFiles read: `rust/Cargo.toml`, `package.json`, `js/web-search-component-entry.js`, `docs/associative-tech-stack.md`.\n\nFiles changed: `docs/associative-tech-stack.md`.\n\nChecks: `task-claims` passed; `source-freshness-and-exact-postimage` passed; `source-anchored-facts` passed; `preimage-preserved` passed.\n\nWork still open (4):\n- `independent-integration-semantics`\n- `consumer-discovery`\n- `source-resolution-unverified:js/web-search-component-entry.js`\n- `consumer-discovery-unverified:consumer-search-incomplete:rust/src`\n\nRequirements not yet verified (3):\n5. Please document each component's actual boundary, feature/target constraints, source paths, and relationship to knowledge acquisition or command execution. Repo…\n6. The wider ecosystem also includes `lino-cache`, `lino-env`, `lino-schema`, `lino-rest-api`, `lino-document-markup-language`, `deduplino`, `links-queue`, `links-…\n7. Evidence and the full personal/organization inventory are being preserved in [PR 34](https://github.com/konard/konard.github.io/pull/34), `docs/case-studies/iss…\n\nThe machine record of this session (`repository-work-item-controller/v1`) is kept in the trace, not in this answer.",
+ "disposition": "gap",
+ "record": {
+  "schema": "repository-work-item-controller/v1",
+  "task": "Document command-stream, web-capture and web-search integrations in the associative stack guide\n\nThe public ecosystem audit for konard/konard.github.io#33 found direct integrations absent from `docs/associative-tech-stack.md` (checked 2026-10-28). The guide says it names upstream associative components and that manifests/source paths are authoritative.\n\nThe current [`rust/Cargo.toml`](https://github.com/link-assistant/formal-ai/blob/main/rust/Cargo.toml) declares `command-stream = \"1.5\"`, `web-capture = \"0.3.37\"` and `web-search = \"0.6.0\"`. [`package.json`](https://github.com/link-assistant/formal-ai/blob/main/package.json) declares `@link-assistant/web-search = \"0.11.1\"`. None is named in the guide.\n\n[`js/web-search-component-entry.js`](https://github.com/link-assistant/formal-ai/blob/main/js/web-search-component-entry.js) imports `getDefaultProviderIds` and `mergeResults` from the published web-search package, invokes them, and adapts HTTP requests through web-capture. This is executable evidence of runtime integration, rather than catalog membership.\n\nPlease document each component's actual boundary, feature/target constraints, source paths, and relationship to knowledge acquisition or command execution. Repository sources: [command-stream](https://github.com/link-foundation/command-stream), [web-capture](https://github.com/link-assistant/web-capture), [web-search](https://github.com/link-assistant/web-search).\n\nThe wider ecosystem also includes `lino-cache`, `lino-env`, `lino-schema`, `lino-rest-api`, `lino-document-markup-language`, `deduplino`, `links-queue`, `links-logs-vault`, `meta-notation`, `meta-ontology` and `meta-expression`. These are candidates for a clearly separate ecosystem/compatibility section if useful; this audit does **not** claim they are linked into Formal AI. Keep the current distinction between real dependencies and design references.\n\nEvidence and the full personal/organization inventory are being preserved in [PR 34](https://github.com/konard/konard.github.io/pull/34), `docs/case-studies/issue-33/`.",
+  "taskIdentity": "0d46b89869e1b93c6795c2a16f1909c53cdfc4c30bf6df3e60c20d0854df6b68",
+  "workItem": "https://github.com/link-assistant/formal-ai/issues/1455",
+  "requirements": [
+   {
+    "text": "Document command-stream, web-capture and web-search integrations in the associative stack guide",
+    "span": [
+     0,
+     95
+    ],
+    "kind": "source-documentation",
+    "status": "verified",
+    "evidence": [
+     "command-stream",
+     "web-capture",
+     "web-search"
+    ]
+   },
+   {
+    "text": "The public ecosystem audit for konard/konard.github.io#33 found direct integrations absent from `docs/associative-tech-stack.md` (checked 2026-10-28). The guide says it names upstream associative components and that manifests/source paths are authoritative.",
+    "span": [
+     97,
+     354
+    ],
+    "kind": "source-documentation",
+    "status": "verified",
+    "evidence": [
+     "docs/associative-tech-stack.md"
+    ]
+   },
+   {
+    "text": "The current [`rust/Cargo.toml`](https://github.com/link-assistant/formal-ai/blob/main/rust/Cargo.toml) declares `command-stream = \"1.5\"`, `web-capture = \"0.3.37\"` and `web-search = \"0.6.0\"`. [`package.json`](https://github.com/link-assistant/formal-ai/blob/main/package.json) declares `@link-assistant/web-search = \"0.11.1\"`. None is named in the guide.",
+    "span": [
+     356,
+     709
+    ],
+    "kind": "source-documentation",
+    "status": "verified",
+    "evidence": [
+     "rust/Cargo.toml",
+     "command-stream = \"1.5\"",
+     "web-capture = \"0.3.37\"",
+     "web-search = \"0.6.0\"",
+     "package.json",
+     "@link-assistant/web-search = \"0.11.1\""
+    ]
+   },
+   {
+    "text": "[`js/web-search-component-entry.js`](https://github.com/link-assistant/formal-ai/blob/main/js/web-search-component-entry.js) imports `getDefaultProviderIds` and `mergeResults` from the published web-search package, invokes them, and adapts HTTP requests through web-capture. This is executable evidence of runtime integration, rather than catalog membership.",
+    "span": [
+     711,
+     1069
+    ],
+    "kind": "source-documentation",
+    "status": "verified",
+    "evidence": [
+     "js/web-search-component-entry.js",
+     "getDefaultProviderIds",
+     "mergeResults"
+    ]
+   },
+   {
+    "text": "Please document each component's actual boundary, feature/target constraints, source paths, and relationship to knowledge acquisition or command execution. Repository sources: [command-stream](https://github.com/link-foundation/command-stream), [web-capture](https://github.com/link-assistant/web-capture), [web-search](https://github.com/link-assistant/web-search).",
+    "span": [
+     1071,
+     1437
+    ],
+    "kind": "source-documentation",
+    "status": "unverified"
+   },
+   {
+    "text": "The wider ecosystem also includes `lino-cache`, `lino-env`, `lino-schema`, `lino-rest-api`, `lino-document-markup-language`, `deduplino`, `links-queue`, `links-logs-vault`, `meta-notation`, `meta-ontology` and `meta-expression`. These are candidates for a clearly separate ecosystem/compatibility section if useful; this audit does **not** claim they are linked into Formal AI. Keep the current distinction between real dependencies and design references.",
+    "span": [
+     1439,
+     1894
+    ],
+    "kind": "source-documentation",
+    "status": "unverified"
+   },
+   {
+    "text": "Evidence and the full personal/organization inventory are being preserved in [PR 34](https://github.com/konard/konard.github.io/pull/34), `docs/case-studies/issue-33/`.",
+    "span": [
+     1896,
+     2064
+    ],
+    "kind": "source-documentation",
+    "status": "unverified"
+   }
+  ],
+  "source": null,
+  "sources": [
+   "rust/Cargo.toml",
+   "package.json",
+   "js/web-search-component-entry.js"
+  ],
+  "target": "docs/associative-tech-stack.md",
+  "observations": [
+   {
+    "path": "rust/Cargo.toml",
+    "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+    "complete": true
+   },
+   {
+    "path": "package.json",
+    "sourceIdentity": "7719887e1ddef6d01246c4c462ae0c1e007cae2d84f89e9850c745855a464a77",
+    "complete": true
+   },
+   {
+    "path": "js/web-search-component-entry.js",
+    "sourceIdentity": "822e6e48a96e256a98154933fc217d6b55bbf959bc5625398fd45ace0c4fba10",
+    "complete": true
+   },
+   {
+    "path": "docs/associative-tech-stack.md",
+    "sourceIdentity": "9938b27518441af593b2310bee7f51e2ab37a1a8418e3d360fdc0f6abbf94504",
+    "complete": true
+   }
+  ],
+  "candidateEdits": [
+   {
+    "path": "docs/associative-tech-stack.md",
+    "preimageIdentity": "f6bd6847906beaa4d459469a80a18c864359da4fcfe7dcae56a8507b1e7ed8af",
+    "postimageIdentity": "9938b27518441af593b2310bee7f51e2ab37a1a8418e3d360fdc0f6abbf94504",
+    "diff": {
+     "added": 25,
+     "lines": [
+      "+<!-- formal-ai-manifest-start: rust/Cargo.toml -->",
+      "+Dependency declarations from `rust/Cargo.toml`:",
+      "+These are literal manifest declarations; they do not establish executable runtime use.",
+      "+| Dependency | Declared version | Dependency section | Target qualifier | Literal options |",
+      "+| --- | --- | --- | --- | --- |",
+      "+| `command-stream` | `1.5` | `dependencies` | `unqualified` | `{}` |",
+      "+| `web-capture` | `0.3.37` | `dependencies` | `cfg(not(target_arch = \"wasm32\"))` | `{\"default-features\":false,\"features\":[\"search\"]}` |",
+      "+| `web-search` | `0.6.0` | `dependencies` | `cfg(not(target_arch = \"wasm32\"))` | `{\"default-features\":false,\"features\":[\"merge\"]}` |",
+      "+<!-- formal-ai-manifest-end: rust/Cargo.toml -->",
+      "+<!-- formal-ai-manifest-start: package.json -->",
+      "+Dependency declarations from `package.json`:",
+      "+These are literal manifest declarations; they do not establish executable runtime use.",
+      "+| Dependency | Declared version | Dependency section | Target qualifier | Literal options |",
+      "+| --- | --- | --- | --- | --- |",
+      "+| `@link-assistant/web-search` | `0.11.1` | `dependencies` | `unqualified` | `{}` |",
+      "+<!-- formal-ai-manifest-end: package.json -->",
+      "+Source syntax observed in `js/web-search-component-entry.js`:",
+      "+Imported `getDefaultProviderIds` from `@link-assistant/web-search` is called in `js/web-search-component-entry.js`; the following excerpt records its syntax.",
+      "+```javascript",
+      "+getDefaultProviderIds()",
+      "+```",
+      "+Imported `mergeResults` from `@link-assistant/web-search` is called in `js/web-search-component-entry.js`; the following excerpt records its syntax.",
+      "+```javascript",
+      "+mergeResults(grouped, { strategy: \"rrf\", rrfK: k, removeDuplicates: true })",
+      "+```"
+     ],
+     "truncated": false
+    }
+   }
+  ],
+  "checks": [
+   {
+    "kind": "task-claims",
+    "status": "passed",
+    "confirmed": 4,
+    "contradicted": 0,
+    "unobserved": 0
+   },
+   {
+    "kind": "source-freshness-and-exact-postimage",
+    "passed": true
+   },
+   {
+    "kind": "source-anchored-facts",
+    "status": "passed",
+    "checked": 5,
+    "missing": []
+   },
+   {
+    "kind": "preimage-preserved",
+    "status": "passed",
+    "kept": 212,
+    "expected": 212,
+    "owned": 0
+   }
+  ],
+  "effects": [
+   {
+    "path": "docs/associative-tech-stack.md",
+    "kind": "edit",
+    "reportedSuccess": true,
+    "observedPostimageIdentity": "9938b27518441af593b2310bee7f51e2ab37a1a8418e3d360fdc0f6abbf94504"
+   }
+  ],
+  "unresolved": [],
+  "remainingWork": [
+   "independent-requirement-acceptance",
+   "independent-integration-semantics",
+   "consumer-discovery",
+   "source-resolution-unverified:js/web-search-component-entry.js",
+   "consumer-discovery-unverified:consumer-search-incomplete:rust/src"
+  ],
+  "transportDiagnostics": [
+   {
+    "kind": "registered-process",
+    "actualTool": "bash",
+    "callId": "c2",
+    "requestIdentity": "84012a75e518fb83748eb0ddbfff09a609c3ea85544df43f16d27766a3363a5d",
+    "operation": "search",
+    "actualExitCode": null,
+    "pendingSession": null,
+    "polls": 0,
+    "reason": null
+   }
+  ],
+  "authored": true,
+  "verified": true,
+  "complete": false,
+  "binding": {
+   "kind": "composed-source-observations",
+   "sources": [
+    {
+     "path": "rust/Cargo.toml",
+     "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795"
+    },
+    {
+     "path": "package.json",
+     "sourceIdentity": "7719887e1ddef6d01246c4c462ae0c1e007cae2d84f89e9850c745855a464a77"
+    },
+    {
+     "path": "js/web-search-component-entry.js",
+     "sourceIdentity": "822e6e48a96e256a98154933fc217d6b55bbf959bc5625398fd45ace0c4fba10"
+    }
+   ],
+   "coverage": "explicit-source-paths-only; no executable-role or whole-task acceptance credit",
+   "discovery": {
+    "schema": "observed-consumer-discovery/v1",
+    "state": "incomplete",
+    "queries": [
+     {
+      "directory": "rust/src",
+      "identifiers": [
+       "command_stream",
+       "web_capture",
+       "web_search"
+      ],
+      "requestIdentity": "84012a75e518fb83748eb0ddbfff09a609c3ea85544df43f16d27766a3363a5d",
+      "status": "unknown",
+      "complete": false,
+      "root": "/tmp/formal-ai-1483-MLIdwL/checkout",
+      "searchGaps": null,
+      "error": "FileIoSearchObservationUnavailable",
+      "transport": {
+       "actualTool": "bash",
+       "callId": "c2",
+       "actualExitCode": null,
+       "completedAt": 7
+      }
+     }
+    ],
+    "candidates": [],
+    "confirmedOwners": [],
+    "gaps": [
+     "consumer-search-incomplete:rust/src"
+    ],
+    "scope": "bounded-observed-cargo-source-scopes; syntax witnesses only; no whole-repository absence or runtime semantics"
+   }
+  },
+  "facts": [
+   {
+    "kind": "manifest-declaration",
+    "manifest": "rust/Cargo.toml",
+    "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+    "section": "dependencies",
+    "name": "command-stream",
+    "version": "1.5"
+   },
+   {
+    "kind": "manifest-declaration",
+    "manifest": "rust/Cargo.toml",
+    "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+    "section": "dependencies",
+    "target": "cfg(not(target_arch = \"wasm32\"))",
+    "name": "web-capture",
+    "version": "0.3.37",
+    "options": {
+     "default-features": false,
+     "features": [
+      "search"
+     ]
+    }
+   },
+   {
+    "kind": "manifest-declaration",
+    "manifest": "rust/Cargo.toml",
+    "sourceIdentity": "1578d9981f78a2e7490ce5e655871fd237be39c7c10710bac5d7fb3fa300f795",
+    "section": "dependencies",
+    "target": "cfg(not(target_arch = \"wasm32\"))",
+    "name": "web-search",
+    "version": "0.6.0",
+    "options": {
+     "default-features": false,
+     "features": [
+      "merge"
+     ]
+    }
+   },
+   {
+    "kind": "manifest-declaration",
+    "manifest": "package.json",
+    "sourceIdentity": "7719887e1ddef6d01246c4c462ae0c1e007cae2d84f89e9850c745855a464a77",
+    "section": "dependencies",
+    "name": "@link-assistant/web-search",
+    "version": "0.11.1"
+   },
+   {
+    "kind": "observed-source-usage",
+    "owner": "js/web-search-component-entry.js",
+    "sourceIdentity": "822e6e48a96e256a98154933fc217d6b55bbf959bc5625398fd45ace0c4fba10",
+    "language": "JavaScript",
+    "imports": [
+     {
+      "module": "@link-assistant/web-search",
+      "bindings": [
+       {
+        "imported": "getDefaultProviderIds",
+        "local": "getDefaultProviderIds",
+        "kind": "named"
+       },
+       {
+        "imported": "mergeResults",
+        "local": "mergeResults",
+        "kind": "named"
+       }
+      ],
+      "kind": "static-import",
+      "span": [
+       0,
+       86
+      ],
+      "source": "import {\n  getDefaultProviderIds,\n  mergeResults,\n} from \"@link-assistant/web-search\";",
+      "sourceTruncated": false
+     }
+    ],
+    "calls": [
+     {
+      "module": "@link-assistant/web-search",
+      "binding": "getDefaultProviderIds",
+      "imported": "getDefaultProviderIds",
+      "kind": "call",
+      "resolution": "static-import-binding-syntax",
+      "span": [
+       288,
+       311
+      ],
+      "source": "getDefaultProviderIds()",
+      "sourceTruncated": false,
+      "options": []
+     },
+     {
+      "module": "@link-assistant/web-search",
+      "binding": "mergeResults",
+      "imported": "mergeResults",
+      "kind": "call",
+      "resolution": "static-import-binding-syntax",
+      "span": [
+       1283,
+       1358
+      ],
+      "source": "mergeResults(grouped, { strategy: \"rrf\", rrfK: k, removeDuplicates: true })",
+      "sourceTruncated": false,
+      "options": [
+       {
+        "name": "strategy",
+        "span": [
+         1307,
+         1322
+        ],
+        "source": "strategy: \"rrf\"",
+        "sourceTruncated": false,
+        "valueKind": "string_literal"
+       },
+       {
+        "name": "rrfK",
+        "span": [
+         1324,
+         1331
+        ],
+        "source": "rrfK: k",
+        "sourceTruncated": false,
+        "valueKind": "identifier"
+       },
+       {
+        "name": "removeDuplicates",
+        "span": [
+         1333,
+         1355
+        ],
+        "source": "removeDuplicates: true",
+        "sourceTruncated": false,
+        "valueKind": "boolean_literal"
+       }
+      ]
+     }
+    ],
+    "references": [],
+    "gaps": [
+     {
+      "kind": "option-spread-or-field-grammar-unresolved",
+      "span": [
+       2883,
+       2893
+      ],
+      "source": "...options",
+      "sourceTruncated": false
+     }
+    ]
+   },
+   {
+    "kind": "observed-consumer-discovery",
+    "schema": "observed-consumer-discovery/v1",
+    "state": "incomplete",
+    "queries": [
+     {
+      "directory": "rust/src",
+      "identifiers": [
+       "command_stream",
+       "web_capture",
+       "web_search"
+      ],
+      "requestIdentity": "84012a75e518fb83748eb0ddbfff09a609c3ea85544df43f16d27766a3363a5d",
+      "status": "unknown",
+      "complete": false,
+      "root": "/tmp/formal-ai-1483-MLIdwL/checkout",
+      "searchGaps": null,
+      "error": "FileIoSearchObservationUnavailable",
+      "transport": {
+       "actualTool": "bash",
+       "callId": "c2",
+       "actualExitCode": null,
+       "completedAt": 7
+      }
+     }
+    ],
+    "candidates": [],
+    "confirmedOwners": [],
+    "gaps": [
+     "consumer-search-incomplete:rust/src"
+    ],
+    "scope": "bounded-observed-cargo-source-scopes; syntax witnesses only; no whole-repository absence or runtime semantics"
+   }
+  ],
+  "claims": [
+   {
+    "reference": "command-stream = \"1.5\"",
+    "name": "command-stream",
+    "version": "1.5",
+    "status": "confirmed",
+    "observed": [
+     "1.5"
+    ]
+   },
+   {
+    "reference": "web-capture = \"0.3.37\"",
+    "name": "web-capture",
+    "version": "0.3.37",
+    "status": "confirmed",
+    "observed": [
+     "0.3.37"
+    ]
+   },
+   {
+    "reference": "web-search = \"0.6.0\"",
+    "name": "web-search",
+    "version": "0.6.0",
+    "status": "confirmed",
+    "observed": [
+     "0.6.0"
+    ]
+   },
+   {
+    "reference": "@link-assistant/web-search = \"0.11.1\"",
+    "name": "@link-assistant/web-search",
+    "version": "0.11.1",
+    "status": "confirmed",
+    "observed": [
+     "0.11.1"
+    ]
+   }
+  ],
+  "authorshipBoundary": {
+   "mechanism": "supplied-documentation-derivation",
+   "targetOutputObserved": true,
+   "autonomousCredit": 0,
+   "laterReviewerWork": "not-observed"
+  },
+  "reason": "UsefulCandidateReadbackVerified"
+ },
+ "changed": [
+  "M docs/associative-tech-stack.md"
+ ],
+ "diff": "diff --git a/docs/associative-tech-stack.md b/docs/associative-tech-stack.md\nindex 8c600c224..04f59bc45 100644\n--- a/docs/associative-tech-stack.md\n+++ b/docs/associative-tech-stack.md\n@@ -284,3 +284,35 @@ When an integration changes, update this guide from executable evidence:\n The project catalog in `data/seed/projects.lino` records a wider ecosystem for\n discovery. Catalog membership alone is not evidence that a component executes\n inside Formal AI.\n+\n+<!-- formal-ai-manifest-start: rust/Cargo.toml -->\n+Dependency declarations from `rust/Cargo.toml`:\n+These are literal manifest declarations; they do not establish executable runtime use.\n+| Dependency | Declared version | Dependency section | Target qualifier | Literal options |\n+| --- | --- | --- | --- | --- |\n+| `command-stream` | `1.5` | `dependencies` | `unqualified` | `{}` |\n+| `web-capture` | `0.3.37` | `dependencies` | `cfg(not(target_arch = \"wasm32\"))` | `{\"default-features\":false,\"features\":[\"search\"]}` |\n+| `web-search` | `0.6.0` | `dependencies` | `cfg(not(target_arch = \"wasm32\"))` | `{\"default-features\":false,\"features\":[\"merge\"]}` |\n+<!-- formal-ai-manifest-end: rust/Cargo.toml -->\n+\n+<!-- formal-ai-manifest-start: package.json -->\n+Dependency declarations from `package.json`:\n+These are literal manifest declarations; they do not establish executable runtime use.\n+| Dependency | Declared version | Dependency section | Target qualifier | Literal options |\n+| --- | --- | --- | --- | --- |\n+| `@link-assistant/web-search` | `0.11.1` | `dependencies` | `unqualified` | `{}` |\n+<!-- formal-ai-manifest-end: package.json -->\n+\n+Source syntax observed in `js/web-search-component-entry.js`:\n+\n+Imported `getDefaultProviderIds` from `@link-assistant/web-search` is called in `js/web-search-component-entry.js`; the following excerpt records its syntax.\n+\n+```javascript\n+getDefaultProviderIds()\n+```\n+\n+Imported `mergeResults` from `@link-assistant/web-search` is called in `js/web-search-component-entry.js`; the following excerpt records its syntax.\n+\n+```javascript\n+mergeResults(grouped, { strategy: \"rrf\", rrfK: k, removeDuplicates: true })\n+```\n"
+}

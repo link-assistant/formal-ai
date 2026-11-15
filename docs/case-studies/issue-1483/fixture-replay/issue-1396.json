@@ -1,0 +1,88 @@
+{
+ "calls": [
+  "bash {\"command\":\"gh issue view 'https://github.com/link-assistant/formal-ai/issues/1396' --json title --jq .title && echo && gh issue view 'https://github.com/link-a"
+ ],
+ "answer": "Не выполнено: https://github.com/link-assistant/formal-ai/issues/1396. Сеанс остановился на `AttachmentEvidenceUnavailable` и не изменил ни одного файла репозитория.\n\nНи один файл репозитория не был прочитан.\n\nНеразрешённые свидетельства (2):\n- `https://github.com/user-attachments/assets/adfaf914-3205-4592-974f-d239277a3c04`: `AttachmentContentUnavailable`\n- `https://github.com/user-attachments/assets/f359e5c9-e373-458c-974e-800092fa05fb`: `AttachmentContentUnavailable`\n\nЕщё не проверенные требования (3):\n1. Не помог...\n2. <img width=\"1758\" height=\"1639\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/adfaf914-3205-4592-974f-d239277a3c04\" />\n3. <img width=\"1729\" height=\"894\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/f359e5c9-e373-458c-974e-800092fa05fb\" />\n\nМашинная запись этого сеанса (`repository-work-item-evidence/v1`) хранится в трассировке, а не в этом ответе.",
+ "disposition": "gap",
+ "record": {
+  "schema": "repository-work-item-evidence/v1",
+  "reason": "AttachmentEvidenceUnavailable",
+  "workItem": "https://github.com/link-assistant/formal-ai/issues/1396",
+  "taskIdentity": "c60e61fb27f34658cbbb3144b068612ca735354e5ee3d0d00565e1401446d456",
+  "requirements": [
+   {
+    "text": "Не помог...",
+    "span": [
+     0,
+     18
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "<img width=\"1758\" height=\"1639\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/adfaf914-3205-4592-974f-d239277a3c04\" />",
+    "span": [
+     20,
+     152
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "<img width=\"1729\" height=\"894\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/f359e5c9-e373-458c-974e-800092fa05fb\" />",
+    "span": [
+     154,
+     285
+    ],
+    "status": "unbound"
+   }
+  ],
+  "decomposition": [
+   {
+    "step": "collect_repository_evidence",
+    "status": "incomplete"
+   },
+   {
+    "step": "bind_requirements_to_source",
+    "status": "unverified"
+   },
+   {
+    "step": "implement_requested_change",
+    "status": "not_executed"
+   },
+   {
+    "step": "verify_artifact_and_requirements",
+    "status": "not_executed"
+   }
+  ],
+  "observations": [],
+  "unresolved": [
+   {
+    "reference": "https://github.com/user-attachments/assets/adfaf914-3205-4592-974f-d239277a3c04",
+    "target": "https://github.com/user-attachments/assets/adfaf914-3205-4592-974f-d239277a3c04",
+    "kind": "attachment",
+    "reason": "AttachmentContentUnavailable"
+   },
+   {
+    "reference": "https://github.com/user-attachments/assets/f359e5c9-e373-458c-974e-800092fa05fb",
+    "target": "https://github.com/user-attachments/assets/f359e5c9-e373-458c-974e-800092fa05fb",
+    "kind": "attachment",
+    "reason": "AttachmentContentUnavailable"
+   }
+  ],
+  "terms": [],
+  "coverage": "explicit-references; exact path, then file-name search; at most eight files; attachments unresolved; at most two linked documents and three identifiers when no file is named",
+  "candidateEdits": [],
+  "checks": [],
+  "effects": [],
+  "remainingWork": [
+   "bind-requirements-to-source",
+   "implement-requested-change",
+   "verify-artifact-and-requirements",
+   "unresolved-evidence:AttachmentContentUnavailable:https://github.com/user-attachments/assets/adfaf914-3205-4592-974f-d239277a3c04",
+   "unresolved-evidence:AttachmentContentUnavailable:https://github.com/user-attachments/assets/f359e5c9-e373-458c-974e-800092fa05fb"
+  ],
+  "authored": false,
+  "verified": false
+ },
+ "changed": [],
+ "diff": ""
+}
