@@ -91,6 +91,17 @@ export function workItemReport(record, task) {
     }
     paragraphs.push(lines.join('\n'));
   }
+  // A partial result names the work it leaves open; requirement rows are listed below.
+  const remaining = record.verified === true && record.complete !== true && Array.isArray(record.remainingWork)
+    ? record.remainingWork.filter(item => typeof item === 'string' && item !== 'independent-requirement-acceptance') : [];
+  if (remaining.length) {
+    const lines = [filled('work-item-report-remaining', language, [['count', String(remaining.length)]])];
+    for (const item of remaining.slice(0, LISTED_REQUIREMENTS)) lines.push('- `' + requirementLine(item) + '`');
+    if (remaining.length > LISTED_REQUIREMENTS) {
+      lines.push(filled('work-item-report-more', language, [['count', String(remaining.length - LISTED_REQUIREMENTS)]]));
+    }
+    paragraphs.push(lines.join('\n'));
+  }
   const requirements = Array.isArray(record.requirements) ? record.requirements : [];
   if (typeof record.refused?.path === 'string') {
     let refused = filled('work-item-report-refused', language, [['path', record.refused.path]]);

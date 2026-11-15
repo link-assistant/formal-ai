@@ -106,9 +106,14 @@ test('ordinary maintained planner produces source-derived guide edit then verifi
   const state = recorded(first);
   assert.equal(state.reason, 'UsefulCandidateReadbackVerified');
   assert.equal(state.task, prompt);
-  assert.equal(state.authored, false);
+  // The edit is authored and its readback preserves the guide, but a single
+  // key binding carries no facts an independent check can anchor (issue #1483).
+  assert.equal(state.authored, true);
   assert.equal(state.verified, false);
   assert.equal(state.complete, false);
+  assert.equal(state.authorshipBoundary.autonomousCredit, 0);
+  assert.equal(state.checks.find(check => check.kind === 'preimage-preserved')?.status, 'passed');
+  assert.ok(state.candidateEdits[0].diff.lines.some(line => line.startsWith('+') && line.includes(JSON.parse(source).packageManager)));
   for (const requirement of state.requirements) assert.equal(Buffer.from(prompt).subarray(...requirement.span).toString(), requirement.text);
   const again = await drive(planChatStep, directory, prompt, {
     steps: 8,

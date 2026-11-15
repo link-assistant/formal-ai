@@ -962,43 +962,43 @@ multilingual_responses
   response response-work-item-report-partial-en
     intent work-item-report-partial
     language en
-    text "Partly done: {subject}. The session stopped at `{reason}` after a change that an independent check accepted; the requirements listed below are not yet verified."
+    text "Partly done: {subject}. The session stopped at `{reason}` after a change that an independent check accepted; the requirements and work listed below are still open."
   response response-work-item-report-partial-ru
     intent work-item-report-partial
     language ru
-    text "Частично выполнено: {subject}. Сеанс остановился на `{reason}` после изменения, которое приняла независимая проверка; перечисленные ниже требования ещё не проверены."
+    text "Частично выполнено: {subject}. Сеанс остановился на `{reason}` после изменения, которое приняла независимая проверка; перечисленные ниже требования и работа ещё не завершены."
   response response-work-item-report-partial-hi
     intent work-item-report-partial
     language hi
-    text "आंशिक रूप से पूरा: {subject}। सत्र `{reason}` पर एक ऐसे बदलाव के बाद रुका जिसे एक स्वतंत्र जाँच ने स्वीकार किया; नीचे दी गई आवश्यकताएँ अभी सत्यापित नहीं हैं।"
+    text "आंशिक रूप से पूरा: {subject}। सत्र `{reason}` पर एक ऐसे बदलाव के बाद रुका जिसे एक स्वतंत्र जाँच ने स्वीकार किया; नीचे दी गई आवश्यकताएँ और काम अभी बाकी हैं।"
   response response-work-item-report-partial-zh
     intent work-item-report-partial
     language zh
-    text "部分完成：{subject}。会话在一次被独立检查接受的更改之后停在 `{reason}`；下列需求尚未验证。"
+    text "部分完成：{subject}。会话在一次被独立检查接受的更改之后停在 `{reason}`；下列需求和工作仍未完成。"
   response response-work-item-report-partial-es
     intent work-item-report-partial
     language es
-    text "Completado en parte: {subject}. La sesión se detuvo en `{reason}` tras un cambio que una comprobación independiente aceptó; los requisitos de abajo aún no están verificados."
+    text "Completado en parte: {subject}. La sesión se detuvo en `{reason}` tras un cambio que una comprobación independiente aceptó; los requisitos y el trabajo de abajo siguen pendientes."
   response response-work-item-report-partial-no-change-needed-en
     intent work-item-report-partial-no-change-needed
     language en
-    text "Partly done already: {subject}. The session stopped at `{reason}`: an independent check accepted the current files, so no change was made; the requirements listed below are not yet verified."
+    text "Partly done already: {subject}. The session stopped at `{reason}`: an independent check accepted the current files, so no change was made; the requirements and work listed below are still open."
   response response-work-item-report-partial-no-change-needed-ru
     intent work-item-report-partial-no-change-needed
     language ru
-    text "Уже частично выполнено: {subject}. Сеанс остановился на `{reason}`: независимая проверка приняла текущие файлы, поэтому изменений не было; перечисленные ниже требования ещё не проверены."
+    text "Уже частично выполнено: {subject}. Сеанс остановился на `{reason}`: независимая проверка приняла текущие файлы, поэтому изменений не было; перечисленные ниже требования и работа ещё не завершены."
   response response-work-item-report-partial-no-change-needed-hi
     intent work-item-report-partial-no-change-needed
     language hi
-    text "पहले से आंशिक रूप से पूरा: {subject}। सत्र `{reason}` पर रुका: एक स्वतंत्र जाँच ने मौजूदा फ़ाइलों को स्वीकार किया, इसलिए कोई बदलाव नहीं किया गया; नीचे दी गई आवश्यकताएँ अभी सत्यापित नहीं हैं।"
+    text "पहले से आंशिक रूप से पूरा: {subject}। सत्र `{reason}` पर रुका: एक स्वतंत्र जाँच ने मौजूदा फ़ाइलों को स्वीकार किया, इसलिए कोई बदलाव नहीं किया गया; नीचे दी गई आवश्यकताएँ और काम अभी बाकी हैं।"
   response response-work-item-report-partial-no-change-needed-zh
     intent work-item-report-partial-no-change-needed
     language zh
-    text "已部分完成：{subject}。会话停在 `{reason}`：独立检查接受了当前文件，因此未做更改；下列需求尚未验证。"
+    text "已部分完成：{subject}。会话停在 `{reason}`：独立检查接受了当前文件，因此未做更改；下列需求和工作仍未完成。"
   response response-work-item-report-partial-no-change-needed-es
     intent work-item-report-partial-no-change-needed
     language es
-    text "Ya completado en parte: {subject}. La sesión se detuvo en `{reason}`: una comprobación independiente aceptó los archivos actuales, así que no se hizo ningún cambio; los requisitos de abajo aún no están verificados."
+    text "Ya completado en parte: {subject}. La sesión se detuvo en `{reason}`: una comprobación independiente aceptó los archivos actuales, así que no se hizo ningún cambio; los requisitos y el trabajo de abajo siguen pendientes."
   response response-work-item-report-effects-en
     intent work-item-report-effects
     language en
@@ -1099,6 +1099,26 @@ multilingual_responses
     intent work-item-report-check-pending
     language es
     text "`{kind}` no ejecutada"
+  response response-work-item-report-remaining-en
+    intent work-item-report-remaining
+    language en
+    text "Work still open ({count}):"
+  response response-work-item-report-remaining-ru
+    intent work-item-report-remaining
+    language ru
+    text "Незавершённая работа ({count}):"
+  response response-work-item-report-remaining-hi
+    intent work-item-report-remaining
+    language hi
+    text "अभी बाकी काम ({count}):"
+  response response-work-item-report-remaining-zh
+    intent work-item-report-remaining
+    language zh
+    text "仍未完成的工作（{count}）："
+  response response-work-item-report-remaining-es
+    intent work-item-report-remaining
+    language es
+    text "Trabajo pendiente ({count}):"
   response response-work-item-report-unresolved-en
     intent work-item-report-unresolved
     language en

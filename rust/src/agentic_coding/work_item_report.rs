@@ -209,6 +209,38 @@ pub fn work_item_report(record: &Value, task: &str) -> String {
         }
         paragraphs.push(lines.join("\n"));
     }
+    // A partial result names the work it leaves open; requirement rows are listed below.
+    let remaining = if record["verified"] == json!(true) && record["complete"] != json!(true) {
+        record["remainingWork"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .filter_map(Value::as_str)
+            .filter(|item| *item != "independent-requirement-acceptance")
+            .collect::<Vec<_>>()
+    } else {
+        Vec::new()
+    };
+    if !remaining.is_empty() {
+        let count = remaining.len().to_string();
+        let mut lines = vec![filled(
+            "work-item-report-remaining",
+            language,
+            &[("count", &count)],
+        )];
+        for item in remaining.iter().take(LISTED_REQUIREMENTS) {
+            lines.push(format!("- `{}`", requirement_line(item)));
+        }
+        if remaining.len() > LISTED_REQUIREMENTS {
+            let more = (remaining.len() - LISTED_REQUIREMENTS).to_string();
+            lines.push(filled(
+                "work-item-report-more",
+                language,
+                &[("count", &more)],
+            ));
+        }
+        paragraphs.push(lines.join("\n"));
+    }
     let requirements = record["requirements"]
         .as_array()
         .map_or(&[][..], Vec::as_slice);

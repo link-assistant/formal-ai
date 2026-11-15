@@ -494,17 +494,17 @@ meanings
     defined-by answer
     role localized_response_template
     precondition "a repository work-item session ends after a change that an executed independent check accepted while other requirements stay unverified"
-    effect "the report opens by naming the work item and the reason the session stopped, says an independent check accepted the change, and says the listed requirements are not yet verified"
+    effect "the report opens by naming the work item and the reason the session stopped, says an independent check accepted the change, and says the listed requirements and work are still open"
     unit "not applicable"
-    example "Partly done: the request. The session stopped at `UsefulCandidateReadbackVerified` after a change that an independent check accepted; the requirements listed below are not yet verified."
+    example "Partly done: the request. The session stopped at `UsefulCandidateReadbackVerified` after a change that an independent check accepted; the requirements and work listed below are still open."
     grounding "data/seed/multilingual-responses-agentic-workspace.lino"
   work-item-report-partial-no-change-needed
     defined-by answer
     role localized_response_template
     precondition "a repository work-item session finds part of the requested state already present, an independent check accepts it, and other requirements stay unverified"
-    effect "the report opens by naming the work item, says no change was made because the current files were accepted, and says the listed requirements are not yet verified"
+    effect "the report opens by naming the work item, says no change was made because the current files were accepted, and says the listed requirements and work are still open"
     unit "not applicable"
-    example "Partly done already: the request. The session stopped at `VerifiedNoOp`: an independent check accepted the current files, so no change was made; the requirements listed below are not yet verified."
+    example "Partly done already: the request. The session stopped at `VerifiedNoOp`: an independent check accepted the current files, so no change was made; the requirements and work listed below are still open."
     grounding "data/seed/multilingual-responses-agentic-workspace.lino"
   work-item-report-effects
     defined-by answer
@@ -545,6 +545,14 @@ meanings
     effect "the report names the check and says it was not run"
     unit "not applicable"
     example "`independent-task-acceptance` not run"
+    grounding "data/seed/multilingual-responses-agentic-workspace.lino"
+  work-item-report-remaining
+    defined-by answer
+    role localized_response_template
+    precondition "an independent check accepted a work-item result while named work, such as integration semantics or consumer discovery, stays open"
+    effect "the report heads the list of open work with its count"
+    unit "not applicable"
+    example "Work still open (2):"
     grounding "data/seed/multilingual-responses-agentic-workspace.lino"
   work-item-report-unresolved
     defined-by answer
