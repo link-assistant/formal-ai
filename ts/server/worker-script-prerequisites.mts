@@ -12,7 +12,7 @@ export const workerScriptPrerequisites = Object.freeze([
   },
   {
     "script": "js/worker/formal_ai_worker_meta_reasoner.js",
-    "sourceSha256": "9aae36050953abed3844db4c44636d7876d2acc4e387dc3005da33598fd0d4ea",
+    "sourceSha256": "7c27b938f20ec4e7650c999e53516b9fa88d27104ed15d85e10bed9c60ea6d07",
     "requires": [
       {
         "script": "js/seed_loader.js",
@@ -30,7 +30,7 @@ export const workerScriptPrerequisites = Object.freeze([
       },
       {
         "script": "js/worker/formal_ai_worker_meta_reasoner.js",
-        "sourceSha256": "9aae36050953abed3844db4c44636d7876d2acc4e387dc3005da33598fd0d4ea"
+        "sourceSha256": "7c27b938f20ec4e7650c999e53516b9fa88d27104ed15d85e10bed9c60ea6d07"
       }
     ]
   },

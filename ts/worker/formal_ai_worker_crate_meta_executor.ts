@@ -425,6 +425,7 @@ async function executeProcedure(request, host, options = {}) {
  * task's goal; the procedure splits by the grammar itself, so the executor
  * never splits a failure again and never extends a tool. The external-CLI
  * executor of orchestration stays one more executor of the same protocol.
+ * Mirrors `struct InProcessExecutor` of rust/src/meta_executor/production.rs.
  */
 function inProcessExecutor(host, language, options = {}) {
   const executor = {
