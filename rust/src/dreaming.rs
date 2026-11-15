@@ -132,6 +132,9 @@ pub struct LearnedRequirement {
     pub statement: String,
     pub source_event_ids: Vec<String>,
     pub occurrences: usize,
+    /// The scope the requirement was stated in (issue #1559 §4); empty when
+    /// it belongs to the owner of the store and applies everywhere.
+    pub scope: Vec<crate::standing_scope::ScopePair>,
 }
 
 /// A generalization baked into Formal AI's meta-algorithm: when solving tasks on
@@ -147,6 +150,11 @@ pub struct MetaAlgorithmAmendment {
     pub rule: String,
     pub source_requirement_ids: Vec<String>,
     pub covered_event_ids: Vec<String>,
+    /// The scope the amendment applies in; empty for everywhere.
+    pub scope: Vec<crate::standing_scope::ScopePair>,
+    /// Lifted out of two or more scopes and kept because its replay
+    /// re-derived stored tasks (issue #1559 §4).
+    pub generalized: bool,
 }
 
 /// A prior task replayed by dreaming against the generalized meta-algorithm.
@@ -658,6 +666,14 @@ fn amendment_event(amendment: &MetaAlgorithmAmendment) -> MemoryEvent {
             .source_requirement_ids
             .iter()
             .cloned()
+            .chain(amendment.scope.iter().map(|(key, value)| {
+                format!("{}{key}={value}", crate::standing_scope::SCOPE_PREFIX)
+            }))
+            .chain(
+                amendment
+                    .generalized
+                    .then(|| String::from(crate::standing_scope::GENERALIZED_SCOPE)),
+            )
             .chain([String::from("recipe:data/meta/dreaming-recipe.lino")])
             .collect(),
         ..MemoryEvent::default()
