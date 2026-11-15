@@ -866,7 +866,7 @@ fn work_item_completion(plan: &GeneralChangePlan, progress: &Progress) -> String
 /// typed into Rust: the words live in `data/seed/`, and the reply follows the
 /// language the request was written in.
 fn general_plan_completed(plan: &GeneralChangePlan) -> String {
-    let language = crate::language::detect(&plan.goal).slug();
+    let language = plan.response_language();
     let mut answer =
         crate::seed::localized_response("general_plan_completed", language).unwrap_or_default();
     answer = answer.replace("{target}", &plan.target);
@@ -918,7 +918,7 @@ const fn capability_label(capability: Capability) -> &'static str {
 }
 
 fn general_plan_mismatch(plan: &GeneralChangePlan, observed: &str) -> String {
-    let language = crate::language::detect(&plan.goal).slug();
+    let language = plan.response_language();
     let mut answer =
         crate::seed::localized_response("general_plan_verification_mismatch", language)
             .unwrap_or_default();
@@ -933,7 +933,7 @@ fn general_plan_mismatch(plan: &GeneralChangePlan, observed: &str) -> String {
 }
 
 fn general_plan_unverified(plan: &GeneralChangePlan) -> String {
-    let language = crate::language::detect(&plan.goal).slug();
+    let language = plan.response_language();
     let mut answer =
         crate::seed::localized_response("general_plan_unverified", language).unwrap_or_default();
     answer = answer.replace("{target}", &plan.target);

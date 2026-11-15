@@ -45,3 +45,7 @@ language_detection
     start 0x0041
     end 0x007A
     note "Fallback / default. Worker also returns en when no Unicode block above matches. `fallback yes` makes the default language a seed record instead of a Rust constant; `alphabetic-only yes` keeps the six ASCII punctuation code points inside 0x0041-0x007A out of the Latin count."
+  prose-syntax
+    fence-markers ("```" "~~~")
+    link-markers ("://" "www.")
+    note "Markup that is not prose in any language (issue #1557): a line opening with a fence marker opens or closes a code block, and a token holding a link marker is a URL. Prose detection drops both before it counts words, so a code block or a link cannot vote for a language."
