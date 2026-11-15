@@ -133,7 +133,7 @@ mod wording;
 mod work_item_boundary_candidate;
 mod work_item_evidence;
 mod work_item_file_io;
-mod work_item_page;
+pub mod work_item_page;
 pub mod work_item_report;
 mod work_item_requirements;
 mod work_item_steps;

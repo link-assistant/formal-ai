@@ -7,6 +7,16 @@ use serde_json::{Value, json};
 use std::collections::{BTreeMap, BTreeSet};
 
 const TOOLS: [&str; 3] = ["read", "edit", "write"];
+/// Issue #1560: a work-item final is a localized report, never a JSON object;
+/// its record stays in the trace.
+fn recorded(answer: &str) -> Value {
+    assert!(
+        !crate::agentic_coding::work_item_report::parses_as_json_object(answer),
+        "{answer}"
+    );
+    crate::agentic_coding::work_item_report::reported_work_item_record(answer)
+        .expect("a work-item final keeps its record")
+}
 struct Run {
     state: Value,
     transcript: Vec<(String, String)>,
@@ -37,7 +47,7 @@ fn drive(task: &str, files: &mut BTreeMap<String, String>) -> Run {
         match planned {
             AgenticPlan::Final(answer) => {
                 return Run {
-                    state: serde_json::from_str(&answer).expect("RepositoryDocumentationState"),
+                    state: recorded(&answer),
                     transcript,
                 };
             }

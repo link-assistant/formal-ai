@@ -12,6 +12,16 @@ Install a supported Node.js release.
 Keep your checkout clean before starting work.
 "#;
 const TOOLS: [&str; 3] = ["read", "edit", "write"];
+/// Issue #1560: a work-item final is a localized report, never a JSON object;
+/// its record stays in the trace.
+fn recorded(answer: &str) -> Value {
+    assert!(
+        !crate::agentic_coding::work_item_report::parses_as_json_object(answer),
+        "{answer}"
+    );
+    crate::agentic_coding::work_item_report::reported_work_item_record(answer)
+        .expect("a work-item final keeps its record")
+}
 fn next(messages: &[ChatMessage]) -> AgenticPlan {
     plan_source_documentation_step(TASK, messages, &TOOLS, None, &mut None).expect("owned task")
 }
@@ -45,7 +55,7 @@ fn answer(plan: AgenticPlan) -> Value {
     let AgenticPlan::Final(answer) = plan else {
         panic!("final answer required")
     };
-    serde_json::from_str(&answer).expect("state")
+    recorded(&answer)
 }
 fn observed(guide: &str) -> Vec<ChatMessage> {
     let mut messages = vec![ChatMessage::user(TASK)];

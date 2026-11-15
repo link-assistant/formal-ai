@@ -8,6 +8,17 @@ use std::{
     sync::atomic::{AtomicU64, Ordering},
 };
 
+/// Issue #1560: a work-item final is a localized report, never a JSON object;
+/// its record stays in the trace.
+fn recorded(answer: &str) -> Value {
+    assert!(
+        !crate::agentic_coding::work_item_report::parses_as_json_object(answer),
+        "{answer}"
+    );
+    crate::agentic_coding::work_item_report::reported_work_item_record(answer)
+        .expect("a work-item final keeps its record")
+}
+
 struct Directory(PathBuf);
 impl Drop for Directory {
     fn drop(&mut self) {
@@ -51,7 +62,7 @@ fn session(directory: &Path, task: &str) -> (Value, Vec<String>) {
         match plan {
             AgenticPlan::Final(answer) => {
                 assert_eq!(final_result.unwrap().disposition, FinalDisposition::Gap);
-                return (serde_json::from_str(&answer).unwrap(), calls);
+                return (recorded(&answer), calls);
             }
             AgenticPlan::ToolCalls(planned) => {
                 assert_eq!(planned.len(), 1);
@@ -226,7 +237,7 @@ fn native_boundary_refuses_ambiguous_reads_and_all_unowned_mutations_before_filt
         let AgenticPlan::Final(answer) = plan else {
             panic!("{variant}: another effect was planned");
         };
-        let report: Value = serde_json::from_str(&answer).unwrap();
+        let report = recorded(&answer);
         assert_eq!(report["reason"], expected, "{variant}");
         assert_eq!(report["authored"], false);
         assert_eq!(report["physicalReadbackVerified"], false);

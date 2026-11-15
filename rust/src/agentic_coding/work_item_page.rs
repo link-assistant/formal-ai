@@ -138,7 +138,8 @@ fn body_lines(text: &str) -> String {
 /// Text that is not a site page (gh, REST or a connector's extracted record)
 /// is returned unchanged. A page yields its title and body; a page without a
 /// body yields `None`.
-pub(super) fn work_item_page_text(raw: &str) -> Option<String> {
+#[must_use]
+pub fn work_item_page_text(raw: &str) -> Option<String> {
     if !is_work_item_page(raw) {
         return Some(raw.to_owned());
     }
