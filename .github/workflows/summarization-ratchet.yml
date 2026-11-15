@@ -90,7 +90,7 @@ jobs:
   summarization-ratchet:
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true) }}
     name: 'Summarization quality ratchet (issue #893)'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # A release build of the CLI plus a few dozen summarizations; the build
     # dominates and starts cold.
     timeout-minutes: 25

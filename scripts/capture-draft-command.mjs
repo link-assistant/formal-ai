@@ -6,6 +6,12 @@ import {StringDecoder} from 'node:string_decoder';
 import {constants} from 'node:os';
 import {fileURLToPath} from 'node:url';
 import {boundedCommand} from '../js/server/bounded-command.mjs';
+// No `.log` names (issue #1571): the shared Hive Mind runner reports a red
+// draft from the newest `*.log` in this directory, which it reads as the
+// solve session log. A capture written there on every chunk is always the
+// newest, so a `.log` capture hid "Finished without changes" behind
+// "docker run exited 5 without a session log error".
+export const CAPTURE_SUFFIX='.capture.jsonl',STREAM_SUFFIX='.txt';
 export async function captureDraftCommand({seconds,phase,command,args=[],directory,env=process.env,maxBytes=134217728,mirror=true}) {
  assert(Number.isSafeInteger(seconds)&&seconds>=0&&seconds<=1800);
  assert(/^[a-z][a-z-]*$/.test(phase)&&path.isAbsolute(directory));
@@ -17,7 +23,7 @@ export async function captureDraftCommand({seconds,phase,command,args=[],directo
  const receipt={schema:'draft-command-outcome/v1',state:'running',budgetSeconds:seconds,
   startedAt:new Date().toISOString(),consoleFormat:'JSONL stream chunks; separate exact stdout/stderr files',maxBytes};
  fs.writeFileSync(receiptFile,JSON.stringify(receipt)+'\n',{flag:'wx',mode:0o600});
- const combined=fs.openSync(path.join(directory,phase+'.log'),'wx',0o600),handles=[],decoders=new Map();
+ const combined=fs.openSync(path.join(directory,phase+CAPTURE_SUFFIX),'wx',0o600),handles=[],decoders=new Map();
  let bytes=0,sequence=0,cancellationSignal=null;
  const cancellation=new AbortController();
  const onSignal=signal=>{
@@ -28,7 +34,7 @@ export async function captureDraftCommand({seconds,phase,command,args=[],directo
  process.on('SIGINT',onInt);process.on('SIGTERM',onTerm);
  const record=(stream,content)=>{if(content)fs.writeFileSync(combined,JSON.stringify({stream,sequence:++sequence,content})+'\n');};
  const observer=(stream,descriptor)=>{
-  const fd=fs.openSync(path.join(directory,phase+'.'+stream+'.log'),'wx',0o600),decoder=new StringDecoder('utf8');
+  const fd=fs.openSync(path.join(directory,phase+'.'+stream+STREAM_SUFFIX),'wx',0o600),decoder=new StringDecoder('utf8');
   handles.push(fd);decoders.set(stream,decoder);
   return chunk=>{
    if(bytes+chunk.length>maxBytes)throw Object.assign(Error('console_byte_budget_exhausted'),{code:'ELOGSIZE'});

@@ -150,8 +150,10 @@ test('corpus verdict preserves every shard obligation with bounded script-only a
   assert.deepEqual(verdict.env,{"NEEDS_JSON":"${{ toJSON(needs) }}","JOBS":"corpus-build corpus-shard","CHECK":"Benchmark corpus gate"});
   // Source pins preserve the original actual quorum/refusal validator and the full build/shard gates.
   assert.equal(digest(fs.readFileSync('scripts/check-shard-results.sh')),"80c490a21334417bc9e2835761b8cf37e89a2c422307ac2a4bf6da86a5ddb168");
-  assert.equal(digest(JSON.stringify(workflow.jobs['corpus-build'])),"c9bfdd565b02f95162e23624c78baec6c1a567c2f4851047c27a86f0881adf5d");
-  assert.equal(digest(JSON.stringify(workflow.jobs['corpus-shard'])),"d158657d57b95d845031893a4258b3f7ce2220031616c99583b07e57d28afdf2");
+  // Issue #1571 pinned the runner image; that is the only change to either reviewed gate.
+  const reviewed=name=>{assert.equal(workflow.jobs[name]['runs-on'],'ubuntu-24.04');return JSON.stringify({...workflow.jobs[name],'runs-on':'ubuntu-latest'});};
+  assert.equal(digest(reviewed('corpus-build')),"c9bfdd565b02f95162e23624c78baec6c1a567c2f4851047c27a86f0881adf5d");
+  assert.equal(digest(reviewed('corpus-shard')),"d158657d57b95d845031893a4258b3f7ce2220031616c99583b07e57d28afdf2");
   const {execFileSync}=await import('node:child_process'),{tmpdir}=await import('node:os'),{join}=await import('node:path');
   const directory=fs.mkdtempSync(join(tmpdir(),'corpus-verdict-selection-'));
   try{

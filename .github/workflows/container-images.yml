@@ -75,7 +75,7 @@ jobs:
     uses: ./.github/workflows/pull-request-check-profile.yml
   resolve:
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true) }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     outputs:
       build: ${{ steps.release.outputs.build }}
@@ -855,7 +855,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     outputs:
       slim-size: ${{ steps.merge.outputs.slim-size }}

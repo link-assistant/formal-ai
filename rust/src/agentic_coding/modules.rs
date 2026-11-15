@@ -134,7 +134,7 @@ mod wording;
 mod work_item_boundary_candidate;
 mod work_item_evidence;
 mod work_item_file_io;
-mod work_item_leads;
+pub mod work_item_leads;
 pub mod work_item_page;
 mod work_item_references;
 pub mod work_item_report;

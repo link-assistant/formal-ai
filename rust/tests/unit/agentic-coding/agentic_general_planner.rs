@@ -264,15 +264,16 @@ fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() 
     let outcome = run_agentic_task(ISSUE_698_WORK_ITEM).expect("Agent CLI work-item replay");
     assert!(!outcome.hit_turn_cap);
     // The driver advertises a shell, but its sandbox refuses gh. The hosted
-    // fallback owns the unchanged issue body; unsupported prose closes with a
-    // canonical gap instead of writing an auxiliary plan journal.
+    // fallback owns the unchanged issue body. Statements inside a fetched issue
+    // are requirements, not read refusals (#1560), so the file the issue names
+    // is read next; the JS planner plans the same three steps (issue #1571).
     assert_eq!(
         outcome
             .steps
             .iter()
             .map(|step| step.tool.as_str())
             .collect::<Vec<_>>(),
-        ["run_command", "web_fetch"]
+        ["run_command", "web_fetch", "read_file"]
     );
     let fetched: serde_json::Value =
         serde_json::from_str(&outcome.steps[1].arguments).expect("fetch arguments");
@@ -285,16 +286,19 @@ fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() 
     )
     .expect("the owned offline issue body");
     assert_eq!(outcome.steps[1].result, body);
-    // The answer is the localized report; the record stays in the trace and a
-    // fetched issue body never refuses a read on the user's behalf (#1560).
+    // A fetched issue body never refuses a read on the user's behalf (#1560):
+    // the read is planned, and its observed failure is the answer instead of a
+    // read-policy refusal or an invented success.
+    let read: serde_json::Value =
+        serde_json::from_str(&outcome.steps[2].arguments).expect("read arguments");
+    assert_eq!(read["path"], "data/benchmarks/industry-suite.lino");
     assert!(!parses_as_json_object(&outcome.final_answer));
-    let evidence = reported_work_item_record(&outcome.final_answer)
-        .expect("structured unsupported-work-item gap");
-    assert_eq!(evidence["schema"], "repository-work-item-evidence/v1");
-    assert_ne!(evidence["reason"], "ReadPolicyRefused");
-    assert_eq!(evidence["authored"], false);
-    assert_eq!(evidence["verified"], false);
-    assert_eq!(evidence["decomposition"][2]["status"], "not_executed");
+    assert!(
+        outcome.final_answer.contains("No such file or directory"),
+        "{}",
+        outcome.final_answer
+    );
+    assert!(!outcome.final_answer.contains("ReadPolicyRefused"));
     assert!(
         outcome
             .steps

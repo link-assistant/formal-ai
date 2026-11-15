@@ -91,7 +91,7 @@ jobs:
   corpus-build:
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true) }}
     name: Build the corpus gate binary
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # 1200s of budget under a 30-minute cap is 66.7%, inside the 70% share
     # issue #1081 allows. A warm sccache build measured 2.0-6.6 minutes, the job 9.1 at most (PR #1188, data/meta/ci-durations.lino).
     timeout-minutes: 30
@@ -151,7 +151,7 @@ jobs:
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) }}
     name: Corpus shard ${{ matrix.shard }}
     needs: [corpus-build]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # 900s of budget under a 25-minute cap is 60%. The whole sweep measured
     # 25.7-34.2 minutes in one job; a sixth of it is ~6 minutes, and the
     # budget leaves room for the shard that draws the slowest prompts.
@@ -214,7 +214,7 @@ jobs:
     # Not `always()`: a run superseded by a newer push is the one
     # cancellation that is not a defect, and it skips the verdict.
     if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled()) }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v7

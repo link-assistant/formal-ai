@@ -1,0 +1,20 @@
+     95 notice	"The ubuntu-latest label will migrate to Ubuntu N beginning October N, N. For more information, see https://github.com/actions/runner-images/issues/N"
+     18 notice	N% - N hits, N misses, N errors
+      9 failure	Process completed with exit code N.
+      7 notice	N% - N hits, N miss, N errors
+      3 notice	run
+      3 notice	Closure-driven cache bucket holds N records (cap N). Exempt from the hard cap because the total-closure gate requires one record per referenced id; every
+      2 warning	The command is still running after Ns (N% of its Ns execution budget). Speed up or repartition it before the budget terminates the step.
+      1 warning	the shared Hive Mind checkout produced no attempt-identity.json; it predates the attempt identity contract (link-assistant/hive-mind#N); zero current-so
+      1 warning	delivery-wall exceeded N in N of N runs (N=N)
+      1 warning	delivery-image-transfer-per-leg exceeded N in N of N runs (N=N)
+      1 warning	delivery-image-prep exceeded N in N of N runs (N=N)
+      1 warning	UNKNOWN: crates.io publish token -- token present; crates.io offers no token-accepting read endpoint (GET /api/vN/me is cookie-only), so only `cargo pub
+      1 warning	This extension consists of N files, out of which N are JavaScript files. For performance reasons, you should bundle your extension: https://aka.ms/vscod
+      1 warning	N verified, N unknown -- proceeding, but the unknown probes above did not confirm anything
+      1 notice	N% - N hits, N misses, N error
+      1 failure	gate `run_clippy` failed (exit status: N); see data/meta/ci-gates/run-clippy.lino
+      1 failure	docker run exited N without a session log error
+      1 failure	The command was terminated after Ns, its full Ns execution budget. The budget expires before `timeout-minutes` so this reports as a failure instead of a
+      1 failure	Pipeline failed. Failing jobs: lint, test
+      1 failure	N gate(s) failed in stage `rust`: run_clippy

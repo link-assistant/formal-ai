@@ -427,6 +427,16 @@ pub fn without_v(version: &str) -> &str {
     version.strip_prefix('v').unwrap_or(version)
 }
 
+/// `version` without its SemVer build metadata (`0.25.19+spec-1.1.0` ->
+/// `0.25.19`). Build metadata never takes part in precedence (SemVer 2.0.0
+/// §10), so a requirement carrying it means nothing more; Cargo warns that it
+/// "will be ignored" (issue #1571, `toml_edit`).
+pub fn without_build_metadata(version: &str) -> &str {
+    version
+        .split_once('+')
+        .map_or(version, |(release, _)| release)
+}
+
 pub fn minor_of(version: &str) -> String {
     let parts: Vec<&str> = without_v(version).split('.').collect();
     parts.iter().take(2).copied().collect::<Vec<_>>().join(".")

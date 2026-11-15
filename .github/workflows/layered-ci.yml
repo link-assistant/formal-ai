@@ -120,7 +120,7 @@ jobs:
   regenerate-translations:
     name: Explicit source-only translation regeneration
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'regenerate-translations' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: read
@@ -168,7 +168,7 @@ jobs:
   changes:
     name: Detect tier changes
     if: ${{ (github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations') && (github.event_name != 'workflow_dispatch' || inputs.diagnostic-native-run == '') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     # Checkout retries must fit this unchanged job clock.
     env:
@@ -219,7 +219,7 @@ jobs:
   source-networks:
     if: ${{ (github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations') && ((github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true)) }}
     name: Full source network serialization (${{ matrix.shard }}/16)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     strategy:
       fail-fast: false
@@ -266,7 +266,7 @@ jobs:
     # Only this tier's own predicate and no `always()`: another tier's
     # folder changing alone must let this tier stand on its last green run.
     if: ${{ (github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations') && (needs.changes.outputs.js-changed == 'true' || github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # Issue #1017: `timeout-minutes` is a backstop, never the deadline. The
     # suites ran as one unbudgeted step that took 378s of this 600s cap
     # (63%, run 37652295664, 2026-10-07) and grows with every pull request,
@@ -451,7 +451,7 @@ jobs:
     # mirrors exceeded the bounded install on main. Keep this optional math
     # integration explicit; a skipped job is not real-prover acceptance.
     if: ${{ (github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations') && (needs.changes.outputs.js-changed == 'true' && vars.FORMAL_AI_REAL_PROVER_INTEGRATION == 'true') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 12
     concurrency:
       group: check-${{ github.workflow }}-${{ github.ref }}-provers
@@ -516,7 +516,7 @@ jobs:
     # R1183: generated research Rust or compiler inputs can change without a
     # JavaScript path change, so this compiler boundary also runs for those edits.
     if: ${{ (github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations') && ((github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && (needs.js.result == 'success' || needs.js.result == 'skipped'))) }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     concurrency:
       group: check-${{ github.workflow }}-${{ github.ref }}-js-rust
@@ -569,7 +569,7 @@ jobs:
     # path). A js failure turns this job into skipped-by-js, never its own
     # red -- the cycle's enforcement order.
     if: ${{ (github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations') && (needs.changes.outputs.ts-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped')) }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     concurrency:
       group: check-${{ github.workflow }}-${{ github.ref }}-ts
@@ -626,7 +626,7 @@ jobs:
     # because the dogfood gate binds all three trees); js and ts must each
     # be green or carried. Either red means skipped-by-cycle, not own red.
     if: ${{ (github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations') && ((github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (needs.changes.outputs.rust-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped') && (needs.ts.result == 'success' || needs.ts.result == 'skipped'))) }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     concurrency:
       group: check-${{ github.workflow }}-${{ github.ref }}-rust
@@ -669,7 +669,7 @@ jobs:
     # The same gate as the rust tier: it wakes on any js, seed, server-manifest
     # or rust change, and js and ts must be green or carried first.
     if: ${{ (github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations') && ((github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (needs.changes.outputs.rust-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped') && (needs.ts.result == 'success' || needs.ts.result == 'skipped'))) }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     concurrency:
       group: check-${{ github.workflow }}-${{ github.ref }}-server-parity
@@ -704,7 +704,7 @@ jobs:
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     name: Explicit server parity diagnostic from existing main binary
     if: ${{ (github.event_name != 'workflow_dispatch' || inputs.mode != 'regenerate-translations') && (github.event_name == 'workflow_dispatch' && inputs.diagnostic-native-run != '') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: read

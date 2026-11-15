@@ -594,6 +594,7 @@ pub fn apply_latest(findings: &[Finding]) {
 }
 
 fn rewrite_cargo_line(text: &str, dependency: &Dependency, latest: &str) -> String {
+    let latest = without_build_metadata(latest);
     rewrite_line_at(text, dependency.line, |line| {
         let declared = dependency.declared.as_deref()?;
         let operator = if declared.starts_with('=') { "=" } else { "" };
@@ -603,6 +604,7 @@ fn rewrite_cargo_line(text: &str, dependency: &Dependency, latest: &str) -> Stri
 }
 
 fn rewrite_npm_line(text: &str, dependency: &Dependency, latest: &str) -> String {
+    let latest = without_build_metadata(latest);
     rewrite_line_at(text, dependency.line, |line| {
         let declared = dependency.declared.as_deref()?;
         let (name, requirement) = npm_registry_identity(&dependency.name, declared)?;

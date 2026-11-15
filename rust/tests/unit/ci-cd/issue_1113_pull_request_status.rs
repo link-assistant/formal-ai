@@ -52,7 +52,7 @@ fn full_status_checks_are_retained_with_explicit_fast_profile_deferral() {
     assert!(!workflow.contains("FORMAL_AI_FULL_PR_CI"));
     assert!(workflow.contains("github.event_name != 'pull_request'"));
     assert!(workflow.contains("uses: ./.github/workflows/pull-request-check-profile.yml"));
-    assert!(workflow.contains("    runs-on: ubuntu-latest"));
+    assert!(workflow.contains("    runs-on: ubuntu-24.04"));
 }
 
 /// Issue #1066: no budget, no grace period, no bypass. Making the check visible

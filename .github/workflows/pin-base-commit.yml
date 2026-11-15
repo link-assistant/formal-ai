@@ -28,7 +28,7 @@ permissions:
 jobs:
   pin:
     name: Pin base commit
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     env:
       GIT_HTTP_LOW_SPEED_LIMIT: '1024'
