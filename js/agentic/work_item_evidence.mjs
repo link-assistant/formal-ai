@@ -23,8 +23,38 @@ export function workItemEvidencePaths(task) {
   }
   return paths;
 }
+/** Mirrors `fn blob_paths`: the repository paths of the work item's own GitHub blob links. */
+function blobPaths(task, workItem) {
+  const repository = /^https:\/\/github\.com\/([^/\s]+\/[^/\s]+)\//u.exec(workItem ?? '')?.[1];
+  if (repository === undefined) return [];
+  const prefix = 'https://github.com/' + repository + '/blob/';
+  const paths = [];
+  for (const word of splitWhitespace(task).flatMap(part => part.split(/[`'"()[\],;<>]+/u))) {
+    if (!word.startsWith(prefix)) continue;
+    const rest = word.slice(prefix.length).split(/[#?]/u)[0];
+    const slash = rest.indexOf('/');
+    if (slash > 0 && slash < rest.length - 1) paths.push(rest.slice(slash + 1));
+  }
+  return paths;
+}
+/**
+ * Mirrors `fn linked_evidence_paths`: a bare file name that the work item's own
+ * GitHub link places in the repository is read at the linked path, so a link
+ * label is not taken for a file at the root (issue #1560). A label whose
+ * linked path is not an evidence path is dropped.
+ */
+export function linkedEvidencePaths(task, workItem = null) {
+  const linked = blobPaths(task, workItem);
+  const paths = [];
+  for (const path of workItemEvidencePaths(task)) {
+    const target = path.includes('/') ? path : linked.find(candidate => candidate.endsWith('/' + path)) ?? path;
+    if (target !== path && workItemEvidencePaths(target)[0] !== target) continue;
+    if (!paths.includes(target)) paths.push(target);
+  }
+  return paths;
+}
 export function planWorkItemEvidence(task, messages, tools, workItem = null) {
-  const paths = workItemEvidencePaths(task);
+  const paths = linkedEvidencePaths(task, workItem);
   if (!paths.length) return null;
   const progress = Progress.scan(messages),
     observations = [];

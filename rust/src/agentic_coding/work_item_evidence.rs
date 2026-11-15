@@ -37,6 +37,57 @@ pub(super) fn work_item_evidence_paths(task: &str) -> Vec<&str> {
     paths
 }
 
+/// The repository paths of the work item's own GitHub blob links.
+fn blob_paths<'a>(task: &'a str, work_item: &str) -> Vec<&'a str> {
+    let Some((owner, repository)) =
+        work_item
+            .strip_prefix("https://github.com/")
+            .and_then(|rest| {
+                let mut parts = rest.splitn(3, '/');
+                let owner = parts.next().filter(|part| !part.is_empty())?;
+                let repository = parts.next().filter(|part| !part.is_empty())?;
+                parts.next().map(|_| (owner, repository))
+            })
+    else {
+        return Vec::new();
+    };
+    let prefix = format!("https://github.com/{owner}/{repository}/blob/");
+    task.split(|character: char| character.is_whitespace() || "`'\"()[],;<>".contains(character))
+        .filter_map(|word| word.strip_prefix(prefix.as_str()))
+        .filter_map(|rest| rest.split(['#', '?']).next())
+        .filter_map(|rest| rest.split_once('/'))
+        .filter(|(reference, path)| !reference.is_empty() && !path.is_empty())
+        .map(|(_, path)| path)
+        .collect()
+}
+
+/// A bare file name that the work item's own GitHub link places in the
+/// repository is read at the linked path, so a link label is not taken for a
+/// file at the root (issue #1560). A label whose linked path is not an
+/// evidence path is dropped.
+pub(super) fn linked_evidence_paths<'a>(task: &'a str, work_item: &str) -> Vec<&'a str> {
+    let linked = blob_paths(task, work_item);
+    let mut paths = Vec::new();
+    for path in work_item_evidence_paths(task) {
+        let target = if path.contains('/') {
+            path
+        } else {
+            linked
+                .iter()
+                .copied()
+                .find(|candidate| candidate.ends_with(&format!("/{path}")))
+                .unwrap_or(path)
+        };
+        if target != path && work_item_evidence_paths(target).first() != Some(&target) {
+            continue;
+        }
+        if !paths.contains(&target) {
+            paths.push(target);
+        }
+    }
+    paths
+}
+
 /// Native twin of `js/agentic/work_item_evidence.mjs`. References grant read evidence only.
 pub(super) fn plan_work_item_evidence(
     task: &str,
@@ -45,7 +96,7 @@ pub(super) fn plan_work_item_evidence(
     work_item: &str,
     result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
-    let paths = work_item_evidence_paths(task);
+    let paths = linked_evidence_paths(task, work_item);
     if paths.is_empty() {
         return None;
     }
