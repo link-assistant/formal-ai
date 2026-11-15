@@ -208,11 +208,12 @@
     "rust/tests/web/issue-1569-workflow-failure-isolation.test.mjs",
     "rust/tests/web/general-plan-event-append.test.mjs",
     "rust/tests/web/owned-hive-finalization.test.mjs",
-    "rust/tests/web/tests-as-docs-twin.test.mjs",
+    "rust/tests/web/tests-as-documentation-twin.test.mjs",
     "rust/tests/web/runner-label-pinning.test.mjs",
     "rust/tests/web/module-map-twin.test.mjs",
     "rust/tests/web/source-test-placement-twin.test.mjs",
     "rust/tests/web/three-source-roots-layout.test.mjs",
-    "rust/tests/web/main-only-planner-twins.test.mjs"
+    "rust/tests/web/main-only-planner-twins.test.mjs",
+    "rust/tests/web/main-only-regression-ledger.test.mjs"
   ]
 }

@@ -13,7 +13,7 @@
 // checked. This twin parses the same files with the vendored tree-sitter Rust
 // grammar (js/vendor/tree-sitter), so the fast pull-request lint rejects that
 // change before merge. It prints the same report with the same exit code, and
-// `data/meta/ci-gates/check-tests-as-docs-js-twin.lino` compares the two on
+// `data/meta/ci-gates/check-tests-as-documentation-javascript-twin.lino` compares the two on
 // main. The rules are the Rust script's; its doc comments explain each one.
 //
 // Usage:

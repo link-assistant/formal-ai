@@ -127,7 +127,7 @@ test('only #[test] functions, also inside inline modules, are audited', () => {
 // The production-only failure this twin closes: the 686367d20 test asserted on
 // its answer only with contains, and the allowlist did not list it.
 test('replays main run 43710854562: a loose-only proof test fails before merge', () => {
-  const replay = JSON.parse(readFileSync(path.join(root, 'rust/tests/fixtures/issue-1191/tests-as-docs-686367d20.json'), 'utf8'));
+  const replay = JSON.parse(readFileSync(path.join(root, 'rust/tests/fixtures/issue-1191/tests-as-documentation-686367d20.json'), 'utf8'));
   assert.equal(replay.schema, 'main-only-regression-replay/v1');
   const found = scan(replay.path, replay.source);
   assert.deepEqual(found, [replay.expectedEntry]);
