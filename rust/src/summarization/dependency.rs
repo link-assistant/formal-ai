@@ -15,11 +15,11 @@
 //! statement in [`KEEP_DIVISOR`], in text order, rendered with the surfaces
 //! they were read from.
 
+use crate::formalization::statement_relation::{certifies_restatement, checked_relation};
 use crate::formalization::statement_rendering::join_surfaces;
 use crate::formalization::text_statements::{
-    Statement, content_ids, formalize_sentences, is_word_character, statement_identity,
+    Statement, content_ids, formalize_sentences, is_word_character,
 };
-use crate::formalization::typed_meaning::typed_meaning_entails;
 
 /// Shared terms that make one statement elaborate another.
 pub const ELABORATION_SHARED_TERMS: usize = 2;
@@ -95,21 +95,12 @@ pub fn sentence_statements(text: &str, language: &str) -> Vec<Entry> {
 
 /// Whether `later` adds nothing to `earlier`.
 ///
-/// It has the same formal identity, or its terms all appear in `earlier`'s
-/// with the same polarity.
+/// Shared terms only propose a restatement; the checked relation certifies it
+/// (issue #1487): the same identity, the same ordered relations, or the
+/// conjunction elimination of an asserted, purely conjunctive statement.
 #[must_use]
 pub fn restates(later: &Statement, earlier: &Statement) -> bool {
-    if later.language != earlier.language
-        || !typed_meaning_entails(&earlier.dialogue, &later.dialogue)
-    {
-        return false;
-    }
-    if statement_identity(later) == statement_identity(earlier) {
-        return true;
-    }
-    let ids = content_ids(later);
-    let held = content_ids(earlier);
-    !ids.is_empty() && later.polarity == earlier.polarity && ids.iter().all(|id| held.contains(id))
+    certifies_restatement(checked_relation(later, earlier))
 }
 
 /// The statements no earlier kept statement restates, and the ones that
