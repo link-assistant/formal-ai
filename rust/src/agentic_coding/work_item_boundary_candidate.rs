@@ -6,8 +6,8 @@ use super::planner::{AgenticPlan, Capability, plan_one, tool_for};
 use super::shell_command_policy::sentences;
 use super::tool_result::{SourceReadObservation, SourceReadStatus, command_argument};
 use super::work_item_file_io::{
-    FileIoPlan, WorkItemFileProgress as Progress, file_io_effect_step, file_io_pending_step,
-    file_io_read_step,
+    FileIoPlan, WorkItemFileProgress as Progress, file_io_certified_read_step, file_io_effect_step,
+    file_io_pending_step, file_io_read_step,
 };
 use super::work_item_leads::work_item_command;
 use super::work_item_report::{refusal, work_item_record_final};
@@ -775,6 +775,9 @@ pub(super) fn plan_work_item_boundary_step(
         };
         observations.push(json!({"path":path,"complete":source.is_some(),"absent":observed.absent,"error":observed.error,"status":status,"sourceIdentity":source.map(digest)}));
         if source.is_none() && !allowed_absent {
+            if let Some(step) = file_io_certified_read_step(messages, tools, path) {
+                return Some(step);
+            }
             return Some(finish(
                 "IncompleteSourceObservation",
                 &observations,

@@ -4,7 +4,7 @@
 import { readText, parseLino, host, hasHost } from './host.mjs';
 import { sentences } from './shell_command_policy.mjs';
 import { sha256Hex } from './crate/source_fetch.mjs';
-import { WorkItemFileProgress as Progress, fileIoReadStep, fileIoEffectStep, fileIoPendingStep } from './work_item_file_io.mjs';
+import { WorkItemFileProgress as Progress, fileIoReadStep, fileIoCertifiedReadStep, fileIoEffectStep, fileIoPendingStep } from './work_item_file_io.mjs';
 import { Capability } from './capability.mjs';
 import { FinalDisposition } from './plan.mjs';
 import { workItemRequirements } from './work_item_requirements.mjs';
@@ -524,7 +524,7 @@ export function planWorkItemBoundaryStep(task, messages, tools, workItem, pathsF
       status: observed.status,
       sourceIdentity: isComplete ? sha256Hex(observed.source) : null
     });
-    if (!isComplete && !allowedAbsent) return finish('IncompleteSourceObservation');
+    if (!isComplete && !allowedAbsent) return fileIoCertifiedReadStep(messages, tools, path) ?? finish('IncompleteSourceObservation');
   }
   const operation = hasHost() ? host().comparisonBoundaryOperation : null;
   const proposed = deriveBoundaryWorkItemCandidate(contract, boundaryCandidateObservations(contract, messages), operation);

@@ -183,3 +183,82 @@ fn native_registered_search_retains_actual_process_custody_without_source_read_c
     assert!(progress.source_read_for("src/consumer.rs").is_none());
     assert!(progress.search_for("other", &identifiers).is_none());
 }
+
+fn listed_read(root: &str) -> Vec<ChatMessage> {
+    let id = "native-client-read";
+    vec![
+        ChatMessage::new(
+            "system",
+            format!("<env>\nWorking directory: {root}\n</env>"),
+        ),
+        ChatMessage::user("Update the requested repository file."),
+        ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            id,
+            "Read",
+            json!({"file_path":"src/owner.mjs"}).to_string(),
+        )]),
+        ChatMessage::tool_result(id, "Read", "     1\texport const enabled = false;"),
+    ]
+}
+
+#[test]
+fn native_uncertified_client_listing_is_reread_through_the_registered_program() {
+    let directory = directory();
+    fs::create_dir(directory.0.join("src")).unwrap();
+    fs::write(
+        directory.0.join("src/owner.mjs"),
+        "export const enabled = false;\n",
+    )
+    .unwrap();
+    let root = directory.0.to_str().unwrap();
+    let mut messages = listed_read(root);
+    assert!(
+        !WorkItemFileProgress::scan(&messages)
+            .source_read_for("src/owner.mjs")
+            .is_some_and(|read| read.complete)
+    );
+    assert!(file_io_certified_read_step(&messages, &["Read", "Edit"], "src/owner.mjs").is_none());
+    let Some(AgenticPlan::ToolCalls(calls)) =
+        file_io_certified_read_step(&messages, &["Read", "Edit", "Bash"], "src/owner.mjs")
+    else {
+        panic!("Expected owned read command");
+    };
+    assert_eq!(calls.len(), 1);
+    assert_eq!(calls[0].tool, "Bash");
+    let arguments: Value = serde_json::from_str(&calls[0].arguments).unwrap();
+    let command = arguments["command"].as_str().unwrap().to_owned();
+    assert_eq!(
+        command,
+        file_io_command("read", Some(root), Some("src/owner.mjs"), None, None).unwrap()
+    );
+    let output = Command::new("/bin/sh")
+        .args(["-c", &command])
+        .current_dir(&directory.0)
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(0));
+    // An Anthropic Bash result carries only the program's output and no exit status;
+    // the registered program's non-failed receipt stands for the exit status.
+    let id = "native-client-bash";
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        id,
+        "Bash",
+        json!({"command":command}).to_string(),
+    )]));
+    messages.push(ChatMessage::tool_result(
+        id,
+        "Bash",
+        String::from_utf8(output.stdout).unwrap(),
+    ));
+    let progress = WorkItemFileProgress::scan(&messages);
+    let read = progress.source_read_for("src/owner.mjs").unwrap();
+    assert!(read.complete);
+    assert_eq!(
+        read.source.as_deref(),
+        Some("export const enabled = false;\n")
+    );
+    assert!(
+        file_io_certified_read_step(&messages, &["Read", "Edit", "Bash"], "src/owner.mjs")
+            .is_none()
+    );
+}

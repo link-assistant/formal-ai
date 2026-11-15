@@ -484,7 +484,14 @@ impl WorkItemFileProgress {
                 continue;
             }
             let observed = receipt(request, &completed.output);
-            let code = completed.code;
+            // The registered program emits a non-failed receipt only with exit status 0, so a
+            // transport that reports no exit code (an Anthropic Bash result) is read from it.
+            let code = completed.code.or_else(|| {
+                observed
+                    .as_ref()
+                    .filter(|value| value["state"] != "failed")
+                    .map(|_| 0)
+            });
             if request.value["operation"] == "root" {
                 if code == Some(0)
                     && observed.as_ref().is_some_and(|value| {
@@ -862,6 +869,38 @@ pub(super) fn file_io_read_step(
             ))
         },
     )
+}
+/// A client Read that succeeded but carries no completeness proof (a Claude
+/// Code numbered listing, say) is read once more through the registered Run
+/// transport, whose receipt certifies the bytes. Any other read outcome, or no
+/// Run tool, leaves the observation incomplete.
+pub(super) fn file_io_certified_read_step(
+    messages: &[ChatMessage],
+    tools: &[&str],
+    path: &str,
+) -> Option<AgenticPlan> {
+    let progress = WorkItemFileProgress::scan(messages);
+    let latest = progress.attempts.iter().rev().find(|attempt| {
+        attempt.capability == Capability::Read
+            && attempt
+                .arguments
+                .as_deref()
+                .and_then(|text| serde_json::from_str::<Value>(text).ok())
+                .is_some_and(|argument_values| argument_values["filePath"] == path)
+    })?;
+    let observed = latest.source_observation()?;
+    if observed.complete
+        || observed.absent
+        || observed.error.is_some()
+        || latest.transport["kind"] == "registered-run-file-io"
+        || shell_command_tool(tools).is_none()
+    {
+        return None;
+    }
+    match run_step(messages, tools, "read", path, None, None) {
+        FileIoPlan::Pending(step) => Some(step),
+        FileIoPlan::Gap(_) => None,
+    }
 }
 pub(super) fn file_io_effect_step(
     messages: &[ChatMessage],
