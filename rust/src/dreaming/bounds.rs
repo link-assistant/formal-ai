@@ -251,9 +251,63 @@ pub fn is_valid_topic(topic: &str) -> bool {
             .any(|word| is_answer_form_cue(word) || !is_topic_stopword(word))
 }
 
+/// A script written without spaces between words.
+fn is_unspaced_script(character: char) -> bool {
+    matches!(
+        character,
+        '\u{3040}'..='\u{30ff}'
+            | '\u{3400}'..='\u{4dbf}'
+            | '\u{4e00}'..='\u{9fff}'
+            | '\u{f900}'..='\u{faff}'
+    )
+}
+
+/// The topic inside one run of an unspaced script ("你必须总是用中文回答") —
+/// the earliest answer-form verb it contains, else what is left after its
+/// leading pronouns, function words and requirement cues (two or more
+/// characters).
+fn unspaced_topic(token: &str, cues: &[String]) -> Option<String> {
+    let mut best: Option<(usize, &str)> = None;
+    for cue in &lexicon().answer_form_cues {
+        if cue.is_empty() {
+            continue;
+        }
+        let Some(at) = token.find(cue.as_str()) else {
+            continue;
+        };
+        let better = best.is_none_or(|(best_at, best_cue)| {
+            at < best_at || (at == best_at && cue.chars().count() > best_cue.chars().count())
+        });
+        if better {
+            best = Some((at, cue.as_str()));
+        }
+    }
+    if let Some((_, cue)) = best {
+        return Some(cue.to_owned());
+    }
+    let prefixes = lexicon()
+        .topic_stopwords
+        .iter()
+        .chain(cues.iter())
+        .filter(|prefix| !prefix.is_empty())
+        .collect::<Vec<_>>();
+    let mut rest = token;
+    loop {
+        let longest = prefixes
+            .iter()
+            .filter(|prefix| rest.starts_with(prefix.as_str()))
+            .max_by_key(|prefix| prefix.chars().count());
+        match longest {
+            Some(prefix) => rest = &rest[prefix.len()..],
+            None => break,
+        }
+    }
+    (rest.chars().count() >= 2).then(|| rest.to_owned())
+}
+
 /// The subject of the statement — its first answer-form verb or first
 /// significant word (three or more characters, not a number, a stopword or a
-/// requirement cue).
+/// requirement cue). A run of an unspaced script is read by `unspaced_topic`.
 #[must_use]
 pub fn statement_topic(statement: &str) -> Option<String> {
     let cues = requirement_cues();
@@ -266,6 +320,12 @@ pub fn statement_topic(statement: &str) -> Option<String> {
         }
         if is_answer_form_cue(&token) {
             return Some(token);
+        }
+        if token.chars().any(is_unspaced_script) {
+            if let Some(topic) = unspaced_topic(&token, cues) {
+                return Some(topic);
+            }
+            continue;
         }
         if token.chars().count() >= 3
             && !is_digits(&token)

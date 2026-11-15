@@ -24,6 +24,7 @@ const DIGITS = /^[0-9]+$/;
 const SLUG_PART = /^[A-Za-z0-9._-]+$/;
 const HEX = /^[0-9a-f]+$/;
 const WHITESPACE = /\p{White_Space}/u;
+const UNSPACED_SCRIPT = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/u;
 
 const charCount = (text) => [...String(text)].length;
 const isWhitespace = (character) => WHITESPACE.test(character);
@@ -181,10 +182,44 @@ export function isValidTopic(topic) {
     && words.some((word) => isAnswerFormCue(word) || !isTopicStopword(word));
 }
 
+/** Mirrors rust/src/dreaming/bounds.rs `is_unspaced_script`: a script written without spaces between words. */
+function isUnspacedScript(character) {
+  return UNSPACED_SCRIPT.test(character);
+}
+
+/**
+ * Mirrors rust/src/dreaming/bounds.rs `unspaced_topic`: the topic inside one
+ * run of an unspaced script ("你必须总是用中文回答") — the earliest answer-form
+ * verb it contains, else what is left after its leading pronouns, function
+ * words and requirement cues (two or more characters).
+ */
+function unspacedTopic(token, cues) {
+  let best = null;
+  let bestAt = Infinity;
+  for (const cue of lexicon().answer_form_cues) {
+    const at = cue ? token.indexOf(cue) : -1;
+    if (at < 0) continue;
+    if (at < bestAt || (at === bestAt && cue.length > best.length)) {
+      best = cue;
+      bestAt = at;
+    }
+  }
+  if (best !== null) return best;
+  const prefixes = [...lexicon().topic_stopwords, ...cues].filter(Boolean);
+  let rest = token;
+  for (;;) {
+    const longest = prefixes.reduce((found, prefix) => (rest.startsWith(prefix) && prefix.length > found.length ? prefix : found), '');
+    if (!longest) break;
+    rest = rest.slice(longest.length);
+  }
+  return charCount(rest) >= 2 ? rest : null;
+}
+
 /**
  * Mirrors rust/src/dreaming/bounds.rs `statement_topic`: the subject of the
  * statement — its first answer-form verb or first significant word (three or
- * more characters, not a number, a stopword or a requirement cue).
+ * more characters, not a number, a stopword or a requirement cue). A run of
+ * an unspaced script is read by `unspacedTopic`.
  */
 export function statementTopic(statement) {
   const cues = requirementCues();
@@ -192,6 +227,11 @@ export function statementTopic(statement) {
     const token = trimMatches(raw, (character) => !isAlphanumeric(character)).toLowerCase();
     if (!token) continue;
     if (isAnswerFormCue(token)) return token;
+    if ([...token].some(isUnspacedScript)) {
+      const topic = unspacedTopic(token, cues);
+      if (topic !== null) return topic;
+      continue;
+    }
     if (charCount(token) >= 3 && !DIGITS.test(token) && !isTopicStopword(token) && !cues.includes(token)) return token;
   }
   return null;
