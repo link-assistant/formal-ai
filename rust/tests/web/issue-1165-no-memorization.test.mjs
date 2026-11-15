@@ -27,6 +27,7 @@ const HELLO_WORLD_PROGRAM_LITERALS_MAX = 1;
 const SOURCE_CAPTURES = [
   ['data/seed/coding-documentation-captures.lino', 23],
   ['data/benchmarks/issue-requirements/', 5],
+  ['data/benchmarks/fixtures/issue-1558/agent-cli-request.json', 4],
 ];
 
 /** Mirrors `source_capture`: the capture a repository-relative path belongs to. */
