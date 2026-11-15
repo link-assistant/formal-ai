@@ -1,6 +1,6 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=394a0ffdbb74e840b9c2dc83d99b295a76a8f629b4ba45942d9947b9ceb65cc5 bytes=30922
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=a1169322e4af97d899617fa08214f62eb97c519aaeafe937a423ad93292fd017 bytes=31838
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
-// formal-ai:workarounds import-pruning items=0 carried=6
+// formal-ai:workarounds import-pruning items=0 carried=7
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
@@ -21,6 +21,10 @@
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal export …
 // formal-ai:blockers export … | imported value
+
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import of names its module carries
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
@@ -249,9 +253,17 @@ pub const HAN: &str = "han";
 // formal-ai:refusal new expression
 // formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | call of a sibling function | field access | imported value | method call .filter() | method call .map() | method call .sort() | new Set
 
+// meta-language:carried JavaScript lexical_declaration (unsupported)
+// formal-ai:refusal new expression
+// formal-ai:blockers new WeakMap
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal nullish coalescing
+// formal-ai:blockers call of a sibling function | call of an imported function | field access | method call .get() | method call .set() | nullish coalescing | object without a $ tag | optional chaining | sibling value
+
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | call of an imported function | field access | imported value | method call .filter() | method call .join() | method call .map() | method call .sort() | new Set | null
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | call of a sibling function | call of an imported function | field access | imported value | method call .filter() | method call .join() | method call .map() | method call .sort() | new Set | null
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .every()

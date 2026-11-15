@@ -927,13 +927,28 @@ pub fn known_ids(statement: &Statement) -> Vec<String> {
     ids.into_iter().collect()
 }
 
-/// The formal identity of a statement: its polarity, its subject and the set
-/// of its other terms.
+/// The formal identity of a statement: its polarity, its subject, the set of
+/// its other terms and the proposition structure a set loses (issue #1487).
 ///
 /// Two statements with one identity say the same thing whatever their wording.
 #[must_use]
 pub fn statement_identity(statement: &Statement) -> String {
     super::typed_meaning::statement_identity(statement)
+}
+
+/// The proposition structure the set of terms loses: operand order,
+/// connectives, quantifiers, negation scope and repetition (issue #1487).
+#[must_use]
+pub fn statement_structure(
+    statement: &Statement,
+) -> super::proposition_structure::PropositionStructure {
+    let words = read_words(&statement.text, &statement.language, true);
+    super::proposition_structure::read_proposition_structure(
+        &statement.text,
+        &statement.language,
+        &words,
+        &statement_terms(statement),
+    )
 }
 
 /// Whether a statement has at least two terms, all of them known.

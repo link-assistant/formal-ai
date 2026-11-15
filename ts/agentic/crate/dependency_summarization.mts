@@ -1,16 +1,18 @@
-import {typedMeaningEntails} from './typed_meaning.mjs';
 // Dependency summarization (R1188-U21): a summary chosen by what the
 // statements of a text depend on, with no language model. The Rust twin is
 // rust/src/summarization/dependency.rs.
 //
 // 1. The text is formalized into statements (text_formalization.mjs).
 // 2. A statement whose formal content an earlier statement already holds is a
-//    duplicate and is dropped. The comparison is by formal identity: the same
-//    polarity, subject and terms, or a term set inside an earlier one's,
-//    whatever the wording.
+//    duplicate and is dropped. Only a checked relation certifies that
+//    (statement_relation.mjs): the same formal identity, the same ordered
+//    relations, or the conjuncts of an asserted conjunctive statement.
+//    Operand order, connectives, quantifiers, negation scope and explicit
+//    counts keep statements apart (issue #1487).
 // 3. The statement graph: a later statement depends on an earlier one when it
 //    mentions the earlier statement's subject, or shares at least
-//    `ELABORATION_SHARED_TERMS` terms with it (it elaborates it).
+//    `ELABORATION_SHARED_TERMS` terms with it (it elaborates it). Shared
+//    terms are retrieval: they relate statements, they never certify one.
 // 4. The kept core: the roots (statements that depend on nothing earlier)
 //    that something depends on, then the most depended-on statements, up to
 //    one statement in `KEEP_DIVISOR`, in text order.
@@ -25,7 +27,8 @@ import {typedMeaningEntails} from './typed_meaning.mjs';
 // duplicate entries and `kept` lists node indexes.
 
 import { byteOrder } from './rust_str.mjs';
-import { contentIds, formalizeSentences, joinSurfaces, statementIdentity } from './text_formalization.mjs';
+import { contentIds, formalizeSentences, joinSurfaces } from './text_formalization.mjs';
+import { certifiesRestatement, checkedRelation } from './statement_relation.mjs';
 
 /** Mirrors `ELABORATION_SHARED_TERMS` in rust/src/summarization/dependency.rs: shared terms that make one statement elaborate another. */
 export const ELABORATION_SHARED_TERMS = 2;
@@ -56,21 +59,12 @@ export function sentenceStatements(text, language) {
   return out;
 }
 
-/** Every member of `inner` is in `outer` (the Rust twin of `restates` checks it inline). */
-function isSubset(inner, outer) {
-  const held = new Set(outer);
-  return inner.every((id) => held.has(id));
-}
-
 /**
- * Mirrors `fn restates` in rust/src/summarization/dependency.rs: `later` adds nothing to `earlier`, it has the same
- * formal identity or its terms all appear in `earlier`'s with the same polarity.
+ * Mirrors `fn restates` in rust/src/summarization/dependency.rs: `later` adds nothing to `earlier`, a checked
+ * relation finds it equivalent to or entailed by `earlier` (never a bare term overlap).
  */
 export function restates(later, earlier) {
-  if(later.language!==earlier.language||!typedMeaningEntails(earlier.dialogue,later.dialogue))return false;
-  if (statementIdentity(later) === statementIdentity(earlier)) return true;
-  const ids = contentIds(later);
-  return ids.length > 0 && later.polarity === earlier.polarity && isSubset(ids, contentIds(earlier));
+  return certifiesRestatement(checkedRelation(later, earlier));
 }
 
 /**

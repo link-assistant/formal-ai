@@ -53,6 +53,8 @@ export const ENTRY_MODULES = Object.freeze([
   'crate/solver_event_projection.mjs',
   'crate/requirement_extraction.mjs',
   'crate/round_trip_translation.mjs',
+  'crate/theorem_claim_binding.mjs',
+  'crate/unread_structure.mjs',
 ]);
 
 const AGENTIC_ROOT = 'js/agentic';

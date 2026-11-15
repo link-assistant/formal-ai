@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=5926eedaf5c512de66e8e3c0eedd0fd50c309a089cc9ff23a10b686d7d8ba42f bytes=9039
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=8ca357d6a14dc41dc4b26efa189f44a5aeb7bf909492b17d4d54ce9e872a9295 bytes=8830
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=3
 
@@ -124,13 +124,9 @@ pub const KEEP_DIVISOR: f64 = 3f64;
 // formal-ai:refusal method call .forEach()
 // formal-ai:blockers arrow callback of .forEach() | call of a sibling function | call of an imported function | field access | method call .forEach() | method call .push() | object without a $ tag
 
-// meta-language:carried JavaScript function_declaration (unsupported)
-// formal-ai:refusal new expression
-// formal-ai:blockers arrow callback of .every() | method call .every() | method call .has() | new Set
-
-// meta-language:carried JavaScript export_statement (unsupported)
-// formal-ai:refusal field access
-// formal-ai:blockers call of a sibling function | call of an imported function | field access
+// meta-language:carried JavaScript export_statement (type)
+// formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of an imported function
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .some()

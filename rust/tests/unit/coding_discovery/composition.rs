@@ -749,3 +749,97 @@ fn source_body_contract_must_match_the_callable_and_evaluated_program() {
         );
     }
 }
+
+fn vowel_requirement(requirement: &str, examples: Vec<Example>) -> CodingTaskSpec {
+    let mut task = spec(
+        "count_vowels",
+        vec![parameter("text", Some("str"))],
+        examples,
+    );
+    task.requirement_sentences = vec![requirement.to_owned()];
+    task
+}
+
+/// Issue #1487: a count, negation or disjunction no discovered part reads is
+/// an unresolved need, and the program for the requirement without it is not
+/// claimed — the examples derived from the same reading cannot tell them apart.
+#[test]
+fn unread_requirement_structure_withholds_the_derived_example_draft() {
+    let vowels = map(&["reduce_count", "vowel_character_class"], Vec::new());
+    let plain = compose(
+        &vowel_requirement("Return the number of vowels in the text.", Vec::new()),
+        &vowels,
+    );
+    let selected = plain.selected.expect("the plain requirement composes");
+    assert!(selected.source.contains("sum(1 for character in text"));
+    assert!(
+        plain
+            .blocked_needs
+            .iter()
+            .all(|need| !need.subject.starts_with("structure:"))
+    );
+
+    for (requirement, unread) in [
+        (
+            "Return twice the number of vowels in the text.",
+            "structure:repetition=repetition-twice",
+        ),
+        (
+            "Return the number of characters that are not vowels in the text.",
+            "structure:scope=_ not _",
+        ),
+        (
+            "Return the number of vowels or digits in the text.",
+            "structure:shape=_ disjunction _",
+        ),
+    ] {
+        let outcome = compose(&vowel_requirement(requirement, Vec::new()), &vowels);
+        assert!(outcome.selected.is_none(), "{requirement} claimed a draft");
+        assert!(outcome.unverified.is_empty(), "{requirement}");
+        assert!(outcome.attempts.is_empty(), "{requirement}");
+        let need = outcome
+            .blocked_needs
+            .iter()
+            .find(|need| need.subject == unread)
+            .unwrap_or_else(|| panic!("{requirement}: {:?}", outcome.blocked_needs));
+        assert_eq!(need.kind, NeedKind::Concept);
+        assert_eq!(need.state, NeedState::Open);
+        assert!(outcome.research_trail.contains(unread), "{requirement}");
+    }
+}
+
+/// Issue #1487: examples the request states are an oracle independent of the
+/// reading, so they check the draft instead — and the plain program fails the
+/// twice requirement's example.
+#[test]
+fn stated_examples_reject_the_draft_that_drops_twice() {
+    let outcome = compose(
+        &vowel_requirement(
+            "Return twice the number of vowels in the text.",
+            vec![example(&["'hello'"], "4"), example(&["'sky'"], "0")],
+        ),
+        &map(&["reduce_count", "vowel_character_class"], Vec::new()),
+    );
+    // A draft that passes executed `'hello' -> 4`, so it is never the plain
+    // count; the plain count is attempted and fails.
+    assert!(
+        outcome.attempts.iter().any(|attempt| !attempt.passed),
+        "{}",
+        outcome.research_trail
+    );
+    if let Some(selected) = &outcome.selected {
+        assert!(
+            !selected
+                .source
+                .contains("sum(1 for character in text if character in 'aeiouAEIOU')\n"),
+            "{}",
+            selected.source
+        );
+    }
+    assert!(
+        outcome
+            .blocked_needs
+            .iter()
+            .all(|need| !need.subject.starts_with("structure:"))
+    );
+}

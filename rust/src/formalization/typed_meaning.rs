@@ -88,8 +88,16 @@ pub fn statement_identity(statement: &Statement) -> String {
         statement.polarity.slug(),
         others.into_iter().collect::<Vec<_>>().join(" ")
     );
-    typed_meaning(&statement.dialogue)
-        .map_or_else(|| legacy.clone(), |typed| format!("{legacy}|{typed}"))
+    let typed = typed_meaning(&statement.dialogue)
+        .map_or_else(|| legacy.clone(), |typed| format!("{legacy}|{typed}"));
+    let key = super::proposition_structure::structure_key(
+        &super::text_statements::statement_structure(statement),
+    );
+    if key.is_empty() {
+        typed
+    } else {
+        format!("{typed}|structure:{key}")
+    }
 }
 /// Source-faithful rendering when the structural view would lose typed meaning.
 #[must_use]

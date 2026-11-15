@@ -27,6 +27,7 @@
 
 use super::vocabulary;
 use crate::engine::stable_id;
+use crate::formalization::proposition_structure::{SurfaceStructure, surface_structure};
 use crate::relative_meta_logic::SourceTier;
 use crate::summarization::Statement;
 
@@ -68,6 +69,13 @@ pub struct StatementSignature {
     pub polarity: Polarity,
     /// Sorted, de-duplicated lowercased content terms.
     pub terms: Vec<String>,
+    /// What a sorted term set drops (issue #1487): operator relations in
+    /// operand order, the `or` shape and explicit counts — shared by an
+    /// assertion and its denial ([`SurfaceStructure::structure`]).
+    pub structure: String,
+    /// Where the negation stands among the connectives and content
+    /// ([`SurfaceStructure::scope`]); empty for an assertion.
+    pub scope: String,
 }
 
 impl StatementSignature {
@@ -90,7 +98,13 @@ impl StatementSignature {
         let mut terms = vocabulary::strip_words(&content, vocabulary::negation_cues());
         terms.sort_unstable();
         terms.dedup();
-        Self { polarity, terms }
+        let SurfaceStructure { structure, scope } = surface_structure(text);
+        Self {
+            polarity,
+            terms,
+            structure,
+            scope,
+        }
     }
 
     /// Reduce `text` to its polarity while using language-independent semantic
@@ -102,27 +116,50 @@ impl StatementSignature {
         if semantic_terms.is_empty() {
             return Self::of(text);
         }
-        let polarity = Self::of(text).polarity;
+        let lexical = Self::of(text);
         let mut terms = semantic_terms.to_vec();
         terms.sort_unstable();
         terms.dedup();
-        Self { polarity, terms }
+        Self { terms, ..lexical }
     }
 
-    /// The signature of this statement's denial — same terms, opposite sign.
+    /// The signature of this statement's denial — same terms and structure,
+    /// opposite sign. The scope is left empty: [`Self::denies`], not `==`,
+    /// recognizes a denial whatever its negation scope.
     #[must_use]
     pub fn negated(&self) -> Self {
         Self {
             polarity: self.polarity.flipped(),
             terms: self.terms.clone(),
+            structure: self.structure.clone(),
+            scope: String::new(),
         }
     }
 
-    /// A stable textual key: `"asserted:fast is parser"`. Two statements share a
-    /// key if and only if they share a signature.
+    /// Whether `self` and `other` take opposite sides of one claim: opposite
+    /// polarity over the same terms and the same structure.
+    #[must_use]
+    pub fn denies(&self, other: &Self) -> bool {
+        self.polarity != other.polarity
+            && self.terms == other.terms
+            && self.structure == other.structure
+    }
+
+    /// A stable textual key: `"asserted:fast is parser"`, then `|` and the
+    /// structure and `|scope=` and the scope when present. Two statements
+    /// share a key if and only if they share a signature.
     #[must_use]
     pub fn key(&self) -> String {
-        format!("{}:{}", self.polarity.slug(), self.terms.join(" "))
+        let mut key = format!("{}:{}", self.polarity.slug(), self.terms.join(" "));
+        if !self.structure.is_empty() {
+            key.push('|');
+            key.push_str(&self.structure);
+        }
+        if !self.scope.is_empty() {
+            key.push_str("|scope=");
+            key.push_str(&self.scope);
+        }
+        key
     }
 
     /// Content-addressed identifier derived from [`Self::key`]. The same fact
@@ -424,8 +461,10 @@ fn find_contradictions(statements: &[MergedStatement]) -> Vec<Contradiction> {
         if node.signature.polarity != Polarity::Asserted || node.signature.is_empty() {
             continue;
         }
-        let denial = node.signature.negated();
-        if let Some(twin) = statements.iter().find(|other| other.signature == denial) {
+        if let Some(twin) = statements
+            .iter()
+            .find(|other| other.signature.denies(&node.signature))
+        {
             out.push(Contradiction {
                 asserted: node.id.clone(),
                 denied: twin.id.clone(),

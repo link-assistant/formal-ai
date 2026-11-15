@@ -3,20 +3,23 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
+
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/dependency_summarization.mjs"] = (crateRequire) => {
-const { typedMeaningEntails } = crateRequire("crate/typed_meaning.mjs");
 // Dependency summarization (R1188-U21): a summary chosen by what the
 // statements of a text depend on, with no language model. The Rust twin is
 // rust/src/summarization/dependency.rs.
 //
 // 1. The text is formalized into statements (text_formalization.mjs).
 // 2. A statement whose formal content an earlier statement already holds is a
-//    duplicate and is dropped. The comparison is by formal identity: the same
-//    polarity, subject and terms, or a term set inside an earlier one's,
-//    whatever the wording.
+//    duplicate and is dropped. Only a checked relation certifies that
+//    (statement_relation.mjs): the same formal identity, the same ordered
+//    relations, or the conjuncts of an asserted conjunctive statement.
+//    Operand order, connectives, quantifiers, negation scope and explicit
+//    counts keep statements apart (issue #1487).
 // 3. The statement graph: a later statement depends on an earlier one when it
 //    mentions the earlier statement's subject, or shares at least
-//    `ELABORATION_SHARED_TERMS` terms with it (it elaborates it).
+//    `ELABORATION_SHARED_TERMS` terms with it (it elaborates it). Shared
+//    terms are retrieval: they relate statements, they never certify one.
 // 4. The kept core: the roots (statements that depend on nothing earlier)
 //    that something depends on, then the most depended-on statements, up to
 //    one statement in `KEEP_DIVISOR`, in text order.
@@ -29,18 +32,25 @@ const { typedMeaningEntails } = crateRequire("crate/typed_meaning.mjs");
 // `dependsOn` and `dependents`, lists of node indexes; a summary is
 // `{statements, duplicates, removed, kept, text}` where `removed` lists the
 // duplicate entries and `kept` lists node indexes.
+
 const { byteOrder } = crateRequire("crate/rust_str.mjs");
-const { contentIds, formalizeSentences, joinSurfaces, statementIdentity } = crateRequire("crate/text_formalization.mjs");
+const { contentIds, formalizeSentences, joinSurfaces } = crateRequire("crate/text_formalization.mjs");
+const { certifiesRestatement, checkedRelation } = crateRequire("crate/statement_relation.mjs");
+
 /** Mirrors `ELABORATION_SHARED_TERMS` in rust/src/summarization/dependency.rs: shared terms that make one statement elaborate another. */
 const ELABORATION_SHARED_TERMS = 2;
+
 /** Mirrors `KEEP_DIVISOR` in rust/src/summarization/dependency.rs: the summary keeps at most one statement in this many. */
 const KEEP_DIVISOR = 3;
+
 const WORD_CHARACTER = /^[\p{L}\p{M}\p{N}]$/u;
+
 /** Mirrors `fn closing_of` in rust/src/summarization/dependency.rs: the last character of a sentence when it is punctuation, else ''. */
 function closingOf(sentence) {
   const last = Array.from(sentence).pop();
   return last === undefined || WORD_CHARACTER.test(last) ? '' : last;
 }
+
 /**
  * Mirrors `fn sentence_statements` in rust/src/summarization/dependency.rs: every statement of `text` with the index
  * of the sentence it came from and that sentence's closing punctuation.
@@ -55,21 +65,15 @@ function sentenceStatements(text, language) {
   });
   return out;
 }
-/** Every member of `inner` is in `outer` (the Rust twin of `restates` checks it inline). */
-function isSubset(inner, outer) {
-  const held = new Set(outer);
-  return inner.every((id) => held.has(id));
-}
+
 /**
- * Mirrors `fn restates` in rust/src/summarization/dependency.rs: `later` adds nothing to `earlier`, it has the same
- * formal identity or its terms all appear in `earlier`'s with the same polarity.
+ * Mirrors `fn restates` in rust/src/summarization/dependency.rs: `later` adds nothing to `earlier`, a checked
+ * relation finds it equivalent to or entailed by `earlier` (never a bare term overlap).
  */
 function restates(later, earlier) {
-  if(later.language!==earlier.language||!typedMeaningEntails(earlier.dialogue,later.dialogue))return false;
-  if (statementIdentity(later) === statementIdentity(earlier)) return true;
-  const ids = contentIds(later);
-  return ids.length > 0 && later.polarity === earlier.polarity && isSubset(ids, contentIds(earlier));
+  return certifiesRestatement(checkedRelation(later, earlier));
 }
+
 /**
  * Mirrors `fn split_duplicates` in rust/src/summarization/dependency.rs: the statements no earlier kept statement
  * restates, and the ones that restate one (the duplicates removed), each in text order.
@@ -86,6 +90,7 @@ function splitDuplicates(entries) {
   }
   return { unique, removed };
 }
+
 /**
  * Mirrors `fn without_duplicates` in rust/src/summarization/dependency.rs: the statements no earlier kept statement
  * restates, and how many were dropped.
@@ -94,11 +99,13 @@ function withoutDuplicates(entries) {
   const { unique, removed } = splitDuplicates(entries);
   return { unique, duplicates: removed.length };
 }
+
 /** Mirrors `fn shared_terms` in rust/src/summarization/dependency.rs: how many distinct term ids two statements share. */
 function sharedTerms(left, right) {
   const held = new Set(contentIds(right));
   return contentIds(left).filter((id) => held.has(id)).length;
 }
+
 /**
  * Mirrors `fn depends_on` in rust/src/summarization/dependency.rs: `later` mentions `earlier`'s subject, or shares
  * enough terms with it to elaborate it.
@@ -107,6 +114,7 @@ function dependsOn(later, earlier) {
   if (earlier.subject !== null && contentIds(later).includes(earlier.subject.id)) return true;
   return sharedTerms(later, earlier) >= ELABORATION_SHARED_TERMS;
 }
+
 /**
  * Mirrors `fn statement_graph` in rust/src/summarization/dependency.rs: for every statement, the earlier statements
  * it depends on and the later ones that depend on it.
@@ -122,10 +130,12 @@ function statementGraph(entries) {
   });
   return nodes;
 }
+
 /** Mirrors `fn keep_budget` in rust/src/summarization/dependency.rs: one statement in `KEEP_DIVISOR`, at least one. @param {number} count @returns {number} */
 function keepBudget(count) {
   return count === 0 ? 0 : Math.max(1, Math.ceil(count / KEEP_DIVISOR));
 }
+
 /**
  * Mirrors `fn kept_core` in rust/src/summarization/dependency.rs: the indexes of the kept statements, in text order.
  * Roots something depends on come first, then the rest, each group by
@@ -139,6 +149,7 @@ function keptCore(nodes) {
   const ranked = [...roots.sort(byDependents), ...rest.sort(byDependents)];
   return ranked.slice(0, keepBudget(nodes.length)).sort((left, right) => left - right);
 }
+
 /**
  * Mirrors `fn render_kept` in rust/src/summarization/dependency.rs: the kept statements in their own words, a
  * fragment that ends its sentence here closed with the sentence's punctuation.
@@ -153,6 +164,7 @@ function renderKept(nodes, kept) {
   });
   return joinSurfaces(pieces);
 }
+
 /**
  * Mirrors `fn summarize_by_dependency` in rust/src/summarization/dependency.rs: the kept core of `text` and its
  * rendering in the text's own words.
@@ -172,6 +184,7 @@ function summarizeByDependency(text, language) {
     text: renderKept(nodes, kept),
   };
 }
+
 /**
  * Mirrors `fn key_facts` in rust/src/summarization/dependency.rs: the gold facts of a text, the distinct term ids of
  * the first sentence that yields a statement (its subject and the facts that
@@ -184,11 +197,13 @@ function keyFacts(text, language) {
   const ids = entries.filter((entry) => entry.sentence === first).flatMap((entry) => contentIds(entry.statement));
   return [...new Set(ids)].sort(byteOrder);
 }
+
 /** Mirrors `fn retained_facts` in rust/src/summarization/dependency.rs: how many of `facts` the kept statements still hold. */
 function retainedFacts(summary, facts) {
   const held = new Set(summary.kept.flatMap((index) => contentIds(summary.statements[index].statement)));
   return facts.filter((id) => held.has(id)).length;
 }
+
 return Object.freeze({
   ELABORATION_SHARED_TERMS,
   KEEP_DIVISOR,
