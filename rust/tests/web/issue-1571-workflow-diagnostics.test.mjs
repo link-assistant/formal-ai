@@ -61,3 +61,30 @@ test('every job runs on a pinned runner image, never a floating *-latest label',
   .filter(([,label])=>floating.test(label)).map(([line])=>`${name}: ${line.trim()}`));
  assert.deepEqual(tables,[]);
 });
+
+// The daily dependency job moved web-capture to 2.0.2, whose engines say
+// node >=26.10.0, and npm only warned (EBADENGINE). Electron 44 embeds Node 24,
+// and VS Code runs the extension on Node 24, so the 2.x line cannot load there.
+// Every package these runtimes load must accept a Node 24 floor.
+test('every runtime package in the desktop and VS Code locks accepts the Node 24 that Electron 44 embeds',()=>{
+ const embedded=[24,21,0],floorOf=alternative=>{
+  const match=/^(?:>=|\^|~|=)?\s*v?(\d+)(?:\.(\d+))?(?:\.(\d+))?/u.exec(alternative.trim());
+  return match?match.slice(1).map(part=>Number(part??0)):[0,0,0];
+ },accepts=range=>range.split('||').some(alternative=>{
+  const floor=floorOf(alternative);
+  for(let index=0;index<3;index+=1)if(floor[index]!==embedded[index])return floor[index]<embedded[index];
+  return true;
+ });
+ const rejected=['desktop','vscode'].flatMap(directory=>{
+  const lock=JSON.parse(readFileSync(new URL(`${directory}/package-lock.json`,root),'utf8'));
+  return Object.entries(lock.packages??{}).filter(([,entry])=>!entry.dev&&entry.engines?.node&&!accepts(entry.engines.node))
+   .map(([path,entry])=>`${directory}/${path}: ${entry.engines.node}`);
+ });
+ assert.deepEqual(rejected,[]);
+ // The pin that holds web-capture on 1.x names the upstream report.
+ for(const directory of ['desktop','vscode']){
+  const manifest=JSON.parse(readFileSync(new URL(`${directory}/package.json`,root),'utf8'));
+  assert.match(manifest.dependencies['@link-assistant/web-capture'],/^\^1\./u);
+  assert.match(manifest['@link-assistant/web-capture//'],/^blocked: https:\/\/github\.com\/link-assistant\/web-capture\/issues\/191 /u);
+ }
+});
