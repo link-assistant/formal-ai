@@ -98,6 +98,7 @@ Almost every red `main` run has the same shape: **a check that runs on `main` bu
 * "No files were found … native-agentic-protocol-captures": expected when no protocol capture runs.
 * The "sccache unavailable" warnings (#1031): the intended fallback.
 * Cache-bucket notices.
+* Eleven "file has N lines (approaching limit of 1500)" warnings on the final PR head (`298d39e6a`). They come from `scripts/check-file-size.mjs`, whose warning threshold is 1400 and whose hard limit is 1500. They name ten files: seven `.lino` files under `data/seed/` and `data/meta/`, and three `ts/` sources, up to `ts/seed_loader.ts` at 1498. These are true advisory warnings. Every count is identical on `main`, and this PR touches none of the files. Splitting a seed or loader file changes what the seed and worker loaders read, which is a content refactor rather than a CI defect, so it is left to the owners of those files. The warning exists precisely so that this split happens before the hard limit is reached.
 * actionlint 1.7 on the touched workflows (ladder, desktop-release, external-benchmarks): clean. zizmor is configured in `.github/zizmor.yml`. Its `unpinned-uses` stance (tags rather than SHAs) is deliberate in this repository and is noted in the template comparison.
 * The templates' `rerun-unacquired` workflow was not adopted. Every cancelled run in the sample was a concurrency supersede, with no unacquired runner.
 * `check-source-duplication.mjs` exits 1 locally, but it is not wired into any workflow. Noted, and out of scope.
