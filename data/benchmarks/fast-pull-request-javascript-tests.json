@@ -192,6 +192,16 @@
     "rust/tests/web/focused-test-map.test.mjs",
     "rust/tests/web/formal-ai-shared-build.test.mjs",
     "rust/tests/web/hive-image-delta.test.mjs",
-    "rust/tests/web/ci-phase-timing.test.mjs"
+    "rust/tests/web/ci-phase-timing.test.mjs",
+    "rust/tests/web/issue-1165-no-memorization.test.mjs",
+    "rust/tests/web/bounded-subprocess-boundaries.test.mjs",
+    "rust/tests/web/dependency-summarization.test.mjs",
+    "rust/tests/web/issue-1569-collect-build-artifacts.test.mjs",
+    "rust/tests/web/issue-1569-ordered-module-lists.test.mjs",
+    "rust/tests/web/issue-1569-generated-version-literals.test.mjs",
+    "rust/tests/web/issue-1569-ladder-leaf-infrastructure.test.mjs",
+    "rust/tests/web/issue-1569-test-output-annotations.test.mjs",
+    "rust/tests/web/issue-1569-wasm-worker-inputs.test.mjs",
+    "rust/tests/web/issue-1569-workflow-failure-isolation.test.mjs"
   ]
 }

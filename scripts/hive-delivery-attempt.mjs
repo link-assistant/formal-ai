@@ -422,10 +422,12 @@ export function readClientOutcomes(environment, selection) {
  * were deferred before effects is reported as deferred and incomplete, with zero
  * credit, instead of failing on missing claim artifacts (#1485). Any other gap fails.
  */
+// `log` receives the deferral notice; tests collect it so it is asserted rather than annotated on their job (#1569).
 export async function aggregateAcceptance(environment = process.env, {
   transport = boundedCommand,
   reader = null,
-  plan = planClients
+  plan = planClients,
+  log = console.log
 } = {}) {
   const selection = readSmallJson(environment.HIVE_ADMISSION_SELECTION);
   assert.equal(selection.admitted, true);
@@ -464,7 +466,7 @@ export async function aggregateAcceptance(environment = process.env, {
     ''
   ].join('\n') + '\n');
   if (observed.deferred) {
-    console.log('::notice title=Hive clients deferred before effects::' + Object.entries(result.states)
+    log('::notice title=Hive clients deferred before effects::' + Object.entries(result.states)
       .filter(([, value]) => value.state === clientStates.deferred).map(([tool]) => tool).join(', ')
       + ' did not run and received no credit; the same candidate resumes after its prerequisites succeed');
     return result;

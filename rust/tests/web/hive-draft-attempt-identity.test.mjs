@@ -4,11 +4,13 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import {ATTEMPT_MODES, ATTEMPT_OUTCOMES, FILES, attemptModeOf, currentSourceCredit, parseAttemptIdentity, selectAttemptIdentity,
+import {ATTEMPT_MODES, ATTEMPT_OUTCOMES, CAPTURE_OUTCOME_SCHEMA, FILES, attemptModeOf, currentSourceCredit, parseAttemptIdentity, selectAttemptIdentity,
   summarizeAttempt, verifyAttemptCustody, verifyHiveAttempt} from '../../../scripts/lib/hive-draft-attempt-identity.mjs';
 import {main} from '../../../scripts/hive-draft-attempt.mjs';
 import {failureComment} from '../../../scripts/hive-mind-draft-result.mjs';
 import {workflowJobs} from '../../../scripts/lib/ci-speed-workflows.mjs';
+
+const root = path.resolve(import.meta.dirname, '../../..');
 
 const formalSha = 'a'.repeat(40), hiveSha = 'b'.repeat(40), digest = 'c'.repeat(64), staleDigest = 'd'.repeat(64);
 const selection = (overrides = {}) => ({
@@ -117,7 +119,11 @@ test('CLI admits once, then refuses a swapped artifact with a typed outcome file
   const env = {FORMAL_AI_DRAFT_LOG_DIR: dir, GITHUB_OUTPUT: outputs, GITHUB_REPOSITORY: 'link-assistant/formal-ai', GITHUB_RUN_ID: '7', GITHUB_RUN_ATTEMPT: '1',
     FORMAL_AI_DRAFT_ISSUE: '1484', FORMAL_AI_SELECTED_SHA: formalSha, FORMAL_AI_SELECTED_AT: '2026-11-15T00:00:00Z', FORMAL_AI_BINARY: 'built',
     HIVE_MIND_DIR: hiveDir, HIVE_MIND_SOURCE_SHA: hiveSha, HIVE_MIND_IMAGE: 'konard/hive-mind:2.40.4'};
-  const io = binaries => ({gitHead: dir => (dir === hiveDir ? hiveSha : formalSha), inspectBinary: name => binaries[name] ?? null});
+  // Issue #1569: the CLI's job-log lines are collected, so the refusals below are asserted here instead of
+  // surfacing as `##[error]` annotations on the passing js tier.
+  const logged = [];
+  const io = binaries => ({gitHead: dir => (dir === hiveDir ? hiveSha : formalSha), inspectBinary: name => binaries[name] ?? null,
+    log: line => logged.push(line)});
   const identity = main(env, ['--select'], io({built: {sha256: digest, bytes: 10, version: 'formal-ai 0.355.29'}}));
   assert.equal(process.exitCode ?? 0, 0);
   assert.deepEqual(JSON.parse(fs.readFileSync(path.join(dir, FILES.identity), 'utf8')), identity);
@@ -133,6 +139,10 @@ test('CLI admits once, then refuses a swapped artifact with a typed outcome file
   assert.equal(main(draftEnv, ['--verify-custody'], io({})).outcome, ATTEMPT_OUTCOMES.deferred);
   assert.equal(main({...draftEnv, FORMAL_AI_ATTEMPT_IDENTITY: ''}, ['--verify-custody'], io({})).outcome, ATTEMPT_OUTCOMES.deferred);
   process.exitCode = 0;
+  const errors = logged.filter(entry => entry.startsWith('::error '));
+  assert.equal(errors.length, 3, logged.join('\n'));
+  assert.match(errors[0], /^::error title=Formal AI draft identity-mismatch::/u);
+  assert.match(errors[2], /no attempt identity was admitted by the build job/u);
   fs.writeFileSync(path.join(dir, FILES.hiveIdentity), JSON.stringify(hiveIdentityFor(identity)));
   fs.writeFileSync(path.join(dir, FILES.hiveRecord), JSON.stringify(hiveRecordFor(identity)));
   assert.equal(main(draftEnv, ['--verify-hive'], io({})).id, identity.id);
@@ -155,4 +165,47 @@ test('both issue-open jobs carry the identity and verify it around the shared Hi
   assert.match(draft.body, /Download the exact-main binary once[\s\S]*?continue-on-error: true/);
   assert.match(draft.body, /DRAFT_ATTEMPT_OUTCOME: \$\{\{ steps.custody.outputs.attempt_outcome/);
   assert.doesNotMatch(workflow, /hive-mind:latest|FORMAL_AI_DRAFT_ATTEMPT_IDENTITY/);
+});
+
+// Issue #1569: run 43691120627 ran solve for seven minutes, yet its receipt said `deferred-infrastructure`,
+// "Hive Mind ended the attempt before solve". The only `attempt-outcome.json` in the session directory was
+// the capture wrapper's own record of the attempt phase, read as if Hive Mind had written it.
+test('the capture record of the attempt phase is never read as a Hive Mind outcome', t => {
+  const captureSource = fs.readFileSync(path.join(root, 'scripts/capture-draft-command.mjs'), 'utf8');
+  assert.ok(captureSource.includes("schema:'" + CAPTURE_OUTCOME_SCHEMA + "'"), 'the capture wrapper still writes ' + CAPTURE_OUTCOME_SCHEMA);
+  assert.match(captureSource, /phase\+'-outcome\.json'/u);
+  const phases = new Set();
+  for (const directory of ['.github/workflows', '.github/actions'])
+    for (const entry of fs.readdirSync(path.join(root, directory), {recursive: true}).filter(name => /\.ya?ml$/u.test(name)))
+      for (const match of fs.readFileSync(path.join(root, directory, entry), 'utf8').matchAll(/run-with-session-evidence\.sh"? +\d+ +([a-z][a-z-]*)/gu)) phases.add(match[1]);
+  assert.ok(phases.has('attempt') && phases.has('build'), [...phases].join(','));
+  for (const phase of phases) assert.notEqual(FILES.hiveOutcome, phase + '-outcome.json', phase);
+
+  const identity = admitted();
+  // The record run 43691120627 left behind: solve finished with exit code 5 and no Hive contract files.
+  const capture = {schema: CAPTURE_OUTCOME_SCHEMA, state: 'finished', budgetSeconds: 1200, exitCode: 5, commandExitCode: 5,
+    deadlineExpired: false, error: null, captureExitCode: 0, completeConsoleCapture: true};
+  const direct = verifyHiveAttempt({identity, hiveOutcome: capture});
+  assert.equal(direct.outcome, ATTEMPT_OUTCOMES.servingUnverified);
+  assert.match(direct.reason, /hive-mind#3909/u);
+
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'hive-attempt-capture-'));
+  t.after(() => { fs.rmSync(dir, {recursive: true, force: true}); process.exitCode = 0; });
+  fs.writeFileSync(path.join(dir, 'attempt-outcome.json'), JSON.stringify(capture));
+  const outputs = path.join(dir, 'outputs');
+  const logged = [];
+  const receipt = main({FORMAL_AI_DRAFT_LOG_DIR: dir, GITHUB_OUTPUT: outputs, FORMAL_AI_ATTEMPT_IDENTITY: JSON.stringify(identity)},
+    ['--verify-hive'], {log: line => logged.push(line)});
+  assert.equal(receipt.id, identity.id);
+  const written = JSON.parse(fs.readFileSync(path.join(dir, FILES.receipt), 'utf8'));
+  assert.equal(written.outcome, ATTEMPT_OUTCOMES.servingUnverified);
+  assert.doesNotMatch(written.reason, /before solve/u);
+  assert.match(fs.readFileSync(outputs, 'utf8'), /attempt_outcome=serving-identity-unverified/u);
+  assert.equal(logged.filter(line => line.startsWith('::error')).length, 0);
+
+  fs.writeFileSync(path.join(dir, FILES.hiveOutcome), JSON.stringify({outcome: ATTEMPT_OUTCOMES.deferred, message: 'exact image is not published'}));
+  main({FORMAL_AI_DRAFT_LOG_DIR: dir, GITHUB_OUTPUT: outputs, FORMAL_AI_ATTEMPT_IDENTITY: JSON.stringify(identity)}, ['--verify-hive'], {log: line => logged.push(line)});
+  const deferred = JSON.parse(fs.readFileSync(path.join(dir, FILES.receipt), 'utf8'));
+  assert.equal(deferred.outcome, ATTEMPT_OUTCOMES.deferred, 'a real Hive Mind outcome is still preserved');
+  assert.equal(deferred.reason, 'exact image is not published');
 });

@@ -114,8 +114,18 @@ jobs:
       - name: Run registered gates (stage rust)
         run: rust-script scripts/run-ci-gates.rs --stage rust
 
-      - name: Build Rust→WASM worker
-        run: sh js/wasm-worker/build.sh
+      # Issue #1569: a new stable rustc compiles unchanged sources to different
+      # bytes. On 2026-11-13 the runners moved to rustc 1.100.0 and this job
+      # failed its own wasm gate for days, so the pull request that should
+      # carry the rebuilt worker was never opened. The rebuilt worker and the
+      # record of its inputs are part of what moved: build them, then stage
+      # them, so the wasm gates compare the commit this job proposes.
+      - name: Build Rust→WASM worker and record its inputs
+        run: |
+          set -euo pipefail
+          node scripts/wasm-worker-inputs.mjs --write
+          git add -- js/formal_ai_worker.wasm data/meta/wasm-worker-inputs.lino
+          node scripts/wasm-worker-inputs.mjs --check
 
       - name: Run registered gates (stage wasm)
         run: rust-script scripts/run-ci-gates.rs --stage wasm

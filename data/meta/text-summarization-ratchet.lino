@@ -6,18 +6,23 @@
 # total-surface ranking of shared surfaces let the summary keep more key
 # facts (retention 0.644 to 0.650) at a slightly longer summary, so the
 # compression floors fell by 0.002 to 0.005; the trade-off is recorded here.
+# Re-based for issue #1569: PR #1565 detects issues 103 and 279 as English
+# (they were misread as Spanish). The summarizer before #1565, given the
+# correct labels, measures the same 425/778 issue facts (0.546) as after it,
+# and neither document loses retention, so the old 0.549 and 0.65 floors were
+# measured on mislabeled input (experiments/issue-1569/summarization-per-document.mjs).
 text-summarization-ratchet
   source "scripts/measure-dependency-summarization.mjs"
   corpus "data/benchmarks/dependency-summarization/corpus.lino"
   documents 70
   compression 0.639
-  key-fact-retention 0.65
-  duplicates-removed 78
+  key-fact-retention 0.649
+  duplicates-removed 79
   pages-documents 40
-  pages-compression 0.637
+  pages-compression 0.638
   pages-key-fact-retention 0.815
   pages-duplicates-removed 34
   issues-documents 30
   issues-compression 0.64
-  issues-key-fact-retention 0.549
-  issues-duplicates-removed 44
+  issues-key-fact-retention 0.546
+  issues-duplicates-removed 45

@@ -1,0 +1,1010 @@
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	﻿2026-11-08T10:40:24.8616231Z Current runner version: '2.338.2'
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8643079Z ##[group]Runner Image Provisioner
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8644081Z Hosted Compute Agent
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8644934Z Version: 20261028.624
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8645639Z Commit: 54898b74c23fde5556c9b3c3a2290865feef0dfe
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8646397Z Build Date: 2026-10-28T21:51:42Z
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8647085Z Worker ID: {c3b20af1-9a1c-48b8-8474-78e2502c4060}
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8647847Z Region: westus
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8648420Z Cloud: Azure
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8648952Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8650849Z ##[group]Operating System
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8651513Z Ubuntu
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8652172Z 26.04.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8652726Z LTS
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8653255Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8653880Z ##[group]Runner Image
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8654832Z Image: ubuntu-26.04
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8655879Z Version: 20261101.186.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8657244Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261101.186/images/ubuntu/Ubuntu2604-Readme.md
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8658856Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261101.186
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8659826Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8661030Z ##[group]GITHUB_TOKEN Permissions
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8663156Z Contents: read
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8663883Z Metadata: read
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8664770Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8667050Z Secret source: Actions
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8668157Z Cache mode: write
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.8669217Z Prepare workflow directory
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.9420965Z Prepare all required actions
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:24.9471109Z Getting action download info
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:25.2901806Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:25.4477282Z Download action repository 'oven-sh/setup-bun@v2' (SHA:0c5077e51419868618aeaa5fe8019c62421857d6)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:25.7815208Z Download action repository 'dtolnay/rust-toolchain@stable' (SHA:b725eda525362e7cf34af9a7243cac1e3f01a7ec)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:25.9710915Z Download action repository 'actions/upload-artifact@v7' (SHA:cf430e030ddbb5b0abf93d22962f4752f3646cd9)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.2209312Z Complete job name: Agent CLI ladder depth-3-1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.3144063Z ##[group]Run actions/checkout@v7
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.3145368Z with:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.3145911Z   persist-credentials: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.3146604Z   repository: link-assistant/formal-ai
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.3154674Z   token: ***
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.3155234Z   ssh-strict: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.3155761Z   ssh-user: git
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.3156247Z   clean: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.3156779Z   sparse-checkout-cone-mode: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.3157441Z   fetch-depth: 1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.3157956Z   fetch-tags: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.3158484Z   show-progress: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.3159012Z   lfs: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.3159498Z   submodules: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.3160054Z   set-safe-directory: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.3160696Z   allow-unsafe-pr-checkout: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.3161718Z env:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.3162185Z   TREE_DEPTH: 3
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.3162685Z   NODE_FILTER: 1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.3163435Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.3164528Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.3165339Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.3165919Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8438549Z Syncing repository: link-assistant/formal-ai
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8442454Z ##[group]Getting Git version info
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8444620Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8447910Z [command]/usr/bin/git version
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8498939Z git version 2.56.0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8523568Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8547704Z Temporarily overriding HOME='/home/runner/work/_temp/50006c22-dbdc-452f-a0a7-e6ee093cf31e' before making global git config changes
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8552607Z Adding repository directory to the temporary git global config as a safe directory
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8557088Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8625791Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8635900Z ##[group]Determining repository object format
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8638807Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8641056Z ##[group]Initializing the repository
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8643191Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8862507Z hint: Using 'master' as the name for the initial branch. This default branch name
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8874022Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8877621Z hint: to use in all of your new repositories, which will suppress this warning,
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8880243Z hint: call:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8881699Z hint:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8883425Z hint: 	git config --global init.defaultBranch <name>
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8885861Z hint:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8888333Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8891746Z hint: 'development'. The just-created branch can be renamed via this command:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8893513Z hint:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8894832Z hint: 	git branch -m <name>
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8896860Z hint:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8898743Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8901507Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8906793Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8954235Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8956632Z ##[group]Disabling automatic garbage collection
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8959373Z [command]/usr/bin/git config --local gc.auto 0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8997483Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.8999872Z ##[group]Setting up auth
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.9001814Z Removing SSH command configuration
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.9004669Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:26.9062101Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:27.0042458Z Removing HTTP extra header
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:27.0049061Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:27.0084925Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:27.0358692Z Removing includeIf entries pointing to credentials config files
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:27.0364098Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:27.0409349Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:27.0697294Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-83d8a3d3-6691-4e1d-94f1-df1c48fc9e75.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:27.0738603Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-83d8a3d3-6691-4e1d-94f1-df1c48fc9e75.config
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:27.0773608Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-83d8a3d3-6691-4e1d-94f1-df1c48fc9e75.config
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:27.0813443Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-83d8a3d3-6691-4e1d-94f1-df1c48fc9e75.config
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:27.0849526Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-83d8a3d3-6691-4e1d-94f1-df1c48fc9e75.config
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:27.0882969Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:27.0885772Z ##[group]Fetching the repository
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:40:27.0891413Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +70935ad8e2a12bc2148eef74722749290c2edb66:refs/remotes/origin/main
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:21.3886560Z From https://github.com/link-assistant/formal-ai
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:21.3887584Z  * [new ref]           70935ad8e2a12bc2148eef74722749290c2edb66 -> origin/main
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:21.3889831Z [command]/usr/bin/git branch --list --remote origin/main
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:21.3920056Z   origin/main
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:21.3929780Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:21.3955010Z 70935ad8e2a12bc2148eef74722749290c2edb66
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:21.3959966Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:21.3960879Z ##[group]Determining the checkout info
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:21.3962070Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:21.3966405Z [command]/usr/bin/git sparse-checkout disable
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:21.4019707Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:21.4055000Z ##[group]Checking out the ref
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:21.4059163Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:22.5145460Z Updating files:  11% (8297/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:22.7165160Z Updating files:  12% (8885/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:23.3225037Z Updating files:  13% (9626/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:23.4766182Z Updating files:  14% (10366/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:23.6719592Z Updating files:  14% (10476/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:23.8733175Z Updating files:  15% (11107/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:23.9811569Z Updating files:  16% (11847/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:24.0446413Z Updating files:  17% (12587/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:24.1572136Z Updating files:  18% (13328/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:24.2908403Z Updating files:  19% (14068/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:24.4792586Z Updating files:  20% (14809/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:24.5022763Z Updating files:  20% (15412/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:24.6063154Z Updating files:  21% (15549/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:24.7036841Z Updating files:  22% (16290/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:24.7859098Z Updating files:  23% (17030/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:24.8643365Z Updating files:  24% (17770/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:24.9597868Z Updating files:  25% (18511/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:25.0448738Z Updating files:  26% (19251/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:25.1342073Z Updating files:  27% (19992/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:25.1715173Z Updating files:  28% (20732/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:25.2315981Z Updating files:  29% (21472/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:25.2810546Z Updating files:  30% (22213/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:25.3216004Z Updating files:  31% (22953/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:25.3827223Z Updating files:  32% (23694/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:25.4222036Z Updating files:  33% (24434/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:25.4501840Z Updating files:  34% (25174/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:25.4792923Z Updating files:  35% (25915/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:25.5400956Z Updating files:  35% (26048/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:25.5949460Z Updating files:  36% (26655/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:25.7776762Z Updating files:  37% (27396/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:25.8238830Z Updating files:  38% (28136/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:25.8610910Z Updating files:  39% (28876/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:25.8969293Z Updating files:  40% (29617/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:25.9321541Z Updating files:  41% (30357/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:25.9838645Z Updating files:  42% (31098/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:26.0207473Z Updating files:  43% (31838/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:26.0685902Z Updating files:  44% (32579/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:26.1593792Z Updating files:  45% (33319/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:26.2159412Z Updating files:  46% (34059/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:26.2544635Z Updating files:  47% (34800/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:26.2964969Z Updating files:  48% (35540/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:26.3349822Z Updating files:  49% (36281/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:26.3903221Z Updating files:  50% (37021/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:26.4212452Z Updating files:  51% (37761/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:26.4631839Z Updating files:  52% (38502/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:26.4744634Z Updating files:  53% (39242/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:26.5006965Z Updating files:  53% (39477/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:26.5631332Z Updating files:  54% (39983/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:26.5957038Z Updating files:  55% (40723/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:26.6345762Z Updating files:  56% (41463/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:26.6676461Z Updating files:  57% (42204/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:26.7260485Z Updating files:  58% (42944/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:26.7972820Z Updating files:  59% (43685/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:26.8585767Z Updating files:  60% (44425/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:26.9025925Z Updating files:  61% (45166/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:26.9616058Z Updating files:  62% (45906/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:27.0276690Z Updating files:  63% (46646/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:27.1239297Z Updating files:  64% (47387/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:27.1750090Z Updating files:  65% (48127/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:27.2182322Z Updating files:  66% (48868/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:27.2710052Z Updating files:  67% (49608/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:27.3039414Z Updating files:  68% (50348/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:27.4017398Z Updating files:  69% (51089/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:27.4293613Z Updating files:  70% (51829/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:27.4566814Z Updating files:  71% (52570/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:27.4756207Z Updating files:  72% (53310/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:27.4848576Z Updating files:  72% (53798/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:27.5183345Z Updating files:  73% (54050/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:27.5467123Z Updating files:  74% (54791/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:27.5786387Z Updating files:  75% (55531/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:27.6431619Z Updating files:  76% (56272/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:27.6929814Z Updating files:  77% (57012/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:27.7678425Z Updating files:  78% (57752/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:27.8255067Z Updating files:  79% (58493/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:27.9856305Z Updating files:  80% (59233/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:28.0925046Z Updating files:  81% (59974/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:28.1643461Z Updating files:  82% (60714/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:28.2365340Z Updating files:  83% (61455/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:28.3355671Z Updating files:  84% (62195/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:28.4084994Z Updating files:  85% (62935/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:28.4571867Z Updating files:  86% (63676/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:28.4745527Z Updating files:  87% (64416/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:28.6478875Z Updating files:  87% (64612/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:28.7211366Z Updating files:  88% (65157/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:28.7798991Z Updating files:  89% (65897/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:28.8406740Z Updating files:  90% (66637/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:28.8903000Z Updating files:  91% (67378/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:28.9655614Z Updating files:  92% (68118/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.0230052Z Updating files:  93% (68859/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.0922939Z Updating files:  94% (69599/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.1461140Z Updating files:  95% (70339/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.2051335Z Updating files:  96% (71080/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.2580040Z Updating files:  97% (71820/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.3124009Z Updating files:  98% (72561/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.3685921Z Updating files:  99% (73301/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.3686355Z Updating files: 100% (74041/74041)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.3686701Z Updating files: 100% (74041/74041), done.
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.4542308Z Switched to a new branch 'main'
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.4547841Z branch 'main' set up to track 'origin/main'.
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.4798365Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.4849572Z [command]/usr/bin/git log -1 --format=%H
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.4881128Z 70935ad8e2a12bc2148eef74722749290c2edb66
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.4890279Z ##[group]Removing auth
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.4890567Z Removing SSH command configuration
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.4894375Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.4928245Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.5325545Z Removing HTTP extra header
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.5329323Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.5366041Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.5762844Z Removing includeIf entries pointing to credentials config files
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.5785543Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.5802376Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.5803558Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.5804859Z includeif.gitdir:/github/workspace/.git.path
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.5805755Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.5813160Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.5841761Z /home/runner/work/_temp/git-credentials-83d8a3d3-6691-4e1d-94f1-df1c48fc9e75.config
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.5851689Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-83d8a3d3\-6691\-4e1d\-94f1\-df1c48fc9e75\.config
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.5889247Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.5918105Z /home/runner/work/_temp/git-credentials-83d8a3d3-6691-4e1d-94f1-df1c48fc9e75.config
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.5930736Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-83d8a3d3\-6691\-4e1d\-94f1\-df1c48fc9e75\.config
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.5968459Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.5992419Z /github/runner_temp/git-credentials-83d8a3d3-6691-4e1d-94f1-df1c48fc9e75.config
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.6000320Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-83d8a3d3\-6691\-4e1d\-94f1\-df1c48fc9e75\.config
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.6033166Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.6056663Z /github/runner_temp/git-credentials-83d8a3d3-6691-4e1d-94f1-df1c48fc9e75.config
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.6064769Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-83d8a3d3\-6691\-4e1d\-94f1\-df1c48fc9e75\.config
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.6098945Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.6486219Z Removing credentials config '/home/runner/work/_temp/git-credentials-83d8a3d3-6691-4e1d-94f1-df1c48fc9e75.config'
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.6497137Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.6728720Z ##[group]Run oven-sh/setup-bun@v2
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.6729007Z with:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.6729243Z   bun-version-file: .bun-version
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.6729497Z   no-cache: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.6731776Z   token: ***
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.6731976Z env:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.6732164Z   TREE_DEPTH: 3
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.6732368Z   NODE_FILTER: 1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.6732654Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.6733022Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.6733322Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.6733545Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.8457521Z Obtained version 1.4.2 from .bun-version
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:41:29.8473416Z Downloading a new version of Bun: https://github.com/oven-sh/bun/releases/download/bun-v1.4.2/bun-linux-x64.zip
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:30.3353092Z Prepare all required actions
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:30.3353698Z Getting action download info
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:30.6298369Z Download action repository 'mozilla-actions/sccache-action@v0.0.11' (SHA:fc920bf0ec8de6ee65d409111f7ec508035751ba)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:30.9258431Z ##[group]Run ./.github/actions/setup-sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:30.9258755Z with:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:30.9258959Z   install: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:30.9259160Z env:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:30.9259343Z   TREE_DEPTH: 3
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:30.9259558Z   NODE_FILTER: 1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:30.9259852Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:30.9260227Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:30.9260530Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:30.9260760Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:30.9318573Z ##[start-action display=Install sccache;id=__self.__mozilla-actions_sccache-action]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:30.9363761Z ##[group]Run mozilla-actions/sccache-action@v0.0.11
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:30.9386606Z with:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:30.9386881Z   version: v0.16.0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:30.9389215Z   token: ***
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:30.9389449Z   disable_annotations: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:30.9389692Z env:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:30.9389878Z   TREE_DEPTH: 3
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:30.9390087Z   NODE_FILTER: 1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:30.9390373Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:30.9390813Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:30.9391114Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:30.9391339Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:31.0271087Z try to setup sccache version: v0.16.0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:31.0285728Z sccache download from url: https://github.com/mozilla/sccache/releases/download/v0.16.0/sccache-v0.16.0-x86_64-unknown-linux-musl.tar.gz
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.7605548Z Correct checksum: aec995a83ad3dff3d14b6314e08858b7b73d35ca85a5bcf3d3a9ec07dee35588
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.7720100Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/79d963d8-a0dd-4744-875a-b96477c50d2d -f /home/runner/work/_temp/69213d8c-a71d-436a-a85d-03aac3affa35
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.8773703Z sccache extracted to: /home/runner/work/_temp/79d963d8-a0dd-4744-875a-b96477c50d2d
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.8958145Z sccache cached to: /opt/hostedtoolcache/sccache/0.16.0/x64
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9075627Z ##[end-action id=__self.__mozilla-actions_sccache-action;outcome=success;conclusion=success;duration_ms=4975]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9078653Z ##[start-action display=Enable sccache for Rust;id=__self.__run]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9109415Z ##[group]Run echo "SCCACHE_GHA_ENABLED=$SCCACHE_GHA_ENABLED" >> "$GITHUB_ENV"
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9109990Z ^[[36;1mecho "SCCACHE_GHA_ENABLED=$SCCACHE_GHA_ENABLED" >> "$GITHUB_ENV"^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9110570Z ^[[36;1mecho "SCCACHE_IGNORE_SERVER_IO_ERROR=$SCCACHE_IGNORE_SERVER_IO_ERROR" >> "$GITHUB_ENV"^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9111102Z ^[[36;1mecho "RUSTC_WRAPPER=$RUSTC_WRAPPER" >> "$GITHUB_ENV"^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9163157Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9163519Z env:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9163719Z   TREE_DEPTH: 3
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9163935Z   NODE_FILTER: 1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9164232Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9164892Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9165196Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9165504Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9165857Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9166256Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9217500Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9217779Z   SCCACHE_GHA_ENABLED: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9218032Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9218574Z   RUSTC_WRAPPER: sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9218810Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9324046Z ##[end-action id=__self.__run;outcome=success;conclusion=success;duration_ms=24]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9326685Z ##[start-action display=Enable opt-in sccache diagnostics;id=__self.__run_2]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9343432Z ##[end-action id=__self.__run_2;outcome=skipped;conclusion=skipped;duration_ms=0]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9345808Z ##[start-action display=Start the sccache server;id=__self.__run_3]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9362763Z ##[group]Run set -euo pipefail
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9363069Z ^[[36;1mset -euo pipefail^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9363323Z ^[[36;1mprobe_log="$(mktemp)"^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9363601Z ^[[36;1mtrap 'rm -f "$probe_log"' EXIT^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9363951Z ^[[36;1msccache --start-server > "$probe_log" 2>&1 || true^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9365480Z ^[[36;1m# A successful compiler probe also accepts an already-running server.^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9365961Z ^[[36;1mif sccache rustc -vV >> "$probe_log" 2>&1; then^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9366336Z ^[[36;1m  echo "sccache compiler probe succeeded"^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9366632Z ^[[36;1melse^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9366890Z ^[[36;1m  echo "RUSTC_WRAPPER=" >> "$GITHUB_ENV"^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9367568Z ^[[36;1m  echo "::warning title=sccache unavailable::Compiler-cache probe failed; subsequent Cargo steps use the real compiler without cache (issue #1031)."^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9368223Z ^[[36;1mfi^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9368653Z ^[[36;1msccache --show-stats >> "$probe_log" 2>&1 || echo "::warning::sccache statistics unavailable (issue #1031)."^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9369281Z ^[[36;1m# Read only the completed file; no cache process writes into this pipe.^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9369837Z ^[[36;1m# Cache errors can contain signed URLs, so redact their complete values.^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9370391Z ^[[36;1mhead -c 65536 "$probe_log" | sed -E 's#https?://[^[:space:]]+#<cache-url-redacted>#g'^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9417917Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9418274Z env:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9418468Z   TREE_DEPTH: 3
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9418689Z   NODE_FILTER: 1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9418989Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9419368Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9419675Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9419983Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9420324Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9420724Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9471938Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9472208Z   SCCACHE_GHA_ENABLED: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9472462Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9472729Z   RUSTC_WRAPPER: sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:35.9472966Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6735521Z sccache compiler probe succeeded
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6783317Z sccache: Starting the server...
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6783961Z sccache: Listening on address 127.0.0.1:4226
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6784692Z rustc 1.99.1 (58cf8f9c3 2026-10-13)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6785160Z binary: rustc
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6785588Z commit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6786071Z commit-date: 2026-10-13
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6786412Z host: x86_64-unknown-linux-gnu
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6786795Z release: 1.99.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6787116Z LLVM version: 23.1.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6787456Z Compile requests                      1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6787968Z Compile requests executed             0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6788548Z Cache hits                            0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6789035Z Cache misses                          0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6789451Z Cache hits rate                       -
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6789718Z Cache timeouts                        0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6789975Z Cache read errors                     0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6790510Z Forced recaches                       0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6790771Z Cache write errors                    0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6791156Z Cache errors                          0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6791777Z Compilations                          0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6792244Z Compilation failures                  0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6792729Z Non-cacheable compilations            0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6793214Z Non-cacheable calls                   1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6793695Z Non-compilation calls                 0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6794278Z Unsupported compiler calls            0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6795294Z Average cache write               0.000 s
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6795800Z Average compiler                  0.000 s
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6796278Z Average cache read hit            0.000 s
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6796759Z Failed distributed compilations       0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6797098Z 
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6797254Z Non-cacheable reasons:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6797652Z missing input                         1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6797969Z 
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6798604Z Cache location                  ghac, name: 90541733aa72480a9e77ce99e66fc1cfabfa835d74c751408eb0351b7adcec6b, prefix: /sccache/
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6799585Z Base directories                (none)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6800035Z Version (client)                0.16.0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6811484Z ##[end-action id=__self.__run_3;outcome=success;conclusion=success;duration_ms=7746]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6965283Z ##[group]Run dtolnay/rust-toolchain@stable
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6965618Z with:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6965833Z   toolchain: stable
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6966038Z env:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6966222Z   TREE_DEPTH: 3
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6966421Z   NODE_FILTER: 1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6966703Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6967061Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6967363Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6967664Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6968015Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.6968410Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7020118Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7020396Z   SCCACHE_GHA_ENABLED: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7020649Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7020907Z   RUSTC_WRAPPER: sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7021153Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7030447Z ##[start-action display=Parse toolchain version;id=__dtolnay_rust-toolchain.parse]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7047766Z ##[group]Run if [[ -z $toolchain ]]; then
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7048096Z ^[[36;1mif [[ -z $toolchain ]]; then^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7048601Z ^[[36;1m  # GitHub does not enforce `required: true` inputs itself. https://github.com/actions/runner/issues/1070^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7049218Z ^[[36;1m  echo "'toolchain' is a required input" >&2^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7049512Z ^[[36;1m  exit 1^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7049852Z ^[[36;1melif [[ $toolchain =~ ^stable' '[0-9]+' '(year|month|week|day)s?' 'ago$ ]]; then^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7050273Z ^[[36;1m  if [[ Linux == macOS ]]; then^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7050800Z ^[[36;1m    echo "toolchain=1.$((($(date -v-$(sed 's/stable \([0-9]*\) \(.\).*/\1\2/' <<< $toolchain) +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7051324Z ^[[36;1m  else^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7051746Z ^[[36;1m    echo "toolchain=1.$((($(date --date "${toolchain#stable }" +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7052213Z ^[[36;1m  fi^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7052587Z ^[[36;1melif [[ $toolchain =~ ^stable' 'minus' '[0-9]+' 'releases?$ ]]; then^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7053141Z ^[[36;1m  echo "toolchain=1.$((($(date +%s)/60/60/24-16569)/7/6-${toolchain//[^0-9]/}))" >> $GITHUB_OUTPUT^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7053606Z ^[[36;1melif [[ $toolchain =~ ^1\.[0-9]+$ ]]; then^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7054123Z ^[[36;1m  echo "toolchain=1.$((i=${toolchain#1.}, c=($(date +%s)/60/60/24-16569)/7/6, i+9*i*(10*i<=c)+90*i*(100*i<=c)))" >> $GITHUB_OUTPUT^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7055100Z ^[[36;1melse^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7055306Z ^[[36;1m  delimiter=EOF^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7055619Z ^[[36;1m  while [[ $toolchain == *$delimiter* ]]; do delimiter+=_; done^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7056132Z ^[[36;1m  printf 'toolchain<<%s\n%s\n%s\n' "$delimiter" "$toolchain" "$delimiter" >> $GITHUB_OUTPUT^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7056563Z ^[[36;1mfi^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7104370Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7104850Z env:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7105044Z   TREE_DEPTH: 3
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7105255Z   NODE_FILTER: 1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7105538Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7105895Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7106199Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7106497Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7106843Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7107241Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7158239Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7158506Z   SCCACHE_GHA_ENABLED: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7158749Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7159011Z   RUSTC_WRAPPER: sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7159236Z   toolchain: stable
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7159636Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7248491Z ##[end-action id=__dtolnay_rust-toolchain.parse;outcome=success;conclusion=success;duration_ms=21]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7252922Z ##[start-action display=Set $CARGO_HOME;id=__dtolnay_rust-toolchain.__run]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7269395Z ##[group]Run echo CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7269876Z ^[[36;1mecho CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7313214Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7313551Z env:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7313751Z   TREE_DEPTH: 3
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7313969Z   NODE_FILTER: 1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7314262Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7314886Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7315189Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7315496Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7315852Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7316250Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7367724Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7367995Z   SCCACHE_GHA_ENABLED: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7368240Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7368496Z   RUSTC_WRAPPER: sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7368716Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7439411Z ##[end-action id=__dtolnay_rust-toolchain.__run;outcome=success;conclusion=success;duration_ms=18]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7441379Z ##[start-action display=Install rustup if needed;id=__dtolnay_rust-toolchain.__run_2]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7458670Z ##[group]Run if ! command -v rustup &>/dev/null; then
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7459038Z ^[[36;1mif ! command -v rustup &>/dev/null; then^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7459785Z ^[[36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7460517Z ^[[36;1m  echo "$CARGO_HOME/bin" >> $GITHUB_PATH^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7460911Z ^[[36;1mfi^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7503864Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7504296Z env:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7504692Z   TREE_DEPTH: 3
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7505099Z   NODE_FILTER: 1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7505476Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7506013Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7506398Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7506810Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7507478Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7507960Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7559602Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7559961Z   SCCACHE_GHA_ENABLED: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7560325Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7560745Z   RUSTC_WRAPPER: sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7574710Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7574999Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7644134Z ##[end-action id=__dtolnay_rust-toolchain.__run_2;outcome=success;conclusion=success;duration_ms=20]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7646502Z ##[start-action display=Install rustup if needed on windows;id=__dtolnay_rust-toolchain.__run_3]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7650105Z ##[end-action id=__dtolnay_rust-toolchain.__run_3;outcome=skipped;conclusion=skipped;duration_ms=0]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7661442Z ##[start-action display=rustup toolchain install stable;id=__dtolnay_rust-toolchain.__run_4]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7677866Z ##[group]Run set -f  # split targets and components on commas and whitespace, without glob expansion
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7678526Z ^[[36;1mset -f  # split targets and components on commas and whitespace, without glob expansion^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7678984Z ^[[36;1mflags=()^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7679424Z ^[[36;1mfor t in ${targets//,/ }; do flags+=(--target "$t"); done^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7679838Z ^[[36;1mfor c in ${components//,/ }; do flags+=(--component "$c"); done^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7680343Z ^[[36;1mif [[ $toolchain == nightly && -n $components ]]; then flags+=(--allow-downgrade); fi^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7680761Z ^[[36;1mlog=$(mktemp)^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7680994Z ^[[36;1mtrap 'rm -f "$log"' EXIT^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7681253Z ^[[36;1mfor attempt in 1 2 3 4 5; do^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7681831Z ^[[36;1m  if rustup toolchain install "$toolchain" "${flags[@]}" --profile minimal --no-self-update --force-non-host 2>&1 | tee "$log"; then^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7682403Z ^[[36;1m    break^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7682610Z ^[[36;1m  else^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7682808Z ^[[36;1m    status=$?^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7683027Z ^[[36;1m  fi^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7683317Z ^[[36;1m  if [[ $attempt == 5 ]] || ! grep -Fq 'checksum failed for ' "$log" \^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7683870Z ^[[36;1m      || ! grep -Fq 'this is likely due to an ongoing update of the official release server' "$log"; then^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7684332Z ^[[36;1m    exit "$status"^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7684826Z ^[[36;1m  fi^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7685191Z ^[[36;1m  echo "Retrying rustup toolchain install in 30 seconds (retry $attempt of 4)" >&2^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7685608Z ^[[36;1m  sleep 30^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7685813Z ^[[36;1mdone^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7729549Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7729892Z env:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7730082Z   TREE_DEPTH: 3
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7730289Z   NODE_FILTER: 1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7730581Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7730972Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7731281Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7731592Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7731935Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7732336Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7783880Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7784154Z   SCCACHE_GHA_ENABLED: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7784597Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7784915Z   RUSTC_WRAPPER: sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7785157Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7785398Z   toolchain: stable
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7785600Z   targets: 
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7785783Z   components: 
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7785989Z   RUSTUP_PERMIT_COPY_RENAME: 1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.7786222Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.8623092Z info: syncing channel updates for stable-x86_64-unknown-linux-gnu
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9393335Z 
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9478308Z   stable-x86_64-unknown-linux-gnu unchanged - rustc 1.99.1 (58cf8f9c3 2026-10-13)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9478895Z 
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9540368Z ##[end-action id=__dtolnay_rust-toolchain.__run_4;outcome=success;conclusion=success;duration_ms=187]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9545699Z ##[start-action display=rustup default stable;id=__dtolnay_rust-toolchain.__run_5]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9562195Z ##[group]Run rustup default "$toolchain" --force-non-host
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9562606Z ^[[36;1mrustup default "$toolchain" --force-non-host^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9611090Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9611442Z env:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9611632Z   TREE_DEPTH: 3
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9611836Z   NODE_FILTER: 1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9612116Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9612496Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9612815Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9613121Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9613463Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9613860Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9665352Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9665911Z   SCCACHE_GHA_ENABLED: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9666190Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9666460Z   RUSTC_WRAPPER: sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9666702Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9666949Z   toolchain: stable
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9667157Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9780541Z info: using existing install for stable-x86_64-unknown-linux-gnu
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9790401Z info: default toolchain set to stable-x86_64-unknown-linux-gnu
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9790713Z 
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9870075Z   stable-x86_64-unknown-linux-gnu unchanged - rustc 1.99.1 (58cf8f9c3 2026-10-13)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9870682Z 
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9887154Z ##[end-action id=__dtolnay_rust-toolchain.__run_5;outcome=success;conclusion=success;duration_ms=34]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9890410Z ##[start-action display=Create cachekey;id=__dtolnay_rust-toolchain.rustc-version]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9907442Z ##[group]Run DATE=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9908321Z ^[[36;1mDATE=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9909018Z ^[[36;1mHASH=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-hash: //p')^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9909560Z ^[[36;1mecho "cachekey=$(echo $DATE$HASH | head -c12)" >> $GITHUB_OUTPUT^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9957736Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9958087Z env:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9958279Z   TREE_DEPTH: 3
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9958496Z   NODE_FILTER: 1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9958780Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9959153Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9959458Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9959769Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9960123Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:43.9960533Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0012054Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0012329Z   SCCACHE_GHA_ENABLED: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0012611Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0012876Z   RUSTC_WRAPPER: sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0013114Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0013362Z   toolchain: stable
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0013572Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0381586Z ##[end-action id=__dtolnay_rust-toolchain.rustc-version;outcome=success;conclusion=success;duration_ms=49]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0384360Z ##[start-action display=Disable incremental compilation;id=__dtolnay_rust-toolchain.__run_6]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0401846Z ##[group]Run if [ -z "${CARGO_INCREMENTAL+set}" ]; then
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0402248Z ^[[36;1mif [ -z "${CARGO_INCREMENTAL+set}" ]; then^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0402591Z ^[[36;1m  echo CARGO_INCREMENTAL=0 >> $GITHUB_ENV^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0402886Z ^[[36;1mfi^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0451018Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0451365Z env:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0451557Z   TREE_DEPTH: 3
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0451768Z   NODE_FILTER: 1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0452047Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0452409Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0452705Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0453013Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0453365Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0453772Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0505950Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0506231Z   SCCACHE_GHA_ENABLED: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0506481Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0506742Z   RUSTC_WRAPPER: sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0506985Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0507431Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0579731Z ##[end-action id=__dtolnay_rust-toolchain.__run_6;outcome=success;conclusion=success;duration_ms=19]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0581895Z ##[start-action display=Enable colors in Cargo output;id=__dtolnay_rust-toolchain.__run_7]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0597868Z ##[group]Run if [ -z "${CARGO_TERM_COLOR+set}" ]; then
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0598238Z ^[[36;1mif [ -z "${CARGO_TERM_COLOR+set}" ]; then^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0598592Z ^[[36;1m  echo CARGO_TERM_COLOR=always >> $GITHUB_ENV^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0598886Z ^[[36;1mfi^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0641732Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0642078Z env:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0642269Z   TREE_DEPTH: 3
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0642474Z   NODE_FILTER: 1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0642789Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0643162Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0643460Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0643775Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0644124Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0644827Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0696185Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0696457Z   SCCACHE_GHA_ENABLED: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0696706Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0696967Z   RUSTC_WRAPPER: sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0697202Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0697445Z   CARGO_INCREMENTAL: 0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0697667Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0767862Z ##[end-action id=__dtolnay_rust-toolchain.__run_7;outcome=success;conclusion=success;duration_ms=18]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0770430Z ##[start-action display=Enable Cargo sparse registry;id=__dtolnay_rust-toolchain.__run_8]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0787236Z ##[group]Run # implemented in 1.66, stabilized in 1.68, made default in 1.70
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0787742Z ^[[36;1m# implemented in 1.66, stabilized in 1.68, made default in 1.70^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0788451Z ^[[36;1mif [ -z "${CARGO_REGISTRIES_CRATES_IO_PROTOCOL+set}" -o -f "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol ]; then^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0789205Z ^[[36;1m  if rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.6[89]\.'; then^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0789813Z ^[[36;1m    touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0790355Z ^[[36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse >> $GITHUB_ENV^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0791109Z ^[[36;1m  elif rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.6[67]\.'; then^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0791696Z ^[[36;1m    touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0792216Z ^[[36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=git >> $GITHUB_ENV^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0792563Z ^[[36;1m  fi^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0792761Z ^[[36;1mfi^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0835787Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0836127Z env:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0836315Z   TREE_DEPTH: 3
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0836521Z   NODE_FILTER: 1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0836810Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0837184Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0837483Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0837791Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0838139Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0838544Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0890087Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0890366Z   SCCACHE_GHA_ENABLED: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0890620Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0890878Z   RUSTC_WRAPPER: sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0891284Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0891538Z   CARGO_INCREMENTAL: 0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0891758Z   CARGO_TERM_COLOR: always
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0891991Z   toolchain: stable
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.0892198Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1217020Z ##[end-action id=__dtolnay_rust-toolchain.__run_8;outcome=success;conclusion=success;duration_ms=44]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1220301Z ##[start-action display=Work around spurious network errors in curl 8.0;id=__dtolnay_rust-toolchain.__run_9]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1237547Z ##[group]Run # https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1238308Z ^[[36;1m# https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1238937Z ^[[36;1mif rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.7[01]\.'; then^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1239414Z ^[[36;1m  echo CARGO_HTTP_MULTIPLEXING=false >> $GITHUB_ENV^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1239724Z ^[[36;1mfi^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1287098Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1287450Z env:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1287640Z   TREE_DEPTH: 3
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1287847Z   NODE_FILTER: 1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1288145Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1288526Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1288825Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1289127Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1289471Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1289879Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1341397Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1341671Z   SCCACHE_GHA_ENABLED: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1341918Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1342179Z   RUSTC_WRAPPER: sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1342419Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1342675Z   CARGO_INCREMENTAL: 0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1342898Z   CARGO_TERM_COLOR: always
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1343121Z   toolchain: stable
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1343325Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1543994Z ##[end-action id=__dtolnay_rust-toolchain.__run_9;outcome=success;conclusion=success;duration_ms=32]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1550770Z ##[start-action display=rustc +stable --version --verbose;id=__dtolnay_rust-toolchain.__run_10]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1609654Z ##[group]Run rustc +"$toolchain" --version --verbose
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1610278Z ^[[36;1mrustc +"$toolchain" --version --verbose^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1680778Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1681464Z env:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1681810Z   TREE_DEPTH: 3
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1682196Z   NODE_FILTER: 1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1682705Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1683374Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1683922Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1684704Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1685344Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1686087Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1792015Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1792347Z   SCCACHE_GHA_ENABLED: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1792602Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1792864Z   RUSTC_WRAPPER: sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1793108Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1793365Z   CARGO_INCREMENTAL: 0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1793615Z   CARGO_TERM_COLOR: always
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1793848Z   toolchain: stable
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1794055Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1985826Z rustc 1.99.1 (58cf8f9c3 2026-10-13)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1986314Z binary: rustc
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1986742Z commit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1987271Z commit-date: 2026-10-13
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1988013Z host: x86_64-unknown-linux-gnu
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1988425Z release: 1.99.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.1988763Z LLVM version: 23.1.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.2009620Z ##[end-action id=__dtolnay_rust-toolchain.__run_10;outcome=success;conclusion=success;duration_ms=45]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.2089472Z Prepare all required actions
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.2090061Z Getting action download info
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.3556430Z Download action repository 'actions/cache@v6' (SHA:55cc8345863c7cc4c66a329aec7e433d2d1c52a9)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4585251Z ##[group]Run ./.github/actions/formal-ai-binary
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4585575Z with:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4585790Z   cache-key-prefix: formal-ai-binary
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4586053Z env:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4586233Z   TREE_DEPTH: 3
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4586433Z   NODE_FILTER: 1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4586709Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4587067Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4587362Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4587668Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4588013Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4588443Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4639820Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4640095Z   SCCACHE_GHA_ENABLED: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4640346Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4640604Z   RUSTC_WRAPPER: sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4640851Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4641104Z   CARGO_INCREMENTAL: 0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4641334Z   CARGO_TERM_COLOR: always
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4641562Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4647580Z ##[start-action display=Key the binary by the sources it is built from;id=__self_2.key]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4663461Z ##[group]Run set -euo pipefail
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4663762Z ^[[36;1mset -euo pipefail^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4664123Z ^[[36;1m# The three-root layout (issue #1138 L1) put the crate under rust/; a^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4664903Z ^[[36;1m# root-level pathspec matches nothing there, the digest collapses to^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4665407Z ^[[36;1m# the hash of empty input, and every push then restores one stale^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4665882Z ^[[36;1m# binary no matter which sources changed. Fail the step if the^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4666327Z ^[[36;1m# pathspec goes empty again instead of caching on nothing.^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4666788Z ^[[36;1m# The binary also `include_str!`s the seed mirror under rust/embedded/^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4667269Z ^[[36;1m# and build.rs bundles data/seed/api-cache/; leaving them out of the^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4667926Z ^[[36;1m# key let a seed-only push restore the binary of the previous seed, and^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4668413Z ^[[36;1m# server parity then saw a stale `/v1/bundle` (PR #1188).^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4669041Z ^[[36;1mentries=$(git ls-files -s rust/src rust/embedded rust/Cargo.toml rust/Cargo.lock rust/build.rs data/seed/api-cache)^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4669598Z ^[[36;1m[ -n "$entries" ]^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4669939Z ^[[36;1mdigest=$(printf '%s\n' "$entries" | git hash-object --stdin)^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4670338Z ^[[36;1mecho "digest=$digest" >> "$GITHUB_OUTPUT"^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4670652Z ^[[36;1mecho "source digest: $digest"^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4718575Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4718917Z env:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4719109Z   TREE_DEPTH: 3
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4719315Z   NODE_FILTER: 1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4719597Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4719973Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4720279Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4720583Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4720923Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4721316Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4772785Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4773061Z   SCCACHE_GHA_ENABLED: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4773312Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4773574Z   RUSTC_WRAPPER: sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4774026Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4774299Z   CARGO_INCREMENTAL: 0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4774629Z   CARGO_TERM_COLOR: always
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.4774858Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5127107Z source digest: 33b0cb6e9b6863250acd41e9d4632e31f2934629
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5134737Z ##[end-action id=__self_2.key;outcome=success;conclusion=success;duration_ms=48]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5137008Z ##[start-action display=Restore the binary built from these sources;id=__self_2.cache]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5173125Z ##[group]Run actions/cache@v6
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5173368Z with:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5173577Z   path: rust/target/release/formal-ai
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5173966Z   key: formal-ai-binary-Linux-33b0cb6e9b6863250acd41e9d4632e31f2934629
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5174364Z   enableCrossOsArchive: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5174847Z   fail-on-cache-miss: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5175089Z   lookup-only: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5175305Z   save-always: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5175505Z env:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5175701Z   TREE_DEPTH: 3
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5175900Z   NODE_FILTER: 1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5176182Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5176537Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5176836Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5177132Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5177479Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5177872Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5229540Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5229813Z   SCCACHE_GHA_ENABLED: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5230057Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5230315Z   RUSTC_WRAPPER: sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5230549Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5230796Z   CARGO_INCREMENTAL: 0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5231013Z   CARGO_TERM_COLOR: always
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.5231237Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:44.8952850Z Cache hit for: formal-ai-binary-Linux-33b0cb6e9b6863250acd41e9d4632e31f2934629
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:46.1742928Z Received 25165824 of 66079583 (38.1%), 24.0 MBs/sec
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:46.5833664Z Received 66079583 of 66079583 (100.0%), 44.7 MBs/sec
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:46.5837190Z Cache Size: ~63 MB (66079583 B)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:46.5882448Z [command]/usr/bin/tar -xf /home/runner/work/_temp/902be7f8-f20c-4b50-b72f-29ca467fc05b/cache.tzst -P -C /home/runner/work/formal-ai/formal-ai --use-compress-program unzstd
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:46.9824114Z Cache restored successfully
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0045566Z Cache restored from key: formal-ai-binary-Linux-33b0cb6e9b6863250acd41e9d4632e31f2934629
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0196616Z ##[end-action id=__self_2.cache;outcome=success;conclusion=success;duration_ms=2505]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0199155Z ##[start-action display=Setup Rust;id=__self_2.__dtolnay_rust-toolchain]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0219610Z ##[end-action id=__self_2.__dtolnay_rust-toolchain;outcome=skipped;conclusion=skipped;duration_ms=0]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0221815Z ##[start-action display=Run ./.github/actions/setup-sccache;id=__self_2.__self]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0226351Z ##[end-action id=__self_2.__self;outcome=skipped;conclusion=skipped;duration_ms=0]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0228355Z ##[start-action display=Run ./.github/actions/cache-cargo-registry;id=__self_2.__self_2]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0232267Z ##[end-action id=__self_2.__self_2;outcome=skipped;conclusion=skipped;duration_ms=0]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0233888Z ##[start-action display=Build formal-ai;id=__self_2.__run]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0237872Z ##[end-action id=__self_2.__run;outcome=skipped;conclusion=skipped;duration_ms=0]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0240136Z ##[start-action display=Report which binary this is;id=__self_2.__run_2]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0257117Z ##[group]Run set -euo pipefail
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0257415Z ^[[36;1mset -euo pipefail^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0257702Z ^[[36;1mchmod +x rust/target/release/formal-ai^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0258217Z ^[[36;1mprintf 'formal-ai %s (cache hit: %s)\n' \^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0258616Z ^[[36;1m  "$(rust/target/release/formal-ai --version)" "$CACHE_HIT"^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0307031Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0307387Z env:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0307584Z   TREE_DEPTH: 3
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0307795Z   NODE_FILTER: 1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0308089Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0308461Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0308772Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0309082Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0309428Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0309839Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0361539Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0361828Z   SCCACHE_GHA_ENABLED: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0362086Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0362364Z   RUSTC_WRAPPER: sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0362618Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0362884Z   CARGO_INCREMENTAL: 0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0363108Z   CARGO_TERM_COLOR: always
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0363337Z   CACHE_HIT: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0363544Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0505380Z formal-ai formal-ai 0.355.34 (cache hit: true)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0512803Z ##[end-action id=__self_2.__run_2;outcome=success;conclusion=success;duration_ms=27]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0541942Z ##[group]Run bun add -g @link-assistant/agent@0.26.0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0542378Z ^[[36;1mbun add -g @link-assistant/agent@0.26.0^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0590770Z shell: /usr/bin/bash -e {0}
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0591028Z env:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0591231Z   TREE_DEPTH: 3
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0591447Z   NODE_FILTER: 1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0591737Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0592115Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0592424Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0592744Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0593095Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0593508Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0645494Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0645974Z   SCCACHE_GHA_ENABLED: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0646230Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0646528Z   RUSTC_WRAPPER: sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0646777Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0647032Z   CARGO_INCREMENTAL: 0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0647258Z   CARGO_TERM_COLOR: always
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0647498Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0715105Z /home/runner/work/_temp/91613a6e-dd86-4389-b54c-42262af1e6cf.sh: line 1: bun: command not found
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0728956Z ##[error]Process completed with exit code 127.
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0785129Z ##[group]Run scripts/dump-agent-cli-evidence.sh "$OUT"
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0785573Z ^[[36;1mscripts/dump-agent-cli-evidence.sh "$OUT"^[[0m
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0829451Z shell: /usr/bin/bash -e {0}
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0829715Z env:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0829913Z   TREE_DEPTH: 3
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0830139Z   NODE_FILTER: 1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0830429Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0830828Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0831147Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0831483Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0831844Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0832262Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0883331Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0883607Z   SCCACHE_GHA_ENABLED: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0883869Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0884167Z   RUSTC_WRAPPER: sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0884534Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0884793Z   CARGO_INCREMENTAL: 0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0885016Z   CARGO_TERM_COLOR: always
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0885251Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0988975Z no Agent CLI evidence at /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.0989902Z no Agent CLI evidence files found; the harness may have failed before it wrote any
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1037065Z ##[group]Run actions/upload-artifact@v7
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1037372Z with:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1037642Z   name: issue-1028-agent-cli-binary-tree-depth-3-1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1038052Z   path: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1038392Z   retention-days: 3
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1038617Z   if-no-files-found: error
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1038857Z   compression-level: 6
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1039087Z   overwrite: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1039305Z   include-hidden-files: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1039548Z   archive: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1039746Z env:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1039933Z   TREE_DEPTH: 3
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1040142Z   NODE_FILTER: 1.2.1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1040417Z   OUT: /home/runner/work/formal-ai/formal-ai/agent-tree-run
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1040769Z   LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1041068Z   AUTHORED_RULES: disabled
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1041408Z   SCCACHE_PATH: /opt/hostedtoolcache/sccache/0.16.0/x64/sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1041762Z   ACTIONS_CACHE_SERVICE_V2: on
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1042166Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1093729Z   ACTIONS_RUNTIME_TOKEN: ***
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1094006Z   SCCACHE_GHA_ENABLED: true
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1094262Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1094705Z   RUSTC_WRAPPER: sccache
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1094956Z   CARGO_HOME: /home/runner/.cargo
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1095215Z   CARGO_INCREMENTAL: 0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1095443Z   CARGO_TERM_COLOR: always
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.1095679Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.2561438Z ##[error]No files were found with the provided path: /home/runner/work/formal-ai/formal-ai/agent-tree-run. No artifacts will be uploaded.
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.2798674Z Post job cleanup.
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.2804228Z ##[start-action display=Restore the binary built from these sources;id=__ff94bf62-6b18-47b3-bddb-5446a0ee5fe4.cache]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.2808350Z ##[end-action id=__ff94bf62-6b18-47b3-bddb-5446a0ee5fe4.cache;outcome=skipped;conclusion=skipped;duration_ms=0]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.2891563Z Post job cleanup.
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.2895954Z ##[start-action display=Install sccache;id=__a629ceeb-d6a1-454f-bdee-710af5f58990.__mozilla-actions_sccache-action]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.2956869Z Post job cleanup.
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3796627Z ##[group]Get human-readable stats
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3814213Z [command]/opt/hostedtoolcache/sccache/0.16.0/x64/sccache --show-stats
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3869664Z Compile requests                      1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3870601Z Compile requests executed             0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3871192Z Cache hits                            0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3871705Z Cache misses                          0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3872211Z Cache hits rate                       -
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3872713Z Cache timeouts                        0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3873193Z Cache read errors                     0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3873729Z Forced recaches                       0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3874217Z Cache write errors                    0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3874981Z Cache errors                          0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3875468Z Compilations                          0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3876019Z Compilation failures                  0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3876531Z Non-cacheable compilations            0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3877050Z Non-cacheable calls                   1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3877541Z Non-compilation calls                 0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3878062Z Unsupported compiler calls            0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3878587Z Average cache write               0.000 s
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3879119Z Average compiler                  0.000 s
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3879630Z Average cache read hit            0.000 s
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3880863Z Failed distributed compilations       0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3881252Z 
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3881424Z Non-cacheable reasons:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3881890Z missing input                         1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3882190Z 
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3882877Z Cache location                  ghac, name: 90541733aa72480a9e77ce99e66fc1cfabfa835d74c751408eb0351b7adcec6b, prefix: /sccache/
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3883909Z Base directories                (none)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3884620Z Version (client)                0.16.0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3893218Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3893896Z ##[group]Get JSON stats
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3896342Z [command]/opt/hostedtoolcache/sccache/0.16.0/x64/sccache --show-stats --stats-format=json
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3936914Z {"stats":{"compile_requests":1,"requests_unsupported_compiler":0,"requests_not_compile":0,"requests_not_cacheable":1,"requests_executed":0,"cache_errors":{"counts":{},"adv_counts":{}},"cache_hits":{"counts":{},"adv_counts":{}},"cache_misses":{"counts":{},"adv_counts":{}},"cache_timeouts":0,"cache_read_errors":0,"non_cacheable_compilations":0,"forced_recaches":0,"cache_write_errors":0,"cache_writes":0,"cache_write_duration":{"secs":0,"nanos":0},"cache_read_hit_duration":{"secs":0,"nanos":0},"compilations":0,"compiler_write_duration":{"secs":0,"nanos":0},"compile_fails":0,"not_cached":{"missing input":1},"dist_compiles":{},"dist_errors":0,"multi_level":null},"cache_location":"ghac, name: 90541733aa72480a9e77ce99e66fc1cfabfa835d74c751408eb0351b7adcec6b, prefix: /sccache/","cache_size":null,"max_cache_size":null,"use_preprocessor_cache_mode":false,"version":"0.16.0","basedirs":[]}
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3942497Z ##[endgroup]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3945721Z ##[notice]0% - 0 hits, 0 misses, 0 errors
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3946388Z 
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3946817Z Full human-readable stats:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3947700Z Compile requests                      1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3948274Z Compile requests executed             0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3948779Z Cache hits                            0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3949216Z Cache misses                          0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3949513Z Cache hits rate                       -
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3950255Z Cache timeouts                        0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3950527Z Cache read errors                     0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3951082Z Forced recaches                       0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3951407Z Cache write errors                    0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3951682Z Cache errors                          0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3951957Z Compilations                          0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3952220Z Compilation failures                  0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3952623Z Non-cacheable compilations            0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3952898Z Non-cacheable calls                   1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3953167Z Non-compilation calls                 0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3953433Z Unsupported compiler calls            0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3953710Z Average cache write               0.000 s
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3953998Z Average compiler                  0.000 s
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3954286Z Average cache read hit            0.000 s
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3954895Z Failed distributed compilations       0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3955175Z 
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3955354Z Non-cacheable reasons:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3955883Z missing input                         1
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3956223Z 
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3956946Z Cache location                  ghac, name: 90541733aa72480a9e77ce99e66fc1cfabfa835d74c751408eb0351b7adcec6b, prefix: /sccache/
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3957981Z Base directories                (none)
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3958470Z Version (client)                0.16.0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.3958764Z 
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.4061133Z ##[end-action id=__a629ceeb-d6a1-454f-bdee-710af5f58990.__mozilla-actions_sccache-action;outcome=success;conclusion=success;duration_ms=116]
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.4151854Z Post job cleanup.
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.5028656Z [command]/usr/bin/git version
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.5073686Z git version 2.56.0
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.5112742Z Temporarily overriding HOME='/home/runner/work/_temp/3a5f2e9a-e45d-4b45-8132-8259637c7eb4' before making global git config changes
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.5114037Z Adding repository directory to the temporary git global config as a safe directory
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.5119314Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.5152651Z Removing SSH command configuration
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.5159582Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.5198175Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.5638043Z Removing HTTP extra header
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.5645258Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.5707329Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.6178272Z Removing includeIf entries pointing to credentials config files
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.6185096Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.6224800Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.6749029Z Cleaning up orphan processes
+Agent CLI ladder depth-3-1.2.1	UNKNOWN STEP	2026-11-08T10:43:47.7118918Z Terminate orphan process: pid (2591) (sccache)

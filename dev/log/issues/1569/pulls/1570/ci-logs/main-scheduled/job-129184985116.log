@@ -1,0 +1,835 @@
+Audit job timeout headroom	UNKNOWN STEP	﻿2026-11-09T13:20:25.1027116Z Current runner version: '2.338.2'
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1043392Z ##[group]Runner Image Provisioner
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1044023Z Hosted Compute Agent
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1044409Z Version: 20261028.624
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1044765Z Commit: 54898b74c23fde5556c9b3c3a2290865feef0dfe
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1045263Z Build Date: 2026-10-28T21:51:42Z
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1045659Z Worker ID: {5147af10-8910-4370-b587-dae6adfab141}
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1046085Z Region: westus3
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1046426Z Cloud: Azure
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1046749Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1047771Z ##[group]Operating System
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1048137Z Ubuntu
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1048438Z 26.04.1
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1048844Z LTS
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1049153Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1049539Z ##[group]Runner Image
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1049887Z Image: ubuntu-26.04
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1050212Z Version: 20261101.186.1
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1050971Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261101.186/images/ubuntu/Ubuntu2604-Readme.md
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1051877Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261101.186
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1052419Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1053154Z ##[group]GITHUB_TOKEN Permissions
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1054295Z Actions: read
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1054904Z Contents: read
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1055327Z Metadata: read
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1055654Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1056950Z Secret source: Actions
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1057736Z Cache mode: write
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1058211Z Prepare workflow directory
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1256926Z Prepare all required actions
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.1287256Z Getting action download info
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.4520748Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.5300362Z Download action repository 'dtolnay/rust-toolchain@stable' (SHA:b725eda525362e7cf34af9a7243cac1e3f01a7ec)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.7902710Z Download action repository 'actions/upload-artifact@v7' (SHA:cf430e030ddbb5b0abf93d22962f4752f3646cd9)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:25.9526363Z Complete job name: Audit job timeout headroom
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.0026917Z ##[group]Run actions/checkout@v7
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.0027439Z with:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.0027674Z   persist-credentials: false
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.0027958Z   repository: link-assistant/formal-ai
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.0029832Z   token: ***
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.0030056Z   ssh-strict: true
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.0030286Z   ssh-user: git
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.0030507Z   clean: true
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.0030745Z   sparse-checkout-cone-mode: true
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.0031016Z   fetch-depth: 1
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.0031243Z   fetch-tags: false
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.0031477Z   show-progress: true
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.0031714Z   lfs: false
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.0031934Z   submodules: false
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.0032176Z   set-safe-directory: true
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.0032442Z   allow-unsafe-pr-checkout: false
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.0032784Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2361538Z Syncing repository: link-assistant/formal-ai
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2362560Z ##[group]Getting Git version info
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2362994Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2363509Z [command]/usr/bin/git version
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2376125Z git version 2.56.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2388524Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2395212Z Temporarily overriding HOME='/home/runner/work/_temp/83c6392f-457d-498e-bfbe-fd367f3418a8' before making global git config changes
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2396667Z Adding repository directory to the temporary git global config as a safe directory
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2398957Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2460231Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2462553Z ##[group]Determining repository object format
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2463363Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2463999Z ##[group]Initializing the repository
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2466075Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2624288Z hint: Using 'master' as the name for the initial branch. This default branch name
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2625221Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2626092Z hint: to use in all of your new repositories, which will suppress this warning,
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2626727Z hint: call:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2627081Z hint:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2627667Z hint: 	git config --global init.defaultBranch <name>
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2628198Z hint:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2628675Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2629580Z hint: 'development'. The just-created branch can be renamed via this command:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2630201Z hint:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2630543Z hint: 	git branch -m <name>
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2630930Z hint:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2631462Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2638558Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2648129Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2704496Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2705158Z ##[group]Disabling automatic garbage collection
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2713591Z [command]/usr/bin/git config --local gc.auto 0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2743325Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2746038Z ##[group]Setting up auth
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2746504Z Removing SSH command configuration
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2747169Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.2774470Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.3148055Z Removing HTTP extra header
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.3152022Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.3177812Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.3388019Z Removing includeIf entries pointing to credentials config files
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.3388879Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.3414940Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.3623443Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-3f29b38c-4af0-4639-ac05-86fbf125e62b.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.3651700Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-3f29b38c-4af0-4639-ac05-86fbf125e62b.config
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.3695870Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-3f29b38c-4af0-4639-ac05-86fbf125e62b.config
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.3724231Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-3f29b38c-4af0-4639-ac05-86fbf125e62b.config
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.3749187Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-3f29b38c-4af0-4639-ac05-86fbf125e62b.config
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.3772727Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.3773362Z ##[group]Fetching the repository
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:26.3777236Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +70935ad8e2a12bc2148eef74722749290c2edb66:refs/remotes/origin/main
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:46.3396671Z From https://github.com/link-assistant/formal-ai
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:46.3397122Z  * [new ref]           70935ad8e2a12bc2148eef74722749290c2edb66 -> origin/main
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:46.3405685Z [command]/usr/bin/git branch --list --remote origin/main
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:46.3430036Z   origin/main
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:46.3435752Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:46.3455132Z 70935ad8e2a12bc2148eef74722749290c2edb66
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:46.3458227Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:46.3458673Z ##[group]Determining the checkout info
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:46.3459129Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:46.3461861Z [command]/usr/bin/git sparse-checkout disable
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:46.3503065Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:46.3528059Z ##[group]Checking out the ref
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:46.3530771Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:47.7252978Z Updating files:  13% (9817/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:47.9823397Z Updating files:  14% (10366/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:48.1297697Z Updating files:  15% (11107/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:48.2046361Z Updating files:  16% (11847/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:48.2477953Z Updating files:  17% (12587/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:48.3262335Z Updating files:  18% (13328/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:48.3986317Z Updating files:  19% (14068/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:48.4220959Z Updating files:  19% (14621/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:48.5766115Z Updating files:  20% (14809/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:48.6505978Z Updating files:  21% (15549/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:48.7161303Z Updating files:  22% (16290/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:48.7747178Z Updating files:  23% (17030/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:48.8335631Z Updating files:  24% (17770/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:48.9021440Z Updating files:  25% (18511/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:48.9595090Z Updating files:  26% (19251/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.0226650Z Updating files:  27% (19992/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.0479710Z Updating files:  28% (20732/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.0884746Z Updating files:  29% (21472/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.1218820Z Updating files:  30% (22213/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.1489153Z Updating files:  31% (22953/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.1898319Z Updating files:  32% (23694/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.2168183Z Updating files:  33% (24434/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.2360119Z Updating files:  34% (25174/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.2978021Z Updating files:  35% (25915/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.3347151Z Updating files:  36% (26655/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.4616287Z Updating files:  37% (27396/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.4626004Z Updating files:  37% (28106/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.4941028Z Updating files:  38% (28136/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.5190966Z Updating files:  39% (28876/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.5431911Z Updating files:  40% (29617/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.5664489Z Updating files:  41% (30357/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.6087527Z Updating files:  42% (31098/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.6273639Z Updating files:  43% (31838/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.6593029Z Updating files:  44% (32579/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.7223556Z Updating files:  45% (33319/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.7611172Z Updating files:  46% (34059/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.8028574Z Updating files:  47% (34800/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.8300253Z Updating files:  48% (35540/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.9081937Z Updating files:  49% (36281/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.9457791Z Updating files:  50% (37021/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.9661522Z Updating files:  51% (37761/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:49.9940347Z Updating files:  52% (38502/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.0183318Z Updating files:  53% (39242/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.0601711Z Updating files:  54% (39983/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.0816820Z Updating files:  55% (40723/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.1094476Z Updating files:  56% (41463/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.1320679Z Updating files:  57% (42204/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.1782968Z Updating files:  58% (42944/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.2278794Z Updating files:  59% (43685/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.2633417Z Updating files:  60% (44425/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.2883510Z Updating files:  61% (45166/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.3265469Z Updating files:  62% (45906/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.3733513Z Updating files:  63% (46646/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.3983578Z Updating files:  64% (47387/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.4338609Z Updating files:  64% (47736/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.4668070Z Updating files:  65% (48127/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.4956865Z Updating files:  66% (48868/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.5314494Z Updating files:  67% (49608/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.5546426Z Updating files:  68% (50348/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.6225988Z Updating files:  69% (51089/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.6434854Z Updating files:  70% (51829/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.6619939Z Updating files:  71% (52570/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.6810506Z Updating files:  72% (53310/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.7040252Z Updating files:  73% (54050/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.7234467Z Updating files:  74% (54791/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.7455176Z Updating files:  75% (55531/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.7887172Z Updating files:  76% (56272/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.8227038Z Updating files:  77% (57012/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.8752136Z Updating files:  78% (57752/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:50.9103615Z Updating files:  79% (58493/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:51.0211228Z Updating files:  80% (59233/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:51.0942128Z Updating files:  81% (59974/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:51.1443090Z Updating files:  82% (60714/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:51.2920199Z Updating files:  83% (61455/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:51.3596827Z Updating files:  84% (62195/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:51.3981807Z Updating files:  85% (62935/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:51.4075225Z Updating files:  85% (63523/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:51.4379610Z Updating files:  86% (63676/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:51.5763330Z Updating files:  87% (64416/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:51.6266330Z Updating files:  88% (65157/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:51.6676305Z Updating files:  89% (65897/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:51.7095104Z Updating files:  90% (66637/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:51.7431429Z Updating files:  91% (67378/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:51.7916855Z Updating files:  92% (68118/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:51.8303458Z Updating files:  93% (68859/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:51.8782079Z Updating files:  94% (69599/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:51.9157941Z Updating files:  95% (70339/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:51.9564056Z Updating files:  96% (71080/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:51.9926873Z Updating files:  97% (71820/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.0300531Z Updating files:  98% (72561/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.0684131Z Updating files:  99% (73301/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.0684603Z Updating files: 100% (74041/74041)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.0684826Z Updating files: 100% (74041/74041), done.
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.1404953Z Switched to a new branch 'main'
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.1431631Z branch 'main' set up to track 'origin/main'.
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.1633972Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.1676726Z [command]/usr/bin/git log -1 --format=%H
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.1709999Z 70935ad8e2a12bc2148eef74722749290c2edb66
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.1715159Z ##[group]Removing auth
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.1715387Z Removing SSH command configuration
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.1717783Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.1747926Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.2051449Z Removing HTTP extra header
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.2054282Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.2085927Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.2398569Z Removing includeIf entries pointing to credentials config files
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.2418298Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.2425614Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.2426243Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.2426862Z includeif.gitdir:/github/workspace/.git.path
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.2427447Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.2433344Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.2464696Z /home/runner/work/_temp/git-credentials-3f29b38c-4af0-4639-ac05-86fbf125e62b.config
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.2468525Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-3f29b38c\-4af0\-4639\-ac05\-86fbf125e62b\.config
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.2501312Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.2522315Z /home/runner/work/_temp/git-credentials-3f29b38c-4af0-4639-ac05-86fbf125e62b.config
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.2531717Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-3f29b38c\-4af0\-4639\-ac05\-86fbf125e62b\.config
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.2594668Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.2615727Z /github/runner_temp/git-credentials-3f29b38c-4af0-4639-ac05-86fbf125e62b.config
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.2621301Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-3f29b38c\-4af0\-4639\-ac05\-86fbf125e62b\.config
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.3195916Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.3218623Z /github/runner_temp/git-credentials-3f29b38c-4af0-4639-ac05-86fbf125e62b.config
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.3223198Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-3f29b38c\-4af0\-4639\-ac05\-86fbf125e62b\.config
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.3791927Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.4094361Z Removing credentials config '/home/runner/work/_temp/git-credentials-3f29b38c-4af0-4639-ac05-86fbf125e62b.config'
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.4103308Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5175415Z ##[group]Run dtolnay/rust-toolchain@stable
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5175582Z with:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5175699Z   toolchain: stable
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5175819Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5216584Z ##[start-action display=Parse toolchain version;id=__dtolnay_rust-toolchain.parse]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5801825Z ##[group]Run if [[ -z $toolchain ]]; then
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5802089Z ^[[36;1mif [[ -z $toolchain ]]; then^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5802390Z ^[[36;1m  # GitHub does not enforce `required: true` inputs itself. https://github.com/actions/runner/issues/1070^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5802686Z ^[[36;1m  echo "'toolchain' is a required input" >&2^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5802850Z ^[[36;1m  exit 1^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5803035Z ^[[36;1melif [[ $toolchain =~ ^stable' '[0-9]+' '(year|month|week|day)s?' 'ago$ ]]; then^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5803256Z ^[[36;1m  if [[ Linux == macOS ]]; then^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5803578Z ^[[36;1m    echo "toolchain=1.$((($(date -v-$(sed 's/stable \([0-9]*\) \(.\).*/\1\2/' <<< $toolchain) +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5803848Z ^[[36;1m  else^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5804069Z ^[[36;1m    echo "toolchain=1.$((($(date --date "${toolchain#stable }" +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5804465Z ^[[36;1m  fi^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5804630Z ^[[36;1melif [[ $toolchain =~ ^stable' 'minus' '[0-9]+' 'releases?$ ]]; then^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5804911Z ^[[36;1m  echo "toolchain=1.$((($(date +%s)/60/60/24-16569)/7/6-${toolchain//[^0-9]/}))" >> $GITHUB_OUTPUT^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5805158Z ^[[36;1melif [[ $toolchain =~ ^1\.[0-9]+$ ]]; then^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5805434Z ^[[36;1m  echo "toolchain=1.$((i=${toolchain#1.}, c=($(date +%s)/60/60/24-16569)/7/6, i+9*i*(10*i<=c)+90*i*(100*i<=c)))" >> $GITHUB_OUTPUT^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5805691Z ^[[36;1melse^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5805805Z ^[[36;1m  delimiter=EOF^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5805979Z ^[[36;1m  while [[ $toolchain == *$delimiter* ]]; do delimiter+=_; done^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5806251Z ^[[36;1m  printf 'toolchain<<%s\n%s\n%s\n' "$delimiter" "$toolchain" "$delimiter" >> $GITHUB_OUTPUT^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5806469Z ^[[36;1mfi^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5849167Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5849355Z env:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5849476Z   toolchain: stable
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.5849595Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.6425112Z ##[end-action id=__dtolnay_rust-toolchain.parse;outcome=success;conclusion=success;duration_ms=120]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.6428067Z ##[start-action display=Set $CARGO_HOME;id=__dtolnay_rust-toolchain.__run]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.6875315Z ##[group]Run echo CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.6875576Z ^[[36;1mecho CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.6910705Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.6910887Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.6966281Z ##[end-action id=__dtolnay_rust-toolchain.__run;outcome=success;conclusion=success;duration_ms=53]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.6967761Z ##[start-action display=Install rustup if needed;id=__dtolnay_rust-toolchain.__run_2]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.6983063Z ##[group]Run if ! command -v rustup &>/dev/null; then
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.6983267Z ^[[36;1mif ! command -v rustup &>/dev/null; then^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.6983676Z ^[[36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.6984059Z ^[[36;1m  echo "$CARGO_HOME/bin" >> $GITHUB_PATH^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.6984218Z ^[[36;1mfi^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7019131Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7019305Z env:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7019421Z   CARGO_HOME: /home/runner/.cargo
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7019561Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7071460Z ##[end-action id=__dtolnay_rust-toolchain.__run_2;outcome=success;conclusion=success;duration_ms=10]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7072774Z ##[start-action display=Install rustup if needed on windows;id=__dtolnay_rust-toolchain.__run_3]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7076480Z ##[end-action id=__dtolnay_rust-toolchain.__run_3;outcome=skipped;conclusion=skipped;duration_ms=0]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7084805Z ##[start-action display=rustup toolchain install stable;id=__dtolnay_rust-toolchain.__run_4]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7266277Z ##[group]Run set -f  # split targets and components on commas and whitespace, without glob expansion
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7266629Z ^[[36;1mset -f  # split targets and components on commas and whitespace, without glob expansion^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7266856Z ^[[36;1mflags=()^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7267009Z ^[[36;1mfor t in ${targets//,/ }; do flags+=(--target "$t"); done^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7267231Z ^[[36;1mfor c in ${components//,/ }; do flags+=(--component "$c"); done^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7267713Z ^[[36;1mif [[ $toolchain == nightly && -n $components ]]; then flags+=(--allow-downgrade); fi^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7267949Z ^[[36;1mlog=$(mktemp)^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7268081Z ^[[36;1mtrap 'rm -f "$log"' EXIT^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7268226Z ^[[36;1mfor attempt in 1 2 3 4 5; do^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7268525Z ^[[36;1m  if rustup toolchain install "$toolchain" "${flags[@]}" --profile minimal --no-self-update --force-non-host 2>&1 | tee "$log"; then^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7268938Z ^[[36;1m    break^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7269052Z ^[[36;1m  else^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7269165Z ^[[36;1m    status=$?^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7269286Z ^[[36;1m  fi^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7269450Z ^[[36;1m  if [[ $attempt == 5 ]] || ! grep -Fq 'checksum failed for ' "$log" \^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7269745Z ^[[36;1m      || ! grep -Fq 'this is likely due to an ongoing update of the official release server' "$log"; then^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7269985Z ^[[36;1m    exit "$status"^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7270110Z ^[[36;1m  fi^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7270300Z ^[[36;1m  echo "Retrying rustup toolchain install in 30 seconds (retry $attempt of 4)" >&2^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7270519Z ^[[36;1m  sleep 30^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7270633Z ^[[36;1mdone^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7304770Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7304943Z env:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7305057Z   CARGO_HOME: /home/runner/.cargo
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7305205Z   toolchain: stable
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7305317Z   targets: 
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7305422Z   components: 
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7305545Z   RUSTUP_PERMIT_COPY_RENAME: 1
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.7305682Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:52.9076949Z info: syncing channel updates for stable-x86_64-unknown-linux-gnu
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.1229176Z 
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.1297421Z   stable-x86_64-unknown-linux-gnu unchanged - rustc 1.99.1 (58cf8f9c3 2026-10-13)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.1297710Z 
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.1366800Z ##[end-action id=__dtolnay_rust-toolchain.__run_4;outcome=success;conclusion=success;duration_ms=428]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.1371352Z ##[start-action display=rustup default stable;id=__dtolnay_rust-toolchain.__run_5]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.1952396Z ##[group]Run rustup default "$toolchain" --force-non-host
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.1952633Z ^[[36;1mrustup default "$toolchain" --force-non-host^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.1991344Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.1991533Z env:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.1991648Z   CARGO_HOME: /home/runner/.cargo
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.1991785Z   toolchain: stable
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.1991901Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.2489726Z info: using existing install for stable-x86_64-unknown-linux-gnu
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.3936118Z info: default toolchain set to stable-x86_64-unknown-linux-gnu
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.3936366Z 
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.4004483Z   stable-x86_64-unknown-linux-gnu unchanged - rustc 1.99.1 (58cf8f9c3 2026-10-13)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.4004779Z 
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.4569390Z ##[end-action id=__dtolnay_rust-toolchain.__run_5;outcome=success;conclusion=success;duration_ms=319]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.4575301Z ##[start-action display=Create cachekey;id=__dtolnay_rust-toolchain.rustc-version]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.4950636Z ##[group]Run DATE=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.4951109Z ^[[36;1mDATE=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.4951473Z ^[[36;1mHASH=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-hash: //p')^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.4951749Z ^[[36;1mecho "cachekey=$(echo $DATE$HASH | head -c12)" >> $GITHUB_OUTPUT^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.4992021Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.4992198Z env:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.4992315Z   CARGO_HOME: /home/runner/.cargo
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.4992455Z   toolchain: stable
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.4992573Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.5916135Z ##[end-action id=__dtolnay_rust-toolchain.rustc-version;outcome=success;conclusion=success;duration_ms=134]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.5918358Z ##[start-action display=Disable incremental compilation;id=__dtolnay_rust-toolchain.__run_6]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.6844959Z ##[group]Run if [ -z "${CARGO_INCREMENTAL+set}" ]; then
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.6845288Z ^[[36;1mif [ -z "${CARGO_INCREMENTAL+set}" ]; then^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.6845726Z ^[[36;1m  echo CARGO_INCREMENTAL=0 >> $GITHUB_ENV^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.6845967Z ^[[36;1mfi^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.6886631Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.6886816Z env:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.6886936Z   CARGO_HOME: /home/runner/.cargo
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.6887072Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.7666217Z ##[end-action id=__dtolnay_rust-toolchain.__run_6;outcome=success;conclusion=success;duration_ms=174]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.7667761Z ##[start-action display=Enable colors in Cargo output;id=__dtolnay_rust-toolchain.__run_7]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.9040829Z ##[group]Run if [ -z "${CARGO_TERM_COLOR+set}" ]; then
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.9041160Z ^[[36;1mif [ -z "${CARGO_TERM_COLOR+set}" ]; then^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.9041441Z ^[[36;1m  echo CARGO_TERM_COLOR=always >> $GITHUB_ENV^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.9041693Z ^[[36;1mfi^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.9080603Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.9080787Z env:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.9080916Z   CARGO_HOME: /home/runner/.cargo
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.9081060Z   CARGO_INCREMENTAL: 0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:53.9081185Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.0258670Z ##[end-action id=__dtolnay_rust-toolchain.__run_7;outcome=success;conclusion=success;duration_ms=259]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.0261268Z ##[start-action display=Enable Cargo sparse registry;id=__dtolnay_rust-toolchain.__run_8]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.1450556Z ##[group]Run # implemented in 1.66, stabilized in 1.68, made default in 1.70
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.1450857Z ^[[36;1m# implemented in 1.66, stabilized in 1.68, made default in 1.70^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.1451312Z ^[[36;1mif [ -z "${CARGO_REGISTRIES_CRATES_IO_PROTOCOL+set}" -o -f "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol ]; then^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.1451706Z ^[[36;1m  if rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.6[89]\.'; then^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.1452028Z ^[[36;1m    touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.1452320Z ^[[36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse >> $GITHUB_ENV^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.1452597Z ^[[36;1m  elif rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.6[67]\.'; then^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.1452906Z ^[[36;1m    touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.1453177Z ^[[36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=git >> $GITHUB_ENV^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.1453366Z ^[[36;1m  fi^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.1453477Z ^[[36;1mfi^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.1489259Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.1489441Z env:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.1489663Z   CARGO_HOME: /home/runner/.cargo
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.1489811Z   CARGO_INCREMENTAL: 0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.1489937Z   CARGO_TERM_COLOR: always
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.1490065Z   toolchain: stable
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.1490182Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.2851983Z ##[end-action id=__dtolnay_rust-toolchain.__run_8;outcome=success;conclusion=success;duration_ms=259]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.2855542Z ##[start-action display=Work around spurious network errors in curl 8.0;id=__dtolnay_rust-toolchain.__run_9]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3232773Z ##[group]Run # https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3233345Z ^[[36;1m# https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3233682Z ^[[36;1mif rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.7[01]\.'; then^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3233936Z ^[[36;1m  echo CARGO_HTTP_MULTIPLEXING=false >> $GITHUB_ENV^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3234104Z ^[[36;1mfi^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3272167Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3272347Z env:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3272463Z   CARGO_HOME: /home/runner/.cargo
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3272606Z   CARGO_INCREMENTAL: 0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3272732Z   CARGO_TERM_COLOR: always
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3272986Z   toolchain: stable
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3273101Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3456535Z ##[end-action id=__dtolnay_rust-toolchain.__run_9;outcome=success;conclusion=success;duration_ms=60]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3460429Z ##[start-action display=rustc +stable --version --verbose;id=__dtolnay_rust-toolchain.__run_10]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3543885Z ##[group]Run rustc +"$toolchain" --version --verbose
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3544152Z ^[[36;1mrustc +"$toolchain" --version --verbose^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3580090Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3580270Z env:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3580387Z   CARGO_HOME: /home/runner/.cargo
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3580539Z   CARGO_INCREMENTAL: 0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3580671Z   CARGO_TERM_COLOR: always
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3580800Z   toolchain: stable
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3580918Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3934526Z rustc 1.99.1 (58cf8f9c3 2026-10-13)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3934807Z binary: rustc
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3934971Z commit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3935459Z commit-date: 2026-10-13
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3935670Z host: x86_64-unknown-linux-gnu
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3935938Z release: 1.99.1
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3936128Z LLVM version: 23.1.1
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.3952317Z ##[end-action id=__dtolnay_rust-toolchain.__run_10;outcome=success;conclusion=success;duration_ms=49]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.5052342Z ##[group]Run bash scripts/install-rust-script.sh
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.5052557Z ^[[36;1mbash scripts/install-rust-script.sh^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.5091668Z shell: /usr/bin/bash -e {0}
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.5091865Z env:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.5092035Z   CARGO_HOME: /home/runner/.cargo
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.5092239Z   CARGO_INCREMENTAL: 0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.5092425Z   CARGO_TERM_COLOR: always
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.5092598Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.5344809Z Installing rust-script (attempt 1/3)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.6063738Z ^[[1m^[[92m    Updating^[[0m crates.io index
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.7329343Z ^[[1m^[[92m Downloading^[[0m crates ...
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.8170419Z ^[[1m^[[92m  Downloaded^[[0m rust-script v0.36.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.9250660Z ^[[1m^[[92m  Installing^[[0m rust-script v0.36.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:54.9261426Z ^[[1m^[[92m    Updating^[[0m crates.io index
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.2575885Z ^[[1m^[[92m    Updating^[[0m crates.io index
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3224012Z ^[[1m^[[92m Downloading^[[0m crates ...
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3459951Z ^[[1m^[[92m  Downloaded^[[0m aho-corasick v1.1.3
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3496680Z ^[[1m^[[92m  Downloaded^[[0m anstyle-query v1.1.4
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3503941Z ^[[1m^[[92m  Downloaded^[[0m anstyle v1.0.11
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3512925Z ^[[1m^[[92m  Downloaded^[[0m anstyle-parse v0.2.7
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3523374Z ^[[1m^[[92m  Downloaded^[[0m anstream v0.6.20
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3537978Z ^[[1m^[[92m  Downloaded^[[0m cpufeatures v0.2.17
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3547651Z ^[[1m^[[92m  Downloaded^[[0m clap_lex v0.7.5
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3556284Z ^[[1m^[[92m  Downloaded^[[0m colorchoice v1.0.4
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3562047Z ^[[1m^[[92m  Downloaded^[[0m dirs v6.0.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3570349Z ^[[1m^[[92m  Downloaded^[[0m dirs-sys v0.5.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3577425Z ^[[1m^[[92m  Downloaded^[[0m fastrand v2.3.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3585108Z ^[[1m^[[92m  Downloaded^[[0m is_terminal_polyfill v1.70.1
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3590852Z ^[[1m^[[92m  Downloaded^[[0m version_check v0.9.5
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3598749Z ^[[1m^[[92m  Downloaded^[[0m block-buffer v0.10.4
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3605430Z ^[[1m^[[92m  Downloaded^[[0m equivalent v1.0.2
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3612239Z ^[[1m^[[92m  Downloaded^[[0m generic-array v0.14.7
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3625416Z ^[[1m^[[92m  Downloaded^[[0m sha1 v0.10.6
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3636023Z ^[[1m^[[92m  Downloaded^[[0m strsim v0.11.1
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3644430Z ^[[1m^[[92m  Downloaded^[[0m cfg-if v1.0.1
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3652912Z ^[[1m^[[92m  Downloaded^[[0m shell-words v1.1.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3659711Z ^[[1m^[[92m  Downloaded^[[0m env_filter v0.1.3
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3668823Z ^[[1m^[[92m  Downloaded^[[0m utf8parse v0.2.2
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3675020Z ^[[1m^[[92m  Downloaded^[[0m errno v0.3.13
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3685717Z ^[[1m^[[92m  Downloaded^[[0m crypto-common v0.1.6
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3690881Z ^[[1m^[[92m  Downloaded^[[0m option-ext v0.2.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3696389Z ^[[1m^[[92m  Downloaded^[[0m serde_spanned v1.0.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3704029Z ^[[1m^[[92m  Downloaded^[[0m pulldown-cmark-escape v0.11.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3708780Z ^[[1m^[[92m  Downloaded^[[0m toml_writer v1.0.2
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3718063Z ^[[1m^[[92m  Downloaded^[[0m digest v0.10.7
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3733110Z ^[[1m^[[92m  Downloaded^[[0m env_logger v0.11.8
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3751287Z ^[[1m^[[92m  Downloaded^[[0m getopts v0.2.23
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3762707Z ^[[1m^[[92m  Downloaded^[[0m unicase v2.8.1
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3773081Z ^[[1m^[[92m  Downloaded^[[0m toml_datetime v0.7.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3784300Z ^[[1m^[[92m  Downloaded^[[0m toml_parser v1.0.2
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3804075Z ^[[1m^[[92m  Downloaded^[[0m hashbrown v0.15.5
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3852474Z ^[[1m^[[92m  Downloaded^[[0m once_cell v1.21.3
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3880560Z ^[[1m^[[92m  Downloaded^[[0m log v0.4.27
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3899339Z ^[[1m^[[92m  Downloaded^[[0m getrandom v0.3.3
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3922604Z ^[[1m^[[92m  Downloaded^[[0m bitflags v2.9.1
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3951728Z ^[[1m^[[92m  Downloaded^[[0m toml v0.9.5
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3980319Z ^[[1m^[[92m  Downloaded^[[0m tempfile v3.20.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.3999866Z ^[[1m^[[92m  Downloaded^[[0m clap v4.5.45
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.4064065Z ^[[1m^[[92m  Downloaded^[[0m typenum v1.18.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.4085474Z ^[[1m^[[92m  Downloaded^[[0m serde v1.0.219
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.4106472Z ^[[1m^[[92m  Downloaded^[[0m memchr v2.7.5
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.4143458Z ^[[1m^[[92m  Downloaded^[[0m indexmap v2.10.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.4170831Z ^[[1m^[[92m  Downloaded^[[0m clap_builder v4.5.44
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.4213826Z ^[[1m^[[92m  Downloaded^[[0m pulldown-cmark v0.13.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.4251460Z ^[[1m^[[92m  Downloaded^[[0m winnow v0.7.12
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.4313505Z ^[[1m^[[92m  Downloaded^[[0m regex v1.11.1
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.4405572Z ^[[1m^[[92m  Downloaded^[[0m unicode-width v0.2.1
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.4445973Z ^[[1m^[[92m  Downloaded^[[0m regex-syntax v0.8.5
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.4492798Z ^[[1m^[[92m  Downloaded^[[0m rustix v1.0.8
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.4676226Z ^[[1m^[[92m  Downloaded^[[0m regex-automata v0.4.9
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.4779592Z ^[[1m^[[92m  Downloaded^[[0m jiff v0.2.15
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.4880908Z ^[[1m^[[92m  Downloaded^[[0m libc v0.2.175
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.5066446Z ^[[1m^[[92m  Downloaded^[[0m linux-raw-sys v0.9.4
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.6424520Z ^[[1m^[[92m   Compiling^[[0m version_check v0.9.5
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.6424904Z ^[[1m^[[92m   Compiling^[[0m typenum v1.18.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.6425333Z ^[[1m^[[92m   Compiling^[[0m libc v0.2.175
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:55.6425746Z ^[[1m^[[92m   Compiling^[[0m memchr v2.7.5
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:56.0149601Z ^[[1m^[[92m   Compiling^[[0m generic-array v0.14.7
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:56.3718560Z ^[[1m^[[92m   Compiling^[[0m serde v1.0.219
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:56.6258728Z ^[[1m^[[92m   Compiling^[[0m utf8parse v0.2.2
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:56.6559316Z ^[[1m^[[92m   Compiling^[[0m anstyle-parse v0.2.7
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:56.6648249Z ^[[1m^[[92m   Compiling^[[0m aho-corasick v1.1.3
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:56.7653413Z ^[[1m^[[92m   Compiling^[[0m anstyle v1.0.11
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:56.8909907Z ^[[1m^[[92m   Compiling^[[0m is_terminal_polyfill v1.70.1
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:56.9321459Z ^[[1m^[[92m   Compiling^[[0m anstyle-query v1.1.4
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:56.9654838Z ^[[1m^[[92m   Compiling^[[0m colorchoice v1.0.4
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:57.0172949Z ^[[1m^[[92m   Compiling^[[0m regex-syntax v0.8.5
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:57.1289165Z ^[[1m^[[92m   Compiling^[[0m anstream v0.6.20
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:57.3868789Z ^[[1m^[[92m   Compiling^[[0m getrandom v0.3.3
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:57.4955338Z ^[[1m^[[92m   Compiling^[[0m rustix v1.0.8
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:57.6383870Z ^[[1m^[[92m   Compiling^[[0m cfg-if v1.0.1
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:57.6628745Z ^[[1m^[[92m   Compiling^[[0m bitflags v2.9.1
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:57.8618796Z ^[[1m^[[92m   Compiling^[[0m crypto-common v0.1.6
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:57.9029387Z ^[[1m^[[92m   Compiling^[[0m block-buffer v0.10.4
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:57.9813900Z ^[[1m^[[92m   Compiling^[[0m unicode-width v0.2.1
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:58.1372850Z ^[[1m^[[92m   Compiling^[[0m strsim v0.11.1
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:58.4719650Z ^[[1m^[[92m   Compiling^[[0m regex-automata v0.4.9
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:58.8259479Z ^[[1m^[[92m   Compiling^[[0m clap_lex v0.7.5
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:58.9609168Z ^[[1m^[[92m   Compiling^[[0m winnow v0.7.12
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:59.2288786Z ^[[1m^[[92m   Compiling^[[0m pulldown-cmark v0.13.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:59.2908748Z ^[[1m^[[92m   Compiling^[[0m linux-raw-sys v0.9.4
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:59.4938608Z ^[[1m^[[92m   Compiling^[[0m option-ext v0.2.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:59.5248615Z ^[[1m^[[92m   Compiling^[[0m log v0.4.27
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:59.6511468Z ^[[1m^[[92m   Compiling^[[0m dirs-sys v0.5.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:20:59.8497921Z ^[[1m^[[92m   Compiling^[[0m toml_datetime v0.7.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:00.0318977Z ^[[1m^[[92m   Compiling^[[0m toml_parser v1.0.2
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:00.0816644Z ^[[1m^[[92m   Compiling^[[0m serde_spanned v1.0.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:00.1348753Z ^[[1m^[[92m   Compiling^[[0m clap_builder v4.5.44
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:00.6378571Z ^[[1m^[[92m   Compiling^[[0m regex v1.11.1
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:01.1298627Z ^[[1m^[[92m   Compiling^[[0m env_filter v0.1.3
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:01.2022215Z ^[[1m^[[92m   Compiling^[[0m getopts v0.2.23
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:01.4426111Z ^[[1m^[[92m   Compiling^[[0m digest v0.10.7
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:01.5898616Z ^[[1m^[[92m   Compiling^[[0m cpufeatures v0.2.17
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:01.6138707Z ^[[1m^[[92m   Compiling^[[0m fastrand v2.3.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:01.6300110Z ^[[1m^[[92m   Compiling^[[0m jiff v0.2.15
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:01.7528548Z ^[[1m^[[92m   Compiling^[[0m toml_writer v1.0.2
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:01.8658787Z ^[[1m^[[92m   Compiling^[[0m unicase v2.8.1
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:01.9778882Z ^[[1m^[[92m   Compiling^[[0m pulldown-cmark-escape v0.11.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:02.0329826Z ^[[1m^[[92m   Compiling^[[0m once_cell v1.21.3
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:02.1439022Z ^[[1m^[[92m   Compiling^[[0m tempfile v3.20.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:02.4718725Z ^[[1m^[[92m   Compiling^[[0m toml v0.9.5
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:03.7848811Z ^[[1m^[[92m   Compiling^[[0m sha1 v0.10.6
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:03.8147881Z ^[[1m^[[92m   Compiling^[[0m clap v4.5.45
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:03.8415305Z ^[[1m^[[92m   Compiling^[[0m dirs v6.0.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:03.8978702Z ^[[1m^[[92m   Compiling^[[0m shell-words v1.1.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:04.0720824Z ^[[1m^[[92m   Compiling^[[0m env_logger v0.11.8
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:04.6993279Z ^[[1m^[[92m   Compiling^[[0m rust-script v0.36.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:18.3083203Z ^[[1m^[[92m    Finished^[[0m `release` profile [optimized] target(s) in 23.74s
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:18.3129290Z ^[[1m^[[92m  Installing^[[0m /home/runner/.cargo/bin/rust-script
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:18.3174982Z ^[[1m^[[92m   Installed^[[0m package `rust-script v0.36.0` (executable `rust-script`)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:18.3429263Z rust-script 0.36.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:18.3459317Z ##[group]Run set -euo pipefail
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:18.3459507Z ^[[36;1mset -euo pipefail^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:18.3459662Z ^[[36;1mbash scripts/collect-job-durations.sh \^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:18.3459845Z ^[[36;1m  "${SAMPLE_BRANCH}" "${SAMPLE_RUNS}" \^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:18.3460005Z ^[[36;1m  > job-durations.tsv^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:18.3460150Z ^[[36;1mwc -l job-durations.tsv^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:18.3513036Z shell: /usr/bin/bash -e {0}
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:18.3513177Z env:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:18.3513298Z   CARGO_HOME: /home/runner/.cargo
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:18.3513443Z   CARGO_INCREMENTAL: 0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:18.3513601Z   CARGO_TERM_COLOR: always
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:18.3519453Z   GH_TOKEN: ***
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:18.3519630Z   SAMPLE_BRANCH: 
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:18.3519803Z   SAMPLE_RUNS: 400
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:18.3519979Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:19.0616740Z Sampling up to 400 runs of link-assistant/formal-ai on main.
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:21:41.8737366Z   ... 25 runs
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:22:00.3510766Z   ... 50 runs
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:22:14.4369663Z   ... 75 runs
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:22:34.6079167Z   ... 100 runs
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:22:54.0186872Z   ... 125 runs
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:23:15.0592129Z   ... 150 runs
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:23:33.1236068Z   ... 175 runs
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:23:59.6871810Z   ... 200 runs
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:24:13.3255511Z   ... 225 runs
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:24:35.7626167Z   ... 250 runs
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:24:54.7671563Z   ... 275 runs
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:25:18.9724652Z   ... 300 runs
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:25:36.9131874Z   ... 325 runs
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:25:50.2392126Z   ... 350 runs
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:09.2577253Z   ... 375 runs
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.3032054Z   ... 400 runs
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.3033401Z Collected jobs from 400 runs.
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.3060968Z 15721 job-durations.tsv
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.3090833Z ##[group]Run rust-script scripts/check-job-headroom.rs --durations job-durations.tsv
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.3091191Z ^[[36;1mrust-script scripts/check-job-headroom.rs --durations job-durations.tsv^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.3132399Z shell: /usr/bin/bash -e {0}
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.3132542Z env:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.3132661Z   CARGO_HOME: /home/runner/.cargo
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.3132810Z   CARGO_INCREMENTAL: 0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.3132946Z   CARGO_TERM_COLOR: always
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.3133082Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7764938Z ## Job headroom
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7765123Z 
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7765745Z `timeout-minutes` against the worst measured duration of the same job. A job killed by its cap reports `cancelled`, not `failure` (issue #977), so a cap the work routinely approaches is a false negative waiting to happen (issue #1076).
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7766433Z 
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7767025Z A `>=` marks a worst case taken from a run that was cut short. Its clock is a lower bound on the work, and dropping such runs is what let a job read as 62.9% of its cap while the runs that were killed said 74.7% (issue #1081).
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7767871Z 
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7768004Z | Share | Cap (min) | Worst (min) | Runs | Workflow | Job | Worst run |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7768235Z | ---: | ---: | ---: | ---: | --- | --- | --- |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7768519Z | 77.2% near | 30 | 23.2 | 31 | Issue 1028 Agent CLI binary-tree ladder | Agent CLI ladder ${{ matrix.leg.id }} | 42472083551 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7768833Z | 62.9% | 25 | 15.7 | 5 | CI/CD Pipeline | Build binaries and tests | 42062109916 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7769070Z | 62.1% | 30 | 18.6 | 12 | container-images | publish-images | 42062109916 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7769470Z | 57.9% | 30 | 17.4 | 60 | CI/CD Pipeline | Test (${{ matrix.os }} / ${{ matrix.test-suite }})${{ matrix.shard && format(' shard {0}/{1}', matrix.shard, matrix.shards) || '' }} | 41833220718 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7770097Z | 54.4% (too few runs to judge) | 15 | 8.2 | 4 | Layered CI | js -> rust leg (meta-language self-translation) | 41873479970 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7770411Z | 48.7% | 25 | 12.2 | 60 | Agentic CLI Matrix | E2E (${{ matrix.client }}) | 41873480209 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7770716Z | 47.8% | 12 | 5.7 | 40 | Layered CI | js tier (node --check over js, suite group ${{ matrix.shard }}) | 41873479970 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7771050Z | 45.2% | 30 | 13.6 | 10 | Security | CodeQL (${{ matrix.language }}) | 42062109826 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7771585Z | 42.1% | 25 | 10.5 | 7 | Write-Effect Ladder | Write-Effect Ladder (issue #916 rungs) | 42029710172 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7772057Z | 35.3% | 30 | 10.6 | 20 | CI/CD Pipeline | Lint and Format Check (lane ${{ matrix.lane }}) | 41833220718 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7772477Z | 34.9% | 90 | 31.4 | 5 | dependencies-latest | update | 42478102357 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7772824Z | 34.6% | 25 | 8.7 | 7 | Task Ladder | Task Ladder (issue #840 dataset) | 42218254922 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7773326Z | 33.7% (too few runs to judge) | 25 | 8.4 | 2 | Question necessity ratchet | Question necessity ratchet (issue #920) | 41821551291 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7773869Z | 33.6% (too few runs to judge) | 30 | 10.1 | 1 | Cross-organization duplication | scan | 42621869456 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7774362Z | 33.0% (too few runs to judge) | 15 | 5.0 | 3 | Desktop Release | Package VS Code extension (.vsix) | 42083305009 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7774886Z | 33.0% | 15 | 5.0 | 80 | Layered CI | Full source network serialization (${{ matrix.shard }}/16) | 41873479970 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7775374Z | 32.9% | 25 | 8.2 | 24 | Benchmark Corpus Gate | Corpus shard ${{ matrix.shard }} | 42062110335 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7775652Z | 31.3% | 5 | 1.6 | 5 | Layered CI | Detect tier changes | 41833220483 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7776017Z | 30.4% | 30 | 9.1 | 5 | Stock Rust Install | stock-rust-install | 41882655625 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7776311Z | 29.5% | 30 | 8.8 | 6 | Learning cycle (proposal only) | Replay the recorded frontier in proposal mode | 42362452143 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7776711Z | 29.2% | 30 | 8.8 | 6 | container-images | native | 41882656145 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7776983Z | 27.6% (too few runs to judge) | 30 | 8.3 | 3 | Staged release candidate | auto registry-availability | 41833220718 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7777495Z | 26.6% (too few runs to judge) | 30 | 8.0 | 3 | Staged release candidate | auto published-crate-smoke | 42062109916 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7777884Z | 26.4% (too few runs to judge) | 15 | 4.0 | 2 | Verify Public Release Downloads | macos-public-packages | 42090086768 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7778218Z | 26.3% (too few runs to judge) | 30 | 7.9 | 3 | Staged release candidate | auto compile-release | 41833220718 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7778544Z | 23.7% (too few runs to judge) | 10 | 2.4 | 3 | Desktop Release | Select exact native release source | 41901978227 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7778922Z | 23.2% (too few runs to judge) | 30 | 7.0 | 3 | Build GitHub Pages artifact | Build GitHub Pages artifact | 41882656145 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7779206Z | 22.7% | 5 | 1.1 | 5 | CI/CD Pipeline | Detect Changes | 41833220718 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7779474Z | 22.4% (too few runs to judge) | 30 | 6.7 | 3 | Staged release candidate | auto verify-package | 42062109916 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7779802Z | 22.2% (too few runs to judge) | 90 | 20.0 | 3 | Staged release candidate | auto publish-verify-images | 41833220718 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7780141Z | 21.9% (too few runs to judge) | 30 | 6.6 | 4 | Benchmark Corpus Gate | Build the corpus gate binary | 41882655368 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7780407Z | 21.3% | 5 | 1.1 | 5 | Coverage | Detect Changes | 41873479992 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7780670Z | 20.7% (too few runs to judge) | 15 | 3.1 | 1 | Verify Public Release Downloads | all-public-bytes | 42090086768 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7780950Z | 20.1% | 30 | 6.0 | 5 | Agentic CLI Matrix | Build formal-ai | 41873480209 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7781219Z | 19.8% (too few runs to judge) | 15 | 3.0 | 1 | External Benchmarks | Verify monotonic ledger | 42621251488 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7781518Z | 19.6% | 30 | 5.9 | 5 | CI/CD Pipeline | Default-feature documentation tests | 42062109916 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7781840Z | >=18.6% | 30 | >=5.6 | 16 | Issue 1028 Agent CLI binary-tree ladder | Agent CLI composite ${{ matrix.leg.id }} | 42472083551 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7782198Z | 18.2% (too few runs to judge) | 30 | 5.5 | 3 | Staged release candidate | auto publish-crate | 41882656145 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7782486Z | 17.7% (too few runs to judge) | 5 | 0.9 | 3 | container-images | resolve | 41833220718 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7782772Z | 16.1% (too few runs to judge) | 30 | 4.8 | 4 | Staged release candidate | auto prepare-source | 41882656145 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7783040Z | 15.4% | 15 | 2.3 | 48 | Publish source networks | packets | 41852917634 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7783330Z | >=15.0% (too few runs to judge) | 10 | >=1.5 | 3 | Desktop Release | Publish SHA256SUMS.txt + provenance | 41852918033 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7783663Z | 14.8% (too few runs to judge) | 30 | 4.4 | 3 | Staged release candidate | auto create-release | 42062109916 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7783958Z | 14.3% | 10 | 1.4 | 143 | Finalize original Hive generated tasks | prepare | 41882107455 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7784266Z | 14.3% | 10 | 1.4 | 5 | Self-authored backlog | Report the self-authored pull requests still open | 42239563434 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7784593Z | >=13.7% (too few runs to judge) | 90 | >=12.3 | 1 | External Benchmarks | Run upstream suites | 42621251488 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7784897Z | 13.1% | 12 | 1.6 | 5 | Source scanner qualification and debt inventory | javascript | 41873479741 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7785652Z | 13.0% | 30 | 3.9 | 10 | Agent CLI E2E | E2E Tests (agent CLI ↔ formal-ai)${{ matrix.part == 'learning' && ' (method learning)' || matrix.part != 'scenarios' && format(' ({0})', matrix.part) || '' }} | 41833220718 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7786202Z | 12.8% | 10 | 1.3 | 6 | Desktop Release | Resolve target release | 41880152260 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7786593Z | 12.7% (too few runs to judge) | 15 | 1.9 | 1 | Verify Public Release Downloads | browser-public-package | 42090086768 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7786875Z | 12.4% | 15 | 1.9 | 5 | CI/CD Pipeline | Secrets Scan | 41873480573 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7787116Z | 12.0% (too few runs to judge) | 20 | 2.4 | 3 | Publish browser engine | package | 41852917832 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7787628Z | 11.6% (too few runs to judge) | 20 | 2.3 | 4 | CI/CD Pipeline | Build Package | 41873480573 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7787905Z | 11.5% | 20 | 2.3 | 5 | Source scanner qualification and debt inventory | native | 41873479741 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7788159Z | 10.6% | 30 | 3.2 | 6 | Publish VS Code extension | publish | 41873480003 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7788417Z | 10.5% (too few runs to judge) | 10 | 1.1 | 3 | container-images | source | 42062109916 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7788745Z | 10.2% | 30 | 3.0 | 5 | Native whole-response observations | Capture unchanged original native test answers | 41882656145 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7789073Z | 9.9% (too few runs to judge) | 15 | 1.5 | 3 | Publish source networks | attach | 41901978150 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7789319Z | 9.7% | 5 | 0.5 | 6 | Publish browser engine | resolve | 41880152168 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7789575Z | >=9.4% (too few runs to judge) | 15 | >=1.4 | 3 | CI/CD Pipeline | E2E Tests (GitHub Pages) | 41882656145 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7789900Z | 9.3% | 5 | 0.5 | 6 | Publish source networks | resolve | 41825758214 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7790224Z | 8.9% | 30 | 2.7 | 10 | Self-development status | Self-development floor and debt ratchet since the last tag | 41882655887 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7790547Z | 8.9% | 3 | 0.3 | 5 | Documentation policy | documentation-policy | 41882655154 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7790799Z | 8.6% (too few runs to judge) | 20 | 1.7 | 3 | container-images | merge | 42062109916 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7791062Z | 8.3% | 30 | 2.5 | 5 | CI/CD Pipeline | Server parity (JavaScript vs Rust) | 42062109916 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7791383Z | 8.1% | 12 | 1.0 | 5 | Agentic CLI Matrix | Hosted workspace compiler discovery and original one-line oracle | 41821551081 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7791733Z | 6.7% (too few runs to judge) | 1 | 0.1 | 3 | Coding Ladder | Coding ladder measurement scope | 41833220610 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7792071Z | 6.2% (too few runs to judge) | 30 | 1.9 | 1 | Publish VS Code extension | authoritative-publication | 42090067041 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7792467Z | >=5.9% (too few runs to judge) | 15 | >=0.9 | 1 | Issue 1028 Agent CLI binary-tree ladder | Compare the measured ladder with the record | 42472083551 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7792908Z | 5.6% (too few runs to judge) | 30 | 1.7 | 3 | Self-authored pull request | Formal AI authors a change and opens the pull request | 41882656145 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7793283Z | 5.3% (too few runs to judge) | 15 | 0.8 | 3 | CI/CD Pipeline | Deploy Web App to GitHub Pages | 42062109916 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7793540Z | 5.3% | 10 | 0.5 | 5 | Security | Cargo audit | 41873479876 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7793753Z | 5.2% (too few runs to judge) | 10 | 0.5 | 2 | Workflows | Zizmor | 41821550992 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7793980Z | 5.0% | 5 | 0.2 | 5 | CI/CD Pipeline | Release Preflight | 41873480573 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7794237Z | 5.0% (too few runs to judge) | 6 | 0.3 | 4 | Verify Public Release Downloads | resolve | 42090086768 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7794570Z | 4.9% (too few runs to judge) | 30 | 1.5 | 1 | Layered CI | server parity (JavaScript server vs Rust server) | 41833220483 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7794880Z | 4.7% | 5 | 0.2 | 5 | Agentic CLI Matrix | Learn reusable client contracts | 41882655655 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7795230Z | >=4.6% (too few runs to judge) | 15 | >=0.7 | 1 | Issue 1028 Agent CLI binary-tree ladder | Validate the current-run leaf evidence | 42472083551 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7795591Z | 4.4% | 3 | 0.1 | 5 | Hive source event provenance | Hive source event provenance | 41882656145 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7795949Z | 3.9% | 3 | 0.1 | 5 | Broken Link Checker | Link parser regressions | 41882655760 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7796173Z | 3.3% | 5 | 0.2 | 5 | CI/CD Pipeline | Pipeline Status | 41833220718 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7796459Z | 3.3% | 6 | 0.2 | 6 | Publish VS Code extension | resolve | 42090067041 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7796729Z | 3.1% (too few runs to judge) | 20 | 0.6 | 1 | Layered CI | rust tier (dogfood regeneration gate) | 41833220483 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7797010Z | 2.7% (too few runs to judge) | 10 | 0.3 | 2 | Workflows | Actionlint | 41821550992 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7797255Z | 2.3% | 5 | 0.1 | 5 | Agentic CLI Matrix | Replay recorded sessions | 41882655655 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7797732Z | 2.3% (too few runs to judge) | 5 | 0.1 | 4 | Benchmark Corpus Gate | no benchmark prompt reaches the unknown opener (all shards) | 41833220520 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7798099Z | 2.2% (too few runs to judge) | 10 | 0.2 | 1 | Layered CI | ts tier (js<->ts file-set parity) | 41833220483 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7798447Z | 1.9% (too few runs to judge) | 30 | 0.6 | 1 | Issue 1028 Agent CLI binary-tree ladder | Plan the Agent CLI ladder | 42472083551 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7798746Z | 1.3% | 5 | 0.1 | 5 | Agentic CLI Matrix | Matrix summary | 41833220603 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7798977Z | 1.3% | 5 | 0.1 | 5 | Coverage | Declare temporary coverage scope | 41882655528 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7809854Z ##[warning]Issue 1028 Agent CLI binary-tree ladder / Agent CLI ladder ${{ matrix.leg.id }} used 77.2% of its 30-minute timeout-minutes (worst of 31 runs, run 42472083551).
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7814343Z 
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7814449Z Every audited job stays under 85% of its cap.
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7857571Z ##[group]Run rust-script scripts/check-step-budget-headroom.rs --durations job-durations.tsv
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7857931Z ^[[36;1mrust-script scripts/check-step-budget-headroom.rs --durations job-durations.tsv^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7896523Z shell: /usr/bin/bash -e {0}
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7896663Z env:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7896779Z   CARGO_HOME: /home/runner/.cargo
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7896920Z   CARGO_INCREMENTAL: 0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7897044Z   CARGO_TERM_COLOR: always
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:27.7897172Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2296605Z 
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2296992Z ## Step budget headroom
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2297142Z 
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2297417Z 1 step budget(s) are the deadline rather than the warning.
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2298004Z `TEST_BUDGET_SECONDS` against the worst measured duration of the step it bounds. Every other gate in this repository compares a budget upward, against the job cap; this is the only one that compares it downward, against the work (issue #1081).
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2298537Z 
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2298728Z A `>=` marks a worst case taken from a run that was cut short -- usually by this very budget -- so the figure is a lower bound.
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2298958Z 
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2299066Z | Share | Budget (s) | Worst (s) | Runs | Workflow | Job | Step | Worst run |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2299297Z | ---: | ---: | ---: | ---: | --- | --- | --- | --- |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2299715Z | 99.7% **over** | 1200 | 1196 | 28 | Issue 1028 Agent CLI binary-tree ladder | Agent CLI ladder ${{ matrix.leg.id }} | Run recursive Agent CLI tree | 42472083551 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2300538Z | 83.3% near | 1080 | 900 | 40 | CI/CD Pipeline | Test (${{ matrix.os }} / ${{ matrix.test-suite }})${{ matrix.shard && format(' shard {0}/{1}', matrix.shard, matrix.shards) || '' }} | Run tests | 41882656145 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2301377Z | 73.1% near | 360 | 263 | 40 | Layered CI | js tier (node --check over js, suite group ${{ matrix.shard }}) | Run this shard of the JavaScript suites | 41873479970 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2302302Z | 56.3% (too few runs to judge) | 630 | 355 | 4 | Layered CI | js -> rust leg (meta-language self-translation) | The committed js -> rust translation is what meta-language renders, and it compiles | 42062109775 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2303145Z | 47.3% | 900 | 426 | 24 | Benchmark Corpus Gate | Corpus shard ${{ matrix.shard }} | Run the benchmark corpus gate shard | 41833220520 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2304150Z | 31.4% | 1080 | 339 | 20 | CI/CD Pipeline | Test (${{ matrix.os }} / ${{ matrix.test-suite }})${{ matrix.shard && format(' shard {0}/{1}', matrix.shard, matrix.shards) || '' }} | Run specification tests from the prebuilt executable | 41873480573 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2304806Z | 27.2% | 780 | 212 | 5 | CI/CD Pipeline | Test (${{ matrix.os }} / ${{ matrix.test-suite }})${{ matrix.shard && format(' shard {0}/{1}', matrix.shard, matrix.shards) || '' }} | Check LiNo data integrity | 42062109916 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2305334Z | 26.0% (too few runs to judge) | 1200 | 312 | 4 | Benchmark Corpus Gate | Build the corpus gate binary | Build the corpus gate binary | 41882655368 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2305789Z | 25.4% | 1080 | 274 | 5 | CI/CD Pipeline | Default-feature documentation tests | Prepare default-feature documentation dependencies | 41833220718 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2307126Z | 13.0% (loose) | 600 | 78 | 5 | Agent CLI E2E | E2E Tests (agent CLI ↔ formal-ai)${{ matrix.part == 'learning' && ' (method learning)' || matrix.part != 'scenarios' && format(' ({0})', matrix.part) || '' }} | Run agent CLI E2E — held-out computer-use generalization (issue #707) | 41833220718 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2308405Z | 6.7% (loose) | 300 | 20 | 5 | Agent CLI E2E | E2E Tests (agent CLI ↔ formal-ai)${{ matrix.part == 'learning' && ' (method learning)' || matrix.part != 'scenarios' && format(' ({0})', matrix.part) || '' }} | Replay Hive Mind self-coding inner loop (issue #655) | 41833220718 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2309119Z | 4.7% (loose) | 300 | 14 | 10 | Agentic CLI Matrix | E2E (${{ matrix.client }}) | Install Xvfb | 41821551081 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2309460Z | 4.2% (loose) | 120 | 5 | 5 | CI/CD Pipeline | Default-feature documentation tests | Run doc tests | 42062109916 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2309866Z | 2.2% (loose) | 600 | 13 | 48 | Publish source networks | packets | Produce complete lossless packets from the selected source commit | 42083304933 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2310361Z | 2.0% (loose) | 600 | 12 | 80 | Layered CI | Full source network serialization (${{ matrix.shard }}/16) | Serialize and reconstruct every source in this shard | 42062109775 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2310981Z | 1.0% (loose) | 300 | 3 | 5 | CI/CD Pipeline | Test (${{ matrix.os }} / ${{ matrix.test-suite }})${{ matrix.shard && format(' shard {0}/{1}', matrix.shard, matrix.shards) || '' }} | Check source navigation and recursive content contracts | 42062109916 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2311636Z | 0.3% (loose) | 600 | 2 | 10 | Self-development status | Self-development floor and debt ratchet since the last tag | Measure the share since the last tag (metric version 3) | 42485104480 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2312190Z | 0.3% (loose) | 600 | 2 | 10 | Self-development status | Self-development floor and debt ratchet since the last tag | Test the metric and the ratchet checker | 42485104480 |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2312480Z 
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2312552Z ### Budgets with no observation in this window
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2312665Z 
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2312780Z Nothing ran these, so nothing knows whether their budgets are the right size.
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2312935Z 
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2313072Z * macOS Core Tests / Build macOS test archive / Build one portable nextest archive (1800s)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2313399Z * Coverage / Build instrumented test executables / Build the instrumented test executables (1260s)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2313751Z * Layered CI / provers (real Lean 4 and Rocq compile, R1186-4) / Compile the rendered Lean and Rocq units (120s)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2314071Z * Layered CI / provers (real Lean 4 and Rocq compile, R1186-4) / Download Lean 4 (90s)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2314355Z * macOS Core Tests / Run macOS platform tests / Download macOS test archive (590s)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2314749Z * Verify full readable source content / Build full source content (${{ matrix.shard }}) / Generate and independently verify recursive source models (1200s)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2315220Z * Layered CI / provers (real Lean 4 and Rocq compile, R1186-4) / Install Rocq (250s)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2315534Z * Coding Ladder / Coding ladder shard ${{ matrix.shard }} / Measure one shard of the 130 coding tasks (1200s)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2315846Z * Coverage / Code Coverage (merged shards) / Report merged Rust coverage (900s)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2316447Z * Agent CLI E2E / E2E Tests (agent CLI ↔ formal-ai)${{ matrix.part == 'learning' && ' (method learning)' || matrix.part != 'scenarios' && format(' ({0})', matrix.part) || '' }} / Run agent CLI E2E — verified computer-use record/replay (issue #707) (900s)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2316948Z * macOS Core Tests / Build macOS test archive / Run doc tests on macOS (400s)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2317211Z * macOS Core Tests / Run macOS platform tests / Run macOS platform tests (600s)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2317718Z * Issue 1028 Agent CLI binary-tree ladder / Agent CLI composite ${{ matrix.leg.id }} / Run recursive Agent CLI composite tree (1200s)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2318088Z * Coverage / Coverage shard ${{ matrix.shard }} / Run the instrumented coverage shard (1200s)
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2321287Z ##[error]Issue 1028 Agent CLI binary-tree ladder / Agent CLI ladder ${{ matrix.leg.id }} / Run recursive Agent CLI tree used 99.7% of its 1200s TEST_BUDGET_SECONDS (worst of 28 runs, run 42472083551). The budget is supposed to be the deadline the work never reaches, not the thing that ends it. Raise the budget and its job cap together, or split the step.
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2323413Z ##[warning]CI/CD Pipeline / Test (${{ matrix.os }} / ${{ matrix.test-suite }})${{ matrix.shard && format(' shard {0}/{1}', matrix.shard, matrix.shards) || '' }} / Run tests used 83.3% of its 1080s TEST_BUDGET_SECONDS (worst of 40 runs, run 41882656145).
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2324735Z ##[warning]Layered CI / js tier (node --check over js, suite group ${{ matrix.shard }}) / Run this shard of the JavaScript suites used 73.1% of its 360s TEST_BUDGET_SECONDS (worst of 40 runs, run 41873479970).
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2326321Z ##[error]Process completed with exit code 1.
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2371122Z ##[group]Run set -euo pipefail
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2371295Z ^[[36;1mset -euo pipefail^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2371481Z ^[[36;1mrust-script scripts/check-head-pipeline-coverage.rs \^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2371750Z ^[[36;1m  --branch "${SAMPLE_BRANCH}" --depth 10 --json head-pipeline-coverage.json^[[0m
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2410074Z shell: /usr/bin/bash -e {0}
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2410211Z env:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2410329Z   CARGO_HOME: /home/runner/.cargo
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2410479Z   CARGO_INCREMENTAL: 0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2410605Z   CARGO_TERM_COLOR: always
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2411942Z   GH_TOKEN: ***
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2412059Z   SAMPLE_BRANCH: 
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.2412179Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:28.9938561Z Auditing the last 10 commit(s) of link-assistant/formal-ai on main.
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3698837Z 
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3699332Z ## Default-branch pipeline coverage
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3699563Z 
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3699711Z | commit | committed | author | CI/CD Pipeline |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3700079Z | --- | --- | --- | --- |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3700659Z | `70935ad8e` | 2026-11-05T16:53:37Z | github-actions[bot] | — none — |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3700971Z | `aa7a8005e` | 2026-11-05T16:12:27Z | konard | push |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3701276Z | `ff7128529` | 2026-11-05T15:52:25Z | github-actions[bot] | pull_request |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3701684Z | `241e9fc5f` | 2026-11-04T18:34:33Z | github-actions[bot] | — none — |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3701988Z | `3294163bd` | 2026-11-04T17:58:35Z | konard | push |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3702308Z | `c5713d812` | 2026-11-04T17:47:38Z | github-actions[bot] | pull_request |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3702624Z | `150b582b6` | 2026-11-04T17:01:54Z | konard | push |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3702926Z | `3746649f3` | 2026-11-04T16:09:08Z | github-actions[bot] | pull_request |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3703329Z | `08ca27d1e` | 2026-11-04T13:32:01Z | github-actions[bot] | — none — |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3703647Z | `cc5730a41` | 2026-11-04T12:53:43Z | konard | push |
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3704079Z 
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3704360Z The tip has no CI/CD Pipeline run. The last commit that does is 1 commit(s) back, so that is the newest tree anything has validated.
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3708322Z ##[warning]70935ad8e ("chore: release v0.355.34") has no CI/CD Pipeline run, and the last validated tree is 1 commit(s) behind it. The branch page shows the previous commit's verdict, which is why this is invisible without asking. The tip was pushed by a bot, which is the documented cause: a push authenticated with the repository's GITHUB_TOKEN creates no workflow run.
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3777051Z ##[group]Run actions/upload-artifact@v7
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3777462Z with:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3777642Z   name: job-durations
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3777905Z   path: job-durations.tsv
+Audit job timeout headroom	UNKNOWN STEP	head-pipeline-coverage.json
+Audit job timeout headroom	UNKNOWN STEP	
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3778194Z   retention-days: 90
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3778399Z   if-no-files-found: warn
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3778612Z   compression-level: 6
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3778821Z   overwrite: false
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3779018Z   include-hidden-files: false
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3779231Z   archive: true
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3779411Z env:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3779590Z   CARGO_HOME: /home/runner/.cargo
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3779807Z   CARGO_INCREMENTAL: 0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3780000Z   CARGO_TERM_COLOR: always
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.3780208Z ##[endgroup]
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.4858240Z Multiple search paths detected. Calculating the least common ancestor of all paths
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.4859577Z The least common ancestor is /home/runner/work/formal-ai/formal-ai. This will be the root directory of the artifact
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.4860211Z With the provided path, there will be 2 files uploaded
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.4860905Z Artifact name is valid!
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.4861252Z Root directory input is valid!
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.8115620Z Uploading artifact: job-durations.zip
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:40.8137953Z Beginning upload of artifact content to blob storage
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:41.2023461Z Uploaded bytes 178730
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:41.2564167Z Finished uploading artifact content to blob storage!
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:41.2564688Z SHA256 digest of uploaded artifact is 0f1033e4eda528e84d5a1ba248a5dfb596acf4acefbe44071eb640ac784761c6
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:41.2565105Z Finalizing artifact upload
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:41.8523483Z Artifact job-durations successfully finalized. Artifact ID 13677558252
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:41.8523883Z Artifact job-durations has been successfully uploaded! Final size is 178730 bytes. Artifact ID is 13677558252
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:41.8526171Z Artifact download URL: https://github.com/link-assistant/formal-ai/actions/runs/42624594054/artifacts/13677558252
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:41.8670926Z Post job cleanup.
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:41.9220404Z [command]/usr/bin/git version
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:41.9258966Z git version 2.56.0
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:41.9279319Z Temporarily overriding HOME='/home/runner/work/_temp/728b58c3-0567-4592-8f8d-242310fa7b9a' before making global git config changes
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:41.9280020Z Adding repository directory to the temporary git global config as a safe directory
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:41.9282454Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:41.9310032Z Removing SSH command configuration
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:41.9314380Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:41.9342251Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:41.9698748Z Removing HTTP extra header
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:41.9702902Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:41.9737856Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:42.0051784Z Removing includeIf entries pointing to credentials config files
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:42.0056851Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:42.0085419Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Audit job timeout headroom	UNKNOWN STEP	2026-11-09T13:26:42.0496803Z Cleaning up orphan processes
