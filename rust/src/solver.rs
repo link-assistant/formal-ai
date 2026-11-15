@@ -855,6 +855,12 @@ impl UniversalSolver {
         // R1012: a handler that admits an impasse hands the turn to the
         // general loop (`metaResolveImpasse`, js/worker/formal_ai_worker_solve.js).
         crate::meta_reasoner::resolve_impasse(prompt, &mut answer, &mut log);
+        // Issue #1550: every answer goes through the recursive procedure
+        // (`crate::meta_executor`, twin of `solveAnswer` in
+        // js/agentic/crate/meta_executor.mjs). Its trace joins the log, and the
+        // composition of the sub-task answers replaces the answer only when
+        // least action selects it over the direct derivation.
+        self.run_meta_procedure(prompt, history, probability_store, &mut answer, &mut log);
         crate::derivation::finalize_answer(&mut answer, &mut log);
         crate::dialog_log::record_native_response_if_enabled(
             "UniversalSolver::solve_with_history_probability_store_and_intent_cache",
@@ -870,6 +876,53 @@ impl UniversalSolver {
             &answer,
         );
         answer
+    }
+}
+
+impl UniversalSolver {
+    fn run_meta_procedure(
+        &self,
+        prompt: &str,
+        history: &[ConversationTurn],
+        probability_store: &ProbabilityStore,
+        answer: &mut SymbolicAnswer,
+        log: &mut EventLog,
+    ) {
+        let draft_of = |solved: &SymbolicAnswer| crate::meta_executor::Draft {
+            intent: solved.intent.clone(),
+            content: solved.answer.clone(),
+            confidence: solved.confidence,
+        };
+        let language = crate::language::detect(prompt).slug();
+        let mut solve_sub_task = |text: &str| {
+            let solved = self.solve_with_history_probability_store_and_intent_cache(
+                text,
+                history,
+                probability_store,
+                &mut IntentFormalizationCache::new(),
+            );
+            Some(draft_of(&solved))
+        };
+        let Some(run) = crate::meta_executor::solve_answer(
+            crate::meta_executor::Request {
+                text: prompt,
+                language,
+            },
+            draft_of(&*answer),
+            &mut solve_sub_task,
+            &crate::meta_executor::RunOptions::default(),
+        ) else {
+            return;
+        };
+        for event in &run.events {
+            log.append(event.kind, event.payload.clone());
+        }
+        crate::meta_executor::remember_trace(&run.events);
+        if let Some(composed) = crate::meta_executor::adopted_composition(&run) {
+            answer.intent.clone_from(&composed.intent);
+            answer.answer.clone_from(&composed.content);
+            answer.confidence = composed.confidence;
+        }
     }
 }
 

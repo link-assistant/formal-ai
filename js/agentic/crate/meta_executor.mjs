@@ -23,6 +23,7 @@
 
 import { grammarVocabulary, structuralRuleValues } from './formalization_grammar.mjs';
 import { rankByLeastAction } from './least_action.mjs';
+import { attemptFailed, attemptPassed, recursiveLeaf, solveRecursively } from './recursive_execution.mjs';
 import { containsCjk } from './seed_meanings.mjs';
 import { isAlphanumeric, isWhitespace, trimMatches } from './rust_str.mjs';
 
@@ -233,13 +234,16 @@ function childrenSatisfy(test, childOutcomes) {
  */
 export function runTaskTest(test, candidate, childOutcomes) {
   const unresolved = ruleValues('unresolved-intent');
+  const unresolvedSuffixes = ruleValues('unresolved-suffix');
   const executed = [];
   let failed = null;
   for (const check of test.checks) {
     executed.push(check);
     let passed;
     if (check === ruleValue('leaf-check')) {
-      passed = Boolean(candidate) && !unresolved.includes(candidate.intent)
+      const intent = String(candidate?.intent ?? '');
+      passed = Boolean(candidate) && !unresolved.includes(intent)
+        && !unresolvedSuffixes.some((suffix) => intent.endsWith(suffix))
         && trimMatches(String(candidate.content ?? ''), isWhitespace).length > 0;
     } else {
       passed = childrenSatisfy(test, childOutcomes);
@@ -406,4 +410,99 @@ export async function executeProcedure(request, host, options = {}) {
     ['budget_left', state.budget],
   ]);
   return { bounds, root, outcome, events: state.events };
+}
+
+/**
+ * Issue #1550 step 1: the in-process executor of `solveRecursively`
+ * (recursive_execution.mjs). One attempt runs the whole procedure on the
+ * task's goal; the procedure splits by the grammar itself, so the executor
+ * never splits a failure again and never extends a tool. The external-CLI
+ * executor of orchestration stays one more executor of the same protocol.
+ */
+export function inProcessExecutor(host, language, options = {}) {
+  const executor = {
+    run: null,
+    async attempt(task) {
+      executor.run = await executeProcedure({ text: task.goal, language }, host, options);
+      const last = executor.run.events[executor.run.events.length - 1];
+      const evidence = `${last.kind} ${last.payload}`;
+      return executor.run.outcome.status === 'resolved' ? attemptPassed(evidence) : attemptFailed(evidence);
+    },
+    split: async () => [],
+    extend_for: async () => false,
+    retry_after_children: async (task) => executor.attempt(task),
+  };
+  return executor;
+}
+
+/**
+ * The single production entry: `solveRecursively` over the turn as the root
+ * task, executed in process. Returns the procedure's run.
+ * @param {{text: string, language: string}} request
+ * @param {{draft: Function, cached?: Function}} host
+ * @param {{bounds?: object, withheldTests?: Iterable<string>}} [options]
+ */
+export async function solveTurn(request, host, options = {}) {
+  const executor = inProcessExecutor(host, String(request.language), options);
+  await solveRecursively(recursiveLeaf('t0', String(request.text)), executor);
+  return executor.run;
+}
+
+let nesting = 0;
+
+/** Whether a sub-task solve is running, so the solver starts no nested run. */
+export function isNested() {
+  return nesting > 0;
+}
+
+/**
+ * Run `body` as a sub-task solve: `isNested()` holds while it runs.
+ * @param {() => Promise<any>} body
+ */
+export async function nested(body) {
+  nesting += 1;
+  try {
+    return await body();
+  } finally {
+    nesting -= 1;
+  }
+}
+
+const answerDraft = (answer) =>
+  answer ? { intent: answer.intent, content: answer.content, confidence: answer.confidence } : null;
+
+/**
+ * Every answer goes through the procedure: the turn is the root task, its
+ * direct derivation is `answer` (what the solver already derived), every
+ * sub-task of a split request is solved by `solveSubTask` (nested, so it
+ * starts no procedure of its own), and the composition replaces the root
+ * answer only when least action selects it. Returns the answer with
+ * `metaExecution` and the trace (in `solverEvents`) attached and the procedure's run (null when nested).
+ * @param {{text: string, language: string}} request
+ * @param {object} answer
+ * @param {(text: string) => Promise<object>} solveSubTask
+ * @param {{bounds?: object, withheldTests?: Iterable<string>}} [options]
+ */
+export async function solveAnswer(request, answer, solveSubTask, options = {}) {
+  if (!answer || isNested()) return { answer, run: null };
+  const host = {
+    draft: async (text, task) => (task.depth === 0 ? answerDraft(answer) : answerDraft(await nested(() => solveSubTask(text)))),
+  };
+  const run = await solveTurn(request, host, options);
+  const selected = run.outcome.candidate;
+  const metaExecution = {
+    status: run.outcome.status,
+    method: selected?.method ?? null,
+    shape: decompositionShape(run.root),
+    events: run.events.map((event) => `${event.kind} ${event.payload}`),
+  };
+  const adopted = selected?.method === 'composition'
+    ? { ...answer, intent: selected.intent, content: selected.content, confidence: selected.confidence }
+    : answer;
+  // The trace joins the solver events of the answer, as the native solver
+  // appends it to its event log.
+  const solverEvents = Array.isArray(answer.solverEvents)
+    ? { solverEvents: answer.solverEvents.concat(run.events.map(({ kind, payload }) => ({ kind, payload }))) }
+    : {};
+  return { answer: { ...adopted, ...solverEvents, metaExecution }, run };
 }

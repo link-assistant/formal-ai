@@ -18,7 +18,7 @@ js_rust_translation
   translated_items 332
   workaround_items 36
   inferred_signatures 3
-  carried_items 2562
+  carried_items 2571
   translated_modules 112
   fully_translated_modules 1
   refused_modules 49
@@ -86,7 +86,7 @@ module js/agentic/crate/literal_content.mjs translated 0 workaround 0 inferred 0
 module js/agentic/crate/literal_instruction_view.mjs translated 0 workaround 0 inferred 0 carried 1
 module js/agentic/crate/memory.mjs translated 5 workaround 0 inferred 0 carried 19
 module js/agentic/crate/meta_core.mjs translated 2 workaround 0 inferred 0 carried 31
-module js/agentic/crate/meta_executor.mjs translated 2 workaround 0 inferred 0 carried 25
+module js/agentic/crate/meta_executor.mjs translated 2 workaround 0 inferred 0 carried 33
 module js/agentic/crate/meta_frame.mjs translated 6 workaround 0 inferred 0 carried 47
 module js/agentic/crate/meta_translate.mjs translated 1 workaround 1 inferred 0 carried 8
 module js/agentic/crate/method_registry.mjs translated 9 workaround 0 inferred 0 carried 22
@@ -184,18 +184,18 @@ module js/agentic/crate/unread_structure.mjs translated 1 workaround 1 inferred 
 module js/agentic/crate/version_resolution.mjs translated 2 workaround 1 inferred 0 carried 24
 module js/agentic/crate/web_engine_core.mjs translated 0 workaround 0 inferred 0 carried 2
 module js/agentic/crate/workspace_change_learning.mjs translated 2 workaround 0 inferred 0 carried 11
-module js/worker/formal_ai_worker_meta_composite.js translated 0 workaround 0 inferred 0 carried 6
+module js/worker/formal_ai_worker_meta_composite.js translated 0 workaround 0 inferred 0 carried 7
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inferred 0 carried 42
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 26
-refusal "import of names its module does not translate" 355
-refusal "JSDoc type {…}" 218
+refusal "import of names its module does not translate" 356
+refusal "JSDoc type {…}" 219
 refusal "import from '…'" 212
 refusal "null" 193
 refusal "arrow function" 137
 refusal "type: unknown name (a sibling item or an import)" 122
-refusal "function value …" 109
+refusal "function value …" 110
+refusal "object without a $ tag" 94
 refusal "new expression" 93
-refusal "object without a $ tag" 92
 refusal "regular expression" 65
 refusal "method call .find()" 62
 refusal "method call .map()" 58
@@ -216,8 +216,8 @@ refusal "try statement" 19
 refusal "case test" 18
 refusal "method call .every()" 18
 refusal "undefined" 18
+refusal "syntax: @param needs a type and a name" 16
 refusal "method call .flatMap()" 14
-refusal "syntax: @param needs a type and a name" 14
 refusal "typeof operator" 14
 refusal "for with const" 12
 refusal "method call .join()" 12
@@ -281,6 +281,7 @@ refusal "method call .normalize()" 1
 refusal "method call .padStart()" 1
 refusal "method call .pop()" 1
 refusal "method call .replaceAll()" 1
+refusal "method call .solveAnswer()" 1
 refusal "method call .update()" 1
 refusal "method call .values()" 1
 refusal "method in an object value" 1
@@ -294,6 +295,7 @@ refusal "syntax: unsupported string escape \p" 1
 refusal "syntax: unsupported string escape \s" 1
 refusal "syntax: unsupported template escape \r" 1
 refusal "syntax: unsupported template escape \u" 1
+refusal "top-level statement" 1
 refusal "type: function value ASSUMED_TRUE_PRIOR: functions and namespaces are only portable when a function is called" 1
 refusal "type: function value CANONICAL_TARGET_MODULE: functions and namespaces are only portable when a function is called" 1
 refusal "type: function value DEFAULT_SPLIT_DEPTH_BOUND: functions and namespaces are only portable when a function is called" 1

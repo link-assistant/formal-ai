@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=b6542637d069caf8afcf2fcf17b1fd87add8e563fe95ec3d9cf0a1ddcec3f52e bytes=6513
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=dfda739ac3fa4cd4c5b2f421f182ddf60aa2a9799d0bc4135696d024b1756e50 bytes=6806
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 
 // meta-language:carried JavaScript function_declaration (unsupported)
@@ -24,3 +24,7 @@
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal JSDoc type {…}
 // formal-ai:blockers JSDoc type {…} | call of a sibling function | field access | object spread | object without a $ tag
+
+// meta-language:carried JavaScript lexical_declaration (unsupported)
+// formal-ai:refusal method call .solveAnswer()
+// formal-ai:blockers arrow function | async function | field access | method call .solveAnswer() | object without a $ tag

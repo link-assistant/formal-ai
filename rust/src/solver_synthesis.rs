@@ -82,12 +82,16 @@ impl UniversalSolver {
             .take(6)
             .filter(|sub_impulse| !sub_impulse.text.trim().is_empty())
             .map(|sub_impulse| {
-                let answer = sub_solver.solve_with_history_probability_store_and_intent_cache(
-                    &sub_impulse.text,
-                    &[],
-                    probability_store,
-                    intent_cache,
-                );
+                // Issue #1550: a sub-impulse solve is a nested solve; it
+                // starts no recursive procedure of its own.
+                let answer = crate::meta_executor::nested(|| {
+                    sub_solver.solve_with_history_probability_store_and_intent_cache(
+                        &sub_impulse.text,
+                        &[],
+                        probability_store,
+                        intent_cache,
+                    )
+                });
                 record_solved_sub_impulse(log, sub_impulse, &answer)
             })
             .collect()
