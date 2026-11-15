@@ -113,15 +113,16 @@ Almost every red `main` run has the same shape: **a check that runs on `main` bu
 
 ## 5. Requirement-by-requirement root cause and plan
 
-**R1.** D1–D9 are fixed, each with a test that reproduces it:
+**R1.** D1–D9 and D12 are fixed, each with a test that reproduces it:
 
 * `issue-1569-*.test.mjs`
 * `rust/tests/web/issue-1569-ladder-leaf-infrastructure.test.mjs` (6 cases: the sccache tolerance, its main and post stages, the fallback warning, the Bun retry conditions, and the verifier on a missing, wrong, right or unpinned Bun)
 * `sccache-outage-fallback.test.mjs`
 * `fast-pull-request-production-profile.test.mjs`
+* `hive-draft-attempt-identity.test.mjs` (D12)
 * the twin and inventory tests for D3–D5
 
-D10–D13 are documented above with the reason for each.
+D10, D11 and D13 are documented above with the reason for each.
 
 The systemic cause (main-only gates) is now handled by policy:
 
