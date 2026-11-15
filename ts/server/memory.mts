@@ -18,6 +18,7 @@ import {
   sharedMemoryPath,
 } from './memory-store.mjs';
 import { serverMessage } from './messages.mjs';
+import { isInstructionPrompt, recordedScopeEvidence } from './standing-scope.mjs';
 import { jsonResponse, linksNotationResponse, messageError } from './response.mjs';
 
 const envOf = (ctx) => ctx?.env || process.env;
@@ -79,13 +80,17 @@ export function createMemory(env = process.env) {
         return [];
       }
     },
-    recordExchange(chatMessages, answerText, store = null) {
+    recordExchange(chatMessages, answerText, store = null, scope = null) {
       try {
-        const { prompt } = chatPromptAndHistory(chatMessages || []);
+        const messages = chatMessages || [];
+        const { prompt } = chatPromptAndHistory(messages);
         const answer = String(answerText ?? '');
         if (!prompt.trim() || !answer.trim()) return 0;
         const target = store || SyncStore.open(env);
-        return target.recordChatExchangeWithTools(prompt, answer, chatToolExecutions(chatMessages || []));
+        return target.recordChatExchangeWithTools(prompt, answer, chatToolExecutions(messages), {
+          scopeEvidence: recordedScopeEvidence(scope),
+          instruction: isInstructionPrompt(prompt, messages, scope),
+        });
       } catch (error) {
         reportRecordFailure(error);
         return 0;
