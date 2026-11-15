@@ -127,8 +127,12 @@ fn cells(line: &str) -> Vec<String> {
         .collect()
 }
 
+const COVERAGE_RECORDS: [&str; 1] = ["observed-consumer-discovery"];
+
 /// Every derived fact is anchored in its raw source and appears in the
 /// artifact. A fact of a kind this check cannot read makes it unavailable.
+/// A coverage record (which consumers were searched) is not a claim the
+/// artifact renders: its gaps travel as remaining work, so it is skipped.
 #[must_use]
 pub(super) fn source_anchored_facts(facts: &Value, sources: &[Value], artifact: &str) -> Value {
     let source_of = |path: &Value| {
@@ -144,7 +148,12 @@ pub(super) fn source_anchored_facts(facts: &Value, sources: &[Value], artifact: 
         .collect::<Vec<_>>();
     let mut missing: Vec<Value> = Vec::new();
     let mut unavailable = false;
+    let mut checked = 0_usize;
     for fact in as_rows(facts) {
+        if COVERAGE_RECORDS.iter().any(|kind| fact["kind"] == *kind) {
+            continue;
+        }
+        checked += 1;
         if fact["kind"] == "manifest-declaration" {
             // A declaration without a literal version (a path or workspace
             // dependency) is anchored by its name; its row still needs the section.
@@ -191,7 +200,6 @@ pub(super) fn source_anchored_facts(facts: &Value, sources: &[Value], artifact: 
             unavailable = true;
         }
     }
-    let checked = as_rows(facts).len();
     let status = if !missing.is_empty() {
         "failed"
     } else if unavailable || checked == 0 {

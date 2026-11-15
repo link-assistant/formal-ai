@@ -387,3 +387,29 @@ fn malformed_manifests_and_negated_documentation_never_mutate() {
         assert_eq!(files, before);
     }
 }
+
+#[test]
+fn a_consumer_search_coverage_record_is_skipped_by_the_anchored_facts_check() {
+    use crate::agentic_coding::documentation_acceptance::source_anchored_facts;
+    let sources =
+        [json!({"path":"package.json","source":"{\"dependencies\":{\"river\":\"1.2.3\"}}"})];
+    let declaration = json!({"kind":"manifest-declaration","manifest":"package.json","name":"river","version":"1.2.3","section":"dependencies"});
+    let coverage = json!({"kind":"observed-consumer-discovery","state":"incomplete","gaps":["search-truncated"]});
+    let artifact = "| river | 1.2.3 | dependencies |\n";
+    let anchored = source_anchored_facts(
+        &json!([declaration.clone(), coverage.clone()]),
+        &sources,
+        artifact,
+    );
+    assert_eq!(anchored["status"], "passed", "{anchored}");
+    assert_eq!(anchored["checked"], 1);
+    assert_eq!(anchored["missing"], json!([]));
+    let unknown = source_anchored_facts(
+        &json!([declaration, {"kind":"unknown-fact"}]),
+        &sources,
+        artifact,
+    );
+    assert_eq!(unknown["status"], "unavailable");
+    let only_coverage = source_anchored_facts(&json!([coverage]), &sources, artifact);
+    assert_eq!(only_coverage["status"], "unavailable");
+}

@@ -171,3 +171,14 @@ test('invalid manifest evidence and negated documentation instructions never wri
     assert.equal(fs.readFileSync(path.join(root, 'guide.md'), 'utf8'), files[2].source);
   }
 });
+test('a consumer-search coverage record is skipped by the anchored-facts check, not read as unavailable', async () => {
+  const { sourceAnchoredFacts } = await import('../../../js/agentic/documentation_acceptance.mjs');
+  const sources = [{ path: 'package.json', source: '{"dependencies":{"river":"1.2.3"}}' }];
+  const declaration = { kind: 'manifest-declaration', manifest: 'package.json', name: 'river', version: '1.2.3', section: 'dependencies' };
+  const coverage = { kind: 'observed-consumer-discovery', state: 'incomplete', gaps: ['search-truncated'] };
+  const artifact = '| river | 1.2.3 | dependencies |\n';
+  const anchored = sourceAnchoredFacts([declaration, coverage], sources, artifact);
+  assert.deepEqual([anchored.status, anchored.checked, anchored.missing], ['passed', 1, []]);
+  assert.equal(sourceAnchoredFacts([declaration, { kind: 'unknown-fact' }], sources, artifact).status, 'unavailable');
+  assert.equal(sourceAnchoredFacts([coverage], sources, artifact).status, 'unavailable');
+});

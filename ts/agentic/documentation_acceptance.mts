@@ -48,16 +48,23 @@ export function judgedClaims(claims, facts) {
 
 const cells = line => line.trim().startsWith('|') ? line.split('|').map(cell => cell.trim().replace(/^`+|`+$/gu, '').trim()) : [];
 
+const coverageRecords = ['observed-consumer-discovery'];
+
 /**
  * Every derived fact is anchored in its raw source and appears in the
  * artifact. A fact of a kind this check cannot read makes it unavailable.
+ * A coverage record (which consumers were searched) is not a claim the
+ * artifact renders: its gaps travel as remaining work, so it is skipped.
  */
 export function sourceAnchoredFacts(facts, sources, artifact) {
   const sourceOf = path => sources.find(row => row.path === path)?.source ?? null;
   const rows = String(artifact).split('\n').map(cells).filter(row => row.length);
   const missing = [];
   let unavailable = false;
+  let checked = 0;
   for (const fact of Array.isArray(facts) ? facts : []) {
+    if (coverageRecords.includes(fact?.kind)) continue;
+    checked += 1;
     if (fact?.kind === 'manifest-declaration') {
       // A declaration without a literal version (a path or workspace
       // dependency) is anchored by its name; its row still needs the section.
@@ -76,7 +83,6 @@ export function sourceAnchoredFacts(facts, sources, artifact) {
       unavailable = true;
     }
   }
-  const checked = (Array.isArray(facts) ? facts : []).length;
   return { kind: 'source-anchored-facts', status: missing.length ? 'failed' : unavailable || !checked ? 'unavailable' : 'passed', checked, missing };
 }
 
