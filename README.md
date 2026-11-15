@@ -129,7 +129,7 @@ production entry; the external-CLI executor of
 `rust/src/orchestration/incremental.rs` is one more executor of the same
 protocol. JavaScript and Rust emit the same event sequence on the shared fixture
 `rust/tests/fixtures/meta-executor-parity.json`, and
-`rust/tests/web/issue-1550-procedure-docs.test.mjs` fails when the tables above
+`rust/tests/web/issue-1550-procedure-documentation.test.mjs` fails when the tables above
 diverge from the code. The audit that found the earlier recorded loop to be
 trace-only is in [docs/case-studies/issue-1548](docs/case-studies/issue-1548/README.md);
 the remaining critical blockers are collected in

@@ -36,7 +36,7 @@ the composition against the parent test, and (6) recurses into every task that
 is not atomic within the depth, breadth and budget bounds, which open the
 trace. Removing the test of a task gives the explicit `meta_exec:unresolved`
 result instead of an answer. The table below is checked against the code by
-`rust/tests/web/issue-1550-procedure-docs.test.mjs` and must stay identical to
+`rust/tests/web/issue-1550-procedure-documentation.test.mjs` and must stay identical to
 the one in the README:
 
 <!-- meta-procedure:start -->

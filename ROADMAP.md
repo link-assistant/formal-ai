@@ -697,7 +697,7 @@ table above, this section is current.
   the problem-frame, work-unit and ledger recording pass, events the executed
   procedure does not emit.
 - README.md and `docs/meta-algorithm.md` carry the same stage and entry tables,
-  checked against the code by `rust/tests/web/issue-1550-procedure-docs.test.mjs`.
+  checked against the code by `rust/tests/web/issue-1550-procedure-documentation.test.mjs`.
 
 ## Verification Contract
 

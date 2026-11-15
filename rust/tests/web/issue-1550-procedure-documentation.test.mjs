@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { DOCUMENTS, procedureDocDivergences } from './helpers/issue-1550-procedure-docs.mjs';
+import { DOCUMENTS, procedureDocDivergences } from './helpers/issue-1550-procedure-documentation.mjs';
 
 const ROOT = fileURLToPath(new URL('../../../', import.meta.url));
 const read = (file) => readFileSync(new URL(file, new URL('../../../', import.meta.url)), 'utf8');
