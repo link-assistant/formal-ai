@@ -55,6 +55,15 @@ jobs:
         env:
           SCANNER_REPORT_DIRECTORY: ${{ runner.temp }}/source-scanner-javascript
         run: node scripts/qualify-source-scanners.mjs js
+      - name: Summarize JavaScript DRY findings and language gaps
+        if: always()
+        run: |
+          scanner_result="$RUNNER_TEMP/source-scanner-javascript/qualification.json"
+          if [ -f "$scanner_result" ]; then
+            node scripts/report-duplication-coverage.mjs --qualification "$scanner_result"
+          else
+            node scripts/report-duplication-coverage.mjs
+          fi
       - name: Preserve source-bound JavaScript evidence
         if: always()
         uses: actions/upload-artifact@v7
@@ -83,6 +92,15 @@ jobs:
         env:
           SCANNER_REPORT_DIRECTORY: ${{ runner.temp }}/source-scanner-native
         run: node scripts/qualify-source-scanners.mjs native
+      - name: Summarize native DRY findings and language gaps
+        if: always()
+        run: |
+          scanner_result="$RUNNER_TEMP/source-scanner-native/qualification.json"
+          if [ -f "$scanner_result" ]; then
+            node scripts/report-duplication-coverage.mjs --qualification "$scanner_result"
+          else
+            node scripts/report-duplication-coverage.mjs
+          fi
       - name: Preserve source-bound native evidence
         if: always()
         uses: actions/upload-artifact@v7

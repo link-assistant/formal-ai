@@ -1,0 +1,57 @@
+{
+  "source": "17465987eaf4627e7b3c5b720d330bad8812975d",
+  "runId": 41830153765,
+  "jobId": 126574967316,
+  "artifactId": 13322352098,
+  "zipSha256": "5aa3f136f04c444fa888458d4b35754ba8bfbfa2bdc0ef93046b46a8fe8b39e9",
+  "upstream": "eb0574d5528babd3b4aadece81590d8e2230b99b",
+  "module": "js/agentic/crate/text_formalization.mjs",
+  "closureModules": 14,
+  "inputsVerified": 170,
+  "unchangedProjectionsVerified": 155,
+  "allGitAndPhysicalWitnessesVerified": 328,
+  "wholeProjectionPreservedExceptActualNewCompiledConstant": true,
+  "newCompiledConstant": "SCOPED_GRAMMAR_ROLE",
+  "before": {
+    "path": "js/agentic/crate/text_formalization.mjs",
+    "translated": 7,
+    "workaround": 0,
+    "inferred": 0,
+    "carried": 61
+  },
+  "after": {
+    "path": "js/agentic/crate/text_formalization.mjs",
+    "translated": 8,
+    "workaround": 0,
+    "inferred": 0,
+    "carried": 61
+  },
+  "blockerBytesUnchanged": true,
+  "files": [
+    {
+      "path": "rust/tests/fixtures/js-rust-translation/crate/text_formalization.rs",
+      "bytes": 18397,
+      "beforeSha256": "ebd325829db066f5f29b2586f2cca3adf04a65e9b92f7b099a924ee9279668c9",
+      "sha256": "5b3cff024c60973138beb95e8654186c248e4cf2a329719453765d356f492d4b"
+    },
+    {
+      "path": "data/meta/js-rust-translation.lino",
+      "bytes": 21090,
+      "beforeSha256": "74d1b03306ecf4b7f4b67fca8f1d2ed774aa5bd150251fbca850fb04d8303faf",
+      "sha256": "1698e040b2eedd4d1170c838a2f049b7efc9c37a6eaa09b9de70c9feb90ef179"
+    },
+    {
+      "path": "data/meta/translation-blockers.lino",
+      "bytes": 19533,
+      "beforeSha256": "e96c76a8b3060dbeb64c9439e807388963688e269ddfb9b2f6a84b261af9972f",
+      "sha256": "e96c76a8b3060dbeb64c9439e807388963688e269ddfb9b2f6a84b261af9972f"
+    }
+  ],
+  "localRustOrWasmExecuted": false,
+  "runtimeQualified": false,
+  "fullBidirectionalParityClaimed": false,
+  "producerRun": "https://github.com/link-assistant/formal-ai/actions/runs/41830153765",
+  "producerJob": "https://github.com/link-assistant/formal-ai/actions/runs/41830153765/job/126574967316",
+  "command": "node scripts/translate-js-rust.mjs --write --meta-language <pinned checkout> --jobs 1 js/agentic/crate/text_formalization.mjs",
+  "scope": "Actual source-only translation and independent artifact import; not native execution, complete issue1483 acceptance or production-release qualification"
+}

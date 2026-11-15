@@ -1,0 +1,202 @@
+{
+  "schema": "formal-ai-hosted-acquisition-evidence/v1",
+  "source": "e5ade3914a593fcf93a6a85a84e47bd18abd7793",
+  "run": 41768761745,
+  "attempt": 1,
+  "runUrl": "https://github.com/link-assistant/formal-ai/actions/runs/41768761745",
+  "admission": "success",
+  "clientExecutionsObserved": false,
+  "classification": "docker-pull-before-client",
+  "image": "konard/hive-mind:2.39.11",
+  "observedPullBoundMilliseconds": 180000,
+  "representativeCommandOutcome": {
+    "status": null,
+    "signal": "SIGKILL",
+    "timedOut": true,
+    "cleanupComplete": true,
+    "error": "ETIMEDOUT"
+  },
+  "jobs": [
+    {
+      "id": 126374892086,
+      "name": "Actual Hive agent work-item contradicted-documentation",
+      "conclusion": "failure",
+      "publicLogSha256": "dcf26677256a0ab9dcd0d5d203bdf49a08cbfa1b6be6ec047c80dca1b6934c5c",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/41768761745/job/126374892086"
+    },
+    {
+      "id": 126374892087,
+      "name": "Actual Hive agent work-item original-documentation",
+      "conclusion": "failure",
+      "publicLogSha256": "db94b67f31692d270fdd43b7358d1bf7b45cee8341e3195a73c26733c49501ec",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/41768761745/job/126374892087"
+    },
+    {
+      "id": 126374892120,
+      "name": "Actual Hive claude work-item unsupported",
+      "conclusion": "failure",
+      "publicLogSha256": "6af07c05de74af2d3a75c40bdaf665e5431c2994543a8e9191332e65d7f1a12a",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/41768761745/job/126374892120"
+    },
+    {
+      "id": 126374892127,
+      "name": "Actual Hive agent work-item unsupported",
+      "conclusion": "failure",
+      "publicLogSha256": "48498b3402017fad83da5b61ddcc4752af02191bea5707eadde1e9c444a78e44",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/41768761745/job/126374892127"
+    },
+    {
+      "id": 126374892135,
+      "name": "Actual Hive codex work-item contradicted-documentation",
+      "conclusion": "failure",
+      "publicLogSha256": "6e7d3b7632c4dcd0fd0b5a333e024a4342e817586b37d03a3b5f32ca91adb735",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/41768761745/job/126374892135"
+    },
+    {
+      "id": 126374892142,
+      "name": "Actual Hive agent work-item renamed-components",
+      "conclusion": "failure",
+      "publicLogSha256": "54171ed81d8fe38502a536f3342caaead347943b9dfaa3e19ef9426c0ceacae0",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/41768761745/job/126374892142"
+    },
+    {
+      "id": 126374892144,
+      "name": "Actual Hive claude work-item renamed-components",
+      "conclusion": "failure",
+      "publicLogSha256": "f945305624337c96d1db57e626e7338a003dc7849e62f49ad6fad9a659f1d552",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/41768761745/job/126374892144"
+    },
+    {
+      "id": 126374892156,
+      "name": "Actual Hive claude work-item original-documentation",
+      "conclusion": "failure",
+      "publicLogSha256": "5e873e8e4dd23948c9ca61ba7e3aeeb010342a2aae02c4fa95d77fb0b6697ce1",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/41768761745/job/126374892156"
+    },
+    {
+      "id": 126374892171,
+      "name": "Actual Hive claude work-item contradicted-documentation",
+      "conclusion": "failure",
+      "publicLogSha256": "f92158672bd5ee71920275c0f43e7320fce53be652b3c942b1db834e356712aa",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/41768761745/job/126374892171"
+    },
+    {
+      "id": 126374892194,
+      "name": "Actual Hive codex work-item renamed-components",
+      "conclusion": "failure",
+      "publicLogSha256": "718349d626ca6cf552890916e6541d14c79413cf4fca0d4e2d7f12acde174aa0",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/41768761745/job/126374892194"
+    },
+    {
+      "id": 126374892201,
+      "name": "Actual Hive codex work-item unsupported",
+      "conclusion": "failure",
+      "publicLogSha256": "719c8e31e357d8d6997a8dc17b5618223a077d2e83fec0f7a0705684af819288",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/41768761745/job/126374892201"
+    },
+    {
+      "id": 126374892307,
+      "name": "Actual Hive codex work-item original-documentation",
+      "conclusion": "failure",
+      "publicLogSha256": "ae8d9e30b6f7a7ae5608a427c12c7489c8dbecb09d08833812904c0e11624570",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/41768761745/job/126374892307"
+    }
+  ],
+  "cleanup": {
+    "sweepRun": 41769860793,
+    "issues": [
+      {
+        "number": 1529,
+        "state": "closed",
+        "stateReason": "not_planned"
+      },
+      {
+        "number": 1530,
+        "state": "closed",
+        "stateReason": "not_planned"
+      },
+      {
+        "number": 1531,
+        "state": "closed",
+        "stateReason": "not_planned"
+      },
+      {
+        "number": 1532,
+        "state": "closed",
+        "stateReason": "not_planned"
+      },
+      {
+        "number": 1533,
+        "state": "closed",
+        "stateReason": "not_planned"
+      },
+      {
+        "number": 1534,
+        "state": "closed",
+        "stateReason": "not_planned"
+      },
+      {
+        "number": 1535,
+        "state": "closed",
+        "stateReason": "not_planned"
+      },
+      {
+        "number": 1536,
+        "state": "closed",
+        "stateReason": "not_planned"
+      },
+      {
+        "number": 1537,
+        "state": "closed",
+        "stateReason": "not_planned"
+      },
+      {
+        "number": 1538,
+        "state": "closed",
+        "stateReason": "not_planned"
+      },
+      {
+        "number": 1539,
+        "state": "closed",
+        "stateReason": "not_planned"
+      },
+      {
+        "number": 1540,
+        "state": "closed",
+        "stateReason": "not_planned"
+      }
+    ],
+    "allIssuesClosedNotPlanned": true,
+    "protectedBranchesRetained": true,
+    "wholeCleanupComplete": false,
+    "deliveryCredit": false
+  },
+  "remediation": {
+    "pullCapMilliseconds": 600000,
+    "jobLimitMilliseconds": 1500000,
+    "cleanupReserveMilliseconds": 180000,
+    "automaticPullRetriesAdded": false,
+    "imageFallbackAdded": false,
+    "historicalOwnerPolicyHashMatches": true,
+    "historicalOwnerInputHashMatches": true,
+    "oldProtocolPathsRead": 19,
+    "oldProtocolBytesRead": 121530,
+    "verifiedProtectedOnlyResidueDisposition": "deferred-protected",
+    "historicalCleanupRetryPerformed": false,
+    "runnerAndBrokerCommandsClampedToMonotonicRemainingJobBudget": true,
+    "authenticatedSourceReader": "separate bounded reader; not covered by the phase allocator"
+  },
+  "validation": {
+    "focusedJavaScriptTest": "rust/tests/web/work-item-hosted-effects.test.mjs",
+    "historicalCompatibilityFocusedTestsPassed": 22,
+    "localRustOrProductWasmExecuted": false,
+    "newHostedClientSuccessProved": false,
+    "fullIssue1483Acceptance": false,
+    "historicalCompatibilityFocusedTestSourceSha256": "42af91c3b072b376154ab96627a25a330c66c98c42d62c8e6045e27155f2a8b8",
+    "remediationBase": "7c00e87e481f21ac23eb14f881a9d2a499a3740b"
+  },
+  "authorship": {
+    "maintainedChangesAppliedThroughFormalAiJavaScript": true,
+    "suppliedBootstrapIndependentSynthesisCredit": 0
+  }
+}

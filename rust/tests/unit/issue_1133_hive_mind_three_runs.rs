@@ -310,10 +310,11 @@ fn prompt() -> String {
 }
 
 /// What `webfetch` returned for the issue page: the GitHub title line, some
-/// page chrome, then the issue body.
+/// page chrome, then the issue body after `Issue body actions` and before the
+/// sign-up footer (issue #1560: a page without a body is rejected).
 fn page(language: &str) -> String {
     format!(
-        "Implement Hello World in {language} · Issue #1 · konard/test-hello-world · GitHub\n\n  Skip to content\n\nNavigation MenuSign in\n\n## Task\nPlease implement a \"Hello World\" program in {language}.\n\n## Requirements\n1. Create a file with the appropriate extension for {language}\n2. The program should print exactly: `Hello, World!`\n3. Add clear comments explaining the code\n6. **Create a GitHub Actions workflow that automatically runs and tests the program on every push and pull request**\n"
+        "Implement Hello World in {language} · Issue #1 · konard/test-hello-world · GitHub\n\n  Skip to content\n\nNavigation MenuSign in\n\nIssue body actions\n\n## Task\nPlease implement a \"Hello World\" program in {language}.\n\n## Requirements\n1. Create a file with the appropriate extension for {language}\n2. The program should print exactly: `Hello, World!`\n3. Add clear comments explaining the code\n6. **Create a GitHub Actions workflow that automatically runs and tests the program on every push and pull request**\n\nActivitySign up for free to join this conversation on GitHub\nFooter\n"
     )
 }
 

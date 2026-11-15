@@ -1,3 +1,4 @@
+import {exactLiteralEffectProof} from './helpers/literal-effect-proof.mjs';
 import { before, test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -8,7 +9,7 @@ import { observedPayload } from '../../../js/agentic/tool_result.mjs';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
 import { planChatStepResolved } from '../../../js/agentic/planner.mjs';
-import { ownsCompleteEditRequest, instructionViewForRequest } from '../../../js/agentic/planner/owned_goals.mjs';
+import { ownsCompleteEditRequest, instructionViewForRequest, goalLedger } from '../../../js/agentic/planner/owned_goals.mjs';
 import { drive } from '../../../experiments/js_dogfood/drive.mjs';
 before(async () => installNodeHost(new WorkerHost()));
 const old = [
@@ -68,7 +69,18 @@ test('renamed Unicode source payload cannot grant quoted target ownership', asyn
   assert.equal(fs.readFileSync(join(root, 'b.txt'), 'utf8'), 'protected older bytes');
   assertEditOnly(result, target);
 });
-test('compound source Edit and independent literal delivery preserve full preimage', async context => {
+test('compound source Edit and independent literal delivery retain both source contracts', () => {
+  const prompt = promptFor('source.mjs') + '\nWrite «marker» to proof.txt.';
+  const goals = goalLedger(prompt);
+  assert.deepEqual(goals.map(goal => [goal.kind, goal.target]), [
+    ['source_edit', 'source.mjs'], ['literal_file', 'proof.txt'],
+  ]);
+  assert.equal(instructionViewForRequest(goals[0].clause), goals[0].clause);
+  assert.equal(goals[1].expected, 'marker');
+});
+test('compound source Edit and independent literal delivery preserve full preimage', {
+  skip: process.env.FAST_PR_PROFILE === 'true' ? 'physical compound-edit integration runs on main' : false,
+}, async context => {
   const target = 'source.mjs';
   const root = workspace(context, target, prefix + old + suffix);
   const prompt = promptFor(target) + '\nWrite «marker» to proof.txt.';
@@ -85,8 +97,7 @@ test('compound source Edit and independent literal delivery preserve full preima
   const digest = createHash('sha256').update(prefix + replacement + suffix).digest('hex');
   assert.equal(observedPayload(sourceReceipt.result)?.trim(), digest + '  ' + target);
   assert.match(sourceReceipt.result, /Exit Code: 0/u);
-  assert.ok(result.transcript.some(call => call.tool === 'bash'
-    && JSON.parse(call.arguments).command === 'cat proof.txt'));
+  assert.ok(exactLiteralEffectProof(result, 'proof.txt', 'marker'));
   assert.equal(result.stop, 'final');
 });
 test('only fully consumed Edit frames retain raw ownership', () => {

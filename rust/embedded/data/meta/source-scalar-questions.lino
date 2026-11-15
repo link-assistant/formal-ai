@@ -1,0 +1,12 @@
+# Finite source-scalar questions; slot values are data, never truth assertions.
+source-scalar-questions
+  schema source-scalar-questions/v1
+  copula is
+  subject "the declared value of"
+  subject "the value of"
+  subject "declared value of"
+  subject "value of"
+  negation not
+  terminator "?"
+  key-slot owned-extract-value-key
+  scalar-slot strict-json-scalar

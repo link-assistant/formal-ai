@@ -7,6 +7,7 @@ import {spawnSync} from 'node:child_process';
 import {join,resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {buildIdentity,verifyReceipt} from './native-test-artifact.mjs';
+import {installNativeCaptureObservationHost,nativeLiteralCaptureObservation} from './lib/native-capture-observation.mjs';
 const CONTRACT='docs/case-studies/pull-request-1188/native-protocol-capture-provenance.json';
 export const bytesDigest=bytes=>createHash('sha256').update(bytes).digest('hex');
 export function captureVerificationStdout(verification){
@@ -39,9 +40,16 @@ export function checkedCapture(bytes,legacy,{historicalRawComparison=false}={}){
  assert.ok(target&&verification,'Original capture must name its target and observed verification');
  const path=arguments_=>arguments_.path??arguments_.filePath??arguments_.file_path;
  assert.ok(session.steps.some(step=>step.tool==='write_file'&&path(step.arguments)===path(target.arguments)&&step.arguments.content===target.arguments.content),'Actual native capture must author the original exact target bytes');
+ const facts=captureVerificationFacts(session,legacy,{historicalRawComparison});
+ assert.ok(facts.commandObservation||facts.literalObservation,'Actual native capture requires a complete successful command-bound or owned literal target observation');
+ return session;
+}
+export function captureVerificationFacts(session,legacy,{historicalRawComparison=false}={}){
+ const target=legacy.steps.filter(step=>step.tool==='write_file').at(-1);
+ const verification=legacy.steps.filter(step=>step.tool==='run_command').at(-1);
  const expectedStdout=captureVerificationStdout(verification);
  const observed=session.steps.filter(step=>step.tool==='run_command'&&step.arguments.command===verification.arguments.command);
- assert.ok(observed.some(step=>{
+ const commandObservation=observed.some(step=>{
   if(historicalRawComparison)return step.result===expectedStdout;
   let receipt;try{receipt=JSON.parse(step.result);}catch{return false;}
   return receipt?.schema==='command-execution-receipt/v1'
@@ -50,10 +58,18 @@ export function checkedCapture(bytes,legacy,{historicalRawComparison=false}={}){
    &&receipt.exit_code===0&&receipt.complete===true
    &&receipt.timed_out===false&&receipt.truncated===false
    &&typeof receipt.stderr==='string'&&receipt.stdout===expectedStdout;
- }),'Actual native capture requires a complete successful command-bound observation of the original exact target bytes');
- return session;
+ });
+ let literalObservation=null;
+ if(!historicalRawComparison){try{literalObservation=nativeLiteralCaptureObservation(session,legacy,{command:verification.arguments.command,stdout:expectedStdout});}catch{}}
+ const path=arguments_=>arguments_.path??arguments_.filePath??arguments_.file_path;
+ return {sessionAvailable:true,taskMatches:session.task===legacy.task,
+  turnCapClear:session.hit_turn_cap===false,
+  exactTargetWrite:session.steps.some(step=>step.tool==='write_file'&&path(step.arguments)===path(target.arguments)&&step.arguments.content===target.arguments.content),
+  commandObservation,literalObservation:literalObservation!==null,
+  freshReadObservation:literalObservation?.method==='read-tool',framedRunObservation:literalObservation?.method==='framed-run'};
 }
 if(import.meta.url===pathToFileURL(process.argv[1]??'').href){
+ await installNativeCaptureObservationHost();
  const [directory,binaryPath]=process.argv.slice(2);assert.ok(directory&&binaryPath);
  const cwd=process.cwd(),binary=resolve(binaryPath),identity=buildIdentity(cwd,'release','all');
  verifyReceipt(resolve('dist/tests'),identity,binary);mkdirSync(directory,{recursive:true});
@@ -67,10 +83,18 @@ if(import.meta.url===pathToFileURL(process.argv[1]??'').href){
   writeFileSync(join(directory,record.id+'.stdout.log'),result.stdout??'');
   writeFileSync(join(directory,record.id+'.stderr.log'),result.stderr??String(result.error??''));
   const observed={id:record.id,'legacy-sha256':record['legacy-sha256'],exit:result.status,signal:result.signal};
+  let capturedSession=null;
   try{assert.equal(result.status,0);assert.equal(result.signal,null);if(result.error)throw result.error;
-   const bytes=readFileSync(path),session=checkedCapture(bytes,legacy);
+   const bytes=readFileSync(path);capturedSession=JSON.parse(bytes.toString('utf8'));
+   const session=checkedCapture(bytes,legacy);
    observed['session-sha256']=bytesDigest(bytes);observed['tools-advertised']=session.tools_advertised;observed.status='captured';
   }catch(error){observed.status='failed';observed.error=String(error);}
+  let facts={sessionAvailable:capturedSession!==null};
+  if(capturedSession){try{facts=captureVerificationFacts(capturedSession,legacy);}catch{}}
+  const signal=['SIGTERM','SIGKILL','SIGINT','SIGABRT','SIGSEGV','SIGBUS'].includes(result.signal)?result.signal:result.signal===null?null:'OTHER';
+  console.log(JSON.stringify({event:'native-capture-case',id:/^[a-z0-9-]{1,64}$/u.test(record.id)?record.id:'unknown-case',
+   status:observed.status,exit:Number.isInteger(result.status)?result.status:null,signal,
+   code:observed.status==='captured'?null:result.status!==0?'NativeCaptureProcessFailed':'NativeCaptureQualificationFailed',facts}));
   results.push(observed);retain();
  }
  assert.ok(results.every(result=>result.status==='captured'),'Every original task requires a complete actual native capture');

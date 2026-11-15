@@ -1,0 +1,76 @@
+{
+  "schema": "ecmascript-own-key-dictionary-knowledge/v1",
+  "language": "JavaScript",
+  "operation": "own-key-storage",
+  "intrinsic": "Object",
+  "method": "create",
+  "prototype": null,
+  "initializer": "Object.create(null)",
+  "goal": "Computed property writes and reads represent own key bindings independently of inherited setters and inherited property names.",
+  "assumptions": [
+    "standard-unmodified-Object-intrinsic",
+    "no-source-reflection-equivalence"
+  ],
+  "claim": "own-key-dictionary-binding-repair-only",
+  "sources": [
+    {
+      "url": "https://tc39.es/ecma262/multipage/fundamental-objects.html#sec-object.create",
+      "fact": "Object.create permits null and creates an ordinary object using that prototype."
+    },
+    {
+      "url": "https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-ordinarysetwithowndescriptor",
+      "fact": "Ordinary property assignment consults the prototype when an own descriptor is absent; with no prototype it can create own data properties."
+    },
+    {
+      "url": "https://tc39.es/ecma262/multipage/fundamental-objects.html#sec-object.prototype.__proto__",
+      "fact": "The legacy prototype accessor setter does not establish a numeric own binding for its property name."
+    }
+  ],
+  "verifiedOn": "2026-11-01",
+  "facets": {
+    "declarator": [
+      "variable_declarator"
+    ],
+    "declaration": [
+      "variable_declaration",
+      "lexical_declaration"
+    ],
+    "object": [
+      "object_expression",
+      "object"
+    ],
+    "block": [
+      "block_statement",
+      "statement_block"
+    ],
+    "function": [
+      "function_declaration",
+      "function_expression",
+      "arrow_function_expression",
+      "arrow_function"
+    ],
+    "member": [
+      "member_expression",
+      "subscript_expression"
+    ],
+    "assignment": [
+      "assignment_expression"
+    ],
+    "spread": [
+      "spread_element"
+    ],
+    "identifier": [
+      "identifier",
+      "property_identifier"
+    ],
+    "call": [
+      "call_expression",
+      "new_expression",
+      "tagged_template_expression"
+    ]
+  },
+  "dynamicLookup": [
+    "eval",
+    "Function"
+  ]
+}

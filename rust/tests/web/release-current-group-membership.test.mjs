@@ -14,7 +14,7 @@ function sourceContract(){
  return {canonical,packetSource,callerDraft,staged,contract:compileContract({canonical,callerDraft,staged,packet:JSON.parse(packetSource),YAML,
   retainedSourceProof:{originalSource:canonical,packetSource}})};
 }
-test('legacy issued-receipt entry uses complete unfiltered exact membership with all source bytes',async()=>{
+function authorityFixture(){
  const {contract,canonical,packetSource,callerDraft,staged}=sourceContract();
  assert.equal(contract.routes.length,52);assert.equal(contract.bindings,104);assert.equal(contract.sources.length,4);
  const route=contract.routes[0],expected={repository:'link-assistant/formal-ai',head:'a'.repeat(40),run:'123',attempt:'1',runnerName:'synthetic-runner',
@@ -22,18 +22,24 @@ test('legacy issued-receipt entry uses complete unfiltered exact membership with
  const bodies=[callerDraft,staged,canonical,packetSource];const entries=contract.sources.map((source,index)=>({path:source.path,type:'blob',mode:'100644',sha:blob(bodies[index])}));
  const calls=[],job={id:42,run_id:123,run_attempt:1,head_sha:expected.head,name:route.descendantName,runner_name:expected.runnerName,runner_id:7,
   status:'in_progress',completed_at:null,started_at:'2026-10-11T00:00:00Z',url:'https://api.github.com/repos/'+expected.repository+'/actions/jobs/42'};
+ const run={id:123,run_attempt:1,repository:{full_name:expected.repository},head_repository:{full_name:expected.repository},head_sha:expected.head,
+   head_branch:'main',status:'in_progress',conclusion:null,path:'.github/workflows/release.yml',event:route.event,workflow_id:9};
+ const group={group_name:contract.writerGroup,total_count:1,group_members:[{job_id:42,job_name:job.name,run_id:123,status:'in_progress',job_url:job.url,run_url:'https://api.github.com/repos/'+expected.repository+'/actions/runs/123'}]};
  const transport=async pathname=>{calls.push(pathname);let body;
-  if(pathname.endsWith('/attempts/1'))body={id:123,run_attempt:1,repository:{full_name:expected.repository},head_repository:{full_name:expected.repository},head_sha:expected.head,
-   head_branch:'main',status:'in_progress',path:'.github/workflows/release.yml',event:route.event,workflow_id:9};
+  if(pathname.endsWith('/attempts/1'))body=run;
   else if(pathname.endsWith('/workflows/9'))body={path:'.github/workflows/release.yml',state:'active'};
   else if(pathname.includes('/git/trees/'))body={truncated:false,tree:entries};
   else if(pathname.includes('/git/blobs/')){const index=entries.findIndex(entry=>pathname.endsWith(entry.sha));assert.ok(index>=0);body={encoding:'base64',content:Buffer.from(bodies[index]).toString('base64')};}
   else if(pathname.endsWith('/jobs?per_page=100'))body={total_count:1,jobs:[job]};
   else {assert.equal(pathname,'/repos/'+expected.repository+'/actions/concurrency_groups/'+encodeURIComponent(contract.writerGroup));
-   body={group_name:contract.writerGroup,total_count:1,group_members:[{job_id:42,job_name:job.name,run_id:123,status:'in_progress',job_url:job.url,run_url:'https://api.github.com/repos/'+expected.repository+'/actions/runs/123'}]};}
+   body=group;}
   return {status:200,body,observedAt:pathname.includes('/concurrency_groups/')?'2026-10-11T00:00:02Z':'2026-10-11T00:00:01Z'};
  };
- const authority=createStagedAuthority(contract,transport),receipt=await authority.observe(expected);
+ const authority=createStagedAuthority(contract,transport);
+ return {authority,expected,route,calls,run,job,group};
+}
+test('legacy issued-receipt entry uses complete unfiltered exact membership with all source bytes',async()=>{
+ const {authority,expected,route,calls}=authorityFixture(),receipt=await authority.observe(expected);
  assert.equal(authority.context(receipt,expected).job,route.caller);
  assert.equal(calls.length,9);assert.ok(calls.every(pathname=>!pathname.includes('ahead_of_')));
  assert.throws(()=>authority.context({...receipt},expected));
@@ -63,4 +69,32 @@ test('actual89a selector422 coexists with exact unfiltered membership; replay ne
   (g,j)=>j.body.jobs.find(value=>value.id===member.job_id).status='queued',
   (g,j)=>j.body.jobs.find(value=>value.id===member.job_id).run_attempt++
  ]){const g=structuredClone(representativeGroup),j=structuredClone(representativeJobs);mutate(g,j);assert.throws(()=>requireExactCurrentGroupMember(expected,member.job_name,g.body.group_name,g,j));}
+});
+
+// Main run 41873480573/job 126744977533 reported queued while the stage executed.
+test('queued parent aggregate still requires the exact current staged writer',async()=>{
+ for(const status of ['queued','in_progress','waiting','pending','requested']) {
+  const fixture=authorityFixture();fixture.run.status=status;
+  const receipt=await fixture.authority.observe(fixture.expected);
+  assert.equal(fixture.authority.context(receipt,fixture.expected).job,fixture.route.caller);
+  for(const mutate of [
+   f=>{f.job.status='queued';},f=>{f.job.runner_name='foreign';},
+   f=>{f.job.run_attempt=2;},f=>{f.group.group_members[0].job_id=43;},
+   f=>{f.group.group_members=[];f.group.total_count=0;},
+   f=>{f.group.group_members.push({...f.group.group_members[0]});f.group.total_count=2;}
+  ]) {
+   const invalid=authorityFixture();invalid.run.status=status;mutate(invalid);
+   await assert.rejects(()=>invalid.authority.observe(invalid.expected));
+  }
+ }
+ for(const status of ['completed','unknown',null,undefined,{private:'not a status'}]) {
+  const fixture=authorityFixture();fixture.run.status=status;
+  await assert.rejects(()=>fixture.authority.observe(fixture.expected),/unsupported_caller_aggregate_status:invalid/u);
+  assert.equal(fixture.calls.length,1);
+ }
+ for(const conclusion of ['success','failure','cancelled','skipped','neutral','timed_out','action_required',undefined]) {
+  const fixture=authorityFixture();fixture.run.status='queued';fixture.run.conclusion=conclusion;
+  await assert.rejects(()=>fixture.authority.observe(fixture.expected),/terminal caller aggregate/u);
+  assert.equal(fixture.calls.length,1);
+ }
 });

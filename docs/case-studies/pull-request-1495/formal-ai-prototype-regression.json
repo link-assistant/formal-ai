@@ -1,0 +1,238 @@
+{
+  "schema": "formal-ai-bounded-regression-qualification/v1",
+  "taskSummary": "Generate an inclusive-upper-bound Node regression from an existing pure interval function whose legal lower-bound identifier has prototype-like spelling.",
+  "taskIdentity": "6651f8e9d946fab4ce58480ca9f590c7298a643e381560f37535e72e950d34b7",
+  "requestAndSourceIdenticalAcrossAttempts": true,
+  "source": {
+    "owner": "src/range.mjs",
+    "sha256": "d51add576ac5e6637f74136e1a52c9ec189183ead6bc835d3ffde988418b3ad0",
+    "preserved": true
+  },
+  "predeclaredOracle": {
+    "healthyTestExit": 0,
+    "exclusiveUpperControlExit": "nonzero assertion failure",
+    "sourceUnchanged": true,
+    "checkerOutsideSolverWorkspace": true
+  },
+  "attempts": [
+    {
+      "stage": "intake-denied",
+      "requestSha256": "6651f8e9d946fab4ce58480ca9f590c7298a643e381560f37535e72e950d34b7",
+      "sourceSha256": "d51add576ac5e6637f74136e1a52c9ec189183ead6bc835d3ffde988418b3ad0",
+      "stop": "unowned-create-request",
+      "reason": null,
+      "tools": [],
+      "testGenerated": false,
+      "sourceUnchanged": true,
+      "healthyExit": null,
+      "exclusiveControlExit": null
+    },
+    {
+      "stage": "binding-gap",
+      "requestSha256": "6651f8e9d946fab4ce58480ca9f590c7298a643e381560f37535e72e950d34b7",
+      "sourceSha256": "d51add576ac5e6637f74136e1a52c9ec189183ead6bc835d3ffde988418b3ad0",
+      "stop": "final",
+      "reason": "BoundaryUnusedParameterUnsupported",
+      "tools": [
+        "read",
+        "read"
+      ],
+      "testGenerated": false,
+      "sourceUnchanged": true,
+      "healthyExit": null,
+      "exclusiveControlExit": null
+    },
+    {
+      "stage": "repaired",
+      "requestSha256": "6651f8e9d946fab4ce58480ca9f590c7298a643e381560f37535e72e950d34b7",
+      "sourceSha256": "d51add576ac5e6637f74136e1a52c9ec189183ead6bc835d3ffde988418b3ad0",
+      "stop": "final",
+      "reason": "UsefulCandidateAwaitingIndependentAcceptance",
+      "tools": [
+        "read",
+        "read",
+        "write",
+        "read"
+      ],
+      "testGenerated": true,
+      "sourceUnchanged": true,
+      "healthyExit": 0,
+      "exclusiveControlExit": 1
+    }
+  ],
+  "assistance": {
+    "experimentalJsDriverIntakeRepair": "manual; typed maintained-plan matching, source preconditions and exclusive target creation",
+    "genericJsMapRepair": "manual; null-prototype map for all parameter-name bindings",
+    "reviewerMechanismIdentification": true,
+    "requiredRegressionManuallyCreated": false,
+    "autonomousMechanismCredit": 0,
+    "unassistedGeneralCodingClaim": false,
+    "unassistedRealLogicRepairClaim": false
+  },
+  "observedGeneratedArtifact": {
+    "target": "tests/range.test.mjs",
+    "sha256": "44c782ff4342dd0994c373e58647c2dde8e52097d049daa0a83a2a2270ce36ae",
+    "toolSequence": [
+      "read",
+      "read",
+      "write",
+      "read"
+    ],
+    "exclusiveCreation": true,
+    "noFollowCreation": true,
+    "maintainedPlanMatched": true,
+    "physicalReadbackVerified": true,
+    "controllerWholeTaskComplete": false,
+    "controllerIndependentAcceptance": false
+  },
+  "independentExecution": {
+    "runtime": "v20.19.4",
+    "healthy": {
+      "exitCode": 0,
+      "signal": null
+    },
+    "exclusiveUpperControl": {
+      "exitCode": 1,
+      "signal": null,
+      "failureClass": "ERR_ASSERTION",
+      "observedExpected": true,
+      "observedActual": false
+    },
+    "externalOraclePassed": true,
+    "generatorVectorsJs": {
+      "exitCode": 0,
+      "passed": 6,
+      "failed": 0
+    },
+    "driverScopeJs": {
+      "exitCode": 0,
+      "passed": 5,
+      "failed": 0
+    },
+    "nativeExecutedLocally": false,
+    "wasmExecutionBlocked": true,
+    "nativeQualification": "shared vectors prepared; native CI qualification separate"
+  },
+  "evidenceHashes": {
+    "intake-denied/request.json": {
+      "sha256": "bb25e2570fc98587517f3bea5fa13cd7936b161f3d0d73826336d62e7da51b52",
+      "bytes": 704
+    },
+    "intake-denied/result.json": {
+      "sha256": "79d02a4f3205beec0ba84dbca08f53a066dd35a7f02af3ce55a53a57af26bbdc",
+      "bytes": 946
+    },
+    "intake-denied/independent-review.json": {
+      "sha256": "e7166599db623731d9494749be05674cf503bb6c441f61d61da6bd599a0adbda",
+      "bytes": 354
+    },
+    "intake-denied/events.jsonl": {
+      "sha256": "487f126076bbe0dc3be2d740d97d583a6dc017acd6987560be796a354c8dc555",
+      "bytes": 811
+    },
+    "intake-denied/process.json": {
+      "sha256": "36f1d729965df150be2c05568f439db171704ef1951708666f0504e3b9a0e9a5",
+      "bytes": 3048
+    },
+    "intake-denied/provenance/anchor.lino": {
+      "sha256": "9acf30f4df32e7df265f60ec9825d200f88a6096c2c452de7efa6f98a00298eb",
+      "bytes": 394
+    },
+    "intake-denied/provenance/chain.lino": {
+      "sha256": "5723a4c8aab83078b1a0393cef38aed1f6e76a27807c2a1f78beec87980203f3",
+      "bytes": 5293
+    },
+    "binding-gap/request.json": {
+      "sha256": "bb25e2570fc98587517f3bea5fa13cd7936b161f3d0d73826336d62e7da51b52",
+      "bytes": 704
+    },
+    "binding-gap/result.json": {
+      "sha256": "f3b33443b1d345112b6ac0763e9cfd2e80c65a8cef22fa7b0a76951ffa929744",
+      "bytes": 4600
+    },
+    "binding-gap/independent-review.json": {
+      "sha256": "f59a09e11eaa9764d09fe091a9403ad8e84f88f7923fd40c736edf98469eef44",
+      "bytes": 2934
+    },
+    "binding-gap/events.jsonl": {
+      "sha256": "b5ec601d90f96b9b772f5c26d910402de72b71c882a6548ff9707aa69bd959ff",
+      "bytes": 7953
+    },
+    "binding-gap/process.json": {
+      "sha256": "f2e5d7e3e983b5e2111b2eb7e2c448c78b2e8b7a6e92416849891dcc15cda78a",
+      "bytes": 15140
+    },
+    "binding-gap/provenance/anchor.lino": {
+      "sha256": "3bf9c5501c6c8e166d334c674c3088d284bd3be3331edc49bca1e11b92d8df9a",
+      "bytes": 395
+    },
+    "binding-gap/provenance/chain.lino": {
+      "sha256": "d8459f3550b08bb67e79accac6c5e97384116c555e5f56fe0b9bb0f6632b47c8",
+      "bytes": 26613
+    },
+    "repaired/request.json": {
+      "sha256": "bb25e2570fc98587517f3bea5fa13cd7936b161f3d0d73826336d62e7da51b52",
+      "bytes": 704
+    },
+    "repaired/result.json": {
+      "sha256": "d7465dcc6d8d5234f7921671b58ca626cad412f8cdc7cfd7c94663517a594716",
+      "bytes": 8325
+    },
+    "repaired/independent-review.json": {
+      "sha256": "04d0de424db22232b4a193d984da2d8033262a3a263ab2c692dc6e22034ad505",
+      "bytes": 6515
+    },
+    "repaired/events.jsonl": {
+      "sha256": "7aa1811108846543c13eefc073977a8b91b754a3ed40b621218673b3c246749e",
+      "bytes": 15003
+    },
+    "repaired/process.json": {
+      "sha256": "15d104849d1bfddfa0935a2b1592385f7f0dc225a74beaa668732c3b45d21af2",
+      "bytes": 26259
+    },
+    "repaired/provenance/anchor.lino": {
+      "sha256": "5210ae4c4ff7bbc2c892772de9c50c0d6f5668a11a9e63ea71eb1afdb657b7d5",
+      "bytes": 395
+    },
+    "repaired/provenance/chain.lino": {
+      "sha256": "4c49b4a25d9f1c7d8ca20bd5d13ae449ac7a38bd00886d1a404246ade2b44437",
+      "bytes": 43303
+    },
+    "repaired/actual-generated-range.test.mjs": {
+      "sha256": "44c782ff4342dd0994c373e58647c2dde8e52097d049daa0a83a2a2270ce36ae",
+      "bytes": 377
+    },
+    "repaired/before-range.mjs": {
+      "sha256": "d51add576ac5e6637f74136e1a52c9ec189183ead6bc835d3ffde988418b3ad0",
+      "bytes": 151
+    },
+    "repaired/after-range.mjs": {
+      "sha256": "d51add576ac5e6637f74136e1a52c9ec189183ead6bc835d3ffde988418b3ad0",
+      "bytes": 151
+    },
+    "repaired/exclusive-control-range.mjs": {
+      "sha256": "e6f11a9a19e8387cf44f9259da9267c51e0a6c29bfc78c5509280ce2e918a50d",
+      "bytes": 150
+    },
+    "repaired/healthy-node-test.json": {
+      "sha256": "aef9c823b09c9b41f85d79d0e09c95a8abd965f4f2833cd29b854e36e66bffff",
+      "bytes": 327
+    },
+    "repaired/exclusive-node-test.json": {
+      "sha256": "c742846af922095d2a301cc618c99dbfcec22687747ef211724c7977a12111d6",
+      "bytes": 1404
+    },
+    "repaired/transform-focused-test.json": {
+      "sha256": "d284ffdc5c14fa4f525ca1cd874ceb535cbd5b32703f304b3d4325bd8c122818",
+      "bytes": 1542
+    }
+  },
+  "privacy": {
+    "rawConversationsIncluded": false,
+    "rawToolOutputIncluded": false,
+    "privateAbsolutePathsIncluded": false,
+    "recordScope": "selected outcomes, relative artifact identities, hashes and explicit assistance boundaries only",
+    "taskInputScope": "one curated public fixture task; no conversation messages or raw logs"
+  },
+  "publicTaskRequest": "Create a regression test in tests/range.test.mjs for function contains in src/range.mjs with an inclusive upper bound. Preserve the source, comments and other functions."
+}

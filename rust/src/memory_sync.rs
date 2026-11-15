@@ -452,16 +452,46 @@ impl SyncStore {
         answer: &str,
         tools: &[RecordedToolExecution],
     ) -> std::io::Result<usize> {
+        self.record_scoped_chat_exchange(prompt, answer, tools, &[], false)
+    }
+
+    /// [`Self::record_chat_exchange_with_tools`] in the scope the exchange was
+    /// made in (issue #1559): `scope_evidence` carries the request's `scope:`
+    /// entries ([`crate::standing_scope::recorded_scope_evidence`]) and
+    /// `instruction` marks a prompt that configures the session, which
+    /// dreaming never learns as a user requirement.
+    ///
+    /// # Errors
+    /// Returns an [`std::io::Error`] when the backing file cannot be written.
+    pub fn record_scoped_chat_exchange(
+        &mut self,
+        prompt: &str,
+        answer: &str,
+        tools: &[RecordedToolExecution],
+        scope_evidence: &[String],
+        instruction: bool,
+    ) -> std::io::Result<usize> {
         if self.path.is_none() || !chat_recording_enabled() {
             return Ok(0);
         }
-        let seed = format!("{prompt}\0{answer}");
+        let scope_seed = scope_evidence.join("\n");
+        let scoped = !scope_evidence.is_empty();
+        let seed = if scoped {
+            format!("{prompt}\0{answer}\0{scope_seed}")
+        } else {
+            format!("{prompt}\0{answer}")
+        };
         let user_id = crate::engine::stable_id("chat_user", &seed);
         let mut recorded = vec![MemoryEvent {
             id: user_id.clone(),
             kind: Some(String::from("message")),
-            role: Some(String::from("user")),
+            role: Some(String::from(if instruction {
+                "instruction"
+            } else {
+                "user"
+            })),
             content: Some(prompt.to_owned()),
+            evidence: scope_evidence.to_vec(),
             write_count: 1,
             ..MemoryEvent::default()
         }];
@@ -475,7 +505,11 @@ impl SyncStore {
                 "{prompt}\0{}\0{}\0{}",
                 execution.tool, execution.inputs, execution.outputs
             );
-            let id = crate::engine::stable_id("chat_tool", &tool_seed);
+            let id = if scoped {
+                crate::engine::stable_id("chat_tool", &format!("{tool_seed}\0{scope_seed}"))
+            } else {
+                crate::engine::stable_id("chat_tool", &tool_seed)
+            };
             evidence.push(id.clone());
             recorded.push(MemoryEvent {
                 id,
@@ -486,7 +520,9 @@ impl SyncStore {
                 inputs: Some(execution.inputs.clone()),
                 outputs: Some(execution.outputs.clone()),
                 content: Some(format!("tool:{}", execution.tool)),
-                evidence: vec![user_id.clone()],
+                evidence: std::iter::once(user_id.clone())
+                    .chain(scope_evidence.iter().cloned())
+                    .collect(),
                 write_count: 1,
                 ..MemoryEvent::default()
             });
@@ -508,7 +544,10 @@ impl SyncStore {
             intent: Some(String::from("solve")),
             inputs: Some(prompt.to_owned()),
             outputs: Some(answer.to_owned()),
-            evidence,
+            evidence: evidence
+                .into_iter()
+                .chain(scope_evidence.iter().cloned())
+                .collect(),
             write_count: 1,
             ..MemoryEvent::default()
         });

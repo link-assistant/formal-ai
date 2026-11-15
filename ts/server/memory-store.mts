@@ -546,17 +546,31 @@ export class SyncStore {
     return added;
   }
 
-  /** `record_chat_exchange_with_tools`. */
-  recordChatExchangeWithTools(prompt, answer, tools = []) {
+  /**
+   * `record_chat_exchange_with_tools`. `scopeEvidence` (issue #1559) carries
+   * the `scope:` entries of the request the exchange was made in;
+   * `instruction` marks a prompt that configures the session, so dreaming never
+   * learns it as a user requirement.
+   */
+  recordChatExchangeWithTools(prompt, answer, tools = [], { scopeEvidence = [], instruction = false } = {}) {
     if (!this.path || !chatRecordingEnabled(this.env)) return 0;
-    const seed = `${prompt}\u0000${answer}`;
+    const scoped = scopeEvidence.length > 0;
+    const seed = scoped ? `${prompt}\u0000${answer}\u0000${scopeEvidence.join('\n')}` : `${prompt}\u0000${answer}`;
     const userId = stableId('chat_user', seed);
-    const recorded = [memoryEvent({ id: userId, kind: 'message', role: 'user', content: prompt, write_count: 1 })];
+    const recorded = [memoryEvent({
+      id: userId,
+      kind: 'message',
+      role: instruction ? 'instruction' : 'user',
+      content: prompt,
+      ...(scoped ? { evidence: [...scopeEvidence] } : {}),
+      write_count: 1,
+    })];
     const hit = predictionHitEvent(this.events, prompt, userId, this.classify);
     if (hit) recorded.push(hit);
     const evidence = [userId];
     for (const execution of tools) {
-      const id = stableId('chat_tool', `${prompt}\u0000${execution.tool}\u0000${execution.inputs}\u0000${execution.outputs}`);
+      const toolSeed = `${prompt}\u0000${execution.tool}\u0000${execution.inputs}\u0000${execution.outputs}`;
+      const id = stableId('chat_tool', scoped ? `${toolSeed}\u0000${scopeEvidence.join('\n')}` : toolSeed);
       evidence.push(id);
       recorded.push(memoryEvent({
         id,
@@ -567,7 +581,7 @@ export class SyncStore {
         inputs: execution.inputs,
         outputs: execution.outputs,
         content: `tool:${execution.tool}`,
-        evidence: [userId],
+        evidence: [userId, ...scopeEvidence],
         write_count: 1,
       }));
     }
@@ -582,7 +596,7 @@ export class SyncStore {
       intent: 'solve',
       inputs: prompt,
       outputs: answer,
-      evidence,
+      evidence: [...evidence, ...scopeEvidence],
       write_count: 1,
     }));
     const before = this.events.length;

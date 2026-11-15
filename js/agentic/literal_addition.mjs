@@ -49,8 +49,8 @@ export function planLiteralAdditionStep(task, messages, toolNames) {
     return planOne(write, writeArguments(target, expected));
   }
   if (written !== expected) return refused(task, target);
-  const after = progress.sourceReadFor(target);
-  if (!progress.attemptsAfterLatestWrite(target)?.some(attempt => attempt.capability === Capability.Read)) {
+  const after = progress.sourceReadAfterLatestWriteFor(target);
+  if (!progress.attemptedReadAfterLatestWriteFor(target)) {
     return planOne(read, readArguments(target));
   }
   if (after === null || after.error !== null || !after.complete || after.source !== expected) return refused(task, target);

@@ -26,6 +26,7 @@ the areas are the whole register.
    - Issue #1073 Reasoning Standard: Unconditional Depth, Refutation First, Computed Trust
    - Issue #1085 The Links Network Is Not The System That Reasons (E108)
    - Issue #1188 User Requirements
+   - Issue #1548: vision blockers and plan
    - Standing Doctrine: Fast pull-request checks and production verification
    - Standing Doctrine: Readable Recursive Source and Comment Meta-Language (2026-10-18)
    - Standing Doctrine: Self-coding CI evidence and useful-change acceptance
@@ -66,6 +67,7 @@ the areas are the whole register.
    - Issue #1169 Every Dependency at Its Latest Release
    - Issue 1364: complete three-client release acceptance
    - Issue #1455: Grounded integration documentation and affordable documentation CI
+   - Issue #1483: repository evidence to useful changes
 
 3. [Interfaces and integrations](docs/requirements/assembled/interfaces-and-integrations.md)
    - Issue #6 UI Follow-Up Requirements

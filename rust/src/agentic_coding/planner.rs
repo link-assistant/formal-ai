@@ -8,7 +8,7 @@ mod obligations;
 mod precedence;
 mod steps;
 use super::final_result::{FinalDisposition, FinalResult, ResolvedPlan, record};
-use continuation::continued_agent_task;
+pub(super) use continuation::continued_agent_task;
 pub(in crate::agentic_coding) use continuation::{evidence_window_start, is_continuation_cue};
 pub use continuation::{trace_route, trace_route_with};
 pub use precedence::checked_route_precedence;
@@ -714,7 +714,7 @@ pub(super) fn plan_settled_routes(
             ));
         }
     }
-    if let Some(plan) = intent_router::plan_edit_step(task, messages, tool_names) {
+    if let Some(plan) = intent_router::plan_edit_step(task, messages, tool_names, result) {
         return Some(plan);
     }
     // Preserve the established stateful list/read recipe whenever the client

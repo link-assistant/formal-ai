@@ -12,10 +12,7 @@ pub(in crate::agentic_coding) fn observed_bytes_match(raw: &str, expected: &str)
     if result.exit_code != Some(0) || result.error.is_some() || incomplete_receipt(raw) {
         return false;
     }
-    let inner = raw
-        .split_once("<untrusted_context>")
-        .and_then(|(_, rest)| rest.split_once("</untrusted_context>"))
-        .map_or(raw, |(inside, _)| inside);
+    let inner = super::untrusted_inner(raw);
     let inner = inner
         .strip_prefix("Command: ")
         .and_then(|rest| rest.split_once('\n').map(|(_, stdout)| stdout))
@@ -119,10 +116,7 @@ pub(in crate::agentic_coding) fn observed_payload(raw: &str) -> Option<String> {
     if let Some(envelope) = parse_shell_envelope(raw)
         && envelope.exit_code == Some(0)
     {
-        let inner = raw
-            .split_once("<untrusted_context>")
-            .and_then(|(_, rest)| rest.split_once("</untrusted_context>"))
-            .map_or(raw, |(inside, _)| inside);
+        let inner = super::untrusted_inner(raw);
         let exact = inner
             .strip_prefix("Output: ")
             .and_then(|output| output.strip_suffix("\nExit Code: 0"));

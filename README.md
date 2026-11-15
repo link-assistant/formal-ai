@@ -83,9 +83,10 @@ sufficient draft, and compose the drafts back into one solution**:
 
 ![Universal Problem Solving Algorithm: a problem fans out into tasks, each task into tests, each test into candidate drafts, and the selected drafts compose back into a single solution](docs/assets/universal-problem-solving-algorithm.jpg)
 
-This is not a separate subsystem bolted onto a catalogue of intents — it is the
-main solver path. `rust/src/solver.rs::UniversalSolver` runs the same 11-step loop
-for every impulse:
+The picture is the target, and it is recursive: every task is itself a problem
+that is split, tested, drafted, selected and composed in the same way.
+`rust/src/solver.rs::UniversalSolver` names the same eleven steps for every
+impulse and records them in the event log:
 
 | Diagram stage | Loop steps in `rust/src/solver.rs` |
 | --- | --- |
@@ -95,7 +96,20 @@ for every impulse:
 | `selection → drafts` | 7. Solution synthesis (`record_candidates`), 8. Combination of the smallest sufficient candidate |
 | `composition → solutions → Solution` | 9. Verification, 10. Simplification, 11. Documentation with a `trace:` pointer |
 
-Every step appends its own event to the append-only log, so the chat can answer
+The recorded steps are not yet the procedure that produces each answer. As
+audited on 2026-11-10 for
+[issue 1548](https://github.com/link-assistant/formal-ai/issues/1548), most
+answers come from a handler chosen by the formalized intent, the solver returns
+before the later steps on several paths, and test derivation, draft selection
+and simplification record fixed values for most requests. The one general
+attempt, split and recompose procedure (`rust/src/recursive_execution.rs`) is
+called only when work is handed to an external agent. Making the recursive
+procedure of the picture the path that produces the answer is the first of the
+critical blockers collected in
+[issue 1561](https://github.com/link-assistant/formal-ai/issues/1561); the
+evidence is in [docs/case-studies/issue-1548](docs/case-studies/issue-1548/README.md).
+
+Every recorded step appends its own event to the append-only log, so the chat can answer
 "why did you do that?" from the recorded experience. The full algorithm,
 including the reasoning-under-unknowns path (`rust/src/solver_unknown_reasoning.rs`)
 and intent formalization (`rust/src/intent_formalization.rs`), is documented in
@@ -702,6 +716,16 @@ losing the original bytes. To retain those tool calls beyond the current client
 conversation, start the server with `FORMAL_AI_MEMORY_PATH=memory.lino`; completed
 tool names, arguments, and raw outputs are then appended to the durable memory log.
 
+Standing requirements learned from that log are scoped (issue #1559). A user
+who declares themselves (OpenAI `user`, Anthropic `metadata.user_id`) and says
+"Always answer in Russian." gets that rule in their later conversations only.
+An agent session, meaning a request that carries tools, keeps what it teaches
+inside its own repository and session, so agents sharing one store do not see
+each other's requirements; set `FORMAL_AI_SHARE_STANDING_REQUIREMENTS=1` to share
+them. A prompt that configures a session ("You are an AI issue solver…") is
+never learned as a requirement. Agentic final answers list the requirements they
+applied in `thinking_steps` and `evidence_links`, never in their text.
+
 Example Telegram webhook update:
 
 ```bash
@@ -1197,5 +1221,5 @@ rust-script scripts/decode-github-issue-url.rs --url 'https://github.com/link-as
 See [REQUIREMENTS.md](REQUIREMENTS.md) for the cumulative requirement matrix and [docs/case-studies/issue-1/README.md](docs/case-studies/issue-1/README.md) for the collected research and implementation plan.
 
 <!-- status:begin self-hosting -->
-Latest ledger row: `v0.355.26`; release share `0` basis points, trailing share `0` basis points, target `389` basis points.
+Latest ledger row: `v0.355.34`; release share `0` basis points, trailing share `0` basis points, target `389` basis points.
 <!-- status:end self-hosting -->

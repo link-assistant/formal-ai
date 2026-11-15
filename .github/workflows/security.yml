@@ -127,8 +127,23 @@ jobs:
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     steps:
       - uses: actions/checkout@v7
+        timeout-minutes: 2
+        env:
+          GIT_HTTP_LOW_SPEED_LIMIT: '1024'
+          GIT_HTTP_LOW_SPEED_TIME: '20'
         with:
           persist-credentials: false
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            /.cargo/
+            /rust/
+            /scripts/check-rust-dependencies.sh
+            /Cargo.toml
+            /Cargo.lock
+            /README.md
+            /LICENSE
+          sparse-checkout-cone-mode: false
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable

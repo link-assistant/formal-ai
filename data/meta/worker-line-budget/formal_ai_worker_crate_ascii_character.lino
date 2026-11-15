@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_crate_ascii_character.js"
+  ceiling 16
+  rationale "Existing quote parsing dependency leaf emitted by the maintained factory generator. The reviewed ceiling is its original source plus factory frame; no existing module budget increases."

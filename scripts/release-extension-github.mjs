@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { verifyAuthoritativeTransfer } from './release-extension-policy.mjs';
+import { signedSubjectAttempts, verifyAuthoritativeTransfer } from './release-extension-policy.mjs';
 export function createReadonlyGithub(directory,
  {
   deadline = Date.now() + 15 * 60 * 1000,
@@ -141,7 +141,40 @@ export function transferFromAuthenticatedGithub(expected,
 
     artifactBytes: asset(filename)
   };
-  return verifyAuthoritativeTransfer(expected,
- evidence,
- github.verify);
+  // Select only cryptographically verified subject invocations, never the latest
+  // workflow attempt as a substitute for an artifact's original producer.
+  const verifiedSubjects = new Map();
+  const attempts = new Map([[Number(expected.attempt), {run, jobs}]]);
+  evidence.producerProofs = [
+    {name: filename, bytes: evidence.artifactBytes},
+    {name: 'formal-ai-native-source-' + expected.tag.slice(1) + '.json',
+      bytes: evidence.sourceBytes}
+  ].map(subject => {
+    const verified = github.verify({
+      ...subject,
+      repository: expected.repository,
+      signerWorkflow: expected.repository + '/.github/workflows/desktop-release.yml',
+      signerDigest: expected.protocolCommit
+    });
+    const candidates = signedSubjectAttempts(expected, subject, verified);
+    const attempt = candidates.includes(Number(expected.attempt))
+      ? Number(expected.attempt) : candidates.length === 1 ? candidates[0] : null;
+    assert.ok(attempt !== null, 'ambiguous signed producer attempts: ' + subject.name);
+    if (!attempts.has(attempt)) {
+      const endpoint = base + '/actions/runs/' + expected.runId + '/attempts/' + attempt;
+      const producerRun = github.json(endpoint);
+      const producerJobs = github.json(endpoint + '/jobs?per_page=100');
+      assert.equal(producerJobs.total_count, producerJobs.jobs.length,
+        'producer job pagination must be complete');
+      attempts.set(attempt, {run: producerRun, jobs: producerJobs});
+    }
+    verifiedSubjects.set(subject.name, {bytes: subject.bytes, verified});
+    return {name: subject.name, attempt, ...attempts.get(attempt)};
+  });
+  return verifyAuthoritativeTransfer(expected, evidence, request => {
+    const cached = verifiedSubjects.get(request.name);
+    assert.ok(cached && Buffer.from(request.bytes).equals(cached.bytes),
+      'signed subject changed during transfer');
+    return cached.verified;
+  });
 }

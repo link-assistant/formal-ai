@@ -2,6 +2,10 @@
 
 use serde_json::json;
 
+#[path = "general_execution/literal_creation.rs"]
+mod literal_creation;
+pub(super) use literal_creation::owned_creation_observation;
+
 use super::append_contract::{AppendRecordStep, append_record_step};
 
 use super::capability_router::shell_command_tool;
@@ -38,7 +42,23 @@ pub(super) fn plan_work_item_change_step(
     general_change_step(messages, tool_names, plan, true, &mut None)
 }
 
+/// A work-item session's terminal is a localized report, never JSON (issue #1560).
 fn general_change_step(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    plan: &GeneralChangePlan,
+    resolved_from_work_item: bool,
+    result: &mut Option<FinalResult>,
+) -> AgenticPlan {
+    let step = change_step(messages, tool_names, plan, resolved_from_work_item, result);
+    if resolved_from_work_item || plan.mode == GeneralPlanMode::RepositoryWorkItem {
+        super::work_item_report::reported_work_item_final(step, &plan.goal, result)
+    } else {
+        step
+    }
+}
+
+fn change_step(
     messages: &[ChatMessage],
     tool_names: &[&str],
     plan: &GeneralChangePlan,
@@ -51,6 +71,48 @@ fn general_change_step(
         return guarded;
     }
     let progress = Progress::scan(messages);
+    if let Some(creation) =
+        literal_creation::plan_owned_creation_step(plan, &progress, tool_names, result)
+    {
+        return creation;
+    }
+    if plan.mode == GeneralPlanMode::RepositoryWorkItem
+        && let Some(objective) = repository_work_item_objective(plan, &progress)
+    {
+        if let Some(step) = super::repository_documentation::plan_repository_documentation(
+            &objective,
+            messages,
+            tool_names,
+            Some(&plan.target),
+            result,
+        ) {
+            return step;
+        }
+        if let Some(step) = super::source_documentation::plan_source_documentation_step(
+            &objective,
+            messages,
+            tool_names,
+            Some(&plan.target),
+            result,
+        ) {
+            return step;
+        }
+        if let Some(step) = super::work_item_boundary_candidate::plan_work_item_boundary_step(
+            &objective,
+            messages,
+            tool_names,
+            Some(&plan.target),
+            |clause| {
+                super::work_item_evidence::work_item_evidence_paths(clause)
+                    .into_iter()
+                    .map(str::to_owned)
+                    .collect()
+            },
+            result,
+        ) {
+            return step;
+        }
+    }
     if let Some(command) = super::prerequisite_recovery::observed_recovery_command(messages)
         && let Some(output) = progress.latest_run_output_for(&command)
         && let Some(recovery) = super::prerequisite_recovery::plan_recovery(
@@ -722,7 +784,9 @@ fn repository_work_item_objective(plan: &GeneralChangePlan, progress: &Progress)
             {
                 return None;
             }
-            raw.trim().to_owned()
+            // A fetched page keeps its title and body; a page without a body
+            // is rejected so the REST and gh api reads run instead (issue #1560).
+            super::work_item_page::work_item_page_text(raw.trim())?
         };
         (!text.trim().is_empty()).then_some(text)
     })
@@ -820,7 +884,7 @@ fn work_item_completion(plan: &GeneralChangePlan, progress: &Progress) -> String
 /// typed into Rust: the words live in `data/seed/`, and the reply follows the
 /// language the request was written in.
 fn general_plan_completed(plan: &GeneralChangePlan) -> String {
-    let language = crate::language::detect(&plan.goal).slug();
+    let language = plan.response_language();
     let mut answer =
         crate::seed::localized_response("general_plan_completed", language).unwrap_or_default();
     answer = answer.replace("{target}", &plan.target);
@@ -872,7 +936,7 @@ const fn capability_label(capability: Capability) -> &'static str {
 }
 
 fn general_plan_mismatch(plan: &GeneralChangePlan, observed: &str) -> String {
-    let language = crate::language::detect(&plan.goal).slug();
+    let language = plan.response_language();
     let mut answer =
         crate::seed::localized_response("general_plan_verification_mismatch", language)
             .unwrap_or_default();
@@ -887,7 +951,7 @@ fn general_plan_mismatch(plan: &GeneralChangePlan, observed: &str) -> String {
 }
 
 fn general_plan_unverified(plan: &GeneralChangePlan) -> String {
-    let language = crate::language::detect(&plan.goal).slug();
+    let language = plan.response_language();
     let mut answer =
         crate::seed::localized_response("general_plan_unverified", language).unwrap_or_default();
     answer = answer.replace("{target}", &plan.target);

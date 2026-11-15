@@ -1,4 +1,7 @@
 use std::fs;
+use std::io::{Read, Write};
+use std::process::{Command, Stdio};
+use std::time::{Duration, Instant};
 
 use formal_ai::agentic_coding::run_agentic_task;
 
@@ -83,11 +86,48 @@ fn self_coding_session_replays() {
     assert_eq!(receipt["timed_out"], false);
     assert_eq!(receipt["truncated"], false);
     let fresh = run_agentic_task(TASK).expect("offline replay");
-    assert_eq!(
-        committed.trim(),
-        serde_json::to_string_pretty(&fresh.session_json())
-            .expect("session JSON")
-            .trim()
+    // The committed session above remains a historical control, not a current trace template.
+    let input = serde_json::to_vec(&fresh.session_json()).expect("session JSON");
+    assert!(input.len() <= 1_048_576, "bounded current session");
+    let mut verifier = Command::new("node")
+        .arg("--max-old-space-size=384")
+        .arg(format!(
+            "{root}/rust/examples/self-coding/verify-session.mjs"
+        ))
+        .arg("-")
+        .stdin(Stdio::piped())
+        .stdout(Stdio::null())
+        .stderr(Stdio::piped())
+        .spawn()
+        .expect("current creation observation verifier");
+    let mut stdin = verifier.stdin.take().expect("verifier stdin");
+    let writer = std::thread::spawn(move || stdin.write_all(&input));
+    let deadline = Instant::now() + Duration::from_secs(20);
+    let (status, timed_out) = loop {
+        if let Some(status) = verifier.try_wait().expect("verifier status") {
+            break (status, false);
+        }
+        if Instant::now() >= deadline {
+            verifier.kill().expect("stop bounded verifier");
+            break (verifier.wait().expect("reap bounded verifier"), true);
+        }
+        std::thread::sleep(Duration::from_millis(10));
+    };
+    let written = writer.join().expect("session writer");
+    let mut detail = Vec::new();
+    verifier
+        .stderr
+        .take()
+        .expect("verifier stderr")
+        .take(8192)
+        .read_to_end(&mut detail)
+        .expect("bounded proof diagnostics");
+    assert!(!timed_out, "current creation proof exceeded its deadline");
+    written.expect("write actual session");
+    assert!(
+        status.success(),
+        "current creation proof failed: {}",
+        String::from_utf8_lossy(&detail)
     );
 }
 

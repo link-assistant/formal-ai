@@ -45,7 +45,18 @@ test('L07 derives a real canonical greeting edit and fulfills every whole-node o
     for (const [index, call] of plan.calls.entries()) {
       const args = JSON.parse(call.arguments);
       let result = '';
-      if (call.tool === 'read_file') result = workspace.get(args.path) ?? 'Error: File not found: ' + args.path;
+      let sourceRead;
+      if (call.tool === 'read_file') {
+        const target = args.path ?? args.filePath ?? args.file_path;
+        assert.equal(typeof target, 'string');
+        const exists = workspace.has(target);
+        result = exists ? workspace.get(target) : 'Error: File not found: ' + target;
+        sourceRead = {path: target, success: exists, complete: exists, format: 'raw',
+          ...(!exists ? {error_code: 'ENOENT'} : {})};
+        if (exists && ['agent-ladder-effects/node-' + node + '.lino', '.agent-ladder/node-' + node + '-proof.md'].includes(target)) {
+          recordReceipts.push([target, result]);
+        }
+      }
       else if (call.tool === 'edit_file') workspace.set(args.path, workspace.get(args.path).replace(args.old_string, args.new_string));
       else if (call.tool === 'write_file') workspace.set(args.path, args.content);
       else {
@@ -62,7 +73,8 @@ test('L07 derives a real canonical greeting edit and fulfills every whole-node o
           result = createHash('sha256').update(workspace.get(path)).digest('hex') + '  ' + path + '\n';
         }
       }
-      messages.push({ role: 'tool', tool_call_id: calls[index].id, name: call.tool, content: result });
+      messages.push({ role: 'tool', tool_call_id: calls[index].id, name: call.tool, content: result,
+        ...(sourceRead === undefined ? {} : {source_read: sourceRead}) });
     }
   }
   assert.equal(finished, true);

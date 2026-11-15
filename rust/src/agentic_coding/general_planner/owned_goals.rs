@@ -1,4 +1,5 @@
 //! Source-owned mixed actions reuse obligation nodes and request-local replay.
+mod edit_frame;
 use super::literal_request::{
     LiteralWriteContract, instruction_view, owns_instruction_span, parse_write_contract,
 };
@@ -17,6 +18,10 @@ use crate::agentic_coding::write_request::{
 use crate::normal_markov::{quote_fault, quoted_segment_spans};
 use crate::obligation_ledger::{ObligationExpectation, ObligationNode};
 use crate::protocol::ChatMessage;
+use edit_frame::{
+    complete_edit_frame, delegated_edit_request, effective_edit_spans, owned_block_edit,
+    owns_edit_request_prefix, supported_edit_frame,
+};
 use std::ops::Range;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum GoalKind {
@@ -194,27 +199,6 @@ pub(in crate::agentic_coding) fn instruction_view_for_request(request: &str) -> 
         .and_then(|contract| instruction_view(request, &contract))
         .unwrap_or_else(|| request.to_owned())
 }
-fn complete_edit_frame(request: &str, spans: [(usize, usize); 2]) -> bool {
-    let mut ordered = spans;
-    ordered.sort_by_key(|span| span.0);
-    let grammar = |text: &str| {
-        text.chars()
-            .all(|character| " \t\r\n.!?。！？।;；".contains(character))
-    };
-    let mut end = 0;
-    for (start, next) in ordered {
-        if next < start
-            || next > request.len()
-            || !request.get(end..end.max(start)).is_some_and(grammar)
-            || request.get(start..next).is_none()
-        {
-            return false;
-        }
-        end = end.max(next);
-    }
-    request.get(end..).is_some_and(grammar)
-}
-
 pub(in crate::agentic_coding) fn owns_complete_literal_request(request: &str) -> bool {
     let literal = literal_write_ownership(request);
     literal.as_ref().is_some_and(|contract| {
@@ -226,13 +210,19 @@ pub(in crate::agentic_coding) fn owns_complete_edit_request(request: &str) -> bo
     if owns_complete_literal_request(request) {
         return false;
     }
+    if owned_block_edit(request) {
+        return true;
+    }
     compose_edit_clauses(request)
-        .and_then(|edit| edit.spans)
+        .and_then(|edit| effective_edit_spans(request, &edit))
         .is_some_and(|spans| complete_edit_frame(request, spans))
 }
 
 fn goal_ledger(request: &str) -> Option<Vec<Goal>> {
     let contract = literal_write_ownership(request);
+    if contract.is_none() && delegated_edit_request(request) {
+        return None;
+    }
     if let Some(owner) = contract.as_ref()
         && let Some(closed) = closed_payload(request, owner)
         && let Some(need) = source_pinned_line_need(request, closed.end, true)
@@ -286,10 +276,7 @@ fn goal_ledger(request: &str) -> Option<Vec<Goal>> {
             .flatten();
         let kind = if complete_literal {
             GoalKind::LiteralFile
-        } else if edit.as_ref().is_some_and(|edit| {
-            edit.spans
-                .is_some_and(|spans| literal.is_none() || complete_edit_frame(clause, spans))
-        }) {
+        } else if edit.is_some() && supported_edit_frame(clause) {
             GoalKind::SourceEdit
         } else {
             GoalKind::Unsupported
@@ -321,9 +308,10 @@ fn goal_ledger(request: &str) -> Option<Vec<Goal>> {
     (contract
         .as_ref()
         .is_some_and(|contract| contract.target_span.start >= contract.payload.end)
-        || goals
-            .iter()
-            .any(|goal| literal_write_ownership(&goal.node.clause).is_some()))
+        || goals.iter().any(|goal| {
+            literal_write_ownership(&goal.node.clause).is_some()
+                || owns_edit_request_prefix(&goal.node.clause)
+        }))
     .then_some(goals)
 }
 fn goal_gap(goal: &Goal, result: &mut Option<FinalResult>) -> AgenticPlan {
@@ -475,7 +463,9 @@ pub(in crate::agentic_coding) fn plan_owned_goal_step(
         if has_context {
             return Some(goal_gap(missing, result));
         }
-        if literal_write_ownership(&missing.node.clause).is_some() {
+        if literal_write_ownership(&missing.node.clause).is_some()
+            || owns_edit_request_prefix(&missing.node.clause)
+        {
             return Some(goal_gap(missing, result));
         }
         if index == 0 {
@@ -745,6 +735,24 @@ fn attributed_action_prefix(clause: &str) -> bool {
     })
 }
 
+fn seeded_action_prologue(text: &str) -> bool {
+    if !quoted_segment_spans(text).is_empty() {
+        return false;
+    }
+    let prologue = crate::engine::normalize_prompt(text);
+    [
+        "politeness_cue",
+        "enumeration_cue",
+        "file-edit-sequence-cue",
+    ]
+    .iter()
+    .any(|role| {
+        bare_surfaces(role)
+            .iter()
+            .any(|surface| crate::engine::normalize_prompt(surface) == prologue)
+    })
+}
+
 fn contract_action_prologue(clause: &str, contract: &LiteralWriteContract) -> bool {
     let mut view = clause.to_owned();
     for span in quoted_segment_spans(clause) {
@@ -775,17 +783,34 @@ fn contract_action_prologue(clause: &str, contract: &LiteralWriteContract) -> bo
             && context_grammar_patterns("action-prologue")
                 .iter()
                 .any(|(prefix, suffix)| prefix.is_match(&view[..start]) && suffix.is_match(""))
-        || [
-            "politeness_cue",
-            "enumeration_cue",
-            "file-edit-sequence-cue",
-        ]
-        .iter()
-        .any(|role| {
-            bare_surfaces(role)
-                .iter()
-                .any(|surface| crate::engine::normalize_prompt(surface) == prologue)
-        })
+        || seeded_action_prologue(&view[..start])
+}
+
+/// Declared content is data only after the existing operation prologue owns it.
+pub(super) fn owns_recovered_write_operation(
+    request: &str,
+    contract: &LiteralWriteContract,
+) -> bool {
+    let Some(view) = instruction_view(request, contract) else {
+        return false;
+    };
+    quote_fault(request).is_none()
+        && !attributed_action_prefix(request)
+        && (contract_action_prologue(request, contract)
+            || declared_creation_prologue(request, contract))
+        && crate::agentic_coding::literal_write_guard::writes_whole_file(&view)
+}
+
+pub(super) fn owns_declared_payload_domain(request: &str, contract: &LiteralWriteContract) -> bool {
+    let Some((lead_start, lead_end)) =
+        first_raw_prefix_lead_end(request, "file_write_content_lead")
+    else {
+        return false;
+    };
+    if contract.target_span.end > lead_start || lead_end > contract.payload.start {
+        return false;
+    }
+    owns_recovered_write_operation(request, contract)
 }
 
 fn declared_creation_prologue(request: &str, contract: &LiteralWriteContract) -> bool {

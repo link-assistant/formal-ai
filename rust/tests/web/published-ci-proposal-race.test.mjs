@@ -44,6 +44,32 @@ test('a later proposal-only cycle cannot invalidate authenticated release CI',as
  assert.deepEqual(await precheckPublishedCi(reader([proposal]),repository,source),{admitted:true,ci:[]});
 });
 
+test('issue-specific failed draft 41346476878 cannot invalidate released source',async()=>{
+ const draft={...publisher,id:41346476878,event:'issues',
+  path:'.github/workflows/hive-mind-draft.yml',status:'completed',conclusion:'failure'};
+ for(const event of ['issues','workflow_dispatch']){
+  for(const [status,conclusion] of [['in_progress',null],['completed','failure'],['completed','skipped']]){
+   const run={...draft,event,status,conclusion};
+   assert.equal(isGatingCiRun(run),false);
+   const result=ciAdmissionDecision(options([publisher,run]));
+   assert.equal(result.admitted,true);
+   assert.deepEqual(result.ci.map(record=>record.id),[publisher.id]);
+   assert.equal((await precheckPublishedCi(reader([publisher,run]),repository,source)).admitted,true);
+  }
+ }
+ for(const event of ['push','pull_request','workflow_run']){
+  const run={...draft,event};
+  assert.equal(isGatingCiRun(run),true);
+  const result=ciAdmissionDecision(options([publisher,run]));
+  assert.equal(result.admitted,false);
+  assert.equal(result.blockedBy.run,draft.id);
+ }
+ assert.equal(ciAdmissionDecision({...options([draft]),expected:[publisher.path]}).admitted,false);
+ assert.throws(()=>ciAdmissionDecision(options([publisher,{...draft,head_sha:'f'.repeat(40)}])),/wrong-source/u);
+ const workflow=YAML.parse(readFileSync(new URL('../../../.github/workflows/hive-mind-draft.yml',import.meta.url),'utf8'));
+ assert.deepEqual(Object.keys(workflow.on).sort(),['issues','workflow_dispatch']);
+});
+
 test('real checks, unknown schedules and publisher retries still fail closed with diagnostics',async()=>{
  for(const run of [
   {...proposal,event:'push'},

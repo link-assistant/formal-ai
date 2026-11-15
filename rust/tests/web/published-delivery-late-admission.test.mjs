@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {isDeepStrictEqual} from 'node:util';
 import YAML from 'yaml';
 import {observeEligibleAdmission as observeLateAdmission, isLatePublishedCompletion, recheckAdmission as lateRecheckAdmission} from '../../../scripts/admit-hive-original-delivery.mjs';
 import {latePublishedBindingDecision} from '../../../scripts/lib/hive-delivery-release.mjs';
@@ -48,11 +49,16 @@ function lateReader(trigger,latest){
   read:async endpoint=>{
    calls.push(endpoint);
    if(endpoint==='repos/'+lateRepository+'/actions/runs/41')return trigger;
+   if(endpoint==='repos/'+lateRepository+'/git/ref/heads/main')return {object:{sha:checkedSource}};
    assert.equal(endpoint,'repos/'+lateRepository+'/actions/workflows/verify-release-downloads.yml/runs?per_page=1');
    if(latest instanceof Error)throw latest;return {workflow_runs:Array.isArray(latest)?latest:[{
     id:77,repository:{full_name:lateRepository},head_repository:{full_name:lateRepository},
     path:'.github/workflows/verify-release-downloads.yml',...latest}]};
-  },pages:async endpoint=>{assert.equal(endpoint,'repos/'+lateRepository+'/commits/'+trigger.head_sha+'/pulls');return [];}};
+  },pages:async endpoint=>{
+   calls.push(endpoint);
+   // #1485: a completed main run first looks up continuations keyed by its exact run id; none exist here.
+   if(endpoint.startsWith('repos/'+lateRepository+'/actions/artifacts?name=hive-wakeup-41-'))return [];
+   assert.equal(endpoint,'repos/'+lateRepository+'/commits/'+trigger.head_sha+'/pulls');return [];}};
 }
 test('actual late route reaches latest producer only for a successful same-repository main push',async()=>{
  for(const mutate of [x=>x.event='workflow_run',x=>x.head_branch='other',x=>x.conclusion='failure']){
@@ -88,6 +94,10 @@ test('late event concurrency preserves separate pending wakeups without changing
  assert.notEqual(first,next);
  assert.equal(evaluate({name:'Verify Public Release Downloads',id:77}),'original-hive-release-77');
  assert.equal(evaluate({name:'Coverage',event:'pull_request',head_branch:'topic',id:2}),'original-hive-candidate-topic');
+ // #1485: every terminal non-pull-request main run is its own continuation key, whatever its conclusion.
+ assert.equal(evaluate({name:'Task ladder',event:'schedule',head_branch:'main',conclusion:'cancelled',id:40675356715}),
+  'original-hive-release-ci-40675356715');
+ assert.equal(evaluate({name:'Coverage',event:'pull_request',head_branch:'main',conclusion:'success',id:3}),'original-hive-candidate-main');
 });
 
 test('absent latest producer defers without searching older releases',async()=>{
@@ -116,14 +126,21 @@ test('production CI decision catches only ordinary missing, pending or failed CI
  for(const changed of [{...options,complete:false},{...options,runs:[{...lateTrigger(),head_sha:'c'.repeat(40)}]},
   {...options,runs:[{...lateTrigger(),status:'malformed'}]}])assert.throws(()=>lateCiDecision(changed));
 });
-test('source-bound published recheck refuses a deferred dependency before consuming success fields',async()=>{
+test('source-bound published recheck returns a typed pending dependency before consuming success fields',async()=>{
  // Fault-inject only the observer dependency in the exact maintained function text.
  // This checks refusal ordering, not publication authentication or real effect authority.
- const source=lateRecheckAdmission.toString();assert.match(source,/assert.equal\(current.admitted, true,/u);
- const isolated=Function('observePublishedAdmission','assert','admissionPolicy','return ('+source+');')(
-  async()=>({admitted:false,reason:'other CI pending',blockedBy:{path:'.github/workflows/desktop-release.yml'},
-   get selected(){throw Error('success fields read before refusal');}}),assert,latePolicy);
- await assert.rejects(isolated({selection:{schema:latePolicy,admitted:true,selected:{event:'published-release'},
-  publicDownloadVerification:{run:77}},repository:lateRepository,reader:{}}),{code:'ERR_ASSERTION',
-   message:/published CI revalidation denied:.*other CI pending.*desktop-release/u});
+ const source=lateRecheckAdmission.toString();assert.doesNotMatch(source,/published CI revalidation denied/u);
+ const blockedBy={run:40675356715,attempt:1,path:'.github/workflows/task-ladder.yml',event:'schedule',status:'in_progress',conclusion:null};
+ const isolated=Function('observePublishedAdmission','assert','admissionPolicy','isDeepStrictEqual','return ('+source+');')(
+  async()=>({admitted:false,reason:'other CI pending',blockedBy,
+   get selected(){throw Error('success fields read before refusal');}}),assert,latePolicy,isDeepStrictEqual);
+ const reader={read:async endpoint=>{
+  assert.equal(endpoint,'repos/'+lateRepository+'/actions/workflows/verify-release-downloads.yml/runs?per_page=1');
+  return {workflow_runs:[{id:77}]};}};
+ const selection={schema:latePolicy,admitted:true,selected:{event:'published-release'},publicDownloadVerification:{run:77}};
+ // #1485: an ordinary pending prerequisite is a typed, non-throwing deferral that names the exact run.
+ assert.deepEqual(await isolated({selection,repository:lateRepository,reader}),{admitted:false,reason:'other CI pending',blockedBy});
+ // A newer public producer is a changed candidate, never the old candidate's success.
+ const superseded={read:async()=>({workflow_runs:[{id:78}]})};
+ assert.deepEqual(await isolated({selection,repository:lateRepository,reader:superseded}),{admitted:false,reason:'source-changed',supersededBy:78});
 });

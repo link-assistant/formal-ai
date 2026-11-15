@@ -323,11 +323,14 @@ export async function observePublishedAdmission({
   // The guarded prepared child cannot alter these authenticated workflow definitions.
   const workflows = await readWorkflowPolicy(reader, repository, main.head_sha);
   const scheduledWorkflows = declaredScheduledWorkflows(workflows);
+  // A non-admitted result names this exact candidate so its prerequisites can resume it (#1485).
+  const candidate = {event: 'published-release', source, scope: 'release-' + selection.tag, verifiedRun: verified.id};
+  const deferred = decision => ({...decision, candidate});
   const earlyChecked = await precheckPublishedCi(reader, repository, main.head_sha, main.path, {scheduledWorkflows});
-  if (!earlyChecked.admitted) return earlyChecked;
+  if (!earlyChecked.admitted) return deferred(earlyChecked);
   if (source !== main.head_sha) {
     const earlyPublished = await precheckPublishedCi(reader, repository, source, null, {scheduledWorkflows});
-    if (!earlyPublished.admitted) return earlyPublished;
+    if (!earlyPublished.admitted) return deferred(earlyPublished);
   }
   const artifacts = await reader.pages(prefix + '/actions/runs/' + main.id + '/artifacts', 'artifacts');
   const events = artifacts.filter(value => value.name === 'hive-source-event-' + main.run_attempt);
@@ -358,7 +361,7 @@ export async function observePublishedAdmission({
     assert.equal(run.head_repository.full_name, repository);
   }
   const checkedDecision = ciAdmissionDecision({source: main.head_sha, expected, runs, complete: true, scheduledWorkflows});
-  if (!checkedDecision.admitted) return checkedDecision;
+  if (!checkedDecision.admitted) return deferred(checkedDecision);
   const ci = checkedDecision.ci;
   let delta = {
     kind: 'exact-ci-source',
@@ -421,7 +424,7 @@ export async function observePublishedAdmission({
   const publishedDecision = publishedExpected.length ? ciAdmissionDecision({
     source, expected: publishedExpected, runs: publishedRuns, complete: true, scheduledWorkflows
   }) : {admitted: true, ci: []};
-  if (!publishedDecision.admitted) return publishedDecision;
+  if (!publishedDecision.admitted) return deferred(publishedDecision);
   const publishedObservedCi = publishedDecision.ci;
   const selected = {
     repository,

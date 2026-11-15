@@ -1,0 +1,33 @@
+JS HTTP agent mode eagerly initializes Rust grammar for simple listing; WASM-disabled host returns HTTP 500
+
+Reproduced while qualifying released `start-command@0.41.0` (link-foundation/start#256) against Formal AI `0.355.28`, source `df939f759123335d81b4d6e56ce59b0fa06b5597`, on Node.js `24.18.0`.
+
+Scope: the local workflow explicitly prohibits Rust/product or Rust-grammar WASM execution. A test-only Node preloader traps WebAssembly compilation/instantiation. This is a qualified failure under that restriction, not a claim that unrestricted start is broken. The checkout reports dirty due to unrelated untracked files; no maintained source was edited for the probe.
+
+Request: `print list of files in current directory` through the released `--use-formal-ai` CLI, with a private tiny fixture, 384 MiB server heap, 20-second task budget, zero retries and automatic issue/log uploads disabled. It exits 70 before any tool executes; all fixture files remain unchanged. A direct replay of the same first HTTP request returns:
+
+```json
+{"error":{"message":"Aborted(Error: LocalProductWasmForbidden). Build with -sASSERTIONS for more info.","type":"formal_ai_error"}}
+```
+
+The trapped initialization stack, with host paths removed, is:
+
+```text
+js/vendor/tree-sitter/web-tree-sitter.mjs: instantiateArrayBuffer / Parser.init
+scripts/lib/source-cst-frontends.mjs: sourceCstFrontends
+js/server/source-usage-rust-frontend.mjs: installSourceUsageRustFrontend
+js/agentic/node-host.mjs: installNodeHost
+```
+
+`js/server/node-host-install.mjs` defaults `sourceUsageRustGrammar` to true, whereas the direct JavaScript host can be installed with false and already handles this class of request. Basic listing should not require initializing a Rust source parser.
+
+Requested outcome:
+
+- Lazily initialize Rust parsing only for an operation requiring it, or expose a trusted caller-owned JS-server capability option that disables the Rust frontend. Conversation/file contents must never grant capabilities.
+- Keep simple filesystem tasks and supported JavaScript literal edits usable without Rust grammar/WASM. If a requested Rust operation needs an unavailable frontend, return a truthful typed unresolved capability result rather than HTTP 500 or a fabricated parse.
+- Add an offline JavaScript regression with a WASM trap for the original listing and a small JavaScript edit. Retain full Rust/source-usage qualification in CI; do not compile or run Rust tests locally.
+- Preserve immutable host-policy conflict checks and Rust/JavaScript behavior where the capability is available.
+
+No raw local logs, environment, personal files, absolute host paths or credentials are attached. The previous direct JavaScript host remains the local fallback while this is unresolved.
+
+__formal_ai_exit=0

@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "issue": 1483,
+  "stage": "notation-naming-integration",
+  "baseCommit": "e0217698a4ed944e6313f47610f6221b65366c6a",
+  "changes": [
+    {
+      "path": "data/seed/meanings-calculator.lino",
+      "beforeSha256": "d960cf5f6da71b7d197995c454b1c9ac28ad89873e2dfe292679eb8bb3e4a31d",
+      "afterSha256": "c7fd534c7a4bcaf5ea02b919ee2892122ae4ab5fcc49185960775ae319d8e5e3"
+    },
+    {
+      "path": "data/seed/multilingual-responses-agentic.lino",
+      "beforeSha256": "8b0bf91a2fe49aee89793d160bdb4170f93ab3c607888071cb04cb45852d7b47",
+      "afterSha256": "32cd2349a64237574bd8ba472b2f6e96ffa76ac2bf8fe34b910fedb5c68309c7"
+    },
+    {
+      "path": "js/worker/formal_ai_worker_quantity_constraints.js",
+      "beforeSha256": "76a00411a273dbbc9ea4ba7e04d9918af69522d242680176ee212c51cf9b8d3d",
+      "afterSha256": "f13effdd1951f89d48ef0fdc1703656886a2496ef590366e139f4a98d40f81be"
+    },
+    {
+      "path": "rust/embedded/data/seed/meanings-calculator.lino",
+      "beforeSha256": "d960cf5f6da71b7d197995c454b1c9ac28ad89873e2dfe292679eb8bb3e4a31d",
+      "afterSha256": "c7fd534c7a4bcaf5ea02b919ee2892122ae4ab5fcc49185960775ae319d8e5e3"
+    },
+    {
+      "path": "rust/embedded/data/seed/multilingual-responses-agentic.lino",
+      "beforeSha256": "8b0bf91a2fe49aee89793d160bdb4170f93ab3c607888071cb04cb45852d7b47",
+      "afterSha256": "32cd2349a64237574bd8ba472b2f6e96ffa76ac2bf8fe34b910fedb5c68309c7"
+    },
+    {
+      "path": "rust/src/quantity_constraint.rs",
+      "beforeSha256": "20120fe52918c6725ca91e7a3a4a598c48ffdefc39977da001b370acd93cce5b",
+      "afterSha256": "d9926383d22241d11fecf57b27dd986f11f1a977b7c9a959e7a551330374a184"
+    },
+    {
+      "path": "ts/worker/formal_ai_worker_quantity_constraints.ts",
+      "beforeSha256": "76a00411a273dbbc9ea4ba7e04d9918af69522d242680176ee212c51cf9b8d3d",
+      "afterSha256": "f13effdd1951f89d48ef0fdc1703656886a2496ef590366e139f4a98d40f81be"
+    }
+  ],
+  "repair": {
+    "newSeedRoles": 10,
+    "responseRecords": 3,
+    "responseTemplateIntents": 3,
+    "naming": "hyphenated symbolic identifiers",
+    "publicResultIntents": "unchanged",
+    "producerEventKinds": "unchanged",
+    "nativeResponseProvenance": "actual hyphenated response template",
+    "shared18QuestionVectors": "byte-identical"
+  },
+  "validation": {
+    "wholeJavaScriptQa": {
+      "passed": 23,
+      "failed": 0,
+      "skipped": 0,
+      "durationMilliseconds": 2264.085959
+    },
+    "notation": {
+      "passed": true,
+      "seedUnderscoreNames": 9267,
+      "ceiling": 9267,
+      "ceilingChanged": false
+    },
+    "generators": {
+      "packageDataMirror": "479 demands; two changed seed mirrors generated",
+      "typescript": "quantity worker twin generated"
+    },
+    "native": "source edited and rustfmt text-only; compile, lint, execution pending CI",
+    "localRustOrWasmExecuted": false
+  },
+  "historicalReceipts": [
+    "aggregate-constraint-source-integration-2026-11-04.json",
+    "aggregate-constraint-hosted-regeneration-2026-11-04.json"
+  ],
+  "boundaries": {
+    "fullIssueAcceptance": false,
+    "globalReasoningShare": "unmeasured",
+    "externallySuppliedImplementationCredit": 0
+  }
+}

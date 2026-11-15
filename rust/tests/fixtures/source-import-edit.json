@@ -1,0 +1,82 @@
+{
+  "schema": "source-import-edit-cases/v1",
+  "cases": [
+    {
+      "name": "unchanged missing engine import request",
+      "task": "In js/agentic/planner.mjs, add the missing named import ownedSourceMaintenanceRequest from ./source_maintenance.mjs to the existing import from that module. This fixes the undefined identifier in planRequestPreflight. Preserve all other source and comments.",
+      "owner": "js/agentic/planner.mjs",
+      "source": "// Preserve the engine comment.\nimport { planSourceMaintenanceStep } from './source_maintenance.mjs';\nexport const ready = true;\n",
+      "binding": "ownedSourceMaintenanceRequest",
+      "module": "./source_maintenance.mjs"
+    },
+    {
+      "name": "renamed module aliases comments Unicode and a trailing comma",
+      "task": "In lib/widget.mjs, please insert missing named import render from ribbon-core to the existing import. Preserve all other content.",
+      "owner": "lib/widget.mjs",
+      "source": "// 雪🙂\nimport { decode as load, /* keep } */ retain, } from \"ribbon-core\";\nexport const useful = retain;\n",
+      "binding": "render",
+      "module": "ribbon-core"
+    },
+    {
+      "name": "CRLF comments and unrelated source survive",
+      "task": "In app/client.js, include the named import query from ./api.js to the existing import statement. Preserve all other content.",
+      "owner": "app/client.js",
+      "source": "// Keep CRLF.\r\nimport { version /* comment */ } from './api.js';\r\nexport const text = 'query from another module';\r\n",
+      "binding": "query",
+      "module": "./api.js"
+    },
+    {
+      "name": "existing local binding is a no-write no-op",
+      "task": "In lib/tool.mjs, add named import render from kit to the existing import.",
+      "owner": "lib/tool.mjs",
+      "source": "import { render, retained } from 'kit';\n",
+      "binding": "render",
+      "module": "kit",
+      "noop": true
+    },
+    {
+      "name": "an alias remains intact while the requested local binding is added",
+      "task": "In lib/tool.mjs, add named import render from kit to the existing import.",
+      "owner": "lib/tool.mjs",
+      "source": "import { render as paint } from 'kit';\n",
+      "binding": "render",
+      "module": "kit"
+    },
+    {
+      "name": "two declarations from the requested module are ambiguous",
+      "task": "In lib/tool.mjs, add named import render from kit to the existing import.",
+      "owner": "lib/tool.mjs",
+      "source": "import { a } from 'kit';\nimport { b } from 'kit';\n",
+      "binding": "render",
+      "module": "kit",
+      "gap": "NamedImportDeclarationAmbiguous"
+    },
+    {
+      "name": "comment-only import text grants no edit",
+      "task": "In lib/tool.mjs, add named import render from kit to the existing import.",
+      "owner": "lib/tool.mjs",
+      "source": "// import { a } from 'kit';\nexport const value = 1;\n",
+      "binding": "render",
+      "module": "kit",
+      "gap": "NamedImportDeclarationAmbiguous"
+    },
+    {
+      "name": "namespace imports stay unsupported",
+      "task": "In lib/tool.mjs, add named import render from kit to the existing import.",
+      "owner": "lib/tool.mjs",
+      "source": "import * as library from 'kit';\n",
+      "binding": "render",
+      "module": "kit",
+      "gap": "NamedImportNamespaceUnsupported"
+    },
+    {
+      "name": "default-only import is outside the declared subset",
+      "task": "In lib/tool.mjs, add named import render from kit to the existing import.",
+      "owner": "lib/tool.mjs",
+      "source": "import library from 'kit';\n",
+      "binding": "render",
+      "module": "kit",
+      "gap": "NamedImportListRequired"
+    }
+  ]
+}

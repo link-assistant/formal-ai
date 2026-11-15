@@ -1,0 +1,147 @@
+{
+  "schema": "formal-ai-aggregate-source-integration/v1",
+  "stage": "reviewed-source-before-hosted-regeneration",
+  "previousJavaScriptIncrement": "91c7cf168c1d6246de669effcb9bbb090558d30a",
+  "sources": [
+    {
+      "path": "rust/src/lib.rs",
+      "sha256": "7a5810bcb594c76c0908fc9fd0365ad59513706260e23223ec621138743d3024"
+    },
+    {
+      "path": "rust/src/solver_handlers/mod.rs",
+      "sha256": "6f02c4db31116cfc12e25024801d998f5b11214c2a2115127928ee60a5640cdc"
+    },
+    {
+      "path": "rust/src/capability_routing/claims.rs",
+      "sha256": "89b8c771d0e14a277930224adb45f7757780df1725d07ea544259cec6283d801"
+    },
+    {
+      "path": "rust/src/event_log.rs",
+      "sha256": "fb03fce9cf12c0a7da45bdcebff48c9a7b75b6d1ef016e76097af6c76125da20"
+    },
+    {
+      "path": "rust/tests/unit/mod.rs",
+      "sha256": "e865cca3fb2de22996a703221de87b5c9e790ff18357a3ac44c728334f58343f"
+    },
+    {
+      "path": "rust/src/quantity_constraint.rs",
+      "sha256": "20120fe52918c6725ca91e7a3a4a598c48ffdefc39977da001b370acd93cce5b"
+    },
+    {
+      "path": "rust/tests/unit/quantity_aggregate_comparison.rs",
+      "sha256": "eed16579dc6e61c0ba0f1874d4d4313622a780bfe73513dde3cd607cbf20407a"
+    },
+    {
+      "path": "js/worker/formal_ai_worker_arithmetic_and_numeric_lists.js",
+      "sha256": "99e0bf6d3b957df84a886242fb0d6260592817dbe576973e44087cd4f4e16270"
+    },
+    {
+      "path": "js/worker/formal_ai_worker_quantity_constraints.js",
+      "sha256": "76a00411a273dbbc9ea4ba7e04d9918af69522d242680176ee212c51cf9b8d3d"
+    },
+    {
+      "path": "js/agentic/crate/event_log.mjs",
+      "sha256": "93f46625e595dda0ca2c7ad603243eb4d077ce2e8f76713bd170dea661c28fbf"
+    },
+    {
+      "path": "rust/tests/web/server-evidence-links.test.mjs",
+      "sha256": "cf76667ba6c5d655a643d33a3ef5fa5a6b8d48c6238fe7c181c0174a9a145abe"
+    },
+    {
+      "path": "data/meta/worker-line-budget/formal_ai_worker_quantity_constraints.lino",
+      "sha256": "508d6c493552645bbfe49776099e63137030a66c95ce906c39e23e9cde92bc93"
+    },
+    {
+      "path": "rust/tests/web/server-debug-session.test.mjs",
+      "sha256": "10d868a3e096d5b1be6058c92672ecbb17e01e854794b9e64ebbd32a58f30754"
+    },
+    {
+      "path": "js/worker/formal_ai_worker_crate_event_log.js",
+      "sha256": "7f283e4947d4b1104b004b29acd85c661d57da1163d0600852bfd0ebe19fb5d9"
+    },
+    {
+      "path": "js/worker-modules.js",
+      "sha256": "60078a10848f61550cbb6539d347781dacdaa8911a2605c33827570d74a2e2c8"
+    },
+    {
+      "path": "ts/worker/formal_ai_worker_arithmetic_and_numeric_lists.ts",
+      "sha256": "99e0bf6d3b957df84a886242fb0d6260592817dbe576973e44087cd4f4e16270"
+    },
+    {
+      "path": "ts/worker/formal_ai_worker_quantity_constraints.ts",
+      "sha256": "76a00411a273dbbc9ea4ba7e04d9918af69522d242680176ee212c51cf9b8d3d"
+    },
+    {
+      "path": "ts/agentic/crate/event_log.mts",
+      "sha256": "93f46625e595dda0ca2c7ad603243eb4d077ce2e8f76713bd170dea661c28fbf"
+    },
+    {
+      "path": "ts/worker/formal_ai_worker_crate_event_log.ts",
+      "sha256": "7f283e4947d4b1104b004b29acd85c661d57da1163d0600852bfd0ebe19fb5d9"
+    },
+    {
+      "path": "ts/worker-modules.ts",
+      "sha256": "60078a10848f61550cbb6539d347781dacdaa8911a2605c33827570d74a2e2c8"
+    },
+    {
+      "path": "data/meta/debug-stage-sources.lino",
+      "sha256": "7963c60f5714488af528c792604c9d1a0f6a61a54f14395271a4e857b4879e46"
+    },
+    {
+      "path": "data/benchmarks/fast-pull-request-javascript-tests.json",
+      "sha256": "0babef31cd899f8bccc1536e617d72e33f435751e75b5c116ed408a65cbf18ef"
+    },
+    {
+      "path": "rust/embedded/data/seed/meanings-calculator.lino",
+      "sha256": "d960cf5f6da71b7d197995c454b1c9ac28ad89873e2dfe292679eb8bb3e4a31d"
+    },
+    {
+      "path": "rust/embedded/data/seed/multilingual-responses-agentic.lino",
+      "sha256": "8b0bf91a2fe49aee89793d160bdb4170f93ab3c607888071cb04cb45852d7b47"
+    }
+  ],
+  "validation": {
+    "javascriptWholeQa": {
+      "file": "rust/tests/web/quantity-aggregate-comparison.test.mjs",
+      "passed": 23,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 2250.138125
+    },
+    "symbolicEvidence": {
+      "file": "rust/tests/web/server-evidence-links.test.mjs",
+      "selected": "quantity",
+      "passed": 2,
+      "failed": 0,
+      "filteredOut": 7,
+      "durationMs": 2131.389792
+    },
+    "debugOwnership": {
+      "file": "rust/tests/web/server-debug-session.test.mjs",
+      "selectedAssertionPassed": true,
+      "wholeFilePassed": false,
+      "blocker": "An unselected HTTP fixture hook attempted a loopback listen, which the local sandbox denied. Full file remains for CI."
+    },
+    "localRustExecuted": false,
+    "localWasmExecuted": false,
+    "localDockerExecuted": false
+  },
+  "architecture": {
+    "legacyWorkerCeilingRaised": false,
+    "legacyWorkerLines": 784,
+    "newQuantityWorker": "js/worker/formal_ai_worker_quantity_constraints.js",
+    "newBudget": "Generated by the actual checker in an isolated one-module workspace.",
+    "typeScript": "Changed workers, crate module, generated factory and module inventory rendered with the maintained translator.",
+    "eventProjection": "Only five explicit quantity kinds preserve payloads; arbitrary namespace suffixes retain event-ID fallback.",
+    "packageSeeds": "Only the two existing, explicitly demanded canonical seed mirrors were refreshed."
+  },
+  "pending": [
+    "Hosted event-log source projection regeneration and actual ledger verification.",
+    "Native CI compile, type, lint and full-solver execution of the shared controls."
+  ],
+  "acceptance": {
+    "fullIssue1483": false,
+    "globalReasoningShare": "unmeasured",
+    "autonomousImplementationAuthorshipCredit": 0
+  }
+}

@@ -167,6 +167,27 @@ fn repeated_exact_objective_preserves_the_bound_source_and_next_edit() {
 }
 
 #[test]
+fn repeated_exact_objective_with_edit_capability_preserves_the_concrete_edit() {
+    let tools = ["read", "grep", "write", "bash", "websearch", "edit"];
+    let messages = session_with_complete_source();
+    let Some(AgenticPlan::ToolCalls(original)) = plan_chat_step(&messages, &tools) else {
+        panic!("complete observed source must bind the concrete Edit");
+    };
+    assert_eq!(original.len(), 1);
+    assert_eq!(original[0].tool, "edit");
+    for suffix in [vec![TASK], vec![TASK, TASK], vec!["continue", TASK]] {
+        let mut continued = messages.clone();
+        continued.extend(suffix.into_iter().map(ChatMessage::user));
+        let Some(AgenticPlan::ToolCalls(next)) = plan_chat_step(&continued, &tools) else {
+            panic!("the identical objective retains its actual source");
+        };
+        assert_eq!(next.len(), original.len());
+        assert_eq!(next[0].tool, original[0].tool);
+        assert_eq!(next[0].arguments, original[0].arguments);
+    }
+}
+
+#[test]
 fn changed_or_intervening_objectives_do_not_reuse_the_prior_source() {
     for suffix in [
         vec![TASK.to_owned() + " "],

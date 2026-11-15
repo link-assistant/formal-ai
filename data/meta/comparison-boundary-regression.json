@@ -1,0 +1,15 @@
+{
+  "imports": [
+    "import test from \"node:test\";",
+    "import assert from \"node:assert/strict\";"
+  ],
+  "binding": "import {{declaration} as subject} from {module};",
+  "title": "{bound} boundary is {polarity}",
+  "polarities": {
+    "inclusive": "inclusive",
+    "exclusive": "exclusive"
+  },
+  "open": "test({name}, () => {",
+  "assertion": "  assert.equal(subject({arguments}), {expected});",
+  "close": "});"
+}
