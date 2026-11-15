@@ -122,7 +122,7 @@ behaviour: what it teaches applies everywhere in that store.
 | Replaying the two recorded prompts in order produces a second summary with no text of the first prompt | Both tests replay the Scala prompt and the Rust prompt through the HTTP handler with one dreaming pass in between. The store also holds the amendment found on the host (topic `you`, the whole prompt). The second answer and the agentic summary contain neither the Scala repository, nor its branch, nor `Learned standing requirement`. |
 | No stored amendment has a pronoun as its topic | Every learned amendment in the tests goes through `assert_bounded_amendments` / `assertBoundedAmendments` (`is_valid_topic`); the pronoun table covers en/ru/hi/zh. |
 | No stored rule is longer than the limit or contains a branch or repository name of one task | The same assertion checks `rule-maximum-characters` and `contains_task_identifier`, plus the literal repository and branch names of both sessions. |
-| "Always answer in Russian" is still learned and applied in that user's later conversations | The test "always answer in Russian is learned and applied in that user's later conversations only" (both runtimes) and `examples/scoped-standing-requirements.mjs`: alice's later answers carry it, bob's and an anonymous user's do not. |
+| "Always answer in Russian" is still learned and applied in that user's later conversations | The test "always answer in Russian is learned and applied in that user's later conversations only" (both runtimes) and `rust/examples/scoped-standing-requirements.mjs`: alice's later answers carry it, bob's and an anonymous user's do not. |
 
 ## 7. Limits
 
