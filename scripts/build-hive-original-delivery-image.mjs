@@ -5,7 +5,9 @@ import assert from 'node:assert/strict';
 import { createHash, randomUUID } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { sourceBinaryIdentity, requireImageBundle, fileDigest } from './lib/hive-delivery-bundle.mjs';
+import os from 'node:os';
+import { sourceBinaryIdentity, requireImageBundle, fileDigest, IMAGE_BUNDLE_SCHEMA } from './lib/hive-delivery-bundle.mjs';
+import { deltaPlan } from './lib/oci-delta-archive.mjs';
 export function taskRuntimeJavaHomeCommand() {
   return 'runtime_java="$(command -v java)" && runtime_home="$(dirname "$(dirname "$(readlink -f "$runtime_java")")")" && test -x "$runtime_home/bin/java" && ln -s "$runtime_home" "$JAVA_HOME" && "$JAVA_HOME/bin/java" -version';
 }
@@ -224,6 +226,77 @@ export function preparePublishedBinary({
   }
   return runtime;
 }
+/** The RepoDigest that pins `runtimeImage` (a tag or an already pinned reference). */
+export function pinnedBaseRef(runtimeImage, repoDigests = []) {
+  const repository = runtimeImage.replace(/@sha256:[a-f0-9]{64}$/u, '').replace(/:[^/:]+$/u, '');
+  const names = new Set([repository, repository.replace(/^docker\.io\//u, ''), repository.replace(/^(docker\.io\/)?library\//u, '')]);
+  return repoDigests.find(reference => names.has(reference.replace(/@sha256:[a-f0-9]{64}$/u, ''))) ?? null;
+}
+
+/**
+ * Issue #1486: write the candidate as a delta over its pinned runtime base
+ * when the candidate inherits the base layers exactly; otherwise (or when the
+ * streamed delta is inconsistent) write the complete archive. Both stream
+ * through gzip, so no Docker image is buffered in Node or kept as a raw tar.
+ */
+export function saveImageArchive({ archive, runtimeImage, runtime, image, run, scratch = process.env.RUNNER_TEMP || os.tmpdir() }) {
+  const save = (command, env = {}) => run('bash', ['-e', '-o', 'pipefail', '-c', command], {
+    env: { ...process.env, HIVE_IMAGE_ARCHIVE: archive, ...env }
+  });
+  const full = reason => {
+    fs.rmSync(archive, { force: true });
+    save('docker save hive-e2e:candidate | gzip -1 > "$HIVE_IMAGE_ARCHIVE"');
+    console.log('Hive task image transport: full archive (' + reason + ').');
+    return { mode: 'full', reason };
+  };
+  let plan;
+  try {
+    plan = deltaPlan({
+      baseImageId: runtime.Id,
+      baseRef: pinnedBaseRef(runtimeImage, runtime.RepoDigests),
+      baseDiffIds: runtime.RootFS?.Layers ?? [],
+      candidateDiffIds: image.RootFS?.Layers ?? []
+    });
+  } catch (error) {
+    return full(error.message);
+  }
+  const work = fs.mkdtempSync(path.join(scratch, 'hive-image-delta-'));
+  const planFile = path.join(work, 'plan.json'), reportFile = path.join(work, 'report.json');
+  fs.writeFileSync(planFile, JSON.stringify(plan));
+  try {
+    save('docker save hive-e2e:candidate | node "$HIVE_DELTA_FILTER" filter --plan "$HIVE_DELTA_PLAN" --report "$HIVE_DELTA_REPORT" | gzip -1 > "$HIVE_IMAGE_ARCHIVE"', {
+      HIVE_DELTA_FILTER: fileURLToPath(new URL('./lib/oci-delta-archive.mjs', import.meta.url)),
+      HIVE_DELTA_PLAN: planFile,
+      HIVE_DELTA_REPORT: reportFile
+    });
+  } catch (error) {
+    const report = fs.existsSync(reportFile) ? JSON.parse(fs.readFileSync(reportFile, 'utf8')) : null;
+    return full('delta rejected: ' + (report?.problems?.join('; ') || error.message));
+  }
+  const report = JSON.parse(fs.readFileSync(reportFile, 'utf8'));
+  fs.rmSync(work, { recursive: true, force: true });
+  // With the containerd image store, `docker save` names blobs by registry digest, so nothing matches the diffIDs:
+  // the archive written is then already complete.
+  if (!report.droppedLayers.length) return { mode: 'full', reason: 'no base blob matched the base diffIDs' };
+  console.log('Hive task image transport: delta over ' + plan.baseRef + ' (' + report.droppedLayers.length + ' of ' + plan.baseLayers + ' base layers omitted, ' + report.droppedBytes + ' bytes not transferred).');
+  return {
+    mode: 'delta',
+    base: { ref: plan.baseRef, imageId: plan.baseImageId, diffIds: runtime.RootFS.Layers },
+    candidateLayers: plan.candidateLayers,
+    droppedLayers: report.droppedLayers.length,
+    droppedBytes: report.droppedBytes,
+    keptBytes: report.keptBytes
+  };
+}
+
+/** Pull the delta's base by digest and prove it is the exact base the producer measured. */
+export function requirePinnedBase(base, { run, read }) {
+  run('docker', ['pull', base.ref]);
+  const pulled = JSON.parse(read('docker', ['image', 'inspect', base.ref]))[0];
+  assert.equal(pulled.Id, base.imageId, 'pinned delta base image');
+  assert.deepEqual(pulled.RootFS.Layers, base.diffIds, 'pinned delta base layers');
+  return pulled;
+}
 export function main() {
   assert.equal(process.env.GITHUB_ACTIONS, 'true', 'hosted image construction only');
   if (process.argv[2] === 'extract-published-binary') {
@@ -261,6 +334,8 @@ export function main() {
       expected,
       inputs
     });
+    if (manifest.transport?.mode === 'delta') requirePinnedBase(manifest.transport.base, { run, read });
+    // A delta archive lacks the base blobs: `docker load` fails closed unless the exact pinned base is present.
     run('docker', ['load', '--input', path.join(directory, 'candidate.tar.gz')]);
     const loaded = JSON.parse(read('docker', ['image', 'inspect', 'hive-e2e:candidate']))[0];
     assert.equal(loaded.Id, manifest.imageId, 'loaded content-addressed task image');
@@ -321,18 +396,19 @@ export function main() {
     });
     const archive = path.join(directory, 'candidate.tar.gz');
     assert.equal(fs.existsSync(archive), false, 'fresh image bundle required');
-    // Stream through gzip: never buffer a Docker image in the bounded Node process or keep a second raw tar.
-    run('bash', ['-e', '-o', 'pipefail', '-c', 'docker save hive-e2e:candidate | gzip -1 > "$HIVE_IMAGE_ARCHIVE"'], {
-      env: {
-        ...process.env,
-        HIVE_IMAGE_ARCHIVE: archive
-      }
-    });
     const image = JSON.parse(read('docker', ['image', 'inspect', 'hive-e2e:candidate']))[0];
+    const transport = saveImageArchive({
+      archive,
+      runtimeImage,
+      runtime,
+      image,
+      run
+    });
     fs.writeFileSync(path.join(directory, 'image-bundle.json'), JSON.stringify({
-      schema: 'formal-ai-hive-image-bundle/v1',
+      schema: IMAGE_BUNDLE_SCHEMA,
       imageId: image.Id,
       archiveSha256: fileDigest(archive),
+      transport,
       identity
     }, null, 2) + '\n', {
       flag: 'wx'

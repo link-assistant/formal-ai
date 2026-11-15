@@ -378,6 +378,33 @@ jobs:
         run: bash scripts/install-agentic-search-tools.sh
       - name: Provision the actual pinned source-model frontend
         uses: ./.github/actions/setup-source-model
+      # Issue #1486: the captured draft replays and contract tests mapped to
+      # the changed components (data/benchmarks/focused-test-map.json) run
+      # first, so a planner, adapter or workflow regression fails in seconds,
+      # before the full suite and long before a release, image or Hive solve.
+      # Without a fetchable comparison base every mapped family runs.
+      - name: Run the focused tests for the changed components first
+        if: matrix.shard == 1
+        timeout-minutes: 5
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
+          # The shallow merge checkout hides its parents, so the PR base comes
+          # from the event; `--since` compares trees and needs no history.
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          base=''
+          if [[ "$EVENT_NAME" == pull_request ]]; then
+            base="$PR_BASE"
+          elif [[ "$EVENT_NAME" == push ]]; then
+            base="$BEFORE"
+          fi
+          if [[ "$base" =~ ^[0-9a-f]{40}$ && ! "$base" =~ ^0+$ ]] && git fetch --no-tags --depth=1 --filter=blob:none origin "$base"; then
+            node scripts/select-focused-tests.mjs --since "$base" --run
+          else
+            node scripts/select-focused-tests.mjs --all --run
+          fi
       - name: Run this shard of the JavaScript suites
         env:
           SHARD: ${{ matrix.shard }}

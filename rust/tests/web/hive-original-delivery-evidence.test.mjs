@@ -442,7 +442,7 @@ for (const options of [{
 test('real effects require current complete CI admission and immutable pre-effect claims; cleanup remains independently discoverable', () => {
   const workflow = parse(readFileSync(new URL('.github/workflows/hive-original-delivery.yml', new URL('../../../', import.meta.url)), 'utf8'));
   assert.equal(workflow.on.pull_request, undefined);
-  assert.deepEqual(workflow.on.workflow_run.workflows, ['*', '!Original Hive Mind three-client delivery', '!Finalize original Hive generated tasks']);
+  assert.deepEqual(workflow.on.workflow_run.workflows, ['*', '!Original Hive Mind three-client delivery', '!Finalize original Hive generated tasks', '!Hive CI phase timing']);
   assert.equal(workflow.concurrency['cancel-in-progress'], false);
   assert.equal(workflow.jobs.build.needs, 'admission');
   assert.match(workflow.jobs.build.if, /admitted/);

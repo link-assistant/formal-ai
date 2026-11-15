@@ -188,6 +188,11 @@
     "rust/tests/web/generate-role-registry-js.test.mjs",
     "rust/tests/web/debugger-client.test.mjs",
     "rust/tests/web/hive-draft-attempt-identity.test.mjs",
-    "rust/tests/web/hive-pre-effect-deferral.test.mjs"
+    "rust/tests/web/hive-pre-effect-deferral.test.mjs",
+    "rust/tests/web/draft-request-replay.test.mjs",
+    "rust/tests/web/focused-test-map.test.mjs",
+    "rust/tests/web/formal-ai-shared-build.test.mjs",
+    "rust/tests/web/hive-image-delta.test.mjs",
+    "rust/tests/web/ci-phase-timing.test.mjs"
   ]
 }
