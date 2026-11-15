@@ -50,7 +50,10 @@ test('fast inventory retains coding, questions, reports and captured CI failure 
   const selected=selectFastTests(JSON.parse(read('data/benchmarks/fast-pull-request-javascript-tests.json')));
   for(const name of ['ordinary-literal-addition','issue-1180-repository-qa','issue-1438-report-and-edit','generated-test-retirement','scheduled-published-admission-race',
     'inactive-desktop-publication','verify-public-release-downloads','dependency-update-publication','create-release-with-recovery',
-    'github-json-observation','self-authored-publication-source','hive-pre-effect-deferral'])
+    'github-json-observation','self-authored-publication-source','hive-pre-effect-deferral',
+    // Issue #1569: each of these failed only on main, after its PR passed.
+    'issue-1165-no-memorization','bounded-subprocess-boundaries','dependency-summarization',
+    'native-library-creation-qualification','issue-1569-collect-build-artifacts','issue-1569-ordered-module-lists'])
     assert(selected.includes('rust/tests/web/'+name+'.test.mjs'),name);
   for(const files of [[],['../outside.test.mjs'],[selected[0],selected[0]],['rust/tests/web/missing.test.mjs']])
     assert.throws(()=>selectFastTests({schema:'fast-pr-javascript-tests/v1',files}));
