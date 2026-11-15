@@ -241,6 +241,10 @@ fn the_solver_prompt_opens_like_a_session_instruction_and_yields_no_bounded_stat
         None
     );
     assert_eq!(
+        bounded_statement("Always keep logs in ./ci-logs of the checkout."),
+        None
+    );
+    assert_eq!(
         bounded_statement("Never close issue #1 without a test."),
         None
     );

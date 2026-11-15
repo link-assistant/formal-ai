@@ -96,7 +96,7 @@ function isUrlNamingOneTask(token) {
 }
 
 function isPath(token) {
-  if (token.startsWith('~/') || token.startsWith('./') || token.startsWith('../')) return true;
+  if (lexicon().relative_path_prefixes.some((prefix) => token.startsWith(prefix))) return true;
   if (token.startsWith('/') && token.slice(1).includes('/')) return true;
   const chars = [...token];
   return chars.length >= 3 && /^[A-Za-z]$/.test(chars[0]) && chars[1] === ':' && chars[2] === '\\';

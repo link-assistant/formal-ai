@@ -1,5 +1,5 @@
 dreaming_lexicon
-  description: Language-independent lexicon grounding dreaming's event detection as data (issues 540 and 494). Task/topic/durability detection reads these entries instead of hardcoded English keyword lists; topic_stopword also lists the pronouns and function words of every supported language so they never become a topic, instruction-opener marks a system or developer instruction delivered as a user message, answer-form-cue names the verbs of a requirement on the answer itself, task-reference-word marks a number naming one task, and rule-maximum-characters bounds a learned rule (issue 1559); edit or extend this file (or ship a copy under FORMAL_AI_DATA_DIR) to teach the pipeline new languages without recompiling.
+  description: Language-independent lexicon grounding dreaming's event detection as data (issues 540 and 494). Task/topic/durability detection reads these entries instead of hardcoded English keyword lists; topic_stopword also lists the pronouns and function words of every supported language so they never become a topic, instruction-opener marks a system or developer instruction delivered as a user message, answer-form-cue names the verbs of a requirement on the answer itself, task-reference-word marks a number naming one task, relative-path-prefix opens a path of one checkout, and rule-maximum-characters bounds a learned rule (issue 1559); edit or extend this file (or ship a copy under FORMAL_AI_DATA_DIR) to teach the pipeline new languages without recompiling.
   task_kind_cue "task"
   task_kind_cue "test_run"
   task_kind_cue "test-run"
@@ -378,6 +378,9 @@ dreaming_lexicon
   task-reference-word "समस्या"
   task-reference-word "问题"
   task-reference-word "工单"
+  relative-path-prefix "~/"
+  relative-path-prefix "./"
+  relative-path-prefix "../"
   rule-maximum-characters "240"
   learning_kind_cue "learning"
   learning_kind_cue "ledger"

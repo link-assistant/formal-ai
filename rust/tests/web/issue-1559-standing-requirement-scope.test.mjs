@@ -115,6 +115,7 @@ test('the solver prompt opens like a session instruction and yields no bounded s
   assert.equal(boundedStatement(`Always push only to branch ${SCALA_BRANCH}.`), null);
   assert.equal(boundedStatement(`Always use gh pr list --repo ${SCALA_REPOSITORY}.`), null);
   assert.equal(boundedStatement('Always keep logs in /tmp/gh-issue-solver-1794699168252/ci-logs.'), null);
+  assert.equal(boundedStatement('Always keep logs in ./ci-logs of the checkout.'), null);
   assert.equal(boundedStatement('Never close issue #1 without a test.'), null);
   assert.equal(boundedStatement(`Always ${'answer briefly and '.repeat(20)}politely.`), null);
   assert.equal(boundedStatement('Always answer in Russian.'), 'Always answer in Russian.');

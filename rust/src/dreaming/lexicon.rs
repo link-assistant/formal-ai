@@ -34,6 +34,9 @@ pub struct DreamingLexicon {
     pub answer_form_cues: Vec<String>,
     /// Words that, followed by a number, name one task (`issue 12`, `PR #3`).
     pub task_reference_words: Vec<String>,
+    /// Openings of a relative path (`./src`, `~/repo`), which names a file of
+    /// one checkout rather than a standing requirement.
+    pub relative_path_prefixes: Vec<String>,
     /// The configured maximum length, in characters, of a learned rule.
     pub rule_maximum_characters: Vec<String>,
 }
@@ -52,6 +55,7 @@ impl DreamingLexicon {
             "instruction-opener" => self.instruction_openers.push(value),
             "answer-form-cue" => self.answer_form_cues.push(value),
             "task-reference-word" => self.task_reference_words.push(value),
+            "relative-path-prefix" => self.relative_path_prefixes.push(value),
             "rule-maximum-characters" => self.rule_maximum_characters.push(value),
             _ => {}
         }

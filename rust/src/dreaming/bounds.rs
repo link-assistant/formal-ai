@@ -116,7 +116,11 @@ fn is_url_naming_one_task(token: &str) -> bool {
 }
 
 fn is_path(token: &str) -> bool {
-    if token.starts_with("~/") || token.starts_with("./") || token.starts_with("../") {
+    if lexicon()
+        .relative_path_prefixes
+        .iter()
+        .any(|prefix| token.starts_with(prefix.as_str()))
+    {
         return true;
     }
     if token.starts_with('/') && token[1..].contains('/') {

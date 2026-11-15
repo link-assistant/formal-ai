@@ -228,6 +228,7 @@ const LEXICON_KEYS = {
   'instruction-opener': 'instruction_openers',
   'answer-form-cue': 'answer_form_cues',
   'task-reference-word': 'task_reference_words',
+  'relative-path-prefix': 'relative_path_prefixes',
   'rule-maximum-characters': 'rule_maximum_characters',
 };
 
