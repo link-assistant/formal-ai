@@ -11,18 +11,25 @@
 # correct labels, measures the same 425/778 issue facts (0.546) as after it,
 # and neither document loses retention, so the old 0.549 and 0.65 floors were
 # measured on mislabeled input (experiments/issue-1569/summarization-per-document.mjs).
+# Re-recorded for issue #1487: a statement is dropped only when the checked
+# relation certifies it (equivalent or a conjunct of an asserted conjunctive
+# statement), not when its terms are a subset of an earlier disjunctive,
+# conditional or negated sentence: experiments/issue-1487/dedup-audit.mjs
+# lists the 13 such merges no longer made, so duplicates-removed fell from 79
+# to 69 (experiments/issue-1487/dedup-count.mjs measures both rules on one
+# tree) and retention by 0.001 to 0.003; the correctness fix is recorded here.
 text-summarization-ratchet
   source "scripts/measure-dependency-summarization.mjs"
   corpus "data/benchmarks/dependency-summarization/corpus.lino"
   documents 70
   compression 0.639
   key-fact-retention 0.649
-  duplicates-removed 79
+  duplicates-removed 69
   pages-documents 40
-  pages-compression 0.638
+  pages-compression 0.639
   pages-key-fact-retention 0.815
-  pages-duplicates-removed 34
+  pages-duplicates-removed 33
   issues-documents 30
-  issues-compression 0.64
+  issues-compression 0.639
   issues-key-fact-retention 0.546
-  issues-duplicates-removed 45
+  issues-duplicates-removed 36

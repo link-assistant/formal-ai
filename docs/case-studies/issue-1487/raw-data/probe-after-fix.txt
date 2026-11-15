@@ -1,0 +1,8 @@
+restates("2 is less than 1." , "1 is less than 2."): false
+same identity (true or false / true and false): false
+negated theorem: proof_request [ 'proof_binding:negated', 'proof_outcome:disproven' ]
+Return the number of vowels in the text. ->     return sum(1 for character in text if character in 'aeiouAEIOU') []
+Return twice the number of vowels in the text. -> (no program) [
+  'synthesis:obligation:unresolved_structure=repetition=repetition-twice',
+  'trace:synthesis:obligation:unresolved_structure=repetition=repetition-twice'
+]

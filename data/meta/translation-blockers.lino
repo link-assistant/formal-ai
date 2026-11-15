@@ -11,34 +11,34 @@
 # `unlock` rows are the greedy order: lifting the constructs down to a row
 # together leaves `cumulative` items with nothing refused by this scan.
 translation_blockers
-  carried_items 2477
+  carried_items 2537
   scanned_clear 14
   blockers_per_item 0 14
-  blockers_per_item 1 793
-  blockers_per_item 2 259
-  blockers_per_item 3 294
-  blockers_per_item 4 211
-  blockers_per_item 5 205
-  blockers_per_item 6 141
-  blockers_per_item 7 106
-  blockers_per_item 8 84
-  blockers_per_item 9 87
-  blockers_per_item 10 61
-  blockers_per_item 11 44
-  blockers_per_item 12 35
-  blockers_per_item 13 21
-  blockers_per_item 14 27
+  blockers_per_item 1 810
+  blockers_per_item 2 266
+  blockers_per_item 3 300
+  blockers_per_item 4 217
+  blockers_per_item 5 210
+  blockers_per_item 6 142
+  blockers_per_item 7 110
+  blockers_per_item 8 85
+  blockers_per_item 9 90
+  blockers_per_item 10 62
+  blockers_per_item 11 45
+  blockers_per_item 12 36
+  blockers_per_item 13 24
+  blockers_per_item 14 28
   blockers_per_item 15 20
   blockers_per_item 16 17
-  blockers_per_item 17 10
+  blockers_per_item 17 11
   blockers_per_item 18 7
   blockers_per_item 19 7
   blockers_per_item 20 7
   blockers_per_item 21 6
   blockers_per_item 22 1
-  blockers_per_item 23 2
+  blockers_per_item 23 3
   blockers_per_item 24 3
-  blockers_per_item 25 1
+  blockers_per_item 25 2
   blockers_per_item 26 3
   blockers_per_item 27 2
   blockers_per_item 28 3
@@ -47,66 +47,66 @@ translation_blockers
   blockers_per_item 35 1
   blockers_per_item 41 1
   blockers_per_item 43 1
-construct "call of a sibling function" items 914 only 36
-construct "field access" items 897 only 25
-construct "call of an imported function" items 665 only 17
-construct "null" items 589 only 5
-construct "object without a $ tag" items 522 only 26
-construct "arrow function" items 361 only 2
-construct "import of names its module carries" items 339 only 339
-construct "method call .map()" items 281 only 0
-construct "method call .push()" items 278 only 4
-construct "method call .slice()" items 275 only 6
-construct "method call .filter()" items 254 only 0
+construct "call of a sibling function" items 927 only 36
+construct "field access" items 919 only 25
+construct "call of an imported function" items 687 only 18
+construct "null" items 598 only 5
+construct "object without a $ tag" items 547 only 26
+construct "arrow function" items 376 only 2
+construct "import of names its module carries" items 351 only 351
+construct "method call .push()" items 292 only 4
+construct "method call .map()" items 288 only 0
+construct "method call .slice()" items 283 only 6
+construct "method call .filter()" items 258 only 0
 construct "JSDoc type {…}" items 253 only 5
-construct "arrow callback of .map()" items 236 only 0
+construct "arrow callback of .map()" items 243 only 0
 construct "regular expression" items 236 only 35
-construct "sibling value" items 211 only 16
-construct "arrow callback of .filter()" items 201 only 0
-construct "nullish coalescing" items 200 only 0
-construct "import from outside the module directory" items 197 only 197
-construct "method call .join()" items 181 only 0
-construct "method call .some()" items 179 only 0
-construct "arrow callback of .some()" items 172 only 0
-construct "undefined" items 165 only 0
-construct "method call .split()" items 152 only 0
-construct "arrow callback of .find()" items 150 only 0
-construct "method call .find()" items 144 only 0
-construct "assignment of a field or element" items 126 only 0
-construct "destructuring" items 126 only 0
+construct "sibling value" items 225 only 16
+construct "nullish coalescing" items 204 only 0
+construct "arrow callback of .filter()" items 203 only 0
+construct "import from outside the module directory" items 200 only 200
+construct "method call .join()" items 189 only 0
+construct "method call .some()" items 182 only 0
+construct "arrow callback of .some()" items 176 only 0
+construct "undefined" items 174 only 0
+construct "arrow callback of .find()" items 158 only 0
+construct "method call .split()" items 153 only 0
+construct "method call .find()" items 152 only 0
+construct "destructuring" items 133 only 0
+construct "assignment of a field or element" items 127 only 0
+construct "imported value" items 125 only 2
+construct "Array.from" items 123 only 0
 construct "method call .test()" items 123 only 0
-construct "imported value" items 118 only 2
-construct "global call String()" items 113 only 0
-construct "Array.from" items 111 only 0
-construct "method call .has()" items 95 only 0
-construct "new Set" items 95 only 35
-construct "method call .sort()" items 93 only 0
-construct "optional chaining" items 85 only 0
+construct "global call String()" items 117 only 0
+construct "method call .sort()" items 101 only 0
+construct "new Set" items 96 only 35
+construct "method call .has()" items 94 only 0
+construct "optional chaining" items 89 only 0
 construct "method call .replace()" items 82 only 0
-construct "method call .get()" items 72 only 0
-construct "method call .indexOf()" items 71 only 0
-construct "arrow callback of .sort()" items 68 only 0
-construct "method call .every()" items 68 only 0
+construct "method call .every()" items 75 only 0
+construct "arrow callback of .sort()" items 74 only 0
+construct "method call .indexOf()" items 74 only 0
+construct "method call .get()" items 73 only 0
 construct "typeof operator" items 68 only 2
 construct "new Map" items 66 only 5
-construct "method call .set()" items 60 only 0
+construct "arrow callback of .every()" items 63 only 0
+construct "method call .set()" items 61 only 0
 construct "try statement" items 59 only 0
-construct "arrow callback of .every()" items 57 only 0
-construct "method call .flatMap()" items 50 only 0
-construct "object spread" items 46 only 0
+construct "method call .flatMap()" items 51 only 0
+construct "object spread" items 49 only 0
 construct "global value Boolean" items 44 only 0
-construct "arrow callback of .flatMap()" items 41 only 0
+construct "arrow callback of .flatMap()" items 42 only 0
+construct "Object.freeze" items 41 only 0
 construct "arrow callback of .reduce()" items 37 only 0
 construct "method call .reduce()" items 37 only 0
-construct "Object.freeze" items 34 only 0
 construct "let without a value" items 34 only 0
+construct "method call .pop()" items 32 only 0
 construct "Array.isArray" items 30 only 0
 construct "method call .encode()" items 29 only 0
-construct "method call .pop()" items 29 only 0
+construct "method call .forEach()" items 27 only 0
+construct "arrow callback of .forEach()" items 26 only 0
 construct "new TextEncoder" items 25 only 8
 construct "JSON.stringify" items 24 only 0
-construct "method call .forEach()" items 24 only 0
-construct "arrow callback of .forEach()" items 23 only 0
 construct "export …" items 23 only 1
 construct "throw of a non-error value" items 23 only 0
 construct "async function" items 19 only 0
@@ -133,8 +133,8 @@ construct "method call .values()" items 10 only 0
 construct "new DispatchError" items 10 only 1
 construct "instanceof operator" items 9 only 0
 construct "method call .emit()" items 9 only 0
+construct "method call .reverse()" items 9 only 0
 construct "String.fromCodePoint" items 8 only 0
-construct "method call .reverse()" items 8 only 0
 construct "new Error" items 8 only 0
 construct "method call .decode()" items 7 only 0
 construct "method call .delete()" items 7 only 0
@@ -162,6 +162,7 @@ construct "method call .match()" items 4 only 0
 construct "method call .mkdirSync()" items 4 only 0
 construct "method call .readFileSync()" items 4 only 0
 construct "method call .relative()" items 4 only 0
+construct "method call .shift()" items 4 only 0
 construct "method call .subarray()" items 4 only 0
 construct "method call .writeText()" items 4 only 0
 construct "new Function" items 4 only 0
@@ -188,6 +189,8 @@ construct "Object.hasOwn" items 2 only 0
 construct "Object.values" items 2 only 0
 construct "PAIRS.find" items 2 only 0
 construct "PAIRS.some" items 2 only 0
+construct "QUOTE_PAIRS.find" items 2 only 0
+construct "QUOTE_PAIRS.some" items 2 only 0
 construct "String.fromCharCode" items 2 only 0
 construct "exponentiation" items 2 only 1
 construct "loose equality" items 2 only 0
@@ -213,7 +216,6 @@ construct "method call .normalize()" items 2 only 0
 construct "method call .retry_after_children()" items 2 only 0
 construct "method call .runGit()" items 2 only 0
 construct "method call .setLanguage()" items 2 only 0
-construct "method call .shift()" items 2 only 0
 construct "method call .skipWhitespace()" items 2 only 0
 construct "method call .stringify()" items 2 only 0
 construct "method call .update()" items 2 only 0
@@ -246,6 +248,7 @@ construct "Math.log2" items 1 only 0
 construct "OBJECT_TYPES.includes" items 1 only 0
 construct "OBLIGATION_ROLES.some" items 1 only 0
 construct "OPEN_ONLY.includes" items 1 only 0
+construct "ORDERED_RELATIONS.includes" items 1 only 0
 construct "Object.assign" items 1 only 0
 construct "Object.create" items 1 only 0
 construct "Object.entries" items 1 only 0
@@ -256,8 +259,6 @@ construct "PIN_IDS.find" items 1 only 0
 construct "Promise.allSettled" items 1 only 0
 construct "QUOTATIONS.find" items 1 only 0
 construct "QUOTATION_OPENERS_AFTER.includes" items 1 only 0
-construct "QUOTE_PAIRS.find" items 1 only 0
-construct "QUOTE_PAIRS.some" items 1 only 0
 construct "REGEX_CONTEXT_KEYWORDS.includes" items 1 only 0
 construct "REQUIREMENT_TOKENS.some" items 1 only 0
 construct "RESOURCE_FIELDS.includes" items 1 only 0
@@ -313,6 +314,7 @@ construct "method call .isFullyFaithful()" items 1 only 0
 construct "method call .isInteger()" items 1 only 0
 construct "method call .isLossless()" items 1 only 0
 construct "method call .isSymbolicLink()" items 1 only 0
+construct "method call .isTerm()" items 1 only 0
 construct "method call .kill()" items 1 only 0
 construct "method call .lastOf()" items 1 only 0
 construct "method call .links()" items 1 only 0
@@ -377,28 +379,29 @@ construct "new SymbolTable" items 1 only 0
 construct "new SyntaxError" items 1 only 0
 construct "new SystemExplanation" items 1 only 0
 construct "new Uint8Array" items 1 only 0
-unlock 1 "import of names its module carries" unlocked 339 cumulative 339
-unlock 2 "import from outside the module directory" unlocked 197 cumulative 536
-unlock 3 "call of a sibling function" unlocked 36 cumulative 572
-unlock 4 "field access" unlocked 44 cumulative 616
-unlock 5 "call of an imported function" unlocked 42 cumulative 658
-unlock 6 "null" unlocked 61 cumulative 719
-unlock 7 "object without a $ tag" unlocked 57 cumulative 776
-unlock 8 "JSDoc type {…}" unlocked 49 cumulative 825
-unlock 9 "arrow function" unlocked 44 cumulative 869
-unlock 10 "regular expression" unlocked 35 cumulative 904
-unlock 11 "sibling value" unlocked 35 cumulative 939
-unlock 12 "new Set" unlocked 35 cumulative 974
-unlock 13 "method call .slice()" unlocked 31 cumulative 1005
-unlock 14 "method call .push()" unlocked 35 cumulative 1040
-unlock 15 "method call .test()" unlocked 34 cumulative 1074
-unlock 16 "Object.freeze" unlocked 30 cumulative 1104
-unlock 17 "nullish coalescing" unlocked 29 cumulative 1133
-unlock 18 "global call String()" unlocked 26 cumulative 1159
-unlock 19 "method call .replace()" unlocked 28 cumulative 1187
-unlock 20 "method call .indexOf()" unlocked 27 cumulative 1214
-unlock 21 "undefined" unlocked 25 cumulative 1239
-unlock 22 "method call .join()" unlocked 21 cumulative 1260
-unlock 23 "Array.from" unlocked 27 cumulative 1287
-unlock 24 "destructuring" unlocked 18 cumulative 1305
-unlock 25 "assignment of a field or element" unlocked 30 cumulative 1335
+construct "new WeakMap" items 1 only 1
+unlock 1 "import of names its module carries" unlocked 351 cumulative 351
+unlock 2 "import from outside the module directory" unlocked 200 cumulative 551
+unlock 3 "call of a sibling function" unlocked 36 cumulative 587
+unlock 4 "field access" unlocked 44 cumulative 631
+unlock 5 "call of an imported function" unlocked 42 cumulative 673
+unlock 6 "null" unlocked 61 cumulative 734
+unlock 7 "object without a $ tag" unlocked 56 cumulative 790
+unlock 8 "JSDoc type {…}" unlocked 49 cumulative 839
+unlock 9 "arrow function" unlocked 44 cumulative 883
+unlock 10 "sibling value" unlocked 36 cumulative 919
+unlock 11 "Object.freeze" unlocked 36 cumulative 955
+unlock 12 "regular expression" unlocked 35 cumulative 990
+unlock 13 "new Set" unlocked 35 cumulative 1025
+unlock 14 "method call .push()" unlocked 32 cumulative 1057
+unlock 15 "method call .slice()" unlocked 36 cumulative 1093
+unlock 16 "method call .test()" unlocked 34 cumulative 1127
+unlock 17 "nullish coalescing" unlocked 29 cumulative 1156
+unlock 18 "method call .indexOf()" unlocked 28 cumulative 1184
+unlock 19 "global call String()" unlocked 27 cumulative 1211
+unlock 20 "method call .replace()" unlocked 29 cumulative 1240
+unlock 21 "undefined" unlocked 26 cumulative 1266
+unlock 22 "method call .join()" unlocked 22 cumulative 1288
+unlock 23 "Array.from" unlocked 28 cumulative 1316
+unlock 24 "destructuring" unlocked 20 cumulative 1336
+unlock 25 "assignment of a field or element" unlocked 31 cumulative 1367

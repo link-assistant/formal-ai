@@ -197,7 +197,7 @@ pub fn score(
     let denier = report
         .statements
         .iter()
-        .find(|other| other.signature == node.signature.negated());
+        .find(|other| other.signature.denies(&node.signature));
     let denied_by: Vec<String> = denier
         .map(|twin| {
             twin.sources()
