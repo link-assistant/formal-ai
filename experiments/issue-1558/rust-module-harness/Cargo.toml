@@ -1,0 +1,14 @@
+# Issue #1558: compiles the real rust/src/agentic_coding/work_item_references.rs
+# and its in-crate unit tests without the 324k-line formal-ai crate, whose
+# codegen does not fit a 3 GB container. Run: cargo test --manifest-path <this file>
+[package]
+name = "issue-1558-module-harness"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+regex = "1"
+serde_json = "1"
+
+[workspace]
