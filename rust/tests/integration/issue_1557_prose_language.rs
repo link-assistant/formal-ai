@@ -155,6 +155,15 @@ fn a_single_marker_or_a_quotation_does_not_outvote_the_prose() {
         formal_ai::language::prose_of("See `код` and \"цитата\" at https://пример.рф/путь"),
         "See and at"
     );
+    // A lone accented loanword does not flip a short English sentence, while a
+    // short Spanish one still reads as Spanish.
+    assert_eq!(
+        slug(detect_prose("Please fix the café bug in this issue")),
+        Some("en")
+    );
+    for text in ["hola", "gracias", "formaliza esto", "¿cómo estás?"] {
+        assert_eq!(slug(detect_prose(text)), Some("es"), "{text}");
+    }
 }
 
 #[test]
