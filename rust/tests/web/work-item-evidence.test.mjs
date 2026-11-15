@@ -240,3 +240,36 @@ test('a work item that links only related pages names each as unresolved evidenc
   assert.match(result.answer, /`RelatedEvidenceUnread`/u);
   assert.equal(planWorkItemEvidence('Organize the blockers.', [], ['read']), null, 'a work item with no lead is left to the general planner');
 });
+// The frozen issue bodies of #1395, #1396 and #1438 (work-item-1483 fixtures):
+// attachments are named, never described; a linked document that cannot be
+// fetched is named; neither ends in an unexplained stop or a write.
+const frozen = JSON.parse(readFileSync('data/benchmarks/fixtures/work-item-1483/issues.json', 'utf8')).issues;
+function leadsOf(number) {
+  const issue = frozen[number], task = issue.title + '\n\n' + issue.body, messages = [{ role: 'user', content: task }];
+  const tools = [];
+  for (let step = 0; step < 12; step += 1) {
+    const plan = planWorkItemEvidence(task, messages, ['read', 'grep', 'glob', 'webfetch', 'write'], issue.url);
+    assert.ok(plan, `issue ${number} is a work item with leads`);
+    if (plan.kind === 'final') return { record: recorded(plan), answer: plan.answer, tools };
+    const call = plan.calls[0];
+    tools.push(call.tool);
+    observe(messages, call.tool, JSON.parse(call.arguments), call.tool === 'webfetch' ? 'Error: network access is not available' : 'Error: File not found');
+  }
+  assert.fail(`issue ${number} did not end within 12 steps`);
+}
+test('the attachments of issues 1395 and 1396 are the named gap, never described', () => {
+  for (const [number, count] of [['1395', 1], ['1396', 2]]) {
+    const { record, answer, tools } = leadsOf(number);
+    assert.equal(record.reason, 'AttachmentEvidenceUnavailable', number);
+    assert.deepEqual(record.unresolved.map(row => [row.kind, row.reason]), Array(count).fill(['attachment', 'AttachmentContentUnavailable']), number);
+    assert.ok(!tools.includes('write') && !tools.includes('edit'), number);
+    assert.match(answer, /`AttachmentEvidenceUnavailable`/u);
+  }
+});
+test('the linked document of issue 1438 that cannot be fetched is the named gap', () => {
+  const { record, answer, tools } = leadsOf('1438');
+  assert.deepEqual(tools, ['webfetch']);
+  assert.equal(record.reason, 'ExternalEvidenceUnavailable');
+  assert.deepEqual(record.unresolved.map(row => [row.kind, row.reason]), [['document', 'FetchFailed']]);
+  assert.match(answer, /`ExternalEvidenceUnavailable`/u);
+});
