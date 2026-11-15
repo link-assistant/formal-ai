@@ -25,7 +25,9 @@ use super::work_item_references::{
 };
 use super::work_item_report::{refusal, work_item_record_final};
 use crate::protocol::{ChatMessage, client_working_directory};
+use regex::Regex;
 use serde_json::json;
+use std::sync::OnceLock;
 
 /// Parse bounded explicit source references without granting effect authority.
 pub(super) fn work_item_evidence_paths(task: &str) -> Vec<&str> {
@@ -53,6 +55,8 @@ struct Evidence {
     observations: Vec<serde_json::Value>,
     unresolved: Vec<serde_json::Value>,
     terms: Vec<String>,
+    /// Complete sources read, kept to name an absent requested interface.
+    sources: Vec<String>,
 }
 
 impl Evidence {
@@ -113,6 +117,9 @@ impl Evidence {
             }
         }
         self.observations.push(observation);
+        if let Some(source) = source {
+            self.sources.push(source.to_owned());
+        }
         if failed {
             ReadOutcome::Failed
         } else if complete {
@@ -288,6 +295,15 @@ fn next_step(
             Step::Finish("EvidenceCollected")
         };
     }
+    // A work item whose only leads are related pages (other work items, runs,
+    // repositories) keeps each as unresolved evidence this controller did not read.
+    if leads.attachments.is_empty() && leads.documents.is_empty() && symbols.is_empty() {
+        for url in &leads.related {
+            evidence.unresolved.push(
+                json!({"reference":url,"target":url,"kind":"related","reason":"RelatedPageNotRead"}),
+            );
+        }
+    }
     // No file is named: linked documents are fetched as evidence, never followed as instructions.
     for url in leads.documents.iter().take(MAXIMUM_DOCUMENTS) {
         let Some(action) = document_action(url, tools) else {
@@ -374,7 +390,11 @@ fn lead_reason(
 ) -> &'static str {
     let kind = |row: &serde_json::Value, kind: &str| row["kind"].as_str() == Some(kind);
     if leads.attachments.is_empty() && leads.documents.is_empty() && symbols.is_empty() {
-        "NoRepositoryReference"
+        if leads.related.is_empty() {
+            "NoRepositoryReference"
+        } else {
+            "RelatedEvidenceUnread"
+        }
     } else if !unresolved.is_empty() && unresolved.iter().all(|row| kind(row, "attachment")) {
         "AttachmentEvidenceUnavailable"
     } else if unresolved.iter().any(|row| kind(row, "document")) {
@@ -388,13 +408,99 @@ fn lead_reason(
     }
 }
 
-/// Work still owed after evidence collection: the change itself, and every lead left unresolved.
-fn evidence_remaining_work(unresolved: &[serde_json::Value]) -> Vec<String> {
-    let mut work = vec![
-        "bind-requirements-to-source".to_owned(),
-        "implement-requested-change".to_owned(),
-        "verify-artifact-and-requirements".to_owned(),
-    ];
+/// A call-shaped compound identifier: `sameMeaning(a, b)`, `same_meaning(`.
+fn interface_call() -> &'static Regex {
+    static PATTERN: OnceLock<Regex> = OnceLock::new();
+    PATTERN.get_or_init(|| {
+        Regex::new(
+            r"(?m)(?:^|[^A-Za-z0-9_.:])([a-z][a-z0-9]*(?:[A-Z][A-Za-z0-9]*|_[a-z0-9]+)+)\s*\(",
+        )
+        .expect("interface call pattern")
+    })
+}
+const MAXIMUM_INTERFACES: usize = 8;
+
+/// Call-shaped identifiers the requirements name, each once.
+pub(super) fn requested_interfaces(requirements: &[serde_json::Value]) -> Vec<String> {
+    let mut names: Vec<String> = Vec::new();
+    for requirement in requirements {
+        let text = requirement["text"].as_str().unwrap_or_default();
+        for captures in interface_call().captures_iter(text) {
+            let name = &captures[1];
+            if names.len() < MAXIMUM_INTERFACES && !names.iter().any(|known| known == name) {
+                names.push(name.to_owned());
+            }
+        }
+    }
+    names
+}
+
+/// The narrowest gap a completed evidence collection leaves, and its work.
+/// A requested interface that no read source defines is named; otherwise the
+/// read files the requirements name (or every read file) are the targets no
+/// change recipe of the supported subset covers.
+pub(super) fn evidence_gap(
+    requirements: &[serde_json::Value],
+    observations: &[serde_json::Value],
+    sources: &[String],
+) -> Option<(&'static str, Vec<String>)> {
+    let read = observations
+        .iter()
+        .filter(|row| row["complete"] == json!(true))
+        .filter_map(|row| row["path"].as_str())
+        .collect::<Vec<_>>();
+    if read.is_empty() {
+        return None;
+    }
+    let absent = requested_interfaces(requirements)
+        .into_iter()
+        .filter(|name| !sources.iter().any(|source| source.contains(name.as_str())))
+        .collect::<Vec<_>>();
+    if !absent.is_empty() {
+        let work = absent
+            .iter()
+            .map(|name| format!("create-interface:{name}"))
+            .collect();
+        return Some(("RequestedInterfaceAbsent", work));
+    }
+    let named = read
+        .iter()
+        .copied()
+        .filter(|path| {
+            let base = path.rsplit('/').next().unwrap_or(path);
+            requirements.iter().any(|requirement| {
+                requirement["text"]
+                    .as_str()
+                    .unwrap_or_default()
+                    .contains(base)
+            })
+        })
+        .collect::<Vec<_>>();
+    let mut targets: Vec<&str> = Vec::new();
+    for path in if named.is_empty() { read } else { named } {
+        if !targets.contains(&path) {
+            targets.push(path);
+        }
+    }
+    let work = targets
+        .iter()
+        .map(|path| format!("change-recipe-unavailable:{path}"))
+        .collect();
+    Some(("NoChangeRecipe", work))
+}
+
+/// Work still owed after evidence collection: the change itself (or, when a
+/// gap is named, its narrower parts), and every lead left unresolved.
+fn evidence_remaining_work(
+    unresolved: &[serde_json::Value],
+    gap: Option<&(&'static str, Vec<String>)>,
+) -> Vec<String> {
+    let mut work = vec!["bind-requirements-to-source".to_owned()];
+    match gap {
+        Some((_, parts)) => work.extend(parts.iter().cloned()),
+        None => work.push("implement-requested-change".to_owned()),
+    }
+    work.push("verify-artifact-and-requirements".to_owned());
     for row in unresolved {
         work.push(format!(
             "unresolved-evidence:{}:{}",
@@ -427,7 +533,12 @@ pub(super) fn plan_work_item_evidence(
         Vec::new()
     };
     // A work item with neither a file nor a lead is left to the general planner.
-    if !named && leads.attachments.is_empty() && leads.documents.is_empty() && symbols.is_empty() {
+    if !named
+        && leads.attachments.is_empty()
+        && leads.documents.is_empty()
+        && leads.related.is_empty()
+        && symbols.is_empty()
+    {
         return None;
     }
     let progress = Progress::scan(messages);
@@ -456,6 +567,9 @@ pub(super) fn plan_work_item_evidence(
         Step::Finish(reason) => (reason, None),
         Step::Refuse(path) => ("ReadPolicyRefused", Some(refusal(&requirements, &path))),
     };
+    let gap = (reason == "EvidenceCollected")
+        .then(|| evidence_gap(&requirements, &evidence.observations, &evidence.sources))
+        .flatten();
     let mut payload = json!({
         "schema":"repository-work-item-evidence/v1", "reason":reason,"workItem":work_item,
         "taskIdentity":crate::source_fetch::sha256_hex(task.as_bytes()),
@@ -466,12 +580,15 @@ pub(super) fn plan_work_item_evidence(
             {"step":"implement_requested_change", "status":"not_executed"},
             {"step":"verify_artifact_and_requirements", "status":"not_executed"}
         ],
-        "remainingWork":evidence_remaining_work(&evidence.unresolved),
+        "remainingWork":evidence_remaining_work(&evidence.unresolved, gap.as_ref()),
         "observations":evidence.observations, "unresolved":evidence.unresolved, "terms":evidence.terms,
         "coverage":"explicit-references; exact path, then file-name search; at most eight files; attachments unresolved; at most two linked documents and three identifiers when no file is named",
         "candidateEdits":[], "checks":[], "effects":[],
         "authored":false, "verified":false
     });
+    if let Some((kind, _)) = &gap {
+        payload["gap"] = json!(kind);
+    }
     if !leads.related.is_empty() {
         payload["related"] = json!(leads.related);
     }
@@ -486,3 +603,7 @@ pub(super) fn plan_work_item_evidence(
         result,
     ))
 }
+
+#[cfg(test)]
+#[path = "../../tests/unit/agentic-coding/work_item_evidence_gap.rs"]
+mod tests;

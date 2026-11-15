@@ -209,8 +209,15 @@ pub fn work_item_report(record: &Value, task: &str) -> String {
         }
         paragraphs.push(lines.join("\n"));
     }
-    // A partial result names the work it leaves open; requirement rows are listed below.
-    let remaining = if record["verified"] == json!(true) && record["complete"] != json!(true) {
+    // A named gap is the narrowest reason no change was made (issue #1483).
+    let gap = record["gap"].as_str();
+    if let Some(gap) = gap {
+        paragraphs.push(filled("work-item-report-gap", language, &[("gap", gap)]));
+    }
+    // A partial result, or a named gap, names the work it leaves open; requirement rows are listed below.
+    let remaining = if (record["verified"] == json!(true) && record["complete"] != json!(true))
+        || gap.is_some()
+    {
         record["remainingWork"]
             .as_array()
             .into_iter()

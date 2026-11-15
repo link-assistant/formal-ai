@@ -91,8 +91,11 @@ export function workItemReport(record, task) {
     }
     paragraphs.push(lines.join('\n'));
   }
-  // A partial result names the work it leaves open; requirement rows are listed below.
-  const remaining = record.verified === true && record.complete !== true && Array.isArray(record.remainingWork)
+  // A named gap is the narrowest reason no change was made (issue #1483).
+  const gap = typeof record.gap === 'string' ? record.gap : null;
+  if (gap !== null) paragraphs.push(filled('work-item-report-gap', language, [['gap', gap]]));
+  // A partial result, or a named gap, names the work it leaves open; requirement rows are listed below.
+  const remaining = ((record.verified === true && record.complete !== true) || gap !== null) && Array.isArray(record.remainingWork)
     ? record.remainingWork.filter(item => typeof item === 'string' && item !== 'independent-requirement-acceptance') : [];
   if (remaining.length) {
     const lines = [filled('work-item-report-remaining', language, [['count', String(remaining.length)]])];

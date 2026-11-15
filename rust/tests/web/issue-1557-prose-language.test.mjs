@@ -165,7 +165,10 @@ test('a fetched English issue body is answered in English end to end', async () 
     }
     assert.ok(final, 'the replay reaches a final answer');
     // Before the fix this answer opened with "Planificado, no ejecutado".
-    assert.match(final, /^Planned, not executed: /u);
+    // Issue #1483: the body links only related pages, so the session ends with
+    // that narrower named gap rather than an unexecuted plan.
+    assert.match(final, /^Not completed: /u);
+    assert.match(final, /`RelatedEvidenceUnread`/u);
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }

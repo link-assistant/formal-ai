@@ -1099,6 +1099,26 @@ multilingual_responses
     intent work-item-report-check-pending
     language es
     text "`{kind}` no ejecutada"
+  response response-work-item-report-gap-en
+    intent work-item-report-gap
+    language en
+    text "Narrowest open gap: `{gap}`."
+  response response-work-item-report-gap-ru
+    intent work-item-report-gap
+    language ru
+    text "Самый узкий открытый пробел: `{gap}`."
+  response response-work-item-report-gap-hi
+    intent work-item-report-gap
+    language hi
+    text "सबसे संकरा खुला अंतर: `{gap}`।"
+  response response-work-item-report-gap-zh
+    intent work-item-report-gap
+    language zh
+    text "最窄的未解决缺口：`{gap}`。"
+  response response-work-item-report-gap-es
+    intent work-item-report-gap
+    language es
+    text "La brecha abierta más estrecha: `{gap}`."
   response response-work-item-report-remaining-en
     intent work-item-report-remaining
     language en

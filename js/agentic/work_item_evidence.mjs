@@ -29,16 +29,51 @@ function hostRoot() {
 
 /** The terminal reason of a work item that names no repository file, from what its leads left unresolved. */
 function leadReason(leads, symbols, unresolved, incomplete) {
-  if (!leads.attachments.length && !leads.documents.length && !symbols.length) return 'NoRepositoryReference';
+  if (!leads.attachments.length && !leads.documents.length && !symbols.length) return leads.related.length ? 'RelatedEvidenceUnread' : 'NoRepositoryReference';
   if (unresolved.length && unresolved.every(row => row.kind === 'attachment')) return 'AttachmentEvidenceUnavailable';
   if (unresolved.some(row => row.kind === 'document')) return 'ExternalEvidenceUnavailable';
   if (unresolved.length) return 'UnresolvedReferences';
   return incomplete ? 'IncompleteSourceObservation' : 'EvidenceCollected';
 }
 
-/** Work still owed after evidence collection: the change itself, and every lead left unresolved. */
-function evidenceRemainingWork(unresolved) {
-  return ['bind-requirements-to-source', 'implement-requested-change', 'verify-artifact-and-requirements',
+/** A call-shaped compound identifier: `sameMeaning(a, b)`, `same_meaning(`. */
+const INTERFACE_CALL = /(?:^|[^A-Za-z0-9_.:])([a-z][a-z0-9]*(?:[A-Z][A-Za-z0-9]*|_[a-z0-9]+)+)\s*\(/gmu;
+const MAXIMUM_INTERFACES = 8;
+
+/** Mirrors `fn requested_interfaces`: call-shaped identifiers the requirements name, each once. */
+export function requestedInterfaces(requirements) {
+  const names = [];
+  for (const requirement of requirements) {
+    for (const match of String(requirement?.text ?? '').matchAll(INTERFACE_CALL)) {
+      if (!names.includes(match[1]) && names.length < MAXIMUM_INTERFACES) names.push(match[1]);
+    }
+  }
+  return names;
+}
+
+/**
+ * Mirrors `fn evidence_gap`: the narrowest gap a completed evidence
+ * collection leaves. A requested interface that no read source defines is
+ * named; otherwise the read files the requirements name (or every read file)
+ * are the targets no change recipe of the supported subset covers.
+ */
+export function evidenceGap(requirements, observations, sources) {
+  const read = observations.filter(row => row.complete === true && typeof row.path === 'string');
+  if (!read.length) return null;
+  const absent = requestedInterfaces(requirements).filter(name => !sources.some(source => source.includes(name)));
+  if (absent.length) return { gap: 'RequestedInterfaceAbsent', work: absent.map(name => 'create-interface:' + name) };
+  const named = read.filter(row => requirements.some(requirement => String(requirement?.text ?? '').includes(row.path.split('/').at(-1))));
+  const targets = [];
+  for (const row of named.length ? named : read) if (!targets.includes(row.path)) targets.push(row.path);
+  return { gap: 'NoChangeRecipe', work: targets.map(path => 'change-recipe-unavailable:' + path) };
+}
+
+/**
+ * Work still owed after evidence collection: the change itself (or, when a
+ * gap is named, its narrower parts), and every lead left unresolved.
+ */
+function evidenceRemainingWork(unresolved, gap = null) {
+  return ['bind-requirements-to-source', ...(gap === null ? ['implement-requested-change'] : gap.work), 'verify-artifact-and-requirements',
     ...unresolved.map(row => `unresolved-evidence:${row.reason}:${row.reference}`)];
 }
 
@@ -49,12 +84,13 @@ export function planWorkItemEvidence(task, messages, tools, workItem = null) {
   // Identifiers are searched only when the work item names no file: a named file is the narrower evidence.
   const symbols = references.length ? [] : workItemSymbols(task);
   // A work item with neither a file nor a lead is left to the general planner.
-  if (!named && !leads.attachments.length && !leads.documents.length && !symbols.length) return null;
+  if (!named && !leads.attachments.length && !leads.documents.length && !leads.related.length && !symbols.length) return null;
   const progress = Progress.scan(messages),
     roots = workspaceRoots(clientWorkingDirectory(messages), hostRoot()),
     observations = [],
     unresolved = [],
-    terms = [];
+    terms = [],
+    sources = [];
   // The work item is split into requirements before any evidence is read, so
   // a refusal names the requirement it concerns (issue #1560).
   const requirements = workItemRequirements(task).map(([text, span]) => ({
@@ -62,9 +98,12 @@ export function planWorkItemEvidence(task, messages, tools, workItem = null) {
     span,
     status: 'unbound'
   }));
-  const finish = (reason, refused = null) => workItemRecordFinal({
+  const finish = (reason, refused = null) => {
+    const gap = reason === 'EvidenceCollected' ? evidenceGap(requirements, observations, sources) : null;
+    return workItemRecordFinal({
     schema: 'repository-work-item-evidence/v1',
     reason,
+    ...(gap === null ? {} : { gap: gap.gap }),
     workItem,
     taskIdentity: sha256Hex(task),
     requirements,
@@ -91,10 +130,11 @@ export function planWorkItemEvidence(task, messages, tools, workItem = null) {
     candidateEdits: [],
     checks: [],
     effects: [],
-    remainingWork: evidenceRemainingWork(unresolved),
+    remainingWork: evidenceRemainingWork(unresolved, gap),
     authored: false,
     verified: false
   }, task, FinalDisposition.Gap, 'repository_work_item_evidence_gap');
+  };
   const read = toolFor(tools, Capability.Read);
   const readStep = path => planOne(read, jsonText({
     path,
@@ -119,6 +159,7 @@ export function planWorkItemEvidence(task, messages, tools, workItem = null) {
     if (resolvedBy !== 'exact') observation.resolvedBy = resolvedBy;
     if (failed) observation.readFailed = true;
     observations.push(observation);
+    if (complete) sources.push(observed.source);
     if (complete && (path.endsWith('.toml') || path.endsWith('.json'))) {
       try {
         observation.manifestFacts = observedManifestFacts(path, observed.source);
@@ -199,6 +240,11 @@ export function planWorkItemEvidence(task, messages, tools, workItem = null) {
   if (references.length) {
     if (unresolved.length) return finish('UnresolvedReferences');
     return finish(incomplete ? 'IncompleteSourceObservation' : 'EvidenceCollected');
+  }
+  // A work item whose only leads are related pages (other work items, runs,
+  // repositories) keeps each as unresolved evidence this controller did not read.
+  if (!leads.attachments.length && !leads.documents.length && !symbols.length) {
+    for (const url of leads.related) unresolved.push({ reference: url, target: url, kind: 'related', reason: 'RelatedPageNotRead' });
   }
   // No file is named: linked documents are fetched as evidence, never followed as instructions.
   for (const url of leads.documents.slice(0, MAXIMUM_DOCUMENTS)) {

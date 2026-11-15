@@ -546,10 +546,18 @@ meanings
     unit "not applicable"
     example "`independent-task-acceptance` not run"
     grounding "data/seed/multilingual-responses-agentic-workspace.lino"
+  work-item-report-gap
+    defined-by answer
+    role localized_response_template
+    precondition "a work-item session collected its evidence and names the narrowest gap that kept it from a change"
+    effect "the report names that gap before the list of open work"
+    unit "not applicable"
+    example "Narrowest open gap: `RequestedInterfaceAbsent`."
+    grounding "data/seed/multilingual-responses-agentic-workspace.lino"
   work-item-report-remaining
     defined-by answer
     role localized_response_template
-    precondition "an independent check accepted a work-item result while named work, such as integration semantics or consumer discovery, stays open"
+    precondition "an independent check accepted a work-item result, or a named gap stopped it, while named work, such as integration semantics or consumer discovery, stays open"
     effect "the report heads the list of open work with its count"
     unit "not applicable"
     example "Work still open (2):"
