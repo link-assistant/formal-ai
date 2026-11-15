@@ -42,7 +42,23 @@ pub(super) fn plan_work_item_change_step(
     general_change_step(messages, tool_names, plan, true, &mut None)
 }
 
+/// A work-item session's terminal is a localized report, never JSON (issue #1560).
 fn general_change_step(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    plan: &GeneralChangePlan,
+    resolved_from_work_item: bool,
+    result: &mut Option<FinalResult>,
+) -> AgenticPlan {
+    let step = change_step(messages, tool_names, plan, resolved_from_work_item, result);
+    if resolved_from_work_item || plan.mode == GeneralPlanMode::RepositoryWorkItem {
+        super::work_item_report::reported_work_item_final(step, &plan.goal, result)
+    } else {
+        step
+    }
+}
+
+fn change_step(
     messages: &[ChatMessage],
     tool_names: &[&str],
     plan: &GeneralChangePlan,

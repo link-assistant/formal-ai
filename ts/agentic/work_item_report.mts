@@ -6,7 +6,7 @@
 // Native twin: rust/src/agentic_coding/work_item_report.rs.
 import { localizedResponse } from './crate/seed.mjs';
 import { detect } from './crate/language.mjs';
-import { resolvedFinalAnswer, observedFinalResult } from './final_result.mjs';
+import { resolvedFinalAnswer, observedFinalResult, FinalDisposition } from './final_result.mjs';
 import { trim } from './write_str.mjs';
 import { requirementNaming } from './work_item_requirements.mjs';
 
@@ -86,6 +86,18 @@ export function workItemRecordFinal(record, task, disposition, origin) {
 /** The work-item record behind a final plan, or `null` (trace and tests). */
 export function workItemRecordOf(plan) {
   return observedFinalResult(plan)?.record ?? null;
+}
+
+/**
+ * Mirrors `fn reported_work_item_final`: a work-item session never answers
+ * with a JSON object. A final whose answer is one is rendered as a report and
+ * its object kept as the record; any other plan is returned unchanged.
+ */
+export function reportedWorkItemFinal(plan, task) {
+  if (plan?.kind !== 'final' || workItemRecordOf(plan) !== null || !parsesAsJsonObject(plan.answer)) return plan;
+  const result = observedFinalResult(plan);
+  const disposition = result?.disposition === FinalDisposition.Failure ? FinalDisposition.Failure : FinalDisposition.Gap;
+  return workItemRecordFinal(JSON.parse(plan.answer), task, disposition, result?.origin ?? 'work_item_record');
 }
 
 /** Mirrors `fn parses_as_json_object`. */

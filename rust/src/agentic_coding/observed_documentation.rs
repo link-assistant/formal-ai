@@ -1,11 +1,12 @@
 //! Shared observed-source documentation custody. Manual native projection only.
-use super::final_result::{FinalDisposition, FinalResult, record};
+use super::final_result::{FinalDisposition, FinalResult};
 use super::planner::{AgenticPlan, Capability};
 use super::work_item_file_io::{
     FileIoAttempt, FileIoPlan, WorkItemFileProgress, file_io_effect_step, file_io_pending_step,
     file_io_read_step,
 };
-use crate::obligation_ledger::clauses_with_spans;
+use super::work_item_report::{refusal, work_item_record_final};
+use super::work_item_requirements::work_item_requirements;
 use crate::protocol::ChatMessage;
 use crate::source_fetch::sha256_hex;
 use serde_json::{Value, json};
@@ -73,10 +74,28 @@ fn finish(
     failure: bool,
     result: &mut Option<FinalResult>,
 ) -> AgenticPlan {
+    finish_refused(state, reason, failure, None, result)
+}
+/// The record is rendered as a localized answer; a refused read names the
+/// path and the requirement it concerns (issue #1560).
+fn finish_refused(
+    state: &Value,
+    reason: &str,
+    failure: bool,
+    refused: Option<&str>,
+    result: &mut Option<FinalResult>,
+) -> AgenticPlan {
     let mut payload = state.clone();
     payload["reason"] = json!(reason);
-    record(
-        AgenticPlan::Final(payload.to_string()),
+    if let Some(path) = refused {
+        let requirements = state["requirements"]
+            .as_array()
+            .map_or(&[][..], Vec::as_slice);
+        payload["refused"] = refusal(requirements, path);
+    }
+    work_item_record_final(
+        payload,
+        state["task"].as_str().unwrap_or_default(),
         if failure {
             FinalDisposition::Failure
         } else {
@@ -104,11 +123,12 @@ fn read_step(
     state: &Value,
     result: &mut Option<FinalResult>,
 ) -> AgenticPlan {
-    resolve_plan(
-        file_io_read_step(messages, tools, path, task),
-        state,
-        result,
-    )
+    match file_io_read_step(messages, tools, path, task) {
+        FileIoPlan::Gap(reason) if reason == "ReadPolicyRefused" => {
+            finish_refused(state, &reason, false, Some(path), result)
+        }
+        planned => resolve_plan(planned, state, result),
+    }
 }
 
 /// Shared custody only. Derivation cannot grant authority or independent acceptance.
@@ -122,12 +142,11 @@ pub(super) fn plan_observed_documentation(
 ) -> AgenticPlan {
     let progress = WorkItemFileProgress::scan(messages);
     let attempts = progress.research_attempts();
-    let mut requirements: Vec<_> = clauses_with_spans(task).into_iter()
+    // The work item is split into requirements before any evidence is read, so
+    // a refusal names the requirement it concerns (issue #1560).
+    let requirements: Vec<_> = work_item_requirements(task).into_iter()
         .map(|(text, (start, end))| json!({"text":text,"span":[start,end],"kind":"source-documentation","status":"unverified"}))
         .collect();
-    if requirements.is_empty() {
-        requirements.push(json!({"text":task,"span":[0,task.len()],"kind":"source-documentation","status":"unverified"}));
-    }
     let sources_value = &contract["sources"];
     let target_value = &contract["target"];
     let single_source = sources_value

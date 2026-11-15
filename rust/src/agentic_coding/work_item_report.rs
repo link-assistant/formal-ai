@@ -162,6 +162,38 @@ pub(super) fn work_item_record_final(
     record(AgenticPlan::Final(report), disposition, origin, result)
 }
 
+/// A work-item session never answers with a JSON object. A final whose answer
+/// is one is rendered as a report and its object kept as the record; any other
+/// plan is returned unchanged.
+pub(super) fn reported_work_item_final(
+    step: AgenticPlan,
+    task: &str,
+    result: &mut Option<FinalResult>,
+) -> AgenticPlan {
+    if let AgenticPlan::Final(text) = &step
+        && let Ok(work_item_record @ Value::Object(_)) = serde_json::from_str::<Value>(text)
+    {
+        let (disposition, origin) = result
+            .as_ref()
+            .filter(|resolved| resolved.text == *text)
+            .map_or_else(
+                || (FinalDisposition::Gap, "work_item_record".to_owned()),
+                |resolved| {
+                    (
+                        if resolved.disposition == FinalDisposition::Failure {
+                            FinalDisposition::Failure
+                        } else {
+                            FinalDisposition::Gap
+                        },
+                        resolved.origin.clone(),
+                    )
+                },
+            );
+        return work_item_record_final(work_item_record, task, disposition, &origin, result);
+    }
+    step
+}
+
 /// Whether `text` parses as a JSON object.
 #[must_use]
 pub fn parses_as_json_object(text: &str) -> bool {

@@ -1,7 +1,7 @@
 //! Native counterpart of work_item_boundary_candidate.mjs. The controller owns
 //! the whole task ledger; this module handles one seeded structural leaf only.
 use super::comparison_boundary::observed_comparison_boundary_operation;
-use super::final_result::{FinalDisposition, FinalResult, record};
+use super::final_result::{FinalDisposition, FinalResult};
 use super::planner::{AgenticPlan, Capability};
 use super::shell_command_policy::sentences;
 use super::tool_result::{SourceReadObservation, SourceReadStatus};
@@ -9,6 +9,7 @@ use super::work_item_file_io::{
     FileIoPlan, WorkItemFileProgress as Progress, file_io_effect_step, file_io_pending_step,
     file_io_read_step,
 };
+use super::work_item_report::{refusal, work_item_record_final};
 use crate::protocol::ChatMessage;
 use crate::seed::parser::parse_lino;
 use serde_json::{Value, json};
@@ -468,18 +469,21 @@ pub(super) fn plan_work_item_boundary_step(
     let contract = boundary_work_item_contract(task, paths_for_clause)?;
     let progress = Progress::scan(messages);
     let mut observations = Vec::new();
-    let finish = |reason: &str,
-                  observations: &[Value],
-                  candidate: Option<&Value>,
-                  effect: Option<&Value>,
-                  detail: Value,
-                  result: &mut Option<FinalResult>| {
+    // The work item is split into requirements before any evidence is read; a
+    // requirement overlapping the bound clause awaits its independent check.
+    let source_start = contract["sourceSpan"][0].as_u64().unwrap_or(u64::MAX);
+    let source_end = contract["sourceSpan"][1].as_u64().unwrap_or(u64::MAX);
+    let requirements=super::work_item_requirements::work_item_requirements(task).into_iter().map(|(text,(start,end))|json!({
+        "text":text,"span":[start,end],"status":if (start as u64)<source_end&&(end as u64)>source_start{"independent_check_pending"}else{"unresolved"}
+    })).collect::<Vec<_>>();
+    let finish_with = |reason: &str,
+                       observations: &[Value],
+                       candidate: Option<&Value>,
+                       effect: Option<&Value>,
+                       detail: Value,
+                       refused: Option<Value>,
+                       result: &mut Option<FinalResult>| {
         let authored = effect.is_some_and(|value| value["implementationChanged"] == true);
-        let source_start = contract["sourceSpan"][0].as_u64().unwrap_or(u64::MAX);
-        let source_end = contract["sourceSpan"][1].as_u64().unwrap_or(u64::MAX);
-        let requirements=crate::obligation_ledger::clauses_with_spans(task).into_iter().map(|(text,(start,end))|json!({
-            "text":text,"span":[start,end],"status":if (start as u64)<=source_start&&(end as u64)>=source_end{"independent_check_pending"}else{"unresolved"}
-        })).collect::<Vec<_>>();
         let candidate_view=candidate.map(|candidate| {
             let mut checks=candidate["checks"].as_array().cloned().unwrap_or_default();
             for check in &mut checks {if check["kind"]=="physical-readback"{check["status"]=json!(if effect.is_some_and(|value|value["verified"]==true){"passed"}else{"pending"});}}
@@ -494,7 +498,7 @@ pub(super) fn plan_work_item_boundary_step(
             .map(|value| value["checks"].clone())
             .unwrap_or_else(|| json!([]));
         let remaining=requirements.iter().map(|value|json!({"text":value["text"],"span":value["span"],"reason":if value["status"]=="independent_check_pending"{"independent-requirement-acceptance-required"}else{"unsupported-or-unbound-obligation"}})).collect::<Vec<_>>();
-        let payload = json!({"schema":"repository-work-item-controller/v1","transportDiagnostics":progress.transport_diagnostics(),"reason":reason,"workItem":work_item,
+        let mut payload = json!({"schema":"repository-work-item-controller/v1","transportDiagnostics":progress.transport_diagnostics(),"reason":reason,"workItem":work_item,
             "taskIdentity":digest(task),"requirements":requirements,"supportedSubset":"finite-number-interval-boundary-and-regression",
             "boundContract":contract,"observations":observations,"candidate":candidate_view,"checks":checks,
             "effects":effect.into_iter().collect::<Vec<_>>(),"authored":authored,"verified":false,"independentlyAccepted":false,"complete":false,
@@ -502,10 +506,45 @@ pub(super) fn plan_work_item_boundary_step(
             "usefulChange":{"observed":authored,"independentlyAccepted":false,"paths":if authored{vec![contract["target"].clone()]}else{Vec::new()}},
             "authorshipBoundary":{"mechanism":"supplied-generic-structural-operation","targetOutputObserved":authored,"autonomousCredit":0,"laterReviewerWork":"not-observed"},
             "remainingWork":remaining,"budget":{"maximumEffects":1,"maximumEvidenceFiles":2},"detail":detail});
-        record(
-            AgenticPlan::Final(payload.to_string()),
+        if let Some(refused) = refused {
+            payload["refused"] = refused;
+        }
+        work_item_record_final(
+            payload,
+            task,
             FinalDisposition::Gap,
             "repository_work_item_boundary",
+            result,
+        )
+    };
+    let finish = |reason: &str,
+                  observations: &[Value],
+                  candidate: Option<&Value>,
+                  effect: Option<&Value>,
+                  detail: Value,
+                  result: &mut Option<FinalResult>| {
+        finish_with(
+            reason,
+            observations,
+            candidate,
+            effect,
+            detail,
+            None,
+            result,
+        )
+    };
+    // A refused read names the path and the requirement it concerns.
+    let refuse = |path: &str,
+                  observations: &[Value],
+                  candidate: Option<&Value>,
+                  result: &mut Option<FinalResult>| {
+        finish_with(
+            "ReadPolicyRefused",
+            observations,
+            candidate,
+            None,
+            Value::Null,
+            Some(refusal(&requirements, path)),
             result,
         )
     };
@@ -533,6 +572,9 @@ pub(super) fn plan_work_item_boundary_step(
         let Some(observed) = progress.source_read_for(path) else {
             return Some(match file_io_read_step(messages, tools, path, task) {
                 FileIoPlan::Pending(step) => step,
+                FileIoPlan::Gap(reason) if reason == "ReadPolicyRefused" => {
+                    refuse(path, &observations, None, result)
+                }
                 FileIoPlan::Gap(reason) => {
                     finish(&reason, &observations, None, None, Value::Null, result)
                 }
@@ -576,12 +618,10 @@ pub(super) fn plan_work_item_boundary_step(
     match plan_boundary_candidate_effect(candidate, messages, tools, task) {
         BoundaryEffectOutcome::Pending(step) => Some(
             if super::file_read::user_read_policy_blocks_plan(messages, task, &step) {
-                finish(
-                    "ReadPolicyRefused",
+                refuse(
+                    candidate["path"].as_str().unwrap_or_default(),
                     &observations,
                     Some(candidate),
-                    None,
-                    Value::Null,
                     result,
                 )
             } else {
