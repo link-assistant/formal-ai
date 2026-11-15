@@ -672,6 +672,15 @@ fn negated_theorem_request_is_refuted_never_proven() {
     }
     let response = FormalAiEngine.answer("Prove there are not infinitely many primes.");
     assert_eq!(response.intent, "proof_request");
+    // Euclid's proof is the refutation: `render_disproven` lays out the
+    // counterexample, the seeded steps and the conclusion, and
+    // `enforce_questions` keeps the first clarifying question and the bare
+    // number of the second (the JavaScript worker renders the same answer,
+    // rust/tests/web/issue-1487-proposition-identity.test.mjs).
+    assert_eq!(
+        response.answer,
+        "How I interpreted the request: treating the request as a claim to be refuted; applying proof by contradiction and producing a counterexample.\n\nDisproof (method: proof by contradiction).\n\nCounterexample: The claim denies a proven theorem: There are infinitely many prime numbers. The proof below refutes the claim.\n\n1. Definition: Work in elementary number theory, formalizable in Peano arithmetic (PA): a prime is an integer greater than 1 whose only positive divisors are 1 and itself. The proof uses the PA theorem that every integer greater than 1 has a prime divisor; this is the formal context for the relative-meta-logic contradiction tactic.\n2. Hypothesis: Assume for contradiction that only finitely many primes exist; call them p₁, p₂, …, pₙ.\n3. Inference: Form the number N = p₁·p₂·…·pₙ + 1. Then N is an integer greater than 1.\n4. Inference: By the fundamental theorem of arithmetic, N has a prime divisor q. If q = pᵢ for some i, then pᵢ divides both p₁·p₂·…·pₙ and N, so pᵢ divides their difference, which is 1 — impossible.\n5. Inference: Hence q is a prime not in the list p₁, …, pₙ, contradicting the assumption that the list was complete.\nThe assumption fails, so there are infinitely many primes. ∎\n\nClarifying questions:\n1. do you want to weaken the claim into a checkable form (e.g. replace equality with an inequality, or restrict the domain)?\n2."
+    );
     assert!(
         response.answer.contains("Disproof") && response.answer.contains("denies a proven theorem"),
         "negated request should be refuted, got: {}",
