@@ -733,7 +733,7 @@ fn without_quotations(line: &str) -> String {
     kept
 }
 
-/// The quoted items of the registry's first `key` line — the `prose_syntax`
+/// The quoted items of the registry's first `key` line — the `prose-syntax`
 /// record's fence and link markers (issue #1557). Mirrored by `registryList`.
 fn registry_list(key: &str) -> Vec<&'static str> {
     LANGUAGE_DETECTION
