@@ -23,6 +23,19 @@
 #                        ("print it twice"), never inferred from a repeated
 #                        mention.
 #
+# Issue #1550 — the task decomposition the recursive meta-executor splits a
+# formalized request with (js/agentic/crate/meta_executor.mjs, its Rust twin
+# rust/src/meta_executor.rs):
+#
+#   connective-sequence / connective-alternative / connective-aggregation
+#                        the words that join two tasks done one after the
+#                        other, two tasks of which either one answers, and two
+#                        tasks whose answers are gathered together. The
+#                        structural rule task-decomposition names the
+#                        relations in the order a level is split by, the
+#                        bounds of the recursion, the test checks and the
+#                        action cost of each drafting method.
+#
 # The structural rules proposition-structure, comparison-relation and
 # symbolic-operator name the kinds and lexicon meanings read as connectives,
 # quantifiers, ordered comparisons and operators.
@@ -55,6 +68,36 @@ text-formalization
     repetition-vocabulary "repetition-thrice"
     universal-meaning "quantifier_all"
     existential-meaning "quantifier_any"
+  structural-rule task-decomposition
+    relation "sequence"
+    relation "alternative"
+    relation "aggregation"
+    sequence-vocabulary "connective-sequence"
+    alternative-vocabulary "connective-alternative"
+    aggregation-vocabulary "connective-aggregation"
+    sequence-requires "all"
+    alternative-requires "any"
+    aggregation-requires "all"
+    depth-bound "2"
+    breadth-bound "6"
+    budget-bound "8"
+    leaf-check "answered"
+    composite-check "children"
+    unresolved-intent "unknown"
+    cache-cost "1"
+    derivation-cost "2"
+    composition-cost "1"
+    quote-pair "«»"
+    quote-pair "“”"
+    quote-pair "„“"
+    quote-pair "「」"
+    quote-pair "『』"
+    quote-pair "``"
+    edge-punctuation ","
+    edge-punctuation ";"
+    edge-punctuation "，"
+    edge-punctuation "；"
+    edge-punctuation "、"
   structural-rule comparison-relation
     less "number_constraint_upper_strict"
     less-converse "number_constraint_lower_strict"
@@ -177,6 +220,11 @@ text-formalization
     inflection-ending "ly"
     connective-conjunction "and"
     connective-disjunction "or"
+    connective-sequence "then"
+    connective-sequence "and then"
+    connective-sequence "after that"
+    connective-alternative "or"
+    connective-aggregation "and"
     repetition-twice "twice"
     repetition-thrice "thrice"
   language ru
@@ -344,6 +392,16 @@ text-formalization
     connective-conjunction "и"
     connective-disjunction "или"
     connective-disjunction "либо"
+    connective-sequence "затем"
+    connective-sequence "потом"
+    connective-sequence "а потом"
+    connective-sequence "и затем"
+    connective-sequence "и потом"
+    connective-sequence "после этого"
+    connective-alternative "или"
+    connective-alternative "либо"
+    connective-aggregation "и"
+    connective-aggregation "а также"
     repetition-twice "дважды"
     repetition-thrice "трижды"
   language hi
@@ -375,6 +433,13 @@ text-formalization
     connective-conjunction "तथा"
     connective-disjunction "या"
     connective-disjunction "अथवा"
+    connective-sequence "फिर"
+    connective-sequence "और फिर"
+    connective-sequence "उसके बाद"
+    connective-alternative "या"
+    connective-alternative "अथवा"
+    connective-aggregation "और"
+    connective-aggregation "तथा"
     repetition-twice "दो बार"
     repetition-thrice "तीन बार"
   language zh
@@ -397,6 +462,13 @@ text-formalization
     connective-conjunction "与"
     connective-disjunction "或者"
     connective-disjunction "或"
+    connective-sequence "然后"
+    connective-sequence "接着"
+    connective-sequence "之后"
+    connective-alternative "或者"
+    connective-aggregation "并且"
+    connective-aggregation "同时"
+    connective-aggregation "以及"
     repetition-twice "两次"
     repetition-thrice "三次"
   language es
@@ -457,5 +529,12 @@ text-formalization
     connective-conjunction "e"
     connective-disjunction "o"
     connective-disjunction "u"
+    connective-sequence "luego"
+    connective-sequence "y luego"
+    connective-sequence "después"
+    connective-alternative "o"
+    connective-alternative "u"
+    connective-aggregation "y"
+    connective-aggregation "e"
     repetition-twice "dos veces"
     repetition-thrice "tres veces"
