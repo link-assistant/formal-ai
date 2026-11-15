@@ -323,6 +323,7 @@ jobs:
           node scripts/check-ci-speed.mjs
           node scripts/check-hardcoded-language.mjs
           node scripts/check-js-literals.mjs
+          node scripts/check-tests-as-docs.mjs
           node scripts/assemble-requirements.mjs
           node scripts/generate-requirement-status.mjs
           node scripts/check-requirement-status.mjs

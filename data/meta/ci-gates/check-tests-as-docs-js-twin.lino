@@ -1,0 +1,10 @@
+# One CI gate, one file. Issue #991 moved the gate list out of
+# `.github/workflows/release.yml`, the repository's third most conflicted path,
+# because its step list was append-only. A gate lives here instead, so two
+# branches adding gates create two files, never one shared region.
+# `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
+ci_gate check-tests-as-docs-js-twin
+  stage rust
+  description "scripts/check-tests-as-docs.mjs prints exactly what scripts/check-tests-as-docs.rs prints, with the same exit code, so the fast pull-request lint enforces the tests-as-docs burn-down without compiling syn."
+  run "node scripts/lib/checks-twin-parity.mjs check-tests-as-docs"
+  justification "The Rust gate ran only on main, so main CI/CD Pipeline run 43710854562 (686367d20) failed on a loose-only test that its green pull request never checked (#1191); the twin now runs in fast-pr-lint, and a twin that drifted from syn's reading would pass work that main then rejects."

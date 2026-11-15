@@ -207,6 +207,7 @@
     "rust/tests/web/issue-1569-wasm-worker-inputs.test.mjs",
     "rust/tests/web/issue-1569-workflow-failure-isolation.test.mjs",
     "rust/tests/web/general-plan-event-append.test.mjs",
-    "rust/tests/web/owned-hive-finalization.test.mjs"
+    "rust/tests/web/owned-hive-finalization.test.mjs",
+    "rust/tests/web/tests-as-docs-twin.test.mjs"
   ]
 }
