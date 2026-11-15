@@ -275,12 +275,13 @@ export async function recheckAdmission({
     event,
     reader
   });
-  if (selected === null ||!isDeepStrictEqual(selected, selection.selected)) return changed;
+  if (selected === null || !isDeepStrictEqual(selected, selection.selected)) return changed;
   const runs = await reader.pages('repos/' + repository + '/actions/runs?head_sha=' + selected.source, 'workflow_runs');
   for (const run of runs) {
     assert.equal(run.repository.full_name, repository);
     assert.equal(run.head_repository.full_name, repository);
   }
+  assert.ok(Array.isArray(selection.expected) && selection.expected.length > 0, 'admitted CI obligations');
   if (runs.length === 0) return {admitted: false, reason: 'missing applicable CI ' + selection.expected[0], selected};
   const decision = ciAdmissionDecision({
     source: selected.source,
