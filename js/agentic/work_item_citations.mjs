@@ -11,9 +11,16 @@
 // autolinks (`<scheme://…>`) and bare addresses (a token holding `://` or
 // starting with `www.`). A quoted phrase inside a sentence is the work item's
 // own naming of what it asks for and is kept.
+//
+// A code span can also be the operand of an obligation: "The program should
+// print exactly: `Hello, World!`". The span asks for nothing by itself, but
+// the clause that binds it does. `bindingText` restores those operand spans —
+// the output literals an obligation clause binds (`boundOutputLiterals`) — so
+// the binding of a recipe reads the clause whole.
 // Native twin: rust/src/agentic_coding/work_item_citations.rs.
 
 import { programContractAnswer } from './crate/coding_program_contract.mjs';
+import { boundOutputLiterals } from './crate/intent_formalization_obligations.mjs';
 import { traceRoute } from './planner/continuation.mjs';
 
 const FENCES = ['```', '~~~'];
@@ -55,14 +62,19 @@ function linkEnd(rest) {
   return end < 0 ? null : end + 1;
 }
 
+/** Mirrors `fn code_span_end`: the end of the code span starting at `start` and its content, or null. */
+function codeSpanEnd(line, start) {
+  const rest = line.slice(start);
+  if (!rest.startsWith('`')) return null;
+  const run = rest.length - rest.replace(/^`+/u, '').length;
+  const close = rest.indexOf(rest.slice(0, run), run);
+  return close < 0 ? null : { end: start + close + run, content: rest.slice(run, close) };
+}
+
 /** Mirrors `fn citation_end`: the end of the citation starting at `start`, or `start`. */
 function citationEnd(line, start) {
   const rest = line.slice(start);
-  if (rest.startsWith('`')) {
-    const run = rest.length - rest.replace(/^`+/u, '').length;
-    const close = rest.indexOf(rest.slice(0, run), run);
-    return close < 0 ? start : start + close + run;
-  }
+  if (rest.startsWith('`')) return codeSpanEnd(line, start)?.end ?? start;
   if (rest.startsWith('[') || rest.startsWith(IMAGE_OPENER)) {
     const end = linkEnd(rest);
     if (end !== null) return start + end;
@@ -80,11 +92,20 @@ function citationEnd(line, start) {
   return start;
 }
 
-/** Mirrors `fn without_inline_citations`. */
-function withoutInlineCitations(line) {
+/**
+ * Mirrors `fn without_inline_citations`: a code span whose content is one of
+ * `operands` is kept whole.
+ */
+function withoutInlineCitations(line, operands) {
   let kept = '';
   let index = 0;
   while (index < line.length) {
+    const operand = codeSpanEnd(line, index);
+    if (operand !== null && operands.includes(operand.content)) {
+      kept += line.slice(index, operand.end);
+      index = operand.end;
+      continue;
+    }
     const end = citationEnd(line, index);
     if (end > index) {
       kept += blank(line.slice(index, end));
@@ -100,6 +121,19 @@ function withoutInlineCitations(line) {
 
 /** Mirrors `fn obligation_text`: the work item with every citation span blanked. */
 export function obligationText(text) {
+  return obligationTextKeeping(text, []);
+}
+
+/**
+ * Mirrors `fn binding_text`: the obligation text with the code spans that are
+ * operands of an obligation clause kept.
+ */
+export function bindingText(text) {
+  return obligationTextKeeping(text, boundOutputLiterals(String(text)));
+}
+
+/** Mirrors `fn obligation_text_keeping`: the citations blanked, save code spans holding one of `operands`. */
+function obligationTextKeeping(text, operands) {
   const source = String(text);
   let kept = '';
   let fenced = false;
@@ -112,7 +146,7 @@ export function obligationText(text) {
       if (fence) fenced = !fenced;
       kept += blank(body);
     } else {
-      kept += withoutInlineCitations(body);
+      kept += withoutInlineCitations(body, operands);
     }
     kept += ending;
   }
@@ -135,12 +169,13 @@ export function isCitation(obligations, [start, end]) {
 
 /**
  * Mirrors `fn unbind_cited_recipe`: drop the recipe when no obligation of the
- * work item names it and return the path it would have written, or null.
+ * work item names it and return the path it would have written, or null. The
+ * obligations are read with their operands (`bindingText`).
  */
 export function unbindCitedRecipe(answer, objective, solve = programContractAnswer) {
   const recipe = answer?.execution_recipe;
   if (!recipe) return null;
-  const obligations = obligationText(objective);
+  const obligations = bindingText(objective);
   if (obligations === objective) return null;
   const obliged = solve(obligations)?.execution_recipe ?? null;
   const bound = obliged !== null && obliged.path === recipe.path && obliged.language === recipe.language;

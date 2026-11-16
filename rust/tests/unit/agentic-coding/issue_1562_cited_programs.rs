@@ -16,7 +16,7 @@
 //! than a read, a glob or a `find`.
 
 use formal_ai::agentic_coding::work_item_citations::{
-    cites_anything, is_citation, obligation_text,
+    binding_text, cites_anything, is_citation, obligation_text,
 };
 use formal_ai::language::registered_languages;
 use formal_ai::protocol::{ChatMessage, ToolCall, create_chat_completion_with_solver};
@@ -164,19 +164,25 @@ fn a_requirement_span_wholly_inside_a_citation_is_a_citation() {
     );
 }
 
-/// The obligation text of a report selects no program; the whole text did.
+/// The obligation text of a report selects no program, nor does it with the
+/// operands of its clauses (its binding text); the whole text did.
 #[test]
 fn the_solver_selects_a_program_only_from_the_cited_addresses() {
     for issue in ISSUES {
-        let obligations = obligation_text(fixture(issue));
-        assert_eq!(
-            formal_ai::UniversalSolver::default()
-                .solve(&obligations)
-                .execution_recipe
-                .map(|recipe| recipe.path),
-            None,
-            "hive-mind#{issue}: no obligation asks for a program"
-        );
+        for text in [
+            obligation_text(fixture(issue)),
+            binding_text(fixture(issue)),
+        ] {
+            assert_eq!(text.len(), fixture(issue).len(), "byte offsets are kept");
+            assert_eq!(
+                formal_ai::UniversalSolver::default()
+                    .solve(&text)
+                    .execution_recipe
+                    .map(|recipe| recipe.path),
+                None,
+                "hive-mind#{issue}: no obligation asks for a program"
+            );
+        }
     }
 }
 
@@ -186,7 +192,7 @@ fn a_work_item_that_asks_for_the_program_keeps_its_recipe() {
     for (language, path) in [("Scala", "Main.scala"), ("Rust", "main.rs")] {
         let text = hello_world_issue(language);
         let whole = formal_ai::UniversalSolver::default().solve(&text);
-        let obliged = formal_ai::UniversalSolver::default().solve(&obligation_text(&text));
+        let obliged = formal_ai::UniversalSolver::default().solve(&binding_text(&text));
         let whole = whole
             .execution_recipe
             .expect("the whole text selects the program");
@@ -204,6 +210,44 @@ fn a_work_item_that_asks_for_the_program_keeps_its_recipe() {
             whole.path
         );
     }
+}
+
+/// A code span that is the operand of an obligation clause ("print exactly:
+/// `Hello, World!`") is no obligation by itself, but the binding reads it with
+/// its clause: the #1155 work item, whose only output literal is a code span,
+/// keeps its program. A cited address in a code span stays blanked.
+#[test]
+fn a_code_span_that_is_the_operand_of_an_obligation_clause_is_read_with_its_clause() {
+    let issue_1155 = "Implement Hello World in Rust\n\n## Task\nPlease implement a \"Hello World\" program in Rust.\n\n## Requirements\n1. Create a file with the appropriate extension for Rust\n2. The program should print exactly: `Hello, World!`\n3. **Create a GitHub Actions workflow that automatically runs and tests the program on every push and pull request**\n";
+    let goodbye = "Write a Python program that prints exactly: `Goodbye, moon`";
+    for (text, path) in [(issue_1155, "main.rs"), (goodbye, "main.py")] {
+        assert!(
+            !obligation_text(text).contains('`'),
+            "the code span is no obligation by itself"
+        );
+        assert!(
+            binding_text(text).contains('`'),
+            "the binding reads the operand"
+        );
+        let whole = formal_ai::UniversalSolver::default()
+            .solve(text)
+            .execution_recipe
+            .expect("the whole text selects the program");
+        let bound = formal_ai::UniversalSolver::default()
+            .solve(&binding_text(text))
+            .execution_recipe
+            .expect("the binding text selects the program");
+        assert_eq!(whole.path, path);
+        assert_eq!((bound.path, bound.language), (whole.path, whole.language));
+    }
+    let cited = format!("{goodbye}\n\nSeen in `konard/test-hello-world-01`.");
+    assert_eq!(
+        binding_text(&cited),
+        format!(
+            "{goodbye}\n\nSeen in {}.",
+            " ".repeat("`konard/test-hello-world-01`".len())
+        )
+    );
 }
 
 /// The paragraph that says why no program was written is seeded in every

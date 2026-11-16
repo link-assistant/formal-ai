@@ -17,7 +17,7 @@ import { readFileSync } from 'node:fs';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { ensureNodeHost } from '../../../js/server/node-host-install.mjs';
 import { runSession } from './helpers/issue-1558-session.mjs';
-import { citesAnything, isCitation, obligationText } from '../../../js/agentic/work_item_citations.mjs';
+import { bindingText, citesAnything, isCitation, obligationText } from '../../../js/agentic/work_item_citations.mjs';
 
 const FIXTURES = 'data/benchmarks/fixtures/issue-1562';
 const ISSUES = [4031, 4034, 4035];
@@ -134,6 +134,29 @@ describe('issue #1562 recipe binding', () => {
     const answer = normalizingSolver(quoted);
     assert.equal(unbindCitedRecipe(answer, quoted, normalizingSolver), null, 'an obligation that names the program keeps it');
     assert.ok(answer.execution_recipe);
+  });
+
+  test('a code span that is the operand of an obligation clause is read with its clause', () => {
+    // rust/tests/web/issue-1155-read-validation.test.mjs: the only output
+    // literal of the work item is a code span.
+    const issue1155 = 'Implement Hello World in Rust\n\n## Task\nPlease implement a "Hello World" program in Rust.\n\n## Requirements\n1. Create a file with the appropriate extension for Rust\n2. The program should print exactly: `Hello, World!`\n3. **Create a GitHub Actions workflow that automatically runs and tests the program on every push and pull request**\n';
+    const goodbye = 'Write a Python program that prints exactly: `Goodbye, moon`';
+    for (const [text, path] of [[issue1155, 'main.rs'], [goodbye, 'main.py']]) {
+      assert.ok(!obligationText(text).includes('`'), 'the code span is still no obligation by itself');
+      assert.equal(programContractAnswer(obligationText(text))?.execution_recipe ?? null, null, 'without its operand the clause selects nothing');
+      assert.ok(bindingText(text).includes('`'), 'the binding reads the operand');
+      const answer = programContractAnswer(text);
+      assert.equal(answer?.execution_recipe?.path, path);
+      assert.equal(unbindCitedRecipe(answer, text), null, `${path} stays bound`);
+      assert.equal(answer.execution_recipe.path, path);
+    }
+    // Only the operand is kept: a cited address in a code span stays blanked.
+    const cited = 'Write a Python program that prints exactly: `Goodbye, moon`\n\nSeen in `konard/test-hello-world-01`.';
+    assert.equal(bindingText(cited), `${cited.split('\n')[0]}\n\nSeen in ${' '.repeat(bytes('`konard/test-hello-world-01`'))}.`);
+    for (const issue of ISSUES) {
+      assert.equal(bytes(bindingText(fixture(issue))), bytes(fixture(issue)), `hive-mind#${issue}: byte offsets are kept`);
+      assert.equal(normalizingSolver(bindingText(fixture(issue))).execution_recipe, null, `hive-mind#${issue}: its operands name no program`);
+    }
   });
 
   test('the JS work-item solver selects no program for the three reports', () => {

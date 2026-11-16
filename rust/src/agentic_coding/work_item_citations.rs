@@ -17,6 +17,14 @@
 //! World\" program") is the work item's own naming of what it asks for and is
 //! kept.
 //!
+//! A code span can also be the operand of an obligation: "The program should
+//! print exactly: `Hello, World!`". The span asks for nothing by itself, but
+//! the clause that binds it does. The binding of a recipe reads the
+//! obligation text with those operand spans kept — the output literals an
+//! obligation clause binds
+//! ([`crate::intent_formalization::bound_output_literals`]) — so it reads the
+//! clause whole.
+//!
 //! Mirrored by `js/agentic/work_item_citations.mjs`.
 
 /// Fence openers of a fenced code block.
@@ -35,6 +43,12 @@ const IMAGE_OPENER: &str = "![";
 /// length; line breaks are kept, so byte offsets are preserved.
 #[must_use]
 pub fn obligation_text(text: &str) -> String {
+    obligation_text_keeping(text, &[])
+}
+
+/// The obligation text with every code span whose content is one of
+/// `operands` kept. Mirrored by `obligationTextKeeping`.
+fn obligation_text_keeping(text: &str, operands: &[String]) -> String {
     let mut kept = String::with_capacity(text.len());
     let mut fenced = false;
     for line in text.split_inclusive('\n') {
@@ -51,7 +65,7 @@ pub fn obligation_text(text: &str) -> String {
             }
             blank(&mut kept, body);
         } else {
-            kept.push_str(&without_inline_citations(body));
+            kept.push_str(&without_inline_citations(body, operands));
         }
         kept.push_str(ending);
     }
@@ -70,12 +84,20 @@ fn blank(kept: &mut String, span: &str) {
     kept.extend(std::iter::repeat_n(' ', span.len()));
 }
 
-/// One line without its code spans, links and addresses.
-fn without_inline_citations(line: &str) -> String {
+/// One line without its code spans, links and addresses; a code span whose
+/// content is one of `operands` is kept whole.
+fn without_inline_citations(line: &str, operands: &[String]) -> String {
     let bytes = line.as_bytes();
     let mut kept = String::with_capacity(line.len());
     let mut index = 0;
     while index < bytes.len() {
+        if let Some((end, content)) = code_span_end(line, index)
+            && operands.iter().any(|operand| operand == content)
+        {
+            kept.push_str(&line[index..end]);
+            index = end;
+            continue;
+        }
         let end = citation_end(line, index);
         if end > index {
             blank(&mut kept, &line[index..end]);
@@ -89,16 +111,25 @@ fn without_inline_citations(line: &str) -> String {
     kept
 }
 
+/// The end of the code span that starts at byte `start`, and its content,
+/// when one does.
+fn code_span_end(line: &str, start: usize) -> Option<(usize, &str)> {
+    let rest = &line[start..];
+    if !rest.starts_with('`') {
+        return None;
+    }
+    let run = rest.len() - rest.trim_start_matches('`').len();
+    let fence = &rest[..run];
+    let close = rest[run..].find(fence)?;
+    Some((start + run + close + run, &rest[run..run + close]))
+}
+
 /// The end of the citation that starts at byte `start`, or `start` when none
 /// does.
 fn citation_end(line: &str, start: usize) -> usize {
     let rest = &line[start..];
     if rest.starts_with('`') {
-        let run = rest.len() - rest.trim_start_matches('`').len();
-        let fence = &rest[..run];
-        return rest[run..]
-            .find(fence)
-            .map_or(start, |close| start + run + close + run);
+        return code_span_end(line, start).map_or(start, |(end, _)| end);
     }
     if (rest.starts_with('[') || rest.starts_with(IMAGE_OPENER))
         && let Some(end) = link_end(rest)
@@ -165,17 +196,16 @@ pub fn is_citation(obligations: &str, (start, end): (usize, usize)) -> bool {
 /// Drop the solver's recipe when no obligation of the work item names it, and
 /// return the path it would have written. Mirrored by `unbindCitedRecipe`.
 ///
-/// The recipe is bound when the work item's own words — its
-/// [`obligation_text`] — select a recipe writing the same file in the same
-/// language. A work item that cites nothing is its own obligation text and is
-/// not solved twice. The decision is traced as route
+/// The recipe is bound when the work item's own words — its [`binding_text`]
+/// — select a recipe writing the same file in the same language. A work item
+/// that cites nothing is its own obligation text and is not solved twice. The decision is traced as route
 /// `work_item_recipe_binding` under `FORMAL_AI_TRACE_REQUESTS`.
 pub(super) fn unbind_cited_recipe(
     answer: &mut crate::engine::SymbolicAnswer,
     objective: &str,
 ) -> Option<String> {
     let recipe = answer.execution_recipe.as_ref()?;
-    let obligations = obligation_text(objective);
+    let obligations = binding_text(objective);
     if obligations == objective {
         return None;
     }
@@ -194,4 +224,17 @@ pub(super) fn unbind_cited_recipe(
         return None;
     }
     answer.execution_recipe.take().map(|recipe| recipe.path)
+}
+
+/// The [`obligation_text`] with the code spans that are operands of an
+/// obligation clause kept: the output literals its clauses bind
+/// ([`crate::intent_formalization::bound_output_literals`]). A code span is
+/// no obligation by itself; "print exactly: `Hello, World!`" is one, and the
+/// binding reads it whole. Mirrored by `bindingText`.
+#[must_use]
+pub fn binding_text(text: &str) -> String {
+    obligation_text_keeping(
+        text,
+        &crate::intent_formalization::bound_output_literals(text),
+    )
 }
