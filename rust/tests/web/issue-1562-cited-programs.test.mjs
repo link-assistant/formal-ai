@@ -158,6 +158,27 @@ describe('issue #1562 recipe binding', () => {
 });
 
 describe('issue #1562 sessions of the three reports', () => {
+  test('a session whose only written file is named by no obligation commits nothing and claims nothing', async () => {
+    // Production order (hive-mind PR 4037): `main.rs` was already written and run when the session resumes.
+    const root = process.cwd();
+    const exchanged = (id, name, args, content) => [
+      { role: 'assistant', content: '', tool_calls: [{ id, type: 'function', function: { name, arguments: JSON.stringify(args) } }] },
+      { role: 'tool', tool_call_id: id, content }
+    ];
+    const after = [
+      ...exchanged('call_write_main', 'write', { filePath: `${root}/main.rs`, content: 'fn main() {\n    println!("Hello, World!");\n}\n' }, 'Wrote file successfully.'),
+      ...exchanged('call_run_main', 'bash', { command: 'rustc main.rs -o main && ./main', description: 'Run the program' }, 'Hello, World!\n')
+    ];
+    const session = await runSession(entry, 4031, root, { issueText: fixture(4031), repository: 'link-assistant/hive-mind', after });
+    assert.equal(session.stop, 'final', `the session ends with an answer: ${session.stop}`);
+    for (const call of session.calls) {
+      assert.ok(!['write', 'edit'].includes(call.tool), `nothing more is written: ${call.tool} ${call.arguments}`);
+      assert.doesNotMatch(call.arguments, /git commit|git push|gh pr ready/u);
+    }
+    assert.doesNotMatch(session.final, /Created and verified/u);
+    assert.equal(session.record?.authored ?? false, false);
+  });
+
   for (const issue of ISSUES) {
     test(`hive-mind#${issue} writes, runs and commits nothing and names the defect`, async () => {
       const text = fixture(issue);
