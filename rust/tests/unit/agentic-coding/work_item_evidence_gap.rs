@@ -66,6 +66,7 @@ fn a_work_item_linking_only_related_pages_names_each_as_unresolved() {
         &messages,
         &["read", "write"],
         "https://github.com/example/project/issues/9",
+        None,
         &mut result,
     );
     let Some(AgenticPlan::Final(answer)) = plan else {
@@ -100,7 +101,15 @@ fn a_work_item_linking_only_related_pages_names_each_as_unresolved() {
     );
     let mut none = None;
     assert!(
-        plan_work_item_evidence("Organize the blockers.", &[], &["read"], "", &mut none).is_none(),
+        plan_work_item_evidence(
+            "Organize the blockers.",
+            &[],
+            &["read"],
+            "",
+            None,
+            &mut none
+        )
+        .is_none(),
         "a work item with no lead is left to the general planner"
     );
 }

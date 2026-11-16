@@ -157,6 +157,8 @@ import { reportedWorkItemFinal } from './work_item_report.mjs';
 import { observedRecoveryCommand, planRecovery } from './prerequisite_recovery.mjs';
 import { programContractAnswer } from './crate/coding_program_contract.mjs';
 import { planWorkItemEvidence, workItemEvidencePaths } from './work_item_evidence.mjs';
+import { obligationText } from './work_item_citations.mjs';
+import { traceRoute } from './planner/continuation.mjs';
 import { fencedBlock, LINO_FENCE_LANGUAGE } from './crate/issue_report.mjs';
 import { localizedResponse } from './crate/seed.mjs';
 import { isAsciiDigit, splitWhitespace, trim, trimEndMatches, charIn } from './write_str.mjs';
@@ -213,6 +215,8 @@ function changeStep(messages, toolNames, plan, resolvedFromWorkItem) {
   if (plan.mode === GeneralPlanMode.RepositoryWorkItem && latestFailure?.capability === Capability.Run) {
     const objective = repositoryWorkItemObjective(plan, progress);
     const answer = objective === null ? null : workItemSolverAnswer(objective);
+    // A recovery repairs only a program an obligation asked for (issue #1562).
+    if (answer !== null) unbindCitedRecipe(answer, objective);
     const owned = answer === null ? null : planOwnedRecipeRecovery(messages, toolNames, answer, objective);
     if (owned !== null) return owned;
   }
@@ -388,12 +392,31 @@ function planEventStep(plan, progress, toolNames, messages) {
  */
 function planWorkItemExecution(objective, messages, toolNames, workItem) {
   const answer = workItemSolverAnswer(objective);
+  // A program is written only for an obligation of the work item, never for a span it merely cites (issue #1562).
+  const unbound = answer ? unbindCitedRecipe(answer, objective) : null;
   if (answer && answer.execution_recipe && requestedIn(objective)) attach(answer.execution_recipe, objective);
   const step = answer ? planSymbolicCommandReroute(messages, toolNames, answer, objective) : null;
   if (step) return step;
   const executable = composeGeneralChangePlan(objective);
-  if (!executable || executable.mode === GeneralPlanMode.RepositoryWorkItem) return planWorkItemEvidence(objective, messages, toolNames, workItem);
+  if (!executable || executable.mode === GeneralPlanMode.RepositoryWorkItem) return planWorkItemEvidence(objective, messages, toolNames, workItem, unbound);
   return planWorkItemChangeStep(messages, toolNames, executable);
+}
+
+/**
+ * Mirrors `fn unbind_cited_recipe`: drop the recipe when no obligation of the
+ * work item names it and return the path it would have written, or null.
+ */
+export function unbindCitedRecipe(answer, objective, solve = workItemSolverAnswer) {
+  const recipe = answer?.execution_recipe;
+  if (!recipe) return null;
+  const obligations = obligationText(objective);
+  if (obligations === objective) return null;
+  const obliged = solve(obligations)?.execution_recipe ?? null;
+  const bound = obliged !== null && obliged.path === recipe.path && obliged.language === recipe.language;
+  traceRoute('work_item_recipe_binding', `path=${recipe.path} language=${recipe.language} bound=${bound}`);
+  if (bound) return null;
+  answer.execution_recipe = null;
+  return recipe.path;
 }
 
 function workItemSolverAnswer(objective) {
