@@ -13,9 +13,11 @@ import { parseLinoRoot } from '../write_lino.mjs';
 import { utf8Len } from '../write_str.mjs';
 import { textOutsideQuotedSegments } from './coding_program_contract.mjs';
 import { normalizePrompt } from './engine.mjs';
+import { structuralRuleValues } from './formalization_grammar.mjs';
 import { detect } from './language.mjs';
 import { quotedSegmentSpans } from './normal_markov.mjs';
 import { buildObligationTree, clausesWithSpans, expectationRules } from './obligation_ledger.mjs';
+import { PROPOSITION_RULE, surfaceStructure } from './proposition_structure.mjs';
 import { DEFAULT_SPLIT_DEPTH_BOUND } from './task_decomposition.mjs';
 
 /** `ObligationKind::slug` of the kinds this module assigns. */
@@ -211,19 +213,67 @@ export function boundOutputLiterals(text) {
     previousEnd = literal.end;
     const introduction = window.split(/[\n.;。]/u).pop();
     const next = index + 1 < literals.length ? literals[index + 1].start : text.length;
+    const after = text.slice(literal.end, next);
+    if (conditionalIntroduction(introduction)) return;
     if (meaningEvidencedIn('print_stdout', introduction.toLowerCase())
-      || (verbFinal && followedByPrint(text.slice(literal.end, next)))) bound.push([literal.start, literal.text]);
+      || (verbFinal && followedByPrint(after))) bound.push([literal.start, literal.text, explicitCount(after)]);
   });
   clauses.forEach(([clause], index) => {
     if (quotedSegmentSpans(clause).length > 0) return;
     const output = unquotedOutput(clause);
-    if (output !== null) bound.push([clauseStarts[index], output]);
+    if (output !== null) bound.push([clauseStarts[index], output, 1]);
   });
   bound.sort((left, right) => left[0] - right[0]);
-  const outputs = [];
-  for (const [, value] of bound) if (!outputs.includes(value)) outputs.push(value);
-  return outputs;
+  const counts = [];
+  for (const [, value, count] of bound) {
+    const seen = counts.find((entry) => entry[0] === value);
+    if (seen === undefined) counts.push([value, count]);
+    else seen[1] = Math.max(seen[1], count);
+  }
+  return counts.flatMap(([value, count]) => Array(count).fill(value));
 }
+
+/**
+ * Mirrors `fn conditional_introduction`: whether the words that introduce a
+ * literal state a condition (`condition_marker`, `negated_condition_marker`)
+ * or its otherwise branch (`otherwise_marker`) rather than the program's own
+ * run (`execution_circumstance`). Such a literal is not printed
+ * unconditionally, so it is never bound; the graph reports it unbound.
+ */
+function conditionalIntroduction(introduction) {
+  const normalized = normalizePrompt(introduction).toLowerCase();
+  return ['condition_marker', 'negated_condition_marker', 'otherwise_marker'].some((role) => mentionsRole(role, normalized))
+    && !mentionsRole('execution_circumstance', normalized);
+}
+
+/**
+ * Mirrors `fn explicit_count`: how many times the words right after a literal
+ * -- up to the sentence break or the first seeded clause separator -- ask for
+ * it ("prints "Hi" twice"), read through the explicit repetition of
+ * `surfaceStructure` and the `<kind>-count` values of the
+ * `proposition-structure` rule; 1 when no count is stated. A repeated mention
+ * is never a count.
+ */
+export function explicitCount(window) {
+  const separators = wordsForRole('skill_procedure_clause_separator');
+  const sentence = window.split(/[\n.;。]/u)[0];
+  const words = [];
+  for (const word of sentence.split(/\s+/u).filter(Boolean)) {
+    if (separators.includes(bareWord(word))) break;
+    words.push(word);
+  }
+  const part = surfaceStructure(words.join(' ')).structure.split(';').find((entry) => entry.startsWith(REPETITION_PART));
+  if (part === undefined) return 1;
+  return part.slice(REPETITION_PART.length).split(' ')
+    .map((kind) => Number.parseInt(structuralRuleValues(PROPOSITION_RULE, `${kind}${COUNT_SUFFIX}`)[0] ?? '1', 10))
+    .reduce((max, count) => (Number.isSafeInteger(count) && count > max ? count : max), 1);
+}
+
+/** The structure part `surfaceStructure` lists explicit counts under. */
+const REPETITION_PART = 'repetition=';
+
+/** The suffix of the `proposition-structure` key holding a repetition kind's count. */
+const COUNT_SUFFIX = '-count';
 
 /** Mirrors `fn verb_final_language` in rust/src/solver_handlers/formalization_task.rs. */
 function verbFinalLanguage(language) {
