@@ -86,6 +86,7 @@ fn character_width(text: &str, index: usize) -> usize {
 /// its exact value is not read.
 #[must_use]
 pub fn task_literals(text: &str) -> Vec<TaskLiteral> {
+    let fences = fence_prefixes();
     let mut out = Vec::new();
     let mut index = 0;
     while index < text.len() {
@@ -94,8 +95,9 @@ pub fn task_literals(text: &str) -> Vec<TaskLiteral> {
             index += character_width(text, index);
             continue;
         };
-        if *open == "`" && rest.starts_with("```") {
-            index = text[index + 3..].find("```").map_or(text.len(), |end| index + 3 + end + 3);
+        if let Some(fence) = fences.iter().find(|fence| fence.starts_with(open) && rest.starts_with(fence.as_str())) {
+            let width = fence.len();
+            index = text[index + width..].find(fence.as_str()).map_or(text.len(), |end| index + width + end + width);
             continue;
         }
         let stops = |cursor: usize| text[cursor..].starts_with(close) || text[cursor..].starts_with('\n');
@@ -124,17 +126,24 @@ pub fn task_literals(text: &str) -> Vec<TaskLiteral> {
     out
 }
 
-fn is_fence(line: &str) -> bool {
+/// The code-fence prefixes, read from the owned-clause fence policy.
+fn fence_prefixes() -> Vec<String> {
+    serde_json::from_str(&super::work_item_steps::fill("owned-clause-fence-prefixes", &[]))
+        .expect("valid owned clause fence policy")
+}
+
+fn is_fence(line: &str, fences: &[String]) -> bool {
     let trimmed = line.trim_start_matches([' ', '\t']);
-    trimmed.starts_with("```") || trimmed.starts_with("~~~")
+    fences.iter().any(|fence| trimmed.starts_with(fence.as_str()))
 }
 
 /// The lines inside the first fenced block of `text`, or `None`.
 #[must_use]
 pub fn fence_lines(text: &str) -> Option<Vec<String>> {
     let lines: Vec<&str> = text.split('\n').collect();
-    let open = lines.iter().position(|line| is_fence(line))?;
-    let close = lines.iter().enumerate().position(|(index, line)| index > open && is_fence(line))?;
+    let fences = fence_prefixes();
+    let open = lines.iter().position(|line| is_fence(line, &fences))?;
+    let close = lines.iter().enumerate().position(|(index, line)| index > open && is_fence(line, &fences))?;
     Some(lines[open + 1..close].iter().map(|line| (*line).to_owned()).collect())
 }
 

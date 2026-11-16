@@ -42,7 +42,9 @@ fn task_of<'a>(root: &'a Value, id: &str) -> &'a str {
 }
 
 fn read_fixture(name: &str) -> String {
-    let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/issue-1166").join(name);
+    let path = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("tests/fixtures/issue-1166")
+        .join(name);
     std::fs::read_to_string(path).expect("a fixture file")
 }
 
@@ -66,7 +68,10 @@ fn verdict_lines(report: &Value) -> Vec<String> {
 }
 
 fn expected_lines(entry: &Value) -> Vec<String> {
-    entries(entry, "verdicts").iter().map(|line| text(line).to_owned()).collect()
+    entries(entry, "verdicts")
+        .iter()
+        .map(|line| text(line).to_owned())
+        .collect()
 }
 
 #[test]
@@ -94,7 +99,12 @@ fn equivalent_paraphrases_share_one_meaning_and_distinct_tasks_do_not() {
         assert_eq!(meanings(group).len(), 1, "{}", group["id"]);
     }
     for group in entries(&root, "distinctGroups") {
-        assert_eq!(meanings(group).len(), entries(group, "cases").len(), "{}", group["id"]);
+        assert_eq!(
+            meanings(group).len(),
+            entries(group, "cases").len(),
+            "{}",
+            group["id"]
+        );
     }
     let multilingual: HashSet<String> = entries(&root, "multilingual")
         .iter()
@@ -122,7 +132,10 @@ fn every_clause_gets_a_verdict_with_a_justification_and_a_span() {
         assert_eq!(report["complete"], entry["complete"], "{id}");
         for verdict in entries(&report, "verdicts") {
             let justification = text(&verdict["justification"]);
-            assert!(!justification.is_empty() && !justification.contains("style"), "{id}");
+            assert!(
+                !justification.is_empty() && !justification.contains("style"),
+                "{id}"
+            );
         }
     }
 }
@@ -130,12 +143,20 @@ fn every_clause_gets_a_verdict_with_a_justification_and_a_span() {
 #[test]
 fn independent_execution_rejects_a_shared_misunderstanding() {
     let root = fixture();
-    let directory = std::env::temp_dir().join(format!("issue-1166-acceptance-{}", std::process::id()));
+    let directory =
+        std::env::temp_dir().join(format!("issue-1166-acceptance-{}", std::process::id()));
     std::fs::create_dir_all(&directory).expect("a scratch directory");
     let program = directory.join("main.py");
     let python = |arguments: &[&str]| {
-        let output = Command::new("python3").args(arguments).output().expect("python3 runs");
-        assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+        let output = Command::new("python3")
+            .args(arguments)
+            .output()
+            .expect("python3 runs");
+        assert!(
+            output.status.success(),
+            "{}",
+            String::from_utf8_lossy(&output.stderr)
+        );
         String::from_utf8(output.stdout).expect("UTF-8 stdout")
     };
     let path = program.to_str().expect("a UTF-8 path");
@@ -148,14 +169,21 @@ fn independent_execution_rejects_a_shared_misunderstanding() {
             std::fs::write(&test, generated).expect("the test is written");
             python(&[test.to_str().expect("a UTF-8 path"), path]);
         }
-        let rows: Vec<Vec<String>> = specification["output"]["table"]["rows"].as_array().map_or_else(
-            || vec![Vec::new()],
-            |rows| {
-                rows.iter()
-                    .map(|row| entries(row, "args").iter().map(|value| text(value).to_owned()).collect())
-                    .collect()
-            },
-        );
+        let rows: Vec<Vec<String>> = specification["output"]["table"]["rows"]
+            .as_array()
+            .map_or_else(
+                || vec![Vec::new()],
+                |rows| {
+                    rows.iter()
+                        .map(|row| {
+                            entries(row, "args")
+                                .iter()
+                                .map(|value| text(value).to_owned())
+                                .collect()
+                        })
+                        .collect()
+                },
+            );
         let observations: Vec<Value> = rows
             .iter()
             .map(|arguments| {
@@ -182,7 +210,10 @@ fn independent_execution_rejects_a_shared_misunderstanding() {
 
 #[test]
 fn workflow_triggers_are_read_in_every_yaml_form() {
-    assert_eq!(workflow_events("on: [push, pull_request]\njobs:\n"), ["push", "pull_request"]);
+    assert_eq!(
+        workflow_events("on: [push, pull_request]\njobs:\n"),
+        ["push", "pull_request"]
+    );
     assert_eq!(workflow_events("\"on\": push\njobs:\n"), ["push"]);
     assert_eq!(
         workflow_events("on:\n  push:\n    branches: [main]\n  pull_request:\njobs:\n"),
@@ -203,17 +234,23 @@ fn a_finished_recipe_reports_only_actionable_verdicts() {
         path: text(&first[1]["path"]).to_owned(),
         source: text(&first[1]["source"]).to_owned(),
     };
-    let recipe = |language: &str, path: &str, source: &str, supporting_files: Vec<ExecutionRecipeFile>| {
-        ExecutionRecipe {
-            language: language.to_owned(),
-            source: source.to_owned(),
-            path: path.to_owned(),
-            supporting_files,
-            commands: vec![String::new()],
-        }
-    };
+    let recipe =
+        |language: &str, path: &str, source: &str, supporting_files: Vec<ExecutionRecipeFile>| {
+            ExecutionRecipe {
+                language: language.to_owned(),
+                source: source.to_owned(),
+                path: path.to_owned(),
+                supporting_files,
+                commands: vec![String::new()],
+            }
+        };
     let greeting = vec!["Hello, World!\n".to_owned()];
-    let commented = recipe("kotlin", "Main.kt", text(&first[0]["source"]), vec![workflow.clone()]);
+    let commented = recipe(
+        "kotlin",
+        "Main.kt",
+        text(&first[0]["source"]),
+        vec![workflow.clone()],
+    );
     let report = acceptance_report(BODY, &commented, &greeting);
     assert!(report.starts_with(
         "Independent acceptance of the task: 16 discharged, 0 contradicted, 10 unresolved, 6 inapplicable.\n"
@@ -222,13 +259,29 @@ fn a_finished_recipe_reports_only_actionable_verdicts() {
         "\n- unresolved (workflow_status_unobserved, bytes 817-856): Show a green check mark when tests pass\n"
     ));
     assert!(report.contains("The task is not complete"));
-    let bare = recipe("kotlin", "Main.kt", "fun main() {\n    println(\"Hello, World!\")\n}\n", vec![workflow]);
+    let bare = recipe(
+        "kotlin",
+        "Main.kt",
+        "fun main() {\n    println(\"Hello, World!\")\n}\n",
+        vec![workflow],
+    );
     assert!(acceptance_report(BODY, &bare, &greeting).contains(
         "\n- contradicted (comments_missing, bytes 192-230): Add clear comments explaining the code\n"
     ));
     let twice = task_of(&root, "twice");
-    let honoured = recipe("python", "main.py", "print(\"Hi\")\nprint(\"Hi\")\n", Vec::new());
-    assert_eq!(acceptance_report(twice, &honoured, &["Hi\nHi\n".to_owned()]), "");
+    let honoured = recipe(
+        "python",
+        "main.py",
+        "print(\"Hi\")\nprint(\"Hi\")\n",
+        Vec::new(),
+    );
+    assert_eq!(
+        acceptance_report(twice, &honoured, &["Hi\nHi\n".to_owned()]),
+        ""
+    );
     let once = recipe("python", "main.py", "print(\"Hi\")\n", Vec::new());
-    assert!(acceptance_report(twice, &once, &["Hi\n".to_owned()]).contains("contradicted (output_differs"));
+    assert!(
+        acceptance_report(twice, &once, &["Hi\n".to_owned()])
+            .contains("contradicted (output_differs")
+    );
 }

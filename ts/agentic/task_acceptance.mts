@@ -257,11 +257,12 @@ export function workflowEvents(source) {
 
 /** Mirrors `fn comment_lines`: the comment lines of `source` and its leading comment block. */
 function commentLines(source, prefix) {
+  const interpreter = fill('script-interpreter-prefix', []);
   const lines = String(source).split('\n').map((line) => line.trim());
-  const comments = lines.filter((line) => line.startsWith(prefix) && !line.startsWith('#!'));
+  const comments = lines.filter((line) => line.startsWith(prefix) && !line.startsWith(interpreter));
   const leading = [];
   for (const line of lines) {
-    if (line === '' || line.startsWith('#!')) continue;
+    if (line === '' || line.startsWith(interpreter)) continue;
     if (!line.startsWith(prefix)) break;
     leading.push(line);
   }

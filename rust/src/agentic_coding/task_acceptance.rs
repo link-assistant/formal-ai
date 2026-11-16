@@ -552,15 +552,16 @@ pub fn workflow_events(source: &str) -> Vec<String> {
 
 /// The comment lines of `source` and its leading comment block.
 fn comment_lines(source: &str, prefix: &str) -> (Vec<String>, Vec<String>) {
+    let interpreter = super::work_item_steps::fill("script-interpreter-prefix", &[]);
     let lines: Vec<&str> = source.split('\n').map(str::trim).collect();
     let comments = lines
         .iter()
-        .filter(|line| line.starts_with(prefix) && !line.starts_with("#!"))
+        .filter(|line| line.starts_with(prefix) && !line.starts_with(interpreter.as_str()))
         .map(|line| (*line).to_owned())
         .collect();
     let mut leading = Vec::new();
     for line in &lines {
-        if line.is_empty() || line.starts_with("#!") {
+        if line.is_empty() || line.starts_with(interpreter.as_str()) {
             continue;
         }
         if !line.starts_with(prefix) {

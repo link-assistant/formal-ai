@@ -13,6 +13,7 @@
 // program's inputs are the condition identifiers in code-point order, given as
 // command-line arguments, and the truth table enumerates small integers.
 import { cached } from './host.mjs';
+import { fill } from './work_item_steps.mjs';
 import { explicitCount } from './crate/intent_formalization_obligations.mjs';
 import { detect } from './crate/language.mjs';
 import { containsCjk, wordsForRole } from './crate/seed_meanings.mjs';
@@ -21,7 +22,6 @@ import { functionWords, negationCues } from './crate/summarization_vocabulary.mj
 
 /** Literal delimiters: opening and closing characters, read verbatim between them. */
 const LITERAL_PAIRS = Object.freeze([['`', '`'], ['"', '"'], ['«', '»'], ['“', '”'], ['「', '」']]);
-const FENCE = /^[ \t]*(?:```|~~~)/u;
 const IDENTIFIER = /^[\p{L}_][\p{L}\p{N}_]*$/u;
 const INTEGER = /^-?[0-9]{1,6}$/u;
 const SMALL_VALUES = Object.freeze([0, 1, 2]);
@@ -51,6 +51,7 @@ const isWordCharacter = (character) => character !== undefined && /[\p{L}\p{N}_]
  * read.
  */
 export function taskLiterals(text) {
+  const fences = fencePrefixes();
   const out = [];
   let index = 0;
   while (index < text.length) {
@@ -60,9 +61,10 @@ export function taskLiterals(text) {
       continue;
     }
     const [open, close] = pair;
-    if (open === '`' && text.startsWith('```', index)) {
-      const end = text.indexOf('```', index + 3);
-      index = end < 0 ? text.length : end + 3;
+    const fence = fences.find((prefix) => prefix.startsWith(open) && text.startsWith(prefix, index));
+    if (fence) {
+      const end = text.indexOf(fence, index + fence.length);
+      index = end < 0 ? text.length : end + fence.length;
       continue;
     }
     let cursor = index + open.length,
@@ -84,12 +86,17 @@ export function taskLiterals(text) {
   return out;
 }
 
+/** Mirrors `fn fence_prefixes`: the code-fence prefixes, read from the owned-clause fence policy. */
+const fencePrefixes = () => cached('task-condition-fence-prefixes', () => JSON.parse(fill('owned-clause-fence-prefixes', [])));
+
 /** Mirrors `fn fence_lines`: the lines inside the first fenced block of `text`, or null. */
 export function fenceLines(text) {
   const lines = text.split('\n');
-  const open = lines.findIndex((line) => FENCE.test(line));
+  const fences = fencePrefixes();
+  const isFence = (line) => fences.some((fence) => line.replace(/^[ \t]+/u, '').startsWith(fence));
+  const open = lines.findIndex(isFence);
   if (open < 0) return null;
-  const close = lines.findIndex((line, index) => index > open && FENCE.test(line));
+  const close = lines.findIndex((line, index) => index > open && isFence(line));
   if (close < 0) return null;
   return lines.slice(open + 1, close);
 }
