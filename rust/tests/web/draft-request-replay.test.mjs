@@ -96,6 +96,17 @@ for (const [name, fixture] of fixtures) {
       assert.ok(read.length > 0, 'no repository file was read: ' + JSON.stringify(transcript));
       assert.ok(record?.observations?.some(observation => observation.complete), JSON.stringify(record?.observations));
     }
+    if (fixture.family === 'work-item-cited-program') {
+      // Issue #1562: the work item only cites a Hello World repository; no
+      // program is written, run or committed, and nothing is claimed done.
+      for (const [tool, args] of transcript) {
+        assert.ok(['read', 'glob'].includes(tool), 'only the cited files are looked up: ' + tool + ' ' + JSON.stringify(args));
+      }
+      assert.doesNotMatch(String(plan.answer), /Created and verified/u);
+      const title = fixture.messages.at(-1).content.split('\n', 1)[0];
+      assert.ok(String(plan.answer).includes(title.slice(0, 60)), 'the summary names the reported defect: ' + plan.answer);
+      assert.equal(record?.authored, false);
+    }
   });
 }
 

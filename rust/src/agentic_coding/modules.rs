@@ -132,6 +132,7 @@ pub mod transcript_evidence;
 mod web_research;
 mod wording;
 mod work_item_boundary_candidate;
+pub mod work_item_citations;
 mod work_item_evidence;
 mod work_item_file_io;
 pub mod work_item_leads;

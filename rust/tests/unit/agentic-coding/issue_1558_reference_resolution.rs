@@ -37,13 +37,13 @@ fn recorded_issue(issue: u32) -> &'static str {
 }
 
 /// The files a session can see: this checkout (tracked files) or a small virtual tree.
-struct Workspace {
-    root: String,
+pub(super) struct Workspace {
+    pub(super) root: String,
     files: BTreeMap<String, Option<String>>,
 }
 
 impl Workspace {
-    fn checkout() -> Self {
+    pub(super) fn checkout() -> Self {
         let root = Path::new(env!("CARGO_MANIFEST_DIR"))
             .parent()
             .expect("the repository root")
@@ -98,7 +98,7 @@ impl Workspace {
     }
 
     /// The answer to one call and whether it failed, or `None` for an action the emulation does not perform.
-    fn answer(&self, tool: &str, arguments: &Value) -> Option<(String, bool)> {
+    pub(super) fn answer(&self, tool: &str, arguments: &Value) -> Option<(String, bool)> {
         if tool == "read" {
             let path = arguments["filePath"].as_str()?;
             let absolute = if path.starts_with('/') {
@@ -156,19 +156,19 @@ impl Workspace {
     }
 }
 
-struct Call {
-    tool: String,
-    arguments: Value,
-    failed: bool,
+pub(super) struct Call {
+    pub(super) tool: String,
+    pub(super) arguments: Value,
+    pub(super) failed: bool,
 }
 
-struct Session {
-    calls: Vec<Call>,
-    final_answer: Option<String>,
-    messages: Vec<ChatMessage>,
+pub(super) struct Session {
+    pub(super) calls: Vec<Call>,
+    pub(super) final_answer: Option<String>,
+    pub(super) messages: Vec<ChatMessage>,
 }
 
-fn agent_solver() -> UniversalSolver {
+pub(super) fn agent_solver() -> UniversalSolver {
     UniversalSolver::new(SolverConfig {
         agent_mode: true,
         ..SolverConfig::default()
@@ -176,7 +176,7 @@ fn agent_solver() -> UniversalSolver {
 }
 
 /// The recorded request, rewritten to `issue` of `repository` in `workspace`, ending with `text`.
-fn recorded_request(
+pub(super) fn recorded_request(
     issue: u32,
     repository: &str,
     workspace: &Workspace,
@@ -212,7 +212,7 @@ fn recorded_request(
 }
 
 /// Plan the session step by step until a final answer, an action outside the emulation, or 40 steps.
-fn run_session(
+pub(super) fn run_session(
     issue: u32,
     repository: &str,
     workspace: &Workspace,
@@ -258,7 +258,7 @@ fn run_session(
 }
 
 /// The invariants every session of this issue keeps, and its evidence report.
-fn settled(session: &Session) -> Value {
+pub(super) fn settled(session: &Session) -> Value {
     let answer = session
         .final_answer
         .as_deref()

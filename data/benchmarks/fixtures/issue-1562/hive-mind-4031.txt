@@ -1,0 +1,91 @@
+Auto-restart on uncommitted changes never applies its "No progress" stop when an old session-kill notice is counted as a new comment
+
+## What happens
+
+Run: `solve <issue-url> --model formal-ai --tool codex --attach-logs --verbose --no-tool-check --disable-report-issue --language en`, solve v2.39.10, 2026-11-10, pull request https://github.com/konard/test-hello-world-019fb331-c107-78c7-8ff6-9f127a3c593c/pull/2. The provider is only the one used in the evidence run; nothing below depends on the model or the tool.
+
+Log (2837 lines): https://gist.githubusercontent.com/konard/f0e689ac80237a960f865873b14f38b8/raw/1eae4c63babdd5783808d7c0f71330c3919dea2c/tmp-hive-mind-log-upload-usQxob-sanitized.log.txt (quotes below omit the timestamp prefix and the leading emoji).
+
+1. The primary session ends with uncommitted changes and the temporary watch mode starts (line 708 `AUTO-RESTART: Uncommitted changes detected`, line 722 `Max iterations:         5`). The uncommitted set is the same on every check (lines 735-739): `M tests/verify-output.sh`, `?? .github/`.
+2. Every restart ends with the same verdict, and the next restart starts anyway:
+
+   | Restart | "No progress: this session ended exactly like the previous one" | Next restart starts |
+   |---|---|---|
+   | 1/5 (line 741) | line 1095 | line 1169 `Restart 2/5` |
+   | 2/5 | line 1523 | line 1597 `Restart 3/5` |
+   | 3/5 | line 1951 | line 2025 `Restart 4/5` |
+   | 4/5 | line 2379 | line 2453 `Restart 5/5` |
+   | 5/5 | line 2807 | budget exhausted |
+
+3. Each of the five restarts used 164,265 input and 28,942 output tokens (lines 951, 1379, 1807, 2235, 2663): 821,325 input and 144,710 output tokens for five sessions the solver itself had classified as identical. Wall time from `Restart 1/5` (09:14:10) to the end of restart 5 (09:22:43): 8.5 minutes.
+4. The run ends with https://github.com/konard/test-hello-world-019fb331-c107-78c7-8ff6-9f127a3c593c/pull/2#issuecomment-6763712572 ("Auto-restart 5/5 - limit reached", "Remaining blocker: uncommitted changes remained: M tests/verify-output.sh, ?? .github/").
+
+For comparison, the CI-failure loop of the same version stops after one repeat. Scala run, https://gist.githubusercontent.com/konard/a32d7924514dd15c26dde56c8824e096/raw/70f75187bbf431206f983668c6d105bfb6d6de47/tmp-hive-mind-log-upload-22ViXH-sanitized.log.txt:
+
+- line 29329: `[session-progress] auto-restart-until-mergeable: repeated=true inputChanged=true occurrences=2 ...`
+- line 29331: `NO PROGRESS BETWEEN SESSIONS Stopping instead of repeating an identical session`
+- line 29334: `Budget left unused:     4 restart iterations`
+
+The Rust log contains no `[session-progress]` line at all: the guard was never evaluated there.
+
+## Expected
+
+A restart loop stops as soon as a session repeats the previous one, whatever started the loop. A comment that Hive Mind itself posted three weeks earlier does not count as new human feedback, and one comment cannot switch the guard off for every iteration of a run.
+
+## Root cause
+
+Code read at 2.39.14 (commit b245deb62fbbca42625753587575416c50d81727). The evidence run is 2.39.10; whether the cited lines are identical in 2.39.10 was not verified.
+
+Three things combine.
+
+1. The repeat guard is skipped whenever any new comment is counted. [`src/solve.watch.lib.mjs` lines 341-343](https://github.com/link-assistant/hive-mind/blob/b245deb62fbbca42625753587575416c50d81727/src/solve.watch.lib.mjs#L341-L343):
+
+   ```js
+   const hasNewHumanComments = newPrComments + newPrReviewComments + newIssueComments > 0;
+   noProgressStop = hasNewHumanComments ? null : await stopWhenSessionRepeated({ ... mode: 'watch' ... });
+   if (noProgressStop) break;
+   ```
+
+   `src/solve.restart-shared.lib.mjs` lines 546-549 only print the "No progress" line; they stop nothing.
+
+2. Every feedback check in the run reports one new comment (lines 161-164, 731-734, 1157-1160, 1585-1588, 2013-2016, 2441-2444):
+
+   ```
+   Last commit time:       2026-10-20T22:35:56.000Z
+   New PR comments:        1
+   New PR review comments: 0
+   New issue comments:     0
+   ```
+
+   The only comment that is newer than that commit and is not filtered is https://github.com/konard/test-hello-world-019fb331-c107-78c7-8ff6-9f127a3c593c/pull/2#issuecomment-6303319315, created 2026-10-20T22:36:24Z. It is Hive Mind's own session-kill notice; its first line is `<!-- hive-mind:session-kill-notice -->`. That marker (`KILL_RECOVERY_NOTICE_MARKER`, `src/session-kill-recovery.lib.mjs` line 33) is not in `TOOL_GENERATED_COMMENT_MARKERS` ([`src/tool-comments.lib.mjs` lines 152-154](https://github.com/link-assistant/hive-mind/blob/b245deb62fbbca42625753587575416c50d81727/src/tool-comments.lib.mjs#L152-L154)), so `isToolGeneratedComment` (lines 176-179) returns false, and no `logPatterns` entry in `src/solve.feedback.lib.mjs` (line 104) matches it either. `isToolStatusComment` (lines 194-199) would accept the `<!-- hive-mind:` prefix, but the feedback counter does not use it.
+
+   Checked by matching the comment body text against the 34 markers and the log patterns of the source (0 hits). The neighbouring comment 6303318912 ("Intermediate working-session log (killed session)") has hits and is filtered. The source was not executed.
+
+3. The counting window is "since the last commit" (`src/solve.feedback.lib.mjs` line 74). A loop whose problem is that nothing gets committed never moves that window, so the same comment is counted again on every iteration.
+
+Result: `hasNewHumanComments` is true for all five restarts and `stopWhenSessionRepeated` is never called.
+
+## Suggested fix
+
+- Treat every comment that starts with a `<!-- hive-mind:` marker as tool-generated in `isToolGeneratedComment`, or at least add `KILL_RECOVERY_NOTICE_MARKER` to `TOOL_GENERATED_COMMENT_MARKERS`.
+- Add a test that every marker constant the solver writes into a comment is recognised by `isToolGeneratedComment`, so a new comment type cannot be forgotten again.
+- Inside a restart loop, count a comment as new only once: remember the comment ids already seen in this run (or use the start of the previous session as the window when no commit was made). The repeat guard is then skipped at most for the one iteration that follows real feedback.
+- Keep the guard itself identical in both loops (see #1355).
+
+## Evidence
+
+- Rust log lines 708, 721-723, 735-739, 741, 1095, 1169, 1523, 1597, 1951, 2025, 2379, 2453, 2807 (URL above); token lines 951, 1379, 1807, 2235, 2663.
+- Feedback counts: lines 161-164, 731-734, 1157-1160, 1585-1588, 2013-2016, 2441-2444.
+- Stale comment: https://github.com/konard/test-hello-world-019fb331-c107-78c7-8ff6-9f127a3c593c/pull/2#issuecomment-6303319315
+- Final comment: https://github.com/konard/test-hello-world-019fb331-c107-78c7-8ff6-9f127a3c593c/pull/2#issuecomment-6763712572
+- Scala log lines 29329, 29331, 29334 (URL above).
+
+## Related issues
+
+- Related: #1355 (one restart engine for all restart reasons; state: open).
+- Related: #2839 and #2313 (earlier reports about the no-progress breaker; state of both: not open).
+- Related: #3435 (another defect of the session-kill notice; state: open).
+- Related: #4032 (what happens after the budget is exhausted in this run).
+
+Reported from the analysis in https://github.com/link-assistant/formal-ai/issues/1548.
+

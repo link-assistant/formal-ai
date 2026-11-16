@@ -1,0 +1,72 @@
+## 4031.full.json
+Here is a minimal Rust hello world program:
+
+```rust
+fn main() {
+
+## 4031.obl.json
+Sequence: 741 1095 1169 1523 1597 1951 2025 2379 2453 2807
+Sequence of 10 element(s), 10 distinct.
+It has no exact repeating period.
+No repeated adjacent pairs to deduplicate.
+
+## 4034.full.json
+Here is a minimal JavaScript hello world program:
+
+```javascript
+console.log("Hello, world!");
+
+## 4034.obl.json
+Sub-tasks, each with a completion criterion you can observe:
+1. Context, tokens usage" shows output above 100%: cumulative session output is divided by the per-response output limit
+
+## What happens
+
+## 4035.full.json
+Here is a minimal JavaScript hello world program:
+
+```javascript
+console.log("Hello, world!");
+
+## 4035.obl.json
+Create event «Humans» on 2026-11-16. Time: 20:26, timezone: UTC. Duration 60 minutes.
+Import this .ics file into any calendar:
+BEGIN:VCALENDAR
+VERSION:2.0
+
+## Kotlin.full.json
+```kotlin
+// kotlinc Main.kt -include-runtime -d Main.jar
+// java -jar Main.jar
+// Emit the requested text followed by a newline.
+
+## Kotlin.obl.json
+```kotlin
+// kotlinc Main.kt -include-runtime -d Main.jar
+// java -jar Main.jar
+// Emit the requested text followed by a newline.
+
+## Rust.full.json
+```rust
+// rustc main.rs -o main
+// ./main
+// Emit the requested text followed by a newline.
+
+## Rust.obl.json
+```rust
+// rustc main.rs -o main
+// ./main
+// Emit the requested text followed by a newline.
+
+## Scala.full.json
+```scala
+// scalac Main.scala
+// scala run Main.scala
+// Emit the requested text followed by a newline.
+
+## Scala.obl.json
+```scala
+// scalac Main.scala
+// scala run Main.scala
+// Emit the requested text followed by a newline.
+

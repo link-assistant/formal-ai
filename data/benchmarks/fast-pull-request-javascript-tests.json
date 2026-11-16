@@ -64,6 +64,7 @@
     "rust/tests/web/documentation-only-ci-policy.test.mjs",
     "rust/tests/web/work-item-evidence.test.mjs",
     "rust/tests/web/issue-1558-reference-resolution.test.mjs",
+    "rust/tests/web/issue-1562-cited-programs.test.mjs",
     "rust/tests/web/release-trigger-paths.test.mjs",
     "rust/tests/web/fetched-issue-auxiliary-safety.test.mjs",
     "rust/tests/web/planner-twins.test.mjs",
@@ -217,7 +218,7 @@
     "rust/tests/web/main-only-regression-ledger.test.mjs",
     "rust/tests/web/push-gate-rules.test.mjs",
     "rust/tests/web/debt-ceiling-fast-lane.test.mjs",
-    "rust/tests/web/stale-pull-request-report.test.mjs"
+    "rust/tests/web/stale-pull-request-report.test.mjs",
     "rust/tests/web/issue-1550-meta-executor.test.mjs",
     "rust/tests/web/issue-1550-procedure-census.test.mjs",
     "rust/tests/web/issue-1550-procedure-documentation.test.mjs"
