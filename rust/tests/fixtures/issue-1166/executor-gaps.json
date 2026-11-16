@@ -27,6 +27,43 @@
       "expected": [
         "A"
       ]
+    },
+    {
+      "id": "an_explicit_twice_binds_two_lines",
+      "prompt": "Write a Python program that prints \"Hi\" twice.",
+      "expected": [
+        "Hi",
+        "Hi"
+      ]
+    },
+    {
+      "id": "a_repeated_mention_does_not_add_to_an_explicit_count",
+      "prompt": "Print `Hi` twice. The program must print `Hi`.",
+      "expected": [
+        "Hi",
+        "Hi"
+      ]
+    },
+    {
+      "id": "a_count_after_a_clause_separator_belongs_to_the_next_clause",
+      "prompt": "Print `A`, then print `B` twice.",
+      "expected": [
+        "A",
+        "B",
+        "B"
+      ]
+    },
+    {
+      "id": "conditional_outputs_are_not_bound_as_fixed_stdout",
+      "prompt": "Write a Python program that reads x and y; when x is greater than y, print \"big\", otherwise print \"small\".",
+      "expected": []
+    },
+    {
+      "id": "the_program_run_is_not_a_condition",
+      "prompt": "When the program runs, it prints `Ready`.",
+      "expected": [
+        "Ready"
+      ]
     }
   ],
   "gapCases": [

@@ -441,9 +441,19 @@ function obligationBoundOutputLiterals(text) {
     const clauseStart = clauseStarts.filter((start) => start <= literal.start).reduce((max, start) => Math.max(max, start), 0);
     const introduction = text.slice(Math.max(previousEnd, clauseStart), literal.start).split(/[\n.;。]/u).pop();
     previousEnd = literal.end;
+    if (obligationConditionalIntroduction(introduction)) continue;
     if (obligationPrintEvidenced(introduction.toLowerCase()) && !outputs.includes(literal.text)) outputs.push(literal.text);
   }
   return outputs;
+}
+
+// Mirrors `fn conditional_introduction`: words that state a condition or its
+// otherwise branch (rather than the program's own run) introduce a literal
+// that is not printed unconditionally, so it is never bound (issue #1166).
+function obligationConditionalIntroduction(introduction) {
+  const normalized = normalizePrompt(introduction).toLowerCase();
+  return ["condition-marker", "negated-condition-marker", "otherwise-marker"].some((role) => lexiconMentionsRole(role, normalized))
+    && !lexiconMentionsRole("execution-circumstance", normalized);
 }
 
 // Mirrors `fn obligation_gap_lines`: the gap report, then the unbound output

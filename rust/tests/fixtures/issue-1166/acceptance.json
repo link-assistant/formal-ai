@@ -1,0 +1,809 @@
+{
+  "specificationCases": [
+    {
+      "id": "once",
+      "task": "Write a Python program that prints `Hi`.",
+      "output": {"lines":["Hi"]},
+      "meaning": "{\"kinds\":[\"output\"],\"language\":\"python\",\"output\":{\"lines\":[\"Hi\"]},\"workflow\":{\"events\":[],\"excluded\":[],\"included\":[],\"names\":[]}}"
+    },
+    {
+      "id": "restated",
+      "task": "Write a Python program that prints `Hi`. The output must be `Hi`.",
+      "output": {"lines":["Hi"]},
+      "meaning": "{\"kinds\":[\"output\"],\"language\":\"python\",\"output\":{\"lines\":[\"Hi\"]},\"workflow\":{\"events\":[],\"excluded\":[],\"included\":[],\"names\":[]}}"
+    },
+    {
+      "id": "mentioned_twice",
+      "task": "Write a Python program that prints `Hi` and `Hi`.",
+      "output": {"lines":["Hi"]},
+      "meaning": "{\"kinds\":[\"output\"],\"language\":\"python\",\"output\":{\"lines\":[\"Hi\"]},\"workflow\":{\"events\":[],\"excluded\":[],\"included\":[],\"names\":[]}}"
+    },
+    {
+      "id": "twice",
+      "task": "Write a Python program that prints `Hi` twice.",
+      "output": {"lines":["Hi","Hi"]},
+      "meaning": "{\"kinds\":[\"output\"],\"language\":\"python\",\"output\":{\"lines\":[\"Hi\",\"Hi\"]},\"workflow\":{\"events\":[],\"excluded\":[],\"included\":[],\"names\":[]}}"
+    },
+    {
+      "id": "exact_backslash_unicode",
+      "task": "Write a Python program that prints `C:\\temp\\ünï \"q\"` twice.",
+      "output": {"lines":["C:\\temp\\ünï \"q\"","C:\\temp\\ünï \"q\""]},
+      "meaning": "{\"kinds\":[\"output\"],\"language\":\"python\",\"output\":{\"lines\":[\"C:\\\\temp\\\\ünï \\\"q\\\"\",\"C:\\\\temp\\\\ünï \\\"q\\\"\"]},\"workflow\":{\"events\":[],\"excluded\":[],\"included\":[],\"names\":[]}}"
+    },
+    {
+      "id": "exact_cyrillic_cjk",
+      "task": "Write a Python program that prints \"Привет, 世界!\".",
+      "output": {"lines":["Привет, 世界!"]},
+      "meaning": "{\"kinds\":[\"output\"],\"language\":\"python\",\"output\":{\"lines\":[\"Привет, 世界!\"]},\"workflow\":{\"events\":[],\"excluded\":[],\"included\":[],\"names\":[]}}"
+    },
+    {
+      "id": "escaped_quote",
+      "task": "Write a Python program that prints \"a\\\"b\".",
+      "output": {"gap":"escaped_quote"},
+      "meaning": "{\"kinds\":[\"output\"],\"language\":\"python\",\"output\":{\"gap\":\"escaped_quote\"},\"workflow\":{\"events\":[],\"excluded\":[],\"included\":[],\"names\":[]}}"
+    },
+    {
+      "id": "greater",
+      "task": "Write a Python program. When x is greater than y, print \"big\", otherwise print \"small\".",
+      "output": {
+        "table": {
+          "inputs": ["x","y"],
+          "rows": [
+            {"args":["0","0"],"lines":["small"]},
+            {"args":["0","1"],"lines":["small"]},
+            {"args":["0","2"],"lines":["small"]},
+            {"args":["1","0"],"lines":["big"]},
+            {"args":["1","1"],"lines":["small"]},
+            {"args":["1","2"],"lines":["small"]},
+            {"args":["2","0"],"lines":["big"]},
+            {"args":["2","1"],"lines":["big"]},
+            {"args":["2","2"],"lines":["small"]}
+          ]
+        }
+      },
+      "meaning": "{\"kinds\":[\"output\"],\"language\":\"python\",\"output\":{\"table\":{\"inputs\":[\"x\",\"y\"],\"rows\":[{\"args\":[\"0\",\"0\"],\"lines\":[\"small\"]},{\"args\":[\"0\",\"1\"],\"lines\":[\"small\"]},{\"args\":[\"0\",\"2\"],\"lines\":[\"small\"]},{\"args\":[\"1\",\"0\"],\"lines\":[\"big\"]},{\"args\":[\"1\",\"1\"],\"lines\":[\"small\"]},{\"args\":[\"1\",\"2\"],\"lines\":[\"small\"]},{\"args\":[\"2\",\"0\"],\"lines\":[\"big\"]},{\"args\":[\"2\",\"1\"],\"lines\":[\"big\"]},{\"args\":[\"2\",\"2\"],\"lines\":[\"small\"]}]}},\"workflow\":{\"events\":[],\"excluded\":[],\"included\":[],\"names\":[]}}"
+    },
+    {
+      "id": "reversed_less",
+      "task": "Write a Python program. Print \"big\" if y is less than x, else print \"small\".",
+      "output": {
+        "table": {
+          "inputs": ["x","y"],
+          "rows": [
+            {"args":["0","0"],"lines":["small"]},
+            {"args":["0","1"],"lines":["small"]},
+            {"args":["0","2"],"lines":["small"]},
+            {"args":["1","0"],"lines":["big"]},
+            {"args":["1","1"],"lines":["small"]},
+            {"args":["1","2"],"lines":["small"]},
+            {"args":["2","0"],"lines":["big"]},
+            {"args":["2","1"],"lines":["big"]},
+            {"args":["2","2"],"lines":["small"]}
+          ]
+        }
+      },
+      "meaning": "{\"kinds\":[\"output\"],\"language\":\"python\",\"output\":{\"table\":{\"inputs\":[\"x\",\"y\"],\"rows\":[{\"args\":[\"0\",\"0\"],\"lines\":[\"small\"]},{\"args\":[\"0\",\"1\"],\"lines\":[\"small\"]},{\"args\":[\"0\",\"2\"],\"lines\":[\"small\"]},{\"args\":[\"1\",\"0\"],\"lines\":[\"big\"]},{\"args\":[\"1\",\"1\"],\"lines\":[\"small\"]},{\"args\":[\"1\",\"2\"],\"lines\":[\"small\"]},{\"args\":[\"2\",\"0\"],\"lines\":[\"big\"]},{\"args\":[\"2\",\"1\"],\"lines\":[\"big\"]},{\"args\":[\"2\",\"2\"],\"lines\":[\"small\"]}]}},\"workflow\":{\"events\":[],\"excluded\":[],\"included\":[],\"names\":[]}}"
+    },
+    {
+      "id": "symbol_greater",
+      "task": "Write a Python program. Print \"big\" when x > y; otherwise print \"small\".",
+      "output": {
+        "table": {
+          "inputs": ["x","y"],
+          "rows": [
+            {"args":["0","0"],"lines":["small"]},
+            {"args":["0","1"],"lines":["small"]},
+            {"args":["0","2"],"lines":["small"]},
+            {"args":["1","0"],"lines":["big"]},
+            {"args":["1","1"],"lines":["small"]},
+            {"args":["1","2"],"lines":["small"]},
+            {"args":["2","0"],"lines":["big"]},
+            {"args":["2","1"],"lines":["big"]},
+            {"args":["2","2"],"lines":["small"]}
+          ]
+        }
+      },
+      "meaning": "{\"kinds\":[\"output\"],\"language\":\"python\",\"output\":{\"table\":{\"inputs\":[\"x\",\"y\"],\"rows\":[{\"args\":[\"0\",\"0\"],\"lines\":[\"small\"]},{\"args\":[\"0\",\"1\"],\"lines\":[\"small\"]},{\"args\":[\"0\",\"2\"],\"lines\":[\"small\"]},{\"args\":[\"1\",\"0\"],\"lines\":[\"big\"]},{\"args\":[\"1\",\"1\"],\"lines\":[\"small\"]},{\"args\":[\"1\",\"2\"],\"lines\":[\"small\"]},{\"args\":[\"2\",\"0\"],\"lines\":[\"big\"]},{\"args\":[\"2\",\"1\"],\"lines\":[\"big\"]},{\"args\":[\"2\",\"2\"],\"lines\":[\"small\"]}]}},\"workflow\":{\"events\":[],\"excluded\":[],\"included\":[],\"names\":[]}}"
+    },
+    {
+      "id": "less",
+      "task": "Write a Python program. When x is less than y, print \"big\", otherwise print \"small\".",
+      "output": {
+        "table": {
+          "inputs": ["x","y"],
+          "rows": [
+            {"args":["0","0"],"lines":["small"]},
+            {"args":["0","1"],"lines":["big"]},
+            {"args":["0","2"],"lines":["big"]},
+            {"args":["1","0"],"lines":["small"]},
+            {"args":["1","1"],"lines":["small"]},
+            {"args":["1","2"],"lines":["big"]},
+            {"args":["2","0"],"lines":["small"]},
+            {"args":["2","1"],"lines":["small"]},
+            {"args":["2","2"],"lines":["small"]}
+          ]
+        }
+      },
+      "meaning": "{\"kinds\":[\"output\"],\"language\":\"python\",\"output\":{\"table\":{\"inputs\":[\"x\",\"y\"],\"rows\":[{\"args\":[\"0\",\"0\"],\"lines\":[\"small\"]},{\"args\":[\"0\",\"1\"],\"lines\":[\"big\"]},{\"args\":[\"0\",\"2\"],\"lines\":[\"big\"]},{\"args\":[\"1\",\"0\"],\"lines\":[\"small\"]},{\"args\":[\"1\",\"1\"],\"lines\":[\"small\"]},{\"args\":[\"1\",\"2\"],\"lines\":[\"big\"]},{\"args\":[\"2\",\"0\"],\"lines\":[\"small\"]},{\"args\":[\"2\",\"1\"],\"lines\":[\"small\"]},{\"args\":[\"2\",\"2\"],\"lines\":[\"small\"]}]}},\"workflow\":{\"events\":[],\"excluded\":[],\"included\":[],\"names\":[]}}"
+    },
+    {
+      "id": "conjunction",
+      "task": "Write a Python program. Print \"yes\" when a is less than b and b is less than c.",
+      "output": {
+        "table": {
+          "inputs": ["a","b","c"],
+          "rows": [
+            {"args":["0","0","0"],"lines":[]},
+            {"args":["0","0","1"],"lines":[]},
+            {"args":["0","0","2"],"lines":[]},
+            {"args":["0","1","0"],"lines":[]},
+            {"args":["0","1","1"],"lines":[]},
+            {"args":["0","1","2"],"lines":["yes"]},
+            {"args":["0","2","0"],"lines":[]},
+            {"args":["0","2","1"],"lines":[]},
+            {"args":["0","2","2"],"lines":[]},
+            {"args":["1","0","0"],"lines":[]},
+            {"args":["1","0","1"],"lines":[]},
+            {"args":["1","0","2"],"lines":[]},
+            {"args":["1","1","0"],"lines":[]},
+            {"args":["1","1","1"],"lines":[]},
+            {"args":["1","1","2"],"lines":[]},
+            {"args":["1","2","0"],"lines":[]},
+            {"args":["1","2","1"],"lines":[]},
+            {"args":["1","2","2"],"lines":[]},
+            {"args":["2","0","0"],"lines":[]},
+            {"args":["2","0","1"],"lines":[]},
+            {"args":["2","0","2"],"lines":[]},
+            {"args":["2","1","0"],"lines":[]},
+            {"args":["2","1","1"],"lines":[]},
+            {"args":["2","1","2"],"lines":[]},
+            {"args":["2","2","0"],"lines":[]},
+            {"args":["2","2","1"],"lines":[]},
+            {"args":["2","2","2"],"lines":[]}
+          ]
+        }
+      },
+      "meaning": "{\"kinds\":[\"output\"],\"language\":\"python\",\"output\":{\"table\":{\"inputs\":[\"a\",\"b\",\"c\"],\"rows\":[{\"args\":[\"0\",\"0\",\"0\"],\"lines\":[]},{\"args\":[\"0\",\"0\",\"1\"],\"lines\":[]},{\"args\":[\"0\",\"0\",\"2\"],\"lines\":[]},{\"args\":[\"0\",\"1\",\"0\"],\"lines\":[]},{\"args\":[\"0\",\"1\",\"1\"],\"lines\":[]},{\"args\":[\"0\",\"1\",\"2\"],\"lines\":[\"yes\"]},{\"args\":[\"0\",\"2\",\"0\"],\"lines\":[]},{\"args\":[\"0\",\"2\",\"1\"],\"lines\":[]},{\"args\":[\"0\",\"2\",\"2\"],\"lines\":[]},{\"args\":[\"1\",\"0\",\"0\"],\"lines\":[]},{\"args\":[\"1\",\"0\",\"1\"],\"lines\":[]},{\"args\":[\"1\",\"0\",\"2\"],\"lines\":[]},{\"args\":[\"1\",\"1\",\"0\"],\"lines\":[]},{\"args\":[\"1\",\"1\",\"1\"],\"lines\":[]},{\"args\":[\"1\",\"1\",\"2\"],\"lines\":[]},{\"args\":[\"1\",\"2\",\"0\"],\"lines\":[]},{\"args\":[\"1\",\"2\",\"1\"],\"lines\":[]},{\"args\":[\"1\",\"2\",\"2\"],\"lines\":[]},{\"args\":[\"2\",\"0\",\"0\"],\"lines\":[]},{\"args\":[\"2\",\"0\",\"1\"],\"lines\":[]},{\"args\":[\"2\",\"0\",\"2\"],\"lines\":[]},{\"args\":[\"2\",\"1\",\"0\"],\"lines\":[]},{\"args\":[\"2\",\"1\",\"1\"],\"lines\":[]},{\"args\":[\"2\",\"1\",\"2\"],\"lines\":[]},{\"args\":[\"2\",\"2\",\"0\"],\"lines\":[]},{\"args\":[\"2\",\"2\",\"1\"],\"lines\":[]},{\"args\":[\"2\",\"2\",\"2\"],\"lines\":[]}]}},\"workflow\":{\"events\":[],\"excluded\":[],\"included\":[],\"names\":[]}}"
+    },
+    {
+      "id": "disjunction",
+      "task": "Write a Python program. Print \"yes\" when a is less than b or b is less than c.",
+      "output": {
+        "table": {
+          "inputs": ["a","b","c"],
+          "rows": [
+            {"args":["0","0","0"],"lines":[]},
+            {"args":["0","0","1"],"lines":["yes"]},
+            {"args":["0","0","2"],"lines":["yes"]},
+            {"args":["0","1","0"],"lines":["yes"]},
+            {"args":["0","1","1"],"lines":["yes"]},
+            {"args":["0","1","2"],"lines":["yes"]},
+            {"args":["0","2","0"],"lines":["yes"]},
+            {"args":["0","2","1"],"lines":["yes"]},
+            {"args":["0","2","2"],"lines":["yes"]},
+            {"args":["1","0","0"],"lines":[]},
+            {"args":["1","0","1"],"lines":["yes"]},
+            {"args":["1","0","2"],"lines":["yes"]},
+            {"args":["1","1","0"],"lines":[]},
+            {"args":["1","1","1"],"lines":[]},
+            {"args":["1","1","2"],"lines":["yes"]},
+            {"args":["1","2","0"],"lines":["yes"]},
+            {"args":["1","2","1"],"lines":["yes"]},
+            {"args":["1","2","2"],"lines":["yes"]},
+            {"args":["2","0","0"],"lines":[]},
+            {"args":["2","0","1"],"lines":["yes"]},
+            {"args":["2","0","2"],"lines":["yes"]},
+            {"args":["2","1","0"],"lines":[]},
+            {"args":["2","1","1"],"lines":[]},
+            {"args":["2","1","2"],"lines":["yes"]},
+            {"args":["2","2","0"],"lines":[]},
+            {"args":["2","2","1"],"lines":[]},
+            {"args":["2","2","2"],"lines":[]}
+          ]
+        }
+      },
+      "meaning": "{\"kinds\":[\"output\"],\"language\":\"python\",\"output\":{\"table\":{\"inputs\":[\"a\",\"b\",\"c\"],\"rows\":[{\"args\":[\"0\",\"0\",\"0\"],\"lines\":[]},{\"args\":[\"0\",\"0\",\"1\"],\"lines\":[\"yes\"]},{\"args\":[\"0\",\"0\",\"2\"],\"lines\":[\"yes\"]},{\"args\":[\"0\",\"1\",\"0\"],\"lines\":[\"yes\"]},{\"args\":[\"0\",\"1\",\"1\"],\"lines\":[\"yes\"]},{\"args\":[\"0\",\"1\",\"2\"],\"lines\":[\"yes\"]},{\"args\":[\"0\",\"2\",\"0\"],\"lines\":[\"yes\"]},{\"args\":[\"0\",\"2\",\"1\"],\"lines\":[\"yes\"]},{\"args\":[\"0\",\"2\",\"2\"],\"lines\":[\"yes\"]},{\"args\":[\"1\",\"0\",\"0\"],\"lines\":[]},{\"args\":[\"1\",\"0\",\"1\"],\"lines\":[\"yes\"]},{\"args\":[\"1\",\"0\",\"2\"],\"lines\":[\"yes\"]},{\"args\":[\"1\",\"1\",\"0\"],\"lines\":[]},{\"args\":[\"1\",\"1\",\"1\"],\"lines\":[]},{\"args\":[\"1\",\"1\",\"2\"],\"lines\":[\"yes\"]},{\"args\":[\"1\",\"2\",\"0\"],\"lines\":[\"yes\"]},{\"args\":[\"1\",\"2\",\"1\"],\"lines\":[\"yes\"]},{\"args\":[\"1\",\"2\",\"2\"],\"lines\":[\"yes\"]},{\"args\":[\"2\",\"0\",\"0\"],\"lines\":[]},{\"args\":[\"2\",\"0\",\"1\"],\"lines\":[\"yes\"]},{\"args\":[\"2\",\"0\",\"2\"],\"lines\":[\"yes\"]},{\"args\":[\"2\",\"1\",\"0\"],\"lines\":[]},{\"args\":[\"2\",\"1\",\"1\"],\"lines\":[]},{\"args\":[\"2\",\"1\",\"2\"],\"lines\":[\"yes\"]},{\"args\":[\"2\",\"2\",\"0\"],\"lines\":[]},{\"args\":[\"2\",\"2\",\"1\"],\"lines\":[]},{\"args\":[\"2\",\"2\",\"2\"],\"lines\":[]}]}},\"workflow\":{\"events\":[],\"excluded\":[],\"included\":[],\"names\":[]}}"
+    },
+    {
+      "id": "positive",
+      "task": "Write a Python program. Print \"yes\" when a is less than b.",
+      "output": {
+        "table": {
+          "inputs": ["a","b"],
+          "rows": [
+            {"args":["0","0"],"lines":[]},
+            {"args":["0","1"],"lines":["yes"]},
+            {"args":["0","2"],"lines":["yes"]},
+            {"args":["1","0"],"lines":[]},
+            {"args":["1","1"],"lines":[]},
+            {"args":["1","2"],"lines":["yes"]},
+            {"args":["2","0"],"lines":[]},
+            {"args":["2","1"],"lines":[]},
+            {"args":["2","2"],"lines":[]}
+          ]
+        }
+      },
+      "meaning": "{\"kinds\":[\"output\"],\"language\":\"python\",\"output\":{\"table\":{\"inputs\":[\"a\",\"b\"],\"rows\":[{\"args\":[\"0\",\"0\"],\"lines\":[]},{\"args\":[\"0\",\"1\"],\"lines\":[\"yes\"]},{\"args\":[\"0\",\"2\"],\"lines\":[\"yes\"]},{\"args\":[\"1\",\"0\"],\"lines\":[]},{\"args\":[\"1\",\"1\"],\"lines\":[]},{\"args\":[\"1\",\"2\"],\"lines\":[\"yes\"]},{\"args\":[\"2\",\"0\"],\"lines\":[]},{\"args\":[\"2\",\"1\"],\"lines\":[]},{\"args\":[\"2\",\"2\"],\"lines\":[]}]}},\"workflow\":{\"events\":[],\"excluded\":[],\"included\":[],\"names\":[]}}"
+    },
+    {
+      "id": "unless",
+      "task": "Write a Python program. Print \"yes\" unless a is less than b.",
+      "output": {
+        "table": {
+          "inputs": ["a","b"],
+          "rows": [
+            {"args":["0","0"],"lines":["yes"]},
+            {"args":["0","1"],"lines":[]},
+            {"args":["0","2"],"lines":[]},
+            {"args":["1","0"],"lines":["yes"]},
+            {"args":["1","1"],"lines":["yes"]},
+            {"args":["1","2"],"lines":[]},
+            {"args":["2","0"],"lines":["yes"]},
+            {"args":["2","1"],"lines":["yes"]},
+            {"args":["2","2"],"lines":["yes"]}
+          ]
+        }
+      },
+      "meaning": "{\"kinds\":[\"output\"],\"language\":\"python\",\"output\":{\"table\":{\"inputs\":[\"a\",\"b\"],\"rows\":[{\"args\":[\"0\",\"0\"],\"lines\":[\"yes\"]},{\"args\":[\"0\",\"1\"],\"lines\":[]},{\"args\":[\"0\",\"2\"],\"lines\":[]},{\"args\":[\"1\",\"0\"],\"lines\":[\"yes\"]},{\"args\":[\"1\",\"1\"],\"lines\":[\"yes\"]},{\"args\":[\"1\",\"2\"],\"lines\":[]},{\"args\":[\"2\",\"0\"],\"lines\":[\"yes\"]},{\"args\":[\"2\",\"1\"],\"lines\":[\"yes\"]},{\"args\":[\"2\",\"2\"],\"lines\":[\"yes\"]}]}},\"workflow\":{\"events\":[],\"excluded\":[],\"included\":[],\"names\":[]}}"
+    },
+    {
+      "id": "not_less",
+      "task": "Write a Python program. Print \"yes\" when a is not less than b.",
+      "output": {
+        "table": {
+          "inputs": ["a","b"],
+          "rows": [
+            {"args":["0","0"],"lines":["yes"]},
+            {"args":["0","1"],"lines":[]},
+            {"args":["0","2"],"lines":[]},
+            {"args":["1","0"],"lines":["yes"]},
+            {"args":["1","1"],"lines":["yes"]},
+            {"args":["1","2"],"lines":[]},
+            {"args":["2","0"],"lines":["yes"]},
+            {"args":["2","1"],"lines":["yes"]},
+            {"args":["2","2"],"lines":["yes"]}
+          ]
+        }
+      },
+      "meaning": "{\"kinds\":[\"output\"],\"language\":\"python\",\"output\":{\"table\":{\"inputs\":[\"a\",\"b\"],\"rows\":[{\"args\":[\"0\",\"0\"],\"lines\":[\"yes\"]},{\"args\":[\"0\",\"1\"],\"lines\":[]},{\"args\":[\"0\",\"2\"],\"lines\":[]},{\"args\":[\"1\",\"0\"],\"lines\":[\"yes\"]},{\"args\":[\"1\",\"1\"],\"lines\":[\"yes\"]},{\"args\":[\"1\",\"2\"],\"lines\":[]},{\"args\":[\"2\",\"0\"],\"lines\":[\"yes\"]},{\"args\":[\"2\",\"1\"],\"lines\":[\"yes\"]},{\"args\":[\"2\",\"2\"],\"lines\":[\"yes\"]}]}},\"workflow\":{\"events\":[],\"excluded\":[],\"included\":[],\"names\":[]}}"
+    },
+    {
+      "id": "unsupported_relation",
+      "task": "Write a Python program. Print \"yes\" when a is roughly bigger than b.",
+      "output": {"gap":"condition_relation_missing"},
+      "meaning": "{\"kinds\":[\"output\"],\"language\":\"python\",\"output\":{\"gap\":\"condition_relation_missing\"},\"workflow\":{\"events\":[],\"excluded\":[],\"included\":[],\"names\":[]}}"
+    }
+  ],
+  "paraphraseGroups": [
+    {"id":"repeated_mentions_are_one_line","cases":["once","restated","mentioned_twice"]},
+    {"id":"reversed_and_symbolic_comparisons","cases":["greater","reversed_less","symbol_greater"]},
+    {"id":"unless_is_a_negated_condition","cases":["unless","not_less"]}
+  ],
+  "distinctGroups": [
+    {"id":"explicit_count_differs_from_one_line","cases":["once","twice"]},
+    {"id":"reversed_operands_differ","cases":["greater","less"]},
+    {"id":"conjunction_differs_from_disjunction","cases":["conjunction","disjunction"]},
+    {"id":"negation_differs_from_the_condition","cases":["positive","unless"]}
+  ],
+  "multilingual": [
+    "hello-world-kotlin-en.txt",
+    "hello-world-kotlin-paraphrase-en.txt",
+    "hello-world-kotlin-es.txt",
+    "hello-world-kotlin-ru.txt",
+    "hello-world-kotlin-zh.txt",
+    "hello-world-kotlin-hi.txt"
+  ],
+  "candidateCases": [
+    {
+      "id": "issue_1450_without_an_observed_conclusion",
+      "candidate": {
+        "program_path": "Main.kt",
+        "files": [
+          {
+            "path": "Main.kt",
+            "source": "// Build: kotlinc Main.kt -include-runtime -d Main.jar\n// Run: java -jar Main.jar\n\n// Prints the greeting.\nfun main() {\n    println(\"Hello, World!\")\n}\n"
+          },
+          {
+            "path": "ci/test-hello-world.yml",
+            "source": "name: Test Hello World\non:\n  push:\n    branches: [main]\n  pull_request:\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: fwilhe2/setup-kotlin@v1\n      - run: kotlinc Main.kt -include-runtime -d Main.jar\n      - run: test \"$(java -jar Main.jar)\" = \"Hello, World!\"\n"
+          }
+        ],
+        "observations": [{"args":[],"stdout":"Hello, World!\n"}]
+      },
+      "task_file": "issue-1450-body.md",
+      "complete": false,
+      "verdicts": [
+        "8-59 discharged extension_matches",
+        "80-135 discharged extension_matches",
+        "139-188 discharged output_matches",
+        "192-230 unresolved judgment_required",
+        "234-290 unresolved judgment_required",
+        "294-375 discharged run_instructions_present",
+        "379-492 discharged workflow_triggers_match",
+        "513-575 discharged output_matches",
+        "608-634 inapplicable no_obligation",
+        "637-688 discharged workflow_triggers_match",
+        "691-737 discharged workflow_runtime_present",
+        "740-767 discharged workflow_runs_program",
+        "770-814 discharged workflow_verifies_output",
+        "817-856 unresolved workflow_status_unobserved",
+        "858-885 inapplicable no_obligation",
+        "888-901 inapplicable no_obligation",
+        "904-928 inapplicable no_obligation",
+        "931-946 inapplicable no_obligation",
+        "949-986 inapplicable no_obligation",
+        "1010-1065 unresolved judgment_required",
+        "1068-1100 unresolved judgment_required",
+        "1103-1198 unresolved judgment_required",
+        "1201-1257 discharged workflow_path_matches",
+        "1260-1330 discharged workflow_file_named",
+        "1333-1512 discharged workflow_path_matches",
+        "1538-1585 discharged extension_matches",
+        "1588-1627 discharged output_matches",
+        "1630-1660 unresolved judgment_required",
+        "1663-1698 unresolved judgment_required",
+        "1701-1766 discharged run_instructions_present",
+        "1769-1816 unresolved workflow_status_unobserved",
+        "1819-1879 unresolved badge_unobserved"
+      ]
+    },
+    {
+      "id": "issue_1450_green",
+      "candidate": {
+        "program_path": "Main.kt",
+        "files": [
+          {
+            "path": "Main.kt",
+            "source": "// Build: kotlinc Main.kt -include-runtime -d Main.jar\n// Run: java -jar Main.jar\n\n// Prints the greeting.\nfun main() {\n    println(\"Hello, World!\")\n}\n"
+          },
+          {
+            "path": "ci/test-hello-world.yml",
+            "source": "name: Test Hello World\non:\n  push:\n    branches: [main]\n  pull_request:\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: fwilhe2/setup-kotlin@v1\n      - run: kotlinc Main.kt -include-runtime -d Main.jar\n      - run: test \"$(java -jar Main.jar)\" = \"Hello, World!\"\n"
+          }
+        ],
+        "observations": [{"args":[],"stdout":"Hello, World!\n"}],
+        "workflow_conclusion": "success"
+      },
+      "task_file": "issue-1450-body.md",
+      "complete": true,
+      "verdicts": [
+        "8-59 discharged extension_matches",
+        "80-135 discharged extension_matches",
+        "139-188 discharged output_matches",
+        "192-230 unresolved judgment_required",
+        "234-290 unresolved judgment_required",
+        "294-375 discharged run_instructions_present",
+        "379-492 discharged workflow_triggers_match",
+        "513-575 discharged output_matches",
+        "608-634 inapplicable no_obligation",
+        "637-688 discharged workflow_triggers_match",
+        "691-737 discharged workflow_runtime_present",
+        "740-767 discharged workflow_runs_program",
+        "770-814 discharged workflow_verifies_output",
+        "817-856 discharged workflow_passed",
+        "858-885 inapplicable no_obligation",
+        "888-901 inapplicable no_obligation",
+        "904-928 inapplicable no_obligation",
+        "931-946 inapplicable no_obligation",
+        "949-986 inapplicable no_obligation",
+        "1010-1065 unresolved judgment_required",
+        "1068-1100 unresolved judgment_required",
+        "1103-1198 unresolved judgment_required",
+        "1201-1257 discharged workflow_path_matches",
+        "1260-1330 discharged workflow_file_named",
+        "1333-1512 discharged workflow_path_matches",
+        "1538-1585 discharged extension_matches",
+        "1588-1627 discharged output_matches",
+        "1630-1660 unresolved judgment_required",
+        "1663-1698 unresolved judgment_required",
+        "1701-1766 discharged run_instructions_present",
+        "1769-1816 discharged workflow_passed",
+        "1819-1879 unresolved badge_unobserved"
+      ]
+    },
+    {
+      "id": "issue_1450_red",
+      "candidate": {
+        "program_path": "Main.kt",
+        "files": [
+          {
+            "path": "Main.kt",
+            "source": "// Build: kotlinc Main.kt -include-runtime -d Main.jar\n// Run: java -jar Main.jar\n\n// Prints the greeting.\nfun main() {\n    println(\"Hello, World!\")\n}\n"
+          },
+          {
+            "path": "ci/test-hello-world.yml",
+            "source": "name: Test Hello World\non:\n  push:\n    branches: [main]\n  pull_request:\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: fwilhe2/setup-kotlin@v1\n      - run: kotlinc Main.kt -include-runtime -d Main.jar\n      - run: test \"$(java -jar Main.jar)\" = \"Hello, World!\"\n"
+          }
+        ],
+        "observations": [{"args":[],"stdout":"Hello, World!\n"}],
+        "workflow_conclusion": "failure"
+      },
+      "task_file": "issue-1450-body.md",
+      "complete": false,
+      "verdicts": [
+        "8-59 discharged extension_matches",
+        "80-135 discharged extension_matches",
+        "139-188 discharged output_matches",
+        "192-230 unresolved judgment_required",
+        "234-290 unresolved judgment_required",
+        "294-375 discharged run_instructions_present",
+        "379-492 discharged workflow_triggers_match",
+        "513-575 discharged output_matches",
+        "608-634 inapplicable no_obligation",
+        "637-688 discharged workflow_triggers_match",
+        "691-737 discharged workflow_runtime_present",
+        "740-767 discharged workflow_runs_program",
+        "770-814 discharged workflow_verifies_output",
+        "817-856 contradicted workflow_failed",
+        "858-885 inapplicable no_obligation",
+        "888-901 inapplicable no_obligation",
+        "904-928 inapplicable no_obligation",
+        "931-946 inapplicable no_obligation",
+        "949-986 inapplicable no_obligation",
+        "1010-1065 unresolved judgment_required",
+        "1068-1100 unresolved judgment_required",
+        "1103-1198 unresolved judgment_required",
+        "1201-1257 discharged workflow_path_matches",
+        "1260-1330 discharged workflow_file_named",
+        "1333-1512 discharged workflow_path_matches",
+        "1538-1585 discharged extension_matches",
+        "1588-1627 discharged output_matches",
+        "1630-1660 unresolved judgment_required",
+        "1663-1698 unresolved judgment_required",
+        "1701-1766 discharged run_instructions_present",
+        "1769-1816 contradicted workflow_failed",
+        "1819-1879 unresolved badge_unobserved"
+      ]
+    },
+    {
+      "id": "issue_1450_without_comments",
+      "candidate": {
+        "program_path": "Main.kt",
+        "files": [
+          {"path":"Main.kt","source":"fun main() {\n    println(\"Hello, World!\")\n}\n"},
+          {
+            "path": "ci/test-hello-world.yml",
+            "source": "name: Test Hello World\non:\n  push:\n    branches: [main]\n  pull_request:\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: fwilhe2/setup-kotlin@v1\n      - run: kotlinc Main.kt -include-runtime -d Main.jar\n      - run: test \"$(java -jar Main.jar)\" = \"Hello, World!\"\n"
+          }
+        ],
+        "observations": [{"args":[],"stdout":"Hello, World!\n"}]
+      },
+      "task_file": "issue-1450-body.md",
+      "complete": false,
+      "verdicts": [
+        "8-59 discharged extension_matches",
+        "80-135 discharged extension_matches",
+        "139-188 discharged output_matches",
+        "192-230 contradicted comments_missing",
+        "234-290 unresolved judgment_required",
+        "294-375 contradicted run_instructions_missing",
+        "379-492 discharged workflow_triggers_match",
+        "513-575 discharged output_matches",
+        "608-634 inapplicable no_obligation",
+        "637-688 discharged workflow_triggers_match",
+        "691-737 discharged workflow_runtime_present",
+        "740-767 discharged workflow_runs_program",
+        "770-814 discharged workflow_verifies_output",
+        "817-856 unresolved workflow_status_unobserved",
+        "858-885 inapplicable no_obligation",
+        "888-901 inapplicable no_obligation",
+        "904-928 inapplicable no_obligation",
+        "931-946 inapplicable no_obligation",
+        "949-986 inapplicable no_obligation",
+        "1010-1065 unresolved judgment_required",
+        "1068-1100 unresolved judgment_required",
+        "1103-1198 unresolved judgment_required",
+        "1201-1257 discharged workflow_path_matches",
+        "1260-1330 discharged workflow_file_named",
+        "1333-1512 discharged workflow_path_matches",
+        "1538-1585 discharged extension_matches",
+        "1588-1627 discharged output_matches",
+        "1630-1660 contradicted comments_missing",
+        "1663-1698 unresolved judgment_required",
+        "1701-1766 contradicted run_instructions_missing",
+        "1769-1816 unresolved workflow_status_unobserved",
+        "1819-1879 unresolved badge_unobserved"
+      ]
+    },
+    {
+      "id": "issue_1450_workflow_under_github",
+      "candidate": {
+        "program_path": "Main.kt",
+        "files": [
+          {
+            "path": "Main.kt",
+            "source": "// Build: kotlinc Main.kt -include-runtime -d Main.jar\n// Run: java -jar Main.jar\n\n// Prints the greeting.\nfun main() {\n    println(\"Hello, World!\")\n}\n"
+          },
+          {
+            "path": ".github/workflows/test-hello-world.yml",
+            "source": "name: Test Hello World\non:\n  push:\n    branches: [main]\n  pull_request:\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: fwilhe2/setup-kotlin@v1\n      - run: kotlinc Main.kt -include-runtime -d Main.jar\n      - run: test \"$(java -jar Main.jar)\" = \"Hello, World!\"\n"
+          }
+        ],
+        "observations": [{"args":[],"stdout":"Hello, World!\n"}]
+      },
+      "task_file": "issue-1450-body.md",
+      "complete": false,
+      "verdicts": [
+        "8-59 discharged extension_matches",
+        "80-135 discharged extension_matches",
+        "139-188 discharged output_matches",
+        "192-230 unresolved judgment_required",
+        "234-290 unresolved judgment_required",
+        "294-375 discharged run_instructions_present",
+        "379-492 discharged workflow_triggers_match",
+        "513-575 discharged output_matches",
+        "608-634 inapplicable no_obligation",
+        "637-688 discharged workflow_triggers_match",
+        "691-737 discharged workflow_runtime_present",
+        "740-767 discharged workflow_runs_program",
+        "770-814 discharged workflow_verifies_output",
+        "817-856 unresolved workflow_status_unobserved",
+        "858-885 inapplicable no_obligation",
+        "888-901 inapplicable no_obligation",
+        "904-928 inapplicable no_obligation",
+        "931-946 inapplicable no_obligation",
+        "949-986 inapplicable no_obligation",
+        "1010-1065 unresolved judgment_required",
+        "1068-1100 unresolved judgment_required",
+        "1103-1198 unresolved judgment_required",
+        "1201-1257 contradicted workflow_path_differs",
+        "1260-1330 discharged workflow_file_named",
+        "1333-1512 contradicted workflow_path_differs",
+        "1538-1585 discharged extension_matches",
+        "1588-1627 discharged output_matches",
+        "1630-1660 unresolved judgment_required",
+        "1663-1698 unresolved judgment_required",
+        "1701-1766 discharged run_instructions_present",
+        "1769-1816 unresolved workflow_status_unobserved",
+        "1819-1879 unresolved badge_unobserved"
+      ]
+    },
+    {
+      "id": "issue_1450_without_pull_request_trigger",
+      "candidate": {
+        "program_path": "Main.kt",
+        "files": [
+          {
+            "path": "Main.kt",
+            "source": "// Build: kotlinc Main.kt -include-runtime -d Main.jar\n// Run: java -jar Main.jar\n\n// Prints the greeting.\nfun main() {\n    println(\"Hello, World!\")\n}\n"
+          },
+          {
+            "path": "ci/test-hello-world.yml",
+            "source": "name: Test Hello World\non:\n  push:\n    branches: [main]\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: fwilhe2/setup-kotlin@v1\n      - run: kotlinc Main.kt -include-runtime -d Main.jar\n      - run: test \"$(java -jar Main.jar)\" = \"Hello, World!\"\n"
+          }
+        ],
+        "observations": [{"args":[],"stdout":"Hello, World!\n"}]
+      },
+      "task_file": "issue-1450-body.md",
+      "complete": false,
+      "verdicts": [
+        "8-59 discharged extension_matches",
+        "80-135 discharged extension_matches",
+        "139-188 discharged output_matches",
+        "192-230 unresolved judgment_required",
+        "234-290 unresolved judgment_required",
+        "294-375 discharged run_instructions_present",
+        "379-492 contradicted workflow_trigger_missing",
+        "513-575 discharged output_matches",
+        "608-634 inapplicable no_obligation",
+        "637-688 contradicted workflow_trigger_missing",
+        "691-737 discharged workflow_runtime_present",
+        "740-767 discharged workflow_runs_program",
+        "770-814 discharged workflow_verifies_output",
+        "817-856 unresolved workflow_status_unobserved",
+        "858-885 inapplicable no_obligation",
+        "888-901 inapplicable no_obligation",
+        "904-928 inapplicable no_obligation",
+        "931-946 inapplicable no_obligation",
+        "949-986 inapplicable no_obligation",
+        "1010-1065 unresolved judgment_required",
+        "1068-1100 unresolved judgment_required",
+        "1103-1198 unresolved judgment_required",
+        "1201-1257 discharged workflow_path_matches",
+        "1260-1330 discharged workflow_file_named",
+        "1333-1512 discharged workflow_path_matches",
+        "1538-1585 discharged extension_matches",
+        "1588-1627 discharged output_matches",
+        "1630-1660 unresolved judgment_required",
+        "1663-1698 unresolved judgment_required",
+        "1701-1766 discharged run_instructions_present",
+        "1769-1816 unresolved workflow_status_unobserved",
+        "1819-1879 unresolved badge_unobserved"
+      ]
+    },
+    {
+      "id": "issue_1450_wrong_output",
+      "candidate": {
+        "program_path": "Main.kt",
+        "files": [
+          {
+            "path": "Main.kt",
+            "source": "// Build: kotlinc Main.kt -include-runtime -d Main.jar\n// Run: java -jar Main.jar\n\n// Prints the greeting.\nfun main() {\n    println(\"Hello, World!\")\n}\n"
+          },
+          {
+            "path": "ci/test-hello-world.yml",
+            "source": "name: Test Hello World\non:\n  push:\n    branches: [main]\n  pull_request:\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: fwilhe2/setup-kotlin@v1\n      - run: kotlinc Main.kt -include-runtime -d Main.jar\n      - run: test \"$(java -jar Main.jar)\" = \"Hello, World!\"\n"
+          }
+        ],
+        "observations": [{"args":[],"stdout":"Hello World\n"}]
+      },
+      "task_file": "issue-1450-body.md",
+      "complete": false,
+      "verdicts": [
+        "8-59 discharged extension_matches",
+        "80-135 discharged extension_matches",
+        "139-188 contradicted output_differs",
+        "192-230 unresolved judgment_required",
+        "234-290 unresolved judgment_required",
+        "294-375 discharged run_instructions_present",
+        "379-492 discharged workflow_triggers_match",
+        "513-575 contradicted output_differs",
+        "608-634 inapplicable no_obligation",
+        "637-688 discharged workflow_triggers_match",
+        "691-737 discharged workflow_runtime_present",
+        "740-767 discharged workflow_runs_program",
+        "770-814 discharged workflow_verifies_output",
+        "817-856 unresolved workflow_status_unobserved",
+        "858-885 inapplicable no_obligation",
+        "888-901 inapplicable no_obligation",
+        "904-928 inapplicable no_obligation",
+        "931-946 inapplicable no_obligation",
+        "949-986 inapplicable no_obligation",
+        "1010-1065 unresolved judgment_required",
+        "1068-1100 unresolved judgment_required",
+        "1103-1198 unresolved judgment_required",
+        "1201-1257 discharged workflow_path_matches",
+        "1260-1330 discharged workflow_file_named",
+        "1333-1512 discharged workflow_path_matches",
+        "1538-1585 discharged extension_matches",
+        "1588-1627 contradicted output_differs",
+        "1630-1660 unresolved judgment_required",
+        "1663-1698 unresolved judgment_required",
+        "1701-1766 discharged run_instructions_present",
+        "1769-1816 unresolved workflow_status_unobserved",
+        "1819-1879 unresolved badge_unobserved"
+      ]
+    },
+    {
+      "id": "issue_1450_other_task",
+      "candidate": {
+        "program_path": "Main.kt",
+        "files": [
+          {
+            "path": "Main.kt",
+            "source": "// Build: kotlinc Main.kt -include-runtime -d Main.jar\n// Run: java -jar Main.jar\n\n// Prints the greeting.\nfun main() {\n    println(\"Hello, World!\")\n}\n"
+          },
+          {
+            "path": "ci/test-hello-world.yml",
+            "source": "name: Test Hello World\non:\n  push:\n    branches: [main]\n  pull_request:\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: fwilhe2/setup-kotlin@v1\n      - run: kotlinc Main.kt -include-runtime -d Main.jar\n      - run: test \"$(java -jar Main.jar)\" = \"Hello, World!\"\n"
+          }
+        ],
+        "observations": [{"args":[],"stdout":"Hello, World!\n"}],
+        "task_identity": "task_0"
+      },
+      "task_file": "issue-1450-body.md",
+      "complete": false,
+      "verdicts": [
+        "8-59 contradicted task_identity_differs",
+        "80-135 contradicted task_identity_differs",
+        "139-188 contradicted task_identity_differs",
+        "192-230 contradicted task_identity_differs",
+        "234-290 contradicted task_identity_differs",
+        "294-375 contradicted task_identity_differs",
+        "379-492 contradicted task_identity_differs",
+        "513-575 contradicted task_identity_differs",
+        "608-634 inapplicable no_obligation",
+        "637-688 contradicted task_identity_differs",
+        "691-737 contradicted task_identity_differs",
+        "740-767 contradicted task_identity_differs",
+        "770-814 contradicted task_identity_differs",
+        "817-856 contradicted task_identity_differs",
+        "858-885 inapplicable no_obligation",
+        "888-901 inapplicable no_obligation",
+        "904-928 inapplicable no_obligation",
+        "931-946 inapplicable no_obligation",
+        "949-986 inapplicable no_obligation",
+        "1010-1065 contradicted task_identity_differs",
+        "1068-1100 contradicted task_identity_differs",
+        "1103-1198 contradicted task_identity_differs",
+        "1201-1257 contradicted task_identity_differs",
+        "1260-1330 contradicted task_identity_differs",
+        "1333-1512 contradicted task_identity_differs",
+        "1538-1585 contradicted task_identity_differs",
+        "1588-1627 contradicted task_identity_differs",
+        "1630-1660 contradicted task_identity_differs",
+        "1663-1698 contradicted task_identity_differs",
+        "1701-1766 contradicted task_identity_differs",
+        "1769-1816 contradicted task_identity_differs",
+        "1819-1879 contradicted task_identity_differs"
+      ]
+    }
+  ],
+  "executionCases": [
+    {
+      "id": "shared_misunderstanding_of_twice",
+      "task": "twice",
+      "program": "print(\"Hi\")\n",
+      "generated_test": "import subprocess, sys\nassert subprocess.run([sys.executable, sys.argv[1]], capture_output=True, text=True).stdout == \"Hi\\n\"\n",
+      "complete": false,
+      "verdicts": ["0-46 contradicted output_differs"]
+    },
+    {
+      "id": "twice_honoured",
+      "task": "twice",
+      "program": "print(\"Hi\")\nprint(\"Hi\")\n",
+      "complete": true,
+      "verdicts": ["0-46 discharged output_matches"]
+    },
+    {
+      "id": "restated_line_printed_once",
+      "task": "restated",
+      "program": "print(\"Hi\")\n",
+      "complete": true,
+      "verdicts": ["0-65 discharged output_matches"]
+    },
+    {
+      "id": "exact_backslash_unicode_kept",
+      "task": "exact_backslash_unicode",
+      "program": "for _ in range(2):\n    print(r'C:\\temp\\ünï \"q\"')\n",
+      "complete": true,
+      "verdicts": ["0-61 discharged output_matches"]
+    },
+    {
+      "id": "backslash_escape_misread",
+      "task": "exact_backslash_unicode",
+      "program": "for _ in range(2):\n    print('C:\\temp\\ünï \"q\"')\n",
+      "complete": false,
+      "verdicts": ["0-61 contradicted output_differs"]
+    },
+    {
+      "id": "reversed_comparison_rejected",
+      "task": "greater",
+      "program": "import sys\nx, y = int(sys.argv[1]), int(sys.argv[2])\nprint(\"big\" if x < y else \"small\")\n",
+      "complete": false,
+      "verdicts": ["0-87 contradicted condition_row_differs"]
+    },
+    {
+      "id": "comparison_honoured",
+      "task": "reversed_less",
+      "program": "import sys\nx, y = int(sys.argv[1]), int(sys.argv[2])\nprint(\"big\" if x > y else \"small\")\n",
+      "complete": true,
+      "verdicts": ["0-76 discharged condition_rows_match"]
+    },
+    {
+      "id": "disjunction_for_conjunction_rejected",
+      "task": "conjunction",
+      "program": "import sys\na, b, c = map(int, sys.argv[1:4])\nif a < b or b < c:\n    print(\"yes\")\n",
+      "complete": false,
+      "verdicts": ["0-79 contradicted condition_row_differs"]
+    },
+    {
+      "id": "conjunction_honoured",
+      "task": "conjunction",
+      "program": "import sys\na, b, c = map(int, sys.argv[1:4])\nif a < b and b < c:\n    print(\"yes\")\n",
+      "complete": true,
+      "verdicts": ["0-79 discharged condition_rows_match"]
+    },
+    {
+      "id": "dropped_negation_rejected",
+      "task": "unless",
+      "program": "import sys\na, b = int(sys.argv[1]), int(sys.argv[2])\nif a < b:\n    print(\"yes\")\n",
+      "complete": false,
+      "verdicts": ["0-60 contradicted condition_row_differs"]
+    },
+    {
+      "id": "negation_honoured",
+      "task": "unless",
+      "program": "import sys\na, b = int(sys.argv[1]), int(sys.argv[2])\nif not a < b:\n    print(\"yes\")\n",
+      "complete": true,
+      "verdicts": ["0-60 discharged condition_rows_match"]
+    },
+    {
+      "id": "unsupported_grammar_is_a_gap",
+      "task": "unsupported_relation",
+      "program": "print(\"yes\")\n",
+      "complete": false,
+      "verdicts": ["0-68 unresolved condition_relation_missing"]
+    }
+  ]
+}

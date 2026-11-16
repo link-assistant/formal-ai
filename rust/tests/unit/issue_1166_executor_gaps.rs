@@ -53,7 +53,7 @@ fn gap_events(log: &EventLog) -> Vec<String> {
 #[test]
 fn output_literals_are_bound_from_the_obligation_clauses() {
     let binding = cases("bindingCases");
-    assert_eq!(binding.len(), 4, "every binding case is read");
+    assert_eq!(binding.len(), 9, "every binding case is read");
     for (id, prompt, expected) in binding {
         assert_eq!(
             bound_output_literals(&prompt),

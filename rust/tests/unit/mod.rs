@@ -266,6 +266,7 @@ mod issue_1165_documentation_route;
 mod issue_1165_documented_commands;
 mod issue_1166_executor_gaps;
 mod issue_1166_obligation_routing;
+mod issue_1166_task_acceptance;
 mod issue_1167_compose_render_parse;
 mod issue_1168_latest_versions;
 mod issue_1168_workflow_render_parity;

@@ -481,7 +481,8 @@ fn gap_line(node: &ObligationNode, reason: &str) -> String {
 /// An explicit count stated with a mention ("prints `Hi` twice") binds that
 /// many lines, and a later mention marked as a repetition ("… and then
 /// prints `Hi` again") binds a further line (issue #1162, the print-twice
-/// task); see [`output_repetition`].
+/// task); see [`explicit_count`] and [`output_again`]. Repeated mentions
+/// of one literal without such a mark keep its largest count (issue #1166).
 #[must_use]
 pub fn bound_output_literals(text: &str) -> Vec<String> {
     let clauses = crate::obligation_ledger::clauses_with_spans(text);
@@ -492,7 +493,7 @@ pub fn bound_output_literals(text: &str) -> Vec<String> {
         crate::solver_handlers::verb_final_language(crate::language::detect(text).slug());
     let literals = quoted_segment_spans(text);
     let mut previous_end: usize = 0;
-    let mut bound: Vec<(usize, String, Repetition)> = Vec::new();
+    let mut bound: Vec<(usize, String, usize, bool)> = Vec::new();
     for (index, literal) in literals.iter().enumerate() {
         let clause_start = clause_starts
             .iter()
@@ -509,94 +510,135 @@ pub fn bound_output_literals(text: &str) -> Vec<String> {
         let next = literals
             .get(index + 1)
             .map_or(text.len(), |next| next.start);
+        let after = &text[literal.end..next];
+        if conditional_introduction(introduction) {
+            continue;
+        }
         if print.is_some_and(|meaning| meaning.evidenced_in(&introduction.to_lowercase()))
-            || (verb_final && followed_by_print(&text[literal.end..next]))
+            || (verb_final && followed_by_print(after))
         {
-            let repetition = output_repetition(&text[literal.end..next]);
-            bound.push((literal.start, literal.text.clone(), repetition));
+            bound.push((
+                literal.start,
+                literal.text.clone(),
+                explicit_count(after),
+                output_again(after),
+            ));
         }
     }
     for (clause, span) in &clauses {
         if quoted_segment_spans(clause).is_empty()
             && let Some(output) = unquoted_output(clause)
         {
-            bound.push((span.0, output, Repetition::default()));
+            bound.push((span.0, output, 1, false));
         }
     }
-    bound.sort_by_key(|(start, _, _)| *start);
-    let mut outputs: Vec<String> = Vec::new();
-    for (_, value, repetition) in bound {
-        if repetition.again || !outputs.contains(&value) {
-            outputs.extend(std::iter::repeat_n(value, repetition.count));
+    bound.sort_by_key(|(start, _, _, _)| *start);
+    let mut counts: Vec<(String, usize)> = Vec::new();
+    for (_, value, count, again) in bound {
+        match counts.iter_mut().find(|(seen, _)| *seen == value) {
+            Some(entry) if !again => entry.1 = entry.1.max(count),
+            _ => counts.push((value, count)),
         }
     }
-    outputs
+    counts
+        .into_iter()
+        .flat_map(|(value, count)| std::iter::repeat_n(value, count))
+        .collect()
 }
 
-/// The structural rule naming the counts and the repetition words an output
-/// mention is read with (data/seed/text-formalization.lino).
-const OUTPUT_REPETITION_RULE: &str = "output-repetition";
+/// The roles whose words state a condition, or its otherwise branch, before
+/// an effect.
+const CONDITION_ROLES: [&str; 3] = [
+    "condition-marker",
+    "negated-condition-marker",
+    "otherwise-marker",
+];
 
-/// How one bound mention of an output repeats: the lines it stands for, and
-/// whether it is an explicit further line of an output bound before.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-struct Repetition {
-    count: usize,
-    again: bool,
-}
-
-impl Default for Repetition {
-    fn default() -> Self {
-        Self {
-            count: 1,
-            again: false,
-        }
-    }
-}
-
-/// The repetition the words right after one output mention state (issue
-/// #1162), up to the sentence break or the first seeded clause separator. A
-/// count word of the seeded `output-repetition` rule ("twice") gives its
-/// count; an `again` word marks a further line. Words before the literal are
-/// not read: "check again that it prints `Hi`" re-checks one line, it does not
-/// ask for a second. Every grammar language's words are read, since a request
-/// carries no language tag.
-fn output_repetition(after: &str) -> Repetition {
+/// Whether the words that introduce a literal state a condition
+/// (`condition-marker`, `negated-condition-marker`) or its otherwise branch
+/// (`otherwise-marker`) rather than the program's own run
+/// (`execution-circumstance`). Such a literal is not printed unconditionally,
+/// so it is never bound; the graph reports it unbound (issue #1166).
+fn conditional_introduction(introduction: &str) -> bool {
     let lexicon = seed::lexicon();
-    let separators = lexicon.words_for_role(seed::ROLE_SKILL_PROCEDURE_CLAUSE_SEPARATOR);
-    let sentence = after
+    let normalized = normalize_prompt(introduction).to_lowercase();
+    CONDITION_ROLES
+        .iter()
+        .any(|role| lexicon.mentions_role(role, &normalized))
+        && !lexicon.mentions_role("execution-circumstance", &normalized)
+}
+
+/// The structure part `surface_structure` lists explicit counts under.
+const REPETITION_PART: &str = "repetition=";
+
+/// The suffix of the `proposition-structure` key holding a repetition kind's
+/// count.
+const COUNT_SUFFIX: &str = "-count";
+
+/// How many times the words right after a literal -- up to the sentence break
+/// or the first seeded clause separator -- ask for it ("prints "Hi" twice"),
+/// read through the explicit repetition of
+/// [`surface_structure`](crate::formalization::proposition_structure::surface_structure)
+/// and the `<kind>-count` values of the `proposition-structure` rule; 1 when no
+/// count is stated. A repeated mention is never a count (issue #1166).
+#[must_use]
+pub fn explicit_count(window: &str) -> usize {
+    use crate::formalization::proposition_structure::{PROPOSITION_RULE, surface_structure};
+    let structure = surface_structure(&trailing_words(window)).structure;
+    let Some(part) = structure
+        .split(';')
+        .find_map(|entry| entry.strip_prefix(REPETITION_PART))
+    else {
+        return 1;
+    };
+    part.split(' ')
+        .filter_map(|kind| {
+            crate::formalization::structural_rule_values(
+                PROPOSITION_RULE,
+                &format!("{kind}{COUNT_SUFFIX}"),
+            )
+            .first()
+            .and_then(|count| count.parse::<usize>().ok())
+        })
+        .fold(1, usize::max)
+}
+
+/// The words right after a literal, up to the sentence break or the first
+/// seeded clause separator.
+fn trailing_words(window: &str) -> String {
+    let separators = seed::lexicon().words_for_role(seed::ROLE_SKILL_PROCEDURE_CLAUSE_SEPARATOR);
+    let sentence = window
         .split(OUTPUT_INTRODUCTION_BREAKS)
         .next()
-        .unwrap_or(after);
-    let trailing: Vec<&str> = sentence
+        .unwrap_or(window);
+    sentence
         .split_whitespace()
         .take_while(|word| !separators.contains(&bare_word(word)))
-        .collect();
-    let window = trailing.join(" ").to_lowercase();
-    let stated = |kind: &str| {
-        grammar_languages()
-            .iter()
-            .flat_map(|language| crate::formalization::grammar_vocabulary(language, kind))
-            .any(|phrase| {
-                let phrase = phrase.to_lowercase();
-                mentions_phrase(&window, &phrase)
-            })
-    };
-    let count =
-        crate::formalization::structural_rule_values(OUTPUT_REPETITION_RULE, "count-vocabulary")
-            .iter()
-            .find(|kind| stated(kind))
-            .and_then(|kind| {
-                crate::formalization::structural_rule_values(OUTPUT_REPETITION_RULE, kind)
-                    .first()
-                    .and_then(|count| count.parse().ok())
-            })
-            .unwrap_or(1);
-    let again =
-        crate::formalization::structural_rule_values(OUTPUT_REPETITION_RULE, "again-vocabulary")
-            .iter()
-            .any(|kind| stated(kind));
-    Repetition { count, again }
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+/// The structural rule naming the words that mark an output mention as a
+/// further line (data/seed/text-formalization.lino).
+const OUTPUT_REPETITION_RULE: &str = "output-repetition";
+
+/// Whether the words right after a literal mark it as a further line of an
+/// output bound before ("prints `Hi` again", issue #1162), read through the
+/// `again-vocabulary` of the seeded `output-repetition` rule. Words before the
+/// literal are not read: "check again that it prints `Hi`" re-checks one line,
+/// it does not ask for a second. Every grammar language's words are read,
+/// since a request carries no language tag.
+#[must_use]
+pub fn output_again(window: &str) -> bool {
+    let trailing = trailing_words(window).to_lowercase();
+    crate::formalization::structural_rule_values(OUTPUT_REPETITION_RULE, "again-vocabulary")
+        .iter()
+        .any(|kind| {
+            grammar_languages()
+                .iter()
+                .flat_map(|language| crate::formalization::grammar_vocabulary(language, kind))
+                .any(|phrase| mentions_phrase(&trailing, &phrase.to_lowercase()))
+        })
 }
 
 /// The languages of the shared formalization grammar.

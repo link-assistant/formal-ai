@@ -27,6 +27,8 @@ roles
     kind meaning
   answer_rationale_lead
     kind predicate
+  applicability-marker
+    kind meaning
   applicability_condition
     kind predicate
   architecture_concept
@@ -169,6 +171,8 @@ roles
     kind meaning
   clause_joiner
     kind meaning
+  code-comment-obligation
+    kind meaning
   code_example_decomposition_answer
     kind predicate
   code_example_decomposition_cue
@@ -249,6 +253,12 @@ roles
     kind meaning
   compact
     kind meaning
+  comparison-equal
+    kind meaning
+  comparison-filler
+    kind meaning
+  comparison-not-equal
+    kind meaning
   comparison_difference_cue
     kind predicate
   comparison_infix
@@ -285,6 +295,8 @@ roles
     kind predicate
   computing-instruction
     kind predicate
+  condition-marker
+    kind meaning
   config_value_lead
     kind predicate
   containment_relation
@@ -377,6 +389,8 @@ roles
     kind predicate
   execute_url_request
     kind predicate
+  execution-circumstance
+    kind meaning
   execution-verb-form
     kind predicate
   execution-verb-position
@@ -529,6 +543,8 @@ roles
     kind meaning
   identifier_reserved_word
     kind meaning
+  illustrative-marker
+    kind meaning
   implementation_language_noun
     kind meaning
   implementation_language_preposition
@@ -550,6 +566,8 @@ roles
   issue-reference
     kind meaning
   javascript-imported-optional-text
+    kind meaning
+  judgment-obligation
     kind meaning
   knowledge_inventory_interrogative
     kind predicate
@@ -675,6 +693,8 @@ roles
     kind meaning
   monetary_concept
     kind predicate
+  negated-condition-marker
+    kind meaning
   network_capability_cue
     kind predicate
   non_referential_subject
@@ -725,12 +745,16 @@ roles
     kind predicate
   operating_principle
     kind meaning
+  optional-obligation-marker
+    kind meaning
   optional-record
     kind meaning
   optional-source-text
     kind meaning
   ordering_relation
     kind predicate
+  otherwise-marker
+    kind meaning
   output_display_request
     kind meaning
   output_obligation_verb
@@ -769,6 +793,8 @@ roles
     kind predicate
   production_relation
     kind predicate
+  program-file-obligation
+    kind meaning
   program-termination-clause
     kind meaning
   program_artifact
@@ -911,6 +937,8 @@ roles
     kind predicate
   rule_listing_subject
     kind predicate
+  run-instruction-obligation
+    kind meaning
   scoped-grammar-pattern
     kind predicate
   script_authoring_verb
@@ -1265,6 +1293,16 @@ roles
     kind meaning
   word_problem_relation
     kind predicate
+  workflow-context-noun
+    kind meaning
+  workflow-execution-verb
+    kind meaning
+  workflow-status-obligation
+    kind meaning
+  workflow-trigger-pull-request
+    kind meaning
+  workflow-trigger-push
+    kind meaning
   workspace_content_search_form
     kind meaning
   workspace_content_search_noise

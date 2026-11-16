@@ -32,6 +32,7 @@ import { MAX_REPAIR_RUNGS, failedStep, repairStep, stopNote } from './repair_loo
 import { feedbackNeedsChanges, pullRequestFeedbackFilter } from './restart_feedback.mjs';
 import { commandArgument, failureMessage, reportedExitCode as toolReportedExitCode, shellStep } from './tool_result.mjs';
 import { fill } from './work_item_steps.mjs';
+import { acceptanceReport } from './task_acceptance.mjs';
 import { detect } from './crate/language.mjs';
 import { localizedResponse } from './crate/seed.mjs';
 import { trim } from './write_str.mjs';
@@ -154,7 +155,9 @@ function recipeStep(messages, toolNames, symbolicAnswer, objective, recoveryOnly
     return planRecipeCiFallback(messages.slice(progress.last_command_index + 1), toolNames, recipe, commit.reference, workflow, prCompletionCommands(recipe
     , commit, requirementsTarget?.reference ?? commit.reference), true, requirementsTarget.reference);
   }
-  return finalAnswer(executionRecipeFinalAnswer(recipe, progress.command_outputs, commit));
+  const answer = executionRecipeFinalAnswer(recipe, progress.command_outputs, commit);
+  const acceptance = acceptanceReport(objective, recipe, progress.command_outputs.slice(0, recipe.commands.length));
+  return finalAnswer(acceptance === '' ? answer : `${answer}\n${acceptance}\n`);
 }
 function recipeFileMatches(observation, file) {
   const index = observation.latestSourceMutationIndex(file.path);

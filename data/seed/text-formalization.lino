@@ -22,12 +22,16 @@
 #   repetition-twice / repetition-thrice  an explicit count of an effect
 #                        ("print it twice"), never inferred from a repeated
 #                        mention.
+#   repetition-twice-count / repetition-thrice-count  the number each explicit
+#                        count stands for, read by the output binding of
+#                        issue #1166 (rust/src/intent_formalization/obligations.rs).
 #
 # Issue #1162 — the output a program request binds
 # (js/agentic/crate/intent_formalization_obligations.mjs, its Rust twin
-# rust/src/intent_formalization/obligations.rs): the structural rule
-# output-repetition names the count each repetition kind stands for, read
-# right after a quoted output ("prints `Hi` twice" is two lines), and
+# rust/src/intent_formalization/obligations.rs) reads an explicit count right
+# after a quoted output through repetition-twice-count / repetition-thrice-count
+# above ("prints `Hi` twice" is two lines). The structural rule
+# output-repetition names
 #
 #   repetition-again     the words that make a later mention of an output
 #                        already bound a further line ("prints `Hi` and then
@@ -77,13 +81,11 @@ text-formalization
     disjunction-vocabulary "connective-disjunction"
     repetition-vocabulary "repetition-twice"
     repetition-vocabulary "repetition-thrice"
+    repetition-twice-count "2"
+    repetition-thrice-count "3"
     universal-meaning "quantifier_all"
     existential-meaning "quantifier_any"
   structural-rule output-repetition
-    count-vocabulary "repetition-twice"
-    count-vocabulary "repetition-thrice"
-    repetition-twice "2"
-    repetition-thrice "3"
     again-vocabulary "repetition-again"
   structural-rule task-decomposition
     relation "sequence"
