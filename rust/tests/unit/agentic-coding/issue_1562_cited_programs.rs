@@ -18,6 +18,7 @@
 use formal_ai::agentic_coding::work_item_citations::{
     cites_anything, is_citation, obligation_text,
 };
+use formal_ai::language::registered_languages;
 use formal_ai::protocol::{ChatMessage, ToolCall, create_chat_completion_with_solver};
 use serde_json::{Value, json};
 
@@ -203,6 +204,28 @@ fn a_work_item_that_asks_for_the_program_keeps_its_recipe() {
             whole.path
         );
     }
+}
+
+/// The paragraph that says why no program was written is seeded in every
+/// registered language, each in its own words, and names the unbound file.
+#[test]
+fn the_unbound_write_paragraph_is_seeded_in_every_registered_language() {
+    let mut texts = Vec::new();
+    for language in registered_languages() {
+        let slug = language.slug();
+        let text = formal_ai::seed::response_for("work-item-report-unbound-write", slug)
+            .unwrap_or_else(|| panic!("{slug}: the unbound-write paragraph is seeded"));
+        assert!(
+            text.contains("`{path}`"),
+            "{slug}: the paragraph names the file: {text}"
+        );
+        assert!(
+            !texts.contains(&text),
+            "{slug}: the paragraph is translated: {text}"
+        );
+        texts.push(text);
+    }
+    assert_eq!(texts.len(), registered_languages().len());
 }
 
 /// The calls that must never be planned for a report that asks for no program.

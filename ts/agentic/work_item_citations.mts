@@ -13,7 +13,19 @@
 // own naming of what it asks for and is kept.
 // Native twin: rust/src/agentic_coding/work_item_citations.rs.
 
+import { programContractAnswer } from './crate/coding_program_contract.mjs';
+import { traceRoute } from './planner/continuation.mjs';
+
 const FENCES = ['```', '~~~'];
+
+/** Mirrors `SCHEME_SEPARATOR`: the separator that marks an address. */
+const SCHEME_SEPARATOR = '://';
+
+/** Mirrors `WEB_HOST`: the host prefix of an address written without a scheme. */
+const WEB_HOST = 'www.';
+
+/** Mirrors `IMAGE_OPENER`: the opener of a Markdown image. */
+const IMAGE_OPENER = '![';
 
 const ENCODER = new TextEncoder();
 
@@ -51,19 +63,19 @@ function citationEnd(line, start) {
     const close = rest.indexOf(rest.slice(0, run), run);
     return close < 0 ? start : start + close + run;
   }
-  if (rest.startsWith('[') || rest.startsWith('![')) {
+  if (rest.startsWith('[') || rest.startsWith(IMAGE_OPENER)) {
     const end = linkEnd(rest);
     if (end !== null) return start + end;
   }
   if (rest.startsWith('<')) {
     const close = rest.indexOf('>');
-    if (close > 0 && rest.slice(1, close).includes('://') && !/\s/u.test(rest.slice(1, close))) return start + close + 1;
+    if (close > 0 && rest.slice(1, close).includes(SCHEME_SEPARATOR) && !/\s/u.test(rest.slice(1, close))) return start + close + 1;
   }
   const previous = start > 0 ? line[start - 1] : null;
   if (previous === null || /\s/u.test(previous) || '([{<"\''.includes(previous)) {
     const space = rest.search(/\s/u);
     const token = space < 0 ? rest : rest.slice(0, space);
-    if (token.includes('://') || token.toLowerCase().startsWith('www.')) return start + token.length;
+    if (token.includes(SCHEME_SEPARATOR) || token.toLowerCase().startsWith(WEB_HOST)) return start + token.length;
   }
   return start;
 }
@@ -119,4 +131,21 @@ export function citesAnything(text) {
 export function isCitation(obligations, [start, end]) {
   const bytes = ENCODER.encode(obligations);
   return end <= bytes.length && start < end && bytes.subarray(start, end).every(byte => byte === 0x20 || byte === 0x0a || byte === 0x0d || byte === 0x09);
+}
+
+/**
+ * Mirrors `fn unbind_cited_recipe`: drop the recipe when no obligation of the
+ * work item names it and return the path it would have written, or null.
+ */
+export function unbindCitedRecipe(answer, objective, solve = programContractAnswer) {
+  const recipe = answer?.execution_recipe;
+  if (!recipe) return null;
+  const obligations = obligationText(objective);
+  if (obligations === objective) return null;
+  const obliged = solve(obligations)?.execution_recipe ?? null;
+  const bound = obliged !== null && obliged.path === recipe.path && obliged.language === recipe.language;
+  traceRoute('work_item_recipe_binding', { path: recipe.path, language: recipe.language, bound });
+  if (bound) return null;
+  answer.execution_recipe = null;
+  return recipe.path;
 }

@@ -37,16 +37,20 @@ let programContractAnswer;
 let planWorkItemEvidence;
 let workItemReport;
 let workItemRecordOf;
+let registeredLanguages;
+let responseFor;
 
 before(async () => {
   await ensureNodeHost({ worker }, { sourceUsageRustGrammar: false });
   const { agenticOutcome, chatCompletionFromPlan } = await import('../../../js/server/agentic.mjs');
   const { parseChatRequest } = await import('../../../js/server/chat-request.mjs');
   entry = { worker, agenticOutcome, chatCompletionFromPlan, parseChatRequest };
-  ({ unbindCitedRecipe } = await import('../../../js/agentic/general_execution.mjs'));
+  ({ unbindCitedRecipe } = await import('../../../js/agentic/work_item_citations.mjs'));
   ({ programContractAnswer } = await import('../../../js/agentic/crate/coding_program_contract.mjs'));
   ({ planWorkItemEvidence } = await import('../../../js/agentic/work_item_evidence.mjs'));
   ({ workItemReport, workItemRecordOf } = await import('../../../js/agentic/work_item_report.mjs'));
+  ({ registeredLanguages } = await import('../../../js/agentic/crate/language.mjs'));
+  ({ responseFor } = await import('../../../js/agentic/crate/seed.mjs'));
 });
 
 /** A solver like the native one: a Hello World recipe whenever its normalized text says "hello world". */
@@ -154,6 +158,19 @@ describe('issue #1562 recipe binding', () => {
     assert.doesNotMatch(report, /Created and verified/u);
     const listed = /Requirements not yet verified \((\d+)\)/u.exec(report);
     assert.equal(Number(listed?.[1]), record.requirements.length - citations.length, 'only obligations are counted');
+  });
+});
+
+describe('issue #1562 report languages', () => {
+  test('the unbound-write paragraph is seeded in every registered language (en, ru, hi, zh, es)', () => {
+    const texts = registeredLanguages().map(language => {
+      const text = responseFor('work-item-report-unbound-write', language);
+      assert.ok(text, `${language}: the unbound-write paragraph is seeded`);
+      assert.ok(text.includes('`{path}`'), `${language}: the paragraph names the file: ${text}`);
+      return text;
+    });
+    for (const language of ['en', 'ru', 'hi', 'zh', 'es']) assert.ok(registeredLanguages().includes(language), `${language} is registered`);
+    assert.equal(new Set(texts).size, texts.length, 'each language has its own words');
   });
 });
 

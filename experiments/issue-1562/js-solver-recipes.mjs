@@ -7,7 +7,7 @@ import { ensureNodeHost } from '../../js/server/node-host-install.mjs';
 
 await ensureNodeHost({ worker: new WorkerHost() }, { sourceUsageRustGrammar: false });
 const { programContractAnswer } = await import('../../js/agentic/crate/coding_program_contract.mjs');
-const { unbindCitedRecipe } = await import('../../js/agentic/general_execution.mjs');
+const { unbindCitedRecipe } = await import('../../js/agentic/work_item_citations.mjs');
 for (const file of process.argv.slice(2)) {
   const text = readFileSync(file, 'utf8');
   const answer = programContractAnswer(text);

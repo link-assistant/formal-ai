@@ -22,6 +22,15 @@
 /// Fence openers of a fenced code block.
 const FENCES: [&str; 2] = ["```", "~~~"];
 
+/// The scheme separator that marks an address (`https://…`).
+const SCHEME_SEPARATOR: &str = "://";
+
+/// The host prefix that marks an address written without a scheme.
+const WEB_HOST: &str = "www.";
+
+/// The opener of a Markdown image (`![text](target)`).
+const IMAGE_OPENER: &str = "![";
+
 /// The work item with every citation span replaced by spaces of the same byte
 /// length; line breaks are kept, so byte offsets are preserved.
 #[must_use]
@@ -91,14 +100,14 @@ fn citation_end(line: &str, start: usize) -> usize {
             .find(fence)
             .map_or(start, |close| start + run + close + run);
     }
-    if (rest.starts_with('[') || rest.starts_with("!["))
+    if (rest.starts_with('[') || rest.starts_with(IMAGE_OPENER))
         && let Some(end) = link_end(rest)
     {
         return start + end;
     }
     if rest.starts_with('<')
         && let Some(close) = rest.find('>')
-        && rest[1..close].contains("://")
+        && rest[1..close].contains(SCHEME_SEPARATOR)
         && !rest[1..close].contains(char::is_whitespace)
     {
         return start + close + 1;
@@ -108,10 +117,10 @@ fn citation_end(line: &str, start: usize) -> usize {
         .next_back()
         .is_none_or(|previous| previous.is_whitespace() || "([{<\"'".contains(previous));
     if token_start {
-        let token_len = rest.find(char::is_whitespace).unwrap_or(rest.len());
-        let token = &rest[..token_len];
-        if token.contains("://") || token.to_ascii_lowercase().starts_with("www.") {
-            return start + token_len;
+        let token_length = rest.find(char::is_whitespace).unwrap_or(rest.len());
+        let token = &rest[..token_length];
+        if token.contains(SCHEME_SEPARATOR) || token.to_ascii_lowercase().starts_with(WEB_HOST) {
+            return start + token_length;
         }
     }
     start
@@ -151,4 +160,38 @@ pub fn is_citation(obligations: &str, (start, end): (usize, usize)) -> bool {
             span.iter()
                 .all(|byte| matches!(byte, b' ' | b'\n' | b'\r' | b'\t'))
         })
+}
+
+/// Drop the solver's recipe when no obligation of the work item names it, and
+/// return the path it would have written. Mirrored by `unbindCitedRecipe`.
+///
+/// The recipe is bound when the work item's own words — its
+/// [`obligation_text`] — select a recipe writing the same file in the same
+/// language. A work item that cites nothing is its own obligation text and is
+/// not solved twice. The decision is traced as route
+/// `work_item_recipe_binding` under `FORMAL_AI_TRACE_REQUESTS`.
+pub(super) fn unbind_cited_recipe(
+    answer: &mut crate::engine::SymbolicAnswer,
+    objective: &str,
+) -> Option<String> {
+    let recipe = answer.execution_recipe.as_ref()?;
+    let obligations = obligation_text(objective);
+    if obligations == objective {
+        return None;
+    }
+    let bound = crate::solver::UniversalSolver::default()
+        .solve(&obligations)
+        .execution_recipe
+        .is_some_and(|obliged| obliged.path == recipe.path && obliged.language == recipe.language);
+    super::planner::trace_route_with("work_item_recipe_binding", || {
+        Some(serde_json::json!({
+            "path": recipe.path,
+            "language": recipe.language,
+            "bound": bound,
+        }))
+    });
+    if bound {
+        return None;
+    }
+    answer.execution_recipe.take().map(|recipe| recipe.path)
 }
