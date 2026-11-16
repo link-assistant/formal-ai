@@ -1,2 +1,4 @@
 https://github.com/link-assistant/hive-mind/issues/4071
 https://github.com/link-assistant/hive-mind/issues/4072
+https://github.com/link-assistant/agent/issues/342 agent idleTimeout 255 resets long session messages (draft run 43738765561)
+https://github.com/link-assistant/hive-mind/issues/4074 hive-mind 3-minute retry sleep ignores the attempt deadline (draft run 43738765561)
