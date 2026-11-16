@@ -255,7 +255,13 @@ roles
     kind meaning
   comparison_difference_cue
     kind predicate
+  comparison_equal
+    kind meaning
+  comparison_filler
+    kind meaning
   comparison_infix
+    kind meaning
+  comparison_not_equal
     kind meaning
   comparison_query_noise
     kind meaning

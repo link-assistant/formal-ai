@@ -365,6 +365,42 @@ meanings
     lexeme hi "चलने पर" "चलाने पर"
     lexeme zh "运行时"
     lexeme es "se ejecuta" "al ejecutarse"
+  comparison_equal
+    defined-by concept
+    role comparison_equal
+    precondition "an output condition compares two operands for equality"
+    effect "independent task acceptance reads the atom as left equals right (issue #1166)"
+    unit "not applicable"
+    example "when x equals y"
+    lexeme en "equals" "is equal to" "equal to" "is the same as"
+    lexeme ru "равно" "равен" "равна"
+    lexeme hi "के बराबर"
+    lexeme zh "等于"
+    lexeme es "igual a" "es igual a"
+  comparison_not_equal
+    defined-by concept
+    role comparison_not_equal
+    precondition "an output condition compares two operands for inequality"
+    effect "independent task acceptance reads the atom as left differs from right (issue #1166)"
+    unit "not applicable"
+    example "when x does not equal y"
+    lexeme en "does not equal" "is not equal to" "not equal to" "differs from"
+    lexeme ru "не равно" "не равен" "не равна"
+    lexeme hi "के बराबर नहीं"
+    lexeme zh "不等于"
+    lexeme es "distinto de" "diferente de" "no es igual a"
+  comparison_filler
+    defined-by concept
+    role comparison_filler
+    precondition "an output condition wraps an operand in a word that names no operand"
+    effect "independent task acceptance drops the word before reading the operand (issue #1166)"
+    unit "not applicable"
+    example "when the value of x is greater than y"
+    lexeme en "value"
+    lexeme ru "значение"
+    lexeme hi "मान"
+    lexeme zh "值"
+    lexeme es "es" "sea" "valor"
   numbered_line_noun
     defined-by concept
     role numbered_line_noun
