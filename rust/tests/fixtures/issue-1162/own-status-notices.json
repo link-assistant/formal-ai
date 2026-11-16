@@ -1,0 +1,127 @@
+{
+  "issue": 1162,
+  "purpose": "Real orchestrator notices from the three 2026-11 Hello World test pull requests (shortest body per own-status pattern). Each alone must not count as feedback; every negative must.",
+  "generated_by": "experiments/issue-1162/collect-notice-samples.mjs",
+  "observed": {
+    "comments": 339,
+    "unmatched": 0
+  },
+  "own_notices": [
+    {
+      "key": "pull-request-session-summary-pattern",
+      "source": "test-hello-world-019fb330-fa49-7c9d-a664-b7ea33bb698a",
+      "body": "<!-- hive-mind:working-session-summary -->\n## Working session summary\n\nThe `pwd` command completed. Output:\n\n```text\n/tmp/gh-issue-solver-1785421161275\n```\n\n---\n*This summary was automatically extracted from the AI working session output.*"
+    },
+    {
+      "key": "pull-request-session-started-pattern",
+      "source": "test-hello-world-019fb330-00e1-73b9-955e-f357a1600d5b",
+      "body": "🤖 **AI Work Session Started**\n\nStarted at 2026-10-13T22:06:53.577Z. Please wait for it to finish before giving feedback.\n\n_Runtime: solve `v2.35.8` · tool `agent` · model `formal-ai` · task image `konard/hive-mind-dind:2.35.8@sha256:9706ce436565c715d6c2b95f615b51fa8c8ee96ddbbf56d98201e6861fdc60e9` · Formal AI `0.352.1`_"
+    },
+    {
+      "key": "pull-request-solution-log-pattern",
+      "source": "test-hello-world-019fb331-c107-78c7-8ff6-9f127a3c593c",
+      "body": "## 📎 Intermediate working-session log (killed session)\nThis log file contains the complete execution trace of the AI solution draft process.\n\n### 📎 **Log file uploaded as Gist** (425KB)\n- [View complete solution draft log](https://gist.githubusercontent.com/konard/43b8126ae1233d6f54a8e8fdf6b87a63/raw/ce9a1af43e4de5e1167f804148654c00cf9df3b2/tmp-hive-mind-log-upload-mDNtem-sanitized.log.txt)\n\n---\n*Now working session is ended, feel free to review and add any feedback on the solution draft.*"
+    },
+    {
+      "key": "pull-request-auto-restart-pattern",
+      "source": "test-hello-world-019fb330-00e1-73b9-955e-f357a1600d5b",
+      "body": "## 🔄 Auto-restart 1/5\n\n**Reason:** CI failures detected\n\nStarting new session to address the issues.\n\n---\n*Auto-restart-until-mergeable mode is active. This run will stop after 5 restart iterations in total.*"
+    },
+    {
+      "key": "pull-request-restart-limit-pattern",
+      "source": "test-hello-world-019fb331-c107-78c7-8ff6-9f127a3c593c",
+      "body": "## ❌ Auto-restart 5/5 - limit reached\n\n**Remaining blocker:** uncommitted changes remained: M tests/verify-output.sh, ?? .github/\n\nThe uncommitted changes were preserved outside this pull request: pushed to the branch `recovery/issue-1-09b0c76bd0e4` (commit cb00f1f5); the pull request branch was not changed. To drop it: `git push origin --delete recovery/issue-1-09b0c76bd0e4`.\n\nNo more sessions will start automatically. Resolve the blocker, or rerun with a higher `--auto-restart-max-iterations`."
+    },
+    {
+      "key": "pull-request-ready-to-merge-pattern",
+      "source": "test-hello-world-019fb330-fa49-7c9d-a664-b7ea33bb698a",
+      "body": "## ✅ Ready to merge\n\nThis pull request is now ready to be merged:\n- All CI checks have passed\n- No merge conflicts\n- No uncommitted changes"
+    },
+    {
+      "key": "pull-request-automation-stopped-pattern",
+      "source": "test-hello-world-019fb331-c107-78c7-8ff6-9f127a3c593c",
+      "body": "## 🛑 Automation stopped: the AI session failed\n\n`--auto-restart-until-mergeable` stopped working on this pull request.\n\n**Reason code:** `tool_failure`\n\n**What happened:** Model metadata for `formal-ai` not found. Defaulting to fallback metadata; this can degrade performance and cause issues.\n\nThe AI tool exited with an error that is not a usage limit, so restarting it automatically would most likely fail the same way.\n\n**What to do next:**\n- Review the attached working session log for the failure, fix the cause, and re-run the command.\n\n---\n*Reported automatically by hive-mind (auto-restart-until-mergeable).*"
+    },
+    {
+      "key": "pull-request-auto-restart-evidence-pattern",
+      "source": "test-hello-world-019fb331-c107-78c7-8ff6-9f127a3c593c",
+      "body": "## 🔄 Auto-restart 1/5\n\n**Reason:** The pull request contains only the placeholder file the solver commits to open a pull request, so there is nothing to merge\n\nStarting a new session to address it."
+    },
+    {
+      "key": "pull-request-auto-restart-uncommitted-pattern",
+      "source": "test-hello-world-019fb330-fa49-7c9d-a664-b7ea33bb698a",
+      "body": "## 🔄 Auto-restart 1/5\n\nThe previous session left uncommitted changes. Starting a new session to commit or discard them.\n\n**Uncommitted files:**\n```\n?? Main.jar\n```"
+    },
+    {
+      "key": "pull-request-restart-safety-limit-pattern",
+      "source": "test-hello-world-019fb330-00e1-73b9-955e-f357a1600d5b",
+      "body": "## ⚠️ Auto-restart limit reached\n\nHive Mind stopped auto-restart-until-mergeable after 5 restart iterations.\n\n**Configured limit:** 5\n**Remaining reason:** Uncommitted changes detected\n\nNo further AI sessions will be started automatically for this run. Please review the remaining blockers manually or rerun with a higher `--auto-restart-max-iterations` value.\n\n---\n*Auto-restart-until-mergeable stopped by the safety limit.*"
+    },
+    {
+      "key": "pull-request-session-started-draft-pattern",
+      "source": "test-hello-world-019fb330-00e1-73b9-955e-f357a1600d5b",
+      "body": "🤖 **AI Work Session Started**\n\nStarting automated work session at 2026-08-02T14:07:11.133Z\n\nThe PR has been converted to draft mode while work is in progress.\n\n_This comment marks the beginning of an AI work session. Please wait for the session to finish, and provide your feedback._"
+    },
+    {
+      "key": "pull-request-solution-failed-pattern",
+      "source": "test-hello-world-019fb330-fa49-7c9d-a664-b7ea33bb698a",
+      "body": "## 🚨 Solution Draft Failed\n\nThe automated solver stopped while continuing this existing pull request, so the failure details are posted here for review.\n\n### Failure\n- **Repository**: `konard/test-hello-world-019fb330-fa49-7c9d-a664-b7ea33bb698a`\n- **Pull request**: #2\n- **Linked issue**: #1\n- **Tool**: `claude`\n- **Requested model**: `formal-ai`\n\n**Reason**\n```text\nCLAUDE execution failed with Prompt is too long\n```\n\n### What you can do\n- Resolve the repository, account, permissions, or environment problem described above, then rerun the solver.\n- Repository owner or Hive Mind administrator path: handle manual recreation or fix of the repository when the required action is outside the requester access.\n\nLogs were not attached because `--attach-logs` was not enabled, so this comment is the only surviving record of the failure. Rerun with `--attach-logs --verbose` to publish the full session log with the raw tool error records.\n"
+    },
+    {
+      "key": "pull-request-no-changes-pattern",
+      "source": "test-hello-world-019fb331-c107-78c7-8ff6-9f127a3c593c",
+      "body": "⚠️ **No changes were produced by this session**\n\nThe pull request has an empty diff against its base branch (only the solver placeholder file is present), so it was not marked ready for review. Check the session log for why, then rerun the solver or continue manually."
+    },
+    {
+      "key": "pull-request-session-killed-pattern",
+      "source": "test-hello-world-019fb331-c107-78c7-8ff6-9f127a3c593c",
+      "body": "<!-- hive-mind:session-kill-notice -->\n## ❌ Working session was force-killed\n\nforced kill — an operator requested the stop\n\n- **Exit code:** 137\n- **Working session:** `ba087de3-96f8-4696-90fa-46edb8f4a544`\n- **On-kill policy:** `resume` (`--on-session-kill=resume`)\n\n<details><summary>Kill diagnostics</summary>\n\n- last session memory reading — 9.5 GB of 11.7 GB RAM available (18.9% used) at 2026-10-20T22:36:02.027Z (phase `log_upload_start`)\n- last session V8 heap reading — 40 MB used of 1.6 GB limit (2.5%) at 2026-10-20T22:36:02.027Z (phase `log_upload_start`)\n- last session disk /: 131.9 GB free of 192.7 GB (31.5% used) at 2026-10-20T22:36:02.027Z (phase `log_upload_start`)\n- lowest host disk /tmp/start-command/logs/isolation/docker: 118.5 GB free of 192.7 GB (38.5% used) at 2026-10-20T12:07:58.803Z observed by the monitor while the session ran\n- last session container cgroup reading — 370 MB used, 2.9 GB limit, peak 977 MB, 0 process(es) killed by the OOM killer, memory.events oom=0 at 2026-10-20T22:36:02.027Z (phase `log_upload_start`)\n- start-command watcher container cgroup reading — 2.9 GB limit, peak 977 MB, 0 process(es) killed by the OOM killer, memory.events oom=0\n- host memory now — 9.8 GB of 11.7 GB RAM available (15.7% used)\n- `/proc/pressure/memory`: some avg10=0.00 avg60=0.00 avg300=0.00 total=30686426\n- `$ --status` reports `exitReason = signal (SIGKILL; cause unknown)`\n\n</details>\n\nThis working session did not continue. Nothing below this comment was produced by it.\n\n📎 The intermediate working-session log was uploaded as a separate comment.\n\nTo continue manually:\n\n```bash\nsolve https://github.com/konard/test-hello-world-019fb331-c107-78c7-8ff6-9f127a3c593c/issues/1 --model formal-ai --tool codex --attach-logs --verbose --no-tool-check --disable-report-issue --language en --resume 01a1586d-a94a-7770-877b-2daebf8de380\n```\n\n<sub>Reported by Hive Mind</sub>"
+    }
+  ],
+  "negatives": [
+    {
+      "id": "viewer-plain-request",
+      "item": {
+        "author": {
+          "login": "konard"
+        },
+        "viewerDidAuthor": true,
+        "includesCreatedEdit": false,
+        "body": "Please rename the workflow to ci.yml"
+      }
+    },
+    {
+      "id": "other-author-notice",
+      "item": {
+        "author": {
+          "login": "reviewer"
+        },
+        "viewerDidAuthor": false,
+        "includesCreatedEdit": false,
+        "body": "## ✅ Ready to merge\n\nThis pull request is now ready to be merged:\n- All CI checks have passed\n- No merge conflicts\n- No uncommitted changes"
+      }
+    },
+    {
+      "id": "edited-notice",
+      "item": {
+        "author": {
+          "login": "konard"
+        },
+        "viewerDidAuthor": true,
+        "includesCreatedEdit": true,
+        "body": "## ✅ Ready to merge\n\nThis pull request is now ready to be merged:\n- All CI checks have passed\n- No merge conflicts\n- No uncommitted changes"
+      }
+    },
+    {
+      "id": "notice-with-request-appended",
+      "item": {
+        "author": {
+          "login": "konard"
+        },
+        "viewerDidAuthor": true,
+        "includesCreatedEdit": false,
+        "body": "## ✅ Ready to merge\n\nThis pull request is now ready to be merged:\n- All CI checks have passed\n- No merge conflicts\n- No uncommitted changes\n\nAlso fix the README."
+      }
+    }
+  ]
+}

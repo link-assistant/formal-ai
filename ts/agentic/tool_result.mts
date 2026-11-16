@@ -139,6 +139,39 @@ export function observedPayload(raw) {
   return result.payload;
 }
 
+/**
+ * Mirrors `fn exact_successful_stdout`: the exact stdout of a successful
+ * client exec envelope, leading columns intact (issue #1162: Codex reports
+ * ` M path` porcelain records whose leading space the trimmed payload erased).
+ */
+export function exactSuccessfulStdout(raw) {
+  if (incompleteReceipt(raw)) return null;
+  const value = parseJson(trim(raw));
+  if (isObject(value)) {
+    const result = normalize(raw);
+    if (result.exit_code !== 0 || result.error !== null) return null;
+    const key = ['output', 'stdout'].find(name => has(value, name));
+    const text = key === undefined ? undefined : value[key];
+    if (typeof text !== 'string') return null;
+    return exactSuccessfulStdout(text) ?? text;
+  }
+  const inner = untrustedInner(raw);
+  let header;
+  let body;
+  if (inner.startsWith('Output:\n')) {
+    header = '';
+    body = inner.slice('Output:\n'.length);
+  } else {
+    const split = splitOnce(inner, '\nOutput:\n');
+    if (split === null || split === undefined) return null;
+    [header, body] = split;
+  }
+  const headerLines = rustLines(header);
+  if (headerLines.length === 0 || headerLines.some(line => trim(line) === '' || trim(line) === 'Output:')
+    || labelledProcessExitCode(header) !== 0) return null;
+  return body;
+}
+
 /** Mirrors `fn failure_message`. */
 export function failureMessage(raw, explicitlyFailed, inferFromProse) {
   const result = normalize(raw);

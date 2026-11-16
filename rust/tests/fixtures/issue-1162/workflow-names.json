@@ -1,0 +1,13 @@
+{
+  "issue": 1162,
+  "purpose": "The workflow path each request line yields: a suggested file name lands in .github/workflows/, a literal save path wins over it, and an invalid, quoted or absent suggestion falls back to the program-stem default.",
+  "cases": [
+    { "id": "suggested-backticked", "prompt": "Write a Kotlin program that prints \"Hello, World!\" to stdout.\nCreate a GitHub Actions workflow that runs it on every push and pull request.\n- The workflow should have a meaningful name like `test-hello-world.yml`", "workflow": ".github/workflows/test-hello-world.yml" },
+    { "id": "suggested-plain", "prompt": "Write a Rust program that prints \"Hello, World!\" to stdout.\nCreate a GitHub Actions workflow that runs it on every push and pull request.\nName the workflow something like hello.yml", "workflow": ".github/workflows/hello.yml" },
+    { "id": "suggested-russian", "prompt": "Write a Scala program that prints \"Hello, World!\" to stdout.\nCreate a GitHub Actions workflow that runs it on every push and pull request.\nРабочий процесс должен иметь осмысленное имя, например `privet.yml`", "workflow": ".github/workflows/privet.yml" },
+    { "id": "literal-path-wins", "prompt": "Write a Kotlin program that prints \"Hello, World!\" to stdout.\nCreate a GitHub Actions workflow that runs it on every push and pull request.\n- The workflow should have a meaningful name like `test-hello-world.yml`\n- Save the workflow as `ci/test-hello-world.yml`", "workflow": "ci/test-hello-world.yml" },
+    { "id": "suggestion-with-directory-falls-back", "prompt": "Write a Kotlin program that prints \"Hello, World!\" to stdout.\nCreate a GitHub Actions workflow that runs it on every push and pull request.\n- The workflow should have a meaningful name like `ci/x.yml`", "workflow": ".github/workflows/Main.yml" },
+    { "id": "quoted-suggestion-is-not-a-directive", "prompt": "Write a Kotlin program that prints \"Hello, World!\" to stdout.\nCreate a GitHub Actions workflow that runs it on every push and pull request.\n\"The workflow should have a meaningful name like `quoted.yml`\"", "workflow": ".github/workflows/Main.yml" },
+    { "id": "no-suggestion", "prompt": "Write a Kotlin program that prints \"Hello, World!\" to stdout.\nCreate a GitHub Actions workflow that runs it on every push and pull request.", "workflow": ".github/workflows/Main.yml" }
+  ]
+}

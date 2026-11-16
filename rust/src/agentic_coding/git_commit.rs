@@ -107,6 +107,11 @@ pub(super) fn valid_workflow_target(value: &str) -> bool {
             .all(|part| !part.is_empty() && part != "." && part != "..")
 }
 
+/// A workflow file name with no directory (issue #1162).
+pub(super) fn valid_workflow_file_name(value: &str) -> bool {
+    !value.contains('/') && valid_workflow_target(value)
+}
+
 pub(super) fn request_target_binding(
     request: &str,
     key: &str,
@@ -273,7 +278,45 @@ pub(super) fn recipe_commit_command(recipe: &ExecutionRecipe, target: &CommitTar
         &[
             ("{files}", &files),
             ("{reference}", &shell_quote(&target.reference)),
+            ("{retire}", &superseded_workflow_step(recipe)),
             ("{commit}", &command),
+        ],
+    )
+}
+
+/// The step that retires this generator's earlier workflow for the same
+/// program, or nothing when the recipe carries no workflow (issue #1162).
+///
+/// A resumed Hive Mind session regenerated the workflow at
+/// `.github/workflows/Main.yml` beside the `run.yml` an earlier session had
+/// committed, so the pull request ran the program twice. The retired file must
+/// sit beside the recipe's workflow and carry the template's exact header and
+/// name lines for this program; anything a person wrote or edited stays.
+#[allow(clippy::literal_string_with_formatting_args)]
+pub(super) fn superseded_workflow_step(recipe: &ExecutionRecipe) -> String {
+    let template = super::work_item_steps::fill("workflow_template", &[("{path}", &recipe.path)]);
+    let header = template.lines().next().unwrap_or_default();
+    let Some(name) = template.lines().find(|line| line.starts_with("name: ")) else {
+        return String::new();
+    };
+    let Some(workflow) = recipe
+        .supporting_files
+        .iter()
+        .find(|file| file.source.lines().any(|line| line == name))
+    else {
+        return String::new();
+    };
+    let (dir, file) = workflow
+        .path
+        .rsplit_once('/')
+        .unwrap_or((".", workflow.path.as_str()));
+    super::work_item_steps::fill(
+        "superseded-workflow-retire-command",
+        &[
+            ("{dir}", &shell_quote(dir)),
+            ("{workflow}", &shell_quote(&format!("{dir}/{file}"))),
+            ("{header}", &shell_quote(header)),
+            ("{name}", &shell_quote(name)),
         ],
     )
 }
@@ -426,3 +469,7 @@ mod target_binding_controls;
 #[cfg(test)]
 #[path = "../../tests/unit/agentic-coding/git_commit_extension_identity.rs"]
 mod extension_identity_tests;
+
+#[cfg(test)]
+#[path = "../../tests/unit/agentic-coding/issue_1162_delivery_commands.rs"]
+mod issue_1162_delivery_commands;

@@ -114,7 +114,27 @@ export function recipeCommitCommand(recipe, target) {
   return fill('task-scaffold-commit-command', [
     ['{files}', files],
     ['{reference}', shellQuote(target.reference)],
+    ['{retire}', supersededWorkflowStep(recipe)],
     ['{commit}', command],
+  ]);
+}
+
+/** Mirrors `fn superseded_workflow_step` (issue #1162). */
+export function supersededWorkflowStep(recipe) {
+  const template = fill('workflow_template', [['{path}', recipe.path]]);
+  const lines = rustLines(template);
+  const header = lines[0] ?? '';
+  const name = lines.find((line) => line.startsWith('name: '));
+  if (name === undefined) return '';
+  const workflow = recipe.supporting_files.find((file) => rustLines(file.source).includes(name));
+  if (workflow === undefined) return '';
+  const slash = workflow.path.lastIndexOf('/');
+  const [dir, file] = slash < 0 ? ['.', workflow.path] : [workflow.path.slice(0, slash), workflow.path.slice(slash + 1)];
+  return fill('superseded-workflow-retire-command', [
+    ['{dir}', shellQuote(dir)],
+    ['{workflow}', shellQuote(`${dir}/${file}`)],
+    ['{header}', shellQuote(header)],
+    ['{name}', shellQuote(name)],
   ]);
 }
 

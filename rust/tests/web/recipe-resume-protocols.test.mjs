@@ -358,6 +358,8 @@ elif a[:2]==['pr','view']:
             print(json.dumps(dict(headRefOid=s['head'],headRefName=s['branch'],isDraft=s['isDraft'],state='OPEN',url=s['reference'])))
         elif fields=='comments,reviews':
             print(json.dumps(s['feedback']))
+        elif fields in ('title','body'):
+            print(s.get(fields,''))
         else:
             raise RuntimeError('unexpected fixture PR fields '+fields)
     else:
@@ -372,6 +374,9 @@ elif a[:2]==['pr','checks']:
         print('All checks passed.')
 elif a[:2]==['pr','edit']:
     assert a[2]==s['reference']
+    for flag in ('--title','--body'):
+        if flag in a:
+            s[flag[2:]]=a[a.index(flag)+1]
 elif a[:2]==['pr','ready']:
     assert a[2]==s['reference'] and s['isDraft']
     s['isDraft']=False

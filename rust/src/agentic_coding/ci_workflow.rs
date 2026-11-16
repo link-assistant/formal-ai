@@ -48,9 +48,10 @@ pub(super) fn attach(recipe: &mut ExecutionRecipe, objective: &str) {
     );
     let path = match binding {
         super::git_commit::RequestTargetBinding::Bound(value) => value,
-        super::git_commit::RequestTargetBinding::Absent => {
-            super::work_item_steps::fill("workflow_path_named", &[("{name}", &name)])
-        }
+        super::git_commit::RequestTargetBinding::Absent => suggested_workflow_path(objective)
+            .unwrap_or_else(|| {
+                super::work_item_steps::fill("workflow_path_named", &[("{name}", &name)])
+            }),
         super::git_commit::RequestTargetBinding::Refused => {
             recipe.commands.insert(
                 0,
@@ -66,6 +67,23 @@ pub(super) fn attach(recipe: &mut ExecutionRecipe, objective: &str) {
     recipe
         .supporting_files
         .push(ExecutionRecipeFile { path, source });
+}
+
+/// The file name the request suggests for its workflow ("a meaningful name
+/// like `test-hello-world.yml`"), placed in the workflow directory (issue
+/// #1162). A suggestion is not a directive, so an invalid or ambiguous one
+/// falls back to the program-stem default.
+pub(super) fn suggested_workflow_path(objective: &str) -> Option<String> {
+    match super::git_commit::request_target_binding(
+        objective,
+        "workflow-name-binding-patterns",
+        super::git_commit::valid_workflow_file_name,
+    ) {
+        super::git_commit::RequestTargetBinding::Bound(file) => Some(
+            super::work_item_steps::fill("workflow_path_file", &[("{file}", &file)]),
+        ),
+        _ => None,
+    }
 }
 
 /// The workflow text over the generation-time version set.
@@ -93,7 +111,7 @@ pub fn render_with(
     versions: &crate::version_resolution::VersionSet,
 ) -> String {
     let template = super::work_item_steps::fill("workflow_template", &[("{path}", &recipe.path)]);
-    let setup = crate::coding::program_contract::runtime_steps(&recipe.language);
+    let setup = crate::coding::program_contract::runtime_step_template(&recipe.language);
     let placed = format!("{template}{}", setup.as_deref().unwrap_or_default());
     let mut out = String::new();
     for note in versions.provenance_note_for(&placed) {

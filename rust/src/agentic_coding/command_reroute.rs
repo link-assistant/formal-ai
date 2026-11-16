@@ -401,7 +401,7 @@ fn recipe_workflow(recipe: &ExecutionRecipe, objective: &str) -> Option<String> 
 /// (issue #1162: the delivered pull requests kept the orchestrator's
 /// placeholder title and description, and the body named the pull request
 /// itself rather than the issue it resolves).
-fn pr_completion_commands(
+pub(super) fn pr_completion_commands(
     recipe: &ExecutionRecipe,
     target: &CommitTarget,
     requirements: &str,

@@ -273,7 +273,7 @@ fn own_session_status(item: &serde_json::Value, body: &str) -> bool {
 /// pull request carried 94 such notices (107 KB), the client truncated the
 /// read, and the unreadable result stopped delivery before the description
 /// and readiness steps.
-const OWN_STATUS_PATTERN_KEYS: [&str; 7] = [
+const OWN_STATUS_PATTERN_KEYS: [&str; 14] = [
     "pull-request-session-summary-pattern",
     "pull-request-session-started-pattern",
     "pull-request-solution-log-pattern",
@@ -281,6 +281,13 @@ const OWN_STATUS_PATTERN_KEYS: [&str; 7] = [
     "pull-request-restart-limit-pattern",
     "pull-request-ready-to-merge-pattern",
     "pull-request-automation-stopped-pattern",
+    "pull-request-auto-restart-evidence-pattern",
+    "pull-request-auto-restart-uncommitted-pattern",
+    "pull-request-restart-safety-limit-pattern",
+    "pull-request-session-started-draft-pattern",
+    "pull-request-solution-failed-pattern",
+    "pull-request-no-changes-pattern",
+    "pull-request-session-killed-pattern",
 ];
 
 fn own_status_patterns() -> Vec<String> {

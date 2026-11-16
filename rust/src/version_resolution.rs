@@ -285,23 +285,38 @@ impl VersionSet {
     /// (R5). Empty when every pin was resolved live.
     #[must_use]
     pub fn provenance_note(&self) -> Vec<String> {
-        self.provenance_note_where(|_| true)
+        self.provenance_note_where(|_, _| true)
     }
 
-    /// [`Self::provenance_note`] limited to the pins `template` places: a
-    /// workflow says where its own versions came from and nothing about the
-    /// toolchains of other languages (issue #1162: the Scala run's workflow
-    /// listed the Kotlin, Java and Python pins it never used).
+    /// [`Self::provenance_note`] limited to the pins `template` places, by a
+    /// version placeholder or by a `workflow_uses` action step (and the
+    /// version key scoped to that step): a workflow says where its own
+    /// versions came from and nothing about the toolchains of other
+    /// languages (issue #1162: the Scala run's workflow listed the Kotlin,
+    /// Java and Python pins it never used).
     #[must_use]
     pub fn provenance_note_for(&self, template: &str) -> Vec<String> {
-        self.provenance_note_where(|placeholders| {
+        let actions = workflow_actions(self)
+            .into_iter()
+            .filter(|action| template.contains(&action.marker))
+            .collect::<Vec<_>>();
+        self.provenance_note_where(|pin, placeholders| {
             placeholders
                 .iter()
                 .any(|placeholder| template.contains(placeholder))
+                || actions.iter().any(|action| {
+                    std::ptr::eq(action.pin, pin)
+                        || action.scoped.as_ref().is_some_and(|(key, scoped)| {
+                            std::ptr::eq(*scoped, pin) && template.contains(key.as_str())
+                        })
+                })
         })
     }
 
-    fn provenance_note_where(&self, used: impl Fn(&[&str]) -> bool) -> Vec<String> {
+    fn provenance_note_where(
+        &self,
+        used: impl Fn(&ResolvedVersion, &[&str]) -> bool,
+    ) -> Vec<String> {
         [
             (
                 "actions/checkout",
@@ -323,7 +338,11 @@ impl VersionSet {
                 &self.setup_python,
                 &["{setup_python_ref}", "{setup_python_tag}"][..],
             ),
-            ("python", &self.python_interpreter, &["{python_version}"][..]),
+            (
+                "python",
+                &self.python_interpreter,
+                &["{python_version}"][..],
+            ),
             ("kotlin", &self.kotlin, &["{kotlin_version}"][..]),
             ("java", &self.java_lts, &["{java_lts}"][..]),
             (
@@ -334,7 +353,7 @@ impl VersionSet {
             ("scala", &self.scala, &["{scala_version}"][..]),
         ]
         .into_iter()
-        .filter(|(_, pin, placeholders)| pin.origin != Origin::Live && used(placeholders))
+        .filter(|(_, pin, placeholders)| pin.origin != Origin::Live && used(pin, placeholders))
         .map(|(name, pin, _)| (name, pin))
         .map(|(name, pin)| {
             let intent = if pin.origin == Origin::Cache {
