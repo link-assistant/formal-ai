@@ -41,9 +41,11 @@ function checkStructure(value) {
   assert.equal(actions, 'read');
   assert.deepEqual(originalPermissions, original.packagePermissions);
   const boundedResolve = structuredClone(original.resolve);
-  // Issue #1571 pins the runner image instead of the floating ubuntu-latest label.
-  assert.equal(boundedResolve['runs-on'], 'ubuntu-latest');
-  boundedResolve['runs-on'] = 'ubuntu-24.04';
+  // Issues #1191 and #1571 pin the runner image instead of the floating
+  // ubuntu-latest label. #1191 restated the reviewed baseline JSON with the pin
+  // and #1571 restated this assertion, so after both merged the test expected
+  // the old label (issue #1580): the baseline itself carries the pin now.
+  assert.equal(boundedResolve['runs-on'], 'ubuntu-24.04');
   boundedResolve.env = {
     GIT_HTTP_LOW_SPEED_LIMIT: '1024',
     GIT_HTTP_LOW_SPEED_TIME: '30'
