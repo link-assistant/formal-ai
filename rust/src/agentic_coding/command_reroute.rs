@@ -122,7 +122,11 @@ fn recipe_step(
     if let Some(target) = &commit
         && workflow.is_none()
     {
-        expected_commands.extend(pr_completion_commands(recipe, target));
+        expected_commands.extend(pr_completion_commands(
+            recipe,
+            target,
+            requirements_reference.as_deref().unwrap_or(target.reference.as_str()),
+        ));
     }
     let progress =
         RecipeProgress::after_latest_user(messages, write_tool, recipe, &expected_commands, resume);
@@ -138,7 +142,11 @@ fn recipe_step(
         return None;
     }
     if let Some(target) = &commit {
-        let followup = pr_completion_commands(recipe, target);
+        let followup = pr_completion_commands(
+            recipe,
+            target,
+            requirements_reference.as_deref().unwrap_or(target.reference.as_str()),
+        );
         let observed = super::progress::Progress::scan(messages);
         if let Some(comments) = followup.first()
             && let Some(output) = observed.latest_successful_run_output_for(comments)
@@ -203,7 +211,11 @@ fn recipe_step(
                 && failure.exit_code == Some(127)
                 && let (Some(target), Some(workflow)) = (&commit, &workflow)
             {
-                let followup = pr_completion_commands(recipe, target);
+                let followup = pr_completion_commands(
+            recipe,
+            target,
+            requirements_reference.as_deref().unwrap_or(target.reference.as_str()),
+        );
                 let start = progress.failure_index.map_or(0, |index| index + 1);
                 return Some(super::recipe_resume::plan_recipe_ci_fallback(
                     &messages[start..],
@@ -298,7 +310,11 @@ fn recipe_step(
     }
 
     if let (Some(target), Some(workflow)) = (&commit, &workflow) {
-        let followup = pr_completion_commands(recipe, target);
+        let followup = pr_completion_commands(
+            recipe,
+            target,
+            requirements_reference.as_deref().unwrap_or(target.reference.as_str()),
+        );
         let start = progress.last_command_index.map_or(0, |index| index + 1);
         return Some(super::recipe_resume::plan_recipe_ci_fallback(
             &messages[start..],
@@ -379,11 +395,22 @@ fn recipe_workflow(recipe: &ExecutionRecipe, objective: &str) -> Option<String> 
         .find_map(|line| line.strip_prefix("name: ").map(str::to_owned))
 }
 
-fn pr_completion_commands(recipe: &ExecutionRecipe, target: &CommitTarget) -> Vec<String> {
+/// Feedback read, description edit and readiness for a pull request target.
+/// `requirements` is the reference the request was for: when it is an issue
+/// the description closes that issue and the title is the issue's title
+/// (issue #1162: the delivered pull requests kept the orchestrator's
+/// placeholder title and description, and the body named the pull request
+/// itself rather than the issue it resolves).
+fn pr_completion_commands(
+    recipe: &ExecutionRecipe,
+    target: &CommitTarget,
+    requirements: &str,
+) -> Vec<String> {
     if !git_commit::is_pull_request_target(target) {
         return Vec::new();
     }
     let target_url = super::git_commit::shell_quote(&target.reference);
+    let issue = requirements.contains("/issues/").then_some(requirements);
     let commands = recipe
         .commands
         .iter()
@@ -395,24 +422,42 @@ fn pr_completion_commands(recipe: &ExecutionRecipe, target: &CommitTarget) -> Ve
         &[
             ("{path}", &recipe.path),
             (concat!("{", "commands}"), &commands),
-            ("{reference}", &target.reference),
+            ("{reference}", issue.unwrap_or(&target.reference)),
         ],
     );
-    vec![
-        super::work_item_steps::fill(
-            "pr_comments_command",
-            &[(concat!("{", "target}"), &target_url)],
-        ),
-        super::work_item_steps::fill(
-            "pr_edit_command",
+    let quoted_body = super::git_commit::shell_quote(&body);
+    let edit = match issue {
+        Some(issue) => super::work_item_steps::fill(
+            "pr_edit_titled_command",
             &[
                 (concat!("{", "target}"), &target_url),
                 (
-                    concat!("{", "body}"),
-                    &super::git_commit::shell_quote(&body),
+                    concat!("{", "issue}"),
+                    &super::git_commit::shell_quote(issue),
+                ),
+                (concat!("{", "body}"), &quoted_body),
+            ],
+        ),
+        None => super::work_item_steps::fill(
+            "pr_edit_command",
+            &[
+                (concat!("{", "target}"), &target_url),
+                (concat!("{", "body}"), &quoted_body),
+            ],
+        ),
+    };
+    vec![
+        super::work_item_steps::fill(
+            "pr_comments_command",
+            &[
+                (concat!("{", "target}"), &target_url),
+                (
+                    concat!("{", "filter}"),
+                    &super::git_commit::shell_quote(&super::restart_feedback::pr_feedback_filter()),
                 ),
             ],
         ),
+        edit,
         super::work_item_steps::fill(
             "pr_ready_command",
             &[(concat!("{", "target}"), &target_url)],

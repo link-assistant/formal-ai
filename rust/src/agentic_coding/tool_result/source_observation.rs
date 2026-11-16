@@ -139,6 +139,50 @@ pub(in crate::agentic_coding) fn observed_payload(raw: &str) -> Option<String> {
     Some(result.payload)
 }
 
+/// Exact stdout of a successful client exec envelope, leading columns intact.
+///
+/// Codex's `exec_command` reports `Chunk ID` / `Wall time` / `Process exited
+/// with code N` / `Original token count` header lines, then an `Output:` line;
+/// every byte after that line is the process's own stdout. The normalised
+/// payload is trimmed for presentation, which erases the leading space of a
+/// `git status --porcelain` record such as ` M tests/verify-output.sh`, so the
+/// prepared-work status read as unparseable and every Rust/Codex session of
+/// issue #1162 ended in a scope refusal instead of committing its workflow.
+/// Only a header block that names a zero exit status is accepted; a running
+/// session, a failure or an unframed text is not exact evidence.
+pub(in crate::agentic_coding) fn exact_successful_stdout(raw: &str) -> Option<String> {
+    if incomplete_receipt(raw) {
+        return None;
+    }
+    if let Ok(Value::Object(object)) = serde_json::from_str::<Value>(raw.trim()) {
+        let result = normalize(raw);
+        if result.exit_code != Some(0) || result.error.is_some() {
+            return None;
+        }
+        let text = ["output", "stdout"]
+            .iter()
+            .find_map(|key| object.get(*key))
+            .and_then(Value::as_str)?;
+        return exact_successful_stdout(text).or_else(|| Some(text.to_owned()));
+    }
+    let inner = super::untrusted_inner(raw);
+    let (header, body) = if let Some(body) = inner.strip_prefix("Output:\n") {
+        ("", body)
+    } else {
+        inner.split_once("\nOutput:\n")?
+    };
+    let header_lines = header.lines().collect::<Vec<_>>();
+    if header_lines.is_empty()
+        || header_lines
+            .iter()
+            .any(|line| line.trim().is_empty() || line.trim() == "Output:")
+        || labelled_process_exit_code(header) != Some(0)
+    {
+        return None;
+    }
+    Some(body.to_owned())
+}
+
 /// Declared partial or interrupted payloads do not certify bytes.
 pub(in crate::agentic_coding) fn incomplete_receipt(raw: &str) -> bool {
     let Ok(Value::Object(object)) = serde_json::from_str::<Value>(raw.trim()) else {

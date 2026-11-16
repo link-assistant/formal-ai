@@ -92,21 +92,21 @@ pub fn render_with(
     recipe: &ExecutionRecipe,
     versions: &crate::version_resolution::VersionSet,
 ) -> String {
+    let template = super::work_item_steps::fill("workflow_template", &[("{path}", &recipe.path)]);
+    let setup = crate::coding::program_contract::runtime_steps(&recipe.language);
+    let placed = format!("{template}{}", setup.as_deref().unwrap_or_default());
     let mut out = String::new();
-    for note in versions.provenance_note() {
+    for note in versions.provenance_note_for(&placed) {
         out.push_str("# ");
         out.push_str(&note);
         out.push('\n');
     }
-    out.push_str(&super::work_item_steps::fill(
-        "workflow_template",
-        &[("{path}", &recipe.path)],
-    ));
+    out.push_str(&template);
     // Filling versions trims the fragment's final newline; each fragment is a
     // whole line block, so it is restored before the next one is appended.
     out = crate::version_resolution::fill_workflow_versions(&out, versions);
     out.push('\n');
-    if let Some(setup) = crate::coding::program_contract::runtime_steps(&recipe.language) {
+    if let Some(setup) = setup {
         out.push_str(&crate::version_resolution::fill_workflow_versions(
             &setup, versions,
         ));
