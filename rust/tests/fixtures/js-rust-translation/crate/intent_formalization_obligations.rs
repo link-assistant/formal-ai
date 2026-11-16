@@ -1,6 +1,6 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=5ecd1a25a2a34cab18b08098dce147f61b5a779613a11ac85ca9cc0c59cd5c42 bytes=12722
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=c03facf9f0fad99dfa9054fb91a2eb71c636dca8ffa65c0ac5f184c4156429bb bytes=15209
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
-// formal-ai:workarounds import-pruning items=0 carried=5
+// formal-ai:workarounds import-pruning items=1 carried=6
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
@@ -41,6 +41,14 @@
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
 // formal-ai:blockers import of names its module carries
+
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import of names its module carries
+
+// formal-ai:workaround import-pruning JavaScript import_statement items=1 sha256=7eb05a769b0f4d2503f8e558048665e66b888a22877c4f1a98a65448df0e9009
+// | import { PROPOSITION_RULE, surfaceStructure } from './proposition_structure.mjs';
+use crate::proposition_structure::PROPOSITION_RULE;
 
 // meta-language:translated JavaScript import_statement items=1 sha256=e9510558b3d8c6f2baeb8831106f535421d27d9965de4c4c2f6d47c7ae50c6e1
 // | import { DEFAULT_SPLIT_DEPTH_BOUND } from './task_decomposition.mjs';
@@ -138,7 +146,25 @@ pub const WHEN_UNBOUND_OUTPUT: &str = "unbound_output_literal";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .map()
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .forEach() | arrow callback of .map() | arrow callback of .reduce() | arrow callback of .sort() | call of a sibling function | call of an imported function | destructuring | field access | method call .filter() | method call .forEach() | method call .map() | method call .pop() | method call .push() | method call .reduce() | method call .slice() | method call .sort() | method call .split() | null | object without a $ tag | regular expression
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .find() | arrow callback of .flatMap() | arrow callback of .forEach() | arrow callback of .map() | arrow callback of .reduce() | arrow callback of .sort() | assignment of a field or element | call of a sibling function | call of an imported function | destructuring | field access | global call Array() | method call .fill() | method call .filter() | method call .find() | method call .flatMap() | method call .forEach() | method call .map() | method call .pop() | method call .push() | method call .reduce() | method call .slice() | method call .sort() | method call .split() | null | object without a $ tag | regular expression | undefined
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal method call .some()
+// formal-ai:blockers arrow callback of .some() | call of an imported function | method call .some()
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal method call .split()
+// formal-ai:blockers Number.parseInt | arrow callback of .find() | arrow callback of .map() | arrow callback of .reduce() | call of a sibling function | call of an imported function | field access | method call .filter() | method call .find() | method call .join() | method call .map() | method call .push() | method call .reduce() | method call .slice() | method call .split() | nullish coalescing | regular expression | undefined
+
+// meta-language:translated JavaScript lexical_declaration items=1 sha256=e89ed6198c954102012e7e221fc4656a3ab67db185470046a97e0bd6ab330353
+// | /** The structure part `surfaceStructure` lists explicit counts under. */
+// | const REPETITION_PART = 'repetition=';
+pub const REPETITION_PART: &str = "repetition=";
+
+// meta-language:translated JavaScript lexical_declaration items=1 sha256=70075855e8525635be7ba79ce355619460f80036e3d5d841f1850c9d56f9c90d
+// | /** The suffix of the `proposition-structure` key holding a repetition kind's count. */
+// | const COUNT_SUFFIX = '-count';
+pub const COUNT_SUFFIX: &str = "-count";
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal arrow function

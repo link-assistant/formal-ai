@@ -27,7 +27,7 @@ before(async () => {
 });
 
 test('output_literals_are_bound_from_the_obligation_clauses', () => {
-  assert.equal(fixture.bindingCases.length, 4);
+  assert.equal(fixture.bindingCases.length, 9);
   for (const { id, prompt, expected } of fixture.bindingCases) {
     assert.deepEqual(boundOutputLiterals(prompt), expected, id);
     assert.equal(explicitStdout(prompt), expected.length ? expected.join('\n') : null, id);

@@ -22,6 +22,9 @@
 #   repetition-twice / repetition-thrice  an explicit count of an effect
 #                        ("print it twice"), never inferred from a repeated
 #                        mention.
+#   repetition-twice-count / repetition-thrice-count  the number each explicit
+#                        count stands for, read by the output binding of
+#                        issue #1166 (rust/src/intent_formalization/obligations.rs).
 #
 # Issue #1550 — the task decomposition the recursive meta-executor splits a
 # formalized request with (js/agentic/crate/meta_executor.mjs, its Rust twin
@@ -66,6 +69,8 @@ text-formalization
     disjunction-vocabulary "connective-disjunction"
     repetition-vocabulary "repetition-twice"
     repetition-vocabulary "repetition-thrice"
+    repetition-twice-count "2"
+    repetition-thrice-count "3"
     universal-meaning "quantifier_all"
     existential-meaning "quantifier_any"
   structural-rule task-decomposition

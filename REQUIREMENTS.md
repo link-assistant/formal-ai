@@ -129,6 +129,7 @@ the areas are the whole register.
    - Issue #1160: Hive Mind prepared work continuation
    - Issue #1164 Code Node Decomposition
    - Issue #1165 Discovery on the Production Path
+   - Issue #1166 The Request Formalized into Obligations
    - Issue #1177 Code Tasks Answered Formally
    - Issue #1180 Repository History as Formal Context
    - Issue #1182 Duplication gates and maintained-parser adoption
@@ -185,7 +186,6 @@ the areas are the whole register.
    - Issue #1138 Live Concept Lookup
    - Issue #1138 Selection Heuristics
    - Issue #1163 Internet as Formal Knowledge
-   - Issue #1166 The Request Formalized into Obligations
    - Issue #1172 Factual QA Subject-Verified Lookup
    - Issue #1173 No Canned Search Answer in the Unknown-Reasoning Fallback
    - Issue #1174 Text Transforms Answered Formally

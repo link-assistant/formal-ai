@@ -315,9 +315,18 @@ fn recipe_step(
             },
         ));
     }
-    Some(AgenticPlan::Final(
-        recipe.final_answer(&progress.command_outputs, commit.as_ref()),
-    ))
+    let answer = recipe.final_answer(&progress.command_outputs, commit.as_ref());
+    let verified = progress.command_outputs.len().min(recipe.commands.len());
+    let acceptance = super::task_acceptance::acceptance_report(
+        objective,
+        recipe,
+        &progress.command_outputs[..verified],
+    );
+    Some(AgenticPlan::Final(if acceptance.is_empty() {
+        answer
+    } else {
+        format!("{answer}\n{acceptance}\n")
+    }))
 }
 
 fn recipe_file_matches(observation: &super::progress::Progress, path: &str, source: &str) -> bool {

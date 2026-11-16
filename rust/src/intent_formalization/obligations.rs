@@ -487,7 +487,7 @@ pub fn bound_output_literals(text: &str) -> Vec<String> {
         crate::solver_handlers::verb_final_language(crate::language::detect(text).slug());
     let literals = quoted_segment_spans(text);
     let mut previous_end: usize = 0;
-    let mut bound: Vec<(usize, String)> = Vec::new();
+    let mut bound: Vec<(usize, String, usize)> = Vec::new();
     for (index, literal) in literals.iter().enumerate() {
         let clause_start = clause_starts
             .iter()
@@ -504,27 +504,101 @@ pub fn bound_output_literals(text: &str) -> Vec<String> {
         let next = literals
             .get(index + 1)
             .map_or(text.len(), |next| next.start);
+        let after = &text[literal.end..next];
+        if conditional_introduction(introduction) {
+            continue;
+        }
         if print.is_some_and(|meaning| meaning.evidenced_in(&introduction.to_lowercase()))
-            || (verb_final && followed_by_print(&text[literal.end..next]))
+            || (verb_final && followed_by_print(after))
         {
-            bound.push((literal.start, literal.text.clone()));
+            bound.push((literal.start, literal.text.clone(), explicit_count(after)));
         }
     }
     for (clause, span) in &clauses {
         if quoted_segment_spans(clause).is_empty()
             && let Some(output) = unquoted_output(clause)
         {
-            bound.push((span.0, output));
+            bound.push((span.0, output, 1));
         }
     }
-    bound.sort_by_key(|(start, _)| *start);
-    let mut outputs: Vec<String> = Vec::new();
-    for (_, value) in bound {
-        if !outputs.contains(&value) {
-            outputs.push(value);
+    bound.sort_by_key(|(start, _, _)| *start);
+    let mut counts: Vec<(String, usize)> = Vec::new();
+    for (_, value, count) in bound {
+        match counts.iter_mut().find(|(seen, _)| *seen == value) {
+            Some(entry) => entry.1 = entry.1.max(count),
+            None => counts.push((value, count)),
         }
     }
-    outputs
+    counts
+        .into_iter()
+        .flat_map(|(value, count)| std::iter::repeat_n(value, count))
+        .collect()
+}
+
+/// The roles whose words state a condition, or its otherwise branch, before
+/// an effect.
+const CONDITION_ROLES: [&str; 3] = [
+    "condition-marker",
+    "negated-condition-marker",
+    "otherwise-marker",
+];
+
+/// Whether the words that introduce a literal state a condition
+/// (`condition-marker`, `negated-condition-marker`) or its otherwise branch
+/// (`otherwise-marker`) rather than the program's own run
+/// (`execution-circumstance`). Such a literal is not printed unconditionally,
+/// so it is never bound; the graph reports it unbound (issue #1166).
+fn conditional_introduction(introduction: &str) -> bool {
+    let lexicon = seed::lexicon();
+    let normalized = normalize_prompt(introduction).to_lowercase();
+    CONDITION_ROLES
+        .iter()
+        .any(|role| lexicon.mentions_role(role, &normalized))
+        && !lexicon.mentions_role("execution-circumstance", &normalized)
+}
+
+/// The structure part `surface_structure` lists explicit counts under.
+const REPETITION_PART: &str = "repetition=";
+
+/// The suffix of the `proposition-structure` key holding a repetition kind's
+/// count.
+const COUNT_SUFFIX: &str = "-count";
+
+/// How many times the words right after a literal -- up to the sentence break
+/// or the first seeded clause separator -- ask for it ("prints "Hi" twice"),
+/// read through the explicit repetition of
+/// [`surface_structure`](crate::formalization::proposition_structure::surface_structure)
+/// and the `<kind>-count` values of the `proposition-structure` rule; 1 when no
+/// count is stated. A repeated mention is never a count (issue #1166).
+#[must_use]
+pub fn explicit_count(window: &str) -> usize {
+    use crate::formalization::proposition_structure::{PROPOSITION_RULE, surface_structure};
+    let separators = seed::lexicon().words_for_role(seed::ROLE_SKILL_PROCEDURE_CLAUSE_SEPARATOR);
+    let sentence = window
+        .split(OUTPUT_INTRODUCTION_BREAKS)
+        .next()
+        .unwrap_or(window);
+    let words: Vec<&str> = sentence
+        .split_whitespace()
+        .take_while(|word| !separators.contains(&bare_word(word)))
+        .collect();
+    let structure = surface_structure(&words.join(" ")).structure;
+    let Some(part) = structure
+        .split(';')
+        .find_map(|entry| entry.strip_prefix(REPETITION_PART))
+    else {
+        return 1;
+    };
+    part.split(' ')
+        .filter_map(|kind| {
+            crate::formalization::structural_rule_values(
+                PROPOSITION_RULE,
+                &format!("{kind}{COUNT_SUFFIX}"),
+            )
+            .first()
+            .and_then(|count| count.parse::<usize>().ok())
+        })
+        .fold(1, usize::max)
 }
 
 /// Whether the words right after a quoted literal -- up to the sentence break

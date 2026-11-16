@@ -146,7 +146,7 @@ meanings
     example "print exactly"
     lexeme en "print" "prints" "write" "writes" "output"
     lexeme ru "выведи" "вывести" "вывод" "напечатай" "напиши" "печатать"
-    lexeme hi "छापो" "छाप" "प्रिंट" "आउटपुट" "लिखो"
+    lexeme hi "छापो" "छाप" "छापता" "छापना" "छापे" "प्रिंट" "आउटपुट" "लिखो"
     lexeme zh "打印" "输出" "打印出"
     lexeme es "imprime" "imprimir" "escribe" "escribir" "salida"
   code_style_obligation
@@ -185,6 +185,253 @@ meanings
     lexeme hi "प्रतीक"
     lexeme zh "徽章"
     lexeme es "escudo" "insignia"
+  code-comment-obligation
+    defined-by concept
+    role code-comment-obligation
+    role scoped-grammar-pattern
+    precondition "a request clause asks for comments in the written code"
+    effect "independent task acceptance checks the candidate program carries comment lines beyond its run instructions (issue #1166)"
+    unit "not applicable"
+    example "add clear comments"
+    lexeme en "comment" "comments" "commented" "commenting"
+    lexeme ru "комментарий" "комментарии" "комментариями" "прокомментируй" "прокомментирован"
+    lexeme hi "टिप्पणी" "टिप्पणियाँ" "टिप्पणियां"
+    lexeme zh "注释"
+    lexeme es "comentario" "comentarios" "comentado" "comenta"
+  run-instruction-obligation
+    defined-by concept
+    role run-instruction-obligation
+    role scoped-grammar-pattern
+    precondition "a request clause asks for build or run instructions"
+    effect "independent task acceptance checks the candidate program's leading comment block names the program file it runs (issue #1166)"
+    unit "not applicable"
+    example "include run instructions in a comment"
+    lexeme en "run instructions" "build instructions" "running instructions" "instructions for running" "how to run"
+    lexeme ru "инструкции по запуску" "инструкцию по запуску" "как запустить"
+    lexeme hi "चलाने के निर्देश" "चलाने का तरीका"
+    lexeme zh "运行说明" "运行方法" "如何运行"
+    lexeme es "instrucciones de ejecución" "instrucciones para ejecutar" "cómo ejecutar"
+  judgment-obligation
+    defined-by concept
+    role judgment-obligation
+    role scoped-grammar-pattern
+    precondition "a request clause asks for a quality no observable check decides"
+    effect "independent task acceptance keeps the clause as explicitly unresolved judgment, never as satisfied (issue #1166)"
+    unit "not applicable"
+    example "follow best practices and idioms"
+    lexeme en "best practice" "best practices" "idiom" "idioms" "idiomatic" "conventions" "simple" "straightforward" "clarity" "clear" "readable" "clean" "properly" "correctness" "standard library" "meaningful"
+    lexeme ru "лучшие практики" "идиомы" "соглашения" "простой" "простым" "понятный" "понятные" "ясность" "стандартную библиотеку" "чистый" "осмысленное" "осмысленный"
+    lexeme hi "सर्वोत्तम अभ्यास" "सरल" "स्पष्ट" "मानक लाइब्रेरी" "सार्थक"
+    lexeme zh "最佳实践" "惯用" "规范" "简单" "清晰" "可读" "标准库" "有意义"
+    lexeme es "buenas prácticas" "idiomático" "convenciones" "simple" "sencillo" "claro" "claridad" "legible" "biblioteca estándar" "significativo"
+  program-file-obligation
+    defined-by concept
+    role program-file-obligation
+    role scoped-grammar-pattern
+    precondition "a request clause asks for the program file itself"
+    effect "independent task acceptance checks the candidate program file carries the requested language's extension (issue #1166)"
+    unit "not applicable"
+    example "a file with the appropriate extension"
+    lexeme en "extension" "file extension" "program file" "source file"
+    lexeme ru "расширение" "расширением" "файл программы"
+    lexeme hi "एक्सटेंशन" "प्रोग्राम फ़ाइल"
+    lexeme zh "扩展名" "源文件" "程序文件"
+    lexeme es "extensión" "archivo del programa" "archivo fuente"
+  workflow-trigger-push
+    defined-by concept
+    role workflow-trigger-push
+    role scoped-grammar-pattern
+    precondition "a workflow clause names the push event as a trigger"
+    effect "independent task acceptance checks the candidate workflow triggers on push (issue #1166)"
+    unit "not applicable"
+    example "trigger on push"
+    lexeme en "push" "pushes"
+    lexeme ru "пуш" "пуше" "отправке"
+    lexeme hi "पुश"
+    lexeme zh "推送"
+    lexeme es "envío" "empuje"
+  workflow-trigger-pull-request
+    defined-by concept
+    role workflow-trigger-pull-request
+    role scoped-grammar-pattern
+    precondition "a workflow clause names the pull-request event as a trigger"
+    effect "independent task acceptance checks the candidate workflow triggers on pull requests (issue #1166)"
+    unit "not applicable"
+    example "and on pull requests"
+    lexeme en "pull request" "pull requests"
+    lexeme ru "пулл-реквест" "пул-реквест" "запросе на слияние" "запросах на слияние"
+    lexeme hi "पुल रिक्वेस्ट"
+    lexeme zh "拉取请求" "合并请求"
+    lexeme es "solicitud de extracción" "solicitudes de extracción"
+  workflow-status-obligation
+    defined-by concept
+    role workflow-status-obligation
+    role scoped-grammar-pattern
+    precondition "a workflow clause asks for a visible pass or fail status"
+    effect "independent task acceptance checks the candidate workflow runs a verification that carries the expected output (issue #1166)"
+    unit "not applicable"
+    example "show a green check mark when tests pass"
+    lexeme en "green check" "check mark" "checkmark" "passing"
+    lexeme ru "зелёная галочка" "зелёную галочку" "зеленая галочка"
+    lexeme hi "हरा निशान"
+    lexeme zh "绿色对勾"
+    lexeme es "marca verde"
+  workflow-context-noun
+    defined-by concept
+    role workflow-context-noun
+    role scoped-grammar-pattern
+    precondition "a clause, its list lead or its section names a continuous-integration workflow"
+    effect "independent task acceptance reads the clause as a workflow requirement (issue #1166)"
+    unit "not applicable"
+    example "the CI workflow should"
+    lexeme en "workflow" "ci" "pipeline" "github actions"
+    lexeme ru "рабочий процесс" "конвейер"
+    lexeme hi "वर्कफ़्लो"
+    lexeme zh "工作流"
+    lexeme es "flujo de trabajo"
+  optional-obligation-marker
+    defined-by concept
+    role optional-obligation-marker
+    role scoped-grammar-pattern
+    precondition "a request clause marks itself optional"
+    effect "independent task acceptance reports the clause but does not require it for completeness (issue #1166)"
+    unit "not applicable"
+    example "optional but recommended"
+    lexeme en "optional" "optionally" "nice to have"
+    lexeme ru "необязательно" "опционально" "по желанию"
+    lexeme hi "वैकल्पिक"
+    lexeme zh "可选"
+    lexeme es "opcional" "opcionalmente"
+  applicability-marker
+    defined-by concept
+    role applicability-marker
+    role scoped-grammar-pattern
+    precondition "a request clause applies only where it is applicable"
+    effect "independent task acceptance keeps the clause required and notes its applicability condition (issue #1166)"
+    unit "not applicable"
+    example "if applicable"
+    lexeme en "if applicable" "if needed" "where applicable" "if necessary"
+    lexeme ru "если применимо" "при необходимости"
+    lexeme hi "यदि लागू हो" "आवश्यक हो तो"
+    lexeme zh "如适用" "如有需要"
+    lexeme es "si aplica" "si es necesario" "si corresponde"
+  illustrative-marker
+    defined-by concept
+    role illustrative-marker
+    role scoped-grammar-pattern
+    precondition "a list lead introduces an example rather than a requirement"
+    effect "independent task acceptance reads the items under the lead as inapplicable illustrations (issue #1166)"
+    unit "not applicable"
+    example "example workflow structure"
+    lexeme en "example" "for example"
+    lexeme ru "пример" "например"
+    lexeme hi "उदाहरण"
+    lexeme zh "示例" "例如"
+    lexeme es "ejemplo" "por ejemplo"
+  condition-marker
+    defined-by concept
+    role condition-marker
+    role scoped-grammar-pattern
+    precondition "an output clause states a condition before its effect"
+    effect "independent task acceptance reads the condition in its supported subset or reports it unresolved (issue #1166)"
+    unit "not applicable"
+    example "when x is greater than y"
+    lexeme en "if" "when" "whenever"
+    lexeme ru "если" "когда"
+    lexeme hi "यदि" "अगर" "जब"
+    lexeme zh "如果"
+    lexeme es "si" "cuando"
+  negated-condition-marker
+    defined-by concept
+    role negated-condition-marker
+    role scoped-grammar-pattern
+    precondition "an output clause states the negation of its condition before its effect"
+    effect "independent task acceptance reads the condition negated (issue #1166)"
+    unit "not applicable"
+    example "unless x is less than y"
+    lexeme en "unless"
+    lexeme ru "если только не"
+    lexeme hi "जब तक कि"
+    lexeme zh "除非"
+    lexeme es "a menos que"
+  otherwise-marker
+    defined-by concept
+    role otherwise-marker
+    role scoped-grammar-pattern
+    precondition "an output clause states the effect when the condition fails"
+    effect "independent task acceptance reads the clause as the condition's otherwise branch (issue #1166)"
+    unit "not applicable"
+    example "otherwise print small"
+    lexeme en "otherwise" "else"
+    lexeme ru "иначе" "в противном случае"
+    lexeme hi "अन्यथा" "वरना" "नहीं तो"
+    lexeme zh "否则"
+    lexeme es "de lo contrario" "en caso contrario"
+  execution-circumstance
+    defined-by concept
+    role execution-circumstance
+    role scoped-grammar-pattern
+    precondition "a condition marker introduces the program's run, not a data condition"
+    effect "independent task acceptance reads the output as unconditional (issue #1166)"
+    unit "not applicable"
+    example "when the program runs"
+    lexeme en "program runs" "it runs" "is run" "is executed" "when run"
+    lexeme ru "при запуске" "запускается"
+    lexeme hi "चलने पर" "चलाने पर"
+    lexeme zh "运行时"
+    lexeme es "se ejecuta" "al ejecutarse"
+  comparison-equal
+    defined-by concept
+    role comparison-equal
+    role scoped-grammar-pattern
+    precondition "an output condition compares two operands for equality"
+    effect "independent task acceptance reads the atom as left equals right (issue #1166)"
+    unit "not applicable"
+    example "when x equals y"
+    lexeme en "equals" "is equal to" "equal to" "is the same as"
+    lexeme ru "равно" "равен" "равна"
+    lexeme hi "के बराबर"
+    lexeme zh "等于"
+    lexeme es "igual a" "es igual a"
+  comparison-not-equal
+    defined-by concept
+    role comparison-not-equal
+    role scoped-grammar-pattern
+    precondition "an output condition compares two operands for inequality"
+    effect "independent task acceptance reads the atom as left differs from right (issue #1166)"
+    unit "not applicable"
+    example "when x does not equal y"
+    lexeme en "does not equal" "is not equal to" "not equal to" "differs from"
+    lexeme ru "не равно" "не равен" "не равна"
+    lexeme hi "के बराबर नहीं"
+    lexeme zh "不等于"
+    lexeme es "distinto de" "diferente de" "no es igual a"
+  comparison-filler
+    defined-by concept
+    role comparison-filler
+    role scoped-grammar-pattern
+    precondition "an output condition wraps an operand in a word that names no operand"
+    effect "independent task acceptance drops the word before reading the operand (issue #1166)"
+    unit "not applicable"
+    example "when the value of x is greater than y"
+    lexeme en "value"
+    lexeme ru "значение"
+    lexeme hi "मान"
+    lexeme zh "值"
+    lexeme es "es" "sea" "valor"
+  workflow-execution-verb
+    defined-by concept
+    role workflow-execution-verb
+    role scoped-grammar-pattern
+    precondition "a workflow clause asks the workflow to run or build the program"
+    effect "independent task acceptance checks the candidate workflow names the program file (issue #1166)"
+    unit "not applicable"
+    example "a workflow that runs the build on every push"
+    lexeme en "run" "runs" "running" "execute" "executes" "build" "builds" "building"
+    lexeme ru "запускает" "запускать" "запусти" "выполняет" "сборку" "собирает"
+    lexeme hi "चलाए" "चलाओ" "चलाता" "बिल्ड"
+    lexeme zh "运行" "执行" "构建"
+    lexeme es "ejecute" "ejecuta" "ejecutar" "compilación" "compile"
   numbered_line_noun
     defined-by concept
     role numbered_line_noun

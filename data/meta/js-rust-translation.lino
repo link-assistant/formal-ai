@@ -15,16 +15,16 @@ js_rust_translation
   upstream link-foundation/meta-language
   commit eb0574d5528babd3b4aadece81590d8e2230b99b
   modules 161
-  translated_items 333
-  workaround_items 36
+  translated_items 335
+  workaround_items 37
   inferred_signatures 3
-  carried_items 2573
+  carried_items 2576
   translated_modules 112
   fully_translated_modules 1
   refused_modules 49
 workaround array-push items 2
 workaround callback-loops items 1
-workaround import-pruning items 11
+workaround import-pruning items 12
 workaround string-methods items 25
 module js/agentic/crate/algorithm_discovery.mjs translated 6 workaround 1 inferred 0 carried 39
 module js/agentic/crate/associative_persistence.mjs translated 1 workaround 0 inferred 0 carried 7
@@ -72,7 +72,7 @@ module js/agentic/crate/history_repository_qa.mjs translated 1 workaround 0 infe
 module js/agentic/crate/history_store.mjs translated 3 workaround 0 inferred 0 carried 30
 module js/agentic/crate/implementation_language.mjs translated 1 workaround 0 inferred 0 carried 22
 module js/agentic/crate/intent_formalization.mjs translated 5 workaround 0 inferred 0 carried 24
-module js/agentic/crate/intent_formalization_obligations.mjs translated 3 workaround 0 inferred 0 carried 37
+module js/agentic/crate/intent_formalization_obligations.mjs translated 5 workaround 1 inferred 0 carried 40
 module js/agentic/crate/intent_formalization_requirements.mjs translated 0 workaround 0 inferred 0 carried 15
 module js/agentic/crate/issue_report.mjs translated 2 workaround 0 inferred 0 carried 0
 module js/agentic/crate/issue_report_title.mjs translated 2 workaround 0 inferred 0 carried 9
@@ -187,7 +187,7 @@ module js/agentic/crate/workspace_change_learning.mjs translated 2 workaround 0 
 module js/worker/formal_ai_worker_meta_composite.js translated 0 workaround 0 inferred 0 carried 7
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inferred 0 carried 42
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 26
-refusal "import of names its module does not translate" 356
+refusal "import of names its module does not translate" 357
 refusal "JSDoc type {…}" 219
 refusal "import from '…'" 212
 refusal "null" 194
@@ -198,10 +198,10 @@ refusal "object without a $ tag" 94
 refusal "new expression" 93
 refusal "regular expression" 65
 refusal "method call .find()" 62
+refusal "method call .split()" 59
 refusal "method call .map()" 58
-refusal "method call .split()" 58
 refusal "method call .filter()" 55
-refusal "method call .some()" 49
+refusal "method call .some()" 50
 refusal "Array.from" 47
 refusal "method call .slice()" 47
 refusal "method call .push()" 38

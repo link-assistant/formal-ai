@@ -21,7 +21,7 @@ pub(super) fn fill(key: &str, values: &[(&str, &str)]) -> String {
     text
 }
 
-fn template(key: &str) -> Option<String> {
+pub(super) fn template(key: &str) -> Option<String> {
     STEPS.lines().find_map(|line| {
         let (candidate, value) = line.strip_prefix("  ")?.split_once(' ')?;
         (candidate == key).then(|| unescape(unquote(value.trim())))
