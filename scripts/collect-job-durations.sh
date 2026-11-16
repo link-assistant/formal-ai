@@ -47,6 +47,22 @@
 #
 # Requires `gh` (authenticated) and `jq`, both preinstalled on GitHub-hosted
 # runners. Set GH_TOKEN when running under Actions.
+#
+# FAILED REQUESTS (issue #1580)
+#
+# Run 40307862657 died 190 runs into its sample with `exit code 1` and nothing
+# else: one `gh api` call failed, its stderr went to /dev/null, and `pipefail`
+# ended the script. The audit then reported nothing about the 400 runs it was
+# asked to read. Every request is now retried, the error text is printed, and
+# a run that still cannot be read is skipped with a warning. The collection
+# fails -- with an `::error::` saying why -- only when more than
+# COLLECT_MAX_UNREAD_PERCENT of the sampled runs could not be read, because an
+# audit over a sample that thin would no longer say what it claims to.
+#
+#   COLLECT_ATTEMPTS            attempts per request (default 3)
+#   COLLECT_RETRY_DELAY         seconds before the first retry, doubled each
+#                               time (default 5)
+#   COLLECT_MAX_UNREAD_PERCENT  share of runs allowed to stay unread (default 5)
 set -euo pipefail
 
 BRANCH="${1:-}"
@@ -59,6 +75,34 @@ fi
 
 log() { printf '%s\n' "$*" >&2; }
 
+ATTEMPTS="${COLLECT_ATTEMPTS:-3}"
+RETRY_DELAY="${COLLECT_RETRY_DELAY:-5}"
+MAX_UNREAD_PERCENT="${COLLECT_MAX_UNREAD_PERCENT:-5}"
+ERRORS="$(mktemp)"
+trap 'rm -f "${ERRORS}"' EXIT
+
+# `gh_api_retried <what> <gh api arguments...>`: the response on stdout, or a
+# non-zero status after ATTEMPTS failures. The output of a failed attempt is
+# discarded whole, so a retry never duplicates rows. Each failure is printed
+# with the error `gh` gave, which the old `2>/dev/null` threw away.
+gh_api_retried() {
+  local what="$1" attempt=1 delay="${RETRY_DELAY}" output
+  shift
+  while :; do
+    if output="$(gh api "$@" 2>"${ERRORS}")"; then
+      printf '%s' "${output}"
+      return 0
+    fi
+    log "::warning::gh api failed for ${what} (attempt ${attempt}/${ATTEMPTS}): $(tr '\n' ' ' < "${ERRORS}")"
+    if [ "${attempt}" -ge "${ATTEMPTS}" ]; then
+      return 1
+    fi
+    sleep "${delay}"
+    attempt=$((attempt + 1))
+    delay=$((delay * 2))
+  done
+}
+
 log "Sampling up to ${RUNS} runs of ${REPOSITORY} on ${BRANCH}."
 
 # Paged explicitly rather than with `gh api --paginate | head`: closing the
@@ -68,10 +112,16 @@ run_ids=""
 collected=0
 page=1
 while [ "${collected}" -lt "${RUNS}" ]; do
-  page_rows="$(
-    gh api "repos/${REPOSITORY}/actions/runs?branch=${BRANCH}&per_page=100&page=${page}" \
+  # The run list is the sample itself: if it cannot be read there is nothing
+  # to audit, so this one fails the collection outright, with the reason.
+  if ! page_rows="$(
+    gh_api_retried "the run list (page ${page})" \
+      "repos/${REPOSITORY}/actions/runs?branch=${BRANCH}&per_page=100&page=${page}" \
       --jq '.workflow_runs[] | [(.id|tostring), .name] | @tsv'
-  )"
+  )"; then
+    log "::error::Could not list the runs of ${REPOSITORY} on ${BRANCH} (page ${page}); see the warnings above."
+    exit 1
+  fi
   [ -n "${page_rows}" ] || break
   run_ids="${run_ids}${page_rows}"$'\n'
   collected=$((collected + $(printf '%s\n' "${page_rows}" | wc -l)))
@@ -80,6 +130,7 @@ done
 run_ids="$(printf '%s' "${run_ids}" | sed -n "1,${RUNS}p")"
 
 count=0
+unread=0
 while IFS=$'\t' read -r run_id workflow; do
   [ -n "${run_id}" ] || continue
   count=$((count + 1))
@@ -88,22 +139,33 @@ while IFS=$'\t' read -r run_id workflow; do
   # One job row followed by that job's step rows. `gh api --jq` takes no
   # `--arg`, so the run id and workflow name are prefixed by the shell rather
   # than built into the filter, and the row is passed through whole.
-  gh api --paginate \
-    "repos/${REPOSITORY}/actions/runs/${run_id}/jobs?per_page=100&filter=latest" \
-    --jq '.jobs[] | . as $job
-          | ([$job.name, ($job.conclusion // "null"), ($job.started_at // ""),
-              ($job.completed_at // "")] | @tsv),
-            ($job.steps[]?
-             | select(.started_at != null and .completed_at != null)
-             | [$job.name, (.conclusion // "null"), .started_at, .completed_at,
-                "step", .name] | @tsv)' \
-    2>/dev/null \
-    | while IFS= read -r row; do
-        printf '%s\t%s\t%s\n' "${run_id}" "${workflow}" "${row}"
-      done
+  if ! rows="$(
+    gh_api_retried "run ${run_id}" --paginate \
+      "repos/${REPOSITORY}/actions/runs/${run_id}/jobs?per_page=100&filter=latest" \
+      --jq '.jobs[] | . as $job
+            | ([$job.name, ($job.conclusion // "null"), ($job.started_at // ""),
+                ($job.completed_at // "")] | @tsv),
+              ($job.steps[]?
+               | select(.started_at != null and .completed_at != null)
+               | [$job.name, (.conclusion // "null"), .started_at, .completed_at,
+                  "step", .name] | @tsv)'
+  )"; then
+    unread=$((unread + 1))
+    log "::warning::Skipping run ${run_id} (${workflow}): its jobs could not be read."
+    continue
+  fi
+  if [ -n "${rows}" ]; then
+    printf '%s\n' "${rows}" | while IFS= read -r row; do
+      printf '%s\t%s\t%s\n' "${run_id}" "${workflow}" "${row}"
+    done
+  fi
   if [ $((count % 25)) -eq 0 ]; then
     log "  ... ${count} runs"
   fi
 done <<< "${run_ids}"
 
-log "Collected jobs from ${count} runs."
+log "Collected jobs from $((count - unread)) of ${count} runs (${unread} unread)."
+if [ $((unread * 100)) -gt $((count * MAX_UNREAD_PERCENT)) ]; then
+  log "::error::${unread} of ${count} sampled runs could not be read, more than the ${MAX_UNREAD_PERCENT}% an audit can skip and still describe the sample; see the warnings above for what gh reported."
+  exit 1
+fi
