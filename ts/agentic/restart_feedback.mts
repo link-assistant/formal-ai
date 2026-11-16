@@ -171,8 +171,8 @@ const OWN_STATUS_PATTERN_KEYS = Object.freeze([
 function ownStatusPatterns() {
   return OWN_STATUS_PATTERN_KEYS.map(key => fill(key, []));
 }
-/** Mirrors `fn pr_feedback_filter`: the bounded `gh --jq` read of pull request feedback. */
-export function prFeedbackFilter() {
+/** Mirrors `fn pull_request_feedback_filter`: the bounded `gh --jq` read of pull request feedback. */
+export function pullRequestFeedbackFilter() {
   const tests = ownStatusPatterns().map(pattern => `test(${JSON.stringify(pattern)})`).join(' or ');
   return '{comments:[.comments[]|select((.viewerDidAuthor==true and .includesCreatedEdit!=true'
     + ` and (.body|sub("^\\\\s+";"")|sub("\\\\s+$";"")|(${tests})))|not)`

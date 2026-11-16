@@ -73,7 +73,7 @@ import { FinalDisposition, finalAnswer, isToolCalls, jsonText, planOne, projectP
 import { continuedAgentTask, isContinuationCue, traceRoute } from './planner/continuation.mjs';
 import * as positionalEdit from './positional_edit.mjs';
 import * as procedure from './procedure.mjs';
-import { planRecovery, recoveryOutput, observedRecoveryCommand, observedDeniedPrerequisiteCommand } from './prerequisite_recovery.mjs';
+import { planRecovery, recoveryOutput, observedRecoveryCommand, observedDeniedPrerequisiteCommand, withRecoveryReport } from './prerequisite_recovery.mjs';
 import { Progress } from './progress.mjs';
 import * as questionCatalog from './question_catalog.mjs';
 import * as rebuildPlan from './rebuild_plan.mjs';
@@ -251,7 +251,7 @@ export async function planChatStepResolved(messages, toolNames) {
   const plan = await planChatStepInner(messages, toolNames);
   if (latestUserRequest(messages) === null) return plan;
   const repeated = repeatedActionStop(messages, isToolCalls(plan) ? plan.calls : null);
-  return repeated === null ? plan : resolvedFinalAnswer(repeated, FinalDisposition.Failure, 'repeated_action_budget');
+  return withRecoveryReport(messages, repeated === null ? plan : resolvedFinalAnswer(repeated, FinalDisposition.Failure, 'repeated_action_budget'));
 }
 
 /** Mirrors `fn plan_chat_step_inner` in rust/src/agentic_coding/planner.rs. */

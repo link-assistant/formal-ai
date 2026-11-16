@@ -122,7 +122,7 @@ fn recipe_step(
     if let Some(target) = &commit
         && workflow.is_none()
     {
-        expected_commands.extend(pr_completion_commands(
+        expected_commands.extend(git_commit::pr_completion_commands(
             recipe,
             target,
             requirements_reference.as_deref().unwrap_or(target.reference.as_str()),
@@ -142,7 +142,7 @@ fn recipe_step(
         return None;
     }
     if let Some(target) = &commit {
-        let followup = pr_completion_commands(
+        let followup = git_commit::pr_completion_commands(
             recipe,
             target,
             requirements_reference.as_deref().unwrap_or(target.reference.as_str()),
@@ -211,7 +211,7 @@ fn recipe_step(
                 && failure.exit_code == Some(127)
                 && let (Some(target), Some(workflow)) = (&commit, &workflow)
             {
-                let followup = pr_completion_commands(
+                let followup = git_commit::pr_completion_commands(
             recipe,
             target,
             requirements_reference.as_deref().unwrap_or(target.reference.as_str()),
@@ -310,7 +310,7 @@ fn recipe_step(
     }
 
     if let (Some(target), Some(workflow)) = (&commit, &workflow) {
-        let followup = pr_completion_commands(
+        let followup = git_commit::pr_completion_commands(
             recipe,
             target,
             requirements_reference.as_deref().unwrap_or(target.reference.as_str()),
@@ -395,76 +395,6 @@ fn recipe_workflow(recipe: &ExecutionRecipe, objective: &str) -> Option<String> 
         .find_map(|line| line.strip_prefix("name: ").map(str::to_owned))
 }
 
-/// Feedback read, description edit and readiness for a pull request target.
-/// `requirements` is the reference the request was for: when it is an issue
-/// the description closes that issue and the title is the issue's title
-/// (issue #1162: the delivered pull requests kept the orchestrator's
-/// placeholder title and description, and the body named the pull request
-/// itself rather than the issue it resolves).
-pub(super) fn pr_completion_commands(
-    recipe: &ExecutionRecipe,
-    target: &CommitTarget,
-    requirements: &str,
-) -> Vec<String> {
-    if !git_commit::is_pull_request_target(target) {
-        return Vec::new();
-    }
-    let target_url = super::git_commit::shell_quote(&target.reference);
-    let issue = requirements.contains("/issues/").then_some(requirements);
-    let commands = recipe
-        .commands
-        .iter()
-        .map(|command| format!("- `{command}`"))
-        .collect::<Vec<_>>()
-        .join("\n");
-    let body = super::work_item_steps::fill(
-        "pr_body_template",
-        &[
-            ("{path}", &recipe.path),
-            (concat!("{", "commands}"), &commands),
-            ("{reference}", issue.unwrap_or(&target.reference)),
-        ],
-    );
-    let quoted_body = super::git_commit::shell_quote(&body);
-    let edit = match issue {
-        Some(issue) => super::work_item_steps::fill(
-            "pr_edit_titled_command",
-            &[
-                (concat!("{", "target}"), &target_url),
-                (
-                    concat!("{", "issue}"),
-                    &super::git_commit::shell_quote(issue),
-                ),
-                (concat!("{", "body}"), &quoted_body),
-            ],
-        ),
-        None => super::work_item_steps::fill(
-            "pr_edit_command",
-            &[
-                (concat!("{", "target}"), &target_url),
-                (concat!("{", "body}"), &quoted_body),
-            ],
-        ),
-    };
-    vec![
-        super::work_item_steps::fill(
-            "pr_comments_command",
-            &[
-                (concat!("{", "target}"), &target_url),
-                (
-                    concat!("{", "filter}"),
-                    &super::git_commit::shell_quote(&super::restart_feedback::pr_feedback_filter()),
-                ),
-            ],
-        ),
-        edit,
-        super::work_item_steps::fill(
-            "pr_ready_command",
-            &[(concat!("{", "target}"), &target_url)],
-        ),
-    ]
-}
-
 fn one_call(tool: &str, arguments: String) -> AgenticPlan {
     AgenticPlan::ToolCalls(vec![PlannedToolCall {
         tool: tool.to_owned(),
@@ -521,7 +451,7 @@ impl ExecutionRecipe {
                     answer,
                     "\n\n{}",
                     super::work_item_steps::fill(
-                        "commit_unchanged_report",
+                        "commit-unchanged-report",
                         &[(concat!("{", "branch}"), target.push_ref())],
                     )
                 );

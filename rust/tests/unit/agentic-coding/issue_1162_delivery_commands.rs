@@ -8,9 +8,8 @@
 //! orchestrator notice per own-status pattern from the three test pull
 //! requests (339 comments in all) plus negatives that must stay feedback.
 
-use super::{superseded_workflow_step, CommitTarget};
-use crate::agentic_coding::command_reroute::pr_completion_commands;
-use crate::agentic_coding::restart_feedback::{feedback_needs_changes, pr_feedback_filter};
+use super::{pr_completion_commands, superseded_workflow_step, CommitTarget};
+use crate::agentic_coding::restart_feedback::{feedback_needs_changes, pull_request_feedback_filter};
 use crate::agentic_coding::tool_result::exact_successful_stdout;
 use crate::event_log::EventLog;
 
@@ -84,7 +83,7 @@ fn delivery_commands_match_the_js_runtime() {
             );
         }
     }
-    assert_eq!(pr_feedback_filter(), text(&fixture, "feedback_filter"));
+    assert_eq!(pull_request_feedback_filter(), text(&fixture, "feedback_filter"));
     for case in fixture["stdout"].as_array().expect("stdout cases") {
         assert_eq!(
             exact_successful_stdout(text(case, "raw")).as_deref(),

@@ -582,18 +582,20 @@ fn output_repetition(after: &str) -> Repetition {
                 mentions_phrase(&window, &phrase)
             })
     };
-    let count = crate::formalization::structural_rule_values(OUTPUT_REPETITION_RULE, "count-vocabulary")
-        .iter()
-        .find(|kind| stated(kind))
-        .and_then(|kind| {
-            crate::formalization::structural_rule_values(OUTPUT_REPETITION_RULE, kind)
-                .first()
-                .and_then(|count| count.parse().ok())
-        })
-        .unwrap_or(1);
-    let again = crate::formalization::structural_rule_values(OUTPUT_REPETITION_RULE, "again-vocabulary")
-        .iter()
-        .any(|kind| stated(kind));
+    let count =
+        crate::formalization::structural_rule_values(OUTPUT_REPETITION_RULE, "count-vocabulary")
+            .iter()
+            .find(|kind| stated(kind))
+            .and_then(|kind| {
+                crate::formalization::structural_rule_values(OUTPUT_REPETITION_RULE, kind)
+                    .first()
+                    .and_then(|count| count.parse().ok())
+            })
+            .unwrap_or(1);
+    let again =
+        crate::formalization::structural_rule_values(OUTPUT_REPETITION_RULE, "again-vocabulary")
+            .iter()
+            .any(|kind| stated(kind));
     Repetition { count, again }
 }
 

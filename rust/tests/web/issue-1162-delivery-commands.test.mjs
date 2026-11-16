@@ -22,7 +22,7 @@ import { programContractAnswer } from '../../../js/agentic/crate/coding_program_
 import { attach, requestedIn } from '../../../js/agentic/ci_workflow.mjs';
 import { recipeCommitCommand, supersededWorkflowStep } from '../../../js/agentic/git_commit.mjs';
 import { prCompletionCommands } from '../../../js/agentic/command_reroute.mjs';
-import { feedbackNeedsChanges, prFeedbackFilter } from '../../../js/agentic/restart_feedback.mjs';
+import { feedbackNeedsChanges, pullRequestFeedbackFilter } from '../../../js/agentic/restart_feedback.mjs';
 import { exactSuccessfulStdout } from '../../../js/agentic/tool_result.mjs';
 
 before(async () => {
@@ -53,7 +53,7 @@ test('delivery commands match the fixture the Rust runtime asserts', () => {
       assert.deepEqual(prCompletionCommands(recipe, target, delivery.pull_request.target), delivery.pull_request.without_issue);
     }
   }
-  assert.equal(prFeedbackFilter(), delivery.feedback_filter);
+  assert.equal(pullRequestFeedbackFilter(), delivery.feedback_filter);
   for (const entry of delivery.stdout) assert.equal(exactSuccessfulStdout(entry.raw), entry.exact, entry.id);
 });
 

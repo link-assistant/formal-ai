@@ -13,7 +13,7 @@ import { lower as canonicalUnaryLower } from './crate/rust_str.mjs';
 import { Capability } from './capability.mjs';
 import { classifyTool, isWorkspaceCreationTool, toolFor } from './capability_router.mjs';
 import { latestUserRequest, plainText, rustLines } from './content.mjs';
-import { pushRef, recipeCommitCommand, shellQuote, targetOf, isPullRequestTarget } from './git_commit.mjs';
+import { pushRef, recipeCommitCommand, shellQuote, targetOf, isPullRequestTarget, isPullRequestReference } from './git_commit.mjs';
 import { attachExecutionRecipe, functionCallCommand, programRecoveryCommand } from './crate/coding_program_contract.mjs';
 import { normalizeCommandWord } from './shell_command_policy.mjs';
 import { pathExtension, tokens, typedWriteTarget } from './write_request.mjs';
@@ -29,7 +29,7 @@ import { recipeSourceCommand, recipeSourceResult, recipeSourceMatches, recipeSou
 import { validateProgram } from './host.mjs';
 import { requestedIn as requestedCiWorkflow, attach as attachCiWorkflow } from './ci_workflow.mjs';
 import { MAX_REPAIR_RUNGS, failedStep, repairStep, stopNote } from './repair_loop.mjs';
-import { feedbackNeedsChanges, prFeedbackFilter } from './restart_feedback.mjs';
+import { feedbackNeedsChanges, pullRequestFeedbackFilter } from './restart_feedback.mjs';
 import { commandArgument, failureMessage, reportedExitCode as toolReportedExitCode, shellStep } from './tool_result.mjs';
 import { fill } from './work_item_steps.mjs';
 import { detect } from './crate/language.mjs';
@@ -190,14 +190,14 @@ function recipeWorkflow(recipe, objective) {
 export function prCompletionCommands(recipe, target, requirements) {
   if (!isPullRequestTarget(target)) return [];
   const targetUrl = shellQuote(target.reference);
-  const issue = typeof requirements === 'string' && requirements.includes('/issues/') ? requirements : null;
+  const issue = typeof requirements === 'string' && !isPullRequestReference(requirements) ? requirements : null;
   const commands = recipe.commands.map(command => `- \`${command}\``).join('\n');
   const body = fill('pr_body_template', [['{path}', recipe.path], ['{commands}', commands], ['{reference}', issue ?? target.reference]]);
   const quotedBody = shellQuote(body);
   const edit = issue === null
     ? fill('pr_edit_command', [['{target}', targetUrl], ['{body}', quotedBody]])
-    : fill('pr_edit_titled_command', [['{target}', targetUrl], ['{issue}', shellQuote(issue)], ['{body}', quotedBody]]);
-  return [fill('pr_comments_command', [['{target}', targetUrl], ['{filter}', shellQuote(prFeedbackFilter())]]), edit, fill('pr_ready_command', [['{target}', targetUrl]])];
+    : fill('pull-request-edit-titled-command', [['{target}', targetUrl], ['{issue}', shellQuote(issue)], ['{body}', quotedBody]]);
+  return [fill('pr_comments_command', [['{target}', targetUrl], ['{filter}', shellQuote(pullRequestFeedbackFilter())]]), edit, fill('pr_ready_command', [['{target}', targetUrl]])];
 }
 
 /**
@@ -230,7 +230,7 @@ export function executionRecipeFinalAnswer(recipe, allOutputs, committed) {
     // success, stated in a sentence rather than left as a marker.
     const marker = fill('commit_nothing_marker', []);
     if (commitOutput.split('\n').some(line => trim(line) === marker)) {
-      answer += `\n\n${fill('commit_unchanged_report', [['{branch}', pushRef(committed)]])}`;
+      answer += `\n\n${fill('commit-unchanged-report', [['{branch}', pushRef(committed)]])}`;
     }
     answer += agenticMessage('command_reroute_committed_and_pushed', {
       branch: pushRef(committed),

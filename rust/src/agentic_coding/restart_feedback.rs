@@ -302,7 +302,7 @@ fn own_status_patterns() -> Vec<String> {
 /// whole-body matches of the same policy patterns) so the read stays bounded,
 /// and keeps every other comment and every review for that check to judge.
 #[must_use]
-pub fn pr_feedback_filter() -> String {
+pub fn pull_request_feedback_filter() -> String {
     let tests = own_status_patterns()
         .iter()
         .map(|pattern| {

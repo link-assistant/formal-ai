@@ -54,7 +54,7 @@ export function validWorkflowFileName(value) {
  */
 export function suggestedWorkflowPath(objective) {
   const binding = requestTargetBinding(objective, 'workflow-name-binding-patterns', validWorkflowFileName);
-  return binding.kind === 'bound' ? fill('workflow_path_file', [['{file}', binding.value]]) : null;
+  return binding.kind === 'bound' ? fill('workflow-path-file', [['{file}', binding.value]]) : null;
 }
 
 /** Mirrors `fn render`: the workflow over the generation-time version set. */

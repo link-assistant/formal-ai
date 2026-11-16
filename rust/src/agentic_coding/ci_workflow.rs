@@ -80,7 +80,7 @@ pub(super) fn suggested_workflow_path(objective: &str) -> Option<String> {
         super::git_commit::valid_workflow_file_name,
     ) {
         super::git_commit::RequestTargetBinding::Bound(file) => Some(
-            super::work_item_steps::fill("workflow_path_file", &[("{file}", &file)]),
+            super::work_item_steps::fill("workflow-path-file", &[("{file}", &file)]),
         ),
         _ => None,
     }

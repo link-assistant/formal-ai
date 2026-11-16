@@ -30,7 +30,14 @@ pub(super) struct CommitTarget {
 /// Classify the already validated work-item destination for all recipe consumers.
 #[must_use]
 pub(super) fn is_pull_request_target(target: &CommitTarget) -> bool {
-    target.reference.contains("/pull/")
+    is_pull_request_reference(&target.reference)
+}
+
+/// Whether a work-item reference names a pull request. Every reference
+/// `general_planner::repository_work_reference` yields is a GitHub `issues` or
+/// `pull` URL, so any other reference names an issue.
+pub(super) fn is_pull_request_reference(reference: &str) -> bool {
+    reference.contains("/pull/")
 }
 
 impl CommitTarget {
@@ -296,7 +303,9 @@ pub(super) fn recipe_commit_command(recipe: &ExecutionRecipe, target: &CommitTar
 pub(super) fn superseded_workflow_step(recipe: &ExecutionRecipe) -> String {
     let template = super::work_item_steps::fill("workflow_template", &[("{path}", &recipe.path)]);
     let header = template.lines().next().unwrap_or_default();
-    let Some(name) = template.lines().find(|line| line.starts_with("name: ")) else {
+    let Some(name) = template
+        .lines()
+        .find(|line| line.strip_prefix("name: ").is_some()) else {
         return String::new();
     };
     let Some(workflow) = recipe
@@ -460,6 +469,76 @@ fn porcelain_entry(line: &str) -> Option<(&str, &str)> {
     let known = matches!(status, "??" | "A" | "M" | "MM" | "AM" | "D" | "R" | "RM");
     let path = path.trim();
     (known && !path.is_empty() && !path.contains(char::is_whitespace)).then_some((status, path))
+}
+
+/// Feedback read, description edit and readiness for a pull request target.
+/// `requirements` is the reference the request was for: when it is an issue
+/// the description closes that issue and the title is the issue's title
+/// (issue #1162: the delivered pull requests kept the orchestrator's
+/// placeholder title and description, and the body named the pull request
+/// itself rather than the issue it resolves).
+pub(super) fn pr_completion_commands(
+    recipe: &ExecutionRecipe,
+    target: &CommitTarget,
+    requirements: &str,
+) -> Vec<String> {
+    if !is_pull_request_target(target) {
+        return Vec::new();
+    }
+    let target_url = shell_quote(&target.reference);
+    let issue = (!is_pull_request_reference(requirements)).then_some(requirements);
+    let commands = recipe
+        .commands
+        .iter()
+        .map(|command| format!("- `{command}`"))
+        .collect::<Vec<_>>()
+        .join("\n");
+    let body = super::work_item_steps::fill(
+        "pr_body_template",
+        &[
+            ("{path}", &recipe.path),
+            (concat!("{", "commands}"), &commands),
+            ("{reference}", issue.unwrap_or(&target.reference)),
+        ],
+    );
+    let quoted_body = shell_quote(&body);
+    let edit = match issue {
+        Some(issue) => super::work_item_steps::fill(
+            "pull-request-edit-titled-command",
+            &[
+                (concat!("{", "target}"), &target_url),
+                (
+                    concat!("{", "issue}"),
+                    &shell_quote(issue),
+                ),
+                (concat!("{", "body}"), &quoted_body),
+            ],
+        ),
+        None => super::work_item_steps::fill(
+            "pr_edit_command",
+            &[
+                (concat!("{", "target}"), &target_url),
+                (concat!("{", "body}"), &quoted_body),
+            ],
+        ),
+    };
+    vec![
+        super::work_item_steps::fill(
+            "pr_comments_command",
+            &[
+                (concat!("{", "target}"), &target_url),
+                (
+                    concat!("{", "filter}"),
+                    &shell_quote(&super::restart_feedback::pull_request_feedback_filter()),
+                ),
+            ],
+        ),
+        edit,
+        super::work_item_steps::fill(
+            "pr_ready_command",
+            &[(concat!("{", "target}"), &target_url)],
+        ),
+    ]
 }
 
 #[cfg(test)]

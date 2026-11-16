@@ -30,11 +30,11 @@ work_item_steps
   stuck_step_report "This session already completed the step below, and repeating it would not change anything, so the step and its last result are reported instead.\nStep: {step}\nLast result:\n{result}"
 
   commit_nothing_marker "__formal_ai_commit_unchanged"
-  commit_unchanged_report "Nothing to commit: the verified files already match the last commit on `{branch}`, so no new commit was made and the existing commit was pushed as is (a repeated or resumed run is a success, not a failure)."
+  commit-unchanged-report "Nothing to commit: the verified files already match the last commit on `{branch}`, so no new commit was made and the existing commit was pushed as is (a repeated or resumed run is a success, not a failure)."
   workflow_path_named ".github/workflows/{name}.yml"
   pr_comments_command "gh pr view {target} --json comments,reviews --jq {filter}"
   pr_edit_command 'pr_body={body} && if test "$(gh pr view {target} --json body --jq .body)" != "$pr_body"; then gh pr edit {target} --body "$pr_body"; fi'
-  pr_edit_titled_command 'pr_title=$(gh issue view {issue} --json title --jq .title) && test -n "$pr_title" && pr_body={body} && if test "$(gh pr view {target} --json title --jq .title)" != "$pr_title" || test "$(gh pr view {target} --json body --jq .body)" != "$pr_body"; then gh pr edit {target} --title "$pr_title" --body "$pr_body"; fi'
+  pull-request-edit-titled-command 'pr_title=$(gh issue view {issue} --json title --jq .title) && test -n "$pr_title" && pr_body={body} && if test "$(gh pr view {target} --json title --jq .title)" != "$pr_title" || test "$(gh pr view {target} --json body --jq .body)" != "$pr_body"; then gh pr edit {target} --title "$pr_title" --body "$pr_body"; fi'
   pr_ready_command 'test -z "$(git status --porcelain)" && pr_draft=$(gh pr view {target} --json isDraft --jq .isDraft) && if test "$pr_draft" = true; then gh pr ready {target}; fi'
   pr_body_template "Verified artifact: {path}\n\nVerification commands:\n{commands}\n\nResolves {reference}"
   pr_feedback_review_report "Pull request feedback requires review before readiness:\n{output}"
@@ -46,7 +46,10 @@ work_item_steps
   read_attempt_run_reason_line "- `{command}` — {reason} (answered: {outcome})"
   read_attempt_fetch_line "- fetch {url} — {outcome}"
   read_failure_exit_status "exit status {status}"
-  prerequisite_grant_required_report "Missing prerequisite `{program}`. Workspace installation requires FORMAL_AI_INSTALL_GRANT=workspace. Failed command: `{command}`\n{output}"
+  prerequisite_grant_required_report "Missing prerequisite `{program}`. Grant required: workspace installation requires FORMAL_AI_INSTALL_GRANT=workspace. {procedure} Failed command: `{command}`\n{output}"
+  prerequisite-grant-procedure "With that grant the pinned `{program}` publisher setup procedure ({documentation}) would run, `{program}` would be re-probed, and the failed command would be retried once."
+  prerequisite-grant-no-procedure "No pinned publisher setup procedure is declared for `{program}`, so a grant alone would not install it."
+  prerequisite-recovered-report "Recovered the missing prerequisite `{program}` under FORMAL_AI_INSTALL_GRANT=workspace: the pinned `{program}` publisher setup procedure ({documentation}) ran, `{program}` was re-probed, and `{command}` was retried once and succeeded."
   prerequisite_no_recipe_report "Publisher `{url}` provided no typed, verifiable setup recipe for `{program}`; installation was not planned."
   prerequisite_grant_exceeded_report "The publisher setup recipe exceeds the workspace installation grant."
   prerequisite_path_prefix 'PATH={bins}:"$PATH"; export PATH'
@@ -67,7 +70,7 @@ work_item_steps
   workflow-excluded-patterns '["^(?:Do not|Never) (?:save|write|create|place|put) (?:the |a )?(?:GitHub Actions )?workflow (?:as|at|to|in|under) ([^ ]+)"]'
   workflow-name-binding-patterns '["^(?:The |A )?(?:GitHub Actions |CI )?workflow (?:file )?(?:should|must) (?:have|use|be given) (?:a )?(?:meaningful |descriptive |clear )?(?:file ?)?name,? (?:like|such as|e\\.g\\.) ([^ ]+)$","^(?:Name|Call) (?:the |a )?(?:GitHub Actions |CI )?workflow (?:file )?(?:something )?(?:like|such as) ([^ ]+)$","^(?:Workflow|Рабочий процесс) (?:должен|должна) (?:иметь|называться) (?:осмысленное |понятное )?(?:имя|название)?,? (?:например|как) ([^ ]+)$"]'
   workflow-name-excluded-patterns '[]'
-  workflow_path_file ".github/workflows/{file}"
+  workflow-path-file ".github/workflows/{file}"
   branch-forbidden-substrings '["..","@{"]'
   owned-clause-fence-prefixes '["~~~","```"]'
 

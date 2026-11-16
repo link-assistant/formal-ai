@@ -26,7 +26,16 @@ export function pushRef(target) {
 
 /** Mirrors fn is_pull_request_target: classify the already validated destination. */
 export function isPullRequestTarget(target) {
-  return target.reference.includes('/pull/');
+  return isPullRequestReference(target.reference);
+}
+
+/**
+ * Mirrors `fn is_pull_request_reference`: every reference
+ * `repositoryWorkReference` yields is a GitHub `issues` or `pull` URL, so any
+ * other reference names an issue.
+ */
+export function isPullRequestReference(reference) {
+  return reference.includes('/pull/');
 }
 
 /** Mirrors `fn target_of`: a `CommitTarget` or null. */
