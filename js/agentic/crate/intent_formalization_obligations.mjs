@@ -235,15 +235,15 @@ export function boundOutputLiterals(text) {
 
 /**
  * Mirrors `fn conditional_introduction`: whether the words that introduce a
- * literal state a condition (`condition_marker`, `negated_condition_marker`)
- * or its otherwise branch (`otherwise_marker`) rather than the program's own
- * run (`execution_circumstance`). Such a literal is not printed
+ * literal state a condition (`condition-marker`, `negated-condition-marker`)
+ * or its otherwise branch (`otherwise-marker`) rather than the program's own
+ * run (`execution-circumstance`). Such a literal is not printed
  * unconditionally, so it is never bound; the graph reports it unbound.
  */
 function conditionalIntroduction(introduction) {
   const normalized = normalizePrompt(introduction).toLowerCase();
-  return ['condition_marker', 'negated_condition_marker', 'otherwise_marker'].some((role) => mentionsRole(role, normalized))
-    && !mentionsRole('execution_circumstance', normalized);
+  return ['condition-marker', 'negated-condition-marker', 'otherwise-marker'].some((role) => mentionsRole(role, normalized))
+    && !mentionsRole('execution-circumstance', normalized);
 }
 
 /**

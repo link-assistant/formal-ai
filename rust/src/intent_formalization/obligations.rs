@@ -538,15 +538,15 @@ pub fn bound_output_literals(text: &str) -> Vec<String> {
 /// The roles whose words state a condition, or its otherwise branch, before
 /// an effect.
 const CONDITION_ROLES: [&str; 3] = [
-    "condition_marker",
-    "negated_condition_marker",
-    "otherwise_marker",
+    "condition-marker",
+    "negated-condition-marker",
+    "otherwise-marker",
 ];
 
 /// Whether the words that introduce a literal state a condition
-/// (`condition_marker`, `negated_condition_marker`) or its otherwise branch
-/// (`otherwise_marker`) rather than the program's own run
-/// (`execution_circumstance`). Such a literal is not printed unconditionally,
+/// (`condition-marker`, `negated-condition-marker`) or its otherwise branch
+/// (`otherwise-marker`) rather than the program's own run
+/// (`execution-circumstance`). Such a literal is not printed unconditionally,
 /// so it is never bound; the graph reports it unbound (issue #1166).
 fn conditional_introduction(introduction: &str) -> bool {
     let lexicon = seed::lexicon();
@@ -554,7 +554,7 @@ fn conditional_introduction(introduction: &str) -> bool {
     CONDITION_ROLES
         .iter()
         .any(|role| lexicon.mentions_role(role, &normalized))
-        && !lexicon.mentions_role("execution_circumstance", &normalized)
+        && !lexicon.mentions_role("execution-circumstance", &normalized)
 }
 
 /// The structure part `surface_structure` lists explicit counts under.

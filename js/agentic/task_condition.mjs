@@ -34,8 +34,8 @@ const RELATION_ROLES = Object.freeze([
   ['number_constraint_lower_inclusive', 'ge'],
   ['number_constraint_upper_strict', 'lt'],
   ['number_constraint_upper_inclusive', 'le'],
-  ['comparison_equal', 'eq'],
-  ['comparison_not_equal', 'ne'],
+  ['comparison-equal', 'eq'],
+  ['comparison-not-equal', 'ne'],
 ]);
 /** Seed operator relations (`symbolic-operator` rule) as comparisons. */
 const SYMBOL_RELATIONS = Object.freeze({ less: ['lt', 'gt'], 'less-or-equal': ['le', 'ge'], equal: ['eq', 'eq'], 'not-equal': ['ne', 'ne'] });
@@ -230,7 +230,7 @@ export function readCondition(text) {
   cuts.sort((left, right) => left.start - right.start);
   const roles = [...new Set(cuts.map((cut) => cut.role))];
   if (roles.length > 1) return 'condition_connectives_mixed';
-  const fillers = [...functionWords(), ...rolePhrases('comparison_filler')];
+  const fillers = [...functionWords(), ...rolePhrases('comparison-filler')];
   const negations = negationCues();
   const atoms = [];
   let from = 0;
@@ -253,12 +253,12 @@ export function readCondition(text) {
 export function conditionalStatement(clause) {
   const literals = taskLiterals(clause).filter((literal) => !literal.escaped);
   const lowered = masked(clause, literals);
-  const otherwise = firstRoleMatch(lowered, 'otherwise_marker');
+  const otherwise = firstRoleMatch(lowered, 'otherwise-marker');
   const mainEnd = otherwise === null ? lowered.length : otherwise[0];
   const main = lowered.slice(0, mainEnd);
-  const negatedMarker = firstRoleMatch(main, 'negated_condition_marker');
-  const marker = negatedMarker ?? firstRoleMatch(main, 'condition_marker');
-  if (marker !== null && firstRoleMatch(main, 'execution_circumstance') !== null) return null;
+  const negatedMarker = firstRoleMatch(main, 'negated-condition-marker');
+  const marker = negatedMarker ?? firstRoleMatch(main, 'condition-marker');
+  if (marker !== null && firstRoleMatch(main, 'execution-circumstance') !== null) return null;
   if (marker === null && otherwise === null) return null;
   const elseLiterals = otherwise === null ? [] : literals.filter((literal) => literal.start >= otherwise[1]);
   const otherwiseLines = branchLines(clause, elseLiterals, clause.length);

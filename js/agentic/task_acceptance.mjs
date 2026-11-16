@@ -104,7 +104,7 @@ function clauseContexts(text) {
   });
 }
 
-const workflowContext = (text) => mentionsRole('ci_workflow_request', lowered(text)) || mentionsRole('workflow_context_noun', lowered(text));
+const workflowContext = (text) => mentionsRole('ci_workflow_request', lowered(text)) || mentionsRole('workflow-context-noun', lowered(text));
 
 /** Mirrors `fn workflow_checks`: the workflow checks a workflow-context clause asks for. */
 function workflowChecks(clause, words, literals, language) {
@@ -120,12 +120,12 @@ function workflowChecks(clause, words, literals, language) {
     const events = JSON.parse(template('workflow-trigger-events')).filter(([role]) => mentionsRole(role, words)).map(([, event]) => event);
     if (events.length) checks.push({ check: 'workflow_triggers', events });
   }
-  if (mentionsRole('workflow_execution_verb', words)) checks.push({ check: 'workflow_runs_program' });
+  if (mentionsRole('workflow-execution-verb', words)) checks.push({ check: 'workflow_runs_program' });
   if (meaningEvidencedIn('print_stdout', words) || mentionsRole('output_obligation_verb', words)) {
     const lines = literals.filter((literal) => !literal.escaped).map((literal) => literal.text);
     checks.push({ check: 'workflow_verifies_output', lines: lines.length ? lines : null });
   }
-  if (mentionsRole('workflow_status_obligation', words)) checks.push({ check: 'workflow_status' });
+  if (mentionsRole('workflow-status-obligation', words)) checks.push({ check: 'workflow_status' });
   if (mentionsRole('ci_badge_obligation', words)) checks.push({ check: 'workflow_badge' });
   const names = mentionsRole('file_naming_obligation', words) ? fileNames(clause, literals) : [];
   if (names.length) checks.push({ check: 'workflow_file_name', names });
@@ -147,15 +147,15 @@ function clauseChecks(context, language, leadIllustrative) {
   } else {
     const output = meaningEvidencedIn('print_stdout', words) || mentionsRole('output_obligation_verb', words);
     if (output) checks.push(outputCheck(clause, literals));
-    const runs = mentionsRole('run_instruction_obligation', words);
+    const runs = mentionsRole('run-instruction-obligation', words);
     if (runs) checks.push({ check: 'run_instructions' });
-    if (!runs && mentionsRole('code_comment_obligation', words)) checks.push({ check: 'comments' });
-    if (mentionsRole('program_file_obligation', words) || (!output && mentionsRole('coding_request_verb', words) && requestedIn(clause) !== null)) {
+    if (!runs && mentionsRole('code-comment-obligation', words)) checks.push({ check: 'comments' });
+    if (mentionsRole('program-file-obligation', words) || (!output && mentionsRole('coding_request_verb', words) && requestedIn(clause) !== null)) {
       checks.push({ check: 'program_file' });
     }
   }
   // A named example settles the judgment it illustrates (`a meaningful name like ci.yml`).
-  if (mentionsRole('judgment_obligation', words) && !checks.some((check) => check.check === 'workflow_file_name')) checks.push({ check: 'judgment' });
+  if (mentionsRole('judgment-obligation', words) && !checks.some((check) => check.check === 'workflow_file_name')) checks.push({ check: 'judgment' });
   return checks.length ? checks : [{ check: 'unread' }];
 }
 
@@ -195,12 +195,12 @@ export function specifyTask(text) {
   const language = requestedIn(text);
   const contexts = clauseContexts(text);
   const clauses = contexts.map((context) => {
-    const leadIllustrative = context.lead !== null && mentionsRole('illustrative_marker', lowered(context.lead));
+    const leadIllustrative = context.lead !== null && mentionsRole('illustrative-marker', lowered(context.lead));
     const words = lowered(context.clause);
     return {
       text: context.clause,
       span: [context.start, context.end],
-      required: !mentionsRole('optional_obligation_marker', words),
+      required: !mentionsRole('optional-obligation-marker', words),
       checks: clauseChecks(context, language, leadIllustrative),
     };
   });
@@ -431,8 +431,8 @@ export function acceptanceReport(objective, recipe, outputs) {
   // appended only when some verdict is actionable (contradicted, or unresolved for want of an observation).
   if (!open.some((verdict) => !UNREAD.has(verdict.justification))) return '';
   const counts = ['discharged', 'contradicted', 'unresolved', 'inapplicable'].map((name) => [`{${name}}`, String(report[name])]);
-  const lines = open.map((verdict) => fill('task_acceptance_line', [['{verdict}', verdict.verdict], ['{justification}', verdict.justification],
+  const lines = open.map((verdict) => fill('task-acceptance-line', [['{verdict}', verdict.verdict], ['{justification}', verdict.justification],
     ['{start}', String(verdict.span[0])], ['{end}', String(verdict.span[1])], ['{clause}', verdict.clause.replaceAll('\n', ' ')]]));
-  const closing = fill(report.complete ? 'task_acceptance_review' : 'task_acceptance_incomplete', []);
-  return [fill('task_acceptance_heading', counts), ...lines, closing].join('\n');
+  const closing = fill(report.complete ? 'task-acceptance-review' : 'task-acceptance-incomplete', []);
+  return [fill('task-acceptance-heading', counts), ...lines, closing].join('\n');
 }

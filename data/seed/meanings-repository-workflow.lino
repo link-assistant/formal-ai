@@ -185,9 +185,9 @@ meanings
     lexeme hi "प्रतीक"
     lexeme zh "徽章"
     lexeme es "escudo" "insignia"
-  code_comment_obligation
+  code-comment-obligation
     defined-by concept
-    role code_comment_obligation
+    role code-comment-obligation
     precondition "a request clause asks for comments in the written code"
     effect "independent task acceptance checks the candidate program carries comment lines beyond its run instructions (issue #1166)"
     unit "not applicable"
@@ -197,9 +197,9 @@ meanings
     lexeme hi "टिप्पणी" "टिप्पणियाँ" "टिप्पणियां"
     lexeme zh "注释"
     lexeme es "comentario" "comentarios" "comentado" "comenta"
-  run_instruction_obligation
+  run-instruction-obligation
     defined-by concept
-    role run_instruction_obligation
+    role run-instruction-obligation
     precondition "a request clause asks for build or run instructions"
     effect "independent task acceptance checks the candidate program's leading comment block names the program file it runs (issue #1166)"
     unit "not applicable"
@@ -209,9 +209,9 @@ meanings
     lexeme hi "चलाने के निर्देश" "चलाने का तरीका"
     lexeme zh "运行说明" "运行方法" "如何运行"
     lexeme es "instrucciones de ejecución" "instrucciones para ejecutar" "cómo ejecutar"
-  judgment_obligation
+  judgment-obligation
     defined-by concept
-    role judgment_obligation
+    role judgment-obligation
     precondition "a request clause asks for a quality no observable check decides"
     effect "independent task acceptance keeps the clause as explicitly unresolved judgment, never as satisfied (issue #1166)"
     unit "not applicable"
@@ -221,9 +221,9 @@ meanings
     lexeme hi "सर्वोत्तम अभ्यास" "सरल" "स्पष्ट" "मानक लाइब्रेरी" "सार्थक"
     lexeme zh "最佳实践" "惯用" "规范" "简单" "清晰" "可读" "标准库" "有意义"
     lexeme es "buenas prácticas" "idiomático" "convenciones" "simple" "sencillo" "claro" "claridad" "legible" "biblioteca estándar" "significativo"
-  program_file_obligation
+  program-file-obligation
     defined-by concept
-    role program_file_obligation
+    role program-file-obligation
     precondition "a request clause asks for the program file itself"
     effect "independent task acceptance checks the candidate program file carries the requested language's extension (issue #1166)"
     unit "not applicable"
@@ -233,9 +233,9 @@ meanings
     lexeme hi "एक्सटेंशन" "प्रोग्राम फ़ाइल"
     lexeme zh "扩展名" "源文件" "程序文件"
     lexeme es "extensión" "archivo del programa" "archivo fuente"
-  workflow_trigger_push
+  workflow-trigger-push
     defined-by concept
-    role workflow_trigger_push
+    role workflow-trigger-push
     precondition "a workflow clause names the push event as a trigger"
     effect "independent task acceptance checks the candidate workflow triggers on push (issue #1166)"
     unit "not applicable"
@@ -245,9 +245,9 @@ meanings
     lexeme hi "पुश"
     lexeme zh "推送"
     lexeme es "envío" "empuje"
-  workflow_trigger_pull_request
+  workflow-trigger-pull-request
     defined-by concept
-    role workflow_trigger_pull_request
+    role workflow-trigger-pull-request
     precondition "a workflow clause names the pull-request event as a trigger"
     effect "independent task acceptance checks the candidate workflow triggers on pull requests (issue #1166)"
     unit "not applicable"
@@ -257,9 +257,9 @@ meanings
     lexeme hi "पुल रिक्वेस्ट"
     lexeme zh "拉取请求" "合并请求"
     lexeme es "solicitud de extracción" "solicitudes de extracción"
-  workflow_status_obligation
+  workflow-status-obligation
     defined-by concept
-    role workflow_status_obligation
+    role workflow-status-obligation
     precondition "a workflow clause asks for a visible pass or fail status"
     effect "independent task acceptance checks the candidate workflow runs a verification that carries the expected output (issue #1166)"
     unit "not applicable"
@@ -269,9 +269,9 @@ meanings
     lexeme hi "हरा निशान"
     lexeme zh "绿色对勾"
     lexeme es "marca verde"
-  workflow_context_noun
+  workflow-context-noun
     defined-by concept
-    role workflow_context_noun
+    role workflow-context-noun
     precondition "a clause, its list lead or its section names a continuous-integration workflow"
     effect "independent task acceptance reads the clause as a workflow requirement (issue #1166)"
     unit "not applicable"
@@ -281,9 +281,9 @@ meanings
     lexeme hi "वर्कफ़्लो"
     lexeme zh "工作流"
     lexeme es "flujo de trabajo"
-  optional_obligation_marker
+  optional-obligation-marker
     defined-by concept
-    role optional_obligation_marker
+    role optional-obligation-marker
     precondition "a request clause marks itself optional"
     effect "independent task acceptance reports the clause but does not require it for completeness (issue #1166)"
     unit "not applicable"
@@ -293,9 +293,9 @@ meanings
     lexeme hi "वैकल्पिक"
     lexeme zh "可选"
     lexeme es "opcional" "opcionalmente"
-  applicability_marker
+  applicability-marker
     defined-by concept
-    role applicability_marker
+    role applicability-marker
     precondition "a request clause applies only where it is applicable"
     effect "independent task acceptance keeps the clause required and notes its applicability condition (issue #1166)"
     unit "not applicable"
@@ -305,9 +305,9 @@ meanings
     lexeme hi "यदि लागू हो" "आवश्यक हो तो"
     lexeme zh "如适用" "如有需要"
     lexeme es "si aplica" "si es necesario" "si corresponde"
-  illustrative_marker
+  illustrative-marker
     defined-by concept
-    role illustrative_marker
+    role illustrative-marker
     precondition "a list lead introduces an example rather than a requirement"
     effect "independent task acceptance reads the items under the lead as inapplicable illustrations (issue #1166)"
     unit "not applicable"
@@ -317,9 +317,9 @@ meanings
     lexeme hi "उदाहरण"
     lexeme zh "示例" "例如"
     lexeme es "ejemplo" "por ejemplo"
-  condition_marker
+  condition-marker
     defined-by concept
-    role condition_marker
+    role condition-marker
     precondition "an output clause states a condition before its effect"
     effect "independent task acceptance reads the condition in its supported subset or reports it unresolved (issue #1166)"
     unit "not applicable"
@@ -329,9 +329,9 @@ meanings
     lexeme hi "यदि" "अगर" "जब"
     lexeme zh "如果"
     lexeme es "si" "cuando"
-  negated_condition_marker
+  negated-condition-marker
     defined-by concept
-    role negated_condition_marker
+    role negated-condition-marker
     precondition "an output clause states the negation of its condition before its effect"
     effect "independent task acceptance reads the condition negated (issue #1166)"
     unit "not applicable"
@@ -341,9 +341,9 @@ meanings
     lexeme hi "जब तक कि"
     lexeme zh "除非"
     lexeme es "a menos que"
-  otherwise_marker
+  otherwise-marker
     defined-by concept
-    role otherwise_marker
+    role otherwise-marker
     precondition "an output clause states the effect when the condition fails"
     effect "independent task acceptance reads the clause as the condition's otherwise branch (issue #1166)"
     unit "not applicable"
@@ -353,9 +353,9 @@ meanings
     lexeme hi "अन्यथा" "वरना" "नहीं तो"
     lexeme zh "否则"
     lexeme es "de lo contrario" "en caso contrario"
-  execution_circumstance
+  execution-circumstance
     defined-by concept
-    role execution_circumstance
+    role execution-circumstance
     precondition "a condition marker introduces the program's run, not a data condition"
     effect "independent task acceptance reads the output as unconditional (issue #1166)"
     unit "not applicable"
@@ -365,9 +365,9 @@ meanings
     lexeme hi "चलने पर" "चलाने पर"
     lexeme zh "运行时"
     lexeme es "se ejecuta" "al ejecutarse"
-  comparison_equal
+  comparison-equal
     defined-by concept
-    role comparison_equal
+    role comparison-equal
     precondition "an output condition compares two operands for equality"
     effect "independent task acceptance reads the atom as left equals right (issue #1166)"
     unit "not applicable"
@@ -377,9 +377,9 @@ meanings
     lexeme hi "के बराबर"
     lexeme zh "等于"
     lexeme es "igual a" "es igual a"
-  comparison_not_equal
+  comparison-not-equal
     defined-by concept
-    role comparison_not_equal
+    role comparison-not-equal
     precondition "an output condition compares two operands for inequality"
     effect "independent task acceptance reads the atom as left differs from right (issue #1166)"
     unit "not applicable"
@@ -389,9 +389,9 @@ meanings
     lexeme hi "के बराबर नहीं"
     lexeme zh "不等于"
     lexeme es "distinto de" "diferente de" "no es igual a"
-  comparison_filler
+  comparison-filler
     defined-by concept
-    role comparison_filler
+    role comparison-filler
     precondition "an output condition wraps an operand in a word that names no operand"
     effect "independent task acceptance drops the word before reading the operand (issue #1166)"
     unit "not applicable"
@@ -401,9 +401,9 @@ meanings
     lexeme hi "मान"
     lexeme zh "值"
     lexeme es "es" "sea" "valor"
-  workflow_execution_verb
+  workflow-execution-verb
     defined-by concept
-    role workflow_execution_verb
+    role workflow-execution-verb
     precondition "a workflow clause asks the workflow to run or build the program"
     effect "independent task acceptance checks the candidate workflow names the program file (issue #1166)"
     unit "not applicable"

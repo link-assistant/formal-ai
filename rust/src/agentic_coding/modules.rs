@@ -123,6 +123,8 @@ pub mod statement_audit;
 mod structured_document;
 pub(crate) mod structured_edit;
 pub mod system_diagram;
+pub mod task_acceptance;
+pub mod task_condition;
 pub mod task_obligations;
 mod task_structure;
 mod test_assertion;
