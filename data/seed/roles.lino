@@ -1295,6 +1295,8 @@ roles
     kind predicate
   workflow_context_noun
     kind meaning
+  workflow_execution_verb
+    kind meaning
   workflow_status_obligation
     kind meaning
   workflow_trigger_pull_request

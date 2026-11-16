@@ -1,0 +1,35 @@
+// Probe: checkTask verdicts for #1450 candidates and an independently executed Python candidate.
+import { readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { WorkerHost } from '../../js/server/worker-host.mjs';
+import { installNodeHost } from '../../js/agentic/node-host.mjs';
+await installNodeHost(new WorkerHost());
+const { specifyTask, checkTask } = await import('../../js/agentic/task_acceptance.mjs');
+const body = readFileSync(new URL('./issue-1450-body.md', import.meta.url), 'utf8');
+const specification = specifyTask(body);
+const program = '// Build: kotlinc Main.kt -include-runtime -d Main.jar\n// Run: java -jar Main.jar\n\n// Prints the greeting.\nfun main() {\n    println("Hello, World!")\n}\n';
+const workflow = 'name: Test Hello World\non:\n  push:\n    branches: [main]\n  pull_request:\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: fwilhe2/setup-kotlin@v1\n      - run: kotlinc Main.kt -include-runtime -d Main.jar\n      - run: test "$(java -jar Main.jar)" = "Hello, World!"\n';
+const good = { task_identity: specification.task_identity, program_path: 'Main.kt', files: [{ path: 'Main.kt', source: program }, { path: 'ci/test-hello-world.yml', source: workflow }], observations: [{ args: [], stdout: 'Hello, World!\n' }] };
+const show = (label, report) => {
+  console.log('==', label, 'complete', report.complete, report.discharged, report.contradicted, report.unresolved, report.inapplicable);
+  for (const verdict of report.verdicts) if (verdict.verdict !== 'discharged' && verdict.verdict !== 'inapplicable') console.log('  ', verdict.verdict, verdict.justification, verdict.span.join('-'), verdict.clause.slice(0, 50));
+};
+show('good', checkTask(specification, good));
+show('no comments', checkTask(specification, { ...good, files: [{ path: 'Main.kt', source: 'fun main() {\n    println("Hello, World!")\n}\n' }, good.files[1]] }));
+show('github path', checkTask(specification, { ...good, files: [good.files[0], { path: '.github/workflows/run.yml', source: workflow }] }));
+show('other task', checkTask(specification, { ...good, task_identity: 'task_0' }));
+show('green', checkTask(specification, { ...good, workflow_conclusion: 'success' }));
+const twice = specifyTask('Write a Python program that prints `Hi` twice.');
+const candidate = 'print("Hi")\n';
+const generatedTest = 'import subprocess, sys\nassert subprocess.run([sys.executable, "-c", open(sys.argv[1]).read()], capture_output=True, text=True).stdout == "Hi\\n"\n';
+import { writeFileSync, mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+const directory = mkdtempSync(join(tmpdir(), 'issue-1166-'));
+writeFileSync(join(directory, 'main.py'), candidate);
+writeFileSync(join(directory, 'test_main.py'), generatedTest);
+execFileSync('python3', [join(directory, 'test_main.py'), join(directory, 'main.py')]);
+console.log('generated test passes');
+const stdout = execFileSync('python3', [join(directory, 'main.py')], { encoding: 'utf8' });
+show('shared misunderstanding', checkTask(twice, { task_identity: twice.task_identity, program_path: 'main.py', files: [{ path: 'main.py', source: candidate }], observations: [{ args: [], stdout }] }));
+console.log(twice.output);

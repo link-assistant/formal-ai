@@ -146,7 +146,7 @@ meanings
     example "print exactly"
     lexeme en "print" "prints" "write" "writes" "output"
     lexeme ru "выведи" "вывести" "вывод" "напечатай" "напиши" "печатать"
-    lexeme hi "छापो" "छाप" "प्रिंट" "आउटपुट" "लिखो"
+    lexeme hi "छापो" "छाप" "छापता" "छापना" "छापे" "प्रिंट" "आउटपुट" "लिखो"
     lexeme zh "打印" "输出" "打印出"
     lexeme es "imprime" "imprimir" "escribe" "escribir" "salida"
   code_style_obligation
@@ -217,10 +217,10 @@ meanings
     unit "not applicable"
     example "follow best practices and idioms"
     lexeme en "best practice" "best practices" "idiom" "idioms" "idiomatic" "conventions" "simple" "straightforward" "clarity" "clear" "readable" "clean" "properly" "correctness" "standard library" "meaningful"
-    lexeme ru "лучшие практики" "идиомы" "соглашения" "простой" "простым" "понятный" "понятные" "ясность" "стандартную библиотеку" "чистый"
-    lexeme hi "सर्वोत्तम अभ्यास" "सरल" "स्पष्ट" "मानक लाइब्रेरी"
-    lexeme zh "最佳实践" "惯用" "规范" "简单" "清晰" "可读" "标准库"
-    lexeme es "buenas prácticas" "idiomático" "convenciones" "simple" "sencillo" "claro" "claridad" "legible" "biblioteca estándar"
+    lexeme ru "лучшие практики" "идиомы" "соглашения" "простой" "простым" "понятный" "понятные" "ясность" "стандартную библиотеку" "чистый" "осмысленное" "осмысленный"
+    lexeme hi "सर्वोत्तम अभ्यास" "सरल" "स्पष्ट" "मानक लाइब्रेरी" "सार्थक"
+    lexeme zh "最佳实践" "惯用" "规范" "简单" "清晰" "可读" "标准库" "有意义"
+    lexeme es "buenas prácticas" "idiomático" "convenciones" "simple" "sencillo" "claro" "claridad" "legible" "biblioteca estándar" "significativo"
   program_file_obligation
     defined-by concept
     role program_file_obligation
@@ -264,7 +264,7 @@ meanings
     effect "independent task acceptance checks the candidate workflow runs a verification that carries the expected output (issue #1166)"
     unit "not applicable"
     example "show a green check mark when tests pass"
-    lexeme en "green check" "check mark" "checkmark"
+    lexeme en "green check" "check mark" "checkmark" "passing"
     lexeme ru "зелёная галочка" "зелёную галочку" "зеленая галочка"
     lexeme hi "हरा निशान"
     lexeme zh "绿色对勾"
@@ -401,6 +401,18 @@ meanings
     lexeme hi "मान"
     lexeme zh "值"
     lexeme es "es" "sea" "valor"
+  workflow_execution_verb
+    defined-by concept
+    role workflow_execution_verb
+    precondition "a workflow clause asks the workflow to run or build the program"
+    effect "independent task acceptance checks the candidate workflow names the program file (issue #1166)"
+    unit "not applicable"
+    example "a workflow that runs the build on every push"
+    lexeme en "run" "runs" "running" "execute" "executes" "build" "builds" "building"
+    lexeme ru "запускает" "запускать" "запусти" "выполняет" "сборку" "собирает"
+    lexeme hi "चलाए" "चलाओ" "चलाता" "बिल्ड"
+    lexeme zh "运行" "执行" "构建"
+    lexeme es "ejecute" "ejecuta" "ejecutar" "compilación" "compile"
   numbered_line_noun
     defined-by concept
     role numbered_line_noun

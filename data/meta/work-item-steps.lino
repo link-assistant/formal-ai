@@ -75,3 +75,9 @@ work_item_steps
 
   pull-request-session-summary-pattern "^<!-- hive-mind:working-session-summary -->\n## Working session summary\n\n[\s\S]+\n\n---\n\*This summary was automatically extracted from the AI working session output\.\*$"
   pull-request-session-started-pattern "^🤖 \*\*AI Work Session Started\*\*\n\nStarted at [0-9TZ:.+-]+\. Please wait for it to finish before giving feedback\.\n\n_Runtime: solve `v[^`\n]+` · tool `[^`\n]+` · model `[^`\n]+`_$"
+
+  task-acceptance-note "Issue #1166: every clause of the task gets a verdict from the task text and the candidate's observed files and output, never from the derivation that wrote the candidate. A judgment clause stays unresolved for review; it is never reported as satisfied."
+  task_acceptance_heading "Independent acceptance of the task: {discharged} discharged, {contradicted} contradicted, {unresolved} unresolved, {inapplicable} inapplicable."
+  task_acceptance_line "- {verdict} ({justification}, bytes {start}-{end}): {clause}"
+  task_acceptance_incomplete "The task is not complete: a required clause above is contradicted or unresolved."
+  task_acceptance_review "Every checkable clause is discharged; the unresolved clauses above need a reviewer's judgment."
