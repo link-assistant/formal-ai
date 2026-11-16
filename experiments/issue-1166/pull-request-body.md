@@ -109,3 +109,7 @@ Before this change the run was reported done. Now each of these clauses is `cont
 `data/benchmarks/fast-pull-request-javascript-tests.json` on `main` is missing a comma after `stale-pull-request-report.test.mjs` (lost in a merge). Because of this, every fast JS tier fails while parsing the manifest. This PR restores the comma.
 
 The shared acceptance fixture is laid out compactly (same data, checked by `experiments/issue-1166/format-acceptance-fixture.mjs`) so that it stays under the 1500-line limit for maintained files.
+
+`docs/architecture/module-map.md` on `main` is missing the `meta_executor` row added by #1550, so the module-map check fails. This PR regenerates the map with `node scripts/generate-module-map.mjs --write`.
+
+The native fence and interpreter checks read their prefixes from data instead of string literals: `owned-clause-fence-prefixes` and the new `script-interpreter-prefix` key in `data/meta/work-item-steps.lino`. This keeps the `literal-predicates` debt ceiling at 432 (measured 432).
