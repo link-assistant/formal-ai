@@ -1,7 +1,8 @@
 // Issue #1162 acceptance items 2 and 7 (sub-issues #1157, #1158, #1160),
 // offline: one Hello World work item driven end to end by the JS planner with
 // no LLM, against a real temporary git repository, a bare origin and a fake
-// `gh` (experiments/issue-1162/offline-hive-e2e.mjs). No network, no
+// `gh` (experiments/issue-1162/offline-hive-end-to-end.mjs). The prompts are Hive
+// Mind's own, verbatim, from rust/tests/fixtures/hive-mind/. No network, no
 // credentials; the CI checks the fake `gh` reports are simulated, so this is
 // local end-to-end evidence, not hosted CI evidence.
 //
@@ -15,7 +16,7 @@ import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
-import { ISSUE, hivePrompt, outcome, session, workspace } from '../../../experiments/issue-1162/offline-hive-e2e.mjs';
+import { ISSUE, hivePrompt, outcome, session, workspace } from '../../../experiments/issue-1162/offline-hive-end-to-end.mjs';
 import { executionRecipeFinalAnswer } from '../../../js/agentic/command_reroute.mjs';
 import { programContractAnswer } from '../../../js/agentic/crate/coding_program_contract.mjs';
 
@@ -32,6 +33,12 @@ const missing = (...commands) => {
   return absent.length === 0 ? false : `needs ${absent.join(', ')} on PATH`;
 };
 
+// A tool call failed when its bash receipt ends with a nonzero exit code or
+// the adapter marked it as an error (#1157: "the second run must end
+// successfully without a failed tool call").
+const failedCalls = run => run.transcript.filter(entry =>
+  entry.is_error === true || /\nExit Code: [1-9]\d*\s*$/u.test(String(entry.result?.content ?? entry.result ?? '')));
+
 function assertDelivered(env, language, program) {
   const result = outcome(env);
   assert.equal(result.pr.title, `Implement Hello World in ${language}`);
@@ -46,13 +53,13 @@ function assertDelivered(env, language, program) {
   return result;
 }
 
-test('Hive Mind wording "Update the pull request at" delivers a titled, described, ready pull request; a rerun is a no-op', {
+test('Hive Mind\'s verbatim formal-ai prompt ("Update the pull request at") delivers a titled, described, ready pull request; a rerun is a no-op', {
   skip: missing('rustc', 'jq', 'python3'),
   timeout: 300_000,
 }, async () => {
   const env = workspace('Rust');
   try {
-    const first = await session(env, hivePrompt('hive'));
+    const first = await session(env, hivePrompt('exact'));
     assert.equal(first.stop, 'final');
     assert.match(String(first.answer), /the pull request is ready\.$/u);
     const delivered = assertDelivered(env, 'Rust', 'main.rs');
@@ -61,9 +68,10 @@ test('Hive Mind wording "Update the pull request at" delivers a titled, describe
     for (const call of ['pr view', 'pr checks', 'pr edit', 'pr ready']) assert.ok(calls.includes(call), `${call} ran`);
     assert.ok(calls.indexOf('pr edit') < calls.lastIndexOf('pr ready'), 'the description is written before readiness');
 
-    const second = await session(env, hivePrompt('hive'));
+    const second = await session(env, hivePrompt('exact'));
     assert.equal(second.stop, 'final');
     assert.match(String(second.answer), /the pull request is ready\.$/u);
+    assert.deepEqual(failedCalls(second).map(entry => entry.arguments), [], 'the second run has no failed tool call');
     const again = assertDelivered(env, 'Rust', 'main.rs');
     assert.equal(again.commits, '2', 'a repeated run makes no new commit');
     const added = again.ghCalls.slice(calls.length);
@@ -73,13 +81,13 @@ test('Hive Mind wording "Update the pull request at" delivers a titled, describe
   }
 });
 
-test('"Your prepared Pull Request:" wording still binds the delivery to the pull request', {
+test('Hive Mind\'s regular prompt ("Your prepared Pull Request:") still binds the delivery to the pull request (#1160)', {
   skip: missing('rustc', 'jq', 'python3'),
   timeout: 300_000,
 }, async () => {
   const env = workspace('Rust');
   try {
-    const run = await session(env, hivePrompt('prepared'));
+    const run = await session(env, hivePrompt('regular'));
     assert.equal(run.stop, 'final');
     assertDelivered(env, 'Rust', 'main.rs');
   } finally {
@@ -93,11 +101,12 @@ test('a stray Main.jar after a Kotlin delivery is ignored, committed, pushed and
 }, async () => {
   const env = workspace('Kotlin');
   try {
-    await session(env, hivePrompt('hive'));
+    await session(env, hivePrompt('exact'));
     assertDelivered(env, 'Kotlin', 'Main.kt');
     fs.writeFileSync(path.join(env.dir, 'Main.jar'), 'PK\u0003\u0004 stray build output');
-    const run = await session(env, hivePrompt('hive'));
+    const run = await session(env, hivePrompt('restart'));
     assert.equal(run.stop, 'final');
+    assert.deepEqual(failedCalls(run).map(entry => entry.arguments), [], 'the restart has no failed tool call');
     assert.match(String(run.answer), /the pull request is ready\.$/u);
     const result = assertDelivered(env, 'Kotlin', 'Main.kt');
     assert.ok(!result.tracked.includes('Main.jar') && !result.pushed.includes('Main.jar'));

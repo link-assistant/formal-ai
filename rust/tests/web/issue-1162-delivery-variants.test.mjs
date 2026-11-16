@@ -47,6 +47,20 @@ test('quotes, dollar signs, percent signs and backslashes are escaped for the la
   assert.ok(verify.includes(`printf '%s\\n' 'It'"'"'s 100% $HOME \\ "q"'`) || verify.includes(`printf '%s\\n' 'It'\\''s 100% $HOME \\ "q"'`), verify);
 });
 
+test('a file name is never the output (#1156 R1156-4: Main.java printing "Main.kt")', () => {
+  for (const prompt of [
+    'Create `Main.kt` with a Kotlin program that prints `Hello, World!`.',
+    'Write a Kotlin program in `Main.kt` that prints exactly: `Hello, World!`',
+  ]) {
+    assert.deepEqual(boundOutputLiterals(prompt), ['Hello, World!'], prompt);
+    const recipe = programContractAnswer(prompt)?.execution_recipe;
+    assert.ok(recipe, prompt);
+    assert.equal(recipe.language, 'kotlin', prompt);
+    assert.ok(!recipe.source.includes('println("Main.kt")'), prompt);
+    assert.ok(!recipe.path.endsWith('.java'), prompt);
+  }
+});
+
 test('an alternate file name named in the request is the program path', () => {
   const { recipe } = delivery(base.replace('Create a file with the appropriate extension for Kotlin', 'Create the file `Greeting.kt`'));
   assert.equal(recipe.path, 'Greeting.kt');
@@ -85,6 +99,24 @@ test('an explicit print-twice task produces the line twice, and the count is rea
     assert.equal(new Set(outputs).size, 1, issue);
     const { recipe } = delivery(issue);
     assert.ok(recipe.source.includes(`println("${Array(count).fill(outputs[0]).join('\\n')}")`), recipe.source);
+  }
+});
+
+// The repetition-again vocabulary (data/seed/text-formalization.lino) is read
+// in every registered language: an "again" word after a repeated output makes
+// it a further line, and a plain repeated mention stays one output obligation.
+const againRequests = [
+  { language: 'en', again: 'Write a Kotlin program that prints `Hi` and then prints `Hi` again.', plain: 'Write a Kotlin program that prints `Hi`. The program prints `Hi` exactly.' },
+  { language: 'ru', again: 'Напиши программу на Kotlin, которая выводит `Hi`, а затем выводит `Hi` снова.', plain: 'Напиши программу на Kotlin, которая выводит `Hi`. Программа выводит `Hi` точно.' },
+  { language: 'hi', again: 'एक Kotlin प्रोग्राम लिखें जो `Hi` प्रिंट करे और फिर `Hi` दोबारा प्रिंट करे।', plain: 'एक Kotlin प्रोग्राम लिखें जो `Hi` प्रिंट करे। प्रोग्राम `Hi` प्रिंट करता है।' },
+  { language: 'zh', again: '编写一个 Kotlin 程序，打印 `Hi`，然后打印 `Hi` 再一次。', plain: '编写一个 Kotlin 程序，打印 `Hi`。程序打印 `Hi`。' },
+  { language: 'es', again: 'Escribe un programa en Kotlin que imprime `Hi` y luego imprime `Hi` de nuevo.', plain: 'Escribe un programa en Kotlin que imprime `Hi`. El programa imprime `Hi` exactamente.' },
+];
+
+test('"again" repeats an output line in every registered language; a plain repeated mention does not (#1156)', () => {
+  for (const { language, again, plain } of againRequests) {
+    assert.deepEqual(boundOutputLiterals(again), ['Hi', 'Hi'], `${language}: ${again}`);
+    assert.deepEqual(boundOutputLiterals(plain), ['Hi'], `${language}: ${plain}`);
   }
 });
 

@@ -3,7 +3,7 @@
 // and must still leave the pull request ready with a clean tree.
 import fs from 'node:fs';
 import path from 'node:path';
-import { workspace, session, outcome, hivePrompt } from './offline-hive-e2e.mjs';
+import { workspace, session, outcome, hivePrompt } from './offline-hive-end-to-end.mjs';
 const language = process.argv[2] ?? 'Rust';
 const env = workspace(language);
 const first = await session(env, hivePrompt('hive'));

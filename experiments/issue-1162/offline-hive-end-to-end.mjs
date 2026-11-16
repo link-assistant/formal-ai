@@ -4,9 +4,10 @@
 // issue and records every pull request call. No network, no credentials.
 //
 // Usage:
-//   node experiments/issue-1162/offline-hive-e2e.mjs [Kotlin|Rust] [prompt-kind] [rerun]
+//   node experiments/issue-1162/offline-hive-end-to-end.mjs [Kotlin|Rust] [prompt-kind] [rerun]
 // prompt-kind: `hive` (Hive Mind's formal-ai prompt, "Update the pull request
-// at ...") or `prepared` ("Your prepared Pull Request: ...").
+// at ..."), `exact` (that prompt verbatim from the 2026-09-27 Kotlin run),
+// `regular` (Hive's regular prompt), `restart` (its auto-restart after `?? Main.jar`) or `prepared` ("Your prepared Pull Request: ...").
 // `rerun` drives a second session on the finished checkout (no-op continuation).
 import fs from 'node:fs';
 import os from 'node:os';
@@ -20,65 +21,24 @@ export const PR = 'https://github.com/example/test-hello-world/pull/2';
 export const BRANCH = 'issue-1-0123456789ab';
 
 export function hivePrompt(kind = 'hive') {
+  if (PROMPTS[kind]) {
+    return fs.readFileSync(PROMPTS[kind], 'utf8').replace(RECORDED, match => match.endsWith('issues/1') ? ISSUE : match.endsWith('pull/2') ? PR : BRANCH);
+  }
   const pull = kind === 'prepared' ? `Your prepared Pull Request: ${PR}` : `Update the pull request at ${PR}.`;
   return `Resolve the GitHub issue at ${ISSUE} in this repository.\nKeep the solution on branch ${BRANCH}.\n${pull}\n\nImplement and verify the solution before reporting completion.\nProceed.\n`;
 }
 
-const FAKE_GH = String.raw`#!/usr/bin/env node
-// Fake gh for the offline Hello World e2e: state lives in $FAKE_GH_STATE.
-const fs = require('node:fs');
-const file = process.env.FAKE_GH_STATE;
-const state = JSON.parse(fs.readFileSync(file, 'utf8'));
-const args = process.argv.slice(2);
-state.calls.push(args);
-const flag = name => { const i = args.indexOf(name); return i < 0 ? null : args[i + 1]; };
-const save = () => fs.writeFileSync(file, JSON.stringify(state, null, 2));
-const [noun, verb] = args;
-let out = '';
-if (noun === 'issue' && verb === 'view') {
-  const field = flag('--json');
-  out = field === 'title' ? state.issue.title : field === 'body' ? state.issue.body : JSON.stringify(state.issue);
-} else if (noun === 'pr' && verb === 'view') {
-  const field = flag('--json');
-  if (field === 'title') out = state.pr.title;
-  else if (field === 'body') out = state.pr.body;
-  else if (field === 'isDraft') out = String(state.pr.isDraft);
-  else if (field === 'comments,reviews') {
-    // Apply the caller's own jq filter to the recorded feedback, as gh does.
-    const { execFileSync } = require('node:child_process');
-    out = execFileSync('jq', ['-c', flag('--jq')], { input: JSON.stringify({ comments: state.pr.comments ?? [], reviews: state.pr.reviews ?? [] }), encoding: 'utf8' }).trim();
-  } else if (field === 'headRefOid,headRefName,isDraft,state,url') {
-    const { execFileSync } = require('node:child_process');
-    const head = execFileSync('git', ['ls-remote', 'origin', 'refs/heads/' + state.branch], { encoding: 'utf8' }).split(/\s/u)[0];
-    out = JSON.stringify({ headRefOid: head, headRefName: state.branch, isDraft: state.pr.isDraft, state: 'OPEN', url: state.pr.url });
-  } else out = '';
-} else if (noun === 'pr' && verb === 'checks') {
-  // Simulated CI: one passing check per workflow in the pushed head, named as
-  // the workflow names itself. Not a real CI run.
-  if (flag('--json') !== null) {
-    const { execFileSync } = require('node:child_process');
-    execFileSync('git', ['fetch', '-q', 'origin', state.branch]);
-    const files = execFileSync('git', ['ls-tree', '-r', '--name-only', 'FETCH_HEAD'], { encoding: 'utf8', env: { ...process.env } }).split('\n');
-    out = JSON.stringify(files.filter(f => /^(\.github\/workflows|ci)\/[^/]+\.ya?ml$/u.test(f)).map(f => {
-      const text = execFileSync('git', ['show', 'FETCH_HEAD:' + f], { encoding: 'utf8' });
-      const name = /^name: (.+)$/mu.exec(text)?.[1] ?? f;
-      return { bucket: 'pass', name: 'run', workflow: name };
-    }));
-  }
-  state.checks = (state.checks ?? 0) + 1;
-} else if (noun === 'pr' && verb === 'edit') {
-  if (flag('--title') !== null) state.pr.title = flag('--title');
-  if (flag('--body') !== null) state.pr.body = flag('--body');
-} else if (noun === 'pr' && verb === 'ready') {
-  state.pr.isDraft = false;
-} else {
-  save();
-  process.stderr.write('fake gh: unsupported ' + args.join(' ') + '\n');
-  process.exit(2);
-}
-save();
-if (out) process.stdout.write(out + '\n');
-`;
+// The fake `gh` is shared with the Rust offline delivery tests
+// (rust/tests/fixtures/hive-mind/offline_delivery.rs).
+const FAKE_GH = 'rust/tests/fixtures/hive-mind/fake-gh.cjs';
+// Hive Mind's exact formal-ai prompt from the 2026-09-27 Kotlin run, and its
+// regular prompt; their work item URLs are replaced with the offline ones.
+const PROMPTS = {
+  exact: 'rust/tests/fixtures/hive-mind/formal-ai-prompt.txt',
+  regular: 'rust/tests/fixtures/hive-mind/regular-prompt.txt',
+  restart: 'rust/tests/fixtures/hive-mind/restart-uncommitted-main-jar.txt',
+};
+const RECORDED = /https:\/\/github\.com\/konard\/test-hello-world-[0-9a-f-]+\/(issues\/1|pull\/2)|issue-1-604f2202fd18/gu;
 
 function git(dir, ...args) {
   return execFileSync('git', args, { cwd: dir, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
@@ -108,7 +68,8 @@ export function workspace(language) {
     branch: BRANCH,
     pr: { title: '[WIP] Implement Hello World', body: 'Work in progress', isDraft: true, url: PR },
   }, null, 2));
-  fs.writeFileSync(path.join(bin, 'gh'), FAKE_GH, { mode: 0o755 });
+  fs.copyFileSync(FAKE_GH, path.join(bin, 'gh'));
+  fs.chmodSync(path.join(bin, 'gh'), 0o755);
   return { root, dir, origin, bin, state };
 }
 

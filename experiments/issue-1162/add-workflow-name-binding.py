@@ -9,7 +9,7 @@ ADD = (
     "\"^(?:Name|Call) (?:the |a )?(?:GitHub Actions |CI )?workflow (?:file )?(?:something )?(?:like|such as) ([^ ]+)$\","
     "\"^(?:Workflow|Рабочий процесс) (?:должен|должна) (?:иметь|называться) (?:осмысленное |понятное )?(?:имя|название)?,? (?:например|как) ([^ ]+)$\"]'\n"
     "  workflow-name-excluded-patterns '[]'\n"
-    "  workflow_path_file \".github/workflows/{file}\"\n"
+    "  workflow-path-file \".github/workflows/{file}\"\n"
 )
 for path in ["data/meta/work-item-steps.lino", "rust/embedded/data/meta/work-item-steps.lino"]:
     p = pathlib.Path(path)

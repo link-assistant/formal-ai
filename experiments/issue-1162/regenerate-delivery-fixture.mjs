@@ -12,7 +12,7 @@ import { programContractAnswer } from '../../js/agentic/crate/coding_program_con
 import { attach, requestedIn } from '../../js/agentic/ci_workflow.mjs';
 import { supersededWorkflowStep } from '../../js/agentic/git_commit.mjs';
 import { prCompletionCommands } from '../../js/agentic/command_reroute.mjs';
-import { prFeedbackFilter } from '../../js/agentic/restart_feedback.mjs';
+import { pullRequestFeedbackFilter } from '../../js/agentic/restart_feedback.mjs';
 import { exactSuccessfulStdout } from '../../js/agentic/tool_result.mjs';
 
 await installNodeHost(new WorkerHost());
@@ -49,7 +49,7 @@ for (const entry of fixture.workflows) {
   }
   console.log(`== ${entry.id}: ${entry.program} ${entry.workflow}\n${entry.retire_step}`);
 }
-fixture.feedback_filter = prFeedbackFilter();
+fixture.feedback_filter = pullRequestFeedbackFilter();
 for (const entry of fixture.stdout) entry.exact = exactSuccessfulStdout(entry.raw);
 console.log(JSON.stringify(fixture.stdout, null, 2));
 if (process.argv.includes('--write')) writeFileSync(path, `${JSON.stringify(fixture, null, 2)}\n`);

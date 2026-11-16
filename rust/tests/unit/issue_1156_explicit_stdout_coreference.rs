@@ -59,7 +59,11 @@ fn repeated_references_and_check_again_wording_stay_one_line() {
         "Write a Kotlin program that prints `Hello, World!`. Check again that it prints `Hello, World!`.",
         "Write a Kotlin program that prints `Hello, World!` and test it against the expected output.",
     ] {
-        assert_eq!(bound_output_literals(prompt), vec!["Hello, World!"], "{prompt}");
+        assert_eq!(
+            bound_output_literals(prompt),
+            vec!["Hello, World!"],
+            "{prompt}"
+        );
     }
 }
 
@@ -75,17 +79,29 @@ fn only_sequenced_distinct_literals_form_several_lines() {
 #[test]
 fn an_explicit_count_or_again_repeats_the_line() {
     for (prompt, lines) in [
-        ("Write a Kotlin program that prints `Hello, World!` twice.", 2),
-        ("Write a Kotlin program that prints `Hello, World!` three times.", 3),
+        (
+            "Write a Kotlin program that prints `Hello, World!` twice.",
+            2,
+        ),
+        (
+            "Write a Kotlin program that prints `Hello, World!` three times.",
+            3,
+        ),
         (
             "Write a Kotlin program that first prints `Hello, World!` and then prints `Hello, World!` again.",
             2,
         ),
-        ("Напиши программу на Kotlin, которая выводит `Привет` дважды.", 2),
+        (
+            "Напиши программу на Kotlin, которая выводит `Привет` дважды.",
+            2,
+        ),
     ] {
         let outputs = bound_output_literals(prompt);
         assert_eq!(outputs.len(), lines, "{prompt}");
-        assert!(outputs.windows(2).all(|pair| pair[0] == pair[1]), "{prompt}");
+        assert!(
+            outputs.windows(2).all(|pair| pair[0] == pair[1]),
+            "{prompt}"
+        );
     }
 }
 
@@ -102,7 +118,11 @@ fn a_file_name_is_never_the_output() {
         "Create `Main.kt` with a Kotlin program that prints `Hello, World!`.",
         "Write a Kotlin program in `Main.kt` that prints exactly: `Hello, World!`",
     ] {
-        assert_eq!(bound_output_literals(prompt), vec!["Hello, World!"], "{prompt}");
+        assert_eq!(
+            bound_output_literals(prompt),
+            vec!["Hello, World!"],
+            "{prompt}"
+        );
         let recipe = recipe(prompt);
         assert_eq!(recipe.language, "kotlin", "{prompt}");
         assert!(!recipe.source.contains("println(\"Main.kt\")"), "{prompt}");
