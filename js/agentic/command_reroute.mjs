@@ -226,6 +226,12 @@ export function executionRecipeFinalAnswer(recipe, allOutputs, committed) {
     actual
   });
   if (committed && commitOutput !== undefined) {
+    // Issue #1157: an unchanged tree after a repeated or resumed run is a
+    // success, stated in a sentence rather than left as a marker.
+    const marker = fill('commit_nothing_marker', []);
+    if (commitOutput.split('\n').some(line => trim(line) === marker)) {
+      answer += `\n\n${fill('commit_unchanged_report', [['{branch}', pushRef(committed)]])}`;
+    }
     answer += agenticMessage('command_reroute_committed_and_pushed', {
       branch: pushRef(committed),
       reference: committed.reference,

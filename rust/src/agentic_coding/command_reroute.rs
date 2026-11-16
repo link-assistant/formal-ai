@@ -513,6 +513,19 @@ impl ExecutionRecipe {
             .map_or("(command completed without output)", |output| output.trim());
         let _ = write!(answer, "\nActual tool output:\n\n```text\n{actual}\n```");
         if let (Some(target), Some(output)) = (committed, commit_output) {
+            // Issue #1157: an unchanged tree after a repeated or resumed run is
+            // a success, stated in a sentence rather than left as a marker.
+            let marker = super::work_item_steps::fill("commit_nothing_marker", &[]);
+            if output.lines().any(|line| line.trim() == marker) {
+                let _ = write!(
+                    answer,
+                    "\n\n{}",
+                    super::work_item_steps::fill(
+                        "commit_unchanged_report",
+                        &[(concat!("{", "branch}"), target.push_ref())],
+                    )
+                );
+            }
             let _ = write!(
                 answer,
                 "\n\nCommitted and pushed to `{}` for {}:\n\n```text\n{}\n```",

@@ -30,6 +30,7 @@ work_item_steps
   stuck_step_report "This session already completed the step below, and repeating it would not change anything, so the step and its last result are reported instead.\nStep: {step}\nLast result:\n{result}"
 
   commit_nothing_marker "__formal_ai_commit_unchanged"
+  commit_unchanged_report "Nothing to commit: the verified files already match the last commit on `{branch}`, so no new commit was made and the existing commit was pushed as is (a repeated or resumed run is a success, not a failure)."
   workflow_path_named ".github/workflows/{name}.yml"
   pr_comments_command "gh pr view {target} --json comments,reviews --jq {filter}"
   pr_edit_command 'pr_body={body} && if test "$(gh pr view {target} --json body --jq .body)" != "$pr_body"; then gh pr edit {target} --body "$pr_body"; fi'

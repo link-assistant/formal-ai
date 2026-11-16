@@ -149,3 +149,31 @@ fn every_observed_orchestrator_notice_is_bookkeeping_and_every_negative_is_feedb
         );
     }
 }
+
+/// Issue #1157 / #1162 acceptance item 5 (already-complete no-op): a repeated
+/// or resumed run whose verified files already match the last commit is a
+/// success stated in a sentence, and an actual commit is never reported as
+/// unchanged.
+#[test]
+fn an_unchanged_tree_on_a_repeated_run_is_reported_as_success() {
+    let recipe = recipe_for(KOTLIN_ISSUE);
+    let target = CommitTarget {
+        binding_refused: false,
+        branch: Some("issue-1162".to_owned()),
+        reference: "https://github.com/example/repo/issues/1162".to_owned(),
+    };
+    let mut outputs = vec![String::new(); recipe.commands.len()];
+    outputs.push("__formal_ai_commit_unchanged\n0123456789abcdef".to_owned());
+    let answer = recipe.final_answer(&outputs, Some(&target));
+    assert!(
+        answer.contains("Nothing to commit: the verified files already match the last commit on `issue-1162`"),
+        "{answer}"
+    );
+    assert!(answer.contains("is a success, not a failure"), "{answer}");
+
+    outputs.pop();
+    outputs.push("0123456789abcdef".to_owned());
+    let answer = recipe.final_answer(&outputs, Some(&target));
+    assert!(!answer.contains("Nothing to commit"), "{answer}");
+    assert!(answer.contains("Committed and pushed to `issue-1162`"), "{answer}");
+}
