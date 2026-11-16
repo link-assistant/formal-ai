@@ -76,6 +76,7 @@ requirement-areas
     match "code"
     match "program"
     match "agentic"
+    match "request-formalization"
     match "workspace"
     match "repository"
     match "discovery"
