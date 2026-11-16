@@ -1,0 +1,16 @@
+- bash {"command":"gh issue view 'https://github.com/link-assistant/hive-mind/issues/4035' --json title --jq .title && echo && gh issue view 'https://github.com/link-assistant/hive-mind/issues/4035' --json body --jq .body; printf '\n__formal_ai_exit=%s\n' $?"}
+  => completed "CI-failure restart prompt gives the model only check names, not the failing job URLs the solver already has\n\n## What happens\n\nWhen auto-restart-until-mergeable restarts a session because CI failed, the solver knows the URL of every failing job. It writes those URLs to its log and to the pull re
+- webfetch {"format":"text","url":"https://github.com/link-assistant/hive-mind/issues/4035"}
+  => completed "CI-failure restart prompt gives the model only check names, not the failing job URLs the solver already has · Issue #4035 · link-assistant/hive-mind · GitHub\n\n\n\n  \n  \n  \n  \n\n    \n  \n\n\n  \n\n\n    \n\n\n  \n  \n\n  \n  \n\n    \n\n\n\n\n\n\n\n  \n\n  \n\n\n\n\n    \n\n  \n\n    \n\n    
+- bash {"command":"command -v python3 >/dev/null 2>&1 && python3 -c 'import json\nimport os\nimport pathlib\nimport secrets\nimport stat\nimport sys\n\nMAXIMUM_FILE_BYTES = 16 * 1024 * 1024\nplan = json.loads(sys.argv[1])\nroot = pathlib.Path.cwd()\n\n\ndef owned_path(value):\n    if not isinstance(value, str) or not value or '\\''\\x00'\\'' in value:\n        raise ValueError('\\''invalid_owned_path'\\'
+  => completed "{\"schema\": \"workspace-source-v1\", \"path\": \"Main.scala\", \"success\": true, \"complete\": true, \"absent\": true, \"error_code\": \"ENOENT\"}\n"
+- write {"content":"object hello {\n  def main(args: Array[String]) = {\n    println(\"Hello, world!\")\n  }\n}","filePath":"/tmp/gh-issue-solver-1794308307396/Main.scala"}
+  => completed "Wrote file successfully."
+- bash {"command":"scalac Main.scala"}
+  => error "Exit code 127\n/usr/bin/bash: line 1: scalac: command not found\n"
+- write {"content":"#!/usr/bin/env python3\n\"\"\"Client-owned bounded workspace installer. No publisher shell text is executed.\"\"\"\nimport hashlib, html, json, os, pathlib, platform, re, shutil, ssl, stat, subprocess, sys, tempfile, time, urllib.error, urllib.parse, urllib.request, zipfile\nfrom html.parser import HTMLParser\n\ndef require(condition, reason):\n    if not condition:\n        raise Valu
+  => completed "Wrote file successfully."
+- bash {"command":"python3 '.formal-ai/bootstrap/prerequisite-installer.py' '{\"dependencies\":[\"java\"],\"grant\":{\"allowNetwork\":true,\"bootstrap\":{\"arguments\":[\".formal-ai/bootstrap/prerequisite-installer.py\"],\"program\":\"python3\"},\"maxArchiveBytes\":134217728,\"maxExpandedBytes\":536870912,\"networkHosts\":[\"kotlinlang.org\",\"www.scala-lang.org\",\"scala-lang.org\",\"rustup.rs\",\"githu
+  => completed "{\"phase\": \"fetch\", \"schema\": \"formal-ai-prerequisite-observation-v1\", \"sha256\": \"552f2996b70ea710ab0ffe6c2cf5ec095c0e32f9828488119588dac93aad0d07\", \"size\": 23297, \"url\": \"https://api.github.com/repos/scala/scala3/releases/latest\"}\n{\"archives\": [\"scala3-3.3.9.zip\"], \"candidat
+- bash {"command":"scala run Main.scala"}
+  => error "Exit code 127\n/usr/bin/bash: line 1: scala: command not found\n"
