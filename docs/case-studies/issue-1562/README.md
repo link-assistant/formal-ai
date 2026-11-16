@@ -73,7 +73,7 @@ The JavaScript runtime does not reproduce the write. Its work-item solver (`prog
    - bare addresses (`…://…`, `www.…`).
 
    A quoted phrase inside a sentence ("a \"Hello World\" program") is the work item naming what it asks for, and is kept.
-2. **Bind every write to an obligation.** `unbind_cited_recipe` / `unbindCitedRecipe` keeps a recipe only if the obligation text selects the same file in the same language. Otherwise the recipe is dropped before the command reroute sees it, both on the work-item route and on the recovery of an owned recipe.
+2. **Bind every write to an obligation.** `unbind_cited_recipe` / `unbindCitedRecipe` (in the same `work_item_citations` modules) keeps a recipe only if the obligation text selects the same file in the same language. Otherwise the recipe is dropped before the command reroute sees it, both on the work-item route and on the recovery of an owned recipe.
    - The evidence record gets `unboundWrite: {path, reason: "NamedByNoObligation"}` and the remaining work `unbound-write:<path>`.
    - The summary says "`main.rs` was not written: no obligation of the work item names it…" (seeded in five languages, intent `work-item-report-unbound-write`).
    - With no recipe, nothing is run, committed or marked ready, so "Created and verified" cannot be reached.
@@ -81,7 +81,7 @@ The JavaScript runtime does not reproduce the write. Its work-item solver (`prog
 
 Each fixture has 3 citation rows: 4031 has 39 requirement rows, 4034 has 21 and 4035 has 29 (`experiments/issue-1562/requirement-citations.mjs`).
 
-The binding decision is traced as route `work_item_recipe_binding` (`path=… language=… bound=…`). The trace is off by default and is enabled by `FORMAL_AI_TRACE_REQUESTS`.
+The binding decision is traced as route `work_item_recipe_binding` (a JSON value `{path, language, bound}`). The trace is off by default and is enabled by `FORMAL_AI_TRACE_REQUESTS`.
 
 ## 5. Tests
 
@@ -90,8 +90,9 @@ The binding decision is traced as route `work_item_recipe_binding` (`path=… la
   - the summary names the defect (the title) and the unbound `main.*`;
   - the record marks citations;
   - the Scala and Rust Hello World items keep their recipe;
-  - a resumed session that already wrote and ran `main.rs` neither commits, pushes nor runs `gh pr ready`, and claims nothing.
-- `rust/tests/web/issue-1562-cited-programs.test.mjs` is the JS twin. It covers the obligation text, `isCitation`, `unbindCitedRecipe`, the Kotlin, Rust and Scala controls, the evidence record and report, and the three sessions.
+  - a resumed session that already wrote and ran `main.rs` neither commits, pushes nor runs `gh pr ready`, and claims nothing;
+  - the unbound-write paragraph is seeded in every registered language (en, ru, hi, zh, es).
+- `rust/tests/web/issue-1562-cited-programs.test.mjs` is the JS twin. It covers the obligation text, `isCitation`, `unbindCitedRecipe`, the Kotlin, Rust and Scala controls, the evidence record and report, the seeded paragraph in every language, the three sessions and the resumed session.
 - `rust/tests/web/draft-request-replay.test.mjs` replays the three production requests (family `work-item-cited-program`, step 6 of the issue).
 
 ## 6. Limits
