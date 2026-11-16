@@ -494,8 +494,14 @@ pub(super) fn evidence_gap(
 fn evidence_remaining_work(
     unresolved: &[serde_json::Value],
     gap: Option<&(&'static str, Vec<String>)>,
+    unbound: Option<&str>,
 ) -> Vec<String> {
     let mut work = vec!["bind-requirements-to-source".to_owned()];
+    // A file the solver selected from a citation alone stays unwritten until
+    // an obligation names it (issue #1562).
+    if let Some(path) = unbound {
+        work.push(format!("unbound-write:{path}"));
+    }
     match gap {
         Some((_, parts)) => work.extend(parts.iter().cloned()),
         None => work.push("implement-requested-change".to_owned()),
@@ -512,11 +518,14 @@ fn evidence_remaining_work(
 }
 
 /// Native twin of `js/agentic/work_item_evidence.mjs`. References grant read evidence only.
+/// `unbound` is the file a recipe would have written although no obligation of
+/// the work item names it (issue #1562); the record and its report name it.
 pub(super) fn plan_work_item_evidence(
     task: &str,
     messages: &[ChatMessage],
     tools: &[&str],
     work_item: &str,
+    unbound: Option<&str>,
     result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let named = !work_item_evidence_paths(task).is_empty();
@@ -546,9 +555,19 @@ pub(super) fn plan_work_item_evidence(
     let mut evidence = Evidence::default();
     // The work item is split into requirements before any evidence is read, so
     // a refusal names the requirement it concerns (issue #1560).
+    // A clause that lies wholly inside an address, a code span, a table of
+    // evidence or a quotation is a citation, not an obligation (issue #1562).
+    let obligations = super::work_item_citations::obligation_text(task);
     let requirements = super::work_item_requirements::work_item_requirements(task)
         .into_iter()
-        .map(|(text, (start, end))| json!({"text":text,"span":[start,end],"status":"unbound"}))
+        .map(|(text, (start, end))| {
+            let status = if super::work_item_citations::is_citation(&obligations, (start, end)) {
+                "citation"
+            } else {
+                "unbound"
+            };
+            json!({"text":text,"span":[start,end],"status":status})
+        })
         .collect::<Vec<_>>();
     let (reason, refused) = match next_step(
         task,
@@ -580,7 +599,7 @@ pub(super) fn plan_work_item_evidence(
             {"step":"implement_requested_change", "status":"not_executed"},
             {"step":"verify_artifact_and_requirements", "status":"not_executed"}
         ],
-        "remainingWork":evidence_remaining_work(&evidence.unresolved, gap.as_ref()),
+        "remainingWork":evidence_remaining_work(&evidence.unresolved, gap.as_ref(), unbound),
         "observations":evidence.observations, "unresolved":evidence.unresolved, "terms":evidence.terms,
         "coverage":"explicit-references; exact path, then file-name search; at most eight files; attachments unresolved; at most two linked documents and three identifiers when no file is named",
         "candidateEdits":[], "checks":[], "effects":[],
@@ -594,6 +613,9 @@ pub(super) fn plan_work_item_evidence(
     }
     if let Some(refused) = refused {
         payload["refused"] = refused;
+    }
+    if let Some(path) = unbound {
+        payload["unboundWrite"] = json!({"path":path,"reason":"NamedByNoObligation"});
     }
     Some(work_item_record_final(
         payload,

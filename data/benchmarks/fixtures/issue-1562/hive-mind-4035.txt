@@ -1,0 +1,77 @@
+CI-failure restart prompt gives the model only check names, not the failing job URLs the solver already has
+
+## What happens
+
+When auto-restart-until-mergeable restarts a session because CI failed, the solver knows the URL of every failing job. It writes those URLs to its log and to the pull request comment. The prompt of the restarted session gets only the check names.
+
+Run: `solve <issue-url> --model formal-ai --tool agent ...`, solve v2.39.10, 2026-11-10, pull request https://github.com/konard/test-hello-world-019fb330-00e1-73b9-955e-f357a1600d5b/pull/2. The provider is only the one used in the evidence run; the code that builds these prompt lines (see "Root cause") contains no reference to a tool, model or provider.
+
+Log (29391 lines): https://gist.githubusercontent.com/konard/a32d7924514dd15c26dde56c8824e096/raw/70f75187bbf431206f983668c6d105bfb6d6de47/tmp-hive-mind-log-upload-22ViXH-sanitized.log.txt (quotes omit the timestamp prefix and leading emoji).
+
+What the solver logged (lines 19660-19662):
+
+```
+RESTART TRIGGERED:        CI failures detected
+   Evidence:               Failing check: run — https://github.com/konard/test-hello-world-019fb330-00e1-73b9-955e-f357a1600d5b/actions/runs/42782279004/job/129714922036
+   Evidence:               Failing check: run — https://github.com/konard/test-hello-world-019fb330-00e1-73b9-955e-f357a1600d5b/actions/runs/42782270548/job/129714894560
+```
+
+What it posted for humans, https://github.com/konard/test-hello-world-019fb330-00e1-73b9-955e-f357a1600d5b/pull/2#issuecomment-6762702946 ("Auto-restart 1/5", "Reason: CI failures detected", "Evidence:" followed by the same two URLs).
+
+What the model received (line 20402, the complete prompt of the restarted session, 15280 characters; relevant part, `\n` shown as line breaks):
+
+```
+Your prepared Pull Request: https://github.com/konard/test-hello-world-019fb330-00e1-73b9-955e-f357a1600d5b/pull/2
+❌ CI/CD checks are failing:
+  - run
+  - run
+Please fix the failing CI checks.
+Fix every failing check, including failures that also happen on the default branch: ...
+```
+
+In that 15280-character line the strings `actions/runs`, `42782279004`, `129714922036`, `129714894560` and `gh run` each occur 0 times. The two failing jobs are the job `run` of one workflow (`.github/workflows/run.yml`, "Run Main.scala"), started twice for the same commit `31809eba`: run 42782279004 by the `pull_request` event and run 42782270548 by the `push` event (GitHub API, read 2026-11-10). The prompt shows them as two identical entries "- run". From the prompt the model cannot tell which workflow, run or job failed, nor why the same name is listed twice.
+
+The restarted session then ended like the previous one and the loop stopped (line 29331 `NO PROGRESS BETWEEN SESSIONS`, line 29334 `Budget left unused:     4 restart iterations`). Whether the session would have acted differently with the URLs was not tested.
+
+## Expected
+
+The restart prompt contains, for each failing check, at least what the PR comment contains: the check name and the job URL. Entries with the same name are distinguishable (workflow name, triggering event or URL). Optionally the last lines of the failing step, or the exact command that prints them (`gh run view <run-id> --job <job-id> --log-failed`).
+
+## Root cause
+
+Code read at 2.39.14 (commit b245deb62fbbca42625753587575416c50d81727). The evidence run is 2.39.10; whether the cited lines are identical in 2.39.10 was not verified.
+
+- The CI blocker carries both forms: `details` (names) and `checks` (`{ name, conclusion, html_url, ... }`, `src/solve.auto-merge-helpers.lib.mjs` line 951).
+- The prompt is built from the names only, [`src/solve.auto-merge.lib.mjs` lines 711-722](https://github.com/link-assistant/hive-mind/blob/b245deb62fbbca42625753587575416c50d81727/src/solve.auto-merge.lib.mjs#L711-L722):
+
+  ```js
+  feedbackLines.push(promptText('prompt.templates.solve-auto-merge.watchUntilMergeable.text8'));
+  ...
+  for (const check of ciBlocker.details) feedbackLines.push(`  - ${check}`);
+  feedbackLines.push('', promptText('prompt.templates.solve-auto-merge.watchUntilMergeable.text9'));
+  ```
+
+  (`text8` is "CI/CD checks are failing:", `text9` is "Please fix the failing CI checks.", `locales/prompts/additional.en.lino` lines 61-62.)
+- The URLs are formatted by `buildCiEvidence`, [`src/restart-evidence.lib.mjs` lines 64-69](https://github.com/link-assistant/hive-mind/blob/b245deb62fbbca42625753587575416c50d81727/src/restart-evidence.lib.mjs#L64-L69): `` `Failing check: ${check.name}${check.html_url ? ` — ${check.html_url}` : ''}` ``. `collectRestartEvidence` (lines 161-166) returns them as `lines`, which go to the log and the comment. Its `feedback`, the part that is appended to the prompt (`src/solve.auto-merge.lib.mjs` lines 767-768), contains only the "same checks failed again" sentence, and only from the second repeat on.
+
+## Suggested fix
+
+- Build the prompt list from `ciBlocker.checks` and print `name — html_url` per entry (reuse `buildCiEvidence`), so the log, the comment and the prompt show the same lines.
+- When several failing checks share a name, add the workflow name or path and the triggering event, so that two entries are never identical.
+- Optionally add one line with the command that prints the failing step's log for each job.
+- Add a test: a blocker with two checks of the same name and different URLs produces two different prompt lines that contain the URLs.
+
+## Evidence
+
+- Log lines 19660-19662, 20402, 29331, 29334 (URL above).
+- PR comment with the URLs: https://github.com/konard/test-hello-world-019fb330-00e1-73b9-955e-f357a1600d5b/pull/2#issuecomment-6762702946
+- Failing jobs: https://github.com/konard/test-hello-world-019fb330-00e1-73b9-955e-f357a1600d5b/actions/runs/42782279004/job/129714922036 and https://github.com/konard/test-hello-world-019fb330-00e1-73b9-955e-f357a1600d5b/actions/runs/42782270548/job/129714894560
+
+## Related issues
+
+- Related: #1887 (prompt wording that asks the model to repair CI in restart mode; state: open).
+- Related: #2293 (restart evidence with run URLs for the log and the comment; state: not open).
+- Related: #2839 (restart loop on CI failures that exist on the base branch; state: not open).
+
+Reported from the analysis in https://github.com/link-assistant/formal-ai/issues/1548.
+

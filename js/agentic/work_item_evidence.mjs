@@ -8,6 +8,7 @@ import { FinalDisposition, planOne, jsonText } from './plan.mjs';
 import { sha256Hex } from './crate/source_fetch.mjs';
 import { userReadPolicyBlocksPlan } from './file_read/ownership.mjs';
 import { workItemRequirements } from './work_item_requirements.mjs';
+import { isCitation, obligationText } from './work_item_citations.mjs';
 import { refusal, workItemRecordFinal } from './work_item_report.mjs';
 import { clientWorkingDirectory } from './content.mjs';
 import { currentDirectory } from './host.mjs';
@@ -72,12 +73,17 @@ export function evidenceGap(requirements, observations, sources) {
  * Work still owed after evidence collection: the change itself (or, when a
  * gap is named, its narrower parts), and every lead left unresolved.
  */
-function evidenceRemainingWork(unresolved, gap = null) {
-  return ['bind-requirements-to-source', ...(gap === null ? ['implement-requested-change'] : gap.work), 'verify-artifact-and-requirements',
+function evidenceRemainingWork(unresolved, gap = null, unbound = null) {
+  // A file the solver selected from a citation alone stays unwritten until an obligation names it (issue #1562).
+  return ['bind-requirements-to-source', ...(unbound === null ? [] : [`unbound-write:${unbound}`]), ...(gap === null ? ['implement-requested-change'] : gap.work), 'verify-artifact-and-requirements',
     ...unresolved.map(row => `unresolved-evidence:${row.reason}:${row.reference}`)];
 }
 
-export function planWorkItemEvidence(task, messages, tools, workItem = null) {
+/**
+ * `unbound` is the file a recipe would have written although no obligation of
+ * the work item names it (issue #1562); the record and its report name it.
+ */
+export function planWorkItemEvidence(task, messages, tools, workItem = null, unbound = null) {
   const named = workItemEvidencePaths(task).length > 0;
   const references = named ? workItemReferences(task, workItem) : [];
   const leads = workItemLeads(task, workItem);
@@ -93,10 +99,13 @@ export function planWorkItemEvidence(task, messages, tools, workItem = null) {
     sources = [];
   // The work item is split into requirements before any evidence is read, so
   // a refusal names the requirement it concerns (issue #1560).
+  // A clause that lies wholly inside an address, a code span, a table of
+  // evidence or a quotation is a citation, not an obligation (issue #1562).
+  const obligations = obligationText(task);
   const requirements = workItemRequirements(task).map(([text, span]) => ({
     text,
     span,
-    status: 'unbound'
+    status: isCitation(obligations, span) ? 'citation' : 'unbound'
   }));
   const finish = (reason, refused = null) => {
     const gap = reason === 'EvidenceCollected' ? evidenceGap(requirements, observations, sources) : null;
@@ -108,6 +117,7 @@ export function planWorkItemEvidence(task, messages, tools, workItem = null) {
     taskIdentity: sha256Hex(task),
     requirements,
     ...(refused === null ? {} : { refused }),
+    ...(unbound === null ? {} : { unboundWrite: { path: unbound, reason: 'NamedByNoObligation' } }),
     decomposition: [{
       step: 'collect_repository_evidence',
       status: reason === 'EvidenceCollected' ? 'observed' : 'incomplete'
@@ -130,7 +140,7 @@ export function planWorkItemEvidence(task, messages, tools, workItem = null) {
     candidateEdits: [],
     checks: [],
     effects: [],
-    remainingWork: evidenceRemainingWork(unresolved, gap),
+    remainingWork: evidenceRemainingWork(unresolved, gap, unbound),
     authored: false,
     verified: false
   }, task, FinalDisposition.Gap, 'repository_work_item_evidence_gap');

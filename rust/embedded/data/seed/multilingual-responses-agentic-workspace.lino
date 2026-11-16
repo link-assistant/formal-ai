@@ -819,6 +819,26 @@ multilingual_responses
     intent work-item-report-refused
     language es
     text "Tu solicitud no permite leer `{path}`, así que no se leyó. Para continuar hay que leerlo, u otra fuente de los mismos datos."
+  response response-work-item-report-unbound-write-en
+    intent work-item-report-unbound-write
+    language en
+    text "`{path}` was not written: no obligation of the work item names it. The work item mentions it only in a citation (an address, a code span, a table of evidence or a quotation), so no program was created, run or committed for it."
+  response response-work-item-report-unbound-write-ru
+    intent work-item-report-unbound-write
+    language ru
+    text "Файл `{path}` не записан: ни одно обязательство задачи его не называет. Задача упоминает его только в цитате (адресе, фрагменте кода, таблице свидетельств или цитировании), поэтому для него ничего не создано, не запущено и не закоммичено."
+  response response-work-item-report-unbound-write-hi
+    intent work-item-report-unbound-write
+    language hi
+    text "`{path}` नहीं लिखा गया: कार्य का कोई भी दायित्व इसका नाम नहीं लेता। कार्य इसका उल्लेख केवल एक उद्धरण (पता, कोड अंश, साक्ष्य की तालिका या उद्धृत पाठ) में करता है, इसलिए इसके लिए कोई प्रोग्राम न बनाया गया, न चलाया गया, न कमिट किया गया।"
+  response response-work-item-report-unbound-write-zh
+    intent work-item-report-unbound-write
+    language zh
+    text "没有写入 `{path}`：工作项的任何义务都没有提到它。工作项只在引用（地址、代码片段、证据表格或引文）中提到它，因此没有为它创建、运行或提交任何程序。"
+  response response-work-item-report-unbound-write-es
+    intent work-item-report-unbound-write
+    language es
+    text "No se escribió `{path}`: ninguna obligación de la tarea lo nombra. La tarea solo lo menciona en una cita (una dirección, un fragmento de código, una tabla de evidencias o una cita textual), así que no se creó, ejecutó ni confirmó ningún programa para él."
   response response-work-item-report-concerns-en
     intent work-item-report-concerns
     language en

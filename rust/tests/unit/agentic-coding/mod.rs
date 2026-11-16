@@ -163,6 +163,8 @@ mod literal_content_boundary;
 
 #[path = "issue_1558_reference_resolution.rs"]
 mod issue_1558_reference_resolution;
+#[path = "issue_1562_cited_programs.rs"]
+mod issue_1562_cited_programs;
 #[path = "work_item_report_outcome.rs"]
 mod work_item_report_outcome;
 

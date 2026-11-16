@@ -434,6 +434,14 @@ meanings
     unit "not applicable"
     example "Your request does not allow reading `secrets/token.txt`, so it was not read."
     grounding "data/seed/multilingual-responses-agentic-workspace.lino"
+  work-item-report-unbound-write
+    defined-by answer
+    role localized_response_template
+    precondition "the solver selected a program for a work item although no obligation of the work item names it, only a citation does"
+    effect "the report names the file that was not written and why"
+    unit "not applicable"
+    example "`main.rs` was not written: no obligation of the work item names it."
+    grounding "data/seed/multilingual-responses-agentic-workspace.lino"
   work-item-report-concerns
     defined-by answer
     role localized_response_template
