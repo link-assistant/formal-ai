@@ -164,13 +164,10 @@ function outputCheck(clause, literals) {
   if (literals.some((literal) => literal.escaped)) return { check: 'output', gap: 'escaped_quote' };
   const statement = conditionalStatement(clause);
   if (statement !== null) return statement.gap ? { check: 'output', gap: statement.gap } : { check: 'output', statement };
-  const lines = [];
-  literals.forEach((literal, index) => {
-    const count = explicitCount(clause.slice(literal.end, literals[index + 1]?.start ?? clause.length));
-    for (let time = 0; time < count; time += 1) lines.push(literal.text);
-  });
-  lines.push(...(fenceLines(clause) ?? []));
-  return { check: 'output', lines };
+  // A repeated mention restates one line; only an explicit count (`twice`) repeats it.
+  const mentions = literals.map((literal, index) =>
+    Array(explicitCount(clause.slice(literal.end, literals[index + 1]?.start ?? clause.length))).fill(literal.text));
+  return { check: 'output', lines: [...mergedLines(mentions), ...(fenceLines(clause) ?? [])] };
 }
 
 /** Mirrors `fn merged_lines`: each distinct line as often as the clause that repeats it most, in first-seen order. */
@@ -225,11 +222,12 @@ export function specifyTask(text) {
   const pick = (name, field) => [...new Set(workflow.filter((check) => check.check === name).flatMap((check) => check[field]))].sort();
   const kinds = [...new Set(clauses.flatMap((clause) => clause.checks.map((check) => check.check)))]
     .filter((kind) => kind !== 'unread' && kind !== 'inapplicable').sort();
+  // Keys in sorted order, the order the native twin's serde_json map writes.
   const meaning = JSON.stringify({
+    kinds,
     language,
     output,
-    workflow: { included: pick('workflow_path', 'included'), excluded: pick('workflow_path', 'excluded'), events: pick('workflow_triggers', 'events'), names: pick('workflow_file_name', 'names') },
-    kinds,
+    workflow: { events: pick('workflow_triggers', 'events'), excluded: pick('workflow_path', 'excluded'), included: pick('workflow_path', 'included'), names: pick('workflow_file_name', 'names') },
   });
   return { task_identity: stableId('task', text), language, clauses, output, meaning };
 }
