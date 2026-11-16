@@ -247,6 +247,7 @@ mod issue_1138_store_read_path;
 mod issue_1138_surface_honesty;
 mod issue_1138_telegram_execution;
 mod issue_1138_uniform_dispatch;
+mod issue_1156_explicit_stdout_coreference;
 mod issue_1163_1164_captured_pages;
 mod issue_1163_formal_knowledge_paths;
 mod issue_1163_web_formalize;

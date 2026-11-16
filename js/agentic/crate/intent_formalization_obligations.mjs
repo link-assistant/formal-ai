@@ -13,6 +13,7 @@ import { parseLinoRoot } from '../write_lino.mjs';
 import { utf8Len } from '../write_str.mjs';
 import { textOutsideQuotedSegments } from './coding_program_contract.mjs';
 import { normalizePrompt } from './engine.mjs';
+import { grammarRoot, grammarVocabulary, structuralRuleValues } from './formalization_grammar.mjs';
 import { detect } from './language.mjs';
 import { quotedSegmentSpans } from './normal_markov.mjs';
 import { buildObligationTree, clausesWithSpans, expectationRules } from './obligation_ledger.mjs';
@@ -212,17 +213,59 @@ export function boundOutputLiterals(text) {
     const introduction = window.split(/[\n.;。]/u).pop();
     const next = index + 1 < literals.length ? literals[index + 1].start : text.length;
     if (meaningEvidencedIn('print_stdout', introduction.toLowerCase())
-      || (verbFinal && followedByPrint(text.slice(literal.end, next)))) bound.push([literal.start, literal.text]);
+      || (verbFinal && followedByPrint(text.slice(literal.end, next)))) {
+      bound.push([literal.start, literal.text, outputRepetition(text.slice(literal.end, next))]);
+    }
   });
   clauses.forEach(([clause], index) => {
     if (quotedSegmentSpans(clause).length > 0) return;
     const output = unquotedOutput(clause);
-    if (output !== null) bound.push([clauseStarts[index], output]);
+    if (output !== null) bound.push([clauseStarts[index], output, { count: 1, again: false }]);
   });
   bound.sort((left, right) => left[0] - right[0]);
   const outputs = [];
-  for (const [, value] of bound) if (!outputs.includes(value)) outputs.push(value);
+  for (const [, value, repetition] of bound) {
+    if (repetition.again || !outputs.includes(value)) outputs.push(...Array(repetition.count).fill(value));
+  }
   return outputs;
+}
+
+/** Mirrors `OUTPUT_REPETITION_RULE`. */
+const OUTPUT_REPETITION_RULE = 'output-repetition';
+
+/** Mirrors `fn output_repetition` (issue #1162, the print-twice task). */
+function outputRepetition(after) {
+  const separators = wordsForRole('skill_procedure_clause_separator');
+  const sentence = after.split(/[\n.;。]/u)[0];
+  const trailing = [];
+  for (const word of sentence.split(/\s+/u).filter(Boolean)) {
+    if (separators.includes(bareWord(word))) break;
+    trailing.push(word);
+  }
+  const window = trailing.join(' ').toLowerCase();
+  const stated = (kind) => grammarLanguages()
+    .flatMap((language) => grammarVocabulary(language, kind))
+    .some((phrase) => mentionsPhrase(window, phrase.toLowerCase()));
+  const countKind = structuralRuleValues(OUTPUT_REPETITION_RULE, 'count-vocabulary').find(stated);
+  const count = countKind === undefined ? 1 : Number.parseInt(structuralRuleValues(OUTPUT_REPETITION_RULE, countKind)[0], 10);
+  const again = structuralRuleValues(OUTPUT_REPETITION_RULE, 'again-vocabulary').some(stated);
+  return { count: Number.isInteger(count) && count >= 0 ? count : 1, again };
+}
+
+/** Mirrors `fn grammar_languages` of the output repetition reader. */
+function grammarLanguages() {
+  return (grammarRoot()?.children ?? []).filter((node) => node.name === 'language').map((node) => node.value);
+}
+
+/** Mirrors `fn mentions_phrase`. */
+function mentionsPhrase(window, phrase) {
+  if (!phrase) return false;
+  const spaced = (character) => character !== undefined && /[\p{Alphabetic}\p{N}]/u.test(character)
+    && !/[\u3400-\u9fff]/u.test(character);
+  for (let at = window.indexOf(phrase); at >= 0; at = window.indexOf(phrase, at + 1)) {
+    if (!spaced([...window.slice(0, at)].at(-1)) && !spaced([...window.slice(at + phrase.length)][0])) return true;
+  }
+  return false;
 }
 
 /** Mirrors `fn verb_final_language` in rust/src/solver_handlers/formalization_task.rs. */

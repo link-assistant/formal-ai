@@ -23,6 +23,17 @@
 #                        ("print it twice"), never inferred from a repeated
 #                        mention.
 #
+# Issue #1162 — the output a program request binds
+# (js/agentic/crate/intent_formalization_obligations.mjs, its Rust twin
+# rust/src/intent_formalization/obligations.rs): the structural rule
+# output-repetition names the count each repetition kind stands for, read
+# right after a quoted output ("prints `Hi` twice" is two lines), and
+#
+#   repetition-again     the words that make a later mention of an output
+#                        already bound a further line ("prints `Hi` and then
+#                        prints `Hi` again"). Without them, mentions of one
+#                        literal are one output obligation (#1156).
+#
 # Issue #1550 — the task decomposition the recursive meta-executor splits a
 # formalized request with (js/agentic/crate/meta_executor.mjs, its Rust twin
 # rust/src/meta_executor.rs):
@@ -68,6 +79,12 @@ text-formalization
     repetition-vocabulary "repetition-thrice"
     universal-meaning "quantifier_all"
     existential-meaning "quantifier_any"
+  structural-rule output-repetition
+    count-vocabulary "repetition-twice"
+    count-vocabulary "repetition-thrice"
+    repetition-twice "2"
+    repetition-thrice "3"
+    again-vocabulary "repetition-again"
   structural-rule task-decomposition
     relation "sequence"
     relation "alternative"
@@ -229,7 +246,12 @@ text-formalization
     connective-alternative "or"
     connective-aggregation "and"
     repetition-twice "twice"
+    repetition-twice "two times"
     repetition-thrice "thrice"
+    repetition-thrice "three times"
+    repetition-again "again"
+    repetition-again "once more"
+    repetition-again "one more time"
   language ru
     numeric-decimal ","
     numeric-group " "
@@ -407,6 +429,10 @@ text-formalization
     connective-aggregation "а также"
     repetition-twice "дважды"
     repetition-thrice "трижды"
+    repetition-again "снова"
+    repetition-again "ещё раз"
+    repetition-again "еще раз"
+    repetition-again "опять"
   language hi
     numeric-secondary-width "2"
     anaphor "वह"
@@ -445,6 +471,8 @@ text-formalization
     connective-aggregation "तथा"
     repetition-twice "दो बार"
     repetition-thrice "तीन बार"
+    repetition-again "फिर से"
+    repetition-again "दोबारा"
   language zh
     anaphor "它"
     anaphor "他"
@@ -474,6 +502,8 @@ text-formalization
     connective-aggregation "以及"
     repetition-twice "两次"
     repetition-thrice "三次"
+    repetition-again "再次"
+    repetition-again "再一次"
   language es
     numeric-decimal ","
     numeric-group "."
@@ -541,3 +571,5 @@ text-formalization
     connective-aggregation "e"
     repetition-twice "dos veces"
     repetition-thrice "tres veces"
+    repetition-again "de nuevo"
+    repetition-again "otra vez"

@@ -461,7 +461,7 @@ fn gap_line(node: &ObligationNode, reason: &str) -> String {
     .join(" ")
 }
 
-/// The output literals an executor binds from `text`, each once, in order.
+/// The output lines an executor binds from `text`, in order.
 ///
 /// This is the program executor's reading of the graph's output clauses
 /// (R1166-3): every quoted segment is assigned to the enumerated obligation
@@ -477,6 +477,11 @@ fn gap_line(node: &ObligationNode, reason: &str) -> String {
 /// A clause that quotes nothing can still name its output in the open
 /// ("… prints Hello, World! and run it"): `unquoted_output` binds that
 /// utterance, at the clause's position in request order (PR #1188 T18).
+///
+/// An explicit count stated with a mention ("prints `Hi` twice") binds that
+/// many lines, and a later mention marked as a repetition ("… and then
+/// prints `Hi` again") binds a further line (issue #1162, the print-twice
+/// task); see [`output_repetition`].
 #[must_use]
 pub fn bound_output_literals(text: &str) -> Vec<String> {
     let clauses = crate::obligation_ledger::clauses_with_spans(text);
@@ -487,7 +492,7 @@ pub fn bound_output_literals(text: &str) -> Vec<String> {
         crate::solver_handlers::verb_final_language(crate::language::detect(text).slug());
     let literals = quoted_segment_spans(text);
     let mut previous_end: usize = 0;
-    let mut bound: Vec<(usize, String)> = Vec::new();
+    let mut bound: Vec<(usize, String, Repetition)> = Vec::new();
     for (index, literal) in literals.iter().enumerate() {
         let clause_start = clause_starts
             .iter()
@@ -507,24 +512,116 @@ pub fn bound_output_literals(text: &str) -> Vec<String> {
         if print.is_some_and(|meaning| meaning.evidenced_in(&introduction.to_lowercase()))
             || (verb_final && followed_by_print(&text[literal.end..next]))
         {
-            bound.push((literal.start, literal.text.clone()));
+            let repetition = output_repetition(&text[literal.end..next]);
+            bound.push((literal.start, literal.text.clone(), repetition));
         }
     }
     for (clause, span) in &clauses {
         if quoted_segment_spans(clause).is_empty()
             && let Some(output) = unquoted_output(clause)
         {
-            bound.push((span.0, output));
+            bound.push((span.0, output, Repetition::default()));
         }
     }
-    bound.sort_by_key(|(start, _)| *start);
+    bound.sort_by_key(|(start, _, _)| *start);
     let mut outputs: Vec<String> = Vec::new();
-    for (_, value) in bound {
-        if !outputs.contains(&value) {
-            outputs.push(value);
+    for (_, value, repetition) in bound {
+        if repetition.again || !outputs.contains(&value) {
+            outputs.extend(std::iter::repeat_n(value, repetition.count));
         }
     }
     outputs
+}
+
+/// The structural rule naming the counts and the repetition words an output
+/// mention is read with (data/seed/text-formalization.lino).
+const OUTPUT_REPETITION_RULE: &str = "output-repetition";
+
+/// How one bound mention of an output repeats: the lines it stands for, and
+/// whether it is an explicit further line of an output bound before.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct Repetition {
+    count: usize,
+    again: bool,
+}
+
+impl Default for Repetition {
+    fn default() -> Self {
+        Self {
+            count: 1,
+            again: false,
+        }
+    }
+}
+
+/// The repetition the words right after one output mention state (issue
+/// #1162), up to the sentence break or the first seeded clause separator. A
+/// count word of the seeded `output-repetition` rule ("twice") gives its
+/// count; an `again` word marks a further line. Words before the literal are
+/// not read: "check again that it prints `Hi`" re-checks one line, it does not
+/// ask for a second. Every grammar language's words are read, since a request
+/// carries no language tag.
+fn output_repetition(after: &str) -> Repetition {
+    let lexicon = seed::lexicon();
+    let separators = lexicon.words_for_role(seed::ROLE_SKILL_PROCEDURE_CLAUSE_SEPARATOR);
+    let sentence = after
+        .split(OUTPUT_INTRODUCTION_BREAKS)
+        .next()
+        .unwrap_or(after);
+    let trailing: Vec<&str> = sentence
+        .split_whitespace()
+        .take_while(|word| !separators.contains(&bare_word(word)))
+        .collect();
+    let window = trailing.join(" ").to_lowercase();
+    let stated = |kind: &str| {
+        grammar_languages()
+            .iter()
+            .flat_map(|language| crate::formalization::grammar_vocabulary(language, kind))
+            .any(|phrase| {
+                let phrase = phrase.to_lowercase();
+                mentions_phrase(&window, &phrase)
+            })
+    };
+    let count = crate::formalization::structural_rule_values(OUTPUT_REPETITION_RULE, "count-vocabulary")
+        .iter()
+        .find(|kind| stated(kind))
+        .and_then(|kind| {
+            crate::formalization::structural_rule_values(OUTPUT_REPETITION_RULE, kind)
+                .first()
+                .and_then(|count| count.parse().ok())
+        })
+        .unwrap_or(1);
+    let again = crate::formalization::structural_rule_values(OUTPUT_REPETITION_RULE, "again-vocabulary")
+        .iter()
+        .any(|kind| stated(kind));
+    Repetition { count, again }
+}
+
+/// The languages of the shared formalization grammar.
+fn grammar_languages() -> Vec<String> {
+    crate::formalization::grammar_root().map_or_else(Vec::new, |root| {
+        root.children
+            .iter()
+            .filter(|node| node.name == "language")
+            .map(|node| node.id.clone())
+            .collect()
+    })
+}
+
+/// Whether `window` mentions `phrase` as whole words: a spaced-script phrase
+/// must not continue a longer word ("against" never reads as "again"), while
+/// an ideographic phrase sits between ideographs without spaces.
+fn mentions_phrase(window: &str, phrase: &str) -> bool {
+    let spaced = |character: Option<char>| {
+        character.is_some_and(|character| {
+            character.is_alphanumeric() && !('\u{3400}'..='\u{9fff}').contains(&character)
+        })
+    };
+    !phrase.is_empty()
+        && window.match_indices(phrase).any(|(at, _)| {
+            !spaced(window[..at].chars().next_back())
+                && !spaced(window[at + phrase.len()..].chars().next())
+        })
 }
 
 /// Whether the words right after a quoted literal -- up to the sentence break
