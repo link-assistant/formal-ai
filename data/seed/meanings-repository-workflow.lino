@@ -188,6 +188,7 @@ meanings
   code-comment-obligation
     defined-by concept
     role code-comment-obligation
+    role scoped-grammar-pattern
     precondition "a request clause asks for comments in the written code"
     effect "independent task acceptance checks the candidate program carries comment lines beyond its run instructions (issue #1166)"
     unit "not applicable"
@@ -200,6 +201,7 @@ meanings
   run-instruction-obligation
     defined-by concept
     role run-instruction-obligation
+    role scoped-grammar-pattern
     precondition "a request clause asks for build or run instructions"
     effect "independent task acceptance checks the candidate program's leading comment block names the program file it runs (issue #1166)"
     unit "not applicable"
@@ -212,6 +214,7 @@ meanings
   judgment-obligation
     defined-by concept
     role judgment-obligation
+    role scoped-grammar-pattern
     precondition "a request clause asks for a quality no observable check decides"
     effect "independent task acceptance keeps the clause as explicitly unresolved judgment, never as satisfied (issue #1166)"
     unit "not applicable"
@@ -224,6 +227,7 @@ meanings
   program-file-obligation
     defined-by concept
     role program-file-obligation
+    role scoped-grammar-pattern
     precondition "a request clause asks for the program file itself"
     effect "independent task acceptance checks the candidate program file carries the requested language's extension (issue #1166)"
     unit "not applicable"
@@ -236,6 +240,7 @@ meanings
   workflow-trigger-push
     defined-by concept
     role workflow-trigger-push
+    role scoped-grammar-pattern
     precondition "a workflow clause names the push event as a trigger"
     effect "independent task acceptance checks the candidate workflow triggers on push (issue #1166)"
     unit "not applicable"
@@ -248,6 +253,7 @@ meanings
   workflow-trigger-pull-request
     defined-by concept
     role workflow-trigger-pull-request
+    role scoped-grammar-pattern
     precondition "a workflow clause names the pull-request event as a trigger"
     effect "independent task acceptance checks the candidate workflow triggers on pull requests (issue #1166)"
     unit "not applicable"
@@ -260,6 +266,7 @@ meanings
   workflow-status-obligation
     defined-by concept
     role workflow-status-obligation
+    role scoped-grammar-pattern
     precondition "a workflow clause asks for a visible pass or fail status"
     effect "independent task acceptance checks the candidate workflow runs a verification that carries the expected output (issue #1166)"
     unit "not applicable"
@@ -272,6 +279,7 @@ meanings
   workflow-context-noun
     defined-by concept
     role workflow-context-noun
+    role scoped-grammar-pattern
     precondition "a clause, its list lead or its section names a continuous-integration workflow"
     effect "independent task acceptance reads the clause as a workflow requirement (issue #1166)"
     unit "not applicable"
@@ -284,6 +292,7 @@ meanings
   optional-obligation-marker
     defined-by concept
     role optional-obligation-marker
+    role scoped-grammar-pattern
     precondition "a request clause marks itself optional"
     effect "independent task acceptance reports the clause but does not require it for completeness (issue #1166)"
     unit "not applicable"
@@ -296,6 +305,7 @@ meanings
   applicability-marker
     defined-by concept
     role applicability-marker
+    role scoped-grammar-pattern
     precondition "a request clause applies only where it is applicable"
     effect "independent task acceptance keeps the clause required and notes its applicability condition (issue #1166)"
     unit "not applicable"
@@ -308,6 +318,7 @@ meanings
   illustrative-marker
     defined-by concept
     role illustrative-marker
+    role scoped-grammar-pattern
     precondition "a list lead introduces an example rather than a requirement"
     effect "independent task acceptance reads the items under the lead as inapplicable illustrations (issue #1166)"
     unit "not applicable"
@@ -320,6 +331,7 @@ meanings
   condition-marker
     defined-by concept
     role condition-marker
+    role scoped-grammar-pattern
     precondition "an output clause states a condition before its effect"
     effect "independent task acceptance reads the condition in its supported subset or reports it unresolved (issue #1166)"
     unit "not applicable"
@@ -332,6 +344,7 @@ meanings
   negated-condition-marker
     defined-by concept
     role negated-condition-marker
+    role scoped-grammar-pattern
     precondition "an output clause states the negation of its condition before its effect"
     effect "independent task acceptance reads the condition negated (issue #1166)"
     unit "not applicable"
@@ -344,6 +357,7 @@ meanings
   otherwise-marker
     defined-by concept
     role otherwise-marker
+    role scoped-grammar-pattern
     precondition "an output clause states the effect when the condition fails"
     effect "independent task acceptance reads the clause as the condition's otherwise branch (issue #1166)"
     unit "not applicable"
@@ -356,6 +370,7 @@ meanings
   execution-circumstance
     defined-by concept
     role execution-circumstance
+    role scoped-grammar-pattern
     precondition "a condition marker introduces the program's run, not a data condition"
     effect "independent task acceptance reads the output as unconditional (issue #1166)"
     unit "not applicable"
@@ -368,6 +383,7 @@ meanings
   comparison-equal
     defined-by concept
     role comparison-equal
+    role scoped-grammar-pattern
     precondition "an output condition compares two operands for equality"
     effect "independent task acceptance reads the atom as left equals right (issue #1166)"
     unit "not applicable"
@@ -380,6 +396,7 @@ meanings
   comparison-not-equal
     defined-by concept
     role comparison-not-equal
+    role scoped-grammar-pattern
     precondition "an output condition compares two operands for inequality"
     effect "independent task acceptance reads the atom as left differs from right (issue #1166)"
     unit "not applicable"
@@ -392,6 +409,7 @@ meanings
   comparison-filler
     defined-by concept
     role comparison-filler
+    role scoped-grammar-pattern
     precondition "an output condition wraps an operand in a word that names no operand"
     effect "independent task acceptance drops the word before reading the operand (issue #1166)"
     unit "not applicable"
@@ -404,6 +422,7 @@ meanings
   workflow-execution-verb
     defined-by concept
     role workflow-execution-verb
+    role scoped-grammar-pattern
     precondition "a workflow clause asks the workflow to run or build the program"
     effect "independent task acceptance checks the candidate workflow names the program file (issue #1166)"
     unit "not applicable"
