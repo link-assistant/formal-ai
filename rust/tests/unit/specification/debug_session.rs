@@ -34,6 +34,9 @@ const ARITHMETIC: &str = "rust/src/solver_handlers/mod.rs:try_arithmetic";
 const CALCULATION_EVENTS: &str =
     "js/worker/formal_ai_worker_solver_events.js:solverCalculationEvents";
 const FINALIZE: &str = "rust/src/solver_handlers/mod.rs:finalize_simple";
+/// Issue #1550 moved the validation record out of `finalize_simple` into the
+/// executed answer test it calls (issue #1580: the stage list was not updated).
+const ANSWER_TEST: &str = "rust/src/solver_helpers/mod.rs:record_answer_test";
 const INTENT_RECORD: (&str, &str) = (
     "rust/src/intent_formalization.rs:record_intent_formalization",
     "js/agentic/crate/intent_formalization.mjs:recordIntentFormalization",
@@ -50,7 +53,7 @@ const TWO_PLUS_TWO: [(&str, &str, &str); 10] = [
     ("compute_steps", ARITHMETIC, CALCULATION_EVENTS),
     ("dispatch_handler", FINALIZE, EVENT_LOG),
     // The browser solverEventLog emits the real validation event.
-    ("rule_verification", FINALIZE, EVENT_LOG),
+    ("rule_verification", ANSWER_TEST, EVENT_LOG),
     ("deformalize", FINALIZE, EVENT_LOG),
 ];
 

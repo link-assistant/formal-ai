@@ -9,7 +9,12 @@ use std::cell::{Cell, RefCell};
 use super::{
     Draft, MetaHost, ProcedureRun, Request, RunOptions, TaskNode, TraceEvent, execute_procedure,
 };
+use crate::engine::SymbolicAnswer;
+use crate::event_log::EventLog;
+use crate::intent_formalization::IntentFormalizationCache;
+use crate::probability::ProbabilityStore;
 use crate::recursive_execution::{RecursiveTask, TaskAttempt, TaskExecutor, solve_recursively};
+use crate::solver::{ConversationTurn, UniversalSolver};
 
 /// Issue #1550 step 1: the in-process executor of
 /// [`crate::recursive_execution::solve_recursively`].
@@ -185,4 +190,54 @@ pub fn remember_trace(events: &[TraceEvent]) {
 #[must_use]
 pub fn last_turn_trace() -> Vec<TraceEvent> {
     LAST_TRACE.with(|trace| trace.borrow().clone())
+}
+
+impl UniversalSolver {
+    /// Hand the cascade's draft to the procedure. Its trace joins the log, and
+    /// the composition of the sub-task answers replaces the answer only when
+    /// least action selects it over the direct derivation.
+    pub(crate) fn run_meta_procedure(
+        &self,
+        prompt: &str,
+        history: &[ConversationTurn],
+        probability_store: &ProbabilityStore,
+        answer: &mut SymbolicAnswer,
+        log: &mut EventLog,
+    ) {
+        let draft_of = |solved: &SymbolicAnswer| Draft {
+            intent: solved.intent.clone(),
+            content: solved.answer.clone(),
+            confidence: solved.confidence,
+        };
+        let language = crate::language::detect(prompt).slug();
+        let mut solve_sub_task = |text: &str| {
+            let solved = self.solve_with_history_probability_store_and_intent_cache(
+                text,
+                history,
+                probability_store,
+                &mut IntentFormalizationCache::new(),
+            );
+            Some(draft_of(&solved))
+        };
+        let Some(run) = solve_answer(
+            Request {
+                text: prompt,
+                language,
+            },
+            draft_of(&*answer),
+            &mut solve_sub_task,
+            &RunOptions::default(),
+        ) else {
+            return;
+        };
+        for event in &run.events {
+            log.append(event.kind, event.payload.clone());
+        }
+        remember_trace(&run.events);
+        if let Some(composed) = adopted_composition(&run) {
+            answer.intent.clone_from(&composed.intent);
+            answer.answer.clone_from(&composed.content);
+            answer.confidence = composed.confidence;
+        }
+    }
 }

@@ -42,6 +42,11 @@ struct ComposedCandidate {
     /// The structural steps of the composition: its least-action cost.
     steps: u32,
     source_result_ids: Vec<String>,
+    /// Issue #1580: whether the composed answer is built from the sub-answers.
+    /// The algebra and remainder composers recompute from the prompt, so the
+    /// fragments they decomposed (`x = 3`, `uses 3 for breakfast`) are not
+    /// children of their answer, and an unresolved fragment must not fail it.
+    consumes_sub_answers: bool,
 }
 
 pub fn record_solved_sub_impulse(
@@ -150,7 +155,12 @@ pub fn try_synthesize_from_sub_results(
                 candidate.source_result_ids.join(",")
             ),
         );
-        let verdict = parent_verdict(candidate, &children);
+        let consumed: &[TaskOutcome] = if candidate.consumes_sub_answers {
+            &children
+        } else {
+            &[]
+        };
+        let verdict = parent_verdict(candidate, consumed);
         log.append(
             "validation",
             format!(
@@ -232,7 +242,7 @@ fn child_outcomes(sub_results: &[SolvedSubImpulse]) -> Vec<TaskOutcome> {
 }
 
 /// The parent test of one composition: the leaf check on its answer and the
-/// children check of its relation over the sub-results.
+/// children check of its relation over the sub-results it consumes.
 fn parent_verdict(candidate: &ComposedCandidate, children: &[TaskOutcome]) -> Verdict {
     let rule =
         |kind: &str| crate::formalization::structural_rule_values("task-decomposition", kind);
@@ -302,6 +312,7 @@ fn compose_algebra_substitution(
         evaluation.formatted,
         ("sequence", steps),
         sub_results,
+        false,
     ))
 }
 
@@ -343,6 +354,7 @@ fn compose_remainder_sale(
         evaluation.formatted,
         ("sequence", steps),
         sub_results,
+        false,
     ))
 }
 
@@ -380,6 +392,7 @@ fn compose_compound_response(
         answers.join("\n\n"),
         ("aggregation", steps),
         sub_results,
+        true,
     ))
 }
 
@@ -388,6 +401,7 @@ fn candidate(
     answer: String,
     (relation, steps): (&'static str, usize),
     sub_results: &[SolvedSubImpulse],
+    consumes_sub_answers: bool,
 ) -> ComposedCandidate {
     let source_result_ids = sub_results
         .iter()
@@ -406,6 +420,7 @@ fn candidate(
         relation,
         steps: u32::try_from(steps).unwrap_or(u32::MAX),
         source_result_ids,
+        consumes_sub_answers,
     }
 }
 
