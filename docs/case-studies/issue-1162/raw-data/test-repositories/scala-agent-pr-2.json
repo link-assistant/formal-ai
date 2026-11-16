@@ -1,0 +1,100 @@
+{
+  "repository": "konard/test-hello-world-019fb330-00e1-73b9-955e-f357a1600d5b",
+  "pull_request": {
+    "body": "## Summary\n\nThis pull request implements a solution for #1: Implement Hello World in Scala\n\n### Changes\n- 1 file(s) modified\n- 1 line(s) added\n- 0 line(s) removed\n\n### Issue Reference\nFixes #1\n\n---\n*This PR was created automatically by the AI issue solver*",
+    "checks": [
+      {
+        "conclusion": "FAILURE",
+        "name": "run"
+      },
+      {
+        "conclusion": "FAILURE",
+        "name": "run"
+      },
+      {
+        "conclusion": "SUCCESS",
+        "name": "run"
+      },
+      {
+        "conclusion": "SUCCESS",
+        "name": "run"
+      }
+    ],
+    "createdAt": "2026-07-30T14:13:51Z",
+    "headRefName": "issue-1-1f3e3886bcb8",
+    "isDraft": true,
+    "state": "OPEN",
+    "title": "'Implement Hello World in Scala'",
+    "updatedAt": "2026-11-10T08:43:09Z"
+  },
+  "files": [
+    {
+      "additions": 32,
+      "changes": 32,
+      "filename": ".github/workflows/Main.yml",
+      "status": "added"
+    },
+    {
+      "additions": 25,
+      "changes": 25,
+      "filename": ".github/workflows/run.yml",
+      "status": "added"
+    },
+    {
+      "additions": 8,
+      "changes": 8,
+      "filename": "Main.scala",
+      "status": "added"
+    },
+    {
+      "additions": 1375,
+      "changes": 1375,
+      "filename": "dev/log/self-authored/issue-1/evidence/agent-stream.jsonl",
+      "status": "added"
+    },
+    {
+      "additions": 2,
+      "changes": 2,
+      "filename": "dev/log/self-authored/issue-1/evidence/session-id.txt",
+      "status": "added"
+    },
+    {
+      "additions": 53,
+      "changes": 53,
+      "filename": "tests/verify-output.sh",
+      "status": "added"
+    }
+  ],
+  "commits": [
+    {
+      "date": "2026-07-30T14:13:41Z",
+      "message": "Initial commit with task details",
+      "sha": "fcfca142"
+    },
+    {
+      "date": "2026-07-30T14:35:17Z",
+      "message": "Revert \"Initial commit with task details\"",
+      "sha": "bd620608"
+    },
+    {
+      "date": "2026-09-13T19:17:33Z",
+      "message": "🛟 Auto-commit before critical-error recovery (auto-restart limit 5/5 reached)",
+      "sha": "a2cbe0ac"
+    },
+    {
+      "date": "2026-09-15T09:16:48Z",
+      "message": "🛟 Auto-commit before critical-error recovery (stopped after two identical AI sessions)",
+      "sha": "a4f344c5"
+    },
+    {
+      "date": "2026-09-16T10:00:58Z",
+      "message": "🛟 Auto-commit before critical-error recovery (stopped after two identical AI sessions)",
+      "sha": "724fb2be"
+    },
+    {
+      "date": "2026-11-10T08:23:30Z",
+      "message": "fix: complete prepared work",
+      "sha": "31809eba"
+    }
+  ]
+}
