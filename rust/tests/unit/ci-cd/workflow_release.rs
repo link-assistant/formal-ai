@@ -62,7 +62,16 @@ fn pages_deploy_uses_the_actions_maximum_supported_wait() {
         .split("actions/deploy-pages@v5")
         .nth(1)
         .and_then(|after| after.split_once("timeout: "))
-        .and_then(|(_, rest)| rest.split_whitespace().next())
+        // Block (`timeout: 600000`) and flow (`with: {timeout: 600000}`) YAML
+        // carry the same value; read the leading digits so the flow form that
+        // cdb83e5c2 adopted to stay under the 1500-line cap still counts
+        // (issue #1580: main failed here while the step pinned 600000).
+        .map(|(_, rest)| {
+            rest.trim_start()
+                .chars()
+                .take_while(char::is_ascii_digit)
+                .collect::<String>()
+        })
         .and_then(|value| value.parse::<u64>().ok())
         .expect("the deploy-pages step should pin an explicit `timeout:` in milliseconds");
 
