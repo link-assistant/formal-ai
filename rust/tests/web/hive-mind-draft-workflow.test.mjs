@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {selectAttemptPullRequest, failureComment, usefulDraftChanges, inspectAttemptDraft, occupyingPullRequests} from '../../../scripts/hive-mind-draft-result.mjs';
+import {shortOfRoom, main as freeDiskIfShort} from '../../../scripts/free-disk-if-short.mjs';
 const workflow=readFileSync(new URL('../../../.github/workflows/hive-mind-draft.yml',import.meta.url),'utf8');
 const context={branch:'issue-7-attempt',repository:'owner/repo',startedAt:'2026-10-16T00:00:00Z'};
 const pr={number:9,headRefName:context.branch,headRepository:{nameWithOwner:context.repository},createdAt:'2026-10-16T00:01:00Z',state:'OPEN'};
@@ -65,7 +66,7 @@ test('bounded build and attempt jobs share one exact-main binary and retain fail
 test('deadline invocations remain portable with exact setup and kill-grace budgets',()=>{
  assert.doesNotMatch(workflow,/\btimeout --/);
  assert.equal((workflow.match(/run-with-deadline\.sh" 180 npm/g)||[]).length,2);
- assert.equal((workflow.match(/FORMAL_AI_DEADLINE_GRACE_SECONDS=15/g)||[]).length,2);
+ assert.equal((workflow.match(/FORMAL_AI_DEADLINE_GRACE_SECONDS=15/g)||[]).length,3);
  assert.equal((workflow.match(/FORMAL_AI_DEADLINE_GRACE_SECONDS=30/g)||[]).length,2);
  assert.equal((workflow.match(/timeout-minutes: 30/g)||[]).length,2);
  assert.match(workflow,/bash "\$GITHUB_WORKSPACE\/scripts\/run-with-session-evidence\.sh" 1320 build cargo/);
@@ -149,4 +150,31 @@ test('an issue another session already works on is left to that session',()=>{
  assert.match(workflow,/id: attempt\n[^\n]*\n\s+if: needs.build.result == 'success' && steps.occupancy.outputs.occupied_by == ''/);
  assert.match(workflow,/steps.custody.outcome == 'success' && steps.attempt.outcome != 'skipped'/);
  assert.match(workflow,/steps.exact-pr.outputs.pull_request_number == '' && steps.occupancy.outputs.occupied_by == ''/);
+});
+
+// Issue #1580, run 43738765561: 4 minutes of SDK deletion on a runner with 80 GB free, then a 5-minute image pull
+// inside the attempt's 1200 s, left solve 15 of its 20 minutes.
+test('the image is pulled before the attempt deadline and the disk cleanup runs only when room is short',()=>{
+ const GIB=1024**3;
+ assert.equal(shortOfRoom(80*GIB,40),false);
+ assert.equal(shortOfRoom(40*GIB,40),false);
+ assert.equal(shortOfRoom(40*GIB-1,40),true);
+ for(const bad of [-1,1.5,NaN]) assert.throws(()=>shortOfRoom(bad,40),/available bytes/);
+ assert.throws(()=>shortOfRoom(GIB,0),/required gigabytes/);
+ const calls=[],lines=[],deps=available=>({measure:()=>available,run:(command,args)=>{calls.push([command,...args]);return {status:0};},log:line=>lines.push(line),env:{}});
+ assert.equal(freeDiskIfShort(['40','node','clean.mjs'],deps(80*GIB)),0);
+ assert.deepEqual(calls,[]);
+ assert.match(lines.at(-1),/80\.0 GiB available on \/, at least the 40 GiB required; skipping the cleanup/);
+ assert.equal(freeDiskIfShort(['40','node','clean.mjs'],deps(10*GIB)),0);
+ assert.deepEqual(calls,[['node','clean.mjs']]);
+ assert.throws(()=>freeDiskIfShort(['forty','node'],deps(GIB)),/usage/);
+ assert.throws(()=>freeDiskIfShort(['40'],deps(GIB)),/usage/);
+ assert.match(workflow,/run: node scripts\/free-disk-if-short.mjs 40 node .hive-mind\/scripts\/free-disk-space.mjs/);
+ assert.doesNotMatch(workflow,/run: node .hive-mind\/scripts\/free-disk-space.mjs/);
+ const pull=workflow.indexOf('id: image');
+ assert(pull>workflow.indexOf('id: occupancy')&&pull<workflow.indexOf('id: attempt'));
+ const step=workflow.slice(pull,workflow.indexOf('id: attempt'));
+ assert.match(step,/if: needs.build.result == 'success' && steps.occupancy.outputs.occupied_by == ''/);
+ assert.match(step,/continue-on-error: true/);
+ assert.match(step,/run-with-deadline\.sh" 360 docker pull --quiet "\$FORMAL_AI_DRAFT_IMAGE"/);
 });

@@ -270,7 +270,7 @@ jobs:
           echo "FORMAL_AI_DRAFT_LOG_DIR=$RUNNER_TEMP/formal-ai-draft-logs" >> "$GITHUB_ENV"
           mkdir -p "$RUNNER_TEMP/formal-ai-draft-logs"
           date -u +%Y-%m-%dT%H:%M:%SZ > "$RUNNER_TEMP/draft-started-at"
-          echo "Attempt budget: 20 minutes including image pull retries; build budget: 22 minutes on a separate runner." > "$RUNNER_TEMP/formal-ai-draft-logs/attempt-policy.txt"
+          echo "Attempt budget: 20 minutes for solve; the image is pulled before it in a 6-minute step, and the attempt pulls again only if that failed. Build budget: 22 minutes on a separate runner." > "$RUNNER_TEMP/formal-ai-draft-logs/attempt-policy.txt"
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
@@ -309,9 +309,11 @@ jobs:
         working-directory: .hive-mind
         run: FORMAL_AI_DEADLINE_GRACE_SECONDS=15 bash "$GITHUB_WORKSPACE/scripts/run-with-deadline.sh" 180 npm ci --omit=dev --ignore-scripts
         if: needs.build.result == 'success'
-      - name: Free disk for the Hive Mind image
+      # Issue #1580: run 43738765561 spent 4 of its 30 minutes deleting SDKs from a runner that already had 80 GB
+      # free; pulling the ~9 GB image used 21 GB of it. The cleanup now runs only on a runner short of room.
+      - name: Free disk for the Hive Mind image only when the runner is short of room
         if: needs.build.result == 'success'
-        run: node .hive-mind/scripts/free-disk-space.mjs
+        run: node scripts/free-disk-if-short.mjs 40 node .hive-mind/scripts/free-disk-space.mjs
       - name: Retain native and dialog payloads in the mounted session directory
         if: needs.build.result == 'success'
         run: node scripts/lib/hive-draft-diagnostics.mjs .hive-mind "$FORMAL_AI_DRAFT_LOG_DIR"
@@ -332,6 +334,13 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: node scripts/hive-mind-draft-result.mjs --occupied
+      # Issue #1580: the same run pulled the image for 5 minutes inside the attempt's 1200 s, leaving solve 15 of
+      # its 20 minutes. A failed pull here is not fatal: the attempt's own pull retries it within its budget.
+      - id: image
+        name: Pull the Hive Mind image before the attempt deadline starts
+        if: needs.build.result == 'success' && steps.occupancy.outputs.occupied_by == ''
+        continue-on-error: true
+        run: FORMAL_AI_DEADLINE_GRACE_SECONDS=15 bash "$GITHUB_WORKSPACE/scripts/run-with-deadline.sh" 360 docker pull --quiet "$FORMAL_AI_DRAFT_IMAGE"
       - id: attempt
         name: Attempt through shared Hive Mind scripts (including image pull retry)
         if: needs.build.result == 'success' && steps.occupancy.outputs.occupied_by == ''
