@@ -10,6 +10,14 @@ export function selectAttemptPullRequest(rows, {branch, repository, startedAt}) 
     && pr.state === 'OPEN' && Number.isInteger(pr.number) && pr.number > 0 && Date.parse(pr.createdAt) >= since);
   return matches.length === 1 ? matches[0] : null;
 }
+/** #1580: Hive Mind continues any open `issue-N-*` PR, so an attempt on an issue another session already
+ * works on writes into that session's PR (run 43813238887 pushed logs to #1581 and labelled it). */
+export function occupyingPullRequests(rows, issue) {
+  if (!/^[1-9][0-9]*$/.test(String(issue)) || !Array.isArray(rows)) throw Error('invalid occupancy census');
+  const prefix = 'issue-' + issue + '-';
+  return rows.filter(pr => pr?.state === 'OPEN' && typeof pr.headRefName === 'string' && pr.headRefName.startsWith(prefix))
+    .map(pr => pr.number).sort((a, b) => a - b);
+}
 export function failureComment({runUrl, artifactUrl, outcome}) {
   return 'Formal AI through Hive Mind did not produce a verified new draft PR in this attempt. '
     + (/^[a-z][a-z-]{2,63}$/.test(outcome || '') ? 'Attempt outcome: `' + outcome + '` (zero capability credit). ' : '')
@@ -70,10 +78,19 @@ export function main(env = process.env) {
     if(env.FORMAL_AI_DRAFT_LOG_DIR)writeFileSync(env.FORMAL_AI_DRAFT_LOG_DIR+'/draft-selection.json',JSON.stringify(result,null,2)+'\n',{flag:'wx'});
     if(result.eligibleForChecks)appendFileSync(env.GITHUB_OUTPUT,'pull_request_number='+result.pullRequest+'\n');
     else {console.log('No verified useful candidate: '+result.disposition+'. Checks were not dispatched.');process.exitCode=1;}
+  } else if (process.argv.includes('--occupied')) {
+    const rows = JSON.parse(gh(['pr','list','--repo',repository,'--state','open','--limit','1000','--json','number,headRefName,state']));
+    if (!Array.isArray(rows) || rows.length >= 1000) throw Error('incomplete open pull request census');
+    const occupied = occupyingPullRequests(rows, env.FORMAL_AI_DRAFT_ISSUE);
+    if (env.FORMAL_AI_DRAFT_LOG_DIR) writeFileSync(env.FORMAL_AI_DRAFT_LOG_DIR+'/draft-occupancy.json',JSON.stringify({schema:'formal-ai-draft-occupancy/v1',issue:Number(env.FORMAL_AI_DRAFT_ISSUE),openPullRequests:occupied},null,2)+'\n',{flag:'wx'});
+    if (occupied.length) {
+      appendFileSync(env.GITHUB_OUTPUT,'occupied_by='+occupied.join(',')+'\n');
+      console.log('::notice title=Formal AI draft not attempted::#'+env.FORMAL_AI_DRAFT_ISSUE+' already has open pull request(s) #'+occupied.join(', #')+' from another session; an attempt would continue that session\'s pull request instead of drafting its own.');
+    } else console.log('No open pull request works on #'+env.FORMAL_AI_DRAFT_ISSUE+'; the draft attempt may run.');
   } else if (process.argv.includes('--failure')) {
     if (!/^[1-9][0-9]*$/.test(env.DRAFT_ISSUE_NUMBER || '')) throw Error('invalid issue number');
     const runUrl=(env.GITHUB_SERVER_URL || 'https://github.com')+'/'+repository+'/actions/runs/'+env.GITHUB_RUN_ID;
     gh(['issue','comment',env.DRAFT_ISSUE_NUMBER,'--repo',repository,'--body',failureComment({runUrl,artifactUrl:env.DRAFT_ARTIFACT_URL,outcome:env.DRAFT_ATTEMPT_OUTCOME})]);
-  } else throw Error('expected --select or --failure');
+  } else throw Error('expected --select, --occupied or --failure');
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main();

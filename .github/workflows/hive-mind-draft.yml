@@ -324,9 +324,17 @@ jobs:
         run: |-
           if [ -f "$FORMAL_AI_DRAFT_BINARY" ]; then chmod +x "$FORMAL_AI_DRAFT_BINARY"; fi
           node scripts/hive-draft-attempt.mjs --verify-custody
+      # Issue #1580: run 43813238887 started after another session opened #1581 for its issue, and the shared
+      # attempt continued that pull request (log commits, `formal-ai-draft` label) instead of drafting its own.
+      - id: occupancy
+        name: Leave an issue another session already works on to that session
+        if: needs.build.result == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/hive-mind-draft-result.mjs --occupied
       - id: attempt
         name: Attempt through shared Hive Mind scripts (including image pull retry)
-        if: needs.build.result == 'success'
+        if: needs.build.result == 'success' && steps.occupancy.outputs.occupied_by == ''
         env:
           GH_TOKEN: ${{ github.token }}
           AUTOMATION_LAYER: default
@@ -339,7 +347,7 @@ jobs:
           FORMAL_AI_DEADLINE_GRACE_SECONDS=30 bash "$GITHUB_WORKSPACE/scripts/run-with-session-evidence.sh" 1200 attempt node .hive-mind/scripts/formal-ai-draft.mjs
       - id: serving
         name: Verify Hive Mind served the admitted selection
-        if: ${{ !cancelled() && steps.custody.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.custody.outcome == 'success' && steps.attempt.outcome != 'skipped' }}
         env:
           FORMAL_AI_ATTEMPT_IDENTITY: ${{ needs.build.outputs.attempt_identity }}
         run: node scripts/hive-draft-attempt.mjs --verify-hive
@@ -384,7 +392,7 @@ jobs:
           if-no-files-found: error
           retention-days: 30
       - name: Link session artifact on the issue when no verified draft exists
-        if: ${{ !cancelled() && steps.exact-pr.outputs.pull_request_number == '' }}
+        if: ${{ !cancelled() && steps.exact-pr.outputs.pull_request_number == '' && steps.occupancy.outputs.occupied_by == '' }}
         env:
           GH_TOKEN: ${{ github.token }}
           DRAFT_ISSUE_NUMBER: ${{ needs.build.outputs.issue_number }}

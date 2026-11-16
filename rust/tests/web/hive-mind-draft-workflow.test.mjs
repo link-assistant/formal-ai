@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {selectAttemptPullRequest, failureComment, usefulDraftChanges, inspectAttemptDraft} from '../../../scripts/hive-mind-draft-result.mjs';
+import {selectAttemptPullRequest, failureComment, usefulDraftChanges, inspectAttemptDraft, occupyingPullRequests} from '../../../scripts/hive-mind-draft-result.mjs';
 const workflow=readFileSync(new URL('../../../.github/workflows/hive-mind-draft.yml',import.meta.url),'utf8');
 const context={branch:'issue-7-attempt',repository:'owner/repo',startedAt:'2026-10-16T00:00:00Z'};
 const pr={number:9,headRefName:context.branch,headRepository:{nameWithOwner:context.repository},createdAt:'2026-10-16T00:01:00Z',state:'OPEN'};
@@ -131,4 +131,22 @@ test('fresh selections are sealed across jobs and setup failures retain an issue
  assert.match(integration,/run: \|\n\s+bun add -g --ignore-scripts @link-assistant\/hive-mind@latest\n\s+bun pm ls -g/);
  assert.doesNotMatch(integration,/bun add -g[^\n]*&&/);
  assert.doesNotMatch(integration,/@link-assistant\/hive-mind@2\.15\.1/);
+});
+
+// Issue #1580, run 43813238887: the attempt began after another session opened #1581 for its issue, and Hive Mind
+// continued that pull request -- three log commits and a `formal-ai-draft` label on a PR it did not open.
+test('an issue another session already works on is left to that session',()=>{
+ const census=[{number:1581,headRefName:'issue-1580-8d61a32a61e1',state:'OPEN'},{number:1579,headRefName:'issue-1162-100a9a565183',state:'OPEN'},
+  {number:1500,headRefName:'issue-15800-aaaa',state:'OPEN'},{number:1490,headRefName:'issue-1580-old',state:'CLOSED'}];
+ assert.deepEqual(occupyingPullRequests(census,'1580'),[1581]);
+ assert.deepEqual(occupyingPullRequests(census,1162),[1579]);
+ assert.deepEqual(occupyingPullRequests(census,'7'),[]);
+ for(const bad of ['', '0', 'x', undefined]) assert.throws(()=>occupyingPullRequests(census,bad),/invalid occupancy census/);
+ assert.throws(()=>occupyingPullRequests(null,'1580'),/invalid occupancy census/);
+ const occupancy=workflow.indexOf('id: occupancy');
+ assert(occupancy>workflow.indexOf('id: custody')&&occupancy<workflow.indexOf('id: attempt'));
+ assert.match(workflow,/run: node scripts\/hive-mind-draft-result.mjs --occupied/);
+ assert.match(workflow,/id: attempt\n[^\n]*\n\s+if: needs.build.result == 'success' && steps.occupancy.outputs.occupied_by == ''/);
+ assert.match(workflow,/steps.custody.outcome == 'success' && steps.attempt.outcome != 'skipped'/);
+ assert.match(workflow,/steps.exact-pr.outputs.pull_request_number == '' && steps.occupancy.outputs.occupied_by == ''/);
 });
