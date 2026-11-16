@@ -248,6 +248,14 @@ pub fn work_item_report(record: &Value, task: &str) -> String {
         }
         paragraphs.push(lines.join("\n"));
     }
+    // A file the solver selected from a citation alone was not written (issue #1562).
+    if let Some(path) = record["unboundWrite"]["path"].as_str() {
+        paragraphs.push(filled(
+            "work-item-report-unbound-write",
+            language,
+            &[("path", path)],
+        ));
+    }
     let requirements = record["requirements"]
         .as_array()
         .map_or(&[][..], Vec::as_slice);
@@ -272,13 +280,23 @@ pub fn work_item_report(record: &Value, task: &str) -> String {
         paragraphs.push(filled("work-item-report-missing-read-tool", language, &[]));
     }
     // Requirements keep their numbers; only those not yet verified are listed.
+    // A clause that only cites evidence is no obligation (issue #1562).
+    let obliged = requirements
+        .iter()
+        .filter(|requirement| requirement["status"].as_str() != Some("citation"))
+        .count();
     let open = requirements
         .iter()
         .enumerate()
-        .filter(|(_, requirement)| requirement["status"].as_str() != Some("verified"))
+        .filter(|(_, requirement)| {
+            !matches!(
+                requirement["status"].as_str(),
+                Some("verified" | "citation")
+            )
+        })
         .collect::<Vec<_>>();
-    if !requirements.is_empty() && open.is_empty() {
-        let count = requirements.len().to_string();
+    if obliged > 0 && open.is_empty() {
+        let count = obliged.to_string();
         paragraphs.push(filled(
             "work-item-report-requirements-verified",
             language,

@@ -35,6 +35,16 @@
       ]
     },
     {
+      "id": "work-item-cited-program",
+      "reasons": [],
+      "description": "A work item that only cites a Hello World repository or a source file received a stored program that was written, run, committed and reported as verified (hive-mind 4036, 4037 and 4039 for issues 4034, 4031 and 4035; issue #1562).",
+      "tests": [
+        "rust/tests/web/draft-request-replay.test.mjs",
+        "rust/tests/web/issue-1562-cited-programs.test.mjs",
+        "rust/tests/web/work-item-report-outcome.test.mjs"
+      ]
+    },
+    {
       "id": "work-item-edit-and-check",
       "reasons": ["IndependentCheckFailed", "FileIoProcessStatusUnknown", "ContradictedIntegrationClaim"],
       "description": "A work item that reaches a change must end with the smallest checkable edit, a contract-derived independent check and a verified no-op repeat, through the Agent, Claude and Codex adapters (issue #1483).",
@@ -98,10 +108,12 @@
     }
   ],
   "components": [
-    { "prefixes": ["js/agentic/work_item_", "js/agentic/file_read/", "js/agentic/planner.mjs"], "families": ["work-item-read-policy", "work-item-reference-resolution", "work-item-evidence-gap", "work-item-edit-and-check"] },
+    { "prefixes": ["js/agentic/work_item_", "js/agentic/file_read/", "js/agentic/planner.mjs"], "families": ["work-item-read-policy", "work-item-reference-resolution", "work-item-evidence-gap", "work-item-cited-program", "work-item-edit-and-check"] },
+    { "prefixes": ["js/agentic/general_execution.mjs", "js/agentic/command_reroute.mjs", "js/agentic/crate/coding_program_contract.mjs"], "families": ["work-item-cited-program"] },
     { "prefixes": ["js/agentic/documentation_acceptance.mjs", "js/agentic/observed_documentation.mjs", "js/agentic/source_repair.mjs"], "families": ["work-item-edit-and-check"] },
     { "prefixes": ["scripts/work-item-qualification/"], "families": ["work-item-evidence-gap"] },
-    { "prefixes": ["data/benchmarks/fixtures/draft-replays/", "scripts/lib/draft-replay.mjs", "scripts/extract-draft-replay.mjs"], "families": ["work-item-read-policy", "work-item-reference-resolution"] },
+    { "prefixes": ["data/benchmarks/fixtures/draft-replays/", "scripts/lib/draft-replay.mjs", "scripts/extract-draft-replay.mjs"], "families": ["work-item-read-policy", "work-item-reference-resolution", "work-item-cited-program"] },
+    { "prefixes": ["data/benchmarks/fixtures/issue-1562/"], "families": ["work-item-cited-program"] },
     { "prefixes": [".github/workflows/hive-mind-draft.yml"], "families": ["hive-draft-adapter", "shared-build-custody", "ci-phase-timing", "workflow-policy"] },
     { "prefixes": ["scripts/hive-draft-attempt.mjs", "scripts/hive-mind-draft-result.mjs", "scripts/prepare-hive-draft-evidence.mjs", ".hive-mind/"], "families": ["hive-draft-adapter"] },
     { "prefixes": ["scripts/formal-ai-shared-build.mjs", "scripts/lib/formal-ai-build-identity.mjs"], "families": ["shared-build-custody"] },

@@ -13,8 +13,8 @@ const FIXTURES = 'data/benchmarks/fixtures/issue-1558';
 const RECORDED_WORKSPACE = /\/tmp\/gh-issue-solver-1793442214945/gu;
 export const ISSUES = [1484, 1485, 1487, 1488, 1507];
 
-/** The request body of the recorded session, rewritten to `issue` and `workspace`, ending with the issue text. */
-export function recordedRequest(issue, workspace, { issueText, repository = 'link-assistant/formal-ai', tools = null } = {}) {
+/** The request body of the recorded session, rewritten to `issue` and `workspace`, ending with the issue text and `after`. */
+export function recordedRequest(issue, workspace, { issueText, repository = 'link-assistant/formal-ai', tools = null, after = [] } = {}) {
   const body = JSON.parse(readFileSync(`${FIXTURES}/agent-cli-request.json`, 'utf8'));
   const text = issueText ?? readFileSync(`${FIXTURES}/issue-${issue}.txt`, 'utf8');
   const messages = JSON.parse(JSON.stringify(body.messages)
@@ -23,6 +23,8 @@ export function recordedRequest(issue, workspace, { issueText, repository = 'lin
     .replaceAll('issue-1485-', `issue-${issue}-`));
   const call = messages.at(-1).tool_calls[0];
   messages.push({ role: 'tool', tool_call_id: call.id, content: text });
+  // Messages the session already exchanged after the issue fetch (issue #1562).
+  messages.push(...after);
   return { model: body.model, tools: tools ? body.tools.filter(tool => tools.includes(tool.function.name)) : body.tools, messages };
 }
 

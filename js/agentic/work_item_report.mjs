@@ -105,6 +105,10 @@ export function workItemReport(record, task) {
     }
     paragraphs.push(lines.join('\n'));
   }
+  // A file the solver selected from a citation alone was not written (issue #1562).
+  if (typeof record.unboundWrite?.path === 'string') {
+    paragraphs.push(filled('work-item-report-unbound-write', language, [['path', record.unboundWrite.path]]));
+  }
   const requirements = Array.isArray(record.requirements) ? record.requirements : [];
   if (typeof record.refused?.path === 'string') {
     let refused = filled('work-item-report-refused', language, [['path', record.refused.path]]);
@@ -118,9 +122,11 @@ export function workItemReport(record, task) {
     paragraphs.push(filled('work-item-report-missing-read-tool', language, []));
   }
   // Requirements keep their numbers; only those not yet verified are listed.
-  const open = requirements.map((requirement, index) => ({ requirement, index })).filter(row => row.requirement?.status !== 'verified');
-  if (requirements.length && !open.length) {
-    paragraphs.push(filled('work-item-report-requirements-verified', language, [['count', String(requirements.length)]]));
+  // A clause that only cites evidence is no obligation (issue #1562).
+  const obliged = requirements.filter(requirement => requirement?.status !== 'citation').length;
+  const open = requirements.map((requirement, index) => ({ requirement, index })).filter(row => row.requirement?.status !== 'verified' && row.requirement?.status !== 'citation');
+  if (obliged && !open.length) {
+    paragraphs.push(filled('work-item-report-requirements-verified', language, [['count', String(obliged)]]));
   } else if (open.length) {
     const lines = [filled('work-item-report-requirements', language, [['count', String(open.length)]])];
     for (const { requirement, index } of open.slice(0, LISTED_REQUIREMENTS)) {

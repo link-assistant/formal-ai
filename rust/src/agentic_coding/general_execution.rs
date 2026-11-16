@@ -131,7 +131,9 @@ fn change_step(
             .is_some_and(|failure| failure.capability == Capability::Run)
         && let Some(objective) = repository_work_item_objective(plan, &progress)
     {
-        let answer = crate::solver::UniversalSolver::default().solve(&objective);
+        let mut answer = crate::solver::UniversalSolver::default().solve(&objective);
+        // A recovery repairs only a program an obligation asked for (issue #1562).
+        super::work_item_citations::unbind_cited_recipe(&mut answer, &objective);
         if let Some(owned) = super::command_reroute::plan_owned_recipe_recovery(
             messages, tool_names, &answer, &objective,
         ) {
@@ -530,6 +532,10 @@ fn plan_work_item_execution(
     // and the client — not this solver — owns execution. Opting into agent mode
     // would only add the policy branches that answer *about* agent actions.
     let mut answer = crate::solver::UniversalSolver::default().solve(objective);
+    // A program is written only for an obligation of the work item, never for
+    // a span it merely cites (issue #1562): the address of a `test-hello-world`
+    // repository or a quoted log is no request for a Hello World program.
+    let unbound = super::work_item_citations::unbind_cited_recipe(&mut answer, objective);
     // The issue that asks for the program may also ask for the workflow that
     // runs it (issue #1133, requirement 6 of every Hello World task): the
     // recipe then carries the workflow as a supporting file, running the same
@@ -547,7 +553,14 @@ fn plan_work_item_execution(
     let Some(executable) = compose_general_change_plan(objective)
         .filter(|executable| executable.mode != GeneralPlanMode::RepositoryWorkItem)
     else {
-        return plan_work_item_evidence(objective, messages, tool_names, work_item, result);
+        return plan_work_item_evidence(
+            objective,
+            messages,
+            tool_names,
+            work_item,
+            unbound.as_deref(),
+            result,
+        );
     };
     Some(plan_work_item_change_step(
         messages,
