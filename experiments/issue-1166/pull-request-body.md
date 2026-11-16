@@ -88,6 +88,17 @@ Anything else is `unresolved (unread)`.
 - A workflow's status needs an observed conclusion; without one the clause stays `unresolved`.
 - Reader gaps (`unread`, `judgment_required`) do not add a report to an otherwise passing answer on their own, but stay visible in `check_task`.
 
+### Verification status
+
+- JavaScript: `node --test rust/tests/web/issue-1166-*.test.mjs` passes 32/32 locally, and the fast JS tiers pass in CI.
+- TypeScript: `node scripts/translate-es.mjs --check` passes locally (714 files), and the ts tier passes in CI.
+- Native compile: `cargo check --tests` is clean locally with no errors or warnings, and CI's native type and lint check passes.
+- **Native unit tests were not executed.** `rust/tests/unit/issue_1166_task_acceptance.rs` and `issue_1166_executor_gaps.rs` compile but have not been run:
+  - Linking the test binary needs a codegen build of the `formal_ai` lib. On the machine that prepared this PR, the 3 GB cgroup killed that build at opt-level 2, at opt-level 0 and without incremental compilation (memory peak equal to the limit).
+  - `--no-default-features` does not build on `main` either.
+  - Pull-request CI only type-checks Rust. The native unit suite runs on `main`.
+- So the native leg of criterion (g) is verified by compilation and the shared fixture only, not by execution. It needs one `cargo test --test unit issue_1166` run on a larger machine before merge.
+
 ### How to reproduce the original bug
 
 Take the #1450 body (`rust/tests/fixtures/issue-1166/issue-1450-body.md`) and a candidate that:
