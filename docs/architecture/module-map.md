@@ -117,6 +117,7 @@ new module fails CI until this map documents it.
 | `grammar_kinds` | The tree-sitter kind inventory of the committed corpora (issue #1138,. | §5 |
 | `knowledge` | External knowledge oracles, treated as cached APIs (issue #412). | §5 |
 | `meta_construction` | Issue #559: the upward construction pass and the `recursion_mode` knob. | §5 |
+| `meta_executor` | Issue #1550 — the recursive procedure every answer goes through, in both. | §5 |
 | `meta_frame` | Issue #559 Phase 1A: an explicit, link-serializable problem frame. | §5 |
 | `meta_reasoner` | The recursive meta reasoner, ported by hand from JavaScript (R1012. | §5 |
 | `meta_reasoning` | Issue #559: white-box recursive reasoning for every meta-core work unit. | §5 |
