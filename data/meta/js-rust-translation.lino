@@ -15,10 +15,10 @@ js_rust_translation
   upstream link-foundation/meta-language
   commit eb0574d5528babd3b4aadece81590d8e2230b99b
   modules 161
-  translated_items 335
+  translated_items 336
   workaround_items 37
   inferred_signatures 3
-  carried_items 2576
+  carried_items 2581
   translated_modules 112
   fully_translated_modules 1
   refused_modules 49
@@ -34,7 +34,7 @@ module js/agentic/crate/change_request.mjs translated 1 workaround 1 inferred 0 
 module js/agentic/crate/client_contract_learning.mjs translated 0 workaround 1 inferred 0 carried 15
 module js/agentic/crate/coding_catalog.mjs translated 4 workaround 2 inferred 0 carried 27
 module js/agentic/crate/coding_cjk.mjs translated 0 workaround 0 inferred 0 carried 1
-module js/agentic/crate/coding_program_contract.mjs translated 0 workaround 1 inferred 0 carried 33
+module js/agentic/crate/coding_program_contract.mjs translated 0 workaround 1 inferred 0 carried 32
 module js/agentic/crate/command_output_contract.mjs translated 0 workaround 0 inferred 0 carried 2
 module js/agentic/crate/computer_use.mjs translated 2 workaround 0 inferred 0 carried 14
 module js/agentic/crate/computer_use_induction.mjs translated 4 workaround 0 inferred 0 carried 22
@@ -72,7 +72,7 @@ module js/agentic/crate/history_repository_qa.mjs translated 1 workaround 0 infe
 module js/agentic/crate/history_store.mjs translated 3 workaround 0 inferred 0 carried 30
 module js/agentic/crate/implementation_language.mjs translated 1 workaround 0 inferred 0 carried 22
 module js/agentic/crate/intent_formalization.mjs translated 5 workaround 0 inferred 0 carried 24
-module js/agentic/crate/intent_formalization_obligations.mjs translated 5 workaround 1 inferred 0 carried 40
+module js/agentic/crate/intent_formalization_obligations.mjs translated 6 workaround 1 inferred 0 carried 44
 module js/agentic/crate/intent_formalization_requirements.mjs translated 0 workaround 0 inferred 0 carried 15
 module js/agentic/crate/issue_report.mjs translated 2 workaround 0 inferred 0 carried 0
 module js/agentic/crate/issue_report_title.mjs translated 2 workaround 0 inferred 0 carried 9
@@ -181,34 +181,34 @@ module js/agentic/crate/translation_formalization.mjs translated 4 workaround 0 
 module js/agentic/crate/translation_language_markers.mjs translated 2 workaround 0 inferred 0 carried 5
 module js/agentic/crate/typed_meaning.mjs translated 0 workaround 0 inferred 0 carried 6
 module js/agentic/crate/unread_structure.mjs translated 1 workaround 1 inferred 0 carried 9
-module js/agentic/crate/version_resolution.mjs translated 2 workaround 1 inferred 0 carried 24
+module js/agentic/crate/version_resolution.mjs translated 2 workaround 1 inferred 0 carried 26
 module js/agentic/crate/web_engine_core.mjs translated 0 workaround 0 inferred 0 carried 2
 module js/agentic/crate/workspace_change_learning.mjs translated 2 workaround 0 inferred 0 carried 11
 module js/worker/formal_ai_worker_meta_composite.js translated 0 workaround 0 inferred 0 carried 7
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inferred 0 carried 42
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 26
-refusal "import of names its module does not translate" 357
+refusal "import of names its module does not translate" 356
 refusal "JSDoc type {…}" 219
 refusal "import from '…'" 212
 refusal "null" 194
-refusal "arrow function" 137
+refusal "arrow function" 139
 refusal "type: unknown name (a sibling item or an import)" 122
-refusal "function value …" 110
+refusal "function value …" 111
 refusal "object without a $ tag" 94
 refusal "new expression" 93
 refusal "regular expression" 65
 refusal "method call .find()" 62
-refusal "method call .split()" 59
+refusal "method call .split()" 60
 refusal "method call .map()" 58
-refusal "method call .filter()" 55
+refusal "method call .filter()" 56
 refusal "method call .some()" 50
 refusal "Array.from" 47
 refusal "method call .slice()" 47
 refusal "method call .push()" 38
 refusal "field access" 33
 refusal "method call .indexOf()" 33
+refusal "optional chaining" 32
 refusal "nullish coalescing" 31
-refusal "optional chaining" 31
 refusal "method call .replace()" 25
 refusal "export …" 23
 refusal "syntax: malformed number" 21

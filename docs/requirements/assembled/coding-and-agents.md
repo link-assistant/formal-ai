@@ -518,45 +518,89 @@ The unit file is registered in `rust/tests/unit/mod.rs`. Both ledger copies of
 tree is nominally main's; the issue requires the sentinel and the fallback
 wording to live there as data).
 
-## Issue #1156: Single output obligations
+## Issue #1156: One Output Literal, Printed Once
 
-Source: https://github.com/link-assistant/formal-ai/issues/1156
+Source: https://github.com/link-assistant/formal-ai/issues/1156 (a sub-issue of
+[#1162](https://github.com/link-assistant/formal-ai/issues/1162)). A Hello World
+request quoted the line `Hello, World!` three times, and the delivered program
+printed it twice. The case study is `docs/case-studies/issue-1156/`. The
+end-to-end evidence is in `docs/case-studies/issue-1162/`.
 
-| Requirement | Drafted behavior | Status |
-|---|---|---|
-| Preserve the requested behavior in the agentic harness | Repeated identical quoted stdout requirements are deduplicated in first-mention order; distinct output operands retain their order. The generated output verifier therefore compares against the composed single obligation. Workflows use the recipe artifact stem rather than a shared run.yml path. | Drafted. Inline regressions cover duplicate and distinct output requirements. Existing output-verifier template already uses byte comparison and propagates process failure. No local execution was performed. Repository/task-specific workflow naming beyond artifact stems remains open. |
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R1156-1 | References to the same literal are one output obligation. Only sequenced literals, an explicit count or a trailing "again" give more than one line. | Implemented: `bound_output_literals` (`rust/src/intent_formalization/obligations.rs`, twin `js/agentic/crate/intent_formalization_obligations.mjs`) merges repeated references to one literal. Since #1162 it reads the words right after each literal through the `output-repetition` structural rule (`data/seed/text-formalization.lino`). "twice" / "two times" / "дважды" / "两次" / "dos veces" and the "three" forms set the count, and "again" / "снова" / "再次" repeat a line that was already bound. Pinned by `rust/tests/unit/issue_1156_explicit_stdout_coreference.rs` and `rust/tests/web/issue-1162-delivery-variants.test.mjs`. |
+| R1156-2 | The verify script is derived from the requirement. | Implemented: `output_verifier` (`rust/src/coding/program_contract.rs`) writes the `explicit_stdout` text with `printf '%s\n'` into a `mktemp -d` verification directory and compares it byte for byte with `cmp`. Pinned by `kotlin_scala_and_rust_print_once_and_verify_the_derived_line` and, in JavaScript, by `changed and Unicode output strings flow into the program and the verify script` in `rust/tests/web/issue-1162-delivery-variants.test.mjs`. |
+| R1156-3 | Kotlin, Scala and Rust fixtures each print once, have a matching verify script and a `test-hello-world.yml` workflow, and are written in the requested language. | Implemented: the variants of `rust/tests/fixtures/issue-1162/hello-world-kotlin-issue.md` and `rust/tests/fixtures/generated-e2e/hello-{kotlin,scala,rust}.md` are pinned by `rust/tests/unit/issue_1156_explicit_stdout_coreference.rs`, `rust/tests/web/issue-1162-delivery-variants.test.mjs`, `rust/tests/web/issue-1162-delivery-obligations.test.mjs` and `rust/tests/unit/agentic-coding/issue_1162_delivery_commands.rs`. |
+| R1156-4 | Regression: a file name or source path is never used as the output (`Main.java` printing "Main.kt"). | Implemented: `a_file_name_is_never_the_output` in `rust/tests/unit/issue_1156_explicit_stdout_coreference.rs` and its JavaScript twin in `rust/tests/web/issue-1162-delivery-variants.test.mjs`. The grader's `program-language` obligation (`scripts/lib/hello-world-delivery-grade.mjs`) fails a delivery that adds a program in another language. |
+| R1156-5 | Manual Hive Mind end-to-end check on a released version. | Blocked: this needs a released version and live Hive Mind credentials, and neither is available to the solver. See `docs/case-studies/issue-1162/README.md`. |
 
-## Issue #1157: Idempotent recipe commits
+## Issue #1157: Idempotent Commit and Clean Build Tree
 
-Source: https://github.com/link-assistant/formal-ai/issues/1157
+Source: https://github.com/link-assistant/formal-ai/issues/1157 (a sub-issue of
+[#1162](https://github.com/link-assistant/formal-ai/issues/1162)). A second run
+failed with "nothing to commit", and compiler outputs (`Main.jar`, `main`) were
+left in the checkout. The case study is `docs/case-studies/issue-1157/`.
 
-| Requirement | Drafted behavior | Status |
-|---|---|---|
-| Preserve the requested behavior in the agentic harness | Recipe commits stage only declared artifacts and inspect the cached diff restricted to those paths. No-change runs emit __formal_ai_commit_unchanged, then still push and print the current hash. Continuations consume the planner evidence window, retaining already completed writes and commands. | Partial. Idempotent commit and continuation replay are drafted. Output ignore patterns and verification of artifacts after externally modified continuation state remain open. No local builds or tests were run. |
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R1157-1 | Build outputs go to a temporary directory outside the checkout, so nothing they produce is committed. | Implemented for the verify script and the workflow: `tests/verify-output.sh` compiles and runs inside a `mktemp -d` verification directory (`data/meta/process-verification.lino`), and the generated workflow runs the same script. The recipe adds no `.gitignore` of its own. Restart hygiene (`data/meta/restart-hygiene.lino`) ignores or removes outputs that an earlier run left behind. The grader's `no-build-artifacts` obligation fails a delivery that commits them. |
+| R1157-2 | Check the tree before committing, and treat "nothing to commit" as a success explained in a sentence. | Implemented: `recipe_commit_command` (`data/meta/work-item-steps.lino`) stages only the recipe's files and checks the cached diff for those paths. With no change it prints `__formal_ai_commit_unchanged`, pushes and prints HEAD. `ExecutionRecipe::final_answer` (`rust/src/agentic_coding/command_reroute.rs`) turns the marker into the `commit-unchanged-report` sentence. Pinned by `rust/tests/unit/agentic-coding/issue_1162_delivery_commands.rs` and, in JavaScript, by `an unchanged tree on a repeated commit is reported as success` in `rust/tests/web/issue-1162-offline-hive-end-to-end.test.mjs`. |
+| R1157-3 | A continuation verifies what is already in place before running anything again. | Implemented: on resume, `recipe_source_command` (`rust/src/agentic_coding/recipe_resume.rs`) probes each source before writing, files that already match are not rewritten, and the verification commands run again before any commit. Only the effects that differ follow: an unchanged tree makes no commit, and `gh pr edit` and `gh pr ready` run only when the pull request differs. Pinned by the rerun in `rust/tests/web/issue-1162-offline-hive-end-to-end.test.mjs` (no new commit, no `pr edit` or `pr ready`, no failed tool call) and by `rust/tests/unit/issue_1157_idempotent_commit.rs`. |
+| R1157-4 | Tests: a second run succeeds, and the tree is clean after kotlinc. | Implemented: `rust/tests/web/issue-1162-offline-hive-end-to-end.test.mjs` runs a full delivery twice against a real git repository and a fake `gh`; the second run ends with success and no failed tool call. Its Kotlin case compiles with a real `kotlinc` and requires a clean working tree after a stray `Main.jar`. The unchanged-commit path is pinned in `rust/tests/unit/issue_1157_idempotent_commit.rs` and `rust/tests/unit/agentic-coding/issue_1162_delivery_commands.rs`, and restart hygiene in `rust/tests/web/issue-1364-restart-hygiene.test.mjs`. |
+| R1157-5 | Manual Hive Mind end-to-end check on a released version. | Blocked: needs a released version and live Hive Mind credentials. |
 
-## Issue #1158: Pull request completion and feedback
+## Issue #1158: Pull Request Feedback, Description and Readiness
 
-Source: https://github.com/link-assistant/formal-ai/issues/1158
+Source: https://github.com/link-assistant/formal-ai/issues/1158 (a sub-issue of
+[#1162](https://github.com/link-assistant/formal-ai/issues/1162)). Delivered
+pull requests kept the orchestrator's placeholder title and description, stayed
+in draft, and their feedback was never read. The case study is
+`docs/case-studies/issue-1158/`.
 
-| Requirement | Drafted behavior | Status |
-|---|---|---|
-| Preserve the requested behavior in the agentic harness | After a verified recipe commit, PR targets retrieve comments and reviews, update their description from artifact and verification commands, and mark draft PRs ready only with a clean working tree. Already-ready PRs are accepted. Nonempty comments, requested changes, or unreadable feedback block readiness with the observed feedback. | Partial. Feedback retrieval, description editing and guarded readiness are drafted. Deriving and applying arbitrary review-requested source edits remains open; feedback is never represented as resolved merely because it was fetched. |
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R1158-1 | Read pull request feedback before planning. | Partial: `pr_comments_command` reads comments and reviews through a bounded `gh pr view --json comments,reviews` filter before the description is edited or the pull request is marked ready. Feedback that asks for changes stops the run with `pr_feedback_review_report` (`rust/src/agentic_coding/command_reroute.rs`). Folding the newest reviewer instruction into the goal before the recipe is planned is not implemented. |
+| R1158-2 | Update the description with the files, the verification and the closing reference. | Implemented: `pr_completion_commands` fills `pr_body_template` with the verified artifact, the verification commands and `Resolves <issue>`. When the target is an issue it also sets the pull request title to the issue title (`pull-request-edit-titled-command`), and it edits only when the text differs. Pinned by `rust/tests/web/issue-1162-delivery-commands.test.mjs` and `rust/tests/unit/agentic-coding/issue_1162_delivery_commands.rs`. |
+| R1158-3 | Run `gh pr ready` when the work is verified and the tree is clean. | Implemented: `pr_ready_command` checks `git status --porcelain` and `isDraft` before `gh pr ready`. The CI fallback (`plan_recipe_ci_fallback`) confirms the pull request is no longer a draft on the verified head. |
+| R1158-4 | The answer reports each step. | Implemented: `ci-verified-report` and `ci-verified-local-report` (`data/meta/recipe-resume.lino`) state that the feedback was read, the description was rewritten with the artifact, the commands and the closing reference, and that the pull request is ready. |
+| R1158-5 | Manual Hive Mind end-to-end check on a released version. | Blocked: needs a released version and live Hive Mind credentials. |
 
-## Issue #1159: Workspace prerequisite recovery
+## Issue #1159: Toolchain Bootstrap Under an Explicit Grant
 
-Source: https://github.com/link-assistant/formal-ai/issues/1159
+Source: https://github.com/link-assistant/formal-ai/issues/1159 (a sub-issue of
+[#1162](https://github.com/link-assistant/formal-ai/issues/1162)). A Scala run
+failed with `scalac: not found` and never recovered. The case study is
+`docs/case-studies/issue-1159/`.
 
-| Requirement | Drafted behavior | Status |
-|---|---|---|
-| Preserve the requested behavior in the agentic harness | Run failures are classified with the shared prerequisite classifier. Missing executables with FORMAL_AI_INSTALL_GRANT=workspace fetch their pinned publisher. A public process-free parser accepts only typed setup notation with a postcondition. Harness tools execute scoped setup, postcondition and one original-command retry, with explicit PATH and transcript binding; absolute/parent write scopes and shell/escalation setup programs are refused. | Partial. Typed publisher recovery is drafted and bounded. Ordinary publisher prose cannot become an executable recipe. Broader source discovery, per-process/network grants and typed recipes for publisher pages that lack them remain open. No local process installation, build or test was executed. |
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R1159-1 | A not-found marker starts the pinned publisher procedure under a grant, then a re-probe and one retry. | Implemented: `classify_failure` and `recover` (`rust/src/prerequisite/mod.rs`), `install_scoped` (`rust/src/prerequisite/install.rs`) and `plan_recovery` (`rust/src/agentic_coding/prerequisite_recovery.rs`), with the `prerequisite_retry_command` data key. Pinned by `rust/tests/web/observed-prerequisite-recovery.test.mjs` and `rust/tests/web/prerequisite-workspace-recovery.test.mjs`. |
+| R1159-2 | `FORMAL_AI_INSTALL_GRANT=workspace` is explicit, and the default is deny. | Implemented: `resolve_workspace_grant` (`rust/src/prerequisite/mod.rs`). Pinned by `rust/tests/unit/prerequisite_workspace_grant.rs` and, in JavaScript, by `rust/tests/web/prerequisite-workspace-recovery.test.mjs`. |
+| R1159-3 | Prefer a self-contained runner (`scala-cli`, `kotlinc -script`). | Not implemented: recipes compile with `scalac` / `kotlinc` from the language catalog. The bounded installer (`data/meta/prerequisite-installer.py`, `select_release_archive`) only unpacks `.zip` release assets, while `scala-cli` ships single gzipped binaries. Preferring it would need a new, security-reviewed archive path, which this pull request does not add. |
+| R1159-4 | The workflow sets up the same toolchain. | Partial. Implemented for Scala: the workflow installs `scalac` at the version resolved from `https://api.github.com/repos/scala/scala3/releases/latest`, the same release feed the pinned `scalac` publisher record names, and runs the same verified command. Pinned by `the_scala_workflow_installs_scalac_from_the_release_feed_of_the_recovery_publisher` in `rust/tests/unit/issue_1159_toolchain_bootstrap.rs` and its JavaScript twin in `rust/tests/web/issue-1159-toolchain-bootstrap.test.mjs`. For Kotlin, the publisher record names the kotlinlang.org documentation page while the workflow pin comes from `https://api.github.com/repos/JetBrains/kotlin/releases/latest`; the two agree only through that page's release link. Pointing the publisher at the release feed directly fails, because that release has more than one `.zip` asset. |
+| R1159-5 | The answer reports the recovery. | Implemented: the grant-required, no-recipe and grant-exceeded reports are written out, and a successful recovery is reported in the answer by `recovered_prerequisites_report` (`rust/src/agentic_coding/prerequisite_recovery.rs`, JS twin in `js/agentic/prerequisite_recovery.mjs`, sentence in the `prerequisite-recovered-report` key of `data/meta/work-item-steps.lino`). The report names the program, the publisher procedure, the re-probe and the retried command. A failed transaction is not reported as a recovery. Pinned by `rust/tests/web/observed-prerequisite-recovery.test.mjs` and `rust/tests/unit/issue_1159_toolchain_bootstrap.rs`. |
+| R1159-6 | Tests: a replay of Scala `scalac: not found`, and "grant required" when there is no grant. | Implemented: `rust/tests/unit/issue_1159_toolchain_bootstrap.rs` replays the Agent CLI Scala `scalac: not found` (exit 127) both without a grant and with a workspace grant. Also `rust/tests/web/observed-prerequisite-recovery.test.mjs` and `rust/tests/web/issue-1364-toolchain-preflight.test.mjs`. |
+| R1159-7 | Manual Hive Mind end-to-end check on a released version. | Blocked: needs a released version and live Hive Mind credentials. |
 
-## Issue #1160: Hive Mind prepared work continuation
+## Issue #1162: Hello World Issue-to-PR Delivery Through All Hive Clients
 
-Source: https://github.com/link-assistant/formal-ai/issues/1160
+Source: https://github.com/link-assistant/formal-ai/issues/1162 (E118, P0). The
+2026-11-10 Kotlin/claude, Scala/agent and Rust/codex runs produced pull requests
+with the wrong workflow path or none, a committed binary, placeholder titles and
+descriptions, and a draft left in draft. The case study, with the timeline, the
+raw logs and the replay snapshots, is `docs/case-studies/issue-1162/`.
 
-| Requirement | Drafted behavior | Status |
-|---|---|---|
-| Preserve the requested behavior in the agentic harness | The planner recognizes the marked UNCOMMITTED CHANGES DETECTED fenced porcelain listing before ordinary issue planning. Valid relative paths are committed explicitly after diff validation, pushed to the prepared branch, described on the prepared PR, and made ready when feedback and clean-tree checks permit. Failed steps stop with evidence. | Partial. Existing-tree continuation is drafted. Quoted porcelain paths and rename records are rejected rather than guessed. Applying arbitrary reviewer source changes and deriving substantive verification commands from restart context remain open. No builds/tests or pushes were performed. |
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R1162-1 | Keep the kinds of evidence apart: offline obligations, independent exact output, CI runs, and live runs on a released version. | Implemented: `gradeHelloWorldDelivery` (`scripts/lib/hello-world-delivery-grade.mjs`) marks exact output `unobserved`, never `pass`, unless an independent run observed stdout. Pinned by `rust/tests/web/issue-1162-delivery-obligations.test.mjs`. |
+| R1162-2 | A full work-item test that does not start from a completed program. | Implemented offline: `rust/tests/web/issue-1162-offline-hive-end-to-end.test.mjs` starts from an empty repository with a bare origin and a fake `gh`. Hive Mind's verbatim prompts drive the JS planner with no LLM to a pushed, titled, described and ready pull request. The issue body (`rust/tests/fixtures/issue-1162/hello-world-kotlin-issue.md`) also drives `programContractAnswer` + `attach` to a full recipe that is graded per obligation. Pinned in Rust by `rust/tests/unit/agentic-coding/issue_1162_delivery_commands.rs` and the `rust/tests/fixtures/hive-mind/` harness. |
+| R1162-3 | Check every requirement on its own. | Implemented: there are 13 named obligations (program file, language, exact output, verify script, workflow count/path/runs, no build artifacts, no session evidence, branch, title, description, ready), with the policy in `data/benchmarks/hello-world-delivery-obligations.json`. The three historical deliveries fail with exactly their listed defects. |
+| R1162-4 | Keep the literal `ci/test-hello-world.yml` requirement (#1450) separate from `.github/workflows`. | Implemented: the grader's `workflowPath` task field, and the recipe's `workflow-binding-patterns`. Pinned by `the literal ci/test-hello-world.yml requirement (#1450) is not met by a native workflow, and the reverse` and `the literal ci/test-hello-world.yml path (#1450) stays separate from .github/workflows`. |
+| R1162-5 | Variants: changed strings, Unicode and escaping, alternate file names, reordered or paraphrased requirements, repeated references, explicit print-twice, missing compiler, resume after partial work, PR feedback, already-complete no-op continuation. | Implemented: `rust/tests/web/issue-1162-delivery-variants.test.mjs` covers strings, Unicode, escaping, file names, paraphrase ("outputs"), repeated references, print-twice / three times / again / дважды, and #1450. Missing compiler: `rust/tests/web/observed-prerequisite-recovery.test.mjs`. Resume and PR feedback: `rust/tests/web/recipe-resume-protocols.test.mjs` and `rust/tests/web/hive-own-session-feedback.test.mjs`. Already-complete no-op: `commit-unchanged-report` in `rust/tests/unit/agentic-coding/issue_1162_delivery_commands.rs`. Two defects were found and fixed: a paraphrase using "outputs" gave no recipe, and an explicit print-twice collapsed to one line. |
+| R1162-6 | The grader rejects print-twice and states its newline rules. | Implemented: `exactOutputObligation` in `scripts/lib/hello-world-delivery-grade.mjs`, with the `newlineRule` policy in `data/benchmarks/hello-world-delivery-obligations.json`. Pinned by `the exact-output rule rejects a doubled line even when the generated test expects it`. |
+| R1162-7 | Run the Claude, Agent and Codex clients with no LLM backend, and tell infrastructure failures apart from wrong code. | Partial: offline, Hive Mind's verbatim formal-ai, regular and restart prompts drive full deliveries in `rust/tests/web/issue-1162-offline-hive-end-to-end.test.mjs`. The three 2026-09-27 logs (`docs/case-studies/issue-1162/raw-data/hive-mind-logs/`) and the 2026-11-10 pull request snapshots are replayed and graded per obligation. A live three-client run on a released version is blocked: no released build and no Hive Mind credentials are available to the solver. |
+| R1162-8 | Qualify hosted and external transport separately; missing credentials are reported as blocked. | Blocked: hosted and external transport need credentials, and those are absent here. They are recorded as blocked, not as passed, in `docs/case-studies/issue-1162/README.md`. |
+| R1162-9 | A predeclared repeated-run and held-out matrix. | Partial: the variant matrix is predeclared in `experiments/issue-1162/variant-matrix.mjs` and pinned by tests. The repeated live runs are blocked for the same reasons as R1162-7. |
 
 ## Issue #1164 Code Node Decomposition
 

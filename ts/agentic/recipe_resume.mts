@@ -185,7 +185,8 @@ export function planRecipeCiFallback(messages, tools, recipe, reference, workflo
     if(view.kind==='missing')return call(command);
     const before=view.kind==='success'?recipeStagedReadyResult(view.output,reference,workflow,staged.path,false):null;
     if(before===null)return gap(installed.refusal);
-    if(before.isDraft&&followup[1]!==undefined){
+    // Issue #1162: the description is written even when the pull request is already ready.
+    if(followup[1]!==undefined){
       const edit=observed(followup[1]);
       if(edit.kind==='missing')return call(followup[1]);if(edit.kind==='failed')return gap(installed.refusal);
     }
@@ -208,12 +209,11 @@ export function planRecipeCiFallback(messages, tools, recipe, reference, workflo
     if (result.kind === 'missing') return call(comments);
     if (result.kind === 'failed') return gap(installed.refusal);
   }
-  if (evidence.isDraft) {
-    if (followup[1] !== undefined) {
-      const result = observed(followup[1]);
-      if (result.kind === 'missing') return call(followup[1]);
-      if (result.kind === 'failed') return gap(installed.refusal);
-    }
+  // Issue #1162: the description is written even when the pull request is already ready.
+  if (followup[1] !== undefined) {
+    const result = observed(followup[1]);
+    if (result.kind === 'missing') return call(followup[1]);
+    if (result.kind === 'failed') return gap(installed.refusal);
   }
   const readyCommand = recipeCiCommand(reference, workflow, true);
   const ready = observed(readyCommand);

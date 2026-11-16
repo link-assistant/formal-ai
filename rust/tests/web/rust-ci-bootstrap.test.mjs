@@ -8,7 +8,8 @@ import { spawnSync } from 'node:child_process';
 import YAML from 'yaml';
 import { installHost } from '../../../js/agentic/host.mjs';
 import { parseLino } from '../../../js/server/lino.mjs';
-import { runtimeSteps } from '../../../js/agentic/crate/coding_program_contract.mjs';
+import { runtimeStepTemplate } from '../../../js/agentic/crate/coding_program_contract.mjs';
+import { fillWorkflowVersions, forGeneration } from '../../../js/agentic/crate/version_resolution.mjs';
 
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
 before(() => installHost({ readText: (path) => readFileSync(join(repository, path), 'utf8'), parseLino, realm: {} }));
@@ -69,7 +70,7 @@ function setupWithFakeTools(configuration = {}) {
     const probe = spawnSync('/bin/sh', ['-c', 'command -v rustup'], { env: environment, encoding: 'utf8' });
     if (configuration.available) assert.equal(probe.status, 0);
     else assert.notEqual(probe.status, 0);
-    const fragment = runtimeSteps('rust');
+    const fragment = fillWorkflowVersions(runtimeStepTemplate('rust'), forGeneration());
     const document = YAML.parse('steps:\n' + fragment);
     assert.equal(document.steps.length, 1);
     assert.equal(document.steps[0].name, 'Set up Rust');

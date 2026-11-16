@@ -27,8 +27,8 @@ pub(crate) fn reported_exit_code(raw: &str) -> Option<i64> {
     source_observation::reported_exit_code(raw)
 }
 pub(super) use source_observation::{
-    harness_reported_failure, incomplete_receipt, normalized_payload, observed_bytes_match,
-    observed_digest_matches, observed_payload, shell_step,
+    exact_successful_stdout, harness_reported_failure, incomplete_receipt, normalized_payload,
+    observed_bytes_match, observed_digest_matches, observed_payload, shell_step,
 };
 
 struct NormalizedResult {

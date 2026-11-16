@@ -1,0 +1,67 @@
+{
+  "repository": "konard/test-hello-world-019fb331-c107-78c7-8ff6-9f127a3c593c",
+  "pull_request": {
+    "body": "## Summary\n\nThis pull request implements a solution for #1: Implement Hello World in Rust\n\n### Changes\n- No files were changed by this pull request yet (it contains only the placeholder file the solver commits to open a pull request)\n\n### Issue Reference\nFixes #1\n\n---\n*This PR was created automatically by the AI issue solver*",
+    "checks": [],
+    "createdAt": "2026-07-30T14:25:12Z",
+    "headRefName": "issue-1-09b0c76bd0e4",
+    "isDraft": false,
+    "state": "OPEN",
+    "title": "Implement Hello World in Rust",
+    "updatedAt": "2026-11-10T09:25:40Z"
+  },
+  "files": [
+    {
+      "additions": 0,
+      "changes": 0,
+      "filename": "dev/log/self-authored/issue-1/evidence/codex-stream.jsonl",
+      "status": "added"
+    },
+    {
+      "additions": 2,
+      "changes": 2,
+      "filename": "dev/log/self-authored/issue-1/evidence/session-id.txt",
+      "status": "added"
+    },
+    {
+      "additions": 0,
+      "changes": 0,
+      "filename": "main",
+      "status": "added"
+    },
+    {
+      "additions": 6,
+      "changes": 6,
+      "filename": "main.rs",
+      "status": "added"
+    },
+    {
+      "additions": 8,
+      "changes": 8,
+      "filename": "tests/verify-output.sh",
+      "status": "added"
+    }
+  ],
+  "commits": [
+    {
+      "date": "2026-07-30T14:24:59Z",
+      "message": "Initial commit with task details",
+      "sha": "9d74fb35"
+    },
+    {
+      "date": "2026-10-20T08:41:50Z",
+      "message": "feat: add main.rs",
+      "sha": "3340bbda"
+    },
+    {
+      "date": "2026-10-20T22:35:56Z",
+      "message": "Auto-commit: Changes made by Codex during problem-solving session",
+      "sha": "693630a8"
+    },
+    {
+      "date": "2026-11-10T09:23:23Z",
+      "message": "Revert \"Initial commit with task details\"",
+      "sha": "8972c208"
+    }
+  ]
+}

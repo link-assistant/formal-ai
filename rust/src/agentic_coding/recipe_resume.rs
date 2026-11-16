@@ -307,9 +307,10 @@ fn plan_staged_completion(
     ) else {
         return gap("scope-refusal");
     };
-    if before.is_draft
-        && let Some(edit) = completion.followup.get(1)
-    {
+    // The description is written whether or not the orchestrator already
+    // marked the pull request ready (issue #1162: the Kotlin run's pull
+    // request was ready before delivery and kept its placeholder body).
+    if let Some(edit) = completion.followup.get(1) {
         match observation(progress, edit) {
             Observation::Missing => return call(run, edit),
             Observation::Failed => return gap("scope-refusal"),
@@ -460,9 +461,10 @@ pub(super) fn plan_recipe_ci_fallback(
             Observation::Succeeded(_) => {}
         }
     }
-    if evidence.is_draft
-        && let Some(edit) = completion.followup.get(1)
-    {
+    // The description is written whether or not the orchestrator already
+    // marked the pull request ready (issue #1162: the Kotlin run's pull
+    // request was ready before delivery and kept its placeholder body).
+    if let Some(edit) = completion.followup.get(1) {
         match observation(&progress, edit) {
             Observation::Missing => return call(run, edit),
             Observation::Failed => return gap("scope-refusal"),

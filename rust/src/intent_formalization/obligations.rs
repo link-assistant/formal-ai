@@ -461,7 +461,7 @@ fn gap_line(node: &ObligationNode, reason: &str) -> String {
     .join(" ")
 }
 
-/// The output literals an executor binds from `text`, each once, in order.
+/// The output lines an executor binds from `text`, in order.
 ///
 /// This is the program executor's reading of the graph's output clauses
 /// (R1166-3): every quoted segment is assigned to the enumerated obligation
@@ -477,6 +477,12 @@ fn gap_line(node: &ObligationNode, reason: &str) -> String {
 /// A clause that quotes nothing can still name its output in the open
 /// ("… prints Hello, World! and run it"): `unquoted_output` binds that
 /// utterance, at the clause's position in request order (PR #1188 T18).
+///
+/// An explicit count stated with a mention ("prints `Hi` twice") binds that
+/// many lines, and a later mention marked as a repetition ("… and then
+/// prints `Hi` again") binds a further line (issue #1162, the print-twice
+/// task); see [`explicit_count`] and [`output_again`]. Repeated mentions
+/// of one literal without such a mark keep its largest count (issue #1166).
 #[must_use]
 pub fn bound_output_literals(text: &str) -> Vec<String> {
     let clauses = crate::obligation_ledger::clauses_with_spans(text);
@@ -487,7 +493,7 @@ pub fn bound_output_literals(text: &str) -> Vec<String> {
         crate::solver_handlers::verb_final_language(crate::language::detect(text).slug());
     let literals = quoted_segment_spans(text);
     let mut previous_end: usize = 0;
-    let mut bound: Vec<(usize, String, usize)> = Vec::new();
+    let mut bound: Vec<(usize, String, usize, bool)> = Vec::new();
     for (index, literal) in literals.iter().enumerate() {
         let clause_start = clause_starts
             .iter()
@@ -511,22 +517,27 @@ pub fn bound_output_literals(text: &str) -> Vec<String> {
         if print.is_some_and(|meaning| meaning.evidenced_in(&introduction.to_lowercase()))
             || (verb_final && followed_by_print(after))
         {
-            bound.push((literal.start, literal.text.clone(), explicit_count(after)));
+            bound.push((
+                literal.start,
+                literal.text.clone(),
+                explicit_count(after),
+                output_again(after),
+            ));
         }
     }
     for (clause, span) in &clauses {
         if quoted_segment_spans(clause).is_empty()
             && let Some(output) = unquoted_output(clause)
         {
-            bound.push((span.0, output, 1));
+            bound.push((span.0, output, 1, false));
         }
     }
-    bound.sort_by_key(|(start, _, _)| *start);
+    bound.sort_by_key(|(start, _, _, _)| *start);
     let mut counts: Vec<(String, usize)> = Vec::new();
-    for (_, value, count) in bound {
+    for (_, value, count, again) in bound {
         match counts.iter_mut().find(|(seen, _)| *seen == value) {
-            Some(entry) => entry.1 = entry.1.max(count),
-            None => counts.push((value, count)),
+            Some(entry) if !again => entry.1 = entry.1.max(count),
+            _ => counts.push((value, count)),
         }
     }
     counts
@@ -573,16 +584,7 @@ const COUNT_SUFFIX: &str = "-count";
 #[must_use]
 pub fn explicit_count(window: &str) -> usize {
     use crate::formalization::proposition_structure::{PROPOSITION_RULE, surface_structure};
-    let separators = seed::lexicon().words_for_role(seed::ROLE_SKILL_PROCEDURE_CLAUSE_SEPARATOR);
-    let sentence = window
-        .split(OUTPUT_INTRODUCTION_BREAKS)
-        .next()
-        .unwrap_or(window);
-    let words: Vec<&str> = sentence
-        .split_whitespace()
-        .take_while(|word| !separators.contains(&bare_word(word)))
-        .collect();
-    let structure = surface_structure(&words.join(" ")).structure;
+    let structure = surface_structure(&trailing_words(window)).structure;
     let Some(part) = structure
         .split(';')
         .find_map(|entry| entry.strip_prefix(REPETITION_PART))
@@ -599,6 +601,71 @@ pub fn explicit_count(window: &str) -> usize {
             .and_then(|count| count.parse::<usize>().ok())
         })
         .fold(1, usize::max)
+}
+
+/// The words right after a literal, up to the sentence break or the first
+/// seeded clause separator.
+fn trailing_words(window: &str) -> String {
+    let separators = seed::lexicon().words_for_role(seed::ROLE_SKILL_PROCEDURE_CLAUSE_SEPARATOR);
+    let sentence = window
+        .split(OUTPUT_INTRODUCTION_BREAKS)
+        .next()
+        .unwrap_or(window);
+    sentence
+        .split_whitespace()
+        .take_while(|word| !separators.contains(&bare_word(word)))
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+/// The structural rule naming the words that mark an output mention as a
+/// further line (data/seed/text-formalization.lino).
+const OUTPUT_REPETITION_RULE: &str = "output-repetition";
+
+/// Whether the words right after a literal mark it as a further line of an
+/// output bound before ("prints `Hi` again", issue #1162), read through the
+/// `again-vocabulary` of the seeded `output-repetition` rule. Words before the
+/// literal are not read: "check again that it prints `Hi`" re-checks one line,
+/// it does not ask for a second. Every grammar language's words are read,
+/// since a request carries no language tag.
+#[must_use]
+pub fn output_again(window: &str) -> bool {
+    let trailing = trailing_words(window).to_lowercase();
+    crate::formalization::structural_rule_values(OUTPUT_REPETITION_RULE, "again-vocabulary")
+        .iter()
+        .any(|kind| {
+            grammar_languages()
+                .iter()
+                .flat_map(|language| crate::formalization::grammar_vocabulary(language, kind))
+                .any(|phrase| mentions_phrase(&trailing, &phrase.to_lowercase()))
+        })
+}
+
+/// The languages of the shared formalization grammar.
+fn grammar_languages() -> Vec<String> {
+    crate::formalization::grammar_root().map_or_else(Vec::new, |root| {
+        root.children
+            .iter()
+            .filter(|node| node.name == "language")
+            .map(|node| node.id.clone())
+            .collect()
+    })
+}
+
+/// Whether `window` mentions `phrase` as whole words: a spaced-script phrase
+/// must not continue a longer word ("against" never reads as "again"), while
+/// an ideographic phrase sits between ideographs without spaces.
+fn mentions_phrase(window: &str, phrase: &str) -> bool {
+    let spaced = |character: Option<char>| {
+        character.is_some_and(|character| {
+            character.is_alphanumeric() && !('\u{3400}'..='\u{9fff}').contains(&character)
+        })
+    };
+    !phrase.is_empty()
+        && window.match_indices(phrase).any(|(at, _)| {
+            !spaced(window[..at].chars().next_back())
+                && !spaced(window[at + phrase.len()..].chars().next())
+        })
 }
 
 /// Whether the words right after a quoted literal -- up to the sentence break

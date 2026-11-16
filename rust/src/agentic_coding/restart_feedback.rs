@@ -260,16 +260,68 @@ fn own_session_status(item: &serde_json::Value, body: &str) -> bool {
     {
         return false;
     }
-    [
-        "pull-request-session-summary-pattern",
-        "pull-request-session-started-pattern",
-    ]
-    .iter()
-    .any(|key| {
-        regex::Regex::new(&super::work_item_steps::fill(key, &[]))
+    own_status_patterns().iter().any(|pattern| {
+        regex::Regex::new(pattern)
             .expect("compiled-in session status policy")
             .is_match(body.trim())
     })
+}
+
+/// Policy keys of the notices the orchestrator posts under the viewer's own
+/// account: session start and summary, uploaded session logs, restart and
+/// stop notices, and the mergeability report. Issue #1162: the Kotlin run's
+/// pull request carried 94 such notices (107 KB), the client truncated the
+/// read, and the unreadable result stopped delivery before the description
+/// and readiness steps.
+const OWN_STATUS_PATTERN_KEYS: [&str; 14] = [
+    "pull-request-session-summary-pattern",
+    "pull-request-session-started-pattern",
+    "pull-request-solution-log-pattern",
+    "pull-request-auto-restart-pattern",
+    "pull-request-restart-limit-pattern",
+    "pull-request-ready-to-merge-pattern",
+    "pull-request-automation-stopped-pattern",
+    "pull-request-auto-restart-evidence-pattern",
+    "pull-request-auto-restart-uncommitted-pattern",
+    "pull-request-restart-safety-limit-pattern",
+    "pull-request-session-started-draft-pattern",
+    "pull-request-solution-failed-pattern",
+    "pull-request-no-changes-pattern",
+    "pull-request-session-killed-pattern",
+];
+
+fn own_status_patterns() -> Vec<String> {
+    OWN_STATUS_PATTERN_KEYS
+        .iter()
+        .map(|key| super::work_item_steps::fill(key, &[]))
+        .collect()
+}
+
+/// `gh --jq` projection of the pull request feedback read. It drops exactly
+/// the comments [`feedback_needs_changes`] exempts (unedited, viewer-authored,
+/// whole-body matches of the same policy patterns) so the read stays bounded,
+/// and keeps every other comment and every review for that check to judge.
+#[must_use]
+pub fn pull_request_feedback_filter() -> String {
+    let tests = own_status_patterns()
+        .iter()
+        .map(|pattern| {
+            format!(
+                "test({})",
+                serde_json::to_string(pattern).expect("a string serializes")
+            )
+        })
+        .collect::<Vec<_>>()
+        .join(" or ");
+    format!(
+        concat!(
+            "{{comments:[.comments[]|select((.viewerDidAuthor==true and .includesCreatedEdit!=true",
+            " and (.body|sub(\"^\\\\s+\";\"\")|sub(\"\\\\s+$\";\"\")|({})))|not)",
+            "|{{author:.author.login,viewerDidAuthor,includesCreatedEdit,createdAt,body}}],",
+            "reviews:[.reviews[]|{{author:.author.login,state,body}}]}}"
+        ),
+        tests
+    )
 }
 
 const COMMAND_PLACEHOLDER: &str = "{command}";
@@ -555,5 +607,6 @@ pub(super) fn prepared_work_paths(output: &str) -> Option<Vec<String>> {
         return None;
     }
     porcelain_paths(output)
+        .or_else(|| porcelain_paths(&super::tool_result::exact_successful_stdout(output)?))
         .or_else(|| porcelain_paths(&super::tool_result::observed_payload(output)?))
 }

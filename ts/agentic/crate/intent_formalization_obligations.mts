@@ -13,7 +13,7 @@ import { parseLinoRoot } from '../write_lino.mjs';
 import { utf8Len } from '../write_str.mjs';
 import { textOutsideQuotedSegments } from './coding_program_contract.mjs';
 import { normalizePrompt } from './engine.mjs';
-import { structuralRuleValues } from './formalization_grammar.mjs';
+import { grammarRoot, grammarVocabulary, structuralRuleValues } from './formalization_grammar.mjs';
 import { detect } from './language.mjs';
 import { quotedSegmentSpans } from './normal_markov.mjs';
 import { buildObligationTree, clausesWithSpans, expectationRules } from './obligation_ledger.mjs';
@@ -216,18 +216,20 @@ export function boundOutputLiterals(text) {
     const after = text.slice(literal.end, next);
     if (conditionalIntroduction(introduction)) return;
     if (meaningEvidencedIn('print_stdout', introduction.toLowerCase())
-      || (verbFinal && followedByPrint(after))) bound.push([literal.start, literal.text, explicitCount(after)]);
+      || (verbFinal && followedByPrint(after))) {
+      bound.push([literal.start, literal.text, explicitCount(after), outputAgain(after)]);
+    }
   });
   clauses.forEach(([clause], index) => {
     if (quotedSegmentSpans(clause).length > 0) return;
     const output = unquotedOutput(clause);
-    if (output !== null) bound.push([clauseStarts[index], output, 1]);
+    if (output !== null) bound.push([clauseStarts[index], output, 1, false]);
   });
   bound.sort((left, right) => left[0] - right[0]);
   const counts = [];
-  for (const [, value, count] of bound) {
+  for (const [, value, count, again] of bound) {
     const seen = counts.find((entry) => entry[0] === value);
-    if (seen === undefined) counts.push([value, count]);
+    if (seen === undefined || again) counts.push([value, count]);
     else seen[1] = Math.max(seen[1], count);
   }
   return counts.flatMap(([value, count]) => Array(count).fill(value));
@@ -246,6 +248,18 @@ function conditionalIntroduction(introduction) {
     && !mentionsRole('execution-circumstance', normalized);
 }
 
+/** Mirrors `fn trailing_words`: the words right after a literal, up to the sentence break or the first seeded clause separator. */
+function trailingWords(window) {
+  const separators = wordsForRole('skill_procedure_clause_separator');
+  const sentence = window.split(/[\n.;。]/u)[0];
+  const words = [];
+  for (const word of sentence.split(/\s+/u).filter(Boolean)) {
+    if (separators.includes(bareWord(word))) break;
+    words.push(word);
+  }
+  return words.join(' ');
+}
+
 /**
  * Mirrors `fn explicit_count`: how many times the words right after a literal
  * -- up to the sentence break or the first seeded clause separator -- ask for
@@ -255,14 +269,7 @@ function conditionalIntroduction(introduction) {
  * is never a count.
  */
 export function explicitCount(window) {
-  const separators = wordsForRole('skill_procedure_clause_separator');
-  const sentence = window.split(/[\n.;。]/u)[0];
-  const words = [];
-  for (const word of sentence.split(/\s+/u).filter(Boolean)) {
-    if (separators.includes(bareWord(word))) break;
-    words.push(word);
-  }
-  const part = surfaceStructure(words.join(' ')).structure.split(';').find((entry) => entry.startsWith(REPETITION_PART));
+  const part = surfaceStructure(trailingWords(window)).structure.split(';').find((entry) => entry.startsWith(REPETITION_PART));
   if (part === undefined) return 1;
   return part.slice(REPETITION_PART.length).split(' ')
     .map((kind) => Number.parseInt(structuralRuleValues(PROPOSITION_RULE, `${kind}${COUNT_SUFFIX}`)[0] ?? '1', 10))
@@ -274,6 +281,38 @@ const REPETITION_PART = 'repetition=';
 
 /** The suffix of the `proposition-structure` key holding a repetition kind's count. */
 const COUNT_SUFFIX = '-count';
+
+/** Mirrors `OUTPUT_REPETITION_RULE`. */
+const OUTPUT_REPETITION_RULE = 'output-repetition';
+
+/**
+ * Mirrors `fn output_again` (issue #1162): whether the words right after a
+ * literal mark it as a further line of an output bound before ("prints `Hi`
+ * again"), read through the `again-vocabulary` of the `output-repetition`
+ * rule in every grammar language.
+ */
+export function outputAgain(window) {
+  const trailing = trailingWords(window).toLowerCase();
+  return structuralRuleValues(OUTPUT_REPETITION_RULE, 'again-vocabulary').some((kind) => grammarLanguages()
+    .flatMap((language) => grammarVocabulary(language, kind))
+    .some((phrase) => mentionsPhrase(trailing, phrase.toLowerCase())));
+}
+
+/** Mirrors `fn grammar_languages` of the output repetition reader. */
+function grammarLanguages() {
+  return (grammarRoot()?.children ?? []).filter((node) => node.name === 'language').map((node) => node.value);
+}
+
+/** Mirrors `fn mentions_phrase`. */
+function mentionsPhrase(window, phrase) {
+  if (!phrase) return false;
+  const spaced = (character) => character !== undefined && /[\p{Alphabetic}\p{N}]/u.test(character)
+    && !/[\u3400-\u9fff]/u.test(character);
+  for (let at = window.indexOf(phrase); at >= 0; at = window.indexOf(phrase, at + 1)) {
+    if (!spaced([...window.slice(0, at)].at(-1)) && !spaced([...window.slice(at + phrase.length)][0])) return true;
+  }
+  return false;
+}
 
 /** Mirrors `fn verb_final_language` in rust/src/solver_handlers/formalization_task.rs. */
 function verbFinalLanguage(language) {

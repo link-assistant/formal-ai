@@ -13,6 +13,10 @@ pub mod release_ledger;
 #[path = "../fixtures/first-workspace-call.rs"]
 mod first_workspace_call;
 
+// Issues #1157, #1158 and #1160 share one offline Hive Mind delivery harness.
+#[path = "../fixtures/hive-mind/offline_delivery.rs"]
+mod offline_delivery;
+
 #[path = "../fixtures/observed-plan-tools.rs"]
 mod observed_plan_tools;
 
@@ -247,6 +251,11 @@ mod issue_1138_store_read_path;
 mod issue_1138_surface_honesty;
 mod issue_1138_telegram_execution;
 mod issue_1138_uniform_dispatch;
+mod issue_1156_explicit_stdout_coreference;
+mod issue_1157_idempotent_commit;
+mod issue_1158_pull_request_steps;
+mod issue_1159_toolchain_bootstrap;
+mod issue_1160_regular_prompt;
 mod issue_1163_1164_captured_pages;
 mod issue_1163_formal_knowledge_paths;
 mod issue_1163_web_formalize;

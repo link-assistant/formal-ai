@@ -214,18 +214,32 @@ function pin(versions, id) {
 
 /** Mirrors `VersionSet::provenance_note`. */
 export function provenanceNote(versions) {
+  return provenanceNoteWhere(versions, () => true);
+}
+
+/**
+ * Mirrors `VersionSet::provenance_note_for`: only the pins `template` places
+ * (issue #1162: a Scala workflow listed Kotlin, Java and Python pins).
+ */
+export function provenanceNoteFor(versions, template) {
+  const actions = workflowActions(versions).filter(action => template.includes(action.marker));
+  return provenanceNoteWhere(versions, (entry, placeholders) => placeholders.some(placeholder => template.includes(placeholder))
+    || actions.some(action => action.pin === entry || (action.scoped !== null && action.scoped[1] === entry && template.includes(action.scoped[0]))));
+}
+
+function provenanceNoteWhere(versions, used) {
   return [
-    ['actions/checkout', versions.checkout],
-    ['actions/setup-java', versions.setup_java],
-    ['fwilhe2/setup-kotlin', versions.setup_kotlin],
-    ['actions/setup-python', versions.setup_python],
-    ['python', versions.python_interpreter],
-    ['kotlin', versions.kotlin],
-    ['java', versions.java_lts],
-    ['coursier/setup-action', versions.setup_coursier],
-    ['scala', versions.scala],
+    ['actions/checkout', versions.checkout, ['{checkout_ref}', '{checkout_tag}']],
+    ['actions/setup-java', versions.setup_java, ['{setup_java_ref}', '{setup_java_tag}']],
+    ['fwilhe2/setup-kotlin', versions.setup_kotlin, ['{setup_kotlin_ref}', '{setup_kotlin_tag}']],
+    ['actions/setup-python', versions.setup_python, ['{setup_python_ref}', '{setup_python_tag}']],
+    ['python', versions.python_interpreter, ['{python_version}']],
+    ['kotlin', versions.kotlin, ['{kotlin_version}']],
+    ['java', versions.java_lts, ['{java_lts}']],
+    ['coursier/setup-action', versions.setup_coursier, ['{setup_coursier_ref}', '{setup_coursier_tag}']],
+    ['scala', versions.scala, ['{scala_version}']],
   ]
-    .filter(([, entry]) => entry.origin !== 'live')
+    .filter(([, entry, placeholders]) => entry.origin !== 'live' && used(entry, placeholders))
     .map(([name, entry]) => reportText(
       entry.origin === 'cache' ? 'version_provenance_cache' : 'version_provenance_baseline',
       [['name', name], ['tag', entry.tag], ['fetched_at', entry.fetched_at]],

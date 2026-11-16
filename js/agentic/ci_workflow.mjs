@@ -6,9 +6,9 @@ import {requestTargetBinding, validWorkflowTarget} from './git_commit.mjs';
 // [{path, source}], commands}`.
 
 import { fill } from './work_item_steps.mjs';
-import { runtimeSteps } from './crate/coding_program_contract.mjs';
+import { runtimeStepTemplate } from './crate/coding_program_contract.mjs';
 import { ObligationKind, requestDemands } from './crate/intent_formalization_obligations.mjs';
-import { fillWorkflowVersions, forGeneration, provenanceNote } from './crate/version_resolution.mjs';
+import { fillWorkflowVersions, forGeneration, provenanceNoteFor } from './crate/version_resolution.mjs';
 import { isAsciiAlphanumeric } from './write_str.mjs';
 
 /** Mirrors `fn workflow_path`. */
@@ -36,9 +36,25 @@ export function attach(recipe, objective = '') {
     .join('');
   const binding = requestTargetBinding(objective, 'workflow-binding-patterns', validWorkflowTarget);
   if (binding.kind === 'refused') { recipe.commands.unshift(fill('target_binding_refused_command', [])); return; }
-  const path = binding.kind === 'bound' ? binding.value : fill('workflow_path_named', [['{name}', name]]);
+  const path = binding.kind === 'bound' ? binding.value : suggestedWorkflowPath(objective) ?? fill('workflow_path_named', [['{name}', name]]);
   if (recipe.supporting_files.some((file) => file.path === path)) return;
   recipe.supporting_files.push({ path, source: render(recipe) });
+}
+
+/** Mirrors `fn valid_workflow_file_name`: a workflow file name with no directory. */
+export function validWorkflowFileName(value) {
+  return !value.includes('/') && validWorkflowTarget(value);
+}
+
+/**
+ * Mirrors `fn suggested_workflow_path` (issue #1162): the file name the request
+ * suggests for its workflow ("a meaningful name like `test-hello-world.yml`"),
+ * placed in the workflow directory, or null. A suggestion is not a directive,
+ * so an invalid or ambiguous one falls back to the program-stem default.
+ */
+export function suggestedWorkflowPath(objective) {
+  const binding = requestTargetBinding(objective, 'workflow-name-binding-patterns', validWorkflowFileName);
+  return binding.kind === 'bound' ? fill('workflow-path-file', [['{file}', binding.value]]) : null;
 }
 
 /** Mirrors `fn render`: the workflow over the generation-time version set. */
@@ -52,13 +68,14 @@ export function render(recipe) {
  * renders the same workflow in both runtimes from one offline version set.
  */
 export function renderWith(recipe, versions) {
+  const template = fill('workflow_template', [['{path}', recipe.path]]);
+  const setup = runtimeStepTemplate(recipe.language);
   let out = '';
-  for (const note of provenanceNote(versions)) out += `# ${note}\n`;
-  out += fill('workflow_template', [['{path}', recipe.path]]);
+  for (const note of provenanceNoteFor(versions, template + (setup ?? ''))) out += `# ${note}\n`;
+  out += template;
   // Filling versions trims the fragment's final newline; each fragment is a
   // whole line block, so it is restored before the next one is appended.
   out = `${fillWorkflowVersions(out, versions)}\n`;
-  const setup = runtimeSteps(recipe.language);
   if (setup !== null) out += `${fillWorkflowVersions(setup, versions)}\n`;
   for (const command of recipe.commands) out += fill('workflow_command_step', [['{command}', command]]);
   return out;
