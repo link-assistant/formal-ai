@@ -1,7 +1,14 @@
-## Issue #1157: Idempotent recipe commits
+## Issue #1157: Idempotent Commit and Clean Build Tree
 
-Source: https://github.com/link-assistant/formal-ai/issues/1157
+Source: https://github.com/link-assistant/formal-ai/issues/1157 (a sub-issue of
+[#1162](https://github.com/link-assistant/formal-ai/issues/1162)). A second run
+failed with "nothing to commit", and compiler outputs (`Main.jar`, `main`) were
+left in the checkout. The case study is `docs/case-studies/issue-1157/`.
 
-| Requirement | Drafted behavior | Status |
-|---|---|---|
-| Preserve the requested behavior in the agentic harness | Recipe commits stage only declared artifacts and inspect the cached diff restricted to those paths. No-change runs emit __formal_ai_commit_unchanged, then still push and print the current hash. Continuations consume the planner evidence window, retaining already completed writes and commands. | Partial. Idempotent commit and continuation replay are drafted. Output ignore patterns and verification of artifacts after externally modified continuation state remain open. No local builds or tests were run. |
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R1157-1 | Build outputs go to a temporary directory outside the checkout, so nothing they produce is committed. | Implemented for the verify script and the workflow: `tests/verify-output.sh` compiles and runs inside a `mktemp -d` verification directory (`data/meta/process-verification.lino`), and the generated workflow runs the same script. The recipe adds no `.gitignore` of its own. Restart hygiene (`data/meta/restart-hygiene.lino`) ignores or removes outputs that an earlier run left behind. The grader's `no-build-artifacts` obligation fails a delivery that commits them. |
+| R1157-2 | Check the tree before committing, and treat "nothing to commit" as a success explained in a sentence. | Implemented: `recipe_commit_command` (`data/meta/work-item-steps.lino`) stages only the recipe's files and checks the cached diff for those paths. With no change it prints `__formal_ai_commit_unchanged`, pushes and prints HEAD. `ExecutionRecipe::final_answer` (`rust/src/agentic_coding/command_reroute.rs`) turns the marker into the `commit-unchanged-report` sentence. Pinned by `rust/tests/unit/agentic-coding/issue_1162_delivery_commands.rs` and, in JavaScript, by `an unchanged tree on a repeated commit is reported as success` in `rust/tests/web/issue-1162-offline-hive-end-to-end.test.mjs`. |
+| R1157-3 | A continuation verifies what is already in place before running anything again. | Implemented: on resume, `recipe_source_command` (`rust/src/agentic_coding/recipe_resume.rs`) probes each source before writing, files that already match are not rewritten, and the verification commands run again before any commit. Only the effects that differ follow: an unchanged tree makes no commit, and `gh pr edit` and `gh pr ready` run only when the pull request differs. Pinned by the rerun in `rust/tests/web/issue-1162-offline-hive-end-to-end.test.mjs` (no new commit, no `pr edit` or `pr ready`, no failed tool call) and by `rust/tests/unit/issue_1157_idempotent_commit.rs`. |
+| R1157-4 | Tests: a second run succeeds, and the tree is clean after kotlinc. | Implemented: `rust/tests/web/issue-1162-offline-hive-end-to-end.test.mjs` runs a full delivery twice against a real git repository and a fake `gh`; the second run ends with success and no failed tool call. Its Kotlin case compiles with a real `kotlinc` and requires a clean working tree after a stray `Main.jar`. The unchanged-commit path is pinned in `rust/tests/unit/issue_1157_idempotent_commit.rs` and `rust/tests/unit/agentic-coding/issue_1162_delivery_commands.rs`, and restart hygiene in `rust/tests/web/issue-1364-restart-hygiene.test.mjs`. |
+| R1157-5 | Manual Hive Mind end-to-end check on a released version. | Blocked: needs a released version and live Hive Mind credentials. |

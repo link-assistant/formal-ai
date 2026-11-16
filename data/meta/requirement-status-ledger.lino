@@ -3,8 +3,8 @@ requirement_status_ledger
   source "REQUIREMENTS.md and docs/requirements/*.md"
   verdict_vocabulary "implemented | partial | not-delivered | superseded | withdrawn"
   manual_column "aspirational since 2026-09-30 (issue #1090): not yet confirmed rows carry no debt"
-  requirement_count 1475
-  implemented_count 1317
+  requirement_count 1511
+  implemented_count 1341
   shard "data/meta/requirement-status-ledger/doctrine-readable-recursive-source-and-comment-meta-language-2026-10-18.lino"
   shard "data/meta/requirement-status-ledger/doctrine-standing-doctrine-compiled-logic-interfacing-only-javascript-2026-08-04.lino"
   shard "data/meta/requirement-status-ledger/doctrine-standing-doctrine-javascript-first-full-parity-then-translate-2026-10-06.lino"
@@ -135,7 +135,13 @@ requirement_status_ledger
   shard "data/meta/requirement-status-ledger/issue-1138-verifiable-task-routing.lino"
   shard "data/meta/requirement-status-ledger/issue-1154-codex-command-argument.lino"
   shard "data/meta/requirement-status-ledger/issue-1155-work-item-read-validation.lino"
+  shard "data/meta/requirement-status-ledger/issue-1156-single-output-literal.lino"
+  shard "data/meta/requirement-status-ledger/issue-1157-idempotent-commit-clean-build.lino"
+  shard "data/meta/requirement-status-ledger/issue-1158-pull-request-feedback-body-ready.lino"
+  shard "data/meta/requirement-status-ledger/issue-1159-toolchain-bootstrap.lino"
+  shard "data/meta/requirement-status-ledger/issue-1160-regular-hive-mind-prompt.lino"
   shard "data/meta/requirement-status-ledger/issue-1161-agent-config-env.lino"
+  shard "data/meta/requirement-status-ledger/issue-1162-hello-world-delivery.lino"
   shard "data/meta/requirement-status-ledger/issue-1163-internet-as-formal-knowledge.lino"
   shard "data/meta/requirement-status-ledger/issue-1164-code-node-decomposition.lino"
   shard "data/meta/requirement-status-ledger/issue-1165-discovery-production-path.lino"

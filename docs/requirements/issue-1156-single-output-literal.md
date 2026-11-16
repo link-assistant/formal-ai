@@ -1,7 +1,15 @@
-## Issue #1156: Single output obligations
+## Issue #1156: One Output Literal, Printed Once
 
-Source: https://github.com/link-assistant/formal-ai/issues/1156
+Source: https://github.com/link-assistant/formal-ai/issues/1156 (a sub-issue of
+[#1162](https://github.com/link-assistant/formal-ai/issues/1162)). A Hello World
+request quoted the line `Hello, World!` three times, and the delivered program
+printed it twice. The case study is `docs/case-studies/issue-1156/`. The
+end-to-end evidence is in `docs/case-studies/issue-1162/`.
 
-| Requirement | Drafted behavior | Status |
-|---|---|---|
-| Preserve the requested behavior in the agentic harness | Repeated identical quoted stdout requirements are deduplicated in first-mention order; distinct output operands retain their order. The generated output verifier therefore compares against the composed single obligation. Workflows use the recipe artifact stem rather than a shared run.yml path. | Drafted. Inline regressions cover duplicate and distinct output requirements. Existing output-verifier template already uses byte comparison and propagates process failure. No local execution was performed. Repository/task-specific workflow naming beyond artifact stems remains open. |
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R1156-1 | References to the same literal are one output obligation. Only sequenced literals, an explicit count or a trailing "again" give more than one line. | Implemented: `bound_output_literals` (`rust/src/intent_formalization/obligations.rs`, twin `js/agentic/crate/intent_formalization_obligations.mjs`) merges repeated references to one literal. Since #1162 it reads the words right after each literal through the `output-repetition` structural rule (`data/seed/text-formalization.lino`). "twice" / "two times" / "дважды" / "两次" / "dos veces" and the "three" forms set the count, and "again" / "снова" / "再次" repeat a line that was already bound. Pinned by `rust/tests/unit/issue_1156_explicit_stdout_coreference.rs` and `rust/tests/web/issue-1162-delivery-variants.test.mjs`. |
+| R1156-2 | The verify script is derived from the requirement. | Implemented: `output_verifier` (`rust/src/coding/program_contract.rs`) writes the `explicit_stdout` text with `printf '%s\n'` into a `mktemp -d` verification directory and compares it byte for byte with `cmp`. Pinned by `kotlin_scala_and_rust_print_once_and_verify_the_derived_line` and, in JavaScript, by `changed and Unicode output strings flow into the program and the verify script` in `rust/tests/web/issue-1162-delivery-variants.test.mjs`. |
+| R1156-3 | Kotlin, Scala and Rust fixtures each print once, have a matching verify script and a `test-hello-world.yml` workflow, and are written in the requested language. | Implemented: the variants of `rust/tests/fixtures/issue-1162/hello-world-kotlin-issue.md` and `rust/tests/fixtures/generated-e2e/hello-{kotlin,scala,rust}.md` are pinned by `rust/tests/unit/issue_1156_explicit_stdout_coreference.rs`, `rust/tests/web/issue-1162-delivery-variants.test.mjs`, `rust/tests/web/issue-1162-delivery-obligations.test.mjs` and `rust/tests/unit/agentic-coding/issue_1162_delivery_commands.rs`. |
+| R1156-4 | Regression: a file name or source path is never used as the output (`Main.java` printing "Main.kt"). | Implemented: `a_file_name_is_never_the_output` in `rust/tests/unit/issue_1156_explicit_stdout_coreference.rs` and its JavaScript twin in `rust/tests/web/issue-1162-delivery-variants.test.mjs`. The grader's `program-language` obligation (`scripts/lib/hello-world-delivery-grade.mjs`) fails a delivery that adds a program in another language. |
+| R1156-5 | Manual Hive Mind end-to-end check on a released version. | Blocked: this needs a released version and live Hive Mind credentials, and neither is available to the solver. See `docs/case-studies/issue-1162/README.md`. |

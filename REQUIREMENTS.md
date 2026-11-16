@@ -93,6 +93,7 @@ the areas are the whole register.
    - Issue #909 Headless-Ready Global Client Configuration
    - Issue 931: local WebSocket and WebRTC transports
    - Issue #1154: One Shell-Argument Reading for the Whole Agentic Module
+   - Issue #1160: The Regular Hive Mind Prompt
    - Issue #1161 Client Registry Names the Agent Config Env
    - Issue #1181 Standalone CLI Binaries and Consistent Boolean Env Switches
    - Issue #1187 Optional GitHub Credentials in Every Workflow
@@ -122,11 +123,11 @@ the areas are the whole register.
    - Issue #1138 Repository Workspace Protocol
    - Issue #1138 Verifiable Task Routing
    - Issue #1155: Work-Item Read Validation and Honest Fallbacks
-   - Issue #1156: Single output obligations
-   - Issue #1157: Idempotent recipe commits
-   - Issue #1158: Pull request completion and feedback
-   - Issue #1159: Workspace prerequisite recovery
-   - Issue #1160: Hive Mind prepared work continuation
+   - Issue #1156: One Output Literal, Printed Once
+   - Issue #1157: Idempotent Commit and Clean Build Tree
+   - Issue #1158: Pull Request Feedback, Description and Readiness
+   - Issue #1159: Toolchain Bootstrap Under an Explicit Grant
+   - Issue #1162: Hello World Issue-to-PR Delivery Through All Hive Clients
    - Issue #1164 Code Node Decomposition
    - Issue #1165 Discovery on the Production Path
    - Issue #1177 Code Tasks Answered Formally

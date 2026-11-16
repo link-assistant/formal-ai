@@ -91,6 +91,11 @@ requirement-areas
     match "repair"
     match "duplication"
     match "verifiable-task"
+    match "single-output-literal"
+    match "idempotent-commit"
+    match "pull-request-feedback"
+    match "toolchain-bootstrap"
+    match "hello-world-delivery"
   area practical-guidance
     title "Practical guidance and user needs"
     match "practical-"
