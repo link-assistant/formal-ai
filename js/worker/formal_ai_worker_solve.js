@@ -24,7 +24,7 @@ async function solve(prompt, history, prefs, userContext = {}, memory = [], opti
     const diagnostic = await tryDiagnosticMarker(prompt, (inner) => solve(inner, history, prefs, userContext, memory, options));
     if (diagnostic) return diagnostic;
     const answer = await solveImpl(prompt, history, prefs, userContext, memory, options);
-    const subTask = async (text) => metaResolveImpasse(text, await solveImpl(text, history, prefs, userContext, memory, options), prefs);
+    const subTask = async (text) => metaResolveImpasse(text, await solveImpl(text, history, prefs, userContext, memory, { ...options, metaSubTask: true }), prefs);
     return metaAttachLearned(await metaRunProcedure(prompt, await metaResolveImpasse(prompt, answer, prefs), subTask));
   } finally {
     setForcedResponseLanguage(previousForced);
@@ -799,7 +799,8 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     }
   }
   steps.push({ step: "invoke_tool", detail: "unknown_intent_research" });
-  const researchedUnknown = await runWebSearchQuery(prompt, language, "unknown_intent_research", preferences);
+  // Issue #1580: a #1550 sub-task is a speculative candidate; it never researches the web or learns from it.
+  const researchedUnknown = options.metaSubTask ? null : await runWebSearchQuery(prompt, language, "unknown_intent_research", preferences);
   const researchedSources = researchedUnknown?.diagnostics?.fused;
   if (Array.isArray(researchedSources) && researchedSources.length > 0) {
     const associationId = associativeResearchId(prompt);
