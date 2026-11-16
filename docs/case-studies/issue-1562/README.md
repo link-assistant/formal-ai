@@ -13,6 +13,7 @@ Pull request: <https://github.com/link-assistant/formal-ai/pull/1578>
 | `raw-data/tool-calls-pr-{4037,4036,4039}.txt` | Every completed tool call of the three production sessions (`experiments/issue-1562/tool-calls-of-log.mjs`) |
 | `raw-data/hive-mind-pr-comments.txt` | The comments the sessions posted on hive-mind PRs 4036, 4037 and 4039 |
 | `raw-data/native-solver-0.355.27.txt` | The released native solver's answer to each whole text and to its obligation text |
+| `raw-data/native-solver-binding-0.355.27.txt` | The released native solver's answer to each binding text (§4), and to the two work items whose output literal is a code span |
 
 The three solve logs:
 
@@ -73,11 +74,20 @@ The JavaScript runtime does not reproduce the write. Its work-item solver (`prog
    - bare addresses (`…://…`, `www.…`).
 
    A quoted phrase inside a sentence ("a \"Hello World\" program") is the work item naming what it asks for, and is kept.
-2. **Bind every write to an obligation.** `unbind_cited_recipe` / `unbindCitedRecipe` (in the same `work_item_citations` modules) keeps a recipe only if the obligation text selects the same file in the same language. Otherwise the recipe is dropped before the command reroute sees it, both on the work-item route and on the recovery of an owned recipe.
+2. **Bind every write to an obligation.** `unbind_cited_recipe` / `unbindCitedRecipe` (in the same `work_item_citations` modules) keeps a recipe only if the work item's binding text selects the same file in the same language.
+   - The binding text (`binding_text` / `bindingText`) is the obligation text with one kind of code span kept: a span that is the **operand of an obligation clause**. These are the output literals that a print clause binds (`bound_output_literals` / `boundOutputLiterals`, the operands the program contract reads), as in "The program should print exactly: `` `Hello, World!` ``". The span is no obligation by itself, but the clause that binds it is one, and the binding reads the clause whole. Any other code span, such as a cited `` `konard/test-hello-world-01` ``, stays blank. Otherwise the recipe is dropped before the command reroute sees it, both on the work-item route and on the recovery of an owned recipe.
    - The evidence record gets `unboundWrite: {path, reason: "NamedByNoObligation"}` and the remaining work `unbound-write:<path>`.
    - The summary says "`main.rs` was not written: no obligation of the work item names it…" (seeded in five languages, intent `work-item-report-unbound-write`).
    - With no recipe, nothing is run, committed or marked ready, so "Created and verified" cannot be reached.
 3. **Requirement rows that only cite** (a table row, a fence) get `status: "citation"` in the evidence record. The report lists only the obligations that are not yet verified (rows keep their numbers), and "all verified" counts obligations only.
+
+**Why operands are kept (a regression found while checking #1162).** The first version solved the plain obligation text. That broke `rust/tests/web/issue-1155-read-validation.test.mjs`: 2 of its 10 tests failed on the branch and passed on `main`. Its Hello World work item gives its output only as a code span ("print exactly: `` `Hello, World!` ``"). With the span blanked, the JavaScript contract solver found no output literal and selected nothing, so the recipe `main.rs` was unbound and never written. The native solver has the same flaw for programs outside the catalog. For "Write a Python program that prints exactly: `` `Goodbye, moon` ``", the whole text gives `main.py`, but the obligation text gives "I cannot write this program". Even for Rust Hello World, the native obligation text gives a template that prints `Hello World`, not the requested `Hello, World!` (`raw-data/native-solver-binding-0.355.27.txt`).
+
+The binding text fixes both runtimes:
+- the #1155 work item and the Python one keep `main.rs` and `main.py`;
+- the three reports still bind nothing.
+
+The reports do have operands: 4031 `No progress`, 4034 `--tool codex`, 4035 `gh run view <run-id> --job <job-id> --log-failed` and `name — html_url` (`experiments/issue-1562/bound-outputs.mjs`). None of them names a program. The released native solver gives the same answers for the binding texts of the reports as for their obligation texts (a sequence analysis, a sub-task list, an event), and Hello World programs for the Kotlin, Rust and Scala controls.
 
 Each fixture has 3 citation rows: 4031 has 39 requirement rows, 4034 has 21 and 4035 has 29 (`experiments/issue-1562/requirement-citations.mjs`).
 
@@ -90,13 +100,18 @@ The binding decision is traced as route `work_item_recipe_binding` (a JSON value
   - the summary names the defect (the title) and the unbound `main.*`;
   - the record marks citations;
   - the Scala and Rust Hello World items keep their recipe;
+  - a code span that is the operand of a print clause is read with its clause: the #1155 work item and a Python program keep `main.rs` and `main.py`, a cited code span stays blank, and the binding texts of the reports select no program;
   - a resumed session that already wrote and ran `main.rs` neither commits, pushes nor runs `gh pr ready`, and claims nothing;
   - the unbound-write paragraph is seeded in every registered language (en, ru, hi, zh, es).
-- `rust/tests/web/issue-1562-cited-programs.test.mjs` is the JS twin. It covers the obligation text, `isCitation`, `unbindCitedRecipe`, the Kotlin, Rust and Scala controls, the evidence record and report, the seeded paragraph in every language, the three sessions and the resumed session.
+- `rust/tests/web/issue-1562-cited-programs.test.mjs` is the JS twin. It covers the obligation text, `isCitation`, `unbindCitedRecipe`, the binding text and its operands (the #1155 and Python work items), the Kotlin, Rust and Scala controls, the evidence record and report, the seeded paragraph in every language, the three sessions and the resumed session.
 - `rust/tests/web/draft-request-replay.test.mjs` replays the three production requests (family `work-item-cited-program`, step 6 of the issue).
+- The #1162 Hello World tests stay green: `rust/tests/web/issue-1155-read-validation.test.mjs` passes 10 of 10 again.
 
 ## 6. Limits
 
-- The Rust crate cannot be fully built on the machine this was written on: a test build is killed under the 3 GB memory limit. `cargo check --lib --tests -j 1` passes locally, and the Rust tests run in CI.
+- **The Rust tests of this change were not executed before merge.** Compiling the `formal-ai` library for the test build is killed by the 3 GB memory limit of the machine this was written on. This happened at `opt-level=2`, at `opt-level=0`, and at `opt-level=0` with 256 codegen units. The pull-request lane of CI does not build the Rust tests either: the `test`, `doc-tests` and coverage jobs of `CI/CD Pipeline` and `Coverage` run on `main` only. So `issue_1562_cited_programs.rs` first runs on `main` after the merge. What was checked instead:
+  - `cargo check --lib --tests -j 1` passes, as does the PR lane's `clippy` over the library and binaries.
+  - `experiments/issue-1562/rust-obligation-twin.sh` compiles the crate-independent half of `work_item_citations.rs` (`obligation_text`, `obligation_text_keeping`, `is_citation`) on its own. Its obligation texts and binding texts equal the JavaScript twin byte for byte on 8 work items: the three fixtures, the three #1364 Hello World work items, the #1155 work item and the Python one. The operands come from the JavaScript twin, because `bound_output_literals` needs the crate.
+  - The released native solver selects no program for the three obligation and binding texts, and the same program for the controls (`raw-data/native-solver-0.355.27.txt`, `raw-data/native-solver-binding-0.355.27.txt`). That is the comparison `unbind_cited_recipe` makes.
 - `rust/tests/web/work-item-boundary-route.test.mjs` fails 4 of its tests locally (`BoundaryGrammarUnavailable`) on both the base commit `31f631973` and this branch, so the cause is the environment, not this change.
 - The issue carries the `no-formal-ai-draft` label. Removing it and dispatching `Hive Mind draft` is left to the maintainer.
