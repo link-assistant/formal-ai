@@ -103,3 +103,9 @@ Before this change the run was reported done. Now each of these clauses is `cont
 - `docs/case-studies/issue-1166/README.md` (independent acceptance section)
 - `changelog.d/20261116_120000_issue_1166_task_acceptance.md`
 - New seed role and template names use `-` (the notation ratchet).
+
+### Unrelated CI repair included here
+
+`data/benchmarks/fast-pull-request-javascript-tests.json` on `main` is missing a comma after `stale-pull-request-report.test.mjs` (lost in a merge). Because of this, every fast JS tier fails while parsing the manifest. This PR restores the comma.
+
+The shared acceptance fixture is laid out compactly (same data, checked by `experiments/issue-1166/format-acceptance-fixture.mjs`) so that it stays under the 1500-line limit for maintained files.
