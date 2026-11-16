@@ -113,3 +113,7 @@ The shared acceptance fixture is laid out compactly (same data, checked by `expe
 `docs/architecture/module-map.md` on `main` is missing the `meta_executor` row added by #1550, so the module-map check fails. This PR regenerates the map with `node scripts/generate-module-map.mjs --write`.
 
 The native fence and interpreter checks read their prefixes from data instead of string literals: `owned-clause-fence-prefixes` and the new `script-interpreter-prefix` key in `data/meta/work-item-steps.lino`. This keeps the `literal-predicates` debt ceiling at 432 (measured 432).
+
+The nineteen meanings that only the task-acceptance clause reader uses (`code-comment-obligation`, `workflow-trigger-pull-request`, `condition-marker`, …) also carry `role scoped-grammar-pattern`. That keeps them out of the general text-formalization meaning index, as is already done for the calculator's grammar frames. Without it, the new phrase "pull request" changed how two issues in the dependency-summarization corpus are read, and three ratchet measures fell by 0.001. With it, the measures match `main` exactly. `experiments/issue-1166/summarization-per-document.mjs` diffs the corpus document by document between two trees.
+
+The governed Unicode-identifier witness records the bytes of `rust/src/intent_formalization.rs` and `rust/tests/unit/mod.rs`, which this PR changes. It was refreshed with the test's `--refresh-reviewed-baseline` mode after `experiments/issue-1571/governed-witness-delta.mjs` showed the only differences were those 13 fixture hashes.
