@@ -9,3 +9,4 @@ https://github.com/link-foundation/php-ai-driven-development-pipeline-template/i
 https://github.com/link-foundation/go-ai-driven-development-pipeline-template/issues/20
 https://github.com/link-foundation/java-ai-driven-development-pipeline-template/issues/31
 https://github.com/link-foundation/csharp-ai-driven-development-pipeline-template/issues/111
+https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/157

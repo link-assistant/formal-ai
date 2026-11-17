@@ -54,5 +54,12 @@
     "url": "https://github.com/link-foundation/csharp-ai-driven-development-pipeline-template/issues/111",
     "bodyFile": "csharp-changeset-output-collision-report.md",
     "evidenceCommit": "0f90c0a7a3bdd77b7d31c276a180d5ee297e57f6"
+  },
+  {
+    "repository": "link-foundation/python-ai-driven-development-pipeline-template",
+    "title": "Manual changelog fragment creation silently overwrites an earlier entry in the same second",
+    "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/157",
+    "bodyFile": "python-fragment-collision-report.md",
+    "evidenceCommit": "9c018344df2e6b09a0f2496897b14a002dad62f4"
   }
 ]
