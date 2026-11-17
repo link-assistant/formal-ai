@@ -64,7 +64,7 @@ test('fast inventory retains coding, questions, reports and captured CI failure 
   const step=layer.steps.find(s=>s.name==='Run this shard of the JavaScript suites');
   assert.equal(evaluate(step.env.FAST_PR_PROFILE,context('pull_request')),true);
   assert.equal(evaluate(step.env.FAST_PR_PROFILE,context('push','refs/heads/main')),false);
-  assert.match(step.run,/printf '%s\\n' rust\/tests\/web\/\*\.test\.mjs/u);
+  assert.match(workflow('layered-ci.yml').jobs.js.steps.find(s=>s.id==='javascript-plan').run,/printf '%s\\n' rust\/tests\/web\/\*\.test\.mjs/u);
   assert.match(read('.github/workflows/pull-request-check-profile.yml'),/no execution or acceptance credit/u);
 });
 
@@ -114,7 +114,7 @@ test('measured TeachF integration stays on main while fast coding and QA control
   const step=workflow('layered-ci.yml').jobs.js.steps
     .find(item=>item.name==='Run this shard of the JavaScript suites');
   assert.equal(evaluate(step.env.FAST_PR_PROFILE,context('push','refs/heads/main')),false);
-  assert.match(step.run,/printf '%s\\n' rust\/tests\/web\/\*\.test\.mjs/u);
+  assert.match(workflow('layered-ci.yml').jobs.js.steps.find(s=>s.id==='javascript-plan').run,/printf '%s\\n' rust\/tests\/web\/\*\.test\.mjs/u);
   for(const name of ['ordinary-literal-addition','issue-1180-repository-qa',
     'issue-1438-report-and-edit','file-command-contract','literal-create-shell-readback',
     'file-obligation-receipts','source-read-provenance','owned-edit-contract'])

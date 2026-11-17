@@ -383,6 +383,32 @@ jobs:
         run: bash scripts/install-agentic-search-tools.sh
       - name: Provision the actual pinned source-model frontend
         uses: ./.github/actions/setup-source-model
+      - name: Plan this shard of the JavaScript suites
+        id: javascript-plan
+        env:
+          SHARD: ${{ matrix.shard }}
+          SHARDS: ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && 2 || 8 }}
+          FAST_PR_PROFILE: ${{ (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) }}
+        run: |
+          set -euo pipefail
+          suites="$RUNNER_TEMP/javascript-suites.txt"
+          if [[ "$FAST_PR_PROFILE" == 'true' ]]; then
+            node scripts/list-fast-pull-request-tests.mjs > "$suites"
+          else
+            printf '%s\n' rust/tests/web/*.test.mjs > "$suites"
+          fi
+          node scripts/plan-test-shards.mjs --of "$SHARDS" --durations data/meta/javascript-test-durations.lino --check < "$suites"
+          node scripts/plan-test-shards.mjs --shard "$SHARD" --of "$SHARDS" --durations data/meta/javascript-test-durations.lino < "$suites" > "$RUNNER_TEMP/javascript-shard.txt"
+          if grep -Fxq 'rust/tests/web/issue-1580-template-observations.test.mjs' "$RUNNER_TEMP/javascript-shard.txt"; then
+            printf 'python-required=true\n' >> "$GITHUB_OUTPUT"
+          else
+            printf 'python-required=false\n' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Set up Python for the pinned template observations
+        if: steps.javascript-plan.outputs.python-required == 'true'
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.15.2'
       # Issue #1486: the captured draft replays and contract tests mapped to
       # the changed components (data/benchmarks/focused-test-map.json) run
       # first, so a planner, adapter or workflow regression fails in seconds,
@@ -427,14 +453,7 @@ jobs:
           if [[ "$FAST_PR_PROFILE" == 'true' && "$SHARD" == '1' ]]; then
             python3 -m unittest discover -s experiments/issue_916_write_effect_ladder -p test_ladder.py
           fi
-          suites="$RUNNER_TEMP/javascript-suites.txt"
-          if [[ "$FAST_PR_PROFILE" == 'true' ]]; then
-            node scripts/list-fast-pull-request-tests.mjs > "$suites"
-          else
-            printf '%s\n' rust/tests/web/*.test.mjs > "$suites"
-          fi
-          node scripts/plan-test-shards.mjs --of "$SHARDS" --durations data/meta/javascript-test-durations.lino --check < "$suites"
-          mapfile -t files < <(node scripts/plan-test-shards.mjs --shard "$SHARD" --of "$SHARDS" --durations data/meta/javascript-test-durations.lino < "$suites")
+          mapfile -t files < "$RUNNER_TEMP/javascript-shard.txt"
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "JavaScript suites shard $SHARD/$SHARDS" \
             node scripts/run-ordered-javascript-tests.mjs --concurrency "$(nproc)" "${files[@]}"

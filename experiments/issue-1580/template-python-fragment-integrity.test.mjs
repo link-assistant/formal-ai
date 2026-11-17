@@ -7,6 +7,7 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import test from 'node:test';
+import {templatePythonAvailable} from './template-python-runtime.mjs';
 
 const fixture=fileURLToPath(new URL('./fixtures/python-template/',import.meta.url));
 const provenance=JSON.parse(readFileSync(join(fixture,'source.json'),'utf8'));
@@ -31,12 +32,7 @@ runpy.run_path(sys.argv[0], run_name='__main__')
 `;
 
 function fragmentFixture(t,{candidate=false}={}){
-  const runtime=spawnSync('python3',['--version'],{encoding:'utf8',timeout:5000,maxBuffer:4096});
-  if(runtime.error?.code==='ENOENT'){t.skip('python3 is not installed');return;}
-  assert.equal(runtime.status,0,runtime.stderr);
-  const version=/Python (\d+)\.(\d+)/u.exec(runtime.stdout);
-  assert.ok(version,runtime.stdout);
-  if(Number(version[1])===3&&Number(version[2])<14){t.skip('Pinned upstream syntax requires Python 3.14+');return;}
+  if(!templatePythonAvailable(t))return;
   const cwd=mkdtempSync(join(tmpdir(),'issue-1580-python-fragments-'));
   t.after(()=>rmSync(cwd,{recursive:true,force:true}));
   cpSync(join(fixture,'scripts'),join(cwd,'scripts'),{recursive:true});

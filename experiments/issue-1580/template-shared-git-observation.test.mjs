@@ -7,6 +7,7 @@ import {join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
 import {spawnSync} from 'node:child_process';
+import {templatePythonAvailable} from './template-python-runtime.mjs';
 
 const cases=[
   {language:'java',command:process.execPath,args:['--max-old-space-size=64','scripts/detect-code-changes.mjs'],code:'src/Main.java',initial:false},
@@ -15,13 +16,12 @@ const cases=[
 ];
 
 for(const item of cases)test(`${item.language}: failed Git is reported as a successful no-code observation`,{timeout:15000},context=>{
-  const runtime=spawnSync(item.command,['--version'],{encoding:'utf8',timeout:5000,maxBuffer:4096});
-  if(runtime.error?.code==='ENOENT'){context.skip(item.command+' is not installed');return;}
-  assert.equal(runtime.status,0,runtime.stderr);
   if(item.language==='python'){
-    const version=/Python (\d+)\.(\d+)/u.exec(runtime.stdout);
-    assert.ok(version,runtime.stdout);
-    if(Number(version[1])===3&&Number(version[2])<14){context.skip('Pinned upstream syntax requires Python 3.14+');return;}
+    if(!templatePythonAvailable(context))return;
+  }else{
+    const runtime=spawnSync(item.command,['--version'],{encoding:'utf8',timeout:5000,maxBuffer:4096});
+    if(runtime.error?.code==='ENOENT'){context.skip(item.command+' is not installed');return;}
+    assert.equal(runtime.status,0,runtime.stderr);
   }
   const fixture=fileURLToPath(new URL(`./fixtures/${item.language}-template/`,import.meta.url));
   const provenance=JSON.parse(readFileSync(join(fixture,'source.json'),'utf8'));
