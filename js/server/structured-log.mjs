@@ -90,7 +90,7 @@ export function createLogger({level='debug',directory,env=process.env,pid=proces
  stderrWrite??=b=>fs.writeSync(process.stderr.fd,b);
  if(recordObserver!==undefined&&typeof recordObserver!=='function')throw Error('invalid_record_observer');
  const redact=makeRedactor(env),failures=[],sinks=[];let sequence=0,fd=null,file=null;
- let fileHealth={status:directory?'not_open':'disabled'};
+ let fileHealth={status:'disabled'};
  let fileFailureReported=false;
  const failedFile=error=>{
   fileHealth=redact({status:'unwritable',directory,error:String(error.message??error),error_kind:String(error.code??error.name??'IOError')});
@@ -169,7 +169,9 @@ export function formatLogRecord(line,format='lino'){
 
 const truth=v=>['1','true','yes','on'].includes(String(v??'').trim().toLowerCase());
 export function createServeLogger(options={}){
- const environment=options.env??process.env,silent=options.silent===true||truth(environment.FORMAL_AI_SILENT);
+ const environment=options.env??process.env;
+ if(options.ephemeral===true||truth(environment.FORMAL_AI_EPHEMERAL))return createLogger({env:environment,level:'silent'});
+ const silent=options.silent===true||truth(environment.FORMAL_AI_SILENT);
  const configured=options.logLevel??environment.FORMAL_AI_LOG_LEVEL??'debug';
  if(!silent&&configured==='trace'&&options.trace!==true)throw Error('trace_requires_explicit_flag');
  const level=silent?'silent':options.trace===true?'trace':configured;

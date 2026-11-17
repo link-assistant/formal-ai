@@ -74,7 +74,7 @@ function renderFields(fields) {
  * @param {(prompt: string, task: string, language: string) => {template: ?string, rendered: ?string}} templateFor
  *   the worker's catalog template for the pair and what the prompt rendered it to
  */
-export async function applyProcedureCache(result, prompt, worker, templateFor) {
+export async function applyProcedureCache(result, prompt, worker, templateFor, { readOnly = false } = {}) {
   if (result?.intent !== WRITE_PROGRAM_INTENT || !Array.isArray(result.solverEvents)) return result;
   const index = result.solverEvents.findIndex((event) => event.kind === CACHE_EVENT);
   if (index < 0) return result;
@@ -88,7 +88,7 @@ export async function applyProcedureCache(result, prompt, worker, templateFor) {
   if (!recipe) {
     // R1165-1: the worker rediscovered the program from documentation; a
     // writable runtime cache keeps the row, so the next request is a hit.
-    if (documented && String(result.solverEvents[index].payload).startsWith('outcome=discovered ')) recordDiscovered(documented);
+    if (!readOnly && documented && String(result.solverEvents[index].payload).startsWith('outcome=discovered ')) recordDiscovered(documented);
     return result;
   }
   const contentId = `0x${recipe.content_id.toString(16).padStart(16, '0')}`;
