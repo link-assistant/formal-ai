@@ -1,4 +1,89 @@
 {
+  "programmingTargets": {
+    "kind": "permission-route exclusions, not compilation or execution of generated programs",
+    "targets": [
+      {
+        "slug": "rust",
+        "name": "Rust",
+        "frameworkOf": null
+      },
+      {
+        "slug": "python",
+        "name": "Python",
+        "frameworkOf": null
+      },
+      {
+        "slug": "javascript",
+        "name": "JavaScript",
+        "frameworkOf": null
+      },
+      {
+        "slug": "typescript",
+        "name": "TypeScript",
+        "frameworkOf": null
+      },
+      {
+        "slug": "go",
+        "name": "Go",
+        "frameworkOf": null
+      },
+      {
+        "slug": "c",
+        "name": "C",
+        "frameworkOf": null
+      },
+      {
+        "slug": "cpp",
+        "name": "C++",
+        "frameworkOf": null
+      },
+      {
+        "slug": "java",
+        "name": "Java",
+        "frameworkOf": null
+      },
+      {
+        "slug": "csharp",
+        "name": "C#",
+        "frameworkOf": null
+      },
+      {
+        "slug": "ruby",
+        "name": "Ruby",
+        "frameworkOf": null
+      },
+      {
+        "slug": "scala",
+        "name": "Scala",
+        "frameworkOf": null
+      },
+      {
+        "slug": "kotlin",
+        "name": "Kotlin",
+        "frameworkOf": null
+      },
+      {
+        "slug": "php",
+        "name": "PHP",
+        "frameworkOf": null
+      },
+      {
+        "slug": "swift",
+        "name": "Swift",
+        "frameworkOf": null
+      },
+      {
+        "slug": "r",
+        "name": "R",
+        "frameworkOf": null
+      },
+      {
+        "slug": "laravel",
+        "name": "Laravel",
+        "frameworkOf": "php"
+      }
+    ]
+  },
   "kind": "source configuration census; not installed-client execution",
   "tools": [
     {
@@ -301,7 +386,13 @@
           "mode": "global",
           "protocol": "default",
           "path": ".profile",
-          "contextSettings": []
+          "contextSettings": [
+            {
+              "kind": "json_set",
+              "value": "modelConfigs.overrides=json+:[{\"match\":{\"model\":\"{model}\"},\"modelConfig\":{\"generateContentConfig\":{\"maxOutputTokens\":{max_output_tokens}}}}]",
+              "path": ".gemini/settings.json"
+            }
+          ]
         }
       ]
     },
@@ -370,7 +461,18 @@
           "mode": "global",
           "protocol": "default",
           "path": ".profile",
-          "contextSettings": []
+          "contextSettings": [
+            {
+              "kind": "json_set",
+              "value": "model.generationConfig.contextWindowSize=json:{context_window_tokens}",
+              "path": ".qwen/settings.json"
+            },
+            {
+              "kind": "json_set",
+              "value": "model.generationConfig.maxTokens=json:{max_output_tokens}",
+              "path": ".qwen/settings.json"
+            }
+          ]
         }
       ]
     },
@@ -400,7 +502,18 @@
           "mode": "global",
           "protocol": "default",
           "path": ".grok/user-settings.json",
-          "contextSettings": []
+          "contextSettings": [
+            {
+              "kind": "toml_set",
+              "value": "model.{model}.context_window=integer:{context_window_tokens}",
+              "path": ".grok/config.toml"
+            },
+            {
+              "kind": "toml_set",
+              "value": "model.{model}.max_completion_tokens=integer:{max_output_tokens}",
+              "path": ".grok/config.toml"
+            }
+          ]
         }
       ]
     },
@@ -434,7 +547,23 @@
           "mode": "global",
           "protocol": "default",
           "path": ".profile",
-          "contextSettings": []
+          "contextSettings": [
+            {
+              "kind": "json_set",
+              "value": "{model_selector}.max_input_tokens=json:{context_window_tokens}",
+              "path": ".aider.model.metadata.json"
+            },
+            {
+              "kind": "json_set",
+              "value": "{model_selector}.max_output_tokens=json:{max_output_tokens}",
+              "path": ".aider.model.metadata.json"
+            },
+            {
+              "kind": "json_set",
+              "value": "{model_selector}.max_tokens=json:{context_window_tokens}",
+              "path": ".aider.model.metadata.json"
+            }
+          ]
         }
       ]
     }
@@ -450,90 +579,5 @@
     "JavaScript": "executable Node/worker regressions",
     "TypeScript": "generated projection and executable permission recognizer",
     "Rust": "source twin and regression drafts; production type/lint only on PR CI, native tests unexecuted"
-  },
-  "programmingTargets": {
-    "kind": "permission-route exclusions, not compilation or execution of generated programs",
-    "targets": [
-      {
-        "slug": "rust",
-        "name": "Rust",
-        "frameworkOf": null
-      },
-      {
-        "slug": "python",
-        "name": "Python",
-        "frameworkOf": null
-      },
-      {
-        "slug": "javascript",
-        "name": "JavaScript",
-        "frameworkOf": null
-      },
-      {
-        "slug": "typescript",
-        "name": "TypeScript",
-        "frameworkOf": null
-      },
-      {
-        "slug": "go",
-        "name": "Go",
-        "frameworkOf": null
-      },
-      {
-        "slug": "c",
-        "name": "C",
-        "frameworkOf": null
-      },
-      {
-        "slug": "cpp",
-        "name": "C++",
-        "frameworkOf": null
-      },
-      {
-        "slug": "java",
-        "name": "Java",
-        "frameworkOf": null
-      },
-      {
-        "slug": "csharp",
-        "name": "C#",
-        "frameworkOf": null
-      },
-      {
-        "slug": "ruby",
-        "name": "Ruby",
-        "frameworkOf": null
-      },
-      {
-        "slug": "scala",
-        "name": "Scala",
-        "frameworkOf": null
-      },
-      {
-        "slug": "kotlin",
-        "name": "Kotlin",
-        "frameworkOf": null
-      },
-      {
-        "slug": "php",
-        "name": "PHP",
-        "frameworkOf": null
-      },
-      {
-        "slug": "swift",
-        "name": "Swift",
-        "frameworkOf": null
-      },
-      {
-        "slug": "r",
-        "name": "R",
-        "frameworkOf": null
-      },
-      {
-        "slug": "laravel",
-        "name": "Laravel",
-        "frameworkOf": "php"
-      }
-    ]
   }
 }

@@ -51,8 +51,12 @@ Status after implementation and local verification:
 - Units 17-18: case/requirement records updated; complete production diff read.
   GitHub rejects `gh pr diff` for this >300-file archive; paginated file metadata
   and local merge-base diffs are the explicit review fallback.
-- Units 19-20: pending the single push gate, current-head hosted checks and
-  remote review metadata. Readiness cannot be claimed while acceptance is open.
+- Units 19-20: complete repair batch pushed after the single push gate; all
+  22 application-source workflows pass after one checkout-failure retry. PR
+  metadata is updated, main is an ancestor, and paginated remote blob review
+  matches 1,681 files. Final evidence checks are tracked through the PR checks view without
+  recursively archiving their own logs.
+  Readiness cannot be claimed while acceptance is open.
 
 Independent Formal AI query attempts: 1/20 (5%). Independently accepted authored
 changes: 0/20 (0%). Supplied commands and recipes get zero authorship credit.

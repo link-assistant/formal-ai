@@ -34,8 +34,15 @@ is a newly reviewed picomatch advisory with no patched release. The advisory
 and upstream response are preserved in the issue archive. No audit waiver or
 unqualified dependency replacement was used to manufacture a green result.
 
-Current-head hosted runs will be recorded after the complete repair batch is
-pushed. The PR stays draft and unmerged while Gemini input context, native
+All 22 hosted workflows pass for application-source head
+`fe8d31d6445f2c37ce0dc141488a183eef50a227`. [CI/CD](https://github.com/link-assistant/formal-ai/actions/runs/44150504632)
+passed after one failed-job retry for an initial checkout transport failure;
+[Layered CI](https://github.com/link-assistant/formal-ai/actions/runs/44150503985)
+passes both JavaScript shards and records the new permission cases. Native
+production type/lint passes; native regressions remain unexecuted. The local
+dependency audit is outside the fast PR profile and still fails. The corrected
+support matrix includes 48 context declarations across all 25 modes, including
+nested companion files. The final evidence commit changes no application source. The PR stays draft and unmerged while Gemini input context, native
 runtime validation or dependency qualification is unfinished. The positive
 closing reference required by the current task remains in the PR description;
 it does not claim that pending acceptance is complete.

@@ -475,3 +475,44 @@ shared native fixture includes the same requests but remains unexecuted under
 the documented pre-merge policy. The initial census recipe omitted the required
 agentic parser host bootstrap; its failed attempt is retained before the
 corrected recipe that uses the established Node host bootstrap.
+
+
+### Hosted verification of the continuation repair
+
+Application-source cutoff: `fe8d31d6445f2c37ce0dc141488a183eef50a227`.
+All 22 workflows for that head completed successfully. The
+[CI/CD run](https://github.com/link-assistant/formal-ai/actions/runs/44150504632)
+first failed during checkout, before tests, with an RPC low-speed timeout,
+`bad pack header` and a missing promisor blob (attempt-one log lines 123-125).
+One failed-job retry passed. Both attempts are preserved under
+`raw-data/local/continuation/ci-logs/`.
+The [Layered CI run](https://github.com/link-assistant/formal-ai/actions/runs/44150503985)
+passed both JavaScript shards. Its log explicitly records all 35 permission
+cases at lines 4154-4189, including every coding target, and the defaults tests
+at lines 6747-6758. The native production type/lint check passed. This does not
+execute or compile the five drafted native regressions.
+
+The first support matrix inspected only direct mode children and omitted
+context entries in four global companion files. The corrected census walks
+nested companions, retains their destination paths, and asserts context
+metadata for every non-MCP mode. It now records 48 declarations across all
+25 modes, including global Gemini output, Qwen, Grok and Aider settings.
+No application change was needed for this evidence correction. A paginated
+PR-file review verified all 1,681 remote file/blob identities against the
+application-source cutoff; GitHub's aggregate diff endpoint rejects this
+archive's file count. The latest test and source diffs were also read locally.
+
+The local dependency audit remains a real failing result even though hosted
+PR CI passes: that audit is outside the fast PR profile. The active advisory
+has no published patched release. Gemini input context and native runtime
+validation remain unfinished; successful workflow wrappers do not complete
+those criteria. The PR therefore stays draft and unmerged. The following
+commit preserves the hosted results and corrects review evidence, with no
+application-source changes; its checks are verified without recursively
+committing their own logs.
+
+Additional execution exceptions were remote metadata/API inspection and the
+bounded failed-job retry. These have zero independent authorship credit. A
+commit recipe first used the nonexistent `data/meta/requirement-status` path;
+Git rejected it without committing, and the corrected ledger path succeeded.
+Both operational attempts are retained. No local Rust build was run.
