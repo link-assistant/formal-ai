@@ -46,3 +46,13 @@ nested companion files. The final evidence commit changes no application source.
 runtime validation or dependency qualification is unfinished. The positive
 closing reference required by the current task remains in the PR description;
 it does not claim that pending acceptance is complete.
+
+
+The evidence head `a0fb531c` exposed an independent CI invocation bug:
+[Secrets Scan](https://github.com/link-assistant/formal-ai/actions/runs/44152920794)
+exited 123 after npm hit `spawn E2BIG` while shell-quoting the changed-file list.
+The repair bounds batches at 16 KiB. Its 1,800-path regression fails before and
+passes after; all 14 subprocess checks and the real 1,729-file scan pass.
+The issue case study retains the full failure and verification logs. All other
+21 workflows on that evidence head passed. Current-head checks are verified
+through the PR checks view; unchanged acceptance blockers keep this PR draft.

@@ -516,3 +516,35 @@ bounded failed-job retry. These have zero independent authorship credit. A
 commit recipe first used the nonexistent `data/meta/requirement-status` path;
 Git rejected it without committing, and the corrected ledger path succeeded.
 Both operational attempts are retained. No local Rust build was run.
+
+
+### Final-head Secrets Scan failure and repair
+
+The evidence head `a0fb531c57a3067f48640519a884ac97adfd7656` completed
+21 workflows successfully, including Layered CI. Its
+[CI/CD run](https://github.com/link-assistant/formal-ai/actions/runs/44152920794)
+failed only Secrets Scan and its aggregate status. The complete retained log
+`ci-logs/pipeline-44152920794.log.gz`, decoded lines 7978-7981, shows 1,729
+files followed by exit 123 without a credential finding. The run started at
+18:54:50Z after that head was pushed and finished at 18:57:29Z.
+
+The exact command reproduced exit 123 locally. npm's retained debug log
+reports `spawn E2BIG`: xargs' default 128 KiB batch becomes one larger quoted
+shell argument inside npm, exceeding Linux's per-argument limit. Invoking the
+same pinned scanner directly on all files passed in both glob and literal
+modes. This was an invocation-size failure, not a credential finding.
+
+`scripts/check-secrets.sh` now caps xargs input batches at 16 KiB, leaving room
+for quoting and npm's command prefix. The existing hosted subprocess-boundary
+test file adds a finite 1,800-path fixture with spaces, apostrophes and Unicode.
+It fails before the fix with exit 123, passes afterward, checks every filename
+arrives exactly once in order, and checks that scanner findings still fail the
+gate. All 14 checks in that file pass. The real pinned scanner then passed all
+1,729 changed files, and shell lint, file-size parity and abbreviation gates
+passed. These complete driver and verification logs are retained; supplied
+recipes receive zero independent authorship credit. The repair preserves the
+pinned scanner and every selected file. The next head's hosted checks are
+tracked separately without recursively committing their own logs.
+
+This CI repair does not resolve the previously recorded Gemini input-context,
+native runtime verification or dependency audit blockers. The PR remains draft.

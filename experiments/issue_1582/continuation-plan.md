@@ -60,3 +60,10 @@ Status after implementation and local verification:
 
 Independent Formal AI query attempts: 1/20 (5%). Independently accepted authored
 changes: 0/20 (0%). Supplied commands and recipes get zero authorship credit.
+
+Additional units 2/9/10/16/19/20 verification: the evidence head completed
+21 workflows successfully; Secrets Scan failed on npm `spawn E2BIG`. A
+reproducing 1,800-path regression failed before and passed after bounding xargs
+batches at 16 KiB. All 14 subprocess checks, real 1,729-file scan and three
+relevant gates pass. The complete CI failure was collected before preparing
+one additional repair round. The frozen denominator remains 20 work units.
