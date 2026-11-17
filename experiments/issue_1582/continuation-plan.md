@@ -67,3 +67,17 @@ reproducing 1,800-path regression failed before and passed after bounding xargs
 batches at 16 KiB. All 14 subprocess checks, real 1,729-file scan and three
 relevant gates pass. The complete CI failure was collected before preparing
 one additional repair round. The frozen denominator remains 20 work units.
+
+
+Units 2/3/16/17/19/20, latest main: merge `826289fc7` (PR #1595),
+preserve both requirement tables, regenerate 1,529-record projections.
+All 51 focused checks pass. The complete 138-entry gate rerun passes/skips
+137, with only the previously recorded picomatch advisory failing. All 23
+workflows on scanner-repair head `721d89d03` pass. The governed witness is
+byte-identical. No local Rust build; full-gate execution uses the documented
+outer-command deadline exception. Final merge-head CI remains to be checked.
+
+The final API composition test adds ten real chat/Responses requests across
+all five registered languages, with a registry equality check. The permission
+file passes 36 checks; the merged focused set is 52. This is supplied test
+execution with zero independent authorship credit.

@@ -56,3 +56,12 @@ passes after; all 14 subprocess checks and the real 1,729-file scan pass.
 The issue case study retains the full failure and verification logs. All other
 21 workflows on that evidence head passed. Current-head checks are verified
 through the PR checks view; unchanged acceptance blockers keep this PR draft.
+
+
+All 23 workflows passed for scanner-repair head `721d89d03`, including the
+real scan and the new hosted regression. Main then advanced to `826289fc7`
+(PR #1595). The merge preserves both request-context and permission behavior;
+51 focused checks pass, and the full gate rerun passes/skips 137 of 138,
+with only the same active dependency advisory failing. Requirement projections
+now include all 1,529 records. New raw logs are kept in a separate latest-main
+round; final merge-head checks are tracked through the PR checks view.

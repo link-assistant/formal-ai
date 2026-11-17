@@ -548,3 +548,46 @@ tracked separately without recursively committing their own logs.
 
 This CI repair does not resolve the previously recorded Gemini input-context,
 native runtime verification or dependency audit blockers. The PR remains draft.
+
+
+### Merge of the request-context changes from main
+
+While the scanner repair was being verified, main advanced to
+`826289fc78154dcd894199ed966f366176be0afb` (PR #1595). The merge preserves
+both request-context handling and client permission routing. Only three
+requirement/status files conflicted. Both issues' traceability rows survive;
+the maintained generators regenerated status and progressive-plan projections
+from 1,529 requirements, with the existing partial client criteria retained.
+
+All 51 focused checks pass on the merged tree: four request-context checks,
+35 shared permission checks and 12 retrieval/log/context defaults checks.
+The complete 138-entry JavaScript gate inventory ran sequentially: 137 pass
+or are explicit policy skips, and only the known dependency audit advisory
+fails. The governed witness bytes are unchanged. No local Rust build ran.
+The full gate run used the previously documented outer-command exception to
+the Formal AI shell's fixed 60-second deadline; supplied recipes receive zero
+independent authorship credit. Logs for this round live under
+`raw-data/local/continuation/latest-main/` and preserve earlier rounds.
+
+All 23 workflows passed for scanner-repair head `721d89d03`. Its retained
+CI/CD log records the 1,752-file scan at lines 4665-4667, and its Layered CI
+log records the 1,800-path regression at line 2966. These verify the repair
+on the hosted runner. The merge head's checks are verified separately through
+the PR checks view. Gemini input context, native runtime validation and
+picomatch qualification remain unfinished, so the PR remains draft.
+
+
+The first merge commit check compared incoming main logs with the old branch
+head and reported their existing trailing whitespace. The corrected check
+compares the staged PR diff with current main, preserving the canonical raw
+log bytes. The failed operational attempt is retained separately.
+
+
+A final integration test checks permission guidance through Chat Completions
+and Responses with coding-agent system instructions: all five registered
+languages pass all ten requests. It compares the fixture languages with the
+actual language registry. The permission test file now passes 36 checks,
+bringing the merged focused set to 52. The staged whitespace check excludes
+verbatim `dev/log/` captures from both branches; all remaining PR files are
+checked against main. Both failed broad whitespace checks are retained, and
+no captured log was rewritten.

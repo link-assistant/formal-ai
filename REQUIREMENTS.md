@@ -199,3 +199,4 @@ the areas are the whole register.
    - Issue #1213 Cryptographic Provenance Prototype
    - Issue #1220 Structured Links Notation Logging
    - Bounded actions and observable failure
+   - Issue #1587 Request Constraints and Dialogue Facts

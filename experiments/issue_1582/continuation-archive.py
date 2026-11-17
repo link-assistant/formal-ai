@@ -1,6 +1,10 @@
 """Archive continuation evidence with deterministic compression and streamed hashes."""
 from pathlib import Path
-import gzip, hashlib, json, shutil
+import argparse, gzip, hashlib, json, shutil
+parser=argparse.ArgumentParser()
+parser.add_argument('--source',default='/tmp/issue-1582-review')
+parser.add_argument('--subdir',default='')
+args=parser.parse_args()
 root=Path('docs/case-studies/issue-1582')
 local=root/'raw-data/local/continuation';local.mkdir(parents=True,exist_ok=True)
 def retain(source,target):
@@ -11,13 +15,15 @@ def retain(source,target):
   with source.open('rb') as incoming,target.open('wb') as output:
    with gzip.GzipFile(filename='',mode='wb',fileobj=output,mtime=0) as compressed:shutil.copyfileobj(incoming,compressed,65536)
  else:shutil.copyfile(source,target)
-temporary=Path('/tmp/issue-1582-review')
+temporary=Path(args.source)
+destination=local/args.subdir
 for source in temporary.rglob('*'):
  if source.is_file() and source.name not in {'meta-language.tar.gz','shellcheck.tar.xz'}:
-  retain(source,local/source.relative_to(temporary))
+  retain(source,destination/source.relative_to(temporary))
 source=Path('/tmp/issue-1582-parser-install.log')
-if source.exists():retain(source,local/source.name)
-for source in Path('experiments/formal_ai_subagent/sandboxes/gates').glob('*.log'):retain(source,local/'gates'/source.name)
+if not args.subdir and source.exists():retain(source,local/source.name)
+if not args.subdir:
+ for source in Path('experiments/formal_ai_subagent/sandboxes/gates').glob('*.log'):retain(source,local/'gates'/source.name)
 def measured(stream):
  digest=hashlib.sha256();size=lines=0;last=b''
  while chunk:=stream.read(65536):
