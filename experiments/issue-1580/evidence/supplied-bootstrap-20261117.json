@@ -1,6 +1,6 @@
 {
   "autonomousAuthorshipCredit": 0,
-  "archiveSha256": "8fdd510b99900214d8854234b95c5574bcc06195ef01c15e629c649bad2b0929",
+  "archiveSha256": "77bad2f955b6089ee3569671e984cc53ebf3a158314c98aa120cae345146c984",
   "files": [
     {
       "file": "add-cache-budget-integration.py",
@@ -21,6 +21,11 @@
       "file": "add-go-pin-integrity-probe.py",
       "bytes": 3798,
       "sha256": "6e7259b3752cdf32f4b78910c14237e3adcf53967e5dd371cb21d4aaeb738dee"
+    },
+    {
+      "file": "add-self-reference-regressions.py",
+      "bytes": 3698,
+      "sha256": "357643ba61ae10d6427758ff3c611173af2d9bed5a4f4aaa14c79034cd9ab44f"
     },
     {
       "file": "add-shared-detector-regressions.py",
@@ -53,9 +58,19 @@
       "sha256": "06005296d69d01f2ed5fc4e48a1a6c6b0de002c6de4c62eb35f89a1400d0b384"
     },
     {
+      "file": "archive-ninth-evidence.py",
+      "bytes": 794,
+      "sha256": "020316e341fd51bd9386c0d7e462454b3d2dda213c1710e443023c1096d44257"
+    },
+    {
       "file": "archive-round-bootstrap.py",
       "bytes": 985,
       "sha256": "99acc6bbd25dd96af48a083b1a81382c7f176ae210deba4831cde219f2b35d3d"
+    },
+    {
+      "file": "archive-self-reference.py",
+      "bytes": 7969,
+      "sha256": "723875e98fb912f84962d1d86d0f53c448bd63f3ff75dcdf57f14a9f67f0e015"
     },
     {
       "file": "archive-seventh-round.py",
@@ -138,6 +153,21 @@
       "sha256": "d40ca2db2c0179f937129c9f6a735561be8e4840ded92c2b4e2741a7c62fda60"
     },
     {
+      "file": "check-self-reference-gates.sh",
+      "bytes": 391,
+      "sha256": "fdddcfc348ac02fe3c93eaecc4225807c0811e15323392de38c01776b84d5a7e"
+    },
+    {
+      "file": "check-self-references-after.sh",
+      "bytes": 534,
+      "sha256": "3b533a3fd26449edc84469aa438194145d06c8309fc8ddd95095e50ce907466f"
+    },
+    {
+      "file": "check-self-references-before.sh",
+      "bytes": 371,
+      "sha256": "0e42faf13a21412b4e2e78db9daf0a20361156bd6b420bcc5a810cbaa534cd54"
+    },
+    {
       "file": "check-template-duplicates.py",
       "bytes": 873,
       "sha256": "09c44f458b291ceb453bd4528d5f8256012024328486e8883ac280f0c8ac8502"
@@ -183,6 +213,11 @@
       "sha256": "bdc430d365d32b57e63a8ae372341e60d365ae869ce236f23131100d65987d68"
     },
     {
+      "file": "commit-eighth-evidence.sh",
+      "bytes": 648,
+      "sha256": "2e03c282cf2f281609c0abb5321f3ffea59a5c76cfd3e2d3397b2326fc9a3f03"
+    },
+    {
       "file": "commit-go-report-records.sh",
       "bytes": 485,
       "sha256": "c658251eb82dbc941ae658a6908a26d73378854a985b15b81a83d93a559a5c37"
@@ -203,6 +238,11 @@
       "sha256": "a0cb2b4220f4d8655b868d666e4e9a8685c62dec18d4e01bd74f74a25a999e8d"
     },
     {
+      "file": "commit-java-report-records.sh",
+      "bytes": 422,
+      "sha256": "b08094db962a8ebd0e2ee19ae8d39d09940bf0bf091131975ec729b628af9592"
+    },
+    {
       "file": "commit-preparation.sh",
       "bytes": 561,
       "sha256": "49abbf913acc261f88a9b9ad12ab1683ce7e33c8fe1f668177f24fff23c59919"
@@ -211,6 +251,11 @@
       "file": "commit-runtime.sh",
       "bytes": 1748,
       "sha256": "e4303cb6963ab72a83e6bfb21cc14779bb94dc37950263ad8dc0725ec7581824"
+    },
+    {
+      "file": "commit-self-reference.sh",
+      "bytes": 1397,
+      "sha256": "d4efbfdf404e2d1ff17d9e93d4be212b9b3e1a73b0b597fa84764192b692b6a3"
     },
     {
       "file": "commit-seventh-evidence.sh",
@@ -248,6 +293,11 @@
       "sha256": "c480528a202cde8f43160ce9bd0cd497f7abe09d8abae43616ff6ab085f99533"
     },
     {
+      "file": "csharp-layout-preflight.py",
+      "bytes": 1413,
+      "sha256": "fa6d2123040e41ee25d73bbd6bdfb3b23a99e10d0cc73585e6cbd7347982101d"
+    },
+    {
       "file": "current-head-status.py",
       "bytes": 1539,
       "sha256": "58ac1a785565a9133f9b5d669447007c29c2f2b023683363cfee513d03dc88da"
@@ -276,6 +326,11 @@
       "file": "file-go-pin-report.py",
       "bytes": 664,
       "sha256": "75316fad6f25cf85f28c62f25fa2ce3652e896fd1e3da45b0043aa36442230d8"
+    },
+    {
+      "file": "file-java-release-integrity.py",
+      "bytes": 1640,
+      "sha256": "0854fdd76ae05ecdc57bb6b6a8562864464fe602198895fac7466b617512fe36"
     },
     {
       "file": "file-template-reports.py",
@@ -428,6 +483,11 @@
       "sha256": "8337d25c924440efdad2b174c53d1c55c732a8cb0a031df4f0280125fd92b90a"
     },
     {
+      "file": "fix-self-reference-traversal.py",
+      "bytes": 2370,
+      "sha256": "57842c6faba98d1793d4c605765e59b1546006cd3da6b3701fc56351464b7a51"
+    },
+    {
       "file": "formal-command.mjs",
       "bytes": 1324,
       "sha256": "75eadb539839c481035d19ebd25afcbc48ef3fc8734c06fca8ac9384bb218cad"
@@ -526,6 +586,16 @@
       "file": "inspect-small-template-closures.py",
       "bytes": 749,
       "sha256": "b63ee8947c8282609303087dc58d1e687ca00fb535c88d2931f7cd2cd7e07bac"
+    },
+    {
+      "file": "inventory-java-history.py",
+      "bytes": 758,
+      "sha256": "bdcda291b0d2f8183f378e877a17f7eec989d070a7fb5a99084d89dc6402a6c5"
+    },
+    {
+      "file": "inventory-next-template.py",
+      "bytes": 812,
+      "sha256": "f0293767cdbf8e549f681f0cb7f0ecf2a5da05370194085e8d4865d5f3d0791a"
     },
     {
       "file": "java-active-file-index.py",
@@ -703,6 +773,11 @@
       "sha256": "ac64f820bce4977275206586a6cbaef519193e447ccb094deb86e0da9e56f908"
     },
     {
+      "file": "prepare-self-reference-commit.py",
+      "bytes": 1844,
+      "sha256": "853b9fa9864132462974f8ff8302a220f8ce90b8f0817d57b7e9b434efcc4935"
+    },
+    {
       "file": "prepare-seventh-round.sh",
       "bytes": 436,
       "sha256": "2323cac654ab8c45910f15050e1e178dcc3ccbf2e2af1ed92afee4944518d691"
@@ -748,6 +823,11 @@
       "sha256": "f9fdcc2b6d2a00c65cf754e9d5efd87b56c86d05dda34f059b404bd61d1ab47f"
     },
     {
+      "file": "push-eighth-round.py",
+      "bytes": 838,
+      "sha256": "bee4d0ab5d7e884f8c49ae32d99b0cac12d62e7e4e017d233af2e2a04f69b89d"
+    },
+    {
       "file": "push-seventh-round.sh",
       "bytes": 851,
       "sha256": "f7d995714e321bedc41af9bfff87ab7ffd20ca0f403be3652601a3a6ce8cc8c0"
@@ -756,6 +836,11 @@
       "file": "push-sixth-round.sh",
       "bytes": 545,
       "sha256": "ee4e21d55a0ad44824f414f8f7f6181081715489536b3faf3d4791edb8826a99"
+    },
+    {
+      "file": "read-active-requirements.py",
+      "bytes": 801,
+      "sha256": "297f6da5b40d7decd679286ef5615de75809e5b4a712a93896190e40efa178af"
     },
     {
       "file": "read-archive-scripts.sh",
@@ -783,6 +868,16 @@
       "sha256": "82bfbee9dae12665ba58a1e99d80cc5be60d95431ac7a5b3af8f3bf718bafa8c"
     },
     {
+      "file": "read-csharp-layout-context.py",
+      "bytes": 971,
+      "sha256": "8abb55eebd66d96a443ded68fed54f53e3076d93e9250758e759fedc7a0f3854"
+    },
+    {
+      "file": "read-csharp-page.py",
+      "bytes": 820,
+      "sha256": "a6c39f29f63f7fcf091f9d8191fd102f5da32f42262fbf1191ec6f763811b52e"
+    },
+    {
       "file": "read-current-ci-failures.py",
       "bytes": 994,
       "sha256": "45c184383901eafbda6b1af687294a26472d13cfe24cfd20e408f3f570a971b0"
@@ -796,6 +891,11 @@
       "file": "read-current-plan.sh",
       "bytes": 147,
       "sha256": "2275749d476c4fc4307db43a853dec9108605ae449a36d51347ea9e9d9c3c6bb"
+    },
+    {
+      "file": "read-current-pr-body.sh",
+      "bytes": 203,
+      "sha256": "af5a9d0fc30d1cd45e345560a3d3d77927e739397e0886f1689761d442b1bec6"
     },
     {
       "file": "read-detector-exact.sh",
@@ -816,6 +916,11 @@
       "file": "read-eighth-archive-input.sh",
       "bytes": 123,
       "sha256": "923c0b41420af5805ad8b9f4ab0c50495ae3ff0d930bee36b91448112c3669a8"
+    },
+    {
+      "file": "read-eighth-report-inputs.py",
+      "bytes": 831,
+      "sha256": "6d6cd7718368f9184e96f3a303ef6a8744be81797ff0a1f7cafd071b5da0efb8"
     },
     {
       "file": "read-evidence-archival.sh",
@@ -841,6 +946,11 @@
       "file": "read-java-final-pages.sh",
       "bytes": 140,
       "sha256": "27cbf6cea87d1a45e2cdf5e9a8e1502254722ab76d91e915f6867c27523762f9"
+    },
+    {
+      "file": "read-latest-feedback.py",
+      "bytes": 801,
+      "sha256": "de08401dd4a0ed49ff7ea24c636d93eda5dd39a93fcd878f10e94b3da6ae7587"
     },
     {
       "file": "read-local-detector.sh",
@@ -878,6 +988,11 @@
       "sha256": "02df9ccff329dce9e387c81d09650c11181d60416107af96320b6979b28463ca"
     },
     {
+      "file": "read-reference-traversal.py",
+      "bytes": 933,
+      "sha256": "5792fbaa57ce0bf369ee929914c714e0d307f843479a2171545a9af585b16541"
+    },
+    {
       "file": "read-related-template-prs.py",
       "bytes": 461,
       "sha256": "ca5980171a60842f5240101730b0f9ccdcd58cc5b6526df2dc1bba53e06a39c6"
@@ -911,6 +1026,21 @@
       "file": "read-script-ci-policy.sh",
       "bytes": 260,
       "sha256": "6a213a64282264af65bd7f23c6115bee96a1dc55eed2b34de5779c9a5d34ec9c"
+    },
+    {
+      "file": "read-self-reference-change.py",
+      "bytes": 616,
+      "sha256": "7de3f6de1271047cc0509796a9c437835b7f6a9c6dead295c4ebed3e68b6307f"
+    },
+    {
+      "file": "read-self-reference-doc-tails.py",
+      "bytes": 532,
+      "sha256": "d534344403ba7c8f31ccb9aa57276866b8f57258caaee736d2c89d9553a3b13d"
+    },
+    {
+      "file": "read-self-reference-docs.py",
+      "bytes": 593,
+      "sha256": "8c921bf818b1c675959280f2625b00fcaa212e474bb25f83ce94d6935d3dad5f"
     },
     {
       "file": "read-template-ci-page.py",
@@ -963,9 +1093,19 @@
       "sha256": "89773643b4d0ec35d3961b161736ccf679ede7c4335014a5b5fd996f2b13b39b"
     },
     {
+      "file": "record-java-release-report.py",
+      "bytes": 2731,
+      "sha256": "6c690be4f8637e8dff5ed5343ebb5f7de3a0b7a9f123954939c1a923ea004a22"
+    },
+    {
       "file": "recovered-checks.sh",
       "bytes": 387,
       "sha256": "aafb378fceabff032d86f7c98d788b491779ead23a47bb1eca000c3038258b7b"
+    },
+    {
+      "file": "refine-self-reference-control.py",
+      "bytes": 540,
+      "sha256": "0551e580d9a6a7de1fda88a635cd0ac26b03fdc6b727bd37813ffbbe7059f485"
     },
     {
       "file": "refresh-reviewed-witness.py",
@@ -976,6 +1116,11 @@
       "file": "refresh-staged-caller.mjs",
       "bytes": 2988,
       "sha256": "e4ce14fd20f26e3408f4012e42836b0a4289b1d372a855411ce18782d7596d1b"
+    },
+    {
+      "file": "regenerate-self-reference-graphs.py",
+      "bytes": 1392,
+      "sha256": "236fbf360b829e45e04f3615ae554dbcf62776586fd9a754ec5f1a111f860ce1"
     },
     {
       "file": "register-new-regressions.py",
@@ -1006,6 +1151,11 @@
       "file": "resume-reports.sh",
       "bytes": 339,
       "sha256": "b89b38c4bf4d01183c8b9f89c002a322777404cd7fd6673d22065697615aa34e"
+    },
+    {
+      "file": "resume-self-reference.py",
+      "bytes": 1113,
+      "sha256": "2264b01e1a88f56164342c9ae6e8e5c18d7b01572470e45de314756c94860e87"
     },
     {
       "file": "retain-cache-backend-diagnostics.py",
@@ -1166,6 +1316,11 @@
       "file": "unpack-probes.py",
       "bytes": 876,
       "sha256": "0c5d8df8457d7e193ad7e8427587f2092b28c5b3b1adb9d02421907ec0d746f8"
+    },
+    {
+      "file": "update-eighth-pr-body.py",
+      "bytes": 2772,
+      "sha256": "3354fada9d35b1f47f5b53680cf099f244d6c6a50a01f349f75cae1d2dacece2"
     },
     {
       "file": "update-pr-seventh.py",
