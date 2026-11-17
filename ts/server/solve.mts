@@ -81,9 +81,9 @@ export function solverEvidenceLinks(result, history = []) {
  * @param {(intent: string) => string|null} [seedReport] the seed's English report text
  * @returns {SymbolicAnswer}
  */
-export function symbolicFromWorker(result, history = [], seedReport = undefined) {
+export function symbolicFromWorker(result, history = [], seedReport = undefined, { readOnly = false } = {}) {
   const answer = nativeProgramAnswer(String(result?.content ?? ''), result?.programExecution, seedReport);
-  noteLearned(result?.memoryOperation);
+  if (!readOnly) noteLearned(result?.memoryOperation);
   const log = solverLogFromWorker(result, history);
   return {
     intent: String(result?.intent ?? 'unknown'),
@@ -132,7 +132,7 @@ export async function solveSymbolic(ctx, prompt, history, options = {}) {
 }
 
 async function solveBegun(ctx, prompt, history, options) {
-  const result = await ctx.worker.solve(prompt, history, options);
+  const result = await ctx.worker.solve(prompt, history, { ...options, readOnly: ctx.ephemeral === true });
   // R1013: the formalization, intent-formalization and meta-core records the
   // native solver logs between the worker's prelude and its handler events.
   if (Array.isArray(result?.solverEvents)) {
@@ -152,7 +152,7 @@ async function solveBegun(ctx, prompt, history, options) {
   }
   // Issue #1184 R1184-9: every native solve ends in `finalize_answer`, which
   // links, appends and persists the answer's derivation record.
-  const symbolic = symbolicFromWorker(result, history, await seedReportReader(ctx));
+  const symbolic = symbolicFromWorker(result, history, await seedReportReader(ctx), { readOnly: ctx.ephemeral });
   // Issue #667 (R383): a held turn is neither persisted nor answered until it is released.
   if (ctx.debugSession) await ensureNodeHost(ctx);
   await gateTurn(ctx, symbolic.thinking_steps);

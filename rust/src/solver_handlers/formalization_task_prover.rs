@@ -142,8 +142,7 @@ pub fn prover_unit(clause: &QuantifiedClause, prover: &ProverRecord) -> Option<S
     Some(format!("{}\n\n{rendered}\n", lines.join("\n")))
 }
 
-/// The executable `binary` names in some directory of the PATH-shaped list
-/// `path_value` (looked up, not run).
+/// Locate `binary` in the PATH-shaped `path_value`.
 #[must_use]
 pub fn prover_command_in(path_value: &std::ffi::OsStr, binary: &str) -> Option<std::path::PathBuf> {
     std::env::split_paths(path_value)
@@ -157,8 +156,7 @@ pub fn prover_command_in(path_value: &std::ffi::OsStr, binary: &str) -> Option<s
 pub enum ProverRun {
     /// The binary was not found in PATH, or the target rendered nothing.
     Absent,
-    /// The binary ran on the compile unit: its exit status (`None` when it
-    /// was killed by a signal or could not be spawned) and the unit's path.
+    /// The command, optional exit code, and path of the compiled unit.
     Ran {
         command: String,
         exit: Option<i32>,
@@ -211,8 +209,7 @@ pub fn run_prover_with(
     }
 }
 
-/// Every seeded prover's run for `clause`, searching `path_value` and
-/// writing units under `directory`.
+/// Run each seeded prover from `path_value`, writing units to `directory`.
 #[must_use]
 pub fn prover_runs_with(
     clause: &QuantifiedClause,
@@ -234,6 +231,9 @@ pub fn prover_runs_with(
 
 /// The runs against this process's PATH and temporary directory.
 fn prover_runs(clause: &QuantifiedClause) -> Vec<(&'static ProverRecord, ProverRun)> {
+    if crate::solver_config::ephemeral_enabled() {
+        return Vec::new();
+    }
     let path_value = std::env::var_os("PATH").unwrap_or_default();
     let directory = std::env::temp_dir().join("formal-ai-prover");
     prover_runs_with(clause, &path_value, &directory)

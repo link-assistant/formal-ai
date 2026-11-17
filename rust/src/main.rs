@@ -79,11 +79,11 @@ const DEFAULT_AGENT_TASK: &str = "Formalize «Сказка о рыбаке и р
     about = "Formal symbolic AI implementation"
 )]
 struct Args {
-    /// Print and persist complete diagnostics (enabled by default).
+    /// Print verbose CLI output (enabled by default).
     #[arg(long, global = true, default_value_t = true)]
     verbose: bool,
 
-    /// Disable verbose output and automatic complete dialog logging.
+    /// Disable diagnostics and dialog capture.
     // Issue #1181: route `FORMAL_AI_SILENT` through the shared boolean parser
     // so `=1`, `=yes`, `=on` (any case) work like `=true`; the action stays
     // `SetTrue`, so a bare `--silent` flag keeps working.
@@ -165,7 +165,9 @@ enum Command {
     Context(ContextArgs),
     /// Build the issue-report document every Formal AI surface files (#839).
     Report(ReportArgs),
-    /// Serve the API; `--agent-mode` is equivalent to `FORMAL_AI_AGENT_MODE=1`.
+    /// Serve the API with request metadata by default.
+    /// Set FORMAL_AI_DIALOG_LOG_DIR to opt in to full dialog capture.
+    /// Structured diagnostics default to debug level in ~/.formal-ai/logs.
     Serve(ServeArgs),
     /// Use the same binary as a WebSocket or WebRTC OpenAI-compatible client.
     Connect(ConnectArgs),
@@ -662,9 +664,12 @@ fn main() -> Result<(), Box<dyn Error>> {
         std::env::args_os().collect(),
         &Args::command(),
     ));
+    if matches!(&arguments.command, Some(Command::Serve(args)) if args.ephemeral()) {
+        formal_ai::server::enable_ephemeral_for_current_process();
+    }
     formal_ai::structured_tracing::install().map_err(std::io::Error::other)?;
     let verbose = arguments.verbose && !arguments.silent;
-    formal_ai::dialog_log::configure_verbose(verbose);
+    formal_ai::dialog_log::configure_verbose(!arguments.silent);
     formal_ai::dialog_log::structured_log::configure_terminal(verbose);
     formal_ai::dialog_log::structured_log::configure(
         arguments.silent,

@@ -170,10 +170,9 @@ function logPlanTerminal(ctx, plan) {
     component: 'agent',
     dialog_id: currentDialogId(),
     ...terminal,
-    ...(workItemRecord === null ? {} : { work_item_record: workItemRecord }),
     scope: 'server_response',
     task_delivery: 'Unknown'
-  });
+  }, workItemRecord === null ? undefined : { work_item_record: workItemRecord });
 }
 export function logUnclassifiedTerminal(ctx, origin) {
   ctx.logger?.log('debug', 'agent.terminal', {
@@ -189,10 +188,9 @@ function bindPlan(ctx, request, plan, prompt, workspace) {
   if (plan.kind !== 'tool_calls') {
     ctx.logger?.log('debug', 'planning_terminal', {
       component: 'planner',
-      answer: String(plan.answer ?? '').slice(0, 4096),
       state: 'terminal',
       repeat_limit: 3
-    });
+    }, () => ({answer: String(plan.answer ?? '').slice(0, 4096)}));
     return plan;
   }
   const calls = [];
@@ -213,10 +211,8 @@ function bindPlan(ctx, request, plan, prompt, workspace) {
       ctx.logger?.log('error', 'tool_argument_binding_failed', {
         component: 'planner',
         tool: call.tool,
-        arguments: args,
-        schema,
-        reason
-      });
+        reason: 'argument_validation_failed'
+      }, () => ({arguments: args, schema, reason}));
       return {
         kind: 'final',
         answer: agenticMessage('tool-argument-binding-incomplete', {
@@ -227,10 +223,9 @@ function bindPlan(ctx, request, plan, prompt, workspace) {
     ctx.logger?.log('debug', 'tool_call_bound', {
       component: 'planner',
       tool: call.tool,
-      arguments: args,
       repeat_limit: 3,
       state: 'awaiting_client_receipt'
-    });
+    }, () => ({arguments: args}));
     calls.push({
       ...call,
       arguments: args

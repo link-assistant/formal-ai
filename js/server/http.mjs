@@ -77,10 +77,17 @@ export function createServer(ctx) {
     const foreground = beginForegroundActivity();
     const disconnected = new AbortController();
     const requestIdentifier=++ctx.requestSequence;
+    const started = performance.now();
+    const path = request.url.split('?')[0];
+    let responseBytes = 0;
     let terminal=false;
     const finish=(reason,fields={})=>{if(terminal)return;terminal=true;ctx.logger?.log(reason==='request_failed'?'error':'debug','request.terminal',{component:'server',request_id:requestIdentifier,reason,...fields});};
-    ctx.logger?.log('debug','request.start',{component:'server',request_id:requestIdentifier,method:request.method,path:request.url});
-    socketResponse.once('finish',()=>finish('response_complete',{status:socketResponse.statusCode}));
+    ctx.logger?.log('debug','request.start',{component:'server',request_id:requestIdentifier,method:request.method,path});
+    socketResponse.once('finish',()=>finish('response_complete',{
+      status:socketResponse.statusCode,
+      response_bytes: responseBytes,
+      elapsed_ms:Math.round(performance.now()-started),
+    }));
     socketResponse.once('close',()=>{if(!socketResponse.writableFinished)finish('client_disconnected');});
     socketResponse.on('close', () => { if (!socketResponse.writableEnded) disconnected.abort(); });
     try {
@@ -89,8 +96,11 @@ export function createServer(ctx) {
       // Like the Rust reader, only a declared content-length carries a body.
       const declared = Number.parseInt(request.headers['content-length'] || '0', 10) || 0;
       const body = raw.subarray(0, Math.min(declared, raw.length)).toString('utf8');
-      ctx.logger?.log('debug','request.received',{component:'server',request_id:requestIdentifier,method:request.method,path:request.url,headers:Object.fromEntries(headers)},()=>diagnosticBody(body));
+      ctx.logger?.log('debug','request.received',{
+        component:'server',request_id:requestIdentifier,method:request.method,path,request_bytes:Buffer.byteLength(body),
+      },()=>diagnosticBody(body));
       const response = await runInRequestScope(disconnected.signal, () => dispatch(ctx, { method: request.method, path: request.url, headers, body }));
+      responseBytes = Buffer.byteLength(response.body);
       writeResponse(socketResponse, response);
     } catch (error) {
       if(ctx.logger){ctx.logger.log('error','request.failure',{component:'server',request_id:requestIdentifier,error});ctx.logger.log('error','agent.terminal',{component:'server',...observedExceptionTerminal(error),scope:'server_request',task_delivery:'Unknown'});finish('request_failed',{error});}

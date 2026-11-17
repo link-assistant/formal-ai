@@ -26,6 +26,7 @@ export async function ensureNodeHost(ctx, options = {}) {
       installNodeHost
     }) => installNodeHost(ctx.worker, {
       prerequisiteGrant: ctx.prerequisiteGrant ?? null,
+      readOnly: ctx.ephemeral === true,
       sourceUsageRustGrammar
     }));
     installed.set(ctx.worker, {

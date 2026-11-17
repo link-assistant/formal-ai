@@ -1,13 +1,13 @@
 {
   "schema": "formal-ai-runtime-feature-coverage-v1",
   "sources": [
-    {"path":"rust/src/main.rs","sha256":"e37798959712ec87883bce1dc8fd8e9066f9d41c64c44a0e50b36a561f33c431"},
-    {"path":"js/server/main.mjs","sha256":"af3407e6373a98571b8d8bfd365709e1e63d84f1c478c7a71236e6d9f125c7f4"},
+    {"path":"rust/src/main.rs","sha256":"9407e8f50401ea54e9082e0820aee61517b861a69dacb893e91ca4fa5fd4c66d"},
+    {"path":"js/server/main.mjs","sha256":"2984b5a9fceab1479616ae6ffe798ff8231bb154a680ea80337df2babf90e8de"},
     {"path":"js/agentic/orchestration_cli.mjs","sha256":"bddd5ce346266f61e14de5a4a7052a087588cd4b0f3d337bc1b0763caa106e84"},
     {"path":"js/provenance/cli.mjs","sha256":"5f2385788ba008835e62021647b0d70355093db1819546b7d7d9cc82d91c56da"},
     {"path":"js/server/memory-upgrade.mjs","sha256":"071e1ff30b7470ff3eebcda0d05f3611e21942e8d2ebf6e5a1ce54f0ce27d887"},
     {"path":"data/meta/server-routes.lino","sha256":"172ee9dabe3500eecc6f56e01a74919fdd37bcd22b92628d5795c74dfa4ab678"},
-    {"path":"js/server/dispatch.mjs","sha256":"faeb5be6a02b90c5f8d758df389e2f575da72f40c94abd70c5304d6302b10ef3"},
+    {"path":"js/server/dispatch.mjs","sha256":"f3b4e0d54106065647213bf81dd1f66677007e3f735cd4f72c8bedc14255c767"},
     {"path":"rust/tests/fixtures/server-parity/requests.lino","sha256":"3468a1cb19ee3bd2e48dceae644f103cd0e3a19649e36cbdfb13357fca377e46"},
     {"path":"js/worker/formal_ai_worker_solve.js","sha256":"9ee18ccde5e045dec9ba9bf8a87ba864ea38b6a2dee654b742487c31e639adf8"},
     {"path":"data/seed/browser-handler-precedence.lino","sha256":"1a3490e203b38a64e86a6c9fa63e76539d17ab99bd8932232974e1205a37405c"},
