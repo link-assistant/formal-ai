@@ -4,6 +4,13 @@
 
 use super::{ChatMessage, MessageContent, ResponsesRequest};
 use crate::engine::estimate_tokens;
+use std::time::{SystemTime, UNIX_EPOCH};
+
+pub(super) fn response_timestamp() -> u64 {
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map_or(1, |duration| duration.as_secs().max(1))
+}
 
 fn message_content_tokens(content: &MessageContent) -> u32 {
     match content {
