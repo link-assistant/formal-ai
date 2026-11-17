@@ -186,7 +186,7 @@ of eight tests; canonicalizing the nested tree and fixing English procedural
 routing made all eight pass. Real HTTP transport and resource-derived model
 metadata regressions brought the issue file to ten passing tests. The logger
 suites pass sixteen more tests, including lossless conversion of nested logs: 26
-focused JavaScript tests in total.
+focused JavaScript tests at that stage. Final transport review adds two deadline/cancellation regressions: the final issue suite has 12 passing tests, plus the 16 logger tests (28 focused core tests).
 
 Run each focused file separately:
 
@@ -304,3 +304,24 @@ explicitly skips all 138 entries with no failures. The role registry's independe
 Python check passes, and all 22 logs for the first repair head are retained.
 The next pushed head must still be checked on hosted CI; earlier passing checks
 are not reused as evidence for it.
+
+## Final transport deadline review
+
+The second repair head, `ca57748ca7daf0882618977e23382a13e07b4d0d`,
+passes all 22 hosted workflows. Its logs and both attached artifacts are retained.
+Final source review then found worker source-capture calls that pass no abort
+signal, plus a search helper that clears its timer when headers arrive. The new
+Node network transport therefore needed its own overall deadline, including
+response-body consumption. Two bounded regressions fail before this correction:
+the combined deadline signal is absent and a deliberately unfinished body only
+stops when the independent two-second probe guard closes the socket.
+
+The Node transport now supplies a 30-second AbortSignal deadline and combines
+it with caller cancellation without changing the caller's options. The maintained
+TypeScript generator produces the matching twin. The whole issue suite passes
+12 tests afterward, including actual stalled-body cancellation in about 275 ms
+with a 250 ms test deadline. The guard, test timeout and server cleanup bound
+both failing and passing probes. Native curl transport already has its own
+finite IO bound and is unchanged. This correction changes no shared registry
+data; the complete eighth local gate round remains the shared-data verification,
+and the affected generated/source gates are checked again for this change.
