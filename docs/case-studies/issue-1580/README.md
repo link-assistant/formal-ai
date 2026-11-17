@@ -102,3 +102,11 @@ Unfinished criteria remain in this PR: final-head hosted CI; native behavior and
 ### Hosted checkpoint after CommonJS and evidence-size repairs
 
 All 24 workflow runs on `09021cb30ed98851f59f8b55f2cf71470ec613f4` completed successfully, with zero pending or failed runs. [Exact-head run metadata](../../../experiments/issue-1580/evidence/ci/09021cb30/summary.json) records the identities and byte hashes. Successful scope-gated workflows do not execute the main-only native runtime suites, native detector regressions, external benchmark capability checks, or live work-item qualification. These broader criteria remain unfinished; the subsequent Go and cache commits require their own hosted results.
+
+### Java release commit integrity
+
+The active Java source review now covers 62 files and all four workflows, with per-file transfer decisions. Its 145 historical evidence blobs are inventoried but not fully semantically reviewed, so the complete Java and other remaining repository reviews stay open. Five new bounded regressions use actual local Git and bare remotes: a rejected release commit still produces success and publishes an old-source tag in both Java release modes. Removing only the failure fallback in a disposable copy blocks publication, and successful-release controls retain the correct source/version. The maintained PR entrypoint passes 16 tests without skips. Formal AI already checks the release commit before pushing/tagging; no unnecessary duplicate release implementation is added. No hosted Java execution, upstream fix, main-only native execution or broader issue completion is claimed. Full logs/hashes are in `checks/java-release-integrity.json`.
+
+### Hosted checkpoint after Go/cache changes
+
+All 24 workflows on `e6627385d3ef58435df22ec61d4dfdc4551c9d28` completed successfully. [Exact-head metadata](../../../experiments/issue-1580/evidence/ci/e6627385d/summary.json) retains every run identity and source-byte hashes. These PR results verify the scoped JavaScript/CI changes; they do not execute the main-only native runtimes or resolve the outstanding benchmark, qualification, live identity, full semantic review and historical backend-cause criteria. The subsequent Java regression/review changes need their own hosted verification.

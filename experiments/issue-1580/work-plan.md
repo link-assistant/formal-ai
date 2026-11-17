@@ -54,3 +54,11 @@ All 24 workflows on 09021cb30e completed successfully; no active or queued runs 
 ## Go integrity report filed (2026-11-17)
 
 The pinned-source stale-pin regression is published at `a4053def4bd4b921001fdf84a026ae35deebfc39` and filed as [Go template #20](https://github.com/link-foundation/go-ai-driven-development-pipeline-template/issues/20). The posted body and immutable evidence identity are recorded locally. Reporting does not establish an upstream fix or complete the seven other semantic template reviews. Current head `e6627385d3ef58435df22ec61d4dfdc4551c9d28` still awaits all hosted results.
+
+## Java active review and release integrity (2026-11-17)
+
+All 62 active Java source/configuration/documentation files are reviewed, including the entire POM and four workflows; 145 historical evidence blobs remain inventoried only. The complete Java repository review stays open. Real local Git reproduces a rejected release commit followed by successful publication of a tag on the old version in both modes. The disposable one-line repair propagates commit failure, while successful controls retain correct versions. New regression: 5 pass; maintained entrypoint: 16 pass; no skips. Formal AI's existing fail-on-commit-error and push-before-tag behavior is retained. Draft the distinct upstream report, publish immutable executable evidence before filing, and keep all other acceptance criteria active.
+
+## Go/cache hosted checkpoint
+
+All 24 workflows on e6627385d completed successfully; no active or queued runs remain for that head. Exact metadata and Java focused/maintained/gate logs are retained. Archive current execution/supplied-input evidence, review the complete Java diff, refresh main and feedback, then push the next batch once. Broader acceptance remains unfinished.

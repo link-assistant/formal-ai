@@ -1,0 +1,950 @@
+{
+  "repository": "link-foundation/java-ai-driven-development-pipeline-template",
+  "commit": "dd803a2d9fa5b3a992b435acce73162274fb9e8b",
+  "scope": "Complete source review of 62 active CI/application/configuration/documentation files, including all four workflows and the full 1872-line POM. All 207 pinned blobs are hash verified. The 145 dev/log historical evidence files below are inventoried and excluded from this active source review; their full semantic contents remain unreviewed.",
+  "completeRepositorySemanticReview": false,
+  "limits": [
+    "Seven complete repository semantic reviews remain open, including Java historical evidence; the complete Go source review is separate.",
+    "Source observations without an executable reproduction are labeled as such and are not reported as reproduced defects.",
+    "No full upstream suite, Maven build, hosted dispatch or live publication was executed.",
+    "The five new release regression cases execute real Git with disposable local bare remotes and a rejecting local pre-commit hook. A one-line candidate repair exists only in disposable copies.",
+    "Externally supplied scripts/review decisions earn zero independent Formal AI reasoning or authorship credit."
+  ],
+  "verification": {
+    "newReleaseRegression": "5 pass, 0 fail, 0 skip",
+    "maintainedEntryPoint": "16 pass, 0 fail, 0 skip"
+  },
+  "files": [
+    {
+      "path": ".changeset/README.md",
+      "gitBlob": "23b6f380c21ef09818943e445f3c470ebb506457",
+      "bytes": 2271,
+      "sha256": "42962da67732a9d5918eb9cd95334724d3dd6c7a1504294437edfb787826b7b2",
+      "completeSourceRead": true,
+      "role": "release metadata and history",
+      "formalAiComparison": [
+        "changelog.d",
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Preserve Formal AI changelog.d and release trigger. Historical descriptions supply context and are not independent evidence that current tests or workflows pass."
+    },
+    {
+      "path": ".changeset/config.json",
+      "gitBlob": "d9dc4c1a797d0557de8d4d6e9bea09381415ec58",
+      "bytes": 178,
+      "sha256": "e3300097f486cadc3a0687aaf2841630d9ee0e09a14f921537fe79205ac3f6b4",
+      "completeSourceRead": true,
+      "role": "release metadata and history",
+      "formalAiComparison": [
+        "changelog.d",
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Preserve Formal AI changelog.d and release trigger. Historical descriptions supply context and are not independent evidence that current tests or workflows pass."
+    },
+    {
+      "path": ".changeset/current-dependencies.md",
+      "gitBlob": "44ff77d4f7f42550cc0227e19eff8a780f0a0eb2",
+      "bytes": 331,
+      "sha256": "9a51d0c7a6fd00ec3d10a5643f4f71afa8d7e268925e609f21fc720bd7ab7047",
+      "completeSourceRead": true,
+      "role": "release metadata and history",
+      "formalAiComparison": [
+        "changelog.d",
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Preserve Formal AI changelog.d and release trigger. Historical descriptions supply context and are not independent evidence that current tests or workflows pass."
+    },
+    {
+      "path": ".changeset/dependency-audit-and-runner-retries.md",
+      "gitBlob": "a490724b86727a73d96c29a76c2aba28d8a20dd6",
+      "bytes": 379,
+      "sha256": "7303e25b45863caebcc0821076588dd7ad266688f260a7ac3812ad43749b1ca8",
+      "completeSourceRead": true,
+      "role": "release metadata and history",
+      "formalAiComparison": [
+        "changelog.d",
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Preserve Formal AI changelog.d and release trigger. Historical descriptions supply context and are not independent evidence that current tests or workflows pass."
+    },
+    {
+      "path": ".changeset/fix-ci-gates-and-size-warnings.md",
+      "gitBlob": "15fb47acb4e1c916d4a41b6c6a00cf3adf703671",
+      "bytes": 436,
+      "sha256": "d285b841de1bcd768dc3a26e68d581d22f2ff53273b3c91882525d8ab4816bbd",
+      "completeSourceRead": true,
+      "role": "release metadata and history",
+      "formalAiComparison": [
+        "changelog.d",
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Preserve Formal AI changelog.d and release trigger. Historical descriptions supply context and are not independent evidence that current tests or workflows pass."
+    },
+    {
+      "path": ".changeset/fix-ci-workflow-dependencies.md",
+      "gitBlob": "7cd1bbf605f69db5419da8b46eb7f5d9fb3cd5c2",
+      "bytes": 494,
+      "sha256": "c7ab29c525f891591350432289611d21e6b39c228959e5ae86a49f6b3f618366",
+      "completeSourceRead": true,
+      "role": "release metadata and history",
+      "formalAiComparison": [
+        "changelog.d",
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Preserve Formal AI changelog.d and release trigger. Historical descriptions supply context and are not independent evidence that current tests or workflows pass."
+    },
+    {
+      "path": ".changeset/harden-release-pipeline.md",
+      "gitBlob": "462d265e76431c8aaf1e724f60e5c762f5847d8a",
+      "bytes": 173,
+      "sha256": "d7a28438482a54c5160233d00bd58b75adf345352a84e80ba06c86c3106acffe",
+      "completeSourceRead": true,
+      "role": "release metadata and history",
+      "formalAiComparison": [
+        "changelog.d",
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Preserve Formal AI changelog.d and release trigger. Historical descriptions supply context and are not independent evidence that current tests or workflows pass."
+    },
+    {
+      "path": ".changeset/recover-and-pin-ci.md",
+      "gitBlob": "e9dc8278ff282bfe3da1716e14041e0cd15de0f5",
+      "bytes": 236,
+      "sha256": "32a48ac057d1713eb098713b98ad1857e925da10a61096f16c0894c9fdc55051",
+      "completeSourceRead": true,
+      "role": "release metadata and history",
+      "formalAiComparison": [
+        "changelog.d",
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Preserve Formal AI changelog.d and release trigger. Historical descriptions supply context and are not independent evidence that current tests or workflows pass."
+    },
+    {
+      "path": ".gitattributes",
+      "gitBlob": "9218ccc6d9a2f333ea1e5d2b6b3ec0d99d34ceda",
+      "bytes": 42,
+      "sha256": "1c7d4e51492fa2d149576c5dc8b072666fabe4f6ee58b69155500006d989434d",
+      "completeSourceRead": true,
+      "role": "line endings",
+      "formalAiComparison": [
+        ".gitattributes"
+      ],
+      "decision": "Keep repository-owned line endings. Java wrapper CRLF checkout dirtiness is already tracked in upstream #28; do not copy its wrapper policy or count an existing report as a new repair."
+    },
+    {
+      "path": ".github/actionlint.yaml",
+      "gitBlob": "ebec83fd5149b8d2b1c7c4c5b5dba05ac541b605",
+      "bytes": 269,
+      "sha256": "3b4ec427dd98c7c55912ed02dab207d2e946633964b3939175a26bb61f8197a3",
+      "completeSourceRead": true,
+      "role": "workflow lint compatibility",
+      "formalAiComparison": [
+        ".github/workflows/workflows.yml"
+      ],
+      "decision": "The source documents queue-schema compatibility. Retain pinned workflow linting; an ignored compatibility finding is not evidence that a workflow executed."
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "gitBlob": "44cc1116596ddc5eee5b4a85d563ec1eb63ef82c",
+      "bytes": 1549,
+      "sha256": "01c0dc2a5e92a011fd286fac60cc821f2dd329696f8977c2df74e8ee9db74e88",
+      "completeSourceRead": true,
+      "role": "dependency update proposals",
+      "formalAiComparison": [
+        ".github/workflows/dependencies-latest.yml",
+        "scripts/check-dependencies-latest.rs"
+      ],
+      "decision": "Weekly Maven, action and pre-commit updates include a seven-day cooldown. Formal AI keeps its dependency maintenance workflow and independent integrity/unverifiable receipts; Java-specific update groups are not portable."
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "gitBlob": "15fbed88c68753227e4d12abbbc3eb3ad23b7bff",
+      "bytes": 21723,
+      "sha256": "0736b24479c96110729f681b95545ea15c8b565905ca3169c5b9a34a86b6672b",
+      "completeSourceRead": true,
+      "role": "release admission, tests and publication",
+      "formalAiComparison": [
+        ".github/workflows/release.yml",
+        ".github/workflows/layered-ci.yml",
+        "scripts/ci-pull-request-admission.mjs"
+      ],
+      "decision": "Reviewed all 610 lines: narrow writer permissions, separate cancelable checks and serialized non-canceling writers, artifact downloads and byte comparison, recovery worktrees, and pinned matrix/tool versions. Java builds on PRs are not applicable to Formal AI default-branch-only application builds. Missing aggregate status is already Java #29. Manual dispatch lint is skipped by its dependency success rule while build admits skipped lint; this is a source observation, not a dispatched or modeled result."
+    },
+    {
+      "path": ".github/workflows/rerun-unacquired.yml",
+      "gitBlob": "76ceb5b422734d19869d8627eb84cc222bb88a58",
+      "bytes": 2172,
+      "sha256": "d5685085200a31ed6043374343a3a1201faa51bfe1835e1b024a578c7848b1ff",
+      "completeSourceRead": true,
+      "role": "bounded runner acquisition recovery",
+      "formalAiComparison": [
+        "scripts/report-runner-capacity.sh",
+        "scripts/check-pipeline-status.sh"
+      ],
+      "decision": "Rerun only same-repository runs with explicit acquisition evidence, no assigned runner and no steps; paginate observations, cap retries, use trusted default-branch code and actions-write only where needed. Do not retry actual code failures or infer unavailable evidence."
+    },
+    {
+      "path": ".github/workflows/security.yml",
+      "gitBlob": "f289df5c9eb8128adeaa547aeca207c118e850cb",
+      "bytes": 3210,
+      "sha256": "b5f709e7248f666b39152011866203c1015c10771f653e8b013bcd2dacdc518b",
+      "completeSourceRead": true,
+      "role": "dependency vulnerability audit",
+      "formalAiComparison": [
+        ".github/workflows/security.yml",
+        "scripts/check-rust-dependencies.sh"
+      ],
+      "decision": "OSV download already uses retry-all-errors and a checksum. Java supplements the source scan with resolved plugin and test dependency observations. Preserve the existing Rust audit scope and strict exception controls; Maven plugins and its Java-specific overrides cannot transfer directly."
+    },
+    {
+      "path": ".github/workflows/workflows.yml",
+      "gitBlob": "9b51c4242b0181f2a5f4106cda7cb7569fe933b6",
+      "bytes": 1007,
+      "sha256": "f17d1da9208a09cc395b4f41b1950392f26d11df86b8167b0a083b7ceefd9614",
+      "completeSourceRead": true,
+      "role": "workflow source lint and freshness",
+      "formalAiComparison": [
+        ".github/workflows/workflows.yml",
+        "scripts/check-runner-labels.mjs"
+      ],
+      "decision": "Pin actionlint container digest and tools, enforce explicit runner images and run JavaScript source-policy tests. Keep Formal AI runner labels and behavior regressions; source regex tests alone miss dependency propagation defects."
+    },
+    {
+      "path": ".gitignore",
+      "gitBlob": "365b90f61b3298a27e685bd4e2d0d3c82574902e",
+      "bytes": 1514,
+      "sha256": "4096e70a83f412bdc3355b45958b5beadb64f74edbe4489d1158591487f5899d",
+      "completeSourceRead": true,
+      "role": "workspace exclusions",
+      "formalAiComparison": [
+        ".gitignore"
+      ],
+      "decision": "Keep scratch/build outputs excluded while preserving reproducible scripts and intentionally committed evidence. Do not hide unfinished work or commit agent scratch state."
+    },
+    {
+      "path": ".gitkeep",
+      "gitBlob": "76775720b078ea31dac64cac21060efd2bb14985",
+      "bytes": 207,
+      "sha256": "b85b7c0efcb62ed4a2e00c8135c263d94382cc8378e0c9e3bc5f2d36301f97c5",
+      "completeSourceRead": true,
+      "role": "empty directory marker",
+      "formalAiComparison": [
+        ".gitignore"
+      ],
+      "decision": "Empty tracked marker has no executable behavior and requires no transfer."
+    },
+    {
+      "path": ".mvn/jvm.config",
+      "gitBlob": "1bc6ea041fbc5fb7c6d9f5f91597b33227d13a6c",
+      "bytes": 321,
+      "sha256": "39c20c5e2a0e4a3804d7e7e11c4e8c896e7d546d26c4cff55f9d482050beeb73",
+      "completeSourceRead": true,
+      "role": "JVM process budget",
+      "formalAiComparison": [
+        "scripts/cargo-test.sh"
+      ],
+      "decision": "Java JVM defaults are build-tool-specific. Formal AI uses its bounded shared Cargo target policy and hosted runners; do not start a local Maven or Rust build for this comparison."
+    },
+    {
+      "path": ".mvn/wrapper/maven-wrapper.properties",
+      "gitBlob": "e193f5bfc6af1b40b21438817d4df6e082cb477c",
+      "bytes": 255,
+      "sha256": "03e1f35df3e20ff2341e05980c8258a4ce94923884822fc2bab922060989862c",
+      "completeSourceRead": true,
+      "role": "Maven distribution pin",
+      "formalAiComparison": [
+        "data/seed/toolchains.lino"
+      ],
+      "decision": "Explicit Maven distribution and wrapper settings are language-specific. Retain the repository Rust toolchain policy and verify downloaded executables independently."
+    },
+    {
+      "path": ".pre-commit-config.yaml",
+      "gitBlob": "608c520da6c678d972686a8071d5555c618faa13",
+      "bytes": 1458,
+      "sha256": "46474cc2d311f2bd60878523bdc80fab4db5f98ad22c514a7a3e0ab9b08b322d",
+      "completeSourceRead": true,
+      "role": "local static checks",
+      "formalAiComparison": [
+        ".pre-commit-config.yaml",
+        "scripts/lint-shell-scripts.sh"
+      ],
+      "decision": "Pinned pre-commit hooks and matching CI checks are useful. Keep Formal AI checks and required JavaScript twins; do not introduce Maven compilation into local mixed-language validation."
+    },
+    {
+      "path": "CHANGELOG.md",
+      "gitBlob": "6f672dce9266662715fa48d8da49af98829b7515",
+      "bytes": 1973,
+      "sha256": "08ead370a11e7242ea469566bfc838b29a9882684676b9cabe11d4f5becb501e",
+      "completeSourceRead": true,
+      "role": "release metadata and history",
+      "formalAiComparison": [
+        "changelog.d",
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Preserve Formal AI changelog.d and release trigger. Historical descriptions supply context and are not independent evidence that current tests or workflows pass."
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "gitBlob": "784737049f86540c688f60643f89c7effb917937",
+      "bytes": 10064,
+      "sha256": "cd9b6fff698889039294ae6509640606dfea2dc73315b6406824427a15267ff5",
+      "completeSourceRead": true,
+      "role": "contributor and usage documentation",
+      "formalAiComparison": [
+        "README.md",
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Keep Formal AI execution, evidence and build policies. Java README freshness/PR-only audit language lags current implementation; compare actual scripts rather than copying obsolete policy text."
+    },
+    {
+      "path": "LICENSE",
+      "gitBlob": "fdddb29aa445bf3d6a5d843d6dd77e10a9f99657",
+      "bytes": 1211,
+      "sha256": "6b0382b16279f26ff69014300541967a356a666eb0b91b422f6862f6b7dad17e",
+      "completeSourceRead": true,
+      "role": "license provenance",
+      "formalAiComparison": [
+        "LICENSE"
+      ],
+      "decision": "Retain original license beside copied upstream fixtures and pin every copied source identity."
+    },
+    {
+      "path": "README.md",
+      "gitBlob": "bcf3f0a46520ab01e8bc01e642088243e5e55a76",
+      "bytes": 10782,
+      "sha256": "2de662d720b3a7884c148966de35648011f26ae27f6562556cc0d49ea62d5f4b",
+      "completeSourceRead": true,
+      "role": "contributor and usage documentation",
+      "formalAiComparison": [
+        "README.md",
+        "CONTRIBUTING.md"
+      ],
+      "decision": "Keep Formal AI execution, evidence and build policies. Java README freshness/PR-only audit language lags current implementation; compare actual scripts rather than copying obsolete policy text."
+    },
+    {
+      "path": "examples/BasicUsage.java",
+      "gitBlob": "5bb8ae6e2edbdfff1196fb50d3a1c2ac5ed7b7e9",
+      "bytes": 2634,
+      "sha256": "5b9251b291f43a9b14be08b44a4ed745547f669c26653749dca83f05f390c375",
+      "completeSourceRead": true,
+      "role": "Java sample application and tests",
+      "formalAiComparison": [
+        "rust/src",
+        "rust/tests"
+      ],
+      "decision": "Reviewed simple arithmetic, asynchronous delay, version and entrypoint examples with small JUnit cases. These are Java teaching examples, not additional Formal AI algorithms or evidence that its benchmark capability floors pass."
+    },
+    {
+      "path": "experiments/ci-dependencies.test.mjs",
+      "gitBlob": "aaff7aa7e7a747fb55aed8347e419411a860aa4e",
+      "bytes": 12241,
+      "sha256": "a052b99713698a9af30f880a67783a7354195d5f2714594156a46a3899d60ca9",
+      "completeSourceRead": true,
+      "role": "dependency checker regressions",
+      "formalAiComparison": [
+        "scripts/check-dependencies-action-release-tests.rs",
+        "rust/tests/web/issue-1580-template-observations.test.mjs"
+      ],
+      "decision": "Read current/stale integrity controls and registry failure mocks. Existing Java stale-plus-invalid checks prevent the Go policy bypass. No complete upstream test execution is claimed."
+    },
+    {
+      "path": "experiments/cli-runtime.test.mjs",
+      "gitBlob": "30f213cfaf29f9193dca8f6e9f858126441046e0",
+      "bytes": 2232,
+      "sha256": "561584baeddcaea5232f153b7405c36dcdf6113b3743cab389711f8c48ec1fa3",
+      "completeSourceRead": true,
+      "role": "CLI compatibility regressions",
+      "formalAiComparison": [
+        "rust/tests/web/issue-1580-template-observations.test.mjs"
+      ],
+      "decision": "Native parser tests reject missing values and misspelled flags and exercise normal version writes. Preserve bounded subprocesses and real behavior instead of accepting source shape alone."
+    },
+    {
+      "path": "experiments/file-size.test.mjs",
+      "gitBlob": "538b0d05552c94791d010349838fda143fb5aeb5",
+      "bytes": 2552,
+      "sha256": "e342d3292ab8a79574d2d25f3ae1aae5ddb4a8fb27597539b47d188c45cbaeaa",
+      "completeSourceRead": true,
+      "role": "warning behavior regressions",
+      "formalAiComparison": [
+        "rust/tests/web/issue-1580-template-observations.test.mjs"
+      ],
+      "decision": "Retain explicit warning/failure distinctions and source boundaries. Existing Formal AI size warning inventory remains unfinished; do not lower thresholds to manufacture success."
+    },
+    {
+      "path": "experiments/fixtures/fake-gh.mjs",
+      "gitBlob": "fdc8b79674caca2d2544c98226d380291fb534f2",
+      "bytes": 481,
+      "sha256": "258344ac9941c486f915ddb887ffb2ecf90c66aad2e5d006b3621ceedf72e869",
+      "completeSourceRead": true,
+      "role": "bounded fake external tools",
+      "formalAiComparison": [
+        "experiments/issue-1580/fixtures"
+      ],
+      "decision": "Small fake gh/Maven executables isolate external-state and worktree controls. Keep these explicitly injected boundaries separate from live publication or runtime capability evidence."
+    },
+    {
+      "path": "experiments/fixtures/fake-mvn.mjs",
+      "gitBlob": "650ab0c5b55a4b88f0d38c578c563949cd1108aa",
+      "bytes": 682,
+      "sha256": "310b5e2c3764582a8c4e30e2d9708d1675d6fdf014b743bc66c85d384e13a74d",
+      "completeSourceRead": true,
+      "role": "bounded fake external tools",
+      "formalAiComparison": [
+        "experiments/issue-1580/fixtures"
+      ],
+      "decision": "Small fake gh/Maven executables isolate external-state and worktree controls. Keep these explicitly injected boundaries separate from live publication or runtime capability evidence."
+    },
+    {
+      "path": "experiments/issue24-registry-inventory.py",
+      "gitBlob": "c5b369f1c06eae7033a34968811b007e7356d1fd",
+      "bytes": 3361,
+      "sha256": "5aec474b429787daf7a0da42fe0f6c563032677238bb1c47a940cfcea31f71fa",
+      "completeSourceRead": true,
+      "role": "historical migration/audit experiments",
+      "formalAiComparison": [
+        "experiments/issue-1580"
+      ],
+      "decision": "Reviewed Maven registry/transitive inventory, one-off dependency migration and audit gap reproduction. Do not replay a historical generator or copy Maven overrides into Formal AI. Registry metadata and upstream ABI blockers are evidence, not local repairs."
+    },
+    {
+      "path": "experiments/issue24-transitive-inventory.py",
+      "gitBlob": "c904c233a867eec474c58c4fcc17ce0a63d2a0a5",
+      "bytes": 5327,
+      "sha256": "dfae38f3aa5520f7d6b498216d6f23c837e5f9ef07aa5fcec5a7584356a1cafb",
+      "completeSourceRead": true,
+      "role": "historical migration/audit experiments",
+      "formalAiComparison": [
+        "experiments/issue-1580"
+      ],
+      "decision": "Reviewed Maven registry/transitive inventory, one-off dependency migration and audit gap reproduction. Do not replay a historical generator or copy Maven overrides into Formal AI. Registry metadata and upstream ABI blockers are evidence, not local repairs."
+    },
+    {
+      "path": "experiments/issue24-update-plugin-dependencies.py",
+      "gitBlob": "572e2061a5b056d96f2a1bb74ba0855b7d575bc1",
+      "bytes": 3911,
+      "sha256": "12201f28850a80de39045e5ffb91bac5f7ccf8277cd94c07b509f7c5457e4664",
+      "completeSourceRead": true,
+      "role": "historical migration/audit experiments",
+      "formalAiComparison": [
+        "experiments/issue-1580"
+      ],
+      "decision": "Reviewed Maven registry/transitive inventory, one-off dependency migration and audit gap reproduction. Do not replay a historical generator or copy Maven overrides into Formal AI. Registry metadata and upstream ABI blockers are evidence, not local repairs."
+    },
+    {
+      "path": "experiments/maven-plugin-audit.test.mjs",
+      "gitBlob": "4a12c9eb90b320adc04bf2e7c0d6f0e70acf7e40",
+      "bytes": 4709,
+      "sha256": "cec0f3e9728b581d83fafd4ac2cc3de349d8056597b1185b08d94061d25726cc",
+      "completeSourceRead": true,
+      "role": "audit-scope regressions",
+      "formalAiComparison": [
+        ".github/workflows/security.yml"
+      ],
+      "decision": "Mock complete registry results and unexpected/missing/error observations; build/test plugin artifacts require scope beyond default source extraction. Maven-specific resolution is not executed or copied into Cargo."
+    },
+    {
+      "path": "experiments/osv-audit-gaps.mjs",
+      "gitBlob": "9c00f841c4aff5b166cb0bda2e9afc3cdf516746",
+      "bytes": 1900,
+      "sha256": "cd73e9ac023940d73b9d2ed7579eed5acca08494ecb337f2c1e6ab835749715a",
+      "completeSourceRead": true,
+      "role": "historical migration/audit experiments",
+      "formalAiComparison": [
+        "experiments/issue-1580"
+      ],
+      "decision": "Reviewed Maven registry/transitive inventory, one-off dependency migration and audit gap reproduction. Do not replay a historical generator or copy Maven overrides into Formal AI. Registry metadata and upstream ABI blockers are evidence, not local repairs."
+    },
+    {
+      "path": "experiments/osv-download.test.mjs",
+      "gitBlob": "8fd13b571901204c3ecc0ba82c0541e2dd7fc43b",
+      "bytes": 2394,
+      "sha256": "e648e603385fbec68e73f6c198d14a9c3174b8fdce5891aaadc8db31d0c7daf5",
+      "completeSourceRead": true,
+      "role": "download retry regression",
+      "formalAiComparison": [
+        "rust/tests/web/container-apt-retry.test.mjs"
+      ],
+      "decision": "Reviewed interrupted-transfer retry and checksum expectations. Java already has retry-all-errors and is excluded from the C++ truncated-transfer report."
+    },
+    {
+      "path": "experiments/release-recovery.test.mjs",
+      "gitBlob": "9e664b0cfba3d87b42139bd2a87bf10388e1a898",
+      "bytes": 10650,
+      "sha256": "ca4eb0018d6cad72c9e66ddcac1ebfec58829fc8ca7ce0b564fc0fd9180f7457",
+      "completeSourceRead": true,
+      "role": "recovery and positive release controls",
+      "formalAiComparison": [
+        "rust/tests/web/release-recovery-decision.test.mjs",
+        "scripts/version-and-commit-tests.rs"
+      ],
+      "decision": "Tests missing/exists/unknown, original-tag worktree cleanup and successful local release pushes. They do not cover rejecting a release commit; the new five-case regression adds that negative control using local bare remotes."
+    },
+    {
+      "path": "experiments/rerun-unacquired.test.mjs",
+      "gitBlob": "80e7c86bd71e84ed7663c778b6170c97b636b15c",
+      "bytes": 3754,
+      "sha256": "efe81c5bd3bcd5c97307fe340cf424885b6918e530895d2abeec36ad26522083",
+      "completeSourceRead": true,
+      "role": "bounded acquisition recovery regressions",
+      "formalAiComparison": [
+        "scripts/report-runner-capacity.sh"
+      ],
+      "decision": "Read strict runner/steps/annotation checks and retry cap controls. Keep code failures distinct from capacity failures, including unavailable observation handling."
+    },
+    {
+      "path": "mvnw",
+      "gitBlob": "bd8896bf2217b46faa0291585e01ac1a3441a958",
+      "bytes": 11790,
+      "sha256": "cae96cef89ebea3531221f4ae17c23cf8edf67d00eae8306d4186ae1bbed4d02",
+      "completeSourceRead": true,
+      "role": "Unix Maven bootstrap",
+      "formalAiComparison": [
+        "scripts/cargo-test.sh"
+      ],
+      "decision": "Reviewed complete bootstrap, distribution pin and downloads. Maven wrapper mechanics are not a substitute for Formal AI executable provenance or its Cargo resource constraints."
+    },
+    {
+      "path": "mvnw.cmd",
+      "gitBlob": "5761d948924c19571d27b465c519b2e2f9e30351",
+      "bytes": 8481,
+      "sha256": "46eedb8419bd14fe70d5bb2916d7b6f51806e51b39d5b76a42610384ca929c1c",
+      "completeSourceRead": true,
+      "role": "Windows Maven bootstrap",
+      "formalAiComparison": [
+        "scripts/cargo-test.sh"
+      ],
+      "decision": "Reviewed full wrapper source. Its CRLF worktree concern is already upstream #28. Retain Formal AI platform paths and executable provenance rather than copy a Java wrapper."
+    },
+    {
+      "path": "pom.xml",
+      "gitBlob": "e36d698ce4eb5cad30e8d6deb2c6ed403892c4ae",
+      "bytes": 97159,
+      "sha256": "555c2feae051e835d7e70cc02d7b8171d2e088c449722c526286e6d087bf21d9",
+      "completeSourceRead": true,
+      "role": "Java dependency graph and compiler/lint/test configuration",
+      "formalAiComparison": [
+        "rust/Cargo.toml",
+        "rust/Cargo.lock",
+        ".github/workflows/security.yml"
+      ],
+      "decision": "Read all 1872 lines in bounded chunks and parsed all XML nodes. Compiler Xlint/Werror, Surefire 120-second process and JUnit 10-second defaults, Spotless validate and SpotBugs verify are explicit. Hundreds of Maven plugin transitive pins and Java 27/Maven floors are Java-specific. Preserve Formal AI benchmark floors, audit coverage and native-main-only policy. POM version-reader/writer parent handling differs; no unexecuted version-writing defect is presented as reproduced."
+    },
+    {
+      "path": "scripts/audit-maven-plugins.mjs",
+      "gitBlob": "06479d81de82e3d4b08e83e5487462238cbd2d5d",
+      "bytes": 6670,
+      "sha256": "a48564dfae9530fb0e7728655a44580198c80b6b42174d8658c2d3d2e5d957da",
+      "completeSourceRead": true,
+      "role": "resolved Maven artifact audit",
+      "formalAiComparison": [
+        ".github/workflows/security.yml",
+        "scripts/check-rust-dependencies.sh"
+      ],
+      "decision": "Resolve plugin/test artifact scope in addition to source scanning; fail on HTTP errors, unexpected result counts and any unsuppressed vulnerability. Keep Formal AI Cargo audit and strict scoped exception validation. No live Maven audit was run."
+    },
+    {
+      "path": "scripts/bump-version.mjs",
+      "gitBlob": "47d77384626514438bb5c0af712a948b6682780d",
+      "bytes": 4566,
+      "sha256": "2d0ae12bfd47b703576a6dd165319a961b00d99a6c1b0b6b55830d19a20239e6",
+      "completeSourceRead": true,
+      "role": "standalone version mutation",
+      "formalAiComparison": [
+        "scripts/bump-version.rs"
+      ],
+      "decision": "Native CLI parsing rejects unknown/missing options. Preserve safe argument handling and consistent version writes. Java standalone regex handling differs from the hardened project-version reader; parent/comment cases remain source observations here."
+    },
+    {
+      "path": "scripts/check-ci-dependencies.mjs",
+      "gitBlob": "de67060089705c49ddc202fa4e82dffeb53ad810",
+      "bytes": 10338,
+      "sha256": "fb6239f5e9cc1f56309d5819938ccec57c04ed97af619642f5ceed3be60a9364",
+      "completeSourceRead": true,
+      "role": "freshness versus integrity",
+      "formalAiComparison": [
+        "scripts/check-dependencies-latest.rs",
+        "scripts/check-dependencies-action-release.rs"
+      ],
+      "decision": "Java intentionally warns for stale versions on every event and verifies integrity independently. Keep Formal AI strict findings/unverifiable policy. Java tests already cover stale-version/bad-pin integrity and do not reproduce the Go early-continue bypass."
+    },
+    {
+      "path": "scripts/check-file-size.mjs",
+      "gitBlob": "6d94cad3bebcedefd1a8734cbfb145e89d56f930",
+      "bytes": 3740,
+      "sha256": "b041f9d9b6c0d3049e2d4c010214ac89c50b147f8ab2c5cc1c8be7b3c75b108d",
+      "completeSourceRead": true,
+      "role": "source size and warning thresholds",
+      "formalAiComparison": [
+        "scripts/check-file-size.mjs",
+        "scripts/check-file-size.rs"
+      ],
+      "decision": "Inspect actual tracked source and explicit large-file warnings. Keep Formal AI targets and account for unresolved warnings instead of raising limits or hiding files."
+    },
+    {
+      "path": "scripts/ci-security.test.mjs",
+      "gitBlob": "58b15db903dcabf55541dfe025d18d6563340766",
+      "bytes": 4869,
+      "sha256": "c0602288e73e67bb9312270ae3dcfa1cac4d35ffabb95024fd9dc0ac7f18c81d",
+      "completeSourceRead": true,
+      "role": "security and input regression coverage",
+      "formalAiComparison": [
+        "rust/tests/web/release-recovery-decision.test.mjs"
+      ],
+      "decision": "Reviewed option-injection, freshness and protected logging cases. Keep executable negative controls and safe argument boundaries; do not treat source regex coverage as hosted execution."
+    },
+    {
+      "path": "scripts/collect-changelog.mjs",
+      "gitBlob": "659ecc112fe75039abd66af0ac61bdb9849c84ad",
+      "bytes": 6029,
+      "sha256": "afefed46692d3f56e122c13328810d7a26e7448b38656ba0c6fc0920ae41017a",
+      "completeSourceRead": true,
+      "role": "changelog consumption",
+      "formalAiComparison": [
+        "scripts/collect-changelog.rs"
+      ],
+      "decision": "Protect contributor text when printed and keep fragment consumption tied to successful release writes. Java can ignore invalid fragments while removing input files; this is a source observation without a separate executed defect claim."
+    },
+    {
+      "path": "scripts/create-github-release.mjs",
+      "gitBlob": "cb2c97ab57b61989f430e18d6e693ca936f95548",
+      "bytes": 3755,
+      "sha256": "584458929e9e7bb85e4b638f65aac248a98ce5a34a2f0bc884edd96b81947c33",
+      "completeSourceRead": true,
+      "role": "GitHub release creation",
+      "formalAiComparison": [
+        "scripts/create-github-release.rs",
+        "scripts/create-release-with-recovery.mjs"
+      ],
+      "decision": "Use strict safe version arguments, distinguish exists/missing/unknown, require the remote tag and verify publication artifacts in the workflow. Keep Formal AI verified receipts, source freshness and default-branch writer restrictions."
+    },
+    {
+      "path": "scripts/create-manual-changeset.mjs",
+      "gitBlob": "4e5aa65a3a8f1bf158c49e857907201c226efd15",
+      "bytes": 5299,
+      "sha256": "5a0d397b5a128d6c0d101fbc1f67ce9c5e5db0ec55dcf530f743c6bd39ebbabb",
+      "completeSourceRead": true,
+      "role": "manual release metadata",
+      "formalAiComparison": [
+        "scripts/create-changelog-fragment.rs"
+      ],
+      "decision": "Use native argument parsing and structured output rather than direct dispatch interpolation. Keep Formal AI changelog.d format and existing version trigger."
+    },
+    {
+      "path": "scripts/detect-code-changes.mjs",
+      "gitBlob": "681079b3e92928a631db1a93a5f789e881e62209",
+      "bytes": 6409,
+      "sha256": "9599ea5b5297bc1df59114044de12ae05e9cca233946ac5523e490be896b7737",
+      "completeSourceRead": true,
+      "role": "Git observation and test selection",
+      "formalAiComparison": [
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "scripts/detect-code-changes.rs"
+      ],
+      "decision": "Unmodified detector turns failed comparisons into successful negative outputs; already reproduced and reported as Java #30. Formal AI propagates unknown comparisons and permits a tree fallback only for established initial commits. Native execution remains main-only and unverified here."
+    },
+    {
+      "path": "scripts/github-actions-log.mjs",
+      "gitBlob": "9bc18a78512941ef309b44029a87a5c9243571a9",
+      "bytes": 649,
+      "sha256": "39d091b802b0d140b85874b254b912257bc269bf7628acab65f0e298ef7d8d57",
+      "completeSourceRead": true,
+      "role": "untrusted diagnostic logging",
+      "formalAiComparison": [
+        "scripts/check-sccache-write-health.sh"
+      ],
+      "decision": "Fresh 128-bit stop/resume command tokens protect contributor text. Formal AI cache diagnostics now use the same boundary with bounded retained bytes/lines and URL redaction. A human prefix alone is not a runner-command boundary."
+    },
+    {
+      "path": "scripts/github-release-state.mjs",
+      "gitBlob": "ade97a05e1089d5837d1980a1557060673ca1ac7",
+      "bytes": 1176,
+      "sha256": "fae9c0c8114031f6d2a3553d62605cdfd7026e9006eedfca6c7fe8f3002b5c93",
+      "completeSourceRead": true,
+      "role": "external-state classification",
+      "formalAiComparison": [
+        "scripts/release-recovery-decision.mjs"
+      ],
+      "decision": "Only the exact not-found result is missing; authentication/network/rate-limit/server/unavailable-tool results are unknown. Default diagnostics stay quiet; verbose text suspends workflow commands. Preserve independent verified/failed/unknown receipts."
+    },
+    {
+      "path": "scripts/merge-changesets.mjs",
+      "gitBlob": "05a07b0cc8c5ca9ad6e85b52c6f09dcbb9828831",
+      "bytes": 7741,
+      "sha256": "d80b52b06674136daa9fe47212840186cae8f3ceb100330ef81bd4be0195b598",
+      "completeSourceRead": true,
+      "role": "release fragment merge",
+      "formalAiComparison": [
+        "scripts/collect-changelog.rs"
+      ],
+      "decision": "Preserve bump priority, release note fidelity and safe logging. Java package frontmatter is not the Formal AI changelog format; source review is not a claim of full upstream suite execution."
+    },
+    {
+      "path": "scripts/rerun-unacquired.mjs",
+      "gitBlob": "7369df0f548c569d883c34033a8d879bf177e29f",
+      "bytes": 5671,
+      "sha256": "568df22688a11206745781342224be5113c422ece67760fae9016cc3f5e96904",
+      "completeSourceRead": true,
+      "role": "runner failure classification",
+      "formalAiComparison": [
+        "scripts/report-runner-capacity.sh",
+        "scripts/check-pipeline-status.sh"
+      ],
+      "decision": "No runner plus no steps plus the exact acquisition annotation is required; unknown annotations remain unclassified. Paginate jobs/annotations and allow only two automatic retries. Do not classify cache/backend failures by counters alone."
+    },
+    {
+      "path": "scripts/validate-changeset.mjs",
+      "gitBlob": "e0c08a25eef6f47dbd845a4dd8cb9d7cd862d49d",
+      "bytes": 6718,
+      "sha256": "ec906ec26ed1b2c40def3771cd8cbbf32148680568121de7d854053225d602ff",
+      "completeSourceRead": true,
+      "role": "release metadata policy",
+      "formalAiComparison": [
+        "scripts/check-changelog-fragment.mjs",
+        "scripts/check-changelog-fragment.rs"
+      ],
+      "decision": "The repaired Java fallback validates all changesets when the base diff is unavailable. Its absent-changeset warning is an explicit weaker policy. Keep Formal AI required fragments and distinguish unavailable observations from empty diffs."
+    },
+    {
+      "path": "scripts/version-and-commit.mjs",
+      "gitBlob": "0f6812d46591f3f6615f52d834f8c42f965662fc",
+      "bytes": 10349,
+      "sha256": "1162d6fed85dfff0b93477879cf92980c8d4384405f32763007c5753bb3fe5b3",
+      "completeSourceRead": true,
+      "role": "release commit/tag ordering",
+      "formalAiComparison": [
+        "scripts/version-and-commit.rs",
+        "scripts/version-and-commit-tests.rs"
+      ],
+      "decision": "New real-Git regression proves failed commit still yields released=true and pushes an old-source tag in both modes. Candidate removal of the commit-error fallback blocks tags/pushes, with positive controls. Formal AI already exits on failed commit and tags after a successful source push; retain those stronger checks. Java report pending immutable evidence publication; no upstream repair is claimed."
+    },
+    {
+      "path": "scripts/workflow-policy.test.mjs",
+      "gitBlob": "41e2343f34f9ce0eec5fd09c4677d2ca36a7fc51",
+      "bytes": 7414,
+      "sha256": "ee332c6824ae59c345937a87a021d77384903ab839eb7aa00362b354f21e5291",
+      "completeSourceRead": true,
+      "role": "workflow structure regressions",
+      "formalAiComparison": [
+        "rust/tests/web/issue-1580-template-observations.test.mjs",
+        "scripts/check-runner-labels.mjs"
+      ],
+      "decision": "Tests pin runner/tool/download/input/publication policy, but text assertions do not execute the dependency graph. Keep Formal AI behavior controls and main-only native scope."
+    },
+    {
+      "path": "src/main/java/com/linkfoundation/mypackage/Main.java",
+      "gitBlob": "3be8f97774892cb36b52425fa96eab3d810d033d",
+      "bytes": 1903,
+      "sha256": "91b187b591cf2123397979c48289b374323dc60382e760ce31a03bd5724d35c0",
+      "completeSourceRead": true,
+      "role": "Java sample application and tests",
+      "formalAiComparison": [
+        "rust/src",
+        "rust/tests"
+      ],
+      "decision": "Reviewed simple arithmetic, asynchronous delay, version and entrypoint examples with small JUnit cases. These are Java teaching examples, not additional Formal AI algorithms or evidence that its benchmark capability floors pass."
+    },
+    {
+      "path": "src/main/java/com/linkfoundation/mypackage/MyPackage.java",
+      "gitBlob": "eac691a23516bb9714291b94484414175cc93d36",
+      "bytes": 2074,
+      "sha256": "cbf7a1986bc5d7a0418c967b8c26d0f2f7adab39c0805ab517a8bfbbd96d79b8",
+      "completeSourceRead": true,
+      "role": "Java sample application and tests",
+      "formalAiComparison": [
+        "rust/src",
+        "rust/tests"
+      ],
+      "decision": "Reviewed simple arithmetic, asynchronous delay, version and entrypoint examples with small JUnit cases. These are Java teaching examples, not additional Formal AI algorithms or evidence that its benchmark capability floors pass."
+    },
+    {
+      "path": "src/main/java/com/linkfoundation/mypackage/package-info.java",
+      "gitBlob": "49a5dceb74ae10ccff8e4e8fb0f03b5b55d72b7c",
+      "bytes": 723,
+      "sha256": "3d2bd3823c1856a38f9ac987811f8ea1e5c278ed559966bdc651eea190d57fd9",
+      "completeSourceRead": true,
+      "role": "Java sample application and tests",
+      "formalAiComparison": [
+        "rust/src",
+        "rust/tests"
+      ],
+      "decision": "Reviewed simple arithmetic, asynchronous delay, version and entrypoint examples with small JUnit cases. These are Java teaching examples, not additional Formal AI algorithms or evidence that its benchmark capability floors pass."
+    },
+    {
+      "path": "src/test/java/com/linkfoundation/mypackage/MainTest.java",
+      "gitBlob": "233ea6eb00ce27f218851edb060347861a5b38ba",
+      "bytes": 578,
+      "sha256": "347dc75fee858d68f3bdc32cf53f90c1fadeb4a795dd50410d356654f815b38f",
+      "completeSourceRead": true,
+      "role": "Java sample application and tests",
+      "formalAiComparison": [
+        "rust/src",
+        "rust/tests"
+      ],
+      "decision": "Reviewed simple arithmetic, asynchronous delay, version and entrypoint examples with small JUnit cases. These are Java teaching examples, not additional Formal AI algorithms or evidence that its benchmark capability floors pass."
+    },
+    {
+      "path": "src/test/java/com/linkfoundation/mypackage/MyPackageTest.java",
+      "gitBlob": "1853ae0fbca79dbc0ca1226fc7c4e56ad6644d90",
+      "bytes": 4842,
+      "sha256": "8a334103a697c88caa1cb3d9174e7329c2f081b3d74a554d24e9dac9f411429d",
+      "completeSourceRead": true,
+      "role": "Java sample application and tests",
+      "formalAiComparison": [
+        "rust/src",
+        "rust/tests"
+      ],
+      "decision": "Reviewed simple arithmetic, asynchronous delay, version and entrypoint examples with small JUnit cases. These are Java teaching examples, not additional Formal AI algorithms or evidence that its benchmark capability floors pass."
+    }
+  ],
+  "excludedHistoricalEvidence": {
+    "policy": "These 145 dev/log files are historical reports, command logs, registry responses, API receipts and previous source snapshots, not active CI source. Git blob identities remain in java-files.tsv. No full-content semantic read or current-runtime verification is claimed.",
+    "files": [
+      "dev/log/issues/24/pulls/25/ANALYSIS.md",
+      "dev/log/issues/24/pulls/25/DEPENDENCIES.md",
+      "dev/log/issues/24/pulls/25/PLAN.md",
+      "dev/log/issues/24/pulls/25/REQUIREMENTS.md",
+      "dev/log/issues/24/pulls/25/TRANSITIVE-DEPENDENCIES.md",
+      "dev/log/issues/24/pulls/25/VERIFICATION.md",
+      "dev/log/issues/24/pulls/25/actionlint-upstream-report.txt",
+      "dev/log/issues/24/pulls/25/actionlint.log",
+      "dev/log/issues/24/pulls/25/baseline-all-syntax.log",
+      "dev/log/issues/24/pulls/25/baseline-node-syntax.log",
+      "dev/log/issues/24/pulls/25/bun-checks.log",
+      "dev/log/issues/24/pulls/25/ci-dependencies.log",
+      "dev/log/issues/24/pulls/25/cli-runtime-tests.log",
+      "dev/log/issues/24/pulls/25/diff-whitespace.log",
+      "dev/log/issues/24/pulls/25/file-size.log",
+      "dev/log/issues/24/pulls/25/format-final.log",
+      "dev/log/issues/24/pulls/25/jacoco-upstream-report.txt",
+      "dev/log/issues/24/pulls/25/javascript-tests.log",
+      "dev/log/issues/24/pulls/25/maven-original-resolution.log",
+      "dev/log/issues/24/pulls/25/maven-resolution-updated.log",
+      "dev/log/issues/24/pulls/25/maven-resolution.log",
+      "dev/log/issues/24/pulls/25/maven-transitive-migration-2.log",
+      "dev/log/issues/24/pulls/25/maven-transitive-migration-3.log",
+      "dev/log/issues/24/pulls/25/maven-transitive-migration-4.log",
+      "dev/log/issues/24/pulls/25/maven-transitive-migration-5.log",
+      "dev/log/issues/24/pulls/25/maven-transitive-migration.log",
+      "dev/log/issues/24/pulls/25/maven-verify.log",
+      "dev/log/issues/24/pulls/25/maven-wrapper-generation.log",
+      "dev/log/issues/24/pulls/25/metadata-consolidation.log",
+      "dev/log/issues/24/pulls/25/migration-regressions.log",
+      "dev/log/issues/24/pulls/25/osv-before-resolved-artifacts.log",
+      "dev/log/issues/24/pulls/25/osv-dependencies.json",
+      "dev/log/issues/24/pulls/25/osv-dependencies.log",
+      "dev/log/issues/24/pulls/25/osv-plugins.log",
+      "dev/log/issues/24/pulls/25/osv-resolved-artifacts.log",
+      "dev/log/issues/24/pulls/25/osv-scope-reproduction-summary.log",
+      "dev/log/issues/24/pulls/25/osv-scope-reproduction.log",
+      "dev/log/issues/24/pulls/25/osv-upstream-report.txt",
+      "dev/log/issues/24/pulls/25/plexus-upstream-report.txt",
+      "dev/log/issues/24/pulls/25/pre-commit-evidence-normalization.log",
+      "dev/log/issues/24/pulls/25/pre-commit-final.log",
+      "dev/log/issues/24/pulls/25/pre-commit-install.log",
+      "dev/log/issues/24/pulls/25/pre-commit-registry-snapshots.log",
+      "dev/log/issues/24/pulls/25/pre-commit.log",
+      "dev/log/issues/24/pulls/25/registry-inventory.log",
+      "dev/log/issues/24/pulls/25/resolved-audit-tests.log",
+      "dev/log/issues/24/pulls/25/sources/actionlint-queue-issue.json",
+      "dev/log/issues/24/pulls/25/sources/actionlint-queue-original.json",
+      "dev/log/issues/24/pulls/25/sources/actionlint-queue-pr.json",
+      "dev/log/issues/24/pulls/25/sources/actionlint-ubuntu26-issue.json",
+      "dev/log/issues/24/pulls/25/sources/actionlint-ubuntu26-search.json",
+      "dev/log/issues/24/pulls/25/sources/adoptium.json",
+      "dev/log/issues/24/pulls/25/sources/current-pr-runs.json",
+      "dev/log/issues/24/pulls/25/sources/dependabot-pr-21.json",
+      "dev/log/issues/24/pulls/25/sources/dependency-update-practices.md",
+      "dev/log/issues/24/pulls/25/sources/durian-swt-changelog.md",
+      "dev/log/issues/24/pulls/25/sources/final-issue-comments.json",
+      "dev/log/issues/24/pulls/25/sources/final-main-sha.txt",
+      "dev/log/issues/24/pulls/25/sources/final-pr-conversation-comments.json",
+      "dev/log/issues/24/pulls/25/sources/final-pr-inline-comments.json",
+      "dev/log/issues/24/pulls/25/sources/final-pr-reviews.json",
+      "dev/log/issues/24/pulls/25/sources/final-sub-issues.json",
+      "dev/log/issues/24/pulls/25/sources/github-actions-checkout.json",
+      "dev/log/issues/24/pulls/25/sources/github-actions-setup-java.json",
+      "dev/log/issues/24/pulls/25/sources/github-actions-setup-node.json",
+      "dev/log/issues/24/pulls/25/sources/github-actions-upload-artifact.json",
+      "dev/log/issues/24/pulls/25/sources/github-codecov-codecov-action.json",
+      "dev/log/issues/24/pulls/25/sources/github-google-osv-scanner.json",
+      "dev/log/issues/24/pulls/25/sources/github-oven-sh-bun.json",
+      "dev/log/issues/24/pulls/25/sources/github-oven-sh-setup-bun.json",
+      "dev/log/issues/24/pulls/25/sources/github-peter-evans-create-pull-request.json",
+      "dev/log/issues/24/pulls/25/sources/github-pre-commit-pre-commit-hooks.json",
+      "dev/log/issues/24/pulls/25/sources/github-pre-commit-pre-commit.json",
+      "dev/log/issues/24/pulls/25/sources/github-rhysd-actionlint.json",
+      "dev/log/issues/24/pulls/25/sources/google-java-format-release.json",
+      "dev/log/issues/24/pulls/25/sources/implementation-pipeline.json",
+      "dev/log/issues/24/pulls/25/sources/implementation-policy.json",
+      "dev/log/issues/24/pulls/25/sources/implementation-security.json",
+      "dev/log/issues/24/pulls/25/sources/initial-main-runs.json",
+      "dev/log/issues/24/pulls/25/sources/initial-pr-runs.json",
+      "dev/log/issues/24/pulls/25/sources/issue-24.json",
+      "dev/log/issues/24/pulls/25/sources/issue-comments.json",
+      "dev/log/issues/24/pulls/25/sources/java27.json",
+      "dev/log/issues/24/pulls/25/sources/json-simple-changelog.txt",
+      "dev/log/issues/24/pulls/25/sources/junit6-migration.md",
+      "dev/log/issues/24/pulls/25/sources/main-pipeline.json",
+      "dev/log/issues/24/pulls/25/sources/main-security.json",
+      "dev/log/issues/24/pulls/25/sources/maven-apache-maven.xml",
+      "dev/log/issues/24/pulls/25/sources/maven-checkstyle.xml",
+      "dev/log/issues/24/pulls/25/sources/maven-google-java-format.xml",
+      "dev/log/issues/24/pulls/25/sources/maven-jacoco-maven-plugin.xml",
+      "dev/log/issues/24/pulls/25/sources/maven-junit-jupiter-params.xml",
+      "dev/log/issues/24/pulls/25/sources/maven-junit-jupiter.xml",
+      "dev/log/issues/24/pulls/25/sources/maven-maven-clean-plugin.xml",
+      "dev/log/issues/24/pulls/25/sources/maven-maven-compiler-plugin.xml",
+      "dev/log/issues/24/pulls/25/sources/maven-maven-dependency-plugin.xml",
+      "dev/log/issues/24/pulls/25/sources/maven-maven-deploy-plugin.xml",
+      "dev/log/issues/24/pulls/25/sources/maven-maven-enforcer-plugin.xml",
+      "dev/log/issues/24/pulls/25/sources/maven-maven-gpg-plugin.xml",
+      "dev/log/issues/24/pulls/25/sources/maven-maven-install-plugin.xml",
+      "dev/log/issues/24/pulls/25/sources/maven-maven-jar-plugin.xml",
+      "dev/log/issues/24/pulls/25/sources/maven-maven-javadoc-plugin.xml",
+      "dev/log/issues/24/pulls/25/sources/maven-maven-resources-plugin.xml",
+      "dev/log/issues/24/pulls/25/sources/maven-maven-site-plugin.xml",
+      "dev/log/issues/24/pulls/25/sources/maven-maven-source-plugin.xml",
+      "dev/log/issues/24/pulls/25/sources/maven-maven-surefire-plugin.xml",
+      "dev/log/issues/24/pulls/25/sources/maven-maven-wrapper-plugin.xml",
+      "dev/log/issues/24/pulls/25/sources/maven-spotbugs-maven-plugin.xml",
+      "dev/log/issues/24/pulls/25/sources/maven-spotless-maven-plugin.xml",
+      "dev/log/issues/24/pulls/25/sources/maven-versions-maven-plugin.xml",
+      "dev/log/issues/24/pulls/25/sources/merged-pr-23.diff",
+      "dev/log/issues/24/pulls/25/sources/merged-pr-23.json",
+      "dev/log/issues/24/pulls/25/sources/merged-prs.json",
+      "dev/log/issues/24/pulls/25/sources/node.json",
+      "dev/log/issues/24/pulls/25/sources/osv-build-issues.json",
+      "dev/log/issues/24/pulls/25/sources/osv-extractor-code.json",
+      "dev/log/issues/24/pulls/25/sources/osv-plugin-dependency-issues.json",
+      "dev/log/issues/24/pulls/25/sources/osv-plugin-issues.json",
+      "dev/log/issues/24/pulls/25/sources/osv-test-scope-issues.json",
+      "dev/log/issues/24/pulls/25/sources/plexus-scope-issue.json",
+      "dev/log/issues/24/pulls/25/sources/pom-original-main.xml",
+      "dev/log/issues/24/pulls/25/sources/pr-25.json",
+      "dev/log/issues/24/pulls/25/sources/pr-conversation-comments.json",
+      "dev/log/issues/24/pulls/25/sources/pr-inline-comments.json",
+      "dev/log/issues/24/pulls/25/sources/pr-reviews.json",
+      "dev/log/issues/24/pulls/25/sources/pre-commit-pypi.json",
+      "dev/log/issues/24/pulls/25/sources/registry-inventory.json",
+      "dev/log/issues/24/pulls/25/sources/related-code.json",
+      "dev/log/issues/24/pulls/25/sources/resolved-artifacts-before-overrides.txt",
+      "dev/log/issues/24/pulls/25/sources/resolved-artifacts-final.txt",
+      "dev/log/issues/24/pulls/25/sources/resolved-artifacts-original-active.txt",
+      "dev/log/issues/24/pulls/25/sources/resolved-artifacts-original-main.txt",
+      "dev/log/issues/24/pulls/25/sources/runner-images-readme.md",
+      "dev/log/issues/24/pulls/25/sources/site-jetty-issue.json",
+      "dev/log/issues/24/pulls/25/sources/spotless-unsafe-issue.json",
+      "dev/log/issues/24/pulls/25/sources/spotless-unsafe-issues.json",
+      "dev/log/issues/24/pulls/25/sources/sub-issues.json",
+      "dev/log/issues/24/pulls/25/sources/transitive-inventory.json",
+      "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-1.json",
+      "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-2.json",
+      "dev/log/issues/24/pulls/25/sources/transitive-registry-metadata-3.json",
+      "dev/log/issues/24/pulls/25/spotless-apply.log",
+      "dev/log/issues/24/pulls/25/spotless-upstream-report.txt",
+      "dev/log/issues/24/pulls/25/toolchains.log",
+      "dev/log/issues/24/pulls/25/transitive-inventory.log"
+    ]
+  }
+}

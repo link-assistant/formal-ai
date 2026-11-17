@@ -16,6 +16,21 @@
       "path": "LICENSE",
       "gitBlob": "fdddb29aa445bf3d6a5d843d6dd77e10a9f99657",
       "sha256": "6b0382b16279f26ff69014300541967a356a666eb0b91b422f6862f6b7dad17e"
+    },
+    {
+      "path": "scripts/version-and-commit.mjs",
+      "gitBlob": "0f6812d46591f3f6615f52d834f8c42f965662fc",
+      "sha256": "1162d6fed85dfff0b93477879cf92980c8d4384405f32763007c5753bb3fe5b3"
+    },
+    {
+      "path": "scripts/github-release-state.mjs",
+      "gitBlob": "ade97a05e1089d5837d1980a1557060673ca1ac7",
+      "sha256": "fae9c0c8114031f6d2a3553d62605cdfd7026e9006eedfca6c7fe8f3002b5c93"
+    },
+    {
+      "path": "scripts/collect-changelog.mjs",
+      "gitBlob": "659ecc112fe75039abd66af0ac61bdb9849c84ad",
+      "sha256": "afefed46692d3f56e122c13328810d7a26e7448b38656ba0c6fc0920ae41017a"
     }
   ]
 }
