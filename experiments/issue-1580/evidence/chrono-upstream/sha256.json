@@ -1,8 +1,36 @@
-{
-  "link-calculator-0.22.0-dependencies.json": "78876e7ff1a2b5fd7c804569558134170cbcf00a65a26ac1a9b87fb0b8fd2d43",
-  "link-calculator-0.24.0-dependencies.json": "f6b236b414635073ef9696cc67aaa97f3019c1816920eacb6bc4d85ad269fa03",
-  "command-stream-registry.json": "91121939ff276502f1d5db4c8990a2178a441a268387df5c450073557f97df97",
-  "command-stream-1.5.3-dependencies.json": "5ac485053228078a6821c9ce025bf5eecea29c1704ac1dea85bf3dfd1e79f359",
-  "link-calculator-registry.json": "2e6f680b30d2057e0b6331414d5fe32dd466f423dbdab9d6e268a776e0e2df99",
-  "command-stream-1.13.0-dependencies.json": "913e7ed31e15bbd899b6982fd01d08d0f256a3bd70f37ef846d253dc4d885538"
-}
+[
+  {
+    "path": "command-stream-1.13.0-dependencies.json",
+    "bytes": 7098,
+    "sha256": "913e7ed31e15bbd899b6982fd01d08d0f256a3bd70f37ef846d253dc4d885538"
+  },
+  {
+    "path": "command-stream-1.5.3-dependencies.json",
+    "bytes": 5454,
+    "sha256": "5ac485053228078a6821c9ce025bf5eecea29c1704ac1dea85bf3dfd1e79f359"
+  },
+  {
+    "path": "command-stream-registry.json.gz",
+    "bytes": 8604,
+    "sha256": "195648a4b807901231667caa8f563523ab43b4517c0ea6a737fbb2a485d69cd4",
+    "uncompressedBytes": 130936,
+    "uncompressedSha256": "91121939ff276502f1d5db4c8990a2178a441a268387df5c450073557f97df97"
+  },
+  {
+    "path": "link-calculator-0.22.0-dependencies.json",
+    "bytes": 5686,
+    "sha256": "78876e7ff1a2b5fd7c804569558134170cbcf00a65a26ac1a9b87fb0b8fd2d43"
+  },
+  {
+    "path": "link-calculator-0.24.0-dependencies.json",
+    "bytes": 5686,
+    "sha256": "f6b236b414635073ef9696cc67aaa97f3019c1816920eacb6bc4d85ad269fa03"
+  },
+  {
+    "path": "link-calculator-registry.json.gz",
+    "bytes": 10881,
+    "sha256": "8f8fc17280041925166bf6c4944a3629e78197e13c452a5e0d3c925de5a3075c",
+    "uncompressedBytes": 197618,
+    "uncompressedSha256": "2e6f680b30d2057e0b6331414d5fe32dd466f423dbdab9d6e268a776e0e2df99"
+  }
+]
