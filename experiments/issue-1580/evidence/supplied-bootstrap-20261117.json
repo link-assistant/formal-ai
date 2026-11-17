@@ -1,6 +1,6 @@
 {
   "autonomousAuthorshipCredit": 0,
-  "archiveSha256": "96cd4693186f5c0f3a0d0a62e1b305fc52ad2bf4f5d10e14d2870fcc910d724f",
+  "archiveSha256": "8fdd510b99900214d8854234b95c5574bcc06195ef01c15e629c649bad2b0929",
   "files": [
     {
       "file": "add-cache-budget-integration.py",
@@ -46,6 +46,11 @@
       "file": "archive-evidence.py",
       "bytes": 1062,
       "sha256": "faf27dafdfe116f36a2a193a64102fb4b597c1572936288a26d72eeec5b71fd7"
+    },
+    {
+      "file": "archive-java-release-checks.py",
+      "bytes": 4783,
+      "sha256": "06005296d69d01f2ed5fc4e48a1a6c6b0de002c6de4c62eb35f89a1400d0b384"
     },
     {
       "file": "archive-round-bootstrap.py",
@@ -108,9 +113,19 @@
       "sha256": "d2aca63fb70a14efd63f4b2adf8ee9230d87e4992e69284cf8f463de5444ae46"
     },
     {
+      "file": "check-eighth-archive-size.sh",
+      "bytes": 283,
+      "sha256": "5151b613d6618ca9abddacd930cd2ef38b73e990dbb97be2c5c9ac40a891f604"
+    },
+    {
       "file": "check-go-review-gates.sh",
       "bytes": 263,
       "sha256": "57a51166d20cc9b924b20a898cc6f4631e222dfbf43b868244185cfdfde6c604"
+    },
+    {
+      "file": "check-java-release-gates.sh",
+      "bytes": 332,
+      "sha256": "e256ee9e19ce7d2b73aa7ea836b747dfd15d1cf93a8c220ff3cc4ace1a4e636f"
     },
     {
       "file": "check-latest-time-dependencies.py",
@@ -168,6 +183,11 @@
       "sha256": "bdc430d365d32b57e63a8ae372341e60d365ae869ce236f23131100d65987d68"
     },
     {
+      "file": "commit-go-report-records.sh",
+      "bytes": 485,
+      "sha256": "c658251eb82dbc941ae658a6908a26d73378854a985b15b81a83d93a559a5c37"
+    },
+    {
       "file": "commit-go-review.py",
       "bytes": 1760,
       "sha256": "4219d9aefdd6dc258316dbabb3f0aec637845a724c2c216a1ff273c0b7048db4"
@@ -176,6 +196,11 @@
       "file": "commit-investigation.sh",
       "bytes": 1577,
       "sha256": "957caa4c4864b86b34e9c5f608efe76c266d5d862375e3123e3567a90ec7fb12"
+    },
+    {
+      "file": "commit-java-release-regression.sh",
+      "bytes": 1368,
+      "sha256": "a0cb2b4220f4d8655b868d666e4e9a8685c62dec18d4e01bd74f74a25a999e8d"
     },
     {
       "file": "commit-preparation.sh",
@@ -241,6 +266,16 @@
       "file": "document-current-round.py",
       "bytes": 8470,
       "sha256": "dbe59846574845717749fafa54d159ad237ca194bedc5a59ef8ffe2099124562"
+    },
+    {
+      "file": "document-java-release-review.py",
+      "bytes": 6803,
+      "sha256": "ef6eae8b67997e94c9c787913403de0aaf1cd5169f1ce5eb78b8ee843bc003bd"
+    },
+    {
+      "file": "file-go-pin-report.py",
+      "bytes": 664,
+      "sha256": "75316fad6f25cf85f28c62f25fa2ce3652e896fd1e3da45b0043aa36442230d8"
     },
     {
       "file": "file-template-reports.py",
@@ -408,6 +443,11 @@
       "sha256": "062f0ee55ff86948680c39335aa85dbedfb31ad2e32cc2f224633862a392b3f0"
     },
     {
+      "file": "fresh-feedback-eighth.py",
+      "bytes": 1198,
+      "sha256": "721062d383592a60d2221d9d0bcdd3adbd61b67d6090879b467e729bb2cb9165"
+    },
+    {
       "file": "full-template-trees.py",
       "bytes": 2125,
       "sha256": "96c78116eb79797c1f64da54328f73b10e3d89de7f705e4df6bf9d2ad48517d5"
@@ -416,6 +456,11 @@
       "file": "go-checkpoint-context.sh",
       "bytes": 355,
       "sha256": "e4664f2947ce6895a90baa0ce7b2471f134f60d70274810328c7de0d8378b10f"
+    },
+    {
+      "file": "go-report-final-preflight.py",
+      "bytes": 1133,
+      "sha256": "ae06db18773985ed1510556e1d8fa30edcd56e2583ac9c75ce8ee52e529f0e14"
     },
     {
       "file": "hive-current-draft.lib.mjs",
@@ -483,9 +528,34 @@
       "sha256": "b63ee8947c8282609303087dc58d1e687ca00fb535c88d2931f7cd2cd7e07bac"
     },
     {
+      "file": "java-active-file-index.py",
+      "bytes": 252,
+      "sha256": "6e2044aae40389893e95ef43749b057e99117e7fd23add0f04a56a79b7e38307"
+    },
+    {
+      "file": "java-archive-inventory.py",
+      "bytes": 423,
+      "sha256": "c92ae56ac54a397aae877bc3bfd49a2376f4b45340bf61987415c3875a3a0cbf"
+    },
+    {
+      "file": "java-comparison-paths.sh",
+      "bytes": 111,
+      "sha256": "323649102c9c09cd4124769e6bbbca8543bcdb8a53e1535b8f9242389e4cf868"
+    },
+    {
+      "file": "java-context-concise.py",
+      "bytes": 457,
+      "sha256": "a0315f9947543181f95b61595c5cf95e40be402b3f65cbe747ccb27e9c7aa737"
+    },
+    {
       "file": "java-context-index.py",
       "bytes": 671,
       "sha256": "62d935ab8b8457391420657b2122ec1582d0a09241bf92f03fe355a97744442f"
+    },
+    {
+      "file": "java-integrity-fixture-context.sh",
+      "bytes": 452,
+      "sha256": "9634eb54ffe23f8b76b66dae9b1615ba83e000553ed6ace58184694efaa61f0f"
     },
     {
       "file": "java-latest-context.py",
@@ -503,14 +573,54 @@
       "sha256": "ccb549cfbb72384d90b8cf3d7b1c7f29bbb198bc0bc7c7b2f9ba6d9a190894b2"
     },
     {
+      "file": "java-precommit-review.sh",
+      "bytes": 295,
+      "sha256": "75575803c0695b58610fa2505b33e0f3189bed464ed843deb7d66909a6137bb3"
+    },
+    {
+      "file": "java-read-remainder.py",
+      "bytes": 357,
+      "sha256": "40dcfda9095d0ca2289832ada2c61f0ad315729a779aa0b58e0d9895febb52b4"
+    },
+    {
       "file": "java-recover-page8.sh",
       "bytes": 112,
       "sha256": "63a0f5e81cc4ca206dcb49605b802b5a36737496df63e23c8d4aec38a2b01c9a"
     },
     {
+      "file": "java-release-context.py",
+      "bytes": 636,
+      "sha256": "bcc2c9276ece26aac00f8515d0c312678de61f79a66e8b3ba7e1249c7e96c84b"
+    },
+    {
+      "file": "java-release-dedup.py",
+      "bytes": 902,
+      "sha256": "51276d403cf4b7ffa981e194b136a567f2ffdb07f6eb842dbdf5f705114f3b19"
+    },
+    {
+      "file": "java-release-existing-tests.sh",
+      "bytes": 416,
+      "sha256": "7e9fd0a210f55a8068004c4c3aa251e9ea56e41f524cb660b201e275fb1bbd47"
+    },
+    {
+      "file": "java-release-targets.sh",
+      "bytes": 396,
+      "sha256": "78965dbf1443a54a270e517ae68b9b9b321c3dab3c84daebe2ca4bc021e94cad"
+    },
+    {
+      "file": "java-report-preflight.py",
+      "bytes": 1122,
+      "sha256": "84659677a8ee2e4518226e9276d05a9a7aa5e3455226ef29fd1229b0ab34eeab"
+    },
+    {
       "file": "java-review-inventory.py",
       "bytes": 750,
       "sha256": "65afef937c43bcfc109e2c3d3505a6f6f1a6eee8d80c84dec192a0a12b1cee5d"
+    },
+    {
+      "file": "java-review-record-context.sh",
+      "bytes": 348,
+      "sha256": "6a3000f8f3c426fad59d6a1c57b1c61810fb459c1c8c69591eec6a0f014c0740"
     },
     {
       "file": "java-review-recovery.sh",
@@ -521,6 +631,11 @@
       "file": "list-checkpoint-inputs.py",
       "bytes": 543,
       "sha256": "9e8e831a90e3c7fe789dd1006266cd3a0b6d282b7ef143e2f3faa6a20d76230a"
+    },
+    {
+      "file": "local-release-integrity-search.sh",
+      "bytes": 187,
+      "sha256": "0221c5e589514aef61bc68b1243655c8e82e2576bdd43d03789f4f481239c45d"
     },
     {
       "file": "locate-issue-source.py",
@@ -558,6 +673,11 @@
       "sha256": "0ce808ef142f352902173e289cc1b91630b48f69110356703308b2bbd97e6324"
     },
     {
+      "file": "prepare-eighth-evidence.py",
+      "bytes": 772,
+      "sha256": "caf01dfacafd76c611558ea3a1d44a613ff6213794165b819ae13545373dbf6f"
+    },
+    {
       "file": "prepare-evidence.py",
       "bytes": 1755,
       "sha256": "b16c25a25ffbb4ab3f4cd6a1e9bfaeb623ec958f60bc7bdc6e906c57d645788d"
@@ -571,6 +691,11 @@
       "file": "prepare-go-fixtures.py",
       "bytes": 1756,
       "sha256": "e496d0b272d4b3e507500b582c89057247a16f373d553e6da7e73d8deb64fe3c"
+    },
+    {
+      "file": "prepare-java-release-fixture.py",
+      "bytes": 1290,
+      "sha256": "76f003c757daf382c10d4b1bbc25a5bf26c7f5ec5322e2c20d87f9202a36b376"
     },
     {
       "file": "prepare-runtime-commit.py",
@@ -623,9 +748,19 @@
       "sha256": "f9fdcc2b6d2a00c65cf754e9d5efd87b56c86d05dda34f059b404bd61d1ab47f"
     },
     {
+      "file": "push-seventh-round.sh",
+      "bytes": 851,
+      "sha256": "f7d995714e321bedc41af9bfff87ab7ffd20ca0f403be3652601a3a6ce8cc8c0"
+    },
+    {
       "file": "push-sixth-round.sh",
       "bytes": 545,
       "sha256": "ee4e21d55a0ad44824f414f8f7f6181081715489536b3faf3d4791edb8826a99"
+    },
+    {
+      "file": "read-archive-scripts.sh",
+      "bytes": 149,
+      "sha256": "aa9f205e414e1947bb4a0bdce73a4ae9dd07eac14bd1175a9798813534ee60d9"
     },
     {
       "file": "read-audit-failure.py",
@@ -678,6 +813,11 @@
       "sha256": "316a2b9fd1a270dcaa10ddf9ba31ad2be53155268d6b5ff1df01aae788ae3ce2"
     },
     {
+      "file": "read-eighth-archive-input.sh",
+      "bytes": 123,
+      "sha256": "923c0b41420af5805ad8b9f4ab0c50495ae3ff0d930bee36b91448112c3669a8"
+    },
+    {
       "file": "read-evidence-archival.sh",
       "bytes": 190,
       "sha256": "f11fa8085bfef79025c393c16a20203f71e459248ff8d15ce6eb7d1dcfddcffa"
@@ -691,6 +831,16 @@
       "file": "read-go-local.sh",
       "bytes": 401,
       "sha256": "8cb945b7047f0185bb7a161c4758b4f807985ef7ac271d40c8b06c7129c23d97"
+    },
+    {
+      "file": "read-go-report-records.sh",
+      "bytes": 460,
+      "sha256": "fd1e88de29c74bdd25b260a2228f64fc367a4087612d70d35d0c85db843599ec"
+    },
+    {
+      "file": "read-java-final-pages.sh",
+      "bytes": 140,
+      "sha256": "27cbf6cea87d1a45e2cdf5e9a8e1502254722ab76d91e915f6867c27523762f9"
     },
     {
       "file": "read-local-detector.sh",
@@ -721,6 +871,11 @@
       "file": "read-policy-and-regression.sh",
       "bytes": 289,
       "sha256": "bcb72567e2e508f5f3d7334b6b83514d614ef66b9ca182ed7e805039639171b9"
+    },
+    {
+      "file": "read-pr-before-seventh.sh",
+      "bytes": 325,
+      "sha256": "02df9ccff329dce9e387c81d09650c11181d60416107af96320b6979b28463ca"
     },
     {
       "file": "read-related-template-prs.py",
@@ -796,6 +951,11 @@
       "file": "record-go-checkpoint.py",
       "bytes": 7832,
       "sha256": "2b74e53f934d6d7f1581adacffc3d0f347bfddfca829c86347a6f40be159e35c"
+    },
+    {
+      "file": "record-go-integrity-report.py",
+      "bytes": 2621,
+      "sha256": "c945390714a14be11fff348a676120769d492a7e4e670b971a7167a019e04d79"
     },
     {
       "file": "record-go-semantic-review.py",
@@ -928,6 +1088,16 @@
       "sha256": "d605af5c1cf8f146be2c46d87c5cd04a8acc6d074acf55a36767537d5e83dce3"
     },
     {
+      "file": "run-java-maintained-checks.sh",
+      "bytes": 287,
+      "sha256": "a9bdd9d45c5dd67578cd1eaeafbcd578a9828fa2e19d98621335991be5f24073"
+    },
+    {
+      "file": "run-java-release-regression.sh",
+      "bytes": 335,
+      "sha256": "01cf6bf71d98a008a39ef87eb2c52801db8256f98316078927a587b38845f58c"
+    },
+    {
       "file": "search-chrono-reports.sh",
       "bytes": 666,
       "sha256": "2291c472fe64060c0bbd8459a11e00ec64c3b59eedf2f91535ff321734f696f9"
@@ -998,6 +1168,11 @@
       "sha256": "0c5d8df8457d7e193ad7e8427587f2092b28c5b3b1adb9d02421907ec0d746f8"
     },
     {
+      "file": "update-pr-seventh.py",
+      "bytes": 2546,
+      "sha256": "4a36438027b3ef81b2b2a62d96276e90572546e8f0976b975a59739d3a40298b"
+    },
+    {
       "file": "update-pr-sixth.py",
       "bytes": 855,
       "sha256": "06cb1d016253909d55803ca4fcd5c55775e41f79cf9feb15b040d7bf875c860a"
@@ -1033,6 +1208,11 @@
       "sha256": "47a718b47ad36aff231a1202b74c8443c69ae659db379327384da403731aa4db"
     },
     {
+      "file": "verify-go-report-records.sh",
+      "bytes": 398,
+      "sha256": "7028c69dd05f77f4afd1eb4adaf984712440b397853bc401c034d72168b732c1"
+    },
+    {
       "file": "verify-import-archive-repair.sh",
       "bytes": 651,
       "sha256": "7571c6272f70d3eca21f6ee8c52e82dc81832877351e9c6840fa8b1baed35469"
@@ -1066,6 +1246,16 @@
       "file": "write-case-study.py",
       "bytes": 18718,
       "sha256": "4409a5583a41726473894fd3e3b6b0524b2ea05612f1f0088aa94c3af13299bc"
+    },
+    {
+      "file": "write-java-release-regression.py",
+      "bytes": 6942,
+      "sha256": "5966407718594d6ba4a05da93511821ecdca691d6bec4aed7351e03a1efd36d2"
+    },
+    {
+      "file": "write-java-semantic-review.py",
+      "bytes": 19561,
+      "sha256": "c89cbeff592f9f722cd3b947faba322b1ae4a011ede93fc8511315a1e7273648"
     }
   ]
 }
