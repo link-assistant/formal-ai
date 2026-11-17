@@ -125,3 +125,25 @@ main-run 44157125186
       failed "cli_serve_exposes_agentic_tool_protocols_over_loopback: Answer concisely replaced the Hi greeting with an output refusal"
       check rust/tests/web/issue-1580-client-output-constraints.test.mjs
       marker "main run 44157125186"
+main-run 44174503458
+  javascript-twin
+    regression causal-seed-page-summary-count
+      introduced-by "PR #1602, merged as 058e9bef"
+      failed "Moon page summary expected 196 unknown terms after causal English lexemes reduced the count to 195"
+      check rust/tests/web/page-formalization-route.test.mjs
+      marker "195 of 423 terms"
+    regression generated-native-source-witness-currency
+      introduced-by "source witness changes observed at main 058e9bef"
+      failed "rust-specification-generated-programs: generated registry is stale"
+      check rust/tests/web/rust-specification-generated-programs.test.mjs
+      marker "generated native registry is current"
+    regression passage-meta-candidate-network-ownership
+      introduced-by "recursive candidate research observed at main 058e9bef"
+      failed "a supplied-passage answer made twenty unnecessary external provider requests"
+      check rust/tests/web/issue-1172-factual-qa-subject-gate.test.mjs
+      marker "quoted passage is answered from its own sentence with no network call"
+    regression opt-in-binding-diagnostic-contract
+      introduced-by "private logging contract observed at main 058e9bef"
+      failed "unbound nested required values expected a raw schema in public metadata instead of the lazy private diagnostic"
+      check rust/tests/web/issue-1328-bounded-retries.test.mjs
+      marker "private schema and arguments remain lazy"
