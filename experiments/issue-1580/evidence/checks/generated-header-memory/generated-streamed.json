@@ -1,0 +1,19 @@
+{
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=96",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/generated-files.test.mjs"
+  ],
+  "status": 0,
+  "durationSeconds": 8.594,
+  "nodeHeapMiB": 96,
+  "childrenPeakRssKiB": 113332,
+  "rawSha256": "0a41731f4187a12c9e2a635d6f950477b7a6cfda90f4558019984971951a91ec",
+  "rawBytes": 764,
+  "log": "generated-streamed.log.gz",
+  "independentAuthorshipCredit": 0
+}
