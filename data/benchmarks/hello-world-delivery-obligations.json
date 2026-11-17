@@ -1,0 +1,37 @@
+{
+  "schema": "formal-ai-hello-world-delivery-obligations-v1",
+  "issue": 1162,
+  "purpose": "Independent per-obligation grade of one Hello World pull request (issue #1162 acceptance item 3). Each obligation is checked on its own, so a delivery fails with the names of what it missed, never with one opaque verdict. Exact stdout is only proven by an independent run; without one it is 'unobserved', never 'pass'.",
+  "expectedStdout": "Hello, World!\n",
+  "newlineRule": "The program writes exactly one line: the expected text followed by a single LF. No trailing spaces, no CR, no second line, no missing final newline. No trimming and no substring match.",
+  "programExtensions": {
+    "Kotlin": ".kt",
+    "Scala": ".scala",
+    "Rust": ".rs",
+    "Java": ".java",
+    "Python": ".py",
+    "JavaScript": ".js",
+    "Go": ".go",
+    "C": ".c"
+  },
+  "workflowDirectories": [".github/workflows/", "ci/"],
+  "workflowExtensions": [".yml", ".yaml"],
+  "verifyScriptPattern": "(^|/)verify[^/]*\\.sh$",
+  "buildArtifactPatterns": [
+    "(^|/)(main|Main|program|hello|hello_world)$",
+    "\\.(jar|class|tasty|o|obj|exe|bin|out|rlib)$",
+    "(^|/)(target|build|out)/"
+  ],
+  "sessionEvidencePatterns": [
+    "^dev/log/self-authored/",
+    "-stream\\.jsonl$",
+    "(^|/)session-id\\.txt$"
+  ],
+  "placeholderBodyMarkers": [
+    "created automatically by the AI issue solver",
+    "only the placeholder file the solver commits",
+    "Work in progress"
+  ],
+  "closingKeywords": ["Fixes", "Closes", "Resolves", "Fix", "Close", "Resolve", "Fixed", "Closed", "Resolved"],
+  "passingCheckConclusions": ["SUCCESS", "NEUTRAL", "SKIPPED"]
+}

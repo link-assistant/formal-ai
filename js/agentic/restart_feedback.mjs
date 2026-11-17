@@ -8,7 +8,7 @@ import { resolvesBody, shellQuote } from './git_commit.mjs';
 import { agenticMessage } from './messages.mjs';
 import { finalAnswer, jsonText, planOne } from './plan.mjs';
 import { Progress } from './progress.mjs';
-import { shellStep, observedPayload, reportedExitCode, harnessReportedFailure, incompleteReceipt } from './tool_result.mjs';
+import { exactSuccessfulStdout, shellStep, observedPayload, reportedExitCode, harnessReportedFailure, incompleteReceipt } from './tool_result.mjs';
 import { fill } from './work_item_steps.mjs';
 import { isObject, parseJson, splitOnce, splitWhitespace, trim, trimMatches } from './crate/rust_str.mjs';
 import { cached, childrenNamed, childValue, parseLino, readText } from './host.mjs';
@@ -149,8 +149,35 @@ export function feedbackNeedsChanges(output) {
 /** Own framework notices are bookkeeping, never evidence that a task passed. */
 function ownSessionStatus(item) {
   if (item.viewerDidAuthor !== true || item.includesCreatedEdit === true) return false;
-  return ['pull-request-session-summary-pattern', 'pull-request-session-started-pattern']
-    .some(key => new RegExp(fill(key, []), 'u').test(trim(item.body)));
+  return ownStatusPatterns().some(pattern => new RegExp(pattern, 'u').test(trim(item.body)));
+}
+/** Mirrors `OWN_STATUS_PATTERN_KEYS`: every notice the orchestrator posts as the viewer (issue #1162). */
+const OWN_STATUS_PATTERN_KEYS = Object.freeze([
+  'pull-request-session-summary-pattern',
+  'pull-request-session-started-pattern',
+  'pull-request-solution-log-pattern',
+  'pull-request-auto-restart-pattern',
+  'pull-request-restart-limit-pattern',
+  'pull-request-ready-to-merge-pattern',
+  'pull-request-automation-stopped-pattern',
+  'pull-request-auto-restart-evidence-pattern',
+  'pull-request-auto-restart-uncommitted-pattern',
+  'pull-request-restart-safety-limit-pattern',
+  'pull-request-session-started-draft-pattern',
+  'pull-request-solution-failed-pattern',
+  'pull-request-no-changes-pattern',
+  'pull-request-session-killed-pattern',
+]);
+function ownStatusPatterns() {
+  return OWN_STATUS_PATTERN_KEYS.map(key => fill(key, []));
+}
+/** Mirrors `fn pull_request_feedback_filter`: the bounded `gh --jq` read of pull request feedback. */
+export function pullRequestFeedbackFilter() {
+  const tests = ownStatusPatterns().map(pattern => `test(${JSON.stringify(pattern)})`).join(' or ');
+  return '{comments:[.comments[]|select((.viewerDidAuthor==true and .includesCreatedEdit!=true'
+    + ` and (.body|sub("^\\\\s+";"")|sub("\\\\s+$";"")|(${tests})))|not)`
+    + '|{author:.author.login,viewerDidAuthor,includesCreatedEdit,createdAt,body}],'
+    + 'reviews:[.reviews[]|{author:.author.login,state,body}]}';
 }
 const REFERENCE_TRIM = new Set(['`', ')', ',', '.']);
 
@@ -260,6 +287,9 @@ export function preparedWorkPaths(output) {
   if (incompleteReceipt(output)) return null;
   const raw = porcelainPaths(output);
   if (raw !== null) return raw;
+  const exact = exactSuccessfulStdout(output);
+  const exactPaths = exact === null ? null : porcelainPaths(exact);
+  if (exactPaths !== null) return exactPaths;
   const payload = observedPayload(output);
   return payload === null ? null : porcelainPaths(payload);
 }

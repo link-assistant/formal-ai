@@ -9,8 +9,11 @@ use crate::seed::{self, parser::parse_lino};
 
 const CONTRACTS: &str = include_str!("../../embedded/data/meta/stdout-program-contracts.lino");
 
+/// The language's CI setup steps with their version placeholders unfilled;
+/// the workflow renderer fills them from the version set it was given and
+/// reads them to say which pins the workflow uses (issue #1162).
 #[must_use]
-pub fn runtime_steps(language: &str) -> Option<String> {
+pub fn runtime_step_template(language: &str) -> Option<String> {
     let root = parse_lino(CONTRACTS);
     let contract = root
         .children
@@ -18,10 +21,7 @@ pub fn runtime_steps(language: &str) -> Option<String> {
         .children
         .iter()
         .find(|node| node.name == "language" && node.id == language)?;
-    Some(crate::version_resolution::fill_workflow_versions(
-        contract.find_child_value("ci_setup"),
-        &crate::version_resolution::VersionSet::for_generation(),
-    ))
+    Some(contract.find_child_value("ci_setup").to_owned())
 }
 
 /// Read the request's explicitly quoted output operands.

@@ -1,0 +1,6 @@
+Issue to solve: https://github.com/konard/test-hello-world-019fb330-fa49-7c9d-a664-b7ea33bb698a/issues/1
+Your prepared branch: issue-1-604f2202fd18
+Your prepared working directory: /tmp/gh-issue-solver-1792505721477
+Your prepared Pull Request: https://github.com/konard/test-hello-world-019fb330-fa49-7c9d-a664-b7ea33bb698a/pull/2
+
+Proceed.

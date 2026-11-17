@@ -1,0 +1,121 @@
+{
+  "repository": "konard/test-hello-world-019fb330-fa49-7c9d-a664-b7ea33bb698a",
+  "pull_request": {
+    "body": "## Summary\n\nThis pull request implements a solution for #1: Implement Hello World in Kotlin\n\n### Changes\n- 1 file(s) modified\n- 1 line(s) added\n- 0 line(s) removed\n\n### Issue Reference\nFixes #1\n\n---\n*This PR was created automatically by the AI issue solver*",
+    "checks": [
+      {
+        "conclusion": "SUCCESS",
+        "name": "run"
+      },
+      {
+        "conclusion": "SUCCESS",
+        "name": "run"
+      },
+      {
+        "conclusion": "SUCCESS",
+        "name": "run"
+      },
+      {
+        "conclusion": "SUCCESS",
+        "name": "run"
+      }
+    ],
+    "createdAt": "2026-07-30T14:19:34Z",
+    "headRefName": "issue-1-604f2202fd18",
+    "isDraft": false,
+    "state": "OPEN",
+    "title": "'Implement Hello World in Kotlin'",
+    "updatedAt": "2026-11-10T09:25:28Z"
+  },
+  "files": [
+    {
+      "additions": 35,
+      "changes": 35,
+      "filename": ".github/workflows/Main.yml",
+      "status": "added"
+    },
+    {
+      "additions": 28,
+      "changes": 28,
+      "filename": ".github/workflows/run.yml",
+      "status": "added"
+    },
+    {
+      "additions": 2,
+      "changes": 2,
+      "filename": ".gitignore",
+      "status": "added"
+    },
+    {
+      "additions": 6,
+      "changes": 6,
+      "filename": "Main.kt",
+      "status": "added"
+    },
+    {
+      "additions": 25,
+      "changes": 25,
+      "filename": "dev/log/self-authored/issue-1/evidence/claude-stream.jsonl",
+      "status": "added"
+    },
+    {
+      "additions": 2,
+      "changes": 2,
+      "filename": "dev/log/self-authored/issue-1/evidence/session-id.txt",
+      "status": "added"
+    },
+    {
+      "additions": 51,
+      "changes": 51,
+      "filename": "tests/verify-output.sh",
+      "status": "added"
+    }
+  ],
+  "commits": [
+    {
+      "date": "2026-07-30T14:19:23Z",
+      "message": "Initial commit with task details",
+      "sha": "65a1be4d"
+    },
+    {
+      "date": "2026-07-30T14:22:29Z",
+      "message": "Revert \"Initial commit with task details\"",
+      "sha": "e411d44f"
+    },
+    {
+      "date": "2026-09-15T09:10:22Z",
+      "message": "feat: add Main.java",
+      "sha": "4ff1d9af"
+    },
+    {
+      "date": "2026-09-16T09:48:55Z",
+      "message": "🛟 Auto-commit before critical-error recovery (stopped after two identical AI sessions)",
+      "sha": "302f35a2"
+    },
+    {
+      "date": "2026-09-27T15:03:41Z",
+      "message": "feat: add Main.kt",
+      "sha": "4337bf1c"
+    },
+    {
+      "date": "2026-09-27T15:06:23Z",
+      "message": "🛟 Auto-commit before critical-error recovery (stopped after two identical AI sessions)",
+      "sha": "923ff306"
+    },
+    {
+      "date": "2026-09-30T10:22:58Z",
+      "message": "Remove Hello World recovery artifacts (hive-mind#2324)",
+      "sha": "bec00a29"
+    },
+    {
+      "date": "2026-10-20T14:17:12Z",
+      "message": "feat: add Main.kt",
+      "sha": "139e03ce"
+    },
+    {
+      "date": "2026-11-10T09:21:27Z",
+      "message": "fix: complete prepared work",
+      "sha": "154e145d"
+    }
+  ]
+}

@@ -8,11 +8,11 @@ requirement is on a resolution level, and the next pass raises the lowest level 
 | Level | Meaning | Requirements |
 | ---: | --- | ---: |
 | 0 closed | superseded or withdrawn; no pass raises it | 8 |
-| 1 recorded | the row exists, nothing measures it yet | 33 |
+| 1 recorded | the row exists, nothing measures it yet | 34 |
 | 2 measured | a test pins it, but the row says it is not delivered | 3 |
-| 3 partial | delivered in part | 114 |
-| 4 implemented | delivered, with a test | 1325 |
-| | **all** | **1483** |
+| 3 partial | delivered in part | 125 |
+| 4 implemented | delivered, with a test | 1349 |
+| | **all** | **1519** |
 
 ## JavaScript first
 
@@ -20,18 +20,19 @@ The root the test that pins each requirement runs in (R1188-U29: the JavaScript 
 
 | Pinned by | Requirements |
 | --- | ---: |
-| a JavaScript test | 471 |
+| a JavaScript test | 500 |
 | a Rust test only | 920 |
-| no test | 92 |
+| no test | 99 |
 
 ## Next pass
 
-Level 1 (recorded): 33 requirement(s) to raise before any level above it is refined.
+Level 1 (recorded): 34 requirement(s) to raise before any level above it is refined.
 
 ### Level 1: recorded
 
 - `docs/requirements/doctrine-standing-doctrine-work-delegated-to-formal-ai-2026-10-07.md`: R1017-R1
 - `docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md`: R1021-14
+- `docs/requirements/issue-1159-toolchain-bootstrap.md`: R1159-3
 - `docs/requirements/issue-1207-hive-mind-progressive-self-coding.md`: R1207-1, R1207-2, R1207-3, R1207-4, R1207-5, R1207-8, R1207-9
 - `docs/requirements/issue-1212-project-motto.md`: R1212-2, R1212-3, R1212-4, R1212-5, R1212-7, R1212-8
 - `docs/requirements/issue-1213-cryptographic-provenance.md`: R1213-1, R1213-2, R1213-3, R1213-4, R1213-5, R1213-6, R1213-7, R1213-8, R1213-9, R1213-10
@@ -58,6 +59,12 @@ Level 1 (recorded): 33 requirement(s) to raise before any level above it is refi
 - `docs/requirements/issue-0914-vision-implementation-planning-coding-first.md`: R914-5, R914-6
 - `docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md`: R1021-22
 - `docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md`: R1085-9, R1085-15
+- `docs/requirements/issue-1156-single-output-literal.md`: R1156-5
+- `docs/requirements/issue-1157-idempotent-commit-clean-build.md`: R1157-5
+- `docs/requirements/issue-1158-pull-request-feedback-body-ready.md`: R1158-1, R1158-5
+- `docs/requirements/issue-1159-toolchain-bootstrap.md`: R1159-4, R1159-7
+- `docs/requirements/issue-1160-regular-hive-mind-prompt.md`: R1160-2, R1160-5
+- `docs/requirements/issue-1162-hello-world-delivery.md`: R1162-7, R1162-8, R1162-9
 - `docs/requirements/issue-1165-discovery-production-path.md`: R1165-1, R1165-2, R1165-4, R1165-8
 - `docs/requirements/issue-1173-no-canned-search-answer.md`: R1173-3
 - `docs/requirements/issue-1182-strict-source-duplication.md`: R1182-D1, R1182-D2, R1182-D3, R1182-D4

@@ -305,6 +305,14 @@ meanings
     unit "ordered relation over two operands"
     example "2 is greater than 1 and 1 is less than 2 both read less(1,2); 2 is less than 1 reads less(2,1)."
     grounding "js/agentic/crate/proposition_structure.mjs::relationOf; rust/src/formalization/proposition_structure.rs::relation_of"
+  output-repetition
+    role action
+    defined-by output
+    precondition "A program request binds a quoted output and states how many times it is printed: an explicit count right after the output, or a later mention marked as a repetition."
+    effect "Bind the output once per counted or explicitly repeated mention, in request order; every other mention of the same literal is the same output obligation, so the program never prints a line the request did not ask for twice."
+    unit "ordered output lines of one program"
+    example "prints Hello twice and prints Hello and then prints Hello again bind two lines; print exactly Hello and code prints Hello exactly bind one."
+    grounding "js/agentic/crate/intent_formalization_obligations.mjs::boundOutputLiterals; rust/src/intent_formalization/obligations.rs::bound_output_literals"
   task-decomposition
     role action
     defined-by output

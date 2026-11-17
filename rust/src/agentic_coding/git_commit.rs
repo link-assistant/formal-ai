@@ -30,7 +30,14 @@ pub(super) struct CommitTarget {
 /// Classify the already validated work-item destination for all recipe consumers.
 #[must_use]
 pub(super) fn is_pull_request_target(target: &CommitTarget) -> bool {
-    target.reference.contains("/pull/")
+    is_pull_request_reference(&target.reference)
+}
+
+/// Whether a work-item reference names a pull request. Every reference
+/// `general_planner::repository_work_reference` yields is a GitHub `issues` or
+/// `pull` URL, so any other reference names an issue.
+pub(super) fn is_pull_request_reference(reference: &str) -> bool {
+    reference.contains("/pull/")
 }
 
 impl CommitTarget {
@@ -105,6 +112,11 @@ pub(super) fn valid_workflow_target(value: &str) -> bool {
         && value
             .split('/')
             .all(|part| !part.is_empty() && part != "." && part != "..")
+}
+
+/// A workflow file name with no directory (issue #1162).
+pub(super) fn valid_workflow_file_name(value: &str) -> bool {
+    !value.contains('/') && valid_workflow_target(value)
 }
 
 pub(super) fn request_target_binding(
@@ -273,7 +285,47 @@ pub(super) fn recipe_commit_command(recipe: &ExecutionRecipe, target: &CommitTar
         &[
             ("{files}", &files),
             ("{reference}", &shell_quote(&target.reference)),
+            ("{retire}", &superseded_workflow_step(recipe)),
             ("{commit}", &command),
+        ],
+    )
+}
+
+/// The step that retires this generator's earlier workflow for the same
+/// program, or nothing when the recipe carries no workflow (issue #1162).
+///
+/// A resumed Hive Mind session regenerated the workflow at
+/// `.github/workflows/Main.yml` beside the `run.yml` an earlier session had
+/// committed, so the pull request ran the program twice. The retired file must
+/// sit beside the recipe's workflow and carry the template's exact header and
+/// name lines for this program; anything a person wrote or edited stays.
+#[allow(clippy::literal_string_with_formatting_args)]
+pub(super) fn superseded_workflow_step(recipe: &ExecutionRecipe) -> String {
+    let template = super::work_item_steps::fill("workflow_template", &[("{path}", &recipe.path)]);
+    let header = template.lines().next().unwrap_or_default();
+    let Some(name) = template
+        .lines()
+        .find(|line| line.strip_prefix("name: ").is_some()) else {
+        return String::new();
+    };
+    let Some(workflow) = recipe
+        .supporting_files
+        .iter()
+        .find(|file| file.source.lines().any(|line| line == name))
+    else {
+        return String::new();
+    };
+    let (dir, file) = workflow
+        .path
+        .rsplit_once('/')
+        .unwrap_or((".", workflow.path.as_str()));
+    super::work_item_steps::fill(
+        "superseded-workflow-retire-command",
+        &[
+            ("{dir}", &shell_quote(dir)),
+            ("{workflow}", &shell_quote(&format!("{dir}/{file}"))),
+            ("{header}", &shell_quote(header)),
+            ("{name}", &shell_quote(name)),
         ],
     )
 }
@@ -419,6 +471,76 @@ fn porcelain_entry(line: &str) -> Option<(&str, &str)> {
     (known && !path.is_empty() && !path.contains(char::is_whitespace)).then_some((status, path))
 }
 
+/// Feedback read, description edit and readiness for a pull request target.
+/// `requirements` is the reference the request was for: when it is an issue
+/// the description closes that issue and the title is the issue's title
+/// (issue #1162: the delivered pull requests kept the orchestrator's
+/// placeholder title and description, and the body named the pull request
+/// itself rather than the issue it resolves).
+pub(super) fn pr_completion_commands(
+    recipe: &ExecutionRecipe,
+    target: &CommitTarget,
+    requirements: &str,
+) -> Vec<String> {
+    if !is_pull_request_target(target) {
+        return Vec::new();
+    }
+    let target_url = shell_quote(&target.reference);
+    let issue = (!is_pull_request_reference(requirements)).then_some(requirements);
+    let commands = recipe
+        .commands
+        .iter()
+        .map(|command| format!("- `{command}`"))
+        .collect::<Vec<_>>()
+        .join("\n");
+    let body = super::work_item_steps::fill(
+        "pr_body_template",
+        &[
+            ("{path}", &recipe.path),
+            (concat!("{", "commands}"), &commands),
+            ("{reference}", issue.unwrap_or(&target.reference)),
+        ],
+    );
+    let quoted_body = shell_quote(&body);
+    let edit = match issue {
+        Some(issue) => super::work_item_steps::fill(
+            "pull-request-edit-titled-command",
+            &[
+                (concat!("{", "target}"), &target_url),
+                (
+                    concat!("{", "issue}"),
+                    &shell_quote(issue),
+                ),
+                (concat!("{", "body}"), &quoted_body),
+            ],
+        ),
+        None => super::work_item_steps::fill(
+            "pr_edit_command",
+            &[
+                (concat!("{", "target}"), &target_url),
+                (concat!("{", "body}"), &quoted_body),
+            ],
+        ),
+    };
+    vec![
+        super::work_item_steps::fill(
+            "pr_comments_command",
+            &[
+                (concat!("{", "target}"), &target_url),
+                (
+                    concat!("{", "filter}"),
+                    &shell_quote(&super::restart_feedback::pull_request_feedback_filter()),
+                ),
+            ],
+        ),
+        edit,
+        super::work_item_steps::fill(
+            "pr_ready_command",
+            &[(concat!("{", "target}"), &target_url)],
+        ),
+    ]
+}
+
 #[cfg(test)]
 #[path = "../../tests/unit/agentic-coding/git_commit_target_binding.rs"]
 mod target_binding_controls;
@@ -426,3 +548,7 @@ mod target_binding_controls;
 #[cfg(test)]
 #[path = "../../tests/unit/agentic-coding/git_commit_extension_identity.rs"]
 mod extension_identity_tests;
+
+#[cfg(test)]
+#[path = "../../tests/unit/agentic-coding/issue_1162_delivery_commands.rs"]
+mod issue_1162_delivery_commands;

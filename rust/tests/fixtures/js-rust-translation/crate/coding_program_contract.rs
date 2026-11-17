@@ -1,6 +1,6 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=6e1066cd12756f83ccaf6ebcda4e7321c292827f9745ab96e6f1c0ba6b2f841b bytes=16363
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=8d59a0593e8e879376359e63f29c565f47deab7fe7641e8f2d2b0a4a213270ad bytes=16268
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
-// formal-ai:workarounds import-pruning items=0 carried=6; string-methods items=1
+// formal-ai:workarounds import-pruning items=0 carried=5; string-methods items=1
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
@@ -40,10 +40,6 @@ pub fn wa_strs_join(items: Vec<String>, separator: String) -> String {
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
 // formal-ai:blockers import from outside the module directory
-
-// formal-ai:workaround import-pruning carried JavaScript import_statement
-// formal-ai:refusal import of names its module does not translate
-// formal-ai:blockers import of names its module carries
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate

@@ -15,7 +15,6 @@ import { normalizePrompt } from './engine.mjs';
 import { requested } from './implementation_language.mjs';
 import { boundOutputLiterals, obligationGapLines } from './intent_formalization_obligations.mjs';
 import { quotedSegmentSpans } from './normal_markov.mjs';
-import { fillWorkflowVersions, forGeneration } from './version_resolution.mjs';
 
 function contracts() {
   return cached('write:stdout_program_contracts', () => parseLinoRoot(readText('data/meta/stdout-program-contracts.lino')).children[0] ?? null);
@@ -28,10 +27,10 @@ function contractFor(language) {
 /** @param {string} text @param {string} from @param {string} to */
 const replaceText = (text, from, to) => text.split(from).join(to);
 
-/** Mirrors `fn runtime_steps`: the language's CI setup steps, or null. */
-export function runtimeSteps(language) {
+/** Mirrors `fn runtime_step_template`: the language's unfilled CI setup steps, or null. */
+export function runtimeStepTemplate(language) {
   const contract = contractFor(language);
-  return contract ? fillWorkflowVersions(findChildValue(contract, 'ci_setup'), forGeneration()) : null;
+  return contract ? findChildValue(contract, 'ci_setup') : null;
 }
 
 /** Mirrors `fn text_outside_quoted_segments` in rust/src/solver_handlers/text_manipulation.rs. */

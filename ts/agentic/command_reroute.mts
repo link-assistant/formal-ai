@@ -13,7 +13,7 @@ import { lower as canonicalUnaryLower } from './crate/rust_str.mjs';
 import { Capability } from './capability.mjs';
 import { classifyTool, isWorkspaceCreationTool, toolFor } from './capability_router.mjs';
 import { latestUserRequest, plainText, rustLines } from './content.mjs';
-import { pushRef, recipeCommitCommand, shellQuote, targetOf, isPullRequestTarget } from './git_commit.mjs';
+import { pushRef, recipeCommitCommand, shellQuote, targetOf, isPullRequestTarget, isPullRequestReference } from './git_commit.mjs';
 import { attachExecutionRecipe, functionCallCommand, programRecoveryCommand } from './crate/coding_program_contract.mjs';
 import { normalizeCommandWord } from './shell_command_policy.mjs';
 import { pathExtension, tokens, typedWriteTarget } from './write_request.mjs';
@@ -29,7 +29,7 @@ import { recipeSourceCommand, recipeSourceResult, recipeSourceMatches, recipeSou
 import { validateProgram } from './host.mjs';
 import { requestedIn as requestedCiWorkflow, attach as attachCiWorkflow } from './ci_workflow.mjs';
 import { MAX_REPAIR_RUNGS, failedStep, repairStep, stopNote } from './repair_loop.mjs';
-import { feedbackNeedsChanges } from './restart_feedback.mjs';
+import { feedbackNeedsChanges, pullRequestFeedbackFilter } from './restart_feedback.mjs';
 import { commandArgument, failureMessage, reportedExitCode as toolReportedExitCode, shellStep } from './tool_result.mjs';
 import { fill } from './work_item_steps.mjs';
 import { acceptanceReport } from './task_acceptance.mjs';
@@ -76,12 +76,12 @@ function recipeStep(messages, toolNames, symbolicAnswer, objective, recoveryOnly
   const workflow = repositoryCi ? recipeWorkflow(recipe, objective) : null;
   const expectedCommands = [...recipe.commands];
   if (commit && workflow === null) expectedCommands.push(recipeCommitCommand(recipe, commit));
-  if (commit && workflow === null) expectedCommands.push(...prCompletionCommands(recipe, commit));
+  if (commit && workflow === null) expectedCommands.push(...prCompletionCommands(recipe, commit, requirementsTarget?.reference ?? commit.reference));
   const progress = recipeProgressAfterLatestUser(messages, writeTool, recipe, expectedCommands, resume);
   if (progress.source_invalidated) return recipeSourceRefusal();
   if (recoveryOnly && !progress.failure?.from_run) return null;
   if (commit) {
-    const followup = prCompletionCommands(recipe, commit);
+    const followup = prCompletionCommands(recipe, commit, requirementsTarget?.reference ?? commit.reference);
     const observed = Progress.scan(messages);
     if (followup.length) {
       const output = observed.latestSuccessfulRunOutputFor(followup[0]);
@@ -113,7 +113,7 @@ function recipeStep(messages, toolNames, symbolicAnswer, objective, recoveryOnly
       if (recoveryOnly && identity === null) return null;
       if (identity !== null && failure.exit_code === 127 && commit && workflow !== null) {
         return planRecipeCiFallback(messages.slice(progress.failure_index + 1), toolNames, recipe, commit.reference, workflow, prCompletionCommands(recipe
-    , commit), false, requirementsTarget.reference);
+    , commit, requirementsTarget?.reference ?? commit.reference), false, requirementsTarget.reference);
       }
       const recovery = identity === null ? planRecovery(messages, toolNames, step, failure.exit_code, failure.reported) : planRecoveryWithIdentity(messages
     , toolNames, step, failure.exit_code, failure.reported, identity);
@@ -153,7 +153,7 @@ function recipeStep(messages, toolNames, symbolicAnswer, objective, recoveryOnly
   }));
   if (commit && workflow !== null) {
     return planRecipeCiFallback(messages.slice(progress.last_command_index + 1), toolNames, recipe, commit.reference, workflow, prCompletionCommands(recipe
-    , commit), true, requirementsTarget.reference);
+    , commit, requirementsTarget?.reference ?? commit.reference), true, requirementsTarget.reference);
   }
   const answer = executionRecipeFinalAnswer(recipe, progress.command_outputs, commit);
   const acceptance = acceptanceReport(objective, recipe, progress.command_outputs.slice(0, recipe.commands.length));
@@ -185,12 +185,22 @@ function recipeWorkflow(recipe, objective) {
   if (!workflow || !recipe.supporting_files.some(file => file.path === workflow.path && file.source === workflow.source)) return null;
   return /^name: ([^\r\n]+)$/mu.exec(workflow.source)?.[1] ?? null;
 }
-function prCompletionCommands(recipe, target) {
+/**
+ * Mirrors `fn pr_completion_commands`: feedback read, description edit and
+ * readiness. When `requirements` names an issue the description closes it and
+ * the title is the issue's own title (issue #1162).
+ */
+export function prCompletionCommands(recipe, target, requirements) {
   if (!isPullRequestTarget(target)) return [];
   const targetUrl = shellQuote(target.reference);
+  const issue = typeof requirements === 'string' && !isPullRequestReference(requirements) ? requirements : null;
   const commands = recipe.commands.map(command => `- \`${command}\``).join('\n');
-  const body = fill('pr_body_template', [['{path}', recipe.path], ['{commands}', commands], ['{reference}', target.reference]]);
-  return [fill('pr_comments_command', [['{target}', targetUrl]]), fill('pr_edit_command', [['{target}', targetUrl], ['{body}', shellQuote(body)]]), fill('pr_ready_command', [['{target}', targetUrl]])];
+  const body = fill('pr_body_template', [['{path}', recipe.path], ['{commands}', commands], ['{reference}', issue ?? target.reference]]);
+  const quotedBody = shellQuote(body);
+  const edit = issue === null
+    ? fill('pr_edit_command', [['{target}', targetUrl], ['{body}', quotedBody]])
+    : fill('pull-request-edit-titled-command', [['{target}', targetUrl], ['{issue}', shellQuote(issue)], ['{body}', quotedBody]]);
+  return [fill('pr_comments_command', [['{target}', targetUrl], ['{filter}', shellQuote(pullRequestFeedbackFilter())]]), edit, fill('pr_ready_command', [['{target}', targetUrl]])];
 }
 
 /**
@@ -219,6 +229,12 @@ export function executionRecipeFinalAnswer(recipe, allOutputs, committed) {
     actual
   });
   if (committed && commitOutput !== undefined) {
+    // Issue #1157: an unchanged tree after a repeated or resumed run is a
+    // success, stated in a sentence rather than left as a marker.
+    const marker = fill('commit_nothing_marker', []);
+    if (commitOutput.split('\n').some(line => trim(line) === marker)) {
+      answer += `\n\n${fill('commit-unchanged-report', [['{branch}', pushRef(committed)]])}`;
+    }
     answer += agenticMessage('command_reroute_committed_and_pushed', {
       branch: pushRef(committed),
       reference: committed.reference,

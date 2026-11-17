@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=c03facf9f0fad99dfa9054fb91a2eb71c636dca8ffa65c0ac5f184c4156429bb bytes=15209
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=26f529f54982d88a55abd979c6b921bea4b291ff86f86d4d7439dac4a1e39ed8 bytes=16896
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=1 carried=6
 
@@ -152,9 +152,13 @@ pub const WHEN_UNBOUND_OUTPUT: &str = "unbound_output_literal";
 // formal-ai:refusal method call .some()
 // formal-ai:blockers arrow callback of .some() | call of an imported function | method call .some()
 
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal method call .split()
+// formal-ai:blockers call of a sibling function | call of an imported function | method call .filter() | method call .join() | method call .push() | method call .split() | regular expression
+
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .split()
-// formal-ai:blockers Number.parseInt | arrow callback of .find() | arrow callback of .map() | arrow callback of .reduce() | call of a sibling function | call of an imported function | field access | method call .filter() | method call .find() | method call .join() | method call .map() | method call .push() | method call .reduce() | method call .slice() | method call .split() | nullish coalescing | regular expression | undefined
+// formal-ai:blockers Number.parseInt | arrow callback of .find() | arrow callback of .map() | arrow callback of .reduce() | call of a sibling function | call of an imported function | field access | method call .find() | method call .map() | method call .reduce() | method call .slice() | method call .split() | nullish coalescing | undefined
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=e89ed6198c954102012e7e221fc4656a3ab67db185470046a97e0bd6ab330353
 // | /** The structure part `surfaceStructure` lists explicit counts under. */
@@ -165,6 +169,23 @@ pub const REPETITION_PART: &str = "repetition=";
 // | /** The suffix of the `proposition-structure` key holding a repetition kind's count. */
 // | const COUNT_SUFFIX = '-count';
 pub const COUNT_SUFFIX: &str = "-count";
+
+// meta-language:translated JavaScript lexical_declaration items=1 sha256=ad7a2505f2d171baa0922469c90ac18b86919fd4a4ed85411eee90e3baa41d55
+// | /** Mirrors `OUTPUT_REPETITION_RULE`. */
+// | const OUTPUT_REPETITION_RULE = 'output-repetition';
+pub const OUTPUT_REPETITION_RULE: &str = "output-repetition";
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal function value …
+// formal-ai:blockers arrow callback of .flatMap() | arrow callback of .some() | call of a sibling function | call of an imported function | method call .flatMap() | method call .some()
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal optional chaining
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | call of an imported function | field access | method call .filter() | method call .map() | nullish coalescing | optional chaining
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal arrow function
+// formal-ai:blockers arrow function | method call .at() | method call .indexOf() | method call .slice() | method call .test() | regular expression | undefined
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal arrow function

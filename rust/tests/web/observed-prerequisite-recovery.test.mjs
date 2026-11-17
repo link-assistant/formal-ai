@@ -105,6 +105,24 @@ test('observed transaction success finalizes its real supplied receipt without r
   const final = await planChatStep(messages, tools);
   assert.equal(final.kind, 'final');
   assert.match(final.answer, /synthetic observed compiler retry success/u);
+  // Issue #1159: the answer reports the recovery (the missing program, the
+  // procedure that ran, the re-probe and the retried command) ahead of the result.
+  assert.ok(final.answer.startsWith('Recovered the missing prerequisite `kotlinc` under FORMAL_AI_INSTALL_GRANT=workspace: the pinned `kotlinc` publisher setup procedure (https://kotlinlang.org/docs/command-line.html) ran, `kotlinc` was re-probed, and `' + command + '` was retried once and succeeded.\n\n'), final.answer);
+});
+test('a failed transaction is not reported as a recovery (#1159)', async () => {
+  const {
+    messages,
+    call
+  } = await bootstrap();
+  append(messages, call, 'written');
+  const transaction = (await planChatStep(messages, tools)).calls[0];
+  append(messages, transaction, JSON.stringify({
+    exit_code: 1,
+    stdout: '',
+    stderr: 'synthetic archive digest mismatch'
+  }), true);
+  const final = await planChatStep(messages, tools);
+  assert.doesNotMatch(final.answer, /Recovered the missing prerequisite/u);
 });
 test('failed authored transaction remains terminal with original failure evidence', async () => {
   const {
