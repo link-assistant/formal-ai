@@ -222,6 +222,8 @@
     "rust/tests/web/issue-1550-meta-executor.test.mjs",
     "rust/tests/web/issue-1550-procedure-census.test.mjs",
     "rust/tests/web/issue-1550-procedure-documentation.test.mjs",
-    "rust/tests/web/issue-1580-production-composition.test.mjs"
+    "rust/tests/web/issue-1580-production-composition.test.mjs",
+    "rust/tests/web/sccache-outage-fallback.test.mjs",
+    "rust/tests/web/worker-candidate-validation.test.mjs"
   ]
 }
