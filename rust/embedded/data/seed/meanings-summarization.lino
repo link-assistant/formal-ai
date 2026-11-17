@@ -1,6 +1,6 @@
 # Free-text summarization and sentence-translation vocabulary (issue #1174).
 #
-# Three concept groups live here. The text_summarization_action role names the
+# The text_summarization_action role names the
 # act of summarizing a text the request itself carries (a paragraph after a
 # colon, a line break, or quotes), which is a different act from summarizing
 # the running conversation (meanings-intent.lino) or a seeded topic
@@ -9,6 +9,7 @@
 # vocabulary, and the translation_stop_word role names the function words a
 # word-by-word rendering leaves out instead of echoing them in the source
 # script.
+# Free-text summaries also use the phatic phrases and causal connective below.
 #
 # Surface forms are stored the way normalize_prompt renders them, so a
 # punctuation-folded cue such as "tl dr" (tl;dr) still matches.
@@ -22,6 +23,42 @@ meanings
     lexeme hi "सारांशित करें" "संक्षेप में लिखें"
     lexeme zh 总结一下 概括一下
     lexeme es "haz un resumen" "resume esto"
+  text-summary-phatic
+    defined-by conversation_reference
+    role text-summary-phatic
+    precondition "The entire sentence is a standalone courtesy or sign-off."
+    effect "Exclude the sentence before ranking substantive statements."
+    unit "not applicable"
+    example "Best regards,"
+    lexeme en "thank you for your attention" "thanks for reading" "best regards" "kind regards" "regards" "sincerely"
+    lexeme ru "спасибо за внимание" "благодарю за внимание" "с уважением" "с наилучшими пожеланиями"
+    lexeme hi "आपके ध्यान के लिए धन्यवाद" सादर
+    lexeme zh 感谢您的关注 谢谢大家 此致敬礼
+    lexeme es "gracias por su atención" "gracias por leer" "saludos cordiales" atentamente
+  text-summary-cause
+    defined-by concept
+    role text-summary-cause
+    precondition "A causal conjunction introduces a reason after the main clause."
+    effect "Render the main clause followed by its complete reasons."
+    unit "not applicable"
+    example "The school closed because the roads flooded."
+    lexeme en "because"
+    lexeme ru "потому что"
+    lexeme hi क्योंकि
+    lexeme zh 因为
+    lexeme es porque
+  text-summary-cause-phrase
+    defined-by concept
+    role text-summary-cause-phrase
+    precondition "A causal preposition introduces a phrase."
+    effect "Retain the preposition and its complement together."
+    unit "not applicable"
+    example "The school closed because of flooding."
+    lexeme en "because of"
+    lexeme ru из-за
+    lexeme hi "की वजह से"
+    lexeme zh 由于
+    lexeme es "debido a"
   weather
     grounded-in Q11663
     defined-by entity

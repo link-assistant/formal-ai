@@ -54,7 +54,7 @@ flowchart LR
 | `formal-ai coding` | Forget or rediscover source-grounded coding fragments. |
 | `formal-ai context` | Export complete conversations or convert arbitrary JSON to Links Notation. |
 | `formal-ai report` | Build the issue-report document every Formal AI surface files (#839). |
-| `formal-ai serve` | Serve the API; `--agent-mode` is equivalent to `FORMAL_AI_AGENT_MODE=1`. |
+| `formal-ai serve` | Serve the API with request metadata by default. |
 | `formal-ai connect` | Use the same binary as a WebSocket or WebRTC OpenAI-compatible client. |
 | `formal-ai proxy` | Run a logging reverse proxy in front of a Formal AI HTTP server. |
 | `formal-ai memory` | Export or import the agent's append-only memory log as a portable `demo_memory` Links Notation file. |

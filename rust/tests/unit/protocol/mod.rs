@@ -13,4 +13,5 @@ mod issue_819_narration;
 #[path = "tool_result_presentation.rs"]
 mod tool_result_presentation;
 
+mod issue_1587_request_context;
 mod physical_lines;

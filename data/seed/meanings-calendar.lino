@@ -311,3 +311,16 @@ meanings
     lexeme hi घंटे घंटा घंटों
     lexeme zh 小时
     lexeme es hora horas
+
+  calendar-date-offset
+    defined-by calendar_day
+    role calendar-date-offset
+    precondition "An explicit date question binds one day offset and a valid stated date."
+    effect "Add the signed day offset to the stated Gregorian date."
+    unit day
+    example "What date is 10 days after December 25, 2026?"
+    lexeme en "what date" "which date"
+    lexeme ru "какая дата"
+    lexeme hi "कौन सी तारीख"
+    lexeme zh "什么日期" "几月几日"
+    lexeme es "qué fecha"

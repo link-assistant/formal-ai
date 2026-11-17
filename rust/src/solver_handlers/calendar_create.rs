@@ -18,8 +18,7 @@ use crate::language::detect as detect_language;
 use crate::rule_interpreter::{handler_table_row, handler_table_rows, handler_table_value};
 use crate::seed::{
     ROLE_CALENDAR_DAY_REFERENCE, ROLE_CALENDAR_EVENT, ROLE_CALENDAR_RELATIVE_DATE,
-    ROLE_CALENDAR_SCHEDULE_ACTION, ROLE_CALENDAR_TIME, ROLE_CALENDAR_WEEKDAY, lexicon,
-    render_localized_once,
+    ROLE_CALENDAR_TIME, ROLE_CALENDAR_WEEKDAY, lexicon, render_localized_once,
 };
 use crate::solver_handlers::calendar_ics::ScheduledEvent;
 use crate::solver_handlers::finalize_simple;
@@ -50,7 +49,7 @@ pub fn try_calendar_create_event(
     if super::software_project_claims(normalized) {
         return None;
     }
-    if !mentions_calendar_create_request(normalized) {
+    if !mentions_calendar_create_request(prompt) {
         return None;
     }
 
@@ -59,11 +58,8 @@ pub fn try_calendar_create_event(
 
 /// Build the event selected by the shared capability-routing table.
 ///
-/// The ordinary handler above retains its standalone recognizer for legacy
-/// callers.  Solver dispatch calls this entry point only after
-/// `(time_expression, schedule, dialogue)` has selected
-/// `calendar_create_event`, so asking the old verb list a second time would
-/// undo the generalized decision for held-out paraphrases.
+/// Capability selection still needs a sentence-local scheduling act. Both
+/// entry points share the seeded recognizer, including generalized paraphrases.
 pub fn try_routed_calendar_create_event(
     prompt: &str,
     normalized: &str,
@@ -75,14 +71,13 @@ pub fn try_routed_calendar_create_event(
     if super::software_project_claims(normalized) {
         return None;
     }
-    // A trip plan ("составь план поездки в Рим на 3 дня") reads a period off
-    // its day count, but it is the planner's request when the event recognizer
-    // finds no event in it (issue #1175 p215), as the browser twin declines.
-    if !mentions_calendar_create_request(normalized)
-        && lexicon().mentions_role("planning_request", normalized)
-    {
-        return None;
-    }
+    // Revalidate the actual request span even when the capability table selected
+    // this handler. A time expression in a document is not a scheduling act.
+    let lowered = prompt.to_lowercase();
+    let span = calendar_request_span(&lowered)?;
+    let normalized_span = crate::engine::normalize_prompt(span);
+    let normalized = normalized_span.as_str();
+    log.append("calendar:intent_span", span.to_owned());
     let base = current_utc_date()?;
     log.append("calendar:clock", "system_utc".to_owned());
 
@@ -186,7 +181,7 @@ pub fn calendar_claims(normalized: &str) -> bool {
     mentions_calendar_create_request(normalized)
 }
 
-fn mentions_calendar_create_request(normalized: &str) -> bool {
+fn has_calendar_anchor(normalized: &str) -> bool {
     let lex = lexicon();
     let has_day_ref = lex
         .words_for_role(ROLE_CALENDAR_DAY_REFERENCE)
@@ -210,24 +205,102 @@ fn mentions_calendar_create_request(normalized: &str) -> bool {
     if !has_date_signal {
         return false;
     }
-    let has_timezone = resolve_timezone(normalized).is_some();
-    let has_participant = extract_participant_title(normalized).is_some();
-    let has_action = lex
-        .words_for_role(ROLE_CALENDAR_SCHEDULE_ACTION)
+    let has_bound_day = lex
+        .words_for_role(ROLE_CALENDAR_DAY_REFERENCE)
         .iter()
-        .any(|w| contains_term(normalized, w))
-        || lex
-            .words_for_role(ROLE_CALENDAR_EVENT)
-            .iter()
-            .any(|w| contains_term(normalized, w));
-    if has_action {
-        return true;
-    }
-    if has_clock && has_timezone && has_participant {
-        return true;
-    }
+        .any(|word| {
+            normalized.find(word).is_some_and(|at| {
+                normalized[..at]
+                    .trim_end()
+                    .ends_with(|ch: char| ch.is_ascii_digit())
+            })
+        });
+    has_clock || has_relative_date || has_weekday || has_bound_day
+}
 
-    table_keys("calendar_schedule_verb").any(|verb| contains_term(normalized, verb))
+fn calendar_request_span(text: &str) -> Option<&str> {
+    let cues = handler_table_rows("calendar-request-cue");
+    let mut candidates = Vec::new();
+    for clause in super::unit_conversion::request::request_clauses(text) {
+        let normalized = crate::engine::normalize_prompt(clause);
+        if !has_calendar_anchor(&normalized) {
+            continue;
+        }
+        let mut request = clause;
+        let mut courtesy = false;
+        for (word, position) in cues {
+            if position == "prefix"
+                && request.starts_with(word.as_str())
+                && contains_term(request, word)
+            {
+                request = request[word.len()..]
+                    .trim_start_matches([',', '，'])
+                    .trim_start();
+                courtesy = true;
+                break;
+            }
+        }
+        let date_led = request.starts_with(|c: char| c.is_ascii_digit())
+            || [ROLE_CALENDAR_RELATIVE_DATE, ROLE_CALENDAR_WEEKDAY]
+                .iter()
+                .any(|role| {
+                    lexicon().words_for_role(role).iter().any(|word| {
+                        request.starts_with(word.as_str()) && contains_term(request, word)
+                    })
+                });
+        let action = cues.iter().any(|(word, position)| {
+            let starts = request.strip_prefix(word.as_str()).is_some_and(|tail| {
+                contains_term(request, word)
+                    && !tail.trim_start().starts_with([':', '：'])
+                    && !cues.iter().any(|(fact, mode)| {
+                        mode == "fact"
+                            && tail.trim_start().starts_with(fact.as_str())
+                            && contains_term(tail, fact)
+                    })
+            });
+            let mut object = request
+                .strip_prefix(word.as_str())
+                .unwrap_or("")
+                .trim_start();
+            if let Some((prefix, _)) = cues.iter().find(|(prefix, mode)| {
+                mode == "object-prefix"
+                    && object.starts_with(prefix.as_str())
+                    && contains_term(object, prefix)
+            }) {
+                object = object[prefix.len()..].trim_start();
+            }
+            let event_object = position == "object"
+                && starts
+                && lexicon()
+                    .words_for_role(ROLE_CALENDAR_EVENT)
+                    .iter()
+                    .any(|event| {
+                        object.starts_with(event.as_str()) && contains_term(object, event)
+                    });
+            match position.as_str() {
+                "start" => starts,
+                "object" => starts && event_object,
+                "date" => starts || (date_led && contains_term(request, word)),
+                "end" => request.ends_with(word.as_str()) && contains_term(request, word),
+                _ => false,
+            }
+        });
+        let elliptical = courtesy
+            && extract_clock_time(&normalized).is_some()
+            && resolve_timezone(&normalized).is_some()
+            && extract_participant_title(&normalized).is_some();
+        if action || elliptical {
+            candidates.push(clause);
+        }
+    }
+    match candidates.as_slice() {
+        [span] => Some(span),
+        _ => None,
+    }
+}
+
+fn mentions_calendar_create_request(text: &str) -> bool {
+    calendar_request_span(&text.to_lowercase()).is_some()
 }
 
 fn extract_day_number(normalized: &str) -> Option<u32> {
@@ -237,12 +310,12 @@ fn extract_day_number(normalized: &str) -> Option<u32> {
             continue;
         }
         if let Some(pos) = normalized.find(&word) {
-            let prefix = &normalized[..pos];
+            let prefix = normalized[..pos].trim_end();
             let mut digits = String::new();
             for ch in prefix.chars().rev() {
                 if ch.is_ascii_digit() {
                     digits.insert(0, ch);
-                } else if !digits.is_empty() {
+                } else {
                     break;
                 }
             }
@@ -262,6 +335,13 @@ fn extract_day_number(normalized: &str) -> Option<u32> {
         } else {
             return None;
         }
+    }
+    let suffix = normalized.trim_start()[num.len()..].trim_start();
+    if super::unit_conversion::unit_mentions(suffix)
+        .iter()
+        .any(|mention| mention.position == 0)
+    {
+        return None;
     }
     if let Ok(n) = num.parse::<u32>()
         && (1..=31).contains(&n)

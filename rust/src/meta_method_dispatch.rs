@@ -562,7 +562,7 @@ fn try_capability_route(
         );
     }
 
-    let live_fetch = crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH");
+    let live_fetch = crate::solver_config::read_network_allowed();
     match capability {
         "web_fetch" => {
             try_routed_http_fetch_with_offline(prompt, log, solver.config.offline || !live_fetch)

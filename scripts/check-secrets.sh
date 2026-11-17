@@ -9,7 +9,7 @@
 #   bash scripts/check-secrets.sh --all             # scan every tracked file
 #   bash scripts/check-secrets.sh path/to/file ...  # scan specific files
 #
-# Exit code 0 = no secrets found; non-zero = secretlint reported a finding.
+# Exit code 0 = no secrets found; non-zero = a finding or scanner failure.
 #
 # Why the diff and not the whole tree
 # -----------------------------------
@@ -84,8 +84,11 @@ done
 SECRETLINT_VERSION="${SECRETLINT_VERSION:-13.0.5}"
 debug "secretlint ${SECRETLINT_VERSION}"
 
+# npm expands each batch into one quoted shell command. Linux limits each
+# argument (including that command) to 128 KiB, below xargs' default batch
+# size after quoting. Leave room for npm's prefix and shell escaping.
 printf '%s\0' "${files[@]}" |
-  xargs -0 npx --yes \
+  xargs -0 -s 16384 npx --yes \
     -p "secretlint@${SECRETLINT_VERSION}" \
     -p "@secretlint/secretlint-rule-preset-recommend@${SECRETLINT_VERSION}" \
     secretlint

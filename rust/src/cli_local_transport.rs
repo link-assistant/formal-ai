@@ -17,10 +17,19 @@ pub struct ServeArgs {
     #[arg(long, env = "FORMAL_AI_PORT", default_value_t = 8080)]
     port: u16,
 
-    /// Allow OpenAI-compatible agent clients to receive tool calls. Equivalent
+    /// Allow OpenAI-compatible agent clients to receive tool calls in persistent mode. Equivalent
     /// to `FORMAL_AI_AGENT_MODE=1` on every transport.
     #[arg(long, default_value_t = false)]
     agent_mode: bool,
+
+    /// Read memory without retaining requests (FORMAL_AI_EPHEMERAL=1).
+    #[arg(
+        long,
+        env = "FORMAL_AI_EPHEMERAL",
+        default_value_t = false,
+        value_parser = formal_ai::cli_env::bool_env_value_parser
+    )]
+    ephemeral: bool,
 
     /// Exact caller-owned workspace prerequisite capability JSON. Default denial.
     #[arg(long, env = "FORMAL_AI_PREREQUISITE_GRANT_JSON")]
@@ -42,7 +51,7 @@ pub struct ServeArgs {
     #[arg(long, default_value_t = false)]
     transport_trace: bool,
 
-    /// Hold every solved turn for step-through debugging (issue #667): loopback
+    /// Hold solved turns for step-through debugging in persistent mode: loopback
     /// binds only; the session token is `FORMAL_AI_DEBUG_SESSION_TOKEN`, else it
     /// is generated and printed (docs/vscode/debugger.md).
     #[arg(long, conflicts_with_all = ["ws", "webrtc"], default_value_t = false)]
@@ -74,6 +83,10 @@ impl ServeArgs {
     pub const fn agent_mode(&self) -> bool {
         self.agent_mode
     }
+
+    pub const fn ephemeral(&self) -> bool {
+        self.ephemeral
+    }
 }
 
 #[derive(Debug, Clone, Copy, ValueEnum)]
@@ -90,15 +103,20 @@ enum ConnectFormat {
 }
 
 pub fn run_serve(args: &ServeArgs) -> Result<(), Box<dyn Error>> {
-    let legacy_grant = std::env::var("FORMAL_AI_INSTALL_GRANT").ok();
-    let grant = formal_ai::prerequisite::resolve_workspace_grant(
-        args.prerequisite_grant.as_deref(),
-        legacy_grant.as_deref(),
-    )?;
-    formal_ai::prerequisite::configure_workspace_grant(grant.as_deref())?;
-    formal_ai::agentic_coding::installed_source_commands::configure_installed_source_commands(
-        args.source_command_host.as_deref(),
-    )?;
+    if args.ephemeral() && args.debug_session {
+        return Err("step-through debugging requires persistent mode".into());
+    }
+    if !args.ephemeral() {
+        let legacy_grant = std::env::var("FORMAL_AI_INSTALL_GRANT").ok();
+        let grant = formal_ai::prerequisite::resolve_workspace_grant(
+            args.prerequisite_grant.as_deref(),
+            legacy_grant.as_deref(),
+        )?;
+        formal_ai::prerequisite::configure_workspace_grant(grant.as_deref())?;
+        formal_ai::agentic_coding::installed_source_commands::configure_installed_source_commands(
+            args.source_command_host.as_deref(),
+        )?;
+    }
     let address = format!("{}:{}", args.host, args.port);
     if args.ws {
         serve_websocket(&address, args.transport_trace).map_err(|error| transport_error(&error))?;

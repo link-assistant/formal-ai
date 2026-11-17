@@ -1,5 +1,6 @@
 use super::{OutputConfig, OutputDensity, OutputPolicy};
 use serde::{Deserialize, Serialize};
+use std::sync::LazyLock;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "lowercase")]
@@ -70,13 +71,15 @@ pub fn output_meaning(document: &OutputDocument) -> Vec<(&str, &str)> {
 
 pub fn output_words(text: &str, language: &str) -> Vec<String> {
     // Match the Unicode word grammar of the JS root, including combining marks.
-    let pattern = if language == "zh" {
-        r"[\p{Han}]|[\p{L}\p{M}\p{N}]+"
-    } else {
-        r"[\p{L}\p{M}\p{N}]+(?:[-’'][\p{L}\p{M}\p{N}]+)*"
-    };
-    regex::Regex::new(pattern)
-        .expect("fixed output word grammar")
+    static HAN: LazyLock<regex::Regex> = LazyLock::new(|| {
+        regex::Regex::new(r"[\p{Han}]|[\p{L}\p{M}\p{N}]+").expect("fixed Han word grammar")
+    });
+    static WORD: LazyLock<regex::Regex> = LazyLock::new(|| {
+        regex::Regex::new(r"[\p{L}\p{M}\p{N}]+(?:[-’'][\p{L}\p{M}\p{N}]+)*")
+            .expect("fixed output word grammar")
+    });
+    let pattern = if language == "zh" { &HAN } else { &WORD };
+    pattern
         .find_iter(text)
         .map(|item| item.as_str().to_owned())
         .collect()
@@ -87,8 +90,9 @@ pub fn project_output(
     configuration: OutputConfig,
     policy: &OutputPolicy,
 ) -> String {
+    let standard = configuration.standard.slug();
     let desired = if configuration.density == OutputDensity::Standard {
-        configuration.standard.slug().to_owned()
+        standard.to_owned()
     } else {
         configuration.density.slug()
     };
@@ -123,7 +127,19 @@ pub fn project_output(
                         .then_with(|| left.text.encode_utf16().cmp(right.text.encode_utf16()))
                 });
             }
-            let Some(form) = forms.first() else {
+            if desired != standard && standard != "cnl-default" {
+                forms.extend(
+                    lexeme
+                        .forms
+                        .iter()
+                        .filter(|form| form.mode.split('|').any(|mode| mode == standard)),
+                );
+            }
+            let Some(form) = forms.into_iter().find(|form| {
+                validate_output(&form.text, &document.language, configuration, policy, &())
+                    .violations
+                    .is_empty()
+            }) else {
                 return surface.clone();
             };
             let Some(first) = surface.chars().next() else {

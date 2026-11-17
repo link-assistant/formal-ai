@@ -54,7 +54,8 @@ const SUMMARIES: &[(&str, &str)] = &[
          the Antarctic ice shelf. It provides year-round measurements of ozone and sea \
          temperature. The crew rotates every summer. Supplies arrive by ship in February. Radar \
          masts surround the living quarters.",
-        "The Halley research station opened in 1956 is used to study the Antarctic ice shelf.",
+        "The Halley research station, opened in 1956, is used to study the Antarctic ice shelf. \
+         It provides year-round measurements of ozone and sea temperature.",
     ),
     (
         "Summarize: The parser reads the file. It builds a tree. The tree is checked.",
@@ -84,6 +85,62 @@ fn summarization_keeps_the_statements_the_text_depends_on() {
         let answer = solved_by(handle_summarization_request, prompt);
         assert_eq!(answer.intent, "summarization_free_text", "{prompt}");
         assert_eq!(answer.answer, *summary, "{prompt}");
+    }
+}
+
+#[test]
+fn summarization_removes_phatic_sentences_and_keeps_governed_reasons() {
+    // The English and Russian reports are followed by Hindi, Chinese and Spanish cases.
+    let cases = [
+        (
+            "Summarize: Good afternoon. I have decided to decline because the commute takes an \
+             hour and a half and the salary is lower than in my current job. Thank you.",
+            "I have decided to decline: the commute takes an hour and a half and the salary is \
+             lower than in my current job.",
+        ),
+        (
+            "Кратко перескажи: Добрый день. Я подумал и решил отказаться, потому что дорога до \
+             офиса занимает полтора часа, а зарплата ниже, чем на текущем месте. Спасибо за внимание.",
+            "Я подумал и решил отказаться: дорога до офиса занимает полтора часа, а зарплата ниже, \
+             чем на текущем месте.",
+        ),
+        (
+            "संक्षेप में लिखें: नमस्ते। स्कूल बंद है क्योंकि सड़क पर पानी भर गया है। सादर।",
+            "स्कूल बंद है: सड़क पर पानी भर गया है।",
+        ),
+        (
+            "总结一下：你好。学校因道路积水而停课。谢谢大家。",
+            "学校因道路积水而停课。",
+        ),
+        (
+            "Resume esto: Hola. La escuela cierra porque la carretera está inundada. Saludos cordiales.",
+            "La escuela cierra: la carretera está inundada.",
+        ),
+        (
+            "Summarize: HELLO! Because both roads are flooded, the school will close. Best regards,",
+            "Because both roads are flooded, the school will close.",
+        ),
+        (
+            "Summarize: Hello! Thanks to the new pump, the well is working. Goodbye.",
+            "Thanks to the new pump, the well is working.",
+        ),
+        (
+            "Summarize: Hello. We did not leave because the road was flooded. Thank you.",
+            "We did not leave because the road was flooded.",
+        ),
+        (
+            "Summarize: Hello. We stayed because of the rain and the flooding. Goodbye.",
+            "We stayed because of the rain and the flooding.",
+        ),
+        (
+            "Summarize: Hello. Thanks. The launch is on Monday. Tickets cost ten dollars. Goodbye.",
+            "The launch is on Monday.",
+        ),
+    ];
+    for (prompt, summary) in cases {
+        let answer = solved_by(handle_summarization_request, prompt);
+        assert_eq!(answer.intent, "summarization_free_text", "{prompt}");
+        assert_eq!(answer.answer, summary, "{prompt}");
     }
 }
 
@@ -130,6 +187,14 @@ fn summarization_declines_a_single_statement() {
     assert!(declined_by(
         handle_summarization_request,
         "Summarize: Cats sleep a lot."
+    ));
+}
+
+#[test]
+fn summarization_declines_text_made_entirely_of_phatic_sentences() {
+    assert!(declined_by(
+        handle_summarization_request,
+        "Summarize: Good afternoon. Thank you. Best regards."
     ));
 }
 

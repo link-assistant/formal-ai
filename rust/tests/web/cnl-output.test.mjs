@@ -74,6 +74,18 @@ test('ambiguous equivalence declarations remain opaque instead of selecting a me
   assert.equal(projectOutput(document, {lexical_density: 'primes'}, custom), document.source);
 });
 
+test('lexical density cannot introduce a known violation of a named profile', () => {
+  for (const density of ['max-precision', 'top-200']) {
+    const configuration = {output_standard: 'e-prime', lexical_density: density};
+    const document = formalizeOutput('I am omniscient.', 'en');
+    const rendered = renderOutput(document, configuration);
+    assert.equal(rendered.text, 'I know everything.');
+    assert.deepEqual(rendered.report.violations, []);
+    assert.equal(rendered.report.compliant, false);
+    assert.equal(outputLinksNotation(formalizeOutput(rendered.text, 'en')), rendered.links_notation);
+  }
+});
+
 test('independent evidence cannot be replaced with a profile label or a word list', () => {
   assert.equal(validateOutput('I know everything.', 'en', {output_standard: 'ace'}).compliant, false);
   assert.deepEqual(validateOutput('I know everything.', 'en', {output_standard: 'ace'}).unchecked,

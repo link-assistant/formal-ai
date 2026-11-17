@@ -75,6 +75,8 @@ roles
     kind predicate
   calculator_tool_name
     kind predicate
+  calendar-date-offset
+    kind meaning
   calendar_day_reference
     kind predicate
   calendar_direction_next
@@ -555,6 +557,8 @@ roles
     kind meaning
   interest_cue
     kind predicate
+  internet-access-help
+    kind meaning
   interrogative_opener
     kind meaning
   inverse_incompatibility_relation
@@ -1164,6 +1168,12 @@ roles
   task_first_step_cue
     kind meaning
   term_information_request_opener
+    kind meaning
+  text-summary-cause
+    kind meaning
+  text-summary-cause-phrase
+    kind meaning
+  text-summary-phatic
     kind meaning
   text_summarization_action
     kind meaning

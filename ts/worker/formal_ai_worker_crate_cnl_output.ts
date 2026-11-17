@@ -116,12 +116,16 @@ function projectOutput(document, configuration = {}, policy = cnlPolicy()) {
     if (!lexeme) return part.surface;
     const desired = selected.lexical_density === 'standard' ? selected.output_standard : selected.lexical_density;
     let forms = lexeme.forms.filter(form => form.mode.split('|').includes(desired));
-    if (forms.length === 0) return part.surface;
     // Minimum over the declared equivalent realizations, with a stable tie break.
     if (selected.lexical_density === 'max-precision') forms = [...forms].sort((left, right) =>
       outputWords(left.text, document.language).length - outputWords(right.text, document.language).length
       || [...left.text].length - [...right.text].length || (left.text < right.text ? -1 : left.text > right.text ? 1 : 0));
-    return capitalizedLike(forms[0].text, part.surface);
+    if (desired !== selected.output_standard && selected.output_standard !== 'cnl-default') {
+      forms.push(...lexeme.forms.filter(form => form.mode.split('|').includes(selected.output_standard)));
+    }
+    const viable = forms.find(form =>
+      validateOutput(form.text, document.language, selected, policy).violations.length === 0);
+    return viable ? capitalizedLike(viable.text, part.surface) : part.surface;
   });
   return parts.join('');
 }

@@ -31,6 +31,7 @@ import { customResponseToolInput, isCustomResponseTool, responseArgumentsForTool
 import { projectAppendContracts } from '../agentic/append_contract.mjs';
 import { ungroundedIdentityArguments } from '../agentic/crate/tool_scope.mjs';
 import { currentRequestScope, eventsInScope } from './standing-scope.mjs';
+import { composeFinalAnswer } from './request-context.mjs';
 
 /** Install the planner host over `ctx.worker` once (shared with js/server/solve.mjs). */
 async function ensureHost(ctx) {
@@ -169,10 +170,9 @@ function logPlanTerminal(ctx, plan) {
     component: 'agent',
     dialog_id: currentDialogId(),
     ...terminal,
-    ...(workItemRecord === null ? {} : { work_item_record: workItemRecord }),
     scope: 'server_response',
     task_delivery: 'Unknown'
-  });
+  }, workItemRecord === null ? undefined : { work_item_record: workItemRecord });
 }
 export function logUnclassifiedTerminal(ctx, origin) {
   ctx.logger?.log('debug', 'agent.terminal', {
@@ -188,10 +188,9 @@ function bindPlan(ctx, request, plan, prompt, workspace) {
   if (plan.kind !== 'tool_calls') {
     ctx.logger?.log('debug', 'planning_terminal', {
       component: 'planner',
-      answer: String(plan.answer ?? '').slice(0, 4096),
       state: 'terminal',
       repeat_limit: 3
-    });
+    }, () => ({answer: String(plan.answer ?? '').slice(0, 4096)}));
     return plan;
   }
   const calls = [];
@@ -212,10 +211,8 @@ function bindPlan(ctx, request, plan, prompt, workspace) {
       ctx.logger?.log('error', 'tool_argument_binding_failed', {
         component: 'planner',
         tool: call.tool,
-        arguments: args,
-        schema,
-        reason
-      });
+        reason: 'argument_validation_failed'
+      }, () => ({arguments: args, schema, reason}));
       return {
         kind: 'final',
         answer: agenticMessage('tool-argument-binding-incomplete', {
@@ -226,10 +223,9 @@ function bindPlan(ctx, request, plan, prompt, workspace) {
     ctx.logger?.log('debug', 'tool_call_bound', {
       component: 'planner',
       tool: call.tool,
-      arguments: args,
       repeat_limit: 3,
       state: 'awaiting_client_receipt'
-    });
+    }, () => ({arguments: args}));
     calls.push({
       ...call,
       arguments: args
@@ -287,14 +283,15 @@ export function chatCompletionFromPlan(ctx, request, prompt, plan, created) {
     };
     finishReason = 'tool_calls';
   } else {
-    const answer = plan.answer;
+    const composed = composeFinalAnswer(request.messages, plan.answer, amendmentSteps(ctx, prompt));
+    const answer = composed.answer;
     completionTokens = estimateTokens(answer);
     message = {
       role: 'assistant',
       content: answer,
       tool_calls: []
     };
-    const steps = amendmentSteps(ctx, prompt);
+    const steps = composed.thinking_steps;
     if (steps.length) {
       const reasoning = renderThinkingSteps(steps);
       Object.assign(message, { thinking_steps: steps, reasoning_content: reasoning, reasoning });
@@ -408,8 +405,9 @@ export function responseFromPlan(ctx, request, chatRequest, prompt, plan, create
       outputTokens += tokens;
     });
   } else {
-    const answer = plan.answer;
-    const steps = amendmentSteps(ctx, prompt);
+    const composed = composeFinalAnswer(chatRequest.messages, plan.answer, amendmentSteps(ctx, prompt));
+    const answer = composed.answer;
+    const steps = composed.thinking_steps;
     const message = outputMessage(answer);
     if (steps.length) message.thinking_steps = steps;
     output = [message];

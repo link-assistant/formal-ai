@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=4b1768fc4a6b833920e4b4d1336c9f9f866a57e44544de2425f02893b74685ad bytes=13494
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=e6e2cc9c2864962f519e012f7558399a74345518669b805dc965f4645b804482 bytes=13807
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 
 // meta-language:prelude begin
@@ -47,7 +47,7 @@ pub const CNL_POLICY_PATH: &str = "data/seed/cnl-output.lino";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .find() | arrow callback of .map() | arrow callback of .sort() | call of a sibling function | field access | method call .filter() | method call .find() | method call .join() | method call .map() | method call .sort() | method call .split() | object without a $ tag
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .find() | arrow callback of .map() | arrow callback of .sort() | call of a sibling function | field access | method call .filter() | method call .find() | method call .join() | method call .map() | method call .push() | method call .sort() | method call .split() | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (syntax)
 // formal-ai:refusal syntax: unterminated string literal

@@ -47,6 +47,23 @@ fn declared_multilingual_meanings_round_trip_without_certifying_unchecked_standa
 }
 
 #[test]
+fn lexical_density_preserves_known_named_profile_constraints() {
+    let policy = cnl_policy();
+    let document = formalize_output("I am omniscient.", "en", policy);
+    for density in ["max-precision", "top-200"] {
+        let configuration = output_configuration(Some("e-prime"), Some(density), policy).unwrap();
+        let rendered = render_output(&document, configuration, policy, &());
+        assert_eq!(rendered.text, "I know everything.");
+        assert!(rendered.report.violations.is_empty());
+        assert!(!rendered.report.compliant);
+        assert_eq!(
+            output_links_notation(&formalize_output(&rendered.text, "en", policy)),
+            rendered.links_notation
+        );
+    }
+}
+
+#[test]
 fn opaque_input_and_configuration_limits_are_lossless_on_every_target() {
     let policy = cnl_policy();
     for input in [

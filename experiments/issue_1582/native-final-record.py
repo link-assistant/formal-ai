@@ -1,0 +1,13 @@
+from pathlib import Path
+p=Path('docs/case-studies/issue-1582/README.md')
+s=p.read_text().replace('the corresponding zero-byte `.log`\nrecords', 'the corresponding `.log.gz` decodes to zero bytes and\nrecords')
+s=s.replace('Native live-search and synthesis helpers and the Node source cache interpreted', 'Native dispatcher, capability, version-resolution, benchmark, live-search and synthesis paths and the Node source cache interpreted')
+s=s.replace('metadata server and fake client executables to check served limits, actual\nClaude environment, quiet diagnostics, permission-rule preservation and exact\nundo.', 'metadata server and fake client executables to check served limits, actual\nClaude/T3 environment, quiet diagnostics, permission-rule preservation and exact\nundo. A fourth native regression executes the actual chat CLI against a bounded\nloopback source: the default must retrieve the marker and each explicit offline,\nnetwork-deny or live-fetch-false setting must prevent a transport call. These\nfour native tests have not been executed locally.')
+s=s.replace('and the complete third round record the corrected state. A fourth complete\nround checks the final Codex seed change before pushing.', 'and complete rounds three through five record no failures. Final source review\nthen found native dispatcher, capability-routing, version-lookup and benchmark\npaths still using the old opt-in flag. Those paths now share the read policy;\ndeterministic benchmark fixtures choose offline explicitly. The sixth complete\nround checks this additional repair before pushing.')
+p.write_text(s)
+p=Path('docs/case-studies/issue-1582/work-plan.md')
+p.write_text(p.read_text().replace('final Codex seed change is being rechecked.', 'rounds three through five have no failures; the final native route repair is being rechecked in round six.'))
+p=Path('experiments/issue_1582/pull-request.md')
+s=p.read_text().replace('The Node serving worker now has a real HTTP GET/HEAD transport.', 'The Node serving worker now has a real HTTP GET/HEAD transport. Native dispatcher, capability, version-resolution and benchmark reads share the same default-on policy.')
+s=s.replace('Native fake-client tests cover actual Claude launch environment, remote limits, preserved permissions and exact undo;', 'Four native regressions cover actual Claude/T3 launch environment, remote limits, preserved permissions, exact undo and real chat-CLI loopback fetches with explicit-deny controls;')
+p.write_text(s)

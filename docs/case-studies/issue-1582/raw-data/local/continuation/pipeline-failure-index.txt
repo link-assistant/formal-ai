@@ -1,0 +1,241 @@
+123:Fast Linux source and requirement checks	Run actions/checkout@v7	2026-11-17T18:41:41.3924386Z ##[error]error: RPC failed; curl 28 Operation too slow. Less than 1024 bytes/sec transferred the last 20 seconds
+124:Fast Linux source and requirement checks	Run actions/checkout@v7	2026-11-17T18:41:41.3932707Z ##[error]fatal: protocol error: bad pack header
+125:Fast Linux source and requirement checks	Run actions/checkout@v7	2026-11-17T18:41:41.7295754Z ##[error]fatal: could not fetch 9df886c42a1e2082f1471383d986fea4d531f8ac from promisor remote
+154:Fast Linux source and requirement checks	Run actions/checkout@v7	2026-11-17T18:41:41.9065210Z ##[error]The process '/usr/bin/git' failed with exit code 128
+363:Release Preflight	Probe every release credential	2026-11-17T18:41:19.4335087Z Release preflight (report mode): 2 verified, 0 failed, 1 unknown
+367:Release Preflight	Probe every release credential	2026-11-17T18:41:19.4369360Z Report mode: a pull request cannot see a fork's secrets, so nothing here fails the run.
+833:hive-source-provenance / Hive source event provenance	UNKNOWN STEP	if(data.type !== 'file' || data.encoding !== 'base64' || data.size > 65536) throw Error('invalid provenance source');
+868:hive-source-provenance / Hive source event provenance	UNKNOWN STEP	2026-11-17T18:41:19.9343477Z   if-no-files-found: error
+6172:Changelog Fragment Check	Check for changelog fragments	2026-11-17T18:41:45.5327567Z   docs/case-studies/issue-1582/raw-data/local/continuation/picomatch-175.json
+6173:Changelog Fragment Check	Check for changelog fragments	2026-11-17T18:41:45.5327976Z   docs/case-studies/issue-1582/raw-data/local/continuation/picomatch-182.diff.gz
+6174:Changelog Fragment Check	Check for changelog fragments	2026-11-17T18:41:45.5328381Z   docs/case-studies/issue-1582/raw-data/local/continuation/picomatch-182.json
+6175:Changelog Fragment Check	Check for changelog fragments	2026-11-17T18:41:45.5328778Z   docs/case-studies/issue-1582/raw-data/local/continuation/picomatch-235.json
+6176:Changelog Fragment Check	Check for changelog fragments	2026-11-17T18:41:45.5329182Z   docs/case-studies/issue-1582/raw-data/local/continuation/picomatch-237.diff.gz
+6177:Changelog Fragment Check	Check for changelog fragments	2026-11-17T18:41:45.5329744Z   docs/case-studies/issue-1582/raw-data/local/continuation/picomatch-237.json
+6178:Changelog Fragment Check	Check for changelog fragments	2026-11-17T18:41:45.5330167Z   docs/case-studies/issue-1582/raw-data/local/continuation/picomatch-238.json
+6179:Changelog Fragment Check	Check for changelog fragments	2026-11-17T18:41:45.5330564Z   docs/case-studies/issue-1582/raw-data/local/continuation/picomatch-246.json
+6180:Changelog Fragment Check	Check for changelog fragments	2026-11-17T18:41:45.5330973Z   docs/case-studies/issue-1582/raw-data/local/continuation/picomatch-advisory.json
+6181:Changelog Fragment Check	Check for changelog fragments	2026-11-17T18:41:45.5331413Z   docs/case-studies/issue-1582/raw-data/local/continuation/picomatch-current-head.json
+6182:Changelog Fragment Check	Check for changelog fragments	2026-11-17T18:41:45.5331895Z   docs/case-studies/issue-1582/raw-data/local/continuation/picomatch-current-parse.base64.gz
+6183:Changelog Fragment Check	Check for changelog fragments	2026-11-17T18:41:45.5332365Z   docs/case-studies/issue-1582/raw-data/local/continuation/picomatch-current-parse.js.gz
+6184:Changelog Fragment Check	Check for changelog fragments	2026-11-17T18:41:45.5332812Z   docs/case-studies/issue-1582/raw-data/local/continuation/picomatch-registry.json
+6185:Changelog Fragment Check	Check for changelog fragments	2026-11-17T18:41:45.5333252Z   docs/case-studies/issue-1582/raw-data/local/continuation/picomatch-related-prs.json
+6186:Changelog Fragment Check	Check for changelog fragments	2026-11-17T18:41:45.5333695Z   docs/case-studies/issue-1582/raw-data/local/continuation/picomatch-upstream-pr.json
+6187:Changelog Fragment Check	Check for changelog fragments	2026-11-17T18:41:45.5334138Z   docs/case-studies/issue-1582/raw-data/local/continuation/picomatch-upstream.diff.gz
+6188:Changelog Fragment Check	Check for changelog fragments	2026-11-17T18:41:45.5334617Z   docs/case-studies/issue-1582/raw-data/local/continuation/picomatch-upstream.json
+6825:Changelog Fragment Check	Check for changelog fragments	2026-11-17T18:41:45.5596523Z   docs/case-studies/issue-1582/raw-data/local/issue-1582-failure-source.log.gz
+6848:Changelog Fragment Check	Check for changelog fragments	2026-11-17T18:41:45.5601479Z   docs/case-studies/issue-1582/raw-data/local/issue-1582-full-failures-source.log.gz
+6894:Changelog Fragment Check	Check for changelog fragments	2026-11-17T18:41:45.5611227Z   docs/case-studies/issue-1582/raw-data/local/issue-1582-new-failures.log.gz
+6902:Changelog Fragment Check	Check for changelog fragments	2026-11-17T18:41:45.5612770Z   docs/case-studies/issue-1582/raw-data/local/issue-1582-pr-final-diff-error.log.gz
+6990:Changelog Fragment Check	Check for changelog fragments	2026-11-17T18:41:45.5630241Z   docs/case-studies/issue-1582/raw-data/research/chrono-advisory.md
+7028:Changelog Fragment Check	Check for changelog fragments	2026-11-17T18:41:45.5637387Z   docs/case-studies/issue-1582/raw-data/research/t3-ClaudeAdapterV2.ts.error
+7141:Changelog Fragment Check	Check for changelog fragments	2026-11-17T18:41:45.5653183Z   experiments/issue_1582/failure-source.sh
+7655:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:41:55.8760549Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+7668:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:41:55.8924206Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+7680:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:41:55.9005465Z ^[[36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y^[[0m
+7683:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:41:55.9026495Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+7710:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:41:55.9115135Z ^[[36;1m  if [[ $attempt == 5 ]] || ! grep -Fq 'checksum failed for ' "$log" \^[[0m
+7717:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:41:55.9137412Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+7745:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:07.1716818Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+7766:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:07.1912777Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+7782:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:07.2177996Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+7797:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:07.2257011Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+7819:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:07.2340745Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+7830:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:07.2536459Z ##[start-action display=Work around spurious network errors in curl 8.0;id=__dtolnay_rust-toolchain.__run_9]
+7836:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:07.2571076Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+7850:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:07.2722158Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+7906:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:09.7291348Z ^[[36;1mecho "SCCACHE_IGNORE_SERVER_IO_ERROR=$SCCACHE_IGNORE_SERVER_IO_ERROR" >> "$GITHUB_ENV"^[[0m
+7908:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:09.7320841Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+7921:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:09.7362829Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+7928:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:09.7447109Z ##[group]Run set -euo pipefail
+7929:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:09.7447441Z ^[[36;1mset -euo pipefail^[[0m
+7930:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:09.7447718Z ^[[36;1mif [ "${SCCACHE_INSTALL_OUTCOME:-}" = failure ]; then^[[0m
+7931:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:09.7448288Z ^[[36;1m  echo "::warning title=sccache install failed::The sccache download failed; this job builds without the compiler cache (issue #1569)."^[[0m
+7941:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:09.7452213Z ^[[36;1m  echo "::warning title=sccache unavailable::Compiler-cache probe failed; subsequent Cargo steps use the real compiler without cache (issue #1031)."^[[0m
+7945:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:09.7454189Z ^[[36;1m# Cache errors can contain signed URLs, so redact their complete values.^[[0m
+7947:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:09.7475321Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+7960:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:09.7517538Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+7980:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:10.5453904Z Cache read errors                     0
+7982:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:10.5454441Z Cache write errors                    0
+7983:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:10.5454753Z Cache errors                          0
+7985:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:10.5455254Z Compilation failures                  0
+7993:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:10.5457740Z Failed distributed compilations       0
+8020:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:10.9761793Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+8036:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:11.7951302Z   fail-on-cache-miss: false
+8050:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:11.7992540Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+8063:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:17.4504221Z ##[group]Run set -euo pipefail
+8064:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:17.4504485Z ^[[36;1mset -euo pipefail^[[0m
+8087:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:17.4538560Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+8100:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:17.4580123Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+8123:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:17.4720762Z   SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+8137:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:19.6133141Z ^[[1m^[[92m   Compiling^[[0m thiserror v2.0.21
+8152:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:22.0597014Z ^[[1m^[[92m   Compiling^[[0m thiserror-impl v2.0.21
+8216:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:29.8969103Z ^[[1m^[[92m   Compiling^[[0m thiserror v1.0.69
+8219:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:42:30.3469189Z ^[[1m^[[92m   Compiling^[[0m thiserror-impl v1.0.69
+8567:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:43:22.4646962Z ^[[1m^[[92m    Checking^[[0m console_error_panic_hook v0.1.7
+8636:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:43:49.2331500Z Cache read errors                      0
+8638:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:43:49.2332182Z Cache write errors                     1
+8639:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:43:49.2332484Z Cache errors                           0
+8641:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:43:49.2333098Z Compilation failures                   4
+8649:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:43:49.2335646Z Failed distributed compilations        0
+8665:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:43:49.2375596Z {"stats":{"compile_requests":785,"requests_unsupported_compiler":0,"requests_not_compile":6,"requests_not_cacheable":155,"requests_executed":624,"cache_errors":{"counts":{},"adv_counts":{}},"cache_hits":{"counts":{"C/C++":98,"Assembler":18,"Rust":503},"adv_counts":{"c [gcc]":98,"rust":503,"assemblerToPreprocess [gcc]":18}},"cache_misses":{"counts":{"Rust":1},"adv_counts":{"rust":1}},"cache_timeouts":0,"cache_read_errors":0,"non_cacheable_compilations":0,"forced_recaches":0,"cache_write_errors":1,"cache_writes":0,"cache_write_duration":{"secs":0,"nanos":0},"cache_read_hit_duration":{"secs":156,"nanos":738990823},"compilations":1,"compiler_write_duration":{"secs":0,"nanos":71018666},"compile_fails":4,"not_cached":{"multiple input files":4,"-":5,"missing output_dir":2,"missing input":2,"crate-type":138,"-o":4},"dist_compiles":{},"dist_errors":0,"multi_level":null},"cache_location":"ghac, name: 90541733aa72480a9e77ce99e66fc1cfabfa835d74c751408eb0351b7adcec6b, prefix: /sccache/","cache_size":null,"max_cache_size":null,"use_preprocessor_cache_mode":false,"version":"0.16.0","basedirs":[]}
+8667:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:43:49.2400060Z ##[notice]100% - 619 hits, 1 miss, 0 errors
+8683:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:43:49.2404969Z Cache read errors                      0
+8685:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:43:49.2405575Z Cache write errors                     1
+8686:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:43:49.2405874Z Cache errors                           0
+8688:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:43:49.2406476Z Compilation failures                   4
+8696:Native type and lint check / Rust compile inputs changed	UNKNOWN STEP	2026-11-17T18:43:49.2409019Z Failed distributed compilations        0
+8764:Pipeline Status	Run actions/github-script@v9	if(data.type !== 'file' || data.encoding !== 'base64' || data.size > 65536) throw Error('invalid status source');
+8789:Pipeline Status	Fail the run when a required job was cancelled or failed	﻿2026-11-17T18:43:57.0273037Z ##[group]Run bash scripts/check-pipeline-status.sh
+8790:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-17T18:43:57.0273985Z ^[[36;1mbash scripts/check-pipeline-status.sh^[[0m
+8791:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-17T18:43:57.0298475Z shell: /usr/bin/bash -e {0}
+8792:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-17T18:43:57.0299103Z env:
+8793:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-17T18:43:57.0299554Z   GIT_CONFIG_COUNT: 1
+8794:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-17T18:43:57.0300097Z   GIT_CONFIG_KEY_0: init.defaultBranch
+8795:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-17T18:43:57.0300710Z   GIT_CONFIG_VALUE_0: main
+8796:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-17T18:43:57.0301534Z   CARGO_NET_RETRY: 10
+8797:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-17T18:43:57.0302063Z   CARGO_HTTP_MULTIPLEXING: false
+8798:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-17T18:43:57.0302648Z   CARGO_TERM_COLOR: always
+8799:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-17T18:43:57.0303194Z   FORMAL_AI_CI_VERBOSE: false
+8800:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-17T18:43:57.0303751Z   FORMAL_AI_NON_LINUX_CI: run
+8801:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-17T18:43:57.0304301Z   RUSTFLAGS: -Dwarnings
+8802:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-17T18:43:57.0304823Z   RUST_BACKTRACE: full
+8803:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-17T18:43:57.0305570Z   CARGO_REGISTRY_TOKEN: ***
+8804:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-17T18:43:57.0306224Z   CARGO_TOKEN: ***
+8805:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-17T18:43:57.0307116Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+8806:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-17T18:43:57.0307804Z   DOCKERHUB_IMAGE: konard/formal-ai
+8807:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-17T18:43:57.0318427Z   NEEDS_JSON: {
+8808:Pipeline Status	Fail the run when a required job was cancelled or failed	  "fast-pr-lint": {
+8809:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "failure",
+8810:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8811:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8812:Pipeline Status	Fail the run when a required job was cancelled or failed	  "native-type-check": {
+8813:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+8814:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8815:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8816:Pipeline Status	Fail the run when a required job was cancelled or failed	  "hive-source-provenance": {
+8817:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+8818:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8819:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8820:Pipeline Status	Fail the run when a required job was cancelled or failed	  "detect-changes": {
+8821:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+8822:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {
+8823:Pipeline Status	Fail the run when a required job was cancelled or failed	      "toml-changed": "true",
+8824:Pipeline Status	Fail the run when a required job was cancelled or failed	      "docs-changed": "true",
+8825:Pipeline Status	Fail the run when a required job was cancelled or failed	      "workflow-changed": "true",
+8826:Pipeline Status	Fail the run when a required job was cancelled or failed	      "pipeline-changed": "true",
+8827:Pipeline Status	Fail the run when a required job was cancelled or failed	      "agentic-routing-changed": "true",
+8828:Pipeline Status	Fail the run when a required job was cancelled or failed	      "any-code-changed": "true",
+8829:Pipeline Status	Fail the run when a required job was cancelled or failed	      "native-type-check": "true",
+8830:Pipeline Status	Fail the run when a required job was cancelled or failed	      "rs-changed": "true"
+8831:Pipeline Status	Fail the run when a required job was cancelled or failed	    }
+8832:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8833:Pipeline Status	Fail the run when a required job was cancelled or failed	  "changelog": {
+8834:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+8835:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8836:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8837:Pipeline Status	Fail the run when a required job was cancelled or failed	  "docker-build": {
+8838:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+8839:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8840:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8841:Pipeline Status	Fail the run when a required job was cancelled or failed	  "docker-slim": {
+8842:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+8843:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8844:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8845:Pipeline Status	Fail the run when a required job was cancelled or failed	  "secrets-scan": {
+8846:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+8847:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8848:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8849:Pipeline Status	Fail the run when a required job was cancelled or failed	  "version-check": {
+8850:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+8851:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8852:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8853:Pipeline Status	Fail the run when a required job was cancelled or failed	  "release-preflight": {
+8854:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+8855:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8856:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8857:Pipeline Status	Fail the run when a required job was cancelled or failed	  "base": {
+8858:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "success",
+8859:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {
+8860:Pipeline Status	Fail the run when a required job was cancelled or failed	      "commit": "512ce428029a92687628b4180309ee5ab660fe08"
+8861:Pipeline Status	Fail the run when a required job was cancelled or failed	    }
+8862:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8863:Pipeline Status	Fail the run when a required job was cancelled or failed	  "lint": {
+8864:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+8865:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8866:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8867:Pipeline Status	Fail the run when a required job was cancelled or failed	  "test": {
+8868:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+8869:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8870:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8871:Pipeline Status	Fail the run when a required job was cancelled or failed	  "doc-tests": {
+8872:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+8873:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8874:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8875:Pipeline Status	Fail the run when a required job was cancelled or failed	  "macos-core-tests": {
+8876:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+8877:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8878:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8879:Pipeline Status	Fail the run when a required job was cancelled or failed	  "build": {
+8880:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+8881:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8882:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8883:Pipeline Status	Fail the run when a required job was cancelled or failed	  "auto-release": {
+8884:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+8885:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8886:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8887:Pipeline Status	Fail the run when a required job was cancelled or failed	  "manual-release": {
+8888:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+8889:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8890:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8891:Pipeline Status	Fail the run when a required job was cancelled or failed	  "native-container-images": {
+8892:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+8893:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8894:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8895:Pipeline Status	Fail the run when a required job was cancelled or failed	  "changelog-pr": {
+8896:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+8897:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8898:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8899:Pipeline Status	Fail the run when a required job was cancelled or failed	  "test-e2e-local": {
+8900:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+8901:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8902:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8903:Pipeline Status	Fail the run when a required job was cancelled or failed	  "test-agent-cli-e2e": {
+8904:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+8905:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8906:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8907:Pipeline Status	Fail the run when a required job was cancelled or failed	  "build-artifacts": {
+8908:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+8909:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8910:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8911:Pipeline Status	Fail the run when a required job was cancelled or failed	  "native-response-observations": {
+8912:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+8913:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8914:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8915:Pipeline Status	Fail the run when a required job was cancelled or failed	  "box-language-projects": {
+8916:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+8917:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8918:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8919:Pipeline Status	Fail the run when a required job was cancelled or failed	  "build-pages": {
+8920:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+8921:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8922:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8923:Pipeline Status	Fail the run when a required job was cancelled or failed	  "deploy-pages": {
+8924:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+8925:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8926:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8927:Pipeline Status	Fail the run when a required job was cancelled or failed	  "test-e2e-pages": {
+8928:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+8929:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8930:Pipeline Status	Fail the run when a required job was cancelled or failed	  },
+8931:Pipeline Status	Fail the run when a required job was cancelled or failed	  "server-parity": {
+8932:Pipeline Status	Fail the run when a required job was cancelled or failed	    "result": "skipped",
+8933:Pipeline Status	Fail the run when a required job was cancelled or failed	    "outputs": {}
+8934:Pipeline Status	Fail the run when a required job was cancelled or failed	  }
+8935:Pipeline Status	Fail the run when a required job was cancelled or failed	}
+8936:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-17T18:43:57.0329994Z   IS_MAIN: false
+8937:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-17T18:43:57.0330510Z ##[endgroup]
+8938:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-17T18:43:57.0495215Z Failed jobs:    fast-pr-lint
+8939:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-17T18:43:57.0495961Z Cancelled jobs: <none>
+8940:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-17T18:43:57.0524660Z ##[error]Pipeline failed. Failing jobs: fast-pr-lint
+8941:Pipeline Status	Fail the run when a required job was cancelled or failed	2026-11-17T18:43:57.0536830Z ##[error]Process completed with exit code 1.

@@ -453,7 +453,7 @@ fn run_ephemeral(
             let relative_catalog_path = render_template(&invocation.model_catalog_path, &context);
             let catalog_path = temp_scoped_path(&home, &relative_catalog_path)?;
             context.model_catalog_path = catalog_path.display().to_string();
-            write_file(&catalog_path, &codex_model_catalog(&context.model)?)?;
+            write_file(&catalog_path, &codex_model_catalog(&context)?)?;
         }
         if !invocation.temp_home_config_path.is_empty() {
             let relative_config_path = render_template(&invocation.temp_home_config_path, &context);
@@ -756,8 +756,11 @@ fn render_template(template: &str, context: &RenderContext) -> String {
 const CONTEXT_WINDOW_SLOT: &str = concat!("{", "context_window_tokens", "}");
 const MAX_OUTPUT_SLOT: &str = concat!("{", "max_output_tokens", "}");
 
-fn codex_model_catalog(model: &str) -> Result<String, Box<dyn Error>> {
+fn codex_model_catalog(render: &RenderContext) -> Result<String, Box<dyn Error>> {
     let context = ContextCapacity::current()?;
+    let (window, _) = render.model_limits();
+    let window: u64 = window.parse()?;
+    let model = &render.model;
     let catalog = serde_json::json!({
         "models": [{
             "slug": model,
@@ -781,8 +784,8 @@ fn codex_model_catalog(model: &str) -> Result<String, Box<dyn Error>> {
             "web_search_tool_type": "text",
             "truncation_policy": {"mode": "tokens", "limit": 8192},
             "supports_parallel_tool_calls": true,
-            "context_window": context.context_window_tokens,
-            "max_context_window": context.context_window_tokens,
+            "context_window": window,
+            "max_context_window": window,
             "context": context,
             "effective_context_window_percent": 100,
             "experimental_supported_tools": [],
