@@ -86,3 +86,15 @@ checks. Early runtime records hash tracked diffs but omit untracked source;
 that provenance limit is retained explicitly. A bounded evidence archive and
 SHA-256 manifest accompany the final verification record. Temporary package
 installations, caches and binaries are excluded from the archive.
+
+## Captured verification
+
+The final full gate run recorded 86 passes, 52 CI-only skips and no failures.
+`capture-projections.mjs` records 880 bounded projections: 0 changes to the
+declared lexical identity, 2 cases with all requested checks passing, and
+878 cases with violations or missing validators. It is not the full issue
+matrix and does not independently validate general semantics.
+
+The [issue case study](../../docs/case-studies/issue-1584/README.md) contains
+the bounded raw archive and SHA-256 inventory. The separate
+[PR case study](../../docs/case-studies/pull-request-1585/README.md) records CI.

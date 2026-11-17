@@ -1,0 +1,24 @@
+{
+  "cutoff_utc": "2026-11-17T13:53:52.725276+00:00",
+  "source_commit": "409d72d08e3fb3cd4b6b8337a8efa545ff0505df",
+  "archive_sha256": "c9b508f50b3d5cfb295f76c3f4e998ee1663973d1420ed6c0d7e57e805bc1202",
+  "archive_bytes": 2219391,
+  "entries": 421,
+  "uncompressed_bytes": 11552606,
+  "excluded": [
+    "temporary dependencies, caches and binaries",
+    "locally downloaded standards documents",
+    "archive-creation trace and subsequent events (after cutoff)"
+  ],
+  "authorship": {
+    "frozen_units": 8,
+    "independently_accepted": 0,
+    "supplied_instructions_credit": 0
+  },
+  "limits": [
+    "early identity records omit hashes of untracked source",
+    "bootstrap failures before host installation were not written by the adapter",
+    "finite declared lexical equivalence is not independent semantic validation",
+    "native/WASM execution is unverified"
+  ]
+}
