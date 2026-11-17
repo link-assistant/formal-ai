@@ -148,7 +148,8 @@
     "@vscode/test-web": "^0.0.81",
     "@vscode/vsce": "3.9.2",
     "esbuild": "^0.28.2",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "picomatch": "file:../packages/picomatch-compat"
   },
   "dependencies": {
     "@link-assistant/web-capture": "^1.12.0",
@@ -174,7 +175,8 @@
       "uuid": "11.1.1"
     },
     "minimatch": "$minimatch",
-    "glob@>=9": "^14.0.2"
+    "glob@>=9": "^14.0.2",
+    "picomatch": "$picomatch"
   },
   "allowScripts": {
     "@playwright/browser-chromium": true,
