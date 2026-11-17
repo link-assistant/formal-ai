@@ -283,9 +283,6 @@ pub fn validate_output(
     }
     if let Some(profile) = profile {
         for name in &profile.required {
-            if name == "e_prime_english" && language == "en" {
-                continue;
-            }
             evidence(
                 name,
                 checkers.check(name, text, language),

@@ -173,7 +173,6 @@ function validateOutput(text, language, configuration = {}, policy = cnlPolicy()
     else if (result !== true) unchecked.push('frequency_vocabulary');
   }
   for (const required of profile.required) {
-    if (required === 'e_prime_english' && language === 'en') continue;
     const result = checkers[required]?.(text, language);
     if (result === false) violations.push(required);
     else if (result !== true) unchecked.push(required);

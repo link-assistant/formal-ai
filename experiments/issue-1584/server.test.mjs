@@ -56,6 +56,12 @@ test('HTTP rewrites bypass planning and settings do not leak between requests', 
     assert.equal(ordinary.body.output_projection.report.output_standard,'ace');
     assert.equal(ordinary.body.output_projection.report.lexical_density,'standard');
     assert.equal(ordinary.body.choices[0].message.content,'2 + 2 = 4');
+    const ePrime=await post({output_standard:'e-prime',messages:[
+      {role:'assistant',content:'I know everything.'},{role:'user',content:'Respond in E-Prime'}]});
+    assert.equal(ePrime.status,200);
+    assert.equal(ePrime.body.choices[0].message.content,'I know everything.');
+    assert.equal(ePrime.body.output_projection.report.compliant,false);
+    assert.ok(ePrime.body.output_projection.report.unchecked.includes('e_prime_english'));
     const invalid=await post({lexical_density:'top-0',messages:[]});
     assert.equal(invalid.status,400);
   } finally {

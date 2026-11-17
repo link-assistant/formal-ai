@@ -1,3 +1,10 @@
+function projectControlledAnswer(answer, config, options) {
+    if (!answer || typeof answer.content !== "string") return answer;
+    const language = options.forcedResponseLanguage || detectLanguage(answer.content);
+    const document = crateModule("crate/cnl_output.mjs").formalizeOutput(answer.content, language);
+    const rendered = crateModule("crate/cnl_output.mjs").renderOutput(document, config);
+    return {...answer, content: rendered.content, outputProjection: rendered};
+}
 // Solve dispatch, handler registry, seed loading and worker initialization.
 // @worker-prerequisite js/worker/formal_ai_worker_web_providers_and_wasm_calls.js
 function isTargetlessProgramModification(normalized) { // "Reverse it.": Rust `looks_like_ambiguous_program_modification`
@@ -13,18 +20,6 @@ async function solve(prompt, history, prefs, userContext = {}, memory = [], opti
     lexical_density: options.lexical_density ?? prefs?.lexicalDensity,
   });
   prompt = turn.prompt;
-  const project = (answer) => {
-    if (!answer || typeof answer.content !== "string") return answer;
-    const language = options.forcedResponseLanguage || detectLanguage(answer.content);
-    const document = cnl.formalizeOutput(answer.content, language);
-    const rendered = cnl.renderOutput(document, turn.config);
-    return {...answer, content: rendered.content, outputProjection: rendered};
-  };
-  if (turn.rewrite !== null) {
-    const language = detectLanguage(turn.rewrite);
-    return project({intent: "cnl_paraphrase", content: cnl.outputSource(turn.rewrite, language),
-      confidence: 1, evidence: ["cnl:paraphrase"], steps: [], events: [], toolCalls: []});
-  }
   // Issue #556: activate the forced response language for the whole replay and
   // always restore the previous value, so a nested follow-up replay never
   // leaks its forced language onto the outer turn's remaining handlers.
@@ -40,10 +35,15 @@ async function solve(prompt, history, prefs, userContext = {}, memory = [], opti
     // ones learned now leave as this answer's memory operation.
     metaImportLearned(memory);
     const diagnostic = await tryDiagnosticMarker(prompt, (inner) => solve(inner, history, prefs, userContext, memory, options));
-    if (diagnostic) return project(diagnostic);
-    const answer = await solveImpl(prompt, history, prefs, userContext, memory, options);
+    if (diagnostic) return projectControlledAnswer(diagnostic, turn.config, options);
+    // A paraphrase is a draft candidate; it still goes through the recursive procedure.
+    const language = turn.rewrite === null ? null : detectLanguage(turn.rewrite);
+    const answer = turn.rewrite === null
+      ? await solveImpl(prompt, history, prefs, userContext, memory, options)
+      : {intent: "cnl_paraphrase", content: cnl.outputSource(turn.rewrite, language),
+        confidence: 1, evidence: ["cnl:paraphrase"], steps: [], events: [], toolCalls: []};
     const subTask = async (text) => metaResolveImpasse(text, await solveImpl(text, history, prefs, userContext, memory, options), prefs);
-    return project(metaAttachLearned(await metaRunProcedure(prompt, await metaResolveImpasse(prompt, answer, prefs), subTask)));
+    return projectControlledAnswer(metaAttachLearned(await metaRunProcedure(prompt, await metaResolveImpasse(prompt, answer, prefs), subTask)), turn.config, options);
   } finally {
     setForcedResponseLanguage(previousForced);
   }

@@ -30,7 +30,7 @@ fn declared_multilingual_meanings_round_trip_without_certifying_unchecked_standa
                     output_links_notation(&formalize_output(&projected, language, policy)),
                     graph
                 );
-                if profile.id != "e-prime" {
+                {
                     assert!(
                         !validate_output(&projected, language, configuration, policy, &())
                             .compliant
@@ -90,10 +90,15 @@ fn e_prime_contractions_and_missing_frequency_evidence_do_not_receive_certificat
         "John's hat fell.",
         "I ain't ready.",
         "Y'all're here.",
+        "’Tis ready.",
+        "Thou wast here.",
+        "Thou beest wise.",
     ] {
         assert!(!validate_output(text, "en", configuration, policy, &()).compliant);
     }
-    assert!(validate_output("I know this.", "en", configuration, policy, &()).compliant);
+    let report = validate_output("I know this.", "en", configuration, policy, &());
+    assert!(!report.compliant);
+    assert!(report.unchecked.contains(&"e_prime_english".to_owned()));
     let configuration = output_configuration(Some("e-prime"), Some("top-1"), policy).unwrap();
     let report = validate_output("Alice sees Bob.", "en", configuration, policy, &());
     assert!(!report.compliant);

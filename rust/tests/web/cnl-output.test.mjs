@@ -86,7 +86,7 @@ test('independent evidence cannot be replaced with a profile label or a word lis
   assert.equal(primes.compliant, false);
   assert.ok(primes.unchecked.includes('nsm_syntax'));
   assert.ok(primes.unchecked.includes('nsm_semantics'));
-  assert.equal(validateOutput('I know this.', 'en', {output_standard: 'e-prime'}).compliant, true);
+  assert.equal(validateOutput('I know this.', 'en', {output_standard: 'e-prime'}).compliant, false);
   for (const text of ['It is true.', 'I’m here.', 'They ARE here.', "It isn't ready."]) {
     assert.equal(validateOutput(text, 'en', {output_standard: 'e-prime'}).compliant, false, text);
   }
@@ -135,4 +135,15 @@ test('a finite lexical alternative search does not certify a global minimum', ()
     output_standard:'e-prime',lexical_density:'max-precision'},policy);
   assert.equal(report.compliant,false);
   assert.ok(report.unchecked.includes('lexical_minimum'));
+});
+
+test('complete E-Prime evidence cannot be inferred from a finite forbidden-word filter', () => {
+  for (const text of ["’Tis ready.", "Thou wast here.", "Thou beest wise.", "I know this."]) {
+    const report = validateOutput(text, 'en', {output_standard: 'e-prime'});
+    assert.equal(report.compliant, false, text);
+    assert.ok(report.unchecked.includes('e_prime_english'), text);
+  }
+  const config = {output_standard: 'e-prime'};
+  assert.equal(validateOutput('I know this.', 'en', config, policy, {e_prime_english: () => true}).compliant, true);
+  assert.equal(validateOutput('Thou wast here.', 'en', config, policy, {e_prime_english: () => false}).compliant, false);
 });

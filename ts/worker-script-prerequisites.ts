@@ -36,7 +36,7 @@ const formalAiWorkerScriptPrerequisites = Object.freeze([
   },
   {
     "script": "js/worker/formal_ai_worker_solve.js",
-    "sourceSha256": "5ed4905bf467f0a259654ee0afa377c5abcc50ce3de8074017d5af815ecf7ba3",
+    "sourceSha256": "f2928db8323f6af393ccac3a0d55674ccee08472317f5edb9c5dcddbd2ee23fd",
     "requires": [
       {
         "script": "js/worker/formal_ai_worker_web_providers_and_wasm_calls.js",
