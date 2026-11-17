@@ -13,7 +13,8 @@ const shellCommand="env sh -c '"+command.replaceAll("'", "'\\''")+"'";
 const request='Run '+shellCommand;
 const result=spawnSync(process.execPath,['--max-old-space-size=256','experiments/js_dogfood/drive.mjs','--dir',process.cwd(),'--steps','4',request],{encoding:'utf8',maxBuffer:8*1024*1024});
 writeFileSync(directory+'/'+id+'.json',JSON.stringify({runtime:'formal-ai JavaScript driver',node:process.version,source:identity,request,stdout:result.stdout,stderr:result.stderr,status:result.status,signal:result.signal,autonomousAuthorshipCredit:0},null,2)+'\n');
-process.stdout.write(result.stdout??'');
+// The full response is retained above; show the tool trace once.
+process.stdout.write((result.stdout??'').split('== answer ==')[0]);
 process.stderr.write(result.stderr??'');
 const calls=[...(result.stdout??'').matchAll(/^>> bash (\{.*\})$/gmu)].map(match=>JSON.parse(match[1]));
 const exact=calls.some(call=>call.command===shellCommand);
