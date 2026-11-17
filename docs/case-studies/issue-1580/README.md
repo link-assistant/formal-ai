@@ -1,0 +1,56 @@
+# Issue 1580: CI failures, warnings and result integrity
+
+Work in progress in [PR #1581](https://github.com/link-assistant/formal-ai/pull/1581), addressing [issue #1580](https://github.com/link-assistant/formal-ai/issues/1580). This record distinguishes source fixes, executed checks and unresolved acceptance criteria. It is not a completion claim.
+
+## Reproduction and evidence
+
+The issue's workflow table, every issue/PR conversation comment, inline review comments and reviews were read. The interrupted session was recovered from its authenticated Gists; its five commits were preserved, and main was merged forward. The audited main source is `b68d21647e678cce91ec83d5a28ea86b481064bf`; the source checkpoint for this report is `22ffaa73d1b2b0dc800ed2f9093059ac80ddef56`.
+
+`experiments/issue-1580/evidence/ci/all-cited-and-latest.json` indexes 71 cited/latest workflow runs with SHA, creation time, conclusion, log line count and SHA-256. The corresponding `.log.gz` files preserve the complete available logs. Annotation JSONL files contain original log line numbers. `summary.json` adds the failed-job inventory. The graph-update run 31914675335 returned HTTP 410 for its expired log; its `LOG_UNAVAILABLE` record is missing evidence, despite the historical success conclusion.
+
+Important production failures, with original log lines:
+
+| Run | Observation | Current disposition |
+| --- | --- | --- |
+| [43815999666](https://github.com/link-assistant/formal-ai/actions/runs/43815999666) | 31 failing native tests; full shards 3/5/8 exhausted the unchanged 1,080-second budget; shard 5 termination at line 60051 | Source fixes cover workflow parsing/retry, fixture receipts, composition/constraints and debug-session expectations. Native execution and remaining benchmark/timing defects are outstanding. |
+| [43805800653](https://github.com/link-assistant/formal-ai/actions/runs/43805800653) | Browser worker budget and JavaScript regressions; shard 8 consumed 317 of 360 seconds at line 26315 | Recovered worker/runner fixes plus production composition and candidate-validation regressions; remaining shard headroom needs measurement. |
+| [43899940611](https://github.com/link-assistant/formal-ai/actions/runs/43899940611) | Draft exited 5 after 8m32s: serving identity unverified, null Hive attempt identity, no useful source changes | Live identity contract remains blocked on [Hive Mind #3909](https://github.com/link-assistant/hive-mind/issues/3909). No identity, delivery or benchmark credit is fabricated. |
+| [43878821415](https://github.com/link-assistant/formal-ai/actions/runs/43878821415) | File-size warning inventory, lines 3783–4023 | Solver reduced below its warning band. Other warning-band files remain open; limits were not globally raised. |
+| [43872809507](https://github.com/link-assistant/formal-ai/actions/runs/43872809507) | Missing required main-branch contexts, line 784 | PR contexts now report on documentation changes. Repository rule configuration and machine-writer compatibility remain open. |
+| [43870207134](https://github.com/link-assistant/formal-ai/actions/runs/43870207134) | HumanEval 12/20, MBPP 11/20 and GSM8K 1/2 below existing floors | Real capability defects reproduced with held-out native probes; floors unchanged. Concrete-output composition fix removes a false success but does not implement the missing algorithms. |
+| [43815999458](https://github.com/link-assistant/formal-ai/actions/runs/43815999458) | Compiler cache: 88 attempted writes, 87 errors, one stored, line 1113 | Warning no longer invents a cause or asserts certain recompilation; pretty-printed counters are recognized. Backend error cause still needs retained diagnostics. |
+| [41768761745](https://github.com/link-assistant/formal-ai/actions/runs/41768761745) | All 12 work-item qualification containers failed to pull | Public log lacks the underlying Docker stderr; inaccessible evidence prevents a verified root-cause claim. Qualification is not passed. |
+
+Successful scope-gated release consumers and the issue-1028 ladder are not evidence that their heavy paths executed. In particular, the successful ladder runs had `FULL_LADDER=false`. Old failures already repaired by newer main commits are kept as historical observations, not attributed to this branch.
+
+## Implemented changes and focused verification
+
+| Requirement/failure | Implementation | Verification |
+| --- | --- | --- |
+| Unknown quoted concept and described-file safety | Preserve path authority, terminal punctuation and source order; do not fetch an unsupported quoted concept or write an inferred file | `rust/tests/web/pull-request-1188-fix-gaps.test.mjs`: 31 passing tests, including G102; source punctuation has held-out cross-language cases |
+| Prime constraints and concrete output | Preserve a validated candidate's intent, reuse existing prime validation before Spanish conjunction parsing, prohibit joining prose as code/constraint success | `worker-candidate-validation.test.mjs`: four tests across five languages; `issue-1580-production-composition.test.mjs`: three positive/negative controls |
+| Parent result validity | Validate child answers only when the selected composition actually consumes them | Native synthesis fixtures added; JavaScript production controls pass; native tests remain unexecuted |
+| Real work-item receipts | Native fixtures obtain source-probe/write receipts from the actual workspace implementation; compiler/network effects remain explicit mocks | `connector-work-item-receipts.test.mjs`: 20 tests; `recipe-handoff-receipts.test.mjs`: two tests; native fixture execution remains outstanding |
+| Required context reporting | Documentation-only PRs report the same native context without compiling; missing/failed change detection conservatively runs the compiler | `default-branch-build-policy.test.mjs`: 21 tests; `stale-pull-request-report.test.mjs`: six tests; canonical staged-release projection verified |
+| Download/YAML/runner regressions | Recovered bounded retries, flow-YAML timeout parsing and pinned browser runner fixes | Local JavaScript gates pass; full native regression execution remains outstanding |
+| Draft resource/result accounting | Recovered occupancy handling, image pre-pull outside the solving allowance, default-off debug and bounded duration-collector retries | Dedicated recovered workflow tests are retained with their actual results under `evidence/checks`; live drafting still fails its identity acceptance criterion |
+| Cache warning accuracy | Parse compact and pretty JSON; report measured counters and causal uncertainty | `sccache-outage-fallback.test.mjs`: eight passing tests, including three subprocess tests of the actual checker |
+| Shared template transport defect | Real curl server reproduces truncated HTTP 200 transfer without retry; `--retry-all-errors` retries and succeeds | `template-download-retry.test.mjs`: one passing bounded regression; reported as [C++ template #35](https://github.com/link-foundation/cpp-ai-driven-development-pipeline-template/issues/35) |
+
+At the checkpoint, the full local JavaScript gate run reported **86 passed, 52 skipped, zero failed** (138 total). Skips explicitly include Rust builds/tests and checks requiring hosted context or artifacts. Full transcripts and hashes are under `experiments/issue-1580/evidence/checks/`. Required Rust formatting and maintained source/projection currency checks passed; Rust compilation was intentionally left to adequately provisioned CI in accordance with repository policy. This container's 2.92 GiB limit is not an adequate reason to mislabel skipped native checks as passes.
+
+The six-line increase in the JavaScript quantity worker is recorded in its individual module allowance with a concrete rationale: invoke the already-existing prime validator before arithmetic interpretation, matching the Rust path. It adds no prime algorithm and does not relax the global worker target. The solver module was split along its executor boundary rather than changing its size limit.
+
+## Full template comparison
+
+The [template source manifest](templates/sources.json) pins all eight complete source trees. Every one of their 3,007 blobs was downloaded and verified against its Git blob identity; the 48 workflows have parsed run bodies in the per-language workflow JSONL. Each full-tree TSV records every file's role, byte count, Git blob and same-name local comparison. CI candidates outside `.github`, including scripts, test/configuration files and package/build metadata, are inventoried separately.
+
+This is a complete file inventory, not a claim that same-name matching establishes semantic equivalence. The remaining transitive CI reference review and policy decisions are tracked in [the template review](templates/README.md). Application source and historical evidence are accounted for instead of silently omitted.
+
+Upstream reports are preserved under `experiments/issue-1580/upstream/`: [Hive Mind #4071](https://github.com/link-assistant/hive-mind/issues/4071), [Hive Mind #4072](https://github.com/link-assistant/hive-mind/issues/4072), and [C++ template #35](https://github.com/link-foundation/cpp-ai-driven-development-pipeline-template/issues/35). Reporting them does not satisfy unimplemented local acceptance criteria.
+
+## Provenance and remaining acceptance criteria
+
+Development commands execute through the JavaScript Formal AI driver. The externally supplied orchestration, literal commands, patches and generators receive **zero autonomous-authorship credit**. `evidence/commands/index.jsonl` hashes full compressed request/response/tool transcripts and source identities; the supplied-patch archive preserves the one-off inputs. Recovered commits retain their historical attribution. The frozen list has 20 substantive reasoning units; independently accepted Formal AI reasoning is **0/20**, below the reporting target. Successful shell execution is not counted as independent reasoning.
+
+Unfinished criteria remain in this PR: final-head hosted CI; native behavior and newly added native fixtures; external benchmark floors and underlying search/arithmetic capability; native/JavaScript shard timing; all remaining warning sources, including extension packaging and cache backend errors; work-item qualification; compatible required-status rules; full semantic template/CI-closure review and all applicable best-practice changes; and the live Hive identity/delivery contract. This PR remains draft and unmerged until these criteria are verified. No benchmark floor, file-size target, identity requirement or default-branch-only build policy is weakened to obtain a green result.
