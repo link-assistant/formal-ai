@@ -530,3 +530,45 @@ function tryCalendarDateWeekday(prompt, normalized) {
     ],
   };
 }
+
+// Mirrors calendar/date_offset.rs: a day quantity and its date are bound
+// on opposite sides of an explicit direction inside a date question.
+function tryCalendarDateOffset(prompt, normalized) {
+  if (!wordsForRole("calendar-date-offset").some(word => containsCalendarTerm(normalized, word))) return null;
+  const lowered = prompt.toLowerCase();
+  const language = detectLanguage(prompt);
+  const candidates = [];
+  for (const [role, sign] of [[ROLE_CALENDAR_DIRECTION_NEXT, 1], [ROLE_CALENDAR_DIRECTION_PREVIOUS, -1]]) {
+    for (const word of wordsForRole(role)) {
+      const at = lowered.indexOf(word);
+      if (at < 0 || !containsCalendarTerm(lowered, word)) continue;
+      const prefix = lowered.slice(0, at);
+      const anchor = lowered.slice(at + word.length);
+      const offset = detectCalendarOffset(prefix, language);
+      const date = calendarStatedDate(anchor, anchor);
+      if (offset === null || date === null || calendarDigitRuns(prefix).length !== 1) continue;
+      const days = calendarDaysFromCivil(date.year, date.month, date.day);
+      const signed = sign * offset.total;
+      const resultDays = days + signed;
+      if (!Number.isSafeInteger(resultDays) || resultDays < calendarDaysFromCivil(1, 1, 1) ||
+          resultDays >= calendarDaysFromCivil(10000, 1, 1)) continue;
+      const result = new Date(resultDays * 86400000);
+      const iso = result.toISOString().slice(0, 10);
+      const source = String(date.year).padStart(4, "0") + "-" + String(date.month).padStart(2, "0") + "-" + String(date.day).padStart(2, "0");
+      const monthSlug = CALENDAR_MONTH_SLUGS[result.getUTCMonth()];
+      const month = handlerRulesTableValue("calendar-date-month-label", monthSlug + "." + language) || calendarMonthLabel(monthSlug, language);
+      const template = calendarOffsetLocalizedResponse("calendar-date-offset", language);
+      if (template === null) continue;
+      const values = {iso, source, signed: (signed >= 0 ? "+" : "") + signed,
+        day: result.getUTCDate(), month, year: result.getUTCFullYear()};
+      let content = template;
+      for (const [key, value] of Object.entries(values)) content = content.split("{" + key + "}").join(String(value));
+      candidates.push({intent: "calendar_date_offset", content, confidence: 1.0,
+        evidence: ["calendar:date:" + source, "calendar:offset:" + values.signed + "d",
+          "calendar:offset_derivation:" + source + " " + values.signed + "d = " + iso,
+          "calendar:result_date:" + iso, "response:calendar-date-offset"]});
+    }
+  }
+  const distinct = [...new Map(candidates.map(row => [row.evidence.join("|"), row])).values()];
+  return distinct.length === 1 ? distinct[0] : null;
+}

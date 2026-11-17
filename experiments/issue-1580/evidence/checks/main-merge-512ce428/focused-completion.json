@@ -1,0 +1,109 @@
+{
+  "status": 0,
+  "durationSeconds": 34.64,
+  "checks": [
+    {
+      "command": [
+        "rustfmt",
+        "--check",
+        "--edition",
+        "2024",
+        "--config",
+        "skip_children=true",
+        "rust/src/capability_routing/claims.rs",
+        "rust/src/solver_handlers/calendar.rs",
+        "rust/src/solver_handlers/calendar/date_offset.rs",
+        "rust/src/solver_handlers/calendar/month.rs",
+        "rust/src/solver_handlers/calendar_create.rs",
+        "rust/src/solver_handlers/unit_conversion.rs",
+        "rust/src/solver_handlers/unit_conversion/request.rs",
+        "rust/tests/unit/issue_1588_intent_spans.rs",
+        "rust/tests/unit/mod.rs"
+      ],
+      "status": 0,
+      "durationSeconds": 0.696,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "focused-1.log.gz"
+    },
+    {
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+      ],
+      "status": 0,
+      "durationSeconds": 4.69,
+      "rawSha256": "266e7e064a607214628c4390697ae714cde40281cffc8716e4a96a618331c689",
+      "log": "focused-2.log.gz"
+    },
+    {
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1588-intent-spans.test.mjs"
+      ],
+      "status": 0,
+      "durationSeconds": 17.514,
+      "rawSha256": "da1861907ac788ac6122351f19275e3d749f6c7ecfecb40ff5ba51095b1e1da8",
+      "log": "focused-3.log.gz"
+    },
+    {
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/rust-specification-unicode-identifiers.test.mjs"
+      ],
+      "status": 0,
+      "durationSeconds": 10.387,
+      "rawSha256": "05b47e7d3b937966d913ae63ee194165ce0ee2c96d76835ba1f4feb745cead5d",
+      "log": "focused-4.log.gz"
+    },
+    {
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
+      ],
+      "status": 0,
+      "durationSeconds": 0.272,
+      "rawSha256": "07a03799d11e4addf4b68d5207de6c15c3f729b8ceedd4c82b5647fd41982dac",
+      "log": "focused-5.log.gz"
+    },
+    {
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/cargo-audit-blocked-proof.test.mjs"
+      ],
+      "status": 0,
+      "durationSeconds": 1.079,
+      "rawSha256": "09be678720d2f1e544dc1843362e79ff4a91d0a5a7d63b31290ca56825a6f30a",
+      "log": "focused-6.log.gz"
+    }
+  ],
+  "nodeHeapMiB": 256,
+  "measuredAvailableBytes": 2019921920,
+  "childrenPeakRssKiB": 372508,
+  "rustCompilation": false,
+  "independentAuthorshipCredit": 0
+}

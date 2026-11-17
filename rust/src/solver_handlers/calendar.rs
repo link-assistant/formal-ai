@@ -17,6 +17,7 @@ use crate::seed::{
 use crate::solver_handlers::finalize_simple;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+pub mod date_offset;
 pub mod date_weekday;
 pub mod month;
 
@@ -205,6 +206,9 @@ pub fn try_calendar_reasoning(
     }
     // R1017: "What day of the week was 2024-02-29?" names a date, not a
     // weekday, and is answered by counting days from the epoch.
+    if let Some(answer) = date_offset::try_date_offset(prompt, normalized, log) {
+        return Some(answer);
+    }
     if let Some(answer) = date_weekday::try_date_weekday(prompt, normalized, log) {
         return Some(answer);
     }

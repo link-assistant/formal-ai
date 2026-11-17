@@ -180,14 +180,14 @@ pub fn detect_month(normalized: &str) -> Option<i64> {
 }
 
 /// The slug of month number `month` (1–12).
-fn month_slug(month: i64) -> Option<&'static str> {
+pub(super) fn month_slug(month: i64) -> Option<&'static str> {
     let index = usize::try_from(month - 1).ok()?;
     MONTH_SLUGS.get(index).copied()
 }
 
 /// The month's name in the answer language: the first surface of its seed
 /// lexeme (falling back to English), so month names stay seed data.
-fn month_label(slug: &str, language: &str) -> &'static str {
+pub(super) fn month_label(slug: &str, language: &str) -> &'static str {
     lexicon()
         .meaning(slug)
         .and_then(|meaning| meaning.word_in(language).or_else(|| meaning.word_in("en")))
