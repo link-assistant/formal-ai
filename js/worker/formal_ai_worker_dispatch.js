@@ -99,7 +99,7 @@ const OWN_CLAIM_EVIDENCE = Object.freeze({
   incompatible_unit_pair: (prompt, normalized) => detectIncompatibleUnitPair(normalized) !== null,
   fetch_url: (prompt, normalized) => extractHttpFetchUrl(prompt, normalized) !== null,
   navigation_url: (prompt, normalized) => extractUrlNavigateUrl(prompt, normalized) !== null,
-  calendar_date_signal: (prompt, normalized) => mentionsCalendarCreateRequest(normalized),
+  calendar_date_signal: (prompt, normalized) => mentionsCalendarCreateRequest(prompt),
   code_artifact: (prompt) => codeTaskCodeBlock(prompt) !== null, supplied_text: (prompt) => textTransformFreeTextPayload(prompt) !== null,
   // Refusal group: the operand each handler's own reader extracts before it composes anything.
   function_under_test: (prompt) => testGenerationFunctionName(prompt) !== null,

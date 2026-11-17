@@ -619,3 +619,23 @@ multilingual_responses_quantities
     intent calendar_create_event_confirmation
     language es
     text "Crear el evento «{title}» el {date}. Hora: {time}, zona horaria: {time_zone}. Duración: {minutes} minutos.\nImporta este archivo .ics en cualquier calendario:\n{ics}\nO ábrelo en Google Calendar (no hace falta iniciar sesión):\n{google_url}\nResponde «sí» para confirmar."
+  response response-calendar-date-offset-en
+    intent calendar-date-offset
+    language en
+    text "The date is {iso}. {source} {signed} days = {iso}."
+  response response-calendar-date-offset-ru
+    intent calendar-date-offset
+    language ru
+    text "Дата: {day} {month} {year} года. {source} {signed} дней = {iso}."
+  response response-calendar-date-offset-hi
+    intent calendar-date-offset
+    language hi
+    text "तारीख {iso} है। {source} {signed} दिन = {iso}।"
+  response response-calendar-date-offset-zh
+    intent calendar-date-offset
+    language zh
+    text "日期是 {iso}。{source} {signed} 天 = {iso}。"
+  response response-calendar-date-offset-es
+    intent calendar-date-offset
+    language es
+    text "La fecha es {iso}. {source} {signed} días = {iso}."
