@@ -10,6 +10,7 @@ use std::sync::atomic::{AtomicU64, Ordering};
 static TMPDIR_SEQ: AtomicU64 = AtomicU64::new(0);
 
 mod fixture_env;
+mod issue_1582;
 mod model_metadata;
 
 pub fn tmpdir() -> PathBuf {
@@ -33,84 +34,7 @@ fn unused_loopback_port() -> u16 {
         .port()
 }
 
-pub fn write_fake_cli(bin_dir: &Path, name: &str) {
-    let path = bin_dir.join(name);
-    std::fs::write(
-        &path,
-        r#"#!/bin/sh
-{
-  echo "tool=$0"
-  i=0
-  for arg in "$@"; do
-    echo "arg[$i]=$arg"
-    i=$((i + 1))
-  done
-  echo "FORMAL_AI_API_KEY=$FORMAL_AI_API_KEY"
-  echo "LINK_ASSISTANT_AGENT_CONFIG_CONTENT=$LINK_ASSISTANT_AGENT_CONFIG_CONTENT"
-  echo "OPENCODE_CONFIG=$OPENCODE_CONFIG"
-  echo "OPENCODE_CONFIG_DIR=$OPENCODE_CONFIG_DIR"
-  echo "OPENCODE_ENABLE_EXA=$OPENCODE_ENABLE_EXA"
-  echo "GEMINI_API_KEY=$GEMINI_API_KEY"
-  echo "GEMINI_DEFAULT_AUTH_TYPE=$GEMINI_DEFAULT_AUTH_TYPE"
-  echo "GEMINI_CLI_TRUST_WORKSPACE=$GEMINI_CLI_TRUST_WORKSPACE"
-  echo "GEMINI_CLI_HOME=$GEMINI_CLI_HOME"
-  echo "GOOGLE_GEMINI_BASE_URL=$GOOGLE_GEMINI_BASE_URL"
-  echo "GOOGLE_VERTEX_BASE_URL=$GOOGLE_VERTEX_BASE_URL"
-  echo "ANTHROPIC_AUTH_TOKEN=$ANTHROPIC_AUTH_TOKEN"
-  echo "ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY"
-  echo "ANTHROPIC_BASE_URL=$ANTHROPIC_BASE_URL"
-  echo "OPENAI_API_KEY=$OPENAI_API_KEY"
-  echo "OPENAI_BASE_URL=$OPENAI_BASE_URL"
-  echo "OPENAI_API_BASE=$OPENAI_API_BASE"
-  echo "OPENAI_MODEL=$OPENAI_MODEL"
-  echo "GROK_API_KEY=$GROK_API_KEY"
-  echo "GROK_BASE_URL=$GROK_BASE_URL"
-  if [ -f "$HOME/.codex/config.toml" ]; then
-    echo "---CODEX_CONFIG---"
-    cat "$HOME/.codex/config.toml"
-  fi
-  model_catalog_path=""
-  for arg in "$@"; do
-    case "$arg" in
-      model_catalog_json=*)
-        model_catalog_path=${arg#model_catalog_json=}
-        model_catalog_path=${model_catalog_path#\"}
-        model_catalog_path=${model_catalog_path%\"}
-        ;;
-    esac
-  done
-  if [ -z "$model_catalog_path" ] && [ -f "$HOME/.codex/config.toml" ]; then
-    model_catalog_path=$(sed -n 's/^model_catalog_json = "\(.*\)"$/\1/p' "$HOME/.codex/config.toml")
-  fi
-  if [ -n "$model_catalog_path" ] && [ -f "$model_catalog_path" ]; then
-    echo "---CODEX_MODEL_CATALOG---"
-    cat "$model_catalog_path"
-  fi
-  if [ -n "$OPENCODE_CONFIG" ] && [ -f "$OPENCODE_CONFIG" ]; then
-    echo "---OPENCODE_CONFIG---"
-    cat "$OPENCODE_CONFIG"
-  fi
-  if [ -n "$GEMINI_CLI_HOME" ] && [ -f "$GEMINI_CLI_HOME/.gemini/settings.json" ]; then
-    echo "---GEMINI_CLI_SETTINGS---"
-    cat "$GEMINI_CLI_HOME/.gemini/settings.json"
-  fi
-  if [ -n "$CLAUDE_CONFIG_DIR" ] && [ -f "$CLAUDE_CONFIG_DIR/.claude.json" ]; then
-    echo "---CLAUDE_CONFIG---"
-    cat "$CLAUDE_CONFIG_DIR/.claude.json"
-  fi
-  if [ -f "$HOME/.gemini/settings.json" ]; then
-    echo "---HOME_GEMINI_SETTINGS---"
-    cat "$HOME/.gemini/settings.json"
-  fi
-} > "$FORMAL_AI_CAPTURE"
-printf 'Hi, how may I help you?\n'
-"#,
-    )
-    .expect("write fake cli");
-    let mut permissions = std::fs::metadata(&path).expect("metadata").permissions();
-    permissions.set_mode(0o755);
-    std::fs::set_permissions(&path, permissions).expect("chmod fake cli");
-}
+pub use fixture_env::write_fake_cli;
 
 fn write_fake_tui_cli(bin_dir: &Path, name: &str) {
     let path = bin_dir.join(name);
@@ -584,8 +508,13 @@ fn with_formal_ai_all_seeded_tools_leave_persistent_configs_unchanged() {
                     true,
                     "an ephemeral interactive run must not stop at Claude's folder-trust dialog"
                 );
-                assert!(captured.contains("arg[0]=--model"));
-                assert!(captured.contains("arg[1]=formal-ai"));
+                assert!(captured.contains("--allowedTools"));
+                assert!(captured.contains("Read,Glob,Grep,WebFetch,WebSearch"));
+                assert!(
+                    captured_args(&captured)
+                        .windows(2)
+                        .any(|args| args == ["--model", "formal-ai"])
+                );
             }
             "qwen" => {
                 assert!(captured.contains("OPENAI_API_KEY=formal-ai"));
@@ -637,10 +566,14 @@ fn with_formal_ai_auto_starts_agent_mode_server_and_tears_it_down() {
         structured_stderr::messages(&output.stderr)
     );
     assert!(
-        structured_stderr::messages(&output.stderr).contains("temporary server in agent mode"),
-        "stderr: {}",
-        structured_stderr::messages(&output.stderr)
+        output.stderr.is_empty(),
+        "routine startup stays out of the harness"
     );
+    let logs = std::fs::read_dir(home.join(".formal-ai/logs"))
+        .expect("default diagnostic directory")
+        .flat_map(|entry| std::fs::read(entry.expect("log entry").path()).expect("log"))
+        .collect::<Vec<_>>();
+    assert!(structured_stderr::messages(&logs).contains("temporary server in agent mode"));
     assert!(
         TcpStream::connect(("127.0.0.1", port)).is_err(),
         "temporary server still listening"

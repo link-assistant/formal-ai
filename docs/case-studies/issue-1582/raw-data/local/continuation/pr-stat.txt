@@ -1,0 +1,1278 @@
+ .cargo/audit.toml                                  |   13 +-
+ REQUIREMENTS.md                                    |    1 +
+ .../20261117_1582_client_access_diagnostics.md     |    5 +
+ .../fast-pull-request-javascript-tests.json        |    3 +-
+ data/meta/core-boundary-ledger.lino                |   12 +-
+ data/meta/dependency-direction.lino                |    2 +-
+ data/meta/notation-ratchet.lino                    |    6 +-
+ data/meta/progressive-plan-ratchet.lino            |    4 +-
+ data/meta/requirement-status-ledger.lino           |    5 +-
+ .../issue-1582-client-read-access-and-context.lino |   32 +
+ data/meta/runtime-feature-coverage.json            |    6 +-
+ ...l_ai_worker_capabilities_and_runtime_rules.lino |    4 +-
+ .../formal_ai_worker_obligations.lino              |    4 +-
+ .../worker-line-budget/formal_ai_worker_solve.lino |    4 +-
+ data/seed/client-integrations.lino                 |   57 +
+ data/seed/meanings-feature-capability.lino         |   12 +
+ data/seed/multilingual-responses-agentic.lino      |   10 +-
+ data/seed/multilingual-responses-capabilities.lino |   20 +
+ data/seed/roles.lino                               |    2 +
+ .../ses_e1ae36041ffeCIlbft74yN0eIL/metadata.json   |   20 +
+ .../ses_e1ae36041ffeCIlbft74yN0eIL/solve.log       | 3890 ++++++++++++++++++++
+ docs/case-studies/issue-1582/README.md             |  349 ++
+ docs/case-studies/issue-1582/evidence-index.json   | 1065 ++++++
+ .../issue-1582/raw-data/branch-runs.json.gz        |  Bin 0 -> 10164 bytes
+ .../raw-data/ci/43903864920.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43903864920.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43903864969.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43903864969.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43903864980.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43903864980.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43903864981.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43903864981.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43903865056.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43903865056.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43903865079.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43903865079.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43903865199.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43903865199.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43903865206.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43903865206.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43903865217.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43903865217.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43903865257.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43903865257.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43903865521.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43903865521.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43904085669.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43904085669.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43904085679.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43904085679.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43904085692.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43904085692.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43904085725.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43904085725.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43904085758.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43904085758.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43904085768.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43904085768.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43904085953.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43904085953.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43904085983.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43904085983.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43904085990.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43904085990.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43904086166.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43904086166.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43904086818.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43904086818.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43904194071.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43904194071.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43904194115.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43904194115.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43904194152-check-runs-full.json   |    1 +
+ .../raw-data/ci/43904194152-run-full.json          |    1 +
+ .../raw-data/ci/43904194152.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43904194152.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43904194185.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43904194185.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43904194235.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43904194235.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43904194236.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43904194236.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43904194239.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43904194239.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43904194331.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43904194331.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43904194502.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43904194502.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43904194588.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43904194588.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/43904194773.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/43904194773.log.gz      |  Bin 0 -> 20 bytes
+ .../raw-data/ci/44096923070.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44096923070.log.gz      |  Bin 0 -> 6052 bytes
+ .../raw-data/ci/44096923082.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44096923082.log.gz      |  Bin 0 -> 28882 bytes
+ .../raw-data/ci/44096923317.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44096923317.log.gz      |  Bin 0 -> 1222 bytes
+ .../raw-data/ci/44096923378.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44096923378.log.gz      |  Bin 0 -> 1226 bytes
+ .../raw-data/ci/44096923480.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44096923480.log.gz      |  Bin 0 -> 5785 bytes
+ .../raw-data/ci/44096923519.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44096923519.log.gz      |  Bin 0 -> 4606 bytes
+ .../raw-data/ci/44096923569.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44096923569.log.gz      |  Bin 0 -> 9200 bytes
+ .../raw-data/ci/44096923611.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44096923611.log.gz      |  Bin 0 -> 1214 bytes
+ .../raw-data/ci/44096923663.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44096923663.log.gz      |  Bin 0 -> 180508 bytes
+ .../raw-data/ci/44096923667.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44096923667.log.gz      |  Bin 0 -> 1216 bytes
+ .../raw-data/ci/44096923684.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44096923684.log.gz      |  Bin 0 -> 1226 bytes
+ .../raw-data/ci/44096923739.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44096923739.log.gz      |  Bin 0 -> 1223 bytes
+ .../raw-data/ci/44096923762.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44096923762.log.gz      |  Bin 0 -> 4133 bytes
+ .../raw-data/ci/44096923780.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44096923780.log.gz      |  Bin 0 -> 1220 bytes
+ .../raw-data/ci/44096923793.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44096923793.log.gz      |  Bin 0 -> 1215 bytes
+ .../raw-data/ci/44096923794.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44096923794.log.gz      |  Bin 0 -> 13554 bytes
+ .../raw-data/ci/44096923842.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44096923842.log.gz      |  Bin 0 -> 1215 bytes
+ .../raw-data/ci/44096923879.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44096923879.log.gz      |  Bin 0 -> 1210 bytes
+ .../raw-data/ci/44096923916.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44096923916.log.gz      |  Bin 0 -> 1216 bytes
+ .../raw-data/ci/44096923927.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44096923927.log.gz      |  Bin 0 -> 1207 bytes
+ .../raw-data/ci/44096924617.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44096924617.log.gz      |  Bin 0 -> 147974 bytes
+ .../raw-data/ci/44096924648.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44096924648.log.gz      |  Bin 0 -> 6912 bytes
+ .../raw-data/ci/44102310883.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44102310883.log.gz      |  Bin 0 -> 1210 bytes
+ .../raw-data/ci/44102310892.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44102310892.log.gz      |  Bin 0 -> 1219 bytes
+ .../raw-data/ci/44102310965.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44102310965.log.gz      |  Bin 0 -> 7153 bytes
+ .../raw-data/ci/44102311067.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44102311067.log.gz      |  Bin 0 -> 5797 bytes
+ .../raw-data/ci/44102311076.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44102311076.log.gz      |  Bin 0 -> 1214 bytes
+ .../raw-data/ci/44102311087.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44102311087.log.gz      |  Bin 0 -> 184235 bytes
+ .../raw-data/ci/44102311151.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44102311151.log.gz      |  Bin 0 -> 1214 bytes
+ .../raw-data/ci/44102311160.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44102311160.log.gz      |  Bin 0 -> 6824 bytes
+ .../raw-data/ci/44102311217.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44102311217.log.gz      |  Bin 0 -> 1217 bytes
+ .../raw-data/ci/44102311299.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44102311299.log.gz      |  Bin 0 -> 28863 bytes
+ .../raw-data/ci/44102311562.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44102311562.log.gz      |  Bin 0 -> 1214 bytes
+ .../raw-data/ci/44102311624.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44102311624.log.gz      |  Bin 0 -> 1219 bytes
+ .../raw-data/ci/44102311660.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44102311660.log.gz      |  Bin 0 -> 1225 bytes
+ .../raw-data/ci/44102311665.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44102311665.log.gz      |  Bin 0 -> 1218 bytes
+ .../raw-data/ci/44102311718.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44102311718.log.gz      |  Bin 0 -> 9211 bytes
+ .../raw-data/ci/44102311745.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44102311745.log.gz      |  Bin 0 -> 1217 bytes
+ .../raw-data/ci/44102311757.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44102311757.log.gz      |  Bin 0 -> 1223 bytes
+ .../raw-data/ci/44102311773.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44102311773.log.gz      |  Bin 0 -> 4592 bytes
+ .../raw-data/ci/44102311783.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44102311783.log.gz      |  Bin 0 -> 14678 bytes
+ .../raw-data/ci/44102311797.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44102311797.log.gz      |  Bin 0 -> 1211 bytes
+ .../raw-data/ci/44102311863.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44102311863.log.gz      |  Bin 0 -> 4130 bytes
+ .../raw-data/ci/44102311998.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44102311998.log.gz      |  Bin 0 -> 150969 bytes
+ .../raw-data/ci/44105060344.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44105060344.log.gz      |  Bin 0 -> 29565 bytes
+ .../raw-data/ci/44105060425.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44105060425.log.gz      |  Bin 0 -> 6032 bytes
+ .../raw-data/ci/44105060443.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44105060443.log.gz      |  Bin 0 -> 5792 bytes
+ .../raw-data/ci/44105060492.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44105060492.log.gz      |  Bin 0 -> 184369 bytes
+ .../raw-data/ci/44105060501.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44105060501.log.gz      |  Bin 0 -> 13706 bytes
+ .../raw-data/ci/44105060530.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44105060530.log.gz      |  Bin 0 -> 1225 bytes
+ .../raw-data/ci/44105060577.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44105060577.log.gz      |  Bin 0 -> 6870 bytes
+ .../raw-data/ci/44105060602.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44105060602.log.gz      |  Bin 0 -> 9123 bytes
+ .../raw-data/ci/44105060628.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44105060628.log.gz      |  Bin 0 -> 1212 bytes
+ .../raw-data/ci/44105060680.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44105060680.log.gz      |  Bin 0 -> 1215 bytes
+ .../raw-data/ci/44105060896.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44105060896.log.gz      |  Bin 0 -> 1214 bytes
+ .../raw-data/ci/44105060897.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44105060897.log.gz      |  Bin 0 -> 1217 bytes
+ .../raw-data/ci/44105060943.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44105060943.log.gz      |  Bin 0 -> 4582 bytes
+ .../raw-data/ci/44105060950.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44105060950.log.gz      |  Bin 0 -> 1213 bytes
+ .../raw-data/ci/44105060966.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44105060966.log.gz      |  Bin 0 -> 1214 bytes
+ .../raw-data/ci/44105061108.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44105061108.log.gz      |  Bin 0 -> 4156 bytes
+ .../raw-data/ci/44105061198.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44105061198.log.gz      |  Bin 0 -> 1214 bytes
+ .../raw-data/ci/44105061249.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44105061249.log.gz      |  Bin 0 -> 1211 bytes
+ .../raw-data/ci/44105061286.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44105061286.log.gz      |  Bin 0 -> 152247 bytes
+ .../raw-data/ci/44105061883.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44105061883.log.gz      |  Bin 0 -> 1212 bytes
+ .../raw-data/ci/44105061935.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44105061935.log.gz      |  Bin 0 -> 1212 bytes
+ .../raw-data/ci/44105061994.log-status.json        |    9 +
+ .../issue-1582/raw-data/ci/44105061994.log.gz      |  Bin 0 -> 1216 bytes
+ .../raw-data/ci/artifact-14333213693.json          |   47 +
+ .../raw-data/ci/artifact-14333213693.zip           |  Bin 0 -> 3959941 bytes
+ .../raw-data/ci/artifact-14334790793.json          |   31 +
+ .../raw-data/ci/artifact-14334790793.zip           |  Bin 0 -> 320 bytes
+ .../raw-data/ci/artifact-14335683632.json          |   31 +
+ .../raw-data/ci/artifact-14335683632.zip           |  Bin 0 -> 321 bytes
+ .../raw-data/ci/artifact-14337044580.json          |   47 +
+ .../raw-data/ci/artifact-14337044580.zip           |  Bin 0 -> 3959854 bytes
+ .../raw-data/ci/artifact-14337195971.json          |   47 +
+ .../raw-data/ci/artifact-14337195971.zip           |  Bin 0 -> 3959936 bytes
+ .../raw-data/ci/artifact-14337213620.json          |   31 +
+ .../raw-data/ci/artifact-14337213620.zip           |  Bin 0 -> 321 bytes
+ .../raw-data/ci/artifacts-6e75ceeb51fb.json        |  154 +
+ .../raw-data/ci/artifacts-c8de9bf3c2b4.json        |  154 +
+ .../raw-data/ci/artifacts-ca57748ca7da.json        |  154 +
+ .../raw-data/ci/historical-check-runs-full.json    |    1 +
+ .../raw-data/ci/historical-run-full.json           |    1 +
+ .../issue-1582/raw-data/ci/inventory.json          |  200 +
+ .../raw-data/ci/repair-runs-6e75ceeb51fb.json.gz   |  Bin 0 -> 7965 bytes
+ .../raw-data/ci/repair-runs-c8de9bf3c2b4.json.gz   |  Bin 0 -> 8001 bytes
+ .../raw-data/ci/repair-runs-ca57748ca7da.json.gz   |  Bin 0 -> 7911 bytes
+ .../issue-1582/raw-data/draft-artifacts.json       |    1 +
+ .../issue-1582/raw-data/draft-run.json             |    1 +
+ .../issue-1582/raw-data/draft-run.log.gz           |  Bin 0 -> 80144 bytes
+ .../raw-data/draft-session/attempt-outcome.json    |    1 +
+ .../raw-data/draft-session/attempt-policy.txt      |    1 +
+ .../draft-session/attempt.capture.jsonl.gz         |  Bin 0 -> 107060 bytes
+ .../raw-data/draft-session/attempt.stderr.txt      |  116 +
+ .../raw-data/draft-session/attempt.stdout.txt.gz   |  Bin 0 -> 97134 bytes
+ .../draft-session/build-capture-manifest.json      |    1 +
+ .../raw-data/draft-session/build-identity.json     |    1 +
+ .../raw-data/draft-session/build-outcome.json      |    1 +
+ .../raw-data/draft-session/build.capture.jsonl     |  535 +++
+ .../raw-data/draft-session/build.stderr.txt        |  437 +++
+ .../raw-data/draft-session/build.stdout.txt        |    0
+ .../raw-data/draft-session/capture-manifest.json   |  171 +
+ .../draft-session/draft-diagnostics-adapter.json   |    1 +
+ .../raw-data/draft-session/draft-selection.json    |    1 +
+ .../draft-session/formal-ai-attempt-identity.json  |    1 +
+ .../draft-session/formal-ai-attempt-receipt.json   |    1 +
+ .../formal-ai-diagnostics/serve-1725.lino          |   43 +
+ .../dialog_1ff7a526a91a7997.conversation.lino      |    2 +
+ .../dialog_1ff7a526a91a7997.lino.gz                |  Bin 0 -> 53703 bytes
+ .../formal-ai-dialog/dialog_60a3c2d098ce9606.lino  |    1 +
+ .../formal-ai-dialog/dialog_953462e58ae18385.lino  |    1 +
+ .../formal-ai-dialog/dialog_9b8e940ebda20388.lino  |    1 +
+ .../formal-ai-native/native-1725.jsonl.gz          |  Bin 0 -> 240413 bytes
+ .../raw-data/draft-session/shared-build.txt        |    1 +
+ .../solve-2026-11-16T16-05-40-995Z.log.gz          |  Bin 0 -> 104089 bytes
+ .../raw-data/draft-session/source-identity.txt     |    6 +
+ .../issue-1582/raw-data/inline-after-repair.json   |    1 +
+ .../issue-1582/raw-data/inline-before-push.json    |    1 +
+ .../issue-1582/raw-data/inline-current.json        |    1 +
+ .../issue-1582/raw-data/issue-1582-comments.json   |    1 +
+ .../issue-1582/raw-data/issue-1582.json            |    1 +
+ .../issue-1582/raw-data/issue-after-repair.json    |    1 +
+ .../raw-data/issue-comments-after-repair.json      |    1 +
+ .../raw-data/issue-comments-before-push.json       |    1 +
+ .../raw-data/issue-comments-current.json           |    1 +
+ .../local/gates-round-1/check-abbreviations.log.gz |  Bin 0 -> 235 bytes
+ .../check-architecture-contents.log.gz             |  Bin 0 -> 108 bytes
+ .../check-architecture-principles.log.gz           |  Bin 0 -> 91 bytes
+ .../check-assemble-requirements-js-twin.log.gz     |  Bin 0 -> 190 bytes
+ .../check-changelog-fragment-js-twin.log.gz        |  Bin 0 -> 135 bytes
+ .../local/gates-round-1/check-ci-speed.log.gz      |  Bin 0 -> 2100 bytes
+ .../local/gates-round-1/check-closure-audit.log.gz |  Bin 0 -> 137 bytes
+ .../check-conversational-variation-floor.log.gz    |  Bin 0 -> 363 bytes
+ .../check-debt-ratchet-js-twin.log.gz              |  Bin 0 -> 142 bytes
+ .../gates-round-1/check-debug-stage-sources.log.gz |  Bin 0 -> 94 bytes
+ .../check-dependency-direction.log.gz              |  Bin 0 -> 241 bytes
+ .../gates-round-1/check-desktop-library.log.gz     |  Bin 0 -> 5994 bytes
+ .../gates-round-1/check-desktop-packaging.log.gz   |  Bin 0 -> 760 bytes
+ .../local/gates-round-1/check-fact-captures.log.gz |  Bin 0 -> 103 bytes
+ .../gates-round-1/check-file-size-js-twin.log.gz   |  Bin 0 -> 130 bytes
+ .../local/gates-round-1/check-file-size.log.gz     |  Bin 0 -> 4141 bytes
+ .../gates-round-1/check-formal-ai-tally.log.gz     |  Bin 0 -> 135 bytes
+ .../check-fragment-release-map.log.gz              |  Bin 0 -> 494 bytes
+ .../check-generate-module-map-js-twin.log.gz       |  Bin 0 -> 134 bytes
+ ...heck-generate-requirement-status-js-twin.log.gz |  Bin 0 -> 140 bytes
+ .../gates-round-1/check-generated-files.log.gz     |  Bin 0 -> 101 bytes
+ ...check-generated-version-literals-js-twin.log.gz |  Bin 0 -> 139 bytes
+ .../check-generated-version-literals.log.gz        |  Bin 0 -> 125 bytes
+ .../check-hardcoded-language-js-twin.log.gz        |  Bin 0 -> 134 bytes
+ .../gates-round-1/check-hardcoded-language.log.gz  |  Bin 0 -> 180 bytes
+ .../check-i18n-catalog-coverage.log.gz             |  Bin 0 -> 516 bytes
+ .../check-javascript-dependencies.log.gz           |  Bin 0 -> 427 bytes
+ .../check-language-change-parity.log.gz            |  Bin 0 -> 176 bytes
+ .../check-language-parity-js-twin.log.gz           |  Bin 0 -> 130 bytes
+ .../gates-round-1/check-language-parity.log.gz     |  Bin 0 -> 104 bytes
+ .../check-language-test-coverage.log.gz            |  Bin 0 -> 400 bytes
+ .../check-minimal-core-boundary-js-twin.log.gz     |  Bin 0 -> 138 bytes
+ .../check-minimal-core-boundary.log.gz             |  Bin 0 -> 277 bytes
+ .../check-multilingual-intent-coverage.log.gz      |  Bin 0 -> 240 bytes
+ .../local/gates-round-1/check-notation.log.gz      |  Bin 0 -> 690 bytes
+ .../check-package-self-containment.log.gz          |  Bin 0 -> 121 bytes
+ .../local/gates-round-1/check-planner-twins.log.gz |  Bin 0 -> 101 bytes
+ .../check-portable-string-contracts.log.gz         |  Bin 0 -> 93 bytes
+ .../gates-round-1/check-progressive-plan.log.gz    |  Bin 0 -> 256 bytes
+ .../local/gates-round-1/check-project-motto.log.gz |  Bin 0 -> 728 bytes
+ .../check-prompt-specialization.log.gz             |  Bin 0 -> 103 bytes
+ .../local/gates-round-1/check-readable-code.log.gz |  Bin 0 -> 234 bytes
+ .../check-reconstructed-changelog.log.gz           |  Bin 0 -> 133 bytes
+ .../check-render-status-js-twin.log.gz             |  Bin 0 -> 132 bytes
+ .../check-requirement-coverage.log.gz              |  Bin 0 -> 99 bytes
+ .../check-requirement-extraction.log.gz            |  Bin 0 -> 135 bytes
+ .../check-requirement-status-js-twin.log.gz        |  Bin 0 -> 143 bytes
+ .../gates-round-1/check-requirement-status.log.gz  |  Bin 0 -> 135 bytes
+ .../check-requirements-document.log.gz             |  Bin 0 -> 149 bytes
+ .../check-response-parity-debt.log.gz              |  Bin 0 -> 103 bytes
+ .../check-round-trip-translation.log.gz            |  Bin 0 -> 593 bytes
+ .../local/gates-round-1/check-runner-labels.log.gz |  Bin 0 -> 464 bytes
+ .../check-runtime-feature-inventory.log.gz         |  Bin 0 -> 96 bytes
+ .../check-seed-registry-js-twin.log.gz             |  Bin 0 -> 134 bytes
+ .../local/gates-round-1/check-seed-registry.log.gz |  Bin 0 -> 177 bytes
+ .../gates-round-1/check-self-translation.log.gz    |  Bin 0 -> 95 bytes
+ .../check-specification-in-javascript.log.gz       |  Bin 0 -> 124 bytes
+ .../local/gates-round-1/check-status-render.log.gz |  Bin 0 -> 82 bytes
+ .../gates-round-1/check-system-diagrams.log.gz     |  Bin 0 -> 86 bytes
+ .../local/gates-round-1/check-tests-as-docs.log.gz |  Bin 0 -> 180 bytes
+ ...k-tests-as-documentation-javascript-twin.log.gz |  Bin 0 -> 131 bytes
+ .../gates-round-1/check-text-summarization.log.gz  |  Bin 0 -> 234 bytes
+ .../gates-round-1/check-twin-citations.log.gz      |  Bin 0 -> 135 bytes
+ .../gates-round-1/check-wasm-worker-current.log.gz |  Bin 0 -> 113 bytes
+ .../gates-round-1/check-web-formalization.log.gz   |  Bin 0 -> 371 bytes
+ .../gates-round-1/check-web-hardcoded-ui.log.gz    |  Bin 0 -> 211 bytes
+ .../local/gates-round-1/check-web-tdz.log.gz       |  Bin 0 -> 209 bytes
+ .../check-worker-crate-modules.log.gz              |  Bin 0 -> 100 bytes
+ .../check-worker-handler-registry.log.gz           |  Bin 0 -> 300 bytes
+ .../check-worker-line-budget-js-twin.log.gz        |  Bin 0 -> 135 bytes
+ .../gates-round-1/check-worker-line-budget.log.gz  |  Bin 0 -> 2996 bytes
+ .../check-worker-prerequisites.log.gz              |  Bin 0 -> 10099 bytes
+ .../check-worker-terminal-vocabulary.log.gz        |  Bin 0 -> 179 bytes
+ .../local/gates-round-1/check_debt_ratchet.log.gz  |  Bin 0 -> 328 bytes
+ .../gates-round-1/check_js_rust_translation.log.gz |  Bin 0 -> 191 bytes
+ .../local/gates-round-1/check_rename_map.log.gz    |  Bin 0 -> 123 bytes
+ .../local/gates-round-1/evidence-check#1.log.gz    |  Bin 0 -> 109 bytes
+ .../local/gates-round-1/layered-ci#1.log.gz        |  Bin 0 -> 91 bytes
+ .../local/gates-round-1/layered-ci#2.log.gz        |  Bin 0 -> 95 bytes
+ .../local/gates-round-1/layered-ci#3.log.gz        |  Bin 0 -> 641 bytes
+ .../local/gates-round-1/layered-ci#4.log.gz        |  Bin 0 -> 279 bytes
+ .../local/gates-round-1/lint-shell-scripts.log.gz  |  Bin 0 -> 107 bytes
+ .../raw-data/local/gates-round-1/release#1.log.gz  |  Bin 0 -> 293 bytes
+ .../raw-data/local/gates-round-1/release#2.log.gz  |  Bin 0 -> 277 bytes
+ .../gates-round-1/self-development-status#1.log.gz |  Bin 0 -> 328 bytes
+ .../local/gates-round-1/web-ui-boundary.log.gz     |  Bin 0 -> 177 bytes
+ .../local/gates-round-2/check-abbreviations.log.gz |  Bin 0 -> 118 bytes
+ .../check-architecture-contents.log.gz             |  Bin 0 -> 108 bytes
+ .../check-architecture-principles.log.gz           |  Bin 0 -> 91 bytes
+ .../check-assemble-requirements-js-twin.log.gz     |  Bin 0 -> 190 bytes
+ .../check-changelog-fragment-js-twin.log.gz        |  Bin 0 -> 135 bytes
+ .../local/gates-round-2/check-ci-speed.log.gz      |  Bin 0 -> 2100 bytes
+ .../local/gates-round-2/check-closure-audit.log.gz |  Bin 0 -> 137 bytes
+ .../check-conversational-variation-floor.log.gz    |  Bin 0 -> 363 bytes
+ .../check-debt-ratchet-js-twin.log.gz              |  Bin 0 -> 142 bytes
+ .../gates-round-2/check-debug-stage-sources.log.gz |  Bin 0 -> 94 bytes
+ .../check-dependency-direction.log.gz              |  Bin 0 -> 205 bytes
+ .../gates-round-2/check-desktop-library.log.gz     |  Bin 0 -> 5953 bytes
+ .../gates-round-2/check-desktop-packaging.log.gz   |  Bin 0 -> 758 bytes
+ .../local/gates-round-2/check-fact-captures.log.gz |  Bin 0 -> 103 bytes
+ .../gates-round-2/check-file-size-js-twin.log.gz   |  Bin 0 -> 129 bytes
+ .../local/gates-round-2/check-file-size.log.gz     |  Bin 0 -> 4117 bytes
+ .../gates-round-2/check-formal-ai-tally.log.gz     |  Bin 0 -> 135 bytes
+ .../check-fragment-release-map.log.gz              |  Bin 0 -> 494 bytes
+ .../check-generate-module-map-js-twin.log.gz       |  Bin 0 -> 134 bytes
+ ...heck-generate-requirement-status-js-twin.log.gz |  Bin 0 -> 140 bytes
+ .../gates-round-2/check-generated-files.log.gz     |  Bin 0 -> 101 bytes
+ ...check-generated-version-literals-js-twin.log.gz |  Bin 0 -> 139 bytes
+ .../check-generated-version-literals.log.gz        |  Bin 0 -> 125 bytes
+ .../check-hardcoded-language-js-twin.log.gz        |  Bin 0 -> 134 bytes
+ .../gates-round-2/check-hardcoded-language.log.gz  |  Bin 0 -> 180 bytes
+ .../check-i18n-catalog-coverage.log.gz             |  Bin 0 -> 145 bytes
+ .../check-javascript-dependencies.log.gz           |  Bin 0 -> 432 bytes
+ .../check-language-change-parity.log.gz            |  Bin 0 -> 176 bytes
+ .../check-language-parity-js-twin.log.gz           |  Bin 0 -> 130 bytes
+ .../gates-round-2/check-language-parity.log.gz     |  Bin 0 -> 104 bytes
+ .../check-language-test-coverage.log.gz            |  Bin 0 -> 490 bytes
+ .../check-minimal-core-boundary-js-twin.log.gz     |  Bin 0 -> 137 bytes
+ .../check-minimal-core-boundary.log.gz             |  Bin 0 -> 196 bytes
+ .../check-multilingual-intent-coverage.log.gz      |  Bin 0 -> 240 bytes
+ .../local/gates-round-2/check-notation.log.gz      |  Bin 0 -> 555 bytes
+ .../check-package-self-containment.log.gz          |  Bin 0 -> 121 bytes
+ .../local/gates-round-2/check-planner-twins.log.gz |  Bin 0 -> 101 bytes
+ .../check-portable-string-contracts.log.gz         |  Bin 0 -> 93 bytes
+ .../gates-round-2/check-progressive-plan.log.gz    |  Bin 0 -> 138 bytes
+ .../local/gates-round-2/check-project-motto.log.gz |  Bin 0 -> 721 bytes
+ .../check-prompt-specialization.log.gz             |  Bin 0 -> 103 bytes
+ .../local/gates-round-2/check-readable-code.log.gz |  Bin 0 -> 118 bytes
+ .../check-reconstructed-changelog.log.gz           |  Bin 0 -> 133 bytes
+ .../check-render-status-js-twin.log.gz             |  Bin 0 -> 132 bytes
+ .../check-requirement-coverage.log.gz              |  Bin 0 -> 99 bytes
+ .../check-requirement-extraction.log.gz            |  Bin 0 -> 135 bytes
+ .../check-requirement-status-js-twin.log.gz        |  Bin 0 -> 143 bytes
+ .../gates-round-2/check-requirement-status.log.gz  |  Bin 0 -> 135 bytes
+ .../check-requirements-document.log.gz             |  Bin 0 -> 149 bytes
+ .../check-response-parity-debt.log.gz              |  Bin 0 -> 103 bytes
+ .../check-round-trip-translation.log.gz            |  Bin 0 -> 593 bytes
+ .../local/gates-round-2/check-runner-labels.log.gz |  Bin 0 -> 139 bytes
+ .../check-runtime-feature-inventory.log.gz         |  Bin 0 -> 79 bytes
+ .../check-seed-registry-js-twin.log.gz             |  Bin 0 -> 134 bytes
+ .../local/gates-round-2/check-seed-registry.log.gz |  Bin 0 -> 177 bytes
+ .../gates-round-2/check-self-translation.log.gz    |  Bin 0 -> 95 bytes
+ .../check-specification-in-javascript.log.gz       |  Bin 0 -> 124 bytes
+ .../local/gates-round-2/check-status-render.log.gz |  Bin 0 -> 82 bytes
+ .../gates-round-2/check-system-diagrams.log.gz     |  Bin 0 -> 86 bytes
+ .../local/gates-round-2/check-tests-as-docs.log.gz |  Bin 0 -> 180 bytes
+ ...k-tests-as-documentation-javascript-twin.log.gz |  Bin 0 -> 131 bytes
+ .../gates-round-2/check-text-summarization.log.gz  |  Bin 0 -> 234 bytes
+ .../gates-round-2/check-twin-citations.log.gz      |  Bin 0 -> 135 bytes
+ .../gates-round-2/check-wasm-worker-current.log.gz |  Bin 0 -> 113 bytes
+ .../gates-round-2/check-web-formalization.log.gz   |  Bin 0 -> 371 bytes
+ .../gates-round-2/check-web-hardcoded-ui.log.gz    |  Bin 0 -> 211 bytes
+ .../local/gates-round-2/check-web-tdz.log.gz       |  Bin 0 -> 209 bytes
+ .../check-worker-crate-modules.log.gz              |  Bin 0 -> 100 bytes
+ .../check-worker-handler-registry.log.gz           |  Bin 0 -> 295 bytes
+ .../check-worker-line-budget-js-twin.log.gz        |  Bin 0 -> 135 bytes
+ .../gates-round-2/check-worker-line-budget.log.gz  |  Bin 0 -> 2871 bytes
+ .../check-worker-prerequisites.log.gz              |  Bin 0 -> 10103 bytes
+ .../check-worker-terminal-vocabulary.log.gz        |  Bin 0 -> 179 bytes
+ .../local/gates-round-2/check_debt_ratchet.log.gz  |  Bin 0 -> 328 bytes
+ .../gates-round-2/check_js_rust_translation.log.gz |  Bin 0 -> 191 bytes
+ .../local/gates-round-2/check_rename_map.log.gz    |  Bin 0 -> 123 bytes
+ .../local/gates-round-2/evidence-check#1.log.gz    |  Bin 0 -> 109 bytes
+ .../local/gates-round-2/layered-ci#1.log.gz        |  Bin 0 -> 91 bytes
+ .../local/gates-round-2/layered-ci#2.log.gz        |  Bin 0 -> 95 bytes
+ .../local/gates-round-2/layered-ci#3.log.gz        |  Bin 0 -> 641 bytes
+ .../local/gates-round-2/layered-ci#4.log.gz        |  Bin 0 -> 277 bytes
+ .../local/gates-round-2/lint-shell-scripts.log.gz  |  Bin 0 -> 69 bytes
+ .../raw-data/local/gates-round-2/release#1.log.gz  |  Bin 0 -> 293 bytes
+ .../raw-data/local/gates-round-2/release#2.log.gz  |  Bin 0 -> 145 bytes
+ .../gates-round-2/self-development-status#1.log.gz |  Bin 0 -> 421 bytes
+ .../local/gates-round-2/web-ui-boundary.log.gz     |  Bin 0 -> 177 bytes
+ .../local/gates-round-6/check-abbreviations.log.gz |  Bin 0 -> 157 bytes
+ .../check-architecture-contents.log.gz             |  Bin 0 -> 108 bytes
+ .../check-architecture-principles.log.gz           |  Bin 0 -> 91 bytes
+ .../check-assemble-requirements-js-twin.log.gz     |  Bin 0 -> 190 bytes
+ .../check-changelog-fragment-js-twin.log.gz        |  Bin 0 -> 135 bytes
+ .../local/gates-round-6/check-ci-speed.log.gz      |  Bin 0 -> 2100 bytes
+ .../local/gates-round-6/check-closure-audit.log.gz |  Bin 0 -> 137 bytes
+ .../check-conversational-variation-floor.log.gz    |  Bin 0 -> 363 bytes
+ .../check-debt-ratchet-js-twin.log.gz              |  Bin 0 -> 142 bytes
+ .../gates-round-6/check-debug-stage-sources.log.gz |  Bin 0 -> 94 bytes
+ .../check-dependency-direction.log.gz              |  Bin 0 -> 206 bytes
+ .../gates-round-6/check-desktop-library.log.gz     |  Bin 0 -> 5980 bytes
+ .../gates-round-6/check-desktop-packaging.log.gz   |  Bin 0 -> 762 bytes
+ .../local/gates-round-6/check-fact-captures.log.gz |  Bin 0 -> 103 bytes
+ .../gates-round-6/check-file-size-js-twin.log.gz   |  Bin 0 -> 129 bytes
+ .../local/gates-round-6/check-file-size.log.gz     |  Bin 0 -> 4117 bytes
+ .../gates-round-6/check-formal-ai-tally.log.gz     |  Bin 0 -> 135 bytes
+ .../check-fragment-release-map.log.gz              |  Bin 0 -> 497 bytes
+ .../check-generate-module-map-js-twin.log.gz       |  Bin 0 -> 134 bytes
+ ...heck-generate-requirement-status-js-twin.log.gz |  Bin 0 -> 140 bytes
+ .../gates-round-6/check-generated-files.log.gz     |  Bin 0 -> 101 bytes
+ ...check-generated-version-literals-js-twin.log.gz |  Bin 0 -> 139 bytes
+ .../check-generated-version-literals.log.gz        |  Bin 0 -> 125 bytes
+ .../check-hardcoded-language-js-twin.log.gz        |  Bin 0 -> 134 bytes
+ .../gates-round-6/check-hardcoded-language.log.gz  |  Bin 0 -> 180 bytes
+ .../check-i18n-catalog-coverage.log.gz             |  Bin 0 -> 145 bytes
+ .../check-javascript-dependencies.log.gz           |  Bin 0 -> 432 bytes
+ .../check-language-change-parity.log.gz            |  Bin 0 -> 176 bytes
+ .../check-language-parity-js-twin.log.gz           |  Bin 0 -> 130 bytes
+ .../gates-round-6/check-language-parity.log.gz     |  Bin 0 -> 104 bytes
+ .../check-language-test-coverage.log.gz            |  Bin 0 -> 162 bytes
+ .../check-minimal-core-boundary-js-twin.log.gz     |  Bin 0 -> 138 bytes
+ .../check-minimal-core-boundary.log.gz             |  Bin 0 -> 231 bytes
+ .../check-multilingual-intent-coverage.log.gz      |  Bin 0 -> 240 bytes
+ .../local/gates-round-6/check-notation.log.gz      |  Bin 0 -> 554 bytes
+ .../check-package-self-containment.log.gz          |  Bin 0 -> 121 bytes
+ .../local/gates-round-6/check-planner-twins.log.gz |  Bin 0 -> 101 bytes
+ .../check-portable-string-contracts.log.gz         |  Bin 0 -> 93 bytes
+ .../gates-round-6/check-progressive-plan.log.gz    |  Bin 0 -> 138 bytes
+ .../local/gates-round-6/check-project-motto.log.gz |  Bin 0 -> 719 bytes
+ .../check-prompt-specialization.log.gz             |  Bin 0 -> 103 bytes
+ .../local/gates-round-6/check-readable-code.log.gz |  Bin 0 -> 118 bytes
+ .../check-reconstructed-changelog.log.gz           |  Bin 0 -> 133 bytes
+ .../check-render-status-js-twin.log.gz             |  Bin 0 -> 132 bytes
+ .../check-requirement-coverage.log.gz              |  Bin 0 -> 99 bytes
+ .../check-requirement-extraction.log.gz            |  Bin 0 -> 135 bytes
+ .../check-requirement-status-js-twin.log.gz        |  Bin 0 -> 143 bytes
+ .../gates-round-6/check-requirement-status.log.gz  |  Bin 0 -> 135 bytes
+ .../check-requirements-document.log.gz             |  Bin 0 -> 149 bytes
+ .../check-response-parity-debt.log.gz              |  Bin 0 -> 103 bytes
+ .../check-round-trip-translation.log.gz            |  Bin 0 -> 593 bytes
+ .../local/gates-round-6/check-runner-labels.log.gz |  Bin 0 -> 139 bytes
+ .../check-runtime-feature-inventory.log.gz         |  Bin 0 -> 79 bytes
+ .../check-seed-registry-js-twin.log.gz             |  Bin 0 -> 134 bytes
+ .../local/gates-round-6/check-seed-registry.log.gz |  Bin 0 -> 177 bytes
+ .../gates-round-6/check-self-translation.log.gz    |  Bin 0 -> 95 bytes
+ .../check-specification-in-javascript.log.gz       |  Bin 0 -> 124 bytes
+ .../local/gates-round-6/check-status-render.log.gz |  Bin 0 -> 82 bytes
+ .../gates-round-6/check-system-diagrams.log.gz     |  Bin 0 -> 86 bytes
+ .../local/gates-round-6/check-tests-as-docs.log.gz |  Bin 0 -> 180 bytes
+ ...k-tests-as-documentation-javascript-twin.log.gz |  Bin 0 -> 131 bytes
+ .../gates-round-6/check-text-summarization.log.gz  |  Bin 0 -> 234 bytes
+ .../gates-round-6/check-twin-citations.log.gz      |  Bin 0 -> 135 bytes
+ .../gates-round-6/check-wasm-worker-current.log.gz |  Bin 0 -> 113 bytes
+ .../gates-round-6/check-web-formalization.log.gz   |  Bin 0 -> 371 bytes
+ .../gates-round-6/check-web-hardcoded-ui.log.gz    |  Bin 0 -> 211 bytes
+ .../local/gates-round-6/check-web-tdz.log.gz       |  Bin 0 -> 209 bytes
+ .../check-worker-crate-modules.log.gz              |  Bin 0 -> 100 bytes
+ .../check-worker-handler-registry.log.gz           |  Bin 0 -> 299 bytes
+ .../check-worker-line-budget-js-twin.log.gz        |  Bin 0 -> 135 bytes
+ .../gates-round-6/check-worker-line-budget.log.gz  |  Bin 0 -> 2871 bytes
+ .../check-worker-prerequisites.log.gz              |  Bin 0 -> 10103 bytes
+ .../check-worker-terminal-vocabulary.log.gz        |  Bin 0 -> 179 bytes
+ .../local/gates-round-6/check_debt_ratchet.log.gz  |  Bin 0 -> 328 bytes
+ .../gates-round-6/check_js_rust_translation.log.gz |  Bin 0 -> 143 bytes
+ .../local/gates-round-6/check_rename_map.log.gz    |  Bin 0 -> 123 bytes
+ .../local/gates-round-6/evidence-check#1.log.gz    |  Bin 0 -> 109 bytes
+ .../local/gates-round-6/layered-ci#1.log.gz        |  Bin 0 -> 91 bytes
+ .../local/gates-round-6/layered-ci#2.log.gz        |  Bin 0 -> 95 bytes
+ .../local/gates-round-6/layered-ci#3.log.gz        |  Bin 0 -> 641 bytes
+ .../local/gates-round-6/layered-ci#4.log.gz        |  Bin 0 -> 277 bytes
+ .../local/gates-round-6/lint-shell-scripts.log.gz  |  Bin 0 -> 69 bytes
+ .../raw-data/local/gates-round-6/release#1.log.gz  |  Bin 0 -> 4669 bytes
+ .../raw-data/local/gates-round-6/release#2.log.gz  |  Bin 0 -> 146 bytes
+ .../gates-round-6/self-development-status#1.log.gz |  Bin 0 -> 328 bytes
+ .../local/gates-round-6/web-ui-boundary.log.gz     |  Bin 0 -> 177 bytes
+ .../local/gates-round-7/check-abbreviations.log.gz |  Bin 0 -> 157 bytes
+ .../check-architecture-contents.log.gz             |  Bin 0 -> 108 bytes
+ .../check-architecture-principles.log.gz           |  Bin 0 -> 91 bytes
+ .../check-assemble-requirements-js-twin.log.gz     |  Bin 0 -> 190 bytes
+ .../check-changelog-fragment-js-twin.log.gz        |  Bin 0 -> 135 bytes
+ .../local/gates-round-7/check-ci-speed.log.gz      |  Bin 0 -> 2100 bytes
+ .../local/gates-round-7/check-closure-audit.log.gz |  Bin 0 -> 137 bytes
+ .../check-conversational-variation-floor.log.gz    |  Bin 0 -> 363 bytes
+ .../check-debt-ratchet-js-twin.log.gz              |  Bin 0 -> 142 bytes
+ .../gates-round-7/check-debug-stage-sources.log.gz |  Bin 0 -> 94 bytes
+ .../check-dependency-direction.log.gz              |  Bin 0 -> 144 bytes
+ .../gates-round-7/check-desktop-library.log.gz     |  Bin 0 -> 5978 bytes
+ .../gates-round-7/check-desktop-packaging.log.gz   |  Bin 0 -> 761 bytes
+ .../local/gates-round-7/check-fact-captures.log.gz |  Bin 0 -> 103 bytes
+ .../gates-round-7/check-file-size-js-twin.log.gz   |  Bin 0 -> 129 bytes
+ .../local/gates-round-7/check-file-size.log.gz     |  Bin 0 -> 4117 bytes
+ .../gates-round-7/check-formal-ai-tally.log.gz     |  Bin 0 -> 135 bytes
+ .../check-fragment-release-map.log.gz              |  Bin 0 -> 494 bytes
+ .../check-generate-module-map-js-twin.log.gz       |  Bin 0 -> 134 bytes
+ ...heck-generate-requirement-status-js-twin.log.gz |  Bin 0 -> 140 bytes
+ .../gates-round-7/check-generated-files.log.gz     |  Bin 0 -> 101 bytes
+ ...check-generated-version-literals-js-twin.log.gz |  Bin 0 -> 139 bytes
+ .../check-generated-version-literals.log.gz        |  Bin 0 -> 125 bytes
+ .../check-hardcoded-language-js-twin.log.gz        |  Bin 0 -> 134 bytes
+ .../gates-round-7/check-hardcoded-language.log.gz  |  Bin 0 -> 180 bytes
+ .../check-i18n-catalog-coverage.log.gz             |  Bin 0 -> 145 bytes
+ .../check-javascript-dependencies.log.gz           |  Bin 0 -> 427 bytes
+ .../check-language-change-parity.log.gz            |  Bin 0 -> 176 bytes
+ .../check-language-parity-js-twin.log.gz           |  Bin 0 -> 130 bytes
+ .../gates-round-7/check-language-parity.log.gz     |  Bin 0 -> 104 bytes
+ .../check-language-test-coverage.log.gz            |  Bin 0 -> 162 bytes
+ .../check-minimal-core-boundary-js-twin.log.gz     |  Bin 0 -> 137 bytes
+ .../check-minimal-core-boundary.log.gz             |  Bin 0 -> 173 bytes
+ .../check-multilingual-intent-coverage.log.gz      |  Bin 0 -> 240 bytes
+ .../local/gates-round-7/check-notation.log.gz      |  Bin 0 -> 552 bytes
+ .../check-package-self-containment.log.gz          |  Bin 0 -> 121 bytes
+ .../local/gates-round-7/check-planner-twins.log.gz |  Bin 0 -> 101 bytes
+ .../check-portable-string-contracts.log.gz         |  Bin 0 -> 93 bytes
+ .../gates-round-7/check-progressive-plan.log.gz    |  Bin 0 -> 138 bytes
+ .../local/gates-round-7/check-project-motto.log.gz |  Bin 0 -> 717 bytes
+ .../check-prompt-specialization.log.gz             |  Bin 0 -> 103 bytes
+ .../local/gates-round-7/check-readable-code.log.gz |  Bin 0 -> 118 bytes
+ .../check-reconstructed-changelog.log.gz           |  Bin 0 -> 133 bytes
+ .../check-render-status-js-twin.log.gz             |  Bin 0 -> 132 bytes
+ .../check-requirement-coverage.log.gz              |  Bin 0 -> 99 bytes
+ .../check-requirement-extraction.log.gz            |  Bin 0 -> 135 bytes
+ .../check-requirement-status-js-twin.log.gz        |  Bin 0 -> 143 bytes
+ .../gates-round-7/check-requirement-status.log.gz  |  Bin 0 -> 135 bytes
+ .../check-requirements-document.log.gz             |  Bin 0 -> 149 bytes
+ .../check-response-parity-debt.log.gz              |  Bin 0 -> 103 bytes
+ .../check-round-trip-translation.log.gz            |  Bin 0 -> 593 bytes
+ .../local/gates-round-7/check-runner-labels.log.gz |  Bin 0 -> 139 bytes
+ .../check-runtime-feature-inventory.log.gz         |  Bin 0 -> 79 bytes
+ .../check-seed-registry-js-twin.log.gz             |  Bin 0 -> 134 bytes
+ .../local/gates-round-7/check-seed-registry.log.gz |  Bin 0 -> 177 bytes
+ .../gates-round-7/check-self-translation.log.gz    |  Bin 0 -> 95 bytes
+ .../check-specification-in-javascript.log.gz       |  Bin 0 -> 124 bytes
+ .../local/gates-round-7/check-status-render.log.gz |  Bin 0 -> 82 bytes
+ .../gates-round-7/check-system-diagrams.log.gz     |  Bin 0 -> 86 bytes
+ .../local/gates-round-7/check-tests-as-docs.log.gz |  Bin 0 -> 180 bytes
+ ...k-tests-as-documentation-javascript-twin.log.gz |  Bin 0 -> 131 bytes
+ .../gates-round-7/check-text-summarization.log.gz  |  Bin 0 -> 234 bytes
+ .../gates-round-7/check-twin-citations.log.gz      |  Bin 0 -> 135 bytes
+ .../gates-round-7/check-wasm-worker-current.log.gz |  Bin 0 -> 113 bytes
+ .../gates-round-7/check-web-formalization.log.gz   |  Bin 0 -> 371 bytes
+ .../gates-round-7/check-web-hardcoded-ui.log.gz    |  Bin 0 -> 211 bytes
+ .../local/gates-round-7/check-web-tdz.log.gz       |  Bin 0 -> 209 bytes
+ .../check-worker-crate-modules.log.gz              |  Bin 0 -> 100 bytes
+ .../check-worker-handler-registry.log.gz           |  Bin 0 -> 300 bytes
+ .../check-worker-line-budget-js-twin.log.gz        |  Bin 0 -> 135 bytes
+ .../gates-round-7/check-worker-line-budget.log.gz  |  Bin 0 -> 2871 bytes
+ .../check-worker-prerequisites.log.gz              |  Bin 0 -> 10103 bytes
+ .../check-worker-terminal-vocabulary.log.gz        |  Bin 0 -> 179 bytes
+ .../local/gates-round-7/check_debt_ratchet.log.gz  |  Bin 0 -> 328 bytes
+ .../gates-round-7/check_js_rust_translation.log.gz |  Bin 0 -> 191 bytes
+ .../local/gates-round-7/check_rename_map.log.gz    |  Bin 0 -> 123 bytes
+ .../local/gates-round-7/evidence-check#1.log.gz    |  Bin 0 -> 109 bytes
+ .../local/gates-round-7/layered-ci#1.log.gz        |  Bin 0 -> 91 bytes
+ .../local/gates-round-7/layered-ci#2.log.gz        |  Bin 0 -> 95 bytes
+ .../local/gates-round-7/layered-ci#3.log.gz        |  Bin 0 -> 641 bytes
+ .../local/gates-round-7/layered-ci#4.log.gz        |  Bin 0 -> 277 bytes
+ .../local/gates-round-7/lint-shell-scripts.log.gz  |  Bin 0 -> 69 bytes
+ .../raw-data/local/gates-round-7/release#1.log.gz  |  Bin 0 -> 4669 bytes
+ .../raw-data/local/gates-round-7/release#2.log.gz  |  Bin 0 -> 146 bytes
+ .../gates-round-7/self-development-status#1.log.gz |  Bin 0 -> 328 bytes
+ .../local/gates-round-7/web-ui-boundary.log.gz     |  Bin 0 -> 177 bytes
+ .../local/gates-round-8/check-abbreviations.log.gz |  Bin 0 -> 157 bytes
+ .../check-architecture-contents.log.gz             |  Bin 0 -> 108 bytes
+ .../check-architecture-principles.log.gz           |  Bin 0 -> 91 bytes
+ .../check-assemble-requirements-js-twin.log.gz     |  Bin 0 -> 190 bytes
+ .../check-changelog-fragment-js-twin.log.gz        |  Bin 0 -> 135 bytes
+ .../local/gates-round-8/check-ci-speed.log.gz      |  Bin 0 -> 2100 bytes
+ .../local/gates-round-8/check-closure-audit.log.gz |  Bin 0 -> 137 bytes
+ .../check-conversational-variation-floor.log.gz    |  Bin 0 -> 363 bytes
+ .../check-debt-ratchet-js-twin.log.gz              |  Bin 0 -> 142 bytes
+ .../gates-round-8/check-debug-stage-sources.log.gz |  Bin 0 -> 94 bytes
+ .../check-dependency-direction.log.gz              |  Bin 0 -> 144 bytes
+ .../gates-round-8/check-desktop-library.log.gz     |  Bin 0 -> 5962 bytes
+ .../gates-round-8/check-desktop-packaging.log.gz   |  Bin 0 -> 761 bytes
+ .../local/gates-round-8/check-fact-captures.log.gz |  Bin 0 -> 103 bytes
+ .../gates-round-8/check-file-size-js-twin.log.gz   |  Bin 0 -> 129 bytes
+ .../local/gates-round-8/check-file-size.log.gz     |  Bin 0 -> 4117 bytes
+ .../gates-round-8/check-formal-ai-tally.log.gz     |  Bin 0 -> 135 bytes
+ .../check-fragment-release-map.log.gz              |  Bin 0 -> 493 bytes
+ .../check-generate-module-map-js-twin.log.gz       |  Bin 0 -> 134 bytes
+ ...heck-generate-requirement-status-js-twin.log.gz |  Bin 0 -> 140 bytes
+ .../gates-round-8/check-generated-files.log.gz     |  Bin 0 -> 101 bytes
+ ...check-generated-version-literals-js-twin.log.gz |  Bin 0 -> 139 bytes
+ .../check-generated-version-literals.log.gz        |  Bin 0 -> 125 bytes
+ .../check-hardcoded-language-js-twin.log.gz        |  Bin 0 -> 134 bytes
+ .../gates-round-8/check-hardcoded-language.log.gz  |  Bin 0 -> 180 bytes
+ .../check-i18n-catalog-coverage.log.gz             |  Bin 0 -> 145 bytes
+ .../check-javascript-dependencies.log.gz           |  Bin 0 -> 434 bytes
+ .../check-language-change-parity.log.gz            |  Bin 0 -> 176 bytes
+ .../check-language-parity-js-twin.log.gz           |  Bin 0 -> 130 bytes
+ .../gates-round-8/check-language-parity.log.gz     |  Bin 0 -> 104 bytes
+ .../check-language-test-coverage.log.gz            |  Bin 0 -> 162 bytes
+ .../check-minimal-core-boundary-js-twin.log.gz     |  Bin 0 -> 137 bytes
+ .../check-minimal-core-boundary.log.gz             |  Bin 0 -> 173 bytes
+ .../check-multilingual-intent-coverage.log.gz      |  Bin 0 -> 240 bytes
+ .../local/gates-round-8/check-notation.log.gz      |  Bin 0 -> 552 bytes
+ .../check-package-self-containment.log.gz          |  Bin 0 -> 121 bytes
+ .../local/gates-round-8/check-planner-twins.log.gz |  Bin 0 -> 101 bytes
+ .../check-portable-string-contracts.log.gz         |  Bin 0 -> 93 bytes
+ .../gates-round-8/check-progressive-plan.log.gz    |  Bin 0 -> 138 bytes
+ .../local/gates-round-8/check-project-motto.log.gz |  Bin 0 -> 709 bytes
+ .../check-prompt-specialization.log.gz             |  Bin 0 -> 103 bytes
+ .../local/gates-round-8/check-readable-code.log.gz |  Bin 0 -> 118 bytes
+ .../check-reconstructed-changelog.log.gz           |  Bin 0 -> 133 bytes
+ .../check-render-status-js-twin.log.gz             |  Bin 0 -> 132 bytes
+ .../check-requirement-coverage.log.gz              |  Bin 0 -> 99 bytes
+ .../check-requirement-extraction.log.gz            |  Bin 0 -> 135 bytes
+ .../check-requirement-status-js-twin.log.gz        |  Bin 0 -> 143 bytes
+ .../gates-round-8/check-requirement-status.log.gz  |  Bin 0 -> 135 bytes
+ .../check-requirements-document.log.gz             |  Bin 0 -> 149 bytes
+ .../check-response-parity-debt.log.gz              |  Bin 0 -> 103 bytes
+ .../check-round-trip-translation.log.gz            |  Bin 0 -> 593 bytes
+ .../local/gates-round-8/check-runner-labels.log.gz |  Bin 0 -> 139 bytes
+ .../check-runtime-feature-inventory.log.gz         |  Bin 0 -> 79 bytes
+ .../check-seed-registry-js-twin.log.gz             |  Bin 0 -> 134 bytes
+ .../local/gates-round-8/check-seed-registry.log.gz |  Bin 0 -> 177 bytes
+ .../gates-round-8/check-self-translation.log.gz    |  Bin 0 -> 95 bytes
+ .../check-specification-in-javascript.log.gz       |  Bin 0 -> 124 bytes
+ .../local/gates-round-8/check-status-render.log.gz |  Bin 0 -> 82 bytes
+ .../gates-round-8/check-system-diagrams.log.gz     |  Bin 0 -> 86 bytes
+ .../local/gates-round-8/check-tests-as-docs.log.gz |  Bin 0 -> 180 bytes
+ ...k-tests-as-documentation-javascript-twin.log.gz |  Bin 0 -> 131 bytes
+ .../gates-round-8/check-text-summarization.log.gz  |  Bin 0 -> 234 bytes
+ .../gates-round-8/check-twin-citations.log.gz      |  Bin 0 -> 135 bytes
+ .../gates-round-8/check-wasm-worker-current.log.gz |  Bin 0 -> 113 bytes
+ .../gates-round-8/check-web-formalization.log.gz   |  Bin 0 -> 371 bytes
+ .../gates-round-8/check-web-hardcoded-ui.log.gz    |  Bin 0 -> 211 bytes
+ .../local/gates-round-8/check-web-tdz.log.gz       |  Bin 0 -> 209 bytes
+ .../check-worker-crate-modules.log.gz              |  Bin 0 -> 100 bytes
+ .../check-worker-handler-registry.log.gz           |  Bin 0 -> 299 bytes
+ .../check-worker-line-budget-js-twin.log.gz        |  Bin 0 -> 135 bytes
+ .../gates-round-8/check-worker-line-budget.log.gz  |  Bin 0 -> 2871 bytes
+ .../check-worker-prerequisites.log.gz              |  Bin 0 -> 10103 bytes
+ .../check-worker-terminal-vocabulary.log.gz        |  Bin 0 -> 179 bytes
+ .../local/gates-round-8/check_debt_ratchet.log.gz  |  Bin 0 -> 328 bytes
+ .../gates-round-8/check_js_rust_translation.log.gz |  Bin 0 -> 191 bytes
+ .../local/gates-round-8/check_rename_map.log.gz    |  Bin 0 -> 123 bytes
+ .../local/gates-round-8/evidence-check#1.log.gz    |  Bin 0 -> 109 bytes
+ .../local/gates-round-8/layered-ci#1.log.gz        |  Bin 0 -> 91 bytes
+ .../local/gates-round-8/layered-ci#2.log.gz        |  Bin 0 -> 95 bytes
+ .../local/gates-round-8/layered-ci#3.log.gz        |  Bin 0 -> 641 bytes
+ .../local/gates-round-8/layered-ci#4.log.gz        |  Bin 0 -> 277 bytes
+ .../local/gates-round-8/lint-shell-scripts.log.gz  |  Bin 0 -> 69 bytes
+ .../raw-data/local/gates-round-8/release#1.log.gz  |  Bin 0 -> 5863 bytes
+ .../raw-data/local/gates-round-8/release#2.log.gz  |  Bin 0 -> 146 bytes
+ .../gates-round-8/self-development-status#1.log.gz |  Bin 0 -> 328 bytes
+ .../local/gates-round-8/web-ui-boundary.log.gz     |  Bin 0 -> 177 bytes
+ .../local/gates/check-abbreviations.log.gz         |  Bin 0 -> 157 bytes
+ .../local/gates/check-architecture-contents.log.gz |  Bin 0 -> 108 bytes
+ .../gates/check-architecture-principles.log.gz     |  Bin 0 -> 91 bytes
+ .../check-assemble-requirements-js-twin.log.gz     |  Bin 0 -> 190 bytes
+ .../gates/check-changelog-fragment-js-twin.log.gz  |  Bin 0 -> 135 bytes
+ .../raw-data/local/gates/check-ci-speed.log.gz     |  Bin 0 -> 2100 bytes
+ .../local/gates/check-closure-audit.log.gz         |  Bin 0 -> 137 bytes
+ .../check-conversational-variation-floor.log.gz    |  Bin 0 -> 363 bytes
+ .../local/gates/check-debt-ratchet-js-twin.log.gz  |  Bin 0 -> 142 bytes
+ .../local/gates/check-debug-stage-sources.log.gz   |  Bin 0 -> 94 bytes
+ .../local/gates/check-dependency-direction.log.gz  |  Bin 0 -> 144 bytes
+ .../local/gates/check-desktop-library.log.gz       |  Bin 0 -> 5962 bytes
+ .../local/gates/check-desktop-packaging.log.gz     |  Bin 0 -> 761 bytes
+ .../local/gates/check-fact-captures.log.gz         |  Bin 0 -> 103 bytes
+ .../local/gates/check-file-size-js-twin.log.gz     |  Bin 0 -> 129 bytes
+ .../raw-data/local/gates/check-file-size.log.gz    |  Bin 0 -> 4117 bytes
+ .../local/gates/check-formal-ai-tally.log.gz       |  Bin 0 -> 135 bytes
+ .../local/gates/check-fragment-release-map.log.gz  |  Bin 0 -> 493 bytes
+ .../gates/check-generate-module-map-js-twin.log.gz |  Bin 0 -> 134 bytes
+ ...heck-generate-requirement-status-js-twin.log.gz |  Bin 0 -> 140 bytes
+ .../local/gates/check-generated-files.log.gz       |  Bin 0 -> 101 bytes
+ ...check-generated-version-literals-js-twin.log.gz |  Bin 0 -> 139 bytes
+ .../gates/check-generated-version-literals.log.gz  |  Bin 0 -> 125 bytes
+ .../gates/check-hardcoded-language-js-twin.log.gz  |  Bin 0 -> 134 bytes
+ .../local/gates/check-hardcoded-language.log.gz    |  Bin 0 -> 180 bytes
+ .../local/gates/check-i18n-catalog-coverage.log.gz |  Bin 0 -> 145 bytes
+ .../gates/check-javascript-dependencies.log.gz     |  Bin 0 -> 434 bytes
+ .../gates/check-language-change-parity.log.gz      |  Bin 0 -> 176 bytes
+ .../gates/check-language-parity-js-twin.log.gz     |  Bin 0 -> 130 bytes
+ .../local/gates/check-language-parity.log.gz       |  Bin 0 -> 104 bytes
+ .../gates/check-language-test-coverage.log.gz      |  Bin 0 -> 162 bytes
+ .../check-minimal-core-boundary-js-twin.log.gz     |  Bin 0 -> 137 bytes
+ .../local/gates/check-minimal-core-boundary.log.gz |  Bin 0 -> 173 bytes
+ .../check-multilingual-intent-coverage.log.gz      |  Bin 0 -> 240 bytes
+ .../raw-data/local/gates/check-notation.log.gz     |  Bin 0 -> 552 bytes
+ .../gates/check-package-self-containment.log.gz    |  Bin 0 -> 121 bytes
+ .../local/gates/check-planner-twins.log.gz         |  Bin 0 -> 101 bytes
+ .../gates/check-portable-string-contracts.log.gz   |  Bin 0 -> 93 bytes
+ .../local/gates/check-progressive-plan.log.gz      |  Bin 0 -> 138 bytes
+ .../local/gates/check-project-motto.log.gz         |  Bin 0 -> 709 bytes
+ .../local/gates/check-prompt-specialization.log.gz |  Bin 0 -> 103 bytes
+ .../local/gates/check-readable-code.log.gz         |  Bin 0 -> 118 bytes
+ .../gates/check-reconstructed-changelog.log.gz     |  Bin 0 -> 133 bytes
+ .../local/gates/check-render-status-js-twin.log.gz |  Bin 0 -> 132 bytes
+ .../local/gates/check-requirement-coverage.log.gz  |  Bin 0 -> 99 bytes
+ .../gates/check-requirement-extraction.log.gz      |  Bin 0 -> 135 bytes
+ .../gates/check-requirement-status-js-twin.log.gz  |  Bin 0 -> 143 bytes
+ .../local/gates/check-requirement-status.log.gz    |  Bin 0 -> 135 bytes
+ .../local/gates/check-requirements-document.log.gz |  Bin 0 -> 149 bytes
+ .../local/gates/check-response-parity-debt.log.gz  |  Bin 0 -> 103 bytes
+ .../gates/check-round-trip-translation.log.gz      |  Bin 0 -> 593 bytes
+ .../local/gates/check-runner-labels.log.gz         |  Bin 0 -> 139 bytes
+ .../gates/check-runtime-feature-inventory.log.gz   |  Bin 0 -> 79 bytes
+ .../local/gates/check-seed-registry-js-twin.log.gz |  Bin 0 -> 134 bytes
+ .../local/gates/check-seed-registry.log.gz         |  Bin 0 -> 177 bytes
+ .../local/gates/check-self-translation.log.gz      |  Bin 0 -> 95 bytes
+ .../gates/check-specification-in-javascript.log.gz |  Bin 0 -> 124 bytes
+ .../local/gates/check-status-render.log.gz         |  Bin 0 -> 82 bytes
+ .../local/gates/check-system-diagrams.log.gz       |  Bin 0 -> 86 bytes
+ .../local/gates/check-tests-as-docs.log.gz         |  Bin 0 -> 180 bytes
+ ...k-tests-as-documentation-javascript-twin.log.gz |  Bin 0 -> 131 bytes
+ .../local/gates/check-text-summarization.log.gz    |  Bin 0 -> 234 bytes
+ .../local/gates/check-twin-citations.log.gz        |  Bin 0 -> 135 bytes
+ .../local/gates/check-wasm-worker-current.log.gz   |  Bin 0 -> 113 bytes
+ .../local/gates/check-web-formalization.log.gz     |  Bin 0 -> 371 bytes
+ .../local/gates/check-web-hardcoded-ui.log.gz      |  Bin 0 -> 211 bytes
+ .../raw-data/local/gates/check-web-tdz.log.gz      |  Bin 0 -> 209 bytes
+ .../local/gates/check-worker-crate-modules.log.gz  |  Bin 0 -> 100 bytes
+ .../gates/check-worker-handler-registry.log.gz     |  Bin 0 -> 299 bytes
+ .../gates/check-worker-line-budget-js-twin.log.gz  |  Bin 0 -> 135 bytes
+ .../local/gates/check-worker-line-budget.log.gz    |  Bin 0 -> 2871 bytes
+ .../local/gates/check-worker-prerequisites.log.gz  |  Bin 0 -> 10103 bytes
+ .../gates/check-worker-terminal-vocabulary.log.gz  |  Bin 0 -> 179 bytes
+ .../raw-data/local/gates/check_debt_ratchet.log.gz |  Bin 0 -> 328 bytes
+ .../local/gates/check_js_rust_translation.log.gz   |  Bin 0 -> 191 bytes
+ .../raw-data/local/gates/check_rename_map.log.gz   |  Bin 0 -> 123 bytes
+ .../raw-data/local/gates/evidence-check#1.log.gz   |  Bin 0 -> 109 bytes
+ .../raw-data/local/gates/layered-ci#1.log.gz       |  Bin 0 -> 91 bytes
+ .../raw-data/local/gates/layered-ci#2.log.gz       |  Bin 0 -> 95 bytes
+ .../raw-data/local/gates/layered-ci#3.log.gz       |  Bin 0 -> 641 bytes
+ .../raw-data/local/gates/layered-ci#4.log.gz       |  Bin 0 -> 277 bytes
+ .../raw-data/local/gates/lint-shell-scripts.log.gz |  Bin 0 -> 69 bytes
+ .../raw-data/local/gates/release#1.log.gz          |  Bin 0 -> 5863 bytes
+ .../raw-data/local/gates/release#2.log.gz          |  Bin 0 -> 146 bytes
+ .../local/gates/self-development-status#1.log.gz   |  Bin 0 -> 328 bytes
+ .../raw-data/local/gates/web-ui-boundary.log.gz    |  Bin 0 -> 177 bytes
+ .../raw-data/local/governed-witness-refresh.json   |   15 +
+ .../raw-data/local/issue-1582-access-source.log.gz |  Bin 0 -> 8930 bytes
+ .../raw-data/local/issue-1582-after-tests1.log.gz  |  Bin 0 -> 1094 bytes
+ .../raw-data/local/issue-1582-after-tests2.log.gz  |  Bin 0 -> 525 bytes
+ .../raw-data/local/issue-1582-all-gates.log.gz     |  Bin 0 -> 1948 bytes
+ ...ssue-1582-artifact-download-first-repair.log.gz |  Bin 0 -> 331 bytes
+ ...sue-1582-artifact-inventory-first-repair.log.gz |  Bin 0 -> 404 bytes
+ .../raw-data/local/issue-1582-audit-chrono.log.gz  |  Bin 0 -> 520 bytes
+ .../local/issue-1582-base-projection-format.log.gz |  Bin 0 -> 1157 bytes
+ .../raw-data/local/issue-1582-before-tests.log.gz  |  Bin 0 -> 1894 bytes
+ .../local/issue-1582-bootstrap-identities.log.gz   |  Bin 0 -> 468 bytes
+ .../raw-data/local/issue-1582-bootstrap.log.gz     |  Bin 0 -> 10062 bytes
+ .../raw-data/local/issue-1582-cap-worker.log.gz    |  Bin 0 -> 2518 bytes
+ .../local/issue-1582-check-tools-fallback.log.gz   |  Bin 0 -> 627 bytes
+ .../raw-data/local/issue-1582-check-tools.log.gz   |  Bin 0 -> 241 bytes
+ .../local/issue-1582-chrono-upstream-retry.log.gz  |  Bin 0 -> 26438 bytes
+ .../local/issue-1582-chrono-upstream.log.gz        |  Bin 0 -> 728 bytes
+ .../issue-1582-ci-action-required-audit.log.gz     |  Bin 0 -> 384 bytes
+ .../raw-data/local/issue-1582-ci-archive.log.gz    |  Bin 0 -> 183 bytes
+ .../local/issue-1582-ci-blocker-audit.log.gz       |  Bin 0 -> 381 bytes
+ .../local/issue-1582-ci-evidence-commit.log.gz     |  Bin 0 -> 2917 bytes
+ .../raw-data/local/issue-1582-ci-first-head.log.gz |  Bin 0 -> 1107 bytes
+ .../raw-data/local/issue-1582-ci-fixes.log.gz      |  Bin 0 -> 11413 bytes
+ .../local/issue-1582-ci-layered-log.log.gz         |  Bin 0 -> 1105 bytes
+ .../local/issue-1582-ci-logs-batch-1.log.gz        |  Bin 0 -> 1120 bytes
+ .../local/issue-1582-ci-logs-batch-2.log.gz        |  Bin 0 -> 1104 bytes
+ .../local/issue-1582-ci-logs-batch-3.log.gz        |  Bin 0 -> 1104 bytes
+ .../local/issue-1582-ci-logs-batch-4.log.gz        |  Bin 0 -> 1104 bytes
+ .../local/issue-1582-ci-logs-batch-5.log.gz        |  Bin 0 -> 1104 bytes
+ .../local/issue-1582-ci-pipeline-log.log.gz        |  Bin 0 -> 1124 bytes
+ .../local/issue-1582-ci-repair-commit.log.gz       |  Bin 0 -> 580 bytes
+ .../local/issue-1582-ci-scope-retry.log.gz         |  Bin 0 -> 4619 bytes
+ .../raw-data/local/issue-1582-ci-scope.log.gz      |  Bin 0 -> 238 bytes
+ .../issue-1582-ci-second-repair-batch-1.log.gz     |  Bin 0 -> 1116 bytes
+ .../issue-1582-ci-second-repair-batch-2.log.gz     |  Bin 0 -> 1101 bytes
+ .../issue-1582-ci-second-repair-batch-3.log.gz     |  Bin 0 -> 1096 bytes
+ .../issue-1582-ci-second-repair-batch-4.log.gz     |  Bin 0 -> 1096 bytes
+ .../issue-1582-ci-second-repair-batch-5.log.gz     |  Bin 0 -> 1091 bytes
+ .../issue-1582-ci-second-repair-batch-6.log.gz     |  Bin 0 -> 1073 bytes
+ .../local/issue-1582-ci-security-log.log.gz        |  Bin 0 -> 1121 bytes
+ .../local/issue-1582-ci-transport-batch-1.log.gz   |  Bin 0 -> 1110 bytes
+ .../local/issue-1582-ci-transport-batch-2.log.gz   |  Bin 0 -> 1106 bytes
+ .../local/issue-1582-ci-transport-batch-3.log.gz   |  Bin 0 -> 1103 bytes
+ .../local/issue-1582-ci-transport-batch-4.log.gz   |  Bin 0 -> 1087 bytes
+ .../local/issue-1582-ci-validation-source.log.gz   |  Bin 0 -> 18894 bytes
+ .../raw-data/local/issue-1582-cli-final.log.gz     |  Bin 0 -> 618 bytes
+ .../raw-data/local/issue-1582-client-matrix.log.gz |  Bin 0 -> 3205 bytes
+ .../local/issue-1582-client-research.log.gz        |  Bin 0 -> 5922 bytes
+ .../local/issue-1582-client-scope-record.log.gz    |  Bin 0 -> 160 bytes
+ .../local/issue-1582-codex-live-search.log.gz      |  Bin 0 -> 275 bytes
+ .../local/issue-1582-codex-policy-source.log.gz    |  Bin 0 -> 2254 bytes
+ .../local/issue-1582-codex-read-research.log.gz    |  Bin 0 -> 1090 bytes
+ .../raw-data/local/issue-1582-commit-draft.log.gz  |  Bin 0 -> 8188 bytes
+ .../raw-data/local/issue-1582-commit-status.log.gz |  Bin 0 -> 273 bytes
+ .../issue-1582-commit-verified-evidence.log.gz     |  Bin 0 -> 20 bytes
+ .../local/issue-1582-context-research.log.gz       |  Bin 0 -> 5122 bytes
+ .../local/issue-1582-context-source.log.gz         |  Bin 0 -> 4586 bytes
+ .../issue-1582-current-projection-format.log.gz    |  Bin 0 -> 1210 bytes
+ .../issue-1582-current-source-artifacts.log.gz     |  Bin 0 -> 2757 bytes
+ .../local/issue-1582-defaults-final.log.gz         |  Bin 0 -> 642 bytes
+ .../raw-data/local/issue-1582-discovery.log.gz     |  Bin 0 -> 22351 bytes
+ .../local/issue-1582-document-source.log.gz        |  Bin 0 -> 4556 bytes
+ .../local/issue-1582-document-source2.log.gz       |  Bin 0 -> 9186 bytes
+ .../raw-data/local/issue-1582-evidence.log.gz      |  Bin 0 -> 2004 bytes
+ .../local/issue-1582-existing-cli-tests.log.gz     |  Bin 0 -> 619 bytes
+ .../local/issue-1582-existing-logger-tests.log.gz  |  Bin 0 -> 742 bytes
+ .../local/issue-1582-failure-source.log.gz         |  Bin 0 -> 6269 bytes
+ .../raw-data/local/issue-1582-feature-seed.log.gz  |  Bin 0 -> 1163 bytes
+ .../local/issue-1582-feedback-before-final.log.gz  |  Bin 0 -> 6181 bytes
+ .../raw-data/local/issue-1582-fetch-path.log.gz    |  Bin 0 -> 799 bytes
+ .../raw-data/local/issue-1582-files.log.gz         |  Bin 0 -> 841 bytes
+ .../raw-data/local/issue-1582-final-gates.log.gz   |  Bin 0 -> 1803 bytes
+ .../local/issue-1582-final-local-record.log.gz     |  Bin 0 -> 159 bytes
+ .../local/issue-1582-final-preflight.log.gz        |  Bin 0 -> 2845 bytes
+ ...issue-1582-final-publish-recipe-explicit.log.gz |  Bin 0 -> 281 bytes
+ .../local/issue-1582-final-publish-recipe.log.gz   |  Bin 0 -> 857 bytes
+ .../issue-1582-final-publish-shell-check.log.gz    |  Bin 0 -> 152 bytes
+ .../local/issue-1582-final-regressions.log.gz      |  Bin 0 -> 580 bytes
+ .../local/issue-1582-final-repair-source.log.gz    |  Bin 0 -> 24358 bytes
+ .../raw-data/local/issue-1582-final-source.log.gz  |  Bin 0 -> 22605 bytes
+ .../local/issue-1582-finalize-local.log.gz         |  Bin 0 -> 2949 bytes
+ .../local/issue-1582-finish-gates-retry.log.gz     |  Bin 0 -> 830 bytes
+ .../raw-data/local/issue-1582-finish-gates.log.gz  |  Bin 0 -> 349 bytes
+ .../local/issue-1582-finish-native-gates.log.gz    |  Bin 0 -> 382 bytes
+ .../issue-1582-finish-native-read-policy.log.gz    |  Bin 0 -> 160 bytes
+ .../local/issue-1582-finish-refresh.log.gz         |  Bin 0 -> 397 bytes
+ .../local/issue-1582-finish-refresh2.log.gz        |  Bin 0 -> 3052 bytes
+ .../raw-data/local/issue-1582-finish-t3.log.gz     |  Bin 0 -> 214 bytes
+ .../local/issue-1582-focused-repair-source.log.gz  |  Bin 0 -> 27232 bytes
+ .../local/issue-1582-full-failures-source.log.gz   |  Bin 0 -> 11083 bytes
+ .../raw-data/local/issue-1582-gate-list.log.gz     |  Bin 0 -> 3248 bytes
+ .../local/issue-1582-gate-repair-source.log.gz     |  Bin 0 -> 129 bytes
+ .../local/issue-1582-gate-repair-source2.log.gz    |  Bin 0 -> 40752 bytes
+ .../raw-data/local/issue-1582-gates-round-3.log.gz |  Bin 0 -> 1705 bytes
+ .../raw-data/local/issue-1582-gates-round-4.log.gz |  Bin 0 -> 1711 bytes
+ .../raw-data/local/issue-1582-gates-round-5.log.gz |  Bin 0 -> 1712 bytes
+ .../raw-data/local/issue-1582-gates-round-6.log.gz |  Bin 0 -> 1799 bytes
+ .../raw-data/local/issue-1582-gates-round-7.log.gz |  Bin 0 -> 1722 bytes
+ .../raw-data/local/issue-1582-gates-round-8.log.gz |  Bin 0 -> 1723 bytes
+ .../raw-data/local/issue-1582-generate-docs.log.gz |  Bin 0 -> 339 bytes
+ .../local/issue-1582-generated-style-check.log.gz  |  Bin 0 -> 196 bytes
+ .../local/issue-1582-identity-refresh.log.gz       |  Bin 0 -> 10067 bytes
+ .../raw-data/local/issue-1582-implement.log.gz     |  Bin 0 -> 152 bytes
+ .../local/issue-1582-implementation-review.diff.gz |  Bin 0 -> 7072 bytes
+ .../raw-data/local/issue-1582-inspect.log.gz       |  Bin 0 -> 5608 bytes
+ .../local/issue-1582-integration-detail.log.gz     |  Bin 0 -> 5945 bytes
+ .../raw-data/local/issue-1582-last-review.log.gz   |  Bin 0 -> 905 bytes
+ .../raw-data/local/issue-1582-ledger-source.log.gz |  Bin 0 -> 3729 bytes
+ .../raw-data/local/issue-1582-limits-source.log.gz |  Bin 0 -> 2676 bytes
+ .../local/issue-1582-limits-source2.log.gz         |  Bin 0 -> 8018 bytes
+ .../local/issue-1582-logger-callers.log.gz         |  Bin 0 -> 829 bytes
+ .../local/issue-1582-logging-source.log.gz         |  Bin 0 -> 7112 bytes
+ .../local/issue-1582-native-cache-driver.log.gz    |  Bin 0 -> 155 bytes
+ .../local/issue-1582-native-cache-source.log.gz    |  Bin 0 -> 4725 bytes
+ .../issue-1582-native-cli-driver-retry.log.gz      |  Bin 0 -> 154 bytes
+ .../local/issue-1582-native-cli-driver.log.gz      |  Bin 0 -> 167 bytes
+ .../local/issue-1582-native-cli-source.log.gz      |  Bin 0 -> 2932 bytes
+ .../local/issue-1582-native-context.log.gz         |  Bin 0 -> 155 bytes
+ .../issue-1582-native-final-audit-driver.log.gz    |  Bin 0 -> 155 bytes
+ .../local/issue-1582-native-final-audit.log.gz     |  Bin 0 -> 926 bytes
+ .../local/issue-1582-native-final-record.log.gz    |  Bin 0 -> 161 bytes
+ .../local/issue-1582-native-gates-refresh.log.gz   |  Bin 0 -> 593 bytes
+ ...sue-1582-native-policy-projection-direct.log.gz |  Bin 0 -> 228 bytes
+ .../issue-1582-native-policy-projection.log.gz     |  Bin 0 -> 125 bytes
+ .../issue-1582-native-policy-requirements.log.gz   |  Bin 0 -> 656 bytes
+ .../issue-1582-native-policy-translation.log.gz    |  Bin 0 -> 68 bytes
+ .../issue-1582-native-read-audit-retry.log.gz      |  Bin 0 -> 154 bytes
+ .../issue-1582-native-read-audit-source.log.gz     |  Bin 0 -> 7524 bytes
+ .../local/issue-1582-native-read-audit.log.gz      |  Bin 0 -> 867 bytes
+ .../local/issue-1582-native-style-current.log.gz   |  Bin 0 -> 1748 bytes
+ .../local/issue-1582-native-style-final.log.gz     |  Bin 0 -> 1682 bytes
+ .../local/issue-1582-native-style-pre-push.log.gz  |  Bin 0 -> 167 bytes
+ .../local/issue-1582-native-test-source.log.gz     |  Bin 0 -> 6416 bytes
+ .../local/issue-1582-network-test-source.log.gz    |  Bin 0 -> 489 bytes
+ .../raw-data/local/issue-1582-network.log.gz       |  Bin 0 -> 708 bytes
+ .../raw-data/local/issue-1582-new-failures.log.gz  |  Bin 0 -> 4869 bytes
+ .../raw-data/local/issue-1582-next-source.log.gz   |  Bin 0 -> 10555 bytes
+ .../raw-data/local/issue-1582-next.log.gz          |  Bin 0 -> 1859 bytes
+ .../local/issue-1582-offline-test-source.log.gz    |  Bin 0 -> 8245 bytes
+ .../raw-data/local/issue-1582-offline.log.gz       |  Bin 0 -> 1022 bytes
+ .../local/issue-1582-parser-install.log.gz         |  Bin 0 -> 45 bytes
+ .../raw-data/local/issue-1582-permissions.log.gz   |  Bin 0 -> 154 bytes
+ .../raw-data/local/issue-1582-policy.log.gz        |  Bin 0 -> 21893 bytes
+ .../local/issue-1582-pr-final-diff-error.log.gz    |  Bin 0 -> 231 bytes
+ .../raw-data/local/issue-1582-pr-final.diff.gz     |  Bin 0 -> 20 bytes
+ .../raw-data/local/issue-1582-pre-gate.log.gz      |  Bin 0 -> 4705 bytes
+ .../local/issue-1582-pre-push-evidence.log.gz      |  Bin 0 -> 2376 bytes
+ .../local/issue-1582-pre-push-refresh.log.gz       |  Bin 0 -> 2376 bytes
+ .../local/issue-1582-prepare-checks.log.gz         |  Bin 0 -> 10857 bytes
+ .../local/issue-1582-prepare-final-gates.log.gz    |  Bin 0 -> 20 bytes
+ .../local/issue-1582-prepare-final-gates2.log.gz   |  Bin 0 -> 5389 bytes
+ .../raw-data/local/issue-1582-preserve-json.log.gz |  Bin 0 -> 160 bytes
+ .../local/issue-1582-production-review-2.diff.gz   |  Bin 0 -> 8587 bytes
+ .../raw-data/local/issue-1582-push-review.log.gz   |  Bin 0 -> 439 bytes
+ .../local/issue-1582-push-second-repair.log.gz     |  Bin 0 -> 479 bytes
+ .../issue-1582-push-transport-deadline.log.gz      |  Bin 0 -> 529 bytes
+ .../raw-data/local/issue-1582-record-review.log.gz |  Bin 0 -> 1061 bytes
+ .../raw-data/local/issue-1582-refine.log.gz        |  Bin 0 -> 151 bytes
+ .../local/issue-1582-refresh-checks.log.gz         |  Bin 0 -> 345 bytes
+ .../local/issue-1582-refresh-checks2.log.gz        |  Bin 0 -> 11168 bytes
+ .../raw-data/local/issue-1582-related-prs.log.gz   |  Bin 0 -> 54699 bytes
+ .../local/issue-1582-remote-production.diff.gz     |  Bin 0 -> 50301 bytes
+ .../local/issue-1582-render-evidence.log.gz        |  Bin 0 -> 306 bytes
+ .../raw-data/local/issue-1582-render-server.log.gz |  Bin 0 -> 214 bytes
+ .../local/issue-1582-repair-boundary.log.gz        |  Bin 0 -> 156 bytes
+ .../raw-data/local/issue-1582-repair-gates.log.gz  |  Bin 0 -> 154 bytes
+ .../local/issue-1582-repair-mirror-path.log.gz     |  Bin 0 -> 206 bytes
+ .../local/issue-1582-repair-preflight.log.gz       |  Bin 0 -> 33119 bytes
+ .../raw-data/local/issue-1582-report-chrono.log.gz |  Bin 0 -> 221 bytes
+ .../local/issue-1582-report-upstream.log.gz        |  Bin 0 -> 298 bytes
+ .../local/issue-1582-research-source.log.gz        |  Bin 0 -> 344 bytes
+ .../local/issue-1582-research-source2.log.gz       |  Bin 0 -> 344 bytes
+ .../local/issue-1582-research-source3.log.gz       |  Bin 0 -> 23453 bytes
+ .../local/issue-1582-resume-native-gates.log.gz    |  Bin 0 -> 155 bytes
+ .../local/issue-1582-resume-refresh.log.gz         |  Bin 0 -> 1127 bytes
+ .../local/issue-1582-review-clients.log.gz         |  Bin 0 -> 7843 bytes
+ .../local/issue-1582-review-current-source.log.gz  |  Bin 0 -> 5147 bytes
+ .../raw-data/local/issue-1582-review-fixes.log.gz  |  Bin 0 -> 244 bytes
+ .../raw-data/local/issue-1582-review-next.log.gz   |  Bin 0 -> 5572 bytes
+ .../local/issue-1582-review-publish.log.gz         |  Bin 0 -> 11317 bytes
+ .../local/issue-1582-review-remaining.log.gz       |  Bin 0 -> 23474 bytes
+ .../raw-data/local/issue-1582-review-remote.log.gz |  Bin 0 -> 376 bytes
+ .../local/issue-1582-review-runtime.log.gz         |  Bin 0 -> 7458 bytes
+ .../local/issue-1582-review-source.diff.gz         |  Bin 0 -> 22062 bytes
+ .../raw-data/local/issue-1582-roots.log.gz         |  Bin 0 -> 1368 bytes
+ .../raw-data/local/issue-1582-routes.log.gz        |  Bin 0 -> 4855 bytes
+ .../local/issue-1582-routing-detail.log.gz         |  Bin 0 -> 1124 bytes
+ .../local/issue-1582-routing-detail2.log.gz        |  Bin 0 -> 22819 bytes
+ .../raw-data/local/issue-1582-runtime.log.gz       |  Bin 0 -> 25711 bytes
+ ...ue-1582-second-repair-artifacts-upstream.log.gz |  Bin 0 -> 2758 bytes
+ .../raw-data/local/issue-1582-start-gates.log.gz   |  Bin 0 -> 184 bytes
+ .../raw-data/local/issue-1582-start-gates2.log.gz  |  Bin 0 -> 184 bytes
+ .../local/issue-1582-t3-context-catalog.log.gz     |  Bin 0 -> 226 bytes
+ .../local/issue-1582-t3-context-fix.log.gz         |  Bin 0 -> 310 bytes
+ .../local/issue-1582-t3-context-path.log.gz        |  Bin 0 -> 235 bytes
+ .../local/issue-1582-t3-context-research.log.gz    |  Bin 0 -> 227 bytes
+ .../raw-data/local/issue-1582-tests-source.log.gz  |  Bin 0 -> 3811 bytes
+ .../local/issue-1582-transport-context.log.gz      |  Bin 0 -> 159 bytes
+ .../issue-1582-transport-deadline-after.log.gz     |  Bin 0 -> 731 bytes
+ .../issue-1582-transport-deadline-before.log.gz    |  Bin 0 -> 1241 bytes
+ .../issue-1582-transport-deadline-commit.log.gz    |  Bin 0 -> 2503 bytes
+ .../local/issue-1582-transport-gates.log.gz        |  Bin 0 -> 134 bytes
+ .../local/issue-1582-verification-source.log.gz    |  Bin 0 -> 25674 bytes
+ .../local/issue-1582-web-tool-audit-driver.log.gz  |  Bin 0 -> 164 bytes
+ .../local/issue-1582-web-tool-audit-retry.log.gz   |  Bin 0 -> 152 bytes
+ .../local/issue-1582-web-tool-audit.log.gz         |  Bin 0 -> 664 bytes
+ .../local/issue-1582-witness-integrity.log.gz      |  Bin 0 -> 390 bytes
+ .../local/issue-1582-witness-refresh.log.gz        |  Bin 0 -> 728 bytes
+ .../local/issue-1582-witness-unicode.log.gz        |  Bin 0 -> 1099 bytes
+ .../local/issue-1582-worker-constructor.log.gz     |  Bin 0 -> 1246 bytes
+ .../raw-data/local/prior-pr-session.log.gz         |  Bin 0 -> 104098 bytes
+ .../issue-1582/raw-data/local/render-evidence.json |    8 +
+ .../issue-1582/raw-data/pr-1583-comments.json      |    1 +
+ .../issue-1582/raw-data/pr-1583-inline.json        |    1 +
+ .../issue-1582/raw-data/pr-1583-reviews.json       |    1 +
+ .../issue-1582/raw-data/pr-1583-runs.json          |    1 +
+ docs/case-studies/issue-1582/raw-data/pr-1583.json |    1 +
+ .../issue-1582/raw-data/pr-6e75ceeb51fb.json       |    9 +
+ .../issue-1582/raw-data/pr-ca57748ca7da.json       |    9 +
+ .../raw-data/pr-comments-after-repair.json         |    1 +
+ .../raw-data/pr-comments-before-push.json          |    1 +
+ .../issue-1582/raw-data/pr-comments-current.json   |    1 +
+ .../issue-1582/raw-data/pr-current.json            |    1 +
+ .../raw-data/pr-files-6e75ceeb51fb.json.gz         |  Bin 0 -> 403038 bytes
+ .../raw-data/pr-files-ca57748ca7da.json.gz         |  Bin 0 -> 384974 bytes
+ .../issue-1582/raw-data/pr-files-repair.json.gz    |  Bin 0 -> 331929 bytes
+ .../issue-1582/raw-data/pr-repair.json             |    9 +
+ .../research/calculator-chrono-report-url.txt      |    1 +
+ .../research/calculator-chrono-report.json         |    1 +
+ .../research/calculator-final-comments.json        |    1 +
+ .../raw-data/research/calculator-final.json        |    1 +
+ .../raw-data/research/chrono-advisory.md           |   20 +
+ .../raw-data/research/chrono-repository.json       |    1 +
+ .../issue-1582/raw-data/research/claude-35630.json |    1 +
+ .../issue-1582/raw-data/research/claude-55182.json |    1 +
+ .../raw-data/research/codex-config-reference.md.gz |  Bin 0 -> 34060 bytes
+ .../raw-data/research/codex-config_toml.rs.gz      |  Bin 0 -> 12813 bytes
+ .../raw-data/research/codex-models.rs.gz           |  Bin 0 -> 23694 bytes
+ .../raw-data/research/codex-permissions.md         |  635 ++++
+ .../raw-data/research/codex-source-sha.txt         |    1 +
+ .../raw-data/research/command-stream-Cargo.toml    |   77 +
+ .../research/command-stream-chrono-issues.json     |    1 +
+ .../research/command-stream-chrono-report-url.txt  |    1 +
+ .../research/command-stream-chrono-report.json     |    1 +
+ .../raw-data/research/command-stream-crate.json    |    1 +
+ .../research/command-stream-final-comments.json    |    1 +
+ .../raw-data/research/command-stream-final.json    |    1 +
+ .../command-stream-latest-dependencies.json        |    1 +
+ .../raw-data/research/gemini-context-probe.json    |    1 +
+ .../raw-data/research/gemini-final-comments.json   |    1 +
+ .../issue-1582/raw-data/research/gemini-final.json |    1 +
+ .../research/gemini-generation-settings.md         |  212 ++
+ .../raw-data/research/gemini-related-issues.json   |    1 +
+ .../raw-data/research/gemini-tokenLimits.ts        |   84 +
+ .../raw-data/research/gemini-upstream-issue.json   |    1 +
+ .../raw-data/research/gemini-upstream-url.txt      |    1 +
+ .../raw-data/research/grok-05-configuration.md     |  900 +++++
+ .../raw-data/research/grok-11-custom-models.md     |  487 +++
+ .../raw-data/research/grok-26-config-reference.md  |  730 ++++
+ .../issue-1582/raw-data/research/grok-readme.md    |  140 +
+ .../raw-data/research/grok-repositories.json       |    1 +
+ .../issue-1582/raw-data/research/grok-tree.json.gz |  Bin 0 -> 215354 bytes
+ .../raw-data/research/link-calculator-Cargo.toml   |    1 +
+ .../research/link-calculator-chrono-issues.json    |    1 +
+ .../research/link-calculator-crate.json.gz         |  Bin 0 -> 9727 bytes
+ .../link-calculator-latest-dependencies.json       |    1 +
+ .../raw-data/research/qwen-settings.md.gz          |  Bin 0 -> 64752 bytes
+ .../raw-data/research/recent-claude-prs.json       |    1 +
+ .../raw-data/research/recent-context-prs.json      |    1 +
+ .../raw-data/research/t3-ClaudeAdapterV2.ts.error  |    1 +
+ .../raw-data/research/t3-ClaudeModelCatalog.ts     |  572 +++
+ .../raw-data/research/t3-providers-claude.md       |  158 +
+ .../issue-1582/raw-data/research/t3-source-sha.txt |    1 +
+ .../issue-1582/raw-data/reviews-after-repair.json  |    1 +
+ .../issue-1582/raw-data/reviews-before-push.json   |    1 +
+ .../issue-1582/raw-data/reviews-current.json       |    1 +
+ .../issue-1582/raw-data/runs-current.json          |    1 +
+ .../raw-data/runtime-evidence/build-identity.json  |    1 +
+ .../raw-data/runtime-evidence/build-outcome.json   |    1 +
+ .../raw-data/runtime-evidence/build.capture.jsonl  |  535 +++
+ .../raw-data/runtime-evidence/build.stderr.txt     |  437 +++
+ .../raw-data/runtime-evidence/build.stdout.txt     |    0
+ .../runtime-evidence/capture-manifest.json         |   69 +
+ .../formal-ai-attempt-identity.json                |    1 +
+ .../raw-data/runtime-evidence/shared-build.txt     |    1 +
+ .../raw-data/runtime-evidence/source-identity.txt  |    6 +
+ .../issue-1582/raw-data/sub-issues.json            |    1 +
+ .../issue-1582/screenshots/after-replay.html       |   34 +
+ .../issue-1582/screenshots/after-replay.png        |  Bin 0 -> 171814 bytes
+ .../issue-1582/screenshots/before-access.png       |  Bin 0 -> 473864 bytes
+ .../issue-1582/screenshots/before-exit.png         |  Bin 0 -> 622915 bytes
+ docs/case-studies/issue-1582/usage.md              |   37 +
+ docs/case-studies/issue-1582/work-plan.md          |   25 +
+ docs/progressive-plan.md                           |   11 +-
+ docs/requirements-traceability.md                  |    6 +
+ .../assembled/interfaces-and-integrations.md       |   15 +
+ docs/requirements/assembled/standing-doctrine.md   |    2 +-
+ .../issue-1548-vision-blockers-and-plan.md         |    2 +-
+ .../issue-1582-client-read-access-and-context.md   |   14 +
+ docs/status.md                                     |    8 +-
+ .../governed-baseline.v8                           |  Bin 1835503 -> 1835503 bytes
+ experiments/issue_1582/access-source.sh            |   10 +
+ experiments/issue_1582/archive-evidence.py         |   30 +
+ experiments/issue_1582/audit-chrono-upstream.py    |   27 +
+ experiments/issue_1582/audit-chrono.py             |   26 +
+ experiments/issue_1582/bootstrap.sh                |    9 +
+ experiments/issue_1582/chrono-report.md            |   14 +
+ experiments/issue_1582/ci-blocker-audit.py         |   23 +
+ experiments/issue_1582/ci-fixes.py                 |   50 +
+ experiments/issue_1582/ci-fixes.sh                 |   10 +
+ experiments/issue_1582/ci-scope.sh                 |    6 +
+ experiments/issue_1582/ci-validation-source.sh     |    8 +
+ experiments/issue_1582/client-matrix.sh            |    5 +
+ experiments/issue_1582/client-research.sh          |   12 +
+ experiments/issue_1582/client-scope-record.py      |   26 +
+ experiments/issue_1582/codex-live-search.py        |   29 +
+ experiments/issue_1582/codex-live-search.sh        |    8 +
+ experiments/issue_1582/codex-policy-source.py      |   10 +
+ experiments/issue_1582/codex-read-research.py      |   15 +
+ experiments/issue_1582/collect-ci.mjs              |   18 +
+ experiments/issue_1582/collect-repair-artifacts.py |   38 +
+ .../issue_1582/collect-verified-artifacts.sh       |    5 +
+ experiments/issue_1582/commit-ci-evidence.sh       |    7 +
+ experiments/issue_1582/commit-ci-repairs.sh        |   32 +
+ experiments/issue_1582/commit-draft.sh             |   13 +
+ experiments/issue_1582/commit-status.sh            |    6 +
+ .../issue_1582/commit-transport-deadline.sh        |   21 +
+ experiments/issue_1582/commit-verified-evidence.sh |    9 +
+ experiments/issue_1582/compact-fixture.py          |    3 +
+ experiments/issue_1582/context-research.sh         |   11 +
+ experiments/issue_1582/context-source.sh           |    9 +
+ experiments/issue_1582/details.sh                  |   20 +
+ experiments/issue_1582/dispatch-checks.mjs         |   17 +
+ experiments/issue_1582/document-source.sh          |   11 +
+ experiments/issue_1582/extend-tests.py             |   24 +
+ experiments/issue_1582/failure-source.sh           |   11 +
+ experiments/issue_1582/final-local-record.py       |   15 +
+ experiments/issue_1582/final-preflight.sh          |   17 +
+ experiments/issue_1582/final-source.sh             |   11 +
+ experiments/issue_1582/finalize-local.sh           |   22 +
+ experiments/issue_1582/finish-gates.py             |   28 +
+ experiments/issue_1582/finish-gates.sh             |    9 +
+ experiments/issue_1582/finish-native-gates.py      |   30 +
+ experiments/issue_1582/finish-native-gates.sh      |   10 +
+ .../issue_1582/finish-native-read-policy.py        |  113 +
+ .../issue_1582/finish-native-read-policy.sh        |   11 +
+ experiments/issue_1582/finish-refresh.py           |   16 +
+ experiments/issue_1582/finish-refresh.sh           |   14 +
+ experiments/issue_1582/finish-t3.py                |   31 +
+ experiments/issue_1582/finish-t3.sh                |    6 +
+ experiments/issue_1582/focused-repair-source.sh    |   14 +
+ experiments/issue_1582/gate-repair-source.sh       |   13 +
+ experiments/issue_1582/gemini-context-probe.mjs    |   11 +
+ experiments/issue_1582/gemini-upstream.md          |   15 +
+ experiments/issue_1582/generate-documentation.sh   |   22 +
+ experiments/issue_1582/generated-style-check.sh    |   18 +
+ experiments/issue_1582/implement.py                |  109 +
+ experiments/issue_1582/inspect-current-ci.py       |   41 +
+ experiments/issue_1582/inspect.sh                  |   25 +
+ .../issue_1582/install-check-tools-fallback.sh     |   14 +
+ experiments/issue_1582/install-check-tools.sh      |   15 +
+ experiments/issue_1582/last-review.py              |   62 +
+ experiments/issue_1582/last-review.sh              |    9 +
+ experiments/issue_1582/ledger-source.sh            |    7 +
+ experiments/issue_1582/limits-source.sh            |   10 +
+ experiments/issue_1582/logging-source.sh           |    9 +
+ experiments/issue_1582/native-cache-source.sh      |    9 +
+ experiments/issue_1582/native-cli-source.sh        |   10 +
+ experiments/issue_1582/native-context.py           |  124 +
+ experiments/issue_1582/native-final-audit.sh       |    6 +
+ experiments/issue_1582/native-final-record.py      |   13 +
+ experiments/issue_1582/native-read-audit.sh        |   14 +
+ experiments/issue_1582/native-test-source.sh       |   14 +
+ experiments/issue_1582/network-test-source.sh      |    7 +
+ experiments/issue_1582/next-source.sh              |    9 +
+ experiments/issue_1582/offline-test-source.sh      |    7 +
+ experiments/issue_1582/permissions.py              |   39 +
+ experiments/issue_1582/pre-gate.sh                 |    9 +
+ experiments/issue_1582/pre-push-evidence.py        |   28 +
+ experiments/issue_1582/prepare-checks.sh           |   18 +
+ experiments/issue_1582/prepare-final-gates.sh      |   12 +
+ experiments/issue_1582/preserve-json-merge.py      |   14 +
+ experiments/issue_1582/pull-request.md             |   26 +
+ experiments/issue_1582/push-review.sh              |   16 +
+ experiments/issue_1582/read.sh                     |    4 +
+ experiments/issue_1582/record-review.py            |   32 +
+ experiments/issue_1582/record-review.sh            |    8 +
+ .../issue_1582/record-transport-deadline.py        |   31 +
+ experiments/issue_1582/record-verified-ci.py       |   55 +
+ experiments/issue_1582/refine.py                   |   35 +
+ experiments/issue_1582/refresh-checks.sh           |   19 +
+ .../issue_1582/refresh-governed-witness.mjs        |   33 +
+ experiments/issue_1582/refresh-repair-feedback.py  |   17 +
+ experiments/issue_1582/refresh-upstream-status.py  |   15 +
+ experiments/issue_1582/related-prs.py              |    8 +
+ experiments/issue_1582/render-evidence.mjs         |   24 +
+ experiments/issue_1582/repair-boundary.py          |    7 +
+ experiments/issue_1582/repair-gates.py             |  115 +
+ experiments/issue_1582/repair-mirror-path.sh       |   12 +
+ experiments/issue_1582/repair-native-logging.py    |   18 +
+ experiments/issue_1582/repair-preflight.sh         |   24 +
+ experiments/issue_1582/report-chrono.sh            |   12 +
+ experiments/issue_1582/report-upstream.sh          |    7 +
+ experiments/issue_1582/research.sh                 |   12 +
+ experiments/issue_1582/resume-native-gates.sh      |   18 +
+ experiments/issue_1582/resume-refresh.sh           |   14 +
+ experiments/issue_1582/review-clients.sh           |    5 +
+ experiments/issue_1582/review-current-source.sh    |   15 +
+ experiments/issue_1582/review-fixes.py             |   45 +
+ experiments/issue_1582/review-fixes.sh             |    7 +
+ experiments/issue_1582/review-publish.sh           |    7 +
+ experiments/issue_1582/review-remaining.sh         |    8 +
+ experiments/issue_1582/review-remote.py            |   28 +
+ experiments/issue_1582/review-runtime.sh           |    7 +
+ experiments/issue_1582/start-gates.sh              |    6 +
+ experiments/issue_1582/t3-context-fix.py           |   21 +
+ experiments/issue_1582/t3-context-fix.sh           |    6 +
+ experiments/issue_1582/t3-context-research.py      |   19 +
+ experiments/issue_1582/transport-context.py        |  122 +
+ experiments/issue_1582/transport-deadline.py       |   11 +
+ experiments/issue_1582/verification-source.sh      |   14 +
+ experiments/issue_1582/verify-native-style.sh      |    6 +
+ .../issue_1582/verify-transport-deadline.sh        |    6 +
+ experiments/issue_1582/web-tool-audit.sh           |    4 +
+ js/agentic/crate/version_resolution.mjs            |    2 +-
+ js/agentic/node-host.mjs                           |    8 +-
+ js/server/main.mjs                                 |    9 +-
+ js/server/read-access.mjs                          |   25 +
+ js/server/structured-log.mjs                       |   28 +-
+ js/server/worker-host.mjs                          |   11 +-
+ js/server/worker-script-prerequisites.mjs          |    2 +-
+ js/worker-script-prerequisites.js                  |    2 +-
+ ...mal_ai_worker_capabilities_and_runtime_rules.js |    4 +
+ js/worker/formal_ai_worker_solve.js                |    4 +
+ rust/embedded/data/seed/client-integrations.lino   |   57 +
+ .../data/seed/meanings-feature-capability.lino     |   12 +
+ .../data/seed/multilingual-responses-agentic.lino  |   10 +-
+ .../seed/multilingual-responses-capabilities.lino  |   20 +
+ rust/src/cli_env.rs                                |    2 +-
+ rust/src/cli_logs.rs                               |   19 +
+ rust/src/client_integrations.rs                    |   11 +-
+ rust/src/client_integrations/global_config.rs      |   52 +-
+ rust/src/coding/synthesis_runtime.rs               |    2 +-
+ rust/src/external_benchmarks/mod.rs                |   11 +-
+ rust/src/main.rs                                   |    1 +
+ rust/src/meta_method_dispatch.rs                   |    2 +-
+ rust/src/solver_config.rs                          |   18 +
+ rust/src/solver_dispatch.rs                        |   12 +-
+ rust/src/solver_handler_how.rs                     |    4 +
+ rust/src/solver_handlers/feature_capability.rs     |   12 +
+ rust/src/solver_handlers/web_requests.rs           |   12 +-
+ .../solver_handlers/web_requests/live_search.rs    |   17 +-
+ rust/src/solver_unknown_reasoning.rs               |    4 +-
+ rust/src/source_fetch.rs                           |    2 +-
+ rust/src/structured_log.rs                         |   44 +-
+ rust/src/version_resolution.rs                     |    7 +-
+ .../crate/version_resolution.rs                    |    2 +-
+ rust/tests/integration/with_formal_ai.rs           |  101 +-
+ .../integration/with_formal_ai/fixture_env.rs      |   84 +
+ .../tests/integration/with_formal_ai/issue_1582.rs |  286 ++
+ rust/tests/unit/cli_logs.rs                        |   19 +
+ .../unit/issue_1173_fallback_executes_search.rs    |   22 +-
+ .../unit/specification/external_benchmarks.rs      |    7 +-
+ .../issue_1172_factual_qa_subject_match.rs         |    8 +-
+ rust/tests/web/issue-1582-defaults.test.mjs        |  143 +
+ rust/tests/web/server-structured-log-cli.test.mjs  |    6 +-
+ rust/tests/web/server-structured-log.test.mjs      |   12 +-
+ rust/tests/web/support/structured-log-fixture.mjs  |    6 +-
+ ts/agentic/crate/version_resolution.mts            |    2 +-
+ ts/agentic/node-host.mts                           |    8 +-
+ ts/server/main.mts                                 |    9 +-
+ ts/server/read-access.mts                          |   25 +
+ ts/server/structured-log.mts                       |   28 +-
+ ts/server/worker-host.mts                          |   11 +-
+ ts/server/worker-script-prerequisites.mts          |    2 +-
+ ts/worker-script-prerequisites.ts                  |    2 +-
+ ...mal_ai_worker_capabilities_and_runtime_rules.ts |    4 +
+ ts/worker/formal_ai_worker_solve.ts                |    4 +
+ 1277 files changed, 17461 insertions(+), 252 deletions(-)
