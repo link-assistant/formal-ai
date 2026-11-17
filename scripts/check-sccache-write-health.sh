@@ -38,7 +38,8 @@
 # The evidence that separates them is the backend's own response, which sccache logs only
 # under `SCCACHE_LOG=debug`. That is wired to the `FORMAL_AI_CI_VERBOSE`
 # repository variable in `.github/actions/setup-sccache/action.yml` and is off by
-# default; set it to `true` and rerun to collect the discriminating evidence.
+# default; set it to `true` and rerun. The EXIT diagnostic below retains a
+# bounded, URL-redacted tail in the hosted job log, including when stats fail.
 #
 # Until then this script does the one thing that was missing: it makes the
 # counter visible, with a threshold, in the run that produced it.
@@ -51,6 +52,8 @@
 #   SCCACHE_WRITE_MIN_ATTEMPTS        stay quiet below this many attempts (20)
 #   SCCACHE_HEALTH_LABEL              prefix for the annotation title ("")
 #   SCCACHE_PATH                      sccache binary to ask (found on PATH)
+#   FORMAL_AI_CI_VERBOSE               true retains opt-in backend diagnostics
+#   SCCACHE_ERROR_LOG                  server log configured before startup
 #
 # Exit status is always 0: this is a visibility audit, and a diagnostic that
 # fails a step replaces the finding with a worse one.
@@ -60,6 +63,27 @@ warn_percent="${SCCACHE_WRITE_ERROR_WARN_PERCENT:-25}"
 min_attempts="${SCCACHE_WRITE_MIN_ATTEMPTS:-20}"
 label="${SCCACHE_HEALTH_LABEL:-}"
 source="${1:-}"
+
+# The daemon writes this file instead of the job's output. Without retaining it,
+# an opt-in rerun loses the response needed to diagnose cache write failures.
+# Read at most 64 KiB and print at most 80 lines; URL values can be signed.
+# Suspend workflow commands with a fresh 128-bit token while printing backend
+# text. A display prefix alone is not an execution boundary.
+# shellcheck disable=SC2329  # invoked by the EXIT trap, including early exits
+emit_backend_diagnostics() {
+  [ "${FORMAL_AI_CI_VERBOSE:-false}" = true ] || return 0
+  local backend_log="${SCCACHE_ERROR_LOG:-}" token
+  [ -n "$backend_log" ] && [ -f "$backend_log" ] && [ -r "$backend_log" ] || return 0
+  token="$(od -An -N16 -tx1 /dev/urandom 2> /dev/null | tr -d '[:space:]')" || return 0
+  [[ "$token" =~ ^[0-9a-f]{32}$ ]] || return 0
+  printf '::stop-commands::%s\n' "$token" >&2
+  echo '[sccache] opt-in backend log tail (at most 64 KiB / 80 lines; URLs redacted):' >&2
+  tail -c 65536 -- "$backend_log" 2> /dev/null | tail -n 80 |
+    sed -E 's#https?://[^[:space:]]+#<cache-url-redacted>#g; s/^/[sccache] /' >&2 || true
+  printf '::%s::\n' "$token" >&2
+  return 0
+}
+trap emit_backend_diagnostics EXIT
 
 read_stats() {
   if [ -n "$source" ] && [ "$source" != "-" ]; then

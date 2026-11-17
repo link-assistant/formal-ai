@@ -60,7 +60,9 @@ runs:
     # cache-backend response -- the evidence that separates rate limiting from
     # concurrent writers of the same key, see
     # scripts/check-sccache-write-health.sh -- set the FORMAL_AI_CI_VERBOSE
-    # repository variable to true and rerun the affected workflow.
+    # repository variable to true and rerun the affected workflow. The
+    # budget wrapper retains the bounded, URL-redacted tail in the job log via
+    # check-sccache-write-health.sh, even if statistics are unavailable.
     - name: Enable opt-in sccache diagnostics
       if: env.FORMAL_AI_CI_VERBOSE == 'true'
       shell: bash

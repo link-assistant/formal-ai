@@ -34,7 +34,7 @@ Successful scope-gated release consumers and the issue-1028 ladder are not evide
 | Required context reporting | Documentation-only PRs report the same native context without compiling; missing/failed change detection conservatively runs the compiler | `default-branch-build-policy.test.mjs`: 21 tests; `stale-pull-request-report.test.mjs`: six tests; canonical staged-release projection verified |
 | Download/YAML/runner regressions | Recovered bounded retries, flow-YAML timeout parsing and pinned browser runner fixes | Local JavaScript gates pass; full native regression execution remains outstanding |
 | Draft resource/result accounting | Recovered occupancy handling, image pre-pull outside the solving allowance, default-off debug and bounded duration-collector retries | Dedicated recovered workflow tests are retained with their actual results under `evidence/checks`; live drafting still fails its identity acceptance criterion |
-| Cache warning accuracy | Parse compact and pretty JSON; report measured counters and causal uncertainty | `sccache-outage-fallback.test.mjs`: eight passing tests, including three subprocess tests of the actual checker |
+| Cache warning accuracy | Parse compact and pretty JSON; report measured counters and causal uncertainty | `sccache-outage-fallback.test.mjs`: twelve passing tests, including actual health-check and budget-wrapper subprocesses |
 | Shared template transport defect | Real curl server reproduces truncated HTTP 200 transfer without retry; `--retry-all-errors` retries and succeeds | `template-download-retry.test.mjs`: one passing bounded regression; reported as [C++ template #35](https://github.com/link-foundation/cpp-ai-driven-development-pipeline-template/issues/35) |
 
 At the checkpoint, the full local JavaScript gate run reported **86 passed, 52 skipped, zero failed** (138 total). Skips explicitly include Rust builds/tests and checks requiring hosted context or artifacts. Full transcripts and hashes are under `experiments/issue-1580/evidence/checks/`. Required Rust formatting and maintained source/projection currency checks passed; Rust compilation was intentionally left to adequately provisioned CI in accordance with repository policy. This container's 2.92 GiB limit is not an adequate reason to mislabel skipped native checks as passes.
@@ -78,6 +78,12 @@ Security [44071443716](https://github.com/link-assistant/formal-ai/actions/runs/
 ## Go source and integrity checkpoint
 
 All 42 pinned Go template files have now been read, compared by role/behavior and recorded in [the per-file review](templates/go-semantic-review.json). Seven complete template semantic reviews remain open. The maintained template entrypoint passes eleven tests without runtime skips. Its added combined stale-version/bad-pin case reproduces an integrity check bypass on non-PR events, with current-pin failure and freshness-only warning controls. A one-line candidate repair is tested only in a disposable fixture copy; no remote template repair or hosted publication is claimed. The report is drafted pending publication of immutable executable evidence. Full regression logs and hashes are retained in `checks/go-pin-integrity.json`.
+
+## Retained cache backend diagnostics
+
+An opt-in logging rerun previously wrote the server response to a runner-local file that the budget wrapper's health check never retained in job output. Two behavioral regressions reproduce the missing evidence before the fix (nine passes, two failures). The health check now retains the last 64 KiB and at most 80 lines whenever existing `FORMAL_AI_CI_VERBOSE=true` logging is enabled, including when statistics are unavailable. URLs are redacted; a fresh 128-bit stop/resume token suspends workflow commands while printing backend text. Default mode remains quiet.
+
+Twelve tests pass afterward, including actual wrapper success/failure outcomes, output bounds, missing logs, token renewal and unchanged warning counts. The verified ShellCheck binary and all five touched gates pass. Complete logs and identities are in `checks/cache-log-retention.json`. This repairs evidence retention; no new hosted backend response has been observed and the historical cache failure cause remains unresolved.
 
 ## Full template comparison
 

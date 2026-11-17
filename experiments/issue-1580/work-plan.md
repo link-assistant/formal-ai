@@ -42,3 +42,7 @@ Collected both failures after all 24 runs on 71e1dee44 completed. Reproduce the 
 ## Complete Go source review and combined integrity regression
 
 Read and compare all 42 Go blobs, including all three workflows and local CI helpers/tests/configuration; preserve per-file identities and decisions. Seven other complete semantic reviews remain open. Execute the unchanged dependency checker with a stale version and injected bad-pin result, compare its current-version failure, and verify the disposable one-line candidate repair retains freshness-only warning policy. The Go file passes five tests; the maintained fast-PR entrypoint passes eleven, zero failures/skips. Retain complete logs and draft the distinct upstream report; file only after immutable executable evidence is pushed. This does not change production Formal AI dependency policy or complete native/benchmark/live-identity acceptance criteria. Supplied review/probe scripts earn zero independent Formal AI reasoning credit.
+
+## Opt-in cache evidence retention
+
+Reproduced the missing backend log in two failing subprocess controls, then retained a bounded URL-redacted tail through the existing health check, including early exits when statistics fail. Fresh workflow-command suspension tokens protect diagnostic output. Twelve regression cases pass, including actual budget-wrapper exit-code preservation; ShellCheck and five touched gates pass. This is prospective evidence collection only: historical cache-backend causality and other broad criteria remain open.
