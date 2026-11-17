@@ -26,10 +26,17 @@ export function traceTree(directory, inventory) {
   };
   const resolve = (from, value, reason, relative = false) => {
     if (value.includes('://') || value.startsWith('node:')) return;
+    const observed = value;
+    // GitHub's $/ references name this repository at the running commit.
+    if (value.startsWith('$/')) value = './' + value.slice(2);
+    if (/[$*?{}]/u.test(value)) {
+      unresolved.push({from,value:observed,reason:'dynamic/glob path in '+reason});
+      return;
+    }
     const base = relative ? path.posix.dirname(from) : '.';
     const target = path.posix.normalize(path.posix.join(base, value));
-    if (target.startsWith('../')) {
-      unresolved.push({from, value, reason: 'reference leaves the source tree'});
+    if (target === '..' || target.startsWith('../') || path.posix.isAbsolute(target)) {
+      unresolved.push({from, value:observed, reason: 'reference leaves the source tree'});
       return;
     }
     const variants = [target, ...['.mjs','.js','.cjs','.ts','.tsx','.py','.rs','.php','.sh'].map(extension => target + extension),
@@ -43,8 +50,12 @@ export function traceTree(directory, inventory) {
     if (children.length) {
       for (const child of children) add(from,child,reason + ' (conservative directory expansion)');
     } else if (value.startsWith('.') || /^(?:scripts|tests?|src|\.github|config|rust|js)\//u.test(value)) {
-      unresolved.push({from,value,reason:'no static file match: '+reason});
+      unresolved.push({from,value:observed,reason:'no static file match: '+reason});
     }
+  };
+  const localUse = (from, value, kind) => {
+    if (typeof value !== 'string' || !(value.startsWith('./') || value.startsWith('$/'))) return;
+    resolve(from,value,(value.startsWith('$/') ? 'self-repository ' : 'local ') + kind);
   };
   const scan = (from, text, reason) => {
     for (const match of text.matchAll(/(?:^|[\s"'`(=])((?:\.{1,2}\/)?(?:[\w@.-]+\/)+[\w@.*?{}$-]+)/gmu)) {
@@ -89,10 +100,10 @@ export function traceTree(directory, inventory) {
       const jobs = document.jobs ?? {composite: document.runs};
       for (const [jobId,job] of Object.entries(jobs)) {
         if (!job) continue;
-        if (job.uses?.startsWith('./')) resolve(file,job.uses,'local reusable workflow');
+        localUse(file,job.uses,'reusable workflow');
         const workingDirectory = job.defaults?.run?.['working-directory'] ?? document.defaults?.run?.['working-directory'] ?? '.';
         for (const [stepIndex,step] of (job.steps ?? []).entries()) {
-          if (step.uses?.startsWith('./')) resolve(file,step.uses,'local action');
+          localUse(file,step.uses,'action');
           if (typeof step.run === 'string') {
             const directory = step['working-directory'] ?? workingDirectory;
             commands.push({file,job:jobId,step:step.id ?? step.name ?? stepIndex,shell:step.shell ?? job.defaults?.run?.shell ?? document.defaults?.run?.shell ?? null,workingDirectory:directory,if:step.if ?? null,run:step.run});

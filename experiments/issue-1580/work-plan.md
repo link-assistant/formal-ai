@@ -66,3 +66,7 @@ All 24 workflows on e6627385d completed successfully; no active or queued runs r
 ## Java release report filed (2026-11-17)
 
 [Java template #31](https://github.com/link-foundation/java-ai-driven-development-pipeline-template/issues/31) is filed with published real-Git regression evidence at `ff5d883b15aeda06c07e509a73a0a436f10799b7`. The posted body and identity are recorded locally. Head `078849576b539e0e6adf2843306af16981d5c09a` awaits all hosted results. No upstream repair, hosted release, complete historical Java semantic review, or broader native/benchmark/live-identity completion is claimed.
+
+## Self-repository references and hosted checkpoint
+
+All 24 workflows on `078849576b539e0e6adf2843306af16981d5c09a` completed successfully; exact-head metadata is retained. During the partial C# review, verify valid `$/` syntax against GitHub's primary announcement and existing actionlint #711 rather than reporting it as an invalid template reference. Repair the lexical traversal, preserving conservative expansion and explicit unknowns. Focused cases: 5 pass; maintained suite: 21 pass; no skips. Three new regressions fail before the repair. All eight same-pin graphs regenerate with 13 added explicit edges and zero added files. Full semantic review, native/main runtime, benchmarks, historical cache cause, live identity and the other broad criteria remain open.
