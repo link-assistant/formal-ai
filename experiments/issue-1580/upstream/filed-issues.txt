@@ -12,3 +12,6 @@ https://github.com/link-foundation/csharp-ai-driven-development-pipeline-templat
 https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/157
 https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/158
 https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/159
+https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/307
+https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/160
+https://github.com/link-foundation/cpp-ai-driven-development-pipeline-template/issues/36

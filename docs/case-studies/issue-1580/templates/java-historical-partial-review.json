@@ -1,0 +1,79 @@
+{
+  "repository": "link-foundation/java-ai-driven-development-pipeline-template",
+  "commit": "dd803a2d9fa5b3a992b435acce73162274fb9e8b",
+  "completeRepositorySemanticReview": false,
+  "pagesFullyRead": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "totalHistoricalPages": 254,
+  "files": [
+    {
+      "path": "dev/log/issues/24/pulls/25/ANALYSIS.md",
+      "sha256": "19d89a12114694a5f1c8e5002a69e421d3f614d31674bb3707ea96ac9461ca1e",
+      "totalLines": 75,
+      "readRanges": [
+        [
+          1,
+          75
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/DEPENDENCIES.md",
+      "sha256": "9b7a75c4e9f126f2f8ee156327ce66641803abcbba7dca2ea5121d1c2d1e6cf5",
+      "totalLines": 57,
+      "readRanges": [
+        [
+          1,
+          57
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/PLAN.md",
+      "sha256": "6f4e07ee07403c3f45d06b3826f813e0ab01429bedbf323cbbb73ba573084919",
+      "totalLines": 14,
+      "readRanges": [
+        [
+          1,
+          14
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/REQUIREMENTS.md",
+      "sha256": "8acaff3b07d6f758f1ed2ca42aaaa97d384299bc4ae7b8a129a38764d958b650",
+      "totalLines": 29,
+      "readRanges": [
+        [
+          1,
+          29
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/TRANSITIVE-DEPENDENCIES.md",
+      "sha256": "30ed6f8676c5a1959f44abde2dacab3531e8e94458e678b5466fa3ee8dbd1023",
+      "totalLines": 211,
+      "readRanges": [
+        [
+          1,
+          73
+        ]
+      ],
+      "completeSourceRead": false
+    }
+  ],
+  "decision": "Historical Java toolchain migration, audit and requirements records supply context only. Maven/JUnit/plugin compatibility claims and old runs do not establish current Formal AI correctness. Preserve existing Rust/default-branch build policy, targeted audit inventories and exact source/result identity; do not introduce Maven or ambient npm setup without a manifest. The transitive inventory and remaining historical source are unfinished.",
+  "independentAuthorshipCredit": 0
+}

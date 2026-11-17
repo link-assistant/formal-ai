@@ -798,7 +798,7 @@
     }
   ],
   "excludedHistoricalEvidence": {
-    "policy": "These 145 dev/log files are historical reports, command logs, registry responses, API receipts and previous source snapshots, not active CI source. Git blob identities remain in java-files.tsv. No full-content semantic read or current-runtime verification is claimed.",
+    "policy": "These 145 dev/log historical files remain outside the active-source review. Four complete files and the first 73 lines of a fifth are now semantically read, as recorded in java-historical-partial-review.json. Remaining historical content and full repository acceptance are unfinished. Historical claims do not verify current runtime behavior.",
     "files": [
       "dev/log/issues/24/pulls/25/ANALYSIS.md",
       "dev/log/issues/24/pulls/25/DEPENDENCIES.md",

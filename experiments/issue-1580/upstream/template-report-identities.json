@@ -76,5 +76,26 @@
     "bodyFile": "python-release-formatting-report.md",
     "evidenceCommit": "da712fadd3f680668c063a6d7de073ef1d52573b",
     "reportCommit": "d0b8b895661c6b5e809810c4da8a3db9f79138b3"
+  },
+  {
+    "repository": "link-foundation/js-ai-driven-development-pipeline-template",
+    "title": "Security audit fails on the picomatch single-branch ReDoS advisory in both npm locks",
+    "url": "https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/307",
+    "bodyFile": "js-picomatch-security-report.md",
+    "evidenceCommit": "83882c0ec7c26b28dc8ac274fada2b39d9dc3a67"
+  },
+  {
+    "repository": "link-foundation/python-ai-driven-development-pipeline-template",
+    "title": "Artifact-action development lock fails npm audit for picomatch single-branch ReDoS",
+    "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/160",
+    "bodyFile": "python-picomatch-security-report.md",
+    "evidenceCommit": "83882c0ec7c26b28dc8ac274fada2b39d9dc3a67"
+  },
+  {
+    "repository": "link-foundation/cpp-ai-driven-development-pipeline-template",
+    "title": "Release npm audit rejects locked picomatch under GHSA-fc5q-39xc-vjpf",
+    "url": "https://github.com/link-foundation/cpp-ai-driven-development-pipeline-template/issues/36",
+    "bodyFile": "cpp-picomatch-security-report.md",
+    "evidenceCommit": "83882c0ec7c26b28dc8ac274fada2b39d9dc3a67"
   }
 ]
