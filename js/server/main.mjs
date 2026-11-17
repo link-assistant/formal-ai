@@ -54,6 +54,7 @@ export function parseArgs(argv, env = process.env) {
     port: Number.parseInt(env.FORMAL_AI_PORT || '8080', 10),
     agentMode: flagEnabled(env.FORMAL_AI_AGENT_MODE),
     debugSession: false,
+    ephemeral: flagEnabled(env.FORMAL_AI_EPHEMERAL),
     logLevel: env.FORMAL_AI_LOG_LEVEL || 'debug',
     silent: flagEnabled(env.FORMAL_AI_SILENT),
     logDirectory: env.FORMAL_AI_LOG_DIR || null,
@@ -70,6 +71,7 @@ export function parseArgs(argv, env = process.env) {
     else if (name === '--agent-mode') options.agentMode = true;
     else if (name === '--prerequisite-grant') options.prerequisiteGrantJson = value();
     else if (name === '--debug-session') options.debugSession = true;
+    else if (name === '--ephemeral') options.ephemeral = true;
     else if (name === '--silent') options.silent = true;
     else if (name === '--trace') options.trace = true;
     else if (name === '--debug' || name === '--verbose') options.logLevel = 'debug';
@@ -86,25 +88,28 @@ export function parseArgs(argv, env = process.env) {
  * Start a server; resolves once it listens.
  * @returns {Promise<{server: import('node:http').Server, ctx: object, url: string}>}
  */
-export async function startServer({ host = '127.0.0.1', port = 0, agentMode = false, debugSession = false, env = process.env, worker, logger, prerequisiteGrantJson = env.FORMAL_AI_PREREQUISITE_GRANT_JSON ?? null } = {}) {
+export async function startServer({ host = '127.0.0.1', port = 0, agentMode = false, debugSession = false, env = process.env, ephemeral = flagEnabled(env.FORMAL_AI_EPHEMERAL), worker, logger, prerequisiteGrantJson = env.FORMAL_AI_PREREQUISITE_GRANT_JSON ?? null } = {}) {
+  ephemeral ||= flagEnabled(env.FORMAL_AI_EPHEMERAL);
   if (debugSession && !isLoopbackHost(host)) throw new Error(`debug_session_requires_loopback:${host}`);
-  const diagnostics = logger ?? createServeLogger({env});
+  if (ephemeral && debugSession) throw new Error('debug_session_requires_retention');
+  const diagnostics = ephemeral ? createServeLogger({env, ephemeral}) : logger ?? createServeLogger({env});
   diagnostics.log('debug', 'server.start', {component:'server',host,port,agent_mode:agentMode,debug_session:debugSession});
   try {
-    const liveMemory=await resolveLiveMemory(env,diagnostics);
-    env={...env,FORMAL_AI_MEMORY_PATH:liveMemory.path};
+    const liveMemory=ephemeral ? null : await resolveLiveMemory(env,diagnostics);
+    env={...env,FORMAL_AI_MEMORY_PATH:liveMemory?.path ?? memoryPath(env)};
     const session=debugSession ? new DebugSession(debugTokenFrom(env)) : null;
     if(session){
       diagnostics.addSecret?.(session.token);
       env={...env,FORMAL_AI_DEBUG_SESSION_TOKEN:session.token};
     }
-    const prerequisiteGrant = configurePrerequisiteGrant(resolvePrerequisiteGrantText(prerequisiteGrantJson, env.FORMAL_AI_INSTALL_GRANT));
+    const prerequisiteGrant = ephemeral ? null : configurePrerequisiteGrant(resolvePrerequisiteGrantText(prerequisiteGrantJson, env.FORMAL_AI_INSTALL_GRANT));
     if (prerequisiteGrant !== null && (prerequisiteGrant.schema !== "formal-ai-workspace-prerequisites-v1" || prerequisiteGrant.scope !== "workspace" || !Array.isArray(prerequisiteGrant.programs))) throw new Error("invalid_prerequisite_grant");
     const ctx = {
       prerequisiteGrant,
       liveMemory,
-      worker: worker || new WorkerHost({ formalAiProverHost: createProverHost({ path: env.PATH }) }),
-      memory: createMemory(env), agentMode, bearerToken: bearerTokenFromEnv(env),
+      ephemeral,
+      worker: worker || new WorkerHost(ephemeral ? {} : { formalAiProverHost: createProverHost({ path: env.PATH }) }),
+      memory: createMemory(env, {readOnly:ephemeral}), agentMode:agentMode && !ephemeral, bearerToken: bearerTokenFromEnv(env),
       debugSession: session,
       env, logger:diagnostics, requestSequence:0,
     };
@@ -128,6 +133,23 @@ export async function startServer({ host = '127.0.0.1', port = 0, agentMode = fa
 }
 
 async function main(argv) {
+  if (argv.join(' ') === '--help' || argv.join(' ') === 'serve --help') {
+    process.stdout.write([
+      'Usage: node js/server/main.mjs [serve] [options]',
+      '  --host HOST / --port PORT    Listen address (default 127.0.0.1:8080)',
+      '  --ephemeral                 Read memory without retaining requests (FORMAL_AI_EPHEMERAL=1)',
+      '  --silent                    Disable diagnostics and dialog capture',
+      '  --agent-mode                Enable client tool planning in persistent mode',
+      '  --debug-session             Enable loopback step-through debugging in persistent mode',
+      '  --log-level LEVEL           Diagnostic level (default debug, request metadata only)',
+      '  --log-dir DIR                Structured logs (default ~/.formal-ai/logs)',
+      '  --trace                      Include diagnostic payloads',
+      '  --prerequisite-grant JSON    Workspace prerequisite grant',
+      '  FORMAL_AI_DIALOG_LOG_DIR     Opt in to full dialog capture (off by default)',
+      '',
+    ].join('\n'));
+    return 0;
+  }
   // `formal-ai explain <answer-id> [--format text|links]` (rust/src/cli_explain.rs).
   if (argv[0] === 'logs') {
     const {runLogsCli}=await import('./logs-cli.mjs');
@@ -155,12 +177,16 @@ async function main(argv) {
     logger.log('error','server.terminal',{component:'server',reason:'invalid_log_configuration'});
     logger.close(); return 2;
   }
+  if (options.ephemeral && options.debugSession) {
+    process.stderr.write('Step-through debugging requires persistent mode.\n');
+    return 2;
+  }
   if(options.unsupported || (options.debugSession && !isLoopbackHost(options.host))){
     logger.log('error','server.terminal',{component:'server',reason:options.unsupported?'unsupported_argument':'debug_session_requires_loopback',argument:options.unsupported});
     logger.close();return 2;
   }
   logger.log('debug','server.memory',{component:'memory',path:memoryPath(process.env)});
-  startCoreDreaming({ env: process.env, memoryPath: memoryPath(process.env) });
+  if (!options.ephemeral) startCoreDreaming({ env: process.env, memoryPath: memoryPath(process.env) });
   let running;
   options.logger=logger;
   try { running=await startServer(options); }catch{return 1;}

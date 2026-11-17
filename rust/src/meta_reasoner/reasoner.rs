@@ -131,6 +131,9 @@ pub fn forget_learned() {
 ///
 /// Mirrors `metaLearn` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 fn meta_learn(groundings: &[Grounding], steps: &[Step], trace: &mut Trace) {
+    if crate::server::ephemeral_enabled() {
+        return;
+    }
     let catalog = catalog();
     let mut used = Vec::new();
     for step in steps {

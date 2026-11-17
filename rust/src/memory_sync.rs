@@ -228,7 +228,7 @@ pub fn configured_memory_path() -> Option<PathBuf> {
 /// Live chat exchanges are recorded into memory unless explicitly disabled.
 #[must_use]
 pub fn chat_recording_enabled() -> bool {
-    !crate::cli_env::flag_disabled("FORMAL_AI_RECORD_CHAT")
+    !crate::server::ephemeral_enabled() && !crate::cli_env::flag_disabled("FORMAL_AI_RECORD_CHAT")
 }
 
 /// Resolve the native link-cli database beside a portable `.lino` memory log.
@@ -289,10 +289,15 @@ impl SyncStore {
     #[must_use]
     pub fn open() -> Self {
         configured_memory_path().map_or_else(Self::default, |path| {
+            if crate::server::ephemeral_enabled() {
+                return Self::open_read(&path, live_memory_source(&path, false), true);
+            }
             match prepare_live_memory(&path) {
-                Ok(selected) => {
-                    Self::open_read(&selected, live_memory_source(&selected, selected != path))
-                }
+                Ok(selected) => Self::open_read(
+                    &selected,
+                    live_memory_source(&selected, selected != path),
+                    false,
+                ),
                 Err(error) => Self {
                     path: Some(path),
                     events: Vec::new(),
@@ -310,16 +315,17 @@ impl SyncStore {
         Ok(Self::open_read(
             &selected,
             live_memory_source(&selected, selected != path),
+            false,
         ))
     }
 
     /// Open a store at an explicit path (used by tests).
     #[must_use]
     pub fn open_at(path: &Path) -> Self {
-        Self::open_read(path, std::fs::read_to_string(path))
+        Self::open_read(path, std::fs::read_to_string(path), false)
     }
 
-    fn open_read(path: &Path, source: std::io::Result<String>) -> Self {
+    fn open_read(path: &Path, source: std::io::Result<String>, read_only: bool) -> Self {
         let mut storage_error = None;
         let (events, schema_version, compatible) = match source {
             Ok(text) => {
@@ -332,6 +338,9 @@ impl SyncStore {
                     schema_version,
                     status.compatible,
                 )
+            }
+            Err(error) if read_only && error.kind() == std::io::ErrorKind::NotFound => {
+                return Self::default();
             }
             Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
                 let compatible = match crate::shared_memory::ensure_shared_memory_file(path) {
@@ -355,13 +364,14 @@ impl SyncStore {
             }
         };
         let mut store = Self {
-            path: Some(path.to_path_buf()),
+            path: (!read_only).then(|| path.to_path_buf()),
             events,
             schema_version,
             compatible,
             storage_error,
         };
-        if store.compatible
+        if !read_only
+            && store.compatible
             && let Err(error) = store.synchronize_link_cli_projection()
         {
             {

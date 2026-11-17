@@ -3,9 +3,8 @@
 //! The server already had a stderr request dump, but a request alone cannot
 //! explain whether an empty CLI turn originated in the planner, a protocol
 //! adapter, or the client. This module records the complete authenticated
-//! request and response together as JSONL. Issue #822 makes complete capture
-//! the default; `--silent` disables it and `FORMAL_AI_DIALOG_LOG_DIR` overrides
-//! its location.
+//! request and response together as Links Notation when
+//! `FORMAL_AI_DIALOG_LOG_DIR` is set. Silent and ephemeral servers skip capture.
 
 #[path = "structured_log.rs"]
 pub mod structured_log;
@@ -46,7 +45,7 @@ thread_local! {
     static CURRENT_DIALOG_ID: RefCell<Option<String>> = const { RefCell::new(None) };
 }
 
-/// Configure process-wide diagnostic capture (`true` by default).
+/// Allow opted-in full dialog capture in this process.
 pub fn configure_verbose(enabled: bool) {
     VERBOSE_ENABLED.store(enabled, Ordering::Relaxed);
 }
@@ -57,23 +56,29 @@ pub fn configure_verbose(enabled: bool) {
 /// #1181): `1`/`true`/`yes`/`on` (any case) all silence diagnostics.
 #[must_use]
 pub fn verbose_enabled() -> bool {
-    VERBOSE_ENABLED.load(Ordering::Relaxed) && !crate::cli_env::flag_enabled("FORMAL_AI_SILENT")
+    VERBOSE_ENABLED.load(Ordering::Relaxed) && structured_log::enabled("error")
 }
 
 /// Resolve the capture directory only when new diagnostic capture is enabled.
 #[must_use]
 pub fn configured_directory() -> Option<PathBuf> {
-    verbose_enabled().then(retained_directory)
+    if !verbose_enabled() {
+        return None;
+    }
+    explicit_directory()
+}
+
+fn explicit_directory() -> Option<PathBuf> {
+    std::env::var_os("FORMAL_AI_DIALOG_LOG_DIR")
+        .filter(|value| !value.is_empty())
+        .map(PathBuf::from)
 }
 
 /// Locate retained logs independently of whether new capture is enabled.
 /// Silent report/export commands still need to read conversations recorded earlier.
 #[must_use]
 pub fn retained_directory() -> PathBuf {
-    if let Some(directory) = std::env::var_os("FORMAL_AI_DIALOG_LOG_DIR")
-        .filter(|value| !value.is_empty())
-        .map(PathBuf::from)
-    {
+    if let Some(directory) = explicit_directory() {
         return directory;
     }
     let memory_path = crate::shared_memory::shared_memory_path();
@@ -113,11 +118,11 @@ pub fn current_dialog_id() -> Option<String> {
     CURRENT_DIALOG_ID.with(|slot| slot.borrow().clone())
 }
 
-/// Dump inbound request details in verbose mode or when explicitly requested.
+/// Capture the request body only when both tracing and request capture are opted in.
 pub(crate) fn trace_request_if_enabled(method: &str, path: &str, body: &str) {
-    if verbose_enabled() || crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS") {
+    if crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS") {
         structured_log::event(
-            "debug",
+            "trace",
             module_path!(),
             || structured_log::request_trace_message(method, path, body),
             || serde_json::json!({"http_method":method, "http_path":path, "body_bytes":body.len()}),
@@ -136,6 +141,9 @@ pub(crate) fn record_native_response_if_enabled(
     answer: &crate::engine::SymbolicAnswer,
 ) {
     static RESPONSE_SEQUENCE: AtomicU64 = AtomicU64::new(1);
+    if crate::server::ephemeral_enabled() {
+        return;
+    }
     let Some(directory) = std::env::var_os("FORMAL_AI_NATIVE_RESPONSE_CAPTURE_DIR")
         .filter(|value| !value.is_empty())
         .map(PathBuf::from)

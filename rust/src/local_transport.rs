@@ -555,7 +555,9 @@ where
 }
 
 fn announce_server(transport: &str, address: &str) {
-    crate::dreaming_runtime::start_core_dreaming();
+    if !crate::server::ephemeral_enabled() {
+        crate::dreaming_runtime::start_core_dreaming();
+    }
     crate::diagnostic!("debug";
         "formal-ai shared memory: {}",
         crate::shared_memory::shared_memory_path().display()

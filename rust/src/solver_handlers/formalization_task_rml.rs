@@ -240,6 +240,9 @@ fn rml_export(clause: &QuantifiedClause) -> RmlExport {
     let Some(source) = rml_source(clause) else {
         return RmlExport::OutsideSubset;
     };
+    if crate::server::ephemeral_enabled() {
+        return RmlExport::Absent;
+    }
     let Some(command) = rml_command() else {
         return RmlExport::Absent;
     };

@@ -19,7 +19,7 @@ import {
 } from './memory-store.mjs';
 import { serverMessage } from './messages.mjs';
 import { isInstructionPrompt, recordedScopeEvidence } from './standing-scope.mjs';
-import { jsonResponse, linksNotationResponse, messageError } from './response.mjs';
+import { errorResponse, jsonResponse, linksNotationResponse, messageError } from './response.mjs';
 
 const envOf = (ctx) => ctx?.env || process.env;
 
@@ -40,7 +40,7 @@ export function memoryPath(env = process.env) {
 }
 
 /** `memory_health_status` (a `json!` value: keys sorted). */
-export function memoryHealthStatus(env = process.env, selection = null) {
+export function memoryHealthStatus(env = process.env, selection = null, readOnly = false) {
   const activePath = sharedMemoryPath(env);
   const status = preflightMemory(activePath);
   return sortedKeys({
@@ -53,6 +53,7 @@ export function memoryHealthStatus(env = process.env, selection = null) {
     compatible: status.compatible,
     migration_required: status.migration_required,
     migration_state: status.migration_state,
+    mode: readOnly ? 'read_only' : 'read_write',
   });
 }
 
@@ -70,17 +71,18 @@ function reportRecordFailure(error) {
  * The per-server memory facade: `events()` reads the shared log,
  * `recordExchange` mirrors `record_exchange_best_effort`.
  */
-export function createMemory(env = process.env) {
+export function createMemory(env = process.env, { readOnly = false } = {}) {
   return {
     events() {
       try {
-        return SyncStore.open(env).events;
+        return SyncStore.open(env, undefined, undefined, {readOnly}).events;
       } catch (error) {
-        reportRecordFailure(error);
+        if (!readOnly) reportRecordFailure(error);
         return [];
       }
     },
     recordExchange(chatMessages, answerText, store = null, scope = null) {
+      if (readOnly) return 0;
       try {
         const messages = chatMessages || [];
         const { prompt } = chatPromptAndHistory(messages);
@@ -101,17 +103,18 @@ export function createMemory(env = process.env) {
 
 /** `GET /v1/memory`. */
 export function handleMemory(ctx) {
-  return linksNotationResponse(200, SyncStore.open(envOf(ctx)).toLinksNotation());
+  return linksNotationResponse(200, SyncStore.open(envOf(ctx), undefined, undefined, {readOnly:ctx.ephemeral}).toLinksNotation());
 }
 
 /** `GET /v1/memory/since?event=<id>`. */
 export function handleMemorySince(ctx, request) {
   const lastSeen = queryParam(request.query, 'event');
-  return linksNotationResponse(200, SyncStore.open(envOf(ctx)).deltaLinksNotation(lastSeen));
+  return linksNotationResponse(200, SyncStore.open(envOf(ctx), undefined, undefined, {readOnly:ctx.ephemeral}).deltaLinksNotation(lastSeen));
 }
 
 /** `POST /v1/memory/import`. */
 export function handleMemoryImport(ctx, request) {
+  if (ctx.ephemeral) return errorResponse(409, 'memory is read-only in ephemeral mode');
   const store = SyncStore.open(envOf(ctx));
   try {
     const added = store.importLinksNotation(request.body ?? '');

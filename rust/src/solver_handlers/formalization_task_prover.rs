@@ -234,6 +234,9 @@ pub fn prover_runs_with(
 
 /// The runs against this process's PATH and temporary directory.
 fn prover_runs(clause: &QuantifiedClause) -> Vec<(&'static ProverRecord, ProverRun)> {
+    if crate::server::ephemeral_enabled() {
+        return Vec::new();
+    }
     let path_value = std::env::var_os("PATH").unwrap_or_default();
     let directory = std::env::temp_dir().join("formal-ai-prover");
     prover_runs_with(clause, &path_value, &directory)

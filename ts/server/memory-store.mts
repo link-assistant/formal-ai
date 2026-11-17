@@ -492,12 +492,14 @@ export class SyncStore {
   }
 
   /** `SyncStore::open` / `open_at`. */
-  static open(env = process.env, file = sharedMemoryPath(env), suppliedBytes) {
+  static open(env = process.env, file = sharedMemoryPath(env), suppliedBytes, { readOnly = false } = {}) {
+    const storagePath = readOnly ? null : file;
     let text;
     try {
       text = suppliedBytes===undefined?fs.readFileSync(file):suppliedBytes;
     } catch (error) {
       if (error.code === 'ENOENT') {
+        if (readOnly) return new SyncStore(null, [], TARGET_SCHEMA, true, env);
         let compatible = true;
         try {
           ensureSharedMemoryFile(file);
@@ -507,21 +509,22 @@ export class SyncStore {
         }
         return new SyncStore(file, [], TARGET_SCHEMA, compatible, env);
       }
-      memoryDebug(env, 'memory_debug_read_failed', { path: file, error: error.message });
-      return new SyncStore(file, [], TARGET_SCHEMA, false, env);
+      if (!readOnly) memoryDebug(env, 'memory_debug_read_failed', { path: file, error: error.message });
+      return new SyncStore(storagePath, [], TARGET_SCHEMA, false, env);
     }
     let decoded;
     try {
       decoded = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(text);
     } catch (error) {
-      memoryDebug(env, 'memory_debug_read_failed', { path: file, error: error.message });
-      return new SyncStore(file, [], TARGET_SCHEMA, false, env);
+      if (!readOnly) memoryDebug(env, 'memory_debug_read_failed', { path: file, error: error.message });
+      return new SyncStore(storagePath, [], TARGET_SCHEMA, false, env);
     }
     const status = inspectMemoryBytes(text, true);
+    if (readOnly && !status.compatible) return new SyncStore(null, [], TARGET_SCHEMA, false, env);
     const events = parseLinksNotation(decoded);
     // R1012: chunks learned in earlier sessions return to the meta reasoner.
     importLearned(events);
-    return new SyncStore(file, events, status.detected_schema_version ?? TARGET_SCHEMA, status.compatible, env);
+    return new SyncStore(storagePath, events, status.detected_schema_version ?? TARGET_SCHEMA, status.compatible, env);
   }
 
   toLinksNotation() {

@@ -767,6 +767,7 @@ async function callTool(ctx, request, id) {
   if (name === CHAT_TOOL) return callChat(ctx, request, id);
   const primitive = primitiveFromToolName(name);
   if (!primitive) return jsonRpcError(id, -32601, serverMessage('mcp_tool_not_found'));
+  if (ctx.ephemeral) return jsonRpcError(id, -32000, 'computer-use tools require persistent mode');
   return callComputerPrimitive(ctx, request, id, primitive);
 }
 
@@ -798,7 +799,7 @@ export async function handleMcp(ctx, request) {
     case 'ping':
       return jsonRpcResult(id, {});
     case 'tools/list':
-      return jsonRpcResult(id, { tools: listedTools() });
+      return jsonRpcResult(id, { tools: listedTools().filter(tool => !ctx.ephemeral || tool.name === CHAT_TOOL) });
     case 'tools/call':
       return callTool(ctx, body, id);
     default:

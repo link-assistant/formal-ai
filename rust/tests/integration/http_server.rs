@@ -306,6 +306,194 @@ pub fn http_post_json(
     serde_json::from_str(&response.body).expect("POST response should be JSON")
 }
 
+#[test]
+fn server_dialog_capture_is_opt_in_and_ephemeral_memory_is_read_only() {
+    const REQUEST_MARKER: &str = "parcelretentionmarker1592";
+    const ANSWER_MARKER: &str = "violet parcel tracking code 1592";
+    const TOKEN: Option<&str> = Some("sk-local-agentic-tools");
+
+    let help = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args(["serve", "--help"])
+        .output()
+        .expect("read serve help");
+    assert!(help.status.success());
+    let help = String::from_utf8(help.stdout).unwrap();
+    for option in [
+        "request metadata by default",
+        "FORMAL_AI_DIALOG_LOG_DIR",
+        "--ephemeral",
+        "FORMAL_AI_EPHEMERAL",
+    ] {
+        assert!(help.contains(option));
+    }
+
+    for (ephemeral, capture) in [(false, false), (false, true), (true, true)] {
+        let port = reserve_loopback_port();
+        let scratch = std::env::temp_dir().join(format!(
+            "formal-ai-http-server-{}-{port}",
+            std::process::id()
+        ));
+        let home = scratch.join("home");
+        let logs = scratch.join("structured");
+        let dialogs = scratch.join("explicit-dialogs");
+        let captures = scratch.join("native-responses");
+        let cache = scratch.join("cache");
+        let dialog_setting = if capture {
+            dialogs.to_str().unwrap()
+        } else {
+            ""
+        };
+        let args: &[&str] = if ephemeral { &["--ephemeral"] } else { &[] };
+        let log_level = if ephemeral { "trace" } else { "debug" };
+        let mut server = spawn_formal_ai_server_with_args(
+            port,
+            args,
+            &[
+                ("HOME", home.to_str().unwrap()),
+                ("XDG_CACHE_HOME", cache.to_str().unwrap()),
+                ("FORMAL_AI_DIALOG_LOG_DIR", dialog_setting),
+                ("FORMAL_AI_DREAMING", "0"),
+                ("FORMAL_AI_SILENT", "0"),
+                ("FORMAL_AI_RECORD_CHAT", "1"),
+                ("FORMAL_AI_LOG_DIR", logs.to_str().unwrap()),
+                ("FORMAL_AI_LOG_LEVEL", log_level),
+                (
+                    "FORMAL_AI_TRACE_REQUESTS",
+                    if ephemeral { "1" } else { "0" },
+                ),
+                (
+                    "FORMAL_AI_NATIVE_RESPONSE_CAPTURE_DIR",
+                    if ephemeral {
+                        captures.to_str().unwrap()
+                    } else {
+                        ""
+                    },
+                ),
+            ],
+        );
+        let health = http_get_json(port, "/health", None);
+        assert_eq!(
+            health["memory"]["mode"],
+            if ephemeral { "read_only" } else { "read_write" }
+        );
+        assert_eq!(health["logs"]["dialog_capture"], capture && !ephemeral);
+        assert_eq!(health["logs"]["derivation_capture"], !ephemeral);
+        assert_eq!(
+            health["logs"]["status"],
+            if ephemeral { "disabled" } else { "writable" }
+        );
+
+        if ephemeral {
+            assert!(!server.memory_path().exists());
+            let seed = format!(
+                "demo_memory\n  event \"parcel\"\n    kind \"message\"\n    role \"user\"\n    content \"The warehouse supervisor supplied the {ANSWER_MARKER}.\"\n    writeCount \"1\"\n"
+            );
+            std::fs::write(server.memory_path(), &seed).unwrap();
+            let answer = http_post_json(
+                port,
+                "/v1/chat/completions",
+                TOKEN,
+                &serde_json::json!({
+                    "model": "formal-ai", "messages": [{"role": "user", "content": "Did I mention violet parcel tracking code?"}]
+                }),
+            );
+            assert!(answer.to_string().contains(ANSWER_MARKER));
+            let private = http_post_json(
+                port,
+                "/v1/chat/completions",
+                TOKEN,
+                &serde_json::json!({
+                    "model": "formal-ai", "messages": [{"role": "user", "content": format!("Did I mention {REQUEST_MARKER}?")}]
+                }),
+            );
+            assert!(private.to_string().contains(REQUEST_MARKER));
+            let response = http_post_json(
+                port,
+                "/v1/responses",
+                TOKEN,
+                &serde_json::json!({
+                    "model": "formal-ai", "input": "2 + 2"
+                }),
+            );
+            assert!(response["output"].to_string().contains('4'));
+            assert!(!response.to_string().contains("derivation_record:"));
+            let imported = http_request(
+                "POST",
+                port,
+                "/v1/memory/import",
+                TOKEN,
+                Some(REQUEST_MARKER),
+            )
+            .unwrap();
+            assert_eq!(imported.status_code, 409);
+            assert_eq!(std::fs::read_to_string(server.memory_path()).unwrap(), seed);
+        } else {
+            http_post_json(
+                port,
+                "/v1/chat/completions",
+                TOKEN,
+                &serde_json::json!({
+                "model": "formal-ai", "messages": [{"role": "user", "content": format!("Did I mention {REQUEST_MARKER}?")}]
+                }),
+            );
+            let diagnostics =
+                std::fs::read_to_string(logs.join(format!("serve-{}.lino", server.child.id())))
+                    .unwrap();
+            assert!(!diagnostics.contains(REQUEST_MARKER));
+            for field in [
+                "request.terminal",
+                "/v1/chat/completions",
+                "request_bytes",
+                "response_bytes",
+                "elapsed_ms",
+                "request_id",
+            ] {
+                assert!(
+                    diagnostics.contains(field),
+                    "missing request metadata field {field}"
+                );
+            }
+        }
+
+        if capture && !ephemeral {
+            let files = std::fs::read_dir(&dialogs)
+                .unwrap()
+                .map(|entry| entry.unwrap().path())
+                .collect::<Vec<_>>();
+            assert_eq!(files.len(), 2);
+            assert!(
+                files
+                    .iter()
+                    .any(|file| file.to_string_lossy().ends_with(".conversation.lino"))
+            );
+            for file in files {
+                assert!(
+                    std::fs::read_to_string(file)
+                        .unwrap()
+                        .contains(REQUEST_MARKER)
+                );
+            }
+        } else {
+            assert!(!dialogs.exists());
+            assert!(!scratch.join("dialog-logs").exists());
+        }
+        if ephemeral {
+            server.child.kill().unwrap();
+            server.child.wait().unwrap();
+            for drain in server.drains.drain(..) {
+                drain.join().unwrap();
+            }
+            assert!(server.diagnostics.stdout.lock().unwrap().is_empty());
+            assert!(server.diagnostics.stderr.lock().unwrap().is_empty());
+            let entries = std::fs::read_dir(&scratch)
+                .unwrap()
+                .map(|entry| entry.unwrap().file_name())
+                .collect::<Vec<_>>();
+            assert_eq!(entries, [std::ffi::OsString::from("memory.lino")]);
+        }
+    }
+}
+
 /// POST a JSON body, allowing longer than [`RESPONSE_TIMEOUT`] for the response.
 ///
 /// Used by recipes whose *first* response performs genuinely heavy deterministic

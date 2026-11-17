@@ -184,10 +184,10 @@ function curlGet(url) {
  * the user's runtime cache, outside the caller repository) and
  * online only when `FORMAL_AI_LIVE_FETCH` is set to a true spelling.
  */
-function nodeSourceFetch() {
+function nodeSourceFetch(readOnly) {
   return cachedSourceFetch({
     cacheDir: process.env.FORMAL_AI_SOURCE_CACHE_DIR || runtimeCachePaths().runtimeRoot,
-    online: flagEnabled(process.env.FORMAL_AI_LIVE_FETCH),
+    online: !readOnly && flagEnabled(process.env.FORMAL_AI_LIVE_FETCH),
     io: boundedSourceCacheIo(curlGet)
   });
 }
@@ -208,6 +208,7 @@ export async function installNodeHost(worker, options = {}) {
     return value;
   };
   if (options === null || typeof options !== "object") throw Error("host_options_required");
+  const readOnly = options.readOnly === true;
   const grantDescriptor = Object.getOwnPropertyDescriptor(options, "prerequisiteGrant");
   if (grantDescriptor && !Object.hasOwn(grantDescriptor, "value")) throw Error("host_grant_must_be_data");
   const suppliedGrant = grantDescriptor?.value ?? null;
@@ -279,8 +280,8 @@ export async function installNodeHost(worker, options = {}) {
       return capture && 'planningObservation' in capture && typeof capture.planningObservation === 'function' ? capture.planningObservation : null;
     },
     solve: async (prompt, history) => {
-      const result = await worker.solve(prompt, history),
-        symbolic = symbolicFromWorker(result, history);
+      const result = await worker.solve(prompt, history, { readOnly }),
+        symbolic = symbolicFromWorker(result, history, undefined, { readOnly });
       const capture = activeDriveCapture();
       if (capture && 'engineObservation' in capture && typeof capture.engineObservation === 'function') {
         const events = Array.isArray(symbolic.solver_events) ? symbolic.solver_events : [];
@@ -307,12 +308,16 @@ export async function installNodeHost(worker, options = {}) {
     sourceCstTransformCommand: () => [process.execPath, path.join(REPO_ROOT, 'scripts/source-cst-transform-request.mjs')],
     sourceUnaryConsolidationCommand: () => [process.execPath, path.join(REPO_ROOT, 'scripts/consolidate-stateless-unary-request.mjs')],
     generatedSeedOwnerDeclarations,
-    sourceFetch: nodeSourceFetch,
+    sourceFetch: () => nodeSourceFetch(readOnly),
     validateProgram: validateRepairProgram,
     comparisonBoundaryOperation: observedComparisonBoundaryOperation,
     observedSourceRepair: observedSourceRepairOperation,
     observedSourceUsage: sourceUsageOperation
   };
+  if (readOnly) {
+    installHost(baseHost);
+    return context;
+  }
   const session = createNodeSourceSessionHost(baseHost.readText);
   installHost({
     ...baseHost,
