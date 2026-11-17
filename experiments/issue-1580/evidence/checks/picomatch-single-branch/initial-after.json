@@ -1,0 +1,19 @@
+{
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/picomatch-security-backport.test.mjs"
+  ],
+  "status": 0,
+  "durationSeconds": 0.51,
+  "rawSha256": "5d4e74f5be781842b57641f3732e0f6f173fe083745f9563dfd45ead8bfc5d1b",
+  "nodeHeapMiB": 96,
+  "childHeapMiB": 64,
+  "childStackKiB": 256,
+  "childTimeoutMilliseconds": 1250,
+  "maxSubjectBytes": 42,
+  "autonomousAuthorshipCredit": 0
+}

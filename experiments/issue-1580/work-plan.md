@@ -108,3 +108,24 @@ Hosted d0b8b8956 verification: all 24 workflows passed, with literal execution o
 Calendar clock regression: main run 44117975432 loses meeting participant/time/zone after the normalized representation erases clock punctuation. A JavaScript reproduction confirms seven failing event cases in five languages and five passing negative controls before the fix. The request recognizer and event payload now read the same unnormalized request span before the existing normalized fallback. The initial worker-only rerun passes all 12 cases. A local HTTP boundary control, shared native fixture, fast inventory entry and main-only replay ledger row are drafted. Final focused checks, projection currency and the complete shared-data gate set are pending. Native execution remains unavailable under the default-branch-only build policy; supplied code earns zero independent authorship credit.
 
 Calendar verification now passes 13 worker/API cases, 62 related span cases, four ledger controls and 15 fast-profile cases, with current projection and native formatting. The complete gate run has 80 pass / 52 exclusions / six failures; all four source-budget gates and the missing-ShellCheck environment failure pass subsequent rechecks without ceiling changes. The remaining audit failure is the newly reviewed picomatch single-branch repeated-extglob advisory, with no patched registry release. Investigate and repair it before the next push. Native synthesis and debug-session failures already have candidate source repairs in this branch; fresh payload comparison confirms those repairs still require native execution rather than duplicate edits. Wider acceptance remains open.
+
+The new picomatch advisory has a local candidate backport, with published-source identity, license and hashes retained. The focused security probes cover single branches, nested wildcards and two independently reproduced bracket bypasses; hostile matches are finite and isolated. Real installed micromatch/tinyglobby/fdir controls pass on both upstream and the candidate. Desktop and VS Code locks now use the local source and both audits return zero vulnerabilities. The complete local gate set and final expanded tests remain pending. This is no upstream repair and earns zero independent authorship credit; all broader acceptance gaps remain open.
+
+The picomatch candidate now has 20 passing focused security/API/provenance/lock
+regressions, with retained failing-before and option-specific reproduction logs.
+Real installed micromatch/tinyglobby/fdir consumers pass after the final helper
+extraction, and the npm package dry run includes all 12 required files. The
+complete local gate run passed 86 gates with 52 explicit exclusions before the
+last option refinements; all six touched gates and the 15-case fast-profile file
+pass again afterward. Two runner selector mistakes are retained separately and
+corrected, rather than counted as product failures. Extracting the existing
+extglob helpers removes the new parser file-size warning without raising a
+threshold. The finite 1,092-comparison probe has 28 reviewed intentional risky
+pattern differences; this is not a general equivalence proof. Four current
+template-lock audits reproduce the same advisory in JavaScript/Python/C++
+tooling, with full responses and current blob identities retained under
+evidence/checks/picomatch-template-locks/. Publication of their distinct reports
+is pending this evidence checkpoint. Native execution and all broader acceptance
+gaps remain unfinished; supplied work receives zero independent authorship credit.
+
+Final picomatch checkpoint: the complete final-source JavaScript gate run passes all 86 gates with 52 explicit native/context exclusions, zero failures, and no local Rust build. The sealed focused runs pass all 20 security regressions and 15 fast-profile cases. Full aggregate and per-gate logs, exact source hashes and the retained earlier failures are under evidence/checks/picomatch-single-branch/. The final run takes 675.184 seconds with a 256 MiB Node heap cap; the cumulative child peak is 1,011,676 KiB. The JavaScript abbreviation ceiling is lowered from 723 to 722; no ceiling is raised. Publish this batch and inspect exact-head hosted checks before filing the three reproduced template advisory reports. Native regression execution, remaining template semantic review and broader issue acceptance remain unfinished. All supplied work receives zero independent Formal AI authorship credit.

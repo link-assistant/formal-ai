@@ -1,0 +1,79 @@
+[
+  {
+    "name": "consumers-initial-failure",
+    "command": [
+      "node",
+      "--max-old-space-size=96",
+      "experiments/issue-1580/picomatch-consumer-probe.mjs"
+    ],
+    "cwd": ".",
+    "exitCode": 1,
+    "seconds": 1.816,
+    "rawSha256": "1c570762a0f0495596ef666a95e982679fc2e5a5c4cf7c8adb32f0922133e361"
+  },
+  {
+    "name": "pack",
+    "command": [
+      "npm",
+      "pack",
+      "--dry-run",
+      "--json",
+      "--ignore-scripts"
+    ],
+    "cwd": "packages/picomatch-compat",
+    "exitCode": 0,
+    "seconds": 0.737,
+    "rawSha256": "2cd1cad73539fa53bd1174ef03beb744e72bf73e791558f5b29b66daae6007da"
+  },
+  {
+    "name": "desktop-audit",
+    "command": [
+      "npm",
+      "audit",
+      "--package-lock-only",
+      "--audit-level=moderate",
+      "--json"
+    ],
+    "cwd": "desktop",
+    "exitCode": 0,
+    "seconds": 1.301,
+    "rawSha256": "d4205a2cc3e75767c808dd22b9f15db2b35a646ffb798f419625f8998d56cfa8"
+  },
+  {
+    "name": "vscode-audit",
+    "command": [
+      "npm",
+      "audit",
+      "--package-lock-only",
+      "--audit-level=moderate",
+      "--json"
+    ],
+    "cwd": "vscode",
+    "exitCode": 0,
+    "seconds": 1.249,
+    "rawSha256": "6f69434eb038961fbfdd3473e8fabba1f45d169de8055b9101047ff7521b5dc8"
+  },
+  {
+    "name": "consumers-baseline",
+    "command": [
+      "node",
+      "--max-old-space-size=96",
+      "experiments/issue-1580/picomatch-consumer-probe.mjs",
+      "/tmp/issue-1580-research/picomatch/package"
+    ],
+    "exitCode": 0,
+    "seconds": 1.321,
+    "rawSha256": "8b87f6ab3a9697e3e75e7235ed042d6c58ff53de147b6c1d698b540e5e56e632"
+  },
+  {
+    "name": "consumers",
+    "command": [
+      "node",
+      "--max-old-space-size=96",
+      "experiments/issue-1580/picomatch-consumer-probe.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 1.743,
+    "rawSha256": "8b8488999c74ecb85180477badc0f561c1fd38e44fc99ff207adad5b6197c938"
+  }
+]

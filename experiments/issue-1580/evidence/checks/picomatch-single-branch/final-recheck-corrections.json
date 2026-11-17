@@ -1,0 +1,84 @@
+{
+  "checks": [
+    {
+      "label": "corrected-fast-profile",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+      ],
+      "startedAt": "2026-11-17T18:51:38.157556+00:00",
+      "exitCode": 0,
+      "durationSeconds": 4.098,
+      "rawSha256": "eeb63dd5be15187f5b4063a23e0858bb3ab866494b6d672b78997adf0698b57f",
+      "rawBytes": 1734,
+      "log": "corrected-fast-profile.log.gz"
+    },
+    {
+      "label": "corrected-file-size-twin",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin"
+      ],
+      "startedAt": "2026-11-17T18:51:42.255529+00:00",
+      "exitCode": 0,
+      "durationSeconds": 5.083,
+      "rawSha256": "a04e5fbe9eeeeb87b3dc7e68bc8c53f9ba7d6a64736a8e6e2fa8ba94ae056298",
+      "rawBytes": 71,
+      "log": "corrected-file-size-twin.log.gz"
+    }
+  ],
+  "allPassed": true,
+  "reason": "Correct the runner path and gate identifier; preserve both original invocation errors. These are command-selection errors, not failing product regressions.",
+  "finalGateLogs": [
+    {
+      "gate": "check-file-size",
+      "log": "final-gates/check-file-size.log.gz",
+      "rawSha256": "02c946b99d95dc8fba57f989754fbaa973fe3b4bed7a3bafcdfdb5152a218196",
+      "rawBytes": 48590,
+      "rawLines": 377
+    },
+    {
+      "gate": "check-file-size-js-twin",
+      "log": "final-gates/check-file-size-js-twin.log.gz",
+      "rawSha256": "07918a2152b578cba2b518dd25d361689d3c2e6a91848afeb3ac8af20d8aeee9",
+      "rawBytes": 139,
+      "rawLines": 2
+    },
+    {
+      "gate": "check-readable-code",
+      "log": "final-gates/check-readable-code.log.gz",
+      "rawSha256": "25ce21f5517b8afb651dfa55482d9932a4952c1da76b1bd85ee3aa86344f5005",
+      "rawBytes": 122,
+      "rawLines": 2
+    },
+    {
+      "gate": "check-abbreviations",
+      "log": "final-gates/check-abbreviations.log.gz",
+      "rawSha256": "918cd90279d0a82dba847c9e55c7ace1db2772951cd1109ad36af487b44bef71",
+      "rawBytes": 256,
+      "rawLines": 5
+    },
+    {
+      "gate": "check-javascript-dependencies",
+      "log": "final-gates/check-javascript-dependencies.log.gz",
+      "rawSha256": "57e4ed39558d36b1865142a759d9045adf475944dd036b319a04f9b5976403d7",
+      "rawBytes": 2589,
+      "rawLines": 37
+    },
+    {
+      "gate": "check-package-self-containment",
+      "log": "final-gates/check-package-self-containment.log.gz",
+      "rawSha256": "c6e407458e13a37b73c2044880ad2f2780d02f6ae0b7741d0065b75e79e6ff72",
+      "rawBytes": 126,
+      "rawLines": 2
+    }
+  ],
+  "nativeExecuted": false,
+  "autonomousAuthorshipCredit": 0
+}

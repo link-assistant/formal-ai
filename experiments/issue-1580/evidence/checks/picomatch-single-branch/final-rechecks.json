@@ -1,0 +1,200 @@
+{
+  "finished": true,
+  "allPassed": false,
+  "checks": [
+    {
+      "label": "extracted-security-tests",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=96",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/picomatch-security-backport.test.mjs"
+      ],
+      "cwd": ".",
+      "startedAt": "2026-11-17T18:50:05.832381+00:00",
+      "durationSeconds": 0.982,
+      "exitCode": 0,
+      "log": "extracted-security-tests.log.gz",
+      "rawBytes": 1561,
+      "rawLines": 28,
+      "rawSha256": "29b2e685a62680ca56660c2e31479c7d2f8ed0ad5a544f1198185ca2b422c14b"
+    },
+    {
+      "label": "extracted-consumers",
+      "argv": [
+        "node",
+        "--max-old-space-size=96",
+        "experiments/issue-1580/picomatch-consumer-probe.mjs"
+      ],
+      "cwd": ".",
+      "startedAt": "2026-11-17T18:50:06.815448+00:00",
+      "durationSeconds": 2.335,
+      "exitCode": 0,
+      "log": "extracted-consumers.log.gz",
+      "rawBytes": 527,
+      "rawLines": 21,
+      "rawSha256": "8b8488999c74ecb85180477badc0f561c1fd38e44fc99ff207adad5b6197c938"
+    },
+    {
+      "label": "extracted-parser-comparison",
+      "argv": [
+        "node",
+        "--max-old-space-size=96",
+        "experiments/issue-1580/picomatch-parser-probe.mjs",
+        "/tmp/issue-1580-research/picomatch/package"
+      ],
+      "cwd": ".",
+      "startedAt": "2026-11-17T18:50:09.150642+00:00",
+      "durationSeconds": 0.122,
+      "exitCode": 0,
+      "log": "extracted-parser-comparison.log.gz",
+      "rawBytes": 5958,
+      "rawLines": 249,
+      "rawSha256": "5fe3e461b82e76b3a20fa34be445c841273da285d4aa7efbf61299f431bbfbc3"
+    },
+    {
+      "label": "extracted-pack",
+      "argv": [
+        "npm",
+        "pack",
+        "--dry-run",
+        "--json",
+        "--ignore-scripts"
+      ],
+      "cwd": "packages/picomatch-compat",
+      "startedAt": "2026-11-17T18:50:09.273038+00:00",
+      "durationSeconds": 0.878,
+      "exitCode": 0,
+      "log": "extracted-pack.log.gz",
+      "rawBytes": 1589,
+      "rawLines": 76,
+      "rawSha256": "12caf9c2b68fd054a0dcf09a5b123ef1b5956bf7c65289bf1469f10b50bd4d9a"
+    },
+    {
+      "label": "extracted-fast-profile",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/formal_ai_subagent/fast-pull-request-javascript-tests.test.mjs"
+      ],
+      "cwd": ".",
+      "startedAt": "2026-11-17T18:50:10.151930+00:00",
+      "durationSeconds": 0.094,
+      "exitCode": 1,
+      "log": "extracted-fast-profile.log.gz",
+      "rawBytes": 92,
+      "rawLines": 1,
+      "rawSha256": "8fdb6dfc1bc0e2e93894003fbf1f4fb5a9a2a97dc4d3f55c88b032d108fe66d6"
+    },
+    {
+      "label": "check-file-size",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size"
+      ],
+      "cwd": ".",
+      "startedAt": "2026-11-17T18:50:10.252522+00:00",
+      "durationSeconds": 14.876,
+      "exitCode": 0,
+      "log": "check-file-size.log.gz",
+      "rawBytes": 64,
+      "rawLines": 3,
+      "rawSha256": "ac0b6ac0bdfcbdc675934d0fcab399b650dfed7e41fbfb38a6a309040054cfce"
+    },
+    {
+      "label": "check-file-size-javascript-twin",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-javascript-twin"
+      ],
+      "cwd": ".",
+      "startedAt": "2026-11-17T18:50:25.130304+00:00",
+      "durationSeconds": 0.235,
+      "exitCode": 1,
+      "log": "check-file-size-javascript-twin.log.gz",
+      "rawBytes": 94,
+      "rawLines": 1,
+      "rawSha256": "259eff4d66f10fa48aa5dbf2def436f3928a0a22d55deded83c17235af765282"
+    },
+    {
+      "label": "check-readable-code",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-readable-code"
+      ],
+      "cwd": ".",
+      "startedAt": "2026-11-17T18:50:25.365739+00:00",
+      "durationSeconds": 13.038,
+      "exitCode": 0,
+      "log": "check-readable-code.log.gz",
+      "rawBytes": 68,
+      "rawLines": 3,
+      "rawSha256": "11691579e9e3f72fb316b46946e809703076af7baff42fae21927599ead1edfe"
+    },
+    {
+      "label": "check-abbreviations",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations"
+      ],
+      "cwd": ".",
+      "startedAt": "2026-11-17T18:50:38.405053+00:00",
+      "durationSeconds": 4.147,
+      "exitCode": 0,
+      "log": "check-abbreviations.log.gz",
+      "rawBytes": 67,
+      "rawLines": 3,
+      "rawSha256": "90fb1651bb79fec9ad5229fcf885c3a0833ea376fce79e1724640842742fea97"
+    },
+    {
+      "label": "check-javascript-dependencies",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-javascript-dependencies"
+      ],
+      "cwd": ".",
+      "startedAt": "2026-11-17T18:50:42.553288+00:00",
+      "durationSeconds": 3.294,
+      "exitCode": 0,
+      "log": "check-javascript-dependencies.log.gz",
+      "rawBytes": 77,
+      "rawLines": 3,
+      "rawSha256": "6543d007333d6c5d00cea317cefbe92476d8d30825559a0112921536a9468786"
+    },
+    {
+      "label": "check-package-self-containment",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-package-self-containment"
+      ],
+      "cwd": ".",
+      "startedAt": "2026-11-17T18:50:45.847517+00:00",
+      "durationSeconds": 1.804,
+      "exitCode": 0,
+      "log": "check-package-self-containment.log.gz",
+      "rawBytes": 78,
+      "rawLines": 3,
+      "rawSha256": "217a12cc86a8d17e2766a1d32a77492e90808fb08d1901719f788a5d0c03af7b"
+    }
+  ],
+  "nativeExecuted": false,
+  "autonomousAuthorshipCredit": 0
+}
