@@ -275,7 +275,8 @@ fn prompt_evidence_holds(kind: &str, prompt: &str, normalized: &str) -> Option<b
         }),
         "calendar_anchor" => {
             use crate::solver_handlers::calendar;
-            calendar::detect_weekday(normalized).is_some()
+            calendar::month::duration::request(prompt).is_some()
+                || calendar::detect_weekday(normalized).is_some()
                 || calendar::month::detect_month(normalized).is_some()
                 || calendar::date_weekday::stated_date(prompt, normalized).is_some()
                 || calendar::date_offset::date_offset_candidate(prompt, normalized).is_some()

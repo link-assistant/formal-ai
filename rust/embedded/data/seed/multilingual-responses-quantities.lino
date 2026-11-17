@@ -639,3 +639,78 @@ multilingual_responses_quantities
     intent calendar-date-offset
     language es
     text "La fecha es {iso}. {source} {signed} días = {iso}."
+
+  response response-calendar-duration-sum-en
+    intent calendar-duration-sum
+    language en
+    text "{result} {unit}. {derivation}"
+
+  response response-calendar-duration-sum-ru
+    intent calendar-duration-sum
+    language ru
+    text "{result} {unit}. {derivation}"
+
+  response response-calendar-duration-sum-hi
+    intent calendar-duration-sum
+    language hi
+    text "{result} {unit}। {derivation}"
+
+  response response-calendar-duration-sum-zh
+    intent calendar-duration-sum
+    language zh
+    text "{result} {unit}。{derivation}"
+
+  response response-calendar-duration-sum-es
+    intent calendar-duration-sum
+    language es
+    text "{result} {unit}. {derivation}"
+
+  response response-calendar-full-periods-en
+    intent calendar-full-periods
+    language en
+    text "{result} {unit}. Completed calendar anniversaries: {derivation}"
+
+  response response-calendar-full-periods-ru
+    intent calendar-full-periods
+    language ru
+    text "{result} {unit}. Полные календарные периоды: {derivation}"
+
+  response response-calendar-full-periods-hi
+    intent calendar-full-periods
+    language hi
+    text "{result} {unit}। पूर्ण कैलेंडर अवधि: {derivation}"
+
+  response response-calendar-full-periods-zh
+    intent calendar-full-periods
+    language zh
+    text "{result} {unit}。完整日历周期：{derivation}"
+
+  response response-calendar-full-periods-es
+    intent calendar-full-periods
+    language es
+    text "{result} {unit}. Períodos completos del calendario: {derivation}"
+
+  response response-currency-conversion-captured-en
+    intent currency-conversion-captured
+    language en
+    text "{amount} {from} ≈ {result} {to}. Captured historical rate basis: 1 {from} = {fromRate} RUB; 1 {to} = {toRate} RUB. Source: {source}. Rate date: {date}. {derivation}"
+
+  response response-currency-conversion-captured-ru
+    intent currency-conversion-captured
+    language ru
+    text "{amount} {from} ≈ {result} {to}. Зафиксированный исторический курс: 1 {from} = {fromRate} RUB; 1 {to} = {toRate} RUB. Источник: {source}. Дата курса: {date}. {derivation}"
+
+  response response-currency-conversion-captured-hi
+    intent currency-conversion-captured
+    language hi
+    text "{amount} {from} ≈ {result} {to}। ऐतिहासिक दर: 1 {from} = {fromRate} RUB; 1 {to} = {toRate} RUB। स्रोत: {source}। दर की तारीख: {date}। {derivation}"
+
+  response response-currency-conversion-captured-zh
+    intent currency-conversion-captured
+    language zh
+    text "{amount} {from} ≈ {result} {to}。已记录的历史汇率：1 {from} = {fromRate} RUB；1 {to} = {toRate} RUB。来源：{source}。汇率日期：{date}。{derivation}"
+
+  response response-currency-conversion-captured-es
+    intent currency-conversion-captured
+    language es
+    text "{amount} {from} ≈ {result} {to}. Tipo histórico registrado: 1 {from} = {fromRate} RUB; 1 {to} = {toRate} RUB. Fuente: {source}. Fecha: {date}. {derivation}"

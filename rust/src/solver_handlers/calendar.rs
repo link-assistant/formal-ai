@@ -201,6 +201,9 @@ pub fn try_calendar_reasoning(
     // Issue #1176: a month offset ("2 months after January", "3 months after
     // Monday") is read before the weekday gate, since a month name carries no
     // day reference and a weekday plus months has no fixed day count.
+    if let Some(answer) = month::duration::duration(prompt, log) {
+        return Some(answer);
+    }
     if let Some(answer) = month::try_month_offset(prompt, normalized, log) {
         return Some(answer);
     }
