@@ -53,3 +53,5 @@ The first published-head CI round and its complete log investigation are recorde
 The subsequent [merge of main PR #1583](main1583-merge.md) preserves its complete client-context changes and verification baseline. Focused feature/client/projection checks pass; all 138 gates were rerun, the unchanged notation check passes after staging the resolved merge, and regenerated status surfaces pass both status checks. Native CI execution and the unpatched dependency audit remain required.
 
 The [server-retention merge verification](main1592-merge.md) records the next main merge, fresh-home API regression, retention tests, source projections and all 138 local gates on the combined tree. Only the existing dependency advisory fails locally. Native CI remains required.
+
+The [second CI investigation](ci-round2.md) records compilation/lint, both JavaScript shards, the native evidence-address test correction, the main PR #1602 merge and fresh combined-tree verification. Corrected native acceptance execution is pending at this pre-push snapshot.
