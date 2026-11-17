@@ -1,0 +1,26 @@
+[
+  {
+    "gate": "check-file-size",
+    "command": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-file-size"
+    ],
+    "exitCode": 0,
+    "log": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/archive-check-file-size.log.gz",
+    "sha256": "ba42cdb16031f40aca96e2fb8f6a76d2d42d06290cbb46270b5c76b31e180c17"
+  },
+  {
+    "gate": "check-file-size-js-twin",
+    "command": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-file-size-js-twin"
+    ],
+    "exitCode": 0,
+    "log": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/archive-check-file-size-js-twin.log.gz",
+    "sha256": "bdb47b267beeac03c927add9e1fff732e481b3f402b5c53298588c5a06f3cb94"
+  }
+]

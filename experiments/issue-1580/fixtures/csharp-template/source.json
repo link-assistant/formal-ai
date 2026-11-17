@@ -1,0 +1,26 @@
+{
+  "repository": "link-foundation/csharp-ai-driven-development-pipeline-template",
+  "commit": "a5b9a1a46686cfe844f9afa2ace030094969e766",
+  "files": [
+    {
+      "path": "LICENSE",
+      "gitBlob": "fdddb29aa445bf3d6a5d843d6dd77e10a9f99657",
+      "sha256": "6b0382b16279f26ff69014300541967a356a666eb0b91b422f6862f6b7dad17e"
+    },
+    {
+      "path": "scripts/merge-changesets.mjs",
+      "gitBlob": "a57d1f941a39dd9aa23ef770a26f02d04fe9fc94",
+      "sha256": "c62f38bec0a7f760db31b5c722b85ed732e8754b7b541fa87d7fa2c40eda3208"
+    },
+    {
+      "path": "scripts/parse-changeset.mjs",
+      "gitBlob": "7e3f8a1081e5b62182ed6558f02fc6c764b77cdd",
+      "sha256": "42d5864063ffc705d78667a206353b68a080b5ec0893fb25f2c926b147b47a26"
+    },
+    {
+      "path": "scripts/print-untrusted.mjs",
+      "gitBlob": "cd6912155eae258bfe4a94e15fdf33c3006d07b7",
+      "sha256": "5a2e811bfec75c0ecd007fbc414a7359d15e733adb9523c51dd5a6400d0d2648"
+    }
+  ]
+}

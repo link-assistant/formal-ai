@@ -1,0 +1,20 @@
+{
+  "head": "e582b270a01443b995d7f36fd2fa685d508fde77",
+  "checkedAt": "2026-11-17T13:32:07.670685+00:00",
+  "runs": 24,
+  "success": 24,
+  "failure": 0,
+  "active": 0,
+  "checkoutRetry": {
+    "run": 44089535561,
+    "failedAttempt": 1,
+    "successfulAttempt": 2,
+    "cause": "checkout transport failure before shard tests",
+    "originalErrorLines": [
+      5634,
+      5635,
+      5636
+    ]
+  },
+  "limits": "Scoped PR checks; no main-only native, benchmark, template publication or live identity completion."
+}

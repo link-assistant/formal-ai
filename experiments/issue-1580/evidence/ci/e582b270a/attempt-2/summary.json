@@ -1,0 +1,9 @@
+{
+  "head": "e582b270a01443b995d7f36fd2fa685d508fde77",
+  "run": 44089535561,
+  "attempt": 2,
+  "conclusion": "success",
+  "logSha256": "c8af2ef2be8c9d9b84d380078506142ae54615090269125552c8f1001e0e5d62",
+  "logLines": 8324,
+  "interpretation": "The same-head failed-job-only rerun passed after an attempt-1 checkout transport failure. This does not establish any main-only native or benchmark acceptance criterion."
+}
