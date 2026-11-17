@@ -13,7 +13,7 @@ only when the acceptance criteria and required checks pass.
 - [ ] Configure actual resource-derived context limits for every supported client. Claude and configurable integrations are implemented; **Gemini input context is blocked upstream** (google-gemini/gemini-cli#30333). Native adapter tests still need execution on an adequately provisioned runner.
 - [x] Add regression tests, reproduce failures before the changes, and run focused checks afterward.
 - [x] Complete timeline, root causes, solution research, upstream reporting where applicable, evidence index and limitations.
-- [ ] Update mirrors, generated translations, release notes and required local gates.
+- [x] Update mirrors, generated translations and release notes. Complete local gate run: 138/138 passed or explicitly skipped; rounds three through five have no failures; round six caught lower debt measurements and a stale comment projection; round seven verifies the repaired final tree: 138/138 passed or explicitly skipped, no failures.
 - [ ] Review the full PR diff, merge current main, commit, check the push gate, push once and resolve current-head CI.
 - [ ] Update PR title/description with reproduction and test evidence, retain `Closes #1582`, mark ready, verify clean status.
 

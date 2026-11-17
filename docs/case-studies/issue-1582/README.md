@@ -43,7 +43,7 @@ Commands and supplied repair recipes live in `experiments/issue_1582/`.
 
 For every historical workflow, `raw-data/ci/<run-id>.log-status.json` preserves
 the run's SHA, creation time, conclusion and retrieval error. GitHub returns
-`failed to get run log: log not found`; the corresponding zero-byte `.log`
+`failed to get run log: log not found`; the corresponding `.log.gz` decodes to zero bytes and
 records that no job log was available. We do not reinterpret that as a passing
 test or invent an underlying compiler error. `raw-data/ci/inventory.json`
 enumerates every attempt.
@@ -64,7 +64,7 @@ unverified environment-specific contributors.
 
 | Symptom | Confirmed cause | Repair and verification |
 | --- | --- | --- |
-| Network retrieval disabled by default | Native live-search and synthesis helpers and the Node source cache interpreted an absent `FORMAL_AI_LIVE_FETCH` as false. | Default-on read policy in `js/server/read-access.mjs` and its native twin; explicit live-fetch false, offline and network deny settings win. Native explicit URL fetches now honor the same deny policy. |
+| Network retrieval disabled by default | Native dispatcher, capability, version-resolution, benchmark, live-search and synthesis paths and the Node source cache interpreted an absent `FORMAL_AI_LIVE_FETCH` as false. | Default-on read policy in `js/server/read-access.mjs` and its native twin; explicit live-fetch false, offline and network deny settings win. Native explicit URL fetches now honor the same deny policy. |
 | Node server cannot reach providers even when enabled | `createWorkerContext` mapped every fetch URL to a local file. The server supplied no external transport. | The server supplies an HTTP(S) GET/HEAD transport; isolated worker fixtures keep their local-only default. A loopback HTTP regression checks a real GET and confirms POST and explicit denies never reach the source server. |
 | Enabling internet is unrecognized | No dedicated semantic role or localized permission guidance existed. English procedural routing also preempted the new role. | Seed-defined intent and responses in English, Russian, Hindi, Chinese and Spanish; a narrow shared-role routing guard; native routing twin. Tests solve the actual questions, including the screenshot's Russian question. |
 | Guidance claims retrieval is default-off | The web-search failure response encoded the previous opt-in policy as a universal explanation. | Localized messages now distinguish missing captures from connectivity, provider failure and explicit restrictions. They point to the permission help instead of promising a successful fetch. |
@@ -73,6 +73,21 @@ unverified environment-specific contributors.
 | Claude assumes 200k | The wrapper names a custom model but did not supply Claude's documented context override. | Ephemeral environment and global profile now carry `CLAUDE_CODE_MAX_CONTEXT_TOKENS` and the served output limit. Read-only tools are preapproved without blanket permission bypass; global permissions append without replacing existing allow/deny rules. Native fake-client regressions verify the actual environment and configuration. |
 | Other clients guess a context window | Several seed integrations lacked model metadata; Codex's catalog always used the launching machine's window even for a remote server. | Codex uses the same served-limit snapshot as other integrations. Existing OpenCode-shaped clients retain numeric limits. Qwen gets generation context settings, Aider gets model metadata, and current Grok gets a typed TOML model definition while retaining its older JSON global configuration. Gemini gets the documented output override; its input budget remains blocked upstream as described below. |
 
+Codex/T3 Codex configuration also selects the dedicated `web_search = "live"`
+tool. Upstream's read-only permission profile restricts command networking;
+live search provides the read-only source path through Formal AI without
+granting a shell unrestricted network access. The native adapter regression
+checks the actual generated setting. Archived official source is pinned in
+`raw-data/research/codex-source-sha.txt`.
+
+T3 Code also launches Claude Code, so its ephemeral environment and persistent
+Anthropic profile receive the same documented context/output overrides.
+[Its provider documentation](https://github.com/pingdotgg/t3code/blob/main/docs/user/providers-claude.md)
+confirms that integration; the pinned documentation and catalog source are
+retained under `raw-data/research/`. Compaction settings are not substituted for
+a model context window. A fake-T3 regression checks both numeric overrides;
+an installed T3 UI session has not been exercised here.
+
 Read-only transport does not grant arbitrary shell execution or filesystem
 writes. Existing operator denies remain authoritative. The harness can present
 permission requests and its permissions UI; the guidance explains Claude's
@@ -80,7 +95,30 @@ permission requests and its permissions UI; the guidance explains Claude's
 explicit server offline restriction and restart. A conversation does not
 silently rewrite an administrator's environment or policy.
 
+## Client coverage and verification boundary
+
+| Registry client | Context/read configuration path | Evidence boundary |
+| --- | --- | --- |
+| Codex | Served model catalog; live web-search setting in ephemeral and global TOML | Native generated-config regression added; execution pending. |
+| T3 Code | Codex catalog plus inherited Claude context/output variables; Anthropic global profile | Fake-T3 numeric-variable regression added; installed UI not exercised. |
+| OpenCode, VS Code and desktop variants; Agent | Existing numeric `limit.context` / `limit.output` seed paths retained | Existing model-metadata tests retained; remote-limit native probe includes Agent. |
+| Claude Code | Documented input/output variables; named read permissions | Native launch/environment and global-preservation regressions added; execution pending. |
+| Qwen Code | Numeric `model.generationConfig` limits in ephemeral and global JSON | Native remote-limit probe added; installed CLI not exercised. |
+| Grok | Numeric model limits in current TOML, preserving older global JSON | Native remote-limit/undo probe added; installed CLI not exercised. |
+| Aider | OpenAI model metadata in ephemeral and global homes | Native remote-limit probe added; metadata is not an enforced cap. |
+| Gemini CLI | Model-specific output setting; upstream input fallback remains fixed | Bounded upstream-source probe reproduced the input limitation; unfinished. |
+| Cursor | Existing MCP server integration retained | This adapter exposes Formal AI as a tool, not as Cursor's model provider; it does not configure the unrelated host model's context window. |
+
+The passing Node probes establish actual server read transport, permission
+answers and metadata behavior. Source/configuration inspection and unexecuted
+native tests are not presented as installed-client end-to-end proof.
+
 ## Primary-source research and choices
+
+- [Codex web-search configuration](https://developers.openai.com/codex/config-reference)
+  supports `web_search = "live"`; [permission profiles](https://learn.chatgpt.com/docs/permissions)
+  document read-only filesystem profiles and separate network controls. The
+  dedicated read tool avoids granting arbitrary network-capable shell commands.
 
 - [Claude model configuration](https://code.claude.com/docs/en/model-config)
   and [environment variables](https://code.claude.com/docs/en/env-vars) document
@@ -107,6 +145,12 @@ silently rewrite an administrator's environment or policy.
   [Its token-limit source](https://github.com/google-gemini/gemini-cli/blob/main/packages/core/src/core/tokenLimits.ts)
   gives unknown model names 1,048,576 input tokens and accepts no override. An
   output setting cannot change that input budget.
+
+Recent related merged PRs were also reviewed: [#1564](https://github.com/link-assistant/formal-ai/pull/1564)
+keeps machine work-item evidence in the trace while returning localized prose;
+[#1567](https://github.com/link-assistant/formal-ai/pull/1567) demonstrates why
+production native type checks and tests must not be conflated. Their downloaded
+bodies and the related-PR search results are retained with the research.
 
 The upstream library interfaces already provide logging codecs, environment
 parsing and worker transports in this repository. Reusing them avoids adding
@@ -155,24 +199,38 @@ node --test --test-concurrency=1 rust/tests/web/server-structured-log-cli.test.m
 The native regression module is
 `rust/tests/integration/with_formal_ai/issue_1582.rs`. It uses a bounded loopback
 metadata server and fake client executables to check served limits, actual
-Claude environment, quiet diagnostics, permission-rule preservation and exact
-undo. Native compilation belongs to CI; no local Rust build is justified under
+Claude/T3 environment, quiet diagnostics, permission-rule preservation and exact
+undo. A fourth native regression executes the actual chat CLI against a bounded
+loopback source: the default must retrieve the marker and each explicit offline,
+network-deny or live-fetch-false setting must prevent a transport call. These
+four native tests have not been executed locally. Native compilation belongs to CI; no local Rust build is justified under
 the shared memory budget. The fast PR JavaScript inventory includes the new
 focused file. Generated mirrors, TypeScript twins, worker identities and
 requirements/status documents are refreshed with their maintained generators.
+Changed handwritten Rust source and tests pass `rustfmt --check`. The generated
+JavaScript-to-Rust fixture retains upstream presentation: rustfmt rejects both
+its base and current versions with the same formatting-only result. Its sole
+change is the regenerated source-identity comment; the maintained projection
+currency check verifies it instead of hand-formatting generated output.
 
 Verification transcripts, including failures, are archived. Passing an earlier
 head or an approval-gated workflow does not count as current-head validation.
 The work plan records remaining checks without declaring the issue complete.
-The complete local gate inventory was run twice: the second round passed or
-skipped 134 of 138 entries. The four failures were a stale seed metadata audit,
+The third complete local gate run passed or skipped all 138 entries with no
+failures. The second round had passed or skipped 134 of 138 entries. The four failures were a stale seed metadata audit,
 a dependency count that had fallen below its ceiling, test row syntax the
 multilingual checker could not identify for English/Spanish, and duplicate JSON
 prefix parsing counted by the literal-predicate ratchet. The repair adds proper
 seed metadata, lowers the dependency ceiling, names languages in the test rows,
 and unifies JSON assignment/merge handling without raising a debt ceiling.
 Per-round gate logs retain the original failures; subsequent focused checks
-record the corrected state.
+and complete rounds three through five record no failures. Final source review
+then found native dispatcher, capability-routing, version-lookup and benchmark
+paths still using the old opt-in flag. Those paths now share the read policy;
+deterministic benchmark fixtures choose offline explicitly. The sixth round caught the expected reduced dependency ceiling (33 to 25),
+web-request baseline (859 to 858) and one stale JavaScript-to-Rust projection
+identity after its comment update. Maintained generation and lower ceilings
+repair those failures; the seventh complete round passes or explicitly skips all 138 entries, with no failures.
 
 ## Development provenance
 
@@ -183,7 +241,9 @@ failures and the worker source-identity bootstrap failure remain in the archive.
 Two full-gate attempts through the driver hit its 60-second tool bound; a
 background child was also terminated by the driver. The full JavaScript gate
 commands were therefore executed directly with complete logs retained. This is
-a documented execution-path exception, with zero authorship credit. The worker
+a documented execution-path exception, with zero authorship credit. The final JavaScript-to-Rust projection refresh also hit that 60-second
+bound after four of five modules; it was rerun directly with the pinned
+translator and one worker, without Rust compilation. The worker
 identity bootstrap also needed one direct maintained-generator invocation
 because the changed worker could not boot its own stale identity.
 The bootstrap installed only the maintained generator's Babel parser/traversal
