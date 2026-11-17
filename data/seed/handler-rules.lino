@@ -1077,3 +1077,17 @@ handler-rules
     row "toilet-forms" "usar un baño"
     row "toilet-forms" "defecar"
     row "toilet-forms" "hacer caca"
+
+  table calendar-date-month-label
+    row "january.ru" "января"
+    row "february.ru" "февраля"
+    row "march.ru" "марта"
+    row "april.ru" "апреля"
+    row "may.ru" "мая"
+    row "june.ru" "июня"
+    row "july.ru" "июля"
+    row "august.ru" "августа"
+    row "september.ru" "сентября"
+    row "october.ru" "октября"
+    row "november.ru" "ноября"
+    row "december.ru" "декабря"

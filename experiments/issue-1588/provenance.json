@@ -1,0 +1,12 @@
+{
+  "base": "ecdebf38f4487a1f91fbd007ecd2148a428698fd",
+  "runtime": "JavaScript Formal AI via experiments/js_dogfood/drive.mjs",
+  "externally_authored": true,
+  "accepted_authored_leaves": 0,
+  "frozen_reasoning_units": 6,
+  "attempted_reasoning_units": 1,
+  "accepted_reasoning_units": 0,
+  "failed_attempt": "reasoning-attempt.log",
+  "note": "Commands, procedures, patches and supplied conclusions earn zero independent reasoning or synthesis credit.",
+  "driver_sha256": "c936361950afbc77a046c826305674aad7efc34bb21fffed11b8b78745afc609"
+}

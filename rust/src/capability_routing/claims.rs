@@ -265,16 +265,20 @@ fn prompt_evidence_holds(kind: &str, prompt: &str, normalized: &str) -> Option<b
                 .collect::<String>(),
         )
         .is_some(),
-        "measured_quantity" => {
-            !crate::quantity_constraint::owns_prompt(prompt)
-                && !crate::solver_handlers::numeric_list::parse_numbers(&lowered).is_empty()
-                && crate::solver_handlers::unit_conversion::unit_mentions(&lowered).len() == 2
-        }
+        "measured_quantity" => crate::solver_handlers::unit_conversion::request::conversion_span(
+            &lowered,
+        )
+        .is_some_and(|span| {
+            !crate::quantity_constraint::owns_prompt(span)
+                && crate::solver_handlers::numeric_list::parse_numbers(span).len() == 1
+                && crate::solver_handlers::unit_conversion::unit_mentions(span).len() == 2
+        }),
         "calendar_anchor" => {
             use crate::solver_handlers::calendar;
             calendar::detect_weekday(normalized).is_some()
                 || calendar::month::detect_month(normalized).is_some()
                 || calendar::date_weekday::stated_date(prompt, normalized).is_some()
+                || calendar::date_offset::date_offset_candidate(prompt, normalized).is_some()
                 || calendar::mentions_current_day_question(normalized)
         }
         // Issue #1175 R3, refusal group: the operand each handler's own

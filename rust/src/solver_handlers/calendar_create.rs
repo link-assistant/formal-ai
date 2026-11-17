@@ -75,11 +75,12 @@ pub fn try_routed_calendar_create_event(
     if super::software_project_claims(normalized) {
         return None;
     }
-    // A trip plan ("составь план поездки в Рим на 3 дня") reads a period off
-    // its day count, but it is the planner's request when the event recognizer
-    // finds no event in it (issue #1175 p215), as the browser twin declines.
-    if !mentions_calendar_create_request(normalized)
-        && lexicon().mentions_role("planning_request", normalized)
+    // Routing supplies the action, but a concrete date/time anchor must
+    // still be bound in this request (issue #1588). Preserve the existing
+    // trip-plan decline when no event is recognized (issue #1175 p215).
+    if !has_calendar_anchor(normalized)
+        || (lexicon().mentions_role("planning_request", normalized)
+            && !mentions_calendar_create_request(normalized))
     {
         return None;
     }
@@ -186,7 +187,7 @@ pub fn calendar_claims(normalized: &str) -> bool {
     mentions_calendar_create_request(normalized)
 }
 
-fn mentions_calendar_create_request(normalized: &str) -> bool {
+fn has_calendar_anchor(normalized: &str) -> bool {
     let lex = lexicon();
     let has_day_ref = lex
         .words_for_role(ROLE_CALENDAR_DAY_REFERENCE)
@@ -210,6 +211,33 @@ fn mentions_calendar_create_request(normalized: &str) -> bool {
     if !has_date_signal {
         return false;
     }
+    let has_bound_day = lex
+        .words_for_role(ROLE_CALENDAR_DAY_REFERENCE)
+        .iter()
+        .any(|word| {
+            normalized.find(word).is_some_and(|at| {
+                normalized[..at]
+                    .trim_end()
+                    .ends_with(|ch: char| ch.is_ascii_digit())
+            })
+        });
+    let has_event = lex
+        .words_for_role(ROLE_CALENDAR_EVENT)
+        .iter()
+        .any(|word| contains_term(normalized, word));
+    has_clock || has_relative_date || has_weekday || has_bound_day || has_event
+}
+
+fn mentions_calendar_create_request(normalized: &str) -> bool {
+    if !has_calendar_anchor(normalized) {
+        return false;
+    }
+    let lex = lexicon();
+    let has_clock = lex
+        .words_for_role(ROLE_CALENDAR_TIME)
+        .iter()
+        .any(|word| contains_term(normalized, word))
+        || extract_clock_time(normalized).is_some();
     let has_timezone = resolve_timezone(normalized).is_some();
     let has_participant = extract_participant_title(normalized).is_some();
     let has_action = lex
@@ -237,12 +265,12 @@ fn extract_day_number(normalized: &str) -> Option<u32> {
             continue;
         }
         if let Some(pos) = normalized.find(&word) {
-            let prefix = &normalized[..pos];
+            let prefix = normalized[..pos].trim_end();
             let mut digits = String::new();
             for ch in prefix.chars().rev() {
                 if ch.is_ascii_digit() {
                     digits.insert(0, ch);
-                } else if !digits.is_empty() {
+                } else {
                     break;
                 }
             }
@@ -262,6 +290,13 @@ fn extract_day_number(normalized: &str) -> Option<u32> {
         } else {
             return None;
         }
+    }
+    let suffix = normalized.trim_start()[num.len()..].trim_start();
+    if super::unit_conversion::unit_mentions(suffix)
+        .iter()
+        .any(|mention| mention.position == 0)
+    {
+        return None;
     }
     if let Ok(n) = num.parse::<u32>()
         && (1..=31).contains(&n)

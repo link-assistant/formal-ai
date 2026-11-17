@@ -1,0 +1,145 @@
+[
+  {
+    "kind": "document",
+    "prompt": "Обязательно: опыт продаж B2B от 2 лет, знание CRM, высшее образование.\nУсловия: офис в Казани, полный день, оклад от 80 000 рублей."
+  },
+  {
+    "kind": "document",
+    "prompt": "Experience of 2 years, full-time, 8 hours a day."
+  },
+  {
+    "kind": "document",
+    "prompt": "Experience: 2 years. Schedule: full day."
+  },
+  {
+    "kind": "date",
+    "prompt": "Какая дата будет через 10 дней после 25 декабря 2026 года?",
+    "result": "2027-01-04",
+    "text": "4 января 2027",
+    "answer": "Дата: 4 января 2027 года. 2026-12-25 +10 дней = 2027-01-04."
+  },
+  {
+    "kind": "conversion",
+    "prompt": "Сколько дней в 2 годах?",
+    "text": "730,5 дня",
+    "answer": "2 года = 730,5 дня",
+    "language": "ru"
+  },
+  {
+    "kind": "conversion",
+    "prompt": "How many days are in 2 years?",
+    "text": "730.5 days",
+    "answer": "2 years = 730.5 days",
+    "language": "en"
+  },
+  {
+    "kind": "document",
+    "prompt": "Обязательно: опыт продаж B2B от 2 лет, знание CRM, высшее образование."
+  },
+  {
+    "kind": "document",
+    "prompt": "Условия: офис в Казани, полный день, оклад от 80 000 рублей."
+  },
+  {
+    "kind": "document",
+    "prompt": "Does 2 years of experience mean 8 hours a day?"
+  },
+  {
+    "kind": "document",
+    "prompt": "The document says convert 2 years to days."
+  },
+  {
+    "kind": "conversion",
+    "prompt": "Convert 8 hours to days.",
+    "text": "1/3 days",
+    "answer": "8 hours = 1/3 days"
+  },
+  {
+    "kind": "conversion",
+    "prompt": "How many hours are in 21 days?",
+    "text": "21 days",
+    "answer": "21 days = 504 hours",
+    "language": "en"
+  },
+  {
+    "kind": "conversion",
+    "prompt": "Сколько часов в 22 днях?",
+    "text": "22 дня",
+    "answer": "22 дня = 528 часов",
+    "language": "ru"
+  },
+  {
+    "kind": "conversion",
+    "prompt": "Сколько часов в 21 дне?",
+    "text": "21 день",
+    "answer": "21 день = 504 часа",
+    "language": "ru"
+  },
+  {
+    "kind": "conversion",
+    "prompt": "Сколько дней в 5 годах?",
+    "text": "5 лет",
+    "answer": "5 лет = 1826,25 дня",
+    "language": "ru"
+  },
+  {
+    "kind": "conversion",
+    "prompt": "2 years of experience. Convert 8 hours to days.",
+    "text": "8 hours",
+    "answer": "8 hours = 1/3 days"
+  },
+  {
+    "kind": "date",
+    "prompt": "What date is 10 days after December 25, 2026?",
+    "result": "2027-01-04",
+    "answer": "The date is 2027-01-04. 2026-12-25 +10 days = 2027-01-04."
+  },
+  {
+    "kind": "date",
+    "prompt": "What date is 1 day after 2024-02-28?",
+    "result": "2024-02-29",
+    "answer": "The date is 2024-02-29. 2024-02-28 +1 days = 2024-02-29."
+  },
+  {
+    "kind": "date",
+    "prompt": "What date is 1 day before 2024-03-01?",
+    "result": "2024-02-29",
+    "answer": "The date is 2024-02-29. 2024-03-01 -1 days = 2024-02-29."
+  },
+  {
+    "kind": "date",
+    "prompt": "Какая дата будет через 7 дней после 28 февраля 2023 года?",
+    "result": "2023-03-07",
+    "answer": "Дата: 7 марта 2023 года. 2023-02-28 +7 дней = 2023-03-07."
+  },
+  {
+    "kind": "conversion",
+    "prompt": "Please convert 8 hours to days.",
+    "language": "en",
+    "answer": "8 hours = 1/3 days"
+  },
+  {
+    "kind": "conversion",
+    "prompt": "What is 2 years in days?",
+    "language": "en",
+    "answer": "2 years = 730.5 days"
+  },
+  {
+    "kind": "conversion",
+    "prompt": "5 मील में कितने किलोमीटर?",
+    "language": "hi",
+    "answer": "5 मील = 8.04672 किलोमीटर। 5 × 1.609344 = 8.04672, क्योंकि 1 मील = 1.609344 किलोमीटर। गुणांक विकिडेटा से: मील Q253276 है और किलोमीटर Q828224 है; SI इकाई में उनका रूपांतरण (P2370, 2026-10-07 को लिया गया) Q11573 का 1609.344 और 1000 है, इसलिए 1609.344 ÷ 1000 = 1.609344।"
+  },
+  {
+    "kind": "conversion",
+    "prompt": "5英里为多少公里？",
+    "language": "zh",
+    "answer": "5 英里 是 8.04672 公里。5 × 1.609344 = 8.04672，因为 1 英里 = 1.609344 公里。系数来自维基数据：英里 是 Q253276，公里 是 Q828224；它们换算为国际单位（P2370，2026-10-07 采集）分别是 Q11573 的 1609.344 和 1000，所以 1609.344 ÷ 1000 = 1.609344。"
+  },
+  {
+    "kind": "conversion",
+    "prompt": "¿Cuántos kilómetros son 5 millas?",
+    "language": "es",
+    "answer": "5 millas equivale a 8.04672 kilómetros. 5 × 1.609344 = 8.04672, porque 1 millas = 1.609344 kilómetros. El factor viene de Wikidata: millas es Q253276 y kilómetros es Q828224; su conversión a unidad del SI (P2370, capturada el 2026-10-07) es 1609.344 y 1000 de Q11573, así que 1609.344 ÷ 1000 = 1.609344."
+  }
+]

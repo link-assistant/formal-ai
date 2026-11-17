@@ -392,6 +392,14 @@ function mentionsCalendarCreateRequest(normalized) {
   const hasWeekday = wordsForRole(ROLE_CALENDAR_WEEKDAY).some((w) => containsCalendarTerm(normalized, w));
   const hasDateSignal = hasDayRef || hasClock || hasRelativeDate || hasWeekday;
   if (!hasDateSignal) return false;
+  // A generic day word is not an event anchor. Years elsewhere in a
+  // document cannot supply the day number.
+  const hasBoundDay = wordsForRole(ROLE_CALENDAR_DAY_REFERENCE).some(word => {
+    const at = normalized.indexOf(word);
+    return at >= 0 && /[0-9]+\s*$/u.test(normalized.slice(0, at));
+  });
+  const hasEvent = wordsForRole(ROLE_CALENDAR_EVENT).some(word => containsCalendarTerm(normalized, word));
+  if (!hasClock && !hasRelativeDate && !hasWeekday && !hasBoundDay && !hasEvent) return false;
   const hasTimezone = resolveTimezone(normalized) !== null;
   const hasParticipant = extractParticipantTitle(normalized) !== null;
   const hasAction =
@@ -421,12 +429,12 @@ function extractDayNumber(normalized) {
     if (!containsCalendarTerm(normalized, word)) continue;
     const pos = normalized.indexOf(word);
     if (pos !== -1) {
-      const prefix = normalized.slice(0, pos);
+      const prefix = normalized.slice(0, pos).trimEnd();
       let digits = "";
       for (let i = prefix.length - 1; i >= 0; i--) {
         const ch = prefix[i];
         if (/\d/.test(ch)) digits = ch + digits;
-        else if (digits) break;
+        else break;
       }
       const n = parseInt(digits, 10);
       if (n >= 1 && n <= 31) return n;
@@ -439,6 +447,8 @@ function extractDayNumber(normalized) {
     else if (num) break;
     else return null;
   }
+  const suffix = normalized.trimStart().slice(num.length).trimStart();
+  if (unitMentions(suffix).some(mention => mention.position === 0)) return null;
   const n = parseInt(num, 10);
   if (n >= 1 && n <= 31) return n;
   return null;
@@ -923,6 +933,8 @@ function tryCalendarReasoning(prompt, normalized, userContext = {}) {
   const monthOffset = tryCalendarMonthOffset(prompt, normalized);
   if (monthOffset) return monthOffset;
   // R1017: the weekday of a stated date (calendar/date_weekday.rs).
+  const dateOffset = tryCalendarDateOffset(prompt, normalized);
+  if (dateOffset !== null) return dateOffset;
   const dateWeekday = tryCalendarDateWeekday(prompt, normalized);
   if (dateWeekday) return dateWeekday;
   if (!mentionsWeekdayContext(normalized)) return null;
