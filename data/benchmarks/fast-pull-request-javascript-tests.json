@@ -8,6 +8,8 @@
     "rust/tests/web/literal-action-ownership.test.mjs",
     "rust/tests/web/issue-1438-report-and-edit.test.mjs",
     "rust/tests/web/issue-1557-prose-language.test.mjs",
+    "rust/tests/web/issue-1588-intent-spans.test.mjs",
+    "rust/tests/web/issue-1587-request-context.test.mjs",
     "rust/tests/web/issue-1180-repository-qa.test.mjs",
     "rust/tests/web/question-necessity-authored-seed.test.mjs",
     "rust/tests/web/issue-1188-why-question-scope.test.mjs",
@@ -221,6 +223,8 @@
     "rust/tests/web/stale-pull-request-report.test.mjs",
     "rust/tests/web/issue-1550-meta-executor.test.mjs",
     "rust/tests/web/issue-1550-procedure-census.test.mjs",
-    "rust/tests/web/issue-1550-procedure-documentation.test.mjs"
+    "rust/tests/web/issue-1550-procedure-documentation.test.mjs",
+    "rust/tests/web/issue-1582-defaults.test.mjs",
+    "rust/tests/web/issue-1582-permissions.test.mjs"
   ]
 }

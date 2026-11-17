@@ -271,6 +271,10 @@ si_units
   si_unit
     unit second
     dimension T
+    numeral-form ru.one "секунда"
+    numeral-form ru.few "секунды"
+    numeral-form ru.many "секунд"
+    numeral-form ru.fraction "секунды"
     si_factor 1
     surface "s"
     surface "second"
@@ -292,6 +296,10 @@ si_units
   si_unit
     unit minute
     dimension T
+    numeral-form ru.one "минута"
+    numeral-form ru.few "минуты"
+    numeral-form ru.many "минут"
+    numeral-form ru.fraction "минуты"
     si_factor 60
     surface "min"
     surface "minute"
@@ -304,6 +312,10 @@ si_units
   si_unit
     unit hour
     dimension T
+    numeral-form ru.one "час"
+    numeral-form ru.few "часа"
+    numeral-form ru.many "часов"
+    numeral-form ru.fraction "часа"
     si_factor 3600
     surface "h"
     surface "hour"
@@ -317,17 +329,27 @@ si_units
   si_unit
     unit day
     dimension T
+    numeral-form ru.one "день"
+    numeral-form ru.few "дня"
+    numeral-form ru.many "дней"
+    numeral-form ru.fraction "дня"
     si_factor 86400
     surface "day"
     surface "days"
     surface "день"
     surface "дня"
     surface "дней"
+    surface "дне"
+    surface "днях"
     surface "दिन"
     surface "天"
   si_unit
     unit week
     dimension T
+    numeral-form ru.one "неделя"
+    numeral-form ru.few "недели"
+    numeral-form ru.many "недель"
+    numeral-form ru.fraction "недели"
     si_factor 604800
     surface "week"
     surface "weeks"
@@ -339,8 +361,17 @@ si_units
   si_unit
     unit julian_year
     dimension T
+    numeral-form ru.one "год"
+    numeral-form ru.few "года"
+    numeral-form ru.many "лет"
+    numeral-form ru.fraction "года"
     si_factor 31557600
     surface "year"
+    surface "years"
+    surface "годах"
+    surface "году"
+    numeral-form en.one "year"
+    numeral-form en.many "years"
     surface "год"
     surface "года"
     surface "лет"
