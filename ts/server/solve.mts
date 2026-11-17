@@ -120,19 +120,19 @@ async function seedReportReader(ctx) {
  * @param {Array<{role: string, content: string}>} history
  * @returns {Promise<SymbolicAnswer>}
  */
-export async function solveSymbolic(ctx, prompt, history) {
+export async function solveSymbolic(ctx, prompt, history, options = {}) {
   // Issue #667 (R383): under a debug session the solve waits at its first
   // stage (`impulse`) before the worker runs; `gateTurn` continues the turn.
   await beginTurn(ctx, prompt);
   try {
-    return await solveBegun(ctx, prompt, history);
+    return await solveBegun(ctx, prompt, history, options);
   } finally {
     endTurn(ctx);
   }
 }
 
-async function solveBegun(ctx, prompt, history) {
-  const result = await ctx.worker.solve(prompt, history);
+async function solveBegun(ctx, prompt, history, options) {
+  const result = await ctx.worker.solve(prompt, history, options);
   // R1013: the formalization, intent-formalization and meta-core records the
   // native solver logs between the worker's prelude and its handler events.
   if (Array.isArray(result?.solverEvents)) {
@@ -193,11 +193,11 @@ export async function answerFromMemory(ctx, memoryPrompt, history, amendPrompt =
  * @param {Array<{role: string, content: string}>} history
  * @returns {Promise<SymbolicAnswer>}
  */
-export async function solveWithMemory(ctx, prompt, history) {
+export async function solveWithMemory(ctx, prompt, history, options = {}) {
   const events = memoryEvents(ctx);
   const seed = await ctx.worker.seedReaders();
   return solveWithStandingRequirements(
-    (text, turns) => solveSymbolic(ctx, text, turns),
+    (text, turns) => solveSymbolic(ctx, text, turns, options),
     seed.normalizePrompt,
     prompt,
     history,

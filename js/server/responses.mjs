@@ -18,6 +18,7 @@ import { resolveModelId } from './seed.mjs';
 import { answerFromMemory, estimateTokens, solveWithMemory, stableId, toolCallRefusalAnswer } from './solve.mjs';
 import { renderThinkingSteps } from './thinking.mjs';
 import { requestScope, runInRequestScope } from './standing-scope.mjs';
+import { formalizeRequest, contextualAnswer, composeRequestAnswer } from './request-context.mjs';
 
 /** `response_reasoning_item`: the rendered trace as a `reasoning` output item. */
 function responseReasoningItem(prompt, thinkingSteps) {
@@ -35,6 +36,7 @@ function responseReasoningItem(prompt, thinkingSteps) {
  * order; empty `thinking_steps` skipped).
  */
 export function responseFromSymbolic(request, chatRequest, prompt, symbolic) {
+  symbolic = composeRequestAnswer(chatRequest.messages, symbolic);
   const inputTokens = messageInputTokens(chatRequest.messages);
   const outputTokens = estimateTokens(symbolic.answer);
   const steps = symbolic.thinking_steps;
@@ -75,12 +77,15 @@ export async function createResponse(ctx, request) {
   const chatRequest = toChatCompletionRequest(request);
   const { prompt: chatPrompt, history } = chatPromptAndHistory(chatRequest.messages);
   const memoryPrompt = chatPrompt.trim() ? chatPrompt : prompt;
+  const context = formalizeRequest(chatRequest.messages);
   const remembered = await answerFromMemory(ctx, memoryPrompt, history, prompt);
   if (remembered) {logUnclassifiedTerminal(ctx,'retained_answer');return responseFromSymbolic(request, chatRequest, prompt, remembered);}
   const outcome = await agenticOutcome(ctx, chatRequest, toolCallRefusalAnswer);
   if (outcome.kind === 'refused') return responseFromSymbolic(request, chatRequest, prompt, outcome.answer);
   if (outcome.kind === 'planned') return responseFromPlan(ctx, request, chatRequest, prompt, outcome.plan, responseTimestamp());
-  const symbolic = await solveWithMemory(ctx, memoryPrompt, history);
+  const contextual = contextualAnswer(context);
+  if (contextual) return responseFromSymbolic(request, chatRequest, prompt, contextual);
+  const symbolic = await solveWithMemory(ctx, memoryPrompt, history, { forcedResponseLanguage: context.language });
   const reroute = await commandReroutePlan(ctx, chatRequest, symbolic);
   if (reroute) return responseFromPlan(ctx, request, chatRequest, prompt, reroute, responseTimestamp());
   logUnclassifiedTerminal(ctx,'symbolic_answer');
