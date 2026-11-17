@@ -347,3 +347,131 @@ the upstream interface, and the four native integration regressions have not
 run. The repository's PR build policy permits the production native type/lint
 check but excludes native test builds; no local Rust build was substituted.
 These acceptance/validation limits are unfinished, even though hosted CI is green.
+
+
+## Review continuation: complete support census
+
+The [latest review](https://github.com/link-assistant/formal-ai/pull/1583#issuecomment-6955718572)
+asks for all supported tools and natural/programming languages. The retained
+`raw-data/local/continuation-support-matrix.json` enumerates all 12 registered
+adapters, every declared global/ephemeral mode, all five natural languages and
+all three source roots. Cursor is an MCP tool adapter: its host model's context
+is outside this adapter. A source/configuration census does not demonstrate an
+installed vendor CLI. Gemini input context remains an unmet requirement.
+
+This audit found a new reproducible permission-routing gap. Several natural
+paraphrases missed the seed role, while a permission phrase embedded in a
+translation or programming request could wrongly take ownership. The initial
+18 shared cases passed six checks and failed twelve. Added seed aliases and a
+direct-request prefix guard repair this reusable cause in JavaScript,
+generated TypeScript and Rust. Quoted leading text stays with its enclosing
+task. The final 35 checks pass: twelve direct requests use actual automatic
+language detection across English, Russian, Hindi, Chinese and Spanish, 22
+negative cases exclude permission routing (including all 16 catalog code targets),
+and the generated TypeScript
+recognizer executes the same fixture. The shared fixture is
+`data/parity/issue-1582-permissions.json`; the executable test is
+`rust/tests/web/issue-1582-permissions.test.mjs`. The corresponding Rust unit
+regression is `rust/tests/unit/issue_1582_permissions.rs`; it is drafted and
+unexecuted, in addition to the four unexecuted native integration regressions.
+PR type/lint validation cannot replace native runtime evidence.
+
+Current main was merged at `512ce428029a92687628b4180309ee5ab660fe08`.
+Both sides' boundary inventories and obligations were retained. Main's governed
+witness was refreshed only after checking all 221 before/after observations
+were identical; the receipt records its two offline fixture call-site changes.
+The merged issue-1588 source suite passes all 62 checks. New helper lines are
+measured in the exact boundary and worker budgets without changing dispositions.
+
+Fresh upstream Gemini source was inspected at the actual token-limit consumers
+in `core/client.ts` and `context/chatCompressionService.ts`, together with model
+configuration types. Unknown `formal-ai` still uses 1,048,576 input tokens;
+model metadata does not supply an override to those consumers. The source probe
+is bounded and is not an installed-client test. The existing upstream report
+[google-gemini/gemini-cli#30333](https://github.com/google-gemini/gemini-cli/issues/30333)
+remains open. Its input-context criterion is unfinished. Native runtime checks
+also remain unfinished under the repository's pre-merge build policy; no local
+Rust build was substituted in this memory-limited environment.
+
+The frozen continuation plan and supplied repair recipes are under
+`experiments/issue_1582/continuation-*`. Their execution through the JavaScript
+Formal AI driver receives zero independent authorship credit. Initial read-only
+inspection and the explicit parser/bootstrap recovery were external exceptions:
+stale worker identity prevented the driver from loading, and prerequisite
+regeneration needed the missing Babel parser tools. The bounded JavaScript-only
+bootstrap and all failed attempts are retained. The independent requirement-gap
+query returned existing partial markers; it did not independently author a fix.
+The continuation's 20-unit denominator stays fixed; no success percentage is
+inferred from supplied-command execution.
+
+
+### Continuation verification and remaining limits
+
+The permission examples are frozen in
+`data/parity/issue-1582-permission-answers.json`. Both the serving-worker test
+and the drafted Rust unit test assert these exact localized answers in addition
+to routing evidence. The Rust recognizer normalizes seed surfaces and rejects
+empty surfaces, matching the JavaScript/TypeScript contract.
+
+The focused JavaScript results are 35 permission checks, 12 defaults/context
+checks, 10 structured-log checks and six real Node CLI checks: **63 passed**.
+The governed-witness suite passes **34/34**; the merged issue-1588 suite passes
+**62/62**. Rustfmt passes on the changed native files. These are JavaScript,
+source-consistency and formatting observations, not native test execution.
+
+After registering the native unit module, four existing complete programs
+observe the changed ancestor `rust/tests/unit/mod.rs`. The second reviewed
+witness refresh compares every complete object, changes only those four
+provenance hashes and preserves all 221 cases, their assertions, initial values,
+unsupported records and source manifest. The exact comparison receipt is
+`raw-data/local/continuation-witness-refresh.json`.
+
+The complete local-gate run exercised all 138 entries: 129 passed or were
+explicitly skipped, and nine failed. Eight failures were repaired or resolved
+by installing the actual local prerequisites: the abbreviated recipe filename,
+two lower abbreviation ceilings, the runtime-feature source hash, exact native
+answer examples, and missing i18n/YAML/ShellCheck/pinned-parser tools. Their
+focused reruns pass. The initial logs remain under
+`raw-data/local/continuation/gates-initial/`, with final reruns alongside them.
+
+The remaining dependency-audit failure is new evidence, not a passing gate.
+[GHSA-fc5q-39xc-vjpf](https://github.com/advisories/GHSA-fc5q-39xc-vjpf)
+was updated/reviewed at 2026-11-17T15:56:44Z, after the earlier green source
+head. GitHub currently flags every published picomatch version through 4.0.7
+and lists no patched release. The desktop and VS Code build dependency trees
+are affected. Registry metadata, audit output and upstream proposals are
+retained. The [maintainer disputes the advisory](https://github.com/micromatch/picomatch/pull/235#issuecomment-6315749381),
+but GitHub has not withdrawn it. Proposed fixes #237/#238/#246 are unmerged;
+#238 also documents an uncovered pattern class. Neither disabling the audit
+nor substituting an unqualified vendored implementation establishes the
+existing dependency contract. Dependency qualification remains unfinished.
+
+The fresh Gemini source probe pins
+`4fa64e71b9b4e1bb65a86cc2863574f561b82340` (2026-11-16T17:38:59Z).
+Its actual budget consumers still select 1,048,576 for the unknown model while
+the served metadata advertises 1,234,567. The open upstream issue, fixed native
+test policy and unavailable reporter Mac logs remain explicit limits.
+
+The Formal AI shell has a fixed 60-second command deadline and cleans up
+detached children. Combined checks and the pinned-source acceptance check
+therefore used explicit outer-command verification exceptions, sequentially,
+with complete logs; no local Rust compilation occurred. Temporary tool
+installations are excluded from repository source measurements. Supplied repair
+recipes receive zero independent authorship credit. Of the frozen 20 work
+units, one independent requirement-gap query was attempted (5%); none produced
+an independently accepted implementation (0%). Those percentages do not count
+command execution or supplied edits as reasoning or authorship.
+
+
+The programming-language census includes code-generation targets as well as
+implementation languages. All 16 catalog rows are covered by quoted-task
+exclusions: Rust, Python, JavaScript, TypeScript, Go, C, C++, Java, C#, Ruby,
+Scala, Kotlin, PHP, Swift, R and the Laravel framework target. The test compares
+the complete fixture target list with both the maintained coding catalog and
+the native `PROGRAM_LANGUAGES` declaration. JavaScript and the generated
+TypeScript recognizer execute every case. This verifies permission-route
+ownership; it does not compile or execute programs in those languages. The
+shared native fixture includes the same requests but remains unexecuted under
+the documented pre-merge policy. The initial census recipe omitted the required
+agentic parser host bootstrap; its failed attempt is retained before the
+corrected recipe that uses the established Node host bootstrap.

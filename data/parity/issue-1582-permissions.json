@@ -88,5 +88,101 @@
     "language": "es",
     "prompt": "Traduce \"permitir acceso a internet\" al inglés.",
     "guidance": false
+  },
+  {
+    "language": "en",
+    "programmingTarget": "rust",
+    "prompt": "Write a Rust program that displays \"enable internet access\".",
+    "guidance": false
+  },
+  {
+    "language": "en",
+    "programmingTarget": "python",
+    "prompt": "Write a Python program that displays \"enable internet access\".",
+    "guidance": false
+  },
+  {
+    "language": "en",
+    "programmingTarget": "javascript",
+    "prompt": "Write a JavaScript program that displays \"enable internet access\".",
+    "guidance": false
+  },
+  {
+    "language": "en",
+    "programmingTarget": "typescript",
+    "prompt": "Write a TypeScript program that displays \"enable internet access\".",
+    "guidance": false
+  },
+  {
+    "language": "en",
+    "programmingTarget": "go",
+    "prompt": "Write a Go program that displays \"enable internet access\".",
+    "guidance": false
+  },
+  {
+    "language": "en",
+    "programmingTarget": "c",
+    "prompt": "Write a C program that displays \"enable internet access\".",
+    "guidance": false
+  },
+  {
+    "language": "en",
+    "programmingTarget": "cpp",
+    "prompt": "Write a C++ program that displays \"enable internet access\".",
+    "guidance": false
+  },
+  {
+    "language": "en",
+    "programmingTarget": "java",
+    "prompt": "Write a Java program that displays \"enable internet access\".",
+    "guidance": false
+  },
+  {
+    "language": "en",
+    "programmingTarget": "csharp",
+    "prompt": "Write a C# program that displays \"enable internet access\".",
+    "guidance": false
+  },
+  {
+    "language": "en",
+    "programmingTarget": "ruby",
+    "prompt": "Write a Ruby program that displays \"enable internet access\".",
+    "guidance": false
+  },
+  {
+    "language": "en",
+    "programmingTarget": "scala",
+    "prompt": "Write a Scala program that displays \"enable internet access\".",
+    "guidance": false
+  },
+  {
+    "language": "en",
+    "programmingTarget": "kotlin",
+    "prompt": "Write a Kotlin program that displays \"enable internet access\".",
+    "guidance": false
+  },
+  {
+    "language": "en",
+    "programmingTarget": "php",
+    "prompt": "Write a PHP program that displays \"enable internet access\".",
+    "guidance": false
+  },
+  {
+    "language": "en",
+    "programmingTarget": "swift",
+    "prompt": "Write a Swift program that displays \"enable internet access\".",
+    "guidance": false
+  },
+  {
+    "language": "en",
+    "programmingTarget": "r",
+    "prompt": "Write a R program that displays \"enable internet access\".",
+    "guidance": false
+  },
+  {
+    "language": "en",
+    "programmingTarget": "laravel",
+    "prompt": "Write a Laravel program that displays \"enable internet access\".",
+    "guidance": false
   }
 ]

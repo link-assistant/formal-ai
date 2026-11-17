@@ -26,6 +26,12 @@ test('the generated TypeScript recognizer executes the same shared cases',{timeo
   const source=readFileSync(new URL('../../../ts/worker/formal_ai_worker_capabilities_and_runtime_rules.ts',import.meta.url),'utf8');
   const helper=source.match(/function internetAccessHelpRequested[\s\S]*?(?=function tryFeatureCapabilityStatus)/u)?.[0];
   assert(helper,'the TypeScript projection must include the shared request recognizer');
+  // Every declared coding target is covered, including framework targets.
+  const catalog=readFileSync(new URL('../../../data/meta/agentic-coding-catalog.lino',import.meta.url),'utf8');
+  const targets=[...catalog.matchAll(/^  language (\S+)$/gmu)].map(match=>match[1]);
+  const native=readFileSync(new URL('../../../rust/src/coding/catalog/languages.rs',import.meta.url),'utf8');
+  assert.deepEqual(targets,[...native.matchAll(/^        slug: "([^"]+)",$/gmu)].map(match=>match[1]));
+  assert.deepEqual(fixtures.filter(row=>row.programmingTarget).map(row=>row.programmingTarget),targets);
   await host.boot();
   await host.run(helper);
   for(const row of fixtures){

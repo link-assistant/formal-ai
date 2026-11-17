@@ -1,0 +1,539 @@
+{
+  "kind": "source configuration census; not installed-client execution",
+  "tools": [
+    {
+      "tool": "codex",
+      "aliases": "",
+      "protocols": "(\"openai\")",
+      "scope": "model provider",
+      "inputContext": "configuration declared; native execution pending",
+      "modes": [
+        {
+          "mode": "ephemeral",
+          "protocol": "default",
+          "path": ".codex/config.toml",
+          "contextSettings": [
+            {
+              "kind": "model_catalog_path",
+              "value": ".codex/formal-ai-model-catalog.json"
+            },
+            {
+              "kind": "temp_home_toml_set",
+              "value": "model_catalog_json={model_catalog_path}"
+            }
+          ]
+        },
+        {
+          "mode": "global",
+          "protocol": "default",
+          "path": ".codex/config.toml",
+          "contextSettings": [
+            {
+              "kind": "model_catalog_path",
+              "value": ".codex/formal-ai-model-catalog.json"
+            },
+            {
+              "kind": "toml_set",
+              "value": "model_catalog_json={model_catalog_path}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tool": "t3code",
+      "aliases": "(\"t3\")",
+      "protocols": "(\"openai\" \"anthropic\")",
+      "scope": "model provider",
+      "inputContext": "configuration declared; native execution pending",
+      "modes": [
+        {
+          "mode": "ephemeral",
+          "protocol": "default",
+          "path": "config.toml",
+          "contextSettings": [
+            {
+              "kind": "model_catalog_path",
+              "value": "formal-ai-model-catalog.json"
+            },
+            {
+              "kind": "temp_home_toml_set",
+              "value": "model_catalog_json={model_catalog_path}"
+            },
+            {
+              "kind": "env",
+              "value": "CLAUDE_CODE_MAX_CONTEXT_TOKENS={context_window_tokens}"
+            },
+            {
+              "kind": "env",
+              "value": "CLAUDE_CODE_MAX_OUTPUT_TOKENS={max_output_tokens}"
+            }
+          ]
+        },
+        {
+          "mode": "global",
+          "protocol": "openai",
+          "path": ".codex/config.toml",
+          "contextSettings": [
+            {
+              "kind": "model_catalog_path",
+              "value": ".codex/formal-ai-model-catalog.json"
+            },
+            {
+              "kind": "toml_set",
+              "value": "model_catalog_json={model_catalog_path}"
+            }
+          ]
+        },
+        {
+          "mode": "global",
+          "protocol": "anthropic",
+          "path": ".profile",
+          "contextSettings": [
+            {
+              "kind": "shell_env",
+              "value": "CLAUDE_CODE_MAX_CONTEXT_TOKENS={context_window_tokens}"
+            },
+            {
+              "kind": "shell_env",
+              "value": "CLAUDE_CODE_MAX_OUTPUT_TOKENS={max_output_tokens}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tool": "opencode",
+      "aliases": "",
+      "protocols": "(\"openai\")",
+      "scope": "model provider",
+      "inputContext": "configuration declared; native execution pending",
+      "modes": [
+        {
+          "mode": "ephemeral",
+          "protocol": "default",
+          "path": "",
+          "contextSettings": [
+            {
+              "kind": "config_json_set",
+              "value": "provider.{provider_id}.models.{model}.limit.context=json:{context_window_tokens}"
+            },
+            {
+              "kind": "config_json_set",
+              "value": "provider.{provider_id}.models.{model}.limit.output=json:{max_output_tokens}"
+            }
+          ]
+        },
+        {
+          "mode": "global",
+          "protocol": "default",
+          "path": ".config/opencode/opencode.json",
+          "contextSettings": [
+            {
+              "kind": "json_set",
+              "value": "provider.{provider_id}.models.{model}.limit.context=json:{context_window_tokens}"
+            },
+            {
+              "kind": "json_set",
+              "value": "provider.{provider_id}.models.{model}.limit.output=json:{max_output_tokens}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tool": "opencode-vscode",
+      "aliases": "(\"opencode-code\")",
+      "protocols": "(\"openai\")",
+      "scope": "model provider",
+      "inputContext": "configuration declared; native execution pending",
+      "modes": [
+        {
+          "mode": "ephemeral",
+          "protocol": "default",
+          "path": "",
+          "contextSettings": [
+            {
+              "kind": "config_json_set",
+              "value": "provider.{provider_id}.models.{model}.limit.context=json:{context_window_tokens}"
+            },
+            {
+              "kind": "config_json_set",
+              "value": "provider.{provider_id}.models.{model}.limit.output=json:{max_output_tokens}"
+            }
+          ]
+        },
+        {
+          "mode": "global",
+          "protocol": "default",
+          "path": ".config/opencode/opencode.json",
+          "contextSettings": [
+            {
+              "kind": "json_set",
+              "value": "provider.{provider_id}.models.{model}.limit.context=json:{context_window_tokens}"
+            },
+            {
+              "kind": "json_set",
+              "value": "provider.{provider_id}.models.{model}.limit.output=json:{max_output_tokens}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tool": "opencode-desktop",
+      "aliases": "",
+      "protocols": "(\"openai\")",
+      "scope": "model provider",
+      "inputContext": "configuration declared; native execution pending",
+      "modes": [
+        {
+          "mode": "ephemeral",
+          "protocol": "default",
+          "path": "",
+          "contextSettings": [
+            {
+              "kind": "config_json_set",
+              "value": "provider.{provider_id}.models.{model}.limit.context=json:{context_window_tokens}"
+            },
+            {
+              "kind": "config_json_set",
+              "value": "provider.{provider_id}.models.{model}.limit.output=json:{max_output_tokens}"
+            }
+          ]
+        },
+        {
+          "mode": "global",
+          "protocol": "default",
+          "path": ".config/opencode/opencode.json",
+          "contextSettings": [
+            {
+              "kind": "json_set",
+              "value": "provider.{provider_id}.models.{model}.limit.context=json:{context_window_tokens}"
+            },
+            {
+              "kind": "json_set",
+              "value": "provider.{provider_id}.models.{model}.limit.output=json:{max_output_tokens}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tool": "agent",
+      "aliases": "",
+      "protocols": "(\"openai\")",
+      "scope": "model provider",
+      "inputContext": "configuration declared; native execution pending",
+      "modes": [
+        {
+          "mode": "ephemeral",
+          "protocol": "default",
+          "path": "",
+          "contextSettings": [
+            {
+              "kind": "config_json_set",
+              "value": "provider.{provider_id}.models.{model}.limit.context=json:{context_window_tokens}"
+            },
+            {
+              "kind": "config_json_set",
+              "value": "provider.{provider_id}.models.{model}.limit.output=json:{max_output_tokens}"
+            }
+          ]
+        },
+        {
+          "mode": "global",
+          "protocol": "default",
+          "path": ".config/link-assistant-agent/opencode.json",
+          "contextSettings": [
+            {
+              "kind": "json_set",
+              "value": "provider.{provider_id}.models.{model}.limit.context=json:{context_window_tokens}"
+            },
+            {
+              "kind": "json_set",
+              "value": "provider.{provider_id}.models.{model}.limit.output=json:{max_output_tokens}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tool": "cursor",
+      "aliases": "",
+      "protocols": "(\"mcp\")",
+      "scope": "MCP tool; host model context does not belong to this adapter",
+      "inputContext": "not applicable",
+      "modes": [
+        {
+          "mode": "ephemeral",
+          "protocol": "default",
+          "path": ".cursor/mcp.json",
+          "contextSettings": []
+        },
+        {
+          "mode": "global",
+          "protocol": "default",
+          "path": ".cursor/mcp.json",
+          "contextSettings": []
+        }
+      ]
+    },
+    {
+      "tool": "gemini",
+      "aliases": "",
+      "protocols": "(\"gemini\" \"vertex\")",
+      "scope": "model provider",
+      "inputContext": "BLOCKED: upstream tokenLimit fallback ignores custom model metadata",
+      "modes": [
+        {
+          "mode": "ephemeral",
+          "protocol": "default",
+          "path": ".gemini/settings.json",
+          "contextSettings": [
+            {
+              "kind": "temp_home_json_set",
+              "value": "modelConfigs.overrides=json+:[{\"match\":{\"model\":\"{model}\"},\"modelConfig\":{\"generateContentConfig\":{\"maxOutputTokens\":{max_output_tokens}}}}]"
+            }
+          ]
+        },
+        {
+          "mode": "global",
+          "protocol": "default",
+          "path": ".profile",
+          "contextSettings": []
+        }
+      ]
+    },
+    {
+      "tool": "claude",
+      "aliases": "",
+      "protocols": "(\"anthropic\")",
+      "scope": "model provider",
+      "inputContext": "configuration declared; native execution pending",
+      "modes": [
+        {
+          "mode": "ephemeral",
+          "protocol": "default",
+          "path": ".claude.json",
+          "contextSettings": [
+            {
+              "kind": "env",
+              "value": "CLAUDE_CODE_MAX_CONTEXT_TOKENS={context_window_tokens}"
+            },
+            {
+              "kind": "env",
+              "value": "CLAUDE_CODE_MAX_OUTPUT_TOKENS={max_output_tokens}"
+            }
+          ]
+        },
+        {
+          "mode": "global",
+          "protocol": "default",
+          "path": ".profile",
+          "contextSettings": [
+            {
+              "kind": "shell_env",
+              "value": "CLAUDE_CODE_MAX_CONTEXT_TOKENS={context_window_tokens}"
+            },
+            {
+              "kind": "shell_env",
+              "value": "CLAUDE_CODE_MAX_OUTPUT_TOKENS={max_output_tokens}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tool": "qwen",
+      "aliases": "",
+      "protocols": "(\"openai\")",
+      "scope": "model provider",
+      "inputContext": "configuration declared; native execution pending",
+      "modes": [
+        {
+          "mode": "ephemeral",
+          "protocol": "default",
+          "path": ".qwen/settings.json",
+          "contextSettings": [
+            {
+              "kind": "temp_home_json_set",
+              "value": "model.generationConfig.contextWindowSize=json:{context_window_tokens}"
+            },
+            {
+              "kind": "temp_home_json_set",
+              "value": "model.generationConfig.maxTokens=json:{max_output_tokens}"
+            }
+          ]
+        },
+        {
+          "mode": "global",
+          "protocol": "default",
+          "path": ".profile",
+          "contextSettings": []
+        }
+      ]
+    },
+    {
+      "tool": "grok",
+      "aliases": "",
+      "protocols": "(\"openai\")",
+      "scope": "model provider",
+      "inputContext": "configuration declared; native execution pending",
+      "modes": [
+        {
+          "mode": "ephemeral",
+          "protocol": "default",
+          "path": ".grok/config.toml",
+          "contextSettings": [
+            {
+              "kind": "temp_home_toml_set",
+              "value": "model.{model}.context_window=integer:{context_window_tokens}"
+            },
+            {
+              "kind": "temp_home_toml_set",
+              "value": "model.{model}.max_completion_tokens=integer:{max_output_tokens}"
+            }
+          ]
+        },
+        {
+          "mode": "global",
+          "protocol": "default",
+          "path": ".grok/user-settings.json",
+          "contextSettings": []
+        }
+      ]
+    },
+    {
+      "tool": "aider",
+      "aliases": "",
+      "protocols": "(\"openai\")",
+      "scope": "model provider",
+      "inputContext": "configuration declared; native execution pending",
+      "modes": [
+        {
+          "mode": "ephemeral",
+          "protocol": "default",
+          "path": ".aider.model.metadata.json",
+          "contextSettings": [
+            {
+              "kind": "temp_home_json_set",
+              "value": "{model_selector}.max_input_tokens=json:{context_window_tokens}"
+            },
+            {
+              "kind": "temp_home_json_set",
+              "value": "{model_selector}.max_output_tokens=json:{max_output_tokens}"
+            },
+            {
+              "kind": "temp_home_json_set",
+              "value": "{model_selector}.max_tokens=json:{context_window_tokens}"
+            }
+          ]
+        },
+        {
+          "mode": "global",
+          "protocol": "default",
+          "path": ".profile",
+          "contextSettings": []
+        }
+      ]
+    }
+  ],
+  "naturalLanguages": [
+    "en",
+    "ru",
+    "hi",
+    "zh",
+    "es"
+  ],
+  "programmingRoots": {
+    "JavaScript": "executable Node/worker regressions",
+    "TypeScript": "generated projection and executable permission recognizer",
+    "Rust": "source twin and regression drafts; production type/lint only on PR CI, native tests unexecuted"
+  },
+  "programmingTargets": {
+    "kind": "permission-route exclusions, not compilation or execution of generated programs",
+    "targets": [
+      {
+        "slug": "rust",
+        "name": "Rust",
+        "frameworkOf": null
+      },
+      {
+        "slug": "python",
+        "name": "Python",
+        "frameworkOf": null
+      },
+      {
+        "slug": "javascript",
+        "name": "JavaScript",
+        "frameworkOf": null
+      },
+      {
+        "slug": "typescript",
+        "name": "TypeScript",
+        "frameworkOf": null
+      },
+      {
+        "slug": "go",
+        "name": "Go",
+        "frameworkOf": null
+      },
+      {
+        "slug": "c",
+        "name": "C",
+        "frameworkOf": null
+      },
+      {
+        "slug": "cpp",
+        "name": "C++",
+        "frameworkOf": null
+      },
+      {
+        "slug": "java",
+        "name": "Java",
+        "frameworkOf": null
+      },
+      {
+        "slug": "csharp",
+        "name": "C#",
+        "frameworkOf": null
+      },
+      {
+        "slug": "ruby",
+        "name": "Ruby",
+        "frameworkOf": null
+      },
+      {
+        "slug": "scala",
+        "name": "Scala",
+        "frameworkOf": null
+      },
+      {
+        "slug": "kotlin",
+        "name": "Kotlin",
+        "frameworkOf": null
+      },
+      {
+        "slug": "php",
+        "name": "PHP",
+        "frameworkOf": null
+      },
+      {
+        "slug": "swift",
+        "name": "Swift",
+        "frameworkOf": null
+      },
+      {
+        "slug": "r",
+        "name": "R",
+        "frameworkOf": null
+      },
+      {
+        "slug": "laravel",
+        "name": "Laravel",
+        "frameworkOf": "php"
+      }
+    ]
+  }
+}

@@ -11,7 +11,7 @@ requirement_status_ledger_shard
   requirement
     id "R1582-2"
     verdict "implemented"
-    delivered "implemented — automatic five-language permission guidance and quoted-input exclusions"
+    delivered "implemented — automatic five-language permission guidance and quoted-input exclusions across all 16 programming targets"
     automated_test "rust/tests/web/issue-1582-permissions.test.mjs"
   requirement
     id "R1582-3"
