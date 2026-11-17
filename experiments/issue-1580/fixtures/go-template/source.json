@@ -31,6 +31,11 @@
       "path": "scripts/ci/runner-acquisition.mjs",
       "gitBlob": "6dfec1d449f69d31c256f44712217a6235042cdf",
       "sha256": "de9903c89fae9e10ac0743916f9f0964a8db7fa3d50e44bd987c321c25f55a86"
+    },
+    {
+      "path": "scripts/ci/check-dependencies.mjs",
+      "gitBlob": "62397dcfdd1b1173b16bcb2e750903066695d4e4",
+      "sha256": "bfe46ba816f2d452675b0bd5a700e56ea144396fda071ffdac809f4b2fe11d39"
     }
   ],
   "purpose": "Unmodified upstream sources for bounded offline reproductions; not a local implementation or a hosted workflow run."

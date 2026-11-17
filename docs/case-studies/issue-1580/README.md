@@ -75,6 +75,10 @@ The initial size-gate invocation copied a stale documented spelling, `check_file
 
 Security [44071443716](https://github.com/link-assistant/formal-ai/actions/runs/44071443716) actually executes the upstream proof and audit: lines 735–741 prove the exact blocked dependencies and scan 555 main-lock dependencies. This verifies the guarded exception, not Chrono removal. The experimental lock still emits its existing allowed unsafe-libyaml unmaintained warning (lines 747–754); that warning remains an unresolved dependency migration rather than a newly hidden result.
 
+## Go source and integrity checkpoint
+
+All 42 pinned Go template files have now been read, compared by role/behavior and recorded in [the per-file review](templates/go-semantic-review.json). Seven complete template semantic reviews remain open. The maintained template entrypoint passes eleven tests without runtime skips. Its added combined stale-version/bad-pin case reproduces an integrity check bypass on non-PR events, with current-pin failure and freshness-only warning controls. A one-line candidate repair is tested only in a disposable fixture copy; no remote template repair or hosted publication is claimed. The report is drafted pending publication of immutable executable evidence. Full regression logs and hashes are retained in `checks/go-pin-integrity.json`.
+
 ## Full template comparison
 
 The [template source manifest](templates/sources.json) pins all eight complete source trees. Every one of their 3,007 blobs was downloaded and verified against its Git blob identity; the 48 workflows have parsed run bodies in the per-language workflow JSONL. Each full-tree TSV records every file's role, byte count, Git blob and same-name local comparison. CI candidates outside `.github`, including scripts, test/configuration files and package/build metadata, are inventoried separately.

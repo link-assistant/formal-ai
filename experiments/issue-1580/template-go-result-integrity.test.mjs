@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import {readFileSync, writeFileSync, mkdtempSync, mkdirSync, cpSync, rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {fileURLToPath} from 'node:url';
+import {fileURLToPath,pathToFileURL} from 'node:url';
 import {createHash} from 'node:crypto';
 import {spawnSync} from 'node:child_process';
 import {Script} from 'node:vm';
@@ -160,5 +160,49 @@ test('Go initial-commit detection loses real source files without a comparison p
     assert.equal(after.status,0,after.stderr);
     assert.match(after.stdout,/^go-changed=true$/mu);
     assert.match(after.stdout,/^any-code-changed=true$/mu);
+  }finally{rmSync(directory,{recursive:true,force:true});}
+});
+
+test('Go stale-pin integrity failures become warnings; independent verification preserves failures', {timeout:5000}, async()=>{
+  const {checkDependencies,report}=await import('./fixtures/go-template/scripts/ci/check-dependencies.mjs');
+  const dependency={name:'actions/checkout',kind:'action',version:'1.0.0',ref:'1'.repeat(40),location:'fixture.yml:1'};
+  const events=['push','schedule','workflow_dispatch','pull_request'];
+  const codes=(reporter,errors)=>events.map(event=>reporter(errors,{
+    event,total:1,githubActions:false,stdout:{write:()=>{}},stderr:{write:()=>{}},
+  }));
+  async function observe(check,version,badPin){
+    let verified=0;
+    const errors=await check([dependency],{
+      latest:async()=>version,
+      verifyPin:async()=>{verified+=1;if(badPin)throw new Error('Pinned SHA does not match the release tag');},
+    });
+    return {verified,errors};
+  }
+  const current=await observe(checkDependencies,'1.0.0',true);
+  assert.equal(current.verified,1);
+  assert.deepEqual(codes(report,current.errors),[1,1,1,1]);
+  const stale=await observe(checkDependencies,'2.0.0',true);
+  assert.equal(stale.verified,0,'the actual upstream checker skips integrity for stale versions');
+  assert.deepEqual(stale.errors.map(error=>error.stale),[true]);
+  assert.deepEqual(codes(report,stale.errors),[0,0,0,1]);
+
+  const directory=mkdtempSync(join(tmpdir(),'issue-1580-stale-pin-'));
+  try{
+    cpSync(join(fixture,'scripts'),join(directory,'scripts'),{recursive:true});
+    const script=join(directory,'scripts/ci/check-dependencies.mjs');
+    const original=readFileSync(script,'utf8');
+    const boundary='        continue;\n      }\n      const key';
+    assert.equal(original.split(boundary).length,2,'one stale-version early return');
+    writeFileSync(script,original.replace(boundary,'      }\n      const key'));
+    const repaired=await import(pathToFileURL(script).href);
+    for(const version of ['1.0.0','2.0.0']){
+      const invalid=await observe(repaired.checkDependencies,version,true);
+      assert.equal(invalid.verified,1);
+      assert.ok(invalid.errors.some(error=>!error.stale&&/Pinned SHA/.test(error.message)));
+      assert.deepEqual(codes(repaired.report,invalid.errors),[1,1,1,1]);
+      const valid=await observe(repaired.checkDependencies,version,false);
+      assert.equal(valid.verified,1);
+      assert.deepEqual(codes(repaired.report,valid.errors),version==='1.0.0'?[0,0,0,0]:[0,0,0,1]);
+    }
   }finally{rmSync(directory,{recursive:true,force:true});}
 });
