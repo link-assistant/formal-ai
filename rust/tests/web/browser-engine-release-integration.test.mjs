@@ -257,7 +257,11 @@ test('real harmless Node processes preserve success, failure, output and kill a 
   }), 17);
   const childFile = join(directory, 'child.json');
   const child = 'require("node:fs").writeFileSync(' + JSON.stringify(childFile) + ',JSON.stringify(process.pid));setInterval(()=>{},100);';
-  const parent = 'require("node:child_process").spawn(process.execPath,["-e",' + JSON.stringify(child) + '],{stdio:"inherit"});setInterval(()=>{},100);';
+  // Reap the child after the process-group TERM. A container's PID 1 may
+  // retain an orphan as a zombie indefinitely; kill(pid, 0) still succeeds
+  // for that exited process. The parent does not signal the child itself,
+  // so the unchanged ESRCH assertion still requires descendant teardown.
+  const parent = 'const child=require("node:child_process").spawn(process.execPath,["-e",' + JSON.stringify(child) + '],{stdio:"inherit"});process.on("SIGTERM",()=>{});child.on("exit",()=>process.exit(0));setInterval(()=>{},100);';
   writeClock();
   assert.equal(runBoundedOperation('cold', [process.execPath, '-e', parent], {
     environment: actualEnvironment
