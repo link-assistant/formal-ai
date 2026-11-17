@@ -124,8 +124,8 @@ pub fn answer_unknown_prompt(
         // for the focus through the process source cache: captured sources
         // answer from their statements with citations, and an offline or
         // cache-miss run degrades to the localized `web_search_unavailable`
-        // response that names the focus. Live provider fetches stay behind
-        // the `FORMAL_AI_LIVE_FETCH` opt-in, so the runtime's offline mode
+        // response that names the focus. Provider reads use the shared
+        // default-on policy; the runtime's explicit offline mode still
         // keeps its no-network boundary.
         return answer_web_search_query(prompt, focus, kind, log, config.offline);
     }

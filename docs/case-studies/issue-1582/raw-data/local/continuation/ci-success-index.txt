@@ -1,0 +1,7 @@
+736:Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-17T18:45:57.1234111Z fast-governance language-parity: PASS (182ms)
+739:Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-17T18:45:57.1650521Z fast-governance minimal-core: PASS (41ms)
+742:Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-17T18:45:57.4126165Z fast-governance current-debt-ceilings: PASS (248ms)
+745:Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-17T18:45:58.6724751Z fast-governance honest-closure: PASS (1260ms)
+750:Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-17T18:45:58.7419392Z fast-governance role-namespace: PASS (69ms)
+754:Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-17T18:45:58.8294750Z fast-governance seed-metadata: PASS (87ms)
+757:Fast Linux source and requirement checks	Validate source readability, CI budgets and requirements without a native build	2026-11-17T18:45:58.8770188Z fast-governance response-language-parity: PASS (47ms)

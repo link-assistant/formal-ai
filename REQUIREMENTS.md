@@ -99,6 +99,7 @@ the areas are the whole register.
    - Issue #1187 Optional GitHub Credentials in Every Workflow
    - Issue #1207 Hive Mind Delivery and Progressive Self-Coding
    - Issue 1438: reliable reporting and source-read preservation
+   - Issue #1582: Client Read Access, Diagnostics and Context
 
 4. [Coding and agents](docs/requirements/assembled/coding-and-agents.md)
    - Issue #80 Software Project Request Requirements
