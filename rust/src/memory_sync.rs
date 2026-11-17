@@ -22,14 +22,14 @@ use std::path::{Path, PathBuf};
 #[cfg(not(target_arch = "wasm32"))]
 mod live_path;
 /// Resolve the active live-server memory file without changing explicit raw-loader behavior.
-pub(crate) fn live_memory_path(path: &Path) -> std::io::Result<PathBuf> {
+fn live_memory_path(path: &Path, read_only: bool) -> std::io::Result<PathBuf> {
     #[cfg(not(target_arch = "wasm32"))]
     {
-        live_path::resolve(path)
+        live_path::resolve(path, read_only)
     }
     #[cfg(target_arch = "wasm32")]
     {
-        let _ = path;
+        let _ = (path, read_only);
         Err(std::io::Error::new(
             std::io::ErrorKind::Unsupported,
             "memory_live_io_unavailable",
@@ -66,7 +66,7 @@ pub(crate) fn prepare_live_memory(path: &Path) -> std::io::Result<PathBuf> {
             "memory_live_configurations_exhausted",
         ));
     }
-    let selected = live_memory_path(path)?;
+    let selected = live_memory_path(path, crate::solver_config::ephemeral_enabled())?;
     paths.insert(path.to_path_buf(), selected.clone());
     drop(paths);
     Ok(selected)
@@ -228,7 +228,8 @@ pub fn configured_memory_path() -> Option<PathBuf> {
 /// Live chat exchanges are recorded into memory unless explicitly disabled.
 #[must_use]
 pub fn chat_recording_enabled() -> bool {
-    !crate::cli_env::flag_disabled("FORMAL_AI_RECORD_CHAT")
+    !crate::solver_config::ephemeral_enabled()
+        && !crate::cli_env::flag_disabled("FORMAL_AI_RECORD_CHAT")
 }
 
 /// Resolve the native link-cli database beside a portable `.lino` memory log.
@@ -289,12 +290,15 @@ impl SyncStore {
     #[must_use]
     pub fn open() -> Self {
         configured_memory_path().map_or_else(Self::default, |path| {
+            let read_only = crate::solver_config::ephemeral_enabled();
             match prepare_live_memory(&path) {
-                Ok(selected) => {
-                    Self::open_read(&selected, live_memory_source(&selected, selected != path))
-                }
+                Ok(selected) => Self::open_read(
+                    &selected,
+                    live_memory_source(&selected, selected != path),
+                    read_only,
+                ),
                 Err(error) => Self {
-                    path: Some(path),
+                    path: (!read_only).then_some(path),
                     events: Vec::new(),
                     schema_version: TARGET_MEMORY_SCHEMA_VERSION,
                     compatible: false,
@@ -306,20 +310,21 @@ impl SyncStore {
 
     /// Open the live-server store after lossless migration or preservation of incompatible bytes.
     pub fn open_live_at(path: &Path) -> std::io::Result<Self> {
-        let selected = live_memory_path(path)?;
+        let selected = live_memory_path(path, false)?;
         Ok(Self::open_read(
             &selected,
             live_memory_source(&selected, selected != path),
+            false,
         ))
     }
 
     /// Open a store at an explicit path (used by tests).
     #[must_use]
     pub fn open_at(path: &Path) -> Self {
-        Self::open_read(path, std::fs::read_to_string(path))
+        Self::open_read(path, std::fs::read_to_string(path), false)
     }
 
-    fn open_read(path: &Path, source: std::io::Result<String>) -> Self {
+    fn open_read(path: &Path, source: std::io::Result<String>, read_only: bool) -> Self {
         let mut storage_error = None;
         let (events, schema_version, compatible) = match source {
             Ok(text) => {
@@ -332,6 +337,9 @@ impl SyncStore {
                     schema_version,
                     status.compatible,
                 )
+            }
+            Err(error) if read_only && error.kind() == std::io::ErrorKind::NotFound => {
+                return Self::default();
             }
             Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
                 let compatible = match crate::shared_memory::ensure_shared_memory_file(path) {
@@ -355,13 +363,14 @@ impl SyncStore {
             }
         };
         let mut store = Self {
-            path: Some(path.to_path_buf()),
+            path: (!read_only).then(|| path.to_path_buf()),
             events,
             schema_version,
             compatible,
             storage_error,
         };
-        if store.compatible
+        if !read_only
+            && store.compatible
             && let Err(error) = store.synchronize_link_cli_projection()
         {
             {

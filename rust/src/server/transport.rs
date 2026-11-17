@@ -23,7 +23,9 @@ pub fn serve(address: &str) -> std::io::Result<()> {
     if let Some(path) = crate::memory_sync::configured_memory_path() {
         crate::memory_sync::prepare_live_memory(&path)?;
     }
-    crate::dreaming_runtime::start_core_dreaming();
+    if !super::ephemeral_enabled() {
+        crate::dreaming_runtime::start_core_dreaming();
+    }
     crate::diagnostic!("debug";
         "formal-ai shared memory: {}",
         crate::shared_memory::shared_memory_path().display()
@@ -38,7 +40,7 @@ pub fn serve(address: &str) -> std::io::Result<()> {
     // listener is bound and reports when it is done. It is opt-in because a
     // harness that starts one server per scenario pays it once per server and
     // routing never reads it.
-    if crate::seed_links::native_mirror_enabled() {
+    if !super::ephemeral_enabled() && crate::seed_links::native_mirror_enabled() {
         std::thread::spawn(|| match crate::seed_links::mirror_native_store() {
             Ok(Some((path, count))) => {
                 crate::diagnostic!("debug"; "formal-ai seed links: {count} at {}", path.display());

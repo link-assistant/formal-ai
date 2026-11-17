@@ -39,10 +39,10 @@ function config(key) {
   return agentInfo().has(key) ? agentInfo().get(key) : key;
 }
 
-/** Capture remains disabled in silent mode, including with an explicit directory. */
+/** Full captures require an explicit directory and an active diagnostics policy. */
 export function configuredDialogLogDirectory(env = process.env) {
-  if (parseBoolEnv(env.FORMAL_AI_SILENT) === true) return null;
-  return retainedDialogLogDirectory(env);
+  if (parseBoolEnv(env.FORMAL_AI_SILENT) || parseBoolEnv(env.FORMAL_AI_EPHEMERAL)) return null;
+  return env[DIALOG_LOG_DIRECTORY_ENV] || null;
 }
 
 /** Locate existing captures without enabling new diagnostic writes. */

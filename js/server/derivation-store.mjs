@@ -58,9 +58,11 @@ function finalizeStoredAnswer(symbolic, events, store) {
   const log = [...events, { kind: RENDER_EMIT_KIND, payload: "answer_id=" + answerId + ";format=text" }];
   const record = recordFor(log, answerId);
   const evidence = [...symbolic.evidence_links, "derivation:" + answerId];
-  const persisted = store(record);
-  evidence.push(persisted.ok ? persisted.evidencePath ?? persisted.path : "derivation:persistence_failed:" + persisted.error);
-  if (persisted.ok && persisted.locator) evidence.push("derivation_record:" + persisted.locator);
+  if (store) {
+    const persisted = store(record);
+    evidence.push(persisted.ok ? persisted.evidencePath ?? persisted.path : "derivation:persistence_failed:" + persisted.error);
+    if (persisted.ok && persisted.locator) evidence.push("derivation_record:" + persisted.locator);
+  }
   return { ...symbolic, evidence_links: evidence, links_notation: symbolic.links_notation + "\n" + toLino(record) };
 }
 
@@ -78,6 +80,7 @@ export async function finalizeServerAnswer(ctx, symbolic, result) {
   const events = Array.isArray(observedEvents)
     ? observedEvents.map((event) => ({ kind: String(event.kind), payload: String(event.payload ?? '') }))
     : [];
+  if (ctx.ephemeral) return finalizeStoredAnswer(symbolic, events, null);
   if (ctx.derivationRoot !== undefined) return finalizeAnswer(symbolic, events, ctx.derivationRoot);
   return finalizeStoredAnswer(symbolic, events, record => {
     try { return { ok: true, ...persistRuntimeDerivation(record, { env: ctx.env ?? process.env }) }; }

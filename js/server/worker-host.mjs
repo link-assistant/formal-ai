@@ -546,13 +546,24 @@ export class WorkerHost {
    * variation (a browser preference) is off here.
    */
   async solve(prompt, history = [], options = {}) {
-    const result = await this.run("solve(__serverPrompt, __serverHistory, { greetingVariations: false }, {}, [], __serverOptions)", {
+    const solve = "solve(__serverPrompt, __serverHistory, { greetingVariations: false }, {}, [], __serverOptions)";
+    const expression = options.readOnly ? `(async () => {
+      const retained = new Map(metaLearnedChunks);
+      try { return await ${solve}; }
+      finally {
+        metaLearnedChunks.clear();
+        for (const [word, chunk] of retained) metaLearnedChunks.set(word, chunk);
+        metaNewChunks.clear();
+        __serverPrompt = __serverHistory = __serverOptions = undefined;
+      }
+    })()` : solve;
+    const result = await this.run(expression, {
       __serverPrompt: prompt,
       __serverHistory: history,
       __serverOptions: options,
     });
     // Issue #1165 R1165-10: the native `WriteProgram` branch reads the procedure cache file.
-    return applyProcedureCache(result, prompt, this, await this.catalogTemplate());
+    return applyProcedureCache(result, prompt, this, await this.catalogTemplate(), options);
   }
 
   /**
