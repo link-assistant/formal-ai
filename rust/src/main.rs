@@ -665,6 +665,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     formal_ai::structured_tracing::install().map_err(std::io::Error::other)?;
     let verbose = arguments.verbose && !arguments.silent;
     formal_ai::dialog_log::configure_verbose(verbose);
+    formal_ai::dialog_log::structured_log::configure_terminal(verbose);
     formal_ai::dialog_log::structured_log::configure(
         arguments.silent,
         matches!(arguments.command.as_ref(), Some(Command::Serve(_))),

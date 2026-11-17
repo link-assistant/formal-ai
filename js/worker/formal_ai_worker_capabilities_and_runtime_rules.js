@@ -424,6 +424,10 @@ function featureCapabilityContent(feature, language, availability) {
 }
 
 function tryFeatureCapabilityStatus(prompt, normalized, language, preferences) {
+  if (lexiconMentionsRole("internet-access-help", normalized)) return {
+    intent: "capabilities", content: capabilityResponse("internet-access-help", language),
+    confidence: 1, evidence: ["handler:capabilities", "permission:guidance", `language:${language}`],
+  };
   if (isConcretePropertyQuestion(prompt)) return null;
   if (!isFeatureCapabilityQuestion(normalized, language)) return null;
   const feature = detectFeatureCapability(normalized, language);

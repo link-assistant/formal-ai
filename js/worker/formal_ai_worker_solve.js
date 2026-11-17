@@ -322,6 +322,10 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     return finalize(events, steps, toolCalls, githubRepoInfo, formalizationContext);
   }
 
+  if (lexiconMentionsRole("internet-access-help", normalized)) {
+    const access = tryFeatureCapabilityStatus(prompt, normalized, language, preferences);
+    return finalizeInlineHandler(events, steps, toolCalls, access, "tryFeatureCapabilityStatus", formalizationContext);
+  }
   const nlTool = tryNaturalLanguageToolRequest(prompt, { ...preferences, agentMode: options?.agentMode ?? preferences.agentMode }); // the nl_tool prelude row, ahead of feature_capability as natively
   if (nlTool) return finalizeInlineHandler(events, steps, toolCalls, nlTool, "tryNaturalLanguageToolRequest", formalizationContext);
   const capabilities = !isAssistantFreeTimePrompt(normalized, prompt)

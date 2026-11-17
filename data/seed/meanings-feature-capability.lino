@@ -168,3 +168,15 @@ meanings
     lexeme hi "क्या आप सारांश कर सकते"
     lexeme zh 你能总结
     lexeme es "puedes resumir" "puedes hacer una lluvia de ideas" "puedes hacer un juego de rol"
+  internet-access-help
+    defined-by action
+    precondition "user asks how to enable read-only network access or grant harness permissions"
+    effect "explain named read permissions, explicit server restrictions and connectivity troubleshooting in the user language"
+    unit "one permission guidance response"
+    example "How do I enable internet access?"
+    role internet-access-help
+    lexeme en "how do i enable internet access" "how to enable internet" "how can i enable internet" "enable internet access" "grant internet access" "how do i grant permissions" "allow read only internet access"
+    lexeme ru "как включить доступ к интернету" "как включить интернет" "разрешить доступ к интернету" "разрешаю доступ к интернету" "как выдать разрешения"
+    lexeme hi "इंटरनेट की अनुमति कैसे दें" "इंटरनेट कैसे सक्षम करें" "इंटरनेट की अनुमति दें"
+    lexeme zh "如何启用互联网访问" "如何开启网络访问" "允许访问互联网" "如何授予权限"
+    lexeme es "cómo habilitar el acceso a internet" "cómo activar internet" "permitir acceso a internet" "cómo conceder permisos"

@@ -75,6 +75,7 @@ fn answer_http_fetch_url(
     log: &mut EventLog,
     offline: bool,
 ) -> SymbolicAnswer {
+    let offline = offline || !crate::solver_config::read_network_allowed();
     if is_page_formalization_prompt(prompt, &normalize_prompt(prompt)) {
         let cache_root = crate::coding::synthesis_runtime::source_cache_root();
         let client =

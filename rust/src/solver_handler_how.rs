@@ -46,6 +46,10 @@ pub fn try_how_to_procedure(
     if let Some(answer) = practical_help::cached(prompt, normalized, log) {
         return Some(answer);
     }
+    // Permission controls belong to capability guidance, before general how-to.
+    if crate::seed::lexicon().mentions_role("internet-access-help", normalized) {
+        return None;
+    }
     let task = extract_procedural_how_to_task(normalized)?;
     for correction in &task.corrections {
         log.append(
