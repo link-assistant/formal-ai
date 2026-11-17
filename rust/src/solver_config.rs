@@ -1,4 +1,17 @@
-//! Small public configuration enums shared by the universal solver surfaces.
+//! Configuration shared by the universal solver surfaces.
+
+use std::sync::atomic::{AtomicBool, Ordering};
+
+static EPHEMERAL: AtomicBool = AtomicBool::new(false);
+
+/// Apply serve's no-retention policy before opening any diagnostic or memory sink.
+pub fn enable_ephemeral_for_current_process() {
+    EPHEMERAL.store(true, Ordering::Relaxed);
+}
+
+pub(crate) fn ephemeral_enabled() -> bool {
+    EPHEMERAL.load(Ordering::Relaxed) || flag_enabled("FORMAL_AI_EPHEMERAL")
+}
 
 /// Runtime surface where the solver is embedded.
 ///
@@ -134,6 +147,9 @@ pub fn flag_disabled(name: &str) -> bool {
 /// default-on. An explicit operator offline/network deny always wins.
 #[must_use]
 pub fn read_network_allowed() -> bool {
+    if ephemeral_enabled() {
+        return false;
+    }
     if std::env::var("FORMAL_AI_OFFLINE").is_ok_and(|value| parse_bool_env(&value) != Some(false)) {
         return false;
     }
