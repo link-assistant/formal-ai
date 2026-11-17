@@ -1,0 +1,243 @@
+[
+  {
+    "prompt": "Сложи 14 месяцев, 2 года и 7 месяцев. Ответ в месяцах.",
+    "intent": "calendar-duration-sum",
+    "text": "45 месяцев",
+    "evidence": "calendar:duration_result:45",
+    "answer": "45 месяцев. 14 × 1 + 2 × 12 + 7 × 1 = 45 months; 45 / 1 = 45"
+  },
+  {
+    "prompt": "How many full years are between March 2021 and June 2024?",
+    "intent": "calendar-full-periods",
+    "text": "3 years",
+    "evidence": "calendar:duration_result:3",
+    "answer": "3 years. Completed calendar anniversaries: 2021-03-01 → 2024-06-01: 39 - 0 = 39 months; ⌊39 / 12⌋ = 3"
+  },
+  {
+    "prompt": "Сколько полных лет прошло с марта 2021 года по июнь 2024 года?",
+    "intent": "calendar-full-periods",
+    "text": "3 года",
+    "evidence": "calendar:duration_result:3",
+    "answer": "3 года. Полные календарные периоды: 2021-03-01 → 2024-06-01: 39 - 0 = 39 months; ⌊39 / 12⌋ = 3"
+  },
+  {
+    "prompt": "What date is 10 days after December 25, 2026?",
+    "intent": "calendar_date_offset",
+    "text": "2027-01-04",
+    "evidence": "calendar:result_date:2027-01-04",
+    "answer": "The date is 2027-01-04. 2026-12-25 +10 days = 2027-01-04."
+  },
+  {
+    "prompt": "Какая дата будет через 10 дней после 25 декабря 2026 года?",
+    "intent": "calendar_date_offset",
+    "text": "4 января 2027 года",
+    "evidence": "calendar:result_date:2027-01-04",
+    "answer": "Дата: 4 января 2027 года. 2026-12-25 +10 дней = 2027-01-04."
+  },
+  {
+    "prompt": "Посчитай 1000 рублей в долларах",
+    "intent": "calculation",
+    "text": "12.12 USD",
+    "evidence": "currency:result:12.12 USD",
+    "answer": "1000 RUB ≈ 12.12 USD. Зафиксированный исторический курс: 1 RUB = 1 RUB; 1 USD = 82.5143 RUB. Источник: https://www.cbr.ru/scripts/XML_daily.asp?date_req=17/11/2026. Дата курса: 2026-11-17. 1000 × 1 / 82.5143 ≈ 12.12 USD"
+  },
+  {
+    "prompt": "Add 14 months, 2 years and 7 months. Answer in months.",
+    "intent": "calendar-duration-sum",
+    "text": "45 months",
+    "evidence": "calendar:duration_result:45",
+    "answer": "45 months. 14 × 1 + 2 × 12 + 7 × 1 = 45 months; 45 / 1 = 45"
+  },
+  {
+    "prompt": "Sum 12 months and 1 year in years.",
+    "intent": "calendar-duration-sum",
+    "text": "2 years",
+    "evidence": "calendar:duration_result:2",
+    "answer": "2 years. 12 × 1 + 1 × 12 = 24 months; 24 / 12 = 2"
+  },
+  {
+    "prompt": "Сложи 1 год и 2 месяца. Ответ в месяцах.",
+    "intent": "calendar-duration-sum",
+    "text": "14 месяцев",
+    "evidence": "calendar:duration_result:14",
+    "answer": "14 месяцев. 1 × 12 + 2 × 1 = 14 months; 14 / 1 = 14"
+  },
+  {
+    "prompt": "Add 1 year and 6 months in years.",
+    "intent": "calendar-duration-sum",
+    "text": "3/2 years",
+    "evidence": "calendar:duration_result:3/2",
+    "answer": "3/2 years. 1 × 12 + 6 × 1 = 18 months; 18 / 12 = 3/2"
+  },
+  {
+    "prompt": "How many full months are between March 2021 and June 2024?",
+    "intent": "calendar-full-periods",
+    "text": "39 months",
+    "evidence": "calendar:duration_result:39",
+    "answer": "39 months. Completed calendar anniversaries: 2021-03-01 → 2024-06-01: 39 - 0 = 39 months; ⌊39 / 1⌋ = 39"
+  },
+  {
+    "prompt": "Сколько полных месяцев прошло с марта 2021 года по июнь 2024 года?",
+    "intent": "calendar-full-periods",
+    "text": "39 месяцев",
+    "evidence": "calendar:duration_result:39",
+    "answer": "39 месяцев. Полные календарные периоды: 2021-03-01 → 2024-06-01: 39 - 0 = 39 months; ⌊39 / 1⌋ = 39"
+  },
+  {
+    "prompt": "How many full years are between 2021-06-20 and 2024-06-19?",
+    "intent": "calendar-full-periods",
+    "text": "2 years",
+    "evidence": "calendar:duration_result:2",
+    "answer": "2 years. Completed calendar anniversaries: 2021-06-20 → 2024-06-19: 36 - 1 = 35 months; ⌊35 / 12⌋ = 2"
+  },
+  {
+    "prompt": "How many full years are between 2021-06-20 and 2024-06-20?",
+    "intent": "calendar-full-periods",
+    "text": "3 years",
+    "evidence": "calendar:duration_result:3",
+    "answer": "3 years. Completed calendar anniversaries: 2021-06-20 → 2024-06-20: 36 - 0 = 36 months; ⌊36 / 12⌋ = 3"
+  },
+  {
+    "prompt": "How many full months are between 2024-01-31 and 2024-02-29?",
+    "intent": "calendar-full-periods",
+    "text": "0 months",
+    "evidence": "calendar:duration_result:0",
+    "answer": "0 months. Completed calendar anniversaries: 2024-01-31 → 2024-02-29: 1 - 1 = 0 months; ⌊0 / 1⌋ = 0"
+  },
+  {
+    "prompt": "How many full months are between 2024-01-31 and 2024-03-01?",
+    "intent": "calendar-full-periods",
+    "text": "1 month",
+    "evidence": "calendar:duration_result:1",
+    "answer": "1 month. Completed calendar anniversaries: 2024-01-31 → 2024-03-01: 2 - 1 = 1 months; ⌊1 / 1⌋ = 1"
+  },
+  {
+    "prompt": "How many full years are between 2024-02-29 and 2025-02-28?",
+    "intent": "calendar-full-periods",
+    "text": "0 years",
+    "evidence": "calendar:duration_result:0",
+    "answer": "0 years. Completed calendar anniversaries: 2024-02-29 → 2025-02-28: 12 - 1 = 11 months; ⌊11 / 12⌋ = 0"
+  },
+  {
+    "prompt": "How many full months are between June 2024 and March 2021?",
+    "intent": "calendar-full-periods",
+    "text": "39 months",
+    "evidence": "calendar:duration_result:39",
+    "answer": "39 months. Completed calendar anniversaries: 2021-03-01 → 2024-06-01: 39 - 0 = 39 months; ⌊39 / 1⌋ = 39"
+  },
+  {
+    "prompt": "Сколько полных месяцев прошло с 15 марта 2021 года по 14 июня 2024 года?",
+    "intent": "calendar-full-periods",
+    "text": "38 месяцев",
+    "evidence": "calendar:duration_result:38",
+    "answer": "38 месяцев. Полные календарные периоды: 2021-03-15 → 2024-06-14: 39 - 1 = 38 months; ⌊38 / 1⌋ = 38"
+  },
+  {
+    "prompt": "Convert 1000 RUB to USD",
+    "intent": "calculation",
+    "text": "12.12 USD",
+    "evidence": "currency:result:12.12 USD",
+    "answer": "1000 RUB ≈ 12.12 USD. Captured historical rate basis: 1 RUB = 1 RUB; 1 USD = 82.5143 RUB. Source: https://www.cbr.ru/scripts/XML_daily.asp?date_req=17/11/2026. Rate date: 2026-11-17. 1000 × 1 / 82.5143 ≈ 12.12 USD"
+  },
+  {
+    "prompt": "Calculate 1 USD in RUB",
+    "intent": "calculation",
+    "text": "82.51 RUB",
+    "evidence": "currency:result:82.51 RUB",
+    "answer": "1 USD ≈ 82.51 RUB. Captured historical rate basis: 1 USD = 82.5143 RUB; 1 RUB = 1 RUB. Source: https://www.cbr.ru/scripts/XML_daily.asp?date_req=17/11/2026. Rate date: 2026-11-17. 1 × 82.5143 / 1 ≈ 82.51 RUB"
+  },
+  {
+    "prompt": "Calculate 1 EUR in RUB",
+    "intent": "calculation",
+    "text": "91.19 RUB",
+    "evidence": "currency:result:91.19 RUB",
+    "answer": "1 EUR ≈ 91.19 RUB. Captured historical rate basis: 1 EUR = 91.1948 RUB; 1 RUB = 1 RUB. Source: https://www.cbr.ru/scripts/XML_daily.asp?date_req=17/11/2026. Rate date: 2026-11-17. 1 × 91.1948 / 1 ≈ 91.19 RUB"
+  },
+  {
+    "prompt": "Calculate 1 EUR in USD",
+    "intent": "calculation",
+    "text": "1.11 USD",
+    "evidence": "currency:result:1.11 USD",
+    "answer": "1 EUR ≈ 1.11 USD. Captured historical rate basis: 1 EUR = 91.1948 RUB; 1 USD = 82.5143 RUB. Source: https://www.cbr.ru/scripts/XML_daily.asp?date_req=17/11/2026. Rate date: 2026-11-17. 1 × 91.1948 / 82.5143 ≈ 1.11 USD"
+  },
+  {
+    "prompt": "Calculate 1.005 USD in USD",
+    "intent": "calculation",
+    "text": "1.01 USD",
+    "evidence": "currency:result:1.01 USD",
+    "answer": "1.005 USD ≈ 1.01 USD. Captured historical rate basis: 1 USD = 82.5143 RUB; 1 USD = 82.5143 RUB. Source: https://www.cbr.ru/scripts/XML_daily.asp?date_req=17/11/2026. Rate date: 2026-11-17. 1.005 × 82.5143 / 82.5143 ≈ 1.01 USD"
+  },
+  {
+    "prompt": "Calculate -1.005 USD in USD",
+    "intent": "calculation",
+    "text": "-1.01 USD",
+    "evidence": "currency:result:-1.01 USD",
+    "answer": "-1.005 USD ≈ -1.01 USD. Captured historical rate basis: 1 USD = 82.5143 RUB; 1 USD = 82.5143 RUB. Source: https://www.cbr.ru/scripts/XML_daily.asp?date_req=17/11/2026. Rate date: 2026-11-17. -1.005 × 82.5143 / 82.5143 ≈ -1.01 USD"
+  },
+  {
+    "prompt": "Посчитай 0,004 рублей в рублях",
+    "intent": "calculation",
+    "text": "0.00 RUB",
+    "evidence": "currency:result:0.00 RUB",
+    "answer": "0.004 RUB ≈ 0.00 RUB. Зафиксированный исторический курс: 1 RUB = 1 RUB; 1 RUB = 1 RUB. Источник: https://www.cbr.ru/scripts/XML_daily.asp?date_req=17/11/2026. Дата курса: 2026-11-17. 0.004 × 1 / 1 ≈ 0.00 RUB"
+  },
+  {
+    "prompt": "Add 2 years of experience and 7 months in months.",
+    "reject": "calendar-duration-sum"
+  },
+  {
+    "prompt": "Add 2 days and 1 month in months.",
+    "reject": "calendar-duration-sum"
+  },
+  {
+    "prompt": "How many full months are between February 30, 2024 and March 2024?",
+    "reject": "calendar-full-periods"
+  },
+  {
+    "prompt": "How many full years are between March 2021 and 2024-06-20?",
+    "reject": "calendar-full-periods"
+  },
+  {
+    "prompt": "How many full years are between March 2021 and June 2024 and May 2025?",
+    "reject": "calendar-full-periods"
+  },
+  {
+    "prompt": "Write a poem about full years between March 2021 and June 2024.",
+    "reject": "calendar-full-periods"
+  },
+  {
+    "prompt": "Add 20 months and 1 month. Answer in months.",
+    "intent": "calendar-duration-sum",
+    "text": "21 months",
+    "evidence": "calendar:duration_result:21",
+    "answer": "21 months. 20 × 1 + 1 × 1 = 21 months; 21 / 1 = 21"
+  },
+  {
+    "prompt": "Add 20 years and 1 year. Answer in years.",
+    "intent": "calendar-duration-sum",
+    "text": "21 years",
+    "evidence": "calendar:duration_result:21",
+    "answer": "21 years. 20 × 12 + 1 × 12 = 252 months; 252 / 12 = 21"
+  },
+  {
+    "prompt": "जोड़ो 14 महीने और 2 वर्ष और 7 महीने. में महीने.",
+    "text": "45 महीने",
+    "intent": "calendar-duration-sum",
+    "evidence": "calendar:duration_result:45",
+    "answer": "45 महीने। 14 × 1 + 2 × 12 + 7 × 1 = 45 months; 45 / 1 = 45"
+  },
+  {
+    "prompt": "相加 14 个月 和 2 年 和 7 个月. 以 个月.",
+    "text": "45 个月",
+    "intent": "calendar-duration-sum",
+    "evidence": "calendar:duration_result:45",
+    "answer": "45 个月。14 × 1 + 2 × 12 + 7 × 1 = 45 months; 45 / 1 = 45"
+  },
+  {
+    "prompt": "Suma 14 meses y 2 años y 7 meses. En meses.",
+    "text": "45 meses",
+    "intent": "calendar-duration-sum",
+    "evidence": "calendar:duration_result:45",
+    "answer": "45 meses. 14 × 1 + 2 × 12 + 7 × 1 = 45 months; 45 / 1 = 45"
+  }
+]
