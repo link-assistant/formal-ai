@@ -1,2 +1,3 @@
 https://github.com/link-assistant/hive-mind/issues/4071
 https://github.com/link-assistant/hive-mind/issues/4072
+https://github.com/link-foundation/cpp-ai-driven-development-pipeline-template/issues/35
