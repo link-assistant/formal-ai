@@ -16,7 +16,7 @@ export const PHASES = ['queue', 'runner', 'checkout', 'install', 'compile', 'ima
 // appear in the API as `Run <action>@<ref>`.
 const RULES = [
   ['runner', /^(Set up job|Complete job|Post )/u],
-  ['image-transfer', /same-run task image delta/u],
+  ['image-transfer', /same-run task image delta|^Pull the Hive Mind image/u],
   ['image-load', /^(Load and reverify|Release transferred image archive)/u],
   ['image-prep', /^(Build and verify actual same-source task image|Free hosted image space|Free disk for the Hive Mind image)/u],
   ['solver', /^(Attempt through shared Hive Mind|Run actual Hive solve)/u],
