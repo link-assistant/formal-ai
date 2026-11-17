@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=a1169322e4af97d899617fa08214f62eb97c519aaeafe937a423ad93292fd017 bytes=31838
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=69ca9331d2ca881fd62a762dc2259e151107ab0f529b8dd18dc23eceffa122a8 bytes=32129
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=7
 
@@ -228,6 +228,10 @@ pub const HAN: &str = "han";
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
 // formal-ai:blockers JSDoc type {…} | assignment of a field or element | call of a sibling function | call of an imported function | field access | method call .pop() | method call .push() | null | object spread | object without a $ tag
+
+// meta-language:carried JavaScript export_statement (type)
+// formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of a sibling function | call of an imported function
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null

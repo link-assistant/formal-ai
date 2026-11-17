@@ -15,11 +15,16 @@
 //! statement in [`KEEP_DIVISOR`], in text order, rendered with the surfaces
 //! they were read from.
 
+use regex::RegexBuilder;
+
+use crate::formalization::segment::sentences;
 use crate::formalization::statement_relation::{certifies_restatement, checked_relation};
 use crate::formalization::statement_rendering::join_surfaces;
 use crate::formalization::text_statements::{
-    Statement, content_ids, formalize_sentences, is_word_character,
+    Polarity, Sentence, Statement, content_ids, formalize_sentence_segments, formalize_sentences,
+    is_word_character, role_words_in, tokens,
 };
+use crate::normal_markov::{quote_fault, quoted_segment_spans};
 
 /// Shared terms that make one statement elaborate another.
 pub const ELABORATION_SHARED_TERMS: usize = 2;
@@ -79,8 +84,12 @@ pub fn closing_of(sentence: &str) -> String {
 /// punctuation.
 #[must_use]
 pub fn sentence_statements(text: &str, language: &str) -> Vec<Entry> {
+    sentence_entries(formalize_sentences(text, language))
+}
+
+fn sentence_entries(formalized: Vec<Sentence>) -> Vec<Entry> {
     let mut out = Vec::new();
-    for (index, sentence) in formalize_sentences(text, language).into_iter().enumerate() {
+    for (index, sentence) in formalized.into_iter().enumerate() {
         let closing = closing_of(&sentence.text);
         for statement in sentence.statements {
             out.push(Entry {
@@ -241,7 +250,11 @@ pub fn render_kept(nodes: &[Node], kept: &[usize]) -> String {
 /// The kept core of `text` and its rendering in the text's own words.
 #[must_use]
 pub fn summarize_by_dependency(text: &str, language: &str) -> CoreSummary {
-    let (unique, removed) = split_duplicates(sentence_statements(text, language));
+    summarize_entries(sentence_statements(text, language))
+}
+
+fn summarize_entries(entries: Vec<Entry>) -> CoreSummary {
+    let (unique, removed) = split_duplicates(entries);
     let statements = statement_graph(unique);
     let kept = kept_core(&statements);
     let text = render_kept(&statements, &kept);
@@ -252,6 +265,105 @@ pub fn summarize_by_dependency(text: &str, language: &str) -> CoreSummary {
         kept,
         text,
     }
+}
+
+const PHATIC_ROLES: [&str; 4] = [
+    "social_greeting",
+    "social_farewell",
+    "social_courtesy_response",
+    "text-summary-phatic",
+];
+
+fn render_causal_sentence(
+    statement: &Statement,
+    cause_pattern: Option<&regex::Regex>,
+    causes: &[String],
+) -> String {
+    let text = &statement.text;
+    if let Some(pattern) = cause_pattern
+        && statement.polarity != Polarity::Denied
+        && statement.dialogue.question.is_none()
+        && !text.contains(['(', ')', '[', ']', '{', '}'])
+        && quote_fault(text).is_none()
+        && quoted_segment_spans(text).is_empty()
+    {
+        let mut matches = pattern.captures_iter(text);
+        if let Some(groups) = matches.next()
+            && let Some(cause) = groups.get(0)
+            && cause.start() > 0
+            && matches.next().is_none()
+            && causes.contains(
+                &groups[1]
+                    .split_whitespace()
+                    .collect::<Vec<_>>()
+                    .join(" ")
+                    .to_lowercase(),
+            )
+        {
+            return format!("{}: {}", &text[..cause.start()], &text[cause.end()..]);
+        }
+    }
+    text.clone()
+}
+
+/// Rank complete substantive sentences so a selection keeps its governed clauses.
+#[must_use]
+pub fn summarize_free_text(text: &str, language: &str) -> Option<CoreSummary> {
+    let mut source = sentences(text);
+    let source_count = source.len();
+    let phatic: std::collections::HashSet<_> = PHATIC_ROLES
+        .iter()
+        .flat_map(|role| role_words_in(role, language))
+        .collect();
+    source.retain(|sentence| {
+        let key = tokens(&sentence.text)
+            .iter()
+            .map(|token| token.surface.to_lowercase())
+            .collect::<Vec<_>>()
+            .join(" ");
+        !phatic.contains(&key)
+    });
+    let entries = sentence_entries(formalize_sentence_segments(source, language, true));
+    let mut summary = summarize_entries(entries);
+    if summary.kept.is_empty() {
+        return None;
+    }
+    let causes = role_words_in("text-summary-cause", language);
+    let cues: Vec<_> = role_words_in("text-summary-cause-phrase", language)
+        .iter()
+        .chain(&causes)
+        .map(|cue| {
+            cue.split_whitespace()
+                .map(regex::escape)
+                .collect::<Vec<_>>()
+                .join(r"\s+")
+        })
+        .collect();
+    let cause_pattern = (!cues.is_empty())
+        .then(|| {
+            RegexBuilder::new(&format!(r"[\s,]+({})\s+", cues.join("|")))
+                .case_insensitive(true)
+                .build()
+                .ok()
+        })
+        .flatten();
+    let pieces: Vec<_> = summary
+        .kept
+        .iter()
+        .map(|&index| {
+            render_causal_sentence(
+                &summary.statements[index].entry.statement,
+                cause_pattern.as_ref(),
+                &causes,
+            )
+        })
+        .collect();
+    let rendered = join_surfaces(&pieces);
+    if source_count == 1 && summary.text == rendered {
+        return None;
+    }
+    summary.text = rendered;
+    Some(summary)
 }
 
 /// The gold facts of a text: the distinct term ids of the first sentence that

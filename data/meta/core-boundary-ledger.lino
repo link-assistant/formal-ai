@@ -8,7 +8,7 @@ core_boundary_ledger
   note "Issue #1582 continuation measures the shared direct-request recognizer in solver_handler_how.rs; quoted permission text remains owned by its enclosing task. All dispositions are retained."
   boundary "docs/design/minimal-core-boundary.md"
   source_file_count_max 90
-  source_lines_max 36051
+  source_lines_max 36045
   outside_core_file_count_max 50
   outside_core_lines_max 18705
   note "Re-measured 2026-09-30 after the seeded creative, formalization, planning, and product-search interpreters were split into ledgered modules: 73 handler sources and 30942 total lines, with 51 promoted-core files contributing 20267 migration lines."
@@ -438,7 +438,7 @@ core_boundary_ledger
     reason "Issue #1176: exact decimal statistics engine (mean, median, mode, variance, standard deviation, range) over an explicit dataset, plus the word-problem relation extractor over seed markers (price-times-count change and total); the operation meanings and every response template are seed data. Re-measured 2026-10-07 for PR #1188: issue #1176 percentiles and the R1017 primality arm, which dispatches to statistics/primality.rs (919 lines). The clippy if_not_else sweep spells the percentile rank as an if-else expression (920 lines). Re-measured 2026-10-08 for the PR #1188 R1175 probe pass: one-item change word problems (p350, the seeded pay/paid payment marker) and the measurement arm declining a statistic over a stated list (p273) (975 lines)."
   source rust/src/solver_handlers/summarization_request.rs
     disposition promote
-    baseline_lines 88
+    baseline_lines 82
     core_component summarization_request_interpreter
     reason "Issue #1174: composes the compressed summary of pasted text in Rust under a length bound that can never echo the input; topic tables and response templates are seed data. Re-measured 2026-10-08 for issue #1173 R1173-3 (p275): the action role is read on the punctuation-folded prompt, so a colon glued to the verb does not hide it."
   source rust/src/solver_handlers/page_query_text.rs
