@@ -38,6 +38,16 @@ test('HTTP rewrites bypass planning and settings do not leak between requests', 
     assert.equal(dense.body.output_projection.report.output_standard,'ace');
     assert.equal(dense.body.output_projection.report.lexical_density,'max-precision');
     assert.equal(dense.body.output_projection.report.compliant,false);
+    const streamed=await fetch(url+'/v1/chat/completions',{method:'POST',headers:{'content-type':'application/json'},
+      body:JSON.stringify({messages,tools,stream:true})});
+    assert.equal(streamed.status,200);
+    assert.equal(streamed.headers.get('content-type'),'text/event-stream');
+    const frames=(await streamed.text()).split('\n\n').filter(Boolean);
+    assert.equal(frames.at(-1),'data: [DONE]');
+    const chunks=frames.slice(0,-1).map(frame=>JSON.parse(frame.slice(6)));
+    assert.equal(chunks.map(chunk=>chunk.choices[0]?.delta.content || '').join(''),dense.body.choices[0].message.content);
+    assert.deepEqual(chunks.at(-1).output_projection.report,dense.body.output_projection.report);
+    assert.equal(chunks.at(-1).choices[0].finish_reason,'stop');
     const simple=await post({messages:[{role:'assistant',content:'I am omniscient.'},
       {role:'user',content:'Explain this in simpler words'}]});
     assert.equal(simple.body.choices[0].message.content,'I know everything.');

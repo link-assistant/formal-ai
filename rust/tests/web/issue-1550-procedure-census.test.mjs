@@ -34,7 +34,7 @@ const read = (file) => readFileSync(new URL(file, new URL('../../../', import.me
 // The cascade's methods inside the closure; each returns the closure's draft,
 // which the procedure records as a candidate. Change only with a method the
 // procedure records (never with an exit of the entry).
-const CASCADE_METHOD_RETURNS = 18;
+const CASCADE_METHOD_RETURNS = 19;
 
 let host;
 before(async () => {
@@ -57,14 +57,24 @@ test('the native entry has no exit around the procedure', () => {
 test('the worker entry exits only through the procedure', () => {
   const census = jsEntryCensus(read(JS_ENTRY));
   assert.deepEqual(census.exits, [
-    'diagnostic',
-    'metaAttachLearned(await metaRunProcedure(prompt, await metaResolveImpasse(prompt, answer, prefs), subTask))',
+    'projectControlledAnswer(diagnostic, turn.config, options)',
+    'projectControlledAnswer(metaAttachLearned(await metaRunProcedure(prompt, await metaResolveImpasse(prompt, answer, prefs), subTask)), turn.config, options)',
   ], `${JS_ENTRY}: solve gained an exit that may skip metaRunProcedure`);
   assert.equal(census.solveImplCalls, 2);
   const files = readdirSync(new URL('../../../js/worker/', import.meta.url))
     .filter((name) => name.endsWith('.js'))
     .map((name) => `js/worker/${name}`);
   assert.deepEqual(solveImplCallersOutsideSolve(ROOT, files), [], 'solveImpl is called outside solve');
+});
+
+test('controlled-output rewrites retain the recursive procedure trace', {timeout: 30000}, async () => {
+  const answer = await host.solve('Rewrite in max-precision mode', [
+    {role: 'assistant', content: 'I know everything.'},
+  ]);
+  assert.equal(answer.intent, 'cnl_paraphrase');
+  assert.equal(answer.content, 'Maximum precision uses specific words. Look up unfamiliar words in a dictionary to check their exact meaning.\n\nI am omniscient.');
+  assert.ok(answer.metaExecution, 'rewrites must pass through the recursive procedure');
+  assert.deepEqual(answer.toolCalls, []);
 });
 
 test('the census fixture lists every prompt of the specification corpus', () => {

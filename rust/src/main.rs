@@ -63,7 +63,7 @@ use cli_translate::run_translate;
 use formal_ai::agentic_coding::run_agentic_task;
 use formal_ai::{
     ChatCompletionRequest, ChatMessage, DEFAULT_MODEL, ExecutionSurface, ProxyConfig,
-    ResponsesRequest, SolverConfig, SymbolicAnswer, UniversalSolver, WithFormalAiArgs,
+    ResponsesRequest, SolverConfig, UniversalSolver, WithFormalAiArgs,
     create_chat_completion_with_solver, create_response_with_solver, delimit_tool_args,
     enable_http_agent_mode_for_current_process, knowledge_links_notation, run_proxy,
     run_with_formal_ai,
