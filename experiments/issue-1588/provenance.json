@@ -14,6 +14,19 @@
     "reasoning-attempt.log": "3294ace984833f105aa75bcc5756aa71cb0fc0daebf65757881caf24d9f61683",
     "tool-sessions.txt": "5337a1ed8d580da23d967a53f742095036bcc1b0bd06b9a1ed6f8b0b86b4e8f5",
     "supplied-procedures.txt": "36cf330c6bfd2dd206af55333c9817a18dfe9f3125a798fae3ed8d5be8f4f083",
-    "validation.txt": "18a8050175c014a4af706fa461e2f2d5b64237ca281d1812240e4de73a4f415d"
+    "validation.txt": "18a8050175c014a4af706fa461e2f2d5b64237ca281d1812240e4de73a4f415d",
+    "ci-round-1-evidence.txt": "4610c3ba5555e3f59914968d5313cb25dcd1584384cb09f6ac40e7eb3508db14"
+  },
+  "ci_round_1": {
+    "head": "69bcdb797344f2ee4957711675bb235ffbe9c70c",
+    "created_at": "2026-11-17T14:38:47Z",
+    "runs": {
+      "Security": 44105386994,
+      "CI/CD Pipeline": 44105387525,
+      "Layered CI": 44105386828
+    },
+    "reviewed_witness_delta": "four occurrences of the rust/tests/unit/mod.rs fixture hash only; every case, assertion, unsupported record and native-source manifest is unchanged",
+    "externally_authored": true,
+    "accepted_reasoning_units": 0
   }
 }

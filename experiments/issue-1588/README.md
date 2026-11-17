@@ -79,3 +79,6 @@ the tracked source tree. Rust compilation stayed in hosted CI.
 Logs and supplied procedures are gzip-compressed to preserve their original
 bytes, including whitespace, without adding generated log formatting to source
 checks. Read one with `gzip -dc experiments/issue-1588/validation.txt.gz`.
+
+[Current-head CI investigation](ci-round-1.md) records the complete first
+published run, the exact failure causes and the batched repairs.
