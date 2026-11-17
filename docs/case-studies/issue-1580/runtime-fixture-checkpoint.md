@@ -91,12 +91,26 @@ of a new branch defect. No new security fix is attributed to this checkpoint.
 Feedback remains one issue comment, nine PR conversation comments, no inline
 comments and no reviews. All earlier native, benchmark, warning, dependency
 migration, template semantic review, historical evidence and live identity
-criteria remain unfinished. Repository policy forbids feature-branch native
-tests, including manual dispatch. Independent Formal AI reasoning acceptance
+criteria remain unfinished. Local native execution remains forbidden. The
+merged policy permits only the existing focused clippy job and its isolated
+calendar/currency CI regression on PRs; other native suites and builds stay on
+main. Independent Formal AI reasoning acceptance
 remains 0/20; supplied scripts, patches and conclusions earn zero credit.
 The PR remains draft and unmerged.
 
 Main advances to `015a683197c89e8f74375b097e8dd06a57dcea8f` during this
-verification. The passing source checkpoint predates that merge. Incoming
-calendar/currency behavior, its isolated native CI exception and its regression
-fixtures must be retained; combined-source verification remains pending.
+verification. The merge retains the calendar/currency implementation, fixtures
+and isolated native CI regression, while preserving our always-reporting PR
+context and compile-input conditions. Both parents’ generated-header tests
+remain; the manifest contains the union of their 240 JavaScript test files.
+
+The reviewed source-reader refresh changes exactly four Cargo manifest hashes
+from our parent. All 221 governed cases, 964 unsupported cases, native source
+manifest entries and other executable values remain identical. A full comparison
+against the incoming parent also checks all changed source values and hashes
+against actual files. All 15 combined-source focused checks pass, including the
+new calendar/currency suite, 13 clock-preservation cases, six Moon summary cases,
+client defaults/permissions and generated projections. Rust formatting passes
+without native execution. Complete logs and comparisons are in
+`experiments/issue-1580/evidence/checks/main-merge-015a6831/`.
+The full combined-source gate run and hosted checks remain pending.

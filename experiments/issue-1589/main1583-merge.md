@@ -1,0 +1,7 @@
+# Merge of main PR #1583
+
+Main 444575f2ac28f609c94497865f125f99415ff6d5 landed before publication. Its client defaults, permissions, seed data, both new test inventory entries and complete governed baseline are preserved. Only the four Cargo fixture hashes for the isolated calendar_currency target change in the baseline; complete object comparison retains all 1,185 assertions and source manifests. The combined handler census is 90 files, 36,525 lines, with 50 migration files and 18,854 migration lines; per-source baselines and dispositions merge unchanged.
+
+The nine focused checks pass: both witness checks, worker inputs, 39 feature checks, client defaults (12 tests), client permissions, both projection checks and Rust formatting. All 138 local gates were rerun. The log initially records 135 passes/skips because the unmerged index listed the same resolved metadata at three stages and the notation inventory counted those copies. Staging the resolved files makes the unchanged notation check pass. The generated status surface was refreshed after merging metadata, and both status checks pass. The combined verified result is 137/138; only the existing unpatched picomatch advisory remains failing. No source, rule, limit or assertion was relaxed to correct the transient notation result. Complete before/after logs, witness review, refreshed issue/PR feedback and actual tool receipts are archived.
+
+No local Rust build was run; current-head native CI execution remains required. The official advisory was refreshed and still has no first patched version.

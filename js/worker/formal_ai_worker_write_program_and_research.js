@@ -1271,5 +1271,5 @@ const NUMERIC_CLAIM_EVIDENCE = Object.freeze({
     return span !== null && quantityConstraintFor(span) === null &&
       parseNumericListNumbers(span).length === 1 && unitMentions(span).length === 2;
   },
-  calendar_anchor: (prompt, normalized) => Boolean(detectWeekday(normalized) || detectCalendarMonth(normalized) || calendarStatedDate(prompt, normalized) || tryCalendarDateOffset(prompt, normalized) || mentionsCurrentDayQuestion(normalized)),
+  calendar_anchor: (prompt, normalized) => Boolean(calendarDurationRequest(prompt) || detectWeekday(normalized) || detectCalendarMonth(normalized) || calendarStatedDate(prompt, normalized) || tryCalendarDateOffset(prompt, normalized) || mentionsCurrentDayQuestion(normalized)),
 });

@@ -5,8 +5,9 @@ name: Native type and lint check
 # (run 43730270231), since no PR job ran rustc. This is the one focused
 # native check a PR runs: main's clippy profile on the library and binaries,
 # called from release.yml on every PR, compiling when a Rust input changed
-# or the classification is unknown. It uploads nothing and records no receipt, so it
-# is never native or release evidence; main still runs full lint, tests and
+# or the classification is unknown. It uploads nothing and records no receipt.
+# Its isolated calendar/currency regression proves runtime behavior for issue
+# #1589, but never release evidence. Main still runs full lint, tests and
 # every build.
 on:
   workflow_call:
@@ -69,3 +70,9 @@ jobs:
       - name: Type-check and lint the library and binaries
         if: ${{ inputs.compile-inputs-changed }}
         run: bash scripts/ci-clippy-profile.sh --library-and-binaries
+      - name: Verify calendar and currency native behavior
+        if: ${{ inputs.compile-inputs-changed }}
+        env:
+          CARGO_BUILD_JOBS: '2'
+          CARGO_PROFILE_TEST_OPT_LEVEL: '0'
+        run: cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency -- --test-threads=1

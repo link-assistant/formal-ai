@@ -910,11 +910,19 @@ function tryCalendarReasoning(prompt, normalized, userContext = {}) {
     };
   }
   // Issue #1176: month offsets are read before the weekday gate (calendar.rs).
+  const duration = tryCalendarDuration(prompt);
+  if (duration) return duration;
   const monthOffset = tryCalendarMonthOffset(prompt, normalized);
   if (monthOffset) return monthOffset;
   // R1017: the weekday of a stated date (calendar/date_weekday.rs).
   const dateOffset = tryCalendarDateOffset(prompt, normalized);
-  if (dateOffset !== null) return dateOffset;
+  if (dateOffset !== null) {
+    dateOffset.solverEvents = dateOffset.evidence.filter(link => link.startsWith("calendar:")).map(link => {
+      const at = link.indexOf(":", 9);
+      return {kind:link.slice(0, at), payload:link.slice(at + 1)};
+    });
+    return dateOffset;
+  }
   const dateWeekday = tryCalendarDateWeekday(prompt, normalized);
   if (dateWeekday) return dateWeekday;
   if (!mentionsWeekdayContext(normalized)) return null;

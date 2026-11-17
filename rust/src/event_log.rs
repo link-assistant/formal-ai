@@ -412,6 +412,9 @@ fn curate_thinking_event(
         "web_search:request" | "http_fetch:request" | "url_navigate:request" => {
             keep("http_chat", detail, "detailed")
         }
+        "calendar:duration_derivation" | "calendar:offset_derivation" | "currency:derivation" => {
+            keep("compute_expression", detail, "detailed")
+        }
         "tool_call" | "tool_result" => keep("invoke_tool", detail, "detailed"),
         "coreference" | "program_coreference" => keep("coreference_binding", "", "detailed"),
         "modifier_detection" | "program_modifiers" => keep("modifier_detection", "", "detailed"),

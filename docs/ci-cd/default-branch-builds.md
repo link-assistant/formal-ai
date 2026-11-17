@@ -13,9 +13,14 @@ Maintainer requirements of 2026-10-31 supersede earlier full-PR build opt-ins.
   (rust/src, build.rs, manifests, embedded data, toolchain, either workflow or any
   unknown path). PR #1497 passed every PR check, then main failed with E0308
   and later with clippy::manual_contains, because JavaScript cannot see Rust
-  types or lints. It builds, tests, uploads and attests nothing, saves no
-  cache, publishes no outputs and is never native or release evidence.
-  Docs-only, JS-only, test-only and script-only PRs skip it. Its selector is
+  types or lints. Issue #1589 additionally runs the isolated calendar_currency
+  regression target against the shared worker/native acceptance fixtures in this
+  existing job, with two compiler jobs and test optimization disabled. The
+  regression proves native behavior; it does not produce release evidence. Full
+  suites and product builds remain on main. The job uploads and attests nothing,
+  saves no cache and publishes no outputs.
+  Every PR reports the required job context. Docs-only, JS-only, test-only and
+  script-only PRs skip its compiler and native test steps. Its selector is
   `nativeCompileInput()` in scripts/ci-pull-request-admission.mjs;
   default-branch-build-policy.test.mjs pins the job and replays PR #1497.
 - Production builds run on the current default branch, main. Release-tag and
