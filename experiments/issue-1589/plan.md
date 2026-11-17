@@ -11,7 +11,8 @@
 - [ ] Execute the shared native regression on CI.
 - [ ] Verify every required current-head CI result, preserving timestamps, SHA and failure logs.
 - [ ] Resolve the external dependency audit blocker; the advisory has no patched release at investigation time.
-- [ ] Review the remote PR diff, update title/body and mark ready only when all required checks pass.
+- [x] Review the complete published PR source diff; retain generated projection checks for duplicate outputs.
+- [ ] Update final CI evidence and mark ready only when all required checks pass.
 
 Frozen reasoning units: quantity binding, full-period anniversaries, ambiguity handling, exact rounding, rate provenance, cross-runtime/API verification. Attempted 1/6; independently accepted 0/6. The anniversary reasoning attempt returned calculation_error/unparseable. Supplied conclusions and procedures count zero.
 

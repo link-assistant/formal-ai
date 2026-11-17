@@ -54,7 +54,8 @@ test('English, Russian, Hindi, Chinese and Spanish duration responses retain the
     ['Сложи 14 месяцев и 2 года и 7 месяцев. В месяцах.','45 месяцев'],
     ['जोड़ो 14 महीने और 2 वर्ष और 7 महीने. में महीने.','45 महीने'],
     ['相加 14 个月 和 2 年 和 7 个月. 以 个月.','45 个月'],
-    ['Suma 14 meses y 2 años y 7 meses. En meses.','45 meses']
+    ['Suma 14 meses y 2 años y 7 meses. En meses.','45 meses'],
+    ['Suma 2 meses y 3 meses. En meses.','5 meses']
   ]) {
     const answer=await worker.solve(prompt,[],{},{},[],{});
     assert.equal(answer.intent,'calendar-duration-sum',JSON.stringify(answer));

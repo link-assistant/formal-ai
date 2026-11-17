@@ -531,7 +531,16 @@ pub(crate) mod duration {
 
     pub(crate) fn duration(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
         let request = request(prompt)?;
-        let language = detect(prompt).slug();
+        let role = if request.kind == "calendar-duration-sum" {
+            "calendar-duration-sum"
+        } else {
+            "calendar-full-query"
+        };
+        let text = prompt.to_lowercase();
+        let language = handler_table_rows(role)
+            .iter()
+            .find(|(_, words)| words.split('|').any(|word| starts(text.trim(), word)))
+            .map_or_else(|| detect(prompt).slug(), |(language, _)| language.as_str());
         let body = localized_response(request.kind, language)?
             .replace("{result}", &request.result)
             .replace("{unit}", label(&request.result, request.factor, language)?)

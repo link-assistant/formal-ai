@@ -698,7 +698,10 @@ function calendarDurationLabel(result, factor, language) {
 function tryCalendarDuration(prompt) {
   const request = calendarDurationRequest(prompt);
   if (!request) return null;
-  const language = detectLanguage(prompt);
+  const role = request.kind === "calendar-duration-sum" ? "calendar-duration-sum" : "calendar-full-query";
+  const text = String(prompt).toLowerCase().trim();
+  const language = (handlerRulesTables()[role]?.rows || [])
+    .find(row => row[1].split("|").some(word => calendarOffsetStartsWithTerm(text, word)))?.[0] || detectLanguage(prompt);
   const template = calendarOffsetLocalizedResponse(request.kind, language);
   if (!template) return null;
   const content = template.replaceAll("{result}", request.result)

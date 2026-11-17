@@ -6,7 +6,7 @@ core_boundary_ledger
   note "Issue #1588 records the measured sentence-local conversion gate, sentence-local scheduling requests with bound anchors and Gregorian date-offset interpreter in both runtimes. Two reusable seed-driven interpreter modules are ledgered; existing dispositions and migration debt measures are retained."
   boundary "docs/design/minimal-core-boundary.md"
   source_file_count_max 90
-  source_lines_max 36488
+  source_lines_max 36497
   outside_core_file_count_max 50
   outside_core_lines_max 18826
   note "Re-measured 2026-09-30 after the seeded creative, formalization, planning, and product-search interpreters were split into ledgered modules: 73 handler sources and 30942 total lines, with 51 promoted-core files contributing 20267 migration lines."
@@ -271,7 +271,7 @@ core_boundary_ledger
     reason "Split from calendar.rs for R1017: reads an ISO or spelled date and the seeded calendar_weekday_query cue, counts days from 1970-01-01 and renders the weekday derivation. Date reading and rendering are domain knowledge over meanings-calendar.lino."
   source rust/src/solver_handlers/calendar/month.rs
     disposition promote
-    baseline_lines 550
+    baseline_lines 559
     core_component civil_date_interpreter
     reason "Split from calendar.rs for issue #1176 month offsets: month-name resolution and civil-day arithmetic. The month vocabulary is seeded; the offset policy is domain knowledge."
   source rust/src/solver_handlers/numeric_list/stated_result.rs
@@ -530,3 +530,4 @@ core_boundary_ledger
     reason "Matches registered first-person goals and binds localized guidance to trusted-source evidence; goal forms, sources, wording and cached knowledge are shared seed data, with no exact-prompt branch."
 
   note "Issue #1589, reviewed 2026-11-17: the existing calendar interpreter now composes bound month/year quantities and completed calendar anniversaries; the calculator performs checked exact-rational conversion over a dated official seed snapshot. Recognition vocabulary, quote provenance and five-language response prose remain seed data. Four existing files are remeasured with no new handler source; dispositions remain unchanged. The isolated calendar_currency CI target exercises native execution."
+  note "Issue #1589 CI review: duration response language is bound to the matching seeded request prefix, preserving Spanish without changing compiled worker language inputs. The calendar interpreter grows by 9 measured lines; its promoted disposition and outside-core ceiling remain unchanged."
