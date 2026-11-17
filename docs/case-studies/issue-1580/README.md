@@ -110,3 +110,5 @@ The active Java source review now covers 62 files and all four workflows, with p
 ### Hosted checkpoint after Go/cache changes
 
 All 24 workflows on `e6627385d3ef58435df22ec61d4dfdc4551c9d28` completed successfully. [Exact-head metadata](../../../experiments/issue-1580/evidence/ci/e6627385d/summary.json) retains every run identity and source-byte hashes. These PR results verify the scoped JavaScript/CI changes; they do not execute the main-only native runtimes or resolve the outstanding benchmark, qualification, live identity, full semantic review and historical backend-cause criteria. The subsequent Java regression/review changes need their own hosted verification.
+
+Java failed-release-commit evidence is now filed as [upstream #31](https://github.com/link-foundation/java-ai-driven-development-pipeline-template/issues/31). Its immutable real-Git test link and posted body are retained under `experiments/issue-1580/upstream/`; reporting does not establish an upstream repair. PR head `078849576b` is still under hosted verification.

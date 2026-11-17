@@ -62,3 +62,7 @@ All 62 active Java source/configuration/documentation files are reviewed, includ
 ## Go/cache hosted checkpoint
 
 All 24 workflows on e6627385d completed successfully; no active or queued runs remain for that head. Exact metadata and Java focused/maintained/gate logs are retained. Archive current execution/supplied-input evidence, review the complete Java diff, refresh main and feedback, then push the next batch once. Broader acceptance remains unfinished.
+
+## Java release report filed (2026-11-17)
+
+[Java template #31](https://github.com/link-foundation/java-ai-driven-development-pipeline-template/issues/31) is filed with published real-Git regression evidence at `ff5d883b15aeda06c07e509a73a0a436f10799b7`. The posted body and identity are recorded locally. Head `078849576b539e0e6adf2843306af16981d5c09a` awaits all hosted results. No upstream repair, hosted release, complete historical Java semantic review, or broader native/benchmark/live-identity completion is claimed.

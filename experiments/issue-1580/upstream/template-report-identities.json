@@ -40,5 +40,12 @@
     "url": "https://github.com/link-foundation/go-ai-driven-development-pipeline-template/issues/20",
     "bodyFile": "go-stale-pin-integrity-report.md",
     "evidenceCommit": "a4053def4bd4b921001fdf84a026ae35deebfc39"
+  },
+  {
+    "repository": "link-foundation/java-ai-driven-development-pipeline-template",
+    "title": "CI: failed release commits still publish tags on the previous version",
+    "url": "https://github.com/link-foundation/java-ai-driven-development-pipeline-template/issues/31",
+    "bodyFile": "java-release-commit-integrity-report.md",
+    "evidenceCommit": "ff5d883b15aeda06c07e509a73a0a436f10799b7"
   }
 ]
