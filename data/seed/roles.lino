@@ -539,6 +539,8 @@ roles
     kind meaning
   github_repository_traffic_signal
     kind meaning
+  handler-table
+    kind predicate
   hello_world_reference
     kind predicate
   http_fetch
@@ -648,6 +650,8 @@ roles
   local_path_type_request
     kind meaning
   local_shell_request_cue
+    kind predicate
+  localized-response-template
     kind predicate
   localized_response_template
     kind meaning

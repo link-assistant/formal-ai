@@ -131,6 +131,9 @@ pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer
     let mut first_explicit_error: Option<(String, String, Vec<PromptInterpretation>)> = None;
     for candidate in candidates {
         let expression = candidate.expression;
+        if let Some(answer) = calculator_rate::conversion(prompt, &expression, log) {
+            return Some(answer);
+        }
         let interpretations = candidate.interpretations;
         let reasoning_steps = candidate.reasoning_steps;
         let result_label = candidate.result_label;

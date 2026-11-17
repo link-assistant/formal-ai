@@ -1,0 +1,1 @@
+Fix English and Russian calendar-duration sums and completed months/years between stated dates. Preserve exact day offsets across year boundaries. Currency conversions disclose a captured historical rate, its official source and date, and round once to two decimal places in both runtimes.

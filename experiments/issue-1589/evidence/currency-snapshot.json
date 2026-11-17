@@ -1,0 +1,12 @@
+{
+  "source": "https://www.cbr.ru/scripts/XML_daily.asp?date_req=17/11/2026",
+  "date": "2026-11-17",
+  "retrieved": "2026-11-17",
+  "rawSha256": "c568167d18ccff9d1b0a834839ba753b89034babe3b256d187fe7db787903dda",
+  "quotesRubPerUnit": {
+    "USD": "82.5143",
+    "EUR": "91.1948",
+    "RUB": "1"
+  },
+  "parser": "Python xml.etree.ElementTree on original Windows-1251 XML; verified nominal=1 for USD and EUR"
+}
