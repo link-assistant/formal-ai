@@ -14,6 +14,7 @@ mod check_file_size;
 mod ci_diagnostic_audit;
 mod ci_warning_audit;
 mod codeql_sink_heuristics;
+mod collect_job_durations;
 mod container_image_visibility;
 #[allow(clippy::duplicate_mod)]
 #[path = "../../../../scripts/create-github-release.rs"]
