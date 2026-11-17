@@ -1,0 +1,535 @@
+{"stream":"stderr","sequence":1,"content":"   Compiling unicode-ident v1.0.26\n"}
+{"stream":"stderr","sequence":2,"content":"   Compiling proc-macro2 v1.0.107\n   Compiling quote v1.0.47\n   Compiling shlex v2.0.1\n"}
+{"stream":"stderr","sequence":3,"content":"   Compiling find-msvc-tools v0.1.14\n"}
+{"stream":"stderr","sequence":4,"content":"   Compiling cfg-if v1.0.5\n"}
+{"stream":"stderr","sequence":5,"content":"   Compiling libc v0.2.190\n"}
+{"stream":"stderr","sequence":6,"content":"   Compiling cc v1.2.67\n"}
+{"stream":"stderr","sequence":7,"content":"   Compiling tree-sitter-language v0.1.8\n"}
+{"stream":"stderr","sequence":8,"content":"   Compiling autocfg v1.5.1\n"}
+{"stream":"stderr","sequence":9,"content":"   Compiling memchr v2.8.3\n"}
+{"stream":"stderr","sequence":10,"content":"   Compiling serde_core v1.0.229\n"}
+{"stream":"stderr","sequence":11,"content":"   Compiling syn v3.0.6\n"}
+{"stream":"stderr","sequence":12,"content":"   Compiling syn v2.0.119\n"}
+{"stream":"stderr","sequence":13,"content":"   Compiling smallvec v1.16.2\n"}
+{"stream":"stderr","sequence":14,"content":"   Compiling thiserror v2.0.21\n"}
+{"stream":"stderr","sequence":15,"content":"   Compiling serde v1.0.229\n"}
+{"stream":"stderr","sequence":16,"content":"   Compiling stable_deref_trait v1.2.1\n"}
+{"stream":"stderr","sequence":17,"content":"   Compiling"}
+{"stream":"stderr","sequence":18,"content":" bitflags v2.13.2\n"}
+{"stream":"stderr","sequence":19,"content":"   Compiling once_cell v1.21.4\n"}
+{"stream":"stderr","sequence":20,"content":"   Compiling typenum v1.20.1\n"}
+{"stream":"stderr","sequence":21,"content":"   Compiling crossbeam-utils v0.8.23\n"}
+{"stream":"stderr","sequence":22,"content":"   Compiling version_check v0.9.5\n"}
+{"stream":"stderr","sequence":23,"content":"   Compiling ring v0.17.14\n"}
+{"stream":"stderr","sequence":24,"content":"   Compiling"}
+{"stream":"stderr","sequence":25,"content":" writeable v0.6.4\n"}
+{"stream":"stderr","sequence":26,"content":"   Compiling litemap v0.8.3\n"}
+{"stream":"stderr","sequence":27,"content":"   Compiling num-traits v0.2.19\n"}
+{"stream":"stderr","sequence":28,"content":"   Compiling rustversion v1.0.23\n"}
+{"stream":"stderr","sequence":29,"content":"   Compiling icu_properties_data v2.3.0\n"}
+{"stream":"stderr","sequence":30,"content":"   Compiling getrandom v0.4.3\n"}
+{"stream":"stderr","sequence":31,"content":"   Compiling icu_normalizer_data v2.3.0\n"}
+{"stream":"stderr","sequence":32,"content":"   Compiling rand_core v0.10.1\n"}
+{"stream":"stderr","sequence":33,"content":"   Compiling utf8_iter v1.0.4\n"}
+{"stream":"stderr","sequence":34,"content":"   Compiling synstructure v0.14.0\n"}
+{"stream":"stderr","sequence":35,"content":"   Compiling"}
+{"stream":"stderr","sequence":36,"content":" log v0.4.34\n"}
+{"stream":"stderr","sequence":37,"content":"   Compiling cpufeatures v0.3.1\n"}
+{"stream":"stderr","sequence":38,"content":"   Compiling getrandom v0.2.17\n"}
+{"stream":"stderr","sequence":39,"content":"   Compiling cfg_aliases v0.2.2\n"}
+{"stream":"stderr","sequence":40,"content":"   Compiling generic-array v0.14.7\n"}
+{"stream":"stderr","sequence":41,"content":"   Compiling"}
+{"stream":"stderr","sequence":42,"content":" zmij v1.0.23\n"}
+{"stream":"stderr","sequence":43,"content":"   Compiling percent-encoding v2.3.2\n"}
+{"stream":"stderr","sequence":44,"content":"   Compiling serde_derive v1.0.229\n"}
+{"stream":"stderr","sequence":45,"content":"   Compiling"}
+{"stream":"stderr","sequence":46,"content":" thiserror-impl v2.0.21\n"}
+{"stream":"stderr","sequence":47,"content":"   Compiling zerofrom-derive v0.1.8\n"}
+{"stream":"stderr","sequence":48,"content":"   Compiling displaydoc v0.2.7\n"}
+{"stream":"stderr","sequence":49,"content":"   Compiling"}
+{"stream":"stderr","sequence":50,"content":" yoke-derive v0.8.4\n"}
+{"stream":"stderr","sequence":51,"content":"   Compiling"}
+{"stream":"stderr","sequence":52,"content":" zerovec-derive v0.11.6\n"}
+{"stream":"stderr","sequence":53,"content":"   Compiling"}
+{"stream":"stderr","sequence":54,"content":" zerofrom v0.1.8\n"}
+{"stream":"stderr","sequence":55,"content":"   Compiling form_urlencoded v1.2.2\n"}
+{"stream":"stderr","sequence":56,"content":"   Compiling yoke v0.8.3\n"}
+{"stream":"stderr","sequence":57,"content":"   Compiling"}
+{"stream":"stderr","sequence":58,"content":" ptr_meta_derive v0.3.2\n"}
+{"stream":"stderr","sequence":59,"content":"   Compiling zerovec v0.11.8\n"}
+{"stream":"stderr","sequence":60,"content":"   Compiling"}
+{"stream":"stderr","sequence":61,"content":" zerotrie v0.2.5\n"}
+{"stream":"stderr","sequence":62,"content":"   Compiling memoffset v0.9.1\n"}
+{"stream":"stderr","sequence":63,"content":"   Compiling bytes v1.12.1\n"}
+{"stream":"stderr","sequence":64,"content":"   Compiling nix v0.31.3\n"}
+{"stream":"stderr","sequence":65,"content":"   Compiling"}
+{"stream":"stderr","sequence":66,"content":" tinystr v0.8.4\n"}
+{"stream":"stderr","sequence":67,"content":"   Compiling"}
+{"stream":"stderr","sequence":68,"content":" potential_utf v0.1.6\n"}
+{"stream":"stderr","sequence":69,"content":"   Compiling icu_collections v2.3.0\n"}
+{"stream":"stderr","sequence":70,"content":"   Compiling"}
+{"stream":"stderr","sequence":71,"content":" icu_locale_core v2.3.0\n"}
+{"stream":"stderr","sequence":72,"content":"   Compiling chacha20 v0.10.2\n"}
+{"stream":"stderr","sequence":73,"content":"   Compiling"}
+{"stream":"stderr","sequence":74,"content":" crossbeam-epoch v0.9.21\n"}
+{"stream":"stderr","sequence":75,"content":"   Compiling"}
+{"stream":"stderr","sequence":76,"content":" rand v0.10.3\n"}
+{"stream":"stderr","sequence":77,"content":"   Compiling rand_core v0.6.4\n"}
+{"stream":"stderr","sequence":78,"content":"   Compiling substring v1.4.5\n"}
+{"stream":"stderr","sequence":79,"content":"   Compiling scopeguard v1.2.0\n"}
+{"stream":"stderr","sequence":80,"content":"   Compiling"}
+{"stream":"stderr","sequence":81,"content":" crypto-common v0.1.7\n"}
+{"stream":"stderr","sequence":82,"content":"   Compiling icu_provider v2.3.1\n"}
+{"stream":"stderr","sequence":83,"content":"   Compiling heck v0.5.0\n"}
+{"stream":"stderr","sequence":84,"content":"   Compiling crossbeam-deque v0.8.8\n"}
+{"stream":"stderr","sequence":85,"content":"   Compiling icu_normalizer v2.3.0\n"}
+{"stream":"stderr","sequence":86,"content":"   Compiling"}
+{"stream":"stderr","sequence":87,"content":" icu_properties v2.3.0\n"}
+{"stream":"stderr","sequence":88,"content":"   Compiling itoa v1.0.18\n"}
+{"stream":"stderr","sequence":89,"content":"   Compiling"}
+{"stream":"stderr","sequence":90,"content":" idna_adapter v1.2.2\n"}
+{"stream":"stderr","sequence":91,"content":"   Compiling"}
+{"stream":"stderr","sequence":92,"content":" bytecheck_derive v0.8.3\n"}
+{"stream":"stderr","sequence":93,"content":"   Compiling idna v1.1.0\n"}
+{"stream":"stderr","sequence":94,"content":"   Compiling"}
+{"stream":"stderr","sequence":95,"content":" url v2.5.8\n"}
+{"stream":"stderr","sequence":96,"content":"   Compiling rayon-core v1.13.0\n"}
+{"stream":"stderr","sequence":97,"content":"   Compiling pin-project-lite v0.2.17\n"}
+{"stream":"stderr","sequence":98,"content":"   Compiling siphasher v1.0.4\n"}
+{"stream":"stderr","sequence":99,"content":"   Compiling rtc-shared v0.21.0\n"}
+{"stream":"stderr","sequence":100,"content":"   Compiling phf_shared v0.11.3\n"}
+{"stream":"stderr","sequence":101,"content":"   Compiling rand v0.8.8\n"}
+{"stream":"stderr","sequence":102,"content":"   Compiling"}
+{"stream":"stderr","sequence":103,"content":" thiserror v1.0.69\n"}
+{"stream":"stderr","sequence":104,"content":"   Compiling phf_generator v0.11.3\n"}
+{"stream":"stderr","sequence":105,"content":"   Compiling thiserror-impl v1.0.69\n"}
+{"stream":"stderr","sequence":106,"content":"   Compiling munge_macro v0.4.7\n"}
+{"stream":"stderr","sequence":107,"content":"   Compiling wasm-bindgen-shared v0.2.129\n"}
+{"stream":"stderr","sequence":108,"content":"   Compiling anyhow v1.0.104\n"}
+{"stream":"stderr","sequence":109,"content":"   Compiling parking_lot_core v0.9.12\n"}
+{"stream":"stderr","sequence":110,"content":"   Compiling subtle v2.6.1\n"}
+{"stream":"stderr","sequence":111,"content":"   Compiling encoding_rs v0.8.42\n"}
+{"stream":"stderr","sequence":112,"content":"   Compiling"}
+{"stream":"stderr","sequence":113,"content":" include_dir_macros v0.7.4\n"}
+{"stream":"stderr","sequence":114,"content":"   Compiling byteorder v1.5.0\n"}
+{"stream":"stderr","sequence":115,"content":"   Compiling hashbrown v0.17.1\n"}
+{"stream":"stderr","sequence":116,"content":"   Compiling include_dir v0.7.4\n"}
+{"stream":"stderr","sequence":117,"content":"   Compiling lock_api v0.4.14\n"}
+{"stream":"stderr","sequence":118,"content":"   Compiling inout v0.1.4\n"}
+{"stream":"stderr","sequence":119,"content":"   Compiling block-buffer v0.10.4\n"}
+{"stream":"stderr","sequence":120,"content":"   Compiling"}
+{"stream":"stderr","sequence":121,"content":" rkyv_derive v0.8.18\n"}
+{"stream":"stderr","sequence":122,"content":"   Compiling"}
+{"stream":"stderr","sequence":123,"content":" slab v0.4.12\n"}
+{"stream":"stderr","sequence":124,"content":"   Compiling simdutf8 v0.1.5\n"}
+{"stream":"stderr","sequence":125,"content":"   Compiling untrusted v0.9.0\n"}
+{"stream":"stderr","sequence":126,"content":"   Compiling zeroize v1.9.1\n"}
+{"stream":"stderr","sequence":127,"content":"   Compiling futures-core v0.3.34\n"}
+{"stream":"stderr","sequence":128,"content":"   Compiling equivalent v1.0.2\n"}
+{"stream":"stderr","sequence":129,"content":"   Compiling serde_json v1.0.151\n"}
+{"stream":"stderr","sequence":130,"content":"   Compiling indexmap v2.14.2\n"}
+{"stream":"stderr","sequence":131,"content":"   Compiling"}
+{"stream":"stderr","sequence":132,"content":" digest v0.10.7\n"}
+{"stream":"stderr","sequence":133,"content":"   Compiling"}
+{"stream":"stderr","sequence":134,"content":" cipher v0.4.4\n"}
+{"stream":"stderr","sequence":135,"content":"   Compiling ptr_meta v0.3.2\n"}
+{"stream":"stderr","sequence":136,"content":"   Compiling num-conv v0.2.2\n"}
+{"stream":"stderr","sequence":137,"content":"   Compiling time-core v0.1.9\n"}
+{"stream":"stderr","sequence":138,"content":"   Compiling"}
+{"stream":"stderr","sequence":139,"content":" crc32fast v1.5.2\n"}
+{"stream":"stderr","sequence":140,"content":"   Compiling multiversion_no_op v1.0.0\n"}
+{"stream":"stderr","sequence":141,"content":"   Compiling time-macros v0.2.32\n"}
+{"stream":"stderr","sequence":142,"content":"   Compiling rustls-pki-types v1.15.1\n"}
+{"stream":"stderr","sequence":143,"content":"   Compiling"}
+{"stream":"stderr","sequence":144,"content":" rancor v0.1.3\n"}
+{"stream":"stderr","sequence":145,"content":"   Compiling num-integer v0.1.47\n"}
+{"stream":"stderr","sequence":146,"content":"   Compiling rustix v1.1.6\n"}
+{"stream":"stderr","sequence":147,"content":"   Compiling cpufeatures v0.2.17\n"}
+{"stream":"stderr","sequence":148,"content":"   Compiling deranged v0.5.8\n"}
+{"stream":"stderr","sequence":149,"content":"   Compiling powerfmt v0.2.1\n"}
+{"stream":"stderr","sequence":150,"content":"   Compiling futures-sink v0.3.34\n"}
+{"stream":"stderr","sequence":151,"content":"   Compiling"}
+{"stream":"stderr","sequence":152,"content":" adler2 v2.0.1\n"}
+{"stream":"stderr","sequence":153,"content":"   Compiling"}
+{"stream":"stderr","sequence":154,"content":" httparse v1.10.1\n"}
+{"stream":"stderr","sequence":155,"content":"   Compiling simd-adler32 v0.3.10\n"}
+{"stream":"stderr","sequence":156,"content":"   Compiling miniz_oxide v0.9.1\n"}
+{"stream":"stderr","sequence":157,"content":"   Compiling futures-channel v0.3.34\n"}
+{"stream":"stderr","sequence":158,"content":"   Compiling time v0.3.55\n"}
+{"stream":"stderr","sequence":159,"content":"   Compiling"}
+{"stream":"stderr","sequence":160,"content":" bytecheck v0.8.3\n"}
+{"stream":"stderr","sequence":161,"content":"   Compiling"}
+{"stream":"stderr","sequence":162,"content":" ctr v0.9.2\n"}
+{"stream":"stderr","sequence":163,"content":"   Compiling phf_codegen v0.11.3\n"}
+{"stream":"stderr","sequence":164,"content":"   Compiling strum_macros v0.28.0\n"}
+{"stream":"stderr","sequence":165,"content":"   Compiling aead v0.5.2\n"}
+{"stream":"stderr","sequence":166,"content":"   Compiling futures-macro v0.3.34\n"}
+{"stream":"stderr","sequence":167,"content":"   Compiling bumpalo v3.20.3\n"}
+{"stream":"stderr","sequence":168,"content":"   Compiling futures-io v0.3.34\n"}
+{"stream":"stderr","sequence":169,"content":"   Compiling futures-task v0.3.34\n"}
+{"stream":"stderr","sequence":170,"content":"   Compiling"}
+{"stream":"stderr","sequence":171,"content":" minimal-lexical v0.2.1\n"}
+{"stream":"stderr","sequence":172,"content":"   Compiling rustls v0.23.46\n"}
+{"stream":"stderr","sequence":173,"content":"   Compiling"}
+{"stream":"stderr","sequence":174,"content":" linux-raw-sys v0.12.1\n"}
+{"stream":"stderr","sequence":175,"content":"   Compiling nom v7.1.3\n"}
+{"stream":"stderr","sequence":176,"content":"   Compiling http v1.5.0\n"}
+{"stream":"stderr","sequence":177,"content":"   Compiling futures-util v0.3.34\n"}
+{"stream":"stderr","sequence":178,"content":"   Compiling wasm-bindgen-macro-support v0.2.129\n"}
+{"stream":"stderr","sequence":179,"content":"   Compiling ccm v0.5.0\n"}
+{"stream":"stderr","sequence":180,"content":"   Compiling"}
+{"stream":"stderr","sequence":181,"content":" flate2 v1.1.10\n"}
+{"stream":"stderr","sequence":182,"content":"   Compiling rend v0.5.4\n"}
+{"stream":"stderr","sequence":183,"content":"   Compiling rustls-webpki v0.103.16\n"}
+{"stream":"stderr","sequence":184,"content":"   Compiling sha1 v0.10.7\n"}
+{"stream":"stderr","sequence":185,"content":"   Compiling aes v0.8.4\n"}
+{"stream":"stderr","sequence":186,"content":"   Compiling md-5 v0.10.6\n"}
+{"stream":"stderr","sequence":187,"content":"   Compiling hmac v0.12.1\n"}
+{"stream":"stderr","sequence":188,"content":"   Compiling parking_lot v0.12.5\n"}
+{"stream":"stderr","sequence":189,"content":"   Compiling munge v0.4.7\n"}
+{"stream":"stderr","sequence":190,"content":"   Compiling"}
+{"stream":"stderr","sequence":191,"content":" wasm-bindgen v0.2.129\n"}
+{"stream":"stderr","sequence":192,"content":"   Compiling"}
+{"stream":"stderr","sequence":193,"content":" synstructure v0.13.2\n"}
+{"stream":"stderr","sequence":194,"content":"   Compiling"}
+{"stream":"stderr","sequence":195,"content":" sansio v1.0.1\n"}
+{"stream":"stderr","sequence":196,"content":"   Compiling new_debug_unreachable v1.0.6\n"}
+{"stream":"stderr","sequence":197,"content":"   Compiling core_detect v1.0.0\n"}
+{"stream":"stderr","sequence":198,"content":"   Compiling utf8parse v0.2.2\n"}
+{"stream":"stderr","sequence":199,"content":"   Compiling base64 v0.23.1\n"}
+{"stream":"stderr","sequence":200,"content":"   Compiling semver v1.0.28\n"}
+{"stream":"stderr","sequence":201,"content":"   Compiling lazy_static v1.5.1\n"}
+{"stream":"stderr","sequence":202,"content":"   Compiling rustc_version v0.4.1\n"}
+{"stream":"stderr","sequence":203,"content":"   Compiling ureq-proto v0.6.4\n"}
+{"stream":"stderr","sequence":204,"content":"   Compiling wasm-bindgen-macro v0.2.129\n"}
+{"stream":"stderr","sequence":205,"content":"   Compiling rkyv v0.8.18\n"}
+{"stream":"stderr","sequence":206,"content":"   Compiling asn1-rs-derive v0.5.1\n"}
+{"stream":"stderr","sequence":207,"content":"   Compiling anstyle-parse v1.0.0\n"}
+{"stream":"stderr","sequence":208,"content":"   Compiling rtc-crypto v0.21.0\n"}
+{"stream":"stderr","sequence":209,"content":"   Compiling xattr v1.6.1\n"}
+{"stream":"stderr","sequence":210,"content":"   Compiling rusticata-macros v4.1.0\n"}
+{"stream":"stderr","sequence":211,"content":"   Compiling webpki-roots v1.0.10\n"}
+{"stream":"stderr","sequence":212,"content":"   Compiling csv-core v0.1.13\n"}
+{"stream":"stderr","sequence":213,"content":"   Compiling filetime v0.2.29\n"}
+{"stream":"stderr","sequence":214,"content":"   Compiling phf_macros v0.11.3\n"}
+{"stream":"stderr","sequence":215,"content":"   Compiling"}
+{"stream":"stderr","sequence":216,"content":" asn1-rs-impl v0.2.0\n"}
+{"stream":"stderr","sequence":217,"content":"   Compiling hybrid-array v0.4.15\n"}
+{"stream":"stderr","sequence":218,"content":"   Compiling socket2 v0.6.5\n"}
+{"stream":"stderr","sequence":219,"content":"   Compiling memmap2 v0.9.11\n"}
+{"stream":"stderr","sequence":220,"content":"   Compiling aho-corasick v1.1.5\n"}
+{"stream":"stderr","sequence":221,"content":"   Compiling"}
+{"stream":"stderr","sequence":222,"content":" ryu v1.0.23\n"}
+{"stream":"stderr","sequence":223,"content":"   Compiling regex-syntax v0.8.11\n"}
+{"stream":"stderr","sequence":224,"content":"   Compiling"}
+{"stream":"stderr","sequence":225,"content":" colorchoice v1.0.5\n"}
+{"stream":"stderr","sequence":226,"content":"   Compiling base64 v0.22.1\n"}
+{"stream":"stderr","sequence":227,"content":"   Compiling either v1.19.0\n"}
+{"stream":"stderr","sequence":228,"content":"   Compiling"}
+{"stream":"stderr","sequence":229,"content":" anstyle-query v1.1.5\n"}
+{"stream":"stderr","sequence":230,"content":"   Compiling is_terminal_polyfill v1.70.2\n"}
+{"stream":"stderr","sequence":231,"content":"   Compiling utf8-zero v0.8.1\n"}
+{"stream":"stderr","sequence":232,"content":"   Compiling anstyle v1.0.14\n"}
+{"stream":"stderr","sequence":233,"content":"   Compiling anstream v1.0.0\n"}
+{"stream":"stderr","sequence":234,"content":"   Compiling"}
+{"stream":"stderr","sequence":235,"content":" ureq v3.4.2\n"}
+{"stream":"stderr","sequence":236,"content":"   Compiling rayon v1.12.0\n"}
+{"stream":"stderr","sequence":237,"content":"   Compiling regex-automata v0.4.18\n"}
+{"stream":"stderr","sequence":238,"content":"   Compiling csv v1.4.0\n"}
+{"stream":"stderr","sequence":239,"content":"   Compiling asn1-rs v0.6.2\n"}
+{"stream":"stderr","sequence":240,"content":"   Compiling phf v0.11.3\n"}
+{"stream":"stderr","sequence":241,"content":"   Compiling tar v0.4.46\n"}
+{"stream":"stderr","sequence":242,"content":"   Compiling"}
+{"stream":"stderr","sequence":243,"content":" encoding_rs_io v0.1.8\n"}
+{"stream":"stderr","sequence":244,"content":"   Compiling crc32c v0.6.8\n"}
+{"stream":"stderr","sequence":245,"content":"   Compiling strum v0.28.0\n"}
+{"stream":"stderr","sequence":246,"content":"   Compiling num-bigint v0.4.8\n"}
+{"stream":"stderr","sequence":247,"content":"   Compiling string_cache_codegen v0.5.4\n"}
+{"stream":"stderr","sequence":248,"content":"   Compiling strsim v0.11.1\n"}
+{"stream":"stderr","sequence":249,"content":"   Compiling glob v0.3.4\n"}
+{"stream":"stderr","sequence":250,"content":"   Compiling daachorse v5.0.0\n"}
+{"stream":"stderr","sequence":251,"content":"   Compiling"}
+{"stream":"stderr","sequence":252,"content":" crc-catalog v2.5.0\n"}
+{"stream":"stderr","sequence":253,"content":"   Compiling"}
+{"stream":"stderr","sequence":254,"content":" clap_lex v1.1.1\n"}
+{"stream":"stderr","sequence":255,"content":"   Compiling"}
+{"stream":"stderr","sequence":256,"content":" mac v0.1.1\n"}
+{"stream":"stderr","sequence":257,"content":"   Compiling md5 v0.8.1\n"}
+{"stream":"stderr","sequence":258,"content":"   Compiling fastrand v2.5.0\n"}
+{"stream":"stderr","sequence":259,"content":"   Compiling oid-registry v0.7.1\n"}
+{"stream":"stderr","sequence":260,"content":"   Compiling precomputed-hash v0.1.1\n"}
+{"stream":"stderr","sequence":261,"content":"   Compiling arrayvec v0.7.8\n"}
+{"stream":"stderr","sequence":262,"content":"   Compiling"}
+{"stream":"stderr","sequence":263,"content":" crawdad v0.4.1\n"}
+{"stream":"stderr","sequence":264,"content":"   Compiling"}
+{"stream":"stderr","sequence":265,"content":" lindera-dictionary v6.2.0\n"}
+{"stream":"stderr","sequence":266,"content":"   Compiling clap_builder v4.6.7\n"}
+{"stream":"stderr","sequence":267,"content":"   Compiling futf v0.1.5\n"}
+{"stream":"stderr","sequence":268,"content":"   Compiling crc v3.4.0\n"}
+{"stream":"stderr","sequence":269,"content":"   Compiling markup5ever v0.14.1\n"}
+{"stream":"stderr","sequence":270,"content":"   Compiling regex v1.13.1\n"}
+{"stream":"stderr","sequence":271,"content":"   Compiling block-buffer v0.12.1\n"}
+{"stream":"stderr","sequence":272,"content":"   Compiling crypto-common v0.2.2\n"}
+{"stream":"stderr","sequence":273,"content":"   Compiling rtc-rtp v0.21.0\n"}
+{"stream":"stderr","sequence":274,"content":"   Compiling"}
+{"stream":"stderr","sequence":275,"content":" clap_derive v4.6.7\n"}
+{"stream":"stderr","sequence":276,"content":"   Compiling nom v8.0.0\n"}
+{"stream":"stderr","sequence":277,"content":"   Compiling getrandom v0.3.4\n"}
+{"stream":"stderr","sequence":278,"content":"   Compiling unicode-width v0.2.2\n"}
+{"stream":"stderr","sequence":279,"content":"   Compiling"}
+{"stream":"stderr","sequence":280,"content":" rustc-hash v2.1.3\n"}
+{"stream":"stderr","sequence":281,"content":"   Compiling const-oid v0.10.2\n"}
+{"stream":"stderr","sequence":282,"content":"   Compiling dtoa v1.0.11\n"}
+{"stream":"stderr","sequence":283,"content":"   Compiling data-encoding v2.11.1\n"}
+{"stream":"stderr","sequence":284,"content":"   Compiling"}
+{"stream":"stderr","sequence":285,"content":" allocator-api2 v0.2.21\n"}
+{"stream":"stderr","sequence":286,"content":"   Compiling utf-8 v0.7.6\n"}
+{"stream":"stderr","sequence":287,"content":"   Compiling"}
+{"stream":"stderr","sequence":288,"content":" foldhash v0.1.5\n"}
+{"stream":"stderr","sequence":289,"content":"   Compiling zerocopy v0.8.61\n"}
+{"stream":"stderr","sequence":290,"content":"   Compiling parking v2.2.1\n"}
+{"stream":"stderr","sequence":291,"content":"   Compiling cfg_aliases v0.1.1\n"}
+{"stream":"stderr","sequence":292,"content":"   Compiling nix v0.28.0\n"}
+{"stream":"stderr","sequence":293,"content":"   Compiling event-listener v5.4.2\n"}
+{"stream":"stderr","sequence":294,"content":"   Compiling hashbrown v0.15.5\n"}
+{"stream":"stderr","sequence":295,"content":"   Compiling tendril v0.4.3\n"}
+{"stream":"stderr","sequence":296,"content":"   Compiling"}
+{"stream":"stderr","sequence":297,"content":" dtoa-short v0.3.5\n"}
+{"stream":"stderr","sequence":298,"content":"   Compiling digest v0.11.3\n"}
+{"stream":"stderr","sequence":299,"content":"   Compiling clap v4.6.7\n"}
+{"stream":"stderr","sequence":300,"content":"   Compiling"}
+{"stream":"stderr","sequence":301,"content":" lindera-jieba v6.2.0\n"}
+{"stream":"stderr","sequence":302,"content":"   Compiling rtc-stun v0.21.0\n"}
+{"stream":"stderr","sequence":303,"content":"   Compiling pem v4.0.0\n"}
+{"stream":"stderr","sequence":304,"content":"   Compiling"}
+{"stream":"stderr","sequence":305,"content":" string_cache v0.8.9\n"}
+{"stream":"stderr","sequence":306,"content":"   Compiling der-parser v9.0.0\n"}
+{"stream":"stderr","sequence":307,"content":"   Compiling js-sys v0.3.106\n"}
+{"stream":"stderr","sequence":308,"content":"   Compiling yasna v0.6.0\n"}
+{"stream":"stderr","sequence":309,"content":"   Compiling selectors v0.26.0\n"}
+{"stream":"stderr","sequence":310,"content":"   Compiling tree-sitter v0.27.0\n"}
+{"stream":"stderr","sequence":311,"content":"   Compiling rtc-rtcp v0.21.0\n"}
+{"stream":"stderr","sequence":312,"content":"   Compiling cssparser-macros v0.6.1\n"}
+{"stream":"stderr","sequence":313,"content":"   Compiling platform-num v0.8.0\n"}
+{"stream":"stderr","sequence":314,"content":"   Compiling ahash v0.8.12\n"}
+{"stream":"stderr","sequence":315,"content":"   Compiling"}
+{"stream":"stderr","sequence":316,"content":" errno v0.3.14\n"}
+{"stream":"stderr","sequence":317,"content":"   Compiling"}
+{"stream":"stderr","sequence":318,"content":" dtor-proc-macro v0.0.5\n"}
+{"stream":"stderr","sequence":319,"content":"   Compiling"}
+{"stream":"stderr","sequence":320,"content":" fst v0.4.7\n"}
+{"stream":"stderr","sequence":321,"content":"   Compiling dtor v0.0.6\n"}
+{"stream":"stderr","sequence":322,"content":"   Compiling"}
+{"stream":"stderr","sequence":323,"content":" signal-hook-registry v1.4.8\n"}
+{"stream":"stderr","sequence":324,"content":"   Compiling cssparser v0.34.0\n"}
+{"stream":"stderr","sequence":325,"content":"   Compiling rcgen v0.14.10\n"}
+{"stream":"stderr","sequence":326,"content":"   Compiling"}
+{"stream":"stderr","sequence":327,"content":" x509-parser v0.16.0\n"}
+{"stream":"stderr","sequence":328,"content":"   Compiling tempfile v3.27.0\n"}
+{"stream":"stderr","sequence":329,"content":"   Compiling rtc-sctp v0.21.0\n"}
+{"stream":"stderr","sequence":330,"content":"   Compiling"}
+{"stream":"stderr","sequence":331,"content":" event-listener-strategy v0.5.4\n"}
+{"stream":"stderr","sequence":332,"content":"   Compiling pem v3.0.6\n"}
+{"stream":"stderr","sequence":333,"content":"   Compiling rtc-mdns v0.21.0\n"}
+{"stream":"stderr","sequence":334,"content":"   Compiling"}
+{"stream":"stderr","sequence":335,"content":" fxhash v0.2.1\n"}
+{"stream":"stderr","sequence":336,"content":"   Compiling match_token v0.1.0\n"}
+{"stream":"stderr","sequence":337,"content":"   Compiling derive_more v0.99.20\n"}
+{"stream":"stderr","sequence":338,"content":"   Compiling links-notation-macro v0.1.0\n"}
+{"stream":"stderr","sequence":339,"content":"   Compiling tokio-macros v2.7.2\n"}
+{"stream":"stderr","sequence":340,"content":"   Compiling quinn-udp v0.6.3\n"}
+{"stream":"stderr","sequence":341,"content":"   Compiling uuid v1.27.0\n"}
+{"stream":"stderr","sequence":342,"content":"   Compiling servo_arc v0.4.3\n"}
+{"stream":"stderr","sequence":343,"content":"   Compiling mio v1.2.4\n"}
+{"stream":"stderr","sequence":344,"content":"   Compiling tree-sitter-r v1.3.0\n"}
+{"stream":"stderr","sequence":345,"content":"   Compiling"}
+{"stream":"stderr","sequence":346,"content":" tree-sitter-erlang v0.20.0\n"}
+{"stream":"stderr","sequence":347,"content":"   Compiling"}
+{"stream":"stderr","sequence":348,"content":" tree-sitter-html v0.23.2\n"}
+{"stream":"stderr","sequence":349,"content":"   Compiling tree-sitter-odin v1.3.0\n"}
+{"stream":"stderr","sequence":350,"content":"   Compiling tree-sitter-pascal v0.10.2\n"}
+{"stream":"stderr","sequence":351,"content":"   Compiling tree-sitter-css v0.25.0\n"}
+{"stream":"stderr","sequence":352,"content":"   Compiling tree-sitter-agda v1.3.3\n"}
+{"stream":"stderr","sequence":353,"content":"   Compiling tree-sitter-xml v0.7.0\n"}
+{"stream":"stderr","sequence":354,"content":"   Compiling tree-sitter-ocaml v0.26.0\n"}
+{"stream":"stderr","sequence":355,"content":"   Compiling tree-sitter-sequel v0.3.11\n"}
+{"stream":"stderr","sequence":356,"content":"   Compiling tree-sitter-lua v0.5.0\n"}
+{"stream":"stderr","sequence":357,"content":"   Compiling"}
+{"stream":"stderr","sequence":358,"content":" tree-sitter-python v0.25.0\n"}
+{"stream":"stderr","sequence":359,"content":"   Compiling tree-sitter-elm v5.9.4\n"}
+{"stream":"stderr","sequence":360,"content":"   Compiling"}
+{"stream":"stderr","sequence":361,"content":" tree-sitter-hcl v1.1.0\n"}
+{"stream":"stderr","sequence":362,"content":"   Compiling"}
+{"stream":"stderr","sequence":363,"content":" tree-sitter-cpp v0.23.4\n"}
+{"stream":"stderr","sequence":364,"content":"   Compiling ts-parser-perl v2.0.0\n"}
+{"stream":"stderr","sequence":365,"content":"   Compiling"}
+{"stream":"stderr","sequence":366,"content":" tree-sitter-vb-dotnet v0.1.0\n"}
+{"stream":"stderr","sequence":367,"content":"   Compiling tree-sitter-nix v0.3.0\n"}
+{"stream":"stderr","sequence":368,"content":"   Compiling"}
+{"stream":"stderr","sequence":369,"content":" tree-sitter-scala v0.26.2\n"}
+{"stream":"stderr","sequence":370,"content":"   Compiling"}
+{"stream":"stderr","sequence":371,"content":" tree-sitter-powershell v0.26.4\n"}
+{"stream":"stderr","sequence":372,"content":"   Compiling"}
+{"stream":"stderr","sequence":373,"content":" tree-sitter-elixir v0.3.5\n"}
+{"stream":"stderr","sequence":374,"content":"   Compiling"}
+{"stream":"stderr","sequence":375,"content":" tree-sitter-haskell v0.24.1\n"}
+{"stream":"stderr","sequence":376,"content":"   Compiling tree-sitter-c-sharp v0.23.5\n"}
+{"stream":"stderr","sequence":377,"content":"   Compiling tree-sitter-zig v1.1.2\n"}
+{"stream":"stderr","sequence":378,"content":"   Compiling"}
+{"stream":"stderr","sequence":379,"content":" tree-sitter-toml-ng v0.7.0\n"}
+{"stream":"stderr","sequence":380,"content":"   Compiling tree-sitter-md-025 v0.5.6\n"}
+{"stream":"stderr","sequence":381,"content":"   Compiling tree-sitter-ruby v0.23.1\n"}
+{"stream":"stderr","sequence":382,"content":"   Compiling"}
+{"stream":"stderr","sequence":383,"content":" tree-sitter-kotlin-ng v1.1.0\n"}
+{"stream":"stderr","sequence":384,"content":"   Compiling tree-sitter-php v0.24.2\n"}
+{"stream":"stderr","sequence":385,"content":"   Compiling tree-sitter-dart v0.2.0\n"}
+{"stream":"stderr","sequence":386,"content":"   Compiling tree-sitter-groovy v0.1.2\n"}
+{"stream":"stderr","sequence":387,"content":"   Compiling tree-sitter-bash v0.25.1\n"}
+{"stream":"stderr","sequence":388,"content":"   Compiling"}
+{"stream":"stderr","sequence":389,"content":" tree-sitter-yaml v0.7.2\n"}
+{"stream":"stderr","sequence":390,"content":"   Compiling"}
+{"stream":"stderr","sequence":391,"content":" tree-sitter-swift v0.7.4\n"}
+{"stream":"stderr","sequence":392,"content":"   Compiling tree-sitter-matlab v1.3.1\n"}
+{"stream":"stderr","sequence":393,"content":"   Compiling dotenvy v0.15.7\n"}
+{"stream":"stderr","sequence":394,"content":"   Compiling"}
+{"stream":"stderr","sequence":395,"content":" allocator-api2 v0.4.0\n"}
+{"stream":"stderr","sequence":396,"content":"   Compiling rust_decimal v1.43.0\n"}
+{"stream":"stderr","sequence":397,"content":"   Compiling ctor-proc-macro v0.0.6\n"}
+{"stream":"stderr","sequence":398,"content":"   Compiling iana-time-zone v0.1.65\n"}
+{"stream":"stderr","sequence":399,"content":"   Compiling lino-env v0.1.0\n"}
+{"stream":"stderr","sequence":400,"content":"   Compiling beef v0.5.2\n"}
+{"stream":"stderr","sequence":401,"content":"   Compiling"}
+{"stream":"stderr","sequence":402,"content":" hashbrown v0.14.5\n"}
+{"stream":"stderr","sequence":403,"content":"   Compiling platform-data v2.0.0\n"}
+{"stream":"stderr","sequence":404,"content":"   Compiling chrono v0.4.45\n"}
+{"stream":"stderr","sequence":405,"content":"   Compiling ctor v0.4.3\n"}
+{"stream":"stderr","sequence":406,"content":"   Compiling platform-mem v0.3.0\n"}
+{"stream":"stderr","sequence":407,"content":"   Compiling dashmap v6.2.1\n"}
+{"stream":"stderr","sequence":408,"content":"   Compiling tokio v1.53.3\n"}
+{"stream":"stderr","sequence":409,"content":"   Compiling rtc-ice v0.21.0\n"}
+{"stream":"stderr","sequence":410,"content":"   Compiling links-notation v0.23.0\n"}
+{"stream":"stderr","sequence":411,"content":"   Compiling"}
+{"stream":"stderr","sequence":412,"content":" html5ever v0.29.1\n"}
+{"stream":"stderr","sequence":413,"content":"   Compiling rtc-dtls v0.21.0\n"}
+{"stream":"stderr","sequence":414,"content":"   Compiling rtc-datachannel v0.21.0\n"}
+{"stream":"stderr","sequence":415,"content":"   Compiling platform-trees v0.3.4\n"}
+{"stream":"stderr","sequence":416,"content":"   Compiling rtc-interceptor v0.21.0\n"}
+{"stream":"stderr","sequence":417,"content":"   Compiling rtc-srtp v0.21.0\n"}
+{"stream":"stderr","sequence":418,"content":"   Compiling rtc-turn v0.21.0\n"}
+{"stream":"stderr","sequence":419,"content":"   Compiling getopts v0.2.24\n"}
+{"stream":"stderr","sequence":420,"content":"   Compiling rtc-media v0.21.0\n"}
+{"stream":"stderr","sequence":421,"content":"   Compiling"}
+{"stream":"stderr","sequence":422,"content":" vte v0.15.0\n"}
+{"stream":"stderr","sequence":423,"content":"   Compiling itertools v0.14.0\n"}
+{"stream":"stderr","sequence":424,"content":"   Compiling futures-executor v0.3.34\n"}
+{"stream":"stderr","sequence":425,"content":"   Compiling"}
+{"stream":"stderr","sequence":426,"content":" meta-language v1.0.0\n"}
+{"stream":"stderr","sequence":427,"content":"   Compiling lingua-chinese-language-model v1.3.0\n"}
+{"stream":"stderr","sequence":428,"content":"   Compiling"}
+{"stream":"stderr","sequence":429,"content":" lingua-russian-language-model v1.3.0\n"}
+{"stream":"stderr","sequence":430,"content":"   Compiling"}
+{"stream":"stderr","sequence":431,"content":" lingua-french-language-model v1.3.0\n"}
+{"stream":"stderr","sequence":432,"content":"   Compiling lingua-urdu-language-model v1.3.0\n"}
+{"stream":"stderr","sequence":433,"content":"   Compiling lingua-bengali-language-model v1.3.0\n"}
+{"stream":"stderr","sequence":434,"content":"   Compiling"}
+{"stream":"stderr","sequence":435,"content":" lingua-portuguese-language-model v1.3.0\n"}
+{"stream":"stderr","sequence":436,"content":"   Compiling lingua-english-language-model v1.3.0\n"}
+{"stream":"stderr","sequence":437,"content":"   Compiling"}
+{"stream":"stderr","sequence":438,"content":" lingua-spanish-language-model v1.3.0\n"}
+{"stream":"stderr","sequence":439,"content":"   Compiling"}
+{"stream":"stderr","sequence":440,"content":" lingua-arabic-language-model v1.3.0\n"}
+{"stream":"stderr","sequence":441,"content":"   Compiling"}
+{"stream":"stderr","sequence":442,"content":" lingua-hindi-language-model v1.3.0\n"}
+{"stream":"stderr","sequence":443,"content":"   Compiling filedescriptor v0.8.3\n"}
+{"stream":"stderr","sequence":444,"content":"   Compiling rtc-sdp v0.21.0\n"}
+{"stream":"stderr","sequence":445,"content":"   Compiling strum_macros v0.27.2\n"}
+{"stream":"stderr","sequence":446,"content":"   Compiling concurrent-queue v2.5.0\n"}
+{"stream":"stderr","sequence":447,"content":"   Compiling async-trait v0.1.92\n"}
+{"stream":"stderr","sequence":448,"content":"   Compiling counter v0.7.1\n"}
+{"stream":"stderr","sequence":449,"content":"   Compiling raw-cpuid v11.6.0\n"}
+{"stream":"stderr","sequence":450,"content":"   Compiling serial2 v0.2.38\n"}
+{"stream":"stderr","sequence":451,"content":"   Compiling blake3 v1.8.7\n"}
+{"stream":"stderr","sequence":452,"content":"   Compiling hex v0.4.3\n"}
+{"stream":"stderr","sequence":453,"content":"   Compiling winnow v1.0.4\n"}
+{"stream":"stderr","sequence":454,"content":"   Compiling"}
+{"stream":"stderr","sequence":455,"content":" linktime-proc-macro v0.2.3\n"}
+{"stream":"stderr","sequence":456,"content":"   Compiling unicode-general-category v1.1.0\n"}
+{"stream":"stderr","sequence":457,"content":"   Compiling"}
+{"stream":"stderr","sequence":458,"content":" leak_slice v0.2.0\n"}
+{"stream":"stderr","sequence":459,"content":"   Compiling tap v1.0.1\n"}
+{"stream":"stderr","sequence":460,"content":"   Compiling shell-words v1.1.1\n"}
+{"stream":"stderr","sequence":461,"content":"   Compiling downcast-rs v1.2.1\n"}
+{"stream":"stderr","sequence":462,"content":"   Compiling"}
+{"stream":"stderr","sequence":463,"content":" streaming-iterator v0.1.9\n"}
+{"stream":"stderr","sequence":464,"content":"   Compiling link-calculator v0.22.0\n"}
+{"stream":"stderr","sequence":465,"content":"   Compiling ego-tree v0.9.0\n"}
+{"stream":"stderr","sequence":466,"content":"   Compiling link-section v0.19.3\n"}
+{"stream":"stderr","sequence":467,"content":"   Compiling strum v0.27.2\n"}
+{"stream":"stderr","sequence":468,"content":"   Compiling unicase v2.10.0\n"}
+{"stream":"stderr","sequence":469,"content":"   Compiling tinyvec v1.13.3\n"}
+{"stream":"stderr","sequence":470,"content":"   Compiling maplit v1.0.2\n"}
+{"stream":"stderr","sequence":471,"content":"   Compiling"}
+{"stream":"stderr","sequence":472,"content":" rtc v0.21.0\n"}
+{"stream":"stderr","sequence":473,"content":"   Compiling lingua v1.8.0\n"}
+{"stream":"stderr","sequence":474,"content":"   Compiling unicode-normalization v0.1.25\n"}
+{"stream":"stderr","sequence":475,"content":"   Compiling ctor v1.0.13\n"}
+{"stream":"stderr","sequence":476,"content":"   Compiling scraper v0.21.0\n"}
+{"stream":"stderr","sequence":477,"content":"   Compiling toml_parser v1.1.3+spec-1.1.0\n"}
+{"stream":"stderr","sequence":478,"content":"   Compiling portable-pty v0.9.0\n"}
+{"stream":"stderr","sequence":479,"content":"   Compiling"}
+{"stream":"stderr","sequence":480,"content":" doublets v0.5.0\n"}
+{"stream":"stderr","sequence":481,"content":"   Compiling quanta v0.12.6\n"}
+{"stream":"stderr","sequence":482,"content":"   Compiling"}
+{"stream":"stderr","sequence":483,"content":" async-channel v2.5.0\n"}
+{"stream":"stderr","sequence":484,"content":"   Compiling futures v0.3.34\n"}
+{"stream":"stderr","sequence":485,"content":"   Compiling vt100 v0.16.2\n"}
+{"stream":"stderr","sequence":486,"content":"   Compiling lindera v6.2.0\n"}
+{"stream":"stderr","sequence":487,"content":"   Compiling lino-arguments v0.3.0\n"}
+{"stream":"stderr","sequence":488,"content":"   Compiling"}
+{"stream":"stderr","sequence":489,"content":" async-broadcast v0.7.2\n"}
+{"stream":"stderr","sequence":490,"content":"   Compiling"}
+{"stream":"stderr","sequence":491,"content":" web-sys v0.3.106\n"}
+{"stream":"stderr","sequence":492,"content":"   Compiling"}
+{"stream":"stderr","sequence":493,"content":" wasm-bindgen-futures v0.4.79\n"}
+{"stream":"stderr","sequence":494,"content":"   Compiling serde-wasm-bindgen v0.6.5\n"}
+{"stream":"stderr","sequence":495,"content":"   Compiling sha1 v0.11.0\n"}
+{"stream":"stderr","sequence":496,"content":"   Compiling sha2 v0.11.0\n"}
+{"stream":"stderr","sequence":497,"content":"   Compiling whatlang v0.18.0\n"}
+{"stream":"stderr","sequence":498,"content":"   Compiling symbol_table v0.4.0\n"}
+{"stream":"stderr","sequence":499,"content":"   Compiling links-notation v0.22.0\n"}
+{"stream":"stderr","sequence":500,"content":"   Compiling console_error_panic_hook v0.1.7\n"}
+{"stream":"stderr","sequence":501,"content":"   Compiling"}
+{"stream":"stderr","sequence":502,"content":" num-rational v0.4.2\n"}
+{"stream":"stderr","sequence":503,"content":"   Compiling num-bigint v0.5.1\n"}
+{"stream":"stderr","sequence":504,"content":"   Compiling tracing-attributes v0.1.31\n"}
+{"stream":"stderr","sequence":505,"content":"   Compiling env_logger v0.9.3\n"}
+{"stream":"stderr","sequence":506,"content":"   Compiling tracing-core v0.1.36\n"}
+{"stream":"stderr","sequence":507,"content":"   Compiling"}
+{"stream":"stderr","sequence":508,"content":" which v8.0.6\n"}
+{"stream":"stderr","sequence":509,"content":"   Compiling toml_datetime v1.1.1+spec-1.1.0\n"}
+{"stream":"stderr","sequence":510,"content":"   Compiling html-escape v0.2.15\n"}
+{"stream":"stderr","sequence":511,"content":"   Compiling symbolic_expressions v5.0.3\n"}
+{"stream":"stderr","sequence":512,"content":"   Compiling unicode-segmentation v1.13.3\n"}
+{"stream":"stderr","sequence":513,"content":"   Compiling constant_time_eq v0.4.2\n"}
+{"stream":"stderr","sequence":514,"content":"   Compiling unicode-bidi v0.3.18\n"}
+{"stream":"stderr","sequence":515,"content":"   Compiling mutate_once v0.1.2\n"}
+{"stream":"stderr","sequence":516,"content":"   Compiling formal-ai v0.355.34 (/home/[user]/work/formal-ai/formal-ai/.formal-ai-source/rust)\n"}
+{"stream":"stderr","sequence":517,"content":"   Compiling same-file v1.0.6\n"}
+{"stream":"stderr","sequence":518,"content":"   Compiling toml_writer v1.1.2+spec-1.1.0\n"}
+{"stream":"stderr","sequence":519,"content":"   Compiling walkdir v2.5.0\n"}
+{"stream":"stderr","sequence":520,"content":"   Compiling"}
+{"stream":"stderr","sequence":521,"content":" toml_edit v0.25.15+spec-1.1.0\n"}
+{"stream":"stderr","sequence":522,"content":"   Compiling kamadak-exif v0.6.1\n"}
+{"stream":"stderr","sequence":523,"content":"   Compiling web-capture v0.3.37\n"}
+{"stream":"stderr","sequence":524,"content":"   Compiling egg v0.11.0\n"}
+{"stream":"stderr","sequence":525,"content":"   Compiling command-stream v1.5.3\n"}
+{"stream":"stderr","sequence":526,"content":"   Compiling tracing v0.1.44\n"}
+{"stream":"stderr","sequence":527,"content":"   Compiling tungstenite v0.30.0\n"}
+{"stream":"stderr","sequence":528,"content":"   Compiling webrtc v0.21.0\n"}
+{"stream":"stderr","sequence":529,"content":"   Compiling link-cli v1.0.0\n"}
+{"stream":"stderr","sequence":530,"content":"   Compiling lino-arguments v0.4.0\n"}
+{"stream":"stderr","sequence":531,"content":"   Compiling lino-objects-codec v0.8.0\n"}
+{"stream":"stderr","sequence":532,"content":"   Compiling web-search v0.6.0\n"}
+{"stream":"stderr","sequence":533,"content":"   Compiling thread-priority v3.1.1\n"}
+{"stream":"stderr","sequence":534,"content":"   Compiling fs2 v0.4.3\n"}
+{"stream":"stderr","sequence":535,"content":"    Finished `release` profile [optimized] target(s) in 8m 10s\n"}
