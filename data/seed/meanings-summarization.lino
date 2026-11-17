@@ -30,7 +30,7 @@ meanings
     effect "Exclude the sentence before ranking substantive statements."
     unit "not applicable"
     example "Best regards,"
-    lexeme en "thank you for your attention" "thanks for reading" "best regards" "kind regards" regards sincerely
+    lexeme en "thank you for your attention" "thanks for reading" "best regards" "kind regards" "regards" "sincerely"
     lexeme ru "спасибо за внимание" "благодарю за внимание" "с уважением" "с наилучшими пожеланиями"
     lexeme hi "आपके ध्यान के लिए धन्यवाद" सादर
     lexeme zh 感谢您的关注 谢谢大家 此致敬礼
@@ -42,8 +42,10 @@ meanings
     effect "Render the main clause followed by its complete reasons."
     unit "not applicable"
     example "The school closed because the roads flooded."
-    lexeme en because
+    lexeme en "because"
     lexeme ru "потому что"
+    lexeme hi क्योंकि
+    lexeme zh 因为
     lexeme es porque
   text_summary_cause_phrase
     defined-by concept
@@ -53,6 +55,10 @@ meanings
     unit "not applicable"
     example "The school closed because of flooding."
     lexeme en "because of"
+    lexeme ru из-за
+    lexeme hi "की वजह से"
+    lexeme zh 由于
+    lexeme es "debido a"
   weather
     grounded-in Q11663
     defined-by entity
