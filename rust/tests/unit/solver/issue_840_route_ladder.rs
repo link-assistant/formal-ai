@@ -161,6 +161,8 @@ fn replay_node(prompt: &str, sandbox: &Path, documents: &[Value]) -> Replay {
             tool_choice: None,
             functions: Vec::new(),
             function_call: None,
+            output_standard: None,
+            lexical_density: None,
             stream_options: None,
         };
         let completion = create_chat_completion_with_solver(&request, &solver);

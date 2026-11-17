@@ -14,12 +14,12 @@
 js_rust_translation
   upstream link-foundation/meta-language
   commit eb0574d5528babd3b4aadece81590d8e2230b99b
-  modules 161
-  translated_items 336
+  modules 162
+  translated_items 337
   workaround_items 37
   inferred_signatures 3
-  carried_items 2581
-  translated_modules 112
+  carried_items 2598
+  translated_modules 113
   fully_translated_modules 1
   refused_modules 49
 workaround array-push items 2
@@ -32,6 +32,7 @@ module js/agentic/crate/calculation.mjs translated 0 workaround 0 inferred 0 car
 module js/agentic/crate/capability_routing.mjs translated 7 workaround 0 inferred 0 carried 66
 module js/agentic/crate/change_request.mjs translated 1 workaround 1 inferred 0 carried 15
 module js/agentic/crate/client_contract_learning.mjs translated 0 workaround 1 inferred 0 carried 15
+module js/agentic/crate/cnl_output.mjs translated 1 workaround 0 inferred 0 carried 17
 module js/agentic/crate/coding_catalog.mjs translated 4 workaround 2 inferred 0 carried 27
 module js/agentic/crate/coding_cjk.mjs translated 0 workaround 0 inferred 0 carried 1
 module js/agentic/crate/coding_program_contract.mjs translated 0 workaround 1 inferred 0 carried 32
@@ -189,21 +190,21 @@ module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inf
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 26
 refusal "import of names its module does not translate" 356
 refusal "JSDoc type {…}" 219
-refusal "import from '…'" 212
+refusal "import from '…'" 213
 refusal "null" 194
-refusal "arrow function" 139
+refusal "arrow function" 140
 refusal "type: unknown name (a sibling item or an import)" 122
-refusal "function value …" 111
-refusal "object without a $ tag" 94
+refusal "function value …" 112
+refusal "object without a $ tag" 99
 refusal "new expression" 93
-refusal "regular expression" 65
-refusal "method call .find()" 62
+refusal "regular expression" 66
+refusal "method call .find()" 63
 refusal "method call .split()" 60
-refusal "method call .map()" 58
+refusal "method call .map()" 59
 refusal "method call .filter()" 56
 refusal "method call .some()" 50
+refusal "method call .slice()" 48
 refusal "Array.from" 47
-refusal "method call .slice()" 47
 refusal "method call .push()" 38
 refusal "field access" 33
 refusal "method call .indexOf()" 33
@@ -217,8 +218,8 @@ refusal "case test" 18
 refusal "method call .every()" 18
 refusal "undefined" 18
 refusal "syntax: @param needs a type and a name" 16
+refusal "typeof operator" 15
 refusal "method call .flatMap()" 14
-refusal "typeof operator" 14
 refusal "for with const" 12
 refusal "method call .join()" 12
 refusal "method call .codePointAt()" 11
@@ -228,18 +229,19 @@ refusal "object spread" 10
 refusal "assignment" 9
 refusal "destructured parameter" 9
 refusal "array destructuring" 8
+refusal "syntax: unterminated string literal" 7
 refusal "Array.isArray" 6
-refusal "syntax: unterminated string literal" 6
 refusal "method call .has()" 5
 refusal "method call .sort()" 5
 refusal "throw new …" 5
+refusal "JSON.stringify" 4
 refusal "Object.keys" 4
 refusal "method call .lastIndexOf()" 4
 refusal "syntax: unsupported template escape" 4
+refusal "syntax: unterminated template literal" 4
 refusal "throw of a non-error value" 4
 refusal "top-level class statement" 4
 refusal "type: one value is used as a Uint8Array and as an array; declare the types of the function with JSDoc" 4
-refusal "JSON.stringify" 3
 refusal "Object.prototype.hasOwnProperty.call" 3
 refusal "call of a computed function" 3
 refusal "let …" 3
@@ -247,7 +249,6 @@ refusal "method call .forEach()" 3
 refusal "method call .repeat()" 3
 refusal "method call .toFixed()" 3
 refusal "several declarators" 3
-refusal "syntax: unterminated template literal" 3
 refusal "type: one value is used as a string and as an array; declare the types of the function with JSDoc" 3
 refusal "type: one value is used as an array and as a string; declare the types of the function with JSDoc" 3
 refusal "bitwise &" 2
@@ -259,6 +260,7 @@ refusal "method call .match()" 2
 refusal "method call .subarray()" 2
 refusal "rest parameter" 2
 refusal "shift <<" 2
+refusal "syntax: unsupported string escape \p" 2
 refusal "syntax: unsupported string escape \x" 2
 refusal "BigInt" 1
 refusal "Math.fround" 1
@@ -291,7 +293,6 @@ refusal "shift >>" 1
 refusal "shift >>>" 1
 refusal "syntax: unsupported string escape \]" 1
 refusal "syntax: unsupported string escape \b" 1
-refusal "syntax: unsupported string escape \p" 1
 refusal "syntax: unsupported string escape \s" 1
 refusal "syntax: unsupported template escape \r" 1
 refusal "syntax: unsupported template escape \u" 1

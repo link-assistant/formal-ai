@@ -27,6 +27,7 @@ pub const CLIENT_INTEGRATIONS_LINO: &str =
     include_str!("../../embedded/data/seed/client-integrations.lino");
 pub const CLOUD_SYNC_POLICY_LINO: &str =
     include_str!("../../embedded/data/seed/cloud-sync-policy.lino");
+pub const CNL_OUTPUT_LINO: &str = include_str!("../../embedded/data/seed/cnl-output.lino");
 pub const CODE_EXAMPLE_PARTS_LINO: &str =
     include_str!("../../embedded/data/seed/code-example-parts.lino");
 pub const CODE_NODE_DECOMPOSITION_LINO: &str =
@@ -139,6 +140,8 @@ pub const MEANINGS_COMPUTER_USE_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-computer-use.lino");
 pub const MEANINGS_CONCEPT_LOOKUP_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-concept-lookup.lino");
+pub const MEANINGS_CONTROLLED_OUTPUT_LINO: &str =
+    include_str!("../../embedded/data/seed/meanings-controlled-output.lino");
 pub const MEANINGS_CONVERSATION_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-conversation.lino");
 pub const MEANINGS_CONVERSATION_SUMMARY_LINO: &str =
@@ -469,6 +472,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/client-completion-contracts.lino", CLIENT_COMPLETION_CONTRACTS_LINO),
         ("data/seed/client-integrations.lino", CLIENT_INTEGRATIONS_LINO),
         ("data/seed/cloud-sync-policy.lino", CLOUD_SYNC_POLICY_LINO),
+        ("data/seed/cnl-output.lino", CNL_OUTPUT_LINO),
         ("data/seed/code-example-parts.lino", CODE_EXAMPLE_PARTS_LINO),
         ("data/seed/code-node-decomposition.lino", CODE_NODE_DECOMPOSITION_LINO),
         ("data/seed/code-review-rules.lino", CODE_REVIEW_RULES_LINO),
@@ -537,6 +541,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings-coding-tasks.lino", MEANINGS_CODING_TASKS_LINO),
         ("data/seed/meanings-computer-use.lino", MEANINGS_COMPUTER_USE_LINO),
         ("data/seed/meanings-concept-lookup.lino", MEANINGS_CONCEPT_LOOKUP_LINO),
+        ("data/seed/meanings-controlled-output.lino", MEANINGS_CONTROLLED_OUTPUT_LINO),
         ("data/seed/meanings-conversation.lino", MEANINGS_CONVERSATION_LINO),
         ("data/seed/meanings-conversation-summary.lino", MEANINGS_CONVERSATION_SUMMARY_LINO),
         ("data/seed/meanings-creative-tasks.lino", MEANINGS_CREATIVE_TASKS_LINO),
@@ -885,6 +890,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_CODING_TASKS_LINO,
     MEANINGS_COMPUTER_USE_LINO,
     MEANINGS_CONCEPT_LOOKUP_LINO,
+    MEANINGS_CONTROLLED_OUTPUT_LINO,
     MEANINGS_CONVERSATION_LINO,
     MEANINGS_CONVERSATION_SUMMARY_LINO,
     MEANINGS_CREATIVE_TASKS_LINO,

@@ -49,6 +49,9 @@ seed_registry
     bundle true
   seed cloud-sync-policy
     bundle true
+  seed cnl-output
+    bundle true
+    web true
   seed code-example-parts
     bundle true
     web true
@@ -248,6 +251,10 @@ seed_registry
     bundle true
     lexicon meaning
   seed meanings-concept-lookup
+    bundle true
+    lexicon meaning
+    web true
+  seed meanings-controlled-output
     bundle true
     lexicon meaning
     web true

@@ -827,7 +827,11 @@ fn chat_completion_sse_response(
         "delta": {},
         "finish_reason": finish_reason,
     });
-    body.push_str(&sse_chunk(&base, &final_chunk));
+    let mut final_base = base.clone();
+    if let Some(projection) = &completion.output_projection {
+        final_base["output_projection"] = projection.clone();
+    }
+    body.push_str(&sse_chunk(&final_base, &final_chunk));
 
     // Optional usage chunk — the AI SDK reads token counts from here when
     // `stream_options.include_usage` is set (per OpenAI's spec).

@@ -141,6 +141,8 @@ pub struct SolverConfig {
     /// sets an ISO 639-1 code before replaying the whole solver. The setting also
     /// prevents recursive language-switch replays.
     pub forced_response_language: Option<&'static str>,
+    /// Output constraints never restrict the accepted input grammar.
+    pub output: crate::cnl_output::OutputConfig,
     /// Compute budget for the step-7 random/evolutionary search stage (issue
     /// #662), counted in candidate evaluations. When reuse and rule reasoning
     /// produce no candidate for a recognized search problem, the solver spends
@@ -180,6 +182,7 @@ impl Default for SolverConfig {
             blueprint_composition: BlueprintComposition::default(),
             probability_policy: ProbabilityDecisionPolicy::default(),
             forced_response_language: None,
+            output: crate::cnl_output::configuration::configured_output(),
             compute_budget: 512,
             draft_count: 1,
         }
@@ -270,6 +273,13 @@ impl UniversalSolver {
     ) -> SymbolicAnswer {
         // Issue #667 (R383): under a debug session the outermost solve of a
         // connection waits at its first stage before it runs.
+        let output_turn = crate::cnl_output::output_turn(
+            prompt,
+            history,
+            self.config.output,
+            crate::cnl_output::cnl_policy(),
+        );
+        let prompt = output_turn.prompt.as_str();
         let _turn = crate::server::begin_turn(prompt);
         let mut log = EventLog::new();
         let mut answer = (|| {
@@ -298,6 +308,20 @@ impl UniversalSolver {
                 log.append(kind, turn.content.clone());
             }
 
+            if let Some(text) = &output_turn.rewrite {
+                return finalize_simple(
+                    prompt,
+                    &mut log,
+                    "cnl_paraphrase",
+                    "response:cnl_paraphrase",
+                    &crate::cnl_output::output_source(
+                        text,
+                        detect_language(text).slug(),
+                        crate::cnl_output::cnl_policy(),
+                    ),
+                    1.0,
+                );
+            }
             log.append("impulse", prompt.to_owned());
 
             let language = detect_language(prompt);
@@ -841,13 +865,45 @@ impl UniversalSolver {
         })();
         // R1012: a handler that admits an impasse hands the turn to the
         // general loop (`metaResolveImpasse`, js/worker/formal_ai_worker_solve.js).
-        crate::meta_reasoner::resolve_impasse(prompt, &mut answer, &mut log);
+        if output_turn.rewrite.is_none() {
+            crate::meta_reasoner::resolve_impasse(prompt, &mut answer, &mut log);
+        }
         // Issue #1550: every answer goes through the recursive procedure
         // (`crate::meta_executor`, twin of `solveAnswer` in
         // js/agentic/crate/meta_executor.mjs). Its trace joins the log, and the
         // composition of the sub-task answers replaces the answer only when
         // least action selects it over the direct derivation.
-        self.run_meta_procedure(prompt, history, probability_store, &mut answer, &mut log);
+        if output_turn.rewrite.is_none() {
+            self.run_meta_procedure(prompt, history, probability_store, &mut answer, &mut log);
+        }
+        let output_language = self
+            .config
+            .forced_response_language
+            .unwrap_or_else(|| detect_language(&answer.answer).slug());
+        let rendered = crate::cnl_output::render_output(
+            &crate::cnl_output::formalize_output(
+                &answer.answer,
+                output_language,
+                crate::cnl_output::cnl_policy(),
+            ),
+            output_turn.config,
+            crate::cnl_output::cnl_policy(),
+            &(),
+        );
+        if output_turn.config != crate::cnl_output::OutputConfig::default()
+            || rendered.content != answer.answer
+        {
+            log.append(
+                "cnl_output",
+                serde_json::to_string(&rendered.report).expect("output report"),
+            );
+            answer
+                .links_notation
+                .push_str(&crate::cnl_output::output_links_notation(
+                    &rendered.document,
+                ));
+        }
+        answer.answer = rendered.content;
         crate::derivation::finalize_answer(&mut answer, &mut log);
         crate::dialog_log::record_native_response_if_enabled(
             "UniversalSolver::solve_with_history_probability_store_and_intent_cache",

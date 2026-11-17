@@ -583,6 +583,8 @@ roles
     kind meaning
   knowledge_value
     kind meaning
+  lexical-identity
+    kind predicate
   lexical_meta
     kind predicate
   line-slice-count
@@ -755,6 +757,8 @@ roles
     kind predicate
   otherwise-marker
     kind meaning
+  output-constraint
+    kind predicate
   output_display_request
     kind meaning
   output_obligation_verb

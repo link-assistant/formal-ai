@@ -31,7 +31,9 @@ mod cli_shared_dialog;
 mod cli_statement_audit;
 mod cli_summarization;
 mod cli_telegram;
+mod cli_thinking;
 mod cli_translate;
+use cli_thinking::print_thinking_trace;
 
 use cli_algorithm::{AlgorithmArgs, run_algorithm};
 use cli_benchmark::{BenchmarkAction, run_benchmark};
@@ -63,9 +65,8 @@ use formal_ai::{
     ChatCompletionRequest, ChatMessage, DEFAULT_MODEL, ExecutionSurface, ProxyConfig,
     ResponsesRequest, SolverConfig, SymbolicAnswer, UniversalSolver, WithFormalAiArgs,
     create_chat_completion_with_solver, create_response_with_solver, delimit_tool_args,
-    enable_http_agent_mode_for_current_process, knowledge_links_notation,
-    naturalize_thinking_step_in, run_proxy, run_with_formal_ai, thinking_answer_language,
-    thinking_trace_heading,
+    enable_http_agent_mode_for_current_process, knowledge_links_notation, run_proxy,
+    run_with_formal_ai,
 };
 
 /// The canonical issue-#468 task; its wording carries the planner's routing keywords.
@@ -95,6 +96,13 @@ struct Args {
         value_parser = formal_ai::cli_env::bool_env_value_parser
     )]
     silent: bool,
+
+    /// Named output constraints, independent of accepted input phrasing.
+    #[arg(long, global = true, env = "FORMAL_AI_OUTPUT_STANDARD")]
+    output_standard: Option<String>,
+    /// Vocabulary density: standard, primes, top-N, dense or max-precision.
+    #[arg(long, global = true, env = "FORMAL_AI_LEXICAL_DENSITY")]
+    lexical_density: Option<String>,
 
     #[command(subcommand)]
     command: Option<Command>,
@@ -662,6 +670,10 @@ fn main() -> Result<(), Box<dyn Error>> {
         std::env::args_os().collect(),
         &Args::command(),
     ));
+    formal_ai::cnl_output::configuration::configure_options(
+        arguments.output_standard.as_deref(),
+        arguments.lexical_density.as_deref(),
+    )?;
     formal_ai::structured_tracing::install().map_err(std::io::Error::other)?;
     let verbose = arguments.verbose && !arguments.silent;
     formal_ai::dialog_log::configure_verbose(verbose);
@@ -897,37 +909,6 @@ fn solver_for_chat(
     UniversalSolver::new(config)
 }
 
-/// Render the solver's concrete thinking trace for the `--thinking` flag.
-///
-/// Each step is shown by its naturalized, human-readable `summary` (issue #488)
-/// — the same meta-language description the web UI and API surfaces expose —
-/// rather than its internal `step` slug. Composite steps are nested under their
-/// parent with a `↳` marker so the recursively composite (fractal) structure of
-/// the reasoning is visible on the CLI too.
-///
-/// The sentences are written in the language the answer itself is written in
-/// (issue #889): a Russian answer gets a Russian trace, not an English
-/// description of a Russian answer.
-fn print_thinking_trace(answer: &SymbolicAnswer) {
-    if answer.thinking_steps.is_empty() {
-        return;
-    }
-    let language = thinking_answer_language(&answer.thinking_steps);
-    let heading = thinking_trace_heading(&language);
-    if !heading.is_empty() {
-        println!("{heading}:");
-    }
-    for step in &answer.thinking_steps {
-        let sentence = naturalize_thinking_step_in(&language, &step.step, &step.detail);
-        if step.parent_id.is_some() {
-            println!("    ↳ {sentence}");
-        } else {
-            println!("  {sentence}");
-        }
-    }
-    println!();
-}
-
 fn run_chat(
     prompt: &str,
     format: OutputFormat,
@@ -955,6 +936,8 @@ fn run_chat(
                 tool_choice: None,
                 functions: Vec::new(),
                 function_call: None,
+                output_standard: None,
+                lexical_density: None,
                 stream_options: None,
             };
             println!(

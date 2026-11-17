@@ -1,0 +1,130 @@
+# Output constraints are independent of the accepted input language.
+# Required checks are deliberately explicit. Missing evidence is not compliance.
+controlled-output
+  profile cnl-default
+    aliases "default|controlled natural language"
+    maximum-words 20
+    required "active_voice|explicit_references|unambiguous_vocabulary|ace_grammar|ste_dictionary|plain_language_reader_evaluation|minimal_english_semantics"
+  profile asd-ste100
+    aliases "ASD-STE100|Simplified Technical English|STE"
+    maximum-words 20
+    required "ste_writing_rules|ste_dictionary"
+  profile ace
+    aliases "ACE|Attempto Controlled English"
+    required "ace_grammar|ace_interpretation"
+  profile gellish
+    aliases "Gellish|Formalized English"
+    required "gellish_dictionary|gellish_relations"
+  profile sbvr
+    aliases "SBVR|Structured English"
+    required "sbvr_vocabulary|sbvr_rules"
+  profile plain-language
+    aliases "Plain Language|Plain English|ISO 24495-1"
+    required "plain_language_reader_evaluation"
+  profile minimal-english
+    aliases "Minimal English|Minimal Russian|Minimal Hindi|Minimal Chinese|Minimal Spanish"
+    required "minimal_english_semantics"
+  profile e-prime
+    aliases "E-Prime|E Prime"
+    forbidden "am|is|are|was|were|be|been|being|isn't|aren't|wasn't|weren't|i'm|you're|we're|they're|it's|he's|she's|that's|there's|who's|what's"
+    required "e_prime_english"
+  profile basic-english
+    aliases "Basic English"
+    required "basic_english_vocabulary|basic_english_grammar"
+  profile special-english
+    aliases "Special English"
+    required "special_english_vocabulary"
+  profile globish
+    aliases "Globish"
+    required "globish_vocabulary|globish_grammar"
+  language en
+    frequency "Explain using top {count} words"
+    notice "Maximum precision uses specific words. Look up unfamiliar words in a dictionary to check their exact meaning."
+    directive "Answer in"
+    directive "Respond in"
+    directive "Use"
+    directive "Rewrite in"
+    switch "Explain this in simpler words"
+      mode cnl-default
+    switch "Rewrite using semantic primes only"
+      mode primes
+    switch "Say this in the fewest, most exact words possible"
+      mode "max-precision"
+    switch "Rewrite in max-precision mode"
+      mode "max-precision"
+    switch "Use simpler words"
+      mode cnl-default
+  language ru
+    frequency "Объясни с помощью {count} самых частых слов"
+    notice "Режим максимальной точности использует специальные слова. Проверяйте точное значение незнакомых слов в словаре."
+    directive "Отвечай на"
+    directive "Используй"
+    directive "Перепиши в"
+    switch "Объясни это простыми словами"
+      mode cnl-default
+    switch "Используй только семантические примитивы"
+      mode primes
+    switch "Скажи это самыми точными словами"
+      mode "max-precision"
+  language hi
+    frequency "सबसे आम {count} शब्दों का उपयोग करके समझाएँ"
+    notice "अधिकतम सटीकता के लिए विशिष्ट शब्दों का उपयोग होता है। अपरिचित शब्दों का सटीक अर्थ शब्दकोश में देखें।"
+    directive "इस शैली में उत्तर दें"
+    switch "इसे सरल शब्दों में समझाएँ"
+      mode cnl-default
+    switch "केवल अर्थगत मूल शब्दों का उपयोग करें"
+      mode primes
+    switch "सबसे सटीक शब्दों में कहें"
+      mode "max-precision"
+  language zh
+    frequency "用最常见的 {count} 个词解释"
+    notice "最高精确度模式使用含义具体的词语。请查词典确认生词的准确含义。"
+    directive "使用"
+    switch "用简单的话解释"
+      mode cnl-default
+    switch "仅使用语义基元"
+      mode primes
+    switch "用最精确的词语表达"
+      mode "max-precision"
+  language es
+    frequency "Explica usando las {count} palabras más frecuentes"
+    notice "La precisión máxima usa palabras específicas. Consulta un diccionario para conocer el significado exacto de las palabras desconocidas."
+    directive "Responde en"
+    directive "Usa"
+    directive "Reescribe en"
+    switch "Explica esto con palabras más simples"
+      mode cnl-default
+    switch "Usa solo primitivos semánticos"
+      mode primes
+    switch "Dilo con las palabras más exactas"
+      mode "max-precision"
+  lexeme speaker-knows-everything
+    language en
+    form "I know everything."
+      mode "cnl-default|plain-language|minimal-english|e-prime|basic-english|special-english|globish|primes"
+    form "I am omniscient."
+      mode "max-precision"
+  lexeme speaker-knows-everything
+    language ru
+    form "Я знаю всё."
+      mode "cnl-default|plain-language|minimal-english|primes"
+    form "Я всеведущ."
+      mode "max-precision"
+  lexeme speaker-knows-everything
+    language hi
+    form "मैं सब कुछ जानता हूँ।"
+      mode "cnl-default|plain-language|minimal-english|primes"
+    form "मैं सर्वज्ञ हूँ।"
+      mode "max-precision"
+  lexeme speaker-knows-everything
+    language zh
+    form "我知道一切。"
+      mode "cnl-default|plain-language|minimal-english|primes"
+    form "我无所不知。"
+      mode "max-precision"
+  lexeme speaker-knows-everything
+    language es
+    form "Yo sé todo."
+      mode "cnl-default|plain-language|minimal-english|primes"
+    form "Soy omnisciente."
+      mode "max-precision"

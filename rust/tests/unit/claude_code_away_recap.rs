@@ -298,6 +298,8 @@ fn an_empty_conversation_summary_never_becomes_a_web_search() {
         tool_choice: None,
         functions: Vec::new(),
         function_call: None,
+        output_standard: None,
+        lexical_density: None,
         stream_options: None,
     };
 

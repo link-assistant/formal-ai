@@ -25,14 +25,18 @@ use crate::protocol_responses::{custom_response_tool_input, is_custom_response_t
 pub use crate::protocol_responses::response_arguments_for_tool;
 use crate::solver::UniversalSolver;
 
+mod chat_request;
+pub use chat_request::ChatCompletionRequest;
 mod content;
 pub use content::{
     client_working_directory, latest_user_request, observed_directory, system_prompt_text,
 };
+mod cnl;
 mod output;
 mod recording;
 mod responses_input;
 mod tokens;
+pub use cnl::create_chat_completion_with_solver_and_memory;
 pub use output::*;
 use recording::response_prompt;
 pub use recording::{
@@ -50,32 +54,6 @@ fn response_timestamp() -> u64 {
     SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .map_or(1, |duration| duration.as_secs().max(1))
-}
-
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct ChatCompletionRequest {
-    #[serde(default)]
-    pub model: Option<String>,
-    #[serde(default)]
-    pub messages: Vec<ChatMessage>,
-    #[serde(default)]
-    pub temperature: Option<f32>,
-    #[serde(default)]
-    pub stream: bool,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub tools: Vec<Value>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tool_choice: Option<Value>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub functions: Vec<Value>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub function_call: Option<Value>,
-    /// OpenAI streaming knobs — most relevantly `include_usage`, which asks the
-    /// server to emit a final chunk carrying the `usage` block. The AI SDK's
-    /// openai-compatible provider ships this and drops token counts if it's
-    /// missing (see issue link-assistant/agent#249).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub stream_options: Option<StreamOptions>,
 }
 
 /// OpenAI-compatible `stream_options` field.
@@ -408,6 +386,8 @@ impl ResponsesRequest {
             tool_choice: self.tool_choice.clone(),
             functions: Vec::new(),
             function_call: None,
+            output_standard: None,
+            lexical_density: None,
             stream_options: None,
         }
     }
@@ -427,7 +407,7 @@ pub fn create_chat_completion_with_solver(
 }
 
 #[must_use]
-pub fn create_chat_completion_with_solver_and_memory(
+fn create_unprojected_chat_completion(
     request: &ChatCompletionRequest,
     solver: &UniversalSolver,
     memory_events: &[MemoryEvent],
@@ -701,6 +681,7 @@ fn chat_completion_from_plan(
             completion_tokens,
             total_tokens: prompt_tokens.saturating_add(completion_tokens),
         },
+        output_projection: None,
         learning_trace: None,
     }
 }
@@ -737,6 +718,7 @@ fn chat_completion_from_symbolic(
             completion_tokens,
             total_tokens: prompt_tokens.saturating_add(completion_tokens),
         },
+        output_projection: None,
         learning_trace,
     }
 }

@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_crate_cnl_output.js"
+  ceiling 300
+  rationale "New shared output policy projection, independent validation and conversation selection. The new factory fits below the standard 1000-line limit; no existing ceiling changes."

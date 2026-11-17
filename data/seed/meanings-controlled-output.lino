@@ -1,0 +1,106 @@
+# Authored concepts for the output policy. No conformance is implied.
+meanings
+  cnl-default
+    defined-by concept
+    role output-constraint
+    precondition "The output policy refers to this concept."
+    effect "A requested output profile combining controlled-language clarity constraints. Selecting this profile is not evidence that every constraint passed."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  asd-ste100
+    defined-by concept
+    role output-constraint
+    precondition "The output policy refers to this concept."
+    effect "The ASD Simplified Technical English output standard, including its approved technical vocabulary and writing rules."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  ace
+    defined-by concept
+    role output-constraint
+    precondition "The output policy refers to this concept."
+    effect "Attempto Controlled English: a controlled English language with a specified grammar and interpretation into logic."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  gellish
+    defined-by concept
+    role output-constraint
+    precondition "The output policy refers to this concept."
+    effect "A formalized language that expresses typed relations between dictionary concepts identified independently of their natural-language spelling."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  sbvr
+    defined-by concept
+    role output-constraint
+    precondition "The output policy refers to this concept."
+    effect "Semantics of Business Vocabulary and Business Rules: an OMG standard for business vocabularies and rules."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  plain-language
+    defined-by concept
+    role output-constraint
+    precondition "The output policy refers to this concept."
+    effect "Communication whose intended readers can find, understand, and use the information they need. Reader evaluation remains required."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  minimal-english
+    defined-by concept
+    role output-constraint
+    precondition "The output policy refers to this concept."
+    effect "A restricted, cross-translatable explanatory vocabulary based on semantic primes and additional simple semantic molecules."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  e-prime
+    defined-by concept
+    role output-constraint
+    precondition "The output policy refers to this concept."
+    effect "English that excludes forms of the verb to be. Ambiguous contractions require analysis before compliance can be established."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  basic-english
+    defined-by concept
+    role output-constraint
+    precondition "The output policy refers to this concept."
+    effect "The named Basic English controlled vocabulary and its grammatical conventions, rather than an arbitrary frequency tier."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  special-english
+    defined-by concept
+    role output-constraint
+    precondition "The output policy refers to this concept."
+    effect "The named Special English controlled vocabulary, rather than an arbitrary frequency tier."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  globish
+    defined-by concept
+    role output-constraint
+    precondition "The output policy refers to this concept."
+    effect "The named Globish controlled vocabulary and grammatical conventions, rather than unrestricted simplified English."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  primes
+    defined-by concept
+    role output-constraint
+    precondition "The output policy refers to this concept."
+    effect "Natural Semantic Metalanguage semantic primes, with language-specific exponents, allolexes, and syntactic frames. A flat list of words is insufficient."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  speaker-knows-everything
+    defined-by concept
+    role lexical-identity
+    precondition "The output policy refers to this concept."
+    effect "The proposition that the utterance speaker knows everything. This lexical identity does not assert that the proposition is true."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"

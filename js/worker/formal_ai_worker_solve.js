@@ -7,6 +7,24 @@ function isTargetlessProgramModification(normalized) { // "Reverse it.": Rust `l
 async function solve(prompt, history, prefs, userContext = {}, memory = [], options = {}) {
   // R1188-U1: read the hydrated seed before answering (a no-op once loaded).
   await loadSeed();
+  const cnl = crateModule("crate/cnl_output.mjs");
+  const turn = cnl.outputTurn(prompt, history || [], {
+    output_standard: options.output_standard ?? prefs?.outputStandard,
+    lexical_density: options.lexical_density ?? prefs?.lexicalDensity,
+  });
+  prompt = turn.prompt;
+  const project = (answer) => {
+    if (!answer || typeof answer.content !== "string") return answer;
+    const language = options.forcedResponseLanguage || detectLanguage(answer.content);
+    const document = cnl.formalizeOutput(answer.content, language);
+    const rendered = cnl.renderOutput(document, turn.config);
+    return {...answer, content: rendered.content, outputProjection: rendered};
+  };
+  if (turn.rewrite !== null) {
+    const language = detectLanguage(turn.rewrite);
+    return project({intent: "cnl_paraphrase", content: cnl.outputSource(turn.rewrite, language),
+      confidence: 1, evidence: ["cnl:paraphrase"], steps: [], events: [], toolCalls: []});
+  }
   // Issue #556: activate the forced response language for the whole replay and
   // always restore the previous value, so a nested follow-up replay never
   // leaks its forced language onto the outer turn's remaining handlers.
@@ -22,10 +40,10 @@ async function solve(prompt, history, prefs, userContext = {}, memory = [], opti
     // ones learned now leave as this answer's memory operation.
     metaImportLearned(memory);
     const diagnostic = await tryDiagnosticMarker(prompt, (inner) => solve(inner, history, prefs, userContext, memory, options));
-    if (diagnostic) return diagnostic;
+    if (diagnostic) return project(diagnostic);
     const answer = await solveImpl(prompt, history, prefs, userContext, memory, options);
     const subTask = async (text) => metaResolveImpasse(text, await solveImpl(text, history, prefs, userContext, memory, options), prefs);
-    return metaAttachLearned(await metaRunProcedure(prompt, await metaResolveImpasse(prompt, answer, prefs), subTask));
+    return project(metaAttachLearned(await metaRunProcedure(prompt, await metaResolveImpasse(prompt, answer, prefs), subTask)));
   } finally {
     setForcedResponseLanguage(previousForced);
   }
@@ -1353,6 +1371,7 @@ self.onmessage = async (event) => {
     requestId: data.requestId,
     intent: answer.intent,
     content: answer.content,
+    outputProjection: answer.outputProjection || null,
     confidence: answer.confidence,
     evidence: [...(answer.evidence || []), `engine:${engine}`],
     steps: answer.steps,

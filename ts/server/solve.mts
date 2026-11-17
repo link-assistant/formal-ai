@@ -86,6 +86,7 @@ export function symbolicFromWorker(result, history = [], seedReport = undefined)
   noteLearned(result?.memoryOperation);
   const log = solverLogFromWorker(result, history);
   return {
+    ...(result?.outputProjection ? {output_projection:result.outputProjection} : {}),
     intent: String(result?.intent ?? 'unknown'),
     answer,
     confidence: Number(result?.confidence ?? 0),
@@ -132,7 +133,7 @@ export async function solveSymbolic(ctx, prompt, history) {
 }
 
 async function solveBegun(ctx, prompt, history) {
-  const result = await ctx.worker.solve(prompt, history);
+  const result = await ctx.worker.solve(prompt, history, ctx.outputConfiguration ?? {});
   // R1013: the formalization, intent-formalization and meta-core records the
   // native solver logs between the worker's prelude and its handler events.
   if (Array.isArray(result?.solverEvents)) {
