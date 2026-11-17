@@ -9,7 +9,7 @@
 import { before, describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
@@ -101,5 +101,36 @@ describe('the local gate runner reads the gates CI runs', () => {
 
   test('a workflow step given only the base ref runs with it', () => {
     assert.match(listed.find((line) => line.includes('check-changelog-fragment.')), /^run /);
+  });
+});
+
+describe('local gate selection cannot silently verify zero gates', () => {
+  const invoke = (...args) => spawnSync(process.execPath,
+    ['experiments/formal_ai_subagent/local-gates.mjs', ...args], {
+      cwd: new URL('../../../', import.meta.url), encoding: 'utf8',
+      timeout: 10000, maxBuffer: 65536,
+    });
+
+  test('a misspelled gate fails before any selected gate executes', {timeout:15000}, () => {
+    const result = invoke('--only', 'run_clippy,check_file_size');
+    assert.equal(result.status, 1, result.stdout + result.stderr);
+    assert.match(result.stderr, /Unknown gate name.*check_file_size/u);
+    assert.doesNotMatch(result.stdout, /SKIP|PASS|0\/0/u);
+  });
+
+  test('an unmatched filter and an empty selection are errors', {timeout:15000}, () => {
+    for (const args of [['--match', 'unmatched-gate-selection'], ['--only', '']]) {
+      const result = invoke(...args);
+      assert.equal(result.status, 1, result.stdout + result.stderr);
+      assert.match(result.stderr, /No gates selected|--only requires/u);
+      assert.doesNotMatch(result.stdout, /0\/0/u);
+    }
+  });
+
+  test('a selected native gate stays an explicit successful skip', {timeout:15000}, () => {
+    const result = invoke('--only', 'run_clippy');
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /SKIP run_clippy .*needs a Rust build/u);
+    assert.match(result.stdout, /1\/1 passed or skipped/u);
   });
 });

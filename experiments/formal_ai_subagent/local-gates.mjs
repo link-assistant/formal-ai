@@ -26,7 +26,7 @@
 //   node experiments/formal_ai_subagent/local-gates.mjs            # run all
 //   node experiments/formal_ai_subagent/local-gates.mjs --with-rust-scripts  # also compile rust-script gates
 //   node experiments/formal_ai_subagent/local-gates.mjs --list     # print them
-//   node experiments/formal_ai_subagent/local-gates.mjs --only check_file_size,web-ui-boundary
+//   node experiments/formal_ai_subagent/local-gates.mjs --only check-file-size,web-ui-boundary
 //   node experiments/formal_ai_subagent/local-gates.mjs --match js  # names containing "js"
 import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -203,6 +203,15 @@ const only = option('--only')?.split(',').filter(Boolean);
 const match = option('--match');
 const chosen = gates.filter((gate) =>
   (!only || only.includes(gate.name)) && (!match || gate.name.includes(match)));
+const known = new Set(gates.map(gate => gate.name));
+const unknown = (only ?? []).filter(name => !known.has(name));
+if (only?.length === 0 || unknown.length || chosen.length === 0) {
+  const message = only?.length === 0 ? '--only requires at least one gate name.'
+    : unknown.length ? `Unknown gate name(s): ${unknown.join(', ')}.`
+    : 'No gates selected.';
+  console.error(`${message} Use --list to inspect available gates.`);
+  process.exit(1);
+}
 mkdirSync(LOGS, { recursive: true });
 const failed = [];
 for (const gate of chosen) {
