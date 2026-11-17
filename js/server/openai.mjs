@@ -17,6 +17,7 @@ import { canonicalModelId, resolveModelId, tryResolveModelId } from './seed.mjs'
 import { answerFromMemory, estimateTokens, solveWithMemory, stableId, toolCallRefusalAnswer } from './solve.mjs';
 import { renderThinkingSteps } from './thinking.mjs';
 import { requestScope, runInRequestScope } from './standing-scope.mjs';
+import { formalizeRequest, contextualAnswer, composeRequestAnswer } from './request-context.mjs';
 
 /** Seconds since the epoch, never 0 (`response_timestamp`). */
 export function responseTimestamp() {
@@ -45,6 +46,7 @@ export function unsupportedModelResponse(model) {
 
 /** `chat_completion_from_symbolic`. */
 export function chatCompletionFromSymbolic(request, prompt, symbolic) {
+  symbolic = composeRequestAnswer(request.messages, symbolic);
   const promptTokens = messageInputTokens(request.messages);
   const completionTokens = estimateTokens(symbolic.answer);
   const reasoning = renderThinkingSteps(symbolic.thinking_steps);
@@ -85,12 +87,15 @@ export function chatCompletionFromSymbolic(request, prompt, symbolic) {
  */
 export async function createChatCompletion(ctx, request) {
   const { prompt, history } = chatPromptAndHistory(request.messages);
+  const context = formalizeRequest(request.messages);
   const remembered = await answerFromMemory(ctx, prompt, history);
   if (remembered) {logUnclassifiedTerminal(ctx,'retained_answer');return chatCompletionFromSymbolic(request, prompt, remembered);}
   const outcome = await agenticOutcome(ctx, request, toolCallRefusalAnswer);
   if (outcome.kind === 'refused') return chatCompletionFromSymbolic(request, prompt, outcome.answer);
   if (outcome.kind === 'planned') return chatCompletionFromPlan(ctx, request, prompt, outcome.plan, responseTimestamp());
-  const symbolic = await solveWithMemory(ctx, prompt, history);
+  const contextual = contextualAnswer(context);
+  if (contextual) return chatCompletionFromSymbolic(request, prompt, contextual);
+  const symbolic = await solveWithMemory(ctx, prompt, history, { forcedResponseLanguage: context.language });
   const reroute = await commandReroutePlan(ctx, request, symbolic);
   if (reroute) return chatCompletionFromPlan(ctx, request, prompt, reroute, responseTimestamp());
   logUnclassifiedTerminal(ctx,'symbolic_answer');
