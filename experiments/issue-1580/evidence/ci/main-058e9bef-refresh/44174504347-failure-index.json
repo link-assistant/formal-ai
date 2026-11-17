@@ -1,0 +1,417 @@
+{
+  "run": 44174504347,
+  "totalLines": 70506,
+  "scope": "Failure-marker index only; unselected raw lines have not been reviewed.",
+  "markers": [
+    {
+      "line": 18717,
+      "kind": "fatal",
+      "payload": "##[error]Process completed with exit code 1."
+    },
+    {
+      "line": 25146,
+      "kind": "native-failed",
+      "payload": "test formal_ai::seed_and_memory::http_fetch_and_url_navigate_intents_are_distinct ... FAILED"
+    },
+    {
+      "line": 25199,
+      "kind": "native-failed",
+      "payload": "test issue_1133_hive_mind_three_runs::extended::the_full_claude_code_drive_reads_builds_verifies_and_pushes_kotlin ... FAILED"
+    },
+    {
+      "line": 25354,
+      "kind": "native-failed",
+      "payload": "test page_formalization_route::formalize_url_answers_the_statements_of_the_fetched_page_in_every_language ... FAILED"
+    },
+    {
+      "line": 25507,
+      "kind": "native-failed",
+      "payload": "test web_requests::source_search_prompts_still_cover_supported_languages ... FAILED"
+    },
+    {
+      "line": 25655,
+      "kind": "native-failed",
+      "payload": "test issue_1138_family_behaviour::every_retired_handler_prompt_still_answers_through_its_family ... FAILED"
+    },
+    {
+      "line": 25695,
+      "kind": "native-failed",
+      "payload": "test with_formal_ai_argv::with_formal_ai_renders_the_same_argv_from_an_argument_and_a_piped_prompt ... FAILED"
+    },
+    {
+      "line": 25879,
+      "kind": "fatal",
+      "payload": "##[error]Process completed with exit code 1."
+    },
+    {
+      "line": 29052,
+      "kind": "native-failed",
+      "payload": "test issue_1133_hive_mind_three_runs::extended::a_workflow_requirement_adds_the_workflow_in_every_language ... FAILED"
+    },
+    {
+      "line": 29080,
+      "kind": "fatal",
+      "payload": "##[error]The command was terminated after 1080s, its full 1080s execution budget. The budget expires before `timeout-minutes` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout."
+    },
+    {
+      "line": 29106,
+      "kind": "fatal",
+      "payload": "##[error]Process completed with exit code 124."
+    },
+    {
+      "line": 32159,
+      "kind": "native-failed",
+      "payload": "test specification::reasoning_loop::step_6_candidates_are_validated_against_constraints ... FAILED"
+    },
+    {
+      "line": 32161,
+      "kind": "native-failed",
+      "payload": "test specification::reasoning_paths_procedures::how_to_make_tea_uses_source_backed_procedure_plan ... FAILED"
+    },
+    {
+      "line": 32203,
+      "kind": "native-failed",
+      "payload": "test specification::spoken_hour_scheduling::issue_595_calendar_create_path_keeps_supported_language_coverage ... FAILED"
+    },
+    {
+      "line": 32211,
+      "kind": "native-failed",
+      "payload": "test specification::synthesis::compound_courtesy_and_question_are_answered_in_source_order ... FAILED"
+    },
+    {
+      "line": 32212,
+      "kind": "native-failed",
+      "payload": "test specification::synthesis::decomposed_sub_results_are_composed_for_algebra ... FAILED"
+    },
+    {
+      "line": 32213,
+      "kind": "native-failed",
+      "payload": "test specification::synthesis::renumbered_algebra_substitution_recomputes_closed_value ... FAILED"
+    },
+    {
+      "line": 32214,
+      "kind": "native-failed",
+      "payload": "test specification::synthesis::shared_cross_runtime_synthesis_fixture_matches_rust_solver ... FAILED"
+    },
+    {
+      "line": 32244,
+      "kind": "native-failed",
+      "payload": "test specification::benchmarks::issue_317_held_out_benchmark_variants_pass_by_derivation ... FAILED"
+    },
+    {
+      "line": 32512,
+      "kind": "fatal",
+      "payload": "##[error]Process completed with exit code 1."
+    },
+    {
+      "line": 35593,
+      "kind": "native-failed",
+      "payload": "test data_files::lino_data_files_are_parseable_human_readable_and_bounded ... FAILED"
+    },
+    {
+      "line": 35604,
+      "kind": "fatal",
+      "payload": "##[error]Process completed with exit code 101."
+    },
+    {
+      "line": 35924,
+      "kind": "native-failed",
+      "payload": "test agentic_coding::issue_498_google_trends_catalog::committed_agent_cli_session_matches_a_fresh_google_trends_run ... FAILED"
+    },
+    {
+      "line": 35966,
+      "kind": "native-failed",
+      "payload": "test capability_routing::issue_1138_self_use_intent_routing::a_scheduling_request_reaches_the_calendar_whatever_verb_it_uses ... FAILED"
+    },
+    {
+      "line": 36033,
+      "kind": "native-failed",
+      "payload": "test ci_cd::workflow_release::pages_deploy_uses_the_actions_maximum_supported_wait ... FAILED"
+    },
+    {
+      "line": 36069,
+      "kind": "native-failed",
+      "payload": "test docs_requirements::issues::agent_cli_shell::issue_607_shell_planner_and_serve_opt_in_are_traceable ... FAILED"
+    },
+    {
+      "line": 36131,
+      "kind": "native-failed",
+      "payload": "test issue_1133_hive_mind_three_runs::extended::a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified ... FAILED"
+    },
+    {
+      "line": 36132,
+      "kind": "native-failed",
+      "payload": "test issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification ... FAILED"
+    },
+    {
+      "line": 36150,
+      "kind": "native-failed",
+      "payload": "test issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_russian ... FAILED"
+    },
+    {
+      "line": 36365,
+      "kind": "native-failed",
+      "payload": "test solver::issue_1138_self_use_concept_lookup::an_unresolved_word_is_looked_up_rather_than_answered_with_the_provider_description ... FAILED"
+    },
+    {
+      "line": 36412,
+      "kind": "native-failed",
+      "payload": "test web_requests::web_search_source_marker_prompts_extract_query_without_source_marker ... FAILED"
+    },
+    {
+      "line": 39230,
+      "kind": "native-failed",
+      "payload": "test specification::benchmarks::issue_304_benchmark_suite_reports_pass_fail_counts ... FAILED"
+    },
+    {
+      "line": 39231,
+      "kind": "native-failed",
+      "payload": "test specification::benchmarks::issue_314_numeric_benchmark_cases_compute_with_trace ... FAILED"
+    },
+    {
+      "line": 39232,
+      "kind": "native-failed",
+      "payload": "test specification::benchmarks::issue_315_unseen_python_function_synthesizes_without_seed_hit ... FAILED"
+    },
+    {
+      "line": 39233,
+      "kind": "native-failed",
+      "payload": "test specification::benchmarks::issue_704_portfolio_rescues_the_industry_search_case ... FAILED"
+    },
+    {
+      "line": 39285,
+      "kind": "native-failed",
+      "payload": "test specification::debug_session::a_served_chat_turn_answers_only_after_its_last_stage ... FAILED"
+    },
+    {
+      "line": 39407,
+      "kind": "native-failed",
+      "payload": "test specification::pronoun_topic_follow_up::seeded_coreference_contexts_normalize_terminal_multilingual_surfaces ... FAILED"
+    },
+    {
+      "line": 39480,
+      "kind": "native-failed",
+      "payload": "test specification::synthesis::paraphrased_algebra_prompt_reaches_same_derivation ... FAILED"
+    },
+    {
+      "line": 39739,
+      "kind": "fatal",
+      "payload": "##[error]Process completed with exit code 1."
+    },
+    {
+      "line": 42731,
+      "kind": "native-failed",
+      "payload": "test ci_cd::ci_warning_audit::audited_warning_band_sources_stay_below_their_limits ... FAILED"
+    },
+    {
+      "line": 42894,
+      "kind": "native-failed",
+      "payload": "test issue_1133_hive_mind_three_runs::repository_requirements_bind_language_and_output_independently_of_page_chrome ... FAILED"
+    },
+    {
+      "line": 42952,
+      "kind": "native-failed",
+      "payload": "test issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_hindi ... FAILED"
+    },
+    {
+      "line": 42958,
+      "kind": "native-failed",
+      "payload": "test issue_1588_intent_spans::document_intent_and_bound_quantities_match_worker_fixtures ... FAILED"
+    },
+    {
+      "line": 43120,
+      "kind": "native-failed",
+      "payload": "test quantity_aggregate_comparison::all_shared_aggregate_vectors_pass_through_the_full_solver ... FAILED"
+    },
+    {
+      "line": 43143,
+      "kind": "native-failed",
+      "payload": "test solver::issue_1138_self_use_concept_lookup::a_spanish_prompt_is_not_reported_as_an_unsupported_language ... FAILED"
+    },
+    {
+      "line": 43189,
+      "kind": "native-failed",
+      "payload": "test web_requests::information_search_variants_route_to_web_search_handler ... FAILED"
+    },
+    {
+      "line": 43458,
+      "kind": "native-failed",
+      "payload": "test with_formal_ai_argv::with_formal_ai_forwards_caller_delimited_and_repeated_unknown_flags ... FAILED"
+    },
+    {
+      "line": 43459,
+      "kind": "native-failed",
+      "payload": "test with_formal_ai_grok::with_formal_ai_grok_reaches_configured_openai_endpoint ... FAILED"
+    },
+    {
+      "line": 43643,
+      "kind": "fatal",
+      "payload": "##[error]Process completed with exit code 1."
+    },
+    {
+      "line": 46643,
+      "kind": "native-failed",
+      "payload": "test ci_cd::network_download_retry::no_remote_download_is_left_out_of_that_rule ... FAILED"
+    },
+    {
+      "line": 46753,
+      "kind": "native-failed",
+      "payload": "test issue_1133_hive_mind_three_runs::extended::a_connector_result_keeps_its_structured_content ... FAILED"
+    },
+    {
+      "line": 46766,
+      "kind": "native-failed",
+      "payload": "test issue_1138_retrieval_method::the_family_prompts_reach_the_interpreter_and_stay_honest_offline ... FAILED"
+    },
+    {
+      "line": 47146,
+      "kind": "native-failed",
+      "payload": "test formal_ai_cli::cli_serve_exposes_agentic_tool_protocols_over_loopback ... FAILED"
+    },
+    {
+      "line": 47348,
+      "kind": "fatal",
+      "payload": "##[error]Process completed with exit code 1."
+    },
+    {
+      "line": 50505,
+      "kind": "native-failed",
+      "payload": "test issue_1133_hive_mind_three_runs::extended::a_verified_work_item_is_committed_and_pushed_to_the_named_branch ... FAILED"
+    },
+    {
+      "line": 50508,
+      "kind": "native-failed",
+      "payload": "test issue_1133_hive_mind_three_runs::extended::a_work_item_that_asks_for_a_workflow_writes_one_with_the_verified_commands ... FAILED"
+    },
+    {
+      "line": 50529,
+      "kind": "native-failed",
+      "payload": "test issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_chinese ... FAILED"
+    },
+    {
+      "line": 50570,
+      "kind": "native-failed",
+      "payload": "test issue_1582_permissions::permission_guidance_owns_direct_requests_in_every_supported_language ... FAILED"
+    },
+    {
+      "line": 50785,
+      "kind": "native-failed",
+      "payload": "test solver::issue_869_meeting_scheduling::reported_meeting_prompt_names_participant_time_and_zone ... FAILED"
+    },
+    {
+      "line": 50823,
+      "kind": "native-failed",
+      "payload": "test web_requests::latest_news_routes_to_wikinews_search_across_supported_languages ... FAILED"
+    },
+    {
+      "line": 50826,
+      "kind": "fatal",
+      "payload": "##[error]The command was terminated after 1080s, its full 1080s execution budget. The budget expires before `timeout-minutes` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout."
+    },
+    {
+      "line": 50861,
+      "kind": "fatal",
+      "payload": "##[error]Process completed with exit code 124."
+    },
+    {
+      "line": 57054,
+      "kind": "native-failed",
+      "payload": "test specification::formalization::same_prompt_and_config_produce_same_interpretation_choice ... FAILED"
+    },
+    {
+      "line": 57232,
+      "kind": "native-failed",
+      "payload": "test specification::synthesis::renumbered_word_problem_recomputes_from_quantities ... FAILED"
+    },
+    {
+      "line": 59382,
+      "kind": "fatal",
+      "payload": "##[error]Process completed with exit code 1."
+    },
+    {
+      "line": 62920,
+      "kind": "native-failed",
+      "payload": "test issue_1133_hive_mind_three_runs::extended::codex_plans_the_work_item_and_never_narrates_the_connector_placeholder ... FAILED"
+    },
+    {
+      "line": 62969,
+      "kind": "native-failed",
+      "payload": "test issue_1173_fallback_executes_search::unknown_reasoning_fallback_executes_instead_of_describing ... FAILED"
+    },
+    {
+      "line": 63175,
+      "kind": "native-failed",
+      "payload": "test pull_request_1188_fix_gaps::g102_a_file_described_rather_than_given_is_never_written ... FAILED"
+    },
+    {
+      "line": 63394,
+      "kind": "fatal",
+      "payload": "##[error]The command was terminated after 1080s, its full 1080s execution budget. The budget expires before `timeout-minutes` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout."
+    },
+    {
+      "line": 63430,
+      "kind": "fatal",
+      "payload": "##[error]Process completed with exit code 124."
+    },
+    {
+      "line": 66592,
+      "kind": "native-failed",
+      "payload": "test specification::synthesis::object_counting_filters_items_by_requested_category ... FAILED"
+    },
+    {
+      "line": 66602,
+      "kind": "native-failed",
+      "payload": "test specification::unknown_reasoning::unresolved_bare_term_routes_to_web_search_after_local_sources_miss ... FAILED"
+    },
+    {
+      "line": 66686,
+      "kind": "fatal",
+      "payload": "##[error]Process completed with exit code 1."
+    },
+    {
+      "line": 69618,
+      "kind": "native-failed",
+      "payload": "test agentic_coding::issue_498_google_trends_catalog::committed_google_trends_catalog_is_generated_by_the_recipe ... FAILED"
+    },
+    {
+      "line": 69840,
+      "kind": "native-failed",
+      "payload": "test issue_1138_place_timezone::a_tbilisi_mention_resolves_through_the_city_entity ... FAILED"
+    },
+    {
+      "line": 69894,
+      "kind": "native-failed",
+      "payload": "test issue_498_google_trends::checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages ... FAILED"
+    },
+    {
+      "line": 69897,
+      "kind": "native-failed",
+      "payload": "test issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_spanish ... FAILED"
+    },
+    {
+      "line": 70090,
+      "kind": "native-failed",
+      "payload": "test seed::issue_699_handler_migration::unsupported_write_program_fails_with_a_named_skill_gap ... FAILED"
+    },
+    {
+      "line": 70155,
+      "kind": "fatal",
+      "payload": "##[error]The command was terminated after 1080s, its full 1080s execution budget. The budget expires before `timeout-minutes` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout."
+    },
+    {
+      "line": 70190,
+      "kind": "fatal",
+      "payload": "##[error]Process completed with exit code 124."
+    },
+    {
+      "line": 70504,
+      "kind": "fatal",
+      "payload": "##[error]Pipeline failed. Failing jobs: lint, test, test-agent-cli-e2e"
+    },
+    {
+      "line": 70505,
+      "kind": "fatal",
+      "payload": "##[error]Process completed with exit code 1."
+    }
+  ]
+}

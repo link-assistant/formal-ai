@@ -1,0 +1,99 @@
+[
+  {
+    "label": "test-source-test-placement-twin.test",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/source-test-placement-twin.test.mjs"
+    ],
+    "startedAt": "2026-11-17T21:50:12.258570+00:00",
+    "durationSeconds": 2.119,
+    "exitCode": 0,
+    "log": "/tmp/issue-1580-research/external-opencode-test-source-test-placement-twin.test.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/external-opencode-test/test-source-test-placement-twin.test.log.gz",
+    "bytes": 560,
+    "lines": 13,
+    "sha256": "93fd878d6d602c010001a60a5adc82d064676361b7b0a47951bdf5ef6f789eb7"
+  },
+  {
+    "label": "test-source-read-provenance.test",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/source-read-provenance.test.mjs"
+    ],
+    "startedAt": "2026-11-17T21:50:14.378719+00:00",
+    "durationSeconds": 6.826,
+    "exitCode": 0,
+    "log": "/tmp/issue-1580-research/external-opencode-test-source-read-provenance.test.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/external-opencode-test/test-source-read-provenance.test.log.gz",
+    "bytes": 4633,
+    "lines": 59,
+    "sha256": "f7b6998648f3f8c79349ef71d2d172f295e6114f1ce243be4d2c7c69de779a40"
+  },
+  {
+    "label": "test-rust-specification-fixture-integrity.test",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
+    ],
+    "startedAt": "2026-11-17T21:50:21.205197+00:00",
+    "durationSeconds": 0.281,
+    "exitCode": 0,
+    "log": "/tmp/issue-1580-research/external-opencode-test-rust-specification-fixture-integrity.test.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/external-opencode-test/test-rust-specification-fixture-integrity.test.log.gz",
+    "bytes": 309,
+    "lines": 10,
+    "sha256": "bb78b3a0a8c8fa4f2c6b5aa1669ee009ba157c450458d776250315dc010a109c"
+  },
+  {
+    "label": "rustfmt",
+    "command": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "--check",
+      "rust/src/agentic_coding/tool_result/source_observation.rs",
+      "rust/tests/source/source_tests/agentic_coding/tool_result/source_observation/opencode_tests.rs"
+    ],
+    "startedAt": "2026-11-17T21:50:21.486407+00:00",
+    "durationSeconds": 0.078,
+    "exitCode": 0,
+    "log": "/tmp/issue-1580-research/external-opencode-rustfmt.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/external-opencode-test/rustfmt.log.gz",
+    "bytes": 0,
+    "lines": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "check-package-self-containment",
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-package-self-containment"
+    ],
+    "startedAt": "2026-11-17T21:50:21.564929+00:00",
+    "durationSeconds": 1.853,
+    "exitCode": 1,
+    "log": "/tmp/issue-1580-research/external-opencode-check-package-self-containment.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/external-opencode-test/check-package-self-containment.log.gz",
+    "bytes": 189,
+    "lines": 3,
+    "sha256": "46998cb3a981f9418c2ae8819fe588ddbf709ab0ec827fafed428a9b3fe2d0a5"
+  }
+]

@@ -1,0 +1,154 @@
+[
+  {
+    "label": "test-page-formalization-route.test",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/page-formalization-route.test.mjs"
+    ],
+    "startedAt": "2026-11-17T21:45:42.371107+00:00",
+    "durationSeconds": 7.943,
+    "exitCode": 0,
+    "log": "/tmp/issue-1580-research/runtime-fixture-test-page-formalization-route.test.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/runtime-fixture-refresh/test-page-formalization-route.test.log.gz",
+    "bytes": 541,
+    "lines": 14,
+    "sha256": "9426c10ab8a1f8a9b703bd130d6a6c3504676b2577bb8b227032eecdf94b763a"
+  },
+  {
+    "label": "test-issue-1582-defaults.test",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/issue-1582-defaults.test.mjs"
+    ],
+    "startedAt": "2026-11-17T21:45:50.315057+00:00",
+    "durationSeconds": 27.115,
+    "exitCode": 0,
+    "log": "/tmp/issue-1580-research/runtime-fixture-test-issue-1582-defaults.test.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/runtime-fixture-refresh/test-issue-1582-defaults.test.log.gz",
+    "bytes": 1031,
+    "lines": 20,
+    "sha256": "5312bff11bd2e86dd26bb2cd4c5ccf8b3de8b895300ad6e49819fd36f8551ccf"
+  },
+  {
+    "label": "test-rust-specification-fixture-integrity.test",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
+    ],
+    "startedAt": "2026-11-17T21:46:17.431330+00:00",
+    "durationSeconds": 0.815,
+    "exitCode": 0,
+    "log": "/tmp/issue-1580-research/runtime-fixture-test-rust-specification-fixture-integrity.test.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/runtime-fixture-refresh/test-rust-specification-fixture-integrity.test.log.gz",
+    "bytes": 311,
+    "lines": 10,
+    "sha256": "77f84459427bddbc4e9b96ec961e2e3c4296c8ef3258055559fb3da2894d41f9"
+  },
+  {
+    "label": "rustfmt",
+    "command": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "--check",
+      "rust/tests/unit/page_formalization_route.rs",
+      "rust/tests/integration/with_formal_ai.rs",
+      "rust/tests/integration/with_formal_ai_argv.rs"
+    ],
+    "startedAt": "2026-11-17T21:46:18.246859+00:00",
+    "durationSeconds": 0.123,
+    "exitCode": 0,
+    "log": "/tmp/issue-1580-research/runtime-fixture-rustfmt.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/runtime-fixture-refresh/rustfmt.log.gz",
+    "bytes": 0,
+    "lines": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "check-abbreviations",
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-abbreviations"
+    ],
+    "startedAt": "2026-11-17T21:46:18.370809+00:00",
+    "durationSeconds": 6.215,
+    "exitCode": 0,
+    "log": "/tmp/issue-1580-research/runtime-fixture-check-abbreviations.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/runtime-fixture-refresh/check-abbreviations.log.gz",
+    "bytes": 67,
+    "lines": 3,
+    "sha256": "aa126bc94d9c5828d3cacb8d2ea7d6ca3ce477f8899a1b370d69923e0705ef5d"
+  },
+  {
+    "label": "check-file-size",
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-file-size"
+    ],
+    "startedAt": "2026-11-17T21:46:24.586611+00:00",
+    "durationSeconds": 12.047,
+    "exitCode": 0,
+    "log": "/tmp/issue-1580-research/runtime-fixture-check-file-size.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/runtime-fixture-refresh/check-file-size.log.gz",
+    "bytes": 64,
+    "lines": 3,
+    "sha256": "9345ba1d68ba4eb6c8ae5b180bb39db887e71ee466acb0df37d3e09d06510d04"
+  },
+  {
+    "label": "check-file-size-js-twin",
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-file-size-js-twin"
+    ],
+    "startedAt": "2026-11-17T21:46:36.634579+00:00",
+    "durationSeconds": 4.311,
+    "exitCode": 0,
+    "log": "/tmp/issue-1580-research/runtime-fixture-check-file-size-js-twin.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/runtime-fixture-refresh/check-file-size-js-twin.log.gz",
+    "bytes": 71,
+    "lines": 3,
+    "sha256": "28258401e18e28c4a7557825c1d6027eb20ff8a010dd2315d2f69f3f0f4f87c5"
+  },
+  {
+    "label": "check-seed-registry",
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-seed-registry"
+    ],
+    "startedAt": "2026-11-17T21:46:40.946564+00:00",
+    "durationSeconds": 1.436,
+    "exitCode": 0,
+    "log": "/tmp/issue-1580-research/runtime-fixture-check-seed-registry.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/runtime-fixture-refresh/check-seed-registry.log.gz",
+    "bytes": 67,
+    "lines": 3,
+    "sha256": "d2d455a52e19a889978590a77d216a324f9291328667226e897b52e26e7ef010"
+  }
+]

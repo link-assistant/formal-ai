@@ -1,0 +1,207 @@
+[
+  {
+    "label": "registry-comparison",
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "/tmp/issue-1580-research/compare-native-program-registry.mjs"
+    ],
+    "completedAt": "2026-11-17T21:59:28.998447+00:00",
+    "seconds": 0.154,
+    "exitCode": 0,
+    "log": "/tmp/issue-1580-research/repaired-registry-registry-comparison.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/repaired-registry-and-external-test/final/registry-comparison.log.gz",
+    "bytes": 3927,
+    "lines": 99,
+    "sha256": "7c6f20a60d003eb6d13a4f4988eb34d11df45e42a12ddba931940c507f09a01a"
+  },
+  {
+    "label": "test-rust-specification-generated-programs.test",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/rust-specification-generated-programs.test.mjs"
+    ],
+    "completedAt": "2026-11-17T21:59:45.778497+00:00",
+    "seconds": 16.78,
+    "exitCode": 0,
+    "log": "/tmp/issue-1580-research/repaired-registry-test-rust-specification-generated-programs.test.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/repaired-registry-and-external-test/final/test-rust-specification-generated-programs.test.log.gz",
+    "bytes": 516,
+    "lines": 13,
+    "sha256": "3defb05cfee4f09f8989002028449584a210b0830085ef0dc043db06b13b37aa"
+  },
+  {
+    "label": "test-source-test-placement-twin.test",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/source-test-placement-twin.test.mjs"
+    ],
+    "completedAt": "2026-11-17T21:59:47.867082+00:00",
+    "seconds": 2.087,
+    "exitCode": 0,
+    "log": "/tmp/issue-1580-research/repaired-registry-test-source-test-placement-twin.test.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/repaired-registry-and-external-test/final/test-source-test-placement-twin.test.log.gz",
+    "bytes": 561,
+    "lines": 13,
+    "sha256": "282c9357177c99b27005a120a0ea14868df0dc6d6f8f0b1b312c7f84a8451a38"
+  },
+  {
+    "label": "test-source-read-provenance.test",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/source-read-provenance.test.mjs"
+    ],
+    "completedAt": "2026-11-17T21:59:57.005178+00:00",
+    "seconds": 9.138,
+    "exitCode": 0,
+    "log": "/tmp/issue-1580-research/repaired-registry-test-source-read-provenance.test.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/repaired-registry-and-external-test/final/test-source-read-provenance.test.log.gz",
+    "bytes": 4633,
+    "lines": 59,
+    "sha256": "260b6dc39c7c59dd8aeadab88b191769e9b8dfeef6154c270092ad60ee40c9a1"
+  },
+  {
+    "label": "test-rust-specification-fixture-integrity.test",
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
+    ],
+    "completedAt": "2026-11-17T21:59:57.319235+00:00",
+    "seconds": 0.314,
+    "exitCode": 0,
+    "log": "/tmp/issue-1580-research/repaired-registry-test-rust-specification-fixture-integrity.test.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/repaired-registry-and-external-test/final/test-rust-specification-fixture-integrity.test.log.gz",
+    "bytes": 309,
+    "lines": 10,
+    "sha256": "c91b962eab2df3f569851063a1ac4bccb4a00f978c59ff76dd80d6e3cd0e552f"
+  },
+  {
+    "label": "rustfmt",
+    "command": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "--check",
+      "rust/src/agentic_coding/tool_result/source_observation.rs",
+      "rust/tests/source/source_tests/agentic_coding/tool_result/source_observation/opencode_tests.rs"
+    ],
+    "completedAt": "2026-11-17T21:59:57.424245+00:00",
+    "seconds": 0.104,
+    "exitCode": 0,
+    "log": "/tmp/issue-1580-research/repaired-registry-rustfmt.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/repaired-registry-and-external-test/final/rustfmt.log.gz",
+    "bytes": 0,
+    "lines": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "check-package-self-containment",
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-package-self-containment"
+    ],
+    "completedAt": "2026-11-17T21:59:59.372547+00:00",
+    "seconds": 1.948,
+    "exitCode": 0,
+    "log": "/tmp/issue-1580-research/repaired-registry-check-package-self-containment.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/repaired-registry-and-external-test/final/check-package-self-containment.log.gz",
+    "bytes": 78,
+    "lines": 3,
+    "sha256": "217a12cc86a8d17e2766a1d32a77492e90808fb08d1901719f788a5d0c03af7b"
+  },
+  {
+    "label": "check_js_rust_translation",
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check_js_rust_translation"
+    ],
+    "completedAt": "2026-11-17T22:00:09.574465+00:00",
+    "seconds": 10.201,
+    "exitCode": 0,
+    "log": "/tmp/issue-1580-research/repaired-registry-check_js_rust_translation.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/repaired-registry-and-external-test/final/check_js_rust_translation.log.gz",
+    "bytes": 74,
+    "lines": 3,
+    "sha256": "fe73f17d05fe7b5bdae8699cfd1d5d0cdf173461b17fdab1b1db95e34b13342a"
+  },
+  {
+    "label": "check-abbreviations",
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-abbreviations"
+    ],
+    "completedAt": "2026-11-17T22:00:17.024083+00:00",
+    "seconds": 7.449,
+    "exitCode": 0,
+    "log": "/tmp/issue-1580-research/repaired-registry-check-abbreviations.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/repaired-registry-and-external-test/final/check-abbreviations.log.gz",
+    "bytes": 67,
+    "lines": 3,
+    "sha256": "123e92e8e7a7002d86979e23ac177e553162625280d2bae866a00927ba003a9e"
+  },
+  {
+    "label": "check-file-size",
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-file-size"
+    ],
+    "completedAt": "2026-11-17T22:00:24.553652+00:00",
+    "seconds": 7.529,
+    "exitCode": 0,
+    "log": "/tmp/issue-1580-research/repaired-registry-check-file-size.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/repaired-registry-and-external-test/final/check-file-size.log.gz",
+    "bytes": 63,
+    "lines": 3,
+    "sha256": "73a4a04b85139520a9b7dbb5129f23a861e41d0786f6699c60f80d332516c764"
+  },
+  {
+    "label": "check-file-size-js-twin",
+    "command": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-file-size-js-twin"
+    ],
+    "completedAt": "2026-11-17T22:00:29.644108+00:00",
+    "seconds": 5.089,
+    "exitCode": 0,
+    "log": "/tmp/issue-1580-research/repaired-registry-check-file-size-js-twin.log",
+    "logArchive": "experiments/issue-1580/evidence/checks/repaired-registry-and-external-test/final/check-file-size-js-twin.log.gz",
+    "bytes": 71,
+    "lines": 3,
+    "sha256": "a04e5fbe9eeeeb87b3dc7e68bc8c53f9ba7d6a64736a8e6e2fa8ba94ae056298"
+  }
+]

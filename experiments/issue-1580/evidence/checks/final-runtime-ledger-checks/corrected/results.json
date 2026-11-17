@@ -1,0 +1,36 @@
+[
+  {
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/main-only-regression-ledger.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.281,
+    "logArchive": "experiments/issue-1580/evidence/checks/final-runtime-ledger-checks/corrected/main-only-regression-ledger.test.log.gz",
+    "rawSha256": "1a6b0b872542c920d8e13bcfac479307088b8a69343c67d94ae00c3e664ea08c",
+    "rawLines": 12,
+    "completedAt": "2026-11-17T22:21:26.785676+00:00"
+  },
+  {
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/fast-pull-request-production-profile.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 4.69,
+    "logArchive": "experiments/issue-1580/evidence/checks/final-runtime-ledger-checks/corrected/fast-pull-request-production-profile.test.log.gz",
+    "rawSha256": "96a9614d8d92b5d5c343220d8a769007efe0364ccf19f4a521bcf2f45e6f3507",
+    "rawLines": 23,
+    "completedAt": "2026-11-17T22:21:31.476498+00:00"
+  }
+]

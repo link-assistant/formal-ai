@@ -9,7 +9,14 @@
     4,
     5,
     6,
-    7
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
   ],
   "totalHistoricalPages": 254,
   "files": [
@@ -68,12 +75,150 @@
       "readRanges": [
         [
           1,
-          73
+          211
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/VERIFICATION.md",
+      "sha256": "d4c76f6a7a7eac530ae59326b0f581a6ad3f5d91e4c9d0bee9a2169ae19eda39",
+      "totalLines": 42,
+      "readRanges": [
+        [
+          1,
+          42
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/actionlint-upstream-report.txt",
+      "sha256": "da2ac6b6b7e7d89ab2a4427b9fc21ab3981fba175c1e190648c0561b1c615b22",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/baseline-all-syntax.log",
+      "sha256": "8de8be7094f873f9bb486eab6ed179e29263a9bfd8b8c066619488742e9c6612",
+      "totalLines": 8,
+      "readRanges": [
+        [
+          1,
+          8
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/baseline-node-syntax.log",
+      "sha256": "8de8be7094f873f9bb486eab6ed179e29263a9bfd8b8c066619488742e9c6612",
+      "totalLines": 8,
+      "readRanges": [
+        [
+          1,
+          8
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/bun-checks.log",
+      "sha256": "d41dfb34de6a5b2f70dc2e26568780f11e34890ec04edc82af3e900faac798c2",
+      "totalLines": 7,
+      "readRanges": [
+        [
+          1,
+          7
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/ci-dependencies.log",
+      "sha256": "b597e6bbbf8dd083df72788e71ff2cd94b04693f7ea5bce72e16f88496be490b",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/cli-runtime-tests.log",
+      "sha256": "80aa5b95967535297a82bb513d244fe3eaf158de0340f499fe43eaf6cecf0628",
+      "totalLines": 11,
+      "readRanges": [
+        [
+          1,
+          11
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/file-size.log",
+      "sha256": "9895ba38d13050aac1af5a7b0c73ba9085af78b47f08030b7de099730c445eed",
+      "totalLines": 3,
+      "readRanges": [
+        [
+          1,
+          3
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/format-final.log",
+      "sha256": "9733d5b64bacb4cc4667aca7f2bfd989baf71ab25dd9ecd4403bfbbf307f915b",
+      "totalLines": 23,
+      "readRanges": [
+        [
+          1,
+          23
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/jacoco-upstream-report.txt",
+      "sha256": "1d1cd8b56072b1746e5ac4b998a2769890ae732065703b465a1240729612d38f",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/javascript-tests.log",
+      "sha256": "3c370c3e0e211565bf33c0c22d7f057cd4b4cf701e9507861b494607992f2ac9",
+      "totalLines": 120,
+      "readRanges": [
+        [
+          1,
+          43
         ]
       ],
       "completeSourceRead": false
     }
   ],
   "decision": "Historical Java toolchain migration, audit and requirements records supply context only. Maven/JUnit/plugin compatibility claims and old runs do not establish current Formal AI correctness. Preserve existing Rust/default-branch build policy, targeted audit inventories and exact source/result identity; do not introduce Maven or ambient npm setup without a manifest. The transitive inventory and remaining historical source are unfinished.",
-  "independentAuthorshipCredit": 0
+  "independentAuthorshipCredit": 0,
+  "observationsThroughPage14": [
+    "The completed transitive inventory documents three compatibility exceptions: legacy Doxia/Sink ABI for JaCoCo, Plexus duplicate Guice scopes, and stable XML dependencies that require Maven release candidates. These historical claims are not a basis for upgrading unrelated Formal AI dependencies without execution.",
+    "Historical verification distinguishes source-tree auditing from actual resolved plugin/project artifacts and retains before/after advisories. Formal AI must keep its own successful dependency inventory before audit; historical Java success does not establish that result.",
+    "Historical verification identifies commit SHAs and timestamps, distinguishes corrected experimental failures from outstanding failures, and records final source/CI identities. Existing Formal AI evidence must retain the same distinction.",
+    "All 254 historical pages remain required for complete repository review. Pages 15 through 254 are unread; current Java or Formal AI native execution is not claimed."
+  ]
 }
