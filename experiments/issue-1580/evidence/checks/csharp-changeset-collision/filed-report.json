@@ -1,0 +1,15 @@
+{
+  "repository": "link-foundation/csharp-ai-driven-development-pipeline-template",
+  "title": "Changeset merge can delete every valid input when its output filename collides",
+  "url": "https://github.com/link-foundation/csharp-ai-driven-development-pipeline-template/issues/111",
+  "bodyFile": "csharp-changeset-output-collision-report.md",
+  "evidenceCommit": "0f90c0a7a3bdd77b7d31c276a180d5ee297e57f6",
+  "checkedAt": "2026-11-17T13:42:56.600706+00:00",
+  "upstreamHead": "a5b9a1a46686cfe844f9afa2ace030094969e766",
+  "sourceBlob": "a57d1f941a39dd9aa23ef770a26f02d04fe9fc94",
+  "bodySha256": "df68c3a52ba8b7c80c8b0e9ef0b7b2ed4436b0c16c777baa51d4fa2e7f62c5a3",
+  "remoteEvidenceVerified": true,
+  "freshIssueRowsChecked": 110,
+  "duplicateTitles": [],
+  "claim": "Reported reproduced valid-input loss with immutable executable evidence; no upstream repair or complete template review is claimed."
+}

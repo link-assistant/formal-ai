@@ -47,5 +47,12 @@
     "url": "https://github.com/link-foundation/java-ai-driven-development-pipeline-template/issues/31",
     "bodyFile": "java-release-commit-integrity-report.md",
     "evidenceCommit": "ff5d883b15aeda06c07e509a73a0a436f10799b7"
+  },
+  {
+    "repository": "link-foundation/csharp-ai-driven-development-pipeline-template",
+    "title": "Changeset merge can delete every valid input when its output filename collides",
+    "url": "https://github.com/link-foundation/csharp-ai-driven-development-pipeline-template/issues/111",
+    "bodyFile": "csharp-changeset-output-collision-report.md",
+    "evidenceCommit": "0f90c0a7a3bdd77b7d31c276a180d5ee297e57f6"
   }
 ]

@@ -18,9 +18,9 @@ The disposable candidate changes only the output write to `writeFileSync(mergedF
 
 ## Executable evidence
 
-- [Content-addressed pinned source and license](https://github.com/link-assistant/formal-ai/tree/EVIDENCE_COMMIT/experiments/issue-1580/fixtures/csharp-template).
-- [Four-case regression](https://github.com/link-assistant/formal-ai/blob/EVIDENCE_COMMIT/experiments/issue-1580/template-csharp-changeset-integrity.test.mjs).
-- [Before/after log and identity index](https://github.com/link-assistant/formal-ai/blob/EVIDENCE_COMMIT/experiments/issue-1580/evidence/checks/csharp-changeset-integrity.json).
+- [Content-addressed pinned source and license](https://github.com/link-assistant/formal-ai/tree/0f90c0a7a3bdd77b7d31c276a180d5ee297e57f6/experiments/issue-1580/fixtures/csharp-template).
+- [Four-case regression](https://github.com/link-assistant/formal-ai/blob/0f90c0a7a3bdd77b7d31c276a180d5ee297e57f6/experiments/issue-1580/template-csharp-changeset-integrity.test.mjs).
+- [Before/after log and identity index](https://github.com/link-assistant/formal-ai/blob/0f90c0a7a3bdd77b7d31c276a180d5ee297e57f6/experiments/issue-1580/evidence/checks/csharp-changeset-integrity.json).
 
 Run `node --test --test-concurrency=1 experiments/issue-1580/template-csharp-changeset-integrity.test.mjs` in that checkout. It executes unchanged pinned helpers in small temporary directories, then applies the candidate only to disposable copies. The preservation assertion fails against the original (3 pass / 1 fail) and all four cases pass after the guard is inserted. Positive controls retain the major bump and both descriptions in chronological order; malformed-input controls retain the existing fatal, nonmutating behavior. The maintained entrypoint also passes all 25 tests, without skips.
 
