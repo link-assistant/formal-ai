@@ -1,0 +1,54 @@
+[
+  {
+    "line": 2452,
+    "text": "E2E (claude)\tRun claude leg\t2026-11-17T20:03:08.7110964Z ##[error]Process completed with exit code 1."
+  },
+  {
+    "line": 2904,
+    "text": "E2E (opencode-vscode)\tRun opencode-vscode leg\t2026-11-17T20:04:41.7475955Z ##[error]Process completed with exit code 1."
+  },
+  {
+    "line": 3343,
+    "text": "E2E (gemini)\tRun gemini leg\t2026-11-17T20:01:07.8521260Z ##[error]Process completed with exit code 1."
+  },
+  {
+    "line": 3779,
+    "text": "E2E (agent)\tRun agent leg\t2026-11-17T20:01:39.8564476Z ##[error]Process completed with exit code 1."
+  },
+  {
+    "line": 4228,
+    "text": "E2E (opencode-desktop)\tRun opencode-desktop leg\t2026-11-17T20:01:43.9560764Z ##[error]Process completed with exit code 1."
+  },
+  {
+    "line": 4678,
+    "text": "E2E (cursor)\tRun cursor leg\t2026-11-17T20:01:49.1622198Z ##[error]Process completed with exit code 1."
+  },
+  {
+    "line": 5241,
+    "text": "E2E (opencode)\tRun opencode leg\t2026-11-17T20:04:02.1800654Z ##[error]Process completed with exit code 1."
+  },
+  {
+    "line": 5696,
+    "text": "E2E (codex)\tRun codex leg\t2026-11-17T20:01:34.7612482Z ##[error]Process completed with exit code 1."
+  },
+  {
+    "line": 6155,
+    "text": "E2E (aider)\tRun aider leg\t2026-11-17T20:03:27.9263820Z ##[error]Process completed with exit code 1."
+  },
+  {
+    "line": 6798,
+    "text": "E2E (qwen)\tRun qwen leg\t2026-11-17T20:04:47.1709600Z ##[error]Process completed with exit code 1."
+  },
+  {
+    "line": 7228,
+    "text": "E2E (t3code)\tRun t3code leg\t2026-11-17T20:02:38.7536543Z ##[error]Process completed with exit code 1."
+  },
+  {
+    "line": 7663,
+    "text": "E2E (grok)\tRun grok leg\t2026-11-17T20:04:56.1541974Z ##[error]Process completed with exit code 1."
+  },
+  {
+    "line": 7776,
+    "text": "Matrix summary\tFail if any leg failed\t2026-11-17T20:05:08.9502289Z ##[error]Process completed with exit code 1."
+  }
+]

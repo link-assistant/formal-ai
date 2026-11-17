@@ -436,10 +436,9 @@ mod opencode_tests {
 
     #[test]
     fn shared_opencode_read_envelopes_preserve_source_and_provenance() {
-        let fixtures: Value = serde_json::from_str(include_str!(concat!(
-            env!("CARGO_MANIFEST_DIR"),
-            "/../data/parity/issue-1580-opencode-read-envelope.json"
-        )))
+        let fixtures: Value = serde_json::from_str(include_str!(
+            "../../../embedded/data/parity/issue-1580-opencode-read-envelope.json"
+        ))
         .unwrap();
         for row in fixtures.as_array().unwrap() {
             let raw = row["raw"].as_str().unwrap();

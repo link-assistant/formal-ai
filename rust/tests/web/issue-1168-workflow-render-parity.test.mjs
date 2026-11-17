@@ -4,7 +4,7 @@
 // runtimes render it from the offline shipped baseline and must produce the
 // fixture text rust/tests/unit/issue_1168_workflow_render_parity.rs asserts.
 
-import { before, test } from 'node:test';
+import { after, before, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
@@ -13,8 +13,14 @@ import { programContractAnswer } from '../../../js/agentic/crate/coding_program_
 import { baselineVersionSet, forGeneration } from '../../../js/agentic/crate/version_resolution.mjs';
 import { render, renderWith } from '../../../js/agentic/ci_workflow.mjs';
 
+const previousOffline = process.env.FORMAL_AI_OFFLINE;
 before(async () => {
+  process.env.FORMAL_AI_OFFLINE = '1';
   await installNodeHost(new WorkerHost());
+});
+after(() => {
+  if (previousOffline === undefined) delete process.env.FORMAL_AI_OFFLINE;
+  else process.env.FORMAL_AI_OFFLINE = previousOffline;
 });
 
 function fixture() {

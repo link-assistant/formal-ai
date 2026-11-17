@@ -410,7 +410,7 @@ client_integrations
       temp_home_env "GEMINI_CLI_HOME"
       temp_home_config_path ".gemini/settings.json"
       temp_home_json_set "security.auth.selectedType={google_auth_type}"
-      temp_home_json_set "modelConfigs.overrides=json+:[{\"match\":{\"model\":\"{model}\"},\"modelConfig\":{\"generateContentConfig\":{\"maxOutputTokens\":{max_output_tokens}}}}]"
+      temp_home_json_set 'modelConfigs.overrides=json+:[{"match":{"model":"{model}"},"modelConfig":{"generateContentConfig":{"maxOutputTokens":{max_output_tokens}}}}]'
       model_arg "-m"
       model_arg_position "before_args"
       orchestration_arg "--skip-trust"

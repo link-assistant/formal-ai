@@ -1,0 +1,162 @@
+[
+  {
+    "conclusion": "success",
+    "created_at": "2026-11-17T19:53:12Z",
+    "head_sha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/44163377635",
+    "id": 44163377635,
+    "name": "Source scanner qualification and debt inventory",
+    "status": "completed",
+    "updated_at": "2026-11-17T19:55:50Z"
+  },
+  {
+    "conclusion": "success",
+    "created_at": "2026-11-17T19:53:12Z",
+    "head_sha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/44163377523",
+    "id": 44163377523,
+    "name": "Publish VS Code extension",
+    "status": "completed",
+    "updated_at": "2026-11-17T19:56:25Z"
+  },
+  {
+    "conclusion": "success",
+    "created_at": "2026-11-17T19:53:12Z",
+    "head_sha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/44163377505",
+    "id": 44163377505,
+    "name": "Documentation policy",
+    "status": "completed",
+    "updated_at": "2026-11-17T19:53:40Z"
+  },
+  {
+    "conclusion": "success",
+    "created_at": "2026-11-17T19:53:12Z",
+    "head_sha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/44163377429",
+    "id": 44163377429,
+    "name": "Broken Link Checker",
+    "status": "completed",
+    "updated_at": "2026-11-17T19:53:23Z"
+  },
+  {
+    "conclusion": "success",
+    "created_at": "2026-11-17T19:53:12Z",
+    "head_sha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/44163377455",
+    "id": 44163377455,
+    "name": "Coverage",
+    "status": "completed",
+    "updated_at": "2026-11-17T19:54:06Z"
+  },
+  {
+    "conclusion": "success",
+    "created_at": "2026-11-17T19:53:12Z",
+    "head_sha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/44163377661",
+    "id": 44163377661,
+    "name": "Self-development status",
+    "status": "completed",
+    "updated_at": "2026-11-17T19:54:50Z"
+  },
+  {
+    "conclusion": "success",
+    "created_at": "2026-11-17T19:53:12Z",
+    "head_sha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/44163377508",
+    "id": 44163377508,
+    "name": "Coding Ladder",
+    "status": "completed",
+    "updated_at": "2026-11-17T19:53:18Z"
+  },
+  {
+    "conclusion": "success",
+    "created_at": "2026-11-17T19:53:12Z",
+    "head_sha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/44163377784",
+    "id": 44163377784,
+    "name": "Task Ladder",
+    "status": "completed",
+    "updated_at": "2026-11-17T20:00:46Z"
+  },
+  {
+    "conclusion": "success",
+    "created_at": "2026-11-17T19:53:12Z",
+    "head_sha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/44163377733",
+    "id": 44163377733,
+    "name": "Write-Effect Ladder",
+    "status": "completed",
+    "updated_at": "2026-11-17T20:01:01Z"
+  },
+  {
+    "conclusion": "success",
+    "created_at": "2026-11-17T19:53:12Z",
+    "head_sha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/44163377732",
+    "id": 44163377732,
+    "name": "Stock Rust Install",
+    "status": "completed",
+    "updated_at": "2026-11-17T20:01:03Z"
+  },
+  {
+    "conclusion": "success",
+    "created_at": "2026-11-17T19:53:12Z",
+    "head_sha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/44163377567",
+    "id": 44163377567,
+    "name": "Question necessity ratchet",
+    "status": "completed",
+    "updated_at": "2026-11-17T20:01:33Z"
+  },
+  {
+    "conclusion": "failure",
+    "created_at": "2026-11-17T19:53:12Z",
+    "head_sha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/44163377677",
+    "id": 44163377677,
+    "name": "Layered CI",
+    "status": "completed",
+    "updated_at": "2026-11-17T20:01:59Z"
+  },
+  {
+    "conclusion": "success",
+    "created_at": "2026-11-17T19:53:12Z",
+    "head_sha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/44163378314",
+    "id": 44163378314,
+    "name": "Security",
+    "status": "completed",
+    "updated_at": "2026-11-17T20:08:04Z"
+  },
+  {
+    "conclusion": "failure",
+    "created_at": "2026-11-17T19:53:12Z",
+    "head_sha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/44163377753",
+    "id": 44163377753,
+    "name": "Agentic CLI Matrix",
+    "status": "completed",
+    "updated_at": "2026-11-17T20:05:11Z"
+  },
+  {
+    "conclusion": "success",
+    "created_at": "2026-11-17T19:53:12Z",
+    "head_sha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/44163377779",
+    "id": 44163377779,
+    "name": "Benchmark Corpus Gate",
+    "status": "completed",
+    "updated_at": "2026-11-17T20:16:27Z"
+  },
+  {
+    "conclusion": "failure",
+    "created_at": "2026-11-17T19:53:12Z",
+    "head_sha": "444575f2ac28f609c94497865f125f99415ff6d5",
+    "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/44163378148",
+    "id": 44163378148,
+    "name": "CI/CD Pipeline",
+    "status": "completed",
+    "updated_at": "2026-11-17T20:29:07Z"
+  }
+]

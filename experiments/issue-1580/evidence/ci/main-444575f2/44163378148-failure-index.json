@@ -1,0 +1,430 @@
+[
+  {
+    "line": 23543,
+    "text": "Lint and Format Check (lane 1)\tAudit JavaScript dependencies before native compilation\t2026-11-17T19:59:43.0046395Z ##[error]Process completed with exit code 1."
+  },
+  {
+    "line": 26796,
+    "text": "Test (ubuntu-24.04 / full) shard 7/8\tUNKNOWN STEP\t2026-11-17T20:10:20.0371069Z test agentic_coding::issue_498_google_trends_catalog::committed_agent_cli_session_matches_a_fresh_google_trends_run ... FAILED"
+  },
+  {
+    "line": 26827,
+    "text": "Test (ubuntu-24.04 / full) shard 7/8\tUNKNOWN STEP\t2026-11-17T20:11:22.8022385Z test capability_routing::issue_1138_self_use_intent_routing::a_scheduling_request_reaches_the_calendar_whatever_verb_it_uses ... FAILED"
+  },
+  {
+    "line": 26891,
+    "text": "Test (ubuntu-24.04 / full) shard 7/8\tUNKNOWN STEP\t2026-11-17T20:11:30.1760326Z test ci_cd::workflow_release::pages_deploy_uses_the_actions_maximum_supported_wait ... FAILED"
+  },
+  {
+    "line": 27001,
+    "text": "Test (ubuntu-24.04 / full) shard 7/8\tUNKNOWN STEP\t2026-11-17T20:17:58.1321444Z test issue_1133_hive_mind_three_runs::repository_requirements_bind_language_and_output_independently_of_page_chrome ... FAILED"
+  },
+  {
+    "line": 27083,
+    "text": "Test (ubuntu-24.04 / full) shard 7/8\tUNKNOWN STEP\t2026-11-17T20:18:33.5820086Z test issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_russian ... FAILED"
+  },
+  {
+    "line": 27302,
+    "text": "Test (ubuntu-24.04 / full) shard 7/8\tUNKNOWN STEP\t2026-11-17T20:21:35.3421395Z test web_requests::information_search_variants_route_to_web_search_handler ... FAILED"
+  },
+  {
+    "line": 27308,
+    "text": "Test (ubuntu-24.04 / full) shard 7/8\tUNKNOWN STEP\t2026-11-17T20:25:41.0864958Z ##[error]The command was terminated after 1080s, its full 1080s execution budget. The budget expires before `timeout-minutes` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout."
+  },
+  {
+    "line": 27334,
+    "text": "Test (ubuntu-24.04 / full) shard 7/8\tUNKNOWN STEP\t2026-11-17T20:25:42.1326208Z ##[error]Process completed with exit code 124."
+  },
+  {
+    "line": 30270,
+    "text": "Test (ubuntu-24.04 / specification) shard 2/4\tUNKNOWN STEP\t2026-11-17T20:08:49.6964287Z test specification::formalization::same_prompt_and_config_produce_same_interpretation_choice ... FAILED"
+  },
+  {
+    "line": 30449,
+    "text": "Test (ubuntu-24.04 / specification) shard 2/4\tUNKNOWN STEP\t2026-11-17T20:09:47.8926912Z test specification::synthesis::renumbered_word_problem_recomputes_from_quantities ... FAILED"
+  },
+  {
+    "line": 30490,
+    "text": "Test (ubuntu-24.04 / specification) shard 2/4\tUNKNOWN STEP\t2026-11-17T20:10:58.0196570Z thread 'specification::formalization::same_prompt_and_config_produce_same_interpretation_choice' (4809) panicked at tests/unit/specification/formalization.rs:286:5:"
+  },
+  {
+    "line": 35350,
+    "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-17T20:13:10.8406794Z test ci_cd::ci_warning_audit::audited_warning_band_sources_stay_below_their_limits ... FAILED"
+  },
+  {
+    "line": 35533,
+    "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-17T20:22:39.3423974Z test issue_1133_hive_mind_three_runs::extended::a_verified_work_item_is_committed_and_pushed_to_the_named_branch ... FAILED"
+  },
+  {
+    "line": 35534,
+    "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-17T20:23:00.4568892Z test issue_1133_hive_mind_three_runs::extended::a_work_item_that_asks_for_a_workflow_writes_one_with_the_verified_commands ... FAILED"
+  },
+  {
+    "line": 35537,
+    "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-17T20:24:03.0428885Z test issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_hindi ... FAILED"
+  },
+  {
+    "line": 35601,
+    "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-17T20:24:46.2677774Z test issue_1588_intent_spans::document_intent_and_bound_quantities_match_worker_fixtures ... FAILED"
+  },
+  {
+    "line": 35677,
+    "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-17T20:27:41.5288006Z ##[error]The command was terminated after 1080s, its full 1080s execution budget. The budget expires before `timeout-minutes` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout."
+  },
+  {
+    "line": 35712,
+    "text": "Test (ubuntu-24.04 / full) shard 3/8\tUNKNOWN STEP\t2026-11-17T20:27:42.5483160Z ##[error]Process completed with exit code 124."
+  },
+  {
+    "line": 47484,
+    "text": "Test (ubuntu-24.04 / full) shard 4/8\tUNKNOWN STEP\t2026-11-17T20:12:32.0170897Z test formal_ai::seed_and_memory::http_fetch_and_url_navigate_intents_are_distinct ... FAILED"
+  },
+  {
+    "line": 47538,
+    "text": "Test (ubuntu-24.04 / full) shard 4/8\tUNKNOWN STEP\t2026-11-17T20:14:05.9271167Z test issue_1133_hive_mind_three_runs::extended::codex_plans_the_work_item_and_never_narrates_the_connector_placeholder ... FAILED"
+  },
+  {
+    "line": 47855,
+    "text": "Test (ubuntu-24.04 / full) shard 4/8\tUNKNOWN STEP\t2026-11-17T20:23:24.1496803Z thread 'formal_ai::seed_and_memory::http_fetch_and_url_navigate_intents_are_distinct' (7943) panicked at tests/unit/formal_ai/seed_and_memory.rs:239:5:"
+  },
+  {
+    "line": 47882,
+    "text": "Test (ubuntu-24.04 / full) shard 4/8\tUNKNOWN STEP\t2026-11-17T20:23:24.1532559Z thread 'issue_1133_hive_mind_three_runs::extended::codex_plans_the_work_item_and_never_narrates_the_connector_placeholder' (9464) panicked at tests/unit/issue_1133_hive_mind_three_runs/extended.rs:533:5:"
+  },
+  {
+    "line": 48049,
+    "text": "Test (ubuntu-24.04 / full) shard 4/8\tUNKNOWN STEP\t2026-11-17T20:24:45.0444354Z ##[error]Process completed with exit code 1."
+  },
+  {
+    "line": 51233,
+    "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-17T20:16:43.9166680Z test issue_1173_fallback_executes_search::unknown_reasoning_fallback_executes_instead_of_describing ... FAILED"
+  },
+  {
+    "line": 51253,
+    "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-17T20:16:59.5716181Z test issue_498_google_trends::checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages ... FAILED"
+  },
+  {
+    "line": 51414,
+    "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-17T20:20:34.1270807Z test pull_request_1188_fix_gaps::g102_a_file_described_rather_than_given_is_never_written ... FAILED"
+  },
+  {
+    "line": 51422,
+    "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-17T20:20:39.8877949Z test seed::issue_699_handler_migration::unsupported_write_program_fails_with_a_named_skill_gap ... FAILED"
+  },
+  {
+    "line": 51520,
+    "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-17T20:24:43.8140341Z thread 'issue_1173_fallback_executes_search::unknown_reasoning_fallback_executes_instead_of_describing' (11185) panicked at tests/unit/issue_1173_fallback_executes_search.rs:237:5:"
+  },
+  {
+    "line": 51550,
+    "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-17T20:24:43.8155008Z thread 'issue_498_google_trends::checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages' (11365) panicked at tests/unit/issue_498_google_trends.rs:85:5:"
+  },
+  {
+    "line": 51580,
+    "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-17T20:24:43.8176558Z thread 'pull_request_1188_fix_gaps::g102_a_file_described_rather_than_given_is_never_written' (14191) panicked at tests/unit/pull_request_1188_fix_gaps.rs:357:5:"
+  },
+  {
+    "line": 51606,
+    "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-17T20:24:43.8183331Z thread 'seed::issue_699_handler_migration::unsupported_write_program_fails_with_a_named_skill_gap' (14759) panicked at tests/unit/seed/issue_699_handler_migration.rs:231:13:"
+  },
+  {
+    "line": 51763,
+    "text": "Test (ubuntu-24.04 / full) shard 5/8\tUNKNOWN STEP\t2026-11-17T20:24:59.0050837Z ##[error]Process completed with exit code 1."
+  },
+  {
+    "line": 54668,
+    "text": "Test (ubuntu-24.04 / specification) shard 3/4\tUNKNOWN STEP\t2026-11-17T20:11:03.9553812Z test specification::benchmarks::issue_304_benchmark_suite_reports_pass_fail_counts ... FAILED"
+  },
+  {
+    "line": 54669,
+    "text": "Test (ubuntu-24.04 / specification) shard 3/4\tUNKNOWN STEP\t2026-11-17T20:11:03.9593615Z test specification::benchmarks::issue_314_numeric_benchmark_cases_compute_with_trace ... FAILED"
+  },
+  {
+    "line": 54670,
+    "text": "Test (ubuntu-24.04 / specification) shard 3/4\tUNKNOWN STEP\t2026-11-17T20:11:03.9595941Z test specification::benchmarks::issue_315_unseen_python_function_synthesizes_without_seed_hit ... FAILED"
+  },
+  {
+    "line": 54671,
+    "text": "Test (ubuntu-24.04 / specification) shard 3/4\tUNKNOWN STEP\t2026-11-17T20:11:03.9597037Z test specification::benchmarks::issue_704_portfolio_rescues_the_industry_search_case ... FAILED"
+  },
+  {
+    "line": 54723,
+    "text": "Test (ubuntu-24.04 / specification) shard 3/4\tUNKNOWN STEP\t2026-11-17T20:11:21.6563075Z test specification::debug_session::a_served_chat_turn_answers_only_after_its_last_stage ... FAILED"
+  },
+  {
+    "line": 54844,
+    "text": "Test (ubuntu-24.04 / specification) shard 3/4\tUNKNOWN STEP\t2026-11-17T20:13:22.7884324Z test specification::pronoun_topic_follow_up::seeded_coreference_contexts_normalize_terminal_multilingual_surfaces ... FAILED"
+  },
+  {
+    "line": 54917,
+    "text": "Test (ubuntu-24.04 / specification) shard 3/4\tUNKNOWN STEP\t2026-11-17T20:13:54.6412882Z test specification::synthesis::paraphrased_algebra_prompt_reaches_same_derivation ... FAILED"
+  },
+  {
+    "line": 54960,
+    "text": "Test (ubuntu-24.04 / specification) shard 3/4\tUNKNOWN STEP\t2026-11-17T20:14:04.7718108Z thread 'specification::benchmarks::issue_304_benchmark_suite_reports_pass_fail_counts' (3818) panicked at tests/unit/specification/benchmarks.rs:803:5:"
+  },
+  {
+    "line": 54992,
+    "text": "Test (ubuntu-24.04 / specification) shard 3/4\tUNKNOWN STEP\t2026-11-17T20:14:04.7727892Z thread 'specification::benchmarks::issue_314_numeric_benchmark_cases_compute_with_trace' (3823) panicked at tests/unit/specification/benchmarks.rs:890:10:"
+  },
+  {
+    "line": 55020,
+    "text": "Test (ubuntu-24.04 / specification) shard 3/4\tUNKNOWN STEP\t2026-11-17T20:14:04.7736792Z thread 'specification::benchmarks::issue_315_unseen_python_function_synthesizes_without_seed_hit' (3836) panicked at tests/unit/specification/benchmarks.rs:890:10:"
+  },
+  {
+    "line": 55048,
+    "text": "Test (ubuntu-24.04 / specification) shard 3/4\tUNKNOWN STEP\t2026-11-17T20:14:04.7745751Z thread 'specification::benchmarks::issue_704_portfolio_rescues_the_industry_search_case' (3921) panicked at tests/unit/specification/benchmarks.rs:890:10:"
+  },
+  {
+    "line": 55076,
+    "text": "Test (ubuntu-24.04 / specification) shard 3/4\tUNKNOWN STEP\t2026-11-17T20:14:04.7754324Z thread 'specification::debug_session::a_served_chat_turn_answers_only_after_its_last_stage' (6850) panicked at tests/unit/specification/debug_session.rs:147:5:"
+  },
+  {
+    "line": 55108,
+    "text": "Test (ubuntu-24.04 / specification) shard 3/4\tUNKNOWN STEP\t2026-11-17T20:14:04.7784105Z thread 'specification::pronoun_topic_follow_up::seeded_coreference_contexts_normalize_terminal_multilingual_surfaces' (11225) panicked at tests/unit/specification/pronoun_topic_follow_up.rs:146:9:"
+  },
+  {
+    "line": 55138,
+    "text": "Test (ubuntu-24.04 / specification) shard 3/4\tUNKNOWN STEP\t2026-11-17T20:14:04.7793365Z thread 'specification::synthesis::paraphrased_algebra_prompt_reaches_same_derivation' (14466) panicked at tests/unit/specification/synthesis.rs:408:5:"
+  },
+  {
+    "line": 55176,
+    "text": "Test (ubuntu-24.04 / specification) shard 3/4\tUNKNOWN STEP\t2026-11-17T20:14:04.8819407Z ##[error]Process completed with exit code 1."
+  },
+  {
+    "line": 58200,
+    "text": "Test (ubuntu-24.04 / full) shard 8/8\tUNKNOWN STEP\t2026-11-17T20:12:12.9959503Z test ci_cd::network_download_retry::no_remote_download_is_left_out_of_that_rule ... FAILED"
+  },
+  {
+    "line": 58316,
+    "text": "Test (ubuntu-24.04 / full) shard 8/8\tUNKNOWN STEP\t2026-11-17T20:18:34.4118066Z test issue_1133_hive_mind_three_runs::extended::a_connector_result_keeps_its_structured_content ... FAILED"
+  },
+  {
+    "line": 58317,
+    "text": "Test (ubuntu-24.04 / full) shard 8/8\tUNKNOWN STEP\t2026-11-17T20:18:47.2907957Z test issue_1133_hive_mind_three_runs::extended::a_workflow_requirement_adds_the_workflow_in_every_language ... FAILED"
+  },
+  {
+    "line": 58345,
+    "text": "Test (ubuntu-24.04 / full) shard 8/8\tUNKNOWN STEP\t2026-11-17T20:19:57.9256920Z test issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_every_language ... FAILED"
+  },
+  {
+    "line": 58642,
+    "text": "Test (ubuntu-24.04 / full) shard 8/8\tUNKNOWN STEP\t2026-11-17T20:27:51.8127430Z ##[error]The command was terminated after 1080s, its full 1080s execution budget. The budget expires before `timeout-minutes` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout."
+  },
+  {
+    "line": 58674,
+    "text": "Test (ubuntu-24.04 / full) shard 8/8\tUNKNOWN STEP\t2026-11-17T20:27:52.8291412Z ##[error]Process completed with exit code 124."
+  },
+  {
+    "line": 63018,
+    "text": "Test (ubuntu-24.04 / specification) shard 1/4\tUNKNOWN STEP\t2026-11-17T20:08:31.7562490Z test specification::reasoning_loop::step_6_candidates_are_validated_against_constraints ... FAILED"
+  },
+  {
+    "line": 63033,
+    "text": "Test (ubuntu-24.04 / specification) shard 1/4\tUNKNOWN STEP\t2026-11-17T20:08:34.8945284Z test specification::reasoning_paths_procedures::how_to_make_tea_uses_source_backed_procedure_plan ... FAILED"
+  },
+  {
+    "line": 63077,
+    "text": "Test (ubuntu-24.04 / specification) shard 1/4\tUNKNOWN STEP\t2026-11-17T20:08:43.0003578Z test specification::spoken_hour_scheduling::issue_595_calendar_create_path_keeps_supported_language_coverage ... FAILED"
+  },
+  {
+    "line": 63085,
+    "text": "Test (ubuntu-24.04 / specification) shard 1/4\tUNKNOWN STEP\t2026-11-17T20:08:45.1194296Z test specification::synthesis::compound_courtesy_and_question_are_answered_in_source_order ... FAILED"
+  },
+  {
+    "line": 63086,
+    "text": "Test (ubuntu-24.04 / specification) shard 1/4\tUNKNOWN STEP\t2026-11-17T20:08:46.0576893Z test specification::synthesis::decomposed_sub_results_are_composed_for_algebra ... FAILED"
+  },
+  {
+    "line": 63087,
+    "text": "Test (ubuntu-24.04 / specification) shard 1/4\tUNKNOWN STEP\t2026-11-17T20:08:46.4765932Z test specification::synthesis::renumbered_algebra_substitution_recomputes_closed_value ... FAILED"
+  },
+  {
+    "line": 63088,
+    "text": "Test (ubuntu-24.04 / specification) shard 1/4\tUNKNOWN STEP\t2026-11-17T20:08:46.8987068Z test specification::synthesis::shared_cross_runtime_synthesis_fixture_matches_rust_solver ... FAILED"
+  },
+  {
+    "line": 63124,
+    "text": "Test (ubuntu-24.04 / specification) shard 1/4\tUNKNOWN STEP\t2026-11-17T20:09:07.4117563Z test specification::benchmarks::issue_317_held_out_benchmark_variants_pass_by_derivation ... FAILED"
+  },
+  {
+    "line": 63134,
+    "text": "Test (ubuntu-24.04 / specification) shard 1/4\tUNKNOWN STEP\t2026-11-17T20:11:29.4734734Z thread 'specification::reasoning_loop::step_6_candidates_are_validated_against_constraints' (4517) panicked at tests/unit/specification/reasoning_loop.rs:216:5:"
+  },
+  {
+    "line": 63160,
+    "text": "Test (ubuntu-24.04 / specification) shard 1/4\tUNKNOWN STEP\t2026-11-17T20:11:29.4741726Z thread 'specification::reasoning_paths_procedures::how_to_make_tea_uses_source_backed_procedure_plan' (4722) panicked at tests/unit/specification/reasoning_paths_procedures.rs:175:5:"
+  },
+  {
+    "line": 63190,
+    "text": "Test (ubuntu-24.04 / specification) shard 1/4\tUNKNOWN STEP\t2026-11-17T20:11:29.4765032Z thread 'specification::spoken_hour_scheduling::issue_595_calendar_create_path_keeps_supported_language_coverage' (5260) panicked at tests/unit/specification/spoken_hour_scheduling.rs:183:13:"
+  },
+  {
+    "line": 63221,
+    "text": "Test (ubuntu-24.04 / specification) shard 1/4\tUNKNOWN STEP\t2026-11-17T20:11:29.4772841Z thread 'specification::synthesis::compound_courtesy_and_question_are_answered_in_source_order' (5323) panicked at tests/unit/specification/synthesis.rs:344:9:"
+  },
+  {
+    "line": 63255,
+    "text": "Test (ubuntu-24.04 / specification) shard 1/4\tUNKNOWN STEP\t2026-11-17T20:11:29.4782381Z thread 'specification::synthesis::decomposed_sub_results_are_composed_for_algebra' (5364) panicked at tests/unit/specification/synthesis.rs:280:5:"
+  },
+  {
+    "line": 63285,
+    "text": "Test (ubuntu-24.04 / specification) shard 1/4\tUNKNOWN STEP\t2026-11-17T20:11:29.4789262Z thread 'specification::synthesis::renumbered_algebra_substitution_recomputes_closed_value' (5370) panicked at tests/unit/specification/synthesis.rs:478:5:"
+  },
+  {
+    "line": 63315,
+    "text": "Test (ubuntu-24.04 / specification) shard 1/4\tUNKNOWN STEP\t2026-11-17T20:11:29.4796037Z thread 'specification::synthesis::shared_cross_runtime_synthesis_fixture_matches_rust_solver' (5375) panicked at tests/unit/specification/synthesis.rs:88:13:"
+  },
+  {
+    "line": 63345,
+    "text": "Test (ubuntu-24.04 / specification) shard 1/4\tUNKNOWN STEP\t2026-11-17T20:11:29.4802894Z thread 'specification::benchmarks::issue_317_held_out_benchmark_variants_pass_by_derivation' (3741) panicked at tests/unit/specification/benchmarks.rs:130:9:"
+  },
+  {
+    "line": 63387,
+    "text": "Test (ubuntu-24.04 / specification) shard 1/4\tUNKNOWN STEP\t2026-11-17T20:11:29.8071659Z ##[error]Process completed with exit code 1."
+  },
+  {
+    "line": 66529,
+    "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-17T20:11:55.1447689Z test issue_1133_hive_mind_three_runs::extended::the_full_claude_code_drive_reads_builds_verifies_and_pushes_kotlin ... FAILED"
+  },
+  {
+    "line": 66770,
+    "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-17T20:16:08.1357764Z test solver::issue_869_meeting_scheduling::georgia_resolves_to_asia_tbilisi_not_a_raw_surface ... FAILED"
+  },
+  {
+    "line": 66807,
+    "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-17T20:16:29.3944812Z test web_requests::latest_news_routes_to_wikinews_search_across_supported_languages ... FAILED"
+  },
+  {
+    "line": 66818,
+    "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-17T20:18:04.6378635Z thread 'issue_1133_hive_mind_three_runs::extended::the_full_claude_code_drive_reads_builds_verifies_and_pushes_kotlin' (8523) panicked at tests/unit/issue_1133_hive_mind_three_runs/extended.rs:193:9:"
+  },
+  {
+    "line": 66844,
+    "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-17T20:18:04.6418906Z thread 'solver::issue_869_meeting_scheduling::georgia_resolves_to_asia_tbilisi_not_a_raw_surface' (18065) panicked at tests/unit/solver/issue_869_meeting_scheduling.rs:65:5:"
+  },
+  {
+    "line": 66870,
+    "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-17T20:18:04.6427612Z thread 'web_requests::latest_news_routes_to_wikinews_search_across_supported_languages' (19032) panicked at tests/unit/web_requests.rs:171:13:"
+  },
+  {
+    "line": 66924,
+    "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-17T20:18:06.5514816Z test issue_1138_family_behaviour::every_retired_handler_prompt_still_answers_through_its_family ... FAILED"
+  },
+  {
+    "line": 66959,
+    "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-17T20:18:14.9941201Z test with_formal_ai::with_formal_ai_auto_starts_agent_mode_server_and_tears_it_down ... FAILED"
+  },
+  {
+    "line": 66960,
+    "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-17T20:18:15.8038313Z test with_formal_ai::with_formal_ai_selects_uniform_interactive_and_non_interactive_modes ... FAILED"
+  },
+  {
+    "line": 66965,
+    "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-17T20:18:16.9787780Z test with_formal_ai_argv::with_formal_ai_renders_the_same_argv_from_an_argument_and_a_piped_prompt ... FAILED"
+  },
+  {
+    "line": 66972,
+    "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-17T20:18:18.0062325Z thread 'issue_1138_family_behaviour::every_retired_handler_prompt_still_answers_through_its_family' (21225) panicked at tests/integration/issue_1138_family_behaviour.rs:97:5:"
+  },
+  {
+    "line": 67002,
+    "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-17T20:18:18.0078435Z thread 'with_formal_ai::with_formal_ai_auto_starts_agent_mode_server_and_tears_it_down' (21549) panicked at tests/integration/with_formal_ai.rs:568:5:"
+  },
+  {
+    "line": 67028,
+    "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-17T20:18:18.0085629Z thread 'with_formal_ai::with_formal_ai_selects_uniform_interactive_and_non_interactive_modes' (21562) panicked at tests/integration/with_formal_ai.rs:322:9:"
+  },
+  {
+    "line": 67095,
+    "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-17T20:18:18.0103906Z thread 'with_formal_ai_argv::with_formal_ai_renders_the_same_argv_from_an_argument_and_a_piped_prompt' (21605) panicked at tests/integration/with_formal_ai_argv.rs:97:9:"
+  },
+  {
+    "line": 67243,
+    "text": "Test (ubuntu-24.04 / full) shard 6/8\tUNKNOWN STEP\t2026-11-17T20:18:18.9713335Z ##[error]Process completed with exit code 1."
+  },
+  {
+    "line": 70399,
+    "text": "Test (ubuntu-24.04 / full) shard 2/8\tUNKNOWN STEP\t2026-11-17T20:18:16.6747451Z test issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_chinese ... FAILED"
+  },
+  {
+    "line": 70498,
+    "text": "Test (ubuntu-24.04 / full) shard 2/8\tUNKNOWN STEP\t2026-11-17T20:22:02.1437148Z test issue_1582_permissions::permission_guidance_owns_direct_requests_in_every_supported_language ... FAILED"
+  },
+  {
+    "line": 70674,
+    "text": "Test (ubuntu-24.04 / full) shard 2/8\tUNKNOWN STEP\t2026-11-17T20:25:59.9093311Z ##[error]The command was terminated after 1080s, its full 1080s execution budget. The budget expires before `timeout-minutes` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout."
+  },
+  {
+    "line": 70709,
+    "text": "Test (ubuntu-24.04 / full) shard 2/8\tUNKNOWN STEP\t2026-11-17T20:26:00.9322360Z ##[error]Process completed with exit code 124."
+  },
+  {
+    "line": 73853,
+    "text": "Test (ubuntu-24.04 / specification) shard 4/4\tUNKNOWN STEP\t2026-11-17T20:19:10.6691181Z test specification::synthesis::object_counting_filters_items_by_requested_category ... FAILED"
+  },
+  {
+    "line": 73887,
+    "text": "Test (ubuntu-24.04 / specification) shard 4/4\tUNKNOWN STEP\t2026-11-17T20:20:26.0540807Z test specification::unknown_reasoning::unresolved_bare_term_routes_to_web_search_after_local_sources_miss ... FAILED"
+  },
+  {
+    "line": 73919,
+    "text": "Test (ubuntu-24.04 / specification) shard 4/4\tUNKNOWN STEP\t2026-11-17T20:26:19.5975348Z ##[error]The command was terminated after 1080s, its full 1080s execution budget. The budget expires before `timeout-minutes` so this reports as a failure instead of a cancelled job (issue #977, issue #1017). Speed up or repartition the work, or raise the budget together with the job timeout."
+  },
+  {
+    "line": 73945,
+    "text": "Test (ubuntu-24.04 / specification) shard 4/4\tUNKNOWN STEP\t2026-11-17T20:26:20.6354006Z ##[error]Process completed with exit code 124."
+  },
+  {
+    "line": 76984,
+    "text": "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T20:15:36.2348572Z thread 'data_files::lino_data_files_are_parseable_human_readable_and_bounded' (14181) panicked at tests/unit/data_files.rs:62:13:"
+  },
+  {
+    "line": 77004,
+    "text": "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T20:15:36.2393016Z test data_files::lino_data_files_are_parseable_human_readable_and_bounded ... FAILED"
+  },
+  {
+    "line": 77019,
+    "text": "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T20:15:36.2549984Z ##[error]Process completed with exit code 101."
+  },
+  {
+    "line": 77339,
+    "text": "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T20:18:55.6694613Z test agentic_coding::issue_498_google_trends_catalog::committed_google_trends_catalog_is_generated_by_the_recipe ... FAILED"
+  },
+  {
+    "line": 77544,
+    "text": "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T20:22:00.6824228Z test issue_1133_hive_mind_three_runs::extended::a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified ... FAILED"
+  },
+  {
+    "line": 77547,
+    "text": "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T20:22:25.5243714Z test issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification ... FAILED"
+  },
+  {
+    "line": 77558,
+    "text": "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T20:22:28.3954074Z test issue_1138_place_timezone::a_tbilisi_mention_resolves_through_the_city_entity ... FAILED"
+  },
+  {
+    "line": 77565,
+    "text": "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T20:22:44.8676806Z test issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_spanish ... FAILED"
+  },
+  {
+    "line": 77780,
+    "text": "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T20:24:52.2024448Z test solver::issue_1138_self_use_concept_lookup::an_unresolved_word_is_looked_up_rather_than_answered_with_the_provider_description ... FAILED"
+  },
+  {
+    "line": 77826,
+    "text": "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T20:25:45.0124286Z test web_requests::source_search_prompts_still_cover_supported_languages ... FAILED"
+  },
+  {
+    "line": 77836,
+    "text": "Test (ubuntu-24.04 / full)\tUNKNOWN STEP\t2026-11-17T20:28:04.6355700Z thread 'agentic_coding::issue_498_google_trends_catalog::committed_google_trends_catalog_is_generated_by_the_recipe' (15529) panicked at tests/unit/agentic-coding/issue_498_google_trends_catalog.rs:32:5:"
+  },
+  {
+    "line": 78052,
+    "text": "Pipeline Status\tFail the run when a required job was cancelled or failed\t2026-11-17T20:29:05.9172687Z ##[error]Pipeline failed. Failing jobs: lint, test"
+  },
+  {
+    "line": 78053,
+    "text": "Pipeline Status\tFail the run when a required job was cancelled or failed\t2026-11-17T20:29:05.9180087Z ##[error]Process completed with exit code 1."
+  }
+]

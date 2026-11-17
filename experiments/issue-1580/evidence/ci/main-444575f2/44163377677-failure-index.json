@@ -1,0 +1,38 @@
+[
+  {
+    "line": 17427,
+    "text": "js tier (node --check over js, suite group 7)\tRun this shard of the JavaScript suites\t2026-11-17T20:01:54.3577893Z ##[error]Process completed with exit code 1."
+  },
+  {
+    "line": 18961,
+    "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T19:59:23.8032860Z \u2714 copied image operation deadline cannot inherit extension or exceed job share (7918.900101ms)"
+  },
+  {
+    "line": 19540,
+    "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T19:59:23.8363124Z \u2714 exclusive actual bytes \"Error: ENOENT is authored data\" (65.891752ms)"
+  },
+  {
+    "line": 20510,
+    "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T19:59:26.4346833Z ##[error]Process completed with exit code 1."
+  },
+  {
+    "line": 23210,
+    "text": "js tier (node --check over js, suite group 2)\tRun this shard of the JavaScript suites\t2026-11-17T19:59:19.4817672Z ##[error]Process completed with exit code 1."
+  },
+  {
+    "line": 26828,
+    "text": "js tier (node --check over js, suite group 5)\tRun this shard of the JavaScript suites\t2026-11-17T19:57:47.8888825Z \u2714 append treats owned source bytes as data: \"Error: this is authored text\" (407.460868ms)"
+  },
+  {
+    "line": 29764,
+    "text": "js tier (node --check over js, suite group 3)\tRun this shard of the JavaScript suites\t2026-11-17T19:58:59.1031514Z \u2714 physical complete reader and owned frame preserve every UTF8 byte: \"Error: authored\" (0.42501ms)"
+  },
+  {
+    "line": 29987,
+    "text": "js tier (node --check over js, suite group 3)\tRun this shard of the JavaScript suites\t2026-11-17T19:59:31.9498751Z ##[error]Process completed with exit code 143."
+  },
+  {
+    "line": 34563,
+    "text": "js tier (node --check over js, suite group 4)\tRun this shard of the JavaScript suites\t2026-11-17T19:58:43.5011887Z WorkerBootstrapFailed Error: ActualBootstrapImportFailed"
+  }
+]

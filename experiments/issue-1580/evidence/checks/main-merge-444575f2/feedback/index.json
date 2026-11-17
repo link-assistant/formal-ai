@@ -1,0 +1,26 @@
+[
+  {
+    "kind": "issue-comments",
+    "count": 1,
+    "rawSha256": "3178261cc3c708d02d40ff1b69be28aeecb8be0ae09a2cac5afd6d3a2c29d7e2",
+    "log": "issue-comments.json.gz"
+  },
+  {
+    "kind": "pull-request-comments",
+    "count": 9,
+    "rawSha256": "5a55505ba72180a44bc3b4c758610cedc55b90b5edda11ee70e7d376d65094fb",
+    "log": "pull-request-comments.json.gz"
+  },
+  {
+    "kind": "pull-request-inline-comments",
+    "count": 0,
+    "rawSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05",
+    "log": "pull-request-inline-comments.json.gz"
+  },
+  {
+    "kind": "pull-request-reviews",
+    "count": 0,
+    "rawSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05",
+    "log": "pull-request-reviews.json.gz"
+  }
+]
