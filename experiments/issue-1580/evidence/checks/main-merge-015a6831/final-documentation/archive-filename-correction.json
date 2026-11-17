@@ -1,0 +1,18 @@
+{
+  "renames": [
+    {
+      "from": "pr-comments.json.gz",
+      "to": "pull-request-comments.json.gz",
+      "compressedSha256": "25c0208e382e3d407bea7998dc7a72f2e184580bb1a6f897aadaaad054ac450c",
+      "rawSha256": "2cffae8254b44e50a21dc5a3ad7651471653a4435b2de254acd8b2bfb16cf302"
+    },
+    {
+      "from": "pr.json.gz",
+      "to": "pull-request.json.gz",
+      "compressedSha256": "a549a12dd7fa0ed88e784a7cfcfc8be920b94f2b1c260b997ccb6ca711282a3e",
+      "rawSha256": "3e3660e0de07912abe689864a1aaad2277e62c18ca74075973a47327855a3e6c"
+    }
+  ],
+  "ratchetChanged": false,
+  "independentAuthorshipCredit": 0
+}

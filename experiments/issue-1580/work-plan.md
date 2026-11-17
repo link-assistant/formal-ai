@@ -157,3 +157,30 @@ Merged retention and multilingual summary fixes, regenerated the conflicted bloc
 All 23 workflows on 7780c707 complete: 22 pass and the one Layered failure is the inline OpenCode native test. Move it into the external source suite, preserve its assertions and canonical fixture, and remove the unused mirrored copy through the official writer. Reproduce the Moon 196-to-195 change with a two-worker causal lexeme control and retain native/JavaScript expectations with identical other counts. Refresh the native registry through its generator; complete comparison verifies 16 actual-source hashes, two constant offsets and zero executable changes. Native Claude argv fixtures retain the existing allowlist without changing capture normalization or quiet stderr assertions. Corrected focused checks pass; the first mirror/comparison failures remain preserved. Existing supplied-passage guards pass positive and negative transport controls, but the parent procedure status is still unresolved. Add four main-only replay ledger rows. The first complete shared-data run passes 86 gates with 52 explicit exclusions; the later focused ledger check catches all four replays missing from the fast PR inventory. Add those four existing files (235 to 239 selected files), then verify the corrected ledger/profile and final shared-data gates before a single batch push. The complete private binding diagnostic file passes all 25 tests without skips. Native runtime, broader acceptance and 0/20 independent reasoning acceptance remain unfinished. See docs/case-studies/issue-1580/runtime-fixture-checkpoint.md.
 
 The corrected ledger/profile files pass 4/15 tests without skips. The final pre-merge gate run passes 86 gates with 52 explicit native/context exclusions and zero failures in 716.03 seconds; all 86 per-gate hashes and aggregate match their receipts. The six implementation commits are preserved locally. Main advances to 015a683197c89e8f74375b097e8dd06a57dcea8f during validation; merge its calendar/currency behavior, specific native CI exception and generated-file controls before combined-source verification and the single batch push. The Java historical review fully reads pages 1–14 of 254 (15 complete files, one partial file); the completed transitive/verification records remain historical context, not current execution. Native and broad acceptance remain unfinished.
+
+
+## Combined calendar/currency merge checkpoint
+
+Main `015a683197c89e8f74375b097e8dd06a57dcea8f` is merged at
+`584b5f57f8d5b1ec6511def65273c78da0caca7b`. Both parents' generated-header
+tests and all 240 fast-inventory files remain. The governed source-reader refresh
+changes four Cargo manifest hashes only; complete comparisons retain every
+executable case and native source-manifest entry. All 15 focused checks pass
+(163 tests with no skips); formatting and generated projections are current.
+The combined-source full gate run passes 86 checks with 52 explicit exclusions,
+zero failures, 673.359 seconds, and verified aggregate plus 86 detailed hashes.
+No local native execution is claimed. Fresh hosted metadata retains the one
+published-head placement failure repaired locally; next-head hosted checks are
+pending until publication.
+
+Java historical semantic review now covers pages 1–22 of 254: 24 complete files,
+one partial file, and 1,369 source lines. Successful resolution logs coexist with
+Guice scope, Doxia ABI and missing Kotlin artifact failures; a later historical
+migration succeeds. These are historical compatibility evidence, not current
+execution. Pages 23–254 and full applicability remain unfinished. The supplied
+passage trace identifies context loss across independent child requests; a
+general context-binding repair and its controls remain required. All broader
+unchecked issue criteria remain active, reasoning acceptance remains 0/20, and
+[PR #1581](https://github.com/link-assistant/formal-ai/pull/1581) remains draft.
+
+The final documentation/evidence check initially catches two abbreviated GitHub archive names (`pr.json.gz` and `pr-comments.json.gz`). Rename only those files to full words, verify identical compressed/raw hashes, and retain the failed aggregate/list before rechecking. The 90-filename ceiling remains unchanged.

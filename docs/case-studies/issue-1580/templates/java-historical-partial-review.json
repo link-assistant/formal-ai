@@ -16,7 +16,15 @@
     11,
     12,
     13,
-    14
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22
   ],
   "totalHistoricalPages": 254,
   "files": [
@@ -207,18 +215,133 @@
       "readRanges": [
         [
           1,
+          120
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/maven-original-resolution.log",
+      "sha256": "914975852f96dc6cb09a50ea4ec131e8b88221f817347a779c3e2b92aaa742bc",
+      "totalLines": 18,
+      "readRanges": [
+        [
+          1,
+          18
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/maven-resolution-updated.log",
+      "sha256": "9a3d94ea0c7fb0aaf004d87b6b1f2c5e1e6e9eec96192a66c06360880ea0fa7e",
+      "totalLines": 19,
+      "readRanges": [
+        [
+          1,
+          19
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/maven-resolution.log",
+      "sha256": "0ffdfb23c271e96c9a90cf7cfc853833064f8099e2d0950457c40920411f4824",
+      "totalLines": 18,
+      "readRanges": [
+        [
+          1,
+          18
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/maven-transitive-migration-2.log",
+      "sha256": "1810dd68bc8095bf8ec1bdde5bb65b8e3a2bf1e0d0cfe19174aa1c02b1ad9303",
+      "totalLines": 119,
+      "readRanges": [
+        [
+          1,
+          119
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/maven-transitive-migration-3.log",
+      "sha256": "aef271dc60dbc2f1914c965a93259dd0697ba48ce03fe22f775dbe0e2afa2eb1",
+      "totalLines": 114,
+      "readRanges": [
+        [
+          1,
+          114
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/maven-transitive-migration-4.log",
+      "sha256": "1a91dd6e93d747682184d1f854af5981192eb2f1110b70cf60694ea6b9c59059",
+      "totalLines": 267,
+      "readRanges": [
+        [
+          1,
+          267
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/maven-transitive-migration-5.log",
+      "sha256": "285d3ee64293875212baef39d71d08704c2ce5a441fb9389db00873b12635ac5",
+      "totalLines": 136,
+      "readRanges": [
+        [
+          1,
+          136
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/maven-transitive-migration.log",
+      "sha256": "7e4d041b77158b4fa7e5608bdd90357468425b46c3d15cbe619f2c254667b754",
+      "totalLines": 24,
+      "readRanges": [
+        [
+          1,
+          24
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/maven-verify.log",
+      "sha256": "71ddf9b33fad8f47615394e4aa4300bcf61aad9218698ebffb17abf51df050f3",
+      "totalLines": 138,
+      "readRanges": [
+        [
+          1,
           43
         ]
       ],
       "completeSourceRead": false
     }
   ],
-  "decision": "Historical Java toolchain migration, audit and requirements records supply context only. Maven/JUnit/plugin compatibility claims and old runs do not establish current Formal AI correctness. Preserve existing Rust/default-branch build policy, targeted audit inventories and exact source/result identity; do not introduce Maven or ambient npm setup without a manifest. The transitive inventory and remaining historical source are unfinished.",
+  "decision": "Historical Java toolchain migration, audit and requirements records supply context only. Successful dependency resolution does not establish plugin runtime compatibility. The historical transitive inventory is fully read, but remaining historical source and complete-repository applicability remain unfinished. Preserve Formal AI default-branch builds, exact source/result identity, actual successful audit inventories and compatibility regressions. No current Java, Maven or Formal AI native execution is claimed.",
   "independentAuthorshipCredit": 0,
   "observationsThroughPage14": [
     "The completed transitive inventory documents three compatibility exceptions: legacy Doxia/Sink ABI for JaCoCo, Plexus duplicate Guice scopes, and stable XML dependencies that require Maven release candidates. These historical claims are not a basis for upgrading unrelated Formal AI dependencies without execution.",
     "Historical verification distinguishes source-tree auditing from actual resolved plugin/project artifacts and retains before/after advisories. Formal AI must keep its own successful dependency inventory before audit; historical Java success does not establish that result.",
     "Historical verification identifies commit SHAs and timestamps, distinguishes corrected experimental failures from outstanding failures, and records final source/CI identities. Existing Formal AI evidence must retain the same distinction.",
-    "All 254 historical pages remain required for complete repository review. Pages 15 through 254 are unread; current Java or Formal AI native execution is not claimed."
+    "At checkpoint 14, pages 15 through 254 remained unread. These observations are historical context and claim no current Java or Formal AI native execution."
+  ],
+  "observationsThroughPage22": [
+    "Original and updated dependency-resolution logs succeed, but migration attempts 2 and 3 fail at the resources Mojo with duplicate Guice scope annotations. Artifact resolution is insufficient evidence of executable compatibility.",
+    "Migration attempt 4 runs all 28 Java tests successfully but fails during the JaCoCo report with NoClassDefFoundError for the legacy org/codehaus/doxia/sink/Sink class. Its printed plugin realm contains the incompatible Doxia 2.2.0 sink artifact.",
+    "Migration attempt 5 completes all 28 tests, JaCoCo reporting, jar/source/javadoc production and SpotBugs with BUILD SUCCESS. This verifies the recorded historical combination only, not a current upgrade or Formal AI behavior.",
+    "A separate migration log fails Spotless dependency resolution because kotlin-stdlib-common 2.4.21 is unavailable from Maven Central. Latest-version overrides need artifact availability and compatibility checks rather than resolution-only assumptions.",
+    "The maven-verify.log review covers source lines 1 through 43 only. Pages 23 through 254 and the remainder of that file remain unread. No executable Java or Formal AI native validation is inferred from source reading."
   ]
 }

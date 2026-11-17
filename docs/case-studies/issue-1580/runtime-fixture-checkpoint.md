@@ -59,8 +59,13 @@ disposable worker reproduces 26 mocked transport calls; the production guard
 makes zero calls with the identical passage answer. A standalone unknown
 question still makes 16 mocked calls, preserving ordinary research behavior.
 No probe contacts a provider. The existing factual QA file passes 15 cases.
-The parent procedure still reports unresolved status for this correct answer;
-this evidence does not complete recursive procedure acceptance.
+The parent procedure still reports unresolved status for this correct answer.
+The retained trace identifies three fragments: `Read this`, the passage plus
+`When`, and `where is the meeting?`. The last two lose the complete question or
+passage context. Independent child drafting and required child checks therefore
+reject the aggregate despite its correct direct answer. A general context-binding
+repair with independent-request controls is still required; this transport
+regression does not complete recursive procedure acceptance.
 
 Four main-only ledger entries retain the narrow existing JavaScript replays
 for the count, registry, passage and private diagnostic failures. The first
@@ -113,4 +118,10 @@ new calendar/currency suite, 13 clock-preservation cases, six Moon summary cases
 client defaults/permissions and generated projections. Rust formatting passes
 without native execution. Complete logs and comparisons are in
 `experiments/issue-1580/evidence/checks/main-merge-015a6831/`.
-The full combined-source gate run and hosted checks remain pending.
+The full combined-source gate run passes 86 checks with 52 explicit native/CI
+context exclusions and zero failures in 673.359 seconds, with a 256 MiB Node
+heap cap and cumulative child peak of 1,035,712 KiB. All 86 detailed archives
+and the 140-line aggregate match their recorded hashes. Its source identity is
+`584b5f57f8d5b1ec6511def65273c78da0caca7b`; all 15 focused checks pass
+(163 tests, no skips, plus generated/projection currency checks). Hosted checks
+for the next published head remain pending.
