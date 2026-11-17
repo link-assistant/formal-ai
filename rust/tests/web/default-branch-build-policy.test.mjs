@@ -65,7 +65,12 @@ test('the focused PR native check stays a lint-only check selected by compile in
   const [check, ...others] = Object.values(called.jobs);
   assert.equal(others.length, 0);
   const runs = check.steps.map(step => step.run).filter(Boolean);
-  assert.deepEqual(runs, ['bash scripts/ci-clippy-profile.sh --library-and-binaries']);
+  assert.deepEqual(runs.filter(run => !run.startsWith('echo ')), ['bash scripts/ci-clippy-profile.sh --library-and-binaries']);
+  assert.equal(called.on.workflow_call.inputs['compile-inputs-changed'].default, true);
+  for (const step of check.steps.filter(step => step.uses || step.name === 'Type-check and lint the library and binaries'))
+    assert.equal(step.if, '${{ inputs.compile-inputs-changed }}');
+  assert.equal(check.steps[0].if, '${{ !inputs.compile-inputs-changed }}');
+  assert.equal(workflow('release.yml').on.pull_request['paths-ignore'], undefined, 'required contexts must report for docs-only PRs');
   assert.deepEqual(check.steps.find(step => step.uses === 'dtolnay/rust-toolchain@stable').with, {components: 'clippy'});
   assert(!check.steps.some(step => /upload-artifact|attest|cache@|cache\/save/u.test(step.uses ?? '')));
   assert.deepEqual(check.steps.find(step => step.uses === './.github/actions/cache-cargo-registry').with, {'restore-only': 'true'});
@@ -77,7 +82,12 @@ test('the focused PR native check stays a lint-only check selected by compile in
     .runInNewContext({github: {event_name: event, ref}, cancelled: () => false,
       needs: {'detect-changes': {result, outputs: value === undefined ? {} : {'native-type-check': value}}}}, {timeout: 100}));
   assert.equal(selected('pull_request', 'refs/pull/1/merge', 'success', 'true'), true);
-  assert.equal(selected('pull_request', 'refs/pull/1/merge', 'success', 'false'), false, 'docs-only and JS-only PRs skip it');
+  assert.equal(selected('pull_request', 'refs/pull/1/merge', 'success', 'false'), true, 'docs-only and JS-only PRs still report the required context');
+  const compile = (result, value) => new Script(job.with['compile-inputs-changed'].slice(3, -2).replaceAll('needs.detect-changes', "needs['detect-changes']").replaceAll('outputs.native-type-check', "outputs['native-type-check']")).runInNewContext({needs: {'detect-changes': {result, outputs: {'native-type-check': value}}}});
+  assert.equal(compile('success', 'false'), false);
+  assert.equal(compile('success', 'true'), true);
+  assert.equal(compile('failure', 'false'), true);
+  assert.equal(compile('success', undefined), true);
   assert.equal(selected('pull_request', 'refs/pull/1/merge', 'failure', 'false'), true, 'an unknown classification is conservative');
   assert.equal(selected('pull_request', 'refs/pull/1/merge', 'success', undefined), true);
   assert.equal(selected('workflow_dispatch', 'refs/heads/fix/example', 'skipped', undefined), true);

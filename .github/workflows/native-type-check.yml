@@ -4,12 +4,17 @@ name: Native type and lint check
 # (run 43710854562) and, once that was fixed, with clippy::manual_contains
 # (run 43730270231), since no PR job ran rustc. This is the one focused
 # native check a PR runs: main's clippy profile on the library and binaries,
-# called from release.yml when a Rust compile input changed or the
-# classification is unknown. It uploads nothing and records no receipt, so it
+# called from release.yml on every PR, compiling when a Rust input changed
+# or the classification is unknown. It uploads nothing and records no receipt, so it
 # is never native or release evidence; main still runs full lint, tests and
 # every build.
 on:
   workflow_call:
+    inputs:
+      compile-inputs-changed:
+        description: Compile when inputs changed or their classification is unknown
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -33,7 +38,11 @@ jobs:
     permissions:
       contents: read
     steps:
+      - name: Report unchanged compile inputs
+        if: ${{ !inputs.compile-inputs-changed }}
+        run: echo '::notice::Rust compile inputs unchanged; required check is satisfied without compiling.'
       - uses: actions/checkout@v7
+        if: ${{ inputs.compile-inputs-changed }}
         timeout-minutes: 4
         env:
           GIT_HTTP_LOW_SPEED_LIMIT: '1024'
@@ -48,11 +57,15 @@ jobs:
             !/experiments/
           sparse-checkout-cone-mode: false
       - uses: dtolnay/rust-toolchain@stable
+        if: ${{ inputs.compile-inputs-changed }}
         with:
           components: clippy
       - uses: ./.github/actions/setup-sccache
+        if: ${{ inputs.compile-inputs-changed }}
       - uses: ./.github/actions/cache-cargo-registry
+        if: ${{ inputs.compile-inputs-changed }}
         with:
           restore-only: 'true'
       - name: Type-check and lint the library and binaries
+        if: ${{ inputs.compile-inputs-changed }}
         run: bash scripts/ci-clippy-profile.sh --library-and-binaries
