@@ -11,6 +11,6 @@ gh pr edit 1583 --repo link-assistant/formal-ai --title "Fix client read access,
 if ! gh pr diff 1583 --repo link-assistant/formal-ai > /tmp/issue-1582-pr-final.diff 2> /tmp/issue-1582-pr-final-diff-error.log; then
   # The combined endpoint rejects more than 300 changed files. Preserve every
   # paginated patch and compare remote blob identities with the local checkout.
-  python3 experiments/issue_1582/review-remote.py
+  python3 experiments/issue_1582/review-remote.py --output-root=/tmp/issue-1582-final-review
 fi
 gh pr view 1583 --repo link-assistant/formal-ai --json url,title,isDraft,headRefOid,mergeStateStatus

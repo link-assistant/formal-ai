@@ -325,3 +325,25 @@ both failing and passing probes. Native curl transport already has its own
 finite IO bound and is unchanged. This correction changes no shared registry
 data; the complete eighth local gate round remains the shared-data verification,
 and the affected generated/source gates are checked again for this change.
+
+## Verified repair CI
+
+All 22 workflows for final source head `6e75ceeb51fb547f3259a1d0c14e7f23cfa7c06d`
+completed successfully, including [Security](https://github.com/link-assistant/formal-ai/actions/runs/44105060501),
+[Layered CI](https://github.com/link-assistant/formal-ai/actions/runs/44105060492)
+and the [CI/CD pipeline](https://github.com/link-assistant/formal-ai/actions/runs/44105061286).
+Every run log and attached artifact is retained. The paginated PR files API
+independently matched all 1,214 remote blob identities to the local branch.
+Current main (`b68d21647e678cce91ec83d5a28ea86b481064bf`) is already an ancestor.
+
+The raw CI archive has this explicit source-head cutoff. A later commit records
+these results and evidence; its own checks are verified through the PR checks
+view without recursively adding commits merely to archive their own runs.
+No application source changes after the verified repair head are included in
+that evidence commit.
+
+The PR remains draft and unmerged. Gemini input context is still blocked by
+the upstream interface, and the four native integration regressions have not
+run. The repository's PR build policy permits the production native type/lint
+check but excludes native test builds; no local Rust build was substituted.
+These acceptance/validation limits are unfinished, even though hosted CI is green.

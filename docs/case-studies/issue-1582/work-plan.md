@@ -14,8 +14,9 @@ only when the acceptance criteria and required checks pass.
 - [x] Add regression tests, reproduce failures before the changes, and run focused checks afterward.
 - [x] Complete timeline, root causes, solution research, upstream reporting where applicable, evidence index and limitations.
 - [x] Update mirrors, generated translations and release notes. Complete local gate run: 138/138 passed or explicitly skipped; rounds three through five have no failures; round six caught lower debt measurements and a stale comment projection; round seven verifies the native-route repairs and round eight verifies the subsequent CI fixes: each has 138/138 passed or explicitly skipped, no failures.
-- [ ] Review the full PR diff, merge current main, commit, check the push gate, push once and resolve current-head CI.
-- [ ] Update PR title/description with reproduction and test evidence, retain `Closes #1582`, mark ready, verify clean status.
+- [x] Review the full PR diff (paginated API when the combined diff exceeds GitHub limits), confirm current main is already included, commit, check the push gate and resolve all current repair-head CI: 22/22 workflows pass.
+- [x] Update PR title/description with reproduction and test evidence; retain `Closes #1582`.
+- [ ] Mark ready only after the Gemini criterion and native regression execution are complete. Keep draft/unmerged while blocked. Verify the evidence-commit checks and clean status before reporting.
 
 Coordination, supplied shell commands, patches and experiment recipes in this
 investigation are externally authored by Codex. Formal AI execution receipts
