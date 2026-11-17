@@ -18,12 +18,12 @@ test("native prime interval request validates rejected candidates before selecti
 });
 
 test("held-out bounds retain the validated intent across en, ru, hi, zh and es", async () => {
-  for (const [language, prompt, expected] of [
-    ["en", "Choose a prime between 8 and 12", "11"],
-    ["ru", "Выбери простое число от 24 до 30", "29"],
-    ["es", "Elige un número primo entre 32 y 40", "37"],
-    ["zh", "选择8到12之间的质数", "11"],
-    ["hi", "0 और 3 के बीच अभाज्य संख्या चुनो", "2"],
+  for (const { language, prompt, expected } of [
+    { language: "en", prompt: "Choose a prime between 8 and 12", expected: "11" },
+    { language: "ru", prompt: "Выбери простое число от 24 до 30", expected: "29" },
+    { language: "es", prompt: "Elige un número primo entre 32 y 40", expected: "37" },
+    { language: "zh", prompt: "选择8到12之间的质数", expected: "11" },
+    { language: "hi", prompt: "0 और 3 के बीच अभाज्य संख्या चुनो", expected: "2" },
   ]) {
     const result = await host.solve(prompt);
     assert.equal(result.content, expected, language);
