@@ -1,10 +1,12 @@
 {
   "reportBody": "experiments/issue-1580/upstream/python-release-formatting-report.md",
-  "reportBodySha256": "a25993f0038fbfecd5df1f9c58b2021e8852c48ccbdd93730fb7edb56552b269",
+  "reportBodySha256": "bdd518a220ef48becb19dec2977bb279486d0118635468d5018a454cb149db99",
   "title": "Release formatter corrupts literal escapes in code examples before updating notes",
   "repository": "link-foundation/python-ai-driven-development-pipeline-template",
   "filed": false,
   "fullPythonReviewClaimed": false,
   "upstreamRepairClaimed": false,
-  "independentAuthorshipCredit": 0
+  "independentAuthorshipCredit": 0,
+  "previousDraftBodySha256": "a25993f0038fbfecd5df1f9c58b2021e8852c48ccbdd93730fb7edb56552b269",
+  "immutableEvidenceCommit": "da712fadd3f680668c063a6d7de073ef1d52573b"
 }
