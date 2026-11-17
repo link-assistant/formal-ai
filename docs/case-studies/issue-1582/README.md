@@ -257,3 +257,50 @@ transformations and intentionally fail on a second application; they are not a
 replacement setup command. Use the maintained generators and focused commands
 above to verify the current tree. Temporary dependency/tool checkouts stay
 outside committed source and no local native compilation was attempted.
+
+## First repair-head CI findings
+
+The first pushed repair is `c8de9bf3c2b404787357986bbefdb46948d21a1d`.
+GitHub's combined PR diff endpoint rejects its file count (845 files); the
+paginated file API is archived and its blob identities are checked against the
+local tree. Most paths are the requested retained evidence.
+
+The [CI/CD run](https://github.com/link-assistant/formal-ai/actions/runs/44096924617)
+reports a stale reserved-role registry at log lines 750–752. The maintained role
+generator refreshes the new permission role; the independent Python registry
+check and package-mirror checks pass. This gate
+is in the hosted fast-governance check, beyond the 138-entry local inventory.
+
+The [Security run](https://github.com/link-assistant/formal-ai/actions/runs/44096923794)
+fails at lines 741–748 because `chrono 0.4.45` is unmaintained under
+RUSTSEC-2026-0543. It is introduced by command-stream and link-calculator;
+their latest published versions still depend on chrono. Primary advisory and
+crate metadata are retained. Reproductions, workarounds and migration proposals
+are reported in [command-stream #238](https://github.com/link-foundation/command-stream/issues/238)
+and [calculator #265](https://github.com/link-assistant/calculator/issues/265).
+The existing audit mechanism can acknowledge this exact informational notice
+with a live dependency-graph proof; it rejects the exception after chrono leaves
+the graph. Other vulnerabilities, unsoundness, yanked crates and warnings stay
+fatal. This is a recorded upstream maintenance limit, not a claim that chrono
+has been repaired. The audit and native compilation execute on CI.
+
+The [Layered CI run](https://github.com/link-assistant/formal-ai/actions/runs/44096923663)
+has two failing JavaScript tests, at lines 4515 and 7194: the governed native
+source witness still hashes the old benchmark fixture source. The two changed
+fixtures now explicitly request offline execution. The maintained, review-gated
+witness refresh preserves the **complete inventory** (221 supported cases and
+all unsupported records) unchanged and updates only that source hash.
+The archived refresh receipt records both witness hashes, the reviewed reader
+hash and the sole manifest delta. The integrity suite passes 2 tests and the
+Unicode/source-identity suite passes 34 tests afterward, run separately.
+
+All 22 runs for this first repair head finished: 19 succeeded and these three
+failed. The CI/CD production native type/lint job succeeded; this does not
+execute the four new native integration tests. Those tests and Gemini's input
+context remain explicitly unverified/unfinished as described above.
+
+The eighth complete local gate round, after these CI repairs, also passes or
+explicitly skips all 138 entries with no failures. The role registry's independent
+Python check passes, and all 22 logs for the first repair head are retained.
+The next pushed head must still be checked on hosted CI; earlier passing checks
+are not reused as evidence for it.

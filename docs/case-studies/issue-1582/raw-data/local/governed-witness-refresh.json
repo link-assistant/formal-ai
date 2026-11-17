@@ -1,0 +1,15 @@
+{
+  "readerSha256": "861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+  "previousWitnessSha256": "3e384770ca9427c5ebb90e5aabc4358987399775b672dae4b00b9a0907c4772b",
+  "refreshedWitnessSha256": "5e4034a4cd4d74e159299ecd083e1e0130872984da3cf992c4db472598299762",
+  "completeInventoryUnchanged": true,
+  "cases": 221,
+  "sourceManifestChanges": [
+    {
+      "path": "rust/tests/unit/specification/external_benchmarks.rs",
+      "sha256": "9f025d32f43f74c0b2d8e09073d89762918b4f249c353e99f9f9f1aef6336a01",
+      "previousSha256": "840f672d2261ad596fd505b77b75a584f430a521247c94b077f0c91e2123da4f"
+    }
+  ],
+  "reviewedChange": "Both unavailable-benchmark fixtures explicitly select offline execution after production retrieval became default-on; no specification case or unsupported record changed."
+}
