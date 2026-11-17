@@ -1,0 +1,48 @@
+{
+  "checkedAt": "2026-11-17T13:48:45.889941+00:00",
+  "head": "0f90c0a7a3bdd77b7d31c276a180d5ee297e57f6",
+  "run": 44095402201,
+  "attempt": 1,
+  "rawLogSha256": "e5fc62730f4f5114086e80da38a6db77325698c87ef76cd3b46b22e29857749f",
+  "rawLogBytes": 1433436,
+  "rawLogLines": 8037,
+  "selectedErrorLines": [
+    2593,
+    4616,
+    6925,
+    7069,
+    7810,
+    7967,
+    7968,
+    7988
+  ],
+  "allHeadRuns": 24,
+  "completed": 24,
+  "failures": [
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-11-17T13:42:23Z",
+      "databaseId": 44095402201,
+      "headSha": "0f90c0a7a3bdd77b7d31c276a180d5ee297e57f6",
+      "status": "completed",
+      "workflowName": "Layered CI"
+    }
+  ],
+  "claim": "Original failure preserved for diagnosis; no passing retry or fix is inferred.",
+  "diagnosis": {
+    "job": 134081207267,
+    "failure": "file-names abbreviated-file-names rose from 90 to 91",
+    "lines": [
+      7069,
+      7965,
+      7966,
+      7967,
+      7968,
+      7988
+    ],
+    "causeFile": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/initial-spec-reporter.log.gz",
+    "repairReceipt": "experiments/issue-1580/evidence/checks/csharp-changeset-collision/abbreviation-filename-correction.json",
+    "otherHeadWorkflowsPassed": 23,
+    "retryRequested": false
+  }
+}
