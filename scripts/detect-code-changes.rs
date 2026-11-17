@@ -86,43 +86,29 @@ const LAYER_CLASSIFIER: &str = "scripts/detect-code-changes.rs";
 // and merged unexecuted: issue #1017's false-negative class.
 const JS_SUITES: &str = "rust/tests/web/";
 
-fn exec(command: &str, args: &[&str]) -> String {
-    match Command::new(command).args(args).output() {
-        Ok(output) => {
-            if output.status.success() {
-                String::from_utf8_lossy(&output.stdout).into_owned()
-            } else {
-                eprintln!("Error executing {command} {args:?}");
-                eprintln!("{}", String::from_utf8_lossy(&output.stderr));
-                String::new()
-            }
-        }
-        Err(e) => {
-            eprintln!("Failed to execute {command} {args:?}: {e}");
-            String::new()
-        }
+fn exec_in(repo: &Path, args: &[&str]) -> std::io::Result<String> {
+    let output = Command::new("git").args(args).current_dir(repo).output()?;
+    if !output.status.success() {
+        return Err(std::io::Error::other(format!(
+            "git {args:?} failed ({}): {}",
+            output.status,
+            String::from_utf8_lossy(&output.stderr).trim()
+        )));
     }
+    String::from_utf8(output.stdout)
+        .map_err(|error| std::io::Error::new(std::io::ErrorKind::InvalidData, error))
 }
 
-fn set_output(name: &str, value: &str) {
-    if let Ok(output_file) = env::var("GITHUB_OUTPUT")
-        && let Ok(mut file) = fs::OpenOptions::new()
+fn set_output(name: &str, value: &str) -> std::io::Result<()> {
+    if let Ok(output_file) = env::var("GITHUB_OUTPUT") {
+        let mut file = fs::OpenOptions::new()
             .create(true)
             .append(true)
-            .open(&output_file)
-    {
-        let _ = writeln!(file, "{name}={value}");
+            .open(output_file)?;
+        writeln!(file, "{name}={value}")?;
     }
     println!("{name}={value}");
-}
-
-fn is_merge_commit() -> bool {
-    let output = exec("git", &["cat-file", "-p", "HEAD"]);
-    output
-        .lines()
-        .filter(|line| line.starts_with("parent "))
-        .count()
-        > 1
+    Ok(())
 }
 
 fn usable_before_sha(before: Option<&str>) -> Option<&str> {
@@ -161,32 +147,44 @@ fn decode_git_paths(output: &str) -> Vec<String> {
         .collect()
 }
 
-fn get_changed_files() -> Vec<String> {
-    // GitHub Actions checks out a synthetic merge commit for pull_request
-    // events: HEAD is the merge commit, HEAD^ is the base branch, HEAD^2
-    // is the actual PR head. Comparing the two parents covers every commit in
-    // the PR, so a docs-only final commit cannot hide earlier code changes.
-    let event_name = env::var("GITHUB_EVENT_NAME").unwrap_or_default();
-    let event_before = env::var("GITHUB_EVENT_BEFORE").ok();
-    let merge_commit = is_merge_commit();
-    let (base, head, description) =
-        comparison_for_event(&event_name, merge_commit, event_before.as_deref());
-    if event_name == "pull_request" && merge_commit {
-        println!("Merge commit detected (pull_request event)");
+fn get_changed_files() -> std::io::Result<Vec<String>> {
+    get_changed_files_in_repo(
+        Path::new("."),
+        &env::var("GITHUB_EVENT_NAME").unwrap_or_default(),
+        env::var("GITHUB_EVENT_BEFORE").ok().as_deref(),
+    )
+}
+
+fn get_changed_files_in_repo(
+    repo: &Path,
+    event: &str,
+    before: Option<&str>,
+) -> std::io::Result<Vec<String>> {
+    // Even shallow commits retain their parent headers. Only a genuinely initial
+    // commit permits the tree fallback; unknown history must not become an empty diff.
+    let commit = exec_in(repo, &["cat-file", "-p", "HEAD"])?;
+    let parents = commit
+        .lines()
+        .take_while(|line| !line.is_empty())
+        .filter(|line| line.starts_with("parent "))
+        .count();
+    if event == "pull_request" && parents != 2 {
+        return Err(std::io::Error::other(
+            "pull_request requires the complete synthetic merge comparison",
+        ));
     }
+    let (base, head, description) = comparison_for_event(event, parents > 1, before);
     println!("Comparing {base} to {head} ({description})");
-    // A source-to-doc rename must retain the removed source path for admission.
-    let mut output = exec(
-        "git",
-        &["diff", "--no-renames", "--name-only", "-z", &base, &head],
-    );
-
-    if output.is_empty() && exec("git", &["rev-parse", "--verify", &base]).is_empty() {
-        println!("{base} is not available, listing all files in HEAD");
-        output = exec("git", &["ls-tree", "--name-only", "-z", "-r", "HEAD"]);
-    }
-
-    decode_git_paths(&output)
+    // Preserve removed source paths and literal path bytes (including newlines).
+    let output = if parents == 0 && base == "HEAD^" {
+        exec_in(repo, &["ls-tree", "--name-only", "-z", "-r", "HEAD"])?
+    } else {
+        exec_in(
+            repo,
+            &["diff", "--no-renames", "--name-only", "-z", &base, &head],
+        )?
+    };
+    Ok(decode_git_paths(&output))
 }
 
 fn is_ignored_by_ci(file_path: &str) -> bool {
@@ -380,10 +378,10 @@ fn classify_changes(changed_files: &[String]) -> ChangeFlags {
     }
 }
 
-fn main() {
+fn main() -> std::io::Result<()> {
     println!("Detecting file changes for CI/CD...\n");
 
-    let changed_files = get_changed_files();
+    let changed_files = get_changed_files()?;
 
     println!("Changed files:");
     if changed_files.is_empty() {
@@ -399,15 +397,15 @@ fn main() {
     set_output(
         "rs-changed",
         if flags.rs_changed { "true" } else { "false" },
-    );
+    )?;
     set_output(
         "toml-changed",
         if flags.toml_changed { "true" } else { "false" },
-    );
+    )?;
     set_output(
         "docs-changed",
         if flags.docs_changed { "true" } else { "false" },
-    );
+    )?;
     set_output(
         "workflow-changed",
         if flags.workflow_changed {
@@ -415,7 +413,7 @@ fn main() {
         } else {
             "false"
         },
-    );
+    )?;
     set_output(
         "pipeline-changed",
         if flags.pipeline_changed {
@@ -423,7 +421,7 @@ fn main() {
         } else {
             "false"
         },
-    );
+    )?;
     set_output(
         "agentic-routing-changed",
         if flags.agentic_routing_changed {
@@ -431,19 +429,19 @@ fn main() {
         } else {
             "false"
         },
-    );
+    )?;
     set_output(
         "js-changed",
         if flags.js_changed { "true" } else { "false" },
-    );
+    )?;
     set_output(
         "ts-changed",
         if flags.ts_changed { "true" } else { "false" },
-    );
+    )?;
     set_output(
         "rust-changed",
         if flags.rust_changed { "true" } else { "false" },
-    );
+    )?;
 
     // Show code changes after both the CI-wide ignored paths and the broader
     // any-code documentation/example exclusions have been applied.
@@ -474,7 +472,7 @@ fn main() {
             "A changelog fragment is waiting on main: the release needs lint, test and the build."
         );
     }
-    set_output("release-pending", if pending { "true" } else { "false" });
+    set_output("release-pending", if pending { "true" } else { "false" })?;
     // Check if any code files changed (.rs, .toml, .mjs, .cjs, .js, .lino, .yml,
     // .yaml, or workflow files). .cjs covers the Electron desktop and VS Code
     // extension host sources (extension.*.cjs, lib/*.cjs) so changes there still
@@ -488,9 +486,10 @@ fn main() {
         } else {
             "false"
         },
-    );
+    )?;
 
     println!("\nChange detection completed.");
+    Ok(())
 }
 
 #[cfg(test)]
@@ -500,6 +499,74 @@ mod tests {
         classify_changes, comparison_for_event, decode_git_paths, is_documentation_path,
         release_pending,
     };
+
+    #[test]
+    fn failed_git_is_not_a_negative_observation() {
+        use std::{
+            fs,
+            process::Command,
+            time::{SystemTime, UNIX_EPOCH},
+        };
+        let repo = std::env::temp_dir().join(format!(
+            "formal-ai-git-{}-{}",
+            std::process::id(),
+            SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap()
+                .as_nanos()
+        ));
+        struct Cleanup(std::path::PathBuf);
+        impl Drop for Cleanup {
+            fn drop(&mut self) {
+                let _ = fs::remove_dir_all(&self.0);
+            }
+        }
+        fs::create_dir(&repo).unwrap();
+        let _cleanup = Cleanup(repo.clone());
+        let git = |args: &[&str]| {
+            let output = Command::new("git")
+                .args([
+                    "-c",
+                    "core.hooksPath=/dev/null",
+                    "-c",
+                    "commit.gpgsign=false",
+                ])
+                .args(args)
+                .current_dir(&repo)
+                .env("GIT_CONFIG_NOSYSTEM", "1")
+                .env("GIT_CONFIG_GLOBAL", "/dev/null")
+                .env("GIT_AUTHOR_NAME", "Fixture")
+                .env("GIT_AUTHOR_EMAIL", "fixture@example.invalid")
+                .env("GIT_COMMITTER_NAME", "Fixture")
+                .env("GIT_COMMITTER_EMAIL", "fixture@example.invalid")
+                .output()
+                .unwrap();
+            assert!(output.status.success(), "{output:?}");
+            String::from_utf8(output.stdout).unwrap().trim().to_string()
+        };
+        assert!(super::get_changed_files_in_repo(&repo, "push", None).is_err());
+        git(&["init", "--quiet"]);
+        fs::write(repo.join("source.rs"), "fn main() {}\n").unwrap();
+        git(&["add", "source.rs"]);
+        git(&["commit", "--quiet", "-m", "initial\n\nparent forged header"]);
+        assert_eq!(
+            super::get_changed_files_in_repo(&repo, "push", None).unwrap(),
+            ["source.rs"]
+        );
+        assert!(super::get_changed_files_in_repo(&repo, "pull_request", None).is_err());
+        let parent = git(&["rev-parse", "HEAD"]);
+        git(&["commit", "--quiet", "--allow-empty", "-m", "empty"]);
+        assert!(super::get_changed_files_in_repo(&repo, "pull_request", None).is_err());
+        assert!(
+            super::get_changed_files_in_repo(&repo, "push", None)
+                .unwrap()
+                .is_empty()
+        );
+        assert!(super::get_changed_files_in_repo(&repo, "push", Some(&"a".repeat(40))).is_err());
+        let object = format!(".git/objects/{}/{}", &parent[..2], &parent[2..]);
+        fs::remove_file(repo.join(object)).unwrap();
+        assert!(super::get_changed_files_in_repo(&repo, "push", None).is_err());
+    }
 
     #[test]
     fn git_path_records_preserve_literal_unicode_and_linebreaks() {
