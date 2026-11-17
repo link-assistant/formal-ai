@@ -11,8 +11,8 @@ requirement is on a resolution level, and the next pass raises the lowest level 
 | 1 recorded | the row exists, nothing measures it yet | 34 |
 | 2 measured | a test pins it, but the row says it is not delivered | 3 |
 | 3 partial | delivered in part | 125 |
-| 4 implemented | delivered, with a test | 1349 |
-| | **all** | **1519** |
+| 4 implemented | delivered, with a test | 1353 |
+| | **all** | **1523** |
 
 ## JavaScript first
 
@@ -20,7 +20,7 @@ The root the test that pins each requirement runs in (R1188-U29: the JavaScript 
 
 | Pinned by | Requirements |
 | --- | ---: |
-| a JavaScript test | 500 |
+| a JavaScript test | 504 |
 | a Rust test only | 920 |
 | no test | 99 |
 
