@@ -55,6 +55,7 @@ test("summarization keeps the statements the text depends on", async () => {
 });
 
 test("summarization removes phatic sentences and keeps the decision with both reasons", async () => {
+  // The English and Russian reports are followed by Hindi, Chinese and Spanish cases.
   const cases = [
     [
       "Summarize: Good afternoon. I have decided to decline because the commute takes an hour and a half and the salary is lower than in my current job. Thank you.",
@@ -63,6 +64,18 @@ test("summarization removes phatic sentences and keeps the decision with both re
     [
       "Кратко перескажи: Добрый день. Я подумал и решил отказаться, потому что дорога до офиса занимает полтора часа, а зарплата ниже, чем на текущем месте. Спасибо за внимание.",
       "Я подумал и решил отказаться: дорога до офиса занимает полтора часа, а зарплата ниже, чем на текущем месте.",
+    ],
+    [
+      "संक्षेप में लिखें: नमस्ते। स्कूल बंद है क्योंकि सड़क पर पानी भर गया है। सादर।",
+      "स्कूल बंद है: सड़क पर पानी भर गया है।",
+    ],
+    [
+      "总结一下：你好。学校因道路积水而停课。谢谢大家。",
+      "学校因道路积水而停课。",
+    ],
+    [
+      "Resume esto: Hola. La escuela cierra porque la carretera está inundada. Saludos cordiales.",
+      "La escuela cierra: la carretera está inundada.",
     ],
     [
       "Summarize: HELLO! Because both roads are flooded, the school will close. Best regards,",

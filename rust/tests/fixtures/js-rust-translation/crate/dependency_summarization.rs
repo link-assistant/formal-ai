@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=9e7b550501779037c6088543feeb47a1ca534c992fde83b26340f7488c322766 bytes=11020
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=e7267fcae9670f4352e99f7ac20132e30b9ded7ac6c70aeaa3b3364abf0568f0 bytes=11020
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=5
 
@@ -189,9 +189,9 @@ pub fn keep_budget(count: f64) -> f64 {
 // formal-ai:refusal object without a $ tag
 // formal-ai:blockers call of a sibling function | destructuring | object without a $ tag
 
-// meta-language:translated JavaScript lexical_declaration items=1 sha256=73167395f1b1525b56669d2678da4f160131d5db0bc530a43a564030ef6e2e0e
-// | const PHATIC_ROLES = ['social_greeting', 'social_farewell', 'social_courtesy_response', 'text_summary_phatic'];
-pub static PHATIC_ROLES: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(|| vec![String::from("social_greeting"), String::from("social_farewell"), String::from("social_courtesy_response"), String::from("text_summary_phatic")]);
+// meta-language:translated JavaScript lexical_declaration items=1 sha256=3641b23c4feb9a7f79a03ea6f77354cddbaf808a830d17b9737e7845f7940d19
+// | const PHATIC_ROLES = ['social_greeting', 'social_farewell', 'social_courtesy_response', 'text-summary-phatic'];
+pub static PHATIC_ROLES: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(|| vec![String::from("social_greeting"), String::from("social_farewell"), String::from("social_courtesy_response"), String::from("text-summary-phatic")]);
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal function value …

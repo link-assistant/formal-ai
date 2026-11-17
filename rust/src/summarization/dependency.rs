@@ -271,7 +271,7 @@ const PHATIC_ROLES: [&str; 4] = [
     "social_greeting",
     "social_farewell",
     "social_courtesy_response",
-    "text_summary_phatic",
+    "text-summary-phatic",
 ];
 
 fn render_causal_sentence(
@@ -328,8 +328,8 @@ pub fn summarize_free_text(text: &str, language: &str) -> Option<CoreSummary> {
     if summary.kept.is_empty() {
         return None;
     }
-    let causes = role_words_in("text_summary_cause", language);
-    let cues: Vec<_> = role_words_in("text_summary_cause_phrase", language)
+    let causes = role_words_in("text-summary-cause", language);
+    let cues: Vec<_> = role_words_in("text-summary-cause-phrase", language)
         .iter()
         .chain(&causes)
         .map(|cue| {

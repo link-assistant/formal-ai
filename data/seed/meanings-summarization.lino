@@ -23,9 +23,9 @@ meanings
     lexeme hi "सारांशित करें" "संक्षेप में लिखें"
     lexeme zh 总结一下 概括一下
     lexeme es "haz un resumen" "resume esto"
-  text_summary_phatic
+  text-summary-phatic
     defined-by conversation_reference
-    role text_summary_phatic
+    role text-summary-phatic
     precondition "The entire sentence is a standalone courtesy or sign-off."
     effect "Exclude the sentence before ranking substantive statements."
     unit "not applicable"
@@ -35,9 +35,9 @@ meanings
     lexeme hi "आपके ध्यान के लिए धन्यवाद" सादर
     lexeme zh 感谢您的关注 谢谢大家 此致敬礼
     lexeme es "gracias por su atención" "gracias por leer" "saludos cordiales" atentamente
-  text_summary_cause
+  text-summary-cause
     defined-by concept
-    role text_summary_cause
+    role text-summary-cause
     precondition "A causal conjunction introduces a reason after the main clause."
     effect "Render the main clause followed by its complete reasons."
     unit "not applicable"
@@ -47,9 +47,9 @@ meanings
     lexeme hi क्योंकि
     lexeme zh 因为
     lexeme es porque
-  text_summary_cause_phrase
+  text-summary-cause-phrase
     defined-by concept
-    role text_summary_cause_phrase
+    role text-summary-cause-phrase
     precondition "A causal preposition introduces a phrase."
     effect "Retain the preposition and its complement together."
     unit "not applicable"

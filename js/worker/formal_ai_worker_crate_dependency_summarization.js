@@ -172,7 +172,7 @@ function summarizeEntries(entries) {
     text: renderKept(nodes, kept),
   };
 }
-const PHATIC_ROLES = ['social_greeting', 'social_farewell', 'social_courtesy_response', 'text_summary_phatic'];
+const PHATIC_ROLES = ['social_greeting', 'social_farewell', 'social_courtesy_response', 'text-summary-phatic'];
 function renderCausalSentence(statement, causePattern, causes) {
   const { text } = statement;
   if (!causePattern || statement.polarity === Polarity.Denied || statement.dialogue.question
@@ -193,8 +193,8 @@ function summarizeFreeText(text, language) {
   ));
   const summary = summarizeEntries(sentenceEntries(formalizeSentenceSegments(content, language, true)));
   if (summary.kept.length === 0) return null;
-  const causes = roleWordsIn('text_summary_cause', language);
-  const cues = [...roleWordsIn('text_summary_cause_phrase', language), ...causes].map((cue) => cue.split(' ')
+  const causes = roleWordsIn('text-summary-cause', language);
+  const cues = [...roleWordsIn('text-summary-cause-phrase', language), ...causes].map((cue) => cue.split(' ')
     .map((word) => word.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')).join('\\s+'));
   const causePattern = cues.length ? new RegExp(`[\\s,]+(${cues.join('|')})\\s+`, 'giu') : null;
   summary.text = joinSurfaces(summary.kept.map((index) => renderCausalSentence(summary.statements[index].statement, causePattern, causes)));
