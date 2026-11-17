@@ -47,5 +47,19 @@
 #   This entry removes itself: `check-rust-dependencies.sh` fails once
 #   `cargo tree --invert fxhash@0.2.1` finds nothing, which is the moment the
 #   bump reaches this lockfile.
+# RUSTSEC-2026-0543 blocked-upstream = "chrono@0.4.45" report = "https://github.com/chronotope/chrono/issues/1768"
+#   This is an unmaintained notice, not a claim of a known exploitable defect.
+#   The advisory affects every Chrono version and has `patched = []`:
+#   https://github.com/RustSec/advisory-db/blob/main/crates/chrono/RUSTSEC-2026-0543.md
+#   The current lockfile reaches Chrono through command-stream 1.5.3 and
+#   link-calculator 0.22.0. On 2026-11-17 the latest published releases still
+#   require it unconditionally: command-stream 1.13.0 requires ^0.4.45;
+#   link-calculator 0.24.0 requires ^0.4. Their current default-branch manifests
+#   do too, so a lockfile refresh or feature toggle cannot remove this notice.
+#   The maintainer's linked deprecation report confirms the upstream state.
+#   Retain the existing blocked-upstream policy: CI must prove this exact crate
+#   still reaches the build graph, and fails when the proof becomes stale.
+#   Removing Chrono from both dependency paths remains unfinished work; this
+#   entry records the blocker and does not claim a dependency migration.
 [advisories]
-ignore = ["RUSTSEC-2025-0057"]
+ignore = ["RUSTSEC-2025-0057", "RUSTSEC-2026-0543"]
