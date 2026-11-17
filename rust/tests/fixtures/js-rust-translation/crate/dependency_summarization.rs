@@ -1,6 +1,6 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=8ca357d6a14dc41dc4b26efa189f44a5aeb7bf909492b17d4d54ce9e872a9295 bytes=8830
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=9e7b550501779037c6088543feeb47a1ca534c992fde83b26340f7488c322766 bytes=11020
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
-// formal-ai:workarounds import-pruning items=0 carried=3
+// formal-ai:workarounds import-pruning items=0 carried=5
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
@@ -102,6 +102,14 @@ pub mod ml_math {
 // formal-ai:refusal import of names its module does not translate
 // formal-ai:blockers import of names its module carries
 
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import of names its module carries
+
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import of names its module carries
+
 // meta-language:translated JavaScript export_statement items=1 sha256=97bf385d8aa8614fd3f7e0346cdd3f0a8e79365dca37ad469ea3165c43775273
 // | /** Mirrors `ELABORATION_SHARED_TERMS` in rust/src/summarization/dependency.rs: shared terms that make one statement elaborate another. */
 // | export const ELABORATION_SHARED_TERMS = 2;
@@ -120,9 +128,13 @@ pub const KEEP_DIVISOR: f64 = 3f64;
 // formal-ai:refusal Array.from
 // formal-ai:blockers Array.from | method call .pop() | method call .test() | sibling value | undefined
 
-// meta-language:carried JavaScript export_statement (unsupported)
+// meta-language:carried JavaScript export_statement (type)
+// formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of a sibling function | call of an imported function
+
+// meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .forEach()
-// formal-ai:blockers arrow callback of .forEach() | call of a sibling function | call of an imported function | field access | method call .forEach() | method call .push() | object without a $ tag
+// formal-ai:blockers arrow callback of .forEach() | call of a sibling function | field access | method call .forEach() | method call .push() | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
@@ -169,9 +181,25 @@ pub fn keep_budget(count: f64) -> f64 {
 // formal-ai:refusal method call .map()
 // formal-ai:blockers arrow callback of .map() | call of an imported function | field access | method call .map() | null | object without a $ tag
 
-// meta-language:carried JavaScript export_statement (unsupported)
+// meta-language:carried JavaScript export_statement (type)
+// formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of a sibling function
+
+// meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal object without a $ tag
 // formal-ai:blockers call of a sibling function | destructuring | object without a $ tag
+
+// meta-language:translated JavaScript lexical_declaration items=1 sha256=73167395f1b1525b56669d2678da4f160131d5db0bc530a43a564030ef6e2e0e
+// | const PHATIC_ROLES = ['social_greeting', 'social_farewell', 'social_courtesy_response', 'text_summary_phatic'];
+pub static PHATIC_ROLES: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(|| vec![String::from("social_greeting"), String::from("social_farewell"), String::from("social_courtesy_response"), String::from("text_summary_phatic")]);
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal function value …
+// formal-ai:blockers assignment of a field or element | call of an imported function | destructuring | field access | imported value | method call .has() | method call .matchAll() | method call .replace() | method call .slice() | method call .test() | null | regular expression
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal new expression
+// formal-ai:blockers PHATIC_ROLES.flatMap | arrow callback of .filter() | arrow callback of .flatMap() | arrow callback of .map() | assignment of a field or element | call of a sibling function | call of an imported function | field access | method call .filter() | method call .has() | method call .join() | method call .map() | method call .replace() | method call .split() | new RegExp | new Set | null | regular expression
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .filter()

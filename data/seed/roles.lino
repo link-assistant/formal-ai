@@ -1167,6 +1167,12 @@ roles
     kind meaning
   text_summarization_action
     kind meaning
+  text_summary_cause
+    kind meaning
+  text_summary_cause_phrase
+    kind meaning
+  text_summary_phatic
+    kind meaning
   time_duration_cue
     kind predicate
   tool_argument_marker
