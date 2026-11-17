@@ -96,7 +96,11 @@ export async function startCli(t,{args=[],env={}}={}){
     get stdout(){return stdout;},get stderr(){return stderr;},
     get code(){return code;},get signal(){return signal;},get closed(){return closed;},
     records(){
-      return stderr.split('\n').slice(0,-1).filter(Boolean).map(decodeTyped);
+      const explicit=extra.indexOf('--log-dir');
+      const logDirectory=explicit<0?path.join(home,'.formal-ai/logs'):extra[explicit+1];
+      const file=path.join(logDirectory,'serve-'+child.pid+'.lino');
+      const text=fs.existsSync(file)?fs.readFileSync(file,'utf8'):stderr;
+      return text.split('\n').slice(0,-1).filter(Boolean).map(decodeTyped);
     },
     legacy(){
       const directory=path.join(home,'dialog-logs');

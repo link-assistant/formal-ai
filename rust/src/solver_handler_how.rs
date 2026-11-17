@@ -46,6 +46,10 @@ pub fn try_how_to_procedure(
     if let Some(answer) = practical_help::cached(prompt, normalized, log) {
         return Some(answer);
     }
+    // Permission controls belong to capability guidance, before general how-to.
+    if internet_access_help_requested(prompt, normalized) {
+        return None;
+    }
     let task = extract_procedural_how_to_task(normalized)?;
     for correction in &task.corrections {
         log.append(
@@ -835,4 +839,27 @@ fn extract_topic_from_prior_reply(reply: &str) -> Option<String> {
         }
     }
     None
+}
+
+/// A permission phrase embedded in a translation or code task is not a grant.
+pub(crate) fn internet_access_help_requested(prompt: &str, normalized: &str) -> bool {
+    if prompt.trim_start().chars().next().is_some_and(|character| {
+        matches!(character, '"' | '\'' | '«' | '“' | '‘') || character == '\u{0060}'
+    }) {
+        return false;
+    }
+    seed::lexicon()
+        .words_for_role("internet-access-help")
+        .iter()
+        .any(|surface| {
+            let surface = normalize_prompt(surface);
+            !surface.is_empty()
+                && normalized
+                    .strip_prefix(surface.as_str())
+                    .is_some_and(|tail| {
+                        tail.is_empty()
+                            || tail.starts_with(' ')
+                            || crate::coding::contains_cjk(&surface)
+                    })
+        })
 }

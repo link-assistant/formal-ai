@@ -58,3 +58,22 @@ fn empty_stream_and_large_integer_and_float_types_survive() {
         encoded
     );
 }
+
+#[test]
+fn nested_diagnostic_streams_convert_without_changing_typed_values() {
+    let nested = "(formal-ai-log-v1\n  (object\n    (field message\n      (string first))))\n(formal-ai-log-v1\n  (null))\n";
+    let canonical =
+        "(formal-ai-log-v1 (object (field message (string first))))\n(formal-ai-log-v1 (null))\n";
+    assert_eq!(
+        convert(nested, InputFormat::Lino, LogFormat::Lino).unwrap(),
+        canonical
+    );
+    assert!(
+        convert(
+            &nested[..nested.len() - 2],
+            InputFormat::Lino,
+            LogFormat::Lino
+        )
+        .is_err()
+    );
+}

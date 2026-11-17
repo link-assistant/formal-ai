@@ -30,6 +30,7 @@ import { serverMessage } from './messages.mjs';
 import { setLearnedImporter } from './meta-learned.mjs';
 import { createProverHost } from './prover-host.mjs';
 import { WorkerHost } from './worker-host.mjs';
+import {createReadOnlyFetch,readNetworkAllowed} from './read-access.mjs';
 import {configurePrerequisiteGrant, resolvePrerequisiteGrantText} from './prerequisite-grant.mjs';
 
 const TOKEN_ENV = ['FORMAL_AI_API_BEARER_TOKEN', 'FORMAL_AI_HTTP_BEARER_TOKEN', 'FORMAL_AI_API_TOKEN'];
@@ -72,7 +73,9 @@ export function parseArgs(argv, env = process.env) {
     else if (name === '--debug-session') options.debugSession = true;
     else if (name === '--silent') options.silent = true;
     else if (name === '--trace') options.trace = true;
-    else if (name === '--debug' || name === '--verbose') options.logLevel = 'debug';
+    else if (name === '--debug' || name === '--verbose') { options.logLevel = 'debug'; options.terminal = true; }
+    else if (name === '--log-stderr') options.terminal = true;
+    else if (name === '--log-format') { options.logFormat = value(); if (!options.logFormat) options.unsupported = arg; }
     else if (name === '--log-level') { options.logLevel = value(); if (!options.logLevel) options.unsupported = arg; }
     else if (name === '--log-dir') { options.logDirectory = value(); if (!options.logDirectory) options.unsupported = arg; }
     else if (name === 'serve' && index === 0) continue;
@@ -103,7 +106,7 @@ export async function startServer({ host = '127.0.0.1', port = 0, agentMode = fa
     const ctx = {
       prerequisiteGrant,
       liveMemory,
-      worker: worker || new WorkerHost({ formalAiProverHost: createProverHost({ path: env.PATH }) }),
+      worker: worker || new WorkerHost({ formalAiProverHost: createProverHost({ path: env.PATH }), navigator:{onLine:readNetworkAllowed(env)} }, {networkFetch:createReadOnlyFetch({env})}),
       memory: createMemory(env), agentMode, bearerToken: bearerTokenFromEnv(env),
       debugSession: session,
       env, logger:diagnostics, requestSequence:0,
@@ -151,7 +154,7 @@ async function main(argv) {
   let logger;
   try { logger=createServeLogger({...options,env:process.env}); }
   catch {
-    logger=createServeLogger({logLevel:'error',env:{...process.env,FORMAL_AI_LOG_LEVEL:'error'}});
+    logger=createServeLogger({logLevel:'error',terminal:true,env:{...process.env,FORMAL_AI_LOG_LEVEL:'error'}});
     logger.log('error','server.terminal',{component:'server',reason:'invalid_log_configuration'});
     logger.close(); return 2;
   }
