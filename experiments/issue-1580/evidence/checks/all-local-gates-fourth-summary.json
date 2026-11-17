@@ -8,9 +8,9 @@
   "interruptedInvocation": {
     "limitMilliseconds": 600000,
     "complete": false,
-    "log": "all-local-gates-fourth.log"
+    "log": "all-local-gates-fourth.log.gz"
   },
-  "completedRemainder": "all-local-gates-fourth-remainder.log",
+  "completedRemainder": "all-local-gates-fourth-remainder.log.gz",
   "outcomes": {
     "check-abbreviations": "PASS",
     "check-architecture-contents": "PASS",
@@ -150,5 +150,49 @@
     "self-development-status#1": "PASS",
     "self-development-status#3": "SKIP",
     "web-ui-boundary": "PASS"
-  }
+  },
+  "transcripts": [
+    {
+      "file": "documentation-reporting.log.gz",
+      "sha256": "17949fbb59010b4e3a67aee4044190b210e5cb0c850b5329121d3610918b4e29",
+      "compressedSha256": "0c3c56f49933688b6494f41f4e6e4b10523f8e8bffb195cfcb5fe96e0dfd3b46",
+      "lines": 40
+    },
+    {
+      "file": "rust-specification-fixture-integrity-current.log.gz",
+      "sha256": "091a21b34bdbdbb50fc455efaee1f67970024be991c3b989e35c2dde0078ee1e",
+      "compressedSha256": "bffd557fcfa45fcd25b6e8f341f625c10053b9f33e3f2be9ecfd417f0965851c",
+      "lines": 10
+    },
+    {
+      "file": "rust-specification-unicode-identifiers-current.log.gz",
+      "sha256": "bea31a24b35e044fdf6b0c1260a78ea1e7a765b58878e829efc4442750aec2f9",
+      "compressedSha256": "53a12a32c3f8cd28f0bde2be23d690a2882fcc1e8edda840ff2033fe6561b6ae",
+      "lines": 42
+    },
+    {
+      "file": "default-branch-build-policy-current.log.gz",
+      "sha256": "6fc6fe62719370efe6cf3ba7f1ee4a5c574db2acd3032463541a46cd03a1f787",
+      "compressedSha256": "0686bed8090992d76f4be2472e289563cf549e1380ef6f871f412758a872e53e",
+      "lines": 29
+    },
+    {
+      "file": "stale-pull-request-report-current.log.gz",
+      "sha256": "5844c6ca51c40028913174c820f0692d2bdf19cd47ed564d443c382cc29bf505",
+      "compressedSha256": "5d3073545aab828f78d776899d1a9b8b8afc936922f37c8ddf0ef956158c669f",
+      "lines": 14
+    },
+    {
+      "file": "all-local-gates-fourth.log.gz",
+      "sha256": "3d101563fe29975e36110e1f132a84eef82953f5107f1bb943ed0fb9ddcf57b7",
+      "compressedSha256": "44882b52063acbc5ba240448a48613e5c8ba869c5e342a7b25f4789f51f89fe3",
+      "lines": 125
+    },
+    {
+      "file": "all-local-gates-fourth-remainder.log.gz",
+      "sha256": "c76d3c6da8fbbec6ffb3bdfbe01b701014fbe8010805d662c0d7e777403498dc",
+      "compressedSha256": "6ea9b955d19a4f40da2548d12c6822427f78ea52c5f38737ccc9d0f25d0cc1d5",
+      "lines": 15
+    }
+  ]
 }
