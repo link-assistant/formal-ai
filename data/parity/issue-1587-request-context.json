@@ -1,0 +1,368 @@
+[
+  {
+    "id": "original-french",
+    "messages": [
+      {
+        "role": "system",
+        "content": "Always answer in French."
+      },
+      {
+        "role": "user",
+        "content": "What is 2 + 2?"
+      }
+    ],
+    "contains": "Cannot satisfy language constraint",
+    "constraint": "French"
+  },
+  {
+    "id": "original-english",
+    "messages": [
+      {
+        "role": "system",
+        "content": "Отвечай только по-английски."
+      },
+      {
+        "role": "user",
+        "content": "Сколько будет 2 + 2?"
+      }
+    ],
+    "answer": "2 + 2 = 4",
+    "constraint": "language"
+  },
+  {
+    "id": "original-labels",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You answer with exactly one word: yes or no."
+      },
+      {
+        "role": "user",
+        "content": "Is 7 greater than 3?"
+      }
+    ],
+    "answer": "yes",
+    "constraint": "labels"
+  },
+  {
+    "id": "original-fact",
+    "messages": [
+      {
+        "role": "user",
+        "content": "My favourite colour is green."
+      },
+      {
+        "role": "assistant",
+        "content": "Noted."
+      },
+      {
+        "role": "user",
+        "content": "Which colour did I name?"
+      }
+    ],
+    "answer": "green",
+    "fact": true
+  },
+  {
+    "id": "held-out-negative",
+    "messages": [
+      {
+        "role": "developer",
+        "content": "Answer with exactly one word: yes or no."
+      },
+      {
+        "role": "user",
+        "content": "Is -2 greater than 8?"
+      }
+    ],
+    "answer": "no",
+    "constraint": "length"
+  },
+  {
+    "id": "held-out-json",
+    "messages": [
+      {
+        "role": "developer",
+        "content": "Answer in JSON."
+      },
+      {
+        "role": "user",
+        "content": "What is 11 + 6?"
+      }
+    ],
+    "answer": "{\"answer\":\"11 + 6 = 17\"}",
+    "constraint": "format"
+  },
+  {
+    "id": "held-out-english",
+    "messages": [
+      {
+        "role": "developer",
+        "content": "Always answer in English."
+      },
+      {
+        "role": "user",
+        "content": "Сколько будет 8 + 5?"
+      }
+    ],
+    "answer": "8 + 5 = 13",
+    "constraint": "language"
+  },
+  {
+    "id": "fact-other-field",
+    "messages": [
+      {
+        "role": "user",
+        "content": "My favourite food is lentil soup."
+      },
+      {
+        "role": "assistant",
+        "content": "Your favourite food is pizza."
+      },
+      {
+        "role": "user",
+        "content": "What is my favourite food?"
+      }
+    ],
+    "answer": "lentil soup",
+    "fact": true
+  },
+  {
+    "id": "fact-latest",
+    "messages": [
+      {
+        "role": "user",
+        "content": "My favourite colour is blue."
+      },
+      {
+        "role": "user",
+        "content": "My favourite color is amber."
+      },
+      {
+        "role": "user",
+        "content": "Which colour did I name?"
+      }
+    ],
+    "answer": "amber",
+    "fact": true
+  },
+  {
+    "id": "role-priority",
+    "messages": [
+      {
+        "role": "system",
+        "content": "Always answer in English."
+      },
+      {
+        "role": "developer",
+        "content": "Always answer in French."
+      },
+      {
+        "role": "user",
+        "content": "What is 4 + 9?"
+      }
+    ],
+    "answer": "4 + 9 = 13",
+    "constraint": "superseded"
+  },
+  {
+    "id": "combined",
+    "messages": [
+      {
+        "role": "system",
+        "content": "Always answer in English. Answer in JSON."
+      },
+      {
+        "role": "user",
+        "content": "Сколько будет 8 + 5?"
+      }
+    ],
+    "answer": "{\"answer\":\"8 + 5 = 13\"}",
+    "constraint": "format"
+  },
+  {
+    "id": "unmet-length",
+    "messages": [
+      {
+        "role": "system",
+        "content": "Answer with exactly one word."
+      },
+      {
+        "role": "user",
+        "content": "What is 12 + 4?"
+      }
+    ],
+    "contains": "Cannot satisfy length constraint",
+    "constraint": "length"
+  },
+  {
+    "id": "unmet-labels",
+    "messages": [
+      {
+        "role": "developer",
+        "content": "Answer only with red or blue."
+      },
+      {
+        "role": "user",
+        "content": "What is 12 + 4?"
+      }
+    ],
+    "contains": "Cannot satisfy labels constraint",
+    "constraint": "labels"
+  },
+  {
+    "id": "unmet-format",
+    "messages": [
+      {
+        "role": "system",
+        "content": "Answer in XML."
+      },
+      {
+        "role": "user",
+        "content": "What is 12 + 4?"
+      }
+    ],
+    "contains": "Cannot satisfy format constraint",
+    "constraint": "format"
+  },
+  {
+    "id": "user-cannot-override",
+    "messages": [
+      {
+        "role": "system",
+        "content": "Always answer in English."
+      },
+      {
+        "role": "user",
+        "content": "Always answer in French."
+      },
+      {
+        "role": "assistant",
+        "content": "Noted."
+      },
+      {
+        "role": "user",
+        "content": "What is 3 + 5?"
+      }
+    ],
+    "answer": "3 + 5 = 8",
+    "constraint": "language"
+  },
+  {
+    "id": "large-exact-comparison",
+    "messages": [
+      {
+        "role": "system",
+        "content": "Answer with exactly one word: yes or no."
+      },
+      {
+        "role": "user",
+        "content": "Is 9007199254740993 greater than 9007199254740992?"
+      }
+    ],
+    "answer": "yes",
+    "constraint": "labels"
+  },
+  {
+    "id": "decimal-exact-comparison",
+    "messages": [
+      {
+        "role": "system",
+        "content": "Answer with exactly one word: yes or no."
+      },
+      {
+        "role": "user",
+        "content": "Is 0.10000000000000001 equal to 0.1?"
+      }
+    ],
+    "answer": "no",
+    "constraint": "length"
+  },
+  {
+    "id": "negative-zero",
+    "messages": [
+      {
+        "role": "system",
+        "content": "Answer with exactly one word: yes or no."
+      },
+      {
+        "role": "user",
+        "content": "Is -0.0 equal to 0?"
+      }
+    ],
+    "answer": "yes",
+    "constraint": "labels"
+  },
+  {
+    "id": "multi-fact",
+    "messages": [
+      {
+        "role": "user",
+        "content": "My favourite colour is blue. My favourite food is rice. My favourite colour is red."
+      },
+      {
+        "role": "user",
+        "content": "Which colour did I name?"
+      }
+    ],
+    "answer": "red",
+    "fact": true
+  },
+  {
+    "id": "schema-refusal",
+    "messages": [
+      {
+        "role": "developer",
+        "content": "Answer in JSON with a custom schema."
+      },
+      {
+        "role": "user",
+        "content": "What is 5 + 1?"
+      }
+    ],
+    "contains": "Cannot satisfy output constraint",
+    "constraint": "output"
+  },
+  {
+    "id": "russian-json",
+    "messages": [
+      { "role": "system", "content": "Answer in Russian. Answer in JSON." },
+      { "role": "user", "content": "What is 9 + 4?" }
+    ],
+    "answer": "{\"answer\":\"9 + 4 = 13\"}",
+    "constraint": "language:applied"
+  },
+  {
+    "id": "refusal-language",
+    "messages": [
+      { "role": "system", "content": "Answer in Russian. Answer with exactly one word." },
+      { "role": "user", "content": "What is 2 + 2?" }
+    ],
+    "contains": "Cannot satisfy language constraint",
+    "constraint": "language:unmet"
+  },
+  {
+    "id": "negated-language",
+    "messages": [
+      { "role": "system", "content": "Do not answer in English." },
+      { "role": "user", "content": "What is 2 + 2?" }
+    ],
+    "contains": "Cannot satisfy output constraint",
+    "constraint": "output:unmet"
+  },
+  {
+    "id": "json-label-conflict",
+    "messages": [
+      {
+        "role": "system",
+        "content": "Answer in JSON. Answer with exactly one word: yes or no."
+      },
+      {
+        "role": "user",
+        "content": "Is 9 less than 4?"
+      }
+    ],
+    "contains": "Cannot satisfy labels constraint",
+    "constraint": "unmet"
+  }
+]

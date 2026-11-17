@@ -31,6 +31,7 @@ import { customResponseToolInput, isCustomResponseTool, responseArgumentsForTool
 import { projectAppendContracts } from '../agentic/append_contract.mjs';
 import { ungroundedIdentityArguments } from '../agentic/crate/tool_scope.mjs';
 import { currentRequestScope, eventsInScope } from './standing-scope.mjs';
+import { composeFinalAnswer } from './request-context.mjs';
 
 /** Install the planner host over `ctx.worker` once (shared with js/server/solve.mjs). */
 async function ensureHost(ctx) {
@@ -287,14 +288,15 @@ export function chatCompletionFromPlan(ctx, request, prompt, plan, created) {
     };
     finishReason = 'tool_calls';
   } else {
-    const answer = plan.answer;
+    const composed = composeFinalAnswer(request.messages, plan.answer, amendmentSteps(ctx, prompt));
+    const answer = composed.answer;
     completionTokens = estimateTokens(answer);
     message = {
       role: 'assistant',
       content: answer,
       tool_calls: []
     };
-    const steps = amendmentSteps(ctx, prompt);
+    const steps = composed.thinking_steps;
     if (steps.length) {
       const reasoning = renderThinkingSteps(steps);
       Object.assign(message, { thinking_steps: steps, reasoning_content: reasoning, reasoning });
@@ -408,8 +410,9 @@ export function responseFromPlan(ctx, request, chatRequest, prompt, plan, create
       outputTokens += tokens;
     });
   } else {
-    const answer = plan.answer;
-    const steps = amendmentSteps(ctx, prompt);
+    const composed = composeFinalAnswer(chatRequest.messages, plan.answer, amendmentSteps(ctx, prompt));
+    const answer = composed.answer;
+    const steps = composed.thinking_steps;
     const message = outputMessage(answer);
     if (steps.length) message.thinking_steps = steps;
     output = [message];
