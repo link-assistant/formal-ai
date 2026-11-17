@@ -11,6 +11,11 @@
       "path": "LICENSE",
       "gitBlob": "fdddb29aa445bf3d6a5d843d6dd77e10a9f99657",
       "sha256": "6b0382b16279f26ff69014300541967a356a666eb0b91b422f6862f6b7dad17e"
+    },
+    {
+      "path": "scripts/create_manual_changeset.py",
+      "gitBlob": "24f4c2b023e08ebb9397c497f2a12f95dd88a93e",
+      "sha256": "69dff7dae4675f4ae2573761be12b72930c6cdc947d9e7d0aa0ea442fcc5e9f2"
     }
   ]
 }

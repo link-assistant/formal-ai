@@ -1,0 +1,85 @@
+{
+  "regression": "experiments/issue-1580/template-python-fragment-integrity.test.mjs",
+  "maintainedEntrypoint": "rust/tests/web/issue-1580-template-observations.test.mjs",
+  "source": {
+    "repository": "link-foundation/python-ai-driven-development-pipeline-template",
+    "commit": "c532c173801dfb12e681b0730c4abbf93aefd0ca",
+    "files": [
+      {
+        "path": "scripts/detect_code_changes.py",
+        "gitBlob": "2ee94adb8d211aee095b09349d35bb9f62b50ec4",
+        "sha256": "c3702e1f2e41c7fe2c5a18220469f8997f15d0ba5f841761874018cebbb8c7a5"
+      },
+      {
+        "path": "LICENSE",
+        "gitBlob": "fdddb29aa445bf3d6a5d843d6dd77e10a9f99657",
+        "sha256": "6b0382b16279f26ff69014300541967a356a666eb0b91b422f6862f6b7dad17e"
+      },
+      {
+        "path": "scripts/create_manual_changeset.py",
+        "gitBlob": "24f4c2b023e08ebb9397c497f2a12f95dd88a93e",
+        "sha256": "69dff7dae4675f4ae2573761be12b72930c6cdc947d9e7d0aa0ea442fcc5e9f2"
+      }
+    ]
+  },
+  "before": {
+    "passed": 3,
+    "failed": 1,
+    "skipped": 0,
+    "failingCase": "candidate rejects a same-second collision and preserves the earlier bytes",
+    "logLines": [
+      8,
+      33
+    ]
+  },
+  "after": {
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0
+  },
+  "maintained": {
+    "passed": 29,
+    "failed": 0,
+    "skipped": 0
+  },
+  "harnessCorrection": "The first invocation used Node default reporter output and the wrapper incorrectly expected TAP summary prefixes. Preserve initial-reporter.*; explicitly select --test-reporter=tap. The actual first run already had the expected 3-pass/1-fail preservation result. No source bug or passing test was fabricated from the parser error.",
+  "bounds": {
+    "pythonAddressSpaceBytes": 134217728,
+    "pythonCpuSeconds": 3,
+    "childWallMilliseconds": 5000,
+    "testWallMilliseconds": 15000
+  },
+  "upstreamRepairClaimed": false,
+  "formalAiNativeFragmentBehaviorExecuted": false,
+  "duplicateAndLatestSourceCheck": "experiments/issue-1580/evidence/checks/python-fragment-collision/duplicate-and-source-check.json",
+  "logs": [
+    {
+      "path": "experiments/issue-1580/evidence/checks/python-fragment-collision/after.log.gz",
+      "compressedSha256": "faa31f47fad8e25ad56a08aee15394c93f4454136e690ddaabf02b804e158fc4",
+      "rawSha256": "2576a70f44862e7e06bbfff8c5611a01de23d883d154f43b7e2752516a12f590",
+      "rawBytes": 1079,
+      "rawLines": 34
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/python-fragment-collision/before.log.gz",
+      "compressedSha256": "c4fa52819fb7f666c5539b20c4e797b07d4d5323219f93204448e796a874082c",
+      "rawSha256": "682741d4e6e279a4235abe9debb2a33e5960732f2f1aee9af307759a5d781eff",
+      "rawBytes": 2018,
+      "rawLines": 55
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/python-fragment-collision/initial-reporter.log.gz",
+      "compressedSha256": "4b77166b3d426c193c583d91172e0d128b213fb77a655ce01bc5ab42987efb2b",
+      "rawSha256": "f7bdd4b161acabca90f28ac565d0389934810a7d9239120e8964e0cd17d28cf4",
+      "rawBytes": 1585,
+      "rawLines": 36
+    },
+    {
+      "path": "experiments/issue-1580/evidence/checks/python-fragment-collision/maintained.log.gz",
+      "compressedSha256": "5a5a0734e96c3fbb43f7ac5761f91ecab6d89d479835ec5723675e5078aacefc",
+      "rawSha256": "2b278b7e606bb203efc62f23a11836e107f75c85502a50f3d91b777cdb731c8a",
+      "rawBytes": 6957,
+      "rawLines": 184
+    }
+  ]
+}
