@@ -23,7 +23,7 @@ retains a distinct prose requirement, including the named standards and runtime 
 | A03 | Strict SBVR business-rule output | Profile selection | Rule semantics and structured realization are missing |
 | A03 | Plain Language ISO 24495-1 output | Profile selection | Reader-oriented evaluation and compliant realization are missing |
 | A03 | Minimal English and localized NSM-based equivalents | Profile selection; small lexical policy | General NSM decomposition and localized syntax are missing |
-| A03 | E-Prime without any form of to be | Finite negative filter; reproduced false-certificate regression | Complete English checker and compliant general rewriting are missing |
+| A03 | E-Prime without any form of to be | Finite negative filter; false-certificate and density-combination regressions | Complete English checker and compliant general rewriting are missing |
 | A03 | Basic English controlled vocabulary | Profile selection | Authoritative vocabulary, inflection policy and decomposition are missing |
 | A03 | Special English controlled vocabulary | Profile selection | Authoritative vocabulary and decomposition are missing |
 | A03 | Globish controlled vocabulary | Profile selection | Authoritative vocabulary and decomposition are missing |
@@ -33,7 +33,7 @@ retains a distinct prose requirement, including the named standards and runtime 
 | A03 | Everyday standard vocabulary | Independent density configuration | This setting alone does not satisfy a selected strict standard |
 | A03 | dense and max-precision aliases | Alias normalization; declared alternative selection | Global minimum and exact lexical semantics are unverified |
 | A03 | Global lino-arguments and CLI selection | Native and JS CLI flags plus environment defaults | Dedicated lino-arguments coverage remains unfinished |
-| A03 | HTTP API request parameters | CLI/API parser tests; request-local HTTP tests | Every protocol path is not covered |
+| A03 | HTTP API request parameters | CLI/API parser tests; Chat Completions tests cover JSON, exact labels, streaming notices and tool call usage | Every protocol path is not covered |
 | A03 | Desktop and browser UI settings | Persisted standard and density controls; browser screenshots | Full desktop/native runtime behavior remains unverified |
 | A03 | WebAssembly worker settings | Generated worker projection and settings plumbing | WASM execution and behavioral parity remain unverified |
 | A03 | Apply policy through formalize, summarize and deformalize | Output adapter retains source and a lexical graph | Complete pipeline and summarization integration are unfinished |
@@ -61,7 +61,7 @@ retains a distinct prose requirement, including the named standards and runtime 
 The shared source is [cnl_output.mjs](../../js/agentic/crate/cnl_output.mjs), with
 [policy data](../../data/seed/cnl-output.lino), a supplied [native port](../../rust/src/cnl_output.rs),
 [JavaScript regressions](../../rust/tests/web/cnl-output.test.mjs),
-[HTTP checks](server.test.mjs), and [native assertions](../../rust/tests/unit/cnl_output.rs).
+[HTTP checks](../../rust/tests/web/cnl-output-http.test.mjs), and [native assertions](../../rust/tests/unit/cnl_output.rs).
 The [reproduction and provenance record](README.md) describes the bounded corpus,
 and the [PR case study](../../docs/case-studies/pull-request-1585/README.md) retains CI evidence.
 

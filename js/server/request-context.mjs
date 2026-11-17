@@ -45,7 +45,10 @@ export function formalizeRequest(messages) {
     if (winner !== item) item.status = 'superseded';
   }
   const active = kind => constraints.find(item => item.kind === kind && item.status !== 'superseded');
-  return { prompt, history, constraints, active, language: languageOf(active('language')?.value) };
+  const format = active('format')?.value;
+  const preserveAnswerBody = Boolean(active('labels') || active('length') || (format && format !== rules.plainFormat));
+  const answerText = format === rules.supportedFormat ? body => JSON.parse(body)[rules.jsonAnswerKey] : body => body;
+  return { prompt, history, constraints, active, preserveAnswerBody, answerText, language: languageOf(active('language')?.value) };
 }
 
 function subject(text) {
@@ -115,7 +118,8 @@ export function composeFinalAnswer(messages, text, steps) {
 export function composeRequestAnswer(messages, symbolic) {
   const context = formalizeRequest(messages);
   if (!context.constraints.length) return symbolic;
-  let text = symbolic.answer;
+  const projection = symbolic.output_projection;
+  let text = context.preserveAnswerBody && projection?.content === symbolic.answer ? projection.text : symbolic.answer;
   const languageText = text;
   if (context.active('format')?.value === rules.supportedFormat) text = JSON.stringify({ [rules.jsonAnswerKey]: text });
   const unmet = [];

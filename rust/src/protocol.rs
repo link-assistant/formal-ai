@@ -431,11 +431,12 @@ fn create_unprojected_chat_completion(
     }
     // Standing requirements are injected into the solving context itself (as if
     // the user restated them), not appended after the fact.
-    let symbolic_answer =
+    let mut symbolic_answer =
         solve_with_standing_requirements(solver, &prompt, &history, memory_events);
     if let Some(plan) = command_reroute_plan(request, solver.config.agent_mode, &symbolic_answer) {
         return chat_completion_from_plan(request, &prompt, plan, memory_events);
     }
+    cnl::strip_notice_for_envelope(&context, solver, &mut symbolic_answer);
     chat_completion_from_symbolic(request, &prompt, symbolic_answer)
 }
 

@@ -12,11 +12,15 @@ arguments, quoted input, and opaque spans retain their original bytes.
 
 ## What the current checks demonstrate
 
-- Eleven focused JavaScript tests exercise option validation, independent mode
+- Twelve focused JavaScript tests exercise option validation, independent mode
   switching, Unicode word counting, opaque input, and declared equivalence.
+  The combined E-Prime and density regression rejects declared realizations
+  that violate the profile's finite forbidden-word check.
 - Three HTTP tests cover request-local overrides, invalid configuration, SSE
-  metadata, and rewrite handling before tool planning. Seven existing server
-  tests provide integration regression coverage.
+  metadata, and rewrite handling before tool planning. They check that the
+  maximum-precision notice stays in response metadata when a body must be
+  valid JSON or an exact label, and that tool calls retain their arguments
+  and token accounting. The fast pull-request lane runs both files.
 - One proposition has two declared realizations in each of English, Russian,
   Hindi, Chinese and Spanish. Its finite profile/density matrix preserves the
   declared lexical identity. This is not the solver's complete intent graph
@@ -61,7 +65,7 @@ Run each file separately, as required by AGENTS.md:
 
 ```sh
 timeout 600 node --test --test-concurrency=1 rust/tests/web/cnl-output.test.mjs
-timeout 600 node --test --test-concurrency=1 experiments/issue-1584/server.test.mjs
+timeout 600 node --test --test-concurrency=1 rust/tests/web/cnl-output-http.test.mjs
 timeout 600 node --test --test-concurrency=1 rust/tests/web/server.test.mjs
 node scripts/translate-es.mjs --check
 node scripts/translate-js-rust.mjs --verify

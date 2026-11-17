@@ -91,29 +91,36 @@ export async function createChatCompletion(ctx, request) {
   const original = chatPromptAndHistory(request.messages);
   const turn = requestOutputTurn(original.prompt, original.history, request, ctx.outputConfiguration);
   const selected = {...ctx, outputConfiguration:turn.config};
+  const context = formalizeRequest(request.messages);
+  let completion;
   // A rewrite is resolved before memory lookup, planning or tool permission paths.
   if (turn.rewrite !== null) {
     const symbolic = await projectServerAnswer(selected, {intent:'cnl_paraphrase',answer:turn.rewrite,
-      confidence:1,evidence_links:['cnl:paraphrase'],thinking_steps:[],links_notation:''}, turn.config);
-    return chatCompletionFromSymbolic(request, original.prompt, symbolic);
-  }
-  // Strip a recognized output directive only from the latest plain-text user
-  // message. Preserve structured content, tool results and command arguments.
-  let planningRequest = request;
-  const latest = request.messages.findLastIndex(message => message.role.toLowerCase() === 'user');
-  const message = request.messages[latest];
-  if (turn.prompt !== original.prompt && typeof message?.content === 'string') {
-    const start = message.content.indexOf(original.prompt);
-    if (start >= 0) {
-      const content = message.content.slice(0, start) + turn.prompt + message.content.slice(start + original.prompt.length);
-      planningRequest = {...request, messages:request.messages.map((item,index) => index === latest ? {...item,content} : item)};
+      confidence:1,evidence_links:['cnl:paraphrase'],thinking_steps:[],links_notation:''}, turn.config, {language: context.language});
+    completion = chatCompletionFromSymbolic(request, original.prompt, symbolic);
+  } else {
+    // Strip a recognized output directive only from the latest plain-text user
+    // message. Preserve structured content, tool results and command arguments.
+    let planningRequest = request;
+    const latest = request.messages.findLastIndex(message => message.role.toLowerCase() === 'user');
+    const message = request.messages[latest];
+    if (turn.prompt !== original.prompt && typeof message?.content === 'string') {
+      const start = message.content.indexOf(original.prompt);
+      if (start >= 0) {
+        const content = message.content.slice(0, start) + turn.prompt + message.content.slice(start + original.prompt.length);
+        planningRequest = {...request, messages:request.messages.map((item,index) => index === latest ? {...item,content} : item)};
+      }
     }
+    completion = await createUnprojectedChatCompletion(selected, planningRequest);
   }
-  const completion = await createUnprojectedChatCompletion(selected, planningRequest);
   const choice = completion.choices[0];
-  if (choice && typeof choice.message.content === 'string') {
+  if (choice?.finish_reason === 'stop' && typeof choice.message.content === 'string') {
     const projected = await projectServerAnswer(selected, {answer:choice.message.content,
-      output_projection:completion.output_projection}, turn.config);
+      output_projection:completion.output_projection}, turn.config, {
+      language: context.language,
+      preserveAnswerBody: context.preserveAnswerBody,
+      answerText: context.answerText(choice.message.content),
+    });
     choice.message.content = projected.answer;
     completion.output_projection = projected.output_projection;
     completion.usage.completion_tokens = estimateTokens(projected.answer);

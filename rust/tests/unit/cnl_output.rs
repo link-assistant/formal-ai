@@ -64,6 +64,38 @@ fn lexical_density_preserves_known_named_profile_constraints() {
 }
 
 #[test]
+fn max_precision_notices_preserve_chat_response_contracts() {
+    let solver = ::formal_ai::UniversalSolver::default();
+    for (instruction, prompt, expected) in [
+        ("Answer in JSON.", "2 + 2", r#"{"answer":"2 + 2 = 4"}"#),
+        (
+            "Answer with exactly one word: yes or no.",
+            "Is 3 greater than 2?",
+            "yes",
+        ),
+    ] {
+        let request = serde_json::from_value(serde_json::json!({
+            "lexical_density": "max-precision",
+            "messages": [
+                {"role": "system", "content": instruction},
+                {"role": "user", "content": prompt},
+            ],
+        }))
+        .unwrap();
+        let completion = ::formal_ai::create_chat_completion_with_solver(&request, &solver);
+        assert_eq!(completion.choices[0].message.content.plain_text(), expected);
+        let projection = completion.output_projection.unwrap();
+        assert!(
+            projection["notice"]
+                .as_str()
+                .unwrap()
+                .contains("dictionary")
+        );
+        assert_eq!(projection["content"], expected);
+    }
+}
+
+#[test]
 fn opaque_input_and_configuration_limits_are_lossless_on_every_target() {
     let policy = cnl_policy();
     for input in [

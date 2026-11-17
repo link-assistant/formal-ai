@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import {mkdtemp, rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
-import {requestOutputTurn} from '../../js/server/cnl-output.mjs';
-import {parseArgs, startServer} from '../../js/server/main.mjs';
-import {parseChatRequest, RequestShapeError} from '../../js/server/chat-request.mjs';
+import {requestOutputTurn} from '../../../js/server/cnl-output.mjs';
+import {parseArgs, startServer} from '../../../js/server/main.mjs';
+import {parseChatRequest, RequestShapeError} from '../../../js/server/chat-request.mjs';
 
 test('CLI and environment select independent output settings', () => {
   assert.equal(parseArgs(['--output-standard=ACE','--lexical-density','top-37'],{}).outputStandard, 'ACE');
@@ -62,6 +62,22 @@ test('HTTP rewrites bypass planning and settings do not leak between requests', 
     assert.equal(ePrime.body.choices[0].message.content,'I know everything.');
     assert.equal(ePrime.body.output_projection.report.compliant,false);
     assert.ok(ePrime.body.output_projection.report.unchecked.includes('e_prime_english'));
+    const structured = await post({lexical_density: 'max-precision', messages: [
+      {role: 'system', content: 'Answer in JSON.'}, {role: 'user', content: '2 + 2'},
+    ]});
+    assert.deepEqual(JSON.parse(structured.body.choices[0].message.content), {answer: '2 + 2 = 4'});
+    assert.match(structured.body.output_projection.notice, /dictionary/u);
+    const binary = await post({lexical_density: 'max-precision', messages: [
+      {role: 'system', content: 'Answer with exactly one word: yes or no.'}, {role: 'user', content: 'Is 3 greater than 2?'},
+    ]});
+    assert.equal(binary.body.choices[0].message.content, 'yes');
+    assert.match(binary.body.output_projection.notice, /dictionary/u);
+    const toolRequest = {messages: [{role: 'user', content: 'Run echo previous-action'}], tools};
+    const ordinaryTool = await post(toolRequest);
+    const denseTool = await post({...toolRequest, lexical_density: 'max-precision'});
+    assert.equal(denseTool.body.choices[0].finish_reason, 'tool_calls');
+    assert.deepEqual(denseTool.body.choices, ordinaryTool.body.choices);
+    assert.deepEqual(denseTool.body.usage, ordinaryTool.body.usage);
     const invalid=await post({lexical_density:'top-0',messages:[]});
     assert.equal(invalid.status,400);
   } finally {
