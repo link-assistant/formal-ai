@@ -6,16 +6,67 @@ All seven issue acceptance criteria remain pending; see the
 
 The initial head was `552ffaf803ea4399dbe4806f8bfc3efd8797eecf`. Eleven
 workflow runs created at 2026-11-17T11:37:01Z completed as `action_required`
-without jobs. Log retrieval returned no available logs. Raw run metadata
-and each log retrieval error are retained in the issue evidence archive.
-These results are not passing CI and are not evidence of source failures.
+without jobs. Log retrieval returned no available logs. Raw metadata and each
+retrieval error remain in the initial issue evidence archive. These results
+are not passing CI or evidence of source failures.
 
-The implementation commit is `409d72d08`. It adds experimental selectors,
-lossless opaque retention and one declared proposition with five localized
-realizations. Source generation was checked, but native execution remains
-unverified. The next push must be reviewed against current-head CI.
+## First implementation CI round
 
-Local checks: 86 gate passes, 52 CI-only skips, no gate failures; focused
-JavaScript tests 10 + 3 + 7 passed. The raw archive also keeps earlier failures.
-No code or documentation is claimed to have been autonomously authored by
-Formal AI: supplied instructions and scripts count as zero accepted units.
+The implementation commit is `409d72d08`; evidence commit `4ca5c0b57` was the
+pushed head. Its 25 workflows, created at 2026-11-17T13:56:16Z, all completed:
+21 succeeded, 3 failed, and 1 skipped. Every failed workflow log was downloaded.
+
+| Workflow | Actual failure | Repair |
+| --- | --- | --- |
+| [CI/CD Pipeline 44097734939](https://github.com/link-assistant/formal-ai/actions/runs/44097734939) | Log line 7632: unused `SymbolicAnswer` import in `rust/src/main.rs:66`; warnings are denied | Remove the import left after extracting the thinking-trace module |
+| [Layered CI 44097734472](https://github.com/link-assistant/formal-ai/actions/runs/44097734472) | Lines 8691/8709: worker rewrite exits around the reasoning procedure; four module-map assertions and three source-witness assertions also fail | Pass rewrite drafts through the procedure, retain two worker exits, regenerate the module map and explicitly review/refresh the complete witness |
+| [Security 44097734306](https://github.com/link-assistant/formal-ai/actions/runs/44097734306) | Lines 742–751: unmaintained `chrono 0.4.45`, RUSTSEC-2026-0543 | Use the existing exact-version blocked-upstream proof; keep every other audit finding fatal |
+
+The native draft already reaches the procedure inside its cascade closure.
+Its census changes from 18 to 19 draft-producing methods; exits outside the
+procedure remain forbidden. A new worker regression checks the exact rewrite,
+absence of tool calls and presence of the actual procedure execution trace.
+The HTTP regression also compares streaming content and its final output report
+with the JSON response.
+
+The witness comparison retains all 1185 native declarations: 221 executable
+cases and 964 unsupported cases. One unchanged test moved to a split file;
+the complete comparison permits that precise move and 111 source-hash changes
+across five reviewed files. It rejects other record-shape, assertion or identity
+changes. Both complete serialized records and the scalar delta are retained.
+The maintained refresh command was used after review; tests never rewrite it.
+
+## Upstream audit acknowledgement
+
+RustSec provides no patched chrono version. Locked parents `command-stream
+1.5.3` and `link-calculator 0.22.0` require it unconditionally. The latest
+published versions checked on 2026-11-17, 1.13.0 and 0.24.0 respectively, still
+require chrono. Existing upstream reports are
+[command-stream 238](https://github.com/link-foundation/command-stream/issues/238)
+and [calculator 265](https://github.com/link-assistant/calculator/issues/265).
+Neither was created by this PR. This acknowledges a maintenance risk; it does
+not repair chrono. The wrapper rechecks the all-target, all-feature graph and
+fails once the exact crate leaves it. Mocked wrapper integration tests verify
+expiry, rejection of a missing proof, and propagation of other audit failures.
+The actual dependency graph and advisory database remain CI checks.
+
+## Verification record
+
+The pre-repair run recorded 86 local gate passes, 52 CI-only skips and no gate
+failures, plus 20 focused test passes. The repair batch passed nine test files
+(82 tests); the HTTP file was repeated after adding streaming assertions. The
+first repair gate run found a stale runtime inventory and missing shellcheck
+on PATH. The maintained generator refreshed the two changed source hashes;
+its eight regression tests passed. The existing local shellcheck binary was
+restored to PATH. Both failed checks and the final rerun are retained. The final complete run
+passed 86 gates, skipped 52 CI-only gates and failed none. Native
+behavior and WASM parity remain unverified; a type check is not execution.
+
+[First-round raw evidence](raw-data/ci-round-one.tar.gz) preserves failed CI
+logs, metadata, exact repair requests and complete witness captures; its
+[manifest](raw-data/ci-round-one.manifest.json) records hashes and cutoff.
+CI for the repair head has not run at this capture point. Later status belongs
+to the PR checks for its exact SHA, not to the earlier run.
+
+Supplied instructions and scripts count as zero accepted reasoning/authorship
+units. The frozen inventory remains 8 units, 0 independently accepted.

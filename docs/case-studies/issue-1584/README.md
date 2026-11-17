@@ -35,3 +35,6 @@ implementation gaps listed in the acceptance inventory.
 - [ISO 24495-1](https://www.iso.org/standard/78907.html) describes reader-oriented plain-language principles; the preview does not certify them.
 - [NSM resources](https://nsm-approach.net/resources) include language tables and syntax frames. NSM is not a flat token whitelist.
 - Official Russian and Chinese NSM tables were retrieved and type-checked locally; their hashes and URLs are in the evidence. The files themselves are excluded. A bounded STE PDF retrieval exceeded the download limit; that does not establish source unavailability.
+
+The [PR case study](../pull-request-1585/README.md) retains the first current-head
+CI failures, their repair evidence, and later verification boundaries.

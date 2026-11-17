@@ -98,3 +98,12 @@ matrix and does not independently validate general semantics.
 The [issue case study](../../docs/case-studies/issue-1584/README.md) contains
 the bounded raw archive and SHA-256 inventory. The separate
 [PR case study](../../docs/case-studies/pull-request-1585/README.md) records CI.
+
+The repair batch passed 82 focused tests across nine files, including procedure
+execution, streaming/JSON report consistency, source-witness integrity, module
+mapping, runtime inventory drift, and the audit wrapper.
+
+The first pushed head had three failed workflows. The PR case study records
+each root cause, the procedure-preserving rewrite repair, source-witness review,
+and the exact-version upstream audit acknowledgement. Native behavior remains
+unverified; passing source/type checks must not be counted as runtime parity.
