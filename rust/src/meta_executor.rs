@@ -573,6 +573,12 @@ const fn candidate_of(method: &'static str, steps: u32, draft: Draft) -> Candida
 pub trait MetaHost {
     /// The direct derivation: the host solver on the task's text.
     fn draft(&mut self, text: &str, task: &TaskNode) -> Option<Draft>;
+    /// Whether joining child answers can fulfil this task's output contract.
+    /// Untyped hosts allow it; production preserves concrete solver intents.
+    fn can_compose(&self, _task: &TaskNode) -> bool {
+        true
+    }
+
     /// A stored row of an earlier run of this procedure, if any.
     fn cached(&mut self, _text: &str, _task: &TaskNode) -> Option<Draft> {
         None
@@ -638,7 +644,7 @@ fn draft_candidates(
         budget_exhausted = true;
     }
     if !node.children.is_empty() {
-        let composition = compose(node, test, child_outcomes);
+        let composition = compose(node, test, child_outcomes).filter(|_| host.can_compose(node));
         let resolved = child_outcomes
             .iter()
             .filter(|outcome| outcome.is_resolved())

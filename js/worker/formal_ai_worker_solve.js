@@ -822,7 +822,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   events.push("fallback:unknown");
   steps.push({ step: "fallback", detail: "unknown" });
   return finalize(events, steps, toolCalls, {
-    intent: "unknown",
+    intent: validation?.answer ? NUMBER_PROPERTY_PRIME_SLUG : "unknown",
     content: validation?.answer ?? unresolved?.content ?? unknownAnswerWithVariation(prompt, language),
     confidence: validation?.answer ? 1 : unresolved ? 0 : 0.1,
     evidence: ["fallback:unknown", `language:${language}`],

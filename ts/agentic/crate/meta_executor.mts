@@ -351,7 +351,7 @@ async function runTask(node, host, state, options) {
     budgetExhausted = true;
   }
   if (node.children.length) {
-    const composition = compose(node, test, childOutcomes);
+    const composition = (host.canCompose?.(node) ?? true) ? compose(node, test, childOutcomes) : null;
     emit(state, 'meta_exec:compose', [
       ['task', node.id],
       ['relation', node.relation],
@@ -517,6 +517,10 @@ const answerDraft = (answer) =>
 export async function solveAnswer(request, answer, solveSubTask, options = {}) {
   if (!answer || isNested()) return { answer, run: null };
   const host = {
+    // Joining prose cannot establish a concrete output contract (for example,
+    // source code), even when each fragment has a nonempty response. Only an
+    // untyped unresolved root can be discharged by this generic composition.
+    canCompose: (task) => task.depth !== 0 || ruleValues('unresolved-intent').includes(answer.intent),
     draft: async (text, task) => (task.depth === 0 ? answerDraft(answer) : answerDraft(await nested(() => solveSubTask(text)))),
   };
   const run = await solveTurn(request, host, options);

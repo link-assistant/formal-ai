@@ -161,7 +161,7 @@ function extractMeaningQuestionBody(original, lower) {
 function extractConceptQuery(prompt) {
   let trimmedRaw = withoutAnswerShapeDirective(prompt) // #1173 R3: "Explain briefly." shapes, not names
     .trim()
-    .replace(/[?。.!!,,;:]+$/g, "")
+    .replace(/[?？。.！!,，;；:：]+$/g, "")
     .trim();
   if (!trimmedRaw) return null;
   trimmedRaw = stripLeadingRequest(trimmedRaw);
@@ -350,7 +350,7 @@ function stripConceptIdiomSuffix(original, lower) {
 function finalizeConceptBody(body, inheritedResponseLanguage = null) {
   let originalBase = String(body || "")
     .trim()
-    .replace(/[?。.!!,,;:]+$/g, "")
+    .replace(/[?？。.！!,，;；:：]+$/g, "")
     .trim();
   if (!originalBase) return null;
   let original = originalBase;

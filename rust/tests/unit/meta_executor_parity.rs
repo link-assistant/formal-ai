@@ -122,3 +122,92 @@ fn every_fixture_case_replays_to_the_javascript_event_sequence() {
         assert_eq!(events, strings(&expected["events"]), "{name}: events");
     }
 }
+
+#[test]
+fn production_composition_preserves_concrete_output_obligations() {
+    for intent in [
+        "write_program_skill_gap",
+        "write_program_unspecified",
+        "write_program",
+    ] {
+        let root = Draft {
+            intent: intent.to_owned(),
+            content: "Source unavailable".to_owned(),
+            confidence: 0.0,
+        };
+        let mut child = |_: &str| {
+            Some(Draft {
+                intent: "read_file".to_owned(),
+                content: "A reading tool is needed".to_owned(),
+                confidence: 1.0,
+            })
+        };
+        let run = formal_ai::meta_executor::solve_answer(
+            Request {
+                text: "Create source and import assert",
+                language: "en",
+            },
+            root,
+            &mut child,
+            &RunOptions::default(),
+        )
+        .expect("outer production turn");
+        assert!(
+            formal_ai::meta_executor::adopted_composition(&run).is_none(),
+            "{intent}"
+        );
+        assert!(
+            run.events
+                .iter()
+                .any(|event| event.kind == "meta_exec:compose")
+        );
+    }
+}
+
+#[test]
+fn production_composition_still_solves_untyped_independent_tasks() {
+    let mut child = |text: &str| {
+        Some(Draft {
+            intent: "answered".to_owned(),
+            content: text.to_owned(),
+            confidence: 1.0,
+        })
+    };
+    let run = formal_ai::meta_executor::solve_answer(
+        Request {
+            text: "First task and second task",
+            language: "en",
+        },
+        Draft {
+            intent: "unknown".to_owned(),
+            content: String::new(),
+            confidence: 0.0,
+        },
+        &mut child,
+        &RunOptions::default(),
+    )
+    .expect("outer production turn");
+    let composed = formal_ai::meta_executor::adopted_composition(&run).expect("valid composition");
+    assert!(composed.content.contains("First task"));
+    assert!(composed.content.contains("second task"));
+}
+
+#[test]
+fn validated_prime_candidates_keep_their_intent_in_every_response_language() {
+    let solver = formal_ai::UniversalSolver::new(formal_ai::SolverConfig {
+        offline: true,
+        temperature: 0.0,
+        ..formal_ai::SolverConfig::default()
+    });
+    for (prompt, expected) in [
+        ("Choose a prime between 8 and 12", "11"),
+        ("Выбери простое число от 24 до 30", "29"),
+        ("Elige un número primo entre 32 y 40", "37"),
+        ("选择8到12之间的质数", "11"),
+        ("0 और 3 के बीच अभाज्य संख्या चुनो", "2"),
+    ] {
+        let answer = solver.solve(prompt);
+        assert_eq!(answer.answer, expected, "{prompt}");
+        assert_eq!(answer.intent, "number_property_prime", "{prompt}");
+    }
+}

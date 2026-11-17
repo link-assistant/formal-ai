@@ -87,3 +87,15 @@ main-run 41804771645
       failed "Self-development status: language-parity-gaps measured 52 above ceiling 42"
       check rust/tests/web/debt-ceiling-fast-lane.test.mjs
       marker "41804771645"
+main-run 43815999666
+  javascript-twin
+    regression concrete-output-composition
+      introduced-by "PR #1576, recursive production entry"
+      failed "generic composition replaced a concrete source-output intent with joined refusal text"
+      check rust/tests/web/issue-1580-production-composition.test.mjs
+      marker "production composition preserves concrete output obligations"
+    regression concept-full-width-punctuation
+      introduced-by "terminal query normalization"
+      failed "compound_courtesy_and_question_are_answered_in_source_order: Redis是什么？ remained unknown"
+      check rust/tests/web/issue-1580-production-composition.test.mjs
+      marker "concept queries trim terminal punctuation"

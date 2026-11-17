@@ -359,6 +359,7 @@ pub fn record_candidates(log: &mut EventLog, intent: &str) {
 
 #[derive(Debug, Clone)]
 pub struct ValidationChoice {
+    pub intent: String,
     pub answer: String,
 }
 
@@ -375,6 +376,7 @@ pub fn record_validation(log: &mut EventLog, prompt: &str) -> Option<ValidationC
         log.append("validation", format!("{property}({candidate})={passed}"));
         if passed {
             return Some(ValidationChoice {
+                intent: property.to_owned(),
                 answer: candidate.to_string(),
             });
         }

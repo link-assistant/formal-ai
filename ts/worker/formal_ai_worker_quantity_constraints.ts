@@ -170,5 +170,11 @@ function tryQuantityConstraint(prompt) {
 
 
 function tryArithmetic(prompt) {
+  // A seeded number-property request owns its operands before loose expression extraction.
+  const validation = solverPrimeIntervalValidation(prompt);
+  if (validation?.answer) return {
+    intent: NUMBER_PROPERTY_PRIME_SLUG, content: validation.answer, confidence: 1,
+    evidence: ["validation:" + NUMBER_PROPERTY_PRIME_SLUG], solverEvents: validation.events,
+  };
   return tryQuantityConstraint(prompt) || tryArithmeticExpression(prompt);
 }

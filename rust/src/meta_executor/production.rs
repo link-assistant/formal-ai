@@ -4,6 +4,11 @@
 //! guard and trace. Mirrors `inProcessExecutor`, `solveTurn` and
 //! `solveAnswer` of `js/agentic/crate/meta_executor.mjs`.
 
+use crate::engine::SymbolicAnswer;
+use crate::event_log::EventLog;
+use crate::intent_formalization::IntentFormalizationCache;
+use crate::probability::ProbabilityStore;
+use crate::solver::ConversationTurn;
 use std::cell::{Cell, RefCell};
 
 use super::{
@@ -108,6 +113,16 @@ struct AnswerHost<'f> {
 }
 
 impl MetaHost for AnswerHost<'_> {
+    fn can_compose(&self, task: &TaskNode) -> bool {
+        // A prose join cannot establish a concrete contract such as source
+        // code. Mirror solveAnswer's root-intent check in JavaScript.
+        task.depth != 0
+            || self
+                .root
+                .as_ref()
+                .is_some_and(|root| super::rule_values("unresolved-intent").contains(&root.intent))
+    }
+
     fn draft(&mut self, text: &str, task: &TaskNode) -> Option<Draft> {
         if task.depth == 0 {
             return self.root.clone();
@@ -185,4 +200,52 @@ pub fn remember_trace(events: &[TraceEvent]) {
 #[must_use]
 pub fn last_turn_trace() -> Vec<TraceEvent> {
     LAST_TRACE.with(|trace| trace.borrow().clone())
+}
+
+// Keep the production adapter with its host rather than the dispatch loop.
+impl crate::solver::UniversalSolver {
+    pub(crate) fn run_meta_procedure(
+        &self,
+        prompt: &str,
+        history: &[ConversationTurn],
+        probability_store: &ProbabilityStore,
+        answer: &mut SymbolicAnswer,
+        log: &mut EventLog,
+    ) {
+        let draft_of = |solved: &SymbolicAnswer| crate::meta_executor::Draft {
+            intent: solved.intent.clone(),
+            content: solved.answer.clone(),
+            confidence: solved.confidence,
+        };
+        let language = crate::language::detect(prompt).slug();
+        let mut solve_sub_task = |text: &str| {
+            let solved = self.solve_with_history_probability_store_and_intent_cache(
+                text,
+                history,
+                probability_store,
+                &mut IntentFormalizationCache::new(),
+            );
+            Some(draft_of(&solved))
+        };
+        let Some(run) = crate::meta_executor::solve_answer(
+            crate::meta_executor::Request {
+                text: prompt,
+                language,
+            },
+            draft_of(&*answer),
+            &mut solve_sub_task,
+            &crate::meta_executor::RunOptions::default(),
+        ) else {
+            return;
+        };
+        for event in &run.events {
+            log.append(event.kind, event.payload.clone());
+        }
+        crate::meta_executor::remember_trace(&run.events);
+        if let Some(composed) = crate::meta_executor::adopted_composition(&run) {
+            answer.intent.clone_from(&composed.intent);
+            answer.answer.clone_from(&composed.content);
+            answer.confidence = composed.confidence;
+        }
+    }
 }

@@ -86,6 +86,17 @@ fn handle_arithmetic(
     if shell_compose_claims(prompt) {
         return None;
     }
+    // A seeded number-property request owns its operands before loose expression extraction.
+    if let Some(choice) = crate::solver_helpers::record_validation(log, prompt) {
+        return Some(crate::solver_handlers::finalize_simple(
+            prompt,
+            log,
+            &choice.intent,
+            "response:number_property_prime",
+            &choice.answer,
+            1.0,
+        ));
+    }
     crate::quantity_constraint::try_answer(prompt, log).or_else(|| try_arithmetic(prompt, log))
 }
 

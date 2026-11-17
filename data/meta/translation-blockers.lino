@@ -35,8 +35,8 @@ translation_blockers
   blockers_per_item 19 8
   blockers_per_item 20 6
   blockers_per_item 21 5
-  blockers_per_item 22 3
-  blockers_per_item 23 3
+  blockers_per_item 22 2
+  blockers_per_item 23 4
   blockers_per_item 24 3
   blockers_per_item 25 2
   blockers_per_item 26 3
@@ -82,7 +82,7 @@ construct "global call String()" items 124 only 0
 construct "method call .sort()" items 102 only 0
 construct "new Set" items 97 only 35
 construct "method call .has()" items 95 only 0
-construct "optional chaining" items 94 only 0
+construct "optional chaining" items 95 only 0
 construct "method call .replace()" items 82 only 0
 construct "method call .indexOf()" items 76 only 0
 construct "arrow callback of .sort()" items 75 only 0
