@@ -26,3 +26,7 @@ Frozen before new implementation: CI freshness/taxonomy; worker budget; passage 
 ## Current verification checkpoint
 
 At 22ffaa73d1b2b0dc800ed2f9093059ac80ddef56, local gates: 86 passed, 52 explicit skips, zero failures. Focused JS tests and native source formatting passed. All 3,007 template blobs and 48 workflows are inventoried; semantic CI closure review remains open. See docs/case-studies/issue-1580/README.md for each unresolved criterion. No native execution or final-head hosted CI is claimed.
+
+## 17 November hosted-CI repair round
+
+Collected every failed workflow on dd334ef6a after all 24 runs completed, preserving full logs and source identities. Fixed the required-context documentation-policy mismatch, the sole native clippy diagnostic (unused intent), and stale governed-witness fingerprints. The witness review preserves all 221 cases and changes only 20 source hashes. Focused policy/specification regressions pass. The complete 138-gate inventory passes or explicitly skips across the interrupted full invocation and its separately completed remainder; no native execution is claimed. Push this batch once, then inspect all final-head results before claiming verification. The broader unfinished criteria above remain active.

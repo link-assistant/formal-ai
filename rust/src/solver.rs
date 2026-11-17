@@ -602,7 +602,6 @@ impl UniversalSolver {
                         0.9,
                     );
                 }
-                let intent = language_aware_intent_for(&rule, language);
                 if let Some(choice) = record_validation(&mut log, prompt) {
                     let intent = choice.intent;
                     let response_link = response_link_for_intent(&rule, &intent);

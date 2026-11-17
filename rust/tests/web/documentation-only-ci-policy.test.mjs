@@ -2,22 +2,25 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync, readdirSync} from 'node:fs';
 import YAML from 'yaml';
-import {checkDocumentationPolicy, filteredWorkflow, lightweightWorkflows} from '../../../scripts/documentation-only-ci-policy.mjs';
+import {checkDocumentationPolicy, filteredWorkflow, lightweightWorkflows, contextReportingWorkflows} from '../../../scripts/documentation-only-ci-policy.mjs';
 import {applicableWorkflows} from '../../../scripts/lib/hive-delivery-admission.mjs';
 import {documentationOnlyPullRequest} from '../../../scripts/lib/documentation-paths.mjs';
 import {Script} from 'node:vm';
 import {posix} from 'node:path';
 const workflows = readdirSync('.github/workflows').filter(name => name.endsWith('.yml')).map(name => ({path: '.github/workflows/' + name, document: YAML.parse(readFileSync('.github/workflows/' + name, 'utf8'))}));
-test('all heavy push and PR triggers carry the generated documentation policy', () => {
+test('heavy triggers are filtered while required PR context reporters remain admitted', () => {
   assert.ok(checkDocumentationPolicy() > 10);
 });
 for (const event of ['push', 'pull_request']) {
   for (const files of [['docs/associative-tech-stack.md'], ['VISION.md','CONTRIBUTING.md'], ['docs/guide.md','changelog.d/pending.md'], ['rust/README.md']]) {
-    test(event + ': documentation paths select lightweight checks only: ' + files.join(','), () => {
+    test(event + ': documentation paths select lightweight checks and required context reporters: ' + files.join(','), () => {
       const selected = applicableWorkflows(workflows, {event, baseBranch: 'main', files});
       assert.ok(selected.includes('.github/workflows/documentation-policy.yml'));
-      for (const path of selected) assert.ok(lightweightWorkflows.has(path.split('/').at(-1)), path);
-      assert.ok(!selected.includes('.github/workflows/release.yml'));
+      for (const path of selected) assert.ok(lightweightWorkflows.has(path.split('/').at(-1))
+          || (event === 'pull_request' && contextReportingWorkflows.has(path.split('/').at(-1))), path);
+
+      assert.equal(selected.includes('.github/workflows/release.yml'), event === 'pull_request',
+          'the required PR contexts report without selecting heavy build jobs');
     });
   }
   for (const path of ['rust/src/lib.rs', 'js/agentic/planner.mjs', 'data/seed/runtime.md', 'data/seed/RUNTIME.MD', '.github/workflows/release.yml', 'Cargo.toml', 'unknown-input']) {
@@ -137,4 +140,65 @@ test('documentation sparse inputs cover the static policy closure and locked par
   assert.deepEqual(Object.keys(dependency.dependencies),['yaml']);
   assert.equal(dependency.dependencies.yaml,lock.packages['node_modules/yaml'].version);
   assert.match(lock.packages['node_modules/yaml'].integrity,/^sha512-/u);
+});
+
+// Execute the retained workflow conditions for a real documentation-only
+// classification; an event-level reporting exception cannot admit a build.
+function assertDocumentationContextSafety(release, native) {
+  const outputs = new Proxy({}, {get: (_, key) => key === 'docs-changed' ? 'true' : 'false'});
+  const results = new Map();
+  const needs = new Proxy({}, {get: (_, id) => {
+    assert.ok(Object.hasOwn(release.jobs, id), 'unknown job dependency ' + id);
+    if (!results.has(id)) results.set(id, evaluate(release.jobs[id].if) ? 'success' : 'skipped');
+    return {result: results.get(id), outputs};
+  }});
+  const evaluate = (expression, inputs = {}) => {
+    if (expression === undefined) return true;
+    const source = String(expression).trim().replace(/^\$\{\{\s*|\s*\}\}$/gu, '')
+      .replace(/\.([a-zA-Z_][a-zA-Z0-9_-]*)/gu, (_, key) => '[' + JSON.stringify(key) + ']');
+    return Boolean(new Script(source).runInNewContext({
+      github: {event_name: 'pull_request', ref: 'refs/pull/1/merge', event: {inputs: {}, workflow_run: {head_branch: 'main'}}},
+      needs, inputs, vars: {}, cancelled: () => false, always: () => true,
+      fromJSON: JSON.parse, contains: (container, value) => container.includes(value),
+    }, {timeout: 100}));
+  };
+  assert.equal(release.on.pull_request['paths-ignore'], undefined);
+  const selected = Object.entries(release.jobs).filter(([, job]) => evaluate(job.if)).map(([id]) => id).sort();
+  assert.deepEqual(selected, ['base', 'detect-changes', 'fast-pr-lint', 'hive-source-provenance',
+    'native-type-check', 'pipeline-status', 'release-preflight', 'secrets-scan', 'version-check']);
+  const call = release.jobs['native-type-check'];
+  assert.equal(call.uses, './.github/workflows/native-type-check.yml');
+  const compile = evaluate(call.with['compile-inputs-changed']);
+  assert.equal(compile, false, 'a complete docs-only observation does not compile');
+  const steps = native.jobs.clippy.steps.filter(step => evaluate(step.if, {'compile-inputs-changed': compile}));
+  assert.equal(steps.length, 1);
+  assert.equal(steps[0].name, 'Report unchanged compile inputs');
+  assert.match(steps[0].run, /^echo '::notice::Rust compile inputs unchanged;/u);
+  assert.equal(steps[0].uses, undefined);
+}
+
+test('documentation PR context reporting runs no native tool, product build or publication job', () => {
+  const release = workflows.find(row => row.path.endsWith('/release.yml')).document;
+  const native = workflows.find(row => row.path.endsWith('/native-type-check.yml')).document;
+  assertDocumentationContextSafety(release, native);
+  for (const mutate of [
+    value => delete value.jobs['build-artifacts'].if,
+    value => value.jobs['native-type-check'].with['compile-inputs-changed'] = true,
+    value => value.on.pull_request['paths-ignore'] = ['docs/**'],
+  ]) {
+    const changed = structuredClone(release); mutate(changed);
+    assert.throws(() => assertDocumentationContextSafety(changed, native));
+  }
+  const changed = structuredClone(native);
+  delete changed.jobs.clippy.steps.find(step => step.name === 'Type-check and lint the library and binaries').if;
+  assert.throws(() => assertDocumentationContextSafety(release, changed));
+});
+
+test('context reporter exemption preserves push filtering and does not apply to other heavy workflows', () => {
+  const source = 'on:\n  push:\n  pull_request:\njobs:\n  retained:\n    steps: []\n';
+  const reporter = YAML.parse(filteredWorkflow(source, {file: 'release.yml'}));
+  assert.ok(reporter.on.push['paths-ignore'].includes('docs/**'));
+  assert.equal(reporter.on.pull_request, null);
+  const other = YAML.parse(filteredWorkflow(source, {file: 'another-heavy-workflow.yml'}));
+  assert.ok(other.on.pull_request['paths-ignore'].includes('docs/**'));
 });
