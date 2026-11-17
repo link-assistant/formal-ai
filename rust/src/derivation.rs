@@ -217,7 +217,7 @@ pub(crate) fn finalize_answer(answer: &mut crate::engine::SymbolicAnswer, log: &
         .push(format!("derivation:{answer_id}"));
     answer.links_notation.push('\n');
     answer.links_notation.push_str(&record.to_lino());
-    if crate::server::ephemeral_enabled() {
+    if crate::solver_config::ephemeral_enabled() {
         return;
     }
     match crate::runtime_cache::persist_derivation(&record) {

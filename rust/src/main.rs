@@ -165,10 +165,10 @@ enum Command {
     Context(ContextArgs),
     /// Build the issue-report document every Formal AI surface files (#839).
     Report(ReportArgs),
-    /// Serve the API. Debug diagnostics log request metadata by default.
+    /// Serve the API with request metadata by default.
     ///
     /// Set FORMAL_AI_DIALOG_LOG_DIR to opt in to full dialog capture.
-    /// Structured diagnostics default to ~/.formal-ai/logs.
+    /// Structured diagnostics default to debug level in ~/.formal-ai/logs.
     Serve(ServeArgs),
     /// Use the same binary as a WebSocket or WebRTC OpenAI-compatible client.
     Connect(ConnectArgs),

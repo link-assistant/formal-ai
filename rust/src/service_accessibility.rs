@@ -356,7 +356,7 @@ impl ServiceAccessibilityCache {
 
     /// Persist the projection, creating the directory when needed.
     pub fn save(&self) -> io::Result<()> {
-        if crate::server::ephemeral_enabled() {
+        if crate::solver_config::ephemeral_enabled() {
             return Ok(());
         }
         if let Some(parent) = self.path.parent() {

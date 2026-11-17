@@ -129,7 +129,7 @@ async function dispatchRoute(ctx, request) {
   const matched = matchRoute(method, normalizedPath);
   if (!matched) return messageError(404, 'route_not_found');
   if (ctx.ephemeral && ['conversation_learn', 'telegram_webhook'].includes(matched.route.id)) {
-    return errorResponse(409, 'this operation requires persistent mode');
+    return messageError(409, 'operation-requires-persistent-mode');
   }
   const handler = ROUTE_HANDLERS[matched.route.id];
   try {

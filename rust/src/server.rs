@@ -38,6 +38,8 @@ mod retention;
 mod shutdown;
 mod transport;
 
+pub use crate::solver_config::enable_ephemeral_for_current_process;
+use crate::solver_config::ephemeral_enabled;
 pub use debug_session::{
     DEBUG_TOKEN_ENV, DebugSession, DebugToken, active_debug_session, debug_session_banner,
     debug_token_from_env, enable_debug_session, generate_debug_token, handle_debug_request,
@@ -48,8 +50,6 @@ pub use debug_stage::{
     EXCERPT_LINES, SourceLocation, StageView, TurnView, describe_turn, js_location, rust_location,
     stage_diagram, turn_method,
 };
-pub use retention::enable_ephemeral_for_current_process;
-pub(crate) use retention::ephemeral_enabled;
 use retention::{log_health_status, memory_health_status};
 pub use transport::serve;
 

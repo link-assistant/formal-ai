@@ -66,7 +66,7 @@ fn file_sink_failed(directory: Option<&std::path::Path>, error: &io::Error) {
 }
 
 pub fn configure(silent: bool, serve: bool) {
-    let silent = silent || crate::server::ephemeral_enabled();
+    let silent = silent || crate::solver_config::ephemeral_enabled();
     SILENT.store(silent, Ordering::Relaxed);
     SERVE.store(serve && !silent, Ordering::Relaxed);
     FILE_DISABLED.store(false, Ordering::Relaxed);
@@ -98,7 +98,7 @@ fn rank(level: &str) -> u8 {
 #[must_use]
 pub fn enabled(level: &str) -> bool {
     !SILENT.load(Ordering::Relaxed)
-        && !crate::server::ephemeral_enabled()
+        && !crate::solver_config::ephemeral_enabled()
         && !crate::solver_config::flag_enabled("FORMAL_AI_SILENT")
         && rank(level)
             <= rank(&std::env::var("FORMAL_AI_LOG_LEVEL").unwrap_or_else(|_| "debug".into()))
@@ -439,7 +439,7 @@ pub fn control(kind: &str, component: &str, message: &str, metadata: &Value) {
 }
 
 fn write_record(record: &Value) {
-    if crate::server::ephemeral_enabled() {
+    if crate::solver_config::ephemeral_enabled() {
         return;
     }
     let Ok(line) = encode(&redact(record)) else {

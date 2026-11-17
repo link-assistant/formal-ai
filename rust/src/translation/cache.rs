@@ -343,7 +343,7 @@ impl<T: HttpClient> HttpClient for CachedHttpClient<T> {
         if let Ok(body) = fs::read_to_string(&body_path) {
             return Ok(body);
         }
-        if !self.online || crate::server::ephemeral_enabled() {
+        if !self.online || crate::solver_config::ephemeral_enabled() {
             return Err(HttpError::Transport(format!(
                 "translation cache miss for {url} and offline mode is active; \
                  set FORMAL_AI_LIVE_API=1 to fetch and populate the cache",

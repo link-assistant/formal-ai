@@ -767,7 +767,7 @@ async function callTool(ctx, request, id) {
   if (name === CHAT_TOOL) return callChat(ctx, request, id);
   const primitive = primitiveFromToolName(name);
   if (!primitive) return jsonRpcError(id, -32601, serverMessage('mcp_tool_not_found'));
-  if (ctx.ephemeral) return jsonRpcError(id, -32000, 'computer-use tools require persistent mode');
+  if (ctx.ephemeral) return jsonRpcError(id, -32000, serverMessage('computer-tools-require-persistent-mode'));
   return callComputerPrimitive(ctx, request, id, primitive);
 }
 

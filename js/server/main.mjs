@@ -134,20 +134,7 @@ export async function startServer({ host = '127.0.0.1', port = 0, agentMode = fa
 
 async function main(argv) {
   if (argv.join(' ') === '--help' || argv.join(' ') === 'serve --help') {
-    process.stdout.write([
-      'Usage: node js/server/main.mjs [serve] [options]',
-      '  --host HOST / --port PORT    Listen address (default 127.0.0.1:8080)',
-      '  --ephemeral                 Read memory without retaining requests (FORMAL_AI_EPHEMERAL=1)',
-      '  --silent                    Disable diagnostics and dialog capture',
-      '  --agent-mode                Enable client tool planning in persistent mode',
-      '  --debug-session             Enable loopback step-through debugging in persistent mode',
-      '  --log-level LEVEL           Diagnostic level (default debug, request metadata only)',
-      '  --log-dir DIR                Structured logs (default ~/.formal-ai/logs)',
-      '  --trace                      Include diagnostic payloads',
-      '  --prerequisite-grant JSON    Workspace prerequisite grant',
-      '  FORMAL_AI_DIALOG_LOG_DIR     Opt in to full dialog capture (off by default)',
-      '',
-    ].join('\n'));
+    process.stdout.write(`${serverMessage('serve-help')}\n`);
     return 0;
   }
   // `formal-ai explain <answer-id> [--format text|links]` (rust/src/cli_explain.rs).
@@ -178,7 +165,7 @@ async function main(argv) {
     logger.close(); return 2;
   }
   if (options.ephemeral && options.debugSession) {
-    process.stderr.write('Step-through debugging requires persistent mode.\n');
+    process.stderr.write(`${serverMessage('serve-debug-session-requires-persistence')}\n`);
     return 2;
   }
   if(options.unsupported || (options.debugSession && !isLoopbackHost(options.host))){

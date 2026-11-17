@@ -142,8 +142,7 @@ pub fn prover_unit(clause: &QuantifiedClause, prover: &ProverRecord) -> Option<S
     Some(format!("{}\n\n{rendered}\n", lines.join("\n")))
 }
 
-/// The executable `binary` names in some directory of the PATH-shaped list
-/// `path_value` (looked up, not run).
+/// Locate `binary` in the PATH-shaped `path_value`.
 #[must_use]
 pub fn prover_command_in(path_value: &std::ffi::OsStr, binary: &str) -> Option<std::path::PathBuf> {
     std::env::split_paths(path_value)
@@ -211,8 +210,7 @@ pub fn run_prover_with(
     }
 }
 
-/// Every seeded prover's run for `clause`, searching `path_value` and
-/// writing units under `directory`.
+/// Run each seeded prover from `path_value`, writing units to `directory`.
 #[must_use]
 pub fn prover_runs_with(
     clause: &QuantifiedClause,
@@ -234,7 +232,7 @@ pub fn prover_runs_with(
 
 /// The runs against this process's PATH and temporary directory.
 fn prover_runs(clause: &QuantifiedClause) -> Vec<(&'static ProverRecord, ProverRun)> {
-    if crate::server::ephemeral_enabled() {
+    if crate::solver_config::ephemeral_enabled() {
         return Vec::new();
     }
     let path_value = std::env::var_os("PATH").unwrap_or_default();
@@ -242,8 +240,7 @@ fn prover_runs(clause: &QuantifiedClause) -> Vec<(&'static ProverRecord, ProverR
     prover_runs_with(clause, &path_value, &directory)
 }
 
-/// The honesty block's prover slots in `language`: `prover_summary`, then
-/// one `<target>_check` per prover.
+/// The honesty block's prover summary and per-target checks in `language`.
 #[must_use]
 pub fn prover_check_slots(
     runs: &[(&ProverRecord, ProverRun)],

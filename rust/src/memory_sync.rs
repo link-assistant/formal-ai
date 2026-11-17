@@ -228,7 +228,8 @@ pub fn configured_memory_path() -> Option<PathBuf> {
 /// Live chat exchanges are recorded into memory unless explicitly disabled.
 #[must_use]
 pub fn chat_recording_enabled() -> bool {
-    !crate::server::ephemeral_enabled() && !crate::cli_env::flag_disabled("FORMAL_AI_RECORD_CHAT")
+    !crate::solver_config::ephemeral_enabled()
+        && !crate::cli_env::flag_disabled("FORMAL_AI_RECORD_CHAT")
 }
 
 /// Resolve the native link-cli database beside a portable `.lino` memory log.
@@ -289,7 +290,7 @@ impl SyncStore {
     #[must_use]
     pub fn open() -> Self {
         configured_memory_path().map_or_else(Self::default, |path| {
-            if crate::server::ephemeral_enabled() {
+            if crate::solver_config::ephemeral_enabled() {
                 return Self::open_read(&path, live_memory_source(&path, false), true);
             }
             match prepare_live_memory(&path) {

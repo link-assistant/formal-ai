@@ -1,23 +1,15 @@
 //! Serve retention policy, passive health status, and request metadata.
 
-use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::Instant;
 
 use serde_json::{Value, json};
 
+use crate::solver_config::ephemeral_enabled;
+
 use super::ApiHttpResponse;
 
-static EPHEMERAL: AtomicBool = AtomicBool::new(false);
 static REQUEST_SEQUENCE: AtomicU64 = AtomicU64::new(0);
-
-/// Apply serve's no-retention policy before opening any diagnostic or memory sink.
-pub fn enable_ephemeral_for_current_process() {
-    EPHEMERAL.store(true, Ordering::Relaxed);
-}
-
-pub(crate) fn ephemeral_enabled() -> bool {
-    EPHEMERAL.load(Ordering::Relaxed) || crate::cli_env::flag_enabled("FORMAL_AI_EPHEMERAL")
-}
 
 pub(super) fn log_health_status() -> Value {
     let mut status = crate::dialog_log::structured_log::health_status();

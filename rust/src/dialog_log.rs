@@ -141,7 +141,7 @@ pub(crate) fn record_native_response_if_enabled(
     answer: &crate::engine::SymbolicAnswer,
 ) {
     static RESPONSE_SEQUENCE: AtomicU64 = AtomicU64::new(1);
-    if crate::server::ephemeral_enabled() {
+    if crate::solver_config::ephemeral_enabled() {
         return;
     }
     let Some(directory) = std::env::var_os("FORMAL_AI_NATIVE_RESPONSE_CAPTURE_DIR")

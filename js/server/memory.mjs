@@ -19,7 +19,7 @@ import {
 } from './memory-store.mjs';
 import { serverMessage } from './messages.mjs';
 import { isInstructionPrompt, recordedScopeEvidence } from './standing-scope.mjs';
-import { errorResponse, jsonResponse, linksNotationResponse, messageError } from './response.mjs';
+import { jsonResponse, linksNotationResponse, messageError } from './response.mjs';
 
 const envOf = (ctx) => ctx?.env || process.env;
 
@@ -114,7 +114,7 @@ export function handleMemorySince(ctx, request) {
 
 /** `POST /v1/memory/import`. */
 export function handleMemoryImport(ctx, request) {
-  if (ctx.ephemeral) return errorResponse(409, 'memory is read-only in ephemeral mode');
+  if (ctx.ephemeral) return messageError(409, 'memory-read-only-ephemeral');
   const store = SyncStore.open(envOf(ctx));
   try {
     const added = store.importLinksNotation(request.body ?? '');

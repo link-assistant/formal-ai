@@ -301,7 +301,7 @@ impl<T: SourceTransport> CachedSourceClient<T> {
 
     pub fn fetch(&self, url: &str) -> Result<SourceCapture, FetchError> {
         validate_url(url)?;
-        let online = self.online && !crate::server::ephemeral_enabled();
+        let online = self.online && !crate::solver_config::ephemeral_enabled();
         let (cache_root, metadata_path) = self.paths(url);
         match read_capture(url, &cache_root, &metadata_path) {
             Ok(Some(mut capture)) => {
@@ -370,7 +370,7 @@ impl<T: SourceTransport> CachedSourceClient<T> {
         let Some(outcome) = crate::source_reconstruction::reconstruct_on_miss(
             events,
             tool,
-            !self.online || crate::server::ephemeral_enabled(),
+            !self.online || crate::solver_config::ephemeral_enabled(),
         ) else {
             return Err(miss);
         };

@@ -327,7 +327,13 @@ fn server_dialog_capture_is_opt_in_and_ephemeral_memory_is_read_only() {
         assert!(help.contains(option));
     }
 
-    for (ephemeral, capture) in [(false, false), (false, true), (true, true)] {
+    for (flag, environment, capture) in [
+        (false, false, false),
+        (false, false, true),
+        (true, false, true),
+        (false, true, true),
+    ] {
+        let ephemeral = flag || environment;
         let port = reserve_loopback_port();
         let scratch = std::env::temp_dir().join(format!(
             "formal-ai-http-server-{}-{port}",
@@ -343,7 +349,7 @@ fn server_dialog_capture_is_opt_in_and_ephemeral_memory_is_read_only() {
         } else {
             ""
         };
-        let args: &[&str] = if ephemeral { &["--ephemeral"] } else { &[] };
+        let args: &[&str] = if flag { &["--ephemeral"] } else { &[] };
         let log_level = if ephemeral { "trace" } else { "debug" };
         let mut server = spawn_formal_ai_server_with_args(
             port,
@@ -353,6 +359,7 @@ fn server_dialog_capture_is_opt_in_and_ephemeral_memory_is_read_only() {
                 ("XDG_CACHE_HOME", cache.to_str().unwrap()),
                 ("FORMAL_AI_DIALOG_LOG_DIR", dialog_setting),
                 ("FORMAL_AI_DREAMING", "0"),
+                ("FORMAL_AI_EPHEMERAL", if environment { "1" } else { "0" }),
                 ("FORMAL_AI_SILENT", "0"),
                 ("FORMAL_AI_RECORD_CHAT", "1"),
                 ("FORMAL_AI_LOG_DIR", logs.to_str().unwrap()),

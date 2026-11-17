@@ -555,7 +555,7 @@ where
 }
 
 fn announce_server(transport: &str, address: &str) {
-    if !crate::server::ephemeral_enabled() {
+    if !crate::solver_config::ephemeral_enabled() {
         crate::dreaming_runtime::start_core_dreaming();
     }
     crate::diagnostic!("debug";

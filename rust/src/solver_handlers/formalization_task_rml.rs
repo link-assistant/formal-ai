@@ -173,8 +173,7 @@ pub enum RmlExport {
     },
 }
 
-/// The `rml` command: the executable `FORMAL_AI_RML` names, else `rml`
-/// found in PATH (looked up, not run).
+/// Locate the executable `FORMAL_AI_RML` names, falling back to `rml` on PATH.
 fn rml_command() -> Option<std::path::PathBuf> {
     if let Some(named) = std::env::var_os("FORMAL_AI_RML") {
         let path = std::path::PathBuf::from(named);
@@ -186,8 +185,7 @@ fn rml_command() -> Option<std::path::PathBuf> {
         .find(|candidate| candidate.is_file())
 }
 
-/// A stable short name for a source text (`FNV-1a`), so one clause always
-/// exports to the same file.
+/// Hash source with FNV-1a so a clause always exports to the same file.
 fn rml_file_stem(source: &str) -> String {
     let mut hash: u64 = 0xcbf2_9ce4_8422_2325;
     for byte in source.bytes() {
@@ -240,7 +238,7 @@ fn rml_export(clause: &QuantifiedClause) -> RmlExport {
     let Some(source) = rml_source(clause) else {
         return RmlExport::OutsideSubset;
     };
-    if crate::server::ephemeral_enabled() {
+    if crate::solver_config::ephemeral_enabled() {
         return RmlExport::Absent;
     }
     let Some(command) = rml_command() else {
@@ -250,8 +248,7 @@ fn rml_export(clause: &QuantifiedClause) -> RmlExport {
     run_rml_export_with(&command, &source, &directory)
 }
 
-/// Record the step as a derivation fragment and return the honesty
-/// sentence that states it.
+/// Record the derivation fragment and return the sentence describing it.
 fn record_rml_fragment(log: &mut EventLog, clause: &QuantifiedClause) -> String {
     let export = rml_export(clause);
     match &export {

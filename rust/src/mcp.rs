@@ -61,7 +61,7 @@ fn call_tool(request: &Value, id: &Value, solver: &UniversalSolver) -> ApiHttpRe
     let Some(primitive) = ComputerUsePrimitive::from_tool_name(name) else {
         return json_rpc_error(id, -32601, "Tool not found");
     };
-    if crate::server::ephemeral_enabled() {
+    if crate::solver_config::ephemeral_enabled() {
         return json_rpc_error(id, -32000, "computer-use tools require persistent mode");
     }
     call_computer_primitive(request, id, solver, primitive)
@@ -176,7 +176,7 @@ fn listed_tools() -> Vec<Value> {
             "additionalProperties": false
         }
     })];
-    if !crate::server::ephemeral_enabled() {
+    if !crate::solver_config::ephemeral_enabled() {
         tools.extend(mcp_tool_definitions());
     }
     tools
