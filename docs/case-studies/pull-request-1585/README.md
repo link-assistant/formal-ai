@@ -105,3 +105,39 @@ across the final inventory and environment retry. Nine focused files passed
 83 tests; the HTTP file passed again with an assertion that the public response
 reports missing independent E-Prime evidence. ES currency and handwritten Rust
 format checks also passed. No native behavior or WASM execution is claimed.
+
+## Main integration and response contract regressions
+
+The merge of `058e9bef1` retains request context, opt-in dialogue retention,
+free-text summarization, and worker priority behavior from `main`. The
+governed witness still records 221 cases and 964 unsupported declarations.
+The merge moved one unchanged test body and changed 111 source hash records.
+The later dependency backport changed 16 manifest fixture records, all
+checked against the original and current manifest bytes.
+
+The combined E-Prime and lexical-density regression previously rendered a
+known forbidden form from a declared equivalent. Candidate selection now
+rejects realizations with known violations. Independent E-Prime validation
+remains required. The JSON regression reproduced a syntax error when the
+dictionary notice became part of the message content. Fixed-format Chat
+Completions now retain the body and carry the notice in projection metadata.
+The checks also cover exact labels, streaming and tool-call token accounting.
+The bounded matrix recorded 880 cases, zero declared identity drifts, and
+zero compliance certificates. General semantic preservation remains open.
+
+The complete local gate run passed 83 checks and skipped 52 CI-only checks.
+The three failed checks passed targeted retries. ShellCheck needed its binary
+on PATH and the source-model check needed the workflow's pinned grammar.
+The dependency audit reproduced the new picomatch advisory on both unchanged
+`main` manifests. This PR brings over the local patch from [PR #1581](https://github.com/link-assistant/formal-ai/pull/1581).
+The package retains the MIT license and npm source hashes. Both lockfiles
+pass `npm ci --dry-run` and their audits report zero vulnerabilities.
+
+[Raw integration evidence](raw-data/main-integration.tar.gz) and its
+[manifest](raw-data/main-integration.manifest.json) retain failing and passing
+checks, the witness review, the projection capture, and the actual Formal AI
+requests and traces. The planner executed the supplied merge and backport
+commands. The reasoning attempt recovered the inventory without independently
+resolving its gaps. The frozen inventory remains at 8 units and 0 independently
+accepted. The [acceptance inventory](../../../experiments/issue-1584/acceptance.md)
+retains all seven open criteria, including native and WASM behavior.
