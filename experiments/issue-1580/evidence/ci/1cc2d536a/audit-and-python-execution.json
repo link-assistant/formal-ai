@@ -1,0 +1,135 @@
+{
+  "head": "1cc2d536ac11e26602cc55a40dffb61716233aa6",
+  "run": 44116797181,
+  "rawLogSha256": "04167c0b5b2c66f38f2d3e180aa948ba5441b7774f4dfb833fb1120f5670f681",
+  "testEvidence": [
+    {
+      "source": "rust/tests/web/javascript-audit-inventory.test.mjs",
+      "title": "the complete audit precedes native compilation and retains its later registered gate",
+      "passingLogLines": [],
+      "executed": false
+    },
+    {
+      "source": "rust/tests/web/javascript-audit-inventory.test.mjs",
+      "title": "an advisory ends each committed lockfile audit on the first attempt",
+      "passingLogLines": [],
+      "executed": false
+    },
+    {
+      "source": "rust/tests/web/javascript-audit-inventory.test.mjs",
+      "title": "exhausting unanswered attempts refuses every committed lockfile",
+      "passingLogLines": [],
+      "executed": false
+    },
+    {
+      "source": "rust/tests/web/javascript-audit-inventory.test.mjs",
+      "title": "request timeouts recover only after every lock receives a real verdict",
+      "passingLogLines": [],
+      "executed": false
+    },
+    {
+      "source": "rust/tests/web/javascript-audit-inventory.test.mjs",
+      "title": "persistent request timeouts never substitute a clean audit verdict",
+      "passingLogLines": [],
+      "executed": false
+    },
+    {
+      "source": "rust/tests/web/javascript-audit-inventory.test.mjs",
+      "title": "a real Git inventory failure refuses to claim that no lockfiles need auditing",
+      "passingLogLines": [],
+      "executed": false
+    },
+    {
+      "source": "rust/tests/web/javascript-audit-inventory.test.mjs",
+      "title": "partial Git inventory output cannot start audits or become a successful subset",
+      "passingLogLines": [],
+      "executed": false
+    },
+    {
+      "source": "rust/tests/web/javascript-audit-inventory.test.mjs",
+      "title": "a genuinely empty tracked lockfile inventory remains successful",
+      "passingLogLines": [],
+      "executed": false
+    },
+    {
+      "source": "experiments/issue-1580/template-python-audit-integrity.test.mjs",
+      "title": "Python pinned npm audit accepts failed or partial Git inventory as a successful audit",
+      "passingLogLines": [
+        {
+          "line": 4954,
+          "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T15:44:41.8467984Z \u2714 Python pinned npm audit accepts failed or partial Git inventory as a successful audit (43.223548ms)"
+        }
+      ],
+      "executed": true
+    },
+    {
+      "source": "experiments/issue-1580/template-python-audit-integrity.test.mjs",
+      "title": "Python candidate rejects failed and partial inventory before listing or auditing",
+      "passingLogLines": [
+        {
+          "line": 4955,
+          "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T15:44:41.8468711Z \u2714 Python candidate rejects failed and partial inventory before listing or auditing (39.178309ms)"
+        }
+      ],
+      "executed": true
+    },
+    {
+      "source": "experiments/issue-1580/template-python-audit-integrity.test.mjs",
+      "title": "Python audit retains every tracked lock, spaces, advisory failures and real empty inventory",
+      "passingLogLines": [
+        {
+          "line": 4956,
+          "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T15:44:41.8469460Z \u2714 Python audit retains every tracked lock, spaces, advisory failures and real empty inventory (106.322909ms)"
+        }
+      ],
+      "executed": true
+    },
+    {
+      "source": "experiments/issue-1580/template-python-fragment-integrity.test.mjs",
+      "title": "Python pinned manual fragment creation silently replaces an earlier same-second change",
+      "passingLogLines": [
+        {
+          "line": 4948,
+          "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T15:44:41.8462859Z \u2714 Python pinned manual fragment creation silently replaces an earlier same-second change (202.746745ms)"
+        }
+      ],
+      "executed": true
+    },
+    {
+      "source": "experiments/issue-1580/template-python-fragment-integrity.test.mjs",
+      "title": "Python candidate rejects a same-second collision and preserves the earlier bytes",
+      "passingLogLines": [
+        {
+          "line": 4949,
+          "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T15:44:41.8464168Z \u2714 Python candidate rejects a same-second collision and preserves the earlier bytes (256.485723ms)"
+        }
+      ],
+      "executed": true
+    },
+    {
+      "source": "experiments/issue-1580/template-python-fragment-integrity.test.mjs",
+      "title": "Python separate timestamps retain both descriptions before and after the guard",
+      "passingLogLines": [
+        {
+          "line": 4950,
+          "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T15:44:41.8464902Z \u2714 Python separate timestamps retain both descriptions before and after the guard (384.504211ms)"
+        }
+      ],
+      "executed": true
+    },
+    {
+      "source": "experiments/issue-1580/template-python-fragment-integrity.test.mjs",
+      "title": "Python invalid bump remains a fatal nonmutating argument error before and after the guard",
+      "passingLogLines": [
+        {
+          "line": 4951,
+          "text": "js tier (node --check over js, suite group 1)\tRun this shard of the JavaScript suites\t2026-11-17T15:44:41.8465693Z \u2714 Python invalid bump remains a fatal nonmutating argument error before and after the guard (231.704294ms)"
+        }
+      ],
+      "executed": true
+    }
+  ],
+  "allSelectedExecuted": false,
+  "nativeAcceptanceClaimed": false,
+  "authorship": "Supplied verification; zero independent Formal AI reasoning credit."
+}

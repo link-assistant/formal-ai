@@ -112,9 +112,9 @@ describe('local gate selection cannot silently verify zero gates', () => {
     });
 
   test('a misspelled gate fails before any selected gate executes', {timeout:15000}, () => {
-    const result = invoke('--only', 'run_clippy,check_file_size');
+    const result = invoke('--only', 'run_clippy,check-file-szie');
     assert.equal(result.status, 1, result.stdout + result.stderr);
-    assert.match(result.stderr, /Unknown gate name.*check_file_size/u);
+    assert.match(result.stderr, /Unknown gate name.*check-file-szie/u);
     assert.doesNotMatch(result.stdout, /SKIP|PASS|0\/0/u);
   });
 

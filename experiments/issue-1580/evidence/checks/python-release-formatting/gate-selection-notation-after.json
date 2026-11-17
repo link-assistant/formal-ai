@@ -1,0 +1,23 @@
+{
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/pull-request-1188-subagent-folder.test.mjs"
+  ],
+  "status": 0,
+  "durationSeconds": 15.26,
+  "rawSha256": "d5ad5b0dd4246df4502797963da909d81525c47d94c0ddfcb1a43d7f3c212923",
+  "log": "gate-selection-notation-after.log.gz",
+  "measuredAvailableBytes": 648855552,
+  "nodeHeapMiB": 256,
+  "initialWrapperPostCheckMistake": "The child passed 11/11, but an initial TAP-only summary assertion rejected Node's spec reporter. Full preserved output confirms zero skips without rerunning the test.",
+  "summaryConfirmed": {
+    "pass": 11,
+    "fail": 0,
+    "skip": 0
+  }
+}

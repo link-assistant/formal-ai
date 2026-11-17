@@ -21,6 +21,16 @@
       "path": "scripts/audit-npm-locks.sh",
       "gitBlob": "e4c73c9df844a08e031b786cb8fdb891ce192789",
       "sha256": "40bdae551f88431166778fa4f041a437afcf1ff73bf5b82fb59d5fe586b2a7a2"
+    },
+    {
+      "path": "scripts/format_release_notes.py",
+      "gitBlob": "8e6bdb61e4da36068e2dd931135588c46c8926f0",
+      "sha256": "1d33ffb5d87a6b9a3036231d41ff79e085fd645e8c2611fac959c23c6fd75254"
+    },
+    {
+      "path": "scripts/release_naming.py",
+      "gitBlob": "e5f7625d5cf497682cddd2efceb7f542f0e3f8b2",
+      "sha256": "108bc0396fbe767e97000b0005da91e0a60200790051bc599a12ae89724cff55"
     }
   ]
 }

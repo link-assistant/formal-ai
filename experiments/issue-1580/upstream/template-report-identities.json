@@ -61,5 +61,12 @@
     "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/157",
     "bodyFile": "python-fragment-collision-report.md",
     "evidenceCommit": "9c018344df2e6b09a0f2496897b14a002dad62f4"
+  },
+  {
+    "repository": "link-foundation/python-ai-driven-development-pipeline-template",
+    "title": "npm audit succeeds after Git fails to enumerate lockfiles",
+    "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/158",
+    "bodyFile": "python-audit-inventory-report.md",
+    "evidenceCommit": "1cc2d536ac11e26602cc55a40dffb61716233aa6"
   }
 ]

@@ -8,3 +8,4 @@ import '../../../experiments/issue-1580/template-csharp-changeset-integrity.test
 import '../../../experiments/issue-1580/template-python-fragment-integrity.test.mjs';
 import '../../../experiments/issue-1580/template-python-runtime.test.mjs';
 import '../../../experiments/issue-1580/template-python-audit-integrity.test.mjs';
+import '../../../experiments/issue-1580/template-python-release-formatting.test.mjs';
