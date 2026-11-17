@@ -13,7 +13,7 @@ fn request_constraints_and_facts_match_shared_fixtures() {
             serde_json::from_value(serde_json::json!({"messages":row["messages"]})).unwrap();
         let result = create_chat_completion(&request);
         let message = &result.choices[0].message;
-        let text = message.plain_text();
+        let text = message.content.plain_text();
         if let Some(expected) = row["answer"].as_str() {
             assert_eq!(text, expected, "{}", row["id"]);
         }
@@ -33,6 +33,16 @@ fn request_constraints_and_facts_match_shared_fixtures() {
                 row["id"]
             );
         }
+        if row["no_constraint"].as_bool() == Some(true) {
+            assert!(
+                !message
+                    .thinking_steps
+                    .iter()
+                    .any(|step| step.step == "request_constraint"),
+                "{}: operational instruction mistaken for output",
+                row["id"]
+            );
+        }
     }
 }
 
@@ -43,6 +53,7 @@ fn request_context_does_not_leak_and_responses_use_instructions() {
         assert!(
             create_chat_completion(&request).choices[0]
                 .message
+                .content
                 .plain_text()
                 .contains("Cannot satisfy language constraint")
         );
@@ -53,6 +64,7 @@ fn request_context_does_not_leak_and_responses_use_instructions() {
         assert_eq!(
             create_chat_completion(&request).choices[0]
                 .message
+                .content
                 .plain_text(),
             "2 + 2 = 4"
         );

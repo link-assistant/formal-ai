@@ -80,7 +80,7 @@ impl RequestContext {
             if !["system", "developer"].contains(&role.as_str()) {
                 continue;
             }
-            let text = message.plain_text();
+            let text = message.content.plain_text();
             for text in pattern(RULES["clauseSeparator"].as_str().unwrap()).split(&text) {
                 let text = text.trim();
                 if text.is_empty() {
@@ -324,7 +324,9 @@ impl RequestContext {
                         !comparison.is_gt()
                     }
                 }
-                "format" => Some(item.value.as_str()) == RULES["supportedFormat"].as_str(),
+                "format" => ["supportedFormat", "plainFormat"]
+                    .iter()
+                    .any(|kind| Some(item.value.as_str()) == RULES[*kind].as_str()),
                 _ => false,
             };
             item.status = if satisfied { "applied" } else { "unmet" };

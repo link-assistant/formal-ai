@@ -364,5 +364,35 @@
     ],
     "contains": "Cannot satisfy labels constraint",
     "constraint": "unmet"
+  },
+  {
+    "id": "operational-instructions-are-not-output-constraints",
+    "messages": [
+      {
+        "role": "system",
+        "content": "Use the run_in_background parameter or append & to the command. Use when a user asks to list installable skills. Keep source files in the repository."
+      },
+      {
+        "role": "user",
+        "content": "What is 2 + 2?"
+      }
+    ],
+    "answer": "2 + 2 = 4",
+    "no_constraint": true
+  },
+  {
+    "id": "response-text-delivery",
+    "messages": [
+      {
+        "role": "system",
+        "content": "Output all communication directly in your response text instead."
+      },
+      {
+        "role": "user",
+        "content": "What is 2 + 2?"
+      }
+    ],
+    "answer": "2 + 2 = 4",
+    "constraint": "format:applied"
   }
 ]

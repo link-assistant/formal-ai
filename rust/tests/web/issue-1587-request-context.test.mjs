@@ -21,6 +21,7 @@ test('issue 1587: request-local constraints and user facts', { timeout: 120000 }
     if (row.answer) assert.equal(message.content, row.answer, row.id);
     if (row.contains) assert.ok(message.content.includes(row.contains), `${row.id}: ${message.content}`);
     if (row.constraint) assert.ok(message.thinking_steps.some(step => step.step === 'request_constraint' && step.detail.includes(row.constraint)), `${row.id}: missing constraint trace`);
+    if (row.no_constraint) assert.ok(!message.thinking_steps.some(step => step.step === 'request_constraint'), `${row.id}: operational instruction mistaken for output`);
     if (row.fact) assert.ok(message.thinking_steps.some(step => step.step === 'request_fact'), `${row.id}: missing fact provenance`);
   }
 });

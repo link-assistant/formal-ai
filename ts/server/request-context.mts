@@ -135,7 +135,7 @@ export function composeRequestAnswer(messages, symbolic) {
       const comparison = compareDecimals(String(length), count);
       satisfied = mode === 'exactly' ? comparison === 0 : comparison <= 0;
     }
-    if (item.kind === 'format') satisfied = item.value === rules.supportedFormat;
+    if (item.kind === 'format') satisfied = [rules.supportedFormat, rules.plainFormat].includes(item.value);
     item.status = satisfied ? 'applied' : 'unmet';
     if (!satisfied) unmet.push(item);
   }

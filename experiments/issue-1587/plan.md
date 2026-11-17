@@ -9,12 +9,12 @@ Requirements and verification:
 - [x] Formalize every system/developer message as request-local constraints with message provenance.
 - [x] Keep earlier user statements as dialogue facts; last user message remains the task.
 - [x] Apply language and format, label and length constraints, or explicitly name unmet constraints.
-- [x] All four original examples plus held-out variants pass exact-answer JavaScript regressions (24 fixtures).
+- [x] All four original examples plus held-out variants pass exact-answer JavaScript regressions (26 fixtures).
 - [x] thinking_steps exposes constraints and their disposition.
 - [x] Preserve issue 1559 isolation under repeated and concurrent JavaScript requests.
 - [x] Add JavaScript and Rust tests using a shared fixture; regenerate TypeScript.
 - [ ] Verify native execution: blocked by the existing main-only native-test policy; do not merge to obtain evidence.
-- [ ] Update release fragment, case study and PR description; review full diff.
+- [x] Update release fragment, case study and PR description; review full diff.
 - [ ] Collect current-head CI failures, fix the complete batch, check local gates, push once per round.
 - [ ] Verify current-head CI and clean status; mark PR ready.
 
@@ -34,3 +34,12 @@ corrected and its gate rechecked successfully. Only the dependency audit remains
 red. The eight-unit reasoning inventory produced 1/8 attempts (12.5%) and 0/8
 independently accepted units (0%). Implementation and verification evidence were
 committed before pushing; native tests and green current-head CI remain pending.
+
+First pushed head `7c4475934`: 19 workflows passed; Layered CI reported six
+existing client/session assertions broken by operational cues or response-text delivery, and
+the native type check reported two E0599 calls on ChatMessage. Full logs were
+downloaded and the complete failure batch was fixed before another push. The
+shared fixture now also excludes operational tool-use instructions. The full local run completed 137/138 passes or explicit skips, with only the
+unchanged dependency audit failing. Client latency (3/3) and adapter sessions
+(6/6) pass. Response-text delivery is now supported; final 26-fixture and
+cited-program rechecks pass (4/4 and 3/3) before the next commit.

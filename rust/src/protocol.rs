@@ -676,7 +676,7 @@ fn chat_completion_from_plan(
                 &answer,
                 applied_amendment_steps(prompt, memory_events),
             );
-            let completion_tokens = estimate_tokens(&message.plain_text());
+            let completion_tokens = estimate_tokens(&message.content.plain_text());
             (message, String::from("stop"), completion_tokens)
         }
     };
