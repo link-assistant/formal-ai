@@ -75,6 +75,8 @@ roles
     kind predicate
   calculator_tool_name
     kind predicate
+  calendar-date-offset
+    kind meaning
   calendar_day_reference
     kind predicate
   calendar_direction_next

@@ -289,6 +289,7 @@ mod issue_1188_dependency_summarization;
 mod issue_1188_round_trip_translation;
 mod issue_1188_self_translation_corpus;
 mod issue_1188_web_formalization;
+mod issue_1588_intent_spans;
 mod issue_483_small_model_fallback;
 mod issue_491_least_action;
 mod issue_668_associative_package_sharing;

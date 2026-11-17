@@ -1,7 +1,7 @@
 {
   "readerSha256": "861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
-  "previousWitnessSha256": "3e384770ca9427c5ebb90e5aabc4358987399775b672dae4b00b9a0907c4772b",
-  "refreshedWitnessSha256": "5e4034a4cd4d74e159299ecd083e1e0130872984da3cf992c4db472598299762",
+  "previousWitnessSha256": "959b9feb7141886582cbb0f21391e17ced3cd3d559e990e50702585ca0d1fbe8",
+  "refreshedWitnessSha256": "5a6cefd53d65d4fd1d8e03e64c2fe4e691bc88e922af835accdecccb1bae410f",
   "completeInventoryUnchanged": true,
   "cases": 221,
   "sourceManifestChanges": [
