@@ -99,3 +99,10 @@ main-run 43815999666
       failed "compound_courtesy_and_question_are_answered_in_source_order: Redis是什么？ remained unknown"
       check rust/tests/web/issue-1580-production-composition.test.mjs
       marker "concept queries trim terminal punctuation"
+main-run 44117975432
+  javascript-twin
+    regression calendar-clock-punctuation
+      introduced-by "clock normalization during request-span recognition (observed on main 512ce428)"
+      failed "meeting participant/time/Georgia and Tbilisi scheduling fell through after normalized clock punctuation disappeared"
+      check rust/tests/web/calendar-clock-preservation.test.mjs
+      marker "calendar preserves the clock in"

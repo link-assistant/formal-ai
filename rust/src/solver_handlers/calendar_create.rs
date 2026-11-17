@@ -98,7 +98,10 @@ pub fn try_routed_calendar_create_event(
             (target.year, target.month, target.day)
         },
     );
-    let (hour, minute) = extract_clock_time(normalized).unwrap_or((17, 0));
+    // Clock punctuation belongs to the request span; normalization erases it.
+    let (hour, minute) = extract_clock_time(span)
+        .or_else(|| extract_clock_time(normalized))
+        .unwrap_or((17, 0));
     let place = resolve_timezone(normalized);
     let tz = place.as_ref().map_or("UTC", |place| place.zone.as_str());
     log.append(
@@ -181,7 +184,7 @@ pub fn calendar_claims(normalized: &str) -> bool {
     mentions_calendar_create_request(normalized)
 }
 
-fn has_calendar_anchor(normalized: &str) -> bool {
+fn has_calendar_anchor(span: &str, normalized: &str) -> bool {
     let lex = lexicon();
     let has_day_ref = lex
         .words_for_role(ROLE_CALENDAR_DAY_REFERENCE)
@@ -191,6 +194,7 @@ fn has_calendar_anchor(normalized: &str) -> bool {
         .words_for_role(ROLE_CALENDAR_TIME)
         .iter()
         .any(|w| contains_term(normalized, w))
+        || extract_clock_time(span).is_some()
         || extract_clock_time(normalized).is_some();
     let has_relative_date = lex
         .words_for_role(ROLE_CALENDAR_RELATIVE_DATE)
@@ -223,7 +227,7 @@ fn calendar_request_span(text: &str) -> Option<&str> {
     let mut candidates = Vec::new();
     for clause in super::unit_conversion::request::request_clauses(text) {
         let normalized = crate::engine::normalize_prompt(clause);
-        if !has_calendar_anchor(&normalized) {
+        if !has_calendar_anchor(clause, &normalized) {
             continue;
         }
         let mut request = clause;
@@ -286,7 +290,9 @@ fn calendar_request_span(text: &str) -> Option<&str> {
             }
         });
         let elliptical = courtesy
-            && extract_clock_time(&normalized).is_some()
+            && extract_clock_time(clause)
+                .or_else(|| extract_clock_time(&normalized))
+                .is_some()
             && resolve_timezone(&normalized).is_some()
             && extract_participant_title(&normalized).is_some();
         if action || elliptical {
@@ -404,7 +410,7 @@ fn extract_clock_time(normalized: &str) -> Option<(u32, u32)> {
         if bytes[i].is_ascii_digit() && bytes[i + 1].is_ascii_digit() {
             let h1 = u32::from(bytes[i] - b'0');
             let h2 = u32::from(bytes[i + 1] - b'0');
-            let mut hour = h1 * 10 + h2;
+            let hour = h1 * 10 + h2;
             let mut j = i + 2;
             if j < bytes.len() && (bytes[j] == b':' || bytes[j] == b'.') {
                 j += 1;
@@ -414,12 +420,6 @@ fn extract_clock_time(normalized: &str) -> Option<(u32, u32)> {
                 let m2 = u32::from(bytes[j + 1] - b'0');
                 let minute = m1 * 10 + m2;
                 if hour <= 23 && minute <= 59 {
-                    if hour == 0 {
-                        hour = 24; // treat 00:xx as end of previous day? keep as 0 for simplicity
-                    }
-                    if hour == 24 {
-                        hour = 0;
-                    }
                     return Some((hour, minute));
                 }
             }

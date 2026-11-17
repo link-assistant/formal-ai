@@ -1,0 +1,100 @@
+[
+  {
+    "name": "clock-noops-tests",
+    "status": 0,
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/calendar-clock-preservation.test.mjs"
+    ],
+    "durationSeconds": 13.546,
+    "rawSha256": "c1ed2925cead0a7a66b15ff616bb891b7c586246a1c0cbb47fa9d51290e35eb3"
+  },
+  {
+    "name": "clock-noops-format",
+    "status": 0,
+    "command": [
+      "rustfmt",
+      "--check",
+      "--edition",
+      "2024",
+      "rust/src/solver_handlers/calendar_create.rs"
+    ],
+    "durationSeconds": 0.131,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "clock-noops-projection",
+    "status": 0,
+    "command": [
+      "node",
+      "scripts/translate-js-rust.mjs",
+      "--verify"
+    ],
+    "durationSeconds": 3.009,
+    "rawSha256": "7a44218f3d7dd40e7ae45c9d998c4caf19db0b73557ff7e987dd6de32b597261"
+  },
+  {
+    "name": "check-minimal-core-boundary-js-twin-recheck",
+    "status": 0,
+    "command": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-minimal-core-boundary-js-twin"
+    ],
+    "durationSeconds": 2.07,
+    "rawSha256": "7ed9e43754eeef956bd941c793b0f42eeb01a13eee5285935461543e0f8d8a81"
+  },
+  {
+    "name": "check-minimal-core-boundary-recheck",
+    "status": 0,
+    "command": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-minimal-core-boundary"
+    ],
+    "durationSeconds": 2.31,
+    "rawSha256": "30a2a0c0e2e6bc81202678fe9c3a0b44b88145d04d8d9bcd6223c377f0d55484"
+  },
+  {
+    "name": "check-worker-line-budget-js-twin-recheck",
+    "status": 0,
+    "command": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-worker-line-budget-js-twin"
+    ],
+    "durationSeconds": 1.885,
+    "rawSha256": "55ca2e62d7308d39405f309519ffe413251b89f5f5cef466961e5864019b3560"
+  },
+  {
+    "name": "check-worker-line-budget-recheck",
+    "status": 0,
+    "command": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-worker-line-budget"
+    ],
+    "durationSeconds": 2.032,
+    "rawSha256": "3f536aeb6a50c88d41b91312bd939e15f964d79cb9bb6d97ad7c4826c49d8dc8"
+  },
+  {
+    "name": "lint-shell-scripts-recheck",
+    "status": 0,
+    "command": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "lint-shell-scripts"
+    ],
+    "durationSeconds": 9.043,
+    "rawSha256": "a6e952ac3208a2973d2698ad382d503fda8d76def5a22c694243f208fba359d8"
+  }
+]
