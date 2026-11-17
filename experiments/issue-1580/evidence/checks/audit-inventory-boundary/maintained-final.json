@@ -1,0 +1,15 @@
+{
+  "command": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=96",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/issue-1580-template-observations.test.mjs"
+  ],
+  "status": 0,
+  "durationSeconds": 33.956,
+  "log": "maintained-final.log.gz",
+  "rawSha256": "12ef1dd6fef9b0eeb2b2d25bb3466337e03de451a744482998704e614f64fc40"
+}

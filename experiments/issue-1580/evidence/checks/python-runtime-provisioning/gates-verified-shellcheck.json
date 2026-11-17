@@ -1,0 +1,17 @@
+{
+  "command": [
+    "node",
+    "experiments/formal_ai_subagent/local-gates.mjs",
+    "--only",
+    "lint-shell-scripts"
+  ],
+  "exitCode": 0,
+  "release": "https://github.com/koalaman/shellcheck/releases/tag/v0.11.0",
+  "version": "0.11.0",
+  "archiveSha256": "8c3be12b05d5c177a04c29e3c78ce89ac86f1595681cab149b65b97c4e227198",
+  "binarySha256": "4da528ddb3a4d1b7b24a59d4e16eb2f5fd960f4bd9a3708a15baddbdf1d5a55b",
+  "existingVerifiedBinaryReused": true,
+  "log": "experiments/issue-1580/evidence/checks/python-runtime-provisioning/gates-verified-shellcheck.log.gz",
+  "uncompressedSha256": "622e47228a8aa8b128317e9a3a78895422e50b6a2ab18af18e59aa7097380ed1",
+  "originalMissingToolFailureRetained": true
+}

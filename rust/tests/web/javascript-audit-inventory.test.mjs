@@ -113,3 +113,48 @@ test('persistent request timeouts never substitute a clean audit verdict',()=>{
   for(const lock of inventory)assert(result.stderr.includes(
     `::error title=advisory registry unreachable for ${lock}::`));
 });
+
+function inventoryBoundary(t,{partial=false,emptyRepository=false}={}) {
+  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'formal-ai-audit-git-boundary-'));
+  t.after(()=>fs.rmSync(directory,{recursive:true,force:true}));
+  const bin=path.join(directory,'bin');fs.mkdirSync(bin);
+  const calls=path.join(directory,'calls');
+  const env={...process.env,PATH:bin+path.delimiter+process.env.PATH,FAKE_AUDIT_CALLS:calls};
+  for(const name of ['GIT_DIR','GIT_COMMON_DIR','GIT_INDEX_FILE','GIT_WORK_TREE'])delete env[name];
+  for(const tool of ['bun','npm'])fs.writeFileSync(path.join(bin,tool),
+    '#!/usr/bin/env bash\nprintf "%s\\n" "$0 $*" >> "$FAKE_AUDIT_CALLS"\nexit 0\n',{mode:0o755});
+  if(partial){
+    fs.writeFileSync(path.join(directory,'bun.lock'),'fixture');
+    fs.writeFileSync(path.join(directory,'package-lock.json'),'{}');
+    fs.writeFileSync(path.join(bin,'git'),
+      '#!/usr/bin/env bash\nprintf "bun.lock\\npackage-lock.json\\n"\necho "fatal: incomplete fixture inventory" >&2\nexit 128\n',{mode:0o755});
+  }else if(emptyRepository){
+    const initialized=spawnSync('git',['init','--quiet'],{cwd:directory,env,encoding:'utf8',timeout:5000,maxBuffer:65536});
+    assert.ifError(initialized.error);assert.equal(initialized.status,0,initialized.stderr);
+  }
+  const result=spawnSync('bash',[path.join(root,'scripts/check-javascript-dependencies.sh')],{
+    cwd:directory,env,encoding:'utf8',timeout:5000,maxBuffer:65536});
+  assert.ifError(result.error);assert.equal(result.signal,null);
+  return {...result,calls:fs.existsSync(calls)?fs.readFileSync(calls,'utf8'):''};
+}
+
+test('a real Git inventory failure refuses to claim that no lockfiles need auditing',{timeout:10000},t=>{
+  const result=inventoryBoundary(t);
+  assert.equal(result.status,128,result.stdout+result.stderr);
+  assert.match(result.stderr,/fatal: not a git repository/u);
+  assert.equal(result.calls,'');
+});
+
+test('partial Git inventory output cannot start audits or become a successful subset',{timeout:10000},t=>{
+  const result=inventoryBoundary(t,{partial:true});
+  assert.equal(result.status,128,result.stdout+result.stderr);
+  assert.match(result.stderr,/fatal: incomplete fixture inventory/u);
+  assert.equal(result.calls,'','inventory must succeed before any audit is started');
+  assert.doesNotMatch(result.stdout,/^Auditing /mu);
+});
+
+test('a genuinely empty tracked lockfile inventory remains successful',{timeout:10000},t=>{
+  const result=inventoryBoundary(t,{emptyRepository:true});
+  assert.equal(result.status,0,result.stderr);
+  assert.equal(result.calls,'');
+});

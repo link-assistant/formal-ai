@@ -1,0 +1,12 @@
+{
+  "command": [
+    "node",
+    "experiments/formal_ai_subagent/local-gates.mjs",
+    "--only",
+    "check-abbreviations"
+  ],
+  "exitCode": 0,
+  "log": "gates-abbreviations.log.gz",
+  "rawSha256": "90fb1651bb79fec9ad5229fcf885c3a0833ea376fce79e1724640842742fea97",
+  "offlineAuditStandIns": false
+}

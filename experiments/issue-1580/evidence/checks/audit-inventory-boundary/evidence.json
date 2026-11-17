@@ -1,0 +1,91 @@
+{
+  "upstreamRepository": "link-foundation/python-ai-driven-development-pipeline-template",
+  "upstreamCommit": "c532c173801dfb12e681b0730c4abbf93aefd0ca",
+  "upstreamGitBlob": "e4c73c9df844a08e031b786cb8fdb891ce192789",
+  "upstreamSha256": "40bdae551f88431166778fa4f041a437afcf1ff73bf5b82fb59d5fe586b2a7a2",
+  "ownChangedSource": "scripts/check-javascript-dependencies.sh",
+  "ownChangedSha256": "d20b896c5c2847e6de315707adbf9f86a5ae08c27d4563e9b749a321ccae0124",
+  "logs": [
+    {
+      "file": "gates-abbreviations.log.gz",
+      "rawSha256": "90fb1651bb79fec9ad5229fcf885c3a0833ea376fce79e1724640842742fea97",
+      "compressedSha256": "7892ea0565aa749224324c1acc040f3264a897a9cfba3c86f1af9dde35a9ac56",
+      "bytes": 67
+    },
+    {
+      "file": "gates-basic.log.gz",
+      "rawSha256": "bebd08b4331fd5f6217bf3fc9799e970427542256b9306c0638476ce36110e59",
+      "compressedSha256": "aa524cc02730e5e40b265264242ec4fd5ec3805eab30ce1836b92d8da85393b4",
+      "bytes": 217
+    },
+    {
+      "file": "gates-dependency-details.log.gz",
+      "rawSha256": "4e6a1111225b43a1424bbce64f6316624e7576943249528eea735a4a4cec356c",
+      "compressedSha256": "3445503a1028276cbc1b62601f9bde1f37d3ec134ab498229f424f582cbe0b8b",
+      "bytes": 2508
+    },
+    {
+      "file": "gates-dependency.log.gz",
+      "rawSha256": "8f69a543a1f2b6c7582a61bbadef9120fc91c3f38ca9093ffc212a9e7b3499a4",
+      "compressedSha256": "36c5cd7c679661c4aec40600f6b661a7aaca82420ebef7c656c55ec38959a88d",
+      "bytes": 77
+    },
+    {
+      "file": "gates-readable.log.gz",
+      "rawSha256": "cb40ab4123f5ae6622ab87e75506275909d673f83033dcede8afce11981b1603",
+      "compressedSha256": "7b2beda3147daa7c429dda0630c39e8dd51fe4b7899c4c9ffd97d4f968e178df",
+      "bytes": 68
+    },
+    {
+      "file": "gates-workflow.log.gz",
+      "rawSha256": "1b6c5a3605a982161ee962cfe05b017dcda6994463165258101ad16dbc54dd32",
+      "compressedSha256": "47297197843c23726627d3e4daf1d789d3699b6d0d14acd42cffac28446aeef2",
+      "bytes": 121
+    },
+    {
+      "file": "initial-abbreviation-details.log.gz",
+      "rawSha256": "fec274dcf0a8f6effd05b3180ab88af3badcedd41c2c887af0b5fe0e66a6533e",
+      "compressedSha256": "27d0588efba84179f45465d052fd674ecd10ca0874ebb84067ada1550f7e62fe",
+      "bytes": 423
+    },
+    {
+      "file": "maintained-final.log.gz",
+      "rawSha256": "12ef1dd6fef9b0eeb2b2d25bb3466337e03de451a744482998704e614f64fc40",
+      "compressedSha256": "5267adf2ebe99d20e9d69c00b5a8e0d61fc59f9d13bfaceb93e00d66cc176cdf",
+      "bytes": 3563
+    },
+    {
+      "file": "own-after.log.gz",
+      "rawSha256": "53238fa9d276015e3dfaa8e9bb1454ec80003d80ff82baf15d9256d9a354f7d0",
+      "compressedSha256": "37679656c307cd3bd2e9f654367a04f1bce137cb0fae14b44291c12c579d2b8c",
+      "bytes": 1026
+    },
+    {
+      "file": "own-before.log.gz",
+      "rawSha256": "f2122412b95028ec0cec54bf00a318330e4b958aa5fc81ba7b8211e25ee34188",
+      "compressedSha256": "3967aa4c19ead6f1e1f48932f0c207c30c8b5cbdcab5e023d254498f8e01e49b",
+      "bytes": 3473
+    },
+    {
+      "file": "own-final.log.gz",
+      "rawSha256": "f45f1c8da0285854e1ec72acd6e21ac1ab66174f7e6336153b7fabc4fc6ab284",
+      "compressedSha256": "e9083134d609ece80dc9c58acdb97002154c95d3a1bc3fd7776686dee6edd784",
+      "bytes": 1021
+    },
+    {
+      "file": "python-after.log.gz",
+      "rawSha256": "337a1cab9dd89b7ce2fb29d2f21276573c4eb9491f11e6b9b262b16a6e502ffa",
+      "compressedSha256": "616fadc4ce442a5a3f81dd000b8c7dc71ffb1f190a2141721654b5f71e0f4330",
+      "bytes": 431
+    },
+    {
+      "file": "python-before.log.gz",
+      "rawSha256": "0962016e964c9c025531aab69325a3b893d974d83e99d0a5f9fa867e320de90c",
+      "compressedSha256": "48d05a09411d0213ac63259ad545fab0d0bb251d4d86ce06426ebb2778102d0b",
+      "bytes": 1470
+    }
+  ],
+  "authorship": "Externally supplied bootstrap; zero independent Formal AI authorship. Frozen 20-unit reasoning audit remains 0/20 accepted.",
+  "limits": "No dependency installation, registry audit, Rust compilation, app build, Docker build or provider release performed. Upstream source is unchanged; suggested guard only executes in a disposable fixture. Report is drafted and not yet filed.",
+  "verification": "Focused own audit 10/10, pinned Python observation 3/3, maintained observations 34/34 with no skips. Relevant readability, abbreviation, size, runner, CI-speed and shell gates pass. The registered dependency gate passes with offline npm/Bun stand-ins against every real tracked lockfile, not a claim about live vulnerabilities. Initial abbreviation gate failed on feedback-pr-comments.json.gz; it was renamed feedback-pull-request-comments.json.gz without changing the ratchet."
+}

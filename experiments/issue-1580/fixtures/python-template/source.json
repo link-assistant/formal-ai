@@ -16,6 +16,11 @@
       "path": "scripts/create_manual_changeset.py",
       "gitBlob": "24f4c2b023e08ebb9397c497f2a12f95dd88a93e",
       "sha256": "69dff7dae4675f4ae2573761be12b72930c6cdc947d9e7d0aa0ea442fcc5e9f2"
+    },
+    {
+      "path": "scripts/audit-npm-locks.sh",
+      "gitBlob": "e4c73c9df844a08e031b786cb8fdb891ce192789",
+      "sha256": "40bdae551f88431166778fa4f041a437afcf1ff73bf5b82fb59d5fe586b2a7a2"
     }
   ]
 }
