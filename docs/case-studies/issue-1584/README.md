@@ -7,18 +7,22 @@ are available experimentally; strict CNL rendering is not established.
 
 ## Reproduction and evidence
 
-Run the commands in the experiment README. The final local gate run recorded
-86 passes, 52 CI-only skips and no failures. Focused tests recorded 10 output,
-3 request-local HTTP and 7 existing server test passes. Rust execution remains
-unverified pending CI. Generated registry formatting differs from rustfmt by
+Run the commands in the experiment README. Local verification covered 86 passing gates and 52 CI-only skips, including
+a targeted retry after restoring ShellCheck on PATH. The PR case study retains
+the failed full inventory and successful retry. Focused tests recorded 11 output,
+3 request-local HTTP and 7 existing server test passes. Native behavior and WASM parity remain
+unverified; prior repair head `778a3a00c` passed the native type-and-lint job. Generated registry formatting differs from rustfmt by
 generator design; handwritten changed Rust passed the focused format check.
 
 The [bounded raw evidence archive](raw-data/development.tar.gz) includes exact
 requests, full captured tool responses, failed attempts, diffs, commands, logs,
 and 880 finite projection records. The manifest records the archive cutoff.
-Only 2 projection cases have all requested constraints checked and passing.
-The other cases report violations or missing validators; lexical identity
-retention is not independent semantic validation. Supplied edits and commands
+The initial capture reported two E-Prime cases as compliant. Those reports
+are withdrawn: they lacked independent evidence. The lexical filter also did
+not cover archaic contractions. A
+reproducing regression and the repair are recorded in the PR case study. The
+new 880-case capture reports no compliant cases without independent checkers.
+Lexical identity retention is not independent semantic validation. Supplied edits and commands
 earn zero autonomous authorship credit: 8 frozen units, 0 independently accepted.
 
 ## Requirement conflict

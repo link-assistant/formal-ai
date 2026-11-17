@@ -38,3 +38,8 @@ drafted; strict standard realization, semantic decomposition, candidate CNL
 clarification, and broad native/WASM parity remain unfinished. See README.md.
 Frozen reasoning units: 8; independently accepted: 0/8 (0%). Supplied
 conclusions and supplied commands are not independent reasoning or authorship.
+
+The second CI repair batch regenerates stale TypeScript projections and fixes
+a reproduced E-Prime false certificate. Reproduction and exact failed logs are
+retained in the PR case study. The explicit ES currency check complements the
+138-selector local gate inventory. All seven acceptance criteria remain open.

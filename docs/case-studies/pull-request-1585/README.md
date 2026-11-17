@@ -70,3 +70,38 @@ to the PR checks for its exact SHA, not to the earlier run.
 
 Supplied instructions and scripts count as zero accepted reasoning/authorship
 units. The frozen inventory remains 8 units, 0 independently accepted.
+
+## Second implementation CI round
+
+Repair head `778a3a00c` completed 25 workflows: 23 succeeded, one skipped and
+one failed. The native type-and-lint job and Security passed.
+[Layered CI 44106197325](https://github.com/link-assistant/formal-ai/actions/runs/44106197325)
+passed both JavaScript shards but failed TypeScript currency. Log lines
+7504–7506 name the three stale generated worker files. The first repair missed
+the ES projection. The maintained ES generator refreshed them; its check now
+compares all 720 generated files. The reusable repair verifier explicitly runs
+ES currency as well as the full gate set.
+
+Final review separately reproduced a false E-Prime certificate for “’Tis
+ready.” The old validator skipped its independent English checker after a
+finite forbidden-word filter. Both JavaScript and native code now require that
+checker. The new regression fails before the repair; it also checks explicit
+positive and negative independent evidence. The old matrix’s two certificates
+are withdrawn. New bounded captures contain no compliance certificates without
+independent checkers; declared lexical identity is unchanged. Native test
+assertions were strengthened, but native behavior remains unverified.
+
+[Second-round evidence](raw-data/ci-round-two.tar.gz) and its
+[manifest](raw-data/ci-round-two.manifest.json) retain the complete failed log,
+before/after regression results, projection records and repair traces. The
+archive cutoff precedes CI for this repair batch.
+
+The latest full inventory passed 85 gates, skipped 52 CI-only gates and failed
+only ShellCheck lookup on PATH. A targeted retry passed with the existing
+ShellCheck binary available. The earlier inventory failed worker projection
+currency; maintained worker and ES generation repaired that drift. Both failed
+inventories and the successful retry are retained. All 86 runnable gates passed
+across the final inventory and environment retry. Nine focused files passed
+83 tests; the HTTP file passed again with an assertion that the public response
+reports missing independent E-Prime evidence. ES currency and handwritten Rust
+format checks also passed. No native behavior or WASM execution is claimed.

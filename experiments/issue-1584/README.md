@@ -12,7 +12,7 @@ arguments, quoted input, and opaque spans retain their original bytes.
 
 ## What the current checks demonstrate
 
-- Ten focused JavaScript tests exercise option validation, independent mode
+- Eleven focused JavaScript tests exercise option validation, independent mode
   switching, Unicode word counting, opaque input, and declared equivalence.
 - Three HTTP tests cover request-local overrides, invalid configuration, SSE
   metadata, and rewrite handling before tool planning. Seven existing server
@@ -26,6 +26,8 @@ arguments, quoted input, and opaque spans retain their original bytes.
 - Real browser checks cover persisted settings and a rewrite turn. Screenshots
   are in `docs/screenshots/issue-1584/`. The browser and preview server were
   closed after verification. These screenshots do not prove vocabulary limits.
+
+The [detailed requirement-to-evidence table](acceptance.md) retains the prose requirements.
 
 ## Acceptance inventory
 
@@ -61,15 +63,17 @@ Run each file separately, as required by AGENTS.md:
 timeout 600 node --test --test-concurrency=1 rust/tests/web/cnl-output.test.mjs
 timeout 600 node --test --test-concurrency=1 experiments/issue-1584/server.test.mjs
 timeout 600 node --test --test-concurrency=1 rust/tests/web/server.test.mjs
+node scripts/translate-es.mjs --check
 node scripts/translate-js-rust.mjs --verify
 node experiments/formal_ai_subagent/local-gates.mjs
 ```
 
 The shared policy and seed registries require the full local gate set. Skipped
 CI-only Rust gates must not be counted as locally passed. The generated JS-to-
-Rust fixture contains carried source and refused constructs: its generation
-exits nonzero, while source currency verification passes. The native module is
-a supplied manual port; automatic translation and runtime parity are unproven.
+Rust fixture contains carried source and refused constructs. The latest
+generation and currency checks exit zero while reporting 49 refused modules;
+that status does not establish executable translation. The native module is a
+supplied manual port; automatic translation and runtime parity are unproven.
 
 ## Development provenance
 
@@ -89,17 +93,25 @@ installations, caches and binaries are excluded from the archive.
 
 ## Captured verification
 
-The final full gate run recorded 86 passes, 52 CI-only skips and no failures.
-`capture-projections.mjs` records 880 bounded projections: 0 changes to the
-declared lexical identity, 2 cases with all requested checks passing, and
-878 cases with violations or missing validators. It is not the full issue
-matrix and does not independently validate general semantics.
+The first repair full gate run recorded 86 passes, 52 CI-only skips and no failures.
+The latest inventory passed 85 gates and skipped 52; its ShellCheck PATH failure
+passed a targeted retry with the existing binary available. All 86 runnable gates
+therefore passed on the repaired source. The preceding stale-worker failure was
+fixed with the maintained generator. The nine focused files passed 83 tests; the
+HTTP file passed again after adding the public E-Prime evidence assertion.
+The initial 880 bounded projections retained their declared lexical identity,
+but two E-Prime compliance certificates lacked independent evidence. The
+finite forbidden-word filter also omitted archaic elisions. A reproducing regression failed on
+“’Tis ready.” The JavaScript and native validators now require independent
+E-Prime evidence. The two earlier certificates are withdrawn. The new capture
+contains 880 cases with violations or missing validators and no compliant
+cases. Neither capture is the full issue matrix or independent semantic proof.
 
 The [issue case study](../../docs/case-studies/issue-1584/README.md) contains
 the bounded raw archive and SHA-256 inventory. The separate
 [PR case study](../../docs/case-studies/pull-request-1585/README.md) records CI.
 
-The repair batch passed 82 focused tests across nine files, including procedure
+The first repair batch passed 82 focused tests across nine files, including procedure
 execution, streaming/JSON report consistency, source-witness integrity, module
 mapping, runtime inventory drift, and the audit wrapper.
 
