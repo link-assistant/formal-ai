@@ -17,4 +17,4 @@ The regression injects lookup and tag-verification results through the checker's
 
 Executable evidence is in link-assistant/formal-ai PR #1581: `experiments/issue-1580/template-go-result-integrity.test.mjs`, case `Go stale-pin integrity failures become warnings; independent verification preserves failures`. The adjacent fixture retains the original license and source hashes. Run `node --test --test-concurrency=1 experiments/issue-1580/template-go-result-integrity.test.mjs` in that checkout. Its five cases pass locally; the maintained fast-PR entrypoint also passes eleven cases without skips. The complete log/hash index is `experiments/issue-1580/evidence/checks/go-pin-integrity.json`.
 
-Permanent evidence commit/link will be added before filing this report. No upstream fix is claimed.
+Immutable regression evidence: https://github.com/link-assistant/formal-ai/blob/a4053def4bd4b921001fdf84a026ae35deebfc39/experiments/issue-1580/template-go-result-integrity.test.mjs (file only after this commit is published) this report. No upstream fix is claimed.

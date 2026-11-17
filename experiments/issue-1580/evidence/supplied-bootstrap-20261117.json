@@ -1,11 +1,26 @@
 {
   "autonomousAuthorshipCredit": 0,
-  "archiveSha256": "b7cff4a50d71431d9ba93116325f1ed1d621945d3bdf1b0dc8bdc5924d805833",
+  "archiveSha256": "96cd4693186f5c0f3a0d0a62e1b305fc52ad2bf4f5d10e14d2870fcc910d724f",
   "files": [
+    {
+      "file": "add-cache-budget-integration.py",
+      "bytes": 1941,
+      "sha256": "0e2d2ce8371894d80d861978e3a08510014d46530e56a73b9a3935fe5881b990"
+    },
+    {
+      "file": "add-cache-log-regression.py",
+      "bytes": 2630,
+      "sha256": "ee00bb18457f5869462c95996f5a018b3c4a117e7f68697f544f18635b6b5a54"
+    },
     {
       "file": "add-composition-tests.py",
       "bytes": 2107,
       "sha256": "3d462a19f44a0dca5dad457414d72d2425a085f76fbdfbd7d0dfdac2b3826c6f"
+    },
+    {
+      "file": "add-go-pin-integrity-probe.py",
+      "bytes": 3798,
+      "sha256": "6e7259b3752cdf32f4b78910c14237e3adcf53967e5dd371cb21d4aaeb738dee"
     },
     {
       "file": "add-shared-detector-regressions.py",
@@ -38,6 +53,11 @@
       "sha256": "99acc6bbd25dd96af48a083b1a81382c7f176ae210deba4831cde219f2b35d3d"
     },
     {
+      "file": "archive-seventh-round.py",
+      "bytes": 3466,
+      "sha256": "c40c1f016e1c9720f9117ddec42d5117372f9f9f8c7d5186232834ad540e6986"
+    },
+    {
       "file": "audit-ci.py",
       "bytes": 3806,
       "sha256": "0876cd00f81fe1f8af751ad41d941f900c6a156c2ba7f944221805bbb8eaf118"
@@ -53,14 +73,29 @@
       "sha256": "6f54bb80aef6045a93b3fcf798aebc86eac188da60e994ee1d57977d0744ae66"
     },
     {
+      "file": "cache-diagnostic-context.sh",
+      "bytes": 270,
+      "sha256": "b40019f9928201189c4f389f218a1b5deb18fc2467df670146071db05f4870ac"
+    },
+    {
       "file": "cache-diagnostics-context.sh",
       "bytes": 451,
       "sha256": "334e274362f7752b5904f75ccb4438f2ba7d583ff21ba9f64d3b38910f31ce0a"
     },
     {
+      "file": "cache-gates.sh",
+      "bytes": 485,
+      "sha256": "486c903104c021aefb0c91d1fc0d0d8e7eb4e93a6e22a67f9c68630c2413510f"
+    },
+    {
       "file": "cache-reporting-tests.mjs",
       "bytes": 2252,
       "sha256": "8f275e03872db8239f24c490d08b5a1b8eea03a48194cf84a0edb03d65ccb51f"
+    },
+    {
+      "file": "cache-touched-gates.sh",
+      "bytes": 357,
+      "sha256": "545621d8838364f1b4e69ce1a548c1bd052e30fd96fe8f0bcc480de00e0eb4ed"
     },
     {
       "file": "capture-round.py",
@@ -71,6 +106,11 @@
       "file": "check-chrono-upstream.py",
       "bytes": 670,
       "sha256": "d2aca63fb70a14efd63f4b2adf8ee9230d87e4992e69284cf8f463de5444ae46"
+    },
+    {
+      "file": "check-go-review-gates.sh",
+      "bytes": 263,
+      "sha256": "57a51166d20cc9b924b20a898cc6f4631e222dfbf43b868244185cfdfde6c604"
     },
     {
       "file": "check-latest-time-dependencies.py",
@@ -86,6 +126,11 @@
       "file": "check-template-duplicates.py",
       "bytes": 873,
       "sha256": "09c44f458b291ceb453bd4528d5f8256012024328486e8883ac280f0c8ac8502"
+    },
+    {
+      "file": "check-template-entrypoint-seventh.sh",
+      "bytes": 239,
+      "sha256": "2e228cfb4e8a9cf26b4c83f92da975cddffa5685a3e237937a9995b1c7377ea6"
     },
     {
       "file": "check-template-review.sh",
@@ -108,6 +153,11 @@
       "sha256": "16612d033c5e84f3f553562993833fcd87e675b21b6db591c4285047077720e1"
     },
     {
+      "file": "commit-cache-log-fix.sh",
+      "bytes": 705,
+      "sha256": "132052af7ccd0f8e28162b080a0d77d81d405098a85e7d5c6c9e47f6adb3675d"
+    },
+    {
       "file": "commit-ci-round.sh",
       "bytes": 1321,
       "sha256": "8a2066123bcbb7d73876fa35758747b8db147a416172c50a00aa2efa99411ed1"
@@ -116,6 +166,11 @@
       "file": "commit-current-round.sh",
       "bytes": 1283,
       "sha256": "bdc430d365d32b57e63a8ae372341e60d365ae869ce236f23131100d65987d68"
+    },
+    {
+      "file": "commit-go-review.py",
+      "bytes": 1760,
+      "sha256": "4219d9aefdd6dc258316dbabb3f0aec637845a724c2c216a1ff273c0b7048db4"
     },
     {
       "file": "commit-investigation.sh",
@@ -131,6 +186,11 @@
       "file": "commit-runtime.sh",
       "bytes": 1748,
       "sha256": "e4303cb6963ab72a83e6bfb21cc14779bb94dc37950263ad8dc0725ec7581824"
+    },
+    {
+      "file": "commit-seventh-evidence.sh",
+      "bytes": 780,
+      "sha256": "79b1972e13aae887ad7be361afd1ab27b7e811e6331107558965852c80de67d6"
     },
     {
       "file": "commit-workflow-and-gates.sh",
@@ -164,8 +224,8 @@
     },
     {
       "file": "current-head-status.py",
-      "bytes": 1499,
-      "sha256": "a0fda8c73d0129198854d2a361400f9e8a43dc24f1acbb84e087a76c7de83a33"
+      "bytes": 1539,
+      "sha256": "58ac1a785565a9133f9b5d669447007c29c2f2b023683363cfee513d03dc88da"
     },
     {
       "file": "detector-twins.sh",
@@ -298,6 +358,11 @@
       "sha256": "b7780e939cf1b5ab1d086ad3a02e100280b24ee66033ff3de9101eab5ccae2a3"
     },
     {
+      "file": "fix-go-probe-url.py",
+      "bytes": 413,
+      "sha256": "e2f70e4fe405c4e3d954028bc8eba29da9d662b938d713e2e698a87136d46505"
+    },
+    {
       "file": "fix-known-checks.py",
       "bytes": 867,
       "sha256": "7f3723a2610a61ab8eb820184c3687b5cf9f71db4f1eb28e23a1ece4409330d0"
@@ -333,6 +398,11 @@
       "sha256": "75eadb539839c481035d19ebd25afcbc48ef3fc8734c06fca8ac9384bb218cad"
     },
     {
+      "file": "frame-cache-log-output.py",
+      "bytes": 1988,
+      "sha256": "4f6704be83d3e89bfd2bb490f2891d8e43b2d7c305c6dcb0808e4cd954814c3f"
+    },
+    {
       "file": "fresh-feedback-and-heads.py",
       "bytes": 980,
       "sha256": "062f0ee55ff86948680c39335aa85dbedfb31ad2e32cc2f224633862a392b3f0"
@@ -341,6 +411,11 @@
       "file": "full-template-trees.py",
       "bytes": 2125,
       "sha256": "96c78116eb79797c1f64da54328f73b10e3d89de7f705e4df6bf9d2ad48517d5"
+    },
+    {
+      "file": "go-checkpoint-context.sh",
+      "bytes": 355,
+      "sha256": "e4664f2947ce6895a90baa0ce7b2471f134f60d70274810328c7de0d8378b10f"
     },
     {
       "file": "hive-current-draft.lib.mjs",
@@ -361,6 +436,11 @@
       "file": "inspect-chrono.sh",
       "bytes": 533,
       "sha256": "54cb614eb222167e6f518931018f8e55e40fe77ec440bc3ce9eb83ae2300ee99"
+    },
+    {
+      "file": "inspect-current-queued-jobs.py",
+      "bytes": 988,
+      "sha256": "d29cfe190762184120e0c66cd41b3395043211cedd09153f389f4b8afcc2201f"
     },
     {
       "file": "inspect-evidence.py",
@@ -391,6 +471,51 @@
       "file": "inspect-round.sh",
       "bytes": 358,
       "sha256": "c8851628af433b7348c52730f88c2baefbe756c29abb6e87b57da72269e7a343"
+    },
+    {
+      "file": "inspect-run-shape.py",
+      "bytes": 160,
+      "sha256": "6bfa0a598d66c048228de4ab9fcae8513b4702f8be98283ea286069020dcf4b6"
+    },
+    {
+      "file": "inspect-small-template-closures.py",
+      "bytes": 749,
+      "sha256": "b63ee8947c8282609303087dc58d1e687ca00fb535c88d2931f7cd2cd7e07bac"
+    },
+    {
+      "file": "java-context-index.py",
+      "bytes": 671,
+      "sha256": "62d935ab8b8457391420657b2122ec1582d0a09241bf92f03fe355a97744442f"
+    },
+    {
+      "file": "java-latest-context.py",
+      "bytes": 1030,
+      "sha256": "f93ff8bf9b4fc955389b7aba99e8950afb4d7c121bb593c51f67c90366b53bdd"
+    },
+    {
+      "file": "java-pom-recover.py",
+      "bytes": 410,
+      "sha256": "28d79799975dc6de6d53b312587f727c474f757b96eb522324f5b2f8745dc758"
+    },
+    {
+      "file": "java-pom-structure.py",
+      "bytes": 1496,
+      "sha256": "ccb549cfbb72384d90b8cf3d7b1c7f29bbb198bc0bc7c7b2f9ba6d9a190894b2"
+    },
+    {
+      "file": "java-recover-page8.sh",
+      "bytes": 112,
+      "sha256": "63a0f5e81cc4ca206dcb49605b802b5a36737496df63e23c8d4aec38a2b01c9a"
+    },
+    {
+      "file": "java-review-inventory.py",
+      "bytes": 750,
+      "sha256": "65afef937c43bcfc109e2c3d3505a6f6f1a6eee8d80c84dec192a0a12b1cee5d"
+    },
+    {
+      "file": "java-review-recovery.sh",
+      "bytes": 369,
+      "sha256": "bee7738fb0821d99d1923a61dba801639b7ac3b5ed8d2cfc99c684c1242e72ae"
     },
     {
       "file": "list-checkpoint-inputs.py",
@@ -453,6 +578,11 @@
       "sha256": "ac64f820bce4977275206586a6cbaef519193e447ccb094deb86e0da9e56f908"
     },
     {
+      "file": "prepare-seventh-round.sh",
+      "bytes": 436,
+      "sha256": "2323cac654ab8c45910f15050e1e178dcc3ccbf2e2af1ed92afee4944518d691"
+    },
+    {
       "file": "prepare-shared-detector-fixtures.py",
       "bytes": 1636,
       "sha256": "94aefb2789dc6320b0d42a9b2fb02773a23cdec6d439daf1982158f117f47a1a"
@@ -466,6 +596,11 @@
       "file": "prepush-current-round.sh",
       "bytes": 1324,
       "sha256": "4ff4afb212ca20eeeda28d36c85dcd0be3312687478d3456dc3333a7db088935"
+    },
+    {
+      "file": "prepush-seventh.sh",
+      "bytes": 1093,
+      "sha256": "4b3414af1ee25188c97126c9fbf99909f97071e71eb2f3435f87ff7bbbd098dc"
     },
     {
       "file": "prepush-sixth.sh",
@@ -521,6 +656,11 @@
       "file": "read-current-fix.sh",
       "bytes": 217,
       "sha256": "55f43c3673e34349c98f1b811b0bd206a409255c98503b5e14977e4855426879"
+    },
+    {
+      "file": "read-current-plan.sh",
+      "bytes": 147,
+      "sha256": "2275749d476c4fc4307db43a853dec9108605ae449a36d51347ea9e9d9c3c6bb"
     },
     {
       "file": "read-detector-exact.sh",
@@ -618,6 +758,16 @@
       "sha256": "6a213a64282264af65bd7f23c6115bee96a1dc55eed2b34de5779c9a5d34ec9c"
     },
     {
+      "file": "read-template-ci-page.py",
+      "bytes": 1065,
+      "sha256": "ba2733be26a47c6b0b802eb4b6c18734fbeec1ba913431410e34381cd18bd72a"
+    },
+    {
+      "file": "read-template-page.py",
+      "bytes": 1011,
+      "sha256": "42cec0b4c0bce85e97a801303da48a8bdbecf4a2f87a7e083591ece0223b4331"
+    },
+    {
       "file": "read-template-policies.sh",
       "bytes": 429,
       "sha256": "0be31d40bfb93575f172ceb4b531955b99f9712eb9609fed26a85a5172756902"
@@ -633,9 +783,24 @@
       "sha256": "a2fbb9c3db9f9a59c3272811d1474f77623ab0cfae9ac9ffbce76f850556cd67"
     },
     {
+      "file": "record-cache-log-checkpoint.py",
+      "bytes": 3524,
+      "sha256": "cb20fecb401c99660f2d40bc1a2aedc17a99895da70c3641a83b7bdab68a97e2"
+    },
+    {
       "file": "record-current-repair.py",
       "bytes": 7569,
       "sha256": "972985f654b05f522b131c6c1a173141ca2c310a3720a9bf91815c86ff24d475"
+    },
+    {
+      "file": "record-go-checkpoint.py",
+      "bytes": 7832,
+      "sha256": "2b74e53f934d6d7f1581adacffc3d0f347bfddfca829c86347a6f40be159e35c"
+    },
+    {
+      "file": "record-go-semantic-review.py",
+      "bytes": 11228,
+      "sha256": "89773643b4d0ec35d3961b161736ccf679ede7c4335014a5b5fd996f2b13b39b"
     },
     {
       "file": "recovered-checks.sh",
@@ -683,6 +848,11 @@
       "sha256": "b89b38c4bf4d01183c8b9f89c002a322777404cd7fd6673d22065697615aa34e"
     },
     {
+      "file": "retain-cache-backend-diagnostics.py",
+      "bytes": 2175,
+      "sha256": "ce797a3c628eceb76f9ffcc45b0db87ea68faff48836757860115d45afc23ac8"
+    },
+    {
       "file": "retain-check-logs.py",
       "bytes": 1481,
       "sha256": "86931b0a5a99638a122504c016ac582ddb64a1bf714c9bc292a2f1e415a252de"
@@ -696,6 +866,11 @@
       "file": "review-current-batch.sh",
       "bytes": 191,
       "sha256": "cec3ebb26b1a01a643d30541bb7d534796fbec1cf11517c733886e38956d8e72"
+    },
+    {
+      "file": "review-current-go.sh",
+      "bytes": 450,
+      "sha256": "826db8d0e9eb69958097a9919ceb24ef38f517018bc0c8faa3246824534b0be5"
     },
     {
       "file": "review-detector-comparison.sh",
@@ -716,6 +891,16 @@
       "file": "review-git-observation.sh",
       "bytes": 268,
       "sha256": "858298ce47dc7b28c5825abff0f9e4553408382c332101728f53156fd51da060"
+    },
+    {
+      "file": "review-go-pin-context.py",
+      "bytes": 1349,
+      "sha256": "555edc4c49fd6f75a4d96eaccd2d8d541cb125d20d092139cb95854cebf03dda"
+    },
+    {
+      "file": "review-go-review-tail.sh",
+      "bytes": 197,
+      "sha256": "866036600ff51fdd620129b54b27d00d11781577207e3c940c2576221c211db2"
     },
     {
       "file": "review-governed-baseline.mjs",
@@ -778,9 +963,24 @@
       "sha256": "db669d796f9afe221b516f340df3f5bca093e5b0cd8f2a75b22bc77bc2b233d5"
     },
     {
+      "file": "test-cache-log-after.sh",
+      "bytes": 413,
+      "sha256": "3976e06d503da1b32650552d878120b4e9eba816dc618e5ffb08ec2b7dfd4c22"
+    },
+    {
+      "file": "test-cache-log-before.sh",
+      "bytes": 241,
+      "sha256": "551375ff88f22bd95e7dbe144e68ec7c3784a312d718fb25a2eb7f8318103865"
+    },
+    {
       "file": "test-current-batch.sh",
       "bytes": 784,
       "sha256": "75b5ef7d54ac662185c3291e97bfc1914db212d5b4a68aa5d5727c0233828662"
+    },
+    {
+      "file": "test-go-pin-integrity.sh",
+      "bytes": 217,
+      "sha256": "a143728b4e0aead0f8e88ffe8d8feb1ca8066ff64e76d77f92d2ba7bef7fc049"
     },
     {
       "file": "test-template-reference-graph.sh",
@@ -796,6 +996,11 @@
       "file": "unpack-probes.py",
       "bytes": 876,
       "sha256": "0c5d8df8457d7e193ad7e8427587f2092b28c5b3b1adb9d02421907ec0d746f8"
+    },
+    {
+      "file": "update-pr-sixth.py",
+      "bytes": 855,
+      "sha256": "06cb1d016253909d55803ca4fcd5c55775e41f79cf9feb15b040d7bf875c860a"
     },
     {
       "file": "update-reports-and-pr.py",

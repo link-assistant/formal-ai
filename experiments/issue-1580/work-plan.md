@@ -46,3 +46,7 @@ Read and compare all 42 Go blobs, including all three workflows and local CI hel
 ## Opt-in cache evidence retention
 
 Reproduced the missing backend log in two failing subprocess controls, then retained a bounded URL-redacted tail through the existing health check, including early exits when statistics fail. Fresh workflow-command suspension tokens protect diagnostic output. Twelve regression cases pass, including actual budget-wrapper exit-code preservation; ShellCheck and five touched gates pass. This is prospective evidence collection only: historical cache-backend causality and other broad criteria remain open.
+
+## Published checkpoint before the Go/cache batch
+
+All 24 workflows on 09021cb30e completed successfully; no active or queued runs remain, and freshly fetched origin/main is already an ancestor. Retain exact-head metadata, review the Go/cache diff, archive supplied bootstrap scripts and Formal AI execution transcripts, then push the batch once. Native runtime, full template semantic review, benchmark capability, live identity, and historical cache-cause criteria remain open.
