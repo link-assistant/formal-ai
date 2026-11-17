@@ -1,0 +1,37 @@
+[
+  {
+    "repository": "link-foundation/go-ai-driven-development-pipeline-template",
+    "title": "CI: manual release skips lint/build/publication but terminal status passes",
+    "url": "https://github.com/link-foundation/go-ai-driven-development-pipeline-template/issues/18",
+    "bodyFile": "go-manual-release-report.md",
+    "evidenceCommit": "71e1dee442fd74589df20a1d6f33710b6dec0d18"
+  },
+  {
+    "repository": "link-foundation/go-ai-driven-development-pipeline-template",
+    "title": "CI: failed Git comparisons become successful no-code change outputs",
+    "url": "https://github.com/link-foundation/go-ai-driven-development-pipeline-template/issues/19",
+    "bodyFile": "go-change-detection-report.md",
+    "evidenceCommit": "71e1dee442fd74589df20a1d6f33710b6dec0d18"
+  },
+  {
+    "repository": "link-foundation/java-ai-driven-development-pipeline-template",
+    "title": "CI: failed Git comparisons become successful no-code change outputs",
+    "url": "https://github.com/link-foundation/java-ai-driven-development-pipeline-template/issues/30",
+    "bodyFile": "java-change-detection-report.md",
+    "evidenceCommit": "71e1dee442fd74589df20a1d6f33710b6dec0d18"
+  },
+  {
+    "repository": "link-foundation/python-ai-driven-development-pipeline-template",
+    "title": "CI: failed Git comparisons become successful no-code change outputs",
+    "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/156",
+    "bodyFile": "python-change-detection-report.md",
+    "evidenceCommit": "71e1dee442fd74589df20a1d6f33710b6dec0d18"
+  },
+  {
+    "repository": "link-foundation/php-ai-driven-development-pipeline-template",
+    "title": "CI: failed Git comparisons become successful no-code change outputs",
+    "url": "https://github.com/link-foundation/php-ai-driven-development-pipeline-template/issues/26",
+    "bodyFile": "php-change-detection-report.md",
+    "evidenceCommit": "71e1dee442fd74589df20a1d6f33710b6dec0d18"
+  }
+]

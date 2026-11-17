@@ -1,0 +1,98 @@
+[
+  {
+    "language": "js",
+    "repository": "link-foundation/js-ai-driven-development-pipeline-template",
+    "commit": "74de898dd6ce548af5bcb9359e1dae75fd4ebd75",
+    "file": "js-ci-reference-graph.json.gz",
+    "sha256": "37cc88ae360aa4fcbcea12f5599134155a6ed31793180fb2c50bfafed76d3259",
+    "uncompressedSha256": "ff3cba7f400c5ef51218b999b698f9c43b3f8605b76c4ce8ad2e10074cebd26a",
+    "roots": 8,
+    "files": 544,
+    "commands": 210,
+    "unresolved": 1887
+  },
+  {
+    "language": "rust",
+    "repository": "link-foundation/rust-ai-driven-development-pipeline-template",
+    "commit": "309387f761f9f0f1b2ea15bfe181cb51f5a9a1fb",
+    "file": "rust-ci-reference-graph.json.gz",
+    "sha256": "d027334b3e15fa1601d27e5bcbfd94039da681da71331fb867fe617db6610320",
+    "uncompressedSha256": "a82ec31f523370f5d45344dc9f2dcfd86c83b240bffa5fb20d987f355504e153",
+    "roots": 8,
+    "files": 355,
+    "commands": 123,
+    "unresolved": 524
+  },
+  {
+    "language": "python",
+    "repository": "link-foundation/python-ai-driven-development-pipeline-template",
+    "commit": "c532c173801dfb12e681b0730c4abbf93aefd0ca",
+    "file": "python-ci-reference-graph.json.gz",
+    "sha256": "cc6b48aa54092ed74dfe46f71950c0ef46f7e8b9de8c08a357c6ddf7a9fdb1a9",
+    "uncompressedSha256": "754b050e7afd8171249a20e02adddd5c1f5f3878f0588318f32a90266987b0a7",
+    "roots": 6,
+    "files": 253,
+    "commands": 81,
+    "unresolved": 470
+  },
+  {
+    "language": "php",
+    "repository": "link-foundation/php-ai-driven-development-pipeline-template",
+    "commit": "3a034b27a56067971ca74dd4c74c7707056b215d",
+    "file": "php-ci-reference-graph.json.gz",
+    "sha256": "c0c0596340cf6e0e536c96c8d2bff2b9de16b41096f08ce75d761aa6a22fcf70",
+    "uncompressedSha256": "10f6047ce958217737d3dc289038bca1d4f377a6e56270344282c16fd1750b2f",
+    "roots": 6,
+    "files": 311,
+    "commands": 113,
+    "unresolved": 689
+  },
+  {
+    "language": "csharp",
+    "repository": "link-foundation/csharp-ai-driven-development-pipeline-template",
+    "commit": "a5b9a1a46686cfe844f9afa2ace030094969e766",
+    "file": "csharp-ci-reference-graph.json.gz",
+    "sha256": "0e32358cf3a20af2ad206cd9b2a683a2e5fc0964769c7512d1ec3c80a53d0391",
+    "uncompressedSha256": "bde2856223d53533b989c90457521773aebaf8a244ed0d4bac95c77530c4d0bf",
+    "roots": 6,
+    "files": 298,
+    "commands": 63,
+    "unresolved": 484
+  },
+  {
+    "language": "java",
+    "repository": "link-foundation/java-ai-driven-development-pipeline-template",
+    "commit": "dd803a2d9fa5b3a992b435acce73162274fb9e8b",
+    "file": "java-ci-reference-graph.json.gz",
+    "sha256": "e408aa6f866f3f6f13a54a4121d23b825cc7298db9d22f2c8e3779abd1ceab0b",
+    "uncompressedSha256": "2bc3bbe5d2a04aa9a38dc1c03558021458f8694ee2394be288b3c818d714afe9",
+    "roots": 4,
+    "files": 26,
+    "commands": 35,
+    "unresolved": 34
+  },
+  {
+    "language": "cpp",
+    "repository": "link-foundation/cpp-ai-driven-development-pipeline-template",
+    "commit": "3769fa70a1bc30ce9516e01f78bcd7edea3b3f80",
+    "file": "cpp-ci-reference-graph.json.gz",
+    "sha256": "00ee5a7aa165df7974e0046e31ed88ea8d0790527b83ccefe72ad9609f32118e",
+    "uncompressedSha256": "4da72030e5a00977868c112f66a8dd2df895068380a969878e1a13fc0c13e040",
+    "roots": 7,
+    "files": 524,
+    "commands": 87,
+    "unresolved": 940
+  },
+  {
+    "language": "go",
+    "repository": "link-foundation/go-ai-driven-development-pipeline-template",
+    "commit": "65c686846d7327d8c835a0d30b1a76cc6345cfc6",
+    "file": "go-ci-reference-graph.json.gz",
+    "sha256": "3a5228f9f2a7a01141f132f8d1521d86a297fb58644f5835b6d71f8279fa6030",
+    "uncompressedSha256": "42ee1552142ce974c8f515d40e3880ce1a9b4f1dc35935867c660358be98f6e7",
+    "roots": 3,
+    "files": 27,
+    "commands": 35,
+    "unresolved": 40
+  }
+]
