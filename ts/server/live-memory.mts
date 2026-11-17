@@ -40,7 +40,7 @@ function privateCurrent(file) {
   return result;
 }
 /** Preserve unknown bytes; validated legacy documents use the existing backup transaction. */
-export async function resolveLiveMemory(env = process.env, diagnostics = null) {
+export async function resolveLiveMemory(env = process.env, diagnostics = null, { readOnly = false } = {}) {
   const original = sharedMemoryPath(env);
   let first;
   try {
@@ -56,7 +56,7 @@ export async function resolveLiveMemory(env = process.env, diagnostics = null) {
   const status = inspectMemoryUpgrade(first.bytes, true),
     sourceSha256 = digest(first.bytes);
   if (status.compatible) {
-    if (status.migration_required) {
+    if (status.migration_required && !readOnly) {
       const receipt = await migrateMemory(original, null, null, () => {
         if (digest(observed(original).bytes) !== sourceSha256) throw Error('memory_live_preimage_changed');
       });
@@ -70,31 +70,38 @@ export async function resolveLiveMemory(env = process.env, diagnostics = null) {
     return {
       path: original,
       originalPath: original,
-      mode: status.migration_required ? 'migrated' : 'current'
+      mode: status.migration_required ? (readOnly ? 'legacy' : 'migrated') : 'current'
     };
   }
   const selected = original + '.schema-' + TARGET_SCHEMA + '.' + sourceSha256 + '.lino';
   let created = false;
-  try {
-    const descriptor = fs.openSync(selected, 'wx', 0o600);
+  if (!readOnly) {
     try {
-      const bytes = Buffer.from(exportLinksNotation([], TARGET_SCHEMA));
-      let offset = 0;
-      for (let attempt = 0; attempt < bytes.length && offset < bytes.length; attempt++) {
-        const count = fs.writeSync(descriptor, bytes, offset, bytes.length - offset);
-        if (!Number.isInteger(count) || count <= 0) throw Error('memory_live_write_no_progress');
-        offset += count;
+      const descriptor = fs.openSync(selected, 'wx', 0o600);
+      try {
+        const bytes = Buffer.from(exportLinksNotation([], TARGET_SCHEMA));
+        let offset = 0;
+        for (let attempt = 0; attempt < bytes.length && offset < bytes.length; attempt++) {
+          const count = fs.writeSync(descriptor, bytes, offset, bytes.length - offset);
+          if (!Number.isInteger(count) || count <= 0) throw Error('memory_live_write_no_progress');
+          offset += count;
+        }
+        if (offset !== bytes.length) throw Error('memory_live_write_incomplete');
+        fs.fsyncSync(descriptor);
+        created = true;
+      } finally {
+        fs.closeSync(descriptor);
       }
-      if (offset !== bytes.length) throw Error('memory_live_write_incomplete');
-      fs.fsyncSync(descriptor);
-      created = true;
-    } finally {
-      fs.closeSync(descriptor);
+    } catch (error) {
+      if (error.code !== 'EEXIST') throw error;
     }
-  } catch (error) {
-    if (error.code !== 'EEXIST') throw error;
   }
-  privateCurrent(selected);
+  try {
+    privateCurrent(selected);
+  } catch (error) {
+    if (readOnly && error.code === 'ENOENT') return { path: original, originalPath: original, mode: 'incompatible' };
+    throw error;
+  }
   if (digest(observed(original).bytes) !== sourceSha256) throw Error('memory_live_preimage_changed');
   diagnostics?.log('warn', 'memory.live_replacement', {
     component: 'memory',

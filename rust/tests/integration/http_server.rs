@@ -311,6 +311,12 @@ fn server_dialog_capture_is_opt_in_and_ephemeral_memory_is_read_only() {
     const REQUEST_MARKER: &str = "parcelretentionmarker1592";
     const ANSWER_MARKER: &str = "violet parcel tracking code 1592";
     const TOKEN: Option<&str> = Some("sk-local-agentic-tools");
+    const FUTURE_MEMORY: &str = "demo_memory\n  schema_version \"99\"\n";
+    let legacy_memory = format!(
+        "demo_memory\n  event \"parcel\"\n    kind \"message\"\n    role \"user\"\n    content \"The warehouse supervisor supplied the {ANSWER_MARKER}.\"\n    writeCount \"1\"\n"
+    );
+    let private_memory =
+        legacy_memory.replacen("demo_memory\n", "demo_memory\n  schema_version \"2\"\n", 1);
 
     let help = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
         .args(["serve", "--help"])
@@ -344,6 +350,27 @@ fn server_dialog_capture_is_opt_in_and_ephemeral_memory_is_read_only() {
         let dialogs = scratch.join("explicit-dialogs");
         let captures = scratch.join("native-responses");
         let cache = scratch.join("cache");
+        let private_name = format!(
+            "memory.lino.schema-2.{}.lino",
+            formal_ai::source_fetch::sha256_hex(FUTURE_MEMORY.as_bytes())
+        );
+        let selected = scratch.join(&private_name);
+        if environment {
+            std::fs::create_dir_all(&scratch).unwrap();
+            std::fs::write(scratch.join("memory.lino"), FUTURE_MEMORY).unwrap();
+            let mut options = std::fs::OpenOptions::new();
+            options.write(true).create_new(true);
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::OpenOptionsExt as _;
+                options.mode(0o600);
+            }
+            options
+                .open(&selected)
+                .unwrap()
+                .write_all(private_memory.as_bytes())
+                .unwrap();
+        }
         let dialog_setting = if capture {
             dialogs.to_str().unwrap()
         } else {
@@ -391,11 +418,12 @@ fn server_dialog_capture_is_opt_in_and_ephemeral_memory_is_read_only() {
         );
 
         if ephemeral {
-            assert!(!server.memory_path().exists());
-            let seed = format!(
-                "demo_memory\n  event \"parcel\"\n    kind \"message\"\n    role \"user\"\n    content \"The warehouse supervisor supplied the {ANSWER_MARKER}.\"\n    writeCount \"1\"\n"
-            );
-            std::fs::write(server.memory_path(), &seed).unwrap();
+            if environment {
+                assert_eq!(health["memory"]["active_path"], serde_json::json!(selected));
+            } else {
+                assert!(!server.memory_path().exists());
+                std::fs::write(server.memory_path(), &legacy_memory).unwrap();
+            }
             let answer = http_post_json(
                 port,
                 "/v1/chat/completions",
@@ -433,7 +461,6 @@ fn server_dialog_capture_is_opt_in_and_ephemeral_memory_is_read_only() {
             )
             .unwrap();
             assert_eq!(imported.status_code, 409);
-            assert_eq!(std::fs::read_to_string(server.memory_path()).unwrap(), seed);
         } else {
             http_post_json(
                 port,
@@ -492,11 +519,24 @@ fn server_dialog_capture_is_opt_in_and_ephemeral_memory_is_read_only() {
             }
             assert!(server.diagnostics.stdout.lock().unwrap().is_empty());
             assert!(server.diagnostics.stderr.lock().unwrap().is_empty());
-            let entries = std::fs::read_dir(&scratch)
+            let mut entries = std::fs::read_dir(&scratch)
                 .unwrap()
                 .map(|entry| entry.unwrap().file_name())
                 .collect::<Vec<_>>();
-            assert_eq!(entries, [std::ffi::OsString::from("memory.lino")]);
+            entries.sort();
+            let mut expected = vec![std::ffi::OsString::from("memory.lino")];
+            let expected_memory = if environment {
+                assert_eq!(std::fs::read_to_string(&selected).unwrap(), private_memory);
+                expected.push(private_name.into());
+                FUTURE_MEMORY
+            } else {
+                &legacy_memory
+            };
+            assert_eq!(
+                std::fs::read_to_string(server.memory_path()).unwrap(),
+                expected_memory
+            );
+            assert_eq!(entries, expected);
         }
     }
 }

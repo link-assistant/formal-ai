@@ -76,8 +76,9 @@ machine automatically.
 
 ## Serve with read-only memory
 
-`formal-ai serve --ephemeral` (or `FORMAL_AI_EPHEMERAL=1`) uses any existing
-memory without creating or upgrading its files. It disables chat memory writes,
+`formal-ai serve --ephemeral` (or `FORMAL_AI_EPHEMERAL=1`) reads existing memory
+without creating or upgrading its files. It can reuse the validated private
+replacement from an earlier server run. It disables chat memory writes,
 background dreaming, memory imports, server diagnostics, dialog capture, and
 derivation storage. Capture and trace options cannot override this mode.
 The server uses local sources in ephemeral mode and skips live source retrieval.

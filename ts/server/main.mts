@@ -98,8 +98,8 @@ export async function startServer({ host = '127.0.0.1', port = 0, agentMode = fa
   const diagnostics = ephemeral ? createServeLogger({env, ephemeral}) : logger ?? createServeLogger({env});
   diagnostics.log('debug', 'server.start', {component:'server',host,port,agent_mode:agentMode,debug_session:debugSession});
   try {
-    const liveMemory=ephemeral ? null : await resolveLiveMemory(env,diagnostics);
-    env={...env,FORMAL_AI_MEMORY_PATH:liveMemory?.path ?? memoryPath(env)};
+    const liveMemory=await resolveLiveMemory(env,diagnostics,{readOnly:ephemeral});
+    env={...env,FORMAL_AI_MEMORY_PATH:liveMemory.path};
     const session=debugSession ? new DebugSession(debugTokenFrom(env)) : null;
     if(session){
       diagnostics.addSecret?.(session.token);

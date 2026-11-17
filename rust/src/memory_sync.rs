@@ -22,14 +22,14 @@ use std::path::{Path, PathBuf};
 #[cfg(not(target_arch = "wasm32"))]
 mod live_path;
 /// Resolve the active live-server memory file without changing explicit raw-loader behavior.
-pub(crate) fn live_memory_path(path: &Path) -> std::io::Result<PathBuf> {
+fn live_memory_path(path: &Path, read_only: bool) -> std::io::Result<PathBuf> {
     #[cfg(not(target_arch = "wasm32"))]
     {
-        live_path::resolve(path)
+        live_path::resolve(path, read_only)
     }
     #[cfg(target_arch = "wasm32")]
     {
-        let _ = path;
+        let _ = (path, read_only);
         Err(std::io::Error::new(
             std::io::ErrorKind::Unsupported,
             "memory_live_io_unavailable",
@@ -66,7 +66,7 @@ pub(crate) fn prepare_live_memory(path: &Path) -> std::io::Result<PathBuf> {
             "memory_live_configurations_exhausted",
         ));
     }
-    let selected = live_memory_path(path)?;
+    let selected = live_memory_path(path, crate::solver_config::ephemeral_enabled())?;
     paths.insert(path.to_path_buf(), selected.clone());
     drop(paths);
     Ok(selected)
@@ -290,17 +290,15 @@ impl SyncStore {
     #[must_use]
     pub fn open() -> Self {
         configured_memory_path().map_or_else(Self::default, |path| {
-            if crate::solver_config::ephemeral_enabled() {
-                return Self::open_read(&path, live_memory_source(&path, false), true);
-            }
+            let read_only = crate::solver_config::ephemeral_enabled();
             match prepare_live_memory(&path) {
                 Ok(selected) => Self::open_read(
                     &selected,
                     live_memory_source(&selected, selected != path),
-                    false,
+                    read_only,
                 ),
                 Err(error) => Self {
-                    path: Some(path),
+                    path: (!read_only).then_some(path),
                     events: Vec::new(),
                     schema_version: TARGET_MEMORY_SCHEMA_VERSION,
                     compatible: false,
@@ -312,7 +310,7 @@ impl SyncStore {
 
     /// Open the live-server store after lossless migration or preservation of incompatible bytes.
     pub fn open_live_at(path: &Path) -> std::io::Result<Self> {
-        let selected = live_memory_path(path)?;
+        let selected = live_memory_path(path, false)?;
         Ok(Self::open_read(
             &selected,
             live_memory_source(&selected, selected != path),

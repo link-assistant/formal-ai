@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { test } from 'node:test';
@@ -134,3 +135,29 @@ for (const mode of ['--ephemeral', 'FORMAL_AI_EPHEMERAL=1']) {
     }
   });
 }
+
+test('ephemeral startup reuses previously selected private memory without writing', { timeout: 15000 }, async t => {
+  const original = 'demo_memory\n  schema_version "99"\n';
+  const digest = createHash('sha256').update(original).digest('hex');
+  const privateMemory = seedMemory.replace('demo_memory\n', 'demo_memory\n  schema_version "2"\n');
+  let selected;
+  const run = await startCli(t, {
+    args(directory) {
+      const memory = path.join(directory, 'home', 'memory.lino');
+      selected = `${memory}.schema-2.${digest}.lino`;
+      fs.writeFileSync(memory, original);
+      fs.writeFileSync(selected, privateMemory, { mode: 0o600 });
+      return ['--ephemeral'];
+    },
+  });
+  await run.ready();
+  const status = await health(run);
+  assert.equal(status.memory.mode, 'read_only');
+  assert.equal(status.memory.configured_path, run.env.FORMAL_AI_MEMORY_PATH);
+  assert.equal(status.memory.active_path, selected);
+  assert.match(await chat(run, 'Did I mention violet parcel tracking code?'), new RegExp(responseMarker));
+  await run.stop();
+  assert.equal(fs.readFileSync(run.env.FORMAL_AI_MEMORY_PATH, 'utf8'), original);
+  assert.equal(fs.readFileSync(selected, 'utf8'), privateMemory);
+  assert.deepEqual(fs.readdirSync(run.home).sort(), ['memory.lino', path.basename(selected)]);
+});

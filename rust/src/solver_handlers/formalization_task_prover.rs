@@ -156,8 +156,7 @@ pub fn prover_command_in(path_value: &std::ffi::OsStr, binary: &str) -> Option<s
 pub enum ProverRun {
     /// The binary was not found in PATH, or the target rendered nothing.
     Absent,
-    /// The binary ran on the compile unit: its exit status (`None` when it
-    /// was killed by a signal or could not be spawned) and the unit's path.
+    /// The command, optional exit code, and path of the compiled unit.
     Ran {
         command: String,
         exit: Option<i32>,
@@ -240,7 +239,8 @@ fn prover_runs(clause: &QuantifiedClause) -> Vec<(&'static ProverRecord, ProverR
     prover_runs_with(clause, &path_value, &directory)
 }
 
-/// The honesty block's prover summary and per-target checks in `language`.
+/// The honesty block's prover slots in `language`: `prover_summary`, then
+/// one `<target>_check` per prover.
 #[must_use]
 pub fn prover_check_slots(
     runs: &[(&ProverRecord, ProverRun)],

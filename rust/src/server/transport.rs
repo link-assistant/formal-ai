@@ -20,10 +20,10 @@ struct ParsedHttpRequest {
 
 pub fn serve(address: &str) -> std::io::Result<()> {
     let mut shutdown = super::shutdown::Shutdown::new()?;
+    if let Some(path) = crate::memory_sync::configured_memory_path() {
+        crate::memory_sync::prepare_live_memory(&path)?;
+    }
     if !super::ephemeral_enabled() {
-        if let Some(path) = crate::memory_sync::configured_memory_path() {
-            crate::memory_sync::prepare_live_memory(&path)?;
-        }
         crate::dreaming_runtime::start_core_dreaming();
     }
     crate::diagnostic!("debug";

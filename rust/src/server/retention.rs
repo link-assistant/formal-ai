@@ -37,11 +37,7 @@ pub(super) fn memory_health_status() -> Value {
         });
     };
     let original_path = path;
-    let path = if ephemeral_enabled() {
-        original_path.clone()
-    } else {
-        crate::memory_sync::active_memory_path(&original_path)
-    };
+    let path = crate::memory_sync::active_memory_path(&original_path);
     let status = crate::memory::preflight_memory_upgrade(&path);
     json!({
         "mode": mode,
