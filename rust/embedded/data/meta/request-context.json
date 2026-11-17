@@ -1,5 +1,5 @@
 {
-  "language": ["(?:^|\\b)(?:always\\s+)?(?:answer|respond|reply|write)\\s+(?:only\\s+)?in\\s+([\\p{L}-]+)", "(?:отвечай|отвечайте|ответь)\\s+(?:только\\s+)?(?:на\\s+|по-)?([\\p{L}-]+)"],
+  "language": ["^(?:answer|respond|reply)\\s+in\\s+the\\s+(same)\\s+language\\s+as\\s+the\\s+user['’]s\\s+input$", "(?:^|\\b)(?:always\\s+)?(?:answer|respond|reply|write)\\s+(?:only\\s+)?in\\s+([\\p{L}-]+)", "(?:отвечай|отвечайте|ответь)\\s+(?:только\\s+)?(?:на\\s+|по-)?([\\p{L}-]+)"],
   "format": ["(?:answer|respond|reply|output|return)\\s+(?:only\\s+)?(?:in|as)\\s+(json|xml|csv|markdown)(?:\\s|$)", "(?:output|response|answer)\\s+format\\s*:?\\s*(json|xml|csv|markdown)", "(?:use|return)\\s+(json|xml|csv|markdown)", "^(?:output|return)(?:\\s+all)?\\s+(?:communication|output)\\s+(?:directly\\s+)?in\\s+(?:your\\s+|the\\s+)?response\\s+(text)(?:\\s+instead)?$"],
   "labels": ["(?:one word\\s*:|only with|only one of|one of\\s*:)\\s*([\\p{L}-]+)\\s+(?:or|/)\\s+([\\p{L}-]+)"],
   "length": ["(exactly|at most|no more than)\\s+(one|[0-9]+)\\s+words?"],
@@ -24,5 +24,15 @@
   "refusal": "Cannot satisfy {kind} constraint ({text}).",
   "refusalLanguage": "en",
   "missingFact": "Cannot retrieve the requested fact from earlier user messages.",
-  "jsonAnswerKey": "answer"
+  "jsonAnswerKey": "answer",
+  "directiveCue": "^(?:you\\s+)?(?:(?:must|should|always|only|please|do\\s+not|don't|never|not|не)\\s+)*(?:answer|respond|reply|write|output|return|be brief|отвечай|отвечайте|ответь)(?:\\s|$)|^(?:your|the)\\s+(?:answer|response|output)\\s+(?:must|should)|^(?:use\\s+(?:json|xml|csv|markdown|yaml|plain text)|(?:keep|limit)\\s+(?:your\\s+|the\\s+)?(?:answer|response|output))(?:\\s|$)|^(?:one word\\s*:|only with\\s|only one of\\s|one of\\s*:|(?:exactly|at most|no more than)\\s+(?:one|[0-9]+)\\s+words?(?:\\s|$))",
+  "lineLimit": ["^(?:you\\s+)?(?:must\\s+)?(?:always\\s+)?(?:answer|respond|reply)\\s+(?:concisely\\s+)?with\\s+(exactly|at most|no more than|fewer than|less than)\\s+(one|[0-9]+)\\s+lines?(?:\\s+of\\s+text)?(?:\\s+(\\(not including tool use or code generation\\)))?(?:,\\s+(unless (?:the )?user asks for detail))?$"],
+  "sameLanguage": "same",
+  "lineLimitKind": "lines",
+  "strictLineModes": ["fewer than", "less than"],
+  "detailRequest": "(?:^|\\s)(?:explain|describe|answer|respond|reply|write|provide)(?:\\s+[\\p{L}]+){0,4}\\s+in\\s+detail(?:\\s|[.!?]|$)|(?:^|\\s)(?:give|provide)\\s+(?:me\\s+)?(?:a\\s+)?detailed\\s+(?:explanation|answer|description)(?:\\s|[.!?]|$)",
+  "fencedCodeBlock": "(?:^|\\n)```[^\\n]*\\n[\\s\\S]*?\\n```(?:\\r?\\n|$)",
+  "briefOutput": "^(?:(?:you\\s+)?(?:must\\s+)?(?:answer|respond|reply)\\s+(?:concisely|briefly)|be\\s+brief)$",
+  "briefOutputKind": "brief",
+  "briefLimits": {"lines": 4, "words": 64}
 }

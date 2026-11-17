@@ -106,3 +106,22 @@ main-run 44117975432
       failed "meeting participant/time/Georgia and Tbilisi scheduling fell through after normalized clock punctuation disappeared"
       check rust/tests/web/calendar-clock-preservation.test.mjs
       marker "calendar preserves the clock in"
+main-run 44157124408
+  javascript-twin
+    regression live-client-output-constraint-refusals
+      introduced-by "PR #1595, merged as 826289fc"
+      failed "OpenCode line limits and Qwen quoted language examples replaced observed file text with refusals"
+      check rust/tests/web/issue-1580-client-output-constraints.test.mjs
+      marker "main run 44157124408"
+    regression opencode-source-envelope
+      introduced-by "OpenCode path/content Read envelope (observed on main 826289fc)"
+      failed "transport path/type/content tags and numbered rows leaked into the final file text"
+      check rust/tests/web/source-read-provenance.test.mjs
+      marker "OpenCode path-bound source envelope"
+main-run 44157125186
+  javascript-twin
+    regression concise-greeting-refusal
+      introduced-by "PR #1595, merged as 826289fc"
+      failed "cli_serve_exposes_agentic_tool_protocols_over_loopback: Answer concisely replaced the Hi greeting with an output refusal"
+      check rust/tests/web/issue-1580-client-output-constraints.test.mjs
+      marker "main run 44157125186"

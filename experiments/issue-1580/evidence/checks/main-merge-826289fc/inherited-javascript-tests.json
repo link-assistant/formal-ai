@@ -1,0 +1,62 @@
+[
+  {
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/recipe-resume-policy-notation.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.904,
+    "rawSha256": "8c8bd955c015756b1e3ecd98b3e1d54ad2cf15ed54c2b749a1de703855f9a0ea",
+    "log": "recipe-resume-policy-notation.log.gz"
+  },
+  {
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/issue-1172-factual-qa-subject-gate.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 18.023,
+    "rawSha256": "efc09857615e408a3d7d14f984a94a32ccef58302786122d8e8a1b36078aaea4",
+    "log": "issue-1172-factual-qa-subject-gate.log.gz"
+  },
+  {
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/connector-work-item-receipts.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 20.776,
+    "rawSha256": "2502d3b2103aa77ac266111bdbb8d49879e4a372fd9700ddbddc34e86ad2da58",
+    "log": "connector-work-item-receipts.log.gz"
+  },
+  {
+    "command": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/browser-engine-release-integration.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 2.775,
+    "rawSha256": "99a9b751a54f15242645e668b9c2c3c83d2f7b1bb2dda16a805bb613a9f3bfb4",
+    "log": "browser-engine-release-integration.log.gz"
+  }
+]

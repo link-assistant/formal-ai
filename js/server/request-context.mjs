@@ -3,6 +3,7 @@
 import { readRepoFile } from './lino.mjs';
 import { plainText, chatPromptAndHistory } from './chat-request.mjs';
 import { thinkingStep } from './thinking.mjs';
+import { detect } from '../agentic/crate/language.mjs';
 
 const rules = JSON.parse(readRepoFile('data/meta/request-context.json'));
 const re = pattern => new RegExp(pattern, 'iu');
@@ -16,7 +17,15 @@ export function formalizeRequest(messages) {
     const role = message.role.toLowerCase();
     if (!['system', 'developer'].includes(role)) return;
     for (const text of plainText(message.content).split(re(rules.clauseSeparator)).map(text => text.trim()).filter(Boolean)) {
+      // A quoted example or a conditional continuation is not a direct instruction.
+      if (!re(rules.directiveCue).test(text)) continue;
       const add = (kind, value) => constraints.push({ role, index, text, kind, value, status: 'pending' });
+      if (re(rules.briefOutput).test(text)) { add('output', rules.briefOutputKind); continue; }
+      const lines = captures('lineLimit', text);
+      if (lines) {
+        add('output', [rules.lineLimitKind, lines[1].toLowerCase(), rules.numberWords[lines[2].toLowerCase()] ?? lines[2], lines[3] ? 'code' : '', lines[4] ? 'detail' : ''].join('|'));
+        continue;
+      }
       if (re(rules.negated).test(text) && (re(rules.outputCue).test(text) || ['language', 'format', 'labels', 'length'].some(kind => captures(kind, text)))) {
         add('output', text);
         continue;
@@ -45,7 +54,7 @@ export function formalizeRequest(messages) {
     if (winner !== item) item.status = 'superseded';
   }
   const active = kind => constraints.find(item => item.kind === kind && item.status !== 'superseded');
-  return { prompt, history, constraints, active, language: languageOf(active('language')?.value) };
+  return { prompt, history, constraints, active, language: active('language')?.value === rules.sameLanguage ? detect(prompt) : languageOf(active('language')?.value) };
 }
 
 function subject(text) {
@@ -125,8 +134,24 @@ export function composeRequestAnswer(messages, symbolic) {
     if (item.kind === 'language') {
       // Only the seeded language override can authorize a localized answer.
       // English also rejects a handler that leaked another script's prose.
-      satisfied = Boolean(languageOf(item.value)) && (context.language !== 'en' || !/[\p{Script=Cyrillic}\p{Script=Han}\p{Script=Devanagari}]/u.test(languageText))
+      satisfied = (item.value === rules.sameLanguage ? Object.hasOwn(rules.languages, context.language) : Boolean(languageOf(item.value))) && (context.language !== 'en' || !/[\p{Script=Cyrillic}\p{Script=Han}\p{Script=Devanagari}]/u.test(languageText))
         && (context.language !== 'ru' || /\p{Script=Cyrillic}/u.test(languageText) || !/\p{L}/u.test(languageText));
+    }
+    if (item.kind === 'output') {
+      if (item.value === rules.briefOutputKind) {
+        const words = (text.match(new RegExp(rules.word, 'gu')) ?? []).length;
+        const lines = text === '' ? 0 : text.split(/\r?\n/u).length - Number(text.endsWith('\n'));
+        satisfied = words <= rules.briefLimits.words && lines <= rules.briefLimits.lines;
+      }
+      const [kind, mode, count, code, exception] = item.value.split('|');
+      if (kind === rules.lineLimitKind) {
+        // The explicit code-generation exemption counts prose outside fenced blocks.
+        const measured = code === 'code' ? text.replace(new RegExp(rules.fencedCodeBlock, 'gu'), '') : text;
+        const lines = measured === '' ? 0 : measured.split(/\r?\n/u).length - Number(measured.endsWith('\n'));
+        const comparison = compareDecimals(String(lines), count);
+        satisfied = exception === 'detail' && re(rules.detailRequest).test(context.prompt)
+          || (mode === 'exactly' ? comparison === 0 : rules.strictLineModes.includes(mode) ? comparison < 0 : comparison <= 0);
+      }
     }
     if (item.kind === 'labels') satisfied = item.value.split('|').includes(text.toLowerCase());
     if (item.kind === 'length') {

@@ -1,0 +1,33 @@
+{
+  "state": "complete",
+  "rows": [
+    {
+      "file": "rust/tests/web/main-only-regression-ledger.test.mjs",
+      "exitCode": 0,
+      "seconds": 0.29,
+      "bytes": 439,
+      "sha256": "8933cb35792109cbe7b41410c67094105fbbfb20514f843109096b6eb09ea97e"
+    },
+    {
+      "file": "rust/tests/web/fast-pull-request-production-profile.test.mjs",
+      "exitCode": 0,
+      "seconds": 4.743,
+      "bytes": 1736,
+      "sha256": "fe68755a9104cf1c143fe88824a332d8c553d1026c62571e5a8951f32b3f79a7"
+    },
+    {
+      "file": "rust/tests/web/rust-specification-unicode-identifiers.test.mjs",
+      "exitCode": 0,
+      "seconds": 15.448,
+      "bytes": 2949,
+      "sha256": "a2e06996b16e6c427b6ca3981bff33fda1e139347597ef6502b0cb1e9252aa48"
+    },
+    {
+      "file": "rust/tests/web/rust-specification-fixture-integrity.test.mjs",
+      "exitCode": 0,
+      "seconds": 0.309,
+      "bytes": 308,
+      "sha256": "ced61236acf294fadc673e6714e3fcbf74cc3b46a88ea8c62506902d1b0fc808"
+    }
+  ]
+}
