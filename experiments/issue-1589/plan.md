@@ -1,16 +1,18 @@
 # Issue 1589 work plan
 
-Scope: mixed calendar months/years; full years/months between dates in English and Russian; exact Gregorian day offsets; currency provenance and cent rounding; derivations in thinking_steps; shared JavaScript/native regressions. Related issues are context, with no required sub-issues.
+- [x] Read the complete issue, all comments, PR conversation, inline comments, reviews and contribution guidance; no required sub-issues.
+- [x] Merge main and reproduce all six original prompts.
+- [x] Implement mixed calendar sums, full months/years, exact Gregorian offsets and their actual derivations in both source runtimes.
+- [x] Implement exact currency cent rounding with dated official rate provenance.
+- [x] Add 37 shared acceptance cases; verify 39 JavaScript checks, including fresh-home HTTP thinking_steps and five-language durations.
+- [x] Verify relevant existing regressions, Rust formatting and source projections; do not compile Rust locally.
+- [x] Run all 138 local gates: 137 pass or skip; only the existing picomatch advisory fails. Correct notation, status and header-inventory memory failures and add bounded regressions.
+- [x] Preserve failures, complete Formal AI responses, source identities, actual tool receipts and supplied-procedure boundaries.
+- [ ] Execute the shared native regression on CI.
+- [ ] Verify every required current-head CI result, preserving timestamps, SHA and failure logs.
+- [ ] Resolve the external dependency audit blocker; the advisory has no patched release at investigation time.
+- [ ] Review the remote PR diff, update title/body and mark ready only when all required checks pass.
 
-- [x] Read issue, all comments, PR conversation/inline/reviews and repository guidance.
-- [x] Merge main, inspect recent related PR 1596 and reproduce six original probes.
-- [ ] Draft seed-driven duration parsing and exact calendar arithmetic, then native twin.
-- [ ] Bind currency conversion to captured rate/source/date and round exactly to cents.
-- [ ] Add shared per-requirement and fresh-home HTTP regressions, including thinking_steps.
-- [ ] Run focused JavaScript tests sequentially, formatting/projection checks and relevant local gates; no local Rust compilation.
-- [ ] Collect latest-head CI runs/timestamps/logs; fix all actionable failures before each push.
-- [ ] Review complete PR diff; commit all changes, update PR title/body and mark ready after green checks.
+Frozen reasoning units: quantity binding, full-period anniversaries, ambiguity handling, exact rounding, rate provenance, cross-runtime/API verification. Attempted 1/6; independently accepted 0/6. The anniversary reasoning attempt returned calculation_error/unparseable. Supplied conclusions and procedures count zero.
 
-Frozen reasoning units (before new outcomes): calendar quantity binding; whole-period anniversary semantics; unsupported/ambiguous input handling; exact currency rounding; rate provenance; cross-runtime/API verification. Attempt Formal AI reasoning on whole-period semantics; independently assess the complete response. Supplied conclusions/procedures receive zero autonomous reasoning credit.
-
-Development boundary: bootstrap discovery and the driver adapter were supplied by Codex. The small source-repair request returned SourceRepairOperatorUnavailable without reading or changing a file. Subsequent supplied recipes are executed through real JavaScript Formal AI tools and earn zero autonomous code-authorship credit. Retain failures, tool receipts and source identities. No subagents are used.
+The bootstrap adapter and all source procedures were supplied by Codex and executed through actual JavaScript Formal AI tools. The source-repair request was unavailable and changed no file. No autonomous code authorship is claimed; no subagents are used. Native execution and a green dependency audit remain unfinished.

@@ -45,3 +45,5 @@ Six reasoning units were frozen before evaluating outcomes: quantity binding, co
 The evidence directory preserves failures, full responses, actual tool receipts and runtime source identities. Compressed provenance and driver logs contain real executions; they do not establish that Formal AI independently authored the supplied implementation.
 
 The generated-file inventory exhausted 384 MiB and 1 GiB heaps by retaining repository file bodies. Its reader now inspects only the first twelve lines, one file at a time, with unchanged generator and exception rules. Header boundary, UTF-8, EOF, stale-exception and actual-repository checks pass; the repository check runs with a 128 MiB heap.
+
+Final local verification: 39/39 feature checks pass; the complete gate run passes or skips 137/138 gates, with only check-javascript-dependencies failing. Final logs, the official advisory response and the isolated proposed-patch audit are included. Intermediate witness-review data describes an abandoned test-module draft; the final native test is the standalone calendar_currency target.
