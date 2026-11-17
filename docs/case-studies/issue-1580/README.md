@@ -133,7 +133,7 @@ The unchanged manual fragment entrypoint silently overwrites the earlier categor
 
 ## Python review, audit coverage and release-note preservation
 
-The Python review now fully reads 155 active files plus one partial file (13,055/44,284 active lines), through corrected pages 1-31 and separately read release/helper tests. The 47 unread active files include both generated bundles and both lockfiles; all 126 historical blobs remain unread. Hash verification is separate from semantic reading and source reading is separate from execution.
+The Python review now fully reads 158 active files plus one partial file (13,240/44,284 active lines), through corrected pages 1-33 and separately read release/helper tests. The 44 unread active files include both generated bundles and both lockfiles; all 126 historical blobs remain unread. Hash verification is separate from semantic reading and source reading is separate from execution.
 
 All 24 workflows passed on `1cc2d536ac11e26602cc55a40dffb61716233aa6`. Full Layered CI run 44116797181 and hashes are retained under `experiments/issue-1580/evidence/ci/1cc2d536a/`. Log lines 4954-4956 confirm all three Python npm inventory observations executed; lines 4948-4951 confirm all four fragment cases. The dedicated Formal AI audit tests were missing from the explicit fast inventory; this batch adds their complete ten-case file and a failing-before selection assertion. Main-only native, benchmark, publication and live-identity criteria remain unfinished.
 
