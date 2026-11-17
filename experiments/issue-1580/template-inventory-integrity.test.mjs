@@ -5,6 +5,7 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {createHash} from 'node:crypto';
 import {spawnSync} from 'node:child_process';
+import {createRequire} from 'node:module';
 import YAML from 'yaml';
 
 const workflow=`name: Complete execution context
@@ -39,7 +40,7 @@ jobs:
     with: {target: linux}
 `;
 
-function fixture(run){
+function fixture(run, commonJsYaml = false){
   const directory=mkdtempSync(join(tmpdir(),'issue-1580-inventory-'));
   try{
     const input=join(directory,'input'),output=join(directory,'output');
@@ -51,7 +52,18 @@ function fixture(run){
     writeFileSync(sourcePath,bytes);
     writeFileSync(join(input,'manifest.json'),JSON.stringify([{repo:'fixture/fixture-template',sha:'a'.repeat(40)}]));
     writeFileSync(join(input,'fixture-complete-inventory.json'),JSON.stringify([{path:'.github/workflows/complete.yml',bytes:bytes.length,gitBlob}]));
-    const invoke=()=>spawnSync(process.execPath,['--max-old-space-size=64','experiments/issue-1580/compare-template-trees.mjs',input,output],{encoding:'utf8',timeout:5000,maxBuffer:65536});
+    let generator='experiments/issue-1580/compare-template-trees.mjs';
+    if (commonJsYaml) {
+      generator=join(directory,'generator.mjs');
+      writeFileSync(generator,readFileSync(new URL('./compare-template-trees.mjs',import.meta.url)));
+      const packageDirectory=join(directory,'node_modules/yaml');
+      mkdirSync(packageDirectory,{recursive:true});
+      writeFileSync(join(packageDirectory,'package.json'),JSON.stringify({main:'index.cjs'}));
+      // Dynamic CommonJS exports reproduce CI without a dependency install.
+      const yamlPath=createRequire(import.meta.url).resolve('yaml');
+      writeFileSync(join(packageDirectory,'index.cjs'),`Object.assign(module.exports, require(${JSON.stringify(yamlPath)}));\n`);
+    }
+    const invoke=()=>spawnSync(process.execPath,['--max-old-space-size=64',generator,input,output],{encoding:'utf8',timeout:5000,maxBuffer:65536});
     run({invoke,sourcePath,output,gitBlob});
   }finally{rmSync(directory,{recursive:true,force:true});}
 }
@@ -76,4 +88,13 @@ test('workflow review refuses content that differs from the pinned Git blob', {t
     assert.equal(result.status,1,result.stderr);
     assert.match(result.stderr,/source drift: .github\/workflows\/complete.yml/u);
   });
+});
+
+test('workflow inventory runs when yaml exposes only dynamic CommonJS exports', {timeout:10000},()=>{
+  fixture(({invoke,output})=>{
+    const result=invoke();
+    assert.equal(result.status,0,result.stderr);
+    const row=JSON.parse(readFileSync(join(output,'fixture-workflows.jsonl'),'utf8'));
+    assert.deepEqual(row.document,YAML.parse(workflow));
+  },true);
 });

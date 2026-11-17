@@ -3,7 +3,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
-import {parse} from 'yaml';
+import {createRequire} from 'node:module';
+const {parse} = createRequire(import.meta.url)('yaml');
 
 const input=process.argv[2]??'/tmp/issue-1580-research/templates';
 const output=process.argv[3]??'docs/case-studies/issue-1580/templates';
