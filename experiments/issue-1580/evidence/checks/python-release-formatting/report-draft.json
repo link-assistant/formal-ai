@@ -3,10 +3,11 @@
   "reportBodySha256": "bdd518a220ef48becb19dec2977bb279486d0118635468d5018a454cb149db99",
   "title": "Release formatter corrupts literal escapes in code examples before updating notes",
   "repository": "link-foundation/python-ai-driven-development-pipeline-template",
-  "filed": false,
+  "filed": true,
   "fullPythonReviewClaimed": false,
   "upstreamRepairClaimed": false,
   "independentAuthorshipCredit": 0,
   "previousDraftBodySha256": "a25993f0038fbfecd5df1f9c58b2021e8852c48ccbdd93730fb7edb56552b269",
-  "immutableEvidenceCommit": "da712fadd3f680668c063a6d7de073ef1d52573b"
+  "immutableEvidenceCommit": "da712fadd3f680668c063a6d7de073ef1d52573b",
+  "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/159"
 }

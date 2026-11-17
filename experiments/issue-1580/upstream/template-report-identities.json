@@ -68,5 +68,13 @@
     "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/158",
     "bodyFile": "python-audit-inventory-report.md",
     "evidenceCommit": "1cc2d536ac11e26602cc55a40dffb61716233aa6"
+  },
+  {
+    "repository": "link-foundation/python-ai-driven-development-pipeline-template",
+    "title": "Release formatter corrupts literal escapes in code examples before updating notes",
+    "url": "https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/159",
+    "bodyFile": "python-release-formatting-report.md",
+    "evidenceCommit": "da712fadd3f680668c063a6d7de073ef1d52573b",
+    "reportCommit": "d0b8b895661c6b5e809810c4da8a3db9f79138b3"
   }
 ]
