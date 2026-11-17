@@ -6,7 +6,14 @@
   "frozen_reasoning_units": 6,
   "attempted_reasoning_units": 1,
   "accepted_reasoning_units": 0,
-  "failed_attempt": "reasoning-attempt.log",
+  "failed_attempt": "reasoning-attempt.log.gz",
   "note": "Commands, procedures, patches and supplied conclusions earn zero independent reasoning or synthesis credit.",
-  "driver_sha256": "c936361950afbc77a046c826305674aad7efc34bb21fffed11b8b78745afc609"
+  "driver_sha256": "c936361950afbc77a046c826305674aad7efc34bb21fffed11b8b78745afc609",
+  "implementation_commit": "91a64e8d3a6adb4c83126f7410077ec8041c2004",
+  "uncompressed_sha256": {
+    "reasoning-attempt.log": "3294ace984833f105aa75bcc5756aa71cb0fc0daebf65757881caf24d9f61683",
+    "tool-sessions.txt": "5337a1ed8d580da23d967a53f742095036bcc1b0bd06b9a1ed6f8b0b86b4e8f5",
+    "supplied-procedures.txt": "36cf330c6bfd2dd206af55333c9817a18dfe9f3125a798fae3ed8d5be8f4f083",
+    "validation.txt": "18a8050175c014a4af706fa461e2f2d5b64237ca281d1812240e4de73a4f415d"
+  }
 }

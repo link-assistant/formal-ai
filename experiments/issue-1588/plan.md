@@ -15,6 +15,12 @@ Scope: #1589 is a related issue, not a required child. This PR implements its da
 
 Reasoning units frozen: intent-gate diagnosis; binding strategy; rational rendering; Gregorian offset strategy; regression design; CI diagnosis. Attempt a Formal AI diagnosis, independently check its response. Supplied procedures and source earn zero independent reasoning/authorship credit.
 
-Bootstrap: Codex initially read instructions and GitHub metadata directly to locate the maintained JS driver. Subsequent development commands run through experiments/js_dogfood/drive.mjs. Literal edits/scripts are externally authored instructions, zero autonomous synthesis credit. Keep transcripts and before/after checks.
+Bootstrap: Codex initially read instructions and GitHub metadata directly to locate the maintained JS driver. Implementation, verification and mutating delivery commands run through experiments/js_dogfood/drive.mjs; Codex also performs direct read-only inspections. Literal edits/scripts are externally authored instructions, zero autonomous synthesis credit. Keep transcripts and before/after checks.
 
 Verification: original and held-out fixtures before/after; adjacent conversion/calendar tests one at a time; rustfmt only locally; mirrors and touched local gates; exact-head hosted checks. No local Rust builds.
+
+Implementation and local verification are complete. Original failures and final
+answers are retained alongside the shared regression fixtures. All acceptance
+criteria map to the table in README.md. Hosted check evidence and final delivery status are recorded on PR #1596;
+readiness requires passing checks for the current commit, a reviewed diff and
+a clean working tree.
