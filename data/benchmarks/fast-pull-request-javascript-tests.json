@@ -224,6 +224,8 @@
     "rust/tests/web/issue-1550-procedure-documentation.test.mjs",
     "rust/tests/web/issue-1580-production-composition.test.mjs",
     "rust/tests/web/sccache-outage-fallback.test.mjs",
-    "rust/tests/web/worker-candidate-validation.test.mjs"
+    "rust/tests/web/worker-candidate-validation.test.mjs",
+    "rust/tests/web/cargo-audit-blocked-proof.test.mjs",
+    "rust/tests/web/issue-1580-template-observations.test.mjs"
   ]
 }

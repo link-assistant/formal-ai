@@ -1,0 +1,16 @@
+{
+  "repository": "link-foundation/python-ai-driven-development-pipeline-template",
+  "commit": "c532c173801dfb12e681b0730c4abbf93aefd0ca",
+  "files": [
+    {
+      "path": "scripts/detect_code_changes.py",
+      "gitBlob": "2ee94adb8d211aee095b09349d35bb9f62b50ec4",
+      "sha256": "c3702e1f2e41c7fe2c5a18220469f8997f15d0ba5f841761874018cebbb8c7a5"
+    },
+    {
+      "path": "LICENSE",
+      "gitBlob": "fdddb29aa445bf3d6a5d843d6dd77e10a9f99657",
+      "sha256": "6b0382b16279f26ff69014300541967a356a666eb0b91b422f6862f6b7dad17e"
+    }
+  ]
+}

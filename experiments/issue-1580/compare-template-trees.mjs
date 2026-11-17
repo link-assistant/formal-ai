@@ -44,11 +44,13 @@ for(const source of manifests){
     }
     if(role==='workflow'){
       const document=parse(text);
-      workflows.push({path:file,name:document.name,events:document.on,permissions:document.permissions??null,concurrency:document.concurrency??null,jobs:Object.entries(document.jobs??{}).map(([id,job])=>({id,name:job.name,runsOn:job['runs-on'],timeout:job['timeout-minutes'],if:job.if,needs:job.needs,permissions:job.permissions,concurrency:job.concurrency,matrix:job.strategy?.matrix,steps:(job.steps??[]).map(step=>({name:step.name,uses:step.uses,if:step.if,timeout:step['timeout-minutes'],continueOnError:step['continue-on-error'],run:step.run})).filter(step=>step.run||step.uses)}))});
+      workflows.push({path:file,gitBlob:item.gitBlob,document,name:document.name,events:document.on,permissions:document.permissions??null,concurrency:document.concurrency??null,jobs:Object.entries(document.jobs??{}).map(([id,job])=>({id,name:job.name,runsOn:job['runs-on'],timeout:job['timeout-minutes'],if:job.if,needs:job.needs,permissions:job.permissions,concurrency:job.concurrency,matrix:job.strategy?.matrix,steps:(job.steps??[]).map(step=>({name:step.name,uses:step.uses,if:step.if,timeout:step['timeout-minutes'],continueOnError:step['continue-on-error'],run:step.run})).filter(step=>step.run||step.uses)}))});
     }
   }
   fs.writeFileSync(path.join(output,language+'-files.tsv'),rows.join('\n')+'\n');
-  // One workflow per JSON line, preserving every run body for review.
+  // One workflow per JSON line. The complete parsed document preserves inputs,
+  // outputs, environments, services, reusable bindings and other execution fields.
+  // The remaining fields are a compact index, never the authoritative source.
   fs.writeFileSync(path.join(output,language+'-workflows.jsonl'),workflows.map(row=>JSON.stringify(row)).join('\n')+'\n');
   fs.writeFileSync(path.join(output,language+'-ci-files.jsonl'),candidates.map(row=>JSON.stringify(row)).join('\n')+'\n');
   summaries.push({language,repository:source.repo,commit:source.sha,blobCount:inventory.length,workflowCount:workflows.length,ciCandidateCount:candidates.length});

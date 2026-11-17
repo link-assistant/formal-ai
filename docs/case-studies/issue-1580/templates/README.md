@@ -1,6 +1,6 @@
 # Complete template inventory and CI review
 
-Source trees were pinned and fully read/hash-verified before comparison. Same-name matches are review aids; they do not establish behavioral equivalence. All file roles, including application source, documentation and historical evidence, remain visible in the TSV inventories.
+Source trees were pinned, downloaded completely and verified against every Git blob before comparison. Same-name matches are review aids; they do not establish behavioral equivalence. All file roles, including application source, documentation and historical evidence, remain visible in the TSV inventories.
 
 | Language | Source commit | Blobs | Workflows | CI candidates |
 | --- | --- | ---: | ---: | ---: |
@@ -36,8 +36,14 @@ The current Hive Mind `docs/CI-CD-BEST-PRACTICES.md` was read in full. Its recom
 
 ## Review boundaries
 
-`*-files.tsv` covers every blob. `*-ci-files.jsonl` conservatively selects workflows, composite actions, scripts/tests and build/policy metadata. `*-workflows.jsonl` preserves parsed job/step run bodies. These generated records do not substitute for resolving shell/package-script/configuration references and reviewing their behavior. That semantic/transitive review remains unfinished and must be completed in this PR.
+`*-files.tsv` covers every blob. `*-ci-files.jsonl` conservatively selects workflows, composite actions, scripts/tests and build/policy metadata. `*-workflows.jsonl` preserves each complete parsed workflow document and Git blob identity, including action inputs, environment/default/service/container fields, outputs and reusable workflow bindings; its smaller job/step fields are only a search index. Two integrity regressions reject dropped execution fields and tampered source blobs. These generated records do not substitute for resolving shell/package-script/configuration references and reviewing their behavior. That semantic/transitive review remains unfinished and must be completed in this PR.
 
 The latest related C++ merged change, PR #34, was reviewed before filing #35; it refreshes dependencies and release configuration but does not repair truncated-transfer retry. The Go pipeline-status helper was read; its failure/cancelled classification is not reported as a bug without evidence. Java already retries the OSV download with `--retry-all-errors`; it is not included in the C++ finding.
 
 Reproduction tooling: `experiments/issue-1580/templates.mjs` selects source identities, `full-template-trees.py` fetches complete archives and verifies every Git blob, and `compare-template-trees.mjs` generates these inventories. Run against the pinned manifest to retain historical reproducibility; selecting current heads intentionally creates a new comparison checkpoint.
+
+## Executed cross-template observations
+
+`rust/tests/web/issue-1580-template-observations.test.mjs` is in the fast PR inventory. Its nine local tests all passed, with no runtime skips. The unmodified Go, Java, Python and PHP detectors all returned exit 0 with negative code-change outputs when the selected Git comparison/repository was unavailable. Code/docs/empty controls separate the defect from legitimate negative observations. Java/Python also fail their first-commit mock, while PHP's legitimate initial-tree fallback succeeds; PHP still misclassifies an entirely unknown repository. A real initial Go Git repository reproduces its false negative. The production Formal AI detector now propagates errors and permits a tree fallback only for an established initial commit.
+
+The Go workflow model also reproduces skipped lint/build/selected release for both manual modes, followed by success from the unchanged terminal helper. This is modeled dependency propagation using the pinned YAML and the real helper, not hosted release execution. A candidate model repair admits both modes and still blocks release after forced lint/test/build failures. Python #18/#19 already fixed its analogous dispatch admission and are not reported again. Java #29 already tracks its missing aggregate status job. Latest merged related changes (Go #16, Java #25, Python #152 and PHP #24) were reviewed before preparing the five distinct upstream reports. Their report bodies, source identities and limitations are preserved in `experiments/issue-1580/upstream/`; filing URLs belong in `filed-issues.txt`.

@@ -1,0 +1,37 @@
+{
+  "repository": "link-foundation/go-ai-driven-development-pipeline-template",
+  "commit": "65c686846d7327d8c835a0d30b1a76cc6345cfc6",
+  "files": [
+    {
+      "path": "LICENSE",
+      "gitBlob": "fdddb29aa445bf3d6a5d843d6dd77e10a9f99657",
+      "sha256": "6b0382b16279f26ff69014300541967a356a666eb0b91b422f6862f6b7dad17e"
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "gitBlob": "0b3253abfe7828bc5dfaa63af10bd114e064502d",
+      "sha256": "55f4d8c4e7a2508067c0a69958f10e25362eb10fd86c02fe62147241f0a924df"
+    },
+    {
+      "path": "scripts/detect-code-changes.mjs",
+      "gitBlob": "24d680619faca711ab32ceafb6570be17ba97df9",
+      "sha256": "e468151784ecfaf53cad97dec66e6d6f888226c0e0b1a125e6005f1d89b8d138"
+    },
+    {
+      "path": "scripts/github-actions-log.mjs",
+      "gitBlob": "cdc8d636d7eafe24c58bb811dad3d17c9d073ac4",
+      "sha256": "29d1a076b214deb7f9ade9636ecd1263aca13514c7a1ada48253c95c743c8182"
+    },
+    {
+      "path": "scripts/ci/check-pipeline-status.mjs",
+      "gitBlob": "999317eee3979f4e3be31afdaf318d04c4c9c36b",
+      "sha256": "8a6ec08b65997133c8d378e00ab68580dda33c4fd84aaf481f8290bd12b22488"
+    },
+    {
+      "path": "scripts/ci/runner-acquisition.mjs",
+      "gitBlob": "6dfec1d449f69d31c256f44712217a6235042cdf",
+      "sha256": "de9903c89fae9e10ac0743916f9f0964a8db7fa3d50e44bd987c321c25f55a86"
+    }
+  ],
+  "purpose": "Unmodified upstream sources for bounded offline reproductions; not a local implementation or a hosted workflow run."
+}
