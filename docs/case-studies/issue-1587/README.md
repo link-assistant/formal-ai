@@ -68,3 +68,13 @@ attempt, supplied procedures and verification transcripts are retained under
 `experiments/issue-1587/`. The driver timed out a combined test command at its
 60-second boundary; the unchanged isolation suite then passed when run alone
 without imposing that driver deadline.
+
+The final local gate run completed all 138 entries. Its two failures were the
+abbreviation gate (a retained log filename, subsequently renamed and rechecked)
+and the dependency audit. All executable local gates now pass except that audit.
+The unchanged desktop and VS Code lockfiles contain picomatch versions affected
+by [GHSA-fc5q-39xc-vjpf](https://github.com/advisories/GHSA-fc5q-39xc-vjpf).
+On 2026-11-17 the advisory listed no patched release and the registry's latest
+was 4.0.7. The gate remains closed without suppressing the advisory or replacing
+an unrelated dependency with an unreviewed implementation. Green CI and native
+runtime execution remain unfinished acceptance evidence.

@@ -28,3 +28,9 @@ notation literals were corrected and rechecked. The dependency audit additionall
 reports GHSA-fc5q-39xc-vjpf in unchanged desktop/VS Code lockfiles; the registry
 and advisory list no patched picomatch release (latest 4.0.7). The gate remains
 closed; no advisory suppression or unreviewed replacement is introduced.
+
+Final local run: 136/138 passed or skipped; the log-filename abbreviation was
+corrected and its gate rechecked successfully. Only the dependency audit remains
+red. The eight-unit reasoning inventory produced 1/8 attempts (12.5%) and 0/8
+independently accepted units (0%). Implementation and verification evidence were
+committed before pushing; native tests and green current-head CI remain pending.
