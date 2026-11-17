@@ -231,7 +231,7 @@ fn prompt_evidence_holds(kind: &str, prompt: &str, normalized: &str) -> Option<b
         }
         "fetch_url" => crate::solver_handlers::http_fetch_claims(prompt, normalized),
         "navigation_url" => crate::solver_handlers::url_navigation_claims(prompt, normalized),
-        "calendar_date_signal" => crate::solver_handlers::calendar_claims(normalized),
+        "calendar_date_signal" => crate::solver_handlers::calendar_claims(prompt),
         "code_artifact" => crate::solver_handlers::code_debugging::code_block(prompt).is_some(),
         "supplied_text" => {
             crate::solver_handlers::text_rewrite::free_text_payload(prompt).is_some()

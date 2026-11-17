@@ -30,7 +30,7 @@ pub(super) fn explicit_conversion(text: &str) -> bool {
         .any(|word| contains_term(text, word) && (text.starts_with(word.as_str()) || numeric))
 }
 
-pub(crate) fn conversion_span(text: &str) -> Option<&str> {
+pub(crate) fn request_clauses(text: &str) -> Vec<&str> {
     let bytes = text.as_bytes();
     let mut clauses = Vec::new();
     let mut start = 0;
@@ -39,13 +39,17 @@ pub(crate) fn conversion_span(text: &str) -> Option<&str> {
             && at > 0
             && bytes[at - 1].is_ascii_digit()
             && bytes.get(at + 1).is_some_and(u8::is_ascii_digit);
-        if matches!(ch, '\n' | ';' | '!' | '?' | '？') || (ch == '.' && !decimal) {
+        if matches!(ch, '\n' | ';' | '!' | '?' | '？' | '。' | '।') || (ch == '.' && !decimal) {
             clauses.push(text[start..at].trim());
             start = at + ch.len_utf8();
         }
     }
     clauses.push(text[start..].trim());
-    let candidates: Vec<_> = clauses
+    clauses
+}
+
+pub(crate) fn conversion_span(text: &str) -> Option<&str> {
+    let candidates: Vec<_> = request_clauses(text)
         .into_iter()
         .map(|clause| clause.trim_start_matches(['¿', '¡']).trim())
         .filter(|clause| {

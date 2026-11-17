@@ -15,6 +15,16 @@ fn document_intent_and_bound_quantities_match_worker_fixtures() {
                 !["unit_conversion", "calendar_create_event"].contains(&result.intent.as_str()),
                 "{prompt}: {result:?}"
             ),
+            "event" => {
+                assert_eq!(
+                    result.intent, "calendar_create_event",
+                    "{prompt}: {result:?}"
+                );
+                assert!(
+                    result.answer.contains("BEGIN:VEVENT"),
+                    "{prompt}: {result:?}"
+                );
+            }
             "conversion" => assert_eq!(result.intent, "unit_conversion", "{prompt}: {result:?}"),
             "date" => {
                 assert_eq!(

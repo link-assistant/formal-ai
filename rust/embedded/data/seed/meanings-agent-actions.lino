@@ -674,6 +674,14 @@ meanings
     unit "not applicable"
     example "schedule"
     grounding "data/seed/handler-rules.lino"
+  calendar-request-cue
+    defined-by method
+    role action
+    precondition "a sentence asks to schedule an anchored event rather than reporting a document fact"
+    effect "reads request cues with start, date-led, imperative-end and courtesy-prefix positions"
+    unit "not applicable"
+    example "Please create an event tomorrow"
+    grounding "data/seed/handler-rules.lino"
   calendar_day_number_marker
     defined-by method
     role action

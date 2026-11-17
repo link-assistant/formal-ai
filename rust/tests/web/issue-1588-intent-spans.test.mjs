@@ -9,6 +9,10 @@ for(const row of fixtures) test(row.prompt,{timeout:15000},async()=>{
  if(row.kind==='document') {
   assert.notEqual(result.intent,'unit_conversion',JSON.stringify(result));
   assert.notEqual(result.intent,'calendar_create_event',JSON.stringify(result));
+ } else if(row.kind==='event') {
+  assert.equal(result.intent,'calendar_create_event',JSON.stringify(result));
+  assert.ok(result.content.includes('BEGIN:VEVENT'),result.content);
+  assert.ok(result.evidence.some(item=>item.startsWith('calendar:intent_span:')),JSON.stringify(result));
  } else {
   assert.equal(result.intent,row.kind==='date'?'calendar_date_offset':'unit_conversion',JSON.stringify(result));
   assert.equal(result.content,row.answer);
@@ -61,4 +65,12 @@ test('original API requests preserve document intent and exact requested answers
   if(running) await new Promise(resolve=>running.server.close(resolve));
   rmSync(home,{recursive:true,force:true});
  }
+});
+
+test('event fields come only from their scheduling request span',async()=>{
+ const answer=await worker.solve('Background: 12 day shifts. Create an event tomorrow.',[],{},{},[],{});
+ assert.ok(answer.evidence.includes('calendar:intent_span:create an event tomorrow'));
+ assert.equal(evaluate(worker,'calendarCreateRequestSpan("Create a poem about tomorrow.")'),null);
+ assert.equal(evaluate(worker,'calendarCreateRequestSpan("Schedule a meeting. The document mentions tomorrow.")'),null);
+ assert.equal(evaluate(worker,'calendarCreateRequestSpan("Create an event tomorrow. Schedule a call tomorrow.")'),null);
 });

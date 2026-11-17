@@ -497,7 +497,7 @@ function unitConversionClauses(text) {
   const out = [];
   let start = 0;
   for (let i = 0; i < text.length; i++) {
-    if (/[\n;!?？]/u.test(text[i]) ||
+    if (/[\n;!?？。।]/u.test(text[i]) ||
         (text[i] === "." && !(/[0-9]/u.test(text[i - 1] || "") && /[0-9]/u.test(text[i + 1] || "")))) {
       out.push(text.slice(start, i).trim());
       start = i + 1;

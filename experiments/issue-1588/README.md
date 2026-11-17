@@ -8,7 +8,7 @@ borrow a number across intervening words. Calendar creation also accepted a
 generic day word and scanned backwards through unrelated words for its date.
 
 The fix selects a single conversion request sentence, binds the quantity to its
-immediately following unit, and requires a concrete calendar anchor. Connector
+immediately following unit, and requires a scheduling request span with a concrete calendar anchor. Connector
 lexemes retain their original meaning identities; separate seed fields describe
 request starts and shorthand connectors. Explicit date-offset questions bind the
 day quantity separately from the date and use Gregorian day arithmetic. SI
@@ -39,7 +39,7 @@ claim native execution. The focused PR type check covers changed native source.
 | Quantity stays with its unit | Adjacent binding, a separate-sentence control, and a direct intervening-word rejection check. |
 | Russian agreement and exact values | `2 года = 730,5 дня`, `5 лет`, `21 день`, `22 дня`, plus exact `8 hours = 1/3 days` fixtures. |
 | Correct date offset | Original Russian request returns `4 января 2027 года`; English, leap day, non-leap year and backwards controls freeze full answers and result-date evidence. |
-| Route evidence and runtime twins | `before.jsonl` records the original 20 probes on the base revision. `after.jsonl` records 25 final probes, including later multilingual controls. Both retain selected-rule/handler evidence; successful answers also retain their bound spans or date derivation. |
+| Route evidence and runtime twins | `before.jsonl` records the original 20 probes on the base revision. `after.jsonl` records 57 final probes, including later multilingual and calendar intent controls. Both retain selected-rule/handler evidence; successful answers also retain their bound spans or date derivation. |
 | Integration and release preparation | JS suite is registered in the fast PR inventory; native shared-fixture suite is registered in the unit test root; embedded seed mirrors and changelog fragment are updated. |
 
 The original incorrect answers were `2 лет = 1461/2 день`,
@@ -82,3 +82,7 @@ checks. Read one with `gzip -dc experiments/issue-1588/validation.txt.gz`.
 
 [Current-head CI investigation](ci-round-1.md) records the complete first
 published run, the exact failure causes and the batched repairs.
+
+[Calendar intent completion and the second CI round](ci-round-2.md) record
+six newly reproduced document misroutes, the shared request-span repair, and
+the generated TypeScript repair reported by Layered CI.
