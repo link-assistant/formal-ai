@@ -33,5 +33,12 @@
     "url": "https://github.com/link-foundation/php-ai-driven-development-pipeline-template/issues/26",
     "bodyFile": "php-change-detection-report.md",
     "evidenceCommit": "71e1dee442fd74589df20a1d6f33710b6dec0d18"
+  },
+  {
+    "repository": "link-foundation/go-ai-driven-development-pipeline-template",
+    "title": "CI: stale action pins bypass integrity verification on non-PR events",
+    "url": "https://github.com/link-foundation/go-ai-driven-development-pipeline-template/issues/20",
+    "bodyFile": "go-stale-pin-integrity-report.md",
+    "evidenceCommit": "a4053def4bd4b921001fdf84a026ae35deebfc39"
   }
 ]

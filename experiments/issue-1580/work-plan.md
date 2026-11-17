@@ -50,3 +50,7 @@ Reproduced the missing backend log in two failing subprocess controls, then reta
 ## Published checkpoint before the Go/cache batch
 
 All 24 workflows on 09021cb30e completed successfully; no active or queued runs remain, and freshly fetched origin/main is already an ancestor. Retain exact-head metadata, review the Go/cache diff, archive supplied bootstrap scripts and Formal AI execution transcripts, then push the batch once. Native runtime, full template semantic review, benchmark capability, live identity, and historical cache-cause criteria remain open.
+
+## Go integrity report filed (2026-11-17)
+
+The pinned-source stale-pin regression is published at `a4053def4bd4b921001fdf84a026ae35deebfc39` and filed as [Go template #20](https://github.com/link-foundation/go-ai-driven-development-pipeline-template/issues/20). The posted body and immutable evidence identity are recorded locally. Reporting does not establish an upstream fix or complete the seven other semantic template reviews. Current head `e6627385d3ef58435df22ec61d4dfdc4551c9d28` still awaits all hosted results.
