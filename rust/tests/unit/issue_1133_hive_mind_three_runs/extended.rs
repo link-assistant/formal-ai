@@ -8,6 +8,12 @@ const BODY_PLACEHOLDER: &str = "{body}";
 // Reuse the production reader and canonical templates without exporting a planner helper.
 use crate::canonical_work_item_steps;
 
+// These two fixtures stop at the named-branch commit phase. Prepared-PR delivery,
+// feedback and readiness are exercised with real Git in issue_1158/1160/1162.
+fn commit_phase_prompt() -> String {
+    prompt().replace(&format!("Update the pull request at {PR}.\n"), "")
+}
+
 fn expected_owned_recipe_commit(planned: &[PlannedToolCall]) -> String {
     let paths = planned
         .iter()
@@ -51,11 +57,43 @@ fn expected_owned_recipe_commit(planned: &[PlannedToolCall]) -> String {
             ("{branch}", &quote(BRANCH)),
         ],
     );
+    let template = canonical_work_item_steps::fill("workflow_template", &[("{path}", &paths[0])]);
+    let header = template.lines().next().expect("workflow provenance header");
+    let name = template
+        .lines()
+        .find(|line| line.starts_with("name: "))
+        .expect("workflow name");
+    let workflow = planned
+        .iter()
+        .find(|call| {
+            let args: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
+            call.tool == "write"
+                && args["path"]
+                    .as_str()
+                    .is_some_and(|path| path.starts_with(".github/workflows/"))
+        })
+        .expect("recipe workflow write");
+    let args: serde_json::Value = serde_json::from_str(&workflow.arguments).unwrap();
+    let source = args["content"].as_str().expect("workflow source");
+    assert!(source.lines().any(|line| line == header));
+    assert!(source.lines().any(|line| line == name));
+    let path = path_of(workflow);
+    let (directory, _) = path.rsplit_once('/').expect("workflow directory");
+    let retire = canonical_work_item_steps::fill(
+        "superseded-workflow-retire-command",
+        &[
+            ("{dir}", &quote(directory)),
+            ("{workflow}", &quote(&path)),
+            ("{header}", &quote(header)),
+            ("{name}", &quote(name)),
+        ],
+    );
     canonical_work_item_steps::fill(
         "task-scaffold-commit-command",
         &[
             (FILES_PLACEHOLDER, &files),
             ("{reference}", &quote(ISSUE)),
+            ("{retire}", &retire),
             ("{commit}", &inner),
         ],
     )
@@ -158,8 +196,8 @@ fn a_fetch_only_client_progresses_past_the_read_without_refetching() {
 }
 
 #[test]
-fn the_full_claude_code_drive_reads_builds_verifies_and_pushes_kotlin() {
-    let mut messages = vec![ChatMessage::user(prompt())];
+fn the_claude_code_commit_phase_reads_builds_verifies_and_pushes_kotlin() {
+    let mut messages = vec![ChatMessage::user(commit_phase_prompt())];
     let kotlin = page("Kotlin");
     let (planned, answer) = drive(
         CLAUDE_TOOLS.as_slice(),
@@ -359,7 +397,7 @@ fn a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified
 
 #[test]
 fn a_verified_work_item_is_committed_and_pushed_to_the_named_branch() {
-    let mut messages = vec![ChatMessage::user(prompt())];
+    let mut messages = vec![ChatMessage::user(commit_phase_prompt())];
     let scala = page("Scala");
     let (planned, answer) = drive(
         AGENT_TOOLS.as_slice(),

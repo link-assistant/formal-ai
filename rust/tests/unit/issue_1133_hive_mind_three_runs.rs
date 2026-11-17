@@ -358,6 +358,7 @@ fn drive(
 ) -> (Vec<PlannedToolCall>, Option<String>) {
     let mut planned = Vec::new();
     let append = append_provider::AppendWorkspace::new();
+    let mut workspace = crate::observed_plan_tools::ToolWorkspace::new("issue-1133-source-probes");
     let definitions: Vec<serde_json::Value> = tools
         .iter()
         .filter(|name| matches!(**name, "Write" | "write"))
@@ -376,9 +377,22 @@ fn drive(
                 } else {
                     None
                 };
+                // Source observations must describe the actual workspace, including ENOENT.
+                // Compiler and network results remain the explicit per-test fixtures.
+                let observed = if appended.is_none()
+                    && (args["command"]
+                        .as_str()
+                        .is_some_and(|command| command.contains("workspace-source-v1"))
+                        || matches!(call.tool.as_str(), "Write" | "write"))
+                {
+                    Some(workspace.execute(&format!("c{step}"), &call))
+                } else {
+                    None
+                };
                 let result = match &appended {
                     Some(Ok(_)) => String::new(),
                     Some(Err(error)) => format!("Error: {error}"),
+                    None if observed.is_some() => String::new(),
                     None => results(&call.tool, &call.arguments),
                 };
                 record(
@@ -388,6 +402,9 @@ fn drive(
                     &call.arguments,
                     &result,
                 );
+                if let Some(observed) = observed {
+                    *messages.last_mut().expect("recorded source observation") = observed;
+                }
                 if let Some(receipt) = appended {
                     let result_message = messages.last_mut().expect("recorded append result");
                     match receipt {
