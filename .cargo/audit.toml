@@ -47,5 +47,16 @@
 #   This entry removes itself: `check-rust-dependencies.sh` fails once
 #   `cargo tree --invert fxhash@0.2.1` finds nothing, which is the moment the
 #   bump reaches this lockfile.
+# RUSTSEC-2026-0543 blocked-upstream = "chrono@0.4.45" report = "https://github.com/link-foundation/command-stream/issues/238"
+#   chrono is an unconditional dependency of command-stream 1.5.3 and
+#   link-calculator 0.22.0. The latest published versions (1.13.0 and 0.24.0)
+#   still require it. RustSec marks all chrono versions unmaintained and lists
+#   no patched release; upgrading chrono cannot resolve this notice.
+#   Both introducing projects have reproducible migration reports:
+#   https://github.com/link-foundation/command-stream/issues/238
+#   https://github.com/link-assistant/calculator/issues/265
+#   This acknowledges only the informational maintenance notice. All other
+#   warnings remain fatal. The existing cargo-tree proof rejects this entry
+#   once chrono leaves the graph, requiring removal of the stale exception.
 [advisories]
-ignore = ["RUSTSEC-2025-0057"]
+ignore = ["RUSTSEC-2025-0057", "RUSTSEC-2026-0543"]

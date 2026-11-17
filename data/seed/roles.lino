@@ -555,6 +555,8 @@ roles
     kind meaning
   interest_cue
     kind predicate
+  internet-access-help
+    kind meaning
   interrogative_opener
     kind meaning
   inverse_incompatibility_relation
