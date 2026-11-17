@@ -57,3 +57,5 @@ The [server-retention merge verification](main1592-merge.md) records the next ma
 The [second CI investigation](ci-round2.md) records compilation/lint, both JavaScript shards, the native evidence-address test correction, the main PR #1602 merge and fresh combined-tree verification. Corrected native acceptance execution is pending at this pre-push snapshot.
 
 The [third CI investigation](ci-round3.md) records all 37 native cases, the three English date-connector failures, the calendar-operation ownership fix, and focused verification. Corrected native execution remains required at this pre-push snapshot.
+
+The [fourth CI investigation](ci-round4.md) confirms that date operands remain intact, identifies the subsequent source-lookup interception and defers complete calendar operations to their symbolic handler. It also preserves the independent checkout network failure and focused verification. Corrected native execution remains required at this pre-push snapshot.
