@@ -30,7 +30,8 @@ const SUMMARIES = [
       "the Antarctic ice shelf. It provides year-round measurements of ozone and sea " +
       "temperature. The crew rotates every summer. Supplies arrive by ship in February. Radar " +
       "masts surround the living quarters.",
-    "The Halley research station opened in 1956 is used to study the Antarctic ice shelf.",
+    "The Halley research station, opened in 1956, is used to study the Antarctic ice shelf. " +
+      "It provides year-round measurements of ozone and sea temperature.",
   ],
   ["Summarize: The parser reads the file. It builds a tree. The tree is checked.", "The parser reads the file."],
   ["Резюмируй: Парсер читает файл. Он строит дерево. Дерево проверяется.", "Парсер читает файл."],
@@ -47,6 +48,57 @@ const SUMMARIES = [
 
 test("summarization keeps the statements the text depends on", async () => {
   for (const [prompt, summary] of SUMMARIES) {
+    const answer = await solve(prompt);
+    assert.equal(answer.intent, "summarization_free_text", prompt);
+    assert.equal(answer.content, summary, prompt);
+  }
+});
+
+test("summarization removes phatic sentences and keeps the decision with both reasons", async () => {
+  // The English and Russian reports are followed by Hindi, Chinese and Spanish cases.
+  const cases = [
+    [
+      "Summarize: Good afternoon. I have decided to decline because the commute takes an hour and a half and the salary is lower than in my current job. Thank you.",
+      "I have decided to decline: the commute takes an hour and a half and the salary is lower than in my current job.",
+    ],
+    [
+      "Кратко перескажи: Добрый день. Я подумал и решил отказаться, потому что дорога до офиса занимает полтора часа, а зарплата ниже, чем на текущем месте. Спасибо за внимание.",
+      "Я подумал и решил отказаться: дорога до офиса занимает полтора часа, а зарплата ниже, чем на текущем месте.",
+    ],
+    [
+      "संक्षेप में लिखें: नमस्ते। स्कूल बंद है क्योंकि सड़क पर पानी भर गया है। सादर।",
+      "स्कूल बंद है: सड़क पर पानी भर गया है।",
+    ],
+    [
+      "总结一下：你好。学校因道路积水而停课。谢谢大家。",
+      "学校因道路积水而停课。",
+    ],
+    [
+      "Resume esto: Hola. La escuela cierra porque la carretera está inundada. Saludos cordiales.",
+      "La escuela cierra: la carretera está inundada.",
+    ],
+    [
+      "Summarize: HELLO! Because both roads are flooded, the school will close. Best regards,",
+      "Because both roads are flooded, the school will close.",
+    ],
+    [
+      "Summarize: Hello! Thanks to the new pump, the well is working. Goodbye.",
+      "Thanks to the new pump, the well is working.",
+    ],
+    [
+      "Summarize: Hello. We did not leave because the road was flooded. Thank you.",
+      "We did not leave because the road was flooded.",
+    ],
+    [
+      "Summarize: Hello. We stayed because of the rain and the flooding. Goodbye.",
+      "We stayed because of the rain and the flooding.",
+    ],
+    [
+      "Summarize: Hello. Thanks. The launch is on Monday. Tickets cost ten dollars. Goodbye.",
+      "The launch is on Monday.",
+    ],
+  ];
+  for (const [prompt, summary] of cases) {
     const answer = await solve(prompt);
     assert.equal(answer.intent, "summarization_free_text", prompt);
     assert.equal(answer.content, summary, prompt);
@@ -81,6 +133,13 @@ test("summarization declines a prompt without text", async () => {
 test("summarization declines a single statement", async () => {
   await seeded;
   const prompt = "Summarize: Cats sleep a lot.";
+  const declined = evaluate(worker, `trySummarizationText(${JSON.stringify(prompt)}, normalizePrompt(${JSON.stringify(prompt)}))`);
+  assert.equal(declined, null);
+});
+
+test("summarization declines text made entirely of phatic sentences", async () => {
+  await seeded;
+  const prompt = "Summarize: Good afternoon. Thank you. Best regards.";
   const declined = evaluate(worker, `trySummarizationText(${JSON.stringify(prompt)}, normalizePrompt(${JSON.stringify(prompt)}))`);
   assert.equal(declined, null);
 });

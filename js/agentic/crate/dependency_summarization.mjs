@@ -27,7 +27,9 @@
 // duplicate entries and `kept` lists node indexes.
 
 import { byteOrder } from './rust_str.mjs';
-import { contentIds, formalizeSentences, joinSurfaces } from './text_formalization.mjs';
+import { contentIds, formalizeSentenceSegments, formalizeSentences, joinSurfaces, Polarity, roleWordsIn, tokens } from './text_formalization.mjs';
+import { sentences } from './formalization_segment.mjs';
+import { quoteFault, quotedSegmentSpans } from './normal_markov.mjs';
 import { certifiesRestatement, checkedRelation } from './statement_relation.mjs';
 
 /** Mirrors `ELABORATION_SHARED_TERMS` in rust/src/summarization/dependency.rs: shared terms that make one statement elaborate another. */
@@ -51,8 +53,12 @@ export function closingOf(sentence) {
  * @param {string} language
  */
 export function sentenceStatements(text, language) {
+  return sentenceEntries(formalizeSentences(text, language));
+}
+
+function sentenceEntries(formalized) {
   const out = [];
-  formalizeSentences(text, language).forEach((sentence, index) => {
+  formalized.forEach((sentence, index) => {
     const closing = closingOf(sentence.text);
     for (const statement of sentence.statements) out.push({ statement, sentence: index, closing });
   });
@@ -165,7 +171,10 @@ export function renderKept(nodes, kept) {
  * @param {string} language
  */
 export function summarizeByDependency(text, language) {
-  const entries = sentenceStatements(text, language);
+  return summarizeEntries(sentenceStatements(text, language));
+}
+
+function summarizeEntries(entries) {
   const { unique, removed } = splitDuplicates(entries);
   const nodes = statementGraph(unique);
   const kept = keptCore(nodes);
@@ -176,6 +185,38 @@ export function summarizeByDependency(text, language) {
     kept,
     text: renderKept(nodes, kept),
   };
+}
+
+const PHATIC_ROLES = ['social_greeting', 'social_farewell', 'social_courtesy_response', 'text-summary-phatic'];
+
+function renderCausalSentence(statement, causePattern, causes) {
+  const { text } = statement;
+  if (!causePattern || statement.polarity === Polarity.Denied || statement.dialogue.question
+      || /[()[\]{}]/u.test(text)
+      || quoteFault(text) !== null || quotedSegmentSpans(text).length > 0) return text;
+  const [cause, repeated] = text.matchAll(causePattern);
+  if (!cause || repeated || cause.index === 0 || !causes.has(cause[1].toLowerCase().replace(/\s+/gu, ' '))) return text;
+  const main = text.slice(0, cause.index);
+  const reasons = text.slice(cause.index + cause[0].length);
+  return `${main}: ${reasons}`;
+}
+
+/** Rank complete substantive sentences so a selection keeps its governed clauses. */
+export function summarizeFreeText(text, language) {
+  const source = sentences(text);
+  const phatic = new Set(PHATIC_ROLES.flatMap((role) => [...roleWordsIn(role, language)]));
+  const content = source.filter((sentence) => !phatic.has(
+    tokens(sentence.text).map((token) => token.surface.toLowerCase()).join(' '),
+  ));
+  const summary = summarizeEntries(sentenceEntries(formalizeSentenceSegments(content, language, true)));
+  if (summary.kept.length === 0) return null;
+
+  const causes = roleWordsIn('text-summary-cause', language);
+  const cues = [...roleWordsIn('text-summary-cause-phrase', language), ...causes].map((cue) => cue.split(' ')
+    .map((word) => word.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')).join('\\s+'));
+  const causePattern = cues.length ? new RegExp(`[\\s,]+(${cues.join('|')})\\s+`, 'giu') : null;
+  summary.text = joinSurfaces(summary.kept.map((index) => renderCausalSentence(summary.statements[index].statement, causePattern, causes)));
+  return source.length === 1 && summary.text === source[0].text ? null : summary;
 }
 
 /**

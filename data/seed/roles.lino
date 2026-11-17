@@ -1169,6 +1169,12 @@ roles
     kind meaning
   term_information_request_opener
     kind meaning
+  text-summary-cause
+    kind meaning
+  text-summary-cause-phrase
+    kind meaning
+  text-summary-phatic
+    kind meaning
   text_summarization_action
     kind meaning
   time_duration_cue
