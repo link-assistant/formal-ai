@@ -322,7 +322,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     return finalize(events, steps, toolCalls, githubRepoInfo, formalizationContext);
   }
 
-  if (lexiconMentionsRole("internet-access-help", normalized)) {
+  if (internetAccessHelpRequested(prompt, normalized)) {
     const access = tryFeatureCapabilityStatus(prompt, normalized, language, preferences);
     return finalizeInlineHandler(events, steps, toolCalls, access, "tryFeatureCapabilityStatus", formalizationContext);
   }

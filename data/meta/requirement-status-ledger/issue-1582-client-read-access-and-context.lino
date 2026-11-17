@@ -11,11 +11,12 @@ requirement_status_ledger_shard
   requirement
     id "R1582-2"
     verdict "implemented"
-    delivered "implemented — five-language harness permission guidance"
+    delivered "implemented — automatic five-language permission guidance and quoted-input exclusions"
+    automated_test "rust/tests/web/issue-1582-permissions.test.mjs"
   requirement
     id "R1582-3"
     verdict "partial"
-    delivered "partial — native wrapper awaits CI"
+    delivered "partial — native runtime regression unexecuted under pre-merge policy"
     automated_test "rust/tests/web/server-structured-log-cli.test.mjs"
   requirement
     id "R1582-4"
@@ -24,9 +25,9 @@ requirement_status_ledger_shard
   requirement
     id "R1582-5"
     verdict "partial"
-    delivered "partial — Gemini input context blocked upstream; native adapters await CI"
+    delivered "partial — Gemini input context blocked upstream; native runtime unexecuted under pre-merge policy"
   requirement
     id "R1582-6"
     verdict "partial"
-    delivered "partial — available evidence retained; Mac-only logs unavailable; final CI pending"
+    delivered "partial — evidence retained; Mac-only logs unavailable; dependency qualification and native runtime unfinished"
     automated_test ""

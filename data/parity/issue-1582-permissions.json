@@ -1,0 +1,92 @@
+[
+  {
+    "language": "en",
+    "prompt": "How do I enable internet access?",
+    "guidance": true
+  },
+  {
+    "language": "en",
+    "prompt": "Allow internet access",
+    "guidance": true
+  },
+  {
+    "language": "en",
+    "prompt": "What should I do to give you access to the internet?",
+    "guidance": true
+  },
+  {
+    "language": "ru",
+    "prompt": "Как включить доступ к интернету?",
+    "guidance": true
+  },
+  {
+    "language": "ru",
+    "prompt": "Что мне сделать, чтобы дать тебе доступ в интернет?",
+    "guidance": true
+  },
+  {
+    "language": "ru",
+    "prompt": "Как мне разрешить доступ к интернету?",
+    "guidance": true
+  },
+  {
+    "language": "hi",
+    "prompt": "इंटरनेट की अनुमति कैसे दें?",
+    "guidance": true
+  },
+  {
+    "language": "hi",
+    "prompt": "मैं आपको इंटरनेट का उपयोग करने की अनुमति कैसे दूँ?",
+    "guidance": true
+  },
+  {
+    "language": "zh",
+    "prompt": "如何启用互联网访问？",
+    "guidance": true
+  },
+  {
+    "language": "zh",
+    "prompt": "我怎样才能允许你访问互联网？",
+    "guidance": true
+  },
+  {
+    "language": "es",
+    "prompt": "¿Cómo habilitar el acceso a internet?",
+    "guidance": true
+  },
+  {
+    "language": "es",
+    "prompt": "¿Cómo puedo darte acceso a internet?",
+    "guidance": true
+  },
+  {
+    "language": "en",
+    "prompt": "Translate \"enable internet access\" into Russian.",
+    "guidance": false
+  },
+  {
+    "language": "en",
+    "prompt": "Write a program that displays \"enable internet access\".",
+    "guidance": false
+  },
+  {
+    "language": "ru",
+    "prompt": "Переведи фразу «как включить интернет» на английский.",
+    "guidance": false
+  },
+  {
+    "language": "hi",
+    "prompt": "\"इंटरनेट की अनुमति दें\" का अनुवाद करें।",
+    "guidance": false
+  },
+  {
+    "language": "zh",
+    "prompt": "请翻译“如何启用互联网访问”。",
+    "guidance": false
+  },
+  {
+    "language": "es",
+    "prompt": "Traduce \"permitir acceso a internet\" al inglés.",
+    "guidance": false
+  }
+]

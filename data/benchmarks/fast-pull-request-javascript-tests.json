@@ -223,6 +223,7 @@
     "rust/tests/web/issue-1550-meta-executor.test.mjs",
     "rust/tests/web/issue-1550-procedure-census.test.mjs",
     "rust/tests/web/issue-1550-procedure-documentation.test.mjs",
-    "rust/tests/web/issue-1582-defaults.test.mjs"
+    "rust/tests/web/issue-1582-defaults.test.mjs",
+    "rust/tests/web/issue-1582-permissions.test.mjs"
   ]
 }

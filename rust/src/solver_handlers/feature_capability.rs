@@ -55,7 +55,7 @@ pub fn try_feature_capability(
     runtime: CapabilityRuntime,
 ) -> Option<SymbolicAnswer> {
     let language = detect_language(prompt);
-    if seed::lexicon().mentions_role("internet-access-help", normalized) {
+    if crate::solver_handler_how::internet_access_help_requested(prompt, normalized) {
         log.append("permission:guidance", "internet-access-help");
         let body = capability_response("internet-access-help", language.slug(), &[]);
         return Some(finalize_simple(
