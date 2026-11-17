@@ -83,8 +83,11 @@ export function makeRedactor(env={}, {preserveJsonNumbers=false,transformText=va
 function writeAll(write,bytes){let offset=0;while(offset<bytes.length){const count=write(bytes.subarray(offset));if(!Number.isSafeInteger(count)||count<=0||count>bytes.length-offset)throw Error('sink_progress');offset+=count;}}
 // Best-effort diagnostics: return typed fixed failure codes, never raw IO error text.
 // This logger makes no durability/provenance guarantee and is not a chain writer.
-export function createLogger({level='debug',directory,env=process.env,pid=process.pid,clock=()=>new Date().toISOString(),recordObserver,stderrWrite=b=>fs.writeSync(process.stderr.fd,b),openFile=file=>fs.openSync(file,'a',0o600),fileWrite=(fd,b)=>fs.writeSync(fd,b),closeFile=fd=>fs.closeSync(fd)}={}){
+export function createLogger({level='debug',directory,env=process.env,pid=process.pid,clock=()=>new Date().toISOString(),recordObserver,stderrWrite,terminal=stderrWrite!==undefined,
+ format='lino',openFile=file=>fs.openSync(file,'a',0o600),fileWrite=(fd,b)=>fs.writeSync(fd,b),closeFile=fd=>fs.closeSync(fd)}={}){
  if(!Object.hasOwn(levels,level))throw Error('invalid_log_level');
+ if(!['lino','nested'].includes(format))throw Error('invalid_log_format');
+ stderrWrite??=b=>fs.writeSync(process.stderr.fd,b);
  if(recordObserver!==undefined&&typeof recordObserver!=='function')throw Error('invalid_record_observer');
  const redact=makeRedactor(env),failures=[],sinks=[];let sequence=0,fd=null,file=null;
  let fileHealth={status:'disabled'};
@@ -94,7 +97,7 @@ export function createLogger({level='debug',directory,env=process.env,pid=proces
   if(!fileFailureReported){fileFailureReported=true;try{writeAll(stderrWrite,Buffer.from(encodeTyped({schema:'formal-ai-diagnostic-v1',level:'error',component:'structured_log',kind:'logging_failure',message:'logging_failed_check_log_directory_permissions_and_space',metadata:fileHealth})+'\n'));}catch{/* The independent fallback never recurses. */}}
  };
  if(level!=='silent'){
-  sinks.push({name:'stderr',write:stderrWrite,enabled:true});
+  if(terminal)sinks.push({name:'stderr',write:stderrWrite,enabled:true});
   if(directory){try{fs.mkdirSync(directory,{recursive:true,mode:0o700});file=path.join(directory,'serve-'+pid+'.lino');fd=openFile(file);sinks.push({name:'file',write:b=>fileWrite(fd,b),enabled:true});fileHealth={status:'writable',directory};}catch(error){failedFile(error);failures.push({sink:'file',reason:'open_failed'});}}
  }
  return {
@@ -124,7 +127,7 @@ export function createLogger({level='debug',directory,env=process.env,pid=proces
 
     line=encodeTyped(record)+'\n';
    }catch{return {emitted:false,reason:'serialization_failed'};}
-   const bytes=Buffer.from(line),delivered=[];
+   const bytes=Buffer.from(formatLogRecord(line.trimEnd(),format)+'\n'),delivered=[];
    if(bytes.length>MAXIMUM_LOG_RECORD_BYTES)return {emitted:false,reason:'record_size_limit'};
    if(recordObserver){try{recordObserver(line.slice(0,-1));}catch{return {emitted:false,reason:'record_observer_failed'};}}
    for(const sink of sinks){if(!sink.enabled)continue;try{writeAll(sink.write,bytes);delivered.push(sink.name);}catch(error){sink.enabled=false;if(sink.name==='file')failedFile(error);failures.push({sink:sink.name,reason:'write_failed'});}}
@@ -140,7 +143,9 @@ export function convertLog(input,{from='lino',to='lino',env=process.env}={}){
  if(!['lino','jsonl'].includes(from)||!['lino','json','jsonl','pretty'].includes(to))throw Error('invalid_format');
  if(typeof input!=='string'||Buffer.byteLength(input)>16*MAXIMUM_LOG_RECORD_BYTES)throw Error('log_size_limit');
  if(input!==''&&!input.endsWith('\n'))throw Error('unterminated_log');
- const redact=makeRedactor(env),records=input===''?[]:input.slice(0,-1).split('\n').map(line=>redact(from==='lino'?decodeTyped(line):JSON.parse(line)));
+ // Fold only the indentation emitted by formatLogRecord; keep strict canonical decoding.
+ const source=from==='lino'?input.replace(/\n +(?=\()/gu,' '):input;
+ const redact=makeRedactor(env),records=source===''?[]:source.slice(0,-1).split('\n').map(line=>redact(from==='lino'?decodeTyped(line):JSON.parse(line)));
  // Validate the same supported typed model for every export format.
  const encoded=records.map(encodeTyped);
  if(encoded.some(line=>Buffer.byteLength(line)>MAXIMUM_LOG_RECORD_BYTES))throw Error('record_size_limit');
@@ -149,14 +154,29 @@ export function convertLog(input,{from='lino',to='lino',env=process.env}={}){
  return JSON.stringify(records,null,to==='pretty'?2:0)+'\n';
 }
 
+// Whitespace-only presentation of the same typed tree, without a second codec.
+export function formatLogRecord(line,format='lino'){
+ if(format==='lino')return line;
+ if(format!=='nested')throw Error('invalid_log_format');
+ let depth=0,out='';
+ for(const character of line){
+  if(character==='('){if(depth)out=out.trimEnd()+'\n'+'  '.repeat(depth);depth++;}
+  else if(character===')')depth--;
+  out+=character;
+ }
+ return out;
+}
+
 const truth=v=>['1','true','yes','on'].includes(String(v??'').trim().toLowerCase());
 export function createServeLogger(options={}){
- const environment=options.env??process.env,silent=options.ephemeral===true||truth(environment.FORMAL_AI_EPHEMERAL)||options.silent===true||truth(environment.FORMAL_AI_SILENT);
+ const environment=options.env??process.env;
+ if(options.ephemeral===true||truth(environment.FORMAL_AI_EPHEMERAL))return createLogger({env:environment,level:'silent'});
+ const silent=options.silent===true||truth(environment.FORMAL_AI_SILENT);
  const configured=options.logLevel??environment.FORMAL_AI_LOG_LEVEL??'debug';
  if(!silent&&configured==='trace'&&options.trace!==true)throw Error('trace_requires_explicit_flag');
  const level=silent?'silent':options.trace===true?'trace':configured;
  const directory=options.logDirectory??environment.FORMAL_AI_LOG_DIR??path.join(environment.HOME||os.homedir(),'.formal-ai','logs');
- return createLogger({env:environment,level,directory});
+ return createLogger({env:environment,level,directory,terminal:options.terminal===true||truth(environment.FORMAL_AI_LOG_STDERR),format:options.logFormat??environment.FORMAL_AI_LOG_FORMAT??'lino',...(options.stderrWrite?{stderrWrite:options.stderrWrite}:{})});
 }
 export function diagnosticBody(body){try{return JSON.parse(body);}catch{return String(body??'');}}
 // Legacy serde-compatible bodies preserve Float markers/BigInt through redaction.

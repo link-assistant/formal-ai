@@ -7,7 +7,7 @@
 //! surface: the search now runs through the process source cache, answers
 //! from captured statements with citations, and degrades to the localized
 //! `web_search_unavailable` response when nothing is captured. Live provider
-//! fetches stay behind the `FORMAL_AI_LIVE_FETCH` opt-in, so this suite never
+//! fetches use explicit offline solver configuration, so this suite never
 //! touches the network: the executed case injects a fixture transport, and
 //! the fallback case runs with the transport off.
 
@@ -89,18 +89,11 @@ const EXECUTED_ANSWER: &str = concat!(
 
 /// The exact offline answer for the explicit request: the localized
 /// `web_search_unavailable` response naming the extracted query.
-const OFFLINE_ANSWER: &str = "No captured provider response is available for `snorflax calibration`. \
-Live fetching is off by default; enable it explicitly to populate the replayable source cache. \
-The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and \
-Wikinews.";
+const OFFLINE_ANSWER: &str = "No captured provider response is available for `snorflax calibration`. Read-only retrieval is enabled by default. Check connectivity, provider errors, and explicit offline or deny settings; ask how to enable internet access for harness permission controls. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews.";
 
 /// The exact fallback answer: the same response naming the whole unresolved
 /// instruction, which is the fallback's focus.
-const FALLBACK_ANSWER: &str = "No captured provider response is available for \
-`Calibrate the snorflax against silent teal weather`. \
-Live fetching is off by default; enable it explicitly to populate the replayable source cache. \
-The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and \
-Wikinews.";
+const FALLBACK_ANSWER: &str = "No captured provider response is available for `Calibrate the snorflax against silent teal weather`. Read-only retrieval is enabled by default. Check connectivity, provider errors, and explicit offline or deny settings; ask how to enable internet access for harness permission controls. The unexecuted plan includes DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary, and Wikinews.";
 
 fn temp_cache(label: &str) -> PathBuf {
     let path = std::env::temp_dir().join(format!(
@@ -229,14 +222,17 @@ fn offline_cache_miss_answers_unavailable_not_a_description() {
 
 /// R1: the unknown-reasoning fallback itself runs its search for the focus.
 /// The canonical unresolved instruction of issue #873 reaches the fallback;
-/// with live fetch off (the default) and no capture for the focus, the
+/// with the explicit offline test configuration and no capture for the focus, the
 /// executed attempt misses the offline cache and the answer is the localized
 /// `web_search_unavailable` response naming the focus — the very answer the
 /// paragraph used to stand in front of.
 #[test]
 fn unknown_reasoning_fallback_executes_instead_of_describing() {
-    let response = UniversalSolver::new(SolverConfig::default())
-        .solve("Calibrate the snorflax against silent teal weather");
+    let response = UniversalSolver::new(SolverConfig {
+        offline: true,
+        ..SolverConfig::default()
+    })
+    .solve("Calibrate the snorflax against silent teal weather");
 
     assert_eq!(response.answer, FALLBACK_ANSWER);
 

@@ -379,12 +379,14 @@ export function loadWorkerMirror(overrides = {}) {
  * `reorderModules`, when given, maps the module list the entry loads to the
  * order to load it in, so a test can prove the modules load in any order.
  */
-export function createWorkerContext(overrides = {}, { reorderModules = null, provenance=false } = {}) {
+export function createWorkerContext(overrides = {}, { reorderModules = null, provenance=false, networkFetch=null } = {}) {
   preflightWorkerSources(workerMirrorFiles());
   const fetched=provenance?[]:null;
   const context = createBrowserContext({
     location: { href: "http://localhost/worker/formal_ai_worker.js", search: "" },
-    fetch: (url) => {
+    fetch: (url, options) => {
+      const address = new URL(String(url), 'http://localhost/worker/formal_ai_worker.js');
+      if (address.origin !== 'http://localhost' && networkFetch) return networkFetch(url, options);
       const relative = webRootPath(url);
       const onDisk = relative.startsWith("seed/")
         ? path.join(REPO_ROOT, "data", relative)
@@ -445,7 +447,8 @@ export function evaluate(context, expression) {
  * does not solve.
  */
 export class WorkerHost {
-  constructor(overrides = {},{provenance=false}={}) {
+  constructor(overrides = {},{provenance=false,networkFetch=null}={}) {
+    this.networkFetch = networkFetch;
     if(provenance===true)workerCustodyEnabled.add(this);
     this.overrides = overrides;
     this.context = null;
@@ -459,7 +462,7 @@ export class WorkerHost {
   boot() {
     if (!this.ready) {
       const provenance=workerCustodyEnabled.has(this);
-      this.context = createWorkerContext(this.overrides,{provenance});
+      this.context = createWorkerContext(this.overrides,{provenance,networkFetch:this.networkFetch});
       this.ready = Promise.resolve(evaluate(this.context, "loadSeed()")).then(() => {
         if(!provenance)return this.context;
         const storage=value=>Array.from({length:value.length},(_,index)=>{

@@ -52,7 +52,7 @@ test('default diagnostics record request metadata and leave full dialogs opt-in'
 
   assert.equal(fs.existsSync(path.join(run.home, 'dialog-logs')), false);
   const diagnostics = fs.readFileSync(path.join(run.home, '.formal-ai', 'logs', `serve-${run.pid}.lino`), 'utf8');
-  assert.equal(diagnostics, run.stderr);
+  assert.equal(run.stderr, '');
   assert.ok(!diagnostics.includes(requestMarker));
   assert.ok(!run.stdout.includes(requestMarker));
   const records = run.records();
@@ -96,6 +96,9 @@ for (const mode of ['--ephemeral', 'FORMAL_AI_EPHEMERAL=1']) {
         FORMAL_AI_RECORD_CHAT: '1',
         FORMAL_AI_DIALOG_LOG_DIR: 'explicit-dialogs',
         FORMAL_AI_LOG_DIR: 'explicit-logs',
+        FORMAL_AI_LOG_STDERR: '1',
+        FORMAL_AI_LOG_FORMAT: 'nested',
+        FORMAL_AI_LIVE_FETCH: '1',
         FORMAL_AI_NATIVE_RESPONSE_CAPTURE_DIR: 'capture',
         FORMAL_AI_SOURCE_USAGE_RUST_GRAMMAR: 'false',
       },

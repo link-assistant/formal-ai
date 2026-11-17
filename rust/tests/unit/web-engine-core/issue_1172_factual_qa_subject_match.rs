@@ -170,12 +170,16 @@ fn engine_no_longer_answers_australia_with_washington() {
     // Australia has no seeded fact, so the prompt must fall through the
     // fact store to a non-fact_lookup answer — never the USA record's
     // Washington, D.C. summary the substring alias match used to produce.
-    let response = FormalAiEngine.answer("What is the capital of Australia?");
+    let response = formal_ai::UniversalSolver::new(formal_ai::SolverConfig {
+        offline: true,
+        ..formal_ai::SolverConfig::default()
+    })
+    .solve("What is the capital of Australia?");
     assert_ne!(
         response.intent, "fact_lookup",
         "an unseeded subject must not route to a seeded fact (issue #1172)"
     );
-    // Offline (no `FORMAL_AI_LIVE_FETCH`), the concept lookup walks every
+    // Explicitly offline, the concept lookup walks every
     // bound source, misses, and says so honestly instead of guessing. The
     // consulted list repeats once per unresolved `concept_lookup:miss` event.
     assert_eq!(response.intent, "concept_lookup_unresolved");

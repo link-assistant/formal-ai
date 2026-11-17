@@ -80,6 +80,7 @@ machine automatically.
 memory without creating or upgrading its files. It disables chat memory writes,
 background dreaming, memory imports, server diagnostics, dialog capture, and
 derivation storage. Capture and trace options cannot override this mode.
+The server uses local sources in ephemeral mode and skips live source retrieval.
 `--silent` only disables diagnostics and dialog capture. Check `GET /health`
 for `memory.mode` (`read_only` or `read_write`), the structured log sink's
 `logs.status`, and the two capture flags.

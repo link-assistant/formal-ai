@@ -1,0 +1,8 @@
+{
+  "kind": "Node regression replay; not an installed Claude TUI",
+  "prompt": "Как включить доступ к интернету?",
+  "answer": "Чтение интернет-источников включено по умолчанию. Если клиент блокирует инструмент, подтвердите запрос разрешения; в Claude Code откройте `/permissions` и разрешите Read, Glob, Grep, WebFetch и WebSearch. Существующие правила ask/deny сохраняются. Если сервер Formal AI явно переведён в автономный режим, уберите FORMAL_AI_OFFLINE и FORMAL_AI_NETWORK=denied и перезапустите: `FORMAL_AI_LIVE_FETCH=1 formal-ai with claude`. Сообщение в чате не отменяет ограничения оператора. Запись и выполнение команд управляются разрешениями клиента. Если запросы не проходят, проверьте соединение, прокси и доступность источников; изучите файл журнала или включите FORMAL_AI_LOG_STDERR=1 для диагностики.",
+  "diagnosticStdout": "",
+  "diagnosticStderr": "",
+  "nested": "(formal-ai-log-v1\n  (object\n    (field component\n      (string client_integrations))\n    (field dialog_id\n      (null))\n    (field kind\n      (string wrapper.session))\n    (field level\n      (string debug))\n    (field message\n      (string wrapper.session))\n    (field metadata\n      (object\n        (field component\n          (string client_integrations))\n        (field session_file\n          (string example/session.jsonl))))\n    (field pid\n      (number 7399))\n    (field schema\n      (string formal-ai-diagnostic-v1))\n    (field sequence\n      (number 1))\n    (field timestamp\n      (string 2026-11-17T12%3A12%3A28.677000000Z))\n    (field timestamp_precision\n      (string milliseconds))))\n"
+}

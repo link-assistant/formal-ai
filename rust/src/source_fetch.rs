@@ -58,7 +58,7 @@ fn http_status(stderr: &str) -> Option<u16> {
         .filter(|status| (100..=599).contains(status))
 }
 
-/// curl-backed transport used by opt-in live retrieval.
+/// curl-backed transport used by read-only live retrieval.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct CurlSourceTransport;
 

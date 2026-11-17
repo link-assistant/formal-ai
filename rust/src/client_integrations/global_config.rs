@@ -49,7 +49,7 @@ pub(super) fn write_global_config(
         let catalog_backup = backup_path(&catalog_path, &global_config.backup_suffix);
         ensure_backup(&catalog_path, &catalog_backup)?;
         context.model_catalog_path = catalog_path.display().to_string();
-        write_file(&catalog_path, &codex_model_catalog(&context.model)?)?;
+        write_file(&catalog_path, &codex_model_catalog(&context)?)?;
     }
     let path = global_config_path(&global_config.path)?;
     let backup_path = backup_path(&path, &global_config.backup_suffix);
@@ -213,8 +213,9 @@ pub(super) fn render_toml_settings(
     for (path, value) in settings {
         set_toml_string(
             document.as_table_mut(),
-            &render_template(path, context),
+            path,
             &render_template(value, context),
+            context,
         )?;
     }
     Ok(ensure_trailing_newline(document.to_string()))
@@ -224,17 +225,24 @@ fn set_toml_string(
     table: &mut Table,
     dotted_path: &str,
     value: &str,
+    context: &RenderContext,
 ) -> Result<(), Box<dyn Error>> {
     let parts = dotted_path
         .split('.')
         .map(str::trim)
         .filter(|part| !part.is_empty())
+        .map(|part| render_template(part, context))
         .collect::<Vec<_>>();
     let Some((last, parents)) = parts.split_last() else {
         return Err("empty TOML setting path".into());
     };
-    let parent = table_at_path_mut(table, parents);
-    parent[*last] = toml_value(value);
+    let parent_keys = parents.iter().map(String::as_str).collect::<Vec<_>>();
+    let parent = table_at_path_mut(table, &parent_keys);
+    parent[last.as_str()] = if let Some(integer) = value.strip_prefix("integer:") {
+        toml_value(integer.parse::<i64>()?)
+    } else {
+        toml_value(value)
+    };
     Ok(())
 }
 
@@ -261,8 +269,9 @@ fn merge_json_settings(
     } else {
         serde_json::from_str(existing)?
     };
-    let overlay = json_settings_value(settings, context)?;
-    merge_json_value(&mut base, overlay);
+    for (path, setting_value) in settings {
+        set_json_setting(&mut base, path, setting_value, context, true)?;
+    }
     Ok(format!("{}\n", serde_json::to_string_pretty(&base)?))
 }
 
@@ -282,7 +291,7 @@ fn json_settings_value(
 ) -> Result<Value, Box<dyn Error>> {
     let mut value = Value::Object(serde_json::Map::new());
     for (path, setting_value) in settings {
-        set_json_setting(&mut value, path, setting_value, context)?;
+        set_json_setting(&mut value, path, setting_value, context, false)?;
     }
     Ok(value)
 }
@@ -292,6 +301,7 @@ fn set_json_setting(
     dotted_path: &str,
     value: &str,
     context: &RenderContext,
+    merge_objects: bool,
 ) -> Result<(), Box<dyn Error>> {
     let parts = dotted_path
         .split('.')
@@ -305,6 +315,9 @@ fn set_json_setting(
 
     let mut current = root;
     for part in parents {
+        if merge_objects && !current.is_object() {
+            *current = Value::Object(serde_json::Map::new());
+        }
         let object = current
             .as_object_mut()
             .ok_or("JSON setting path conflicts with a scalar value")?;
@@ -312,17 +325,40 @@ fn set_json_setting(
             .entry(part.clone())
             .or_insert_with(|| Value::Object(serde_json::Map::new()));
     }
+    if merge_objects && !current.is_object() {
+        *current = Value::Object(serde_json::Map::new());
+    }
     let object = current
         .as_object_mut()
         .ok_or("JSON setting path conflicts with a scalar value")?;
     let rendered = render_template(value, context);
+    if let Some(literal) = rendered.strip_prefix("json+:") {
+        let additions: Vec<Value> = serde_json::from_str(literal)
+            .map_err(|error| invalid_typed_json_setting_error(&rendered, &error))?;
+        let target = object
+            .entry(last.clone())
+            .or_insert_with(|| Value::Array(Vec::new()));
+        let target = target
+            .as_array_mut()
+            .ok_or("JSON append setting conflicts with a scalar value")?;
+        for value in additions {
+            if !target.contains(&value) {
+                target.push(value);
+            }
+        }
+        return Ok(());
+    }
     let setting = if let Some(literal) = rendered.strip_prefix("json:") {
         serde_json::from_str(literal)
             .map_err(|error| invalid_typed_json_setting_error(&rendered, &error))?
     } else {
         Value::String(rendered)
     };
-    object.insert(last.clone(), setting);
+    if let Some(previous) = object.get_mut(last).filter(|_| merge_objects) {
+        merge_json_value(previous, setting);
+    } else {
+        object.insert(last.clone(), setting);
+    }
     Ok(())
 }
 

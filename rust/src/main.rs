@@ -166,7 +166,6 @@ enum Command {
     /// Build the issue-report document every Formal AI surface files (#839).
     Report(ReportArgs),
     /// Serve the API with request metadata by default.
-    ///
     /// Set FORMAL_AI_DIALOG_LOG_DIR to opt in to full dialog capture.
     /// Structured diagnostics default to debug level in ~/.formal-ai/logs.
     Serve(ServeArgs),
@@ -671,6 +670,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     formal_ai::structured_tracing::install().map_err(std::io::Error::other)?;
     let verbose = arguments.verbose && !arguments.silent;
     formal_ai::dialog_log::configure_verbose(!arguments.silent);
+    formal_ai::dialog_log::structured_log::configure_terminal(verbose);
     formal_ai::dialog_log::structured_log::configure(
         arguments.silent,
         matches!(arguments.command.as_ref(), Some(Command::Serve(_))),
