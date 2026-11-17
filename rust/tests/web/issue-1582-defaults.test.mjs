@@ -106,3 +106,38 @@ test('served model metadata advertises the resource-derived context consistently
   await run.stop();
   assert.equal(run.stdout,'');assert.equal(run.stderr,'');
 });
+
+test('read transport supplies a finite deadline and preserves caller cancellation',async()=>{
+  const {createReadOnlyFetch}=await import('../../../js/server/read-access.mjs');
+  const caller=new AbortController(),options={signal:caller.signal};
+  let received;
+  const read=createReadOnlyFetch({env:{},timeoutMs:100,fetchImpl:async(url,settings)=>{received=settings;return {ok:true};}});
+  await read('https://example.test/source',options);
+  assert(received.signal instanceof AbortSignal);
+  assert.notEqual(received.signal,caller.signal,'caller cancellation must be combined with the transport deadline');
+  caller.abort(new Error('caller-stopped'));
+  assert.equal(received.signal.aborted,true);
+  assert.equal(received.signal.reason,caller.signal.reason);
+  assert.equal(options.signal,caller.signal,'do not mutate caller options');
+  assert.throws(()=>createReadOnlyFetch({timeoutMs:0}),/read_network_timeout/u);
+});
+
+test('transport deadline cancels a stalled response body',{timeout:4000},async t=>{
+  const {createServer}=await import('node:http');
+  const {createReadOnlyFetch}=await import('../../../js/server/read-access.mjs');
+  const source=createServer((request,response)=>{response.writeHead(200);response.flushHeaders();response.write('unfinished');});
+  await new Promise(resolve=>source.listen(0,'127.0.0.1',resolve));
+  // A failing pre-fix probe still stops within two seconds.
+  const guard=setTimeout(()=>source.closeAllConnections(),2000);
+  t.after(()=>{clearTimeout(guard);source.closeAllConnections();return new Promise(resolve=>source.close(resolve));});
+  let signal,bodyStarted=false;
+  const read=createReadOnlyFetch({env:{},timeoutMs:250,fetchImpl:(url,options)=>{signal=options.signal;return fetch(url,options);}});
+  await assert.rejects(async()=>{
+    const response=await read('http://127.0.0.1:'+source.address().port+'/stalled');
+    bodyStarted=true;
+    await response.text();
+  },error=>['AbortError','TimeoutError'].includes(error.name));
+  assert.equal(bodyStarted,true,'the deadline must remain active after headers arrive');
+  assert.equal(signal.aborted,true);
+  assert.equal(signal.reason.name,'TimeoutError');
+});
