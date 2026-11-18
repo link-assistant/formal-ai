@@ -231,8 +231,11 @@ pub fn entry_url_in(record: &SourceRecord, subject: &str, language: &str) -> Opt
     } else {
         language
     };
-    let hyphenated = record.host().contains("wikihow");
-    let title = page_title(subject, hyphenated);
+    let title = if record.id == "wikihow" {
+        wiki_how_title(subject, language)
+    } else {
+        page_title(subject, false)
+    };
     let mut bindings: Vec<(&str, &str)> = vec![
         ("title", title.as_str()),
         ("query", subject),
@@ -244,6 +247,29 @@ pub fn entry_url_in(record: &SourceRecord, subject: &str, language: &str) -> Opt
     let url = record.api_url_in(language, &bindings);
     (!url.contains('{')).then_some(url)
 }
+pub(crate) fn wiki_how_title(subject: &str, language: &str) -> String {
+    let words = subject
+        .split(|character| !is_topic_character(character))
+        .filter(|word| !word.is_empty());
+    if language.is_empty() || language == "en" {
+        words.map(capitalize).collect::<Vec<_>>().join("-")
+    } else {
+        words.collect::<Vec<_>>().join("-").to_lowercase()
+    }
+}
+
+/// Keep the marks used by scripts such as Devanagari inside their words.
+pub(crate) fn is_topic_character(character: char) -> bool {
+    use unicode_general_category::{GeneralCategory, get_general_category};
+    character.is_alphanumeric()
+        || matches!(
+            get_general_category(character),
+            GeneralCategory::NonspacingMark
+                | GeneralCategory::SpacingMark
+                | GeneralCategory::EnclosingMark
+        )
+}
+
 /// Bind the registry-declared missing-resource alternative in the same language.
 #[must_use]
 pub fn fallback_entry_url_in(

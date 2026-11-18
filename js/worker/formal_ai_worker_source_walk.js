@@ -206,8 +206,9 @@ async function sourceWalkSources(kind, subject, language, preferences, bounds, e
   const walked = { subject, items: [], outcomes: candidates.skipped, bounds };
   const now = typeof extractor.now === "number" ? extractor.now : sourceWalkNowSeconds();
   for (const { record, url: firstUrl } of candidates.selected) {
-    if (sourceWalkServiceKnownUnreachable(record.id, now)) {
-      const known = sourceWalkAccessibility.get(record.id);
+    const accessibilityKey = extractor.accessibilityKey?.(record, firstUrl) || record.id;
+    if (sourceWalkServiceKnownUnreachable(accessibilityKey, now)) {
+      const known = sourceWalkAccessibility.get(accessibilityKey);
       walked.outcomes.push(sourceWalkOutcome(
         record.id,
         "unreachable_cached",
@@ -225,7 +226,7 @@ async function sourceWalkSources(kind, subject, language, preferences, bounds, e
       if (outcome.pages >= bounds.maxPagesPerService || visited.includes(url)) continue;
       visited.push(url);
       // eslint-disable-next-line no-await-in-loop -- capture order is evidence.
-      const capture = await sourceWalkFetchCapture(url, { online: extractor.online !== false });
+      const capture = await sourceWalkFetchCapture(url, { online: extractor.online !== false, bounded: extractor.bounded });
       if (!capture.ok) {
         const offline = capture.failureKind === "offline_cache_miss";
         const missing = sourceWalkResourceMissing(capture.error);
@@ -234,7 +235,7 @@ async function sourceWalkSources(kind, subject, language, preferences, bounds, e
           : (url === firstUrl ? "unreachable" : "fallback_failed");
         outcome.detail = `${capture.error} url=${url}`;
         if (url === firstUrl && !missing && !offline) {
-          sourceWalkObserveService(record.id, "unreachable", capture.error, now);
+          sourceWalkObserveService(accessibilityKey, "unreachable", capture.error, now);
         }
         const fallback = missing && url === firstUrl
           ? sourceWalkFallbackEntryUrl(record, subject, language) : null;
@@ -247,7 +248,7 @@ async function sourceWalkSources(kind, subject, language, preferences, bounds, e
       }
       outcome.pages += 1;
       if (failedAttempts.length) outcome.detail = `fallback_capture url=${url}`;
-      sourceWalkObserveService(record.id, "reachable", `captured ${url}`, now);
+      sourceWalkObserveService(accessibilityKey, "reachable", `captured ${url}`, now);
       const age = now - Number.parseInt(capture.fetchedAt, 10);
       if (Number.isFinite(age) && age > bounds.maxCaptureAgeSeconds) {
         outcome.detail = `stale_capture age_seconds=${age} url=${url}`;

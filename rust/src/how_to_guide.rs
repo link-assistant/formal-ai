@@ -308,6 +308,17 @@ pub fn synthesize_how_to_guide<T: SourceTransport>(
     availability: &mut ServiceAccessibilityCache,
     now: u64,
 ) -> HowToGuide {
+    synthesize_how_to_guide_in((task, ""), client, preferences, bounds, availability, now)
+}
+
+pub(crate) fn synthesize_how_to_guide_in<T: SourceTransport>(
+    (task, language): (&str, &str),
+    client: &CachedSourceClient<T>,
+    preferences: &ServicePreferences,
+    bounds: &GuideBounds,
+    availability: &mut ServiceAccessibilityCache,
+    now: u64,
+) -> HowToGuide {
     let mut guide = HowToGuide {
         task: task.trim().to_owned(),
         steps: Vec::new(),
@@ -320,23 +331,30 @@ pub fn synthesize_how_to_guide<T: SourceTransport>(
         guide.outcomes.push(record);
     }
     let mut collected: Vec<GuideStep> = Vec::new();
-    let extractor = StepExtractor { task: &guide.task };
+    let extractor = StepExtractor {
+        task: &guide.task,
+        language,
+    };
     for record in select_sources(&guide.task, preferences, bounds) {
-        if availability.known_unreachable(&record.id, now) {
+        let Some(url) = extractor.entry_url(&record, &guide.task) else {
+            guide.outcomes.push(GuideSourceOutcome::new(
+                &record.id,
+                "unbound_template",
+                record.api.clone(),
+            ));
+            continue;
+        };
+        let endpoint = crate::source_walk::endpoint_key(&record, &url);
+        if availability.known_unreachable(&endpoint, now) {
             guide.outcomes.push(GuideSourceOutcome::new(
                 &record.id,
                 "unreachable_cached",
                 availability
-                    .record(&record.id)
+                    .record(&endpoint)
                     .map_or_else(String::new, |entry| entry.detail.clone()),
             ));
             continue;
         }
-        // `select_sources` already dropped every template this task cannot
-        // bind, and reported it; the fallback keeps the walk total.
-        let Some(url) = entry_url(&record, &guide.task) else {
-            continue;
-        };
         let mut outcome = WalkSourceOutcome::new(&record.id, "no_steps", url.clone());
         let steps = walk_source(
             &record,
@@ -372,15 +390,6 @@ fn skipped_sources(task: &str, preferences: &ServicePreferences) -> Vec<GuideSou
         .collect()
 }
 
-/// Bind the registry's API template for this task, or `None` when a required
-/// placeholder cannot be filled from the task alone.
-///
-/// The binder is the kernel's: a template with a `{title}` slot binds the same
-/// way whatever need kind is asking.
-fn entry_url(record: &SourceRecord, task: &str) -> Option<String> {
-    crate::source_walk::entry_url(record, task)
-}
-
 /// The task as a wiki page title: `install docker` becomes `Install-Docker` for
 /// wikiHow's hyphenated titles and `Install Docker` elsewhere.
 #[must_use]
@@ -393,8 +402,8 @@ pub fn page_title(task: &str, hyphenated: bool) -> String {
 /// The registry's entry template addresses a page by title, which only works
 /// when the task names the page exactly. Full-text search is the recursive step
 /// that turns a task into the titles worth parsing.
-fn search_url(record: &SourceRecord, task: &str) -> String {
-    let base = record.api.split('?').next().unwrap_or(&record.api);
+fn search_url(endpoint: &str, task: &str) -> String {
+    let base = endpoint.split('?').next().unwrap_or(endpoint);
     format!(
         "{base}?action=query&list=search&srsearch={}&srlimit=5&format=json&origin=*",
         percent_encode(task)
@@ -416,8 +425,8 @@ fn answers_url(record: &SourceRecord, question_id: u64) -> String {
 }
 
 /// A `MediaWiki` `action=parse` URL on the same wiki as `record`'s endpoint.
-fn parse_url(record: &SourceRecord, title: &str) -> String {
-    let base = record.api.split('?').next().unwrap_or(&record.api);
+fn parse_url(endpoint: &str, title: &str) -> String {
+    let base = endpoint.split('?').next().unwrap_or(endpoint);
     format!(
         "{base}?action=parse&page={}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*",
         percent_encode(title)
@@ -442,7 +451,7 @@ const TOPIC_STOPWORDS: &[&str] = &[
 fn matches_task(task: &str, candidate: &str) -> bool {
     let wanted = topic_words(task);
     if wanted.is_empty() {
-        return true;
+        return false;
     }
     let offered = topic_words(candidate);
     wanted.iter().all(|word| offered.contains(word))
@@ -452,9 +461,11 @@ fn matches_task(task: &str, candidate: &str) -> bool {
 /// stopwords and one/two-letter fragments dropped.
 fn topic_words(value: &str) -> Vec<String> {
     value
-        .split(|character: char| !character.is_alphanumeric())
+        .split(|character| !crate::source_walk::is_topic_character(character))
         .map(str::to_lowercase)
-        .filter(|word| word.len() > 2 && !TOPIC_STOPWORDS.contains(&word.as_str()))
+        .filter(|word| {
+            (word.len() > 2 || !word.is_ascii()) && !TOPIC_STOPWORDS.contains(&word.as_str())
+        })
         .map(|word| singular(&word))
         .collect()
 }
@@ -476,13 +487,14 @@ fn singular(word: &str) -> String {
 /// which link on a page is worth one more page.
 struct StepExtractor<'a> {
     task: &'a str,
+    language: &'a str,
 }
 
 impl CaptureExtractor for StepExtractor<'_> {
     type Item = GuideStep;
 
     fn entry_url(&self, record: &SourceRecord, subject: &str) -> Option<String> {
-        entry_url(record, subject)
+        crate::source_walk::entry_url_in(record, subject, self.language)
     }
 
     fn read(
@@ -494,17 +506,31 @@ impl CaptureExtractor for StepExtractor<'_> {
         bounds: &LookupBounds,
     ) -> Extracted<Self::Item> {
         let task = self.task;
-        let url = capture.source_url().to_owned();
+        let endpoint = capture.source_url();
+        let url = endpoint.to_owned();
         let is_wiki = record.api.contains("api.php");
         let mut read = Extracted::default();
         match classify(capture.bytes()) {
-            Payload::Parse { html, .. } => {
-                let found = extract_steps(&html, bounds.max_items);
-                if found.is_empty() {
+            Payload::Parse { title, html } => {
+                let relevant = record.id != "wikihow" || matches_task(task, &title);
+                let localized = record.id == "wikihow"
+                    && endpoint.split('?').next() != record.api.split('?').next();
+                let found = if !relevant {
+                    read.detail = Some(trace_record::line("no_relevant_result", &[("url", url)]));
+                    Vec::new()
+                } else if localized {
+                    extract::wiki_how_steps(&html, bounds.max_items)
+                } else {
+                    extract_steps(&html, bounds.max_items)
+                };
+                if found.is_empty() && depth < bounds.max_depth {
                     for title in wiki_link_titles(&html, bounds.max_pages_per_service) {
                         if matches_task(task, &title) {
-                            read.follow.push(parse_url(record, &title));
+                            read.follow.push(parse_url(endpoint, &title));
                         }
+                    }
+                    if !relevant && read.follow.is_empty() {
+                        read.follow.push(search_url(endpoint, task));
                     }
                 }
                 push_steps(record, capture, depth, &found, &mut read.items);
@@ -551,7 +577,7 @@ impl CaptureExtractor for StepExtractor<'_> {
                     read.detail = Some(trace_record::line("no_relevant_result", &[("url", url)]));
                 }
                 for title in relevant {
-                    read.follow.push(parse_url(record, title));
+                    read.follow.push(parse_url(endpoint, title));
                 }
             }
             Payload::Unrecognized { reason } => {
@@ -563,7 +589,7 @@ impl CaptureExtractor for StepExtractor<'_> {
                 // A title guess that misses is not a dead end: the same wiki can
                 // be searched for the task, and the hits parsed one hop deeper.
                 if should_search {
-                    read.follow.push(search_url(record, task));
+                    read.follow.push(search_url(endpoint, task));
                 }
             }
         }
@@ -677,7 +703,7 @@ fn action_key(text: &str) -> String {
     text.split_whitespace()
         .map(|word| {
             word.chars()
-                .filter(|character| character.is_alphanumeric())
+                .filter(|character| crate::source_walk::is_topic_character(*character))
                 .collect::<String>()
                 .to_lowercase()
         })

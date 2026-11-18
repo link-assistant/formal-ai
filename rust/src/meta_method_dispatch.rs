@@ -654,13 +654,15 @@ fn try_capability_route(
             // An elaboration of a procedure this conversation already answered
             // ("give me the exact steps") is that procedure's continuation
             // (issue #444). The rebind is recovered from the prior turns, not
-            // from this prompt's own words, so neither a promoted method nor a
-            // cue-matched family can claim the turn before the table routes
-            // the bare words to a fresh compose — the same blind spot the
-            // fetch arms solve for the response-language retarget below. Offer
-            // the follow-up its turn before composing from scratch.
+            // from this prompt's own words. Offer the follow-up its turn
+            // before composing from scratch.
             if let Some(answer) =
-                crate::solver_handler_how::try_procedural_how_to_followup(prompt, &normalized, log)
+                crate::solver_handler_how_synthesis::try_procedural_followup_with_offline(
+                    prompt,
+                    &normalized,
+                    log,
+                    solver.config.offline || !crate::solver_config::read_network_allowed(),
+                )
             {
                 return Some(record_contextual_method_answer(
                     prompt,

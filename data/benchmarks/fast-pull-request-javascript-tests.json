@@ -2,6 +2,7 @@
   "schema": "fast-pr-javascript-tests/v1",
   "scope": "Essential offline coding, QA, reporting and captured CI failure regressions. Full native and product build qualification runs only on main.",
   "files": [
+    "rust/tests/web/procedural-runtime-parity.test.mjs",
     "rust/tests/web/ordinary-literal-addition.test.mjs",
     "rust/tests/web/authored-literal-planning.test.mjs",
     "rust/tests/web/literal-action-routing.test.mjs",

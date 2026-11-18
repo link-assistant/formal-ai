@@ -6,7 +6,7 @@ name: Native type and lint check
 # native check a PR runs: main's clippy profile on the library and binaries,
 # called from release.yml when a Rust compile input changed or the
 # classification is unknown. It uploads nothing and records no receipt.
-# The isolated regressions verify native calendar, currency and OpenAI behavior.
+# The isolated regressions verify native calendar, currency, OpenAI and localized procedure behavior.
 # Main still runs full lint, tests and every build.
 on:
   workflow_call:
@@ -71,3 +71,7 @@ jobs:
         env:
           FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
         run: node --test --test-concurrency=1 rust/tests/web/issue-1586-structured-output.test.mjs
+      - name: Replay localized procedures against the native CLI
+        env:
+          FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
+        run: node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs

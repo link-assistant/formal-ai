@@ -556,13 +556,12 @@ function extractElidedProceduralHowToTask(clean) {
     );
     const task = correction.task;
     const split = splitKnownProceduralActionObject(task);
-    if (!split || !split.object) continue;
-    return {
-      task,
-      action: split.action,
-      object: split.object,
-      corrections: correction.corrections,
-    };
+    if (split?.object) return { task, ...split, corrections: correction.corrections };
+    const language = detectLanguageFromRules(clean);
+    const endings = (handlerRulesPolicy("procedural_how_to", `infinitive-endings-${language}`) || "").split(/\s+/u).filter(Boolean);
+    const words = task.split(/[^\p{L}\p{M}]+/u).filter(Boolean);
+    const verb = words.find((word) => endings.some((ending) => word.length > ending.length + 1 && word.endsWith(ending)));
+    if (verb) return { task, action: verb, object: words.filter((word) => word !== verb).join(" "), corrections: correction.corrections };
   }
   return null;
 }
@@ -596,118 +595,6 @@ function extractProceduralHowToTask(normalized) {
     };
   }
   return extractElidedProceduralHowToTask(clean);
-}
-
-function capitalizeForWikiHow(word) {
-  const text = String(word || "");
-  if (!text) return "";
-  return text.charAt(0).toUpperCase() + text.slice(1);
-}
-
-function wikiHowPageTitle(task) {
-  return String(task || "")
-    .split(/[^\p{L}\p{N}]+/u)
-    .filter(Boolean)
-    .map(capitalizeForWikiHow)
-    .join("-");
-}
-
-function wikiHowParseApiUrl(pageTitle, encodePage = true) {
-  const encodedPage = encodePage ? encodeURIComponent(pageTitle).replace(/%2D/gi, "-") : pageTitle;
-  return `https://www.wikihow.com/api.php?action=parse&page=${encodedPage}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`;
-}
-
-function decodeBasicHtmlEntities(value) {
-  return String(value || "")
-    .replace(/&nbsp;|&#160;/g, " ")
-    .replace(/&amp;/g, "&")
-    .replace(/&quot;/g, '"')
-    .replace(/&#039;|&apos;/g, "'")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&#(\d+);/g, (_match, code) => {
-      const value = Number(code);
-      if (!Number.isFinite(value) || value < 0 || value > 0x10ffff) return "";
-      return String.fromCodePoint(value);
-    });
-}
-
-function compactStepText(value) {
-  const text = decodeBasicHtmlEntities(stripHtml(value))
-    .replace(/\[[0-9]+\]/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
-  if (text.length <= 180) return text;
-  const sentence = text.match(/^(.{40,180}?[.!?])\s/u);
-  if (sentence) return sentence[1].trim();
-  return `${text.slice(0, 177).trim()}...`;
-}
-
-function extractWikiHowSteps(html) {
-  const lines = String(html || "").split(/\n+/u);
-  const steps = [];
-  const seen = new Set();
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (!trimmed.startsWith("<li>") || trimmed.startsWith("<li><b>")) {
-      continue;
-    }
-    const text = compactStepText(trimmed);
-    if (text.length < 40 || seen.has(text)) continue;
-    seen.add(text);
-    steps.push(text);
-    if (steps.length >= 6) break;
-  }
-  return steps;
-}
-
-async function fetchWikiHowProcedure(pageTitle, evidence) {
-  const url = wikiHowParseApiUrl(pageTitle);
-  if (typeof fetch !== "function") {
-    return { ok: false, url, error: "fetch_unavailable", steps: [] };
-  }
-  try {
-    const response = await fetch(url, { method: "GET", mode: "cors" });
-    evidence.push(`http_fetch:status:${response.status}`);
-    if (!response.ok) {
-      return { ok: false, url, error: `http_${response.status}`, steps: [] };
-    }
-    const data = await response.json();
-    if (data && data.error) {
-      return {
-        ok: false,
-        url,
-        error: data.error.code || "wikihow_error",
-        steps: [],
-      };
-    }
-    const parse = data && data.parse ? data.parse : null;
-    const html = parse && parse.text ? parse.text["*"] : "";
-    const steps = extractWikiHowSteps(html);
-    const title = compactStepText(parse && parse.displaytitle ? parse.displaytitle : pageTitle);
-    const sourceUrl = `https://www.wikihow.com/${encodeURIComponent(pageTitle).replace(/%2D/gi, "-")}`;
-    return {
-      ok: steps.length > 0,
-      url,
-      title: title || pageTitle,
-      sourceUrl,
-      error: steps.length > 0 ? "" : "no_explicit_steps",
-      steps,
-    };
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    evidence.push(`http_fetch:error:${message.toLowerCase().includes("cors") ? "cors" : "network"}`);
-    return { ok: false, url, error: message || "network", steps: [] };
-  }
-}
-
-function appendUniqueEvidence(target, source) {
-  const seen = new Set(target);
-  for (const item of source || []) {
-    if (!item || seen.has(item)) continue;
-    seen.add(item);
-    target.push(item);
-  }
 }
 
 // The docs_method_explanation rule of data/seed/handler-rules.lino: its claim
@@ -749,12 +636,12 @@ function proceduralSearchQuery(task) {
 }
 
 // Native discovery plan over the actual parsed task and declared source route.
-function proceduralDiscoveryPlan(task, language, pageTitle, searchQuery, fallbackQuery, providers) {
+function proceduralDiscoveryPlan(task, language, pageTitle, apiUrl, searchQuery, fallbackQuery, providers) {
   const installGate = task.action === "install" ? howResponse("procedural_how_to_install_gate", language,
     { search_query: searchQuery, fallback_query: fallbackQuery }) : "";
   return howResponse("procedural_how_to_plan", language, {
     task: task.task, action: task.action, object: task.object, install_gate: installGate,
-    candidate: pageTitle, api_url: wikiHowParseApiUrl(pageTitle, false), search_query: searchQuery, providers, k: webSearchRrfK(),
+    candidate: pageTitle, api_url: apiUrl.replace(/([?&]page=)([^&]+)/u, (_, key, value) => key + decodeURIComponent(value)), search_query: searchQuery, providers, k: webSearchRrfK(),
   });
 }
 
@@ -777,6 +664,173 @@ function proceduralDiscoveryEvents(task, pageTitle, apiUrl, searchQuery, fallbac
   return pairs.map(([kind, payload]) => ({ kind, payload: String(payload) }));
 }
 
+// Recover wikiHow procedures through the public Wayback availability API and
+// the existing web-capture adapter when the browser cannot read the HTML.
+const HOW_TO_CAPTURE_TIMEOUT_MS = 3500;
+const HOW_TO_CAPTURE_MAXIMUM_BYTES = 2 * 1024 * 1024;
+
+function howToWikiHowSlug(task) {
+  return String(task || "").toLowerCase().split(/[^\p{L}\p{N}\p{M}]+/u).filter(Boolean).join("-");
+}
+
+function howToCaptureFetchOptions() {
+  return { method: "GET", mode: "cors", signal: AbortSignal.timeout(HOW_TO_CAPTURE_TIMEOUT_MS) };
+}
+
+async function howToReadBoundedResponse(response, signal) {
+  signal?.throwIfAborted();
+  if (!response.body?.getReader) {
+    const text = await response.text();
+    if (new TextEncoder().encode(text).length > HOW_TO_CAPTURE_MAXIMUM_BYTES) {
+      throw new Error("capture_too_large");
+    }
+    return text;
+  }
+  const reader = response.body.getReader();
+  const cancel = () => { reader.cancel(signal.reason).catch(() => {}); };
+  signal?.addEventListener("abort", cancel, { once: true });
+  const decoder = new TextDecoder("utf-8", { ignoreBOM: true });
+  let bytes = 0;
+  let emptyChunks = 0;
+  let text = "";
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      signal?.throwIfAborted();
+      if (done) return text + decoder.decode();
+      emptyChunks = value.byteLength === 0 ? emptyChunks + 1 : 0;
+      bytes += value.byteLength;
+      if (bytes > HOW_TO_CAPTURE_MAXIMUM_BYTES || emptyChunks > 16) {
+        reader.cancel().catch(() => {});
+        throw new Error(emptyChunks > 16 ? "capture_stalled" : "capture_too_large");
+      }
+      text += decoder.decode(value, { stream: true });
+    }
+  } finally {
+    signal?.removeEventListener("abort", cancel);
+    reader.releaseLock();
+  }
+}
+
+function howToWikiHowArticle(apiUrl) {
+  const api = new URL(apiUrl);
+  return new URL("/" + sourceWalkPercentEncode(api.searchParams.get("page") || ""), api.origin);
+}
+
+function howToSameWikiHowArticle(value, expected) {
+  try {
+    const url = new URL(value);
+    return ["http:", "https:"].includes(url.protocol) && url.host === expected.host
+      && !url.username && !url.password
+      && decodeURIComponent(url.pathname) === decodeURIComponent(expected.pathname);
+  } catch {
+    return false;
+  }
+}
+
+function howToWaybackSnapshot(text, article) {
+  const closest = JSON.parse(text)?.archived_snapshots?.closest;
+  if (!closest?.available || String(closest.status) !== "200" || !/^\d{14}$/u.test(closest.timestamp)) {
+    return null;
+  }
+  const replay = new URL(closest.url);
+  const prefix = `/web/${closest.timestamp}/`;
+  if (replay.host !== "web.archive.org" || !replay.pathname.startsWith(prefix)
+      || !howToSameWikiHowArticle(replay.pathname.slice(prefix.length), article)) return null;
+  return `https://web.archive.org/web/${closest.timestamp}id_/${article.href}`;
+}
+
+function howToWikiHowHtmlSteps(html, article, limit) {
+  const canonical = html.match(/<link\b[^>]*\brel=["']canonical["'][^>]*\bhref=["']([^"']+)["']/iu);
+  if (!canonical || !howToSameWikiHowArticle(canonical[1], article)) return [];
+  return howToWikiHowStepLists(html, limit);
+}
+
+function howToWikiHowStepLists(html, limit, allowLegacy = false) {
+  const lists = html.matchAll(/<ol(?=[\s>])([^>]*)>([\s\S]*?)<\/ol>/gu);
+  let sawList = false;
+  for (const [, attributes, items] of lists) {
+    sawList = true;
+    if (!/\bsteps_list_2\b/u.test(attributes) && !(allowLegacy && !attributes.trim())) continue;
+    const steps = howToExtractSteps(items, limit);
+    if (steps.length >= HOW_TO_MIN_ACCEPTED_STEPS) return steps;
+  }
+  return allowLegacy && !sawList ? howToExtractSteps(html, limit) : [];
+}
+
+async function howToCaptureThroughComponent(url, notes) {
+  const component = self.FormalAIWebSearchComponent;
+  if (!component?.fetchUrl) return null;
+  try {
+    const response = await component.fetchUrl(url, notes, HOW_TO_CAPTURE_TIMEOUT_MS);
+    if (!response?.ok) {
+      notes.push(`http_${response?.status || 0} url=${url}`);
+      return null;
+    }
+    // The component adapter's deadline ends at the headers.
+    const text = await howToReadBoundedResponse(response, AbortSignal.timeout(HOW_TO_CAPTURE_TIMEOUT_MS));
+    return { url, text, sha256: await sourceWalkSha256Hex(text), fetchedAt: String(sourceWalkNowSeconds()), cached: false };
+  } catch (error) {
+    notes.push(`capture_failed url=${url} reason=${error.message}`);
+    return null;
+  }
+}
+
+async function howToRecoverWikiHow(walked, task, language, preferences) {
+  const outcome = walked.outcomes.find((item) => item.sourceId === "wikihow");
+  if (!outcome || ["disabled", "unbound_template"].includes(outcome.status)
+      || outcome.items >= HOW_TO_MIN_ACCEPTED_STEPS || preferences?.offline === true
+      || outcome.pages >= walked.bounds.maxPagesPerService) return;
+
+  const record = howToSourceRegistry().find((item) => item.id === "wikihow");
+  const article = howToWikiHowArticle(sourceWalkEntryUrl(record, task, language));
+  const notes = [];
+  const index = await sourceWalkFetchCapture(
+    `https://archive.org/wayback/available?url=${sourceWalkPercentEncode(article.href)}`, { bounded: true });
+  const candidates = [];
+  if (index.ok) {
+    try {
+      const snapshot = howToWaybackSnapshot(index.text, article);
+      if (snapshot) candidates.push(snapshot);
+      else notes.push("wayback:no_matching_snapshot");
+    } catch {
+      notes.push("wayback:invalid_availability");
+    }
+  } else {
+    notes.push(`wayback:availability_failed ${index.error}`);
+  }
+  candidates.push(article.href);
+  for (const url of candidates) {
+    if (outcome.pages >= walked.bounds.maxPagesPerService) break;
+    outcome.pages += 1;
+    let capture = url === article.href ? null : await sourceWalkFetchCapture(url, { bounded: true });
+    if (!capture?.ok) {
+      if (capture) notes.push(`wayback:replay_failed ${capture.error}`);
+      capture = await howToCaptureThroughComponent(url, notes);
+    }
+    if (!capture?.ok && url === article.href && !capture?.text) {
+      capture = await sourceWalkFetchCapture(url, { bounded: true });
+    }
+    if (!capture?.text) {
+      notes.push(`no_capture url=${url}`);
+      continue;
+    }
+    const steps = howToWikiHowHtmlSteps(capture.text, article, walked.bounds.maxItems);
+    if (steps.length < HOW_TO_MIN_ACCEPTED_STEPS) {
+      notes.push(`no_matching_steps url=${url}`);
+      continue;
+    }
+    const recovered = [];
+    howToPushSteps(record, capture, 0, steps, recovered);
+    walked.items = walked.items.filter((item) => item.sourceId !== record.id).concat(recovered);
+    outcome.status = "contributed";
+    outcome.items = recovered.length;
+    notes.push(`recovered url=${url}`);
+    break;
+  }
+  outcome.detail = [outcome.detail, ...notes].filter(Boolean).join(" | ");
+}
+
 async function tryProceduralHowTo(prompt, language, preferences = {}) {
   const practical = await tryPracticalHelp(prompt,language,preferences);
   if(practical)return practical;
@@ -784,183 +838,66 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
   const task = extractProceduralHowToTask(normalized);
   if (!task) return null;
 
+  const sourceLanguage = detectLanguageFromRules(prompt);
+  const research = await researchProceduralHowTo(task, preferences, sourceLanguage, language);
+  if (research.answer) return research.answer;
   const query = proceduralFallbackQuery(task.task);
-  // Issue #991: the browser and the Rust solver run the same bounded
-  const synthesized = await trySynthesizedHowToGuide(task, preferences);
-  if (synthesized) return synthesized;
   const searchQuery = proceduralSearchQuery(task);
-  const pageTitle = wikiHowPageTitle(task.task);
-  const apiUrl = wikiHowParseApiUrl(pageTitle);
+  const wiki = howToSourceRegistry().find((record) => record.id === "wikihow");
+  const apiUrl = wiki ? (sourceWalkEntryUrl(wiki, task.task, sourceLanguage) || sourceWalkEntryUrl(wiki, task.task)) : "";
+  const pageTitle = apiUrl ? new URL(apiUrl).searchParams.get("page") : "";
   const providerSummary = WEB_SEARCH_PROVIDERS.map((provider) => provider.id).join(", ");
-  const isInstallProcedure = task.action === "install";
-  // Honor the wikiHow opt-out: when disabled we skip the wikiHow API stage and
+  const isInstall = task.action === "install";
   const wikihowEnabled = externalServiceEnabled(preferences, "externalServiceWikihow");
+  const wikiOutcome = research.guide.outcomes.find((outcome) => outcome.sourceId === "wikihow");
+  const wikiAttempted = Boolean(wikiOutcome?.pages || (wikiOutcome
+    && !["disabled", "unreachable_cached", "offline_cache_miss", "unbound_template"].includes(wikiOutcome.status)));
+  const solverEvents = proceduralDiscoveryEvents(task, pageTitle, apiUrl, searchQuery, query, wikihowEnabled, wikiAttempted);
   const evidence = [
-    `procedural_how_to:request:${task.task}`,
-    `procedural_how_to:action:${task.action}`,
-    ...(task.object ? [`procedural_how_to:object:${task.object}`] : []),
-    ...(isInstallProcedure
-      ? [
-          "procedural_how_to:stage:official_documentation",
-          "procedural_how_to:source_gate:official_documentation_first",
-          `web_search:request:${searchQuery}`,
-          ...(searchQuery !== query ? [`web_search:request:${query}`] : []),
-        ]
-      : []),
-    `procedural_how_to:stage:wikipedia`,
-    `procedural_how_to:stage:wikidata`,
-  ];
-  if (!isInstallProcedure) {
-    if (wikihowEnabled) {
-      evidence.push(
-        `procedural_how_to:stage:wikihow_api`,
-        `procedural_how_to:wikihow_candidate:${pageTitle}`,
-        `http_fetch:request:${apiUrl}`,
-      );
-    } else {
-      evidence.push("procedural_how_to:service_disabled:wikihow");
-    }
-  }
-  for (const correction of task.corrections || []) {
-    evidence.push(`spelling_correction:${correction.from}->${correction.to}`);
-  }
-
-  const pathVariant = `${isInstallProcedure ? "install_" : ""}${wikihowEnabled ? "wikihow" : "no_wikihow"}`;
-  const lines = [
-    howResponse("procedural_how_to_heading", language, { task: task.task, action: task.action, object: task.object }),
-    "",
-    ...(isInstallProcedure
-      ? [howResponse("procedural_how_to_live_install_gate", language, { search_query: searchQuery, fallback_query: query }), ""]
-      : []),
-    howResponse(`procedural_how_to_source_path_${pathVariant}`, language === "ru" ? "ru" : "en"),
-    "",
+    ...solverEvents.map(({ kind, payload }) => `${kind}:${payload}`),
+    ...research.evidence,
+    ...(task.corrections || []).map(({ from, to }) => `spelling_correction:${from}->${to}`),
   ];
 
-  let confidence = 0.78;
-  let diagnostics = null;
-  let formalizedObject = "";
-  let officialSearchUsable = false;
-  let sourceContentObserved = false;
-
-  if (isInstallProcedure) {
-    evidence.push("procedural_how_to:stage:web_search");
-    const officialSearch = await runWebSearchQuery(
-      searchQuery,
-      language,
-      "official_documentation",
-    );
-    if (officialSearch) {
-      appendUniqueEvidence(evidence, officialSearch.evidence);
-      diagnostics = officialSearch.diagnostics || diagnostics;
-      formalizedObject = officialSearch.formalizedObject || formalizedObject;
-      officialSearchUsable = officialSearch.confidence >= 0.8;
-      if (officialSearchUsable) {
-        sourceContentObserved = true;
-        confidence = Math.max(confidence, 0.82);
-        lines.push(howResponse("procedural_how_to_official_search", "en", { query: searchQuery }));
-        lines.push("");
-        lines.push(officialSearch.content);
-      }
-    }
-    if (!officialSearchUsable) {
-      lines.push(howResponse("procedural_how_to_official_search_miss", "en", { query: searchQuery, fallback: query }));
-      lines.push("");
-    }
+  const fallbackQuery = isInstall ? query : searchQuery;
+  const official = isInstall && preferences.offline !== true
+    ? await runWebSearchQuery(searchQuery, language, "official_documentation") : null;
+  const indexed = preferences.offline !== true
+    ? await runWebSearchQuery(fallbackQuery, language, isInstall ? "general_how_to_fallback" : "") : null;
+  for (const result of [official, indexed]) {
+    if (result) evidence.push(...result.evidence.filter((item) => !evidence.includes(item)));
   }
-
-  if (!officialSearchUsable) {
-    if (isInstallProcedure) {
-      if (wikihowEnabled) {
-        evidence.push(
-          `procedural_how_to:stage:wikihow_api`,
-          `procedural_how_to:wikihow_candidate:${pageTitle}`,
-          `http_fetch:request:${apiUrl}`,
-        );
-      } else {
-        evidence.push("procedural_how_to:service_disabled:wikihow");
-      }
-    }
-    const wikiHow = wikihowEnabled
-      ? await fetchWikiHowProcedure(pageTitle, evidence)
-      : { ok: false, error: "service_disabled" };
-
-    if (wikiHow.ok) {
-      sourceContentObserved = true;
-      evidence.push(`procedural_how_to:wikihow_steps:${wikiHow.steps.length}`);
-      evidence.push(`source:${wikiHow.sourceUrl}`);
-      formalizedObject = `WH:${pageTitle}`;
-      confidence = 0.86;
-      lines.push(howResponse("procedural_how_to_wikihow_returned", "en", { title: wikiHow.title, candidate: pageTitle }));
-      lines.push("");
-      wikiHow.steps.forEach((step, index) => {
-        lines.push(`${index + 1}. ${step}`);
-      });
-      lines.push("");
-      lines.push(`[Source](${wikiHow.sourceUrl})`);
-    } else {
-      if (wikihowEnabled) {
-        evidence.push(`procedural_how_to:wikihow_miss:${wikiHow.error || "no_match"}`);
-      }
-      evidence.push("procedural_how_to:stage:web_search");
-      const missNote = wikihowEnabled
-        ? howResponse("procedural_how_to_wikihow_miss", "en", { candidate: pageTitle, error: wikiHow.error || "no_match" })
-        : howResponse("procedural_how_to_wikihow_disabled", "en");
-      const fallbackSearchQuery = isInstallProcedure ? query : searchQuery;
-      const webSearch = await runWebSearchQuery(
-        fallbackSearchQuery,
-        language,
-        isInstallProcedure ? "general_how_to_fallback" : "",
-      );
-      if (webSearch) {
-        sourceContentObserved = Array.isArray(webSearch.diagnostics?.fused) && webSearch.diagnostics.fused.length > 0;
-        appendUniqueEvidence(evidence, webSearch.evidence);
-        diagnostics = webSearch.diagnostics || diagnostics;
-        formalizedObject = webSearch.formalizedObject || formalizedObject;
-        lines.push(missNote);
-        lines.push("");
-        lines.push(howResponse("procedural_how_to_fallback_search", "en", { query: fallbackSearchQuery }));
-        lines.push("");
-        lines.push(webSearch.content);
-      } else {
-        evidence.push(`web_search:request:${fallbackSearchQuery}`);
-        for (const provider of WEB_SEARCH_PROVIDERS) {
-          evidence.push(`web_search:provider:${provider.id}`);
-        }
-        evidence.push(`web_search:combined:rrf:k=${webSearchRrfK()}`);
-        lines.push(missNote);
-        lines.push("");
-        lines.push(howResponse("procedural_how_to_fallback_search_plan", "en", { query: fallbackSearchQuery, providers: providerSummary, k: webSearchRrfK() }));
-      }
-    }
+  const rendered = proceduralDiscoveryPlan(task, language, pageTitle, apiUrl, searchQuery, query, providerSummary);
+  const servicesEnabled = !Object.entries(preferences).some(([key, value]) =>
+    key.startsWith("externalService") && value === false);
+  let content = rendered;
+  if (!servicesEnabled) {
+    const path = `${isInstall ? "install_" : ""}${wikihowEnabled ? "wikihow" : "no_wikihow"}`;
+    const values = { task: task.task, action: task.action, object: task.object,
+      search_query: searchQuery, fallback_query: query };
+    const lines = [
+      howResponse("procedural_how_to_heading", language, values),
+      ...(isInstall ? [howResponse("procedural_how_to_live_install_gate", language, values)] : []),
+      howResponse(`procedural_how_to_source_path_${path}`, language === "ru" ? "ru" : "en"),
+      ...(isInstall ? [howResponse("procedural_how_to_official_search_miss", "en", { query: searchQuery, fallback: query })] : []),
+      wikihowEnabled
+        ? howResponse("procedural_how_to_wikihow_miss", "en", { candidate: pageTitle, error: wikiOutcome?.status || "no_steps" })
+        : howResponse("procedural_how_to_wikihow_disabled", "en"),
+      howResponse("procedural_how_to_fallback_search", "en", { query: fallbackQuery }),
+    ];
+    if (indexed && !indexed.diagnostics?.fused?.length) lines.push(indexed.content);
+    else lines.push(howResponse("procedural_how_to_fallback_search_plan", "en", { query: fallbackQuery, providers: providerSummary, k: webSearchRrfK() }));
+    content = lines.join("\n\n");
   }
-  if (!evidence.includes("procedural_how_to:stage:web_search")) {
-    evidence.push("procedural_how_to:stage:web_search");
-    evidence.push(`web_search:request:${searchQuery}`);
-    if (isInstallProcedure && searchQuery !== query) {
-      evidence.push(`web_search:request:${query}`);
-    }
-    for (const provider of WEB_SEARCH_PROVIDERS) {
-      evidence.push(`web_search:provider:${provider.id}`);
-    }
-    evidence.push(`web_search:combined:rrf:k=${webSearchRrfK()}`);
+  if (indexed?.diagnostics?.fused?.length || official?.diagnostics?.fused?.length || preferences.offline) {
+    content += "\n\n" + howToGuideChrome("how_to_guide_insufficient_evidence", language, {
+      steps: research.guide.steps.length, required: HOW_TO_MIN_ACCEPTED_STEPS,
+    });
   }
-  evidence.push("procedural_how_to:stage:recursive_fetch_check");
-  evidence.push("procedural_how_to:source_gate:explicit_steps_only");
-
-  const servicesEnabled = Object.entries(preferences).every(([key, value]) =>
-    !key.startsWith("externalService") || value !== false);
-  const discoveryOnly = !sourceContentObserved && servicesEnabled;
   return {
-    intent: "procedural_how_to",
-    content: discoveryOnly ? proceduralDiscoveryPlan(task, language, pageTitle, searchQuery, query, providerSummary)
-      : lines.join("\n"),
-    solverEvents: proceduralDiscoveryEvents(task, pageTitle, apiUrl, searchQuery, query, wikihowEnabled, !officialSearchUsable && wikihowEnabled),
-    confidence,
-    evidence,
-    diagnostics,
-    query,
-    wikihowCandidate: pageTitle,
-    formalizedObject,
+    intent: "procedural_how_to", content, solverEvents, confidence: 0.78, evidence,
+    diagnostics: indexed?.diagnostics || official?.diagnostics || null,
+    query, wikihowCandidate: pageTitle, formalizedObject: `HOWTO:${task.task}`,
   };
 }
 

@@ -68,7 +68,8 @@ test('the focused PR native check limits execution to lint and isolated regressi
   assert.deepEqual(runs, ['bash scripts/ci-clippy-profile.sh --library-and-binaries',
     'cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test cnl_output --test cnl_parity -- --test-threads=1',
     'node --test --test-concurrency=1 rust/tests/web/issue-1590-forced-functions.test.mjs',
-    'node --test --test-concurrency=1 rust/tests/web/issue-1586-structured-output.test.mjs']);
+    'node --test --test-concurrency=1 rust/tests/web/issue-1586-structured-output.test.mjs',
+    'node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs']);
   assert.deepEqual(check.steps.find(step => step.name === 'Verify calendar, currency, forced OpenAI function and CNL behavior').env,
     {CARGO_BUILD_JOBS: '2', CARGO_PROFILE_TEST_OPT_LEVEL: '0'});
   for (const command of runs.slice(2)) {
