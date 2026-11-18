@@ -915,6 +915,8 @@ roles
     kind predicate
   repository_reference
     kind meaning
+  request-prefix
+    kind predicate
   request_function_word
     kind meaning
   request_objective_lead
