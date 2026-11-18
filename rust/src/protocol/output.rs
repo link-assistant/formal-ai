@@ -19,6 +19,16 @@ pub struct ChatCompletion {
     pub choices: Vec<ChatChoice>,
     pub usage: TokenUsage,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub response_format: Option<Value>,
+    #[serde(
+        default,
+        rename = "derivation_id",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub derivation_identifier: Option<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub evidence_links: Vec<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub learning_trace: Option<Value>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub output_projection: Option<Value>,
@@ -47,6 +57,8 @@ pub struct ResponseObject {
     pub model: String,
     pub output: Vec<ResponseOutputItem>,
     pub usage: ResponseUsage,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub text: Option<Value>,
     #[serde(default)]
     pub evidence_links: Vec<String>,
     /// The content-addressed id of the solver answer this response carries
@@ -265,24 +277,40 @@ pub(super) fn response_from_symbolic(
     prompt: &str,
     symbolic_answer: SymbolicAnswer,
 ) -> ResponseObject {
-    let symbolic_answer =
+    let format = request.text.as_ref().and_then(|text| text.get("format"));
+    let structured = super::structured_output::requested(format);
+    let symbolic_answer = if structured {
+        symbolic_answer
+    } else {
         request_context::RequestContext::new(&request.to_chat_completion_request().messages)
-            .compose(symbolic_answer);
+            .compose(symbolic_answer)
+    };
     let model = resolved_request_model(request.model.as_deref());
     let input_tokens = responses_input_tokens(request);
     let output_tokens = estimate_tokens(&symbolic_answer.answer);
     let derivation_id = symbolic_answer.derivation_id();
+    let refused = structured && symbolic_answer.intent == "tool_call_refused";
     let answer = symbolic_answer.answer;
     let thinking_steps = symbolic_answer.thinking_steps;
+    let message_identifier = stable_id("msg", &answer);
+    let part = if refused {
+        ResponseOutputContent {
+            kind: "refusal".into(),
+            text: String::new(),
+            refusal: Some(answer),
+        }
+    } else {
+        ResponseOutputContent {
+            kind: "output_text".into(),
+            text: answer,
+            refusal: None,
+        }
+    };
     let mut output = vec![ResponseOutputItem::Message(ResponseOutputMessage {
-        id: stable_id("msg", &answer),
+        id: message_identifier,
         kind: String::from("message"),
         role: String::from("assistant"),
-        content: vec![ResponseOutputContent {
-            kind: String::from("output_text"),
-            refusal: None,
-            text: answer,
-        }],
+        content: vec![part],
         thinking_steps: thinking_steps.clone(),
     })];
     if let Some(reasoning) = response_reasoning_item(prompt, &thinking_steps) {
@@ -303,6 +331,7 @@ pub(super) fn response_from_symbolic(
         },
         evidence_links: symbolic_answer.evidence_links,
         derivation_id: Some(derivation_id),
+        text: None,
         thinking_steps,
     }
 }

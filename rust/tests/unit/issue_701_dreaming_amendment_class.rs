@@ -96,6 +96,7 @@ fn chat_answer(prompt: &str, events: &[MemoryEvent]) -> String {
         function_call: None,
         output_standard: None,
         lexical_density: None,
+        response_format: None,
         stream_options: None,
     };
     let completion = create_chat_completion_with_solver_and_memory(
@@ -108,6 +109,7 @@ fn chat_answer(prompt: &str, events: &[MemoryEvent]) -> String {
 
 fn responses_answer(prompt: &str, events: &[MemoryEvent]) -> String {
     let request = ResponsesRequest {
+        text: None,
         input: serde_json::Value::String(String::from(prompt)),
         ..ResponsesRequest::default()
     };

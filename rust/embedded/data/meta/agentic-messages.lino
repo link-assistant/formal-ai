@@ -10,6 +10,16 @@
 # without this file shows up as a divergence. `{name}` is a placeholder;
 # `\n` is a newline.
 agentic_messages
+  message structured-output-schema-unsupported
+    text "The requested JSON output schema is invalid or uses unsupported constraints."
+  message structured-output-underivable
+    text "Could not derive a valid JSON object for the requested schema."
+  message structured-output-experience-qualifier
+    text "(?:[Aa]t least|[Mm]inimum(?: of)?)"
+  message structured-output-sum-pattern
+    text "^(?:(?:return|give|find|compute|calculate|what is)\s+(?:me\s+)?(?:the\s+)?|.*\b(?:equal to|is)\s+(?:the\s+)?)?sum of\s+({number})\s+and\s+({number})[.!?]?$"
+  message structured-output-arithmetic-pattern
+    text "^(?:(?:return|compute|calculate|what is)\s+)?({number}\s*[-+*/]\s*{number})[.!?]?$"
   message shell-recovery-final-failure
     text "{failure}\n\n{recovery}"
   message shell_tool_missing

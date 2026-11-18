@@ -18,6 +18,8 @@ pub struct ChatCompletionRequest {
     pub model: Option<String>,
     #[serde(default)]
     pub messages: Vec<ChatMessage>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub response_format: Option<Value>,
     #[serde(default)]
     pub temperature: Option<f32>,
     #[serde(default)]

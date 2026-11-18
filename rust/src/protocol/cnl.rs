@@ -94,6 +94,9 @@ fn create_projected_chat_completion(
             forced_client_functions,
         )
     };
+    if structured_output::project_chat(request, &prompt, &mut completion) {
+        return completion;
+    }
     if let Some(choice) = completion.choices.first_mut().filter(|choice| {
         choice.finish_reason == "stop" && !choice.message.content.plain_text().is_empty()
     }) {

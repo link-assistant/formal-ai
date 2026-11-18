@@ -158,6 +158,7 @@ fn organically_recorded_chat_dreams_amendments_that_replay_through_production() 
             function_call: None,
             output_standard: None,
             lexical_density: None,
+            response_format: None,
             stream_options: None,
         };
         create_chat_completion_with_solver_and_memory(&request, &solver, events).choices[0]

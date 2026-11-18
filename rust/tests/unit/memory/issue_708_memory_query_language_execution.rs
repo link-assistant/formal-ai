@@ -511,6 +511,7 @@ fn agent_protocol_surfaces_execute_exact_reads_and_refuse_implicit_writes() {
     assert!(sql.contains("issue-708-alpha"), "{sql}");
 
     let response_request = ResponsesRequest {
+        text: None,
         input: serde_json::Value::String(String::from(
             "query { memoryAggregate(where: { conversationId: { eq: \"issue-708-fixture\" } }) { count accesses: sum(field: accessCount) } }",
         )),
