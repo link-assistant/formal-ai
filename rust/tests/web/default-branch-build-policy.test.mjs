@@ -1,7 +1,7 @@
 // Replays the recorded release/PR topology without compiling or publishing products.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync, readdirSync, mkdtempSync, mkdirSync, writeFileSync, rmSync} from 'node:fs';
+import {readFileSync, readdirSync, mkdtempSync, mkdirSync, writeFileSync, rmSync, existsSync} from 'node:fs';
 import {dirname,join,relative,resolve} from 'node:path';
 import {tmpdir} from 'node:os';
 import {spawnSync} from 'node:child_process';
@@ -624,4 +624,30 @@ test('the unchanged shell and download contracts execute in the focused native l
     assert.equal(admission([path])['native-type-check'], true, path);
   for (const path of ['docs/unrelated.md', 'experiments/unrelated.mjs'])
     assert.equal(admission([path])['native-type-check'], false, path);
+});
+
+test('native sparse checkout retains nested shell inputs without experiment payloads', {timeout:15000}, () => {
+  const checkout = Object.values(workflow('native-type-check.yml').jobs)[0].steps.find(step => step.uses === 'actions/checkout@v7');
+  const directory = mkdtempSync(join(tmpdir(), 'formal-ai-native-shell-inputs-'));
+  const paths = ['README.md', 'scripts/install.sh', 'experiments/agentic_cli_matrix/install_client.sh',
+    'experiments/issue-1571/osv-cargo-lock.sh', 'experiments/new/nested/download.sh', 'experiments/direct.sh',
+    'experiments/new/nested/payload.json', 'experiments/unrelated.mjs', 'dev/log/payload.json'];
+  const git = (args, input) => {
+    const result = spawnSync('git', args, {cwd:directory, input, encoding:'utf8', timeout:5000, maxBuffer:65536});
+    assert.equal(result.status, 0, result.stderr || String(result.error));
+  };
+  try {
+    for (const path of paths) {
+      mkdirSync(dirname(join(directory, path)), {recursive:true});
+      writeFileSync(join(directory, path), 'finite checkout fixture\n');
+    }
+    git(['init', '-q']);
+    git(['add', '.']);
+    git(['-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid', '-c', 'commit.gpgsign=false',
+      'commit', '-qm', 'Finite source inputs']);
+    assert.equal(checkout.with['sparse-checkout-cone-mode'], false);
+    git(['sparse-checkout', 'set', '--no-cone', '--stdin'], checkout.with['sparse-checkout']);
+    for (const path of paths.slice(0, 6)) assert(existsSync(join(directory, path)), path);
+    for (const path of paths.slice(6)) assert(!existsSync(join(directory, path)), path);
+  } finally { rmSync(directory, {recursive:true, force:true}); }
 });

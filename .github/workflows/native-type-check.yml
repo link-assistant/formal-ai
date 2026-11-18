@@ -54,7 +54,8 @@ jobs:
           sparse-checkout: |
             /*
             !/dev/log/
-            !/experiments/
+            !/experiments/**
+            /experiments/**/*.sh
           sparse-checkout-cone-mode: false
       - uses: dtolnay/rust-toolchain@stable
         if: ${{ inputs.compile-inputs-changed }}
