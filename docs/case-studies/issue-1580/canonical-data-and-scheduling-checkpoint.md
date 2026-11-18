@@ -50,3 +50,5 @@ Java historical review reaches 130/254 continuous pages and 8,240 literal lines;
 124 pages and wider semantic applicability remain unfinished. Accepted
 independent reasoning stays 0/20. The PR remains draft and the full issue stays
 unfinished. The work plan retains the remaining acceptance inventory.
+
+The subsequent [native failure collection and scheduling checkpoint](native-failure-collection-and-scheduling-checkpoint.md) records actual hosted data and scheduling results and the next repair batch.

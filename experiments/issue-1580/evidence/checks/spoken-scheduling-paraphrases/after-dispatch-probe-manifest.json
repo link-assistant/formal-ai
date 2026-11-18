@@ -1,0 +1,8 @@
+{
+  "file": "after-dispatch-probe.json.gz",
+  "rawSha256": "47d61abc0513378f2d56e9550a6dde6b1f67770e5b20fdf0ed8e64a96295f7d8",
+  "archiveSha256": "3716bc7a94e49f843ec997d24fcd2d24638f4b6250fd2016148af91aece869f5",
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0,
+  "limits": "Direct handler intent and artifact admission do not certify full-worker routing, clock accuracy or full issue completion."
+}

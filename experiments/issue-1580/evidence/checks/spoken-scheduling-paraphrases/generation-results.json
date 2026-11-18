@@ -1,0 +1,61 @@
+[
+  {
+    "name": "rust-format",
+    "argv": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "rust/src/solver_handlers/calendar_create.rs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.185,
+    "file": "rust-format.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "lines": 0
+  },
+  {
+    "name": "typescript",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/translate-es.mjs",
+      "js/worker/formal_ai_worker_calendar_and_proofs.js"
+    ],
+    "exitCode": 0,
+    "seconds": 0.124,
+    "file": "typescript.log.gz",
+    "rawSha256": "322536f8cd415b070ba6957903199a9e41cd43d209ecba050f445d4ddb01b298",
+    "archiveSha256": "553a3f45ac980da007a8f086aa6624f0f1a46958baa23a6a436f7bb51c285954",
+    "lines": 1150
+  },
+  {
+    "name": "native-registry-generation",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/lib/generate-native-specification-programs.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 15.55,
+    "file": "native-registry-generation.log.gz",
+    "rawSha256": "245b2bbd93d0c882ea096ede07385802d5984795dee09d43f5dbd0d04e420746",
+    "archiveSha256": "8617531febebb95f8c91bc47261d1892b82dbd44a577f97b2467507e37815a3d",
+    "lines": 1
+  },
+  {
+    "name": "package-mirrors",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/mirror-package-data.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "seconds": 0.439,
+    "file": "package-mirrors.log.gz",
+    "rawSha256": "384345ae61b09f8e04b9f1ef2a343627bb11e63b9cbd3c058b82c3a115084476",
+    "archiveSha256": "94167580842f408c93d3e78fd5d563e7def15ca7be28fd2b9594af591ee32858",
+    "lines": 1
+  }
+]

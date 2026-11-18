@@ -1,0 +1,8 @@
+{
+  "beforeSha256": "6e79a060b2483d81546bd4e16898f404dcde541d7f7ec8928f4c5a50665950b5",
+  "afterSha256": "58c0ac523b7553e5c9327e76828742147a605ad29c235882542d5743326a2b23",
+  "beforeArchive": "native-registry-before.mjs.gz",
+  "beforeArchiveSha256": "bf3bf2a4838cf7035a45c8dd337ecfc4c76fedaacef52f0fc75f28f484e7a87b",
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

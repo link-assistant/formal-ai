@@ -267,3 +267,5 @@ JavaScript tests, TypeScript runtime qualification and all 87 executable gates;
 pending. Java historical review reaches 130/254 pages and 8,240 literal lines.
 The remaining 43 original panics, three budget failures and wider criteria stay
 unfinished; the PR remains draft with zero independent reasoning credit.
+
+The [native failure collection and scheduling checkpoint](native-failure-collection-and-scheduling-checkpoint.md) records both `2c9d93c5` failures, 60 native passes, sentence-local scheduling repair, independent failure collection and the remaining acceptance limits.

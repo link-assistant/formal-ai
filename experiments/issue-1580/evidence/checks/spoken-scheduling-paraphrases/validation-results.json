@@ -1,0 +1,206 @@
+[
+  {
+    "name": "calendar-act-paraphrases",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/calendar-act-paraphrases.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 4.084,
+    "file": "calendar-act-paraphrases.log.gz",
+    "rawSha256": "567bd6971576324f5852089ba28e37c6538f8b6082dddc80cac2de78686e9c58",
+    "archiveSha256": "c1f5c66dd513b49229459fb187a5c7b2ae8c0bfe51b8a86091019797c42c1afa",
+    "lines": 21
+  },
+  {
+    "name": "calendar-clock-preservation",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/calendar-clock-preservation.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 14.008,
+    "file": "calendar-clock-preservation.log.gz",
+    "rawSha256": "c989865bf75583352a9e553eb1540c39cde7f1c300252fde2d91c85a890235d5",
+    "archiveSha256": "849631a4679b83367438e495073eb01851f3f46380ae5acf469c180843cb187d",
+    "lines": 21
+  },
+  {
+    "name": "cardinality-summary-scheduling",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/cardinality-summary-scheduling.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 10.907,
+    "file": "cardinality-summary-scheduling.log.gz",
+    "rawSha256": "44148c59e835d5fc6273577a7cb2e4f59c5acf35b4b55c7d26692cfd29c046be",
+    "archiveSha256": "1651783c57d7002552537076ea05ab926e2c9e40bf8c7c0431de44c1d22cd003",
+    "lines": 32
+  },
+  {
+    "name": "rust-specification-generated-programs",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/rust-specification-generated-programs.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 16.324,
+    "file": "rust-specification-generated-programs.log.gz",
+    "rawSha256": "ea85a4deb9f9df50fc8deece37c152e91acd40bc3465cffbe7ef3f524f12712b",
+    "archiveSha256": "b5379ca13f06227e452140bddb35ce1f1ea4c3f1045c465d0bf3f84efa3e7b45",
+    "lines": 13
+  },
+  {
+    "name": "default-branch-build-policy",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 7.722,
+    "file": "default-branch-build-policy.log.gz",
+    "rawSha256": "2e889d7f16095b3db752c6c6f721123379f10291c56f2491e67a274fdaec74e0",
+    "archiveSha256": "66d371239b309634c06c0b046ba2a9b1f8fa82ca674a10cca045a9c85fdca140",
+    "lines": 36
+  },
+  {
+    "name": "focused-test-map",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/focused-test-map.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.761,
+    "file": "focused-test-map.log.gz",
+    "rawSha256": "538f09c6108bad43ce4842202519251f6c21274730dea76936ea102b54d6e880",
+    "archiveSha256": "6a06e1587c52466f0714ea37d8fd65bbdad8f57b8b19dd1dabf38737d7b08e83",
+    "lines": 16
+  },
+  {
+    "name": "scripts-js-twins-checks",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/scripts-js-twins-checks.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 1.651,
+    "file": "scripts-js-twins-checks.log.gz",
+    "rawSha256": "9dc98a959129f85c8b989b4728d9f8d94d422fbebf748de6fe15ef26f9d1fe7e",
+    "archiveSha256": "7f1b4c08044340343814b358d91315a14061b91db476d46352695770b7d34da4",
+    "lines": 34
+  },
+  {
+    "name": "native-response-scheduling",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/native-response-scheduling.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.925,
+    "file": "native-response-scheduling.log.gz",
+    "rawSha256": "39a3bdb20d751d73313734126c7b8ade38e0b0c0f2c259da2e94c6137198bdbf",
+    "archiveSha256": "fcb188b853029e1f46b1c28a693abbf5955461f0d944a64ca5cbb18848834c38",
+    "lines": 14
+  },
+  {
+    "name": "rust-format-check",
+    "argv": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "--check",
+      "rust/src/solver_handlers/calendar_create.rs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.104,
+    "file": "rust-format-check.log.gz",
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "lines": 0
+  },
+  {
+    "name": "typescript-currency",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/translate-es.mjs",
+      "--check"
+    ],
+    "exitCode": 0,
+    "seconds": 2.743,
+    "file": "typescript-currency.log.gz",
+    "rawSha256": "1580b2bf51099bac3a0c670b8963a461b41f5ca5f09ffc74096d4abc1b19d8fd",
+    "archiveSha256": "470114e67442962d059d5b1f9ab7bd0243317a5033019e789f7d7e52c9fb1820",
+    "lines": 1
+  },
+  {
+    "name": "native-registry-currency",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/lib/generate-native-specification-programs.mjs",
+      "--check"
+    ],
+    "exitCode": 0,
+    "seconds": 16.277,
+    "file": "native-registry-currency.log.gz",
+    "rawSha256": "df87305aedb537c1d1f3ba75ccd79f6e68e7cf4bc6f875b426e178b5ea1488c1",
+    "archiveSha256": "226df5a482963ec7219ce5ea73602f1b39bee7d3fabb0c591ebb6f57bf33bab8",
+    "lines": 1
+  },
+  {
+    "name": "all-local-gates",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs"
+    ],
+    "exitCode": 1,
+    "seconds": 791.775,
+    "file": "all-local-gates.log.gz",
+    "rawSha256": "671ca7c98df713c7537dcdcfbdab50ab50849a0263254426ca4fd625ca86243a",
+    "archiveSha256": "b69d218c44da042beba761f89e97b3e602af06238c5b3efa5cfda0f66e49b103",
+    "lines": 141
+  }
+]

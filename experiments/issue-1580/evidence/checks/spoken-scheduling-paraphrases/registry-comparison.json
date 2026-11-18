@@ -1,0 +1,15 @@
+{
+  "programsBefore": 158,
+  "programsAfter": 158,
+  "changes": [
+    {
+      "path": "/80/sourceWitnesses/0/sha256",
+      "before": "2c23edb55ea310ae0a08297968a0860fce5d79080cda33ff2ddae5b39119b832",
+      "after": "3deba603f5bb5ef1a07e98cc793d089df5027cb6fd2a886f3adf8b109d1cb45c",
+      "source": "rust/src/cnl_output.rs"
+    }
+  ],
+  "executableUnchanged": true,
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

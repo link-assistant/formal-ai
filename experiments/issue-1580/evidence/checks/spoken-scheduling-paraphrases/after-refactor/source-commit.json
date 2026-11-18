@@ -1,0 +1,16 @@
+{
+  "head": "af2d57d98bebcf1f898df2fef11f34b42966dae3",
+  "files": [
+    "rust/src/solver_handlers/calendar_create.rs",
+    "js/worker/formal_ai_worker_calendar_and_proofs.js",
+    "ts/worker/formal_ai_worker_calendar_and_proofs.ts",
+    "data/benchmarks/fast-pull-request-javascript-tests.json",
+    "rust/tests/web/calendar-act-paraphrases.test.mjs",
+    "changelog.d/issue-1580-seeded-scheduling-acts.md"
+  ],
+  "allFocusedChecksPassed": true,
+  "allExecutableGatesPassed": true,
+  "pushExecuted": false,
+  "nativeVerification": "pending hosted execution",
+  "independentAuthorshipCredit": 0
+}
