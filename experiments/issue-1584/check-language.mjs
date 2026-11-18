@@ -1,16 +1,19 @@
 // Check every generalized CNL property for one language grammar only (issue #1584).
-// Usage: node experiments/issue-1584/check-language.mjs <language> [--ledger]
-// Other languages' grammar files are hidden, so one draft cannot break another.
-const [language] = process.argv.slice(2);
-process.env.CNL_MATRIX_LANGUAGES = [...new Set(['en', language])].join(',');
+// Usage: node experiments/issue-1584/check-language.mjs <language>[,<language>...] [--ledger]
+// Other languages' grammar files are hidden, so one draft cannot break another;
+// a comma list checks those languages together (cross-language prompt analysis).
+const languages = process.argv[2].split(',');
+process.env.CNL_MATRIX_LANGUAGES = [...new Set(['en', ...languages])].join(',');
 const matrix = await import('../../rust/tests/web/support/cnl-matrix.mjs');
 let total = 0;
-for (const [property, list] of Object.entries(matrix.languageProperties(language))) {
-  total += list.length;
-  console.log(`${property}: ${list.length}`);
-  for (const line of list.slice(0, 15)) console.log('  ' + line);
+for (const language of languages) {
+  for (const [property, list] of Object.entries(matrix.languageProperties(language))) {
+    total += list.length;
+    console.log(`${language} ${property}: ${list.length}`);
+    for (const line of list.slice(0, 15)) console.log('  ' + line);
+  }
 }
-const rows = matrix.complianceMatrix([language]);
+const rows = matrix.complianceMatrix(languages);
 const failures = matrix.complianceFailures(rows);
 total += failures.length;
 console.log(`compliance: ${failures.length}`);
