@@ -14,7 +14,7 @@ for (const prompt of prompts) test('the calendar handler accepts the original sc
   assert.equal(answer?.intent, 'calendar_create_event', JSON.stringify(answer));
   assert.match(answer.content, /BEGIN:VCALENDAR/u);
 });
-for (const prompt of [
+const sourcePrompts = [
   'I watched a schedule demonstration tonight.',
   'Schedule a meeting. The background mentions tonight.',
   'The document says: put me down at eight tonight.',
@@ -23,6 +23,30 @@ for (const prompt of [
   '文档写着今晚八点帮我和亚历山大约一下。',
   'El texto dice: apúntame a las ocho de esta noche.',
   'Put me down tonight. Book another meeting tomorrow at 20:00.',
-]) test('source text cannot schedule an event: ' + prompt, {timeout:15000}, () => {
+];
+for (const prompt of sourcePrompts) test('source text cannot schedule an event: ' + prompt, {timeout:15000}, () => {
   assert.equal(evaluate(worker, 'calendarCreateRequestSpan(' + JSON.stringify(prompt) + ')'), null);
+});
+
+for (const prompt of prompts) test('the full worker keeps the original scheduling act: ' + prompt, {timeout:15000}, async () => {
+  const answer = await worker.solve(prompt, [], {}, {}, [], {});
+  assert.equal(answer?.intent, 'calendar_create_event', JSON.stringify(answer));
+  assert.match(answer.content, /BEGIN:VCALENDAR/u);
+  assert.equal(answer.memoryOperation, undefined);
+});
+for (const prompt of [
+  'Remember that my favorite color is blue.',
+  'Запомни что мой любимый цвет синий.',
+  'Remember that the meeting is Friday at 14:00.',
+  'Запомни что встреча в пятницу в 14:00.',
+]) test('the full worker keeps an explicit memory write: ' + prompt, {timeout:15000}, async () => {
+  const answer = await worker.solve(prompt, [], {}, {}, [], {});
+  assert.equal(answer?.intent, 'memory_write', JSON.stringify(answer));
+  assert.equal(answer.memoryOperation?.action, 'append');
+});
+
+for (const prompt of sourcePrompts) test('the full worker keeps source text out of scheduling: ' + prompt, {timeout:15000}, async () => {
+  const answer = await worker.solve(prompt, [], {}, {}, [], {});
+  assert.notEqual(answer?.intent, 'calendar_create_event', JSON.stringify(answer));
+  assert.doesNotMatch(answer.content, /BEGIN:VCALENDAR/u);
 });

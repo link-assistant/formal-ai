@@ -93,6 +93,10 @@ browser-handler-precedence
   handler tryKupiSlona
     argument_prompt
     argument_normalized
+  handler tryCalendarCreateEvent
+    argument_prompt
+    argument_normalized
+    argument_userContext
   handler tryCalendarReasoning
     argument_prompt
     argument_normalized
