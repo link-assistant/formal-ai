@@ -1,0 +1,26 @@
+{
+  "complete": true,
+  "allPassed": true,
+  "head": "b2e84dd059f5b57e0a4277448857e5813a801f13",
+  "sourceUnchangedDuringValidation": true,
+  "checks": 8,
+  "failed": [],
+  "gateLogsArchived": 11,
+  "nativeExecutedLocally": false,
+  "independentAuthorshipCredit": 0,
+  "completedAt": "2026-11-18T18:33:05.105376+00:00",
+  "focusedCounts": {
+    "tests": 75,
+    "pass": 75,
+    "fail": 0,
+    "skipped": 0
+  },
+  "gateCounts": {
+    "PASS": 11,
+    "FAIL": 0,
+    "SKIP": 0
+  },
+  "allArchivedPayloadHashesVerified": true,
+  "focusedAndAggregateLogsLiterallyRead": true,
+  "detailedGatePayloadsLiterallyRead": false
+}

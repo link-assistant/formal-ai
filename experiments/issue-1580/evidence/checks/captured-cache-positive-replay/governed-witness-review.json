@@ -1,0 +1,21 @@
+{
+  "parent": "d43bc0386409bb16535451d33dbb1af5e5e83888",
+  "readerSha256": "861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+  "writerExitCode": 0,
+  "previousSha256": "3996582b77f3aeda04d02b2e05a502279b47aa5db7364549f7135336ca60f5b4",
+  "currentSha256": "adeb01620875ef3335805c249570f6aa298ef0f748adafc7f192c677506aa4a7",
+  "completeObjectEqualAfterReviewedSourceChanges": true,
+  "hashChanges": [
+    {
+      "path": "sourceManifest/129/sha256",
+      "source": "rust/tests/unit/specification/unknown_reasoning.rs",
+      "before": "980380b04b0a4734b23eed1cc40a915bfc1e583bdb5d011286041f44abdc523c",
+      "after": "76563be50c44825988eb3948281a931347b6af27ea95f7478056c3e4e5da7682"
+    }
+  ],
+  "total": 1185,
+  "supported": 221,
+  "unsupported": 964,
+  "nativeExecutionVerified": false,
+  "independentAuthorshipCredit": 0
+}

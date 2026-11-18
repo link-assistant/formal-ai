@@ -1,0 +1,50 @@
+{
+  "head": "4d105df788a398c6c26a9431393622bb4206dbfe",
+  "allWorkflowResultsCollected": true,
+  "workflows": 23,
+  "successfulWorkflows": 22,
+  "failedWorkflow": {
+    "id": 44367130256,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/44367130256",
+    "actionableFailures": [
+      {
+        "job": 135024168069,
+        "lineRange": [
+          1712,
+          1725
+        ],
+        "test": "seed_backed_bare_terms_still_use_public_knowledge_cache",
+        "assertion": "tests/unit/specification/unknown_reasoning.rs:131 expected concept_lookup, actual web_search",
+        "cause": "The added offline cursor positive asserted transient runtime cache content absent from committed captures.",
+        "repairCommit": "b2e84dd059f5b57e0a4277448857e5813a801f13"
+      }
+    ]
+  },
+  "nativeLog": {
+    "file": "job-135024168069.stdout.gz",
+    "rawSha256": "1f2a902449315753d1253b0db31c2d3b1f08ada155bb4ca4e72cbdb7b9df78e5",
+    "archiveSha256": "0f110109a577f84685911d4f709ab217d49b8891e8013c0542b1ab7158b49b94",
+    "bytes": 271165,
+    "lines": 1836,
+    "totalLines": 1836
+  },
+  "verifiedArchivedPayloads": 62,
+  "literalNativeRanges": [
+    [
+      1609,
+      1725
+    ]
+  ],
+  "nativeRustPassed": 41,
+  "nativeRustFailed": 1,
+  "nativeOriginalMissFixturePassed": true,
+  "unknownReasoningTarget": {
+    "passed": 8,
+    "failed": 1
+  },
+  "subsequentLibrarySpanishAndHttpSteps": "not executed after isolated command failed",
+  "priorF6NativeEvidenceRemainsHistorical": true,
+  "fullNativeLogLiterallyRead": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

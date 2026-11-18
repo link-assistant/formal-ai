@@ -1,0 +1,425 @@
+{
+  "complete": true,
+  "head": "4d105df788a398c6c26a9431393622bb4206dbfe",
+  "sourceHead": "dc618e45c5372edbd742f500105ac5e3a72a9737",
+  "priorPublishedHead": "f6ecab596c331da59c40abd07d69c431beba1066",
+  "pushExecuted": true,
+  "observedAt": "2026-11-18T18:12:18.326191+00:00",
+  "records": [
+    {
+      "name": "branch",
+      "argv": [
+        "git",
+        "branch",
+        "--show-current"
+      ],
+      "exitCode": 0,
+      "seconds": 0.008,
+      "stdoutSha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "source-head",
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "seconds": 0.008,
+      "stdoutSha256": "181f30d862c40189f355747b998610a8281c2111ce33650f627406e755559cc0",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "unmerged",
+      "argv": [
+        "git",
+        "diff",
+        "--name-only",
+        "--diff-filter=U"
+      ],
+      "exitCode": 0,
+      "seconds": 0.756,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "initial-index",
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--name-only"
+      ],
+      "exitCode": 0,
+      "seconds": 0.082,
+      "stdoutSha256": "5a70ddb93ca8fc8f311bfac7007c92a44559fded528e1e25a41e2fddc20b19f3",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "archive-supplied",
+      "argv": [
+        "python3",
+        "/tmp/issue-1580-research/archive-round-bootstrap.py"
+      ],
+      "exitCode": 0,
+      "seconds": 0.927,
+      "stdoutSha256": "5a2ce35c85eb0ca97b8076152a507b5dc9bfe8474996703f63a32b4de0631222",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "archive-commands",
+      "argv": [
+        "python3",
+        "experiments/issue-1580/archive-evidence.py"
+      ],
+      "exitCode": 0,
+      "seconds": 0.21,
+      "stdoutSha256": "3188afbc59d3675b07deea3438a1bda607d812b4576d183760e6043155453ec2",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "stage-evidence",
+      "argv": [
+        "git",
+        "add",
+        "--",
+        "docs/case-studies/issue-1580",
+        "experiments/issue-1580"
+      ],
+      "exitCode": 0,
+      "seconds": 0.392,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "staged-names",
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--name-only"
+      ],
+      "exitCode": 0,
+      "seconds": 0.055,
+      "stdoutSha256": "5f56ff3e34e583e5a97d67cbe40574dd21234d18ac4726569eff0cf77b76867e",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "documentation-gates",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-changelog-fragment-js-twin,check-tests-as-docs,check-tests-as-documentation-javascript-twin"
+      ],
+      "exitCode": 0,
+      "seconds": 30.568,
+      "stdoutSha256": "9f69850a54652c0319bac53439a49b87def143b86514b1871f5d949a878a8235",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "staged-whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.171,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "commit-evidence",
+      "argv": [
+        "git",
+        "-c",
+        "gc.auto=0",
+        "commit",
+        "-m",
+        "Record large-diff, role registry and native replay evidence"
+      ],
+      "exitCode": 0,
+      "seconds": 0.699,
+      "stdoutSha256": "0e0613c81988635632d7f25003b119e4edd2fc0c903c8ccf6d80ff6b78bbc4cc",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "head",
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "seconds": 0.008,
+      "stdoutSha256": "77a4bac55c81012edade20575495ef1528956c53a6cb9ca4d0a20d0841678c18",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "clean-before-push",
+      "argv": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "exitCode": 0,
+      "seconds": 0.575,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "fetch-main-final",
+      "argv": [
+        "git",
+        "-c",
+        "gc.auto=0",
+        "fetch",
+        "origin",
+        "main"
+      ],
+      "exitCode": 0,
+      "seconds": 0.592,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "f694fbaa5fdcdaea1514acbf57d0fe8b435415ef941c8159035a4a9a57d8aed5"
+    },
+    {
+      "name": "main-ancestor-final",
+      "argv": [
+        "git",
+        "merge-base",
+        "--is-ancestor",
+        "origin/main",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "seconds": 0.015,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "inherited-log-main",
+      "argv": [
+        "git",
+        "show",
+        "origin/main:dev/log/issues/1586/pulls/1598/sessions/ses_e16a64b32ffeT7gcIqGmGFfoQY/solve.log"
+      ],
+      "exitCode": 0,
+      "seconds": 0.068,
+      "stdoutSha256": "1e28c36272af07896db652e0eee200cef6756cfba6071590fca3eb5fbc1196f0",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "inherited-log-head",
+      "argv": [
+        "git",
+        "show",
+        "HEAD:dev/log/issues/1586/pulls/1598/sessions/ses_e16a64b32ffeT7gcIqGmGFfoQY/solve.log"
+      ],
+      "exitCode": 0,
+      "seconds": 0.05,
+      "stdoutSha256": "1e28c36272af07896db652e0eee200cef6756cfba6071590fca3eb5fbc1196f0",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "combined-whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "f6ecab596c331da59c40abd07d69c431beba1066",
+        "HEAD",
+        "--",
+        ".",
+        ":(exclude)dev/log/issues/1586/pulls/1598/sessions/ses_e16a64b32ffeT7gcIqGmGFfoQY/solve.log"
+      ],
+      "exitCode": 0,
+      "seconds": 0.159,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "remote-before",
+      "argv": [
+        "git",
+        "ls-remote",
+        "origin",
+        "refs/heads/issue-1580-8d61a32a61e1"
+      ],
+      "exitCode": 0,
+      "seconds": 0.849,
+      "stdoutSha256": "6ed4cdd84123dfae63a70dbfe8de062d3a733fccb0d0e56f0b8d760b87b51c0d",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "latest-runs",
+      "argv": [
+        "gh",
+        "run",
+        "list",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--branch",
+        "issue-1580-8d61a32a61e1",
+        "--limit",
+        "100",
+        "--json",
+        "databaseId,workflowName,headSha,status,conclusion,createdAt"
+      ],
+      "exitCode": 0,
+      "seconds": 2.008,
+      "stdoutSha256": "aec3033e53f37642367f092be63e1a234d74f7d6bfaaa992c35e8bc8e6ca3306",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "runs-in_progress",
+      "argv": [
+        "gh",
+        "run",
+        "list",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--branch",
+        "issue-1580-8d61a32a61e1",
+        "--status",
+        "in_progress",
+        "--json",
+        "databaseId,workflowName,headSha"
+      ],
+      "exitCode": 0,
+      "seconds": 0.595,
+      "stdoutSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "runs-queued",
+      "argv": [
+        "gh",
+        "run",
+        "list",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--branch",
+        "issue-1580-8d61a32a61e1",
+        "--status",
+        "queued",
+        "--json",
+        "databaseId,workflowName,headSha"
+      ],
+      "exitCode": 0,
+      "seconds": 0.677,
+      "stdoutSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "branch-before-push",
+      "argv": [
+        "git",
+        "branch",
+        "--show-current"
+      ],
+      "exitCode": 0,
+      "seconds": 0.005,
+      "stdoutSha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "push",
+      "argv": [
+        "git",
+        "-c",
+        "pack.threads=1",
+        "-c",
+        "pack.windowMemory=16m",
+        "push",
+        "origin",
+        "HEAD:refs/heads/issue-1580-8d61a32a61e1"
+      ],
+      "exitCode": 0,
+      "seconds": 4.914,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "2affae927162b4fb7d7fb4df4fcef88c4cccece029ddb9201976ca6c3247e6e8"
+    },
+    {
+      "name": "remote-after",
+      "argv": [
+        "git",
+        "ls-remote",
+        "origin",
+        "refs/heads/issue-1580-8d61a32a61e1"
+      ],
+      "exitCode": 0,
+      "seconds": 0.51,
+      "stdoutSha256": "b8dfcdb466130bf1575aee118009cbb417e41213cb42f688897b9d08c7f5b6d8",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "edit-pull-request",
+      "argv": [
+        "gh",
+        "pr",
+        "edit",
+        "1581",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--title",
+        "Fix solver composition, client constraints and CI regressions",
+        "--body-file",
+        "/tmp/gh-issue-solver-1794900398048/experiments/issue-1580/evidence/checks/unverified-child-status/pull-request-description.md"
+      ],
+      "exitCode": 0,
+      "seconds": 2.4,
+      "stdoutSha256": "2a0be70d82ef5db818ead580d29299c06fc9d28a7c85355fbb36648015956b71",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "pull-request-details",
+      "argv": [
+        "gh",
+        "pr",
+        "view",
+        "1581",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--json",
+        "headRefOid,isDraft,body,title,url"
+      ],
+      "exitCode": 0,
+      "seconds": 0.662,
+      "stdoutSha256": "921f863b4ce9a453829453c6d76a4c134eef377ba99df40acec866a6fe4b39d0",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "whole-pull-request-diff",
+      "argv": [
+        "gh",
+        "pr",
+        "diff",
+        "1581",
+        "--repo",
+        "link-assistant/formal-ai"
+      ],
+      "exitCode": 1,
+      "seconds": 1.485,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "06dda70ebfef8b578f4e212792b89631413563da7dfaa7598b90c00adb13cfe5"
+    },
+    {
+      "name": "clean-after-publication",
+      "argv": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "exitCode": 0,
+      "seconds": 0.642,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "fullIssueComplete": false,
+  "newNativeExecution": "pending hosted CI",
+  "independentAuthorshipCredit": 0
+}

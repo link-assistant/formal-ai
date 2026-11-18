@@ -245,3 +245,14 @@ local skip and 87 executable gates with 52 explicit exclusions. Nine original
 unknown-source contracts now have isolated hosted admission; their execution
 is pending. Java historical review reaches 124/254 pages and 8,069 lines.
 The full issue remains unfinished and the PR remains draft.
+
+
+The data-contract follow-through records `4d105df7`: 22 workflows pass and one
+native cache-positive assertion fails because it assumes an uncommitted runtime
+capture. The repair uses the existing committed isogram capture for both bare
+and question forms, retaining the whole attributed answer. The next hosted batch
+also admits 22 byte-identical original data-file tests. Combined local validation
+passes 75 focused tests and 11 affected gates; actual native execution is pending.
+Java historical review reaches 126/254 pages and 8,122 lines. The remaining 44
+original panic contracts, three budget terminations and broader issue criteria
+remain unfinished; the PR remains draft.
