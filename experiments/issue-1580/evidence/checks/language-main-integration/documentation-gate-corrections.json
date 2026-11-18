@@ -1,0 +1,48 @@
+{
+  "beforeGateCounts": {
+    "PASS": 81,
+    "FAIL": 5,
+    "SKIP": 52
+  },
+  "commands": [
+    {
+      "name": "format-exact-native-examples",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "rust/tests/unit/solver_unknown_reasoning_captured_sources.rs"
+      ],
+      "exitCode": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0
+    },
+    {
+      "name": "regenerate-status",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/render-status.mjs",
+        "--write"
+      ],
+      "exitCode": 0,
+      "rawSha256": "9dc74f2c8bd924631a3dae9e191b3abb41137e06868cd6c8438f5a872d1d4436",
+      "lines": 1
+    },
+    {
+      "name": "review-failed-gates",
+      "argv": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin,check-file-size,check-status-render,check-tests-as-docs,check-tests-as-documentation-javascript-twin"
+      ],
+      "exitCode": 0,
+      "rawSha256": "d0b0fb87efe5e23ba9581d8d8d195c26a25ec3f291e2e277e434c10da6e0d96e",
+      "lines": 7
+    }
+  ],
+  "nativeExecution": false,
+  "assertions": "Three native cases now show exact whole answer strings in addition to their original intent and contains assertions; no existing assertion removed.",
+  "status": "Maintained JavaScript renderer; no Rust build."
+}

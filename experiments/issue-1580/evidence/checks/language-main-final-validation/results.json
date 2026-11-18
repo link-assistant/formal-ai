@@ -1,0 +1,47 @@
+[
+  {
+    "log": "rustfmt.log.gz",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "lines": 0,
+    "bytes": 0,
+    "name": "rustfmt",
+    "argv": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "--check",
+      "rust/src/solver.rs",
+      "rust/src/solver_unknown_reasoning.rs",
+      "rust/tests/unit/solver_unknown_reasoning_captured_sources.rs"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 0.162
+  },
+  {
+    "log": "all-local-gates.log.gz",
+    "sha256": "ce89391c3ee70e25edaed0808ded0d3c39404310e21b9d1e302346faf30dc3ef",
+    "lines": 140,
+    "bytes": 6870,
+    "name": "all-local-gates",
+    "argv": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs"
+    ],
+    "exitCode": 1,
+    "durationSeconds": 715.614
+  },
+  {
+    "log": "whitespace.log.gz",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "lines": 0,
+    "bytes": 0,
+    "name": "whitespace",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 0.322
+  }
+]

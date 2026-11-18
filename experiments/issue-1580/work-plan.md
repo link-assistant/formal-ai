@@ -605,10 +605,24 @@ PHP classification correction: the path taxonomy is not a CI boundary. Current t
 - [x] Exercise both original Spanish sibling requests in real Chromium, preserve full before/after observations and screenshots, verify unchanged whole “how” body, close the browser and stop the bounded servers. The labeled worker harness is not production UI or WASM verification.
 - [x] Draft a native guard against promoting word glosses to answers for unparsed unsupported-language sentences; add four captured-source tests and wire those plus the unchanged original Spanish contract into hosted CI.
 - [x] Correct the three local static-check failures (format, exact workflow policy, four Cargo fixture identity references), preserving complete governed objects and all first-attempt logs.
-- [ ] Finish collecting every full local gate result; move the native test module into the existing test tree to resolve the specialization false positive without weakening the gate.
-- [ ] Merge newly advanced `main`, preserve both branches' isolated targets and generated registry changes, review the complete governed witness delta, then rerun the full local inventory before the next single push.
+- [x] Collect every first local inventory result and move the native test module into the existing test tree, resolving the six specialization failures without weakening any gate. Retain all first-attempt evidence.
+- [x] Merge main `30ff2d8a81cf8f21f679c2826851b5b413c34b7a` as `46ea14f01ca21ae6b2f59adbcc6d20677f4e819d`, preserving both branches' isolated targets and generated identities. Complete both-parent witness review and pass the final full local inventory before publication.
 - [ ] Publish atomic source/evidence commits only after the push gate; verify the four new native cases and unchanged Spanish sibling on the actual pushed head. Keep every broader criterion unfinished and independent reasoning credit 0/20.
 
 Details and reproducible checks: `docs/case-studies/issue-1580/language-source-binding-checkpoint.md`.
 
 The first complete local inventory finishes in 764.618 seconds: 80 executable gates pass, six fail and 52 are explicitly excluded. All six failures trace to placing the new test-only module under `rust/src` (one abbreviation, two literal predicates, four natural-language strings and three test prompts); the tests have moved into the existing test tree without changing any ceiling or allowlist. All 91 aggregate/focused/detailed payload hashes are verified. No merged-tree or new native execution is claimed yet. Main advanced to `30ff2d8a8`; merge and complete revalidation are next.
+
+- [x] Read and preserve Java historical pages 114–115 fully: continuous
+  1–115/254, 111 complete files, one partial and 7,815 source lines. The Node
+  catalog is read through line 236/884. Pages 116–254 and full semantic review
+  remain unfinished; no independent authorship credit.
+
+- [x] Resolve all twenty main-integration conflicts; preserve all seven native targets, CNL fixture admission, controlled output and both language guards. Review the complete governed witness against both parents, all native registry objects and all 164 translation projections.
+- [x] Pass and literally read Rust formatting and all ten merged focused JavaScript files, with complete log hashes checked. Full merged gate collection and actual next-head native execution remain pending.
+
+- [x] Literally read and retain Java historical pages 116–117, reaching continuous 1–117/254 and 7,872 source lines. The partial Node catalog reaches line 293/884. Pages 118–254 and complete applicability remain open; zero independent authorship credit.
+
+- [x] Collect the first merged inventory (81 pass / five fail / 52 exclusions); fix all five failures without relaxing a ceiling, assertion or check. The next complete inventory reports 85 passes, one filename failure and 52 exclusions. Rename four unchanged preflight payloads from abbreviated `pr` to full `pull-request`; the affected gate passes. All 86 executable gates have passing results after their corrections. Verify all 89 full-run payload hashes, the filename retry and unchanged candidate source bytes; no local native build.
+- [x] Literally read and retain Java historical pages 118–119, reaching 119/254 continuous pages and 7,930 source lines. Node catalog lines 1–351/884 are partial; pages 120–254 and semantic applicability remain open.
+- [x] Read the current standing doctrine: the measured 0/20 independently accepted reasoning units remain below its 5% reporting target. R1017-R5 does not add a release percentage gate; all supplied work still earns zero independent credit.

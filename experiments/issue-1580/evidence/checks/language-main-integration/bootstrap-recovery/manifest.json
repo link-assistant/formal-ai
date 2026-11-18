@@ -1,0 +1,79 @@
+{
+  "recovery": {
+    "purpose": "temporary recovery of merge-broken Formal AI bootstrap; zero validation and independent reasoning credit",
+    "head": "a748854197dcc693033610acc6589f10b1c6d525",
+    "paths": [
+      "js",
+      "ts",
+      "scripts",
+      "data",
+      "experiments/js_dogfood",
+      "experiments/issue-1580/formal-command.mjs",
+      "package.json"
+    ],
+    "snapshot": "/tmp/issue-1580-research/frozen-formal-driver-a748854"
+  },
+  "records": [
+    {
+      "file": "2026-11-18T14-55-37.207Z.json.gz",
+      "rawSha256": "9be4fe3ea589344f2135f501b92f6d05f213d0e1594944f616cf05b052d7892b",
+      "archiveSha256": "1aba692b65c712b316ed2819de92cb13382b4c55a03eef4ba10132fec0c30980",
+      "status": 1,
+      "source": "",
+      "signal": null,
+      "independentAuthorshipCredit": 0,
+      "validationCredit": 0
+    },
+    {
+      "file": "2026-11-18T14-56-09.978Z.json.gz",
+      "rawSha256": "f0be2afc4c5210b2b6d3b56ee62f813691c502938690c21f20949eb9c9af5bf6",
+      "archiveSha256": "3b2444c12b8b9cf647757cb2a28a45b229aaefb16204e738d548e9a987fae2ac",
+      "status": 0,
+      "source": "",
+      "signal": null,
+      "independentAuthorshipCredit": 0,
+      "validationCredit": 0
+    },
+    {
+      "file": "2026-11-18T14-56-33.098Z.json.gz",
+      "rawSha256": "0cb9cb41da38ebe1daee1018e3b0338fccb669202465432b271eab1077d407f4",
+      "archiveSha256": "430988cfe6c23146463d31c130679587552b8b056d109c903bc160146e72c878",
+      "status": 0,
+      "source": "",
+      "signal": null,
+      "independentAuthorshipCredit": 0,
+      "validationCredit": 0
+    },
+    {
+      "file": "2026-11-18T14-56-59.830Z.json.gz",
+      "rawSha256": "ed161c2f3cc3d980f088b31220ed92a220efdc1fe6d66328c19d3dd9c7fe4c09",
+      "archiveSha256": "9701ff17264cd61bd7b376dd2a943dfa4ad39e85a74ed47e6734552162f9ee34",
+      "status": 0,
+      "source": "",
+      "signal": null,
+      "independentAuthorshipCredit": 0,
+      "validationCredit": 0
+    },
+    {
+      "file": "2026-11-18T14-57-25.185Z.json.gz",
+      "rawSha256": "34500c914dcadb104657e82adad58df1ef59981a6c6b1ddbb0e64cc7716dc603",
+      "archiveSha256": "b464d873992f24305d58e4b727c6b8c0754b0503375207fb9f6f629dbba9944d",
+      "status": 0,
+      "source": "",
+      "signal": null,
+      "independentAuthorshipCredit": 0,
+      "validationCredit": 0
+    },
+    {
+      "file": "2026-11-18T14-58-17.805Z.json.gz",
+      "rawSha256": "59e27ed2217543440b3d62ededac05305db953439b151d96726a0b087957d01b",
+      "archiveSha256": "c0311368413acbbd784346042acadebac0359e24d82c2eeda3c271f547548fdb",
+      "status": 0,
+      "source": "",
+      "signal": null,
+      "independentAuthorshipCredit": 0,
+      "validationCredit": 0
+    }
+  ],
+  "scope": "Temporary coherent HEAD snapshot for merge-conflict recovery only. Snapshot construction used direct host recovery commands; no validation, solver or independent reasoning credit. All merged validation uses restored ordinary driver in actual checkout without preloader."
+}
