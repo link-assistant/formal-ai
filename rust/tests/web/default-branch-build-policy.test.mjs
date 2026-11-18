@@ -66,14 +66,16 @@ test('the focused PR native check limits execution to lint and isolated regressi
   assert.equal(others.length, 0);
   const runs = check.steps.map(step => step.run).filter(Boolean);
   assert.deepEqual(runs.filter(run => !run.startsWith('echo ')), ['bash scripts/ci-clippy-profile.sh --library-and-binaries',
-    'cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test meta_executor_parity --test synthesis_contracts --test cnl_output --test cnl_parity --test unknown_reasoning --test data_files --test scheduling_contracts -- --test-threads=1',
-    'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_unknown_reasoning::tests:: -- --test-threads=1\n' +
-    'cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1\n',
+    'cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast --test calendar_currency --test openai_forced_functions --test meta_executor_parity --test synthesis_contracts --test cnl_output --test cnl_parity --test unknown_reasoning --test data_files --test scheduling_contracts -- --test-threads=1',
+    'regression_status=0\n' +
+    'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_unknown_reasoning::tests:: -- --test-threads=1 || regression_status=$?\n' +
+    'cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1 || regression_status=$?\n' +
+    'exit "$regression_status"\n',
     'node --test --test-concurrency=1 rust/tests/web/issue-1590-forced-functions.test.mjs',
     'node --test --test-concurrency=1 rust/tests/web/issue-1586-structured-output.test.mjs',
     'node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs']);
   assert.equal(called.on.workflow_call.inputs['compile-inputs-changed'].default, true);
-  for (const step of check.steps.filter(step => step.uses || ['Type-check and lint the library and binaries', 'Verify isolated native behavior regressions', 'Verify native unresolved-language source binding', 'Replay the forced function requests against the native CLI', 'Replay structured output and refusals against the native CLI', 'Replay localized procedures against the native CLI'].includes(step.name)))
+  for (const step of check.steps.filter(step => (step.uses && step.uses !== 'actions/setup-node@v7') || ['Type-check and lint the library and binaries', 'Verify isolated native behavior regressions'].includes(step.name)))
     assert.equal(step.if, '${{ inputs.compile-inputs-changed }}');
   assert.equal(check.steps[0].if, '${{ !inputs.compile-inputs-changed }}');
   assert.equal(workflow('release.yml').on.pull_request['paths-ignore'], undefined, 'required contexts must report for docs-only PRs');
@@ -150,11 +152,13 @@ test('native CNL parity selects execution when a discovered language fixture cha
 test('native unsupported-language regressions execute the captured-source units and unchanged sibling contract', () => {
   const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps
     .find(step => step.name === 'Verify native unresolved-language source binding');
-  assert.equal(step.if, '${{ inputs.compile-inputs-changed }}');
+  assert.equal(step.if, "${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}");
   assert.deepEqual(step.env, {CARGO_BUILD_JOBS: '2', CARGO_PROFILE_TEST_OPT_LEVEL: '0'});
   assert.deepEqual(step.run.trim().split('\n'), [
-    'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_unknown_reasoning::tests:: -- --test-threads=1',
-    'cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1',
+    'regression_status=0',
+    'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_unknown_reasoning::tests:: -- --test-threads=1 || regression_status=$?',
+    'cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1 || regression_status=$?',
+    'exit "$regression_status"',
   ]);
   const target = read('rust/Cargo.toml').split('[[test]]').find(block => /^name = "any_language"$/mu.test(block));
   assert.match(target, /^path = "tests\/unit\/issue_706_any_language.rs"$/mu);
@@ -553,4 +557,55 @@ test('localized native replay selects both its test source and consumed fixture'
   assert.deepEqual(paths.map(path => admission([path])['native-type-check']), [true, true]);
   for (const path of ['rust/tests/web/unrelated.test.mjs', 'rust/tests/fixtures/unrelated.json'])
     assert.equal(admission([path])['native-type-check'], false, path);
+});
+
+
+test('independent native replays continue after a regression fails and preserve failure status', () => {
+  const job = workflow('native-type-check.yml').jobs.clippy;
+  const later = job.steps.filter(step => step.name === 'Verify native unresolved-language source binding'
+    || step.uses === 'actions/setup-node@v7' || step.name?.startsWith('Replay '));
+  assert.equal(later.length, 5);
+  const selected = (step, {earlierFailure = true, compile = true, lint = 'success', cancelled = false} = {}) => {
+    const expression = step.if.slice(3, -2).trim()
+      .replaceAll('inputs.compile-inputs-changed', "inputs['compile-inputs-changed']")
+      .replaceAll('steps.native-lint', "steps['native-lint']");
+    // Actions supplies success() unless an explicit status function is present.
+    if (earlierFailure && !/\b(?:always|cancelled|failure|success)\s*\(/u.test(expression)) return false;
+    return Boolean(new Script(expression).runInNewContext({
+      inputs: {'compile-inputs-changed': compile}, steps: {'native-lint': {outcome: lint}},
+      cancelled: () => cancelled,
+    }, {timeout: 100}));
+  };
+  for (const step of later) {
+    assert.equal(selected(step), true, step.name ?? step.uses);
+    assert.equal(selected(step, {earlierFailure: false}), true);
+    assert.equal(selected(step, {cancelled: true}), false);
+    assert.equal(selected(step, {compile: false}), false);
+    for (const lint of ['failure', 'skipped', 'cancelled'])
+      assert.equal(selected(step, {lint}), false);
+  }
+  assert.equal(job.steps.find(step => step.name === 'Type-check and lint the library and binaries').id, 'native-lint');
+  const isolated = job.steps.find(step => step.name === 'Verify isolated native behavior regressions');
+  assert.match(isolated.run, /--no-fail-fast/u);
+  assert.equal(isolated['continue-on-error'], undefined);
+  for (const step of later) assert.equal(step['continue-on-error'], undefined);
+  const binding = later.find(step => step.name === 'Verify native unresolved-language source binding');
+  // Run the actual shell body against a finite stub: either failure must still
+  // run its sibling and leave the step failed; two successes must succeed.
+  const directory = mkdtempSync(join(tmpdir(), 'native-replay-failures-'));
+  try {
+    const stub = join(directory, 'cargo');
+    writeFileSync(stub, '#!/bin/sh\nprintf "%s\\n" "$*" >> "$REPLAY_CALLS"\ncase "$*" in *" --lib "*) exit "$REPLAY_LIBRARY_STATUS";; *) exit "$REPLAY_SPANISH_STATUS";; esac\n', {mode: 0o755});
+    for (const [library, spanish, expected] of [[1,0,1],[0,1,1],[0,0,0]]) {
+      const calls = join(directory, `calls-${library}-${spanish}.txt`);
+      const result = spawnSync('bash', ['-e', '-c', binding.run], {encoding:'utf8', timeout:5000,
+        env:{...process.env, PATH:directory+':'+process.env.PATH, REPLAY_CALLS:calls,
+          REPLAY_LIBRARY_STATUS:String(library), REPLAY_SPANISH_STATUS:String(spanish)}});
+      assert.equal(result.status, expected, result.stderr);
+      const commands = read(calls).trim().split('\n');
+      assert.equal(commands.length, 2);
+      assert.match(commands[0], /--lib solver_unknown_reasoning::tests::/u);
+      assert.match(commands[1], /--test any_language/u);
+    }
+  } finally { rmSync(directory, {recursive:true, force:true}); }
 });
