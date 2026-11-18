@@ -1,0 +1,33 @@
+[
+  {
+    "name": "abbreviation-ratchet-refresh",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/measure-abbreviations.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "seconds": 3.068,
+    "file": "abbreviation-ratchet-refresh.log.gz",
+    "rawSha256": "7076bebc2f1449ee2fa145f940e9331bc19ded28497f61da1def88f7ad1a639b",
+    "archiveSha256": "c1f6ae4cc219943f47eb2f7680572fbabf17b4e20d0ef8be73f604374b257c3c",
+    "lines": 4
+  },
+  {
+    "name": "abbreviation-resolution",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-abbreviations"
+    ],
+    "exitCode": 0,
+    "seconds": 4.025,
+    "file": "abbreviation-resolution.log.gz",
+    "rawSha256": "7ec7fb5d73202c44f358ca7a3b8d135e28657ece84ee22c1ca1f677bc151053d",
+    "archiveSha256": "d39b7922bfe7781ff01aeab07bf14370881607360dd785512caf1a1a1e781304",
+    "lines": 3
+  }
+]

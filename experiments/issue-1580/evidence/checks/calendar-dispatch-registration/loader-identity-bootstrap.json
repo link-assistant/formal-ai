@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "node",
+    "--max-old-space-size=256",
+    "scripts/generate-worker-prerequisites.mjs",
+    "--write"
+  ],
+  "exitCode": 0,
+  "rawSha256": "bfed9ae295056c729c7730b27859ae7402b62afedd490ad27c4a82a8d9caf571",
+  "driver": "previously retained coherent a748854 snapshot",
+  "reason": "Current driver correctly refuses changed seed-loader until its generated source identity is refreshed",
+  "identityChecksDisabled": false,
+  "validationCredit": 0,
+  "independentAuthorshipCredit": 0
+}

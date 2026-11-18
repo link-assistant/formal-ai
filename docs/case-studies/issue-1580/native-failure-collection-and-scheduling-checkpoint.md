@@ -59,3 +59,5 @@ lines, with 111 complete files and one partial Node catalog through line 836/884
 Pages 135–254 and complete semantic applicability remain open. Accepted
 independent reasoning stays 0/20; supplied work earns zero credit. The pull
 request remains draft and unmerged, and the full issue is unfinished.
+
+The subsequent [calendar dispatch and native success checkpoint](calendar-dispatch-and-native-success-checkpoint.md) records the actual published native success and the full-worker dispatcher follow-up. The counts above describe the earlier checkpoint.

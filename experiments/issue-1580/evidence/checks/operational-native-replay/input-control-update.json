@@ -1,0 +1,10 @@
+{
+  "reason": "README is read by the unchanged shell documentation contract, and every shell script is discovered by the unchanged download retry contract. Both now select native execution. Unrelated documentation and scripts retain negative controls.",
+  "removedNegativeControls": [
+    "README.md",
+    "experiments/a/b.sh"
+  ],
+  "movedToPositiveControls": true,
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

@@ -709,3 +709,21 @@ The first complete local inventory finishes in 764.618 seconds: 80 executable ga
 - [x] Literally read and preserve Java historical pages 131–134: continuous 134/254 pages, 8,415 source lines, 111 complete files and one partial Node catalog through line 836/884. Pages 135–254 and full semantic applicability remain open.
 - [ ] Publish the complete repair batch after fresh main, remote and empty queue checks, then collect every exact-head result. Verify the original scheduling contract, subsequent native targets, library, Spanish, both HTTP modes and localized replay on that head. Keep later failures unfinished until repaired and verified.
 - [ ] Fix and verify spelled-hour accuracy and Russian full-worker scheduling parity; the direct handler admission test does not certify either. Continue all 38 original panic contracts, three budget failures and every broader acceptance criterion. Keep PR #1581 draft and unmerged; accepted independent reasoning remains 0/20 and the 5% target is reporting only.
+
+### Calendar dispatch and native success follow-up
+
+- [x] Collect all 23 current-head workflows for `86dcf79d`: all succeed.
+- [x] Verify 96 native Rust cases and four native HTTP tests; retain exact log ranges and 70 payload hashes.
+- [x] Update the original failure crosswalk to 16 published passing replays, 37 without one, and three original budget failures still open.
+- [x] Reproduce the full-worker Russian memory-write misroute, retain the failed registration-only attempt, and pass the shared-evidence repair with 30 scheduling/memory/source controls.
+- [x] Draft the isolated operational target with four unchanged existing native tests and consumed-input admission; pass 29 local policy cases.
+- [x] Preserve the invalid initial policy baseline with zero regression credit; reproduce the actual missing-target failure after correcting the job lookup.
+- [x] Pass 123 focused JavaScript tests, formatting, projection and registry currency, and all 87 executable gates with 52 explicit exclusions.
+- [x] Prove the governed refresh changes only four Cargo fixture hashes, preserving all complete objects and the 1,185 / 221 / 964 inventory.
+- [x] Read continuous Java historical pages 135–139, reaching 8,766 complete literal lines, 123 complete files and one partially read registry response; retain zero authorship credit.
+- [ ] Publish this complete batch after fresh branch, main-ancestor and idle-run checks; collect every next-head native result.
+- [ ] Verify the four operational contracts in hosted native CI.
+- [ ] Correct spelled-hour values; finish all remaining original failures, benchmarks, template comparison, dependency, delivery and semantic criteria from the frozen acceptance inventory.
+- [ ] Raise independently accepted Formal AI reasoning above 0/20; supplied patches, scripts and reading retain zero credit.
+
+The broader issue is unfinished and the pull request remains draft and unmerged.

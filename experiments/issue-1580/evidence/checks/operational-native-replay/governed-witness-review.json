@@ -1,0 +1,39 @@
+{
+  "beforeSha256": "3939e27a59defd1025f418bb88de7dd6dffc10d6ddda1706d7613953b5a5a733",
+  "afterSha256": "e20d28ad0164645074336969e9dff3cb02142578865b0a5043cf8ca598c3f7c4",
+  "readerSha256": "861c6c5b40cfc8f4e99ad0ebece2cc3c20f941c6a1103dd5e8e70813c40ee0ca",
+  "changes": [
+    {
+      "path": "inventory/cases/79/program/fixtures/7/sha256",
+      "source": "rust/Cargo.toml",
+      "before": "bbc6052d3a7f3b416b5a92d00d2689cdefdf01ba9a56da849c36a1808274e7c1",
+      "after": "b5a752a16ec22c16b211040b99adae87b51f52262925214a48217cc08f134777"
+    },
+    {
+      "path": "inventory/cases/81/program/fixtures/3/sha256",
+      "source": "rust/Cargo.toml",
+      "before": "bbc6052d3a7f3b416b5a92d00d2689cdefdf01ba9a56da849c36a1808274e7c1",
+      "after": "b5a752a16ec22c16b211040b99adae87b51f52262925214a48217cc08f134777"
+    },
+    {
+      "path": "inventory/cases/190/program/fixtures/7/sha256",
+      "source": "rust/Cargo.toml",
+      "before": "bbc6052d3a7f3b416b5a92d00d2689cdefdf01ba9a56da849c36a1808274e7c1",
+      "after": "b5a752a16ec22c16b211040b99adae87b51f52262925214a48217cc08f134777"
+    },
+    {
+      "path": "inventory/cases/193/program/fixtures/8/sha256",
+      "source": "rust/Cargo.toml",
+      "before": "bbc6052d3a7f3b416b5a92d00d2689cdefdf01ba9a56da849c36a1808274e7c1",
+      "after": "b5a752a16ec22c16b211040b99adae87b51f52262925214a48217cc08f134777"
+    }
+  ],
+  "completeWitnessDeepEqualAfterFourReviewedHashChanges": true,
+  "unsupportedObjectsUnchanged": true,
+  "sourceManifestUnchanged": true,
+  "total": 1185,
+  "supported": 221,
+  "unsupported": 964,
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}
