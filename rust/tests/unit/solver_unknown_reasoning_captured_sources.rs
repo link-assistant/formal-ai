@@ -147,3 +147,112 @@ fn unsupported_bare_term_keeps_its_attributed_retrieved_answer() {
     assert!(answer.answer.contains(&sense.gloss));
     assert!(answer.answer.contains(&sense.source_url));
 }
+
+#[test]
+fn operative_question_cannot_be_replaced_by_a_retrieved_word_definition() {
+    let mut log = EventLog::new();
+    let answer = answer_unknown_prompt(
+        "How should an isogram be calibrated for teal silence?",
+        Language::English,
+        &mut log,
+        offline_config(),
+        &[captured_sense("isogram", "en")],
+    );
+    assert_eq!(answer.intent, "unknown");
+    assert_eq!(
+        answer.answer,
+        "I could not determine `an isogram be calibrated for teal silence` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. I recorded the failed gather attempts in the trace.\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`.\n\nI detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`."
+    );
+    assert!(!log.events().iter().any(|event| {
+        event.kind == "reasoning:gather_result"
+            && (event.payload.starts_with("external_source:hit:")
+                || event.payload.starts_with("public_knowledge_cache:hit:"))
+    }));
+}
+
+#[test]
+fn a_definition_request_cannot_use_a_different_retrieved_term() {
+    let mut log = EventLog::new();
+    let answer = answer_unknown_prompt(
+        "What is a snorflax?",
+        Language::English,
+        &mut log,
+        offline_config(),
+        &[captured_sense("isogram", "en")],
+    );
+    assert_eq!(answer.intent, "unknown");
+    assert_eq!(
+        answer.answer,
+        "I could not determine `a snorflax` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. I recorded the failed gather attempts in the trace.\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`.\n\nI detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`."
+    );
+    assert!(!log.events().iter().any(|event| {
+        event.kind == "reasoning:gather_result"
+            && (event.payload.starts_with("external_source:hit:")
+                || event.payload.starts_with("public_knowledge_cache:hit:"))
+    }));
+}
+
+#[test]
+fn a_cached_concept_mention_cannot_replace_an_operative_question() {
+    let mut log = EventLog::new();
+    let answer = answer_unknown_prompt(
+        "How should WebAssembly be calibrated for teal silence?",
+        Language::English,
+        &mut log,
+        offline_config(),
+        &[],
+    );
+    assert_eq!(answer.intent, "unknown");
+    assert_eq!(
+        answer.answer,
+        "I could not determine `WebAssembly be calibrated for teal silence` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. I recorded the failed gather attempts in the trace.\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`.\n\nI detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`."
+    );
+    assert!(!log.events().iter().any(|event| {
+        event.kind == "reasoning:gather_result"
+            && (event.payload.starts_with("external_source:hit:")
+                || event.payload.starts_with("public_knowledge_cache:hit:"))
+    }));
+}
+
+#[test]
+fn an_unrelated_higher_tier_sense_cannot_replace_the_requested_definition() {
+    let mut unrelated = captured_sense("isograma", "es");
+    unrelated.tier = SourceTier::OriginalFirstParty;
+    let mut log = EventLog::new();
+    let answer = answer_unknown_prompt(
+        "What is an isogram?",
+        Language::English,
+        &mut log,
+        offline_config(),
+        &[unrelated, captured_sense("isogram", "en")],
+    );
+    assert_eq!(answer.intent, "concept_lookup");
+    assert_eq!(
+        answer.answer,
+        "isogram (isogram): a line drawn on a map connecting points having the same numerical value of some variable\n\nSource: https://en-word.net/api/lemma/isogram (sha256 ae8c98f774fd255a; CC BY 4.0)"
+    );
+    assert!(log.events().iter().any(|event| {
+        event.kind == "reasoning:gather_result" && event.payload.starts_with("external_source:hit:")
+    }));
+}
+
+#[test]
+fn an_explicit_cached_concept_request_keeps_its_complete_attributed_answer() {
+    let mut log = EventLog::new();
+    let answer = answer_unknown_prompt(
+        "Use cached public knowledge about WebAssembly",
+        Language::English,
+        &mut log,
+        offline_config(),
+        &[],
+    );
+    assert_eq!(answer.intent, "concept_lookup");
+    assert_eq!(
+        answer.answer,
+        "WebAssembly (runtime): WebAssembly (Wasm) is a binary instruction format for a stack-based virtual machine. It is designed as a portable compilation target for programming languages, enabling deployment on the web for client and server applications.\n\nSource: https://en.wikipedia.org/wiki/WebAssembly (wikipedia)."
+    );
+    assert!(log.events().iter().any(|event| {
+        event.kind == "reasoning:gather_result"
+            && event.payload.starts_with("public_knowledge_cache:hit:")
+    }));
+}

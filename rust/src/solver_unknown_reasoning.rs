@@ -174,11 +174,40 @@ fn answer_from_retrieved_senses(
         }
         return None;
     }
-    let sense = senses
+    // A retrieved definition answers only its named term. Rank source quality
+    // after binding the sense to the request, so an unrelated high-tier source
+    // cannot replace the question or a matching lower-tier definition. A
+    // context-qualified query needs more evidence than a context-free gloss.
+    let requested = crate::concepts::extract_concept_query(prompt).map_or_else(
+        || normalize_fact_subject(prompt),
+        |query| {
+            if query.context.is_some() {
+                String::new()
+            } else {
+                normalize_fact_subject(&query.term)
+            }
+        },
+    );
+    let selected = senses
         .iter()
         .enumerate()
-        .max_by_key(|(index, sense)| (sense.tier.weight_percent(), usize::MAX - index))?
-        .1;
+        .filter(|(_, sense)| {
+            !requested.is_empty()
+                && [sense.surface.as_str(), sense.lemma.as_str()]
+                    .into_iter()
+                    .chain(sense.synonyms.iter().map(String::as_str))
+                    .any(|term| normalize_fact_subject(term) == requested)
+        })
+        .max_by_key(|(index, sense)| (sense.tier.weight_percent(), usize::MAX - index));
+    let Some((_, sense)) = selected else {
+        if !senses.is_empty() {
+            log.append(
+                "reasoning:gather_result",
+                "external_source:no_verified_answer".to_owned(),
+            );
+        }
+        return None;
+    };
     let digest = sense.sha256.get(..16).unwrap_or(&sense.sha256);
     let mut body = seed::render_response(
         "concept_lookup_resolved",
@@ -549,23 +578,18 @@ fn public_concepts() -> &'static [ConceptRecord] {
 }
 
 fn public_concept_candidate_terms(focus: &str) -> Vec<String> {
-    let focus_normalized = normalize_search_surface(focus);
-    let padded_focus = format!(" {focus_normalized} ");
+    let focus_normalized = normalize_fact_subject(focus);
     let mut scored = Vec::new();
     for record in public_concepts() {
         for candidate in concept_candidate_surfaces(record) {
-            let normalized = normalize_search_surface(&candidate);
+            let normalized = normalize_fact_subject(&candidate);
             if normalized.len() < 3 {
                 continue;
             }
-            // A surface names the focus as whole words: "colour" inside
-            // "colourless" is no mention of colour (issue #1175 p329). A
-            // script written without spaces keeps the substring reading.
-            let matches = normalized == focus_normalized
-                || padded_focus.contains(&format!(" {normalized} "))
-                || (normalized.chars().any(is_unspaced_script)
-                    && focus_normalized.contains(&normalized));
-            if matches {
+            // A cached definition must cover the complete extracted focus.
+            // Mentioning a concept inside an operative question does not make
+            // its encyclopedia summary an answer to that question.
+            if normalized == focus_normalized {
                 scored.push((normalized.len(), candidate));
             }
         }
@@ -840,14 +864,6 @@ fn normalize_fact_subject(value: &str) -> String {
         .or_else(|| cleaned.strip_prefix("an "))
         .unwrap_or(cleaned.as_str());
     normalize_search_surface(stripped)
-}
-
-/// Whether `ch` belongs to a script written without spaces (kana, CJK, hangul).
-const fn is_unspaced_script(ch: char) -> bool {
-    matches!(
-        ch,
-        '\u{3040}'..='\u{30ff}' | '\u{3400}'..='\u{9fff}' | '\u{ac00}'..='\u{d7af}'
-    )
 }
 
 fn normalize_search_surface(value: &str) -> String {
