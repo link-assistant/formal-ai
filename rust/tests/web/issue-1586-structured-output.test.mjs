@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
+import { runInNewContext } from 'node:vm';
 import { installHost } from '../../../js/agentic/host.mjs';
-import { parseLino } from '../../../js/server/lino.mjs';
 import { loadRuntimeDerivation } from '../../../js/server/runtime-cache.mjs';
 import { startCli } from './support/structured-log-fixture.mjs';
 
@@ -134,7 +135,11 @@ function events(text) {
 }
 
 test('OpenAI requests constrain final JSON across endpoint and streaming shapes', { timeout: 120_000 }, async t => {
-  installHost({ parseLino });
+  const parserContext = { self: {} };
+  for (const script of ['parser-cache-primordials.js', 'seed_loader.js']) {
+    runInNewContext(readFileSync(new URL('../../../js/' + script, import.meta.url), 'utf8'), parserContext);
+  }
+  installHost({ parseLino: parserContext.self.FormalAiSeed.parse });
   const run = await startCli(t, {
     binary: process.env.FORMAL_AI_TEST_NATIVE_CLI,
     env: { FORMAL_AI_SOURCE_USAGE_RUST_GRAMMAR: 'false' },
