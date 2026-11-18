@@ -15,6 +15,6 @@ abbreviation-ratchet
   file-names
     abbreviated-file-names 90
   bindings js
-    abbreviated-bindings 722
+    abbreviated-bindings 718
   bindings rust/src
-    abbreviated-bindings 909
+    abbreviated-bindings 908

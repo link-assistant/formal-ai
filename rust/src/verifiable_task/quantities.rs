@@ -40,7 +40,7 @@ pub struct Entity {
 /// Every quantity the prompt states, in order of appearance.
 #[must_use]
 pub fn extract_quantities(prompt: &str, language: &str) -> Vec<Quantity> {
-    quantity_matches(prompt, language)
+    quantity_matches(prompt, Some(language))
         .into_iter()
         .map(|found| {
             let (unit, label) = following_meaning(prompt, found.end, language);
@@ -155,13 +155,14 @@ fn leading_role_surface_len(text: &str, language: &str, role: &str) -> Option<us
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-struct QuantityMatch {
-    value: String,
-    start: usize,
-    end: usize,
+pub(crate) struct QuantityMatch {
+    pub(crate) value: String,
+    pub(crate) start: usize,
+    pub(crate) end: usize,
 }
 
-fn quantity_matches(prompt: &str, language: &str) -> Vec<QuantityMatch> {
+/// Source spans for registered numerals; `None` permits every lexeme language.
+pub(crate) fn quantity_matches(prompt: &str, language: Option<&str>) -> Vec<QuantityMatch> {
     let mut found = digit_matches(prompt);
     found.extend(cardinal_word_matches(prompt, language));
     ordered_unique(found)
@@ -175,12 +176,12 @@ fn quantity_matches(prompt: &str, language: &str) -> Vec<QuantityMatch> {
 /// quantity view so prompt identity does not change.
 fn quantity_matches_with_indefinites(prompt: &str, language: &str) -> Vec<QuantityMatch> {
     let mut found = digit_matches(prompt);
-    found.extend(cardinal_word_matches(prompt, language));
+    found.extend(cardinal_word_matches(prompt, Some(language)));
     found.extend(indefinite_determiner_matches(prompt, language));
     ordered_unique(found)
 }
 
-fn cardinal_word_matches(prompt: &str, language: &str) -> Vec<QuantityMatch> {
+fn cardinal_word_matches(prompt: &str, language: Option<&str>) -> Vec<QuantityMatch> {
     let lowered = prompt.to_lowercase();
     let mut found = Vec::new();
     for meaning in crate::seed::lexicon().meanings_with_role(ROLE_CARDINAL_NUMBER_WORD) {
@@ -193,7 +194,7 @@ fn cardinal_word_matches(prompt: &str, language: &str) -> Vec<QuantityMatch> {
         for surface in meaning
             .lexemes
             .iter()
-            .filter(|lexeme| lexeme.language == language)
+            .filter(|lexeme| language.is_none_or(|language| lexeme.language == language))
             .flat_map(|lexeme| &lexeme.words)
             .map(|word| word.text.as_str())
             .filter(|surface| surface.chars().any(char::is_alphabetic))
@@ -257,7 +258,7 @@ fn ordered_unique(mut found: Vec<QuantityMatch>) -> Vec<QuantityMatch> {
 
 pub(crate) fn normalized_shape(prompt: &str, language: &str) -> String {
     let lowered = prompt.to_lowercase();
-    let matches = quantity_matches(&lowered, language);
+    let matches = quantity_matches(&lowered, Some(language));
     let mut out = String::new();
     let mut cursor = 0;
     for found in matches {
@@ -292,7 +293,7 @@ fn digit_matches(prompt: &str) -> Vec<QuantityMatch> {
     out
 }
 
-fn matching_offsets(haystack: &str, needle: &str) -> Vec<usize> {
+pub(crate) fn matching_offsets(haystack: &str, needle: &str) -> Vec<usize> {
     if needle.is_empty() {
         return Vec::new();
     }

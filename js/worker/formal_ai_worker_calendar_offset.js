@@ -90,7 +90,7 @@ function calendarOffsetMatchingOffsets(haystack, needle) {
  * of `language` from the seed — in order, overlaps removed (Rust
  * `verifiable_task::quantities::extract_quantities`, value and offset only).
  * @param {string} text
- * @param {string} language
+ * @param {string|null} language Null accepts every registered numeral language.
  * @returns {{value: string, start: number, end: number}[]}
  */
 function calendarOffsetQuantities(text, language) {
@@ -106,7 +106,7 @@ function calendarOffsetQuantities(text, language) {
     const value = meaning.words.find((word) => /^[0-9]+$/.test(word));
     if (!value) continue;
     for (const lexeme of meaning.lexemes) {
-      if (lexeme.language !== language) continue;
+      if (language !== null && lexeme.language !== language) continue;
       for (const surface of lexeme.words) {
         if (!/\p{Alphabetic}/u.test(surface)) continue;
         const needle = surface.toLowerCase();

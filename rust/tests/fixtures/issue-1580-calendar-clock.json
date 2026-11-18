@@ -38,6 +38,106 @@
       "prompt": "कल 19:35 पर बैठक शेड्यूल करें",
       "time": "19:35",
       "zone": "UTC"
+    },
+    {
+      "prompt": "Put me down with Alexander at eight tonight, Tbilisi time.",
+      "time": "20:00",
+      "zone": "Asia/Tbilisi"
+    },
+    {
+      "prompt": "Запиши меня к команде в пятницу на 14:00 по Берлину.",
+      "time": "14:00",
+      "zone": "Europe/Berlin"
+    },
+    {
+      "prompt": "आज रात आठ बजे तिबिलिसी समय पर अलेक्जेंडर के साथ मुझे दर्ज कीजिए।",
+      "time": "20:00",
+      "zone": "Asia/Tbilisi"
+    },
+    {
+      "prompt": "今晚八点第比利斯时间，帮我和亚历山大约一下。",
+      "time": "20:00",
+      "zone": "Asia/Tbilisi"
+    },
+    {
+      "prompt": "Apúntame con Alejandro a las ocho de esta noche, hora de Tiflis.",
+      "time": "20:00",
+      "zone": "Asia/Tbilisi"
+    },
+    {
+      "prompt": "Schedule a meeting tomorrow at nine in the morning.",
+      "time": "09:00",
+      "zone": "UTC"
+    },
+    {
+      "prompt": "Schedule a meeting tomorrow at nine in the evening.",
+      "time": "21:00",
+      "zone": "UTC"
+    },
+    {
+      "prompt": "Запланируй встречу завтра в восемь вечера.",
+      "time": "20:00",
+      "zone": "UTC"
+    },
+    {
+      "prompt": "कल सुबह नौ बजे मीटिंग शेड्यूल करें",
+      "time": "09:00",
+      "zone": "UTC"
+    },
+    {
+      "prompt": "明天上午九点安排会议",
+      "time": "09:00",
+      "zone": "UTC"
+    },
+    {
+      "prompt": "Programa una reunión mañana a las nueve de la mañana.",
+      "time": "09:00",
+      "zone": "UTC"
+    },
+    {
+      "prompt": "Schedule a meeting with two people tomorrow at nine.",
+      "time": "09:00",
+      "zone": "UTC"
+    },
+    {
+      "prompt": "Schedule a meeting in 2026 tomorrow at nine.",
+      "time": "09:00",
+      "zone": "UTC"
+    },
+    {
+      "prompt": "Schedule a meeting tomorrow at 8:05 pm.",
+      "time": "20:05",
+      "zone": "UTC"
+    },
+    {
+      "prompt": "Schedule a meeting tomorrow at 12:00 am.",
+      "time": "00:00",
+      "zone": "UTC"
+    },
+    {
+      "prompt": "Schedule a meeting tomorrow at 12:00 pm.",
+      "time": "12:00",
+      "zone": "UTC"
+    },
+    {
+      "prompt": "Schedule a meeting tomorrow at 1400.",
+      "time": "14:00",
+      "zone": "UTC"
+    },
+    {
+      "prompt": "Schedule a meeting tomorrow at 20:00 tonight.",
+      "time": "20:00",
+      "zone": "UTC"
+    },
+    {
+      "prompt": "Schedule a meeting tomorrow at 0:15 am.",
+      "time": "00:15",
+      "zone": "UTC"
+    },
+    {
+      "prompt": "Schedule a meeting tomorrow at 12:30 am.",
+      "time": "00:30",
+      "zone": "UTC"
     }
   ],
   "documents": [
@@ -46,5 +146,103 @@
     "Create a poem about 20:45.",
     "Schedule a meeting at 20:45. Book another meeting at 21:10.",
     "The text says: schedule a meeting at 20:45."
+  ],
+  "parserControls": [
+    {
+      "text": "the report counts two people tonight",
+      "time": null
+    },
+    {
+      "text": "2026-11-18",
+      "time": null
+    },
+    {
+      "text": "somewhere in eight rooms",
+      "time": null
+    },
+    {
+      "text": "через 3 часа",
+      "time": null
+    },
+    {
+      "text": "the number eight is in the text",
+      "time": null
+    },
+    {
+      "text": "at eightish tonight",
+      "time": null
+    },
+    {
+      "text": "at 25:00",
+      "time": null
+    },
+    {
+      "text": "at 12:90",
+      "time": null
+    },
+    {
+      "text": "at 8:5",
+      "time": null
+    },
+    {
+      "text": "at 200000",
+      "time": null
+    },
+    {
+      "text": "5pm",
+      "time": [
+        17,
+        0
+      ]
+    },
+    {
+      "text": "at eight pm",
+      "time": [
+        20,
+        0
+      ]
+    },
+    {
+      "text": "at eight a.m.",
+      "time": [
+        8,
+        0
+      ]
+    },
+    {
+      "text": "в восемь утра",
+      "time": [
+        8,
+        0
+      ]
+    },
+    {
+      "text": "at nine in the morning",
+      "time": [
+        9,
+        0
+      ]
+    },
+    {
+      "text": "八点",
+      "time": [
+        8,
+        0
+      ]
+    },
+    {
+      "text": "下午5点",
+      "time": [
+        17,
+        0
+      ]
+    },
+    {
+      "text": "2026 at eight tonight",
+      "time": [
+        20,
+        0
+      ]
+    }
   ]
 }

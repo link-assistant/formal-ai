@@ -484,73 +484,44 @@ function extractEventTitle(normalized) {
   return null;
 }
 
-function extractClockTime(normalized) {
-  const bytes = normalized.split("");
-  for (let i = 0; i < bytes.length - 2; i++) {
-    if (/\d/.test(bytes[i]) && /\d/.test(bytes[i + 1])) {
-      const h = parseInt(bytes[i] + bytes[i + 1], 10);
-      let j = i + 2;
-      if (j < bytes.length && (bytes[j] === ":" || bytes[j] === ".")) j++;
-      if (j + 1 < bytes.length && /\d/.test(bytes[j]) && /\d/.test(bytes[j + 1])) {
-        const min = parseInt(bytes[j] + bytes[j + 1], 10);
-        if (h <= 23 && min <= 59) {
-          return [h, min];
-        }
-      }
+// Bind a shared quantity to adjacent clock syntax; counts and years stay unbound.
+function extractClockTime(text) {
+  text = text.toLowerCase();
+  const markers = handlerRulesTables().calendar_spoken_hour_marker?.rows || [];
+  const edge = (value, surface, beginning) => calendarOffsetMatchingOffsets(value, surface)
+    .some(offset => beginning ? offset === 0 : offset + surface.length === value.length);
+  const leads = [...handlerRulesTableKeys("calendar_clock_hour_lead"), ...handlerRulesTableKeys("calendar_spoken_hour_lead")];
+  for (const found of calendarOffsetQuantities(text, null)) {
+    const before = text.slice(0, found.start).trimEnd();
+    const lead = leads.some(surface => edge(before, surface.trim(), false));
+    const compact = lead && /^[0-9]{4}$/.test(text.slice(found.start, found.end));
+    const value = Number(found.value);
+    let hour = compact ? Math.floor(value / 100) : value;
+    let minute = compact ? value % 100 : 0;
+    let end = found.end;
+    const tail = text.slice(end);
+    const separated = tail.startsWith(":") || /^\.[0-9]/.test(tail);
+    if (separated) {
+      const digits = /^[0-9]*/.exec(tail.slice(1))[0];
+      if (digits.length !== 2) continue;
+      minute = Number(digits);
+      end += 3;
     }
-  }
-  const spoken = extractSpokenHourTime(normalized);
-  if (spoken) return spoken;
-  for (const lead of handlerRulesTableKeys("calendar_clock_hour_lead")) {
-    const leadPos = normalized.indexOf(lead);
-    if (leadPos === -1) continue;
-    const tail = normalized.slice(leadPos + lead.length);
-    let num = "";
-    for (const ch of tail) {
-      if (/\d/.test(ch)) num += ch;
-      else if (num) break;
+    if (hour > 23 || minute > 59) continue;
+    const after = text.slice(end).trimStart();
+    const marker = markers.find(([surface]) => edge(after, surface, true));
+    const remainder = marker ? after.slice(marker[0].length).trimStart() : after;
+    const period = markers.find(([surface, value]) => ["am", "pm"].includes(value) &&
+      (edge(before, surface, false) || edge(after, surface, true) || edge(remainder, surface, true)));
+    const clockMarker = marker && (marker[1] === "clock" || (marker[1] === "hour" && !before));
+    if (!separated && !compact && !lead && !clockMarker && !period) continue;
+    if (period) {
+      if (hour >= 1 && hour <= 12) hour = hour % 12 + (period[1] === "pm" ? 12 : 0);
+      else if (!separated && !compact) continue;
     }
-    const h = parseInt(num, 10);
-    if (h <= 23) return [h, 0];
-  }
-  return null;
-}
-
-function extractSpokenHourTime(normalized) {
-  for (const marker of handlerRulesTableKeys("calendar_spoken_hour_marker")) {
-    let pos = normalized.indexOf(marker);
-    while (pos !== -1) {
-      const before = pos > 0 ? Array.from(normalized.slice(0, pos)).pop() : "";
-      const after = Array.from(normalized.slice(pos + marker.length))[0] || "";
-      if (
-        (!before || !isCalendarWordCharacter(before)) &&
-        (!after || !isCalendarWordCharacter(after))
-      ) {
-        const prefixEnd = normalized.slice(0, pos).trimEnd().length;
-        let start = prefixEnd;
-        while (start > 0 && /\d/.test(normalized[start - 1])) {
-          start -= 1;
-        }
-        if (
-          start !== prefixEnd &&
-          hasSpokenHourPrefix(normalized, start)
-        ) {
-          const hour = parseInt(normalized.slice(start, prefixEnd), 10);
-          if (hour >= 0 && hour <= 23) return [hour, 0];
-        }
-      }
-      pos = normalized.indexOf(marker, pos + marker.length);
-    }
+    return [hour, minute];
   }
   return null;
-}
-
-function hasSpokenHourPrefix(normalized, digitStart) {
-  const prefix = normalized.slice(0, digitStart).trimEnd();
-  if (!prefix) return true;
-  const words = prefix.split(/\s+/).filter(Boolean);
-  const last = words[words.length - 1];
-  return handlerRulesTableKeys("calendar_spoken_hour_lead").includes(last);
 }
 
 // Plan 10 leaf 16 (issue #869): the zone is not a memorized alias table. A

@@ -404,80 +404,77 @@ const fn compute_target_date_with_rollover(base: CalendarDate, day: u32) -> (i32
     (y, m, d)
 }
 
-fn extract_clock_time(normalized: &str) -> Option<(u32, u32)> {
-    let bytes = normalized.as_bytes();
-    for i in 0..bytes.len().saturating_sub(3) {
-        if bytes[i].is_ascii_digit() && bytes[i + 1].is_ascii_digit() {
-            let h1 = u32::from(bytes[i] - b'0');
-            let h2 = u32::from(bytes[i + 1] - b'0');
-            let hour = h1 * 10 + h2;
-            let mut j = i + 2;
-            if j < bytes.len() && (bytes[j] == b':' || bytes[j] == b'.') {
-                j += 1;
+fn extract_clock_time(text: &str) -> Option<(u32, u32)> {
+    use crate::verifiable_task::quantities::{matching_offsets, quantity_matches};
+    let lowered = text.to_lowercase();
+    let text = lowered.as_str();
+    let markers = handler_table_rows("calendar_spoken_hour_marker");
+    let edge = |text: &str, surface: &str, beginning: bool| {
+        matching_offsets(text, surface).into_iter().any(|offset| {
+            if beginning {
+                offset == 0
+            } else {
+                offset + surface.len() == text.len()
             }
-            if j + 1 < bytes.len() && bytes[j].is_ascii_digit() && bytes[j + 1].is_ascii_digit() {
-                let m1 = u32::from(bytes[j] - b'0');
-                let m2 = u32::from(bytes[j + 1] - b'0');
-                let minute = m1 * 10 + m2;
-                if hour <= 23 && minute <= 59 {
-                    return Some((hour, minute));
-                }
-            }
-        }
-    }
-    if let Some(time) = extract_spoken_hour_time(normalized) {
-        return Some(time);
-    }
-    for lead in table_keys("calendar_clock_hour_lead") {
-        let Some(pos) = normalized.find(lead) else {
+        })
+    };
+    for found in quantity_matches(text, None) {
+        let before = text[..found.start].trim_end();
+        let lead = table_keys("calendar_clock_hour_lead")
+            .chain(table_keys("calendar_spoken_hour_lead"))
+            .any(|surface| edge(before, surface.trim(), false));
+        let Ok(value) = found.value.parse::<u32>() else {
             continue;
         };
-        let tail = &normalized[pos + lead.len()..];
-        let mut num = String::new();
-        for ch in tail.chars() {
-            if ch.is_ascii_digit() {
-                num.push(ch);
-            } else if !num.is_empty() {
-                break;
-            }
-        }
-        if let Ok(h) = num.parse::<u32>()
-            && h <= 23
-        {
-            return Some((h, 0));
-        }
-    }
-    None
-}
-
-fn extract_spoken_hour_time(normalized: &str) -> Option<(u32, u32)> {
-    for marker in table_keys("calendar_spoken_hour_marker") {
-        for (pos, _) in normalized.match_indices(marker) {
-            let before = normalized[..pos].chars().next_back();
-            let after = normalized[pos + marker.len()..].chars().next();
-            if before.is_some_and(is_word_character) || after.is_some_and(is_word_character) {
+        let compact = found.end - found.start == 4
+            && text[found.start..found.end]
+                .bytes()
+                .all(|byte| byte.is_ascii_digit())
+            && lead;
+        let (mut hour, mut minute) = if compact {
+            (value / 100, value % 100)
+        } else {
+            (value, 0)
+        };
+        let mut end = found.end;
+        let tail = &text[end..];
+        let separated = tail.starts_with(':')
+            || (tail.starts_with('.') && tail.as_bytes().get(1).is_some_and(u8::is_ascii_digit));
+        if separated {
+            let digits: String = tail[1..].chars().take_while(char::is_ascii_digit).collect();
+            if digits.len() != 2 {
                 continue;
             }
-            let prefix_end = normalized[..pos].trim_end().len();
-            let prefix = &normalized[..prefix_end];
-            let start = prefix
-                .char_indices()
-                .rev()
-                .find(|(_, ch)| !ch.is_ascii_digit())
-                .map_or(0, |(idx, ch)| idx + ch.len_utf8());
-            let marker = normalized[..start].trim_end();
-            let allowed_marker = marker.split_whitespace().next_back().is_none_or(|word| {
-                table_keys("calendar_spoken_hour_lead").any(|lead| lead == word)
-            });
-            if start == prefix_end || !allowed_marker {
+            minute = digits.parse().ok()?;
+            end += 3;
+        }
+        if hour > 23 || minute > 59 {
+            continue;
+        }
+        let after = text[end..].trim_start();
+        let marker = markers
+            .iter()
+            .find(|(surface, _)| edge(after, surface, true));
+        let remainder = marker.map_or(after, |(surface, _)| after[surface.len()..].trim_start());
+        let period = markers.iter().find(|(surface, value)| {
+            matches!(value.as_str(), "am" | "pm")
+                && (edge(before, surface, false)
+                    || edge(after, surface, true)
+                    || edge(remainder, surface, true))
+        });
+        let clock_marker = marker
+            .is_some_and(|(_, value)| value == "clock" || (value == "hour" && before.is_empty()));
+        if !separated && !compact && !lead && !clock_marker && period.is_none() {
+            continue;
+        }
+        if let Some((_, period)) = period {
+            if (1..=12).contains(&hour) {
+                hour = hour % 12 + if period == "pm" { 12 } else { 0 };
+            } else if !separated && !compact {
                 continue;
             }
-            if let Ok(hour) = prefix[start..].parse::<u32>()
-                && hour <= 23
-            {
-                return Some((hour, 0));
-            }
         }
+        return Some((hour, minute));
     }
     None
 }
