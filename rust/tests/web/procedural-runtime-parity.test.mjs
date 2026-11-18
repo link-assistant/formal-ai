@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import path from "node:path";
 import test from "node:test";
@@ -7,6 +7,7 @@ import { createWorkerContext, evaluate, plain } from "./support/browser-runtime.
 import { specificationCases } from "../../../scripts/lib/rust-specification-cases.mjs";
 import { executeTypedProgram } from "../../../scripts/lib/rust-specification-programs.mjs";
 import { WorkerHost } from "../../../js/server/worker-host.mjs";
+import { startCli, temporaryHome } from "./support/structured-log-fixture.mjs";
 
 const REPO_ROOT = path.resolve(import.meta.dirname, "../../..");
 const CACHE_DIR = path.join(REPO_ROOT, "rust/tests/fixtures/issue-991/source-cache");
@@ -83,8 +84,8 @@ test("no-source plans retain transport encoding and producer-owned typed stages"
   const context = await bootWorker(new Map(), requested);
   const result = plain(await evaluate(context, 'tryProceduralHowTo("как подключить redis к ruby", "ru", {})'));
   assert.equal(result.intent, "procedural_how_to");
-  assert.match(result.content, /page=Подключить-Redis-К-Ruby&/u);
-  assert.ok(requested.some(url => url.includes("page=%D0%9F")));
+  assert.match(result.content, /ru\.wikihow\.com.*page=подключить-redis-к-ruby&/u);
+  assert.ok(requested.some(url => url.includes("page=%D0%BF")));
   assert.ok(result.solverEvents.some(event => event.kind === "procedural_how_to:request"
     && event.payload === "подключить redis к ruby"));
   assert.ok(result.solverEvents.some(event => event.kind === "web_search:fusion_planned"));
@@ -140,4 +141,134 @@ test("typed discovery stages distinguish skipped, attempted and disabled wikiHow
   assert.ok(!disabled.some(event => event.kind === "http_fetch:request"));
   assert.ok(disabled.some(event => event.kind === "procedural_how_to:service_disabled"
     && event.payload === "wikihow"));
+});
+
+const RUSSIAN_REQUEST = "Как хорошо покакать?";
+const RUSSIAN_SLUG = encodeURIComponent("хорошо-покакать");
+const RUSSIAN_ARTICLE = `https://ru.wikihow.com/${RUSSIAN_SLUG}`;
+const RUSSIAN_API = `https://ru.wikihow.com/api.php?action=parse&page=${RUSSIAN_SLUG}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`;
+const WAYBACK_INDEX = `https://archive.org/wayback/available?url=${encodeURIComponent(RUSSIAN_ARTICLE)}`;
+const SNAPSHOT = "20241222160007";
+const WAYBACK_REPLAY = `https://web.archive.org/web/${SNAPSHOT}id_/${RUSSIAN_ARTICLE}`;
+const RUSSIAN_CAPTURE = readFileSync(path.join(REPO_ROOT, "rust/tests/fixtures/issue-1396/wiki-how-ru.json"), "utf8");
+const WIKIHOW_STEPS = JSON.parse(RUSSIAN_CAPTURE).parse.text["*"];
+
+function archiveIndex(article) {
+  return JSON.stringify({ archived_snapshots: { closest: {
+    available: true, status: "200", timestamp: SNAPSHOT,
+    url: `http://web.archive.org/web/${SNAPSHOT}/${article}`,
+  } } });
+}
+
+function answerRussian(context, preferences = {}) {
+  return evaluate(context, `tryProceduralHowTo(${JSON.stringify(RUSSIAN_REQUEST)}, "ru", ${JSON.stringify(preferences)})`);
+}
+
+test("an unregistered Russian how-to uses the localized CORS API and quotes its ordered steps", async () => {
+  const requested = [];
+  const context = await bootWorker(new Map([[RUSSIAN_API, { body: RUSSIAN_CAPTURE }]]), requested);
+  const answer = await answerRussian(context);
+  assert.match(answer.content, /## Как хорошо покакать/u);
+  assert.match(answer.content, /1\. Не откладывайте/u);
+  assert.equal(answer.guide.steps.length, 2);
+  assert.deepEqual(new Set(answer.guide.steps.map((step) => step.sourceUrl)), new Set([RUSSIAN_API]));
+  assert.ok(requested.includes(RUSSIAN_API));
+  assert.ok(!requested.includes(WAYBACK_INDEX));
+});
+
+test("the browser uses a matching archival capture after a live request fails", async () => {
+  const requested = [];
+  const body = `<link rel="canonical" href="${RUSSIAN_ARTICLE}"><ul><li>This unrelated navigation entry is long enough to look like a step.</li></ul>${WIKIHOW_STEPS}`;
+  const captures = new Map([
+    [WAYBACK_INDEX, { body: archiveIndex(RUSSIAN_ARTICLE) }],
+    [WAYBACK_REPLAY, { body }],
+  ]);
+  const answer = await answerRussian(await bootWorker(captures, requested));
+  assert.deepEqual(requested.filter((url) => [RUSSIAN_API, WAYBACK_INDEX, WAYBACK_REPLAY].includes(url)),
+    [RUSSIAN_API, WAYBACK_INDEX, WAYBACK_REPLAY]);
+  assert.match(answer.content, /1\. Не откладывайте/u);
+  assert.doesNotMatch(answer.content, /unrelated navigation entry/u);
+  for (const step of answer.guide.steps) {
+    assert.equal(step.sourceUrl, WAYBACK_REPLAY);
+    assert.equal(step.sha256, createHash("sha256").update(body).digest("hex"));
+  }
+});
+
+test("a mismatched parse or archive cannot become numbered instructions", async () => {
+  const requested = [];
+  const captures = new Map([
+    [RUSSIAN_API, { body: JSON.stringify({ parse: { title: "Tió de Nadal", text: { "*": WIKIHOW_STEPS } } }) }],
+    [WAYBACK_INDEX, { body: archiveIndex("https://ru.wikihow.com/another-page") }],
+  ]);
+  const context = await bootWorker(captures, requested);
+  evaluate(context, `runWebSearchQuery = async () => ({
+    content: "Tió de Nadal: unrelated ranked Wikipedia fragment",
+    confidence: 0.8, evidence: [], diagnostics: { fused: [{ title: "Tió de Nadal" }] },
+  })`);
+  const answer = await answerRussian(context);
+  assert.doesNotMatch(answer.content, /Tió de Nadal|1\. Не откладывайте/u);
+  assert.ok(answer.evidence.some((line) => line.includes("wayback:no_matching_snapshot")));
+  assert.ok(!requested.some((url) => url.startsWith("https://web.archive.org/")));
+  assert.ok(answer.evidence.some((line) => line.startsWith("how_to:insufficient_evidence")));
+});
+
+test("the browser tries the web capture component when the archive is unavailable", async () => {
+  const context = await bootWorker(new Map());
+  const body = `<link rel="canonical" href="${RUSSIAN_ARTICLE}">${WIKIHOW_STEPS}`;
+  evaluate(context, `self.FormalAIWebSearchComponent = {
+    fetchUrl: async (url) => url === ${JSON.stringify(RUSSIAN_ARTICLE)}
+      ? { ok: true, text: async () => ${JSON.stringify(body)} } : { ok: false, status: 404 },
+  }`);
+  const answer = await answerRussian(context);
+  assert.equal(answer.guide.steps.length, 2);
+  assert.ok(answer.guide.steps.every((step) => step.sourceUrl === RUSSIAN_ARTICLE));
+});
+
+test("offline and wikiHow opt-out prevent both live and archived wikiHow requests", async () => {
+  const requested = [];
+  const context = await bootWorker(new Map(), requested);
+  await answerRussian(context, { offline: true });
+  assert.equal(requested.length, 0);
+  await answerRussian(context, { externalServiceWikihow: false });
+  assert.ok(!requested.some((url) => url.includes("wikihow.com") || url.includes("/wayback/available")));
+});
+
+test("native localized procedure and follow-up reuse the exact capture over HTTP", {
+  skip: !process.env.FORMAL_AI_TEST_NATIVE_CLI,
+  timeout: 30_000,
+}, async (t) => {
+  const cache = temporaryHome(t);
+  const objects = path.join(cache, "source-cache", "objects");
+  mkdirSync(objects, { recursive: true });
+  const digest = createHash("sha256").update(RUSSIAN_CAPTURE).digest("hex");
+  // Source capture filenames use the URL's FNV-1a key. The content has its own SHA-256.
+  let key = 0xcbf29ce484222325n;
+  for (const byte of Buffer.from(RUSSIAN_API)) {
+    key = BigInt.asUintN(64, (key ^ BigInt(byte)) * 0x100000001b3n);
+  }
+  writeFileSync(path.join(objects, `${digest}.body`), RUSSIAN_CAPTURE);
+  writeFileSync(path.join(cache, "source-cache", `${key.toString(16).padStart(16, "0")}.meta`),
+    `source-capture-v2\nurl=${RUSSIAN_API}\nfetched_at=${Math.floor(Date.now() / 1000)}\nsha256=${digest}\n`);
+  const run = await startCli(t, {
+    binary: process.env.FORMAL_AI_TEST_NATIVE_CLI,
+    env: { FORMAL_AI_SOURCE_CACHE_DIR: cache },
+    lifetime: 25_000,
+  });
+  await run.ready();
+  async function ask(messages) {
+    const response = await fetch(`${run.url}/v1/chat/completions`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ model: "formal-ai", stream: false, messages }),
+    });
+    assert.ok(response.ok, await response.clone().text());
+    const content = (await response.json()).choices[0].message.content;
+    assert.match(content, /1\. Не откладывайте/u);
+    assert.ok(content.includes(RUSSIAN_API), content);
+    return content;
+  }
+  const request = { role: "user", content: RUSSIAN_REQUEST };
+  const first = await ask([request]);
+  assert.match(first, /## Как хорошо покакать/u);
+  await ask([request, { role: "assistant", content: first }, { role: "user", content: "Дай точные шаги" }]);
 });

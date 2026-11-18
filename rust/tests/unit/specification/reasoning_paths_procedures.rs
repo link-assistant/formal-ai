@@ -504,7 +504,7 @@ fn elided_how_connect_requests_cover_supported_languages() {
             prompt: "как подключить mysql к node js",
             task_fragment: "подключить mysql к node js",
             object_fragment: "mysql к node js",
-            candidate: "Подключить-Mysql-К-Node-Js",
+            candidate: "подключить-mysql-к-node-js",
         },
         Case {
             language: "hi",
@@ -566,7 +566,7 @@ fn greeting_prefixed_russian_connect_how_to_composes_procedure() {
 
     assert_eq!(
         response.answer,
-        "Здравствуйте! Чем могу помочь?\n\nПлан поиска процедуры для `подключить mysql к node js` (действие `connect`, объект `mysql к node js`).\n\nЯ не отвечаю на это как на заученный рецепт. Сначала solver проверяет Wikipedia для контекста темы и Wikidata для подсказок сущности, действия и объекта. Затем он пробует CORS-readable MediaWiki parse API wikiHow для кандидата `Подключить-Mysql-К-Node-Js` через `https://www.wikihow.com/api.php?action=parse&page=Подключить-Mysql-К-Node-Js&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`. Если эти источники не дают пригодные шаги, fallback запускает web search по `how to подключить mysql к node js` через duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews и объединяет верхние результаты reciprocal rank fusion (k = 60). Финальная recursive fetch check принимает только страницы с явными упорядоченными или инструкционными шагами для `подключить mysql к node js`."
+        "Здравствуйте! Чем могу помочь?\n\nПлан поиска процедуры для `подключить mysql к node js` (действие `connect`, объект `mysql к node js`).\n\nЯ не отвечаю на это как на заученный рецепт. Сначала solver проверяет Wikipedia для контекста темы и Wikidata для подсказок сущности, действия и объекта. Затем он пробует CORS-readable MediaWiki parse API wikiHow для кандидата `подключить-mysql-к-node-js` через `https://ru.wikihow.com/api.php?action=parse&page=подключить-mysql-к-node-js&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`. Если эти источники не дают пригодные шаги, fallback запускает web search по `how to подключить mysql к node js` через duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews и объединяет верхние результаты reciprocal rank fusion (k = 60). Финальная recursive fetch check принимает только страницы с явными упорядоченными или инструкционными шагами для `подключить mysql к node js`."
     );
 
     assert_eq!(

@@ -17,10 +17,16 @@
 
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
-use crate::how_to_guide::{GuideBounds, HowToGuide, ServicePreferences, synthesize_how_to_guide};
+use crate::how_to_guide::{
+    GuideBounds, HowToGuide, ServicePreferences, synthesize_how_to_guide_in,
+};
+use crate::language::detect;
 use crate::seed::external_service_settings_keys;
 use crate::service_accessibility::{ServiceAccessibilityCache, unix_now};
-use crate::solver_handler_how::{procedural_how_to_task, try_how_to_procedure};
+use crate::solver_handler_how::{
+    internet_access_help_requested, procedural_how_to_task, try_how_to_procedure,
+    try_procedural_how_to_followup_with,
+};
 use crate::solver_handlers::finalize_simple;
 use crate::source_fetch::{CachedSourceClient, CurlSourceTransport, SourceTransport};
 
@@ -77,10 +83,14 @@ pub fn try_how_to_procedure_with_client<T: SourceTransport>(
     {
         return Some(answer);
     }
+    if internet_access_help_requested(prompt, normalized) {
+        return None;
+    }
     let task = procedural_how_to_task(normalized)?;
+    let language = detect(prompt).slug();
     let bounds = GuideBounds::default();
-    let guide = synthesize_how_to_guide(
-        &task,
+    let guide = synthesize_how_to_guide_in(
+        (&task, language),
         client,
         preferences,
         &bounds,
@@ -99,7 +109,7 @@ pub fn try_how_to_procedure_with_client<T: SourceTransport>(
         log.append("procedural_how_to:fallback", "discovery_plan".to_owned());
         return try_how_to_procedure(prompt, normalized, log);
     }
-    Some(answer_synthesized_guide(prompt, &guide, log))
+    Some(answer_synthesized_guide(prompt, &guide, language, log))
 }
 
 /// Use the process source cache and the environment's settings.
@@ -127,9 +137,22 @@ pub fn try_how_to_procedure_with_offline(
     )
 }
 
+/// Resolve the prior procedural task with the same capture policy as a fresh turn.
+pub(crate) fn try_procedural_followup_with_offline(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+    offline: bool,
+) -> Option<SymbolicAnswer> {
+    try_procedural_how_to_followup_with(prompt, normalized, log, |prior, canonical, log| {
+        try_how_to_procedure_with_offline(prior, canonical, log, offline)
+    })
+}
+
 fn answer_synthesized_guide(
     prompt: &str,
     guide: &HowToGuide,
+    language: &str,
     log: &mut EventLog,
 ) -> SymbolicAnswer {
     finalize_simple(
@@ -137,7 +160,7 @@ fn answer_synthesized_guide(
         log,
         "procedural_how_to",
         "response:procedural_how_to_guide",
-        &guide.markdown(),
+        &guide.markdown_in(language),
         0.82,
     )
 }
