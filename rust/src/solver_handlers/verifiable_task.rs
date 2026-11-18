@@ -342,15 +342,14 @@ fn derive_count(
                     .split_whitespace()
                     .all(|token| token.len() < 3 || gloss.contains(token))
         });
-        let seeded_sources = (!retrieved_match)
-            .then(|| {
-                crate::verifiable_task::seeded_membership_sources(
-                    &entity.surface,
-                    subject,
-                    &task.prose_language,
-                )
-            })
-            .flatten();
+        // Retain the seed taxonomy proof even when retrieval also matches:
+        // populating the source cache must not
+        // erase the grounded membership path from the composition trace.
+        let seeded_sources = crate::verifiable_task::seeded_membership_sources(
+            &entity.surface,
+            subject,
+            &task.prose_language,
+        );
         if retrieved_match || seeded_sources.is_some() {
             count += entity.multiplicity.parse::<i128>().unwrap_or(1);
             urls.extend(outcome.items.into_iter().map(|sense| sense.source_url));
@@ -792,4 +791,3 @@ fn symbolic_check(derivation_id: &str, slug: &str, observed: &[u8]) -> Evidence 
     evidence.produced_by = format!("verifiable_task:{slug}");
     evidence
 }
-
