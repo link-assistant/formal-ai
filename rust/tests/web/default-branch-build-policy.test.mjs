@@ -667,3 +667,38 @@ test('the complete reasoning-loop and interpretation contracts execute in the fo
   for (const path of ['specification/reasoning_loop.rs', 'specification/formalization.rs'])
     assert(source.includes('#[path = "' + path + '"]'), path);
 });
+
+
+test('all checked-out shell downloads retain the native retry contract', {timeout:15000}, () => {
+  const source = read('rust/tests/unit/ci-cd/network_download_retry.rs');
+  const table = name => source.split('const ' + name + ':')[1].split('];')[0];
+  const required = new Map([...table('DOWNLOADS_THAT_MUST_RETRY').matchAll(/\("([^"\n]+)", (\d+)\)/gu)]
+    .map(([, path, count]) => [path, Number(count)]));
+  const ownRetry = new Set([...table('FETCHES_WITH_THEIR_OWN_RETRY_LOOP').matchAll(/"((?:scripts|experiments)\/[^"\n]+[.]sh)"/gu)]
+    .map(([, path]) => path));
+  assert(required.size >= 4);
+  assert(ownRetry.size >= 6);
+  const invocations = path => read(path).replaceAll('\\\n', ' ').split('\n').map(line => line.trim())
+    .filter(line => !line.startsWith('#') && !line.startsWith('echo') && line.includes('curl -'));
+  for (const [path, count] of required) {
+    const commands = invocations(path);
+    assert.equal(commands.length, count, path + ' download count');
+    for (const command of commands) {
+      assert(command.includes('--retry ') && command.includes('--retry-all-errors'), path + ': ' + command);
+      assert(command.includes('--retry-delay '), path + ': ' + command);
+    }
+  }
+  const listing = spawnSync('git', ['ls-files', '-z', '--', '*.sh', ':!:dev/log/**'],
+    {encoding:'utf8', timeout:5000, maxBuffer:2097152});
+  assert.equal(listing.status, 0, listing.stderr || String(listing.error));
+  let swept = 0;
+  for (const path of listing.stdout.split('\0').filter(path => path && existsSync(path))) {
+    for (const command of invocations(path)) {
+      if (![' -o ', '| bash', '| sh', '| tar'].some(part => command.includes(part))
+          || command.includes('127.0.0.1') || command.includes('localhost')) continue;
+      swept++;
+      assert(required.has(path) || ownRetry.has(path), path + ': unregistered remote download: ' + command);
+    }
+  }
+  assert(swept >= 10, 'the sweep must retain the native minimum');
+});

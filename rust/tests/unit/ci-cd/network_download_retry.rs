@@ -42,6 +42,7 @@ const DOWNLOADS_THAT_MUST_RETRY: &[(&str, usize)] = &[
     ("experiments/agentic_cli_matrix/install_client.sh", 3),
     ("experiments/issue-1021-laravel/run.sh", 1),
     ("experiments/issue-1571/osv-cargo-lock.sh", 1),
+    ("experiments/issue_1582/continuation-local-tools.sh", 1),
     ("scripts/install.sh", 2),
 ];
 
