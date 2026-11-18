@@ -94,7 +94,15 @@
     89,
     90,
     91,
-    92
+    92,
+    93,
+    94,
+    95,
+    96,
+    97,
+    98,
+    99,
+    100
   ],
   "totalHistoricalPages": 254,
   "files": [
@@ -1149,7 +1157,235 @@
       "readRanges": [
         [
           1,
+          59
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-jacoco-maven-plugin.xml",
+      "sha256": "a2e6335709927f02b60a1d5e3063af33ac15f723d644e8788cc61c10466d174f",
+      "totalLines": 53,
+      "readRanges": [
+        [
+          1,
+          53
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-junit-jupiter-params.xml",
+      "sha256": "668a93a83af54a6f0ad96d55aff4e3ac0a16e9cd61f4968fb26e83814fa984b2",
+      "totalLines": 122,
+      "readRanges": [
+        [
+          1,
+          122
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-junit-jupiter.xml",
+      "sha256": "8c200889ad17c89a3f88419f0c0e7550436cbc8fe25b95327821044b9f5f7c0f",
+      "totalLines": 99,
+      "readRanges": [
+        [
+          1,
+          99
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-clean-plugin.xml",
+      "sha256": "cc806bbdff9fb4ef5072c9d5c2f5e81feb4c82092bdf942306e2159741d5f670",
+      "totalLines": 35,
+      "readRanges": [
+        [
+          1,
           35
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-compiler-plugin.xml",
+      "sha256": "a9497cbfe76f06c2f7682b12e0c2cea8725ee69cdc1c7640481405e9e80eed26",
+      "totalLines": 52,
+      "readRanges": [
+        [
+          1,
+          52
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-dependency-plugin.xml",
+      "sha256": "597c3b5f3181eca12d8151fc59d786cda051ed72f4764daac74e0616342021b2",
+      "totalLines": 47,
+      "readRanges": [
+        [
+          1,
+          47
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-deploy-plugin.xml",
+      "sha256": "b11cbef3fcfba913daa2168d8be2564788cdd8cead36be4954d7fb253838c66e",
+      "totalLines": 37,
+      "readRanges": [
+        [
+          1,
+          37
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-enforcer-plugin.xml",
+      "sha256": "4b58111a46979123b2ee3773900105d5296591e472a8f0a7c82f06a2680bc805",
+      "totalLines": 41,
+      "readRanges": [
+        [
+          1,
+          41
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-gpg-plugin.xml",
+      "sha256": "6048f4378288f1df66a9540cf8103740d0983dfe5a328bbbfa388230dea7f481",
+      "totalLines": 33,
+      "readRanges": [
+        [
+          1,
+          33
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-install-plugin.xml",
+      "sha256": "74f6e8453779aef836394b4297b43c8191a3cd178a2f12e485e962a8f22269e9",
+      "totalLines": 34,
+      "readRanges": [
+        [
+          1,
+          34
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-jar-plugin.xml",
+      "sha256": "332d78d2683b31a6fb5983c9ea298a9d152cf27db8d29c3a895f5ac081505160",
+      "totalLines": 40,
+      "readRanges": [
+        [
+          1,
+          40
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-javadoc-plugin.xml",
+      "sha256": "4714383a26d6eac40640bfe676623c4038bd4875f3e68a870654121f5240d6f9",
+      "totalLines": 55,
+      "readRanges": [
+        [
+          1,
+          55
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-resources-plugin.xml",
+      "sha256": "a4ca8c94f86a81472da7118d37eed3ecbf0365cc117435b9f44561209c6838f6",
+      "totalLines": 36,
+      "readRanges": [
+        [
+          1,
+          36
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-site-plugin.xml",
+      "sha256": "165b40d905bbb0662c5cd70b272cf9643de555d343418455bf0e463108f352aa",
+      "totalLines": 65,
+      "readRanges": [
+        [
+          1,
+          65
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-source-plugin.xml",
+      "sha256": "38cc2595cdaa11e76baf677a9c996cd3b52b82f32a3339123dbd4d45a513980e",
+      "totalLines": 35,
+      "readRanges": [
+        [
+          1,
+          35
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-surefire-plugin.xml",
+      "sha256": "ce52db2a631de836bca791d42992cb54918c3c13fd9d5a776d946080f77209eb",
+      "totalLines": 85,
+      "readRanges": [
+        [
+          1,
+          85
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-maven-wrapper-plugin.xml",
+      "sha256": "f46009a69226a26610b85822412c114f9d48df47aad4abc046ca52a9f2f47738",
+      "totalLines": 22,
+      "readRanges": [
+        [
+          1,
+          22
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-spotbugs-maven-plugin.xml",
+      "sha256": "5abf58f0f2e272174baf1a4620a913c3dbc54b8fae6169502a24a7efc343ceb2",
+      "totalLines": 99,
+      "readRanges": [
+        [
+          1,
+          99
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-spotless-maven-plugin.xml",
+      "sha256": "d5b5ce5aeb349592bc39676c2caf089df63419f96cc25938f3d0d2ea4b0ceeee",
+      "totalLines": 159,
+      "readRanges": [
+        [
+          1,
+          56
         ]
       ],
       "completeSourceRead": false
@@ -1200,7 +1436,7 @@
     "The complete historical dependency-update practices source is read. Its discussion of automatic merges and administrative bypass describes the upstream tool; it does not authorize changing Formal AI branch protection or merging this draft. Current applicability, remaining historical pages and broader issue acceptance stay unfinished."
   ],
   "nextUnreviewedLiteralPage": 39,
-  "nextForwardLiteralPage": 93,
+  "nextForwardLiteralPage": 101,
   "observationsThroughPage58": [
     "Pages 56–58 are fully read. Together with page 55 they complete the historical Durian SWT changelog. Its Java 17, Kotlin flow and platform notes are third-party historical context, not verification of current Formal AI dependencies.",
     "The retained final issue conversation, final main SHA, empty pull-request conversation/review/inline-comment lists and empty sub-issue list are fully read. These are historical snapshots rather than fresh GitHub state.",
@@ -1244,5 +1480,10 @@
     "The retained JUnit migration raises its Java baseline to 17 and Kotlin baseline to 2.1, aligns module versions and replaces deprecated extension-store APIs. These are historical migration context and do not establish current library compatibility or applicability to Formal AI.",
     "Historical main head 600f3c713ca5b8cec3718a0713c2220fe154118c records successful Java 21 tests on Windows, Linux and macOS, lint and packaging, while release jobs are skipped. This is template history, not execution of the current Formal AI head or a new release.",
     "Continuous literal coverage is pages 1–92/254. The google-java-format Maven catalog is partly read through line 35; pages 93–254 and full semantic applicability remain unfinished. No download or present runtime verification is claimed from catalog metadata."
+  ],
+  "observationsPages93Through100": [
+    "All eight pages were literally read without truncation. They finish the retained google-java-format, JaCoCo, JUnit Jupiter, Maven plugin and SpotBugs catalogs and begin the Spotless catalog.",
+    "The retained catalogs include JUnit Jupiter 6.1.3, JaCoCo 0.8.16, compiler 4.0.0-beta-5, Surefire 3.6.1 and SpotBugs 4.10.5.0. These are historical catalog observations, not compatibility, download or current runtime verification.",
+    "Continuous literal coverage is pages 1–100/254. The Spotless catalog is partly read through line 56; pages 101–254 and full semantic applicability remain unfinished. No independent Formal AI authorship credit is claimed."
   ]
 }

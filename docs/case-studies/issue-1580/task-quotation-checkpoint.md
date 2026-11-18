@@ -257,3 +257,30 @@ The complete before/after receipts and failed attempts are under
 All earlier broad unfinished criteria remain open. Supplied scripts, code and
 conclusions receive zero independent authorship credit; independent acceptance
 stays 0/20. The PR stays draft and unmerged.
+
+The pre-push main update advances to `19235c49abaf1e71aad89e4badbe1f9bba5d4786`.
+Review every incoming source change and preserve the full 7,123-line diff.
+Resolve the workflow and policy-test conflict by retaining both isolated native
+targets and the required-context admission conditions, including the incoming
+Node setup and native HTTP replay. Preserve the upstream development log bytes.
+Refresh the governed witness through its maintained writer after comparing every
+inventory object; only four Cargo manifest fixture hashes change.
+
+Add the existing executor parity module as a third isolated native target. It
+replays all 29 shared cases with complete events and retains its three production
+composition/language tests. Commit the target, workflow, policy test, documentation
+and reviewed Cargo fingerprint as `26f3f332aeffb7ced6985e58e682b209a71346c7`.
+Native execution of this target remains pending hosted CI; no local compiler runs.
+
+After main integration, all 84 tests in six focused JavaScript files pass. Both
+fixtures are current, and Rust 2024 formatting and whitespace pass. The full
+138-entry run records 85 passes, 52 explicit exclusions and one abbreviation
+failure from two newly archived filenames. Rename those archives using full
+words, preserve their compressed and raw bytes and original source paths, and
+pass all four affected gates. Retain the failed run and correction separately.
+Peak child RSS is 1,116,156 KiB, with no OOM or OOM-kill count change.
+
+Java historical literal review now covers continuous pages 1–100/254, with 106
+complete files, one partial file and 6,862 source lines. Pages 101–254 remain
+unread; historical catalogs do not prove current compatibility or execution.
+All broader unfinished criteria and the 0/20 independent acceptance result remain.

@@ -418,3 +418,10 @@ All 23 workflows on `a97832237cbb365000dd7296050984e4bdd59ebb` complete successf
 - [x] Read and preserve Java historical pages 79–92 completely. Coverage is continuous 1–92/254, with 87 complete files, 1 partial file and 5,792 literally reviewed source lines. Pages 93–254 and complete semantic applicability remain unfinished; historical metadata grants no current execution credit.
 
 - [x] Preserve the first two size-gate failures and wrong-path invocation, split the four new status cases into a second shared fixture, then pass 25 focused tests and all 86 executable gates (52 explicit exclusions). Preserve and correct Rust formatting separately; original 25 fixture entries remain byte-identical. Native status execution and general parent coverage stay unfinished.
+
+- [x] Read and preserve Java historical pages 93–100 completely. Coverage is continuous 1–100/254, with 106 complete files, 1 partial file and 6,862 literally reviewed source lines. Pages 101–254 and complete semantic applicability remain unfinished; historical metadata grants no current execution credit.
+
+- [x] Preserve the stopped publication attempt, merge current main `19235c49`, review all incoming source changes and resolve workflow/policy conflicts without dropping required-context admission or either native regression target.
+- [x] Add isolated native executor parity CI using the existing four-test module and all 29 shared cases, with complete event comparisons; preserve complete governed-object equality apart from four Cargo fixture identities. Native execution remains pending hosted CI.
+- [x] Pass 84 focused JavaScript tests, both fixture checks, Rust 2024 formatting and whitespace after integration. Preserve the full local run's 85 passes, 52 exclusions and one evidence-filename failure; correct only those two names and pass four affected gates without raising limits.
+- [ ] Publish this combined round once after a fresh main/feedback/run check, then collect and review every current-head CI result, including the new native target.
