@@ -251,6 +251,12 @@ const REQUIRED_KEYS = [
   'sidebar.tools',
   'sidebar.trace',
   'sidebar.settings',
+  // Issue #1584: output settings require every UI locale.
+  'settings.outputStandard',
+  'settings.lexicalDensity',
+  'settings.customVocabulary',
+  'settings.vocabularySize',
+  'settings.outputVerification',
   'settings.ambiguity',
   'settings.moreQuestions',
   'settings.moreGuessing',

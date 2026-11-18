@@ -1,5 +1,3 @@
-use std::time::{SystemTime, UNIX_EPOCH};
-
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
@@ -10,7 +8,7 @@ use crate::dreaming_application::{
     applied_amendment_steps, apply_retained_amendments, solve_with_standing_requirements,
 };
 use crate::engine::{
-    FormalAiEngine, SymbolicAnswer, ThinkingStep, estimate_tokens, render_thinking_steps, stable_id,
+    SymbolicAnswer, ThinkingStep, estimate_tokens, render_thinking_steps, stable_id,
 };
 use crate::memory::MemoryEvent;
 use crate::protocol_memory::answer_from_memory_if_requested;
@@ -25,14 +23,22 @@ use crate::protocol_responses::{custom_response_tool_input, is_custom_response_t
 pub use crate::protocol_responses::response_arguments_for_tool;
 use crate::solver::UniversalSolver;
 
+mod chat_request;
+pub use chat_request::ChatCompletionRequest;
+mod client_functions;
 mod content;
 pub use content::{
     client_working_directory, latest_user_request, observed_directory, system_prompt_text,
 };
+mod cnl;
 mod output;
 mod recording;
+mod request_context;
 mod responses_input;
 mod tokens;
+pub(crate) use cnl::create_adapted_chat_completion;
+pub use cnl::create_chat_completion_with_solver_and_memory;
+use output::response_from_symbolic;
 pub use output::*;
 use recording::response_prompt;
 pub use recording::{
@@ -40,42 +46,10 @@ pub use recording::{
     responses_exchange_to_record,
 };
 pub(crate) use recording::{chat_message_to_turn, chat_prompt_and_history};
-use tokens::{message_input_tokens, responses_input_tokens};
+use tokens::{message_input_tokens, response_timestamp, responses_input_tokens};
 
 fn resolved_request_model(model: Option<&str>) -> String {
     crate::seed::resolve_model_id(model)
-}
-
-fn response_timestamp() -> u64 {
-    SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .map_or(1, |duration| duration.as_secs().max(1))
-}
-
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct ChatCompletionRequest {
-    #[serde(default)]
-    pub model: Option<String>,
-    #[serde(default)]
-    pub messages: Vec<ChatMessage>,
-    #[serde(default)]
-    pub temperature: Option<f32>,
-    #[serde(default)]
-    pub stream: bool,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub tools: Vec<Value>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tool_choice: Option<Value>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub functions: Vec<Value>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub function_call: Option<Value>,
-    /// OpenAI streaming knobs — most relevantly `include_usage`, which asks the
-    /// server to emit a final chunk carrying the `usage` block. The AI SDK's
-    /// openai-compatible provider ships this and drops token counts if it's
-    /// missing (see issue link-assistant/agent#249).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub stream_options: Option<StreamOptions>,
 }
 
 /// OpenAI-compatible `stream_options` field.
@@ -154,6 +128,9 @@ pub struct ChatMessage {
     pub role: String,
     #[serde(default, deserialize_with = "deserialize_null_content")]
     pub content: MessageContent,
+    /// Machine-readable reason a forced client function could not be called.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refusal: Option<String>,
     /// Tool calls an `assistant` turn is requesting (OpenAI `tool_calls`).
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub tool_calls: Vec<ToolCall>,
@@ -408,6 +385,8 @@ impl ResponsesRequest {
             tool_choice: self.tool_choice.clone(),
             functions: Vec::new(),
             function_call: None,
+            output_standard: None,
+            lexical_density: None,
             stream_options: None,
         }
     }
@@ -426,13 +405,22 @@ pub fn create_chat_completion_with_solver(
     create_chat_completion_with_solver_and_memory(request, solver, &[])
 }
 
-#[must_use]
-pub fn create_chat_completion_with_solver_and_memory(
+/// The unprojected planner path. `protocol::cnl` wraps it so every Chat,
+/// Anthropic and Gemini completion receives the selected output projection.
+fn create_unprojected_chat_completion(
     request: &ChatCompletionRequest,
     solver: &UniversalSolver,
     memory_events: &[MemoryEvent],
+    forced_client_functions: bool,
 ) -> ChatCompletion {
     let (prompt, history) = chat_prompt_and_history(&request.messages);
+    if forced_client_functions
+        && let Some(completion) = client_functions::client_function_completion(request, &prompt)
+    {
+        return completion;
+    }
+    let context = request_context::RequestContext::new(&request.messages);
+    let solver = &context.solver(solver);
 
     if let Some(mut symbolic_answer) =
         answer_from_memory_if_requested(&prompt, &history, memory_events)
@@ -451,13 +439,17 @@ pub fn create_chat_completion_with_solver_and_memory(
         AgenticOutcome::Fallthrough => {}
     }
 
+    if let Some(answer) = context.answer() {
+        return chat_completion_from_symbolic(request, &prompt, answer);
+    }
     // Standing requirements are injected into the solving context itself (as if
     // the user restated them), not appended after the fact.
-    let symbolic_answer =
+    let mut symbolic_answer =
         solve_with_standing_requirements(solver, &prompt, &history, memory_events);
     if let Some(plan) = command_reroute_plan(request, solver.config.agent_mode, &symbolic_answer) {
         return chat_completion_from_plan(request, &prompt, plan, memory_events);
     }
+    cnl::strip_notice_for_envelope(&context, solver, &mut symbolic_answer);
     chat_completion_from_symbolic(request, &prompt, symbolic_answer)
 }
 
@@ -673,15 +665,12 @@ fn chat_completion_from_plan(
         AgenticPlan::Final(answer) => {
             // Issue #1559 §5: the final answer is published outside the
             // conversation, so applied amendments go to the trace, not the text.
-            let completion_tokens = estimate_tokens(&answer);
-            let mut message = ChatMessage::assistant(answer);
-            let steps = applied_amendment_steps(prompt, memory_events);
-            if !steps.is_empty() {
-                let reasoning = render_thinking_steps(&steps);
-                message.thinking_steps = steps;
-                message.reasoning_content.clone_from(&reasoning);
-                message.reasoning = reasoning;
-            }
+            let message = request_context::final_message(
+                &request.messages,
+                &answer,
+                applied_amendment_steps(prompt, memory_events),
+            );
+            let completion_tokens = estimate_tokens(&message.content.plain_text());
             (message, String::from("stop"), completion_tokens)
         }
     };
@@ -701,6 +690,7 @@ fn chat_completion_from_plan(
             completion_tokens,
             total_tokens: prompt_tokens.saturating_add(completion_tokens),
         },
+        output_projection: None,
         learning_trace: None,
     }
 }
@@ -710,6 +700,8 @@ fn chat_completion_from_symbolic(
     prompt: &str,
     symbolic_answer: SymbolicAnswer,
 ) -> ChatCompletion {
+    let symbolic_answer =
+        request_context::RequestContext::new(&request.messages).compose(symbolic_answer);
     let model = resolved_request_model(request.model.as_deref());
     let prompt_tokens = message_input_tokens(&request.messages);
     let completion_tokens = estimate_tokens(&symbolic_answer.answer);
@@ -737,15 +729,14 @@ fn chat_completion_from_symbolic(
             completion_tokens,
             total_tokens: prompt_tokens.saturating_add(completion_tokens),
         },
+        output_projection: None,
         learning_trace,
     }
 }
 
 #[must_use]
 pub fn create_response(request: &ResponsesRequest) -> ResponseObject {
-    let prompt = response_prompt(request);
-    let symbolic_answer = FormalAiEngine.answer(&prompt);
-    response_from_symbolic(request, &prompt, symbolic_answer)
+    create_response_with_solver(request, &UniversalSolver::default())
 }
 
 #[must_use]
@@ -765,6 +756,13 @@ pub fn create_response_with_solver_and_memory(
     let prompt = response_prompt(request);
     let chat_request = request.to_chat_completion_request();
     let (memory_prompt, history) = chat_prompt_and_history(&chat_request.messages);
+    if let Some(response) =
+        client_functions::client_function_response(request, &chat_request, &prompt, &memory_prompt)
+    {
+        return response;
+    }
+    let context = request_context::RequestContext::new(&chat_request.messages);
+    let solver = &context.solver(solver);
     let memory_prompt = if memory_prompt.trim().is_empty() {
         prompt.as_str()
     } else {
@@ -782,6 +780,9 @@ pub fn create_response_with_solver_and_memory(
             return response_from_plan(request, &prompt, plan, memory_events);
         }
         AgenticOutcome::Fallthrough => {}
+    }
+    if let Some(answer) = context.answer() {
+        return response_from_symbolic(request, &prompt, answer);
     }
     let symbolic_answer =
         solve_with_standing_requirements(solver, memory_prompt, &history, memory_events);
@@ -830,6 +831,7 @@ fn response_from_plan(
                 content: vec![ResponseOutputContent {
                     kind: String::from("output_text"),
                     text: narration,
+                    refusal: None,
                 }],
                 thinking_steps: Vec::new(),
             }));
@@ -909,8 +911,14 @@ fn response_from_plan(
         AgenticPlan::Final(answer) => {
             // Issue #1559 §5: applied amendments are listed in the trace and
             // as evidence links, never appended to the published answer.
+            let composed = request_context::compose_final(
+                &request.to_chat_completion_request().messages,
+                &answer,
+                applied_amendment_steps(prompt, memory_events),
+            );
+            let answer = composed.answer;
             let output_tokens = estimate_tokens(&answer);
-            let steps = applied_amendment_steps(prompt, memory_events);
+            let steps = composed.thinking_steps;
             evidence_links = steps.iter().map(|step| step.source_event.clone()).collect();
             let message = ResponseOutputItem::Message(ResponseOutputMessage {
                 id: stable_id("msg", &answer),
@@ -918,6 +926,7 @@ fn response_from_plan(
                 role: String::from("assistant"),
                 content: vec![ResponseOutputContent {
                     kind: String::from("output_text"),
+                    refusal: None,
                     text: answer,
                 }],
                 thinking_steps: steps,
@@ -941,48 +950,5 @@ fn response_from_plan(
         evidence_links,
         derivation_id: None,
         thinking_steps: Vec::new(),
-    }
-}
-
-fn response_from_symbolic(
-    request: &ResponsesRequest,
-    prompt: &str,
-    symbolic_answer: SymbolicAnswer,
-) -> ResponseObject {
-    let model = resolved_request_model(request.model.as_deref());
-    let input_tokens = responses_input_tokens(request);
-    let output_tokens = estimate_tokens(&symbolic_answer.answer);
-    let derivation_id = symbolic_answer.derivation_id();
-    let answer = symbolic_answer.answer;
-    let thinking_steps = symbolic_answer.thinking_steps;
-    let mut output = vec![ResponseOutputItem::Message(ResponseOutputMessage {
-        id: stable_id("msg", &answer),
-        kind: String::from("message"),
-        role: String::from("assistant"),
-        content: vec![ResponseOutputContent {
-            kind: String::from("output_text"),
-            text: answer,
-        }],
-        thinking_steps: thinking_steps.clone(),
-    })];
-    if let Some(reasoning) = output::response_reasoning_item(prompt, &thinking_steps) {
-        output.push(reasoning);
-    }
-
-    ResponseObject {
-        id: stable_id("resp", prompt),
-        object: String::from("response"),
-        created_at: response_timestamp(),
-        status: String::from("completed"),
-        model,
-        output,
-        usage: ResponseUsage {
-            input_tokens,
-            output_tokens,
-            total_tokens: input_tokens.saturating_add(output_tokens),
-        },
-        evidence_links: symbolic_answer.evidence_links,
-        derivation_id: Some(derivation_id),
-        thinking_steps,
     }
 }

@@ -49,9 +49,9 @@ test('actual compiler, image, application and deployment entries refuse PR execu
   }
 });
 // Issue #1191: the only PR job that runs the Rust compiler is main's clippy
-// profile on the library and binaries. It must stay a check (no build, test or
-// upload), selected by compile inputs.
-test('the focused PR native check stays a lint-only check selected by compile inputs', () => {
+// profile on the library and binaries, plus the isolated regression targets.
+// Full suites, product builds and uploads remain main-only.
+test('the focused PR native check limits execution to lint and isolated regressions', () => {
   const job = workflow('release.yml').jobs['native-type-check'];
   assert.equal(job.uses, './.github/workflows/native-type-check.yml');
   assert.deepEqual(job.permissions, {contents: 'read'});
@@ -65,7 +65,13 @@ test('the focused PR native check stays a lint-only check selected by compile in
   const [check, ...others] = Object.values(called.jobs);
   assert.equal(others.length, 0);
   const runs = check.steps.map(step => step.run).filter(Boolean);
-  assert.deepEqual(runs, ['bash scripts/ci-clippy-profile.sh --library-and-binaries']);
+  assert.deepEqual(runs, ['bash scripts/ci-clippy-profile.sh --library-and-binaries',
+    'cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test cnl_output --test cnl_parity -- --test-threads=1',
+    'node --test --test-concurrency=1 rust/tests/web/issue-1590-forced-functions.test.mjs']);
+  assert.deepEqual(check.steps.find(step => step.name === 'Verify calendar, currency, forced OpenAI function and CNL behavior').env,
+    {CARGO_BUILD_JOBS: '2', CARGO_PROFILE_TEST_OPT_LEVEL: '0'});
+  assert.deepEqual(check.steps.find(step => step.name === 'Replay the forced function requests against the native CLI').env,
+    {FORMAL_AI_TEST_NATIVE_CLI: '${{ github.workspace }}/rust/target/debug/formal-ai'});
   assert.deepEqual(check.steps.find(step => step.uses === 'dtolnay/rust-toolchain@stable').with, {components: 'clippy'});
   assert(!check.steps.some(step => /upload-artifact|attest|cache@|cache\/save/u.test(step.uses ?? '')));
   assert.deepEqual(check.steps.find(step => step.uses === './.github/actions/cache-cargo-registry').with, {'restore-only': 'true'});

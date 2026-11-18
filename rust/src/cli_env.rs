@@ -12,7 +12,7 @@
 //!
 //! Three reading helpers cover the two idioms the codebase actually uses:
 //!
-//! - [`flag_enabled`] — an opt-in switch (debug traces, live fetch): the flag
+//! - [`flag_enabled`] — an opt-in switch (debug traces): the flag
 //!   is on only when the variable is set to a true spelling.
 //! - [`flag_disabled`] — an opt-out switch on a default-on feature (chat
 //!   recording, dreaming): the feature is off only when the variable is set

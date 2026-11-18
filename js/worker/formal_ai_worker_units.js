@@ -491,6 +491,67 @@ function unitWikidataFactor(numerator, denominator) {
   };
 }
 
+// Intent belongs to a sentence, never to a connector elsewhere in a document.
+// Mirrors unit_conversion/request.rs. Decimal points stay inside their sentence.
+function unitConversionClauses(text) {
+  const out = [];
+  let start = 0;
+  for (let i = 0; i < text.length; i++) {
+    if (/[\n;!?？。।]/u.test(text[i]) ||
+        (text[i] === "." && !(/[0-9]/u.test(text[i - 1] || "") && /[0-9]/u.test(text[i + 1] || "")))) {
+      out.push(text.slice(start, i).trim());
+      start = i + 1;
+    }
+  }
+  out.push(text.slice(start).trim());
+  return out.map(clause => clause.replace(/^[¿¡]/u, "").trim()).filter(Boolean);
+}
+function unitRequestSurfaces(field) {
+  const root = parseLinoTree(seedRawText(SEED_RAW, "meanings-units.lino"));
+  const record = root.children.flatMap(section => section.children)
+    .find(row => row.name === ROLE_UNIT_CONVERSION_QUESTION);
+  return (record?.children || []).filter(row => row.name === field)
+    .map(row => String(row.value || "").replace(/^"|"$/gu, ""));
+}
+function unitExplicitConversion(text) {
+  return unitRequestSurfaces("request-start")
+    .some(word => quantityContainsTerm(text, word) &&
+      (text.startsWith(word) || /^[+-]?[0-9]/u.test(text)));
+}
+
+function unitConversionSpan(text) {
+  const candidates = unitConversionClauses(text).filter(clause =>
+    unitExplicitConversion(clause) || /^[+-]?[0-9]/u.test(clause));
+  const explicit = candidates.filter(unitExplicitConversion);
+  // Multiple requests need composition rather than an arbitrary first one.
+  return explicit.length === 1 ? explicit[0] : explicit.length === 0 && candidates.length === 1 ? candidates[0] : null;
+}
+// Preserve exactness: short terminating decimals are readable; longer and
+// repeating values keep their reduced fraction, without rounding.
+function unitRationalText(numerator, denominator) {
+  const quotient = exactDecimalMulDiv({mantissa: numerator, scale: 0}, 1n, denominator, 3);
+  return quotient?.exact ? exactDecimalRender(quotient.value) : String(numerator) + "/" + String(denominator);
+}
+function unitNumeralLabel(mention, numerator, denominator, language) {
+  let form = "many";
+  const count = numerator < 0n ? -numerator : numerator;
+  if (numerator % denominator !== 0n) form = "fraction";
+  else {
+    const integer = count / denominator;
+    if (language === "ru") {
+      const last = integer % 10n;
+      const teen = integer % 100n >= 11n && integer % 100n <= 14n;
+      form = !teen && last === 1n ? "one" : !teen && last >= 2n && last <= 4n ? "few" : "many";
+    } else if (integer === 1n) form = "one";
+  }
+  const root = parseLinoTree(seedRawText(SEED_RAW, "si-unit-dimensions.lino"));
+  const section = root.children.find(child => child.name === "si_units");
+  const record = section?.children.find(child => child.name === "si_unit" && siChildValue(child, "unit") === mention.slug);
+  const key = language + "." + form;
+  const row = record?.children.find(child => child.name === "numeral-form" && String(child.value || "").startsWith(key + " "));
+  return row ? String(row.value).slice(key.length + 1).replaceAll('"', "") : mention.surface;
+}
+
 /**
  * Unit-conversion entry point (issue #1176): "how many X are N Y",
  * "N Y in X", "convert N Y to X", exactly and with the arithmetic shown.
@@ -501,31 +562,36 @@ function unitWikidataFactor(numerator, denominator) {
  * @returns {{intent: string, content: string, confidence: number, evidence: Array<string>}|null}
  */
 function tryUnitConversion(prompt, normalized, language) {
-  const asksConversion = wordsForRole(ROLE_UNIT_CONVERSION_QUESTION)
-    .some((word) => quantityContainsTerm(normalized, word));
-  const lowered = String(prompt || "").toLowerCase();
-  if (!asksConversion && !lowered.includes("?") && !lowered.includes("？")) return null;
+  const lowered = unitConversionSpan(String(prompt || "").toLowerCase());
+  if (lowered === null) return null;
   const items = parseNumericListNumbers(lowered);
-  if (items.length === 0) return null;
+  if (items.length !== 1) return null;
   const mentions = unitMentions(lowered);
   if (mentions.length !== 2) return null;
   const value = exactDecimalParse(items[0].text);
   if (value === null) return null;
   const numberIndex = lowered.indexOf(items[0].text);
-  if (numberIndex === -1) return null;
-  const numberPosition = quantityByteOffset(lowered, numberIndex);
-  let source = mentions[0];
-  for (const mention of mentions) {
-    if (Math.abs(mention.position - numberPosition) < Math.abs(source.position - numberPosition)) {
-      source = mention;
-    }
-  }
-  const target = mentions.find((mention) => mention.slug !== source.slug);
+  const numberEnd = quantityByteOffset(lowered, numberIndex + items[0].text.length);
+  const bytes = new TextEncoder().encode(lowered);
+  const source = mentions.find(mention => mention.position >= numberEnd &&
+    new TextDecoder().decode(bytes.slice(numberEnd, mention.position)).trim() === "");
+  if (!source) return null;
+  const target = mentions.find(mention => mention.slug !== source.slug);
   if (!target) return null;
+  if (!unitExplicitConversion(lowered)) {
+    const end = source.position + quantityByteOffset(source.surface, source.surface.length);
+    const connector = new TextDecoder().decode(bytes.slice(end, target.position)).trim();
+    const tail = new TextDecoder().decode(bytes.slice(target.position + quantityByteOffset(target.surface, target.surface.length))).trim();
+    if (numberIndex !== 0 || target.position < end || tail !== "" ||
+        !unitRequestSurfaces("connector").includes(connector)) return null;
+  }
   const direction = unitFindConversion(unitConversionTable(), source.slug, target.slug);
 
   if (direction === null) {
-    const log = [];
+    const log = [
+      "unit_conversion:intent_span:" + lowered,
+      "unit_conversion:quantity_span:" + items[0].text + " " + source.surface,
+    ];
     const outcome = siConvertThroughSi(value.mantissa, 10n ** BigInt(value.scale), source.slug, target.slug);
     // Two lexicon dimensions have no path: `incompatible_units`, the next row, explains it.
     if (outcome.tag === "incompatible" && detectIncompatibleUnitPair(normalized)) return null;
@@ -533,7 +599,14 @@ function tryUnitConversion(prompt, normalized, language) {
     switch (outcome.tag) {
       case "converted":
         log.push(`unit_conversion:si_path:${source.slug} -> ${target.slug}`);
-        body = `${exactDecimalRender(value)} ${source.surface} = ${outcome.numerator}/${outcome.denominator} ${target.surface}`;
+        {
+          const local = text => language === "ru" ? text.replace(".", ",") : text;
+          body = local(exactDecimalRender(value)) + " " +
+            unitNumeralLabel(source, value.mantissa, 10n ** BigInt(value.scale), language) + " = " +
+            local(unitRationalText(outcome.numerator, outcome.denominator)) + " " +
+            unitNumeralLabel(target, outcome.numerator, outcome.denominator, language);
+          log.push("unit_conversion:derivation:" + body);
+        }
         break;
       case "unknown_unit":
         log.push(`si_units:unknown_unit:${outcome.unit}`);
@@ -555,6 +628,8 @@ function tryUnitConversion(prompt, normalized, language) {
   }
 
   const log = [
+    "unit_conversion:intent_span:" + lowered,
+    "unit_conversion:quantity_span:" + items[0].text + " " + source.surface,
     `unit_conversion:source_unit:${source.slug}`,
     `unit_conversion:target_unit:${target.slug}`,
     `unit_conversion:value:${exactDecimalRender(value)}`,

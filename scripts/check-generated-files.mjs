@@ -13,7 +13,7 @@
 // Usage: node scripts/check-generated-files.mjs [--list]
 
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { closeSync, openSync, readFileSync, readSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -79,7 +79,7 @@ export function exceptionsFrom(lino) {
 
 /**
  * The problems of a set of files.
- * @param {Array<{path: string, text: string}>} files
+ * @param {Iterable<{path: string, text: string}>} files
  * @param {string} ciText
  * @param {Map<string, string>} exceptions
  * @returns {{generated: Array<{path: string, command: string, checked: boolean}>, problems: Array<string>}}
@@ -87,7 +87,9 @@ export function exceptionsFrom(lino) {
 export function generatedFileProblems(files, ciText, exceptions) {
   const generated = [];
   const problems = [];
+  const seen = new Set();
   for (const { path, text } of files) {
+    seen.add(path);
     const command = generatorOf(text);
     if (command === null) {
       continue;
@@ -103,13 +105,37 @@ export function generatedFileProblems(files, ciText, exceptions) {
       problems.push(`${path} is listed as unchecked in ${EXCEPTIONS} without a reason`);
     }
   }
-  const seen = new Set(files.map((file) => file.path));
   for (const path of exceptions.keys()) {
     if (!seen.has(path)) {
       problems.push(`${EXCEPTIONS} lists ${path}, which is not a generated file in the tree; remove the row`);
     }
   }
   return { generated, problems };
+}
+
+/** Read only the twelve lines the generator convention inspects. */
+export function readHeader(path) {
+  const fd = openSync(path, 'r');
+  try {
+    const chunks = [];
+    let lines = 0;
+    while (lines < HEADER_LINES) {
+      const chunk = Buffer.alloc(4096);
+      const size = readSync(fd, chunk, 0, chunk.length, null);
+      if (size === 0) break;
+      let end = size;
+      for (let i = 0; i < size; i++) {
+        if (chunk[i] === 10 && ++lines === HEADER_LINES) {
+          end = i + 1;
+          break;
+        }
+      }
+      chunks.push(chunk.subarray(0, end));
+    }
+    return Buffer.concat(chunks).toString('utf8');
+  } finally {
+    closeSync(fd);
+  }
 }
 
 function main(argv) {
@@ -129,9 +155,14 @@ function main(argv) {
       return '';
     }
   };
-  const files = listed([])
-    .filter((path) => !EVIDENCE.test(path))
-    .map((path) => ({ path, text: read(path) }));
+  // Keep captured evidence and source bodies out of the live heap.
+  const files = (function* () {
+    for (const path of listed([]).filter((path) => !EVIDENCE.test(path))) {
+      let text = '';
+      try { text = readHeader(join(root, path)); } catch {}
+      yield { path, text };
+    }
+  })();
   const ciText = listed(['data/meta/ci-gates', '.github/workflows']).map(read).join('\n');
   const { generated, problems } = generatedFileProblems(files, ciText, exceptionsFrom(read(EXCEPTIONS)));
   if (argv.includes('--list')) {

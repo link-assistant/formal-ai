@@ -123,6 +123,21 @@ fn push_response_message_events(
     message: &ResponseOutputMessage,
 ) {
     for (content_index, content) in message.content.iter().enumerate() {
+        let (field, value, delta_event, done_event) = if let Some(refusal) = &content.refusal {
+            (
+                "refusal",
+                refusal,
+                "response.refusal.delta",
+                "response.refusal.done",
+            )
+        } else {
+            (
+                "text",
+                &content.text,
+                "response.output_text.delta",
+                "response.output_text.done",
+            )
+        };
         push_response_stream_event(
             body,
             "response.content_part.added",
@@ -132,31 +147,31 @@ fn push_response_message_events(
                 "item_id": &message.id,
                 "output_index": output_index,
                 "content_index": content_index,
-                "part": {"type": &content.kind, "text": ""},
+                "part": {"type": &content.kind, (field): ""},
             }),
         );
         push_response_stream_event(
             body,
-            "response.output_text.delta",
+            delta_event,
             &json!({
-                "type": "response.output_text.delta",
+                "type": delta_event,
                 "sequence_number": next_response_sequence(sequence_number),
                 "item_id": &message.id,
                 "output_index": output_index,
                 "content_index": content_index,
-                "delta": &content.text,
+                "delta": value,
             }),
         );
         push_response_stream_event(
             body,
-            "response.output_text.done",
+            done_event,
             &json!({
-                "type": "response.output_text.done",
+                "type": done_event,
                 "sequence_number": next_response_sequence(sequence_number),
                 "item_id": &message.id,
                 "output_index": output_index,
                 "content_index": content_index,
-                "text": &content.text,
+                (field): value,
             }),
         );
         push_response_stream_event(

@@ -1,0 +1,19 @@
+{
+  "name": "@formal-ai/picomatch-compat",
+  "version": "4.0.7-formal-ai.1",
+  "private": true,
+  "description": "Picomatch 4.0.7 with a single-branch repeated-extglob security backport",
+  "license": "MIT",
+  "main": "index.js",
+  "engines": {
+    "node": ">=12"
+  },
+  "files": [
+    "index.js",
+    "posix.js",
+    "lib",
+    "LICENSE",
+    "upstream.json",
+    "README.md"
+  ]
+}

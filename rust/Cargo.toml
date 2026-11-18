@@ -132,6 +132,22 @@ name = "unit"
 path = "tests/unit/mod.rs"
 
 [[test]]
+name = "calendar_currency"
+path = "tests/unit/calendar-currency.rs"
+
+[[test]]
+name = "openai_forced_functions"
+path = "tests/unit/openai_forced_functions.rs"
+
+[[test]]
+name = "cnl_output"
+path = "tests/unit/cnl_output.rs"
+
+[[test]]
+name = "cnl_parity"
+path = "tests/unit/cnl_parity.rs"
+
+[[test]]
 name = "integration"
 path = "tests/integration/mod.rs"
 

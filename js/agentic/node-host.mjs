@@ -10,6 +10,7 @@ import { recordFor, toLino, answerDerivationId } from './crate/derivation.mjs';
 import { boundedCommandSync } from '../server/bounded-command.mjs';
 import { lstatSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
+import {readNetworkAllowed} from '../server/read-access.mjs';
 import { REPO_ROOT, parseLino, readRepoFile } from '../server/lino.mjs';
 import { runtimeCachePaths } from '../server/runtime-cache.mjs';
 import { symbolicFromWorker } from '../server/solve.mjs';
@@ -160,9 +161,6 @@ export function censusSourceClosureComplete(repository = REPO_ROOT) {
   }
 }
 
-/** `cli_env::flag_enabled`: a true spelling of the variable. */
-const flagEnabled = value => ['1', 'true', 'yes', 'on'].includes(String(value ?? '').trim().toLowerCase());
-
 /** `CurlSourceTransport::get`: the response bytes, null on any failure. */
 function curlGet(url) {
   try {
@@ -182,12 +180,12 @@ function curlGet(url) {
  * The source client `VersionSet::for_generation` builds, read from the
  * environment at each generation: `FORMAL_AI_SOURCE_CACHE_DIR` (default
  * the user's runtime cache, outside the caller repository) and
- * online only when `FORMAL_AI_LIVE_FETCH` is set to a true spelling.
+ * online by default; explicit offline and network-deny controls take precedence.
  */
-function nodeSourceFetch() {
+function nodeSourceFetch(readOnly) {
   return cachedSourceFetch({
     cacheDir: process.env.FORMAL_AI_SOURCE_CACHE_DIR || runtimeCachePaths().runtimeRoot,
-    online: flagEnabled(process.env.FORMAL_AI_LIVE_FETCH),
+    online: !readOnly && readNetworkAllowed(process.env),
     io: boundedSourceCacheIo(curlGet)
   });
 }
@@ -208,6 +206,7 @@ export async function installNodeHost(worker, options = {}) {
     return value;
   };
   if (options === null || typeof options !== "object") throw Error("host_options_required");
+  const readOnly = options.readOnly === true;
   const grantDescriptor = Object.getOwnPropertyDescriptor(options, "prerequisiteGrant");
   if (grantDescriptor && !Object.hasOwn(grantDescriptor, "value")) throw Error("host_grant_must_be_data");
   const suppliedGrant = grantDescriptor?.value ?? null;
@@ -279,8 +278,8 @@ export async function installNodeHost(worker, options = {}) {
       return capture && 'planningObservation' in capture && typeof capture.planningObservation === 'function' ? capture.planningObservation : null;
     },
     solve: async (prompt, history) => {
-      const result = await worker.solve(prompt, history),
-        symbolic = symbolicFromWorker(result, history);
+      const result = await worker.solve(prompt, history, { readOnly }),
+        symbolic = symbolicFromWorker(result, history, undefined, { readOnly });
       const capture = activeDriveCapture();
       if (capture && 'engineObservation' in capture && typeof capture.engineObservation === 'function') {
         const events = Array.isArray(symbolic.solver_events) ? symbolic.solver_events : [];
@@ -307,12 +306,16 @@ export async function installNodeHost(worker, options = {}) {
     sourceCstTransformCommand: () => [process.execPath, path.join(REPO_ROOT, 'scripts/source-cst-transform-request.mjs')],
     sourceUnaryConsolidationCommand: () => [process.execPath, path.join(REPO_ROOT, 'scripts/consolidate-stateless-unary-request.mjs')],
     generatedSeedOwnerDeclarations,
-    sourceFetch: nodeSourceFetch,
+    sourceFetch: () => nodeSourceFetch(readOnly),
     validateProgram: validateRepairProgram,
     comparisonBoundaryOperation: observedComparisonBoundaryOperation,
     observedSourceRepair: observedSourceRepairOperation,
     observedSourceUsage: sourceUsageOperation
   };
+  if (readOnly) {
+    installHost(baseHost);
+    return context;
+  }
   const session = createNodeSourceSessionHost(baseHost.readText);
   installHost({
     ...baseHost,

@@ -97,7 +97,12 @@ pub fn run_suite(
     slice: usize,
     repository_root: &Path,
 ) -> Result<SuiteRun, String> {
-    run_suite_with_online(manifest, slice, repository_root, live_fetch_enabled())
+    run_suite_with_online(
+        manifest,
+        slice,
+        repository_root,
+        crate::solver_config::read_network_allowed(),
+    )
 }
 
 /// Run an upstream suite with an explicit discovery-network policy.
@@ -385,10 +390,6 @@ pub fn benchmark_solver_with(online: bool) -> UniversalSolver {
         temperature: 0.0,
         ..SolverConfig::default()
     })
-}
-
-fn live_fetch_enabled() -> bool {
-    crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH")
 }
 
 /// The repository root of a checkout, derived from the compiled manifest dir.

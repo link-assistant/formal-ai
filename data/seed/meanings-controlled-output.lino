@@ -1,0 +1,466 @@
+# Authored concepts for the output policy. No conformance is implied.
+meanings
+  cnl-default
+    defined-by concept
+    role output-constraint
+    precondition "The output policy refers to this concept."
+    effect "A requested output profile combining controlled-language clarity constraints. Selecting this profile is not evidence that every constraint passed."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  asd-ste100
+    defined-by concept
+    role output-constraint
+    precondition "The output policy refers to this concept."
+    effect "The ASD Simplified Technical English output standard, including its approved technical vocabulary and writing rules."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  ace
+    defined-by concept
+    role output-constraint
+    precondition "The output policy refers to this concept."
+    effect "Attempto Controlled English: a controlled English language with a specified grammar and interpretation into logic."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  gellish
+    defined-by concept
+    role output-constraint
+    precondition "The output policy refers to this concept."
+    effect "A formalized language that expresses typed relations between dictionary concepts identified independently of their natural-language spelling."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  sbvr
+    defined-by concept
+    role output-constraint
+    precondition "The output policy refers to this concept."
+    effect "Semantics of Business Vocabulary and Business Rules: an OMG standard for business vocabularies and rules."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  plain-language
+    defined-by concept
+    role output-constraint
+    precondition "The output policy refers to this concept."
+    effect "Communication whose intended readers can find, understand, and use the information they need. Reader evaluation remains required."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  minimal-english
+    defined-by concept
+    role output-constraint
+    precondition "The output policy refers to this concept."
+    effect "A restricted, cross-translatable explanatory vocabulary based on semantic primes and additional simple semantic molecules."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  e-prime
+    defined-by concept
+    role output-constraint
+    precondition "The output policy refers to this concept."
+    effect "English that excludes forms of the verb to be. Ambiguous contractions require analysis before compliance can be established."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  basic-english
+    defined-by concept
+    role output-constraint
+    precondition "The output policy refers to this concept."
+    effect "The named Basic English controlled vocabulary and its grammatical conventions, rather than an arbitrary frequency tier."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  special-english
+    defined-by concept
+    role output-constraint
+    precondition "The output policy refers to this concept."
+    effect "The named Special English controlled vocabulary, rather than an arbitrary frequency tier."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  globish
+    defined-by concept
+    role output-constraint
+    precondition "The output policy refers to this concept."
+    effect "The named Globish controlled vocabulary and grammatical conventions, rather than unrestricted simplified English."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  primes
+    defined-by concept
+    role output-constraint
+    precondition "The output policy refers to this concept."
+    effect "Natural Semantic Metalanguage semantic primes, with language-specific exponents, allolexes, and syntactic frames. A flat list of words is insufficient."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  speaker-knows-everything
+    defined-by concept
+    role lexical-identity
+    precondition "The output policy refers to this concept."
+    effect "The proposition that the utterance speaker knows everything. This lexical identity does not assert that the proposition is true."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  active-voice
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Profile check: every clause uses active voice with an explicit subject before the verb."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  explicit-references
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Profile check: the text names each thing it refers to and uses no pronoun that needs an earlier antecedent."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  unambiguous-vocabulary
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Profile check: every content word has one meaning in the selected register, so no word names two concepts."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  ace-grammar
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Profile check: every sentence follows the Attempto Controlled English construction rules."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  ace-interpretation
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Profile check: every Attempto Controlled English sentence has its declared first-order logic reading."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  ste-writing-rules
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Profile check: sentences follow the ASD-STE100 writing rules, such as short sentences and one instruction per sentence."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  ste-dictionary
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Profile check: every word is in the project subset of the ASD-STE100 approved vocabulary or is a semantic prime."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  plain-language-rules
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Profile check: the text follows the reader-oriented sentence rules of ISO 24495-1 plain language."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  minimal-english-semantics
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Profile check: every word is a semantic prime or a Minimal English semantic molecule."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  gellish-dictionary
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Profile check: every word is a Gellish dictionary concept or relation name in the project subset."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  gellish-relations
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Profile check: every sentence is a Gellish relation between two dictionary concepts."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  sbvr-vocabulary
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Profile check: every noun concept and verb concept comes from the declared SBVR business vocabulary."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  sbvr-rules
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Profile check: every rule uses an SBVR structured English rule form, such as a necessity or obligation."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  e-prime-english
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Profile check: the text contains no form or contraction of the verb to be."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  basic-english-vocabulary
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Profile check: every word is in the Ogden Basic English 850-word list or its allowed endings."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  basic-english-grammar
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Profile check: sentences use the Basic English operators and word order."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  special-english-vocabulary
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Profile check: every word is in the project subset of the Special English word list."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  globish-vocabulary
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Profile check: every word is in the project subset of the Globish word list."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  globish-grammar
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Profile check: sentences follow the short subject-verb-object conventions of Globish."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  frequency-vocabulary
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Profile check: every word is in the selected top-N frequency tier or is a semantic prime that decomposes a concept outside it."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  lexical-minimum
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Profile check: the max-precision text uses no more words than the shortest compliant candidate over the whole candidate domain."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  nsm-semantics
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Profile check: every word is an exponent of one of the 65 Natural Semantic Metalanguage primes in the selected language."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  nsm-syntax
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Profile check: the primes combine only in the canonical Natural Semantic Metalanguage syntactic frames."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  references
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Check kind: checks that judge how a text refers to things."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  ambiguity
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Check kind: checks that judge whether a word or sentence has more than one reading."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  interpretation
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Check kind: checks that judge whether a sentence has its declared logical reading."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  vocabulary
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Check kind: checks that judge each word against a declared word list."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  forbidden
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Check kind: checks that reject any word from a declared forbidden list."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  frequency
+    defined-by concept
+    role output-constraint
+    precondition "The controlled output grammar refers to this concept."
+    effect "Check kind: checks that judge each word against a frequency tier."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  kind-of
+    defined-by concept
+    role lexical-identity
+    precondition "The controlled output grammar refers to this concept."
+    effect "Proposition frame: one class is a kind of another class."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  part-of
+    defined-by concept
+    role lexical-identity
+    precondition "The controlled output grammar refers to this concept."
+    effect "Proposition frame: one thing is a part of another thing."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  must-have
+    defined-by concept
+    role lexical-identity
+    precondition "The controlled output grammar refers to this concept."
+    effect "Proposition frame: every member of one class must have a member of another class."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  clarify
+    defined-by concept
+    role lexical-identity
+    precondition "The controlled output grammar refers to this concept."
+    effect "Dialogue frame: the system lists each reading of an ambiguous question and asks the user to choose one by number."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  choose
+    defined-by concept
+    role lexical-identity
+    precondition "The controlled output grammar refers to this concept."
+    effect "Dialogue frame: the user picks one numbered reading of an earlier clarification."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  list-maximum
+    defined-by concept
+    role lexical-identity
+    precondition "The controlled output grammar refers to this concept."
+    effect "Task frame: the largest number in a list of numbers."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  list-sum
+    defined-by concept
+    role lexical-identity
+    precondition "The controlled output grammar refers to this concept."
+    effect "Task frame: the sum of a list of numbers."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  reverse-text
+    defined-by concept
+    role lexical-identity
+    precondition "The controlled output grammar refers to this concept."
+    effect "Task frame: a text with its characters in reverse order."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  animal
+    defined-by concept
+    role lexical-identity
+    precondition "The controlled output grammar refers to this concept."
+    effect "Fragment term: a living being that can move and feel."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  plant
+    defined-by concept
+    role lexical-identity
+    precondition "The controlled output grammar refers to this concept."
+    effect "Fragment term: a living being that grows in one place and makes its food from light."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  computer
+    defined-by concept
+    role lexical-identity
+    precondition "The controlled output grammar refers to this concept."
+    effect "Fragment term: a machine that stores data and runs programs."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  finger
+    defined-by concept
+    role lexical-identity
+    precondition "The controlled output grammar refers to this concept."
+    effect "Fragment term: one of the five end parts of a hand."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  password
+    defined-by concept
+    role lexical-identity
+    precondition "The controlled output grammar refers to this concept."
+    effect "Fragment term: a secret string of characters that proves who may use an account."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  account
+    defined-by concept
+    role lexical-identity
+    precondition "The controlled output grammar refers to this concept."
+    effect "Fragment term: a record that lets one user sign in to a system."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  mouse-animal
+    defined-by concept
+    role lexical-identity
+    precondition "The controlled output grammar refers to this concept."
+    effect "Fragment term: the small rodent sense of mouse. It shares its everyday surface word with mouse-device, so the bare word mouse asks for clarification."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"
+  mouse-device
+    defined-by concept
+    role lexical-identity
+    precondition "The controlled output grammar refers to this concept."
+    effect "Fragment term: the hand-held pointing device sense of mouse. It shares its everyday surface word with mouse-animal, so the bare word mouse asks for clarification."
+    unit "not applicable"
+    example "Inspect this concept independently of its selected output spelling."
+    grounding "https://github.com/link-assistant/formal-ai/issues/1584"

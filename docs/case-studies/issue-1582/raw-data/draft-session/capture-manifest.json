@@ -1,0 +1,171 @@
+{
+  "schema": "hive-draft-session-capture/v1",
+  "runId": "43899940611",
+  "runAttempt": "1",
+  "workflowSource": "b68d21647e678cce91ec83d5a28ea86b481064bf",
+  "buildOutcome": "success",
+  "attemptOutcome": "failure",
+  "files": [
+    {
+      "path": "source-identity.txt",
+      "bytes": 501,
+      "sha256": "3d20c1cf33d095bb3643bc0d641dc68cd3ba17424cc89aaafadbc34e5b711d72",
+      "complete": true
+    },
+    {
+      "path": "solve-2026-11-16T16-05-40-995Z.log",
+      "bytes": 504713,
+      "sha256": "7c0ecba234682c1b39c73718f94d6e071c94bbcf2385a34c739323eb42e95dc7",
+      "complete": true
+    },
+    {
+      "path": "shared-build.txt",
+      "bytes": 133,
+      "sha256": "7ba048cd9b271a1f71447939edb875eef5cea41391ffbe4de8960f6d60da6ae4",
+      "complete": true
+    },
+    {
+      "path": "formal-ai-native/native-1725.jsonl",
+      "bytes": 1825131,
+      "sha256": "3dc83972e4a6842920cf619ea59e5e816640cbbd9a90a44d6dae426263413c5d",
+      "complete": true
+    },
+    {
+      "path": "formal-ai-dialog/dialog_9b8e940ebda20388.lino",
+      "bytes": 1445,
+      "sha256": "e72b9b3379c1e9a80523b6ccd376196648f6d642c603930bf86baa86ae957085",
+      "complete": true
+    },
+    {
+      "path": "formal-ai-dialog/dialog_953462e58ae18385.lino",
+      "bytes": 3090,
+      "sha256": "18446d7dd05eece2281c30d765ab895525630fd0b5d59fe38825fc59aa811964",
+      "complete": true
+    },
+    {
+      "path": "formal-ai-dialog/dialog_60a3c2d098ce9606.lino",
+      "bytes": 3101,
+      "sha256": "e7e1022ffc097ac6877d05c5c6ed8c900806e681c4247811c85179b245522aba",
+      "complete": true
+    },
+    {
+      "path": "formal-ai-dialog/dialog_1ff7a526a91a7997.lino",
+      "bytes": 218904,
+      "sha256": "1fc3e22967b40c4ee5792f027dadd218b020a4e0ab1b6d09e433f6845ec45ec2",
+      "complete": true
+    },
+    {
+      "path": "formal-ai-dialog/dialog_1ff7a526a91a7997.conversation.lino",
+      "bytes": 99853,
+      "sha256": "f980f09a04bf3c755c3ee71f76f6c9e3897d806f6b03b125568423014ba5b53b",
+      "complete": true
+    },
+    {
+      "path": "formal-ai-diagnostics/serve-1725.lino",
+      "bytes": 31618,
+      "sha256": "e4667a0b78023a397593fa24749efc0e20452d7f1097b8439220ea705e425c14",
+      "complete": true
+    },
+    {
+      "path": "formal-ai-attempt-receipt.json",
+      "bytes": 621,
+      "sha256": "147d9baf91998bb14a3a31fb442b9f6d5c38d061e99b2ddb9bcb99eda6303fbb",
+      "complete": true
+    },
+    {
+      "path": "formal-ai-attempt-identity.json",
+      "bytes": 765,
+      "sha256": "77cf95b49cd81ee13ff91753ec9d173dac0cb78a9154de2c014096be4ff68f12",
+      "complete": true
+    },
+    {
+      "path": "draft-selection.json",
+      "bytes": 577,
+      "sha256": "2f6acb857bb402aa5fd593e8367e11fe2a3b8fbcc7b8f464f404f18ba71aaf29",
+      "complete": true
+    },
+    {
+      "path": "draft-diagnostics-adapter.json",
+      "bytes": 507,
+      "sha256": "78f61fec8d29fb0b57e73777d84c300d6994174d22ef077765a5044af953ec7d",
+      "complete": true
+    },
+    {
+      "path": "build-capture-manifest.json",
+      "bytes": 1635,
+      "sha256": "92734da6aeff8f403902f665d4497d654c03ad2fa7d85b11115924b7a4d4dd7f",
+      "complete": true
+    },
+    {
+      "path": "build.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "complete": true
+    },
+    {
+      "path": "build.stderr.txt",
+      "bytes": 14212,
+      "sha256": "69c8c06a31c1d7141b3e347b9d759a96ce2b582cebf2560f1c55a588b3af960d",
+      "complete": true
+    },
+    {
+      "path": "build.capture.jsonl",
+      "bytes": 40221,
+      "sha256": "98fe0e08208cbe73f7592c2ec3c1cab7e44cda468f4b8254289bd20d080d6525",
+      "complete": true
+    },
+    {
+      "path": "build-outcome.json",
+      "bytes": 478,
+      "sha256": "a55fc178fff63ba62a11347192efeb443b4d2ff49268fd0756df5829e7b34397",
+      "complete": true
+    },
+    {
+      "path": "build-identity.json",
+      "bytes": 640,
+      "sha256": "34dd4db76ce84ad7ddbb35ee08e554e7c915cdb5ce0cdead0ed3f329e6b4bca8",
+      "complete": true
+    },
+    {
+      "path": "attempt.stdout.txt",
+      "bytes": 448322,
+      "sha256": "f51d6efd8f4e9d93e82e271ce43de340bbe384addca92a2ce8348f5136ab4728",
+      "complete": true
+    },
+    {
+      "path": "attempt.stderr.txt",
+      "bytes": 10701,
+      "sha256": "20c470bcc255626f449a8a393ec585c5db4be41161ccfa01c6f5c66d87b44177",
+      "complete": true
+    },
+    {
+      "path": "attempt.capture.jsonl",
+      "bytes": 550231,
+      "sha256": "448402d9b20b0ad406000ea1dbbb6c460e8ab189242850b1ec464cacac4ce942",
+      "complete": true
+    },
+    {
+      "path": "attempt-policy.txt",
+      "bytes": 104,
+      "sha256": "6efae9ae119b95fba6a25356d60bee6196dcc9083642a0beefb3f462beddc823",
+      "complete": true
+    },
+    {
+      "path": "attempt-outcome.json",
+      "bytes": 479,
+      "sha256": "91ee834f35e9f6fbcea35862a8106e8e7babf8c550dbf591cbe9247fd7081409",
+      "complete": true
+    }
+  ],
+  "unavailable": [],
+  "redaction": "known environment credentials, credential patterns and personal-data patterns",
+  "rawPrivateFilesIncluded": false,
+  "taskAcceptance": false,
+  "missingRequired": [],
+  "completeAvailableFileCapture": true,
+  "nativeResponsesObserved": true,
+  "dialogExchangesObserved": true,
+  "fullModelEvidence": true,
+  "incompleteProcesses": [],
+  "complete": true
+}

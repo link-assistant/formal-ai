@@ -530,3 +530,186 @@ function tryCalendarDateWeekday(prompt, normalized) {
     ],
   };
 }
+
+// Mirrors calendar/date_offset.rs: a day quantity and its date are bound
+// on opposite sides of an explicit direction inside a date question.
+function tryCalendarDateOffset(prompt, normalized) {
+  if (!wordsForRole("calendar-date-offset").some(word => containsCalendarTerm(normalized, word))) return null;
+  const lowered = prompt.toLowerCase();
+  const language = detectLanguage(prompt);
+  const candidates = [];
+  for (const [role, sign] of [[ROLE_CALENDAR_DIRECTION_NEXT, 1], [ROLE_CALENDAR_DIRECTION_PREVIOUS, -1]]) {
+    for (const word of wordsForRole(role)) {
+      const at = lowered.indexOf(word);
+      if (at < 0 || !containsCalendarTerm(lowered, word)) continue;
+      const prefix = lowered.slice(0, at);
+      const anchor = lowered.slice(at + word.length);
+      const offset = detectCalendarOffset(prefix, language);
+      const date = calendarStatedDate(anchor, anchor);
+      if (offset === null || date === null || calendarDigitRuns(prefix).length !== 1) continue;
+      const days = calendarDaysFromCivil(date.year, date.month, date.day);
+      const signed = sign * offset.total;
+      const resultDays = days + signed;
+      if (!Number.isSafeInteger(resultDays) || resultDays < calendarDaysFromCivil(1, 1, 1) ||
+          resultDays >= calendarDaysFromCivil(10000, 1, 1)) continue;
+      const result = new Date(resultDays * 86400000);
+      const iso = result.toISOString().slice(0, 10);
+      const source = String(date.year).padStart(4, "0") + "-" + String(date.month).padStart(2, "0") + "-" + String(date.day).padStart(2, "0");
+      const monthSlug = CALENDAR_MONTH_SLUGS[result.getUTCMonth()];
+      const month = handlerRulesTableValue("calendar-date-month-label", monthSlug + "." + language) || calendarMonthLabel(monthSlug, language);
+      const template = calendarOffsetLocalizedResponse("calendar-date-offset", language);
+      if (template === null) continue;
+      const values = {iso, source, signed: (signed >= 0 ? "+" : "") + signed,
+        day: result.getUTCDate(), month, year: result.getUTCFullYear()};
+      let content = template;
+      for (const [key, value] of Object.entries(values)) content = content.split("{" + key + "}").join(String(value));
+      candidates.push({intent: "calendar_date_offset", content, confidence: 1.0,
+        evidence: ["calendar:date:" + source, "calendar:offset:" + values.signed + "d",
+          "calendar:offset_derivation:" + source + " " + values.signed + "d = " + iso,
+          "calendar:result_date:" + iso, "response:calendar-date-offset"]});
+    }
+  }
+  const distinct = [...new Map(candidates.map(row => [row.evidence.join("|"), row])).values()];
+  return distinct.length === 1 ? distinct[0] : null;
+}
+
+// Calendar durations (issue #1589), twin of calendar/month.rs::duration.
+// Seed vocabulary binds quantities to calendar units; months never use an
+// average number of days. Full periods use completed day-of-month anniversaries.
+function calendarDurationWords(role) {
+  return (handlerRulesTables()[role]?.rows || []).flatMap((row) => row[1].split("|")).sort((a, b) => b.length - a.length);
+}
+function calendarDurationUnit(text) {
+  const units = [];
+  for (const [slug, factor] of [["calendar_month", 1], ["calendar_year", 12]]) {
+    const meaning = meaningLexicon().find((entry) => entry.slug === slug);
+    for (const word of slug === "calendar_year" ? calendarDurationWords("calendar-duration-year") : meaning ? meaning.words : []) units.push({word, factor});
+  }
+  return units.sort((a, b) => b.word.length - a.word.length)
+    .find((unit) => calendarOffsetStartsWithTerm(text, unit.word)) || null;
+}
+function calendarDurationTrim(text) {
+  return text.trim().replace(/[.?!]+$/u, "").trim();
+}
+function calendarDurationDate(text) {
+  const lowered = calendarDurationTrim(text);
+  const runs = calendarDigitRuns(lowered);
+  const month = detectCalendarMonth(lowered);
+  // Reject multiple named months even when one surface is longer than another.
+  const months = new Set();
+  for (const entry of meaningsWithRole(ROLE_CALENDAR_MONTH_NAME)) {
+    if (entry.words.some((word) => containsCalendarTerm(lowered, word))) months.add(entry.slug);
+  }
+  if (months.size > 1) return null;
+  if (runs.length === 1 && runs[0].end - runs[0].start === 4 &&
+      runs[0].value >= 1 && runs[0].value <= 9999 && month !== null) {
+    return {year:runs[0].value, month, day:1, precision:"month"};
+  }
+  const date = calendarStatedDate(lowered, lowered);
+  return date ? {...date, precision:"day"} : null;
+}
+function calendarDurationRequest(prompt) {
+  const text = String(prompt).toLowerCase().trim();
+  const sumCue = calendarDurationWords("calendar-duration-sum")
+    .find((word) => calendarOffsetStartsWithTerm(text, word));
+  if (sumCue) {
+    const body = text.slice(sumCue.length).trim();
+    for (const marker of calendarDurationWords("calendar-duration-output")) {
+      for (const position of calendarOffsetMatchingOffsets(body, marker)) {
+        const targetText = calendarDurationTrim(body.slice(position + marker.length));
+        const target = calendarDurationUnit(targetText);
+        if (!target || target.word !== targetText) continue;
+        let rest = calendarDurationTrim(body.slice(0, position));
+        const terms = [];
+        let total = 0;
+        while (rest && terms.length < 32) {
+          const number = /^([+-]?[0-9]{1,12})\s+/u.exec(rest);
+          if (!number) break;
+          const tail = rest.slice(number[0].length);
+          const unit = calendarDurationUnit(tail);
+          if (!unit) break;
+          const count = Number(number[1]);
+          total += count * unit.factor;
+          terms.push(count + " × " + unit.factor);
+          rest = tail.slice(unit.word.length).trim();
+          if (!rest) break;
+          let separated = false;
+          if (rest.startsWith(",")) {
+            separated = true;
+            rest = rest.slice(1).trimStart();
+          }
+          const join = calendarDurationWords("calendar-duration-join")
+            .find((word) => calendarOffsetStartsWithTerm(rest, word));
+          if (join) { separated = true; rest = rest.slice(join.length).trimStart(); }
+          if (!separated || !rest) { rest = "!"; break; }
+        }
+        if (rest || terms.length < 2 || !Number.isSafeInteger(total)) continue;
+        const divisor = target.factor;
+        const gcd = (a, b) => b ? gcd(b, a % b) : a;
+        const common = gcd(Math.abs(total), divisor);
+        const result = divisor === common ? String(total / divisor)
+          : (total / common) + "/" + (divisor / common);
+        return {kind:"calendar-duration-sum", result, factor:target.factor,
+          derivation:terms.join(" + ") + " = " + total + " months; " + total + " / " + divisor + " = " + result};
+      }
+    }
+    return null;
+  }
+  if (!calendarDurationWords("calendar-full-query").some((word) => calendarOffsetStartsWithTerm(text, word))) return null;
+  const factor = calendarDurationWords("calendar-full-years").some((word) => containsCalendarTerm(text, word)) ? 12
+    : calendarDurationWords("calendar-full-months").some((word) => containsCalendarTerm(text, word)) ? 1 : null;
+  if (factor === null) return null;
+  const candidates = [];
+  for (const start of calendarDurationWords("calendar-interval-start")) {
+    for (const at of calendarOffsetMatchingOffsets(text, start)) {
+      const tail = text.slice(at + start.length);
+      for (const end of calendarDurationWords("calendar-interval-end")) {
+        for (const split of calendarOffsetMatchingOffsets(tail, end)) {
+          const left = calendarDurationDate(tail.slice(0, split));
+          const right = calendarDurationDate(tail.slice(split + end.length));
+          if (!left || !right || left.precision !== right.precision) continue;
+          const ordinal = (date) => calendarDaysFromCivil(date.year, date.month, date.day);
+          const [first, last] = ordinal(left) <= ordinal(right) ? [left, right] : [right, left];
+          const raw = (last.year - first.year) * 12 + last.month - first.month;
+          const incomplete = last.day < first.day ? 1 : 0;
+          const months = raw - incomplete;
+          const result = String(Math.floor(months / factor));
+          candidates.push({kind:"calendar-full-periods", result, factor,
+            derivation:calendarDurationIso(first) + " → " + calendarDurationIso(last) +
+              ": " + raw + " - " + incomplete + " = " + months + " months; ⌊" + months + " / " + factor + "⌋ = " + result});
+        }
+      }
+    }
+  }
+  return candidates.length === 1 ? candidates[0] : null;
+}
+function calendarDurationIso(date) {
+  return String(date.year).padStart(4, "0") + "-" + String(date.month).padStart(2, "0") + "-" + String(date.day).padStart(2, "0");
+}
+function calendarDurationLabel(result, factor, language) {
+  const number = result.includes("/") ? NaN : Math.abs(Number(result));
+  const kind = !Number.isInteger(number) ? "fraction"
+    : (language === "ru" ? number % 10 === 1 && number % 100 !== 11 : number === 1) ? "one"
+    : number % 10 >= 2 && number % 10 <= 4 && (number % 100 < 12 || number % 100 > 14) ? "few" : "other";
+  const key = (factor === 12 ? "year" : "month") + "." + language + "." + kind;
+  return handlerRulesTableValue("calendar-duration-label", key) ||
+    handlerRulesTableValue("calendar-duration-label", (factor === 12 ? "year" : "month") + ".en." + kind);
+}
+function tryCalendarDuration(prompt) {
+  const request = calendarDurationRequest(prompt);
+  if (!request) return null;
+  const role = request.kind === "calendar-duration-sum" ? "calendar-duration-sum" : "calendar-full-query";
+  const text = String(prompt).toLowerCase().trim();
+  const language = (handlerRulesTables()[role]?.rows || [])
+    .find(row => row[1].split("|").some(word => calendarOffsetStartsWithTerm(text, word)))?.[0] || detectLanguage(prompt);
+  const template = calendarOffsetLocalizedResponse(request.kind, language);
+  if (!template) return null;
+  const content = template.replaceAll("{result}", request.result)
+    .replaceAll("{unit}", calendarDurationLabel(request.result, request.factor, language))
+    .replaceAll("{derivation}", request.derivation);
+  return {intent:request.kind, content, confidence:1,
+    evidence:["calendar:duration_derivation:" + request.derivation,
+      "calendar:duration_result:" + request.result],
+    solverEvents:[{kind:"calendar:duration_derivation", payload:request.derivation},
+      {kind:"calendar:duration_result", payload:request.result}]};
+}

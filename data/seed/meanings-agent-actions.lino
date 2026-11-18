@@ -642,6 +642,14 @@ meanings
     unit "not applicable"
     example "html for HTML"
     grounding "data/seed/handler-rules.lino"
+  calendar-date-month-label
+    defined-by method
+    role action
+    precondition "a computed date prints the month in the grammatical case of its language"
+    effect "reads the month label keyed by month slug and language"
+    unit "not applicable"
+    example "january.ru for января"
+    grounding "data/seed/handler-rules.lino"
   calendar_weekday_label
     defined-by method
     role action
@@ -665,6 +673,14 @@ meanings
     effect "reads the surfaces that ask for scheduling"
     unit "not applicable"
     example "schedule"
+    grounding "data/seed/handler-rules.lino"
+  calendar-request-cue
+    defined-by method
+    role action
+    precondition "a sentence asks to schedule an anchored event rather than reporting a document fact"
+    effect "reads request cues with start, date-led, imperative-end and courtesy-prefix positions"
+    unit "not applicable"
+    example "Please create an event tomorrow"
     grounding "data/seed/handler-rules.lino"
   calendar_day_number_marker
     defined-by method

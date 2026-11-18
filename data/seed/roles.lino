@@ -75,6 +75,8 @@ roles
     kind predicate
   calculator_tool_name
     kind predicate
+  calendar-date-offset
+    kind meaning
   calendar_day_reference
     kind predicate
   calendar_direction_next
@@ -171,6 +173,16 @@ roles
     kind meaning
   clause_joiner
     kind meaning
+  client-function-sentiment
+    kind predicate
+  client-function-sentiment-negation
+    kind predicate
+  client-function-sentiment-negative
+    kind predicate
+  client-function-sentiment-neutral
+    kind predicate
+  client-function-sentiment-positive
+    kind predicate
   code-comment-obligation
     kind meaning
   code_example_decomposition_answer
@@ -537,6 +549,8 @@ roles
     kind meaning
   github_repository_traffic_signal
     kind meaning
+  handler-table
+    kind predicate
   hello_world_reference
     kind predicate
   http_fetch
@@ -555,6 +569,8 @@ roles
     kind meaning
   interest_cue
     kind predicate
+  internet-access-help
+    kind meaning
   interrogative_opener
     kind meaning
   inverse_incompatibility_relation
@@ -583,6 +599,8 @@ roles
     kind meaning
   knowledge_value
     kind meaning
+  lexical-identity
+    kind predicate
   lexical_meta
     kind predicate
   line-slice-count
@@ -644,6 +662,8 @@ roles
   local_path_type_request
     kind meaning
   local_shell_request_cue
+    kind predicate
+  localized-response-template
     kind predicate
   localized_response_template
     kind meaning
@@ -755,6 +775,8 @@ roles
     kind predicate
   otherwise-marker
     kind meaning
+  output-constraint
+    kind predicate
   output_display_request
     kind meaning
   output_obligation_verb
@@ -1160,6 +1182,12 @@ roles
   task_first_step_cue
     kind meaning
   term_information_request_opener
+    kind meaning
+  text-summary-cause
+    kind meaning
+  text-summary-cause-phrase
+    kind meaning
+  text-summary-phatic
     kind meaning
   text_summarization_action
     kind meaning

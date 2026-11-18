@@ -364,56 +364,41 @@ function renderWeekdayRelation(language, operation, source, result) {
 // exactly like mentionsWeekdayContext etc. Base date for rollover uses a UTC mirror of
 // Rust current_utc_date (create does not inherit the browser userContext tz used only by
 // the "today" path). Returns the same {intent, content, confidence, evidence} shape.
-function mentionsCalendarCreateRequest(normalized) {
-  const hasDayRef = wordsForRole(ROLE_CALENDAR_DAY_REFERENCE).some((w) =>
-    containsCalendarTerm(normalized, w),
-  );
-  // A clock time anchors the event just as well as a day word; the lexicon
-  // carries localized surfaces ("17:00", "5pm", "शाम 5 बजे", "下午5点") and the
-  // scanner covers any bare "HH:MM"/"в HH". Mirrors Rust has_clock.
-  const hasClock =
-    wordsForRole(ROLE_CALENDAR_TIME).some((w) =>
-      containsCalendarTerm(normalized, w),
-    ) || extractClockTime(normalized) !== null;
-  // A relative-date word ("завтра", "tomorrow", "послезавтра", "后天", …)
-  // anchors the event to a specific day just as well as a day number or a
-  // clock time (issue #435: "поставь мне созвон ... на завтра" carries no
-  // digit at all). Surfaces live in data/seed/meanings-calendar.lino.
-  const hasRelativeDate = wordsForRole(ROLE_CALENDAR_RELATIVE_DATE).some((w) =>
-    containsCalendarTerm(normalized, w),
-  );
-  // A genuine scheduling request anchors to a concrete date/time cue: a
-  // day-reference word, a clock time, or a relative-date word. Bare digits
-  // (e.g. the "1." / "2." of a numbered installation-guide list) are NOT a
-  // date signal — they were the source of false positives that hijacked
-  // installation-conversion prompts such as
-  // "…the-book-of-secret-knowledge…" (issue #404 vs #423).
-  // A named weekday ("on Friday") anchors the event to a day as well.
-  const hasWeekday = wordsForRole(ROLE_CALENDAR_WEEKDAY).some((w) => containsCalendarTerm(normalized, w));
-  const hasDateSignal = hasDayRef || hasClock || hasRelativeDate || hasWeekday;
-  if (!hasDateSignal) return false;
-  const hasTimezone = resolveTimezone(normalized) !== null;
-  const hasParticipant = extractParticipantTitle(normalized) !== null;
-  const hasAction =
-    wordsForRole(ROLE_CALENDAR_SCHEDULE_ACTION).some((w) =>
-      containsCalendarTerm(normalized, w),
-    ) ||
-    wordsForRole(ROLE_CALENDAR_EVENT).some((w) =>
-      containsCalendarTerm(normalized, w),
-    );
-  if (hasAction) return true;
-  // Elliptical Russian follow-ups such as "А можешь на 10 часов по Грузии с
-  // Марией?" carry no explicit schedule verb or event noun. The spoken clock +
-  // timezone + participant trio is narrow enough to route to calendar creation
-  // without claiming generic numbered questions.
-  if (hasClock && hasTimezone && hasParticipant) return true;
-  // Rust fallback heuristic (classic RU/EN patterns). Word-boundary matching
-  // keeps "the-book-of-secret-knowledge" from masquerading as a schedule verb.
-  const hasScheduleVerb = handlerRulesTableKeys("calendar_schedule_verb")
-    .some((verb) => containsCalendarTerm(normalized, verb));
-  // The date/time anchor is already guaranteed by hasDateSignal above, so a
-  // recognized schedule verb is enough to confirm a create request here.
-  return hasScheduleVerb;
+function calendarCreateRequestSpan(text) {
+  const cues = (handlerRulesTables()["calendar-request-cue"]?.rows || []);
+  const candidates = unitConversionClauses(text.toLowerCase()).filter(clause => {
+    const normalized = normalizePrompt(clause);
+    const anchor = wordsForRole(ROLE_CALENDAR_RELATIVE_DATE).some(w => containsCalendarTerm(normalized, w)) ||
+      wordsForRole(ROLE_CALENDAR_WEEKDAY).some(w => containsCalendarTerm(normalized, w)) ||
+      extractClockTime(normalized) !== null ||
+      wordsForRole(ROLE_CALENDAR_TIME).some(w => containsCalendarTerm(normalized, w)) ||
+      wordsForRole(ROLE_CALENDAR_DAY_REFERENCE).some(w => {
+        const at = normalized.indexOf(w);
+        return at >= 0 && /[0-9]+\s*$/u.test(normalized.slice(0, at));
+      });
+    if (!anchor) return false;
+    let request = clause;
+    const prefix = cues.find(([word, position]) => position === "prefix" && request.startsWith(word) && containsCalendarTerm(request, word));
+    if (prefix) request = request.slice(prefix[0].length).replace(/^[,，]\s*/u, "").trimStart();
+    const dateLed = /^[0-9]/u.test(request) || [ROLE_CALENDAR_RELATIVE_DATE, ROLE_CALENDAR_WEEKDAY]
+      .some(role => wordsForRole(role).some(word => request.startsWith(word) && containsCalendarTerm(request, word)));
+    const action = cues.some(([word, position]) => {
+      const tail = request.slice(word.length).trimStart();
+      const starts = request.startsWith(word) && containsCalendarTerm(request, word) && !/^[:：]/u.test(tail) &&
+        !cues.some(([fact, mode]) => mode === "fact" && tail.startsWith(fact) && containsCalendarTerm(tail, fact));
+      const article = cues.find(([lead, mode]) => mode === "object-prefix" && tail.startsWith(lead) && containsCalendarTerm(tail, lead));
+      const object = article ? tail.slice(article[0].length).trimStart() : tail;
+      const eventObject = position === "object" && starts && wordsForRole(ROLE_CALENDAR_EVENT).some(event => object.startsWith(event) && containsCalendarTerm(object, event));
+      return position === "object" ? starts && eventObject : position === "start" ? starts : position === "date" ? starts || (dateLed && containsCalendarTerm(request, word)) :
+        position === "end" && request.endsWith(word) && containsCalendarTerm(request, word);
+    });
+    return action || (prefix && extractClockTime(normalized) !== null && resolveTimezone(normalized) !== null && extractParticipantTitle(normalized) !== null);
+  });
+  return candidates.length === 1 ? candidates[0] : null;
+}
+
+function mentionsCalendarCreateRequest(text) {
+  return calendarCreateRequestSpan(text) !== null;
 }
 
 function extractDayNumber(normalized) {
@@ -421,12 +406,12 @@ function extractDayNumber(normalized) {
     if (!containsCalendarTerm(normalized, word)) continue;
     const pos = normalized.indexOf(word);
     if (pos !== -1) {
-      const prefix = normalized.slice(0, pos);
+      const prefix = normalized.slice(0, pos).trimEnd();
       let digits = "";
       for (let i = prefix.length - 1; i >= 0; i--) {
         const ch = prefix[i];
         if (/\d/.test(ch)) digits = ch + digits;
-        else if (digits) break;
+        else break;
       }
       const n = parseInt(digits, 10);
       if (n >= 1 && n <= 31) return n;
@@ -439,6 +424,8 @@ function extractDayNumber(normalized) {
     else if (num) break;
     else return null;
   }
+  const suffix = normalized.trimStart().slice(num.length).trimStart();
+  if (unitMentions(suffix).some(mention => mention.position === 0)) return null;
   const n = parseInt(num, 10);
   if (n >= 1 && n <= 31) return n;
   return null;
@@ -823,7 +810,9 @@ function currentUtcCalendarBase() {
 }
 
 function tryCalendarCreateEvent(prompt, normalized, userContext = {}) {
-  if (!mentionsCalendarCreateRequest(normalized)) return null;
+  const span = calendarCreateRequestSpan(prompt);
+  if (span === null) return null;
+  normalized = normalizePrompt(span);
   const base = currentUtcCalendarBase();
   const language = detectLanguage(prompt);
   // A relative-date word ("завтра", "tomorrow", "послезавтра", …) anchors the
@@ -866,6 +855,7 @@ function tryCalendarCreateEvent(prompt, normalized, userContext = {}) {
   const body = renderCreateConfirmation(language, event, ics, googleUrl);
   const evidence = [
     "calendar:clock:browser",
+    `calendar:intent_span:${span}`,
     `calendar:parsed_date:${isoDate(year, month, d)}`,
     `calendar:parsed_time:${pad2(hour)}:${pad2(minute)}`,
     `calendar:parsed_time_zone:${tz}`,
@@ -920,9 +910,19 @@ function tryCalendarReasoning(prompt, normalized, userContext = {}) {
     };
   }
   // Issue #1176: month offsets are read before the weekday gate (calendar.rs).
+  const duration = tryCalendarDuration(prompt);
+  if (duration) return duration;
   const monthOffset = tryCalendarMonthOffset(prompt, normalized);
   if (monthOffset) return monthOffset;
   // R1017: the weekday of a stated date (calendar/date_weekday.rs).
+  const dateOffset = tryCalendarDateOffset(prompt, normalized);
+  if (dateOffset !== null) {
+    dateOffset.solverEvents = dateOffset.evidence.filter(link => link.startsWith("calendar:")).map(link => {
+      const at = link.indexOf(":", 9);
+      return {kind:link.slice(0, at), payload:link.slice(at + 1)};
+    });
+    return dateOffset;
+  }
   const dateWeekday = tryCalendarDateWeekday(prompt, normalized);
   if (dateWeekday) return dateWeekday;
   if (!mentionsWeekdayContext(normalized)) return null;

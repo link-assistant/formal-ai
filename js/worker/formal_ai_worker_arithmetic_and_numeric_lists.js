@@ -93,6 +93,8 @@ function tryArithmeticExpression(prompt) {
     : [];
   const resultLabel = typeof extracted.resultLabel === "string" ? extracted.resultLabel : "";
   try {
+    const capturedCurrency = tryCapturedCurrencyConversion(prompt, expression);
+    if (capturedCurrency) return capturedCurrency;
     const isEquation = expression.includes("=");
     let formatted;
     let backend = "js";

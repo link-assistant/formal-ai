@@ -1,0 +1,9 @@
+{
+  "id": 43904085669,
+  "sha": "6f6a6045b0bd51a3f346b1106b75197e01ba9b8c",
+  "created_at": "2026-11-16T16:08:03Z",
+  "conclusion": "action_required",
+  "exit": 1,
+  "stderr": "failed to get run log: log not found\n",
+  "error": null
+}

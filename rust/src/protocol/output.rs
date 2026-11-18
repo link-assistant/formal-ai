@@ -1,7 +1,13 @@
+use serde::ser::SerializeStruct;
 use serde::{Deserialize, Serialize};
 
-use super::ChatMessage;
-use crate::engine::{ThinkingStep, render_thinking_steps, stable_id};
+use super::{
+    ChatMessage, ResponsesRequest, request_context, resolved_request_model, response_timestamp,
+    responses_input_tokens,
+};
+use crate::engine::{
+    SymbolicAnswer, ThinkingStep, estimate_tokens, render_thinking_steps, stable_id,
+};
 use serde_json::Value;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -14,6 +20,8 @@ pub struct ChatCompletion {
     pub usage: TokenUsage,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub learning_trace: Option<Value>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub output_projection: Option<Value>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -188,11 +196,27 @@ pub struct ResponseOutputMessage {
     pub thinking_steps: Vec<ThinkingStep>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct ResponseOutputContent {
     #[serde(rename = "type")]
     pub kind: String,
+    #[serde(default)]
     pub text: String,
+    #[serde(default)]
+    pub refusal: Option<String>,
+}
+
+impl Serialize for ResponseOutputContent {
+    fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        let mut state = serializer.serialize_struct("ResponseOutputContent", 2)?;
+        state.serialize_field("type", &self.kind)?;
+        if let Some(refusal) = &self.refusal {
+            state.serialize_field("refusal", refusal)?;
+        } else {
+            state.serialize_field("text", &self.text)?;
+        }
+        state.end()
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -234,4 +258,51 @@ pub(super) fn response_reasoning_item(
             text,
         }],
     }))
+}
+
+pub(super) fn response_from_symbolic(
+    request: &ResponsesRequest,
+    prompt: &str,
+    symbolic_answer: SymbolicAnswer,
+) -> ResponseObject {
+    let symbolic_answer =
+        request_context::RequestContext::new(&request.to_chat_completion_request().messages)
+            .compose(symbolic_answer);
+    let model = resolved_request_model(request.model.as_deref());
+    let input_tokens = responses_input_tokens(request);
+    let output_tokens = estimate_tokens(&symbolic_answer.answer);
+    let derivation_id = symbolic_answer.derivation_id();
+    let answer = symbolic_answer.answer;
+    let thinking_steps = symbolic_answer.thinking_steps;
+    let mut output = vec![ResponseOutputItem::Message(ResponseOutputMessage {
+        id: stable_id("msg", &answer),
+        kind: String::from("message"),
+        role: String::from("assistant"),
+        content: vec![ResponseOutputContent {
+            kind: String::from("output_text"),
+            refusal: None,
+            text: answer,
+        }],
+        thinking_steps: thinking_steps.clone(),
+    })];
+    if let Some(reasoning) = response_reasoning_item(prompt, &thinking_steps) {
+        output.push(reasoning);
+    }
+
+    ResponseObject {
+        id: stable_id("resp", prompt),
+        object: String::from("response"),
+        created_at: response_timestamp(),
+        status: String::from("completed"),
+        model,
+        output,
+        usage: ResponseUsage {
+            input_tokens,
+            output_tokens,
+            total_tokens: input_tokens.saturating_add(output_tokens),
+        },
+        evidence_links: symbolic_answer.evidence_links,
+        derivation_id: Some(derivation_id),
+        thinking_steps,
+    }
 }
