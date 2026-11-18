@@ -33,6 +33,11 @@ const NATIVE_REGRESSION_INPUTS = new Set([
   'rust/tests/unit/data_files.rs',
   'rust/tests/unit/data_files/technical_scalar.rs',
   'rust/tests/unit/scheduling_contracts.rs',
+  'rust/tests/unit/operational_contracts.rs',
+  'rust/tests/unit/docs_requirements/agent_cli_shell.rs',
+  'rust/tests/unit/ci-cd/network_download_retry.rs',
+  'README.md',
+  'docs/desktop/server-api.md',
   'rust/tests/unit/issue_1138_place_timezone.rs',
   'rust/tests/unit/solver/issue_869_meeting_scheduling.rs',
   'rust/tests/unit/specification/spoken_hour_scheduling.rs',
@@ -55,6 +60,8 @@ const NATIVE_REGRESSION_INPUTS = new Set([
   'js/server/structured-log.mjs',
 ]);
 export function nativeCompileInput(path) {
+  // The download contract discovers every shell script, including new paths.
+  if (path.endsWith('.sh')) return true;
   if (path.startsWith('data/parity/issue-1584-cnl/') || NATIVE_REGRESSION_INPUTS.has(path) || ['scripts/ci-clippy-profile.sh',
     'scripts/ci-pull-request-admission.mjs', 'scripts/lib/documentation-paths.mjs'].includes(path)) return true;
   if (isDocumentation(path) || NON_NATIVE_FILES.has(path)) return false;

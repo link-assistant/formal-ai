@@ -66,7 +66,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
   assert.equal(others.length, 0);
   const runs = check.steps.map(step => step.run).filter(Boolean);
   assert.deepEqual(runs.filter(run => !run.startsWith('echo ')), ['bash scripts/ci-clippy-profile.sh --library-and-binaries',
-    'cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast --test calendar_currency --test openai_forced_functions --test meta_executor_parity --test synthesis_contracts --test cnl_output --test cnl_parity --test unknown_reasoning --test data_files --test scheduling_contracts -- --test-threads=1',
+    'cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast --test calendar_currency --test openai_forced_functions --test meta_executor_parity --test synthesis_contracts --test cnl_output --test cnl_parity --test unknown_reasoning --test data_files --test scheduling_contracts --test operational_contracts -- --test-threads=1',
     'regression_status=0\n' +
     'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_unknown_reasoning::tests:: -- --test-threads=1 || regression_status=$?\n' +
     'cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1 || regression_status=$?\n' +
@@ -115,8 +115,8 @@ test('the focused PR native check limits execution to lint and isolated regressi
     'rust/tests/web/issue-1586-structured-output.test.mjs',
     'rust/tests/web/support/structured-log-fixture.mjs', 'js/server/structured-log.mjs', 'clippy.toml', 'new-top-level/unknown.txt'])
     assert.equal(native([path]), true, path);
-  for (const path of ['docs/a.md', 'README.md', 'changelog.d/x.md', 'js/app.js', 'rust/tests/web/a.test.mjs',
-    'rust/tests/unit/proof_request.rs', 'rust/tests/fixtures/unrelated.json', 'data/parity/unrelated.json', 'scripts/check-tests-as-docs.mjs', 'data/meta/x.txt', 'experiments/a/b.sh',
+  for (const path of ['docs/a.md', 'changelog.d/x.md', 'js/app.js', 'rust/tests/web/a.test.mjs',
+    'rust/tests/unit/proof_request.rs', 'rust/tests/fixtures/unrelated.json', 'data/parity/unrelated.json', 'scripts/check-tests-as-docs.mjs', 'data/meta/x.txt',
     '.github/workflows/links.yml', 'package.json', 'bun.lock'])
     assert.equal(native([path]), false, path);
   assert.equal(native([]), true, 'an empty observation is unknown, so the check runs');
@@ -608,4 +608,20 @@ test('independent native replays continue after a regression fails and preserve 
       assert.match(commands[1], /--test any_language/u);
     }
   } finally { rmSync(directory, {recursive:true, force:true}); }
+});
+
+test('the unchanged shell and download contracts execute in the focused native lane', () => {
+  const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps.find(step => step.name === 'Verify isolated native behavior regressions');
+  assert.match(step.run, /--test operational_contracts(?: |$)/u);
+  const manifest = read('rust/Cargo.toml');
+  assert.match(manifest, /name = "operational_contracts"\npath = "tests\/unit\/operational_contracts[.]rs"/u);
+  const source = read('rust/tests/unit/operational_contracts.rs');
+  assert.match(source, /#\[path = "docs_requirements\/agent_cli_shell[.]rs"\]/u);
+  assert.match(source, /#\[path = "ci-cd\/network_download_retry[.]rs"\]/u);
+  for (const path of ['rust/tests/unit/operational_contracts.rs', 'rust/tests/unit/docs_requirements/agent_cli_shell.rs',
+    'rust/tests/unit/ci-cd/network_download_retry.rs', 'README.md', 'docs/desktop/server-api.md',
+    'scripts/install.sh', 'experiments/agentic_cli_matrix/install_client.sh', 'experiments/a/b.sh', 'new-download-script.sh'])
+    assert.equal(admission([path])['native-type-check'], true, path);
+  for (const path of ['docs/unrelated.md', 'experiments/unrelated.mjs'])
+    assert.equal(admission([path])['native-type-check'], false, path);
 });
