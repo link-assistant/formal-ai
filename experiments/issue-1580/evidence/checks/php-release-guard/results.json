@@ -1,0 +1,121 @@
+{
+  "observedAt": "2026-11-18T12:21:37.285504+00:00",
+  "checks": [
+    {
+      "name": "focused-tests",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/template-php-release-integrity.test.mjs"
+      ],
+      "exitCode": 0,
+      "bytes": 537,
+      "lines": 12,
+      "sha256": "3cf080caca7a47f1320383100c681c8a71159ba3ae96a289d6b8a3f85731df0a",
+      "archiveSha256": "3c7895e1a09178837b8838c4feb4e17dbf08af1bef621ccfb5bbb5a22d1649f0"
+    },
+    {
+      "name": "maintained-tests",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1580-template-observations.test.mjs"
+      ],
+      "exitCode": 0,
+      "bytes": 4420,
+      "lines": 50,
+      "sha256": "7eb6404b0d6bbf635b1a8cae7281b702f99fae0ff499c5d0fea7780ff3177f40",
+      "archiveSha256": "75da3c96f953608a32e6641b994b9b9f2ad8483a1706505158f551338011a806"
+    },
+    {
+      "name": "affected-gates",
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin,check-file-size,changelog,abbreviations"
+      ],
+      "exitCode": 1,
+      "bytes": 87,
+      "lines": 1,
+      "sha256": "68a5a6dc8a9770a8332eda944390856b70c95574a94b5ad86ab269781a7a1c9f",
+      "archiveSha256": "f77320a20426bef86f96dcbed2765833c8671fc801763fef7b3f803dd12cc18b"
+    },
+    {
+      "name": "whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "bytes": 0,
+      "lines": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "name": "affected-gates-corrected",
+      "command": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin,check-file-size,check-changelog-fragment-js-twin,check-abbreviations"
+      ],
+      "exitCode": 0,
+      "bytes": 171,
+      "lines": 6,
+      "sha256": "76dad53013f0a16833ddd170ec981199862088370a0098e2ea677a53b3327a29",
+      "archiveSha256": "0856948dee6e463c23ec3315e072904a3f3667fd37fa1875baa9f6db2a9b1526"
+    },
+    {
+      "name": "final-focused-tests",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "experiments/issue-1580/template-php-release-integrity.test.mjs"
+      ],
+      "exitCode": 0,
+      "bytes": 648,
+      "lines": 13,
+      "sha256": "cae17d9dd0530b38183dd26f5d5b15d56b0111d69d1acfcdcc45b3e4bca8a4f5",
+      "archiveSha256": "54d1d17bd557afed1b3b44d62a8153484ad94bba22e95408d4d3277c95dd8958"
+    },
+    {
+      "name": "final-maintained-tests",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1580-template-observations.test.mjs"
+      ],
+      "exitCode": 0,
+      "bytes": 4524,
+      "lines": 51,
+      "sha256": "da3194a23b3be1ed779b6f6dc5af53442ff8694c77131ca0f661a646c4acb056",
+      "archiveSha256": "79a1b17d024c74788d1babdabfa84432fed65d7a1744227f378fcf5c479a18be"
+    }
+  ],
+  "complete": true,
+  "nativeExecution": false,
+  "hostedPublication": false,
+  "independentAuthorshipCredit": 0,
+  "initialGateInvocation": "Unknown short gate names were rejected; retain that caller error separately."
+}

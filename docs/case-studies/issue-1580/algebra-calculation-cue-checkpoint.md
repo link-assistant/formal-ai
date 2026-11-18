@@ -59,3 +59,14 @@ commands and conclusions receive zero independent authorship credit;
 independent acceptance remains 0/20 and the PR stays draft and unmerged.
 
 The first publication attempt stopped before commit or push: staging the new `gate-check-tests-as-docs.log.gz` evidence archive raised the abbreviated filename count from 90 to 91. The archive was renamed to `gate-check-tests-as-documentation.log.gz`, its receipt references were updated, and the failed attempt was retained. No abbreviation ceiling or source code was changed by this correction.
+
+## Hosted execution of published head
+
+Published head `acb9fa51085c8ba88ff8fae006b45698d355921e` passes all 23 workflows.
+The actual native job passes calendar/currency, all six executor tests (including
+the five-prompt production algebra regression), forced functions and both HTTP
+modes. JavaScript shards pass 1,188 and 1,528 tests, with four and 13 skips and
+zero failures or cancellations. Complete payloads and hashes are retained under
+`experiments/issue-1580/evidence/ci/algebra-acb9fa51/`; the review receipt identifies
+the exact result ranges read and does not claim literal review of every log line.
+This run precedes the added source-operand tests and synthesis target.

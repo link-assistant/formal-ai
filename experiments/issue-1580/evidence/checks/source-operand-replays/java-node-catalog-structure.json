@@ -1,0 +1,156 @@
+{
+  "observedAt": "2026-11-18T11:43:26.105126+00:00",
+  "pinnedTemplateHead": "dd803a2d9fa5b3a992b435acce73162274fb9e8b",
+  "path": "dev/log/issues/24/pulls/25/sources/node.json",
+  "gitBlob": "55d78d020053ed196f9047fe1ea14d9b30fb3d89",
+  "sha256": "ecbf1d9f49532daf606cd495537d2ff7ab28f441e877ae40821738d56e2a0a80",
+  "rawLines": 884,
+  "recordsParsedAndValidated": 882,
+  "prereleaseVersions": [
+    "v27.0.0-alpha.0.1.0",
+    "v27.0.0-alpha.0.0.0"
+  ],
+  "wholeRawPayloadLiterallyRead": false,
+  "literalSourceLinesRead": [
+    1,
+    129
+  ],
+  "dateRange": [
+    "2011-08-26",
+    "2026-11-12"
+  ],
+  "majorVersionCounts": {
+    "27": 2,
+    "26": 21,
+    "25": 14,
+    "24": 33,
+    "23": 14,
+    "22": 38,
+    "21": 13,
+    "20": 41,
+    "19": 13,
+    "18": 38,
+    "17": 15,
+    "16": 37,
+    "15": 18,
+    "14": 46,
+    "13": 17,
+    "12": 51,
+    "11": 17,
+    "10": 42,
+    "9": 18,
+    "8": 36,
+    "7": 17,
+    "6": 45,
+    "5": 19,
+    "4": 40,
+    "0": 237
+  },
+  "fieldPresenceCounts": {
+    "date": 882,
+    "files": 882,
+    "lts": 882,
+    "modules": 847,
+    "npm": 804,
+    "openssl": 813,
+    "security": 882,
+    "uv": 813,
+    "v8": 878,
+    "version": 882,
+    "zlib": 810
+  },
+  "fieldTypeCounts": {
+    "date": {
+      "str": 882
+    },
+    "files": {
+      "list": 882
+    },
+    "lts": {
+      "bool": 586,
+      "str": 296
+    },
+    "modules": {
+      "str": 847
+    },
+    "npm": {
+      "str": 804
+    },
+    "openssl": {
+      "str": 813
+    },
+    "security": {
+      "bool": 882
+    },
+    "uv": {
+      "str": 813
+    },
+    "v8": {
+      "str": 878
+    },
+    "version": {
+      "str": 882
+    },
+    "zlib": {
+      "str": 810
+    }
+  },
+  "artifactCounts": {
+    "aix-ppc64": 576,
+    "headers": 664,
+    "linux-arm64": 645,
+    "linux-armv6l": 232,
+    "linux-armv7l": 574,
+    "linux-ppc64le": 623,
+    "linux-s390x": 577,
+    "linux-x64": 765,
+    "linux-x64-musl": 22,
+    "linux-x86": 295,
+    "osx-arm64-tar": 279,
+    "osx-x64-pkg": 804,
+    "osx-x64-tar": 763,
+    "osx-x86-tar": 120,
+    "src": 882,
+    "sunos-x64": 415,
+    "sunos-x86": 295,
+    "win-arm64-7z": 177,
+    "win-arm64-zip": 177,
+    "win-x64-7z": 601,
+    "win-x64-exe": 787,
+    "win-x64-msi": 647,
+    "win-x64-zip": 601,
+    "win-x86-7z": 514,
+    "win-x86-exe": 727,
+    "win-x86-msi": 687,
+    "win-x86-zip": 514
+  },
+  "ltsCounts": {
+    "Argon": 36,
+    "Boron": 32,
+    "Carbon": 21,
+    "Dubnium": 27,
+    "Erbium": 34,
+    "False": 586,
+    "Fermium": 29,
+    "Gallium": 18,
+    "Hydrogen": 25,
+    "Iron": 28,
+    "Jod": 25,
+    "Krypton": 19,
+    "Lithium": 2
+  },
+  "securityCounts": {
+    "False": 735,
+    "True": 147
+  },
+  "activeSourceReferences": [],
+  "decisions": [
+    "This is a retained release registry response, not executable CI policy or a current dependency selection.",
+    "Every release record is parsed and validated for identity, date, artifact list, LTS state and security flag; optional dependency-field absence is counted rather than silently treated as a known current version.",
+    "Preserve pinned supported runtime labels and actual fetched currency checks in Formal AI. Historical release presence and security flags do not prove compatibility, vulnerability status or current runner support.",
+    "This structured inspection supplements the existing literal review through line 129; it does not relabel the remaining raw pages as literally read or close the complete repository comparison."
+  ],
+  "nativeExecutionClaimed": false,
+  "completeRepositorySemanticReview": false,
+  "independentAuthorshipCredit": 0
+}

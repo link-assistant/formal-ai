@@ -1,0 +1,11 @@
+{
+  "observedAt": "2026-11-18T12:32:33.832403+00:00",
+  "head": "c9e9eb3ff3d60c7ff290b28e4fadc1b214441174",
+  "parent": "ec8e609bfe5cd7b9c4111683a02fe08fb5fa3185",
+  "source": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8",
+  "completeObjectsCompared": true,
+  "fullLogsLiterallyRead": true,
+  "pushed": false,
+  "nativeExecution": false,
+  "independentAuthorshipCredit": 0
+}

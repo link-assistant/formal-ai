@@ -23,16 +23,32 @@
         109,
         109
       ]
+    },
+    {
+      "file": "java-historical-forward-review-003.json",
+      "sha256": "d488571eaf5ab32901acba35968da1c2118c3cce70a08e6b949e0bf92f90cc43",
+      "pages": [
+        110,
+        111
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-004.json",
+      "sha256": "821db0cb450a555596ab7019e5cab8f387abf9777bf94cd96c1b632adddabcf2",
+      "pages": [
+        112,
+        113
+      ]
     }
   ],
   "cumulativeSummary": {
-    "literalPages": 109,
+    "literalPages": 113,
     "totalPages": 254,
     "completeFiles": 111,
     "partialFiles": 1,
-    "literalLines": 7655,
-    "nextForwardPage": 110,
-    "remainingPages": 145,
+    "literalLines": 7760,
+    "nextForwardPage": 114,
+    "remainingPages": 141,
     "completeRepositorySemanticReview": false,
     "independentAuthorshipCredit": 0
   },

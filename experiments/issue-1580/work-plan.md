@@ -510,3 +510,62 @@ All 23 workflows on `a97832237cbb365000dd7296050984e4bdd59ebb` complete successf
   acceptance remains 0/20; keep PR #1581 draft and unmerged.
 
 The first publication attempt stopped before commit or push: staging the new `gate-check-tests-as-docs.log.gz` evidence archive raised the abbreviated filename count from 90 to 91. The archive was renamed to `gate-check-tests-as-documentation.log.gz`, its receipt references were updated, and the failed attempt was retained. No abbreviation ceiling or source code was changed by this correction.
+
+
+## Source operand replay follow-through
+
+- [x] Publish the algebra correction once as `acb9fa51`, retain all publication payloads, and literally review all 157 incremental API patch lines across eight source files. The whole PR diff remains unavailable above GitHub's 300-file limit.
+- [x] Probe the actual worker for the greeting, object count and renumbered word problem; preserve all four full responses without presenting unresolved cases as successes.
+- [x] Draft both native source-operand replays and the native membership-count replay in the existing isolated target. Add two actual JavaScript word-problem cases; four composition tests, 25 executor tests, formatting, four affected gates and whitespace checks pass.
+- [x] Read and preserve Java historical pages 110–111 without truncation: continuous 1–111/254, 111 complete files, one partial and 7,708 source lines. The retained Node catalog is read through line 129/884; pages 112–254 and full semantic applicability remain unfinished.
+- [ ] Collect every hosted result for `acb9fa51`; all 23 workflows are queued in the latest observation. Address any failures together, then publish the native replay batch once and verify actual execution.
+- [ ] Resolve all other original requirements and wider criteria. Keep PR #1581 draft, unmerged and the native goal active.
+
+- [x] Fully read two supplementary historical Java sources (original POM 293 lines, runner guide 230 lines), retain identities/payloads and transfer decisions without double-counting the forward page prefix. Parse/validate all 882 archived Node release records while retaining the literal catalog limit of line 129. Execute the runner-label check: 74 files / 207 labels, all pinned; no active latest or macos-14 workflow reference. Full semantic applicability remains unfinished.
+
+## Isolated native regression admission — 2026-11-18T12:04:40.635560+00:00
+
+- Reproduced test-only admission skipping the actual calendar target. Corrected the isolated sources, embedded fixtures, HTTP replay inputs and policy classification.
+- Committed local source fca86432b7194eb94d0c153860d67f782a9a3401; no push while acb9fa51 workflows remain unfinished.
+- Added explicit synthesis_contracts target reusing all twelve existing specifications, with no duplicate source and no full unit build.
+- Verified policy 22/22 after one unchanged retry of an existing 100 ms VM guard failure, forced HTTP 2/2, seven affected gates, rustfmt and whitespace. Retained all complete logs and the first wrong-job-ID test draft.
+- Native execution and all broader issue acceptance criteria remain pending; independent authorship remains zero for supplied work.
+
+
+## PHP release guard checkpoint (2026-11-18T12:28:22.207929+00:00)
+
+Hash-verify the unchanged pinned release workflow and reproduce admission after unsuccessful quality checks. Add explicit-success candidate and positive/event/cancellation/manual controls to the maintained entrypoint; all initial four focused and 42 maintained cases pass. Retain the rejected abbreviated gate selector and corrected four-gate success. Add and rerun the final implicit-success/cancelled-function control. Read complete related PR feedback and verified existing screenshot. Publish immutable evidence before filing the distinct upstream draft. Full PHP semantic review, hosted native regression execution, all broader acceptance and 0/20 independent reasoning remain unfinished.
+
+PHP classification correction: the path taxonomy is not a CI boundary. Current templates.yml installs/tests/builds/audits four captured trees under historical-looking case-study paths. Preserve a conservative subtree inventory and keep their full semantic applicability review open. Final PHP controls pass five focused and 43 maintained tests. The Cargo witness refresh preserves all complete objects except four manifest identity hashes, and 2/34 existing source-integrity/identifier checks pass. Native execution remains pending.
+
+### Published algebra and pending native/PHP batch
+
+- Published `acb9fa51`: 23/23 workflows pass. Actual hosted execution passes six
+  executor tests including algebra, calendar/currency, forced functions and both
+  HTTP modes. Retain complete logs and exact literal result ranges.
+- Pending local batch: isolated native input admission, twelve existing synthesis
+  contracts as a focused target, source-operand replays, reviewed Cargo witness,
+  and five-case PHP release-guard observation. Run the complete local inventory
+  before the single push; collect hosted outcomes afterward.
+- PHP captured-tree inventory has 221 files already included in its conservative
+  reference graph. Historical paths do not exclude current CI inputs. Full
+  template semantics and independent reasoning acceptance remain unfinished.
+
+- [x] Read and preserve Java historical pages 112–113 fully: continuous
+  1–113/254, 111 complete files, one partial and 7,760 source lines. The Node
+  catalog is read through line 181/884. Pages 114–254 and full semantic review
+  remain unfinished; no independent authorship credit.
+
+- [x] Final native/PHP source local inventory: all 86 executable gates pass,
+  52 explicit native/context exclusions, zero failures. The complete aggregate
+  was literally reviewed; all 86 detailed payload hashes verified and retained.
+  The 394-line incremental source patch was read completely; the unmodified
+  511-line workflow and four-field binary witness comparison were read separately.
+  No local native build or execution; publish the batch once, then collect hosted
+  execution of the new synthesis/source-operand tests.
+
+- [x] Post-gate review corrects one new Rust assertion to match existing event-ID
+  evidence links, retaining exact arithmetic answers and raw evaluation traces.
+  The complete small correction patch was read; edition-2024 rustfmt and whitespace
+  pass. The first rustfmt invocation omitted the edition and is retained as a
+  caller error. The full gate run is explicitly tied to its preceding source head.
