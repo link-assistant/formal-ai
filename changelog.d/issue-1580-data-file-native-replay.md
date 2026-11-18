@@ -1,0 +1,1 @@
+Admit the existing native data-file contracts and their consumed Links Notation and cached JSON sources to the focused pull-request check. Replay the original meaning-identity, pipe-list and canonical-notation failures without compiling the full unit target.

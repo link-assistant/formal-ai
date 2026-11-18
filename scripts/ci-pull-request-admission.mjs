@@ -30,6 +30,8 @@ const NATIVE_REGRESSION_INPUTS = new Set([
   'rust/tests/unit/meta_executor_parity.rs',
   'rust/tests/unit/specification/synthesis.rs',
   'rust/tests/unit/specification/unknown_reasoning.rs',
+  'rust/tests/unit/data_files.rs',
+  'rust/tests/unit/data_files/technical_scalar.rs',
   'rust/tests/unit/issue_706_any_language.rs',
   'rust/tests/unit/solver_unknown_reasoning_captured_sources.rs',
   'rust/tests/fixtures/issue-1138-b1/expected-senses.json',
@@ -48,7 +50,10 @@ export function nativeCompileInput(path) {
   if (path.startsWith('data/parity/issue-1584-cnl/') || NATIVE_REGRESSION_INPUTS.has(path) || ['scripts/ci-clippy-profile.sh',
     'scripts/ci-pull-request-admission.mjs', 'scripts/lib/documentation-paths.mjs'].includes(path)) return true;
   if (isDocumentation(path) || NON_NATIVE_FILES.has(path)) return false;
-  if (path.startsWith('data/')) return path.startsWith('data/seed/api-cache/');
+  // The isolated data-file target parses all LiNo and cached source JSON.
+  if (path.startsWith('data/')) return path.endsWith('.lino')
+    || (path.startsWith('data/cache/') && path.endsWith('.json'))
+    || path.startsWith('data/seed/api-cache/');
   // Its own job definition and the composite actions it runs stay inputs.
   if (path.startsWith('.github/workflows/')) return ['release.yml', 'native-type-check.yml'].some(file => path === '.github/workflows/' + file);
   return !NON_NATIVE_PREFIXES.some(prefix => path.startsWith(prefix));

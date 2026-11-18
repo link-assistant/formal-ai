@@ -66,7 +66,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
   assert.equal(others.length, 0);
   const runs = check.steps.map(step => step.run).filter(Boolean);
   assert.deepEqual(runs.filter(run => !run.startsWith('echo ')), ['bash scripts/ci-clippy-profile.sh --library-and-binaries',
-    'cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test meta_executor_parity --test synthesis_contracts --test cnl_output --test cnl_parity --test unknown_reasoning -- --test-threads=1',
+    'cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test meta_executor_parity --test synthesis_contracts --test cnl_output --test cnl_parity --test unknown_reasoning --test data_files -- --test-threads=1',
     'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_unknown_reasoning::tests:: -- --test-threads=1\n' +
     'cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1\n',
     'node --test --test-concurrency=1 rust/tests/web/issue-1590-forced-functions.test.mjs',
@@ -113,7 +113,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
     'rust/tests/web/support/structured-log-fixture.mjs', 'js/server/structured-log.mjs', 'clippy.toml', 'new-top-level/unknown.txt'])
     assert.equal(native([path]), true, path);
   for (const path of ['docs/a.md', 'README.md', 'changelog.d/x.md', 'js/app.js', 'rust/tests/web/a.test.mjs',
-    'rust/tests/unit/proof_request.rs', 'rust/tests/fixtures/unrelated.json', 'data/parity/unrelated.json', 'scripts/check-tests-as-docs.mjs', 'data/meta/x.lino', 'experiments/a/b.sh',
+    'rust/tests/unit/proof_request.rs', 'rust/tests/fixtures/unrelated.json', 'data/parity/unrelated.json', 'scripts/check-tests-as-docs.mjs', 'data/meta/x.txt', 'experiments/a/b.sh',
     '.github/workflows/links.yml', 'package.json', 'bun.lock'])
     assert.equal(native([path]), false, path);
   assert.equal(native([]), true, 'an empty observation is unknown, so the check runs');
@@ -519,4 +519,16 @@ test('the fast PR lint job runs only scripts that need no installed package', ()
   };
   entries.forEach(visit);
   assert.deepEqual(bare, [], 'scripts reachable from the fast lint job import installed packages');
+});
+
+
+test('native data-file regressions select every consumed source and data format', () => {
+  for (const path of ['rust/tests/unit/data_files.rs', 'rust/tests/unit/data_files/technical_scalar.rs',
+    'data/seed/meanings-calendar.lino', 'data/meta/technical-scalar-contracts.lino',
+    'data/cache/wikidata/entity/Q146786.lino', 'data/cache/wikidata/entity/Q146786.json',
+    'data/cache/wiktionary/en/example.json', 'data/parity/fixture.lino', 'data/seed/api-cache/fixture.bin'])
+    assert.equal(admission([path])['native-type-check'], true, path);
+  for (const path of ['data/benchmarks/fixture.json', 'data/meta/fixture.txt',
+    'data/cache/fixture.txt', 'rust/tests/unit/unrelated.rs'])
+    assert.equal(admission([path])['native-type-check'], false, path);
 });

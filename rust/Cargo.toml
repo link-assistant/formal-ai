@@ -166,6 +166,11 @@ path = "tests/unit/cnl_parity.rs"
 name = "unknown_reasoning"
 path = "tests/unit/specification/unknown_reasoning.rs"
 
+# Replay the unchanged data contracts, including their technical-scalar controls.
+[[test]]
+name = "data_files"
+path = "tests/unit/data_files.rs"
+
 [[test]]
 name = "integration"
 path = "tests/integration/mod.rs"
