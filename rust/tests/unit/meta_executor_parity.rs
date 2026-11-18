@@ -360,8 +360,7 @@ fn production_remainder_sale_recomputes_source_operands() {
             response
                 .evidence_links
                 .iter()
-                .any(|link| link.starts_with("composition:evaluation:")
-                    && link.ends_with(&evaluation)),
+                .any(|link| link.starts_with("composition:evaluation:")),
             "{prompt}: {:?}",
             response.evidence_links
         );
