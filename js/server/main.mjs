@@ -16,6 +16,7 @@
 // (js/server/debug-session.mjs, docs/vscode/debugger.md).
 
 import { pathToFileURL } from 'node:url';
+import {serverOutputConfiguration} from './cnl-output.mjs';
 import { createServeLogger } from './structured-log.mjs';
 import { createGeneratedDebugHandoff } from './debug-session-handoff.mjs';
 
@@ -62,12 +63,16 @@ export function parseArgs(argv, env = process.env) {
     trace: false,
     prerequisiteGrantJson: env.FORMAL_AI_PREREQUISITE_GRANT_JSON ?? null,
     unsupported: null,
+    ...(env.FORMAL_AI_OUTPUT_STANDARD ? {outputStandard:env.FORMAL_AI_OUTPUT_STANDARD} : {}),
+    ...(env.FORMAL_AI_LEXICAL_DENSITY ? {lexicalDensity:env.FORMAL_AI_LEXICAL_DENSITY} : {}),
   };
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
     const [name, inline] = arg.includes('=') ? arg.split(/=(.*)/s, 2) : [arg, null];
     const value = () => (inline !== null ? inline : argv[++index]);
-    if (name === '--host') options.host = value();
+    if (name === '--output-standard') {options.outputStandard=value();if(!options.outputStandard)options.unsupported=arg;}
+    else if (name === '--lexical-density') {options.lexicalDensity=value();if(!options.lexicalDensity)options.unsupported=arg;}
+    else if (name === '--host') options.host = value();
     else if (name === '--port') options.port = Number.parseInt(value(), 10);
     else if (name === '--agent-mode') options.agentMode = true;
     else if (name === '--prerequisite-grant') options.prerequisiteGrantJson = value();
@@ -91,7 +96,13 @@ export function parseArgs(argv, env = process.env) {
  * Start a server; resolves once it listens.
  * @returns {Promise<{server: import('node:http').Server, ctx: object, url: string}>}
  */
-export async function startServer({ host = '127.0.0.1', port = 0, agentMode = false, debugSession = false, env = process.env, ephemeral = flagEnabled(env.FORMAL_AI_EPHEMERAL), worker, logger, prerequisiteGrantJson = env.FORMAL_AI_PREREQUISITE_GRANT_JSON ?? null } = {}) {
+export async function startServer({
+  host = '127.0.0.1', port = 0, agentMode = false, debugSession = false,
+  env = process.env, ephemeral = flagEnabled(env.FORMAL_AI_EPHEMERAL), worker, logger,
+  outputStandard = env.FORMAL_AI_OUTPUT_STANDARD,
+  lexicalDensity = env.FORMAL_AI_LEXICAL_DENSITY,
+  prerequisiteGrantJson = env.FORMAL_AI_PREREQUISITE_GRANT_JSON ?? null,
+} = {}) {
   ephemeral ||= flagEnabled(env.FORMAL_AI_EPHEMERAL);
   if (debugSession && !isLoopbackHost(host)) throw new Error(`debug_session_requires_loopback:${host}`);
   if (ephemeral && debugSession) throw new Error('debug_session_requires_retention');
@@ -109,6 +120,7 @@ export async function startServer({ host = '127.0.0.1', port = 0, agentMode = fa
     if (prerequisiteGrant !== null && (prerequisiteGrant.schema !== "formal-ai-workspace-prerequisites-v1" || prerequisiteGrant.scope !== "workspace" || !Array.isArray(prerequisiteGrant.programs))) throw new Error("invalid_prerequisite_grant");
     const ctx = {
       prerequisiteGrant,
+      outputConfiguration: serverOutputConfiguration({output_standard:outputStandard,lexical_density:lexicalDensity}),
       liveMemory,
       ephemeral,
       worker: worker || new WorkerHost({

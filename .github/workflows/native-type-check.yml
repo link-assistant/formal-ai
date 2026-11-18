@@ -74,7 +74,7 @@ jobs:
         env:
           CARGO_BUILD_JOBS: '2'
           CARGO_PROFILE_TEST_OPT_LEVEL: '0'
-        run: cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test meta_executor_parity --test synthesis_contracts -- --test-threads=1
+        run: cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test meta_executor_parity --test synthesis_contracts --test cnl_output --test cnl_parity -- --test-threads=1
       - name: Verify native unresolved-language source binding
         if: ${{ inputs.compile-inputs-changed }}
         env:

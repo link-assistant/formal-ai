@@ -25,6 +25,8 @@ const NON_NATIVE_FILES = new Set(['package.json', 'bun.lock', '.bun-version', 't
 const NATIVE_REGRESSION_INPUTS = new Set([
   'rust/tests/unit/calendar-currency.rs',
   'rust/tests/unit/openai_forced_functions.rs',
+  'rust/tests/unit/cnl_output.rs',
+  'rust/tests/unit/cnl_parity.rs',
   'rust/tests/unit/meta_executor_parity.rs',
   'rust/tests/unit/specification/synthesis.rs',
   'rust/tests/unit/issue_706_any_language.rs',
@@ -41,7 +43,7 @@ const NATIVE_REGRESSION_INPUTS = new Set([
   'js/server/structured-log.mjs',
 ]);
 export function nativeCompileInput(path) {
-  if (NATIVE_REGRESSION_INPUTS.has(path) || ['scripts/ci-clippy-profile.sh',
+  if (path.startsWith('data/parity/issue-1584-cnl/') || NATIVE_REGRESSION_INPUTS.has(path) || ['scripts/ci-clippy-profile.sh',
     'scripts/ci-pull-request-admission.mjs', 'scripts/lib/documentation-paths.mjs'].includes(path)) return true;
   if (isDocumentation(path) || NON_NATIVE_FILES.has(path)) return false;
   if (path.startsWith('data/')) return path.startsWith('data/seed/api-cache/');

@@ -28,6 +28,7 @@ pub mod change_request;
 pub mod client_contract_learning;
 pub mod client_integrations;
 pub mod cloud_sync;
+pub mod cnl_output;
 pub(crate) mod code_editing;
 pub mod code_example_knowledge;
 pub(crate) mod coding;

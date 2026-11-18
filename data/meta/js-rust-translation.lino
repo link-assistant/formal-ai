@@ -14,17 +14,17 @@
 js_rust_translation
   upstream link-foundation/meta-language
   commit eb0574d5528babd3b4aadece81590d8e2230b99b
-  modules 162
-  translated_items 337
-  workaround_items 37
+  modules 164
+  translated_items 342
+  workaround_items 38
   inferred_signatures 3
-  carried_items 2592
-  translated_modules 112
+  carried_items 2656
+  translated_modules 114
   fully_translated_modules 1
   refused_modules 50
 workaround array-push items 2
 workaround callback-loops items 1
-workaround import-pruning items 12
+workaround import-pruning items 13
 workaround string-methods items 25
 module js/agentic/crate/algorithm_discovery.mjs translated 6 workaround 1 inferred 0 carried 39
 module js/agentic/crate/associative_persistence.mjs translated 1 workaround 0 inferred 0 carried 7
@@ -32,6 +32,8 @@ module js/agentic/crate/calculation.mjs translated 0 workaround 0 inferred 0 car
 module js/agentic/crate/capability_routing.mjs translated 7 workaround 0 inferred 0 carried 66
 module js/agentic/crate/change_request.mjs translated 1 workaround 1 inferred 0 carried 15
 module js/agentic/crate/client_contract_learning.mjs translated 0 workaround 1 inferred 0 carried 15
+module js/agentic/crate/cnl_grammar.mjs translated 3 workaround 0 inferred 0 carried 33
+module js/agentic/crate/cnl_output.mjs translated 2 workaround 1 inferred 0 carried 31
 module js/agentic/crate/coding_catalog.mjs translated 4 workaround 2 inferred 0 carried 27
 module js/agentic/crate/coding_cjk.mjs translated 0 workaround 0 inferred 0 carried 1
 module js/agentic/crate/coding_program_contract.mjs translated 0 workaround 1 inferred 0 carried 32
@@ -189,73 +191,75 @@ module js/worker/formal_ai_worker_meta_composite.js translated 0 workaround 0 in
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inferred 0 carried 42
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 26
 refusal "import of names its module does not translate" 361
-refusal "JSDoc type {…}" 220
-refusal "import from '…'" 212
+refusal "JSDoc type {…}" 221
+refusal "import from '…'" 214
 refusal "null" 194
-refusal "arrow function" 139
+refusal "arrow function" 144
 refusal "type: unknown name (a sibling item or an import)" 125
-refusal "function value …" 112
-refusal "new expression" 94
-refusal "object without a $ tag" 94
-refusal "regular expression" 65
-refusal "method call .find()" 62
+refusal "function value …" 113
+refusal "object without a $ tag" 104
+refusal "new expression" 97
+refusal "regular expression" 68
+refusal "method call .find()" 65
+refusal "method call .map()" 61
+refusal "method call .filter()" 60
 refusal "method call .split()" 60
-refusal "method call .map()" 58
-refusal "method call .filter()" 56
-refusal "method call .some()" 50
+refusal "method call .some()" 51
+refusal "method call .slice()" 48
 refusal "Array.from" 47
-refusal "method call .slice()" 47
 refusal "method call .push()" 38
+refusal "method call .indexOf()" 34
 refusal "field access" 33
-refusal "method call .indexOf()" 33
-refusal "optional chaining" 32
-refusal "nullish coalescing" 31
-refusal "method call .replace()" 25
+refusal "optional chaining" 33
+refusal "nullish coalescing" 32
+refusal "method call .replace()" 28
 refusal "export …" 23
 refusal "syntax: malformed number" 21
+refusal "method call .every()" 19
 refusal "try statement" 19
 refusal "case test" 18
-refusal "method call .every()" 18
 refusal "undefined" 18
 refusal "syntax: @param needs a type and a name" 16
-refusal "method call .flatMap()" 14
-refusal "typeof operator" 14
+refusal "method call .flatMap()" 15
+refusal "typeof operator" 15
+refusal "method call .join()" 13
 refusal "for with const" 12
-refusal "method call .join()" 12
 refusal "method call .codePointAt()" 11
 refusal "namespace property …" 11
+refusal "object spread" 11
 refusal "method call .reduce()" 10
-refusal "object spread" 10
+refusal "array destructuring" 9
 refusal "assignment" 9
 refusal "destructured parameter" 9
-refusal "array destructuring" 8
+refusal "syntax: unterminated string literal" 9
 refusal "Array.isArray" 6
-refusal "syntax: unterminated string literal" 6
+refusal "Object.keys" 5
 refusal "method call .has()" 5
 refusal "method call .sort()" 5
+refusal "syntax: unterminated template literal" 5
 refusal "throw new …" 5
-refusal "Object.keys" 4
+refusal "JSON.stringify" 4
+refusal "call of a computed function" 4
 refusal "method call .lastIndexOf()" 4
 refusal "syntax: unsupported template escape" 4
 refusal "throw of a non-error value" 4
 refusal "top-level class statement" 4
 refusal "type: one value is used as a Uint8Array and as an array; declare the types of the function with JSDoc" 4
-refusal "JSON.stringify" 3
 refusal "Object.prototype.hasOwnProperty.call" 3
-refusal "call of a computed function" 3
 refusal "let …" 3
 refusal "method call .forEach()" 3
+refusal "method call .get()" 3
 refusal "method call .repeat()" 3
+refusal "method call .replaceAll()" 3
 refusal "method call .toFixed()" 3
 refusal "several declarators" 3
-refusal "syntax: unterminated template literal" 3
+refusal "syntax: unsupported string escape \p" 3
 refusal "type: one value is used as a string and as an array; declare the types of the function with JSDoc" 3
 refusal "type: one value is used as an array and as a string; declare the types of the function with JSDoc" 3
 refusal "bitwise &" 2
 refusal "generator function" 2
 refusal "instanceof operator" 2
 refusal "method call .entries()" 2
-refusal "method call .get()" 2
 refusal "method call .match()" 2
 refusal "method call .subarray()" 2
 refusal "rest parameter" 2
@@ -278,10 +282,10 @@ refusal "method call .dirname()" 1
 refusal "method call .handlerRulesDocument()" 1
 refusal "method call .keys()" 1
 refusal "method call .linksNotation()" 1
+refusal "method call .matchAll()" 1
 refusal "method call .normalize()" 1
 refusal "method call .padStart()" 1
 refusal "method call .pop()" 1
-refusal "method call .replaceAll()" 1
 refusal "method call .solveAnswer()" 1
 refusal "method call .update()" 1
 refusal "method call .values()" 1
@@ -292,7 +296,6 @@ refusal "shift >>" 1
 refusal "shift >>>" 1
 refusal "syntax: unsupported string escape \]" 1
 refusal "syntax: unsupported string escape \b" 1
-refusal "syntax: unsupported string escape \p" 1
 refusal "syntax: unsupported string escape \s" 1
 refusal "syntax: unsupported template escape \r" 1
 refusal "syntax: unsupported template escape \u" 1
@@ -305,6 +308,7 @@ refusal "type: function value HAN: functions and namespaces are only portable wh
 refusal "type: function value MAX_OPERANDS: functions and namespaces are only portable when a function is called" 1
 refusal "type: function value ROLE_RESPONSE_LANGUAGE_MARKER: functions and namespaces are only portable when a function is called" 1
 refusal "type: function value RULE: functions and namespaces are only portable when a function is called" 1
+refusal "type: one value is used as a boolean and as a number; declare the types of the function with JSDoc" 1
 refusal "type: one value is used as a boolean and as a string; declare the types of the function with JSDoc" 1
 refusal "type: ordering on string" 1
 refusal "void operator" 1

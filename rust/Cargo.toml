@@ -154,6 +154,14 @@ name = "any_language"
 path = "tests/unit/issue_706_any_language.rs"
 
 [[test]]
+name = "cnl_output"
+path = "tests/unit/cnl_output.rs"
+
+[[test]]
+name = "cnl_parity"
+path = "tests/unit/cnl_parity.rs"
+
+[[test]]
 name = "integration"
 path = "tests/integration/mod.rs"
 

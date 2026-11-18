@@ -13,13 +13,16 @@ Maintainer requirements of 2026-10-31 supersede earlier full-PR build opt-ins.
   (rust/src, build.rs, manifests, embedded data, toolchain, either workflow or any
   unknown path). PR #1497 passed every PR check, then main failed with E0308
   and later with clippy::manual_contains, because JavaScript cannot see Rust
-  types or lints. The same job runs four isolated regression targets:
+  types or lints. The same job runs six isolated regression targets:
   `calendar_currency` (#1589), `openai_forced_functions` (#1590),
-  `meta_executor_parity`, and `synthesis_contracts` (#1580). The executor target
+  `meta_executor_parity` and `synthesis_contracts` (#1580), and `cnl_output`
+  and `cnl_parity` (#1584). The CNL targets retain the shared controlled-language
+  output and parity contracts. The executor target
   compares the shared execution, status and cue fixtures, including complete event
   sequences and unverified-draft controls. The synthesis target reuses the twelve
   existing specification tests directly from their maintained source file. The
-  forced-function HTTP suite also replays
+  same job also runs four captured-source language tests and the unchanged
+  unsupported-language sibling contract (#1580). The forced-function HTTP suite also replays
   against the native CLI. All compile-dependent steps retain the same input
   condition, with two compiler jobs and test optimization disabled. Successful
   execution verifies these regressions; it does not produce release evidence. Full

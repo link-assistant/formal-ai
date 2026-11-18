@@ -32,6 +32,8 @@ self.FORMAL_AI_WORKER_MODULES = Object.freeze([
   "worker/formal_ai_worker_coreference.js",
   "worker/formal_ai_worker_crate_ascii_character.js",
   "worker/formal_ai_worker_crate_callback_values.js",
+  "worker/formal_ai_worker_crate_cnl_grammar.js",
+  "worker/formal_ai_worker_crate_cnl_output.js",
   "worker/formal_ai_worker_crate_coding_catalog.js",
   "worker/formal_ai_worker_crate_command_output_contract.js",
   "worker/formal_ai_worker_crate_concise_dependency_restatement.js",

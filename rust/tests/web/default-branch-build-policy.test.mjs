@@ -66,7 +66,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
   assert.equal(others.length, 0);
   const runs = check.steps.map(step => step.run).filter(Boolean);
   assert.deepEqual(runs.filter(run => !run.startsWith('echo ')), ['bash scripts/ci-clippy-profile.sh --library-and-binaries',
-    'cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test meta_executor_parity --test synthesis_contracts -- --test-threads=1',
+    'cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test meta_executor_parity --test synthesis_contracts --test cnl_output --test cnl_parity -- --test-threads=1',
     'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_unknown_reasoning::tests:: -- --test-threads=1\n' +
     'cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1\n',
     'node --test --test-concurrency=1 rust/tests/web/issue-1590-forced-functions.test.mjs']);
@@ -132,6 +132,15 @@ test('isolated native regressions select execution for their sources and embedde
       assert.equal(admission([fixture])['native-type-check'], true, fixture);
     }
   }
+});
+test('native CNL parity selects execution when a discovered language fixture changes', () => {
+  const source = read('rust/tests/unit/cnl_parity.rs');
+  assert.match(source, /join\("\.\.\/data\/parity\/issue-1584-cnl"\)/u);
+  const fixtures = readdirSync('data/parity/issue-1584-cnl').filter(name => name.endsWith('.json'));
+  assert(fixtures.length > 0);
+  for (const name of fixtures) assert.equal(admission(['data/parity/issue-1584-cnl/' + name])['native-type-check'], true, name);
+  assert.equal(admission(['data/parity/issue-1584-cnl/new-language.json'])['native-type-check'], true);
+  assert.equal(admission(['data/parity/unrelated.json'])['native-type-check'], false);
 });
 test('native unsupported-language regressions execute the captured-source units and unchanged sibling contract', () => {
   const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps

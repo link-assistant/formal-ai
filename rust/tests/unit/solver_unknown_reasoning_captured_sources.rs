@@ -91,6 +91,19 @@ fn a_word_in_an_unparsed_question_is_still_only_a_word_definition() {
         &[captured_sense("isograma", "es")],
     );
     assert_eq!(answer.intent, "unknown");
+    assert_eq!(
+        answer.answer,
+        "No pude determinar `¿Cómo funciona un isograma` a partir de la \
+         memoria local de Links Notation, el conocimiento público en caché ni la caché de fuentes, \
+         y no puedo inferir una respuesta verificada. Registré en la traza los intentos fallidos \
+         de recopilación.\n\n\
+         Si el razonamiento sigue sin resolverlo y hace falta un hecho semilla compartido o una \
+         regla de enlaces en Links Notation, usa Report issue con la traza. Para conservar una \
+         regla local del diálogo, exporta la memoria o enséñala con `When I say ... answer ...`; \
+         revisa las rutas con `List behavior rules` y `Show behavior rule unknown`.\n\n\
+         Detecté un fallo mientras trabajaba en esta solicitud. ¿Quieres que prepare un informe \
+         del problema con el contexto de diagnóstico? Responde `Report issue`."
+    );
     assert!(answer.answer.contains("`¿Cómo funciona un isograma`"));
 }
 
@@ -106,6 +119,10 @@ fn supported_definition_keeps_its_attributed_retrieved_answer() {
         std::slice::from_ref(&sense),
     );
     assert_eq!(answer.intent, "concept_lookup");
+    assert_eq!(
+        answer.answer,
+        "isogram (isogram): a line drawn on a map connecting points having the same numerical value of some variable\n\nSource: https://en-word.net/api/lemma/isogram (sha256 ae8c98f774fd255a; CC BY 4.0)"
+    );
     assert!(answer.answer.contains(&sense.gloss));
     assert!(answer.answer.contains(&sense.source_url));
     assert!(answer.answer.contains(&sense.sha256[..16]));
@@ -123,6 +140,10 @@ fn unsupported_bare_term_keeps_its_attributed_retrieved_answer() {
         std::slice::from_ref(&sense),
     );
     assert_eq!(answer.intent, "concept_lookup");
+    assert_eq!(
+        answer.answer,
+        "isograma (Heterograma): Un heterograma es una palabra o frase que no contiene ninguna letra repetida. Esta propiedad fue descrita por Dmitri Borgmann en su libro Language on Vacation: An Olio of Orthographical Oddities, donde intentó encontrar la palabra más larga que cumpliera esta condición.\n\nFuente: https://es.wikipedia.org/api/rest_v1/page/summary/Isograma (sha256 7fbc0bf57dce4de1; CC BY-SA 4.0)"
+    );
     assert!(answer.answer.contains(&sense.gloss));
     assert!(answer.answer.contains(&sense.source_url));
 }

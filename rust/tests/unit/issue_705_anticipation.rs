@@ -486,6 +486,8 @@ fn chat_answer(prompt: &str, events: &[MemoryEvent], solver: &UniversalSolver) -
         tool_choice: None,
         functions: Vec::new(),
         function_call: None,
+        output_standard: None,
+        lexical_density: None,
         stream_options: None,
     };
     create_chat_completion_with_solver_and_memory(&request, solver, events).choices[0]

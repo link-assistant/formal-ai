@@ -94,6 +94,7 @@ debug_stage_sources
     rust "rust/src/solver_handlers/web_requests.rs" "answer_http_fetch_url"
   event "impulse"
     step impulse
+    rust "rust/src/cnl_output/controlled.rs" "controlled_solve"
     rust "rust/src/protocol_memory.rs" "answer_memory_inspection"
     rust "rust/src/solver.rs" "solve_with_history_probability_store_and_intent_cache"
     rust "rust/src/solver_handlers/conversation_memory/mod.rs" "answer_memory_recall"
@@ -101,6 +102,7 @@ debug_stage_sources
     js "js/worker/formal_ai_worker_solver_events.js" "solverEventLog"
   event "intent"
     step dispatch_handler
+    rust "rust/src/cnl_output/controlled.rs" "controlled_solve"
     rust "rust/src/meta_method_dispatch.rs" "try_diagnostic"
     rust "rust/src/meta_method_dispatch.rs" "try_learned_method"
     rust "rust/src/meta_reasoner/integration.rs" "project"
@@ -160,6 +162,7 @@ debug_stage_sources
     rust "rust/src/solver_handlers/benchmark_prompts.rs" "render_release_timeline"
   event "response"
     step deformalize
+    rust "rust/src/cnl_output/controlled.rs" "controlled_solve"
     rust "rust/src/meta_method_dispatch.rs" "try_diagnostic"
     rust "rust/src/meta_method_dispatch.rs" "try_learned_method"
     rust "rust/src/meta_reasoner/integration.rs" "project"
