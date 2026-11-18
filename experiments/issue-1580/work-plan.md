@@ -342,3 +342,26 @@ the unchanged ceiling. The focused naming and whitespace rerun passes.
 Evidence: `docs/case-studies/issue-1580/opener-native-boundary-checkpoint.md`.
 
 - [x] Complete all 12 affected policy/release/core/source-budget gates and final Rust formatting, projection and whitespace checks. No shared `data/meta` input changes this round; the full gate inventory is not repeated. Save final source identities and retain zero native behavior/authorship credit.
+
+
+## Declared language policy in unresolved JavaScript answers
+
+- [x] Verify publication of edffcb18 and its exact PR body; the prior metadata assertion stripped only the local terminal newline. Preserve the corrected receipt. Fresh CI has 21 passing workflows and two active workflows; no failure or completion conclusion is inferred.
+- [x] Read the original complete native Spanish fixture, canonical agent-info answer-language declaration and both unresolved paths. Native uses declared answer languages; the JavaScript terminal helper currently checks only the detector's unknown value. Spanish is detected but absent from the four declared answer languages.
+- [x] Reproduce the complete original Spanish how-question answer mismatch and a held-out metadata-policy control before changing production code. Both fail before the fix; preserve both complete assertion payloads.
+- [x] Use the maintained seed list parser for the JavaScript terminal policy, preserve actual detected-language trace metadata and native whole-prompt punctuation handling; all eight focused cases pass, including positive supported-language routes.
+- [ ] Verify focused regressions and affected gates; collect every result on edffcb18 before any later push. The original adopted Spanish definition route and actual native execution remain separate unfinished criteria.
+
+All supplied diagnostics, patches and conclusions retain zero independent authorship credit. Every earlier broad unchecked acceptance criterion remains open.
+
+The complete edffcb18 CI inventory has 22 passing workflows and one checkout failure; the sole failed direct log is read in full (171 lines). Preserve the original transport failure and request one failed-job retry, then await it before publication. The transport root cause remains unverified. Evidence and acceptance limits: `docs/case-studies/issue-1580/declared-language-policy-checkpoint.md`.
+
+
+- [x] Collect both edffcb18 Layered CI attempts and read each failed job completely: 171 checkout lines, then 320 TypeScript-projection lines. The one allowed retry passes checkout and both JavaScript groups, then identifies the stale mirror. Transport cause remains unverified.
+- [x] Preserve the initial 38-line worker budget failure, restore the unchanged 33-line ceiling, pass all eight focused cases again and all six affected source gates. The other eight initial publication gates passed; no shared metadata changes.
+- [x] Reproduce both TypeScript mirror drifts, regenerate only those files through the maintained translator and pass its 717-file check. No native execution or full language-parity claim.
+- [ ] Review, seal and publish the complete batch once; verify all workflows on its new head. All earlier broad unchecked requirements remain unfinished.
+
+- [x] Read Java historical pages 39–41 completely. Coverage is now 58/254 pages (1–41 and 48–64), still 65 complete files, two partials and 3,038 complete source lines; all three pages contain only fragments of one incomplete retained OSV log line. Pages 42–47 and 65–254 remain unread.
+
+- [x] Review the complete code and generated mirror diff; pass the final five release/naming/size gates, 717-file projection and whitespace checks. Fresh 03:50 UTC feedback is unchanged, main 015a6831 is already merged, all edffcb18 runs are completed and both active/queued lists are empty. Preserve both failed CI attempts before publication.

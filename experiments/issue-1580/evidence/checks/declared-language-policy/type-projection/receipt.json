@@ -1,0 +1,11 @@
+{
+  "changed": [
+    "ts/worker/formal_ai_worker_seed_responses_and_language.ts",
+    "ts/worker/formal_ai_worker_unknown_language.ts"
+  ],
+  "writtenBy": "node scripts/translate-es.mjs --write",
+  "changedSourcesByteEqual": true,
+  "allTrackedMirrorsVerified": true,
+  "nativeBehaviorVerified": false,
+  "autonomousAuthorshipCredit": 0
+}

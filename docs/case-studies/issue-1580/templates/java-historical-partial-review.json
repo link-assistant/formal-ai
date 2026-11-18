@@ -41,6 +41,9 @@
     36,
     37,
     38,
+    39,
+    40,
+    41,
     48,
     49,
     50,
@@ -930,5 +933,13 @@
     "Pages 61–64 complete the retained Codecov action and google/osv-scanner v2.7.1 release records, including every release-note fragment and asset record. They remain historical evidence; no asset download or current dependency execution is claimed.",
     "The OSV record describes deterministic vulnerability sorting, malformed archive-size rejection, confined extraction, lockfile extraction and fix-command argument validation. These are review context rather than evidence that the current Formal AI project exercises those release paths.",
     "Only the first three lines of the retained oven-sh/bun release record have been read. Pages 39–47 and forward pages 65–254 remain unread; complete repository review is not claimed."
+  ],
+  "observationsPage39": [
+    "Page 39 was fully read: retained osv-scope-reproduction.log line 2 fragments 10–15 of 66, covering historical Log4j advisory and affected-package records. This is historical review, not current execution or security advice.",
+    "The long second source line is still incomplete; this page adds no complete source line or file. Pages 40–47 and forward pages 65–254 remain unread."
+  ],
+  "observationsPages40And41": [
+    "Both pages were read completely: osv-scope-reproduction.log line 2 fragments 16–27 of 66. These retained records cover Log4j advisory references and package ranges, including JDBC appender configuration scope; no current package execution or security conclusion is claimed.",
+    "The second source line remains incomplete; neither page adds a complete source line or file. Pages 42–47 and forward 65–254 remain unread."
   ]
 }

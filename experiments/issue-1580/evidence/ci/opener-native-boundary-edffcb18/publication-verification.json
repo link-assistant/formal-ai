@@ -1,0 +1,13 @@
+{
+  "verifiedAt": "2026-11-18T03:26:32.332709+00:00",
+  "head": "edffcb183a7a7f9d5d17967cfea94071aee57a90",
+  "url": "https://github.com/link-assistant/formal-ai/pull/1581",
+  "draft": true,
+  "bodyVerified": true,
+  "bodyExact": true,
+  "bodySha256": "8806875aeb232b43ee1ec3314b997c5c63eedf716ef5ef86afe09f5b1a535a94",
+  "cleanWorkingTree": true,
+  "remoteHeadVerified": true,
+  "nativeBehaviorVerified": false,
+  "priorAssertionCause": "Local stripped body was compared to GitHub body including its terminal newline."
+}
