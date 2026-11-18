@@ -84,11 +84,13 @@ function main(argv) {
     return 1;
   }
   const changed = values(argv, '--changed');
+  // Keep a finite 16 MiB ceiling while accepting evidence-heavy diffs above 1 MiB.
+  // NUL delimiters preserve spaces, Unicode and newlines in Git paths.
   for (const base of values(argv, '--base')) {
-    changed.push(...execFileSync('git', ['diff', '--name-only', base + '...HEAD'], { encoding: 'utf8' }).split('\n').filter(Boolean));
+    changed.push(...execFileSync('git', ['diff', '--name-only', '-z', base + '...HEAD'], { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 }).split('\0').filter(Boolean));
   }
   for (const since of values(argv, '--since')) {
-    changed.push(...execFileSync('git', ['diff', '--no-renames', '--name-only', since, 'HEAD'], { encoding: 'utf8' }).split('\n').filter(Boolean));
+    changed.push(...execFileSync('git', ['diff', '--no-renames', '--name-only', '-z', since, 'HEAD'], { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 }).split('\0').filter(Boolean));
   }
   const families = argv.includes('--all') ? map.families.map(family => family.id) : values(argv, '--family');
   const selection = selectFocused(map, { changed, families, reasons: values(argv, '--reason') });
