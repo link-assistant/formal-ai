@@ -149,6 +149,11 @@ main-run 44174503458
       marker "private schema and arguments remain lazy"
 main-run 44188508650
   javascript-twin
+    regression algebra-source-operand-composition
+      introduced-by "recursive parent validation observed on main 015a6831"
+      failed "synthesis algebra intent and renumbered assignment cases returned calculation_error instead of 11 and 17"
+      check rust/tests/web/issue-1580-algebra-substitution.test.mjs
+      marker "Given y = 4 and x = 3, evaluate (x^2 + 2y)."
     regression calendar-meaning-slug-collision
       introduced-by "PR #1597, merged as 015a6831"
       failed "meaning_slugs_are_globally_unique: calendar-duration-sum named a handler cue and a response intent"

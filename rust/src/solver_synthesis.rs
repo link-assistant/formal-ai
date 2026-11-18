@@ -523,7 +523,10 @@ fn extract_requested_expression(prompt: &str) -> Option<String> {
             }
         }
     }
-    None
+    crate::calculation::calculation_expression_candidates(prompt)
+        .into_iter()
+        .find(|candidate| candidate.explicit && !candidate.expression.contains('='))
+        .map(|candidate| candidate.expression)
 }
 
 fn clean_expression(value: &str) -> String {

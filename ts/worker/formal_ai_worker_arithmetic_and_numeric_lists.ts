@@ -273,7 +273,7 @@ function extractRequestedAlgebraExpression(prompt) {
       .trim();
     if (cleaned && /[A-Za-z_]/.test(cleaned)) return cleaned;
   }
-  return null;
+  return extractArithmeticExpression(text)?.expression ?? null;
 }
 
 function lastNonWhitespace(value) {

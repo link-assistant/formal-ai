@@ -278,3 +278,52 @@ fn production_composition_retains_only_selected_child_evidence() {
         assert_eq!(composed.evidence, expected, "{connective}");
     }
 }
+
+// Issue #1580: main rejected source-operand compositions because separately
+// solved assignment fragments were unresolved. Replay through the real solver,
+// including the renumbered case, in the existing isolated native target.
+#[test]
+fn production_algebra_substitution_replays_main_regressions() {
+    let solver = formal_ai::UniversalSolver::new(formal_ai::SolverConfig {
+        offline: true,
+        execution_surface: formal_ai::ExecutionSurface::RustLibrary,
+        temperature: 0.0,
+        ..formal_ai::SolverConfig::default()
+    });
+    for (prompt, expected) in [
+        (
+            "If x = 2 and y = 5, then what is the value of (x^4 + 2y^2) / 6?",
+            "11",
+        ),
+        ("Given y = 4 and x = 3, evaluate (x^2 + 2y).", "17"),
+        ("Given x = 3 and y = 4, evaluate (x^2 + 2y).", "17"),
+        ("If x = 3 and y = 4, what is x*x + 2*y?", "17"),
+        ("If x = 4 and y = 6, what is x*x + 2*y?", "28"),
+    ] {
+        let response = solver.solve(prompt);
+        assert_eq!(
+            response.intent, "algebra_substitution",
+            "{prompt}: {}",
+            response.answer
+        );
+        assert_eq!(response.answer, expected, "{prompt}");
+        for kind in [
+            "sub_impulse:",
+            "sub_result:",
+            "composition:substitution:",
+            "composition:evaluation:",
+        ] {
+            assert!(
+                response
+                    .evidence_links
+                    .iter()
+                    .any(|link| link.starts_with(kind)),
+                "{prompt}: missing {kind}"
+            );
+        }
+        assert!(
+            response.links_notation.contains("composition:evaluation"),
+            "{prompt}"
+        );
+    }
+}
