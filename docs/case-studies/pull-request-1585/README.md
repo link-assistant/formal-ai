@@ -175,3 +175,9 @@ found these problems and fixed them:
   the controlled text the draft already is, so the output projection does not
   render it twice. The governed specification witness and the debug stage sources
   were refreshed for the new `rust/src/solver.rs` and `controlled_solve` events.
+  Both runtimes have a test that pins the exact answer "Yes. Every cat is an
+  animal." together with its procedure trace: `controlled dialogue answers retain
+  the recursive procedure trace` in the census test, and
+  `controlled_dialogue_answers_retain_the_recursive_procedure_trace` in
+  `rust/tests/unit/cnl_output.rs`. The Rust test also covers the "Use
+  max-precision." switch.

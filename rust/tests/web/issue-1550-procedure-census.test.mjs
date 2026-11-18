@@ -3,7 +3,8 @@
 //
 // (c) Both production entries end in the recursive procedure: the native
 // `solve_with_history_probability_store_and_intent_cache` has no exit before or
-// after its cascade closure and hands the closure's draft to
+// after its cascade closure, runs the closure through the controlled output
+// hook (`controlled_solve`, issue #1584) and hands the hook's draft to
 // `run_meta_procedure`; the worker's `solve` has exactly two exits (the
 // diagnostic rerun, which copies the inner turn's `metaExecution`, and the
 // procedure's run). The native `rust/tests/unit/meta_executor_census.rs`
@@ -77,6 +78,13 @@ test('controlled-output rewrites retain the recursive procedure trace', {timeout
   assert.equal(answer.content, 'Maximum precision uses specific words. Look up unfamiliar words in a dictionary to check their exact meaning.\n\nI am omniscient.');
   assert.ok(answer.metaExecution, 'rewrites must pass through the recursive procedure');
   assert.deepEqual(answer.toolCalls, []);
+});
+
+test('controlled dialogue answers retain the recursive procedure trace', {timeout: 30000}, async () => {
+  const answer = await host.solve('Is a cat an animal?', []);
+  assert.equal(answer.intent, 'cnl_answer');
+  assert.equal(answer.content, 'Yes. Every cat is an animal.');
+  assert.ok(answer.metaExecution, 'controlled dialogue answers must pass through the recursive procedure');
 });
 
 test('the census fixture lists every prompt of the specification corpus', () => {

@@ -235,3 +235,29 @@ fn an_in_dialog_density_switch_rerenders_the_controlled_answer_deterministically
     let named = solve_with_history("Rewrite in max-precision mode", &history);
     assert_eq!(named.answer, MAX_PRECISION_CAT);
 }
+
+// Issue #1550: a controlled dialogue answer and a density switch are drafts
+// that still run the recursive procedure (twin of "controlled dialogue answers
+// retain the recursive procedure trace" in issue-1550-procedure-census.test.mjs).
+#[test]
+fn controlled_dialogue_answers_retain_the_recursive_procedure_trace() {
+    use ::formal_ai::meta_executor::{last_turn_trace, remember_trace};
+    use ::formal_ai::{ConversationTurn, UniversalSolver};
+    let solver = UniversalSolver::default();
+    let question = "Is a cat an animal?";
+    remember_trace(&[]);
+    let cat = solver.solve(question);
+    let trace = last_turn_trace();
+    assert_eq!(cat.intent, "cnl_answer");
+    assert_eq!(cat.answer, "Yes. Every cat is an animal.");
+    assert!(trace.iter().any(|event| event.kind == "meta_exec:result"));
+    let history = [
+        ConversationTurn::user(question),
+        ConversationTurn::assistant(cat.answer.as_str()),
+    ];
+    remember_trace(&[]);
+    let switched = solver.solve_with_history("Use max-precision.", &history);
+    let trace = last_turn_trace();
+    assert_eq!(switched.answer, MAX_PRECISION_CAT);
+    assert!(trace.iter().any(|event| event.kind == "meta_exec:result"));
+}
