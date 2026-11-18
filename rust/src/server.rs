@@ -737,17 +737,15 @@ fn http_solver() -> UniversalSolver {
 /// scraping content out of the raw SSE stream, which is where the CLI's
 /// *"AI SDK dropped token data"* warning comes from) but silently dropped
 /// `tool_calls`, so the agent CLI never actually invoked the tool the planner
-/// requested. Emit chunks: an initial `role` delta, one delta per tool call
-/// (with full `function.arguments` in a single frame — the SDK stitches them
-/// back together), a final `finish_reason` chunk, an optional usage chunk when
-/// the client asks for it via `stream_options.include_usage`, and the closing
-/// `[DONE]` sentinel.
+/// requested. Emit a `role` delta, one delta per tool call (full arguments in one
+/// frame), a final `finish_reason` chunk carrying any `output_projection`, an
+/// optional `stream_options.include_usage` chunk, and the `[DONE]` sentinel.
 fn chat_completion_sse_response(
     completion: &ChatCompletion,
     include_usage: bool,
 ) -> ApiHttpResponse {
     let mut body = String::new();
-    let base = json!({
+    let mut base = json!({
         "id": completion.id,
         "object": "chat.completion.chunk",
         "created": completion.created,
@@ -829,11 +827,10 @@ fn chat_completion_sse_response(
         "delta": {},
         "finish_reason": finish_reason,
     });
-    let mut final_base = base.clone();
     if let Some(projection) = &completion.output_projection {
-        final_base["output_projection"] = projection.clone();
+        base["output_projection"] = projection.clone();
     }
-    body.push_str(&sse_chunk(&final_base, &final_chunk));
+    body.push_str(&sse_chunk(&base, &final_chunk));
 
     // Optional usage chunk — the AI SDK reads token counts from here when
     // `stream_options.include_usage` is set (per OpenAI's spec).
