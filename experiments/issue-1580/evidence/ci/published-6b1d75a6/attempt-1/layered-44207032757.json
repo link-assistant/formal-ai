@@ -1,0 +1,573 @@
+{
+  "attempt": 1,
+  "conclusion": "failure",
+  "createdAt": "2026-11-18T00:20:37Z",
+  "databaseId": 44207032757,
+  "headSha": "6b1d75a62a610e58914ef594c107f3fa402ded9d",
+  "jobs": [
+    {
+      "completedAt": "2026-11-18T00:20:47Z",
+      "conclusion": "success",
+      "databaseId": 134475511760,
+      "name": "Detect tier changes",
+      "startedAt": "2026-11-18T00:20:40Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-18T00:20:41Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-18T00:20:41Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:20:44Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v7",
+          "number": 2,
+          "startedAt": "2026-11-18T00:20:41Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:20:44Z",
+          "conclusion": "skipped",
+          "name": "Setup Rust",
+          "number": 3,
+          "startedAt": "2026-11-18T00:20:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:20:44Z",
+          "conclusion": "skipped",
+          "name": "Install rust-script",
+          "number": 4,
+          "startedAt": "2026-11-18T00:20:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:20:44Z",
+          "conclusion": "skipped",
+          "name": "Test change admission before selecting tiers",
+          "number": 5,
+          "startedAt": "2026-11-18T00:20:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:20:45Z",
+          "conclusion": "success",
+          "name": "Detect tier changes",
+          "number": 6,
+          "startedAt": "2026-11-18T00:20:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:20:45Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 12,
+          "startedAt": "2026-11-18T00:20:45Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:20:45Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 13,
+          "startedAt": "2026-11-18T00:20:45Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207032757/job/134475511760"
+    },
+    {
+      "completedAt": "2026-11-18T00:20:38Z",
+      "conclusion": "skipped",
+      "databaseId": 134475513482,
+      "name": "Full source network serialization (${{ matrix.shard }}/16)",
+      "startedAt": "2026-11-18T00:20:38Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207032757/job/134475513482"
+    },
+    {
+      "completedAt": "2026-11-18T00:20:38Z",
+      "conclusion": "skipped",
+      "databaseId": 134475513841,
+      "name": "Explicit server parity diagnostic from existing main binary",
+      "startedAt": "2026-11-18T00:20:38Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207032757/job/134475513841"
+    },
+    {
+      "completedAt": "2026-11-18T00:20:38Z",
+      "conclusion": "skipped",
+      "databaseId": 134475513974,
+      "name": "Explicit source-only translation regeneration",
+      "startedAt": "2026-11-18T00:20:38Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207032757/job/134475513974"
+    },
+    {
+      "completedAt": "2026-11-18T00:27:41Z",
+      "conclusion": "success",
+      "databaseId": 134475584294,
+      "name": "js tier (node --check over js, suite group 1)",
+      "startedAt": "2026-11-18T00:20:49Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-18T00:20:53Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-18T00:20:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:26Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v7",
+          "number": 2,
+          "startedAt": "2026-11-18T00:20:53Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:31Z",
+          "conclusion": "success",
+          "name": "Report DRY review and language coverage",
+          "number": 3,
+          "startedAt": "2026-11-18T00:21:26Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:32Z",
+          "conclusion": "success",
+          "name": "Regenerate canonical seed projection for JavaScript consumers",
+          "number": 4,
+          "startedAt": "2026-11-18T00:21:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:35Z",
+          "conclusion": "success",
+          "name": "Syntax-check every committed js file",
+          "number": 5,
+          "startedAt": "2026-11-18T00:21:32Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:36Z",
+          "conclusion": "success",
+          "name": "Native diagnostics use the shared structured logger (R1220)",
+          "number": 6,
+          "startedAt": "2026-11-18T00:21:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:36Z",
+          "conclusion": "success",
+          "name": "Native-only handler rows only fall (R998)",
+          "number": 7,
+          "startedAt": "2026-11-18T00:21:36Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:37Z",
+          "conclusion": "success",
+          "name": "Syntax-check the JavaScript server and its parity runner (R1013)",
+          "number": 8,
+          "startedAt": "2026-11-18T00:21:36Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:38Z",
+          "conclusion": "success",
+          "name": "Natural-language literals in the worker and server only fall (R1010, R1013)",
+          "number": 9,
+          "startedAt": "2026-11-18T00:21:37Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:39Z",
+          "conclusion": "success",
+          "name": "Check out relative-meta-logic for the rml export step (R1186-4)",
+          "number": 10,
+          "startedAt": "2026-11-18T00:21:38Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:42Z",
+          "conclusion": "success",
+          "name": "Install rml and name it in RML_BIN (R1186-6)",
+          "number": 11,
+          "startedAt": "2026-11-18T00:21:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:42Z",
+          "conclusion": "success",
+          "name": "Setup the pinned web dependency installer",
+          "number": 12,
+          "startedAt": "2026-11-18T00:21:42Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:43Z",
+          "conclusion": "success",
+          "name": "Install actual locked UI test dependencies",
+          "number": 13,
+          "startedAt": "2026-11-18T00:21:42Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:44Z",
+          "conclusion": "success",
+          "name": "Install the isolated patched matcher test dependencies",
+          "number": 14,
+          "startedAt": "2026-11-18T00:21:43Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:22:33Z",
+          "conclusion": "success",
+          "name": "Provision the real agentic search adapter",
+          "number": 15,
+          "startedAt": "2026-11-18T00:21:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:22:36Z",
+          "conclusion": "success",
+          "name": "Provision the actual pinned source-model frontend",
+          "number": 16,
+          "startedAt": "2026-11-18T00:22:33Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:22:36Z",
+          "conclusion": "success",
+          "name": "Plan this shard of the JavaScript suites",
+          "number": 17,
+          "startedAt": "2026-11-18T00:22:36Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:22:36Z",
+          "conclusion": "success",
+          "name": "Set up Python for the pinned template observations",
+          "number": 18,
+          "startedAt": "2026-11-18T00:22:36Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:24:46Z",
+          "conclusion": "success",
+          "name": "Run the focused tests for the changed components first",
+          "number": 19,
+          "startedAt": "2026-11-18T00:22:36Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:27:39Z",
+          "conclusion": "success",
+          "name": "Run this shard of the JavaScript suites",
+          "number": 20,
+          "startedAt": "2026-11-18T00:24:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:27:39Z",
+          "conclusion": "success",
+          "name": "Post Set up Python for the pinned template observations",
+          "number": 36,
+          "startedAt": "2026-11-18T00:27:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:27:39Z",
+          "conclusion": "success",
+          "name": "Post Provision the actual pinned source-model frontend",
+          "number": 37,
+          "startedAt": "2026-11-18T00:27:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:27:39Z",
+          "conclusion": "success",
+          "name": "Post Setup the pinned web dependency installer",
+          "number": 38,
+          "startedAt": "2026-11-18T00:27:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:27:39Z",
+          "conclusion": "success",
+          "name": "Post Check out relative-meta-logic for the rml export step (R1186-4)",
+          "number": 39,
+          "startedAt": "2026-11-18T00:27:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:27:40Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 40,
+          "startedAt": "2026-11-18T00:27:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:27:40Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 41,
+          "startedAt": "2026-11-18T00:27:40Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207032757/job/134475584294"
+    },
+    {
+      "completedAt": "2026-11-18T00:21:17Z",
+      "conclusion": "failure",
+      "databaseId": 134475584343,
+      "name": "js tier (node --check over js, suite group 2)",
+      "startedAt": "2026-11-18T00:20:49Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-18T00:20:51Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-18T00:20:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:16Z",
+          "conclusion": "failure",
+          "name": "Run actions/checkout@v7",
+          "number": 2,
+          "startedAt": "2026-11-18T00:20:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:16Z",
+          "conclusion": "skipped",
+          "name": "Report DRY review and language coverage",
+          "number": 3,
+          "startedAt": "2026-11-18T00:21:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:16Z",
+          "conclusion": "skipped",
+          "name": "Regenerate canonical seed projection for JavaScript consumers",
+          "number": 4,
+          "startedAt": "2026-11-18T00:21:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:16Z",
+          "conclusion": "skipped",
+          "name": "Syntax-check every committed js file",
+          "number": 5,
+          "startedAt": "2026-11-18T00:21:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:16Z",
+          "conclusion": "skipped",
+          "name": "Native diagnostics use the shared structured logger (R1220)",
+          "number": 6,
+          "startedAt": "2026-11-18T00:21:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:16Z",
+          "conclusion": "skipped",
+          "name": "Native-only handler rows only fall (R998)",
+          "number": 7,
+          "startedAt": "2026-11-18T00:21:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:16Z",
+          "conclusion": "skipped",
+          "name": "Syntax-check the JavaScript server and its parity runner (R1013)",
+          "number": 8,
+          "startedAt": "2026-11-18T00:21:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:16Z",
+          "conclusion": "skipped",
+          "name": "Natural-language literals in the worker and server only fall (R1010, R1013)",
+          "number": 9,
+          "startedAt": "2026-11-18T00:21:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:16Z",
+          "conclusion": "skipped",
+          "name": "Check out relative-meta-logic for the rml export step (R1186-4)",
+          "number": 10,
+          "startedAt": "2026-11-18T00:21:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:16Z",
+          "conclusion": "skipped",
+          "name": "Install rml and name it in RML_BIN (R1186-6)",
+          "number": 11,
+          "startedAt": "2026-11-18T00:21:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:16Z",
+          "conclusion": "skipped",
+          "name": "Setup the pinned web dependency installer",
+          "number": 12,
+          "startedAt": "2026-11-18T00:21:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:16Z",
+          "conclusion": "skipped",
+          "name": "Install actual locked UI test dependencies",
+          "number": 13,
+          "startedAt": "2026-11-18T00:21:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:16Z",
+          "conclusion": "skipped",
+          "name": "Install the isolated patched matcher test dependencies",
+          "number": 14,
+          "startedAt": "2026-11-18T00:21:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:16Z",
+          "conclusion": "skipped",
+          "name": "Provision the real agentic search adapter",
+          "number": 15,
+          "startedAt": "2026-11-18T00:21:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:16Z",
+          "conclusion": "skipped",
+          "name": "Provision the actual pinned source-model frontend",
+          "number": 16,
+          "startedAt": "2026-11-18T00:21:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:16Z",
+          "conclusion": "skipped",
+          "name": "Plan this shard of the JavaScript suites",
+          "number": 17,
+          "startedAt": "2026-11-18T00:21:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:16Z",
+          "conclusion": "skipped",
+          "name": "Set up Python for the pinned template observations",
+          "number": 18,
+          "startedAt": "2026-11-18T00:21:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:16Z",
+          "conclusion": "skipped",
+          "name": "Run the focused tests for the changed components first",
+          "number": 19,
+          "startedAt": "2026-11-18T00:21:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:16Z",
+          "conclusion": "skipped",
+          "name": "Run this shard of the JavaScript suites",
+          "number": 20,
+          "startedAt": "2026-11-18T00:21:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:16Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v7",
+          "number": 40,
+          "startedAt": "2026-11-18T00:21:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-18T00:21:16Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 41,
+          "startedAt": "2026-11-18T00:21:16Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207032757/job/134475584343"
+    },
+    {
+      "completedAt": "2026-11-18T00:20:47Z",
+      "conclusion": "skipped",
+      "databaseId": 134475586832,
+      "name": "provers (real Lean 4 and Rocq compile, R1186-4)",
+      "startedAt": "2026-11-18T00:20:47Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207032757/job/134475586832"
+    },
+    {
+      "completedAt": "2026-11-18T00:27:41Z",
+      "conclusion": "skipped",
+      "databaseId": 134478797453,
+      "name": "js -> rust leg (meta-language self-translation)",
+      "startedAt": "2026-11-18T00:27:42Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207032757/job/134478797453"
+    },
+    {
+      "completedAt": "2026-11-18T00:27:41Z",
+      "conclusion": "skipped",
+      "databaseId": 134478797672,
+      "name": "ts tier (js<->ts file-set parity)",
+      "startedAt": "2026-11-18T00:27:42Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207032757/job/134478797672"
+    },
+    {
+      "completedAt": "2026-11-18T00:27:41Z",
+      "conclusion": "skipped",
+      "databaseId": 134478797767,
+      "name": "rust tier (dogfood regeneration gate)",
+      "startedAt": "2026-11-18T00:27:42Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207032757/job/134478797767"
+    },
+    {
+      "completedAt": "2026-11-18T00:27:41Z",
+      "conclusion": "skipped",
+      "databaseId": 134478798335,
+      "name": "server parity (JavaScript server vs Rust server)",
+      "startedAt": "2026-11-18T00:27:42Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207032757/job/134478798335"
+    }
+  ],
+  "status": "completed",
+  "updatedAt": "2026-11-18T00:27:42Z",
+  "url": "https://github.com/link-assistant/formal-ai/actions/runs/44207032757"
+}

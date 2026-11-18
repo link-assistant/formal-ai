@@ -1,0 +1,130 @@
+{
+  "createdAt": "2026-11-18T00:53:02.177398+00:00",
+  "durationSeconds": 39.2,
+  "gates": [
+    {
+      "gate": "check-ci-speed",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-ci-speed"
+      ],
+      "exitCode": 0,
+      "seconds": 1.695,
+      "log": "check-ci-speed.log.gz",
+      "rawSha256": "302fa6446cfc79db8726269bcdf06c609f481a6e90f90a75231b2b384cfbc4d3",
+      "rawBytes": 62,
+      "rawLines": 3
+    },
+    {
+      "gate": "check-abbreviations",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations"
+      ],
+      "exitCode": 0,
+      "seconds": 4.474,
+      "log": "check-abbreviations.log.gz",
+      "rawSha256": "264a04f6b5aa4d0e73bfa30236569edd211e8421e35ebb7f030479e9b174e03b",
+      "rawBytes": 67,
+      "rawLines": 3
+    },
+    {
+      "gate": "check-file-size",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size"
+      ],
+      "exitCode": 0,
+      "seconds": 4.038,
+      "log": "check-file-size.log.gz",
+      "rawSha256": "f4a170300cb54e1ac7ca56ed7d66551693ccea732df23baafbf8d401b85f41c8",
+      "rawBytes": 63,
+      "rawLines": 3
+    },
+    {
+      "gate": "check-file-size-js-twin",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin"
+      ],
+      "exitCode": 0,
+      "seconds": 4.148,
+      "log": "check-file-size-js-twin.log.gz",
+      "rawSha256": "43e9f18e90da64ce5f02fb42f92209cd0e5832562a4f0b1bd43faa4b68c2dfa0",
+      "rawBytes": 71,
+      "rawLines": 3
+    },
+    {
+      "gate": "check-changelog-fragment-js-twin",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-changelog-fragment-js-twin"
+      ],
+      "exitCode": 0,
+      "seconds": 1.821,
+      "log": "check-changelog-fragment-js-twin.log.gz",
+      "rawSha256": "b346a927d702f1814ced2b15a5dacc2edd3c77f6cbf61d4286a490c973f61007",
+      "rawBytes": 80,
+      "rawLines": 3
+    },
+    {
+      "gate": "check-reconstructed-changelog",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-reconstructed-changelog"
+      ],
+      "exitCode": 0,
+      "seconds": 20.369,
+      "log": "check-reconstructed-changelog.log.gz",
+      "rawSha256": "290b56bad81e44f080bdb5aaefa6bfd8c2733cff2548bdc35f890dc4dd1d38e6",
+      "rawBytes": 78,
+      "rawLines": 3
+    },
+    {
+      "gate": "evidence-check#1",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "evidence-check#1"
+      ],
+      "exitCode": 0,
+      "seconds": 1.492,
+      "log": "evidence-check-1.log.gz",
+      "rawSha256": "9950ae03bd1e749dc7afb234cd41eeac3f49d2df4f3328ae4d2337ae999188e4",
+      "rawBytes": 64,
+      "rawLines": 3
+    }
+  ],
+  "runnerLabels": {
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/check-runner-labels.mjs"
+    ],
+    "exitCode": 0,
+    "log": "runner-labels.log.gz",
+    "rawSha256": "ac12b3e7a5796e591f44427b1da5c5a2f4c8b949e40ed07bc335adc5a27c45d9",
+    "rawLines": 1
+  },
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,20 @@
+{
+  "head": "6b1d75a62a610e58914ef594c107f3fa402ded9d",
+  "requestedAt": "2026-11-18T00:28:55.001443+00:00",
+  "reason": "One unchanged-head retry for collected checkout-only failures; no timeout or checkout policy changed.",
+  "requests": [
+    {
+      "run": 44207032757,
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "run": 44207033000,
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}

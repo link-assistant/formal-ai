@@ -306,7 +306,7 @@ jobs:
     steps:
       - {uses: actions/checkout@v7, timeout-minutes: 4,
          env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '20'},
-         with: {persist-credentials: false, fetch-depth: 1, filter: blob:none, sparse-checkout: "/*\n!/dev/log/\n!/experiments/formal_ai_subagent/evidence/coordinator-1188/**/*.gz\n", sparse-checkout-cone-mode: false}}
+         with: {persist-credentials: false, fetch-depth: 1, filter: blob:none, sparse-checkout: "/*\n!/dev/log/\n!/docs/case-studies/**/*.gz\n!/docs/case-studies/**/*.log\n!/docs/case-studies/**/*.zip\n!/docs/case-studies/**/*.tgz\n!/docs/case-studies/**/*.diff\n!/experiments/*/evidence/**/*.gz\n!/experiments/*/evidence/**/*.log\n!/experiments/*/evidence/**/*.zip\n!/experiments/*/evidence/**/*.tgz\n!/experiments/*/evidence/**/*.diff\n", sparse-checkout-cone-mode: false}}
       - {uses: actions/setup-node@v7, with: {node-version: 22}}
       - name: Validate source readability, CI budgets and requirements without a native build
         run: |

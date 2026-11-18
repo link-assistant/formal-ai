@@ -198,3 +198,15 @@ health/cache fixture tests also pass without transport calls. Next-head hosted
 checks remain pending. Native runtime, general recursive context binding and
 all broader acceptance remain
 unfinished; independent reasoning acceptance remains 0/20.
+
+
+## Fast source archive acquisition checkpoint
+
+The [checkout checkpoint](checkout-archive-checkpoint.md) records all 23 results
+on 6b1d75a6, the remaining repeated checkout failure, a small successful remote
+probe and a measured 320 MB source-input reduction. Its regression passes
+16/16 and all 20 underlying source checks pass across the retained attempts.
+The full hosted checkout remains unverified for the next head. Java historical
+literal review covers pages 1–38 and 48–55/254; pages 39–47 remain literally
+unread despite separate complete structured OSV comparison. Broader acceptance
+and independent reasoning acceptance remain unfinished.

@@ -230,3 +230,45 @@ Final archive/changelog checks pass all six selected gates, with the filename
 abbreviation ceiling unchanged. Preserve the full command and supplied-script
 archives, commit this verified batch, and inspect every hosted result on the new
 head before another push. The PR remains draft; broad acceptance is unfinished.
+
+
+## Smaller fast source checkout and published-head review
+
+All 23 workflows on 6b1d75a6 finish: 22 pass after one unchanged-head retry;
+the pipeline still fails checkout before source checks. Preserve both complete
+attempts and exact identities. A small remote checkout succeeds from this
+different host/Git version; hosted transport causality remains unproven.
+Reduce only unmeasured historical archive inputs by about 320 MB, retaining
+all measured/readable sources and unchanged clocks, refs and credentials.
+The regression changes from 15/16 to 16/16. Twenty underlying source checks
+pass in the sparse temporary copy across the incomplete initial invocation
+and corrected direct debt-function check; the initial hosted guard refusal
+and 60-second wrapper limit are retained. Temporary copies are removed.
+
+Java literal history covers pages 1–38 and 48–55/254, 52 complete files and
+two partial files, 2,141 complete source lines. Pages 39–47 stay literally
+unread, with a separate complete structured OSV comparison retained. The
+historical actionlint image is downloaded, validated and viewed. Complete
+repository applicability and all broader unchecked criteria stay open.
+Run touched gates, review the diff and evidence, archive supplied work, and
+push this whole batch once after verifying no current-head runs are active.
+Inspect every next-head result; keep the pull request draft and reasoning
+acceptance 0/20. See docs/case-studies/issue-1580/checkout-archive-checkpoint.md.
+
+
+The required deployed-stage check catches the stale canonical copy. Refresh
+only the Fast Linux source job using the maintained generator, preserve every
+one of 52 release operations and 104 bindings, and verify the unchanged staged
+workflow bytes. The deployed projection and all seven touched gates pass;
+pinned runner labels also pass. No data/meta source changes in this round.
+
+The existing staged-release activation transition tests pass 3/3 after clearing
+inherited NODE_OPTIONS, which the proof subprocess correctly refuses. Preserve
+the initial 2/3 failure and the corrected clean-environment invocation separately.
+The production guard is unchanged. Broad acceptance remains unfinished.
+
+Final publication checks catch the canonical workflow at 1,513 lines. Preserve
+both unchanged-limit gate failures. Compact only the new checkout configuration
+using its prior flow style, prove parsed YAML equality, and regenerate with the
+maintained compiler: 1,494 lines, unchanged 52 operations/104 bindings/staged
+workflow bytes. Recheck affected gates and focused regressions before pushing.

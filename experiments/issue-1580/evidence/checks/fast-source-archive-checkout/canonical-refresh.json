@@ -1,0 +1,47 @@
+{
+  "changedJobs": [
+    "fast-pr-lint"
+  ],
+  "originalCanonicalSha256": "0c900fba5e5c962202a0fe29072f39d1c43c948b45348210969610c7c615b706",
+  "refreshedCanonicalSha256": "03a51b3df14cbcc51edce242a2af342f14d802535f66bfcd9839bbd2245b0960",
+  "operations": 52,
+  "bindings": 104,
+  "identicalStagedOperations": true,
+  "identicalBindings": true,
+  "packetChanges": [
+    "workflowSha256"
+  ],
+  "outputs": [
+    {
+      "path": ".github/workflows/release-staged.yml",
+      "beforeSha256": "a041a93826b166f6557d1e303460e638382eebac301431864abd8b60c6b39e5a",
+      "afterSha256": "a041a93826b166f6557d1e303460e638382eebac301431864abd8b60c6b39e5a",
+      "changed": false
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml",
+      "beforeSha256": "106d3a44e5f94858d8cce458ca6a04f7a22623342a56a9ac38d0897b3423e869",
+      "afterSha256": "a858e77148b02fd8e53e7bd440670df11b31087d2717a0e5b8089aa53be09497",
+      "changed": true
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json",
+      "beforeSha256": "87f9934019ba573010f37f014c563ddee75c5b1c8adf53b75351534e5aa7d950",
+      "afterSha256": "bdb6b93dd9ecc3993c376d940882f57c96e69983a2aa5e0c62d14c363841e0cf",
+      "changed": true
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml",
+      "beforeSha256": "0c900fba5e5c962202a0fe29072f39d1c43c948b45348210969610c7c615b706",
+      "afterSha256": "03a51b3df14cbcc51edce242a2af342f14d802535f66bfcd9839bbd2245b0960",
+      "changed": true
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/stage-source-coverage.json",
+      "beforeSha256": "d08d980ac08f04eb900099cce3a37458dd15a856fb493426541507cfd03e1c38",
+      "afterSha256": "fbb9c83af42f9d1f662076abd6855ed755fba0d634289d77b78e83516eccda7b",
+      "changed": true
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}

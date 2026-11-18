@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "timeout",
+    "600",
+    "node",
+    "--max-old-space-size=256",
+    "--test",
+    "--test-concurrency=1",
+    "rust/tests/web/staged-release-activation-transition.test.mjs"
+  ],
+  "exitCode": 0,
+  "seconds": 11.811,
+  "removedInheritedNodeOptions": true,
+  "counts": {
+    "tests": 3,
+    "pass": 3,
+    "fail": 0,
+    "skipped": 0
+  },
+  "rawSha256": "42981166fb0027db3079d548af496e9d942ade32e2ac5f8acc6ee373700d1843",
+  "rawBytes": 438,
+  "rawLines": 11,
+  "cumulativeChildPeakKiB": 183772,
+  "scope": "Preserves the production guard rejecting externally supplied Node options; clears the inherited environment for its strict proof subprocess."
+}

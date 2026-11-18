@@ -39,7 +39,16 @@
     34,
     35,
     36,
-    37
+    37,
+    38,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55
   ],
   "totalHistoricalPages": 254,
   "files": [
@@ -459,6 +468,238 @@
         [
           1,
           1
+        ],
+        [
+          3,
+          3
+        ]
+      ],
+      "completeSourceRead": false
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/osv-upstream-report.txt",
+      "sha256": "b38e54522cbc764b56e3ff4e3e858089a56352da644ed88eed924f4802ab831a",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/plexus-upstream-report.txt",
+      "sha256": "87f979cbaced6e3d19270c3153745145f0a9e93f924bfe847ae4d852d6e9e763",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/pre-commit-evidence-normalization.log",
+      "sha256": "02eb109a42ff4f8c848bac30f6c2ca828a1bbf3df5f02c5e4e27e1871fb663b9",
+      "totalLines": 54,
+      "readRanges": [
+        [
+          1,
+          54
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/pre-commit-final.log",
+      "sha256": "109312f736323648c99d2e999daf0d0831d0b539f353b04e92cbd54021e4bb2f",
+      "totalLines": 11,
+      "readRanges": [
+        [
+          1,
+          11
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/pre-commit-install.log",
+      "sha256": "bb82503d0c4dddc421a6cf2943275c5415d5fd327499ebe966f20af571608154",
+      "totalLines": 38,
+      "readRanges": [
+        [
+          1,
+          38
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/pre-commit-registry-snapshots.log",
+      "sha256": "5ea04352d2bd6676d49d5b855ee89ea7c3ad8c12bf953ed1d5eb795ce1bc1a63",
+      "totalLines": 11,
+      "readRanges": [
+        [
+          1,
+          11
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/pre-commit.log",
+      "sha256": "109312f736323648c99d2e999daf0d0831d0b539f353b04e92cbd54021e4bb2f",
+      "totalLines": 11,
+      "readRanges": [
+        [
+          1,
+          11
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/registry-inventory.log",
+      "sha256": "91306cf46dbab88c1d9357fa0d025b784b2781dacbdef51f76f3c553eaced1c4",
+      "totalLines": 35,
+      "readRanges": [
+        [
+          1,
+          35
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/resolved-audit-tests.log",
+      "sha256": "f87f98c8be3ff959453ebf839cc305573777b264b369790edd6a5cbec1ee8fa4",
+      "totalLines": 14,
+      "readRanges": [
+        [
+          1,
+          14
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/actionlint-queue-issue.json",
+      "sha256": "525edcfe6fa2dd098ac737f09aae5b41b00ac76c998262f9d7cf40582916eb19",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/actionlint-queue-original.json",
+      "sha256": "9dc387943577224a24743336a60037d3590273ddec4a9d242648cde7ed036175",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/actionlint-queue-pr.json",
+      "sha256": "cb93e7191bb8a0836755ee795c39a1351df254dc4960fdec64a065075ca8eccd",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/actionlint-ubuntu26-issue.json",
+      "sha256": "0128ac11f67bdc3210c04345a5a8cbbda79dcf3d3412e1a63efe06203d9c3f1f",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/actionlint-ubuntu26-search.json",
+      "sha256": "215f2ba725243f239cec7f0c45000f471c1395ff5dac75a27241aa267004a9cf",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/adoptium.json",
+      "sha256": "24363565f828de7ecc260b8c03e8a679ccb8b6b2c532a02a0e16dda1ed761859",
+      "totalLines": 29,
+      "readRanges": [
+        [
+          1,
+          29
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/current-pr-runs.json",
+      "sha256": "caaae01887a4f15fef27b31cdb39263d3b9b86f8193a098a0aef23a82d1eeeb2",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/dependabot-pr-21.json",
+      "sha256": "fc89e8665d5f82d9098f4858e4f0ef45b84f3cde1362e3920bd2cefe7256b76a",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/dependency-update-practices.md",
+      "sha256": "7945526bcd969cd07b2d26539ab750069311c13949899827ddecf5b84fd6926a",
+      "totalLines": 260,
+      "readRanges": [
+        [
+          1,
+          260
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/durian-swt-changelog.md",
+      "sha256": "be0e2273c0f94b3b1228d19b0bc2dbf36b42bd1c2a6afd0cea05a610405de97c",
+      "totalLines": 287,
+      "readRanges": [
+        [
+          1,
+          6
         ]
       ],
       "completeSourceRead": false
@@ -484,5 +725,30 @@
     "The first long OSV response in osv-scope-reproduction.log is fully read, including all 66 fragments of its first line. It records historical Log4j core 2.14.1 and API 2.14.1 advisories. This historical dependency state is not current security verification.",
     "The second long line has only fragments 1 through 3 of 66 read at page 37. The log remains partial, so the file is not counted as fully read.",
     "Pages 38 through 254 remain unread. Complete repository semantic review, current upstream runtime/publication acceptance, and the broader Formal AI acceptance criteria remain unfinished."
-  ]
+  ],
+  "structuredComparison": {
+    "path": "experiments/issue-1580/evidence/checks/java-historical-osv-scope-comparison.json.gz",
+    "scope": "Complete parsed compile/test OSV records; all three differences read, with seven recursively equal subtrees hashed. Equal vulnerability payload reuses the fully read compile record. This is comparative review, not a claim of literal reading of test fragments on pages 39–47.",
+    "literalUnreadPagesWithinForwardProgress": [
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47
+    ]
+  },
+  "observationsThroughPage55": [
+    "Literal pages 38 and 48–55 are fully read. Pages 39–47 remain literally unread; complete parsed OSV comparison separately establishes that both scopes share the vulnerability results, differing only in the test dependency-group label, record name and elapsed diagnostic. The OSV log is still marked partial under literal source reads.",
+    "The plugin-dependency OSV record exits 128 with no package sources and an empty stdout. Historical source-only scanning does not establish coverage of resolved Maven plugin artifacts; the existing six resolved-audit regressions preserve this distinction.",
+    "The pre-commit normalization record changes retained logs using whitespace and end-of-file hooks. These versioned files are normalized historical evidence; their current hashes must not be represented as hashes of unmodified original command streams.",
+    "The original actionlint issue and queue proposal, Ubuntu runner report, Adoptium release data and JUnit Dependabot pull request are fully read as historical context. Their versions and status are not current dependency compatibility verification.",
+    "The linked actionlint screenshot is downloaded with authenticated GitHub access, verified as a valid PNG and viewed. It shows queue rejected under concurrency at workflow line 60; no current application UI or actionlint execution is claimed.",
+    "The complete historical dependency-update practices source is read. Its discussion of automatic merges and administrative bypass describes the upstream tool; it does not authorize changing Formal AI branch protection or merging this draft. Current applicability, remaining historical pages and broader issue acceptance stay unfinished."
+  ],
+  "nextUnreviewedLiteralPage": 39,
+  "nextForwardLiteralPage": 56
 }

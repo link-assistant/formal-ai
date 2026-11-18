@@ -243,7 +243,7 @@ test('fast source checkout retains every measured tracked source while excluding
   const omitted=files.filter(file=>!retained.has(file));assert.ok(omitted.length>0);
   for(const file of omitted){
     if(file.startsWith('dev/log/'))continue;
-    assert.match(file,/^experiments\/formal_ai_subagent\/evidence\/coordinator-1188\/.*[.]gz$/u);
+    assert.match(file,/^(?:docs\/case-studies\/|experiments\/[^/]+\/evidence\/).*\.(?:gz|log|zip|tgz|diff)$/u);
     assert.equal(fileLimit(file),null,'do not omit measured content: '+file);
   }
   for(const file of files){
@@ -251,6 +251,22 @@ test('fast source checkout retains every measured tracked source while excluding
     const readable=ROOTS.some(root=>file.startsWith(root+'/'))&&familyOf(file);
     if(readable||fileLimit(file)!==null)assert.ok(retained.has(file),'missing source input '+file);
   }
+});
+
+
+test('source checkout excludes historical archive formats and retains authored diagnostics', () => {
+  const patterns=workflow('release.yml').jobs['fast-pr-lint'].steps[0].with['sparse-checkout'];
+  const archives=['docs/case-studies/issue-730/raw-data/ci-logs/branch-29482019343.log',
+    ...['gz','log','zip','tgz','diff'].flatMap(extension=>[
+      `docs/case-studies/issue-1580/raw-data/archive.${extension}`,
+      `experiments/issue-1580/evidence/round/archive.${extension}`])];
+  const retained=['docs/requirements/1580.md','docs/case-studies/issue-1580/README.md',
+    'experiments/issue-1580/evidence/round/proof.lino',
+    'experiments/issue-1580/evidence/round/receipt.json',
+    'experiments/issue-1580/evidence/round/reproduce.mjs',
+    'rust/tests/fixtures/expected.log','scripts/read-archive.mjs','Cargo.lock'];
+  assert.deepEqual(checkoutSelection(patterns,[...retained,...archives]),retained);
+  for(const file of archives)assert.equal(fileLimit(file),null,file);
 });
 
 
