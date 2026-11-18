@@ -589,6 +589,22 @@ fn a_connector_result_keeps_its_structured_content() {
     let envelope = "{\"content\":[{\"type\":\"text\",\"text\":\"Action completed.\"}],\"structuredContent\":{\"content\":\"{\\\"number\\\":1,\\\"title\\\":\\\"Implement Hello World in Rust\\\",\\\"body\\\":\\\"## Task\\\\nPlease implement a Hello World program in Rust.\\\"}\"}}";
     record(&mut messages, "c0", &fetch, &fetch.arguments, envelope);
     let tools = ["write", "bash", "mcp__codex_apps__github_fetch"];
+    let source_calls = calls(plan_chat_step(&messages, tools.as_slice()));
+    let source_call = &source_calls[0];
+    assert_eq!(source_call.tool, "bash", "{source_calls:?}");
+    let source_command = command_of(source_call);
+    assert!(
+        source_command.contains("workspace-source-v1"),
+        "{source_command}"
+    );
+    assert!(source_command.contains("main.rs"), "{source_command}");
+    // Observe the real workspace before the planner decides whether to create
+    // or edit the entry point; the connector envelope above stays unchanged.
+    let mut workspace =
+        crate::observed_plan_tools::ToolWorkspace::new("issue-1133-connector-source-observation");
+    let observed = workspace.execute("c1", source_call);
+    record(&mut messages, "c1", source_call, &source_call.arguments, "");
+    *messages.last_mut().expect("recorded source observation") = observed;
     let calls = calls(plan_chat_step(&messages, tools.as_slice()));
     assert_eq!(calls[0].tool, "write", "{calls:?}");
     assert!(calls[0].arguments.contains("fn main()"), "{calls:?}");
