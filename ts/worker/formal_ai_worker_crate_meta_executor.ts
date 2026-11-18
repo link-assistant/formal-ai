@@ -28,6 +28,7 @@ const { grammarVocabulary, structuralRuleValues } = crateRequire("crate/formaliz
 const { rankByLeastAction } = crateRequire("crate/least_action.mjs");
 const { attemptFailed, attemptPassed, recursiveLeaf, solveRecursively } = crateRequire("crate/recursive_execution.mjs");
 const { containsCjk } = crateRequire("crate/seed_meanings.mjs");
+const { maskQuotedCues } = crateRequire("crate/task_decomposition_cues.mjs");
 const { isAlphanumeric, isWhitespace, trimMatches } = crateRequire("crate/rust_str.mjs");
 const RULE = 'task-decomposition';
 /** The event kinds, in the order a level emits them. */
@@ -131,6 +132,7 @@ function splitRequest(text, language) {
   const original = Array.from(String(text));
   const lowered = original.map((character) => character.toLowerCase());
   const mask = quotedMask(original);
+  maskQuotedCues(lowered, original, mask, ruleValues, markerMatches);
   for (const relation of decompositionRelations()) {
     const vocabulary = ruleValue(relation + '-vocabulary');
     const markers = grammarVocabulary(language, vocabulary)

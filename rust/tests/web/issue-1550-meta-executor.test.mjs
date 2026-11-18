@@ -11,6 +11,7 @@ import { before, test } from 'node:test';
 import { readFileSync } from 'node:fs';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+import { TASK_CUE_CASES } from './helpers/issue-1580-task-cue-cases.mjs';
 
 let CASES;
 let quotationCases;
@@ -24,6 +25,11 @@ const statusFixture = JSON.parse(
 );
 assert.equal(statusFixture.schema, fixture.schema);
 fixture.cases.push(...statusFixture.cases);
+const cueFixture = JSON.parse(
+  readFileSync(new URL('../fixtures/meta-executor-cue-parity.json', import.meta.url), 'utf8'),
+);
+assert.equal(cueFixture.schema, fixture.schema);
+fixture.cases.push(...cueFixture.cases);
 const named = (name) => fixture.cases.find((entry) => entry.name === name);
 const kinds = (events) => events.map((event) => event.split(' ')[0]);
 
@@ -204,3 +210,12 @@ test('a direct answer retains its evidence and rejected children cannot supply a
   assert.deepEqual(atomic.run.outcome.candidate.source.evidence, direct.evidence);
   assert.deepEqual(atomic.answer.evidence, direct.evidence);
 });
+
+for (const [name, text, language, parts] of TASK_CUE_CASES) {
+  test(`quoted-passage cue boundaries: ${name}`, () => {
+    assert.deepEqual(executor.splitRequest(text, language),
+      parts ? { relation: 'aggregation', parts } : null);
+    const root = executor.planTasks(text, language, executor.decompositionBounds());
+    assert.deepEqual(executor.taskLeaves(root), parts ?? [text]);
+  });
+}

@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_crate_task_decomposition_cues.js"
+  ceiling 46
+  rationale "Quoted-passage cue masking mirrors rust/src/meta_executor/decomposition.rs using the shared quote-cue-role and quote-cue-separator keys. The exact budget covers maintained source and factory frame; all existing module ceilings remain unchanged."

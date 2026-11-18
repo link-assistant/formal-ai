@@ -17,21 +17,24 @@ use serde_json::Value;
 const FIXTURE: &str = include_str!("../fixtures/meta-executor-parity.json");
 
 const STATUS_FIXTURE: &str = include_str!("../fixtures/meta-executor-status-parity.json");
+const CUE_FIXTURE: &str = include_str!("../fixtures/meta-executor-cue-parity.json");
 
 fn fixture() -> Value {
     let mut fixture: Value = serde_json::from_str(FIXTURE).expect("parity fixture is JSON");
-    let status: Value = serde_json::from_str(STATUS_FIXTURE).expect("status fixture is JSON");
-    assert_eq!(status["schema"], fixture["schema"]);
-    fixture["cases"]
-        .as_array_mut()
-        .expect("fixture cases")
-        .extend(
-            status["cases"]
-                .as_array()
-                .expect("status cases")
-                .iter()
-                .cloned(),
-        );
+    for (name, source) in [("status", STATUS_FIXTURE), ("cue", CUE_FIXTURE)] {
+        let supplement: Value = serde_json::from_str(source).expect(name);
+        assert_eq!(supplement["schema"], fixture["schema"]);
+        fixture["cases"]
+            .as_array_mut()
+            .expect("fixture cases")
+            .extend(
+                supplement["cases"]
+                    .as_array()
+                    .expect("supplement cases")
+                    .iter()
+                    .cloned(),
+            );
+    }
     fixture
 }
 

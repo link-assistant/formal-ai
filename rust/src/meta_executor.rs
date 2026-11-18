@@ -30,6 +30,9 @@ use crate::coding::contains_cjk;
 use crate::formalization::{grammar_vocabulary, structural_rule_values};
 use crate::least_action::{ActionCost, SolutionCandidate, rank_by_least_action};
 
+#[path = "meta_executor/decomposition.rs"]
+mod decomposition;
+
 #[path = "meta_executor/production.rs"]
 mod production;
 pub use production::{
@@ -235,7 +238,8 @@ pub struct Split {
 pub fn split_request(text: &str, language: &str) -> Option<Split> {
     let original: Vec<char> = text.chars().collect();
     let lowered: Vec<String> = original.iter().copied().map(lower_char).collect();
-    let mask = quoted_mask(&original);
+    let mut mask = quoted_mask(&original);
+    decomposition::mask_quoted_cues(&lowered, &original, &mut mask);
     let edges = rule_values("edge-punctuation");
     for relation in decomposition_relations() {
         let vocabulary = rule_value(&format!("{relation}-vocabulary"));

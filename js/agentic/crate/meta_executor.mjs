@@ -25,6 +25,7 @@ import { grammarVocabulary, structuralRuleValues } from './formalization_grammar
 import { rankByLeastAction } from './least_action.mjs';
 import { attemptFailed, attemptPassed, recursiveLeaf, solveRecursively } from './recursive_execution.mjs';
 import { containsCjk } from './seed_meanings.mjs';
+import { maskQuotedCues } from './task_decomposition_cues.mjs';
 import { isAlphanumeric, isWhitespace, trimMatches } from './rust_str.mjs';
 
 const RULE = 'task-decomposition';
@@ -141,6 +142,7 @@ export function splitRequest(text, language) {
   const original = Array.from(String(text));
   const lowered = original.map((character) => character.toLowerCase());
   const mask = quotedMask(original);
+  maskQuotedCues(lowered, original, mask, ruleValues, markerMatches);
   for (const relation of decompositionRelations()) {
     const vocabulary = ruleValue(relation + '-vocabulary');
     const markers = grammarVocabulary(language, vocabulary)

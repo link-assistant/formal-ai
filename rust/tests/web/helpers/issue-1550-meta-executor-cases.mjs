@@ -11,6 +11,9 @@ import {
   taskLeaves,
 } from '../../../../js/agentic/crate/meta_executor.mjs';
 
+import { CUE_CASES } from './issue-1580-task-cue-cases.mjs';
+export { CUE_CASES };
+
 const answered = (content) => ({ intent: 'answered', content, confidence: 1 });
 const unknown = { intent: 'unknown', content: '', confidence: 0 };
 
@@ -166,6 +169,7 @@ export const CASES = [
     bounds: {},
   })),
   ...STATUS_CASES,
+  ...CUE_CASES,
 ];
 
 /** The table host of one case. */

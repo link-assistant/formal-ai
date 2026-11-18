@@ -14,12 +14,13 @@ const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const FIXTURE = path.join(REPO, 'rust/tests/fixtures/meta-executor-parity.json');
 await installNodeHost(new WorkerHost());
 const { replayCase } = await import('../../rust/tests/web/helpers/issue-1550-meta-executor-cases.mjs');
-const { CASES, STATUS_CASES } = await import('../../rust/tests/web/helpers/issue-1550-meta-executor-cases.mjs');
+const { CASES, STATUS_CASES, CUE_CASES } = await import('../../rust/tests/web/helpers/issue-1550-meta-executor-cases.mjs');
 
-const statusNames = new Set(STATUS_CASES.map((entry) => entry.name));
+const supplementalNames = new Set([...STATUS_CASES, ...CUE_CASES].map((entry) => entry.name));
 const fixtures = [
-  { path: FIXTURE, entries: CASES.filter((entry) => !statusNames.has(entry.name)) },
+  { path: FIXTURE, entries: CASES.filter((entry) => !supplementalNames.has(entry.name)) },
   { path: path.join(REPO, 'rust/tests/fixtures/meta-executor-status-parity.json'), entries: STATUS_CASES },
+  { path: path.join(REPO, 'rust/tests/fixtures/meta-executor-cue-parity.json'), entries: CUE_CASES },
 ];
 for (const fixture of fixtures) {
   const cases = [];
