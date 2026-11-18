@@ -1,25 +1,14 @@
-//! The executed half of the procedural "how to X" handler — issue #991.
+//! Execute bounded procedural discovery using live or cached sources (#991).
 //!
-//! [`crate::solver_handler_how::try_how_to_procedure`] records the *plan*: the
-//! services it would consult and the gates it would apply. That plan is still
-//! the right answer when nothing can be retrieved, but issue #991 requires the
-//! native path to actually run the same bounded source-selection and synthesis
-//! contract the browser worker runs, and to answer from the captured bytes when
-//! it succeeds.
-//!
-//! This module is that seam. It reads the user's service opt-outs, walks the
-//! enabled registry services through [`crate::how_to_guide`], persists the
-//! per-service accessibility record, and answers with the synthesised guide —
-//! falling back to the discovery plan, unchanged, whenever the evidence is
-//! insufficient. Nothing here reaches the network by itself: every byte arrives
-//! through [`CachedSourceClient`], so an offline run replays committed captures
-//! and a live run refreshes them along the identical code path.
+//! The service registry and the source client apply the user's opt-outs and
+//! network policy. Offline runs replay committed captures through the same
+//! guide synthesis as live runs.
+//! Walk the enabled services, save their accessibility, and answer from
+//! captured steps. If the evidence is insufficient, return the discovery plan.
 
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
-use crate::how_to_guide::{
-    GuideBounds, HowToGuide, ServicePreferences, synthesize_how_to_guide_in,
-};
+use crate::how_to_guide::{GuideBounds, ServicePreferences, synthesize_how_to_guide_in};
 use crate::language::detect;
 use crate::seed::external_service_settings_keys;
 use crate::service_accessibility::{ServiceAccessibilityCache, unix_now};
@@ -88,12 +77,11 @@ pub fn try_how_to_procedure_with_client<T: SourceTransport>(
     }
     let task = procedural_how_to_task(normalized)?;
     let language = detect(prompt).slug();
-    let bounds = GuideBounds::default();
     let guide = synthesize_how_to_guide_in(
         (&task, language),
         client,
         preferences,
-        &bounds,
+        &GuideBounds::default(),
         availability,
         unix_now(),
     );
@@ -102,14 +90,17 @@ pub fn try_how_to_procedure_with_client<T: SourceTransport>(
     }
     guide.record(log);
     if !guide.is_sufficient() {
-        // Not enough corroborated procedure to assert steps. The discovery plan
-        // is still a truthful answer, and it is exactly what the runtime
-        // answered before this handler existed, so the fallback is a strict
-        // superset of the prior behaviour rather than a replacement.
         log.append("procedural_how_to:fallback", "discovery_plan".to_owned());
         return try_how_to_procedure(prompt, normalized, log);
     }
-    Some(answer_synthesized_guide(prompt, &guide, language, log))
+    Some(finalize_simple(
+        prompt,
+        log,
+        "procedural_how_to",
+        "response:procedural_how_to_guide",
+        &guide.markdown_in(language),
+        0.82,
+    ))
 }
 
 /// Use the process source cache and the environment's settings.
@@ -138,6 +129,8 @@ pub fn try_how_to_procedure_with_offline(
 }
 
 /// Resolve the prior procedural task with the same capture policy as a fresh turn.
+/// The follow-up matcher reconstructs the original prompt and its normalised
+/// form so the guide can use its language and query the original goal.
 pub(crate) fn try_procedural_followup_with_offline(
     prompt: &str,
     normalized: &str,
@@ -147,20 +140,4 @@ pub(crate) fn try_procedural_followup_with_offline(
     try_procedural_how_to_followup_with(prompt, normalized, log, |prior, canonical, log| {
         try_how_to_procedure_with_offline(prior, canonical, log, offline)
     })
-}
-
-fn answer_synthesized_guide(
-    prompt: &str,
-    guide: &HowToGuide,
-    language: &str,
-    log: &mut EventLog,
-) -> SymbolicAnswer {
-    finalize_simple(
-        prompt,
-        log,
-        "procedural_how_to",
-        "response:procedural_how_to_guide",
-        &guide.markdown_in(language),
-        0.82,
-    )
 }
