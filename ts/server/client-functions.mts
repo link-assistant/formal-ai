@@ -1,13 +1,13 @@
 // Forced OpenAI functions return a validated data payload for the caller.
-import { computerPrimitiveFromToolName, toolDefinitionNames } from '../agentic/protocol_policy.mts';
-import { agenticToolCapabilities } from '../agentic/crate/seed_agentic_tool_capabilities.mts';
-import { normalizePrompt } from '../agentic/crate/engine.mts';
-import { invalidArguments } from '../agentic/crate/tool_call_validation.mts';
-import { mentionsRole } from '../agentic/crate/seed_meanings.mts';
-import { agenticMessage } from '../agentic/messages.mts';
-import { jsonText } from '../agentic/plan.mts';
-import { estimateTokens, stableId } from './ids.mts';
-import { ensureNodeHost } from './node-host-install.mts';
+import { computerPrimitiveFromToolName, toolDefinitionNames } from '../agentic/protocol_policy.mjs';
+import { agenticToolCapabilities } from '../agentic/crate/seed_agentic_tool_capabilities.mjs';
+import { normalizePrompt } from '../agentic/crate/engine.mjs';
+import { invalidArguments } from '../agentic/crate/tool_call_validation.mjs';
+import { mentionsRole } from '../agentic/crate/seed_meanings.mjs';
+import { agenticMessage } from '../agentic/messages.mjs';
+import { jsonText } from '../agentic/plan.mjs';
+import { estimateTokens, stableId } from './ids.mjs';
+import { ensureNodeHost } from './node-host-install.mjs';
 
 const isObject = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 
