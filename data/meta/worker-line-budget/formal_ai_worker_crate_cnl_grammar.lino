@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_crate_cnl_grammar.js"
+  ceiling 520
+  rationale "Issue #1584 declarative controlled-language grammar engine: realization, its exact inverse parser and built-in checks shared by every language file. The new factory fits below the standard 1000-line limit; no existing ceiling changes."

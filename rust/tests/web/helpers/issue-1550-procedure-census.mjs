@@ -2,11 +2,13 @@
 //
 // One recursive procedure produces every answer: the native entry
 // `UniversalSolver::solve_with_history_probability_store_and_intent_cache`
-// (rust/src/solver.rs) runs the handler cascade inside one closure whose value
-// is the direct-derivation draft, then hands it to `run_meta_procedure`; the
-// worker's `solve` (js/worker/formal_ai_worker_solve.js) runs `solveImpl` and
-// hands its answer to `metaRunProcedure`. A return outside that closure (or a
-// new exit of `solve`) would let a turn skip the procedure, so the census below
+// (rust/src/solver.rs) runs the handler cascade inside one drafting closure
+// whose value is the direct-derivation draft; `controlled_solve` (issue #1584)
+// calls it for the turn's prompt and the canonical reading of a task
+// paraphrase, and its draft goes to `run_meta_procedure`; the
+// worker's `solve` (js/worker/formal_ai_worker_solve.js) drafts through
+// `solveImpl` and hands its answer to `metaRunProcedure`. A return outside that
+// closure (or a new exit of `solve`) would let a turn skip the procedure, so the census below
 // reads both entries and reports every exit.
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -15,8 +17,8 @@ import { specificationCases } from '../../../../scripts/lib/rust-specification-c
 export const RUST_ENTRY = 'rust/src/solver.rs';
 export const JS_ENTRY = 'js/worker/formal_ai_worker_solve.js';
 const RUST_FN = 'fn solve_with_history_probability_store_and_intent_cache(';
-const CLOSURE_OPEN = 'let mut answer = (|| {';
-const CLOSURE_CLOSE = '})();';
+const CLOSURE_OPEN = 'let mut solve_core = |prompt: &str, log: &mut EventLog| -> SymbolicAnswer {';
+const CLOSURE_CLOSE = '};\n        let crate::cnl_output::ControlledSolve {';
 const RUST_EXIT = /\breturn\b|\?\s*;/gu;
 
 /** Source without line comments, so a comment that mentions `return` is no exit. */

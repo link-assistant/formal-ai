@@ -1,5 +1,11 @@
 // Solve dispatch, handler registry, seed loading and worker initialization.
 // @worker-prerequisite js/worker/formal_ai_worker_web_providers_and_wasm_calls.js
+function projectControlledAnswer(answer, config, options) { // Issue #1584: Rust `render_output` after `controlled_solve`.
+  if (!answer || typeof answer.content !== "string" || answer.outputProjection?.content === answer.content) return answer;
+  const cnl = crateModule("crate/cnl_output.mjs");
+  const rendered = cnl.renderOutput(cnl.formalizeOutput(answer.content, options.forcedResponseLanguage || detectLanguage(answer.content)), config);
+  return {...answer, content: rendered.content, outputProjection: rendered};
+}
 function isTargetlessProgramModification(normalized) { // "Reverse it.": Rust `looks_like_ambiguous_program_modification`
   const mentions = (role) => lexiconMentionsRole(role, normalized);
   return mentions(ROLE_PROGRAM_MODIFICATION) && mentions(ROLE_PROGRAM_MODIFICATION_REFERENCE) && !mentions(ROLE_PROGRAM_ARTIFACT);
@@ -7,6 +13,10 @@ function isTargetlessProgramModification(normalized) { // "Reverse it.": Rust `l
 async function solve(prompt, history, prefs, userContext = {}, memory = [], options = {}) {
   // R1188-U1: read the hydrated seed before answering (a no-op once loaded).
   await loadSeed();
+  const cnl = crateModule("crate/cnl_output.mjs");
+  const turn = cnl.outputTurn(prompt, history || [], {output_standard: options.output_standard ?? prefs?.outputStandard,
+    lexical_density: options.lexical_density ?? prefs?.lexicalDensity});
+  prompt = turn.prompt;
   // Issue #556: activate the forced response language for the whole replay and
   // always restore the previous value, so a nested follow-up replay never
   // leaks its forced language onto the outer turn's remaining handlers.
@@ -22,10 +32,18 @@ async function solve(prompt, history, prefs, userContext = {}, memory = [], opti
     // ones learned now leave as this answer's memory operation.
     metaImportLearned(memory);
     const diagnostic = await tryDiagnosticMarker(prompt, (inner) => solve(inner, history, prefs, userContext, memory, options));
-    if (diagnostic) return diagnostic;
-    const answer = await solveImpl(prompt, history, prefs, userContext, memory, options);
-    const subTask = async (text) => metaResolveImpasse(text, await solveImpl(text, history, prefs, userContext, memory, options), prefs);
-    return metaAttachLearned(await metaRunProcedure(prompt, await metaResolveImpasse(prompt, answer, prefs), subTask));
+    if (diagnostic) return projectControlledAnswer(diagnostic, turn.config, options);
+    // Issue #1584: a paraphrase directive re-renders the previous answer; otherwise the crate hook
+    // (Rust `controlled_solve`) answers, clarifies or re-solves. Every draft goes through the procedure.
+    const draft = (text) => solveImpl(text, history, prefs, userContext, memory, options);
+    const solved = turn.rewrite === null
+      ? await cnl.controlledSolve(turn, history || [], draft)
+      : {prompt, answer: {intent: "cnl_paraphrase", content: cnl.outputSource(turn.rewrite, detectLanguage(turn.rewrite)),
+        confidence: 1, evidence: ["cnl:paraphrase"], steps: [], events: [], toolCalls: []}};
+    prompt = solved.prompt;
+    const answer = solved.answer;
+    const subTask = async (text) => metaResolveImpasse(text, await draft(text), prefs);
+    return projectControlledAnswer(metaAttachLearned(await metaRunProcedure(prompt, await metaResolveImpasse(prompt, answer, prefs), subTask)), turn.config, options);
   } finally {
     setForcedResponseLanguage(previousForced);
   }
@@ -1357,6 +1375,7 @@ self.onmessage = async (event) => {
     requestId: data.requestId,
     intent: answer.intent,
     content: answer.content,
+    outputProjection: answer.outputProjection || null,
     confidence: answer.confidence,
     evidence: [...(answer.evidence || []), `engine:${engine}`],
     steps: answer.steps,

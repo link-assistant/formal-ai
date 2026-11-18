@@ -5,6 +5,7 @@
 import React from "react";
 import { chakra } from "@chakra-ui/react";
 import { MenuGlyph, SidebarToggleGlyph } from "./glyphs.jsx";
+import { CnlSettings } from "./cnl-settings.jsx";
 import { DebuggerView } from "./debugger-view.jsx";
 // Issue #825: the shared autocomplete engine backs every own-input-box
 // surface — the chat composer here and the free-text settings fields below.
@@ -52,7 +53,7 @@ import {
   normalizeBlueprintComposition, normalizeChatStyle, normalizeComposerAction,
   normalizeComposerStyle, normalizeContextPanelWidth, normalizeDefinitionFusion,
   normalizeDesktopToolGrants, normalizeMode, normalizePreferredLanguage,
-  normalizeResponseLanguageMode, normalizeSliderPreference, normalizeThemePreference,
+  normalizeOutputStandard, normalizeLexicalDensity, normalizeResponseLanguageMode, normalizeSliderPreference, normalizeThemePreference,
   normalizeThinkingDetailLevel, normalizeToolbarIconPack, normalizeUiSkin, settingIsDefault,
 } from "./preferences.jsx";
 import { buildRecallReport, recognizeRecallQuery } from "./recall-query.jsx";
@@ -143,6 +144,8 @@ export function App() {
   const [preferredLanguage, setPreferredLanguage] = useState(
     normalizePreferredLanguage(initialPreferences.current.preferredLanguage),
   );
+  const [outputStandard, setOutputStandard] = useState(normalizeOutputStandard(initialPreferences.current.outputStandard));
+  const [lexicalDensity, setLexicalDensity] = useState(normalizeLexicalDensity(initialPreferences.current.lexicalDensity));
   const [i18nRuntimeTick, setI18nRuntimeTick] = useState(0);
   const uiLanguage = detectUiLanguage(uiLanguagePreference);
   const t = useCallback(
@@ -588,7 +591,7 @@ export function App() {
   const { loadBrowserRuntime } = useFormalAiWorker({
     workerRef, pendingResponses, setWorkerState, setWorkerReady, setEngineUnavailable, setSeed,
     diagnosticJsFallback, browserRuntimeState, setBrowserRuntimeState, uiLanguagePreference,
-    responseLanguage, preferredLanguage, demoMode, diagnosticsMode, thinkingDetailLevel,
+    responseLanguage, preferredLanguage, outputStandard, lexicalDensity, demoMode, diagnosticsMode, thinkingDetailLevel,
     minMessageAnimationMs, contextPanelWidth, sidebarMenuCollapsed, sidebarDesktopCollapsed,
     sidebarPromptsCollapsed, sidebarToolsCollapsed, sidebarTraceCollapsed,
     sidebarConversationsCollapsed, sidebarSettingsCollapsed, sidebarCollapsed,
@@ -614,10 +617,10 @@ export function App() {
     externalServicesRef, associativeProjectPromotionRef, agentModeRef, modeRef,
     agentOnboardingSeenRef, desktopToolGrantsRef, commandApprovalsRef, pendingAgentTaskRef,
     hasPendingAgentTask, setHasPendingAgentTask, themePreferenceRef, uiLanguagePreferenceRef,
-    responseLanguageRef, preferredLanguageRef, uiSkinRef, chatStyleRef, composerStyleRef,
+    responseLanguageRef, preferredLanguageRef, outputStandardReference, lexicalDensityReference, uiSkinRef, chatStyleRef, composerStyleRef,
     composerActionRef, locationPreferenceRef, assistantNameRef, desktopStatusRef,
   } = useLatestValueRefs({
-    uiLanguagePreference, responseLanguage, preferredLanguage, demoMode, diagnosticsMode,
+    uiLanguagePreference, responseLanguage, preferredLanguage, outputStandard, lexicalDensity, demoMode, diagnosticsMode,
     greetingVariations, guessProbability, temperature, followUpProbability, definitionFusion,
     blueprintComposition, experimentalOcr, externalServices, associativeProjectPromotion,
     themePreference, uiSkin, chatStyle, composerStyle, composerAction, locationPreference,
@@ -631,7 +634,7 @@ export function App() {
     followUpProbabilityRef, definitionFusionRef, blueprintCompositionRef, experimentalOcrRef,
     externalServicesRef, associativeProjectPromotionRef, agentModeRef, modeRef,
     desktopToolGrantsRef, themePreferenceRef, uiLanguagePreferenceRef, responseLanguageRef,
-    preferredLanguageRef, uiSkinRef, chatStyleRef, composerStyleRef, composerActionRef,
+    preferredLanguageRef, outputStandardReference, lexicalDensityReference, uiSkinRef, chatStyleRef, composerStyleRef, composerActionRef,
     locationPreferenceRef, assistantNameRef, desktopStatusRef,
   });
 
@@ -978,6 +981,8 @@ export function App() {
       label: service.label,
     })),
     { key: "uiLanguage", value: uiLanguagePreference, set: setUiLanguagePreference, label: "settings.language" },
+    { key: "outputStandard", value: outputStandard, set: setOutputStandard, label: "settings.outputStandard" },
+    { key: "lexicalDensity", value: lexicalDensity, set: setLexicalDensity, label: "settings.lexicalDensity" },
     { key: "responseLanguage", value: responseLanguage, set: setResponseLanguage, label: "settings.responseLanguage" },
     { key: "preferredLanguage", value: preferredLanguage, set: setPreferredLanguage, label: "settings.preferredLanguage" },
     { key: "theme", value: themePreference, set: setThemePreference, label: "settings.theme" },
@@ -1334,7 +1339,8 @@ export function App() {
           {t("settings.preferredLanguage")}</span>
           <select data-testid="setting-preferred-language" value={preferredLanguage} onChange={event => setPreferredLanguage(normalizePreferredLanguage(event.target.value))}>
           <option value="en">{"English"}</option><option value="ru">{"Русский"}</option><option value="zh">{"中文"}</option><option value="hi">{"हिन्दी"}</option></select>
-          </label> : null}<label className="setting-row"><span>{t("settings.theme")}</span>
+          </label> : null}<CnlSettings {...{t, outputStandard, setOutputStandard, lexicalDensity, setLexicalDensity}} />
+          <label className="setting-row"><span>{t("settings.theme")}</span>
           <select data-testid="setting-theme" value={themePreference} onChange={event => setThemePreference(normalizeThemePreference(event.target.value))}><option value="auto">
           {t("settings.theme.auto")}</option><option value="light">{t("settings.theme.light")}</option><option value="dark">{t("settings.theme.dark")}</option></select></label>
           <label className="setting-row"><span>{t("settings.uiSkin")}</span>

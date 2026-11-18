@@ -23,16 +23,21 @@ use crate::protocol_responses::{custom_response_tool_input, is_custom_response_t
 pub use crate::protocol_responses::response_arguments_for_tool;
 use crate::solver::UniversalSolver;
 
+mod chat_request;
+pub use chat_request::ChatCompletionRequest;
 mod client_functions;
 mod content;
 pub use content::{
     client_working_directory, latest_user_request, observed_directory, system_prompt_text,
 };
+mod cnl;
 mod output;
 mod recording;
 mod request_context;
 mod responses_input;
 mod tokens;
+pub(crate) use cnl::create_adapted_chat_completion;
+pub use cnl::create_chat_completion_with_solver_and_memory;
 use output::response_from_symbolic;
 pub use output::*;
 use recording::response_prompt;
@@ -45,32 +50,6 @@ use tokens::{message_input_tokens, response_timestamp, responses_input_tokens};
 
 fn resolved_request_model(model: Option<&str>) -> String {
     crate::seed::resolve_model_id(model)
-}
-
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct ChatCompletionRequest {
-    #[serde(default)]
-    pub model: Option<String>,
-    #[serde(default)]
-    pub messages: Vec<ChatMessage>,
-    #[serde(default)]
-    pub temperature: Option<f32>,
-    #[serde(default)]
-    pub stream: bool,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub tools: Vec<Value>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tool_choice: Option<Value>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub functions: Vec<Value>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub function_call: Option<Value>,
-    /// OpenAI streaming knobs — most relevantly `include_usage`, which asks the
-    /// server to emit a final chunk carrying the `usage` block. The AI SDK's
-    /// openai-compatible provider ships this and drops token counts if it's
-    /// missing (see issue link-assistant/agent#249).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub stream_options: Option<StreamOptions>,
 }
 
 /// OpenAI-compatible `stream_options` field.
@@ -406,6 +385,8 @@ impl ResponsesRequest {
             tool_choice: self.tool_choice.clone(),
             functions: Vec::new(),
             function_call: None,
+            output_standard: None,
+            lexical_density: None,
             stream_options: None,
         }
     }
@@ -424,24 +405,9 @@ pub fn create_chat_completion_with_solver(
     create_chat_completion_with_solver_and_memory(request, solver, &[])
 }
 
-#[must_use]
-pub fn create_chat_completion_with_solver_and_memory(
-    request: &ChatCompletionRequest,
-    solver: &UniversalSolver,
-    memory_events: &[MemoryEvent],
-) -> ChatCompletion {
-    create_chat_completion_inner(request, solver, memory_events, true)
-}
-
-pub(crate) fn create_adapted_chat_completion(
-    request: &ChatCompletionRequest,
-    solver: &UniversalSolver,
-    memory_events: &[MemoryEvent],
-) -> ChatCompletion {
-    create_chat_completion_inner(request, solver, memory_events, false)
-}
-
-fn create_chat_completion_inner(
+/// The unprojected planner path. `protocol::cnl` wraps it so every Chat,
+/// Anthropic and Gemini completion receives the selected output projection.
+fn create_unprojected_chat_completion(
     request: &ChatCompletionRequest,
     solver: &UniversalSolver,
     memory_events: &[MemoryEvent],
@@ -478,11 +444,12 @@ fn create_chat_completion_inner(
     }
     // Standing requirements are injected into the solving context itself (as if
     // the user restated them), not appended after the fact.
-    let symbolic_answer =
+    let mut symbolic_answer =
         solve_with_standing_requirements(solver, &prompt, &history, memory_events);
     if let Some(plan) = command_reroute_plan(request, solver.config.agent_mode, &symbolic_answer) {
         return chat_completion_from_plan(request, &prompt, plan, memory_events);
     }
+    cnl::strip_notice_for_envelope(&context, solver, &mut symbolic_answer);
     chat_completion_from_symbolic(request, &prompt, symbolic_answer)
 }
 
@@ -723,6 +690,7 @@ fn chat_completion_from_plan(
             completion_tokens,
             total_tokens: prompt_tokens.saturating_add(completion_tokens),
         },
+        output_projection: None,
         learning_trace: None,
     }
 }
@@ -761,6 +729,7 @@ fn chat_completion_from_symbolic(
             completion_tokens,
             total_tokens: prompt_tokens.saturating_add(completion_tokens),
         },
+        output_projection: None,
         learning_trace,
     }
 }

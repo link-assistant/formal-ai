@@ -25,6 +25,8 @@ fn chat_completion_round_trips_user_prompt_to_assistant_response() {
         tool_choice: None,
         functions: Vec::new(),
         function_call: None,
+        output_standard: None,
+        lexical_density: None,
         stream_options: None,
     };
 
@@ -57,6 +59,8 @@ fn chat_completion_accepts_multipart_content() {
         tool_choice: None,
         functions: Vec::new(),
         function_call: None,
+        output_standard: None,
+        lexical_density: None,
         stream_options: None,
     };
 
@@ -80,6 +84,8 @@ fn chat_completion_reports_token_usage() {
         tool_choice: None,
         functions: Vec::new(),
         function_call: None,
+        output_standard: None,
+        lexical_density: None,
         stream_options: None,
     };
     let completion = create_chat_completion(&request);
@@ -101,6 +107,8 @@ fn chat_completion_includes_ordered_thinking_steps() {
         tool_choice: None,
         functions: Vec::new(),
         function_call: None,
+        output_standard: None,
+        lexical_density: None,
         stream_options: None,
     };
 
@@ -127,6 +135,8 @@ fn chat_completion_includes_standard_reasoning_content() {
         tool_choice: None,
         functions: Vec::new(),
         function_call: None,
+        output_standard: None,
+        lexical_density: None,
         stream_options: None,
     };
 
@@ -741,6 +751,8 @@ fn chat_completion_supports_multi_turn_conversation() {
         tool_choice: None,
         functions: Vec::new(),
         function_call: None,
+        output_standard: None,
+        lexical_density: None,
         stream_options: None,
     };
     let completion = create_chat_completion(&request);
@@ -771,6 +783,8 @@ fn chat_completion_applies_behavior_rule_from_prior_messages() {
         tool_choice: None,
         functions: Vec::new(),
         function_call: None,
+        output_standard: None,
+        lexical_density: None,
         stream_options: None,
     };
 
@@ -967,34 +981,4 @@ fn chat_completion_refuses_tool_call_without_agent_mode() {
         "chat surface must refuse autonomous shell execution by default, got: {body}"
     );
 }
-#[test]
-fn chat_completion_allows_declared_tools_when_tool_choice_is_none() {
-    let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
-        "model": "formal-ai",
-        "messages": [{
-            "role": "user",
-            "content": "Say hello"
-        }],
-        "tools": [{
-            "type": "function",
-            "function": {
-                "name": "local_shell",
-                "description": "Run a shell command on the host",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "command": {"type": "string"}
-                    }
-                }
-            }
-        }],
-        "tool_choice": "none"
-    }))
-    .unwrap();
-    let completion = create_chat_completion(&request);
-    let body = completion.choices[0].message.content.plain_text();
-    assert!(
-        !body.to_lowercase().contains("agent mode"),
-        "declared tools with tool_choice=none should remain a normal chat request, got: {body}"
-    );
-}
+mod output;

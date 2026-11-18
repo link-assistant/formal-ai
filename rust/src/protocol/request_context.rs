@@ -202,6 +202,26 @@ impl RequestContext {
             .and_then(|item| language(&item.value))
     }
 
+    pub(super) fn preserve_answer_body(&self) -> bool {
+        self.active("labels").is_some()
+            || self.active("length").is_some()
+            || self
+                .active("format")
+                .is_some_and(|item| Some(item.value.as_str()) != RULES["plainFormat"].as_str())
+    }
+
+    pub(super) fn answer_text(&self, body: &str) -> String {
+        if self
+            .active("format")
+            .is_some_and(|item| Some(item.value.as_str()) == RULES["supportedFormat"].as_str())
+            && let Ok(value) = serde_json::from_str::<Value>(body)
+            && let Some(text) = value[RULES["jsonAnswerKey"].as_str().unwrap()].as_str()
+        {
+            return text.to_owned();
+        }
+        body.to_owned()
+    }
+
     pub(super) fn answer(&self) -> Option<SymbolicAnswer> {
         if let Some(recall) = capture("recall", &self.prompt) {
             for (index, turn) in self.history.iter().enumerate().rev() {

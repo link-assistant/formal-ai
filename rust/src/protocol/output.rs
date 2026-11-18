@@ -20,6 +20,8 @@ pub struct ChatCompletion {
     pub usage: TokenUsage,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub learning_trace: Option<Value>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub output_projection: Option<Value>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

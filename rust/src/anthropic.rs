@@ -187,6 +187,8 @@ impl AnthropicMessagesRequest {
                 .map(anthropic_tool_choice_to_openai),
             functions: Vec::new(),
             function_call: None,
+            output_standard: None,
+            lexical_density: None,
             stream_options: None,
         }
     }

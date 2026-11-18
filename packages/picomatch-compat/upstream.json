@@ -1,0 +1,69 @@
+{
+  "package": "picomatch",
+  "version": "4.0.7",
+  "tarball": "https://registry.npmjs.org/picomatch/-/picomatch-4.0.7.tgz",
+  "integrity": "sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==",
+  "sha1": "6313360034ccb36b3dc61ecbdff78121f90fe21f",
+  "advisory": "https://github.com/advisories/GHSA-fc5q-39xc-vjpf",
+  "files": [
+    {
+      "path": "LICENSE",
+      "originalSha256": "d0cd141b0c322fded5dfad1d4645bb2fedfc05b7321fe1009469638190d59ef9",
+      "bytes": 1091,
+      "localSha256": "d0cd141b0c322fded5dfad1d4645bb2fedfc05b7321fe1009469638190d59ef9"
+    },
+    {
+      "path": "index.js",
+      "originalSha256": "02ae26406508e28f9ba0865be16cf77f0b33de6c4d4d49c212c4176df1d5625a",
+      "bytes": 479,
+      "localSha256": "02ae26406508e28f9ba0865be16cf77f0b33de6c4d4d49c212c4176df1d5625a"
+    },
+    {
+      "path": "posix.js",
+      "originalSha256": "5695ff5dfcd5a338a40630bd506056f2950bcb08fe1cc068519cbbfe60add480",
+      "bytes": 60,
+      "localSha256": "5695ff5dfcd5a338a40630bd506056f2950bcb08fe1cc068519cbbfe60add480"
+    },
+    {
+      "path": "lib/constants.js",
+      "originalSha256": "c28f952d2758261fe5428a121add485cc25b03e0193633f649de903dc0e5e222",
+      "bytes": 4552,
+      "localSha256": "c28f952d2758261fe5428a121add485cc25b03e0193633f649de903dc0e5e222"
+    },
+    {
+      "path": "lib/parse.js",
+      "originalSha256": "4e1e05447668aa1e94366c5516a2bcd8f5fff800cc92b1d0cd7d77703b8618c4",
+      "bytes": 35144,
+      "localSha256": "4df850ea17ca83ffd0f2d47271b142c4dc2b991f0d561f2038c30e58d69ef121"
+    },
+    {
+      "path": "lib/picomatch.js",
+      "originalSha256": "fdd249d7ffff853f3bb1c77eafc8baa1a437bea85a94c35877b83c6a40d9ca94",
+      "bytes": 10722,
+      "localSha256": "fdd249d7ffff853f3bb1c77eafc8baa1a437bea85a94c35877b83c6a40d9ca94"
+    },
+    {
+      "path": "lib/scan.js",
+      "originalSha256": "6457a1764e5c2e543cc3a0c00ce12ebb3764097628868198370b64d4e642aaae",
+      "bytes": 9483,
+      "localSha256": "6457a1764e5c2e543cc3a0c00ce12ebb3764097628868198370b64d4e642aaae"
+    },
+    {
+      "path": "lib/utils.js",
+      "originalSha256": "f04604f70cd1a3f6ace80b84766468674ff38b4bb83818d2ef1d81fc6355f935",
+      "bytes": 1994,
+      "localSha256": "f04604f70cd1a3f6ace80b84766468674ff38b4bb83818d2ef1d81fc6355f935"
+    }
+  ],
+  "modifiedFiles": [
+    "lib/parse.js"
+  ],
+  "scope": "Local security backport: extend the existing repeated-extglob guard to unescaped wildcard stars in every branch count, after preserving its proved-safe character-class flattening. Risky patterns are literalized using the existing fallback. No upstream release or general regex-safety claim. The repeated-extglob helpers are extracted verbatim around the local guard into lib/extglob-guard.js so the parser remains below the repository warning threshold; no threshold is raised.",
+  "addedFiles": [
+    {
+      "path": "lib/extglob-guard.js",
+      "sha256": "e9a46e9ad44d15bef4755a9750b7ecad753d730eabdde3c06e29b5a885705aea",
+      "bytes": 8310
+    }
+  ]
+}

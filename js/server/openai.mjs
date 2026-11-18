@@ -17,6 +17,7 @@ import { canonicalModelId, resolveModelId, tryResolveModelId } from './seed.mjs'
 import { answerFromMemory, estimateTokens, solveWithMemory, stableId, toolCallRefusalAnswer } from './solve.mjs';
 import { renderThinkingSteps } from './thinking.mjs';
 import { requestScope, runInRequestScope } from './standing-scope.mjs';
+import { projectServerAnswer, requestOutputTurn } from './cnl-output.mjs';
 import { formalizeRequest, contextualAnswer, composeRequestAnswer } from './request-context.mjs';
 import { clientFunctionOutput, forcedFunction } from './client-functions.mjs';
 
@@ -52,6 +53,7 @@ export function chatCompletionFromSymbolic(request, prompt, symbolic) {
   const completionTokens = estimateTokens(symbolic.answer);
   const reasoning = renderThinkingSteps(symbolic.thinking_steps);
   return {
+    ...(symbolic.output_projection ? {output_projection:symbolic.output_projection} : {}),
     id: stableId('chatcmpl', prompt),
     object: 'chat.completion',
     created: responseTimestamp(),
@@ -85,7 +87,49 @@ export function chatCompletionFromSymbolic(request, prompt, symbolic) {
  * @param {{worker: object, agentMode: boolean}} ctx
  * @param {object} request a parsed `ChatCompletionRequest`
  */
-export async function createChatCompletion(ctx, request, { forcedClientFunctions = true } = {}) {
+export async function createChatCompletion(ctx, request, options = {}) {
+  const original = chatPromptAndHistory(request.messages);
+  const turn = requestOutputTurn(original.prompt, original.history, request, ctx.outputConfiguration);
+  const selected = {...ctx, outputConfiguration:turn.config};
+  const context = formalizeRequest(request.messages);
+  let completion;
+  // A rewrite is resolved before memory lookup, planning or tool permission paths.
+  if (turn.rewrite !== null) {
+    const symbolic = await projectServerAnswer(selected, {intent:'cnl_paraphrase',answer:turn.rewrite,
+      confidence:1,evidence_links:['cnl:paraphrase'],thinking_steps:[],links_notation:''}, turn.config, {language: context.language});
+    completion = chatCompletionFromSymbolic(request, original.prompt, symbolic);
+  } else {
+    // Strip a recognized output directive only from the latest plain-text user
+    // message. Preserve structured content, tool results and command arguments.
+    let planningRequest = request;
+    const latest = request.messages.findLastIndex(message => message.role.toLowerCase() === 'user');
+    const message = request.messages[latest];
+    if (turn.prompt !== original.prompt && typeof message?.content === 'string') {
+      const start = message.content.indexOf(original.prompt);
+      if (start >= 0) {
+        const content = message.content.slice(0, start) + turn.prompt + message.content.slice(start + original.prompt.length);
+        planningRequest = {...request, messages:request.messages.map((item,index) => index === latest ? {...item,content} : item)};
+      }
+    }
+    completion = await createUnprojectedChatCompletion(selected, planningRequest, options);
+  }
+  const choice = completion.choices[0];
+  if (choice?.finish_reason === 'stop' && typeof choice.message.content === 'string' && choice.message.content !== '') {
+    const projected = await projectServerAnswer(selected, {answer:choice.message.content,
+      output_projection:completion.output_projection}, turn.config, {
+      language: context.language,
+      preserveAnswerBody: context.preserveAnswerBody,
+      answerText: context.answerText(choice.message.content),
+    });
+    choice.message.content = projected.answer;
+    completion.output_projection = projected.output_projection;
+    completion.usage.completion_tokens = estimateTokens(projected.answer);
+    completion.usage.total_tokens = completion.usage.prompt_tokens + completion.usage.completion_tokens;
+  }
+  return completion;
+}
+
+async function createUnprojectedChatCompletion(ctx, request, { forcedClientFunctions = true } = {}) {
   const { prompt, history } = chatPromptAndHistory(request.messages);
   const forced = forcedClientFunctions ? await forcedFunction(ctx, request, prompt) : null;
   if (forced) {
@@ -132,6 +176,7 @@ export function chatCompletionJson(completion) {
     })),
     usage: completion.usage,
   };
+  if (completion.output_projection) out.output_projection = completion.output_projection;
   if (completion.learning_trace) out.learning_trace = completion.learning_trace;
   return out;
 }
@@ -174,7 +219,7 @@ export function chatCompletionSse(completion, includeUsage) {
       });
     });
   }
-  body += sseChunk(base, { index: 0, delta: {}, finish_reason: choice ? choice.finish_reason : 'stop' });
+  body += sseChunk({...base,...(completion.output_projection ? {output_projection:completion.output_projection} : {})}, { index: 0, delta: {}, finish_reason: choice ? choice.finish_reason : 'stop' });
   if (includeUsage) {
     const usage = sortedKeys({
       ...base,

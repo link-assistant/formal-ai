@@ -1,0 +1,463 @@
+// Controlled-language grammar (issue #1584). One declarative description per
+// language drives realization, parsing (its exact inverse) and validation.
+// Rust counterpart: rust/src/cnl_output/grammar.rs. Data: data/seed/cnl-*.lino.
+import { childValue, childrenNamed } from '../host.mjs';
+
+export const CNL_LANGUAGE_PATH = 'data/seed/cnl-language-{language}.lino';
+/** Term register of input-only surfaces; realization never selects it. */
+export const INPUT_REGISTER = 'input';
+const TOKEN = /\.\.\.|…|\p{Script=Han}|[0-9]+(?:\.[0-9]+)?|[\p{L}\p{M}\p{N}]+(?:['-][\p{L}\p{M}\p{N}]+)*/gu;
+const NUMBER = /^[0-9]+(?:\.[0-9]+)?$/u;
+const SLOT = /\{([a-z]+)\.([a-z-]+)\}/gu;
+const MAXIMUM_SPAN = 24;
+
+function list(value) {
+  return String(value ?? '').split('|').filter(Boolean);
+}
+
+function keyed(value) {
+  const at = value.indexOf(': ');
+  return at < 0 ? [value, []] : [value.slice(0, at), list(value.slice(at + 2))];
+}
+
+/** Shared frames, facts and checks; independent of any language. */
+export function parseGrammarPolicy(root) {
+  const frames = childrenNamed(root, 'frame').map(node => ({
+    id: node.value, slots: list(childValue(node, 'slots')), types: list(childValue(node, 'types')),
+    transitive: childValue(node, 'transitive') === 'true', answerable: childValue(node, 'answerable') === 'true',
+    expands: list(childValue(node, 'expands')), canonical: childValue(node, 'canonical'),
+    logic: childValue(node, 'logic'), negativeLogic: childValue(node, 'negative-logic'),
+  }));
+  const facts = childrenNamed(root, 'fact').map(node => {
+    const [frame, ...args] = node.value.split(' ');
+    return {frame, args};
+  });
+  const checks = childrenNamed(root, 'check').map(node => ({
+    id: node.value, kind: childValue(node, 'kind'), styles: list(childValue(node, 'styles')),
+    registers: list(childValue(node, 'registers')), lists: list(childValue(node, 'lists')),
+    closed: childValue(node, 'closed') === 'true',
+  }));
+  return {frames, facts, checks, registers: list(childValue(root, 'registers')),
+    inputStyles: list(childValue(root, 'input-styles')),
+    precisionRegisters: list(childValue(root, 'precision-registers')),
+    precisionStyles: list(childValue(root, 'precision-styles'))};
+}
+
+/** Parse one cnl-language-<id>.lino file into plain data. */
+export function parseLanguageGrammar(text, parse) {
+  const parsed = parse(text);
+  const root = parsed.name === 'cnl-language' ? parsed : childrenNamed(parsed, 'cnl-language')[0];
+  if (!root) throw new Error('cnl_language_missing');
+  return {
+    id: root.value, keys: list(childValue(root, 'keys')), grammar: list(childValue(root, 'grammar')),
+    copula: list(childValue(root, 'copula')), pronouns: list(childValue(root, 'pronouns')),
+    clauseClose: childValue(root, 'clause-close') ?? '',
+    // Between two sentences of one reply: a space, or nothing (Chinese 。).
+    sentenceSpace: childrenNamed(root, 'sentence-space').length ? childValue(root, 'sentence-space') : ' ',
+    fillers: list(childValue(root, 'fillers')),
+    typos: list(childValue(root, 'typos')).map(pair => pair.split('=')),
+    loose: list(childValue(root, 'loose')).map(pair => pair.split('=')),
+    primes: childrenNamed(root, 'prime').map(node => keyed(node.value)),
+    lists: childrenNamed(root, 'list').map(node => keyed(node.value)),
+    tiers: childrenNamed(root, 'tier').map(node => keyed(node.value)).map(([bound, words]) => [Number(bound), words]),
+    terms: childrenNamed(root, 'term').map(node => ({
+      id: node.value,
+      registers: Object.fromEntries((node.children ?? []).map(child => [child.name, child.value.split('|')])),
+    })),
+    templates: childrenNamed(root, 'template').map(node => {
+      const [frame, styles, mood] = node.value.split(' ');
+      return {frame, styles: list(styles), mood,
+        positive: childrenNamed(node, 'positive').map(item => item.value),
+        negative: childrenNamed(node, 'negative').map(item => item.value)};
+    }),
+  };
+}
+
+/** Normalize like the parser: lowercase, typographic apostrophes, typos, fillers. Mirrors `fn tokens`. */
+export function grammarTokens(text, grammar) {
+  const raw = (String(text).toLowerCase().replaceAll('’', "'").match(TOKEN) ?? [])
+    .map(token => token === '…' ? '...' : token);
+  const fixed = raw.flatMap(token => grammar.typos.get(token) ?? [token]);
+  const tokens = [];
+  for (let index = 0; index < fixed.length;) {
+    const filler = grammar.fillers.find(words => words.every((word, offset) => fixed[index + offset] === word));
+    if (filler) index += filler.length;
+    else tokens.push(fixed[index++]);
+  }
+  return tokens;
+}
+
+function compileTemplate(text, grammar) {
+  const parts = [];
+  let last = 0;
+  for (const match of text.matchAll(SLOT)) {
+    parts.push({literal: grammarTokens(text.slice(last, match.index), grammar)});
+    parts.push({slot: match[1], key: match[2]});
+    last = match.index + match[0].length;
+  }
+  parts.push({literal: grammarTokens(text.slice(last), grammar)});
+  return parts;
+}
+
+/** Build lookup tables once per language; caches live on the compiled grammar. */
+export function compileGrammar(data, shared) {
+  const grammar = {...data, shared, typos: new Map(), fillers: [], index: new Map(), looseIndex: new Map(),
+    looseWords: new Map(data.loose ?? []),
+    parseCache: new Map(), minimumCache: new Map()};
+  for (const [wrong, right] of data.typos) grammar.typos.set(wrong, right.split(' '));
+  grammar.fillers = data.fillers.map(filler => filler.split(' ')).sort((left, right) => right.length - left.length);
+  const words = text => (String(text).toLowerCase().replaceAll('’', "'").match(TOKEN) ?? []);
+  grammar.primeWords = new Set(data.primes.flatMap(([, forms]) => forms.flatMap(words)));
+  grammar.grammarWords = new Set(data.grammar.flatMap(words));
+  grammar.copulaWords = new Set(data.copula);
+  grammar.pronounWords = new Set(data.pronouns);
+  grammar.listWords = new Map(data.lists.map(([name, forms]) => [name, new Set(forms.flatMap(words))]));
+  grammar.listWords.set('primes', grammar.primeWords);
+  grammar.rank = new Map();
+  for (const [bound, forms] of [...data.tiers].sort((left, right) => left[0] - right[0])) {
+    for (const word of forms.flatMap(words)) if (!grammar.rank.has(word)) grammar.rank.set(word, bound);
+  }
+  grammar.termById = new Map(data.terms.map(term => [term.id, term]));
+  for (const term of data.terms) {
+    // The input register lists accepted surfaces that are never realized: a
+    // shared colloquial word (Chinese 鼠, Hindi मूषक) reads as every term that
+    // declares it, so a question with it gets a clarification.
+    for (const register of [...shared.registers, INPUT_REGISTER]) {
+      const forms = register === INPUT_REGISTER ? term.registers.input ?? [] : term.registers[register] ?? term.registers.forms ?? [];
+      forms.forEach((form, position) => {
+        const key = grammarTokens(form, grammar).join(' ');
+        const entry = {concept: term.id, key: data.keys[position], register};
+        for (const [table, name] of [[grammar.index, key], [grammar.looseIndex, looseKey(key.split(' '), grammar)]]) {
+          if (!table.has(name)) table.set(name, []);
+          table.get(name).push(entry);
+        }
+      });
+    }
+  }
+  grammar.templates = data.templates.map(template => ({...template,
+    compiled: {positive: template.positive.map(text => compileTemplate(text, grammar)),
+      negative: template.negative.map(text => compileTemplate(text, grammar))}}));
+  grammar.outputStyles = [...new Set(data.templates.flatMap(template => template.styles))]
+    .filter(style => !shared.inputStyles.includes(style));
+  return grammar;
+}
+
+function frameOf(frameName, shared) {
+  return shared.frames.find(frame => frame.id === frameName) ?? {id: frameName, slots: [], types: [], expands: []};
+}
+
+/** Canonical identity of a meaning graph, independent of wording. */
+export function graphKey(graph) {
+  const slots = Object.keys(graph.slots).sort().map(name => name + '=' + graph.slots[name]).join(',');
+  return graph.frame + '(' + slots + ') ' + graph.polarity + ' ' + graph.mood;
+}
+
+/** Input-only spelling equivalences (for example English "a"/"an"). */
+function looseKey(tokens, grammar) {
+  return tokens.map(token => grammar.looseWords.get(token) ?? token).join(' ');
+}
+
+/**
+ * Bind template parts to tokens. Lenient (input-only) templates accept any
+ * form key and the declared loose equivalences; output templates are exact.
+ */
+function matchParts(parts, tokens, grammar, lenient) {
+  const same = lenient ? (left, right) => left === right || looseKey([left], grammar) === looseKey([right ?? ''], grammar)
+    : (left, right) => left === right;
+  const results = [];
+  const walk = (part, at, bound) => {
+    if (part === parts.length) {
+      if (at === tokens.length) results.push(bound);
+      return;
+    }
+    const current = parts[part];
+    if (current.literal) {
+      if (current.literal.every((word, offset) => same(word, tokens[at + offset]))) {
+        walk(part + 1, at + current.literal.length, bound);
+      }
+      return;
+    }
+    if (current.key === 'number') {
+      if (NUMBER.test(tokens[at] ?? '')) walk(part + 1, at + 1, {...bound, [current.slot]: {number: tokens[at]}});
+      return;
+    }
+    for (let end = at + 1; end <= Math.min(tokens.length, at + MAXIMUM_SPAN); end += 1) {
+      const span = tokens.slice(at, end);
+      const entries = lenient ? grammar.looseIndex.get(looseKey(span, grammar)) ?? []
+        : (grammar.index.get(span.join(' ')) ?? []).filter(entry => entry.key === current.key);
+      const concepts = new Map();
+      for (const entry of entries) {
+        if (!concepts.has(entry.concept)) concepts.set(entry.concept, new Set());
+        concepts.get(entry.concept).add(entry.register);
+      }
+      for (const [concept, registers] of concepts) {
+        walk(part + 1, end, {...bound, [current.slot]: {concept, registers}});
+      }
+    }
+  };
+  walk(0, 0, {});
+  return results;
+}
+
+function slotsTyped(frame, bound) {
+  return frame.slots.every((slot, index) => frame.types[index] === 'number'
+    ? bound[slot]?.number !== undefined : bound[slot]?.concept !== undefined);
+}
+
+/**
+ * Every reading of one utterance: [{graph, style, registers}]. A statement
+ * template ending in a question mark reads as the corresponding question.
+ */
+export function parseUtterance(text, grammar) {
+  const cached = grammar.parseCache.get(text);
+  if (cached) return cached;
+  const tokens = grammarTokens(text, grammar);
+  const question = /[?？]/u.test(text);
+  const readings = [];
+  if (tokens.length) {
+    for (const template of grammar.templates) {
+      const lenient = template.styles.every(style => grammar.shared.inputStyles.includes(style));
+      for (const polarity of ['positive', 'negative']) {
+        for (const parts of template.compiled[polarity]) {
+          for (const bound of matchParts(parts, tokens, grammar, lenient)) {
+            const frame = frameOf(template.frame, grammar.shared);
+            const mood = template.mood === 'statement' && question ? 'question' : template.mood;
+            for (const frameName of frame.expands.length ? frame.expands : [frame.id]) {
+              const target = frameOf(frameName, grammar.shared);
+              if (!slotsTyped(target, bound)) continue;
+              const slots = Object.fromEntries(target.slots.map(slot => [slot, bound[slot].concept ?? bound[slot].number]));
+              const registers = Object.fromEntries(target.slots.filter(slot => bound[slot].registers)
+                .map(slot => [slot, bound[slot].registers]));
+              for (const style of template.styles) {
+                readings.push({graph: {frame: frameName, slots, polarity, mood}, style, registers});
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  if (grammar.parseCache.size > 4096) grammar.parseCache.clear();
+  grammar.parseCache.set(text, readings);
+  return readings;
+}
+
+/** Distinct meaning graphs of one utterance, in a stable order. */
+export function utteranceGraphs(text, grammar) {
+  const graphs = new Map();
+  for (const reading of parseUtterance(text, grammar)) graphs.set(graphKey(reading.graph), reading.graph);
+  return [...graphs.keys()].sort().map(key => graphs.get(key));
+}
+
+function capitalized(text) {
+  return text.replace(/\p{L}/u, letter => letter.toUpperCase());
+}
+
+/** Declared variants of a frame/style/mood/polarity, preferred first. */
+function variantsOf(graph, style, grammar) {
+  return grammar.templates.filter(item => item.frame === graph.frame && item.mood === graph.mood
+    && item.styles.includes(style)).flatMap(item => item[graph.polarity] ?? []);
+}
+
+/** One declared variant (the preferred one by default) in one register, or null. */
+export function realizeGraph(graph, style, register, grammar, variant = 0) {
+  const source = variantsOf(graph, style, grammar)[variant];
+  if (source === undefined) return null;
+  let missing = false;
+  const text = source.replace(SLOT, (whole, slot, key, offset) => {
+    const value = graph.slots[slot];
+    if (value === undefined) {
+      missing = true;
+      return '';
+    }
+    if (key === 'number') return String(value);
+    const term = grammar.termById.get(value);
+    const forms = term?.registers[register] ?? term?.registers.forms;
+    const form = forms?.[grammar.keys.indexOf(key)];
+    if (form === undefined) missing = true;
+    // A form with an inner clause (for example Russian "..., которая может
+    // двигаться") is closed by the language's declared mark unless punctuation
+    // or the end of the sentence already follows it. Parsing ignores the mark.
+    const rest = source.slice(offset + whole.length).trimStart();
+    const close = grammar.clauseClose && form?.includes(',') && rest && !/^[.,;:?!…»)"。，？！、]/u.test(rest);
+    return close ? form + grammar.clauseClose : form ?? '';
+  });
+  return missing ? null : capitalized(text);
+}
+
+/** Every distinct realization of every variant, in the order of the style/register pairs. */
+export function realizations(graph, pairs, grammar) {
+  const seen = new Set();
+  const texts = [];
+  for (const [style, register] of pairs) {
+    for (let variant = 0; variant < variantsOf(graph, style, grammar).length; variant += 1) {
+      const text = realizeGraph(graph, style, register, grammar, variant);
+      if (text !== null && !seen.has(text)) {
+        seen.add(text);
+        texts.push(text);
+      }
+    }
+  }
+  return texts;
+}
+
+export function allPairs(grammar) {
+  return grammar.outputStyles.flatMap(style => grammar.shared.registers.map(register => [style, register]));
+}
+
+/** Sentences of an output text with the exact separators between them. */
+export function outputSentences(text) {
+  const pieces = [];
+  const characters = [...String(text)];
+  let index = 0;
+  const take = (kind, from) => {
+    if (index > from) pieces.push({kind, text: characters.slice(from, index).join('')});
+  };
+  while (index < characters.length) {
+    let from = index;
+    while (index < characters.length && /\s/u.test(characters[index])) index += 1;
+    take('space', from);
+    from = index;
+    const enumerator = characters.slice(index, index + 8).join('').match(/^[0-9]+\)\s+/u);
+    if (enumerator) index += [...enumerator[0]].length;
+    take('opaque', from);
+    from = index;
+    while (index < characters.length) {
+      const character = characters[index];
+      index += 1;
+      if ('。！？।'.includes(character) || ('.!?'.includes(character)
+        && (index === characters.length || /[\s.!?।]/u.test(characters[index])))) {
+        while (index < characters.length && '.!?。！？।'.includes(characters[index])) index += 1;
+        if (index === characters.length || /\s/u.test(characters[index]) || '。！？।'.includes(character)) break;
+      }
+    }
+    take('sentence', from);
+  }
+  return pieces;
+}
+
+function words(text) {
+  return String(text).toLowerCase().replaceAll('’', "'").match(TOKEN)?.filter(token => token !== '...') ?? [];
+}
+
+function allowedBy(names, grammar) {
+  return word => NUMBER.test(word) || grammar.grammarWords.has(word)
+    || names.some(name => grammar.listWords.get(name)?.has(word));
+}
+
+function readingsAllowed(readings, check, grammar) {
+  return readings.some(reading => (check.styles.length ? check.styles.includes(reading.style)
+    : grammar.outputStyles.includes(reading.style))
+    && Object.values(reading.registers).every(registers => !check.registers.length
+      || check.registers.some(register => registers.has(register))));
+}
+
+/**
+ * Built-in evidence for one named check: true (pass), false (a definite
+ * violation) or undefined (outside the closed fragment; stays unchecked).
+ */
+export function builtinCheck(check, text, grammar, context) {
+  const sentences = outputSentences(text).filter(piece => piece.kind === 'sentence').map(piece => piece.text);
+  if (!sentences.length) return undefined;
+  const parsed = sentences.map(sentence => parseUtterance(sentence, grammar));
+  const output = parsed.map(readings => readings.filter(reading => grammar.outputStyles.includes(reading.style)));
+  const distinct = parsed.map(readings => new Set(readings.map(reading => graphKey(reading.graph))).size);
+  switch (check.kind) {
+  case 'grammar':
+    return parsed.every(readings => readingsAllowed(readings, check, grammar)) ? true : undefined;
+  case 'interpretation':
+    return parsed.every((readings, index) => distinct[index] === 1 && readingsAllowed(readings, check, grammar)
+      && frameOf(readings[0].graph.frame, grammar.shared).logic) ? true : undefined;
+  case 'references':
+    if (output.every(readings => readings.length)) return true;
+    return sentences.some(sentence => words(sentence).some(word => grammar.pronounWords.has(word))) ? false : undefined;
+  case 'ambiguity':
+    if (distinct.some(count => count > 1)) return false;
+    return distinct.every(count => count === 1) ? true : undefined;
+  case 'vocabulary': {
+    const allowed = allowedBy(check.lists, grammar);
+    if (sentences.every(sentence => words(sentence).every(allowed))) return true;
+    return check.closed ? false : undefined;
+  }
+  case 'primes': {
+    const allowed = allowedBy(['primes'], grammar);
+    return sentences.every(sentence => words(sentence).every(allowed));
+  }
+  case 'forbidden': {
+    // Each language declares its own copula forms; without them the check stays open.
+    if (!grammar.copulaWords.size) return undefined;
+    const tokens = sentences.flatMap(words);
+    if (tokens.some(word => grammar.copulaWords.has(word) || /'(?:m|re)$/u.test(word))) return false;
+    return parsed.every(readings => readingsAllowed(readings, check, grammar)) ? true : undefined;
+  }
+  case 'frequency': {
+    const floor = allowedBy(['primes'], grammar);
+    const tokens = sentences.flatMap(words);
+    if (tokens.some(word => !floor(word) && grammar.rank.has(word) && grammar.rank.get(word) > context.tier)) return false;
+    return tokens.every(word => floor(word) || (grammar.rank.get(word) ?? Infinity) <= context.tier) ? true : undefined;
+  }
+  case 'minimum': {
+    let verdict = true;
+    for (const [index, sentence] of sentences.entries()) {
+      if (distinct[index] !== 1) return undefined;
+      const least = context.minimum(parsed[index][0].graph);
+      if (least === null) return undefined;
+      const count = context.count(sentence);
+      if (count > least) verdict = false;
+    }
+    return verdict;
+  }
+  default:
+    return undefined;
+  }
+}
+
+/** Closed-world truth over declared facts; transitive frames follow chains. */
+export function graphHolds(graph, shared) {
+  const frame = frameOf(graph.frame, shared);
+  const [first, second] = frame.slots;
+  const start = graph.slots[first];
+  const goal = graph.slots[second];
+  const edges = shared.facts.filter(fact => fact.frame === graph.frame);
+  const seen = new Set([start]);
+  const queue = [start];
+  while (queue.length) {
+    const current = queue.shift();
+    for (const fact of edges) {
+      if (fact.args[0] !== current) continue;
+      if (fact.args[1] === goal) return true;
+      if (frame.transitive && !seen.has(fact.args[1])) {
+        seen.add(fact.args[1]);
+        queue.push(fact.args[1]);
+      }
+    }
+  }
+  return false;
+}
+
+/** First-order reading of a graph for the Links Notation record, or ''. */
+export function graphLogic(graph, shared) {
+  const frame = frameOf(graph.frame, shared);
+  const logic = graph.polarity === 'negative' ? frame.negativeLogic : frame.logic;
+  return logic ? logic.replace(/\{([a-z]+)\}/gu, (_whole, slot) => graph.slots[slot] ?? slot) : '';
+}
+
+/** Whole-prompt analysis in the first language with any reading. */
+export function promptAnalysis(prompt, grammars) {
+  if (typeof prompt !== 'string' || /^\s*[`"'«>]/u.test(prompt)) return null;
+  for (const grammar of grammars) {
+    const graphs = utteranceGraphs(prompt, grammar);
+    if (graphs.length) return {language: grammar.id, grammar, graphs};
+  }
+  return null;
+}
+
+/** A task request's canonical solver prompt, filled from its number slots. */
+export function canonicalPrompt(graph, shared) {
+  const frame = frameOf(graph.frame, shared);
+  return frame.canonical ? frame.canonical.replace(/\{([a-z]+)\}/gu, (_whole, slot) => graph.slots[slot]) : null;
+}
+
+export function answerableQuestions(graphs, shared) {
+  return graphs.filter(graph => graph.mood === 'question' && frameOf(graph.frame, shared).answerable);
+}

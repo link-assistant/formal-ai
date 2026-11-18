@@ -10,6 +10,7 @@
 
 import { childrenNamed, parseLino, readRepoFile } from './lino.mjs';
 import { serverMessage } from './messages.mjs';
+import {parseOutputOptions} from './cnl-output.mjs';
 
 const byteLength = (text) => Buffer.byteLength(text, 'utf8');
 
@@ -129,7 +130,11 @@ export function parseChatRequest(body) {
     if (typeof streamOptions !== 'object' || Array.isArray(streamOptions)) fail('stream_options', 'struct StreamOptions', streamOptions);
     includeUsage = defaultBool(streamOptions, 'include_usage');
   }
+  let output;
+  try { output = parseOutputOptions(object, optionalString); }
+  catch (error) { throw new RequestShapeError(error.message); }
   return {
+    ...output,
     model: optionalString(object, 'model'),
     messages: defaultArray(object, 'messages').map(parseChatMessage),
     temperature: optionalNumber(object, 'temperature'),

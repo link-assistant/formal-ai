@@ -15,8 +15,11 @@ Maintainer requirements of 2026-10-31 supersede earlier full-PR build opt-ins.
   and later with clippy::manual_contains, because JavaScript cannot see Rust
   types or lints. Issue #1589 additionally runs the isolated calendar_currency
   regression target against the shared worker/native acceptance fixtures in this
-  existing job, with two compiler jobs and test optimization disabled. The
-  regression proves native behavior; it does not produce release evidence. Full
+  existing job, with two compiler jobs and test optimization disabled. Issue
+  #1584 adds the isolated cnl_output and cnl_parity targets to the same step, so
+  the native controlled-language engine runs against the JavaScript parity
+  fixtures before merge. These
+  regressions prove native behavior; they do not produce release evidence. Full
   suites and product builds remain on main. The job uploads and attests nothing,
   saves no cache and publishes no outputs.
   Docs-only, JS-only, test-only and script-only PRs skip it. Its selector is
