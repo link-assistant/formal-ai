@@ -1,0 +1,6 @@
+{
+  "earlierLog": "before-held-out-apostrophe-boundaries.log",
+  "correction": "The earlier held-out test failed because three fixture entries had not been generated. It did not demonstrate a CJK split defect. The first direct diagnostic omitted installNodeHost and failed before producing a split. The corrected direct diagnostic uses the actual aggregation connective inside each Chinese quotation and compares split output before fixture generation.",
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,29 @@
+{
+  "codeCommit": "13c2763ce9f7c31d9c36d9efd3e0f023899566e5",
+  "sourceHashesVerified": 13,
+  "fixtureCases": 25,
+  "originalCasesUnchanged": 15,
+  "executorTestsPassed": 9,
+  "adjacentTestsPassed": 15,
+  "finalFullGateRun": {
+    "passed": 86,
+    "excluded": 52,
+    "failed": 0
+  },
+  "initialFullGateFailuresRetained": [
+    "check_js_rust_translation",
+    "check-notation",
+    "check-package-self-containment"
+  ],
+  "finalPublicationGatesPassed": 5,
+  "typescriptProjectionsChecked": 717,
+  "suppliedScripts": 1175,
+  "compressedScriptBytes": 631934,
+  "sealedCommandRecords": 2702,
+  "newCommandHashesVerified": 228,
+  "noRunningWorkers": true,
+  "nativeBehaviorVerified": false,
+  "rejectedContextCandidateAccepted": false,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

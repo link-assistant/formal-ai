@@ -44,6 +44,12 @@
     39,
     40,
     41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
     48,
     49,
     50,
@@ -60,7 +66,21 @@
     61,
     62,
     63,
-    64
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77,
+    78
   ],
   "totalHistoricalPages": 254,
   "files": [
@@ -479,14 +499,10 @@
       "readRanges": [
         [
           1,
-          1
-        ],
-        [
-          3,
           3
         ]
       ],
-      "completeSourceRead": false
+      "completeSourceRead": true
     },
     {
       "path": "dev/log/issues/24/pulls/25/osv-upstream-report.txt",
@@ -867,7 +883,55 @@
       "readRanges": [
         [
           1,
-          3
+          1424
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/github-oven-sh-setup-bun.json",
+      "sha256": "4da1eea5f8362c4f810a325b01c38cfb48f08d69ff4472b034bfe20b5b032e46",
+      "totalLines": 55,
+      "readRanges": [
+        [
+          1,
+          55
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/github-peter-evans-create-pull-request.json",
+      "sha256": "d7fc03190f4dea066cb0ef850838fa911f83626508e18c256268fbeb37481aba",
+      "totalLines": 43,
+      "readRanges": [
+        [
+          1,
+          43
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/github-pre-commit-pre-commit-hooks.json",
+      "sha256": "7646bbede73003321a8ffa0ffbb5c4d933163a6f4e33861dc9399809a5cd04c9",
+      "totalLines": 55,
+      "readRanges": [
+        [
+          1,
+          55
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/github-pre-commit-pre-commit.json",
+      "sha256": "ccb756c2e3e43065756dcdef909f70ea98ba111d73ac34b1cddfb8bf3a8fc998",
+      "totalLines": 92,
+      "readRanges": [
+        [
+          1,
+          18
         ]
       ],
       "completeSourceRead": false
@@ -918,7 +982,7 @@
     "The complete historical dependency-update practices source is read. Its discussion of automatic merges and administrative bypass describes the upstream tool; it does not authorize changing Formal AI branch protection or merging this draft. Current applicability, remaining historical pages and broader issue acceptance stay unfinished."
   ],
   "nextUnreviewedLiteralPage": 39,
-  "nextForwardLiteralPage": 65,
+  "nextForwardLiteralPage": 79,
   "observationsThroughPage58": [
     "Pages 56–58 are fully read. Together with page 55 they complete the historical Durian SWT changelog. Its Java 17, Kotlin flow and platform notes are third-party historical context, not verification of current Formal AI dependencies.",
     "The retained final issue conversation, final main SHA, empty pull-request conversation/review/inline-comment lists and empty sub-issue list are fully read. These are historical snapshots rather than fresh GitHub state.",
@@ -941,5 +1005,20 @@
   "observationsPages40And41": [
     "Both pages were read completely: osv-scope-reproduction.log line 2 fragments 16–27 of 66. These retained records cover Log4j advisory references and package ranges, including JDBC appender configuration scope; no current package execution or security conclusion is claimed.",
     "The second source line remains incomplete; neither page adds a complete source line or file. Pages 42–47 and forward 65–254 remain unread."
+  ],
+  "observationsPages42Through47": [
+    "All six pages were read completely: retained osv-scope-reproduction.log line 2 fragments 28–63 of 66. Together with previously read fragments, the historical file is now complete.",
+    "The payload includes XML-layout event-loss, Log4Shell, self-referential lookup, Socket Appender TLS verification and Log4j API advisory records with their package ranges and references. These are retained scope-reproduction data, not present dependency execution or current remediation advice.",
+    "Literal pages 1–64 are now complete with no internal page gap. Forward pages 65–254 remain unread; full template semantic review is unfinished."
+  ],
+  "observationsPages65Through72": [
+    "All eight pages were read completely: retained github-oven-sh-bun.json lines 4–938. Together with the previously read opening three lines, the historical release record is partially read through line 938.",
+    "The record identifies Bun v1.4.4, a published non-prerelease snapshot, and release archive metadata for Darwin, FreeBSD and Linux ARM/x64 variants including Android, musl and profile builds. URLs, digests and download counts are historical response data; no asset download or present runtime/compatibility verification is claimed.",
+    "Literal pages 1–72 are complete with no internal page gap. Forward pages 73–254 remain unread; full template semantic review is unfinished."
+  ],
+  "observationsPages73Through78": [
+    "Pages 73–78 were read in full. They finish the historical Bun v1.4.4 release response, setup-bun v2.2.0, create-pull-request v8.1.3 and pre-commit-hooks v6.0.0; the retained pre-commit response is partially read through line 18.",
+    "Bun asset names, digests, dates and download counts are historical response data. The setup-bun notes describe a Node.js 24 action runtime, create-pull-request describes a signed-commit ref check, and pre-commit-hooks describes Python >=3.9 and removal or replacement of two hooks. None establishes that the current repository runs those versions or passes affected paths.",
+    "Literal coverage is continuous pages 1–78/254. Pages 79–254 remain unread, and full template semantic applicability remains unfinished."
   ]
 }

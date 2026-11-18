@@ -365,3 +365,24 @@ The complete edffcb18 CI inventory has 22 passing workflows and one checkout fai
 - [x] Read Java historical pages 39–41 completely. Coverage is now 58/254 pages (1–41 and 48–64), still 65 complete files, two partials and 3,038 complete source lines; all three pages contain only fragments of one incomplete retained OSV log line. Pages 42–47 and 65–254 remain unread.
 
 - [x] Review the complete code and generated mirror diff; pass the final five release/naming/size gates, 717-file projection and whitespace checks. Fresh 03:50 UTC feedback is unchanged, main 015a6831 is already merged, all edffcb18 runs are completed and both active/queued lists are empty. Preserve both failed CI attempts before publication.
+
+- [x] Read all six Java historical gap pages 42–47 completely, completing the retained OSV scope log. Literal coverage is now continuous pages 1–64/254; forward pages 65–254 and complete repository semantic comparison remain unfinished. All advisory payloads are historical review only.
+
+
+## Task quotation and rejected context binding (2026-11-18)
+
+All 23 workflows on `a97832237cbb365000dd7296050984e4bdd59ebb` complete successfully; preserve exact-head snapshots without claiming native acceptance from scope gates. A finite 16-observation disposable context candidate restores the original and changed-facts traces, preserves a withheld child, but passes only four of eight explicit qualification checks. Reject it: the independent arithmetic request becomes resolved while omitting the passage result, and the pre-existing two-passage coverage failure remains. Retain complete evidence and default-off production behavior. Separately reproduce a real quotation defect: the shared grammar omits ASCII quote pairs and splits connectives inside literal passages. Draft both runtime masks with escape/apostrophe boundaries, seven new shared fixture controls and maintained projections; all 15 original fixture cases remain identical. The before run has seven passes/two failures, including the exact incorrect split. Bare rustfmt's edition mismatch is preserved; corrected focused checks and the complete shared-data gates remain pending. Parent coverage, native execution, the broader unchecked criteria and 0/20 independent reasoning acceptance remain unfinished. See docs/case-studies/issue-1580/task-quotation-checkpoint.md.
+
+- [x] Read Java historical pages 65–72 completely, covering the retained Bun release response through line 938. Literal coverage is now continuous pages 1–72/254; pages 73–254 and complete semantic applicability remain unfinished. Historical release metadata is separate from current execution.
+
+- [x] Read Java historical pages 73–78 completely. Literal coverage is now continuous pages 1–78/254, with 70 complete historical files and the pre-commit release response partly read. Pages 79–254 and complete semantic applicability remain unfinished; no current runtime credit is claimed from historical release metadata.
+
+- [x] Complete final quotation validation: 25 shared fixture cases, nine executor
+  tests and 15 adjacent factual-QA tests pass. Preserve the first complete gate
+  run's three stale-artifact failures, regenerate through maintained writers,
+  then pass all 86 executable gates in the complete 138-entry inventory; 52
+  native/CI-context exclusions remain explicit. No local Rust build or native
+  execution is claimed. Parent coverage and the rejected context candidate stay
+  unfinished; supplied work earns zero independent authorship credit.
+
+- [x] Commit quotation repair 13c2763c, verify all original source hashes, review final code and projection diffs, and pass five final release/naming/size gates plus TypeScript and whitespace checks. Fresh feedback remains unchanged and all 23 a9783223 workflows pass. Main is merged; quotation-head hosted CI and broad acceptance remain unfinished.
