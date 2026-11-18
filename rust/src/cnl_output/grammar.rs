@@ -10,7 +10,7 @@ pub use checks::{
 };
 pub use graph::{Graph, Slots, graph_key};
 
-use crate::seed::parser::{LinoNode, parse_lino};
+use crate::seed::parser::{LinoNode, parse_lino, split_pipe_list};
 use regex::Regex;
 use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
@@ -58,11 +58,20 @@ pub fn js_trim(text: &str) -> &str {
     text.trim_matches(js_space)
 }
 
+/// Canonical references retain empty positional forms; legacy scalars remain readable.
+pub(crate) fn reference_values(value: &str) -> Vec<String> {
+    let trimmed = value.trim();
+    if trimmed.starts_with('(') && trimmed.ends_with(')') {
+        split_pipe_list(trimmed)
+    } else {
+        value.split('|').map(str::to_owned).collect()
+    }
+}
+
 pub(crate) fn list(value: &str) -> Vec<String> {
-    value
-        .split('|')
+    reference_values(value)
+        .into_iter()
         .filter(|part| !part.is_empty())
-        .map(str::to_owned)
         .collect()
 }
 
@@ -238,8 +247,15 @@ pub fn parse_language_grammar(text: &str) -> Result<LanguageGrammar, &'static st
             .next()
             .ok_or("cnl_language_missing")?
     };
-    let keyed_children =
-        |name: &'static str| children_named(root, name).map(|node| keyed(&node.id));
+    let keyed_children = |name: &'static str| {
+        children_named(root, name).map(|node| {
+            if let Some(forms) = children_named(node, "forms").next() {
+                (node.id.clone(), list(&forms.id))
+            } else {
+                keyed(&node.id)
+            }
+        })
+    };
     Ok(LanguageGrammar {
         id: root.id.clone(),
         keys: list(root.find_child_value("keys")),
@@ -267,7 +283,7 @@ pub fn parse_language_grammar(text: &str) -> Result<LanguageGrammar, &'static st
                     .children
                     .iter()
                     .map(|child| {
-                        let forms = child.id.split('|').map(str::to_owned).collect();
+                        let forms = reference_values(&child.id);
                         (child.name.clone(), forms)
                     })
                     .collect(),
@@ -276,10 +292,16 @@ pub fn parse_language_grammar(text: &str) -> Result<LanguageGrammar, &'static st
         templates: children_named(root, "template")
             .map(|node| {
                 let mut head = node.id.split(' ');
+                let frame = head.next().unwrap_or_default().to_owned();
+                let styles = if let Some(styles) = children_named(node, "styles").next() {
+                    list(&styles.id)
+                } else {
+                    list(head.next().unwrap_or_default())
+                };
                 let texts = |name| children_named(node, name).map(|item| item.id.clone());
                 TemplateData {
-                    frame: head.next().unwrap_or_default().to_owned(),
-                    styles: list(head.next().unwrap_or_default()),
+                    frame,
+                    styles,
                     mood: head.next().unwrap_or_default().to_owned(),
                     positive: texts("positive").collect(),
                     negative: texts("negative").collect(),

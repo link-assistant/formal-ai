@@ -4,70 +4,70 @@
 # prefer; data/seed/cnl-language-<id>.lino describes each language's grammar.
 # Built-in checks are tri-state: pass, definite violation, or unchecked.
 controlled-output
-  registers "forms|precise|ste|minimal|basic|special|globish|primes"
-  input-styles "colloquial|stream|task"
-  precision-registers "precise|forms"
-  precision-styles "dense|ace|plain|ste|eprime|basic|sbvr|gellish|primes"
+  registers ("forms" "precise" "ste" "minimal" "basic" "special" "globish" "primes")
+  input-styles ("colloquial" "stream" "task")
+  precision-registers ("precise" "forms")
+  precision-styles ("dense" "ace" "plain" "ste" "eprime" "basic" "sbvr" "gellish" "primes")
   profile cnl-default
-    aliases "default|controlled natural language"
-    styles "ace|plain|ste"
-    registers "ste|minimal|forms"
-    density-required "active-voice|explicit-references|unambiguous-vocabulary"
+    aliases ("default" "controlled natural language")
+    styles ("ace" "plain" "ste")
+    registers ("ste" "minimal" "forms")
+    density-required ("active-voice" "explicit-references" "unambiguous-vocabulary")
     density-maximum-words 32
     maximum-words 20
-    required "active-voice|explicit-references|unambiguous-vocabulary|ace-grammar|ste-dictionary|plain-language-rules|minimal-english-semantics"
+    required ("active-voice" "explicit-references" "unambiguous-vocabulary" "ace-grammar" "ste-dictionary" "plain-language-rules" "minimal-english-semantics")
   profile asd-ste100
-    aliases "ASD-STE100|Simplified Technical English|STE"
-    styles "ste|plain"
-    registers "ste|forms"
+    aliases ("ASD-STE100" "Simplified Technical English" "STE")
+    styles ("ste" "plain")
+    registers ("ste" "forms")
     maximum-words 20
-    required "ste-writing-rules|ste-dictionary"
+    required ("ste-writing-rules" "ste-dictionary")
   profile ace
-    aliases "ACE|Attempto Controlled English"
+    aliases ("ACE" "Attempto Controlled English")
     styles "ace"
-    registers "precise|forms"
-    required "ace-grammar|ace-interpretation"
+    registers ("precise" "forms")
+    required ("ace-grammar" "ace-interpretation")
   profile gellish
-    aliases "Gellish|Formalized English"
+    aliases ("Gellish" "Formalized English")
     styles "gellish"
-    registers "precise|forms"
-    required "gellish-dictionary|gellish-relations"
+    registers ("precise" "forms")
+    required ("gellish-dictionary" "gellish-relations")
   profile sbvr
-    aliases "SBVR|Structured English"
+    aliases ("SBVR" "Structured English")
     styles "sbvr"
-    registers "precise|forms"
-    required "sbvr-vocabulary|sbvr-rules"
+    registers ("precise" "forms")
+    required ("sbvr-vocabulary" "sbvr-rules")
   profile plain-language
-    aliases "Plain Language|Plain English|ISO 24495-1"
+    aliases ("Plain Language" "Plain English" "ISO 24495-1")
     styles "plain"
-    registers "forms|precise"
+    registers ("forms" "precise")
     required "plain-language-rules"
   profile minimal-english
-    aliases "Minimal English|Minimal Russian|Minimal Hindi|Minimal Chinese|Minimal Spanish"
+    aliases ("Minimal English" "Minimal Russian" "Minimal Hindi" "Minimal Chinese" "Minimal Spanish")
     styles "plain"
-    registers "minimal|forms"
+    registers ("minimal" "forms")
     required "minimal-english-semantics"
   profile e-prime
-    aliases "E-Prime|E Prime"
-    styles "eprime|plain"
-    registers "precise|forms"
-    forbidden "am|is|are|was|were|be|been|being|isn't|aren't|wasn't|weren't|i'm|you're|we're|they're|it's|he's|she's|that's|there's|who's|what's"
+    aliases ("E-Prime" "E Prime")
+    styles ("eprime" "plain")
+    registers ("precise" "forms")
+    forbidden ("am" "is" "are" "was" "were" "be" "been" "being" "isn't" "aren't" "wasn't" "weren't" "i'm" "you're" "we're" "they're" "it's" "he's" "she's" "that's" "there's" "who's" "what's")
     required "e-prime-english"
   profile basic-english
     aliases "Basic English"
-    styles "basic|plain"
-    registers "basic|forms"
-    required "basic-english-vocabulary|basic-english-grammar"
+    styles ("basic" "plain")
+    registers ("basic" "forms")
+    required ("basic-english-vocabulary" "basic-english-grammar")
   profile special-english
     aliases "Special English"
     styles "plain"
-    registers "special|forms"
+    registers ("special" "forms")
     required "special-english-vocabulary"
   profile globish
     aliases "Globish"
     styles "plain"
-    registers "globish|precise|forms"
-    required "globish-vocabulary|globish-grammar"
+    registers ("globish" "precise" "forms")
+    required ("globish-vocabulary" "globish-grammar")
   language en
     frequency "Explain using top {count} words"
     notice "Maximum precision uses specific words. Look up unfamiliar words in a dictionary to check their exact meaning."
@@ -132,7 +132,7 @@ controlled-output
   lexeme speaker-knows-everything
     language en
     form "I know everything."
-      mode "cnl-default|plain-language|minimal-english|e-prime|basic-english|special-english|globish"
+      mode ("cnl-default" "plain-language" "minimal-english" "e-prime" "basic-english" "special-english" "globish")
     form "I know all things."
       mode "primes"
     form "I am omniscient."
@@ -140,19 +140,19 @@ controlled-output
   lexeme speaker-knows-everything
     language ru
     form "Я знаю всё."
-      mode "cnl-default|plain-language|minimal-english|primes"
+      mode ("cnl-default" "plain-language" "minimal-english" "primes")
     form "Я всеведущ."
       mode "max-precision"
   lexeme speaker-knows-everything
     language hi
     form "मैं सब कुछ जानता हूँ।"
-      mode "cnl-default|plain-language|minimal-english|primes"
+      mode ("cnl-default" "plain-language" "minimal-english" "primes")
     form "मैं सर्वज्ञ हूँ।"
       mode "max-precision"
   lexeme speaker-knows-everything
     language zh
     form "我知道一切。"
-      mode "cnl-default|plain-language|minimal-english"
+      mode ("cnl-default" "plain-language" "minimal-english")
     form "我知道所有东西。"
       mode "primes"
     form "我无所不知。"
@@ -160,7 +160,7 @@ controlled-output
   lexeme speaker-knows-everything
     language es
     form "Yo sé todo."
-      mode "cnl-default|plain-language|minimal-english|primes"
+      mode ("cnl-default" "plain-language" "minimal-english" "primes")
     form "Soy omnisciente."
       mode "max-precision"
   check active-voice
@@ -177,16 +177,16 @@ controlled-output
     styles "ace"
   check ste-writing-rules
     kind grammar
-    styles "ste|plain"
+    styles ("ste" "plain")
   check ste-dictionary
     kind vocabulary
-    lists "ste|primes"
+    lists ("ste" "primes")
   check plain-language-rules
     kind grammar
-    styles "plain|ace|ste|basic"
+    styles ("plain" "ace" "ste" "basic")
   check minimal-english-semantics
     kind vocabulary
-    lists "minimal|primes"
+    lists ("minimal" "primes")
   check gellish-dictionary
     kind vocabulary
     lists "gellish"
@@ -196,20 +196,20 @@ controlled-output
   check sbvr-vocabulary
     kind grammar
     styles "sbvr"
-    registers "precise|forms"
+    registers ("precise" "forms")
   check sbvr-rules
     kind grammar
     styles "sbvr"
   check e-prime-english
     kind forbidden
-    styles "eprime|plain|ste|ace|gellish|sbvr|dense|basic"
+    styles ("eprime" "plain" "ste" "ace" "gellish" "sbvr" "dense" "basic")
   check basic-english-vocabulary
     kind vocabulary
     lists "basic"
   check basic-english-grammar
     kind grammar
-    styles "basic|plain"
-    registers "basic|forms"
+    styles ("basic" "plain")
+    registers ("basic" "forms")
   check special-english-vocabulary
     kind vocabulary
     lists "special"
@@ -235,29 +235,29 @@ controlled-output
     logic "answer(question, true)"
     negative-logic "answer(question, false)"
   frame kind-of
-    slots "subject|object"
-    types "concept|concept"
+    slots ("subject" "object")
+    types ("concept" "concept")
     transitive "true"
     answerable "true"
     logic "forall x ({subject}(x) -> {object}(x))"
     negative-logic "forall x ({subject}(x) -> not {object}(x))"
   frame part-of
-    slots "subject|object"
-    types "concept|concept"
+    slots ("subject" "object")
+    types ("concept" "concept")
     transitive "true"
     answerable "true"
     logic "forall x ({object}(x) -> exists y ({subject}(y) and part-of(y, x)))"
     negative-logic "forall x ({object}(x) -> not exists y ({subject}(y) and part-of(y, x)))"
   frame must-have
-    slots "subject|object"
-    types "concept|concept"
+    slots ("subject" "object")
+    types ("concept" "concept")
     answerable "true"
     logic "forall x ({subject}(x) -> necessarily exists y ({object}(y) and has(x, y)))"
     negative-logic "not forall x ({subject}(x) -> necessarily exists y ({object}(y) and has(x, y)))"
   frame relation
-    slots "subject|object"
-    types "concept|concept"
-    expands "kind-of|part-of|must-have"
+    slots ("subject" "object")
+    types ("concept" "concept")
+    expands ("kind-of" "part-of" "must-have")
   frame clarify
     slots "count"
     types "number"
@@ -265,16 +265,16 @@ controlled-output
   frame choose
     logic "request(exists m (meaning(question, m) and answer-with(number(m))))"
   frame sum
-    slots "left|right"
-    types "number|number"
+    slots ("left" "right")
+    types ("number" "number")
     canonical "{left} + {right}"
   frame difference
-    slots "left|right"
-    types "number|number"
+    slots ("left" "right")
+    types ("number" "number")
     canonical "{left} - {right}"
   frame product
-    slots "left|right"
-    types "number|number"
+    slots ("left" "right")
+    types ("number" "number")
     canonical "{left} * {right}"
   frame reverse-text
     canonical "Write a function that reverses a string."
