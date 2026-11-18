@@ -539,7 +539,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1309,"end":137
 "formal_ai::cnl_output::CNL_POLICY_PATH","canonicalPath":"formal_ai::cnl_output::CNL_POLICY_PATH","kind":
 "nativeConstant","nativeType":"&str","returnType":"string","value":"data/seed/cnl-output.lino","nativeSourceQualified":
 true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":998,"end":1060},"sourceWitnesses":[{"path":
-"rust/src/cnl_output.rs","sha256":"2c23edb55ea310ae0a08297968a0860fce5d79080cda33ff2ddae5b39119b832"},{"path":
+"rust/src/cnl_output.rs","sha256":"3deba603f5bb5ef1a07e98cc793d089df5027cb6fd2a886f3adf8b109d1cb45c"},{"path":
 "rust/src/lib.rs","sha256":"1ad3f2141912278012ec1ef295d23e7ff9cf5e94f4a249f21dd6639d56e51e98"}],"maintainedMeta":
 "(constant CNL-POLICY-PATH (exported) (type string) (value (string data/seed/cnl-output.lino)))","maintainedJavaScript":
 "export const CNL_POLICY_PATH = 'data/seed/cnl-output.lino';","maintainedTranslationSha256":
