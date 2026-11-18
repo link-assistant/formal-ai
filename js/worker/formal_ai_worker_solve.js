@@ -36,12 +36,25 @@ async function solve(prompt, history, prefs, userContext = {}, memory = [], opti
     metaImportLearned(memory);
     const diagnostic = await tryDiagnosticMarker(prompt, (inner) => solve(inner, history, prefs, userContext, memory, options));
     if (diagnostic) return projectControlledAnswer(diagnostic, turn.config, options);
+    // Issue #1584: a whole-prompt CNL reading answers declared fact questions and
+    // asks which reading an ambiguous one means; a task paraphrase the solver
+    // does not understand is retried as its canonical prompt.
+    const dialogue = turn.rewrite === null ? cnl.controlledDialogue(prompt, history || [], turn.config) : null;
+    if (dialogue && dialogue.intent !== "cnl_task") {
+      return {intent: dialogue.intent, content: dialogue.content, outputProjection: dialogue.outputProjection,
+        confidence: 1, evidence: ["cnl:" + dialogue.language], steps: [], events: [], toolCalls: []};
+    }
     // A paraphrase is a draft candidate; it still goes through the recursive procedure.
     const language = turn.rewrite === null ? null : detectLanguage(turn.rewrite);
-    const answer = turn.rewrite === null
+    let answer = turn.rewrite === null
       ? await solveImpl(prompt, history, prefs, userContext, memory, options)
       : {intent: "cnl_paraphrase", content: cnl.outputSource(turn.rewrite, language),
         confidence: 1, evidence: ["cnl:paraphrase"], steps: [], events: [], toolCalls: []};
+    if (dialogue && answer.intent === "unknown") {
+      prompt = dialogue.prompt;
+      answer = await solveImpl(prompt, history, prefs, userContext, memory, options);
+      answer = {...answer, evidence: [...(answer.evidence || []), "cnl:task:" + dialogue.language]};
+    }
     const subTask = async (text) => metaResolveImpasse(text, await solveImpl(text, history, prefs, userContext, memory, options), prefs);
     return projectControlledAnswer(metaAttachLearned(await metaRunProcedure(prompt, await metaResolveImpasse(prompt, answer, prefs), subTask)), turn.config, options);
   } finally {

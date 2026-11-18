@@ -27,6 +27,8 @@ pub const CLIENT_INTEGRATIONS_LINO: &str =
     include_str!("../../embedded/data/seed/client-integrations.lino");
 pub const CLOUD_SYNC_POLICY_LINO: &str =
     include_str!("../../embedded/data/seed/cloud-sync-policy.lino");
+pub const CNL_LANGUAGE_EN_LINO: &str =
+    include_str!("../../embedded/data/seed/cnl-language-en.lino");
 pub const CNL_OUTPUT_LINO: &str = include_str!("../../embedded/data/seed/cnl-output.lino");
 pub const CODE_EXAMPLE_PARTS_LINO: &str =
     include_str!("../../embedded/data/seed/code-example-parts.lino");
@@ -472,6 +474,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/client-completion-contracts.lino", CLIENT_COMPLETION_CONTRACTS_LINO),
         ("data/seed/client-integrations.lino", CLIENT_INTEGRATIONS_LINO),
         ("data/seed/cloud-sync-policy.lino", CLOUD_SYNC_POLICY_LINO),
+        ("data/seed/cnl-language-en.lino", CNL_LANGUAGE_EN_LINO),
         ("data/seed/cnl-output.lino", CNL_OUTPUT_LINO),
         ("data/seed/code-example-parts.lino", CODE_EXAMPLE_PARTS_LINO),
         ("data/seed/code-node-decomposition.lino", CODE_NODE_DECOMPOSITION_LINO),

@@ -3,27 +3,37 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/cnl_output.mjs"] = (crateRequire) => {
 // Controlled output: reversible lexical projection, independent of input routing.
 // Rust counterpart: rust/src/cnl_output.rs. Profiles and wording are shared data.
 const { cached, childValue, childrenNamed, parseLino, readText } = crateRequire("host.mjs");
-
+const { CNL_LANGUAGE_PATH, allPairs, answerableQuestions, builtinCheck, canonicalPrompt, compileGrammar, graphHolds, graphKey, graphLogic, outputSentences, parseGrammarPolicy, parseLanguageGrammar, promptAnalysis, realizations, utteranceGraphs } = crateRequire("crate/cnl_grammar.mjs");
 const CNL_POLICY_PATH = 'data/seed/cnl-output.lino';
-
 /** Read profile constraints and explicitly equivalent lexical realizations. */
 function cnlPolicy() {
-  return cached('cnl-output-policy', () => parseOutputPolicy(readText(CNL_POLICY_PATH)));
+  return cached('cnl-output-policy', () => parseOutputPolicy(readText(CNL_POLICY_PATH), parseLino, language => {
+    try {
+      return readText(CNL_LANGUAGE_PATH.replace('{language}', language)) || null;
+    } catch {
+      return null;
+    }
+  }));
 }
-
-/** Parse canonical policy data without requiring a solver or a runtime host. */
-function parseOutputPolicy(text, parse = parseLino) {
+/**
+ * Parse canonical policy data without requiring a solver or a runtime host.
+ * `grammarText(language)` returns that language's grammar file, or null.
+ */
+function parseOutputPolicy(text, parse = parseLino, grammarText = () => null) {
     const parsed = parse(text);
     const root = parsed.name === 'controlled-output' ? parsed : childrenNamed(parsed, 'controlled-output')[0];
     if (!root) throw new Error('cnl_policy_missing');
     const profiles = childrenNamed(root, 'profile').map(node => ({
       id: node.value, aliases: childValue(node, 'aliases').split('|'),
       maxWords: Number(childValue(node, 'maximum-words')) || null,
+      densityMaxWords: Number(childValue(node, 'density-maximum-words')) || null,
+      styles: childValue(node, 'styles').split('|').filter(Boolean),
+      registers: childValue(node, 'registers').split('|').filter(Boolean),
+      densityRequired: childValue(node, 'density-required').split('|').filter(Boolean),
       forbidden: childValue(node, 'forbidden').split('|').filter(Boolean),
       required: childValue(node, 'required').split('|').filter(Boolean),
     }));
@@ -40,16 +50,20 @@ function parseOutputPolicy(text, parse = parseLino) {
         text: form.value, mode: childValue(form, 'mode'),
       })),
     }));
-    return {profiles, languages, lexemes};
+    const shared = parseGrammarPolicy(root);
+    const grammars = {};
+    for (const language of languages) {
+      const source = grammarText(language.id);
+      if (source) grammars[language.id] = compileGrammar(parseLanguageGrammar(source, parse), shared);
+    }
+    return {profiles, languages, lexemes, shared, grammars};
 }
-
 /** A positive integer tier; no floating point, signed or exponential aliases. */
 function frequencyTier(value) {
   if (!/^top-[1-9][0-9]*$/u.test(value)) return null;
   const count = Number(value.slice(4));
   return Number.isSafeInteger(count) ? count : null;
 }
-
 /** Validate output options only. This function never validates user input. */
 function outputConfiguration(value = {}, policy = cnlPolicy()) {
   const named = value.output_standard ?? 'cnl-default';
@@ -68,7 +82,6 @@ function outputConfiguration(value = {}, policy = cnlPolicy()) {
   }
   return {output_standard: profile.id, lexical_density: density};
 }
-
 /**
  * Lossless representation. Only declared whole utterances acquire a meaning.
  * Substrings cannot change a quote, identifier, negation or quantifier scope.
@@ -86,31 +99,46 @@ function formalizeOutput(text, language = 'en', policy = cnlPolicy()) {
     parts.push({kind: 'meaning', id: matches[0].id, surface: trimmed});
     if (start + trimmed.length < text.length) parts.push({kind: 'opaque', text: text.slice(start + trimmed.length)});
   } else if (text) {
-    parts.push({kind: 'opaque', text});
+    parts.push(...graphParts(text, policy.grammars?.[language]));
   }
   return {language, source: text, parts};
 }
-
+/** Sentences with exactly one reading become graphs; everything else stays opaque. */
+function graphParts(text, grammar) {
+  if (!grammar) return [{kind: 'opaque', text}];
+  const pieces = outputSentences(text).map(piece => {
+    if (piece.kind !== 'sentence') return piece;
+    const graphs = utteranceGraphs(piece.text, grammar);
+    return graphs.length === 1 ? {kind: 'graph', graph: graphs[0], surface: piece.text} : {kind: 'opaque', text: piece.text};
+  });
+  if (!pieces.some(piece => piece.kind === 'graph')) return [{kind: 'opaque', text}];
+  const parts = [];
+  for (const piece of pieces) {
+    const last = parts.at(-1);
+    if (piece.kind === 'opaque' && last?.kind === 'opaque') last.text += piece.text;
+    else parts.push({...piece});
+  }
+  return parts;
+}
 /** The canonical lexical identity includes every unresolved byte and its order. */
 function outputMeaning(document) {
-  return document.parts.map(part => part.kind === 'meaning' ? ['meaning', part.id] : ['opaque', part.text]);
+  return document.parts.filter(part => part.kind !== 'space').map(part => part.kind === 'meaning'
+    ? ['meaning', part.id] : part.kind === 'graph' ? ['graph', graphKey(part.graph)] : ['opaque', part.text]);
 }
-
 /** Whitespace-delimited languages use Unicode words; CJK has no whitespace promise. */
 function outputWords(text, language) {
   return language === 'zh' ? (text.match(/[\p{Script=Han}]|[\p{L}\p{M}\p{N}]+/gu) ?? [])
     : (text.match(/[\p{L}\p{M}\p{N}]+(?:[-’'][\p{L}\p{M}\p{N}]+)*/gu) ?? []);
 }
-
 function capitalizedLike(text, original) {
   if (!text || !original || original[0] === original[0].toLowerCase()) return text;
   return text[0].toUpperCase() + text.slice(1);
 }
-
 /** Select a realization without ever deleting an opaque span or a proposition. */
 function projectOutput(document, configuration = {}, policy = cnlPolicy()) {
   const selected = outputConfiguration(configuration, policy);
   const parts = document.parts.map(part => {
+    if (part.kind === 'graph') return projectGraph(part, document.language, selected, policy);
     if (part.kind !== 'meaning') return part.text;
     const lexeme = policy.lexemes.find(item => item.id === part.id && item.language === document.language);
     if (!lexeme) return part.surface;
@@ -129,7 +157,100 @@ function projectOutput(document, configuration = {}, policy = cnlPolicy()) {
   });
   return parts.join('');
 }
-
+/** Style/register pairs to try, most preferred first, for one configuration. */
+function candidatePairs(selected, grammar, policy) {
+  const profile = policy.profiles.find(item => item.id === selected.output_standard);
+  if (selected.lexical_density === 'max-precision') {
+    // The precise registers first, then the profile's own registers: a closed-vocabulary
+    // profile (Basic, Special) may need its own exact explication of a word it lacks.
+    const registers = [...new Set([...precisionRegisters(policy), ...profile.registers])];
+    return [...profile.styles.flatMap(style => registers.map(register => [style, register])), ...precisionPairs(grammar, policy)];
+  }
+  const preferred = profile.styles.flatMap(style => profile.registers.map(register => [style, register]));
+  const all = allPairs(grammar);
+  if (selected.lexical_density === 'primes') {
+    return [['primes', 'primes'], ...profile.styles.map(style => [style, 'primes']), ...all];
+  }
+  if (frequencyTier(selected.lexical_density) !== null) {
+    return [...preferred, ...profile.styles.map(style => [style, 'primes']), ['primes', 'primes'], ...all];
+  }
+  return [...preferred, ...all];
+}
+function precisionRegisters(policy) {
+  return policy.shared.precisionRegisters.length ? policy.shared.precisionRegisters : policy.shared.registers;
+}
+/** Max-precision searches every output style with the declared precise registers. */
+function precisionPairs(grammar, policy) {
+  const order = policy.shared.precisionStyles;
+  const position = style => order.includes(style) ? order.indexOf(style) : order.length;
+  return [...grammar.outputStyles].sort((left, right) => position(left) - position(right))
+    .flatMap(style => precisionRegisters(policy).map(register => [style, register]));
+}
+/**
+ * The search domain of one configuration: every realization (all variants)
+ * that reads back as exactly this graph, most preferred first. Max-precision
+ * orders it by word count; its domain is the declared precise registers plus the profile's own.
+ */
+function outputCandidates(graph, language, configuration = {}, policy = cnlPolicy()) {
+  const selected = outputConfiguration(configuration, policy);
+  const grammar = policy.grammars?.[language];
+  if (!grammar) return [];
+  const key = graphKey(graph);
+  const candidates = realizations(graph, candidatePairs(selected, grammar, policy), grammar).filter(text => {
+    const graphs = utteranceGraphs(text, grammar);
+    return graphs.length === 1 && graphKey(graphs[0]) === key;
+  });
+  if (selected.lexical_density !== 'max-precision') return candidates;
+  const rank = new Map(candidates.map((text, index) => [text, index]));
+  return [...candidates].sort((left, right) => outputWords(left, language).length - outputWords(right, language).length
+    || rank.get(left) - rank.get(right));
+}
+/** The minimum word count over the domain's candidates compliant with everything else. */
+function minimumWords(graph, language, selected, policy) {
+  const grammar = policy.grammars[language];
+  const key = [graphKey(graph), selected.output_standard, selected.lexical_density].join('|');
+  if (!grammar.minimumCache.has(key)) {
+    let least = null;
+    for (const text of outputCandidates(graph, language, selected, policy)) {
+      if (!validateOutput(text, language, selected, policy, {lexical_minimum: () => true}).compliant) continue;
+      const count = outputWords(text, language).length;
+      least = least === null ? count : Math.min(least, count);
+    }
+    grammar.minimumCache.set(key, least);
+  }
+  return grammar.minimumCache.get(key);
+}
+// Lexical-density evidence; every other violation belongs to the named profile.
+const DENSITY_CHECKS = new Set(['non_prime', 'nsm_vocabulary', 'nsm_syntax', 'nsm_semantics',
+  'frequency_vocabulary', 'lexical_minimum']);
+/** Lexicographic cost: profile violations, then density violations, then unchecked evidence. */
+function outputCost(report) {
+  const profile = report.violations.filter(id => !DENSITY_CHECKS.has(id)).length;
+  return [profile, report.violations.length - profile, report.unchecked.length];
+}
+function cheaper(left, right) {
+  for (let index = 0; index < left.length; index += 1) if (left[index] !== right[index]) return left[index] < right[index];
+  return false;
+}
+/**
+ * Realize one meaning graph. A compliant surface stays as written; otherwise
+ * the first compliant candidate wins. When the profile and the density cannot
+ * both hold, the named profile wins over the density and the report says so.
+ */
+function projectGraph(part, language, selected, policy) {
+  if (!policy.grammars?.[language]) return part.surface ?? '';
+  const candidates = outputCandidates(part.graph, language, selected, policy);
+  if (part.surface !== undefined) candidates.unshift(part.surface);
+  let best = null;
+  let bestCost = null;
+  for (const text of [...new Set(candidates)]) {
+    const report = validateOutput(text, language, selected, policy);
+    if (report.compliant) return text;
+    const cost = outputCost(report);
+    if (best === null || cheaper(cost, bestCost)) [best, bestCost] = [text, cost];
+  }
+  return best ?? '';
+}
 /**
  * Constraint evidence, not a certificate. A standard is compliant only when
  * every required independent checker ran and passed. Missing checks stay open.
@@ -138,53 +259,54 @@ function validateOutput(text, language, configuration = {}, policy = cnlPolicy()
   const selected = outputConfiguration(configuration, policy);
   const profile = policy.profiles.find(item => item.id === selected.output_standard);
   const locale = policy.languages.find(item => item.id === language);
+  const grammar = policy.grammars?.[language];
+  const tier = frequencyTier(selected.lexical_density);
+  const context = {tier, count: sentence => outputWords(sentence, language).length,
+    minimum: graph => minimumWords(graph, language, selected, policy)};
+  // A caller-supplied checker overrides the built-in evidence for the same id.
+  const evidence = (id, custom = checkers[id]) => {
+    if (custom) return custom(text, language, tier);
+    const check = policy.shared?.checks.find(item => item.id === id);
+    return check && grammar ? builtinCheck(check, text, grammar, context) : undefined;
+  };
   const violations = [];
   const unchecked = [];
+  const record = (id, result) => {
+    if (result === false) violations.push(id);
+    else if (result !== true) unchecked.push(id);
+  };
   if (!locale) unchecked.push('language');
   const tokens = outputWords(text, language).map(word => word.toLowerCase());
-  if (profile.maxWords && text.split(/[.!?。！？]+/u).some(sentence => outputWords(sentence, language).length > profile.maxWords)) {
+  const standard = selected.lexical_density === 'standard';
+  const maxWords = !standard && profile.densityMaxWords ? profile.densityMaxWords : profile.maxWords;
+  if (maxWords && text.split(/[.!?。！？।]+/u).some(sentence => outputWords(sentence, language).length > maxWords)) {
     violations.push('sentence_length');
   }
   if (selected.output_standard === 'e-prime') {
-    if (language !== 'en') unchecked.push('e_prime_language');
+    // The profile lists the English forms of "to be"; every other language declares
+    // its own copula in its grammar file. A language without one stays unchecked.
+    const forbidden = new Set([...(language === 'en' ? profile.forbidden : []), ...(grammar?.copulaWords ?? [])]);
+    if (!forbidden.size) unchecked.push('e_prime_language');
     else {
       const words = tokens.map(word => word.replaceAll('’', "'"));
-      if (words.some(word => profile.forbidden.includes(word) || /'(?:m|re)$/u.test(word))) violations.push('forbidden_word');
+      if (words.some(word => forbidden.has(word) || /'(?:m|re)$/u.test(word))) violations.push('forbidden_word');
       if (words.some(word => word.endsWith("'s") || word === "ain't")) unchecked.push('e_prime_contraction');
     }
   }
   if (selected.lexical_density === 'primes') {
-    if (locale?.primes.length) {
-      const allowed = new Set([...locale.primes, ...locale.grammar].flatMap(word => outputWords(word, language).map(token => token.toLowerCase())));
-      if (tokens.some(word => !allowed.has(word))) violations.push('non_prime');
+    if (grammar?.primeWords.size) {
+      if (!builtinCheck({kind: 'primes'}, text, grammar, context) && tokens.length) violations.push('non_prime');
     } else unchecked.push('nsm_vocabulary');
-    for (const required of ['nsm_syntax', 'nsm_semantics']) {
-      const result = checkers[required]?.(text, language);
-      if (result === false) violations.push(required);
-      else if (result !== true) unchecked.push(required);
-    }
+    for (const required of ['nsm_syntax', 'nsm_semantics']) record(required, evidence(required));
   }
-  if (selected.lexical_density === 'max-precision') {
-    const result = checkers.lexical_minimum?.(text, language);
-    if (result === false) violations.push('lexical_minimum');
-    else if (result !== true) unchecked.push('lexical_minimum');
-  }
-  const tier = frequencyTier(selected.lexical_density);
-  if (tier !== null) {
-    // No fabricated frequency ranks. A corpus-backed word-rank checker is required.
-    const result = checkers.frequency?.(text, language, tier);
-    if (result === false) violations.push('frequency_vocabulary');
-    else if (result !== true) unchecked.push('frequency_vocabulary');
-  }
-  for (const required of profile.required) {
-    const result = checkers[required]?.(text, language);
-    if (result === false) violations.push(required);
-    else if (result !== true) unchecked.push(required);
-  }
+  if (selected.lexical_density === 'max-precision') record('lexical_minimum', evidence('lexical_minimum'));
+  // Built-in ranks are a declared, project-authored tier table; a corpus checker may replace them.
+  if (tier !== null) record('frequency_vocabulary', evidence('frequency_vocabulary', checkers.frequency));
+  const required = !standard && profile.densityRequired.length ? profile.densityRequired : profile.required;
+  for (const id of required) record(id, evidence(id));
   return {...selected, compliant: violations.length === 0 && unchecked.length === 0,
     violations, unchecked};
 }
-
 /** Render from the retained document each time; notices never enter its meaning. */
 function renderOutput(document, configuration = {}, policy = cnlPolicy(), checkers = {}) {
   const selected = outputConfiguration(configuration, policy);
@@ -193,9 +315,8 @@ function renderOutput(document, configuration = {}, policy = cnlPolicy(), checke
   const notice = selected.lexical_density === 'max-precision'
     ? (policy.languages.find(item => item.id === document.language)?.notice ?? '') : '';
   return {text, notice, content: notice ? notice + '\n\n' + text : text, document,
-    links_notation: outputLinksNotation(document), report};
+    links_notation: outputLinksNotation(document, policy), report};
 }
-
 /**
  * Recognize only whole user directives or a delimited directive prefix. Text
  * inside a quote/code block and historical assistant messages has no authority.
@@ -206,7 +327,6 @@ function directiveConfiguration(mode, policy) {
   if (configuration.output_standard === 'cnl-default') return configuration;
   return {output_standard: configuration.output_standard};
 }
-
 function outputDirective(text, policy = cnlPolicy()) {
   if (typeof text !== 'string' || /^\s*[`"'«>]/u.test(text)) return null;
   const trimmed = text.trim();
@@ -235,14 +355,24 @@ function outputDirective(text, policy = cnlPolicy()) {
   }
   return null;
 }
-
 /** Canonical Links Notation; the original surface remains in the document. */
-function outputLinksNotation(document) {
+function outputLinksNotation(document, policy = cnlPolicy()) {
   const rows = ['output-meaning', '  language ' + JSON.stringify(document.language)];
-  for (const [kind, value] of outputMeaning(document)) rows.push('  ' + kind + ' ' + JSON.stringify(value));
+  for (const part of document.parts) {
+    if (part.kind === 'space') continue;
+    if (part.kind !== 'graph') {
+      const [kind, value] = outputMeaning({parts: [part]})[0];
+      rows.push('  ' + kind + ' ' + JSON.stringify(value));
+      continue;
+    }
+    rows.push('  graph ' + JSON.stringify(part.graph.frame));
+    for (const [slot, value] of Object.entries(part.graph.slots)) rows.push('    ' + slot + ' ' + JSON.stringify(value));
+    rows.push('    polarity ' + JSON.stringify(part.graph.polarity), '    mood ' + JSON.stringify(part.graph.mood));
+    const logic = graphLogic(part.graph, policy.shared);
+    if (logic) rows.push('    logic ' + JSON.stringify(logic));
+  }
   return rows.join('\n') + '\n';
 }
-
 /** Stateless conversation selection: latest explicit user directive wins. */
 function outputTurn(prompt, history = [], configuration = {}, policy = cnlPolicy()) {
   let selected = outputConfiguration(configuration, policy);
@@ -257,13 +387,67 @@ function outputTurn(prompt, history = [], configuration = {}, policy = cnlPolicy
   return {config: outputConfiguration(selected, policy), prompt: directive?.rest || prompt,
     rewrite: directive && !directive.rest ? previous?.content ?? null : null};
 }
-
 /** A notice is presentation metadata, never input to a subsequent paraphrase. */
 function outputSource(text, language, policy = cnlPolicy()) {
   const notice = policy.languages.find(item => item.id === language)?.notice;
   return notice && text.startsWith(notice + '\n\n') ? text.slice(notice.length + 2) : text;
 }
-
+function graphDocument(language, items, selected, policy) {
+  const parts = items.map(item => item.graph
+    ? {kind: 'graph', graph: item.graph, surface: projectGraph({graph: item.graph}, language, selected, policy)}
+    : {kind: item.kind, text: item.text});
+  return {language, source: parts.map(part => part.surface ?? part.text).join(''), parts};
+}
+function answerDocument(question, language, selected, policy) {
+  const holds = graphHolds(question, policy.shared);
+  const yes = holds === (question.polarity === 'positive');
+  return graphDocument(language, [
+    {graph: {frame: 'reply', slots: {}, polarity: yes ? 'positive' : 'negative', mood: 'statement'}},
+    {kind: 'space', text: ' '},
+    {graph: {...question, polarity: holds ? 'positive' : 'negative', mood: 'statement'}},
+  ], selected, policy);
+}
+function clarificationDocument(questions, language, selected, policy) {
+  const items = [{graph: {frame: 'clarify', slots: {count: String(questions.length)}, polarity: 'positive', mood: 'statement'}}];
+  questions.forEach((graph, index) => items.push({kind: 'space', text: '\n'},
+    {kind: 'opaque', text: (index + 1) + ') '}, {graph}));
+  items.push({kind: 'space', text: '\n'}, {graph: {frame: 'choose', slots: {}, polarity: 'positive', mood: 'request'}});
+  return graphDocument(language, items, selected, policy);
+}
+/**
+ * Whole-prompt controlled dialogue: a numbered reply chooses a reading of the
+ * previous ambiguous question; an ambiguous question asks for clarification;
+ * an unambiguous fact question is answered from declared facts; a recognized
+ * task paraphrase becomes its canonical solver prompt. Anything else: null.
+ */
+function controlledDialogue(prompt, history = [], configuration = {}, policy = cnlPolicy()) {
+  const selected = outputConfiguration(configuration, policy);
+  const grammars = policy.languages.map(language => policy.grammars?.[language.id]).filter(Boolean);
+  const rendered = (intent, language, document) => {
+    const output = renderOutput(document, selected, policy);
+    return {intent, language, content: output.content, outputProjection: output};
+  };
+  const choice = /^\s*([0-9]+)\s*[.)]?\s*$/u.exec(String(prompt ?? ''));
+  if (choice) {
+    const previous = history.at(-1)?.role === 'assistant' ? history.findLast(turn => turn.role === 'user') : null;
+    const earlier = previous ? promptAnalysis(previous.content, grammars) : null;
+    const options = earlier && earlier.graphs.length > 1 ? answerableQuestions(earlier.graphs, policy.shared) : [];
+    const index = Number(choice[1]) - 1;
+    if (options.length === earlier?.graphs.length && options[index]) {
+      return rendered('cnl_answer', earlier.language, answerDocument(options[index], earlier.language, selected, policy));
+    }
+    return null;
+  }
+  const analysis = promptAnalysis(prompt, grammars);
+  if (!analysis) return null;
+  const {graphs, language} = analysis;
+  const task = graphs.length === 1 ? canonicalPrompt(graphs[0], policy.shared) : null;
+  if (task) return {intent: 'cnl_task', language, prompt: task};
+  const questions = answerableQuestions(graphs, policy.shared);
+  if (!questions.length || questions.length !== graphs.length) return null;
+  if (questions.length === 1) return rendered('cnl_answer', language, answerDocument(questions[0], language, selected, policy));
+  return rendered('cnl_clarification', language, clarificationDocument(questions, language, selected, policy));
+}
 return Object.freeze({
   CNL_POLICY_PATH,
   cnlPolicy,
@@ -274,11 +458,13 @@ return Object.freeze({
   outputMeaning,
   outputWords,
   projectOutput,
+  outputCandidates,
   validateOutput,
   renderOutput,
   outputDirective,
   outputLinksNotation,
   outputTurn,
   outputSource,
+  controlledDialogue,
 });
 };

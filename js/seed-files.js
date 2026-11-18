@@ -12,6 +12,7 @@ self.FORMAL_AI_SEED_FILES = Object.freeze([
   "seed/brainstorm-seeds.lino",
   "seed/browser-handler-precedence.lino",
   "seed/capability-routing.lino",
+  "seed/cnl-language-en.lino",
   "seed/cnl-output.lino",
   "seed/code-example-parts.lino",
   "seed/code-review-rules.lino",
