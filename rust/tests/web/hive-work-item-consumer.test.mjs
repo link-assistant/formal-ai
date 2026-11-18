@@ -1,12 +1,20 @@
 // Issue #1207 partial maintained-consumer regressions. These are local planner
 // controls; they do not claim released client delivery or autonomous authorship.
 import assert from 'node:assert/strict';
-import {before,test} from 'node:test';
+import {after,before,test} from 'node:test';
 import {WorkerHost} from '../../../js/server/worker-host.mjs';
 import {installNodeHost} from '../../../js/agentic/node-host.mjs';
 import {planChatStep,planChatStepResolved} from '../../../js/agentic/planner.mjs';
 import {objectiveText} from '../../../js/agentic/general_planner.mjs';
-before(async()=>{await installNodeHost(new WorkerHost());});
+const previousLiveFetch=process.env.FORMAL_AI_LIVE_FETCH;
+before(async()=>{
+ process.env.FORMAL_AI_LIVE_FETCH='0';
+ await installNodeHost(new WorkerHost());
+});
+after(()=>{
+ if(previousLiveFetch===undefined)delete process.env.FORMAL_AI_LIVE_FETCH;
+ else process.env.FORMAL_AI_LIVE_FETCH=previousLiveFetch;
+});
 const issue='https://github.com/example/project/issues/42';
 const prompt='You are an AI issue solver. General guidelines mention Issue to solve: as a field.\nWhen WebFetch fails (e.g., returns empty content), read README.md and report issues.\nIssue to solve: '+issue+'\nYour prepared branch: issue-42\nYour prepared working directory: /tmp/issue-workspace\nProceed.';
 const tools=['Bash','Read','Write','Edit','WebFetch'];
@@ -62,7 +70,8 @@ test('default host source captures use the user cache independently of caller cw
  const saved={cwd:process.cwd(),cache:process.env.FORMAL_AI_CACHE_DIR,source:process.env.FORMAL_AI_SOURCE_CACHE_DIR,live:process.env.FORMAL_AI_LIVE_FETCH};
  try{
   const runtime=path.join(root,'user-cache'),caller=path.join(root,'caller');fs.mkdirSync(caller);process.chdir(caller);
-  process.env.FORMAL_AI_CACHE_DIR=runtime;delete process.env.FORMAL_AI_SOURCE_CACHE_DIR;delete process.env.FORMAL_AI_LIVE_FETCH;
+  // Cache/baseline replay is explicitly offline under the default-on read policy.
+  process.env.FORMAL_AI_CACHE_DIR=runtime;delete process.env.FORMAL_AI_SOURCE_CACHE_DIR;process.env.FORMAL_AI_LIVE_FETCH='0';
   const bodies=new Map([
    ['https://api.github.com/repos/actions/checkout/releases/latest','{ "tag_name": "v7.0.1" }'],
    ['https://api.github.com/repos/actions/checkout/commits/v7.0.1','{ "sha": "3d3c42e5aac5ba805825da76410c181273ba90b1" }']

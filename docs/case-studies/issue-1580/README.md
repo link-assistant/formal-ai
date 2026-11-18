@@ -185,3 +185,16 @@ The four added fast-inventory replays pass the ledger/profile checks (4/15 tests
 
 
 The combined calendar/currency source checkpoint at `584b5f57` passes all 15 focused checks (163 tests), formatting/projection checks, and the complete gate set (86 pass, 52 explicit exclusions, zero failures). All detailed hashes are verified; next-head hosted execution remains pending. Java historical review reaches pages 1–22/254, 24 complete files, one partial and 1,369 source lines. Full template applicability, recursive context binding, native runtime and all broader issue criteria remain unfinished. See the [runtime checkpoint](runtime-fixture-checkpoint.md).
+
+
+The [calendar seed checkpoint](calendar-seed-checkpoint.md) records two
+main-only data failures, their failing-before replays and lossless scalar-row
+repair (43 passing calendar/currency tests, four ledger tests). The published
+2ec6ef93 head has checkout failures and a stale TypeScript mirror exposed by
+one retry; the official parity check now passes all 717 sources and 12 tests.
+The final combined-source gates pass 86 checks with 52 explicit exclusions and
+zero failures; all 86 detailed logs and 14 source hashes are verified. All 24
+health/cache fixture tests also pass without transport calls. Next-head hosted
+checks remain pending. Native runtime, general recursive context binding and
+all broader acceptance remain
+unfinished; independent reasoning acceptance remains 0/20.

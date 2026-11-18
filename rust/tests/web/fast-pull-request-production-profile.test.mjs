@@ -51,6 +51,7 @@ test('fast inventory retains coding, questions, reports and captured CI failure 
   for(const name of ['ordinary-literal-addition','issue-1180-repository-qa','issue-1438-report-and-edit','generated-test-retirement','scheduled-published-admission-race',
     'inactive-desktop-publication','verify-public-release-downloads','dependency-update-publication','create-release-with-recovery',
     'github-json-observation','self-authored-publication-source','hive-pre-effect-deferral','javascript-audit-inventory',
+    'server-memory-schema','hive-work-item-consumer','issue-1168-source-cache',
     // Issue #1569: each of these failed only on main, after its PR passed.
     'issue-1165-no-memorization','bounded-subprocess-boundaries','dependency-summarization',
     'native-library-creation-qualification','issue-1569-collect-build-artifacts','issue-1569-ordered-module-lists',

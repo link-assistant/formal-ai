@@ -368,9 +368,11 @@ function calendarCreateRequestSpan(text) {
   const cues = (handlerRulesTables()["calendar-request-cue"]?.rows || []);
   const candidates = unitConversionClauses(text.toLowerCase()).filter(clause => {
     const normalized = normalizePrompt(clause);
+    // Normalization erases clock punctuation; read the same request span first.
+    const clock = extractClockTime(clause) || extractClockTime(normalized);
     const anchor = wordsForRole(ROLE_CALENDAR_RELATIVE_DATE).some(w => containsCalendarTerm(normalized, w)) ||
       wordsForRole(ROLE_CALENDAR_WEEKDAY).some(w => containsCalendarTerm(normalized, w)) ||
-      extractClockTime(normalized) !== null ||
+      clock !== null ||
       wordsForRole(ROLE_CALENDAR_TIME).some(w => containsCalendarTerm(normalized, w)) ||
       wordsForRole(ROLE_CALENDAR_DAY_REFERENCE).some(w => {
         const at = normalized.indexOf(w);
@@ -392,7 +394,7 @@ function calendarCreateRequestSpan(text) {
       return position === "object" ? starts && eventObject : position === "start" ? starts : position === "date" ? starts || (dateLed && containsCalendarTerm(request, word)) :
         position === "end" && request.endsWith(word) && containsCalendarTerm(request, word);
     });
-    return action || (prefix && extractClockTime(normalized) !== null && resolveTimezone(normalized) !== null && extractParticipantTitle(normalized) !== null);
+    return action || (prefix && clock !== null && resolveTimezone(normalized) !== null && extractParticipantTitle(normalized) !== null);
   });
   return candidates.length === 1 ? candidates[0] : null;
 }
@@ -486,14 +488,12 @@ function extractClockTime(normalized) {
   const bytes = normalized.split("");
   for (let i = 0; i < bytes.length - 2; i++) {
     if (/\d/.test(bytes[i]) && /\d/.test(bytes[i + 1])) {
-      let h = parseInt(bytes[i] + bytes[i + 1], 10);
+      const h = parseInt(bytes[i] + bytes[i + 1], 10);
       let j = i + 2;
       if (j < bytes.length && (bytes[j] === ":" || bytes[j] === ".")) j++;
       if (j + 1 < bytes.length && /\d/.test(bytes[j]) && /\d/.test(bytes[j + 1])) {
         const min = parseInt(bytes[j] + bytes[j + 1], 10);
         if (h <= 23 && min <= 59) {
-          if (h === 0) h = 0;
-          if (h === 24) h = 0;
           return [h, min];
         }
       }
@@ -827,7 +827,7 @@ function tryCalendarCreateEvent(prompt, normalized, userContext = {}) {
     const day = extractDayNumber(normalized) || base.day;
     [year, month, d] = computeTargetDateWithRollover(base, day);
   }
-  const [hour, minute] = extractClockTime(normalized) || [17, 0];
+  const [hour, minute] = extractClockTime(span) || extractClockTime(normalized) || [17, 0];
   const place = resolveTimezonePlace(normalized);
   const tz = place ? place.zone : "UTC";
   const timezoneOrigin = place

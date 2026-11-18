@@ -241,6 +241,9 @@
     "rust/tests/web/rust-specification-generated-programs.test.mjs",
     "rust/tests/web/issue-1172-factual-qa-subject-gate.test.mjs",
     "rust/tests/web/issue-1328-bounded-retries.test.mjs",
-    "rust/tests/web/issue-1589-calendar-currency.test.mjs"
+    "rust/tests/web/issue-1589-calendar-currency.test.mjs",
+    "rust/tests/web/server-memory-schema.test.mjs",
+    "rust/tests/web/hive-work-item-consumer.test.mjs",
+    "rust/tests/web/issue-1168-source-cache.test.mjs"
   ]
 }

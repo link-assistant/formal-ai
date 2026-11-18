@@ -184,3 +184,49 @@ unchecked issue criteria remain active, reasoning acceptance remains 0/20, and
 [PR #1581](https://github.com/link-assistant/formal-ai/pull/1581) remains draft.
 
 The final documentation/evidence check initially catches two abbreviated GitHub archive names (`pr.json.gz` and `pr-comments.json.gz`). Rename only those files to full words, verify identical compressed/raw hashes, and retain the failed aggregate/list before rechecking. The 90-filename ceiling remains unchanged.
+
+
+## Calendar seed integrity and TypeScript parity
+
+The 2ec6ef93 published head has 21 successful workflows and two failures.
+Both initial failures are checkout curl-28 failures for the six-byte
+`.bun-version` blob. After one failed-job retry, Layered JavaScript succeeds
+and exposes one stale TypeScript mirror; the pipeline checkout still fails.
+Preserve all attempts and fix every actionable source failure before publishing.
+The official translator now verifies all 717 sources and passes 12 tests.
+
+Main 015a6831 has two new data integrity failures: a duplicate calendar meaning
+and packed handler-table aliases. The existing fast calendar/currency file
+reproduces both failures (40/42 pass before), then passes all 43 tests after the
+cue rename and lossless 21-to-55 row expansion. All four ledger tests pass;
+the maintained mirrors and two-file Rust formatting pass without native execution.
+Draft all changes, run the full JavaScript gates, collect every current-head
+failure, review the diff and fresh comments/main ancestry, then make one batch
+push and inspect every next-head hosted result. Broader acceptance remains
+unfinished and reasoning acceptance remains 0/20. See
+docs/case-studies/issue-1580/calendar-seed-checkpoint.md.
+
+
+## Health/cache fixtures and recovered main logs
+
+Recover all five failed JavaScript job logs from cancelled main Layered run
+44188508228. Reproduce the health response omission and live-read cache fixture
+failure using a recorded offline curl stand-in; 8/9 cases pass before each fix.
+Preserve the supported health mode and default-on production reads. After the
+fixture repairs, all 24 complete health/cache cases pass with zero transport
+calls, followed by 15 fast-profile and four ledger checks. Add all three existing
+files to the fast PR inventory and record the main-only failures. Final combined
+shared-data gates pass 86 checks with 52 explicit exclusions and zero failures
+in 660.018 seconds. Verify all 86 detailed log hashes and all 14 source hashes;
+no source differs from the tested bytes. Next-head hosted checks remain pending.
+
+Java historical text review reaches pages 1–37/254, 34 complete files and one
+partial, 1,662 fully read source lines. The first OSV JSON line is complete;
+only fragments 1–3/66 of its second line are read. Broader semantic review and
+native/runtime acceptance remain unfinished. Supplied work earns zero
+independent authorship credit.
+
+Final archive/changelog checks pass all six selected gates, with the filename
+abbreviation ceiling unchanged. Preserve the full command and supplied-script
+archives, commit this verified batch, and inspect every hosted result on the new
+head before another push. The PR remains draft; broad acceptance is unfinished.

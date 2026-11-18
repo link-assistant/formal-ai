@@ -1,0 +1,185 @@
+{
+  "head": "2ec6ef93a80c7081a46816d1242bc0f7b843d5ff",
+  "capturedAt": "2026-11-17T23:32:19.929539+00:00",
+  "runs": [
+    {
+      "workflow": "layered",
+      "runId": 44197052235,
+      "exitCode": 0,
+      "rawBytes": 1506587,
+      "lines": 9511,
+      "sha256": "e6b37654308f4611ca8f88eaa07cd8bdc92476ef3c6e6370a1290bd123eda719",
+      "archive": "experiments/issue-1580/evidence/ci/published-2ec6ef93/attempt-2/layered-44197052235.log.gz",
+      "rawLog": "/tmp/issue-1580-research/published-2ec6ef93-failures/attempt-2/layered-44197052235.log",
+      "failedJobs": [
+        {
+          "id": 134449655327,
+          "name": "Explicit source-only translation regeneration",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134449656318,
+          "name": "Full source network serialization (${{ matrix.shard }}/16)",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134449656648,
+          "name": "provers (real Lean 4 and Rocq compile, R1186-4)",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134449716858,
+          "name": "Explicit server parity diagnostic from existing main binary",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134451323964,
+          "name": "ts tier (js<->ts file-set parity)",
+          "conclusion": "failure"
+        },
+        {
+          "id": 134451326021,
+          "name": "js -> rust leg (meta-language self-translation)",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134451419073,
+          "name": "server parity (JavaScript server vs Rust server)",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134451419524,
+          "name": "rust tier (dogfood regeneration gate)",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    {
+      "workflow": "pipeline",
+      "runId": 44197053206,
+      "exitCode": 0,
+      "rawBytes": 1677851,
+      "lines": 11725,
+      "sha256": "d2fa970ad0f2bc47daabfd75e2ade8265a6f35fcfd4029609b432a26b4d53da6",
+      "archive": "experiments/issue-1580/evidence/ci/published-2ec6ef93/attempt-2/pipeline-44197053206.log.gz",
+      "rawLog": "/tmp/issue-1580-research/published-2ec6ef93-failures/attempt-2/pipeline-44197053206.log",
+      "failedJobs": [
+        {
+          "id": 134449683444,
+          "name": "Fast Linux source and requirement checks",
+          "conclusion": "failure"
+        },
+        {
+          "id": 134449685814,
+          "name": "Build binaries and tests",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134449686867,
+          "name": "Box Image Projects (${{ matrix.language }})",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134449686983,
+          "name": "E2E Tests (local web app)",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134449687170,
+          "name": "Slim Docker build and runtime",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134449687192,
+          "name": "Docker Image Build & Runtime Check",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134449687343,
+          "name": "Server parity (JavaScript vs Rust)",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134449687857,
+          "name": "E2E Tests (agent CLI \u2194 formal-ai)",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134449688264,
+          "name": "macOS Core Tests",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134449688270,
+          "name": "Test (${{ matrix.os }} / ${{ matrix.test-suite }})${{ ((matrix.shard && format(' shard {0}/{1}', matrix.shard, matrix.shards)) || '') }}",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134449688427,
+          "name": "Default-feature documentation tests",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134449688451,
+          "name": "native-response-observations",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134449688597,
+          "name": "Lint and Format Check (lane ${{ matrix.lane }})",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134449688898,
+          "name": "Build Package",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134449689171,
+          "name": "Instant Release",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134449689564,
+          "name": "Native full and slim container publication",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134449690117,
+          "name": "Auto Release",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134449690719,
+          "name": "Deploy Web App to GitHub Pages",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134449690789,
+          "name": "Build GitHub Pages artifact",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134449690930,
+          "name": "self-authored-after-publication",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134449692762,
+          "name": "E2E Tests (GitHub Pages)",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134449765345,
+          "name": "Create Changelog PR",
+          "conclusion": "skipped"
+        },
+        {
+          "id": 134449966004,
+          "name": "Pipeline Status",
+          "conclusion": "failure"
+        }
+      ]
+    }
+  ]
+}

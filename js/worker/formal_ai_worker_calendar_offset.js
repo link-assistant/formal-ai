@@ -577,7 +577,7 @@ function tryCalendarDateOffset(prompt, normalized) {
 // Seed vocabulary binds quantities to calendar units; months never use an
 // average number of days. Full periods use completed day-of-month anniversaries.
 function calendarDurationWords(role) {
-  return (handlerRulesTables()[role]?.rows || []).flatMap((row) => row[1].split("|")).sort((a, b) => b.length - a.length);
+  return (handlerRulesTables()[role]?.rows || []).map((row) => row[1]).sort((a, b) => b.length - a.length);
 }
 function calendarDurationUnit(text) {
   const units = [];
@@ -610,7 +610,7 @@ function calendarDurationDate(text) {
 }
 function calendarDurationRequest(prompt) {
   const text = String(prompt).toLowerCase().trim();
-  const sumCue = calendarDurationWords("calendar-duration-sum")
+  const sumCue = calendarDurationWords("calendar-duration-addition-cue")
     .find((word) => calendarOffsetStartsWithTerm(text, word));
   if (sumCue) {
     const body = text.slice(sumCue.length).trim();
@@ -698,10 +698,10 @@ function calendarDurationLabel(result, factor, language) {
 function tryCalendarDuration(prompt) {
   const request = calendarDurationRequest(prompt);
   if (!request) return null;
-  const role = request.kind === "calendar-duration-sum" ? "calendar-duration-sum" : "calendar-full-query";
+  const role = request.kind === "calendar-duration-sum" ? "calendar-duration-addition-cue" : "calendar-full-query";
   const text = String(prompt).toLowerCase().trim();
   const language = (handlerRulesTables()[role]?.rows || [])
-    .find(row => row[1].split("|").some(word => calendarOffsetStartsWithTerm(text, word)))?.[0] || detectLanguage(prompt);
+    .find(row => calendarOffsetStartsWithTerm(text, row[1]))?.[0] || detectLanguage(prompt);
   const template = calendarOffsetLocalizedResponse(request.kind, language);
   if (!template) return null;
   const content = template.replaceAll("{result}", request.result)

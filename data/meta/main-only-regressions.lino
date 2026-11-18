@@ -147,3 +147,32 @@ main-run 44174503458
       failed "unbound nested required values expected a raw schema in public metadata instead of the lazy private diagnostic"
       check rust/tests/web/issue-1328-bounded-retries.test.mjs
       marker "private schema and arguments remain lazy"
+main-run 44188508650
+  javascript-twin
+    regression calendar-meaning-slug-collision
+      introduced-by "PR #1597, merged as 015a6831"
+      failed "meaning_slugs_are_globally_unique: calendar-duration-sum named a handler cue and a response intent"
+      check rust/tests/web/issue-1589-calendar-currency.test.mjs
+      marker "calendar meanings stay globally unique"
+    regression calendar-pipe-packed-table-values
+      introduced-by "PR #1597, merged as 015a6831"
+      failed "seed_lino_values_never_pipe_pack_multi_values: handler-rules.lino:1236 year|years"
+      check rust/tests/web/issue-1589-calendar-currency.test.mjs
+      marker "handler table rows carry one surface each without pipe-packed aliases"
+main-run 44188508228
+  javascript-twin
+    regression health-schema-access-mode
+      introduced-by "commit ec6ade5cd (server ephemeral memory mode)"
+      failed "server-memory-schema: health schema assertion omitted the supported read_write mode"
+      check rust/tests/web/server-memory-schema.test.mjs
+      marker "mode: 'read_only'"
+    regression hive-cache-replay-network-policy
+      introduced-by "default-on source reads observed on main 015a6831"
+      failed "hive-work-item-consumer: empty source cache expected baseline but live publisher returned a pin"
+      check rust/tests/web/hive-work-item-consumer.test.mjs
+      marker "Cache/baseline replay is explicitly offline"
+    regression version-cache-replay-network-policy
+      introduced-by "default-on source reads observed on main 015a6831"
+      failed "issue-1168-source-cache: empty source cache expected baseline but live publisher returned a pin"
+      check rust/tests/web/issue-1168-source-cache.test.mjs
+      marker "process.env.FORMAL_AI_LIVE_FETCH = '0'"

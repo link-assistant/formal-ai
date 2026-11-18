@@ -5,7 +5,7 @@
 // back to the cached capture and then the shipped baseline, each said out
 // loud. `forGeneration()` reads the installed host's `sourceFetch`, which
 // js/agentic/node-host.mjs builds from `FORMAL_AI_SOURCE_CACHE_DIR` and the
-// `FORMAL_AI_LIVE_FETCH` opt-in exactly as `VersionSet::for_generation` does.
+// shared default-on read policy; cache-only replay explicitly disables live reads.
 // No test here reaches the network: the transport is a fixture.
 
 import assert from 'node:assert/strict';

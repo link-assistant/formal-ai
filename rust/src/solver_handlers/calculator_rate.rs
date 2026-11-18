@@ -197,7 +197,7 @@ pub(super) fn conversion(
     let connector = tokens[2..tokens.len() - 1].join(" ").to_lowercase();
     if !crate::rule_interpreter::handler_table_rows("currency-conversion-connector")
         .iter()
-        .any(|(_, words)| words.split('|').any(|word| word == connector))
+        .any(|(_, word)| word == &connector)
     {
         return None;
     }
