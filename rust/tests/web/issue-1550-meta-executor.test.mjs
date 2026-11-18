@@ -13,6 +13,7 @@ import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
 
 let CASES;
+let quotationCases;
 let replayCase;
 let executor;
 const fixture = JSON.parse(
@@ -23,7 +24,7 @@ const kinds = (events) => events.map((event) => event.split(' ')[0]);
 
 before(async () => {
   await installNodeHost(new WorkerHost());
-  ({ CASES, replayCase } = await import('./helpers/issue-1550-meta-executor-cases.mjs'));
+  ({ CASES, QUOTATION_CASES: quotationCases, replayCase } = await import('./helpers/issue-1550-meta-executor-cases.mjs'));
   executor = await import('../../../js/agentic/crate/meta_executor.mjs');
 });
 
@@ -116,4 +117,14 @@ test('the split reads its connectives from the grammar, not from code', () => {
   }
   assert.deepEqual(executor.decompositionRelations(), ['sequence', 'alternative', 'aggregation']);
   assert.deepEqual(executor.splitRequest('A and then B', 'en'), { relation: 'sequence', parts: ['A', 'B'] });
+});
+
+test('ASCII quoted connectives stay in their task while apostrophes and escaped quotes keep their boundaries', () => {
+  for (const [name, text, relation, parts, language = 'en'] of quotationCases) {
+    assert.deepEqual(executor.splitRequest(text, language), { relation, parts }, name);
+    const expected = named(name).expected;
+    assert.equal(expected.shape, `${relation}(leaf,leaf)`, name);
+    assert.deepEqual(expected.leaves, parts, name);
+    assert.equal(expected.status, 'resolved', name);
+  }
 });

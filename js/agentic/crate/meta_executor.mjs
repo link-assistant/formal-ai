@@ -91,19 +91,21 @@ function quotedMask(characters) {
   if (pairs.some((pair) => pair.length !== 2)) throw Error('task_decomposition_quote_pair');
   const mask = [];
   let closer = null;
-  for (const character of characters) {
+  let escaped = false;
+  for (let at = 0; at < characters.length; at += 1) {
+    const character = characters[at];
+    const neighbor = characters[at + (closer === "'" ? 1 : -1)] ?? '';
+    const wordApostrophe = character === "'" && isAlphanumeric(neighbor) && !containsCjk(neighbor);
+    const delimiter = !escaped && !wordApostrophe;
     if (closer !== null) {
       mask.push(true);
-      if (character === closer) closer = null;
-      continue;
+      if (delimiter && character === closer) closer = null;
+    } else {
+      const pair = pairs.find((candidate) => delimiter && candidate[0] === character);
+      mask.push(Boolean(pair));
+      if (pair) closer = pair[1];
     }
-    const pair = pairs.find((candidate) => candidate[0] === character);
-    if (pair) {
-      closer = pair[1];
-      mask.push(true);
-      continue;
-    }
-    mask.push(false);
+    escaped = character === '\\' && !escaped;
   }
   return mask;
 }

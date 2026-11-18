@@ -959,6 +959,466 @@
           "meta_exec:result task=t0 status=resolved method=derivation budget_left=7"
         ]
       }
+    },
+    {
+      "name": "ascii-double-aggregation",
+      "text": "Count \"salt and pepper\" and report the size",
+      "language": "en",
+      "answers": {
+        "Count \"salt and pepper\"": {
+          "intent": "answered",
+          "content": "1",
+          "confidence": 1
+        },
+        "report the size": {
+          "intent": "answered",
+          "content": "2",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "aggregation(leaf,leaf)",
+        "leaves": [
+          "Count \"salt and pepper\"",
+          "report the size"
+        ],
+        "status": "resolved",
+        "content": "1\n\n2",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=aggregation children=2 atomic=- text=Count \"salt and pepper\" and report the size",
+          "meta_exec:test task=t0 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=Count \"salt and pepper\"",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=- children=0 atomic=no_relation text=report the size",
+          "meta_exec:test task=t0.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:compose task=t0 relation=aggregation children=t0.1,t0.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0 method=composition steps=5 code_units=4 executed=answered,children:aggregation passed=true failed=-",
+          "meta_exec:select task=t0 method=composition reason=least_action steps=5 code_units=4 passing=1/1",
+          "meta_exec:result task=t0 status=resolved method=composition budget_left=5"
+        ]
+      }
+    },
+    {
+      "name": "ascii-double-sequence",
+      "text": "Read \"first then second\" then report the length",
+      "language": "en",
+      "answers": {
+        "Read \"first then second\"": {
+          "intent": "answered",
+          "content": "1",
+          "confidence": 1
+        },
+        "report the length": {
+          "intent": "answered",
+          "content": "2",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "sequence(leaf,leaf)",
+        "leaves": [
+          "Read \"first then second\"",
+          "report the length"
+        ],
+        "status": "resolved",
+        "content": "1\n\n2",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=sequence children=2 atomic=- text=Read \"first then second\" then report the length",
+          "meta_exec:test task=t0 checks=answered,children:sequence requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=Read \"first then second\"",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=- children=0 atomic=no_relation text=report the length",
+          "meta_exec:test task=t0.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:compose task=t0 relation=sequence children=t0.1,t0.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0 method=composition steps=5 code_units=4 executed=answered,children:sequence passed=true failed=-",
+          "meta_exec:select task=t0 method=composition reason=least_action steps=5 code_units=4 passing=1/1",
+          "meta_exec:result task=t0 status=resolved method=composition budget_left=5"
+        ]
+      }
+    },
+    {
+      "name": "ascii-single-aggregation",
+      "text": "Count 'salt and pepper' and report the size",
+      "language": "en",
+      "answers": {
+        "Count 'salt and pepper'": {
+          "intent": "answered",
+          "content": "1",
+          "confidence": 1
+        },
+        "report the size": {
+          "intent": "answered",
+          "content": "2",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "aggregation(leaf,leaf)",
+        "leaves": [
+          "Count 'salt and pepper'",
+          "report the size"
+        ],
+        "status": "resolved",
+        "content": "1\n\n2",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=aggregation children=2 atomic=- text=Count 'salt and pepper' and report the size",
+          "meta_exec:test task=t0 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=Count 'salt and pepper'",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=- children=0 atomic=no_relation text=report the size",
+          "meta_exec:test task=t0.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:compose task=t0 relation=aggregation children=t0.1,t0.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0 method=composition steps=5 code_units=4 executed=answered,children:aggregation passed=true failed=-",
+          "meta_exec:select task=t0 method=composition reason=least_action steps=5 code_units=4 passing=1/1",
+          "meta_exec:result task=t0 status=resolved method=composition budget_left=5"
+        ]
+      }
+    },
+    {
+      "name": "unquoted-contraction",
+      "text": "Don't count and report the size",
+      "language": "en",
+      "answers": {
+        "Don't count": {
+          "intent": "answered",
+          "content": "1",
+          "confidence": 1
+        },
+        "report the size": {
+          "intent": "answered",
+          "content": "2",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "aggregation(leaf,leaf)",
+        "leaves": [
+          "Don't count",
+          "report the size"
+        ],
+        "status": "resolved",
+        "content": "1\n\n2",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=aggregation children=2 atomic=- text=Don't count and report the size",
+          "meta_exec:test task=t0 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=Don't count",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=- children=0 atomic=no_relation text=report the size",
+          "meta_exec:test task=t0.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:compose task=t0 relation=aggregation children=t0.1,t0.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0 method=composition steps=5 code_units=4 executed=answered,children:aggregation passed=true failed=-",
+          "meta_exec:select task=t0 method=composition reason=least_action steps=5 code_units=4 passing=1/1",
+          "meta_exec:result task=t0 status=resolved method=composition budget_left=5"
+        ]
+      }
+    },
+    {
+      "name": "quoted-contraction",
+      "text": "Read 'Don't split and join' and report the length",
+      "language": "en",
+      "answers": {
+        "Read 'Don't split and join'": {
+          "intent": "answered",
+          "content": "1",
+          "confidence": 1
+        },
+        "report the length": {
+          "intent": "answered",
+          "content": "2",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "aggregation(leaf,leaf)",
+        "leaves": [
+          "Read 'Don't split and join'",
+          "report the length"
+        ],
+        "status": "resolved",
+        "content": "1\n\n2",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=aggregation children=2 atomic=- text=Read 'Don't split and join' and report the length",
+          "meta_exec:test task=t0 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=Read 'Don't split and join'",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=- children=0 atomic=no_relation text=report the length",
+          "meta_exec:test task=t0.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:compose task=t0 relation=aggregation children=t0.1,t0.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0 method=composition steps=5 code_units=4 executed=answered,children:aggregation passed=true failed=-",
+          "meta_exec:select task=t0 method=composition reason=least_action steps=5 code_units=4 passing=1/1",
+          "meta_exec:result task=t0 status=resolved method=composition budget_left=5"
+        ]
+      }
+    },
+    {
+      "name": "plural-possessive",
+      "text": "Count the dogs' coats and report the size",
+      "language": "en",
+      "answers": {
+        "Count the dogs' coats": {
+          "intent": "answered",
+          "content": "1",
+          "confidence": 1
+        },
+        "report the size": {
+          "intent": "answered",
+          "content": "2",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "aggregation(leaf,leaf)",
+        "leaves": [
+          "Count the dogs' coats",
+          "report the size"
+        ],
+        "status": "resolved",
+        "content": "1\n\n2",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=aggregation children=2 atomic=- text=Count the dogs' coats and report the size",
+          "meta_exec:test task=t0 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=Count the dogs' coats",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=- children=0 atomic=no_relation text=report the size",
+          "meta_exec:test task=t0.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:compose task=t0 relation=aggregation children=t0.1,t0.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0 method=composition steps=5 code_units=4 executed=answered,children:aggregation passed=true failed=-",
+          "meta_exec:select task=t0 method=composition reason=least_action steps=5 code_units=4 passing=1/1",
+          "meta_exec:result task=t0 status=resolved method=composition budget_left=5"
+        ]
+      }
+    },
+    {
+      "name": "escaped-double-quote",
+      "text": "Read \"a \\\"quote and join\\\" stays\" and report the length",
+      "language": "en",
+      "answers": {
+        "Read \"a \\\"quote and join\\\" stays\"": {
+          "intent": "answered",
+          "content": "1",
+          "confidence": 1
+        },
+        "report the length": {
+          "intent": "answered",
+          "content": "2",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "aggregation(leaf,leaf)",
+        "leaves": [
+          "Read \"a \\\"quote and join\\\" stays\"",
+          "report the length"
+        ],
+        "status": "resolved",
+        "content": "1\n\n2",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=aggregation children=2 atomic=- text=Read \"a \\\"quote and join\\\" stays\" and report the length",
+          "meta_exec:test task=t0 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=Read \"a \\\"quote and join\\\" stays\"",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=- children=0 atomic=no_relation text=report the length",
+          "meta_exec:test task=t0.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:compose task=t0 relation=aggregation children=t0.1,t0.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0 method=composition steps=5 code_units=4 executed=answered,children:aggregation passed=true failed=-",
+          "meta_exec:select task=t0 method=composition reason=least_action steps=5 code_units=4 passing=1/1",
+          "meta_exec:result task=t0 status=resolved method=composition budget_left=5"
+        ]
+      }
+    },
+    {
+      "name": "adjacent-cjk-single-quote",
+      "text": "统计'盐并且胡椒'并且报告大小",
+      "language": "zh",
+      "answers": {
+        "统计'盐并且胡椒'": {
+          "intent": "answered",
+          "content": "1",
+          "confidence": 1
+        },
+        "报告大小": {
+          "intent": "answered",
+          "content": "2",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "aggregation(leaf,leaf)",
+        "leaves": [
+          "统计'盐并且胡椒'",
+          "报告大小"
+        ],
+        "status": "resolved",
+        "content": "1\n\n2",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=aggregation children=2 atomic=- text=统计'盐并且胡椒'并且报告大小",
+          "meta_exec:test task=t0 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=统计'盐并且胡椒'",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=- children=0 atomic=no_relation text=报告大小",
+          "meta_exec:test task=t0.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:compose task=t0 relation=aggregation children=t0.1,t0.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0 method=composition steps=5 code_units=4 executed=answered,children:aggregation passed=true failed=-",
+          "meta_exec:select task=t0 method=composition reason=least_action steps=5 code_units=4 passing=1/1",
+          "meta_exec:result task=t0 status=resolved method=composition budget_left=5"
+        ]
+      }
+    },
+    {
+      "name": "adjacent-cjk-double-quote",
+      "text": "统计\"盐并且胡椒\"并且报告大小",
+      "language": "zh",
+      "answers": {
+        "统计\"盐并且胡椒\"": {
+          "intent": "answered",
+          "content": "1",
+          "confidence": 1
+        },
+        "报告大小": {
+          "intent": "answered",
+          "content": "2",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "aggregation(leaf,leaf)",
+        "leaves": [
+          "统计\"盐并且胡椒\"",
+          "报告大小"
+        ],
+        "status": "resolved",
+        "content": "1\n\n2",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=aggregation children=2 atomic=- text=统计\"盐并且胡椒\"并且报告大小",
+          "meta_exec:test task=t0 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=统计\"盐并且胡椒\"",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=- children=0 atomic=no_relation text=报告大小",
+          "meta_exec:test task=t0.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:compose task=t0 relation=aggregation children=t0.1,t0.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0 method=composition steps=5 code_units=4 executed=answered,children:aggregation passed=true failed=-",
+          "meta_exec:select task=t0 method=composition reason=least_action steps=5 code_units=4 passing=1/1",
+          "meta_exec:result task=t0 status=resolved method=composition budget_left=5"
+        ]
+      }
+    },
+    {
+      "name": "russian-double-quote",
+      "text": "Посчитай \"соль и перец\" и назови размер",
+      "language": "ru",
+      "answers": {
+        "Посчитай \"соль и перец\"": {
+          "intent": "answered",
+          "content": "1",
+          "confidence": 1
+        },
+        "назови размер": {
+          "intent": "answered",
+          "content": "2",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "aggregation(leaf,leaf)",
+        "leaves": [
+          "Посчитай \"соль и перец\"",
+          "назови размер"
+        ],
+        "status": "resolved",
+        "content": "1\n\n2",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=aggregation children=2 atomic=- text=Посчитай \"соль и перец\" и назови размер",
+          "meta_exec:test task=t0 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=Посчитай \"соль и перец\"",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=- children=0 atomic=no_relation text=назови размер",
+          "meta_exec:test task=t0.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=1 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2 method=derivation reason=least_action steps=2 code_units=1 passing=1/1",
+          "meta_exec:compose task=t0 relation=aggregation children=t0.1,t0.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0 method=composition steps=5 code_units=4 executed=answered,children:aggregation passed=true failed=-",
+          "meta_exec:select task=t0 method=composition reason=least_action steps=5 code_units=4 passing=1/1",
+          "meta_exec:result task=t0 status=resolved method=composition budget_left=5"
+        ]
+      }
     }
   ]
 }

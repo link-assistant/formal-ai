@@ -24,10 +24,10 @@ translation_blockers
   blockers_per_item 8 88
   blockers_per_item 9 91
   blockers_per_item 10 63
-  blockers_per_item 11 46
+  blockers_per_item 11 45
   blockers_per_item 12 38
   blockers_per_item 13 24
-  blockers_per_item 14 31
+  blockers_per_item 14 32
   blockers_per_item 15 20
   blockers_per_item 16 17
   blockers_per_item 17 11
@@ -50,7 +50,7 @@ translation_blockers
   blockers_per_item 43 1
 construct "call of a sibling function" items 954 only 38
 construct "field access" items 942 only 25
-construct "call of an imported function" items 703 only 20
+construct "call of an imported function" items 704 only 20
 construct "null" items 613 only 5
 construct "object without a $ tag" items 563 only 26
 construct "arrow function" items 385 only 2
@@ -63,7 +63,7 @@ construct "JSDoc type {…}" items 261 only 5
 construct "arrow callback of .map()" items 253 only 0
 construct "regular expression" items 241 only 35
 construct "sibling value" items 228 only 17
-construct "nullish coalescing" items 214 only 0
+construct "nullish coalescing" items 215 only 0
 construct "arrow callback of .filter()" items 210 only 0
 construct "import from outside the module directory" items 200 only 200
 construct "method call .join()" items 197 only 0
@@ -121,10 +121,10 @@ construct "JSON.parse" items 14 only 0
 construct "Object.keys" items 14 only 0
 construct "method call .add()" items 14 only 0
 construct "method call .exec()" items 14 only 0
+construct "global call Boolean()" items 13 only 0
 construct "method call .repeat()" items 13 only 1
 construct "arrow callback of .findIndex()" items 12 only 0
 construct "default or namespace import" items 12 only 12
-construct "global call Boolean()" items 12 only 0
 construct "in operator" items 12 only 0
 construct "method call .findIndex()" items 12 only 0
 construct "method call .lastIndexOf()" items 11 only 0

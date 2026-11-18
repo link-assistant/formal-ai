@@ -140,20 +140,30 @@ fn quoted_mask(characters: &[char]) -> Vec<bool> {
     );
     let mut mask = Vec::with_capacity(characters.len());
     let mut closer: Option<char> = None;
-    for &character in characters {
+    let mut escaped = false;
+    for (at, &character) in characters.iter().enumerate() {
+        let neighbor = if closer == Some('\'') {
+            characters.get(at + 1)
+        } else {
+            at.checked_sub(1).and_then(|index| characters.get(index))
+        };
+        let word_apostrophe = character == '\''
+            && neighbor
+                .is_some_and(|next| next.is_alphanumeric() && !contains_cjk(&next.to_string()));
+        let delimiter = !escaped && !word_apostrophe;
         if let Some(close) = closer {
             mask.push(true);
-            if character == close {
+            if delimiter && character == close {
                 closer = None;
             }
-            continue;
+        } else {
+            let pair = pairs.iter().find(|pair| delimiter && pair[0] == character);
+            mask.push(pair.is_some());
+            if let Some(pair) = pair {
+                closer = Some(pair[1]);
+            }
         }
-        if let Some(pair) = pairs.iter().find(|pair| pair[0] == character) {
-            closer = Some(pair[1]);
-            mask.push(true);
-            continue;
-        }
-        mask.push(false);
+        escaped = character == '\\' && !escaped;
     }
     mask
 }
