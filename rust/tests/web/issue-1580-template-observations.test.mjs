@@ -9,3 +9,4 @@ import '../../../experiments/issue-1580/template-python-fragment-integrity.test.
 import '../../../experiments/issue-1580/template-python-runtime.test.mjs';
 import '../../../experiments/issue-1580/template-python-audit-integrity.test.mjs';
 import '../../../experiments/issue-1580/template-python-release-formatting.test.mjs';
+import '../../../experiments/issue-1580/template-php-release-integrity.test.mjs';

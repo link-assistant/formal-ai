@@ -36,6 +36,11 @@
       "path": "LICENSE",
       "gitBlob": "fdddb29aa445bf3d6a5d843d6dd77e10a9f99657",
       "sha256": "6b0382b16279f26ff69014300541967a356a666eb0b91b422f6862f6b7dad17e"
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "gitBlob": "d383bce663bc9c7de1513b951131c937864d7676",
+      "sha256": "b1ea5a8b7a2c103e2bad5a92a36229ea56397642fb48db733af0db6d3dfd3899"
     }
   ]
 }
