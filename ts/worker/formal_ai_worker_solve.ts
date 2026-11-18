@@ -37,8 +37,9 @@ async function solve(prompt, history, prefs, userContext = {}, memory = [], opti
     const diagnostic = await tryDiagnosticMarker(prompt, (inner) => solve(inner, history, prefs, userContext, memory, options));
     if (diagnostic) return projectControlledAnswer(diagnostic, turn.config, options);
     // Issue #1584: a whole-prompt CNL reading answers declared fact questions and
-    // asks which reading an ambiguous one means; a task paraphrase the solver
-    // does not understand is retried as its canonical prompt.
+    // asks which reading an ambiguous one means. A task paraphrase is also solved
+    // as its canonical prompt: the user's wording is kept when both reach the same
+    // intent, otherwise the controlled reading of the whole prompt wins.
     const dialogue = turn.rewrite === null ? cnl.controlledDialogue(prompt, history || [], turn.config) : null;
     if (dialogue && dialogue.intent !== "cnl_task") {
       return {intent: dialogue.intent, content: dialogue.content, outputProjection: dialogue.outputProjection,
@@ -50,10 +51,12 @@ async function solve(prompt, history, prefs, userContext = {}, memory = [], opti
       ? await solveImpl(prompt, history, prefs, userContext, memory, options)
       : {intent: "cnl_paraphrase", content: cnl.outputSource(turn.rewrite, language),
         confidence: 1, evidence: ["cnl:paraphrase"], steps: [], events: [], toolCalls: []};
-    if (dialogue && answer.intent === "unknown") {
-      prompt = dialogue.prompt;
-      answer = await solveImpl(prompt, history, prefs, userContext, memory, options);
-      answer = {...answer, evidence: [...(answer.evidence || []), "cnl:task:" + dialogue.language]};
+    if (dialogue && dialogue.prompt !== prompt) {
+      const canonical = await solveImpl(dialogue.prompt, history, prefs, userContext, memory, options);
+      if (canonical.intent !== "unknown" && canonical.intent !== answer.intent) {
+        prompt = dialogue.prompt;
+        answer = {...canonical, evidence: [...(canonical.evidence || []), "cnl:task:" + dialogue.language]};
+      }
     }
     const subTask = async (text) => metaResolveImpasse(text, await solveImpl(text, history, prefs, userContext, memory, options), prefs);
     return projectControlledAnswer(metaAttachLearned(await metaRunProcedure(prompt, await metaResolveImpasse(prompt, answer, prefs), subTask)), turn.config, options);
