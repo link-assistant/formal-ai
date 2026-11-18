@@ -192,17 +192,10 @@ fn controlled_dialogue_answers_declared_facts_and_asks_which_reading() {
 fn task_paraphrases_reach_the_solver_and_understood_prompts_keep_their_answers() {
     use ::formal_ai::FormalAiEngine;
     let paraphrase = FormalAiEngine.answer("add 10 and 3");
-    assert!(
-        paraphrase
-            .answer
-            .split(|c: char| !c.is_ascii_digit())
-            .any(|word| word == "13"),
-        "{}",
-        paraphrase.answer
-    );
+    assert_eq!(paraphrase.answer, "10 + 3 = 13");
     // Issue #962: no CNL fallback for a prompt the solver already understood.
     let sum = FormalAiEngine.answer("What is 2 plus 2?");
-    assert!(sum.answer.contains("2 plus 2 = 4"), "{}", sum.answer);
+    assert_eq!(sum.answer, "2 plus 2 = 4");
     assert!(
         !sum.evidence_links
             .iter()
@@ -216,12 +209,18 @@ fn an_in_dialog_density_switch_rerenders_the_controlled_answer_deterministically
     let question = "Is a cat an animal?";
     let first = FormalAiEngine.answer(question);
     assert_eq!(first.intent, "cnl_answer");
+    assert_eq!(first.answer, "Yes. Every cat is an animal.");
     let history = [
         ConversationTurn::user(question),
         ConversationTurn::assistant(first.answer.as_str()),
     ];
-    let switched = solve_with_history("max-precision", &history);
-    let again = solve_with_history("max-precision", &history);
+    // The issue's own densification phrase re-renders the previous graph.
+    let switched = solve_with_history("Rewrite in max-precision mode", &history);
+    let again = solve_with_history("Rewrite in max-precision mode", &history);
+    assert_eq!(switched.intent, "cnl_paraphrase");
+    assert_eq!(
+        switched.answer,
+        "Maximum precision uses specific words. Look up unfamiliar words in a dictionary to check their exact meaning.\n\nYes. Cats are animals."
+    );
     assert_eq!(switched.answer, again.answer);
-    assert_ne!(switched.answer, first.answer);
 }

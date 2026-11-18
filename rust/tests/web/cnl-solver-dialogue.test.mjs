@@ -59,20 +59,24 @@ test('prompts the solver already understood keep their answers', {timeout: 60_00
     ['2 जोड़ 2 कितना होता है?', '2 जोड़ 2 = 4'], ['2 जमा 2 कितना होता है?', '2 जमा 2 = 4'],
     ['2 加 2 等于多少?', '2 加 2 = 4'], ['¿Cuánto es 2 más 2?', '2 más 2 = 4']]) {
     const sum = await solve(prompt);
-    assert.ok(String(sum.content).includes(expected), `${prompt} -> ${sum.content}`);
+    assert.equal(sum.content, expected, prompt);
     assert.ok(!(sum.evidence || []).some(item => String(item).startsWith('cnl:task')), `no CNL fallback for ${prompt}`);
   }
   const paraphrase = await solve('add 10 and 3');
-  assert.match(String(paraphrase.content), /\b13\b/u);
+  assert.equal(paraphrase.content, '10 + 3 = 13');
 });
 
 test('an in-dialog density switch re-renders the same controlled answer deterministically', {timeout: 60_000}, async () => {
   const question = 'Is a cat an animal?';
   const first = await solve(question);
   assert.equal(first.intent, 'cnl_answer');
+  assert.equal(first.content, 'Yes. Every cat is an animal.');
   const history = [{role: 'user', content: question}, {role: 'assistant', content: first.content}];
-  const switched = await solve('max-precision', history);
-  const again = await solve('max-precision', history);
+  // The issue's own densification phrase re-renders the previous graph.
+  const switched = await solve('Rewrite in max-precision mode', history);
+  const again = await solve('Rewrite in max-precision mode', history);
+  assert.equal(switched.intent, 'cnl_paraphrase');
+  assert.equal(switched.content, 'Maximum precision uses specific words. Look up unfamiliar words in a dictionary '
+    + 'to check their exact meaning.\n\nYes. Cats are animals.');
   assert.equal(switched.content, again.content);
-  assert.notEqual(switched.content, first.content);
 });
