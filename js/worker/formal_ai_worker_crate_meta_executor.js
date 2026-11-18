@@ -281,6 +281,7 @@ function compose(node, test, childOutcomes) {
     confidence,
     steps,
     parts: chosen.map((outcome) => outcome.task),
+    evidence: [...new Set(chosen.flatMap((outcome) => outcome.candidate.evidence))],
   };
 }
 function draftOf(method, steps, raw) {
@@ -291,6 +292,7 @@ function draftOf(method, steps, raw) {
     content: String(raw.content ?? ''),
     confidence: Number(raw.confidence ?? 0),
     steps,
+    evidence: Array.isArray(raw.evidence) ? raw.evidence.slice() : [],
     source: raw,
   };
 }
@@ -472,7 +474,7 @@ async function nested(body) {
   }
 }
 const answerDraft = (answer) =>
-  answer ? { intent: answer.intent, content: answer.content, confidence: answer.confidence } : null;
+  answer ? { intent: answer.intent, content: answer.content, confidence: answer.confidence, evidence: answer.evidence } : null;
 /**
  * Every answer goes through the procedure: the turn is the root task, its
  * direct derivation is `answer` (what the solver already derived), every
@@ -503,7 +505,7 @@ async function solveAnswer(request, answer, solveSubTask, options = {}) {
     events: run.events.map((event) => `${event.kind} ${event.payload}`),
   };
   const adopted = selected?.method === 'composition'
-    ? { ...answer, intent: selected.intent, content: selected.content, confidence: selected.confidence }
+    ? { ...answer, intent: selected.intent, content: selected.content, confidence: selected.confidence, evidence: selected.evidence }
     : answer;
   // The trace joins the solver events of the answer, as the native solver
   // appends it to its event log.

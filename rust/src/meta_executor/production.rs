@@ -216,6 +216,7 @@ impl crate::solver::UniversalSolver {
             intent: solved.intent.clone(),
             content: solved.answer.clone(),
             confidence: solved.confidence,
+            evidence: solved.evidence_links.clone(),
         };
         let language = crate::language::detect(prompt).slug();
         let mut solve_sub_task = |text: &str| {
@@ -246,6 +247,7 @@ impl crate::solver::UniversalSolver {
             answer.intent.clone_from(&composed.intent);
             answer.answer.clone_from(&composed.content);
             answer.confidence = composed.confidence;
+            answer.evidence_links.clone_from(&composed.evidence);
         }
     }
 }

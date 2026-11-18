@@ -18,17 +18,17 @@ translation_blockers
   blockers_per_item 2 271
   blockers_per_item 3 304
   blockers_per_item 4 222
-  blockers_per_item 5 213
+  blockers_per_item 5 212
   blockers_per_item 6 146
-  blockers_per_item 7 113
+  blockers_per_item 7 114
   blockers_per_item 8 88
   blockers_per_item 9 91
   blockers_per_item 10 63
   blockers_per_item 11 45
-  blockers_per_item 12 38
+  blockers_per_item 12 37
   blockers_per_item 13 24
   blockers_per_item 14 32
-  blockers_per_item 15 20
+  blockers_per_item 15 21
   blockers_per_item 16 17
   blockers_per_item 17 11
   blockers_per_item 18 8
@@ -57,7 +57,7 @@ construct "arrow function" items 385 only 2
 construct "import of names its module carries" items 358 only 358
 construct "method call .push()" items 300 only 4
 construct "method call .map()" items 299 only 0
-construct "method call .slice()" items 288 only 6
+construct "method call .slice()" items 289 only 6
 construct "method call .filter()" items 266 only 0
 construct "JSDoc type {…}" items 261 only 5
 construct "arrow callback of .map()" items 253 only 0
@@ -80,7 +80,7 @@ construct "Array.from" items 126 only 0
 construct "method call .test()" items 126 only 0
 construct "global call String()" items 124 only 0
 construct "method call .sort()" items 102 only 0
-construct "new Set" items 98 only 35
+construct "new Set" items 99 only 35
 construct "method call .has()" items 97 only 0
 construct "optional chaining" items 95 only 0
 construct "method call .replace()" items 84 only 0
@@ -93,16 +93,16 @@ construct "new Map" items 67 only 5
 construct "arrow callback of .every()" items 63 only 0
 construct "method call .set()" items 62 only 0
 construct "try statement" items 60 only 0
-construct "method call .flatMap()" items 54 only 0
+construct "method call .flatMap()" items 55 only 0
 construct "object spread" items 50 only 0
-construct "arrow callback of .flatMap()" items 45 only 0
+construct "arrow callback of .flatMap()" items 46 only 0
 construct "global value Boolean" items 44 only 0
 construct "Object.freeze" items 41 only 0
 construct "arrow callback of .reduce()" items 39 only 0
 construct "method call .reduce()" items 39 only 0
 construct "let without a value" items 35 only 0
+construct "Array.isArray" items 32 only 0
 construct "method call .pop()" items 32 only 0
-construct "Array.isArray" items 31 only 0
 construct "method call .encode()" items 29 only 0
 construct "method call .forEach()" items 27 only 0
 construct "arrow callback of .forEach()" items 26 only 0
@@ -404,11 +404,11 @@ unlock 14 "method call .push()" unlocked 34 cumulative 1075
 unlock 15 "method call .slice()" unlocked 36 cumulative 1111
 unlock 16 "method call .test()" unlocked 34 cumulative 1145
 unlock 17 "nullish coalescing" unlocked 29 cumulative 1174
-unlock 18 "global call String()" unlocked 28 cumulative 1202
-unlock 19 "method call .replace()" unlocked 28 cumulative 1230
-unlock 20 "method call .indexOf()" unlocked 29 cumulative 1259
-unlock 21 "undefined" unlocked 26 cumulative 1285
-unlock 22 "method call .join()" unlocked 24 cumulative 1309
-unlock 23 "Array.from" unlocked 28 cumulative 1337
-unlock 24 "destructuring" unlocked 20 cumulative 1357
-unlock 25 "assignment of a field or element" unlocked 31 cumulative 1388
+unlock 18 "method call .indexOf()" unlocked 28 cumulative 1202
+unlock 19 "global call String()" unlocked 27 cumulative 1229
+unlock 20 "method call .replace()" unlocked 29 cumulative 1258
+unlock 21 "undefined" unlocked 26 cumulative 1284
+unlock 22 "method call .join()" unlocked 24 cumulative 1308
+unlock 23 "Array.from" unlocked 28 cumulative 1336
+unlock 24 "destructuring" unlocked 20 cumulative 1356
+unlock 25 "assignment of a field or element" unlocked 31 cumulative 1387

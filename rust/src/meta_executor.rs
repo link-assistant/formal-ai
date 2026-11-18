@@ -397,6 +397,8 @@ pub struct Draft {
     pub intent: String,
     pub content: String,
     pub confidence: f32,
+    /// Evidence belonging to this draft, retained when selected or composed.
+    pub evidence: Vec<String>,
 }
 
 /// The verdict of a task test on one candidate.
@@ -500,6 +502,7 @@ pub fn answer_validation(intent: &str, content: &str) -> String {
         intent: intent.to_owned(),
         content: content.to_owned(),
         confidence: 0.0,
+        evidence: Vec::new(),
     };
     let verdict = run_task_test(&test, Some(&draft), &[]);
     format!(
@@ -553,6 +556,13 @@ fn compose(node: &TaskNode, test: &TaskTest, child_outcomes: &[TaskOutcome]) -> 
         .fold(f32::INFINITY, f32::min);
     let steps = rule_number("composition-cost")
         + chosen.iter().map(|candidate| candidate.steps).sum::<u32>();
+    let mut seen = BTreeSet::new();
+    let evidence = chosen
+        .iter()
+        .flat_map(|candidate| candidate.draft.evidence.iter())
+        .filter(|entry| seen.insert(entry.as_str()))
+        .cloned()
+        .collect();
     Some(Candidate {
         method: "composition",
         draft: Draft {
@@ -562,6 +572,7 @@ fn compose(node: &TaskNode, test: &TaskTest, child_outcomes: &[TaskOutcome]) -> 
             ),
             content,
             confidence,
+            evidence,
         },
         steps,
         code_units: 0,

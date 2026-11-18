@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=783972598de9f153c1efa1dd08a28fb3bcc2457164d2eafd79308e9599be67bd bytes=21775
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=b7ca29779b965dedc7a050d125dd7233244fbffdb0e247569d19d19a4bc161ca bytes=21987
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=5
 
@@ -122,11 +122,11 @@ pub static META_EXEC_EVENT_KINDS: std::sync::LazyLock<Vec<String>> = std::sync::
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .filter()
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | arrow callback of .reduce() | call of a sibling function | field access | method call .filter() | method call .join() | method call .map() | method call .reduce() | null | nullish coalescing | object without a $ tag
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .flatMap() | arrow callback of .map() | arrow callback of .reduce() | call of a sibling function | field access | method call .filter() | method call .flatMap() | method call .join() | method call .map() | method call .reduce() | new Set | null | nullish coalescing | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal null
-// formal-ai:blockers field access | global call String() | null | nullish coalescing | object without a $ tag
+// formal-ai:blockers Array.isArray | field access | global call String() | method call .slice() | null | nullish coalescing | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal nullish coalescing

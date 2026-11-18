@@ -50,6 +50,7 @@ fn draft_of(row: &Value) -> Option<Draft> {
         intent: field(row, "intent").to_owned(),
         content: field(row, "content").to_owned(),
         confidence: row["confidence"].as_f64().map_or(0.0, |value| value as f32),
+        evidence: row.get("evidence").map_or_else(Vec::new, strings),
     })
 }
 
@@ -149,12 +150,14 @@ fn production_composition_preserves_concrete_output_obligations() {
             intent: intent.to_owned(),
             content: "Source unavailable".to_owned(),
             confidence: 0.0,
+            evidence: Vec::new(),
         };
         let mut child = |_: &str| {
             Some(Draft {
                 intent: "read_file".to_owned(),
                 content: "A reading tool is needed".to_owned(),
                 confidence: 1.0,
+                evidence: Vec::new(),
             })
         };
         let run = formal_ai::meta_executor::solve_answer(
@@ -186,6 +189,7 @@ fn production_composition_still_solves_untyped_independent_tasks() {
             intent: "answered".to_owned(),
             content: text.to_owned(),
             confidence: 1.0,
+            evidence: Vec::new(),
         })
     };
     let run = formal_ai::meta_executor::solve_answer(
@@ -197,6 +201,7 @@ fn production_composition_still_solves_untyped_independent_tasks() {
             intent: "unknown".to_owned(),
             content: String::new(),
             confidence: 0.0,
+            evidence: Vec::new(),
         },
         &mut child,
         &RunOptions::default(),
@@ -224,5 +229,49 @@ fn validated_prime_candidates_keep_their_intent_in_every_response_language() {
         let answer = solver.solve(prompt);
         assert_eq!(answer.answer, expected, "{prompt}");
         assert_eq!(answer.intent, "number_property_prime", "{prompt}");
+    }
+}
+
+#[test]
+fn production_composition_retains_only_selected_child_evidence() {
+    for (connective, expected) in [
+        (
+            "and",
+            vec!["source:first", "source:shared", "source:second"],
+        ),
+        ("or", vec!["source:first", "source:shared"]),
+    ] {
+        let mut child = |text: &str| {
+            let source = if text == "First task" {
+                "source:first"
+            } else {
+                "source:second"
+            };
+            Some(Draft {
+                intent: "answered".to_owned(),
+                content: text.to_owned(),
+                confidence: 1.0,
+                evidence: vec![source.to_owned(), "source:shared".to_owned()],
+            })
+        };
+        let prompt = format!("First task {connective} second task");
+        let run = formal_ai::meta_executor::solve_answer(
+            Request {
+                text: &prompt,
+                language: "en",
+            },
+            Draft {
+                intent: "unknown".to_owned(),
+                content: String::new(),
+                confidence: 0.0,
+                evidence: vec!["source:unselected-root".to_owned()],
+            },
+            &mut child,
+            &RunOptions::default(),
+        )
+        .expect("outer production turn");
+        let composed =
+            formal_ai::meta_executor::adopted_composition(&run).expect("composition selected");
+        assert_eq!(composed.evidence, expected, "{connective}");
     }
 }

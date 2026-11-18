@@ -159,3 +159,48 @@ test('unverified drafts cannot satisfy a leaf test or complete an all-required p
     assert.equal(run.outcome.status, intent.endsWith('_unverified') ? 'unresolved' : 'resolved', intent);
   }
 });
+
+test('selected children retain their evidence through composition, caching and answer adoption', async () => {
+  const shared = 'source:shared';
+  const first = { intent: 'answered', content: 'First result', confidence: 0.9,
+    evidence: ['source:first', shared] };
+  const second = { intent: 'answered', content: 'Second result', confidence: 0.8,
+    evidence: ['source:second', shared] };
+  const root = { intent: 'unknown', content: '', confidence: 0,
+    evidence: ['source:unselected-root'] };
+  const before = JSON.stringify([root, first, second]);
+  const solve = async (text) => text === 'First task' ? first : second;
+  const result = await executor.solveAnswer({ text: 'First task and second task', language: 'en' }, root, solve);
+  assert.equal(result.run.outcome.candidate.method, 'composition');
+  assert.deepEqual(result.run.outcome.candidate.evidence, ['source:first', shared, 'source:second']);
+  assert.deepEqual(result.answer.evidence, ['source:first', shared, 'source:second']);
+  const remembered = await executor.executeProcedure({ text: 'First task and second task', language: 'en' }, {
+    draft: async () => null,
+    cached: async (text) => text.includes(' and ') ? result.run.outcome.candidate : null,
+  }, { bounds: { depth: 0 } });
+  assert.equal(remembered.outcome.candidate.method, 'cache');
+  assert.deepEqual(remembered.outcome.candidate.evidence, result.answer.evidence);
+  assert.deepEqual(remembered.outcome.candidate.source.evidence, result.answer.evidence);
+  assert.equal(JSON.stringify([root, first, second]), before, 'never mutate host evidence');
+});
+
+test('alternative composition keeps only the selected child evidence', async () => {
+  const result = await executor.solveAnswer({ text: 'First task or second task', language: 'en' },
+    { intent: 'unknown', content: '', confidence: 0, evidence: ['source:root'] },
+    async (text) => ({ intent: 'answered', content: text, confidence: 1, evidence: ['source:' + text] }));
+  assert.equal(result.run.outcome.candidate.method, 'composition');
+  assert.equal(result.answer.content, 'First task');
+  assert.deepEqual(result.answer.evidence, ['source:First task']);
+});
+
+test('a direct answer retains its evidence and rejected children cannot supply adopted provenance', async () => {
+  const direct = { intent: 'answered', content: 'Complete root', confidence: 1, evidence: ['source:root'] };
+  const result = await executor.solveAnswer({ text: 'First task and second task', language: 'en' }, direct,
+    async () => ({ intent: 'unknown', content: '', confidence: 0, evidence: ['source:rejected'] }));
+  assert.equal(result.run.outcome.status, 'unresolved');
+  assert.deepEqual(result.answer.evidence, direct.evidence);
+  const atomic = await executor.solveAnswer({ text: 'Atomic request', language: 'en' }, direct, async () => null);
+  assert.equal(atomic.run.outcome.candidate.method, 'derivation');
+  assert.deepEqual(atomic.run.outcome.candidate.source.evidence, direct.evidence);
+  assert.deepEqual(atomic.answer.evidence, direct.evidence);
+});
