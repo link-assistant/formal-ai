@@ -50,3 +50,37 @@ test("the fallback pool stays available without injecting it into another langua
   const english = await host.run('unknownOpenersFor("en")');
   assert.ok(english.includes(opener));
 });
+
+
+test("a detected language outside the declared answer languages keeps the entire native unresolved body", { timeout: 15000 }, async () => {
+  const source = fs.readFileSync("rust/tests/unit/issue_706_any_language.rs", "utf8");
+  const region = source.slice(source.indexOf("fn a_language_without_localized_openers_reports_a_gap_not_english()"));
+  const prompts = [...region.matchAll(/\.answer\("([^"\n]+)"\)/gu)].map((match) => match[1]);
+  assert.equal(prompts.length, 2);
+  const literal = region.match(/answer\.answer,\s*("(?:[^"\\]|\\[\s\S])*")/u)[1];
+  const expected = JSON.parse(literal.replace(/\\\r?\n\s*/gu, ""));
+  const answer = await host.solve(prompts[1]);
+  assert.equal(answer.intent, "unknown");
+  assert.equal(answer.content, expected);
+  assert.ok(answer.rawSolverEvents.some((event) => event.kind === "reasoning:known" && event.payload.startsWith("language=es ")));
+  for (const source of ["link_memory", "public_knowledge_cache", "source_cache"]) {
+    assert.ok(answer.rawSolverEvents.some((event) => event.kind === "reasoning:gather_attempt" && event.payload === source + ":" + prompts[1].slice(0, -1)));
+    assert.ok(answer.rawSolverEvents.some((event) => event.kind === "reasoning:gather_result" && event.payload === source + ":miss"));
+  }
+});
+
+test("declared answer languages control the fallback independently of detection rules", async () => {
+  const result = await host.run(`(() => {
+    const original = AGENT_INFO.supported_languages;
+    try {
+      AGENT_INFO.supported_languages = '("en" "held-out")';
+      const supported = solverUnknownLanguage("a held-out request", "held-out", [], [], {});
+      AGENT_INFO.supported_languages = '("en")';
+      const unsupported = solverUnknownLanguage("a held-out request?", "held-out", [], [], { offline: true });
+      return { supported, unsupported };
+    } finally { AGENT_INFO.supported_languages = original; }
+  })()`);
+  assert.equal(result.supported, null);
+  assert.ok(result.unsupported?.events.some((event) => event.payload === "missing_answer_for:a held-out request"));
+  assert.ok(result.unsupported.events.some((event) => event.payload === "allowed_external_api:skipped_offline"));
+});
