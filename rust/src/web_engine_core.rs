@@ -362,14 +362,9 @@ pub fn unknown_opener_sentence_separators() -> Vec<&'static str> {
     with_opener_registry(|registry| registry.sentence_separators.clone())
 }
 
-/// Pick an opener only when the seed declares a pool in the requested language.
-/// An empty result leaves the localized unknown answer intact.
+/// Pick the deterministic unknown-answer opener for a prompt/language pair.
 #[must_use]
 pub fn select_unknown_opener(prompt: &str, language: &str) -> &'static str {
-    if !with_opener_registry(|registry| registry.pools.iter().any(|pool| pool.language == language))
-    {
-        return "";
-    }
     let pool = unknown_openers_for(language);
     debug_assert!(!pool.is_empty(), "unknown opener pool must be non-empty");
     let trimmed = prompt.trim();
