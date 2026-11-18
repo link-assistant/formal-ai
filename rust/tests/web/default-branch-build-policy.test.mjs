@@ -66,7 +66,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
   assert.equal(others.length, 0);
   const runs = check.steps.map(step => step.run).filter(Boolean);
   assert.deepEqual(runs.filter(run => !run.startsWith('echo ')), ['bash scripts/ci-clippy-profile.sh --library-and-binaries',
-    'cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast --test calendar_currency --test openai_forced_functions --test meta_executor_parity --test synthesis_contracts --test cnl_output --test cnl_parity --test unknown_reasoning --test data_files --test scheduling_contracts --test operational_contracts -- --test-threads=1',
+    'cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast --test calendar_currency --test openai_forced_functions --test meta_executor_parity --test synthesis_contracts --test cnl_output --test cnl_parity --test unknown_reasoning --test data_files --test scheduling_contracts --test operational_contracts --test reasoning_contracts -- --test-threads=1',
     'regression_status=0\n' +
     'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_unknown_reasoning::tests:: -- --test-threads=1 || regression_status=$?\n' +
     'cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1 || regression_status=$?\n' +
@@ -650,4 +650,20 @@ test('native sparse checkout retains nested shell inputs without experiment payl
     for (const path of paths.slice(0, 6)) assert(existsSync(join(directory, path)), path);
     for (const path of paths.slice(6)) assert(!existsSync(join(directory, path)), path);
   } finally { rmSync(directory, {recursive:true, force:true}); }
+});
+
+
+test('the complete reasoning-loop and interpretation contracts execute in the focused native lane', {timeout:15000}, () => {
+  for (const path of ['rust/tests/unit/reasoning_contracts.rs',
+    'rust/tests/unit/specification/reasoning_loop.rs', 'rust/tests/unit/specification/formalization.rs'])
+    assert.equal(admission([path])['native-type-check'], true, path);
+  for (const path of ['rust/tests/unit/specification/unrelated.rs', 'rust/tests/fixtures/unrelated.json'])
+    assert.equal(admission([path])['native-type-check'], false, path);
+  const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps.find(step => step.name === 'Verify isolated native behavior regressions');
+  assert.match(step.run, /--test reasoning_contracts(?: |$)/u);
+  assert.match(step.run, /--no-fail-fast/u);
+  assert.match(read('rust/Cargo.toml'), /name = "reasoning_contracts"\npath = "tests\/unit\/reasoning_contracts[.]rs"/u);
+  const source = read('rust/tests/unit/reasoning_contracts.rs');
+  for (const path of ['specification/reasoning_loop.rs', 'specification/formalization.rs'])
+    assert(source.includes('#[path = "' + path + '"]'), path);
 });

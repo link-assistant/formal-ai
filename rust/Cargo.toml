@@ -180,6 +180,10 @@ name = "operational_contracts"
 path = "tests/unit/operational_contracts.rs"
 
 [[test]]
+name = "reasoning_contracts"
+path = "tests/unit/reasoning_contracts.rs"
+
+[[test]]
 name = "integration"
 path = "tests/integration/mod.rs"
 

@@ -76,7 +76,7 @@ jobs:
         env:
           CARGO_BUILD_JOBS: '2'
           CARGO_PROFILE_TEST_OPT_LEVEL: '0'
-        run: cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast --test calendar_currency --test openai_forced_functions --test meta_executor_parity --test synthesis_contracts --test cnl_output --test cnl_parity --test unknown_reasoning --test data_files --test scheduling_contracts --test operational_contracts -- --test-threads=1
+        run: cargo test --manifest-path rust/Cargo.toml --locked --no-fail-fast --test calendar_currency --test openai_forced_functions --test meta_executor_parity --test synthesis_contracts --test cnl_output --test cnl_parity --test unknown_reasoning --test data_files --test scheduling_contracts --test operational_contracts --test reasoning_contracts -- --test-threads=1
       - name: Verify native unresolved-language source binding
         if: ${{ !cancelled() && inputs.compile-inputs-changed && steps.native-lint.outcome == 'success' }}
         env:
