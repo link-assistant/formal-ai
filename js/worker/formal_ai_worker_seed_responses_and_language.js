@@ -237,6 +237,8 @@ function unknownOpenersFor(language) {
 }
 
 function selectUnknownOpener(prompt, language) {
+  // Keep the localized seed intact when only a different language's pool exists.
+  if (!unknownOpenerRegistry().pools.some((pool) => pool.language === language)) return "";
   const fromWasm = wasmSelectUnknownOpener(prompt, language);
   if (fromWasm) return fromWasm;
   const pool = unknownOpenersFor(language);

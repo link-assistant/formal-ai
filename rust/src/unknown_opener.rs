@@ -20,6 +20,9 @@ use crate::web_engine_core::{
 /// the structured teaching instructions remain identical across variations.
 fn unknown_answer_with_variation(prompt: &str, language: &str, seed_text: &str) -> String {
     let opener = select_unknown_opener(prompt, language);
+    if opener.is_empty() {
+        return seed_text.to_owned();
+    }
     let body = strip_leading_opener(seed_text, &unknown_openers_for(language));
     if body.is_empty() {
         return String::from(opener);
@@ -80,4 +83,16 @@ pub fn language_aware_unknown_answer(prompt: &str, language: Language) -> String
         return String::from(unknown_language_fallback_answer());
     };
     unknown_answer_with_variation(prompt, slug, &seed_text)
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn a_language_without_an_opener_pool_keeps_its_complete_localized_seed() {
+        let seed = crate::seed::response_for("unknown", "es").expect("Spanish unknown seed");
+        assert_eq!(
+            super::language_aware_unknown_answer("probe", crate::Language::Spanish,),
+            seed,
+        );
+    }
 }

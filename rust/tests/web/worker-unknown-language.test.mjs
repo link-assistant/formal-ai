@@ -35,3 +35,18 @@ test("matching unverified local text is recorded without claiming a verified ans
   assert.ok(answer.events.some((event) => event.payload === "link_memory:no_verified_answer"));
   assert.ok(answer.events.some((event) => event.payload === "allowed_external_api:skipped_offline"));
 });
+
+test("a localized unknown answer keeps its full seed text without an opener pool", async () => {
+  const seed = await host.run('answerFor("unknown", "es")');
+  assert.ok(seed.startsWith("Todavía no sé"), seed);
+  const answer = await host.run('unknownAnswerWithVariation("¿Cómo funciona la fotosíntesis submarina de xyzzy?", "es")');
+  assert.equal(answer, seed);
+});
+
+test("the fallback pool stays available without injecting it into another language", async () => {
+  assert.deepEqual(await host.run('unknownOpenersFor("es")'), await host.run('unknownOpenersFor("en")'));
+  assert.equal(await host.run('selectUnknownOpener("¿Qué es xyzzy?", "es")'), "");
+  const opener = await host.run('selectUnknownOpener("a held-out unknown prompt", "en")');
+  const english = await host.run('unknownOpenersFor("en")');
+  assert.ok(english.includes(opener));
+});
