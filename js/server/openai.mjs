@@ -19,6 +19,7 @@ import { renderThinkingSteps } from './thinking.mjs';
 import { requestScope, runInRequestScope } from './standing-scope.mjs';
 import { projectServerAnswer, requestOutputTurn } from './cnl-output.mjs';
 import { formalizeRequest, contextualAnswer, composeRequestAnswer } from './request-context.mjs';
+import { outputObligation, projectStructuredOutput, structuredAnswerFromSource, structuredOutputRequested, structuredThinkingStep } from './structured-output.mjs';
 import { clientFunctionOutput, forcedFunction } from './client-functions.mjs';
 
 /** Seconds since the epoch, never 0 (`response_timestamp`). */
@@ -48,7 +49,8 @@ export function unsupportedModelResponse(model) {
 
 /** `chat_completion_from_symbolic`. */
 export function chatCompletionFromSymbolic(request, prompt, symbolic) {
-  symbolic = composeRequestAnswer(request.messages, symbolic);
+  const structured = structuredOutputRequested(request.response_format);
+  if (!structured) symbolic = composeRequestAnswer(request.messages, symbolic);
   const promptTokens = messageInputTokens(request.messages);
   const completionTokens = estimateTokens(symbolic.answer);
   const reasoning = renderThinkingSteps(symbolic.thinking_steps);
@@ -63,6 +65,7 @@ export function chatCompletionFromSymbolic(request, prompt, symbolic) {
       message: {
         role: 'assistant',
         content: symbolic.answer,
+        ...(structured && symbolic.intent === 'tool_call_refused' ? { refusal: symbolic.answer } : {}),
         tool_calls: [],
         thinking_steps: symbolic.thinking_steps,
         reasoning_content: reasoning,
@@ -114,6 +117,24 @@ export async function createChatCompletion(ctx, request, options = {}) {
     completion = await createUnprojectedChatCompletion(selected, planningRequest, options);
   }
   const choice = completion.choices[0];
+  const obligation = outputObligation(request.response_format, true);
+  if (obligation) {
+    completion.response_format = obligation.format;
+    if (choice?.finish_reason !== 'stop' || choice.message.tool_calls?.length) return completion;
+    const message = choice.message;
+    const result = await projectStructuredOutput(ctx, obligation, original.prompt, plainText(message.content), message.refusal);
+    message.content = result.content;
+    if (result.refusal) message.refusal = result.refusal;
+    const steps = [...(message.thinking_steps ?? [])];
+    steps.push(structuredThinkingStep(steps, result));
+    message.thinking_steps = steps;
+    completion.derivation_id = result.id;
+    completion.evidence_links = result.evidence;
+    delete completion.output_projection;
+    completion.usage.completion_tokens = estimateTokens(result.refusal ?? result.content);
+    completion.usage.total_tokens = completion.usage.prompt_tokens + completion.usage.completion_tokens;
+    return completion;
+  }
   if (choice?.finish_reason === 'stop' && typeof choice.message.content === 'string' && choice.message.content !== '') {
     const projected = await projectServerAnswer(selected, {answer:choice.message.content,
       output_projection:completion.output_projection}, turn.config, {
@@ -155,7 +176,8 @@ async function createUnprojectedChatCompletion(ctx, request, { forcedClientFunct
   if (outcome.kind === 'planned') return chatCompletionFromPlan(ctx, request, prompt, outcome.plan, responseTimestamp());
   const contextual = contextualAnswer(context);
   if (contextual) return chatCompletionFromSymbolic(request, prompt, contextual);
-  const symbolic = await solveWithMemory(ctx, prompt, history, { forcedResponseLanguage: context.language });
+  const symbolic = await structuredAnswerFromSource(ctx, request.response_format, true, prompt)
+    ?? await solveWithMemory(ctx, prompt, history, { forcedResponseLanguage: context.language });
   const reroute = await commandReroutePlan(ctx, request, symbolic);
   if (reroute) return chatCompletionFromPlan(ctx, request, prompt, reroute, responseTimestamp());
   logUnclassifiedTerminal(ctx,'symbolic_answer');
@@ -176,6 +198,11 @@ export function chatCompletionJson(completion) {
     })),
     usage: completion.usage,
   };
+  if (completion.response_format !== undefined) out.response_format = completion.response_format;
+  if (completion.derivation_id) {
+    out.derivation_id = completion.derivation_id;
+    out.evidence_links = completion.evidence_links;
+  }
   if (completion.output_projection) out.output_projection = completion.output_projection;
   if (completion.learning_trace) out.learning_trace = completion.learning_trace;
   return out;
@@ -219,7 +246,16 @@ export function chatCompletionSse(completion, includeUsage) {
       });
     });
   }
-  body += sseChunk({...base,...(completion.output_projection ? {output_projection:completion.output_projection} : {})}, { index: 0, delta: {}, finish_reason: choice ? choice.finish_reason : 'stop' });
+  const metadata = { ...base };
+  let delta = {};
+  if (completion.output_projection) metadata.output_projection = completion.output_projection;
+  if (completion.response_format !== undefined) metadata.response_format = completion.response_format;
+  if (completion.derivation_id) {
+    metadata.derivation_id = completion.derivation_id;
+    metadata.evidence_links = completion.evidence_links;
+    delta = { thinking_steps: choice.message.thinking_steps };
+  }
+  body += sseChunk(metadata, { index: 0, delta, finish_reason: choice ? choice.finish_reason : 'stop' });
   if (includeUsage) {
     const usage = sortedKeys({
       ...base,

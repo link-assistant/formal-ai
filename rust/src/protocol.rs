@@ -35,6 +35,8 @@ mod output;
 mod recording;
 mod request_context;
 mod responses_input;
+mod structured_output;
+mod structured_schema;
 mod tokens;
 pub(crate) use cnl::create_adapted_chat_completion;
 pub use cnl::create_chat_completion_with_solver_and_memory;
@@ -346,6 +348,8 @@ pub struct ResponsesRequest {
     pub input: Value,
     #[serde(default)]
     pub instructions: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub text: Option<Value>,
     #[serde(default)]
     pub temperature: Option<f32>,
     #[serde(default)]
@@ -387,6 +391,7 @@ impl ResponsesRequest {
             function_call: None,
             output_standard: None,
             lexical_density: None,
+            response_format: None,
             stream_options: None,
         }
     }
@@ -445,7 +450,10 @@ fn create_unprojected_chat_completion(
     // Standing requirements are injected into the solving context itself (as if
     // the user restated them), not appended after the fact.
     let mut symbolic_answer =
-        solve_with_standing_requirements(solver, &prompt, &history, memory_events);
+        structured_output::answer_from_source(request.response_format.as_ref(), true, &prompt)
+            .unwrap_or_else(|| {
+                solve_with_standing_requirements(solver, &prompt, &history, memory_events)
+            });
     if let Some(plan) = command_reroute_plan(request, solver.config.agent_mode, &symbolic_answer) {
         return chat_completion_from_plan(request, &prompt, plan, memory_events);
     }
@@ -690,6 +698,9 @@ fn chat_completion_from_plan(
             completion_tokens,
             total_tokens: prompt_tokens.saturating_add(completion_tokens),
         },
+        response_format: None,
+        derivation_identifier: None,
+        evidence_links: Vec::new(),
         output_projection: None,
         learning_trace: None,
     }
@@ -700,8 +711,12 @@ fn chat_completion_from_symbolic(
     prompt: &str,
     symbolic_answer: SymbolicAnswer,
 ) -> ChatCompletion {
-    let symbolic_answer =
-        request_context::RequestContext::new(&request.messages).compose(symbolic_answer);
+    let structured = structured_output::requested(request.response_format.as_ref());
+    let symbolic_answer = if structured {
+        symbolic_answer
+    } else {
+        request_context::RequestContext::new(&request.messages).compose(symbolic_answer)
+    };
     let model = resolved_request_model(request.model.as_deref());
     let prompt_tokens = message_input_tokens(&request.messages);
     let completion_tokens = estimate_tokens(&symbolic_answer.answer);
@@ -709,7 +724,10 @@ fn chat_completion_from_symbolic(
         crate::self_improvement::learning_trace_from_symbolic_answer(prompt, &symbolic_answer);
     let thinking_steps = symbolic_answer.thinking_steps;
     let reasoning = render_thinking_steps(&thinking_steps);
+    let refusal = (structured && symbolic_answer.intent == "tool_call_refused")
+        .then(|| symbolic_answer.answer.clone());
     let mut message = ChatMessage::assistant(symbolic_answer.answer);
+    message.refusal = refusal;
     message.thinking_steps = thinking_steps;
     message.reasoning_content.clone_from(&reasoning);
     message.reasoning = reasoning;
@@ -729,6 +747,9 @@ fn chat_completion_from_symbolic(
             completion_tokens,
             total_tokens: prompt_tokens.saturating_add(completion_tokens),
         },
+        response_format: None,
+        derivation_identifier: None,
+        evidence_links: Vec::new(),
         output_projection: None,
         learning_trace,
     }
@@ -749,6 +770,16 @@ pub fn create_response_with_solver(
 
 #[must_use]
 pub fn create_response_with_solver_and_memory(
+    request: &ResponsesRequest,
+    solver: &UniversalSolver,
+    memory_events: &[MemoryEvent],
+) -> ResponseObject {
+    let mut response = create_unstructured_response(request, solver, memory_events);
+    structured_output::project_response(request, &mut response);
+    response
+}
+
+fn create_unstructured_response(
     request: &ResponsesRequest,
     solver: &UniversalSolver,
     memory_events: &[MemoryEvent],
@@ -784,8 +815,11 @@ pub fn create_response_with_solver_and_memory(
     if let Some(answer) = context.answer() {
         return response_from_symbolic(request, &prompt, answer);
     }
-    let symbolic_answer =
-        solve_with_standing_requirements(solver, memory_prompt, &history, memory_events);
+    let format = request.text.as_ref().and_then(|text| text.get("format"));
+    let symbolic_answer = structured_output::answer_from_source(format, false, memory_prompt)
+        .unwrap_or_else(|| {
+            solve_with_standing_requirements(solver, memory_prompt, &history, memory_events)
+        });
     if let Some(plan) =
         command_reroute_plan(&chat_request, solver.config.agent_mode, &symbolic_answer)
     {
@@ -949,6 +983,7 @@ fn response_from_plan(
         },
         evidence_links,
         derivation_id: None,
+        text: None,
         thinking_steps: Vec::new(),
     }
 }

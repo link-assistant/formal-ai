@@ -114,6 +114,7 @@ fn first_agentic_call(messages: &[ChatMessage], tools: &[&str]) -> String {
         function_call: None,
         output_standard: None,
         lexical_density: None,
+        response_format: None,
         stream_options: None,
     };
     let solver = UniversalSolver::new(SolverConfig {
@@ -170,6 +171,7 @@ fn first_agentic_call_raw(messages: &[ChatMessage], tools: &[&str]) -> (String, 
         function_call: None,
         output_standard: None,
         lexical_density: None,
+        response_format: None,
         stream_options: None,
     };
     let solver = UniversalSolver::new(SolverConfig {

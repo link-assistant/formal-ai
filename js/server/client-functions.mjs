@@ -32,7 +32,7 @@ async function selectedFunctions(ctx, { tool_choice: choice, tools = [], functio
   });
 }
 
-function sentimentLabel(definition, name, field, prompt) {
+export function sentimentLabel(definition, name, field, prompt) {
   const labels = ['negative', 'neutral', 'positive'];
   if (!field.enum || field.enum.length < 2 || !field.enum.every(label => labels.includes(label))) return undefined;
   const description = normalizePrompt([definition.description, name, field.description].join(' '));

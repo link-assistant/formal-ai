@@ -27,6 +27,7 @@ fn chat_completion_round_trips_user_prompt_to_assistant_response() {
         function_call: None,
         output_standard: None,
         lexical_density: None,
+        response_format: None,
         stream_options: None,
     };
 
@@ -61,6 +62,7 @@ fn chat_completion_accepts_multipart_content() {
         function_call: None,
         output_standard: None,
         lexical_density: None,
+        response_format: None,
         stream_options: None,
     };
 
@@ -86,6 +88,7 @@ fn chat_completion_reports_token_usage() {
         function_call: None,
         output_standard: None,
         lexical_density: None,
+        response_format: None,
         stream_options: None,
     };
     let completion = create_chat_completion(&request);
@@ -109,6 +112,7 @@ fn chat_completion_includes_ordered_thinking_steps() {
         function_call: None,
         output_standard: None,
         lexical_density: None,
+        response_format: None,
         stream_options: None,
     };
 
@@ -137,6 +141,7 @@ fn chat_completion_includes_standard_reasoning_content() {
         function_call: None,
         output_standard: None,
         lexical_density: None,
+        response_format: None,
         stream_options: None,
     };
 
@@ -153,6 +158,7 @@ fn chat_completion_includes_standard_reasoning_content() {
 #[test]
 fn responses_endpoint_returns_completed_response() {
     let request = ResponsesRequest {
+        text: None,
         model: None,
         input: serde_json::Value::String(String::from("Hi")),
         instructions: None,
@@ -170,6 +176,7 @@ fn responses_endpoint_returns_completed_response() {
 #[test]
 fn responses_instructions_do_not_prefix_the_latest_user_turn() {
     let bare = ResponsesRequest {
+        text: None,
         input: serde_json::json!([{
             "role": "user",
             "content": [{"type": "input_text", "text": "hi"}]
@@ -177,6 +184,7 @@ fn responses_instructions_do_not_prefix_the_latest_user_turn() {
         ..ResponsesRequest::default()
     };
     let steered = ResponsesRequest {
+        text: None,
         instructions: Some(String::from(
             "You are a coding agent. Decompose requests into sub-tasks.",
         )),
@@ -193,6 +201,7 @@ fn responses_instructions_do_not_prefix_the_latest_user_turn() {
 #[test]
 fn responses_endpoint_includes_top_level_and_message_thinking_steps() {
     let request = ResponsesRequest {
+        text: None,
         model: None,
         input: serde_json::Value::String(String::from("Hi")),
         instructions: None,
@@ -216,6 +225,7 @@ fn responses_endpoint_includes_top_level_and_message_thinking_steps() {
 #[test]
 fn responses_endpoint_includes_standard_reasoning_output_item() {
     let request = ResponsesRequest {
+        text: None,
         model: None,
         input: serde_json::Value::String(String::from("Hi")),
         instructions: None,
@@ -753,6 +763,7 @@ fn chat_completion_supports_multi_turn_conversation() {
         function_call: None,
         output_standard: None,
         lexical_density: None,
+        response_format: None,
         stream_options: None,
     };
     let completion = create_chat_completion(&request);
@@ -785,6 +796,7 @@ fn chat_completion_applies_behavior_rule_from_prior_messages() {
         function_call: None,
         output_standard: None,
         lexical_density: None,
+        response_format: None,
         stream_options: None,
     };
 
@@ -933,6 +945,7 @@ fn rate_limit_metadata_is_exposed() {
 #[test]
 fn responses_api_attaches_trace_link() {
     let request = ResponsesRequest {
+        text: None,
         model: None,
         input: serde_json::Value::String(String::from("Hi")),
         instructions: None,

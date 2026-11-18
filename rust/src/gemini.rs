@@ -145,6 +145,7 @@ impl GeminiGenerateContentRequest {
             function_call: None,
             output_standard: None,
             lexical_density: None,
+            response_format: None,
             stream_options: None,
         }
     }

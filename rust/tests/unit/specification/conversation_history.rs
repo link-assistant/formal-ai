@@ -315,6 +315,7 @@ fn chat_completion_supports_natural_language_history_search() {
         function_call: None,
         output_standard: None,
         lexical_density: None,
+        response_format: None,
         stream_options: None,
     };
 

@@ -22,6 +22,33 @@ Primary protocol namespaces are OpenAI `/api/openai/v1`, Anthropic
 `/api/anthropic/v1`, Gemini `/api/gemini/v1beta`, and Vertex `/api/vertex/v1`.
 Legacy `/v1` aliases remain available.
 
+## OpenAI structured output
+
+`GET /v1/models` advertises the `json_schema` capability. To request a
+validated JSON object, send `response_format` on Chat Completions or
+`text.format` on Responses. The response echoes the selected format,
+including the `strict` value when supplied.
+
+| Endpoint | JSON schema | JSON object mode |
+| --- | --- | --- |
+| `POST /v1/chat/completions` | `response_format: {type: "json_schema", json_schema: {name, strict, schema}}` | `response_format: {type: "json_object"}` |
+| `POST /v1/responses` | `text.format: {type: "json_schema", name, strict, schema}` | `text.format: {type: "json_object"}` |
+
+The supported schema constraints include JSON types, required keys,
+`additionalProperties`, `enum`, `const`, arrays, local references, schema
+combinations, length and numeric bounds, and simple ASCII patterns.
+Formal AI validates both strict and non-strict requests. It can return a
+schema-allowed `null` or `"unknown"` for a missing required value.
+If the schema uses unsupported constraints or the result cannot be
+derived, Chat Completions returns `message.refusal` and Responses returns
+a `refusal` content item. Streaming clients receive the corresponding
+refusal delta or events.
+
+The `structured_output` thinking step contains the format and the validated
+value or refusal. When derivation capture is enabled, pass the locator from
+the `derivation_record:` evidence link to `formal-ai explain` to read the
+same data from the stored derivation.
+
 ## UTF-8 usage
 
 Usage counts Unicode characters consistently across protocol adapters. It does
