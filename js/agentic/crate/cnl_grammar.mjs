@@ -312,10 +312,10 @@ export function outputSentences(text) {
     while (index < characters.length) {
       const character = characters[index];
       index += 1;
-      if ('。！？'.includes(character) || ('.!?'.includes(character)
-        && (index === characters.length || /[\s.!?]/u.test(characters[index])))) {
-        while (index < characters.length && '.!?。！？'.includes(characters[index])) index += 1;
-        if (index === characters.length || /\s/u.test(characters[index]) || '。！？'.includes(character)) break;
+      if ('。！？।'.includes(character) || ('.!?'.includes(character)
+        && (index === characters.length || /[\s.!?।]/u.test(characters[index])))) {
+        while (index < characters.length && '.!?。！？।'.includes(characters[index])) index += 1;
+        if (index === characters.length || /\s/u.test(characters[index]) || '。！？।'.includes(character)) break;
       }
     }
     take('sentence', from);
@@ -371,7 +371,8 @@ export function builtinCheck(check, text, grammar, context) {
     return sentences.every(sentence => words(sentence).every(allowed));
   }
   case 'forbidden': {
-    if (grammar.id !== 'en') return undefined;
+    // Each language declares its own copula forms; without them the check stays open.
+    if (!grammar.copulaWords.size) return undefined;
     const tokens = sentences.flatMap(words);
     if (tokens.some(word => grammar.copulaWords.has(word) || /'(?:m|re)$/u.test(word))) return false;
     return parsed.every(readings => readingsAllowed(readings, check, grammar)) ? true : undefined;

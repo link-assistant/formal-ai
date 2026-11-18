@@ -298,14 +298,17 @@ export function validateOutput(text, language, configuration = {}, policy = cnlP
   const tokens = outputWords(text, language).map(word => word.toLowerCase());
   const standard = selected.lexical_density === 'standard';
   const maxWords = !standard && profile.densityMaxWords ? profile.densityMaxWords : profile.maxWords;
-  if (maxWords && text.split(/[.!?。！？]+/u).some(sentence => outputWords(sentence, language).length > maxWords)) {
+  if (maxWords && text.split(/[.!?。！？।]+/u).some(sentence => outputWords(sentence, language).length > maxWords)) {
     violations.push('sentence_length');
   }
   if (selected.output_standard === 'e-prime') {
-    if (language !== 'en') unchecked.push('e_prime_language');
+    // The profile lists the English forms of "to be"; every other language declares
+    // its own copula in its grammar file. A language without one stays unchecked.
+    const forbidden = new Set([...(language === 'en' ? profile.forbidden : []), ...(grammar?.copulaWords ?? [])]);
+    if (!forbidden.size) unchecked.push('e_prime_language');
     else {
       const words = tokens.map(word => word.replaceAll('’', "'"));
-      if (words.some(word => profile.forbidden.includes(word) || /'(?:m|re)$/u.test(word))) violations.push('forbidden_word');
+      if (words.some(word => forbidden.has(word) || /'(?:m|re)$/u.test(word))) violations.push('forbidden_word');
       if (words.some(word => word.endsWith("'s") || word === "ain't")) unchecked.push('e_prime_contraction');
     }
   }
