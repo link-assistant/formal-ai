@@ -1,0 +1,314 @@
+{
+  "observedAt": "2026-11-18T08:12:34.194246+00:00",
+  "head": "9095abcbcccdd5518ce2c9318d3ebc6eb8914fc8",
+  "runId": 44262999002,
+  "attempt": 2,
+  "conclusion": "failure",
+  "jobs": [
+    {
+      "id": 134665248683,
+      "name": "js tier (node --check over js, suite group 1)",
+      "conclusion": "failure",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "failure",
+          "number": 2
+        },
+        {
+          "name": "Report DRY review and language coverage",
+          "conclusion": "skipped",
+          "number": 3
+        },
+        {
+          "name": "Regenerate canonical seed projection for JavaScript consumers",
+          "conclusion": "skipped",
+          "number": 4
+        },
+        {
+          "name": "Syntax-check every committed js file",
+          "conclusion": "skipped",
+          "number": 5
+        },
+        {
+          "name": "Native diagnostics use the shared structured logger (R1220)",
+          "conclusion": "skipped",
+          "number": 6
+        },
+        {
+          "name": "Native-only handler rows only fall (R998)",
+          "conclusion": "skipped",
+          "number": 7
+        },
+        {
+          "name": "Syntax-check the JavaScript server and its parity runner (R1013)",
+          "conclusion": "skipped",
+          "number": 8
+        },
+        {
+          "name": "Natural-language literals in the worker and server only fall (R1010, R1013)",
+          "conclusion": "skipped",
+          "number": 9
+        },
+        {
+          "name": "Check out relative-meta-logic for the rml export step (R1186-4)",
+          "conclusion": "skipped",
+          "number": 10
+        },
+        {
+          "name": "Install rml and name it in RML_BIN (R1186-6)",
+          "conclusion": "skipped",
+          "number": 11
+        },
+        {
+          "name": "Setup the pinned web dependency installer",
+          "conclusion": "skipped",
+          "number": 12
+        },
+        {
+          "name": "Install actual locked UI test dependencies",
+          "conclusion": "skipped",
+          "number": 13
+        },
+        {
+          "name": "Install the isolated patched matcher test dependencies",
+          "conclusion": "skipped",
+          "number": 14
+        },
+        {
+          "name": "Provision the real agentic search adapter",
+          "conclusion": "skipped",
+          "number": 15
+        },
+        {
+          "name": "Provision the actual pinned source-model frontend",
+          "conclusion": "skipped",
+          "number": 16
+        },
+        {
+          "name": "Plan this shard of the JavaScript suites",
+          "conclusion": "skipped",
+          "number": 17
+        },
+        {
+          "name": "Set up Python for the pinned template observations",
+          "conclusion": "skipped",
+          "number": 18
+        },
+        {
+          "name": "Run the focused tests for the changed components first",
+          "conclusion": "skipped",
+          "number": 19
+        },
+        {
+          "name": "Run this shard of the JavaScript suites",
+          "conclusion": "skipped",
+          "number": 20
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success",
+          "number": 40
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success",
+          "number": 41
+        }
+      ],
+      "markers": [
+        {
+          "line": 124,
+          "text": "js tier (node --check over js, suite group 1)\tRun actions/checkout@v7\t2026-11-18T08:08:50.1338046Z ##[error]error: RPC failed; curl 28 Operation too slow. Less than 1024 bytes/sec transferred the last 20 seconds"
+        },
+        {
+          "line": 125,
+          "text": "js tier (node --check over js, suite group 1)\tRun actions/checkout@v7\t2026-11-18T08:08:50.1344660Z ##[error]fatal: protocol error: bad pack header"
+        },
+        {
+          "line": 126,
+          "text": "js tier (node --check over js, suite group 1)\tRun actions/checkout@v7\t2026-11-18T08:08:50.3069060Z ##[error]fatal: could not fetch 9df886c42a1e2082f1471383d986fea4d531f8ac from promisor remote"
+        },
+        {
+          "line": 155,
+          "text": "js tier (node --check over js, suite group 1)\tRun actions/checkout@v7\t2026-11-18T08:08:50.3871626Z ##[error]The process '/usr/bin/git' failed with exit code 128"
+        }
+      ],
+      "rawLog": "/tmp/issue-1580-research/ci-logs/executor-status-9095abcb/layered-attempt-2-job-134665248683.log"
+    },
+    {
+      "id": 134665249345,
+      "name": "js tier (node --check over js, suite group 2)",
+      "conclusion": "failure",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "conclusion": "failure",
+          "number": 2
+        },
+        {
+          "name": "Report DRY review and language coverage",
+          "conclusion": "skipped",
+          "number": 3
+        },
+        {
+          "name": "Regenerate canonical seed projection for JavaScript consumers",
+          "conclusion": "skipped",
+          "number": 4
+        },
+        {
+          "name": "Syntax-check every committed js file",
+          "conclusion": "skipped",
+          "number": 5
+        },
+        {
+          "name": "Native diagnostics use the shared structured logger (R1220)",
+          "conclusion": "skipped",
+          "number": 6
+        },
+        {
+          "name": "Native-only handler rows only fall (R998)",
+          "conclusion": "skipped",
+          "number": 7
+        },
+        {
+          "name": "Syntax-check the JavaScript server and its parity runner (R1013)",
+          "conclusion": "skipped",
+          "number": 8
+        },
+        {
+          "name": "Natural-language literals in the worker and server only fall (R1010, R1013)",
+          "conclusion": "skipped",
+          "number": 9
+        },
+        {
+          "name": "Check out relative-meta-logic for the rml export step (R1186-4)",
+          "conclusion": "skipped",
+          "number": 10
+        },
+        {
+          "name": "Install rml and name it in RML_BIN (R1186-6)",
+          "conclusion": "skipped",
+          "number": 11
+        },
+        {
+          "name": "Setup the pinned web dependency installer",
+          "conclusion": "skipped",
+          "number": 12
+        },
+        {
+          "name": "Install actual locked UI test dependencies",
+          "conclusion": "skipped",
+          "number": 13
+        },
+        {
+          "name": "Install the isolated patched matcher test dependencies",
+          "conclusion": "skipped",
+          "number": 14
+        },
+        {
+          "name": "Provision the real agentic search adapter",
+          "conclusion": "skipped",
+          "number": 15
+        },
+        {
+          "name": "Provision the actual pinned source-model frontend",
+          "conclusion": "skipped",
+          "number": 16
+        },
+        {
+          "name": "Plan this shard of the JavaScript suites",
+          "conclusion": "skipped",
+          "number": 17
+        },
+        {
+          "name": "Set up Python for the pinned template observations",
+          "conclusion": "skipped",
+          "number": 18
+        },
+        {
+          "name": "Run the focused tests for the changed components first",
+          "conclusion": "skipped",
+          "number": 19
+        },
+        {
+          "name": "Run this shard of the JavaScript suites",
+          "conclusion": "skipped",
+          "number": 20
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "conclusion": "success",
+          "number": 40
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success",
+          "number": 41
+        }
+      ],
+      "markers": [
+        {
+          "line": 124,
+          "text": "js tier (node --check over js, suite group 2)\tRun actions/checkout@v7\t2026-11-18T08:08:41.7138937Z ##[error]error: RPC failed; curl 28 Operation too slow. Less than 1024 bytes/sec transferred the last 20 seconds"
+        },
+        {
+          "line": 125,
+          "text": "js tier (node --check over js, suite group 2)\tRun actions/checkout@v7\t2026-11-18T08:08:41.7147402Z ##[error]fatal: protocol error: bad pack header"
+        },
+        {
+          "line": 126,
+          "text": "js tier (node --check over js, suite group 2)\tRun actions/checkout@v7\t2026-11-18T08:08:42.1706170Z ##[error]fatal: could not fetch 9df886c42a1e2082f1471383d986fea4d531f8ac from promisor remote"
+        },
+        {
+          "line": 155,
+          "text": "js tier (node --check over js, suite group 2)\tRun actions/checkout@v7\t2026-11-18T08:08:42.3030530Z ##[error]The process '/usr/bin/git' failed with exit code 128"
+        }
+      ],
+      "rawLog": "/tmp/issue-1580-research/ci-logs/executor-status-9095abcb/layered-attempt-2-job-134665249345.log"
+    }
+  ],
+  "archives": [
+    {
+      "archive": "layered-attempt-2.json.gz",
+      "rawBytes": 13279,
+      "rawLines": 1,
+      "rawSha256": "c3b86455c24a15c0187655ef1386afce2ec6a8e161f74565447fecea74f356f5",
+      "archiveSha256": "813a9c6a60686d30ccb87d7b1bb0345b8137a8d136c612981337dc5e2690f01e"
+    },
+    {
+      "archive": "layered-attempt-2-jobs.json.gz",
+      "rawBytes": 19726,
+      "rawLines": 1,
+      "rawSha256": "15c8286325a010dcfde5d99d8b72925b5a151ae5f47a47b495911d25587c41ad",
+      "archiveSha256": "513c728bcad465cb3ef48839b001bae7c79eb65c1ba83d5b5f1984d2d93e42b7"
+    },
+    {
+      "archive": "layered-attempt-2-job-134665248683.log.gz",
+      "rawBytes": 26978,
+      "rawLines": 171,
+      "rawSha256": "fa7256431a293022397d35b72b73e1338faf670b28e0e3ab8b8d966ff60cfff9",
+      "archiveSha256": "1a84fcd69ca4f25cf8eec91501f2995450df57d3cbf072aef9720e11c38f7e9e"
+    },
+    {
+      "archive": "layered-attempt-2-job-134665249345.log.gz",
+      "rawBytes": 26977,
+      "rawLines": 171,
+      "rawSha256": "604b500fe9f1e43103654e9238c0b4c1b5863dab121e397566ad39b1e6c94711",
+      "archiveSha256": "9725b66b490b54603c37cf716f414b9568ff5e29d8b77f9cc794072ce2c1fe05"
+    }
+  ],
+  "allFailedPayloadsLiterallyRead": false,
+  "causeEstablished": false,
+  "independentAuthorshipCredit": 0
+}

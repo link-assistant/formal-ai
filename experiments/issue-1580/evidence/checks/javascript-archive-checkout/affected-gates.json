@@ -1,0 +1,155 @@
+{
+  "completedAt": "2026-11-18T08:33:41.382636+00:00",
+  "commands": [
+    {
+      "name": "check-abbreviations",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations"
+      ],
+      "exitCode": 0,
+      "seconds": 5.08,
+      "log": "gate-01-check-abbreviations.log.gz",
+      "rawBytes": 67,
+      "rawLines": 3,
+      "rawSha256": "5802e687926493221d1bf51c5b89c99094d481a1e28a4177031710714eca71f2",
+      "archiveSha256": "85935dc31050f922c01876d88ada4fbf722635bf63981713dec67dba447ab2a4"
+    },
+    {
+      "name": "check-changelog-fragment-js-twin",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-changelog-fragment-js-twin"
+      ],
+      "exitCode": 0,
+      "seconds": 2.355,
+      "log": "gate-02-check-changelog-fragment-js-twin.log.gz",
+      "rawBytes": 80,
+      "rawLines": 3,
+      "rawSha256": "19e00e830e273a93f788186c1ffda8afedc470a0e7227db9e91a6db49b99531f",
+      "archiveSha256": "1b72c3827292677f5c5376ce2ea247f34174f5909beedcbf89687fdee3fb0088"
+    },
+    {
+      "name": "check-file-size-js-twin",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size-js-twin"
+      ],
+      "exitCode": 0,
+      "seconds": 6.168,
+      "log": "gate-03-check-file-size-js-twin.log.gz",
+      "rawBytes": 71,
+      "rawLines": 3,
+      "rawSha256": "54b3e928c7c03fb89e80de040a18d26dcf078053795116d7b6c86036c9e74db7",
+      "archiveSha256": "9d22941e1b03a6e250a0d106e1a899358c5f04ce3ac5160826b77e89e7982934"
+    },
+    {
+      "name": "check-file-size",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-file-size"
+      ],
+      "exitCode": 0,
+      "seconds": 4.647,
+      "log": "gate-04-check-file-size.log.gz",
+      "rawBytes": 63,
+      "rawLines": 3,
+      "rawSha256": "cbf1798b18a4e5c8280e260badbe98e100864615bd72ba5ca2af9f919c3bcc25",
+      "archiveSha256": "f15afa50bad4bc7882a52c18513ccf2106b38dc6152021fa33b2a97708fc6a90"
+    },
+    {
+      "name": "check-runner-labels",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-runner-labels"
+      ],
+      "exitCode": 0,
+      "seconds": 2.597,
+      "log": "gate-05-check-runner-labels.log.gz",
+      "rawBytes": 67,
+      "rawLines": 3,
+      "rawSha256": "c8a0bac1ff1617b80449319ca6833eb115efd1568e00710433357b5302c3be7f",
+      "archiveSha256": "c5a1e974c0c52f1c81df09cf813489d5dc84288f732de0d8798a7e3a119d2817"
+    },
+    {
+      "name": "check-readable-code",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-readable-code"
+      ],
+      "exitCode": 0,
+      "seconds": 14.486,
+      "log": "gate-06-check-readable-code.log.gz",
+      "rawBytes": 68,
+      "rawLines": 3,
+      "rawSha256": "75458310607c3fccd39320903c1e8c4560d89c745a8a44953b69eafbc1115ec4",
+      "archiveSha256": "9e8eccc4bc727a365211f4bce3e8ff84fb03645ec74e16ad984564bb33cba342"
+    },
+    {
+      "name": "check-tests-as-docs",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-tests-as-docs"
+      ],
+      "exitCode": 0,
+      "seconds": 9.358,
+      "log": "gate-07-check-tests-as-documentation.log.gz",
+      "rawBytes": 67,
+      "rawLines": 3,
+      "rawSha256": "e5458ee54c2110413f3b7f341c0dddc5b08450d1d0ed78c0c04d98401b760cd6",
+      "archiveSha256": "74eb91b1b08ab612abe73d01977c9ffba2d2deb4486c94776bbbd8e011b83925"
+    },
+    {
+      "name": "check-tests-as-documentation-javascript-twin",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-tests-as-documentation-javascript-twin"
+      ],
+      "exitCode": 0,
+      "seconds": 9.182,
+      "log": "gate-08-check-tests-as-documentation-javascript-twin.log.gz",
+      "rawBytes": 92,
+      "rawLines": 3,
+      "rawSha256": "0333e7f0edc9cb8004850b01f9caf267ba417497a81f2ed09b58410b31acb9be",
+      "archiveSha256": "45c6baf4828c833d82e006baa73cea11a0fd362ef7fbeb0699e848cc95993605"
+    },
+    {
+      "name": "whitespace-check",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "log": "whitespace-check.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "seconds": 62.479,
+  "memoryEventsAfter": "low 0\nhigh 0\nmax 148934\noom 0\noom_kill 0\noom_group_kill 0\n",
+  "independentAuthorshipCredit": 0
+}

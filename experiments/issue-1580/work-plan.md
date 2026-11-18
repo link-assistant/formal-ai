@@ -425,3 +425,14 @@ All 23 workflows on `a97832237cbb365000dd7296050984e4bdd59ebb` complete successf
 - [x] Add isolated native executor parity CI using the existing four-test module and all 29 shared cases, with complete event comparisons; preserve complete governed-object equality apart from four Cargo fixture identities. Native execution remains pending hosted CI.
 - [x] Pass 84 focused JavaScript tests, both fixture checks, Rust 2024 formatting and whitespace after integration. Preserve the full local run's 85 passes, 52 exclusions and one evidence-filename failure; correct only those two names and pass four affected gates without raising limits.
 - [ ] Publish this combined round once after a fresh main/feedback/run check, then collect and review every current-head CI result, including the new native target.
+
+
+## JavaScript checkout follow-up after 9095abcb
+
+- [x] Preserve the current 23 workflow results: 22 successful, Layered CI checkout unsuccessful on both groups in both attempts. Literally read both complete retry job logs; request no further identical retry.
+- [x] Verify actual hosted native execution: four executor tests covering all 29 shared cases and full events, calendar/currency, forced functions and two HTTP regressions pass on the current head.
+- [x] Reproduce archive over-selection before the checkout change (16/17), then pass the selection file (17/17) and all 88 tests in eight files against a real temporary selection. Preserve the local wrapper interruption separately, and verify every selected source digest remains unchanged.
+- [x] Pass all eight affected local gates plus the whitespace check; literally review each complete gate log.
+- [ ] Review and commit this complete checkout/evidence batch, then publish only after checking the latest head's failures, feedback, main ancestry and idle workflow state.
+- [ ] Review the new hosted checkout and every workflow result before claiming it passes. Input reduction is verified locally; the transport cause remains unproved.
+- [ ] Continue every previously unfinished issue requirement. The PR remains draft and unmerged; independent reasoning acceptance remains 0/20.

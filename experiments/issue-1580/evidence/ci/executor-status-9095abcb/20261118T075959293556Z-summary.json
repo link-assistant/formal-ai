@@ -1,0 +1,42 @@
+{
+  "observedAt": "20261118T075959293556Z",
+  "head": "9095abcbcccdd5518ce2c9318d3ebc6eb8914fc8",
+  "runCount": 23,
+  "completedSuccessful": 21,
+  "nonPassingCompleted": [
+    {
+      "id": 44262999002,
+      "name": "Layered CI",
+      "conclusion": "failure",
+      "createdAt": "2026-11-18T07:58:04Z",
+      "updatedAt": "2026-11-18T07:58:57Z"
+    }
+  ],
+  "active": [
+    {
+      "id": 44262999525,
+      "name": "CI/CD Pipeline",
+      "status": "in_progress"
+    }
+  ],
+  "archives": [
+    {
+      "archive": "20261118T075959293556Z-recent-runs.json.gz",
+      "rawSha256": "770e0335c7e252af11f573eb3f287b21a072b1322354132be20c3b85fc6c04be",
+      "archiveSha256": "abda51c4327e08ed4c55d7e9994bb7a9769d31c82b8c9c59508d0b26b881b726"
+    },
+    {
+      "archive": "20261118T075959293556Z-head-runs.json.gz",
+      "rawSha256": "61a684266e449ae7e9dd8033e15993cb12e2bbfc2b19fa89f8ffe0ac6164ff72",
+      "archiveSha256": "f8bc0b2e32f385faefb105c797a3279873ad4934de9476a230cc6a40c2bb6caf"
+    },
+    {
+      "archive": "20261118T075959293556Z-checks.json.gz",
+      "rawSha256": "9ccababc3458473a6c090a1e2c0e762413a66a81762747b6f01a4db1038c5cfb",
+      "archiveSha256": "5501c5049868377450bbf4a718245a24c1abd4e42cde13378e03169eeef65e98"
+    }
+  ],
+  "nativeExecutionVerified": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

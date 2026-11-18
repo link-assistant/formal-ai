@@ -105,3 +105,64 @@ failure followed by one successful unchanged-head failed-job retry. Preserve bot
 attempts; the Layered checkout is unchanged by this patch. These observations
 verify the published source checks, without proving a transport root cause or
 native runtime acceptance. See the [native evidence checkpoint](native-evidence-checkpoint.md).
+
+
+## JavaScript test checkout on 9095abcb
+
+All 23 workflows finish on published head
+`9095abcbcccdd5518ce2c9318d3ebc6eb8914fc8`: 22 pass. Layered CI run
+[44262999002](https://github.com/link-assistant/formal-ai/actions/runs/44262999002)
+fails in both JavaScript groups during checkout in attempt 1 and in a single
+unchanged-head failed-job retry, attempt 2. The complete 171-line retry job logs
+for jobs 134665248683 and 134665249345 are literally read. Lines 124–126 record
+curl 28 (1024 bytes/second for 20 seconds), a bad pack header and a missing
+promisor fetch; line 155 records exit 128. Tests never start. The two groups run
+in AWS us-west-2 and Azure eastus. These observations do not establish the
+server-side cause or total missing-blob pack size.
+
+The existing JavaScript selection includes approximately 631.7 MB of tracked
+blobs. Extend the fast source job's historical archive policy to the JavaScript
+test checkout, with explicit inclusions for the client transcripts, issue-982
+native-session log and issue-932 language logs that tests actually consume.
+Retain all measured source, every Cargo.lock, JSON session operands and the real
+nested-context learning report. The existing event ref, shallow blobless fetch,
+credential handling, 5-minute checkout cap, 12-minute job cap, 1024-byte/20-second
+low-speed policy and 360-second test budget remain intact.
+
+The new regression fails 16/17 before the workflow selection changes, precisely
+because historical archives remain selected, and passes 17/17 afterward.
+A temporary selection retains 23,313 files and 301,945,027 current working-tree
+bytes. All 88 tests across eight individually run JavaScript files pass in that
+selection, including actual compressed client and native-session operands and
+all seven language-verification logs. Every selected original file's SHA-256 is
+unchanged afterward. Peak child RSS is 390,252 KiB; cgroup OOM counters stay zero.
+The temporary hard links and isolated Git index are removed. The first foreground
+harness is interrupted by the local Formal AI 60-second command cap after three
+files pass; its incomplete records are preserved separately. The complete
+background harness finishes in 80.58 seconds. The 178-line combined log view is
+literally read in full. No native build or execution runs locally.
+
+All receipts and complete logs are under
+`experiments/issue-1580/evidence/checks/javascript-archive-checkout/`; exact-head
+workflow, job and failed attempt records are under
+`experiments/issue-1580/evidence/ci/executor-status-9095abcb/`.
+All eight affected local gates and the whitespace check pass; complete gate logs
+are literally read. The smaller selection is locally verified. A new hosted
+checkout is still required; working-tree size reduction alone does not prove
+transport causality.
+
+The current native workflow passes independently: job
+[134660858273](https://github.com/link-assistant/formal-ai/actions/runs/44262999525/job/134660858273)
+actually executes and passes four executor tests, one calendar/currency test and
+one forced-function test, followed by two native HTTP tests. The executor test
+replays all 29 shared cases and complete event sequences. Only log lines
+1605–1722 are claimed literally reviewed; the complete immutable log is retained.
+This verifies those named regressions, not the broad unfinished issue acceptance.
+Independent Formal AI reasoning acceptance remains 0/20.
+
+The final staged gate run catches the newly tracked abbreviated gate-log filename
+(91 names against the unchanged 90-name ceiling). Rename only that archive to
+`gate-07-check-tests-as-documentation.log.gz`, preserving compressed and raw bytes
+and the failed log. All three corrected staged gates pass. Preserve the literal
+review diff compressed, including its patch-context spaces, before the final
+whitespace check.

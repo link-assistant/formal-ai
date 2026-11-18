@@ -1,0 +1,9 @@
+{
+  "oldName": "gate-07-check-tests-as-docs.log.gz",
+  "newName": "gate-07-check-tests-as-documentation.log.gz",
+  "archiveSha256": "74eb91b1b08ab612abe73d01977c9ffba2d2deb4486c94776bbbd8e011b83925",
+  "rawSha256": "e5458ee54c2110413f3b7f341c0dddc5b08450d1d0ed78c0c04d98401b760cd6",
+  "bytesChanged": false,
+  "baselineChanged": false,
+  "independentAuthorshipCredit": 0
+}
