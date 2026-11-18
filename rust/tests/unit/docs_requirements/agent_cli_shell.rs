@@ -130,9 +130,31 @@ fn issue_607_shell_planner_and_serve_opt_in_are_traceable() {
         "rust/src/main.rs",
         &cli,
         &[
-            "agent_mode",
-            "FORMAL_AI_AGENT_MODE",
+            "mod cli_local_transport;",
+            "Command::Serve(args)",
+            "args.agent_mode()",
             "enable_http_agent_mode_for_current_process",
+        ],
+    );
+    // The extracted CLI arguments own --agent-mode; the shared configuration
+    // loader owns its environment equivalent. Keep both paths traceable.
+    let transport = read(root.join("rust/src/cli_local_transport.rs"));
+    assert_contains_all(
+        "rust/src/cli_local_transport.rs",
+        &transport,
+        &[
+            "pub struct ServeArgs",
+            "agent_mode: bool",
+            "pub const fn agent_mode",
+        ],
+    );
+    let configuration = read(root.join("rust/src/solver_helpers/mod.rs"));
+    assert_contains_all(
+        "rust/src/solver_helpers/mod.rs",
+        &configuration,
+        &[
+            "env_truthy(\"FORMAL_AI_AGENT_MODE\")",
+            "config.agent_mode = true",
         ],
     );
 }
