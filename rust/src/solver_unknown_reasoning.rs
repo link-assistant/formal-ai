@@ -529,7 +529,7 @@ fn cached_public_request_subject(prompt: &str) -> Option<String> {
     let lower = clean_focus(prompt).to_lowercase();
     PREFIXES
         .get_or_init(|| {
-            crate::solver_handlers::code_task_cue_phrases("concept_lookup", "cache_request_prefix")
+            crate::solver_handlers::code_task_cue_phrases("concept_lookup", "cache-request-prefix")
         })
         .iter()
         .find_map(|prefix| lower.strip_prefix(prefix.as_str()).map(str::to_owned))

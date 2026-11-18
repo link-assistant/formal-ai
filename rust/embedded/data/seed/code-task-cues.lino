@@ -306,7 +306,7 @@ map
 # arbitrary request containing "about" does not authorize a definition answer.
 cues
   intent concept_lookup
-    role cache_request_prefix
+    role cache-request-prefix
     phrase "use cached public knowledge about "
 cues
   intent concept_lookup
