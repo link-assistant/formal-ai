@@ -38,7 +38,7 @@ unchanged.
 | A07 | Every input style × every output standard and tier | `complianceMatrix` enumerates 5 languages × 68 graphs × 11 profiles × 7 densities = 26,180 projections. It also validates the whole candidate domain as an oracle. | 17,076 projections are feasible and compliant. The other 9,104 match the reviewed ledger exactly (test "compliance … matches the ledger"). |
 | A07 | Same internal graph for every input style | `utteranceGraphs` + `graphKey`. | *Inversion* and *dialogue*: one answer per question across all styles. |
 | A07 | free-form → Lino → dense → primes → cnl-default round trip | `languageProperties().roundTrip`. | Zero drift for all 64 fact graphs in all five languages. |
-| A07 | Rust and JS/WASM parity | Native grammar engine in `rust/src/cnl_output/grammar.rs` with the same seeds. The generated worker modules are the JS/WASM side. | `cnl-parity.test.mjs` regenerates every fixture from the JS engine. `rust/tests/unit/cnl_parity.rs` checks that the Rust engine reproduces the same projections and dialogue. |
+| A07 | Rust and JS/WASM parity | Native grammar engine in `rust/src/cnl_output/grammar.rs` with the same seeds. The generated worker modules are the JS/WASM side. | `cnl-parity.test.mjs` regenerates every fixture from the JS engine. `rust/tests/unit/cnl_parity.rs` checks that the Rust engine reproduces the same projections and dialogue. It is its own Cargo target, `cnl_parity`, which the PR native type-check job runs together with `cnl_output`. |
 
 ## Recorded limits
 

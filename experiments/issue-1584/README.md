@@ -99,7 +99,7 @@ timeout 600 node --test --test-concurrency=1 rust/tests/web/cnl-parity.test.mjs
 timeout 600 node --test --test-concurrency=1 rust/tests/web/cnl-solver-dialogue.test.mjs
 timeout 600 node --test --test-concurrency=1 rust/tests/web/cnl-output.test.mjs
 timeout 600 node --test --test-concurrency=1 rust/tests/web/cnl-output-http.test.mjs
-cargo test --manifest-path rust/Cargo.toml --test unit cnl_
+cargo test --manifest-path rust/Cargo.toml --test cnl_output --test cnl_parity
 ```
 
 Experiment scripts:

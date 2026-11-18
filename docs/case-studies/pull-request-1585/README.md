@@ -181,3 +181,13 @@ found these problems and fixed them:
   `controlled_dialogue_answers_retain_the_recursive_procedure_trace` in
   `rust/tests/unit/cnl_output.rs`. The Rust test also covers the "Use
   max-precision." switch.
+- **The native CNL tests did not run before merge.** By design, PR CI only
+  type-checks the library and binaries (`cargo clippy --lib --bins`). The full
+  Rust unit suite runs on main, and it cannot be compiled locally: the
+  `formal_ai` library is killed by the memory limit, even at opt-level 0. So
+  `cnl_output.rs` and `cnl_parity.rs` became their own Cargo test targets,
+  `cnl_output` and `cnl_parity`, like the `calendar_currency` target of issue
+  #1589. The PR native type-check job now runs them in its existing test step.
+  `default-branch-build-policy.test.mjs` pins the command, and the governed
+  witness was refreshed for the two changed registries (`rust/Cargo.toml` and
+  `rust/tests/unit/mod.rs`, eight fixture hashes and nothing else).

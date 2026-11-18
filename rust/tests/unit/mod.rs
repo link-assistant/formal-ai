@@ -41,8 +41,6 @@ mod candidate_solution_portfolios;
 mod ci_gates;
 mod claude_code_away_recap;
 mod cli_paths;
-mod cnl_output;
-mod cnl_parity;
 mod coding_discovery;
 mod coding_ladder_rungs;
 mod compatibility_research_evidence;
