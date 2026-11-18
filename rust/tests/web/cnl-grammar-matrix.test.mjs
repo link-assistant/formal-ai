@@ -9,47 +9,16 @@
 //   5. dialogue   - every phrasing of one question gets the same answer, ambiguity asks first.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {installHost} from '../../../js/agentic/host.mjs';
-import {parseLino, readRepoFile} from '../../../js/server/lino.mjs';
+import {readFileSync} from 'node:fs';
 import {
-  cnlPolicy, controlledDialogue, formalizeOutput, outputCandidates, outputLinksNotation, outputMeaning,
-  projectOutput, renderOutput, validateOutput,
+  controlledDialogue, formalizeOutput, outputLinksNotation, outputMeaning, renderOutput,
 } from '../../../js/agentic/crate/cnl_output.mjs';
 import {graphHolds, graphKey, realizeGraph, utteranceGraphs} from '../../../js/agentic/crate/cnl_grammar.mjs';
+import {
+  complianceMatrix, DENSITIES, dialogueGraphs, factGraphs, infeasibilityLedger, LEDGER_PATH, policy, profileViolations,
+} from './support/cnl-matrix.mjs';
 
-installHost({parseLino, readText: readRepoFile, realm: {}});
-const policy = cnlPolicy();
-const DENSITIES = ['standard', 'primes', 'top-100', 'top-200', 'top-500', 'top-1000', 'max-precision'];
 const answerable = policy.shared.frames.filter(frame => frame.answerable);
-
-/** Every fact, its converse and both polarities, as statements and questions. */
-function factGraphs() {
-  const graphs = new Map();
-  for (const fact of policy.shared.facts) {
-    const frame = policy.shared.frames.find(item => item.id === fact.frame);
-    for (const args of [fact.args, [...fact.args].reverse()]) {
-      for (const polarity of ['positive', 'negative']) {
-        for (const mood of ['statement', 'question']) {
-          const graph = {frame: frame.id, slots: Object.fromEntries(frame.slots.map((slot, index) => [slot, args[index]])),
-            polarity, mood};
-          graphs.set(graphKey(graph), graph);
-        }
-      }
-    }
-  }
-  return [...graphs.values()];
-}
-
-/** Dialogue frames that every output style must also realize. */
-function dialogueGraphs() {
-  return [
-    {frame: 'reply', slots: {}, polarity: 'positive', mood: 'statement'},
-    {frame: 'reply', slots: {}, polarity: 'negative', mood: 'statement'},
-    {frame: 'clarify', slots: {count: '2'}, polarity: 'positive', mood: 'statement'},
-    {frame: 'choose', slots: {}, polarity: 'positive', mood: 'request'},
-  ];
-}
-
 const grammars = Object.values(policy.grammars);
 const graphs = factGraphs();
 
@@ -106,35 +75,11 @@ test('inversion: every realization parses back to the graph it came from', () =>
 });
 
 // The oracle validates the whole search domain exhaustively, independently of
-// the projection's ordered search: if any candidate is compliant, the
-// projection must be compliant; if none is, the combination is infeasible and
-// the projection must still never break the named profile when some candidate
-// keeps it. Infeasible combinations are listed in the case study.
-const DENSITY_CHECKS = new Set(['non_prime', 'nsm_vocabulary', 'nsm_syntax', 'nsm_semantics',
-  'frequency_vocabulary', 'lexical_minimum']);
-const profileViolations = report => report.violations.filter(id => !DENSITY_CHECKS.has(id));
-
-export function complianceMatrix() {
-  const rows = [];
-  for (const grammar of grammars) {
-    for (const graph of [...graphs, ...dialogueGraphs()]) {
-      for (const profile of policy.profiles) {
-        for (const density of DENSITIES) {
-          const configuration = {output_standard: profile.id, lexical_density: density};
-          const text = projectOutput({language: grammar.id, source: '', parts: [{kind: 'graph', graph}]}, configuration);
-          const report = validateOutput(text, grammar.id, configuration);
-          const domain = outputCandidates(graph, grammar.id, configuration).map(candidate => validateOutput(candidate, grammar.id, configuration));
-          rows.push({language: grammar.id, graph: graphKey(graph), profile: profile.id, density, text, report,
-            back: utteranceGraphs(text, grammar).map(graphKey),
-            feasible: domain.some(item => item.compliant),
-            profileFeasible: domain.some(item => profileViolations(item).length === 0)});
-        }
-      }
-    }
-  }
-  return rows;
-}
-
+// the projection's ordered search: if any candidate is compliant, the projection
+// must be compliant; if none is, the combination is infeasible and the projection
+// must still keep the named profile whenever some candidate keeps it. Infeasible
+// combinations are not hidden behind a ratio: they must match the reviewed ledger
+// (regenerate with `node experiments/issue-1584/feasibility.mjs --write`).
 test('compliance: every feasible profile and density projection is compliant and keeps its graph', () => {
   const failures = [];
   const rows = complianceMatrix();
@@ -143,11 +88,12 @@ test('compliance: every feasible profile and density projection is compliant and
     if (row.back.length !== 1 || row.back[0] !== row.graph) failures.push(`${label} reads as ${row.back}`);
     if (row.feasible && !row.report.compliant) failures.push(`${label} ${JSON.stringify(row.report)}`);
     if (row.profileFeasible && profileViolations(row.report).length) failures.push(`${label} breaks the profile`);
+    if (!row.feasible && row.report.compliant) failures.push(`${label} is compliant outside the oracle domain`);
   }
   assert.deepEqual(failures.slice(0, 20), []);
-  // Most of the matrix must be feasible; the infeasible remainder is documented, not hidden.
-  const feasible = rows.filter(row => row.feasible).length;
-  assert.ok(feasible / rows.length > 0.8, `${feasible}/${rows.length}`);
+  assert.deepEqual(infeasibilityLedger(rows), JSON.parse(readFileSync(LEDGER_PATH, 'utf8')));
+  // Every named profile is satisfiable at standard density for every graph.
+  assert.deepEqual(rows.filter(row => row.density === 'standard' && !row.feasible).map(row => `${row.language} ${row.profile} ${row.graph}`), []);
 });
 
 test('round trip: free-form -> Links Notation -> dense -> primes -> cnl-default keeps every graph', () => {

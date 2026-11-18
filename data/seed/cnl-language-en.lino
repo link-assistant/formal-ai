@@ -81,7 +81,7 @@ cnl-language en
   list "ste: yes|no|not|every|each|type|part|must|have|has|need|needs|all|cat|cats|dog|dogs|animal|animals|plant|plants|tree|trees|leaf|leaves|hand|hands|finger|fingers|computer|computers|house|mouse|mice|account|accounts|password|passwords|question|possible|meaning|meanings|answer|with|number|you|want|choose|by|lack|lacks|class|form|belong|false|true"
   list "minimal: yes|no|every|each|must|have|has|need|needs|animal|animals|plant|plants|cat|cats|dog|dogs|house|mouse|mice|tree|trees|leaf|leaves|hand|hands|finger|fingers|computer|computers|account|accounts|password|passwords|everything|question|possible|meaning|meanings|answer|with|number|you|want|choose|by|lack|lacks|class|form|belong|false|true"
   list "basic: yes|no|not|every|kind|part|have|has|necessary|animal|animals|plant|plants|cat|cats|dog|dogs|tree|trees|leaf|leaves|hand|hands|finger|fingers|number|machine|machines|point|pointer|pointers|account|accounts|secret|word|words|i|know|everything|question|possible|sense|senses|give|mind|in|you|small|rat|family|of|the|a"
-  list "special: yes|no|not|every|kind|part|must|have|has|need|animal|animals|plant|plants|cat|cats|dog|dogs|tree|trees|leaf|leaves|hand|hands|finger|fingers|computer|computers|account|accounts|password|passwords|i|know|everything|question|possible|meaning|meanings|answer|with|number|you|want|choose|by|lack|lacks|class|form|belong|false|true"
+  list "special: small|that|lives|live|in|houses|house|control|controls|held|the|a|yes|no|not|every|kind|part|must|have|has|need|animal|animals|plant|plants|cat|cats|dog|dogs|tree|trees|leaf|leaves|hand|hands|finger|fingers|computer|computers|account|accounts|password|passwords|i|know|everything|question|possible|meaning|meanings|answer|with|number|you|want|choose|by|lack|lacks|class|form|belong|false|true"
   list "globish: yes|no|not|every|kind|part|must|have|has|need|animal|animals|plant|plants|cat|cats|dog|dogs|tree|trees|leaf|leaves|hand|hands|finger|fingers|computer|computers|house|mouse|mice|account|accounts|password|passwords|i|know|everything|question|possible|meaning|meanings|answer|with|number|you|want|choose|by|lack|lacks|class|form|belong|false|true"
   list "gellish: specialization|part|shall|have|require|requires|not|does|yes|no|cat|dog|animal|plant|tree|leaf|hand|finger|computer|house|mouse|account|password|question|has|possible|meaning|meanings|answer|with|number|you|want|choose|by|lack|lacks|class|form|belong"
   tier "100: the|of|and|a|to|in|is|you|that|it|he|was|for|on|are|as|with|his|they|i|at|be|this|have|from|or|one|had|by|word|but|not|what|all|were|we|when|your|can|said|there|use|an|each|which|she|do|how|their|if|will|up|other|about|out|many|then|them|these|so|some|her|would|make|like|him|into|time|has|look|two|more|write|go|see|number|no|way|could|people|my|than|first|been|call|who|its|now|find|long|down|day|did|get|come|made|may|part|yes|every|thing|things|does"
@@ -105,6 +105,7 @@ cnl-language en
     forms "mouse|a mouse|the mouse|mice"
     precise "house mouse|a house mouse|the house mouse|house mice"
     ste "house mouse|a house mouse|the house mouse|house mice"
+    special "small animal that lives in houses|a small animal that lives in houses|the small animal that lives in houses|small animals that live in houses"
     basic "small animal of the rat family|a small animal of the rat family|the small animal of the rat family|small animals of the rat family"
     primes "very small living thing that can move|a very small living thing that can move|the very small living thing that can move|very small living things that can move"
   term tree
@@ -127,6 +128,7 @@ cnl-language en
     forms "mouse|a mouse|the mouse|mice"
     precise "computer mouse|a computer mouse|the computer mouse|computer mice"
     ste "computer mouse|a computer mouse|the computer mouse|computer mice"
+    special "computer control held in the hand|a computer control held in the hand|the computer control held in the hand|computer controls held in the hand"
     basic "pointer|a pointer|the pointer|pointers"
     primes "small thing that people move to do something with words|a small thing that people move to do something with words|the small thing that people move to do something with words|small things that people move to do something with words"
   term account

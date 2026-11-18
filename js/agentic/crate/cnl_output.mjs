@@ -171,7 +171,9 @@ export function projectOutput(document, configuration = {}, policy = cnlPolicy()
 function candidatePairs(selected, grammar, policy) {
   const profile = policy.profiles.find(item => item.id === selected.output_standard);
   if (selected.lexical_density === 'max-precision') {
-    const registers = precisionRegisters(policy);
+    // The precise registers first, then the profile's own registers: a closed-vocabulary
+    // profile (Basic, Special) may need its own exact explication of a word it lacks.
+    const registers = [...new Set([...precisionRegisters(policy), ...profile.registers])];
     return [...profile.styles.flatMap(style => registers.map(register => [style, register])), ...precisionPairs(grammar, policy)];
   }
   const preferred = profile.styles.flatMap(style => profile.registers.map(register => [style, register]));
@@ -200,7 +202,7 @@ function precisionPairs(grammar, policy) {
 /**
  * The search domain of one configuration: every realization (all variants)
  * that reads back as exactly this graph, most preferred first. Max-precision
- * orders it by word count; its domain is the declared precise registers.
+ * orders it by word count; its domain is the declared precise registers plus the profile's own.
  */
 export function outputCandidates(graph, language, configuration = {}, policy = cnlPolicy()) {
   const selected = outputConfiguration(configuration, policy);

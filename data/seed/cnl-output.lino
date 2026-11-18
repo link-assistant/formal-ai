@@ -232,6 +232,8 @@ controlled-output
     kind frequency
   frame reply
     answer "true"
+    logic "answer(question, true)"
+    negative-logic "answer(question, false)"
   frame kind-of
     slots "subject|object"
     types "concept|concept"
@@ -259,7 +261,9 @@ controlled-output
   frame clarify
     slots "count"
     types "number"
+    logic "exactly {count} m (meaning(question, m))"
   frame choose
+    logic "request(exists m (meaning(question, m) and answer-with(number(m))))"
   frame sum
     slots "left|right"
     types "number|number"
