@@ -334,6 +334,7 @@ fn learned_amendment_changes_a_new_task_answer_without_repeating_requirement() {
         function_call: None,
         output_standard: None,
         lexical_density: None,
+        response_format: None,
         stream_options: None,
     };
     let completion = create_chat_completion_with_solver_and_memory(
@@ -347,6 +348,7 @@ fn learned_amendment_changes_a_new_task_answer_without_repeating_requirement() {
     assert!(answer.contains("LaTeX verification step"));
 
     let responses_request = ResponsesRequest {
+        text: None,
         input: serde_json::Value::String(String::from("latex: solve another recurrence proof")),
         ..ResponsesRequest::default()
     };

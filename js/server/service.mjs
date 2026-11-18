@@ -60,6 +60,7 @@ export function handleModels() {
   const context = capacityJson(capacity);
   const shared = {
     avg_utf8_bytes_per_char: capacity.avg_utf8_bytes_per_char,
+    capabilities: ['json_schema'],
     context,
     context_used_fraction: f64(capacity.context_used_fraction),
     context_used_tokens: capacity.context_used_tokens,

@@ -448,7 +448,6 @@ rust/src/self_improvement.rs	missing `{name}` in candidate
 rust/src/self_improvement.rs	rule verification did not pass: {status}
 rust/src/self_improvement.rs	substitution_rules\n  id \"learned_program_plan_rules\"\n  rule \"{rule_id}\"\n    order \"90\"\n    event \"learned\"\n    when \"request:modifier -> {modifier}\"\n    replace \"request:task -> {base_task}\"\n      with \"request:task -> {resolved_task}\"
 rust/src/self_source_links.rs	Projected {faithful}/{total} owned source modules losslessly through the meta-language links network ({permille}‰ round-trip coverage, {nodes} named AST nodes).
-rust/src/server.rs	data: [DONE]\n\n
 rust/src/server.rs	failed to persist memory: {error}
 rust/src/server.rs	failed to serialize response: {error}
 rust/src/server.rs	invalid chat request: {error}

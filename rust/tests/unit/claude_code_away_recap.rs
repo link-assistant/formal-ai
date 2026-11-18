@@ -300,6 +300,7 @@ fn an_empty_conversation_summary_never_becomes_a_web_search() {
         function_call: None,
         output_standard: None,
         lexical_density: None,
+        response_format: None,
         stream_options: None,
     };
 

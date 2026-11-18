@@ -135,6 +135,7 @@ export function parseChatRequest(body) {
   catch (error) { throw new RequestShapeError(error.message); }
   return {
     ...output,
+    response_format: object.response_format ?? null,
     model: optionalString(object, 'model'),
     messages: defaultArray(object, 'messages').map(parseChatMessage),
     temperature: optionalNumber(object, 'temperature'),

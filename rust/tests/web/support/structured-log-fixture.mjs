@@ -47,7 +47,7 @@ export async function waitFor(read,{timeout=2000}={}){
   throw Error('fixture_observation_timeout');
 }
 
-export async function startCli(t,{args=[],env={},binary}={}){
+export async function startCli(t,{args=[],env={},binary,lifetime=15_000}={}){
   const directory=fs.mkdtempSync(path.join(os.tmpdir(),'formal-ai-structured-cli-'));
   const home=path.join(directory,'home');
   const privateEnv={PATH:'',HOME:home,FORMAL_AI_DREAMING:'false',FORMAL_AI_RECORD_CHAT:'0'};
@@ -79,7 +79,7 @@ export async function startCli(t,{args=[],env={},binary}={}){
   const done=new Promise(resolve=>child.once('close',(status,why)=>{
     code=status;signal=why;closed=true;resolve();
   }));
-  const deadline=setTimeout(()=>child.kill('SIGKILL'),15_000);
+  const deadline=setTimeout(()=>child.kill('SIGKILL'),lifetime);
   deadline.unref();
   async function stop(){
     if(!closed)child.kill('SIGTERM');

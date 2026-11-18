@@ -81,7 +81,7 @@ fn selected_functions(request: &ChatCompletionRequest) -> Vec<(&str, &Value)> {
         .collect()
 }
 
-fn sentiment_label(
+pub(super) fn sentiment_label(
     definition: &Value,
     name: &str,
     field: &Value,
@@ -278,6 +278,9 @@ pub(super) fn client_function_completion(
             total_tokens: prompt_tokens.saturating_add(completion_tokens),
         },
         learning_trace: None,
+        response_format: None,
+        derivation_identifier: None,
+        evidence_links: Vec::new(),
         output_projection: None,
     })
 }
@@ -327,6 +330,7 @@ pub(super) fn client_function_response(
         },
         evidence_links: vec![],
         derivation_id: None,
+        text: None,
         thinking_steps: vec![],
     })
 }

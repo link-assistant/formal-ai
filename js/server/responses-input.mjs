@@ -22,6 +22,7 @@ const FAILED_STATUSES = ['failed', 'error', 'errored', 'cancelled', 'canceled'];
 export function parseResponsesRequest(body) {
   const object = parseJsonObject(body);
   return {
+    text: object.text ?? null,
     model: optionalString(object, 'model'),
     input: object.input === undefined ? null : object.input,
     instructions: optionalString(object, 'instructions'),
@@ -114,6 +115,7 @@ export function toChatCompletionRequest(request) {
   return {
     model: request.model,
     messages,
+    response_format: null,
     temperature: request.temperature,
     stream: false,
     tools: request.tools,

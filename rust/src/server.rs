@@ -8,7 +8,7 @@ use crate::anthropic::{
     create_anthropic_message_with_solver_and_memory,
 };
 use crate::context_capacity::ContextCapacity;
-use crate::engine::{knowledge_graph, render_thinking_steps};
+use crate::engine::knowledge_graph;
 use crate::gemini::{
     GeminiGenerateContentRequest, create_gemini_generate_content_response_with_solver_and_memory,
     gemini_model_list, gemini_model_metadata, gemini_response_sse, vertex_model_list,
@@ -17,7 +17,7 @@ use crate::mcp::handle_mcp_request;
 use crate::memory_sync::SyncStore;
 use crate::network_endpoint::{handle_links_query_request, handle_network_request};
 use crate::protocol::{
-    ChatCompletion, ChatCompletionRequest, ChatMessage, ResponsesRequest, chat_exchange_to_record,
+    ChatCompletionRequest, ChatMessage, ResponsesRequest, chat_exchange_to_record,
     chat_tool_executions, create_chat_completion_with_solver_and_memory,
     create_response_with_solver_and_memory, messages_exchange_to_record,
     responses_exchange_to_record,
@@ -30,6 +30,7 @@ use crate::standing_scope::{
 };
 use crate::telegram::handle_telegram_webhook;
 
+mod chat_stream;
 mod conversation_reports;
 mod debug_session;
 mod debug_stage;
@@ -40,6 +41,7 @@ mod transport;
 
 pub use crate::solver_config::enable_ephemeral_for_current_process;
 use crate::solver_config::ephemeral_enabled;
+use chat_stream::chat_completion_sse_response;
 pub use debug_session::{
     DEBUG_TOKEN_ENV, DebugSession, DebugToken, active_debug_session, debug_session_banner,
     debug_token_from_env, enable_debug_session, generate_debug_token, handle_debug_request,
@@ -498,6 +500,7 @@ fn handle_openai_models_request() -> ApiHttpResponse {
             "data": [{
                 "id": model_id,
                 "slug": model_id,
+                "capabilities": ["json_schema"],
                 "object": "model",
                 "owned_by": "link-assistant",
                 "context_window": context.context_window_tokens,
@@ -513,6 +516,7 @@ fn handle_openai_models_request() -> ApiHttpResponse {
                 "id": model_id,
                 "slug": model_id,
                 "name": model_id,
+                "capabilities": ["json_schema"],
                 "context_window": context.context_window_tokens,
                 "max_output_tokens": ADVERTISED_MAX_OUTPUT_TOKENS,
                 "context_window_tokens": context.context_window_tokens,
@@ -725,151 +729,6 @@ fn http_solver() -> UniversalSolver {
     }
     config.execution_surface = ExecutionSurface::HttpServer;
     UniversalSolver::new(config)
-}
-
-/// Serialise a completed [`ChatCompletion`] as an OpenAI-compatible
-/// `chat.completion.chunk` SSE stream.
-///
-/// The Vercel AI SDK's `@ai-sdk/openai-compatible` provider (and every other
-/// OpenAI-compatible streaming parser) expects incremental `chat.completion.chunk`
-/// events carrying `choices[].delta` — not a single `chat.completion` payload.
-/// Shipping the non-streaming shape "worked" for text (the SDK falls back to
-/// scraping content out of the raw SSE stream, which is where the CLI's
-/// *"AI SDK dropped token data"* warning comes from) but silently dropped
-/// `tool_calls`, so the agent CLI never actually invoked the tool the planner
-/// requested. Emit a `role` delta, one delta per tool call (full arguments in one
-/// frame), a final `finish_reason` chunk carrying any `output_projection`, an
-/// optional `stream_options.include_usage` chunk, and the `[DONE]` sentinel.
-fn chat_completion_sse_response(
-    completion: &ChatCompletion,
-    include_usage: bool,
-) -> ApiHttpResponse {
-    let mut body = String::new();
-    let mut base = json!({
-        "id": completion.id,
-        "object": "chat.completion.chunk",
-        "created": completion.created,
-        "model": completion.model,
-    });
-
-    let choice = completion.choices.first();
-
-    // Chunk 1: role delta.
-    let role_delta = json!({
-        "index": 0,
-        "delta": { "role": "assistant" },
-        "finish_reason": null,
-    });
-    body.push_str(&sse_chunk(&base, &role_delta));
-
-    // Chunk 2..N: reasoning, content, or tool_call deltas.
-    if let Some(choice) = choice {
-        let reasoning = if choice.message.reasoning_content.is_empty() {
-            render_thinking_steps(&choice.message.thinking_steps)
-        } else {
-            choice.message.reasoning_content.clone()
-        };
-        if !reasoning.is_empty() {
-            let delta = json!({
-                "index": 0,
-                "delta": {
-                    "reasoning_content": reasoning,
-                    "reasoning": reasoning,
-                },
-                "finish_reason": null,
-            });
-            body.push_str(&sse_chunk(&base, &delta));
-        }
-        let text = choice.message.content.plain_text();
-        if !text.is_empty() {
-            let delta = json!({
-                "index": 0,
-                "delta": { "content": text },
-                "finish_reason": null,
-            });
-            body.push_str(&sse_chunk(&base, &delta));
-        }
-        if let Some(refusal) = &choice.message.refusal {
-            let delta = json!({
-                "index": 0,
-                "delta": { "refusal": refusal },
-                "finish_reason": null,
-            });
-            body.push_str(&sse_chunk(&base, &delta));
-        }
-        for (index, call) in choice.message.tool_calls.iter().enumerate() {
-            let delta = json!({
-                "index": 0,
-                "delta": {
-                    "tool_calls": [{
-                        "index": index,
-                        "id": call.id,
-                        "type": call.kind,
-                        "function": {
-                            "name": call.function.name,
-                            "arguments": call.function.arguments,
-                        }
-                    }]
-                },
-                "finish_reason": null,
-            });
-            body.push_str(&sse_chunk(&base, &delta));
-        }
-    }
-
-    // Final chunk: finish_reason.
-    let finish_reason = choice.map_or_else(
-        || String::from("stop"),
-        |choice| choice.finish_reason.clone(),
-    );
-    let final_chunk = json!({
-        "index": 0,
-        "delta": {},
-        "finish_reason": finish_reason,
-    });
-    if let Some(projection) = &completion.output_projection {
-        base["output_projection"] = projection.clone();
-    }
-    body.push_str(&sse_chunk(&base, &final_chunk));
-
-    // Optional usage chunk — the AI SDK reads token counts from here when
-    // `stream_options.include_usage` is set (per OpenAI's spec).
-    if include_usage {
-        let usage_payload = json!({
-            "id": completion.id,
-            "object": "chat.completion.chunk",
-            "created": completion.created,
-            "model": completion.model,
-            "choices": [],
-            "usage": {
-                "prompt_tokens": completion.usage.prompt_tokens,
-                "completion_tokens": completion.usage.completion_tokens,
-                "total_tokens": completion.usage.total_tokens,
-            }
-        });
-        body.push_str("data: ");
-        body.push_str(&usage_payload.to_string());
-        body.push_str("\n\n");
-    }
-
-    body.push_str("data: [DONE]\n\n");
-
-    ApiHttpResponse {
-        status_code: 200,
-        content_type: "text/event-stream",
-        body,
-        deprecated: false,
-    }
-}
-
-/// Serialise a single OpenAI streaming chunk: merge `base` (id/object/created/model)
-/// with a `choices` entry and emit it as an SSE `data:` frame.
-fn sse_chunk(base: &Value, choice: &Value) -> String {
-    let mut merged = base.clone();
-    if let Value::Object(map) = &mut merged {
-        map.insert(String::from("choices"), Value::Array(vec![choice.clone()]));
-    }
-    format!("data: {merged}\n\n")
 }
 
 /// Translate an Anthropic Messages request (`POST /v1/messages`) so the `claude`

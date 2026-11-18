@@ -40,6 +40,7 @@ fn request(messages: Vec<ChatMessage>, tools: &[&str]) -> ChatCompletionRequest 
         function_call: None,
         output_standard: None,
         lexical_density: None,
+        response_format: None,
         stream_options: None,
     }
 }

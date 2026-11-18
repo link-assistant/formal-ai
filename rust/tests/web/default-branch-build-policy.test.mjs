@@ -69,16 +69,19 @@ test('the focused PR native check limits execution to lint and isolated regressi
     'cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test meta_executor_parity --test synthesis_contracts --test cnl_output --test cnl_parity -- --test-threads=1',
     'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_unknown_reasoning::tests:: -- --test-threads=1\n' +
     'cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1\n',
-    'node --test --test-concurrency=1 rust/tests/web/issue-1590-forced-functions.test.mjs']);
+    'node --test --test-concurrency=1 rust/tests/web/issue-1590-forced-functions.test.mjs',
+    'node --test --test-concurrency=1 rust/tests/web/issue-1586-structured-output.test.mjs']);
   assert.equal(called.on.workflow_call.inputs['compile-inputs-changed'].default, true);
-  for (const step of check.steps.filter(step => step.uses || ['Type-check and lint the library and binaries', 'Verify isolated native behavior regressions', 'Verify native unresolved-language source binding', 'Replay the forced function requests against the native CLI'].includes(step.name)))
+  for (const step of check.steps.filter(step => step.uses || ['Type-check and lint the library and binaries', 'Verify isolated native behavior regressions', 'Verify native unresolved-language source binding', 'Replay the forced function requests against the native CLI', 'Replay structured output and refusals against the native CLI'].includes(step.name)))
     assert.equal(step.if, '${{ inputs.compile-inputs-changed }}');
   assert.equal(check.steps[0].if, '${{ !inputs.compile-inputs-changed }}');
   assert.equal(workflow('release.yml').on.pull_request['paths-ignore'], undefined, 'required contexts must report for docs-only PRs');
   assert.deepEqual(check.steps.find(step => step.name === 'Verify isolated native behavior regressions').env,
     {CARGO_BUILD_JOBS: '2', CARGO_PROFILE_TEST_OPT_LEVEL: '0'});
-  assert.deepEqual(check.steps.find(step => step.name === 'Replay the forced function requests against the native CLI').env,
-    {FORMAL_AI_TEST_NATIVE_CLI: '${{ github.workspace }}/rust/target/debug/formal-ai'});
+  for (const command of runs.filter(command => command.startsWith('node --test '))) {
+    assert.deepEqual(check.steps.find(step => step.run === command).env,
+      {FORMAL_AI_TEST_NATIVE_CLI: '${{ github.workspace }}/rust/target/debug/formal-ai'});
+  }
   assert.deepEqual(check.steps.find(step => step.uses === 'dtolnay/rust-toolchain@stable').with, {components: 'clippy'});
   assert(!check.steps.some(step => /upload-artifact|attest|cache@|cache\/save/u.test(step.uses ?? '')));
   assert.deepEqual(check.steps.find(step => step.uses === './.github/actions/cache-cargo-registry').with, {'restore-only': 'true'});

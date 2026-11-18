@@ -17,6 +17,7 @@ import { answerFromMemory, estimateTokens, solveWithMemory, stableId, toolCallRe
 import { renderThinkingSteps } from './thinking.mjs';
 import { requestScope, runInRequestScope } from './standing-scope.mjs';
 import { formalizeRequest, contextualAnswer, composeRequestAnswer } from './request-context.mjs';
+import { outputObligation, projectStructuredOutput, structuredAnswerFromSource, structuredOutputRequested, structuredThinkingStep } from './structured-output.mjs';
 import { clientFunctionOutput, forcedFunction } from './client-functions.mjs';
 
 /** `response_reasoning_item`: the rendered trace as a `reasoning` output item. */
@@ -35,7 +36,8 @@ function responseReasoningItem(prompt, thinkingSteps) {
  * order; empty `thinking_steps` skipped).
  */
 export function responseFromSymbolic(request, chatRequest, prompt, symbolic) {
-  symbolic = composeRequestAnswer(chatRequest.messages, symbolic);
+  const structured = structuredOutputRequested(request.text?.format);
+  if (!structured) symbolic = composeRequestAnswer(chatRequest.messages, symbolic);
   const inputTokens = messageInputTokens(chatRequest.messages);
   const outputTokens = estimateTokens(symbolic.answer);
   const steps = symbolic.thinking_steps;
@@ -43,7 +45,9 @@ export function responseFromSymbolic(request, chatRequest, prompt, symbolic) {
     id: stableId('msg', symbolic.answer),
     type: 'message',
     role: 'assistant',
-    content: [{ type: 'output_text', text: symbolic.answer }],
+    content: structured && symbolic.intent === 'tool_call_refused'
+      ? [{ type: 'refusal', refusal: symbolic.answer }]
+      : [{ type: 'output_text', text: symbolic.answer }],
   };
   if (steps.length) message.thinking_steps = steps;
   const output = [message];
@@ -72,6 +76,31 @@ export function responseFromSymbolic(request, chatRequest, prompt, symbolic) {
 
 /** `create_response_with_solver_and_memory`. */
 export async function createResponse(ctx, request) {
+  const response = await createUnstructuredResponse(ctx, request);
+  const obligation = outputObligation(request.text?.format, false);
+  if (!obligation) return response;
+  response.text = { format: obligation.format };
+  const message = response.output.find(item => item.type === 'message');
+  if (!message) return response;
+  const source = chatPromptAndHistory(toChatCompletionRequest(request).messages).prompt;
+  const answer = message.content.filter(part => part.type === 'output_text').map(part => part.text).join('\n');
+  const result = await projectStructuredOutput(ctx, obligation, source, answer,
+    message.content.find(part => part.type === 'refusal')?.refusal);
+  message.content = result.refusal ? [{ type: 'refusal', refusal: result.refusal }]
+    : [{ type: 'output_text', text: result.content }];
+  message.id = stableId('msg', result.refusal ?? result.content);
+  const steps = [...(message.thinking_steps ?? [])];
+  steps.push(structuredThinkingStep(steps, result));
+  message.thinking_steps = steps;
+  response.thinking_steps = steps;
+  response.derivation_id = result.id;
+  response.evidence_links = [...result.evidence, ...response.evidence_links];
+  response.usage.output_tokens = estimateTokens(result.refusal ?? result.content);
+  response.usage.total_tokens = response.usage.input_tokens + response.usage.output_tokens;
+  return response;
+}
+
+async function createUnstructuredResponse(ctx, request) {
   const prompt = responsePrompt(request);
   const chatRequest = toChatCompletionRequest(request);
   const { prompt: chatPrompt, history } = chatPromptAndHistory(chatRequest.messages);
@@ -101,7 +130,8 @@ export async function createResponse(ctx, request) {
   if (outcome.kind === 'planned') return responseFromPlan(ctx, request, chatRequest, prompt, outcome.plan, responseTimestamp());
   const contextual = contextualAnswer(context);
   if (contextual) return responseFromSymbolic(request, chatRequest, prompt, contextual);
-  const symbolic = await solveWithMemory(ctx, memoryPrompt, history, { forcedResponseLanguage: context.language });
+  const symbolic = await structuredAnswerFromSource(ctx, request.text?.format, false, memoryPrompt)
+    ?? await solveWithMemory(ctx, memoryPrompt, history, { forcedResponseLanguage: context.language });
   const reroute = await commandReroutePlan(ctx, chatRequest, symbolic);
   if (reroute) return responseFromPlan(ctx, request, chatRequest, prompt, reroute, responseTimestamp());
   logUnclassifiedTerminal(ctx,'symbolic_answer');
@@ -112,7 +142,7 @@ export async function createResponse(ctx, request) {
 function responseAnswerText(response) {
   return response.output
     .filter((item) => item.type === 'message')
-    .flatMap((item) => item.content.map((content) => content.text))
+    .flatMap((item) => item.content.filter((content) => content.type === 'output_text').map((content) => content.text))
     .join('\n');
 }
 
