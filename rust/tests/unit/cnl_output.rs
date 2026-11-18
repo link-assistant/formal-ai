@@ -191,8 +191,17 @@ fn controlled_dialogue_answers_declared_facts_and_asks_which_reading() {
 #[test]
 fn task_paraphrases_reach_the_solver_and_understood_prompts_keep_their_answers() {
     use ::formal_ai::FormalAiEngine;
+    // The task paraphrase reaches the canonical calculation.
     let paraphrase = FormalAiEngine.answer("add 10 and 3");
+    assert_eq!(paraphrase.intent, "calculation");
     assert_eq!(paraphrase.answer, "10 + 3 = 13");
+    assert!(
+        paraphrase
+            .evidence_links
+            .contains(&"cnl:task:en".to_owned()),
+        "{:?}",
+        paraphrase.evidence_links
+    );
     // Issue #962: no CNL fallback for a prompt the solver already understood.
     let sum = FormalAiEngine.answer("What is 2 plus 2?");
     assert_eq!(sum.answer, "2 plus 2 = 4");
@@ -202,6 +211,9 @@ fn task_paraphrases_reach_the_solver_and_understood_prompts_keep_their_answers()
             .any(|item| item.starts_with("cnl:task"))
     );
 }
+
+const MAX_PRECISION_CAT: &str = "Maximum precision uses specific words. Look up unfamiliar words in a \
+     dictionary to check their exact meaning.\n\nYes. Cats are animals.";
 
 #[test]
 fn an_in_dialog_density_switch_rerenders_the_controlled_answer_deterministically() {
@@ -214,13 +226,12 @@ fn an_in_dialog_density_switch_rerenders_the_controlled_answer_deterministically
         ConversationTurn::user(question),
         ConversationTurn::assistant(first.answer.as_str()),
     ];
-    // The issue's own densification phrase re-renders the previous graph.
-    let switched = solve_with_history("Rewrite in max-precision mode", &history);
-    let again = solve_with_history("Rewrite in max-precision mode", &history);
+    // A declared directive (a bare `max-precision` is not one) re-renders the previous answer.
+    let switched = solve_with_history("Use max-precision.", &history);
+    let again = solve_with_history("Use max-precision.", &history);
     assert_eq!(switched.intent, "cnl_paraphrase");
-    assert_eq!(
-        switched.answer,
-        "Maximum precision uses specific words. Look up unfamiliar words in a dictionary to check their exact meaning.\n\nYes. Cats are animals."
-    );
-    assert_eq!(switched.answer, again.answer);
+    assert_eq!(switched.answer, MAX_PRECISION_CAT);
+    assert_eq!(again.answer, switched.answer);
+    let named = solve_with_history("Rewrite in max-precision mode", &history);
+    assert_eq!(named.answer, MAX_PRECISION_CAT);
 }

@@ -1,8 +1,11 @@
 # PR 1585 development and CI record
 
-[PR 1585](https://github.com/link-assistant/formal-ai/pull/1585) remains a draft.
-All seven issue acceptance criteria remain pending; see the
-[issue case study](../issue-1584/README.md).
+This is the CI and development record of
+[PR 1585](https://github.com/link-assistant/formal-ai/pull/1585). The sections
+below are in time order. The earlier rounds describe the lexical preview that the
+generalized engine later replaced. The current state of every acceptance criterion
+is in the [issue case study](../issue-1584/README.md) and the
+[acceptance table](../../../experiments/issue-1584/acceptance.md).
 
 The initial head was `552ffaf803ea4399dbe4806f8bfc3efd8797eecf`. Eleven
 workflow runs created at 2026-11-17T11:37:01Z completed as `action_required`
@@ -141,3 +144,34 @@ commands. The reasoning attempt recovered the inventory without independently
 resolving its gaps. The frozen inventory remains at 8 units and 0 independently
 accepted. The [acceptance inventory](../../../experiments/issue-1584/acceptance.md)
 retains all seven open criteria, including native and WASM behavior.
+
+## Generalized engine round
+
+The maintainer review replaced the preview with the generalized engine described
+in the [issue case study](../issue-1584/README.md). The final local gate round
+found these problems and fixed them:
+
+- **Stale parity fixtures.** The check ids had been renamed from `_` to `-`
+  after the fixtures were written, so the digests no longer matched. The fixtures
+  were regenerated from the JavaScript engine.
+- **Worker line budget.** The worker solve module grew past its budget. The
+  solver hook moved into the shared crate module as `controlledSolve`, the twin of
+  Rust `controlled_solve`, which brought the module back to its ceiling.
+- **A test that passed trivially.** The density-switch test sent a bare
+  `max-precision`. That is not a declared directive, so the solver answered
+  `unknown`, which differs from the first answer, and the inequality assertion
+  passed. Both twins now send "Use max-precision." and the declared switch
+  "Rewrite in max-precision mode", and assert the exact re-rendered answer.
+- **Generated surfaces.** The abbreviation ratchet, the planner-twin citation,
+  the JS → Rust translation ledger, the runtime feature inventory and
+  `docs/status.md` were brought back in line with their generators.
+- **A controlled answer skipped the recursive procedure.** The Layered CI census
+  of issue #1550 (`rust/tests/web/issue-1550-procedure-census.test.mjs`) failed in
+  both runtimes. The hook returned a declared-fact answer or a clarification
+  straight to the caller, so that turn never reached `metaRunProcedure` /
+  `run_meta_procedure`. Now the hook returns a draft `{prompt, answer,
+  projection}` (`ControlledSolve` in Rust) every time, and every draft goes through
+  the impasse hand-off and the procedure, the same as a handler's answer. `projection` records
+  the controlled text the draft already is, so the output projection does not
+  render it twice. The governed specification witness and the debug stage sources
+  were refreshed for the new `rust/src/solver.rs` and `controlled_solve` events.

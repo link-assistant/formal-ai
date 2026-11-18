@@ -24,7 +24,9 @@ The shared policy in `data/seed/cnl-output.lino` declares the rest:
 
 The JavaScript engine is `js/agentic/crate/cnl_grammar.mjs` plus `cnl_output.mjs`. The
 browser and desktop worker use generated copies of it. The native port in
-`rust/src/cnl_output/` reads the same seeds.
+`rust/src/cnl_output/` reads the same seeds. Both solvers enter the engine through one hook:
+`controlledSolve` in `cnl_output.mjs` and its twin `controlled_solve` in
+`rust/src/cnl_output/controlled.rs`.
 
 Grammar keys that a language needs only for itself:
 
@@ -109,6 +111,8 @@ Experiment scripts:
 | `parity-fixture.mjs [--write]` | Checks or rewrites the per-language fixtures |
 | `dialogue-probe.mjs "<prompt>" ...` | Prints the controlled turns of a dialogue |
 | `probe-tiers.mjs` | Prints answers and compliance reports under several standards and densities |
+| `rendered-answers.mjs` | Prints the exact engine answers the solver tests pin (first answer, max-precision switch, task canonical prompt) |
+| `worker-answers.mjs` | Prints the browser-worker answers for the same prompts, including that a bare `max-precision` is not a directive |
 
 ## Sources and limits
 
