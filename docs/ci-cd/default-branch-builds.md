@@ -13,18 +13,22 @@ Maintainer requirements of 2026-10-31 supersede earlier full-PR build opt-ins.
   (rust/src, build.rs, manifests, embedded data, toolchain, either workflow or any
   unknown path). PR #1497 passed every PR check, then main failed with E0308
   and later with clippy::manual_contains, because JavaScript cannot see Rust
-  types or lints. The same job runs three isolated regression targets:
-  `calendar_currency` (#1589), `openai_forced_functions` (#1590), and
-  `meta_executor_parity` (#1580). The executor target reuses its existing four-test
-  module and compares all 29 shared cases, including complete event sequences
-  and unverified-draft controls. The forced-function HTTP suite also replays
+  types or lints. The same job runs four isolated regression targets:
+  `calendar_currency` (#1589), `openai_forced_functions` (#1590),
+  `meta_executor_parity`, and `synthesis_contracts` (#1580). The executor target
+  compares the shared execution, status and cue fixtures, including complete event
+  sequences and unverified-draft controls. The synthesis target reuses the twelve
+  existing specification tests directly from their maintained source file. The
+  forced-function HTTP suite also replays
   against the native CLI. All compile-dependent steps retain the same input
   condition, with two compiler jobs and test optimization disabled. Successful
   execution verifies these regressions; it does not produce release evidence. Full
   suites and product builds remain on main. The job uploads and attests nothing,
   saves no cache and publishes no outputs.
-  Every PR reports the required job context. Docs-only, JS-only, test-only and
-  script-only PRs skip its compiler and native test steps. Its selector is
+  Every PR reports the required job context. Changes to isolated native test
+  sources, embedded fixtures, HTTP replay inputs or the admission policy select
+  native execution. Documentation and unrelated JavaScript, test or script changes
+  skip its compiler and native test steps. Its selector is
   `nativeCompileInput()` in scripts/ci-pull-request-admission.mjs;
   default-branch-build-policy.test.mjs pins the job and replays PR #1497.
 - Production builds run on the current default branch, main. Release-tag and

@@ -20,8 +20,26 @@ const NON_NATIVE_PREFIXES = ['docs/', 'changelog.d/', 'experiments/', 'dev/', 'e
 const NON_NATIVE_FILES = new Set(['package.json', 'bun.lock', '.bun-version', 'tsconfig.json', 'Dockerfile',
   'Dockerfile.slim', 'compose.yaml', '.dockerignore', '.gitignore', '.gitattributes', '.gitkeep',
   '.lycheeignore', '.pre-commit-config.yaml', '.secretlintrc.json', 'LICENSE']);
+// The focused native lane also executes isolated integration targets and an
+// HTTP replay. Changes to their sources or consumed fixtures must run that lane.
+const NATIVE_REGRESSION_INPUTS = new Set([
+  'rust/tests/unit/calendar-currency.rs',
+  'rust/tests/unit/openai_forced_functions.rs',
+  'rust/tests/unit/meta_executor_parity.rs',
+  'rust/tests/unit/specification/synthesis.rs',
+  'rust/tests/fixtures/meta-executor-parity.json',
+  'rust/tests/fixtures/meta-executor-status-parity.json',
+  'rust/tests/fixtures/meta-executor-cue-parity.json',
+  'data/parity/issue-1589-calendar-currency.json',
+  'data/parity/issue-1590-forced-functions.json',
+  'data/parity/cross-runtime-synthesis.json',
+  'rust/tests/web/issue-1590-forced-functions.test.mjs',
+  'rust/tests/web/support/structured-log-fixture.mjs',
+  'js/server/structured-log.mjs',
+]);
 export function nativeCompileInput(path) {
-  if (path === 'scripts/ci-clippy-profile.sh') return true;
+  if (NATIVE_REGRESSION_INPUTS.has(path) || ['scripts/ci-clippy-profile.sh',
+    'scripts/ci-pull-request-admission.mjs', 'scripts/lib/documentation-paths.mjs'].includes(path)) return true;
   if (isDocumentation(path) || NON_NATIVE_FILES.has(path)) return false;
   if (path.startsWith('data/')) return path.startsWith('data/seed/api-cache/');
   // Its own job definition and the composite actions it runs stay inputs.

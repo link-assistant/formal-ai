@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync, readdirSync, mkdtempSync, mkdirSync, writeFileSync, rmSync} from 'node:fs';
-import {join,resolve} from 'node:path';
+import {dirname,join,relative,resolve} from 'node:path';
 import {tmpdir} from 'node:os';
 import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
@@ -66,7 +66,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
   assert.equal(others.length, 0);
   const runs = check.steps.map(step => step.run).filter(Boolean);
   assert.deepEqual(runs.filter(run => !run.startsWith('echo ')), ['bash scripts/ci-clippy-profile.sh --library-and-binaries',
-    'cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test meta_executor_parity -- --test-threads=1',
+    'cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test meta_executor_parity --test synthesis_contracts -- --test-threads=1',
     'node --test --test-concurrency=1 rust/tests/web/issue-1590-forced-functions.test.mjs']);
   assert.equal(called.on.workflow_call.inputs['compile-inputs-changed'].default, true);
   for (const step of check.steps.filter(step => step.uses || ['Type-check and lint the library and binaries', 'Verify isolated native behavior regressions', 'Replay the forced function requests against the native CLI'].includes(step.name)))
@@ -102,13 +102,34 @@ test('the focused PR native check limits execution to lint and isolated regressi
   const native = paths => admission(paths)['native-type-check'];
   for (const path of ['rust/src/proof_engine/types.rs', 'rust/build.rs', 'rust/Cargo.lock', 'rust/embedded/data/seed/a.lino',
     'data/seed/api-cache/x.lino', '.cargo/config.toml', 'rust-toolchain.toml', '.github/workflows/release.yml', '.github/workflows/native-type-check.yml',
-    '.github/actions/setup-sccache/action.yml', 'scripts/ci-clippy-profile.sh', 'clippy.toml', 'new-top-level/unknown.txt'])
+    '.github/actions/setup-sccache/action.yml', 'scripts/ci-clippy-profile.sh', 'scripts/ci-pull-request-admission.mjs',
+    'scripts/lib/documentation-paths.mjs', 'rust/tests/web/issue-1590-forced-functions.test.mjs',
+    'rust/tests/web/support/structured-log-fixture.mjs', 'js/server/structured-log.mjs', 'clippy.toml', 'new-top-level/unknown.txt'])
     assert.equal(native([path]), true, path);
   for (const path of ['docs/a.md', 'README.md', 'changelog.d/x.md', 'js/app.js', 'rust/tests/web/a.test.mjs',
-    'rust/tests/unit/proof_request.rs', 'scripts/check-tests-as-docs.mjs', 'data/meta/x.lino', 'experiments/a/b.sh',
+    'rust/tests/unit/proof_request.rs', 'rust/tests/fixtures/unrelated.json', 'data/parity/unrelated.json', 'scripts/check-tests-as-docs.mjs', 'data/meta/x.lino', 'experiments/a/b.sh',
     '.github/workflows/links.yml', 'package.json', 'bun.lock'])
     assert.equal(native([path]), false, path);
   assert.equal(native([]), true, 'an empty observation is unknown, so the check runs');
+});
+// A test-only change must execute the same isolated target that consumes it.
+test('isolated native regressions select execution for their sources and embedded fixtures', () => {
+  const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps
+    .find(step => step.name === 'Verify isolated native behavior regressions');
+  const manifest = read('rust/Cargo.toml').split('[[test]]').slice(1);
+  const targets = [...step.run.matchAll(/--test (\S+)/gu)].map(match => match[1]);
+  assert(targets.length > 0);
+  for (const target of targets) {
+    const block = manifest.find(block => new RegExp('^name = "' + target + '"$', 'mu').test(block));
+    assert(block, 'explicit Cargo target ' + target);
+    const source = 'rust/' + /^path = "([^"]+)"$/mu.exec(block)[1];
+    assert.equal(admission([source])['native-type-check'], true, source);
+    for (const match of read(source).matchAll(/include_str!\(\s*"([^"]+)"/gu)) {
+      const fixture = relative(process.cwd(), resolve(dirname(source), match[1]));
+      assert(readFileSync(fixture).length > 0, fixture);
+      assert.equal(admission([fixture])['native-type-check'], true, fixture);
+    }
+  }
 });
 // The production-only failure this job closes: PR #1497 was green, then main
 // failed with E0308 in rust/src. Its own changed paths must select the check.

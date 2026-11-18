@@ -143,6 +143,11 @@ path = "tests/unit/openai_forced_functions.rs"
 name = "meta_executor_parity"
 path = "tests/unit/meta_executor_parity.rs"
 
+# Replay the existing synthesis contracts without compiling the whole unit suite.
+[[test]]
+name = "synthesis_contracts"
+path = "tests/unit/specification/synthesis.rs"
+
 [[test]]
 name = "integration"
 path = "tests/integration/mod.rs"
