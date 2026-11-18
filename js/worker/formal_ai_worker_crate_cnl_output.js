@@ -403,7 +403,7 @@ function answerDocument(question, language, selected, policy) {
   const yes = holds === (question.polarity === 'positive');
   return graphDocument(language, [
     {graph: {frame: 'reply', slots: {}, polarity: yes ? 'positive' : 'negative', mood: 'statement'}},
-    {kind: 'space', text: ' '},
+    {kind: 'space', text: policy.grammars?.[language]?.sentenceSpace ?? ' '},
     {graph: {...question, polarity: holds ? 'positive' : 'negative', mood: 'statement'}},
   ], selected, policy);
 }

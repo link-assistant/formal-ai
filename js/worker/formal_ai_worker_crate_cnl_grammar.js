@@ -11,6 +11,8 @@
 const { childValue, childrenNamed } = crateRequire("host.mjs");
 
 const CNL_LANGUAGE_PATH = 'data/seed/cnl-language-{language}.lino';
+/** Term register of input-only surfaces; realization never selects it. */
+const INPUT_REGISTER = 'input';
 const TOKEN = /\.\.\.|…|\p{Script=Han}|[0-9]+(?:\.[0-9]+)?|[\p{L}\p{M}\p{N}]+(?:['-][\p{L}\p{M}\p{N}]+)*/gu;
 const NUMBER = /^[0-9]+(?:\.[0-9]+)?$/u;
 const SLOT = /\{([a-z]+)\.([a-z-]+)\}/gu;
@@ -57,6 +59,8 @@ function parseLanguageGrammar(text, parse) {
     id: root.value, keys: list(childValue(root, 'keys')), grammar: list(childValue(root, 'grammar')),
     copula: list(childValue(root, 'copula')), pronouns: list(childValue(root, 'pronouns')),
     clauseClose: childValue(root, 'clause-close') ?? '',
+    // Between two sentences of one reply: a space, or nothing (Chinese 。).
+    sentenceSpace: childrenNamed(root, 'sentence-space').length ? childValue(root, 'sentence-space') : ' ',
     fillers: list(childValue(root, 'fillers')),
     typos: list(childValue(root, 'typos')).map(pair => pair.split('=')),
     loose: list(childValue(root, 'loose')).map(pair => pair.split('=')),
@@ -122,8 +126,11 @@ function compileGrammar(data, shared) {
   }
   grammar.termById = new Map(data.terms.map(term => [term.id, term]));
   for (const term of data.terms) {
-    for (const register of shared.registers) {
-      const forms = term.registers[register] ?? term.registers.forms ?? [];
+    // The input register lists accepted surfaces that are never realized: a
+    // shared colloquial word (Chinese 鼠, Hindi मूषक) reads as every term that
+    // declares it, so a question with it gets a clarification.
+    for (const register of [...shared.registers, INPUT_REGISTER]) {
+      const forms = register === INPUT_REGISTER ? term.registers.input ?? [] : term.registers[register] ?? term.registers.forms ?? [];
       forms.forEach((form, position) => {
         const key = grammarTokens(form, grammar).join(' ');
         const entry = {concept: term.id, key: data.keys[position], register};
@@ -464,6 +471,7 @@ function answerableQuestions(graphs, shared) {
 
 return Object.freeze({
   CNL_LANGUAGE_PATH,
+  INPUT_REGISTER,
   parseGrammarPolicy,
   parseLanguageGrammar,
   grammarTokens,

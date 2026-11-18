@@ -56,6 +56,7 @@ function parseLanguageGrammar(text, parse) {
   return {
     id: root.value, keys: list(childValue(root, 'keys')), grammar: list(childValue(root, 'grammar')),
     copula: list(childValue(root, 'copula')), pronouns: list(childValue(root, 'pronouns')),
+    clauseClose: childValue(root, 'clause-close') ?? '',
     fillers: list(childValue(root, 'fillers')),
     typos: list(childValue(root, 'typos')).map(pair => pair.split('=')),
     loose: list(childValue(root, 'loose')).map(pair => pair.split('=')),
@@ -263,7 +264,7 @@ function realizeGraph(graph, style, register, grammar, variant = 0) {
   const source = variantsOf(graph, style, grammar)[variant];
   if (source === undefined) return null;
   let missing = false;
-  const text = source.replace(SLOT, (_whole, slot, key) => {
+  const text = source.replace(SLOT, (whole, slot, key, offset) => {
     const value = graph.slots[slot];
     if (value === undefined) {
       missing = true;
@@ -274,7 +275,12 @@ function realizeGraph(graph, style, register, grammar, variant = 0) {
     const forms = term?.registers[register] ?? term?.registers.forms;
     const form = forms?.[grammar.keys.indexOf(key)];
     if (form === undefined) missing = true;
-    return form ?? '';
+    // A form with an inner clause (for example Russian "..., которая может
+    // двигаться") is closed by the language's declared mark unless punctuation
+    // or the end of the sentence already follows it. Parsing ignores the mark.
+    const rest = source.slice(offset + whole.length).trimStart();
+    const close = grammar.clauseClose && form?.includes(',') && rest && !/^[.,;:?!…»)"。，？！、]/u.test(rest);
+    return close ? form + grammar.clauseClose : form ?? '';
   });
   return missing ? null : capitalized(text);
 }
