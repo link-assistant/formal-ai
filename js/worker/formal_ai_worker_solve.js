@@ -1,5 +1,5 @@
 function projectControlledAnswer(answer, config, options) {
-    if (!answer || typeof answer.content !== "string") return answer;
+    if (!answer || typeof answer.content !== "string" || answer.outputProjection?.content === answer.content) return answer;
     const language = options.forcedResponseLanguage || detectLanguage(answer.content);
     const document = crateModule("crate/cnl_output.mjs").formalizeOutput(answer.content, language);
     const rendered = crateModule("crate/cnl_output.mjs").renderOutput(document, config);
@@ -40,25 +40,25 @@ async function solve(prompt, history, prefs, userContext = {}, memory = [], opti
     // asks which reading an ambiguous one means. A task paraphrase is also solved
     // as its canonical prompt: the user's wording is kept when both reach the same
     // intent, otherwise the controlled reading of the whole prompt wins.
+    // A controlled answer, a clarification and a paraphrase are draft candidates
+    // like any handler's answer: every one still goes through the recursive procedure.
+    const draft = (text) => solveImpl(text, history, prefs, userContext, memory, options);
     const dialogue = turn.rewrite === null ? cnl.controlledDialogue(prompt, history || [], turn.config) : null;
-    if (dialogue && dialogue.intent !== "cnl_task") {
-      return {intent: dialogue.intent, content: dialogue.content, outputProjection: dialogue.outputProjection,
-        confidence: 1, evidence: ["cnl:" + dialogue.language], steps: [], events: [], toolCalls: []};
-    }
-    // A paraphrase is a draft candidate; it still goes through the recursive procedure.
-    const language = turn.rewrite === null ? null : detectLanguage(turn.rewrite);
-    let answer = turn.rewrite === null
-      ? await solveImpl(prompt, history, prefs, userContext, memory, options)
-      : {intent: "cnl_paraphrase", content: cnl.outputSource(turn.rewrite, language),
-        confidence: 1, evidence: ["cnl:paraphrase"], steps: [], events: [], toolCalls: []};
-    if (dialogue && dialogue.prompt !== prompt) {
-      const canonical = await solveImpl(dialogue.prompt, history, prefs, userContext, memory, options);
+    const controlled = (intent, content, evidence, outputProjection) => ({intent, content, outputProjection,
+      confidence: 1, evidence: [evidence], steps: [], events: [], toolCalls: []});
+    let answer = turn.rewrite !== null
+      ? controlled("cnl_paraphrase", cnl.outputSource(turn.rewrite, detectLanguage(turn.rewrite)), "cnl:paraphrase")
+      : dialogue && dialogue.intent !== "cnl_task"
+        ? controlled(dialogue.intent, dialogue.content, "cnl:" + dialogue.language, dialogue.outputProjection)
+        : await draft(prompt);
+    if (dialogue && dialogue.intent === "cnl_task" && dialogue.prompt !== prompt) {
+      const canonical = await draft(dialogue.prompt);
       if (canonical.intent !== "unknown" && canonical.intent !== answer.intent) {
         prompt = dialogue.prompt;
         answer = {...canonical, evidence: [...(canonical.evidence || []), "cnl:task:" + dialogue.language]};
       }
     }
-    const subTask = async (text) => metaResolveImpasse(text, await solveImpl(text, history, prefs, userContext, memory, options), prefs);
+    const subTask = async (text) => metaResolveImpasse(text, await draft(text), prefs);
     return projectControlledAnswer(metaAttachLearned(await metaRunProcedure(prompt, await metaResolveImpasse(prompt, answer, prefs), subTask)), turn.config, options);
   } finally {
     setForcedResponseLanguage(previousForced);

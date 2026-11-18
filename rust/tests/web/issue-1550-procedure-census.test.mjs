@@ -60,7 +60,9 @@ test('the worker entry exits only through the procedure', () => {
     'projectControlledAnswer(diagnostic, turn.config, options)',
     'projectControlledAnswer(metaAttachLearned(await metaRunProcedure(prompt, await metaResolveImpasse(prompt, answer, prefs), subTask)), turn.config, options)',
   ], `${JS_ENTRY}: solve gained an exit that may skip metaRunProcedure`);
-  assert.equal(census.solveImplCalls, 2);
+  // One drafting function: the turn's draft, the canonical reading of a task
+  // paraphrase (issue #1584) and every sub-task all reach solveImpl through it.
+  assert.equal(census.solveImplCalls, 1);
   const files = readdirSync(new URL('../../../js/worker/', import.meta.url))
     .filter((name) => name.endsWith('.js'))
     .map((name) => `js/worker/${name}`);

@@ -211,15 +211,17 @@ pub fn controlled_dialogue(
     Some(rendered("cnl_clarification", language, &document))
 }
 
-/// What the solver does with one turn after the controlled dialogue ran.
-pub enum ControlledSolve {
-    /// A declared fact answer or a clarification: return it as is.
-    Direct(Box<SymbolicAnswer>),
-    /// The solved answer and the prompt the rest of the pipeline uses.
-    Solved {
-        prompt: String,
-        answer: SymbolicAnswer,
-    },
+/// The draft of one turn after the controlled dialogue ran. Every draft, a
+/// controlled answer and a clarification included, still goes through the
+/// recursive procedure (issue #1550).
+pub struct ControlledSolve {
+    /// The prompt the rest of the pipeline uses.
+    pub prompt: String,
+    /// The draft answer.
+    pub answer: SymbolicAnswer,
+    /// The controlled projection the draft already is (a declared fact
+    /// answer or a clarification), so it is not projected a second time.
+    pub projection: Option<String>,
 }
 
 /// Issue #1584 solver hook. A whole-prompt CNL reading answers declared fact
@@ -247,15 +249,22 @@ pub fn controlled_solve(
             content,
             output_projection,
         }) => {
-            return ControlledSolve::Direct(Box::new(SymbolicAnswer {
-                intent,
-                answer: content,
-                confidence: 1.0,
-                evidence_links: vec![format!("cnl:{language}")],
-                thinking_steps: Vec::new(),
-                links_notation: output_projection.links_notation,
-                execution_recipe: None,
-            }));
+            log.append("impulse", prompt.to_owned());
+            log.append("intent", intent.clone());
+            log.append("response", format!("response:{intent}"));
+            return ControlledSolve {
+                prompt: prompt.to_owned(),
+                projection: Some(content.clone()),
+                answer: SymbolicAnswer {
+                    intent,
+                    answer: content,
+                    confidence: 1.0,
+                    evidence_links: vec![format!("cnl:{language}")],
+                    thinking_steps: Vec::new(),
+                    links_notation: output_projection.links_notation,
+                    execution_recipe: None,
+                },
+            };
         }
         Some(ControlledDialogue::Task { language, prompt }) => Some((language, prompt)),
         None => None,
@@ -269,14 +278,16 @@ pub fn controlled_solve(
                 .evidence_links
                 .push(format!("cnl:task:{language}"));
             *log = canonical_log;
-            return ControlledSolve::Solved {
+            return ControlledSolve {
                 prompt: canonical_prompt,
                 answer: canonical,
+                projection: None,
             };
         }
     }
-    ControlledSolve::Solved {
+    ControlledSolve {
         prompt: prompt.to_owned(),
         answer,
+        projection: None,
     }
 }

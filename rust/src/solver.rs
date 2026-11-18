@@ -858,60 +858,61 @@ impl UniversalSolver {
                 execution_recipe,
             }
         };
-        let solved = crate::cnl_output::controlled_solve(
+        let crate::cnl_output::ControlledSolve {
+            prompt,
+            mut answer,
+            projection,
+        } = crate::cnl_output::controlled_solve(
             &output_turn,
             history,
             crate::cnl_output::cnl_policy(),
             &mut log,
             &mut solve_core,
         );
-        let (prompt, mut answer) = match solved {
-            crate::cnl_output::ControlledSolve::Direct(answer) => return *answer,
-            crate::cnl_output::ControlledSolve::Solved { prompt, answer } => (prompt, answer),
-        };
         let prompt = prompt.as_str();
         // R1012: a handler that admits an impasse hands the turn to the
         // general loop (`metaResolveImpasse`, js/worker/formal_ai_worker_solve.js).
-        if output_turn.rewrite.is_none() {
-            crate::meta_reasoner::resolve_impasse(prompt, &mut answer, &mut log);
-        }
+        crate::meta_reasoner::resolve_impasse(prompt, &mut answer, &mut log);
         // Issue #1550: every answer goes through the recursive procedure
         // (`crate::meta_executor`, twin of `solveAnswer` in
         // js/agentic/crate/meta_executor.mjs). Its trace joins the log, and the
         // composition of the sub-task answers replaces the answer only when
-        // least action selects it over the direct derivation.
-        if output_turn.rewrite.is_none() {
-            self.run_meta_procedure(prompt, history, probability_store, &mut answer, &mut log);
-        }
-        let output_language = self
-            .config
-            .forced_response_language
-            .unwrap_or_else(|| detect_language(&answer.answer).slug());
-        let rendered = crate::cnl_output::render_output(
-            &crate::cnl_output::formalize_output(
-                &answer.answer,
-                output_language,
-                crate::cnl_output::cnl_policy(),
-            ),
-            output_turn.config,
-            crate::cnl_output::cnl_policy(),
-            &(),
-        );
-        if output_turn.config != crate::cnl_output::OutputConfig::default()
-            || rendered.content != answer.answer
-        {
-            log.append(
-                "cnl_output",
-                serde_json::to_string(&rendered.report).expect("output report"),
-            );
-            answer
-                .links_notation
-                .push_str(&crate::cnl_output::output_links_notation(
-                    &rendered.document,
+        // least action selects it over the direct derivation. A controlled
+        // answer, a clarification and a paraphrase are drafts like any other.
+        self.run_meta_procedure(prompt, history, probability_store, &mut answer, &mut log);
+        // A controlled answer or clarification the procedure kept is already
+        // its own projection (`projectControlledAnswer` in the worker).
+        if projection.as_deref() != Some(answer.answer.as_str()) {
+            let output_language = self
+                .config
+                .forced_response_language
+                .unwrap_or_else(|| detect_language(&answer.answer).slug());
+            let rendered = crate::cnl_output::render_output(
+                &crate::cnl_output::formalize_output(
+                    &answer.answer,
+                    output_language,
                     crate::cnl_output::cnl_policy(),
-                ));
+                ),
+                output_turn.config,
+                crate::cnl_output::cnl_policy(),
+                &(),
+            );
+            if output_turn.config != crate::cnl_output::OutputConfig::default()
+                || rendered.content != answer.answer
+            {
+                log.append(
+                    "cnl_output",
+                    serde_json::to_string(&rendered.report).expect("output report"),
+                );
+                answer
+                    .links_notation
+                    .push_str(&crate::cnl_output::output_links_notation(
+                        &rendered.document,
+                        crate::cnl_output::cnl_policy(),
+                    ));
+            }
+            answer.answer = rendered.content;
         }
-        answer.answer = rendered.content;
         crate::derivation::finalize_answer(&mut answer, &mut log);
         crate::dialog_log::record_native_response_if_enabled(
             "UniversalSolver::solve_with_history_probability_store_and_intent_cache",
