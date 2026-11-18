@@ -272,6 +272,7 @@ export function chatToolExecutions(messages) {
 /** Serialize a `ChatMessage` in struct field order, skipping empty fields. */
 export function chatMessageJson(message) {
   const out = { role: message.role, content: message.content };
+  if (message.refusal) out.refusal = message.refusal;
   if (message.tool_calls?.length) out.tool_calls = message.tool_calls;
   if (message.tool_call_id) out.tool_call_id = message.tool_call_id;
   if (message.name) out.name = message.name;

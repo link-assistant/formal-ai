@@ -4,9 +4,7 @@
 // `response_reasoning_item`, `responses_input_tokens`) and the
 // `ResponseObject` wire shape of rust/src/protocol/output.rs.
 //
-// A tool-bearing request goes through the agentic outcome
-// (js/server/agentic.mjs): refused without agent mode, planned by the
-// deterministic planner port (js/agentic/) with it, as natively.
+// Agentic requests go through the shared planner and its permission checks.
 
 import { logUnclassifiedTerminal, agenticOutcome, commandReroutePlan, responseFromPlan } from './agentic.mjs';
 import { RequestShapeError, chatPromptAndHistory } from './chat-request.mjs';
@@ -19,6 +17,7 @@ import { answerFromMemory, estimateTokens, solveWithMemory, stableId, toolCallRe
 import { renderThinkingSteps } from './thinking.mjs';
 import { requestScope, runInRequestScope } from './standing-scope.mjs';
 import { formalizeRequest, contextualAnswer, composeRequestAnswer } from './request-context.mjs';
+import { clientFunctionOutput, forcedFunction } from './client-functions.mjs';
 
 /** `response_reasoning_item`: the rendered trace as a `reasoning` output item. */
 function responseReasoningItem(prompt, thinkingSteps) {
@@ -77,6 +76,23 @@ export async function createResponse(ctx, request) {
   const chatRequest = toChatCompletionRequest(request);
   const { prompt: chatPrompt, history } = chatPromptAndHistory(chatRequest.messages);
   const memoryPrompt = chatPrompt.trim() ? chatPrompt : prompt;
+  const forced = await forcedFunction(ctx, chatRequest, chatPrompt);
+  if (forced) {
+    const { callId, outputTokens } = clientFunctionOutput(forced, prompt, chatRequest.messages.length);
+    const item = forced.refusal ? {
+      id: stableId('msg', forced.refusal), type: 'message', role: 'assistant',
+      content: [{ type: 'refusal', refusal: forced.refusal }],
+    } : {
+      id: stableId('fc', callId), type: 'function_call', call_id: callId,
+      name: forced.name, arguments: forced.arguments, status: 'completed',
+    };
+    const inputTokens = messageInputTokens(chatRequest.messages);
+    return {
+      id: stableId('resp', prompt), object: 'response', created_at: responseTimestamp(),
+      status: 'completed', model: resolveModelId(request.model), output: [item], evidence_links: [],
+      usage: { input_tokens: inputTokens, output_tokens: outputTokens, total_tokens: inputTokens + outputTokens },
+    };
+  }
   const context = formalizeRequest(chatRequest.messages);
   const remembered = await answerFromMemory(ctx, memoryPrompt, history, prompt);
   if (remembered) {logUnclassifiedTerminal(ctx,'retained_answer');return responseFromSymbolic(request, chatRequest, prompt, remembered);}
