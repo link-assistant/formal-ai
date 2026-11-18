@@ -220,6 +220,7 @@ fn child_outcomes(sub_results: &[SolvedSubImpulse]) -> Vec<TaskOutcome> {
                 intent: result.intent.clone(),
                 content: result.answer.clone(),
                 confidence: 0.0,
+                evidence: Vec::new(),
             };
             let resolved = run_task_test(&test, Some(&draft), &[]).passed;
             TaskOutcome {
@@ -262,6 +263,7 @@ fn parent_verdict(candidate: &ComposedCandidate, children: &[TaskOutcome]) -> Ve
         intent: candidate.intent.clone(),
         content: candidate.answer.clone(),
         confidence: candidate.confidence,
+        evidence: Vec::new(),
     };
     run_task_test(&test, Some(&draft), children)
 }
