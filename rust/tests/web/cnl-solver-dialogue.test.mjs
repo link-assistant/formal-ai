@@ -62,17 +62,28 @@ test('prompts the solver already understood keep their answers', {timeout: 60_00
     assert.ok(String(sum.content).includes(expected), `${prompt} -> ${sum.content}`);
     assert.ok(!(sum.evidence || []).some(item => String(item).startsWith('cnl:task')), `no CNL fallback for ${prompt}`);
   }
+  // The task paraphrase reaches the canonical calculation.
   const paraphrase = await solve('add 10 and 3');
-  assert.match(String(paraphrase.content), /\b13\b/u);
+  assert.equal(paraphrase.intent, 'calculation');
+  assert.equal(paraphrase.content, '10 + 3 = 13');
+  assert.ok(paraphrase.evidence.includes('cnl:task:en'), JSON.stringify(paraphrase.evidence));
 });
+
+const MAX_PRECISION_CAT = 'Maximum precision uses specific words. Look up unfamiliar words in a dictionary to check '
+  + 'their exact meaning.\n\nYes. Cats are animals.';
 
 test('an in-dialog density switch re-renders the same controlled answer deterministically', {timeout: 60_000}, async () => {
   const question = 'Is a cat an animal?';
   const first = await solve(question);
   assert.equal(first.intent, 'cnl_answer');
   const history = [{role: 'user', content: question}, {role: 'assistant', content: first.content}];
-  const switched = await solve('max-precision', history);
-  const again = await solve('max-precision', history);
-  assert.equal(switched.content, again.content);
-  assert.notEqual(switched.content, first.content);
+  // A declared directive (a bare `max-precision` is not one) re-renders the previous answer.
+  const switched = await solve('Use max-precision.', history);
+  const again = await solve('Use max-precision.', history);
+  assert.equal(first.content, 'Yes. Every cat is an animal.');
+  assert.equal(switched.intent, 'cnl_paraphrase');
+  assert.equal(switched.content, MAX_PRECISION_CAT);
+  assert.equal(again.content, switched.content);
+  const named = await solve('Rewrite in max-precision mode', history);
+  assert.equal(named.content, MAX_PRECISION_CAT);
 });

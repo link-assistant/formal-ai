@@ -485,3 +485,32 @@ export function controlledDialogue(prompt, history = [], configuration = {}, pol
   if (questions.length === 1) return rendered('cnl_answer', language, answerDocument(questions[0], language, selected, policy));
   return rendered('cnl_clarification', language, clarificationDocument(questions, language, selected, policy));
 }
+
+/**
+ * Issue #1584 solver hook. A whole-prompt CNL reading answers declared fact
+ * questions and asks which reading an ambiguous one means. A task paraphrase is
+ * also solved as its canonical prompt: the user's wording is kept when both
+ * reach the same intent, otherwise the controlled reading of the whole prompt
+ * wins. Returns `{direct}` or `{prompt, answer}`. Mirrors `fn controlled_solve`.
+ * @param {{prompt: string, rewrite: ?string, config: object}} turn
+ * @param {Array<object>} history
+ * @param {function(string): Promise<object>} solve
+ * @param {object} policy
+ * @returns {Promise<object>}
+ */
+export async function controlledSolve(turn, history, solve, policy = cnlPolicy()) {
+  const prompt = turn.prompt;
+  const dialogue = turn.rewrite === null ? controlledDialogue(prompt, history, turn.config, policy) : null;
+  if (dialogue && dialogue.intent !== 'cnl_task') {
+    return {direct: {intent: dialogue.intent, content: dialogue.content, outputProjection: dialogue.outputProjection,
+      confidence: 1, evidence: ['cnl:' + dialogue.language], steps: [], events: [], toolCalls: []}};
+  }
+  const answer = await solve(prompt);
+  if (dialogue && dialogue.prompt !== prompt) {
+    const canonical = await solve(dialogue.prompt);
+    if (canonical.intent !== 'unknown' && canonical.intent !== answer.intent) {
+      return {prompt: dialogue.prompt, answer: {...canonical, evidence: [...(canonical.evidence || []), 'cnl:task:' + dialogue.language]}};
+    }
+  }
+  return {prompt, answer};
+}

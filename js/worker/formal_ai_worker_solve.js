@@ -1,12 +1,11 @@
-function projectControlledAnswer(answer, config, options) {
-    if (!answer || typeof answer.content !== "string") return answer;
-    const language = options.forcedResponseLanguage || detectLanguage(answer.content);
-    const document = crateModule("crate/cnl_output.mjs").formalizeOutput(answer.content, language);
-    const rendered = crateModule("crate/cnl_output.mjs").renderOutput(document, config);
-    return {...answer, content: rendered.content, outputProjection: rendered};
-}
 // Solve dispatch, handler registry, seed loading and worker initialization.
 // @worker-prerequisite js/worker/formal_ai_worker_web_providers_and_wasm_calls.js
+function projectControlledAnswer(answer, config, options) { // Issue #1584: Rust `render_output` after `controlled_solve`.
+  if (!answer || typeof answer.content !== "string") return answer;
+  const cnl = crateModule("crate/cnl_output.mjs");
+  const rendered = cnl.renderOutput(cnl.formalizeOutput(answer.content, options.forcedResponseLanguage || detectLanguage(answer.content)), config);
+  return {...answer, content: rendered.content, outputProjection: rendered};
+}
 function isTargetlessProgramModification(normalized) { // "Reverse it.": Rust `looks_like_ambiguous_program_modification`
   const mentions = (role) => lexiconMentionsRole(role, normalized);
   return mentions(ROLE_PROGRAM_MODIFICATION) && mentions(ROLE_PROGRAM_MODIFICATION_REFERENCE) && !mentions(ROLE_PROGRAM_ARTIFACT);
@@ -15,10 +14,8 @@ async function solve(prompt, history, prefs, userContext = {}, memory = [], opti
   // R1188-U1: read the hydrated seed before answering (a no-op once loaded).
   await loadSeed();
   const cnl = crateModule("crate/cnl_output.mjs");
-  const turn = cnl.outputTurn(prompt, history || [], {
-    output_standard: options.output_standard ?? prefs?.outputStandard,
-    lexical_density: options.lexical_density ?? prefs?.lexicalDensity,
-  });
+  const turn = cnl.outputTurn(prompt, history || [], {output_standard: options.output_standard ?? prefs?.outputStandard,
+    lexical_density: options.lexical_density ?? prefs?.lexicalDensity});
   prompt = turn.prompt;
   // Issue #556: activate the forced response language for the whole replay and
   // always restore the previous value, so a nested follow-up replay never
@@ -36,28 +33,15 @@ async function solve(prompt, history, prefs, userContext = {}, memory = [], opti
     metaImportLearned(memory);
     const diagnostic = await tryDiagnosticMarker(prompt, (inner) => solve(inner, history, prefs, userContext, memory, options));
     if (diagnostic) return projectControlledAnswer(diagnostic, turn.config, options);
-    // Issue #1584: a whole-prompt CNL reading answers declared fact questions and
-    // asks which reading an ambiguous one means. A task paraphrase is also solved
-    // as its canonical prompt: the user's wording is kept when both reach the same
-    // intent, otherwise the controlled reading of the whole prompt wins.
-    const dialogue = turn.rewrite === null ? cnl.controlledDialogue(prompt, history || [], turn.config) : null;
-    if (dialogue && dialogue.intent !== "cnl_task") {
-      return {intent: dialogue.intent, content: dialogue.content, outputProjection: dialogue.outputProjection,
-        confidence: 1, evidence: ["cnl:" + dialogue.language], steps: [], events: [], toolCalls: []};
-    }
-    // A paraphrase is a draft candidate; it still goes through the recursive procedure.
-    const language = turn.rewrite === null ? null : detectLanguage(turn.rewrite);
-    let answer = turn.rewrite === null
-      ? await solveImpl(prompt, history, prefs, userContext, memory, options)
-      : {intent: "cnl_paraphrase", content: cnl.outputSource(turn.rewrite, language),
-        confidence: 1, evidence: ["cnl:paraphrase"], steps: [], events: [], toolCalls: []};
-    if (dialogue && dialogue.prompt !== prompt) {
-      const canonical = await solveImpl(dialogue.prompt, history, prefs, userContext, memory, options);
-      if (canonical.intent !== "unknown" && canonical.intent !== answer.intent) {
-        prompt = dialogue.prompt;
-        answer = {...canonical, evidence: [...(canonical.evidence || []), "cnl:task:" + dialogue.language]};
-      }
-    }
+    // Issue #1584: a paraphrase directive re-renders the previous answer as a draft for the recursive
+    // procedure; otherwise the crate hook (Rust `controlled_solve`) answers, clarifies or re-solves.
+    const solved = turn.rewrite === null
+      ? await cnl.controlledSolve(turn, history || [], (text) => solveImpl(text, history, prefs, userContext, memory, options))
+      : {prompt, answer: {intent: "cnl_paraphrase", content: cnl.outputSource(turn.rewrite, detectLanguage(turn.rewrite)),
+        confidence: 1, evidence: ["cnl:paraphrase"], steps: [], events: [], toolCalls: []}};
+    if (solved.direct) return solved.direct;
+    prompt = solved.prompt;
+    const answer = solved.answer;
     const subTask = async (text) => metaResolveImpasse(text, await solveImpl(text, history, prefs, userContext, memory, options), prefs);
     return projectControlledAnswer(metaAttachLearned(await metaRunProcedure(prompt, await metaResolveImpasse(prompt, answer, prefs), subTask)), turn.config, options);
   } finally {

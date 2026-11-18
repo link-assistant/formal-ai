@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=a8f6e93c0bc0d53c9e8bd27a44063796db227b3affb4f4b805de21ae2769ed14 bytes=25944
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=effc21f83f3b0c9278e89893d4a4a5802ab8086789321776e8de9c60c7456d29 bytes=27453
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=1
 
@@ -219,3 +219,7 @@ pub fn ml_cheaper_loop1(mut left: Vec<f64>, mut right: Vec<f64>, mut index: f64)
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
 // formal-ai:blockers arrow callback of .findLast() | arrow callback of .map() | arrow function | call of a sibling function | call of an imported function | destructuring | field access | global call String() | global value Boolean | method call .at() | method call .exec() | method call .filter() | method call .findLast() | method call .map() | null | nullish coalescing | object without a $ tag | optional chaining | regular expression
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | async function | call of a sibling function | field access | null | object spread | object without a $ tag

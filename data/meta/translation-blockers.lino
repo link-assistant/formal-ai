@@ -11,7 +11,7 @@
 # `unlock` rows are the greedy order: lifting the constructs down to a row
 # together leaves `cumulative` items with nothing refused by this scan.
 translation_blockers
-  carried_items 2651
+  carried_items 2652
   scanned_clear 15
   blockers_per_item 0 15
   blockers_per_item 1 830
@@ -20,7 +20,7 @@ translation_blockers
   blockers_per_item 4 224
   blockers_per_item 5 219
   blockers_per_item 6 154
-  blockers_per_item 7 119
+  blockers_per_item 7 120
   blockers_per_item 8 90
   blockers_per_item 9 96
   blockers_per_item 10 67
@@ -48,11 +48,11 @@ translation_blockers
   blockers_per_item 35 1
   blockers_per_item 41 1
   blockers_per_item 43 1
-construct "call of a sibling function" items 989 only 38
-construct "field access" items 988 only 26
+construct "call of a sibling function" items 990 only 38
+construct "field access" items 989 only 26
 construct "call of an imported function" items 716 only 20
-construct "null" items 629 only 5
-construct "object without a $ tag" items 592 only 26
+construct "null" items 630 only 5
+construct "object without a $ tag" items 593 only 26
 construct "arrow function" items 396 only 2
 construct "import of names its module carries" items 358 only 358
 construct "method call .map()" items 319 only 0
@@ -60,7 +60,7 @@ construct "method call .push()" items 314 only 4
 construct "method call .slice()" items 298 only 7
 construct "method call .filter()" items 282 only 0
 construct "arrow callback of .map()" items 273 only 0
-construct "JSDoc type {…}" items 261 only 5
+construct "JSDoc type {…}" items 262 only 5
 construct "regular expression" items 257 only 38
 construct "nullish coalescing" items 236 only 0
 construct "sibling value" items 236 only 17
@@ -94,7 +94,7 @@ construct "arrow callback of .every()" items 69 only 0
 construct "method call .set()" items 67 only 0
 construct "try statement" items 62 only 0
 construct "method call .flatMap()" items 61 only 0
-construct "object spread" items 56 only 0
+construct "object spread" items 57 only 0
 construct "arrow callback of .flatMap()" items 51 only 0
 construct "global value Boolean" items 47 only 0
 construct "Object.freeze" items 41 only 0
@@ -106,7 +106,7 @@ construct "Array.isArray" items 31 only 0
 construct "method call .encode()" items 29 only 0
 construct "method call .forEach()" items 29 only 0
 construct "arrow callback of .forEach()" items 28 only 0
-construct "async function" items 26 only 0
+construct "async function" items 27 only 0
 construct "throw of a non-error value" items 26 only 0
 construct "JSON.stringify" items 25 only 0
 construct "new TextEncoder" items 25 only 8

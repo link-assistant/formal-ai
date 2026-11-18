@@ -18,7 +18,7 @@ js_rust_translation
   translated_items 342
   workaround_items 38
   inferred_signatures 3
-  carried_items 2651
+  carried_items 2652
   translated_modules 114
   fully_translated_modules 1
   refused_modules 49
@@ -33,7 +33,7 @@ module js/agentic/crate/capability_routing.mjs translated 7 workaround 0 inferre
 module js/agentic/crate/change_request.mjs translated 1 workaround 1 inferred 0 carried 15
 module js/agentic/crate/client_contract_learning.mjs translated 0 workaround 1 inferred 0 carried 15
 module js/agentic/crate/cnl_grammar.mjs translated 3 workaround 0 inferred 0 carried 33
-module js/agentic/crate/cnl_output.mjs translated 2 workaround 1 inferred 0 carried 30
+module js/agentic/crate/cnl_output.mjs translated 2 workaround 1 inferred 0 carried 31
 module js/agentic/crate/coding_catalog.mjs translated 4 workaround 2 inferred 0 carried 27
 module js/agentic/crate/coding_cjk.mjs translated 0 workaround 0 inferred 0 carried 1
 module js/agentic/crate/coding_program_contract.mjs translated 0 workaround 1 inferred 0 carried 32
@@ -190,7 +190,7 @@ module js/worker/formal_ai_worker_meta_composite.js translated 0 workaround 0 in
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inferred 0 carried 42
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 26
 refusal "import of names its module does not translate" 358
-refusal "JSDoc type {…}" 219
+refusal "JSDoc type {…}" 220
 refusal "import from '…'" 214
 refusal "null" 194
 refusal "arrow function" 144
