@@ -638,6 +638,8 @@ agentic_messages
     text "The push failed with an invalid local refspec. Read git branch --show-current in the client workspace before retrying; no shell tool is available."
   message tool-argument-binding-incomplete
     text "Planning stopped: required tool arguments could not be bound for {tool}. No call was sent; inspect tool_argument_binding_failed diagnostics. The task is incomplete."
+  message client-function-arguments-underivable
+    text "Could not derive arguments for {tool} that satisfy its parameters schema."
   message memory-storage-unavailable
     text "persisted-memory storage unavailable at {path}: {error}"
   message source-cst-read-arguments
