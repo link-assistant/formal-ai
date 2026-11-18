@@ -26,7 +26,7 @@ order. Adoption replaces the rejected root's evidence with the composition's
 evidence. Direct answers keep their evidence, and unresolved compositions do not
 adopt evidence from rejected children. Regenerate worker and TypeScript mirrors
 through the maintained writers. Add one native executor test for conjunctions
-and alternatives; native execution remains pending CI.
+and alternatives; its first hosted attempt is recorded below.
 
 The final focused run passes all 13 executor tests, including explicit evidence
 assertions on both the cached candidate and its source. The 15 adjacent factual-QA
@@ -44,7 +44,7 @@ executable entries pass. Preserve the original aggregate, every individual gate
 log and the focused correction with hashes; literal review covers the aggregate
 and failed payload, not all successful individual payloads. Expand abbreviated
 archive filenames without changing their bytes and retain alias receipts. No
-local native build runs; the fifth native executor test still awaits CI.
+local native build runs; hosted execution is recorded below.
 
 ## Published compile failure and correction
 
@@ -62,7 +62,7 @@ to be assembled by `finalize_composed_candidate` from the event log. Audit all
 Rust `Draft` constructors and imports, including the separate coding type.
 The correction passes 13 executor tests, six procedure-census tests, five relevant
 JavaScript gates, Rust 2024 formatting and whitespace checks. Native compilation
-and the fifth executor regression remain pending the next hosted run.
+and the fifth executor regression are verified on the hosted follow-up below.
 
 The passing JavaScript jobs on `ffebedb1` report 1,440 and 1,256 passes, four and
 13 skips, zero failures and zero cancellations. Complete logs and hash checks
@@ -76,3 +76,16 @@ validate a citation's truth, establish semantic parent coverage, bind passages t
 questions, or solve multi-passage aggregation. Those acceptance criteria remain
 unfinished. Supplied diagnostics, commands, patches and conclusions receive zero
 independent authorship credit; independent acceptance remains 0/20.
+
+## Hosted synthesis correction follow-up
+
+Published head `c8fb9ad1df655abe89289e229189f3fc41451ec0` passes all 23 workflows.
+The [actual native job](https://github.com/link-assistant/formal-ai/actions/runs/44279551659/job/134719666304)
+passes five executor tests, including selected-child evidence retention, plus
+calendar/currency and forced functions: seven Rust tests and both HTTP modes.
+The executor target replays all 29 existing cases and their full event sequences.
+JavaScript shards pass 1,440 and 1,256 tests with four and 13 skips and no failures.
+Preserve complete downloaded job payloads, digests and literal review ranges under
+`experiments/issue-1580/evidence/ci/synthesis-c8fb9ad1/`. This verifies the two
+validation-only constructor initializers and the fifth executor regression;
+general parent coverage, passage binding and multi-passage validation remain open.

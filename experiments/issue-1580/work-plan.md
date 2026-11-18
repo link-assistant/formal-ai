@@ -462,8 +462,7 @@ All 23 workflows on `a97832237cbb365000dd7296050984e4bdd59ebb` complete successf
 - [x] Initialize both validation-only synthesis drafts, audit every Rust `Draft`
   constructor/import, then pass 13 executor tests, six procedure-census tests,
   five selected gates, Rust 2024 formatting and whitespace checks.
-- [ ] Publish the synthesis constructor correction after the single-push gate,
-  then verify all hosted results and actual execution of the fifth executor test.
+- [x] Publish the synthesis constructor correction as c8fb9ad1 after the single-push gate. All 23 workflows pass; the actual hosted log passes five executor tests, calendar/currency, forced functions and both HTTP modes. The fifth executor regression executes successfully; complete payloads and literal review ranges remain preserved.
 - [ ] Complete parent-answer coverage, passage binding, multi-passage provenance
   validation and every earlier unfinished issue criterion. Carrying selected
   evidence alone does not prove those contracts. Independent acceptance remains
@@ -472,3 +471,24 @@ All 23 workflows on `a97832237cbb365000dd7296050984e4bdd59ebb` complete successf
 - [x] Read and preserve Java historical pages 101–108 completely. Coverage is continuous 1–108/254, with 111 complete files, 1 partial file and 7,625 literally reviewed source lines. Preserve the 1–100 manifest unchanged and add a bounded forward part/index. Pages 109–254 and complete semantic applicability remain unfinished.
 
 - [x] Read and preserve Java historical page 109 completely: continuous 1–109/254, 111 complete files, one partial file and 7,655 source lines. The historical Node catalog is read through line 76/884; pages 110–254 and semantic applicability remain unfinished.
+
+## Quoted-passage cue boundary draft
+
+- [x] Add 12 literal decomposition/tree controls in five languages. Against
+  published c8fb9ad1 source, preserve 18 passes / seven failures: four language
+  cues, case/spacing, a preceding task and a following task fail. Chinese and
+  unquoted/escaped/word-boundary/inside-quotation controls already pass.
+- [x] Draft cue masking in JavaScript and Rust using the existing seeded
+  prompt-text-question role, with declared separators and actual quote openers.
+  Leave genuine surrounding tasks and unquoted instructions independent.
+- [x] Wire a third shared fixture into the maintained writer and both replay
+  readers. Keep the original 25-case and four-case fixtures unchanged.
+- [x] Preserve both worker-generation failures: existing factory ceiling, then
+  missing budget for the extracted helper. Add the measured 46-line helper
+  budget; all existing module budgets remain unchanged.
+- [x] Complete maintained generation, 25 executor and 15 adjacent factual-QA tests, original fixture byte checks and all 138 local inventory entries. Preserve the third writer failure (untracked new helper), then its successful pinned translation refresh. The full run records 83 passes, 52 exclusions and three stale mirror/status failures. Preserve the stopped correction guard, regenerate both surfaces with maintained writers, and pass all three failed gates plus the adjacent status twin. Preserve the final EOF-whitespace failure, remove only that blank line, refresh projections and pass five affected gates plus whitespace. The exact remeasured new factory ceiling is 46; all existing ceilings remain unchanged. All 86 executable entries pass after correction; projection reports 50 refused modules, including the new helper.
+- [ ] Review and publish the complete batch only after current c8fb9ad1 CI
+  finishes; verify actual native cue fixture execution on the new head.
+- [ ] Complete general passage binding, parent coverage and multi-passage
+  provenance. Cue masking alone does not establish any of those contracts.
+  Independent reasoning acceptance remains 0/20; keep PR #1581 draft and unmerged.

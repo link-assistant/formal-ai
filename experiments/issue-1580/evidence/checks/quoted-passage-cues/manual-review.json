@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "observedAt": "2026-11-18T10:34:45.280393+00:00",
+  "handwrittenIncrementalSourceDiffLiterallyRead": true,
+  "fixtureLinesLiterallyRead": 477,
+  "finalSourceAndGeneratedStatusDiffLiterallyRead": true,
+  "originalFixtureBytesPreserved": {
+    "rust/tests/fixtures/meta-executor-parity.json": "0657136c9c6a0b378192d6742dc4dbffe9c5bd520bfeedaa2b5c9b9b43384d7e",
+    "rust/tests/fixtures/meta-executor-status-parity.json": "392ada0ec67a39f1fa282290e264fe445851476400e1393b43783477e520b28b"
+  },
+  "finalCorrectionLogsLiterallyReadAndDigestsVerified": true,
+  "sourceSha256": {
+    "data/seed/text-formalization.lino": "84a8fcbca8accd02544fa2cc55432cf11e7d7cea4109eee59d0d097387fa8e61",
+    "js/agentic/crate/meta_executor.mjs": "f6a13d9729d021f03f2482b7e9113f139bb3ad3ae3142c16bed54acc2b9e3af6",
+    "js/agentic/crate/task_decomposition_cues.mjs": "7b3496436daefc32c219d4f1e6f7873eba09f8bb1d41fe591ff0eb46b4b630c1",
+    "rust/src/meta_executor.rs": "5fefc18986007dbcd2be3d2dade9c9ff45fdf7e849a66548ad5d76ae2615ded4",
+    "rust/src/meta_executor/decomposition.rs": "ab5a5cbe0413f4fbf8823ee257c51811c8026245e01110e2f2cef40532ba9768",
+    "data/meta/worker-line-budget/formal_ai_worker_crate_task_decomposition_cues.lino": "a287f86da3ff623defbf84a40210a4adae5ff2cce92cd60f6ed836d7884738ba",
+    "rust/tests/web/helpers/issue-1580-task-cue-cases.mjs": "d1a68211c8fa8e755bf61fd42c211f070b2ccc9de0fd363a014f3fcb29658b37",
+    "rust/tests/web/issue-1550-meta-executor.test.mjs": "f86c36336786ae464f50eb8043d63e925c41e0cd33b9a5d7fad48cee21d7a1dd",
+    "rust/tests/web/helpers/issue-1550-meta-executor-cases.mjs": "48b5e43a0b6c98462934924548502838ea0980c66ba8e3a10a7a581e119fd5d2",
+    "experiments/issue-1550/parity-fixture.mjs": "b7803b963e4dae3765b49191637266ac3e36fa272ee3609e727d2bd6ac5eba7f",
+    "rust/tests/unit/meta_executor_parity.rs": "d9f463c65259c34f81fcd56048f26099706bc580281e7232e74bcfac17f0ef20"
+  },
+  "newFixtureSha256": "d857330def9e51a2a3e9e64b43f42dcef3886405b8c02dff9d2b00c9dbbed5d3",
+  "wholePullRequestDiffLiterallyRead": false,
+  "nativeCueExecutionVerified": false,
+  "independentAuthorshipCredit": 0
+}
