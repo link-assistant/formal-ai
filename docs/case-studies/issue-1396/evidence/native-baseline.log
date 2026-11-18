@@ -1,0 +1,30 @@
+✖ native localized procedure and follow-up reuse the exact capture over HTTP (2165.851166ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3317.384371
+
+✖ failing tests:
+
+test at rust/tests/web/issue-1396-native.test.mjs:13:1
+✖ native localized procedure and follow-up reuse the exact capture over HTTP (2165.851166ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /1\. Не откладывайте/u. Input:
+
+  'Это для меня новое. Я пока не могу ответить на это по локальным правилам связей. Чтобы посмотреть текущие правила, отправьте `Покажи правила поведения`, затем `Покажи правило unknown`. Чтобы научить этот диалог ответу, отправьте: Когда я скажу `ваш запрос`, ответь `ваш ответ`. Если после этих проверок всё ещё нужен общий seed-факт или правило связей в формате Links Notation, сообщите о недостающем правиле с диагностической трассировкой или экспортируйте память, чтобы сохранить правило этого диалога.'
+
+      at ask (file:///tmp/gh-issue-solver-1795023898504/rust/tests/web/issue-1396-native.test.mjs:43:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///tmp/gh-issue-solver-1795023898504/rust/tests/web/issue-1396-native.test.mjs:48:17)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'Это для меня новое. Я пока не могу ответить на это по локальным правилам связей. Чтобы посмотреть текущие правила, отправьте `Покажи правила поведения`, затем `Покажи правило unknown`. Чтобы научить этот диалог ответу, отправьте: Когда я скажу `ваш запрос`, ответь `ваш ответ`. Если после этих проверок всё ещё нужен общий seed-факт или правило связей в формате Links Notation, сообщите о недостающем правиле с диагностической трассировкой или экспортируйте память, чтобы сохранить правило этого диалога.',
+    expected: /1\. Не откладывайте/u,
+    operator: 'match',
+    diff: 'simple'
+  }

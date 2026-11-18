@@ -1,0 +1,54 @@
+✔ a procedural plan renders its seeded lines in English and Russian (1053.009849ms)
+✔ unchanged native procedural assertions: greeting_prefixed_russian_connect_how_to_composes_procedure (13260.642892ms)
+✖ an unregistered Russian how-to uses the localized CORS API and quotes its ordered steps (2500.955324ms)
+✖ the browser uses a matching archival capture after a live request fails (2649.064959ms)
+✔ a mismatched parse or archive cannot become numbered instructions (2985.558937ms)
+✔ offline and wikiHow opt-out prevent both live and archived wikiHow requests (2842.018931ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 4
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 29067.522983
+
+✖ failing tests:
+
+test at rust/tests/web/procedural-runtime-parity.test.mjs:166:1
+✖ an unregistered Russian how-to uses the localized CORS API and quotes its ordered steps (2500.955324ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /## Как хорошо покакать/u. Input:
+
+  'План поиска процедуры для `хорошо покакать` (действие `покакать`, объект `хорошо`).\n' +
+    '\n' +
+    'Я не отвечаю на это как на заученный рецепт. Сначала solver проверяет Wikipedia для контекста темы и Wikidata для подсказок сущности, действия и объекта. Затем он пробует CORS-readable MediaWiki parse API wikiHow для кандидата `хорошо-покакать` через `https://ru.wikihow.com/api.php?action=parse&page=хорошо-покакать&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`. Если эти источники не дают пригодные шаги, fallback запускает web search по `how to хорошо покакать` через duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews и объединяет верхние результаты reciprocal rank fusion (k = 60). Финальная recursive fetch check принимает только страницы с явными упорядоченными или инструкционными шагами для `хорошо покакать`.'
+
+      at TestContext.<anonymous> (file:///tmp/gh-issue-solver-1795023898504/rust/tests/web/procedural-runtime-parity.test.mjs:170:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'План поиска процедуры для `хорошо покакать` (действие `покакать`, объект `хорошо`).\n\nЯ не отвечаю на это как на заученный рецепт. Сначала solver проверяет Wikipedia для контекста темы и Wikidata для подсказок сущности, действия и объекта. Затем он пробует CORS-readable MediaWiki parse API wikiHow для кандидата `хорошо-покакать` через `https://ru.wikihow.com/api.php?action=parse&page=хорошо-покакать&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`. Если эти источники не дают пригодные шаги, fallback запускает web search по `how to хорошо покакать` через duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews и объединяет верхние результаты reciprocal rank fusion (k = 60). Финальная recursive fetch check принимает только страницы с явными упорядоченными или инструкционными шагами для `хорошо покакать`.',
+    expected: /## Как хорошо покакать/u,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at rust/tests/web/procedural-runtime-parity.test.mjs:177:1
+✖ the browser uses a matching archival capture after a live request fails (2649.064959ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /1\. Не откладывайте/u. Input:
+
+  'План поиска процедуры для `хорошо покакать` (действие `покакать`, объект `хорошо`).\n' +
+    '\n' +
+    'Я не отвечаю на это как на заученный рецепт. Сначала solver проверяет Wikipedia для контекста темы и Wikidata для подсказок сущности, действия и объекта. Затем он пробует CORS-readable MediaWiki parse API wikiHow для кандидата `хорошо-покакать` через `https://ru.wikihow.com/api.php?action=parse&page=хорошо-покакать&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`. Если эти источники не дают пригодные шаги, fallback запускает web search по `how to хорошо покакать` через duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews и объединяет верхние результаты reciprocal rank fusion (k = 60). Финальная recursive fetch check принимает только страницы с явными упорядоченными или инструкционными шагами для `хорошо покакать`.'
+
+      at TestContext.<anonymous> (file:///tmp/gh-issue-solver-1795023898504/rust/tests/web/procedural-runtime-parity.test.mjs:187:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'План поиска процедуры для `хорошо покакать` (действие `покакать`, объект `хорошо`).\n\nЯ не отвечаю на это как на заученный рецепт. Сначала solver проверяет Wikipedia для контекста темы и Wikidata для подсказок сущности, действия и объекта. Затем он пробует CORS-readable MediaWiki parse API wikiHow для кандидата `хорошо-покакать` через `https://ru.wikihow.com/api.php?action=parse&page=хорошо-покакать&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`. Если эти источники не дают пригодные шаги, fallback запускает web search по `how to хорошо покакать` через duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews и объединяет верхние результаты reciprocal rank fusion (k = 60). Финальная recursive fetch check принимает только страницы с явными упорядоченными или инструкционными шагами для `хорошо покакать`.',
+    expected: /1\. Не откладывайте/u,
+    operator: 'match',
+    diff: 'simple'
+  }

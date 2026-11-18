@@ -70,9 +70,10 @@ test('the focused PR native check limits execution to lint and isolated regressi
     'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_unknown_reasoning::tests:: -- --test-threads=1\n' +
     'cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1\n',
     'node --test --test-concurrency=1 rust/tests/web/issue-1590-forced-functions.test.mjs',
-    'node --test --test-concurrency=1 rust/tests/web/issue-1586-structured-output.test.mjs']);
+    'node --test --test-concurrency=1 rust/tests/web/issue-1586-structured-output.test.mjs',
+    'node --test --test-concurrency=1 rust/tests/web/issue-1396-native.test.mjs']);
   assert.equal(called.on.workflow_call.inputs['compile-inputs-changed'].default, true);
-  for (const step of check.steps.filter(step => step.uses || ['Type-check and lint the library and binaries', 'Verify isolated native behavior regressions', 'Verify native unresolved-language source binding', 'Replay the forced function requests against the native CLI', 'Replay structured output and refusals against the native CLI'].includes(step.name)))
+  for (const step of check.steps.filter(step => step.uses || ['Type-check and lint the library and binaries', 'Verify isolated native behavior regressions', 'Verify native unresolved-language source binding', 'Replay the forced function requests against the native CLI', 'Replay structured output and refusals against the native CLI', 'Replay localized procedures against the native CLI'].includes(step.name)))
     assert.equal(step.if, '${{ inputs.compile-inputs-changed }}');
   assert.equal(check.steps[0].if, '${{ !inputs.compile-inputs-changed }}');
   assert.equal(workflow('release.yml').on.pull_request['paths-ignore'], undefined, 'required contexts must report for docs-only PRs');

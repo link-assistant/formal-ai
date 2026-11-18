@@ -453,6 +453,7 @@ handler-rules
   policy playwright_script
     docs_url "https://playwright.dev/docs/writing-tests"
   policy procedural_how_to
+    infinitive-endings-ru "ть ться тись ти чь чься"
     fallback-query "how to {task}"
     install-query "{target} install official documentation"
   policy how_it_works

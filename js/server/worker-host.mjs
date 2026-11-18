@@ -155,6 +155,7 @@ export function createBrowserContext(overrides = {},{provenance=false}={}) {
     TextEncoder,
     TextDecoder,
     AbortController,
+    AbortSignal,
     URL,
     URLSearchParams,
     crypto,

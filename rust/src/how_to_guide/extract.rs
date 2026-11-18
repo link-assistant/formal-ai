@@ -291,6 +291,34 @@ fn first_sentence(text: &str) -> Option<String> {
     None
 }
 
+/// Prefer wikiHow's ordered step lists to navigation and related links.
+pub(super) fn wiki_how_steps(html: &str, limit: usize) -> Vec<String> {
+    let mut saw_list = false;
+    for list in html.split("<ol").skip(1) {
+        if !list.starts_with(|character: char| character == '>' || character.is_whitespace()) {
+            continue;
+        }
+        let Some((attributes, content)) = list.split_once('>') else {
+            continue;
+        };
+        saw_list = true;
+        if let Some((items, _)) = content.split_once("</ol>")
+            && (attributes.trim().is_empty() || attributes.contains("steps_list_2"))
+        {
+            let steps = extract_steps(items, limit);
+            if steps.len() >= super::MIN_ACCEPTED_STEPS {
+                return steps;
+            }
+        }
+    }
+    if saw_list {
+        Vec::new()
+    } else {
+        // Older structured captures contain bare list items.
+        extract_steps(html, limit)
+    }
+}
+
 /// Ordered steps found in rendered HTML.
 ///
 /// List items are the only step carrier: prose paragraphs describe, lists

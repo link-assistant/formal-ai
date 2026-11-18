@@ -17,7 +17,9 @@ use crate::solver::{ConversationTurn, SolverConfig};
 use crate::solver_handler_how::{
     try_how_it_works, try_how_to_procedure, try_procedural_how_to_followup,
 };
-use crate::solver_handler_how_synthesis::try_how_to_procedure_with_offline;
+use crate::solver_handler_how_synthesis::{
+    try_how_to_procedure_with_offline, try_procedural_followup_with_offline,
+};
 use crate::solver_handler_units::try_incompatible_units;
 use crate::solver_handlers::page_query_text::handle_page_query_text;
 use crate::solver_handlers::{
@@ -242,6 +244,7 @@ pub const CONTEXTUAL_HANDLER_NAMES: &[&str] = &[
     // the same `procedural_how_to` name the regular table registers, so the
     // discovery-plan handler remains the fallback when the evidence is thin.
     "procedural_how_to",
+    "procedural_how_to_followup",
     // Issue #1172 R3/R8: a fact question no seeded record answers is asked
     // of Wikidata, and an explanation is composed from retrieved pages, both
     // through the capture client, which needs the runtime's offline flag. The
@@ -321,6 +324,12 @@ pub fn try_contextual_override(
         }
         "world_state" => try_world_state(prompt, normalized, log, history, runtime.solver_config),
         "procedural_how_to" => try_how_to_procedure_with_offline(
+            prompt,
+            normalized,
+            log,
+            runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
+        ),
+        "procedural_how_to_followup" => try_procedural_followup_with_offline(
             prompt,
             normalized,
             log,

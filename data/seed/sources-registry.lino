@@ -90,6 +90,8 @@ sources_registry
       upstream "the procedures its contributors and credited expert reviewers describe"
       basis "wikiHow articles are written and revised by contributors and credited reviewers rather than by whoever built the thing the article is about, so a guide stands one hop from the procedure it reports."
     api "https://www.wikihow.com/api.php?action=parse&page={title}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
+    language_api "https://{language}.wikihow.com/api.php?action=parse&page={title}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
+    api_language en ru hi zh es
     license_name "CC BY-NC-SA 3.0"
     license_url "https://creativecommons.org/licenses/by-nc-sa/3.0/"
     cache_path data/cache/wikihow/
