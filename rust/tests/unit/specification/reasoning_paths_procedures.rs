@@ -44,7 +44,7 @@ fn documented_connect_procedure(
     candidate: &str,
 ) -> String {
     let api = format!(
-        "https://www.wikihow.com/api.php?action=parse&page={candidate}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
+        "https://{language}.wikihow.com/api.php?action=parse&page={candidate}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
     );
     let query = format!("how to {task}");
     let providers = "duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews";

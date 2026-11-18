@@ -667,7 +667,7 @@ function proceduralDiscoveryEvents(task, pageTitle, apiUrl, searchQuery, fallbac
 // Recover wikiHow procedures through the public Wayback availability API and
 // the existing web-capture adapter when the browser cannot read the HTML.
 const HOW_TO_CAPTURE_TIMEOUT_MS = 3500;
-const HOW_TO_CAPTURE_MAX_BYTES = 2 * 1024 * 1024;
+const HOW_TO_CAPTURE_MAXIMUM_BYTES = 2 * 1024 * 1024;
 
 function howToWikiHowSlug(task) {
   return String(task || "").toLowerCase().split(/[^\p{L}\p{N}\p{M}]+/u).filter(Boolean).join("-");
@@ -681,7 +681,7 @@ async function howToReadBoundedResponse(response, signal) {
   signal?.throwIfAborted();
   if (!response.body?.getReader) {
     const text = await response.text();
-    if (new TextEncoder().encode(text).length > HOW_TO_CAPTURE_MAX_BYTES) {
+    if (new TextEncoder().encode(text).length > HOW_TO_CAPTURE_MAXIMUM_BYTES) {
       throw new Error("capture_too_large");
     }
     return text;
@@ -700,7 +700,7 @@ async function howToReadBoundedResponse(response, signal) {
       if (done) return text + decoder.decode();
       emptyChunks = value.byteLength === 0 ? emptyChunks + 1 : 0;
       bytes += value.byteLength;
-      if (bytes > HOW_TO_CAPTURE_MAX_BYTES || emptyChunks > 16) {
+      if (bytes > HOW_TO_CAPTURE_MAXIMUM_BYTES || emptyChunks > 16) {
         reader.cancel().catch(() => {});
         throw new Error(emptyChunks > 16 ? "capture_stalled" : "capture_too_large");
       }
