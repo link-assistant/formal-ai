@@ -1,45 +1,30 @@
 # Issue 1584 work plan
 
-Objective: implement and verify every criterion in issue 1584 in PR 1585;
-keep unfinished acceptance visible, and never count an unverified constraint
-as delivered. The complete issue has one automation comment and no required sub-issues as of
-the 2026-11-17 refresh. PR 1585 has four conversation comments from previous
-attempts, no inline comments, and no reviews. All were read.
+Objective: implement and verify every criterion of issue 1584 in PR 1585, in the scope
+the maintainer's PR comment asks for. That means a full implementation, a generalized
+meta check of inputs and outputs in every configuration, and all CI checks green. The
+issue has no required sub-issues.
 
-Frozen substantive units, before implementation outcomes:
+Units and their state:
 
-1. Inspect the complete issue, PR feedback, policies and existing pipelines.
-2. Preserve unrestricted input, unknown spans, polarity, quantifiers and source.
-3. Represent named standards and independent vocabulary-density configuration.
-4. Project and independently validate output without claiming unknown constraints.
-5. Preserve meaning across simplification, compression and dialogue switching.
-6. Apply the policy through summarization, CLI, HTTP, desktop and worker/WASM.
-7. Verify multilingual input-style/output-profile matrices and runtime parity.
-8. Prepare docs, release trigger, clean commits, current-main merge and green CI.
+1. **Declarative grammars** (en, ru, hi, zh, es) and one engine for realization,
+   parsing and validation. Done: `cnl_grammar.mjs` and `data/seed/cnl-language-*.lino`.
+2. **Profiles, checks and densities**, including the primes floor for any `top-N` and
+   the max-precision minimum with its notice. Done: `cnl_output.mjs` and
+   `cnl-output.lino`.
+3. **Generalized property matrix and reviewed infeasibility ledger.** Done:
+   `cnl-grammar-matrix.test.mjs`.
+4. **Whole-prompt controlled dialogue** (answers, numbered clarifications, canonical
+   tasks) in the worker, HTTP and desktop. Done: `cnl-solver-dialogue.test.mjs` and
+   `cnl-output-http.test.mjs`.
+5. **Native Rust port and per-language parity fixtures.** Done: `rust/src/cnl_output/`
+   and `rust/tests/unit/cnl_parity.rs`.
+6. **Documentation, changelog, current-main merge and green CI.** See the PR.
 
-Investigation evidence is initially retained under /tmp/issue-1584-research.
-Commit the relevant bounded, complete captures before reporting final results.
-The first open-ended source-authoring request stopped with
-`unowned-create-request`, without writing the requested module. The supplied
-development adapter and bootstrap scripts earn zero authorship credit. Actual
-development commands run through the maintained JavaScript Formal AI planner.
+Verification rules:
 
-Verification: run each changed JavaScript test individually, then the affected
-local gates (all gates if shared meta data changes). Do not compile Rust locally.
-Use maintained generators for worker, TypeScript and embedded data projections.
-Inspect the current-head CI runs and preserve every failing log before a push;
-batch all actionable failures and check for active/queued runs before pushing.
-
-All acceptance remains pending until implementation and behavioral evidence
-exist. Selected-profile metadata alone does not establish output compliance.
-
-Current pass: configuration, output-only projection, API and browser controls are
-drafted; strict standard realization, semantic decomposition, candidate CNL
-clarification, and broad native/WASM parity remain unfinished. See README.md.
-Frozen reasoning units: 8; independently accepted: 0/8 (0%). Supplied
-conclusions and supplied commands are not independent reasoning or authorship.
-
-The second CI repair batch regenerates stale TypeScript projections and fixes
-a reproduced E-Prime false certificate. Reproduction and exact failed logs are
-retained in the PR case study. The explicit ES currency check complements the
-138-selector local gate inventory. All seven acceptance criteria remain open.
+- Run each JavaScript test file on its own.
+- Regenerate worker, TypeScript, registry and embedded projections with the maintained
+  generators.
+- Run the local gates.
+- Preserve the logs of failing CI runs before the next push.

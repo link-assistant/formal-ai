@@ -1,71 +1,55 @@
 # Issue 1584 requirement-to-evidence inventory
 
-Source: [complete issue and acceptance criteria](https://github.com/link-assistant/formal-ai/issues/1584).
-Reviewed issue and PR feedback adds no required sub-issues. A01–A07 refer to the seven
-acceptance checkboxes in order. Every checkbox remains pending. Each row below
-retains a distinct prose requirement, including the named standards and runtime surfaces.
+Source: [issue 1584](https://github.com/link-assistant/formal-ai/issues/1584) and the
+maintainer's PR comment. That comment asks for a full implementation, a generalized
+("meta") check of inputs and outputs in every configuration, and repository-wide tests.
+A01–A07 are the seven acceptance checkboxes, in order. Every row names the code and
+the test that verify it. Commands are in [README.md](README.md).
 
-| Acceptance | Requirement | Current implementation or verification | Remaining scope |
+The domain is the finite controlled fragment declared in
+[`data/seed/cnl-output.lino`](../../data/seed/cnl-output.lino):
+
+- 8 facts with their converses, both polarities and both moods (64 graphs), plus 4
+  dialogue graphs;
+- one declarative grammar per language in `data/seed/cnl-language-<id>.lino` (en, ru,
+  hi, zh, es).
+
+Text outside the fragment never fails. It stays opaque and goes to the ordinary solver
+unchanged.
+
+| Acceptance | Requirement | Implementation | Verification |
 | --- | --- | --- | --- |
-| A01 | Accept arbitrary free-form prose, incomplete thoughts, slang and typos | Opaque retention in `formalizeOutput`; JS tests | General intent understanding remains unverified |
-| A01 | Accept strict CNL input without an input grammar wall | Output-only option validation; opaque input tests | Equivalence across all input dialects remains unverified |
-| A01 | Map everyday and CNL variants to identical internal Links Notation | One declared proposition with two forms in five languages | The lexical identity is not the complete solver intent graph |
-| A02 | Default to cnl-default in every supported language | Shared configuration defaults; five localized policy records | No complete multilingual intersection renderer |
-| A02 | Use the common ASD-STE100, ACE, Plain Language and Minimal English rules | Profile lists required checks | Independent validators and compatible realization rules are missing |
-| A02 | Prefer simple high-frequency words with one canonical meaning | Required unambiguous-vocabulary check | No authoritative frequency corpus or general sense selection |
-| A02 | Use short sentences | Sentence-length negative check | Splitting arbitrary long meanings safely is unfinished |
-| A02 | Use active voice and explicit subject-verb-object structure | Named active-voice check | Grammar realization and independent syntax checks are unfinished |
-| A02 | Remove ambiguous pronouns, idioms and filler | Opaque text remains unchanged | Safe resolution and meaning-preserving rewriting are unfinished |
-| A02 | Support English, Russian, Hindi, Chinese and localized equivalents | Five-language lexical corpus including Spanish | Localized standard grammars and broad language behavior are unfinished |
-| A03 | Strict asd-ste100 output | Profile selection and sentence-length check | Approved vocabulary, authorized meanings and complete syntax are missing |
-| A03 | Strict ACE output mappable to first-order logic | Profile selection; ace_grammar stays unchecked | ACE parser, renderer and semantic mapping are missing |
-| A03 | Strict Gellish relation output | Profile selection | Relation dictionary and typed triple realization are missing |
-| A03 | Strict SBVR business-rule output | Profile selection | Rule semantics and structured realization are missing |
-| A03 | Plain Language ISO 24495-1 output | Profile selection | Reader-oriented evaluation and compliant realization are missing |
-| A03 | Minimal English and localized NSM-based equivalents | Profile selection; small lexical policy | General NSM decomposition and localized syntax are missing |
-| A03 | E-Prime without any form of to be | Finite negative filter; false-certificate and density-combination regressions | Complete English checker and compliant general rewriting are missing |
-| A03 | Basic English controlled vocabulary | Profile selection | Authoritative vocabulary, inflection policy and decomposition are missing |
-| A03 | Special English controlled vocabulary | Profile selection | Authoritative vocabulary and decomposition are missing |
-| A03 | Globish controlled vocabulary | Profile selection | Authoritative vocabulary and decomposition are missing |
-| A03 | NSM primes only, with syntax frames | Finite vocabulary negatives; syntax and semantics stay unchecked | Complete official inventories, polysemy handling and decomposition are missing |
-| A03 | top-100, top-200, top-500 and top-1000 output | Validated tier selection | Corpus-backed ranks and meaning-preserving decomposition are missing |
-| A03 | Arbitrary positive top-N output | Safe-integer tier validation; missing evidence remains unchecked | Strict top-1 conflicts with universal meaning preservation; policy unresolved |
-| A03 | Everyday standard vocabulary | Independent density configuration | This setting alone does not satisfy a selected strict standard |
-| A03 | dense and max-precision aliases | Alias normalization; declared alternative selection | Global minimum and exact lexical semantics are unverified |
-| A03 | Global lino-arguments and CLI selection | Native and JS CLI flags plus environment defaults | Dedicated lino-arguments coverage remains unfinished |
-| A03 | HTTP API request parameters | CLI/API parser tests; Chat Completions tests cover JSON, exact labels, streaming notices and tool call usage | Every protocol path is not covered |
-| A03 | Desktop and browser UI settings | Persisted standard and density controls; browser screenshots | Full desktop/native runtime behavior remains unverified |
-| A03 | WebAssembly worker settings | Generated worker projection and settings plumbing | WASM execution and behavioral parity remain unverified |
-| A03 | Apply policy through formalize, summarize and deformalize | Output adapter retains source and a lexical graph | Complete pipeline and summarization integration are unfinished |
-| A04 | Use existing exact rare, archaic or technical words | One declared omniscience equivalence | General lexical sense evidence and decomposition are missing |
-| A04 | Minimize the number of words while preserving full meaning | Stable minimum over declared alternatives | Global minimality over existing words remains unchecked |
-| A04 | Notify max-precision users and recommend dictionary lookup | Localized notice kept outside the retained lexical identity | Notice exists; whole max-precision acceptance remains pending |
-| A05 | Explicit requests for ACE, ASD-STE100 and E-Prime | Whole-directive and delimited-prefix parsing | Selecting metadata is not strict realization |
-| A05 | Simplify, use semantic primes, or use the top 200 words | Localized rewrite directives and previous-answer selection | General semantic decomposition is unfinished |
-| A05 | Compress to the fewest exact words or max-precision | Localized compression directives | General exact compression and global optimality are unfinished |
-| A05 | Switch standards and density independently during dialogue | History-aware user directives; option and HTTP tests | Complete dialogue and protocol coverage is unfinished |
-| A05 | Preserve meaning through repeated simple and dense paraphrases | Declared lexical round trips; unknown bytes retained | General semantic equivalence and original intent scope are unverified |
-| A05 | Preserve deterministic behavior | Stable ordering and tie breaks in the finite corpus | Determinism of the full requested system is unverified |
-| A06 | Detect multiple plausible intent graphs from unrestricted input | Existing ambiguity handling was inspected | General candidate generation remains unfinished |
-| A06 | Restate each candidate more precisely in CNL | No new candidate renderer | Candidate graph realization remains unfinished |
-| A06 | Ask for confirmation before acting on ambiguous prompts | No new cross-runtime confirmation flow | Action gating for all candidate interpretations remains unfinished |
-| A07 | Corpus includes free-form, colloquial and stream-of-consciousness styles | Opaque adversarial examples | Canonical intent corpus across all these styles is missing |
-| A07 | Corpus includes primes, STE, ACE, Gellish, SBVR and plain variants | Named profiles exist | Independent input-standard fixtures and validators are missing |
-| A07 | Corpus includes Basic English, E-Prime and technical dense variants | Two declared realizations per language | Broad independently validated corpus is missing |
-| A07 | Every input style paired with every output standard and tier | 880 bounded lexical projections | This is a single-proposition output-profile matrix, not the requested matrix |
-| A07 | Assert exact internal intent/meaning graph equality | Declared lexical identity comparison | Complete internal intent graph equivalence is unverified |
-| A07 | Independently verify valid deterministic output for any input | Explicit unchecked report; new capture has zero certificates | Strict output compliance remains unfinished |
-| A07 | Round trip free-form to Lino to dense to primes to cnl-default | Finite declared lexical round trips | Zero general semantic drift is unverified |
-| A07 | Rust unit/integration and JS/WASM parity matrix | JS tests; native assertions; CI native type-and-lint | Native behavior, WASM execution and full parity are unverified |
+| A01 | Accept any free-form prose, slang, typos and CNL dialects | `utteranceGraphs` parses each grammar's input styles (plain, basic, ste, ace, gellish, sbvr, eprime, primes, dense, colloquial) with declared fillers and typo maps. Unparsed text stays opaque. | Matrix property *inversion*: every style × register realization parses back to its graph in all five languages. The dialogue suite checks that the solver's earlier #962 prompts keep their answers. |
+| A01 | Everyday and CNL variants map to the same Links Notation | One graph key per meaning. `outputLinksNotation` serializes the graph, not the words. | Matrix properties *inversion* and *dialogue*: every phrasing of one question gets one answer. |
+| A02 | `cnl-default` in every language is the ASD-STE100 / Plain Language / ACE / Minimal English intersection | The `cnl-default` profile uses styles `ace\|plain\|ste` and registers `ste\|minimal\|forms`. It requires every check those standards share. | Matrix *compliance*: all 68 graphs × 5 languages are compliant under `cnl-default`, at standard and max-precision. |
+| A02 | Simple unambiguous words, short active SVO sentences, no pronouns, idioms or filler | Checks `unambiguous_vocabulary`, `explicit_references`, `active_voice`, `plain_language_rules` and `ste_writing_rules`. Pronoun and filler lists are declared per language. | *Uniqueness*: no form names two concepts in one register. *Compliance* reports every check outcome, so none goes unchecked. |
+| A02 | English, Russian, Hindi, Chinese and localized equivalents (Spanish) | Five grammars with the same 65 NSM prime ids, every term and every output style. Russian adds clause-close punctuation, Chinese drops sentence spacing, Spanish puts the verb first in questions. | Matrix *inventory* for every language. `check-language.mjs en,ru,zh,es,hi` passes with all five loaded together. |
+| A03 | `asd-ste100`, `ace`, `gellish`, `sbvr`, `plain-language`, `minimal-english`, `e-prime`, `basic-english`, `special-english`, `globish` | One profile per standard. Each has its styles, registers, word lists and checks: ACE grammar and FOL interpretation, Gellish relations, SBVR rule forms, E-Prime copula filter, and others. | Matrix *compliance*: every profile is compliant for every graph at standard density, in every language. |
+| A03 | `primes`, `top-100/200/500/1000`, any `top-N`, `standard`, `dense`/`max-precision` | `frequencyTier` accepts any positive N. NSM primes are the floor below every tier: a concept outside the tier is decomposed into primes. | Matrix rows for 7 densities. A named standard whose own grammar cannot be written in primes under a primes or top-N density is listed in the reviewed [infeasibility ledger](../../data/parity/issue-1584-cnl-infeasible.json). The response names the failing checks; it does not claim compliance. |
+| A03 | CLI, lino-arguments, HTTP API, desktop and browser UI, WASM worker | Native CLI flags and env defaults (`rust/src/main.rs`, `rust/src/protocol/cnl.rs`). JS server fields (`js/server/cnl-output.mjs`). UI settings (`js/app/cnl-settings.jsx`, `js/preferences/controlled-output.js`). Worker hook (`js/worker/formal_ai_worker_solve.js`). | `cnl-output-http.test.mjs` covers the HTTP dialogue, including a clarification and its numbered reply. `cnl-solver-dialogue.test.mjs` runs the worker solver on every fixture case. Rust protocol unit tests cover the CLI and API. |
+| A03 | Apply the policy in formalize → summarize → deformalize | `formalizeOutput` → `outputLinksNotation` → `renderOutput`. A meaning re-renders from its graph. | Matrix *round trip* for every graph in every language. |
+| A04 | `max-precision` uses the fewest exact words and shows a dictionary notice | `precisionPairs` searches every style with the precise register. `lexical_minimum` compares the word count with the minimum over the whole candidate domain. A localized notice comes first. | Matrix *compliance* (`lexical_minimum` is verified, not assumed). The HTTP test checks that the notice is not empty. |
+| A05 | Explicit requests: "Answer in ACE", "Use ASD-STE100", "Respond in E-Prime" | Localized `directive` prefixes per language in the shared policy. | `cnl-output.test.mjs` directive tests. |
+| A05 | Simplify, primes only, top 200, fewest exact words, max-precision | Localized `switch` and `frequency` phrases re-render the previous answer from its graph. | `cnl-output.test.mjs`. `cnl-solver-dialogue.test.mjs` checks that an in-dialog density switch re-renders the same answer deterministically. |
+| A05 | Deterministic switching and paraphrasing | Stable candidate order and pure functions of (graph, language, configuration). | Matrix test "in-dialog switching is deterministic for every configuration" (11 profiles × 7 densities). |
+| A06 | Ambiguous prompts get a CNL clarification restating each candidate | When a prompt parses to more than one graph (for example a bare polysemous "mouse"), the engine renders each candidate precisely. It asks for a number, and a numbered reply answers that reading. | Matrix *dialogue*: every ambiguous phrasing must clarify, and the clarification must be compliant. The fixtures hold 249 clarification cases (en 52, ru 52, hi 52, es 48, zh 45). The HTTP test covers this end to end in English and Russian. |
+| A06 | Ask before acting on an ambiguous task | A task paraphrase has a canonical prompt. The worker solves it when the original prompt reached no intent or a different one. | `cnl-solver-dialogue.test.mjs` covers the arithmetic and coding task shapes (sum, difference, product, reverse-text, list-maximum, list-sum, factorial) in every language. |
+| A07 | Free-form, colloquial, primes, STE, ACE, Gellish, SBVR, plain, Basic, E-Prime and dense input corpus | The grammar templates per style are the corpus. The fixtures enumerate each question in every style and in the precise, forms and input registers. | Per-language fixtures `data/parity/issue-1584-cnl/<id>.json` hold 2,259 dialogue cases. |
+| A07 | Every input style × every output standard and tier | `complianceMatrix` enumerates 5 languages × 68 graphs × 11 profiles × 7 densities = 26,180 projections. It also validates the whole candidate domain as an oracle. | 17,076 projections are feasible and compliant. The other 9,104 match the reviewed ledger exactly (test "compliance … matches the ledger"). |
+| A07 | Same internal graph for every input style | `utteranceGraphs` + `graphKey`. | *Inversion* and *dialogue*: one answer per question across all styles. |
+| A07 | free-form → Lino → dense → primes → cnl-default round trip | `languageProperties().roundTrip`. | Zero drift for all 64 fact graphs in all five languages. |
+| A07 | Rust and JS/WASM parity | Native grammar engine in `rust/src/cnl_output/grammar.rs` with the same seeds. The generated worker modules are the JS/WASM side. | `cnl-parity.test.mjs` regenerates every fixture from the JS engine. `rust/tests/unit/cnl_parity.rs` checks that the Rust engine reproduces the same projections and dialogue. |
 
-The shared source is [cnl_output.mjs](../../js/agentic/crate/cnl_output.mjs), with
-[policy data](../../data/seed/cnl-output.lino), a supplied [native port](../../rust/src/cnl_output.rs),
-[JavaScript regressions](../../rust/tests/web/cnl-output.test.mjs),
-[HTTP checks](../../rust/tests/web/cnl-output-http.test.mjs), and [native assertions](../../rust/tests/unit/cnl_output.rs).
-The [reproduction and provenance record](README.md) describes the bounded corpus,
-and the [PR case study](../../docs/case-studies/pull-request-1585/README.md) retains CI evidence.
+## Recorded limits
 
-The top-1 conflict is a requirement conflict; it is not evidence that the other
-unfinished rows have been implemented. No exception, lossy fallback or vocabulary
-widening has been approved. Missing implementation and missing behavioral evidence
-remain unfinished. Type checking does not execute the native or WASM matrix.
+- **Word lists are project-authored.** The full ASD-STE100 dictionary, the Special
+  English list and the Globish list are not redistributable here. Each grammar holds a
+  small subset that covers its fragment, as the grammar headers state. Basic English
+  uses Ogden's public-domain 850 words. The NSM exponents follow the published
+  65-prime tables. Frequency tiers are upper rank bounds, not a corpus.
+- **The fragment is finite.** Equivalence and compliance are proven exhaustively for
+  the declared graphs. Prompts outside the fragment are not rewritten; they reach the
+  solver unchanged, so input is never refused.
+- **Some combinations are infeasible.** For example, ACE grammar written only in NSM
+  primes cannot hold for every graph. The ledger lists these combinations with the
+  checks that still fail, and the output reports them.

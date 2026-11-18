@@ -1,125 +1,127 @@
-# Controlled output development evidence — issue 1584
+# Controlled natural language output — issue 1584
 
-Work in progress for [PR 1585](https://github.com/link-assistant/formal-ai/pull/1585).
-None of the issue's seven broad acceptance criteria is marked complete.
+Implementation evidence for [PR 1585](https://github.com/link-assistant/formal-ai/pull/1585).
+The [requirement-to-evidence table](acceptance.md) maps each acceptance criterion to its
+code and tests.
 
-The JavaScript root is `js/agentic/crate/cnl_output.mjs`. The shared policy is
-`data/seed/cnl-output.lino`; native code is in `rust/src/cnl_output/`.
-Configuration selects a named standard independently from vocabulary density.
-Explicit user directives can override each dimension. A standalone rewrite
-uses the previous assistant response before the agentic planner runs. Tool
-arguments, quoted input, and opaque spans retain their original bytes.
+## Design
 
-## What the current checks demonstrate
+The engine is generalized, not a set of fixed answer strings. Each language has one
+declarative grammar in `data/seed/cnl-language-<id>.lino`. The same description drives
+three directions:
 
-- Twelve focused JavaScript tests exercise option validation, independent mode
-  switching, Unicode word counting, opaque input, and declared equivalence.
-  The combined E-Prime and density regression rejects declared realizations
-  that violate the profile's finite forbidden-word check.
-- Three HTTP tests cover request-local overrides, invalid configuration, SSE
-  metadata, and rewrite handling before tool planning. They check that the
-  maximum-precision notice stays in response metadata when a body must be
-  valid JSON or an exact label, and that tool calls retain their arguments
-  and token accounting. The fast pull-request lane runs both files.
-- One proposition has two declared realizations in each of English, Russian,
-  Hindi, Chinese and Spanish. Its finite profile/density matrix preserves the
-  declared lexical identity. This is not the solver's complete intent graph
-  and is not a corpus across all requested input standards.
-- Rust tests mirror the limited corpus and configuration boundaries. They have
-  not been compiled locally; repository policy leaves Rust execution to CI.
-- Real browser checks cover persisted settings and a rewrite turn. Screenshots
-  are in `docs/screenshots/issue-1584/`. The browser and preview server were
-  closed after verification. These screenshots do not prove vocabulary limits.
+- **realization**: graph → text, for each template style and term register;
+- **parsing**: text → graphs, the exact inverse of realization, plus declared fillers,
+  typos and input-only words;
+- **validation**: the profile checks that judge a text.
 
-The [detailed requirement-to-evidence table](acceptance.md) retains the prose requirements.
+The shared policy in `data/seed/cnl-output.lino` declares the rest:
 
-## Acceptance inventory
+- the profiles and their checks;
+- the frames, including first-order logic for ACE;
+- the facts;
+- the localized directives, switches and dictionary notices.
 
-| Requirement | Implemented evidence | Still unfinished |
+The JavaScript engine is `js/agentic/crate/cnl_grammar.mjs` plus `cnl_output.mjs`. The
+browser and desktop worker use generated copies of it. The native port in
+`rust/src/cnl_output/` reads the same seeds.
+
+Grammar keys that a language needs only for itself:
+
+| Key | Example | Effect |
 | --- | --- | --- |
-| Unrestricted input | Unknown text, quotes, polarity and quantifiers remain opaque and unchanged | General equivalence of free-form and every CNL input intent |
-| Default intersection | Shared profile and sentence-length constraint | Complete multilingual intersection grammar, vocabulary and semantic validation |
-| Named output standards and density | CLI/env, OpenAI fields, UI settings, localized directives | Strict renderers, official vocabularies, NSM decomposition, frequency corpus, all protocol and summarization surfaces |
-| Maximum lexical density | Deterministic minimum over declared alternatives; localized dictionary notice | Global minimum proof over existing words; this is explicitly `unchecked` |
-| Bidirectional paraphrasing | Declared realization round trips and per-turn settings | General meaning-preserving paraphrases |
-| Candidate clarification | Existing solver clarification was inspected | Precise candidate CNL and confirmation before actions across runtimes |
-| Cross-standard matrix | Small JS corpus plus unexecuted native tests | Full input-style/output matrix and native/JS/WASM behavioral parity |
+| `clause-close` | Russian `","` | Closes a multi-word slot form before the next word |
+| `sentence-space` | Chinese `""` | Removes the space after a sentence end |
+| `input` register | Chinese 鼠, Hindi मूषक | Shared polysemous words that are parsed but never produced. They make a question ambiguous, so the engine asks. |
 
-A selected profile is metadata, not a compliance certificate. Missing checkers
-produce `compliant: false` with named `unchecked` constraints. Opaque retention
-is lossless storage, not evidence of understanding. In particular, `primes` and
-`top-N` currently retain text without claiming that it satisfies their limits.
+Spanish matches question templates even without "?". Its grammar therefore puts the
+verb first in questions, so a question never reads as a statement.
 
-Arbitrary positive `top-N` includes `top-1`. A single natural-language word
-cannot express every distinct proposition with exact preserved meaning by
-ordinary natural-language composition. Encoding arbitrary meanings in counts
-or identifiers would not satisfy a natural-language output requirement. The
-strict universal output constraint therefore conflicts with unrestricted
-meaning preservation for some tiers; the requested policy for an unsatisfiable
-tier remains unresolved. Other unfinished work above is implementation work,
-not an external blocker.
+## The generalized meta test
+
+`rust/tests/web/cnl-grammar-matrix.test.mjs`, with the enumeration in
+`rust/tests/web/support/cnl-matrix.mjs`, checks properties instead of examples. Each
+property must hold for every graph, style, register, language and configuration:
+
+1. **inventory**: 65 NSM primes, every term and every output style in each language;
+2. **uniqueness**: no form names two concepts in one register;
+3. **coverage**: every output style can realize every graph;
+4. **inversion**: every realization parses back to its own graph;
+5. **compliance**: 26,180 projections (5 languages × 68 graphs × 11 profiles ×
+   7 densities), each validated against an oracle over the whole candidate domain;
+6. **round trip**: free-form → Links Notation → max-precision → primes →
+   cnl-default keeps the graph;
+7. **dialogue**: every phrasing of a question gets one compliant answer, and an
+   ambiguous phrasing asks a compliant numbered clarification.
+
+Compliance results:
+
+- 17,076 projections are compliant.
+- The other 9,104 are combinations where no candidate can satisfy both the named
+  standard and a primes or top-N vocabulary.
+- Those 9,104 must equal the reviewed ledger `data/parity/issue-1584-cnl-infeasible.json`
+  exactly.
+- Standard and max-precision density are feasible for every profile in every language.
+  `minimal-english` is feasible under every density, and `cnl-default` under top-200
+  and above.
+
+Frequency tiers use the NSM primes as their floor, so any `top-N`, including `top-1`,
+decomposes into primes.
+
+## Parity and runtime surfaces
+
+| Surface | Test | What it checks |
+| --- | --- | --- |
+| JS engine (fixture generator) | `rust/tests/web/cnl-parity.test.mjs` | Regenerates each `data/parity/issue-1584-cnl/<id>.json` and compares it byte for byte |
+| Rust engine | `rust/tests/unit/cnl_parity.rs` | Reproduces every fixture projection digest and dialogue turn |
+| Browser/desktop worker | `rust/tests/web/cnl-solver-dialogue.test.mjs` | Every question case and one paraphrase per task shape in each language; #962 prompts keep their answers; deterministic density switch |
+| HTTP API | `rust/tests/web/cnl-output-http.test.mjs` | Request options and directives, then "Is a mouse an animal?" (en and ru) gets a clarification, and "1" picks a reading |
+
+The fixtures hold 2,259 dialogue cases:
+
+| Language | Cases | Clarifications |
+| --- | --- | --- |
+| en | 432 | 52 |
+| ru | 443 | 52 |
+| hi | 485 | 52 |
+| zh | 489 | 45 |
+| es | 410 | 48 |
 
 ## Reproduction
 
-Run each file separately, as required by AGENTS.md:
+Run each file on its own, as AGENTS.md requires:
 
 ```sh
+timeout 600 node --test --test-concurrency=1 rust/tests/web/cnl-grammar-matrix.test.mjs
+timeout 600 node --test --test-concurrency=1 rust/tests/web/cnl-parity.test.mjs
+timeout 600 node --test --test-concurrency=1 rust/tests/web/cnl-solver-dialogue.test.mjs
 timeout 600 node --test --test-concurrency=1 rust/tests/web/cnl-output.test.mjs
 timeout 600 node --test --test-concurrency=1 rust/tests/web/cnl-output-http.test.mjs
-timeout 600 node --test --test-concurrency=1 rust/tests/web/server.test.mjs
-node scripts/translate-es.mjs --check
-node scripts/translate-js-rust.mjs --verify
-node experiments/formal_ai_subagent/local-gates.mjs
+cargo test --manifest-path rust/Cargo.toml --test unit cnl_
 ```
 
-The shared policy and seed registries require the full local gate set. Skipped
-CI-only Rust gates must not be counted as locally passed. The generated JS-to-
-Rust fixture contains carried source and refused constructs. The latest
-generation and currency checks exit zero while reporting 49 refused modules;
-that status does not establish executable translation. The native module is a
-supplied manual port; automatic translation and runtime parity are unproven.
+Experiment scripts:
 
-## Development provenance
+| Script | Purpose |
+| --- | --- |
+| `check-language.mjs en,ru,hi,zh,es [--ledger]` | Property counterexample counts for a grammar draft, optionally with only some languages loaded |
+| `feasibility.mjs --write` | Regenerates the infeasibility ledger |
+| `parity-fixture.mjs [--write]` | Checks or rewrites the per-language fixtures |
+| `dialogue-probe.mjs "<prompt>" ...` | Prints the controlled turns of a dialogue |
+| `probe-tiers.mjs` | Prints answers and compliance reports under several standards and densities |
 
-`drive.mjs` is an externally supplied adapter around the maintained JavaScript
-Formal AI planner and real tool host. `job.mjs` keeps long checks outside the
-host's command deadline and records completion. Supplied requests, patches,
-commands and scripts earn **zero autonomous authorship credit**. The frozen
-substantive unit inventory is in PLAN.md: 8 frozen, 0 independently accepted
-(0%). No claim that Formal AI authored this implementation is made.
+## Sources and limits
 
-Captured records retain exact requests, complete responses/tool traces,
-failures, command outputs, runtime identities, tracked diffs and independent
-checks. Early runtime records hash tracked diffs but omit untracked source;
-that provenance limit is retained explicitly. A bounded evidence archive and
-SHA-256 manifest accompany the final verification record. Temporary package
-installations, caches and binaries are excluded from the archive.
-
-## Captured verification
-
-The first repair full gate run recorded 86 passes, 52 CI-only skips and no failures.
-The latest inventory passed 85 gates and skipped 52; its ShellCheck PATH failure
-passed a targeted retry with the existing binary available. All 86 runnable gates
-therefore passed on the repaired source. The preceding stale-worker failure was
-fixed with the maintained generator. The nine focused files passed 83 tests; the
-HTTP file passed again after adding the public E-Prime evidence assertion.
-The initial 880 bounded projections retained their declared lexical identity,
-but two E-Prime compliance certificates lacked independent evidence. The
-finite forbidden-word filter also omitted archaic elisions. A reproducing regression failed on
-“’Tis ready.” The JavaScript and native validators now require independent
-E-Prime evidence. The two earlier certificates are withdrawn. The new capture
-contains 880 cases with violations or missing validators and no compliant
-cases. Neither capture is the full issue matrix or independent semantic proof.
-
-The [issue case study](../../docs/case-studies/issue-1584/README.md) contains
-the bounded raw archive and SHA-256 inventory. The separate
-[PR case study](../../docs/case-studies/pull-request-1585/README.md) records CI.
-
-The first repair batch passed 82 focused tests across nine files, including procedure
-execution, streaming/JSON report consistency, source-witness integrity, module
-mapping, runtime inventory drift, and the audit wrapper.
-
-The first pushed head had three failed workflows. The PR case study records
-each root cause, the procedure-preserving rewrite repair, source-witness review,
-and the exact-version upstream audit acknowledgement. Native behavior remains
-unverified; passing source/type checks must not be counted as runtime parity.
+- **NSM exponents** follow the published 65-prime tables (English, Russian, Chinese,
+  Spanish and Hindi; [NSM resources](https://nsm-approach.net/resources)).
+- **Basic English** uses Ogden's public-domain 850-word list.
+- **STE, Special English and Globish** lists are small project subsets for this
+  fragment, because their full dictionaries are not redistributable here.
+- **ACE** follows the [ACE 6.6 construction rules](https://attempto.ifi.uzh.ch/site/docs/ace/6.6/ace_constructionrules.html).
+  Every ACE frame declares its first-order reading.
+- **Plain Language** follows the reader-oriented rules of
+  [ISO 24495-1](https://www.iso.org/standard/78907.html) as concrete sentence checks.
+- **One grammar drives both directions**, following the multilingual precedent of
+  Grammatical Framework.
+- **The fragment is finite.** Text outside it is never rejected or rewritten; it goes
+  to the ordinary solver unchanged.

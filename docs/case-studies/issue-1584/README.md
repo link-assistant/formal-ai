@@ -1,44 +1,79 @@
-# Controlled output: acceptance remains pending
+# Controlled natural language output and clarification
 
-Work in progress in [PR 1585](https://github.com/link-assistant/formal-ai/pull/1585).
-The [implementation and acceptance inventory](../../../experiments/issue-1584/README.md)
-records every unfinished criterion. Configuration and finite lexical projection
-are available experimentally; strict CNL rendering is not established.
+Issue [#1584](https://github.com/link-assistant/formal-ai/issues/1584), implemented in
+[PR 1585](https://github.com/link-assistant/formal-ai/pull/1585).
 
-## Reproduction and evidence
+## Problem
 
-Run the commands in the experiment README. Local verification covered 86 passing gates and 52 CI-only skips, including
-a targeted retry after restoring ShellCheck on PATH. The PR case study retains
-the failed full inventory and successful retry. Focused tests recorded 11 output,
-3 request-local HTTP and 7 existing server test passes. Native behavior and WASM parity remain
-unverified; prior repair head `778a3a00c` passed the native type-and-lint job. Generated registry formatting differs from rustfmt by
-generator design; handwritten changed Rust passed the focused format check.
+Formal AI should answer in a selectable controlled natural language (CNL) and accept
+any input unchanged.
 
-The [bounded raw evidence archive](raw-data/development.tar.gz) includes exact
-requests, full captured tool responses, failed attempts, diffs, commands, logs,
-and 880 finite projection records. The manifest records the archive cutoff.
-The initial capture reported two E-Prime cases as compliant. Those reports
-are withdrawn: they lacked independent evidence. The lexical filter also did
-not cover archaic contractions. A
-reproducing regression and the repair are recorded in the PR case study. The
-new 880-case capture reports no compliant cases without independent checkers.
-Lexical identity retention is not independent semantic validation. Supplied edits and commands
-earn zero autonomous authorship credit: 8 frozen units, 0 independently accepted.
+- **Languages:** English, Russian, Hindi, Chinese and Spanish.
+- **Standards:** the `cnl-default` intersection, ASD-STE100, ACE, Gellish, SBVR, Plain
+  Language, Minimal English, E-Prime, Basic English, Special English and Globish.
+- **Densities:** NSM primes, top-N word tiers, standard vocabulary, and max-precision
+  with a dictionary notice.
+- **Dialogue:** switching inside a dialogue must be deterministic, and an ambiguous
+  prompt must get a CNL clarification.
+- **Verification:** a cross-standard test matrix in Rust and in JS/WASM.
 
-## Requirement conflict
+## Timeline
 
-Arbitrary top-N includes top-1. Restricting natural-language output to a single
-word cannot express arbitrary propositions with exact meaning through ordinary
-natural-language composition. A policy choice for unsatisfiable limits is
-required; no answer has been received. This conflict does not excuse the other
-implementation gaps listed in the acceptance inventory.
+1. **First attempt.** It added configuration, request options, UI settings and
+   localized directives. It then stopped at a lexical preview: one proposition with
+   declared paraphrases, and no checks that could certify any standard. The earlier
+   evidence archive in `raw-data/` keeps that state. It includes two E-Prime
+   certificates that were withdrawn because they lacked independent evidence.
+2. **Maintainer review.** The review asked for a full implementation, checked by
+   generalization over every configuration.
+3. **Generalized engine.** One declarative grammar per language now drives
+   realization, parsing and validation. A property matrix replaces hand-written
+   examples.
+4. **Whole-prompt dialogue.** Fact questions get controlled answers, ambiguous
+   questions get numbered clarifications, and task paraphrases are solved through
+   their canonical prompt. This works in the worker, over HTTP and on desktop.
+5. **Rust port.** The native engine reads the same seeds. JS-generated per-language
+   fixtures pin the parity.
 
-## Primary references
+## Root causes of the earlier gaps
 
-- [ACE 6.6 construction rules](https://attempto.ifi.uzh.ch/site/docs/ace/6.6/ace_constructionrules.html) restrict sentence forms; the current fixtures do not validate ACE.
-- [ISO 24495-1](https://www.iso.org/standard/78907.html) describes reader-oriented plain-language principles; the preview does not certify them.
-- [NSM resources](https://nsm-approach.net/resources) include language tables and syntax frames. NSM is not a flat token whitelist.
-- Official Russian and Chinese NSM tables were retrieved and type-checked locally; their hashes and URLs are in the evidence. The files themselves are excluded. A bounded STE PDF retrieval exceeded the download limit; that does not establish source unavailability.
+- **Fixed strings.** Realizations were declared strings, not generated from a
+  meaning. Nothing could prove inversion, coverage or minimality.
+- **Unbacked labels.** A profile label stood in for evidence. The fix is to name
+  every check, and to compare each projection with an oracle that validates the whole
+  candidate domain.
+- **Hidden infeasibility.** Combinations that cannot be satisfied, such as ACE
+  grammar in NSM primes only, were hidden behind a ratio. They are now listed in a
+  reviewed ledger that the test compares exactly.
+- **The top-1 conflict.** The primes are the floor below every frequency tier. A
+  concept outside a tier is decomposed into primes, so every `top-N` is satisfiable.
+- **No ambiguous surface in some languages.** Chinese and Hindi had no polysemous
+  surface word. An input-only register adds the shared words 鼠 and मूषक. They are
+  parsed but never produced, so these languages can ask for clarification too.
 
-The [PR case study](../pull-request-1585/README.md) retains the first current-head
-CI failures, their repair evidence, and later verification boundaries.
+## Evidence
+
+The [experiment README](../../../experiments/issue-1584/README.md) has the design,
+the reproduction commands and the measured results. The
+[acceptance table](../../../experiments/issue-1584/acceptance.md) maps every
+criterion to code and tests.
+
+Summary:
+
+- **Matrix:** 26,180 projections. 17,076 are compliant, and the remaining 9,104
+  match the infeasibility ledger exactly.
+- **Language properties:** inventory, uniqueness, coverage, inversion, round trip
+  and dialogue hold with zero counterexamples in all five languages.
+- **Fixtures:** 2,259 dialogue cases, 249 of them clarifications. The JS engine, the
+  worker solver and the Rust engine all reproduce them.
+
+Screenshots of the settings and a rewrite turn are in
+[`docs/screenshots/issue-1584/`](../../screenshots/issue-1584/). CI evidence is in
+the [PR case study](../pull-request-1585/README.md).
+
+## Limits
+
+- The full STE, Special English and Globish dictionaries are not redistributable.
+  The grammars use small project subsets that cover the fragment.
+- Compliance is proven exhaustively over the declared fragment. Text outside it
+  goes to the ordinary solver unchanged.
