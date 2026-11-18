@@ -1,0 +1,70 @@
+{
+  "source": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506408.log.gz",
+  "leftLine": 3078,
+  "rightLine": 3079,
+  "fields": [
+    {
+      "field": "intent",
+      "equal": true,
+      "leftBytes": 12,
+      "rightBytes": 12,
+      "leftSha256": "6acf037c8a691e01742cdd590e4af551cad093a6cee85a13d2605ede5518b4b5",
+      "rightSha256": "6acf037c8a691e01742cdd590e4af551cad093a6cee85a13d2605ede5518b4b5"
+    },
+    {
+      "field": "answer",
+      "equal": true,
+      "leftBytes": 2037,
+      "rightBytes": 2037,
+      "leftSha256": "c16ab8029882051cc702a0534e20df05e40b6165fabb34cb541551be347fe0cb",
+      "rightSha256": "c16ab8029882051cc702a0534e20df05e40b6165fabb34cb541551be347fe0cb"
+    },
+    {
+      "field": "confidence",
+      "equal": true,
+      "leftBytes": 3,
+      "rightBytes": 3,
+      "leftSha256": "1e9d7c27c8bbc8ddf0055c93e064a62fa995d177fee28cc8fa949bc8a4db06f4",
+      "rightSha256": "1e9d7c27c8bbc8ddf0055c93e064a62fa995d177fee28cc8fa949bc8a4db06f4"
+    },
+    {
+      "field": "evidence_links",
+      "equal": false,
+      "leftBytes": 126804,
+      "rightBytes": 126985,
+      "leftSha256": "a495b5d794502df5d3f213191163daf6456ffbedbf7f531054edcc11f8c1b36e",
+      "rightSha256": "360b86c691f8ee9006bb44c0ca7c1926cda0b5d709d63c9f89b35cceadbb158f",
+      "commonPrefixChars": 3691,
+      "commonSuffixChars": 292,
+      "nonStringFieldFullReviewComplete": false
+    },
+    {
+      "field": "thinking_steps",
+      "equal": true,
+      "leftBytes": 3868,
+      "rightBytes": 3868,
+      "leftSha256": "5f51a2ac49b639c3d364218aad2b46e29b171c0b42c1eb329a72dbe1fde349f5",
+      "rightSha256": "5f51a2ac49b639c3d364218aad2b46e29b171c0b42c1eb329a72dbe1fde349f5"
+    },
+    {
+      "field": "links_notation",
+      "equal": false,
+      "leftBytes": 262706,
+      "rightBytes": 262911,
+      "leftSha256": "7d3a0fb33d54c4cc209a0d79a1af398f6a54d0397669c28b5e0cbefaa675a6b2",
+      "rightSha256": "fb6f60230bd166c395e05f6d3c083c1341dffee95b16cd9f0f89540311e15258",
+      "decodedDifferenceLines": 13,
+      "decodedDifferenceArtifact": "experiments/issue-1580/evidence/ci/main-015a6831/formalization-links-notation.diff.gz"
+    },
+    {
+      "field": "execution_recipe",
+      "equal": true,
+      "leftBytes": 4,
+      "rightBytes": 4,
+      "leftSha256": "dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91",
+      "rightSha256": "dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91"
+    }
+  ],
+  "fullLiteralReviewComplete": false,
+  "nativeBehaviorVerified": false
+}

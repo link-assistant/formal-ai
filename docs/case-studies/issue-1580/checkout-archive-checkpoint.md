@@ -94,3 +94,14 @@ Complete template applicability, native regressions, benchmark capability,
 live identity/delivery and all previously unchecked acceptance criteria remain
 unfinished. Independent Formal AI reasoning acceptance remains 0/20; supplied
 scripts, commands and patches receive zero independent authorship credit.
+
+
+## Published 7e89122c result
+
+The 2026-11-18 01:41 UTC snapshot records all 23 workflows passing on
+`7e89122c9d030b3af5eec2d346141bba3ff3fdab`. Pipeline 44213727766 passes its
+source checkout and checks. Layered run 44213727267 has a separate checkout-only
+failure followed by one successful unchanged-head failed-job retry. Preserve both
+attempts; the Layered checkout is unchanged by this patch. These observations
+verify the published source checks, without proving a transport root cause or
+native runtime acceptance. See the [native evidence checkpoint](native-evidence-checkpoint.md).

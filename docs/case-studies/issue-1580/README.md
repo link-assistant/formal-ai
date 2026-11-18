@@ -210,3 +210,14 @@ The full hosted checkout remains unverified for the next head. Java historical
 literal review covers pages 1–38 and 48–55/254; pages 39–47 remain literally
 unread despite separate complete structured OSV comparison. Broader acceptance
 and independent reasoning acceptance remain unfinished.
+
+
+The [native evidence checkpoint](native-evidence-checkpoint.md) records all 23
+published-head checks passing on 7e89122c after one checkout retry. Direct native
+job logs correct the historical main inventory from 39 to 53 distinct panics.
+Four narrow candidate changes retain counting seed provenance, observe the actual
+connector workspace, trace current agent-mode owners and freeze interpretation
+network input. Focused JavaScript/formatting checks pass; native behavior and
+the strict Google Trends catalog regeneration remain unverified. All wider
+acceptance criteria stay active, the PR remains draft and independent reasoning
+acceptance remains 0/20.

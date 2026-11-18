@@ -1,0 +1,143 @@
+[
+  {
+    "job": 134419506413,
+    "rawBytes": 617912,
+    "rawLines": 3778,
+    "rawSha256": "3ab70fdd8df701e987ee56c359d5e597e3318dcb8c098942eda5a00b88a4cf06",
+    "markers": [
+      {
+        "line": 2822,
+        "characters": 178,
+        "prefix": "2026-11-17T22:34:56.8655150Z test agentic_coding::issue_498_google_trends_catalog::committed_google_trends_catalog_is_generated_by_the_recipe has been running for over 60 seconds"
+      },
+      {
+        "line": 2828,
+        "characters": 152,
+        "prefix": "2026-11-17T22:35:48.7313382Z test agentic_coding::issue_498_google_trends_catalog::committed_google_trends_catalog_is_generated_by_the_recipe ... FAILED"
+      },
+      {
+        "line": 3106,
+        "characters": 144,
+        "prefix": "2026-11-17T22:40:04.7213854Z test issue_498_google_trends::checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages ... FAILED"
+      },
+      {
+        "line": 3370,
+        "characters": 153,
+        "prefix": "2026-11-17T22:47:44.9521049Z ---- agentic_coding::issue_498_google_trends_catalog::committed_google_trends_catalog_is_generated_by_the_recipe stdout ----"
+      },
+      {
+        "line": 3372,
+        "characters": 231,
+        "prefix": "2026-11-17T22:47:44.9522349Z thread 'agentic_coding::issue_498_google_trends_catalog::committed_google_trends_catalog_is_generated_by_the_recipe' (3917) panicked at tests/unit/agentic-coding/issue_498_google_trends_catalog.rs:32:5:"
+      },
+      {
+        "line": 3374,
+        "characters": 49272,
+        "prefix": "2026-11-17T22:47:44.9643236Z   left: \"google_trends_catalog\\n  record_type \\\"google_trends_catalog\\\"\\n  source \\\"google_trends_rss\\\"\\n  source_url \\\"https://trends.google.com/trending/rss?geo=US\\\"\\n  geo \\\"US\\\"\\n  locale \\\"ru\\\"\\n  collected"
+      },
+      {
+        "line": 3375,
+        "characters": 178151,
+        "prefix": "2026-11-17T22:47:45.0187267Z  right: \"google_trends_catalog\\n  record_type \\\"google_trends_catalog\\\"\\n  source \\\"google_trends_rss\\\"\\n  source_url \\\"https://trends.google.com/trending/rss?geo=US\\\"\\n  geo \\\"US\\\"\\n  locale \\\"ru\\\"\\n  collected"
+      },
+      {
+        "line": 3405,
+        "characters": 60,
+        "prefix": "2026-11-17T22:47:45.0688130Z  right: \"calendar_create_event\""
+      },
+      {
+        "line": 3430,
+        "characters": 145,
+        "prefix": "2026-11-17T22:47:45.0694022Z ---- issue_498_google_trends::checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages stdout ----"
+      },
+      {
+        "line": 3432,
+        "characters": 201,
+        "prefix": "2026-11-17T22:47:45.0694919Z thread 'issue_498_google_trends::checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages' (11723) panicked at tests/unit/issue_498_google_trends.rs:85:5:"
+      },
+      {
+        "line": 3435,
+        "characters": 312,
+        "prefix": "2026-11-17T22:47:45.0702795Z  right: \"No captured provider response is available for `juli\u00e1n andr\u00e9s qui\u00f1ones`. Live fetching is off by default; enable it explicitly to populate the replayable source cache. The unexecuted plan includes DuckD"
+      },
+      {
+        "line": 3492,
+        "characters": 46,
+        "prefix": "2026-11-17T22:47:45.0750789Z  right: \"unknown\""
+      },
+      {
+        "line": 3545,
+        "characters": 140,
+        "prefix": "2026-11-17T22:47:45.0764708Z     agentic_coding::issue_498_google_trends_catalog::committed_google_trends_catalog_is_generated_by_the_recipe"
+      },
+      {
+        "line": 3548,
+        "characters": 132,
+        "prefix": "2026-11-17T22:47:45.0766370Z     issue_498_google_trends::checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages"
+      }
+    ]
+  },
+  {
+    "job": 134419506816,
+    "rawBytes": 662713,
+    "rawLines": 4356,
+    "rawSha256": "7f2c2e24ddedcda4902447b4a1c6a1bbdf754f6fcd5f8442cc63b6da9fc4ac90",
+    "markers": [
+      {
+        "line": 3341,
+        "characters": 181,
+        "prefix": "2026-11-17T22:39:37.4044623Z test agentic_coding::issue_498_google_trends_catalog::committed_agent_cli_session_matches_a_fresh_google_trends_run has been running for over 60 seconds"
+      },
+      {
+        "line": 3350,
+        "characters": 155,
+        "prefix": "2026-11-17T22:40:19.5112495Z test agentic_coding::issue_498_google_trends_catalog::committed_agent_cli_session_matches_a_fresh_google_trends_run ... FAILED"
+      },
+      {
+        "line": 3854,
+        "characters": 156,
+        "prefix": "2026-11-17T22:49:10.1248106Z ---- agentic_coding::issue_498_google_trends_catalog::committed_agent_cli_session_matches_a_fresh_google_trends_run stdout ----"
+      },
+      {
+        "line": 3856,
+        "characters": 236,
+        "prefix": "2026-11-17T22:49:10.1249030Z thread 'agentic_coding::issue_498_google_trends_catalog::committed_agent_cli_session_matches_a_fresh_google_trends_run' (15415) panicked at tests/unit/agentic-coding/issue_498_google_trends_catalog.rs:114:5:"
+      },
+      {
+        "line": 3858,
+        "characters": 49278,
+        "prefix": "2026-11-17T22:49:10.1371167Z   left: Some(\"google_trends_catalog\\n  record_type \\\"google_trends_catalog\\\"\\n  source \\\"google_trends_rss\\\"\\n  source_url \\\"https://trends.google.com/trending/rss?geo=US\\\"\\n  geo \\\"US\\\"\\n  locale \\\"ru\\\"\\n  coll"
+      },
+      {
+        "line": 3859,
+        "characters": 176856,
+        "prefix": "2026-11-17T22:49:10.2029441Z  right: Some(\"google_trends_catalog\\n  record_type \\\"google_trends_catalog\\\"\\n  source \\\"google_trends_rss\\\"\\n  source_url \\\"https://trends.google.com/trending/rss?geo=US\\\"\\n  geo \\\"US\\\"\\n  locale \\\"ru\\\"\\n  coll"
+      },
+      {
+        "line": 3889,
+        "characters": 66,
+        "prefix": "2026-11-17T22:49:10.2425006Z  right: Some(\"SUMMARY:\u0421 \u0430\u043b\u0435\u043a\u0441\u0430\u043d\u0434\u0440\u043e\u043c\")"
+      },
+      {
+        "line": 4024,
+        "characters": 38,
+        "prefix": "2026-11-17T22:49:10.2481146Z  right: 5"
+      },
+      {
+        "line": 4056,
+        "characters": 639,
+        "prefix": "2026-11-17T22:49:10.2493375Z  right: \"No consulted source defined \\\"Is the sentence \\\"quick brown fox\\\" a lipogram\\\". Consulted: github unbound_template wikidata unbound_template wiktionary offline_cache_miss wordnet offline_cache_miss wiki"
+      },
+      {
+        "line": 4086,
+        "characters": 295,
+        "prefix": "2026-11-17T22:49:10.2504527Z  right: \"No captured provider response is available for `apple`. Live fetching is off by default; enable it explicitly to populate the replayable source cache. The unexecuted plan includes DuckDuckGo, Internet A"
+      },
+      {
+        "line": 4113,
+        "characters": 143,
+        "prefix": "2026-11-17T22:49:10.2510560Z     agentic_coding::issue_498_google_trends_catalog::committed_agent_cli_session_matches_a_fresh_google_trends_run"
+      }
+    ]
+  }
+]

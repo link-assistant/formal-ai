@@ -1,0 +1,375 @@
+{
+  "sourceHead": "015a683197c89e8f74375b097e8dd06a57dcea8f",
+  "records": [
+    {
+      "job": 134419506330,
+      "name": "Test (ubuntu-24.04 / full) shard 8/8",
+      "artifact": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506330.log.gz",
+      "rawBytes": 379004,
+      "rawLines": 3784,
+      "rawSha256": "3bf392180ab7bb4f65d594cd78432e56da426167615048dc0f9f33bd07a4af4f",
+      "largeLines": [],
+      "panics": [
+        {
+          "line": 3336,
+          "text": "2026-11-17T22:44:15.2096221Z thread 'issue_1133_hive_mind_three_runs::extended::a_workflow_requirement_adds_the_workflow_in_every_language' (9842) panicked at tests/unit/issue_1133_hive_mind_three_runs/extended.rs:764:9:"
+        },
+        {
+          "line": 3362,
+          "text": "2026-11-17T22:44:15.2141726Z thread 'issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_every_language' (10080) panicked at tests/unit/issue_1133_hive_mind_three_runs/extended.rs:666:28:"
+        },
+        {
+          "line": 3389,
+          "text": "2026-11-17T22:44:15.2201045Z thread 'solver::issue_869_meeting_scheduling::georgia_resolves_to_asia_tbilisi_not_a_raw_surface' (15997) panicked at tests/unit/solver/issue_869_meeting_scheduling.rs:65:5:"
+        },
+        {
+          "line": 3485,
+          "text": "2026-11-17T22:44:31.1171357Z thread 'with_formal_ai::with_formal_ai_auto_starts_agent_mode_server_and_tears_it_down' (19103) panicked at tests/integration/with_formal_ai.rs:568:5:"
+        },
+        {
+          "line": 3511,
+          "text": "2026-11-17T22:44:31.1177365Z thread 'with_formal_ai::with_formal_ai_selects_uniform_interactive_and_non_interactive_modes' (19106) panicked at tests/integration/with_formal_ai.rs:322:9:"
+        },
+        {
+          "line": 3578,
+          "text": "2026-11-17T22:44:31.1191072Z thread 'issue_819_tui_isolation::temporary_server_diagnostics_do_not_leak_into_the_wrapped_tui' (18970) panicked at tests/integration/issue_819_tui_isolation.rs:91:5:"
+        }
+      ]
+    },
+    {
+      "job": 134419506379,
+      "name": "Test (ubuntu-24.04 / specification) shard 1/4",
+      "artifact": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506379.log.gz",
+      "rawBytes": 323712,
+      "rawLines": 3428,
+      "rawSha256": "e78a6f062cbf75acf9b2d890e07f5dfaa07325263aa039412457a0d992d70f2a",
+      "largeLines": [],
+      "panics": [
+        {
+          "line": 3075,
+          "text": "2026-11-17T22:35:32.6967560Z thread 'specification::reasoning_loop::step_6_candidates_are_validated_against_constraints' (4563) panicked at tests/unit/specification/reasoning_loop.rs:216:5:"
+        },
+        {
+          "line": 3101,
+          "text": "2026-11-17T22:35:32.6977849Z thread 'specification::reasoning_paths_procedures::how_to_make_tea_uses_source_backed_procedure_plan' (4798) panicked at tests/unit/specification/reasoning_paths_procedures.rs:175:5:"
+        },
+        {
+          "line": 3131,
+          "text": "2026-11-17T22:35:32.7019454Z thread 'specification::spoken_hour_scheduling::issue_595_calendar_create_path_keeps_supported_language_coverage' (5292) panicked at tests/unit/specification/spoken_hour_scheduling.rs:183:13:"
+        },
+        {
+          "line": 3162,
+          "text": "2026-11-17T22:35:32.7031066Z thread 'specification::synthesis::compound_courtesy_and_question_are_answered_in_source_order' (5353) panicked at tests/unit/specification/synthesis.rs:344:9:"
+        },
+        {
+          "line": 3196,
+          "text": "2026-11-17T22:35:32.7059441Z thread 'specification::synthesis::decomposed_sub_results_are_composed_for_algebra' (5382) panicked at tests/unit/specification/synthesis.rs:280:5:"
+        },
+        {
+          "line": 3226,
+          "text": "2026-11-17T22:35:32.7070759Z thread 'specification::synthesis::renumbered_algebra_substitution_recomputes_closed_value' (5385) panicked at tests/unit/specification/synthesis.rs:478:5:"
+        },
+        {
+          "line": 3256,
+          "text": "2026-11-17T22:35:32.7081546Z thread 'specification::synthesis::shared_cross_runtime_synthesis_fixture_matches_rust_solver' (5386) panicked at tests/unit/specification/synthesis.rs:88:13:"
+        },
+        {
+          "line": 3286,
+          "text": "2026-11-17T22:35:32.7093409Z thread 'specification::benchmarks::issue_317_held_out_benchmark_variants_pass_by_derivation' (3731) panicked at tests/unit/specification/benchmarks.rs:130:9:"
+        }
+      ]
+    },
+    {
+      "job": 134419506408,
+      "name": "Test (ubuntu-24.04 / specification) shard 2/4",
+      "artifact": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506408.log.gz",
+      "rawBytes": 1097817,
+      "rawLines": 3242,
+      "rawSha256": "3b606d1b92d0fefe41f0e8c27bb1920fcdb5f6c299c376f0ab1532648f78118e",
+      "largeLines": [
+        {
+          "line": 3078,
+          "bytes": 395596,
+          "sha256": "3b2d7de9a6ca33f6d1323770401118fa1021443658c40aa28c3d5da0d9985ff8",
+          "prefix": "2026-11-17T22:38:19.2377284Z   left: SymbolicAnswer { intent: \"web_search\", answer: \"Fused 3 statement(s) from 10 captured source(s) for `apple is a fruit`:\\n\\n1. A reference servi"
+        },
+        {
+          "line": 3079,
+          "bytes": 395982,
+          "sha256": "83535705082a8828014663e5fabc96e814425625db391362a4fd95bc83f3d1c7",
+          "prefix": "2026-11-17T22:38:19.4028824Z  right: SymbolicAnswer { intent: \"web_search\", answer: \"Fused 3 statement(s) from 10 captured source(s) for `apple is a fruit`:\\n\\n1. A reference servi"
+        }
+      ],
+      "panics": [
+        {
+          "line": 3076,
+          "text": "2026-11-17T22:38:19.1515828Z thread 'specification::formalization::same_prompt_and_config_produce_same_interpretation_choice' (4793) panicked at tests/unit/specification/formalization.rs:286:5:"
+        },
+        {
+          "line": 3106,
+          "text": "2026-11-17T22:38:19.4835385Z thread 'specification::synthesis::renumbered_word_problem_recomputes_from_quantities' (8490) panicked at tests/unit/specification/synthesis.rs:446:5:"
+        }
+      ]
+    },
+    {
+      "job": 134419506413,
+      "name": "Test (ubuntu-24.04 / full) shard 5/8",
+      "artifact": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-catalog-jobs/job-134419506413.log.gz",
+      "rawBytes": 617912,
+      "rawLines": 3778,
+      "rawSha256": "3ab70fdd8df701e987ee56c359d5e597e3318dcb8c098942eda5a00b88a4cf06",
+      "largeLines": [
+        {
+          "line": 3375,
+          "bytes": 186070,
+          "sha256": "8c65f8bbad40f6ef073e92b8bc706abaceab95824ae5d6d18af56d6344749622",
+          "prefix": "2026-11-17T22:47:45.0187267Z  right: \"google_trends_catalog\\n  record_type \\\"google_trends_catalog\\\"\\n  source \\\"google_trends_rss\\\"\\n  source_url \\\"https://trends.google.com/trend"
+        }
+      ],
+      "panics": [
+        {
+          "line": 3372,
+          "text": "2026-11-17T22:47:44.9522349Z thread 'agentic_coding::issue_498_google_trends_catalog::committed_google_trends_catalog_is_generated_by_the_recipe' (3917) panicked at tests/unit/agentic-coding/issue_498_google_trends_catalog.rs:32:5:"
+        },
+        {
+          "line": 3402,
+          "text": "2026-11-17T22:47:45.0686979Z thread 'issue_1138_place_timezone::a_tbilisi_mention_resolves_through_the_city_entity' (11486) panicked at tests/unit/issue_1138_place_timezone.rs:49:5:"
+        },
+        {
+          "line": 3432,
+          "text": "2026-11-17T22:47:45.0694919Z thread 'issue_498_google_trends::checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages' (11723) panicked at tests/unit/issue_498_google_trends.rs:85:5:"
+        },
+        {
+          "line": 3462,
+          "text": "2026-11-17T22:47:45.0709427Z thread 'issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_spanish' (10879) panicked at tests/unit/issue_1133_hive_mind_three_runs/extended.rs:666:28:"
+        },
+        {
+          "line": 3489,
+          "text": "2026-11-17T22:47:45.0749700Z thread 'issue_706_any_language::a_language_without_localized_openers_reports_a_gap_not_english' (12719) panicked at tests/unit/issue_706_any_language.rs:445:5:"
+        },
+        {
+          "line": 3519,
+          "text": "2026-11-17T22:47:45.0757643Z thread 'seed::issue_699_handler_migration::unsupported_write_program_fails_with_a_named_skill_gap' (15363) panicked at tests/unit/seed/issue_699_handler_migration.rs:231:13:"
+        }
+      ]
+    },
+    {
+      "job": 134419506453,
+      "name": "Test (ubuntu-24.04 / full) shard 7/8",
+      "artifact": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506453.log.gz",
+      "rawBytes": 300264,
+      "rawLines": 3164,
+      "rawSha256": "a71a3dcabf90712c1024cbe11226c59137a2c2683258717606405eb8fadf08c8",
+      "largeLines": [],
+      "panics": []
+    },
+    {
+      "job": 134419506466,
+      "name": "Test (ubuntu-24.04 / full) shard 6/8",
+      "artifact": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506466.log.gz",
+      "rawBytes": 376189,
+      "rawLines": 3832,
+      "rawSha256": "95383f017c44862fce06a5ebe0b5ce612af8edbf5ee7bf13a48c51bbcf5287ed",
+      "largeLines": [],
+      "panics": [
+        {
+          "line": 3370,
+          "text": "2026-11-17T22:46:45.5171053Z thread 'formal_ai::seed_and_memory::http_fetch_and_url_navigate_intents_are_distinct' (8884) panicked at tests/unit/formal_ai/seed_and_memory.rs:239:5:"
+        },
+        {
+          "line": 3397,
+          "text": "2026-11-17T22:46:45.5177649Z thread 'issue_1133_hive_mind_three_runs::extended::the_full_claude_code_drive_reads_builds_verifies_and_pushes_kotlin' (10488) panicked at tests/unit/issue_1133_hive_mind_three_runs/extended.rs:193:9:"
+        },
+        {
+          "line": 3423,
+          "text": "2026-11-17T22:46:45.5204956Z thread 'page_formalization_route::formalize_url_answers_the_statements_of_the_fetched_page_in_every_language' (15307) panicked at tests/unit/page_formalization_route.rs:124:9:"
+        },
+        {
+          "line": 3453,
+          "text": "2026-11-17T22:46:45.5214820Z thread 'web_requests::source_search_prompts_still_cover_supported_languages' (17769) panicked at tests/unit/web_requests.rs:697:13:"
+        },
+        {
+          "line": 3556,
+          "text": "2026-11-17T22:47:06.7658831Z thread 'issue_1138_family_behaviour::every_retired_handler_prompt_still_answers_through_its_family' (20445) panicked at tests/integration/issue_1138_family_behaviour.rs:97:5:"
+        },
+        {
+          "line": 3586,
+          "text": "2026-11-17T22:47:06.7670930Z thread 'with_formal_ai_argv::with_formal_ai_renders_the_same_argv_from_an_argument_and_a_piped_prompt' (20815) panicked at tests/integration/with_formal_ai_argv.rs:97:9:"
+        }
+      ]
+    },
+    {
+      "job": 134419506490,
+      "name": "Test (ubuntu-24.04 / specification) shard 3/4",
+      "artifact": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506490.log.gz",
+      "rawBytes": 322689,
+      "rawLines": 3414,
+      "rawSha256": "44c159390c091b9e5a47a01b58d6a959bca6fe28816232dd1f6ea8232309772b",
+      "largeLines": [],
+      "panics": [
+        {
+          "line": 3098,
+          "text": "2026-11-17T22:41:59.5623318Z thread 'specification::benchmarks::issue_304_benchmark_suite_reports_pass_fail_counts' (4008) panicked at tests/unit/specification/benchmarks.rs:803:5:"
+        },
+        {
+          "line": 3130,
+          "text": "2026-11-17T22:41:59.5635106Z thread 'specification::benchmarks::issue_314_numeric_benchmark_cases_compute_with_trace' (4011) panicked at tests/unit/specification/benchmarks.rs:890:10:"
+        },
+        {
+          "line": 3158,
+          "text": "2026-11-17T22:41:59.5644141Z thread 'specification::benchmarks::issue_315_unseen_python_function_synthesizes_without_seed_hit' (4014) panicked at tests/unit/specification/benchmarks.rs:890:10:"
+        },
+        {
+          "line": 3186,
+          "text": "2026-11-17T22:41:59.5652828Z thread 'specification::benchmarks::issue_704_portfolio_rescues_the_industry_search_case' (4053) panicked at tests/unit/specification/benchmarks.rs:890:10:"
+        },
+        {
+          "line": 3214,
+          "text": "2026-11-17T22:41:59.5661799Z thread 'specification::debug_session::a_served_chat_turn_answers_only_after_its_last_stage' (7116) panicked at tests/unit/specification/debug_session.rs:147:5:"
+        },
+        {
+          "line": 3246,
+          "text": "2026-11-17T22:41:59.5689771Z thread 'specification::pronoun_topic_follow_up::seeded_coreference_contexts_normalize_terminal_multilingual_surfaces' (14226) panicked at tests/unit/specification/pronoun_topic_follow_up.rs:146:9:"
+        },
+        {
+          "line": 3276,
+          "text": "2026-11-17T22:41:59.5698951Z thread 'specification::synthesis::paraphrased_algebra_prompt_reaches_same_derivation' (15207) panicked at tests/unit/specification/synthesis.rs:408:5:"
+        }
+      ]
+    },
+    {
+      "job": 134419506604,
+      "name": "Test (ubuntu-24.04 / full) shard 4/8",
+      "artifact": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506604.log.gz",
+      "rawBytes": 315981,
+      "rawLines": 3306,
+      "rawSha256": "e5f8c2255757b6fc29ff2333fbf1a0b37e7677fec81898580fc29c4ec3a176e4",
+      "largeLines": [],
+      "panics": []
+    },
+    {
+      "job": 134419506701,
+      "name": "Test (ubuntu-24.04 / full) shard 2/8",
+      "artifact": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506701.log.gz",
+      "rawBytes": 367632,
+      "rawLines": 3726,
+      "rawSha256": "5ddcb932806934e820983bc778da4b9b1db4c28a61d27292f959fb75f75e5021",
+      "largeLines": [],
+      "panics": [
+        {
+          "line": 3323,
+          "text": "2026-11-17T22:44:53.0109139Z thread 'ci_cd::network_download_retry::no_remote_download_is_left_out_of_that_rule' (6719) panicked at tests/unit/ci-cd/network_download_retry.rs:172:13:"
+        },
+        {
+          "line": 3349,
+          "text": "2026-11-17T22:44:53.0116125Z thread 'issue_1133_hive_mind_three_runs::extended::a_connector_result_keeps_its_structured_content' (10437) panicked at tests/unit/issue_1133_hive_mind_three_runs/extended.rs:555:5:"
+        },
+        {
+          "line": 3379,
+          "text": "2026-11-17T22:44:53.0142425Z thread 'issue_1138_retrieval_method::the_family_prompts_reach_the_interpreter_and_stay_honest_offline' (10461) panicked at tests/unit/issue_1138_retrieval_method.rs:148:5:"
+        },
+        {
+          "line": 3522,
+          "text": "2026-11-17T22:45:35.6318780Z thread 'formal_ai_cli::cli_serve_exposes_agentic_tool_protocols_over_loopback' (21676) panicked at tests/integration/formal_ai_cli.rs:190:5:"
+        }
+      ]
+    },
+    {
+      "job": 134419506752,
+      "name": "Test (ubuntu-24.04 / specification) shard 4/4",
+      "artifact": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506752.log.gz",
+      "rawBytes": 348457,
+      "rawLines": 3255,
+      "rawSha256": "662e84cfd45402de68bd6bbd982e1cc19de9e58f64d5e3d5795ffb1f8597e1f5",
+      "largeLines": [],
+      "panics": [
+        {
+          "line": 3081,
+          "text": "2026-11-17T22:43:07.3226125Z thread 'specification::synthesis::object_counting_filters_items_by_requested_category' (15601) panicked at tests/unit/specification/synthesis.rs:514:9:"
+        },
+        {
+          "line": 3117,
+          "text": "2026-11-17T22:43:07.3460019Z thread 'specification::unknown_reasoning::unresolved_bare_term_routes_to_web_search_after_local_sources_miss' (15791) panicked at tests/unit/specification/unknown_reasoning.rs:91:9:"
+        }
+      ]
+    },
+    {
+      "job": 134419506816,
+      "name": "Test (ubuntu-24.04 / full)",
+      "artifact": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-catalog-jobs/job-134419506816.log.gz",
+      "rawBytes": 662713,
+      "rawLines": 4356,
+      "rawSha256": "7f2c2e24ddedcda4902447b4a1c6a1bbdf754f6fcd5f8442cc63b6da9fc4ac90",
+      "largeLines": [
+        {
+          "line": 3859,
+          "bytes": 185713,
+          "sha256": "665a04a46595965f1003cf60bd75693115bd106504c49dd690f7c4ec18c404c7",
+          "prefix": "2026-11-17T22:49:10.2029441Z  right: Some(\"google_trends_catalog\\n  record_type \\\"google_trends_catalog\\\"\\n  source \\\"google_trends_rss\\\"\\n  source_url \\\"https://trends.google.com/"
+        }
+      ],
+      "panics": [
+        {
+          "line": 2938,
+          "text": "2026-11-17T22:37:57.5791684Z thread 'data_files::meaning_slugs_are_globally_unique' (14099) panicked at tests/unit/data_files.rs:648:5:"
+        },
+        {
+          "line": 2967,
+          "text": "2026-11-17T22:37:57.6702131Z thread 'data_files::seed_lino_values_never_pipe_pack_multi_values' (14105) panicked at tests/unit/data_files.rs:235:13:"
+        },
+        {
+          "line": 3000,
+          "text": "2026-11-17T22:37:58.0731309Z thread 'data_files::lino_data_files_are_parseable_human_readable_and_bounded' (14095) panicked at tests/unit/data_files.rs:62:13:"
+        },
+        {
+          "line": 3856,
+          "text": "2026-11-17T22:49:10.1249030Z thread 'agentic_coding::issue_498_google_trends_catalog::committed_agent_cli_session_matches_a_fresh_google_trends_run' (15415) panicked at tests/unit/agentic-coding/issue_498_google_trends_catalog.rs:114:5:"
+        },
+        {
+          "line": 3886,
+          "text": "2026-11-17T22:49:10.2423348Z thread 'capability_routing::issue_1138_self_use_intent_routing::a_scheduling_request_reaches_the_calendar_whatever_verb_it_uses' (17970) panicked at tests/unit/capability-routing/issue_1138_self_use_intent_routing.rs:268:5:"
+        },
+        {
+          "line": 3916,
+          "text": "2026-11-17T22:49:10.2431190Z thread 'ci_cd::workflow_release::pages_deploy_uses_the_actions_maximum_supported_wait' (19074) panicked at tests/unit/ci-cd/workflow_release.rs:67:10:"
+        },
+        {
+          "line": 3943,
+          "text": "2026-11-17T22:49:10.2438386Z thread 'docs_requirements::issues::agent_cli_shell::issue_607_shell_planner_and_serve_opt_in_are_traceable' (23319) panicked at tests/unit/docs_requirements/agent_cli_shell.rs:147:9:"
+        },
+        {
+          "line": 3969,
+          "text": "2026-11-17T22:49:10.2445141Z thread 'issue_1133_hive_mind_three_runs::extended::a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified' (24434) panicked at tests/unit/issue_1133_hive_mind_three_runs/extended.rs:342:5:"
+        },
+        {
+          "line": 3995,
+          "text": "2026-11-17T22:49:10.2473425Z thread 'issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification' (25165) panicked at tests/unit/issue_1133_hive_mind_three_runs.rs:158:32:"
+        },
+        {
+          "line": 4021,
+          "text": "2026-11-17T22:49:10.2479904Z thread 'issue_1133_hive_mind_three_runs::extended::the_named_branch_is_pushed_to_in_russian' (25130) panicked at tests/unit/issue_1133_hive_mind_three_runs/extended.rs:23:5:"
+        },
+        {
+          "line": 4053,
+          "text": "2026-11-17T22:49:10.2487943Z thread 'solver::issue_1138_self_use_concept_lookup::an_unresolved_word_is_looked_up_rather_than_answered_with_the_provider_description' (28642) panicked at tests/unit/solver/issue_1138_self_use_concept_lookup.rs:291:13:"
+        },
+        {
+          "line": 4083,
+          "text": "2026-11-17T22:49:10.2501602Z thread 'web_requests::web_search_source_marker_prompts_extract_query_without_source_marker' (29524) panicked at tests/unit/web_requests.rs:421:13:"
+        }
+      ]
+    },
+    {
+      "job": 134419506862,
+      "name": "Test (ubuntu-24.04 / full) shard 3/8",
+      "artifact": "experiments/issue-1580/evidence/ci/main-015a6831/individual-native-failed-jobs/job-134419506862.log.gz",
+      "rawBytes": 303066,
+      "rawLines": 3202,
+      "rawSha256": "b6ee72a372b5aedf0275c9905869ee733edee04d9d0288307396d1022864dbb6",
+      "largeLines": [],
+      "panics": []
+    }
+  ],
+  "downloadComplete": true,
+  "fullLiteralReviewComplete": false
+}

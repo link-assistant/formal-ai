@@ -272,3 +272,40 @@ both unchanged-limit gate failures. Compact only the new checkout configuration
 using its prior flow style, prove parsed YAML equality, and regenerate with the
 maintained compiler: 1,494 lines, unchanged 52 operations/104 bindings/staged
 workflow bytes. Recheck affected gates and focused regressions before pushing.
+
+
+## Direct native evidence and published checkout result
+
+All 23 workflows on 7e89122c pass in the 2026-11-18 01:41 UTC snapshot, after
+one unchanged-head checkout-only retry in Layered CI. Preserve both attempts and
+the exact source/job identities. Direct downloads of all 12 failed main native
+jobs recover 53 distinct panic headers, correcting the incomplete 39-header
+aggregate. All 14 newly recovered primary assertion payloads are read; complete
+job-log literal review is explicitly unfinished. Three budget-terminated jobs
+remain failures even without panic headers.
+
+Candidate commits retain seed membership provenance alongside retrieval matches,
+observe the connector's real workspace probe, trace the current CLI/environment
+source owners and freeze the interpretation equality fixture's network input.
+Keep the original semantic/negative/full-answer assertions. The first eight
+focused commands pass, including 22 JavaScript cases and source/projection/size
+checks; the last two fixtures pass formatting/whitespace checks. No native
+behavioral verification is claimed. Complete evidence and limitations are in
+docs/case-studies/issue-1580/native-evidence-checkpoint.md.
+
+The two fresh native catalog payloads differ from the committed artifact and
+each other. Offline alone still accepts warm cache entries; preserve strict
+artifact/session/receipt checks while investigating immutable inputs. Finish
+touched gates, preserve supplied scripts and command transcripts, review the
+complete batch, refresh main/feedback/run state, then push once. Inspect all
+next-head results while continuing remaining native and template work. Every
+broader unchecked criterion above remains open; keep the goal active and PR draft.
+
+
+Final publication verification passes all five selected JavaScript gates, plus
+formatting of all four candidate source/fixture files and whitespace checks.
+The complete logs and unchanged source identities are retained under
+`experiments/issue-1580/evidence/checks/native-round-publication/`. Fresh 01:57 UTC
+feedback is unchanged, main 015a6831 remains merged, all 23 published-head runs
+pass and both branch active/queued lists are empty. Native behavior and the
+broader acceptance criteria remain unfinished.
