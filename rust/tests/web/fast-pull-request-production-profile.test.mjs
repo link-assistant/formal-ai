@@ -151,7 +151,7 @@ test('essential PR checkouts reserve their original test clocks and avoid unrela
   assert.equal(version.steps[0].with['sparse-checkout'],
     '/scripts/ci-pull-request-admission.mjs\n/scripts/lib/documentation-paths.mjs\n/Cargo.toml\n/rust/Cargo.toml\n');
   assert.equal(javascript.steps[0].with['sparse-checkout'],
-    '/*\n!/experiments/formal_ai_subagent/evidence/coordinator-1188/\n!/dev/log/\n/dev/log/issues/702/pulls/818/agent-cli/\n');
+    '/*\n!/experiments/formal_ai_subagent/evidence/coordinator-1188/\n!/dev/log/\n/dev/log/issues/702/pulls/818/agent-cli/\n!/docs/case-studies/**/*.gz\n!/docs/case-studies/**/*.log\n!/docs/case-studies/**/*.zip\n!/docs/case-studies/**/*.tgz\n!/docs/case-studies/**/*.diff\n!/experiments/*/evidence/**/*.gz\n!/experiments/*/evidence/**/*.log\n!/experiments/*/evidence/**/*.zip\n!/experiments/*/evidence/**/*.tgz\n!/experiments/*/evidence/**/*.diff\n/docs/case-studies/issue-717/e2e-npm-ci.log\n/docs/case-studies/issue-932/raw-data/verify-*.log\n/docs/case-studies/issue-982/self-hosting/contract/*.gz\n/experiments/issue-1580/evidence/ci/main-826289fc/cli/opencode-interactive-proxy.jsonl.gz\n/experiments/issue-1580/evidence/ci/main-826289fc/cli/qwen-interactive-proxy.jsonl.gz\n');
   assert.equal(javascript.steps.find(step=>step.name==='Run this shard of the JavaScript suites').env.TEST_BUDGET_SECONDS, 360);
   assert.match(release.jobs['version-check'].steps.at(-1).run, /ci-pull-request-admission[.]mjs version/u);
 });
@@ -228,6 +228,34 @@ function checkoutSelection(patterns,files) {
     return selected;
   } finally {rmSync(directory,{recursive:true,force:true});}
 }
+
+
+test('JavaScript acquisition excludes historical archives and retains consumed regression operands', () => {
+  const patterns=workflow('layered-ci.yml').jobs.js.steps[0].with['sparse-checkout'];
+  const retained=['docs/case-studies/issue-717/e2e-npm-ci.log',
+    'docs/case-studies/issue-932/raw-data/verify-python.log',
+    'docs/case-studies/issue-982/self-hosting/contract/actual.log.gz',
+    ...['opencode','qwen'].map(client=>`experiments/issue-1580/evidence/ci/main-826289fc/cli/${client}-interactive-proxy.jsonl.gz`),
+    'rust/tests/fixtures/expected.log','experiments/issue-1580/evidence/checks/receipt.json',
+    'docs/case-studies/issue-703/comparison/sessions/000-codex.json'];
+  const omitted=['gz','log','zip','tgz','diff'].flatMap(extension=>[
+    `docs/case-studies/history/nested/archive.${extension}`,
+    `experiments/issue-1580/evidence/ci/old/archive.${extension}`]);
+  assert.deepEqual(checkoutSelection(patterns,[...retained,...omitted]),retained);
+  const files=execFileSync('git',['ls-files','--cached','-z'],{
+    encoding:'utf8',timeout:5000,maxBuffer:16*1024*1024
+  }).split('\0').filter(Boolean);
+  const selected=new Set(checkoutSelection(patterns,files));
+  for(const file of files){
+    if(file.startsWith('dev/log/')||file.startsWith('experiments/formal_ai_subagent/evidence/coordinator-1188/'))continue;
+    if(!selected.has(file)){
+      assert.match(file,/^(?:docs\/case-studies\/|experiments\/[^/]+\/evidence\/).*\.(?:gz|log|zip|tgz|diff)$/u);
+      assert.equal(fileLimit(file),null,'preserve measured source: '+file);
+    }
+  }
+  for(const file of files.filter(file=>file==='Cargo.lock'||file.endsWith('/Cargo.lock')))
+    assert.ok(selected.has(file),'preserve repo-wide lockfile audit: '+file);
+});
 
 
 test('fast source checkout retains every measured tracked source while excluding only unmeasured archives', () => {

@@ -302,11 +302,28 @@ jobs:
           persist-credentials: false
           fetch-depth: 1
           filter: blob:none
+          # Keep consumed client transcripts, session operands and language logs
+          # while excluding historical archives from this JavaScript test checkout.
           sparse-checkout: |
             /*
             !/experiments/formal_ai_subagent/evidence/coordinator-1188/
             !/dev/log/
             /dev/log/issues/702/pulls/818/agent-cli/
+            !/docs/case-studies/**/*.gz
+            !/docs/case-studies/**/*.log
+            !/docs/case-studies/**/*.zip
+            !/docs/case-studies/**/*.tgz
+            !/docs/case-studies/**/*.diff
+            !/experiments/*/evidence/**/*.gz
+            !/experiments/*/evidence/**/*.log
+            !/experiments/*/evidence/**/*.zip
+            !/experiments/*/evidence/**/*.tgz
+            !/experiments/*/evidence/**/*.diff
+            /docs/case-studies/issue-717/e2e-npm-ci.log
+            /docs/case-studies/issue-932/raw-data/verify-*.log
+            /docs/case-studies/issue-982/self-hosting/contract/*.gz
+            /experiments/issue-1580/evidence/ci/main-826289fc/cli/opencode-interactive-proxy.jsonl.gz
+            /experiments/issue-1580/evidence/ci/main-826289fc/cli/qwen-interactive-proxy.jsonl.gz
           sparse-checkout-cone-mode: false
       - name: Report DRY review and language coverage
         if: matrix.shard == 1
