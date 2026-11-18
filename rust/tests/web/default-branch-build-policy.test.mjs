@@ -66,7 +66,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
   assert.equal(others.length, 0);
   const runs = check.steps.map(step => step.run).filter(Boolean);
   assert.deepEqual(runs.filter(run => !run.startsWith('echo ')), ['bash scripts/ci-clippy-profile.sh --library-and-binaries',
-    'cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test meta_executor_parity --test synthesis_contracts --test cnl_output --test cnl_parity --test unknown_reasoning --test data_files -- --test-threads=1',
+    'cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test meta_executor_parity --test synthesis_contracts --test cnl_output --test cnl_parity --test unknown_reasoning --test data_files --test scheduling_contracts -- --test-threads=1',
     'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_unknown_reasoning::tests:: -- --test-threads=1\n' +
     'cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1\n',
     'node --test --test-concurrency=1 rust/tests/web/issue-1590-forced-functions.test.mjs',
@@ -530,5 +530,17 @@ test('native data-file regressions select every consumed source and data format'
     assert.equal(admission([path])['native-type-check'], true, path);
   for (const path of ['data/benchmarks/fixture.json', 'data/meta/fixture.txt',
     'data/cache/fixture.txt', 'rust/tests/unit/unrelated.rs'])
+    assert.equal(admission([path])['native-type-check'], false, path);
+});
+
+
+test('native scheduling regressions select every consumed source', () => {
+  for (const path of ['rust/tests/unit/scheduling_contracts.rs',
+    'rust/tests/unit/issue_1138_place_timezone.rs', 'rust/tests/unit/solver/issue_869_meeting_scheduling.rs',
+    'rust/tests/unit/specification/spoken_hour_scheduling.rs',
+    'rust/tests/unit/capability-routing/issue_1138_self_use_intent_routing.rs',
+    'rust/tests/fixtures/issue-1580-calendar-clock.json', 'data/benchmarks/self-use-intent-routing.lino'])
+    assert.equal(admission([path])['native-type-check'], true, path);
+  for (const path of ['rust/tests/unit/unrelated.rs', 'rust/tests/fixtures/unrelated.json'])
     assert.equal(admission([path])['native-type-check'], false, path);
 });

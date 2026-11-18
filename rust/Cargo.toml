@@ -172,6 +172,10 @@ name = "data_files"
 path = "tests/unit/data_files.rs"
 
 [[test]]
+name = "scheduling_contracts"
+path = "tests/unit/scheduling_contracts.rs"
+
+[[test]]
 name = "integration"
 path = "tests/integration/mod.rs"
 
