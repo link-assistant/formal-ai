@@ -75,6 +75,7 @@ fn answer_http_fetch_url(
     log: &mut EventLog,
     offline: bool,
 ) -> SymbolicAnswer {
+    let offline = offline || !crate::solver_config::read_network_allowed();
     if is_page_formalization_prompt(prompt, &normalize_prompt(prompt)) {
         let cache_root = crate::coding::synthesis_runtime::source_cache_root();
         let client =
@@ -277,8 +278,8 @@ pub const WEB_SEARCH_PROVIDERS: &[&str] = CORE_WEB_SEARCH_PROVIDERS;
 /// executed search through the process source cache — captured sources
 /// answer from their statements with citations, and anything else degrades
 /// to the localized `web_search_unavailable` response. Live provider
-/// fetches stay opt-in via `FORMAL_AI_LIVE_FETCH`, matching the combined
-/// offline gate `solver_dispatch.rs` applies to its `web_search` route.
+/// reads use the shared default-on policy, combined with the caller's
+/// explicit offline mode on every route.
 pub fn try_web_search(
     prompt: &str,
     normalized: &str,
@@ -286,7 +287,7 @@ pub fn try_web_search(
 ) -> Option<SymbolicAnswer> {
     let request = extract_web_search_request(prompt, normalized)?;
     // The native-handler table carries no runtime offline flag; the live-fetch
-    // opt-in is applied inside `answer_web_search_query`.
+    // policy is applied inside `answer_web_search_query`.
     Some(answer_web_search_query(
         prompt,
         &request.query,
@@ -321,9 +322,8 @@ pub fn detect_web_search_query(prompt: &str) -> Option<String> {
 /// `web_search_unavailable` response that names the query.
 ///
 /// `runtime_offline` is the caller's own offline mode; the
-/// `FORMAL_AI_LIVE_FETCH` opt-in is applied here so every caller gets the
-/// combined offline gate `solver_dispatch.rs` uses at its `web_search` call
-/// site.
+/// shared read policy is applied here so every caller respects explicit
+/// offline and operator network-deny settings.
 pub fn answer_web_search_query(
     prompt: &str,
     query: &str,

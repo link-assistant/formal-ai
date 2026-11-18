@@ -380,7 +380,9 @@ pub fn answer_cache_miss(
                     ("content_id", &content_id),
                 ],
             );
-            let _recorded = record_discovered(&recipe);
+            if !crate::solver_config::ephemeral_enabled() {
+                let _recorded = record_discovered(&recipe);
+            }
             Some(recipe.entry)
         }
         Err(reason) => {

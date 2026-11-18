@@ -800,12 +800,28 @@ pub fn statement_clauses(sentence: &Segment) -> Vec<Segment> {
 /// A statement's subject carries over to the next clause that points back.
 #[must_use]
 pub fn formalize_sentences(text: &str, language: &str) -> Vec<Sentence> {
+    formalize_sentence_segments(sentences(text), language, false)
+}
+
+/// Formalize preselected sentence segments, optionally keeping each as one statement.
+pub(crate) fn formalize_sentence_segments(
+    segments: Vec<Segment>,
+    language: &str,
+    whole_sentences: bool,
+) -> Vec<Sentence> {
     let mut out = Vec::new();
     let mut previous_subject: Option<Word> = None;
-    for sentence in sentences(text) {
+    for sentence in segments {
         let sentence_dialogue = super::dialogue::formalize_dialogue(&sentence.text, language);
         let mut statements = Vec::new();
-        for (index, clause) in statement_clauses(&sentence).iter().enumerate() {
+        let split;
+        let parts = if whole_sentences {
+            std::slice::from_ref(&sentence)
+        } else {
+            split = statement_clauses(&sentence);
+            &split
+        };
+        for (index, clause) in parts.iter().enumerate() {
             let mut statement = clause_statement(
                 &clause.text,
                 language,

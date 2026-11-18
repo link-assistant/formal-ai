@@ -188,20 +188,18 @@ export function writeDialogExchange(directory, method, requestPath, headers, req
 export function recordApiExchangeIfEnabled(request, response, authorized, env = process.env, logger = null) {
   try {
     if (!authorized || logger?.level === 'silent') return;
+    const directory = configuredDialogLogDirectory(env);
+    if (!directory || String(request.path).split('?')[0].includes('/conversations/')) return;
     {
       const redact=makeRedactor(env,{preserveJsonNumbers:true});
       const safe=redact({...request,headers:Object.fromEntries(request.headers??[]),body:redactedBody(String(request.body??''),env)});
       request={...safe,headers:Object.entries(safe.headers)};
       response=redact({...response,body:redactedBody(String(response.body??''),env)});
     }
-    const requestPath = String(request.path);
-    if (requestPath.split('?')[0].includes('/conversations/')) return;
-    const directory = configuredDialogLogDirectory(env);
-    if (!directory) return;
     const file = writeDialogExchange(
       directory,
       request.method,
-      requestPath,
+      String(request.path),
       request.headers,
       String(request.body ?? ''),
       response.statusCode,

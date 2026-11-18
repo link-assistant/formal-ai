@@ -1,0 +1,11 @@
+{
+  "mergeParent": "721d89d03cd75ac90c0fb584e70fdb14b5aa35ef",
+  "mergedMain": "826289fc78154dcd894199ed966f366176be0afb",
+  "focusedChecks": 51,
+  "localGates": 138,
+  "passedOrSkipped": 137,
+  "remainingFailure": "check-javascript-dependencies: GHSA-fc5q-39xc-vjpf",
+  "previousHeadSuccessfulWorkflows": 23,
+  "governedWitnessBytesUnchanged": true,
+  "localRustBuild": false
+}

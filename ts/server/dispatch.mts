@@ -109,7 +109,7 @@ export async function dispatch(ctx, request) {
   // (`DialogScope::begin` in `handle_api_request_with_auth`).
   return withDialogScope(request.headers, async () => {
     const response = await dispatchRoute(ctx, request);
-    recordApiExchangeIfEnabled(request, response, authorized, ctx.env || process.env, ctx.logger);
+    if (!ctx.ephemeral) recordApiExchangeIfEnabled(request, response, authorized, ctx.env || process.env, ctx.logger);
     return response;
   });
 }
@@ -128,6 +128,9 @@ async function dispatchRoute(ctx, request) {
   }
   const matched = matchRoute(method, normalizedPath);
   if (!matched) return messageError(404, 'route_not_found');
+  if (ctx.ephemeral && ['conversation_learn', 'telegram_webhook'].includes(matched.route.id)) {
+    return messageError(409, 'operation-requires-persistent-mode');
+  }
   const handler = ROUTE_HANDLERS[matched.route.id];
   try {
     return await handler(ctx, { method, path, normalizedPath, query, headers, body, params: matched.params });

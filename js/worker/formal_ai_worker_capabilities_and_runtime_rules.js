@@ -423,7 +423,21 @@ function featureCapabilityContent(feature, language, availability) {
   return capabilityResponse("feature_capability_unavailable", language, { reason, label, example });
 }
 
+// Permission guidance owns a direct request, not a phrase quoted by another task.
+function internetAccessHelpRequested(prompt, normalized) {
+  if (/^[\s]*["'`«“‘]/u.test(prompt)) return false;
+  return roleWordForms("internet-access-help").some((form) => {
+    const surface = normalizePrompt(form.text);
+    return surface && (normalized === surface || normalized.startsWith(surface + " ") ||
+      (containsCjk(surface) && normalized.startsWith(surface)));
+  });
+}
+
 function tryFeatureCapabilityStatus(prompt, normalized, language, preferences) {
+  if (internetAccessHelpRequested(prompt, normalized)) return {
+    intent: "capabilities", content: capabilityResponse("internet-access-help", language),
+    confidence: 1, evidence: ["handler:capabilities", "permission:guidance", `language:${language}`],
+  };
   if (isConcretePropertyQuestion(prompt)) return null;
   if (!isFeatureCapabilityQuestion(normalized, language)) return null;
   const feature = detectFeatureCapability(normalized, language);

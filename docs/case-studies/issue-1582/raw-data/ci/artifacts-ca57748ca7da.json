@@ -1,0 +1,154 @@
+[
+  {
+    "run": 44102310892,
+    "sha": "ca57748ca7daf0882618977e23382a13e07b4d0d",
+    "artifacts": []
+  },
+  {
+    "run": 44102311562,
+    "sha": "ca57748ca7daf0882618977e23382a13e07b4d0d",
+    "artifacts": []
+  },
+  {
+    "run": 44102311665,
+    "sha": "ca57748ca7daf0882618977e23382a13e07b4d0d",
+    "artifacts": []
+  },
+  {
+    "run": 44102311745,
+    "sha": "ca57748ca7daf0882618977e23382a13e07b4d0d",
+    "artifacts": []
+  },
+  {
+    "run": 44102311624,
+    "sha": "ca57748ca7daf0882618977e23382a13e07b4d0d",
+    "artifacts": []
+  },
+  {
+    "run": 44102311151,
+    "sha": "ca57748ca7daf0882618977e23382a13e07b4d0d",
+    "artifacts": []
+  },
+  {
+    "run": 44102311217,
+    "sha": "ca57748ca7daf0882618977e23382a13e07b4d0d",
+    "artifacts": []
+  },
+  {
+    "run": 44102311076,
+    "sha": "ca57748ca7daf0882618977e23382a13e07b4d0d",
+    "artifacts": []
+  },
+  {
+    "run": 44102311660,
+    "sha": "ca57748ca7daf0882618977e23382a13e07b4d0d",
+    "artifacts": []
+  },
+  {
+    "run": 44102311783,
+    "sha": "ca57748ca7daf0882618977e23382a13e07b4d0d",
+    "artifacts": []
+  },
+  {
+    "run": 44102311998,
+    "sha": "ca57748ca7daf0882618977e23382a13e07b4d0d",
+    "artifacts": [
+      {
+        "id": 14335683632,
+        "node_id": "MDg6QXJ0aWZhY3QxNDMzNTY4MzYzMg==",
+        "name": "hive-source-event-1",
+        "size_in_bytes": 321,
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14335683632",
+        "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14335683632/zip",
+        "expired": false,
+        "digest": "sha256:f4adb9a3bf5cb373ca684838a32a9095c1f933ea1afd9aad40a7302d9a1b3eb7",
+        "created_at": "2026-11-17T14:22:14Z",
+        "updated_at": "2026-11-17T14:22:14Z",
+        "expires_at": "2027-02-15T14:22:02Z",
+        "workflow_run": {
+          "id": 44102311998,
+          "repository_id": 1236510803,
+          "head_repository_id": 1236510803,
+          "head_branch": "issue-1582-79aa864de807",
+          "head_sha": "ca57748ca7daf0882618977e23382a13e07b4d0d"
+        }
+      }
+    ]
+  },
+  {
+    "run": 44102311087,
+    "sha": "ca57748ca7daf0882618977e23382a13e07b4d0d",
+    "artifacts": []
+  },
+  {
+    "run": 44102311773,
+    "sha": "ca57748ca7daf0882618977e23382a13e07b4d0d",
+    "artifacts": []
+  },
+  {
+    "run": 44102311757,
+    "sha": "ca57748ca7daf0882618977e23382a13e07b4d0d",
+    "artifacts": []
+  },
+  {
+    "run": 44102311797,
+    "sha": "ca57748ca7daf0882618977e23382a13e07b4d0d",
+    "artifacts": []
+  },
+  {
+    "run": 44102310883,
+    "sha": "ca57748ca7daf0882618977e23382a13e07b4d0d",
+    "artifacts": []
+  },
+  {
+    "run": 44102311067,
+    "sha": "ca57748ca7daf0882618977e23382a13e07b4d0d",
+    "artifacts": []
+  },
+  {
+    "run": 44102310965,
+    "sha": "ca57748ca7daf0882618977e23382a13e07b4d0d",
+    "artifacts": []
+  },
+  {
+    "run": 44102311299,
+    "sha": "ca57748ca7daf0882618977e23382a13e07b4d0d",
+    "artifacts": []
+  },
+  {
+    "run": 44102311863,
+    "sha": "ca57748ca7daf0882618977e23382a13e07b4d0d",
+    "artifacts": []
+  },
+  {
+    "run": 44102311160,
+    "sha": "ca57748ca7daf0882618977e23382a13e07b4d0d",
+    "artifacts": []
+  },
+  {
+    "run": 44102311718,
+    "sha": "ca57748ca7daf0882618977e23382a13e07b4d0d",
+    "artifacts": [
+      {
+        "id": 14337195971,
+        "node_id": "MDg6QXJ0aWZhY3QxNDMzNzE5NTk3MQ==",
+        "name": "source-scanner-js-ca57748ca7daf0882618977e23382a13e07b4d0d",
+        "size_in_bytes": 3959936,
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14337195971",
+        "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14337195971/zip",
+        "expired": false,
+        "digest": "sha256:cffca1c95a6bd83300a851793de8f402fb980a905c91b9510d33e27811c8438c",
+        "created_at": "2026-11-17T14:22:55Z",
+        "updated_at": "2026-11-17T14:22:55Z",
+        "expires_at": "2026-11-24T14:22:54Z",
+        "workflow_run": {
+          "id": 44102311718,
+          "repository_id": 1236510803,
+          "head_repository_id": 1236510803,
+          "head_branch": "issue-1582-79aa864de807",
+          "head_sha": "ca57748ca7daf0882618977e23382a13e07b4d0d"
+        }
+      }
+    ]
+  }
+]

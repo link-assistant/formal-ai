@@ -18,6 +18,16 @@ server_messages
     text "MCP origin is not allowed"
   message mcp_sse_unsupported
     text "MCP SSE streams are not supported"
+  message operation-requires-persistent-mode
+    text "this operation requires persistent mode"
+  message memory-read-only-ephemeral
+    text "memory is read-only in ephemeral mode"
+  message computer-tools-require-persistent-mode
+    text "computer-use tools require persistent mode"
+  message serve-debug-session-requires-persistence
+    text "Step-through debugging requires persistent mode."
+  message serve-help
+    text "Usage: node js/server/main.mjs [serve] [options]\n  --host HOST / --port PORT    Listen address (default 127.0.0.1:8080)\n  --ephemeral                 Read memory without retaining requests (FORMAL_AI_EPHEMERAL=1)\n  --silent                    Disable diagnostics and dialog capture\n  --agent-mode                Enable client tool planning in persistent mode\n  --debug-session             Enable loopback step-through debugging in persistent mode\n  --log-level LEVEL           Diagnostic level (default debug, request metadata only)\n  --log-dir DIR                Structured logs (default ~/.formal-ai/logs)\n  --trace                      Include diagnostic payloads\n  --prerequisite-grant JSON    Workspace prerequisite grant\n  FORMAL_AI_DIALOG_LOG_DIR     Opt in to full dialog capture (off by default)"
   message hello
     text "hello"
   message invalid_chat_request

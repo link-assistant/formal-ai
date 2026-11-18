@@ -75,6 +75,8 @@ roles
     kind predicate
   calculator_tool_name
     kind predicate
+  calendar-date-offset
+    kind meaning
   calendar_day_reference
     kind predicate
   calendar_direction_next
@@ -537,6 +539,8 @@ roles
     kind meaning
   github_repository_traffic_signal
     kind meaning
+  handler-table
+    kind predicate
   hello_world_reference
     kind predicate
   http_fetch
@@ -555,6 +559,8 @@ roles
     kind meaning
   interest_cue
     kind predicate
+  internet-access-help
+    kind meaning
   interrogative_opener
     kind meaning
   inverse_incompatibility_relation
@@ -644,6 +650,8 @@ roles
   local_path_type_request
     kind meaning
   local_shell_request_cue
+    kind predicate
+  localized-response-template
     kind predicate
   localized_response_template
     kind meaning
@@ -1160,6 +1168,12 @@ roles
   task_first_step_cue
     kind meaning
   term_information_request_opener
+    kind meaning
+  text-summary-cause
+    kind meaning
+  text-summary-cause-phrase
+    kind meaning
+  text-summary-phatic
     kind meaning
   text_summarization_action
     kind meaning
