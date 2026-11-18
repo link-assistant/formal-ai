@@ -342,7 +342,7 @@ export async function handleAnthropicMessages(ctx, request) {
   if (unsupported) return unsupported;
   const chatRequest = anthropicToChatCompletionRequest(parsed);
   const scope = requestScope({ body: request.body, messages: chatRequest.messages, tools: chatRequest.tools });
-  const completion = await runInRequestScope(scope, () => createChatCompletion(ctx, chatRequest));
+  const completion = await runInRequestScope(scope, () => createChatCompletion(ctx, chatRequest, { forcedClientFunctions: false }));
   const message = anthropicMessageFromChatCompletion(parsed, completion);
   const answer = message.content
     .filter((block) => block.type === 'text')

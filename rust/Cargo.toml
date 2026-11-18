@@ -136,6 +136,10 @@ name = "calendar_currency"
 path = "tests/unit/calendar-currency.rs"
 
 [[test]]
+name = "openai_forced_functions"
+path = "tests/unit/openai_forced_functions.rs"
+
+[[test]]
 name = "integration"
 path = "tests/integration/mod.rs"
 

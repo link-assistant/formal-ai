@@ -49,9 +49,9 @@ test('actual compiler, image, application and deployment entries refuse PR execu
   }
 });
 // Issue #1191: the only PR job that runs the Rust compiler is main's clippy
-// profile on the library and binaries, plus the isolated issue #1589 native
-// regression target. Full suites, product builds and uploads remain main-only.
-test('the focused PR native check limits execution to lint and the calendar currency regression', () => {
+// profile on the library and binaries, plus the isolated regression targets.
+// Full suites, product builds and uploads remain main-only.
+test('the focused PR native check limits execution to lint and isolated regressions', () => {
   const job = workflow('release.yml').jobs['native-type-check'];
   assert.equal(job.uses, './.github/workflows/native-type-check.yml');
   assert.deepEqual(job.permissions, {contents: 'read'});
@@ -66,14 +66,17 @@ test('the focused PR native check limits execution to lint and the calendar curr
   assert.equal(others.length, 0);
   const runs = check.steps.map(step => step.run).filter(Boolean);
   assert.deepEqual(runs.filter(run => !run.startsWith('echo ')), ['bash scripts/ci-clippy-profile.sh --library-and-binaries',
-    'cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency -- --test-threads=1']);
+    'cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions -- --test-threads=1',
+    'node --test --test-concurrency=1 rust/tests/web/issue-1590-forced-functions.test.mjs']);
   assert.equal(called.on.workflow_call.inputs['compile-inputs-changed'].default, true);
-  for (const step of check.steps.filter(step => step.uses || ['Type-check and lint the library and binaries', 'Verify calendar and currency native behavior'].includes(step.name)))
+  for (const step of check.steps.filter(step => step.uses || ['Type-check and lint the library and binaries', 'Verify calendar, currency and forced OpenAI function behavior', 'Replay the forced function requests against the native CLI'].includes(step.name)))
     assert.equal(step.if, '${{ inputs.compile-inputs-changed }}');
   assert.equal(check.steps[0].if, '${{ !inputs.compile-inputs-changed }}');
   assert.equal(workflow('release.yml').on.pull_request['paths-ignore'], undefined, 'required contexts must report for docs-only PRs');
-  assert.deepEqual(check.steps.find(step => step.name === 'Verify calendar and currency native behavior').env,
+  assert.deepEqual(check.steps.find(step => step.name === 'Verify calendar, currency and forced OpenAI function behavior').env,
     {CARGO_BUILD_JOBS: '2', CARGO_PROFILE_TEST_OPT_LEVEL: '0'});
+  assert.deepEqual(check.steps.find(step => step.name === 'Replay the forced function requests against the native CLI').env,
+    {FORMAL_AI_TEST_NATIVE_CLI: '${{ github.workspace }}/rust/target/debug/formal-ai'});
   assert.deepEqual(check.steps.find(step => step.uses === 'dtolnay/rust-toolchain@stable').with, {components: 'clippy'});
   assert(!check.steps.some(step => /upload-artifact|attest|cache@|cache\/save/u.test(step.uses ?? '')));
   assert.deepEqual(check.steps.find(step => step.uses === './.github/actions/cache-cargo-registry').with, {'restore-only': 'true'});
