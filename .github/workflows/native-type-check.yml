@@ -6,7 +6,7 @@ name: Native type and lint check
 # native check a PR runs: main's clippy profile on the library and binaries,
 # called from release.yml on every PR, compiling when a Rust input changed
 # or the classification is unknown. It uploads nothing and records no receipt.
-# The isolated regressions verify native calendar, currency and OpenAI behavior.
+# The isolated regressions verify native calendar, currency, OpenAI and executor behavior.
 # Main still runs full lint, tests and every build.
 on:
   workflow_call:
@@ -69,12 +69,12 @@ jobs:
       - name: Type-check and lint the library and binaries
         if: ${{ inputs.compile-inputs-changed }}
         run: bash scripts/ci-clippy-profile.sh --library-and-binaries
-      - name: Verify calendar, currency and forced OpenAI function behavior
+      - name: Verify isolated native behavior regressions
         if: ${{ inputs.compile-inputs-changed }}
         env:
           CARGO_BUILD_JOBS: '2'
           CARGO_PROFILE_TEST_OPT_LEVEL: '0'
-        run: cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions -- --test-threads=1
+        run: cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test meta_executor_parity -- --test-threads=1
       - uses: actions/setup-node@v7
         if: ${{ inputs.compile-inputs-changed }}
         with: {node-version: 22}

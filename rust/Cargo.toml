@@ -140,6 +140,10 @@ name = "openai_forced_functions"
 path = "tests/unit/openai_forced_functions.rs"
 
 [[test]]
+name = "meta_executor_parity"
+path = "tests/unit/meta_executor_parity.rs"
+
+[[test]]
 name = "integration"
 path = "tests/integration/mod.rs"
 

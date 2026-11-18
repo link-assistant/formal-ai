@@ -13,10 +13,14 @@ Maintainer requirements of 2026-10-31 supersede earlier full-PR build opt-ins.
   (rust/src, build.rs, manifests, embedded data, toolchain, either workflow or any
   unknown path). PR #1497 passed every PR check, then main failed with E0308
   and later with clippy::manual_contains, because JavaScript cannot see Rust
-  types or lints. Issue #1589 additionally runs the isolated calendar_currency
-  regression target against the shared worker/native acceptance fixtures in this
-  existing job, with two compiler jobs and test optimization disabled. The
-  regression proves native behavior; it does not produce release evidence. Full
+  types or lints. The same job runs three isolated regression targets:
+  `calendar_currency` (#1589), `openai_forced_functions` (#1590), and
+  `meta_executor_parity` (#1580). The executor target reuses its existing four-test
+  module and compares all 29 shared cases, including complete event sequences
+  and unverified-draft controls. The forced-function HTTP suite also replays
+  against the native CLI. All compile-dependent steps retain the same input
+  condition, with two compiler jobs and test optimization disabled. Successful
+  execution verifies these regressions; it does not produce release evidence. Full
   suites and product builds remain on main. The job uploads and attests nothing,
   saves no cache and publishes no outputs.
   Every PR reports the required job context. Docs-only, JS-only, test-only and
