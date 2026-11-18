@@ -1,0 +1,86 @@
+[
+  {
+    "log": "rustfmt.log.gz",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "lines": 0,
+    "bytes": 0,
+    "name": "rustfmt",
+    "argv": [
+      "rustfmt",
+      "--edition",
+      "2024",
+      "--check",
+      "rust/src/solver_unknown_reasoning.rs",
+      "rust/src/solver_unknown_reasoning_tests.rs"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 0.099
+  },
+  {
+    "log": "workflow-policy.log.gz",
+    "sha256": "12cdfc3ac7813e2b71df617a6f42b9feeba99ba8650fa891549361e7184d2bc3",
+    "lines": 31,
+    "bytes": 2437,
+    "name": "workflow-policy",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 3.981
+  },
+  {
+    "log": "fixture-integrity.log.gz",
+    "sha256": "64679ecb2e67bb8e85e6e47ee6c5d2fe651cd5cd995b5c2378800d32d64a565b",
+    "lines": 10,
+    "bytes": 308,
+    "name": "fixture-integrity",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 0.314
+  },
+  {
+    "log": "governed-identifiers.log.gz",
+    "sha256": "78c93b06030d7c2f0ead840f0fd14aa49928eea753069beb3ac7f694cd0a007a",
+    "lines": 42,
+    "bytes": 2951,
+    "name": "governed-identifiers",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/rust-specification-unicode-identifiers.test.mjs"
+    ],
+    "exitCode": 0,
+    "durationSeconds": 10.874
+  },
+  {
+    "log": "all-local-gates.log.gz",
+    "sha256": "a3611bc58a06a0941db38648ce9bd1a4323216f585dadaffccde73941363b519",
+    "lines": 140,
+    "bytes": 7411,
+    "name": "all-local-gates",
+    "argv": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs"
+    ],
+    "exitCode": 1,
+    "durationSeconds": 764.618
+  }
+]

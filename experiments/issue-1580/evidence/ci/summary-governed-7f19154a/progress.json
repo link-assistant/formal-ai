@@ -1,0 +1,214 @@
+{
+  "snapshots": [
+    {
+      "observedAt": "2026-11-18T14:07:07.012242+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 20,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:07:38.149260+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:08:09.283122+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:08:40.954863+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:09:12.079611+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:09:43.154279+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:10:14.358061+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:10:45.471717+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:11:16.413707+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:11:47.656691+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:12:19.608235+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:12:50.671361+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:13:21.580087+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:13:52.577013+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 21,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:14:23.651138+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 22,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:14:54.698075+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 22,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:15:25.735039+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 22,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:15:57.399736+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 22,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:16:28.343464+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 22,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:16:59.304672+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 22,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:17:30.519231+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 22,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:18:01.645913+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 22,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:18:32.684187+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 22,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:19:03.956008+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 22,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:19:35.503726+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 22,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:20:06.811136+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 22,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:20:37.993486+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 22,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:21:09.052913+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 22,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:21:40.161600+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 22,
+      "failed": []
+    },
+    {
+      "observedAt": "2026-11-18T14:22:11.279796+00:00",
+      "head": "7f19154a21d79f268f48af6b0938f17e6fb32ba3",
+      "workflowCount": 23,
+      "completed": 23,
+      "failed": []
+    }
+  ]
+}

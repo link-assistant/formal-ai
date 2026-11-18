@@ -597,3 +597,18 @@ PHP classification correction: the path taxonomy is not a CI boundary. Current t
 - [x] Both unchanged JavaScript regression files pass (2/2 and 34/34); all 86 executable gates pass with 52 explicit exclusions and zero failures. Verify all 93 retained payload hashes and the exact one-hash complete-object witness comparison. No local Rust build.
 - [x] Commit the independently useful witness correction as `9b9552be9e798dbca5b4a6fd901ff41a778d8f0a`; prepare the complete evidence/publication batch. The publication receipt records actual push execution and fresh single-push checks. Broader issue acceptance remains unfinished.
 - [ ] Collect every next-head hosted result and continue every broader unfinished criterion; PR #1581 stays draft, independent reasoning credit 0/20.
+
+## Meaning registry and native Spanish sibling follow-through (2026-11-18)
+
+- [x] Verify published `7f19154a` completes 23/23 workflows; retain all current-head result identities and selected native/JavaScript job payloads. Read native result spans, without extending the claim to all original main failures.
+- [x] Reproduce missing registered meaning seeds and stale warmed markers with three valid pre-fix failures; fix through the generated registry and cache invalidation; pass all ten focused and nine adjacent checks.
+- [x] Exercise both original Spanish sibling requests in real Chromium, preserve full before/after observations and screenshots, verify unchanged whole “how” body, close the browser and stop the bounded servers. The labeled worker harness is not production UI or WASM verification.
+- [x] Draft a native guard against promoting word glosses to answers for unparsed unsupported-language sentences; add four captured-source tests and wire those plus the unchanged original Spanish contract into hosted CI.
+- [x] Correct the three local static-check failures (format, exact workflow policy, four Cargo fixture identity references), preserving complete governed objects and all first-attempt logs.
+- [ ] Finish collecting every full local gate result; move the native test module into the existing test tree to resolve the specialization false positive without weakening the gate.
+- [ ] Merge newly advanced `main`, preserve both branches' isolated targets and generated registry changes, review the complete governed witness delta, then rerun the full local inventory before the next single push.
+- [ ] Publish atomic source/evidence commits only after the push gate; verify the four new native cases and unchanged Spanish sibling on the actual pushed head. Keep every broader criterion unfinished and independent reasoning credit 0/20.
+
+Details and reproducible checks: `docs/case-studies/issue-1580/language-source-binding-checkpoint.md`.
+
+The first complete local inventory finishes in 764.618 seconds: 80 executable gates pass, six fail and 52 are explicitly excluded. All six failures trace to placing the new test-only module under `rust/src` (one abbreviation, two literal predicates, four natural-language strings and three test prompts); the tests have moved into the existing test tree without changing any ceiling or allowlist. All 91 aggregate/focused/detailed payload hashes are verified. No merged-tree or new native execution is claimed yet. Main advanced to `30ff2d8a8`; merge and complete revalidation are next.
