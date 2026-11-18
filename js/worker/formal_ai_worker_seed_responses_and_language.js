@@ -85,9 +85,10 @@ function hydrateLinoSeedText(raw) {
   }
   cachedKnownEntityNames = null;
   cachedTimezonePlaces = null;
+  const meaningSeedFiles = new Set((self.FORMAL_AI_CRATE_MEANING_SEEDS || []).map((stem) => stem + ".lino"));
   MEANINGS_LINO = seedRawTexts(
     raw,
-    (fileName) => fileName === "meanings.lino" || /^meanings-[a-z0-9-]+\.lino$/.test(fileName),
+    (fileName) => meaningSeedFiles.has(fileName) || fileName === "meanings.lino" || /^meanings-[a-z0-9-]+\.lino$/.test(fileName),
   ).join("\n");
 
   cachedNumericListOntology = null;
@@ -97,6 +98,7 @@ function hydrateLinoSeedText(raw) {
   cachedOperationVocabulary = null;
   cachedProgramPlanRules = null;
   cachedMeaningLexicon = null;
+  if (typeof WEB_SEARCH_MARKERS_CACHE !== "undefined") WEB_SEARCH_MARKERS_CACHE = null;
   cachedMarketPriceReferences = null;
   if (typeof installSeedProgramTasks === "function") installSeedProgramTasks(raw); // R1021-6, formal_ai_worker_program_requests.js
   if (typeof installDocumentedLanguageCommands === "function") installDocumentedLanguageCommands(raw); // R1165-6, formal_ai_worker_documented_commands.js

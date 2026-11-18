@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
-import { WorkerHost } from "../../../js/server/worker-host.mjs";
+import { WorkerHost, createWorkerContext, evaluate } from "../../../js/server/worker-host.mjs";
 const host = new WorkerHost();
 
 test("unchanged Persian request matches the entire native authored answer", async () => {
@@ -59,7 +59,12 @@ test("a detected language outside the declared answer languages keeps the entire
   assert.equal(prompts.length, 2);
   const literal = region.match(/answer\.answer,\s*("(?:[^"\\]|\\[\s\S])*")/u)[1];
   const expected = JSON.parse(literal.replace(/\\\r?\n\s*/gu, ""));
-  const answer = await host.solve(prompts[1]);
+  const worker = createWorkerContext();
+  await evaluate(worker, "loadSeed()");
+  worker.fetch = async () => { throw new Error("Network disabled for the Spanish sibling regression"); };
+  const definition = await worker.solve(prompts[0], [], {}, {}, [], {});
+  assert.equal(definition.intent, "web_search");
+  const answer = await worker.solve(prompts[1], [], {}, {}, [], {});
   assert.equal(answer.intent, "unknown");
   assert.equal(answer.content, expected);
   assert.ok(answer.rawSolverEvents.some((event) => event.kind === "reasoning:known" && event.payload.startsWith("language=es ")));
@@ -83,4 +88,50 @@ test("declared answer languages control the fallback independently of detection 
   assert.equal(result.supported, null);
   assert.ok(result.unsupported?.events.some((event) => event.payload === "missing_answer_for:a held-out request"));
   assert.ok(result.unsupported.events.some((event) => event.payload === "allowed_external_api:skipped_offline"));
+});
+
+test("meaning hydration includes registered seed names and keeps extension fixtures isolated", { timeout: 15000 }, async () => {
+  const worker = createWorkerContext();
+  await evaluate(worker, "loadSeed()");
+  const meaning = (opener) => `meanings
+  fixture_request_opener
+    defined-by inquiry
+    role term_information_request_opener
+    lexeme en "${opener} …"`;
+  worker.__meaningFixtures = {
+    "/fixtures/learned-request-openers.lino": meaning("registered inquiry"),
+    "/fixtures/meanings-fixture.lino": meaning("extension inquiry"),
+    "/fixtures/notes.lino": meaning("unregistered inquiry"),
+    "/fixtures/learned-request-openers.json": meaning("wrong extension inquiry"),
+  };
+  evaluate(worker, "hydrateLinoSeedText(__meaningFixtures)");
+  const query = (prompt) => {
+    worker.__meaningPrompt = prompt;
+    return evaluate(worker, "extractTermInformationRequest(__meaningPrompt, normalizePrompt(__meaningPrompt))");
+  };
+  assert.equal(query("registered inquiry a held out subject"), "a held out subject");
+  assert.equal(query("extension inquiry a held out subject"), "a held out subject");
+  assert.equal(query("unregistered inquiry a held out subject"), "");
+  assert.equal(query("wrong extension inquiry a held out subject"), "");
+});
+
+test("rehydration replaces warmed search markers with the new meaning seed", { timeout: 15000 }, async () => {
+  const worker = createWorkerContext();
+  await evaluate(worker, "loadSeed()");
+  const meaning = (opener) => `meanings
+  fixture_request_opener
+    defined-by inquiry
+    role term_information_request_opener
+    lexeme en "${opener} …"`;
+  const query = (prompt) => {
+    worker.__meaningPrompt = prompt;
+    return evaluate(worker, "extractTermInformationRequest(__meaningPrompt, normalizePrompt(__meaningPrompt))");
+  };
+  worker.__meaningFixtures = { "meanings-fixture.lino": meaning("earlier inquiry") };
+  evaluate(worker, "hydrateLinoSeedText(__meaningFixtures)");
+  assert.equal(query("earlier inquiry a held out subject"), "a held out subject");
+  worker.__meaningFixtures = { "meanings-fixture.lino": meaning("replacement inquiry") };
+  evaluate(worker, "hydrateLinoSeedText(__meaningFixtures)");
+  assert.equal(query("replacement inquiry a held out subject"), "a held out subject");
+  assert.equal(query("earlier inquiry a held out subject"), "");
 });
