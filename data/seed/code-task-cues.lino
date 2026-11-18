@@ -302,6 +302,12 @@ map
 # subject, the meaning-question leads and tails, the words that are never the
 # interrogated subject, the idiom tails and the articles a term sheds. Every
 # list is read in seed order.
+# An explicit cache instruction names the whole requested subject. An
+# arbitrary request containing "about" does not authorize a definition answer.
+cues
+  intent concept_lookup
+    role cache_request_prefix
+    phrase "use cached public knowledge about "
 cues
   intent concept_lookup
     role request_prefix

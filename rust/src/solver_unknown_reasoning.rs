@@ -69,9 +69,7 @@ pub fn answer_unknown_prompt(
             |value| format!("public_knowledge_cache:{value}"),
         ),
     );
-    if let Some(focus) = focus.as_deref()
-        && let Some(answer) = answer_from_public_knowledge_cache(prompt, focus, language, log)
-    {
+    if let Some(answer) = answer_from_public_knowledge_cache(prompt, language, log) {
         return answer;
     }
     log.append(
@@ -526,13 +524,35 @@ fn answer_from_link_memory(prompt: &str, focus: &str, log: &mut EventLog) -> Opt
     None
 }
 
+fn cached_public_request_subject(prompt: &str) -> Option<String> {
+    static PREFIXES: OnceLock<Vec<String>> = OnceLock::new();
+    let lower = clean_focus(prompt).to_lowercase();
+    PREFIXES
+        .get_or_init(|| {
+            crate::solver_handlers::code_task_cue_phrases("concept_lookup", "cache_request_prefix")
+        })
+        .iter()
+        .find_map(|prefix| lower.strip_prefix(prefix.as_str()).map(str::to_owned))
+        .filter(|subject| !subject.trim().is_empty())
+}
+
 fn answer_from_public_knowledge_cache(
     prompt: &str,
-    focus: &str,
     language: Language,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    for term in public_concept_candidate_terms(focus) {
+    // A research focus can name only part of an operative request. Bind a
+    // definition to the complete parsed query or explicit cache instruction;
+    // an unparsed request can match only as a whole cached concept surface.
+    let requested = if let Some(query) = crate::concepts::extract_concept_query(prompt) {
+        if query.context.is_some() {
+            return None;
+        }
+        query.term
+    } else {
+        cached_public_request_subject(prompt).unwrap_or_else(|| prompt.to_owned())
+    };
+    for term in public_concept_candidate_terms(&requested) {
         log.append(
             "reasoning:gather_attempt",
             format!("public_knowledge_cache:concept:{term}"),
@@ -679,8 +699,8 @@ fn infer_missing_focus(prompt: &str) -> Option<String> {
     if trimmed.is_empty() {
         return None;
     }
-    if let Some(about) = tail_after_marker(trimmed, " about ") {
-        return Some(clean_focus(about).to_owned());
+    if let Some(subject) = cached_public_request_subject(trimmed) {
+        return Some(subject);
     }
     if let Some(subject) = tail_after_marker(trimmed, " definitions of ") {
         return Some(clean_focus(subject).to_owned());

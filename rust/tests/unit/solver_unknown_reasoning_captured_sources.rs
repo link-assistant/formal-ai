@@ -256,3 +256,80 @@ fn an_explicit_cached_concept_request_keeps_its_complete_attributed_answer() {
             && event.payload.starts_with("public_knowledge_cache:hit:")
     }));
 }
+
+#[test]
+fn an_about_clause_cannot_replace_the_complete_operative_request() {
+    let mut log = EventLog::new();
+    let answer = answer_unknown_prompt(
+        "How should a snorflax be calibrated about WebAssembly?",
+        Language::English,
+        &mut log,
+        offline_config(),
+        &[],
+    );
+    assert_eq!(answer.intent, "unknown");
+    assert_eq!(
+        answer.answer,
+        "I could not determine `a snorflax be calibrated about WebAssembly` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. I recorded the failed gather attempts in the trace.\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`.\n\nI detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`."
+    );
+    assert!(!log.events().iter().any(|event| {
+        event.kind == "reasoning:gather_result"
+            && event.payload.starts_with("public_knowledge_cache:hit:")
+    }));
+}
+
+#[test]
+fn public_cache_answers_require_the_complete_requested_subject() {
+    for prompt in [
+        "Calibrate the snorflax about WebAssembly",
+        "Calibrate the definitions of WebAssembly",
+        "What is WebAssembly in teal silence?",
+        "Use cached public knowledge about a snorflax about WebAssembly",
+    ] {
+        let mut log = EventLog::new();
+        assert!(
+            answer_from_public_knowledge_cache(prompt, Language::English, &mut log).is_none(),
+            "a cached gloss cannot answer {prompt}"
+        );
+        assert!(!log.events().iter().any(|event| {
+            event.kind == "reasoning:gather_result"
+                && event.payload.starts_with("public_knowledge_cache:hit:")
+        }));
+    }
+}
+
+#[test]
+fn an_about_clause_cannot_replace_a_link_memory_question() {
+    let prompt = "Calibrate the snorflax about WebAssembly";
+    let mut log = EventLog::new();
+    log.append(
+        "prior_turn:user",
+        "WebAssembly is a portable instruction format.".to_owned(),
+    );
+    let focus = infer_missing_focus(prompt).expect("the request has a focus");
+    assert!(answer_from_link_memory(prompt, &focus, &mut log).is_none());
+    assert!(!log.events().iter().any(|event| {
+        event.kind == "reasoning:gather_result" && event.payload.starts_with("link_memory:hit:")
+    }));
+}
+
+#[test]
+fn a_bare_cached_concept_keeps_its_complete_attributed_answer() {
+    let mut log = EventLog::new();
+    let answer = answer_unknown_prompt(
+        "WebAssembly",
+        Language::English,
+        &mut log,
+        offline_config(),
+        &[],
+    );
+    assert_eq!(answer.intent, "concept_lookup");
+    assert_eq!(
+        answer.answer,
+        "WebAssembly (runtime): WebAssembly (Wasm) is a binary instruction format for a stack-based virtual machine. It is designed as a portable compilation target for programming languages, enabling deployment on the web for client and server applications.\n\nSource: https://en.wikipedia.org/wiki/WebAssembly (wikipedia)."
+    );
+    assert!(log.events().iter().any(|event| {
+        event.kind == "reasoning:gather_result"
+            && event.payload.starts_with("public_knowledge_cache:hit:")
+    }));
+}
