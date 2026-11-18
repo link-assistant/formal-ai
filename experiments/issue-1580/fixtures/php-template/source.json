@@ -41,6 +41,46 @@
       "path": ".github/workflows/release.yml",
       "gitBlob": "d383bce663bc9c7de1513b951131c937864d7676",
       "sha256": "b1ea5a8b7a2c103e2bad5a92a36229ea56397642fb48db733af0db6d3dfd3899"
+    },
+    {
+      "path": "scripts/version-and-commit.php",
+      "gitBlob": "4064e001df56da13a05dd5a60076b80b18d47deb",
+      "sha256": "0214f276d8732a2591b4e0d41d2600fe74aef7358d07bc6136be9070ad5d393d"
+    },
+    {
+      "path": "scripts/src/VersionReleaser.php",
+      "gitBlob": "a9da3bb74ce1effbe6c6e124c18479ae095db0c7",
+      "sha256": "2a3250cbf9cd3bf605799f3b670fbb6df1d45528aba8e0c6cbfe16e6c15a55ff"
+    },
+    {
+      "path": "scripts/src/Project.php",
+      "gitBlob": "34b9699fc8e8a632220a80ecf33ae1aae83b950a",
+      "sha256": "6c665acc039b4a2fd75687d95a745dc7a71d2025c3de6c903b4702300c22018d"
+    },
+    {
+      "path": "scripts/src/Git.php",
+      "gitBlob": "4b96ef5a1b4b84b1106bfe449671cd005fc007b1",
+      "sha256": "5c6d151f7bcda91c6161af83a62455b5c2aba4b54f103bed605924af04884efa"
+    },
+    {
+      "path": "scripts/src/SemVer.php",
+      "gitBlob": "bc7695453b4a62d664509d7cb4b95a7929fd2722",
+      "sha256": "4ff127e182aa545f201edac764dc79adb30045307941305d9dc77ba9b20323c5"
+    },
+    {
+      "path": "scripts/src/ChangelogFragments.php",
+      "gitBlob": "e611720367bd38cdf7f2d7ed75ada499ef47e424",
+      "sha256": "88c156fcaa052e8f359e8dd23ecb5a37e7d3b52a18309080cd0a09b779d864b3"
+    },
+    {
+      "path": "scripts/src/Changelog.php",
+      "gitBlob": "f3330cb406ba905ea96d88bbdb032b7958ae3c5a",
+      "sha256": "b2bdfb66ec179c8d9f013b54d339a46b7e11b56d2a3db561d0ff3d159e87be07"
+    },
+    {
+      "path": "scripts/src/Cli.php",
+      "gitBlob": "4eb25923e67273d4f5f8abeff298a26f9c345310",
+      "sha256": "54aeb58748c06c88d2b829f5719783f578d36aceca698ae15989e728350076e9"
     }
   ]
 }
