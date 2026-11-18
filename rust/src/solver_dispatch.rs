@@ -86,7 +86,7 @@ fn handle_arithmetic(
     if shell_compose_claims(prompt) {
         return None;
     }
-    try_arithmetic(prompt, log)
+    crate::quantity_constraint::try_answer(prompt, log).or_else(|| try_arithmetic(prompt, log))
 }
 
 fn handle_javascript_execution(
@@ -265,13 +265,13 @@ pub fn try_contextual_override(
             prompt,
             normalized,
             log,
-            runtime.solver_config.offline || !crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH"),
+            runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
         ),
         "web_search" => try_web_search_with_offline(
             prompt,
             normalized,
             log,
-            runtime.solver_config.offline || !crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH"),
+            runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
         ),
         "proof_request" => {
             try_proof_request_with_config(prompt, normalized, log, runtime.proof_render_config)
@@ -313,7 +313,7 @@ pub fn try_contextual_override(
             prompt,
             normalized,
             log,
-            runtime.solver_config.offline || !crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH"),
+            runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
         ),
         // Issue #1172 R1172-5: a definition request the seeded concepts do
         // not cover is answered from the registry's dictionary sources. A
@@ -325,8 +325,8 @@ pub fn try_contextual_override(
             if seeded {
                 return ContextualOutcome::NotHandled;
             }
-            let offline = runtime.solver_config.offline
-                || !crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH");
+            let offline =
+                runtime.solver_config.offline || !crate::solver_config::read_network_allowed();
             let Some(answer) =
                 crate::solver_handlers::try_word_definition_with_offline(prompt, log, offline)
             else {
@@ -338,7 +338,7 @@ pub fn try_contextual_override(
             prompt,
             normalized,
             log,
-            runtime.solver_config.offline || !crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH"),
+            runtime.solver_config.offline || !crate::solver_config::read_network_allowed(),
         ),
         _ => return ContextualOutcome::NotHandled,
     };

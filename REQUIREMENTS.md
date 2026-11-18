@@ -26,7 +26,10 @@ the areas are the whole register.
    - Issue #1073 Reasoning Standard: Unconditional Depth, Refutation First, Computed Trust
    - Issue #1085 The Links Network Is Not The System That Reasons (E108)
    - Issue #1188 User Requirements
+   - Issue #1548: vision blockers and plan
+   - Standing Doctrine: Fast pull-request checks and production verification
    - Standing Doctrine: Readable Recursive Source and Comment Meta-Language (2026-10-18)
+   - Standing Doctrine: Self-coding CI evidence and useful-change acceptance
    - Standing Doctrine: Compiled Logic, Interfacing-Only JavaScript (2026-08-04)
    - Standing Doctrine: JavaScript First, Full Parity, Then Translate (2026-10-06)
    - Standing Doctrine: The JavaScript Server Has Full Parity With the Rust Server (2026-10-07)
@@ -63,6 +66,8 @@ the areas are the whole register.
    - Issue #1168 Generated Code Uses Versions Resolved at Generation Time
    - Issue #1169 Every Dependency at Its Latest Release
    - Issue 1364: complete three-client release acceptance
+   - Issue #1455: Grounded integration documentation and affordable documentation CI
+   - Issue #1483: repository evidence to useful changes
 
 3. [Interfaces and integrations](docs/requirements/assembled/interfaces-and-integrations.md)
    - Issue #6 UI Follow-Up Requirements
@@ -88,10 +93,13 @@ the areas are the whole register.
    - Issue #909 Headless-Ready Global Client Configuration
    - Issue 931: local WebSocket and WebRTC transports
    - Issue #1154: One Shell-Argument Reading for the Whole Agentic Module
+   - Issue #1160: The Regular Hive Mind Prompt
    - Issue #1161 Client Registry Names the Agent Config Env
    - Issue #1181 Standalone CLI Binaries and Consistent Boolean Env Switches
    - Issue #1187 Optional GitHub Credentials in Every Workflow
    - Issue #1207 Hive Mind Delivery and Progressive Self-Coding
+   - Issue 1438: reliable reporting and source-read preservation
+   - Issue #1582: Client Read Access, Diagnostics and Context
 
 4. [Coding and agents](docs/requirements/assembled/coding-and-agents.md)
    - Issue #80 Software Project Request Requirements
@@ -116,13 +124,14 @@ the areas are the whole register.
    - Issue #1138 Repository Workspace Protocol
    - Issue #1138 Verifiable Task Routing
    - Issue #1155: Work-Item Read Validation and Honest Fallbacks
-   - Issue #1156: Single output obligations
-   - Issue #1157: Idempotent recipe commits
-   - Issue #1158: Pull request completion and feedback
-   - Issue #1159: Workspace prerequisite recovery
-   - Issue #1160: Hive Mind prepared work continuation
+   - Issue #1156: One Output Literal, Printed Once
+   - Issue #1157: Idempotent Commit and Clean Build Tree
+   - Issue #1158: Pull Request Feedback, Description and Readiness
+   - Issue #1159: Toolchain Bootstrap Under an Explicit Grant
+   - Issue #1162: Hello World Issue-to-PR Delivery Through All Hive Clients
    - Issue #1164 Code Node Decomposition
    - Issue #1165 Discovery on the Production Path
+   - Issue #1166 The Request Formalized into Obligations
    - Issue #1177 Code Tasks Answered Formally
    - Issue #1180 Repository History as Formal Context
    - Issue #1182 Duplication gates and maintained-parser adoption
@@ -131,7 +140,11 @@ the areas are the whole register.
    - Issue #1185 Error-Driven Repair Loop
    - Issue #1188 Compact Inputs and Useful Coding Work
 
-5. [Reasoning and knowledge](docs/requirements/assembled/reasoning-and-knowledge.md)
+5. [Practical guidance and user needs](docs/requirements/assembled/practical-guidance.md)
+   - Issue 1395: useful reactions and relevant practical answers
+   - Issue 1396: urgent practical requests and follow-ups
+
+6. [Reasoning and knowledge](docs/requirements/assembled/reasoning-and-knowledge.md)
    - Issue #16 Follow-Up: Universal Data/Seed Across Every Interface (PR #17 reopen)
    - Issue #16 Multilingual, Wikipedia, and Append-Only Memory Requirements
    - Issue #63 Cross-Language Definition Fusion Requirements
@@ -175,7 +188,6 @@ the areas are the whole register.
    - Issue #1138 Live Concept Lookup
    - Issue #1138 Selection Heuristics
    - Issue #1163 Internet as Formal Knowledge
-   - Issue #1166 The Request Formalized into Obligations
    - Issue #1172 Factual QA Subject-Verified Lookup
    - Issue #1173 No Canned Search Answer in the Unknown-Reasoning Fallback
    - Issue #1174 Text Transforms Answered Formally
@@ -187,3 +199,4 @@ the areas are the whole register.
    - Issue #1213 Cryptographic Provenance Prototype
    - Issue #1220 Structured Links Notation Logging
    - Bounded actions and observable failure
+   - Issue #1587 Request Constraints and Dialogue Facts

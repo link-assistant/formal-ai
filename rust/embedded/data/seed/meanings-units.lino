@@ -460,7 +460,7 @@ meanings
     lexeme es largo longitud
   # Recognition cue for unit-conversion questions (issue #1176) — one of these
   # surfaces plus a number and two known units is a conversion request. Common
-  # words such as "in" or "to" only open the gate; the unit pair decides.
+  # connectors belong to a complete quantity-in-unit shorthand, not document intent.
   unit_conversion_question
     defined-by unit
     role unit_conversion_question
@@ -469,3 +469,31 @@ meanings
     lexeme hi कितने बदलें में
     lexeme zh 多少 转换 换算 为
     lexeme es cuántos cuántas cuánto convierte convertir en a
+    request-start "how many"
+    request-start "how much"
+    request-start "convert"
+    request-start "please convert"
+    request-start "can you convert"
+    request-start "could you convert"
+    request-start "what is"
+    request-start "сколько"
+    request-start "переведи"
+    request-start "конвертируй"
+    request-start "пожалуйста переведи"
+    request-start "कितने"
+    request-start "बदलें"
+    request-start "多少"
+    request-start "转换"
+    request-start "换算"
+    request-start "cuántos"
+    request-start "cuántas"
+    request-start "cuánto"
+    request-start "convierte"
+    request-start "convertir"
+    connector "in"
+    connector "to"
+    connector "в"
+    connector "में"
+    connector "为"
+    connector "en"
+    connector "a"

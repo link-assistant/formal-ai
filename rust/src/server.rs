@@ -8,7 +8,7 @@ use crate::anthropic::{
     create_anthropic_message_with_solver_and_memory,
 };
 use crate::context_capacity::ContextCapacity;
-use crate::engine::{knowledge_graph, render_thinking_steps};
+use crate::engine::knowledge_graph;
 use crate::gemini::{
     GeminiGenerateContentRequest, create_gemini_generate_content_response_with_solver_and_memory,
     gemini_model_list, gemini_model_metadata, gemini_response_sse, vertex_model_list,
@@ -17,7 +17,7 @@ use crate::mcp::handle_mcp_request;
 use crate::memory_sync::SyncStore;
 use crate::network_endpoint::{handle_links_query_request, handle_network_request};
 use crate::protocol::{
-    ChatCompletion, ChatCompletionRequest, ResponsesRequest, chat_exchange_to_record,
+    ChatCompletionRequest, ChatMessage, ResponsesRequest, chat_exchange_to_record,
     chat_tool_executions, create_chat_completion_with_solver_and_memory,
     create_response_with_solver_and_memory, messages_exchange_to_record,
     responses_exchange_to_record,
@@ -25,15 +25,23 @@ use crate::protocol::{
 use crate::responses_stream::responses_sse_response;
 use crate::seed::{canonical_model_id, merged_bundle, try_resolve_model_id};
 use crate::solver::{ExecutionSurface, SolverConfig, UniversalSolver};
+use crate::standing_scope::{
+    RequestScope, events_in_scope, is_instruction_prompt, recorded_scope_evidence, request_scope,
+};
 use crate::telegram::handle_telegram_webhook;
 
+mod chat_stream;
 mod conversation_reports;
 mod debug_session;
 mod debug_stage;
 mod debug_stage_sources;
+mod retention;
 mod shutdown;
 mod transport;
 
+pub use crate::solver_config::enable_ephemeral_for_current_process;
+use crate::solver_config::ephemeral_enabled;
+use chat_stream::chat_completion_sse_response;
 pub use debug_session::{
     DEBUG_TOKEN_ENV, DebugSession, DebugToken, active_debug_session, debug_session_banner,
     debug_token_from_env, enable_debug_session, generate_debug_token, handle_debug_request,
@@ -44,10 +52,10 @@ pub use debug_stage::{
     EXCERPT_LINES, SourceLocation, StageView, TurnView, describe_turn, js_location, rust_location,
     stage_diagram, turn_method,
 };
+use retention::{log_health_status, memory_health_status};
 pub use transport::serve;
 
 static HTTP_AGENT_MODE_FORCED: AtomicBool = AtomicBool::new(false);
-
 pub const ADVERTISED_MAX_OUTPUT_TOKENS: i64 = 8_192;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -128,17 +136,35 @@ pub fn handle_api_request_with_headers(
 /// Record a live chat exchange into the shared memory log (issue #540), never
 /// failing the request over it: a write error is logged and swallowed so the
 /// answer still reaches the client.
+///
+/// The exchange carries the scope of its request (issue #1559): a prompt that
+/// configures the session is recorded with the `instruction` role, and the
+/// `scope:` evidence keeps what one session teaches inside that session.
 fn record_exchange_best_effort(
     store: &mut SyncStore,
     exchange: Option<(String, String)>,
-    tools: &[crate::memory_sync::RecordedToolExecution],
+    messages: &[ChatMessage],
+    scope: &RequestScope,
 ) {
+    if !crate::memory_sync::chat_recording_enabled() {
+        return;
+    }
     let Some((prompt, answer)) = exchange else {
         return;
     };
-    if let Err(error) = store.record_chat_exchange_with_tools(&prompt, &answer, tools) {
+    let phase = crate::dialog_log::structured_log::request_phases(
+        crate::solver_config::flag_enabled("FORMAL_AI_TRACE_REQUESTS"),
+    );
+    phase("memory_recording_started");
+    let tools = chat_tool_executions(messages);
+    let evidence = recorded_scope_evidence(scope);
+    let instruction = is_instruction_prompt(&prompt, messages, scope);
+    if let Err(error) =
+        store.record_scoped_chat_exchange(&prompt, &answer, &tools, &evidence, instruction)
+    {
         crate::diagnostic!("error"; "[memory] failed to record live chat exchange: {error}");
     }
+    phase("memory_recording_finished");
 }
 
 #[must_use]
@@ -154,10 +180,17 @@ pub fn handle_api_request_with_auth(
     // The planner reads this back when it writes a report command, so the
     // exported session is the caller's own session and not a guess (#839).
     let _dialog = crate::dialog_log::DialogScope::begin(headers);
+    let phase = crate::dialog_log::structured_log::request_phases(
+        crate::solver_config::flag_enabled("FORMAL_AI_TRACE_REQUESTS"),
+    );
+    let started = retention::request_start();
     let response = dispatch_api_request_with_auth(method, path, headers, body, auth);
+    phase("api_dispatch_finished");
     crate::dialog_log::record_api_exchange_if_enabled(
         method, path, headers, body, &response, authorized,
     );
+    phase("dialog_logging_finished");
+    retention::log_request(method, normalized_path, body.len(), &response, started);
     response
 }
 
@@ -241,7 +274,7 @@ fn dispatch_api_request_with_auth(
                 "model": canonical_model_id(),
                 "version": env!("CARGO_PKG_VERSION"),
                 "memory": memory_health_status(),
-                "logs": crate::dialog_log::structured_log::health_status(),
+                "logs": log_health_status(),
             }),
         ),
         ("GET", "/v1/models" | "/api/openai/v1/models") => handle_openai_models_request(),
@@ -282,15 +315,17 @@ fn dispatch_api_request_with_auth(
                     }
                     let solver = http_solver();
                     let mut store = SyncStore::open();
+                    let scope = request_scope(body, &request.messages, !request.tools.is_empty());
                     let completion = create_chat_completion_with_solver_and_memory(
                         &request,
                         &solver,
-                        store.events(),
+                        &events_in_scope(store.events(), Some(&scope)),
                     );
                     record_exchange_best_effort(
                         &mut store,
                         chat_exchange_to_record(&request, &completion),
-                        &chat_tool_executions(&request.messages),
+                        &request.messages,
+                        &scope,
                     );
                     if request.stream {
                         let include_usage = request
@@ -312,12 +347,19 @@ fn dispatch_api_request_with_auth(
                     }
                     let solver = http_solver();
                     let mut store = SyncStore::open();
-                    let response =
-                        create_response_with_solver_and_memory(&request, &solver, store.events());
+                    let chat_request = request.to_chat_completion_request();
+                    let scope =
+                        request_scope(body, &chat_request.messages, !chat_request.tools.is_empty());
+                    let response = create_response_with_solver_and_memory(
+                        &request,
+                        &solver,
+                        &events_in_scope(store.events(), Some(&scope)),
+                    );
                     record_exchange_best_effort(
                         &mut store,
                         responses_exchange_to_record(&request, &response),
-                        &chat_tool_executions(&request.to_chat_completion_request().messages),
+                        &chat_request.messages,
+                        &scope,
                     );
                     if request.stream {
                         responses_sse_response(&response)
@@ -330,6 +372,9 @@ fn dispatch_api_request_with_auth(
         }
         ("POST", "/mcp") => handle_mcp_request(body, &http_solver()),
         ("GET", "/mcp") => error_response(405, "MCP SSE streams are not supported"),
+        ("POST", "/telegram/webhook") if ephemeral_enabled() => {
+            error_response(409, "this operation requires persistent mode")
+        }
         ("POST", "/telegram/webhook") => match handle_telegram_webhook(body) {
             Ok(Some(reply)) => json_response(200, &reply),
             Ok(None) => ApiHttpResponse {
@@ -342,33 +387,6 @@ fn dispatch_api_request_with_auth(
         },
         _ => error_response(404, "route not found"),
     }
-}
-
-fn memory_health_status() -> Value {
-    let Some(path) = crate::memory_sync::configured_memory_path() else {
-        return json!({
-            "schema_version": Value::Null,
-            "minimum_readable_schema_version": crate::memory::MINIMUM_READABLE_MEMORY_SCHEMA_VERSION,
-            "maximum_readable_schema_version": crate::memory::MAXIMUM_READABLE_MEMORY_SCHEMA_VERSION,
-            "target_schema_version": crate::memory::TARGET_MEMORY_SCHEMA_VERSION,
-            "compatible": true,
-            "migration_required": false,
-            "migration_state": "missing",
-        });
-    };
-    let original_path = path;
-    let path = crate::memory_sync::active_memory_path(&original_path);
-    let status = crate::memory::preflight_memory_upgrade(&path);
-    json!({
-        "active_path":path,"configured_path":original_path,
-        "schema_version": status.detected_schema_version,
-        "minimum_readable_schema_version": status.minimum_readable_schema_version,
-        "maximum_readable_schema_version": status.maximum_readable_schema_version,
-        "target_schema_version": status.target_schema_version,
-        "compatible": status.compatible,
-        "migration_required": status.migration_required,
-        "migration_state": status.migration_state,
-    })
 }
 
 fn requires_bearer_auth(method: &str, normalized_path: &str) -> bool {
@@ -420,6 +438,12 @@ fn handle_dynamic_protocol_route(
             .or_else(|| normalized_path.strip_prefix("/v1/conversations/"))
             .and_then(|suffix| suffix.strip_suffix("/learn"));
         if let Some(dialog_id) = dialog_id.filter(|id| !id.is_empty()) {
+            if ephemeral_enabled() {
+                return Some(error_response(
+                    409,
+                    "this operation requires persistent mode",
+                ));
+            }
             return Some(conversation_reports::handle_learning_request(dialog_id));
         }
     }
@@ -476,6 +500,7 @@ fn handle_openai_models_request() -> ApiHttpResponse {
             "data": [{
                 "id": model_id,
                 "slug": model_id,
+                "capabilities": ["json_schema"],
                 "object": "model",
                 "owned_by": "link-assistant",
                 "context_window": context.context_window_tokens,
@@ -491,6 +516,7 @@ fn handle_openai_models_request() -> ApiHttpResponse {
                 "id": model_id,
                 "slug": model_id,
                 "name": model_id,
+                "capabilities": ["json_schema"],
                 "context_window": context.context_window_tokens,
                 "max_output_tokens": ADVERTISED_MAX_OUTPUT_TOKENS,
                 "context_window_tokens": context.context_window_tokens,
@@ -528,11 +554,12 @@ fn handle_gemini_generate_content_request(
             let solver = http_solver();
             let mut store = SyncStore::open();
             let chat_request = request.to_chat_completion_request(&model);
+            let scope = request_scope(body, &chat_request.messages, !chat_request.tools.is_empty());
             let response = create_gemini_generate_content_response_with_solver_and_memory(
                 &request,
                 &model,
                 &solver,
-                store.events(),
+                &events_in_scope(store.events(), Some(&scope)),
             );
             let answer = response["candidates"][0]["content"]["parts"]
                 .as_array()
@@ -544,7 +571,8 @@ fn handle_gemini_generate_content_request(
             record_exchange_best_effort(
                 &mut store,
                 messages_exchange_to_record(&chat_request.messages, &answer),
-                &chat_tool_executions(&chat_request.messages),
+                &chat_request.messages,
+                &scope,
             );
             if stream {
                 ApiHttpResponse {
@@ -695,144 +723,12 @@ fn http_solver() -> UniversalSolver {
     if HTTP_AGENT_MODE_FORCED.load(Ordering::Relaxed) {
         config.agent_mode = true;
     }
+    if ephemeral_enabled() {
+        config.agent_mode = false;
+        config.offline = true;
+    }
     config.execution_surface = ExecutionSurface::HttpServer;
     UniversalSolver::new(config)
-}
-
-/// Serialise a completed [`ChatCompletion`] as an OpenAI-compatible
-/// `chat.completion.chunk` SSE stream.
-///
-/// The Vercel AI SDK's `@ai-sdk/openai-compatible` provider (and every other
-/// OpenAI-compatible streaming parser) expects incremental `chat.completion.chunk`
-/// events carrying `choices[].delta` — not a single `chat.completion` payload.
-/// Shipping the non-streaming shape "worked" for text (the SDK falls back to
-/// scraping content out of the raw SSE stream, which is where the CLI's
-/// *"AI SDK dropped token data"* warning comes from) but silently dropped
-/// `tool_calls`, so the agent CLI never actually invoked the tool the planner
-/// requested. Emit chunks: an initial `role` delta, one delta per tool call
-/// (with full `function.arguments` in a single frame — the SDK stitches them
-/// back together), a final `finish_reason` chunk, an optional usage chunk when
-/// the client asks for it via `stream_options.include_usage`, and the closing
-/// `[DONE]` sentinel.
-fn chat_completion_sse_response(
-    completion: &ChatCompletion,
-    include_usage: bool,
-) -> ApiHttpResponse {
-    let mut body = String::new();
-    let base = json!({
-        "id": completion.id,
-        "object": "chat.completion.chunk",
-        "created": completion.created,
-        "model": completion.model,
-    });
-
-    let choice = completion.choices.first();
-
-    // Chunk 1: role delta.
-    let role_delta = json!({
-        "index": 0,
-        "delta": { "role": "assistant" },
-        "finish_reason": null,
-    });
-    body.push_str(&sse_chunk(&base, &role_delta));
-
-    // Chunk 2..N: reasoning, content, or tool_call deltas.
-    if let Some(choice) = choice {
-        let reasoning = if choice.message.reasoning_content.is_empty() {
-            render_thinking_steps(&choice.message.thinking_steps)
-        } else {
-            choice.message.reasoning_content.clone()
-        };
-        if !reasoning.is_empty() {
-            let delta = json!({
-                "index": 0,
-                "delta": {
-                    "reasoning_content": reasoning,
-                    "reasoning": reasoning,
-                },
-                "finish_reason": null,
-            });
-            body.push_str(&sse_chunk(&base, &delta));
-        }
-        let text = choice.message.content.plain_text();
-        if !text.is_empty() {
-            let delta = json!({
-                "index": 0,
-                "delta": { "content": text },
-                "finish_reason": null,
-            });
-            body.push_str(&sse_chunk(&base, &delta));
-        }
-        for (index, call) in choice.message.tool_calls.iter().enumerate() {
-            let delta = json!({
-                "index": 0,
-                "delta": {
-                    "tool_calls": [{
-                        "index": index,
-                        "id": call.id,
-                        "type": call.kind,
-                        "function": {
-                            "name": call.function.name,
-                            "arguments": call.function.arguments,
-                        }
-                    }]
-                },
-                "finish_reason": null,
-            });
-            body.push_str(&sse_chunk(&base, &delta));
-        }
-    }
-
-    // Final chunk: finish_reason.
-    let finish_reason = choice.map_or_else(
-        || String::from("stop"),
-        |choice| choice.finish_reason.clone(),
-    );
-    let final_chunk = json!({
-        "index": 0,
-        "delta": {},
-        "finish_reason": finish_reason,
-    });
-    body.push_str(&sse_chunk(&base, &final_chunk));
-
-    // Optional usage chunk — the AI SDK reads token counts from here when
-    // `stream_options.include_usage` is set (per OpenAI's spec).
-    if include_usage {
-        let usage_payload = json!({
-            "id": completion.id,
-            "object": "chat.completion.chunk",
-            "created": completion.created,
-            "model": completion.model,
-            "choices": [],
-            "usage": {
-                "prompt_tokens": completion.usage.prompt_tokens,
-                "completion_tokens": completion.usage.completion_tokens,
-                "total_tokens": completion.usage.total_tokens,
-            }
-        });
-        body.push_str("data: ");
-        body.push_str(&usage_payload.to_string());
-        body.push_str("\n\n");
-    }
-
-    body.push_str("data: [DONE]\n\n");
-
-    ApiHttpResponse {
-        status_code: 200,
-        content_type: "text/event-stream",
-        body,
-        deprecated: false,
-    }
-}
-
-/// Serialise a single OpenAI streaming chunk: merge `base` (id/object/created/model)
-/// with a `choices` entry and emit it as an SSE `data:` frame.
-fn sse_chunk(base: &Value, choice: &Value) -> String {
-    let mut merged = base.clone();
-    if let Value::Object(map) = &mut merged {
-        map.insert(String::from("choices"), Value::Array(vec![choice.clone()]));
-    }
-    format!("data: {merged}\n\n")
 }
 
 /// Translate an Anthropic Messages request (`POST /v1/messages`) so the `claude`
@@ -848,8 +744,12 @@ fn handle_anthropic_messages_request(body: &str) -> ApiHttpResponse {
             let solver = http_solver();
             let mut store = SyncStore::open();
             let chat_request = request.to_chat_completion_request();
-            let message =
-                create_anthropic_message_with_solver_and_memory(&request, &solver, store.events());
+            let scope = request_scope(body, &chat_request.messages, !chat_request.tools.is_empty());
+            let message = create_anthropic_message_with_solver_and_memory(
+                &request,
+                &solver,
+                &events_in_scope(store.events(), Some(&scope)),
+            );
             let answer = message
                 .content
                 .iter()
@@ -862,7 +762,8 @@ fn handle_anthropic_messages_request(body: &str) -> ApiHttpResponse {
             record_exchange_best_effort(
                 &mut store,
                 messages_exchange_to_record(&chat_request.messages, &answer),
-                &chat_tool_executions(&chat_request.messages),
+                &chat_request.messages,
+                &scope,
             );
             if request.stream {
                 ApiHttpResponse {
@@ -894,6 +795,9 @@ fn handle_memory_since_request(query: &str) -> ApiHttpResponse {
 /// Merge an inbound `demo_memory` document into the shared store
 /// (`POST /v1/memory/import`, ROADMAP D1 / R5c).
 fn handle_memory_import_request(body: &str) -> ApiHttpResponse {
+    if ephemeral_enabled() {
+        return error_response(409, "memory is read-only in ephemeral mode");
+    }
     let mut store = SyncStore::open();
     match store.import_links_notation(body) {
         Ok(added) => json_response(

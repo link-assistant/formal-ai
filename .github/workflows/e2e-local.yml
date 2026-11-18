@@ -30,8 +30,9 @@ permissions:
 
 jobs:
   e2e-local:
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) }}
     name: E2E Tests (local web app, shard ${{ matrix.shard }}/3)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # R1188-U9/U11: the suite is split over three matrix legs by spec file
     # (Playwright `--shard`), so each leg stays well inside 30 minutes; the
     # whole suite measured 30.0 minutes at most as one job.
@@ -91,7 +92,7 @@ jobs:
         continue-on-error: true
         run: |
           cd rust/tests/e2e
-          npx playwright install-deps chromium
+          bash ../../../scripts/with-ubuntu-apt-sources.sh npx playwright install-deps chromium
       - name: Install Playwright browsers
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 10
@@ -105,6 +106,8 @@ jobs:
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
         env:
           SHARD: ${{ matrix.shard }}
+          # Both preparation steps above must succeed before this opt-in.
+          E2E_PREBUILT_WEB: '1'
         # R1188-U10: the legs are planned longest-first from the seconds each
         # spec file took (data/meta/playwright-test-durations.lino) by
         # scripts/plan-test-shards.mjs, not cut by test count in file order,

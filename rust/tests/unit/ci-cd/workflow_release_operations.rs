@@ -46,15 +46,13 @@ pub(super) fn rust_script_install_steps_use_retry_wrapper() {
         workflow
             .matches("run: bash scripts/install-rust-script.sh")
             .count(),
-        // The evidence-check job (issue #808) moved to its own workflow when
-        // extracting it brought `release.yml` back under the 1500-line warning
-        // band (issues #999, #1012); its install step is counted by
-        // `evidence_check_workflow_caps_its_job_and_installs_rust_script_with_the_retry_wrapper`.
-        // PR #1188 moved the Pages build's install into pages-artifact.yml,
-        // asserted by `pages_deploy_generates_api_docs_and_copies_them_after_stamping`.
-        8,
+        workflow
+            .lines()
+            .filter(|line| line.trim() == "- name: Install rust-script")
+            .count(),
         "each rust-script install step should use the retry wrapper"
     );
+    assert!(workflow.contains("run: bash scripts/install-rust-script.sh"));
     assert!(install_script.contains("RUST_SCRIPT_INSTALL_ATTEMPTS"));
     assert!(install_script.contains("cargo install rust-script --locked"));
     assert!(install_script.contains("sleep \"$delay\""));

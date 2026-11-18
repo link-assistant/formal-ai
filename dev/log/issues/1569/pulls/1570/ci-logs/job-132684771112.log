@@ -1,0 +1,212 @@
+﻿2026-11-15T03:25:26.2303111Z Current runner version: '2.338.2'
+2026-11-15T03:25:26.2329675Z ##[group]Runner Image Provisioner
+2026-11-15T03:25:26.2330567Z Hosted Compute Agent
+2026-11-15T03:25:26.2331452Z Version: 20261103.629
+2026-11-15T03:25:26.2332194Z Commit: 15dbd9ccb5dbf34fae002b6ed1a2670f52df37bc
+2026-11-15T03:25:26.2333182Z Build Date: 2026-11-03T17:26:59Z
+2026-11-15T03:25:26.2333961Z Worker ID: {69c630e6-fde3-4376-9875-586235ab3eb8}
+2026-11-15T03:25:26.2334691Z Region: eastus2
+2026-11-15T03:25:26.2335330Z Cloud: Azure
+2026-11-15T03:25:26.2335909Z ##[endgroup]
+2026-11-15T03:25:26.2337302Z ##[group]Operating System
+2026-11-15T03:25:26.2337968Z Ubuntu
+2026-11-15T03:25:26.2338530Z 26.04.1
+2026-11-15T03:25:26.2339077Z LTS
+2026-11-15T03:25:26.2339606Z ##[endgroup]
+2026-11-15T03:25:26.2340169Z ##[group]Runner Image
+2026-11-15T03:25:26.2340823Z Image: ubuntu-26.04
+2026-11-15T03:25:26.2341404Z Version: 20261111.196.1
+2026-11-15T03:25:26.2342955Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261111.196/images/ubuntu/Ubuntu2604-Readme.md
+2026-11-15T03:25:26.2344630Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261111.196
+2026-11-15T03:25:26.2345720Z ##[endgroup]
+2026-11-15T03:25:26.2346884Z ##[group]GITHUB_TOKEN Permissions
+2026-11-15T03:25:26.2349369Z Contents: read
+2026-11-15T03:25:26.2349971Z Metadata: read
+2026-11-15T03:25:26.2351091Z ##[endgroup]
+2026-11-15T03:25:26.2353563Z Secret source: Actions
+2026-11-15T03:25:26.2354608Z Cache mode: write
+2026-11-15T03:25:26.2355538Z Prepare workflow directory
+2026-11-15T03:25:26.2875718Z Prepare all required actions
+2026-11-15T03:25:26.2925882Z Getting action download info
+2026-11-15T03:25:26.4529003Z Download action repository 'actions/github-script@v9' (SHA:3a2844b7e9c422d3c10d287c895573f7108da1b3)
+2026-11-15T03:25:26.7903390Z Complete job name: Pipeline Status
+2026-11-15T03:25:26.8852810Z ##[group]Run actions/github-script@v9
+2026-11-15T03:25:26.8853877Z with:
+2026-11-15T03:25:26.8856765Z   script: const p = 'scripts/check-pipeline-status.sh';
+const {data} = await github.rest.repos.getContent({...context.repo, path:p, ref:context.sha, request:{timeout:20000}});
+if(data.type !== 'file' || data.encoding !== 'base64' || data.size > 65536) throw Error('invalid status source');
+const fs = require('node:fs'); fs.mkdirSync('scripts', {recursive:true}); fs.writeFileSync(p, Buffer.from(data.content, 'base64'), {flag:'wx'});
+
+2026-11-15T03:25:26.8863715Z   github-token: ***
+2026-11-15T03:25:26.8864330Z   debug: false
+2026-11-15T03:25:26.8864918Z   user-agent: actions/github-script
+2026-11-15T03:25:26.8865627Z   result-encoding: json
+2026-11-15T03:25:26.8866194Z   retries: 0
+2026-11-15T03:25:26.8867001Z   retry-exempt-status-codes: 400,401,403,404,422
+2026-11-15T03:25:26.8867927Z env:
+2026-11-15T03:25:26.8868439Z   GIT_CONFIG_COUNT: 1
+2026-11-15T03:25:26.8869161Z   GIT_CONFIG_KEY_0: init.defaultBranch
+2026-11-15T03:25:26.8869849Z   GIT_CONFIG_VALUE_0: main
+2026-11-15T03:25:26.8870504Z   CARGO_NET_RETRY: 10
+2026-11-15T03:25:26.8871090Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-15T03:25:26.8871743Z   CARGO_TERM_COLOR: always
+2026-11-15T03:25:26.8872355Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-15T03:25:26.8873094Z   FORMAL_AI_NON_LINUX_CI: run
+2026-11-15T03:25:26.8873826Z   RUSTFLAGS: -Dwarnings
+2026-11-15T03:25:26.8874406Z   RUST_BACKTRACE: full
+2026-11-15T03:25:26.8875165Z   CARGO_REGISTRY_TOKEN: ***
+2026-11-15T03:25:26.8875879Z   CARGO_TOKEN: ***
+2026-11-15T03:25:26.8876483Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+2026-11-15T03:25:26.8877304Z   DOCKERHUB_IMAGE: konard/formal-ai
+2026-11-15T03:25:26.8877942Z ##[endgroup]
+2026-11-15T03:25:27.3838745Z ##[group]Run bash scripts/check-pipeline-status.sh
+2026-11-15T03:25:27.3839848Z [36;1mbash scripts/check-pipeline-status.sh[0m
+2026-11-15T03:25:27.3877591Z shell: /usr/bin/bash -e {0}
+2026-11-15T03:25:27.3878441Z env:
+2026-11-15T03:25:27.3879017Z   GIT_CONFIG_COUNT: 1
+2026-11-15T03:25:27.3879711Z   GIT_CONFIG_KEY_0: init.defaultBranch
+2026-11-15T03:25:27.3880566Z   GIT_CONFIG_VALUE_0: main
+2026-11-15T03:25:27.3881485Z   CARGO_NET_RETRY: 10
+2026-11-15T03:25:27.3882209Z   CARGO_HTTP_MULTIPLEXING: false
+2026-11-15T03:25:27.3883140Z   CARGO_TERM_COLOR: always
+2026-11-15T03:25:27.3883905Z   FORMAL_AI_CI_VERBOSE: false
+2026-11-15T03:25:27.3884654Z   FORMAL_AI_NON_LINUX_CI: run
+2026-11-15T03:25:27.3885352Z   RUSTFLAGS: -Dwarnings
+2026-11-15T03:25:27.3886018Z   RUST_BACKTRACE: full
+2026-11-15T03:25:27.3887015Z   CARGO_REGISTRY_TOKEN: ***
+2026-11-15T03:25:27.3887788Z   CARGO_TOKEN: ***
+2026-11-15T03:25:27.3888491Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+2026-11-15T03:25:27.3889411Z   DOCKERHUB_IMAGE: konard/formal-ai
+2026-11-15T03:25:27.3902234Z   NEEDS_JSON: {
+  "fast-pr-lint": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "hive-source-provenance": {
+    "result": "success",
+    "outputs": {}
+  },
+  "detect-changes": {
+    "result": "success",
+    "outputs": {
+      "docs-changed": "true",
+      "workflow-changed": "false",
+      "pipeline-changed": "true",
+      "agentic-routing-changed": "true",
+      "any-code-changed": "true",
+      "rs-changed": "true",
+      "toml-changed": "false"
+    }
+  },
+  "changelog": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "docker-build": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "docker-slim": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "secrets-scan": {
+    "result": "success",
+    "outputs": {}
+  },
+  "version-check": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "release-preflight": {
+    "result": "success",
+    "outputs": {}
+  },
+  "base": {
+    "result": "skipped",
+    "outputs": {
+      "commit": ""
+    }
+  },
+  "lint": {
+    "result": "failure",
+    "outputs": {}
+  },
+  "test": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "doc-tests": {
+    "result": "success",
+    "outputs": {}
+  },
+  "macos-core-tests": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "build": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "auto-release": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "manual-release": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "native-container-images": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "changelog-pr": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "test-e2e-local": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "test-agent-cli-e2e": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "build-artifacts": {
+    "result": "failure",
+    "outputs": {
+      "source-commit": "57b7a3b69dfc2ec0340f9640c1458f4d71b3b99d"
+    }
+  },
+  "native-response-observations": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "box-language-projects": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "build-pages": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "deploy-pages": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "test-e2e-pages": {
+    "result": "skipped",
+    "outputs": {}
+  },
+  "server-parity": {
+    "result": "skipped",
+    "outputs": {}
+  }
+}
+2026-11-15T03:25:27.3915667Z   IS_MAIN: true
+2026-11-15T03:25:27.3916264Z ##[endgroup]
+2026-11-15T03:25:27.4101095Z Failed jobs:    lint, build-artifacts
+2026-11-15T03:25:27.4102184Z Cancelled jobs: <none>
+2026-11-15T03:25:27.4130863Z ##[error]Pipeline failed. Failing jobs: lint, build-artifacts
+2026-11-15T03:25:27.4142344Z ##[error]Process completed with exit code 1.
+2026-11-15T03:25:27.4254112Z Cleaning up orphan processes

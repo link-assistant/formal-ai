@@ -1,0 +1,11 @@
+import { WorkerHost } from '../../js/server/worker-host.mjs';
+import { installNodeHost } from '../../js/agentic/node-host.mjs';
+const host = new WorkerHost();
+await installNodeHost(host);
+const executor = await import('../../js/agentic/crate/meta_executor.mjs');
+console.log(executor.answerValidation('greeting', 'Hello!'), executor.answerValidation('unknown', ''));
+const answer = await host.solve('Find a prime number between 14 and 20');
+console.log(Object.keys(answer));
+console.log(answer.content);
+for (const key of ['solverEvents', 'events', 'eventLog', 'solverLog']) if (answer[key]) console.log(key, JSON.stringify(answer[key]).slice(0, 800));
+for (const event of answer.solverEvents) if (['validation', 'trace:simplification', 'candidate'].includes(event.kind)) console.log(event.kind, '|', event.payload.slice(0, 120));

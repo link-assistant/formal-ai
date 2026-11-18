@@ -58,13 +58,12 @@ fn report_commands() -> Vec<String> {
 #[test]
 fn every_report_context_is_exported_by_the_local_cli() {
     let commands = report_commands();
-    // GitHub is filed last, and its body is rendered locally too: `formal-ai
-    // report body` exports the merged context and writes the document #839 §3
-    // specifies, instead of assembling one in the shell.
+    // GitHub is filed last. The local submission command renders the merged
+    // context as the complete document #839 §3 specifies before invoking gh.
     let expected = [
         ("harness", "formal-ai context export"),
         ("server", "formal-ai context export"),
-        ("both", "formal-ai report body"),
+        ("both", "formal-ai report create-issue"),
     ];
 
     for ((source, program), command) in expected.iter().zip(&commands) {
@@ -76,7 +75,7 @@ fn every_report_context_is_exported_by_the_local_cli() {
         assert!(!command.contains("FORMAL_AI_BASE_URL"), "{command}");
     }
     let github = &commands[2];
-    assert!(github.contains("gh issue create"), "{github}");
+    assert!(github.contains("formal-ai report create-issue"), "{github}");
 }
 
 #[test]
@@ -103,9 +102,9 @@ fn local_report_export_is_available_in_every_supported_language() {
         let command = command_of(&one_call(&messages, &["request_user_input", "bash"]));
 
         assert!(
-            command.contains("formal-ai report body")
+            command.starts_with("formal-ai report create-issue ")
                 && command.contains("--source both")
-                && command.contains("gh issue create"),
+                && command.contains("--separate-context-links"),
             "language={language}, prompt={prompt:?}: {command}"
         );
         assert!(!command.contains("curl"), "language={language}: {command}");

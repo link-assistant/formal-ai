@@ -1,0 +1,5 @@
+restates("2 is less than 1." , "1 is less than 2."): true
+same identity (true or false / true and false): true
+negated theorem: proof_request [ 'proof_outcome:proven' ]
+Return the number of vowels in the text. ->     return sum(1 for character in text if character in 'aeiouAEIOU') []
+Return twice the number of vowels in the text. ->     return sum(1 for character in text if character in 'aeiouAEIOU') []

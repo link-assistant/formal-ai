@@ -13,6 +13,7 @@ import { createHash } from 'node:crypto';
 
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+import { completeOwnedSourceReadFrame } from '../../../js/agentic/tool_result.mjs';
 
 let planChatStep;
 let sequenceSteps;
@@ -125,9 +126,19 @@ describe('G104: an edit naming files listed with `and` or commas is declined, na
   test('a path in a later sentence (the ladder leaf asking for evidence) is no edit target', async () => {
     const prompt = 'In the file rust/src/core.rs, replace "statement_negation_cue" with "statement_negation_marker". '
       + 'Leave supporting evidence in .agent-ladder/node-2.1-proof.md.';
-    const { files, answer } = await drive(prompt, { 'rust/src/core.rs': 'const statement_negation_cue: u8 = 1;\n' });
+    const { calls, files, answer } = await drive(prompt, { 'rust/src/core.rs': 'const statement_negation_cue: u8 = 1;\n' });
     assert.equal(files.get('rust/src/core.rs'), 'const statement_negation_marker: u8 = 1;\n');
-    assert.equal(answer, 'Replaced `statement_negation_cue` with `statement_negation_marker` in `rust/src/core.rs` and observed the result.');
+    assert.equal(calls.filter(tool => tool === 'edit').length, 1);
+    assert.equal(calls.includes('write'), false);
+    assert.equal(files.has('.agent-ladder/node-2.1-proof.md'), false);
+    const { parseLino, childValue } = await import('../../../js/agentic/host.mjs');
+    const gap = parseLino(answer);
+    assert.equal(childValue(gap, 'record_type'), 'obligation_gap');
+    assert.equal(childValue(gap, 'reason'), 'no_artifact_in_clause');
+    const clause = 'Leave supporting evidence in .agent-ladder/node-2.1-proof.md.';
+    assert.equal(childValue(gap, 'clause'), clause);
+    const start = Number(childValue(gap, 'span_start')), end = Number(childValue(gap, 'span_end'));
+    assert.equal(Buffer.from(prompt).subarray(start, end).toString(), clause);
   });
 
   test('one file followed by a comma and the edit is still one edit', async () => {
@@ -315,7 +326,7 @@ test('formal rewrite queries validate escaped literals before the prose quote gu
   assert.equal(read.calls[0].tool, 'read');
   messages.push({ role: 'assistant', content: '', tool_calls: [{ id: 'read', type: 'function', function: {
     name: 'read', arguments: read.calls[0].arguments,
-  } }] }, { role: 'tool', tool_call_id: 'read', content: source });
+  } }] }, { role: 'tool', tool_call_id: 'read', content: completeOwnedSourceReadFrame(source) });
   const write = await planChatStep(messages, ['read', 'write']);
   assert.equal(write.calls[0].tool, 'write');
   assert.equal(JSON.parse(write.calls[0].arguments).content, 'fn main() {\n}\n');

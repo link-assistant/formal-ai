@@ -44,18 +44,27 @@ fn natural_location_questions_use_pwd_instead_of_web_search() {
 #[test]
 fn ordinary_file_edits_are_not_mistaken_for_dialog_control() {
     let prompt = "update main.rs and change foo to bar";
-    let plan = plan_chat_step(&[ChatMessage::user(prompt)], &["edit"]);
+    let Some(AgenticPlan::Final(gap)) = plan_chat_step(&[ChatMessage::user(prompt)], &["edit"])
+    else {
+        panic!("a missing source Read must not authorize an edit");
+    };
+    let gap: serde_json::Value = serde_json::from_str(&gap).expect("typed capability gap");
+    assert_eq!(gap["reason"], "ReadToolUnavailable");
+    assert_eq!(gap["verified"], false);
+    let plan = plan_chat_step(&[ChatMessage::user(prompt)], &["read", "edit"]);
     let Some(AgenticPlan::ToolCalls(calls)) = plan else {
         panic!("ordinary file edit should remain an agentic tool request: {plan:?}");
     };
-    assert_eq!(calls[0].tool, "edit");
+    assert_eq!(calls[0].tool, "read");
+    let arguments: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
+    assert_eq!(arguments["path"], "main.rs");
 
     let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
         "messages": [{"role": "user", "content": prompt}],
-        "tools": [{
-            "type": "function",
-            "function": {"name": "edit", "parameters": {"type": "object"}}
-        }]
+        "tools": [
+            {"type": "function", "function": {"name": "read", "parameters": {"type": "object"}}},
+            {"type": "function", "function": {"name": "edit", "parameters": {"type": "object"}}}
+        ]
     }))
     .expect("valid agent request");
     let solver = UniversalSolver::new(SolverConfig {
@@ -66,7 +75,7 @@ fn ordinary_file_edits_are_not_mistaken_for_dialog_control() {
     assert_eq!(completion.choices[0].finish_reason, "tool_calls");
     assert_eq!(
         completion.choices[0].message.tool_calls[0].function.name,
-        "edit"
+        "read"
     );
 }
 

@@ -4,6 +4,16 @@ use formal_ai::agentic_coding::{AgenticPlan, PlannedToolCall, plan_chat_step};
 use formal_ai::normal_markov::quoted_segments;
 use formal_ai::protocol::{ChatMessage, ToolCall};
 
+// Model a provider-owned complete Read, including exact trailing newlines.
+fn complete_read(id: &str, tool: &str, source: impl Into<String>) -> ChatMessage {
+    let source: String = source.into();
+    ChatMessage::tool_result(
+        id,
+        tool,
+        formal_ai::agentic_coding::tool_result::complete_owned_source_read_frame(&source),
+    )
+}
+
 fn one_call(messages: &[ChatMessage]) -> PlannedToolCall {
     match plan_chat_step(messages, &["read_file", "write_file"]) {
         Some(AgenticPlan::ToolCalls(mut calls)) if calls.len() == 1 => calls.remove(0),
@@ -39,11 +49,7 @@ fn rewrite(path: &str, source: &str, prompt: &str) -> String {
         "read_file".to_owned(),
         read.arguments,
     )]));
-    messages.push(ChatMessage::tool_result(
-        "read-current",
-        "read_file",
-        source,
-    ));
+    messages.push(complete_read("read-current", "read_file", source));
 
     let write = one_call(&messages);
     assert_eq!(write.tool, "write_file", "{prompt}");
@@ -163,7 +169,7 @@ fn a_cyclic_program_reaches_the_bound_without_writing_partial_bytes() {
         "read_file".to_owned(),
         read.arguments,
     )]));
-    messages.push(ChatMessage::tool_result("read-cycle", "read_file", "a"));
+    messages.push(complete_read("read-cycle", "read_file", "a"));
 
     match plan_chat_step(&messages, &["read_file", "write_file"]) {
         Some(AgenticPlan::Final(answer)) => {

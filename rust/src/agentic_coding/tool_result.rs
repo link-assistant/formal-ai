@@ -27,8 +27,8 @@ pub(crate) fn reported_exit_code(raw: &str) -> Option<i64> {
     source_observation::reported_exit_code(raw)
 }
 pub(super) use source_observation::{
-    harness_reported_failure, incomplete_receipt, normalized_payload, observed_bytes_match,
-    observed_digest_matches, observed_payload, shell_step,
+    exact_successful_stdout, harness_reported_failure, incomplete_receipt, normalized_payload,
+    observed_bytes_match, observed_digest_matches, observed_payload, shell_step,
 };
 
 struct NormalizedResult {
@@ -486,10 +486,19 @@ impl ShellEnvelope {
                 ..from_payload(&payload, None)
             };
         }
-        let error = if self.error.is_empty() {
+        let error = if self.output.is_empty() {
+            self.error
+        } else if self.error.is_empty() {
             self.output
         } else {
-            self.error
+            crate::seed::agentic_message(
+                "tool-result-command-streams",
+                &[
+                    ("output", &self.output),
+                    ("separator", "\n"),
+                    ("error", &self.error),
+                ],
+            )
         };
         NormalizedResult {
             payload: String::new(),
@@ -500,11 +509,18 @@ impl ShellEnvelope {
     }
 }
 
+/// A harness envelope frames the whole result. An envelope quoted inside
+/// source text (an issue body that shows a tool receipt) is data, not the
+/// receipt of this call (issue #1560).
+pub(super) fn untrusted_inner(text: &str) -> &str {
+    text.trim()
+        .strip_prefix("<untrusted_context>")
+        .and_then(|rest| rest.split_once("</untrusted_context>"))
+        .map_or(text, |(inside, _)| inside)
+}
+
 fn parse_shell_envelope(text: &str) -> Option<ShellEnvelope> {
-    let inner = text
-        .split_once("<untrusted_context>")
-        .and_then(|(_, rest)| rest.split_once("</untrusted_context>"))
-        .map_or(text, |(inside, _)| inside);
+    let inner = untrusted_inner(text);
     let lines = inner.lines().collect::<Vec<_>>();
     let mut exit_code = None;
     // A call the harness killed (a timeout) names its signal and no exit code
@@ -705,10 +721,7 @@ fn structured_content_text(structured: &Value) -> String {
 /// lines before the real `Output:` — so a recipe that answers with the command's
 /// output quotes the file, not the transport (issue #671).
 pub(super) fn strip_transport_envelope(text: &str) -> String {
-    let inner = text
-        .split_once("<untrusted_context>")
-        .and_then(|(_, rest)| rest.split_once("</untrusted_context>"))
-        .map_or(text, |(inside, _)| inside);
+    let inner = untrusted_inner(text);
     let lines = inner.lines().collect::<Vec<_>>();
     let output = lines.iter().position(|line| {
         let trimmed = line.trim();
@@ -819,11 +832,11 @@ pub(super) fn command_argument(arguments: &str) -> Option<String> {
 fn result_tool(messages: &[ChatMessage], index: usize) -> Option<&str> {
     let message = &messages[index];
     message.name.as_deref().or_else(|| {
-        let id = message.tool_call_id.as_deref()?;
+        let call_identifier = message.tool_call_id.as_deref()?;
         messages[..index]
             .iter()
             .flat_map(|prior| &prior.tool_calls)
-            .find(|call| call.id == id)
+            .find(|call| call.id == call_identifier)
             .map(|call| call.function.name.as_str())
     })
 }

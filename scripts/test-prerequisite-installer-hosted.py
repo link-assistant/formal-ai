@@ -147,6 +147,43 @@ class InstallerControls(unittest.TestCase):
             self.assertEqual(receipt['documentation'],final)
             self.assertEqual(receipt['document_sha256'],hashlib.sha256(responses[final]).hexdigest())
 
+class DiscoveryConnectionControls(unittest.TestCase):
+    def observe(self, results):
+        opener=types.SimpleNamespace(open=unittest.mock.Mock(side_effect=results))
+        return opener
+    def test_captured_tls_handshake_timeout_recovers_before_download(self):
+        response=io.BytesIO(b'verified response')
+        failure=installer.urllib.error.URLError(TimeoutError('_ssl.c:983: The handshake operation timed out'))
+        opener=self.observe([failure,response])
+        with patch.object(installer.time,'sleep') as sleep,contextlib.redirect_stdout(io.StringIO()):
+            self.assertIs(installer.open_discovery_response(opener,'https://github.com/vendor/compiler/releases/download/v1/compiler.zip'),response)
+        self.assertEqual(opener.open.call_count,2);sleep.assert_called_once_with(1)
+        self.assertTrue(all(call.kwargs['timeout']==30 for call in opener.open.call_args_list))
+    def test_repeated_handshake_timeouts_stop_after_three_attempts(self):
+        failure=installer.urllib.error.URLError(TimeoutError('handshake timed out'))
+        opener=self.observe([failure,failure,failure])
+        with patch.object(installer.time,'sleep') as sleep,contextlib.redirect_stdout(io.StringIO()):
+            with self.assertRaises(installer.urllib.error.URLError): installer.open_discovery_response(opener,'https://github.com/vendor/compiler')
+        self.assertEqual(opener.open.call_count,3)
+        self.assertEqual([call.args for call in sleep.call_args_list],[(1,),(2,)])
+    def test_authorization_certificate_and_policy_failures_never_retry(self):
+        failures=[installer.urllib.error.HTTPError('https://api.github.com/',403,'denied',{},None),
+                  installer.urllib.error.URLError(installer.ssl.SSLCertVerificationError('untrusted certificate')),
+                  ValueError('redirect_not_granted')]
+        for failure in failures:
+            opener=self.observe([failure])
+            with patch.object(installer.time,'sleep') as sleep,contextlib.redirect_stdout(io.StringIO()):
+                with self.assertRaises(type(failure)): installer.open_discovery_response(opener,'https://github.com/vendor/compiler')
+            self.assertEqual(opener.open.call_count,1);sleep.assert_not_called()
+    def test_transient_server_response_closes_before_retry_without_reading_body(self):
+        response=io.BytesIO(b'verified response');body=io.BytesIO(b'untrusted error body')
+        failure=installer.urllib.error.HTTPError('https://github.com/vendor/compiler',503,'unavailable',{},body)
+        opener=self.observe([failure,response])
+        with patch.object(installer.time,'sleep'),contextlib.redirect_stdout(io.StringIO()):
+            self.assertIs(installer.open_discovery_response(opener,'https://github.com/vendor/compiler'),response)
+        self.assertTrue(body.closed);self.assertEqual(response.tell(),0)
+
+
 class CompiledRuntimeControls(unittest.TestCase):
     def test_scala_uses_only_compiled_class_inputs(self):
         import ast

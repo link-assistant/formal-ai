@@ -8,7 +8,7 @@ import { resolvesBody, shellQuote } from './git_commit.mjs';
 import { agenticMessage } from './messages.mjs';
 import { finalAnswer, jsonText, planOne } from './plan.mjs';
 import { Progress } from './progress.mjs';
-import { shellStep, observedPayload, reportedExitCode, harnessReportedFailure, incompleteReceipt } from './tool_result.mjs';
+import { exactSuccessfulStdout, shellStep, observedPayload, reportedExitCode, harnessReportedFailure, incompleteReceipt } from './tool_result.mjs';
 import { fill } from './work_item_steps.mjs';
 import { isObject, parseJson, splitOnce, splitWhitespace, trim, trimMatches } from './crate/rust_str.mjs';
 import { cached, childrenNamed, childValue, parseLino, readText } from './host.mjs';
@@ -27,6 +27,7 @@ function hygienePolicy() {
       untrack: childValue(root, 'untrack-command'),
       clean: childValue(root, 'clean-command'),
       indexGuard: childValue(root, 'index-guard-command'),
+      branchGuard: childValue(root, 'branch-guard-command'),
       statusCommand: childValue(root, 'status-command'),
       scopeRefusal: childValue(root, 'scope-refusal'),
       commitCommand: childValue(root, 'commit-command')
@@ -63,7 +64,7 @@ function hygieneOutputs(policy) {
 export function preparedWorkHygiene(paths) {
   return workHygieneWithPolicy(paths, null);
 }
-function workHygieneWithPolicy(paths, sessionPolicy) {
+function workHygieneWithPolicy(paths, sessionPolicy, placeholders = [], sourcePaths = [], placeholderPolicy = null) {
   const policy = hygienePolicy();
   const outputs = hygieneOutputs(policy);
   const ignored = paths.filter(value => outputs.some(entry => entry.output === value) || value.startsWith(policy.evidenceRoot) && policy.evidenceSuffixes.some(suffix => value.endsWith(suffix)));
@@ -75,11 +76,17 @@ function workHygieneWithPolicy(paths, sessionPolicy) {
     'evidence-root': policy.evidenceRoot,
     'empty-evidence-suffixes': policy.evidenceSuffixes,
     'session-policy': sessionPolicy,
-    'session-contract': sessionContract()
+    'session-contract': sessionContract(),
+    'placeholders': placeholders,
+    'source-paths': sourcePaths,
+    'placeholder-issue': placeholderPolicy?.issue ?? null,
+    'placeholder-branch': placeholderPolicy?.branch ?? null,
+    'placeholder-sources': placeholderPolicy?.sources ?? {}
   };
   const command = policy.command.replace(/\{(?:source|plan)\}/gu, placeholder => shellQuote(placeholder === '{source}' ? policy.source : jsonText(plan)));
   const excluded = [...new Set([...paths, '.gitignore'])].map(value => shellQuote(':(exclude,literal)' + value)).join(' ');
-  const indexGuardCommand = policy.indexGuard.replace('{exclude}', () => excluded);
+  const indexGuardCommand = (placeholders.length ? policy.branchGuard.replace('{branch}',()=>shellQuote(placeholderPolicy.branch))+' && ' : '')
+    + policy.indexGuard.replace('{exclude}', () => excluded);
   const commands = [indexGuardCommand, command];
   if (ignored.length) commands.push(policy.untrack.replace('{files}', () => ignored.map(value => shellQuote(':(literal)' + value)).join(' ')));
   return {
@@ -136,8 +143,41 @@ export function feedbackNeedsChanges(output) {
   const value = parseJson(text);
   if (value === undefined) return true;
   if (!isObject(value) || !Array.isArray(value.comments) || !Array.isArray(value.reviews)) return true;
-  return value.comments.some(item => isObject(item) && typeof item.body === 'string' && trim(item.body) !== '') || value.reviews.some(item => isObject(item)
+  return value.comments.some(item => isObject(item) && typeof item.body === 'string' && trim(item.body) !== '' && !ownSessionStatus(item)) || value.reviews.some(item => isObject(item)
     && item.state === 'CHANGES_REQUESTED');
+}
+/** Own framework notices are bookkeeping, never evidence that a task passed. */
+function ownSessionStatus(item) {
+  if (item.viewerDidAuthor !== true || item.includesCreatedEdit === true) return false;
+  return ownStatusPatterns().some(pattern => new RegExp(pattern, 'u').test(trim(item.body)));
+}
+/** Mirrors `OWN_STATUS_PATTERN_KEYS`: every notice the orchestrator posts as the viewer (issue #1162). */
+const OWN_STATUS_PATTERN_KEYS = Object.freeze([
+  'pull-request-session-summary-pattern',
+  'pull-request-session-started-pattern',
+  'pull-request-solution-log-pattern',
+  'pull-request-auto-restart-pattern',
+  'pull-request-restart-limit-pattern',
+  'pull-request-ready-to-merge-pattern',
+  'pull-request-automation-stopped-pattern',
+  'pull-request-auto-restart-evidence-pattern',
+  'pull-request-auto-restart-uncommitted-pattern',
+  'pull-request-restart-safety-limit-pattern',
+  'pull-request-session-started-draft-pattern',
+  'pull-request-solution-failed-pattern',
+  'pull-request-no-changes-pattern',
+  'pull-request-session-killed-pattern',
+]);
+function ownStatusPatterns() {
+  return OWN_STATUS_PATTERN_KEYS.map(key => fill(key, []));
+}
+/** Mirrors `fn pull_request_feedback_filter`: the bounded `gh --jq` read of pull request feedback. */
+export function pullRequestFeedbackFilter() {
+  const tests = ownStatusPatterns().map(pattern => `test(${JSON.stringify(pattern)})`).join(' or ');
+  return '{comments:[.comments[]|select((.viewerDidAuthor==true and .includesCreatedEdit!=true'
+    + ` and (.body|sub("^\\\\s+";"")|sub("\\\\s+$";"")|(${tests})))|not)`
+    + '|{author:.author.login,viewerDidAuthor,includesCreatedEdit,createdAt,body}],'
+    + 'reviews:[.reviews[]|{author:.author.login,state,body}]}';
 }
 const REFERENCE_TRIM = new Set(['`', ')', ',', '.']);
 
@@ -165,7 +205,7 @@ export function planRestart(task, messages, tools) {
       command: policy.statusCommand
     }));
   }
-  const current = porcelainPaths(observedPayload(statusOutput) ?? statusOutput);
+  const current = preparedWorkPaths(statusOutput);
   if (current === null || current.some(path => !listed.some(scope => path === scope || scope.endsWith('/') && path.startsWith(scope)))) {
     return finalAnswer(policy.scopeRefusal);
   }
@@ -209,11 +249,12 @@ function sessionContract() {
 }
 
 /** Mirrors `fn prepared_recipe_hygiene_with_inventory`; only caller-qualified inventory grants scope. */
-export function preparedRecipeHygiene(sourcePaths, changed, inventory = null) {
+export function preparedRecipeHygiene(sourcePaths, changed, inventory = null, issueReference = null) {
   const policy = hygienePolicy();
   const outputs = hygieneOutputs(policy).filter(entry => sourcePaths.includes(entry.source));
   let sessionPolicy = null;
   let owned = [];
+  const placeholders = [...childrenNamed(parseLino(readText('data/meta/prepared-artifact-inventory.lino')), 'bootstrap-placeholder')].map(node => node.value);
   if (inventory !== null) {
     const contract = sessionContract();
     const root = inventory.evidenceRoot;
@@ -230,17 +271,25 @@ export function preparedRecipeHygiene(sourcePaths, changed, inventory = null) {
     const installed = parseLino(readText('data/meta/prepared-artifact-inventory.lino'));
     const members = [...childrenNamed(installed, 'stream')].map(node => root + node.value);
     members.push(sessionPolicy.path);
-    if (!inventory.ownedPaths.every(path => members.includes(path) || outputs.some(entry => entry.output === path))) return null;
+    if (!inventory.ownedPaths.every(path => members.includes(path) || placeholders.includes(path) || outputs.some(entry => entry.output === path))) return null;
     owned = inventory.ownedPaths;
   }
-  const known = changed.every(path => sourcePaths.includes(path) || outputs.some(entry => entry.output === path) || (inventory !== null ? path === sessionPolicy.path
+  const known = changed.every(path => sourcePaths.includes(path) || outputs.some(entry => entry.output === path) || inventory !== null && owned.includes(path) && placeholders.includes(path) || (inventory !== null ? path === sessionPolicy.path
     || [...childrenNamed(parseLino(readText('data/meta/prepared-artifact-inventory.lino')), 'stream')].some(node => path === inventory.evidenceRoot + node.value) : path.startsWith(policy.evidenceRoot)
     && policy.evidenceSuffixes.some(suffix => path.endsWith(suffix))));
-  return known ? workHygieneWithPolicy([...new Set([...changed, ...owned])], sessionPolicy) : null;
+  const selected=owned.filter(path=>placeholders.includes(path)),scope=inventory?.placeholderPolicy??null;
+  if(selected.length&&(scope?.issue!==issueReference||typeof scope.branch!=='string'||scope.branch===''||scope.branch.length>512||/[\r\n\0]/u.test(scope.branch)))return null;
+  return known ? workHygieneWithPolicy([...new Set([...changed, ...owned])], sessionPolicy, selected, sourcePaths, scope) : null;
 }
 
 /** Mirrors `fn prepared_work_paths`; caller binds the exact status receipt. */
 export function preparedWorkPaths(output) {
+  if (incompleteReceipt(output)) return null;
+  const raw = porcelainPaths(output);
+  if (raw !== null) return raw;
+  const exact = exactSuccessfulStdout(output);
+  const exactPaths = exact === null ? null : porcelainPaths(exact);
+  if (exactPaths !== null) return exactPaths;
   const payload = observedPayload(output);
   return payload === null ? null : porcelainPaths(payload);
 }

@@ -1,0 +1,621 @@
+{
+  "schema": "formal-ai-public-wire-history-projections/v1",
+  "repository": "link-assistant/formal-ai",
+  "run": 40274202613,
+  "attempt": 1,
+  "projection": "Original paths, emitted call names/arguments and final request tool calls/receipt identities. Narrative, schemas and receipt text omitted; aggregate memory deliberately unavailable. Not executable delivery evidence. Argument strings over 256 UTF-16 units replaced consistently with their SHA-256 text identity to bound the fixture. No fixture tools are executed.",
+  "cases": [
+    {
+      "tool": "claude",
+      "pass": "pass-1",
+      "artifact": 12630968997,
+      "artifactSha256": "794b668808f852450ad0f57d60ee43f226aa6d26fbc1130702bb3403049d4dff",
+      "dialog": "dialog_8e0ee70e172d9b19",
+      "observedAggregateMessageCount": 495,
+      "expectedCalls": 17,
+      "context": {
+        "metadata": {
+          "exchange_count": 18
+        },
+        "messages": [],
+        "server_logs": [
+          {
+            "method": "POST",
+            "path": "/api/anthropic/v1/messages?beta=true",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "command": "gh issue view 'https://github.com/link-assistant/[REDACTED]/issues/1419' --json title --jq .title && echo && gh issue view 'https://github.com/link-assistant/[REDACTED]/issues/1419' --json body --jq .body; printf '\n__formal_ai_exit=%s\n' $?"
+                },
+                "name": "Bash"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/anthropic/v1/messages?beta=true",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "command": "[declared text projection sha256:ddd38c56233206643d1c1ba6177bc676216858c375d7386c94d054c969ead456]"
+                },
+                "name": "Bash"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/anthropic/v1/messages?beta=true",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "content": "// kotlinc Main.kt -include-runtime -d Main.jar\n// java -jar Main.jar\n// Emit the requested text followed by a newline.\nfun main() {\n    println(\"Hello, World!\")\n}\n",
+                  "file_path": "Main.kt"
+                },
+                "name": "Write"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/anthropic/v1/messages?beta=true",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "command": "[declared text projection sha256:3ac20684f59b51a82c02e171999cec2f0fd2c7e4bbd36698344943034c013b3b]"
+                },
+                "name": "Bash"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/anthropic/v1/messages?beta=true",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "content": "[declared text projection sha256:ed1632f27f5d3116b810d150cf7e20311a22a7b4207756863a6856cbcee90f2d]",
+                  "file_path": "tests/verify-output.sh"
+                },
+                "name": "Write"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/anthropic/v1/messages?beta=true",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "command": "[declared text projection sha256:061fcbb7717bac4221bfe310830fb2cdcdea713af8c1e7d66e6898d257a6d679]"
+                },
+                "name": "Bash"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/anthropic/v1/messages?beta=true",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "content": "[declared text projection sha256:eee9ade4dbe24300c8b530aa3416efa9eaeb9efb5ea96900ff1490f1fc259624]",
+                  "file_path": "ci/test-hello-world.yml"
+                },
+                "name": "Write"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/anthropic/v1/messages?beta=true",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "command": "sh tests/verify-output.sh"
+                },
+                "name": "Bash"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/anthropic/v1/messages?beta=true",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "command": "git status --porcelain --untracked-files=all # __formal_ai_recipe_ci_fallback_status"
+                },
+                "name": "Bash"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/anthropic/v1/messages?beta=true",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "command": "[declared text projection sha256:a76bc7b860064939479c8ee272ffa363c4c317a7900b77d397cce113d4fab797]"
+                },
+                "name": "Bash"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/anthropic/v1/messages?beta=true",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "command": "[declared text projection sha256:0e3301f6dfb3fddfe5b26f1f144a4660e74280b08180a5a3ffeed3ed5cd2ce36]"
+                },
+                "name": "Bash"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/anthropic/v1/messages?beta=true",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "command": "[declared text projection sha256:f90d3c6f715040921032c3ba9025eae49748544ab4ca1da88e317570ed508160]"
+                },
+                "name": "Bash"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/anthropic/v1/messages?beta=true",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "command": "test -z \"$(git status --porcelain --untracked-files=all)\""
+                },
+                "name": "Bash"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/anthropic/v1/messages?beta=true",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "command": "gh pr view 'https://github.com/link-assistant/[REDACTED]/pull/1420' --json comments,reviews"
+                },
+                "name": "Bash"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/anthropic/v1/messages?beta=true",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "command": "[declared text projection sha256:64fce9cb2f35b5229f1b767f723199a53094fb494d9118fff9e24a87e9ba75cd]"
+                },
+                "name": "Bash"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/anthropic/v1/messages?beta=true",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "command": "gh pr edit 'https://github.com/link-assistant/[REDACTED]/pull/1420' --body 'Verified artifact: Main.kt\n\nVerification commands:\n- `sh tests/verify-output.sh`\n\nResolves https://github.com/link-assistant/[REDACTED]/pull/1420'"
+                },
+                "name": "Bash"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/anthropic/v1/messages?beta=true",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "command": "[declared text projection sha256:7852ab0e7bff43db57375b52755491eca5bf21451c6c81896c41824cfe2b65bf]"
+                },
+                "name": "Bash"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/anthropic/v1/messages?beta=true",
+            "request_body": "{\"model\":\"formal-ai\",\"messages\":[{\"role\":\"assistant\",\"content\":[{\"type\":\"tool_use\",\"id\":\"call_6bfb9e727b59405d\",\"name\":\"Bash\",\"input\":{\"command\":\"gh issue view 'https://github.com/link-assistant/[REDACTED]/issues/1419' --json title --jq .title && echo && gh issue view 'https://github.com/link-assistant/[REDACTED]/issues/1419' --json body --jq .body; printf '\\n__formal_ai_exit=%s\\n' $?\"}}]},{\"role\":\"user\",\"content\":[{\"tool_use_id\":\"call_6bfb9e727b59405d\",\"type\":\"tool_result\",\"content\":\"[receipt text omitted by declared projection]\",\"is_error\":false}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"tool_use\",\"id\":\"call_d3822aeec89d4432\",\"name\":\"Bash\",\"input\":{\"command\":\"[declared text projection sha256:ddd38c56233206643d1c1ba6177bc676216858c375d7386c94d054c969ead456]\"}}]},{\"role\":\"user\",\"content\":[{\"tool_use_id\":\"call_d3822aeec89d4432\",\"type\":\"tool_result\",\"content\":\"[receipt text omitted by declared projection]\",\"is_error\":false}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"tool_use\",\"id\":\"call_2d1b8a90859652fc\",\"name\":\"Write\",\"input\":{\"file_path\":\"Main.kt\",\"content\":\"// kotlinc Main.kt -include-runtime -d Main.jar\\n// java -jar Main.jar\\n// Emit the requested text followed by a newline.\\nfun main() {\\n    println(\\\"Hello, World!\\\")\\n}\\n\"}}]},{\"role\":\"user\",\"content\":[{\"tool_use_id\":\"call_2d1b8a90859652fc\",\"type\":\"tool_result\",\"content\":\"[receipt text omitted by declared projection]\"}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"tool_use\",\"id\":\"call_a7aeafe94bf121e1\",\"name\":\"Bash\",\"input\":{\"command\":\"[declared text projection sha256:3ac20684f59b51a82c02e171999cec2f0fd2c7e4bbd36698344943034c013b3b]\"}}]},{\"role\":\"user\",\"content\":[{\"tool_use_id\":\"call_a7aeafe94bf121e1\",\"type\":\"tool_result\",\"content\":\"[receipt text omitted by declared projection]\",\"is_error\":false}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"tool_use\",\"id\":\"call_ec92a0b8751074a7\",\"name\":\"Write\",\"input\":{\"file_path\":\"tests/verify-output.sh\",\"content\":\"[declared text projection sha256:ed1632f27f5d3116b810d150cf7e20311a22a7b4207756863a6856cbcee90f2d]\"}}]},{\"role\":\"user\",\"content\":[{\"tool_use_id\":\"call_ec92a0b8751074a7\",\"type\":\"tool_result\",\"content\":\"[receipt text omitted by declared projection]\"}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"tool_use\",\"id\":\"call_2ce3707b1e232302\",\"name\":\"Bash\",\"input\":{\"command\":\"[declared text projection sha256:061fcbb7717bac4221bfe310830fb2cdcdea713af8c1e7d66e6898d257a6d679]\"}}]},{\"role\":\"user\",\"content\":[{\"tool_use_id\":\"call_2ce3707b1e232302\",\"type\":\"tool_result\",\"content\":\"[receipt text omitted by declared projection]\",\"is_error\":false}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"tool_use\",\"id\":\"call_981a6666e1e3f113\",\"name\":\"Write\",\"input\":{\"file_path\":\"ci/test-hello-world.yml\",\"content\":\"[declared text projection sha256:eee9ade4dbe24300c8b530aa3416efa9eaeb9efb5ea96900ff1490f1fc259624]\"}}]},{\"role\":\"user\",\"content\":[{\"tool_use_id\":\"call_981a6666e1e3f113\",\"type\":\"tool_result\",\"content\":\"[receipt text omitted by declared projection]\"}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"tool_use\",\"id\":\"call_05199faab802e017\",\"name\":\"Bash\",\"input\":{\"command\":\"sh tests/verify-output.sh\"}}]},{\"role\":\"user\",\"content\":[{\"type\":\"tool_result\",\"content\":\"[receipt text omitted by declared projection]\",\"is_error\":true,\"tool_use_id\":\"call_05199faab802e017\"}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"tool_use\",\"id\":\"call_2187971cf7365d32\",\"name\":\"Bash\",\"input\":{\"command\":\"git status --porcelain --untracked-files=all # __formal_ai_recipe_ci_fallback_status\"}}]},{\"role\":\"user\",\"content\":[{\"tool_use_id\":\"call_2187971cf7365d32\",\"type\":\"tool_result\",\"content\":\"[receipt text omitted by declared projection]\",\"is_error\":false}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"tool_use\",\"id\":\"call_5fa7dbf95766b6e0\",\"name\":\"Bash\",\"input\":{\"command\":\"[declared text projection sha256:a76bc7b860064939479c8ee272ffa363c4c317a7900b77d397cce113d4fab797]\"}}]},{\"role\":\"user\",\"content\":[{\"tool_use_id\":\"call_5fa7dbf95766b6e0\",\"type\":\"tool_result\",\"content\":\"[receipt text omitted by declared projection]\",\"is_error\":false}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"tool_use\",\"id\":\"call_ce898e19efa77a59\",\"name\":\"Bash\",\"input\":{\"command\":\"[declared text projection sha256:0e3301f6dfb3fddfe5b26f1f144a4660e74280b08180a5a3ffeed3ed5cd2ce36]\"}}]},{\"role\":\"user\",\"content\":[{\"tool_use_id\":\"call_ce898e19efa77a59\",\"type\":\"tool_result\",\"content\":\"[receipt text omitted by declared projection]\",\"is_error\":false}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"tool_use\",\"id\":\"call_187cd5a02162a9ec\",\"name\":\"Bash\",\"input\":{\"command\":\"[declared text projection sha256:f90d3c6f715040921032c3ba9025eae49748544ab4ca1da88e317570ed508160]\"}}]},{\"role\":\"user\",\"content\":[{\"tool_use_id\":\"call_187cd5a02162a9ec\",\"type\":\"tool_result\",\"content\":\"[receipt text omitted by declared projection]\",\"is_error\":false}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"tool_use\",\"id\":\"call_22008f9c5491e244\",\"name\":\"Bash\",\"input\":{\"command\":\"test -z \\\"$(git status --porcelain --untracked-files=all)\\\"\"}}]},{\"role\":\"user\",\"content\":[{\"tool_use_id\":\"call_22008f9c5491e244\",\"type\":\"tool_result\",\"content\":\"[receipt text omitted by declared projection]\",\"is_error\":false}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"tool_use\",\"id\":\"call_d452bf2f5c83e8a1\",\"name\":\"Bash\",\"input\":{\"command\":\"gh pr view 'https://github.com/link-assistant/[REDACTED]/pull/1420' --json comments,reviews\"}}]},{\"role\":\"user\",\"content\":[{\"tool_use_id\":\"call_d452bf2f5c83e8a1\",\"type\":\"tool_result\",\"content\":\"[receipt text omitted by declared projection]\",\"is_error\":false}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"tool_use\",\"id\":\"call_fbee89785b990238\",\"name\":\"Bash\",\"input\":{\"command\":\"[declared text projection sha256:64fce9cb2f35b5229f1b767f723199a53094fb494d9118fff9e24a87e9ba75cd]\"}}]},{\"role\":\"user\",\"content\":[{\"tool_use_id\":\"call_fbee89785b990238\",\"type\":\"tool_result\",\"content\":\"[receipt text omitted by declared projection]\",\"is_error\":false}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"tool_use\",\"id\":\"call_7e76b91dc7e2e191\",\"name\":\"Bash\",\"input\":{\"command\":\"gh pr edit 'https://github.com/link-assistant/[REDACTED]/pull/1420' --body 'Verified artifact: Main.kt\\n\\nVerification commands:\\n- `sh tests/verify-output.sh`\\n\\nResolves https://github.com/link-assistant/[REDACTED]/pull/1420'\"}}]},{\"role\":\"user\",\"content\":[{\"tool_use_id\":\"call_7e76b91dc7e2e191\",\"type\":\"tool_result\",\"content\":\"[receipt text omitted by declared projection]\",\"is_error\":false}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"tool_use\",\"id\":\"call_736686f8eb0a4406\",\"name\":\"Bash\",\"input\":{\"command\":\"[declared text projection sha256:7852ab0e7bff43db57375b52755491eca5bf21451c6c81896c41824cfe2b65bf]\"}}]},{\"role\":\"user\",\"content\":[{\"tool_use_id\":\"call_736686f8eb0a4406\",\"type\":\"tool_result\",\"content\":\"[receipt text omitted by declared projection]\",\"is_error\":false}]}]}",
+            "response_tool_calls": []
+          }
+        ]
+      }
+    },
+    {
+      "tool": "codex",
+      "pass": "pass-1",
+      "artifact": 12632201424,
+      "artifactSha256": "ea116b9b7fbadcb4fdb327015b2514db80f2abe2f195fc8fcd8096aa5519f072",
+      "dialog": "dialog_9066022c9dce9ff2",
+      "observedAggregateMessageCount": 54,
+      "expectedCalls": 17,
+      "context": {
+        "metadata": {
+          "exchange_count": 18
+        },
+        "messages": [],
+        "server_logs": [
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "cmd": "gh issue view 'https://github.com/link-assistant/[REDACTED]/issues/1421' --json title --jq .title && echo && gh issue view 'https://github.com/link-assistant/[REDACTED]/issues/1421' --json body --jq .body; printf '\n__formal_ai_exit=%s\n' $?"
+                },
+                "name": "exec_command"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "cmd": "[declared text projection sha256:0278337b9da7cbdf86da38c1faa0da951f9eea64b05d621b31e2e881b2ea9afa]"
+                },
+                "name": "exec_command"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": "*** Begin Patch\n*** Add File: main.rs\n+// rustc main.rs -o main\n+// ./main\n+// Emit the requested text followed by a newline.\n+fn main() {\n+    println!(\"{}\", \"Hello, World!\");\n+}\n*** End Patch\n",
+                "name": "apply_patch"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "cmd": "[declared text projection sha256:3ac20684f59b51a82c02e171999cec2f0fd2c7e4bbd36698344943034c013b3b]"
+                },
+                "name": "exec_command"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": "[declared text projection sha256:d2855d0fa934a2bf585cdf398dda28ab926de500cfcb491053e4c498d3205430]",
+                "name": "apply_patch"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "cmd": "[declared text projection sha256:061fcbb7717bac4221bfe310830fb2cdcdea713af8c1e7d66e6898d257a6d679]"
+                },
+                "name": "exec_command"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": "[declared text projection sha256:72901f2bd059d27c4bc79c04f78aab18db4e2b75cad8286723e6ccaae9b5b4e6]",
+                "name": "apply_patch"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "cmd": "sh tests/verify-output.sh"
+                },
+                "name": "exec_command"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "cmd": "git status --porcelain --untracked-files=all # __formal_ai_recipe_ci_fallback_status"
+                },
+                "name": "exec_command"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "cmd": "[declared text projection sha256:008895cd3bb5ad890ff06eedcdac7b4729aa1c28006872eb2bbd4db31fc086d2]"
+                },
+                "name": "exec_command"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "cmd": "[declared text projection sha256:0b8bc3198394b23768c387bad775cddb072f5b0c09556328080088c394896bc3]"
+                },
+                "name": "exec_command"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "cmd": "[declared text projection sha256:a25316b66739cc4bae9b81bee01f50a17f34edb140f5a5a9c479487b7635f2a7]"
+                },
+                "name": "exec_command"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "cmd": "test -z \"$(git status --porcelain --untracked-files=all)\""
+                },
+                "name": "exec_command"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "cmd": "gh pr view 'https://github.com/link-assistant/[REDACTED]/pull/1422' --json comments,reviews"
+                },
+                "name": "exec_command"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "cmd": "[declared text projection sha256:352bc6acb9b3f6054dcc210c75fbea4f85db568d59d5084c5b9f60b155c47503]"
+                },
+                "name": "exec_command"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "cmd": "gh pr edit 'https://github.com/link-assistant/[REDACTED]/pull/1422' --body 'Verified artifact: main.rs\n\nVerification commands:\n- `sh tests/verify-output.sh`\n\nResolves https://github.com/link-assistant/[REDACTED]/pull/1422'"
+                },
+                "name": "exec_command"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "cmd": "[declared text projection sha256:25ea696dea45ac9583579ddb16642d08616690685274415cdd8163ae559406ca]"
+                },
+                "name": "exec_command"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\",\"input\":[{\"type\":\"function_call\",\"id\":\"fc_c2f9fe5179819a44\",\"name\":\"exec_command\",\"arguments\":\"{\\\"cmd\\\":\\\"gh issue view 'https://github.com/link-assistant/[REDACTED]/issues/1421' --json title --jq .title && echo && gh issue view 'https://github.com/link-assistant/[REDACTED]/issues/1421' --json body --jq .body; printf '\\\\n__formal_ai_exit=%s\\\\n' $?\\\"}\",\"call_id\":\"call_c2f9fe5179819a44\"},{\"type\":\"function_call_output\",\"id\":\"fco_01a176e3-b7c8-7af2-a06c-70eddbf9361f\",\"call_id\":\"call_c2f9fe5179819a44\",\"output\":\"[receipt text omitted by declared projection]\"},{\"type\":\"function_call\",\"id\":\"fc_643302012e032703\",\"name\":\"exec_command\",\"arguments\":\"{\\\"cmd\\\":\\\"[declared text projection sha256:0278337b9da7cbdf86da38c1faa0da951f9eea64b05d621b31e2e881b2ea9afa]\\\"}\",\"call_id\":\"call_643302012e032703\"},{\"type\":\"function_call_output\",\"id\":\"fco_01a176e3-c352-75b0-b5e6-c1f176a5ddd8\",\"call_id\":\"call_643302012e032703\",\"output\":\"[receipt text omitted by declared projection]\"},{\"type\":\"custom_tool_call\",\"id\":\"ctc_625f6559eb273cad\",\"call_id\":\"call_625f6559eb273cad\",\"name\":\"apply_patch\",\"input\":\"*** Begin Patch\\n*** Add File: main.rs\\n+// rustc main.rs -o main\\n+// ./main\\n+// Emit the requested text followed by a newline.\\n+fn main() {\\n+    println!(\\\"{}\\\", \\\"Hello, World!\\\");\\n+}\\n*** End Patch\\n\"},{\"type\":\"custom_tool_call_output\",\"id\":\"ctco_01a176e3-ce96-7653-bc9e-023a01c7117d\",\"call_id\":\"call_625f6559eb273cad\",\"output\":\"[receipt text omitted by declared projection]\"},{\"type\":\"function_call\",\"id\":\"fc_5da785af11f0c864\",\"name\":\"exec_command\",\"arguments\":\"{\\\"cmd\\\":\\\"[declared text projection sha256:3ac20684f59b51a82c02e171999cec2f0fd2c7e4bbd36698344943034c013b3b]\\\"}\",\"call_id\":\"call_5da785af11f0c864\"},{\"type\":\"function_call_output\",\"id\":\"fco_01a176e3-d9d7-7c23-8416-01b99c3673f1\",\"call_id\":\"call_5da785af11f0c864\",\"output\":\"[receipt text omitted by declared projection]\"},{\"type\":\"custom_tool_call\",\"id\":\"ctc_7e46b3b320e01007\",\"call_id\":\"call_7e46b3b320e01007\",\"name\":\"apply_patch\",\"input\":\"[declared text projection sha256:d2855d0fa934a2bf585cdf398dda28ab926de500cfcb491053e4c498d3205430]\"},{\"type\":\"custom_tool_call_output\",\"id\":\"ctco_01a176e3-e520-78f0-9d5a-49687ee3bf9b\",\"call_id\":\"call_7e46b3b320e01007\",\"output\":\"[receipt text omitted by declared projection]\"},{\"type\":\"function_call\",\"id\":\"fc_8a7ca41282e88049\",\"name\":\"exec_command\",\"arguments\":\"{\\\"cmd\\\":\\\"[declared text projection sha256:061fcbb7717bac4221bfe310830fb2cdcdea713af8c1e7d66e6898d257a6d679]\\\"}\",\"call_id\":\"call_8a7ca41282e88049\"},{\"type\":\"function_call_output\",\"id\":\"fco_01a176e3-f109-7f81-ae2f-063679fb7dfd\",\"call_id\":\"call_8a7ca41282e88049\",\"output\":\"[receipt text omitted by declared projection]\"},{\"type\":\"custom_tool_call\",\"id\":\"ctc_274452cc8c4c91bd\",\"call_id\":\"call_274452cc8c4c91bd\",\"name\":\"apply_patch\",\"input\":\"[declared text projection sha256:72901f2bd059d27c4bc79c04f78aab18db4e2b75cad8286723e6ccaae9b5b4e6]\"},{\"type\":\"custom_tool_call_output\",\"id\":\"ctco_01a176e3-fbe7-7ff0-9ac0-42a9ee6e38f4\",\"call_id\":\"call_274452cc8c4c91bd\",\"output\":\"[receipt text omitted by declared projection]\"},{\"type\":\"function_call\",\"id\":\"fc_89a371b63214db88\",\"name\":\"exec_command\",\"arguments\":\"{\\\"cmd\\\":\\\"sh tests/verify-output.sh\\\"}\",\"call_id\":\"call_89a371b63214db88\"},{\"type\":\"function_call_output\",\"id\":\"fco_01a176e4-08f4-7b10-b1ad-9b96f966a7e7\",\"call_id\":\"call_89a371b63214db88\",\"output\":\"[receipt text omitted by declared projection]\"},{\"type\":\"function_call\",\"id\":\"fc_5060cb77e4d0d8e7\",\"name\":\"exec_command\",\"arguments\":\"{\\\"cmd\\\":\\\"git status --porcelain --untracked-files=all # __formal_ai_recipe_ci_fallback_status\\\"}\",\"call_id\":\"call_5060cb77e4d0d8e7\"},{\"type\":\"function_call_output\",\"id\":\"fco_01a176e4-14ad-7a13-aa80-bec64fea1a41\",\"call_id\":\"call_5060cb77e4d0d8e7\",\"output\":\"[receipt text omitted by declared projection]\"},{\"type\":\"function_call\",\"id\":\"fc_59e0e8e53512f63b\",\"name\":\"exec_command\",\"arguments\":\"{\\\"cmd\\\":\\\"[declared text projection sha256:008895cd3bb5ad890ff06eedcdac7b4729aa1c28006872eb2bbd4db31fc086d2]\\\"}\",\"call_id\":\"call_59e0e8e53512f63b\"},{\"type\":\"function_call_output\",\"id\":\"fco_01a176e4-20cf-73c3-bdb5-1e3b31c50236\",\"call_id\":\"call_59e0e8e53512f63b\",\"output\":\"[receipt text omitted by declared projection]\"},{\"type\":\"function_call\",\"id\":\"fc_1a3c72239cf25497\",\"name\":\"exec_command\",\"arguments\":\"{\\\"cmd\\\":\\\"[declared text projection sha256:0b8bc3198394b23768c387bad775cddb072f5b0c09556328080088c394896bc3]\\\"}\",\"call_id\":\"call_1a3c72239cf25497\"},{\"type\":\"function_call_output\",\"id\":\"fco_01a176e4-2e53-77b2-95af-eac3accfd3e9\",\"call_id\":\"call_1a3c72239cf25497\",\"output\":\"[receipt text omitted by declared projection]\"},{\"type\":\"function_call\",\"id\":\"fc_b2c7f3c67c43f0dc\",\"name\":\"exec_command\",\"arguments\":\"{\\\"cmd\\\":\\\"[declared text projection sha256:a25316b66739cc4bae9b81bee01f50a17f34edb140f5a5a9c479487b7635f2a7]\\\"}\",\"call_id\":\"call_b2c7f3c67c43f0dc\"},{\"type\":\"function_call_output\",\"id\":\"fco_01a176e4-3f44-7f71-8732-e901c868aef5\",\"call_id\":\"call_b2c7f3c67c43f0dc\",\"output\":\"[receipt text omitted by declared projection]\"},{\"type\":\"function_call\",\"id\":\"fc_d88dccd83956c9cf\",\"name\":\"exec_command\",\"arguments\":\"{\\\"cmd\\\":\\\"test -z \\\\\\\"$(git status --porcelain --untracked-files=all)\\\\\\\"\\\"}\",\"call_id\":\"call_d88dccd83956c9cf\"},{\"type\":\"function_call_output\",\"id\":\"fco_01a176e4-4a6c-7a73-a26a-05fadbb3d5b8\",\"call_id\":\"call_d88dccd83956c9cf\",\"output\":\"[receipt text omitted by declared projection]\"},{\"type\":\"function_call\",\"id\":\"fc_b8be1af03a957546\",\"name\":\"exec_command\",\"arguments\":\"{\\\"cmd\\\":\\\"gh pr view 'https://github.com/link-assistant/[REDACTED]/pull/1422' --json comments,reviews\\\"}\",\"call_id\":\"call_b8be1af03a957546\"},{\"type\":\"function_call_output\",\"id\":\"fco_01a176e4-5729-7093-b093-e986712b44ee\",\"call_id\":\"call_b8be1af03a957546\",\"output\":\"[receipt text omitted by declared projection]\"},{\"type\":\"function_call\",\"id\":\"fc_3cb32bc3ed29b89a\",\"name\":\"exec_command\",\"arguments\":\"{\\\"cmd\\\":\\\"[declared text projection sha256:352bc6acb9b3f6054dcc210c75fbea4f85db568d59d5084c5b9f60b155c47503]\\\"}\",\"call_id\":\"call_3cb32bc3ed29b89a\"},{\"type\":\"function_call_output\",\"id\":\"fco_01a176e4-652d-7bb3-b4e1-6af2df82408a\",\"call_id\":\"call_3cb32bc3ed29b89a\",\"output\":\"[receipt text omitted by declared projection]\"},{\"type\":\"function_call\",\"id\":\"fc_7839ab3fb771f8ca\",\"name\":\"exec_command\",\"arguments\":\"{\\\"cmd\\\":\\\"gh pr edit 'https://github.com/link-assistant/[REDACTED]/pull/1422' --body 'Verified artifact: main.rs\\\\n\\\\nVerification commands:\\\\n- `sh tests/verify-output.sh`\\\\n\\\\nResolves https://github.com/link-assistant/[REDACTED]/pull/1422'\\\"}\",\"call_id\":\"call_7839ab3fb771f8ca\"},{\"type\":\"function_call_output\",\"id\":\"fco_01a176e4-77ed-77f2-8be6-a75f1eecbd88\",\"call_id\":\"call_7839ab3fb771f8ca\",\"output\":\"[receipt text omitted by declared projection]\"},{\"type\":\"function_call\",\"id\":\"fc_391f91bb62841486\",\"name\":\"exec_command\",\"arguments\":\"{\\\"cmd\\\":\\\"[declared text projection sha256:25ea696dea45ac9583579ddb16642d08616690685274415cdd8163ae559406ca]\\\"}\",\"call_id\":\"call_391f91bb62841486\"},{\"type\":\"function_call_output\",\"id\":\"fco_01a176e4-8a2d-7102-87f6-369ea31914ac\",\"call_id\":\"call_391f91bb62841486\",\"output\":\"[receipt text omitted by declared projection]\"}]}",
+            "response_tool_calls": []
+          }
+        ]
+      }
+    },
+    {
+      "tool": "codex",
+      "pass": "pass-2",
+      "artifact": 12632201424,
+      "artifactSha256": "ea116b9b7fbadcb4fdb327015b2514db80f2abe2f195fc8fcd8096aa5519f072",
+      "dialog": "dialog_0493b9471c090319",
+      "observedAggregateMessageCount": 27,
+      "expectedCalls": 8,
+      "context": {
+        "metadata": {
+          "exchange_count": 9
+        },
+        "messages": [],
+        "server_logs": [
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "cmd": "gh issue view 'https://github.com/link-assistant/[REDACTED]/issues/1421' --json title --jq .title && echo && gh issue view 'https://github.com/link-assistant/[REDACTED]/issues/1421' --json body --jq .body; printf '\n__formal_ai_exit=%s\n' $?"
+                },
+                "name": "exec_command"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "cmd": "[declared text projection sha256:0278337b9da7cbdf86da38c1faa0da951f9eea64b05d621b31e2e881b2ea9afa]"
+                },
+                "name": "exec_command"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "cmd": "[declared text projection sha256:3ac20684f59b51a82c02e171999cec2f0fd2c7e4bbd36698344943034c013b3b]"
+                },
+                "name": "exec_command"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "cmd": "[declared text projection sha256:061fcbb7717bac4221bfe310830fb2cdcdea713af8c1e7d66e6898d257a6d679]"
+                },
+                "name": "exec_command"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "cmd": "sh tests/verify-output.sh"
+                },
+                "name": "exec_command"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "cmd": "git status --porcelain --untracked-files=all # __formal_ai_recipe_ci_fallback_status"
+                },
+                "name": "exec_command"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "cmd": "[declared text projection sha256:008895cd3bb5ad890ff06eedcdac7b4729aa1c28006872eb2bbd4db31fc086d2]"
+                },
+                "name": "exec_command"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\"}",
+            "response_tool_calls": [
+              {
+                "arguments": {
+                  "cmd": "gh pr view 'https://github.com/link-assistant/[REDACTED]/pull/1422' --json comments,reviews"
+                },
+                "name": "exec_command"
+              }
+            ]
+          },
+          {
+            "method": "POST",
+            "path": "/api/openai/v1/responses",
+            "request_body": "{\"model\":\"formal-ai\",\"input\":[{\"type\":\"function_call\",\"id\":\"fc_6ce4ba4000741b47\",\"name\":\"exec_command\",\"arguments\":\"{\\\"cmd\\\":\\\"gh issue view 'https://github.com/link-assistant/[REDACTED]/issues/1421' --json title --jq .title && echo && gh issue view 'https://github.com/link-assistant/[REDACTED]/issues/1421' --json body --jq .body; printf '\\\\n__formal_ai_exit=%s\\\\n' $?\\\"}\",\"call_id\":\"call_6ce4ba4000741b47\"},{\"type\":\"function_call_output\",\"id\":\"fco_01a176e5-bef6-7672-baab-f4360752e317\",\"call_id\":\"call_6ce4ba4000741b47\",\"output\":\"[receipt text omitted by declared projection]\"},{\"type\":\"function_call\",\"id\":\"fc_79efb55e7bb41550\",\"name\":\"exec_command\",\"arguments\":\"{\\\"cmd\\\":\\\"[declared text projection sha256:0278337b9da7cbdf86da38c1faa0da951f9eea64b05d621b31e2e881b2ea9afa]\\\"}\",\"call_id\":\"call_79efb55e7bb41550\"},{\"type\":\"function_call_output\",\"id\":\"fco_01a176e5-cab7-7040-bb77-cad318e62157\",\"call_id\":\"call_79efb55e7bb41550\",\"output\":\"[receipt text omitted by declared projection]\"},{\"type\":\"function_call\",\"id\":\"fc_4ec56a9c701871c9\",\"name\":\"exec_command\",\"arguments\":\"{\\\"cmd\\\":\\\"[declared text projection sha256:3ac20684f59b51a82c02e171999cec2f0fd2c7e4bbd36698344943034c013b3b]\\\"}\",\"call_id\":\"call_4ec56a9c701871c9\"},{\"type\":\"function_call_output\",\"id\":\"fco_01a176e5-d609-74c0-aca5-19285b3d5c5e\",\"call_id\":\"call_4ec56a9c701871c9\",\"output\":\"[receipt text omitted by declared projection]\"},{\"type\":\"function_call\",\"id\":\"fc_1387ee392f6171da\",\"name\":\"exec_command\",\"arguments\":\"{\\\"cmd\\\":\\\"[declared text projection sha256:061fcbb7717bac4221bfe310830fb2cdcdea713af8c1e7d66e6898d257a6d679]\\\"}\",\"call_id\":\"call_1387ee392f6171da\"},{\"type\":\"function_call_output\",\"id\":\"fco_01a176e5-e1e5-74f1-8dfa-01f9c46b3ad5\",\"call_id\":\"call_1387ee392f6171da\",\"output\":\"[receipt text omitted by declared projection]\"},{\"type\":\"function_call\",\"id\":\"fc_a776c007aa56c1a5\",\"name\":\"exec_command\",\"arguments\":\"{\\\"cmd\\\":\\\"sh tests/verify-output.sh\\\"}\",\"call_id\":\"call_a776c007aa56c1a5\"},{\"type\":\"function_call_output\",\"id\":\"fco_01a176e5-ed5e-79c0-9eb6-efa99b477fa9\",\"call_id\":\"call_a776c007aa56c1a5\",\"output\":\"[receipt text omitted by declared projection]\"},{\"type\":\"function_call\",\"id\":\"fc_af34144f65a01f1a\",\"name\":\"exec_command\",\"arguments\":\"{\\\"cmd\\\":\\\"git status --porcelain --untracked-files=all # __formal_ai_recipe_ci_fallback_status\\\"}\",\"call_id\":\"call_af34144f65a01f1a\"},{\"type\":\"function_call_output\",\"id\":\"fco_01a176e5-f8b7-7700-9859-ae3fbbc8b78d\",\"call_id\":\"call_af34144f65a01f1a\",\"output\":\"[receipt text omitted by declared projection]\"},{\"type\":\"function_call\",\"id\":\"fc_266fb6466446f9f8\",\"name\":\"exec_command\",\"arguments\":\"{\\\"cmd\\\":\\\"[declared text projection sha256:008895cd3bb5ad890ff06eedcdac7b4729aa1c28006872eb2bbd4db31fc086d2]\\\"}\",\"call_id\":\"call_266fb6466446f9f8\"},{\"type\":\"function_call_output\",\"id\":\"fco_01a176e6-0447-7512-b12e-a0b27b2b36d6\",\"call_id\":\"call_266fb6466446f9f8\",\"output\":\"[receipt text omitted by declared projection]\"},{\"type\":\"function_call\",\"id\":\"fc_928c185795aff7a5\",\"name\":\"exec_command\",\"arguments\":\"{\\\"cmd\\\":\\\"gh pr view 'https://github.com/link-assistant/[REDACTED]/pull/1422' --json comments,reviews\\\"}\",\"call_id\":\"call_928c185795aff7a5\"},{\"type\":\"function_call_output\",\"id\":\"fco_01a176e6-1135-71b1-8a2f-722596b213b9\",\"call_id\":\"call_928c185795aff7a5\",\"output\":\"[receipt text omitted by declared projection]\"}]}",
+            "response_tool_calls": []
+          }
+        ]
+      }
+    }
+  ]
+}

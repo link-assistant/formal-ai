@@ -7,7 +7,7 @@ import { generalChangePlanRecordHeader } from './append_contract.mjs';
 // (rust/src/agentic_coding/general_planner.rs, issue #654).
 //
 // A `GeneralChangePlan` is `{id, mode, goal, target, content, steps,
-// verification_command, terminal_state}`; `mode` is 'literal_file' |
+// verification_command, terminal_state, request_language}`; `mode` is 'literal_file' |
 // 'command_output' | 'repository_work_item' (the Rust `GeneralPlanMode::slug`)
 // and `terminal_state` is 'executed' | 'planned_not_executed'. A step is
 // `{capability, action, expected_evidence, command}`.
@@ -17,13 +17,15 @@ import { endOfStatement } from './crate/literal_content.mjs';
 import { literalInstructionView } from './crate/literal_instruction_view.mjs';
 export { semanticAuthoringLead };
 import { Capability } from './capability.mjs';
+import { wholeFileOperationAt } from './literal_write_guard.mjs';
+import { ownsDeclaredPayloadDomain, ownsRecoveredWriteOperation } from './planner/owned_goals.mjs';
 import { fill as fillWorkStep, template as workStepTemplate } from './work_item_steps.mjs';
 import { agenticMessage } from './messages.mjs';
 import { composedDocumentSpecificationSpan } from './note_composition.mjs';
 import { proseSentences } from './shell_command_policy.mjs';
 import { traceRoute } from './planner/continuation.mjs';
 import {
-  CueFamily, actionCueStartAfter, bareSurfaces, cleanContent, cleanCueToken, cleanPathToken,
+  CueFamily, actionCueStartAfter, bareSurfaces, cleanContent, cleanCueToken, cleanPathToken, composeEditClauses,
   rawContentLeadClose, firstActionCueEnd, firstActionCueStart, firstContentLeadEnd, firstPrefixLeadEnd,
   firstRawContentLeadEnd, firstRawPrefixLeadEnd,
   honouringPinnedFirstLine, looksLikeFilePath, payloadContinuesPastItsFirstLine, rankedBindings,
@@ -33,7 +35,7 @@ import { stableId } from './crate/engine_stable_identifier.mjs';
 import { formalizeIntent } from './crate/intent_formalization.mjs';
 import { withoutTrailingKnownModifier } from './crate/implementation_language.mjs';
 import { fencedBlock, LINO_FENCE_LANGUAGE } from './crate/issue_report.mjs';
-import { detect } from './crate/language.mjs';
+import { detect, detectProse } from './crate/language.mjs';
 import { localizedResponse } from './crate/seed.mjs';
 import { terminalCommandVocabulary } from './crate/seed_terminal_commands.mjs';
 import { resolveReference, workspace } from './crate/self_ast_census.mjs';
@@ -127,9 +129,35 @@ export function planLinksNotation(plan) {
   return out;
 }
 
+/**
+ * Mirrors `fn work_item_language`: the run joins a fetched issue as `title`,
+ * a blank line, then `body`. The body's prose decides, then the title's prose,
+ * and the whole goal only when neither holds prose (issue #1557). The plan
+ * answer and the work-item report (issue #1483) share it.
+ * @param {string} goal
+ * @returns {string}
+ */
+export function workItemLanguage(goal) {
+  const text = String(goal);
+  const at = text.indexOf('\n\n');
+  const [title, body] = at >= 0 && !text.slice(0, at).includes('\n') ? [text.slice(0, at), text.slice(at + 2)] : ['', text];
+  return detectProse(body) ?? detectProse(title) ?? detect(text);
+}
+
+/**
+ * Mirrors `GeneralChangePlan::response_language`: a work item answers in the
+ * language of the user's own turn, then of its body's prose, then of its
+ * title's prose, and of its goal as a whole only when none holds prose, so
+ * one marker or one quotation cannot decide a document (issue #1557).
+ */
+export function planResponseLanguage(plan) {
+  if (plan.mode !== GeneralPlanMode.RepositoryWorkItem) return detect(plan.goal);
+  return plan.request_language ?? workItemLanguage(plan.goal);
+}
+
 /** Mirrors `GeneralChangePlan::planned_not_executed_answer`. */
 export function plannedNotExecutedAnswer(plan) {
-  const language = detect(plan.goal);
+  const language = planResponseLanguage(plan);
   return (localizedResponse('general_plan_repository_planned', language) ?? '')
     .split(TARGET_PLACEHOLDER).join(plan.target)
     .split('{plan_path}').join(PLAN_PATH)
@@ -261,6 +289,7 @@ export function composeGeneralChangePlan(fullRequest) {
     steps,
     verification_command: verificationCommand,
     terminal_state: PlanTerminalState.Executed,
+    request_language: null,
   };
 }
 
@@ -276,6 +305,9 @@ function composeRepositoryWorkPlan(request) {
   if (!opensWithReference && !mentionsBareRole(request, 'software_authoring_action')) return null;
   const responseLanguage = detect(request);
   const intent = formalizeIntent(request, responseLanguage);
+  // Issue #1557: a request that wraps the reference in words of its own is
+  // the user's turn, the strongest signal for the answer's language.
+  const requestLanguage = opensWithReference ? null : detectProse(request);
   return {
     id: stableId('repository_work_item_plan', `${intent.impulse_id}:${target}`),
     mode: GeneralPlanMode.RepositoryWorkItem,
@@ -288,6 +320,7 @@ function composeRepositoryWorkPlan(request) {
     ],
     verification_command: '',
     terminal_state: PlanTerminalState.PlannedNotExecuted,
+    request_language: requestLanguage,
   };
 }
 
@@ -365,6 +398,40 @@ function parseWriteRequest(request) {
 
 /** Mirrors fn parse_write_contract: raw payload and target positions are UTF16 indices. */
 export function parseWriteContract(request) {
+  const contract = recoverWriteContract(request);
+  if (contract === null) return null;
+  // A concrete substring edit cannot acquire whole-file authority from its operands.
+  const edit = composeEditClauses(request);
+  if (edit !== null) {
+    const actionStart = edit.spans?.[1][0] ?? null;
+    if (actionStart !== null && actionStart >= contract.payload.start && actionStart < contract.payload.end
+      && ownsDeclaredPayloadDomain(request, contract)) return contract;
+    if (independentOwnedWriteStatement(request, contract, actionStart)) return contract;
+    const operands = quotedSegmentSpans(request);
+    const oldOperand = operands.findIndex(span => span.text === edit.edit[1]);
+    const ownedOperands = oldOperand >= 0
+      && operands.slice(oldOperand + 1).some(span => span.text === edit.edit[2]);
+    if (ownedOperands || edit.spans === null || !wholeFileOperationAt(request, edit.spans[1][0], edit.edit[0], edit.spans[0][1])) return null;
+  }
+  return contract;
+}
+
+function independentOwnedWriteStatement(request, contract, actionStart) {
+  if (actionStart === null) return false;
+  for (const statement of proseSentences(statementScope(request))) {
+    const span = spanOf(statement);
+    if (contract.targetSpan.start < span.start || contract.targetSpan.end > span.end
+      || contract.payload.start < span.start || contract.payload.end > span.end) continue;
+    if (actionStart >= span.start && actionStart < span.end) return false;
+    const local = {...contract,
+      targetSpan: {start: contract.targetSpan.start - span.start, end: contract.targetSpan.end - span.start},
+      payload: {start: contract.payload.start - span.start, end: contract.payload.end - span.start}};
+    return ownsRecoveredWriteOperation(request.slice(span.start, span.end), local);
+  }
+  return false;
+}
+
+function recoverWriteContract(request) {
   const toks = tokens(request);
   const literal = literalPayload(request);
   if (literal !== null) {
@@ -405,6 +472,20 @@ function bindingHasWriteInstruction(request, toks, binding) {
 
 const slice = (text, start, end) => (start <= end && end <= text.length ? text.slice(start, end) : null);
 
+function markerPayloadStart(request, toks, leadEnd) {
+  const separatorEnd = from => {
+    const separator = /^[ \t]*[:：]/u.exec(request.slice(from));
+    return separator === null ? null : from + separator[0].length;
+  };
+  const actionStart = firstActionCueStart(toks), actionEnd = firstActionCueEnd(toks);
+  // A postposed verb and its separator must stay on the instruction header.
+  const postposed = actionStart !== null && actionEnd !== null && actionStart >= leadEnd
+    && /^[ \t]*$/u.test(request.slice(leadEnd, actionStart))
+    && (/[:：][ \t]*$/u.test(request.slice(actionStart, actionEnd)) || separatorEnd(actionEnd) !== null);
+  const start = postposed ? actionEnd : leadEnd;
+  return separatorEnd(start) ?? start;
+}
+
 function parseWriteRequestBound(request, toks, binding) {
   if (!bindingHasWriteInstruction(request, toks, binding)) return null;
   const lowered = request.toLowerCase();
@@ -417,7 +498,7 @@ function parseWriteRequestBound(request, toks, binding) {
   const specificationSpan = specification ? spanOf({ span: specification }) : null;
   const lead = firstRawContentLeadEnd(request);
   if (lead) {
-    const markerEnd = lead[1];
+    const markerEnd = markerPayloadStart(request, toks, lead[1]);
     const insideSpecification = specificationSpan && markerEnd >= specificationSpan.start && markerEnd < specificationSpan.end;
     if (!insideSpecification && positionsShareStatement(request, markerEnd, clauseStart)) {
       const markerLeads = markerEnd <= clauseStart;

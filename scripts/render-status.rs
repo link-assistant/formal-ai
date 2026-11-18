@@ -192,7 +192,6 @@ fn requirement_verdicts(source: &str) -> Result<Vec<String>, String> {
     Ok(verdicts)
 }
 
-
 #[cfg(not(test))]
 fn requirement_counts(root: &Path) -> Result<BTreeMap<String, usize>, String> {
     let directory = root.join("data/meta/requirement-status-ledger");
@@ -266,16 +265,30 @@ fn language_table(rows: &[BTreeMap<String, String>]) -> String {
 fn latest_release(root: &Path) -> Result<BTreeMap<String, String>, String> {
     let source = fs::read_to_string(root.join(LEDGERS[1])).map_err(|error| error.to_string())?;
     let mut latest = BTreeMap::new();
+    let mut defaults = BTreeMap::new();
     let mut in_release = false;
+    let mut in_defaults = false;
     for line in source.lines() {
         let trimmed = line.trim();
-        if line.starts_with("  release") {
-            latest.clear();
+        if line == "  release-defaults" {
+            defaults.clear();
+            in_defaults = true;
+            in_release = false;
+        } else if line == "  release" {
+            latest.clone_from(&defaults);
             in_release = true;
-        } else if in_release && line.starts_with("    ") {
+            in_defaults = false;
+        } else if (in_release || in_defaults) && line.starts_with("    ") {
             if let Some((key, value)) = trimmed.split_once(' ') {
-                latest.insert(key.to_owned(), unquote(value).to_owned());
+                let target = if in_defaults {
+                    &mut defaults
+                } else {
+                    &mut latest
+                };
+                target.insert(key.to_owned(), unquote(value).to_owned());
             }
+        } else if line.starts_with("  ") {
+            in_defaults = false;
         }
     }
     if latest.is_empty() {

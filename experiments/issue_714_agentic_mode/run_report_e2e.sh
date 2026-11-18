@@ -75,7 +75,7 @@ test "$posts" -ge 3
 test -f "$MEMORY"
 grep -Fq 'kind "tool_call"' "$MEMORY"
 grep -Fq 'tool "bash"' "$MEMORY"
-grep -Fq 'formal-ai report body' "$MEMORY"
+grep -Fq 'formal-ai report create-issue' "$MEMORY"
 grep -Fq 'issues/999' "$MEMORY"
 
 if [ -n "$ARTIFACT_DIR" ]; then

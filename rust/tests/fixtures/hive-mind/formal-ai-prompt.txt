@@ -1,0 +1,8 @@
+Resolve the GitHub issue at https://github.com/konard/test-hello-world-019fb330-fa49-7c9d-a664-b7ea33bb698a/issues/1 in this repository.
+Keep the solution on branch issue-1-604f2202fd18.
+Update the pull request at https://github.com/konard/test-hello-world-019fb330-fa49-7c9d-a664-b7ea33bb698a/pull/2.
+Review and address all feedback recorded on that pull request.
+
+Implement and verify the solution before reporting completion.
+Commit the changes and push them to the branch before reporting completion.
+Continue.

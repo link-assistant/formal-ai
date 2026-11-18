@@ -1,3 +1,14 @@
+import {
+  creationMutationFor as creationMutation,
+  creationPreflightFor as creationPreflight,
+  creationReadbackFor as creationReadback,
+  ownedCreationDeclarations as creationDeclarations,
+  postMutationReadStateFor as mutationReadState,
+  freshSourceReadAttemptFor as freshReadAttempt,
+  sourceReadBeforeLatestMutationFor as mutationPreimage,
+  readOnlyAttempt,
+  readOnlyCapability,
+} from './progress_command_readback.mjs';
 // Reading a turn's tool results back out of the transcript (issue #468): a
 // port of rust/src/agentic_coding/progress.rs.
 //
@@ -6,7 +17,8 @@
 // detail, arguments, tool}` with `arguments` / `tool` null when unknown.
 
 import { sourceFetchObservation } from './source_fetch_observation.mjs';
-import { plainText, rustLines } from './content.mjs';
+import {currentDirectory} from './host.mjs';
+import { plainText, rustLines, latestUserRequest } from './content.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
 import { wordsForRole } from './crate/seed_meanings.mjs';
 import { agenticMessage } from './messages.mjs';
@@ -15,7 +27,7 @@ import { writeArguments } from './plan.mjs';
 import { fill } from './work_item_steps.mjs';
 import { classifyTool } from './capability_router.mjs';
 import { commandArgument, failureMessage, incompleteReceipt, normalizedPayload, observedPayload, sourceReadObservation, stepOutcome, StepOutcome } from './tool_result.mjs';
-import { evidenceWindowStart } from './planner/continuation.mjs';
+import { evidenceWindowStart, continuedAgentTask } from './planner/continuation.mjs';
 import { applyPatchInput } from './crate/protocol_responses_apply_patch.mjs';
 import { argumentValuesEqual, qualifiedTranscriptFrames, canonicalCreationPath } from './qualified_tool_observation.mjs';
 import { eqIgnoreAsciiCase, isObject, parseJson, splitWhitespace, trim, trimMatches } from './crate/rust_str.mjs';
@@ -29,6 +41,7 @@ export function isWorkItemRead(attempt) {
 
 // A scanner-created frame proves transcript binding only, never execution authority.
 const qualifiedProgressFrames = new WeakMap();
+const creationProgressContexts = new WeakMap();
 /** Mirrors `latest_attempt_for` in rust/src/agentic_coding/progress.rs. */
 export function qualifiedToolAttempt(progress, capability, argumentsValue) {
   const frames = qualifiedProgressFrames.get(progress);
@@ -65,6 +78,11 @@ export class Progress {
   static scan(messages) {
     const progress = new Progress();
     const currentTurn = evidenceWindowStart(messages);
+    const received = latestUserRequest(messages);
+    const request = received === null ? null : continuedAgentTask(messages, received) ?? received;
+    let hostRoot = null;
+    try { hostRoot = currentDirectory(); } catch { /* Unavailable host scope grants no equivalence. */ }
+    creationProgressContexts.set(progress, {request, declarations: null, hostRoot});
     for (let index = currentTurn; index < messages.length; index += 1) {
       const message = messages[index];
       if (message.role.toLowerCase() !== 'tool') continue;
@@ -83,6 +101,7 @@ export class Progress {
       progress.attempts.push({
         capability,
         source_read: observation,
+        ...(capability === Capability.Run || capability === Capability.Edit || capability === Capability.Write ? {raw_receipt: raw} : {}),
         succeeded: failure === null,
         detail: failure ?? raw,
         arguments: call ? call.function.arguments : null,
@@ -368,7 +387,85 @@ export class Progress {
     return index === null ? null : this.attempts.slice(index + 1);
   }
 
-  /** Mirrors `Progress::successful_write_content_for`. */
+  freshSourceReadFor(path) {
+    const attempt = freshReadAttempt(this, path, qualifiedCommandAttempt, sourceReadPath);
+    if (attempt === null || !attempt.succeeded) return null;
+    const frame = qualifiedToolAttempt(this, Capability.Read, JSON.parse(attempt.arguments));
+    if (frame?.binding !== 'exact' || !frame.receiptPresent || frame.declaredTool !== attempt.tool
+      || frame.detail !== attempt.detail) return null;
+    const frames = qualifiedProgressFrames.get(this) ?? [], index = frames.indexOf(frame);
+    if (index < 0 || frames.slice(index + 1).some(candidate => !candidate.receiptPresent && !readOnlyCapability(candidate.capability))) return null;
+    const observed = attempt.source_read;
+    return observed?.error === null && observed.complete && typeof observed.source === 'string' ? observed : null;
+  }
+
+  attemptedMutationFor(path, capability) {
+    return (qualifiedProgressFrames.get(this) ?? []).some(frame => frame.capability === capability
+      && sourceReadPath(frame.arguments) === path);
+  }
+
+  sourceReadBeforeLatestMutationFor(path, capability) {
+    const attempt = mutationPreimage(this, path, capability, qualifiedCommandAttempt, sourceReadPath);
+    if (attempt === null) return null;
+    const mutation = this.attempts.findLast(item => item.capability === capability
+      && item.arguments !== null && sourceReadPath(item.arguments) === path);
+    const frames = qualifiedProgressFrames.get(this) ?? [];
+    const matches = (frame, item) => frame.capability === item.capability && frame.declaredTool === item.tool
+      && frame.detail === (item.raw_receipt ?? item.detail) && argumentValuesEqual(frame.argumentsValue, JSON.parse(item.arguments));
+    const end = frames.findLastIndex(frame => matches(frame, mutation));
+    const start = frames.findLastIndex((frame, index) => index < end && matches(frame, attempt)
+      && frame.binding === 'exact' && frame.receiptPresent);
+    if (start < 0 || frames.slice(start + 1, end).some(frame => !frame.receiptPresent && !readOnlyCapability(frame.capability))) return null;
+    return attempt.source_read;
+  }
+
+  postMutationReadStateFor(path, capability, argumentsValue) {
+    const expected = qualifiedToolAttempt(this, capability, argumentsValue);
+    const frames = qualifiedProgressFrames.get(this) ?? [], index = frames.indexOf(expected);
+    if (index < 0 || frames.slice(index + 1).some(frame => !frame.receiptPresent && !readOnlyCapability(frame.capability))) {
+      return {current:false,attempt:null};
+    }
+    return mutationReadState(this, path, capability, argumentsValue, qualifiedToolAttempt, qualifiedCommandAttempt, sourceReadPath);
+  }
+
+  latestPostWriteReadAttemptFor(path) {
+    const attempts = this.attemptsAfterLatestWrite(path) ?? [];
+    for (let index = attempts.length - 1; index >= 0; index--) {
+      const attempt = attempts[index];
+      if (!readOnlyAttempt(this, attempt, qualifiedCommandAttempt, sourceReadPath)) return null;
+      if (attempt.capability === Capability.Read && attempt.arguments !== null && sourceReadPath(attempt.arguments) === path) return attempt;
+    }
+    return null;
+  }
+
+  attemptedReadAfterLatestWriteFor(path) {
+    return this.latestPostWriteReadAttemptFor(path) !== null;
+  }
+
+  /** Failed or missing latest receipts cannot reuse an earlier observation. */
+  sourceReadAfterLatestWriteFor(path) {
+    return this.latestPostWriteReadAttemptFor(path)?.source_read ?? null;
+  }
+
+  /** Exact creation-specific witnesses; Edit capability is never rewritten as Write. */
+  creationMutationFor(path) {
+    return creationMutation(this, qualifiedProgressFrames.get(this) ?? [], path, sourceReadPath,
+      creationProgressContexts.get(this)?.hostRoot ?? null);
+  }
+  creationPreflightFor(path) {
+    return creationPreflight(this, qualifiedProgressFrames.get(this) ?? [], path, sourceReadPath,
+      creationProgressContexts.get(this)?.hostRoot ?? null);
+  }
+  creationReadbackFor(mutation, command) {
+    const context = creationProgressContexts.get(this);
+    if (context && context.declarations === null) {
+      context.declarations = creationDeclarations(context.request, context.hostRoot);
+    }
+    return creationReadback(this, qualifiedProgressFrames.get(this) ?? [], mutation, command,
+      qualifiedCommandAttempt, sourceReadPath, context?.declarations ?? [], context?.hostRoot ?? null);
+  }
+
+  /** Content supplied to the latest successful write. */
   successfulWriteContentFor(path) {
     for (let index = this.attempts.length - 1; index >= 0; index -= 1) {
       const attempt = this.attempts[index];
@@ -431,7 +528,7 @@ function firstStringField(argumentsText, keys) {
 
 /** Mirrors `fn argument_path`. */
 /** Mirrors fn source_read_path: conflicting naming fields do not bind source bytes. */
-function sourceReadPath(argumentsText) {
+export function sourceReadPath(argumentsText) {
   const value = parseJson(argumentsText);
   if (!isObject(value)) return null;
   const fields = ['path', 'filePath', 'file_path'].filter(key => Object.hasOwn(value, key)).map(key => value[key]);

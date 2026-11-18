@@ -12,6 +12,9 @@ require_command() {
 }
 
 require_command formal-ai
+require_command node
+require_command npm
+require_command npx
 require_command docker
 require_command dockerd
 require_command curl
@@ -37,6 +40,9 @@ if [[ "$status" -ne 0 ]]; then
 fi
 
 formal-ai --version
+node --version
+npm --version
+npx --version
 "$" --version
 docker --version
 dockerd --version

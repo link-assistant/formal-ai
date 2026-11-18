@@ -231,7 +231,7 @@ fn prompt_evidence_holds(kind: &str, prompt: &str, normalized: &str) -> Option<b
         }
         "fetch_url" => crate::solver_handlers::http_fetch_claims(prompt, normalized),
         "navigation_url" => crate::solver_handlers::url_navigation_claims(prompt, normalized),
-        "calendar_date_signal" => crate::solver_handlers::calendar_claims(normalized),
+        "calendar_date_signal" => crate::solver_handlers::calendar_claims(prompt),
         "code_artifact" => crate::solver_handlers::code_debugging::code_block(prompt).is_some(),
         "supplied_text" => {
             crate::solver_handlers::text_rewrite::free_text_payload(prompt).is_some()
@@ -242,7 +242,8 @@ fn prompt_evidence_holds(kind: &str, prompt: &str, normalized: &str) -> Option<b
             !crate::solver_handlers::numeric_list::parse_numbers(&lowered).is_empty()
         }
         "calculation_expression" => {
-            !crate::calculation::calculation_expression_candidates(prompt).is_empty()
+            crate::quantity_constraint::owns_prompt(prompt)
+                || !crate::calculation::calculation_expression_candidates(prompt).is_empty()
         }
         "currency_rate_basis" => {
             crate::solver_handlers::calculator_rate::asks_for_usd_rate_basis(canonical)
@@ -264,15 +265,21 @@ fn prompt_evidence_holds(kind: &str, prompt: &str, normalized: &str) -> Option<b
                 .collect::<String>(),
         )
         .is_some(),
-        "measured_quantity" => {
-            !crate::solver_handlers::numeric_list::parse_numbers(&lowered).is_empty()
-                && crate::solver_handlers::unit_conversion::unit_mentions(&lowered).len() == 2
-        }
+        "measured_quantity" => crate::solver_handlers::unit_conversion::request::conversion_span(
+            &lowered,
+        )
+        .is_some_and(|span| {
+            !crate::quantity_constraint::owns_prompt(span)
+                && crate::solver_handlers::numeric_list::parse_numbers(span).len() == 1
+                && crate::solver_handlers::unit_conversion::unit_mentions(span).len() == 2
+        }),
         "calendar_anchor" => {
             use crate::solver_handlers::calendar;
-            calendar::detect_weekday(normalized).is_some()
+            calendar::month::duration::request(prompt).is_some()
+                || calendar::detect_weekday(normalized).is_some()
                 || calendar::month::detect_month(normalized).is_some()
                 || calendar::date_weekday::stated_date(prompt, normalized).is_some()
+                || calendar::date_offset::date_offset_candidate(prompt, normalized).is_some()
                 || calendar::mentions_current_day_question(normalized)
         }
         // Issue #1175 R3, refusal group: the operand each handler's own

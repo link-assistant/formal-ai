@@ -4,6 +4,12 @@ on:
     types:
       - published
   push:
+    paths-ignore:
+      - "docs/**"
+      - "*.md"
+      - "**/README.md"
+      - "**/CHANGELOG.md"
+      - "changelog.d/**"
     branches:
       - main
   pull_request:
@@ -26,6 +32,11 @@ on:
       - scripts/github-artifact-by-identifier.mjs
       - rust/tests/web/release-extension-transfer.test.mjs
       - rust/tests/web/github-artifact-by-identifier.test.mjs
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   workflow_dispatch:
     inputs:
       mode:
@@ -62,15 +73,28 @@ concurrency:
   queue: max
 jobs:
   resolve:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
     outputs:
       tag: ${{ steps.release.outputs.tag }}
       publish: ${{ steps.release.outputs.publish }}
       build: ${{ steps.release.outputs.build }}
     steps:
       - uses: actions/checkout@v7
+        timeout-minutes: 2
+        env:
+          GIT_CONFIG_COUNT: 2
+          GIT_CONFIG_KEY_0: http.lowSpeedLimit
+          GIT_CONFIG_VALUE_0: 1024
+          GIT_CONFIG_KEY_1: http.lowSpeedTime
+          GIT_CONFIG_VALUE_1: 20
         with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /scripts/
+            /package.json
           persist-credentials: false
           ref: ${{ github.workflow_sha }}
       - uses: actions/setup-node@v7
@@ -100,8 +124,8 @@ jobs:
       actions: read
   publish:
     needs: resolve
-    if: ${{ !cancelled() && needs.resolve.outputs.build == 'true' }}
-    runs-on: ubuntu-latest
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.resolve.outputs.build == 'true') }}
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
       contents: read
@@ -193,7 +217,7 @@ jobs:
       - publish
     if: ${{ !cancelled() && needs.publish.result == 'success' &&
       needs.resolve.outputs.publish == 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
       contents: read

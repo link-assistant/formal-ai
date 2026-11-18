@@ -5,7 +5,7 @@
 //! standard error that were observed — never a silent skip and never a pass. A
 //! timeout is reported with both the deadline and the elapsed time.
 
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::process::Command;
 
 use formal_ai::execution_box::ExecutionBackend;
@@ -15,11 +15,7 @@ use formal_ai::repository_workspace::verify::{RunCommand, run_named_tests};
 use formal_ai::repository_workspace::{RepositoryWorkspace, WorkspaceError};
 
 fn repo_root() -> PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR"))
-        .ancestors()
-        .nth(1)
-        .unwrap()
-        .to_path_buf()
+    super::fixture::source_root()
 }
 
 fn head_commit() -> String {

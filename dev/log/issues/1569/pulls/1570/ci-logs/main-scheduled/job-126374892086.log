@@ -1,0 +1,713 @@
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	﻿2026-11-04T03:47:36.3729024Z Current runner version: '2.338.2'
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3764308Z ##[group]Runner Image Provisioner
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3765565Z Hosted Compute Agent
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3767189Z Version: 20261021.618
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3768300Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3769524Z Build Date: 2026-10-21T00:45:21Z
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3771061Z Worker ID: {f3a985c6-dc1f-4768-893d-12c283367d13}
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3772247Z Region: eastus
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3773283Z Cloud: Azure
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3774230Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3776404Z ##[group]Operating System
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3777573Z Ubuntu
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3778473Z 24.04.5
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3779450Z LTS
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3780634Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3781538Z ##[group]Runner Image
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3782614Z Image: ubuntu-24.04
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3783580Z Version: 20261025.353.1
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3785833Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261025.353/images/ubuntu/Ubuntu2404-Readme.md
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3788617Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261025.353
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3790753Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3793290Z ##[group]GITHUB_TOKEN Permissions
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3796362Z Actions: read
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3797306Z Contents: write
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3798272Z Issues: write
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3799197Z Metadata: read
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3800566Z PullRequests: write
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3801550Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3804662Z Secret source: Actions
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3806519Z Cache mode: write
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.3807941Z Prepare workflow directory
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.4473829Z Prepare all required actions
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.4523341Z Getting action download info
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.6599302Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.8245616Z Download action repository 'actions/setup-node@v7' (SHA:949feb2413d6458794dcd2491c4babbbce0c15c1)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:36.9182548Z Download action repository 'oven-sh/setup-bun@v2' (SHA:0c5077e51419868618aeaa5fe8019c62421857d6)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.0607504Z Download action repository 'actions/download-artifact@v8' (SHA:9000827ccba6bdab643e8b6fd33ac0654aef8333)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.2281415Z Download action repository 'actions/upload-artifact@v7' (SHA:cf430e030ddbb5b0abf93d22962f4752f3646cd9)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.5801693Z Complete job name: Actual Hive agent work-item contradicted-documentation
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.6870099Z ##[group]Run actions/checkout@v7
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.6871122Z with:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.6871645Z   ref: e5ade3914a593fcf93a6a85a84e47bd18abd7793
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.6872312Z   persist-credentials: false
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.6872889Z   repository: link-assistant/formal-ai
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.6877447Z   token: ***
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.6877911Z   ssh-strict: true
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.6878369Z   ssh-user: git
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.6878824Z   clean: true
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.6879304Z   sparse-checkout-cone-mode: true
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.6880209Z   fetch-depth: 1
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.6880683Z   fetch-tags: false
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.6881161Z   show-progress: true
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.6881648Z   lfs: false
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.6882094Z   submodules: false
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.6882580Z   set-safe-directory: true
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.6883114Z   allow-unsafe-pr-checkout: false
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.6883991Z env:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.6884431Z   E2E_TOOL: agent
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.6885009Z   WORK_ITEM_TASK: contradicted-documentation
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:37.6885639Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5251759Z Syncing repository: link-assistant/formal-ai
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5255135Z ##[group]Getting Git version info
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5257126Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5260622Z [command]/usr/bin/git version
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5660520Z git version 2.56.0
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5723642Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5735485Z Temporarily overriding HOME='/home/runner/work/_temp/40afebd7-6517-4e52-9e32-d7f39c01a779' before making global git config changes
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5741983Z Adding repository directory to the temporary git global config as a safe directory
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5746298Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5832250Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5836919Z ##[group]Determining repository object format
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5840226Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5842180Z ##[group]Initializing the repository
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.5845287Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.6185313Z hint: Using 'master' as the name for the initial branch. This default branch name
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.6188004Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.6190869Z hint: to use in all of your new repositories, which will suppress this warning,
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.6192971Z hint: call:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.6193935Z hint:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.6195146Z hint: 	git config --global init.defaultBranch <name>
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.6196950Z hint:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.6198855Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.6202768Z hint: 'development'. The just-created branch can be renamed via this command:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.6205694Z hint:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.6207214Z hint: 	git branch -m <name>
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.6208969Z hint:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.6211690Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.6215777Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.6222183Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.6281174Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.6284401Z ##[group]Disabling automatic garbage collection
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.6287158Z [command]/usr/bin/git config --local gc.auto 0
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.6330817Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.6333496Z ##[group]Setting up auth
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.6335700Z Removing SSH command configuration
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.6338695Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.6389067Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.7189133Z Removing HTTP extra header
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.7194989Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.7238986Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.7482138Z Removing includeIf entries pointing to credentials config files
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.7486593Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.7533452Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.7782381Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-a9dff217-334a-4a0d-87dd-c29b123ea567.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.7835302Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-a9dff217-334a-4a0d-87dd-c29b123ea567.config
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.7877565Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-a9dff217-334a-4a0d-87dd-c29b123ea567.config
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.8001713Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-a9dff217-334a-4a0d-87dd-c29b123ea567.config
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.8045563Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-a9dff217-334a-4a0d-87dd-c29b123ea567.config
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.8085182Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.8086808Z ##[group]Fetching the repository
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:38.8092148Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin e5ade3914a593fcf93a6a85a84e47bd18abd7793
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:57.1682384Z From https://github.com/link-assistant/formal-ai
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:57.1683072Z  * branch              e5ade3914a593fcf93a6a85a84e47bd18abd7793 -> FETCH_HEAD
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:57.1697276Z [command]/usr/bin/git rev-parse --verify --quiet e5ade3914a593fcf93a6a85a84e47bd18abd7793^{object}
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:57.1738779Z e5ade3914a593fcf93a6a85a84e47bd18abd7793
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:57.1744270Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:57.1745085Z ##[group]Determining the checkout info
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:57.1745840Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:57.1750014Z [command]/usr/bin/git sparse-checkout disable
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:57.1815223Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:57.1863175Z ##[group]Checking out the ref
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:57.1863676Z [command]/usr/bin/git checkout --progress --force e5ade3914a593fcf93a6a85a84e47bd18abd7793
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:58.2758584Z Updating files:  11% (8558/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:58.4736898Z Updating files:  12% (8882/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:59.0728488Z Updating files:  13% (9622/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:59.2790116Z Updating files:  14% (10362/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:59.4147595Z Updating files:  14% (10491/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:59.6144904Z Updating files:  15% (11102/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:59.7195412Z Updating files:  16% (11843/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:59.7819441Z Updating files:  17% (12583/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:47:59.8976946Z Updating files:  18% (13323/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.0285493Z Updating files:  19% (14063/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.2363784Z Updating files:  20% (14803/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.2604216Z Updating files:  21% (15543/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.3376484Z Updating files:  21% (15720/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.4292024Z Updating files:  22% (16283/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.5104204Z Updating files:  23% (17023/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.5848028Z Updating files:  24% (17764/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.6780828Z Updating files:  25% (18504/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.7568969Z Updating files:  26% (19244/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.8455688Z Updating files:  27% (19984/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.8821440Z Updating files:  28% (20724/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.9414714Z Updating files:  29% (21464/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:00.9883589Z Updating files:  30% (22204/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.0278142Z Updating files:  31% (22945/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.0871638Z Updating files:  32% (23685/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.1285820Z Updating files:  33% (24425/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.1561224Z Updating files:  34% (25165/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.2445178Z Updating files:  35% (25905/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.2587754Z Updating files:  36% (26645/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.2985099Z Updating files:  36% (26945/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.4826172Z Updating files:  37% (27385/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.5280258Z Updating files:  38% (28125/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.5641858Z Updating files:  39% (28866/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.5996228Z Updating files:  40% (29606/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.6338451Z Updating files:  41% (30346/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.6843719Z Updating files:  42% (31086/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.7206432Z Updating files:  43% (31826/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.7667418Z Updating files:  44% (32566/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.8555183Z Updating files:  45% (33306/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.9110805Z Updating files:  46% (34046/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.9449242Z Updating files:  47% (34787/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:01.9905811Z Updating files:  48% (35527/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.0287376Z Updating files:  49% (36267/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.0830282Z Updating files:  50% (37007/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.1128010Z Updating files:  51% (37747/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.1538380Z Updating files:  52% (38487/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.1901060Z Updating files:  53% (39227/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.2513815Z Updating files:  54% (39968/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.2585520Z Updating files:  55% (40708/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.2830218Z Updating files:  55% (40862/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.3280386Z Updating files:  56% (41448/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.3597593Z Updating files:  57% (42188/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.4209942Z Updating files:  58% (42928/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.4903615Z Updating files:  59% (43668/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.5402242Z Updating files:  60% (44408/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.5762502Z Updating files:  61% (45148/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.6290078Z Updating files:  62% (45889/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.6967650Z Updating files:  63% (46629/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.7831639Z Updating files:  64% (47369/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.8307885Z Updating files:  65% (48109/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.8721883Z Updating files:  66% (48849/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.9245958Z Updating files:  67% (49589/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:02.9569210Z Updating files:  68% (50329/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.0540604Z Updating files:  69% (51069/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.0811429Z Updating files:  70% (51810/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.1079990Z Updating files:  71% (52550/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.1358805Z Updating files:  72% (53290/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.1694621Z Updating files:  73% (54030/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.1974746Z Updating files:  74% (54770/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.2291766Z Updating files:  75% (55510/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.2696748Z Updating files:  76% (56250/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.2970449Z Updating files:  76% (56759/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.3529745Z Updating files:  77% (56991/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.4301147Z Updating files:  78% (57731/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.4804545Z Updating files:  79% (58471/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.6374252Z Updating files:  80% (59211/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.7426556Z Updating files:  81% (59951/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.8136644Z Updating files:  82% (60691/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.8847993Z Updating files:  83% (61431/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:03.9825007Z Updating files:  84% (62171/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.0512059Z Updating files:  85% (62912/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.0951742Z Updating files:  86% (63652/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.2598327Z Updating files:  87% (64392/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.2882832Z Updating files:  87% (64909/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.3588198Z Updating files:  88% (65132/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4187677Z Updating files:  89% (65872/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.4802587Z Updating files:  90% (66612/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.5352072Z Updating files:  91% (67352/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.6031801Z Updating files:  92% (68092/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.6579267Z Updating files:  93% (68833/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.7242352Z Updating files:  94% (69573/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.7766240Z Updating files:  95% (70313/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.8337213Z Updating files:  96% (71053/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.8853501Z Updating files:  97% (71793/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.9380274Z Updating files:  98% (72533/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.9925612Z Updating files:  99% (73273/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.9926084Z Updating files: 100% (74013/74013)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:04.9926532Z Updating files: 100% (74013/74013), done.
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.0781382Z Note: switching to 'e5ade3914a593fcf93a6a85a84e47bd18abd7793'.
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.0782098Z 
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.0782548Z You are in 'detached HEAD' state. You can look around, make experimental
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.0783293Z changes and commit them, and you can discard any commits you make in this
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.0783932Z state without impacting any branches by switching back to a branch.
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.0784313Z 
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.0784818Z If you want to create a new branch to retain commits you create, you may
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.0785419Z do so (now or later) by using -c with the switch command. Example:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.0786024Z 
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.0786197Z   git switch -c <new-branch-name>
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.0786482Z 
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.0786643Z Or undo this operation with:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.0786940Z 
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.0787090Z   git switch -
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.0787283Z 
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.0787657Z Turn off this advice by setting config variable advice.detachedHead to false
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.0788231Z 
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.0788483Z HEAD is now at e5ade391 chore: release v0.355.30
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.1029408Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.1096960Z [command]/usr/bin/git log -1 --format=%H
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.1130180Z e5ade3914a593fcf93a6a85a84e47bd18abd7793
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.1140691Z ##[group]Removing auth
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.1141147Z Removing SSH command configuration
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.1145672Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.1191461Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.1571320Z Removing HTTP extra header
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.1575043Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.1619815Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.1993127Z Removing includeIf entries pointing to credentials config files
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.1997936Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2040140Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2041101Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2041631Z includeif.gitdir:/github/workspace/.git.path
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2041999Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2052345Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2093149Z /home/runner/work/_temp/git-credentials-a9dff217-334a-4a0d-87dd-c29b123ea567.config
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2105625Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-a9dff217\-334a\-4a0d\-87dd\-c29b123ea567\.config
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2152365Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2186671Z /home/runner/work/_temp/git-credentials-a9dff217-334a-4a0d-87dd-c29b123ea567.config
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2196681Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-a9dff217\-334a\-4a0d\-87dd\-c29b123ea567\.config
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2251434Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2286960Z /github/runner_temp/git-credentials-a9dff217-334a-4a0d-87dd-c29b123ea567.config
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2295825Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-a9dff217\-334a\-4a0d\-87dd\-c29b123ea567\.config
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2343673Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2378543Z /github/runner_temp/git-credentials-a9dff217-334a-4a0d-87dd-c29b123ea567.config
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2387165Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-a9dff217\-334a\-4a0d\-87dd\-c29b123ea567\.config
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2433437Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2819142Z Removing credentials config '/home/runner/work/_temp/git-credentials-a9dff217-334a-4a0d-87dd-c29b123ea567.config'
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.2830124Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.3092834Z ##[group]Run actions/setup-node@v7
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.3093125Z with:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.3093320Z   node-version: 24
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.3093536Z   check-latest: false
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.3096272Z   token: ***
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.3096495Z   package-manager-cache: true
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.3096735Z env:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.3096918Z   E2E_TOOL: agent
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.3097153Z   WORK_ITEM_TASK: contradicted-documentation
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.3097438Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.4449361Z Found in cache @ /opt/hostedtoolcache/node/24.22.1/x64
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.5467030Z ##[group]Environment details
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.9276934Z node: v24.22.1
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.9277355Z npm: 11.19.1
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.9277700Z yarn: 1.22.22
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.9278607Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.9471131Z ##[group]Run oven-sh/setup-bun@v2
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.9471422Z with:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.9471629Z   bun-version-file: .bun-version
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.9471879Z   no-cache: false
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.9474588Z   token: ***
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.9474788Z env:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.9474967Z   E2E_TOOL: agent
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.9475199Z   WORK_ITEM_TASK: contradicted-documentation
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:05.9475489Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.1253902Z Obtained version 1.4.2 from .bun-version
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.2131777Z Cache hit for: bun-gmoqYqdUbaYsI0KujeXt7Zg/p0I=
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.6149148Z Received 35684137 of 35684137 (100.0%), 98.9 MBs/sec
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.6150614Z Cache Size: ~34 MB (35684137 B)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.6188638Z [command]/usr/bin/tar -xf /home/runner/work/_temp/754cfdd2-8a78-44ac-9aa5-f39aba1da9f3/cache.tzst -P -C /home/runner/work/formal-ai/formal-ai --use-compress-program unzstd
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.7890015Z Cache restored successfully
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.7913873Z [command]/home/runner/.bun/bin/bun --revision
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.8010248Z 1.4.2+744846f84
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.8022882Z Using a cached version of Bun: 1.4.2+744846f84
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.8565732Z ##[group]Run bun install --frozen-lockfile --ignore-scripts
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.8566288Z ^[[36;1mbun install --frozen-lockfile --ignore-scripts^[[0m
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.8603102Z shell: /usr/bin/bash -e {0}
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.8603367Z env:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.8603559Z   E2E_TOOL: agent
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.8603817Z   WORK_ITEM_TASK: contradicted-documentation
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.8604129Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:06.9098923Z bun install v1.4.2 (744846f84)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9270418Z 
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9271203Z + @babel/traverse@8.0.7
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9271814Z + @babel/parser@8.0.7
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9272135Z + @chakra-ui/react@3.37.0
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9272420Z + @emotion/react@11.14.0
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9272736Z + @link-assistant/web-search@0.11.1
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9273034Z + dompurify@3.4.17
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9273264Z + lino-i18n@0.4.0
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9273472Z + marked@18.1.1
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9273680Z + mermaid@12.2.0
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9273989Z + react@19.3.1
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9274202Z + react-dom@19.3.1
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9274426Z + tesseract.js@7.0.0
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9274566Z 
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9274721Z 394 packages installed [2.02s]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9413211Z ##[group]Run actions/checkout@v7
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9413497Z with:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9413731Z   repository: link-assistant/hive-mind
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9414041Z   ref: 4ac40597b70aa411d00c9a645f10484e5f04f57e
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9414340Z   path: .hive-mind
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9414569Z   persist-credentials: false
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9417320Z   token: ***
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9417529Z   ssh-strict: true
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9417926Z   ssh-user: git
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9418131Z   clean: true
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9418351Z   sparse-checkout-cone-mode: true
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9418616Z   fetch-depth: 1
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9418818Z   fetch-tags: false
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9419039Z   show-progress: true
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9419251Z   lfs: false
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9419445Z   submodules: false
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9419994Z   set-safe-directory: true
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9420293Z   allow-unsafe-pr-checkout: false
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9420543Z env:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9420759Z   E2E_TOOL: agent
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9420997Z   WORK_ITEM_TASK: contradicted-documentation
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:08.9421283Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0300318Z Syncing repository: link-assistant/hive-mind
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0308213Z ##[group]Getting Git version info
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0309320Z Working directory is '/home/runner/work/formal-ai/formal-ai/.hive-mind'
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0364647Z [command]/usr/bin/git version
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0412622Z git version 2.56.0
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0466712Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0478751Z Temporarily overriding HOME='/home/runner/work/_temp/d52ab687-1ff6-4b97-9c63-66561cad113e' before making global git config changes
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0481002Z Adding repository directory to the temporary git global config as a safe directory
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0486923Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai/.hive-mind
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0534172Z ##[group]Determining repository object format
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0536287Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0537664Z ##[group]Initializing the repository
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0542863Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai/.hive-mind
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0611441Z hint: Using 'master' as the name for the initial branch. This default branch name
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0616033Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0616709Z hint: to use in all of your new repositories, which will suppress this warning,
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0617164Z hint: call:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0617360Z hint:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0617689Z hint: 	git config --global init.defaultBranch <name>
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0618020Z hint:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0618422Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0619017Z hint: 'development'. The just-created branch can be renamed via this command:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0619410Z hint:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0619945Z hint: 	git branch -m <name>
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0620258Z hint:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0620672Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0622110Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.hive-mind/.git/
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0623895Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/hive-mind
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0657660Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0658772Z ##[group]Disabling automatic garbage collection
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0662532Z [command]/usr/bin/git config --local gc.auto 0
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0715010Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0715667Z ##[group]Setting up auth
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0719229Z Removing SSH command configuration
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0723223Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.0767707Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.1034859Z Removing HTTP extra header
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.1040779Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.1088161Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.1360404Z Removing includeIf entries pointing to credentials config files
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.1367578Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.1423812Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.1674440Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-d2031ad8-d57c-46dd-8113-22722f189a4c.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.1726230Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git.path /home/runner/work/_temp/git-credentials-d2031ad8-d57c-46dd-8113-22722f189a4c.config
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.1770292Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-d2031ad8-d57c-46dd-8113-22722f189a4c.config
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.1815248Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.hive-mind/.git.path /github/runner_temp/git-credentials-d2031ad8-d57c-46dd-8113-22722f189a4c.config
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.1859162Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.hive-mind/.git/worktrees/*.path /github/runner_temp/git-credentials-d2031ad8-d57c-46dd-8113-22722f189a4c.config
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.1901145Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.1901633Z ##[group]Fetching the repository
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:09.1908136Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 4ac40597b70aa411d00c9a645f10484e5f04f57e
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:24.3233006Z From https://github.com/link-assistant/hive-mind
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:24.3233825Z  * branch            4ac40597b70aa411d00c9a645f10484e5f04f57e -> FETCH_HEAD
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:24.3245259Z [command]/usr/bin/git rev-parse --verify --quiet 4ac40597b70aa411d00c9a645f10484e5f04f57e^{object}
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:24.3285644Z 4ac40597b70aa411d00c9a645f10484e5f04f57e
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:24.3290858Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:24.3291691Z ##[group]Determining the checkout info
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:24.3292613Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:24.3297859Z [command]/usr/bin/git sparse-checkout disable
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:24.3638591Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:24.3691160Z ##[group]Checking out the ref
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:24.3697772Z [command]/usr/bin/git checkout --progress --force 4ac40597b70aa411d00c9a645f10484e5f04f57e
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:25.6707806Z Updating files:  22% (2179/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:25.7496436Z Updating files:  23% (2185/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:25.7889499Z Updating files:  24% (2280/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:25.8223164Z Updating files:  25% (2374/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:25.8473715Z Updating files:  26% (2469/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:25.9242862Z Updating files:  27% (2564/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:25.9986241Z Updating files:  28% (2659/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.0178263Z Updating files:  29% (2754/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.1100934Z Updating files:  30% (2849/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.2176994Z Updating files:  31% (2944/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.2832201Z Updating files:  32% (3039/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.3894072Z Updating files:  33% (3134/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.4452598Z Updating files:  33% (3208/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.5185377Z Updating files:  34% (3229/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.6051141Z Updating files:  35% (3324/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.6700976Z Updating files:  36% (3419/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.7153092Z Updating files:  37% (3514/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.7927637Z Updating files:  38% (3609/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.8587015Z Updating files:  39% (3704/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.8882703Z Updating files:  40% (3799/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.9183801Z Updating files:  41% (3894/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.9613082Z Updating files:  42% (3989/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:26.9797561Z Updating files:  43% (4084/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.0814835Z Updating files:  44% (4179/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.1135245Z Updating files:  45% (4274/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.2001010Z Updating files:  46% (4369/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.2100930Z Updating files:  47% (4464/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.2458950Z Updating files:  48% (4559/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.2638630Z Updating files:  49% (4654/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.2941373Z Updating files:  50% (4748/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.3034019Z Updating files:  51% (4843/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.3885316Z Updating files:  52% (4938/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.4040963Z Updating files:  52% (5013/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.4458542Z Updating files:  53% (5033/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.5725266Z Updating files:  54% (5128/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.5923207Z Updating files:  55% (5223/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.6208914Z Updating files:  56% (5318/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.6910390Z Updating files:  57% (5413/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.7056459Z Updating files:  58% (5508/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.7211791Z Updating files:  59% (5603/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.7925099Z Updating files:  60% (5698/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.8001824Z Updating files:  61% (5793/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.8050112Z Updating files:  62% (5888/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.8190873Z Updating files:  63% (5983/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:27.9375761Z Updating files:  64% (6078/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.0378300Z Updating files:  65% (6173/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.1100938Z Updating files:  66% (6268/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.1412011Z Updating files:  67% (6363/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.1542967Z Updating files:  68% (6458/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.2566535Z Updating files:  69% (6553/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.2757721Z Updating files:  70% (6648/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.4786573Z Updating files:  71% (6743/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.5389511Z Updating files:  71% (6758/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.5853912Z Updating files:  72% (6838/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.6105691Z Updating files:  73% (6933/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.6153788Z Updating files:  74% (7028/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.6208066Z Updating files:  75% (7122/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.6254221Z Updating files:  76% (7217/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.6314083Z Updating files:  77% (7312/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.6779930Z Updating files:  78% (7407/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.6825807Z Updating files:  79% (7502/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.6891225Z Updating files:  80% (7597/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.6938518Z Updating files:  81% (7692/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.6989668Z Updating files:  82% (7787/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.7038447Z Updating files:  83% (7882/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.7087101Z Updating files:  84% (7977/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.7141385Z Updating files:  85% (8072/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.7215713Z Updating files:  86% (8167/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.7292520Z Updating files:  87% (8262/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.7378037Z Updating files:  88% (8357/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.7460197Z Updating files:  89% (8452/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.7558909Z Updating files:  90% (8547/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.7646831Z Updating files:  91% (8642/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.7714804Z Updating files:  92% (8737/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.7792855Z Updating files:  93% (8832/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.7862574Z Updating files:  94% (8927/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.7939836Z Updating files:  95% (9022/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8009367Z Updating files:  96% (9117/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8078710Z Updating files:  97% (9212/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8160235Z Updating files:  98% (9307/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8228412Z Updating files:  99% (9402/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8228823Z Updating files: 100% (9496/9496)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8229532Z Updating files: 100% (9496/9496), done.
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8607245Z Note: switching to '4ac40597b70aa411d00c9a645f10484e5f04f57e'.
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8607864Z 
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8608963Z You are in 'detached HEAD' state. You can look around, make experimental
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8610801Z changes and commit them, and you can discard any commits you make in this
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8612266Z state without impacting any branches by switching back to a branch.
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8613419Z 
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8614203Z If you want to create a new branch to retain commits you create, you may
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8615753Z do so (now or later) by using -c with the switch command. Example:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8616393Z 
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8616684Z   git switch -c <new-branch-name>
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8617059Z 
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8617322Z Or undo this operation with:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8617664Z 
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8617845Z   git switch -
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8618095Z 
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8618444Z Turn off this advice by setting config variable advice.detachedHead to false
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8618785Z 
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8618928Z HEAD is now at 4ac4059 2.39.11
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8816447Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8873456Z [command]/usr/bin/git log -1 --format=%H
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8912172Z 4ac40597b70aa411d00c9a645f10484e5f04f57e
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8922802Z ##[group]Removing auth
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8923356Z Removing SSH command configuration
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8927220Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.8971516Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.9229554Z Removing HTTP extra header
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.9234008Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.9277998Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.9532785Z Removing includeIf entries pointing to credentials config files
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.9536477Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.9574504Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git.path
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.9575597Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git/worktrees/*.path
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.9576211Z includeif.gitdir:/github/workspace/.hive-mind/.git.path
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.9576733Z includeif.gitdir:/github/workspace/.hive-mind/.git/worktrees/*.path
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.9585890Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git.path
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.9627051Z /home/runner/work/_temp/git-credentials-d2031ad8-d57c-46dd-8113-22722f189a4c.config
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:28.9640155Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-d2031ad8\-d57c\-46dd\-8113\-22722f189a4c\.config
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.0124521Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git/worktrees/*.path
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.0160655Z /home/runner/work/_temp/git-credentials-d2031ad8-d57c-46dd-8113-22722f189a4c.config
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.0170667Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-d2031ad8\-d57c\-46dd\-8113\-22722f189a4c\.config
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.2130776Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.hive-mind/.git.path
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.2188089Z /github/runner_temp/git-credentials-d2031ad8-d57c-46dd-8113-22722f189a4c.config
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.2198337Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.hive-mind/.git.path \/github\/runner_temp\/git\-credentials\-d2031ad8\-d57c\-46dd\-8113\-22722f189a4c\.config
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.2625097Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.hive-mind/.git/worktrees/*.path
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.2662976Z /github/runner_temp/git-credentials-d2031ad8-d57c-46dd-8113-22722f189a4c.config
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.2671778Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.hive-mind/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-d2031ad8\-d57c\-46dd\-8113\-22722f189a4c\.config
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.3061671Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.3326553Z Removing credentials config '/home/runner/work/_temp/git-credentials-d2031ad8-d57c-46dd-8113-22722f189a4c.config'
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.3338320Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.3506442Z ##[group]Run npm ci --omit=dev --ignore-scripts --no-audit --no-fund
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.3507275Z ^[[36;1mnpm ci --omit=dev --ignore-scripts --no-audit --no-fund^[[0m
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.3533370Z shell: /usr/bin/bash -e {0}
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.3533629Z env:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.3533819Z   E2E_TOOL: agent
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.3534070Z   WORK_ITEM_TASK: contradicted-documentation
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:29.3534370Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:37.5920822Z 
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:37.5921487Z added 277 packages in 8s
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:37.6733436Z ##[group]Run actions/download-artifact@v8
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:37.6733916Z with:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:37.6734144Z   name: work-item-current-binary
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:37.6734414Z   path: rust/target/release
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:37.6734666Z   merge-multiple: false
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:37.6734921Z   repository: link-assistant/formal-ai
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:37.6735202Z   run-id: 41768761745
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:37.6735427Z   skip-decompress: false
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:37.6735658Z   digest-mismatch: error
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:37.6735878Z env:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:37.6736062Z   E2E_TOOL: agent
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:37.6736310Z   WORK_ITEM_TASK: contradicted-documentation
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:37.6736651Z   NODE_OPTIONS: --disable-warning=DEP0005
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:37.6736929Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:37.8237829Z Downloading single artifact
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:37.9268442Z Preparing to download the following artifacts:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:37.9270459Z - work-item-current-binary (ID: 13294610319, Size: 69056033, Expected Digest: sha256:6ffee4339de5d622387e44c13786fbd5b8d15f23e9f633d168dcfa4414aace37)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.1058528Z Redirecting to blob download url: https://productionresultssa30.blob.core.windows.net/actions-results/828f7d1e-1031-4911-9d18-c7b809f30116/workflow-job-run-54ba12fa-99e8-51a8-807f-eba566801b41/artifacts/a54b978306d9bcea8fcba22525c1447de6d0bbc0827bde1273260bc8c684a0ac.zip
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:38.1062370Z Starting download of artifact to: /home/runner/work/formal-ai/formal-ai/rust/target/release
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.9808301Z SHA256 digest of downloaded artifact is 6ffee4339de5d622387e44c13786fbd5b8d15f23e9f633d168dcfa4414aace37
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.9809004Z Artifact download completed successfully.
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.9809385Z Total of 1 artifact(s) downloaded
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.9815493Z Download artifact has finished successfully
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.9962609Z ##[group]Run chmod 0755 rust/target/release/formal-ai
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.9963362Z ^[[36;1mchmod 0755 rust/target/release/formal-ai^[[0m
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.9987677Z shell: /usr/bin/bash -e {0}
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.9987952Z env:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.9988150Z   E2E_TOOL: agent
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.9988417Z   WORK_ITEM_TASK: contradicted-documentation
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:39.9988729Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.0144279Z ##[group]Run actions/download-artifact@v8
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.0144618Z with:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.0144841Z   name: work-item-admission
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.0145166Z   path: /home/runner/work/_temp/work-item-admission
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.0145509Z   merge-multiple: false
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.0145774Z   repository: link-assistant/formal-ai
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.0146061Z   run-id: 41768761745
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.0146298Z   skip-decompress: false
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.0146546Z   digest-mismatch: error
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.0146777Z env:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.0146968Z   E2E_TOOL: agent
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.0147213Z   WORK_ITEM_TASK: contradicted-documentation
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.0147728Z   NODE_OPTIONS: --disable-warning=DEP0005
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.0148009Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.1550043Z Downloading single artifact
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.2599110Z Preparing to download the following artifacts:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.2600558Z - work-item-admission (ID: 13294570596, Size: 5109, Expected Digest: sha256:2d2c9d271fe2fb41d7460d1c46db98750e7cafc1b7603c980a5df08c1e3f33ec)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.4546204Z Redirecting to blob download url: https://productionresultssa30.blob.core.windows.net/actions-results/828f7d1e-1031-4911-9d18-c7b809f30116/workflow-job-run-54ba12fa-99e8-51a8-807f-eba566801b41/artifacts/c575c32ad6d3499ce047f0ad9b36cd002252dc29e27a9d883e1f9c38cf8dd8af.zip
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.4549197Z Starting download of artifact to: /home/runner/work/_temp/work-item-admission
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.5179528Z SHA256 digest of downloaded artifact is 2d2c9d271fe2fb41d7460d1c46db98750e7cafc1b7603c980a5df08c1e3f33ec
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.5180980Z Artifact download completed successfully.
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.5181692Z Total of 1 artifact(s) downloaded
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.5185447Z Download artifact has finished successfully
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.5302357Z ##[group]Run node scripts/work-item-qualification/run-work-item-qualification.mjs
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.5303013Z ^[[36;1mnode scripts/work-item-qualification/run-work-item-qualification.mjs^[[0m
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.5323432Z shell: /usr/bin/bash -e {0}
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.5323708Z env:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.5323909Z   E2E_TOOL: agent
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.5324187Z   WORK_ITEM_TASK: contradicted-documentation
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.5327281Z   GH_TOKEN: ***
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.5327684Z   WORK_ITEM_SELECTION: /home/runner/work/_temp/work-item-admission/selection.json
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.5328235Z   WORK_ITEM_OWNER: /home/runner/work/_temp/work-item-admission/owner.json
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:48:40.5328634Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.0835266Z node:internal/modules/run_main:107
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.0836140Z     triggerUncaughtException(
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.0836997Z     ^
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.1513890Z 
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.1515238Z AssertionError [ERR_ASSERTION]: command failed: docker; inspect retained status and logs
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.1517738Z     at command (file:///home/runner/work/formal-ai/formal-ai/scripts/work-item-qualification/run-work-item-qualification.mjs:51:21)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.1519429Z     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.1521305Z     at async file:///home/runner/work/formal-ai/formal-ai/scripts/work-item-qualification/run-work-item-qualification.mjs:111:3 {
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.1522488Z   generatedMessage: false,
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.1523001Z   code: 'ERR_ASSERTION',
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.1523355Z   actual: false,
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.1523616Z   expected: true,
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.1523868Z   operator: '==',
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.1524115Z   diff: 'simple'
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.1524361Z }
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.1524540Z 
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.1524655Z Node.js v24.22.1
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.2621773Z ##[error]Process completed with exit code 1.
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.4038978Z ##[group]Run actions/upload-artifact@v7
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.4039945Z with:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.4040457Z   name: work-item-resource-agent-contradicted-documentation
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.4041670Z   path: /home/runner/work/_temp/work-item-agent-contradicted-documentation/publish/resource.json
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.4042583Z   if-no-files-found: error
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.4043112Z   retention-days: 90
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.4043514Z   compression-level: 6
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.4043912Z   overwrite: false
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.4044423Z   include-hidden-files: false
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.4044863Z   archive: true
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.4045215Z env:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.4045500Z   E2E_TOOL: agent
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.4046161Z   WORK_ITEM_TASK: contradicted-documentation
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.4046673Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.8312108Z With the provided path, there will be 1 file uploaded
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.8341360Z Artifact name is valid!
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:47.8343620Z Root directory input is valid!
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.3451080Z Uploading artifact: work-item-resource-agent-contradicted-documentation.zip
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.3492747Z Beginning upload of artifact content to blob storage
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.4211533Z Uploaded bytes 754
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.4357761Z Finished uploading artifact content to blob storage!
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.4359146Z SHA256 digest of uploaded artifact is 6d48295912d470f6c085ab84c0c73ecd32426cafe925d72c7c0ed62b1e98f31e
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.4360487Z Finalizing artifact upload
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.9043185Z Artifact work-item-resource-agent-contradicted-documentation successfully finalized. Artifact ID 13293722885
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.9045056Z Artifact work-item-resource-agent-contradicted-documentation has been successfully uploaded! Final size is 754 bytes. Artifact ID is 13293722885
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.9047623Z Artifact download URL: https://github.com/link-assistant/formal-ai/actions/runs/41768761745/artifacts/13293722885
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.9502847Z ##[group]Run actions/upload-artifact@v7
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.9503228Z with:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.9503518Z   name: work-item-agent-contradicted-documentation
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.9504037Z   path: /home/runner/work/_temp/work-item-agent-contradicted-documentation/publish
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.9504504Z   if-no-files-found: error
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.9504773Z   retention-days: 90
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.9505022Z   compression-level: 6
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.9505296Z   overwrite: false
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.9505541Z   include-hidden-files: false
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.9505806Z   archive: true
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.9506018Z env:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.9506219Z   E2E_TOOL: agent
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.9506576Z   WORK_ITEM_TASK: contradicted-documentation
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:48.9507120Z ##[endgroup]
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.1121929Z With the provided path, there will be 40 files uploaded
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.1123380Z Artifact name is valid!
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.1123962Z Root directory input is valid!
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.3302109Z Uploading artifact: work-item-agent-contradicted-documentation.zip
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.3344065Z Beginning upload of artifact content to blob storage
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.4552312Z Uploaded bytes 42597
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.4745161Z Finished uploading artifact content to blob storage!
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.4746766Z SHA256 digest of uploaded artifact is 7a025063a7777934424cf0e4fa4a0ff82a1829ef6bb11b28386637befb2af1f7
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.4747780Z Finalizing artifact upload
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.9478594Z Artifact work-item-agent-contradicted-documentation successfully finalized. Artifact ID 13294610887
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.9480831Z Artifact work-item-agent-contradicted-documentation has been successfully uploaded! Final size is 42597 bytes. Artifact ID is 13294610887
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:49.9483033Z Artifact download URL: https://github.com/link-assistant/formal-ai/actions/runs/41768761745/artifacts/13294610887
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.1102516Z Post job cleanup.
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.3710303Z [command]/usr/bin/git version
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.3795584Z git version 2.56.0
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.3843527Z Temporarily overriding HOME='/home/runner/work/_temp/cd176912-400f-41b9-a0ef-64cd256e3953' before making global git config changes
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.3845671Z Adding repository directory to the temporary git global config as a safe directory
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.3849208Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai/.hive-mind
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.3902703Z Removing SSH command configuration
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.3911289Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.3971629Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.4328831Z Removing HTTP extra header
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.4334896Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.4395892Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.4705664Z Removing includeIf entries pointing to credentials config files
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.4714074Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.4767471Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.5386340Z Post job cleanup.
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.6478158Z [command]/usr/bin/git version
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.6541331Z git version 2.56.0
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.6629956Z Temporarily overriding HOME='/home/runner/work/_temp/0a3718d6-66b2-402b-8408-1e5c43391400' before making global git config changes
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.6632380Z Adding repository directory to the temporary git global config as a safe directory
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.6637892Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.6697476Z Removing SSH command configuration
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.6707396Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.6764013Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.7501739Z Removing HTTP extra header
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.7503667Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.7584957Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.8018935Z Removing includeIf entries pointing to credentials config files
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.8029111Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.8084373Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Actual Hive agent work-item contradicted-documentation	UNKNOWN STEP	2026-11-04T03:51:50.8725101Z Cleaning up orphan processes

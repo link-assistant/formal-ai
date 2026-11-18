@@ -6,6 +6,57 @@ ordered procedure that reproduces a deterministic chat intent handler for any
 language topic, together with a machine-readable recipe that stays grounded in
 the live source.
 
+**What this page is and is not.** The recipes below are checked descriptions of
+procedures that exist in the source, and the recursive-core recipe is executed
+to produce the same trace as the hand-written recorder. The procedure that
+produces every answer is the recursive meta algorithm of the picture in the
+README ([#1550](https://github.com/link-assistant/formal-ai/issues/1550)):
+`rust/src/meta_executor.rs` and its JavaScript twin
+`js/agentic/crate/meta_executor.mjs`, run once per turn by `solve_recursively`
+with an in-process executor. The topic handlers are no longer a way around it:
+the handler cascade is the direct-derivation method whose draft the procedure
+tests, selects and composes. The standing requirements are in
+[VISION.md](../VISION.md#requirements-are-axioms-options-are-scored-the-plan-is-executed)
+and the audit that found the earlier recorded loop to be trace-only is in
+[docs/case-studies/issue-1548](case-studies/issue-1548/README.md).
+
+## The recursive procedure every answer goes through
+
+At every level the procedure (1) splits the formalized request into tasks by
+the relations of the `task-decomposition` rule and the `connective-*`
+vocabularies of `data/seed/text-formalization.lino` (sequence, alternative,
+aggregation; never by an English word in code), (2) derives a test for every
+task as a value that is executed, (3) drafts every candidate a method gives:
+the cache row of the same task (solved earlier in the run, or stored by a
+host that keeps rows), the direct derivation, and the composition of
+the selected sub-results, (4) runs each draft against the test and selects the
+smallest sufficient passing draft with `rank_by_least_action` (issue #491),
+recording the reason, (5) composes by the structure of the split and checks
+the composition against the parent test, and (6) recurses into every task that
+is not atomic within the depth, breadth and budget bounds, which open the
+trace. Removing the test of a task gives the explicit `meta_exec:unresolved`
+result instead of an answer. The table below is checked against the code by
+`rust/tests/web/issue-1550-procedure-documentation.test.mjs` and must stay identical to
+the one in the README:
+
+<!-- meta-procedure:start -->
+| Diagram stage | Trace event | Rust | JavaScript |
+| --- | --- | --- | --- |
+| `Problem` (bounds of the run) | `meta_exec:bounds` | `execute_procedure`, `decomposition_bounds` | `executeProcedure`, `decompositionBounds` |
+| `decomposition → tasks` | `meta_exec:task` | `emit_task`, `plan_tasks`, `split_request` | `runTask`, `planTasks`, `splitRequest` |
+| `experiment → tests` | `meta_exec:test` | `run_task`, `derive_task_test` | `runTask`, `deriveTaskTest` |
+| `drafts` (each run against the test) | `meta_exec:draft` | `select`, `draft_candidates`, `run_task_test` | `runTask`, `runTaskTest` |
+| `composition → solutions` | `meta_exec:compose` | `draft_candidates`, `compose` | `runTask`, `compose` |
+| `selection` (least action) | `meta_exec:select` | `select`, `rank_by_least_action` | `runTask`, `rankByLeastAction` |
+| no passing draft (explicit) | `meta_exec:unresolved` | `run_task`, `select` | `runTask` |
+| `Solution` | `meta_exec:result` | `execute_procedure` | `executeProcedure` |
+
+| Runtime | Entry chain (each function calls the next) | Recursive executor |
+| --- | --- | --- |
+| Rust | `solve_with_history_probability_store_and_intent_cache` → `run_meta_procedure` → `solve_answer` → `solve_turn` → `InProcessExecutor` → `execute_procedure` | `solve_recursively` |
+| JavaScript | `solve` → `metaRunProcedure` → `solveAnswer` → `solveTurn` → `inProcessExecutor` → `executeProcedure` | `solveRecursively` |
+<!-- meta-procedure:end -->
+
 The first fully-encoded instance is the **procedural how-to** topic (issue #444):
 a "how to X" request and its elaboration follow-up ("can you give me specific
 instructions?"). Its recipe lives at

@@ -2,8 +2,20 @@ name: Security
 
 on:
   push:
+    paths-ignore:
+      - "docs/**"
+      - "*.md"
+      - "**/README.md"
+      - "**/CHANGELOG.md"
+      - "changelog.d/**"
     branches: [main]
   pull_request:
+    paths-ignore:
+      - "docs/**"
+      - "*.md"
+      - "**/README.md"
+      - "**/CHANGELOG.md"
+      - "changelog.d/**"
     # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
     # never triggers this repository's own pipeline.
     branches-ignore: ['e2e/**']
@@ -33,8 +45,9 @@ permissions:
 
 jobs:
   codeql:
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true) }}
     name: CodeQL (${{ matrix.language }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     concurrency:
       group: check-${{ github.workflow }}-${{ github.ref }}-codeql-${{ matrix.language }}
@@ -107,15 +120,32 @@ jobs:
 
   cargo-audit:
     name: Cargo audit
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     concurrency:
       group: check-${{ github.workflow }}-${{ github.ref }}-cargo-audit
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     steps:
       - uses: actions/checkout@v7
+        timeout-minutes: 2
+        env:
+          GIT_HTTP_LOW_SPEED_LIMIT: '1024'
+          GIT_HTTP_LOW_SPEED_TIME: '20'
         with:
           persist-credentials: false
+          fetch-depth: 1
+          filter: blob:none
+          # `Cargo.lock` with no leading slash matches every committed lockfile
+          # at any depth; the audit covers each one (#1571).
+          sparse-checkout: |
+            /.cargo/
+            /rust/
+            /scripts/check-rust-dependencies.sh
+            /Cargo.toml
+            Cargo.lock
+            /README.md
+            /LICENSE
+          sparse-checkout-cone-mode: false
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -144,7 +174,7 @@ jobs:
   dependency-review:
     name: Dependency Review
     if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     concurrency:
       group: check-${{ github.workflow }}-${{ github.ref }}-dependency-review

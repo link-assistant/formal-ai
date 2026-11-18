@@ -15,6 +15,14 @@
 # job meets the limit again, or no longer exists, fails the gate until removed.
 ci-speed
   issue 1188
+  temporary-profile critical-coding-release
+    recorded "2026-10-27"
+    deferred "duplicate native/browser instrumented coverage; no measurement credit"
+    restore "coverage dispatch full-coverage=true or FORMAL_AI_FULL_COVERAGE=run"
+    retained "normal Linux Rust/JS/specification/browser E2E, coding/reporting, three-client first/repeat, lifecycle, authenticated cleanup and public download checks"
+    replay-deferred "noncritical recorded scenarios, long method-learning and computer-record legs"
+    replay-restore "FORMAL_AI_FULL_AGENT_REPLAY=run; routing-changing pull requests retain full replay"
+    documentation "docs/ci-cd/speed.md"
   limit-minutes 30
   target-minutes 15
   long-job-minutes 10
@@ -43,6 +51,10 @@ ci-speed
     over-limit-job build-archive
       timeout-minutes 55
       reason "Switched off while non-Linux CI is off (issue #1111): a cold build of the macOS test archive. To meet 30: build the archive from a shared compiler cache on the Linux build job's schedule."
+  workflow ".github/workflows/hive-original-delivery.yml"
+    over-limit-job delivery
+      timeout-minutes 55
+      reason "Issue #1364: owner40173640886 job121114230265 spent28m13s before solve (08:04:29Z to08:32:42Z on2026-10-25), leaving only1m47s under the old30-minute parent for its bounded21-minute solve. Temporary image-transfer debt: allow55 minutes for observed setup plus solve and5-minute evidence reserve; retain all operation limits and single-attempt ownership. Remove after source-bound image handoff plus solve fits30 minutes."
   workflow ".github/workflows/release-staged.yml"
     over-limit-job "auto_publish-verify-images"
       timeout-minutes 90

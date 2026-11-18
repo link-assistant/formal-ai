@@ -46,22 +46,30 @@
 # substring across the whole job block, so the forbidden name must not appear
 # there even inside a comment.
 #
+# The tree is `$CARGO_TARGET_DIR` when it is set, else `rust/target/`. Issue
+# #1191 asks agents that do build Rust locally to share one bounded target
+# directory (CARGO_TARGET_DIR, CARGO_INCREMENTAL=0, a limited -j), so the
+# sweep, the example removal and the ceiling all follow it there; cargo-sweep
+# itself asks `cargo metadata`, which already honours the variable.
+#
 # Usage:
 #   scripts/prune-build-cache.sh [marker-file]
 set -euo pipefail
+target=${CARGO_TARGET_DIR:-rust/target}
+
 
 if [ -n "${CARGO_TEST_NO_PRUNE:-}" ]; then
   echo "prune-build-cache: skipped (CARGO_TEST_NO_PRUNE)"
   exit 0
 fi
 
-if [ ! -d rust/target ]; then
-  echo "prune-build-cache: no rust/target/ directory, nothing to prune"
+if [ ! -d "$target" ]; then
+  echo "prune-build-cache: no $target/ directory, nothing to prune"
   exit 0
 fi
 
 target_size_mb() {
-  echo $(( $(du -sk rust/target 2>/dev/null | cut -f1 || echo 0) / 1024 ))
+  echo $(( $(du -sk "$target" 2>/dev/null | cut -f1 || echo 0) / 1024 ))
 }
 
 before=$(target_size_mb)
@@ -122,7 +130,7 @@ else
     # No caller-supplied start time. Use the newest fingerprint cargo just
     # wrote: everything the current build touched is at least that new, and
     # everything older belongs to a build that no longer exists.
-    newest=$(find rust/target -name '.fingerprint' -prune -o -type f -newer rust/Cargo.toml -print 2>/dev/null | head -1 || true)
+    newest=$(find "$target" -name '.fingerprint' -prune -o -type f -newer rust/Cargo.toml -print 2>/dev/null | head -1 || true)
     marker=$(mktemp)
     cleanup_marker=$marker
     if [ -n "$newest" ]; then
@@ -138,10 +146,10 @@ else
 
   # Only build outputs are pruned. Binaries, test executables and cargo's own
   # bookkeeping stay, so the next build still links rather than starting cold.
-  find rust/target -type f ! -newer "$marker" \
+  find "$target" -type f ! -newer "$marker" \
     \( -path '*/incremental/*' -o -name '*.rlib' -o -name '*.rmeta' -o -name '*.o' \) \
     -delete 2>/dev/null || true
-  find rust/target -type d -empty -delete 2>/dev/null || true
+  find "$target" -type d -empty -delete 2>/dev/null || true
   pruner="timestamps (install cargo-sweep for fingerprint-accurate pruning)"
 fi
 
@@ -158,8 +166,8 @@ fi
 # example without linking it, which is what both the `run_clippy` CI gate and
 # the pre-commit hook use; a linked example binary only appears when someone
 # runs `--all-targets` by hand, and it is never read again afterwards.
-if [ -d rust/target/debug/examples ] || [ -d rust/target/release/examples ]; then
-  rm -rf rust/target/debug/examples rust/target/release/examples
+if [ -d "$target/debug/examples" ] || [ -d "$target/release/examples" ]; then
+  rm -rf "$target/debug/examples" "$target/release/examples"
 fi
 
 # A ceiling, applied after the sweep. Only local runs get one by default: see

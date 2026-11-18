@@ -96,3 +96,15 @@ test('retained filters reject traversal, metadata, negation, broad and dynamic p
       'filters never become frozen registry source authority');
   }
 });
+test('exact documentation exclusions remain last and grant no source declaration authority', () => {
+  for (const ending of ['\n','\r\n']) {
+    const original = workflow.replace('  workflow_dispatch:', '      - "!docs/**" # documentation policy\n      - "!*.md"\n  workflow_dispatch:').replaceAll('\n',ending);
+    const result = projectReleaseTriggerPaths(recipe,original,'role');
+    assert.ok(result.text.indexOf('"second.mjs"') < result.text.indexOf('"!docs/**"'));
+    assert.equal(result.text.slice(0,result.offset)+result.text.slice(result.offset+result.insertion.length),original);
+    assert.deepEqual(projectReleaseTriggerPaths(recipe,result.text,'role').added,[]);
+  }
+  for (const filter of ['!rust/src/**','!data/**','!docs/../outside.md'])
+    assert.throws(()=>projectReleaseTriggerPaths(recipe,workflow.replace('first.mjs # original operand',filter),'role'));
+  assert.throws(()=>projectReleaseTriggerPaths(recipe.replace('second.mjs','!docs/**'),workflow,'role'));
+});

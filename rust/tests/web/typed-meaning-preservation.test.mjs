@@ -38,7 +38,7 @@ test('deformalization preserves typed facts and forged metadata never gets a sur
  const q=statement('You are located on Earth?','en');q.dialogue.question.kind='where';assert.equal(factSurvives(q),false);
 });
 test('actual browser factories preserve the same typed identity without import cycles or raised budgets',async()=>{
- const worker=new WorkerHost();const names=['formalization_grammar','dialogue_formalization','typed_meaning','text_formalization','page_formalization','dependency_summarization'];
+ const worker=new WorkerHost();const names=['formalization_grammar','dialogue_formalization','typed_meaning','proposition_structure','text_formalization','statement_relation','page_formalization','dependency_summarization'];
  const factories=names.map(name=>factoryOf('crate/'+name+'.mjs',fs.readFileSync(new URL('../../../js/agentic/crate/'+name+'.mjs',import.meta.url),'utf8'),name==='text_formalization'?666:name==='dialogue_formalization'?198:null)).join('\n');
  const result=await worker.run(factories+`;crateInstances.clear();crateHostSeed=null;(()=>{const text=crateModule('crate/text_formalization.mjs'),dedup=crateModule('crate/dependency_summarization.mjs');const a=text.formalizeText('450000 ₽','ru')[0],b=text.formalizeText('450000 $','ru')[0];return [text.statementIdentity(a),text.statementIdentity(b),dedup.restates(a,b)];})()`);
  assert.notEqual(result[0],result[1]);assert.equal(result[2],false);

@@ -16,9 +16,21 @@ name: Coverage
 # for a 25-minute instrumented build.
 on:
   push:
+    paths-ignore:
+      - "docs/**"
+      - "*.md"
+      - "**/README.md"
+      - "**/CHANGELOG.md"
+      - "changelog.d/**"
     branches:
       - main
   pull_request:
+    paths-ignore:
+      - "docs/**"
+      - "*.md"
+      - "**/README.md"
+      - "**/CHANGELOG.md"
+      - "changelog.d/**"
     # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
     # never triggers this repository's own pipeline.
     branches-ignore: ['e2e/**']
@@ -27,6 +39,10 @@ on:
   # (.github/actions/dispatch-checks); mode and pull-request are its inputs.
   workflow_dispatch:
     inputs:
+      full-coverage:
+        description: Run all native and browser instrumented coverage shards (temporarily opt-in)
+        type: boolean
+        default: false
       mode:
         description: 'checks: run the pull-request checks on the dispatched branch'
         required: false
@@ -62,7 +78,7 @@ jobs:
   # not, so both workflows call the same scripts/detect-code-changes.rs.
   detect-changes:
     name: Detect Changes
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     # Checkout retries must fit this unchanged job clock.
     env:
@@ -83,19 +99,48 @@ jobs:
           # Keep complete commit history, without materializing unrelated blobs.
           sparse-checkout: |
             /scripts/detect-code-changes.rs
+            /scripts/ci-pull-request-admission.mjs
+            /scripts/lib/documentation-paths.mjs
             /scripts/install-rust-script.sh
             /changelog.d/
           sparse-checkout-cone-mode: false
       - name: Setup Rust
+        if: github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')
         uses: dtolnay/rust-toolchain@stable
       - name: Install rust-script
+        if: github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')
         run: bash scripts/install-rust-script.sh
       - name: Detect changes
         id: changes
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_EVENT_BEFORE: ${{ github.event.before }}
-        run: rust-script scripts/detect-code-changes.rs
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = pull_request ] || { [ "$GITHUB_EVENT_NAME" = workflow_dispatch ] && [ "$GITHUB_REF" != refs/heads/main ]; }; then
+            node scripts/ci-pull-request-admission.mjs detect
+          else
+            rust-script scripts/detect-code-changes.rs
+          fi
+  coverage-policy:
+    name: Declare temporary coverage scope
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      run: ${{ steps.scope.outputs.run }}
+    steps:
+      - name: Record instrumented coverage selection without claiming a measurement
+        id: scope
+        env:
+          FULL_COVERAGE: ${{ inputs.full-coverage == true || vars.FORMAL_AI_FULL_COVERAGE == 'run' }}
+        run: |
+          set -euo pipefail
+          printf 'run=%s\n' "$FULL_COVERAGE" >> "$GITHUB_OUTPUT"
+          if [ "$FULL_COVERAGE" = true ]; then
+            printf '### Full instrumented coverage requested\n\nAll selected shards and both unchanged ratchets are required.\n' >> "$GITHUB_STEP_SUMMARY"
+          else
+            printf '### Instrumented coverage temporarily deferred\n\nNo coverage measurement or coverage credit is claimed. Normal Linux Rust/JS tests, browser E2E, coding/reporting and real-client release acceptance remain required. Restore with full-coverage=true on dispatch or FORMAL_AI_FULL_COVERAGE=run. See docs/ci-cd/speed.md.\n' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
   # === CODE COVERAGE ===
   # Generate the Rust coverage report with cargo-llvm-cov, from one build and
   # parallel test shards.
@@ -127,19 +172,14 @@ jobs:
   #                   the ratchet sees the whole-suite number.
   coverage-build:
     name: Build instrumented test executables
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # Run 37957603076 on source 8abb066db: the complete producer took 1393s,
     # including a 670s instrumented compile and all executable uploads.
     # A 1260s compile deadline is 70% of this 30-minute cap; compilation
     # and the unchanged artifact protocol retain their independent checks.
     timeout-minutes: 30
-    needs: [detect-changes]
-    if: |
-      !cancelled() && (
-        github.event_name == 'workflow_dispatch' ||
-        needs.detect-changes.outputs.rs-changed == 'true' ||
-        needs.detect-changes.outputs.toml-changed == 'true'
-      )
+    needs: [coverage-policy, detect-changes]
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.coverage-policy.outputs.run == 'true' && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' )) }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -223,12 +263,14 @@ jobs:
 
   coverage-shard:
     name: Coverage shard ${{ matrix.shard }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # Keep the 1200s execution budget and 30-minute job cap unchanged.
     # Thirty-two partitions distribute the complete instrumented inventory;
     # fresh CI must establish completion under the existing deadlines.
     timeout-minutes: 30
     needs: [coverage-build]
+    # Dispatch skips the detector; a successful producer must still release its shards.
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.coverage-build.result == 'success') }}
     strategy:
       fail-fast: false
       matrix:
@@ -437,18 +479,13 @@ jobs:
     # A new display name on purpose: scripts/check-job-headroom.rs matches
     # measured jobs to caps by name, and the one-job history under the old
     # name would be judged against this short verdict job's cap.
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # 900s of budget under a 25-minute cap is 60%. The report reads the same
     # objects a single run's report read; the ratchet, the uploads and the
     # downloads fit in the remainder.
     timeout-minutes: 25
-    needs: [detect-changes, coverage-build, coverage-shard]
-    if: |
-      !cancelled() && (
-        github.event_name == 'workflow_dispatch' ||
-        needs.detect-changes.outputs.rs-changed == 'true' ||
-        needs.detect-changes.outputs.toml-changed == 'true'
-      )
+    needs: [coverage-policy, detect-changes, coverage-build, coverage-shard]
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.coverage-policy.outputs.run == 'true' && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' )) }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -588,15 +625,15 @@ jobs:
   # both would be a number nobody can act on.
   browser-coverage-shard:
     name: Browser coverage shard ${{ matrix.shard }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
-    needs: [detect-changes]
+    needs: [coverage-policy, detect-changes]
     strategy:
       fail-fast: false
       matrix:
         shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
     if: |
-      !cancelled() && (
+      !cancelled() && needs.coverage-policy.outputs.run == 'true' && (
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.workflow-changed == 'true'
@@ -625,6 +662,7 @@ jobs:
         run: bash scripts/install-rust-script.sh
 
       - name: Provision the real agentic search adapter
+        timeout-minutes: 3
         run: bash scripts/install-agentic-search-tools.sh
       - name: Regenerate canonical seed projection for browser consumers
         timeout-minutes: 1
@@ -648,15 +686,10 @@ jobs:
 
   browser-coverage:
     name: Browser Code Coverage
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
-    needs: [detect-changes, browser-coverage-shard]
-    if: |
-      !cancelled() && (
-        github.event_name == 'workflow_dispatch' ||
-        needs.detect-changes.outputs.any-code-changed == 'true' ||
-        needs.detect-changes.outputs.workflow-changed == 'true'
-      )
+    needs: [coverage-policy, detect-changes, browser-coverage-shard]
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.coverage-policy.outputs.run == 'true' && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.workflow-changed == 'true' )) }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -681,6 +714,7 @@ jobs:
         run: bash scripts/install-rust-script.sh
 
       - name: Provision the real agentic search adapter
+        timeout-minutes: 3
         run: bash scripts/install-agentic-search-tools.sh
       - name: Regenerate canonical seed projection for browser consumers
         timeout-minutes: 1

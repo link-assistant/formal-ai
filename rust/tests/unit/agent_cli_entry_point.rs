@@ -1,5 +1,8 @@
 //! Regression coverage for issue #1069's real Agent CLI entry point.
 
+use formal_ai::agentic_coding::work_item_report::{
+    parses_as_json_object, reported_work_item_record,
+};
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use formal_ai::recursive_execution::{
@@ -61,7 +64,7 @@ fn fetched_issue_prose_does_not_pair_content_with_a_later_filename() {
     let task = format!("Solve {ISSUE_URL} in this checkout as one whole task.");
     let tools = ["web_fetch", "write_file", "run_shell_command"];
     let workspace = observed_tool_workspace::ToolWorkspace::new(&task);
-    let mut messages = vec![ChatMessage::user(task.clone())];
+    let mut messages = vec![ChatMessage::user(task)];
     let body = "Produce a legitimate release with no fabricated evidence.\n\
          Adding a bypass flag to check-self-development-release.rs is not acceptable.";
 
@@ -108,20 +111,36 @@ fn fetched_issue_prose_does_not_pair_content_with_a_later_filename() {
     let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
         panic!("unsupported prose must settle without auxiliary writes or source effects");
     };
-    let mut expected =
-        formal_ai::agentic_coding::general_planner::compose_general_change_plan(&task)
-            .expect("original work-item plan");
-    expected.goal = body.to_owned();
-    assert_eq!(answer, expected.planned_not_executed_answer());
-    assert!(answer.contains("Planned, not executed"));
-    assert!(answer.contains(ISSUE_URL));
-    let goal_literal = answer
-        .lines()
-        .find_map(|line| line.strip_prefix("  goal "))
-        .expect("the canonical plan contains its original goal");
-    let decoded_goal: String =
-        serde_json::from_str(goal_literal).expect("the goal literal is a quoted string");
-    assert_eq!(decoded_goal, body);
+    // Issue #1560: the answer is a localized report; the record stays in the trace.
+    assert!(!parses_as_json_object(&answer), "{answer}");
+    assert!(answer.contains(ISSUE_URL), "{answer}");
+    let evidence = reported_work_item_record(&answer).expect("the report's work-item record");
+    assert_eq!(evidence["schema"], "repository-work-item-evidence/v1");
+    assert_eq!(evidence["reason"], "MissingReadTool");
+    assert_eq!(evidence["workItem"], ISSUE_URL);
+    assert_eq!(evidence["authored"], false);
+    assert_eq!(evidence["verified"], false);
+    assert_eq!(
+        evidence["taskIdentity"],
+        formal_ai::source_fetch::sha256_hex(body.trim().as_bytes())
+    );
+    for requirement in evidence["requirements"]
+        .as_array()
+        .expect("original clauses")
+    {
+        let start =
+            usize::try_from(requirement["span"][0].as_u64().expect("start")).expect("start offset");
+        let end =
+            usize::try_from(requirement["span"][1].as_u64().expect("end")).expect("end offset");
+        assert_eq!(
+            &body.trim().as_bytes()[start..end],
+            requirement["text"]
+                .as_str()
+                .expect("original clause")
+                .as_bytes()
+        );
+        assert_eq!(requirement["status"], "unbound");
+    }
     assert!(!answer.contains("Recorded and verified"));
     assert!(!answer.contains("Created and verified"));
     assert!(

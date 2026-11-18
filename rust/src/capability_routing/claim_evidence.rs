@@ -66,7 +66,10 @@ pub fn class_evidence_holds(
             crate::definition_merge::names_definition_merge_term(prompt, normalized)
         }
         "mechanism_subject" => crate::solver_handler_how::names_mechanism_subject(prompt),
-        "procedure_task" => crate::solver_handler_how::procedural_how_to_task(normalized).is_some(),
+        "procedure_task" => {
+            crate::solver_handler_how::procedural_how_to_task(normalized).is_some()
+                || crate::solver_handler_how::practical_help::goal(prompt, normalized).is_some()
+        }
         "search_focus" => handlers::detect_web_search_query(prompt).is_some(),
         "conversation_topic_subject" => {
             crate::rule_interpreter::handler_claims("conversation_topic", prompt, normalized)
@@ -156,6 +159,11 @@ fn continues_procedure(dialogue: &EventLog) -> bool {
                 user,
             ))
             .is_some()
+                || crate::solver_handler_how::practical_help::goal(
+                    user,
+                    &crate::engine::normalize_prompt(user),
+                )
+                .is_some()
         })
 }
 

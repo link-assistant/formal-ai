@@ -32,14 +32,22 @@ test("unchanged exact CI promotion request physically delivers every original se
       original.desired,
     );
     assert.ok(out.transcript.some((t) => t.tool === "write"));
-    assert.ok(
-      out.transcript.some(
-        (t) =>
-          t.tool === "bash" &&
-          JSON.parse(t.arguments).command ===
-            "cat data/seed/learned-program-rules.lino",
-      ),
-    );
+    // The target-only creation owner verifies a bound raw Read instead of
+    // adding an unrelated shell/journal operation to the declared effect.
+    assert.equal(out.stop, "final");
+    assert.deepEqual(out.transcript.map((entry) => entry.tool), ["write", "read"]);
+    const creation = out.transcript[0];
+    assert.equal(creation.source_creation?.success, true);
+    assert.equal(creation.source_creation?.exclusive, true);
+    const verification = out.transcript[1];
+    const target = "data/seed/learned-program-rules.lino";
+    assert.equal(JSON.parse(verification.arguments).path, target);
+    assert.equal(verification.result, original.desired);
+    assert.equal(verification.source_read?.path, target);
+    assert.equal(verification.source_read?.success, true);
+    assert.equal(verification.source_read?.complete, true);
+    assert.equal(verification.source_read?.format, "raw");
+    assert.notEqual(verification.is_error, true);
     assert.doesNotMatch(out.answer, /does not occur/);
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });

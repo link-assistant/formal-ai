@@ -84,7 +84,7 @@ fn scraped_page() -> String {
     page
 }
 
-/// The confirmed `gh issue create` command the planner would run.
+/// The confirmed report submission command the planner would run.
 fn report_command(messages: &[ChatMessage]) -> String {
     let mut messages = messages.to_vec();
     messages.push(ChatMessage::user("GitHub issue"));
@@ -307,20 +307,21 @@ mod report_format {
             "# Обзор\n\nСписок:\n- SpaceX\n- Blue Origin\n\nИтого семь стран.",
         );
         assert!(!command.contains("# Обзор"), "{command}");
-        assert!(command.contains("formal-ai report body"), "{command}");
+        assert!(
+            command.contains("formal-ai report create-issue"),
+            "{command}"
+        );
         assert!(!command.contains("curl"), "{command}");
-        assert!(command.contains("--body-file"), "{command}");
+        assert!(command.contains("--separate-context-links"), "{command}");
     }
 
     #[test]
     fn complete_context_is_requested_in_links_notation() {
         let command = command_for("first question", "an answer");
         assert!(command.contains("--source both"), "{command}");
-        // The complete `.lino` context is written beside the body, under a real
-        // filename: #838 attached a gist literally named after the unexpanded
-        // `mktemp` template it was given (#839 §1).
-        assert!(command.contains("--context-output"), "{command}");
-        assert!(command.contains("context.lino"), "{command}");
+        // The CLI owns complete context files and separate full-log links.
+        // Executable report tests verify their contents and real filenames.
+        assert!(command.contains("--separate-context-links"), "{command}");
         for line in command.lines().filter(|line| !line.contains("mktemp")) {
             assert!(!line.contains("XXXXXX"), "{command}");
         }
@@ -342,7 +343,7 @@ mod report_format {
         }
         messages.push(ChatMessage::user("report"));
         let command = report_command(&messages);
-        // Bounding the context is `formal-ai report body`'s job now. The shell
+        // Bounding the context is `formal-ai report create-issue`'s job now. The shell
         // used to do it with `tail -c 12000 | sed '1d'`, a byte offset that
         // lands mid-record and destroyed the export in #838 (#839 §2.3).
         for slice in ["wc -c", "tail -c", "head -c", "sed '1d'"] {
@@ -438,7 +439,10 @@ mod reported_session {
         let command = report_command(&messages);
         assert!(!command.contains("Главное меню"), "{command}");
         assert!(command.contains("--source both"), "{command}");
-        assert!(command.contains("gh issue create"), "{command}");
-        assert!(command.contains("--body-file"), "{command}");
+        assert!(
+            command.contains("formal-ai report create-issue"),
+            "{command}"
+        );
+        assert!(command.contains("--separate-context-links"), "{command}");
     }
 }

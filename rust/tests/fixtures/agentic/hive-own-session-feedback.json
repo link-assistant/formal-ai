@@ -1,0 +1,44 @@
+{
+  "schema": "formal-ai-public-feedback-regression/v1",
+  "provenance": {
+    "repository": "link-assistant/formal-ai",
+    "run": 40274202613,
+    "attempt": 1,
+    "job": 121425875301,
+    "artifact": 12632201424,
+    "artifactSha256": "ea116b9b7fbadcb4fdb327015b2514db80f2abe2f195fc8fcd8096aa5519f072",
+    "member": "pass-2/solve.log",
+    "memberSha256": "2da5015189b3b2f7ff5cf1f72ee6e4029a6865ab64d2a576bdb909deeab16cd0",
+    "projection": "Exact sanitized feedback payload and successful tool wrapper; account metadata was removed by the producer."
+  },
+  "feedback": {
+    "comments": [
+      {
+        "id": "IC_kwDOSbOoU88AAAABfgx7zw",
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "<!-- hive-mind:working-session-summary -->\n## Working session summary\n\nOwned source, local execution and the staged workflow were prepared for bd21c28f7d7bec0910d00d6d1a9be739285cb5b6. The pull request is ready. Hosted CI is not verified; independent execution of the staged workflow is still required. No full completion is claimed.\n\n---\n*This summary was automatically extracted from the AI working session output.*",
+        "createdAt": "2026-10-26T06:27:38Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/link-assistant/formal-ai/pull/1422#issuecomment-6409714639",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDOSbOoU88AAAABfgy5YA",
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "🤖 **AI Work Session Started**\n\nStarted at 2026-10-26T06:28:38.022Z. Please wait for it to finish before giving feedback.\n\n_Runtime: solve `v2.39.2` · tool `codex` · model `formal-ai`_",
+        "createdAt": "2026-10-26T06:28:40Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/link-assistant/formal-ai/pull/1422#issuecomment-6409730400",
+        "viewerDidAuthor": true
+      }
+    ],
+    "reviews": []
+  },
+  "toolReceipt": "Chunk ID: d45777\nWall time: 0.2999 seconds\nProcess exited with code 0\nOriginal token count: 335\nOutput:\n{\"comments\":[{\"id\":\"IC_kwDOSbOoU88AAAABfgx7zw\",\"authorAssociation\":\"CONTRIBUTOR\",\"body\":\"<!-- hive-mind:working-session-summary -->\\n## Working session summary\\n\\nOwned source, local execution and the staged workflow were prepared for bd21c28f7d7bec0910d00d6d1a9be739285cb5b6. The pull request is ready. Hosted CI is not verified; independent execution of the staged workflow is still required. No full completion is claimed.\\n\\n---\\n*This summary was automatically extracted from the AI working session output.*\",\"createdAt\":\"2026-10-26T06:27:38Z\",\"includesCreatedEdit\":false,\"isMinimized\":false,\"minimizedReason\":\"\",\"reactionGroups\":[],\"url\":\"https://github.com/link-assistant/formal-ai/pull/1422#issuecomment-6409714639\",\"viewerDidAuthor\":true},{\"id\":\"IC_kwDOSbOoU88AAAABfgy5YA\",\"authorAssociation\":\"CONTRIBUTOR\",\"body\":\"🤖 **AI Work Session Started**\\n\\nStarted at 2026-10-26T06:28:38.022Z. Please wait for it to finish before giving feedback.\\n\\n_Runtime: solve `v2.39.2` · tool `codex` · model `formal-ai`_\",\"createdAt\":\"2026-10-26T06:28:40Z\",\"includesCreatedEdit\":false,\"isMinimized\":false,\"minimizedReason\":\"\",\"reactionGroups\":[],\"url\":\"https://github.com/link-assistant/formal-ai/pull/1422#issuecomment-6409730400\",\"viewerDidAuthor\":true}],\"reviews\":[]}"
+}

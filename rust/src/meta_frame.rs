@@ -517,8 +517,8 @@ fn decompose_once(span: &str) -> Vec<String> {
 ///
 /// Segmentation is deliberately structural and language-neutral: it splits on
 /// sentence terminators (`?`, `!`, `.`, and their CJK forms) and then on the
-/// same coordinating triggers the existing decomposition step uses
-/// (`record_decomposition` in `src/solver_helpers.rs`). It introduces no new
+/// seed's procedure-clause separators (the turn's own task tree is
+/// `crate::meta_executor::plan_tasks`, issue #1550). It introduces no new
 /// per-language phrase list, so it does not regress the no-hardcoded-natural-
 /// language discipline. A period flanked by non-whitespace (e.g. `3.14`) is kept
 /// inside its segment so decimals are never broken apart.
@@ -568,8 +568,7 @@ fn split_sentences(text: &str) -> Vec<String> {
     sentences
 }
 
-/// Split a sentence on coordinating triggers, mirroring the existing shallow
-/// decomposition so the frame agrees with `record_decomposition`.
+/// Split a sentence on the seed's procedure-clause separators.
 #[must_use]
 fn split_clauses(sentence: &str) -> Vec<String> {
     let surfaces = seed::lexicon()

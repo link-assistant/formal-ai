@@ -46,95 +46,35 @@ function extractProofClaim(normalized) {
   }
   return trimmed;
 }
-function matchesEuclidPrimeClaim(claim) {
-  const lower = String(claim || "").toLowerCase();
-  return (
-    lower.includes("infinitely many primes") ||
-    lower.includes("infinitely many prime numbers") ||
-    lower.includes("infinitude of primes") ||
-    lower.includes("prime numbers are infinite") ||
-    lower.includes("euclid") ||
-    lower.includes("евклид") ||
-    (lower.includes("прост") && lower.includes("бесконеч")) ||
-    lower.includes("अनंत अभाज्य") ||
-    lower.includes("अनन्त अभाज्य") ||
-    lower.includes("अभाज्य संख्याएँ अनंत") ||
-    lower.includes("अभाज्य संख्याएं अनंत") ||
-    lower.includes("अभाज्य संख्याएँ अनन्त") ||
-    lower.includes("अभाज्य संख्याएं अनन्त") ||
-    lower.includes("无穷多素数") ||
-    lower.includes("无穷多个素数") ||
-    lower.includes("素数有无穷") ||
-    lower.includes("素数无穷") ||
-    lower.includes("無窮多素數") ||
-    lower.includes("素數有無窮") ||
-    lower.includes("素數無窮") ||
-    lower.includes("欧几里得")
-  );
+// Issue #1487: a proof-library keyword only retrieves a theorem; the negation cues around it bind the request to the
+// theorem, its negation, or nothing (Rust `proof_engine::claim_binding`, `refuted_negation`).
+function proofClaimBinding(claim) {
+  const crate = crateModule("crate/theorem_claim_binding.mjs"), text = String(claim || "").toLowerCase(), match = crate.theoremMatch(text);
+  return match && { theorem: match.theorem, binding: crate.bindTheoremClaim(text, match.keyword), slugs: crate.ClaimBinding };
 }
+// A seeded theorem's statement, steps and conclusion in `language` (Rust `proof_engine::library::build_proof`).
+function proofLibraryTheoremProof(id, language) {
+  const section = parseLinoTree(seedRawText(SEED_RAW, "proof-library.lino")).children.find((child) => child.name === "proof_library");
+  const theorem = section && section.children.find((child) => child.name === "theorem" && child.value === id);
+  const surface = (name) => { const node = theorem && theorem.children.find((child) => child.name === name); return node ? proofLibrarySurface(node, language) : ""; };
+  const steps = theorem ? theorem.children.filter((child) => child.name === "step").map((step) => ({ kind: step.value, text: proofLibrarySurface(step, language) })) : [];
+  return { method: theorem ? theorem.children.find((child) => child.name === "method").value : "contradiction", statement: surface("statement"), steps, conclusion: surface("conclusion") };
+}
+// The theorem's proof is the refutation, never a success for the negated claim: Rust `refuted_negation`, rendered as
+// `render_outcome_with_config` renders `ProofOutcome::Disproven` and compacted as `enforce_questions` compacts it, so
+// no "Proof (" heading presents the request as proven.
+function euclidNegationRefutationBody(language) {
+  const proof = proofLibraryTheoremProof("euclid_infinitude_of_primes", language);
+  const counterexample = proofLibraryText("negated-theorem-refuted", language, { statement: proof.statement });
+  const core = `${proofPresenterMethodLine("disproof_heading", language, proof.method)}\n\n${proofLibraryText("counterexample_label", language)}: ${counterexample}\n\n${proofPresenterSteps(proof.steps, language)}\n${proof.conclusion}`;
+  return numberConstraintCompactBody(`${proofPresenterInterpretation(false, proof.statement, language, proof.method)}\n\n${core}\n\n${proofPresenterDisprovenFollowUps(language)}`);
+}
+// The theorem's proof, rendered as `render_outcome_with_config` renders `ProofOutcome::Proven`; with no question to
+// authorize, `enforce_questions` leaves it uncompacted.
 function euclidPrimeProofBody(language) {
-  if (language === "ru") {
-    return [
-      "Как я понял запрос: трактуем запрос как формальное утверждение «Простых чисел бесконечно много.» и доказываем методом «от противного» в relative-meta-logic.",
-      "",
-      "Доказательство (метод: от противного).",
-      "",
-      "Утверждение: Простых чисел бесконечно много.",
-      "1. Работаем в элементарной теории чисел, формализуемой в арифметике Пеано (PA): простое число — это целое число больше 1, положительные делители которого только 1 и оно само. В доказательстве используется теорема PA: у каждого целого числа больше 1 есть простой делитель; это формальный контекст для тактики от противного в relative-meta-logic.",
-      "2. Предположим противное: простых чисел конечное число; обозначим их p₁, p₂, …, pₙ.",
-      "3. Рассмотрим число N = p₁·p₂·…·pₙ + 1. Это целое число, большее единицы.",
-      "4. По основной теореме арифметики у N есть простой делитель q. Если q = pᵢ для некоторого i, то pᵢ делит и p₁·p₂·…·pₙ, и N, а значит делит их разность, равную 1 — противоречие.",
-      "5. Значит, q — простое число, не входящее в список p₁, …, pₙ, что противоречит предположению о полноте списка.",
-      "",
-      "Предположение несостоятельно, следовательно простых чисел бесконечно много. ∎",
-    ].join("\n");
-  }
-  if (language === "hi") {
-    return [
-      "मैंने प्रश्न को कैसे समझा: प्रश्न को औपचारिक कथन \"अभाज्य संख्याएँ अनंत हैं।\" मानकर relative-meta-logic में \"विरोधाभास\" विधि से प्रमाणित कर रहे हैं।",
-      "",
-      "प्रमाण (विधि: विरोधाभास)।",
-      "",
-      "कथन: अभाज्य संख्याएँ अनंत हैं।",
-      "1. हम प्राथमिक संख्या-सिद्धांत में काम करते हैं, जिसे Peano arithmetic (PA) में औपचारिक किया जा सकता है: अभाज्य वह पूर्णांक है जो 1 से बड़ा है और जिसके धनात्मक भाजक केवल 1 और वही संख्या हैं। प्रमाण PA के इस प्रमेय का उपयोग करता है कि 1 से बड़े हर पूर्णांक का कोई अभाज्य भाजक होता है; यही relative-meta-logic की contradiction युक्ति का औपचारिक संदर्भ है।",
-      "2. विरोधाभास हेतु मान लीजिए कि अभाज्य संख्याएँ केवल सीमित संख्या में हैं: p₁, p₂, …, pₙ।",
-      "3. संख्या N = p₁·p₂·…·pₙ + 1 लीजिए। N एक से बड़ा पूर्णांक है।",
-      "4. अंकगणित की मूल प्रमेय से N का कोई अभाज्य भाजक q है। यदि किसी i के लिए q = pᵢ हो, तो pᵢ संख्या p₁·p₂·…·pₙ और N दोनों को विभाजित करेगा, अर्थात उनका अंतर 1 भी विभाजित करेगा — असंभव।",
-      "5. अतः q एक ऐसा अभाज्य है जो सूची p₁, …, pₙ में नहीं है, जो सूची के पूर्ण होने की परिकल्पना का खंडन करता है।",
-      "",
-      "अतः परिकल्पना असत्य है और अभाज्य संख्याएँ अनंत हैं। ∎",
-    ].join("\n");
-  }
-  if (language === "zh") {
-    return [
-      "对问题的理解: 把问题视为形式命题“素数有无穷多个。”, 在 relative-meta-logic 中用“反证法”方法证明。",
-      "",
-      "证明 (方法: 反证法)。",
-      "",
-      "命题: 素数有无穷多个。",
-      "1. 在可由 Peano arithmetic (PA) 形式化的初等数论中工作: 素数是大于 1 的整数, 其正因数只有 1 和自身。证明使用 PA 中的定理: 每个大于 1 的整数都有素因数; 这就是 relative-meta-logic 反证策略的形式上下文。",
-      "2. 假设素数仅有有限多个, 记为 p₁、p₂、…、pₙ。",
-      "3. 构造数 N = p₁·p₂·…·pₙ + 1。N 是大于 1 的整数。",
-      "4. 由算术基本定理, N 有一个素因数 q。若 q = pᵢ, 则 pᵢ 同时整除 p₁·p₂·…·pₙ 与 N, 因而整除二者之差 1, 矛盾。",
-      "5. 因此 q 是不在 p₁, …, pₙ 中的素数, 与假设矛盾。",
-      "",
-      "假设不成立, 故素数有无穷多个。∎",
-    ].join("\n");
-  }
-  return [
-    "How I interpreted the request: treating the request as the formal claim \"There are infinitely many prime numbers.\" and discharging it by contradiction inside relative-meta-logic.",
-    "",
-    "Proof (method: contradiction).",
-    "",
-    "Statement: There are infinitely many prime numbers.",
-    "1. Work in elementary number theory, formalizable in Peano arithmetic (PA): a prime is an integer greater than 1 whose only positive divisors are 1 and itself. The proof uses the PA theorem that every integer greater than 1 has a prime divisor; this is the formal context for the relative-meta-logic contradiction tactic.",
-    "2. Assume for contradiction that only finitely many primes exist; call them p₁, p₂, …, pₙ.",
-    "3. Form the number N = p₁·p₂·…·pₙ + 1. Then N is an integer greater than 1.",
-    "4. By the fundamental theorem of arithmetic, N has a prime divisor q. If q = pᵢ for some i, then pᵢ divides both p₁·p₂·…·pₙ and N, so pᵢ divides their difference, which is 1 — impossible.",
-    "5. Hence q is a prime not in the list p₁, …, pₙ, contradicting the assumption that the list was complete.",
-    "",
-    "The assumption fails, so there are infinitely many primes. ∎",
-  ].join("\n");
+  const proof = proofLibraryTheoremProof("euclid_infinitude_of_primes", language);
+  const core = `${proofPresenterMethodLine("proof_heading", language, proof.method)}\n\n${proofLibraryText("statement_label", language)}: ${proof.statement}\n${proofPresenterSteps(proof.steps, language)}\n${proof.conclusion}`;
+  return `${proofPresenterInterpretation(true, proof.statement, language, proof.method)}\n\n${core}`;
 }
 
 function genericProofPlanBody(prompt, language) {
@@ -203,18 +143,15 @@ function tryProofRequest(prompt, normalized, language) {
   if (lead && isGreetingPrompt(normalizePrompt(lead.greeting), lead.greeting)) normalized = normalizePrompt(lead.remainder);
   if (!hasProofRequestShape(normalized)) return null;
   const claim = extractProofClaim(normalized);
-  if (matchesEuclidPrimeClaim(claim)) {
+  const bound = proofClaimBinding(claim), bindingEvidence = bound ? [`proof_binding:${bound.binding}`] : [];
+  const refuted = Boolean(bound) && bound.binding === bound.slugs.Negated && bound.theorem.refutesNegation;
+  if (bound && bound.theorem.id === "euclid_infinitude_of_primes" && (refuted || bound.binding === bound.slugs.Affirmed)) {
     return {
       intent: "proof_request",
-      content: euclidPrimeProofBody(language),
+      content: refuted ? euclidNegationRefutationBody(language) : euclidPrimeProofBody(language),
       confidence: 0.85,
-      evidence: [
-        "policy:proof_request",
-        "pipeline:planned:relative-meta-logic",
-        "proof_outcome:proven",
-        "proof_method:contradiction",
-        `language:${language}`,
-      ],
+      evidence: ["policy:proof_request", "pipeline:planned:relative-meta-logic", ...bindingEvidence,
+        refuted ? "proof_outcome:disproven" : "proof_outcome:proven", "proof_method:contradiction", `language:${language}`],
     };
   }
   return {
@@ -224,6 +161,7 @@ function tryProofRequest(prompt, normalized, language) {
     evidence: [
       "policy:proof_request",
       "pipeline:planned:relative-meta-logic",
+      ...bindingEvidence,
       "proof_outcome:partial_plan",
       `language:${language}`,
     ].concat(claimEvidenceStatedClaim(claim) ? [] : ["proof_request:refusal:no stated claim"]), // #1175 R3
@@ -426,56 +364,41 @@ function renderWeekdayRelation(language, operation, source, result) {
 // exactly like mentionsWeekdayContext etc. Base date for rollover uses a UTC mirror of
 // Rust current_utc_date (create does not inherit the browser userContext tz used only by
 // the "today" path). Returns the same {intent, content, confidence, evidence} shape.
-function mentionsCalendarCreateRequest(normalized) {
-  const hasDayRef = wordsForRole(ROLE_CALENDAR_DAY_REFERENCE).some((w) =>
-    containsCalendarTerm(normalized, w),
-  );
-  // A clock time anchors the event just as well as a day word; the lexicon
-  // carries localized surfaces ("17:00", "5pm", "शाम 5 बजे", "下午5点") and the
-  // scanner covers any bare "HH:MM"/"в HH". Mirrors Rust has_clock.
-  const hasClock =
-    wordsForRole(ROLE_CALENDAR_TIME).some((w) =>
-      containsCalendarTerm(normalized, w),
-    ) || extractClockTime(normalized) !== null;
-  // A relative-date word ("завтра", "tomorrow", "послезавтра", "后天", …)
-  // anchors the event to a specific day just as well as a day number or a
-  // clock time (issue #435: "поставь мне созвон ... на завтра" carries no
-  // digit at all). Surfaces live in data/seed/meanings-calendar.lino.
-  const hasRelativeDate = wordsForRole(ROLE_CALENDAR_RELATIVE_DATE).some((w) =>
-    containsCalendarTerm(normalized, w),
-  );
-  // A genuine scheduling request anchors to a concrete date/time cue: a
-  // day-reference word, a clock time, or a relative-date word. Bare digits
-  // (e.g. the "1." / "2." of a numbered installation-guide list) are NOT a
-  // date signal — they were the source of false positives that hijacked
-  // installation-conversion prompts such as
-  // "…the-book-of-secret-knowledge…" (issue #404 vs #423).
-  // A named weekday ("on Friday") anchors the event to a day as well.
-  const hasWeekday = wordsForRole(ROLE_CALENDAR_WEEKDAY).some((w) => containsCalendarTerm(normalized, w));
-  const hasDateSignal = hasDayRef || hasClock || hasRelativeDate || hasWeekday;
-  if (!hasDateSignal) return false;
-  const hasTimezone = resolveTimezone(normalized) !== null;
-  const hasParticipant = extractParticipantTitle(normalized) !== null;
-  const hasAction =
-    wordsForRole(ROLE_CALENDAR_SCHEDULE_ACTION).some((w) =>
-      containsCalendarTerm(normalized, w),
-    ) ||
-    wordsForRole(ROLE_CALENDAR_EVENT).some((w) =>
-      containsCalendarTerm(normalized, w),
-    );
-  if (hasAction) return true;
-  // Elliptical Russian follow-ups such as "А можешь на 10 часов по Грузии с
-  // Марией?" carry no explicit schedule verb or event noun. The spoken clock +
-  // timezone + participant trio is narrow enough to route to calendar creation
-  // without claiming generic numbered questions.
-  if (hasClock && hasTimezone && hasParticipant) return true;
-  // Rust fallback heuristic (classic RU/EN patterns). Word-boundary matching
-  // keeps "the-book-of-secret-knowledge" from masquerading as a schedule verb.
-  const hasScheduleVerb = handlerRulesTableKeys("calendar_schedule_verb")
-    .some((verb) => containsCalendarTerm(normalized, verb));
-  // The date/time anchor is already guaranteed by hasDateSignal above, so a
-  // recognized schedule verb is enough to confirm a create request here.
-  return hasScheduleVerb;
+function calendarCreateRequestSpan(text) {
+  const cues = (handlerRulesTables()["calendar-request-cue"]?.rows || []);
+  const candidates = unitConversionClauses(text.toLowerCase()).filter(clause => {
+    const normalized = normalizePrompt(clause);
+    const anchor = wordsForRole(ROLE_CALENDAR_RELATIVE_DATE).some(w => containsCalendarTerm(normalized, w)) ||
+      wordsForRole(ROLE_CALENDAR_WEEKDAY).some(w => containsCalendarTerm(normalized, w)) ||
+      extractClockTime(normalized) !== null ||
+      wordsForRole(ROLE_CALENDAR_TIME).some(w => containsCalendarTerm(normalized, w)) ||
+      wordsForRole(ROLE_CALENDAR_DAY_REFERENCE).some(w => {
+        const at = normalized.indexOf(w);
+        return at >= 0 && /[0-9]+\s*$/u.test(normalized.slice(0, at));
+      });
+    if (!anchor) return false;
+    let request = clause;
+    const prefix = cues.find(([word, position]) => position === "prefix" && request.startsWith(word) && containsCalendarTerm(request, word));
+    if (prefix) request = request.slice(prefix[0].length).replace(/^[,，]\s*/u, "").trimStart();
+    const dateLed = /^[0-9]/u.test(request) || [ROLE_CALENDAR_RELATIVE_DATE, ROLE_CALENDAR_WEEKDAY]
+      .some(role => wordsForRole(role).some(word => request.startsWith(word) && containsCalendarTerm(request, word)));
+    const action = cues.some(([word, position]) => {
+      const tail = request.slice(word.length).trimStart();
+      const starts = request.startsWith(word) && containsCalendarTerm(request, word) && !/^[:：]/u.test(tail) &&
+        !cues.some(([fact, mode]) => mode === "fact" && tail.startsWith(fact) && containsCalendarTerm(tail, fact));
+      const article = cues.find(([lead, mode]) => mode === "object-prefix" && tail.startsWith(lead) && containsCalendarTerm(tail, lead));
+      const object = article ? tail.slice(article[0].length).trimStart() : tail;
+      const eventObject = position === "object" && starts && wordsForRole(ROLE_CALENDAR_EVENT).some(event => object.startsWith(event) && containsCalendarTerm(object, event));
+      return position === "object" ? starts && eventObject : position === "start" ? starts : position === "date" ? starts || (dateLed && containsCalendarTerm(request, word)) :
+        position === "end" && request.endsWith(word) && containsCalendarTerm(request, word);
+    });
+    return action || (prefix && extractClockTime(normalized) !== null && resolveTimezone(normalized) !== null && extractParticipantTitle(normalized) !== null);
+  });
+  return candidates.length === 1 ? candidates[0] : null;
+}
+
+function mentionsCalendarCreateRequest(text) {
+  return calendarCreateRequestSpan(text) !== null;
 }
 
 function extractDayNumber(normalized) {
@@ -483,12 +406,12 @@ function extractDayNumber(normalized) {
     if (!containsCalendarTerm(normalized, word)) continue;
     const pos = normalized.indexOf(word);
     if (pos !== -1) {
-      const prefix = normalized.slice(0, pos);
+      const prefix = normalized.slice(0, pos).trimEnd();
       let digits = "";
       for (let i = prefix.length - 1; i >= 0; i--) {
         const ch = prefix[i];
         if (/\d/.test(ch)) digits = ch + digits;
-        else if (digits) break;
+        else break;
       }
       const n = parseInt(digits, 10);
       if (n >= 1 && n <= 31) return n;
@@ -501,6 +424,8 @@ function extractDayNumber(normalized) {
     else if (num) break;
     else return null;
   }
+  const suffix = normalized.trimStart().slice(num.length).trimStart();
+  if (unitMentions(suffix).some(mention => mention.position === 0)) return null;
   const n = parseInt(num, 10);
   if (n >= 1 && n <= 31) return n;
   return null;
@@ -885,7 +810,9 @@ function currentUtcCalendarBase() {
 }
 
 function tryCalendarCreateEvent(prompt, normalized, userContext = {}) {
-  if (!mentionsCalendarCreateRequest(normalized)) return null;
+  const span = calendarCreateRequestSpan(prompt);
+  if (span === null) return null;
+  normalized = normalizePrompt(span);
   const base = currentUtcCalendarBase();
   const language = detectLanguage(prompt);
   // A relative-date word ("завтра", "tomorrow", "послезавтра", …) anchors the
@@ -928,6 +855,7 @@ function tryCalendarCreateEvent(prompt, normalized, userContext = {}) {
   const body = renderCreateConfirmation(language, event, ics, googleUrl);
   const evidence = [
     "calendar:clock:browser",
+    `calendar:intent_span:${span}`,
     `calendar:parsed_date:${isoDate(year, month, d)}`,
     `calendar:parsed_time:${pad2(hour)}:${pad2(minute)}`,
     `calendar:parsed_time_zone:${tz}`,
@@ -982,9 +910,19 @@ function tryCalendarReasoning(prompt, normalized, userContext = {}) {
     };
   }
   // Issue #1176: month offsets are read before the weekday gate (calendar.rs).
+  const duration = tryCalendarDuration(prompt);
+  if (duration) return duration;
   const monthOffset = tryCalendarMonthOffset(prompt, normalized);
   if (monthOffset) return monthOffset;
   // R1017: the weekday of a stated date (calendar/date_weekday.rs).
+  const dateOffset = tryCalendarDateOffset(prompt, normalized);
+  if (dateOffset !== null) {
+    dateOffset.solverEvents = dateOffset.evidence.filter(link => link.startsWith("calendar:")).map(link => {
+      const at = link.indexOf(":", 9);
+      return {kind:link.slice(0, at), payload:link.slice(at + 1)};
+    });
+    return dateOffset;
+  }
   const dateWeekday = tryCalendarDateWeekday(prompt, normalized);
   if (dateWeekday) return dateWeekday;
   if (!mentionsWeekdayContext(normalized)) return null;

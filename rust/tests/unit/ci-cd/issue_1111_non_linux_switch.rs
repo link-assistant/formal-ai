@@ -105,7 +105,7 @@ fn the_linux_leg_is_not_guarded_by_the_switch() {
     let linux_rows: Vec<_> = workflow
         .lines()
         .map(str::trim)
-        .filter(|line| line.starts_with("- { os: ubuntu-latest, test-suite: full,"))
+        .filter(|line| line.starts_with("- { os: ubuntu-24.04, test-suite: full,"))
         .collect();
     let shards = linux_rows
         .first()
@@ -126,9 +126,9 @@ fn the_linux_leg_is_not_guarded_by_the_switch() {
     );
     for shard in 1..=shards {
         let identity = if shard == 1 {
-            format!("- {{ os: ubuntu-latest, test-suite: full, shards: {shards} }}")
+            format!("- {{ os: ubuntu-24.04, test-suite: full, shards: {shards} }}")
         } else {
-            format!("- {{ os: ubuntu-latest, test-suite: full, shard: {shard}, shards: {shards} }}")
+            format!("- {{ os: ubuntu-24.04, test-suite: full, shard: {shard}, shards: {shards} }}")
         };
         assert_eq!(
             linux_rows.iter().filter(|line| **line == identity).count(),

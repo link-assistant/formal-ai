@@ -5,11 +5,12 @@ mod audit;
 mod ownership;
 pub(super) use ownership::{
     bound_read_paths, owned_read_paths, pending_read_condition, read_policy_blocks_plan,
-    read_request_envelope,
+    read_request_envelope, user_read_policy_blocks_plan,
 };
 mod exact;
 mod records;
 mod source;
+mod source_claims;
 use records::{
     ToolResultRecord, grep_result_for_path, read_result_for_path, run_record_for_command,
     tool_result_records,

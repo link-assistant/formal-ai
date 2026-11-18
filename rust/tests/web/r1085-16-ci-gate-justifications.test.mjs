@@ -11,6 +11,7 @@ import assert from "node:assert/strict";
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
+import {wallClockBudget} from '../../../scripts/lib/ci-wall-clock.mjs';
 import { REPO_ROOT } from "./support/browser-runtime.mjs";
 
 const GATES_DIR = join(REPO_ROOT, "data/meta/ci-gates");
@@ -85,20 +86,17 @@ describe("R1085-16 CI gate justifications", () => {
 describe("R1085-16 wall-clock ceiling", () => {
   const record = readFileSync(WALL_CLOCK_FILE, "utf8");
 
-  test("data/meta/ci-wall-clock.lino records measured <= ceiling", () => {
-    const measured = Number.parseInt(extractField(record, "measured_minutes"), 10);
-    const ceiling = Number.parseInt(extractField(record, "ceiling_minutes"), 10);
-    assert.ok(Number.isInteger(measured) && Number.isInteger(ceiling), record);
-    assert.ok(measured <= ceiling, `measured_minutes (${measured}) exceeds ceiling_minutes (${ceiling})`);
+  test("the computed bound fits the ceiling without a synchronized counter", () => {
+    const {minutes,ceiling}=wallClockBudget(record);
+    assert.ok(minutes<=ceiling);
+    assert.doesNotMatch(record,/^  measured_minutes /mu);
   });
 
-  test("the record names the PR-triggered workflow its critical path comes from", () => {
-    const workflow = extractField(record, "workflow");
-    assert.ok(workflow, "ci-wall-clock.lino: missing workflow field");
-    const path = join(REPO_ROOT, workflow);
-    assert.ok(existsSync(path), `${workflow} does not exist`);
-    assert.ok(workflowHasPrTrigger(readFileSync(path, "utf8")), `${workflow} has no pull_request trigger`);
-    assert.ok(extractField(record, "chain"), "ci-wall-clock.lino: missing chain field");
+  test("the derived workflow exists and has a pull-request trigger", () => {
+    const {workflow}=wallClockBudget(record);
+    const path=join(REPO_ROOT,workflow);
+    assert.ok(existsSync(path));
+    assert.ok(workflowHasPrTrigger(readFileSync(path,"utf8")));
   });
 
   test("the measuring script is a registered rust-stage gate", () => {

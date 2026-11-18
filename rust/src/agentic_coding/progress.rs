@@ -9,7 +9,12 @@
 use super::capability_router::classify_tool;
 use super::planner::Capability;
 use crate::protocol::ChatMessage;
+mod creation;
+mod creation_path;
 mod source_fetch_observation;
+mod source_freshness;
+pub use source_freshness::owned_creation_readback_command;
+pub(super) use source_freshness::read_only_capability;
 mod work_item_read_receipt;
 use work_item_read_receipt::{without_exit_sentinel, work_item_read_failure_reason};
 
@@ -20,7 +25,7 @@ pub(super) struct ToolAttempt {
     source_read: Option<super::tool_result::SourceReadObservation>,
     pub(super) succeeded: bool,
     pub(super) detail: String,
-    /// Original run-tool bytes remain separate from normalized failure detail.
+    /// Original mutation and Run receipt bytes remain separate from normalized failure detail.
     pub(super) raw_receipt: Option<String>,
     pub(super) arguments: Option<String>,
     /// The advertised tool name the result came back under, when known.
@@ -53,6 +58,9 @@ pub struct Progress {
     completed: Vec<Capability>,
     attempts: Vec<ToolAttempt>,
     qualified_attempts: Vec<super::qualified_tool_observation::QualifiedToolAttempt>,
+    creation_request: Option<String>,
+    workspace_root: Option<String>,
+    creation_declarations: std::sync::OnceLock<Vec<creation::CreationDeclaration>>,
     pub(super) fetched_text: Option<String>,
     pub(super) fetched_pages: Vec<(String, String)>,
     source_observations: Vec<serde_json::Value>,
@@ -160,7 +168,11 @@ impl Progress {
                 source_read,
                 succeeded: failure.is_none(),
                 detail: failure.clone().unwrap_or_else(|| raw.clone()),
-                raw_receipt: (capability == Capability::Run).then(|| raw.clone()),
+                raw_receipt: matches!(
+                    capability,
+                    Capability::Run | Capability::Edit | Capability::Write
+                )
+                .then(|| raw.clone()),
                 arguments,
                 tool,
             });
@@ -222,7 +234,11 @@ impl Progress {
                     {
                         failed_work_item_reads.push((url.clone(), reason));
                     } else if failure.is_none()
-                        && let Some(text) = super::tool_result::normalized_payload(&raw)
+                        // The receipt check above already rejected failed
+                        // reads; the body itself may name errors (issue 1488
+                        // quotes "exit 5" and "HTTP 403"), so it is taken as
+                        // observed, like the JavaScript twin (issue #1571).
+                        && let Some(text) = super::tool_result::observed_payload(&raw)
                             .filter(|text| !text.trim().is_empty())
                     {
                         fetched_pages.push((url, without_exit_sentinel(&text, command)));
@@ -248,6 +264,11 @@ impl Progress {
             completed,
             attempts,
             qualified_attempts: super::qualified_tool_observation::scan(messages, current_turn),
+            creation_request: creation::standing_request(messages),
+            workspace_root: std::env::current_dir()
+                .ok()
+                .and_then(|root| root.into_os_string().into_string().ok()),
+            creation_declarations: std::sync::OnceLock::new(),
             fetched_text,
             fetched_pages,
             attempted_fetches,
@@ -687,7 +708,7 @@ impl Progress {
         Some(&self.attempts[index + 1..])
     }
 
-    /// Content supplied to the latest successful write of `path`.
+    /// Content supplied to the latest successful write.
     pub(super) fn successful_write_content_for(&self, path: &str) -> Option<String> {
         self.attempts.iter().rev().find_map(|attempt| {
             (attempt.capability == Capability::Write && attempt.succeeded)
@@ -776,7 +797,7 @@ impl Progress {
 }
 
 /// Conflicting naming fields cannot bind an observation.
-fn source_read_path(arguments: &str) -> Option<String> {
+pub(super) fn source_read_path(arguments: &str) -> Option<String> {
     let value: serde_json::Value = serde_json::from_str(arguments).ok()?;
     let object = value.as_object()?;
     let fields = ["path", "filePath", "file_path"]

@@ -17,10 +17,15 @@ pub(super) fn extract_url_navigate_url(prompt: &str, normalized: &str) -> Option
 }
 
 pub(super) fn first_url_candidate(prompt: &str) -> Option<(String, String)> {
-    for token in prompt.split_whitespace() {
-        let trimmed = trim_url_token(token);
-        if let Some(url) = normalize_url_candidate(trimmed) {
-            return Some((trimmed.to_owned(), url));
+    for line in prompt.lines() {
+        if super::super::document_originality::is_section_line(line.trim()) {
+            break;
+        }
+        for token in line.split_whitespace() {
+            let trimmed = trim_url_token(token);
+            if let Some(url) = normalize_url_candidate(trimmed) {
+                return Some((trimmed.to_owned(), url));
+            }
         }
     }
     None

@@ -490,6 +490,206 @@ Each row says what holds today and what is still missing.
 | R1188-U29 | More of the work goes through Formal AI from its JavaScript source, and the JavaScript requirements pass first; the other roots follow. (Owner, 2026-10-08, message 145.) Narrower rows cover parts of this: R1188-U13 (delegation), R1188-U16 (the agentic planner), R1188-U24 (local runs from JavaScript). | Partial: `docs/progressive-plan.md` counts which root's test pins each requirement: the generated-plan baseline measured 2026-10-09 before round 21 has 432 of 1369 pinned by a JavaScript test, 921 by a Rust test only and 16 by none; subsequent new JavaScript pins update the generated plan. A row that names tests in both roots cites the JavaScript one (`testPath` and `test_path` of `scripts/generate-requirement-status.{mjs,rs}`, test `rust/tests/web/requirement-status-test-path.test.mjs`), which moved 194 requirements from the Rust-only count. The tally `docs/case-studies/pull-request-1188/formal-ai-tally.md` now sets Formal AI's edits beside the edits made by hand, from the ledger's "Edits by hand" table (`scripts/tally-formal-ai-dogfood.mjs`, `handRows`, `renderHandEdits`). `data/meta/progressive-plan-ratchet.lino` holds the Rust-only count to a ceiling of 921 that only falls (gate `check-progressive-plan`). `scripts/check-specification-in-javascript.mjs` (gate `check-specification-in-javascript`, test `rust/tests/web/specification-in-javascript.test.mjs`) conservatively reads supported native prompts, typed constructors, verified pure helper bodies and imported history calls through `scripts/lib/rust-specification-cases.mjs` and executes the whole supported case: 214 of1182 complete cases are carried and all214 execute successfully in the ordinary installed T3409 replay, with968 explicitly unsupported; T2670 previously carried202 of1181. General pure-source compilation preserves all original ordered assertions and rejects unsupported constructors, enum derives and ownership semantics. Source fixture identities and all original ordered assertions are retained; unknown engine profiles and unsupported helper/configuration bodies are not replaced by default solves. Three general mechanisms closed 20: every worker answer carries the native evidence links of the log it records (`js/agentic/crate/event_log.mjs`, the twin of `build_evidence_links`, run in the worker as a generated crate factory); the policy gates read seed roles and responses in five languages in both roots (`data/seed/meanings-policy.lino`, `rust/src/solver_helpers/mod.rs`, `js/worker/formal_ai_worker_policy_gates.js`); and project lookup runs in the two phases `data/seed/method-execution.lino` declares, with the identity rule after the handler table (test `rust/tests/web/specification-parity-worker.test.mjs`). No carried failures remain in `data/meta/specification-javascript-gaps.lino` as the worker's parity debt, and the passing count never falls. Missing: a JavaScript test for each requirement pinned by Rust only and the968 unsupported native cases, including remaining multi-turn/fixture forms, unknown engine profiles and unsupported source-bound helper/configuration bodies. |
 | R1188-U30 | Translation between JavaScript, TypeScript, Rust and the meta language is fully automated, so code is translated by hand less and less. Where relative meta logic (RML) and the meta language (ML) are not done yet, temporary workarounds in this repository do the translation, and they are retired as RML and ML, developed in parallel, improve. (Owner, 2026-10-08, message 145.) | Partial. JavaScript → TypeScript is automated (`scripts/translate-es.mjs`). JavaScript → Rust is automated through meta-language self-translation at the pinned main commit `eb0574d5`, where PR #216 binds sibling items and relative imports. Where it cannot translate yet, a recorded temporary workaround does it, each with the upstream issue that retires it (`data/meta/translation-workarounds.lino`, `scripts/lib/translation-workarounds.mjs`, `scripts/lib/translation-lowering.mjs`). The workarounds are import pruning ([meta-language#220](https://github.com/link-foundation/meta-language/issues/220)), one crate per root for the compile check ([#219](https://github.com/link-foundation/meta-language/issues/219)), string methods through 22 recorded UTF-16 stubs ([#209](https://github.com/link-foundation/meta-language/issues/209)), `.push` ([#208](https://github.com/link-foundation/meta-language/issues/208)) and callbacks lowered to loops ([#207](https://github.com/link-foundation/meta-language/issues/207)). Measured 2026-10-09 in round21: of2571 top-level items across139 modules, meta-language translates291 and the recorded workarounds33 more;2247 remain carried.97 modules have translated items and42 are refused. Current reviewed production integration:293 translated,33 workaround items and2285 carried across141 modules;98 modules have translations and43 are refused. The checked ledger separates upstream and workaround counts. The current full blocker scan counts678 carried items with one construct and237 with two; its generated unlock rows give the current ordered causes. Upstream PR #218 wraps long Rust output and all of its actual JavaScript/Rust/workload stages passed, but the final aggregate310/323 remains red from13 inherited broad acceptance/evidence gaps. Its merge and the main-pin update remain pending; the verified current main pin stays eb0574d5. A module's translated count is a ratchet: `--write` refuses a fall. The CI js-rust job re-translates, compiles each root as one crate and runs the 15 calls of `calls.lino`, which cover every workaround (`rust/tests/web/translation-workarounds.test.mjs`). A sibling-context retry was measured on 2026-10-08 and dropped: it recovered 1 of 2,229 items. Missing: Rust → JavaScript is only measured. meta-language translates 4,377 of the 51,040 top-level items of `rust/src` (774 files, 2026-10-09), but nothing is generated from it, and the214 whole specification cases executed in JavaScript (ordinary T3409:214passing of1182total,968unsupported) are the current source-backed Rust → JavaScript workaround. The temporary source-qualified compiler expands registered substitutions, constants and builtin Copy/Clone/PartialEq-proved unit enums and pure predicates with deterministic generation checks and conservative refusal. Actual pinned upstream execution T4985 rejects these enum items; earlier portable adapter diagnostics are not upstream translation proof. Complete meta-language/native profile equivalence and upstream retirement remain unverified. TypeScript → Rust is not automated on its own, because `ts/` is generated from `js/`. `null`, untyped object records and closures as values remain with upstream ([#204](https://github.com/link-foundation/meta-language/issues/204), [#206](https://github.com/link-foundation/meta-language/issues/206), [#207](https://github.com/link-foundation/meta-language/issues/207)). 17 items got `@param` types so that the lowering could translate them, and more items need them. |
 
+## Issue #1548: vision blockers and plan
+
+Authority: [#1548](https://github.com/link-assistant/formal-ai/issues/1548), kept verbatim in the
+[architect note of 2026-11-10](../../architect-notes/2026-11-10-what-we-do-most-wrong.md).
+The issue sets its scope: "the result here should be documentation changes and issues created/organized".
+A row is therefore `Implemented` when its documentation and issues exist, and `Partial` when the row names
+a capability of the source: the audit, the documents and the owning issue are delivered, the capability is
+not. Evidence, options and the plan per row are in
+[the case study](../../case-studies/issue-1548/README.md); the order of work is in the parent issue
+[#1561](https://github.com/link-assistant/formal-ai/issues/1561).
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R1548-1 | One parent issue holds every open issue that blocks coding by the recursive meta algorithm and general question answering; every dependency between issues is a native GitHub blocker. | Implemented: parent [#1561](https://github.com/link-assistant/formal-ai/issues/1561) with 31 sub-issues and 17 native blockers, no cycle in the snapshot `docs/case-studies/issue-1548/raw-data/github/issue-graph-after.json`; pinned by rust/tests/web/issue-1548-vision-blockers.test.mjs. |
+| R1548-2 | Every step is supported in both directions with the meta language: formalization and deformalization (naturalization). | Partial: stated in VISION and measured (sentence survival 0.105 over 320 sentences; 1 of 156 modules translated between the runtimes). The capability is owned by [#1555](https://github.com/link-assistant/formal-ai/issues/1555), [#1487](https://github.com/link-assistant/formal-ai/issues/1487), [#1167](https://github.com/link-assistant/formal-ai/issues/1167) and [#1500](https://github.com/link-assistant/formal-ai/issues/1500). |
+| R1548-3 | The meta algorithm is truly recursive, as in the vision picture of README. | Partial: checked and written into README, ROADMAP and `docs/meta-algorithm.md`. The steps of the picture are recorded as a trace while a handler produces the answer; the attempt, split and recompose engine has one caller, the delegation to an external CLI. Owned by [#1550](https://github.com/link-assistant/formal-ai/issues/1550). |
+| R1548-4 | Information is discovered while reasoning, every discovery is cached, sources are trusted, and just enough data is collected to continue. | Partial: the trusted-source registry and cache-on-fetch exist; `cached_or_research` is called from a test only. Read-only live fetching is now on by default under #1582; discovery orchestration remains partial. Owned by [#1165](https://github.com/link-assistant/formal-ai/issues/1165) and [#1163](https://github.com/link-assistant/formal-ai/issues/1163). |
+| R1548-5 | The task is split into specific requirements and each requirement is formalized into tests in the required programming language. | Partial: this issue delivers the plan only. Obligations exist for one task shape; generated tests are written in one language and are never run. Owned by [#1551](https://github.com/link-assistant/formal-ai/issues/1551) and [#1166](https://github.com/link-assistant/formal-ai/issues/1166). |
+| R1548-6 | Algorithms are reproduced from the internet or generated by the same recursive meta algorithm, reusing parts of algorithms. | Partial: this issue delivers the plan only. Program requests are answered from 138 compiled templates and 151 stored rows. Owned by [#1550](https://github.com/link-assistant/formal-ai/issues/1550), [#1164](https://github.com/link-assistant/formal-ai/issues/1164) and [#1554](https://github.com/link-assistant/formal-ai/issues/1554). |
+| R1548-7 | GitHub source code is a reference for ideas, not copies; public-domain repositories may be copied; with the user's permission other source is used as a library or copied as a file, respecting its licence. | Partial: this issue delivers the rule in VISION and the plan only. The source reads no repository licence and maps an unknown licence to verbatim reuse. Owned by [#1553](https://github.com/link-assistant/formal-ai/issues/1553). |
+| R1548-8 | Each requirement is an axiom or a high-probability statement of a formal system; next statements are derived and missing ones inferred with relative-meta-logic. | Partial: this issue delivers the rule in VISION and the plan only. relative-meta-logic is an architectural reference, not a dependency; the in-repository module is applied to statements, facts and source trust. Owned by [#1552](https://github.com/link-assistant/formal-ai/issues/1552) and [#1179](https://github.com/link-assistant/formal-ai/issues/1179). |
+| R1548-9 | Knowledge from the internet and experience of similar tasks is used to infer missing details. | Partial: this issue delivers the plan only; see R1548-4. Owned by [#1165](https://github.com/link-assistant/formal-ai/issues/1165), [#1552](https://github.com/link-assistant/formal-ai/issues/1552) and [#1491](https://github.com/link-assistant/formal-ai/issues/1491). |
+| R1548-10 | Several options are studied, their fit is calculated with relative-meta-logic, the best is selected, a plan is made and every action of the plan is executed in the target repository or folder. | Partial: this issue delivers the plan only. Dispatch returns the first match, and a plan for a repository work item ends `planned_not_executed`. Owned by [#1552](https://github.com/link-assistant/formal-ai/issues/1552), [#491](https://github.com/link-assistant/formal-ai/issues/491) and [#1483](https://github.com/link-assistant/formal-ai/issues/1483). |
+| R1548-11 | Anything that contradicts the vision is updated; where several options are valid, configuration switches between them. | Partial: the contradictions found between documents and source are corrected in README, ROADMAP, VISION, `docs/meta-algorithm.md` and the doctrine rows R1001, R1002 and R1010, and every solver switch is documented in `docs/configuration/solver.md`; pinned by rust/tests/web/issue-1548-vision-blockers.test.mjs. Four switches change the trace and not the answer; owned by [#1556](https://github.com/link-assistant/formal-ai/issues/1556). |
+| R1548-12 | What is not detailed enough is written into vision, documents and guidelines by the pull request of this issue. | Implemented: VISION section "Requirements are axioms, options are scored, the plan is executed", seven GOALS items, `docs/guidelines/issue-planning.md` linked from CONTRIBUTING, and the architect note; pinned by rust/tests/web/issue-1548-vision-blockers.test.mjs. |
+| R1548-13 | The latest results of the three Hello World test repositories are checked after the sessions finish. | Implemented: all three sessions were followed to their end on 2026-11-10 (Scala failed, Rust failed, Kotlin ready with defects) and recorded in section 4 of the case study; pinned by rust/tests/web/issue-1548-vision-blockers.test.mjs. Delivery itself is owned by [#1162](https://github.com/link-assistant/formal-ai/issues/1162). |
+| R1548-14 | Every failed attempt of Formal AI on a real GitHub issue, in this repository and in link-assistant/hive-mind, is collected, and Formal AI can advance each further. | Partial: the attempts of both repositories are collected in section 5 of the case study with the issue that removes the cause of each class; pinned by rust/tests/web/issue-1548-vision-blockers.test.mjs. No attempt is advanced in the source by this issue; owned by [#1483](https://github.com/link-assistant/formal-ai/issues/1483), [#1557](https://github.com/link-assistant/formal-ai/issues/1557), [#1558](https://github.com/link-assistant/formal-ai/issues/1558), [#1560](https://github.com/link-assistant/formal-ai/issues/1560), [#1562](https://github.com/link-assistant/formal-ai/issues/1562), [#1189](https://github.com/link-assistant/formal-ai/issues/1189), [#1158](https://github.com/link-assistant/formal-ai/issues/1158) and [#1170](https://github.com/link-assistant/formal-ai/issues/1170). |
+| R1548-15 | Defects of Hive Mind that block Formal AI on the orchestrator side are reported there, and Formal AI is treated as any other provider of an OpenAI-compatible API. | Implemented: five issues and two comments in link-assistant/hive-mind, each in provider-neutral words, listed in section 6 of the case study; pinned by rust/tests/web/issue-1548-vision-blockers.test.mjs. |
+| R1548-16 | Every hardcoded solution is replaced by a solution of the meta algorithm, for every task already supported. | Partial: this issue delivers the inventory and the order of replacement only. The migration ledger records 98 handlers (59 migrated, 26 justified-native, 13 not migrated) and 151 stored programs. Owned by [#1554](https://github.com/link-assistant/formal-ai/issues/1554). |
+| R1548-17 | Every open issue is clearly marked as a bug, a feature or a task. | Implemented: 84 issues received an issue type and the matching label; the snapshot of 109 open issues has none without a type; pinned by rust/tests/web/issue-1548-vision-blockers.test.mjs. |
+| R1548-18 | The data of the issue is collected in `docs/case-studies/issue-1548` with a deep analysis, online research, the list of every requirement, and options and plans per requirement, including existing components and libraries. | Implemented: `README.md`, `requirements.md`, `solution-plan.md` and `raw-data/` of the case study; pinned by rust/tests/web/issue-1548-vision-blockers.test.mjs. |
+| R1548-19 | Everything is planned and executed in one pull request until every requirement is addressed. | Implemented: in the scope the issue sets, documentation and issues, rows R1548-1 to R1548-18 are delivered by pull request #1549; pinned by rust/tests/web/issue-1548-vision-blockers.test.mjs. The capabilities of the rows marked Partial are carried by the parent issue [#1561](https://github.com/link-assistant/formal-ai/issues/1561). |
+
+## Standing Doctrine: Fast pull-request checks and production verification
+
+The architect's 2026-10-28 instruction supersedes earlier requirements that
+made every integration, platform build or live client test mandatory on each PR.
+
+The 2026-10-29 documentation-only exception is defined in
+[issue #1455 requirements](../issue-1455-documentation-and-evidence.md): automatic
+docs-only pushes/PRs run lightweight documentation checks and produce no release
+by default. Mixed code changes, schedules and explicit manual runs retain their
+existing verification obligations.
+
+- **CI-FAST-1:** Use one bulk-drafted PR for related fixes, tests, documentation,
+  vision and guidelines. Commit the complete batch before pushing; collect and
+  fix all available CI failures before the next push. Do not wait idly on CI.
+- **CI-FAST-2:** Default PR checks run on Linux and prioritize coding, Hello World,
+  source edits, question answering, issue reporting, retry bounds and offline
+  failure regressions. Keep lint, workflow/security checks, requirement consistency
+  and JavaScript/TypeScript checks. The fast lint job uses maintained JavaScript
+  checks; the original native/WASM lint gates stay on main or explicit main-only qualification.
+  Production native builds, packaging, Docker,
+  broad benchmark ladders and heavy integration/E2E jobs are retained but deferred
+  to main. FORMAL_AI_FULL_PR_CI cannot reenable PR builds or branch-dispatched
+  builds. Existing narrower platform/coverage opt-ins apply only on main.
+- **CI-FAST-3:** Main retains native tests, integrations, final production builds,
+  signed/self-signed package verification where advertised, Docker publication and
+  public-download verification. A green PR proves the selected fast profile only;
+  delivery is complete only after the resulting main CI and configured release
+  producers/consumers are green. Diagnose main failures and fix them promptly in
+  a follow-up PR. Never label skipped suites as executed, passing or equivalent.
+- **CI-FAST-4:** Real GitHub E2E effects are disabled by default. Enable a deliberate
+  run with FORMAL_AI_REAL_GITHUB_E2E=true or the real-github-e2e dispatch input.
+  Preserve immutable per-PR/per-release ownership, attempt bounds, first/repeat
+  oracles, independent verification, cleanup and complete redacted evidence.
+  Never rerun an old effect owner to make it green. Failure does not authorize
+  blind mutation retries. Offline emulation can run frequently with no GitHub
+  effects. Its coverage of live authentication, network and runtimes is limited.
+- **CI-FAST-5:** Turn complete public CI logs and actual bot-created test records
+  into small provenance-labelled unit fixtures. Cover the observed failure and
+  held-out negative cases, not just a successful transcript. Retain every original
+  integration/E2E test for opt-in execution. Do not claim that captured data
+  establishes an unobserved live solve or full unit/E2E equivalence.
+- **CI-FAST-6:** Close generated test issues after a verified test outcome through
+  the trusted finalizer. Historical stale issues may be retired as not_planned
+  with an explicit unverified comment only after exact bot/body/label/custody and
+  inactivity checks. Never mark an unverified test completed or grant feature
+  delivery credit. Revalidate immediately before mutation, stop on uncertain
+  writes and preserve receipts; never touch human/modified/active issues.
+- **CI-FAST-7:** Scheduled observations declared by authenticated workflow source
+  do not invalidate an otherwise checked release. Required commit checks and
+  publication obligations remain mandatory; unknown workflows, pending/failed
+  push/manual checks, foreign sources and missing required checks still refuse.
+- **CI-FAST-8:** On the workstation, run only a single necessary JavaScript test
+  at a time. Never run Rust builds, tests, clippy, native products or local Docker
+  builds. Keep finite time/transfer budgets, avoid broad filesystem scans and
+  preserve disk space. Production verification belongs to CI.
+
+Evidence for the initial regressions: generated-e2e fixtures capture 43 exact
+public bot test issues and the v0.355.14 Agent claim failure caused by a late
+scheduled task-ladder run. Retiring those issues is housekeeping with unverified
+outcomes; it is not evidence that their coding tasks passed. Supplied literal
+Formal AI edit recipes receive zero autonomous implementation credit.
+
+- **CI-FAST-9:** Archive discovery may consider a unique platform-neutral ZIP
+  from an authenticated canonical publisher release catalog. It remains only a
+  candidate: reject ambiguity, incompatible explicit platform/architecture,
+  missing digest, ungranted effects and failed actual probes. A generic archive
+  mentioned nowhere in unauthenticated context remains refused. Select runner
+  command grammar from observed help, never a hardcoded release version. Retain
+  full bounded selection/probe diagnostics; no compiler execution occurs locally.
+
+- **CI-FAST-10:** Canonical package data and every demanded rust/embedded byte
+  mirror must agree before merge. Regenerate through the existing JavaScript
+  mirror-package-data generator and commit its outputs; never manually edit
+  generated mirrors or defer this cheap parity check to production compilation.
+- **CI-FAST-11:** Visual replay/font/GIF export integration tests are retained
+  but default-off with FORMAL_AI_FULL_TUI_REPLAY=run or full agent replay opt-in.
+  Their explicit finite test deadlines include export overhead. Keep ordinary
+  readiness, literal typing and PTY checks enabled; use real captured startup
+  frames in cheap unit tests. A skipped export test grants no visual acceptance.
+- **CI-FAST-12:** Keep the implementation, captured-log regressions, requirement
+  register, vision, contributor guidelines and handoff in the same working PR.
+  Before merge, verify all applicable checks against its exact current head.
+  After merge, follow that source through main, version preparation, configured
+  release consumers and public artifact verification. Record the source commit,
+  actual version, workflow outcomes and immutable artifact identities. A previous
+  release, a skipped job or an unrelated green run cannot satisfy this delivery.
+- **CI-FAST-13:** Reuse the digest-verified same-run complete source-history
+  artifact for native, desktop and extension consumers. Keep their independently
+  pinned workflow protocol separate. Advertise detached selected history during
+  release-tag fetch negotiation so existing objects are not downloaded again.
+  Preserve complete unfiltered source bytes, published tag/default-branch
+  ancestry checks, original finite budgets and failure policy. Capture actual
+  failed transfers as small unit fixtures, including detached-head and advancing
+  default-branch controls. Stage packaging console evidence only after packaging
+  starts; missing evidence after an attempted package operation remains a failure.
+  An unacquired hosted runner has no execution credit: retain its structured
+  annotations and explicit unavailable-console outcome instead of inventing logs.
+- **CI-FAST-14:** Desktop runtime packages contain the prepared renderer, engine,
+  browser and actual production dependencies. Exclude the private repository
+  package and its source/build outputs from dependency collection. Audit ASAR
+  metadata before installer creation, including unpacked entries, so recursive
+  source inclusion fails early. Replay captured packaging paths in fast unit
+  tests and check exclusions with the installed packager in hosted packaging.
+  Never mask oversized-payload failures with generic retries or higher limits.
+  Refresh reviewed complete source witnesses after referenced configuration
+  changes; fast source-binding checks must detect stale embedded bytes before
+  main, while preserving full reader and complete-object parity checks.
+
+## Default-branch build amendment (2026-10-31)
+
+- **CI-FAST-13:** No PR or feature-branch check dispatch may compile Cargo,
+  Docker, WASM or application products, or deploy Pages, even with the old full-PR
+  override. Production consumers must independently select authorized main source.
+- **CI-FAST-14:** Remove redundant compilation from package verification after
+  the actual compiler succeeds. Retain the cold independent Docker build as a
+  main-only opt-in; production image publication depends on its actual native
+  producer. Keep immutable source, byte, producer and attempt checks.
+- **CI-FAST-15:** PR change/version admission uses JavaScript without installing
+  Rust tooling. Combine selected JavaScript unit suites in one runner. Preserve
+  measured main sharding and optimization where needed; run no Rust locally.
+- **CI-FAST-16:** Browser E2E, box-language integration and complete Coding Ladder measurement are retained but default-off; restore explicitly on main.
+  Keep full ladder data, misses, ratchet and mandatory fast consistency; full-ladder=true or FORMAL_AI_FULL_CODING_LADDER=run selects all original shards.
+  Preserve critical coding/QA/reporting and log-derived regressions; deferred suites earn no measurement credit or E2E equivalence.
+
+See [the operational policy](../../ci-cd/default-branch-builds.md), including the
+existing non-atomic cross-service publication boundary. A green PR is fast-source
+qualification; complete production delivery still requires all release consumers.
+
+- **CI-FAST-17:** Source-fixture changes must refresh complete governed objects,
+  including cached source text, through the reviewed reader. Preserve case IDs,
+  assertions and unchanged native-source hashes. Fast PR checks must compare the
+  complete objects as well as fixture digests; matching hashes alone do not
+  establish consistency of the program representation.
+
+- **CI-FAST-18:** Derive the conservative PR timeout maximum and selected workflow
+  from current definitions, retaining the existing ceiling and fail-closed checks.
+  Do not maintain a synchronized measurement counter. Resolve npm aliases to
+  their actual publisher for currency checks and preserve alias syntax during
+  updates; local packages have no registry currency, while their declared
+  registry dependencies remain checked. Capture observed failures in shared
+  fast JavaScript and native gate fixtures.
+
+- **CI-FAST-19:** Bound source acquisition separately from execution and acquire
+  the complete input closure of each job. Small source-policy jobs should use
+  explicit sparse roots, including dynamically enumerated directories, imported
+  helpers, package boundaries and locked dependencies. Preserve the full input
+  census and original assertions; guard dependency additions with focused tests.
+  A shallow, blob-filtered checkout can still stall while materializing an
+  unnecessarily broad worktree. Diagnose the actual failed phase before retrying;
+  after one bounded acquisition retry reproduces it, prepare a source fix rather
+  than repeat the same action. Missing inputs or timed-out acquisition grant no
+  execution credit. Hosted timings must qualify the resulting optimization.
+
+  Jobs whose identity contract witnesses every tracked blob retain that complete
+  worktree. Never transfer a narrow policy or JavaScript checkout exclusion to
+  those jobs. Allocate finite main-only producer time from observed acquisition,
+  compilation, verification and upload phases within the existing CI ceiling;
+  record changes and preserve PR iteration budgets and source/receipt guards.
+
+- **CI-FAST-20:** Retain full live-link integration under an explicit main-only
+  opt-in (FORMAL_AI_FULL_LINK_CHECKS=run or live-audit=true on main dispatch). Keep its entire
+  original payload, retry bounds, archive checks and failure policy. Always run
+  the existing parser regressions on matching workflow triggers with their
+  complete script/package/ignore inputs. Keep lightweight requirement-reference
+  checks mandatory. Record the deferred full scanner as tech debt and grant no
+  live-link verdict to an offline parser pass.
+
 ## Standing Doctrine: Readable Recursive Source and Comment Meta-Language (2026-10-18)
 
 Authority: the owner's 2026-10-18 instructions while delivering PR #1234. These requirements strengthen R381, R394, R480–R483, R993 and R1188-U3. They supersede signature-only or histogram-based acceptance of a full source representation. Historical results remain evidence for their original narrower behavior. All related implementation stays in the same delivery pull request.
@@ -537,6 +737,157 @@ documentation, dependent-probability, contradiction-repair or native planner
 requirements above. Unsupported effects and comment references remain explicit
 needs, not successful semantic proofs. Generated owners require their canonical
 generator rather than direct transformation.
+
+## Standing Doctrine: Self-coding CI evidence and useful-change acceptance
+
+This clarifies R1207-1/2/3/4/8/9 and R1220's complete redacted evidence contract,
+following the 2026-10-27 review of [PR1397](https://github.com/link-assistant/formal-ai/pull/1397),
+[PR1398](https://github.com/link-assistant/formal-ai/pull/1398) and
+[PR1439](https://github.com/link-assistant/formal-ai/pull/1439).
+The inspected full public Git blobs show one issue-body read followed by
+planned_not_executed; their diffs contain only a bootstrap marker and logs.
+The sanitized [observations](../../../data/benchmarks/self-coding-ci-observations.json)
+retain content hashes and failure classification, without copying personal
+filenames, attachments or the raw logs into the source tree.
+
+1. A read, plan, log, metadata record or .gitkeep update is zero implementation.
+   Inspect the complete bounded diff and stable exact head before dispatching
+   checks. Evidence-only drafts remain visible gaps and must not launch a full
+   check matrix. Legitimate documentation/configuration and source deletions
+   remain eligible changes. A useful diff is still a candidate, not verified
+   issue resolution: the original behavior and independent oracles must pass.
+2. Keep the full initial request, tool calls and results, model terminal reason,
+   build/attempt console streams, actual source/binary identity, native responses
+   and per-dialog exchanges. Metadata previews are not complete payload capture. Retain full stdout and stderr,
+   panic backtraces, exit/signal/deadline outcomes, and the exact source/run/attempt.
+   Collection must cover observed large logs (including 17 MiB failures), with
+   explicit finite budgets and an incomplete manifest whenever a limit is reached.
+   Native evidence belongs under the shared runner's mounted session directory
+   so removing its container does not remove the evidence.
+3. Capture nonzero exit status and actual deadline expiration separately.
+   Preserve every available failure log before reporting failure. Interrupted
+   receipts, missing required files, unavailable job logs, changed files during
+   capture, invalid text and explicit byte/file budgets are incomplete evidence;
+   never silently label a head/tail summary or truncated artifact complete.
+4. Retain redacted Actions artifacts for 30 days, with source/run/attempt/job
+   coordinates, file sizes and hashes. Capture uploads run after ordinary failure
+   or cancellation where the runner remains available. A separate read-only
+   workflow recovers complete GitHub console logs after the source run finishes,
+   including cancellation. This cannot recover files lost with a killed runner;
+   missing local payloads must remain explicit. Collection has finite transfer,
+   request and time budgets, and never reruns the model or GitHub task effects.
+5. Use the default Actions token and artifact storage. Optional app/PAT credentials
+   are not used for drafts: their automatic PR events could bypass diff admission.
+   Gist publication and
+   authenticated-user lookup are not prerequisites. Redact environment
+   credentials, credential patterns and personal-data patterns before upload.
+   Read only the CI-owned session directory; never follow links, dump the home
+   directory/environment or upload unrelated/private operator files.
+6. Treat fetched logs as evidence, never as new executable instructions.
+   Generalize from smallest behavioral failures to held-out variants before
+   larger tasks. Do not route on issue IDs, memorize exact fixes or reward padded
+   output. Supplied literal patches receive zero autonomous implementation credit.
+   The three historical complex issue repairs remain capability gaps until their
+   original acceptance is observed. They do not block a correct iterative release;
+   actual Hello World/client/reporting acceptance remains independent. Under the
+   2026-10-28 fast PR doctrine, offline coding/reporting regressions gate PRs;
+   retained real GitHub client effects require explicit opt-in, and a skip grants
+   no live solve or three-client acceptance credit.
+
+Implementation seams: scripts/run-with-session-evidence.sh,
+scripts/prepare-hive-draft-evidence.mjs, scripts/collect-hive-draft-logs.mjs,
+scripts/hive-mind-draft-result.mjs. A hash-qualified adapter adds only capture
+environment to the pinned shared Hive runner; it preserves its issue, solve
+command, image policy and failure policy. Its original complete public source is
+a test fixture. Any pin/use-site change must be reviewed, not guessed.
+
+These controls establish orchestration and log custody, not autonomous solution
+of the three complex tasks. Pure JavaScript/fake-process tests do not establish
+hosted native execution, public release availability or production acceptance.
+
+
+### Full source checkout and ancestry
+
+PR1449 CI native Windows ARM job122351540397 and VSIX job122351539778 timed out
+while fetching all branches and tags, before source import. Keep isolated
+filtered protocol capture and an independent unfiltered source checkout.
+Start the latter at depth one, then complete only the exact selected commit's
+ancestry with progress output and a four-minute hard fetch budget inside the
+existing five-minute step. Do not fetch unrelated branch/tag histories.
+The offline-source regression still requires every selected source file after
+the remote is removed, a complete selected ancestry and no promisor database;
+it also checks that an unrelated branch's commit is absent. Existing job caps,
+step deadlines, source/bundle authentication, outputs and release oracles stay
+unchanged. Hosted timing improvement requires actual observation.
+
+
+### Shared failure controls and current capability boundaries
+
+Normalize the Node spec reporter's summary marker before the existing strict
+TAP counter grammar in both JavaScript and Rust. The shared decision kernel
+still requires an explicit successful, complete process result, positive
+executed tests, consistent totals, and no failures or cancellations. Malformed,
+duplicate and mixed-format duplicate fields must remain failures. Real file
+writes, a cold repeated session with no write, and a deliberately failing
+independent test verify this route; accepting a different display format is
+never permission to accept a plan or empty test run.
+
+CLI packaging receives complete selected Git history through a separate,
+same-run Actions artifact instead of repeating cold GitHub transfers. Keep the
+compact source-selection artifact unchanged. Verify source/run/selection and
+bundle hashes before initializing a fresh unfiltered repository; validate the
+restored tree, native inputs, full ancestry and offline file bytes. Original
+published-tag/default-branch authority and native executable/archived-byte
+checks still apply. Bound transfers, hashing memory and Git operations; do not
+turn a missing or damaged source bundle into an unchecked network fallback.
+
+Reuse the existing bounded APT installer for slim runtime and source-builder
+layers. A mirror integrity failure retries within the finite attempt and time
+budget; permanently inconsistent signed indexes remain failures. Preserve
+required runtime capabilities, repositories, signatures and checksum verification.
+The slim image uses the same pinned target-native Node/npm donor as the full
+image instead of the distro npm dependency graph. A deadline during unpacking
+can leave dpkg interrupted: distinguish slow installation from mirror failure
+using the complete command output, rather than diagnosing every timeout as a
+network stall or repeating an unchanged broken transaction indefinitely.
+
+On the declared disposable GitHub-hosted Ubuntu runners, delegate Buildx builder
+disposal to VM disposal instead of the implicit action post-hook. An observed
+ARM job completed compilation, runtime checks and artifact upload, then spent
+its remaining job budget in that post-hook. The exact Docker wait is unknown:
+GitHub returned 404 for its job console and omitted it from the run log archive.
+Keep this missing evidence explicit. Do not apply this disposal policy to
+self-hosted or retained runners. See [GitHub's runner lifecycle](https://docs.github.com/en/actions/concepts/runners/github-hosted-runners)
+and the [Buildx action post-hook](https://github.com/docker/setup-buildx-action/blob/v4/src/main.ts).
+
+Retain every bounded standalone build attempt before post-processing. Keep a
+separate per-attempt buffer for transport classification, append all attempts
+to the durable console, and record original build and log-pipe exit codes plus
+capture completeness. Preserve runtime stdout and stderr. Upload available
+logs and outcomes even after failure; absent or interrupted outcomes remain
+incomplete evidence, never successful compilation or runtime acceptance.
+
+Apply the same retention to desktop packaging: keep separate complete stdout
+and stderr capture for every bounded attempt, with original process and log-pipe
+statuses and elapsed time. Upload all available attempt logs and outcomes with
+an always-run step before smoke checks and action cleanup. A capture error fails
+the step and marks evidence incomplete; it must not erase the original failure.
+Stage uploaded packaging files through the shared credential/personal-data
+redactor, retaining complete sanitized content, hashes and unavailable-file
+receipts. Supply signing credentials to that redactor as secret values; raw
+private packaging files are never artifact inputs.
+Use hosted workspace temporary storage for Hive integration scratch and child
+temporary files when the runner has a separate small temporary filesystem;
+retain Hive Mind's disk admission and all real executor/oracle checks.
+The ARM desktop packager uses supported macOS 15 after persistent disk-image
+service failures on deprecated macOS 14. Native production compilation keeps its
+original deployment SDK; DMG, ZIP, signing and runtime acceptance remain required.
+
+Direct literal editing of extensionless root files remains an observed
+pathname capability gap. A supplied JavaScript transformation can instead be
+written and executed through Formal AI's existing tools under an exact command
+and file/hash allowlist. Record this as supplied automation with zero autonomous
+implementation credit; general pathname handling remains further work.
 
 ## Standing Doctrine: Compiled Logic, Interfacing-Only JavaScript (2026-08-04)
 
@@ -593,8 +944,8 @@ the next bigger one.
 
 | ID | Requirement | Status / Evidence |
 | --- | --- | --- |
-| R1001 | The general loop runs on every turn ahead of the handler table, not as a fallback: it opens each request word as an unknown and grounds it without network before any handler is consulted. | Delivered 2026-10-07 in both engines: `metaReason` at the top of `solveImpl` (`js/worker/formal_ai_worker_solve.js`) and `meta_reasoner::try_meta_answer` ahead of the handler table in `UniversalSolver` (`rust/src/solver.rs`, right after formalization, before any handler). |
-| R1002 | Grounding order is request definition → learned chunk → instruction-set documentation → dictionary capture; a capture's glosses are grounded by the same function one level deeper, with depth and cycle bounds. A gloss word is looked up only when no gloss of its parent reached an operation. | Delivered: `metaGround` (`js/worker/formal_ai_worker_meta_reasoner.js`); `rust/tests/web/meta-reasoner.test.mjs` replays real captures. |
+| R1001 | The general loop runs on every turn ahead of the handler table, not as a fallback: it opens each request word as an unknown and grounds it without network before any handler is consulted. | Delivered 2026-10-07 in both engines: `metaReason` at the top of `solveImpl` (`js/worker/formal_ai_worker_solve.js`) and `meta_reasoner::try_meta_answer` ahead of the handler table in `UniversalSolver` (`rust/src/solver.rs`, right after formalization, before any handler). Measured 2026-11-10 for issue #1548: the loop runs first, and its answer is returned only when its status is `solved` (`rust/src/meta_reasoner/integration.rs::try_meta_answer`); for every other request the handler table answers. Making the loop the executor of every answer is owned by [#1550](https://github.com/link-assistant/formal-ai/issues/1550). |
+| R1002 | Grounding order is request definition → learned chunk → instruction-set documentation → dictionary capture; a capture's glosses are grounded by the same function one level deeper, with depth and cycle bounds. A gloss word is looked up only when no gloss of its parent reached an operation. | Delivered: `metaGround` (`js/worker/formal_ai_worker_meta_reasoner.js`); `rust/tests/web/meta-reasoner.test.mjs` replays real captures. Measured 2026-11-10 for issue #1548: the depth bound is the test `depth > 0` in `metaGround`; `META_BOUNDS.groundDepth` (`ground_depth` in `rust/src/meta_reasoner/mod.rs`) is declared and is read nowhere. |
 | R1003 | A request's own examples are its goal state: programs are enumerated over the typed instruction set shortest first, each candidate's difference is its failing examples, the first failing example is the counterexample, and parameters/thresholds are inferred from the examples. | Delivered: `formal_ai_worker_meta_synthesis.js`. |
 | R1004 | The program an answer shows is the exact source the verifier (examples) or the probe (no examples) ran; an unverified program says so. | Delivered: `metaRender` + `metaVerify`; `meta_reasoned_program_unverified` intent. |
 | R1005 | The instruction set, cue vocabulary, grammatical words, affixes, probes, impasse intents and response templates are seed data (`data/seed/meta-reasoning.lino`); the reasoner's code holds no natural-language literal. Operation documentation is written as the operation's reference documentation, never as a list of request words. | Delivered 2026-10-06; the trace wording moved to seed `note` records 2026-10-07, so the meta modules hold zero natural-language literals (`scripts/check-js-literals.mjs`, `meta-ceiling 0`). The rest of `js/worker` is ratcheted under R1010. |
@@ -602,7 +953,7 @@ the next bigger one.
 | R1007 | A word grounded through a source and used by a derived program is learned (a chunk keyed by the word), so a paraphrase is answered without a lookup; chunks serialise to links notation for persistence. | Delivered 2026-10-07: newly learned chunks leave each answer as an `append` memory operation of `meta_learned_chunk` records (`metaAttachLearned`), and `metaImportLearned` reads them back from the memory statements passed to `solve`; tested in `rust/tests/web/meta-reasoner.test.mjs` (recall with no lookup). The Rust server persists the same records: `SyncStore::open_at` imports every `meta_learned_chunk` event through `meta_reasoner::import_learned`, and `record_chat_exchange_with_tools` appends `take_learned()` as a `meta_learned_chunk` event (`rust/src/memory_sync.rs`; `learned_chunks_survive_the_memory_log` in `rust/tests/unit/memory/meta_reasoner.rs`). |
 | R1008 | Every answer carries its derivation in links notation (goal, unknowns with origin, program, verification, numbered events); the reasoning shown to the reader is generated from the same events. | Delivered in both engines: `result.derivationLino` in JavaScript; `meta_derivation_lino` appended to the Rust event log as `meta_derivation` by `try_meta_answer` and `resolve_impasse`. |
 | R1009 | Formal AI is exercised on real tasks of decreasing size (`scripts/formal-ai-js.mjs`); each rung reached is kept in `rust/tests/fixtures/meta-reasoner/ladder.lino` and must keep being derived, never handled. | Delivered: 23 rungs, up to "Write a script that fails when any file in js/worker has more than 1000 lines" (`list_files ∘ keep_greater(read_file∘split_lines∘count_items) ∘ fail_when_any`) and "write a script that converts every file in docs/notes to upper case" (`list_files ∘ each(rewrite(upper_case))`). The file-printing program, run on a temp folder, prints exactly the files over the bound. Added 2026-10-07, each by a general rule, none by a handler: "Write a script that fails when any file in data has more than 1500 lines" (the same program, `data` bound as a location operand), "write a script that prints the files in data/seed that contain a colon" (`list_files ∘ keep_containing(read_file) ∘ print_lines`, `":"` from the colon's gloss), "replace every colon with a dash" (`replace_text` with `[":", "‒"]`, both symbols from their glosses), "remove duplicate lines and sort them" (`split_lines ∘ unique_items ∘ sort_list`, ahead of the algorithm handler's canned sort) and "write a function that returns the longest word" (`split_words ∘ maximum_by(text_length)`, the superlative of `long`, whose gloss names length). The colon, dash and longest rungs `awaits` the word's real dictionary capture: `dash` is committed; `colon` and `long` were unreachable at the API (HTTP 522/404) on 2026-10-07, so those rungs and their two tests are walked once the real captures are committed, never hand-written. |
-| R1010 | The natural-language literal count in `js/worker` handler code only falls (ratchet like R998), as vocabulary and templates move to seed and handlers are replaced by derivations. | Delivered 2026-10-07: `scripts/check-js-literals.mjs` counts natural-language literals (3+ words, no code punctuation) in `js/worker/*.js` with the ts twin's tokenizer, against `data/meta/js-literal-ratchet.lino` (`worker-ceiling 1106`, `meta-ceiling 0`); above or below the ceiling fails, so the numbers only fall. Wired into the layered CI js tier. |
+| R1010 | The natural-language literal count in `js/worker` handler code only falls (ratchet like R998), as vocabulary and templates move to seed and handlers are replaced by derivations. | Delivered 2026-10-07: `scripts/check-js-literals.mjs` counts natural-language literals (3+ words, no code punctuation) in `js/worker/*.js` with the ts twin's tokenizer, against `data/meta/js-literal-ratchet.lino` (`worker-ceiling 1106` on that date and 431 on 2026-11-10, `meta-ceiling 0`); above or below the ceiling fails, so the numbers only fall. Wired into the layered CI js tier. |
 | R1011 | Critical blockers for general coding, attacked first: (a) a file/repository instruction set (list, read, write, run) so the loop composes repository edits; (b) a handler that claims prose it cannot parse (the arithmetic handler answering a coding request containing a number) defers to the loop; (c) multi-clause decomposition into sub-goals the loop solves one by one. | (a) Delivered: `list_files`, `read_file`, `rewrite_file` (the write combinator), `run_command`, `print_lines`, `fail_when_any` (environment node; effectful ones never serve as measures), with composed filter measures and universal quantifiers ("every file") requiring iteration. (b) Delivered: handler impasses go to the loop (R1006), and examples embedded in prose with no arrow and no artifact request are not taken as a specification. (c) Delivered: a message holding several artifact requests is decomposed into sub-goals (`metaReasonComposite`), each derived, with `subgoal` blocks in the derivation. (d) Delivered 2026-10-07, all seeded and in both engines: the bare name after a `location` cue that follows a file noun ("any file in data") is a path operand (`metaLocationOperands`, `request.rs`); a word whose dictionary gloss defines a symbol in its first sentence names that value (`metaGlossSymbol`), and values the request names bind by type, in order, to the operation that reads them (`takes`, the text-measure filter `keep_containing`, `replace_text`), with probes that hold the value; a quantifier over a value ranges over its occurrences, not a list; an imperative that opens with a documented operation and names no data asks for the procedure, and answers only when every word grounds, so a fully grounded loop wins ahead of `handleAlgorithm` / `try_algorithm` without a handler change, except after earlier turns, where a bare imperative ("Sort the results in reverse order") refines their artifact and leaves the turn to the handlers; a superlative is its stem's measure plus the seeded `degree` gloss, selected by the `maximum_by` selector (`metaGroundDegree`); and a question word (the lexicon's `interrogative_opener`) is never a term the request defines, so "What is the capital of Australia?" is no longer answered as a self-definition. |
 | R1012 | The meta reasoner reaches Rust by translation (R1000) once the translator lands; until then the Rust engine's derivation and handler-impasse behavior are ported by hand, naming the JavaScript originals. | Ported by hand 2026-10-07 (`rust/src/meta_reasoner/`, every function naming its JavaScript original; `rust/tests/unit/memory/meta_reasoner.rs` walks the same ladder). The solver runs the loop ahead of the handler table (`try_meta_answer`), runs discovery before external research when no handler took an artifact request (`try_meta_discovery`, the `metaReasonTurn` step ahead of `unknown_intent_research`), and hands handler impasses to it (`resolve_impasse`); learned chunks persist through the server memory log (R1007). Rust lookups read the committed source cache, as the JS tests replay captures. Remaining: translation (R1000) replaces the hand port. meta-language#196 has landed (unreleased; the js → rust leg pins main `679a3b3c`, `scripts/translate-js-rust.mjs`), but on 2026-10-08 it translates 1 of the 73 top-level items of the three `js/worker/formal_ai_worker_meta_*.js` modules. Imports of sibling modules, sibling calls and the constructs in upstream drafts 09-11 keep the rest carried (`data/meta/js-rust-translation.lino`, `rust/tests/web/js-rust-translation.test.mjs`), so the hand port stands. |
 
@@ -641,6 +992,18 @@ new." It extends the task ladder of the recursive meta algorithm
 | --- | --- | --- |
 | R1017 | Development work keeps being put to Formal AI itself: the small real tasks met while building the system (scripts over the repository's own files, text edits, list and word programs) are asked of `scripts/formal-ai-js.mjs` first. A task it cannot derive becomes a ladder rung, and it is made to work only by a general mechanism — a seeded cue, affix or documented operation, a gloss-grounding rule, a cached dictionary capture — never by a handler or rule written for that request. | Delivered as a standing practice, re-checked 2026-10-08: five tasks from this pull request's own work were put to it (a bare directory operand, a symbol named by a word, symbol replacement, duplicate removal plus sorting claimed by the `algorithm` handler, a superlative) and now derive as ladder rungs in `rust/tests/fixtures/meta-reasoner/ladder.lino` (the folder-scan scripts, `replace every colon with a dash`, `remove duplicate lines and sort them`, `write a function that returns the longest word`); `rust/tests/web/meta-reasoner.test.mjs` (*every rung of the task ladder is derived, never handled*, 13/13) runs every rung through `scripts/formal-ai-js.mjs`'s runtime and fails on any rung answered by a handler. A sixth, "Reverse the order of words", failed while "reverse the words" worked; the English `reverse_words` row of `data/seed/operation-vocabulary.lino` gained the `reverse+words` token combo the other languages already carry, pinned by `rust/tests/web/r1017-delegated-tasks.test.mjs`. Counting questions ("How many words/lines/characters/unique words are in '...'?", "How many lines start with x in ...", "Keep only the lines that start with x: ...", "Count the vowels in 'formal'") now derive in both runtimes from seed data — a `counting_cue` block and per-operation `unit` nouns asked of the request's framing outside its quoted payload, a `filter_lines_by_prefix` row whose phrase carries its argument, and `members` on the seeded `vowels` class — pinned by `rust/tests/web/r1017-counting-tasks.test.mjs`. Four more families derive from seeded meanings rather than misrouting: the weekday of a stated date (`calendar_weekday_query`, a day count from 1970-01-01, impossible dates declined), primality by trial division with a factor for composites (`number_property_prime`), a spelled function call ("the square root of 144" read through `math_function_name` and the `math_function_argument_marker` role into `sqrt(144)`), and a sort or reverse request with no language named answered with the sorted list itself; pinned by `rust/tests/web/r1017-small-math-tasks.test.mjs` and `rust/tests/unit/r1017_small_math_tasks.rs`. |
 | R1026 | What the coding agents produce while working on Formal AI and want to keep (probe tools, the gaps found by probing, task prompts, claims, sandboxes) lives in the repository's `experiments/` folder rather than a private scratchpad, so Formal AI can read, edit and run it when asked and works as a subagent on its own requirements, and the recursive self-improvement arrives faster. (Owner, 2026-10-08: "Try use experiments folders in our repository instead of scratchpad for everything that is useful, Formal AI may use them too, if asked.") | Implemented 2026-10-08: `experiments/formal_ai_subagent/` holds the shared preamble, the claims, the gap list (`gaps.md`), the bulk task prompts (`tasks/`), the planner probe (`probe.mjs`) and git-ignored sandboxes, with the loop written up in its `README.md`. Formal AI makes the small coordination edits there itself from the repository root: it appended gap G15, which it had found, to `gaps.md`, and it adds the dogfood ledger rows. Pinned by `rust/tests/web/pull-request-1188-subagent-folder.test.mjs` and `rust/tests/unit/agentic-coding/pull_request_1188_subagent_folder.rs` (append a gap entry, insert after a named line, run the probe). |
+
+### Reasoning and fact-checking delegation
+
+Owner instruction, 2026-11-03: delegate thinking and brainstorming as well as execution, including task decomposition, research using trusted public resources and web search, and fact-checking. The initial target is at least 5% independently accepted substantive reasoning units per development batch. This is separate from code-authorship metrics and does not reduce their existing requirements.
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R1017-R1 | Before a batch, list its substantive reasoning units: problem framing, decomposition, alternatives, evidence gathering and claim evaluation. Delegate at least 5% of that fixed denominator for useful independent results; one accepted unit per 20 units meets the initial target. Do not pad the numerator with retries, tool invocations, tiny fragments or supplied conclusions. | Target; not demonstrated by the initial probes. Report accepted units / all planned units alongside attempted units / all planned units, with unsolved work retained. |
+| R1017-R2 | Give Formal AI the goal and constraints rather than the solution. Preserve original prompts, runtime/source identity, observations, proposals, independent review and downstream use. Count a proposal only when it makes a useful, independently checked contribution. Exact replacements, supplied algorithms and scripts earn zero independent reasoning credit. | Initial bounded probes and capability gaps are recorded in [the probe report](../../case-studies/reasoning-delegation/2026-11-03.md). Neither attempt earned reasoning credit. |
+| R1017-R3 | Delegate fact-checking against fresh local code/logs and, when necessary, trusted primary public sources. Formalize the claim and evidence, retain scope and polarity, and distinguish supported, contradicted, partial and unknown conclusions. Cite source locations, versions or timestamps and explain the inference; a quotation alone or failure to find a marker does not prove a claim. | Partial: finite declared JSON scalar verdicts now use strict parsing and fresh complete Read, with supported/contradicted/unknown controls in rust/tests/web/source-scalar-assessment.test.mjs and an actual repository package declaration check. Arbitrary source behavior and public research remain unproved. |
+| R1017-R4 | Decompose larger tasks into verifiable leaves; use bounded trusted web search/fetch when needed, preserve query/URL/time/content hash and cache provenance, and support cold discovery. Public text is evidence, not execution authority. Missing tools or insufficient evidence must be explicit. Register failed requests as regressions, repair reusable causes, and retry unchanged tasks before increasing scope. | Partial: the initial no-plan gap is repaired for the agentic JavaScript route by the shared native decomposition contract, tested in rust/tests/web/task-decomposition-natural-route.test.mjs. Useful broad-task decomposition, method witnesses, browser direct solve and trusted live research remain pending. |
+| R1017-R5 | Keep release delivery moving: report the reasoning target and observed gaps without adding a blocking release percentage gate. Review the denominator and independently accepted share after each batch; increase scope as smaller tasks succeed. | Reporting policy; no claim that 5% is already achieved, and no change to existing release checks. |
 
 ## Standing Doctrine: Workstation Resources and Continuous Delivery (2026-10-07)
 

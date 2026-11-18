@@ -270,8 +270,10 @@ describe('check-debt-ratchet.mjs', () => {
         '  try-dispatch-entries: measured 1 / ceiling 1',
       ]);
       // Outside a git work tree the base cannot be read; the Rust script says so and goes on.
-      assert.match(out[5], /^ {2}\(skipping the base comparison: git \["show", "HEAD:data\/meta\/debt-ratchet\.lino"\] failed: /);
-      assert.deepEqual(out.slice(6), [
+      const diagnosticEnd = out.findIndex((line, index) => index >= 5 && line.startsWith('::error file=')) - 1;
+      assert(diagnosticEnd >= 5, 'retain the complete Git diagnostic, including filesystem-boundary details');
+      assert.match(out.slice(5, diagnosticEnd + 1).join('\n'), /^ {2}\(skipping the base comparison: git \["show", "HEAD:data\/meta\/debt-ratchet\.lino"\] failed: /);
+      assert.deepEqual(out.slice(diagnosticEnd + 1), [
         '::error file=data/meta/debt-ratchet.lino::handler-files: improved from 2 to 1; lower the reviewed ceiling in data/meta/debt-ratchet.lino in this commit',
         '::error file=data/meta/debt-ratchet.lino::literal-predicates: measured 2, ceiling 1; move the behaviour into data/seed or data/meta rules instead of raising the ceiling (issue #1085 D1)',
         '',

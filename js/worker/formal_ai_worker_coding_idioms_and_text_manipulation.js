@@ -476,7 +476,10 @@ function tryProgramSynthesis(prompt, normalized) {
   const functionName = extractPythonFunctionName(prompt);
   if (!functionName) return null;
   const structures = discoveredCodingStructures(canonical);
-  const composed = browserComposeProgramIr(prompt, canonical, structures);
+  // Issue #1487: a negation, count, disjunction or comparison no discovered part reads stays an unresolved
+  // obligation; the program for the requirement without it is withheld (Rust `composition::compose_with_ir`).
+  const unread = crateModule("crate/unread_structure.mjs").unreadStructure(prompt, structures);
+  const composed = unread ? null : browserComposeProgramIr(prompt, canonical, structures);
   const language = browserSynthesisLanguage(canonical);
   const discovered = structures.length > 0 ? structures.join(", ") : "none yet";
   const evidence = [
@@ -484,6 +487,7 @@ function tryProgramSynthesis(prompt, normalized) {
     ...metaAlgorithmConstructionEvidence("program_synthesis"),
     `synthesis:spec:language=${language} function=${functionName}`,
     `synthesis:discovered_parts:${structures.join(",")}`,
+    ...(unread ? [`synthesis:obligation:unresolved_structure=${unread}`] : []),
     "synthesis:verification:unverified_browser_boundary",
   ];
   if (composed) {
@@ -498,6 +502,7 @@ function tryProgramSynthesis(prompt, normalized) {
   const body = [
     `Coding task formalized for ${WRITE_PROGRAM_LANGUAGES[language].name} function \`${functionName}\`.`,
     `Discovered structural parts: ${discovered}.`,
+    unread ? `Unresolved requirement structure: ${unread}. No discovered part reads it, so no program is offered for it.` : "",
     composed ? `\`\`\`${WRITE_PROGRAM_LANGUAGES[language].fence}\n${composed.source.trimEnd()}\n\`\`\`` : "",
     "Verification status: unverified in the browser boundary; run the Rust/native solver to execute the derived program and its tests.",
   ].filter(Boolean);
@@ -510,6 +515,7 @@ function tryProgramSynthesis(prompt, normalized) {
     trace: [
       `synthesis:spec:language=${language} function=${functionName}`,
       `synthesis:discovered_parts:${structures.join(",")}`,
+      ...(unread ? [`synthesis:obligation:unresolved_structure=${unread}`] : []),
       ...(composed ? ["synthesis:ir:type_checked", `synthesis:ir:content_id=${composed.contentId}`] : []),
       "synthesis:verification:unverified_browser_boundary",
     ],

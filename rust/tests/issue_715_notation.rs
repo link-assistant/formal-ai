@@ -20,12 +20,12 @@ fn final_artifact(path: &str, source: &str, prompt: &str) -> String {
     ];
     let tools = ["read_file", "write_file"];
 
-    loop {
+    for _ in 0..8 {
         match plan_chat_step(&messages, &tools) {
             Some(AgenticPlan::ToolCalls(calls)) => {
                 let call = &calls[0];
                 let result = if call.tool == "read_file" {
-                    source.to_owned()
+                    formal_ai::agentic_coding::tool_result::complete_owned_source_read_frame(source)
                 } else {
                     "Wrote file successfully.".to_owned()
                 };
@@ -41,6 +41,7 @@ fn final_artifact(path: &str, source: &str, prompt: &str) -> String {
             other => panic!("unexpected plan: {other:?}"),
         }
     }
+    panic!("artifact planning exceeded eight steps");
 }
 
 /// Pull just the notation block out of the surrounding prose: from the

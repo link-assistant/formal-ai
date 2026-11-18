@@ -2,6 +2,7 @@ import {readCheckedReleaseOperationView} from '../../../scripts/checked-release-
 // Workflow contracts are static checks; runtime and cold-build acceptance require actual CI.
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import YAML from 'yaml';
 import {readFileSync} from 'node:fs';
 const workflow=readFileSync(new URL('../../../.github/workflows/container-images.yml',import.meta.url),'utf8');
 function job(name) {
@@ -59,4 +60,21 @@ test('the release pipeline waits for native publication only after actual succes
  assert.match(release,/native-container-images:\n[\s\S]*needs: \[auto-release, manual-release\]/u);
  assert.match(release,/uses: \.\/\.github\/workflows\/container-images\.yml/u);
  assert.match(release,/auto-release, manual-release, native-container-images,/u);
+});
+
+test('implicit builder removal is disabled only for disposable hosted runner jobs',()=>{
+ const parsed=YAML.parse(workflow),allowed=new Set(['ubuntu-latest','ubuntu-24.04','ubuntu-24.04-arm']);
+ const selected=Object.entries(parsed.jobs).filter(([,job])=>job.steps?.some(step=>step.uses==='docker/setup-buildx-action@v4'));
+ assert(selected.length>0);
+ for(const [name,job]of selected){
+  const runners=job['runs-on']==='${{ matrix.runner }}'?job.strategy.matrix.include.map(row=>row.runner):[job['runs-on']];
+  assert(runners.length>0&&runners.every(runner=>allowed.has(runner)),name+' requires disposable hosted runners');
+  for(const step of job.steps.filter(step=>step.uses==='docker/setup-buildx-action@v4'))assert.equal(step.with?.cleanup,false,name);
+ }
+ const independent=parsed.jobs['independent-full'];
+ const upload=independent.steps.find(step=>step.uses==='actions/upload-artifact@v7');
+ assert.equal(upload.if,'always()');assert.equal(upload.with['if-no-files-found'],'error');
+ for(const file of ['standalone-build.log','standalone-runtime.log'])assert(upload.with.path.split('\n').includes(file));
+ const compile=independent.steps.find(step=>step.name==='Compile the full image independently on each native architecture');
+ assert.equal(compile['timeout-minutes'],25);assert(compile.run.includes('2>&1 | tee standalone-runtime.log'));
 });

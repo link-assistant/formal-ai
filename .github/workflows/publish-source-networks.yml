@@ -55,6 +55,12 @@ on: # zizmor: ignore[dangerous-triggers]
       - "js/vendor/tree-sitter/LICENSE-web-tree-sitter"
       - "js/vendor/tree-sitter/LICENSE-tree-sitter-rust"
       - "js/vendor/tree-sitter/provenance.lino"
+      - "scripts/lib/translation-single-pass.mjs"
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   workflow_dispatch:
     inputs:
       mode:
@@ -82,7 +88,7 @@ concurrency:
   queue: max
 jobs:
   resolve:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     # Bound stalled transfers so checkout retries fit the existing job clock.
     env:
@@ -128,8 +134,8 @@ jobs:
         run: node scripts/resolve-package-release.mjs
   packets:
     needs: resolve
-    if: ${{ !cancelled() && needs.resolve.outputs.build == 'true' }}
-    runs-on: ubuntu-latest
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.resolve.outputs.build == 'true') }}
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     strategy:
       fail-fast: false
@@ -204,7 +210,7 @@ jobs:
   attach:
     needs: [resolve, packets]
     if: ${{ !cancelled() && needs.resolve.outputs.publish == 'true' && needs.packets.result == 'success' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:
       contents: write

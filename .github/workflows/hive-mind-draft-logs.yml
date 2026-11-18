@@ -1,0 +1,44 @@
+name: Retain Hive Mind draft job logs
+# Read-only recovery: trusted default-branch code only; no candidate/artifact execution,
+# cache writes, repository writes, model reruns or secret-bearing credentials.
+on: # zizmor: ignore[dangerous-triggers]
+  workflow_run:
+    workflows: [Hive Mind draft]
+    types: [completed]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: hive-draft-logs-${{ github.event.workflow_run.id }}-${{ github.event.workflow_run.run_attempt }}
+  cancel-in-progress: false
+jobs:
+  collect:
+    if: github.event.workflow_run.repository.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      # Never execute the candidate branch or any downloaded log content.
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+          sparse-checkout: |
+            /scripts/collect-hive-draft-logs.mjs
+            /scripts/collect-ci-failures.mjs
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Recover complete console logs and exact attempt provenance
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DRAFT_JOB_LOG_OUTPUT: ${{ runner.temp }}/hive-draft-job-logs
+        run: node scripts/collect-hive-draft-logs.mjs
+      - name: Retain logs and explicit completeness manifest even after collection failure
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: hive-draft-job-logs-${{ github.event.workflow_run.id }}-${{ github.event.workflow_run.run_attempt }}
+          path: ${{ runner.temp }}/hive-draft-job-logs
+          if-no-files-found: error
+          retention-days: 30

@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto';
 import { createDeliveryClaim,
  publishDeliveryResult,
  readDeliveryLedger,
- publicLedgerClaim,
+ publicLedgerClaim, publicLedgerResult,
  githubLedgerWriter } from '../../../scripts/lib/hive-delivery-ledger.mjs';
 import { observeClientHistory } from '../../../scripts/lib/hive-delivery-journal.mjs';
 import { policyIdentity, policyRoots } from '../../../scripts/lib/hive-delivery-source.mjs';
@@ -91,7 +91,9 @@ async function fixture() {
       if (relative.startsWith('contents/')) {
         const name = relative.slice('contents/'.length).split('?')[0];
         assert.ok(name === 'data/benchmarks/issue-1364-client-replay-inputs.json' || policyRoots.includes(name));
-        const bytes = name === 'data/benchmarks/issue-1364-client-replay-inputs.json' ? canonical : Buffer.from('owned protocol ' + name + '\n');
+        const module = name === 'scripts/lib/hive-delivery-source.mjs'
+          ? 'export const policyRoots = ' + JSON.stringify(policyRoots) + ';\n' : '';
+        const bytes = name === 'data/benchmarks/issue-1364-client-replay-inputs.json' ? canonical : Buffer.from(module + 'owned protocol ' + name + '\n');
         return {
           type: 'file',
           encoding: 'base64',
@@ -286,6 +288,20 @@ test('permanent qualified result survives expired/deleted Actions artifacts and 
   assert.equal(durable.claimCommit, value.claim.ledger.claimCommit);
   assert.notEqual(durable.head, durable.claimCommit);
   assert.ok(value.writes.every(operation => !Object.hasOwn(operation.body, 'force') || operation.body.force === false));
+});
+
+test('qualified same-repository transport survives ledger projection without claiming historical external delivery', async () => {
+  const value = await fixture(), result = value.success(value.claim);
+  result.acceptance.taskTransport = {kind: 'same-repository', repository,
+    issueUrl: 'https://github.com/owner/repo/issues/17', pullRequestUrl: 'https://github.com/owner/repo/pull/18',
+    workflowDirectory: 'ci/', workflowExecution: 'act', cleanup: 'after-owner-run',
+    historicalExternalDeliveryVerified: false};
+  assert.deepEqual(publicLedgerResult(result, value.claim).acceptance.taskTransport, result.acceptance.taskTransport);
+  for (const change of [{repository: 'foreign/repo'}, {historicalExternalDeliveryVerified: true},
+    {issueUrl: 'https://github.com/foreign/repo/issues/17'}, {cleanup: 'already-completed'}]) {
+    const altered = structuredClone(result); Object.assign(altered.acceptance.taskTransport, change);
+    assert.throws(() => publicLedgerResult(altered, value.claim));
+  }
 });
 test('expired producer proof quarantines an occupied permanent key instead of granting new effects', async () => {
   const value = await fixture();

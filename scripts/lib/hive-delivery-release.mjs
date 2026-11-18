@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { artifactJson } from './hive-delivery-journal.mjs';
 import { sourceBytes, readWorkflowPolicy } from './hive-delivery-source.mjs';
-import { applicableWorkflows, ciAdmissionDecision, admissionPolicy, deliveryWorkflow } from './hive-delivery-admission.mjs';
+import { applicableWorkflows, ciAdmissionDecision, admissionPolicy, isGatingCiRun, declaredScheduledWorkflows } from './hive-delivery-admission.mjs';
 import { validateVersionWitness } from '../refresh-release-specification-witness.mjs';
 import { verifyAnonymousImageManifest } from '../verify-anonymous-image-manifest.mjs';
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -30,7 +30,8 @@ export function preparedMetadataPolicy(versionSource, witnessSource, metricSourc
     witness,
     ledger,
     mapping,
-    archive
+    archive,
+    ledgerParts: metricSource.includes('pub mod ledger_storage;') ? 'data/meta/self-hosting-ledger-parts' : null
   };
 }
 export function requirePreparedVersionDelta({
@@ -58,7 +59,12 @@ export function requirePreparedVersionDelta({
   const lockVersion = /(\[\[package\]\]\s*\nname\s*=\s*"formal-ai"\s*\nversion\s*=\s*")[^"]+(")/u;
   assert.ok(lockVersion.test(beforeLock));
   assert.equal(beforeLock.replace(lockVersion, (_whole, prefix, suffix) => prefix + version + suffix), afterLock, 'dependency edges and checksums unchanged');
-  const allowed = name => name === 'rust/Cargo.toml' || name === 'rust/Cargo.lock' || name === policy.witness || name === policy.ledger || name === policy.mapping || name === 'CHANGELOG.md' || policy.surfaces.includes(name) || name.startsWith(policy.archive + '/') && name.endsWith('.md');
+  const allowed = name => name === 'rust/Cargo.toml' || name === 'rust/Cargo.lock'
+    || name === policy.witness || name === policy.ledger || name === policy.mapping
+    || name === 'CHANGELOG.md' || policy.surfaces.includes(name)
+    || name.startsWith(policy.archive + '/') && name.endsWith('.md')
+    || policy.ledgerParts === 'data/meta/self-hosting-ledger-parts'
+      && /^data\/meta\/self-hosting-ledger-parts\/\d{4}\.lino$/u.test(name);
   for (const file of files) {
     if (file.filename.startsWith('changelog.d/')) {
       assert.equal(file.status, 'removed', 'only consumed fragments');
@@ -216,7 +222,7 @@ export function lateSourceCandidate(source, commit, head) {
   return head === source || (commit.parents.length === 1 && commit.parents[0].sha === head);
 }
 /** Cheap observed-state refusal only; the full applicable-workflow census still runs afterward. */
-export async function precheckPublishedCi(reader, repository, source, requiredPath = null) {
+export async function precheckPublishedCi(reader, repository, source, requiredPath = null, {scheduledWorkflows = []} = {}) {
   const runs = await reader.pages('repos/' + repository + '/actions/runs?head_sha=' + source, 'workflow_runs');
   for (const run of runs) {
     assert.equal(run.repository.full_name, repository);
@@ -225,10 +231,9 @@ export async function precheckPublishedCi(reader, repository, source, requiredPa
   }
   assert.ok(Array.isArray(runs) && runs.length <= 2000, 'bounded complete CI inventory');
   if (requiredPath !== null && runs.length === 0) return {admitted: false, reason: 'missing applicable CI ' + requiredPath};
-  const observed = [...new Set(runs.filter(run => run.path !== deliveryWorkflow
-    && run.path !== '.github/workflows/hive-original-delivery-finalize.yml').map(run => run.path))];
+  const observed = [...new Set(runs.filter(run => isGatingCiRun(run, {scheduledWorkflows})).map(run => run.path))];
   const expected = requiredPath === null ? observed : [requiredPath];
-  return expected.length ? ciAdmissionDecision({source, expected, runs, complete: true}) : {admitted: true, ci: []};
+  return expected.length ? ciAdmissionDecision({source, expected, runs, complete: true, scheduledWorkflows}) : {admitted: true, ci: []};
 }
 /** No open PR is inferred from a default-branch workflow SHA; published source has its own authenticated chain. */
 export async function observePublishedAdmission({
@@ -315,11 +320,17 @@ export async function observePublishedAdmission({
   assert.equal(main.event, 'push');
   assert.equal(main.status, 'completed');
   assert.equal(main.conclusion, 'success');
-  const earlyChecked = await precheckPublishedCi(reader, repository, main.head_sha, main.path);
-  if (!earlyChecked.admitted) return earlyChecked;
+  // The guarded prepared child cannot alter these authenticated workflow definitions.
+  const workflows = await readWorkflowPolicy(reader, repository, main.head_sha);
+  const scheduledWorkflows = declaredScheduledWorkflows(workflows);
+  // A non-admitted result names this exact candidate so its prerequisites can resume it (#1485).
+  const candidate = {event: 'published-release', source, scope: 'release-' + selection.tag, verifiedRun: verified.id};
+  const deferred = decision => ({...decision, candidate});
+  const earlyChecked = await precheckPublishedCi(reader, repository, main.head_sha, main.path, {scheduledWorkflows});
+  if (!earlyChecked.admitted) return deferred(earlyChecked);
   if (source !== main.head_sha) {
-    const earlyPublished = await precheckPublishedCi(reader, repository, source);
-    if (!earlyPublished.admitted) return earlyPublished;
+    const earlyPublished = await precheckPublishedCi(reader, repository, source, null, {scheduledWorkflows});
+    if (!earlyPublished.admitted) return deferred(earlyPublished);
   }
   const artifacts = await reader.pages(prefix + '/actions/runs/' + main.id + '/artifacts', 'artifacts');
   const events = artifacts.filter(value => value.name === 'hive-source-event-' + main.run_attempt);
@@ -339,7 +350,6 @@ export async function observePublishedAdmission({
   const comparison = await reader.read(prefix + '/compare/' + event.before + '...' + event.after);
   assert.equal(comparison.status, 'ahead');
   const changedPaths = await publishedChangedPaths(reader, repository, event.before, event.after);
-  const workflows = await readWorkflowPolicy(reader, repository, main.head_sha);
   const expected = applicableWorkflows(workflows, {
     event: 'push',
     baseBranch: 'main',
@@ -350,8 +360,8 @@ export async function observePublishedAdmission({
     assert.equal(run.repository.full_name, repository);
     assert.equal(run.head_repository.full_name, repository);
   }
-  const checkedDecision = ciAdmissionDecision({source: main.head_sha, expected, runs, complete: true});
-  if (!checkedDecision.admitted) return checkedDecision;
+  const checkedDecision = ciAdmissionDecision({source: main.head_sha, expected, runs, complete: true, scheduledWorkflows});
+  if (!checkedDecision.admitted) return deferred(checkedDecision);
   const ci = checkedDecision.ci;
   let delta = {
     kind: 'exact-ci-source',
@@ -410,11 +420,11 @@ export async function observePublishedAdmission({
     assert.equal(run.repository.full_name, repository);
     assert.equal(run.head_repository.full_name, repository);
   }
-  const publishedExpected = [...new Set(publishedRuns.filter(run => run.path !== deliveryWorkflow && run.path !== '.github/workflows/hive-original-delivery-finalize.yml').map(run => run.path))];
+  const publishedExpected = [...new Set(publishedRuns.filter(run => isGatingCiRun(run, {scheduledWorkflows})).map(run => run.path))];
   const publishedDecision = publishedExpected.length ? ciAdmissionDecision({
-    source, expected: publishedExpected, runs: publishedRuns, complete: true
+    source, expected: publishedExpected, runs: publishedRuns, complete: true, scheduledWorkflows
   }) : {admitted: true, ci: []};
-  if (!publishedDecision.admitted) return publishedDecision;
+  if (!publishedDecision.admitted) return deferred(publishedDecision);
   const publishedObservedCi = publishedDecision.ci;
   const selected = {
     repository,

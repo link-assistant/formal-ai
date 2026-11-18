@@ -5,8 +5,17 @@ use ::formal_ai::source_fetch;
 #[path = "../../src/agentic_coding/work_item_steps.rs"]
 pub mod canonical_work_item_steps;
 
+// Shared production reader includes every immutable release-ledger part.
+#[allow(clippy::duplicate_mod)]
+#[path = "../../../scripts/self-hosting-ledger.rs"]
+pub mod release_ledger;
+
 #[path = "../fixtures/first-workspace-call.rs"]
 mod first_workspace_call;
+
+// Issues #1157, #1158 and #1160 share one offline Hive Mind delivery harness.
+#[path = "../fixtures/hive-mind/offline_delivery.rs"]
+mod offline_delivery;
 
 #[path = "../fixtures/observed-plan-tools.rs"]
 mod observed_plan_tools;
@@ -92,6 +101,7 @@ mod issue_1138_three_source_roots;
 mod issue_1138_translation_tool;
 mod issue_1138_universal_loop_lookup;
 mod issue_1364_server_lifecycle;
+mod issue_1559_standing_requirement_scope;
 mod issue_498_google_trends;
 mod issue_499_learn_from_source;
 mod issue_531_algorithm_discovery;
@@ -184,6 +194,8 @@ mod pull_request_1188_typo_discovery;
 mod pull_request_1188_unnamed_language;
 mod pull_request_1188_unquoted_output;
 mod pull_request_1188_workspace_search;
+mod quantity_aggregate_comparison;
+mod released_client_request_latency;
 mod report_output_location;
 mod requirement_listing_route;
 mod requirement_span_integrity;
@@ -239,6 +251,11 @@ mod issue_1138_store_read_path;
 mod issue_1138_surface_honesty;
 mod issue_1138_telegram_execution;
 mod issue_1138_uniform_dispatch;
+mod issue_1156_explicit_stdout_coreference;
+mod issue_1157_idempotent_commit;
+mod issue_1158_pull_request_steps;
+mod issue_1159_toolchain_bootstrap;
+mod issue_1160_regular_prompt;
 mod issue_1163_1164_captured_pages;
 mod issue_1163_formal_knowledge_paths;
 mod issue_1163_web_formalize;
@@ -249,6 +266,7 @@ mod issue_1165_documentation_route;
 mod issue_1165_documented_commands;
 mod issue_1166_executor_gaps;
 mod issue_1166_obligation_routing;
+mod issue_1166_task_acceptance;
 mod issue_1167_compose_render_parse;
 mod issue_1168_latest_versions;
 mod issue_1168_workflow_render_parity;
@@ -271,6 +289,8 @@ mod issue_1188_dependency_summarization;
 mod issue_1188_round_trip_translation;
 mod issue_1188_self_translation_corpus;
 mod issue_1188_web_formalization;
+mod issue_1582_permissions;
+mod issue_1588_intent_spans;
 mod issue_483_small_model_fallback;
 mod issue_491_least_action;
 mod issue_668_associative_package_sharing;
@@ -322,6 +342,9 @@ mod web_engine_core;
 #[path = "../fixtures/source-read-provenance.rs"]
 mod source_read_provenance;
 
+mod meta_executor_census;
+mod meta_executor_parity;
+mod proposition_structure_parity;
 mod provenance_snapshot;
 
 mod readable_source_model;

@@ -1,0 +1,53 @@
+name: Documentation policy
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches-ignore: ['e2e/**']
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Run documentation checks
+        type: choice
+        options: [checks]
+        default: checks
+      pull-request:
+        description: Pull request whose checks were requested
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-documentation-policy
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+jobs:
+  documentation-policy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v7
+        timeout-minutes: 2
+        env:
+          GIT_HTTP_LOW_SPEED_LIMIT: '1024'
+          GIT_HTTP_LOW_SPEED_TIME: '20'
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            /.github/workflows/
+            /scripts/documentation-only-ci-policy.mjs
+            /scripts/lib/documentation-paths.mjs
+            /scripts/lib/hive-delivery-admission.mjs
+            /scripts/documentation-policy-dependencies/
+            /rust/tests/web/documentation-only-ci-policy.test.mjs
+            /package.json
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      # Install only the policy parser, never the application/native dependency tree.
+      - run: npm ci --ignore-scripts --no-audit --no-fund --prefix scripts/documentation-policy-dependencies
+      - run: |
+          mkdir -p node_modules
+          ln -s ../scripts/documentation-policy-dependencies/node_modules/yaml node_modules/yaml
+          node --test rust/tests/web/documentation-only-ci-policy.test.mjs

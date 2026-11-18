@@ -1,0 +1,713 @@
+Actual Hive claude work-item unsupported	UNKNOWN STEP	﻿2026-11-04T03:47:36.8036811Z Current runner version: '2.338.2'
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8061993Z ##[group]Runner Image Provisioner
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8062893Z Hosted Compute Agent
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8063516Z Version: 20261021.618
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8064247Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8064981Z Build Date: 2026-10-21T00:45:21Z
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8066164Z Worker ID: {4977bf87-78ac-468c-896a-a49247eb4a28}
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8067163Z Region: centralus
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8067731Z Cloud: Azure
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8068373Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8069900Z ##[group]Operating System
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8070532Z Ubuntu
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8071195Z 24.04.5
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8071714Z LTS
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8072295Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8072876Z ##[group]Runner Image
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8073493Z Image: ubuntu-24.04
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8074125Z Version: 20261025.353.1
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8075434Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261025.353/images/ubuntu/Ubuntu2404-Readme.md
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8077310Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261025.353
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8078272Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8079765Z ##[group]GITHUB_TOKEN Permissions
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8082036Z Actions: read
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8082745Z Contents: write
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8083320Z Issues: write
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8083906Z Metadata: read
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8084496Z PullRequests: write
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8085133Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8087548Z Secret source: Actions
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8088517Z Cache mode: write
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8089314Z Prepare workflow directory
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8694769Z Prepare all required actions
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:36.8768632Z Getting action download info
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:37.1550619Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:37.3033563Z Download action repository 'actions/setup-node@v7' (SHA:949feb2413d6458794dcd2491c4babbbce0c15c1)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:37.4517284Z Download action repository 'oven-sh/setup-bun@v2' (SHA:0c5077e51419868618aeaa5fe8019c62421857d6)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:37.8132683Z Download action repository 'actions/download-artifact@v8' (SHA:9000827ccba6bdab643e8b6fd33ac0654aef8333)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.2250117Z Download action repository 'actions/upload-artifact@v7' (SHA:cf430e030ddbb5b0abf93d22962f4752f3646cd9)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.5171226Z Complete job name: Actual Hive claude work-item unsupported
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.6297855Z ##[group]Run actions/checkout@v7
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.6299347Z with:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.6300296Z   ref: e5ade3914a593fcf93a6a85a84e47bd18abd7793
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.6301544Z   persist-credentials: false
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.6302646Z   repository: link-assistant/formal-ai
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.6311478Z   token: ***
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.6312390Z   ssh-strict: true
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.6313287Z   ssh-user: git
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.6314141Z   clean: true
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.6315060Z   sparse-checkout-cone-mode: true
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.6316163Z   fetch-depth: 1
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.6317199Z   fetch-tags: false
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.6318119Z   show-progress: true
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.6319026Z   lfs: false
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.6319859Z   submodules: false
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.6320778Z   set-safe-directory: true
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.6321818Z   allow-unsafe-pr-checkout: false
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.6323167Z env:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.6323993Z   E2E_TOOL: claude
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.6324970Z   WORK_ITEM_TASK: unsupported
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.6325987Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9103582Z Syncing repository: link-assistant/formal-ai
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9107887Z ##[group]Getting Git version info
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9109861Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9113391Z [command]/usr/bin/git version
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9185265Z git version 2.56.0
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9217300Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9229350Z Temporarily overriding HOME='/home/runner/work/_temp/0fc1a7cf-d9b5-41eb-b86d-9bc77841966a' before making global git config changes
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9241303Z Adding repository directory to the temporary git global config as a safe directory
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9245482Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9293966Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9311819Z ##[group]Determining repository object format
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9314812Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9317723Z ##[group]Initializing the repository
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9320067Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9433878Z hint: Using 'master' as the name for the initial branch. This default branch name
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9437622Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9440940Z hint: to use in all of your new repositories, which will suppress this warning,
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9443600Z hint: call:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9444951Z hint:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9446854Z hint: 	git config --global init.defaultBranch <name>
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9449011Z hint:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9451018Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9454478Z hint: 'development'. The just-created branch can be renamed via this command:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9457644Z hint:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9459027Z hint: 	git branch -m <name>
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9460547Z hint:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9461870Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9463939Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9470268Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9526974Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9529634Z ##[group]Disabling automatic garbage collection
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9531948Z [command]/usr/bin/git config --local gc.auto 0
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9573997Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9576693Z ##[group]Setting up auth
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9578584Z Removing SSH command configuration
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9581135Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:38.9638129Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:39.0043176Z Removing HTTP extra header
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:39.0051305Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:39.0102025Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:39.0350693Z Removing includeIf entries pointing to credentials config files
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:39.0355212Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:39.0408330Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:39.0675642Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-c3ece08c-fbb7-4c68-bf08-ed7e8a14ab74.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:39.0729870Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-c3ece08c-fbb7-4c68-bf08-ed7e8a14ab74.config
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:39.0778116Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-c3ece08c-fbb7-4c68-bf08-ed7e8a14ab74.config
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:39.0830395Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-c3ece08c-fbb7-4c68-bf08-ed7e8a14ab74.config
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:39.0877479Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-c3ece08c-fbb7-4c68-bf08-ed7e8a14ab74.config
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:39.0923646Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:39.0926292Z ##[group]Fetching the repository
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:39.0932498Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin e5ade3914a593fcf93a6a85a84e47bd18abd7793
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:56.8758239Z From https://github.com/link-assistant/formal-ai
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:56.8759173Z  * branch              e5ade3914a593fcf93a6a85a84e47bd18abd7793 -> FETCH_HEAD
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:56.8773416Z [command]/usr/bin/git rev-parse --verify --quiet e5ade3914a593fcf93a6a85a84e47bd18abd7793^{object}
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:56.8814045Z e5ade3914a593fcf93a6a85a84e47bd18abd7793
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:56.8819799Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:56.8820732Z ##[group]Determining the checkout info
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:56.8821635Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:56.8825580Z [command]/usr/bin/git sparse-checkout disable
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:56.8889246Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:56.8933610Z ##[group]Checking out the ref
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:56.8938874Z [command]/usr/bin/git checkout --progress --force e5ade3914a593fcf93a6a85a84e47bd18abd7793
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:57.9826806Z Updating files:  11% (8567/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:58.1799722Z Updating files:  12% (8882/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:58.7738293Z Updating files:  13% (9622/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:58.9890406Z Updating files:  14% (10362/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:59.1261329Z Updating files:  14% (10491/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:59.3235431Z Updating files:  15% (11102/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:59.4291505Z Updating files:  16% (11843/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:59.4918787Z Updating files:  17% (12583/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:59.6027579Z Updating files:  18% (13323/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:59.7334546Z Updating files:  19% (14063/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:59.9401377Z Updating files:  20% (14803/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:47:59.9657806Z Updating files:  21% (15543/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:00.0419884Z Updating files:  21% (15743/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:00.1343817Z Updating files:  22% (16283/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:00.2161718Z Updating files:  23% (17023/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:00.2907817Z Updating files:  24% (17764/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:00.3845002Z Updating files:  25% (18504/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:00.4634122Z Updating files:  26% (19244/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:00.5530535Z Updating files:  27% (19984/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:00.5897898Z Updating files:  28% (20724/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:00.6481677Z Updating files:  29% (21464/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:00.6960956Z Updating files:  30% (22204/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:00.7358094Z Updating files:  31% (22945/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:00.7955641Z Updating files:  32% (23685/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:00.8344428Z Updating files:  33% (24425/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:00.8618112Z Updating files:  34% (25165/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:00.9505129Z Updating files:  35% (25905/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:00.9656247Z Updating files:  36% (26645/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:01.0048772Z Updating files:  36% (26969/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:01.1884232Z Updating files:  37% (27385/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:01.2341250Z Updating files:  38% (28125/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:01.2708361Z Updating files:  39% (28866/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:01.3063145Z Updating files:  40% (29606/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:01.3410361Z Updating files:  41% (30346/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:01.3925923Z Updating files:  42% (31086/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:01.4291683Z Updating files:  43% (31826/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:01.4758123Z Updating files:  44% (32566/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:01.5651619Z Updating files:  45% (33306/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:01.6215550Z Updating files:  46% (34046/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:01.6563364Z Updating files:  47% (34787/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:01.6984438Z Updating files:  48% (35527/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:01.7367598Z Updating files:  49% (36267/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:01.7910611Z Updating files:  50% (37007/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:01.8217096Z Updating files:  51% (37747/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:01.8632455Z Updating files:  52% (38487/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:01.9000846Z Updating files:  53% (39227/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:01.9614651Z Updating files:  54% (39968/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:01.9655584Z Updating files:  55% (40708/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:01.9935898Z Updating files:  55% (40783/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:02.0321079Z Updating files:  56% (41448/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:02.0650234Z Updating files:  57% (42188/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:02.1419585Z Updating files:  58% (42928/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:02.2162112Z Updating files:  59% (43668/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:02.2671402Z Updating files:  60% (44408/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:02.3034334Z Updating files:  61% (45148/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:02.3558406Z Updating files:  62% (45889/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:02.4228593Z Updating files:  63% (46629/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:02.5087947Z Updating files:  64% (47369/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:02.5605390Z Updating files:  65% (48109/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:02.6026310Z Updating files:  66% (48849/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:02.6556017Z Updating files:  67% (49589/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:02.6880568Z Updating files:  68% (50329/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:02.7872252Z Updating files:  69% (51069/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:02.8148504Z Updating files:  70% (51810/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:02.8423873Z Updating files:  71% (52550/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:02.8704974Z Updating files:  72% (53290/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:02.9045184Z Updating files:  73% (54030/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:02.9332131Z Updating files:  74% (54770/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:02.9648061Z Updating files:  75% (55510/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:02.9654926Z Updating files:  76% (56250/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:03.0292751Z Updating files:  76% (56264/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:03.0783160Z Updating files:  77% (56991/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:03.1588565Z Updating files:  78% (57731/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:03.2136757Z Updating files:  79% (58471/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:03.3719395Z Updating files:  80% (59211/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:03.4774747Z Updating files:  81% (59951/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:03.5487765Z Updating files:  82% (60691/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:03.6226913Z Updating files:  83% (61431/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:03.7203214Z Updating files:  84% (62171/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:03.7879670Z Updating files:  85% (62912/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:03.8320416Z Updating files:  86% (63652/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:03.9700787Z Updating files:  87% (64392/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.0243412Z Updating files:  87% (64893/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.0961143Z Updating files:  88% (65132/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.1557856Z Updating files:  89% (65872/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.2155256Z Updating files:  90% (66612/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.2636934Z Updating files:  91% (67352/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.3314124Z Updating files:  92% (68092/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.3873306Z Updating files:  93% (68833/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.4542007Z Updating files:  94% (69573/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.5070319Z Updating files:  95% (70313/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.5653539Z Updating files:  96% (71053/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.6175070Z Updating files:  97% (71793/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.6709319Z Updating files:  98% (72533/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.7256969Z Updating files:  99% (73273/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.7257852Z Updating files: 100% (74013/74013)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.7258302Z Updating files: 100% (74013/74013), done.
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8107785Z Note: switching to 'e5ade3914a593fcf93a6a85a84e47bd18abd7793'.
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8108620Z 
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8109216Z You are in 'detached HEAD' state. You can look around, make experimental
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8110042Z changes and commit them, and you can discard any commits you make in this
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8110797Z state without impacting any branches by switching back to a branch.
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8111238Z 
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8111536Z If you want to create a new branch to retain commits you create, you may
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8112703Z do so (now or later) by using -c with the switch command. Example:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8113159Z 
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8113337Z   git switch -c <new-branch-name>
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8113627Z 
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8113794Z Or undo this operation with:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8114055Z 
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8114201Z   git switch -
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8114405Z 
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8114782Z Turn off this advice by setting config variable advice.detachedHead to false
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8115317Z 
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8115516Z HEAD is now at e5ade391 chore: release v0.355.30
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8347559Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8409129Z [command]/usr/bin/git log -1 --format=%H
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8458965Z e5ade3914a593fcf93a6a85a84e47bd18abd7793
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8472381Z ##[group]Removing auth
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8472780Z Removing SSH command configuration
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8474695Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8521237Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8908265Z Removing HTTP extra header
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8912508Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.8959825Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.9336961Z Removing includeIf entries pointing to credentials config files
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.9341736Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.9388928Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.9389782Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.9390252Z includeif.gitdir:/github/workspace/.git.path
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.9390816Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.9399944Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.9439515Z /home/runner/work/_temp/git-credentials-c3ece08c-fbb7-4c68-bf08-ed7e8a14ab74.config
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.9453234Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-c3ece08c\-fbb7\-4c68\-bf08\-ed7e8a14ab74\.config
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.9505198Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.9549084Z /home/runner/work/_temp/git-credentials-c3ece08c-fbb7-4c68-bf08-ed7e8a14ab74.config
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.9563212Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-c3ece08c\-fbb7\-4c68\-bf08\-ed7e8a14ab74\.config
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.9614922Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.9651602Z /github/runner_temp/git-credentials-c3ece08c-fbb7-4c68-bf08-ed7e8a14ab74.config
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.9658773Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-c3ece08c\-fbb7\-4c68\-bf08\-ed7e8a14ab74\.config
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.9705678Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.9740744Z /github/runner_temp/git-credentials-c3ece08c-fbb7-4c68-bf08-ed7e8a14ab74.config
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.9747909Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-c3ece08c\-fbb7\-4c68\-bf08\-ed7e8a14ab74\.config
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:04.9794183Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:05.0165710Z Removing credentials config '/home/runner/work/_temp/git-credentials-c3ece08c-fbb7-4c68-bf08-ed7e8a14ab74.config'
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:05.0175461Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:05.0434855Z ##[group]Run actions/setup-node@v7
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:05.0435141Z with:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:05.0435337Z   node-version: 24
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:05.0435547Z   check-latest: false
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:05.0438400Z   token: ***
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:05.0438637Z   package-manager-cache: true
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:05.0438883Z env:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:05.0439061Z   E2E_TOOL: claude
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:05.0439276Z   WORK_ITEM_TASK: unsupported
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:05.0439515Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:05.2161040Z Found in cache @ /opt/hostedtoolcache/node/24.22.1/x64
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:06.0418610Z ##[group]Environment details
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:08.0794977Z node: v24.22.1
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:08.0795241Z npm: 11.19.1
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:08.0795434Z yarn: 1.22.22
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:08.0795879Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:08.0990877Z ##[group]Run oven-sh/setup-bun@v2
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:08.0991342Z with:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:08.0991683Z   bun-version-file: .bun-version
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:08.0992104Z   no-cache: false
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:08.0996943Z   token: ***
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:08.0997281Z env:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:08.0997611Z   E2E_TOOL: claude
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:08.0997976Z   WORK_ITEM_TASK: unsupported
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:08.0998429Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:08.2739812Z Obtained version 1.4.2 from .bun-version
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:08.4349912Z Cache hit for: bun-gmoqYqdUbaYsI0KujeXt7Zg/p0I=
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:09.3113083Z Received 35684137 of 35684137 (100.0%), 48.5 MBs/sec
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:09.3117597Z Cache Size: ~34 MB (35684137 B)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:09.3149574Z [command]/usr/bin/tar -xf /home/runner/work/_temp/f4d61ecb-2501-4b56-a778-6ea489eaf466/cache.tzst -P -C /home/runner/work/formal-ai/formal-ai --use-compress-program unzstd
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:09.4702722Z Cache restored successfully
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:09.4725039Z [command]/home/runner/.bun/bin/bun --revision
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:09.4798365Z 1.4.2+744846f84
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:09.4811688Z Using a cached version of Bun: 1.4.2+744846f84
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:09.5098099Z ##[group]Run bun install --frozen-lockfile --ignore-scripts
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:09.5098624Z ^[[36;1mbun install --frozen-lockfile --ignore-scripts^[[0m
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:09.5174361Z shell: /usr/bin/bash -e {0}
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:09.5174640Z env:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:09.5174838Z   E2E_TOOL: claude
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:09.5175070Z   WORK_ITEM_TASK: unsupported
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:09.5175323Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:09.5619972Z bun install v1.4.2 (744846f84)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.7922092Z 
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.7924183Z + @babel/traverse@8.0.7
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.7924893Z + @babel/parser@8.0.7
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.7925533Z + @chakra-ui/react@3.37.0
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.7926232Z + @emotion/react@11.14.0
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.7927296Z + @link-assistant/web-search@0.11.1
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.7928007Z + dompurify@3.4.17
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.7928559Z + lino-i18n@0.4.0
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.7929070Z + marked@18.1.1
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.7929572Z + mermaid@12.2.0
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.7930084Z + react@19.3.1
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.7930687Z + react-dom@19.3.1
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.7931245Z + tesseract.js@7.0.0
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.7931598Z 
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.7931895Z 394 packages installed [2.23s]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.8095185Z ##[group]Run actions/checkout@v7
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.8095478Z with:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.8095705Z   repository: link-assistant/hive-mind
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.8096026Z   ref: 4ac40597b70aa411d00c9a645f10484e5f04f57e
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.8096319Z   path: .hive-mind
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.8096843Z   persist-credentials: false
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.8099269Z   token: ***
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.8099475Z   ssh-strict: true
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.8099683Z   ssh-user: git
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.8100080Z   clean: true
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.8100294Z   sparse-checkout-cone-mode: true
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.8100551Z   fetch-depth: 1
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.8100754Z   fetch-tags: false
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.8100969Z   show-progress: true
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.8101175Z   lfs: false
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.8101367Z   submodules: false
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.8101578Z   set-safe-directory: true
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.8101843Z   allow-unsafe-pr-checkout: false
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.8102097Z env:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.8102314Z   E2E_TOOL: claude
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.8102533Z   WORK_ITEM_TASK: unsupported
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.8102766Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.8978031Z Syncing repository: link-assistant/hive-mind
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.8986516Z ##[group]Getting Git version info
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.8987793Z Working directory is '/home/runner/work/formal-ai/formal-ai/.hive-mind'
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9035955Z [command]/usr/bin/git version
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9082905Z git version 2.56.0
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9104610Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9115494Z Temporarily overriding HOME='/home/runner/work/_temp/384d1064-f397-479a-83ad-94e0019a2d69' before making global git config changes
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9117210Z Adding repository directory to the temporary git global config as a safe directory
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9121688Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai/.hive-mind
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9163008Z ##[group]Determining repository object format
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9165118Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9166058Z ##[group]Initializing the repository
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9170426Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai/.hive-mind
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9224985Z hint: Using 'master' as the name for the initial branch. This default branch name
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9226232Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9227699Z hint: to use in all of your new repositories, which will suppress this warning,
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9228540Z hint: call:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9228990Z hint:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9229641Z hint: 	git config --global init.defaultBranch <name>
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9230312Z hint:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9231081Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9232218Z hint: 'development'. The just-created branch can be renamed via this command:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9233006Z hint:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9233501Z hint: 	git branch -m <name>
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9234075Z hint:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9234931Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9236220Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.hive-mind/.git/
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9238766Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/hive-mind
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9279656Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9280343Z ##[group]Disabling automatic garbage collection
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9285170Z [command]/usr/bin/git config --local gc.auto 0
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9324545Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9325285Z ##[group]Setting up auth
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9325976Z Removing SSH command configuration
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9333009Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9376955Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9667259Z Removing HTTP extra header
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9673412Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9720855Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:11.9998386Z Removing includeIf entries pointing to credentials config files
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:12.0000255Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:12.0066310Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:12.0343648Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-7a543de5-6e56-4d22-b4b2-441567af30e0.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:12.0399371Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git.path /home/runner/work/_temp/git-credentials-7a543de5-6e56-4d22-b4b2-441567af30e0.config
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:12.0444103Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-7a543de5-6e56-4d22-b4b2-441567af30e0.config
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:12.0488390Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.hive-mind/.git.path /github/runner_temp/git-credentials-7a543de5-6e56-4d22-b4b2-441567af30e0.config
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:12.0536180Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.hive-mind/.git/worktrees/*.path /github/runner_temp/git-credentials-7a543de5-6e56-4d22-b4b2-441567af30e0.config
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:12.0577135Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:12.0577618Z ##[group]Fetching the repository
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:12.0584685Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 4ac40597b70aa411d00c9a645f10484e5f04f57e
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:25.0806258Z From https://github.com/link-assistant/hive-mind
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:25.0807500Z  * branch            4ac40597b70aa411d00c9a645f10484e5f04f57e -> FETCH_HEAD
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:25.0819535Z [command]/usr/bin/git rev-parse --verify --quiet 4ac40597b70aa411d00c9a645f10484e5f04f57e^{object}
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:25.0858785Z 4ac40597b70aa411d00c9a645f10484e5f04f57e
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:25.0863296Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:25.0863906Z ##[group]Determining the checkout info
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:25.0864586Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:25.0869155Z [command]/usr/bin/git sparse-checkout disable
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:25.0923402Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:25.0966706Z ##[group]Checking out the ref
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:25.0971082Z [command]/usr/bin/git checkout --progress --force 4ac40597b70aa411d00c9a645f10484e5f04f57e
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:26.3727921Z Updating files:  22% (2179/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:26.4735730Z Updating files:  23% (2185/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:26.5224789Z Updating files:  24% (2280/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:26.5591758Z Updating files:  25% (2374/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:26.5860226Z Updating files:  26% (2469/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:26.6669744Z Updating files:  27% (2564/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:26.7112350Z Updating files:  28% (2659/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:26.7324246Z Updating files:  29% (2754/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:26.8283577Z Updating files:  30% (2849/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:26.9347772Z Updating files:  31% (2944/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:26.9973926Z Updating files:  32% (3039/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:27.1169490Z Updating files:  33% (3134/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:27.1740174Z Updating files:  33% (3208/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:27.2342347Z Updating files:  34% (3229/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:27.3317182Z Updating files:  35% (3324/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:27.3926898Z Updating files:  36% (3419/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:27.4381460Z Updating files:  37% (3514/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:27.5110159Z Updating files:  38% (3609/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:27.5758470Z Updating files:  39% (3704/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:27.6057232Z Updating files:  40% (3799/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:27.6348139Z Updating files:  41% (3894/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:27.6792483Z Updating files:  42% (3989/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:27.6977982Z Updating files:  43% (4084/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:27.8003892Z Updating files:  44% (4179/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:27.8330055Z Updating files:  45% (4274/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:27.9120937Z Updating files:  46% (4369/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:27.9244713Z Updating files:  47% (4464/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:27.9681803Z Updating files:  48% (4559/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:27.9887073Z Updating files:  49% (4654/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:28.0217611Z Updating files:  50% (4748/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:28.0319477Z Updating files:  51% (4843/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:28.1227340Z Updating files:  52% (4938/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:28.1380594Z Updating files:  52% (5013/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:28.1807230Z Updating files:  53% (5033/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:28.3131654Z Updating files:  54% (5128/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:28.3328921Z Updating files:  55% (5223/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:28.3617013Z Updating files:  56% (5318/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:28.4342208Z Updating files:  57% (5413/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:28.4492283Z Updating files:  58% (5508/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:28.4654501Z Updating files:  59% (5603/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:28.5365917Z Updating files:  60% (5698/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:28.5441497Z Updating files:  61% (5793/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:28.5490262Z Updating files:  62% (5888/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:28.5614951Z Updating files:  63% (5983/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:28.6626135Z Updating files:  64% (6078/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:28.7628211Z Updating files:  65% (6173/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:28.8372255Z Updating files:  66% (6268/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:28.8699597Z Updating files:  67% (6363/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:28.8828402Z Updating files:  68% (6458/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:28.9852486Z Updating files:  69% (6553/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.0044424Z Updating files:  70% (6648/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.2005531Z Updating files:  71% (6743/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.2603052Z Updating files:  71% (6758/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.3070394Z Updating files:  72% (6838/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.3318576Z Updating files:  73% (6933/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.3369442Z Updating files:  74% (7028/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.3423978Z Updating files:  75% (7122/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.3470195Z Updating files:  76% (7217/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.3530411Z Updating files:  77% (7312/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.3998588Z Updating files:  78% (7407/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.4045966Z Updating files:  79% (7502/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.4111194Z Updating files:  80% (7597/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.4160452Z Updating files:  81% (7692/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.4211493Z Updating files:  82% (7787/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.4259026Z Updating files:  83% (7882/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.4308210Z Updating files:  84% (7977/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.4364284Z Updating files:  85% (8072/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.4437867Z Updating files:  86% (8167/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.4518594Z Updating files:  87% (8262/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.4602896Z Updating files:  88% (8357/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.4684780Z Updating files:  89% (8452/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.4776345Z Updating files:  90% (8547/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.4863954Z Updating files:  91% (8642/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.4931026Z Updating files:  92% (8737/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5000967Z Updating files:  93% (8832/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5070880Z Updating files:  94% (8927/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5146866Z Updating files:  95% (9022/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5215906Z Updating files:  96% (9117/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5285022Z Updating files:  97% (9212/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5362390Z Updating files:  98% (9307/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5429923Z Updating files:  99% (9402/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5430471Z Updating files: 100% (9496/9496)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5431199Z Updating files: 100% (9496/9496), done.
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5550587Z Note: switching to '4ac40597b70aa411d00c9a645f10484e5f04f57e'.
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5551165Z 
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5551743Z You are in 'detached HEAD' state. You can look around, make experimental
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5552919Z changes and commit them, and you can discard any commits you make in this
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5554057Z state without impacting any branches by switching back to a branch.
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5554566Z 
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5555180Z If you want to create a new branch to retain commits you create, you may
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5555882Z do so (now or later) by using -c with the switch command. Example:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5556225Z 
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5556397Z   git switch -c <new-branch-name>
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5556966Z 
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5557130Z Or undo this operation with:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5557353Z 
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5557473Z   git switch -
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5557628Z 
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5558033Z Turn off this advice by setting config variable advice.detachedHead to false
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5558447Z 
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5558616Z HEAD is now at 4ac4059 2.39.11
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5783746Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5844084Z [command]/usr/bin/git log -1 --format=%H
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5885459Z 4ac40597b70aa411d00c9a645f10484e5f04f57e
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5897295Z ##[group]Removing auth
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5897917Z Removing SSH command configuration
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5902849Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.5949888Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.6214978Z Removing HTTP extra header
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.6220439Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.6267276Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.6529707Z Removing includeIf entries pointing to credentials config files
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.6533801Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.6574024Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git.path
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.6575260Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git/worktrees/*.path
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.6576248Z includeif.gitdir:/github/workspace/.hive-mind/.git.path
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.6577426Z includeif.gitdir:/github/workspace/.hive-mind/.git/worktrees/*.path
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.6584078Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git.path
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.6619822Z /home/runner/work/_temp/git-credentials-7a543de5-6e56-4d22-b4b2-441567af30e0.config
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.6637956Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-7a543de5\-6e56\-4d22\-b4b2\-441567af30e0\.config
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.6685326Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git/worktrees/*.path
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.6720725Z /home/runner/work/_temp/git-credentials-7a543de5-6e56-4d22-b4b2-441567af30e0.config
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.6730881Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.hive-mind/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-7a543de5\-6e56\-4d22\-b4b2\-441567af30e0\.config
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.6794589Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.hive-mind/.git.path
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.6832545Z /github/runner_temp/git-credentials-7a543de5-6e56-4d22-b4b2-441567af30e0.config
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.6844688Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.hive-mind/.git.path \/github\/runner_temp\/git\-credentials\-7a543de5\-6e56\-4d22\-b4b2\-441567af30e0\.config
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.6893269Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.hive-mind/.git/worktrees/*.path
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.6928874Z /github/runner_temp/git-credentials-7a543de5-6e56-4d22-b4b2-441567af30e0.config
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.6937458Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.hive-mind/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-7a543de5\-6e56\-4d22\-b4b2\-441567af30e0\.config
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.6983771Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.7252479Z Removing credentials config '/home/runner/work/_temp/git-credentials-7a543de5-6e56-4d22-b4b2-441567af30e0.config'
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.7263561Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.7386318Z ##[group]Run npm ci --omit=dev --ignore-scripts --no-audit --no-fund
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.7387386Z ^[[36;1mnpm ci --omit=dev --ignore-scripts --no-audit --no-fund^[[0m
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.7408615Z shell: /usr/bin/bash -e {0}
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.7408865Z env:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.7409055Z   E2E_TOOL: claude
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.7409286Z   WORK_ITEM_TASK: unsupported
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:29.7409539Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:36.6127999Z 
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:36.6128904Z added 277 packages in 7s
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:36.6791783Z ##[group]Run actions/download-artifact@v8
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:36.6792096Z with:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:36.6792308Z   name: work-item-current-binary
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:36.6792568Z   path: rust/target/release
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:36.6792806Z   merge-multiple: false
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:36.6793046Z   repository: link-assistant/formal-ai
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:36.6793847Z   run-id: 41768761745
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:36.6794081Z   skip-decompress: false
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:36.6794320Z   digest-mismatch: error
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:36.6794534Z env:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:36.6794717Z   E2E_TOOL: claude
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:36.6794950Z   WORK_ITEM_TASK: unsupported
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:36.6795236Z   NODE_OPTIONS: --disable-warning=DEP0005
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:36.6795507Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:36.8269551Z Downloading single artifact
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:36.9947046Z Preparing to download the following artifacts:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:36.9948715Z - work-item-current-binary (ID: 13294610319, Size: 69056033, Expected Digest: sha256:6ffee4339de5d622387e44c13786fbd5b8d15f23e9f633d168dcfa4414aace37)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:37.2729874Z Redirecting to blob download url: https://productionresultssa30.blob.core.windows.net/actions-results/828f7d1e-1031-4911-9d18-c7b809f30116/workflow-job-run-54ba12fa-99e8-51a8-807f-eba566801b41/artifacts/a54b978306d9bcea8fcba22525c1447de6d0bbc0827bde1273260bc8c684a0ac.zip
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:37.2732726Z Starting download of artifact to: /home/runner/work/formal-ai/formal-ai/rust/target/release
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:39.8702991Z SHA256 digest of downloaded artifact is 6ffee4339de5d622387e44c13786fbd5b8d15f23e9f633d168dcfa4414aace37
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:39.8704382Z Artifact download completed successfully.
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:39.8705408Z Total of 1 artifact(s) downloaded
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:39.8711639Z Download artifact has finished successfully
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:39.8861534Z ##[group]Run chmod 0755 rust/target/release/formal-ai
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:39.8862264Z ^[[36;1mchmod 0755 rust/target/release/formal-ai^[[0m
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:39.8892578Z shell: /usr/bin/bash -e {0}
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:39.8893042Z env:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:39.8893398Z   E2E_TOOL: claude
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:39.8893801Z   WORK_ITEM_TASK: unsupported
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:39.8894246Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:39.9043179Z ##[group]Run actions/download-artifact@v8
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:39.9043515Z with:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:39.9043726Z   name: work-item-admission
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:39.9044034Z   path: /home/runner/work/_temp/work-item-admission
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:39.9044358Z   merge-multiple: false
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:39.9044612Z   repository: link-assistant/formal-ai
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:39.9044890Z   run-id: 41768761745
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:39.9045111Z   skip-decompress: false
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:39.9045344Z   digest-mismatch: error
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:39.9045569Z env:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:39.9045753Z   E2E_TOOL: claude
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:39.9045976Z   WORK_ITEM_TASK: unsupported
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:39.9046252Z   NODE_OPTIONS: --disable-warning=DEP0005
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:39.9046816Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:40.0535808Z Downloading single artifact
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:40.2029241Z Preparing to download the following artifacts:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:40.2030885Z - work-item-admission (ID: 13294570596, Size: 5109, Expected Digest: sha256:2d2c9d271fe2fb41d7460d1c46db98750e7cafc1b7603c980a5df08c1e3f33ec)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:40.4964323Z Redirecting to blob download url: https://productionresultssa30.blob.core.windows.net/actions-results/828f7d1e-1031-4911-9d18-c7b809f30116/workflow-job-run-54ba12fa-99e8-51a8-807f-eba566801b41/artifacts/c575c32ad6d3499ce047f0ad9b36cd002252dc29e27a9d883e1f9c38cf8dd8af.zip
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:40.4967372Z Starting download of artifact to: /home/runner/work/_temp/work-item-admission
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:40.6610227Z SHA256 digest of downloaded artifact is 2d2c9d271fe2fb41d7460d1c46db98750e7cafc1b7603c980a5df08c1e3f33ec
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:40.6611391Z Artifact download completed successfully.
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:40.6612063Z Total of 1 artifact(s) downloaded
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:40.6615486Z Download artifact has finished successfully
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:40.6735611Z ##[group]Run node scripts/work-item-qualification/run-work-item-qualification.mjs
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:40.6736245Z ^[[36;1mnode scripts/work-item-qualification/run-work-item-qualification.mjs^[[0m
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:40.6757671Z shell: /usr/bin/bash -e {0}
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:40.6757942Z env:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:40.6758138Z   E2E_TOOL: claude
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:40.6758374Z   WORK_ITEM_TASK: unsupported
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:40.6760877Z   GH_TOKEN: ***
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:40.6761245Z   WORK_ITEM_SELECTION: /home/runner/work/_temp/work-item-admission/selection.json
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:40.6761790Z   WORK_ITEM_OWNER: /home/runner/work/_temp/work-item-admission/owner.json
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:48:40.6762164Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.5501022Z node:internal/modules/run_main:107
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.5523459Z     triggerUncaughtException(
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.5524031Z     ^
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.5524236Z 
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.5525082Z AssertionError [ERR_ASSERTION]: command failed: docker; inspect retained status and logs
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.5527228Z     at command (file:///home/runner/work/formal-ai/formal-ai/scripts/work-item-qualification/run-work-item-qualification.mjs:51:21)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.5529051Z     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.5530524Z     at async file:///home/runner/work/formal-ai/formal-ai/scripts/work-item-qualification/run-work-item-qualification.mjs:111:3 {
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.5531292Z   generatedMessage: false,
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.5531790Z   code: 'ERR_ASSERTION',
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.5532205Z   actual: false,
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.5532608Z   expected: true,
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.5533019Z   operator: '==',
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.5533404Z   diff: 'simple'
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.5533788Z }
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.5533980Z 
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.5534138Z Node.js v24.22.1
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.6121033Z ##[error]Process completed with exit code 1.
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.7498764Z ##[group]Run actions/upload-artifact@v7
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.7499157Z with:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.7499446Z   name: work-item-resource-claude-unsupported
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.7500003Z   path: /home/runner/work/_temp/work-item-claude-unsupported/publish/resource.json
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.7500527Z   if-no-files-found: error
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.7500827Z   retention-days: 90
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.7501105Z   compression-level: 6
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.7501383Z   overwrite: false
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.7501660Z   include-hidden-files: false
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.7501969Z   archive: true
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.7502210Z env:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.7502441Z   E2E_TOOL: claude
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.7502704Z   WORK_ITEM_TASK: unsupported
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:46.7503007Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:47.0320284Z With the provided path, there will be 1 file uploaded
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:47.0324488Z Artifact name is valid!
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:47.0325519Z Root directory input is valid!
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:47.4167227Z Uploading artifact: work-item-resource-claude-unsupported.zip
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:47.4210397Z Beginning upload of artifact content to blob storage
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:47.6092248Z Uploaded bytes 743
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:47.6530386Z Finished uploading artifact content to blob storage!
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:47.6532183Z SHA256 digest of uploaded artifact is 0bf22484d6f170c0384f02d062f05f359cad65e45610f79aea8505ecf5de1b28
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:47.6533518Z Finalizing artifact upload
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:48.2043066Z Artifact work-item-resource-claude-unsupported successfully finalized. Artifact ID 13294665789
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:48.2044449Z Artifact work-item-resource-claude-unsupported has been successfully uploaded! Final size is 743 bytes. Artifact ID is 13294665789
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:48.2047305Z Artifact download URL: https://github.com/link-assistant/formal-ai/actions/runs/41768761745/artifacts/13294665789
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:48.2685899Z ##[group]Run actions/upload-artifact@v7
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:48.2686432Z with:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:48.2687042Z   name: work-item-claude-unsupported
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:48.2687720Z   path: /home/runner/work/_temp/work-item-claude-unsupported/publish
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:48.2688390Z   if-no-files-found: error
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:48.2688661Z   retention-days: 90
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:48.2688902Z   compression-level: 6
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:48.2689133Z   overwrite: false
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:48.2689368Z   include-hidden-files: false
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:48.2689637Z   archive: true
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:48.2689849Z env:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:48.2690045Z   E2E_TOOL: claude
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:48.2690278Z   WORK_ITEM_TASK: unsupported
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:48.2690525Z ##[endgroup]
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:48.4334441Z With the provided path, there will be 40 files uploaded
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:48.4340520Z Artifact name is valid!
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:48.4341386Z Root directory input is valid!
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:48.7234132Z Uploading artifact: work-item-claude-unsupported.zip
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:48.7289974Z Beginning upload of artifact content to blob storage
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:48.9837721Z Uploaded bytes 42040
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.0208344Z Finished uploading artifact content to blob storage!
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.0209750Z SHA256 digest of uploaded artifact is e2dd9fda12eaba3c99fb4df568c8982819fb8d571ea10c77948fa099056fb96c
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.0210630Z Finalizing artifact upload
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.5408534Z Artifact work-item-claude-unsupported successfully finalized. Artifact ID 13294007407
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.5409539Z Artifact work-item-claude-unsupported has been successfully uploaded! Final size is 42040 bytes. Artifact ID is 13294007407
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.5412150Z Artifact download URL: https://github.com/link-assistant/formal-ai/actions/runs/41768761745/artifacts/13294007407
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.5705942Z Post job cleanup.
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.6719457Z [command]/usr/bin/git version
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.6773263Z git version 2.56.0
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.6828246Z Temporarily overriding HOME='/home/runner/work/_temp/52678916-174f-4087-b641-1116f5ab6e16' before making global git config changes
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.6830635Z Adding repository directory to the temporary git global config as a safe directory
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.6836806Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai/.hive-mind
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.6997494Z Removing SSH command configuration
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.6998706Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.7001876Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.7370959Z Removing HTTP extra header
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.7378808Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.7458246Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.7818765Z Removing includeIf entries pointing to credentials config files
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.7824447Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.7876296Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.8395930Z Post job cleanup.
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.9469047Z [command]/usr/bin/git version
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.9536093Z git version 2.56.0
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.9616321Z Temporarily overriding HOME='/home/runner/work/_temp/9568332d-0750-4521-8931-f92a5e7d4860' before making global git config changes
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.9622068Z Adding repository directory to the temporary git global config as a safe directory
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.9647761Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.9728097Z Removing SSH command configuration
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.9752911Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:49.9788667Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:50.0671697Z Removing HTTP extra header
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:50.0673138Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:50.0740020Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:50.1179876Z Removing includeIf entries pointing to credentials config files
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:50.1188059Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:50.1242325Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Actual Hive claude work-item unsupported	UNKNOWN STEP	2026-11-04T03:51:50.1853444Z Cleaning up orphan processes

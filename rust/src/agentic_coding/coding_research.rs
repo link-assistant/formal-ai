@@ -10,11 +10,18 @@ pub(super) mod kernel;
 
 use super::tool_result::{StepOutcome, incomplete_receipt, normalized_payload, step_outcome};
 
-/// Terminal TAP evidence is decided by the same generated kernel as JavaScript.
+/// Terminal TAP and Node spec evidence share strict generated counter decisions.
 #[must_use]
 pub fn verification_receipt_gap(raw: &str) -> Option<String> {
     let complete = !incomplete_receipt(raw) && step_outcome(raw) == StepOutcome::Succeeded;
-    let payload = normalized_payload(raw).unwrap_or_default();
+    let payload: Vec<String> = normalized_payload(raw)
+        .unwrap_or_default()
+        .split('\n')
+        .map(|line| {
+            line.strip_prefix("ℹ ")
+                .map_or_else(|| line.to_owned(), |tail| format!("# {tail}"))
+        })
+        .collect();
     let mut counts = [-1.0, -1.0, -1.0, 0.0, 0.0];
     let mut unique = true;
     for (index, field) in ["tests", "pass", "fail", "skipped", "cancelled"]
@@ -23,7 +30,7 @@ pub fn verification_receipt_gap(raw: &str) -> Option<String> {
     {
         let prefix = format!("# {field} ");
         let values: Vec<&str> = payload
-            .split('\n')
+            .iter()
             .filter_map(|line| {
                 line.strip_suffix('\r')
                     .unwrap_or(line)
@@ -33,7 +40,7 @@ pub fn verification_receipt_gap(raw: &str) -> Option<String> {
             .collect();
         let label = format!("# {field}");
         let recognized = payload
-            .split('\n')
+            .iter()
             .filter(|line| {
                 line.strip_prefix(label.as_str()).is_some_and(|suffix| {
                     suffix.is_empty()

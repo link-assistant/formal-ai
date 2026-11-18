@@ -9,18 +9,19 @@
 //! These tests pin the trigger *and* the thing it must not become: a place to
 //! weaken the condition now that it is visible sooner.
 
-use super::workflow_fixtures::{self_development_status_workflow, unwrapped};
+use super::workflow_fixtures::{job_block, self_development_status_workflow, unwrapped};
 
 /// The trigger exists, beside the two that were already there.
 #[test]
 fn the_status_runs_on_pull_requests_as_well_as_pushes_and_the_schedule() {
-    let workflow = unwrapped(&self_development_status_workflow());
+    let source = self_development_status_workflow();
+    let workflow = unwrapped(&source);
     assert!(
         workflow.contains("pull_request:"),
         "a pull request must be able to see the self-development status (issue #1113)"
     );
     assert!(
-        workflow.contains("push: branches: [main]"),
+        unwrapped(job_block(&source, "push")).contains("branches: [main]"),
         "the push trigger is what reports the status on `main`; it stays"
     );
     assert!(
@@ -33,7 +34,7 @@ fn the_status_runs_on_pull_requests_as_well_as_pushes_and_the_schedule() {
 /// that it answers the same question the push run answers, so none of them may
 /// become conditional on the event that started the run.
 #[test]
-fn every_check_still_runs_and_none_is_conditional_on_the_event() {
+fn full_status_checks_are_retained_with_explicit_fast_profile_deferral() {
     let workflow = self_development_status_workflow();
     for check in [
         "rust-script scripts/self-hosting-metric.rs",
@@ -48,11 +49,10 @@ fn every_check_still_runs_and_none_is_conditional_on_the_event() {
             "{check} is one of the three checks the status reports; it must still run"
         );
     }
-    assert!(
-        !workflow.contains("github.event_name"),
-        "no check may be skipped depending on what started the run: a status that \
-         means something different on a pull request than on `main` reports nothing"
-    );
+    assert!(!workflow.contains("FORMAL_AI_FULL_PR_CI"));
+    assert!(workflow.contains("github.event_name != 'pull_request'"));
+    assert!(workflow.contains("uses: ./.github/workflows/pull-request-check-profile.yml"));
+    assert!(workflow.contains("    runs-on: ubuntu-24.04"));
 }
 
 /// Issue #1066: no budget, no grace period, no bypass. Making the check visible

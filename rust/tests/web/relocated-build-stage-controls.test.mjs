@@ -54,7 +54,10 @@ function checkDesktop(workflow){
   const imported=step(job,'Import and verify exact source selection');
   assert.equal(imported.env.NATIVE_SELECTED_HEAD,'${{ needs.native-source.outputs.selected-head }}');
   assert.equal(imported.env.NATIVE_SELECTION_SHA256,'${{ needs.native-source.outputs.selection-sha256 }}');
-  assert.match(imported.run,/native-release-source\.mjs" import native-source/u);
+  assert.equal(imported.run.trim(),'node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import-offline native-source');
+  const history=download(job,'native-release-source-history');assert.equal(history.with.path,'native-source');
+  assert.ok(job.steps.indexOf(history)>job.steps.indexOf(download(job,'native-release-source')));
+  assert.ok(job.steps.indexOf(history)<job.steps.indexOf(imported));
   const verified=step(job,'Verify native receipt, bytes and startup before packaging');
   assert.equal(verified.env.NATIVE_SELECTION_SHA256,'${{ needs.native-source.outputs.selection-sha256 }}');
   assert.equal(verified.run.trim(),'node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-artifact.mjs" verify native-bin native-source "${{ matrix.target }}"');
@@ -72,7 +75,7 @@ function checkBrowserCoverage(workflow) {
  const producer=workflow.jobs['browser-coverage-shard'],collector=workflow.jobs['browser-coverage'];
  assert.equal(producer['timeout-minutes'],15);assert.equal(collector['timeout-minutes'],15);
  assert.equal(producer.strategy['fail-fast'],false);assert.deepEqual(producer.strategy.matrix.shard,Array.from({length:browserShardCount},(_,index)=>index+1));
- assert.deepEqual(producer.needs,['detect-changes']);assert.deepEqual(collector.needs,['detect-changes','browser-coverage-shard']);
+ assert.deepEqual(producer.needs,['coverage-policy','detect-changes']);assert.deepEqual(collector.needs,['coverage-policy','detect-changes','browser-coverage-shard']);
  for(const job of [producer,collector]) {
   assert.ok(job.if.includes('!cancelled()'));assert.ok(job.if.includes("github.event_name == 'workflow_dispatch'"));
   for(const output of ['any-code-changed','workflow-changed'])assert.ok(job.if.includes(`needs.detect-changes.outputs.${output} == 'true'`));
@@ -92,7 +95,7 @@ function checkBrowserCoverage(workflow) {
  order(collector,['Every browser shard measured its complete test slice','Download every browser coverage shard','Collect the complete source-bound browser coverage','Check browser coverage ratchet']);
 }
 function checkCoverage(workflow){
- const originalNames=['detect-changes','coverage-build','coverage-shard','coverage','browser-coverage'];
+ const originalNames=['detect-changes','coverage-policy','coverage-build','coverage-shard','coverage','browser-coverage'];
  const browserProducer='browser-coverage-shard';
  assert.deepEqual(Object.keys(workflow.jobs).filter(name=>name!==browserProducer),originalNames);
  const names=[...originalNames.slice(0,-1),browserProducer,originalNames.at(-1)];assert.deepEqual(Object.keys(workflow.jobs),names);
@@ -112,7 +115,7 @@ function checkCoverage(workflow){
  step(shard,'Run the instrumented coverage shard');
  const profileUploads=shard.steps.filter(value=>String(value.uses).startsWith('actions/upload-artifact@')&&value.with?.name?.startsWith('coverage-profile-'));
  assert.equal(profileUploads.length,1);assert.equal(profileUploads[0].with['if-no-files-found'],'error');
- assert.deepEqual(reducer.needs,['detect-changes','coverage-build','coverage-shard']);
+ assert.deepEqual(reducer.needs,['coverage-policy','detect-changes','coverage-build','coverage-shard']);
  assert.equal(step(reducer,'Every coverage shard measured its tests').run,'bash scripts/check-shard-results.sh');
  download(reducer,'coverage-objects');
  const profiles=step(reducer,"Download every shard's profile");assert.equal(profiles.with.pattern,'coverage-profile-*');assert.equal(profiles.with['merge-multiple'],true);
@@ -150,6 +153,11 @@ const desktopRefusals=[
  ['source drift selection digest',w=>{step(w.jobs.build,'Import and verify exact source selection').env.NATIVE_SELECTION_SHA256='unproved';}],
  ['unqualified required binary',w=>{step(w.jobs.build,'Prepare desktop resources (web + bundled binary + version sync)').env.FORMAL_AI_DESKTOP_REQUIRE_BINARY='false';}],
  ['duplicate package compilation',w=>{w.jobs.build.steps.push({name:'Unproved build',run:'cargo build --release'});}],
+ ['missing CLI history',w=>{w.jobs.cli.steps=w.jobs.cli.steps.filter(s=>s.with?.name!=='native-release-source-history');}],
+ ['misplaced CLI history',w=>{download(w.jobs.cli,'native-release-source-history').with.path='wrong-source';}],
+ ['CLI skips offline restore',w=>{step(w.jobs.cli,'Import and verify exact source selection').run='node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import native-source';}],
+ ['missing desktop history',w=>{w.jobs.build.steps=w.jobs.build.steps.filter(s=>s.with?.name!=='native-release-source-history');}],
+ ['desktop skips offline restore',w=>{step(w.jobs.build,'Import and verify exact source selection').run='node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import native-source';}],
  ['missing CLI smoke',w=>{w.jobs.cli.steps=w.jobs.cli.steps.filter(s=>s.name!=='Smoke test CLI archive');}]
 ];
 for(const [name,mutate]of desktopRefusals)test('refuse changed relocated native/package source: '+name,()=>{checkDesktop(desktop);const changed=structuredClone(desktop);mutate(changed);assert.throws(()=>checkDesktop(changed));});

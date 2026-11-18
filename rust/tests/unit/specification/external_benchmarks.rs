@@ -608,8 +608,9 @@ fn an_unrunnable_suite_is_recorded_as_benchmark_unavailable() {
     assert_eq!(editeval.grading, Grading::NotApplicable);
 
     // The run reports the reason rather than fabricating a score.
-    let run = external_benchmarks::run_suite(editeval, DEFAULT_SLICE, &repo_root())
-        .expect("an unavailable suite is reported, not an error");
+    let run =
+        external_benchmarks::run_suite_with_online(editeval, DEFAULT_SLICE, &repo_root(), false)
+            .expect("an unavailable suite is reported, not an error");
     assert_eq!(run.total, 0);
     assert_eq!(run.passed, 0);
     assert!(
@@ -660,7 +661,7 @@ fn a_runtime_payload_failure_is_reported_as_benchmark_unavailable() {
         availability: Availability::Runnable,
     };
 
-    let run = external_benchmarks::run_suite(&missing_payload, 1, &repo_root())
+    let run = external_benchmarks::run_suite_with_online(&missing_payload, 1, &repo_root(), false)
         .expect("runtime acquisition failures should become an unavailable run");
     assert_eq!(run.total, 0);
     assert_eq!(run.passed, 0);

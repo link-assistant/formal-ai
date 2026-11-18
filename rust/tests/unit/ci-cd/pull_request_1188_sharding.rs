@@ -164,8 +164,8 @@ fn every_test_matrix_suite_lists_each_of_its_shards_once() {
         slot.1.push(shard);
     }
     assert!(
-        declared.contains_key("ubuntu-latest / full")
-            && declared.contains_key("ubuntu-latest / specification"),
+        declared.contains_key("ubuntu-24.04 / full")
+            && declared.contains_key("ubuntu-24.04 / specification"),
         "the test matrix must still declare the ubuntu full and specification suites"
     );
     assert_eq!(

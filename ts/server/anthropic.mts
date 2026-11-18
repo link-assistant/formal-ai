@@ -24,6 +24,7 @@ import { createChatCompletion, unsupportedModelResponse } from './openai.mjs';
 import { advertisedContextCapacity, contextJson } from './gemini.mjs';
 import { resolveModelId } from './seed.mjs';
 import { renderThinkingSteps } from './thinking.mjs';
+import { requestScope, runInRequestScope } from './standing-scope.mjs';
 
 const U32_MAX = 0xffffffff;
 
@@ -340,13 +341,14 @@ export async function handleAnthropicMessages(ctx, request) {
   const unsupported = unsupportedModelResponse(parsed.model);
   if (unsupported) return unsupported;
   const chatRequest = anthropicToChatCompletionRequest(parsed);
-  const completion = await createChatCompletion(ctx, chatRequest);
+  const scope = requestScope({ body: request.body, messages: chatRequest.messages, tools: chatRequest.tools });
+  const completion = await runInRequestScope(scope, () => createChatCompletion(ctx, chatRequest, { forcedClientFunctions: false }));
   const message = anthropicMessageFromChatCompletion(parsed, completion);
   const answer = message.content
     .filter((block) => block.type === 'text')
     .map((block) => block.text)
     .join('\n');
-  ctx.memory.recordExchange(chatRequest.messages, answer);
+  ctx.memory.recordExchange(chatRequest.messages, answer, null, scope);
   if (parsed.stream) return sseResponse(anthropicMessageSse(message));
   return jsonResponse(200, message);
 }

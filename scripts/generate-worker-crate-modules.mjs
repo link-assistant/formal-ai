@@ -37,6 +37,7 @@ import { tokenize, layoutOf, renderSource } from './translate-es.mjs';
 
 /** The modules the chat routes call; their import closure is generated. */
 export const ENTRY_MODULES = Object.freeze([
+  'crate/cnl_output.mjs',
   'crate/command_output_contract.mjs',
   'crate/conversation_summary.mjs',
   'crate/concise_dependency_restatement.mjs',
@@ -45,6 +46,7 @@ export const ENTRY_MODULES = Object.freeze([
   'crate/fact_derivation.mjs',
   'crate/literal_authoring_contract.mjs',
   'crate/literal_content.mjs',
+  'crate/meta_executor.mjs',
   'crate/page_formalization.mjs',
   'crate/skill_compiler.mjs',
   'crate/skill_procedure.mjs',
@@ -53,6 +55,8 @@ export const ENTRY_MODULES = Object.freeze([
   'crate/solver_event_projection.mjs',
   'crate/requirement_extraction.mjs',
   'crate/round_trip_translation.mjs',
+  'crate/theorem_claim_binding.mjs',
+  'crate/unread_structure.mjs',
 ]);
 
 const AGENTIC_ROOT = 'js/agentic';

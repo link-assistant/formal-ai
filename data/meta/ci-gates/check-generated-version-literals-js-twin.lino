@@ -1,0 +1,10 @@
+# One CI gate, one file. Issue #991 moved the gate list out of
+# `.github/workflows/release.yml`, the repository's third most conflicted path,
+# because its step list was append-only. A gate lives here instead, so two
+# branches adding gates create two files, never one shared region.
+# `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
+ci_gate check-generated-version-literals-js-twin
+  stage rust
+  description "scripts/check-generated-version-literals.mjs prints exactly what scripts/check-generated-version-literals.rs prints, with the same exit code, so pull requests can run the JavaScript twin instead of compiling Rust."
+  run "node scripts/lib/checks-twin-parity.mjs check-generated-version-literals"
+  justification "Issue #1569: the Rust gate runs only in the main lint job, so PR #1498 merged captured action SHAs that turned every following main run red; the fast pull-request JavaScript profile runs this twin, and a twin that drifted from the Rust gate would pass work that main then rejects."

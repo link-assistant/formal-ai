@@ -118,6 +118,7 @@ test('actual captured grammar protocol serializes selected historical sources an
 
 
 for (const dependency of [
+  'scripts/lib/translation-single-pass.mjs',
   'scripts/lib/rust-projection-presentation.mjs',
   'scripts/self-translation/lexer.mjs',
   'scripts/check-readable-code.mjs',

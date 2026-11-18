@@ -7,6 +7,7 @@ import { contextCapacity, memoryHealthStatus } from './memory.mjs';
 import { serverMessage } from './messages.mjs';
 import { errorResponse, jsonResponse, linksNotationResponse, rawResponse, JSON_TYPE } from './response.mjs';
 import { canonicalModelId, mergedBundle, packageVersion } from './seed.mjs';
+import { configuredDialogLogDirectory } from './conversations.mjs';
 
 /** `server::ADVERTISED_MAX_OUTPUT_TOKENS`. */
 export const ADVERTISED_MAX_OUTPUT_TOKENS = 8192;
@@ -24,8 +25,12 @@ export function handleHello() {
 /** `GET /health`. */
 export function handleHealth(ctx = {}) {
   return jsonResponse(200, sortedKeys({
-    memory: memoryHealthStatus(ctx.env, ctx.liveMemory),
-    logs: ctx.logger?.healthStatus?.() ?? {status: 'not_configured'},
+    memory: memoryHealthStatus(ctx.env, ctx.liveMemory, ctx.ephemeral),
+    logs: {
+      ...(ctx.logger?.healthStatus?.() ?? {status: 'not_configured'}),
+      dialog_capture: !ctx.ephemeral && ctx.logger?.level !== 'silent' && Boolean(configuredDialogLogDirectory(ctx.env)),
+      derivation_capture: !ctx.ephemeral,
+    },
     model: canonicalModelId(),
     status: 'ok',
     version: packageVersion(),
@@ -55,6 +60,7 @@ export function handleModels() {
   const context = capacityJson(capacity);
   const shared = {
     avg_utf8_bytes_per_char: capacity.avg_utf8_bytes_per_char,
+    capabilities: ['json_schema'],
     context,
     context_used_fraction: f64(capacity.context_used_fraction),
     context_used_tokens: capacity.context_used_tokens,

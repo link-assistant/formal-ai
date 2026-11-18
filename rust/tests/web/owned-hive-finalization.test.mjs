@@ -3,13 +3,18 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import {prepareOwnedHiveRuns, applyOwnedHiveClaim, writeCleanupPreparation, writeCleanupOutcome} from '../../../scripts/finalize-owned-hive-delivery-runs.mjs';
-import {prepareCleanupClaim, readScanCursor, makeScanProgress, cleanupClaimName,
+import vm from 'node:vm';
+import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import YAML from 'yaml';
+import {prepareOwnedHiveRuns, applyOwnedHiveClaim, writeCleanupPreparation, writeCleanupOutcome,
+  writeCleanupRecheck, triggeredHiveOwnerExists, prepareExplicitHiveOwner} from '../../../scripts/finalize-owned-hive-delivery-runs.mjs';
+import {prepareCleanupClaim, revalidateCleanupClaim, readScanCursor, makeScanProgress, cleanupClaimName,
   effectOwnerArtifact} from '../../../scripts/lib/generated-task-cleanup-journal.mjs';
 const protocol = 'a'.repeat(40), cleanupProtocol = 'b'.repeat(40), selected = 'c'.repeat(40);
 const deliveryHash = 'd'.repeat(64), inputHash = 'e'.repeat(64), cleanupHash = 'f'.repeat(64);
 const producer = {run: 900, attempt: 1, protocolCommit: cleanupProtocol};
-function fixture() {
+function fixture({additionalProducers = []} = {}) {
   const calls = [], effects = [], owners = new Map(), artifacts = new Map(), documents = new Map();
   let claims = [], progress = [], listingOverride = null;
   function addOwner(run = 101, artifact = 11) {
@@ -24,6 +29,11 @@ function fixture() {
   const reader = {
     async read(endpoint) {
       calls.push(endpoint);
+      if (endpoint.includes('/actions/artifacts?name=hive-cleanup-scan-progress-')) {
+        const name = new URLSearchParams(endpoint.split('?')[1]).get('name');
+        const values = progress.filter(row => row.name === name);
+        return {total_count: values.length, artifacts: values.slice(0,100)};
+      }
       if (endpoint.includes('/actions/artifacts?')) {
         if (listingOverride) return listingOverride(endpoint);
         return {total_count: owners.size, artifacts: [...owners.keys()].map(id => artifacts.get(id))};
@@ -36,10 +46,11 @@ function fixture() {
       const match = /runs\/(\d+)\/attempts\/(\d+)/u.exec(endpoint);
       if (match) {
         const id = Number(match[1]), attempt = Number(match[2]);
-        return {id, run_attempt: attempt, head_sha: id === producer.run ? cleanupProtocol : protocol,
+        const isCleanup = [producer, ...additionalProducers].some(value => value.run === id);
+        return {id, run_attempt: attempt, head_sha: isCleanup ? cleanupProtocol : protocol,
           repository: {full_name: 'link-assistant/formal-ai'}, head_repository: {full_name: 'link-assistant/formal-ai'},
-          path: id === producer.run ? '.github/workflows/hive-original-delivery-finalize.yml'
-            : '.github/workflows/hive-original-delivery.yml', event: id === producer.run ? 'schedule' : 'workflow_run',
+          path: isCleanup ? '.github/workflows/hive-original-delivery-finalize.yml'
+            : '.github/workflows/hive-original-delivery.yml', event: isCleanup ? 'schedule' : 'workflow_run',
           status: 'completed', conclusion: 'success'};
       }
       throw Error('unexpected synthetic endpoint');
@@ -72,6 +83,36 @@ function fixture() {
 async function prepare(f) {
   return prepareCleanupClaim({reader: f.reader, metadata: f.metadata, producer, ...f.dependencies});
 }
+function triggerFixture({hasOwner = false, conclusion = 'success'} = {}) {
+  const calls = [], trigger = {id: 101, run_attempt: 1, head_sha: protocol};
+  const run = {...trigger, status: 'completed', conclusion,
+    repository: {full_name: 'link-assistant/formal-ai'}, head_repository: {full_name: 'link-assistant/formal-ai'},
+    path: '.github/workflows/hive-original-delivery.yml'};
+  const listing = {total_count: hasOwner ? 1 : 0, artifacts: hasOwner ? [{name: effectOwnerArtifact}] : []};
+  const reader = {async read(endpoint) {
+    calls.push(endpoint);
+    if (endpoint.endsWith('/runs/101/attempts/1')) return run;
+    if (endpoint.endsWith('/runs/101/artifacts?name=' + effectOwnerArtifact + '&per_page=100')) return listing;
+    throw new Error('No unrelated history or source read permitted');
+  }};
+  return {reader, trigger, run, listing, calls};
+}
+test('completed no-owner triggers stop after two metadata reads without cursor, journal or cleanup credit', async () => {
+  const f = triggerFixture();
+  const plan = await prepareOwnedHiveRuns({reader: f.reader, producer, trigger: f.trigger});
+  assert.equal(f.calls.length, 2); assert.deepEqual(plan.owners, []);
+  assert.equal(plan.complete, false); assert.equal(plan.progress, null); assert.equal(plan.progressName, '');
+  assert.equal(plan.trigger.immutableOwner, false);
+});
+test('cancelled owners with immutable evidence still enter cleanup; partial or foreign triggers cannot skip proof', async () => {
+  const f = triggerFixture({hasOwner: true, conclusion: 'cancelled'});
+  assert.equal(await triggeredHiveOwnerExists(f.reader, f.trigger), true);
+  for (const mutate of [f => {f.run.status = 'in_progress';}, f => {f.run.head_sha = '0'.repeat(40);},
+    f => {f.run.repository.full_name = 'foreign/repo';}, f => {f.listing.total_count = 1;}]) {
+    const value = triggerFixture(); mutate(value);
+    await assert.rejects(triggeredHiveOwnerExists(value.reader, value.trigger));
+  }
+});
 test('nonfinite scan bounds and invalid cursors reject before IO', async () => {
   for (const options of [{maxPages: Infinity}, {maxOwners: NaN}, {cursor: {page: 0, offset: 0}}, {now: Infinity}]) {
     const f = fixture(); await assert.rejects(prepareOwnedHiveRuns({reader: f.reader, producer,
@@ -84,6 +125,27 @@ test('prepare creates source-bound claim data without any close', async () => {
   assert.equal(result.outcomeName, 'hive-cleanup-outcome-101-1');
   assert.equal(result.claim.cleanupPolicyHash, cleanupHash);
   assert.equal(result.claim.protocolHead, protocol); assert.equal(result.claim.selectedSourceFromOwner, selected);
+  assert.equal(f.effects.length, 0);
+});
+test('explicit cleanup waits for and authenticates only its exact owner, without scanning history', async () => {
+  const f = fixture(), original = f.reader.read;
+  f.reader.read = async endpoint => {
+    if (endpoint === 'repos/link-assistant/formal-ai/actions/runs/101/artifacts?name=' + effectOwnerArtifact + '&per_page=100') {
+      f.calls.push(endpoint); return {total_count: 1, artifacts: [f.metadata]};
+    }
+    return original(endpoint);
+  };
+  const owner = {id: 101, run_attempt: 1, head_sha: protocol};
+  const result = await prepareExplicitHiveOwner({reader: f.reader, producer, owner, ...f.dependencies});
+  assert.equal(result.owners.length, 1); assert.equal(result.owners[0].run, 101);
+  assert.equal(result.progress, null); assert.equal(f.effects.length, 0);
+  assert(f.calls.every(endpoint => !endpoint.includes('/actions/artifacts?name=' + effectOwnerArtifact)
+    && !endpoint.includes('hive-cleanup-scan-progress-')));
+  f.publishClaim(result.owners[0].claim);
+  const repeated = await prepareExplicitHiveOwner({reader: f.reader, producer, owner, ...f.dependencies});
+  assert.deepEqual(repeated.owners, []); assert.equal(repeated.retained[0].reason, 'prior-claim-quarantined');
+  await assert.rejects(prepareExplicitHiveOwner({reader: f.reader, producer,
+    owner: {...owner, run_attempt: 2}, ...f.dependencies}));
   assert.equal(f.effects.length, 0);
 });
 test('no remote durable claim means no cleanup effect', async () => {
@@ -117,6 +179,83 @@ test('concurrent immutable claims refuse all issue mutations', async () => {
   const f = fixture(), prepared = await prepare(f); f.publishClaim(prepared.claim); f.publishClaim(prepared.claim, 22);
   await assert.rejects(applyOwnedHiveClaim({reader: f.reader, producer, claimArtifactId: 21,
     finalize: f.finalize, ...f.dependencies})); assert.equal(f.effects.length, 0);
+});
+test('a queued second producer rechecks after the first claim and never publishes a duplicate', async () => {
+  const other = {...producer, run: 901}, f = fixture({additionalProducers: [other]});
+  const first = await prepare(f), queued = await prepareCleanupClaim({reader: f.reader,
+    metadata: f.metadata, producer: other, ...f.dependencies});
+  assert.equal(first.eligible, true); assert.equal(queued.eligible, true);
+  const fresh = await revalidateCleanupClaim({reader: f.reader, producer, claim: first.claim, ...f.dependencies});
+  assert.deepEqual(fresh.claim, first.claim); assert.equal(f.effects.length, 0); f.publishClaim(fresh.claim);
+  const blocked = await revalidateCleanupClaim({reader: f.reader, producer: other, claim: queued.claim, ...f.dependencies});
+  assert.equal(blocked.eligible, false); assert.equal(blocked.reason, 'prior-claim-quarantined');
+  assert.equal((await f.reader.pages('name=hive-cleanup-attempt-101-1')).length, 1);
+  const applied = await applyOwnedHiveClaim({reader: f.reader, producer, claimArtifactId: 21,
+    finalize: f.finalize, ...f.dependencies});
+  assert.equal(applied.state, 'completed'); assert.equal(f.effects.length, 1);
+});
+test('queued claim identity is revalidated even when another claim already quarantines the owner', async () => {
+  for (const field of ['cleanupPolicyHash', 'selectedSourceFromOwner', 'protocolHead', 'ownerArtifactDigest']) {
+    const f = fixture(), prepared = await prepare(f); f.publishClaim(prepared.claim);
+    const claim = structuredClone(prepared.claim); claim[field] = field === 'ownerArtifactDigest'
+      ? 'sha256:' + '0'.repeat(64) : '0'.repeat(field === 'cleanupPolicyHash' ? 64 : 40);
+    await assert.rejects(revalidateCleanupClaim({reader: f.reader, producer, claim, ...f.dependencies}));
+    assert.equal(f.effects.length, 0);
+  }
+});
+test('queued claim from another invocation rejects before any transport or mutation', async () => {
+  const f = fixture(), prepared = await prepare(f); f.calls.length = 0;
+  await assert.rejects(revalidateCleanupClaim({reader: f.reader, producer: {...producer, attempt: 2},
+    claim: prepared.claim, ...f.dependencies}));
+  assert.equal(f.calls.length, 0); assert.equal(f.effects.length, 0);
+});
+test('an incomplete cleanup receipt cannot be promoted to a completed outcome', async () => {
+  const f = fixture(), prepared = await prepare(f); f.publishClaim(prepared.claim);
+  const result = await applyOwnedHiveClaim({reader: f.reader, producer, claimArtifactId: 21,
+    ...f.dependencies, finalize: async () => ({applied: {results: [{status: 'retained'}]}, cleanupReceipt: {complete: false}})});
+  assert.equal(result.state, 'retained'); assert.equal(result.cleanupReceipt.complete, false);
+});
+test('proved skipped effect gates produce a distinct terminal no-op without delivery credit', async () => {
+  const f = fixture(), prepared = await prepare(f); f.publishClaim(prepared.claim);
+  const result = await applyOwnedHiveClaim({reader: f.reader, producer, claimArtifactId: 21,
+    ...f.dependencies, finalize: async () => ({applied: {results: []},
+      cleanupReceipt: {complete: false, noEffects: true, closed: 0, retained: 0}})});
+  assert.equal(result.state, 'not-started'); assert.equal(result.cleanupReceipt.complete, false);
+  assert.equal((await prepare(f)).eligible, false, 'the original immutable claim still prevents repetition');
+});
+test('uncertain writes take precedence over an inconsistent no-effects receipt', async () => {
+  const f = fixture(), prepared = await prepare(f); f.publishClaim(prepared.claim);
+  const result = await applyOwnedHiveClaim({reader: f.reader, producer, claimArtifactId: 21,
+    ...f.dependencies, finalize: async () => ({applied: {results: [{status: 'mutation-uncertain'}]},
+      cleanupReceipt: {complete: false, noEffects: true}})});
+  assert.equal(result.state, 'uncertain');
+});
+test('pre-claim materialization retains a blocked decision without creating another durable claim', async () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'formal-ai-preclaim-'));
+  try {
+    const blocked = writeCleanupRecheck({eligible: false, run: 101, attempt: 1, reason: 'prior-claim-quarantined'}, directory);
+    assert.equal(blocked.schema, 'owned-hive-cleanup-preclaim/v1'); assert.equal(blocked.claimPath, null);
+    assert.deepEqual(fs.readdirSync(directory), []);
+    const f = fixture(), prepared = await prepare(f), fresh = writeCleanupRecheck(prepared, directory);
+    assert.deepEqual(JSON.parse(fs.readFileSync(fresh.claimPath)), prepared.claim);
+    assert.throws(() => writeCleanupRecheck({...prepared, run: '../escape'}, directory));
+  } finally { fs.rmSync(directory, {recursive: true, force: true}); }
+});
+test('actual cleanup workflow rechecks inside owner serialization and gates every effect on fresh eligibility', () => {
+  const workflow = YAML.parse(fs.readFileSync('.github/workflows/hive-original-delivery-finalize.yml', 'utf8'));
+  const job = workflow.jobs.sweep, steps = job.steps, recheck = steps.findIndex(step => step.id === 'recheck');
+  assert.match(job.concurrency.group, /matrix\.owner\.run.*matrix\.owner\.attempt/u);
+  assert.equal(job.concurrency['cancel-in-progress'], false); assert(recheck >= 0);
+  assert.match(steps[recheck].run, /finalize-owned-hive-delivery-runs\.mjs recheck/u);
+  const effects = [steps.find(step => step.id === 'claim'),
+    steps.find(step => step.run?.includes('finalize-owned-hive-delivery-runs.mjs apply')),
+    steps.find(step => step.with?.name?.startsWith('hive-cleanup-outcome-'))];
+  for (const step of effects) {
+    assert(steps.indexOf(step) > recheck); assert.equal(typeof step.if, 'string');
+    const expression = step.if.replace(/^\$\{\{\s*|\s*\}\}$/gu, '');
+    for (const eligible of ['true', 'false']) assert.equal(vm.runInNewContext(expression,
+      {steps: {recheck: {outputs: {eligible}}}, always: () => true}, {timeout: 100}), eligible === 'true');
+  }
 });
 test('changed owner artifact identity after claim is refused', async () => {
   const f = fixture(), prepared = await prepare(f); f.publishClaim(prepared.claim);
@@ -164,6 +303,80 @@ test('authenticated durable progress advances scheduled discovery beyond its pre
   await assert.rejects(readScanCursor({reader: f.reader, now: Date.parse('2026-10-21T13:00:00Z'), ...f.dependencies}));
 });
 
+test('progress journals larger than the old daily cap retain authenticated continuation with bounded reads', async () => {
+  const f=fixture(),now=Date.parse('2026-10-21T13:00:00Z');
+  const progress=await makeScanProgress({reader:f.reader,producer,now,continuation:{page:8,offset:17},...f.dependencies});
+  const values=Array.from({length:1000},(_,index)=>({id:2000-index,name:progress.name,expired:false,size_in_bytes:100,
+    created_at:new Date(now-index*1000).toISOString(),workflow_run:{id:producer.run,head_sha:cleanupProtocol}}));
+  for(const metadata of values)f.documents.set(metadata.id,structuredClone(progress.document));
+  f.setProgress(values);
+  assert.deepEqual(await readScanCursor({reader:f.reader,now,...f.dependencies}),{page:8,offset:17});
+  const reads=f.calls.filter(value=>value.includes('name=hive-cleanup-scan-progress-'));
+  assert.equal(reads.length,2);assert.ok(reads.every(value=>value.endsWith('&per_page=100&page=1')));
+  assert.equal(f.calls.filter(value=>value.startsWith('artifact-json/')).length,1);
+  assert.equal(f.effects.length,0);
+  f.documents.get(values[0].id).schema='foreign-progress';
+  const beforeFallback=f.calls.filter(value=>value.startsWith('artifact-json/')).length;
+  assert.deepEqual(await readScanCursor({reader:f.reader,now,...f.dependencies}),{page:8,offset:17});
+  assert.equal(f.calls.filter(value=>value.startsWith('artifact-json/')).length-beforeFallback,2);
+  for(const metadata of values)f.documents.get(metadata.id).cleanupPolicyHash='0'.repeat(64);
+  await assert.rejects(readScanCursor({reader:f.reader,now,...f.dependencies}),/without an authenticated cursor/u);
+  assert.equal(f.effects.length,0);
+});
+
+test('malformed progress windows cannot masquerade as absent history',async()=>{
+  for(const listing of [{total_count:1,artifacts:[]},{total_count:0,artifacts:[{id:1}]},
+    {total_count:2,artifacts:[{id:1},{id:1}]}]) {
+    const f=fixture(),read=f.reader.read;
+    f.reader.read=endpoint=>endpoint.includes('name=hive-cleanup-scan-progress-')?listing:read(endpoint);
+    await assert.rejects(readScanCursor({reader:f.reader,now:Date.parse('2026-10-21T13:00:00Z'),...f.dependencies}));
+    assert.equal(f.effects.length,0);
+  }
+});
+
+test('many historical cursors share one failed immutable policy lookup instead of repeating HTTP 404 reads', async () => {
+  const f = fixture(), now = Date.parse('2026-10-21T13:00:00Z');
+  const progress = await makeScanProgress({reader: f.reader, producer, now,
+    continuation: {page: 8, offset: 17}, ...f.dependencies});
+  const values = Array.from({length: 100}, (_, index) => ({id: 2000 - index,
+    name: progress.name, expired: false, size_in_bytes: 100,
+    created_at: new Date(now - index * 1000).toISOString(),
+    workflow_run: {id: producer.run, head_sha: cleanupProtocol}}));
+  for (const metadata of values) f.documents.set(metadata.id, structuredClone(progress.document));
+  f.setProgress(values);
+  let lookups = 0;
+  await assert.rejects(readScanCursor({reader: f.reader, now, ...f.dependencies,
+    cleanupPolicy() {lookups++; throw new Error('observed historical HTTP 404');}}),
+  /without an authenticated cursor/u);
+  assert.equal(lookups, 1); assert.equal(f.effects.length, 0);
+});
+test('cursor discovery reports denied authority immediately instead of trying the remaining artifacts',async()=>{
+ const f=fixture(),now=Date.parse('2026-10-21T13:00:00Z');
+ const progress=await makeScanProgress({reader:f.reader,producer,now,continuation:null,...f.dependencies});
+ f.setProgress([1,2].map(id=>({id,name:progress.name,expired:false,size_in_bytes:100,
+  created_at:new Date(now).toISOString(),workflow_run:{id:producer.run,head_sha:cleanupProtocol}})));
+ let reads=0;
+ const denied=Object.assign(new Error('GitHub read failed'),{code:'GITHUB_READ_FAILED',httpStatus:403});
+ await assert.rejects(readScanCursor({reader:f.reader,now,...f.dependencies,
+  readArtifact:async()=>{reads++;throw denied;}}),error=>error===denied);
+ assert.equal(reads,1);assert.equal(f.effects.length,0);
+});
+
+test('terminal cancelled owners can recover isolated fixtures; foreign owners cannot enqueue cleanup',()=>{
+  const workflow=YAML.parse(fs.readFileSync(new URL('../../../.github/workflows/hive-original-delivery-finalize.yml',import.meta.url),'utf8'));
+  const expression=workflow.jobs.prepare.if.replace(/^\$\{\{\s*|\s*\}\}$/gu,'');
+  const eligible=(event_name,conclusion,full_name='link-assistant/formal-ai')=>vm.runInNewContext(expression,
+    {github:{event_name,repository:'link-assistant/formal-ai',event:{workflow_run:{conclusion,head_repository:{full_name}}}}},{timeout:100});
+  assert.equal(eligible('workflow_run','cancelled'),true);
+  assert.equal(eligible('workflow_run','failure'),true);
+  assert.equal(eligible('workflow_run','success'),true);
+  assert.equal(eligible('workflow_run','success','foreign/repo'),false);
+  // #1191: a wholly skipped delivery claimed no effects; schedule recovery remains.
+  assert.equal(eligible('workflow_run','skipped'),false);
+  assert.equal(eligible('schedule','skipped'),true);
+  assert.equal(eligible('schedule','cancelled'),true);
+});
+
 test('published claim and outcome filenames match exact sole artifact members', () => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'cleanup-artifact-members-'));
   try {
@@ -178,4 +391,52 @@ test('published claim and outcome filenames match exact sole artifact members', 
     assert.throws(() => writeCleanupOutcome(outcome, directory));
     assert.throws(() => writeCleanupPreparation({owners: [{run: '../other', attempt: 1, claim}], progress: {}}, directory));
   } finally { fs.rmSync(directory, {recursive: true, force: true}); }
+});
+
+// These finite selection controls are not a claim of a tiny import closure.
+test('prepare acquisition preserves trusted source, custody gates and the complete retained source tree', context => {
+  const workflow=YAML.parse(fs.readFileSync('.github/workflows/hive-original-delivery-finalize.yml','utf8'));
+  assert.deepEqual(workflow.permissions,{contents:'read',actions:'read'});
+  const digest=value=>createHash('sha256').update(value).digest('hex');
+  const patterns='/*\n!/dev/log/\n!/experiments/formal_ai_subagent/evidence/coordinator-1188/**/*.gz\n';
+  function check(job){
+    assert.equal(job['timeout-minutes'],10);assert.equal(job.permissions,undefined);
+    assert.equal(digest(job.if),'bf292a98dbf9f0e0b451de19ed5ab0ad8c53e1d3e349bd03c99901239013fcc6'); // #1191 skipped-delivery gate
+    assert.equal(digest(JSON.stringify(job.steps.slice(1))),'91204467397f2eed32a328ebeb5de3c68aa493b41109cac23fe961b2612d6859');
+    const checkouts=job.steps.filter(step=>step.uses?.startsWith('actions/checkout@'));
+    assert.equal(checkouts.length,1);const checkout=checkouts[0];
+    assert.equal(job.steps[0],checkout);assert.equal(checkout.uses,'actions/checkout@v7');
+    assert.equal(checkout['timeout-minutes'],4);
+    assert.deepEqual(checkout.env,{GIT_HTTP_LOW_SPEED_LIMIT:'1024',GIT_HTTP_LOW_SPEED_TIME:'20'});
+    assert.deepEqual(checkout.with,{ref:'${{ github.workflow_sha }}','persist-credentials':false,
+      'fetch-depth':1,filter:'blob:none','sparse-checkout':patterns,'sparse-checkout-cone-mode':false});
+  }
+  const job=workflow.jobs.prepare;check(job);
+  for(const mutate of [value=>value['timeout-minutes']=11,value=>value.steps[0]['timeout-minutes']=5,
+    value=>value.steps[0].with.ref='refs/heads/main',value=>value.steps[0].with['persist-credentials']=true,
+    value=>value.steps[0].with.filter='tree:0',value=>value.steps[0].with['sparse-checkout-cone-mode']=true,
+    value=>value.steps[0].with['sparse-checkout']+='!/scripts/\n',
+    value=>value.steps[0].with['sparse-checkout']='/*\n!/experiments/formal_ai_subagent/evidence/coordinator-1188/\n',
+    value=>value.steps[0].env.GIT_HTTP_LOW_SPEED_TIME='300',value=>value.steps.pop(),value=>value.if='true']){
+    const changed=structuredClone(job);mutate(changed);assert.throws(()=>check(changed));
+  }
+  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'cleanup-checkout-rules-'));
+  context.after(()=>fs.rmSync(directory,{recursive:true,force:true}));
+  const rules=path.join(directory,'rules');fs.writeFileSync(rules,patterns);
+  const retained=['.github/workflows/hive-original-delivery-finalize.yml','package.json','bun.lock',
+    'scripts/finalize-owned-hive-delivery-runs.mjs','scripts/lib/generated-task-cleanup-journal.mjs',
+    'scripts/work-item-qualification/cleanup-contract.mjs','scripts/work-item-qualification/policy.mjs',
+    'scripts/work-item-qualification/fixtures.mjs','scripts/work-item-qualification/original-task.json',
+    'js/server/json.mjs','js/agentic/node-host.mjs','data/benchmarks/hive-original-delivery-inputs.json',
+    'rust/tests/fixtures/memory/schema-1.lino',
+    'experiments/formal_ai_subagent/evidence/coordinator-1188/source.mjs',
+    'experiments/formal_ai_subagent/evidence/coordinator-1188/nested/README.md'];
+  const omitted=['dev/log/private-evidence.json','experiments/formal_ai_subagent/evidence/coordinator-1188/trace.gz',
+    'experiments/formal_ai_subagent/evidence/coordinator-1188/nested/trace.gz'];
+  const selected=execFileSync('git',['sparse-checkout','check-rules','--no-cone','--rules-file',rules,'-z'],{
+    input:[...retained,...omitted].join('\0')+'\0',encoding:'utf8',timeout:5000,maxBuffer:65536
+  }).split('\0').filter(Boolean);
+  assert.deepEqual(selected,retained);
+  assert.ok(fs.existsSync('scripts/work-item-qualification/original-task.json'));
+  assert.doesNotThrow(()=>JSON.parse(fs.readFileSync('scripts/work-item-qualification/original-task.json','utf8')));
 });

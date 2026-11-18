@@ -80,7 +80,9 @@ test('actual UI consumes shared metadata while only ready enables the composer a
     terminated = 0;
   const metadata = [],
     ready = [],
-    status = [];
+    status = [],
+    unavailable = [],
+    reports = [];
   const context = {
     Worker: class {
       constructor() {
@@ -98,7 +100,8 @@ test('actual UI consumes shared metadata while only ready enables the composer a
     setSeed: value => metadata.push(value),
     setWorkerState: value => status.push(value),
     setWorkerReady: value => ready.push(value),
-    setEngineUnavailable: () => {},
+    setEngineUnavailable: value => unavailable.push(value),
+    console: { error: (...args) => reports.push(args) },
     dispatchEvent: () => {},
     Event: class {},
     pendingResponses: {
@@ -128,8 +131,18 @@ test('actual UI consumes shared metadata while only ready enables the composer a
   });
   assert.deepEqual(ready, [true]);
   assert.deepEqual(status, ['wasm worker']);
+  worker.onerror({ message: 'NetworkError: importScripts failed', filename: 'https://example.test/worker/module.js', lineno: 41 });
+  assert.equal(ready.at(-1), false, 'A dead worker cannot leave the composer enabled');
+  assert.equal(status.at(-1), 'engine unavailable');
+  assert.match(unavailable.at(-1), /importScripts/);
+  assert.equal(reports[0][0], 'FormalAiWorkerFailed');
+  worker.onmessageerror({});
+  assert.equal(ready.at(-1), false);
+  assert.match(unavailable.at(-1), /decoded/);
   cleanup();
   assert.equal(terminated, 1);
+  assert.equal(worker.onerror, null);
+  assert.equal(worker.onmessageerror, null);
   const app = read('js/app/application.jsx');
   assert.equal(app.includes('window.FormalAiSeed.loadAll()'), false);
   assert.match(app, /disabled=\{demoMode \|\| !workerReady\}/u);

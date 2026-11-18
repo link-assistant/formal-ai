@@ -2,6 +2,7 @@
 // Issue #205: Optional OCR image attachments stay out of the initial page and export their text into memory when enabled.
 const { test, expect } = require('@playwright/test');
 const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
+const { withWorkerDiagnostics } = require('./support/worker-diagnostics');
 
 const ONE_PIXEL_PNG = Buffer.from(
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=',
@@ -50,53 +51,60 @@ test.describe('Issue #205 optional OCR image attachments', () => {
   });
 
   test('when enabled, image attachments export base64 and OCR text in memory', async ({
-    page,
-  }) => {
-    await page.addInitScript(() => {
-      window.localStorage.setItem(
-        'formal-ai.preferences.v1',
-        'demo_preferences\n  greetingVariations "off"\n  experimentalOcr "on"',
-      );
-      window.FormalAiOcr = {
-        VERSION: 'test-double',
-        recognizeImage: async () => ({
-          text: 'mock ocr text',
-          confidence: 98.25,
-        }),
-      };
+    page, baseURL,
+  }, testInfo) => {
+    return withWorkerDiagnostics(page, testInfo, async () => {
+      // Exercise the real worker and memory export without depending on public services.
+      const origin = new URL(baseURL).origin;
+      await page.context().route('**/*', route => new URL(route.request().url()).origin === origin
+        ? route.continue()
+        : route.fulfill({ status: 503, contentType: 'application/json', body: '{"error":"offline OCR fixture"}' }));
+      await page.addInitScript(() => {
+        window.localStorage.setItem(
+          'formal-ai.preferences.v1',
+          'demo_preferences\n  greetingVariations "off"\n  experimentalOcr "on"',
+        );
+        window.FormalAiOcr = {
+          VERSION: 'test-double',
+          recognizeImage: async () => ({
+            text: 'mock ocr text',
+            confidence: 98.25,
+          }),
+        };
+      });
+
+      await page.goto('./');
+      await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+      await switchToManualMode(page);
+
+      await expect(page.locator('[data-testid="setting-experimental-ocr"]')).toBeChecked();
+      await page.locator('[data-testid="composer-attachment-input"]').setInputFiles({
+        name: 'tiny.png',
+        mimeType: 'image/png',
+        buffer: ONE_PIXEL_PNG,
+      });
+      await expect(page.locator('[data-testid="composer-attachment-status"]'))
+        .toContainText(/1 attached/i);
+
+      await page.locator('[data-testid="chat-composer-input"]').fill('Read attached image');
+      const messages = page.locator('[data-testid="chat-message"]');
+      const initial = await messages.count();
+      await page.locator('[data-testid="chat-composer-submit"]').click();
+      await expect(messages).toHaveCount(initial + 2, { timeout: 20_000 });
+
+      const [download] = await Promise.all([
+        page.waitForEvent('download'),
+        page.locator('[data-testid="memory-export"]').click(),
+      ]);
+      const path = await download.path();
+      expect(path).toBeTruthy();
+
+      const fs = require('node:fs');
+      const text = fs.readFileSync(path, 'utf8');
+      expect(text).toContain('attachments "');
+      expect(text).toContain('data:image/png;base64,');
+      expect(text).toContain('mock ocr text');
+      expect(text).toContain('tiny.png');
     });
-
-    await page.goto('./');
-    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
-    await switchToManualMode(page);
-
-    await expect(page.locator('[data-testid="setting-experimental-ocr"]')).toBeChecked();
-    await page.locator('[data-testid="composer-attachment-input"]').setInputFiles({
-      name: 'tiny.png',
-      mimeType: 'image/png',
-      buffer: ONE_PIXEL_PNG,
-    });
-    await expect(page.locator('[data-testid="composer-attachment-status"]'))
-      .toContainText(/1 attached/i);
-
-    await page.locator('[data-testid="chat-composer-input"]').fill('Read attached image');
-    const messages = page.locator('[data-testid="chat-message"]');
-    const initial = await messages.count();
-    await page.locator('[data-testid="chat-composer-submit"]').click();
-    await expect(messages).toHaveCount(initial + 2, { timeout: 20_000 });
-
-    const [download] = await Promise.all([
-      page.waitForEvent('download'),
-      page.locator('[data-testid="memory-export"]').click(),
-    ]);
-    const path = await download.path();
-    expect(path).toBeTruthy();
-
-    const fs = require('node:fs');
-    const text = fs.readFileSync(path, 'utf8');
-    expect(text).toContain('attachments "');
-    expect(text).toContain('data:image/png;base64,');
-    expect(text).toContain('mock ocr text');
-    expect(text).toContain('tiny.png');
   });
 });

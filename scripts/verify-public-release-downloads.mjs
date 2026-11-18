@@ -7,7 +7,7 @@ import { createHash } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { validateDigestCoverage } from './release-advertisement.mjs';
 import { tmpdir as temporaryDirectory } from 'node:os';
-import { selectCompletedSource } from './release-extension-selection.mjs';
+import { selectCompletedSource, completedDesktopPublication } from './release-extension-selection.mjs';
 import { createReadonlyGithub } from './release-extension-github.mjs';
 export const MAX_ASSET_BYTES = 2 * 1024 ** 3;
 export const MAX_TOTAL_BYTES = 12 * 1024 ** 3;
@@ -215,8 +215,9 @@ function completedProducerSource(repository, runId, attempt) {
       return bytes;
     }
   };
-  const run = bounded.json('repos/' + repository + '/actions/runs/' + runId + '/attempts/' + attempt);
-  assert.equal(run.conclusion, 'success', 'completed Desktop producer must have succeeded');
+  const expected = {repository, runId, attempt};
+  const disposition = completedDesktopPublication(expected, bounded);
+  if (!disposition.active) return disposition;
   return selectCompletedSource({
     repository,
     runId,
@@ -231,6 +232,7 @@ export async function resolveRelease({
   producerAttempt
 }) {
   const selected = producerRunId ? completedProducerSource(repository, producerRunId, producerAttempt) : null;
+  if (selected?.active === false) return {repository, ...selected};
   const route = releaseRoute({
     repository,
     tag,
@@ -448,6 +450,14 @@ export async function main(environment = process.env) {
     producerRunId: environment.PRODUCER_RUN_ID || undefined,
     producerAttempt: environment.PRODUCER_ATTEMPT || undefined
   });
+  if (selection.active === false) {
+    assert.equal(environment.RELEASE_VERIFY_MODE, 'resolve', 'only initial resolution can skip an inactive producer');
+    assert.ok(!environment.RELEASE_SELECTION && !environment.RELEASE_TAG && !environment.RELEASE_ID,
+      'inactive producer cannot replace a pinned release');
+    if (environment.GITHUB_OUTPUT) fs.appendFileSync(environment.GITHUB_OUTPUT, 'active=false\n');
+    console.log(JSON.stringify(selection));
+    return selection;
+  }
   if (environment.RELEASE_SELECTION) {
     const stat = fs.lstatSync(environment.RELEASE_SELECTION);
     assert.ok(stat.isFile() && !stat.isSymbolicLink() && stat.size <= 1024 * 1024);
@@ -467,6 +477,7 @@ export async function main(environment = process.env) {
   });
   if (environment.GITHUB_OUTPUT) {
     for (const [key, value] of Object.entries({
+      active: 'true',
       tag: selection.tag,
       release_id: selection.releaseId,
       source_sha: selection.sourceCommit,

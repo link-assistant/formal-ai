@@ -231,7 +231,8 @@ fn the_recheck_cannot_outlast_the_job_that_contains_it() {
          change to this test too"
     );
 
-    let cap: u64 = workflow()
+    let workflow = workflow();
+    let cap: u64 = super::super::workflow_fixtures::job_block(&workflow, "link-checker")
         .lines()
         .find_map(|line| line.trim().strip_prefix("timeout-minutes: "))
         .and_then(|value| value.trim().parse().ok())

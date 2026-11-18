@@ -1,16 +1,18 @@
-import {typedMeaningEntails} from './typed_meaning.mjs';
 // Dependency summarization (R1188-U21): a summary chosen by what the
 // statements of a text depend on, with no language model. The Rust twin is
 // rust/src/summarization/dependency.rs.
 //
 // 1. The text is formalized into statements (text_formalization.mjs).
 // 2. A statement whose formal content an earlier statement already holds is a
-//    duplicate and is dropped. The comparison is by formal identity: the same
-//    polarity, subject and terms, or a term set inside an earlier one's,
-//    whatever the wording.
+//    duplicate and is dropped. Only a checked relation certifies that
+//    (statement_relation.mjs): the same formal identity, the same ordered
+//    relations, or the conjuncts of an asserted conjunctive statement.
+//    Operand order, connectives, quantifiers, negation scope and explicit
+//    counts keep statements apart (issue #1487).
 // 3. The statement graph: a later statement depends on an earlier one when it
 //    mentions the earlier statement's subject, or shares at least
-//    `ELABORATION_SHARED_TERMS` terms with it (it elaborates it).
+//    `ELABORATION_SHARED_TERMS` terms with it (it elaborates it). Shared
+//    terms are retrieval: they relate statements, they never certify one.
 // 4. The kept core: the roots (statements that depend on nothing earlier)
 //    that something depends on, then the most depended-on statements, up to
 //    one statement in `KEEP_DIVISOR`, in text order.
@@ -25,7 +27,10 @@ import {typedMeaningEntails} from './typed_meaning.mjs';
 // duplicate entries and `kept` lists node indexes.
 
 import { byteOrder } from './rust_str.mjs';
-import { contentIds, formalizeSentences, joinSurfaces, statementIdentity } from './text_formalization.mjs';
+import { contentIds, formalizeSentenceSegments, formalizeSentences, joinSurfaces, Polarity, roleWordsIn, tokens } from './text_formalization.mjs';
+import { sentences } from './formalization_segment.mjs';
+import { quoteFault, quotedSegmentSpans } from './normal_markov.mjs';
+import { certifiesRestatement, checkedRelation } from './statement_relation.mjs';
 
 /** Mirrors `ELABORATION_SHARED_TERMS` in rust/src/summarization/dependency.rs: shared terms that make one statement elaborate another. */
 export const ELABORATION_SHARED_TERMS = 2;
@@ -48,29 +53,24 @@ export function closingOf(sentence) {
  * @param {string} language
  */
 export function sentenceStatements(text, language) {
+  return sentenceEntries(formalizeSentences(text, language));
+}
+
+function sentenceEntries(formalized) {
   const out = [];
-  formalizeSentences(text, language).forEach((sentence, index) => {
+  formalized.forEach((sentence, index) => {
     const closing = closingOf(sentence.text);
     for (const statement of sentence.statements) out.push({ statement, sentence: index, closing });
   });
   return out;
 }
 
-/** Every member of `inner` is in `outer` (the Rust twin of `restates` checks it inline). */
-function isSubset(inner, outer) {
-  const held = new Set(outer);
-  return inner.every((id) => held.has(id));
-}
-
 /**
- * Mirrors `fn restates` in rust/src/summarization/dependency.rs: `later` adds nothing to `earlier`, it has the same
- * formal identity or its terms all appear in `earlier`'s with the same polarity.
+ * Mirrors `fn restates` in rust/src/summarization/dependency.rs: `later` adds nothing to `earlier`, a checked
+ * relation finds it equivalent to or entailed by `earlier` (never a bare term overlap).
  */
 export function restates(later, earlier) {
-  if(later.language!==earlier.language||!typedMeaningEntails(earlier.dialogue,later.dialogue))return false;
-  if (statementIdentity(later) === statementIdentity(earlier)) return true;
-  const ids = contentIds(later);
-  return ids.length > 0 && later.polarity === earlier.polarity && isSubset(ids, contentIds(earlier));
+  return certifiesRestatement(checkedRelation(later, earlier));
 }
 
 /**
@@ -171,7 +171,10 @@ export function renderKept(nodes, kept) {
  * @param {string} language
  */
 export function summarizeByDependency(text, language) {
-  const entries = sentenceStatements(text, language);
+  return summarizeEntries(sentenceStatements(text, language));
+}
+
+function summarizeEntries(entries) {
   const { unique, removed } = splitDuplicates(entries);
   const nodes = statementGraph(unique);
   const kept = keptCore(nodes);
@@ -182,6 +185,38 @@ export function summarizeByDependency(text, language) {
     kept,
     text: renderKept(nodes, kept),
   };
+}
+
+const PHATIC_ROLES = ['social_greeting', 'social_farewell', 'social_courtesy_response', 'text-summary-phatic'];
+
+function renderCausalSentence(statement, causePattern, causes) {
+  const { text } = statement;
+  if (!causePattern || statement.polarity === Polarity.Denied || statement.dialogue.question
+      || /[()[\]{}]/u.test(text)
+      || quoteFault(text) !== null || quotedSegmentSpans(text).length > 0) return text;
+  const [cause, repeated] = text.matchAll(causePattern);
+  if (!cause || repeated || cause.index === 0 || !causes.has(cause[1].toLowerCase().replace(/\s+/gu, ' '))) return text;
+  const main = text.slice(0, cause.index);
+  const reasons = text.slice(cause.index + cause[0].length);
+  return `${main}: ${reasons}`;
+}
+
+/** Rank complete substantive sentences so a selection keeps its governed clauses. */
+export function summarizeFreeText(text, language) {
+  const source = sentences(text);
+  const phatic = new Set(PHATIC_ROLES.flatMap((role) => [...roleWordsIn(role, language)]));
+  const content = source.filter((sentence) => !phatic.has(
+    tokens(sentence.text).map((token) => token.surface.toLowerCase()).join(' '),
+  ));
+  const summary = summarizeEntries(sentenceEntries(formalizeSentenceSegments(content, language, true)));
+  if (summary.kept.length === 0) return null;
+
+  const causes = roleWordsIn('text-summary-cause', language);
+  const cues = [...roleWordsIn('text-summary-cause-phrase', language), ...causes].map((cue) => cue.split(' ')
+    .map((word) => word.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')).join('\\s+'));
+  const causePattern = cues.length ? new RegExp(`[\\s,]+(${cues.join('|')})\\s+`, 'giu') : null;
+  summary.text = joinSurfaces(summary.kept.map((index) => renderCausalSentence(summary.statements[index].statement, causePattern, causes)));
+  return source.length === 1 && summary.text === source[0].text ? null : summary;
 }
 
 /**

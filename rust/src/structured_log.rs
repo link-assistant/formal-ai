@@ -19,6 +19,7 @@ pub const ORCHESTRATION_SESSION_PREFIX: &str = "formal-ai: orchestration-session
 
 static SILENT: AtomicBool = AtomicBool::new(false);
 static SERVE: AtomicBool = AtomicBool::new(false);
+static TERMINAL: AtomicBool = AtomicBool::new(false);
 static SEQUENCE: AtomicU64 = AtomicU64::new(0);
 static WRITE_LOCK: OnceLock<Mutex<()>> = OnceLock::new();
 static FILE_DISABLED: AtomicBool = AtomicBool::new(false);
@@ -65,13 +66,14 @@ fn file_sink_failed(directory: Option<&std::path::Path>, error: &io::Error) {
     }
 }
 
-pub fn configure(silent: bool, serve: bool) {
+pub fn configure(silent: bool, _serve: bool) {
+    let silent = silent || crate::solver_config::ephemeral_enabled();
     SILENT.store(silent, Ordering::Relaxed);
-    SERVE.store(serve, Ordering::Relaxed);
+    SERVE.store(!silent, Ordering::Relaxed);
     FILE_DISABLED.store(false, Ordering::Relaxed);
     STDERR_DISABLED.store(false, Ordering::Relaxed);
     FAILURE_REPORTED.store(false, Ordering::Relaxed);
-    if serve && !silent {
+    if !silent {
         if let Some(directory) = directory() {
             match open_log_file(&directory).and_then(|mut file| file.flush()) {
                 Ok(()) => set_file_health(&json!({"status":"writable","directory":directory})),
@@ -84,6 +86,11 @@ pub fn configure(silent: bool, serve: bool) {
         set_file_health(&json!({"status":"disabled"}));
     }
 }
+/// Explicit terminal diagnostics; normal wrapper/server output stays clear.
+pub fn configure_terminal(verbose: bool) {
+    TERMINAL.store(verbose, Ordering::Relaxed);
+}
+
 fn rank(level: &str) -> u8 {
     match level {
         "error" => 1,
@@ -97,10 +104,22 @@ fn rank(level: &str) -> u8 {
 #[must_use]
 pub fn enabled(level: &str) -> bool {
     !SILENT.load(Ordering::Relaxed)
+        && !crate::solver_config::ephemeral_enabled()
         && !crate::solver_config::flag_enabled("FORMAL_AI_SILENT")
         && rank(level)
             <= rank(&std::env::var("FORMAL_AI_LOG_LEVEL").unwrap_or_else(|_| "debug".into()))
 }
+
+/// Passive native request timing; WASM has no standard-library monotonic clock.
+pub(crate) fn request_phases(trace: bool) -> impl Fn(&str) {
+    let started = (trace && !cfg!(target_arch = "wasm32")).then(std::time::Instant::now);
+    move |name| {
+        if let Some(started) = started {
+            crate::diagnostic!("debug"; "[trace] agentic_phase={name} elapsed_ms={}", started.elapsed().as_millis());
+        }
+    }
+}
+
 fn secret_key(key: &str) -> bool {
     let key: String = key
         .chars()
@@ -426,15 +445,26 @@ pub fn control(kind: &str, component: &str, message: &str, metadata: &Value) {
 }
 
 fn write_record(record: &Value) {
-    let Ok(line) = encode(&redact(record)) else {
+    if crate::solver_config::ephemeral_enabled() {
+        return;
+    }
+    let Ok(mut line) = encode(&redact(record)) else {
         sink_failure("encoding_failed");
         return;
     };
+    let control = record["schema"] == "formal-ai-control-v1";
+    if !control && std::env::var("FORMAL_AI_LOG_FORMAT").is_ok_and(|value| value == "nested") {
+        line = nested_record(&line);
+    }
     let _guard = WRITE_LOCK
         .get_or_init(|| Mutex::new(()))
         .lock()
         .unwrap_or_else(std::sync::PoisonError::into_inner);
-    if !STDERR_DISABLED.load(Ordering::Relaxed) && writeln!(io::stderr().lock(), "{line}").is_err()
+    if (control
+        || TERMINAL.load(Ordering::Relaxed)
+        || crate::solver_config::flag_enabled("FORMAL_AI_LOG_STDERR"))
+        && !STDERR_DISABLED.load(Ordering::Relaxed)
+        && writeln!(io::stderr().lock(), "{line}").is_err()
     {
         STDERR_DISABLED.store(true, Ordering::Relaxed);
         sink_failure("stderr_write_failed");
@@ -454,6 +484,26 @@ fn write_record(record: &Value) {
         }
     }
 }
+/// Whitespace-only rendering of the typed tree; string punctuation is encoded.
+fn nested_record(line: &str) -> String {
+    let mut depth = 0;
+    let mut out = String::new();
+    for character in line.chars() {
+        if character == '(' {
+            if depth > 0 {
+                out.truncate(out.trim_end().len());
+                out.push('\n');
+                out.push_str(&"  ".repeat(depth));
+            }
+            depth += 1;
+        } else if character == ')' {
+            depth -= 1;
+        }
+        out.push(character);
+    }
+    out
+}
+
 /// A bounded nonrecursive fallback: no caller text, paths, or IO errors enter it.
 fn sink_failure(reason: &str) {
     if FAILURE_REPORTED.swap(true, Ordering::Relaxed) {

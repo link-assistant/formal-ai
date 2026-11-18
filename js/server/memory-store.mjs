@@ -492,12 +492,14 @@ export class SyncStore {
   }
 
   /** `SyncStore::open` / `open_at`. */
-  static open(env = process.env, file = sharedMemoryPath(env), suppliedBytes) {
+  static open(env = process.env, file = sharedMemoryPath(env), suppliedBytes, { readOnly = false } = {}) {
+    const storagePath = readOnly ? null : file;
     let text;
     try {
       text = suppliedBytes===undefined?fs.readFileSync(file):suppliedBytes;
     } catch (error) {
       if (error.code === 'ENOENT') {
+        if (readOnly) return new SyncStore(null, [], TARGET_SCHEMA, true, env);
         let compatible = true;
         try {
           ensureSharedMemoryFile(file);
@@ -507,21 +509,22 @@ export class SyncStore {
         }
         return new SyncStore(file, [], TARGET_SCHEMA, compatible, env);
       }
-      memoryDebug(env, 'memory_debug_read_failed', { path: file, error: error.message });
-      return new SyncStore(file, [], TARGET_SCHEMA, false, env);
+      if (!readOnly) memoryDebug(env, 'memory_debug_read_failed', { path: file, error: error.message });
+      return new SyncStore(storagePath, [], TARGET_SCHEMA, false, env);
     }
     let decoded;
     try {
       decoded = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(text);
     } catch (error) {
-      memoryDebug(env, 'memory_debug_read_failed', { path: file, error: error.message });
-      return new SyncStore(file, [], TARGET_SCHEMA, false, env);
+      if (!readOnly) memoryDebug(env, 'memory_debug_read_failed', { path: file, error: error.message });
+      return new SyncStore(storagePath, [], TARGET_SCHEMA, false, env);
     }
     const status = inspectMemoryBytes(text, true);
+    if (readOnly && !status.compatible) return new SyncStore(null, [], TARGET_SCHEMA, false, env);
     const events = parseLinksNotation(decoded);
     // R1012: chunks learned in earlier sessions return to the meta reasoner.
     importLearned(events);
-    return new SyncStore(file, events, status.detected_schema_version ?? TARGET_SCHEMA, status.compatible, env);
+    return new SyncStore(storagePath, events, status.detected_schema_version ?? TARGET_SCHEMA, status.compatible, env);
   }
 
   toLinksNotation() {
@@ -546,17 +549,31 @@ export class SyncStore {
     return added;
   }
 
-  /** `record_chat_exchange_with_tools`. */
-  recordChatExchangeWithTools(prompt, answer, tools = []) {
+  /**
+   * `record_chat_exchange_with_tools`. `scopeEvidence` (issue #1559) carries
+   * the `scope:` entries of the request the exchange was made in;
+   * `instruction` marks a prompt that configures the session, so dreaming never
+   * learns it as a user requirement.
+   */
+  recordChatExchangeWithTools(prompt, answer, tools = [], { scopeEvidence = [], instruction = false } = {}) {
     if (!this.path || !chatRecordingEnabled(this.env)) return 0;
-    const seed = `${prompt}\u0000${answer}`;
+    const scoped = scopeEvidence.length > 0;
+    const seed = scoped ? `${prompt}\u0000${answer}\u0000${scopeEvidence.join('\n')}` : `${prompt}\u0000${answer}`;
     const userId = stableId('chat_user', seed);
-    const recorded = [memoryEvent({ id: userId, kind: 'message', role: 'user', content: prompt, write_count: 1 })];
+    const recorded = [memoryEvent({
+      id: userId,
+      kind: 'message',
+      role: instruction ? 'instruction' : 'user',
+      content: prompt,
+      ...(scoped ? { evidence: [...scopeEvidence] } : {}),
+      write_count: 1,
+    })];
     const hit = predictionHitEvent(this.events, prompt, userId, this.classify);
     if (hit) recorded.push(hit);
     const evidence = [userId];
     for (const execution of tools) {
-      const id = stableId('chat_tool', `${prompt}\u0000${execution.tool}\u0000${execution.inputs}\u0000${execution.outputs}`);
+      const toolSeed = `${prompt}\u0000${execution.tool}\u0000${execution.inputs}\u0000${execution.outputs}`;
+      const id = stableId('chat_tool', scoped ? `${toolSeed}\u0000${scopeEvidence.join('\n')}` : toolSeed);
       evidence.push(id);
       recorded.push(memoryEvent({
         id,
@@ -567,7 +584,7 @@ export class SyncStore {
         inputs: execution.inputs,
         outputs: execution.outputs,
         content: `tool:${execution.tool}`,
-        evidence: [userId],
+        evidence: [userId, ...scopeEvidence],
         write_count: 1,
       }));
     }
@@ -582,7 +599,7 @@ export class SyncStore {
       intent: 'solve',
       inputs: prompt,
       outputs: answer,
-      evidence,
+      evidence: [...evidence, ...scopeEvidence],
       write_count: 1,
     }));
     const before = this.events.length;

@@ -48,6 +48,12 @@ on:
       - "scripts/mirror-package-data.mjs/**"
       - "rust/examples/generate_source_content.rs"
       - "scripts/native-release-source.mjs"
+      - "scripts/collect-ci-failures.mjs"
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   # Issue #1187 R2: a bot pull request's checks start through dispatch
   # (.github/actions/dispatch-checks); mode and pull-request are its inputs.
   workflow_dispatch:
@@ -77,9 +83,13 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  pr-check-profile:
+    if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'))
+    uses: ./.github/workflows/pull-request-check-profile.yml
   content:
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true) }}
     name: Build full source content (${{ matrix.shard }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -137,7 +147,7 @@ jobs:
   regenerate:
     name: Verify source-content receipts
     needs: content
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7

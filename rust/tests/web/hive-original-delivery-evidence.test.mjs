@@ -128,10 +128,11 @@ test('a real ready isolated PR and one safe original-language source are require
 });
 import { readFileSync } from 'node:fs';
 import YAML from 'yaml';
+import { parseSpeedPolicy } from '../../../scripts/lib/ci-speed-policy.mjs';
 const {
   parse
 } = YAML;
-test('genuine image, solve and independent verification phases use same-run handoffs within the existing cap', () => {
+test('genuine image, solve and independent verification phases use same-run handoffs within recorded caps', () => {
   const root = new URL('../../../', import.meta.url);
   const {
     jobs
@@ -142,8 +143,10 @@ test('genuine image, solve and independent verification phases use same-run hand
   assert.equal(jobs.verification.if,
  "${{ !cancelled() && needs.image.result == 'success' && needs.admission.outputs.execute == 'true' }}",
  'failed original solves still reach the original verifier');
-  for (const job of Object.values(jobs)) {
-    assert.ok(job['timeout-minutes'] <= 30);
+  const speed = parseSpeedPolicy(readFileSync(new URL('data/meta/ci-speed.lino', root), 'utf8'));
+  for (const [id, job] of Object.entries(jobs)) {
+    const exception = speed.exceptions.find(value => value.workflow === '.github/workflows/hive-original-delivery.yml' && value.job === id);
+    assert.ok(job['timeout-minutes'] <= (exception?.timeoutMinutes ?? speed.limitMinutes));
     for (const step of job.steps ?? []) if (step['timeout-minutes'] !== undefined) {
       assert.ok(step['timeout-minutes'] * 100 <= job['timeout-minutes'] * 70, 'step retains original job headroom');
     }
@@ -182,8 +185,11 @@ test('genuine image, solve and independent verification phases use same-run hand
   assert.equal(stage.with.name, staged.with.name);
   assert.equal(stage.with.path, staged.with.path + '/publish', 'only sanitized explicit export is uploaded');
   assert.equal(final.with.name, 'hive-original-${{ matrix.tool }}-evidence');
+  assert.equal(stage.if, "${{ !cancelled() && steps.claim.outputs.execute == 'true' }}");
+  // Evidence is retained for every claimed leg, including a failed oracle; a deferred leg has none (#1485).
+  assert.equal(final.if, "${{ !cancelled() && steps.outcome.outputs.verify == 'true' }}");
+  assert.equal(staged.if, "${{ steps.outcome.outputs.verify == 'true' }}");
   for (const upload of [stage, final]) {
-    assert.equal(upload.if, '${{ !cancelled() }}');
     assert.equal(upload.with['if-no-files-found'], 'error');
     assert.equal(upload.with['include-hidden-files'], false);
   }
@@ -195,6 +201,29 @@ test('genuine image, solve and independent verification phases use same-run hand
   assert.ok(!jobs.delivery.steps.some(step => step.uses === 'dtolnay/rust-toolchain@stable' || step.uses?.startsWith('coursier/')),
  'compilers belong only to the independent verification host');
   assert.ok(jobs.verification.steps.findIndex(step => (step.run || '').includes('--verify-evidence')) < jobs.verification.steps.findIndex(step => (step.run || '').includes('node .hive-protocol/scripts/check-hive-original-delivery.mjs')));
+});
+test('the delivery parent preserves the full solve budget after observed image setup', () => {
+  const root = new URL('../../../', import.meta.url);
+  const { jobs } = parse(readFileSync(new URL('.github/workflows/hive-original-delivery.yml', root), 'utf8'));
+  // Public job metadata, owner 40173640886 attempt 1, 2026-10-25:
+  // https://github.com/link-assistant/formal-ai/actions/runs/40173640886
+  // Job 121114230265 (Codex) and 121114230383 (Claude), before any model work.
+  const observations = [
+    { job: 121114230265, started: '2026-10-25T08:04:29Z', solve: '2026-10-25T08:32:42Z' },
+    { job: 121114230383, started: '2026-10-25T08:04:29Z', solve: '2026-10-25T08:31:55Z' },
+  ];
+  const solve = jobs.delivery.steps.find(step => step.name === 'Run actual Hive solve and original assertions');
+  const reserveSeconds = 5 * 60;
+  for (const observed of observations) {
+    const setupSeconds = (Date.parse(observed.solve) - Date.parse(observed.started)) / 1000;
+    assert.ok(setupSeconds > 0);
+    assert.ok(jobs.delivery['timeout-minutes'] * 60 >= setupSeconds + solve['timeout-minutes'] * 60 + reserveSeconds,
+      `job ${observed.job}: image handoff must not consume the solve/evidence budget`);
+  }
+  assert.ok(jobs.delivery['timeout-minutes'] <= 55, 'the temporary allowance remains finite and scoped');
+  for (const [id, job] of Object.entries(jobs)) if (id !== 'delivery') {
+    assert.ok(job['timeout-minutes'] <= 30, `${id}: no general deadline expansion`);
+  }
 });
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
@@ -302,8 +331,10 @@ test('only Codex installs Rust and resolves the actual compiler before the uncha
   const resolved = steps.indexOf(resolve);
   const independent = steps.findIndex(step => step.name === 'Independently compile delivered source and require exactly one output line');
   assert.ok(setup >= 0 && setup < resolved && resolved < independent);
-  assert.equal(steps[setup].if, "matrix.tool == 'codex'");
-  assert.equal(resolve.if, "matrix.tool == 'codex'");
+  // Only a claimed leg is verified (#1485); a deferred or refused leg has no delivered source.
+  assert.equal(steps[setup].if, "${{ steps.outcome.outputs.verify == 'true' && matrix.tool == 'codex' }}");
+  assert.equal(resolve.if, "${{ steps.outcome.outputs.verify == 'true' && matrix.tool == 'codex' }}");
+  assert.equal(steps[independent].if, "${{ steps.outcome.outputs.verify == 'true' }}");
   assert.equal(steps[independent].run, 'node .hive-protocol/scripts/check-hive-original-delivery.mjs');
   assert.match(resolve.run, /rustup which rustc/);
   assert.match(resolve.run, /test -x "\$hive_rust_compiler"/);
@@ -411,7 +442,7 @@ for (const options of [{
 test('real effects require current complete CI admission and immutable pre-effect claims; cleanup remains independently discoverable', () => {
   const workflow = parse(readFileSync(new URL('.github/workflows/hive-original-delivery.yml', new URL('../../../', import.meta.url)), 'utf8'));
   assert.equal(workflow.on.pull_request, undefined);
-  assert.deepEqual(workflow.on.workflow_run.workflows, ['*', '!Original Hive Mind three-client delivery', '!Finalize original Hive generated tasks']);
+  assert.deepEqual(workflow.on.workflow_run.workflows, ['*', '!Original Hive Mind three-client delivery', '!Finalize original Hive generated tasks', '!Hive CI phase timing']);
   assert.equal(workflow.concurrency['cancel-in-progress'], false);
   assert.equal(workflow.jobs.build.needs, 'admission');
   assert.match(workflow.jobs.build.if, /admitted/);
@@ -451,18 +482,29 @@ test('released completion cannot be replaced by unrelated candidate events and e
   assert.match(steps[effect].env.CLAIM_ARTIFACT_ID, /steps.claim.outputs.artifact-id/);
   assert.ok(cleanup.jobs.prepare.steps.some(step => step.with?.name === '${{ steps.prepare.outputs.progress_name }}' && step.with['retention-days'] >= 2));
 });
-test('external task credentials bind canonical owner and repository and preflight before consuming an effect attempt', () => {
+test('the shared credential resolver scopes optional App access and retains the default token before claims', () => {
   const workflow = parse(readFileSync(new URL('.github/workflows/hive-original-delivery.yml', new URL('../../../', import.meta.url)), 'utf8'));
   const steps = workflow.jobs.delivery.steps,
-    app = steps.find(value => value.id === 'task_app');
-  assert.equal(app.uses, 'actions/create-github-app-token@v3');
+    app = steps.find(value => value.id === 'task_token');
+  assert.equal(app.uses, './.hive-protocol/.github/actions/automation-token');
   assert.equal(app.with.owner, '${{ steps.target.outputs.target_owner }}');
   assert.equal(app.with.repositories, '${{ steps.target.outputs.target_name }}');
-  for (const permission of ['contents', 'issues', 'pull-requests', 'actions', 'workflows']) assert.equal(app.with['permission-' + permission], 'write');
+  for (const permission of ['actions', 'workflows']) assert.equal(app.with['permission-' + permission], 'write');
+  assert.equal(app.with['github-token'], '${{ github.token }}');
+  const resolver = parse(readFileSync(new URL('.github/actions/automation-token/action.yml', new URL('../../../', import.meta.url)), 'utf8'));
+  const mint = resolver.runs.steps.find(step => step.id === 'app-token');
+  assert.equal(mint['continue-on-error'], true, 'an unusable optional App must retain its fallback');
+  assert.equal(mint.with.owner, '${{ inputs.owner }}');
+  for (const permission of ['contents', 'issues', 'pull-requests']) assert.equal(mint.with['permission-' + permission], 'write');
   assert.ok(steps.findIndex(value => value.id === 'target') < steps.indexOf(app));
   assert.ok(steps.findIndex(value => value.id === 'gh') < steps.findIndex(value => value.id === 'claim'));
-  assert.equal(steps.find(value => value.id === 'gh').env.GH_TOKEN, '${{ steps.task_app.outputs.token || secrets.AUTOMATION_TOKEN }}');
-  assert.ok(!steps.some(value => value.uses?.endsWith('/resolve-github-token')), 'current repository resolver cannot authorize canonical external fixtures');
+  assert.equal(steps.find(value => value.id === 'gh').env.GH_TOKEN, '${{ steps.task_token.outputs.token }}');
+  assert.equal(steps.find(value => value.id === 'gh').env.HIVE_CREDENTIAL_LAYER, '${{ steps.task_token.outputs.layer }}');
+  const early = workflow.jobs.admission.steps.find(step => step.run?.endsWith('hive-delivery-attempt.mjs configuration'));
+  assert(early, 'optional credential availability is reported without blocking the default layer');
+  assert.match(early.if, /steps\.admit\.outputs\.admitted == 'true'.*steps\.admit\.outputs\.execute == 'true'/u);
+  assert.equal(early.env.AUTOMATION_TOKEN, '${{ secrets.AUTOMATION_TOKEN }}');
+  assert.equal(early.env.AUTOMATION_APP_PRIVATE_KEY, '${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}');
 });
 test('durable result publication is isolated from untrusted compiler execution and precedes final qualification', () => {
   const workflow = parse(readFileSync(new URL('.github/workflows/hive-original-delivery.yml', new URL('../../../', import.meta.url)), 'utf8'));

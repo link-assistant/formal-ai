@@ -25,6 +25,7 @@ import { invalidArguments } from '../../../js/agentic/crate/tool_call_validation
 const originalTask = fs.readFileSync(new URL('../fixtures/issue-1364-claude-restart.txt', import.meta.url), 'utf8');
 const issues = JSON.parse(fs.readFileSync(new URL('../fixtures/issue-1364-hello-world-issues.json', import.meta.url), 'utf8'));
 const historicalSources = JSON.parse(fs.readFileSync(new URL('../fixtures/issue-1364-original-sources.json', import.meta.url), 'utf8'));
+const ownSessionFeedback = JSON.parse(fs.readFileSync(new URL('../fixtures/agentic/hive-own-session-feedback.json', import.meta.url), 'utf8')).feedback;
 const logicalRoot = '/tmp/gh-issue-solver-1792505721477';
 function relativeClientPath(value) {
   if (path.isAbsolute(value)) {
@@ -178,7 +179,13 @@ async function nextClient(context, history, tools, protocol) {
   };
 }
 function appendClient(history, next, call, result, protocol) {
-  const output = JSON.stringify({
+  let sourceReceipt = false;
+  try {
+    sourceReceipt = ['workspace-source-v1', 'workspace-source-update-v1'].includes(JSON.parse(result.stdout).schema);
+  } catch {/* Other commands retain their explicit process envelope. */}
+  // Real Hive Claude/Agent callbacks carry these semantic receipts as stdout
+  // without a shell exit code. Preserve that observed transport in full replays.
+  const output = sourceReceipt || result.status === 0 && protocol !== 'codex' ? result.stdout : JSON.stringify({
     exit_code: result.status,
     stdout: result.stdout,
     stderr: result.stderr,
@@ -283,7 +290,9 @@ async function runFixture(configuration) {
     const sourceContext = {
       worker: new WorkerHost()
     };
-    await ensureNodeHost(sourceContext);
+    await ensureNodeHost(sourceContext, {
+      sourceUsageRustGrammar: false
+    });
     const generated = programContractAnswer(issue.body)?.execution_recipe?.source;
     assert.equal(typeof generated, 'string');
     const generatedLines = generated.split('\n');
@@ -314,8 +323,7 @@ async function runFixture(configuration) {
       // Synthetic bytes use the pinned producer grammar; original private session bytes are absent.
       remember(evidence + 'session-id.txt', Buffer.from('formal-ai session synthetic-historical-session\nformal-ai model formal-ai/0.3.55\n'));
     }
-    if (configuration.protocol === 'codex') remember('main', Buffer.from([0x7f, 0x45, 0x4c, 0x46, 0x00, 0x53, 0x59, 0x4e, 0x54, 0x48, 0x45, 0x54, 0x49
-    , 0x43]));
+    if (configuration.protocol === 'codex') remember('main', Buffer.from([0x7f, 0x45, 0x4c, 0x46, 0x00, 0x53, 0x59, 0x4e, 0x54, 0x48, 0x45, 0x54, 0x49, 0x43]));
     await git('add', 'README.md', configuration.source, ...retainedArtifacts.map(entry => entry.path));
     await git('commit', '-qm', 'initial');
     await git('remote', 'add', 'origin', origin);
@@ -327,6 +335,7 @@ async function runFixture(configuration) {
       isDraft: true,
       reference: issue.html_url.replace('/issues/1', '/pull/2'),
       issue,
+      feedback: ownSessionFeedback,
       workflow: 'Run ' + configuration.source,
       calls: []
     };
@@ -348,7 +357,9 @@ elif a[:2]==['pr','view']:
         if fields=='headRefOid,headRefName,isDraft,state,url':
             print(json.dumps(dict(headRefOid=s['head'],headRefName=s['branch'],isDraft=s['isDraft'],state='OPEN',url=s['reference'])))
         elif fields=='comments,reviews':
-            print(json.dumps(dict(comments=[],reviews=[])))
+            print(json.dumps(s['feedback']))
+        elif fields in ('title','body'):
+            print(s.get(fields,''))
         else:
             raise RuntimeError('unexpected fixture PR fields '+fields)
     else:
@@ -363,6 +374,9 @@ elif a[:2]==['pr','checks']:
         print('All checks passed.')
 elif a[:2]==['pr','edit']:
     assert a[2]==s['reference']
+    for flag in ('--title','--body'):
+        if flag in a:
+            s[flag[2:]]=a[a.index(flag)+1]
 elif a[:2]==['pr','ready']:
     assert a[2]==s['reference'] and s['isDraft']
     s['isDraft']=False
@@ -398,7 +412,9 @@ json.dump(s,open(p,'w'))
           FORMAL_AI_MEMORY_PATH: fixture + '/memory-' + run + '.lino'
         })
       };
-      await ensureNodeHost(context);
+      await ensureNodeHost(context, {
+        sourceUsageRustGrammar: false
+      });
       if (run === 0) {
         const own = issue.html_url.replace('/issues/1', '/pull/2');
         const handoff = reference => 'Your prepared Pull Request: ' + reference;
@@ -704,7 +720,14 @@ json.dump(s,open(p,'w'))
         flag: 'wx'
       });
       assert.equal(typeof final, 'string');
-      assert.match(final, /verified by CI/u);
+      assert.match(final, /verified by CI/u, JSON.stringify({
+        final,
+        lastCalls: calls.slice(-4).map(call => ({
+          tool: call.declaredTool,
+          command: (call.arguments.command ?? call.arguments.cmd ?? '').slice(0, 80),
+          observation: call.observation
+        }))
+      }));
       assert.doesNotMatch(final, /Created and verified/u);
       assert.equal(receipt.at(-1).status, '');
       assert.equal(receipt.at(-1).state.isDraft, false);

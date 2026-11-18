@@ -756,16 +756,9 @@ fn every_step_level_timeout_can_fire_before_its_job_cap() {
             });
 
             for budget_minutes in step_budgets {
-                let cap_minutes: u64 = job_timeout(job)
+                let cap_minutes = super::workflow_fixtures::minimum_job_timeout(job)
                     .unwrap_or_else(|| {
-                        panic!("{name}: job `{job_name}` caps a step but declares no cap itself")
-                    })
-                    .parse()
-                    .unwrap_or_else(|_| {
-                        panic!(
-                            "{name}: job `{job_name}` caps a step under a job cap this test \
-                             cannot compare against; write the cap as a plain number of minutes"
-                        )
+                        panic!("{name}: job `{job_name}` requires a complete positive literal or include-matrix cap")
                     });
                 checked += 1;
                 let share = budget_minutes * 100 / cap_minutes;

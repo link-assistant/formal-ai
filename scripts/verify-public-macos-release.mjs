@@ -80,9 +80,19 @@ export function validateRendererProbe(value, version) {
   assert.equal(value.ui.messageListCount, 1, diagnostic);
 }
 
-function command(file, args, options = {}) {
-  const result = spawnSync(file, args, {encoding: 'utf8', timeout: 30000,
+export function command(file, args, options = {}, invoke = spawnSync) {
+  // A complete app copied from a compressed DMG is not a small metadata probe.
+  // The successful Intel producer's install smoke took 48 seconds; retain one
+  // finite attempt for both ditto operations within the 15-minute consumer job.
+  const timeout = file === '/usr/bin/ditto' ? 180000 : 30000;
+  const started = Date.now();
+  console.error(JSON.stringify({schema: 'public-macos-command/v1', phase: 'started',
+    tool: path.basename(file), timeoutMs: timeout}));
+  const result = invoke(file, args, {encoding: 'utf8', timeout,
     maxBuffer: 1024 * 1024, ...options});
+  console.error(JSON.stringify({schema: 'public-macos-command/v1', phase: 'finished',
+    tool: path.basename(file), elapsedMs: Date.now() - started, status: result.status,
+    signal: result.signal, errorCode: result.error?.code ?? null}));
   if (result.error) throw result.error;
   assert.equal(result.status, 0, `${path.basename(file)} failed: ${result.stderr}`);
   return result.stdout;

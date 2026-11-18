@@ -1,6 +1,6 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=c40c5d0d3542fadf8c86c7e6522a69e772bf0a840fcc3279610c20ebea2e2893 bytes=30721
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=69ca9331d2ca881fd62a762dc2259e151107ab0f529b8dd18dc23eceffa122a8 bytes=32129
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
-// formal-ai:workarounds import-pruning items=0 carried=6
+// formal-ai:workarounds import-pruning items=0 carried=7
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
@@ -38,6 +38,10 @@
 // formal-ai:refusal import of names its module does not translate
 // formal-ai:blockers import of names its module carries
 
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import of names its module carries
+
 // meta-language:translated JavaScript export_statement items=1 sha256=fc62867699c06b20229106914761a4f4ed172866c107b35a3bcd0b5c2e0d33ac
 // | /** Mirrors `TEXT_FORMALIZATION_LINO` in rust/src/seed/embedded_registry.rs (the repository path it embeds). */
 // | export const TEXT_FORMALIZATION_PATH = 'data/seed/text-formalization.lino';
@@ -52,6 +56,11 @@ pub static FUNCTION_WORD_ROLES: std::sync::LazyLock<Vec<String>> = std::sync::La
 // | /** Mirrors `NEGATION_ROLE` in rust/src/formalization/text_statements.rs: the lexicon role whose words deny a statement. */
 // | export const NEGATION_ROLE = 'statement_negation_cue';
 pub const NEGATION_ROLE: &str = "statement_negation_cue";
+
+// meta-language:translated JavaScript export_statement items=1 sha256=e1042fc0a398935864a2e221716cb150b4f8d1e1af11053d075a3873f589fedc
+// | /** Grammar lexemes belong to their owning parser, not the general semantic index. */
+// | export const SCOPED_GRAMMAR_ROLE = 'scoped-grammar-pattern';
+pub const SCOPED_GRAMMAR_ROLE: &str = "scoped-grammar-pattern";
 
 // meta-language:translated JavaScript export_statement items=1 sha256=53865a1c7f28f922404629d81d819692bc7382af5456d2bd3a23dba17df0ef80
 // | /** Mirrors `LONGEST_PHRASE` in rust/src/formalization/text_statements.rs: the most words one lexicon surface may span. */
@@ -220,6 +229,10 @@ pub const HAN: &str = "han";
 // formal-ai:refusal JSDoc type {…}
 // formal-ai:blockers JSDoc type {…} | assignment of a field or element | call of a sibling function | call of an imported function | field access | method call .pop() | method call .push() | null | object spread | object without a $ tag
 
+// meta-language:carried JavaScript export_statement (type)
+// formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of a sibling function | call of an imported function
+
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
 // formal-ai:blockers arrow callback of .forEach() | assignment of a field or element | call of a sibling function | call of an imported function | field access | method call .forEach() | method call .push() | null | object without a $ tag
@@ -244,9 +257,17 @@ pub const HAN: &str = "han";
 // formal-ai:refusal new expression
 // formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | call of a sibling function | field access | imported value | method call .filter() | method call .map() | method call .sort() | new Set
 
+// meta-language:carried JavaScript lexical_declaration (unsupported)
+// formal-ai:refusal new expression
+// formal-ai:blockers new WeakMap
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal nullish coalescing
+// formal-ai:blockers call of a sibling function | call of an imported function | field access | method call .get() | method call .set() | nullish coalescing | object without a $ tag | optional chaining | sibling value
+
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | call of an imported function | field access | imported value | method call .filter() | method call .join() | method call .map() | method call .sort() | new Set | null
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | call of a sibling function | call of an imported function | field access | imported value | method call .filter() | method call .join() | method call .map() | method call .sort() | new Set | null
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .every()

@@ -22,14 +22,14 @@ use std::path::{Path, PathBuf};
 #[cfg(not(target_arch = "wasm32"))]
 mod live_path;
 /// Resolve the active live-server memory file without changing explicit raw-loader behavior.
-pub(crate) fn live_memory_path(path: &Path) -> std::io::Result<PathBuf> {
+fn live_memory_path(path: &Path, read_only: bool) -> std::io::Result<PathBuf> {
     #[cfg(not(target_arch = "wasm32"))]
     {
-        live_path::resolve(path)
+        live_path::resolve(path, read_only)
     }
     #[cfg(target_arch = "wasm32")]
     {
-        let _ = path;
+        let _ = (path, read_only);
         Err(std::io::Error::new(
             std::io::ErrorKind::Unsupported,
             "memory_live_io_unavailable",
@@ -66,7 +66,7 @@ pub(crate) fn prepare_live_memory(path: &Path) -> std::io::Result<PathBuf> {
             "memory_live_configurations_exhausted",
         ));
     }
-    let selected = live_memory_path(path)?;
+    let selected = live_memory_path(path, crate::solver_config::ephemeral_enabled())?;
     paths.insert(path.to_path_buf(), selected.clone());
     drop(paths);
     Ok(selected)
@@ -228,7 +228,8 @@ pub fn configured_memory_path() -> Option<PathBuf> {
 /// Live chat exchanges are recorded into memory unless explicitly disabled.
 #[must_use]
 pub fn chat_recording_enabled() -> bool {
-    !crate::cli_env::flag_disabled("FORMAL_AI_RECORD_CHAT")
+    !crate::solver_config::ephemeral_enabled()
+        && !crate::cli_env::flag_disabled("FORMAL_AI_RECORD_CHAT")
 }
 
 /// Resolve the native link-cli database beside a portable `.lino` memory log.
@@ -289,12 +290,15 @@ impl SyncStore {
     #[must_use]
     pub fn open() -> Self {
         configured_memory_path().map_or_else(Self::default, |path| {
+            let read_only = crate::solver_config::ephemeral_enabled();
             match prepare_live_memory(&path) {
-                Ok(selected) => {
-                    Self::open_read(&selected, live_memory_source(&selected, selected != path))
-                }
+                Ok(selected) => Self::open_read(
+                    &selected,
+                    live_memory_source(&selected, selected != path),
+                    read_only,
+                ),
                 Err(error) => Self {
-                    path: Some(path),
+                    path: (!read_only).then_some(path),
                     events: Vec::new(),
                     schema_version: TARGET_MEMORY_SCHEMA_VERSION,
                     compatible: false,
@@ -306,20 +310,21 @@ impl SyncStore {
 
     /// Open the live-server store after lossless migration or preservation of incompatible bytes.
     pub fn open_live_at(path: &Path) -> std::io::Result<Self> {
-        let selected = live_memory_path(path)?;
+        let selected = live_memory_path(path, false)?;
         Ok(Self::open_read(
             &selected,
             live_memory_source(&selected, selected != path),
+            false,
         ))
     }
 
     /// Open a store at an explicit path (used by tests).
     #[must_use]
     pub fn open_at(path: &Path) -> Self {
-        Self::open_read(path, std::fs::read_to_string(path))
+        Self::open_read(path, std::fs::read_to_string(path), false)
     }
 
-    fn open_read(path: &Path, source: std::io::Result<String>) -> Self {
+    fn open_read(path: &Path, source: std::io::Result<String>, read_only: bool) -> Self {
         let mut storage_error = None;
         let (events, schema_version, compatible) = match source {
             Ok(text) => {
@@ -332,6 +337,9 @@ impl SyncStore {
                     schema_version,
                     status.compatible,
                 )
+            }
+            Err(error) if read_only && error.kind() == std::io::ErrorKind::NotFound => {
+                return Self::default();
             }
             Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
                 let compatible = match crate::shared_memory::ensure_shared_memory_file(path) {
@@ -355,13 +363,14 @@ impl SyncStore {
             }
         };
         let mut store = Self {
-            path: Some(path.to_path_buf()),
+            path: (!read_only).then(|| path.to_path_buf()),
             events,
             schema_version,
             compatible,
             storage_error,
         };
-        if store.compatible
+        if !read_only
+            && store.compatible
             && let Err(error) = store.synchronize_link_cli_projection()
         {
             {
@@ -452,16 +461,46 @@ impl SyncStore {
         answer: &str,
         tools: &[RecordedToolExecution],
     ) -> std::io::Result<usize> {
+        self.record_scoped_chat_exchange(prompt, answer, tools, &[], false)
+    }
+
+    /// [`Self::record_chat_exchange_with_tools`] in the scope the exchange was
+    /// made in (issue #1559): `scope_evidence` carries the request's `scope:`
+    /// entries ([`crate::standing_scope::recorded_scope_evidence`]) and
+    /// `instruction` marks a prompt that configures the session, which
+    /// dreaming never learns as a user requirement.
+    ///
+    /// # Errors
+    /// Returns an [`std::io::Error`] when the backing file cannot be written.
+    pub fn record_scoped_chat_exchange(
+        &mut self,
+        prompt: &str,
+        answer: &str,
+        tools: &[RecordedToolExecution],
+        scope_evidence: &[String],
+        instruction: bool,
+    ) -> std::io::Result<usize> {
         if self.path.is_none() || !chat_recording_enabled() {
             return Ok(0);
         }
-        let seed = format!("{prompt}\0{answer}");
+        let scope_seed = scope_evidence.join("\n");
+        let scoped = !scope_evidence.is_empty();
+        let seed = if scoped {
+            format!("{prompt}\0{answer}\0{scope_seed}")
+        } else {
+            format!("{prompt}\0{answer}")
+        };
         let user_id = crate::engine::stable_id("chat_user", &seed);
         let mut recorded = vec![MemoryEvent {
             id: user_id.clone(),
             kind: Some(String::from("message")),
-            role: Some(String::from("user")),
+            role: Some(String::from(if instruction {
+                "instruction"
+            } else {
+                "user"
+            })),
             content: Some(prompt.to_owned()),
+            evidence: scope_evidence.to_vec(),
             write_count: 1,
             ..MemoryEvent::default()
         }];
@@ -475,7 +514,11 @@ impl SyncStore {
                 "{prompt}\0{}\0{}\0{}",
                 execution.tool, execution.inputs, execution.outputs
             );
-            let id = crate::engine::stable_id("chat_tool", &tool_seed);
+            let id = if scoped {
+                crate::engine::stable_id("chat_tool", &format!("{tool_seed}\0{scope_seed}"))
+            } else {
+                crate::engine::stable_id("chat_tool", &tool_seed)
+            };
             evidence.push(id.clone());
             recorded.push(MemoryEvent {
                 id,
@@ -486,7 +529,9 @@ impl SyncStore {
                 inputs: Some(execution.inputs.clone()),
                 outputs: Some(execution.outputs.clone()),
                 content: Some(format!("tool:{}", execution.tool)),
-                evidence: vec![user_id.clone()],
+                evidence: std::iter::once(user_id.clone())
+                    .chain(scope_evidence.iter().cloned())
+                    .collect(),
                 write_count: 1,
                 ..MemoryEvent::default()
             });
@@ -508,7 +553,10 @@ impl SyncStore {
             intent: Some(String::from("solve")),
             inputs: Some(prompt.to_owned()),
             outputs: Some(answer.to_owned()),
-            evidence,
+            evidence: evidence
+                .into_iter()
+                .chain(scope_evidence.iter().cloned())
+                .collect(),
             write_count: 1,
             ..MemoryEvent::default()
         });

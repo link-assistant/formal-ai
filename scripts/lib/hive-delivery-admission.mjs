@@ -3,6 +3,17 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 export const deliveryWorkflow = '.github/workflows/hive-original-delivery.yml';
 export const admissionPolicy = 'formal-ai-hive-1364-admission/v1';
+/** Proposal generation has no release authority; push/PR checks and unknown workflows still gate. */
+export function isGatingCiRun(run, {scheduledWorkflows = []} = {}) {
+  if ([deliveryWorkflow, '.github/workflows/hive-original-delivery-finalize.yml',
+    '.github/workflows/work-item-qualification.yml'].includes(run.path)) return false;
+  // Issue-specific proposal attempts do not qualify or invalidate published source.
+  if (run.path === '.github/workflows/hive-mind-draft.yml' &&
+    ['issues', 'workflow_dispatch'].includes(run.event)) return false;
+  if (run.event === 'schedule' && scheduledWorkflows.includes(run.path)) return false;
+  return run.path !== '.github/workflows/learning-cycle.yml' ||
+    !['schedule', 'workflow_dispatch'].includes(run.event);
+}
 const commit = value => assert.match(value ?? '', /^[a-f0-9]{40}$/u);
 const positive = value => assert.ok(Number.isSafeInteger(value) && value > 0);
 const strings = value => {
@@ -10,6 +21,18 @@ const strings = value => {
   assert.ok(value.every(item => typeof item === 'string' && item.length <= 1024));
   return value;
 };
+/** Only authenticated source declarations may classify periodic observations outside commit CI. */
+export function declaredScheduledWorkflows(workflows) {
+  assert.ok(Array.isArray(workflows) && workflows.length <= 128);
+  return [...new Set(workflows.filter(workflow => {
+    const schedule = workflow.document?.on?.schedule;
+    return Array.isArray(schedule) && schedule.length > 0
+      && schedule.every(row => typeof row?.cron === 'string' && row.cron.trim().length > 0);
+  }).map(workflow => {
+    assert.match(workflow.path, /^[.]github\/workflows\/[A-Za-z0-9_.-]+[.]ya?ml$/u);
+    return workflow.path;
+  }))].sort();
+}
 /** Match the bounded GitHub branch/path glob subset used by maintained triggers. Unknown syntax refuses. */
 export function githubPattern(pattern, value) {
   assert.equal(typeof pattern, 'string');
@@ -66,7 +89,7 @@ export function applicableWorkflows(workflows, {
   const expected = [];
   for (const workflow of workflows) {
     assert.match(workflow.path, /^\.github\/workflows\/[A-Za-z0-9_-]+\.ya?ml$/u);
-    if (workflow.path === deliveryWorkflow) continue;
+    if (!isGatingCiRun({path: workflow.path, event})) continue;
     const triggers = workflow.document.on;
     const policy = typeof triggers === 'string' ? triggers === event ? {} : undefined : Array.isArray(triggers) ? triggers.includes(event) ? {} : undefined : triggers?.[event];
     if (policy === undefined) continue;
@@ -126,16 +149,26 @@ export function authenticatePullRequest({
     event: 'pull_request'
   };
 }
-/** Every applicable workflow and every other observed workflow must be green at the exact source. */
-class CiAdmissionDeferred extends Error {}
+/** Required commit CI and other observed gates remain strict; declared periodic observations confer no authority. */
+class CiAdmissionDeferred extends Error {
+  constructor(message, run = null) {
+    super(message);
+    this.blockedBy = run === null ? null : {
+      run: run.id, attempt: run.run_attempt, path: run.path, event: run.event,
+      status: run.status, conclusion: run.conclusion
+    };
+  }
+}
 
 export function ciAdmission({
   source,
   expected,
   runs,
-  complete
+  complete,
+  scheduledWorkflows = []
 }) {
   commit(source);
+  strings(scheduledWorkflows);
   assert.equal(complete, true, 'incomplete API census');
   strings(expected);
   assert.ok(expected.length > 0);
@@ -146,7 +179,7 @@ export function ciAdmission({
     positive(run.id);
     positive(run.run_attempt);
     assert.equal(typeof run.path, 'string');
-    if ([deliveryWorkflow, '.github/workflows/hive-original-delivery-finalize.yml'].includes(run.path)) continue;
+    if (!isGatingCiRun(run, {scheduledWorkflows})) continue;
     const key = run.path + '\0' + run.event,
       previous = latest.get(key);
     if (!previous || run.id > previous.id || run.id === previous.id && run.run_attempt > previous.run_attempt) latest.set(key, run);
@@ -158,10 +191,10 @@ export function ciAdmission({
     assert.ok(['completed', 'queued', 'in_progress', 'requested', 'waiting', 'pending'].includes(run.status), 'invalid CI status metadata');
     if (run.status !== 'completed') {
       assert.equal(run.conclusion, null, 'nonterminal CI conclusion metadata');
-      throw new CiAdmissionDeferred('other CI pending');
+      throw new CiAdmissionDeferred('other CI pending', run);
     }
     assert.ok(['success', 'failure', 'neutral', 'cancelled', 'skipped', 'timed_out', 'action_required', 'stale', 'startup_failure'].includes(run.conclusion), 'invalid CI conclusion metadata');
-    if (run.conclusion !== 'success') throw new CiAdmissionDeferred('other CI not green');
+    if (run.conclusion !== 'success') throw new CiAdmissionDeferred('other CI not green', run);
   }
   return [...latest.values()].map(run => ({
     id: run.id,
@@ -232,7 +265,8 @@ export function clientAdmission({
       action: 'reuse',
       testedHead: success.testedHead,
       run: success.run,
-      attempt: success.attempt
+      attempt: success.attempt,
+      ...(success.acceptance.taskTransport ? {taskTransport: success.acceptance.taskTransport} : {})
     };
   }
   if (attempts.some(record => record.run === currentRun)) return {
@@ -291,6 +325,6 @@ export function ciAdmissionDecision(options) {
   try { return {admitted: true, ci: ciAdmission(options)}; }
   catch (error) {
     if (!(error instanceof CiAdmissionDeferred)) throw error;
-    return {admitted: false, reason: error.message};
+    return {admitted: false, reason: error.message, ...(error.blockedBy ? {blockedBy: error.blockedBy} : {})};
   }
 }

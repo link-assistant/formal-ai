@@ -4,14 +4,23 @@ name: Original Hive Mind three-client delivery
 # effects, which require a source-bound immutable claim.
 on: # zizmor: ignore[dangerous-triggers]
   workflow_run:
+    branches: [main]
     workflows:
       - "*"
       - "!Original Hive Mind three-client delivery"
       - "!Finalize original Hive generated tasks"
+      # Issue #1486: the phase-timing reader measures this workflow; its own
+      # completion must not admit another delivery run.
+      - "!Hive CI phase timing"
     types:
       - completed
   workflow_dispatch:
     inputs:
+      real-github-e2e:
+        description: Explicitly enable real GitHub test effects; offline replay is the default.
+        required: false
+        type: boolean
+        default: false
       pull-request:
         description: Current same-repository pull request number
         required: true
@@ -22,14 +31,24 @@ permissions:
 concurrency:
   group: original-hive-${{ github.event.workflow_run.name == 'Verify Public
     Release Downloads' && format('release-{0}', github.event.workflow_run.id) ||
-    github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main' &&
-    github.event.workflow_run.conclusion == 'success' && format('release-ci-{0}', github.event.workflow_run.id) ||
+    github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.event != 'pull_request' &&
+    github.event.workflow_run.event != 'pull_request_target' && format('release-ci-{0}', github.event.workflow_run.id) ||
     format('candidate-{0}', github.event.workflow_run.head_branch ||
     github.ref_name) }}
   cancel-in-progress: false
 jobs:
   admission:
     name: Authenticate current source and every applicable CI result
+    if: >-
+      (vars.FORMAL_AI_REAL_GITHUB_E2E == 'true' ||
+       (github.event_name == 'workflow_dispatch' && inputs['real-github-e2e'] == true)) &&
+      (github.event_name == 'workflow_dispatch' ||
+       (github.event.workflow_run.conclusion == 'success' &&
+        (github.event.workflow_run.name == 'Verify Public Release Downloads' ||
+         (github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main'))) ||
+       (github.event.workflow_run.head_branch == 'main' &&
+        github.event.workflow_run.event != 'pull_request' &&
+        github.event.workflow_run.event != 'pull_request_target'))
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     outputs:
@@ -41,6 +60,7 @@ jobs:
       published: ${{ steps.admit.outputs.published }}
       input_hash: ${{ steps.admit.outputs.input_hash }}
       policy_hash: ${{ steps.admit.outputs.policy_hash }}
+      wakeup_name: ${{ steps.admit.outputs.wakeup_name }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -68,9 +88,23 @@ jobs:
           path: ${{ runner.temp }}/hive-admission/selection.json
           if-no-files-found: error
           retention-days: 90
+      - name: Persist event-driven continuation for the blocking run
+        if: ${{ steps.admit.outputs.wakeup_name != '' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.admit.outputs.wakeup_name }}
+          path: ${{ runner.temp }}/hive-admission/wakeup-admission.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Report optional credentials and the default-token isolation fallback
+        if: ${{ steps.admit.outputs.admitted == 'true' && steps.admit.outputs.execute == 'true' }}
+        env:
+          AUTOMATION_TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
+          AUTOMATION_APP_ID: ${{ vars.AUTOMATION_APP_ID || secrets.AUTOMATION_APP_ID }}
+          AUTOMATION_APP_PRIVATE_KEY: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+        run: node .hive-protocol/scripts/hive-delivery-attempt.mjs configuration
   build:
-    if: ${{ needs.admission.outputs.admitted == 'true' &&
-      needs.admission.outputs.execute == 'true' }}
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (needs.admission.outputs.admitted == 'true' && needs.admission.outputs.execute == 'true') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -220,7 +254,9 @@ jobs:
           path: ${{ runner.temp }}/hive-original-evidence/released-lifecycle.json
           if-no-files-found: error
           retention-days: 90
-      - uses: actions/upload-artifact@v7
+      # Issue #1486: named so CI phase timing measures the image transfer.
+      - name: Publish the same-run task image delta
+        uses: actions/upload-artifact@v7
         with:
           name: hive-same-source-task-image
           path: ${{ runner.temp }}/hive-image-bundle
@@ -251,7 +287,9 @@ jobs:
       - build
       - image
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    # Owner 40173640886 needed 28m13s before solve; preserve its full 21m budget.
+    # Temporary image-transfer debt is recorded in data/meta/ci-speed.lino.
+    timeout-minutes: 55
     permissions:
       contents: write
       issues: write
@@ -281,10 +319,12 @@ jobs:
           HIVE_PUBLISHED_RUNTIME_FILE: ${{ needs.admission.outputs.published == 'true' &&
             format('{0}/hive-admission/selection.json', runner.temp) || '' }}
           HIVE_EVIDENCE_PUBLISH_DIRECTORY: ${{ runner.temp }}/hive-original-evidence/publish
+          HIVE_ATTEMPT_CLAIM: ${{ runner.temp }}/hive-attempt/claim.json
         run: >
           printf '%s\n' "HIVE_ADMISSION_SELECTION=$HIVE_ADMISSION_SELECTION"
           "HIVE_PUBLISHED_RUNTIME_FILE=$HIVE_PUBLISHED_RUNTIME_FILE"
-          "HIVE_EVIDENCE_PUBLISH_DIRECTORY=$HIVE_EVIDENCE_PUBLISH_DIRECTORY" >>
+          "HIVE_EVIDENCE_PUBLISH_DIRECTORY=$HIVE_EVIDENCE_PUBLISH_DIRECTORY"
+          "HIVE_ATTEMPT_CLAIM=$HIVE_ATTEMPT_CLAIM" >>
           "$GITHUB_ENV"
       - uses: actions/checkout@v7
         with:
@@ -342,7 +382,8 @@ jobs:
         run: npm ci --omit=dev --ignore-scripts --no-audit --no-fund
       - name: Prepare reviewed Hive workflow-log transport
         run: node .hive-protocol/scripts/prepare-hive-original-delivery.mjs
-      - uses: actions/download-artifact@v8
+      - name: Download the same-run task image delta
+        uses: actions/download-artifact@v8
         env:
           NODE_OPTIONS: --disable-warning=DEP0005
         with:
@@ -356,33 +397,23 @@ jobs:
           attempt
         id: target
         run: node .hive-protocol/scripts/hive-delivery-attempt.mjs target
-      - name: Observe configured credential availability without exposing secrets
-        id: credential_config
-        env:
-          APP_ID: ${{ vars.AUTOMATION_APP_ID || secrets.AUTOMATION_APP_ID }}
-          APP_KEY: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
-        run: if [ -n "$APP_ID" ] && [ -n "$APP_KEY" ]; then echo "has_app=true" >>
-          "$GITHUB_OUTPUT"; else echo "has_app=false" >> "$GITHUB_OUTPUT"; fi
-      - name: Mint token only for the authenticated canonical task repository
-        id: task_app
-        if: ${{ steps.credential_config.outputs.has_app == 'true' }}
-        continue-on-error: true
-        uses: actions/create-github-app-token@v3
+      - name: Resolve optional credentials with the repository token as fallback
+        id: task_token
+        uses: ./.hive-protocol/.github/actions/automation-token # zizmor: ignore[self-repository] Trusted workflow_sha protocol checkout.
         with:
           app-id: ${{ vars.AUTOMATION_APP_ID || secrets.AUTOMATION_APP_ID }}
-          private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+          app-private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+          automation-token: ${{ secrets.AUTOMATION_TOKEN }}
+          github-token: ${{ github.token }}
           owner: ${{ steps.target.outputs.target_owner }}
           repositories: ${{ steps.target.outputs.target_name }}
-          permission-contents: write
-          permission-issues: write
-          permission-pull-requests: write
           permission-actions: write
           permission-workflows: write
       - name: Read-only exact-target push and available workflow-scope preflight
         id: gh
         env:
-          GH_TOKEN: ${{ steps.task_app.outputs.token || secrets.AUTOMATION_TOKEN }}
-          HIVE_CREDENTIAL_LAYER: ${{ steps.task_app.outcome == 'success' && 'app' || 'token' }}
+          GH_TOKEN: ${{ steps.task_token.outputs.token }}
+          HIVE_CREDENTIAL_LAYER: ${{ steps.task_token.outputs.layer }}
         run: node .hive-protocol/scripts/hive-delivery-attempt.mjs credentials
       - name: Claim one bounded client effect after fresh CI and source revalidation
         id: claim
@@ -398,6 +429,22 @@ jobs:
           path: ${{ runner.temp }}/hive-attempt/claim.json
           if-no-files-found: error
           retention-days: 90
+      - name: Persist typed pre-effect client outcome for downstream jobs
+        uses: actions/upload-artifact@v7
+        if: ${{ !cancelled() && steps.claim.outputs.outcome_name != '' }}
+        with:
+          name: ${{ steps.claim.outputs.outcome_name }}
+          path: ${{ runner.temp }}/hive-attempt/outcome-${{ matrix.tool }}.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Persist event-driven continuation for the blocking run
+        uses: actions/upload-artifact@v7
+        if: ${{ !cancelled() && steps.claim.outputs.wakeup_name != '' }}
+        with:
+          name: ${{ steps.claim.outputs.wakeup_name }}
+          path: ${{ runner.temp }}/hive-attempt/wakeup-${{ matrix.tool }}.json
+          if-no-files-found: error
+          retention-days: 30
       - name: Install act when workflows require staging
         if: ${{ steps.claim.outputs.execute == 'true' && (steps.gh.outputs.layer ==
           'default') }}
@@ -435,10 +482,10 @@ jobs:
           node .hive-protocol/scripts/run-issue-1364-client-replay.mjs --tool "$E2E_TOOL" --source "$HIVE_ADMISSION_SOURCE" --image "$E2E_IMAGE" --output "$E2E_LOG_DIR/issue-1364-delivery.json"
         if: ${{ steps.claim.outputs.execute == 'true' }}
       - name: Seal staged source/run evidence without granting success credit
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.claim.outputs.execute == 'true' }}
         run: node .hive-protocol/scripts/lib/hive-delivery-bundle.mjs --seal-evidence
       - name: Stage actual original solve evidence for independent verification
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.claim.outputs.execute == 'true' }}
         uses: actions/upload-artifact@v7
         with:
           name: hive-original-${{ matrix.tool }}-staged-evidence
@@ -446,6 +493,21 @@ jobs:
           retention-days: 30
           if-no-files-found: error
           include-hidden-files: false
+      - name: Record a typed outcome when the leg ended before its claim decision
+        id: fallback
+        if: ${{ always() && steps.claim.outputs.outcome_name == '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HIVE_ATTEMPT_DIRECTORY: ${{ runner.temp }}/hive-attempt
+        run: node .hive-protocol/scripts/hive-delivery-attempt.mjs outcome
+      - name: Persist the fallback typed client outcome
+        if: ${{ always() && steps.fallback.outputs.outcome_name != '' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.fallback.outputs.outcome_name }}
+          path: ${{ runner.temp }}/hive-attempt/outcome-${{ matrix.tool }}.json
+          if-no-files-found: error
+          retention-days: 90
     concurrency:
       group: hive-client-${{ needs.admission.outputs.scope }}-${{ matrix.tool }}
       cancel-in-progress: false
@@ -463,6 +525,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: read
+      issues: read
     strategy:
       fail-fast: false
       matrix:
@@ -519,7 +582,21 @@ jobs:
         with:
           name: hive-same-source-formal-ai-binary
           path: rust/target/release
+      - name: Download the typed client outcome
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          name: hive-outcome-${{ needs.admission.outputs.scope }}-${{ matrix.tool }}-${{
+            needs.admission.outputs.policy_hash }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/hive-outcome
+      - name: Consume the typed outcome instead of absent claim or result artifacts
+        id: outcome
+        env:
+          HIVE_CLIENT_OUTCOME: ${{ runner.temp }}/hive-outcome/outcome-${{ matrix.tool }}.json
+        run: node .hive-protocol/scripts/hive-delivery-attempt.mjs client-outcome
       - name: Download immutable pre-effect client claim
+        if: ${{ steps.outcome.outputs.verify == 'true' }}
         uses: actions/download-artifact@v8
         env:
           NODE_OPTIONS: --disable-warning=DEP0005
@@ -528,32 +605,35 @@ jobs:
             needs.admission.outputs.policy_hash }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/hive-attempt
       - uses: actions/download-artifact@v8
+        if: ${{ steps.outcome.outputs.verify == 'true' }}
         env:
           NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: hive-original-${{ matrix.tool }}-staged-evidence
           path: ${{ runner.temp }}/hive-original-evidence
       - name: Verify complete same-run staged source and evidence bytes
+        if: ${{ steps.outcome.outputs.verify == 'true' }}
         run: node .hive-protocol/scripts/lib/hive-delivery-bundle.mjs --verify-evidence
       - uses: coursier/setup-action@648df969f41ef15fda2baba8b37f9fa3d16390a3
-        if: matrix.tool == 'agent'
+        if: ${{ steps.outcome.outputs.verify == 'true' && matrix.tool == 'agent' }}
         with:
           apps: scala-cli
       - name: Install Rust for independent delivered-source verification
-        if: matrix.tool == 'codex'
+        if: ${{ steps.outcome.outputs.verify == 'true' && matrix.tool == 'codex' }}
         uses: dtolnay/rust-toolchain@stable
       - name: Resolve Rust compiler for isolated output verification
-        if: matrix.tool == 'codex'
+        if: ${{ steps.outcome.outputs.verify == 'true' && matrix.tool == 'codex' }}
         run: |
           hive_rust_compiler="$(rustup which rustc)"
           test -x "$hive_rust_compiler"
           printf '%s\n' "$(dirname "$hive_rust_compiler")" >> "$GITHUB_PATH"
       - name: Independently compile delivered source and require exactly one output line
+        if: ${{ steps.outcome.outputs.verify == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: node .hive-protocol/scripts/check-hive-original-delivery.mjs
       - name: Retain actual task links, assertions, independent stdout and failure logs
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.outcome.outputs.verify == 'true' }}
         uses: actions/upload-artifact@v7
         with:
           name: hive-original-${{ matrix.tool }}-evidence
@@ -562,13 +642,13 @@ jobs:
           if-no-files-found: error
           include-hidden-files: false
       - name: Retain typed bounded attempt result independently of other clients
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.outcome.outputs.verify == 'true' }}
         env:
           HIVE_VERIFICATION_OUTCOME: ${{ job.status }}
           HIVE_ATTEMPT_DIRECTORY: ${{ runner.temp }}/hive-attempt-result
         run: node .hive-protocol/scripts/hive-delivery-attempt.mjs result
       - name: Upload durable typed result
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.outcome.outputs.verify == 'true' }}
         uses: actions/upload-artifact@v7
         with:
           name: hive-result-${{ needs.admission.outputs.scope }}-${{ matrix.tool }}-${{
@@ -632,7 +712,21 @@ jobs:
         with:
           name: hive-admission-selection
           path: ${{ runner.temp }}/hive-admission
+      - name: Download the typed client outcome
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          name: hive-outcome-${{ needs.admission.outputs.scope }}-${{ matrix.tool }}-${{
+            needs.admission.outputs.policy_hash }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/hive-outcome
+      - name: Consume the typed outcome instead of absent claim or result artifacts
+        id: outcome
+        env:
+          HIVE_CLIENT_OUTCOME: ${{ runner.temp }}/hive-outcome/outcome-${{ matrix.tool }}.json
+        run: node .hive-protocol/scripts/hive-delivery-attempt.mjs client-outcome
       - uses: actions/download-artifact@v8
+        if: ${{ steps.outcome.outputs.verify == 'true' }}
         env:
           NODE_OPTIONS: --disable-warning=DEP0005
         with:
@@ -640,6 +734,7 @@ jobs:
             needs.admission.outputs.policy_hash }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/hive-attempt
       - uses: actions/download-artifact@v8
+        if: ${{ steps.outcome.outputs.verify == 'true' }}
         env:
           NODE_OPTIONS: --disable-warning=DEP0005
         with:
@@ -647,6 +742,7 @@ jobs:
             needs.admission.outputs.policy_hash }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/hive-attempt-result
       - name: Publish only a normal fast-forward child of the exact durable claim
+        if: ${{ steps.outcome.outputs.verify == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: node .hive-protocol/scripts/hive-delivery-attempt.mjs publish-result
@@ -695,14 +791,48 @@ jobs:
         with:
           name: hive-admission-selection
           path: ${{ runner.temp }}/hive-admission
+      - name: Download every typed client outcome of this attempt
+        if: ${{ needs.admission.outputs.execute == 'true' }}
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          pattern: hive-outcome-${{ needs.admission.outputs.scope }}-*-${{
+            needs.admission.outputs.policy_hash }}-${{ github.run_attempt }}
+          merge-multiple: true
+          path: ${{ runner.temp }}/hive-outcomes
       - name: Authenticate all three final independent delivery receipts
         env:
           GH_TOKEN: ${{ github.token }}
           HIVE_ATTEMPT_DIRECTORY: ${{ runner.temp }}/hive-final-acceptance
+          HIVE_CLIENT_OUTCOMES: ${{ runner.temp }}/hive-outcomes
         run: node .hive-protocol/scripts/hive-delivery-attempt.mjs aggregate
-      - uses: actions/upload-artifact@v7
+      - if: ${{ always() }}
+        uses: actions/upload-artifact@v7
         with:
           name: hive-three-client-acceptance
           path: ${{ runner.temp }}/hive-final-acceptance/acceptance.json
           if-no-files-found: error
           retention-days: 90
+  cleanup-request:
+    name: Request terminal owner cleanup beyond the workflow chain limit
+    needs: [admission, image, delivery, verification, ledger, acceptance]
+    if: ${{ always() && needs.admission.outputs.admitted == 'true' &&
+      needs.admission.outputs.execute == 'true' && github.run_attempt == 1 }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Dispatch exactly one authenticated cleanup request with the default token
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/request-owned-hive-cleanup.mjs

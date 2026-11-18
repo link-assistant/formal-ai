@@ -1,0 +1,10 @@
+✔ every governed repository fixture matches its actual current source bytes (13.454518ms)
+✔ governed authoritative native source hashes match without parsing or compiling Rust (13.897974ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 175.094714

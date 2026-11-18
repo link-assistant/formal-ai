@@ -51,6 +51,7 @@ import { availableParallelism, tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { Worker, isMainThread, parentPort, workerData } from 'node:worker_threads';
+import { SINGLE_PASS_CONTRACT_FILE, parseSinglePassContract, combinedTranslationModuleURL } from './lib/translation-single-pass.mjs';
 
 import { itemBlockers, moduleContext, renderBlockers } from './lib/translation-blockers.mjs';
 import { LOWERED_LINE, lowerModule, readStubs, stubPrelude } from './lib/translation-lowering.mjs';
@@ -580,7 +581,7 @@ function translateAll(dir, paths, jobs) {
   const results = new Map();
   const total = pending.length;
   const inScope = new Set(paths);
-  // Signatures cost a second translation, so only an imported module computes them.
+  // Only imported modules need their already-computed signatures transferred.
   const imported = new Set([...graph.values()].flat());
   // Waiting on: the imports not yet translated, beside the module itself.
   const waiting = (path) => graph.get(path).filter((dep) => dep !== path && !signatures.has(dep)).length;
@@ -638,6 +639,12 @@ function translateAll(dir, paths, jobs) {
 
 async function workerMain() {
   const src = (file) => import(pathToFileURL(join(workerData.dir, 'js', 'src', ...file.split('/'))).href);
+  const contract = parseSinglePassContract(readFileSync(join(REPO, SINGLE_PASS_CONTRACT_FILE), 'utf8'));
+  if (contract.commit !== parseLedger(readFileSync(join(REPO, LEDGER_FILE), 'utf8')).commit)
+    throw new Error('Single-pass adapter must match the committed upstream pin');
+  const original = join(workerData.dir, contract.source);
+  const combinedURL = combinedTranslationModuleURL(readFileSync(original, 'utf8'), pathToFileURL(original).href, contract.sha256);
+  const { formalAICombinedSelfTranslation } = await import(combinedURL);
   const api = await src('index.js');
   // The frontend, checker and emitter selfTranslate itself runs, for the lowered items.
   const upstream = {
@@ -651,8 +658,8 @@ async function workerMain() {
     const started = Date.now();
     // Each module is the crate root of its directory (meta-language's default).
     const options = { imports };
-    const { code } = api.selfTranslate(text, 'JavaScript', 'Rust', options);
-    const signatures = wanted ? api.selfTranslationSignatures(text, 'JavaScript', options) : [];
+    const { translation: { code }, signatures: exportedSignatures } = formalAICombinedSelfTranslation(text, 'JavaScript', 'Rust', options);
+    const signatures = wanted ? exportedSignatures : [];
     // The portable-core diagnostic of each carried item, from the public
     // translateProgram API: selfTranslate keeps only its kind (meta-language #214).
     const details = upstreamBlocks(code).blocks.map((block) => (block.kind === 'carried' && DIAGNOSED.has(block.reason)

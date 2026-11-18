@@ -12,7 +12,7 @@ const secrets={FORMAL_AI_API_KEY:'api-private',GH_TOKEN:'gh-private',GITHUB_TOKE
 const payload={message:'api-private\ngh-private github-private',nested:{password:'field-private'}};
 const sanitized={message:'[REDACTED]\n[REDACTED] [REDACTED]',nested:{password:'[REDACTED]'}};
 
-test('CLI defaults emit typed debug tee and preserve the HTTP/stdout protocol',{timeout:15000},async t=>{
+test('CLI defaults persist typed debug records quietly and preserve the HTTP/stdout protocol',{timeout:15000},async t=>{
   const run=await startCli(t,{args:['--agent-mode'],env:secrets});await run.ready();
   const response=await fetch(run.url+'/no-such-route',{method:'POST',
     headers:{'content-type':'application/json','x-goog-api-key':'goog-private',
@@ -21,7 +21,7 @@ test('CLI defaults emit typed debug tee and preserve the HTTP/stdout protocol',{
   assert.equal(response.status,404);await response.text();await run.stop();
   assert.equal(run.code,0);assert.equal(run.stdout,'');
   const text=fs.readFileSync(path.join(run.home,'.formal-ai/logs/serve-'+run.pid+'.lino'),'utf8');
-  assert.equal(text,run.stderr);
+  assert.equal(run.stderr,'');assert(text.length>0);
   for(const secret of [...Object.values(secrets),'field-private','goog-private','anthropic-private','auth-private']){
     assert.equal((text+run.legacy()).includes(secret),false);
   }
@@ -128,7 +128,7 @@ test('actual no-flags server emits semantic refusal and conservative symbolic te
  assert(terminals.some(x=>x.metadata.reason==='refusal'&&x.dialog_id==='refused-session'));
  assert(terminals.some(x=>x.metadata.reason==='Unknown'&&x.dialog_id==='symbolic-session'&&x.metadata.task_delivery==='Unknown'));
  assert.equal(run.stdout,'');
- const persisted=fs.readFileSync(path.join(run.home,'.formal-ai/logs/serve-'+run.pid+'.lino'),'utf8');assert.equal(persisted,run.stderr);
+ const persisted=fs.readFileSync(path.join(run.home,'.formal-ai/logs/serve-'+run.pid+'.lino'),'utf8');assert.equal(run.stderr,'');assert(persisted.length>0);
  }catch(error){
   const scrub=text=>{
    let result=text.replaceAll(run.directory,'[fixture]');

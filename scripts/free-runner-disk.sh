@@ -15,6 +15,23 @@
 # Set RUNNER_DISK_DEBUG=1 for a per-directory breakdown of what was reclaimed.
 set -euo pipefail
 
+if [ "${GITHUB_ACTIONS:-}" != true ]; then
+  echo "free-runner-disk: hosted Actions runner required" >&2
+  exit 2
+fi
+if [ "${RUNNER_OS:-}" != Linux ]; then
+  echo "free-runner-disk: Linux SDK cleanup skipped on ${RUNNER_OS:-unknown}"
+  exit 0
+fi
+target_mib="${RUNNER_DISK_TARGET_MIB:-}"
+if [ -n "$target_mib" ]; then
+  if ! [[ "$target_mib" =~ ^[0-9]{1,7}$ ]] || (( 10#$target_mib < 1024 || 10#$target_mib > 1048576 )); then
+    echo "free-runner-disk: RUNNER_DISK_TARGET_MIB must be 1024..1048576" >&2
+    exit 2
+  fi
+  target_mib=$((10#$target_mib))
+fi
+
 # Paths worth reclaiming, largest first. Each is optional: the runner image
 # changes over time and a missing path is not an error.
 DISPOSABLE_PATHS=(
@@ -29,9 +46,18 @@ avail_kb() {
   df -Pk / | awk 'NR == 2 { print $4 }'
 }
 
+# Without an explicit reserve, heavy build jobs retain the original full cleanup.
+enough_disk() {
+  [ -n "$target_mib" ] && [ "$(avail_kb)" -ge "$((target_mib * 1024))" ]
+}
+
 before_kb="$(avail_kb)"
 echo "Disk usage before cleanup:"
 df -h /
+if enough_disk; then
+  echo "Already enough runner disk: $((before_kb / 1024)) MiB available; target $target_mib MiB. Cleanup skipped."
+  exit 0
+fi
 
 for path in "${DISPOSABLE_PATHS[@]}"; do
   if [ ! -e "$path" ]; then
@@ -45,10 +71,15 @@ for path in "${DISPOSABLE_PATHS[@]}"; do
   fi
   # Best-effort: a path we cannot remove is not worth failing the release over.
   sudo rm -rf "$path" || echo "  WARNING: could not remove ${path}"
+  if enough_disk; then
+    break
+  fi
 done
 
-echo "  prune  dangling and unused docker images"
-sudo docker image prune --all --force >/dev/null 2>&1 || true
+if ! enough_disk; then
+  echo "  prune  dangling and unused docker images"
+  sudo docker image prune --all --force >/dev/null 2>&1 || true
+fi
 
 after_kb="$(avail_kb)"
 echo "Disk usage after cleanup:"

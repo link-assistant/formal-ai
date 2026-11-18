@@ -10,6 +10,47 @@ on: # zizmor: ignore[dangerous-triggers]
       - completed
   schedule:
     - cron: 7,22,37,52 * * * *
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Run read-only checks on a bot pull request
+        type: choice
+        default: checks
+        options: [checks]
+      cleanup:
+        description: Explicitly authenticate and clean up the specified terminal owner
+        type: boolean
+        default: false
+      pull-request:
+        description: Pull request whose explicit audit owner is read from metadata
+        type: string
+      owner-run:
+        description: Exact original Hive owner to audit or authenticate for cleanup
+        required: false
+        type: string
+      owner-attempt:
+        description: Exact attempt required for explicit cleanup
+        type: string
+      owner-head:
+        description: Exact protocol commit required for explicit cleanup
+        type: string
+  pull_request:
+    branches-ignore: ['e2e/**']
+    types: [opened, synchronize, reopened, edited]
+    paths:
+      - .github/workflows/hive-original-delivery-finalize.yml
+      - scripts/audit-owned-hive-cleanup.mjs
+      - scripts/finalize-owned-hive-delivery-runs.mjs
+      - scripts/request-owned-hive-cleanup.mjs
+      - scripts/finalize-generated-test-issues.mjs
+      - scripts/lib/hive-isolated-task.mjs
+      - scripts/lib/generated-task-*.mjs
+      - scripts/work-item-qualification/**
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
 permissions:
   contents: read
   actions: read
@@ -17,8 +58,52 @@ concurrency:
   group: hive-generated-cleanup-${{ github.event.workflow_run.id || github.run_id }}
   cancel-in-progress: false
 jobs:
+  audit:
+    name: Audit explicit owner without mutations
+    if: >-
+      (github.event_name == 'workflow_dispatch' && inputs.mode == 'checks' && !inputs.cleanup) ||
+      (github.event_name == 'pull_request' &&
+       github.event.pull_request.head.repo.full_name == github.repository &&
+       contains(github.event.pull_request.body, 'Cleanup-audit-owner:'))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+      issues: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Report complete log custody and read-only ownership decisions
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CLEANUP_AUDIT_OWNER: ${{ inputs['owner-run'] || '' }}
+          CLEANUP_AUDIT_BODY: ${{ github.event.pull_request.body || '' }}
+          CLEANUP_AUDIT_PR: ${{ inputs['pull-request'] || '' }}
+          CLEANUP_AUDIT_SOURCE: ${{ github.sha }}
+          CLEANUP_AUDIT_REPOSITORY: ${{ github.repository }}
+        run: node scripts/audit-owned-hive-cleanup.mjs | tee "$RUNNER_TEMP/cleanup-audit.json"
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: hive-cleanup-audit
+          path: ${{ runner.temp }}/cleanup-audit.json
+          if-no-files-found: error
+          retention-days: 7
   prepare:
-    if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_run'
+    # A delivery whose every job was skipped never started an effect owner and
+    # cannot have uploaded its claim artifact, so preparing it only billed a
+    # no-op runner (85 such runs in 8 hours, #1191). Failed and cancelled owners
+    # still prepare here, and the quarter-hourly schedule still recovers all.
+    if: ${{ (github.event_name == 'workflow_dispatch' && inputs.cleanup == true
+      && github.ref == 'refs/heads/main') || github.event_name == 'schedule' || (github.event_name == 'workflow_run'
+      && github.event.workflow_run.conclusion != 'skipped'
       && github.event.workflow_run.head_repository.full_name ==
       github.repository) }}
     runs-on: ubuntu-24.04
@@ -27,9 +112,20 @@ jobs:
       owners: ${{ steps.prepare.outputs.owners }}
     steps:
       - uses: actions/checkout@v7
+        timeout-minutes: 4
+        env:
+          GIT_HTTP_LOW_SPEED_LIMIT: '1024'
+          GIT_HTTP_LOW_SPEED_TIME: '20'
         with:
           ref: ${{ github.workflow_sha }}
           persist-credentials: false
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            /*
+            !/dev/log/
+            !/experiments/formal_ai_subagent/evidence/coordinator-1188/**/*.gz
+          sparse-checkout-cone-mode: false
       - uses: actions/setup-node@v7
         with:
           node-version: 24
@@ -37,11 +133,14 @@ jobs:
         id: prepare
         env:
           GH_TOKEN: ${{ github.token }}
+          CLEANUP_OWNER_RUN: ${{ inputs['owner-run'] || '' }}
+          CLEANUP_OWNER_ATTEMPT: ${{ inputs['owner-attempt'] || '' }}
+          CLEANUP_OWNER_HEAD: ${{ inputs['owner-head'] || '' }}
         run: >-
           node scripts/finalize-owned-hive-delivery-runs.mjs prepare >
           "$RUNNER_TEMP/preparation.json"
 
-          node --input-type=module -e 'import fs from "node:fs";const plan=JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP+"/preparation.json"));fs.writeFileSync(process.env.RUNNER_TEMP+"/progress.json",JSON.stringify(plan.progress)+"\n",{flag:"wx",mode:0o600});fs.appendFileSync(process.env.GITHUB_OUTPUT,"owners="+JSON.stringify(plan.owners)+"\nprogress_name="+plan.progressName+"\n");'
+          node --input-type=module -e 'import fs from "node:fs";const plan=JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP+"/preparation.json"));if(plan.progress)fs.writeFileSync(process.env.RUNNER_TEMP+"/progress.json",JSON.stringify(plan.progress)+"\n",{flag:"wx",mode:0o600});fs.appendFileSync(process.env.GITHUB_OUTPUT,"owners="+JSON.stringify(plan.owners)+"\nprogress_name="+(plan.progressName||"")+"\n");'
       - uses: actions/upload-artifact@v7
         with:
           name: hive-cleanup-preparation
@@ -49,6 +148,7 @@ jobs:
           if-no-files-found: error
           retention-days: 90
       - name: Retain bounded authenticated cleanup scan continuation
+        if: ${{ steps.prepare.outputs.progress_name != '' }}
         uses: actions/upload-artifact@v7
         with:
           name: ${{ steps.prepare.outputs.progress_name }}
@@ -75,28 +175,40 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-      - name: Materialize only authenticated public owner claim metadata
+      - name: Recheck queued owner before publishing a cleanup claim
+        id: recheck
         env:
+          GH_TOKEN: ${{ github.token }}
           CLEANUP_CLAIM: ${{ toJSON(matrix.owner.claim) }}
-        run: node --input-type=module -e 'import fs from
-          "node:fs";fs.writeFileSync(process.env.RUNNER_TEMP+"/claim.json",JSON.stringify(JSON.parse(process.env.CLEANUP_CLAIM))+"\n",{flag:"wx",mode:0o600});'
+        run: node scripts/finalize-owned-hive-delivery-runs.mjs recheck >
+          "$RUNNER_TEMP/preclaim.json"
+      - name: Retain the authenticated pre-claim decision without cleanup credit
+        if: ${{ always() && steps.recheck.outcome == 'success' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: hive-cleanup-preclaim-${{ matrix.owner.run }}-${{ matrix.owner.attempt }}
+          path: ${{ runner.temp }}/preclaim.json
+          if-no-files-found: error
+          retention-days: 90
       - name: Persist immutable cleanup claim before issue writes
+        if: ${{ steps.recheck.outputs.eligible == 'true' }}
         id: claim
         uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.owner.claimName }}
-          path: ${{ runner.temp }}/claim.json
+          path: ${{ steps.recheck.outputs.claim_path }}
           if-no-files-found: error
           retention-days: 90
       - name: Apply one fresh authenticated claimed owner without uncertain-write
           retries
+        if: ${{ steps.recheck.outputs.eligible == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
           CLAIM_ARTIFACT_ID: ${{ steps.claim.outputs.artifact-id }}
         run: node scripts/finalize-owned-hive-delivery-runs.mjs apply
           "$CLAIM_ARTIFACT_ID" > "$RUNNER_TEMP/outcome.json"
       - name: Retain terminal outcome without granting retries after uncertainty
-        if: ${{ always() }}
+        if: ${{ always() && steps.recheck.outputs.eligible == 'true' }}
         uses: actions/upload-artifact@v7
         with:
           name: hive-cleanup-outcome-${{ matrix.owner.run }}-${{ matrix.owner.attempt }}
@@ -104,6 +216,7 @@ jobs:
           if-no-files-found: error
           retention-days: 90
     permissions:
-      contents: read
+      contents: write
       actions: read
       issues: write
+      pull-requests: write

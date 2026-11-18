@@ -72,6 +72,11 @@ pub fn try_how_to_procedure_with_client<T: SourceTransport>(
     if crate::legality_warning::assess(prompt, normalized).is_some() {
         return None;
     }
+    if let Some(answer) =
+        crate::solver_handler_how::practical_help::with_client(prompt, normalized, log, client)
+    {
+        return Some(answer);
+    }
     let task = procedural_how_to_task(normalized)?;
     let bounds = GuideBounds::default();
     let guide = synthesize_how_to_guide(

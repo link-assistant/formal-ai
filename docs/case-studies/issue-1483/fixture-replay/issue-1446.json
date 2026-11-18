@@ -1,0 +1,297 @@
+{
+ "calls": [
+  "bash {\"command\":\"gh issue view 'https://github.com/link-assistant/formal-ai/issues/1446' --json title --jq .title && echo && gh issue view 'https://github.com/link-a",
+  "read {\"filePath\":\"rust/src/solver.rs\",\"file_path\":\"rust/src/solver.rs\",\"path\":\"rust/src/solver.rs\"}",
+  "read {\"filePath\":\"rust/src/solver_unknown_reasoning.rs\",\"file_path\":\"rust/src/solver_unknown_reasoning.rs\",\"path\":\"rust/src/solver_unknown_reasoning.rs\"}",
+  "read {\"filePath\":\"rust/tests/unit/docs_benchmarks.rs\",\"file_path\":\"rust/tests/unit/docs_benchmarks.rs\",\"path\":\"rust/tests/unit/docs_benchmarks.rs\"}",
+  "glob {\"pattern\":\"**/VISION.md\"}",
+  "read {\"filePath\":\"VISION.md\",\"file_path\":\"VISION.md\",\"path\":\"VISION.md\"}",
+  "glob {\"pattern\":\"**/ARCHITECTURE.md\"}",
+  "read {\"filePath\":\"ARCHITECTURE.md\",\"file_path\":\"ARCHITECTURE.md\",\"path\":\"ARCHITECTURE.md\"}"
+ ],
+ "answer": "Not completed: https://github.com/link-assistant/formal-ai/issues/1446. The session stopped at `EvidenceCollected` and changed no repository file.\n\nFiles read: `rust/src/solver.rs`, `rust/src/solver_unknown_reasoning.rs`, `rust/tests/unit/docs_benchmarks.rs`, `VISION.md`, `ARCHITECTURE.md`.\n\nNarrowest open gap: `NoChangeRecipe`.\n\nWork still open (7):\n- `bind-requirements-to-source`\n- `change-recipe-unavailable:rust/src/solver.rs`\n- `change-recipe-unavailable:rust/src/solver_unknown_reasoning.rs`\n- `change-recipe-unavailable:rust/tests/unit/docs_benchmarks.rs`\n- `change-recipe-unavailable:VISION.md`\n- `change-recipe-unavailable:ARCHITECTURE.md`\n- `verify-artifact-and-requirements`\n\nRequirements not yet verified (25):\n1. Research & Implementation: Enhancing the Temperature and Randomization Mechanism via ProbabilityStore and Memory Dreaming\n2. Following recent advancements in complexity theory (specifically the RL = L derandomization proof introduced in OpenAI's October 6, 2026 release), it is mathema…\n3. As a symbolic, deterministic framework built on GOFAI traditions, Formal AI must reflect these principles realistically within its architecture, rather than mim…\n4. Based on the current codebase audit:\n5. **Deterministic Core:** The codebase relies on `rust/src/solver.rs::UniversalSolver`, which executes a strict 11-step loop (from impulse formalization to soluti…\n6. **Non-Neural Architecture:** Knowledge is represented as an inspectable semantic network of human-readable links instead of hidden weights.\n7. **Existing Infrastructure:** The system already defines a `ProbabilityStore` capable of handling append-only Bayesian evidence and Markov transitions.\n8. **The Policy Gap:** While `ProbabilityStore` ranks symbolic candidate IDs before the temperature/clarify-vs-guess policy runs, the temperature parameter current…\nand 17 more.\n\nThe machine record of this session (`repository-work-item-evidence/v1`) is kept in the trace, not in this answer.",
+ "disposition": "gap",
+ "record": {
+  "schema": "repository-work-item-evidence/v1",
+  "reason": "EvidenceCollected",
+  "gap": "NoChangeRecipe",
+  "workItem": "https://github.com/link-assistant/formal-ai/issues/1446",
+  "taskIdentity": "41fa850d11407ff9ea50fb6df421cdf57b3bc461f8352a7bd7688e7b518301e1",
+  "requirements": [
+   {
+    "text": "Research & Implementation: Enhancing the Temperature and Randomization Mechanism via ProbabilityStore and Memory Dreaming",
+    "span": [
+     0,
+     121
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Following recent advancements in complexity theory (specifically the RL = L derandomization proof introduced in OpenAI's October 6, 2026 release), it is mathematically established that randomness does not grant additional computational power to bounded-memory algorithms. However, in engineering practice, incorporating controlled randomness (such as temperature) can significantly accelerate solution discovery, prevent local minima entrapment, and balance the trade-offs between strict deterministic exploration and heuristic acceleration.",
+    "span": [
+     163,
+     704
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "As a symbolic, deterministic framework built on GOFAI traditions, Formal AI must reflect these principles realistically within its architecture, rather than mimicking LLM hyperparameter concepts on a surface level.",
+    "span": [
+     706,
+     920
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Based on the current codebase audit:",
+    "span": [
+     969,
+     1005
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**Deterministic Core:** The codebase relies on `rust/src/solver.rs::UniversalSolver`, which executes a strict 11-step loop (from impulse formalization to solution composition) for every prompt.",
+    "span": [
+     1008,
+     1201
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**Non-Neural Architecture:** Knowledge is represented as an inspectable semantic network of human-readable links instead of hidden weights.",
+    "span": [
+     1204,
+     1343
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**Existing Infrastructure:** The system already defines a `ProbabilityStore` capable of handling append-only Bayesian evidence and Markov transitions.",
+    "span": [
+     1346,
+     1496
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**The Policy Gap:** While `ProbabilityStore` ranks symbolic candidate IDs before the temperature/clarify-vs-guess policy runs, the temperature parameter currently has a minimal impact on the runtime complexity and search behavior of the deterministic solvers (`solver.rs` and `solver_unknown_reasoning.rs`). At `temperature = 0`, the system should guarantee high-quality deterministic results (even if it takes longer), while `temperature > 0` should enable accelerated heuristic shortcuts based on probabilistic evidence.",
+    "span": [
+     1499,
+     2021
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "To make this system truly dynamic and adaptive, the background **`memory dream`** mechanism (tracked under issue #540) must act as the primary engine for updating `ProbabilityStore`.",
+    "span": [
+     2085,
+     2267
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "While the core server is idle, the dreaming worker should analyze the interaction history with the user and the environment to **increase the baseline probability of obtaining the most relevant answers**. Instead of real-time weight calculations during a hot chat turn, `memory dream` will:",
+    "span": [
+     2270,
+     2560
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Aggregate and compress the append-only event log into long-term statistical trends.",
+    "span": [
+     2563,
+     2646
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Update Bayesian evidence inside the link-network, prioritizing paths, contexts, and rules that have historically led to verified, high-quality outcomes.",
+    "span": [
+     2649,
+     2801
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Mine recurring multi-turn task structures, dynamically updating Markov transition probabilities so that future heuristic searches (`temperature > 0`) lean toward proven contextual pathways.",
+    "span": [
+     2804,
+     2993
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "We need to conduct a deep dive into our solver mechanics to make the randomization/temperature behavior realistic and functional:",
+    "span": [
+     3026,
+     3155
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**Define `temperature = 0` Execution Path:** Ensure that at zero temperature, the `UniversalSolver` falls back to complete, exhaustive symbolic path traversal, ensuring maximum precision and deterministic accuracy, accepting the higher time/step cost if necessary.",
+    "span": [
+     3159,
+     3423
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**Implement Probabilistic Acceleration (`temperature > 0`):** Use the `ProbabilityStore` Markov transition weights to greedily prune or prioritize search paths within the link network, mimicking how higher temperature values allow algorithms to jump out of local minima or bypass exhaustive checking.",
+    "span": [
+     3427,
+     3727
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**Bridge Dreaming and ProbabilityStore:** Formally map the output of background `memory dream` analysis onto the active weights of the `ProbabilityStore`.",
+    "span": [
+     3731,
+     3885
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**Verify Contract Stability:** Ensure that enabling/disabling randomness or modifying temperature does not degrade the core symbolic verification pipelines pinned by our regression suites (e.g., HumanEval/MBPP controls, egg rewrite laws).",
+    "span": [
+     3889,
+     4127
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "To prevent future regressions and enforce the strict operational semantics of temperature settings, we must implement a dedicated unit/integration test within `rust/tests/unit/docs_benchmarks.rs`. This test will:",
+    "span": [
+     4178,
+     4390
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Assert that a set of highly connected link subgraphs evaluated at `temperature = 0` successfully traverses all possible branches, returning exact results while validating the step/time cost.",
+    "span": [
+     4393,
+     4583
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Assert that the same subgraph evaluated at `temperature > 0` with populated `ProbabilityStore` weights achieves a lower total step count (heuristic acceleration) without violating baseline correctness.",
+    "span": [
+     4586,
+     4787
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Ensure any deviation from these committed architectural ledger entries causes a test failure (`rust/tests/unit/docs_benchmarks.rs` enforcement).",
+    "span": [
+     4790,
+     4934
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Audit `rust/src/solver.rs`, `rust/src/solver_unknown_reasoning.rs`, and the background dreaming worker to map out exact integration points for `ProbabilityStore`.",
+    "span": [
+     4966,
+     5128
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Implement the new step-count validation test within `rust/tests/unit/docs_benchmarks.rs`.",
+    "span": [
+     5131,
+     5220
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Document the findings and formalize the updated policy under `VISION.md` and `ARCHITECTURE.md`.",
+    "span": [
+     5223,
+     5318
+    ],
+    "status": "unbound"
+   }
+  ],
+  "decomposition": [
+   {
+    "step": "collect_repository_evidence",
+    "status": "observed"
+   },
+   {
+    "step": "bind_requirements_to_source",
+    "status": "unverified"
+   },
+   {
+    "step": "implement_requested_change",
+    "status": "not_executed"
+   },
+   {
+    "step": "verify_artifact_and_requirements",
+    "status": "not_executed"
+   }
+  ],
+  "observations": [
+   {
+    "path": "rust/src/solver.rs",
+    "complete": true,
+    "sourceIdentity": "ba5863fdd3fd960475bccec456bec94514ba9a45030ae4fa2ae38cdbec061b65",
+    "excerpt": "//! Universal problem-solving algorithm.\n//!\n//! Every prompt the assistant ever receives walks the same 11-step loop\n//! described in `VISION.md` and `REQUIREMENTS.md`:\n//!\n//! 1. **Impulse** — append the raw user message to the event log.\n//! 2. **Formalization** — derive an intent (the smallest formal requirement).\n//! 3. **Context** — detect the surface language and mode flags.\n//! 4. **History lookup** — search local Links Notation knowledge first.\n//! 5. **Decomposition** — split composite prompts into sub-impulses.\n//! 6. **TDD-style validation** — when the requirement implies a constraint,\n//!    generate at least one executable check and record the validation event.\n//! 7. **Solution synthesis** — gather candidate answers.\n//! 8. **Combination** — pick the smallest sufficient candidate.\n//! 9. **Verification** — when execution is implied, surface execution events.\n//! 10. **Simplification** — collapse meaning-preserving redundancies.\n//! 11. **Documentation** — emit the user-facing reply with a `trac",
+    "reference": "solver.rs"
+   },
+   {
+    "path": "rust/src/solver_unknown_reasoning.rs",
+    "complete": true,
+    "sourceIdentity": "3e7798698ce4f1f428566bdea1a566e670c549e7df1b659d9e0eefc961555e77",
+    "excerpt": "//! Unknown-prompt reasoning path.\n//!\n//! This module handles the point where every known rule and specialized\n//! handler has declined a prompt. It still records a bounded reasoning trace,\n//! tries reachable link-memory and public-cache sources, and only then returns\n//! an unknown answer.\n\nuse std::sync::OnceLock;\n\nuse crate::concept_lookup::ConceptSense;\nuse crate::concepts::{ConceptQuery, lookup_concept_query};\nuse crate::engine::{SymbolicAnswer, normalize_prompt, stable_id};\nuse crate::event_log::EventLog;\nuse crate::language::Language;\nuse crate::seed::{self, ConceptRecord, localized_response};\nuse crate::solver_handlers::{WebSearchQueryKind, answer_web_search_query, finalize_simple};\nuse crate::solver_helpers::{humanize_url, miss_names_consulted_sources};\nuse crate::unknown_opener::language_aware_unknown_answer;\n\nconst FOCUS_PLACEHOLDER: &str = concat!(\"{\", \"focus\", \"}\");\n\n#[derive(Debug, Clone, Copy)]\npub struct UnknownReasoningConfig {\n    pub questioning_rigor: f32,\n    pub offline: bool,\n    pub ",
+    "reference": "solver_unknown_reasoning.rs"
+   },
+   {
+    "path": "rust/tests/unit/docs_benchmarks.rs",
+    "complete": true,
+    "sourceIdentity": "53c2388d0be25f279dc274d87d231b519befdabf217c85941af453b675b44fb6",
+    "excerpt": "//! Benchmark-documentation traceability gates, consolidated under the stable\n//! Plan 11 suite name instead of one top-level suite per issue.\n\nuse std::collections::BTreeMap;\nuse std::fs;\nuse std::path::Path;\n\nuse formal_ai::external_benchmarks::{Ledger, ResultEntry};\n\nfn read(path: impl AsRef<Path>) -> String {\n    let path = path.as_ref();\n    fs::read_to_string(path).unwrap_or_else(|error| panic!(\"{} readable: {error}\", path.display()))\n}\n\nfn assert_contains_all(name: &str, source: &str, needles: &[&str]) {\n    for needle in needles {\n        assert!(source.contains(needle), \"{name} must contain `{needle}`\");\n    }\n}\n\nfn ratio_count(text: &str) -> usize {\n    text.as_bytes()\n        .windows(3)\n        .filter(|window| {\n            window[0].is_ascii_digit() && window[1] == b'/' && window[2].is_ascii_digit()\n        })\n        .count()\n}\n\nfn claim_units(document: &str) -> Vec<&str> {\n    document\n        .split(\"\\n\\n\")\n        .flat_map(|paragraph| {\n            let table_rows: Vec<&str> = paragraph\n    ",
+    "reference": "docs_benchmarks.rs"
+   },
+   {
+    "path": "VISION.md",
+    "complete": true,
+    "sourceIdentity": "7a9356339feb023927746927f846c53d6fd4774c0919727311af9d1688177afd",
+    "excerpt": "# Vision\n\n**Don't know everything, know just enough to get to know anything**\n\n## Development through Formal AI\n\nDevelopers and subagents perform all development task actions through natural-language\ninstructions to JavaScript Formal AI: exploration, commands, drafting, tests,\nverification and code changes. Let it execute real tools through Agent, Codex\nor Claude. Begin with the smallest useful task, verify the result, and increase\ndifficulty after demonstrated success. Register observed capability failures\nas focused regressions, repair the reusable cause and retry the unchanged task.\n\nKeep the original request, runtime identity, observed source, tool calls,\nfailures, resulting diff and independent checks as evidence. A supplied patch,\nscript, generator or exact replacement is instruction execution and earns no\nautonomous code-generation credit. Unsupported tasks remain explicit gaps;\nnever substitute a manual edit while claiming Formal AI authored the change.\n\nDelegate substantive thinking as well as action",
+    "resolvedBy": "unique-name-match"
+   },
+   {
+    "path": "ARCHITECTURE.md",
+    "complete": true,
+    "sourceIdentity": "1ce3563b0be74cf58891d1a65435cc15aa2e9d61f27af65c426ab5b5f079c1d2",
+    "excerpt": "# Architecture\n\nThis document describes the evolving architecture of `formal-ai`. Where\n`VISION.md` captures *why* the project exists and `GOALS.md` captures *what*\ncounts as success, this document captures *how* the runtime is structured and\nhow each piece talks to the others. It is the canonical reference for new\ncontributors who want to understand the full pipeline without having to\ntriangulate between five other files.\n\nIssue [#103](https://github.com/link-assistant/formal-ai/issues/103) names\nthis document as the single source of truth for the design — the structure and\nwiring recorded here; status lives in `ROADMAP.md`, per-requirement status in\n`REQUIREMENTS.md`, and numbers in the ledgers — and asks for the\nfollowing ideas to be explicit:\n\n- last input + previous messages + memory + user data form the system context;\n- the input is translated to Links Notation and recorded in memory before the\n  formalization step;\n- each verb phrase is formalized as a Wikidata P-ID and each noun phrase as a\n  Wikidat",
+    "resolvedBy": "unique-name-match"
+   }
+  ],
+  "unresolved": [],
+  "terms": [],
+  "coverage": "explicit-references; exact path, then file-name search; at most eight files; attachments unresolved; at most two linked documents and three identifiers when no file is named",
+  "candidateEdits": [],
+  "checks": [],
+  "effects": [],
+  "remainingWork": [
+   "bind-requirements-to-source",
+   "change-recipe-unavailable:rust/src/solver.rs",
+   "change-recipe-unavailable:rust/src/solver_unknown_reasoning.rs",
+   "change-recipe-unavailable:rust/tests/unit/docs_benchmarks.rs",
+   "change-recipe-unavailable:VISION.md",
+   "change-recipe-unavailable:ARCHITECTURE.md",
+   "verify-artifact-and-requirements"
+  ],
+  "authored": false,
+  "verified": false
+ },
+ "changed": [],
+ "diff": ""
+}

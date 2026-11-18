@@ -48,7 +48,7 @@ test('re-resolves every lockfile with the tool that owns it', () => {
   assert.doesNotMatch(workflow, /--mode=save/);
 });
 
-test('re-runs all three gate stages after re-resolution, then opens one pull request', () => {
+test('re-runs all three gate stages after re-resolution before optional PR creation', () => {
   const resolved = position('npm install --package-lock-only');
   const stages = ['rust', 'wasm', 'web'].map((stage) =>
     position(`run: rust-script scripts/run-ci-gates.rs --stage ${stage}`),
@@ -56,5 +56,22 @@ test('re-runs all three gate stages after re-resolution, then opens one pull req
   assert.ok(resolved < stages[0] && stages[0] < stages[1] && stages[1] < stages[2]);
   const pullRequest = position('uses: peter-evans/create-pull-request@v8');
   assert.ok(stages[2] < pullRequest);
-  position('branch: dependencies/latest');
+  position('branch: ${{ steps.publication.outputs.branch }}');
+  position('delete-branch: false');
+});
+
+// Issue #1569: when the stable compiler moved to rustc 1.100.0 on 2026-11-13,
+// the unchanged worker sources compiled to different bytes, this job failed its
+// own wasm gate, and the pull request that should carry the rebuilt worker was
+// never opened. The rebuilt worker and its input record are staged before the
+// wasm gates, so they compare, and the pull request carries, the proposed commit.
+test('stages the rebuilt worker and its input record before the wasm gates', () => {
+  const rust = position('run: rust-script scripts/run-ci-gates.rs --stage rust');
+  const write = position('node scripts/wasm-worker-inputs.mjs --write');
+  const stage = position('git add -- js/formal_ai_worker.wasm data/meta/wasm-worker-inputs.lino');
+  const check = position('node scripts/wasm-worker-inputs.mjs --check');
+  const wasm = position('run: rust-script scripts/run-ci-gates.rs --stage wasm');
+  const publication = position('run: node scripts/dependency-update-publication.mjs');
+  assert.ok(rust < write && write < stage && stage < check && check < wasm && wasm < publication);
+  assert.doesNotMatch(workflow, /run: sh js\/wasm-worker\/build\.sh/, 'one compiler invocation, the recorded one');
 });

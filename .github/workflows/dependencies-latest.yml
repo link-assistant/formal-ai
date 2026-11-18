@@ -7,6 +7,9 @@
 # the lockfiles from the rewritten manifests, re-runs the CI gates against
 # the result, and opens one pull request carrying whatever moved. An empty
 # day produces no PR at all.
+# If only the default token is available and workflows changed, retain the
+# complete validated patch for review instead of pushing an unauthorized
+# workflow edit or publishing a partial update.
 name: dependencies-latest
 
 on:
@@ -15,6 +18,11 @@ on:
     # outage (issue #1021's retry rule exists for the same reason).
     - cron: "23 5 * * *"
   workflow_dispatch:
+    inputs:
+      create-pull-request:
+        description: Open the dependency update PR after validation (scheduled runs always do)
+        type: boolean
+        default: false
 
 permissions: {}
 
@@ -24,7 +32,8 @@ concurrency:
 
 jobs:
   update:
-    runs-on: ubuntu-latest
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) }}
+    runs-on: ubuntu-24.04
     # Three CI-gate stages (with the WASM worker and web bundle builds they
     # need) over a re-resolved tree plus the lockfile re-resolutions; the cap
     # keeps a hung registry from inheriting the 360-minute default (issue
@@ -33,6 +42,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      actions: write
     steps:
       # Issue #1079: this checkout keeps persist-credentials (the default)
       # because peter-evans/create-pull-request below commits and pushes the
@@ -40,13 +50,6 @@ jobs:
       - uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
-
-      - uses: ./.github/actions/automation-token
-        with:
-          app-id: ${{ secrets.AUTOMATION_APP_ID }}
-          app-private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
-          automation-token: ${{ secrets.AUTOMATION_TOKEN }}
-        id: automation
 
       # The same toolchain set the release workflow's gate job uses, so the
       # re-run below executes the gates exactly as CI does.
@@ -73,7 +76,7 @@ jobs:
       # fails this run loudly instead of opening a PR from a partial view.
       - name: Refresh the registry snapshot the gate reads
         env:
-          GH_TOKEN: ${{ steps.automation.outputs.token }}
+          GH_TOKEN: ${{ github.token }}
         run: rust-script scripts/check-dependencies-latest.rs --refresh-snapshot
 
       # Exit 1 means "findings", which is exactly what --apply just moved;
@@ -111,8 +114,18 @@ jobs:
       - name: Run registered gates (stage rust)
         run: rust-script scripts/run-ci-gates.rs --stage rust
 
-      - name: Build Rust→WASM worker
-        run: sh js/wasm-worker/build.sh
+      # Issue #1569: a new stable rustc compiles unchanged sources to different
+      # bytes. On 2026-11-13 the runners moved to rustc 1.100.0 and this job
+      # failed its own wasm gate for days, so the pull request that should
+      # carry the rebuilt worker was never opened. The rebuilt worker and the
+      # record of its inputs are part of what moved: build them, then stage
+      # them, so the wasm gates compare the commit this job proposes.
+      - name: Build Rust→WASM worker and record its inputs
+        run: |
+          set -euo pipefail
+          node scripts/wasm-worker-inputs.mjs --write
+          git add -- js/formal_ai_worker.wasm data/meta/wasm-worker-inputs.lino
+          node scripts/wasm-worker-inputs.mjs --check
 
       - name: Run registered gates (stage wasm)
         run: rust-script scripts/run-ci-gates.rs --stage wasm
@@ -129,7 +142,37 @@ jobs:
       - name: Run registered gates (stage web)
         run: rust-script scripts/run-ci-gates.rs --stage web
 
+      # Installation tokens expire after one hour; mint after the long gates.
+      - uses: ./.github/actions/automation-token
+        if: github.event_name == 'schedule' || inputs.create-pull-request == true
+        with:
+          app-id: ${{ secrets.AUTOMATION_APP_ID }}
+          app-private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+          automation-token: ${{ secrets.AUTOMATION_TOKEN }}
+          permission-workflows: write
+        id: automation
+
+      - name: Prepare complete dependency update review
+        id: publication
+        timeout-minutes: 2
+        env:
+          AUTOMATION_LAYER: ${{ steps.automation.outputs.layer || 'default' }}
+          DEPENDENCY_REVIEW_DIRECTORY: ${{ runner.temp }}/dependency-update-review
+        run: node scripts/dependency-update-publication.mjs
+
+      - name: Retain the complete dependency update patch
+        timeout-minutes: 5
+        uses: actions/upload-artifact@v7
+        with:
+          name: dependency-update-review
+          path: ${{ runner.temp }}/dependency-update-review
+          if-no-files-found: error
+          retention-days: 7
+
       - name: Open one pull request with everything that moved
+        timeout-minutes: 5
+        if: (github.event_name == 'schedule' || inputs.create-pull-request == true) && steps.publication.outputs.publish == 'true'
+        id: pull-request
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ steps.automation.outputs.token }}
@@ -142,6 +185,14 @@ jobs:
             do carry one are untouched by design. The registry snapshot under
             `data/meta/` is the same run's live answer, so reviewers can see
             what "latest" meant when the branch was cut.
-          branch: dependencies/latest
-          delete-branch: true
+          branch: ${{ steps.publication.outputs.branch }}
+          delete-branch: false
           labels: dependencies
+
+      - name: Start checks for a PR created with the default token
+        timeout-minutes: 5
+        if: steps.automation.outputs.layer == 'default' && steps.pull-request.outputs.pull-request-number != '' && (steps.pull-request.outputs.pull-request-operation == 'created' || steps.pull-request.outputs.pull-request-operation == 'updated')
+        uses: ./.github/actions/dispatch-checks
+        with:
+          pull-request: ${{ steps.pull-request.outputs.pull-request-number }}
+          token: ${{ github.token }}

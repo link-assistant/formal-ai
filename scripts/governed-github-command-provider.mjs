@@ -10,6 +10,78 @@ const freeze = value => {
   }
   return value;
 };
+/** Bounded transport only: callers still need a provider-issued registered observation. */
+export function runGovernedGithubRead(executable, arguments_, {deadline, maximumAttempts}, {
+  spawn = spawnSync, now = Date.now, beforeAttempt = () => {}
+} = {}) {
+  assert.ok(Number.isFinite(deadline) && [1, 2].includes(maximumAttempts));
+  const attempts = [];
+  let result;
+  for (let attempt = 1; attempt <= maximumAttempts; attempt++) {
+    const remaining = deadline - now();
+    if (remaining <= 0) {
+      assert.ok(result, 'aggregate observation deadline expired');
+      break;
+    }
+    beforeAttempt();
+    const available = deadline - now();
+    if (available <= 0) {
+      assert.ok(result, 'aggregate observation deadline expired');
+      break;
+    }
+    const timeout = Math.min(5000, available);
+    const process = spawn(executable, arguments_, {shell: false, encoding: null,
+      timeout, killSignal: 'SIGKILL', maxBuffer: 4 * 1024 * 1024});
+    const raw = process.stdout ?? Buffer.alloc(0), stderr = process.stderr ?? Buffer.alloc(0);
+    const wire = raw.toString('utf8'), separator = /\r?\n\r?\n/u.exec(wire);
+    const headers = separator ? wire.slice(0, separator.index) : '';
+    const httpStatus = Number(/^HTTP\/\S+ ([1-5][0-9]{2})(?: |\r?$)/mu.exec(headers)?.[1]) || 0;
+    let body = null;
+    try { body = JSON.parse(separator ? wire.slice(separator.index + separator[0].length) : ''); } catch {}
+    const clean = process.status === 0 && !process.error && !process.signal;
+    const status = clean && httpStatus === 200 && body !== null && typeof body === 'object'
+      ? 200 : httpStatus >= 400 ? httpStatus : 0;
+    const numericHeader = name => {
+      const value = new RegExp('^' + name + ':\\s*([0-9]+)\\s*$', 'imu').exec(headers)?.[1];
+      const number = value === undefined ? null : Number(value);
+      return number === null || Number.isSafeInteger(number) ? number : null;
+    };
+    attempts.push({attempt, maximumAttempts, timeoutMilliseconds: timeout, status, httpStatus,
+      processStatus: process.status, signal: process.signal ?? null, errorCode: process.error?.code ?? null,
+      bytes: raw.length, responseSha256: hash(raw), stderrSha256: hash(stderr),
+      rateLimitRemaining: numericHeader('x-ratelimit-remaining'),
+      rateLimitReset: numericHeader('x-ratelimit-reset'), retryAfter: numericHeader('retry-after')});
+    result = {process, raw, stderr, body, status, attempts};
+    const transient = !clean && [0, 200].includes(httpStatus) || [429, 500, 502, 503, 504].includes(httpStatus);
+    if (status === 200 || !transient) break;
+  }
+  return result;
+}
+export function readGovernedCurrentPair({readJobs, readGroup, validateJobs, deadline, now = Date.now}) {
+  assert.equal(typeof validateJobs, 'function', 'independent current job validation required');
+  for (let pairAttempt = 1; pairAttempt <= 2; pairAttempt++) {
+    assert.ok(now() < deadline, 'aggregate observation deadline expired');
+    const jobs = readJobs(pairAttempt);
+    let group = null;
+    if (jobs.status === 200) {
+      validateJobs(jobs);
+      assert.ok(now() < deadline, 'aggregate observation deadline expired');
+      group = readGroup(pairAttempt);
+      if (group.status === 200) {
+        assert.ok(now() < deadline, 'aggregate observation deadline expired');
+        return {jobs, group};
+      }
+    }
+    const unavailable = group ?? jobs;
+    const attempt = unavailable.provider?.attempts?.at(-1);
+    const transportFailure = unavailable.status === 0 && attempt?.httpStatus === 0 &&
+      ['ETIMEDOUT', 'ECONNRESET', 'EPIPE', 'EAI_AGAIN', 'ENETUNREACH', 'ECONNREFUSED'].includes(attempt.errorCode);
+    if (!transportFailure || pairAttempt === 2) {
+      assert.equal(unavailable.status, 200, 'unknown or unavailable authenticatedGET current pair');
+    }
+  }
+  assert.fail('bounded current observation pair unavailable');
+}
 export function requireRegisteredTreeEntry(body, treeSha, name, type, mode) {
   assert.equal(body.sha, treeSha);
   assert.equal(body.truncated, false);
@@ -80,27 +152,28 @@ export function createGovernedGithubCommandProvider({
     childId = null;
   const deadline = Date.now() + 30000;
   let count = 0;
-  function read(route) {
+  function readPhysical(route, logicalRead, pairAttempt) {
     const allowed = route === runPath || route === commitPath || route === jobsPath || workflowId !== null && route === base + '/actions/workflows/' + workflowId || trees.has(route) || blobs.has(route) || childId !== null && route === groupPath;
     assert.ok(allowed, 'unregistered governedGET route');
-    assert.ok(++count <= profile.maximumRequests, 'bounded source/lease request inventory exceeded');
+    assert.ok(Number.isSafeInteger(logicalRead) && logicalRead > 0 && logicalRead <= profile.maximumRequests, 'bounded source/lease request inventory exceeded');
     const remaining = deadline - Date.now();
     assert.ok(remaining > 0, 'aggregate observation deadline expired');
     assert.equal(realpathSync(installed), executable);
     assert.equal(hash(readFileSync(executable)), executableSha256, 'GitHubCLI executable changed');
-    const arguments_ = ['api', '--hostname', 'github.com', '--method', 'GET', '-H', 'Accept: application/vnd.github+json', '-H', 'X-GitHub-Api-Version: 2026-03-10', route];
-    const process = spawnSync(executable, arguments_, {
-      shell: false,
-      encoding: null,
-      timeout: Math.min(5000, remaining),
-      maxBuffer: 4 * 1024 * 1024
+    const arguments_ = ['api', '--include', '--hostname', 'github.com', '--method', 'GET', '-H', 'Accept: application/vnd.github+json', '-H', 'X-GitHub-Api-Version: 2026-03-10', route];
+    const {process, raw, stderr, body, status, attempts} = runGovernedGithubRead(executable, arguments_, {
+      deadline, maximumAttempts: route === jobsPath || route === groupPath ? 1 : 2
+    }, {
+      beforeAttempt() {
+        assert.equal(realpathSync(installed), executable);
+        assert.equal(hash(readFileSync(executable)), executableSha256, 'GitHubCLI executable changed');
+      }
     });
-    const raw = process.stdout ?? Buffer.alloc(0);
-    let body = null;
-    try {
-      body = JSON.parse(raw.toString('utf8'));
-    } catch {}
-    const status = process.status === 0 ? 200 : Number(body?.status) || 0;
+    if (status !== 200 || attempts.length > 1 || pairAttempt > 1) for (const attempt of attempts) {
+      console.error('Governed GitHub read diagnostic ' + JSON.stringify({
+        requestSha256: hash(route), logicalRead, maximumLogicalReads: profile.maximumRequests, pairAttempt, aggregateRemainingMilliseconds: Math.max(0, deadline - Date.now()),
+        ...attempt}));
+    }
     const snapshot = freeze({
       status,
       route,
@@ -115,13 +188,14 @@ export function createGovernedGithubCommandProvider({
         signal: process.signal,
         error: process.error?.code,
         bytes: raw.length,
-        stderrSha256: hash(process.stderr ?? Buffer.alloc(0))
+        stderrSha256: hash(stderr),
+        attempts
       }
     });
     receipts.set(snapshot, {
       route,
       raw: Buffer.from(raw),
-      stderr: Buffer.from(process.stderr ?? Buffer.alloc(0))
+      stderr: Buffer.from(stderr)
     });
     if (status !== 200) return snapshot;
     if (route === runPath) {
@@ -171,6 +245,20 @@ export function createGovernedGithubCommandProvider({
     }
     return snapshot;
   }
+  function read(route) {
+    return readPhysical(route, ++count);
+  }
+  let currentPairIssued = false;
+  function readCurrentGroupPair(validateJobs) {
+    assert.equal(typeof validateJobs, 'function', 'independent current job validation required');
+    assert.equal(currentPairIssued, false, 'one bounded current observation pair acquisition required');
+    currentPairIssued = true;
+    const jobsLogicalRead = ++count, groupLogicalRead = ++count;
+    assert.ok(groupLogicalRead <= profile.maximumRequests, 'bounded source/lease request inventory exceeded');
+    return readGovernedCurrentPair({deadline, validateJobs,
+      readJobs: pairAttempt => readPhysical(jobsPath, jobsLogicalRead, pairAttempt),
+      readGroup: pairAttempt => readPhysical(groupPath, groupLogicalRead, pairAttempt)});
+  }
   function issued(snapshot, route) {
     const record = receipts.get(snapshot);
     assert.ok(record && record.route === route, 'provider-issued exactGET observation required');
@@ -196,6 +284,7 @@ export function createGovernedGithubCommandProvider({
   }
   return Object.freeze({
     read,
+    readCurrentGroupPair,
     issued,
     registered,
     processStreams,

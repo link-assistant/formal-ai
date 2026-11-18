@@ -3,6 +3,9 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {bytesDigest,checkedCapture} from '../../../scripts/capture-native-agentic-protocol.mjs';
+import {completeOwnedSourceReadFrame} from '../../../js/agentic/tool_result.mjs';
+import {renderSeededOutcome} from '../../../js/agentic/code_task.mjs';
+import {installNativeCaptureObservationHost} from '../../../scripts/lib/native-capture-observation.mjs';
 const directory='docs/case-studies/issue-982/self-hosting/contract/';
 const provenance=JSON.parse(readFileSync(directory+'session-v3-provenance.json'));
 const legacy=JSON.parse(readFileSync(directory+'session.json'));
@@ -42,11 +45,27 @@ test('actual native command observations refuse false completion or changed orig
  const changed=structuredClone(actual);changed.steps[3].arguments.content='changed original leaf';
  assert.throws(()=>checkedCapture(Buffer.from(JSON.stringify(changed)),legacy));
 });
-test('rollback remains explicitly uncaptured after the actual first assertion failure',()=>{
+test('rollback remains explicitly uncaptured after the actual first assertion failure',async()=>{
  assert.deepEqual(provenance.capturedCases,['contract']);
  assert.equal(provenance.rollback,'Not executed after the original first whole-session assertion failed; original legacy fixture and live native comparison remain required.');
  const source=readFileSync('rust/tests/integration/issue_982_self_hosting.rs','utf8');
- assert.ok(source.includes('assert_literal_capture_transition(committed_session, &rendered)'));
+ assert.ok(source.includes('assert_literal_capture_transition(cases[0].3, observed_contract)'));
+ assert.ok(source.includes('assert_current_literal_observation(committed_session, &rendered)'));
  assert.ok(source.includes('assert_eq!(committed_leaf, expected_leaf)'));
  assert.ok(source.includes('assert_eq!(arguments["content"], expected_leaf)'));
+ await installNativeCaptureObservationHost();
+ const write=legacy.steps.filter(step=>step.tool==='write_file').at(-1);
+ const target=write.arguments.path,content=write.arguments.content;
+ const read={tool:'read_file',arguments:{path:target,filePath:target,file_path:target},result:completeOwnedSourceReadFrame(content)};
+ const current={...legacy,tools_advertised:[...new Set([...legacy.tools_advertised,'read_file'])],
+  steps:[write,read],turns:3,hit_turn_cap:false,
+  final_answer:renderSeededOutcome('coding_workspace_effect_observed',legacy.task,target)};
+ assert.equal(checkedCapture(Buffer.from(JSON.stringify(current)),legacy).task,legacy.task);
+ const refused=[{...current,steps:[read,write]},
+  {...current,steps:[{...write,result:'Error: actual write failed'},read]},
+  {...current,steps:[write,{...read,arguments:{path:'foreign.txt'}}]},
+  {...current,steps:[write,{...read,result:completeOwnedSourceReadFrame(content+' changed')}]},
+  {...current,steps:[write,{...read,result:content}]},
+  {...current,tools_advertised:current.tools_advertised.filter(tool=>tool!=='read_file')}];
+ for(const session of refused)assert.throws(()=>checkedCapture(Buffer.from(JSON.stringify(session)),legacy));
 });

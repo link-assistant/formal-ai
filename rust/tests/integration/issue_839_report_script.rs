@@ -547,3 +547,45 @@ fn the_scratch_template_is_expanded_before_anything_is_written() {
         "the body file must carry a real name: {body_file}"
     );
 }
+
+/// Successful preparation does not make an absent or foreign issue URL a success.
+#[test]
+fn uncertain_submission_retains_the_full_report_without_retrying() {
+    for (label, url) in [
+        ("missing-url", ""),
+        (
+            "foreign-url",
+            "https://github.com/unrelated/repository/issues/4",
+        ),
+        (
+            "zero-url",
+            "https://github.com/link-assistant/formal-ai/issues/0",
+        ),
+    ] {
+        let workspace = Workspace::new(label);
+        workspace.install_gh();
+        workspace.record_conversation(label);
+        let command = format!("GH_ISSUE_URL='{url}' {}", github_command(label));
+        let output = workspace.run(&command);
+        assert!(!output.status.success());
+        let diagnostic = String::from_utf8_lossy(&output.stderr);
+        assert!(
+            diagnostic.contains("do not retry automatically"),
+            "{diagnostic}"
+        );
+        let args = workspace
+            .filed_arguments()
+            .expect("submission reached once");
+        assert_eq!(args.matches("issue\ncreate\n").count(), 1);
+        let original = args
+            .lines()
+            .skip_while(|line| *line != "--body-file")
+            .nth(1)
+            .unwrap();
+        let retained = fs::read_to_string(original)
+            .expect("original report retained after uncertain submission");
+        for (_, turn) in TURNS {
+            assert!(retained.contains(turn));
+        }
+    }
+}

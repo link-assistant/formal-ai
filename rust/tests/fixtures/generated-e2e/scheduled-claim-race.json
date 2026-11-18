@@ -1,0 +1,119 @@
+{
+  "schema": "captured-published-claim-race/v1",
+  "repository": "link-assistant/formal-ai",
+  "source": "b46e2b0a486895e821ee73f2289d0a7ceef5a512",
+  "ownerRun": 40668396305,
+  "failedJob": 122765110686,
+  "logSha256": "81c9d1e8c9ea6970f94849fc9765390aedc394da9bee16e5e299f1cd66b30ad5",
+  "observedFailureAt": "2026-10-28T10:52:00Z",
+  "scope": "Real claim failure before Agent task effects; publication remained green. This is not three-client delivery acceptance.",
+  "diagnostic": {
+    "reason": "other CI pending",
+    "blockedBy": {
+      "run": 40675356715,
+      "attempt": 1,
+      "path": ".github/workflows/task-ladder.yml",
+      "event": "schedule",
+      "status": "in_progress",
+      "conclusion": null
+    }
+  },
+  "trustedSchedule": [
+    {
+      "cron": "53 4 * * *"
+    }
+  ],
+  "trustedScheduleSource": "https://github.com/link-assistant/formal-ai/blob/b46e2b0a486895e821ee73f2289d0a7ceef5a512/.github/workflows/task-ladder.yml",
+  "releaseRuns": [
+    {
+      "id": 40667707192,
+      "run_attempt": 1,
+      "head_sha": "b46e2b0a486895e821ee73f2289d0a7ceef5a512",
+      "event": "workflow_run",
+      "path": ".github/workflows/verify-release-downloads.yml",
+      "status": "completed",
+      "conclusion": "success",
+      "repository": {
+        "full_name": "link-assistant/formal-ai"
+      },
+      "head_repository": {
+        "full_name": "link-assistant/formal-ai"
+      }
+    },
+    {
+      "id": 40667694358,
+      "run_attempt": 1,
+      "head_sha": "b46e2b0a486895e821ee73f2289d0a7ceef5a512",
+      "event": "workflow_dispatch",
+      "path": ".github/workflows/publish-vscode.yml",
+      "status": "completed",
+      "conclusion": "success",
+      "repository": {
+        "full_name": "link-assistant/formal-ai"
+      },
+      "head_repository": {
+        "full_name": "link-assistant/formal-ai"
+      }
+    },
+    {
+      "id": 40660948160,
+      "run_attempt": 1,
+      "head_sha": "b46e2b0a486895e821ee73f2289d0a7ceef5a512",
+      "event": "workflow_run",
+      "path": ".github/workflows/publish-engine.yml",
+      "status": "completed",
+      "conclusion": "success",
+      "repository": {
+        "full_name": "link-assistant/formal-ai"
+      },
+      "head_repository": {
+        "full_name": "link-assistant/formal-ai"
+      }
+    },
+    {
+      "id": 40660948209,
+      "run_attempt": 1,
+      "head_sha": "b46e2b0a486895e821ee73f2289d0a7ceef5a512",
+      "event": "workflow_run",
+      "path": ".github/workflows/publish-source-networks.yml",
+      "status": "completed",
+      "conclusion": "success",
+      "repository": {
+        "full_name": "link-assistant/formal-ai"
+      },
+      "head_repository": {
+        "full_name": "link-assistant/formal-ai"
+      }
+    },
+    {
+      "id": 40660948355,
+      "run_attempt": 1,
+      "head_sha": "b46e2b0a486895e821ee73f2289d0a7ceef5a512",
+      "event": "workflow_run",
+      "path": ".github/workflows/desktop-release.yml",
+      "status": "completed",
+      "conclusion": "success",
+      "repository": {
+        "full_name": "link-assistant/formal-ai"
+      },
+      "head_repository": {
+        "full_name": "link-assistant/formal-ai"
+      }
+    }
+  ],
+  "backgroundRun": {
+    "id": 40675356715,
+    "run_attempt": 1,
+    "head_sha": "b46e2b0a486895e821ee73f2289d0a7ceef5a512",
+    "event": "schedule",
+    "path": ".github/workflows/task-ladder.yml",
+    "status": "in_progress",
+    "conclusion": null,
+    "repository": {
+      "full_name": "link-assistant/formal-ai"
+    },
+    "head_repository": {
+      "full_name": "link-assistant/formal-ai"
+    }
+  }
+}

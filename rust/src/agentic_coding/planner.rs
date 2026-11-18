@@ -8,7 +8,7 @@ mod obligations;
 mod precedence;
 mod steps;
 use super::final_result::{FinalDisposition, FinalResult, ResolvedPlan, record};
-use continuation::continued_agent_task;
+pub(super) use continuation::continued_agent_task;
 pub(in crate::agentic_coding) use continuation::{evidence_window_start, is_continuation_cue};
 pub use continuation::{trace_route, trace_route_with};
 pub use precedence::checked_route_precedence;
@@ -159,9 +159,8 @@ impl Capability {
 
 /// Classify an advertised tool name into the [`Capability`] it provides.
 ///
-/// Returns [`None`] when the planner's recipe has no use for it
-/// (list/grep/todo/…). Public so the permission gate classifies through the
-/// *same* function the planner uses.
+/// Returns [`None`] when the planner's recipe has no use for it (list/grep/todo/…).
+/// Public so the permission gate classifies through the *same* function the planner uses.
 #[must_use]
 pub fn tool_capability(name: &str) -> Option<Capability> {
     capability_router::classify_tool(name)
@@ -181,6 +180,7 @@ pub(super) fn plan_chat_step_resolved(
     let mut result = None;
     let plan = plan_chat_step_inner(messages, tool_names, &mut result);
     let plan = super::repetition_guard::guard_plan(messages, plan, &mut result)?;
+    let plan = super::prerequisite_recovery::with_recovery_report(messages, plan, &mut result);
     Some(ResolvedPlan::new(plan, result))
 }
 
@@ -714,7 +714,7 @@ pub(super) fn plan_settled_routes(
             ));
         }
     }
-    if let Some(plan) = intent_router::plan_edit_step(task, messages, tool_names) {
+    if let Some(plan) = intent_router::plan_edit_step(task, messages, tool_names, result) {
         return Some(plan);
     }
     // Preserve the established stateful list/read recipe whenever the client

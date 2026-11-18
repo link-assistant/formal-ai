@@ -289,6 +289,46 @@ meanings
     unit "compatibility status and reason"
     example "A missing question or answer produces unknown with reason missing typed evidence."
     grounding "js/agentic/crate/dialogue_formalization.mjs::answerCompatibility; rust/src/formalization/dialogue.rs::answer_compatibility"
+  proposition-structure
+    role action
+    defined-by output
+    precondition "A formalized statement carries connectives, quantifiers, an explicit count or comparison relations that a set of term identities cannot hold."
+    effect "Read the ordered proposition shape, the ordered relations and the explicit repetition from the seeded vocabulary and add them to the statement identity; structure the reader cannot bind stays an unresolved obligation instead of a guess."
+    unit "proposition shape, relations, repetition and unresolved obligations"
+    example "1 and 2 and 1 or 2 receive different shapes, and print hello twice keeps a repetition that print hello lacks."
+    grounding "js/agentic/crate/proposition_structure.mjs::readPropositionStructure; rust/src/formalization/proposition_structure.rs::read_proposition_structure"
+  comparison-relation
+    role action
+    defined-by output
+    precondition "A comparison word such as less than, greater than or at most joins two operands of a statement."
+    effect "Map the word to an ordered relation and its direction, swapping the operands of a converse word so a paraphrase and its original share one relation while reversed operands stay distinct."
+    unit "ordered relation over two operands"
+    example "2 is greater than 1 and 1 is less than 2 both read less(1,2); 2 is less than 1 reads less(2,1)."
+    grounding "js/agentic/crate/proposition_structure.mjs::relationOf; rust/src/formalization/proposition_structure.rs::relation_of"
+  output-repetition
+    role action
+    defined-by output
+    precondition "A program request binds a quoted output and states how many times it is printed: an explicit count right after the output, or a later mention marked as a repetition."
+    effect "Bind the output once per counted or explicitly repeated mention, in request order; every other mention of the same literal is the same output obligation, so the program never prints a line the request did not ask for twice."
+    unit "ordered output lines of one program"
+    example "prints Hello twice and prints Hello and then prints Hello again bind two lines; print exactly Hello and code prints Hello exactly bind one."
+    grounding "js/agentic/crate/intent_formalization_obligations.mjs::boundOutputLiterals; rust/src/intent_formalization/obligations.rs::bound_output_literals"
+  task-decomposition
+    role action
+    defined-by output
+    precondition "A request names more than one obligation joined by a sequence, alternative or aggregation connective of the seeded vocabulary."
+    effect "Split the request into a task tree within the seeded depth, breadth and budget bounds, derive a test per task, draft by cache, derivation and composition, select the passing draft of least action and compose the children by their relation; a task no draft passes stays an explicit unresolved result."
+    unit "task tree with tests, drafts, selection and composition"
+    example "Translate hello to French, then count the letters and report the vowels reads sequence(leaf,aggregation(leaf,leaf)) in English, Russian, Hindi and Chinese alike."
+    grounding "js/agentic/crate/meta_executor.mjs::executeProcedure; rust/src/meta_executor.rs::execute_procedure"
+  symbolic-operator
+    role action
+    defined-by output
+    precondition "A statement writes a relation or arithmetic operator as a symbol between two operands."
+    effect "Read the symbol as the same relation its words name, keep operand order for non-commutative operators, sort the operands of commutative ones, and leave a chain of different operators unresolved because its grouping is not read."
+    unit "ordered relation over two operands"
+    example "a - b reads minus(a,b) and b - a reads minus(b,a); 1 < 2 reads less(1,2) like 1 is less than 2."
+    grounding "js/agentic/crate/proposition_structure.mjs::operatorSymbols; rust/src/formalization/proposition_structure.rs::operator_symbols"
   typed-statement-notation
     role action
     defined-by output

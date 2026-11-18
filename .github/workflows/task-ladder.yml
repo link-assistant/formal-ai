@@ -27,6 +27,11 @@ on:
       - 'data/seed/**'
       - 'experiments/issue_840_task_ladder/**'
       - '.github/workflows/task-ladder.yml'
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   # Issue #1107 (item 3): four ladders each booted Formal AI and drove an agent
   # on every Rust-touching branch push. One of them proving the path is the
   # branch signal; running all four is four times the bill for the same answer.
@@ -41,6 +46,11 @@ on:
     paths:
       - 'experiments/issue_840_task_ladder/**'
       - '.github/workflows/task-ladder.yml'
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   schedule:
     - cron: '53 4 * * *'
   # Issue #1187 R2: a bot pull request's checks start through dispatch
@@ -77,9 +87,13 @@ env:
   CARGO_INCREMENTAL: '0'
 
 jobs:
+  pr-check-profile:
+    if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'))
+    uses: ./.github/workflows/pull-request-check-profile.yml
   task-ladder:
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true) }}
     name: 'Task Ladder (issue #840 dataset)'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # A release build of the server plus 24 request/route/answer round trips
     # against it; the build dominates and starts cold.
     timeout-minutes: 25

@@ -10,7 +10,7 @@ export async function subprocessBoundaryAuditor(root) {
   const parser = new runtime.Parser();
   parser.setLanguage(await runtime.Language.load(path.join(root, 'js/vendor/tree-sitter/tree-sitter-rust.wasm')));
   const require = createRequire(path.join(root, 'package.json'));
-  const babel = require('@babel/parser');
+  const babel = await import(pathToFileURL(require.resolve('@babel/parser')).href);
   function rust(source) {
     const tree = parser.parse(source);
     try {

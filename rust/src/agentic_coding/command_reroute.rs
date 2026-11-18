@@ -122,7 +122,11 @@ fn recipe_step(
     if let Some(target) = &commit
         && workflow.is_none()
     {
-        expected_commands.extend(pr_completion_commands(recipe, target));
+        expected_commands.extend(git_commit::pr_completion_commands(
+            recipe,
+            target,
+            requirements_reference.as_deref().unwrap_or(target.reference.as_str()),
+        ));
     }
     let progress =
         RecipeProgress::after_latest_user(messages, write_tool, recipe, &expected_commands, resume);
@@ -138,7 +142,11 @@ fn recipe_step(
         return None;
     }
     if let Some(target) = &commit {
-        let followup = pr_completion_commands(recipe, target);
+        let followup = git_commit::pr_completion_commands(
+            recipe,
+            target,
+            requirements_reference.as_deref().unwrap_or(target.reference.as_str()),
+        );
         let observed = super::progress::Progress::scan(messages);
         if let Some(comments) = followup.first()
             && let Some(output) = observed.latest_successful_run_output_for(comments)
@@ -203,7 +211,11 @@ fn recipe_step(
                 && failure.exit_code == Some(127)
                 && let (Some(target), Some(workflow)) = (&commit, &workflow)
             {
-                let followup = pr_completion_commands(recipe, target);
+                let followup = git_commit::pr_completion_commands(
+            recipe,
+            target,
+            requirements_reference.as_deref().unwrap_or(target.reference.as_str()),
+        );
                 let start = progress.failure_index.map_or(0, |index| index + 1);
                 return Some(super::recipe_resume::plan_recipe_ci_fallback(
                     &messages[start..],
@@ -298,7 +310,11 @@ fn recipe_step(
     }
 
     if let (Some(target), Some(workflow)) = (&commit, &workflow) {
-        let followup = pr_completion_commands(recipe, target);
+        let followup = git_commit::pr_completion_commands(
+            recipe,
+            target,
+            requirements_reference.as_deref().unwrap_or(target.reference.as_str()),
+        );
         let start = progress.last_command_index.map_or(0, |index| index + 1);
         return Some(super::recipe_resume::plan_recipe_ci_fallback(
             &messages[start..],
@@ -315,9 +331,18 @@ fn recipe_step(
             },
         ));
     }
-    Some(AgenticPlan::Final(
-        recipe.final_answer(&progress.command_outputs, commit.as_ref()),
-    ))
+    let answer = recipe.final_answer(&progress.command_outputs, commit.as_ref());
+    let verified = progress.command_outputs.len().min(recipe.commands.len());
+    let acceptance = super::task_acceptance::acceptance_report(
+        objective,
+        recipe,
+        &progress.command_outputs[..verified],
+    );
+    Some(AgenticPlan::Final(if acceptance.is_empty() {
+        answer
+    } else {
+        format!("{answer}\n{acceptance}\n")
+    }))
 }
 
 fn recipe_file_matches(observation: &super::progress::Progress, path: &str, source: &str) -> bool {
@@ -379,47 +404,6 @@ fn recipe_workflow(recipe: &ExecutionRecipe, objective: &str) -> Option<String> 
         .find_map(|line| line.strip_prefix("name: ").map(str::to_owned))
 }
 
-fn pr_completion_commands(recipe: &ExecutionRecipe, target: &CommitTarget) -> Vec<String> {
-    if !git_commit::is_pull_request_target(target) {
-        return Vec::new();
-    }
-    let target_url = super::git_commit::shell_quote(&target.reference);
-    let commands = recipe
-        .commands
-        .iter()
-        .map(|command| format!("- `{command}`"))
-        .collect::<Vec<_>>()
-        .join("\n");
-    let body = super::work_item_steps::fill(
-        "pr_body_template",
-        &[
-            ("{path}", &recipe.path),
-            (concat!("{", "commands}"), &commands),
-            ("{reference}", &target.reference),
-        ],
-    );
-    vec![
-        super::work_item_steps::fill(
-            "pr_comments_command",
-            &[(concat!("{", "target}"), &target_url)],
-        ),
-        super::work_item_steps::fill(
-            "pr_edit_command",
-            &[
-                (concat!("{", "target}"), &target_url),
-                (
-                    concat!("{", "body}"),
-                    &super::git_commit::shell_quote(&body),
-                ),
-            ],
-        ),
-        super::work_item_steps::fill(
-            "pr_ready_command",
-            &[(concat!("{", "target}"), &target_url)],
-        ),
-    ]
-}
-
 fn one_call(tool: &str, arguments: String) -> AgenticPlan {
     AgenticPlan::ToolCalls(vec![PlannedToolCall {
         tool: tool.to_owned(),
@@ -468,6 +452,19 @@ impl ExecutionRecipe {
             .map_or("(command completed without output)", |output| output.trim());
         let _ = write!(answer, "\nActual tool output:\n\n```text\n{actual}\n```");
         if let (Some(target), Some(output)) = (committed, commit_output) {
+            // Issue #1157: an unchanged tree after a repeated or resumed run is
+            // a success, stated in a sentence rather than left as a marker.
+            let marker = super::work_item_steps::fill("commit_nothing_marker", &[]);
+            if output.lines().any(|line| line.trim() == marker) {
+                let _ = write!(
+                    answer,
+                    "\n\n{}",
+                    super::work_item_steps::fill(
+                        "commit-unchanged-report",
+                        &[(concat!("{", "branch}"), target.push_ref())],
+                    )
+                );
+            }
             let _ = write!(
                 answer,
                 "\n\nCommitted and pushed to `{}` for {}:\n\n```text\n{}\n```",
@@ -656,14 +653,13 @@ impl RecipeProgress {
             if matches_update {
                 let (path, _) = files[progress.files_written];
                 let observation = super::progress::Progress::scan(&messages[start..=index]);
-                let frame =
-                    observation.qualified_command_attempt(update_command.as_deref().unwrap_or(""));
-                if frame.is_some_and(|frame| {
-                    frame.binding == super::qualified_tool_observation::Binding::Exact
-                        && frame.succeeded
-                }) && reported_exit_code(&output) == Some(0)
-                    && super::recipe_resume::recipe_source_update_result(&output, path)
-                {
+                let receipt = super::recipe_resume::recipe_source_receipt(
+                    &observation,
+                    update_command.as_deref().unwrap_or(""),
+                );
+                if receipt.is_some_and(|receipt| {
+                    super::recipe_resume::recipe_source_update_result(receipt, path)
+                }) {
                     progress.source_checked.remove(path);
                     progress.source_preimages.remove(path);
                 } else {
@@ -679,14 +675,8 @@ impl RecipeProgress {
             if let Some((path, source)) = probe_path {
                 let observation = super::progress::Progress::scan(&messages[start..=index]);
                 let command = super::recipe_resume::recipe_source_command(path);
-                let frame = observation.qualified_command_attempt(&command);
-                let result = frame
-                    .filter(|frame| {
-                        frame.binding == super::qualified_tool_observation::Binding::Exact
-                            && frame.succeeded
-                            && reported_exit_code(&output) == Some(0)
-                    })
-                    .and_then(|_| super::recipe_resume::recipe_source_result(&output, path));
+                let result = super::recipe_resume::recipe_source_receipt(&observation, &command)
+                    .and_then(|receipt| super::recipe_resume::recipe_source_result(receipt, path));
                 if let Some(result) = result {
                     progress.failure = None;
                     progress.source_checked.insert((*path).to_owned());
@@ -752,6 +742,18 @@ impl RecipeProgress {
         }
         if resume {
             let observation = super::progress::Progress::scan(messages);
+            if let Some((path, _)) = files.get(progress.files_written)
+                && progress.source_checked.contains(*path)
+                && super::recipe_resume::recipe_source_receipt(
+                    &observation,
+                    &super::recipe_resume::recipe_source_command(path),
+                )
+                .is_none()
+            {
+                progress.source_checked.remove(*path);
+                progress.source_preimages.remove(*path);
+                progress.source_invalidated = true;
+            }
             for (index, (path, source)) in files.iter().take(progress.files_written).enumerate() {
                 if !recipe_file_matches(&observation, path, source) {
                     progress.files_written = index;

@@ -1,0 +1,462 @@
+{
+  "schema": "formal-ai-natural-search-naming-maintenance/v1",
+  "scope": "Actual naminggate maintenance only: six abbreviated declarations across JS/native plus TS mirror. Not a broad coding or runtime capability claim.",
+  "workflow": "Natural-language atomic rename request \u2192 maintained JS FormalAI planner \u2192 actual Read/approved solver-generated Perl/SHA verifier \u2192 externally preserved identifier-only and syntax/lexical checks.",
+  "priorStages": [
+    {
+      "id": "search-naming-maintenance-scratch",
+      "request": "Rename the identifier searchSpec to searchSpecification and every local identifier spec to specification in js/agentic/work_item_file_io.mjs, updating all references. Preserve every other byte, including comments, string literals and protocol values.",
+      "requestIdentity": "ab67e525d6b2b48a275932b98e46cfd91ee2deaad564f4d6aec67e113f8f9810",
+      "tools": [
+        "read",
+        "edit"
+      ],
+      "stop": "steps",
+      "sourcePreIdentity": "17ded4926c843fcdf717dd7cae1d3a8f10c521552fc38b409b2673cdfe6dd55e",
+      "sourcePostIdentity": "17ded4926c843fcdf717dd7cae1d3a8f10c521552fc38b409b2673cdfe6dd55e",
+      "passed": false,
+      "evidence": {
+        "request.json": "2144e05e3fb44b8b61dcef96c11ac896f9681fb1edc7bcaede769e511d0c5420",
+        "result.json": "97c5c3e93c90b67cb95e2af316845dd13feaeb27f53e584080a5969dbc94d7d9",
+        "before-source.mjs": "17ded4926c843fcdf717dd7cae1d3a8f10c521552fc38b409b2673cdfe6dd55e",
+        "after-source.mjs": "17ded4926c843fcdf717dd7cae1d3a8f10c521552fc38b409b2673cdfe6dd55e",
+        "independent-oracle-plan.json": "3396d00cf09901a9b421fe0da5b618c87cee0f349f3ffdf9525716b0c61fe3a8",
+        "independent-review.json": "aa7a32640418111059b54949ccdb959e9c12ee342d7b29b474b9f07e62d6e5fc"
+      },
+      "failure": "Compound rename parsed wrong old/new phrases; Edit failed oldString not found. Restricted tools not a general capability verdict."
+    },
+    {
+      "id": "search-function-naming-proposal",
+      "request": "In the file js/agentic/work_item_file_io.mjs, rename the function searchSpec to searchSpecification everywhere it appears in this file. Preserve all other content.",
+      "requestIdentity": "a6ff316671a6255883a5e54d26e4fb128be22f2f0f92e3f6a2c312c3f772cedc",
+      "tools": [
+        "read"
+      ],
+      "stop": "command-policy-denied",
+      "sourcePreIdentity": "17ded4926c843fcdf717dd7cae1d3a8f10c521552fc38b409b2673cdfe6dd55e",
+      "sourcePostIdentity": "17ded4926c843fcdf717dd7cae1d3a8f10c521552fc38b409b2673cdfe6dd55e",
+      "passed": false,
+      "evidence": {
+        "request.json": "853603f3aadf0178792e9a360da114c01601a93b54e72da77e034f5852de0b65",
+        "result.json": "19037992f6481f9fac682e6f00b57077ff41adef13a49638227f29ea0d17579a",
+        "before-source.mjs": "17ded4926c843fcdf717dd7cae1d3a8f10c521552fc38b409b2673cdfe6dd55e",
+        "after-source.mjs": "17ded4926c843fcdf717dd7cae1d3a8f10c521552fc38b409b2673cdfe6dd55e",
+        "independent-oracle-plan.json": "8b825d3e14517a72904c85161bd67a199924dcedd4224cecdd864d174efe3bdd",
+        "independent-review.json": "47be292d462c633d146d2d9d8c2ad7c90eb6399d32546af3c5d6f85a39b4a054"
+      },
+      "deniedBeforeExecution": [
+        {
+          "tool": "bash",
+          "arguments": "{\"command\":\"perl -pi -e 's/\\\\bsearchSpec\\\\b/searchSpecification/g' -- js/agentic/work_item_file_io.mjs\"}"
+        }
+      ],
+      "reason": "Expected reviewer command capture with empty allowlist; source unchanged."
+    },
+    {
+      "id": "search-function-naming-approved-scratch",
+      "request": "In the file js/agentic/work_item_file_io.mjs, rename the function searchSpec to searchSpecification everywhere it appears in this file. Preserve all other content.",
+      "requestIdentity": "a6ff316671a6255883a5e54d26e4fb128be22f2f0f92e3f6a2c312c3f772cedc",
+      "tools": [
+        "read",
+        "bash",
+        "bash"
+      ],
+      "stop": "final",
+      "sourcePreIdentity": "17ded4926c843fcdf717dd7cae1d3a8f10c521552fc38b409b2673cdfe6dd55e",
+      "sourcePostIdentity": "875478129a1dfbe85d3db02af4968a874c8cf05ba136b222954fab7591cabb1e",
+      "passed": true,
+      "evidence": {
+        "request.json": "2841a1b4f42521955ff6959f99a9d823a0508456ba49a46dfb0009d96338a0e4",
+        "result.json": "40e03645ff86794571a9e337c0e339bb740e81c4b7ec099db606fcd3f4c9a9bc",
+        "before-source.mjs": "17ded4926c843fcdf717dd7cae1d3a8f10c521552fc38b409b2673cdfe6dd55e",
+        "after-source.mjs": "875478129a1dfbe85d3db02af4968a874c8cf05ba136b222954fab7591cabb1e",
+        "independent-oracle-plan.json": "8b825d3e14517a72904c85161bd67a199924dcedd4224cecdd864d174efe3bdd",
+        "independent-review.json": "c8a5acd81fe0a2647654ba934664731a6f71a423e9b8260f6c9103f9c74f71cc"
+      }
+    }
+  ],
+  "atomicOutcomes": [
+    {
+      "id": "js-function",
+      "stage": "maintained",
+      "owner": "js/agentic/work_item_file_io.mjs",
+      "promptIdentity": "a6ff316671a6255883a5e54d26e4fb128be22f2f0f92e3f6a2c312c3f772cedc",
+      "stop": "final",
+      "tools": [
+        "read",
+        "bash",
+        "bash"
+      ],
+      "sourcePreIdentity": "17ded4926c843fcdf717dd7cae1d3a8f10c521552fc38b409b2673cdfe6dd55e",
+      "sourcePostIdentity": "875478129a1dfbe85d3db02af4968a874c8cf05ba136b222954fab7591cabb1e",
+      "candidatePreservedBeforeOracle": true,
+      "qualification": {
+        "passed": true,
+        "exactIdentifierTokensOnly": true,
+        "renamedTokens": 5,
+        "allOtherBytesPreserved": true,
+        "syntaxValid": true,
+        "fullRustSyntaxCheck": false,
+        "runtimeProof": false
+      },
+      "request": "In the file js/agentic/work_item_file_io.mjs, rename the function searchSpec to searchSpecification everywhere it appears in this file. Preserve all other content.",
+      "actualCommands": [
+        "perl -pi -e 's/\\bsearchSpec\\b/searchSpecification/g' -- js/agentic/work_item_file_io.mjs",
+        "sha256sum -- js/agentic/work_item_file_io.mjs"
+      ],
+      "evidence": {
+        "request.json": "5dc6157a585cb81ef3ce5d07d12caf739aed254bb184560f596019439b21ca0b",
+        "result.json": "40e03645ff86794571a9e337c0e339bb740e81c4b7ec099db606fcd3f4c9a9bc",
+        "before-source": "17ded4926c843fcdf717dd7cae1d3a8f10c521552fc38b409b2673cdfe6dd55e",
+        "after-source": "875478129a1dfbe85d3db02af4968a874c8cf05ba136b222954fab7591cabb1e",
+        "oracle-plan.json": "8bd111a556cf11824258924b49359c0911d0671e62d96e0d3356a05f0be634cf",
+        "independent-review.json": "e7cfc0706ebcbdddca3a3874f2bb019ba8a1a8395d8fe3af905e3ce2b5a4b9fc",
+        "events.jsonl": "3f00a1098eed4856752637f32b4296bb249bc9b2279b2446253998dbba6794e3"
+      }
+    },
+    {
+      "id": "js-locals",
+      "stage": "scratch",
+      "owner": "js/agentic/work_item_file_io.mjs",
+      "promptIdentity": "c2cda03cd89a3bab50fb9533c08138dca485dff352964f99dd9db81f8dcbcd12",
+      "stop": "final",
+      "tools": [
+        "read",
+        "bash",
+        "bash"
+      ],
+      "sourcePreIdentity": "875478129a1dfbe85d3db02af4968a874c8cf05ba136b222954fab7591cabb1e",
+      "sourcePostIdentity": "e73689101709394d59db44f5b1adee41264e67dbb55f78b010369cb57539561d",
+      "candidatePreservedBeforeOracle": true,
+      "qualification": {
+        "passed": true,
+        "exactIdentifierTokensOnly": true,
+        "renamedTokens": 12,
+        "allOtherBytesPreserved": true,
+        "syntaxValid": true,
+        "fullRustSyntaxCheck": false,
+        "runtimeProof": false
+      },
+      "request": "In the file js/agentic/work_item_file_io.mjs, rename spec to specification everywhere it appears in this file. Preserve all other content.",
+      "actualCommands": [
+        "perl -pi -e 's/\\bspec\\b/specification/g' -- js/agentic/work_item_file_io.mjs",
+        "sha256sum -- js/agentic/work_item_file_io.mjs"
+      ],
+      "evidence": {
+        "request.json": "1906bd16669f436dcf2f1b8808f3d49b9c470b528f4f9b9c21073da5b8d741f4",
+        "result.json": "ca7702830a0c13bb5dac378804f6d895de4fdf953a5af17715b06f28bf347500",
+        "before-source": "875478129a1dfbe85d3db02af4968a874c8cf05ba136b222954fab7591cabb1e",
+        "after-source": "e73689101709394d59db44f5b1adee41264e67dbb55f78b010369cb57539561d",
+        "oracle-plan.json": "87d2e8d56e62af61688a88214810e38ad823e445371fc9a09f92dd35d541a86e",
+        "independent-review.json": "d835ce243b3ad09cf3da8c86ab43839339a255d40e8f7c41a08992b2a21e6bf5",
+        "events.jsonl": "c6261c289c734260136ec28226aafd49b64ae367ff24bfcf6d7fccd00095684f"
+      }
+    },
+    {
+      "id": "js-locals",
+      "stage": "maintained",
+      "owner": "js/agentic/work_item_file_io.mjs",
+      "promptIdentity": "c2cda03cd89a3bab50fb9533c08138dca485dff352964f99dd9db81f8dcbcd12",
+      "stop": "final",
+      "tools": [
+        "read",
+        "bash",
+        "bash"
+      ],
+      "sourcePreIdentity": "875478129a1dfbe85d3db02af4968a874c8cf05ba136b222954fab7591cabb1e",
+      "sourcePostIdentity": "e73689101709394d59db44f5b1adee41264e67dbb55f78b010369cb57539561d",
+      "candidatePreservedBeforeOracle": true,
+      "qualification": {
+        "passed": true,
+        "exactIdentifierTokensOnly": true,
+        "renamedTokens": 12,
+        "allOtherBytesPreserved": true,
+        "syntaxValid": true,
+        "fullRustSyntaxCheck": false,
+        "runtimeProof": false
+      },
+      "request": "In the file js/agentic/work_item_file_io.mjs, rename spec to specification everywhere it appears in this file. Preserve all other content.",
+      "actualCommands": [
+        "perl -pi -e 's/\\bspec\\b/specification/g' -- js/agentic/work_item_file_io.mjs",
+        "sha256sum -- js/agentic/work_item_file_io.mjs"
+      ],
+      "evidence": {
+        "request.json": "da7bf69bd731949d6a4a8593030c7574b77e4bfe480058594c37498853782ea7",
+        "result.json": "ca7702830a0c13bb5dac378804f6d895de4fdf953a5af17715b06f28bf347500",
+        "before-source": "875478129a1dfbe85d3db02af4968a874c8cf05ba136b222954fab7591cabb1e",
+        "after-source": "e73689101709394d59db44f5b1adee41264e67dbb55f78b010369cb57539561d",
+        "oracle-plan.json": "87d2e8d56e62af61688a88214810e38ad823e445371fc9a09f92dd35d541a86e",
+        "independent-review.json": "c9972475d12ef2554543bddb9cf6bc49d04d0809493b292fdf37e1d7e7eb55a7",
+        "events.jsonl": "c6261c289c734260136ec28226aafd49b64ae367ff24bfcf6d7fccd00095684f"
+      }
+    },
+    {
+      "id": "ts-function",
+      "stage": "scratch",
+      "owner": "ts/agentic/work_item_file_io.mts",
+      "promptIdentity": "196c429f6b2903faab93c298613fe82289df31de4b0cdd831c8ed72eac878ae3",
+      "stop": "final",
+      "tools": [
+        "read",
+        "bash",
+        "bash"
+      ],
+      "sourcePreIdentity": "17ded4926c843fcdf717dd7cae1d3a8f10c521552fc38b409b2673cdfe6dd55e",
+      "sourcePostIdentity": "875478129a1dfbe85d3db02af4968a874c8cf05ba136b222954fab7591cabb1e",
+      "candidatePreservedBeforeOracle": true,
+      "qualification": {
+        "passed": true,
+        "exactIdentifierTokensOnly": true,
+        "renamedTokens": 5,
+        "allOtherBytesPreserved": true,
+        "syntaxValid": true,
+        "fullRustSyntaxCheck": false,
+        "runtimeProof": false
+      },
+      "request": "In the file ts/agentic/work_item_file_io.mts, rename searchSpec to searchSpecification everywhere it appears in this file. Preserve all other content.",
+      "actualCommands": [
+        "perl -pi -e 's/\\bsearchSpec\\b/searchSpecification/g' -- ts/agentic/work_item_file_io.mts",
+        "sha256sum -- ts/agentic/work_item_file_io.mts"
+      ],
+      "evidence": {
+        "request.json": "3319808da757a8cdf78c43eafe734814a6a7d043a7add0d2fdcda3abf2bf1521",
+        "result.json": "7242dcc7547d73d3d5af2009cda53935aad59490ce3a79d6a911370eaea3171b",
+        "before-source": "17ded4926c843fcdf717dd7cae1d3a8f10c521552fc38b409b2673cdfe6dd55e",
+        "after-source": "875478129a1dfbe85d3db02af4968a874c8cf05ba136b222954fab7591cabb1e",
+        "oracle-plan.json": "8bd111a556cf11824258924b49359c0911d0671e62d96e0d3356a05f0be634cf",
+        "independent-review.json": "16c2107c5bdeaa8ed294e582b9170a1c9fa05167fe68e9587fb84ff9e671cd22",
+        "events.jsonl": "89c62aa78f59fd3f2bea087d8bc5f8de6cd3478c9bc631575805a63d0c7b4d9a"
+      }
+    },
+    {
+      "id": "ts-function",
+      "stage": "maintained",
+      "owner": "ts/agentic/work_item_file_io.mts",
+      "promptIdentity": "196c429f6b2903faab93c298613fe82289df31de4b0cdd831c8ed72eac878ae3",
+      "stop": "final",
+      "tools": [
+        "read",
+        "bash",
+        "bash"
+      ],
+      "sourcePreIdentity": "17ded4926c843fcdf717dd7cae1d3a8f10c521552fc38b409b2673cdfe6dd55e",
+      "sourcePostIdentity": "875478129a1dfbe85d3db02af4968a874c8cf05ba136b222954fab7591cabb1e",
+      "candidatePreservedBeforeOracle": true,
+      "qualification": {
+        "passed": true,
+        "exactIdentifierTokensOnly": true,
+        "renamedTokens": 5,
+        "allOtherBytesPreserved": true,
+        "syntaxValid": true,
+        "fullRustSyntaxCheck": false,
+        "runtimeProof": false
+      },
+      "request": "In the file ts/agentic/work_item_file_io.mts, rename searchSpec to searchSpecification everywhere it appears in this file. Preserve all other content.",
+      "actualCommands": [
+        "perl -pi -e 's/\\bsearchSpec\\b/searchSpecification/g' -- ts/agentic/work_item_file_io.mts",
+        "sha256sum -- ts/agentic/work_item_file_io.mts"
+      ],
+      "evidence": {
+        "request.json": "ffcc7ea35c5609b79ba3b667801b4011fd32d66d1dffc457f54af4b59243efd8",
+        "result.json": "7242dcc7547d73d3d5af2009cda53935aad59490ce3a79d6a911370eaea3171b",
+        "before-source": "17ded4926c843fcdf717dd7cae1d3a8f10c521552fc38b409b2673cdfe6dd55e",
+        "after-source": "875478129a1dfbe85d3db02af4968a874c8cf05ba136b222954fab7591cabb1e",
+        "oracle-plan.json": "8bd111a556cf11824258924b49359c0911d0671e62d96e0d3356a05f0be634cf",
+        "independent-review.json": "5db86cefcd75bd31a6220eb1d1ea99d316ea108e52b58b3774666e3b147387e0",
+        "events.jsonl": "89c62aa78f59fd3f2bea087d8bc5f8de6cd3478c9bc631575805a63d0c7b4d9a"
+      }
+    },
+    {
+      "id": "ts-locals",
+      "stage": "scratch",
+      "owner": "ts/agentic/work_item_file_io.mts",
+      "promptIdentity": "e9bae01e2f139c4b5e2e53df2baef33fa9cd0ddee00f374e9200dd633e9b18d5",
+      "stop": "final",
+      "tools": [
+        "read",
+        "bash",
+        "bash"
+      ],
+      "sourcePreIdentity": "875478129a1dfbe85d3db02af4968a874c8cf05ba136b222954fab7591cabb1e",
+      "sourcePostIdentity": "e73689101709394d59db44f5b1adee41264e67dbb55f78b010369cb57539561d",
+      "candidatePreservedBeforeOracle": true,
+      "qualification": {
+        "passed": true,
+        "exactIdentifierTokensOnly": true,
+        "renamedTokens": 12,
+        "allOtherBytesPreserved": true,
+        "syntaxValid": true,
+        "fullRustSyntaxCheck": false,
+        "runtimeProof": false
+      },
+      "request": "In the file ts/agentic/work_item_file_io.mts, rename spec to specification everywhere it appears in this file. Preserve all other content.",
+      "actualCommands": [
+        "perl -pi -e 's/\\bspec\\b/specification/g' -- ts/agentic/work_item_file_io.mts",
+        "sha256sum -- ts/agentic/work_item_file_io.mts"
+      ],
+      "evidence": {
+        "request.json": "f0b8477a7909757e4a663ba61fee57a1ba7f1d250bfde6d495adcfd8bdb3dc28",
+        "result.json": "859eb43bd343612d583d82436fc5cb20309e8c2fb3f734effcab9001722f6b0b",
+        "before-source": "875478129a1dfbe85d3db02af4968a874c8cf05ba136b222954fab7591cabb1e",
+        "after-source": "e73689101709394d59db44f5b1adee41264e67dbb55f78b010369cb57539561d",
+        "oracle-plan.json": "87d2e8d56e62af61688a88214810e38ad823e445371fc9a09f92dd35d541a86e",
+        "independent-review.json": "db72eb6e243b06b949dca05db70bf8d508736bd296605782c77bb916b483dd87",
+        "events.jsonl": "0e9828cf18ff8670c56e0433c952bb0f4640b0ab7d8932800cb5175e5c931ca2"
+      }
+    },
+    {
+      "id": "ts-locals",
+      "stage": "maintained",
+      "owner": "ts/agentic/work_item_file_io.mts",
+      "promptIdentity": "e9bae01e2f139c4b5e2e53df2baef33fa9cd0ddee00f374e9200dd633e9b18d5",
+      "stop": "final",
+      "tools": [
+        "read",
+        "bash",
+        "bash"
+      ],
+      "sourcePreIdentity": "875478129a1dfbe85d3db02af4968a874c8cf05ba136b222954fab7591cabb1e",
+      "sourcePostIdentity": "e73689101709394d59db44f5b1adee41264e67dbb55f78b010369cb57539561d",
+      "candidatePreservedBeforeOracle": true,
+      "qualification": {
+        "passed": true,
+        "exactIdentifierTokensOnly": true,
+        "renamedTokens": 12,
+        "allOtherBytesPreserved": true,
+        "syntaxValid": true,
+        "fullRustSyntaxCheck": false,
+        "runtimeProof": false
+      },
+      "request": "In the file ts/agentic/work_item_file_io.mts, rename spec to specification everywhere it appears in this file. Preserve all other content.",
+      "actualCommands": [
+        "perl -pi -e 's/\\bspec\\b/specification/g' -- ts/agentic/work_item_file_io.mts",
+        "sha256sum -- ts/agentic/work_item_file_io.mts"
+      ],
+      "evidence": {
+        "request.json": "9003b843f5fdeb03d0953c11853cac7be70812f19e96601d4a892ab7eb472ff4",
+        "result.json": "859eb43bd343612d583d82436fc5cb20309e8c2fb3f734effcab9001722f6b0b",
+        "before-source": "875478129a1dfbe85d3db02af4968a874c8cf05ba136b222954fab7591cabb1e",
+        "after-source": "e73689101709394d59db44f5b1adee41264e67dbb55f78b010369cb57539561d",
+        "oracle-plan.json": "87d2e8d56e62af61688a88214810e38ad823e445371fc9a09f92dd35d541a86e",
+        "independent-review.json": "88a585192550702cfc2c9e95568d0d7f9da0e03567183e6171d79dd39c235631",
+        "events.jsonl": "0e9828cf18ff8670c56e0433c952bb0f4640b0ab7d8932800cb5175e5c931ca2"
+      }
+    },
+    {
+      "id": "rust-function",
+      "stage": "scratch",
+      "owner": "rust/src/agentic_coding/work_item_file_io/search.rs",
+      "promptIdentity": "50d80f6cb71e0408965891a17acfd009c8cb13a91c4f94d1488d041f5b86d3b1",
+      "stop": "final",
+      "tools": [
+        "read",
+        "bash",
+        "bash"
+      ],
+      "sourcePreIdentity": "0babd00692c4964d3d56038e0f484ad9184b1e733eb0b4efa272a6dcd3de4abb",
+      "sourcePostIdentity": "8cb1f8b3efda8452715fb4829518501fc2723fe8ee27469ab4aa4fe169ad6e5c",
+      "candidatePreservedBeforeOracle": true,
+      "qualification": {
+        "passed": true,
+        "exactIdentifierTokensOnly": true,
+        "renamedTokens": 5,
+        "allOtherBytesPreserved": true,
+        "syntaxValid": null,
+        "fullRustSyntaxCheck": false,
+        "runtimeProof": false
+      },
+      "request": "In the file rust/src/agentic_coding/work_item_file_io/search.rs, rename spec to specification everywhere it appears in this file. Preserve all other content.",
+      "actualCommands": [
+        "perl -pi -e 's/\\bspec\\b/specification/g' -- rust/src/agentic_coding/work_item_file_io/search.rs",
+        "sha256sum -- rust/src/agentic_coding/work_item_file_io/search.rs"
+      ],
+      "evidence": {
+        "request.json": "0c9420610a9eefbc85b87b8a3abac327234541b159f7b8a2176a44cf49700587",
+        "result.json": "b450212f53e47e2b9e115711058db0fe51614331979cc37e320921e789712a24",
+        "before-source": "0babd00692c4964d3d56038e0f484ad9184b1e733eb0b4efa272a6dcd3de4abb",
+        "after-source": "8cb1f8b3efda8452715fb4829518501fc2723fe8ee27469ab4aa4fe169ad6e5c",
+        "oracle-plan.json": "4d163730dd7dcb349e9ebf3f4c9fa9c68e83ffaf4434036d3372d6860a94ed53",
+        "independent-review.json": "6279720554cf305b0105dd4834afc359bbe041cd7c86dd066fa2b9fbf70efd55",
+        "events.jsonl": "16fb5968c611ed5b3bdf266ee5d6a99397026c14f6cb33aeae478728d0ef2587"
+      }
+    },
+    {
+      "id": "rust-function",
+      "stage": "maintained",
+      "owner": "rust/src/agentic_coding/work_item_file_io/search.rs",
+      "promptIdentity": "50d80f6cb71e0408965891a17acfd009c8cb13a91c4f94d1488d041f5b86d3b1",
+      "stop": "final",
+      "tools": [
+        "read",
+        "bash",
+        "bash"
+      ],
+      "sourcePreIdentity": "0babd00692c4964d3d56038e0f484ad9184b1e733eb0b4efa272a6dcd3de4abb",
+      "sourcePostIdentity": "8cb1f8b3efda8452715fb4829518501fc2723fe8ee27469ab4aa4fe169ad6e5c",
+      "candidatePreservedBeforeOracle": true,
+      "qualification": {
+        "passed": true,
+        "exactIdentifierTokensOnly": true,
+        "renamedTokens": 5,
+        "allOtherBytesPreserved": true,
+        "syntaxValid": null,
+        "fullRustSyntaxCheck": false,
+        "runtimeProof": false
+      },
+      "request": "In the file rust/src/agentic_coding/work_item_file_io/search.rs, rename spec to specification everywhere it appears in this file. Preserve all other content.",
+      "actualCommands": [
+        "perl -pi -e 's/\\bspec\\b/specification/g' -- rust/src/agentic_coding/work_item_file_io/search.rs",
+        "sha256sum -- rust/src/agentic_coding/work_item_file_io/search.rs"
+      ],
+      "evidence": {
+        "request.json": "5e842e0defdd27f09ebac3cd67e0e2e0640d58c2b1134bc1f8074071431d95eb",
+        "result.json": "b450212f53e47e2b9e115711058db0fe51614331979cc37e320921e789712a24",
+        "before-source": "0babd00692c4964d3d56038e0f484ad9184b1e733eb0b4efa272a6dcd3de4abb",
+        "after-source": "8cb1f8b3efda8452715fb4829518501fc2723fe8ee27469ab4aa4fe169ad6e5c",
+        "oracle-plan.json": "4d163730dd7dcb349e9ebf3f4c9fa9c68e83ffaf4434036d3372d6860a94ed53",
+        "independent-review.json": "09a3bea24e5e591cab9981204b859168b05719623c5bad4debb5cde7ef1453da",
+        "events.jsonl": "16fb5968c611ed5b3bdf266ee5d6a99397026c14f6cb33aeae478728d0ef2587"
+      }
+    }
+  ],
+  "approval": {
+    "generatedCommandReviewedBeforeExecution": true,
+    "allowlistOutsidePrompt": true,
+    "approvedFamily": "Literal whole-word Perl substitution on only declared sourceowner, plus SHA256 verifier for that file. No network/other paths.",
+    "reviewerApprovalOnlyNotSuppliedImplementation": true
+  },
+  "failuresPreserved": {
+    "compoundParserFailure": true,
+    "emptyAllowlistProposalDenial": true,
+    "orchestrationImportFailure": "Fourth bounded JS process failed before tasks due package resolution from private temporary directory; fixed orchestration package resolution only, then final fifth process completed batch."
+  },
+  "credit": {
+    "actualDerivedMaintenance": true,
+    "suppliedTargetPatch": false,
+    "suppliedImplementationGenerator": false,
+    "manualMaintainedTargetWrites": false,
+    "manualBootstrapCreditForTheseRenames": false,
+    "zeroCreditLiteralApplicationBootstrapsDistinct": true,
+    "generalAutonomousCodingRateClaim": false,
+    "runtimeProofClaim": false,
+    "nativeCompilerOrRuntimeClaim": false
+  },
+  "budget": {
+    "bootedJavaScriptProcesses": 5,
+    "maximumPerProcessSeconds": 25,
+    "heapMegabytes": 384,
+    "finalBatchSeconds": 5.983835250022821,
+    "productWasmBlocked": true,
+    "sourceUsageRustGrammar": false,
+    "localRustExecuted": false
+  },
+  "remainingChecks": "Root naming/IO checks and hosted/native CI; no more local processes authorized or executed.",
+  "finalFiles": {
+    "js/agentic/work_item_file_io.mjs": "e73689101709394d59db44f5b1adee41264e67dbb55f78b010369cb57539561d",
+    "ts/agentic/work_item_file_io.mts": "e73689101709394d59db44f5b1adee41264e67dbb55f78b010369cb57539561d",
+    "rust/src/agentic_coding/work_item_file_io/search.rs": "8cb1f8b3efda8452715fb4829518501fc2723fe8ee27469ab4aa4fe169ad6e5c"
+  },
+  "allSixNamingOffendersResolved": true,
+  "jsTsMirrorByteIdentical": true,
+  "maintainedIdentifierTokensRenamed": 39
+}

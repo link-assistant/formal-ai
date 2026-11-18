@@ -12,6 +12,11 @@ on:
       - 'scripts/lib/native-process-diagnostics.mjs'
       - 'scripts/lib/native-response-identity.mjs'
       - '.github/workflows/regenerate-native-session-projections.yml'
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   workflow_dispatch:
     inputs:
       mode:
@@ -31,8 +36,12 @@ concurrency:
   group: native-session-projections-${{ github.ref }}
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 jobs:
+  pr-check-profile:
+    if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'))
+    uses: ./.github/workflows/pull-request-check-profile.yml
   regenerate:
-    runs-on: ubuntu-latest
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true) }}
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
       NATIVE_SESSION_REQUESTED_PULL_REQUEST: ${{ github.event.inputs['pull-request'] || '' }}

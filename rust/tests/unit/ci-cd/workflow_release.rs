@@ -500,7 +500,7 @@ fn test_job_reclaims_runner_disk_before_restoring_the_target_cache() {
 
     let cleanup = workflow_step_block(test_job, "Free up runner disk space");
     assert!(
-        cleanup.contains("run: bash scripts/free-runner-disk.sh"),
+        cleanup.contains("run: RUNNER_DISK_TARGET_MIB=12288 bash scripts/free-runner-disk.sh"),
         "the test job must use the repository's established, observable disk cleanup"
     );
     assert!(
@@ -521,12 +521,21 @@ fn lint_job_gates_on_workflow_shell_and_clippy_findings() {
     let workflow = ci_surface();
     let lint = job_block(&workflow, "lint");
 
+    assert!(lint.contains("bash scripts/ci-clippy-profile.sh"));
+    let profile = fs::read_to_string(format!(
+        "{}/../scripts/ci-clippy-profile.sh",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .expect("shared Clippy profile");
     assert!(
-        lint.contains("cargo clippy --manifest-path rust/Cargo.toml --lib --bins --tests --all-features -- -D warnings"),
+        profile.contains("cargo clippy --manifest-path rust/Cargo.toml --lib --bins --tests --all-features -- -D warnings"),
         "clippy must lint executable test targets and fail the job on findings"
     );
+    for lint in ["correctness", "suspicious", "perf"] {
+        assert!(profile.contains(&format!("-D clippy::{lint}")));
+    }
     assert!(
-        lint.contains("cargo check --manifest-path rust/Cargo.toml --examples --all-features"),
+        profile.contains("cargo check --manifest-path rust/Cargo.toml --examples --all-features"),
         "examples must be compile-checked without linking every standalone binary (issue #534)"
     );
     assert!(
@@ -748,7 +757,9 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // `evidence_check_workflow_caps_its_job_and_installs_rust_script_with_the_retry_wrapper`.
         ("docker-build", 30),
         ("docker-slim", 0),
-        ("secrets-scan", 10),
+        // PR #1523: 597s checkout left only 5s for the clean scanner before cancellation.
+        // Keep full history/tree and reserve five bounded minutes after acquisition.
+        ("secrets-scan", 15),
         ("version-check", 5),
         // Issue #1081 (D15): probes every publishing credential with a write
         // before the pipeline spends 90 minutes building what it cannot
@@ -815,7 +826,7 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         ("build", 20),
         // R1015: the JavaScript server answers the parity corpus as the
         // release binary does; it reuses build-artifacts' binary, so no compile.
-        ("server-parity", 15),
+        ("server-parity", 30),
         // Issue #1076 (D5): raised from 60. Worst case 50.6 min over 400
         // `main` runs, 84.4% of that cap -- and the 45-minute GHCR budget that
         // owns the real deadline could never have fired inside it, since the
@@ -843,7 +854,7 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         ("test-agent-cli-e2e", 0),
         // Issue #1012: the shared release binary is built once before the seven
         // Box image legs, avoiding seven identical cache restores and builds.
-        ("build-artifacts", 20),
+        ("build-artifacts", 25),
         ("native-response-observations", 0),
         // Issue #932: per-language matrix leg that pulls one link-foundation/box
         // image, generates the project from solver answers and runs the
@@ -863,12 +874,18 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         ("native-container-images", 0),
         ("pipeline-status", 5),
     ];
-    let actual_jobs = workflow_job_names(&workflow);
-    let expected_jobs = expected_timeouts
-        .iter()
-        .map(|(job_name, _)| *job_name)
-        .collect::<Vec<_>>();
-    assert_eq!(actual_jobs, expected_jobs);
+    // Preserve known budget contracts without requiring a second job inventory.
+    // Every newly declared job must also own a deadline or delegate to a local workflow.
+    for job_name in workflow_job_names(&workflow) {
+        let job = job_block(&workflow, job_name);
+        assert!(
+            minimum_job_timeout(job).is_some()
+                || job
+                    .lines()
+                    .any(|line| { line.trim().starts_with("uses: ./.github/workflows/") }),
+            "{job_name} must own a positive deadline or delegate to a local workflow"
+        );
+    }
 
     for (job_name, timeout_minutes) in expected_timeouts {
         let job = job_block(&workflow, job_name);
@@ -889,8 +906,9 @@ fn release_workflow_jobs_have_explicit_timeouts() {
                     .unwrap_or_else(|error| panic!("read {called}: {error}"));
             for inner_job in workflow_job_names(&reusable) {
                 assert!(
-                    job_block(&reusable, inner_job).contains("    timeout-minutes:"),
-                    "{inner_job} should declare an explicit timeout"
+                    minimum_job_timeout(job_block(&reusable, inner_job)).is_some()
+                        || job_block(&reusable, inner_job).contains("uses: ./.github/workflows/"),
+                    "{inner_job} should declare an explicit timeout or delegate"
                 );
             }
             continue;

@@ -1,4 +1,5 @@
 llm_task_classes
+  default-structured-output "Schema validation or refusal; task-specific coverage unmeasured"
   class factual_qa
     name "Factual question answering"
     llm_strength "Recall of widely stated facts from pretrained knowledge; weak on long-tail and recent facts"
@@ -85,8 +86,9 @@ llm_task_classes
   class classification
     name "Classification and sentiment"
     llm_strength "Accurate label prediction for common facets"
-    benchmark "SST-2" benchmark_url "https://nlp.stanford.edu/sentiment/treebank.html"
+    benchmark "SST-2" benchmark_url "https://github.com/stanfordnlp/sentiment-treebank"
     formal_version "Formalize the statement, score it against the labeled seed facets, and answer with the matched label and margin"
+    structured-output "Validated enum from a grounded label or supported sentiment"
     status "0.347.0: canned search paragraph, no answer"
     tracking_issue 1173
     evidence "rust/tests/unit/issue_1173_fallback_executes_search.rs"
@@ -95,6 +97,7 @@ llm_task_classes
     llm_strength "Span marking into requested schemas"
     benchmark "CoNLL-2003" benchmark_url "https://aclanthology.org/W03-0419/"
     formal_version "Parse the text, mark spans against the schema's entity meanings, and emit the JSON with the span trace"
+    structured-output "Validated object from supplied fields or supported text relations"
     status "0.347.0: canned search paragraph, no answer"
     tracking_issue 1173
     evidence "rust/tests/unit/issue_1173_fallback_executes_search.rs"
@@ -104,6 +107,7 @@ llm_task_classes
     benchmark "GSM8K" benchmark_url "https://github.com/openai/grade-school-math"
     benchmark "MATH" benchmark_url "https://github.com/hendrycks/math"
     formal_version "Formalize the quantities and relations, compute by reduction, and show each arithmetic step"
+    structured-output "Validated numeric result for a supported sum request"
     status "0.347.0: canned search paragraph, no answer; branch: word-problem route landed with parity case e34_numeric_word_problem_renumbered, unmeasured until the release probe runs"
     tracking_issue 1176
     evidence "data/parity/cross-runtime-synthesis.json"
@@ -197,6 +201,7 @@ llm_task_classes
     name "Format conversion (JSON, YAML, CSV)"
     llm_strength "Lossless re-serialization of small documents"
     formal_version "Parse the source format to the meta structure and re-render in the target format"
+    structured-output "Validated JSON object projection from supplied JSON"
     status "0.347.0: canned search paragraph, no answer; branch: format-conversion handler landed, unmeasured until the release probe runs"
     tracking_issue 1177
     evidence "rust/tests/unit/web-engine-core/issue_1177_code_task_handlers.rs"

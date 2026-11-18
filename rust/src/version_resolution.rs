@@ -25,8 +25,6 @@ const TOOLCHAINS: &str = include_str!("../embedded/data/seed/toolchains.lino");
 /// The environment override for the source cache, matching the convention of
 /// `solver_handler_how_synthesis`.
 const CACHE_ENV_VAR: &str = "FORMAL_AI_SOURCE_CACHE_DIR";
-/// The opt-in that lets generation reach the publishers' APIs.
-const LIVE_FETCH_ENV_VAR: &str = "FORMAL_AI_LIVE_FETCH";
 
 /// Where a resolved version came from.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -166,8 +164,7 @@ impl VersionSet {
     }
 
     /// What generation uses when no client is handed in (R1168-1, R1168-5):
-    /// the publisher's live API when `FORMAL_AI_LIVE_FETCH` opts the run into
-    /// the network (the repository's one live-retrieval switch), captured into
+    /// the publisher's live API under the shared default-on read policy, captured into
     /// the source cache; the cached capture when the network is off or
     /// unreachable; otherwise the shipped baseline. Each origin is named by
     /// `provenance_note`.
@@ -182,7 +179,7 @@ impl VersionSet {
             return Self::baseline().expect("the toolchains seed carries the baseline");
         };
         let client = CachedSourceClient::new(cache_dir, CurlSourceTransport)
-            .with_online(crate::cli_env::flag_enabled(LIVE_FETCH_ENV_VAR));
+            .with_online(crate::solver_config::read_network_allowed());
         Self::resolve(&client)
     }
 
@@ -285,19 +282,76 @@ impl VersionSet {
     /// (R5). Empty when every pin was resolved live.
     #[must_use]
     pub fn provenance_note(&self) -> Vec<String> {
+        self.provenance_note_where(|_, _| true)
+    }
+
+    /// [`Self::provenance_note`] limited to the pins `template` places, by a
+    /// version placeholder or by a `workflow_uses` action step (and the
+    /// version key scoped to that step): a workflow says where its own
+    /// versions came from and nothing about the toolchains of other
+    /// languages (issue #1162: the Scala run's workflow listed the Kotlin,
+    /// Java and Python pins it never used).
+    #[must_use]
+    pub fn provenance_note_for(&self, template: &str) -> Vec<String> {
+        let actions = workflow_actions(self)
+            .into_iter()
+            .filter(|action| template.contains(&action.marker))
+            .collect::<Vec<_>>();
+        self.provenance_note_where(|pin, placeholders| {
+            placeholders
+                .iter()
+                .any(|placeholder| template.contains(placeholder))
+                || actions.iter().any(|action| {
+                    std::ptr::eq(action.pin, pin)
+                        || action.scoped.as_ref().is_some_and(|(key, scoped)| {
+                            std::ptr::eq(*scoped, pin) && template.contains(key.as_str())
+                        })
+                })
+        })
+    }
+
+    fn provenance_note_where(
+        &self,
+        used: impl Fn(&ResolvedVersion, &[&str]) -> bool,
+    ) -> Vec<String> {
         [
-            ("actions/checkout", &self.checkout),
-            ("actions/setup-java", &self.setup_java),
-            ("fwilhe2/setup-kotlin", &self.setup_kotlin),
-            ("actions/setup-python", &self.setup_python),
-            ("python", &self.python_interpreter),
-            ("kotlin", &self.kotlin),
-            ("java", &self.java_lts),
-            ("coursier/setup-action", &self.setup_coursier),
-            ("scala", &self.scala),
+            (
+                "actions/checkout",
+                &self.checkout,
+                &["{checkout_ref}", "{checkout_tag}"][..],
+            ),
+            (
+                "actions/setup-java",
+                &self.setup_java,
+                &["{setup_java_ref}", "{setup_java_tag}"][..],
+            ),
+            (
+                "fwilhe2/setup-kotlin",
+                &self.setup_kotlin,
+                &["{setup_kotlin_ref}", "{setup_kotlin_tag}"][..],
+            ),
+            (
+                "actions/setup-python",
+                &self.setup_python,
+                &["{setup_python_ref}", "{setup_python_tag}"][..],
+            ),
+            (
+                "python",
+                &self.python_interpreter,
+                &["{python_version}"][..],
+            ),
+            ("kotlin", &self.kotlin, &["{kotlin_version}"][..]),
+            ("java", &self.java_lts, &["{java_lts}"][..]),
+            (
+                "coursier/setup-action",
+                &self.setup_coursier,
+                &["{setup_coursier_ref}", "{setup_coursier_tag}"][..],
+            ),
+            ("scala", &self.scala, &["{scala_version}"][..]),
         ]
         .into_iter()
-        .filter(|(_, pin)| pin.origin != Origin::Live)
+        .filter(|(_, pin, placeholders)| pin.origin != Origin::Live && used(pin, placeholders))
+        .map(|(name, pin, _)| (name, pin))
         .map(|(name, pin)| {
             let intent = if pin.origin == Origin::Cache {
                 "version_provenance_cache"

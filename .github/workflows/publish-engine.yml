@@ -24,11 +24,18 @@ on: # zizmor: ignore[dangerous-triggers]
       - "scripts/release-publication-observation.mjs"
       - "scripts/build-selected-wasm.mjs"
       - "scripts/browser-engine-*.mjs"
+      - "scripts/prepare-ubuntu-apt-mirror.sh"
+      - "scripts/with-ubuntu-apt-sources.sh"
       - "vscode/package.json"
       - "vscode/package-lock.json"
       - "rust/**"
       - "rust/tests/web/browser-engine-release-integration.test.mjs"
       - "scripts/generate-web-distribution.py"
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   workflow_dispatch:
     inputs:
       mode:
@@ -56,7 +63,7 @@ concurrency:
   queue: max
 jobs:
   resolve:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     # Bound stalled transfers so checkout retries fit the existing job clock.
     env:
@@ -102,8 +109,8 @@ jobs:
         run: node scripts/resolve-package-release.mjs
   package:
     needs: resolve
-    if: ${{ !cancelled() && needs.resolve.outputs.build == 'true' }}
-    runs-on: ubuntu-latest
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.resolve.outputs.build == 'true') }}
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:
       contents: write
@@ -191,7 +198,7 @@ jobs:
           node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" setup npm ci --prefix vscode --ignore-scripts \
             --no-audit --no-fund --fetch-timeout=30000 --fetch-retries=1 \
             --fetch-retry-mintimeout=1000 --fetch-retry-maxtimeout=5000 --timing
-          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" setup node vscode/node_modules/playwright/cli.js install chromium --with-deps
+          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" setup bash "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/with-ubuntu-apt-sources.sh" node vscode/node_modules/playwright/cli.js install chromium --with-deps
       - name: Prepare web and engine artifacts
         env:
           ENGINE_CLOCK_SHA256: ${{ steps.clock.outputs.sha256 }}

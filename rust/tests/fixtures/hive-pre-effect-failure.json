@@ -1,0 +1,666 @@
+{
+  "schema": "hive-pre-effect-failure-replay/v1",
+  "repository": "link-assistant/formal-ai",
+  "run": 40056943769,
+  "protocolHead": "43671c81673e3fd5040de1830175a2152e7d3a00",
+  "cleanupRun": 40061761443,
+  "jobs": [
+    {
+      "id": 120769489900,
+      "name": "Actual Hive agent original delivery",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "logSha256": "54c2d76a1eb2e0549f5574d1618f363f8b22fb2d1f7444a7092a2d93e4722d91",
+      "steps": [
+        {
+          "number": 1,
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 2,
+          "name": "Initialize shared delivery evidence directory",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 3,
+          "name": "Initialize owned admission paths after runner assignment",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 4,
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 5,
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 6,
+          "name": "Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 7,
+          "name": "Run oven-sh/setup-bun@v2",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 8,
+          "name": "Install frozen trusted admission dependencies",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 9,
+          "name": "Run actions/download-artifact@v8",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 10,
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 11,
+          "name": "Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 12,
+          "name": "Run actions/download-artifact@v8",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 13,
+          "name": "Free hosted image space",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 14,
+          "name": "Install pinned Hive automation dependencies",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 15,
+          "name": "Prepare reviewed Hive workflow-log transport",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 16,
+          "name": "Run actions/download-artifact@v8",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 17,
+          "name": "Load and reverify same-run source-bound task image",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "number": 18,
+          "name": "Release transferred image archive after verified load",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 19,
+          "name": "Derive exact canonical task credential scope without consuming an effect attempt",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 20,
+          "name": "Observe configured credential availability without exposing secrets",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 21,
+          "name": "Mint token only for the authenticated canonical task repository",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 22,
+          "name": "Read-only exact-target push and available workflow-scope preflight",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 23,
+          "name": "Claim one bounded client effect after fresh CI and source revalidation",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 24,
+          "name": "Persist effect claim before any task effects",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 25,
+          "name": "Install act when workflows require staging",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 26,
+          "name": "Run actual Hive solve and original assertions",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 27,
+          "name": "Seal staged source/run evidence without granting success credit",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 28,
+          "name": "Stage actual original solve evidence for independent verification",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 51,
+          "name": "Post Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 52,
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 53,
+          "name": "Post Run oven-sh/setup-bun@v2",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 54,
+          "name": "Post Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 55,
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 56,
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 57,
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 120769489969,
+      "name": "Actual Hive claude original delivery",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "logSha256": "ccc5de5a73bd43ba8a017e74b3642a655514920692da485b99077f469aef2279",
+      "steps": [
+        {
+          "number": 1,
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 2,
+          "name": "Initialize shared delivery evidence directory",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 3,
+          "name": "Initialize owned admission paths after runner assignment",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 4,
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 5,
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 6,
+          "name": "Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 7,
+          "name": "Run oven-sh/setup-bun@v2",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 8,
+          "name": "Install frozen trusted admission dependencies",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 9,
+          "name": "Run actions/download-artifact@v8",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 10,
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 11,
+          "name": "Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 12,
+          "name": "Run actions/download-artifact@v8",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 13,
+          "name": "Free hosted image space",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 14,
+          "name": "Install pinned Hive automation dependencies",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 15,
+          "name": "Prepare reviewed Hive workflow-log transport",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 16,
+          "name": "Run actions/download-artifact@v8",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 17,
+          "name": "Load and reverify same-run source-bound task image",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "number": 18,
+          "name": "Release transferred image archive after verified load",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 19,
+          "name": "Derive exact canonical task credential scope without consuming an effect attempt",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 20,
+          "name": "Observe configured credential availability without exposing secrets",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 21,
+          "name": "Mint token only for the authenticated canonical task repository",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 22,
+          "name": "Read-only exact-target push and available workflow-scope preflight",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 23,
+          "name": "Claim one bounded client effect after fresh CI and source revalidation",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 24,
+          "name": "Persist effect claim before any task effects",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 25,
+          "name": "Install act when workflows require staging",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 26,
+          "name": "Run actual Hive solve and original assertions",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 27,
+          "name": "Seal staged source/run evidence without granting success credit",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 28,
+          "name": "Stage actual original solve evidence for independent verification",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 51,
+          "name": "Post Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 52,
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 53,
+          "name": "Post Run oven-sh/setup-bun@v2",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 54,
+          "name": "Post Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 55,
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 56,
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 57,
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 120769489990,
+      "name": "Actual Hive codex original delivery",
+      "status": "completed",
+      "conclusion": "failure",
+      "logSha256": "eb1aceb3ff505027f2b01de4ed8ca66ef09c757b4c22bc9402e1805f084f82cb",
+      "steps": [
+        {
+          "number": 1,
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 2,
+          "name": "Initialize shared delivery evidence directory",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 3,
+          "name": "Initialize owned admission paths after runner assignment",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 4,
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 5,
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 6,
+          "name": "Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 7,
+          "name": "Run oven-sh/setup-bun@v2",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 8,
+          "name": "Install frozen trusted admission dependencies",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 9,
+          "name": "Run actions/download-artifact@v8",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 10,
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 11,
+          "name": "Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 12,
+          "name": "Run actions/download-artifact@v8",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 13,
+          "name": "Free hosted image space",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 14,
+          "name": "Install pinned Hive automation dependencies",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 15,
+          "name": "Prepare reviewed Hive workflow-log transport",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 16,
+          "name": "Run actions/download-artifact@v8",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 17,
+          "name": "Load and reverify same-run source-bound task image",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 18,
+          "name": "Release transferred image archive after verified load",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 19,
+          "name": "Derive exact canonical task credential scope without consuming an effect attempt",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 20,
+          "name": "Observe configured credential availability without exposing secrets",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 21,
+          "name": "Mint token only for the authenticated canonical task repository",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 22,
+          "name": "Read-only exact-target push and available workflow-scope preflight",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "number": 23,
+          "name": "Claim one bounded client effect after fresh CI and source revalidation",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 24,
+          "name": "Persist effect claim before any task effects",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 25,
+          "name": "Install act when workflows require staging",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 26,
+          "name": "Run actual Hive solve and original assertions",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 27,
+          "name": "Seal staged source/run evidence without granting success credit",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "number": 28,
+          "name": "Stage actual original solve evidence for independent verification",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "number": 51,
+          "name": "Post Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 52,
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 53,
+          "name": "Post Run oven-sh/setup-bun@v2",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 54,
+          "name": "Post Run actions/setup-node@v7",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "number": 55,
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 56,
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 57,
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ]
+}

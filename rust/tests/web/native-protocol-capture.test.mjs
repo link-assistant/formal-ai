@@ -1,4 +1,9 @@
-import {test} from 'node:test';
+import {composeGeneralChangePlan} from '../../../js/agentic/general_planner.mjs';
+import {installNativeCaptureObservationHost} from '../../../scripts/lib/native-capture-observation.mjs';
+import {completeOwnedSourceReadFrame} from '../../../js/agentic/tool_result.mjs';
+import {ownedCreationReadbackCommand} from '../../../js/agentic/progress_command_readback.mjs';
+before(installNativeCaptureObservationHost);
+import {before,test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {bytesDigest,checkedCapture,captureVerificationStdout} from '../../../scripts/capture-native-agentic-protocol.mjs';
@@ -64,4 +69,60 @@ test('actual CI sessions retain complete process receipts and immutable failed p
   const foreign=structuredClone(actual);foreign.steps.at(-1).arguments.command='cat foreign.txt';
   assert.throws(()=>checkedCapture(Buffer.from(JSON.stringify(foreign)),legacy));
  }
+});
+
+function literalFixture(){
+ const task='Create file safe.txt containing owned bytes',write={tool:'write_file',arguments:{path:'safe.txt',content:'owned bytes'},result:'wrote 11 byte(s) to safe.txt'};
+ const verification={tool:'run_command',arguments:{command:'cat safe.txt'},result:'owned bytes'};
+ const legacy={task,steps:[write,verification]};
+ const read={tool:'read_file',arguments:{path:'safe.txt'},result:completeOwnedSourceReadFrame('owned bytes')};
+ const actual={task,tools_advertised:['write_file','read_file','run_command'],steps:[write,read],turns:3,hit_turn_cap:false,final_answer:'Observed owned bytes'};
+ return{legacy,actual,write,read};
+}
+test('file-only original creation qualifies exact fresh provider Read without requiring the legacy chosen cat',()=>{
+ const {legacy,actual}=literalFixture();assert.equal(checkedCapture(Buffer.from(JSON.stringify(actual)),legacy).steps.length,2);
+});
+test('literal capture refuses failed writes, pre-write or stale reads, unadvertised reads and foreign or opaque bytes',()=>{
+ const {legacy,actual,write,read}=literalFixture();
+ const rejected=[{...actual,steps:[{...write,result:'Error: write failed'},read]},
+  {...actual,steps:[read,write]},
+  {...actual,steps:[write,read,{...write,result:'Error: later write failed'}]},
+  {...actual,tools_advertised:['write_file']},
+  {...actual,steps:[write,{...read,arguments:{path:'foreign.txt'}}]},
+  {...actual,steps:[write,{...read,result:completeOwnedSourceReadFrame('foreign bytes')}]},
+  {...actual,steps:[write,{...read,result:'owned bytes'}]},
+  {...actual,steps:[write,{...read,result:completeOwnedSourceReadFrame('owned bytes'),source_read:{path:'safe.txt',complete:false,format:'opaque'}}]}];
+ for(const session of rejected)assert.throws(()=>checkedCapture(Buffer.from(JSON.stringify(session)),legacy));
+});
+test('owned framed Run remains an independent literal readback proof with exact command and bytes',()=>{
+ const {legacy,actual,write}=literalFixture(),command=ownedCreationReadbackCommand('safe.txt');
+ const receipt={schema:'command-execution-receipt/v1',command,exit_code:0,complete:true,truncated:false,timed_out:false,stdout:'(owned bytes)',stderr:''};
+ const session={...actual,steps:[write,{tool:'run_command',arguments:{command},result:JSON.stringify(receipt)}]};
+ assert.equal(checkedCapture(Buffer.from(JSON.stringify(session)),legacy).steps.length,2);
+ assert.throws(()=>checkedCapture(Buffer.from(JSON.stringify({...session,steps:[write,{...session.steps[1],result:JSON.stringify({...receipt,exit_code:1})}]})),legacy));
+});
+test('a task requesting program execution cannot replace its complete real command result with a Read',()=>{
+ const {legacy,actual,write,read}=literalFixture();
+ const task='Create file safe.txt containing owned bytes. Then run the command wc -c safe.txt.';
+ const programLegacy={...legacy,task,steps:[write,{tool:'run_command',arguments:{command:'wc -c safe.txt'},result:'11 safe.txt\n'}]};
+ assert.throws(()=>checkedCapture(Buffer.from(JSON.stringify({...actual,task,steps:[write,read]})),programLegacy));
+ const receipt={schema:'command-execution-receipt/v1',command:'wc -c safe.txt',exit_code:0,complete:true,truncated:false,timed_out:false,stdout:'11 safe.txt\n',stderr:''};
+ const session={...actual,task,steps:[write,{tool:'run_command',arguments:{command:receipt.command},result:JSON.stringify(receipt)}]};
+ assert.equal(checkedCapture(Buffer.from(JSON.stringify(session)),programLegacy).steps.length,2);
+ assert.throws(()=>checkedCapture(Buffer.from(JSON.stringify({...session,steps:[write,{...session.steps[1],result:JSON.stringify({...receipt,stdout:'wrong'})}]})),programLegacy));
+});
+
+test('all three immutable file-only originals retain their exact literal command and byte contract',()=>{
+ for(const record of contract.captures){
+  const legacy=JSON.parse(readFileSync(record.legacy,'utf8')),plan=composeGeneralChangePlan(legacy.task);
+  const target=legacy.steps.filter(step=>step.tool==='write_file').at(-1),verification=legacy.steps.filter(step=>step.tool==='run_command').at(-1);
+  assert.equal(plan.mode,'literal_file');assert.equal(plan.target,target.arguments.path);
+  assert.equal(plan.content,target.arguments.content);assert.equal(plan.verification_command,verification.arguments.command);
+  assert.equal(captureVerificationStdout(verification),plan.content);
+ }
+});
+test('a complete literal Create cannot replace a legacy program command with a Read even when its stdout equals the source bytes',()=>{
+ const {legacy,actual,write}=literalFixture();
+ const programLegacy={...legacy,steps:[write,{tool:'run_command',arguments:{command:'node safe.txt'},result:'owned bytes'}]};
+ assert.throws(()=>checkedCapture(Buffer.from(JSON.stringify(actual)),programLegacy));
 });

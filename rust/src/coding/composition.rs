@@ -135,12 +135,16 @@ pub fn compose_with_ir(
     catalog: &FragmentCatalog,
     programs: impl IntoIterator<Item = ProgramIr>,
 ) -> CompositionOutcome {
+    let derived = if spec.examples.is_empty() {
+        derived_examples(spec, concepts)
+    } else {
+        Vec::new()
+    };
     let examples = if spec.examples.is_empty() {
-        let derived = derived_examples(spec, concepts);
         if derived.is_empty() {
             source_examples(concepts)
         } else {
-            derived
+            derived.clone()
         }
     } else {
         spec.examples.clone()
@@ -176,6 +180,30 @@ pub fn compose_with_ir(
             Ok(found) => drafts.extend(found),
             Err(missing) => blocked_needs.push(blocked_fragment_need(spec, &missing)),
         }
+    }
+    // Issue #1487: examples derived from the requirement share its reading, so
+    // a negation, count, disjunction or comparison no discovered part reads
+    // cannot be checked by them. It stays an unresolved need and no draft is
+    // claimed; examples the request itself states, or a source documents,
+    // remain an independent oracle.
+    let unread = if derived.is_empty() {
+        String::new()
+    } else {
+        crate::coding::unread_structure::unread_structure(
+            &spec.requirement_sentences.join(" "),
+            &concepts.structure_ids(),
+        )
+    };
+    if !unread.is_empty() {
+        let raised_by = format!("composition:{}", spec.name);
+        let subject = format!("structure:{unread}");
+        blocked_needs.push(Need::raised(
+            NeedKind::Concept,
+            &subject,
+            &spec.prose_language,
+            &raised_by,
+        ));
+        drafts.clear();
     }
     if spec.language == "python"
         && spec.artifact_shape == ArtifactShape::Function

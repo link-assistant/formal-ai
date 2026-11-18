@@ -49,6 +49,123 @@ fn context(command: &str, program: &str) -> Option<String> {
     Some(["python3 ",&quote(BOOTSTRAP_PATH)," ",&quote(&request.to_string())," && read -r __formal_ai_prerequisite_bin < ",&quote(&active)," && export PATH=\"$__formal_ai_prerequisite_bin:$PATH\" &&\n# __formal_ai_prerequisite_retry\n",command].concat())
 }
 
+/// Issue #1159: a denied recovery names the missing program and the pinned
+/// publisher procedure a workspace grant would run, so the stop is actionable.
+fn grant_required_report(program: &str, command: &str, output: &str) -> String {
+    let documentation = crate::prerequisite::publisher::seed_publishers()
+        .into_iter()
+        .find(|publisher| publisher.program == program)
+        .map(|publisher| publisher.documentation_url())
+        .filter(|url| !url.is_empty());
+    let procedure = documentation.map_or_else(
+        || {
+            super::work_item_steps::fill(
+                "prerequisite-grant-no-procedure",
+                &[(concat!("{", "program}"), program)],
+            )
+        },
+        |url| {
+            super::work_item_steps::fill(
+                "prerequisite-grant-procedure",
+                &[
+                    (concat!("{", "program}"), program),
+                    (concat!("{", "documentation}"), url.as_str()),
+                ],
+            )
+        },
+    );
+    super::work_item_steps::fill(
+        "prerequisite_grant_required_report",
+        &[
+            (concat!("{", "program}"), program),
+            (concat!("{", "procedure}"), procedure.as_str()),
+            (concat!("{", "command}"), command),
+            (concat!("{", "output}"), output),
+        ],
+    )
+}
+
+/// Issue #1159: one sentence per prerequisite recovered in the current turn:
+/// the missing program, the pinned publisher procedure that ran, the re-probe
+/// and the retried original command.
+pub(super) fn recovered_prerequisites_report(messages: &[ChatMessage]) -> Option<String> {
+    let start = messages
+        .iter()
+        .rposition(|message| message.role.eq_ignore_ascii_case("user"))
+        .unwrap_or(0);
+    let progress = Progress::scan(&messages[start..]);
+    let mut reports: Vec<String> = Vec::new();
+    for attempt in progress.research_attempts() {
+        if attempt.capability != Capability::Run || !attempt.succeeded {
+            continue;
+        }
+        let Some(report) = attempt
+            .arguments
+            .as_deref()
+            .and_then(tool_result::command_argument)
+            .and_then(|command| recovered_report(&command))
+        else {
+            continue;
+        };
+        if !reports.contains(&report) {
+            reports.push(report);
+        }
+    }
+    (!reports.is_empty()).then(|| reports.join("\n"))
+}
+
+fn recovered_report(command: &str) -> Option<String> {
+    let (prefix, original) = command.split_once("\n# __formal_ai_prerequisite_retry\n")?;
+    let installer = ["python3 ", &super::git_commit::shell_quote(BOOTSTRAP_PATH), " "].concat();
+    if !prefix.starts_with(&installer) {
+        return None;
+    }
+    let program = prefix
+        .split_once(".formal-ai/toolchains/active-")?
+        .1
+        .split_once(".bin")?
+        .0;
+    let documentation = crate::prerequisite::publisher::seed_publishers()
+        .into_iter()
+        .find(|publisher| publisher.program == program)?
+        .documentation_url();
+    Some(super::work_item_steps::fill(
+        "prerequisite-recovered-report",
+        &[
+            (concat!("{", "program}"), program),
+            (concat!("{", "documentation}"), documentation.as_str()),
+            (concat!("{", "command}"), original),
+        ],
+    ))
+}
+
+/// Lead a final answer with the current turn's recovery report; a source
+/// module payload stays byte-exact.
+pub(super) fn with_recovery_report(
+    messages: &[ChatMessage],
+    plan: AgenticPlan,
+    result: &mut Option<FinalResult>,
+) -> AgenticPlan {
+    let AgenticPlan::Final(text) = plan else {
+        return plan;
+    };
+    if result.as_ref().is_some_and(|result| {
+        result.text == text
+            && result.payload_role == super::final_result::FinalPayloadRole::SourceModule
+    }) {
+        return AgenticPlan::Final(text);
+    }
+    let Some(report) = recovered_prerequisites_report(messages).filter(|report| !text.contains(report.as_str()))
+    else {
+        return AgenticPlan::Final(text);
+    };
+    let reported = [report.as_str(), "\n\n", text.as_str()].concat();
+    if let Some(result) = result.as_mut().filter(|result| result.text == text) {
+        result.text.clone_from(&reported);
+    }
+    AgenticPlan::Final(reported)
+}
+
 pub(super) fn recovery_output(messages: &[ChatMessage], command: &str) -> Option<String> {
     let program = command.split_whitespace().next()?;
     let recovery = context(command, program)?;
@@ -84,13 +201,10 @@ pub(super) fn plan_recovery_with_identity(
         return None;
     }
     let Some(recovery) = context(command, &need.program) else {
-        return Some(AgenticPlan::Final(super::work_item_steps::fill(
-            "prerequisite_grant_required_report",
-            &[
-                (concat!("{", "program}"), need.program.as_str()),
-                (concat!("{", "command}"), command),
-                (concat!("{", "output}"), output),
-            ],
+        return Some(AgenticPlan::Final(grant_required_report(
+            &need.program,
+            command,
+            output,
         )));
     };
     let progress = Progress::scan(messages);

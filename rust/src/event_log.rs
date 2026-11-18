@@ -412,13 +412,16 @@ fn curate_thinking_event(
         "web_search:request" | "http_fetch:request" | "url_navigate:request" => {
             keep("http_chat", detail, "detailed")
         }
+        "calendar:duration_derivation" | "calendar:offset_derivation" | "currency:derivation" => {
+            keep("compute_expression", detail, "detailed")
+        }
         "tool_call" | "tool_result" => keep("invoke_tool", detail, "detailed"),
         "coreference" | "program_coreference" => keep("coreference_binding", "", "detailed"),
         "modifier_detection" | "program_modifiers" => keep("modifier_detection", "", "detailed"),
         "rule_construction" => keep("rule_construction", "", "detailed"),
-        // The validation payload is an internal acceptance reason
-        // (`accepted_without_extra_constraints`); surface a clean verification
-        // step without the meta-language token.
+        // The validation payload is the executed test of the turn
+        // (`answered(intent)=true`, `number_property_prime(17)=true`); surface
+        // a clean verification step without the meta-language token.
         "validation" => keep("rule_verification", "", "detailed"),
         _ if kind.starts_with("tool_") => keep("invoke_tool", detail, "detailed"),
         _ if kind.starts_with("agent_mode") || kind == "action_log" => {
@@ -740,6 +743,11 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "network_fetch" => format!("network_fetch:{}", event.id),
             "calculation:engine" => format!("calculation:engine:{}", event.payload),
             "calculation:lino" => format!("calculation:lino:{}", event.payload),
+            kind @ ("quantity_constraint:frame"
+            | "quantity_constraint:verdict"
+            | "quantity_constraint:unknown"
+            | "quantity_constraint:expression"
+            | "quantity_constraint:difference") => format!("{kind}:{}", event.payload),
             "method:learned:operations_verified" => {
                 format!("method:learned:operations_verified:{}", event.payload)
             }

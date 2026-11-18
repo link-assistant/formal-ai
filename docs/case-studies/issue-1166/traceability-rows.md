@@ -15,3 +15,11 @@ this slice does not run).
 | R1166-6 | translated bodies yield the same graph | confirmed for the fixture family (`kotlin_issue_ru_yields_same_obligation_count_as_en`, `kotlin_issue_hi_zh_es_yield_same_graph_modulo_language_tag`) |
 | R1166-7 | paraphrase yields an equivalent graph | confirmed by `paraphrase_en_yields_same_obligation_count_as_canonical_en` |
 | R1166-8 | routing decides by meaning, not leading word | confirmed by `work_obligation_requests_are_not_terminal_commands` (`rust/src/solver_terminal.rs` veto) |
+| R1166-9 | repeated mention → one line, explicit count → that many | confirmed by the `once`/`restated`/`mentioned_twice`/`twice` cases of `rust/tests/fixtures/issue-1166/acceptance.json` |
+| R1166-10 | reversed comparisons, and/or, negation stay distinct | confirmed by the fixture's `distinctGroups` and the executed `*_rejected` candidates |
+| R1166-11 | mandatory clauses cannot be omitted while complete | confirmed by the #1450 `candidateCases` and `a_finished_recipe_reports_only_actionable_verdicts` |
+| R1166-12 | workflow name, path (`ci/`) and triggers checked | confirmed by the `under .github` / `no pull_request trigger` candidates and `workflow_triggers_are_read_in_every_yaml_form` |
+| R1166-13 | exact Unicode, quote and backslash values kept | confirmed by `exact_backslash_unicode`, `exact_cyrillic_cjk`, `escaped_quote` |
+| R1166-14 | paraphrases share a meaning; unsupported grammar is a gap | confirmed by `paraphraseGroups`, the multilingual fixtures and `unsupported_grammar_is_a_gap` |
+| R1166-15 | JS, TS and native agree; shared misunderstanding rejected | confirmed by `independent_execution_rejects_a_shared_misunderstanding` in both roots |
+| R1166-16 | every clause has a verdict, justification and span | confirmed by `every_clause_gets_a_verdict_with_a_justification_and_a_span` |

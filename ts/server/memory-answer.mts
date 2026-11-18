@@ -18,6 +18,9 @@ import { stableId } from './ids.mjs';
 import { serverMessage } from './messages.mjs';
 import { thinkingStepsFromEvents } from './solver-trace.mjs';
 import { answerLinksNotation } from './answer-links.mjs';
+import { hasHost, installHost } from '../agentic/host.mjs';
+import { answerValidation, selectionRecord } from '../agentic/crate/meta_executor.mjs';
+import { parseLino, readRepoFile } from './lino.mjs';
 
 const REQUEST_HISTORY_CONVERSATION_ID = 'request_history';
 const LEGACY_CONVERSATION = 'legacy';
@@ -42,11 +45,16 @@ export { EventLog, buildEvidenceLinks };
  * memory reports it would see carry no question of their own.)
  */
 export function finalizeSimple(prompt, log, intent, responseLink, body, confidence) {
+  if (!hasHost()) installHost({ readText: readRepoFile, parseLino });
   log.append('intent', intent);
   if (!log.firstOf('candidate')) log.append('candidate', intent);
-  if (!log.firstOf('validation')) log.append('validation', 'accepted_without_extra_constraints');
+  // Issue #1550: the executed leaf test and the selection it supports.
+  if (!log.firstOf('validation')) log.append('validation', answerValidation(intent, body));
   log.append('response', responseLink);
-  if (!log.firstOf('trace:simplification')) log.append('trace:simplification', 'smallest_sufficient');
+  if (!log.firstOf('trace:simplification')) {
+    const validations = log.events.filter((event) => event.kind === 'validation').map((event) => event.payload);
+    log.append('trace:simplification', selectionRecord(validations, intent));
+  }
   const traceIdentifier = log.append('trace', intent);
   return {
     intent,

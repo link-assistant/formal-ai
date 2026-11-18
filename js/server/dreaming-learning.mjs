@@ -14,6 +14,10 @@ import {
   asciiLower, cmpNum, cmpStr, isAlphanumeric, lexicon, requirementCues, rustStrLines, splitWhitespace, stringBytes, trim,
   trimMatches,
 } from './dreaming-support.mjs';
+import {
+  boundedStatement, isBoundedRule, isValidTopic, ruleMaximumCharacters, statementTopic,
+} from './standing-requirement-bounds.mjs';
+import { inScope, scopeKey, scopePairs } from './standing-scope.mjs';
 
 const NO_DIGITS = /^[0-9]+$/;
 
@@ -37,13 +41,20 @@ function firstSignificantWord(text) {
   return null;
 }
 
-/** Mirrors rust/src/dreaming/learning.rs `event_topic`. */
-export function eventTopic(event) {
+/** Mirrors rust/src/dreaming/learning.rs `metadata_topic`: an explicit topic label of the event. */
+function metadataTopic(event) {
   for (const raw of [event.conversation_title, event.demo_label, event.intent, event.tool]) {
     if (raw === null || raw === undefined) continue;
     const normalized = trim(String(raw)).toLowerCase();
     if (normalized && !isTopicStopword(normalized)) return normalized;
   }
+  return null;
+}
+
+/** Mirrors rust/src/dreaming/learning.rs `event_topic`. */
+export function eventTopic(event) {
+  const labelled = metadataTopic(event);
+  if (labelled !== null) return labelled;
   for (const raw of [event.content, event.inputs]) {
     if (raw === null || raw === undefined) continue;
     const topic = firstSignificantWord(String(raw));
@@ -61,14 +72,52 @@ export function isTaskEvent(event) {
     || cues.task_intent_cues.some((cue) => intent.includes(cue));
 }
 
+/**
+ * Roles whose text is never a user's standing requirement (issue #1559 §1):
+ * the assistant's own words, and system, developer or session instructions —
+ * including one a client delivered as the first user message.
+ */
+const NON_REQUIREMENT_ROLES = new Set(['assistant', 'system', 'developer', 'instruction']);
+
 /** Mirrors rust/src/dreaming/learning.rs `requirement_statement`. */
 function requirementStatement(event) {
   const role = event.role === null || event.role === undefined ? null : asciiLower(event.role);
-  if (role === 'assistant' || role === 'system') return null;
+  if (role !== null && NON_REQUIREMENT_ROLES.has(role)) return null;
   if (event.content === null || event.content === undefined) return null;
-  const content = trim(String(event.content));
-  const lowered = content.toLowerCase();
-  return requirementCues().some((cue) => lowered.includes(cue)) ? content : null;
+  return boundedStatement(String(event.content));
+}
+
+/**
+ * Mirrors rust/src/dreaming/learning.rs `requirement_topic`: the explicit
+ * topic label, else the subject of the statement itself; never a pronoun or
+ * function word.
+ */
+function requirementTopic(event, statement) {
+  const topic = metadataTopic(event) ?? statementTopic(statement);
+  return topic !== null && isValidTopic(topic) ? topic : null;
+}
+
+/** Mirrors rust/src/dreaming/learning.rs `scope_of`: the scope pairs as a lookup object. */
+function scopeOf(event) {
+  return Object.fromEntries(scopePairs(event.evidence));
+}
+
+/** Mirrors rust/src/dreaming/learning.rs `amendment_identifier`. */
+function amendmentIdentifier(topic, scope) {
+  const key = scopeKey(scope);
+  return key ? stableId('amendment', `${topic}\u0000${key}`) : stableId('amendment', topic);
+}
+
+/** Mirrors rust/src/dreaming/learning.rs `bounded_rule`: statements joined while the rule stays in bounds. */
+function boundedRule(statements) {
+  const limit = ruleMaximumCharacters();
+  let rule = '';
+  for (const statement of statements) {
+    const next = rule ? `${rule}; ${statement}` : statement;
+    if ([...next].length > limit) continue;
+    rule = next;
+  }
+  return rule;
 }
 
 /** Mirrors rust/src/dreaming/learning.rs `normalize`. */
@@ -88,38 +137,122 @@ function amendmentReproducesSpecific(amendment, event, replay) {
   return normalize(replay(event.inputs, [retainedRecord(amendment)])) === normalize(event.outputs);
 }
 
-/** Mirrors rust/src/dreaming/learning.rs `generalize_amendments`. */
+/** Mirrors rust/src/dreaming/learning.rs `in_scope_of`: the amendment applies where `event` was made. */
+function appliesTo(amendment, event) {
+  return inScope(amendment.scope, scopeOf(event));
+}
+
+/** Mirrors rust/src/dreaming/learning.rs `records_for`: the amendments one event's replay sees. */
+function recordsFor(amendments, event) {
+  return amendments.filter((amendment) => appliesTo(amendment, event)).map(retainedRecord);
+}
+
+/** Mirrors rust/src/dreaming/learning.rs `covered_events`. */
+function coveredEvents(amendment, events, specificIndices, replay) {
+  return (specificIndices.get(amendment.topic) ?? [])
+    .filter((index) => appliesTo(amendment, events[index]))
+    .filter((index) => amendmentReproducesSpecific(amendment, events[index], replay))
+    .map((index) => events[index].id);
+}
+
+/** Mirrors rust/src/dreaming/learning.rs `build_amendment`. */
+function buildAmendment(topic, scope, grouped, generalized) {
+  const sources = [];
+  for (const requirement of grouped) {
+    for (const identifier of requirement.source_event_ids) if (!sources.includes(identifier)) sources.push(identifier);
+  }
+  return {
+    id: amendmentIdentifier(topic, scope),
+    topic,
+    rule: boundedRule(grouped.map((requirement) => requirement.statement)),
+    source_requirement_ids: sources,
+    covered_event_ids: [],
+    scope: scope.map(([key, value]) => [key, value]),
+    generalized,
+  };
+}
+
+/**
+ * Mirrors rust/src/dreaming/learning.rs `generalized_statements`: the
+ * statements of `topic` made in two or more distinct scopes, which are
+ * candidates for one amendment that applies everywhere (issue #1559 §4).
+ */
+function generalizedStatements(grouped) {
+  const scopesByStatement = new Map();
+  for (const requirement of grouped) {
+    const key = scopeKey(requirement.scope);
+    if (!key) continue;
+    const statement = requirement.statement.toLowerCase();
+    if (!scopesByStatement.has(statement)) scopesByStatement.set(statement, new Set());
+    scopesByStatement.get(statement).add(key);
+  }
+  return new Set([...scopesByStatement].filter(([, scopes]) => scopes.size >= 2).map(([statement]) => statement));
+}
+
+/**
+ * Mirrors rust/src/dreaming/learning.rs `generalize_amendments`: one
+ * amendment per topic and scope. A statement made in two or more scopes is
+ * generalized into the amendment without scope, which is kept only when its
+ * replay re-derives at least one stored task.
+ */
 function generalizeAmendments(events, requirements, specificIndices, replay) {
   const byTopic = new Map();
   for (const requirement of requirements) {
     if (!byTopic.has(requirement.topic)) byTopic.set(requirement.topic, []);
     byTopic.get(requirement.topic).push(requirement);
   }
-  return sortedEntries(byTopic).map(([topic, grouped]) => {
-    const amendment = {
-      id: stableId('amendment', topic),
-      topic,
-      rule: grouped.map((requirement) => requirement.statement).join('; '),
-      source_requirement_ids: grouped.flatMap((requirement) => requirement.source_event_ids),
-      covered_event_ids: [],
-    };
-    amendment.covered_event_ids = (specificIndices.get(topic) ?? [])
-      .filter((index) => amendmentReproducesSpecific(amendment, events[index], replay))
-      .map((index) => events[index].id);
-    return amendment;
-  });
+  const amendments = [];
+  for (const [topic, grouped] of sortedEntries(byTopic)) {
+    const general = generalizedStatements(grouped);
+    const unscoped = grouped.filter((requirement) => requirement.scope.length === 0);
+    let generalizedAway = new Set();
+    if (general.size > 0) {
+      const lifted = [...unscoped];
+      for (const requirement of grouped) {
+        if (requirement.scope.length > 0 && general.has(requirement.statement.toLowerCase())
+          && !lifted.some((entry) => entry.statement.toLowerCase() === requirement.statement.toLowerCase())) {
+          lifted.push({ ...requirement, scope: [] });
+        }
+      }
+      const candidate = buildAmendment(topic, [], lifted, true);
+      for (const requirement of grouped) {
+        if (requirement.scope.length > 0 && general.has(requirement.statement.toLowerCase())) {
+          for (const identifier of requirement.source_event_ids) {
+            if (!candidate.source_requirement_ids.includes(identifier)) candidate.source_requirement_ids.push(identifier);
+          }
+        }
+      }
+      candidate.covered_event_ids = coveredEvents(candidate, events, specificIndices, replay);
+      if (candidate.covered_event_ids.length > 0) {
+        amendments.push(candidate);
+        generalizedAway = general;
+      }
+    }
+    if (generalizedAway.size === 0 && unscoped.length > 0) amendments.push(buildAmendment(topic, [], unscoped, false));
+    const byScope = new Map();
+    for (const requirement of grouped) {
+      const key = scopeKey(requirement.scope);
+      if (!key || generalizedAway.has(requirement.statement.toLowerCase())) continue;
+      if (!byScope.has(key)) byScope.set(key, []);
+      byScope.get(key).push(requirement);
+    }
+    for (const [, scoped] of sortedEntries(byScope)) amendments.push(buildAmendment(topic, scoped[0].scope, scoped, false));
+  }
+  for (const amendment of amendments) {
+    if (!amendment.generalized) amendment.covered_event_ids = coveredEvents(amendment, events, specificIndices, replay);
+  }
+  return amendments.filter((amendment) => amendment.rule);
 }
 
 /** Mirrors rust/src/dreaming/learning.rs `replay_candidate_tasks`. */
 function replayCandidateTasks(events, observations, amendments, interactions, replay) {
-  const records = amendments.map(retainedRecord);
   const candidates = [];
   events.forEach((event, index) => {
     if (!isTaskEvent(event)) return;
     const topic = observations[index].topic;
     if (topic === null || event.inputs === null || event.inputs === undefined
       || event.outputs === null || event.outputs === undefined) return;
-    const simulated = replay(event.inputs, records);
+    const simulated = replay(event.inputs, recordsFor(amendments, event));
     candidates.push({
       topic,
       source_event_id: event.id,
@@ -144,9 +277,12 @@ function standingMarker(topic) {
   return template.replace('{topic}', () => topic);
 }
 
-/** Mirrors rust/src/dreaming/learning.rs `missing_statements_for_topic`. */
-function missingStatementsForTopic(expectedOutput, amendments, topic) {
-  const current = amendments.find((amendment) => amendment.topic === topic);
+/**
+ * Mirrors rust/src/dreaming/learning.rs `missing_statements_for_topic`: the
+ * marked statements of a stored output the current rule lacks, each inside
+ * the bounds of a learned rule.
+ */
+function missingStatementsForTopic(expectedOutput, current, topic) {
   const currentRule = current ? current.rule.toLowerCase() : '';
   const marker = standingMarker(topic);
   const markerBytes = stringBytes(marker);
@@ -155,7 +291,8 @@ function missingStatementsForTopic(expectedOutput, amendments, topic) {
     const line = trim(raw);
     if (!line || !line.toLowerCase().startsWith(marker)) continue;
     const statement = trim(Buffer.from(line, 'utf8').subarray(markerBytes).toString('utf8'));
-    if (statement && !currentRule.includes(statement.toLowerCase()) && !statements.includes(statement)) {
+    if (statement && isBoundedRule(statement) && !currentRule.includes(statement.toLowerCase())
+      && !statements.includes(statement)) {
       statements.push(statement);
     }
   }
@@ -164,39 +301,46 @@ function missingStatementsForTopic(expectedOutput, amendments, topic) {
 
 /** Mirrors rust/src/dreaming/learning.rs `refine_amendments_from_failures`. */
 function refineAmendmentsFromFailures(events, specificIndices, requirements, amendments, candidates, replay) {
-  const refinedTopics = new Set();
-  const failures = candidates.filter((candidate) => !candidate.passed)
-    .map((candidate) => [candidate.topic, candidate.source_event_id, candidate.expected_output]);
-  for (const [topic, sourceEventId, expectedOutput] of failures) {
-    const missing = missingStatementsForTopic(expectedOutput, amendments, topic);
+  const eventByIdentifier = new Map();
+  for (const event of events) if (event.id && !eventByIdentifier.has(event.id)) eventByIdentifier.set(event.id, event);
+  const sourceOf = (candidate) => eventByIdentifier.get(candidate.source_event_id) ?? {};
+  const refined = new Set();
+  const failures = candidates.filter((candidate) => !candidate.passed && isValidTopic(candidate.topic))
+    .map((candidate) => [candidate.topic, candidate.source_event_id, candidate.expected_output, sourceOf(candidate)]);
+  for (const [topic, sourceEventId, expectedOutput, source] of failures) {
+    const scope = scopePairs(source.evidence);
+    const key = scopeKey(scope);
+    let amendment = amendments.find((candidate) => candidate.topic === topic && scopeKey(candidate.scope) === key);
+    const missing = missingStatementsForTopic(expectedOutput, amendment, topic);
     if (missing.length === 0) continue;
-    let amendment = amendments.find((candidate) => candidate.topic === topic);
     if (!amendment) {
-      amendment = { id: stableId('amendment', topic), topic, rule: '', source_requirement_ids: [], covered_event_ids: [] };
+      amendment = {
+        id: amendmentIdentifier(topic, scope), topic, rule: '', source_requirement_ids: [], covered_event_ids: [], scope, generalized: false,
+      };
       amendments.push(amendment);
     }
     for (const statement of missing) {
-      amendment.rule = amendment.rule ? `${amendment.rule}; ${statement}` : statement;
-      requirements.push({ topic, statement, source_event_ids: [sourceEventId], occurrences: 1 });
+      const next = amendment.rule ? `${amendment.rule}; ${statement}` : statement;
+      if ([...next].length > ruleMaximumCharacters()) continue;
+      amendment.rule = next;
+      requirements.push({ topic, statement, source_event_ids: [sourceEventId], occurrences: 1, scope });
     }
     if (sourceEventId && !amendment.source_requirement_ids.includes(sourceEventId)) {
       amendment.source_requirement_ids.push(sourceEventId);
     }
-    refinedTopics.add(topic);
+    refined.add(amendment);
   }
-  if (refinedTopics.size === 0) return;
-  const records = amendments.map(retainedRecord);
+  if (refined.size === 0) return;
   for (const candidate of candidates.filter((entry) => !entry.passed)) {
-    candidate.simulated_output = replay(candidate.input, records);
+    candidate.simulated_output = replay(candidate.input, recordsFor(amendments, sourceOf(candidate)));
     candidate.passed = normalize(candidate.simulated_output) === normalize(candidate.expected_output);
   }
-  for (const amendment of amendments.filter((entry) => refinedTopics.has(entry.topic))) {
-    const indices = specificIndices.get(amendment.topic);
-    if (!indices) continue;
-    amendment.covered_event_ids = indices
-      .filter((index) => amendmentReproducesSpecific(amendment, events[index], replay))
-      .map((index) => events[index].id);
+  for (const amendment of amendments.filter((entry) => refined.has(entry))) {
+    if (!specificIndices.has(amendment.topic)) continue;
+    amendment.covered_event_ids = coveredEvents(amendment, events, specificIndices, replay);
   }
+  // A refinement whose every statement fell outside the bounds teaches nothing.
+  for (let index = amendments.length - 1; index >= 0; index -= 1) if (!amendments[index].rule) amendments.splice(index, 1);
 }
 
 /** Mirrors rust/src/dreaming/learning.rs `skeleton_tokens`. */
@@ -316,12 +460,16 @@ export function learnFromMemory(events, observations, deletedConversations, repl
       }
     }
     const statement = requirementStatement(event);
-    if (statement !== null) {
+    const learnedTopic = statement === null ? null : requirementTopic(event, statement);
+    if (learnedTopic !== null) {
       bump(requirementCounts, topic);
-      const key = [topic, statement.toLowerCase()];
+      const scope = scopePairs(event.evidence);
+      const key = [learnedTopic, scopeKey(scope), statement.toLowerCase()];
       const mapKey = JSON.stringify(key);
       if (!requirementsByKey.has(mapKey)) {
-        requirementsByKey.set(mapKey, { key, requirement: { topic, statement, source_event_ids: [], occurrences: 0 } });
+        requirementsByKey.set(mapKey, {
+          key, requirement: { topic: learnedTopic, statement, source_event_ids: [], occurrences: 0, scope },
+        });
       }
       const entry = requirementsByKey.get(mapKey).requirement;
       entry.occurrences += 1;
@@ -335,13 +483,16 @@ export function learnFromMemory(events, observations, deletedConversations, repl
     requirement_events: requirementCounts.get(topic) ?? 0,
   })).sort((left, right) => cmpNum(right.interactions, left.interactions) || cmpStr(left.topic, right.topic));
   const requirements = [...requirementsByKey.values()]
-    .sort((left, right) => cmpStr(left.key[0], right.key[0]) || cmpStr(left.key[1], right.key[1]))
+    .sort((left, right) => cmpStr(left.key[0], right.key[0]) || cmpStr(left.key[1], right.key[1])
+      || cmpStr(left.key[2], right.key[2]))
     .map(({ requirement }) => requirement);
   const amendments = generalizeAmendments(events, requirements, specificIndices, replay);
   const candidateTasks = replayCandidateTasks(events, observations, amendments, interactions, replay);
   refineAmendmentsFromFailures(events, specificIndices, requirements, amendments, candidateTasks, replay);
   const patterns = minePatterns(events, observations);
-  const synthesizedTasks = synthesizeTrials(topics, patterns, events, amendments, replay);
+  // A synthesized trial belongs to no one request, so it sees only amendments without scope.
+  const unscoped = amendments.filter((amendment) => amendment.scope.length === 0);
+  const synthesizedTasks = synthesizeTrials(topics, patterns, events, unscoped, replay);
   return {
     topics,
     requirements,

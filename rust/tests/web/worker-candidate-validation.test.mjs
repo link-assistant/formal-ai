@@ -3,13 +3,17 @@ import test from "node:test";
 import { WorkerHost } from "../../../js/server/worker-host.mjs";
 const host = new WorkerHost();
 
-test("unchanged native prime interval request validates rejected candidates before selecting17", async () => {
+test("native prime interval request validates rejected candidates before selecting 17", async () => {
   const answer = await host.solve("Pick a prime number between 14 and 18");
   assert.ok(answer.content.includes("17"));
   assert.ok(answer.evidence.some((link) => link.startsWith("validation:")));
   const candidates = answer.rawSolverEvents.filter((event) => event.kind === "candidate").map((event) => event.payload);
   assert.deepEqual(candidates.slice(-4), ["14", "15", "16", "17"]);
-  assert.ok(answer.rawSolverEvents.some((event) => event.kind === "validation" && event.payload === "prime_between_14_and_18"));
+  // Issue #1550: each executed test is recorded with its verdict and the
+  // selection names the chosen candidate and how many of them passed.
+  const validations = answer.rawSolverEvents.filter((event) => event.kind === "validation").map((event) => event.payload);
+  assert.deepEqual(validations, ["number_property_prime(14)=false", "number_property_prime(15)=false", "number_property_prime(16)=false", "number_property_prime(17)=true"]);
+  assert.equal(answer.rawSolverEvents.find((event) => event.kind === "trace:simplification").payload, "17=1/4");
 });
 
 test("held-out bounds and seeded languages use the same actual predicate", async () => {
@@ -29,7 +33,8 @@ test("no candidate is invented for an empty prime interval", async () => {
   const result = await host.run("solverPrimeIntervalValidation(__primePrompt)", { __primePrompt: "Pick a prime between 14 and 16" });
   assert.equal(result.answer, null);
   assert.deepEqual(result.events.filter((event) => event.kind === "candidate").map((event) => event.payload), ["14", "15", "16"]);
-  assert.equal(result.events.at(-1).payload, "no_prime_in_range");
+  assert.equal(result.events.at(-1).payload, "number_property_prime(16)=false");
+  assert.ok(result.events.filter((event) => event.kind === "validation").every((event) => event.payload.endsWith("=false")));
 });
 
 test("unsupported bounds and code-authoring requests remain explicit nonmatches", async () => {

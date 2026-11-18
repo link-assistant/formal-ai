@@ -4,35 +4,30 @@ use std::fmt::Write as _;
 
 use serde_json::json;
 
-use super::planner::{plan_one, tool_for, AgenticPlan, Capability, Progress};
-use super::report_script::{shell_quote, ReportScript};
+use super::planner::{AgenticPlan, Capability, Progress, plan_one, tool_for};
+use super::report_script::{ReportScript, shell_quote};
 use crate::engine::normalize_prompt;
-use crate::issue_report::{issue_title, ReportTurn, TitleSettings};
+use crate::issue_report::{ReportTurn, TitleSettings, issue_title};
 use crate::protocol::ChatMessage;
 use crate::{language, seed};
 
-const REPORT_BODY_COMMAND: &str = "formal-ai report body";
+const REPORT_SUBMIT_COMMAND: &str = "formal-ai report create-issue";
 const CONTEXT_EXPORT_COMMAND: &str = "formal-ai context export";
 const CONTEXT_LEARN_COMMAND: &str = "formal-ai context learn";
-const ISSUE_CREATE_COMMAND: &str = "gh issue create --repo ";
+const REPOSITORY_FLAG: &str = " --repo ";
 const CONTEXT_SESSION_FLAG: &str = " --session ";
 const SOURCE_FLAG: &str = " --source ";
 const OUTPUT_FLAG: &str = " --output ";
-const CONTEXT_OUTPUT_FLAG: &str = " --context-output ";
 const SEPARATE_CONTEXT_LINKS_FLAG: &str = " --separate-context-links";
 const SURFACE_FLAG: &str = " --surface ";
 const TITLE_FLAG: &str = " --title ";
-const BODY_FILE_FLAG: &str = " --body-file ";
 /// Programs the generated script checks for before it does anything.
 const FORMAL_AI_PROGRAM: &str = "formal-ai";
-const GH_PROGRAM: &str = "gh";
 const PRINTF_PROGRAM: &str = "printf";
 /// One `%s` line, so the script's last output is the exported artifact's path.
 const PRINTF_LINE_FORMAT: &str = " '%s\\n' ";
 /// Surface recorded in the report body's User Context section.
 const AGENTIC_SURFACE: &str = "agentic-cli";
-const BODY_FILE: &str = "body.md";
-const CONTEXT_FILE: &str = "context.lino";
 /// Session argument that makes the CLI resolve the live harness session.
 const LATEST_SESSION: &str = "latest";
 
@@ -415,46 +410,29 @@ fn learning_command(dialog_id: &str) -> String {
     script.render()
 }
 
-/// Render the body with `formal-ai report body`, then file it.
-///
-/// The body is a file, not a shell-assembled string: `formal-ai report body`
-/// fails when the export is empty, and `set -eu` then stops the script before
-/// `gh issue create` can file an issue that claims context it does not have.
+/// A named local CLI action owns preparation and one bounded GitHub mutation.
+/// Its explicit create-issue name remains visible to the host approval layer.
 fn github_command(
     contents: ReportContents,
     messages: &[ChatMessage],
     report_index: usize,
     dialog_id: &str,
 ) -> String {
-    let mut script = ReportScript::new();
-    let body_file = script.scratch(BODY_FILE);
-    let context_file = script.scratch(CONTEXT_FILE);
-
-    let mut body = REPORT_BODY_COMMAND.to_owned();
-    body.push_str(CONTEXT_SESSION_FLAG);
-    body.push_str(&shell_quote(dialog_id));
-    body.push_str(SOURCE_FLAG);
-    body.push_str(source_name(contents));
-    body.push_str(SURFACE_FLAG);
-    body.push_str(AGENTIC_SURFACE);
-    body.push_str(OUTPUT_FLAG);
-    body.push_str(&body_file);
-    body.push_str(CONTEXT_OUTPUT_FLAG);
-    body.push_str(&context_file);
+    let mut command = REPORT_SUBMIT_COMMAND.to_owned();
+    command.push_str(CONTEXT_SESSION_FLAG);
+    command.push_str(&shell_quote(dialog_id));
+    command.push_str(SOURCE_FLAG);
+    command.push_str(source_name(contents));
+    command.push_str(SURFACE_FLAG);
+    command.push_str(AGENTIC_SURFACE);
+    command.push_str(REPOSITORY_FLAG);
+    command.push_str(&shell_quote(&formal_ai_repo()));
+    command.push_str(TITLE_FLAG);
+    command.push_str(&shell_quote(&report_title(messages, report_index)));
     if contents == ReportContents::Both {
-        body.push_str(SEPARATE_CONTEXT_LINKS_FLAG);
+        command.push_str(SEPARATE_CONTEXT_LINKS_FLAG);
     }
-    script.step(FORMAL_AI_PROGRAM, body);
-
-    let mut create = ISSUE_CREATE_COMMAND.to_owned();
-    create.push_str(&formal_ai_repo());
-    create.push_str(TITLE_FLAG);
-    create.push_str(&shell_quote(&report_title(messages, report_index)));
-    create.push_str(BODY_FILE_FLAG);
-    create.push_str(&body_file);
-    script.step(GH_PROGRAM, create);
-
-    script.render()
+    command
 }
 
 /// The destination a failed command was reporting to, named in the answer.
@@ -554,10 +532,19 @@ fn report_finished(targets: &[ReportTarget], run_outputs: &[String], language: &
         // Honesty rule (#839, §5): the URL GitHub printed is the only evidence
         // that an issue exists. Without it the report failed, whatever else the
         // exports may have printed.
-        if let Some(url) = trimmed
-            .split_whitespace()
-            .find(|token| token.starts_with("https://") && token.contains("/issues/"))
-        {
+        let submission = ordered
+            .iter()
+            .position(|target| *target == ReportTarget::GithubIssue)
+            .and_then(|index| run_outputs.get(index))
+            .map_or("", String::as_str);
+        let prefix = format!("https://github.com/{}/issues/", formal_ai_repo());
+        if let Some(url) = submission.split_whitespace().find(|token| {
+            token.strip_prefix(&prefix).is_some_and(|number| {
+                !number.is_empty()
+                    && !number.starts_with('0')
+                    && number.bytes().all(|byte| byte.is_ascii_digit())
+            })
+        }) {
             return render("issue_report_created_with_url", &[("url", url)]);
         }
         let failed = config("issue_report_failed");

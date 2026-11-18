@@ -13,7 +13,7 @@
 //! - Excludes additional documentation/example paths from "code changes"
 //!
 //! Excluded from code changes (don't require changelog fragments):
-//! - Markdown files (*.md) in any folder
+//! - Root Markdown and nested README.md/CHANGELOG.md documentation
 //! - changelog.d/ folder (changelog fragments)
 //! - docs/ folder (documentation)
 //! - experiments/ folder (experimental scripts)
@@ -90,7 +90,7 @@ fn exec(command: &str, args: &[&str]) -> String {
     match Command::new(command).args(args).output() {
         Ok(output) => {
             if output.status.success() {
-                String::from_utf8_lossy(&output.stdout).trim().to_string()
+                String::from_utf8_lossy(&output.stdout).into_owned()
             } else {
                 eprintln!("Error executing {command} {args:?}");
                 eprintln!("{}", String::from_utf8_lossy(&output.stderr));
@@ -153,6 +153,14 @@ fn comparison_for_event(
     )
 }
 
+fn decode_git_paths(output: &str) -> Vec<String> {
+    output
+        .split('\0')
+        .filter(|path| !path.is_empty())
+        .map(String::from)
+        .collect()
+}
+
 fn get_changed_files() -> Vec<String> {
     // GitHub Actions checks out a synthetic merge commit for pull_request
     // events: HEAD is the merge commit, HEAD^ is the base branch, HEAD^2
@@ -167,23 +175,18 @@ fn get_changed_files() -> Vec<String> {
         println!("Merge commit detected (pull_request event)");
     }
     println!("Comparing {base} to {head} ({description})");
-    let output = exec("git", &["diff", "--name-only", &base, &head]);
+    // A source-to-doc rename must retain the removed source path for admission.
+    let mut output = exec(
+        "git",
+        &["diff", "--no-renames", "--name-only", "-z", &base, &head],
+    );
 
     if output.is_empty() && exec("git", &["rev-parse", "--verify", &base]).is_empty() {
         println!("{base} is not available, listing all files in HEAD");
-        let output = exec("git", &["ls-tree", "--name-only", "-r", "HEAD"]);
-        return output
-            .lines()
-            .filter(|s| !s.is_empty())
-            .map(String::from)
-            .collect();
+        output = exec("git", &["ls-tree", "--name-only", "-z", "-r", "HEAD"]);
     }
 
-    output
-        .lines()
-        .filter(|s| !s.is_empty())
-        .map(String::from)
-        .collect()
+    decode_git_paths(&output)
 }
 
 fn is_ignored_by_ci(file_path: &str) -> bool {
@@ -192,9 +195,33 @@ fn is_ignored_by_ci(file_path: &str) -> bool {
         .any(|prefix| file_path.starts_with(prefix))
 }
 
+// Exact twin of documentationPaths in scripts/documentation-only-ci-policy.mjs.
+fn is_documentation_path(path: &str) -> bool {
+    path.starts_with("docs/")
+        || path.starts_with("changelog.d/")
+        // GitHub path filters are case-sensitive globs, including a root `.md` file.
+        || (!path.contains('/') && matches!(path.rsplit_once('.'), Some((_, "md"))))
+        || path.ends_with("/README.md")
+        || path.ends_with("/CHANGELOG.md")
+}
+
+fn automatic_release_pending(
+    event: &str,
+    git_ref: &str,
+    fragments: &[String],
+    changed_files: &[String],
+) -> bool {
+    // A pending fragment cannot turn a docs-only push into an automatic release,
+    // even if GitHub bypasses workflow path filters for an oversized event.
+    changed_files
+        .iter()
+        .any(|path| !is_documentation_path(path))
+        && release_pending(event, git_ref, fragments)
+}
+
 fn is_excluded_from_code_changes(file_path: &str) -> bool {
-    // Exclude markdown files in any folder
-    if has_extension(file_path, "md") {
+    // Unknown Markdown may be runtime input, not documentation.
+    if is_documentation_path(file_path) {
         return true;
     }
 
@@ -269,7 +296,7 @@ fn classify_changes(changed_files: &[String]) -> ChangeFlags {
         .filter(|file| !is_ignored_by_ci(file))
         .collect();
     let code_pattern =
-        Regex::new(r"\.(rs|toml|mjs|cjs|js|lino|yml|yaml)$|\.github/workflows/").unwrap();
+        Regex::new(r"\.(rs|toml|mjs|cjs|js|lino|yml|yaml|[mM][dD])$|\.github/workflows/").unwrap();
     // A workflow is code for the gates that read it, but it is not the code
     // the compiled jobs test. Counting it in `any_code_changed` made every
     // workflow edit buy the macOS archive, the Docker check, six box images
@@ -363,7 +390,7 @@ fn main() {
         println!("  (none)");
     } else {
         for file in &changed_files {
-            println!("  {file}");
+            println!("  {file:?}");
         }
     }
     println!();
@@ -430,16 +457,17 @@ fn main() {
         println!("  (none)");
     } else {
         for file in &code_changed_files {
-            println!("  {file}");
+            println!("  {file:?}");
         }
     }
     println!();
 
     let pending = env::var("RELEASE_PIPELINE").is_ok_and(|value| value == "true")
-        && release_pending(
+        && automatic_release_pending(
             &env::var("GITHUB_EVENT_NAME").unwrap_or_default(),
             &env::var("GITHUB_REF").unwrap_or_default(),
             &changelog_fragments(),
+            &changed_files,
         );
     if pending && !flags.any_code_changed {
         println!(
@@ -468,9 +496,56 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use super::{
-        ChangeFlags, LAYER_CLASSIFIER, LAYERED_WORKFLOW, classify_changes, comparison_for_event,
+        ChangeFlags, LAYER_CLASSIFIER, LAYERED_WORKFLOW, automatic_release_pending,
+        classify_changes, comparison_for_event, decode_git_paths, is_documentation_path,
         release_pending,
     };
+
+    #[test]
+    fn git_path_records_preserve_literal_unicode_and_linebreaks() {
+        let paths = decode_git_paths("docs/中文.md\0docs/line\nbreak.md\0");
+        assert_eq!(paths, vec!["docs/中文.md", "docs/line\nbreak.md"]);
+        assert!(!classify_changes(&paths).any_code_changed);
+        assert!(!automatic_release_pending(
+            "push",
+            "refs/heads/main",
+            &["pending.md".to_string()],
+            &paths,
+        ));
+        assert_eq!(
+            decode_git_paths(" docs/space.md \0"),
+            vec![" docs/space.md "]
+        );
+    }
+
+    #[test]
+    fn documentation_only_push_never_releases_a_waiting_fragment() {
+        let waiting = vec!["pending.md".to_string()];
+        let docs = vec![
+            "docs/guide.md".to_string(),
+            "changelog.d/pending.md".to_string(),
+        ];
+        assert!(!automatic_release_pending(
+            "push",
+            "refs/heads/main",
+            &waiting,
+            &docs
+        ));
+        let mixed = vec!["docs/guide.md".to_string(), "rust/src/lib.rs".to_string()];
+        assert!(automatic_release_pending(
+            "push",
+            "refs/heads/main",
+            &waiting,
+            &mixed
+        ));
+        assert!(is_documentation_path("README.md"));
+        assert!(is_documentation_path(".md"));
+        assert!(!is_documentation_path("README.MD"));
+        assert!(is_documentation_path("rust/README.md"));
+        assert!(!is_documentation_path("data/seed/runtime.md"));
+        assert!(classify_changes(&["data/seed/runtime.md".to_string()]).any_code_changed);
+        assert!(classify_changes(&["data/seed/RUNTIME.MD".to_string()]).any_code_changed);
+    }
 
     #[test]
     fn a_waiting_fragment_on_main_makes_the_release_pending() {

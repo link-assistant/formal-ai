@@ -9,10 +9,325 @@ concurrency fixture is now manual-only and explicitly unproven; see the
 [recorded deferral](critical-delivery-scope.md#recorded-follow-up). Its prior
 strict-final Unknown remains a failed attempt, not a skipped check or a pass.
 
-Continue in [the existing PR 1329](https://github.com/link-assistant/formal-ai/pull/1329).
-Its four original bot commits and public session logs must be retained by normal
-history updates. The integration started from `98f7808d49583e1e7932d133355445d8fdfb91f9`
-(v0.355.0). Do not create a replacement PR or rewrite its branch history.
+## Latest continuation: expanded PR 1437, 27 October 2026
+
+The current batch also addresses issues [1438](https://github.com/link-assistant/formal-ai/issues/1438),
+[1395](https://github.com/link-assistant/formal-ai/issues/1395), and
+[1396](https://github.com/link-assistant/formal-ai/issues/1396). Their requirements
+are recorded in the respective issue shards. The previous pushed head passed all
+16 applicable workflows; that evidence does not qualify this expanded batch.
+Require fresh exact-head CI, including native compilation and parity in CI only.
+The H5 coverage and JavaScript shards also exposed older fixtures that still
+expected compound report scripts or supplied an opaque Read before a whole-file
+write. Migrate those fixtures to the named submission and provider-owned complete
+reads, retaining the executable body-content checks and the opaque-read refusal
+regression. Preserve general substitution semantics across arbitrary extensions,
+escaped literals, insertion and deletion. Bound the notation fixture to eight
+planner steps. Add the real Rust function citation for the new JavaScript literal
+planner, spell its new binding in full, and regenerate the single status surface.
+These fixtures retain every quality ceiling and production oracle. The remaining
+Rust lint failures require reading the existing shared literal-edit wording,
+storing submission diagnostics in agent-info data, defining the four practical
+guidance identifiers in the already loaded meanings registry, and correcting
+visibility inside private modules. The closure gap and prose allowlist remain
+at their reviewed values; no exception or ceiling increase is introduced.
+
+The expanded H3 batch exposed an unused legacy report scratch builder under
+warnings-as-errors and required recording the improved literal-predicate debt
+ceiling. Remove that obsolete builder in both maintained languages and record
+the actual procedural integration in the boundary census; keep all semantic
+quality checks and native acceptance requirements. The full JavaScript planner
+also replayed the original contextual edit as Read, Edit, Read while preserving
+physical CRLF and Unicode source bytes. A large whole-ledger literal edit was
+interrupted and decomposed into small verified edits; it grants no autonomous
+implementation credit.
+
+The public reporting reproduction also exposed contextual source corruption:
+provider line numbers were written into a Rust file. Contextual single-line
+changes now use an exact literal Edit and a fresh Read; ambiguous provider output
+cannot authorize a whole-file Write. Reporting uses one inspectable named
+submission command, preserves complete context, bounds the child process, and
+retains the prepared report after uncertain submission without retrying creation.
+Host approval refusals remain authoritative and are reported honestly.
+
+The browser failures came from choosing encyclopedic search for a first-person
+practical need and losing its goal in a follow-up. A data-owned goal reader now
+selects trusted-source guidance in English, Russian, Hindi, Chinese and Spanish. Minimal
+curated evidence is distinguished from fetched evidence; empty-cache discovery
+has a byte limit, read limit and deadline. Unavailable or irrelevant evidence
+produces a targeted question. The same reader controls formal claim admission;
+quoted, negated and unrelated requests must remain outside this route.
+
+JavaScript Formal AI applied small file edits and larger literal replacements,
+with expected-content verification. Implementation text was supplied by the
+operator: autonomous implementation credit is zero. A larger behavioral-only ask
+was not solved autonomously and was decomposed into explicit edits. During this
+batch, one malformed intermediate worker edit prevented Formal AI from booting;
+its syntax was repaired directly to restore the tool, then edits resumed through
+Formal AI. This is recovery evidence, not a claimed self-coding success.
+
+A subsequent browser OCR export timeout exposed an unrelated external-network
+dependency: an attachment filename was treated as a hostname. URL readers now
+use the shared attachment-section boundary in both runtimes. The OCR persistence
+test keeps its real worker, image, OCR and memory-export assertions while
+emulating unavailable external services; failures print worker diagnostics.
+The same batch addresses macOS compiler setup failing to resolve the official
+Rust distribution host. Retry only a transient, fully settled installation
+failure once; preserve the exact compiler, target and later source/signature
+checks. Mocked setup tests never invoke Rust locally.
+The attachment URL regression now forces offline mode and documents its entire
+expected answer. This satisfies the tests-as-documentation gate without adding
+an allowlist entry or depending on external network state.
+The next web gate exposed the registered Spanish locale missing from the new
+guidance and language evidence. Add Spanish through the same goal and response
+data, show full answer examples in every registered language, and mirror the
+follow-up and unavailable-evidence regressions in native CI. Keep the response
+parity debt ceiling unchanged; do not record the omission as new accepted debt.
+Native coverage also checks the canonical role registry. Regenerate its object
+and procedure declarations from the meaning records, and check the generated
+registry locally before pushing. This changes no role-closure exception.
+The seed integrity test rejects pipe-packed policy lists. Store practical
+vocabulary as ordered rule-table rows and read those rows in both runtimes;
+retain scalar policy values for single values and the existing goal extension
+test. No data-integrity exception is added.
+Native coverage found that unavailable-source wording was classified as a
+factual question and removed by the question-necessity gate. Make the intended
+request for the user's choice explicit in every registered language. Native
+regressions require the complete answer and an authorized necessity trace;
+the existing classifier, question budget and factual-question refusal remain.
+Register the practical-goal component under the existing Generic interpreter
+boundary category; the component metadata must use the canonical category
+rather than inventing a new category for the same kind of interpreter.
+The new browser regressions pass locally without WASM or native execution.
+The source-only refresh of the carried agent-info projection uses the pinned
+portable JavaScript frontend and existing blocker analyzer. It reproduces the
+old projection byte for byte, classifies all three new items as still carried,
+and grants no translated-code credit. Full upstream regeneration remains a
+required independent CI oracle; no parser WASM was executed locally.
+Native regressions are drafted for CI; do not report native parity as verified
+until those current-head jobs pass. No personal session exports, user-created
+root source files or binaries were read, staged, executed or uploaded.
+
+## Prior PR 1437 continuation: 26 October 2026
+
+The ready follow-up is [PR 1437](https://github.com/link-assistant/formal-ai/pull/1437).
+Focused captured-replay, cleanup, admission and ledger checks pass locally.
+Its first CI batch found a stale assembled requirement part after the shard
+update. Regenerate it with `node scripts/assemble-requirements.mjs --write` and
+check with the same JavaScript twin; do not compile Rust locally. Retain the
+failed CI attempt and require fresh current-head CI after the complete fix batch.
+
+PR 1418 merged and v0.355.12 passed all main, publisher and public-download
+checks. Public Docker manifests, native/signing attestations, the browser Worker
+and package metadata were independently verified without local product
+downloads or native execution. The fresh three-client run passed every first
+delivery, but each repeat returned Hive's documented no-change exit 5. Coding
+acceptance remains pending. The focused follow-up uses Hive's supported
+compatibility setting only for the verified repeat, with the original oracle
+and no-write/no-commit checks intact. See the [captured cause and regression](released-client-no-change-exit.md).
+The released workflow chain also exhausted GitHub's `workflow_run` depth before
+cleanup. The follow-up explicitly dispatches trusted cleanup with the default
+token, authenticates the exact terminal owner with a finite read-only wait, and
+preserves immutable claims and protected references. Read-only audits remain
+read-only; no extra credential is required.
+Do not rerun owner 40377859689 or any immutable claim. Require a new qualified
+source, released-client attempt and terminal authenticated cleanup.
+
+## Previous PR 1418 continuation
+
+PR 1418 also fixes the actual v0.355.11 acceptance failures: endpoint query
+classification, duplicate aggregated tool histories, own Hive session notices
+blocking a no-op, and cleanup encountering repository-wide branch deletion
+protection. See the [observed causes and delivery gates](released-client-history-and-feedback.md).
+Publication of v0.355.11 passed; its actual client owner and old cleanup claims
+remain failed/retained historical evidence and must not be retried. Require new
+exact-head CI and a fresh released-client execution after merging this fix.
+Cleanup closes owned issues and PRs while explicitly preserving and independently
+checking branches protected by an effective deletion rule; it never changes
+repository protection or requests another credential.
+
+## Previous continuation
+
+PR 1417 merged after all required PR checks passed. Its main run then exposed a
+coverage-shard deadline caused by an unmeasured cold TypeScript research case
+sharing a default-weight process batch. The native suites passed; publication
+of candidate v0.355.11 does not establish complete acceptance while coverage is
+red. See the [preserved failure and scheduling correction](coverage-cold-research-budget.md).
+The one permitted pure coverage rerun completed every selected case; the first
+timeout remains preserved. PR 1418 also addresses a fresh-translation deadline
+by [removing a duplicate upstream pass](translation-double-pass-budget.md).
+Native scheduling checks are explicitly dispatched for its CI-only edits.
+
+PR 1410 is now merged and v0.355.10 passed all main, publisher and public-download
+checks, including independently checked Docker manifests. The fresh actual
+three-client owner failed: Claude left Hive's 174-byte bootstrap placeholder, while Agent and
+Codex exceeded their finite first-pass budgets while progressing. The next
+batched [PR 1417](https://github.com/link-assistant/formal-ai/pull/1417) fixes placeholder scope and repeated native registry parsing,
+with captured-request regressions. See the
+[current causes, fixes and acceptance contract](released-client-progress.md).
+The broad vision and issue 1364 are not complete; fresh released-client
+acceptance and terminal authenticated cleanup remain mandatory.
+
+PR 1417's first CI batch exposed file-size limits and a stale governed source
+witness after registering the native regression. The correction moves request
+timing into the existing logging module and reformats the captured Claude JSON
+without changing parsed content. The witness refresh changes only the reviewed
+`rust/tests/unit/mod.rs` source hash; cases and assertions remain identical.
+Both JavaScript failures share that witness cause. The PR description retains
+issues 1328 and 1364 using the exact pending-acceptance disposition. All tracked
+files satisfy the size gate, 35 focused JavaScript tests pass and the native
+specification generator remains current. Require fresh exact-head CI after the
+batch push; native latency and released-client acceptance remain unverified.
+
+The next batch also corrects a diagnostics dependency: the logging helper takes
+the caller's trace flag instead of reading the CLI surface. Clock creation is
+lazy and native-only; browser WASM never calls the unsupported standard-library
+monotonic clock. Preserve the architecture ceiling and verify the actual native
+request tests in CI. These fixes are manual and grant no autonomous authorship
+credit.
+
+The older H4 native run passed pure captured-request planning, but its real HTTP
+regression timed out after 30 seconds despite planning completing in 716 ms.
+The follow-up fixes a Rust/JavaScript parity gap: prediction-hit bookkeeping
+must skip classification when memory has no prediction events. Rust invoked
+the full offline solver there; JavaScript already short-circuits. Retain memory
+and log recording, genuine prediction matching and the original HTTP deadline.
+The drafted guard and captured-prompt test require fresh native CI; dispatch,
+memory and dialog timings identify any remaining downstream bottleneck.
+The shared native producer now runs the three captured-request regressions
+immediately after receipt binding and before artifact distribution, under its
+unchanged 20-minute budget. The artifact-binding command has a 90-second timeout
+and five-second kill grace for the complete declarative smoke list. Explicit integration execution verifies its
+own receipt member; existing unit-only transfers keep their original default.
+
+The 26 October native producer verified the memory correction with the real
+Agent HTTP request in 1.306 seconds, including normal memory and dialog logging.
+Captured pure planning took 625 ms (Agent), 241 ms (Codex schema refusal) and
+147 ms (Claude). The sanitized Codex schema still grants no executable replay
+credit. All unchanged 15-second deadlines passed; released three-client
+acceptance remains pending. The full native and instrumented coverage lanes
+then exposed the same GNU-timeout portability defect in the new CI command.
+Use the existing process-group-aware `run-with-deadline.sh`, preserving the
+90-second deadline and five-second kill grace, and regenerate the checked
+workflow projection without changing publication operations.
+
+The slim sidecar's cold Bun dependency resolution exhausted its existing
+600-second bound with only `Resolving dependencies` logged. Limit the shared
+installer to eight simultaneous registry requests, as Bun recommends for
+connection trouble. This is a mitigation requiring fresh image-build evidence;
+the available log does not establish which network request stalled. Keep the
+same pins, trust policy, verification, deadline and evidence-qualified retry
+rule. A timeout must still fail without an automatic retry or delivery credit.
+
+PR 1407 is merged; v0.355.9 and all configured release/public-download gates
+passed. Real released-image acceptance then verified the native memory
+lifecycle and default-token access, but exposed a post-admission proposal race
+and missing Claude/Codex/MCP runtime prerequisites. The fixes were delivered by
+[`PR 1410`](https://github.com/link-assistant/formal-ai/pull/1410) on
+`fix/published-ci-proposal-admission`; see the
+[exact causes, verification contract and evidence](released-client-prerequisites.md).
+Issue 1364 remains open until a fresh real three-client execution and trusted
+cleanup pass. No local Rust compilation or product download/execution is
+permitted. The private untracked session export must never be read or staged.
+
+PR 1410 also replayed the recent public Hive Mind client failures:
+stdout-only source receipts, raw Git status whitespace, and missing hosted
+checks for explicitly staged workflows. PR readiness in the staged transport
+grants no CI credit; the original independent workflow execution and all
+acceptance assertions remain required. The default-token hosted read-only
+audit now proves owner discovery. Existing uncertain cleanup claims must not
+be retried automatically. PR 1410's final reviewed head and main publication
+passed; the next follow-up requires its own complete exact-head checks.
+
+Its final blocker batch corrected an order-dependent Docker COPY test and cited
+the existing Rust staged-readiness twins. It also preserved the solve budget
+after the actual 28-minute image setup: only the delivery parent receives a
+documented temporary 55-minute allowance, while the solve remains bounded at
+21 minutes. Public-timestamp regressions cover the parent/child budget. Require
+fresh final-head CI; neither earlier image success nor hermetic replay grants
+the still-missing released three-client acceptance.
+
+Keep native regressions outside production source. The staged-readiness
+regression now uses the repository's supported external fixture registration,
+preserving access to private helpers without shipping inline test bodies.
+
+## Earlier release history
+
+The original integration and subsequent release fixes are merged. Most recently,
+[PR 1406](https://github.com/link-assistant/formal-ai/pull/1406) merged normally as
+`fd721a2277c58932fa49c65652db06b29a8993f4` after all its checks passed.
+Its version-preparation child is `55e2f7ea83ad127c6f77c820bee3fdb996498943`
+(`0.355.8`). Release producers and public-download verification passed, including
+full/slim multiarchitecture containers and both macOS architectures. Original
+three-client acceptance is still unverified: hosted run `40139076853` failed
+before client tasks because its lifecycle verifier expected an assistant message
+instead of the actual linked task record. The focused follow-up on
+`fix/released-lifecycle-and-ci-recovery` fixes that verifier and uses the real
+JavaScript memory writer for its regression. See
+[the cause, diagnostics and release evidence](released-memory-lifecycle.md).
+The same [PR 1407](https://github.com/link-assistant/formal-ai/pull/1407) also fixes
+the subsequent candidate run `40152800096`: all three clients selected the default
+token but stopped before their claims because a false repository role flag was
+treated as proof of denied push access despite the jobs' declared write scope.
+A bounded, read-only Git receive-pack probe now establishes actual access when
+metadata is not positive. No new credentials are required. This privileged
+protocol executes from the default branch, so its hosted validation must follow
+the corrected PR's green checks and merge; do not rerun the old effectful run.
+
+[PR 1404](https://github.com/link-assistant/formal-ai/pull/1404) merged normally as
+`af6e30e7828c0dfd1eb844235756949c610f5467` after all 16 workflows passed.
+It removes the mandatory external credential requirement,
+following the latest user direction and Hive Mind's default-token approach.
+See [the updated cause and contract](hive-pre-effect-finalization.md). The default
+token creates run-owned orphan branches, issues and PRs in this repository and
+uses Hive's staged `ci/` workflow transport with `act`. Original task hashes,
+two-pass/no-op and independent output verification remain mandatory. Cleanup
+runs only after the complete owner workflow is terminal. The released
+three-client requirement remains unverified until the actual hosted run passes.
+Preserve all original bot commits and public evidence in normal history.
+Before another merge, require green exact-head CI and let any active guarded
+release finish; current `main` remains required throughout publication.
+
+The merged PR 1405 follow-up used `fix/hive-cleanup-policy-history`. Cleanup preparation
+after PR 1404 exposed a historical-policy rollout failure; see the
+[captured cause and compatibility proof](hive-pre-effect-finalization.md#historical-policy-rollout).
+The fix reads each policy's root list from its original immutable source and
+caches failed lookups. The actual older CI progress hash is reproduced, and
+249 related JavaScript regressions pass. Monitor main pipeline
+[40097546818](https://github.com/link-assistant/formal-ai/actions/runs/40097546818)
+through publication before merging this follow-up, then require its hosted
+cleanup recovery and the actual three-client acceptance.
+The same follow-up also fixes the observed three-minute native test artifact
+download timeout in that pipeline by publishing a selected self-coding artifact
+with the original receipt. The exact native replay remains required. The failed
+main run has one bounded transport retry; no further retry is authorized by
+this record. The permanent workflow change is projected from the canonical
+staged-release source with publication operations and bindings unchanged.
+That bounded main retry passed all agent-CLI legs, but automatic source
+preparation then failed on an unavailable governed source read before changing
+`main`. The same follow-up adds real HTTP status, redacted process diagnostics
+and finite recovery for discovery reads under the unchanged deadline. Live
+writer/job observations remain single-attempt and every source/lease gate is
+preserved. Do not rerun the unchanged failed main run again; validate the fixed
+source through the follow-up's CI and next default-branch run.
+PR #1405 merged as `9739704f886447ef05f586be942b73e00e512ff5` after all 18
+workflows passed (152 successful checks and 24 conditional skips). The paused
+finalizer (`392761102`) was re-enabled immediately and verified `active`.
+Multiple hosted discovery runs passed, and a read-only live historical-cursor
+check authenticated the journal in 20 requests. A scheduled full sweep remains
+to be observed; no workflow is intentionally left disabled.
+
+The historical main run `40109825719` exposed a separate Codex TUI startup race:
+the harness sent Enter while its model was still loading and inside the pinned
+client's paste-suppression window. See
+[`codex-tui-startup-race.md`](codex-tui-startup-race.md) for the captured evidence
+and regression, delivered in merged PR 1406. Its hosted PTY regression and main
+real grounded-client test passed, followed by release `v0.355.8`. Validate the
+current lifecycle follow-up, self-merge only its exact green head after prior
+publishers/effect owners are terminal, and monitor publication plus the original
+three-client acceptance. Do not rerun the failed original-Hive workflow: its
+first-attempt requirement remains authoritative. Work solo under the latest
+owner instruction, without local Rust builds or product execution/downloads.
 
 ## Findings and implementation
 
@@ -1051,3 +1366,88 @@ coverage elsewhere and track `PR1329-browser-unknown-seed-latency` as unresolved
 profiling debt, not a product latency fix. This direct fixture repair receives
 zero autonomous Formal AI authorship credit. Require actual hosted acceptance
 on the next source and retain every other pending check as unaccepted.
+
+### Merged-source prover setup follow-up
+
+PR 1329 merged normally as
+`9b800dc33a2c6ec8bed1e56a48d8c7c8a5934268` after its complete check inventory
+was green. The subsequent default-branch
+[prover installation](https://github.com/link-assistant/formal-ai/actions/runs/39764481959/job/119776755681)
+failed before either compiler ran. The complete 30,164-byte mixed log has
+SHA256 `098fc63823d20ea9e3187d0a146501fff7ed47dcca7524f7d30f1efc9b905b63`.
+Both existing attempts reached their 120-second deadlines; the second did
+exercise the official HTTPS mirror alternate. Its progress is insufficient
+to establish that the mirror recovery solves cold-install throughput.
+
+The follow-up uses the owner's temporary noncritical-test deferral authority:
+only the real Lean/Rocq math integration requires explicit repository variable
+`FORMAL_AI_REAL_PROVER_INTEGRATION=true`. Keep its skipped result unaccepted.
+When enabled, install mandatory packages without recommendations and run every
+original compiler oracle under the same bounds. This is release debt, not a
+fixed network root cause. The stable debt and restoration conditions are in
+[the critical scope](critical-delivery-scope.md#temporary-real-prover-installation-debt).
+No production, coding, released-client or public-download gate is deferred.
+Manual changes receive zero autonomous Formal AI authorship credit.
+
+Continue collecting all default-branch failures into one repair batch. Require
+actual follow-up-head CI before normal merge, then monitor its production
+release and the original three-client acceptance; the merged candidate and
+historical compiler successes cannot substitute for those observations.
+
+The follow-up is [PR 1394](https://github.com/link-assistant/formal-ai/pull/1394).
+Its first lint lane failed only `check-pull-request-link`: the description
+omitted an explicit issue disposition. Preserve the complete 396,505-byte log
+from [job 119788589006](https://github.com/link-assistant/formal-ai/actions/runs/39767617743/job/119788589006),
+SHA256 `0d2f2b0a95fa9ebec09264722539b6ff8fccd26bdce5cda5a1d538dffe483016`.
+Add the required whole-line pending-acceptance reference to issue 1364 rather
+than a false closing claim. Released-client acceptance remains unfinished.
+The compiler and production gates themselves need no further change for this
+description failure. The next ordinary source update records these PR/debt
+links and lets CI check the corrected description without a manual rerun.
+
+
+### Public release and read-only admission follow-up
+
+[Release v0.355.1](https://github.com/link-assistant/formal-ai/releases/tag/v0.355.1)
+is public. Its crate publication, registry-content audit, installed-crate
+smoke test, full/slim GHCR images and Docker Hub mirror passed their actual
+hosted steps. Installer, signing, public-download and remaining surface
+verification still require their own results. The original released three-client
+and all-eleven issue-1364 acceptance is not established by those release steps.
+
+The subsequent [admission failure](https://github.com/link-assistant/formal-ai/actions/runs/39790340888/job/119864406820)
+happened before client execution: the fourth GitHub CLI read exited 1 with an
+empty response and completed cleanup. Preserve its full 28,367-byte log, SHA256
+`6eede8918b85174d2a35779480b1a5dcc0ace05c3451563487e4a66dba19fdfd`.
+The exact cause of the suppressed 29-byte diagnostic remains unknown.
+
+Batch one unchanged clean REST-read retry and privacy-safe attempt diagnostics
+into PR 1394. Keep the original global request, byte and time limits; GraphQL,
+known denials, partial bodies and uncertain processes stay unretried. A second
+failure stops without client effects. The
+[critical scope](critical-delivery-scope.md#bounded-read-only-github-admission-recovery)
+records the precise policy and evidence limits. The preceding head's green CI
+cannot accept this additional change: require fresh current-head results
+before the normal merge. This manual repair has zero autonomous Formal AI
+authorship credit. Continue monitoring actual release consumers and the original
+three task repositories; do not close issue 1364 prematurely.
+
+### Browser dependency setup and checksum cascade
+
+The main v0.355.1 release pipeline completed successfully. Independent data-only
+checks verified anonymous immutable full/slim GHCR and DockerHub manifests
+against the released source and executable receipts; these contain the merged
+PR 1329 changes. Installer/browser/download and original-client acceptance
+remain separate requirements.
+
+Browser publication then exhausted its existing setup deadline downloading
+Ubuntu fonts, before any browser smoke assertion. Desktop checksum publication
+subsequently refused the missing browser publication receipt. Preserve both
+complete failure logs and the precise limits in the
+[critical scope](critical-delivery-scope.md#browser-system-dependency-publication-blocker).
+Batch the shared validated HTTPS mirror preparation, immutable protocol/package
+dependency, HTTP diagnostic delimiter correction and regression controls into
+PR 1394. Keep every existing deadline, signature check and browser/checksum
+oracle. Earlier current-head green CI does not accept these added changes;
+require a fresh exact-head census before the normal merge. The suppressed
+admission diagnostic's underlying cause remains unknown.

@@ -393,8 +393,26 @@ function detectLanguageFromRules(text) {
   if (rival) return rival.language;
   const normalized = text.toLowerCase();
   const byMarker = LANGUAGE_RULES.find((rule) => !rule.fallback && at(rule) > 0 &&
-    (rule.markers || []).some((marker) => normalized.includes(String(marker).toLowerCase())));
+    (rule.markers || []).some((marker) => markerWordIn(normalized, String(marker).toLowerCase(), back)));
   return byMarker ? byMarker.language : back.language || "en";
+}
+
+// Issue #1557: a marker written in the fallback script counts only as a whole
+// word, so Spanish "formaliza" never claims English "formalization". Markers
+// in a script of their own match anywhere, as `markerCount` in
+// `js/agentic/crate/language.mjs` and `marker_count` in `rust/src/language.rs`.
+function markerWordIn(normalized, marker, back) {
+  const first = marker.codePointAt(0);
+  if (first === undefined) return false;
+  const shared = first >= back.start && first <= back.end;
+  if (!shared) return normalized.includes(marker);
+  const letter = (character) => character !== undefined && /\p{L}/u.test(character);
+  for (let at = normalized.indexOf(marker); at >= 0; at = normalized.indexOf(marker, at + 1)) {
+    const before = Array.from(normalized.slice(0, at)).pop();
+    const after = Array.from(normalized.slice(at + marker.length))[0];
+    if (!letter(before) && !letter(after)) return true;
+  }
+  return false;
 }
 
 // Issue #324: the user can choose which language drives responses. The default

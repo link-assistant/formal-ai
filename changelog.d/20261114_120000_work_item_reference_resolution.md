@@ -1,0 +1,6 @@
+---
+bump: patch
+---
+
+### Fixed
+- Resolve file names named in a work item before reading them (issue #1558). Each name is tried as an exact path, then as a unique file-name match found with glob or `find`, then as at most three candidates ranked by path similarity to the words around the reference. A link to a file on GitHub resolves to its repository path, and a link to another repository becomes one unresolved item. Product names such as `Node.js` are recorded as terms. A `File not found` read now counts as a failure. A failed or completed read is never planned again: the planned path is compared with the read bound to the workspace, and the relative and absolute forms count as the same path. The remaining evidence is still read, and the report lists `unresolved` and `terms` next to the observations. JS and Rust share the behaviour and are tested with the five recorded issue texts and the hive-mind 4033 case.

@@ -81,7 +81,7 @@ function numericCalculationResponse(prompt, expression, formatted) {
   return completeOperand ? formatted : null;
 }
 
-function tryArithmetic(prompt) {
+function tryArithmeticExpression(prompt) {
   const extracted = extractArithmeticExpression(prompt);
   if (!extracted) return null;
   const expression = extracted.expression;
@@ -93,6 +93,8 @@ function tryArithmetic(prompt) {
     : [];
   const resultLabel = typeof extracted.resultLabel === "string" ? extracted.resultLabel : "";
   try {
+    const capturedCurrency = tryCapturedCurrencyConversion(prompt, expression);
+    if (capturedCurrency) return capturedCurrency;
     const isEquation = expression.includes("=");
     let formatted;
     let backend = "js";

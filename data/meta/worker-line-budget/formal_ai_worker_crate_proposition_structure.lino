@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_crate_proposition_structure.js"
+  ceiling 446
+  rationale "Exact source-owned factory (issue #1487): proposition structure, checked-relation helpers and the language-free surface structure statement merging keys on."

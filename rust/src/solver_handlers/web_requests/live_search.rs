@@ -14,21 +14,10 @@ use super::{WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K};
 use crate::solver_handlers::finalize_simple;
 use crate::solver_handlers::web_search_intent::{WebSearchQueryKind, extract_web_search_request};
 
-/// Whether the runtime opted into live provider fetches through
-/// `FORMAL_AI_LIVE_FETCH` (`1`, `true`, `yes`, or `on`).
-///
-/// Issue #1173 (E138): every executed-search entry point applies the same
-/// combined offline rule `solver_dispatch.rs` applies at its `web_search`
-/// call site — a runtime offline flag **or** a missing live-fetch opt-in
-/// keeps the transport off — so the unknown-reasoning fallback cannot go
-/// online behind the dispatcher's back.
+/// Read-only retrieval is default-on; explicit offline/deny controls win.
+/// See the JavaScript policy twin `js/server/read-access.mjs` (#1582).
 pub fn live_fetch_enabled() -> bool {
-    std::env::var("FORMAL_AI_LIVE_FETCH").is_ok_and(|value| {
-        matches!(
-            value.trim().to_ascii_lowercase().as_str(),
-            "1" | "true" | "yes" | "on"
-        )
-    })
+    crate::solver_config::read_network_allowed()
 }
 
 /// Execute the web search for an already-extracted `(prompt, query, kind)`

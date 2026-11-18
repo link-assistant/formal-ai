@@ -13,6 +13,48 @@
 #                        another ending of the language, to reach the
 #                        dictionary form of an inflected word.
 #
+# Issue #1487 — the proposition structure a statement identity keeps
+# (js/agentic/crate/proposition_structure.mjs, its Rust twin
+# rust/src/formalization/proposition_structure.rs):
+#
+#   connective-conjunction / connective-disjunction  the words that join the
+#                        parts of one proposition with "and" or with "or";
+#   repetition-twice / repetition-thrice  an explicit count of an effect
+#                        ("print it twice"), never inferred from a repeated
+#                        mention.
+#   repetition-twice-count / repetition-thrice-count  the number each explicit
+#                        count stands for, read by the output binding of
+#                        issue #1166 (rust/src/intent_formalization/obligations.rs).
+#
+# Issue #1162 — the output a program request binds
+# (js/agentic/crate/intent_formalization_obligations.mjs, its Rust twin
+# rust/src/intent_formalization/obligations.rs) reads an explicit count right
+# after a quoted output through repetition-twice-count / repetition-thrice-count
+# above ("prints `Hi` twice" is two lines). The structural rule
+# output-repetition names
+#
+#   repetition-again     the words that make a later mention of an output
+#                        already bound a further line ("prints `Hi` and then
+#                        prints `Hi` again"). Without them, mentions of one
+#                        literal are one output obligation (#1156).
+#
+# Issue #1550 — the task decomposition the recursive meta-executor splits a
+# formalized request with (js/agentic/crate/meta_executor.mjs, its Rust twin
+# rust/src/meta_executor.rs):
+#
+#   connective-sequence / connective-alternative / connective-aggregation
+#                        the words that join two tasks done one after the
+#                        other, two tasks of which either one answers, and two
+#                        tasks whose answers are gathered together. The
+#                        structural rule task-decomposition names the
+#                        relations in the order a level is split by, the
+#                        bounds of the recursion, the test checks and the
+#                        action cost of each drafting method.
+#
+# The structural rules proposition-structure, comparison-relation and
+# symbolic-operator name the kinds and lexicon meanings read as connectives,
+# quantifiers, ordered comparisons and operators.
+#
 # Function words and negation cues are not repeated here. They are the
 # translation_stop_word, statement_function_word and statement_negation_cue
 # roles of the meaning lexicon.
@@ -34,6 +76,79 @@ text-formalization
     template "(statement (terms {legacy}) (typed_meaning {typed}))"
   structural-rule answer-compatibility
     missing-reason "missing typed evidence"
+  structural-rule proposition-structure
+    conjunction-vocabulary "connective-conjunction"
+    disjunction-vocabulary "connective-disjunction"
+    repetition-vocabulary "repetition-twice"
+    repetition-vocabulary "repetition-thrice"
+    repetition-twice-count "2"
+    repetition-thrice-count "3"
+    universal-meaning "quantifier_all"
+    existential-meaning "quantifier_any"
+  structural-rule output-repetition
+    again-vocabulary "repetition-again"
+  structural-rule task-decomposition
+    relation "sequence"
+    relation "alternative"
+    relation "aggregation"
+    sequence-vocabulary "connective-sequence"
+    alternative-vocabulary "connective-alternative"
+    aggregation-vocabulary "connective-aggregation"
+    sequence-requires "all"
+    alternative-requires "any"
+    aggregation-requires "all"
+    depth-bound "2"
+    breadth-bound "6"
+    budget-bound "8"
+    leaf-check "answered"
+    composite-check "children"
+    unresolved-intent "unknown"
+    unresolved-intent "calculation_error"
+    unresolved-suffix "_skill_gap"
+    unresolved-suffix "_unspecified"
+    cache-cost "1"
+    derivation-cost "2"
+    composition-cost "1"
+    quote-pair "«»"
+    quote-pair "“”"
+    quote-pair "„“"
+    quote-pair "「」"
+    quote-pair "『』"
+    quote-pair "``"
+    edge-punctuation ","
+    edge-punctuation ";"
+    edge-punctuation "，"
+    edge-punctuation "；"
+    edge-punctuation "、"
+  structural-rule comparison-relation
+    less "number_constraint_upper_strict"
+    less-converse "number_constraint_lower_strict"
+    less-or-equal "number_constraint_upper_inclusive"
+    less-or-equal "recurrence_less_equal"
+    less-or-equal-converse "number_constraint_lower_inclusive"
+  structural-rule symbolic-operator
+    less "<"
+    less-converse ">"
+    less-or-equal "<="
+    less-or-equal "≤"
+    less-or-equal-converse ">="
+    less-or-equal-converse "≥"
+    equal "=="
+    equal "="
+    not-equal "!="
+    not-equal "≠"
+    minus "-"
+    minus "−"
+    plus "+"
+    times "*"
+    times "×"
+    divide "/"
+    compound-joiner "-"
+    compound-joiner "/"
+    commutative "equal"
+    commutative "not-equal"
+    commutative "plus"
+    commutative "times"
   language en
     question-where "where"
     question-how-many "how many"
@@ -125,6 +240,20 @@ text-formalization
     inflection-ending "ed"
     inflection-ending "ing"
     inflection-ending "ly"
+    connective-conjunction "and"
+    connective-disjunction "or"
+    connective-sequence "then"
+    connective-sequence "and then"
+    connective-sequence "after that"
+    connective-alternative "or"
+    connective-aggregation "and"
+    repetition-twice "twice"
+    repetition-twice "two times"
+    repetition-thrice "thrice"
+    repetition-thrice "three times"
+    repetition-again "again"
+    repetition-again "once more"
+    repetition-again "one more time"
   language ru
     numeric-decimal ","
     numeric-group " "
@@ -287,6 +416,25 @@ text-formalization
     inflection-ending "о"
     inflection-ending "ь"
     inflection-ending "й"
+    connective-conjunction "и"
+    connective-disjunction "или"
+    connective-disjunction "либо"
+    connective-sequence "затем"
+    connective-sequence "потом"
+    connective-sequence "а потом"
+    connective-sequence "и затем"
+    connective-sequence "и потом"
+    connective-sequence "после этого"
+    connective-alternative "или"
+    connective-alternative "либо"
+    connective-aggregation "и"
+    connective-aggregation "а также"
+    repetition-twice "дважды"
+    repetition-thrice "трижды"
+    repetition-again "снова"
+    repetition-again "ещё раз"
+    repetition-again "еще раз"
+    repetition-again "опять"
   language hi
     numeric-secondary-width "2"
     anaphor "वह"
@@ -312,6 +460,21 @@ text-formalization
     inflection-ending "ी"
     inflection-ending "ा"
     inflection-ending "े"
+    connective-conjunction "और"
+    connective-conjunction "तथा"
+    connective-disjunction "या"
+    connective-disjunction "अथवा"
+    connective-sequence "फिर"
+    connective-sequence "और फिर"
+    connective-sequence "उसके बाद"
+    connective-alternative "या"
+    connective-alternative "अथवा"
+    connective-aggregation "और"
+    connective-aggregation "तथा"
+    repetition-twice "दो बार"
+    repetition-thrice "तीन बार"
+    repetition-again "फिर से"
+    repetition-again "दोबारा"
   language zh
     anaphor "它"
     anaphor "他"
@@ -326,6 +489,23 @@ text-formalization
     clause-continuation "而"
     clause-continuation "且"
     clause-continuation "但"
+    connective-conjunction "和"
+    connective-conjunction "并且"
+    connective-conjunction "且"
+    connective-conjunction "与"
+    connective-disjunction "或者"
+    connective-disjunction "或"
+    connective-sequence "然后"
+    connective-sequence "接着"
+    connective-sequence "之后"
+    connective-alternative "或者"
+    connective-aggregation "并且"
+    connective-aggregation "同时"
+    connective-aggregation "以及"
+    repetition-twice "两次"
+    repetition-thrice "三次"
+    repetition-again "再次"
+    repetition-again "再一次"
   language es
     numeric-decimal ","
     numeric-group "."
@@ -380,3 +560,18 @@ text-formalization
     inflection-ending "a"
     inflection-ending "o"
     inflection-ending "e"
+    connective-conjunction "y"
+    connective-conjunction "e"
+    connective-disjunction "o"
+    connective-disjunction "u"
+    connective-sequence "luego"
+    connective-sequence "y luego"
+    connective-sequence "después"
+    connective-alternative "o"
+    connective-alternative "u"
+    connective-aggregation "y"
+    connective-aggregation "e"
+    repetition-twice "dos veces"
+    repetition-thrice "tres veces"
+    repetition-again "de nuevo"
+    repetition-again "otra vez"

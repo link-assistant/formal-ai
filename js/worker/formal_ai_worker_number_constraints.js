@@ -527,18 +527,17 @@ function proofLibraryItems(id, language) {
 }
 
 /**
- * The interpretation header for a proven or disproven decision. Mirrors
+ * The interpretation header for a proven or disproven outcome. Mirrors
  * `render_interpretation` in rust/src/proof_engine/presenter.rs.
  * @param {boolean} proven
  * @param {string} statement
  * @param {string} language
+ * @param {string} [methodSlug] the `method_<slug>` template, as `ProofMethod::slug`
  * @returns {string}
  */
-function proofPresenterInterpretation(proven, statement, language) {
-  const method = proofLibraryText("method_decision_procedure", language);
-  const detail = proven
-    ? proofLibraryText("interpretation_proven", language, { statement, method })
-    : proofLibraryText("interpretation_disproven", language, { method });
+function proofPresenterInterpretation(proven, statement, language, methodSlug = "decision_procedure") {
+  const method = proofLibraryText(`method_${methodSlug}`, language);
+  const detail = proofLibraryText(proven ? "interpretation_proven" : "interpretation_disproven", language, { statement, method });
   return `${proofLibraryText("interpretation_label", language)}: ${detail}`;
 }
 
@@ -546,10 +545,11 @@ function proofPresenterInterpretation(proven, statement, language) {
  * `Heading (method: label).`, as `method_line`.
  * @param {string} headingId
  * @param {string} language
+ * @param {string} [methodSlug] the `method_<slug>` template, as `ProofMethod::slug`
  * @returns {string}
  */
-function proofPresenterMethodLine(headingId, language) {
-  return `${proofLibraryText(headingId, language)} (${proofLibraryText("method_intro", language)}: ${proofLibraryText("method_decision_procedure", language)}).`;
+function proofPresenterMethodLine(headingId, language, methodSlug = "decision_procedure") {
+  return `${proofLibraryText(headingId, language)} (${proofLibraryText("method_intro", language)}: ${proofLibraryText(`method_${methodSlug}`, language)}).`;
 }
 
 /**
@@ -628,14 +628,16 @@ function numberConstraintFormalCheck(claim, language) {
     { kind: "inference", text: proofLibraryText("linear_empty_model_set", language, values) },
   ];
   const core = `${proofPresenterMethodLine("disproof_heading", language)}\n\n${proofLibraryText("counterexample_label", language)}: ${proofLibraryText("linear_no_assignment", language, values)}\n\n${proofPresenterSteps(steps, language)}\n${proofLibraryText("linear_unsatisfiable", language)}`;
-  // `enforce_questions` (rust/src/question_necessity.rs) authorizes one
-  // question per answer: the first follow-up stays, and every later one loses
-  // its sentence, which starts after the item's "N. " prefix (the seeded
-  // questions carry no inner sentence terminator), leaving the bare "N.".
-  const questions = proofLibraryItems("disproven_follow_ups", language)
-    .map((question, index) => (index === 0 ? `${index + 1}. ${question}` : `${index + 1}.`))
-    .join("\n");
-  return `${proofPresenterInterpretation(false, statement, language)}\n\n${core}\n\n${proofLibraryText("follow_up_label", language)}\n${questions}`;
+  return `${proofPresenterInterpretation(false, statement, language)}\n\n${core}\n\n${proofPresenterDisprovenFollowUps(language)}`;
+}
+
+/**
+ * The `ProofOutcome::Disproven` footer after `enforce_questions` authorized one question: every later follow-up loses its sentence (it starts after the "N. " prefix; seeded questions have no inner terminator), leaving the bare "N.".
+ * @param {string} language
+ * @returns {string}
+ */
+function proofPresenterDisprovenFollowUps(language) {
+  return [proofLibraryText("follow_up_label", language), ...proofLibraryItems("disproven_follow_ups", language).map((item, index) => (index ? `${index + 1}.` : `1. ${item}`))].join("\n");
 }
 
 /**

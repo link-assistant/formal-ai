@@ -32,6 +32,11 @@ on:
       - 'scripts/check-shard-results.sh'
       - '.github/actions/formal-ai-binary/**'
       - '.github/workflows/coding-ladder.yml'
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   pull_request:
     # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
     # never triggers this repository's own pipeline.
@@ -47,12 +52,22 @@ on:
       - 'scripts/check-coding-ladder.rs'
       - 'scripts/check-shard-results.sh'
       - '.github/workflows/coding-ladder.yml'
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   schedule:
     - cron: '17 5 * * 0'
   # Issue #1187 R2: a bot pull request's checks start through dispatch
   # (.github/actions/dispatch-checks); mode and pull-request are its inputs.
   workflow_dispatch:
     inputs:
+      full-ladder:
+        description: 'Run the complete 130-task authoring measurement on main'
+        required: false
+        default: false
+        type: boolean
       mode:
         description: 'checks: run the pull-request checks on the dispatched branch'
         required: false
@@ -73,9 +88,27 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
+  pr-check-profile:
+    if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'))
+    uses: ./.github/workflows/pull-request-check-profile.yml
+  ladder-scope:
+    name: Coding ladder measurement scope
+    runs-on: ubuntu-24.04
+    timeout-minutes: 1
+    steps:
+      - name: Record complete measurement selection without awarding coverage
+        env:
+          FULL_LADDER: ${{ github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main' && (vars.FORMAL_AI_FULL_CODING_LADDER == 'run' || (github.event_name == 'workflow_dispatch' && inputs['full-ladder'] == true)) }}
+        run: |
+          if [ "$FULL_LADDER" = true ]; then
+            printf '%s\n' 'Complete Coding Ladder selected: all original shards and the unchanged ratchet must pass.' >> "$GITHUB_STEP_SUMMARY"
+          else
+            printf '%s\n' 'Complete Coding Ladder deferred: no authoring measurement, benchmark score or acceptance credit is claimed. Mandatory fast consistency and ordinary coding/QA/reporting checks remain selected. Restore on main with full-ladder=true or FORMAL_AI_FULL_CODING_LADDER=run.' >> "$GITHUB_STEP_SUMMARY"
+          fi
   ladder-binary:
+    if: ${{ ((github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true)) && (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main' && (vars.FORMAL_AI_FULL_CODING_LADDER == 'run' || (github.event_name == 'workflow_dispatch' && inputs['full-ladder'] == true))) }}
     name: Coding ladder binary
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # A cold release build measured 4.4-5.6 minutes; a cache hit is seconds.
     timeout-minutes: 30
     steps:
@@ -88,9 +121,10 @@ jobs:
       - uses: ./.github/actions/formal-ai-binary
 
   ladder-shard:
+    if: ${{ ((github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main')))) && (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main' && (vars.FORMAL_AI_FULL_CODING_LADDER == 'run' || (github.event_name == 'workflow_dispatch' && inputs['full-ladder'] == true))) }}
     name: Coding ladder shard ${{ matrix.shard }}
     needs: [ladder-binary]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # 1200s of budget under a 30-minute cap is 66.7%, inside the 70% share
     # issue #1081 allows. All 130 tasks measured 17.7-23.1 minutes in one job,
     # so a fifth is ~4-5 minutes (8.6 at most, PR #1188); the budget is four times that, for a shard
@@ -146,8 +180,8 @@ jobs:
     needs: [ladder-binary, ladder-shard]
     # Not `always()`: a run superseded by a newer push is the one
     # cancellation that is not a defect, and it skips the verdict.
-    if: ${{ !cancelled() }}
-    runs-on: ubuntu-latest
+    if: ${{ ((github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled())) && (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main' && (vars.FORMAL_AI_FULL_CODING_LADDER == 'run' || (github.event_name == 'workflow_dispatch' && inputs['full-ladder'] == true))) }}
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7

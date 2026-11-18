@@ -11,10 +11,18 @@ import { planChatStepResolved } from '../../../js/agentic/planner.mjs';
 import {composeGeneralChangePlan,planLinksNotation} from '../../../js/agentic/general_planner.mjs';
 import { finalResult } from '../../../js/agentic/final_result.mjs';
 import { executeResult } from '../../../experiments/js_dogfood/drive.mjs';
+import { workItemRecordOf, parsesAsJsonObject } from '../../../js/agentic/work_item_report.mjs';
+function recorded(plan) {
+  assert.equal(parsesAsJsonObject(plan.answer), false, 'a work-item answer is a report, not a JSON object');
+  const record = plan.record ?? workItemRecordOf(plan);
+  assert.ok(record, 'a work-item final keeps its record');
+  return record;
+}
 const task = 'Solve https://github.com/link-assistant/formal-ai/issues/1069 in this checkout as one whole task.';
 const prose = 'Produce a legitimate release with no fabricated evidence.\nAdding a bypass flag to check-self-development-release.rs is not acceptable.';
 const tools = ['web_fetch', 'write_file', 'bash'];
-const auxiliaryTask = 'Create observation.txt containing exactly "auxiliary evidence".';
+// Journal receipt authority applies to the legacy replacement owner; complete Create owns only its target.
+const auxiliaryTask = 'Set the contents of observation.txt to «auxiliary evidence»';
 before(async () => { await installNodeHost(new WorkerHost()); });
 function append(messages, call, observation) {
   const id = 'actual-' + messages.length;
@@ -59,7 +67,12 @@ test('original fetched task and two statements retain an honest gap with no jour
   const dir = mkdtempSync(join(tmpdir(), 'fetched-auxiliary-'));
   try {
     const { result } = await fetched();
-    assert.equal(result.kind, 'final'); assert.ok(result.answer.includes('Planned, not executed'));
+    assert.equal(result.kind, 'final');
+    const evidence = recorded(result);
+    assert.equal(evidence.schema, 'repository-work-item-evidence/v1');
+    assert.equal(evidence.reason, 'MissingReadTool');
+    assert.equal(evidence.authored, false); assert.equal(evidence.verified, false);
+    assert.equal(evidence.decomposition.find(step => step.step === 'implement_requested_change').status, 'not_executed');
     assert.equal(finalResult(result).disposition, 'gap'); assert.equal(result.calls, undefined);
     assert.ok(result.answer.includes('Produce a legitimate release with no fabricated evidence.'));
     assert.ok(result.answer.includes('Adding a bypass flag to check-self-development-release.rs is not acceptable.'));
@@ -93,6 +106,8 @@ test('legacy run_command retrieval does not authorize a shell journal recipe for
   const legacyTools = ['web_fetch', 'write_file', 'run_command'];
   const { result } = await fetched(legacyTools, 'run_command');
   assert.equal(result.kind, 'final'); assert.equal(finalResult(result).disposition, 'gap');
-  assert.ok(result.answer.includes('Planned, not executed'));
+  const evidence = recorded(result);
+  assert.equal(evidence.reason, 'MissingReadTool');
+  assert.equal(evidence.authored, false); assert.equal(evidence.verified, false);
   assert.ok(!result.answer.includes('Executed')); assert.equal(result.calls, undefined);
 });

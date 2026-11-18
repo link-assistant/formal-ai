@@ -7,7 +7,12 @@ runtime_home="${1:?runtime tools project directory is required}"
   exit 2
 }
 script_dir="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-# One bounded attempt, no dependency-resolution retries or ignored failures.
-bash "$script_dir/run-with-deadline.sh" 600 \
+# One shared deadline; only a verified, newly available official tarball permits
+# one identical retry. Preserve Bun's lifecycle trust and the project policy.
+# Keep cold Docker builds below Bun's default 64 concurrent registry requests.
+# https://bun.sh/docs/runtime/environment-variables
+export BUN_CONFIG_MAX_HTTP_REQUESTS=8
+node "$script_dir/install-client-registry-recovery.mjs" \
   bun install --production --cwd "$runtime_home"
 node "$script_dir/verify-container-runtime-tools.mjs" "$runtime_home"
+node "$script_dir/configure-container-client-tools.mjs" "$runtime_home"

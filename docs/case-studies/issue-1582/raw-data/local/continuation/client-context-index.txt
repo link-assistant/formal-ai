@@ -1,0 +1,40 @@
+rust/src/client_integrations/global_verify.rs:27:use super::{RenderContext, global_config_path, render_template};
+rust/src/client_integrations/global_verify.rs:79:    context: &RenderContext,
+rust/src/client_integrations/global_verify.rs:92:    context: &RenderContext,
+rust/src/client_integrations/global_verify.rs:229:    context: &RenderContext,
+rust/src/client_integrations/server.rs:62:pub(super) fn served_model_limits(base_url: &str) -> Option<(u64, u64)> {
+rust/src/client_integrations/server.rs:79:        model.get("context_window_tokens")?.as_u64()?,
+rust/src/client_integrations/completion.rs:17:use super::{ClientIntegration, InvocationOptions, RenderContext, build_invocation_args};
+rust/src/client_integrations/completion.rs:206:        context: &RenderContext,
+rust/src/client_integrations/completion.rs:264:    pub(super) context: &'a RenderContext,
+rust/src/client_integrations/global_config.rs:20:    EMPTY_BACKUP_SENTINEL, ERROR_PLACEHOLDER, ModelLimits, RENDERED_PLACEHOLDER, RenderContext,
+rust/src/client_integrations/global_config.rs:42:    model_limits: &ModelLimits,
+rust/src/client_integrations/global_config.rs:45:    context.model_limits = model_limits.clone();
+rust/src/client_integrations/global_config.rs:102:    context: &RenderContext,
+rust/src/client_integrations/global_config.rs:206:    context: &RenderContext,
+rust/src/client_integrations/global_config.rs:228:    context: &RenderContext,
+rust/src/client_integrations/global_config.rs:265:    context: &RenderContext,
+rust/src/client_integrations/global_config.rs:280:    context: &RenderContext,
+rust/src/client_integrations/global_config.rs:290:    context: &RenderContext,
+rust/src/client_integrations/global_config.rs:303:    context: &RenderContext,
+rust/src/client_integrations/global_config.rs:392:    context: &RenderContext,
+rust/src/client_integrations.rs:155:struct RenderContext {
+rust/src/client_integrations.rs:175:    model_limits: ModelLimits,
+rust/src/client_integrations.rs:178:impl RenderContext {
+rust/src/client_integrations.rs:179:    fn model_limits(&self) -> &(String, String) {
+rust/src/client_integrations.rs:180:        self.model_limits.get_or_init(|| {
+rust/src/client_integrations.rs:185:                server::served_model_limits(&self.base_url).unwrap_or_else(|| {
+rust/src/client_integrations.rs:188:                            .map_or(0, |capacity| capacity.context_window_tokens),
+rust/src/client_integrations.rs:213:        let model_limits = ModelLimits::default();
+rust/src/client_integrations.rs:218:                write_global_config(integration, args, &model_limits)?;
+rust/src/client_integrations.rs:325:) -> Result<RenderContext, Box<dyn Error>> {
+rust/src/client_integrations.rs:370:    let mut context = RenderContext {
+rust/src/client_integrations.rs:385:        model_limits: ModelLimits::default(),
+rust/src/client_integrations.rs:401:    context: &RenderContext,
+rust/src/client_integrations.rs:593:    context: &RenderContext,
+rust/src/client_integrations.rs:697:fn overlay_args(overlay: &[String], caller: &CallerArgs, context: &RenderContext) -> Vec<String> {
+rust/src/client_integrations.rs:721:fn render_template(template: &str, context: &RenderContext) -> String {
+rust/src/client_integrations.rs:748:    let (window, output) = context.model_limits();
+rust/src/client_integrations.rs:756:const CONTEXT_WINDOW_SLOT: &str = concat!("{", "context_window_tokens", "}");
+rust/src/client_integrations.rs:759:fn codex_model_catalog(render: &RenderContext) -> Result<String, Box<dyn Error>> {
+rust/src/client_integrations.rs:761:    let (window, _) = render.model_limits();

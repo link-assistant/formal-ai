@@ -1,0 +1,12 @@
+{
+  "source": "https://github.com/link-assistant/formal-ai/actions/runs/40787709964/job/123172160709",
+  "completeLogSha256": "220b17374ab70243cb7c9c99a7369dd90a3628039458fe48d4ffc351203e7178",
+  "failure": "File: failed creating mmap of \"D:\\a\\formal-ai\\formal-ai\\desktop\\release\\formal-ai-desktop-0.355.16-x64.nsis.7z\"",
+  "unpackedSizeKiB": 5443783,
+  "unexpectedPaths": [
+    "node_modules/formal-ai-web-bundle/native-bin/formal-ai.exe",
+    "node_modules/formal-ai-web-bundle/desktop/release/win-unpacked/electron.exe",
+    "node_modules/formal-ai-web-bundle/desktop/browser-runtime/chrome-win64/chrome.exe",
+    "node_modules/formal-ai-web-bundle/desktop/bin/formal-ai.exe"
+  ]
+}

@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { before, test } from 'node:test';
 import { execFile, execFileSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
@@ -159,6 +159,39 @@ test('simultaneous retries take the bounded lock and retain exactly one event', 
     mkdirSync(join(directory, PLAN_PATH + '.lock'));
     assert.throws(() => execFileSync('/bin/sh', ['-c', command], { cwd: directory, encoding: 'utf8', timeout: 5000 }), (error) => error.status === 75);
     assert.equal(readFileSync(join(directory, PLAN_PATH), 'utf8'), before + '\n' + event);
+  } finally { rmSync(directory, { recursive: true, force: true }); }
+});
+
+// Main Layered CI run 43710854189 (ubuntu-26.04) appended this event twice. Its
+// default uutils 0.8.0 mkdir reports success when the directory appears between
+// its exists() check and mkdir(2) (uutils/coreutils#13970), so two lockers both
+// "won". The shim reproduces that answer deterministically: the lock is held,
+// yet mkdir still exits 0. The claim must not rely on mkdir(1) refusing EEXIST.
+test('a held plan-event lock refuses even when mkdir(1) reports an existing directory as created', () => {
+  const directory = mkdtempSync(join(tmpdir(), 'formal-ai-events-uutils-mkdir-'));
+  try {
+    const shims = join(directory, 'shims');
+    mkdirSync(shims);
+    writeFileSync(join(shims, 'mkdir'), '#!/bin/sh\nfor last; do :; done\n[ -d "$last" ] && exit 0\nexec /bin/mkdir "$@"\n', { mode: 0o755 });
+    const store = join(directory, 'store');
+    mkdirSync(join(store, '.formal-ai'), { recursive: true });
+    writeFileSync(join(store, PLAN_PATH), 'prior-event');
+    const plan = composeGeneralChangePlan(request);
+    const step = planGeneralChangeStep([{ role: 'user', content: request }], ['bash', 'read', 'write'], plan);
+    const command = JSON.parse(step.calls[0].arguments).command;
+    const env = { ...process.env, PATH: `${shims}:${process.env.PATH}` };
+    for (const held of ['directory', 'file']) {
+      const lock = join(store, PLAN_PATH + '.lock');
+      if (held === 'directory') mkdirSync(lock); else writeFileSync(lock, 'other-owner');
+      assert.throws(() => execFileSync('/bin/sh', ['-c', command], { cwd: store, env, encoding: 'utf8', timeout: 5000, stdio: 'pipe' }),
+        (error) => error.status === 75, `a ${held} lock held by another owner must refuse`);
+      assert.equal(readFileSync(join(store, PLAN_PATH), 'utf8'), 'prior-event');
+      rmSync(lock, { recursive: true, force: true });
+    }
+    const output = execFileSync('/bin/sh', ['-c', command], { cwd: store, env, encoding: 'utf8', timeout: 5000 });
+    assert.equal(output, planLinksNotation(plan));
+    assert.equal(readFileSync(join(store, PLAN_PATH), 'utf8'), 'prior-event\n' + planLinksNotation(plan));
+    assert.equal(existsSync(join(store, PLAN_PATH + '.lock')), false, 'the owner releases its own lock');
   } finally { rmSync(directory, { recursive: true, force: true }); }
 });
 

@@ -1,0 +1,73 @@
+name: Native type and lint check
+
+# Issue #1191: PR #1497 passed every PR check, then main failed with E0308
+# (run 43710854562) and, once that was fixed, with clippy::manual_contains
+# (run 43730270231), since no PR job ran rustc. This is the one focused
+# native check a PR runs: main's clippy profile on the library and binaries,
+# called from release.yml when a Rust compile input changed or the
+# classification is unknown. It uploads nothing and records no receipt.
+# The isolated regressions verify native calendar, currency and OpenAI behavior.
+# Main still runs full lint, tests and every build.
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-native-type-check
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+env:
+  CARGO_NET_RETRY: '10'
+  CARGO_HTTP_MULTIPLEXING: 'false'
+  CARGO_INCREMENTAL: '0'
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -Dwarnings
+
+jobs:
+  clippy:
+    name: Rust compile inputs changed
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        timeout-minutes: 4
+        env:
+          GIT_HTTP_LOW_SPEED_LIMIT: '1024'
+          GIT_HTTP_LOW_SPEED_TIME: '20'
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            /*
+            !/dev/log/
+            !/experiments/
+          sparse-checkout-cone-mode: false
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - uses: ./.github/actions/setup-sccache
+      - uses: ./.github/actions/cache-cargo-registry
+        with:
+          restore-only: 'true'
+      - name: Type-check and lint the library and binaries
+        run: bash scripts/ci-clippy-profile.sh --library-and-binaries
+      - name: Verify calendar, currency, forced OpenAI function and CNL behavior
+        env:
+          CARGO_BUILD_JOBS: '2'
+          CARGO_PROFILE_TEST_OPT_LEVEL: '0'
+        run: cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test cnl_output --test cnl_parity -- --test-threads=1
+      - uses: actions/setup-node@v7
+        with: {node-version: 22}
+      - name: Replay the forced function requests against the native CLI
+        env:
+          FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
+        run: node --test --test-concurrency=1 rust/tests/web/issue-1590-forced-functions.test.mjs
+      - name: Replay structured output and refusals against the native CLI
+        env:
+          FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
+        run: node --test --test-concurrency=1 rust/tests/web/issue-1586-structured-output.test.mjs

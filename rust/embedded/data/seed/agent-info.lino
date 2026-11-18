@@ -77,6 +77,16 @@ agent_info
     value "The complete Links Notation context is attached as a gist: {url}"
   field issue_report_context_excerpt_note
     value "The complete Links Notation context did not fit, so {count} records are omitted from the excerpt below."
+  field issue-report-destination-invalid
+    value "report destination must be owner/name"
+  field issue-report-title-invalid
+    value "report title is empty or exceeds its byte budget"
+  field issue-report-directory-collisions
+    value "report directory collision budget exhausted"
+  field issue-report-submit-unavailable
+    value "Required report submission command gh is unavailable: {error}"
+  field issue-report-submit-uncertain
+    value "Issue submission failed or is uncertain; do not retry automatically. The complete report remains at {body}. {error}"
   field issue_report_gist_failed
     value "The complete context could not be uploaded as a gist: {error}"
   field issue_report_export_heading

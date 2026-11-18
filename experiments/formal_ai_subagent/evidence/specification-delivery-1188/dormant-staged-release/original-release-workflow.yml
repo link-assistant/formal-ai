@@ -1,9 +1,20 @@
 name: CI/CD Pipeline
 on:
   push:
-    branches:
-      - main
+    paths-ignore:
+      - "docs/**"
+      - "*.md"
+      - "**/README.md"
+      - "**/CHANGELOG.md"
+      - "changelog.d/**"
+    branches: [main]
   pull_request:
+    paths-ignore:
+      - "docs/**"
+      - "*.md"
+      - "**/README.md"
+      - "**/CHANGELOG.md"
+      - "changelog.d/**"
     branches-ignore: ['e2e/**']
     types: [opened, synchronize, reopened]
   workflow_dispatch:
@@ -32,10 +43,7 @@ on:
         required: false
         default: patch
         type: choice
-        options:
-          - patch
-          - minor
-          - major
+        options: [patch, minor, major]
       description:
         description: 'Release description (optional)'
         required: false
@@ -52,6 +60,7 @@ env:
   FORMAL_AI_CI_VERBOSE: ${{ vars.FORMAL_AI_CI_VERBOSE || 'false' }}
   FORMAL_AI_NON_LINUX_CI: ${{ vars.FORMAL_AI_NON_LINUX_CI || 'skip' }}
   RUSTFLAGS: -Dwarnings
+  RUST_BACKTRACE: full
   CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
   CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
   GHCR_IMAGE: ghcr.io/${{ github.repository }}
@@ -61,7 +70,7 @@ jobs:
     uses: ./.github/workflows/hive-source-provenance.yml
   detect-changes:
     name: Detect Changes
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-detect-changes
@@ -75,14 +84,17 @@ jobs:
       pipeline-changed: ${{ steps.changes.outputs.pipeline-changed }}
       agentic-routing-changed: ${{ steps.changes.outputs.agentic-routing-changed }}
       any-code-changed: ${{ steps.changes.outputs.any-code-changed }}
+      native-type-check: ${{ steps.changes.outputs.native-type-check }}
     steps:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
           fetch-depth: 0
       - name: Setup Rust
+        if: github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')
         uses: dtolnay/rust-toolchain@stable
       - name: Install rust-script
+        if: github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')
         run: bash scripts/install-rust-script.sh
       - name: Detect changes
         id: changes
@@ -91,32 +103,34 @@ jobs:
           GITHUB_EVENT_BEFORE: ${{ github.event.before }}
           # A fragment waiting on main runs lint/test/build, so Auto Release runs (#1064).
           RELEASE_PIPELINE: 'true'
-        run: rust-script scripts/detect-code-changes.rs
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = pull_request ] || { [ "$GITHUB_EVENT_NAME" = workflow_dispatch ] && [ "$GITHUB_REF" != refs/heads/main ]; }; then
+            node scripts/ci-pull-request-admission.mjs detect
+          else
+            rust-script scripts/detect-code-changes.rs
+          fi
   changelog:
     name: Changelog Fragment Check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-changelog
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-    needs: [detect-changes, build-artifacts]
+    needs: [detect-changes]
     if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
     steps:
-      - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-          fetch-depth: 0
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
-      - name: Install rust-script
-        run: bash scripts/install-rust-script.sh
+      - {uses: actions/checkout@v7, timeout-minutes: 2,
+         env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '30'},
+         with: {persist-credentials: false, fetch-depth: 0, filter: blob:none, sparse-checkout: "/scripts/check-changelog-fragment.mjs\n/Cargo.toml\n/rust/Cargo.toml\n/package.json\n", sparse-checkout-cone-mode: false}}
+      - uses: actions/setup-node@v7
+        with: {node-version: 22}
       - name: Check for changelog fragments
         env:
           GITHUB_BASE_REF: ${{ github.base_ref }}
-        run: rust-script scripts/check-changelog-fragment.rs
+        run: node scripts/check-changelog-fragment.mjs
   docker-build:
     name: Docker Image Build & Runtime Check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       packages: read
@@ -125,7 +139,7 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-docker-build
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     needs: [detect-changes, build-artifacts]
-    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (needs.build-artifacts.result == 'success' && github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true') }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -188,14 +202,14 @@ jobs:
       group: ${{ github.workflow }}-docker-slim-${{ github.ref }}
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     needs: [detect-changes, build-artifacts]
-    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (needs.build-artifacts.result == 'success' && github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true') }}
     uses: ./.github/workflows/docker-slim.yml
     permissions:
       contents: read
   secrets-scan:
     name: Secrets Scan
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-secrets-scan
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -208,44 +222,42 @@ jobs:
         needs.detect-changes.outputs.pipeline-changed == 'true'
       )
     steps:
-      - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-          fetch-depth: 0
+      - {uses: actions/checkout@v7, timeout-minutes: 10, env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '20'},
+         with: {persist-credentials: false, fetch-depth: 0, filter: blob:none}}
       - name: Setup Node
         uses: actions/setup-node@v7
-        with:
-          node-version: 22
+        with: {node-version: 22}
       - name: Check for secrets
         env:
           BASE_REF: ${{ github.base_ref || github.event.before || 'HEAD~1' }}
         run: bash scripts/check-secrets.sh
   version-check:
     name: Version Modification Check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-version-check
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     if: github.event_name == 'pull_request'
     steps:
-      - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-          fetch-depth: 0
+      - {uses: actions/checkout@v7, timeout-minutes: 2, env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '20'},
+         with: {persist-credentials: false, fetch-depth: 1, filter: blob:none, sparse-checkout: "/scripts/ci-pull-request-admission.mjs\n/scripts/lib/documentation-paths.mjs\n/Cargo.toml\n/rust/Cargo.toml\n", sparse-checkout-cone-mode: false}}
       - name: Setup Rust
+        if: github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')
         uses: dtolnay/rust-toolchain@stable
       - name: Install rust-script
+        if: github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')
         run: bash scripts/install-rust-script.sh
       - name: Check for manual version changes
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_HEAD_REF: ${{ github.head_ref }}
           GITHUB_BASE_REF: ${{ github.base_ref }}
-        run: rust-script scripts/check-version-modification.rs
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/ci-pull-request-admission.mjs version
   release-preflight:
     name: Release Preflight
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-release-preflight
@@ -277,9 +289,44 @@ jobs:
     uses: ./.github/workflows/pin-base-commit.yml
     permissions:
       contents: read
+  fast-pr-lint:
+    name: Fast Linux source and requirement checks
+    if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'))
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-fast-pr-lint
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - {uses: actions/checkout@v7, timeout-minutes: 4,
+         env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '20'},
+         with: {persist-credentials: false, fetch-depth: 1, filter: blob:none, sparse-checkout: "/*\n!/dev/log/\n!/experiments/formal_ai_subagent/evidence/coordinator-1188/**/*.gz\n", sparse-checkout-cone-mode: false}}
+      - {uses: actions/setup-node@v7, with: {node-version: 22}}
+      - name: Validate source readability, CI budgets and requirements without a native build
+        run: |
+          node scripts/check-readable-code.mjs
+          node scripts/check-file-size.mjs
+          node scripts/check-ci-speed.mjs
+          node scripts/check-hardcoded-language.mjs
+          node scripts/check-js-literals.mjs
+          node scripts/check-tests-as-docs.mjs
+          node scripts/assemble-requirements.mjs
+          node scripts/generate-requirement-status.mjs
+          node scripts/check-requirement-status.mjs
+          node scripts/render-status.mjs --check
+          node scripts/render-progressive-plan.mjs --check
+          node scripts/mirror-package-data.mjs --check
+          node scripts/check-fast-governance.mjs
+  # Issue #1191: the one focused PR native check (main's clippy profile); never native or release evidence.
+  native-type-check:
+    name: Native type and lint check
+    needs: [detect-changes]
+    if: ${{ !cancelled() && (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')) && (needs.detect-changes.result != 'success' || needs.detect-changes.outputs.native-type-check != 'false') }}
+    uses: ./.github/workflows/native-type-check.yml
+    permissions: {contents: read}
   lint:
     name: Lint and Format Check (lane ${{ matrix.lane }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -289,16 +336,7 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-lint-${{ matrix.lane }}
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     needs: [detect-changes, base]
-    if: |
-      !cancelled() && (
-        github.event_name == 'workflow_dispatch' ||
-        needs.detect-changes.outputs.any-code-changed == 'true' ||
-        needs.detect-changes.outputs.rs-changed == 'true' ||
-        needs.detect-changes.outputs.toml-changed == 'true' ||
-        needs.detect-changes.outputs.docs-changed == 'true' ||
-        needs.detect-changes.outputs.pipeline-changed == 'true' ||
-        needs.detect-changes.outputs.workflow-changed == 'true'
-      )
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' || needs.detect-changes.outputs.docs-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' || needs.detect-changes.outputs.workflow-changed == 'true' )) }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -310,16 +348,23 @@ jobs:
           BASE_REF: ${{ github.base_ref }}
           BASE_COMMIT: ${{ needs.base.outputs.commit }}  # issue #1017: see `base`
         run: bash scripts/simulate-fresh-merge.sh
+      - name: Setup Node
+        if: matrix.lane == 1
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: rust/tests/e2e/package-lock.json
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with: {bun-version-file: .bun-version}
+      - {name: Audit JavaScript dependencies before native compilation, if: matrix.lane == 1, timeout-minutes: 9, run: bash scripts/check-javascript-dependencies.sh}
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
           targets: wasm32-unknown-unknown
       - uses: ./.github/actions/setup-sccache
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: .bun-version
       - name: Install rust-script
         run: bash scripts/install-rust-script.sh
       - uses: ./.github/actions/cache-cargo-registry
@@ -357,13 +402,6 @@ jobs:
       - name: Check web bundles are current
         if: matrix.lane == 1
         run: git diff --exit-code -- js/vendor.bundle.js js/web-search-component.bundle.js js/ocr.bundle.js js/app.js
-      - name: Setup Node
-        if: matrix.lane == 1
-        uses: actions/setup-node@v7
-        with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: rust/tests/e2e/package-lock.json
       - name: Install web test dependencies
         if: matrix.lane == 1
         run: npm ci --prefix rust/tests/e2e --no-audit --no-fund
@@ -380,14 +418,7 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.os }}-${{ matrix.test-suite }}-${{ matrix.shard || 1 }}
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     needs: [detect-changes, base, build-artifacts]
-    if: |
-      !cancelled() && (
-        github.event_name == 'workflow_dispatch' ||
-        needs.detect-changes.outputs.any-code-changed == 'true' ||
-        needs.detect-changes.outputs.rs-changed == 'true' ||
-        needs.detect-changes.outputs.toml-changed == 'true' ||
-        needs.detect-changes.outputs.pipeline-changed == 'true'
-      )
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.build-artifacts.result == 'success' && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' )) }}
     strategy:
       fail-fast: false
       matrix:
@@ -396,14 +427,14 @@ jobs:
           # data/meta/test-durations.lino (run 37802763478: 296-743s of tests
           # at four). The entry without `shard` is shard 1 (data + census
           # gates); default-feature doc tests run in their own prepared job.
-          - { os: ubuntu-latest, test-suite: full, shards: 8 }
-          - { os: ubuntu-latest, test-suite: full, shard: 2, shards: 8 }
-          - { os: ubuntu-latest, test-suite: full, shard: 3, shards: 8 }
-          - { os: ubuntu-latest, test-suite: full, shard: 4, shards: 8 }
-          - { os: ubuntu-latest, test-suite: full, shard: 5, shards: 8 }
-          - { os: ubuntu-latest, test-suite: full, shard: 6, shards: 8 }
-          - { os: ubuntu-latest, test-suite: full, shard: 7, shards: 8 }
-          - { os: ubuntu-latest, test-suite: full, shard: 8, shards: 8 }
+          - { os: ubuntu-24.04, test-suite: full, shards: 8 }
+          - { os: ubuntu-24.04, test-suite: full, shard: 2, shards: 8 }
+          - { os: ubuntu-24.04, test-suite: full, shard: 3, shards: 8 }
+          - { os: ubuntu-24.04, test-suite: full, shard: 4, shards: 8 }
+          - { os: ubuntu-24.04, test-suite: full, shard: 5, shards: 8 }
+          - { os: ubuntu-24.04, test-suite: full, shard: 6, shards: 8 }
+          - { os: ubuntu-24.04, test-suite: full, shard: 7, shards: 8 }
+          - { os: ubuntu-24.04, test-suite: full, shard: 8, shards: 8 }
           # The specification suite on Linux closes the blind spot of issue
           # #1107. PR #1188 runs it as four shards of the prebuilt unit
           # executable (its longest test took 520s; run 37802763478 ran three
@@ -412,10 +443,10 @@ jobs:
           # behaviour can differ from Linux (data/meta/macos-platform-tests.lino,
           # macos-core-tests.yml), and a 3600s compile-and-run leg could not fit
           # the 30-minute cap.
-          - { os: ubuntu-latest, test-suite: specification, shard: 1, shards: 4 }
-          - { os: ubuntu-latest, test-suite: specification, shard: 2, shards: 4 }
-          - { os: ubuntu-latest, test-suite: specification, shard: 3, shards: 4 }
-          - { os: ubuntu-latest, test-suite: specification, shard: 4, shards: 4 }
+          - { os: ubuntu-24.04, test-suite: specification, shard: 1, shards: 4 }
+          - { os: ubuntu-24.04, test-suite: specification, shard: 2, shards: 4 }
+          - { os: ubuntu-24.04, test-suite: specification, shard: 3, shards: 4 }
+          - { os: ubuntu-24.04, test-suite: specification, shard: 4, shards: 4 }
     steps:
       - uses: actions/checkout@v7
         with:
@@ -448,7 +479,7 @@ jobs:
           enabled: ${{ github.ref != 'refs/heads/main' }}
       - name: Free up runner disk space
         if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
-        run: bash scripts/free-runner-disk.sh
+        run: RUNNER_DISK_TARGET_MIB=12288 bash scripts/free-runner-disk.sh
       - name: Setup Rust
         if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
         uses: dtolnay/rust-toolchain@stable
@@ -467,7 +498,7 @@ jobs:
           bun-version-file: .bun-version
       - name: Install actual locked native fixture dependencies
         if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
-        run: bun install --frozen-lockfile --ignore-scripts
+        run: node scripts/install-locked-fixture-dependencies.mjs
       - name: Check LiNo data integrity
         if: ${{ (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' && !matrix.shard }}
         env:
@@ -542,19 +573,12 @@ jobs:
             bash scripts/run-prebuilt-tests.sh
   doc-tests:
     name: Default-feature documentation tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
       contents: read
     needs: [detect-changes, base]
-    if: |
-      !cancelled() && (
-        github.event_name == 'workflow_dispatch' ||
-        needs.detect-changes.outputs.any-code-changed == 'true' ||
-        needs.detect-changes.outputs.rs-changed == 'true' ||
-        needs.detect-changes.outputs.toml-changed == 'true' ||
-        needs.detect-changes.outputs.pipeline-changed == 'true'
-      )
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' )) }}
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-doc-tests
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -607,14 +631,7 @@ jobs:
     concurrency:
       group: check-${{ github.workflow }}-${{ github.ref }}-macos-core-tests
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-    if: |
-      !cancelled() && vars.FORMAL_AI_NON_LINUX_CI == 'run' && (
-        github.event_name == 'workflow_dispatch' ||
-        needs.detect-changes.outputs.any-code-changed == 'true' ||
-        needs.detect-changes.outputs.rs-changed == 'true' ||
-        needs.detect-changes.outputs.toml-changed == 'true' ||
-        needs.detect-changes.outputs.pipeline-changed == 'true'
-      )
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && vars.FORMAL_AI_NON_LINUX_CI == 'run' && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' )) }}
     uses: ./.github/workflows/macos-core-tests.yml
     with:
       base-commit: ${{ needs.base.outputs.commit }}
@@ -622,43 +639,41 @@ jobs:
       contents: read
   build:
     name: Build Package
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-build
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     needs: [lint, test, macos-core-tests, build-artifacts]
-    if: ${{ !cancelled() && needs.lint.result == 'success' && needs.test.result == 'success' && (needs.macos-core-tests.result == 'success' || needs.macos-core-tests.result == 'skipped') }}
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.lint.result == 'success' && needs.test.result == 'success' && (needs.macos-core-tests.result == 'success' || needs.macos-core-tests.result == 'skipped')) }}
     steps:
       - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
+        with: {persist-credentials: false}
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
       - uses: ./.github/actions/setup-sccache
       - name: Install rust-script
         run: bash scripts/install-rust-script.sh
       - uses: ./.github/actions/cache-cargo-registry
-        with:
-          prefix: build-
+        with: {prefix: build-}
       - uses: ./.github/actions/download-formal-ai-binary
       - name: Check package
-        run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai
+        run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai --no-verify
       - name: Check crate package size
         run: rust-script scripts/check-crate-package-size.rs
   server-parity:
     name: Server parity (JavaScript vs Rust)
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-server-parity
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     needs: [build-artifacts]
-    if: ${{ !cancelled() && needs.build-artifacts.result == 'success' }}
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.build-artifacts.result == 'success') }}
     steps:
-      - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
+      - {uses: actions/checkout@v7, timeout-minutes: 18,
+         env: {GIT_HTTP_LOW_SPEED_LIMIT: '1024', GIT_HTTP_LOW_SPEED_TIME: '20'},
+         with: {persist-credentials: false}}
       - name: Setup Node
         uses: actions/setup-node@v7
         with:
@@ -753,14 +768,14 @@ jobs:
         run: node scripts/prepared-release-binary.mjs "$RELEASE_VERSION" prepared-release
       - name: Verify packaged crate archive
         if: steps.check.outputs.should_release == 'true'
-        run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai
+        run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai --no-verify
       - name: Publish to Crates.io
         if: steps.check.outputs.should_release == 'true' && steps.prepared.outputs.crate_published != 'true'
         id: publish-crate
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
           CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
-        run: rust-script scripts/publish-crate.rs
+        run: rust-script scripts/publish-crate.rs --verified-build true
       - name: Wait for Crate availability on Crates.io
         if: |
           steps.check.outputs.should_release == 'true' && (
@@ -984,14 +999,14 @@ jobs:
         run: node scripts/prepared-release-binary.mjs "$RELEASE_VERSION" prepared-release
       - name: Verify packaged crate archive
         if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
-        run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai
+        run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai --no-verify
       - name: Publish to Crates.io
         if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
         id: publish-crate
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
           CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
-        run: rust-script scripts/publish-crate.rs
+        run: rust-script scripts/publish-crate.rs --verified-build true
       - name: Wait for Crate availability on Crates.io
         if: |
           (steps.version.outputs.version_committed == 'true' ||
@@ -1148,7 +1163,7 @@ jobs:
       group: formal-ai-repository-writes
       queue: max
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'changelog-pr' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: write
@@ -1156,8 +1171,7 @@ jobs:
     steps:
       # Create-pull-request pushes the generated release branch after workflow_dispatch, so issue #1079 retains persist-credentials for that action.
       - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
+        with: {fetch-depth: 0}
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
       - name: Install rust-script
@@ -1189,11 +1203,7 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-test-e2e-local
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     needs: [detect-changes]
-    if: |
-      !cancelled() && (
-        github.event_name == 'workflow_dispatch' ||
-        needs.detect-changes.outputs.any-code-changed == 'true'
-      )
+    if: ${{ vars.FORMAL_AI_FULL_INTEGRATION == 'run' && (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' )) }}
     uses: ./.github/workflows/e2e-local.yml
     permissions:
       contents: read
@@ -1203,17 +1213,10 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-test-agent-cli-e2e
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     needs: [detect-changes, build-artifacts]
-    if: |
-      !cancelled() && (
-        github.event_name == 'workflow_dispatch' ||
-        needs.detect-changes.outputs.any-code-changed == 'true' ||
-        needs.detect-changes.outputs.rs-changed == 'true' ||
-        needs.detect-changes.outputs.toml-changed == 'true' ||
-        needs.detect-changes.outputs.pipeline-changed == 'true'
-      )
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.build-artifacts.result == 'success' && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' )) }}
     uses: ./.github/workflows/agent-cli-e2e.yml
     with:
-      full-replay: ${{ github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || (github.event_name == 'pull_request' && needs.detect-changes.outputs.agentic-routing-changed == 'true') }}
+      full-replay: ${{ vars.FORMAL_AI_FULL_AGENT_REPLAY == 'run' || (github.event_name == 'pull_request' && needs.detect-changes.outputs.agentic-routing-changed == 'true') }}
     permissions:
       contents: read
   build-artifacts:
@@ -1222,38 +1225,39 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-build-artifacts
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
     needs: [detect-changes]
-    if: |
-      !cancelled() && (
-        github.event_name == 'workflow_dispatch' ||
-        needs.detect-changes.outputs.any-code-changed == 'true' ||
-        needs.detect-changes.outputs.rs-changed == 'true' ||
-        needs.detect-changes.outputs.toml-changed == 'true' ||
-        needs.detect-changes.outputs.pipeline-changed == 'true'
-      )
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' )) }}
     steps:
       - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
+        with: {persist-credentials: false}
       - name: Free up runner disk space
         run: bash scripts/free-runner-disk.sh
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
       - uses: ./.github/actions/setup-sccache
       - uses: ./.github/actions/cache-cargo-registry
-        with:
-          prefix: artifacts-
+        with: {prefix: artifacts-}
       - name: Pin actual native test producer source commit
         id: source
         run: printf 'commit=%s\n' "$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
       - name: Build binaries and test executables
-        run: cargo test --manifest-path rust/Cargo.toml --release --no-run --bins --tests --all-features
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo test --manifest-path rust/Cargo.toml --release --no-run --bins --tests --all-features --message-format=json \
+            | tee "$RUNNER_TEMP/native-build-messages.jsonl"
+      - name: Run compiled native creation fixtures
+        run: |
+          FORMAL_AI_DEADLINE_GRACE_SECONDS=5 scripts/run-with-deadline.sh 90 \
+            node scripts/run-native-coding-fixtures.mjs \
+            "$RUNNER_TEMP/native-build-messages.jsonl" "$RUNNER_TEMP/native-creation-fixtures.json"
+      - {name: Retain native creation fixture evidence, if: '${{ always() }}', uses: actions/upload-artifact@v7, with: {name: native-creation-fixture-qualification, path: "${{ runner.temp }}/native-build-messages.jsonl\n${{ runner.temp }}/native-creation-fixtures.json\n", if-no-files-found: warn, retention-days: 3}}
       - name: Collect the build artifacts
         run: bash scripts/collect-build-artifacts.sh
       - name: Bind native test artifacts to their actual build inputs
-        run: node scripts/native-test-artifact.mjs write dist/tests release all
+        run: FORMAL_AI_DEADLINE_GRACE_SECONDS=5 scripts/run-with-deadline.sh 300 node scripts/native-test-artifact.mjs write-and-check dist/tests release all rust/tests/fixtures/released-client-requests/smoke-tests.json
       - name: Capture complete current native agentic protocols
         timeout-minutes: 5
         run: node scripts/capture-native-agentic-protocol.mjs "$RUNNER_TEMP/native-agentic-protocol-captures" dist/formal-ai
@@ -1272,16 +1276,16 @@ jobs:
           retention-days: 1
       - name: Upload test executables
         uses: actions/upload-artifact@v7
-        with:
-          name: formal-ai-test-executables
-          path: dist/tests
-          retention-days: 1
+        with: {name: formal-ai-test-executables, path: dist/tests, retention-days: 1}
+      - name: Upload the selected self-coding test executable and original receipt
+        uses: actions/upload-artifact@v7
+        with: {name: formal-ai-self-coding-test-executable, path: "dist/tests/unit\ndist/tests/native-build-receipt.json\n", retention-days: 1}
   native-response-observations:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-native-response-observations
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     needs: [build-artifacts]
-    if: ${{ !cancelled() && needs.build-artifacts.result == 'success' }}
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.build-artifacts.result == 'success') }}
     uses: ./.github/workflows/native-response-observations.yml
     with:
       source-commit: ${{ needs.build-artifacts.outputs.source-commit }}
@@ -1292,17 +1296,10 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-box-language-projects-${{ matrix.language }}
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     needs: [detect-changes, build-artifacts]
-    if: |
-      !cancelled() && (
-        github.event_name == 'workflow_dispatch' ||
-        needs.detect-changes.outputs.any-code-changed == 'true' ||
-        needs.detect-changes.outputs.rs-changed == 'true' ||
-        needs.detect-changes.outputs.toml-changed == 'true' ||
-        needs.detect-changes.outputs.pipeline-changed == 'true'
-      )
+    if: ${{ vars.FORMAL_AI_FULL_INTEGRATION == 'run' && (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (!cancelled() && needs.build-artifacts.result == 'success' && ( github.event_name == 'workflow_dispatch' || needs.detect-changes.outputs.any-code-changed == 'true' || needs.detect-changes.outputs.rs-changed == 'true' || needs.detect-changes.outputs.toml-changed == 'true' || needs.detect-changes.outputs.pipeline-changed == 'true' )) }}
     strategy:
       fail-fast: false
       matrix:
@@ -1310,8 +1307,7 @@ jobs:
         language: [rust, python, javascript, typescript, go, java, ruby]
     steps:
       - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
+        with: {persist-credentials: false}
       - name: Skip when identical inputs already passed
         id: ledger
         uses: ./.github/actions/green-ledger
@@ -1322,7 +1318,7 @@ jobs:
           enabled: ${{ github.ref != 'refs/heads/main' }}
       - name: Free up runner disk space
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
-        run: bash scripts/free-runner-disk.sh
+        run: RUNNER_DISK_TARGET_MIB=12288 bash scripts/free-runner-disk.sh
       - uses: ./.github/actions/download-formal-ai-binary
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
       - name: Generate the ${{ matrix.language }} project from Formal-AI answers
@@ -1374,7 +1370,7 @@ jobs:
         (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
         (github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant' && github.ref == 'refs/heads/main')
       )
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:
       contents: read
@@ -1389,8 +1385,7 @@ jobs:
       - name: Deploy Pages artifact
         id: deployment
         uses: actions/deploy-pages@v5
-        with:
-          timeout: 600000
+        with: {timeout: 600000}
         env:
           # deploy-pages upstream issue #434 tracks its core punycode deprecation.
           NODE_OPTIONS: --disable-warning=DEP0040
@@ -1403,12 +1398,11 @@ jobs:
     if: |
       !cancelled() &&
       needs.deploy-pages.result == 'success'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
+        with: {persist-credentials: false}
       - name: Setup Node.js
         uses: actions/setup-node@v7
         with:
@@ -1432,7 +1426,7 @@ jobs:
         continue-on-error: true
         run: |
           cd rust/tests/e2e
-          npx playwright install-deps chromium
+          bash ../../../scripts/with-ubuntu-apt-sources.sh npx playwright install-deps chromium
       - name: Install Playwright browsers
         timeout-minutes: 10
         run: |
@@ -1476,19 +1470,23 @@ jobs:
       tag: ${{ needs.auto-release.outputs.container-tag || needs.manual-release.outputs.container-tag }}
   pipeline-status:
     name: Pipeline Status
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     if: always()
-    needs: [hive-source-provenance, detect-changes, changelog, docker-build, docker-slim, secrets-scan,
+    needs: [fast-pr-lint, native-type-check, hive-source-provenance, detect-changes, changelog, docker-build, docker-slim, secrets-scan,
             version-check, release-preflight, base, lint, test, doc-tests, macos-core-tests, build,
             auto-release, manual-release, native-container-images,
             changelog-pr, test-e2e-local, test-agent-cli-e2e,
             build-artifacts, native-response-observations, box-language-projects, build-pages, deploy-pages,
             test-e2e-pages, server-parity]
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/github-script@v9
         with:
-          persist-credentials: false
+          script: |
+            const p = 'scripts/check-pipeline-status.sh';
+            const {data} = await github.rest.repos.getContent({...context.repo, path:p, ref:context.sha, request:{timeout:20000}});
+            if(data.type !== 'file' || data.encoding !== 'base64' || data.size > 65536) throw Error('invalid status source');
+            const fs = require('node:fs'); fs.mkdirSync('scripts', {recursive:true}); fs.writeFileSync(p, Buffer.from(data.content, 'base64'), {flag:'wx'});
       - name: Fail the run when a required job was cancelled or failed
         env:
           NEEDS_JSON: ${{ toJSON(needs) }}

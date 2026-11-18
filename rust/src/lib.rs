@@ -28,9 +28,11 @@ pub mod change_request;
 pub mod client_contract_learning;
 pub mod client_integrations;
 pub mod cloud_sync;
+pub mod cnl_output;
 pub(crate) mod code_editing;
 pub mod code_example_knowledge;
 pub(crate) mod coding;
+pub(crate) mod quantity_constraint;
 #[cfg(feature = "meta-language")]
 pub mod readable_source;
 pub use coding::composition;
@@ -46,6 +48,7 @@ pub use coding::python_render;
 pub use coding::python_signature;
 pub use coding::recurrence as coding_recurrence;
 pub use coding::task_spec as coding_task_spec;
+pub use coding::unread_structure;
 pub mod authoring_loop;
 pub mod behavior_delta;
 pub mod bounded_process;
@@ -134,6 +137,7 @@ pub mod memory_sync;
 pub(crate) mod meta_algorithm_builder;
 pub mod meta_construction;
 pub(crate) mod meta_core;
+pub mod meta_executor;
 pub mod meta_frame;
 pub(crate) mod meta_method_answers;
 pub(crate) mod meta_method_dispatch;
@@ -232,6 +236,7 @@ pub mod source_fetch;
 pub mod source_reconstruction;
 pub mod source_research;
 pub mod source_walk;
+pub mod standing_scope;
 pub mod statement_audit;
 pub mod statement_verification;
 pub mod storage_policy;
@@ -305,9 +310,9 @@ pub use dreaming::{
     compose_recipe_with_amendments, plan_memory_dreaming, render_dreaming_plan,
 };
 pub use dreaming_application::{
-    RetainedAmendment, amended_answer, apply_retained_amendments, replay_answer_with_amendments,
-    retained_amendments, solve_with_amendment_records, solve_with_standing_requirements,
-    topic_matches,
+    RetainedAmendment, applied_amendment_steps, apply_retained_amendments,
+    replay_answer_with_amendments, retained_amendments, solve_with_amendment_records,
+    solve_with_standing_requirements, topic_matches,
 };
 pub use dreaming_runtime::{
     ForegroundActivity, core_is_idle, dreaming_disabled, run_core_dreaming_once,

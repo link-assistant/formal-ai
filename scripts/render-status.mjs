@@ -154,15 +154,20 @@ export function languageTable(rows) {
 export function latestRelease(root) {
   const source = read(joinPath(root, LEDGERS[1]), (error) => error);
   let latest = new Map();
-  let inRelease = false;
+  const defaults = new Map();
+  let inRelease = false, inDefaults = false;
   for (const line of lines(source)) {
     const trimmed = trim(line);
-    if (line.startsWith('  release')) {
-      latest = new Map();
-      inRelease = true;
-    } else if (inRelease && line.startsWith('    ')) {
+    if (line === '  release-defaults') {
+      defaults.clear();inDefaults = true;inRelease = false;
+    } else if (line === '  release') {
+      latest = new Map(defaults);
+      inRelease = true;inDefaults = false;
+    } else if ((inRelease || inDefaults) && line.startsWith('    ')) {
       const pair = splitOnce(trimmed);
-      if (pair) latest.set(pair[0], unquote(pair[1]));
+      if (pair) (inDefaults ? defaults : latest).set(pair[0], unquote(pair[1]));
+    } else if (line.startsWith('  ')) {
+      inDefaults = false;
     }
   }
   if (!latest.size) throw new Error('self-hosting ledger has no release row');

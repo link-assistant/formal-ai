@@ -14,9 +14,13 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/github-script@v9
         with:
-          persist-credentials: false
+          script: |
+            const p = 'scripts/record-hive-source-event.mjs';
+            const {data} = await github.rest.repos.getContent({...context.repo, path:p, ref:context.sha, request:{timeout:20000}});
+            if(data.type !== 'file' || data.encoding !== 'base64' || data.size > 65536) throw Error('invalid provenance source');
+            const fs = require('node:fs'); fs.mkdirSync('scripts', {recursive:true}); fs.writeFileSync(p, Buffer.from(data.content, 'base64'), {flag:'wx'});
       - uses: actions/setup-node@v7
         with:
           node-version: 24

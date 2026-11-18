@@ -1,0 +1,446 @@
+{
+  "schema": "proposition-structure-parity/v1",
+  "issue": "https://github.com/link-assistant/formal-ai/issues/1487",
+  "structures": [
+    {
+      "text": "1 is less than 2.",
+      "language": "en",
+      "key": "relations=less(number:1,number:2)"
+    },
+    {
+      "text": "2 is less than 1.",
+      "language": "en",
+      "key": "relations=less(number:2,number:1)"
+    },
+    {
+      "text": "2 is greater than 1.",
+      "language": "en",
+      "key": "relations=less(number:1,number:2)"
+    },
+    {
+      "text": "1 < 2",
+      "language": "en",
+      "key": "relations=less(number:1,number:2)"
+    },
+    {
+      "text": "1 <= 2",
+      "language": "en",
+      "key": "relations=less-or-equal(number:1,number:2)"
+    },
+    {
+      "text": "1 is less than or equal to 2.",
+      "language": "en",
+      "key": "relations=less-or-equal(number:1,number:2)"
+    },
+    {
+      "text": "a-b",
+      "language": "en",
+      "key": "relations=minus(symbol:a,unknown:b)"
+    },
+    {
+      "text": "b-a",
+      "language": "en",
+      "key": "relations=minus(unknown:b,symbol:a)"
+    },
+    {
+      "text": "Compute a - b.",
+      "language": "en",
+      "key": "relations=minus(symbol:a,unknown:b)"
+    },
+    {
+      "text": "Compute b - a.",
+      "language": "en",
+      "key": "relations=minus(unknown:b,symbol:a)"
+    },
+    {
+      "text": "The program returns true or false.",
+      "language": "en",
+      "key": "shape=_ disjunction _"
+    },
+    {
+      "text": "The program returns true and false.",
+      "language": "en",
+      "key": ""
+    },
+    {
+      "text": "Print hello twice.",
+      "language": "en",
+      "key": "repetition=repetition-twice"
+    },
+    {
+      "text": "Print hello.",
+      "language": "en",
+      "key": ""
+    },
+    {
+      "text": "Not all primes are odd.",
+      "language": "en",
+      "key": "shape=not universal _"
+    },
+    {
+      "text": "All primes are not odd.",
+      "language": "en",
+      "key": "shape=universal _ not _"
+    },
+    {
+      "text": "x + y * z",
+      "language": "en",
+      "key": "relations=plus(unknown:x,unknown:y) times(unknown:y,unknown:z);unresolved=operator-chain"
+    },
+    {
+      "text": "Send an e-mail and/or a letter.",
+      "language": "en",
+      "key": "shape=_ conjunction disjunction _"
+    },
+    {
+      "text": "程序返回真或假。",
+      "language": "zh",
+      "key": "shape=_ disjunction _"
+    },
+    {
+      "text": "Программа возвращает истину или ложь.",
+      "language": "ru",
+      "key": "shape=_ disjunction _"
+    },
+    {
+      "text": "प्रोग्राम सही या गलत लौटाता है।",
+      "language": "hi",
+      "key": "shape=_ disjunction _"
+    },
+    {
+      "text": "Выведи привет дважды.",
+      "language": "ru",
+      "key": "repetition=repetition-twice"
+    },
+    {
+      "text": "1969 and 1972",
+      "language": "en",
+      "key": ""
+    }
+  ],
+  "relations": [
+    {
+      "later": "2 is less than 1.",
+      "earlier": "1 is less than 2.",
+      "language": "en",
+      "verdict": "distinct",
+      "reason": "different-relations",
+      "restates": false
+    },
+    {
+      "later": "1 is less than 2.",
+      "earlier": "1 is less than 2.",
+      "language": "en",
+      "verdict": "equivalent",
+      "reason": "same-identity",
+      "restates": true
+    },
+    {
+      "later": "2 is greater than 1.",
+      "earlier": "1 is less than 2.",
+      "language": "en",
+      "verdict": "equivalent",
+      "reason": "same-relations",
+      "restates": true
+    },
+    {
+      "later": "1 < 2",
+      "earlier": "1 is less than 2.",
+      "language": "en",
+      "verdict": "equivalent",
+      "reason": "same-relations",
+      "restates": true
+    },
+    {
+      "later": "1 <= 2",
+      "earlier": "1 < 2",
+      "language": "en",
+      "verdict": "distinct",
+      "reason": "different-relations",
+      "restates": false
+    },
+    {
+      "later": "The program returns true or false.",
+      "earlier": "The program returns true and false.",
+      "language": "en",
+      "verdict": "distinct",
+      "reason": "non-conjunctive-shape",
+      "restates": false
+    },
+    {
+      "later": "The program returns true and false.",
+      "earlier": "The program returns true or false.",
+      "language": "en",
+      "verdict": "distinct",
+      "reason": "non-conjunctive-shape",
+      "restates": false
+    },
+    {
+      "later": "b-a",
+      "earlier": "a-b",
+      "language": "en",
+      "verdict": "distinct",
+      "reason": "different-relations",
+      "restates": false
+    },
+    {
+      "later": "Compute b - a.",
+      "earlier": "Compute a - b.",
+      "language": "en",
+      "verdict": "distinct",
+      "reason": "different-relations",
+      "restates": false
+    },
+    {
+      "later": "Print hello.",
+      "earlier": "Print hello twice.",
+      "language": "en",
+      "verdict": "distinct",
+      "reason": "different-repetition",
+      "restates": false
+    },
+    {
+      "later": "Print hello twice.",
+      "earlier": "Print hello.",
+      "language": "en",
+      "verdict": "distinct",
+      "reason": "different-repetition",
+      "restates": false
+    },
+    {
+      "later": "Print hello.",
+      "earlier": "Print hello.",
+      "language": "en",
+      "verdict": "equivalent",
+      "reason": "same-identity",
+      "restates": true
+    },
+    {
+      "later": "Not all primes are odd.",
+      "earlier": "All primes are not odd.",
+      "language": "en",
+      "verdict": "distinct",
+      "reason": "not-asserted",
+      "restates": false
+    },
+    {
+      "later": "1972",
+      "earlier": "1969 and 1972",
+      "language": "en",
+      "verdict": "entailed",
+      "reason": "conjunction-elimination",
+      "restates": true
+    },
+    {
+      "later": "x + y * z",
+      "earlier": "x + y * z",
+      "language": "en",
+      "verdict": "equivalent",
+      "reason": "same-identity",
+      "restates": true
+    },
+    {
+      "later": "x + y * z",
+      "earlier": "x * y + z",
+      "language": "en",
+      "verdict": "unresolved",
+      "reason": "unsupported-structure",
+      "restates": false
+    }
+  ],
+  "signatures": [
+    {
+      "text": "Compute a - b.",
+      "key": "asserted:b compute|relations=minus(symbol:a,symbol:b)"
+    },
+    {
+      "text": "Compute b - a.",
+      "key": "asserted:b compute|relations=minus(symbol:b,symbol:a)"
+    },
+    {
+      "text": "1 < 2",
+      "key": "asserted:1 2|relations=less(symbol:1,symbol:2)"
+    },
+    {
+      "text": "2 < 1",
+      "key": "asserted:1 2|relations=less(symbol:2,symbol:1)"
+    },
+    {
+      "text": "x <= y",
+      "key": "asserted:x y|relations=less-or-equal(symbol:x,symbol:y)"
+    },
+    {
+      "text": "1 is less than 2.",
+      "key": "asserted:1 2 less|relations=less(symbol:1,symbol:2)"
+    },
+    {
+      "text": "2 is less than 1.",
+      "key": "asserted:1 2 less|relations=less(symbol:2,symbol:1)"
+    },
+    {
+      "text": "2 is greater than 1.",
+      "key": "asserted:1 2 greater|relations=less(symbol:1,symbol:2)"
+    },
+    {
+      "text": "1 is at most 2.",
+      "key": "asserted:1 2 most|relations=less-or-equal(symbol:1,symbol:2)"
+    },
+    {
+      "text": "The program returns true or false.",
+      "key": "asserted:false program returns true|shape=_ disjunction _"
+    },
+    {
+      "text": "The program returns true and false.",
+      "key": "asserted:false program returns true"
+    },
+    {
+      "text": "The program does not return true or false.",
+      "key": "denied:false program return true|shape=_ disjunction _|scope=_ not _ disjunction _"
+    },
+    {
+      "text": "Not all tests pass.",
+      "key": "denied:all pass tests|scope=not universal _"
+    },
+    {
+      "text": "All tests do not pass.",
+      "key": "denied:all pass tests|scope=universal _ not _"
+    },
+    {
+      "text": "Print hello twice.",
+      "key": "asserted:hello print twice|repetition=repetition-twice"
+    },
+    {
+      "text": "Print hello.",
+      "key": "asserted:hello print"
+    },
+    {
+      "text": "The parser is fast.",
+      "key": "asserted:fast parser"
+    },
+    {
+      "text": "The parser is not fast.",
+      "key": "denied:fast parser|scope=_ not _"
+    },
+    {
+      "text": "Не все тесты проходят.",
+      "key": "denied:все проходят тесты|scope=not universal _"
+    },
+    {
+      "text": "Все тесты не проходят.",
+      "key": "denied:все проходят тесты|scope=universal _ not _"
+    },
+    {
+      "text": "Программа возвращает истину или ложь.",
+      "key": "asserted:возвращает истину ложь программа|shape=_ disjunction _"
+    },
+    {
+      "text": "程序返回真或假。",
+      "key": "asserted:程序返回真假|shape=_ disjunction _"
+    },
+    {
+      "text": "प्रोग्राम सही या गलत लौटाता है।",
+      "key": "asserted:गलत प राम रोग लौटाता सही|shape=_ disjunction _"
+    },
+    {
+      "text": "Выведи привет дважды.",
+      "key": "asserted:выведи дважды привет|repetition=repetition-twice"
+    }
+  ],
+  "unread": [
+    {
+      "text": "Return the number of vowels in the text.",
+      "ids": [
+        "reduce_count",
+        "vowel_character_class"
+      ],
+      "unread": ""
+    },
+    {
+      "text": "Return twice the number of vowels in the text.",
+      "ids": [
+        "reduce_count",
+        "vowel_character_class"
+      ],
+      "unread": "repetition=repetition-twice"
+    },
+    {
+      "text": "Return the number of vowels in the text twice.",
+      "ids": [
+        "reduce_count",
+        "vowel_character_class"
+      ],
+      "unread": "repetition=repetition-twice"
+    },
+    {
+      "text": "Return the number of characters that are not vowels in the text.",
+      "ids": [
+        "reduce_count",
+        "vowel_character_class"
+      ],
+      "unread": "scope=_ not _"
+    },
+    {
+      "text": "Return the number of vowels or digits in the text.",
+      "ids": [
+        "reduce_count",
+        "vowel_character_class"
+      ],
+      "unread": "shape=_ disjunction _"
+    },
+    {
+      "text": "Return a - b.",
+      "ids": [],
+      "unread": "relations=minus(symbol:a,symbol:b)"
+    },
+    {
+      "text": "Return b - a.",
+      "ids": [],
+      "unread": "relations=minus(symbol:b,symbol:a)"
+    },
+    {
+      "text": "Return whether a < b.",
+      "ids": [],
+      "unread": "relations=less(symbol:a,symbol:b)"
+    },
+    {
+      "text": "Return whether a <= b.",
+      "ids": [],
+      "unread": "relations=less-or-equal(symbol:a,symbol:b)"
+    },
+    {
+      "text": "Print \"a or b\".",
+      "ids": [
+        "print_stdout"
+      ],
+      "unread": ""
+    },
+    {
+      "text": "Write below_zero(values) that returns the sum of values.",
+      "ids": [
+        "reduce_sum"
+      ],
+      "unread": ""
+    },
+    {
+      "text": "Return the reverse-sorted list.",
+      "ids": [],
+      "unread": ""
+    },
+    {
+      "text": "Верни количество гласных дважды.",
+      "ids": [
+        "reduce_count",
+        "vowel_character_class"
+      ],
+      "unread": "repetition=repetition-twice"
+    },
+    {
+      "text": "返回元音或数字的数量。",
+      "ids": [
+        "reduce_count",
+        "vowel_character_class"
+      ],
+      "unread": "shape=_ disjunction _"
+    }
+  ]
+}

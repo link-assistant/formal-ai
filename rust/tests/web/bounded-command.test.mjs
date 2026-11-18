@@ -124,3 +124,18 @@ test('a blocked supervisor Worker cannot retain the caller after finite fallback
   assert.equal(observed.cleanup, false);
   assert.ok(BigInt(observed.elapsed) >= 1000000000n);
 });
+
+
+test('stream observers retain every byte without accumulating a second command buffer',async()=>{
+ let stdout=0,stderr=0;
+ const result=await boundedCommand(node,['-e','process.stdout.write(Buffer.alloc(300000,120));process.stderr.write("failure\\n");'],{
+  timeout:2000,stdoutLimitBytes:0,stderrLimitBytes:0,onStdout:chunk=>{stdout+=chunk.length;},onStderr:chunk=>{stderr+=chunk.length;}});
+ assert.equal(result.error,undefined);assert.equal(result.cleanup_complete,true);
+ assert.equal(stdout,300000);assert.equal(stderr,8);assert.equal(result.stdout.length,0);assert.equal(result.stderr.length,0);
+});
+test('cancellation allows a finite TERM grace and then kills a signal-ignoring process group',async()=>{
+ const cancellation=new AbortController();
+  const result=await boundedCommand(node,['-e','process.on("SIGTERM",()=>{});process.stdout.write("ready");setInterval(()=>{},1000);'],{
+   timeout:2000,terminationGraceMs:100,signal:cancellation.signal,onStdout:()=>{cancellation.abort();}});
+  assert.equal(result.error.code,'ECANCELLED');assert.equal(result.signal,'SIGKILL');assert.equal(result.cleanup_complete,true);
+});

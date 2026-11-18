@@ -19,13 +19,46 @@ acceptance and released-image evidence must be distinguished.
 | Live memory | Migrate validated supported older schema without loss. For incompatible bytes, preserve the original and select an explicitly reported new current-schema store. Permission/IO failures remain distinct; second startup is idempotent. |
 | Shutdown | A serving process handles SIGTERM within the container stop timeout, including PID1 and active connections; no local native build is permitted for this work. |
 
-Acceptance uses the exact three issue bodies and PR branches named in issue
-1364, with source provenance. Each client must produce the commented program,
+Acceptance preserves the complete three original issue bodies named in issue
+1364, with source provenance. Following the latest credential requirement,
+the default GitHub Actions token uses an owned orphan branch, issue and PR in
+this repository. The pinned Hive generator stages the workflow in `ci/` and
+the original harness executes it with `act`. Only its two workflow location
+instructions change; reversing those instructions must reproduce the original
+complete body hash. Optional credentials may use the historical external PR
+branches. Receipts distinguish these transports and never claim an external
+repository write from same-repository acceptance. Missing optional credentials
+must not block the release or this acceptance. Each client must produce the commented program,
 build/run instructions, verifier and working workflow, push everything, update
 the ready PR, exit zero, and leave a clean tree without build outputs. A second
 run is a no-op success. No run may make more than two identical failing calls.
 Released-image Hive `/claude`, `/codex` and `/agent` outcomes must also be zero;
 candidate-image results do not establish released-image acceptance.
+
+For Hive revisions whose documented no-change process status is 5, the verified
+repeat uses the supported `HIVE_MIND_SOLVE_NO_CHANGES_EXIT_CODE=0` invocation
+setting, forwarded into its container. The first delivery explicitly retains 5
+so an inherited override cannot excuse missing work. The original harness must
+still exit zero and pass every assertion, and the repeat must independently
+preserve source bytes, file identities and commits without mutation calls.
+Never rewrite failed observations or add artificial changes to satisfy a change
+counter. See the [released failure and compatibility boundary](../case-studies/issue-1328/released-client-no-change-exit.md).
+
+The published runtime must include the real Claude, Codex and Agent executables
+and the MCP prerequisites required by the original Hive defaults. Verify those
+prerequisites in the final task image before transferring it or creating issues;
+do not infer client readiness from the Formal AI server version alone. Preserve
+the original MCP preflight. Proposal-only learning events are not release CI
+gates; actual validation workflows, publishers and unknown scheduled checks
+remain required. Revalidation and command failures must identify their blocking
+run or bounded redacted stdout/stderr instead of a bare boolean assertion.
+
+For explicitly staged `ci/` workflows, source-qualified PR readiness and CI
+completion are separate observations. A clean pushed source tree and its exact
+staged workflow may be marked ready for independent execution. This grants no
+CI or task-completion credit. The original Hive harness must still execute that
+workflow and all unchanged delivery assertions before acceptance. Missing
+hosted checks must never become a fabricated green result.
 
 ## Replay and GitHub side effects
 
@@ -49,6 +82,13 @@ test and evidence finalization are terminal. Record pass/failure/cancellation
 and the run link. Preserve active or unproven issues; never close feature issues
 based on title, age or labels alone. Cleanup must run for failed and cancelled
 tests too, with bounded recovery for interrupted finalization.
+When a released-owner chain exhausts GitHub's `workflow_run` depth, explicitly
+dispatch trusted-main cleanup with the default Actions token, naming its exact
+run, attempt and protocol commit. Wait only a finite number of read-only polls
+for owner completion; authenticate source custody before the immutable cleanup
+claim and every effect. Standard checks dispatches stay read-only. Dispatch is
+not cleanup credit, uncertain mutations never retry, and existing claims remain
+quarantined rather than replayed.
 
 Live service/authentication/publication behavior remains independently checked
 by the final real run; replay success alone is not proof that GitHub is usable.

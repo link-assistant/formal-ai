@@ -10,6 +10,16 @@
 # without this file shows up as a divergence. `{name}` is a placeholder;
 # `\n` is a newline.
 agentic_messages
+  message structured-output-schema-unsupported
+    text "The requested JSON output schema is invalid or uses unsupported constraints."
+  message structured-output-underivable
+    text "Could not derive a valid JSON object for the requested schema."
+  message structured-output-experience-qualifier
+    text "(?:[Aa]t least|[Mm]inimum(?: of)?)"
+  message structured-output-sum-pattern
+    text "^(?:(?:return|give|find|compute|calculate|what is)\s+(?:me\s+)?(?:the\s+)?|.*\b(?:equal to|is)\s+(?:the\s+)?)?sum of\s+({number})\s+and\s+({number})[.!?]?$"
+  message structured-output-arithmetic-pattern
+    text "^(?:(?:return|compute|calculate|what is)\s+)?({number}\s*[-+*/]\s*{number})[.!?]?$"
   message shell-recovery-final-failure
     text "{failure}\n\n{recovery}"
   message shell_tool_missing
@@ -70,6 +80,12 @@ agentic_messages
     text "Formal AI learning"
   message report_issue_report_body_command
     text "formal-ai report body"
+  message report-issue-submit-command
+    text "formal-ai report create-issue"
+  message code-artifact-literal-unverified
+    text "Could not independently verify the literal update of {path}; no whole-file replacement was attempted."
+  message code-artifact-literal-verified
+    text "Updated {path} with an exact literal edit and observed the requested result; all other content stayed outside the edit."
   message report_issue_context_export_command
     text "formal-ai context export"
   message report_issue_context_learn_command
@@ -632,6 +648,8 @@ agentic_messages
     text "The push failed with an invalid local refspec. Read git branch --show-current in the client workspace before retrying; no shell tool is available."
   message tool-argument-binding-incomplete
     text "Planning stopped: required tool arguments could not be bound for {tool}. No call was sent; inspect tool_argument_binding_failed diagnostics. The task is incomplete."
+  message client-function-arguments-underivable
+    text "Could not derive arguments for {tool} that satisfy its parameters schema."
   message memory-storage-unavailable
     text "persisted-memory storage unavailable at {path}: {error}"
   message source-cst-read-arguments
@@ -687,3 +705,18 @@ agentic_messages
 
   message source-transport-timeout-diagnostic
     text "source_transport_timeout; cleanup_complete={cleaned}"
+
+  message tool-result-command-streams
+    text "Output: {output}{separator}Error: {error}"
+
+  message literal-create-shell-readback
+    text "printf %s '(' && cat -- {path} && printf %s ')'"
+
+  message literal-create-write-unobserved
+    text "Declared target write was not observed."
+
+  message literal-create-read-incomplete
+    text "Target readback was incomplete or unbound."
+
+  message literal-create-receipt-unbound
+    text "Unbound target verification receipt."

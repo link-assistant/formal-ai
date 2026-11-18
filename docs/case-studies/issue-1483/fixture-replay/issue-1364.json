@@ -1,0 +1,573 @@
+{
+ "calls": [
+  "bash {\"command\":\"gh issue view 'https://github.com/link-assistant/formal-ai/issues/1364' --json title --jq .title && echo && gh issue view 'https://github.com/link-a",
+  "glob {\"pattern\":\"**/main.rs\"}",
+  "read {\"filePath\":\"rust/src/main.rs\",\"file_path\":\"rust/src/main.rs\",\"path\":\"rust/src/main.rs\"}",
+  "glob {\"pattern\":\"**/run.yml\"}"
+ ],
+ "answer": "Not completed: https://github.com/link-assistant/formal-ai/issues/1364. The session stopped at `UnresolvedReferences` and changed no repository file.\n\nFiles read: `rust/src/main.rs`.\n\nEvidence left unresolved (1):\n- `run.yml`: `NotFound`\n\nRequirements not yet verified (62):\n1. Hive Mind 2026-10-20 (0.354.1): Hello World via /claude, /codex and /agent all failed (branch 'so', web_run {} ×210, build outputs left, invalid gh flags, scala…\n2. On 2026-10-20 Hive Mind 2.39.2 ran the three Hello World issues with Formal AI **0.354.1** as the model, one per client. **None succeeded:**\n3. | Client | Issue / PR | Execution | Result | What Formal AI produced in this run | |---|---|---|---|---| | Claude Code (`--tool claude`) | [Kotlin #1](https://g…\n4. Goal of this issue: everything Formal AI must change so that the **next release completes all three runs**. Each item below has the evidence from these logs, th…\n5. This continues #1162 (the same three tasks on 2026-09-27 with 0.352.1) and #1328 (the Codex loop of this run, observed live).\n6. Session 1 (`858bf47a`, 7 turns) did the work correctly:\n7. `gh issue view` (title and body);\n8. wrote `Main.kt` and `tests/verify-output.sh`;\nand 54 more.\n\nThe machine record of this session (`repository-work-item-evidence/v1`) is kept in the trace, not in this answer.",
+ "disposition": "gap",
+ "record": {
+  "schema": "repository-work-item-evidence/v1",
+  "reason": "UnresolvedReferences",
+  "workItem": "https://github.com/link-assistant/formal-ai/issues/1364",
+  "taskIdentity": "a55f42132182fa184c209c8274f504315e93f9a83d3bd5f8c6c1f800d6b02c26",
+  "requirements": [
+   {
+    "text": "Hive Mind 2026-10-20 (0.354.1): Hello World via /claude, /codex and /agent all failed (branch 'so', web_run {} ×210, build outputs left, invalid gh flags, scalac missing, exit code misread, workflow never planned): everything the next release must fix",
+    "span": [
+     0,
+     252
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "On 2026-10-20 Hive Mind 2.39.2 ran the three Hello World issues with Formal AI **0.354.1** as the model, one per client. **None succeeded:**",
+    "span": [
+     266,
+     406
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "| Client | Issue / PR | Execution | Result | What Formal AI produced in this run |\n|---|---|---|---|---|\n| Claude Code (`--tool claude`) | [Kotlin #1](https://github.com/konard/test-hello-world-019fb330-fa49-7c9d-a664-b7ea33bb698a/issues/1) / [PR #2](https://github.com/konard/test-hello-world-019fb330-fa49-7c9d-a664-b7ea33bb698a/pull/2) | `2719fb28` | **failed, exit 1** after 7 min 28 s | Session 1: correct `Main.kt`, verify script, compiled, ran, committed and pushed `139e03c`. Left `Main.jar` untracked. Session 2 (restart for `Main.jar`): an invalid `gh` command, then stopped |\n| Codex (`--tool codex`) | [Rust #1](https://github.com/konard/test-hello-world-019fb331-c107-78c7-8ff6-9f127a3c593c/issues/1) / [PR #2](https://github.com/konard/test-hello-world-019fb331-c107-78c7-8ff6-9f127a3c593c/pull/2) | `b8b78e59` | **stopped by the operator, exit 137**, after 14 h 8 min | `main.rs` + verify script, compiled and ran, committed. **Pushed to branch `so`** (fails), then **210** `web_run` calls with `{}` until the sidecar was stopped. No workflow |\n| Agent CLI (`--tool agent`) | [Scala #1](https://github.com/konard/test-hello-world-019fb330-00e1-73b9-955e-f357a1600d5b/issues/1) / [PR #2](https://github.com/konard/test-hello-world-019fb330-00e1-73b9-955e-f357a1600d5b/pull/2) | `2e56df93` | **failed, exit 1** after 2 h 39 min | Nothing new: 7 attempts, each repeated the same reads and writes and stopped at `scalac: not found` |",
+    "span": [
+     408,
+     1852
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Goal of this issue: everything Formal AI must change so that the **next release completes all three runs**. Each item below has the evidence from these logs, the related issue if one exists, and a regression test built from this exact input. Parts outside Formal AI are listed at the end and tracked in their own repositories.",
+    "span": [
+     1854,
+     2180
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "This continues #1162 (the same three tasks on 2026-09-27 with 0.352.1) and #1328 (the Codex loop of this run, observed live).",
+    "span": [
+     2182,
+     2307
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Session 1 (`858bf47a`, 7 turns) did the work correctly:",
+    "span": [
+     2404,
+     2459
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "`gh issue view` (title and body);",
+    "span": [
+     2465,
+     2498
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "wrote `Main.kt` and `tests/verify-output.sh`;",
+    "span": [
+     2504,
+     2549
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "ran `kotlinc Main.kt -include-runtime -d Main.jar`, then the verify script (`Hello, World!`);",
+    "span": [
+     2555,
+     2648
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "`git add … && git commit … && git push -q origin 'issue-1-604f2202fd18'` → `139e03c`, pushed.",
+    "span": [
+     2654,
+     2753
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "It ended `subtype=success` with \"Created and verified `Main.kt` through the agentic CLI harness.\"",
+    "span": [
+     2758,
+     2855
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**`Main.jar` was left untracked** in the working tree: Formal AI's own build command writes it into the repository root. Hive Mind restarts the session for every uncommitted file (#1157 has the same symptom from 2026-09-27).",
+    "span": [
+     2859,
+     3083
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Session 2 (`539e9b34`, 2 turns) got Hive Mind's restart prompt, which lists `?? Main.jar` and asks to commit, ignore or delete each file. Formal AI did none of that. Its only step was:\n   ```\n   gh pr view 'https://github.com/…/pull/2' --comments --json comments,reviews\n   → Exit code 1: specify only one of --comments or --json\n   ```\n   It then ended with \"Prepared-work continuation stopped at `gh pr view …`\". The usage error names the fix (`--json comments,reviews` alone), but Formal AI neither retried it nor moved on to the actual request (`Main.jar`).",
+    "span": [
+     3087,
+     3654
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Hive Mind then stopped with \"no progress between sessions\" (same HEAD `139e03c`, `Main.jar` still there), exit 1.",
+    "span": [
+     3658,
+     3771
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "The PR content is close to complete: `Main.kt`, the verify script and `.github/workflows/run.yml` (from the 2026-09-27 run) are there, and CI passes. What failed the run is the build output and the second session.",
+    "span": [
+     3773,
+     3986
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Details and the live observation are in #1328. Final numbers:",
+    "span": [
+     4042,
+     4103
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "08:41:50: `rustc main.rs -o main`, the verify script passed, and `git commit` succeeded. **`git push -q origin 'so'`** then failed with `error: src refspec so does not match any`. The branch name came from the system prompt's guideline sentence \"commit each atomic step … to the pull request **branch so** interrupted work remains preserved\". The real branch `issue-1-09b0c76bd0e4` appears 11 times in the same Codex session (`turn_context.git.branch`, the prompt).",
+    "span": [
+     4108,
+     4575
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "08:43:55 → 16:35:10: **210** `codex_apps search_service.web_run` calls, all with `arguments: {}`, all rejected (`InvalidActionArgumentsError … missing_required_argument`). Before every call the text was the same: \"Let me search the web for rust src refspec so does not match any.\" There was no repeat stop. Each answer used 57–140 s of a full core, and the request body grew by 864 B per call.",
+    "span": [
+     4579,
+     4978
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "After the sidecar was stopped (16:35:50), Codex waited \"for network\" until the operator stopped the task at 22:36. Hive Mind then auto-committed and pushed the untracked **`main` binary (4.5 MB)** that Formal AI's `rustc main.rs -o main` had left in the repository root (`693630a`). The same build-output problem as `Main.jar`.",
+    "span": [
+     4982,
+     5309
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**Requirement 6 (a GitHub Actions workflow) was never planned**: the PR has no workflow and no CI.",
+    "span": [
+     5313,
+     5411
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Every attempt repeated the same steps: `gh issue view` ×2, write `Main.scala`, write `tests/verify-output.sh`, `scalac Main.scala` → `/bin/sh: 1: scalac: not found` (exit 127), then stop. There were 7 attempts: the first plus 6 Hive Mind retries of the same session; the last one failed at once on the stopped sidecar. `scalac` ran 8 times. **No commit was made on 2026-10-20**: the PR still has only the September commits.",
+    "span": [
+     5475,
+     5901
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Formal AI never checked which toolchain exists (`command -v scalac`, `scala-cli`, `cs`, `sbt`), never tried a fallback, and never handed compilation to CI (the PR already has a workflow that passes). #1159 is the same failure from 2026-09-15.",
+    "span": [
+     5905,
+     6147
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**The tool's exit code was misread.** The agent CLI's tool result carries `\"metadata\": {\"exit\": 127}` and `\"error\": \"Exit code 127\\n/bin/sh: 1: scalac: not found\"`, yet Formal AI answered \"Step `scalac Main.scala` for `Main.scala` failed. **No exit code was reported**, so the verdict rests on what the tool said\".",
+    "span": [
+     6151,
+     6465
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "A resumed session re-ran the steps the history already showed as done (see #1328, attempts 1–5).",
+    "span": [
+     6469,
+     6567
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "17:07: Hive Mind's retry found the stopped sidecar unreachable and failed the task properly (\"the Formal AI endpoint … could not be reached\").",
+    "span": [
+     6571,
+     6715
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**Logs and memory not written.** During the Claude run alone there were 83 `level error` lines: `[dialog-log] failed to record exchange: Permission denied (os error 13)`, `logging_failed_check_log_directory_permissions_and_space`. There were also `[memory] failed to record live chat exchange: refusing to write an incompatible persisted-memory schema`. The permission part is Hive Mind's volume ownership (link-assistant/hive-mind#3583). **The incompatible persisted-memory schema is Formal AI's**: an existing memory volume from an older version can't be used, and nothing upgrades it (compare #982).",
+    "span": [
+     6748,
+     7350
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**`formal-ai serve` ignores SIGTERM.** `docker stop -t 10` ended with exit 137 (#1328).",
+    "span": [
+     7353,
+     7440
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**The runs used 0.354.1** although v0.355.0 had been released at 2026-10-19 22:37 UTC, about 10 h before the first run. Its notes mention \"Preserve observed tool exit status …\", \"keep explicitly requested workflow paths in fetched coding tasks\" and \"Continue missing-command recovery …\". So items 4, 6 and 7 below may be partly addressed already, but they are unverified for these inputs.",
+    "span": [
+     7443,
+     7835
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**Branch name from the prompt's prose** (`so`). Push to the checked-out branch (`git rev-parse --abbrev-ref HEAD`, or the client's `git.branch` context), never to a word taken from guideline text. Test: the exact Codex system prompt and turn context from `b8b78e59` → `git push origin issue-1-09b0c76bd0e4`. (#1328)",
+    "span": [
+     7914,
+     8231
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**Tool calls with empty or invalid arguments, and no repeat stop.** `web_run` must get its `input`/`query`. The same failing call with the same arguments must not be planned again: after the second identical failure, change the plan or end the task with an honest failure. Test: the `b8b78e59` transcript at item 12 ends in ≤ 2 identical calls. (#1328)",
+    "span": [
+     8235,
+     8589
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**Build outputs left in the repository** (`Main.jar`, `main`). Build into a temporary directory, or add a matching `.gitignore` and commit it, or delete the output after verifying. Never leave an untracked file. Test: Kotlin and Rust tasks end with an empty `git status --porcelain`. (#1157)",
+    "span": [
+     8593,
+     8884
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**Hive Mind's continuation prompt.** When the prompt lists uncommitted files, handle each one as asked (commit, ignore or delete) before anything else. A usage error from `gh` (`specify only one of --comments or --json`) must be corrected and retried, or skipped, instead of ending the session. Reading PR feedback must use valid flags (`gh pr view <n> --json comments,reviews`). Test: the `539e9b34` input ends with `Main.jar` ignored or removed, pushed, and a clean tree. (#1158, #1157)",
+    "span": [
+     8888,
+     9376
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**Requirement coverage before success.** Check every numbered requirement of the issue before answering success. Here requirement 6 (a GitHub Actions workflow that builds and runs the program on push and pull request) was never planned for Rust, and for Kotlin and Scala it was never checked against the existing `run.yml`. Test: all three issue bodies → a workflow exists, runs the program and the verify script, and CI is green.",
+    "span": [
+     9380,
+     9812
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**Missing toolchain.** Probe before compiling (`command -v`). If the compiler is missing, use an available alternative or install it in user space (e.g. `scala-cli` / coursier for Scala). As a last resort, commit the source, verify script and workflow and let CI build it, with an honest note that local compilation was not possible. Never stop with the work uncommitted. Test: the Scala issue in an image without `scalac` → the work is committed and CI is green. (#1159)",
+    "span": [
+     9816,
+     10289
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**The agent CLI's tool-result format.** Read `state.metadata.exit` (and `state.error` \"Exit code N\") from OpenCode-style `tool_use` parts. \"No exit code was reported\" was false here. Test: the `scalac` result from `2e56df93`. (0.355.0 \"Preserve observed tool exit status\" may cover this; please confirm with this exact input.)",
+    "span": [
+     10293,
+     10619
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**Resumed sessions.** Continue from the last completed step instead of re-running finished reads, writes and commands. A resume after a completed, committed step should make no further changes. Test: resuming `ses_ea64805c8ffe…` after attempt 1 does not rewrite `Main.scala`. (#1157, #1328)",
+    "span": [
+     10623,
+     10915
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**Evidence files committed into the user's PR.** Both the Kotlin and Rust runs committed `dev/log/self-authored/issue-1/evidence/{claude,codex}-stream.jsonl` as **empty files (0 bytes)**, plus `session-id.txt`. Please decide: either commit them with content (and say so in the PR description), or keep them out of the user's repository. An empty evidence file proves nothing and adds noise to a Hello World PR.",
+    "span": [
+     10919,
+     11329
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**Persisted-memory schema.** Upgrade or migrate an older memory volume unattended and without data loss, or start a new one and say so. Don't refuse every write for the whole session. (#982)",
+    "span": [
+     11334,
+     11524
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**SIGTERM.** `formal-ai serve` should shut down within the stop timeout instead of being killed (exit 137). (#1328)",
+    "span": [
+     11529,
+     11644
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**link-assistant/agent:** its own `POST /session/<id>/message` request is reset after ~256 s (255,992 / 256,052 / 256,215 ms). With Formal AI at 60–140 s per step, every session longer than about 4 minutes hits it.",
+    "span": [
+     11706,
+     11922
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**link-assistant/hive-mind:**",
+    "span": [
+     11925,
+     11954
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "it takes that reset for a transient network failure and resumes the session (Retry 1–6, 3 → 30 min);",
+    "span": [
+     11959,
+     12063
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "its `--auto-commit-uncommitted-changes` committed and pushed a 4.5 MB compiled binary;",
+    "span": [
+     12068,
+     12154
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "the failed Kotlin run ends with PR #2 ready for review, not draft (\"Converting PR: To ready for review (run end (No progress between sessions))\");",
+    "span": [
+     12159,
+     12305
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "the runs used 0.354.1 although 0.355.0 was out;",
+    "span": [
+     12310,
+     12357
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "#3583 (volume ownership).",
+    "span": [
+     12362,
+     12387
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "**Codex 0.163.0:** with a local provider that is down it waits for the network indefinitely instead of failing the turn.",
+    "span": [
+     12390,
+     12510
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Each fix above has a regression test whose input is taken from these logs (prompts, transcripts, tool results), and the tests run in Formal AI's CI.",
+    "span": [
+     12549,
+     12697
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Against a local `formal-ai serve --agent-mode`, with Claude Code (Kotlin), Codex (Rust) and the Agent CLI (Scala) as clients, using **these three issue bodies and these PR branches**, each run ends with:",
+    "span": [
+     12701,
+     12904
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "one program file printing exactly `Hello, World!` with explaining comments and build/run instructions;",
+    "span": [
+     12910,
+     13012
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "a verify script and a workflow that runs both on push and pull request, with green CI;",
+    "span": [
+     13018,
+     13104
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "no build outputs committed and a clean working tree;",
+    "span": [
+     13110,
+     13162
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "everything pushed to the PR branch;",
+    "span": [
+     13168,
+     13203
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "the PR description updated and the PR ready;",
+    "span": [
+     13209,
+     13253
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "CLI exit 0.",
+    "span": [
+     13259,
+     13270
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "A second run on the same checkout is a no-op success. No run makes more than 2 identical failing tool calls.",
+    "span": [
+     13275,
+     13383
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Then Hive Mind's `/claude`, `/codex` and `/agent` runs of the same three issues all end with `✅` (exit 0) on the released image.",
+    "span": [
+     13387,
+     13517
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Claude Code / Kotlin, execution `2719fb28`, 14:14 → 14:21 UTC: https://gist.github.com/konard/bde1161e75014632ee711c07328f21b9",
+    "span": [
+     13592,
+     13720
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Codex / Rust, execution `b8b78e59`, 08:27 → 22:36 UTC: https://gist.github.com/konard/fc014070fb8976cd3ad7766ed0675c0a",
+    "span": [
+     13723,
+     13843
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Agent CLI / Scala, execution `2e56df93`, 14:28 → 17:07 UTC: https://gist.github.com/konard/74beb03d2d22bfaf8bb8b96dc6bd73e1",
+    "span": [
+     13846,
+     13971
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Formal AI 0.354.1 sidecar stdout, 08:27 → 16:35 UTC: https://gist.github.com/konard/64cec5f80bec8275df4d255399a7e80e",
+    "span": [
+     13974,
+     14092
+    ],
+    "status": "unbound"
+   },
+   {
+    "text": "Codex rollout `01a1586d` (to 15:31 UTC) and earlier logs: in #1328",
+    "span": [
+     14095,
+     14161
+    ],
+    "status": "unbound"
+   }
+  ],
+  "decomposition": [
+   {
+    "step": "collect_repository_evidence",
+    "status": "incomplete"
+   },
+   {
+    "step": "bind_requirements_to_source",
+    "status": "unverified"
+   },
+   {
+    "step": "implement_requested_change",
+    "status": "not_executed"
+   },
+   {
+    "step": "verify_artifact_and_requirements",
+    "status": "not_executed"
+   }
+  ],
+  "observations": [
+   {
+    "path": "rust/src/main.rs",
+    "complete": true,
+    "sourceIdentity": "2d44563dcef74bd9e39bb665625e0a6e4045c48c247a96e39c5e8dc8cfc3663b",
+    "excerpt": "use std::error::Error;\nuse std::path::PathBuf;\n\nuse clap::{CommandFactory, Subcommand, ValueEnum};\nuse lino_arguments::Parser;\n\nmod cli_algorithm;\nmod cli_benchmark;\nmod cli_bundle;\nmod cli_clients;\nmod cli_coding;\nmod cli_computer_use;\nmod cli_context;\nmod cli_environments;\nmod cli_explain;\nmod cli_file_legality;\nmod cli_github_logs;\nmod cli_import;\nmod cli_improve;\nmod cli_learn;\nmod cli_local_transport;\nmod cli_logs;\nmod cli_memory;\nmod cli_orchestration;\nmod cli_paths;\nmod cli_procedure;\nmod cli_provenance;\nmod cli_report;\nmod cli_repository_history;\nmod cli_shared_dialog;\nmod cli_statement_audit;\nmod cli_summarization;\nmod cli_telegram;\nmod cli_translate;\n\nuse cli_algorithm::{AlgorithmArgs, run_algorithm};\nuse cli_benchmark::{BenchmarkAction, run_benchmark};\nuse cli_bundle::run_bundle;\nuse cli_clients::{ClientsAction, ClientsFormat, run_clients};\nuse cli_coding::{CodingArgs, run_coding};\nuse cli_computer_use::{ComputerUseArgs, run_computer_use};\nuse cli_context::{ContextArgs, run_context};\nuse cli_enviro",
+    "reference": "main.rs",
+    "resolvedBy": "ranked-name-match"
+   }
+  ],
+  "unresolved": [
+   {
+    "reference": "run.yml",
+    "target": "run.yml",
+    "reason": "NotFound"
+   }
+  ],
+  "terms": [],
+  "related": [
+   "https://github.com/konard/test-hello-world-019fb330-fa49-7c9d-a664-b7ea33bb698a/issues/1",
+   "https://github.com/konard/test-hello-world-019fb330-fa49-7c9d-a664-b7ea33bb698a/pull/2",
+   "https://github.com/konard/test-hello-world-019fb331-c107-78c7-8ff6-9f127a3c593c/issues/1",
+   "https://github.com/konard/test-hello-world-019fb331-c107-78c7-8ff6-9f127a3c593c/pull/2",
+   "https://github.com/konard/test-hello-world-019fb330-00e1-73b9-955e-f357a1600d5b/issues/1",
+   "https://github.com/konard/test-hello-world-019fb330-00e1-73b9-955e-f357a1600d5b/pull/2",
+   "https://github.com/…/pull/2"
+  ],
+  "coverage": "explicit-references; exact path, then file-name search; at most eight files; attachments unresolved; at most two linked documents and three identifiers when no file is named",
+  "candidateEdits": [],
+  "checks": [],
+  "effects": [],
+  "remainingWork": [
+   "bind-requirements-to-source",
+   "implement-requested-change",
+   "verify-artifact-and-requirements",
+   "unresolved-evidence:NotFound:run.yml"
+  ],
+  "authored": false,
+  "verified": false
+ },
+ "changed": [],
+ "diff": ""
+}

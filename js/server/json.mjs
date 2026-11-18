@@ -108,11 +108,11 @@ const I64_MIN = -(1n << 63n);
  * @param {string} token
  * @returns {number|bigint|object}
  */
-function parsedNumber(token) {
+function parsedNumber(token, unboundedIntegers = false) {
   if (/^-?(0|[1-9][0-9]*)$/u.test(token)) {
     const integer = BigInt(token);
     if (token === '-0') return f64(-0);
-    if (integer > U64_MAX || integer < I64_MIN) return f64(Number(token));
+    if (!unboundedIntegers && (integer > U64_MAX || integer < I64_MIN)) return f64(Number(token));
     return Number.isSafeInteger(Number(token)) ? Number(token) : integer;
   }
   return f64(Number(token));
@@ -121,11 +121,11 @@ function parsedNumber(token) {
 /**
  * `serde_json::from_str::<Value>`: `JSON.parse` with every number kept as the
  * kind serde_json reads it as, so floats print back as floats.
- * Throws the `JSON.parse` error for invalid text.
+ * Optional unboundedIntegers preserves integer text in diagnostic archives; ordinary calls keep serde parity.\n * Throws the `JSON.parse` error for invalid text.
  * @param {string} text
  * @returns {unknown}
  */
-export function parseJson(text) {
+export function parseJson(text, {unboundedIntegers = false} = {}) {
   const plain = JSON.parse(text);
   if (!/[.eE]|-0|[0-9]{16,}/u.test(text)) return plain;
   let at = 0;
@@ -176,7 +176,7 @@ export function parseJson(text) {
     if (match[0] === 'true') return true;
     if (match[0] === 'false') return false;
     if (match[0] === 'null') return null;
-    return parsedNumber(match[0]);
+    return parsedNumber(match[0], unboundedIntegers);
   };
   const string = () => {
     const start = at;

@@ -1,0 +1,83 @@
+## issue-1155.full
+```rust
+// rustc main.rs -o main
+// ./main
+// Emit the requested text followed by a newline.
+fn main() {
+
+## python-goodbye.full
+```python
+# python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py
+# python3 main.py
+# Emit the requested text followed by a newline.
+print("Goodbye, moon")
+
+## issue-1155.obl
+Here is a minimal Rust hello world program:
+
+```rust
+fn main() {
+    println!("Hello World");
+
+## python-goodbye.obl
+I cannot write this program: no synthesis route reaches task "main" in language "python".
+
+I decomposed the request and tried every synthesis route I have, in order — catalog, blueprint_recipes, coding_oracle, seed_idiom_composer — and none of them derives it.
+
+Nothing was guessed: I do not return a program I cannot derive, and I do not recite the templates I happen to hold. Teach me the missing idiom for `python`, or restate the task in steps I can already compile.
+
+## 4031.bind
+Sequence: 741 1095 1169 1523 1597 1951 2025 2379 2453 2807
+Sequence of 10 element(s), 10 distinct.
+It has no exact repeating period.
+No repeated adjacent pairs to deduplicate.
+
+## 4034.bind
+Sub-tasks, each with a completion criterion you can observe:
+1. Context, tokens usage" shows output above 100%: cumulative session output is divided by the per-response output limit
+
+## What happens
+
+
+## 4035.bind
+Create event «Humans» on 2026-11-16. Time: 20:26, timezone: UTC. Duration 60 minutes.
+Import this .ics file into any calendar:
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//formal-ai//calendar//EN
+
+## Kotlin.bind
+```kotlin
+// kotlinc Main.kt -include-runtime -d Main.jar
+// java -jar Main.jar
+// Emit the requested text followed by a newline.
+fun main() {
+
+## Rust.bind
+```rust
+// rustc main.rs -o main
+// ./main
+// Emit the requested text followed by a newline.
+fn main() {
+
+## Scala.bind
+```scala
+// scalac Main.scala
+// scala run Main.scala
+// Emit the requested text followed by a newline.
+object Main {
+
+## issue-1155.bind
+```rust
+// rustc main.rs -o main
+// ./main
+// Emit the requested text followed by a newline.
+fn main() {
+
+## python-goodbye.bind
+```python
+# python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py
+# python3 main.py
+# Emit the requested text followed by a newline.
+print("Goodbye, moon")
+

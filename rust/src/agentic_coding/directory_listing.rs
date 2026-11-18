@@ -113,6 +113,8 @@ fn is_directory_operand(token: &str) -> bool {
 /// (`request_function_word`: the article of "en la carpeta actual" is no
 /// directory); `.` otherwise.
 pub(super) fn listed_directory(task: &str) -> String {
+    let normalized = super::file_command_contract::normalize_listing(task).0;
+    let task = normalized.as_str();
     let lexicon = seed::lexicon();
     let excluded: Vec<String> = LISTED_SCOPE_ROLES
         .iter()

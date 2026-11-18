@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
 import {appendFileSync} from 'node:fs';
 import {pathToFileURL} from 'node:url';
-import {githubJson, resolvePackageRelease} from './resolve-package-release.mjs';
+import {githubJson, resolvePackageRelease, GithubObservationUnavailable} from './resolve-package-release.mjs';
 import {validatePublishedStableSource} from './native-release-trust.mjs';
 
 
@@ -51,17 +51,29 @@ export async function main(environment = process.env) {
   // The CLI fixes the observer; callers cannot provide a callback through event data.
   const repository = environment.REPOSITORY;
   const producerRoute = Boolean(environment.PRODUCER_RUN_ID);
-  const decision = producerRoute
-    ? (await import('./self-authored-publication-source.mjs')).resolvePublishedProducer(process.cwd(), environment, githubJson)
-    : resolvePackageRelease(environment, productionReleaseObserver(environment, githubJson));
-  const releaseEnvironment = producerRoute
-    ? {...environment, EVENT: 'release', RELEASE_ACTION: 'published', RELEASE_TAG: decision.tag}
-    : environment;
-  if (decision.publish) {
-    execFileSync('git', ['fetch', '--no-tags', 'origin',
-      'refs/tags/' + decision.tag + ':refs/tags/' + decision.tag], {stdio: 'pipe', timeout: 30000});
+  let result;
+  try {
+    const decision = producerRoute
+      ? (await import('./self-authored-publication-source.mjs')).resolvePublishedProducer(process.cwd(), environment, githubJson)
+      : resolvePackageRelease(environment, productionReleaseObserver(environment, githubJson));
+    const releaseEnvironment = producerRoute
+      ? {...environment, EVENT: 'release', RELEASE_ACTION: 'published', RELEASE_TAG: decision.tag}
+      : environment;
+    if (decision.publish) {
+      execFileSync('git', ['fetch', '--no-tags', 'origin',
+        'refs/tags/' + decision.tag + ':refs/tags/' + decision.tag], {stdio: 'pipe', timeout: 30000});
+    }
+    result = decision.publish ? resolveSelfAuthoredRelease(process.cwd(), releaseEnvironment) : {active: false};
+  } catch (error) {
+    if (!producerRoute || !(error instanceof GithubObservationUnavailable)) throw error;
+    result = {active: false, reason: 'github-observation-unavailable', observation: 'Deferred',
+      effectAuthority: 'Unknown', reviewedContribution: 'Pending', attempts: error.detail.attempt};
+    console.warn('::warning::Post-publication self-authoring deferred after bounded GitHub server failures; no authoring or self-development credit.');
+    if (environment.GITHUB_STEP_SUMMARY) appendFileSync(environment.GITHUB_STEP_SUMMARY,
+      '\n### Self-authoring observation deferred\n\nGitHub server errors exhausted three bounded reads. '
+      + 'No source was authorized, no change was authored, and no self-development credit is awarded. '
+      + 'Production artifact verification remains required. See retry diagnostics in this job log.\n');
   }
-  const result = decision.publish ? resolveSelfAuthoredRelease(process.cwd(), releaseEnvironment) : {active: false};
   const output = 'active=' + result.active + '\nbranch=' + (result.branch ?? '') + '\n'
     + 'release_id=' + (result.releaseId ?? '') + '\n';
   assert.ok(repository && environment.GITHUB_OUTPUT);

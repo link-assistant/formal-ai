@@ -24,14 +24,16 @@ fn dockerfile_defines_only_supported_dind_telegram_runtime() {
             "DIND_STORAGE_DRIVER=\"vfs\"",
             "FROM node:26.12.0-bookworm-slim AS node-runtime",
             "COPY --from=node-runtime /usr/local/bin/node /usr/local/bin/node",
-            "COPY --chmod=0755 scripts/apt-install-with-retry.sh scripts/run-with-deadline.sh /usr/local/lib/formal-ai-build/",
+            "COPY --chmod=0755 scripts/apt-install-with-retry.sh scripts/run-with-deadline.sh scripts/prepare-ubuntu-apt-mirror.sh /usr/local/lib/formal-ai-build/",
             "FORMAL_AI_APT_PRIVILEGE= bash /usr/local/lib/formal-ai-build/apt-install-with-retry.sh",
             "--no-install-recommends libstdc++6 libatomic1",
             "new RegExp('', 'v')",
             "node --version",
             "COPY --chown=box:box packages/container-runtime-tools/package.json /home/box/.formal-ai-runtime-tools/package.json",
-            "COPY --chmod=0755 scripts/install-container-runtime-tools.sh scripts/verify-container-runtime-tools.mjs scripts/run-with-deadline.sh /usr/local/lib/formal-ai-runtime-tools/",
-            "RUN /usr/local/lib/formal-ai-runtime-tools/install-container-runtime-tools.sh /home/box/.formal-ai-runtime-tools",
+            "COPY --chmod=0755 scripts/install-container-runtime-tools.sh scripts/verify-container-runtime-tools.mjs",
+            "js/server/bounded-command.mjs js/server/structured-log.mjs js/server/json.mjs",
+            "js/logging/json-numbers.mjs js/logging/lino-codec.mjs",
+            "RUN /usr/local/lib/formal-ai-runtime-tools/scripts/install-container-runtime-tools.sh /home/box/.formal-ai-runtime-tools",
             "ENV PATH=\"/home/box/.formal-ai-runtime-tools/node_modules/.bin:${PATH}\"",
             "\"$\" --version",
             "agent --version",
@@ -41,6 +43,28 @@ fn dockerfile_defines_only_supported_dind_telegram_runtime() {
             "CMD [\"formal-ai\", \"telegram\", \"--mode\", \"polling\"]",
         ],
     );
+
+    let instructions = dockerfile.replace("\\\n", " ");
+    let copied: Vec<_> = instructions
+        .lines()
+        .filter_map(|line| line.strip_prefix("COPY "))
+        .filter(|line| {
+            line.split_whitespace().last()
+                == Some("/usr/local/lib/formal-ai-runtime-tools/scripts/")
+        })
+        .flat_map(str::split_whitespace)
+        .collect();
+    for source in [
+        "scripts/install-container-runtime-tools.sh",
+        "scripts/verify-container-runtime-tools.mjs",
+        "scripts/install-client-registry-recovery.mjs",
+        "scripts/configure-container-client-tools.mjs",
+    ] {
+        assert!(
+            copied.contains(&source),
+            "runtime COPY closure lacks {source}"
+        );
+    }
 
     assert!(
         !dockerfile.contains("FROM debian:"),

@@ -21,6 +21,7 @@ new module fails CI until this map documents it.
 | `bounded_retry` | Shared finite ceiling for consecutive failed attempts at an external action. | §2 |
 | `callback_values` | Typed receiver adapters for ECMAScript callback operations. | §2 |
 | `cloud_sync` | Opt-in, vendor-neutral append-only memory synchronization (issue #669). | §2 |
+| `cnl_output` | Output-only constraints. Accepting text never depends on its grammar. | §2 |
 | `code_example_knowledge` | Code examples as formal knowledge (issue #1164, E129). | §2 |
 | `derivation` | White-box derivation record for every answer (issue #1184, E148). | §2 |
 | `discovery_production` | Discovery on the production path: a rediscoverable coding-procedure cache. | §2 |
@@ -43,6 +44,7 @@ new module fails CI until this map documents it.
 | `self_improvement` | White-box self-improvement over accumulated unknown traces. | §2 |
 | `si_units` | SI dimension algebra for unit conversion (issue #700, E58). | §2 |
 | `small_model_fallback` | Small-model formalization fallback, behind an experimental flag. | §2 |
+| `standing_scope` | The scope a learned standing requirement belongs to (issue #1559). | §2 |
 | `structured_tracing` | `tracing` events enter the same redacting typed-Lino sink as native diagnostics. | §2 |
 | `telemetry` | Consent-gated anonymous Sentry diagnostics (issue #861). | §2 |
 | `translation` | Translation pipeline. | §2 |
@@ -116,6 +118,7 @@ new module fails CI until this map documents it.
 | `grammar_kinds` | The tree-sitter kind inventory of the committed corpora (issue #1138,. | §5 |
 | `knowledge` | External knowledge oracles, treated as cached APIs (issue #412). | §5 |
 | `meta_construction` | Issue #559: the upward construction pass and the `recursion_mode` knob. | §5 |
+| `meta_executor` | Issue #1550 — the recursive procedure every answer goes through, in both. | §5 |
 | `meta_frame` | Issue #559 Phase 1A: an explicit, link-serializable problem frame. | §5 |
 | `meta_reasoner` | The recursive meta reasoner, ported by hand from JavaScript (R1012. | §5 |
 | `meta_reasoning` | Issue #559: white-box recursive reasoning for every meta-core work unit. | §5 |
@@ -205,11 +208,11 @@ new module fails CI until this map documents it.
 | `github_logs` | Collects issue, pull-request and CI logs from GitHub as evidence. | §14 |
 | `issue_report` | One shared issue-report document for every Formal AI surface (#839). | §14 |
 | `repository_workspace` | One repository protocol for SWE-bench, the #848 ladder and self-coding (#1138 B7). | §14 |
-| `self_source_links` | The whole-repository source ↔ links projection (issue #558). | §14 |
+| `self_source_links` | Owned source inputs and parser-round-trip diagnostics (issue #558). | §14 |
 | `workspace_change_learning` | Review-gated procedural learning for verified repository rewrites. | §14 |
 | `external_benchmarks` | Real external benchmark harness (issue #698). | §15 |
 | `fact_checking` | Deterministic, disproof-first statement verification — issue #845. | §15 |
-| `self_ast_census` | Issue #673: the self-AST census widened from one pinned module to the whole. | §15 |
+| `self_ast_census` | Actual owned-source navigation and on-demand recursive CST content. | §15 |
 | `statement_audit` | Evidence-weighted audit of statements in a repository corpus. | §15 |
 | `statement_verification` | Per-statement verification planning for the document-verification class. | §15 |
 <!-- module-map:end -->

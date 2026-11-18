@@ -332,6 +332,9 @@ fn learned_amendment_changes_a_new_task_answer_without_repeating_requirement() {
         tool_choice: None,
         functions: Vec::new(),
         function_call: None,
+        output_standard: None,
+        lexical_density: None,
+        response_format: None,
         stream_options: None,
     };
     let completion = create_chat_completion_with_solver_and_memory(
@@ -345,6 +348,7 @@ fn learned_amendment_changes_a_new_task_answer_without_repeating_requirement() {
     assert!(answer.contains("LaTeX verification step"));
 
     let responses_request = ResponsesRequest {
+        text: None,
         input: serde_json::Value::String(String::from("latex: solve another recurrence proof")),
         ..ResponsesRequest::default()
     };
@@ -399,12 +403,27 @@ fn learned_amendment_changes_the_agentic_final_answer() {
         create_chat_completion_with_solver_and_memory(&request, &agent_solver, store.events());
 
     assert_eq!(completion.choices[0].finish_reason, "stop");
-    let answer = completion.choices[0].message.content.plain_text();
+    // Issue #1559 §5: an agent publishes its final answer outside the
+    // conversation (a pull request, an issue comment), so the amendment is
+    // listed in the trace with its evidence link instead of in the text.
+    let message = &completion.choices[0].message;
+    let answer = message.content.plain_text();
     assert!(
-        answer.contains("Learned standing requirement"),
-        "agentic final answer must carry the retained amendment: {answer}"
+        !answer.contains("Learned standing requirement"),
+        "agentic final answer must not carry amendment text: {answer}"
     );
-    assert!(answer.contains("LaTeX verification step"), "{answer}");
+    assert!(!answer.contains("LaTeX verification step"), "{answer}");
+    assert!(
+        message
+            .thinking_steps
+            .iter()
+            .any(|step| step.step == "match_rule"
+                && step.detail.contains("latex")
+                && step.source_event.starts_with("meta_algorithm_amendment:")),
+        "the applied amendment is traced: {:?}",
+        message.thinking_steps
+    );
+    assert!(!message.reasoning.is_empty());
 }
 
 #[test]

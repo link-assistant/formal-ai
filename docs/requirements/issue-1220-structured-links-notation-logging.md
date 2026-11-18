@@ -26,3 +26,13 @@ Use one canonical typed codec and shared hash backend with provenance. Existing 
 ### PR #1221 resumed bulk source checkpoint
 
 The resumed PR #1221 source adds typed .lino dialog/conversation persistence with legacy JSONL readers, JavaScript logs conversion, actual terminal-reason observations and a shared redacting native diagnostic sink. The native bypass guard is wired into hosted CI; native writers validate reader roundtrip before append. Controls are in rust/tests/web/server-dialog-lino.test.mjs, rust/tests/web/server-terminal-events.test.mjs and native dialog source tests. Actual native compilation/runtime, a tracing subscriber, complete shared dedup/lazy policy, native conversion, chain integration and Hive Mind log attachments remain Pending. Full acceptance statuses above remain unchanged. All issues and subissues share [one delivery scope](../case-studies/pull-request-1221/scope.md).
+
+
+### Current CI evidence and self-coding clarification
+
+The [CI self-coding evidence contract](doctrine-self-coding-ci-evidence.md) clarifies the
+existing useful-change and complete-log requirements. Historical plan-only
+attempts retain their failure classification; source assistance is not
+autonomous implementation. Console recovery and source-qualified native log
+mounting are independently tested. Hosted capture remains unverified until a
+real run's artifacts and completeness manifests are inspected.

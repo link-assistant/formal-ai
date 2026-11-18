@@ -6,7 +6,7 @@ import {execFileSync} from 'node:child_process';
 import {test} from 'node:test';
 import {runInNewContext} from 'node:vm';
 import {fileURLToPath} from 'node:url';
-import {inputs, digestFile, validateAppObservation, validateRendererProbe, rendererReadinessExpression}
+import {inputs, digestFile, validateAppObservation, validateRendererProbe, rendererReadinessExpression, command}
   from '../../../scripts/verify-public-macos-release.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
@@ -18,6 +18,31 @@ const expected = {version: '2.7.11', mode: 'adhoc', nativeSha256: 'c'.repeat(64)
 const app = {bundleId: 'ai.formal.desktop', version: '2.7.11', envelope: true,
   signatureStatus: 0, display: 'Signature=adhoc\n', nativeSha256: 'c'.repeat(64),
   nativeBytes: 91, nativeVersion: 'formal-ai 2.7.11\n'};
+
+test('recorded slow Intel app transfer fits one finite attempt while metadata and permanent failures remain bounded', () => {
+  const transfer = ['/mounted/formal-ai Desktop.app', '/owned/formal-ai Desktop.app'];
+  function driver(elapsed, status = 0) {
+    let calls = 0;
+    return {invoke(file, args, options) {
+      calls++; assert.ok(options.timeout > 0 && options.timeout <= 180000);
+      assert.equal(options.maxBuffer, 1024 * 1024);
+      return elapsed > options.timeout
+        ? {error: Object.assign(Error('spawnSync '+file+' ETIMEDOUT'), {code: 'ETIMEDOUT'}), status: null}
+        : {status, signal: null, stdout: 'copied', stderr: 'fixture failure'};
+    }, calls: () => calls};
+  }
+  for (const args of [transfer, ['-x', '-k', '/owned/release.zip', '/owned/extracted']]) {
+    const slow = driver(40000);
+    assert.equal(command('/usr/bin/ditto', args, {}, slow.invoke), 'copied');
+    assert.equal(slow.calls(), 1);
+  }
+  for (const [file, elapsed, status] of [['/usr/bin/codesign', 40000, 0],
+    ['/usr/bin/ditto', 180001, 0], ['/usr/bin/ditto', 1, 1]]) {
+    const refused = driver(elapsed, status);
+    assert.throws(() => command(file, transfer, {}, refused.invoke));
+    assert.equal(refused.calls(), 1);
+  }
+});
 
 test('public package execution requires exact hosted platform architecture and release identity', () => {
   assert.equal(inputs(env, 'darwin', 'arm64').label, 'macos-arm64');

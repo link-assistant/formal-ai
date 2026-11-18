@@ -1,4 +1,17 @@
-//! Small public configuration enums shared by the universal solver surfaces.
+//! Configuration shared by the universal solver surfaces.
+
+use std::sync::atomic::{AtomicBool, Ordering};
+
+static EPHEMERAL: AtomicBool = AtomicBool::new(false);
+
+/// Apply serve's no-retention policy before opening any diagnostic or memory sink.
+pub fn enable_ephemeral_for_current_process() {
+    EPHEMERAL.store(true, Ordering::Relaxed);
+}
+
+pub(crate) fn ephemeral_enabled() -> bool {
+    EPHEMERAL.load(Ordering::Relaxed) || flag_enabled("FORMAL_AI_EPHEMERAL")
+}
 
 /// Runtime surface where the solver is embedded.
 ///
@@ -128,4 +141,25 @@ pub fn flag_enabled(name: &str) -> bool {
 #[must_use]
 pub fn flag_disabled(name: &str) -> bool {
     std::env::var(name).as_deref().ok().and_then(parse_bool_env) == Some(false)
+}
+
+/// Native twin of `js/server/read-access.mjs`: read-only source retrieval is
+/// default-on. An explicit operator offline/network deny always wins.
+#[must_use]
+pub fn read_network_allowed() -> bool {
+    if ephemeral_enabled() {
+        return false;
+    }
+    if std::env::var("FORMAL_AI_OFFLINE").is_ok_and(|value| parse_bool_env(&value) != Some(false)) {
+        return false;
+    }
+    if std::env::var("FORMAL_AI_NETWORK").is_ok_and(|value| {
+        matches!(
+            value.trim().to_ascii_lowercase().as_str(),
+            "denied" | "closed" | "off" | "0" | "false"
+        )
+    }) {
+        return false;
+    }
+    std::env::var("FORMAL_AI_LIVE_FETCH").map_or(true, |value| parse_bool_env(&value) == Some(true))
 }

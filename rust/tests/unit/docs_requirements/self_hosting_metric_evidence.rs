@@ -89,7 +89,8 @@ fn issue_657_self_hosting_evidence_is_traceable() {
         "the issue #657 Agent CLI E2E must run in CI"
     );
 
-    let ledger = read("data/meta/self-hosting-ledger.lino");
+    let ledger = crate::release_ledger::read(&root.join("data/meta/self-hosting-ledger.lino"))
+        .expect("complete self-hosting history must be readable");
     assert!(ledger.contains("attribution_policy \"commit_trailers\""));
     assert!(ledger.contains("percentage_basis_points \"0\""));
 }

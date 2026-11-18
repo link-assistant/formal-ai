@@ -70,6 +70,10 @@ pub struct ProofLibraryEntry {
     pub conclusion: LocalizedText,
     /// The inputs a plan still needs from the reader.
     pub missing_inputs: Vec<LocalizedText>,
+    /// `negation contradiction`: the keywords state the theorem's
+    /// proposition, so a claim that denies it is refuted by the proof (issue
+    /// #1487).
+    pub refutes_negation: bool,
 }
 
 impl ProofLibraryEntry {
@@ -90,6 +94,7 @@ impl ProofLibraryEntry {
         for child in &node.children {
             match child.name.as_str() {
                 "keyword" => entry.keywords.push(child.id.clone()),
+                "negation" => entry.refutes_negation |= child.id == "contradiction",
                 "statement" => entry.statement = LocalizedText::from_node(child),
                 "conclusion" => entry.conclusion = LocalizedText::from_node(child),
                 "missing_input" => entry.missing_inputs.push(LocalizedText::from_node(child)),

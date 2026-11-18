@@ -7,6 +7,94 @@
 use std::fs;
 use std::path::Path;
 
+/// The declared job cap, including matrix expressions.
+pub fn job_timeout(job: &str) -> Option<&str> {
+    job.lines()
+        .find_map(|line| line.trim().strip_prefix("timeout-minutes:"))
+        .map(str::trim)
+}
+
+/// Resolve a literal cap or every row of the maintained literal include matrix.
+/// Unsupported axes, expressions, missing fields and incomplete rows fail closed.
+pub fn minimum_job_timeout(job: &str) -> Option<u64> {
+    let raw = job_timeout(job)?;
+    if let Ok(value) = raw.parse::<u64>() {
+        return (value > 0).then_some(value);
+    }
+    let key = raw.strip_prefix("${{ matrix.")?.strip_suffix(" }}")?;
+    if key.is_empty()
+        || !key
+            .bytes()
+            .all(|byte| byte.is_ascii_alphanumeric() || byte == b'_')
+    {
+        return None;
+    }
+    let mut lines = job.lines();
+    let matrix = lines.find(|line| line.trim() == "matrix:")?;
+    let indent = matrix.len() - matrix.trim_start().len();
+    let mut include = false;
+    let mut caps = Vec::new();
+    for line in lines {
+        let text = line.trim();
+        if text.is_empty() || text.starts_with('#') {
+            continue;
+        }
+        let depth = line.len() - line.trim_start().len();
+        if depth <= indent {
+            break;
+        }
+        if text == "include:" && depth == indent + 2 && !include {
+            include = true;
+            continue;
+        }
+        if !include || depth != indent + 4 {
+            return None;
+        }
+        let row = text.strip_prefix("- {")?.strip_suffix('}')?;
+        let last = row.rsplit(',').next()?.trim();
+        let (name, value) = last.split_once(':')?;
+        if name.trim() != key {
+            return None;
+        }
+        let value = value.trim().parse::<u64>().ok()?;
+        if value == 0 {
+            return None;
+        }
+        caps.push(value);
+    }
+    caps.into_iter().min()
+}
+
+#[test]
+fn matrix_job_deadlines_cover_every_literal_leg_and_refuse_unknown_forms() {
+    let job = "  native:\n    timeout-minutes: ${{ matrix.capmin }}\n    strategy:\n      matrix:\n        include:\n          - { os: linux, capmin: 30 }\n          - { os: intel, capmin: 45 }\n    steps:\n      - uses: actions/checkout@v7\n        timeout-minutes: 5\n";
+    assert_eq!(minimum_job_timeout(job), Some(30));
+    assert_eq!(
+        minimum_job_timeout(&job.replace("capmin: 45", "capmin: 6")),
+        Some(6)
+    );
+    for changed in [
+        job.replace("capmin: 45", "other: 45"),
+        job.replace("capmin: 45", "capmin: 0"),
+        job.replace("capmin: 45", "capmin: expression"),
+        job.replace("capmin: 45", "note: \"fake, capmin: 45\""),
+        job.replace("include:", "exclude:"),
+        job.replace("${{ matrix.capmin }}", "${{ inputs.minutes }}"),
+        job.replace(
+            "          - { os: intel, capmin: 45 }",
+            "          - os: intel\n            capmin: 45",
+        ),
+    ] {
+        assert_eq!(minimum_job_timeout(&changed), None, "{changed}");
+    }
+    assert_eq!(minimum_job_timeout("    timeout-minutes: 20\n"), Some(20));
+    assert_eq!(minimum_job_timeout("    timeout-minutes: 0\n"), None);
+    assert_eq!(
+        minimum_job_timeout("    timeout-minutes: ${{ matrix.capmin }}\n"),
+        None
+    );
+}
+
 /// Everything CI executes for a pull request, workflow and gate registry as one
 /// text.
 ///

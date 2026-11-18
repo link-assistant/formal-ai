@@ -1,0 +1,20 @@
+{
+  "observedFailure": {
+    "source": "https://github.com/link-assistant/formal-ai/actions/runs/41185985718/job/124493275719",
+    "commit": "6b203df4489f9830817e548479fab4c42353c67e",
+    "errors": [
+      "dependency currency: npm/minimatch: absent from snapshot; not checked",
+      "dependency currency: npm/minimatch-modern: absent from snapshot; not checked"
+    ]
+  },
+  "cases": [
+    {"name":"react","declared":"^19.3.1","expected":{"name":"react","requirement":"^19.3.1"}},
+    {"name":"minimatch-modern","declared":"npm:minimatch@11.0.3","expected":{"name":"minimatch","requirement":"11.0.3"}},
+    {"name":"alias","declared":"npm:@scope/actual@~2.0.0","expected":{"name":"@scope/actual","requirement":"~2.0.0"}},
+    {"name":"alias","declared":"npm:@scope/actual","expected":{"name":"@scope/actual","requirement":"latest"}},
+    {"name":"alias","declared":"npm:actual","expected":{"name":"actual","requirement":"latest"}},
+    {"name":"minimatch","declared":"file:../packages/minimatch-compat","expected":null},
+    {"name":"local","declared":"link:../local","expected":null},
+    {"name":"local","declared":"workspace:*","expected":null}
+  ]
+}

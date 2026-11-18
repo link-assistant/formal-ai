@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import {runGh} from './collect-ci-failures.mjs';
 import {
   pathToFileURL,
   fileURLToPath}
@@ -55,6 +56,7 @@ export async function collectQualifiedNativeData({
     ancestor=path.dirname(ancestor);
   }
   const implementationPaths=['aggregate-source-content.mjs',
+  'collect-ci-failures.mjs',
   'mirror-package-data.mjs',
   'collect-qualified-native-data-artifacts.mjs',
   'lib/qualified-native-data-collector.mjs',
@@ -152,7 +154,16 @@ export async function collectQualifiedNativeData({
     const job=authenticateProducerJob(jobs[0],
     run,
     jobName);
-    const log=raw('actions/jobs/'+job.id+'/logs');
+    let log;
+    if(api)log=raw('actions/jobs/'+job.id+'/logs');
+    else{
+      const endpoint='actions/jobs/'+job.id+'/logs';
+      const captured=await runGh(['api','repos/'+repository+'/'+endpoint],
+      {captureRaw:true,timeoutMs:30000,maxBytes:32*1024*1024});
+      assert(captured.ok&&!captured.truncated&&captured.streamComplete&&captured.tailComplete,
+      'complete captured producer log required: '+captured.error);
+      log=Buffer.from(captured.text,'utf8');snapshots.push({endpoint,bytes:log});
+    }
     const commit=sourceCheckout(log.toString());
     const sourceCommit=json('commits/'+commit);
     const tree=sourceCommit.commit.tree.sha;

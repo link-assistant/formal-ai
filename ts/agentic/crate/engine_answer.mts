@@ -8,7 +8,7 @@ export function asksForClarification(answer) {
 
 /** Mirrors `SymbolicAnswer::is_inconclusive`. */
 export function isInconclusive(answer) {
-  return ['unknown', 'ill_formed', 'punctuation_only_prompt', 'concept_lookup_unresolved'].includes(answer.intent)
+  return ['unknown', 'ill_formed', 'punctuation_only_prompt', 'concept_lookup_unresolved', 'meta_reasoning_open', 'meta_reasoned_program_unverified'].includes(answer.intent)
     || asksForClarification(answer);
 }
 

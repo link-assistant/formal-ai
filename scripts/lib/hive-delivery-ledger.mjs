@@ -81,8 +81,25 @@ function publicAcceptance(value, claim) {
       noWrite: value.secondPass.noWrite,
       noCommit: value.secondPass.noCommit
     },
-    complete: true
+    complete: true,
+    ...(value.taskTransport ? {taskTransport: publicTaskTransport(value.taskTransport, claim)} : {})
   };
+}
+function publicTaskTransport(value, claim) {
+  exactKeys(value, ['kind', 'repository', 'issueUrl', 'pullRequestUrl', 'workflowDirectory',
+    'workflowExecution', 'cleanup', 'historicalExternalDeliveryVerified']);
+  assert.equal(value.kind, 'same-repository');
+  assert.equal(value.repository, claim.repository);
+  for (const [key, kind] of [['issueUrl', 'issues'], ['pullRequestUrl', 'pull']]) {
+    const prefix = 'https://github.com/' + claim.repository + '/' + kind + '/';
+    assert(value[key].startsWith(prefix));
+    assert.match(value[key].slice(prefix.length), /^[1-9][0-9]*$/u);
+  }
+  assert.equal(value.workflowDirectory, 'ci/');
+  assert.equal(value.workflowExecution, 'act');
+  assert.equal(value.cleanup, 'after-owner-run');
+  assert.equal(value.historicalExternalDeliveryVerified, false);
+  return {...value};
 }
 export function publicLedgerResult(value, claim) {
   exactKeys(value, [...claimKeys, 'state', 'originalOraclePassed', 'acceptance', ...(Object.hasOwn(value, 'ledger') ? ['ledger'] : [])]);

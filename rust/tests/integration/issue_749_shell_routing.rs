@@ -37,16 +37,6 @@ fn strict_shell_schema_gets_required_extras_for_every_language() {
     }
 }
 
-/// Restores the process working directory when dropped, including on the
-/// panic path of the assertions that run inside the controlled workspace.
-struct RestoreCwd(std::path::PathBuf);
-
-impl Drop for RestoreCwd {
-    fn drop(&mut self) {
-        std::env::set_current_dir(&self.0).expect("restore the working directory");
-    }
-}
-
 /// The matrix asserts the whole plan a client would drive, and its "run the
 /// tests" row resolves through `formal-ai:workspace-test`, which picks the
 /// command from the first marker file in the process's working directory.
@@ -60,13 +50,53 @@ impl Drop for RestoreCwd {
 /// whatever directory the runner happened to start from.
 #[test]
 fn whole_shell_task_matrix_routes_without_web_search() {
-    let previous = std::env::current_dir().expect("current directory");
-    let workspace =
-        std::env::temp_dir().join(format!("formal-ai-issue-749-matrix-{}", std::process::id()));
-    std::fs::create_dir_all(&workspace).expect("create the controlled workspace");
-    std::fs::write(workspace.join("Cargo.toml"), "[package]\n").expect("write the marker");
-    let restore = RestoreCwd(previous);
-    std::env::set_current_dir(&workspace).expect("enter the controlled workspace");
+    const CHILD: &str = "FORMAL_AI_SHELL_MATRIX_CHILD";
+    const RECEIPT: &str = "shell-matrix-complete.txt";
+    if std::env::var_os(CHILD).is_none() {
+        let nonce = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .expect("clock")
+            .as_nanos();
+        let workspace = std::env::temp_dir().join(format!(
+            "formal-ai-issue-749-matrix-{}-{nonce}",
+            std::process::id()
+        ));
+        std::fs::create_dir(&workspace).expect("create isolated workspace");
+        std::fs::write(workspace.join("Cargo.toml"), "[package]\n").expect("marker");
+        let mut child = std::process::Command::new(std::env::current_exe().expect("test binary"))
+            .args([
+                "--exact",
+                "issue_749_shell_routing::whole_shell_task_matrix_routes_without_web_search",
+                "--test-threads=1",
+            ])
+            .env(CHILD, "1")
+            .current_dir(&workspace)
+            .spawn()
+            .expect("start isolated matrix");
+        let started = std::time::Instant::now();
+        let status = loop {
+            if let Some(status) = child.try_wait().expect("observe child") {
+                break status;
+            }
+            if started.elapsed() >= std::time::Duration::from_secs(60) {
+                let _ = child.kill();
+                let _ = child.wait();
+                let _ = std::fs::remove_dir_all(&workspace);
+                panic!("isolated shell matrix exceeded its deadline");
+            }
+            std::thread::sleep(std::time::Duration::from_millis(20));
+        };
+        let receipt = std::fs::read_to_string(workspace.join(RECEIPT));
+        std::fs::remove_dir_all(&workspace).expect("remove isolated workspace");
+        assert!(status.success(), "isolated shell matrix failed: {status}");
+        assert_eq!(receipt.expect("matrix actually executed"), "complete\n");
+        return;
+    }
+    assert_eq!(std::env::var(CHILD).as_deref(), Ok("1"));
+    assert_eq!(
+        std::fs::read_to_string("Cargo.toml").unwrap(),
+        "[package]\n"
+    );
     for (prompt, expected) in [
         ("show current directory", "pwd"),
         ("show environment variables", "env"),
@@ -88,8 +118,7 @@ fn whole_shell_task_matrix_routes_without_web_search() {
             verified_recipe(expected).unwrap_or_else(|| vec![String::from(expected)]);
         assert_eq!(chat_shell_commands(prompt), expected_steps, "{prompt}");
     }
-    drop(restore);
-    std::fs::remove_dir_all(&workspace).expect("remove the controlled workspace");
+    std::fs::write(RECEIPT, "complete\n").expect("record executed matrix");
 }
 
 #[test]

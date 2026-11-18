@@ -220,12 +220,13 @@ test('original Fetch-only dialogue retains a planned-not-executed gap without wr
     'Implement and verify the solution before reporting completion.', 'Proceed.', '',
   ].join('\n');
   const page = 'Implement Hello World in Kotlin · Issue #1 · konard/test-hello-world · GitHub\n\n'
-    + '  Skip to content\n\nNavigation MenuSign in\n\n## Task\n'
+    + '  Skip to content\n\nNavigation MenuSign in\n\nIssue body actions\n\n## Task\n'
     + 'Please implement a "Hello World" program in Kotlin.\n\n## Requirements\n'
     + '1. Create a file with the appropriate extension for Kotlin\n'
     + '2. The program should print exactly: `Hello, World!`\n'
     + '3. Add clear comments explaining the code\n'
-    + '6. **Create a GitHub Actions workflow that automatically runs and tests the program on every push and pull request**\n';
+    + '6. **Create a GitHub Actions workflow that automatically runs and tests the program on every push and pull request**\n\n'
+    + 'ActivitySign up for free to join this conversation on GitHub\nFooter\n';
   const prior = 'general_change_plan\n  id "previous-owned-plan"\n';
   writePrior(root, argumentsFor(), prior);
   const messages = [{ role: 'user', content: prompt }];

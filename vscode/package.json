@@ -146,25 +146,37 @@
   },
   "devDependencies": {
     "@vscode/test-web": "^0.0.81",
-    "@vscode/vsce": "^4.0.0",
+    "@vscode/vsce": "3.9.2",
     "esbuild": "^0.28.2",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "picomatch": "file:../packages/picomatch-compat"
   },
   "dependencies": {
     "@link-assistant/web-capture": "^1.12.0",
     "@link-assistant/web-search": "^0.11.1",
-    "playwright": "^1.64.0"
+    "playwright": "^1.64.0",
+    "minimatch": "file:../packages/minimatch-compat"
   },
+  "@link-assistant/web-capture//": "blocked: https://github.com/link-assistant/web-capture/issues/191 (2.0.0+ declares engines node >=26.10.0; Electron 44 embeds Node 24.22.2, VS Code runs Node 24, and desktop builds use Node 22, so 1.12.0 is the newest release whose engines match)",
   "browser-commander//": "blocked: https://github.com/link-assistant/web-capture/issues/160 (0.21+ launches the installed Chrome over CDP by default; web-capture 1.11.2 does not pass launch: 'engine', so 0.20.0 is the newest override it runs on)",
   "@kreuzberg/html-to-markdown-node//": "blocked: https://github.com/xberg-io/html-to-markdown/issues/459 (every release after 3.5.5, through 3.7.2, declares linux musl optional packages that npm does not have)",
   "overrides": {
     "@link-assistant/web-capture": {
       "@kreuzberg/html-to-markdown-node": "3.5.5",
       "browser-commander": "0.20.0",
-      "puppeteer": "^25.12.0",
-      "puppeteer-core": "^25.12.0",
+      "puppeteer": "25.13.0",
+      "puppeteer-core": "25.13.0",
       "qs": "^6.16.0"
-    }
+    },
+    "@vscode/vsce": {
+      "@azure/identity": "4.13.0"
+    },
+    "@azure/msal-node@3.8.10": {
+      "uuid": "11.1.1"
+    },
+    "minimatch": "$minimatch",
+    "glob@>=9": "^14.0.2",
+    "picomatch": "$picomatch"
   },
   "allowScripts": {
     "@playwright/browser-chromium": true,
@@ -189,5 +201,6 @@
   "bugs": {
     "url": "https://github.com/link-assistant/formal-ai/issues"
   },
-  "homepage": "https://github.com/link-assistant/formal-ai/tree/main/vscode"
+  "homepage": "https://github.com/link-assistant/formal-ai/tree/main/vscode",
+  "@vscode/vsce//": "blocked: https://github.com/advisories/GHSA-xcx6-jx8p-x3h5 Temporarily retain VSCE 3.9.2 with Azure Identity 4.13.0 (within its declared ^4.1.0 range) to avoid GHSA-xcx6-jx8p-x3h5. VSCE 4 requires Identity >=4.13.2, whose latest stable release still requires vulnerable MSAL 6. Remove the pin when upstream supports a patched MSAL release. MSAL 3 uses only UUID v4; scope the compatible CommonJS UUID 11.1.1 security backport to that MSAL subtree (GHSA-w5hq-g745-h8pq)."
 }

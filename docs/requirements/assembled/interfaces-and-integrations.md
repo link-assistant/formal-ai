@@ -434,6 +434,22 @@ is `docs/case-studies/issue-1154/`.
 | R1154-3 | After a successful read, the fetched text drives `plan_work_item_execution` exactly as on the Claude and Agent paths. | Implemented by the shared reading: `issue_view_url` resolves under `cmd` (and under a schema-declared key through R1154-1's projection), the read lands in `fetched_pages`, and `repository_work_item_objective` feeds `plan_work_item_execution` unchanged. Pinned by `codex_cmd_read_drives_execution_instead_of_repeating` in `rust/tests/unit/agentic-coding/issue_1154_progress_arguments.rs` and its JS twin in `rust/tests/web/issue-1154-command-argument.test.mjs`. |
 | R1154-4 | Tests: replay the Codex transcript's first two Responses items (`function_call` `exec_command {"cmd": …}` + `function_call_output`) through the Responses input conversion and assert the next plan is not another `gh issue view`; a table test over `{command}`, `{cmd}`, `{script}`, `{command:[…]}` yields the same recorded read. | Implemented in `rust/tests/unit/agentic-coding/issue_1154_progress_arguments.rs`: the replay goes through `ResponsesRequest::to_chat_completion_request` (the server's own conversion), and the table covers all four spellings plus the twice-repeated transcript shape. |
 
+## Issue #1160: The Regular Hive Mind Prompt
+
+Source: https://github.com/link-assistant/formal-ai/issues/1160 (a sub-issue of
+[#1162](https://github.com/link-assistant/formal-ai/issues/1162)). The long
+Hive Mind prompt (prepared branch, pull request and uncommitted changes) was
+not handled the way the short prompt was. The case study is
+`docs/case-studies/issue-1160/`.
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R1160-1 | Fixtures of the regular Hive Mind prompt. | Implemented: `rust/tests/fixtures/hive-mind/` holds Hive Mind's formal-ai, regular and restart prompts verbatim, a fake `gh` and the offline delivery harness. They drive `rust/tests/unit/issue_1160_regular_prompt.rs` and `rust/tests/web/issue-1162-offline-hive-end-to-end.test.mjs`. The older fixtures `rust/tests/fixtures/issue-1364-claude-restart.txt`, `rust/tests/fixtures/hive-workflow-original-task.json` and `rust/tests/fixtures/issue-1364-hello-world-issues.json` remain. The redacted logs are in `docs/case-studies/issue-1162/raw-data/hive-mind-logs/`. |
+| R1160-2 | The router extracts the branch, the pull request and the feedback. | Partial: the branch comes from `branch-binding-patterns` ("Your prepared branch: …"), and `plan_restart` (`rust/src/agentic_coding/restart_feedback.rs`) reads the pull request and the changed paths. The feedback text is not extracted from the prompt; it is read later through `pr_comments_command`. |
+| R1160-3 | With an uncommitted `Main.jar`, the plan is ignore or delete, commit, push, ready. | Implemented: `prepared_work_hygiene` ignores or deletes the output, commits and pushes (`rust/tests/web/issue-1364-restart-hygiene.test.mjs`). With the pull request bound from the prompt, the recipe completion then marks it ready. The restart case of `rust/tests/web/issue-1162-offline-hive-end-to-end.test.mjs` leaves an uncommitted `Main.jar` after a real Kotlin delivery: `.gitignore` gains `Main.jar`, which is committed and pushed, `Main.jar` is never tracked, and the pull request stays ready. `rust/tests/unit/issue_1160_regular_prompt.rs` pins the same path from Rust. |
+| R1160-4 | The short prompt still works. | Implemented: the short `Implement <issue>` prompt drives the recipe in `rust/tests/web/issue-1162-delivery-commands.test.mjs`. |
+| R1160-5 | Manual Hive Mind end-to-end check on a released version. | Blocked: needs a released version and live Hive Mind credentials. |
+
 ## Issue #1161 Client Registry Names the Agent Config Env
 
 Issue [#1161](https://github.com/link-assistant/formal-ai/issues/1161) (E126)
@@ -477,6 +493,19 @@ live in `docs/case-studies/issue-1181/`.
 
 ## Issue #1187 Optional GitHub Credentials in Every Workflow
 
+The original Hive three-client delivery also follows this contract. Missing or
+unusable optional App credentials select the usable token fallback. At layer
+`default`, the pinned Hive generator creates an owned orphan branch, issue and
+PR here, stages the test workflow in `ci/`, and runs it using Hive's `act`
+transport. The original requirements, independent compiler/stdout checks and
+second-pass no-op oracle remain mandatory. The separate trusted finalizer
+closes the owned issue and PR and deletes their branches only after the complete
+owner workflow is terminal, including cancellation. Complete log custody and
+live API corroboration are required before those bounded cleanup writes.
+Same-repository acceptance must be reported separately from historical external
+repository delivery. This supersedes the credential prerequisite introduced in
+PR #1403; additional secrets are optional in this workload too.
+
 Issue [#1187](https://github.com/link-assistant/formal-ai/issues/1187) (E151,
 part of the E127 umbrella #1183): tokens are "not mandatory, but optional in
 all cases". One resolver chooses a GitHub App, then one `AUTOMATION_TOKEN`
@@ -491,7 +520,7 @@ live in `docs/case-studies/issue-1187/`.
 | ID | Requirement | Status / Evidence |
 | --- | --- | --- |
 | R1187-1 | Every workflow that writes to GitHub takes its token from one resolver — GitHub App (`AUTOMATION_APP_ID` + `AUTOMATION_APP_PRIVATE_KEY`) → `AUTOMATION_TOKEN` → `github.token`; `FORMAL_AI_BOT_TOKEN` is replaced; nothing skips or fails on a missing token; the layer is printed to the log and the job summary. | Implemented: `.github/actions/automation-token/action.yml` resolves the three layers, writes the layer to the log and `GITHUB_STEP_SUMMARY`, and exposes `can-create-repositories` (true only at the App layer); `cross-org-duplication.yml`, `dependencies-latest.yml`, `e2e-isolation.yml` and now `self-authored-pull-request.yml` use it. The self-authored job no longer reads `secrets.FORMAL_AI_BOT_TOKEN`: it passes the resolved token as `GH_TOKEN` and, for the composite action's unchanged contract, as `FORMAL_AI_BOT_TOKEN` only when the layer is not `default`. `release.yml` reads no `FORMAL_AI_BOT_TOKEN`. Pinned by `the_resolver_action_implements_the_three_layers`, `no_workflow_or_action_reads_a_github_token_secret_but_the_automation_names` and `the_self_authored_workflow_resolves_its_token_and_dispatches_checks` in `rust/tests/unit/issue_1187_credentials.rs`. The action is a local mirror of link-foundation/.github `resolve-github-token` (link-foundation/.github#1), not a call to it. |
-| R1187-2 | At layer `default`, the workflow that opened or pushed the pull request dispatches every `pull_request` workflow on the head commit; `layered-ci.yml`, `evidence-check.yml` and `workflows.yml` gain `workflow_dispatch` with `mode: checks`. | Implemented: `self-authored-pull-request.yml` calls `.github/actions/dispatch-checks` at layer `default` once the bot pull request exists, and the dispatcher runs `gh workflow run` on the head branch for every `pull_request` workflow that declares the checks mode. Every `pull_request` workflow now declares it (`mode` with `options: [checks]` and a `pull-request` input). Three are left out, each named with its reason in `every_pull_request_workflow_declares_the_checks_mode_or_a_reason_not_to`: `desktop-release.yml` (a dispatch publishes release assets), `external-benchmarks.yml` (a dispatch runs the credentialed full-slice jobs) and the authoring workflow itself. `release.yml` is dispatched too since its dispatch defaults to checks (R1187-3). The resolver now takes the `AUTOMATION_*` secrets as inputs from each caller. A composite action cannot read `secrets`, so it had failed to load (pinned by `the_resolver_takes_its_secrets_as_inputs_from_every_caller`). The dispatcher's own script, run against this repository's workflows with a recording `gh`, dispatches every other `pull_request` workflow in checks mode on the bot branch (`rust/tests/web/issue-1187-release-dispatch.test.mjs`); whether the dispatched runs satisfy a branch rule is part of the post-merge acceptance run (R1187-8). |
+| R1187-2 | At layer `default`, the workflow that opened or pushed the pull request dispatches every `pull_request` workflow on the head commit; `layered-ci.yml`, `evidence-check.yml` and `workflows.yml` gain `workflow_dispatch` with `mode: checks`. | Implemented: the default-token authoring path dispatches eligible pull-request workflows on the exact head branch, always with `mode=checks` and the pull-request input. Admission structurally binds the mode choice, its effective checks default and required inputs; an additional explicitly selected source-generation mode does not remove checks eligibility. Unrelated options, duplicate or unsupported declarations and unsatisfied required inputs do not authorize dispatch. Release and authoring job guards remain independent. The actual action runs against recording `gh` fixtures in `rust/tests/web/issue-1187-release-dispatch.test.mjs`; native credential contract tests mirror it. Live post-merge acceptance remains R1187-8. |
 | R1187-3 | `release.yml` gets a checks-only dispatch mode that is the default, and every release, publish and tag job requires an explicit release mode and `github.ref == 'refs/heads/main'`. | Implemented 2026-10-07: `release.yml`'s `workflow_dispatch` declares the checks-mode `mode` input (`options: [checks]`, so `actions/dispatch-checks` may dispatch it) and a `release_mode` that defaults to `checks` (`bump_type` defaults to `patch`); `manual-release`, `changelog-pr`, the Pages deploy and the release preflight's release mode each require an explicit `instant` or `changelog-pr` mode and `github.ref == 'refs/heads/main'`, and `detect-changes` names its push and pull-request triggers instead of excluding dispatch. A checks dispatch runs only the lint and test jobs. Pinned by `release_dispatch_needs_an_explicit_mode_and_main` in `rust/tests/unit/issue_1187_credentials.rs` and its JavaScript twin in `rust/tests/web/issue-1187-release-dispatch.test.mjs`: both parse every job of `release.yml`, take each one with a `write` permission, and require that every `||` alternative of its condition that admits `workflow_dispatch` names an explicit release mode and the main ref (a writing job with no `if:`, the preflight, must guard its own dispatch alternative the same way), that `release_mode` defaults to `checks`, and that no deferred #1187 R3 row remains in `docs/integration-manifest.md`; the manifest tolerance the rule used to have is removed. |
 | R1187-4 | Workloads needing a separate test tree use an orphan branch `e2e/<purpose>/<run_id>/<name>` built with `git checkout --orphan`, an `e2e-task` issue and a pull request based on that branch, all closed and deleted at the end; a separate repository only when the resolver reports `can-create-repositories: true`; this repository's `pull_request` workflows ignore `e2e/**` bases. | Implemented: `.github/workflows/e2e-isolation.yml` builds the orphan branch from only the named paths and opens the `e2e-task` issue and the pull request. Its cleanup closes both and deletes the branches. When the resolver reports `can-create-repositories: true`, the isolated tree is pushed instead to a new private repository `<owner>/formal-ai-e2e-<run_id>`. That repository carries the tracking issue and pull request, and the cleanup deletes it. Every `pull_request` workflow carries `branches-ignore: ['e2e/**']`. Pinned in `rust/tests/unit/issue_1187_credentials.rs` by `orphan_branch_isolation_needs_no_credential` and `every_pull_request_workflow_is_dispatchable_and_ignores_e2e_bases`. |
 | R1187-5 | Cross-repository work opens issues directly at layer `app`/`token` when it can write there; at layer `default` it writes findings to its report and keeps one tracking issue in this repository. | Implemented: at layer `default`, `.github/workflows/cross-org-duplication.yml` drops `--open` with a `::warning::` and uploads `data/meta/cross-org-duplication.lino` as the report. It keeps one tracking issue in this repository titled "cross-org duplication findings (default credential layer)". It edits that issue while it is open and opens a new one only when none exists (job permission `issues: write`). Pinned by `cross_repository_work_keeps_one_tracking_issue_at_the_default_layer`. At layers `app` and `token`, the scan opens issues in the owning repositories through `--open`. |
@@ -545,3 +574,63 @@ autonomous-authorship credit. Task length is not total input, and no amplificati
 token saving or development-cost reduction is claimed. A larger source task still
 fails its original acceptance. R1207-4's representative cohort, R1207-5's general
 decomposition and full runtime acceptance remain pending.
+
+
+### Current CI evidence and self-coding clarification
+
+The [CI self-coding evidence contract](../doctrine-self-coding-ci-evidence.md) clarifies the
+existing useful-change and complete-log requirements. Historical plan-only
+attempts retain their failure classification; source assistance is not
+autonomous implementation. Console recovery and source-qualified native log
+mounting are independently tested. Hosted capture remains unverified until a
+real run's artifacts and completeness manifests are inspected.
+
+### Current ordered delivery and translation boundary
+
+The current plan in [#1170](https://github.com/link-assistant/formal-ai/issues/1170)
+supersedes its historical ordering. Deliver one task per pull request, starting
+with [#1483](https://github.com/link-assistant/formal-ai/issues/1483) in
+[#1495](https://github.com/link-assistant/formal-ai/pull/1495); qualify its actual
+main-branch CI and release before taking the next task. Read-only evidence,
+diagnostic files and supplied patches do not satisfy useful autonomous editing.
+
+Complete bidirectional Rust ↔ meta-language ↔ JavaScript production translation
+is tracked separately in [#1500](https://github.com/link-assistant/formal-ai/issues/1500)
+and scheduled at the very end of the ordered work. It is not a prerequisite for
+the first useful coding contribution. Reuse existing checked portable kernels
+where supported; otherwise keep explicitly paired implementations and shared
+behavioral contracts. A narrow kernel translation does not establish complete
+source translation. Preserve the readable recursive CST, including comments and
+layout, and distinguish exact source reconstruction from semantic translation.
+All Rust compilation and native qualification remain in CI; local iterations use
+bounded, focused JavaScript checks only.
+
+# Issue 1438: reliable reporting and source-read preservation
+
+This requirement belongs to [PR 1437](https://github.com/link-assistant/formal-ai/pull/1437)
+and [issue 1438](https://github.com/link-assistant/formal-ai/issues/1438).
+Recording it is not implementation or acceptance.
+
+- Generate an explicit, inspectable report submission command after the user selects the destination and context. Prepare the complete report through the shared renderer; do not put temporary-directory shell setup and GitHub submission into an opaque compound Bash action.
+- Respect host approval refusals. Do not disguise a denied action, bypass its policy, claim submission, or retry uncertain issue creation. Keep a recoverable local report when preparation succeeded but submission failed.
+- Bound process time, stdout/stderr, and temporary-directory collision attempts. Verify an actual issue URL for the selected repository before reporting success.
+- Keep the selected full context and separate context links. Do not read unrelated personal session exports or publish them as regression fixtures; use minimal sanitized observations.
+- The same public reproduction shows line-numbered Read output written into Rust source. Recognize provider framing separately from file content and preserve source comments, whitespace and newline identity. Reject partial, failed or ambiguous observations before whole-file replacement.
+- Exercise original report choices, the captured approval refusal, successful and uncertain submission, and numbered Read counterexamples. Keep JavaScript/TypeScript and Rust behavior aligned, with all Rust compilation and native execution in CI.
+
+Use the JavaScript Formal AI planner for small edits and larger decomposed work. Record unsupported requests and human-supplied implementation honestly; successful mechanical edits do not establish autonomous implementation authorship.
+
+## Issue #1582: Client Read Access, Diagnostics and Context
+
+Source: https://github.com/link-assistant/formal-ai/issues/1582, including its
+2026-11-17 evidence/case-study edit. No required sub-issues were listed.
+The investigation and retained data are in `docs/case-studies/issue-1582/`.
+
+| ID | Requirement | Status / Evidence |
+| --- | --- | --- |
+| R1582-1 | Enable read-only network/source retrieval by default and honor explicit restrictions. | Implemented: shared JavaScript/native read policy and serving worker HTTP transport; `rust/tests/web/issue-1582-defaults.test.mjs`. |
+| R1582-2 | Explain how the harness can lift restrictions and enable internet access. | Implemented: seed-defined permission intent and actionable localized guidance with automatic detection in all five registered languages, including quoted-input exclusions for all 16 catalog programming targets; `rust/tests/web/issue-1582-permissions.test.mjs`. Operator policy still requires the operator's change. |
+| R1582-3 | Keep routine wrapper startup and exit diagnostics out of the harness; persist logs by default. | Partial: `rust/tests/web/server-structured-log-cli.test.mjs` passes; native wrapper and file sink changed; runtime regressions remain unexecuted under pre-merge policy. Production type/lint checks do not execute them. |
+| R1582-4 | Keep single-line default logs and offer nested/indented presentation. | Implemented: opt-in nested formatting after redaction; `rust/tests/web/issue-1582-defaults.test.mjs`. |
+| R1582-5 | Configure actual/resource-derived input context for every supported client, including Claude's unknown model. | Partial: Claude, Codex, Qwen, Aider, Grok and OpenCode-shaped integrations receive limits. Gemini input context remains blocked by its upstream fixed fallback; https://github.com/google-gemini/gemini-cli/issues/30333. Native adapter runtime regression remains unexecuted under pre-merge policy. |
+| R1582-6 | Preserve available logs/data, timeline, root causes, primary-source research, solution plans and relevant upstream reports. | Partial: repository case study and retrieved evidence retained; original Mac-only files were never uploaded, review-continuation evidence distinguishes all 12 registered tools and JavaScript, TypeScript and Rust verification; current continuation CI evidence is tracked in the PR case study; the new picomatch advisory also leaves dependency qualification unfinished. |

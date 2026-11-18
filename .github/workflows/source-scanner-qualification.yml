@@ -1,8 +1,20 @@
 name: Source scanner qualification and debt inventory
 on:
   pull_request:
+    paths-ignore:
+      - "docs/**"
+      - "*.md"
+      - "**/README.md"
+      - "**/CHANGELOG.md"
+      - "changelog.d/**"
     branches-ignore: ['e2e/**']
   push:
+    paths-ignore:
+      - "docs/**"
+      - "*.md"
+      - "**/README.md"
+      - "**/CHANGELOG.md"
+      - "changelog.d/**"
     branches: [main]
   workflow_dispatch:
     inputs:
@@ -43,6 +55,15 @@ jobs:
         env:
           SCANNER_REPORT_DIRECTORY: ${{ runner.temp }}/source-scanner-javascript
         run: node scripts/qualify-source-scanners.mjs js
+      - name: Summarize JavaScript DRY findings and language gaps
+        if: always()
+        run: |
+          scanner_result="$RUNNER_TEMP/source-scanner-javascript/qualification.json"
+          if [ -f "$scanner_result" ]; then
+            node scripts/report-duplication-coverage.mjs --qualification "$scanner_result"
+          else
+            node scripts/report-duplication-coverage.mjs
+          fi
       - name: Preserve source-bound JavaScript evidence
         if: always()
         uses: actions/upload-artifact@v7
@@ -52,6 +73,7 @@ jobs:
           if-no-files-found: error
           retention-days: 7
   native:
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true) }}
     needs: javascript
     runs-on: ubuntu-24.04
     timeout-minutes: 20
@@ -70,6 +92,15 @@ jobs:
         env:
           SCANNER_REPORT_DIRECTORY: ${{ runner.temp }}/source-scanner-native
         run: node scripts/qualify-source-scanners.mjs native
+      - name: Summarize native DRY findings and language gaps
+        if: always()
+        run: |
+          scanner_result="$RUNNER_TEMP/source-scanner-native/qualification.json"
+          if [ -f "$scanner_result" ]; then
+            node scripts/report-duplication-coverage.mjs --qualification "$scanner_result"
+          else
+            node scripts/report-duplication-coverage.mjs
+          fi
       - name: Preserve source-bound native evidence
         if: always()
         uses: actions/upload-artifact@v7

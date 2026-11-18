@@ -2,6 +2,10 @@
 
 use serde_json::json;
 
+#[path = "general_execution/literal_creation.rs"]
+mod literal_creation;
+pub(super) use literal_creation::owned_creation_observation;
+
 use super::append_contract::{AppendRecordStep, append_record_step};
 
 use super::capability_router::shell_command_tool;
@@ -12,6 +16,7 @@ use super::general_planner::{
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for, write_arguments};
 use super::progress::Progress;
 use super::tool_result;
+use super::work_item_evidence::plan_work_item_evidence;
 use crate::protocol::ChatMessage;
 
 const EXPECTED_PLACEHOLDER: &str = concat!("{", "expected", "}");
@@ -37,7 +42,23 @@ pub(super) fn plan_work_item_change_step(
     general_change_step(messages, tool_names, plan, true, &mut None)
 }
 
+/// A work-item session's terminal is a localized report, never JSON (issue #1560).
 fn general_change_step(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    plan: &GeneralChangePlan,
+    resolved_from_work_item: bool,
+    result: &mut Option<FinalResult>,
+) -> AgenticPlan {
+    let step = change_step(messages, tool_names, plan, resolved_from_work_item, result);
+    if resolved_from_work_item || plan.mode == GeneralPlanMode::RepositoryWorkItem {
+        super::work_item_report::reported_work_item_final(step, &plan.goal, result)
+    } else {
+        step
+    }
+}
+
+fn change_step(
     messages: &[ChatMessage],
     tool_names: &[&str],
     plan: &GeneralChangePlan,
@@ -50,6 +71,48 @@ fn general_change_step(
         return guarded;
     }
     let progress = Progress::scan(messages);
+    if let Some(creation) =
+        literal_creation::plan_owned_creation_step(plan, &progress, tool_names, result)
+    {
+        return creation;
+    }
+    if plan.mode == GeneralPlanMode::RepositoryWorkItem
+        && let Some(objective) = repository_work_item_objective(plan, &progress)
+    {
+        if let Some(step) = super::repository_documentation::plan_repository_documentation(
+            &objective,
+            messages,
+            tool_names,
+            Some(&plan.target),
+            result,
+        ) {
+            return step;
+        }
+        if let Some(step) = super::source_documentation::plan_source_documentation_step(
+            &objective,
+            messages,
+            tool_names,
+            Some(&plan.target),
+            result,
+        ) {
+            return step;
+        }
+        if let Some(step) = super::work_item_boundary_candidate::plan_work_item_boundary_step(
+            &objective,
+            messages,
+            tool_names,
+            Some(&plan.target),
+            |clause| {
+                super::work_item_evidence::work_item_evidence_paths(clause)
+                    .into_iter()
+                    .map(str::to_owned)
+                    .collect()
+            },
+            result,
+        ) {
+            return step;
+        }
+    }
     if let Some(command) = super::prerequisite_recovery::observed_recovery_command(messages)
         && let Some(output) = progress.latest_run_output_for(&command)
         && let Some(recovery) = super::prerequisite_recovery::plan_recovery(
@@ -68,7 +131,9 @@ fn general_change_step(
             .is_some_and(|failure| failure.capability == Capability::Run)
         && let Some(objective) = repository_work_item_objective(plan, &progress)
     {
-        let answer = crate::solver::UniversalSolver::default().solve(&objective);
+        let mut answer = crate::solver::UniversalSolver::default().solve(&objective);
+        // A recovery repairs only a program an obligation asked for (issue #1562).
+        super::work_item_citations::unbind_cited_recipe(&mut answer, &objective);
         if let Some(owned) = super::command_reroute::plan_owned_recipe_recovery(
             messages, tool_names, &answer, &objective,
         ) {
@@ -224,7 +289,9 @@ fn general_change_step(
     // capability is only genuinely unavailable once the fetch has been tried.
     if plan.mode == GeneralPlanMode::RepositoryWorkItem {
         if let Some(fetched) = repository_work_item_objective(plan, &progress) {
-            if let Some(step) = plan_work_item_execution(&fetched, messages, tool_names) {
+            if let Some(step) =
+                plan_work_item_execution(&fetched, messages, tool_names, &plan.target, result)
+            {
                 return step;
             }
         } else if let Some(step) =
@@ -457,12 +524,18 @@ fn plan_work_item_execution(
     objective: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
+    work_item: &str,
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     // The default configuration is the right one: the recipe wanted here is the
     // same `write_program` answer a user typing this request directly would get,
     // and the client — not this solver — owns execution. Opting into agent mode
     // would only add the policy branches that answer *about* agent actions.
     let mut answer = crate::solver::UniversalSolver::default().solve(objective);
+    // A program is written only for an obligation of the work item, never for
+    // a span it merely cites (issue #1562): the address of a `test-hello-world`
+    // repository or a quoted log is no request for a Hello World program.
+    let unbound = super::work_item_citations::unbind_cited_recipe(&mut answer, objective);
     // The issue that asks for the program may also ask for the workflow that
     // runs it (issue #1133, requirement 6 of every Hello World task): the
     // recipe then carries the workflow as a supporting file, running the same
@@ -477,8 +550,18 @@ fn plan_work_item_execution(
     ) {
         return Some(step);
     }
-    let executable = compose_general_change_plan(objective)
-        .filter(|executable| executable.mode != GeneralPlanMode::RepositoryWorkItem)?;
+    let Some(executable) = compose_general_change_plan(objective)
+        .filter(|executable| executable.mode != GeneralPlanMode::RepositoryWorkItem)
+    else {
+        return plan_work_item_evidence(
+            objective,
+            messages,
+            tool_names,
+            work_item,
+            unbound.as_deref(),
+            result,
+        );
+    };
     Some(plan_work_item_change_step(
         messages,
         tool_names,
@@ -714,7 +797,9 @@ fn repository_work_item_objective(plan: &GeneralChangePlan, progress: &Progress)
             {
                 return None;
             }
-            raw.trim().to_owned()
+            // A fetched page keeps its title and body; a page without a body
+            // is rejected so the REST and gh api reads run instead (issue #1560).
+            super::work_item_page::work_item_page_text(raw.trim())?
         };
         (!text.trim().is_empty()).then_some(text)
     })
@@ -812,7 +897,7 @@ fn work_item_completion(plan: &GeneralChangePlan, progress: &Progress) -> String
 /// typed into Rust: the words live in `data/seed/`, and the reply follows the
 /// language the request was written in.
 fn general_plan_completed(plan: &GeneralChangePlan) -> String {
-    let language = crate::language::detect(&plan.goal).slug();
+    let language = plan.response_language();
     let mut answer =
         crate::seed::localized_response("general_plan_completed", language).unwrap_or_default();
     answer = answer.replace("{target}", &plan.target);
@@ -864,7 +949,7 @@ const fn capability_label(capability: Capability) -> &'static str {
 }
 
 fn general_plan_mismatch(plan: &GeneralChangePlan, observed: &str) -> String {
-    let language = crate::language::detect(&plan.goal).slug();
+    let language = plan.response_language();
     let mut answer =
         crate::seed::localized_response("general_plan_verification_mismatch", language)
             .unwrap_or_default();
@@ -879,7 +964,7 @@ fn general_plan_mismatch(plan: &GeneralChangePlan, observed: &str) -> String {
 }
 
 fn general_plan_unverified(plan: &GeneralChangePlan) -> String {
-    let language = crate::language::detect(&plan.goal).slug();
+    let language = plan.response_language();
     let mut answer =
         crate::seed::localized_response("general_plan_unverified", language).unwrap_or_default();
     answer = answer.replace("{target}", &plan.target);

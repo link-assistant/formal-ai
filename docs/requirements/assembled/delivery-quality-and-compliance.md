@@ -624,13 +624,46 @@ acceptance and released-image evidence must be distinguished.
 | Live memory | Migrate validated supported older schema without loss. For incompatible bytes, preserve the original and select an explicitly reported new current-schema store. Permission/IO failures remain distinct; second startup is idempotent. |
 | Shutdown | A serving process handles SIGTERM within the container stop timeout, including PID1 and active connections; no local native build is permitted for this work. |
 
-Acceptance uses the exact three issue bodies and PR branches named in issue
-1364, with source provenance. Each client must produce the commented program,
+Acceptance preserves the complete three original issue bodies named in issue
+1364, with source provenance. Following the latest credential requirement,
+the default GitHub Actions token uses an owned orphan branch, issue and PR in
+this repository. The pinned Hive generator stages the workflow in `ci/` and
+the original harness executes it with `act`. Only its two workflow location
+instructions change; reversing those instructions must reproduce the original
+complete body hash. Optional credentials may use the historical external PR
+branches. Receipts distinguish these transports and never claim an external
+repository write from same-repository acceptance. Missing optional credentials
+must not block the release or this acceptance. Each client must produce the commented program,
 build/run instructions, verifier and working workflow, push everything, update
 the ready PR, exit zero, and leave a clean tree without build outputs. A second
 run is a no-op success. No run may make more than two identical failing calls.
 Released-image Hive `/claude`, `/codex` and `/agent` outcomes must also be zero;
 candidate-image results do not establish released-image acceptance.
+
+For Hive revisions whose documented no-change process status is 5, the verified
+repeat uses the supported `HIVE_MIND_SOLVE_NO_CHANGES_EXIT_CODE=0` invocation
+setting, forwarded into its container. The first delivery explicitly retains 5
+so an inherited override cannot excuse missing work. The original harness must
+still exit zero and pass every assertion, and the repeat must independently
+preserve source bytes, file identities and commits without mutation calls.
+Never rewrite failed observations or add artificial changes to satisfy a change
+counter. See the [released failure and compatibility boundary](../../case-studies/issue-1328/released-client-no-change-exit.md).
+
+The published runtime must include the real Claude, Codex and Agent executables
+and the MCP prerequisites required by the original Hive defaults. Verify those
+prerequisites in the final task image before transferring it or creating issues;
+do not infer client readiness from the Formal AI server version alone. Preserve
+the original MCP preflight. Proposal-only learning events are not release CI
+gates; actual validation workflows, publishers and unknown scheduled checks
+remain required. Revalidation and command failures must identify their blocking
+run or bounded redacted stdout/stderr instead of a bare boolean assertion.
+
+For explicitly staged `ci/` workflows, source-qualified PR readiness and CI
+completion are separate observations. A clean pushed source tree and its exact
+staged workflow may be marked ready for independent execution. This grants no
+CI or task-completion credit. The original Hive harness must still execute that
+workflow and all unchanged delivery assertions before acceptance. Missing
+hosted checks must never become a fabricated green result.
 
 ## Replay and GitHub side effects
 
@@ -654,7 +687,120 @@ test and evidence finalization are terminal. Record pass/failure/cancellation
 and the run link. Preserve active or unproven issues; never close feature issues
 based on title, age or labels alone. Cleanup must run for failed and cancelled
 tests too, with bounded recovery for interrupted finalization.
+When a released-owner chain exhausts GitHub's `workflow_run` depth, explicitly
+dispatch trusted-main cleanup with the default Actions token, naming its exact
+run, attempt and protocol commit. Wait only a finite number of read-only polls
+for owner completion; authenticate source custody before the immutable cleanup
+claim and every effect. Standard checks dispatches stay read-only. Dispatch is
+not cleanup credit, uncertain mutations never retry, and existing claims remain
+quarantined rather than replayed.
 
 Live service/authentication/publication behavior remains independently checked
 by the final real run; replay success alone is not proof that GitHub is usable.
 Implementation and acceptance remain pending until their evidence is recorded.
+
+## Issue #1455: Grounded integration documentation and affordable documentation CI
+
+The 2026-10-29 instruction adds investigation of incomplete PR #1456. These
+requirements supersede blanket main-build/release requirements for docs-only
+pushes; mixed source changes and explicit manual production verification retain
+their existing obligations.
+
+- Document command-stream, web-capture and web-search as actual direct
+  integrations. Cite manifests and executable consumers, distinguish native
+  target/features from browser HTTP/package boundaries, and explain acquisition,
+  ranking and command execution without claiming that search proves an answer.
+- Keep optional ecosystem candidates separate from proven runtime dependencies.
+  The Cargo/package manifests govern versions; do not maintain arbitrary counters.
+- For automatic push and PR events, explicit documentation paths (`docs/**`,
+  root Markdown, nested README/CHANGELOG files and changelog fragments) select
+  lightweight documentation/workflow checks only. Unknown runtime Markdown and
+  mixed code/docs changes retain normal CI. Docs-only changes must not trigger
+  an automatic release, even when a changelog fragment is pending.
+- Preserve all heavy jobs, manual dispatch controls and schedules. Maintain
+  filters through an idempotent JavaScript transformation that preserves source
+  comments and job bodies. Never represent a filtered job as an executed pass.
+  Review required-check configuration before making a filtered workflow required;
+  GitHub can leave such checks pending. Large diffs and unavailable GitHub diffs
+  may bypass platform path filtering; do not promise savings in those cases.
+- Reduce the public PR #1456 failure to a provenance-labelled fixture. Formal AI
+  must collect explicit repository evidence before returning an unsupported
+  work-item gap, formalize the observations and decompose the remaining work.
+  Bound paths, observations and repeated actions; stop on failed, partial or
+  policy-refused reads. Preserve JavaScript/native behavior parity in CI.
+- Bind each evidence record to the caller's referenced work item and the
+  original goal hash; retain original clause text and UTF-8 source spans.
+  Fetched prose must not replace the work-item origin. Keep native regressions
+  in the integration-test tree rather than embedding fixtures in production source.
+- Reading evidence alone does not deliver the original task. Record unbound
+  requirements, implementation and independent verification as unfinished. The
+  current bounded preflight is a capability improvement, not an autonomous
+  documentation-authoring claim; general evidence-to-edit synthesis remains an
+  explicit development gap.
+
+### Current runtimes for issue handling (2026-10-30)
+
+- Each live issue-drafting attempt resolves current Formal AI `main` and current
+  Hive Mind `main`, rather than using a historical source pin. Resolve each once
+  and reuse the exact selected commits across the attempt's jobs. Log actual
+  checkout identities, Formal AI version and binary digest, and Hive Mind
+  package version and requested image. Moving branches must not change an
+  in-progress attempt's source identity.
+- Build Formal AI from that source in CI. Select Hive Mind's exact versioned
+  runtime image from the selected source, with no fallback to a potentially
+  older `latest` image. Unavailable images, failed discovery or incompatible
+  runner structure are explicit failures with retained evidence and an issue
+  response; they must not silently run a stale version or claim task delivery.
+- Maintained Hive Mind CLI integration checks install its latest published npm
+  version and print the installed package identity. This published CLI check
+  is distinct from the live issue handler's current-source policy.
+- Keep historical fixtures and disabled forensic replays pinned to their
+  original sources. Their results provide historical regression evidence,
+  never acceptance evidence for current runtime freshness. Diagnostic adaptation
+  preserves source text outside a structurally qualified environment insertion;
+  it does not replace the shared solve command or task.
+- Fresh runtimes do not establish general autonomous editing. The evidence-to-edit
+  synthesis gap above remains open until actual authored and verified changes
+  demonstrate it. These workflow repairs are manual, not Formal-AI-authored.
+- Publication observation accepts GitHub's documented active scheduling states,
+  including pending, waiting and requested, while still authenticating the exact
+  completed publisher job, operation, source and attempt. A scheduling state is
+  never pipeline-success or effect-authority evidence. Keep invalid-state
+  diagnostics bounded. Self-authoring checkouts retain history and current file
+  contents, filter historical blobs, and have finite network and step deadlines.
+- Native release source import retains complete authenticated offline history
+  and all current source bytes. Materialize the worktree once, then verify the
+  selected commit, tree, lock bytes, declared bundle and actual native inputs.
+  Parallel checkout has four workers; history commands have a four-minute cap
+  inside a six-minute restore transaction and a seven-minute workflow step.
+  Damaged artifacts and inconsistent input digests must still fail closed.
+
+## Issue #1483: repository evidence to useful changes
+
+Authority: [#1483](https://github.com/link-assistant/formal-ai/issues/1483) and
+the current ordered plan in [#1170](https://github.com/link-assistant/formal-ai/issues/1170).
+Delivery began in [PR #1495](https://github.com/link-assistant/formal-ai/pull/1495) and continues through reviewed follow-up repairs, including [PR #1518](https://github.com/link-assistant/formal-ai/pull/1518); a merged component repair does not close this issue.
+This is the first unfinished task; do not advance to #1484 until independent
+acceptance, default-branch CI and release qualification are complete.
+
+| ID | Requirement and acceptance | Status |
+| --- | --- | --- |
+| R1483-1 | Preserve the original work-item identity, UTF-8 requirement spans, observations, uncertainty, candidates, checks, effects and remaining work throughout execution. Reading evidence does not discharge an edit requirement. | Partial: the source-documentation and structural-boundary controllers retain these records; rust/tests/web/source-documentation-controller.test.mjs and rust/tests/web/work-item-boundary-route.test.mjs pass locally. General decomposition and hosted native acceptance remain pending. |
+| R1483-2 | Discover obligation-relevant facts from source, manifests and trusted external observations. Fetched prose is evidence, never authority. Missing, unavailable and contradicted evidence must remain explicit. | Partial: unique scalar JSON property binding, exact observed source identities, negative edit authority and complete-CST operation preconditions are tested. General integration-role discovery, external discovery and the original unavailable-attachment hosted case remain pending. |
+| R1483-3 | Derive the smallest useful structural change through readable recursive CST/meta-language representation; preserve comments, layout, unrelated source, preconditions and provenance. Derive checks from the contract before choosing a candidate. | Partial: scripts/lib/source-cst-boundary-transform.mjs supports a declared finite-number interval subset with full grammar reparse, exact inverse, concrete residual and preselected regression witnesses. rust/tests/web/comparison-boundary-transform.test.mjs passes. This does not establish arbitrary JavaScript semantics or general source translation. |
+| R1483-4 | Bound retries and effects, preserve real tool failures, guard preimages and verify fresh readback. A completed rerun must be a verified no-write no-op. | Partial: documentation permits one exact Edit and rereads source before target; boundary candidates permit one effect and preserve pre-effect observations. The two controller JavaScript suites pass, including failed/ambiguous effects and no-op. Native tests are committed for CI, not executed locally. Full hosted no-write acceptance remains pending. |
+| R1483-5 | Replay original #1455 through ordinary Hive solve on its pre-fix checkout without the final guide or solution patch. Independently verify an actual guide edit against manifests and executable consumers; also check changed components/paths and a contradicted integration. | Partial: the maintained JavaScript planner produced a source-derived useful patch from the original pre-fix four-file snapshot, preserved unrelated text and source files, and retained unresolved integration semantics. Renamed paths/components, contradicted manifest claims and a current no-write repeat also passed offline; see [the bounded evidence](../../case-studies/issue-1483/maintained-source-documentation-2026-11-04.json). Ordinary Hive solve, independent executable-integration acceptance and full documentation correctness remain pending. |
+| R1483-6 | Complete a small genuine production logic repair and a useful regression-test task selected before execution, plus an honest unsupported task. Do not relabel a controlled mutation or synthetic exercise as a production defect. | Partial: actual JavaScript Formal AI repaired a historical real production dictionary-binding defect from public pre-fix revision 0d12e35 and produced a regression that passes healthy code and rejects the broken control. The source, comments and unrelated bytes were preserved; see docs/case-studies/pull-request-1495/formal-ai-production-dictionary-repair.json. This replay is not a new live-main contribution. Engine bootstrap has zero autonomous credit; native and hosted-client qualification remain pending. |
+| R1483-7 | Use the same controller via actual agent, Claude and Codex clients with ordinary Hive prompts, current qualified Formal AI/Hive runtime identities and no LLM service. | Partial: the actual Agent CLI drove the current maintained JavaScript backend on the original pre-fix task. Independently captured emissions matched qualified receipts for the guide Edit and fresh complete readback; the source returned an honest useful-partial result. See [the bounded client proof](../../case-studies/issue-1483/agent-source-documentation-2026-11-04.json). This does not qualify ordinary Hive execution, Claude/Codex clients, production orchestration or the full task. The manual main-only released-runtime qualification remains available; release-consumer acceptance is pending. |
+| R1483-8 | Keep acceptance outside candidate control; report exact useful effects and authorship. Plans, logs and placeholders earn zero useful-change credit. Supplied implementations, generators and later reviewer work must not become autonomous credit. | Partial: both controllers retain external acceptance as pending, and supplied engine/bootstrap applications carry zero autonomous credit. The actual JavaScript planner produces source-derived guide and interval edits in local fixtures; this does not establish a general coding success rate. |
+| R1483-9 | Retain small offline regressions from actual failures and full redacted hosted execution logs. Run heavy native/client qualification only on main with explicit effect ownership; close owned test issues with truthful outcomes and bounded cleanup. | Partial: rust/tests/web/work-item-hosted-effects.test.mjs covers owned effects, capture limits, phase deadlines and historical policy seals. The first released-runtime hosted run passed admission but every client job stopped during image acquisition before client launch; see [the retained evidence](../../case-studies/issue-1483/hosted-acquisition-2026-11-04.json). Its test issues are independently verified closed as not planned; protected branches remain explicit residue. JavaScript command-budget and historical-owner checks pass. Actual hosted client/useful-edit acceptance remains pending. |
+| R1483-10 | Creation must use an actually advertised, supported workspace capability. A canonical client AddFile patch can discharge creation only with exact owned target/content, actual matched successful effect evidence and fresh verification; ordinary edits, failed/pending/foreign receipts and unsupported encodings cannot. Provider overwrite behavior must be authorized or guarded. With no effect, the answer must not claim that a file was created. | Partial: rust/tests/web/scoped-creation-evidence.test.mjs passes 16 focused groups, including the original zero-effect request as an honest gap, scoped creation and negative custody controls. Real Codex safe-preflight completion and hosted native qualification remain pending. |
+| R1483-11 | Exact literal content boundaries must survive natural-language instructions and client transport: exclude framing words and quotation delimiters while preserving all requested UTF-8 content, whitespace and final newline. Reuse formalized content ownership, reject ambiguous/unowned frames, and test held-out payloads rather than memorizing this task. | Partial: rust/tests/web/literal-create-content-boundary.test.mjs passes all five groups. After the shared grammar repair, the unchanged actual Agent task writes the exact 188-byte JSON and final newline. Receipt-qualified completion and hosted native qualification remain pending. |
+
+JavaScript and TypeScript sources are synchronized using the maintained ES
+translation. The interval semantic kernel is generated from JavaScript through
+the pinned checked meta-language compiler; host/CST/controller adapters are
+explicitly paired implementations with shared contracts, not a claim of full
+automated translation. Complete bidirectional production translation is
+[#1500](https://github.com/link-assistant/formal-ai/issues/1500), scheduled last.
+Local Rust compilation, tests and product WASM execution are prohibited.

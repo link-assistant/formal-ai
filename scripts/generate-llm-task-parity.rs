@@ -35,11 +35,11 @@ struct Class {
     llm_strength: String,
     benchmarks: Vec<(String, Option<String>)>,
     formal_version: String,
+    structured_output: String,
     status: String,
     tracking_issue: String,
     evidence: String,
 }
-
 
 /// Splits a field line into its `key value` pairs. A quoted value may contain
 /// spaces and may be followed by further pairs on the same line
@@ -57,9 +57,7 @@ fn field_pairs(line: &str) -> Vec<(String, String)> {
             pairs.push((key.to_owned(), quoted[..end].to_owned()));
             rest = quoted[end + 1..].trim_start();
         } else {
-            let (value, tail) = after
-                .split_once(' ')
-                .unwrap_or((after, ""));
+            let (value, tail) = after.split_once(' ').unwrap_or((after, ""));
             pairs.push((key.to_owned(), value.to_owned()));
             rest = tail.trim_start();
         }
@@ -72,6 +70,11 @@ fn field_pairs(line: &str) -> Vec<(String, String)> {
 /// share one line, so each field line is split into key/value pairs while
 /// text remains.
 fn parse_classes(source: &str) -> Result<Vec<Class>, String> {
+    let default_structured_output = source
+        .lines()
+        .find(|line| line.starts_with("  default-structured-output "))
+        .and_then(|line| field_pairs(line.trim()).into_iter().next())
+        .map_or_else(String::new, |(_, value)| value);
     let mut classes = Vec::new();
     let mut current: Option<Class> = None;
     for line in source.lines() {
@@ -86,6 +89,7 @@ fn parse_classes(source: &str) -> Result<Vec<Class>, String> {
                 llm_strength: String::new(),
                 benchmarks: Vec::new(),
                 formal_version: String::new(),
+                structured_output: default_structured_output.clone(),
                 status: String::new(),
                 tracking_issue: String::new(),
                 evidence: String::new(),
@@ -103,6 +107,7 @@ fn parse_classes(source: &str) -> Result<Vec<Class>, String> {
                         }
                     }
                     "formal_version" => class.formal_version = value,
+                    "structured-output" => class.structured_output = value,
                     "status" => class.status = value,
                     "tracking_issue" => class.tracking_issue = value,
                     "evidence" => class.evidence = value,
@@ -119,6 +124,7 @@ fn parse_classes(source: &str) -> Result<Vec<Class>, String> {
             ("name", &class.name),
             ("llm_strength", &class.llm_strength),
             ("formal_version", &class.formal_version),
+            ("structured-output", &class.structured_output),
             ("status", &class.status),
             ("tracking_issue", &class.tracking_issue),
             ("evidence", &class.evidence),
@@ -186,16 +192,17 @@ fn document(classes: &[Class], input_source: &str) -> String {
          (formal-ai 0.347.0, 34 probes) found 0 of 34 useful answers and 3 wrong ones, recorded \
          in the history section below.\n\n\
          | Task class | What LLMs do well | Public benchmark | Formal version of the answer | \
-         Status | Evidence | Tracking |\n\
-         | --- | --- | --- | --- | --- | --- | --- |\n"
+         Structured output | Status | Evidence | Tracking |\n\
+         | --- | --- | --- | --- | --- | --- | --- | --- |\n"
     );
     for class in classes {
         output.push_str(&format!(
-            "| {} | {} | {} | {} | {} | {} | {} |\n",
+            "| {} | {} | {} | {} | {} | {} | {} | {} |\n",
             class_cell(class),
             class.llm_strength,
             benchmark_cell(class),
             class.formal_version,
+            class.structured_output,
             class.status,
             evidence_cell(class),
             tracking_cell(class)
@@ -232,11 +239,10 @@ fn main() {
         eprintln!("generate-llm-task-parity: unknown mode {mode}; expected --write or --check");
         std::process::exit(2);
     }
-    let (input_source_value, classes) =
-        input_source(&root).unwrap_or_else(|error| {
-            eprintln!("generate-llm-task-parity: {error}");
-            std::process::exit(1);
-        });
+    let (input_source_value, classes) = input_source(&root).unwrap_or_else(|error| {
+        eprintln!("generate-llm-task-parity: {error}");
+        std::process::exit(1);
+    });
     let path = PathBuf::from(DOCUMENT);
     let content = document(&classes, &input_source_value);
     if mode == "--write" {

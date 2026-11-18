@@ -38,20 +38,32 @@ test -f "${HIVE_MIND_ROOT}/src/agent.lib.mjs" || {
   exit 2
 }
 
-SCRATCH="$(mktemp -d /tmp/formal-ai-issue-921.XXXXXX)"
+# Hosted /tmp can be a small separate filesystem even when the workspace has
+# ample free space. Keep Hive Mind's unchanged disk admission on that workspace.
+SCRATCH="$(mktemp -d "${RUNNER_TEMP:-${TMPDIR:-/tmp}}/formal-ai-issue-921.XXXXXX")"
+export TMPDIR="${SCRATCH}"
 REAL_GH="$(command -v gh)"
 SERVER_PID=""
 export NPM_CONFIG_PREFIX="${SCRATCH}/npm-global"
 export PATH="${NPM_CONFIG_PREFIX}/bin:${PATH}"
 mkdir -p "${NPM_CONFIG_PREFIX}"
 cleanup() {
+  local status="$1" line="$2"
+  if [[ "$status" -ne 0 ]]; then
+    echo "Hive Mind full-circle failed at run.sh:$line (exit $status); complete command logs: $OUT/raw-logs" >&2
+  fi
   if [[ -n "${SERVER_PID}" ]]; then
     kill "${SERVER_PID}" 2>/dev/null || true
     wait "${SERVER_PID}" 2>/dev/null || true
   fi
+  # The public solve command logs in its current directory. Preserve its logs
+  # before scratch cleanup, including nonzero prepare-only admission failures.
+  find "${SCRATCH}" -maxdepth 1 -type f -name 'solve-*.log' \
+    -exec cp -- {} "${OUT}/raw-logs/" \; || true
   rm -rf "${SCRATCH}"
+  return "$status"
 }
-trap cleanup EXIT
+trap 'cleanup "$?" "$LINENO"' EXIT
 
 mkdir -p \
   "${OUT}/hive-mind-to-formal-ai" \
@@ -135,7 +147,8 @@ mkdir -p "${SCRATCH}/readonly-prepare-bin"
 ln -s "${GH_PREPARE_WRAPPER}" "${SCRATCH}/readonly-prepare-bin/gh"
 set +e
 (
-  cd "${OUT}/raw-logs"
+  # Hive Mind checks free space at cwd before honoring --working-directory.
+  cd "${SCRATCH}"
   GIT_CONFIG_COUNT=2 \
     GIT_CONFIG_KEY_0=user.name \
     GIT_CONFIG_VALUE_0="Issue 921 Replay" \

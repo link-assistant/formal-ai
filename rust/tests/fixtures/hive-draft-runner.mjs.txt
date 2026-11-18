@@ -1,0 +1,198 @@
+#!/usr/bin/env node
+
+/**
+ * Open a Formal AI draft for one issue (issue #2233).
+ *
+ * Two modes, both driven by `.github/workflows/formal-ai-draft.yml`:
+ *
+ *   --decide   Read the event, decide whether to attempt a draft, and write
+ *              `should_run` / `decision_code` / `decision_reason` to
+ *              `$GITHUB_OUTPUT`. Never touches the network unless a
+ *              `workflow_dispatch` replay makes it fetch the issue.
+ *   (default)  Run the attempt: `docker run … solve <issue> --tool agent
+ *              --model formal-ai --attach-logs --verbose`, then put the
+ *              resulting pull request back into draft and label it.
+ *
+ * `--dry-run` prints the exact argv that would be executed and exits 0, so the
+ * command can be inspected — and diffed in review — without a container, a
+ * token or a model.
+ *
+ * Every decision this file makes lives in `scripts/formal-ai-draft.lib.mjs`;
+ * this file only wires the real event payload, Docker and `gh` into it.
+ *
+ * @see https://github.com/link-assistant/hive-mind/issues/2233
+ * @see docs/FORMAL-AI-DRAFTS.md
+ */
+
+import { spawn } from 'node:child_process';
+import { appendFileSync, chmodSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { join } from 'node:path';
+import { setTimeout as sleep } from 'node:timers/promises';
+
+import { buildDockerArgv, buildGitIdentityEnv, buildRunContextEnv, buildSolveArgv, decideDraft, DRAFT_DECISION_ANNOTATION_TITLE, DRAFT_FAILURE_ANNOTATION_TITLE, FORMAL_AI_BINARY_CONTAINER_PATH, firstErrorLine, formatDecisionOutputs, formatWorkflowAnnotation, keepPullRequestAsDraftArgs, labelDraftPullRequest, readIssueEvent, selectDraftPullRequest } from './formal-ai-draft.lib.mjs';
+import { pullDraftImage, resolveDraftImages } from './formal-ai-draft-image.lib.mjs';
+import { gh } from './github-actions.lib.mjs';
+
+const flags = new Set(process.argv.slice(2));
+const decideOnly = flags.has('--decide');
+const dryRun = flags.has('--dry-run');
+
+const env = process.env;
+const repository = env.GITHUB_REPOSITORY || '';
+const serverUrl = env.GITHUB_SERVER_URL || 'https://github.com';
+
+const setOutput = text => {
+  if (env.GITHUB_OUTPUT) appendFileSync(env.GITHUB_OUTPUT, text);
+  process.stdout.write(text);
+};
+
+/**
+ * The issue this run is about.
+ *
+ * On `issues: opened` it is already in the payload. On a `workflow_dispatch`
+ * replay only the number is, so the rest is fetched — which is also the path
+ * that lets a maintainer re-attempt a draft that failed for an infrastructure
+ * reason rather than a model one.
+ */
+const resolveIssue = async () => {
+  const eventName = env.GITHUB_EVENT_NAME || 'issues';
+  if (eventName === 'issues' && env.GITHUB_EVENT_PATH) {
+    const { action, issue } = readIssueEvent(JSON.parse(readFileSync(env.GITHUB_EVENT_PATH, 'utf8')));
+    return { eventName, action, issue };
+  }
+
+  const number = (env.FORMAL_AI_DRAFT_ISSUE || '').trim();
+  if (!/^\d+$/.test(number)) throw new Error(`a manual run needs FORMAL_AI_DRAFT_ISSUE set to an issue number, received ${JSON.stringify(number)}`);
+  const fetched = JSON.parse(await gh(['issue', 'view', number, '--repo', repository, '--json', 'number,labels,author,url,state']));
+  return {
+    eventName,
+    // A replay is an explicit request, so it is treated as an `opened` event.
+    action: 'opened',
+    issue: { number: fetched.number, url: fetched.url, labels: fetched.labels, user: { login: fetched.author?.login, type: fetched.author?.is_bot ? 'Bot' : 'User' } },
+  };
+};
+
+const issueUrlFor = issue => issue?.html_url || issue?.url || `${serverUrl}/${repository}/issues/${issue?.number}`;
+
+const { eventName, action, issue } = await resolveIssue();
+const decision = decideDraft({ eventName, action, issue, layer: env.AUTOMATION_LAYER || 'default' });
+
+console.log(`Formal AI draft: ${decision.run ? 'attempting' : 'skipping'} — ${decision.reason}`);
+// Read back by the scheduled health check, which flags a decision that repeats.
+console.log(formatWorkflowAnnotation('notice', DRAFT_DECISION_ANNOTATION_TITLE, decision.code));
+setOutput(formatDecisionOutputs(decision));
+setOutput(`issue_number=${issue?.number ?? ''}\n`);
+
+if (decideOnly || !decision.run) process.exit(0);
+
+// --- The attempt ----------------------------------------------------------
+
+const hostLogDir = env.FORMAL_AI_DRAFT_LOG_DIR || `${env.RUNNER_TEMP || '/tmp'}/formal-ai-draft-logs`;
+const containerLogDir = '/home/box/logs';
+mkdirSync(hostLogDir, { recursive: true });
+// The runner creates this directory as its own user; the container writes to it
+// as `box`, whose uid is not the runner's. Without this, solve's session log —
+// the one artefact a failed draft is judged by — fails to write, and the
+// failure looks like the model's rather than the mount's.
+chmodSync(hostLogDir, 0o777);
+
+const fail = message => {
+  console.log(formatWorkflowAnnotation('error', DRAFT_FAILURE_ANNOTATION_TITLE, message));
+  process.exit(1);
+};
+
+// A caller testing a Formal AI build (`workflow_call` with
+// `formal_ai_binary_artifact`) runs it in place of the image's own binary.
+const extraMounts = [];
+const binary = (env.FORMAL_AI_DRAFT_BINARY || '').trim();
+if (binary) {
+  if (!existsSync(binary)) fail(`FORMAL_AI_DRAFT_BINARY is ${binary}, which does not exist; the downloaded artifact must contain a file named formal-ai`);
+  chmodSync(binary, 0o755);
+  extraMounts.push(`${binary}:${FORMAL_AI_BINARY_CONTAINER_PATH}:ro`);
+}
+
+// The image is the tag of the checked-out version, so the container runs the
+// same hive-mind as these scripts; `docker run` alone would pull once and fail
+// the draft on the first registry timeout.
+const imageOptions = { override: env.FORMAL_AI_DRAFT_IMAGE, version: JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version };
+const pullRunner = args =>
+  new Promise(resolve => {
+    const child = spawn('docker', args, { stdio: ['ignore', 'pipe', 'pipe'] });
+    let output = '';
+    const collect = stream => chunk => {
+      output += chunk;
+      stream.write(chunk);
+    };
+    child.stdout.on('data', collect(process.stdout));
+    child.stderr.on('data', collect(process.stderr));
+    child.on('error', error => resolve({ code: 1, output: `${output}\n${error.message}` }));
+    child.on('close', code => resolve({ code: code ?? 1, output }));
+  });
+
+let image = resolveDraftImages(imageOptions).image;
+if (!dryRun) {
+  try {
+    image = await pullDraftImage({ ...imageOptions, run: pullRunner, sleep, warn: message => console.log(formatWorkflowAnnotation('warning', 'Formal AI draft image', message)) });
+  } catch (error) {
+    fail(error.message);
+  }
+}
+
+const dockerArgv = buildDockerArgv({
+  solveArgv: buildSolveArgv({ issueUrl: issueUrlFor(issue), logDir: containerLogDir }),
+  forwardEnv: ['GH_TOKEN', 'FORMAL_AI_INSTALL_GRANT'],
+  setEnv: { ...buildGitIdentityEnv(), ...buildRunContextEnv(env) },
+  image,
+  hostLogDir,
+  containerLogDir,
+  extraMounts,
+});
+
+console.log(`\n$ docker ${dockerArgv.join(' ')}\n`);
+if (dryRun) process.exit(0);
+
+const status = await new Promise((resolve, reject) => {
+  const child = spawn('docker', dockerArgv, { stdio: 'inherit' });
+  child.on('error', reject);
+  child.on('close', code => resolve(code ?? 1));
+});
+
+/** The first error of the newest session log, so the run's summary says why it is red. */
+const reportFirstError = () => {
+  let text = '';
+  try {
+    const logs = readdirSync(hostLogDir)
+      .filter(name => name.endsWith('.log'))
+      .map(name => join(hostLogDir, name))
+      .sort((a, b) => statSync(b).mtimeMs - statSync(a).mtimeMs);
+    if (logs.length) text = readFileSync(logs[0], 'utf8');
+  } catch {
+    // No log is itself the finding; the fallback message says so.
+  }
+  console.log(formatWorkflowAnnotation('error', DRAFT_FAILURE_ANNOTATION_TITLE, firstErrorLine(text) || `docker run exited ${status} without a session log error`));
+};
+if (status !== 0) reportFirstError();
+
+// --- The failure policy ---------------------------------------------------
+//
+// This runs whether the attempt succeeded or failed, and its own failures are
+// never fatal. #2233: the draft "stays open and red until a later run
+// succeeds"; a labelling error must not close it, and must not turn a red
+// draft into a red *workflow* that hides why the draft is red.
+
+try {
+  const open = JSON.parse(await gh(['pr', 'list', '--repo', repository, '--state', 'open', '--limit', '100', '--json', 'number,headRefName,isDraft']));
+  const pullRequest = selectDraftPullRequest(open, issue.number);
+  if (!pullRequest) {
+    console.log(`No pull request was opened for issue #${issue.number}; the session log is the record of why.`);
+  } else {
+    console.log(`Draft pull request: ${serverUrl}/${repository}/pull/${pullRequest.number}`);
+    setOutput(`head_branch=${pullRequest.headRefName}\npull_request_number=${pullRequest.number}\n`);
+    if (!pullRequest.isDraft) await gh(keepPullRequestAsDraftArgs({ repository, number: pullRequest.number }));
+    await labelDraftPullRequest({ gh, repository, number: pullRequest.number });
+  }
+} catch (error) {
+  console.log(`Could not finalize the draft's state (${error.message}); the pull request itself is unaffected.`);
+}
+
+process.exit(status);

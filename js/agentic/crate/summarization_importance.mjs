@@ -13,7 +13,7 @@ import {
   Stance, TruthValueConstants, assessAssumedTrue, relativeEvidence, tierWeightPercent,
 } from './relative_meta_logic.mjs';
 import {
-  compareStrings, mergedEvidence, mergedPrior, mergedSources, negatedSignature, sameSignature,
+  compareStrings, mergedEvidence, mergedPrior, mergedSources, signatureDenies,
   signatureKey, sourceCount,
 } from './summarization_dedup.mjs';
 import { renderedResponse } from './summarization_vocabulary.mjs';
@@ -61,7 +61,7 @@ function trustMass(node) {
  * @param {number} totalSources
  */
 export function scoreStatement(node, report, totalSources) {
-  const denier = report.statements.find((other) => sameSignature(other.signature, negatedSignature(node.signature))) ?? null;
+  const denier = report.statements.find((other) => signatureDenies(other.signature, node.signature)) ?? null;
   const deniedBy = denier === null ? [] : mergedSources(denier);
   const asserting = sourceCount(node);
   const coverage = percentage(asserting, totalSources);

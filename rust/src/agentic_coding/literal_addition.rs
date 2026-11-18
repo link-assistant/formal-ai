@@ -126,17 +126,10 @@ pub(super) fn plan_literal_addition_step(
     if written != expected {
         return Some(refused(task, &target, FinalDisposition::Gap, result));
     }
-    if !progress
-        .attempts_after_latest_write(&target)
-        .is_some_and(|attempts| {
-            attempts
-                .iter()
-                .any(|attempt| attempt.capability == Capability::Read)
-        })
-    {
+    if !progress.attempted_read_after_latest_write_for(&target) {
         return Some(plan_one(read, read_arguments(&target)));
     }
-    let after = progress.source_read_for(&target);
+    let after = progress.source_read_after_latest_write_for(&target);
     if !after.is_some_and(|after| {
         after.error.is_none()
             && after.complete

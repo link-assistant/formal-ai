@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=e0647daec35aa76536851c9daa3cfd8a12bcee1fff77fc425efe4837bea2cd19 bytes=10650
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=bd26384c689b15d9bbd99a217ab3f830af3c312b9b1f8e2f75d36e081ee384a3 bytes=17868
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds array-push items=1; string-methods items=1
 
@@ -232,13 +232,37 @@ pub fn ml_parse_quoted_list_loop1(mut items: Vec<String>, mut rest: String, mut 
 // formal-ai:refusal method call .reduce()
 // formal-ai:blockers arrow callback of .reduce() | arrow function | field access | method call .reduce()
 
+// meta-language:carried JavaScript lexical_declaration (unsupported)
+// formal-ai:refusal regular expression
+// formal-ai:blockers regular expression
+
+// meta-language:carried JavaScript lexical_declaration (type)
+// formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers arrow function | method call .test() | sibling value
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal undefined
+// formal-ai:blockers method call .charCodeAt() | method call .slice() | undefined
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal method call .codePointAt()
+// formal-ai:blockers String.fromCodePoint | method call .codePointAt() | undefined
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal method call .slice()
+// formal-ai:blockers call of a sibling function | method call .slice()
+
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal regular expression
-// formal-ai:blockers method call .slice() | method call .test() | regular expression
+// formal-ai:blockers method call .test() | regular expression
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal Array.from
-// formal-ai:blockers Array.from | arrow callback of .some() | call of a sibling function | field access | method call .indexOf() | method call .pop() | method call .slice() | method call .some() | undefined
+// formal-ai:blockers Array.from | arrow callback of .some() | call of a sibling function | field access | method call .indexOf() | method call .some() | undefined
+
+// meta-language:carried JavaScript function_declaration (type)
+// formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of a sibling function
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal null
@@ -251,6 +275,70 @@ pub fn ml_parse_quoted_list_loop1(mut items: Vec<String>, mut rest: String, mut 
 // meta-language:carried JavaScript export_statement (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
 // formal-ai:blockers call of a sibling function | global call String()
+
+// meta-language:translated JavaScript lexical_declaration items=1 sha256=01a02a63ab217c1250d7a51f2d36ad452d99fc080468f6c65878219dee0c72f6
+// | /**
+// |  * Mirrors `PROSE_SCRIPT_WEIGHT`: in prose, a registered script other than the
+// |  * fallback's wins once its letters reach a sixth of the fallback script's.
+// |  * Writers of other languages borrow fallback-script names and terms freely,
+// |  * and a fallback-script word spends several letters where an ideographic
+// |  * script spends one, so the fallback script must clearly outnumber a rival
+// |  * script to win (issue #1557).
+// |  */
+// | const PROSE_SCRIPT_WEIGHT = 6;
+pub const PROSE_SCRIPT_WEIGHT: f64 = 6f64;
+
+// meta-language:translated JavaScript lexical_declaration items=1 sha256=244d22c00d431a177f91cc651ce6cea6827c8ae7c60ff909a0e05921987bf5bf
+// | /**
+// |  * Mirrors `SHARED_SCRIPT_SHARE`: a language sharing the fallback script wins
+// |  * prose once its votes reach a tenth of the fallback-script words, and a lone
+// |  * vote must be half of them, so one marker or one accented name cannot outvote
+// |  * a document or a short sentence (issue #1557).
+// |  */
+// | const SHARED_SCRIPT_SHARE = 10;
+pub const SHARED_SCRIPT_SHARE: f64 = 10f64;
+
+// meta-language:translated JavaScript lexical_declaration items=1 sha256=e5a9900bb5ed9074a1e47d771982b8ccc7c296f73ba3577dc3124653c28a0582
+// | /** Mirrors `QUOTATIONS`: an opening quotation mark and its closing marks. */
+// | const QUOTATIONS = [['"', '"'], ['\u201C', '\u201D'], ['\u00AB', '\u00BB'], ['\u201E', '\u201C\u201D']];
+pub static QUOTATIONS: std::sync::LazyLock<Vec<Vec<String>>> = std::sync::LazyLock::new(|| vec![vec![String::from("\""), String::from("\"")], vec![String::from("“"), String::from("”")], vec![String::from("«"), String::from("»")], vec![String::from("„"), String::from("“”")]]);
+
+// meta-language:translated JavaScript lexical_declaration items=1 sha256=cb36dbad934bc4b3010056da66e526059498debc49a29a980259363bb1516b7f
+// | /** Mirrors `QUOTATION_OPENERS_AFTER`: punctuation a quotation may open after. */
+// | const QUOTATION_OPENERS_AFTER = '([{|';
+pub const QUOTATION_OPENERS_AFTER: &str = "([{|";
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal method call .split()
+// formal-ai:blockers arrow callback of .filter() | method call .filter() | method call .join() | method call .split()
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal Array.from
+// formal-ai:blockers Array.from | QUOTATIONS.find | QUOTATION_OPENERS_AFTER.includes | arrow callback of .find() | arrow callback of .findIndex() | call of a sibling function | method call .findIndex() | method call .join() | method call .push() | undefined
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal array destructuring
+// formal-ai:blockers assignment of a field or element | call of a sibling function | call of an imported function | destructuring | nullish coalescing
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal method call .some()
+// formal-ai:blockers arrow callback of .some() | call of a sibling function | method call .some() | method call .test() | regular expression
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal method call .replace()
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .some() | call of a sibling function | call of an imported function | method call .filter() | method call .join() | method call .push() | method call .replace() | method call .some() | method call .split() | regular expression
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal method call .split()
+// formal-ai:blockers Array.from | arrow callback of .filter() | arrow callback of .reduce() | arrow callback of .some() | call of a sibling function | field access | method call .filter() | method call .reduce() | method call .some() | method call .split() | null | regular expression
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal null
+// formal-ai:blockers call of a sibling function | field access | null | nullish coalescing
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal JSDoc type {…}
+// formal-ai:blockers JSDoc type {…} | call of a sibling function
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null

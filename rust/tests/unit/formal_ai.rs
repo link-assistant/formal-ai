@@ -595,6 +595,9 @@ fn chat_completion_has_openai_compatible_shape() {
         tool_choice: None,
         functions: Vec::new(),
         function_call: None,
+        output_standard: None,
+        lexical_density: None,
+        response_format: None,
         stream_options: None,
     };
 
@@ -613,6 +616,7 @@ fn chat_completion_has_openai_compatible_shape() {
 #[test]
 fn responses_api_shape_contains_output_text() {
     let request = ResponsesRequest {
+        text: None,
         model: Some(String::from("formal-ai")),
         input: serde_json::Value::String(String::from("Write hello world in Rust")),
         instructions: None,

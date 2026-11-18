@@ -10,8 +10,9 @@
 //! workflow does not parse, or if a local reusable workflow cannot be found:
 //! each of those would otherwise drop a leg out of the measurement.
 //!
-//! The ceiling is read from data/meta/ci-wall-clock.lino. The measured maximum
-//! must equal measured_minutes and must not exceed ceiling_minutes.
+//! The ceiling is read from data/meta/ci-wall-clock.lino. The maximum is derived
+//! from current workflows and must not exceed ceiling_minutes. It is not a
+//! manually synchronized counter or a claim about observed Actions runtime.
 //!
 //! Usage:
 //!   rust-script scripts/check-ci-wall-clock.rs
@@ -57,33 +58,25 @@ fn as_minutes(value: &Value) -> Option<u32> {
 
 #[derive(Debug, PartialEq)]
 pub struct WallClockRecord {
-    pub measured_minutes: u32,
     pub ceiling_minutes: u32,
 }
 
 pub fn parse_wall_clock(content: &str) -> Result<WallClockRecord, String> {
-    let mut measured = None;
     let mut ceiling = None;
     for line in content.lines() {
         let t = line.trim();
         if t.starts_with('#') || t.is_empty() {
             continue;
         }
-        if let Some(v) = t.strip_prefix("measured_minutes ") {
-            measured = v.trim().parse::<u32>().ok();
-        }
         if let Some(v) = t.strip_prefix("ceiling_minutes ") {
             ceiling = v.trim().parse::<u32>().ok();
         }
     }
-    match (measured, ceiling) {
-        (Some(m), Some(c)) => Ok(WallClockRecord {
-            measured_minutes: m,
+    match ceiling {
+        Some(c) => Ok(WallClockRecord {
             ceiling_minutes: c,
         }),
-        _ => Err(format!(
-            "{WALL_CLOCK_FILE}: missing measured_minutes or ceiling_minutes"
-        )),
+        _ => Err(format!("{WALL_CLOCK_FILE}: missing ceiling_minutes")),
     }
 }
 
@@ -551,18 +544,9 @@ fn main() {
     };
 
     // Verify against recorded ceiling.
-    if measured != record.measured_minutes {
-        println!(
-            "::error::{WALL_CLOCK_FILE}: measured_minutes is {}, but the discovered \
-             maximum is {measured} min (from {wf_name}: {chain_str}); \
-             update measured_minutes to {measured}",
-            record.measured_minutes
-        );
-        std::process::exit(1);
-    }
     if measured > record.ceiling_minutes {
         println!(
-            "::error::{WALL_CLOCK_FILE}: measured_minutes ({measured}) exceeds \
+            "::error::{WALL_CLOCK_FILE}: computed path ({measured}) exceeds \
              ceiling_minutes ({}); reduce job timeouts or raise the ceiling",
             record.ceiling_minutes
         );
@@ -812,10 +796,9 @@ jobs:
     }
 
     #[test]
-    fn parse_wall_clock_reads_measured_and_ceiling() {
+    fn parse_wall_clock_reads_ceiling_without_synchronized_measurements() {
         let content = "ci_wall_clock pr\n  measured_minutes 225\n  ceiling_minutes 225\n  workflow \".github/workflows/issue-1028-agent-ladder.yml\"\n";
         let r = parse_wall_clock(content).unwrap();
-        assert_eq!(r.measured_minutes, 225);
         assert_eq!(r.ceiling_minutes, 225);
     }
 
@@ -826,8 +809,8 @@ jobs:
     }
 
     #[test]
-    fn parse_wall_clock_rejects_missing_measured() {
+    fn parse_wall_clock_accepts_ceiling_only() {
         let content = "ci_wall_clock pr\n  ceiling_minutes 100\n";
-        assert!(parse_wall_clock(content).is_err());
+        assert_eq!(parse_wall_clock(content).unwrap().ceiling_minutes, 100);
     }
 }

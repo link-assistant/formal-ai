@@ -10,11 +10,11 @@ const record={name:'vscode-languageserver-types',version:'3.18.5',dist:{tarball:
 const result=(status,stderr='',extra={})=>({status,signal:null,error:undefined,cleanup_complete:true,
   timed_out:false,stdout:Buffer.from('bun add\n'),stderr:Buffer.from(stderr),...extra});
 async function replay({first=result(1,fixture.stderr),second=result(0),metadata=record,head=200,
-  fetchFailure=false,advance=0,redirect=null}={}){
+  fetchFailure=false,advance=0,redirect=null,commandArgs=args}={}){
   let calls=0,clock=0;const fetches=[],outputs=[],records=[],timeouts=[],environment={AUTH_TOKEN:'owned-test-secret'};
-  const final=await recoverClientInstall('bun',args,{seconds:60,cwd:'/owned-client',env:environment},{
+  const final=await recoverClientInstall('bun',commandArgs,{seconds:60,cwd:'/owned-client',env:environment},{
     now:()=>clock,command:async(file,actual,options)=>{
-      calls++;assert.equal(file,'bun');assert.deepEqual(actual,args);assert.equal(options.cwd,'/owned-client');
+      calls++;assert.equal(file,'bun');assert.deepEqual(actual,commandArgs);assert.equal(options.cwd,'/owned-client');
       assert.equal(options.env,environment);assert(options.timeout>0&&options.timeout<=60000);
       assert.equal(options.stdoutLimitBytes,4194304);assert.equal(options.stderrLimitBytes,4194304);
       timeouts.push(options.timeout);if(calls===1)clock+=advance;return calls===1?first:second;
@@ -80,4 +80,27 @@ test('bounded replay redacts known credentials and metadata never includes argum
 
 test('mixed-log channel reconstruction does not change failure classification',()=>{
   assert.deepEqual(failedRegistryTarball(fixture.stderr,fixture.stdout),candidate);
+});
+
+test('actual agent and Docker ai tarball failure recovers only through fresh official evidence',async()=>{
+  const tarball='https://registry.npmjs.org/ai/-/ai-7.0.152.tgz';
+  const first=result(1,'error: GET '+tarball+' - 404\n');
+  const metadata={name:'ai',version:'7.0.152',dist:{tarball,integrity:record.dist.integrity}};
+  for(const commandArgs of [args,['install','--production','--cwd','/owned tools']]){
+    const observed=await replay({first,metadata,commandArgs});
+    assert.equal(observed.final.status,0);assert.equal(observed.calls,2);
+    const unavailable=await replay({first,metadata,commandArgs,head:404});
+    assert.equal(unavailable.final,first);assert.equal(unavailable.calls,1);
+    const permanent=await replay({first,second:first,metadata,commandArgs});
+    assert.equal(permanent.final,first);assert.equal(permanent.calls,2);
+  }
+});
+
+test('project recovery rejects altered install policy and relative directories before execution',async()=>{
+  for(const commandArgs of [['install','--force','--cwd','/owned'],
+    ['install','--production','--cwd','relative'],['add','-g','--ignore-scripts','@link-assistant/agent']]){
+    let calls=0;
+    await assert.rejects(recoverClientInstall('bun',commandArgs,{}, {command:async()=>{calls++;}}));
+    assert.equal(calls,0);
+  }
 });

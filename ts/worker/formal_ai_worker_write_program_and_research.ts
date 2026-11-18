@@ -788,7 +788,9 @@ function normalizeUrlCandidate(candidate) {
 }
 
 function firstUrlCandidate(prompt) {
-  const tokens = String(prompt || "").split(/\s+/);
+  const lines = String(prompt || "").split(/\r?\n/u);
+  const boundary = lines.findIndex(line => isDocumentOriginalitySectionLine(line.trim()));
+  const tokens = (boundary < 0 ? lines : lines.slice(0, boundary)).join(" ").split(/\s+/);
   for (const token of tokens) {
     const trimmed = trimUrlToken(token);
     const url = normalizeUrlCandidate(trimmed);
@@ -1259,11 +1261,15 @@ function searchBoundaryBefore(text, verbStart, markers) {
 // Issue #1175 R3, numeric group: claim evidence joined into claimEvidence() (formal_ai_worker_dispatch.js), each the operand reader its handler already runs, twin of rust/src/capability_routing/claims.rs.
 const NUMERIC_CLAIM_EVIDENCE = Object.freeze({
   stated_number: (prompt) => parseNumericListNumbers(String(prompt).toLowerCase()).length > 0,
-  calculation_expression: (prompt) => Boolean(extractArithmeticExpression(prompt)),
+  calculation_expression: (prompt) => Boolean(quantityConstraintFor(prompt) || extractArithmeticExpression(prompt)),
   currency_rate_basis: (prompt) => mentionsUsdRate(normalizePrompt(prompt)) && mentionsRateCalculationBasis(normalizePrompt(prompt)),
   investment_terms: (prompt, normalized) => parseCompoundInterestRequest(prompt, normalized) !== null,
   conversion_target_currency: (prompt, normalized) => Boolean(targetCurrencyFromText(normalized)),
   interval_bounds: (prompt, normalized) => numberConstraintIntervalBounds(normalizePrompt(normalized), String(prompt).toLowerCase()) !== null,
-  measured_quantity: (prompt) => parseNumericListNumbers(String(prompt).toLowerCase()).length > 0 && unitMentions(String(prompt).toLowerCase()).length === 2,
-  calendar_anchor: (prompt, normalized) => Boolean(detectWeekday(normalized) || detectCalendarMonth(normalized) || calendarStatedDate(prompt, normalized) || mentionsCurrentDayQuestion(normalized)),
+  measured_quantity: (prompt) => {
+    const span = unitConversionSpan(String(prompt).toLowerCase());
+    return span !== null && quantityConstraintFor(span) === null &&
+      parseNumericListNumbers(span).length === 1 && unitMentions(span).length === 2;
+  },
+  calendar_anchor: (prompt, normalized) => Boolean(calendarDurationRequest(prompt) || detectWeekday(normalized) || detectCalendarMonth(normalized) || calendarStatedDate(prompt, normalized) || tryCalendarDateOffset(prompt, normalized) || mentionsCurrentDayQuestion(normalized)),
 });

@@ -93,6 +93,7 @@ pub use software_project::{
 pub use software_project_followup::{continues_software_project, try_software_project_followup};
 pub use sql_synthesis::{handle_sql_synthesis, names_query_table};
 pub use statistics::{handle_statistics, handle_word_problem};
+pub(crate) use statistics::{has_property, property_interval};
 pub use summarization_request::handle_summarization_request;
 pub use task_decomposition::{looks_like_task_decomposition, try_task_decomposition_with_depth};
 pub use test_generation::{handle_test_generation, names_function_under_test};
@@ -130,6 +131,9 @@ pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer
     let mut first_explicit_error: Option<(String, String, Vec<PromptInterpretation>)> = None;
     for candidate in candidates {
         let expression = candidate.expression;
+        if let Some(answer) = calculator_rate::conversion(prompt, &expression, log) {
+            return Some(answer);
+        }
         let interpretations = candidate.interpretations;
         let reasoning_steps = candidate.reasoning_steps;
         let result_label = candidate.result_label;
@@ -739,19 +743,10 @@ pub fn finalize_simple(
 ) -> SymbolicAnswer {
     let body = crate::question_necessity::enforce_questions(body, log);
     log.append("intent", intent.to_owned());
-    if log.first_of("candidate").is_none() {
-        log.append("candidate", intent.to_owned());
-    }
-    if log.first_of("validation").is_none() {
-        log.append(
-            "validation",
-            "accepted_without_extra_constraints".to_owned(),
-        );
-    }
+    crate::solver_helpers::record_candidates(log, intent);
+    crate::solver_helpers::record_answer_test(log, intent, &body);
     log.append("response", response_link.to_owned());
-    if log.first_of("trace:simplification").is_none() {
-        log.append("trace:simplification", "smallest_sufficient".to_owned());
-    }
+    crate::solver_helpers::record_selection(log, intent);
     let trace_id = log.append("trace", intent.to_owned());
     let evidence_links = build_evidence_links(prompt, log, response_link);
     let links_notation = answer_links_notation(prompt, intent, &body, log, &trace_id);

@@ -42,6 +42,7 @@ import {typedMeaning,preserveTypedRendering,countSourceTerms,inheritNumericEvide
 import { byteSlice, clauses, scriptOf, sentences } from './formalization_segment.mjs';
 import { byteOrder } from './rust_str.mjs';
 import { lexicon, meaning, meaningsWithRole } from './seed_meanings.mjs';
+import { readPropositionStructure, structureKey } from './proposition_structure.mjs';
 
 /** Mirrors `TEXT_FORMALIZATION_LINO` in rust/src/seed/embedded_registry.rs (the repository path it embeds). */
 export const TEXT_FORMALIZATION_PATH = 'data/seed/text-formalization.lino';
@@ -51,6 +52,9 @@ export const FUNCTION_WORD_ROLES = Object.freeze(['translation_stop_word', 'stat
 
 /** Mirrors `NEGATION_ROLE` in rust/src/formalization/text_statements.rs: the lexicon role whose words deny a statement. */
 export const NEGATION_ROLE = 'statement_negation_cue';
+
+/** Grammar lexemes belong to their owning parser, not the general semantic index. */
+export const SCOPED_GRAMMAR_ROLE = 'scoped-grammar-pattern';
 
 /** Mirrors `LONGEST_PHRASE` in rust/src/formalization/text_statements.rs: the most words one lexicon surface may span. */
 export const LONGEST_PHRASE = 4;
@@ -199,7 +203,8 @@ export function meaningIndex(language) {
   return cached(`text-formalization-index-${language}`, () => {
     const best = new Map();
     lexicon().forEach((entry, order) => {
-      if (FUNCTION_WORD_ROLES.some((role) => entry.roles.includes(role)) || entry.roles.includes(NEGATION_ROLE)) return;
+      if (FUNCTION_WORD_ROLES.some((role) => entry.roles.includes(role))
+        || entry.roles.includes(NEGATION_ROLE) || entry.roles.includes(SCOPED_GRAMMAR_ROLE)) return;
       const lexeme = entry.lexemes.find((candidate) => candidate.language === language);
       if (lexeme === undefined) return;
       const languages = new Set(entry.lexemes.map((candidate) => candidate.language)).size;
@@ -476,12 +481,18 @@ export function statementClauses(sentence) {
  * @param {string} language
  */
 export function formalizeSentences(text, language) {
+  return formalizeSentenceSegments(sentences(text), language, false);
+}
+
+/** Formalize preselected sentence segments, optionally keeping each as one statement. */
+export function formalizeSentenceSegments(segments, language, wholeSentences) {
   const out = [];
   let previousSubject = null;
-  for (const sentence of sentences(text)) {
+  for (const sentence of segments) {
     const sentenceDialogue = formalizeDialogue(sentence.text, language);
     const statements = [];
-    statementClauses(sentence).forEach((clause, index) => {
+    const parts = wholeSentences ? [sentence] : statementClauses(sentence);
+    parts.forEach((clause, index) => {
       const statement = clauseStatement(clause.text, language, previousSubject, index === 0);
       if (index === 0 && sentenceDialogue.question) statement.dialogue.question = sentenceDialogue.question;
       if (statement.subject === null && statement.terms.length === 0 && !statement.dialogue.answer && !statement.dialogue.question) return;
@@ -541,16 +552,28 @@ export function knownIds(statement) {
     .sort(byteOrder);
 }
 
+const STRUCTURES = new WeakMap();
+/** Mirrors `fn statement_structure` in rust/src/formalization/text_statements.rs: operand order, connectives, quantifiers, repetition (#1487). */
+export function statementStructure(statement) {
+  const text = statement.text ?? '';
+  const seen = STRUCTURES.get(statement);
+  if (seen?.text === text && seen.terms === statement.terms) return seen.structure;
+  const words = readWords(text, statement.language, true);
+  const kinds = { meaning: WordKind.Meaning, negation: WordKind.Negation, isTerm: isTermKind };
+  const structure = readPropositionStructure(text, statement.language, words, statementTerms(statement), kinds);
+  STRUCTURES.set(statement, { text, terms: statement.terms, structure });
+  return structure;
+}
+
 /**
  * Mirrors `fn statement_identity` in rust/src/formalization/text_statements.rs: the formal identity of a statement, its
- * polarity, its subject and the set of its other terms. Two statements with
- * one identity say the same thing whatever their wording.
+ * polarity, its subject, the set of its other terms and the proposition structure a set loses (issue #1487).
  */
 export function statementIdentity(statement) {
   const subject = statement.subject === null ? '' : statement.subject.id;
   const others = [...new Set(statement.terms.map((term) => term.id))].filter((id) => id !== subject).sort(byteOrder);
-  const legacy=`${statement.polarity}|${subject}|${others.join(' ')}`;
-  return typedMeaning(statement.dialogue)===null?legacy:legacy+'|'+typedMeaning(statement.dialogue);
+  const legacy=`${statement.polarity}|${subject}|${others.join(' ')}`, typed=typedMeaning(statement.dialogue)===null?legacy:legacy+'|'+typedMeaning(statement.dialogue), key=structureKey(statementStructure(statement));
+  return key===''?typed:`${typed}|structure:${key}`;
 }
 
 /** Mirrors `fn has_no_unknown` in rust/src/formalization/text_statements.rs: a statement of at least two terms, all of them known. */

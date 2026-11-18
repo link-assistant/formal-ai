@@ -66,12 +66,18 @@ function freshBrowserEntry(failBootstrap = false) {
     }
   };
   const owner = 'js/worker/formal_ai_worker.js';
-  vm.runInContext(readFileSync(path.join(REPO_ROOT, owner), 'utf8'), browser, { filename: owner });
-  return { browser, imports };
+  let bootstrapError;
+  try {
+    vm.runInContext(readFileSync(path.join(REPO_ROOT, owner), 'utf8'), browser, { filename: owner });
+  } catch (error) {
+    bootstrapError = error;
+  }
+  return { browser, imports, bootstrapError };
 }
 
 test('fresh browser imports the real parser provider before seed and dependent modules', () => {
-  const { browser, imports } = freshBrowserEntry();
+  const { browser, imports, bootstrapError } = freshBrowserEntry();
+  assert.equal(bootstrapError, undefined);
   const bootstrap = imports.indexOf('js/parser-cache-primordials.js');
   assert(bootstrap >= 0);
   assert(bootstrap < imports.indexOf('js/seed_loader.js'));
@@ -81,7 +87,8 @@ test('fresh browser imports the real parser provider before seed and dependent m
 });
 
 test('failed browser bootstrap import does not admit seed or dependent modules', () => {
-  const { browser, imports } = freshBrowserEntry(true);
+  const { browser, imports, bootstrapError } = freshBrowserEntry(true);
+  assert.match(bootstrapError?.message ?? '', /ActualBootstrapImportFailed/);
   assert(imports.includes('js/parser-cache-primordials.js'));
   assert(!imports.includes('js/seed_loader.js'));
   assert.equal(vm.runInContext('typeof metaPrograms', browser), 'undefined');

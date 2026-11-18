@@ -27,6 +27,8 @@ roles
     kind meaning
   answer_rationale_lead
     kind predicate
+  applicability-marker
+    kind meaning
   applicability_condition
     kind predicate
   architecture_concept
@@ -73,6 +75,8 @@ roles
     kind predicate
   calculator_tool_name
     kind predicate
+  calendar-date-offset
+    kind meaning
   calendar_day_reference
     kind predicate
   calendar_direction_next
@@ -169,6 +173,18 @@ roles
     kind meaning
   clause_joiner
     kind meaning
+  client-function-sentiment
+    kind predicate
+  client-function-sentiment-negation
+    kind predicate
+  client-function-sentiment-negative
+    kind predicate
+  client-function-sentiment-neutral
+    kind predicate
+  client-function-sentiment-positive
+    kind predicate
+  code-comment-obligation
+    kind meaning
   code_example_decomposition_answer
     kind predicate
   code_example_decomposition_cue
@@ -249,6 +265,12 @@ roles
     kind meaning
   compact
     kind meaning
+  comparison-equal
+    kind meaning
+  comparison-filler
+    kind meaning
+  comparison-not-equal
+    kind meaning
   comparison_difference_cue
     kind predicate
   comparison_infix
@@ -285,6 +307,8 @@ roles
     kind predicate
   computing-instruction
     kind predicate
+  condition-marker
+    kind meaning
   config_value_lead
     kind predicate
   containment_relation
@@ -377,6 +401,8 @@ roles
     kind predicate
   execute_url_request
     kind predicate
+  execution-circumstance
+    kind meaning
   execution-verb-form
     kind predicate
   execution-verb-position
@@ -523,11 +549,15 @@ roles
     kind meaning
   github_repository_traffic_signal
     kind meaning
+  handler-table
+    kind predicate
   hello_world_reference
     kind predicate
   http_fetch
     kind meaning
   identifier_reserved_word
+    kind meaning
+  illustrative-marker
     kind meaning
   implementation_language_noun
     kind meaning
@@ -539,6 +569,8 @@ roles
     kind meaning
   interest_cue
     kind predicate
+  internet-access-help
+    kind meaning
   interrogative_opener
     kind meaning
   inverse_incompatibility_relation
@@ -550,6 +582,8 @@ roles
   issue-reference
     kind meaning
   javascript-imported-optional-text
+    kind meaning
+  judgment-obligation
     kind meaning
   knowledge_inventory_interrogative
     kind predicate
@@ -565,6 +599,8 @@ roles
     kind meaning
   knowledge_value
     kind meaning
+  lexical-identity
+    kind predicate
   lexical_meta
     kind predicate
   line-slice-count
@@ -627,6 +663,8 @@ roles
     kind meaning
   local_shell_request_cue
     kind predicate
+  localized-response-template
+    kind predicate
   localized_response_template
     kind meaning
   math_function_argument_marker
@@ -675,6 +713,8 @@ roles
     kind meaning
   monetary_concept
     kind predicate
+  negated-condition-marker
+    kind meaning
   network_capability_cue
     kind predicate
   non_referential_subject
@@ -711,6 +751,8 @@ roles
     kind predicate
   numeric_concept
     kind predicate
+  object
+    kind predicate
   observable_task_action
     kind meaning
   observed-callable-authoring
@@ -723,11 +765,17 @@ roles
     kind predicate
   operating_principle
     kind meaning
+  optional-obligation-marker
+    kind meaning
   optional-record
     kind meaning
   optional-source-text
     kind meaning
   ordering_relation
+    kind predicate
+  otherwise-marker
+    kind meaning
+  output-constraint
     kind predicate
   output_display_request
     kind meaning
@@ -763,8 +811,12 @@ roles
     kind meaning
   procedural_task_modifier
     kind meaning
+  procedure
+    kind predicate
   production_relation
     kind predicate
+  program-file-obligation
+    kind meaning
   program-termination-clause
     kind meaning
   program_artifact
@@ -827,6 +879,28 @@ roles
     kind predicate
   publish
     kind meaning
+  quantity-constraint-aggregate
+    kind predicate
+  quantity-constraint-bound-frame
+    kind meaning
+  quantity-constraint-bound-reference
+    kind meaning
+  quantity-constraint-comparison-frame
+    kind meaning
+  quantity-constraint-list-conjunction
+    kind meaning
+  quantity-constraint-member-reference
+    kind meaning
+  quantity-constraint-members-frame
+    kind meaning
+  quantity-constraint-outcome
+    kind predicate
+  quantity-constraint-ownership-frame
+    kind meaning
+  quantity-constraint-query-prefix
+    kind meaning
+  quantity-constraint-relation-le
+    kind predicate
   quantity_conversion_cue
     kind predicate
   reachability_operand_framing
@@ -884,6 +958,10 @@ roles
   rule_listing_scope
     kind predicate
   rule_listing_subject
+    kind predicate
+  run-instruction-obligation
+    kind meaning
+  scoped-grammar-pattern
     kind predicate
   script_authoring_verb
     kind predicate
@@ -1105,6 +1183,12 @@ roles
     kind meaning
   term_information_request_opener
     kind meaning
+  text-summary-cause
+    kind meaning
+  text-summary-cause-phrase
+    kind meaning
+  text-summary-phatic
+    kind meaning
   text_summarization_action
     kind meaning
   time_duration_cue
@@ -1237,6 +1321,16 @@ roles
     kind meaning
   word_problem_relation
     kind predicate
+  workflow-context-noun
+    kind meaning
+  workflow-execution-verb
+    kind meaning
+  workflow-status-obligation
+    kind meaning
+  workflow-trigger-pull-request
+    kind meaning
+  workflow-trigger-push
+    kind meaning
   workspace_content_search_form
     kind meaning
   workspace_content_search_noise

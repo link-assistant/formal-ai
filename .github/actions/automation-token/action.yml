@@ -56,16 +56,28 @@ inputs:
     description: Extra repositories the GitHub App token may touch (csv); cross-repository workloads pass them here
     required: false
     default: ""
+  owner:
+    description: Owner of the selected GitHub App installation
+    required: false
+    default: ${{ github.repository_owner }}
+  permission-actions:
+    description: Optional Actions permission for the scoped installation token
+    required: false
+    default: ""
+  permission-workflows:
+    description: Optional workflow-file permission for the scoped installation token
+    required: false
+    default: ""
 outputs:
   token:
     description: The resolved credential
-    value: ${{ steps.resolve.outputs.token }}
+    value: ${{ steps.selected.outputs.token }}
   layer:
     description: Which layer resolved (app | token | default)
-    value: ${{ steps.resolve.outputs.layer }}
+    value: ${{ steps.selected.outputs.layer }}
   can-create-repositories:
     description: '"true" only when the app layer is active'
-    value: ${{ steps.resolve.outputs.layer == 'app' && 'true' || 'false' }}
+    value: ${{ steps.selected.outputs.layer == 'app' && 'true' || 'false' }}
 
 runs:
   using: composite
@@ -85,11 +97,9 @@ runs:
         layer=""
         token=""
 
-        if [ -n "$APP_ID" ] && [ -n "$APP_PRIVATE_KEY" ]; then
-          # Layer 1: the GitHub App. The exchange itself is delegated to the
-          # maintained action; everything before it is configuration.
-          layer=app
-        elif [ -n "$AUTOMATION_TOKEN" ]; then
+        # Prepare a usable fallback before the optional App exchange. A
+        # configured App is selected only when minting actually succeeds.
+        if [ -n "$AUTOMATION_TOKEN" ]; then
           # Layer 2: the one token name, same in every repository.
           layer=token
           token="$AUTOMATION_TOKEN"
@@ -119,13 +129,8 @@ runs:
         } >> "$GITHUB_STEP_SUMMARY"
         echo "automation-token: layer=${layer}"
 
-        # The app layer exchanges its token in the step below; every other
-        # layer is already resolved.
-        if [ "$layer" != app ]; then
-          # token is masked by Actions automatically (it came from secrets
-          # or github.token), so writing it to the output is safe.
-          echo "token=$token" >> "$GITHUB_OUTPUT"
-        fi
+        # Preserve the fallback even when the optional App exchange fails.
+        echo "token=$token" >> "$GITHUB_OUTPUT"
 
     # Layer 1 exchange, only when the app is configured. actions/
     # create-github-app-token is the maintained implementation of the
@@ -133,12 +138,13 @@ runs:
     # on a real run (the pin is deliberately a tag until then, so the
     # GUARD-tracked first run chooses the pin consciously).
     - id: app-token
-      if: ${{ steps.resolve.outputs.layer == 'app' }}
+      if: ${{ inputs.app-id != '' && inputs.app-private-key != '' }}
+      continue-on-error: true
       uses: actions/create-github-app-token@v3
       with:
         app-id: ${{ inputs.app-id }}
         private-key: ${{ inputs.app-private-key }}
-        owner: ${{ github.repository_owner }}
+        owner: ${{ inputs.owner }}
         repositories: ${{ inputs.repositories != '' && inputs.repositories || github.event.repository.name }}
         # Scope the installation token to the writes callers perform
         # (contents, issues, pull requests) instead of inheriting the
@@ -146,12 +152,22 @@ runs:
         permission-contents: write
         permission-issues: write
         permission-pull-requests: write
+        permission-actions: ${{ inputs.permission-actions }}
+        permission-workflows: ${{ inputs.permission-workflows }}
 
-    - name: Propagate app token
-      if: ${{ steps.resolve.outputs.layer == 'app' }}
+    - name: Report the actual selected credential
+      id: selected
       shell: bash
-      # GITHUB_OUTPUT is set for every run step; the app exchange's token
-      # joins the same output the other layers wrote.
       env:
         APP_TOKEN: ${{ steps.app-token.outputs.token }}
-      run: echo "token=$APP_TOKEN" >> "$GITHUB_OUTPUT"
+        FALLBACK_TOKEN: ${{ steps.resolve.outputs.token }}
+        FALLBACK_LAYER: ${{ steps.resolve.outputs.layer }}
+      run: |
+        token="$FALLBACK_TOKEN"
+        layer="$FALLBACK_LAYER"
+        if [ -n "$APP_TOKEN" ]; then token="$APP_TOKEN"; layer=app; fi
+        echo "::add-mask::$token"
+        echo "token=$token" >> "$GITHUB_OUTPUT"
+        echo "layer=$layer" >> "$GITHUB_OUTPUT"
+        echo "automation-token: selected layer=$layer"
+        printf '\nSelected credential layer: `%s`\n' "$layer" >> "$GITHUB_STEP_SUMMARY"

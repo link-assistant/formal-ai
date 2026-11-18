@@ -34,7 +34,7 @@ import { agenticToolCapabilities } from './crate/seed_agentic_tool_capabilities.
 import { isClientWorkspace, scopeOfToolName } from './crate/tool_scope.mjs';
 import { eqIgnoreAsciiCase, minByKey, splitWhitespace, toAsciiLowercase, trimMatches } from './crate/rust_str.mjs';
 
-const registryEntry = (capability) => agenticToolCapabilities().find((entry) => entry.id === registryId(capability)) ?? null;
+const registryEntry = (capability, registry = agenticToolCapabilities()) => registry.find((entry) => entry.id === registryId(capability)) ?? null;
 
 /**
  * Mirrors `fn tool_for` in rust/src/agentic_coding/capability_router.rs.
@@ -101,8 +101,8 @@ const BROWSER_INTERACTION_MARKERS = ['browser_', 'click', 'hover', 'drag', 'snap
 
 const isBrowserInteractionTool = (lower) => BROWSER_INTERACTION_MARKERS.some((marker) => lower.includes(marker));
 
-function toolMatchesCapability(name, capability) {
-  const entry = registryEntry(capability);
+function toolMatchesCapability(name, capability, registry) {
+  const entry = registryEntry(capability, registry);
   return entry !== null && entry.aliases.some((alias) => eqIgnoreAsciiCase(alias, name));
 }
 
@@ -118,7 +118,8 @@ const CLASSIFY_ORDER = [
  * @returns {string|null}
  */
 export function classifyTool(name) {
-  for (const capability of CLASSIFY_ORDER) if (toolMatchesCapability(name, capability)) return capability;
+  const registry = agenticToolCapabilities();
+  for (const capability of CLASSIFY_ORDER) if (toolMatchesCapability(name, capability, registry)) return capability;
   const lower = toAsciiLowercase(name);
   const has = (part) => lower.includes(part);
   if (has('todo') || isBrowserInteractionTool(lower)) return null;

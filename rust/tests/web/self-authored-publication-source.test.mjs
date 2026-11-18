@@ -4,6 +4,7 @@ import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {publicationContract, resolvePublishedProducer} from '../../../scripts/self-authored-publication-source.mjs';
+import {readGithubJson} from '../../../scripts/resolve-package-release.mjs';
 const cwd = fileURLToPath(new URL('../../../', import.meta.url));
 const head = 'a'.repeat(40);
 const repository = 'fixture/repository';
@@ -20,7 +21,7 @@ function fixture() {
   const entries = new Map([
     [base + 'actions/runs/41', run],
     [base + 'actions/workflows/19', {id: 19, path: run.path}],
-    [base + 'actions/runs/41/attempts/2/jobs?per_page=100&page=1', {total_count: 1, jobs: [publisher]}],
+    [base + 'actions/runs/41/attempts/2/jobs?per_page=20&page=1', {total_count: 1, jobs: [publisher]}],
     [base + 'releases?per_page=5&page=1', [{tag_name: 'v1.2.3', draft: false, prerelease: false}]],
     [base + 'commits/v1.2.3', {sha: 'b'.repeat(40), parents: [{sha: head}]}],
   ]);
@@ -40,6 +41,34 @@ test('completed registered publisher permits observation while caller is still r
   assert.equal(f.contract.routes.length, 52); assert.equal(f.contract.bindings, 104);
   assert.ok(f.calls.some(endpoint => endpoint.includes('/contents/')));
 });
+test('small exact-attempt pages find the publisher after the first twenty jobs', () => {
+  const f=fixture(),endpoint=base+'actions/runs/41/attempts/2/jobs?per_page=20&page=';
+  const ordinary=Array.from({length:20},(_,index)=>({...f.publisher,id:100+index,name:'ordinary job '+index}));
+  f.entries.set(endpoint+'1',{total_count:21,jobs:ordinary});
+  f.entries.set(endpoint+'2',{total_count:21,jobs:[f.publisher]});
+  assert.equal(resolvePublishedProducer(cwd,environment,f.read).publisherJob,73);
+  assert(f.calls.includes(endpoint+'2'));
+  for(const changed of [{total_count:22,jobs:[f.publisher]},
+    {total_count:21,jobs:[{...f.publisher,id:ordinary[0].id}]}]){
+    f.entries.set(endpoint+'2',changed);
+    assert.throws(()=>resolvePublishedProducer(cwd,environment,f.read));
+  }
+});
+test('captured HTTP 504 is replayed through the actual observer without weakening publisher guards', () => {
+  for(const valid of [true,false]){
+    const f=fixture();if(!valid)f.publisher.conclusion='failure';
+    let attempts=0;const reports=[];
+    const read=endpoint=>readGithubJson(endpoint,{pause:()=>{},report:record=>reports.push(record),
+      transport:()=>{
+        if(endpoint.includes('/jobs?')&&attempts++===0)return {status:1,signal:null,cleanup_complete:true,
+          stdout:Buffer.alloc(0),stderr:Buffer.from('gh: request timed out (HTTP 504)')};
+        return {status:0,signal:null,cleanup_complete:true,stdout:Buffer.from(JSON.stringify(f.read(endpoint))),stderr:Buffer.alloc(0)};
+      }});
+    if(valid)assert.equal(resolvePublishedProducer(cwd,environment,read).publish,true);
+    else assert.throws(()=>resolvePublishedProducer(cwd,environment,read));
+    assert.equal(reports.length,1);assert.equal(attempts,2);
+  }
+});
 test('all foreign run, attempt, source, workflow and unfinished publisher witnesses refuse', () => {
   for (const change of [
     f => {f.run.head_repository.full_name = 'foreign/repository';},
@@ -53,10 +82,10 @@ test('all foreign run, attempt, source, workflow and unfinished publisher witnes
     f => {f.publisher.conclusion = 'failure';},
     f => {f.publisher.name = 'prefix ' + f.publisher.name;},
     f => {f.publisher.run_attempt = 1;},
-    f => {const response = f.entries.get(base + 'actions/runs/41/attempts/2/jobs?per_page=100&page=1'); response.total_count = 2; response.jobs.push({...f.publisher, id: 74});},
-    f => {f.entries.get(base + 'actions/runs/41/attempts/2/jobs?per_page=100&page=1').total_count = 2;},
+    f => {const response = f.entries.get(base + 'actions/runs/41/attempts/2/jobs?per_page=20&page=1'); response.total_count = 2; response.jobs.push({...f.publisher, id: 74});},
+    f => {f.entries.get(base + 'actions/runs/41/attempts/2/jobs?per_page=20&page=1').total_count = 2;},
     f => {const source = f.contract.sources[0]; f.entries.get(base + 'contents/' + source.path + '?ref=' + head).sha = 'c'.repeat(40);},
-    f => {f.entries.get(base + 'actions/runs/41/attempts/2/jobs?per_page=100&page=1').total_count = 1001;},
+    f => {f.entries.get(base + 'actions/runs/41/attempts/2/jobs?per_page=20&page=1').total_count = 1001;},
   ]) {const f = fixture(); change(f); assert.throws(() => resolvePublishedProducer(cwd, environment, f.read));}
 });
 test('controller inputs cannot substitute another run, attempt, main source or event', () => {
@@ -116,18 +145,20 @@ test('authentic no-release conditional operation stays inactive without release 
 });
 
 
-test('queued aggregate authenticates only the exact completed registered publisher', () => {
+// Main run 40954594484, job 123779514059 rejected a real pending parent after publication.
+for (const aggregateStatus of ['queued', 'in_progress', 'waiting', 'pending', 'requested']) {
+test(`${aggregateStatus} aggregate authenticates only the exact completed registered publisher`, () => {
   const currentFixture = fixture();
-  currentFixture.run.status = 'queued';
+  currentFixture.run.status = aggregateStatus;
   const result = resolvePublishedProducer(cwd, environment, currentFixture.read);
   assert.deepEqual(result, {publish: true, tag: 'v1.2.3', producerRun: 41, producerAttempt: 2,
     publisherJob: 73, sourceHead: head, effectAuthority: 'Unknown', pipelineGreen: 'Pending'});
   assert.ok(currentFixture.calls.some(endpoint => endpoint.includes('/contents/')));
-  assert.ok(currentFixture.calls.includes(base + 'actions/runs/41/attempts/2/jobs?per_page=100&page=1'));
+  assert.ok(currentFixture.calls.includes(base + 'actions/runs/41/attempts/2/jobs?per_page=20&page=1'));
   assert.ok(currentFixture.calls.includes(base + 'commits/v1.2.3'));
 });
 
-test('queued aggregate preserves run, repository, attempt, workflow, inventory and source guards', () => {
+test(`${aggregateStatus} aggregate preserves run, repository, attempt, workflow, inventory and source guards`, () => {
   for (const change of [
     current => {current.run.id = 42;},
     current => {current.run.head_repository.full_name = 'foreign/repository';},
@@ -142,9 +173,9 @@ test('queued aggregate preserves run, repository, attempt, workflow, inventory a
     current => {current.publisher.run_id = 42;},
     current => {current.publisher.run_attempt = 1;},
     current => {current.publisher.name = 'prefix ' + current.publisher.name;},
-    current => {const response = current.entries.get(base + 'actions/runs/41/attempts/2/jobs?per_page=100&page=1'); response.total_count = 2; response.jobs.push({...current.publisher, id: 74});},
-    current => {current.entries.get(base + 'actions/runs/41/attempts/2/jobs?per_page=100&page=1').total_count = 2;},
-    current => {current.entries.get(base + 'actions/runs/41/attempts/2/jobs?per_page=100&page=1').total_count = 1001;},
+    current => {const response = current.entries.get(base + 'actions/runs/41/attempts/2/jobs?per_page=20&page=1'); response.total_count = 2; response.jobs.push({...current.publisher, id: 74});},
+    current => {current.entries.get(base + 'actions/runs/41/attempts/2/jobs?per_page=20&page=1').total_count = 2;},
+    current => {current.entries.get(base + 'actions/runs/41/attempts/2/jobs?per_page=20&page=1').total_count = 1001;},
     current => {const source = current.contract.sources[0]; current.entries.get(base + 'contents/' + source.path + '?ref=' + head).sha = 'c'.repeat(40);},
     current => {
       const source = current.contract.sources[0];
@@ -155,12 +186,12 @@ test('queued aggregate preserves run, repository, attempt, workflow, inventory a
       return /publisher source differs from compiled default-source contract/u;
     },
   ]) {
-    const currentFixture = fixture(); currentFixture.run.status = 'queued'; const expectedReason = change(currentFixture);
+    const currentFixture = fixture(); currentFixture.run.status = aggregateStatus; const expectedReason = change(currentFixture);
     assert.throws(() => resolvePublishedProducer(cwd, environment, currentFixture.read), expectedReason);
   }
 });
 
-test('queued aggregate cannot replace completed successful publisher and operation witnesses', () => {
+test(`${aggregateStatus} aggregate cannot replace completed successful publisher and operation witnesses`, () => {
   for (const change of [
     current => {current.publisher.status = 'queued'; current.publisher.conclusion = null;},
     current => {current.publisher.status = 'in_progress'; current.publisher.conclusion = null;},
@@ -172,21 +203,21 @@ test('queued aggregate cannot replace completed successful publisher and operati
     current => {current.publisher.steps.push({...current.publisher.steps[0]});},
     current => {current.publisher.steps[0].completed_at = '2026-10-11T00:03:00Z';},
   ]) {
-    const currentFixture = fixture(); currentFixture.run.status = 'queued'; change(currentFixture);
+    const currentFixture = fixture(); currentFixture.run.status = aggregateStatus; change(currentFixture);
     assert.throws(() => resolvePublishedProducer(cwd, environment, currentFixture.read));
     assert.ok(currentFixture.calls.every(endpoint => !endpoint.includes('/releases') && !endpoint.includes('/commits/')));
   }
 });
 
-test('queued aggregate retains cancellation guards and unsupported status diagnostics are bounded', () => {
+test(`${aggregateStatus} aggregate retains cancellation guards and unsupported status diagnostics are bounded`, () => {
   for (const conclusion of ['cancelled', 'skipped', 'neutral', 'timed_out', 'action_required']) {
-    const currentFixture = fixture(); currentFixture.run.status = 'queued'; currentFixture.run.conclusion = conclusion;
+    const currentFixture = fixture(); currentFixture.run.status = aggregateStatus; currentFixture.run.conclusion = conclusion;
     assert.throws(() => resolvePublishedProducer(cwd, environment, currentFixture.read));
     assert.equal(currentFixture.calls.length, 1);
   }
-  for (const status of ['waiting', 'pending', 'requested', 'secret-status\nprivate-value', null, {secret: 'private-value'}]) {
+  for (const status of ['secret-status\nprivate-value', null, undefined, {secret: 'private-value'}, 'success', 'failure']) {
     const currentFixture = fixture(); currentFixture.run.status = status;
-    const label = ['waiting', 'pending', 'requested'].includes(status) ? status : 'invalid';
+    const label = 'invalid';
     assert.throws(() => resolvePublishedProducer(cwd, environment, currentFixture.read), error => {
       assert.equal(error.code, 'ERR_ASSERTION');
       assert.equal(error.message, 'unsupported_producer_aggregate_status:' + label);
@@ -196,17 +227,17 @@ test('queued aggregate retains cancellation guards and unsupported status diagno
   }
 });
 
-test('queued aggregate keeps absent, unrelated and skipped publications inactive without authority', () => {
+test(`${aggregateStatus} aggregate keeps absent, unrelated and skipped publications inactive without authority`, () => {
   for (const change of [
     current => {current.entries.get(base + 'commits/v1.2.3').parents = [];},
     current => {current.entries.get(base + 'releases?per_page=5&page=1')[0].draft = true;},
     current => {current.entries.get(base + 'releases?per_page=5&page=1')[0].prerelease = true;},
     current => {current.entries.set(base + 'releases?per_page=5&page=1', []);},
   ]) {
-    const currentFixture = fixture(); currentFixture.run.status = 'queued'; change(currentFixture);
+    const currentFixture = fixture(); currentFixture.run.status = aggregateStatus; change(currentFixture);
     assert.deepEqual(resolvePublishedProducer(cwd, environment, currentFixture.read), {publish: false, tag: '', effectAuthority: 'Unknown'});
   }
-  const currentFixture = fixture(); currentFixture.run.status = 'queued';
+  const currentFixture = fixture(); currentFixture.run.status = aggregateStatus;
   currentFixture.publisher.steps[0].conclusion = 'skipped';
   assert.deepEqual(resolvePublishedProducer(cwd, environment, currentFixture.read), {
     publish: false, tag: '', reason: 'registered-publication-skipped', effectAuthority: 'Unknown',
@@ -214,13 +245,50 @@ test('queued aggregate keeps absent, unrelated and skipped publications inactive
   assert.ok(currentFixture.calls.every(endpoint => !endpoint.includes('/releases') && !endpoint.includes('/commits/')));
 });
 
-test('queued aggregate cannot substitute controller identity or bypass the observation deadline', () => {
+test(`${aggregateStatus} aggregate cannot substitute controller identity or bypass the observation deadline`, () => {
   for (const delta of [{PRODUCER_RUN_ID: '42'}, {PRODUCER_RUN_ATTEMPT: '3'}, {REFERENCE: 'refs/heads/feature'},
     {CURRENT_WORKFLOW_REF: 'foreign/repository/.github/workflows/release.yml@refs/heads/main'}, {EVENT: 'pull_request'}]) {
-    const currentFixture = fixture(); currentFixture.run.status = 'queued';
+    const currentFixture = fixture(); currentFixture.run.status = aggregateStatus;
     assert.throws(() => resolvePublishedProducer(cwd, {...environment, ...delta}, currentFixture.read));
     assert.equal(currentFixture.calls.length, 0);
   }
-  const currentFixture = fixture(); currentFixture.run.status = 'queued'; let tick = 0;
+  const currentFixture = fixture(); currentFixture.run.status = aggregateStatus; let tick = 0;
   assert.throws(() => resolvePublishedProducer(cwd, environment, currentFixture.read, () => tick++ * 90001));
+});
+
+}
+
+// Captured main run 41833220718/job 126637298693: 60 !== 59 during pagination.
+test('growing job inventory restarts from page one and bounds unstable observations', () => {
+  const endpoint = base + 'actions/runs/41/attempts/2/jobs?per_page=20&page=';
+  for (const mode of ['settles', 'churns', 'foreign-attempt', 'duplicate']) {
+    const current = fixture();
+    const ordinary = Array.from({length: 59}, (_, index) => ({...current.publisher,
+      id: 100 + index, name: 'ordinary job ' + index}));
+    const complete = [...ordinary, current.publisher];
+    let observations = 0, jobReads = 0;
+    const read = path => {
+      if (!path.startsWith(endpoint)) return current.read(path);
+      const page = Number(path.slice(endpoint.length));
+      if (page === 1) observations++;
+      jobReads++;
+      const changing = mode === 'churns' || observations === 1;
+      const total_count = changing && page === 1 ? 59 : 60;
+      const jobs = structuredClone(complete.slice((page - 1) * 20, page * 20));
+      if (page === 2 && mode === 'foreign-attempt') jobs[0].run_attempt = 3;
+      if (page === 2 && mode === 'duplicate') jobs[0].id = complete[0].id;
+      return {total_count, jobs};
+    };
+    if (mode === 'settles') {
+      assert.equal(resolvePublishedProducer(cwd, environment, read).publisherJob, 73);
+      assert.equal(observations, 2);
+      assert.equal(jobReads, 5);
+    } else {
+      assert.throws(() => resolvePublishedProducer(cwd, environment, read),
+        mode === 'churns' ? /all three bounded observations/u : undefined);
+      assert.equal(observations, mode === 'churns' ? 3 : 1);
+      assert.equal(jobReads, mode === 'churns' ? 6 : 2);
+      assert.ok(current.calls.every(path => !path.includes('/releases') && !path.includes('/commits/')));
+    }
+  }
 });

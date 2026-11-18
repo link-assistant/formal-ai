@@ -1,0 +1,18 @@
+{
+  "repository": "link-assistant/formal-ai",
+  "run": 40326352911,
+  "attempt": 1,
+  "head": "95884ade6b8d69214b1ef2f3310e8a1f442b180b",
+  "job": 121584796548,
+  "jobBudgetSeconds": 300,
+  "jobStarted": "2026-10-26T12:58:09Z",
+  "fetchStarted": "2026-10-26T12:58:11.5460837Z",
+  "fetchCompleted": "2026-10-26T13:03:08.0280438Z",
+  "checkoutCancelled": "2026-10-26T13:03:10.0974892Z",
+  "workingTreeFiles": 73654,
+  "replayStarted": false,
+  "rootCause": "Full-repository checkout consumed the offline replay job budget before any transcript assertion ran.",
+  "fullLogSha256": "b7787d81320e8d7e774746ab0ac2dc778a005e5f32e6cf4b2c0855b3101ff22e",
+  "fullLogBytes": 13418,
+  "checkoutSource": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
+}

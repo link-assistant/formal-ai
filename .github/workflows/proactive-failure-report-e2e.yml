@@ -9,9 +9,15 @@ on:
       - "rust/src/**"
       - "data/seed/**"
       - "experiments/agent_cli_e2e/run_issue_864.sh"
+      - "scripts/install-client-registry-recovery.mjs"
       - ".github/workflows/proactive-failure-report-e2e.yml"
       - "rust/Cargo.toml"
       - "Cargo.lock"
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   # Issue #1187 R2: a bot pull request's checks start through dispatch
   # (.github/actions/dispatch-checks); mode and pull-request are its inputs.
   workflow_dispatch:
@@ -32,8 +38,12 @@ permissions:
   contents: read
 
 jobs:
+  pr-check-profile:
+    if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'))
+    uses: ./.github/workflows/pull-request-check-profile.yml
   agent-cli-failure-report:
-    runs-on: ubuntu-latest
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true) }}
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       # Issue #1079: the Agent CLI summarizes a session with the head of its
@@ -62,8 +72,9 @@ jobs:
           bun-version-file: .bun-version
           no-cache: true
       - name: Install the real Agent CLI
+        timeout-minutes: 11
         run: |
-          bun add -g --ignore-scripts @link-assistant/agent
+          bun scripts/install-client-registry-recovery.mjs bun add -g --ignore-scripts @link-assistant/agent@0.27.0
           echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
       # Reused across every workflow that only needs to *run* the binary: the
       # cache key is the content of the sources it is built from, so a push that

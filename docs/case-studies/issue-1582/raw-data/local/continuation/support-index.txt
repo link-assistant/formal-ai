@@ -1,0 +1,44 @@
+data/seed/multilingual-responses-capabilities.lino:197:    text "Read-only internet retrieval is enabled by default. If your client blocks a tool, approve its permission request; in Claude Code use `/permissions` to allow Read, Glob, Grep, WebFetch and WebSearch. Existing ask/deny rules still apply. For an explicitly offline Formal AI server, unset FORMAL_AI_OFFLINE and FORMAL_AI_NETWORK=denied, then restart with `FORMAL_AI_LIVE_FETCH=1 formal-ai with claude`. A chat message cannot override an operator restriction. Writes and command execution use the client’s permission controls. If retrieval still fails, check connectivity, proxy settings and provider availability; inspect the log file or enable FORMAL_AI_LOG_STDERR=1 for diagnostics."
+data/seed/multilingual-responses-capabilities.lino:213:    text "La lectura de fuentes de internet está habilitada por defecto. Si el cliente bloquea una herramienta, aprueba su solicitud de permiso; en Claude Code usa `/permissions` para permitir Read, Glob, Grep, WebFetch y WebSearch. Se conservan las reglas ask/deny existentes. Si Formal AI está explícitamente sin conexión, elimina FORMAL_AI_OFFLINE y FORMAL_AI_NETWORK=denied y reinicia con `FORMAL_AI_LIVE_FETCH=1 formal-ai with claude`. Un mensaje no anula restricciones del operador. La escritura y ejecución de comandos usan los permisos del cliente. Si falla la consulta, comprueba conexión, proxy y disponibilidad de las fuentes; consulta el archivo de registro o activa FORMAL_AI_LOG_STDERR=1 para diagnosticar."
+data/seed/client-integrations.lino:2:  tool "codex"
+data/seed/client-integrations.lino:6:    default_protocol "openai"
+data/seed/client-integrations.lino:7:    supported_protocols ("openai")
+data/seed/client-integrations.lino:61:  tool "t3code"
+data/seed/client-integrations.lino:66:    default_protocol "openai"
+data/seed/client-integrations.lino:67:    supported_protocols ("openai" "anthropic")
+data/seed/client-integrations.lino:137:  tool "opencode"
+data/seed/client-integrations.lino:141:    default_protocol "openai"
+data/seed/client-integrations.lino:142:    supported_protocols ("openai")
+data/seed/client-integrations.lino:197:  tool "opencode-vscode"
+data/seed/client-integrations.lino:202:    default_protocol "openai"
+data/seed/client-integrations.lino:203:    supported_protocols ("openai")
+data/seed/client-integrations.lino:248:  tool "opencode-desktop"
+data/seed/client-integrations.lino:256:    default_protocol "openai"
+data/seed/client-integrations.lino:257:    supported_protocols ("openai")
+data/seed/client-integrations.lino:295:  tool "agent"
+data/seed/client-integrations.lino:299:    default_protocol "openai"
+data/seed/client-integrations.lino:300:    supported_protocols ("openai")
+data/seed/client-integrations.lino:355:  tool "cursor"
+data/seed/client-integrations.lino:359:    default_protocol "mcp"
+data/seed/client-integrations.lino:360:    supported_protocols ("mcp")
+data/seed/client-integrations.lino:382:  tool "gemini"
+data/seed/client-integrations.lino:386:    default_protocol "gemini"
+data/seed/client-integrations.lino:387:    supported_protocols ("gemini" "vertex")
+data/seed/client-integrations.lino:442:  tool "claude"
+data/seed/client-integrations.lino:446:    default_protocol "anthropic"
+data/seed/client-integrations.lino:447:    supported_protocols ("anthropic")
+data/seed/client-integrations.lino:493:  tool "qwen"
+data/seed/client-integrations.lino:497:    default_protocol "openai"
+data/seed/client-integrations.lino:498:    supported_protocols ("openai")
+data/seed/client-integrations.lino:546:  tool "grok"
+data/seed/client-integrations.lino:550:    default_protocol "openai"
+data/seed/client-integrations.lino:551:    supported_protocols ("openai")
+data/seed/client-integrations.lino:590:  tool "aider"
+data/seed/client-integrations.lino:594:    default_protocol "openai"
+data/seed/client-integrations.lino:595:    supported_protocols ("openai")
+data/seed/meanings-feature-capability.lino:178:    lexeme en "how do i enable internet access" "how to enable internet" "how can i enable internet" "enable internet access" "grant internet access" "how do i grant permissions" "allow read only internet access"
+data/seed/languages.lino:4:  language en
+data/seed/languages.lino:86:  language ru
+data/seed/languages.lino:92:  language hi
+data/seed/languages.lino:99:  language zh
+data/seed/languages.lino:106:  language es

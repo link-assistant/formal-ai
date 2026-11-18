@@ -17,6 +17,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   build:
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) }}
     concurrency:
       group: hive-mind-draft-build-${{ github.repository }}-${{ github.event.issue.number || inputs.issue_number }}-${{ github.ref }}
       cancel-in-progress: true
@@ -25,35 +26,53 @@ jobs:
     permissions:
       contents: read
       issues: read
+      # Issue #1486: list and download the authenticated shared build artifact.
+      actions: read
     outputs:
-      should_run: ${{ steps.decide.outputs.should_run }}
+      should_run: ${{ steps.decide.outputs.should_run || (job.status == 'failure' && 'true') || 'false' }}
       decision_code: ${{ steps.decide.outputs.decision_code }}
-      issue_number: ${{ steps.decide.outputs.issue_number }}
+      issue_number: ${{ steps.decide.outputs.issue_number || github.event.issue.number || inputs.issue_number }}
       source_sha: ${{ steps.source.outputs.sha }}
+      hive_source_sha: ${{ steps.hive-source.outputs.sha }}
+      hive_image: ${{ steps.hive-version.outputs.image }}
       evidence_url: ${{ steps.build-logs.outputs.artifact-url }}
+      evidence_artifact_id: ${{ steps.build-logs.outputs.artifact-id }}
+      binary_artifact_id: ${{ steps.binary-artifact.outputs.artifact-id }}
+      attempt_id: ${{ steps.identity.outputs.attempt_id }}
+      attempt_identity: ${{ steps.identity.outputs.attempt_identity }}
+      build_key: ${{ steps.build-identity.outputs.key }}
+      build_mode: ${{ steps.shared-verify.outputs.reused == 'true' && 'reuse' || 'build' }}
+    # The default token suppresses automatic PR-event fanout, so even with
+    # optional app credentials configured elsewhere, evidence-only drafts
+    # cannot start the matrix before the complete-diff admission check.
     env:
       FORMAL_AI_DRAFT_ISSUE: ${{ inputs.issue_number }}
     steps:
       - name: Set session evidence directory on the allocated runner
         shell: bash
-        run: echo "FORMAL_AI_DRAFT_LOG_DIR=$RUNNER_TEMP/formal-ai-draft-logs" >> "$GITHUB_ENV"
+        run: |
+          echo "FORMAL_AI_DRAFT_LOG_DIR=$RUNNER_TEMP/formal-ai-draft-logs" >> "$GITHUB_ENV"
+          mkdir -p "$RUNNER_TEMP/formal-ai-draft-logs"
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
       - uses: actions/setup-node@v7
         with:
           node-version: 24.x
-      - id: credentials
-        uses: ./.github/actions/automation-token
-        with:
-          app-id: ${{ secrets.AUTOMATION_APP_ID }}
-          app-private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
-          automation-token: ${{ secrets.AUTOMATION_TOKEN }}
+      - id: hive-source
+        name: Resolve current Hive Mind main once for this attempt
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sha="$(bash "$GITHUB_WORKSPACE/scripts/run-with-deadline.sh" 60 gh api repos/link-assistant/hive-mind/commits/main --jq .sha)"
+          [[ "$sha" =~ ^[0-9a-f]{40}$ ]]
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "hive_mind_main_commit=$sha" | tee -a "$FORMAL_AI_DRAFT_LOG_DIR/source-identity.txt"
       - name: Checkout shared maintained Hive Mind decision and attempt
         uses: actions/checkout@v7
         with:
           repository: link-assistant/hive-mind
-          ref: 2083d6fd86ba0a7ee54e36110c8aebcfb5f2774d
+          ref: ${{ steps.hive-source.outputs.sha }}
           path: .hive-mind
           persist-credentials: false
       - name: Install shared automation dependencies
@@ -62,21 +81,42 @@ jobs:
       - id: decide
         name: Decide before building source
         env:
-          GH_TOKEN: ${{ steps.credentials.outputs.token }}
-          AUTOMATION_LAYER: ${{ steps.credentials.outputs.layer }}
+          GH_TOKEN: ${{ github.token }}
+          AUTOMATION_LAYER: default
         run: node .hive-mind/scripts/formal-ai-draft.mjs --decide
+      - id: hive-version
+        if: steps.decide.outputs.should_run == 'true'
+        name: Bind the current Hive source and its exact runtime version
+        env:
+          HIVE_MIND_SOURCE_SHA: ${{ steps.hive-source.outputs.sha }}
+        run: |
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          import assert from 'node:assert/strict';
+          import {execFileSync} from 'node:child_process';
+          import {resolveDraftImages} from './.hive-mind/scripts/formal-ai-draft-image.lib.mjs';
+          const sha=process.env.HIVE_MIND_SOURCE_SHA;
+          assert.match(sha,/^[a-f0-9]{40}$/u);
+          assert.equal(execFileSync('git',['-C','.hive-mind','rev-parse','HEAD'],{encoding:'utf8',timeout:15000}).trim(),sha);
+          const version=JSON.parse(fs.readFileSync('.hive-mind/package.json')).version;
+          assert.match(version,/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/u);
+          const {image}=resolveDraftImages({version});
+          assert(image.endsWith(':'+version),'exact versioned Hive image required');
+          fs.appendFileSync(process.env.GITHUB_OUTPUT,'image='+image+'\nversion='+version+'\n');
+          fs.appendFileSync(process.env.FORMAL_AI_DRAFT_LOG_DIR+'/source-identity.txt',JSON.stringify({hiveCommit:sha,hiveVersion:version,hiveImage:image,selection:'latest-main-resolved-once'})+'\n');
+          JS
       - id: source
         name: Resolve current main commit
         if: steps.decide.outputs.should_run == 'true'
         env:
-          GH_TOKEN: ${{ steps.credentials.outputs.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           mkdir -p "$FORMAL_AI_DRAFT_LOG_DIR"
           date -u +%Y-%m-%dT%H:%M:%SZ > "$RUNNER_TEMP/draft-started-at"
-          sha="$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)"
+          sha="$(bash "$GITHUB_WORKSPACE/scripts/run-with-deadline.sh" 60 gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)"
           [[ "$sha" =~ ^[0-9a-f]{40}$ ]]
           echo "sha=$sha" >> "$GITHUB_OUTPUT"
-          echo "main_commit=$sha" | tee "$FORMAL_AI_DRAFT_LOG_DIR/source-identity.txt"
+          echo "main_commit=$sha" | tee -a "$FORMAL_AI_DRAFT_LOG_DIR/source-identity.txt"
       - name: Checkout exact main source
         if: steps.decide.outputs.should_run == 'true'
         uses: actions/checkout@v7
@@ -84,15 +124,66 @@ jobs:
           ref: ${{ steps.source.outputs.sha }}
           path: .formal-ai-source
           persist-credentials: false
-      - name: Restore shared Cargo registry without an extra cache writer
+      # Issue #1486: build once per source/toolchain/target/features/lockfile identity.
+      # The earliest live claim produces; other drafts reuse its authenticated
+      # artifact, and a failed, stale, poisoned or incomplete one is never reused.
+      - id: build-identity
+        name: Compute the effective Formal AI build identity
         if: steps.decide.outputs.should_run == 'true'
+        run: |
+          node scripts/formal-ai-shared-build.mjs identity --source .formal-ai-source --out "$RUNNER_TEMP/formal-ai-build-identity.json"
+          cp "$RUNNER_TEMP/formal-ai-build-identity.json" "$FORMAL_AI_DRAFT_LOG_DIR/build-identity.json"
+      - name: Claim the build identity for this draft
+        if: steps.decide.outputs.should_run == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: formal-ai-build-claim-${{ steps.build-identity.outputs.key }}
+          path: ${{ runner.temp }}/formal-ai-build-identity.json
+          if-no-files-found: error
+          retention-days: 1
+        # A re-run attempt keeps its first attempt's claim; artifacts are never overwritten.
+        continue-on-error: true
+      - id: shared-build
+        name: Reuse or await the single producer of this build identity
+        if: steps.decide.outputs.should_run == 'true'
+        timeout-minutes: 12
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/formal-ai-shared-build.mjs resolve --identity "$RUNNER_TEMP/formal-ai-build-identity.json" | tee -a "$FORMAL_AI_DRAFT_LOG_DIR/shared-build.txt"
+      - name: Download the authenticated shared build
+        if: steps.shared-build.outputs.mode == 'reuse'
+        # A missing or broken artifact falls back to this draft's own build.
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          artifact-ids: ${{ steps.shared-build.outputs.artifact_id }}
+          run-id: ${{ steps.shared-build.outputs.producer_run_id }}
+          github-token: ${{ github.token }}
+          merge-multiple: true
+          path: ${{ runner.temp }}/formal-ai-shared-build
+      - id: shared-verify
+        name: Verify the shared build's producer, identity and digest
+        if: steps.shared-build.outputs.mode == 'reuse'
+        continue-on-error: true
+        env:
+          PRODUCER_RUN_ID: ${{ steps.shared-build.outputs.producer_run_id }}
+        run: |
+          node scripts/formal-ai-shared-build.mjs verify --identity "$RUNNER_TEMP/formal-ai-build-identity.json" --dir "$RUNNER_TEMP/formal-ai-shared-build" --producer-run "$PRODUCER_RUN_ID" | tee -a "$FORMAL_AI_DRAFT_LOG_DIR/shared-build.txt"
+          mkdir -p .formal-ai-source/target/release
+          install -m 0755 "$RUNNER_TEMP/formal-ai-shared-build/formal-ai" .formal-ai-source/target/release/formal-ai
+          echo "reused=true" >> "$GITHUB_OUTPUT"
+      - name: Restore shared Cargo registry without an extra cache writer
+        if: steps.decide.outputs.should_run == 'true' && steps.shared-verify.outputs.reused != 'true'
         uses: ./.github/actions/cache-cargo-registry
         with:
           restore-only: "true"
-      - name: Build current main binary in CI
-        if: steps.decide.outputs.should_run == 'true'
+      - id: build-command
+        name: Build current main binary in CI
+        if: steps.decide.outputs.should_run == 'true' && steps.shared-verify.outputs.reused != 'true'
         working-directory: .formal-ai-source
-        run: FORMAL_AI_DEADLINE_GRACE_SECONDS=30 bash "$GITHUB_WORKSPACE/scripts/run-with-deadline.sh" 1320 cargo build --manifest-path rust/Cargo.toml --target-dir target --release --locked --bin formal-ai 2>&1 | tee "$FORMAL_AI_DRAFT_LOG_DIR/build.log"
+        run: FORMAL_AI_DEADLINE_GRACE_SECONDS=30 bash "$GITHUB_WORKSPACE/scripts/run-with-session-evidence.sh" 1320 build cargo build --manifest-path rust/Cargo.toml --target-dir target --release --locked --bin formal-ai
         shell: bash
       - name: Record actual source version and binary digest
         if: steps.decide.outputs.should_run == 'true'
@@ -105,22 +196,58 @@ jobs:
           binary="$GITHUB_WORKSPACE/.formal-ai-source/target/release/formal-ai"
           "$binary" --version | tee -a "$FORMAL_AI_DRAFT_LOG_DIR/source-identity.txt"
           sha256sum "$binary" | tee -a "$FORMAL_AI_DRAFT_LOG_DIR/source-identity.txt"
-      - name: Publish the single exact-main binary for the draft runner
+      # Issue #1484: one attempt identity binds both selected sources to the built binary and exact image.
+      - id: identity
+        name: Admit one attempt identity for the selected sources and binary
+        if: steps.decide.outputs.should_run == 'true'
+        env:
+          FORMAL_AI_DRAFT_ISSUE: ${{ steps.decide.outputs.issue_number || github.event.issue.number || inputs.issue_number }}
+          FORMAL_AI_SELECTED_SHA: ${{ steps.source.outputs.sha }}
+          FORMAL_AI_BINARY: ${{ github.workspace }}/.formal-ai-source/target/release/formal-ai
+          FORMAL_AI_BINARY_SOURCE: ${{ steps.shared-verify.outputs.reused == 'true' && 'shared-build' || 'build' }}
+          HIVE_MIND_SOURCE_SHA: ${{ steps.hive-source.outputs.sha }}
+          HIVE_MIND_IMAGE: ${{ steps.hive-version.outputs.image }}
+        run: |
+          FORMAL_AI_SELECTED_AT="$(cat "$RUNNER_TEMP/draft-started-at")" node scripts/hive-draft-attempt.mjs --select
+      - id: binary-artifact
+        name: Publish the single exact-main binary for the draft runner
         if: steps.decide.outputs.should_run == 'true'
         uses: actions/upload-artifact@v7
         with:
-          name: hive-mind-main-binary-${{ github.run_id }}
+          name: hive-mind-main-binary-${{ github.run_id }}-${{ github.run_attempt }}
           path: .formal-ai-source/target/release/formal-ai
           if-no-files-found: error
           retention-days: 1
-      - id: build-logs
-        name: Retain main source and build evidence even on failure
-        if: ${{ !cancelled() && steps.decide.outputs.should_run == 'true' }}
+      - name: Describe the successful build for other drafts of the same identity
+        if: steps.build-command.outcome == 'success'
+        run: |
+          mkdir -p "$RUNNER_TEMP/formal-ai-build-product"
+          install -m 0755 .formal-ai-source/target/release/formal-ai "$RUNNER_TEMP/formal-ai-build-product/formal-ai"
+          node scripts/formal-ai-shared-build.mjs manifest --identity "$RUNNER_TEMP/formal-ai-build-identity.json" --binary "$RUNNER_TEMP/formal-ai-build-product/formal-ai" --out "$RUNNER_TEMP/formal-ai-build-product/formal-ai-build.json"
+      - name: Publish the authenticated build product once per identity
+        if: steps.build-command.outcome == 'success'
         uses: actions/upload-artifact@v7
         with:
-          name: hive-mind-main-evidence-${{ github.run_id }}
-          path: ${{ runner.temp }}/formal-ai-draft-logs
-          if-no-files-found: warn
+          name: formal-ai-build-${{ steps.build-identity.outputs.key }}
+          path: ${{ runner.temp }}/formal-ai-build-product
+          if-no-files-found: error
+          retention-days: 3
+        # The per-run binary above is the draft's custody; this copy only serves other drafts.
+        continue-on-error: true
+      - name: Stage complete redacted build evidence
+        if: ${{ always() && (steps.decide.outputs.should_run == 'true' || failure()) }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DRAFT_BUILD_OUTCOME: ${{ steps.build-command.outcome }}
+        run: node scripts/prepare-hive-draft-evidence.mjs "$FORMAL_AI_DRAFT_LOG_DIR" "$RUNNER_TEMP/formal-ai-build-artifact"
+      - id: build-logs
+        name: Retain main source and build evidence even on failure
+        if: ${{ always() && (steps.decide.outputs.should_run == 'true' || failure()) }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: hive-mind-main-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/formal-ai-build-artifact
+          if-no-files-found: error
           retention-days: 30
   draft:
     needs: build
@@ -133,7 +260,9 @@ jobs:
       pull-requests: write
       actions: write
     env:
-      FORMAL_AI_DRAFT_ISSUE: ${{ inputs.issue_number }}
+      FORMAL_AI_DRAFT_ISSUE: ${{ needs.build.outputs.issue_number }}
+      HIVE_MIND_SOURCE_SHA: ${{ needs.build.outputs.hive_source_sha }}
+      FORMAL_AI_DRAFT_IMAGE: ${{ needs.build.outputs.hive_image }}
     steps:
       - name: Set session evidence directory on the allocated runner
         shell: bash
@@ -148,33 +277,31 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24.x
-      - id: credentials
-        uses: ./.github/actions/automation-token
-        with:
-          app-id: ${{ secrets.AUTOMATION_APP_ID }}
-          app-private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
-          automation-token: ${{ secrets.AUTOMATION_TOKEN }}
       - name: Restore source and build evidence
         if: ${{ needs.build.outputs.evidence_url != '' }}
         uses: actions/download-artifact@v8
         env:
           NODE_OPTIONS: --disable-warning=DEP0005
         with:
-          name: hive-mind-main-evidence-${{ github.run_id }}
+          artifact-ids: ${{ needs.build.outputs.evidence_artifact_id }}
+          merge-multiple: true
           path: ${{ runner.temp }}/formal-ai-draft-logs
       - name: Download the exact-main binary once
         if: needs.build.result == 'success'
+        # A missing artifact must reach the custody check as a typed deferred outcome.
+        continue-on-error: true
         uses: actions/download-artifact@v8
         env:
           NODE_OPTIONS: --disable-warning=DEP0005
         with:
-          name: hive-mind-main-binary-${{ github.run_id }}
+          artifact-ids: ${{ needs.build.outputs.binary_artifact_id }}
+          merge-multiple: true
           path: ${{ runner.temp }}/formal-ai-binary
       - name: Checkout shared maintained Hive Mind decision and attempt
         uses: actions/checkout@v7
         with:
           repository: link-assistant/hive-mind
-          ref: 2083d6fd86ba0a7ee54e36110c8aebcfb5f2774d
+          ref: ${{ needs.build.outputs.hive_source_sha }}
           path: .hive-mind
           persist-credentials: false
         if: needs.build.result == 'success'
@@ -185,48 +312,82 @@ jobs:
       - name: Free disk for the Hive Mind image
         if: needs.build.result == 'success'
         run: node .hive-mind/scripts/free-disk-space.mjs
+      - name: Retain native and dialog payloads in the mounted session directory
+        if: needs.build.result == 'success'
+        run: node scripts/lib/hive-draft-diagnostics.mjs .hive-mind "$FORMAL_AI_DRAFT_LOG_DIR"
+      - id: custody
+        name: Verify the admitted binary and sources before any task effect
+        if: needs.build.result == 'success'
+        env:
+          FORMAL_AI_ATTEMPT_IDENTITY: ${{ needs.build.outputs.attempt_identity }}
+          FORMAL_AI_DRAFT_BINARY: ${{ runner.temp }}/formal-ai-binary/formal-ai
+        run: |-
+          if [ -f "$FORMAL_AI_DRAFT_BINARY" ]; then chmod +x "$FORMAL_AI_DRAFT_BINARY"; fi
+          node scripts/hive-draft-attempt.mjs --verify-custody
       - id: attempt
         name: Attempt through shared Hive Mind scripts (including image pull retry)
         if: needs.build.result == 'success'
         env:
-          GH_TOKEN: ${{ steps.credentials.outputs.token }}
-          AUTOMATION_LAYER: ${{ steps.credentials.outputs.layer }}
+          GH_TOKEN: ${{ github.token }}
+          AUTOMATION_LAYER: default
           FORMAL_AI_INSTALL_GRANT: workspace
           FORMAL_AI_DRAFT_BINARY: ${{ runner.temp }}/formal-ai-binary/formal-ai
+          FORMAL_AI_DRAFT_SOURCE_SHA: ${{ needs.build.outputs.source_sha }}
+          FORMAL_AI_DRAFT_MODE: live-current
         run: |-
           chmod +x "$FORMAL_AI_DRAFT_BINARY"
-          FORMAL_AI_DEADLINE_GRACE_SECONDS=30 bash "$GITHUB_WORKSPACE/scripts/run-with-deadline.sh" 1200 node .hive-mind/scripts/formal-ai-draft.mjs
+          FORMAL_AI_DEADLINE_GRACE_SECONDS=30 bash "$GITHUB_WORKSPACE/scripts/run-with-session-evidence.sh" 1200 attempt node .hive-mind/scripts/formal-ai-draft.mjs
+      - id: serving
+        name: Verify Hive Mind served the admitted selection
+        if: ${{ !cancelled() && steps.custody.outcome == 'success' }}
+        env:
+          FORMAL_AI_ATTEMPT_IDENTITY: ${{ needs.build.outputs.attempt_identity }}
+        run: node scripts/hive-draft-attempt.mjs --verify-hive
       - id: exact-pr
         name: Verify this attempt's exact pull request
-        if: ${{ !cancelled() && steps.attempt.outputs.head_branch != '' }}
+        if: ${{ !cancelled() && steps.attempt.outputs.head_branch != '' && steps.serving.outputs.attempt_outcome != 'identity-mismatch' }}
         env:
-          GH_TOKEN: ${{ steps.credentials.outputs.token }}
+          GH_TOKEN: ${{ github.token }}
           DRAFT_HEAD_BRANCH: ${{ steps.attempt.outputs.head_branch }}
         run: node scripts/hive-mind-draft-result.mjs --select
-      - name: Dispatch checks on the exact draft at the default credential layer
-        if: ${{ !cancelled() && steps.credentials.outputs.layer == 'default' && steps.exact-pr.outputs.pull_request_number != '' }}
+      - name: Dispatch checks only after a useful draft is verified
+        if: ${{ !cancelled() && steps.exact-pr.outputs.pull_request_number != '' }}
         uses: ./.github/actions/dispatch-checks
         with:
           pull-request: ${{ steps.exact-pr.outputs.pull_request_number }}
-          token: ${{ steps.credentials.outputs.token }}
+          token: ${{ github.token }}
       - name: Retain failed build outcome while still publishing evidence
         if: ${{ !cancelled() && needs.build.result != 'success' }}
         run: |-
           echo "::error::The exact-main build failed; no draft attempt ran. See retained source/build evidence."
           exit 1
+      - name: Transfer only private diagnostic files to the artifact reader
+        if: ${{ always() && steps.attempt.outcome != '' && steps.attempt.outcome != 'skipped' }}
+        run: |
+          for category in formal-ai-diagnostics formal-ai-dialog formal-ai-native; do
+            sudo -n env GITHUB_ACTIONS=true "$(command -v node)" scripts/lib/hive-operational-evidence.mjs --transfer-ownership "$FORMAL_AI_DRAFT_LOG_DIR" "$(id -u)" "$(id -g)" "$category"
+          done
+      - name: Stage complete redacted attempt evidence
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DRAFT_BUILD_OUTCOME: ${{ needs.build.result }}
+          DRAFT_ATTEMPT_OUTCOME: ${{ steps.attempt.outcome }}
+        run: node scripts/prepare-hive-draft-evidence.mjs "$FORMAL_AI_DRAFT_LOG_DIR" "$RUNNER_TEMP/formal-ai-session-artifact"
       - id: logs
         name: Upload complete session evidence on success and failure
-        if: ${{ !cancelled() }}
+        if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: hive-mind-draft-session-${{ needs.build.outputs.issue_number }}
-          path: ${{ runner.temp }}/formal-ai-draft-logs
-          if-no-files-found: warn
+          name: hive-mind-draft-session-${{ needs.build.outputs.issue_number }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/formal-ai-session-artifact
+          if-no-files-found: error
           retention-days: 30
       - name: Link session artifact on the issue when no verified draft exists
         if: ${{ !cancelled() && steps.exact-pr.outputs.pull_request_number == '' }}
         env:
-          GH_TOKEN: ${{ steps.credentials.outputs.token }}
+          GH_TOKEN: ${{ github.token }}
           DRAFT_ISSUE_NUMBER: ${{ needs.build.outputs.issue_number }}
           DRAFT_ARTIFACT_URL: ${{ steps.logs.outputs.artifact-url || needs.build.outputs.evidence_url }}
+          DRAFT_ATTEMPT_OUTCOME: ${{ steps.custody.outputs.attempt_outcome || steps.attempt.outputs.attempt_outcome || steps.serving.outputs.attempt_outcome }}
         run: node scripts/hive-mind-draft-result.mjs --failure

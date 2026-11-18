@@ -855,6 +855,9 @@ fn main() {
         &changelog_file,
         &self_hosting_ledger_str,
     ];
+    if Path::new(self_hosting_metric::ledger_storage::PARTS).exists() {
+        add_args.push(self_hosting_metric::ledger_storage::PARTS);
+    }
     add_args.extend_from_slice(STATUS_SURFACES);
     if witness_updated {
         add_args.push(SPECIFICATION_WITNESS);

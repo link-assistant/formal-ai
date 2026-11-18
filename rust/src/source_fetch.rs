@@ -58,7 +58,7 @@ fn http_status(stderr: &str) -> Option<u16> {
         .filter(|status| (100..=599).contains(status))
 }
 
-/// curl-backed transport used by opt-in live retrieval.
+/// curl-backed transport used by read-only live retrieval.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct CurlSourceTransport;
 
@@ -301,12 +301,13 @@ impl<T: SourceTransport> CachedSourceClient<T> {
 
     pub fn fetch(&self, url: &str) -> Result<SourceCapture, FetchError> {
         validate_url(url)?;
+        let online = self.online && !crate::solver_config::ephemeral_enabled();
         let (cache_root, metadata_path) = self.paths(url);
         match read_capture(url, &cache_root, &metadata_path) {
             Ok(Some(mut capture)) => {
                 let fetched_at = capture.fetched_at.parse::<u64>().unwrap_or(0);
                 let age = (self.now)().saturating_sub(fetched_at);
-                if !self.online || age <= self.ttl_seconds {
+                if !online || age <= self.ttl_seconds {
                     capture.cached = true;
                     return Ok(capture);
                 }
@@ -317,14 +318,14 @@ impl<T: SourceTransport> CachedSourceClient<T> {
                 {
                     let age =
                         (self.now)().saturating_sub(capture.fetched_at.parse::<u64>().unwrap_or(0));
-                    if !self.online || age <= self.ttl_seconds {
+                    if !online || age <= self.ttl_seconds {
                         return Ok(capture);
                     }
                 }
             }
             Err(error) => return Err(error),
         }
-        if !self.online {
+        if !online {
             return Err(FetchError::OfflineCacheMiss(url.to_owned()));
         }
 
@@ -366,9 +367,11 @@ impl<T: SourceTransport> CachedSourceClient<T> {
             Ok(capture) => return Ok(capture),
             Err(error) => error,
         };
-        let Some(outcome) =
-            crate::source_reconstruction::reconstruct_on_miss(events, tool, !self.online)
-        else {
+        let Some(outcome) = crate::source_reconstruction::reconstruct_on_miss(
+            events,
+            tool,
+            !self.online || crate::solver_config::ephemeral_enabled(),
+        ) else {
             return Err(miss);
         };
         match outcome {

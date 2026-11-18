@@ -132,14 +132,19 @@ fn confirmed_github_report_fetches_complete_lino_context_after_both_questions() 
     let call = one_call(&messages, &["request_user_input", "bash"]);
     assert_eq!(call.tool, "bash");
     let command = arguments(&call)["command"].as_str().unwrap().to_owned();
-    // The complete context is still exported and attached — but by the local
-    // CLI, into a file: `formal-ai report body` renders the document and writes
-    // the whole `.lino` context alongside it (#839 §7).
-    assert!(command.contains("formal-ai report body"), "{command}");
+    // The named CLI action prepares complete context in a private directory,
+    // then submits one bounded issue mutation without a compound shell script.
+    assert!(
+        command.starts_with("formal-ai report create-issue "),
+        "{command}"
+    );
     assert!(command.contains("--source both"), "{command}");
-    assert!(command.contains("--context-output"), "{command}");
-    assert!(command.contains("context.lino"), "{command}");
-    assert!(command.contains("--body-file"), "{command}");
+    assert!(command.contains("--separate-context-links"), "{command}");
+    assert!(
+        command.contains("--repo 'link-assistant/formal-ai'"),
+        "{command}"
+    );
+    assert!(!command.contains("mktemp"), "{command}");
     // #839 §2.3: byte-offset truncation cut Links Notation mid-record, so no
     // step may slice the context on its way into the body.
     assert!(!command.contains("tail -c"), "{command}");

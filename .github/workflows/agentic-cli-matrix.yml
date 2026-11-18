@@ -7,7 +7,8 @@ name: Agentic CLI Matrix
 # recording every exchange. Our own server is the model provider, so no leg
 # needs vendor credentials.
 #
-# Legs run in parallel and never skip: a client the runner cannot exercise
+# When this retained integration is selected, every client leg runs in parallel.
+# A client the runner cannot exercise
 # headlessly still gets an interactive PTY leg, and a documented upstream
 # limitation is written as an assertion that fails when upstream lifts it,
 # not as a `continue-on-error`. The `agentic_cli_matrix_covers_every_seeded_client`
@@ -15,6 +16,12 @@ name: Agentic CLI Matrix
 
 on:
   push:
+    paths-ignore:
+      - "docs/**"
+      - "*.md"
+      - "**/README.md"
+      - "**/CHANGELOG.md"
+      - "changelog.d/**"
     branches:
       - main
   pull_request:
@@ -42,6 +49,11 @@ on:
       - 'rust/Cargo.toml'
       - 'rust/Cargo.lock'
       - '.github/workflows/agentic-cli-matrix.yml'
+      - "!docs/**"
+      - "!*.md"
+      - "!**/README.md"
+      - "!**/CHANGELOG.md"
+      - "!changelog.d/**"
   # Issue #1187 R2: a bot pull request's checks start through dispatch
   # (.github/actions/dispatch-checks); mode and pull-request are its inputs.
   workflow_dispatch:
@@ -71,11 +83,15 @@ env:
   RUSTFLAGS: -Dwarnings
 
 jobs:
+  pr-check-profile:
+    if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'))
+    uses: ./.github/workflows/pull-request-check-profile.yml
   # Build once; every leg downloads the same binary. A leg that rebuilt would
   # spend more time compiling than driving a CLI.
   build:
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true) }}
     name: Build formal-ai
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     outputs:
       already-green: ${{ steps.ledger.outputs.already-green }}
@@ -125,7 +141,7 @@ jobs:
     # strategy error rather than an empty run. The ledger's own skip therefore
     # has to reach this job too, or a hit turns the workflow red.
     if: ${{ needs.build.outputs.already-green != 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     strategy:
       # Every leg reports independently: a Gemini upstream change must not hide
@@ -286,13 +302,21 @@ jobs:
   # runs. This job needs no CLI, no display and no network — only `jq` — so it is
   # the one leg that can never be skipped for environmental reasons.
   replay:
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true) }}
     name: Replay recorded sessions
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
+    env:
+      GIT_HTTP_LOW_SPEED_LIMIT: '1024'
+      GIT_HTTP_LOW_SPEED_TIME: '30'
     steps:
       - uses: actions/checkout@v7
+        timeout-minutes: 2
         with:
           persist-credentials: false
+          # Offline replay only reads this harness and its committed transcripts.
+          # checkout uses blob:none for a sparse checkout, avoiding unrelated blobs.
+          sparse-checkout: experiments/agentic_cli_matrix
       - name: Replay every committed transcript
         run: experiments/agentic_cli_matrix/replay.sh
 
@@ -301,7 +325,7 @@ jobs:
     needs: [build, matrix]
     # Issue #1111: nothing to learn from when the legs did not run.
     if: ${{ needs.build.outputs.already-green != 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - name: Download formal-ai binary
@@ -352,13 +376,13 @@ jobs:
   summary:
     name: Matrix summary
     needs: [build, matrix, replay, learn]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # Issue #1017: the only job in the repository without a cap. It inherits
     # GitHub's 360-minute default, so a runner that wedges while evaluating this
     # gate holds a billable job for six hours and reports `cancelled` at the end.
     # Three string comparisons need seconds.
     timeout-minutes: 5
-    if: always()
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (always()) }}
     steps:
       - name: Fail if any leg failed
         # A single red leg fails the matrix. Issue #671 exists because

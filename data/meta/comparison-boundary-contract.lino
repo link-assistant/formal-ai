@@ -1,0 +1,12 @@
+(comparison-boundary-contract
+  (version "finite-numeric-interval/v1")
+  (representation "complete-readable-source-cst")
+  (match "unique-declaration" "simple-parameters" "sole-return" "two-comparisons-in-conjunction")
+  (binding "unique-shared-subject" "operand-direction-normalization" "lower-and-upper-relational-roles")
+  (operation "replace-one-boundary-operator-leaf")
+  (preserve "lower-or-upper-comparison-complement" "comments" "layout" "all-other-source")
+  (check "independent-full-grammar-reparse" "exact-inverse" "complete-concrete-residual")
+  (refuse "multiple-declarations" "multiple-common-identifiers" "free-variables" "effects" "nested-scopes" "unsupported-operands" "unavailable-grammar")
+  (regression "finite-boundary-and-interior-and-exterior-witnesses" "derive-before-edit-selection")
+  (claim "finite-number-interval-boundary-only")
+  (not-certified "arbitrary-runtime-types" "compiler-validity" "independent-task-acceptance"))

@@ -17,6 +17,7 @@ import { createHash } from 'node:crypto';
 
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+import {completeOwnedSourceReadFrame} from '../../../js/agentic/tool_result.mjs';
 
 let planChatStep;
 let planRoutedCapabilityStep;
@@ -42,7 +43,8 @@ async function drive(prompt, source, name = 'f.txt') {
     const [call] = plan.calls;
     const args = JSON.parse(call.arguments);
     let result = '';
-    if (call.tool === 'read') result = file;
+    if (call.tool === 'read') result = (args.filePath ?? args.file_path ?? args.path) === name
+      ? completeOwnedSourceReadFrame(file) : 'Error: File not found';
     if (call.tool === 'edit') file = file.replace(args.oldString, () => args.newString);
     if (call.tool === 'write') file = args.content;
     if (call.tool === 'bash') result = `${createHash('sha256').update(file).digest('hex')}  ${name}\n`;

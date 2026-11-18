@@ -55,6 +55,18 @@ pub fn try_feature_capability(
     runtime: CapabilityRuntime,
 ) -> Option<SymbolicAnswer> {
     let language = detect_language(prompt);
+    if crate::solver_handler_how::internet_access_help_requested(prompt, normalized) {
+        log.append("permission:guidance", "internet-access-help");
+        let body = capability_response("internet-access-help", language.slug(), &[]);
+        return Some(finalize_simple(
+            prompt,
+            log,
+            "capabilities",
+            "response:capabilities",
+            &body,
+            1.0,
+        ));
+    }
     if crate::formalization::dialogue::blocks_self_description(prompt, language.slug())
         || !is_feature_capability_question(normalized, language.slug())
     {

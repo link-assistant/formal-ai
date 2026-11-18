@@ -83,19 +83,59 @@ sufficient draft, and compose the drafts back into one solution**:
 
 ![Universal Problem Solving Algorithm: a problem fans out into tasks, each task into tests, each test into candidate drafts, and the selected drafts compose back into a single solution](docs/assets/universal-problem-solving-algorithm.jpg)
 
-This is not a separate subsystem bolted onto a catalogue of intents — it is the
-main solver path. `rust/src/solver.rs::UniversalSolver` runs the same 11-step loop
-for every impulse:
+The picture is the procedure that produces every answer, and it is
+recursive: every task that is not atomic is itself a problem that is split,
+tested, drafted, selected and composed in the same way
+([issue 1550](https://github.com/link-assistant/formal-ai/issues/1550)). At
+every level `rust/src/meta_executor.rs` (and its JavaScript twin
+`js/agentic/crate/meta_executor.mjs`) splits the formalized request into tasks
+by the relations the shared grammar names (sequence, alternative, aggregation,
+in every supported language), derives an executed test for each task, drafts
+every candidate a method gives (the cache row of a task already solved in the
+run, the direct derivation of the solver's handler cascade, the composition of the selected sub-results), runs
+each draft against the test, selects the smallest sufficient passing draft by
+least action and records why, composes by the structure of the split and checks
+the composition against the parent test. The depth, breadth and budget bounds
+are data in the `task-decomposition` rule of `data/seed/text-formalization.lino`,
+a caller of `execute_procedure` can override each one through `RunOptions`, and
+they are the first event of every trace. The trace events, the functions that emit
+them, and the call chain from each runtime's entry are:
 
-| Diagram stage | Loop steps in `rust/src/solver.rs` |
-| --- | --- |
-| `Problem` | 1. Impulse, 2. Formalization (Links-Notation intent), 3. Context, 4. History lookup |
-| `decomposition → tasks` | 5. Decomposition into sub-impulses (`record_decomposition`) |
-| `experiment → tests` | 6. TDD-style validation (`record_validation`) |
-| `selection → drafts` | 7. Solution synthesis (`record_candidates`), 8. Combination of the smallest sufficient candidate |
-| `composition → solutions → Solution` | 9. Verification, 10. Simplification, 11. Documentation with a `trace:` pointer |
+<!-- meta-procedure:start -->
+| Diagram stage | Trace event | Rust | JavaScript |
+| --- | --- | --- | --- |
+| `Problem` (bounds of the run) | `meta_exec:bounds` | `execute_procedure`, `decomposition_bounds` | `executeProcedure`, `decompositionBounds` |
+| `decomposition → tasks` | `meta_exec:task` | `emit_task`, `plan_tasks`, `split_request` | `runTask`, `planTasks`, `splitRequest` |
+| `experiment → tests` | `meta_exec:test` | `run_task`, `derive_task_test` | `runTask`, `deriveTaskTest` |
+| `drafts` (each run against the test) | `meta_exec:draft` | `select`, `draft_candidates`, `run_task_test` | `runTask`, `runTaskTest` |
+| `composition → solutions` | `meta_exec:compose` | `draft_candidates`, `compose` | `runTask`, `compose` |
+| `selection` (least action) | `meta_exec:select` | `select`, `rank_by_least_action` | `runTask`, `rankByLeastAction` |
+| no passing draft (explicit) | `meta_exec:unresolved` | `run_task`, `select` | `runTask` |
+| `Solution` | `meta_exec:result` | `execute_procedure` | `executeProcedure` |
 
-Every step appends its own event to the append-only log, so the chat can answer
+| Runtime | Entry chain (each function calls the next) | Recursive executor |
+| --- | --- | --- |
+| Rust | `solve_with_history_probability_store_and_intent_cache` → `run_meta_procedure` → `solve_answer` → `solve_turn` → `InProcessExecutor` → `execute_procedure` | `solve_recursively` |
+| JavaScript | `solve` → `metaRunProcedure` → `solveAnswer` → `solveTurn` → `inProcessExecutor` → `executeProcedure` | `solveRecursively` |
+<!-- meta-procedure:end -->
+
+The procedure runs once per turn in both runtimes: the handler cascade inside
+`solve_with_history_probability_store_and_intent_cache` (and the worker's
+`solveImpl`) is the direct-derivation method whose draft the procedure records;
+no turn returns before or after it, and the census test
+`rust/tests/web/issue-1550-procedure-census.test.mjs` fails when a new early
+return appears. `solve_recursively` with the in-process executor is the
+production entry; the external-CLI executor of
+`rust/src/orchestration/incremental.rs` is one more executor of the same
+protocol. JavaScript and Rust emit the same event sequence on the shared fixture
+`rust/tests/fixtures/meta-executor-parity.json`, and
+`rust/tests/web/issue-1550-procedure-documentation.test.mjs` fails when the tables above
+diverge from the code. The audit that found the earlier recorded loop to be
+trace-only is in [docs/case-studies/issue-1548](docs/case-studies/issue-1548/README.md);
+the remaining critical blockers are collected in
+[issue 1561](https://github.com/link-assistant/formal-ai/issues/1561).
+
+Every recorded step appends its own event to the append-only log, so the chat can answer
 "why did you do that?" from the recorded experience. The full algorithm,
 including the reasoning-under-unknowns path (`rust/src/solver_unknown_reasoning.rs`)
 and intent formalization (`rust/src/intent_formalization.rs`), is documented in
@@ -391,13 +431,21 @@ artifacts written inside an isolated temporary client home are preserved so the
 reported path remains available for debugging. If `FORMAL_AI_PROXY_LOG` names an
 existing proxy log, that path is included in the same final block.
 
-Set `FORMAL_AI_DIALOG_LOG_DIR` on the server to write full request/response
-JSONL records into one file per dialog. This recorder is off by default because
-the bodies can contain private prompts and tool output. Send
-`X-Formal-AI-Dialog-ID` for exact grouping, or let the server derive the group
-from the first user prompt. See
+By default, server diagnostics record request IDs, routes, byte counts, timing,
+and status. Full dialog capture is off. Set `FORMAL_AI_DIALOG_LOG_DIR` to opt in
+to recording complete exchanges and conversation turns in Links Notation
+(`.lino`), grouped by `X-Formal-AI-Dialog-ID` or the first user prompt. Use
+`--silent` to disable server diagnostics and dialog capture. In ordinary mode,
+memory and derivation recording follow their own settings.
+
+Run `formal-ai serve --ephemeral` or set `FORMAL_AI_EPHEMERAL=1` to answer using
+existing memory read-only. This mode disables chat recording, background memory
+updates, server diagnostics, dialog capture, and derivation persistence, even
+when capture or trace options are set. Server-side agent execution and the
+stepping debugger require ordinary mode. `GET /health` reports `memory.mode`,
+`logs.status`, `logs.dialog_capture`, and `logs.derivation_capture`. See
 [`docs/configuration/output-sessions.md`](docs/configuration/output-sessions.md)
-for capture and optional `gh-upload-log` upload instructions.
+for capture, export, and provenance details.
 
 ```text
 formal-ai: session files for debugging:
@@ -701,6 +749,16 @@ means a later turn can ask for the full result, a numbered line, or a URL withou
 losing the original bytes. To retain those tool calls beyond the current client
 conversation, start the server with `FORMAL_AI_MEMORY_PATH=memory.lino`; completed
 tool names, arguments, and raw outputs are then appended to the durable memory log.
+
+Standing requirements learned from that log are scoped (issue #1559). A user
+who declares themselves (OpenAI `user`, Anthropic `metadata.user_id`) and says
+"Always answer in Russian." gets that rule in their later conversations only.
+An agent session, meaning a request that carries tools, keeps what it teaches
+inside its own repository and session, so agents sharing one store do not see
+each other's requirements; set `FORMAL_AI_SHARE_STANDING_REQUIREMENTS=1` to share
+them. A prompt that configures a session ("You are an AI issue solver…") is
+never learned as a requirement. Agentic final answers list the requirements they
+applied in `thinking_steps` and `evidence_links`, never in their text.
 
 Example Telegram webhook update:
 
@@ -1197,5 +1255,5 @@ rust-script scripts/decode-github-issue-url.rs --url 'https://github.com/link-as
 See [REQUIREMENTS.md](REQUIREMENTS.md) for the cumulative requirement matrix and [docs/case-studies/issue-1/README.md](docs/case-studies/issue-1/README.md) for the collected research and implementation plan.
 
 <!-- status:begin self-hosting -->
-Latest ledger row: `v0.355.0`; release share `0` basis points, trailing share `0` basis points, target `389` basis points.
+Latest ledger row: `v0.355.34`; release share `0` basis points, trailing share `0` basis points, target `389` basis points.
 <!-- status:end self-hosting -->

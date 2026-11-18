@@ -4,14 +4,36 @@ requirement_status_ledger_shard
   issue "1166"
   verdict "implemented"
   delivered "implemented — 2026-10-07 (this pull request); see the shard"
-  automated_test "rust/tests/web/issue-1166-obligation-routing.test.mjs"
+  automated_test "rust/tests/web/issue-1166-task-acceptance.test.mjs"
   manual "not yet confirmed"
   requirement
     id "R1166-1"
     delivered "this pull request — see the shard"
     automated_test "rust/tests/unit/issue_1166_obligation_routing.rs"
   requirement
+    id "R1166-10"
+    delivered "2026-11-16 (this pull request): task_condition reads conditional outputs into a truth table, so reversed comparisons, and/or and negation stay distinct"
+  requirement
+    id "R1166-11"
+    delivered "2026-11-16 (this pull request): task_acceptance::check_task reports comments, run instructions and workflow clauses; acceptance_report appends actionable verdicts to the recipe final answer"
+  requirement
+    id "R1166-12"
+    delivered "2026-11-16 (this pull request): workflow path (ci/ included, .github/workflows excluded for #1450), triggers in every on: form, file name, runtime, status and badge are checked"
+  requirement
+    id "R1166-13"
+    delivered "2026-11-16 (this pull request): literals read verbatim (Unicode, quotes, backslashes); an escaped quote is a gap"
+  requirement
+    id "R1166-14"
+    delivered "2026-11-16 (this pull request): specify_task emits a canonical meaning and exact task identity; unsupported grammar is an unresolved gap"
+  requirement
+    id "R1166-15"
+    delivered "2026-11-16 (this pull request): one shared fixture in the native and JS tests, generated TS twins; executed Python candidates reject a shared misunderstanding"
+  requirement
+    id "R1166-16"
+    delivered "2026-11-16 (this pull request): every clause verdict carries a justification and byte span; no generic style verdict"
+  requirement
     id "R1166-2"
+    automated_test "rust/tests/web/issue-1166-obligation-routing.test.mjs"
   requirement
     id "R1166-3"
     delivered "2026-10-07 (this pull request; JS verified locally, Rust awaiting CI): ci_workflow::requested_in reads request_demands(CiWorkflow) in both roots; explicit_stdout and its JS twin read the graph's clauses through bound_output_literals (a print verb no longer binds a literal in a later enumerated clause); clause vocabularies are seed roles"
@@ -22,9 +44,16 @@ requirement_status_ledger_shard
     automated_test "rust/tests/web/issue-1166-worker-obligation-gaps.test.mjs"
   requirement
     id "R1166-5"
+    automated_test "rust/tests/web/issue-1166-obligation-routing.test.mjs"
   requirement
     id "R1166-6"
+    automated_test "rust/tests/web/issue-1166-obligation-routing.test.mjs"
   requirement
     id "R1166-7"
+    automated_test "rust/tests/web/issue-1166-obligation-routing.test.mjs"
   requirement
     id "R1166-8"
+    automated_test "rust/tests/web/issue-1166-obligation-routing.test.mjs"
+  requirement
+    id "R1166-9"
+    delivered "2026-11-16 (this pull request): explicit_count repeats a bound output line only for an explicit count; restated mentions merge into one line"

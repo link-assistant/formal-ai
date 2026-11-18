@@ -9,6 +9,12 @@ name: External Benchmarks
 
 on:
   pull_request:
+    paths-ignore:
+      - "docs/**"
+      - "*.md"
+      - "**/README.md"
+      - "**/CHANGELOG.md"
+      - "changelog.d/**"
     # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
     # never triggers this repository's own pipeline.
     branches-ignore: ['e2e/**']
@@ -52,13 +58,17 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  pr-check-profile:
+    if: (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'))
+    uses: ./.github/workflows/pull-request-check-profile.yml
   # === RATCHET - every PR compares its ledger with the actual base revision ===
   ratchet:
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (true) }}
     name: Verify monotonic ledger
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-ratchet
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
@@ -88,8 +98,8 @@ jobs:
     concurrency:
       group: formal-ai-repository-writes
       queue: max
-    if: github.event_name != 'pull_request' && !inputs.shard_size
-    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' && !inputs.shard_size && (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main')))
+    runs-on: ubuntu-24.04
     timeout-minutes: 90
     permissions:
       contents: write
@@ -135,6 +145,12 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p ci-logs
+          # Issue #1569: one failing suite must not hide the others. Under
+          # `set -e` the first failure ended the loop: every weekly run from
+          # 2026-10-26 to 2026-11-02 stopped after humaneval (12/20), so the
+          # other nine suites produced no result at all. Every selected suite
+          # runs now, each failure is named, and the step still fails.
+          failed=''
           run_suite() {
             ./rust/target/release/formal-ai benchmark run \
               --suite "$1" \
@@ -143,22 +159,33 @@ jobs:
               --allow-install \
               --append \
               --learning-report "target/formal-ai-benchmarks/learning/$1.lino" \
-              --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino
+              --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino || {
+              echo "::error title=External benchmark $1 failed::formal-ai benchmark run --suite $1 exited non-zero; the remaining suites still ran"
+              failed="${failed} $1"
+            }
           }
-          if [[ "${BENCHMARK_SUITE}" == 'all' ]]; then
-            for suite in humaneval mbpp gsm8k math object_counting coedit egg_math editeval; do
-              run_suite "${suite}" "${BENCHMARK_SLICE}"
-            done
-            run_suite ascent_transitive_closure 5
-            run_suite swebench_lite "${SWE_BENCH_SLICE}"
-          elif [[ "${BENCHMARK_SUITE}" == 'swebench_lite' ]]; then
-            run_suite "${BENCHMARK_SUITE}" "${SWE_BENCH_SLICE}"
-          elif [[ "${BENCHMARK_SUITE}" == 'ascent_transitive_closure' ]]; then
-            run_suite "${BENCHMARK_SUITE}" 5
-          else
-            run_suite "${BENCHMARK_SUITE}" "${BENCHMARK_SLICE}"
-          fi 2>&1 | tee ci-logs/external-benchmarks.log
+          status=0
+          {
+            if [[ "${BENCHMARK_SUITE}" == 'all' ]]; then
+              for suite in humaneval mbpp gsm8k math object_counting coedit egg_math editeval; do
+                run_suite "${suite}" "${BENCHMARK_SLICE}"
+              done
+              run_suite ascent_transitive_closure 5
+              run_suite swebench_lite "${SWE_BENCH_SLICE}"
+            elif [[ "${BENCHMARK_SUITE}" == 'swebench_lite' ]]; then
+              run_suite "${BENCHMARK_SUITE}" "${SWE_BENCH_SLICE}"
+            elif [[ "${BENCHMARK_SUITE}" == 'ascent_transitive_closure' ]]; then
+              run_suite "${BENCHMARK_SUITE}" 5
+            else
+              run_suite "${BENCHMARK_SUITE}" "${BENCHMARK_SLICE}"
+            fi
+            if [[ -n "${failed}" ]]; then
+              echo "failed suites:${failed}"
+              exit 1
+            fi
+          } 2>&1 | tee ci-logs/external-benchmarks.log || status=$?
           grep -E '^suite=' ci-logs/external-benchmarks.log >> "${GITHUB_STEP_SUMMARY}"
+          exit "${status}"
 
       - name: Verify the monotonic ratchet
         run: |
@@ -234,8 +261,8 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.suite }}-shard-plan
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
-    if: github.event_name == 'workflow_dispatch' && inputs.shard_size
-    runs-on: ubuntu-latest
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) && (github.event_name == 'workflow_dispatch' && inputs.shard_size) }}
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     outputs:
       windows: ${{ steps.plan.outputs.windows }}
@@ -271,12 +298,13 @@ jobs:
       - uses: ./.github/actions/formal-ai-binary
 
   upstream-shard:
+    if: ${{ (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && (github.ref == 'refs/heads/main' || github.event_name == 'release' || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'))) }}
     name: Upstream shard ${{ matrix.window.offset }}
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.suite }}-shard-${{ matrix.window.offset }}
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     needs: shard-plan
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     strategy:
       fail-fast: false
@@ -330,7 +358,7 @@ jobs:
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     needs: [shard-plan, upstream-shard]
     if: ${{ !cancelled() && needs.shard-plan.result == 'success' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/download-artifact@v8

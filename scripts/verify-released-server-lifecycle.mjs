@@ -12,6 +12,7 @@ import {boundedCommand} from '../js/server/bounded-command.mjs';
 import {parseLinksNotation} from '../js/server/memory-store.mjs';
 import {makeRedactor} from '../js/server/structured-log.mjs';
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
+const textIdentity=value=>typeof value==='string'?{utf8Bytes:Buffer.byteLength(value),sha256:hash(Buffer.from(value))}:null;
 const configured='/memory/memory.lino';
 function ordinary(file){
   const stat=fs.lstatSync(file);assert(stat.isFile()&&!stat.isSymbolicLink()&&stat.size<=1048576);
@@ -90,6 +91,10 @@ export async function observeReleasedLifecycle({runtime,source,fixture1,fixture2
       const active=scenario==='supported'?configured:configured+'.schema-2.'+hash(original)+'.lino';
       let baseline=null,recordedAnswer=null;
       for(let pass=1;pass<=2;pass++){
+        // Retain the failing pass before assertions; the owned volume is removed
+        // after receipt publication. Hash payloads instead of publishing text.
+        receipt.currentObservation={scenario,pass,activePath:active,stage:'create'};
+        const observation=receipt.currentObservation;
         const name='formal-ai-lifecycle-'+randomUUID();owned=name;
         await docker(['create','--pull=never','--name',name,'--user',process.getuid()+':'+process.getgid(),
           '--env','HOME=/memory','--env','FORMAL_AI_MEMORY_PATH='+configured,
@@ -110,12 +115,15 @@ export async function observeReleasedLifecycle({runtime,source,fixture1,fixture2
             if(poll===19)throw error;await ops.pause(Math.min(100,remaining()));
           }
         }
+        observation.stage='health';observation.health=health;
         requireMemoryHealth(health,active);
         let answer=null;
         if(scenario==='incompatible'&&pass===1){
           const response=await ops.request(port,{model:'formal-ai',stream:false,
             messages:[{role:'user',content:'2 + 2'}]},remaining(30000));
-          answer=response.choices?.[0]?.message?.content;assert.equal(typeof answer,'string');assert.match(answer,/\b4\b/u);
+          answer=response.choices?.[0]?.message?.content;
+          observation.stage='answer';observation.wireAnswer=textIdentity(answer);
+          assert.equal(typeof answer,'string');assert.match(answer,/\b4\b/u);
           recordedAnswer=answer;
         }
         held=await ops.hold(port,remaining(10000));assert(held.isOpen(),'HeldConnectionNotOpen');
@@ -127,9 +135,14 @@ export async function observeReleasedLifecycle({runtime,source,fixture1,fixture2
         const wait=await docker(['wait',name],Math.max(1,Math.min(remaining(),4999-(ops.now()-stop))));assert.equal(wait,'0');
         const stopped=JSON.parse(await docker(['inspect',name],Math.max(1,Math.min(remaining(),4999-(ops.now()-stop)))))[0];
         const shutdownMs=ops.now()-stop;
+        observation.stage='shutdown';observation.shutdownMs=shutdownMs;observation.exitCode=stopped.State.ExitCode;
         requireSuccessfulStop(stopped.State,shutdownMs);held.close();held=null;
         const file=path.join(volume,path.basename(active)),bytes=ordinary(file);
         const events=parseLinksNotation(bytes.toString());
+        observation.stage='memory';observation.memorySha256=hash(bytes);observation.eventCount=events.length;
+        observation.events=events.slice(-8).map(event=>({id:event.id.slice(0,256),kind:event.kind,role:event.role,
+          content:textIdentity(event.content),inputs:textIdentity(event.inputs),outputs:textIdentity(event.outputs),
+          evidence:event.evidence.slice(0,8).map(id=>id.slice(0,256))}));
         let backupSha256=null,chatWritten=false;
         if(scenario==='supported'){
           assert(bytes.equals(fixture2),'SupportedMigrationLoss');
@@ -141,8 +154,11 @@ export async function observeReleasedLifecycle({runtime,source,fixture1,fixture2
           assert(ordinary(path.join(volume,'memory.lino')).equals(original),'IncompatibleOriginalChanged');
           assert(bytes.toString().startsWith('demo_memory\n  schema_version "2"\n'));
           assert(events.length>=2,'FallbackDidNotRecordEvents');
-          assert(events.some(event=>event.role==='user'&&event.content==='2 + 2'),'FallbackDidNotRecordPrompt');
-          assert(events.some(event=>event.role==='assistant'&&event.content===recordedAnswer),'FallbackDidNotRecordAnswer');
+          const user=events.find(event=>event.id&&event.kind==='message'&&event.role==='user'&&event.content==='2 + 2');
+          assert(user,'FallbackDidNotRecordPrompt');
+          assert(events.some(event=>event.kind==='task'&&event.role==='assistant'&&event.intent==='solve'
+            &&event.inputs==='2 + 2'&&event.outputs===recordedAnswer&&event.evidence.includes(user.id)),
+          'FallbackDidNotRecordLinkedAnswer');
           chatWritten=true;
         }
         if(baseline!==null)assert(bytes.equals(baseline),'RestartChangedMemory');baseline=bytes;
@@ -156,6 +172,7 @@ export async function observeReleasedLifecycle({runtime,source,fixture1,fixture2
           userContentSha256:chatWritten?hash(Buffer.from('2 + 2')):null,
           assistantContentSha256:chatWritten?hash(Buffer.from(recordedAnswer)):null});
         await docker(['rm',name]);owned=null;
+        delete receipt.currentObservation;
       }
     }
     receipt.cleanupComplete=true;receipt.complete=true;

@@ -1,0 +1,275 @@
+import test, { before } from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { WorkerHost } from '../../../js/server/worker-host.mjs';
+import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+import { planWorkItemEvidence, workItemEvidencePaths } from '../../../js/agentic/work_item_evidence.mjs';
+import { planChatStep } from '../../../js/agentic/planner.mjs';
+import { workItemRecordOf, parsesAsJsonObject } from '../../../js/agentic/work_item_report.mjs';
+function recorded(plan) {
+  assert.equal(parsesAsJsonObject(plan.answer), false, 'a work-item answer is a report, not a JSON object');
+  const record = plan.record ?? workItemRecordOf(plan);
+  assert.ok(record, 'a work-item final keeps its record');
+  return record;
+}
+const fixture = JSON.parse(readFileSync('data/benchmarks/fixtures/work-item-1455/failure.json', 'utf8'));
+before(async () => installNodeHost(new WorkerHost({
+  WebAssembly: {
+    compile() {
+      throw Error('LocalProductWasmForbidden');
+    },
+    instantiate() {
+      throw Error('LocalProductWasmForbidden');
+    }
+  }
+})));
+function observe(messages, tool, args, content, extra = {}) {
+  const id = 'observation-' + messages.length;
+  messages.push({
+    role: 'assistant',
+    content: '',
+    tool_calls: [{
+      id,
+      type: 'function',
+      function: {
+        name: tool,
+        arguments: JSON.stringify(args)
+      }
+    }]
+  });
+  messages.push({
+    role: 'tool',
+    tool_call_id: id,
+    name: tool,
+    content,
+    ...extra
+  });
+}
+test('the evidence collector retains original task sources without claiming an implementation', async () => {
+  const paths = workItemEvidencePaths(fixture.objective);
+  assert.deepEqual(paths, ['docs/associative-tech-stack.md', 'rust/Cargo.toml', 'package.json', 'js/web-search-component-entry.js']);
+  const messages = [{
+    role: 'user',
+    content: 'Implement ' + fixture.issue
+  }];
+  const tools = ['fetch_url', 'read', 'write'];
+  const retrieval = await planChatStep(messages, tools);
+  assert.equal(retrieval.kind, 'tool_calls');
+  assert.equal(retrieval.calls[0].tool, 'fetch_url');
+  assert.equal(JSON.parse(retrieval.calls[0].arguments).url, fixture.issue);
+  observe(messages, retrieval.calls[0].tool, JSON.parse(retrieval.calls[0].arguments), fixture.title + '\n\n' + fixture.objective);
+  for (const path of paths) {
+    const step = planWorkItemEvidence(fixture.title + '\n\n' + fixture.objective, messages, tools, fixture.issue);
+    assert.equal(step.kind, 'tool_calls');
+    assert.equal(step.calls.length, 1);
+    const call = step.calls[0],
+      args = JSON.parse(call.arguments);
+    assert.equal(call.tool, 'read');
+    assert.equal(args.path, path);
+    observe(messages, 'read', args, readFileSync(path, 'utf8'), {
+      source_read: {
+        path,
+        success: true,
+        complete: true,
+        format: 'raw'
+      }
+    });
+  }
+  const result = planWorkItemEvidence(fixture.title + '\n\n' + fixture.objective, messages, tools, fixture.issue);
+  assert.equal(result.kind, 'final');
+  const evidence = recorded(result);
+  assert.equal(evidence.reason, 'EvidenceCollected');
+  assert.equal(evidence.workItem, fixture.issue);
+  assert.equal(evidence.authored, false);
+  assert.equal(evidence.verified, false);
+  assert.equal(evidence.decomposition[2].status, 'not_executed');
+  assert.ok(evidence.requirements.length > 0);
+  for (const requirement of evidence.requirements) {
+    assert.equal(requirement.status, 'unbound');
+    assert.equal(Buffer.from(fixture.title + '\n\n' + fixture.objective).subarray(...requirement.span).toString(), requirement.text);
+  }
+  for (const observation of evidence.observations) {
+    assert.equal(observation.complete, true);
+    assert.equal(observation.sourceIdentity, createHash('sha256').update(readFileSync(observation.path)).digest('hex'));
+    assert.ok(Array.from(observation.excerpt).length <= 1024);
+    if (/\.(?:json|toml)$/u.test(observation.path)) {
+      assert.ok(observation.manifestFacts.length > 0);
+      assert.equal(observation.factScope, 'literal-declarations-only; executable use remains unverified');
+      for (const fact of observation.manifestFacts) assert.equal(fact.sourceIdentity, observation.sourceIdentity);
+    }
+  }
+});
+test('missing tool, failed and truncated reads terminate without repeating an action or writing', () => {
+  const task = 'Investigate package.json before implementing the requested integration.';
+  assert.equal(recorded(planWorkItemEvidence(task, [], [])).reason, 'MissingReadTool');
+  for (const extra of [{
+    is_error: true
+  }, {
+    source_read: {
+      path: 'package.json',
+      success: true,
+      complete: false,
+      format: 'raw'
+    }
+  }]) {
+    const messages = [{
+      role: 'user',
+      content: task
+    }];
+    observe(messages, 'read', {
+      path: 'package.json'
+    }, 'untrusted incomplete source', extra);
+    const result = planWorkItemEvidence(task, messages, ['read', 'write']);
+    assert.equal(result.kind, 'final');
+    const report = recorded(result);
+    // A failed read with no search tool leaves the reference unresolved (issue #1558); a partial read stays incomplete.
+    assert.equal(report.reason, extra.is_error ? 'UnresolvedReferences' : 'IncompleteSourceObservation');
+    assert.equal(report.observations[0].sourceIdentity, null);
+    if (extra.is_error) assert.deepEqual(report.unresolved, [{ reference: 'package.json', target: 'package.json', reason: 'SearchUnavailable' }]);
+  }
+});
+test('paths are bounded, deduplicated and cannot become shell or traversal instructions', () => {
+  assert.deepEqual(workItemEvidencePaths('Read ../private.json /etc/secrets.json https://example.com/page.md package.json package.json.'), ['package.json']);
+  assert.equal(workItemEvidencePaths(Array.from({
+    length: 20
+  }, (_, i) => 'source' + i + '.js').join(' ')).length, 8);
+  assert.deepEqual(workItemEvidencePaths('x'.repeat(32769) + ' package.json'), []);
+  assert.equal(planWorkItemEvidence('An unsupported obligation with no repository paths', [], ['read']), null);
+});
+test('read prohibitions and oversized observations remain unverified', () => {
+  assert.equal(recorded(planWorkItemEvidence('Do not read package.json. Investigate package.json.', [], ['read'])).reason, 'ReadPolicyRefused');
+  const task = 'Investigate package.json.',
+    messages = [{
+      role: 'user',
+      content: task
+    }];
+  observe(messages, 'read', {
+    path: 'package.json'
+  }, 'x'.repeat(262145), {
+    source_read: {
+      path: 'package.json',
+      success: true,
+      complete: true,
+      format: 'raw'
+    }
+  });
+  assert.equal(recorded(planWorkItemEvidence(task, messages, ['read'])).reason, 'IncompleteSourceObservation');
+});
+test('source references preserve native Unicode separator semantics', () => {
+  assert.deepEqual(workItemEvidencePaths('Inspect\u0085Cargo.toml.'), ['Cargo.toml']);
+  assert.deepEqual(workItemEvidencePaths('Inspect\uFEFFCargo.toml.'), []);
+});
+
+test('quoted documentation examples remain literal edit payloads',async()=>{
+  const owner='tests/request.mjs',before='const note = "before";',after='const note = "Document docs/runtime.md using package.json and js/client.mjs.";';
+  const task='In '+owner+', replace «'+before+'» with «'+after+'». Preserve all other content.';
+  const messages=[{role:'user',content:task}],tools=['read_file','edit_file'];
+  const read=await planChatStep(messages,tools);
+  assert.equal(read.kind,'tool_calls');assert.equal(read.calls.length,1);
+  assert.equal(read.calls[0].tool,'read_file');const args=JSON.parse(read.calls[0].arguments);
+  assert.equal(args.path,owner);
+  observe(messages,'read_file',args,before,{source_read:{path:owner,success:true,complete:true,format:'raw'}});
+  const edit=await planChatStep(messages,tools);
+  assert.equal(edit.kind,'tool_calls');assert.equal(edit.calls.length,1);
+  assert.equal(edit.calls[0].tool,'edit_file');const replacement=JSON.parse(edit.calls[0].arguments);
+  assert.equal(replacement.path,owner);assert.equal(replacement.old_string,before);assert.equal(replacement.new_string,after);
+});
+
+test('captured original issue with invalid evidence terminates without effects',async()=>{
+  const messages=[{role:'user',content:'Implement '+fixture.issue}],tools=['fetch_url','read_file','write_file'];
+  const retrieval=await planChatStep(messages,tools);
+  assert.equal(retrieval.kind,'tool_calls');assert.equal(retrieval.calls.length,1);
+  assert.equal(retrieval.calls[0].tool,'fetch_url');
+  assert.equal(JSON.parse(retrieval.calls[0].arguments).url,fixture.issue);
+  observe(messages,'fetch_url',JSON.parse(retrieval.calls[0].arguments),fixture.title+'\n\n'+fixture.objective);
+  const paths=['rust/Cargo.toml','package.json','js/web-search-component-entry.js','docs/associative-tech-stack.md'];
+  for(const path of paths){
+    const step=await planChatStep(messages,tools);
+    assert.equal(step.kind,'tool_calls');assert.equal(step.calls.length,1);
+    const call=step.calls[0],args=JSON.parse(call.arguments);
+    assert.equal(call.tool,'read_file');assert.equal(args.path,path);
+    assert.equal(args.filePath,path);assert.equal(args.file_path,path);
+    observe(messages,call.tool,args,'observed source\n',{source_read:{path,success:true,complete:true,format:'raw'}});
+  }
+  const result=await planChatStep(messages,tools);
+  assert.equal(result.kind,'final');const state=recorded(result);
+  assert.equal(state.schema,'repository-work-item-controller/v1');
+  assert.equal(state.reason,'UnsupportedManifestDocumentationSource');
+  for(const field of ['authored','verified','complete'])assert.equal(state[field],false);
+  for(const field of ['candidateEdits','checks','effects'])assert.deepEqual(state[field],[]);
+  assert.equal(state.workItem,fixture.issue);assert.deepEqual(state.observations.map(row=>row.path),paths);
+  assert.ok(state.requirements.length>0);assert.ok(state.requirements.every(row=>row.status==='unverified'));
+  for(const row of state.observations){assert.equal(row.complete,true);assert.equal(row.sourceIdentity,createHash('sha256').update('observed source\n').digest('hex'));}
+});
+// Issue #1483: a completed evidence collection names the narrowest gap it
+// leaves, and a work item that links only related pages names them.
+function collected(task, path, source) {
+  const messages = [{ role: 'user', content: task }];
+  observe(messages, 'read', { path }, source, { source_read: { path, success: true, complete: true, format: 'raw', source } });
+  const result = planWorkItemEvidence(task, messages, ['read', 'write']);
+  assert.equal(result.kind, 'final');
+  return { record: recorded(result), answer: result.answer };
+}
+test('an interface the requirements ask for and no read source defines is the named gap', () => {
+  const task = 'Add a categorical interface to js/rules.mjs.\n\nProposed addition: assessContext(evidence) returning supported or unknown.';
+  const { record, answer } = collected(task, 'js/rules.mjs', 'export function aggregate(evidence) { return evidence; }\n');
+  assert.equal(record.reason, 'EvidenceCollected');
+  assert.equal(record.gap, 'RequestedInterfaceAbsent');
+  assert.ok(record.remainingWork.includes('create-interface:assessContext'), JSON.stringify(record.remainingWork));
+  assert.ok(!record.remainingWork.includes('implement-requested-change'));
+  assert.match(answer, /Narrowest open gap: `RequestedInterfaceAbsent`\./u);
+  assert.match(answer, /- `create-interface:assessContext`/u);
+});
+test('an interface the read source already defines leaves the files no change recipe covers', () => {
+  const task = 'Change js/rules.mjs so that aggregate(evidence) keeps provenance.';
+  const { record } = collected(task, 'js/rules.mjs', 'export function aggregate(evidence) { return evidence; }\n');
+  assert.equal(record.gap, 'NoChangeRecipe');
+  assert.ok(record.remainingWork.includes('change-recipe-unavailable:js/rules.mjs'), JSON.stringify(record.remainingWork));
+});
+test('a work item that links only related pages names each as unresolved evidence', () => {
+  const task = 'Organize the blockers.\n\nSee https://github.com/example/other/issues/1 and https://github.com/example/tool.';
+  const result = planWorkItemEvidence(task, [{ role: 'user', content: task }], ['read', 'write'], 'https://github.com/example/project/issues/9');
+  assert.equal(result.kind, 'final');
+  const record = recorded(result);
+  assert.equal(record.reason, 'RelatedEvidenceUnread');
+  assert.deepEqual(record.unresolved.map(row => [row.reference, row.kind, row.reason]), [
+    ['https://github.com/example/other/issues/1', 'related', 'RelatedPageNotRead'],
+    ['https://github.com/example/tool', 'related', 'RelatedPageNotRead']]);
+  assert.equal(record.gap, undefined);
+  assert.match(result.answer, /`RelatedEvidenceUnread`/u);
+  assert.equal(planWorkItemEvidence('Organize the blockers.', [], ['read']), null, 'a work item with no lead is left to the general planner');
+});
+// The frozen issue bodies of #1395, #1396 and #1438 (work-item-1483 fixtures):
+// attachments are named, never described; a linked document that cannot be
+// fetched is named; neither ends in an unexplained stop or a write.
+const frozen = JSON.parse(readFileSync('data/benchmarks/fixtures/work-item-1483/issues.json', 'utf8')).issues;
+function leadsOf(number) {
+  const issue = frozen[number], task = issue.title + '\n\n' + issue.body, messages = [{ role: 'user', content: task }];
+  const tools = [];
+  for (let step = 0; step < 12; step += 1) {
+    const plan = planWorkItemEvidence(task, messages, ['read', 'grep', 'glob', 'webfetch', 'write'], issue.url);
+    assert.ok(plan, `issue ${number} is a work item with leads`);
+    if (plan.kind === 'final') return { record: recorded(plan), answer: plan.answer, tools };
+    const call = plan.calls[0];
+    tools.push(call.tool);
+    observe(messages, call.tool, JSON.parse(call.arguments), call.tool === 'webfetch' ? 'Error: network access is not available' : 'Error: File not found');
+  }
+  assert.fail(`issue ${number} did not end within 12 steps`);
+}
+test('the attachments of issues 1395 and 1396 are the named gap, never described', () => {
+  for (const [number, count] of [['1395', 1], ['1396', 2]]) {
+    const { record, answer, tools } = leadsOf(number);
+    assert.equal(record.reason, 'AttachmentEvidenceUnavailable', number);
+    assert.deepEqual(record.unresolved.map(row => [row.kind, row.reason]), Array(count).fill(['attachment', 'AttachmentContentUnavailable']), number);
+    assert.ok(!tools.includes('write') && !tools.includes('edit'), number);
+    assert.match(answer, /`AttachmentEvidenceUnavailable`/u);
+  }
+});
+test('the linked document of issue 1438 that cannot be fetched is the named gap', () => {
+  const { record, answer, tools } = leadsOf('1438');
+  assert.deepEqual(tools, ['webfetch']);
+  assert.equal(record.reason, 'ExternalEvidenceUnavailable');
+  assert.deepEqual(record.unresolved.map(row => [row.kind, row.reason]), [['document', 'FetchFailed']]);
+  assert.match(answer, /`ExternalEvidenceUnavailable`/u);
+});

@@ -7,9 +7,9 @@
 //!
 //! This builder replaces the heredoc with a small, inspectable structure: each
 //! step names the program it needs, every named program is checked with
-//! `command -v` before the first step runs, and a report that wants scratch
-//! files gets one directory that is removed on exit. The report body itself is
-//! no longer assembled in shell — `formal-ai report body` renders it.
+//! `command -v` before the first step runs. Export directories survive so the
+//! user can retrieve them. GitHub submission has its own named CLI action;
+//! the shared renderer prepares its body outside the shell.
 
 use crate::seed;
 
@@ -21,21 +21,11 @@ const PREFLIGHT: &str =
     "command -v {command} >/dev/null 2>&1 || { printf '%s\\n' {message} >&2; exit 1; }";
 /// Fail on the first error and on an unset variable.
 const STRICT_MODE: &str = "set -eu";
-/// Shell variable holding the scratch directory of one report.
-const SCRATCH_VARIABLE: &str = "report_dir";
-/// One directory per report, removed however the script ends.
-///
-/// GNU `mktemp` only substitutes a trailing run of `X`s, so the suffixed
-/// template of #838 produced the literal name `formal-ai-report.XXXXXX.lino`
-/// in the filed gist. A directory keeps the template trailing and still lets
-/// every artifact carry a real extension.
-const SCRATCH_SETUP: &str = "report_dir=$(mktemp -d \"${TMPDIR:-/tmp}/formal-ai-report.XXXXXX\")\n\
-                             trap 'rm -rf \"$report_dir\"' EXIT";
 /// Shell variable holding the directory of one report's deliverable exports.
 const EXPORT_VARIABLE: &str = "export_dir";
 /// One directory per export, outside the caller's working directory (#945).
 ///
-/// Unlike [`SCRATCH_SETUP`] there is no removal trap: a harness or server log
+/// There is no removal trap: a harness or server log
 /// export *is* the deliverable, so the directory must outlive the script. What
 /// it must never do is land in the CWD, where a repo checkout would collect
 /// untracked session dumps at its root.
@@ -45,7 +35,6 @@ const EXPORT_SETUP: &str = "export_dir=$(mktemp -d \"${TMPDIR:-/tmp}/formal-ai-e
 pub(super) struct ReportScript {
     programs: Vec<String>,
     steps: Vec<String>,
-    scratch: bool,
     export: bool,
 }
 
@@ -54,7 +43,6 @@ impl ReportScript {
         Self {
             programs: Vec::new(),
             steps: Vec::new(),
-            scratch: false,
             export: false,
         }
     }
@@ -67,12 +55,6 @@ impl ReportScript {
         self.steps.push(command);
     }
 
-    /// A shell-quoted path inside this report's scratch directory.
-    pub(super) fn scratch(&mut self, name: &str) -> String {
-        self.scratch = true;
-        format!("\"${SCRATCH_VARIABLE}/{name}\"")
-    }
-
     /// A shell-quoted path inside this report's surviving export directory.
     pub(super) fn export(&mut self, name: &str) -> String {
         self.export = true;
@@ -83,9 +65,6 @@ impl ReportScript {
     pub(super) fn render(&self) -> String {
         let mut lines = vec![String::from(STRICT_MODE)];
         lines.extend(self.programs.iter().map(|program| preflight(program)));
-        if self.scratch {
-            lines.push(String::from(SCRATCH_SETUP));
-        }
         if self.export {
             lines.push(String::from(EXPORT_SETUP));
         }

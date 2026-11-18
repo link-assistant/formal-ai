@@ -79,12 +79,14 @@ test('actual load entrypoint rechecks image bytes and adapters with mocked Docke
  const transport={upstreamCommit:pin,adaptedSha256:hashes['/opt/hive-e2e/scripts/e2e-hello-world.mjs'],helperSha256:hashes['/opt/hive-e2e/scripts/formal-ai-hive-delivery-evidence.mjs']};
  for(const [name,value] of [['operational',operational],['transport',transport]])fs.writeFileSync(path.join(hive,'.formal-ai-'+name+'-adapter.json'),JSON.stringify(value));
  const inputs={...f.inputs,hiveCommit:pin};fs.mkdirSync(path.join(f.root,'data/benchmarks'),{recursive:true});fs.writeFileSync(path.join(f.root,'data/benchmarks/hive-original-delivery-inputs.json'),JSON.stringify(inputs));
- const identity={...f.identity,...expected,hiveCommit:pin,actualTaskImageBinarySha256:expected.binarySha256,transportAdapter:transport,operationalEvidence:{...operational,actualImageHelperSha256:operational.helperSha256,adaptedOwnerImports:'passed'}};
+ const identity={...f.identity,...expected,hiveCommit:pin,actualTaskImageBinarySha256:expected.binarySha256,
+  clientPrerequisites:{clientVersions:'passed',originalHiveMcpPreflight:'passed',containerCleanup:'passed'},
+  transportAdapter:transport,operationalEvidence:{...operational,actualImageHelperSha256:operational.helperSha256,adaptedOwnerImports:'passed'}};
  fs.writeFileSync(path.join(f.directory,'candidate.tar.gz'),'fixture image archive');
  const imageId='sha256:'+'9'.repeat(64),manifest={schema:'formal-ai-hive-image-bundle/v1',identity,imageId,archiveSha256:fileDigest(path.join(f.directory,'candidate.tar.gz'))};
  fs.writeFileSync(path.join(f.directory,'image-bundle.json'),JSON.stringify(manifest));
  const bin=path.join(f.root,'bin'),calls=path.join(f.root,'calls.jsonl');fs.mkdirSync(bin);
- fs.writeFileSync(path.join(bin,'docker'),'#!/usr/bin/env node\nconst fs=require("node:fs"),args=process.argv.slice(2);fs.appendFileSync(process.env.FIXTURE_CALLS,JSON.stringify(args)+"\\n");if(args[0]==="image")console.log(JSON.stringify([{Id:process.env.FIXTURE_IMAGE_ID}]));else if(args.includes("sha256sum"))console.log(JSON.parse(process.env.FIXTURE_HASHES)[args.at(-1)]+"  file");else if(!["load","run"].includes(args[0]))process.exitCode=95;\n',{mode:0o700});
+ fs.writeFileSync(path.join(bin,'docker'),'#!/usr/bin/env node\nconst fs=require("node:fs"),args=process.argv.slice(2);fs.appendFileSync(process.env.FIXTURE_CALLS,JSON.stringify(args)+"\\n");if(args[0]==="image")console.log(JSON.stringify([{Id:process.env.FIXTURE_IMAGE_ID}]));else if(args.includes("sha256sum"))console.log(JSON.parse(process.env.FIXTURE_HASHES)[args.at(-1)]+"  file");else if(args[0]==="rm"&&args[1]==="--force"&&args[2].startsWith("formal-ai-hive-client-probe-")){}else if(!["load","run"].includes(args[0]))process.exitCode=95;\n',{mode:0o700});
  const script=fileURLToPath(new URL('../../../scripts/build-hive-original-delivery-image.mjs',import.meta.url));
  const env={...environment,PATH:bin+path.delimiter+environment.PATH,HIVE_IMAGE_BUNDLE_DIR:f.directory,E2E_LOG_DIR:path.join(f.root,'loaded'),FIXTURE_CALLS:calls,FIXTURE_HASHES:JSON.stringify(hashes),FIXTURE_IMAGE_ID:imageId};
  const run=()=>spawnSync(process.execPath,[script,'load'],{cwd:f.root,env,encoding:'utf8',timeout:15000});

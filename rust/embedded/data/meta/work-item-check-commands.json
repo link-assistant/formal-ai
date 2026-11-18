@@ -1,0 +1,6 @@
+{
+  "description": "Shell commands a work-item controller runs through the Run tool (issue #1483). Each {name} is replaced by a value the controller derived; none is user-facing prose.",
+  "contractSampleCheck": "node --input-type=module -e '{script}'",
+  "regressionTestCheck": "node --test '{testOwner}' >/dev/null 2>&1 && echo \"formal-ai-regression-test: passed\" || echo \"formal-ai-regression-test: failed\"; {sampleCommand}",
+  "symbolSearch": "grep -rIlw --exclude-dir=node_modules --exclude-dir=.git -e '{symbol}' . | head -n 20"
+}

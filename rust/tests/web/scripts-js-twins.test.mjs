@@ -30,7 +30,7 @@ import { fileURLToPath } from 'node:url';
 import * as assemble from '../../../scripts/assemble-requirements.mjs';
 import { quoted, verdict, containsWord, renderShard, sharedValue } from '../../../scripts/generate-requirement-status.mjs';
 import { ledgerRows, unquote } from '../../../scripts/check-requirement-status.mjs';
-import { replaceRegion } from '../../../scripts/render-status.mjs';
+import { latestRelease, replaceRegion } from '../../../scripts/render-status.mjs';
 import { comparePaths, debugList, lines, trim } from '../../../scripts/lib/requirements-rust-compat.mjs';
 import { compareRuns } from '../../../scripts/lib/requirements-twin-parity.mjs';
 import { headOverlay, PIPELINE_COMMITTED } from '../../../scripts/lib/requirements-head-overlay.mjs';
@@ -47,6 +47,16 @@ function put(root, path, text) {
   mkdirSync(dirname(join(root, path)), { recursive: true });
   writeFileSync(join(root, path), text);
 }
+
+test('status resolves shared release defaults and preserves explicit row overrides',t=>{
+  const root=mkdtempSync(join(tmpdir(),'formal-ai-status-defaults-'));
+  t.after(()=>rmSync(root,{recursive:true,force:true}));
+  const ledger='data/meta/self-hosting-ledger.lino';
+  put(root,ledger,'self_hosting_ledger\n  release\n    tag "v1"\n    metric_version "2"\n    percentage_basis_points "0"\n    target_percentage_basis_points "17"\n');
+  const expected=latestRelease(root);
+  put(root,ledger,'self_hosting_ledger\n  release-defaults\n    metric_version "3"\n    percentage_basis_points "0"\n    target_percentage_basis_points "389"\n  release\n    tag "v1"\n    metric_version "2"\n    target_percentage_basis_points "17"\n');
+  assert.deepEqual(latestRelease(root),expected);
+});
 
 describe('the Rust standard-library semantics the twins reproduce', () => {
   test('str::lines drops one final newline and a \\r only before \\n', () => {

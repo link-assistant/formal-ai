@@ -29,12 +29,15 @@ fn hygiene_policy() -> &'static crate::seed::parser::LinoNode {
 /// this does not grant authority to remove arbitrary files or execute a compiler.
 #[must_use]
 pub fn prepared_work_hygiene(paths: &[String]) -> Option<PreparedWorkHygiene> {
-    work_hygiene_with_policy(paths, None)
+    work_hygiene_with_policy(paths, None, &[], &[], None)
 }
 
 fn work_hygiene_with_policy(
     paths: &[String],
     session_policy: Option<&serde_json::Value>,
+    placeholders: &[String],
+    source_paths: &[String],
+    placeholder_policy: Option<&serde_json::Value>,
 ) -> Option<PreparedWorkHygiene> {
     let root = hygiene_policy().children.first()?;
     let values = |name: &str| {
@@ -62,7 +65,11 @@ fn work_hygiene_with_policy(
         .collect::<Vec<_>>();
     let plan = json!({"files":paths, "outputs":outputs, "ignored":ignored,
         "binary-prefixes":values("binary-prefix"), "evidence-root":evidence_root,
-        "empty-evidence-suffixes":suffixes,"session-policy":session_policy,"session-contract":session_contract()?});
+        "empty-evidence-suffixes":suffixes,"session-policy":session_policy,"session-contract":session_contract()?,
+        "placeholders":placeholders,"source-paths":source_paths,
+        "placeholder-issue":placeholder_policy.and_then(|value|value.get("issue")),
+        "placeholder-branch":placeholder_policy.and_then(|value|value.get("branch")),
+        "placeholder-sources":placeholder_policy.and_then(|value|value.get("sources")).cloned().unwrap_or_else(|| json!({}))});
     let source_io = crate::seed::parser::parse_lino(include_str!(
         "../../embedded/data/meta/workspace-source-io.lino"
     ));
@@ -84,10 +91,18 @@ fn work_hygiene_with_policy(
         .map(|path| quote(&format!(":(exclude,literal){path}")))
         .collect::<Vec<_>>()
         .join(" ");
-    let index_guard_command = crate::seed::fill_template_once(
+    let mut index_guard_command = crate::seed::fill_template_once(
         root.find_child_value("index-guard-command"),
         &[("exclude", &excluded)],
     );
+    if !placeholders.is_empty() {
+        let branch = placeholder_policy?.get("branch")?.as_str()?;
+        let guard = crate::seed::fill_template_once(
+            root.find_child_value("branch-guard-command"),
+            &[("branch", &quote(branch))],
+        );
+        index_guard_command = format!("{guard} && {index_guard_command}");
+    }
     let quoted_source = quote(&source);
     let quoted_plan = quote(&plan.to_string());
     let command = crate::seed::fill_template_once(
@@ -217,7 +232,7 @@ pub fn feedback_needs_changes(output: &str) -> bool {
             items.iter().any(|item| {
                 item.get("body")
                     .and_then(serde_json::Value::as_str)
-                    .is_some_and(|body| !body.trim().is_empty())
+                    .is_some_and(|body| !body.trim().is_empty() && !own_session_status(item, body))
             })
         })
         || value
@@ -229,6 +244,84 @@ pub fn feedback_needs_changes(output: &str) -> bool {
                         == Some("CHANGES_REQUESTED")
                 })
             })
+}
+
+// Shared framework framing plus the authenticated viewer's authorship identify
+// bookkeeping. This does not certify any verification claim in the notice.
+fn own_session_status(item: &serde_json::Value, body: &str) -> bool {
+    if item
+        .get("viewerDidAuthor")
+        .and_then(serde_json::Value::as_bool)
+        != Some(true)
+        || item
+            .get("includesCreatedEdit")
+            .and_then(serde_json::Value::as_bool)
+            == Some(true)
+    {
+        return false;
+    }
+    own_status_patterns().iter().any(|pattern| {
+        regex::Regex::new(pattern)
+            .expect("compiled-in session status policy")
+            .is_match(body.trim())
+    })
+}
+
+/// Policy keys of the notices the orchestrator posts under the viewer's own
+/// account: session start and summary, uploaded session logs, restart and
+/// stop notices, and the mergeability report. Issue #1162: the Kotlin run's
+/// pull request carried 94 such notices (107 KB), the client truncated the
+/// read, and the unreadable result stopped delivery before the description
+/// and readiness steps.
+const OWN_STATUS_PATTERN_KEYS: [&str; 14] = [
+    "pull-request-session-summary-pattern",
+    "pull-request-session-started-pattern",
+    "pull-request-solution-log-pattern",
+    "pull-request-auto-restart-pattern",
+    "pull-request-restart-limit-pattern",
+    "pull-request-ready-to-merge-pattern",
+    "pull-request-automation-stopped-pattern",
+    "pull-request-auto-restart-evidence-pattern",
+    "pull-request-auto-restart-uncommitted-pattern",
+    "pull-request-restart-safety-limit-pattern",
+    "pull-request-session-started-draft-pattern",
+    "pull-request-solution-failed-pattern",
+    "pull-request-no-changes-pattern",
+    "pull-request-session-killed-pattern",
+];
+
+fn own_status_patterns() -> Vec<String> {
+    OWN_STATUS_PATTERN_KEYS
+        .iter()
+        .map(|key| super::work_item_steps::fill(key, &[]))
+        .collect()
+}
+
+/// `gh --jq` projection of the pull request feedback read. It drops exactly
+/// the comments [`feedback_needs_changes`] exempts (unedited, viewer-authored,
+/// whole-body matches of the same policy patterns) so the read stays bounded,
+/// and keeps every other comment and every review for that check to judge.
+#[must_use]
+pub fn pull_request_feedback_filter() -> String {
+    let tests = own_status_patterns()
+        .iter()
+        .map(|pattern| {
+            format!(
+                "test({})",
+                serde_json::to_string(pattern).expect("a string serializes")
+            )
+        })
+        .collect::<Vec<_>>()
+        .join(" or ");
+    format!(
+        concat!(
+            "{{comments:[.comments[]|select((.viewerDidAuthor==true and .includesCreatedEdit!=true",
+            " and (.body|sub(\"^\\\\s+\";\"\")|sub(\"\\\\s+$\";\"\")|({})))|not)",
+            "|{{author:.author.login,viewerDidAuthor,includesCreatedEdit,createdAt,body}}],",
+            "reviews:[.reviews[]|{{author:.author.login,state,body}}]}}"
+        ),
+        tests
+    )
 }
 
 const COMMAND_PLACEHOLDER: &str = "{command}";
@@ -263,9 +356,7 @@ pub(super) fn plan_restart(
             json!({"command": status_command}).to_string(),
         ));
     };
-    let status = super::tool_result::observed_payload(status_output)
-        .unwrap_or_else(|| status_output.to_owned());
-    let current = porcelain_paths(&status);
+    let current = prepared_work_paths(status_output);
     let Some(current) = current.filter(|paths| {
         paths.iter().all(|path| {
             listed.iter().any(|scope| {
@@ -386,6 +477,7 @@ pub(super) fn prepared_recipe_hygiene_with_inventory(
     source_paths: &[String],
     changed: &[String],
     inventory: Option<&super::recipe_artifact_inventory::RecipeArtifactInventory>,
+    issue_reference: Option<&str>,
 ) -> Option<PreparedWorkHygiene> {
     let policy = hygiene_policy().children.first()?;
     let flags = policy
@@ -411,6 +503,7 @@ pub(super) fn prepared_recipe_hygiene_with_inventory(
     let mut combined = changed.to_vec();
     let mut session_policy = None;
     let mut evidence_members = Vec::new();
+    let mut placeholders = Vec::new();
     if let Some(inventory) = inventory {
         let contract = session_contract()?;
         let root_pattern = contract.get("rootPattern")?.as_str()?;
@@ -442,10 +535,25 @@ pub(super) fn prepared_recipe_hygiene_with_inventory(
             .map(|node| format!("{}{}", inventory.evidence_root, node.id))
             .collect();
         evidence_members.push(format!("{}session-id.txt", inventory.evidence_root));
+        let allowed_placeholders = installed
+            .children
+            .first()?
+            .children
+            .iter()
+            .filter(|node| node.name == "bootstrap-placeholder")
+            .map(|node| node.id.clone())
+            .collect::<Vec<_>>();
         let mut observed = std::collections::BTreeSet::new();
         for path in &inventory.owned_paths {
-            if !observed.insert(path) || (!output_owned(path) && !evidence_members.contains(path)) {
+            if !observed.insert(path)
+                || (!output_owned(path)
+                    && !evidence_members.contains(path)
+                    && !allowed_placeholders.contains(path))
+            {
                 return None;
+            }
+            if allowed_placeholders.contains(path) {
+                placeholders.push(path.clone());
             }
             if !combined.contains(path) {
                 combined.push(path.clone());
@@ -457,7 +565,7 @@ pub(super) fn prepared_recipe_hygiene_with_inventory(
         source_paths.contains(path)
             || output_owned(path)
             || if inventory.is_some() {
-                evidence_members.contains(path)
+                evidence_members.contains(path) || placeholders.contains(path)
             } else {
                 path.starts_with(policy.find_child_value("evidence-root"))
                     && policy
@@ -467,13 +575,38 @@ pub(super) fn prepared_recipe_hygiene_with_inventory(
                         .any(|node| path.ends_with(node.id.as_str()))
             }
     });
+    let placeholder_policy = inventory.and_then(|inventory| inventory.placeholder_policy.as_ref());
+    if !placeholders.is_empty() {
+        let scope = placeholder_policy?;
+        let branch = scope.get("branch")?.as_str()?;
+        if scope.get("issue")? != &json!(issue_reference)
+            || branch.is_empty()
+            || branch.len() > 512
+            || branch.contains(['\r', '\n', '\0'])
+        {
+            return None;
+        }
+    }
     known
-        .then(|| work_hygiene_with_policy(&combined, session_policy.as_ref()))
+        .then(|| {
+            work_hygiene_with_policy(
+                &combined,
+                session_policy.as_ref(),
+                &placeholders,
+                source_paths,
+                placeholder_policy,
+            )
+        })
         .flatten()
 }
 
 /// Decode a freshly command-bound status payload without trimming its path bytes.
 #[must_use]
 pub(super) fn prepared_work_paths(output: &str) -> Option<Vec<String>> {
-    porcelain_paths(&super::tool_result::observed_payload(output)?)
+    if super::tool_result::incomplete_receipt(output) {
+        return None;
+    }
+    porcelain_paths(output)
+        .or_else(|| porcelain_paths(&super::tool_result::exact_successful_stdout(output)?))
+        .or_else(|| porcelain_paths(&super::tool_result::observed_payload(output)?))
 }

@@ -15,9 +15,10 @@ ARG BINARY_SOURCE=compile
 FROM rust:1.99-slim AS builder
 
 WORKDIR /app
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends libssl-dev pkg-config && \
-    rm -rf /var/lib/apt/lists/*
+COPY --chmod=0755 scripts/apt-install-with-retry.sh scripts/run-with-deadline.sh scripts/prepare-ubuntu-apt-mirror.sh /usr/local/lib/formal-ai-build/
+RUN TEST_BUDGET_SECONDS=300 FORMAL_AI_APT_PRIVILEGE= bash /usr/local/lib/formal-ai-build/apt-install-with-retry.sh \
+      --no-install-recommends libssl-dev pkg-config && \
+    rm -rf /var/lib/apt/lists/* /usr/local/lib/formal-ai-build
 
 # Dependencies are their own layer, keyed on the manifests alone.
 #
@@ -91,7 +92,7 @@ ENV PATH="${BUN_INSTALL}/bin:/usr/local/bin:${PATH}"
 # write /var/lib/apt/lists as box. The bun installs below run as box again.
 USER root
 # Reuse the bounded mirror retry; every attempt retains apt's integrity checks.
-COPY --chmod=0755 scripts/apt-install-with-retry.sh scripts/run-with-deadline.sh /usr/local/lib/formal-ai-build/
+COPY --chmod=0755 scripts/apt-install-with-retry.sh scripts/run-with-deadline.sh scripts/prepare-ubuntu-apt-mirror.sh /usr/local/lib/formal-ai-build/
 RUN FORMAL_AI_APT_PRIVILEGE= bash /usr/local/lib/formal-ai-build/apt-install-with-retry.sh \
       --no-install-recommends libstdc++6 libatomic1 && \
     rm -rf /var/lib/apt/lists/* /usr/local/lib/formal-ai-build
@@ -99,7 +100,12 @@ RUN FORMAL_AI_APT_PRIVILEGE= bash /usr/local/lib/formal-ai-build/apt-install-wit
 # Ubuntu 24.04 supplies the shared libraries required by official Node 26.
 # Its distro Node 18 cannot parse the /v regex used by agent dependencies.
 COPY --from=node-runtime /usr/local/bin/node /usr/local/bin/node
-RUN node --version && \
+# Node's CLI alone omits npm: derived Hive images also run npm ci as box.
+# Keep the package manager and both launchers from the same pinned donor.
+COPY --from=node-runtime /usr/local/lib/node_modules/npm/ /usr/local/lib/node_modules/npm/
+RUN ln -sf ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && \
+    ln -sf ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx && \
+    node --version && \
     node --eval "if (process.versions.node.split('.')[0] !== '26') process.exit(1); new RegExp('', 'v')"
 
 USER box
@@ -107,13 +113,21 @@ WORKDIR /home/box
 ENV PATH="/home/box/.formal-ai-runtime-tools/node_modules/.bin:${PATH}"
 RUN mkdir -p /home/box/.formal-ai-runtime-tools
 COPY --chown=box:box packages/container-runtime-tools/package.json /home/box/.formal-ai-runtime-tools/package.json
-COPY --chmod=0755 scripts/install-container-runtime-tools.sh scripts/verify-container-runtime-tools.mjs scripts/run-with-deadline.sh /usr/local/lib/formal-ai-runtime-tools/
-RUN /usr/local/lib/formal-ai-runtime-tools/install-container-runtime-tools.sh /home/box/.formal-ai-runtime-tools && \
+COPY --chmod=0755 scripts/install-container-runtime-tools.sh scripts/verify-container-runtime-tools.mjs \
+    scripts/install-client-registry-recovery.mjs scripts/configure-container-client-tools.mjs /usr/local/lib/formal-ai-runtime-tools/scripts/
+COPY js/server/bounded-command.mjs js/server/structured-log.mjs js/server/json.mjs /usr/local/lib/formal-ai-runtime-tools/js/server/
+COPY js/logging/diagnostic-metadata.mjs js/logging/typed-codec.mjs js/logging/text-lines.mjs \
+    js/logging/json-numbers.mjs js/logging/lino-codec.mjs /usr/local/lib/formal-ai-runtime-tools/js/logging/
+RUN /usr/local/lib/formal-ai-runtime-tools/scripts/install-container-runtime-tools.sh /home/box/.formal-ai-runtime-tools && \
+    npm --version && \
+    npx --version && \
     "$" --version && \
     agent --version && \
     start-agent --help >/dev/null
 
 USER root
+RUN node /usr/local/lib/formal-ai-runtime-tools/scripts/configure-container-client-tools.mjs --global-mcp /home/box/.formal-ai-runtime-tools && \
+    npm ls --global @playwright/mcp
 COPY --from=selected-binary /app/target/release/formal-ai /usr/local/bin/formal-ai
 COPY scripts/verify-docker-runtime.sh /usr/local/bin/verify-formal-ai-dind
 RUN chmod 0755 /usr/local/bin/formal-ai /usr/local/bin/verify-formal-ai-dind && \

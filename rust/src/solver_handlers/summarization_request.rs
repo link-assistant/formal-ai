@@ -4,13 +4,13 @@
 //! Recognizes requests that carry the text to summarize themselves — a
 //! paragraph after a command colon, a line break, or quotes — and answers with
 //! the dependency summary of that text
-//! ([`crate::summarization::dependency::summarize_by_dependency`]): the text is
-//! formalized into statements, restatements are dropped, and the statements
-//! the others depend on are kept, up to one in three, in the text's own words.
+//! ([`crate::summarization::dependency::summarize_free_text`]): standalone
+//! greetings and farewells are filtered, then complete sentences are ranked
+//! by dependency and deduplicated.
 //! Requests that carry no text (for example "summarize the rust language", a
 //! seeded topic) stay with the handlers that own them: this handler returns
 //! `None` when no payload follows the command, and when the payload holds a
-//! single statement, which cannot be shortened without being echoed back.
+//! single sentence that would be echoed back unchanged.
 //!
 //! The evidence trace names every statement kept or dropped and every
 //! duplicate removed. Recognition vocabulary lives in
@@ -23,7 +23,7 @@ use super::finalize_simple;
 use super::text_rewrite::free_text_payload;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
-use crate::summarization::dependency::summarize_by_dependency;
+use crate::summarization::dependency::summarize_free_text;
 
 /// The role naming the act of summarizing a text the request itself
 /// carries. Surfaces live in `data/seed/meanings-summarization.lino`.
@@ -32,9 +32,7 @@ const ROLE_TEXT_SUMMARIZATION_ACTION: &str = "text_summarization_action";
 /// Recognize a summarization request that carries its own text and answer
 /// with the statements the rest of the text depends on.
 ///
-/// Returns `None` when the prompt names no text to summarize — the
-/// seeded-topic and conversation-summary handlers keep those prompts — or
-/// when the text holds a single statement.
+/// Returns `None` when there is no payload or no shorter summary.
 pub fn handle_summarization_request(
     prompt: &str,
     normalized: &str,
@@ -48,11 +46,7 @@ pub fn handle_summarization_request(
         return None;
     }
     let payload = free_text_payload(prompt)?;
-    let summary = summarize_by_dependency(&payload, crate::language::detect(&payload).slug());
-    if summary.statements.len() + summary.removed.len() < 2 || summary.kept.is_empty() {
-        // A single statement cannot be shortened without echoing it back.
-        return None;
-    }
+    let summary = summarize_free_text(&payload, crate::language::detect(&payload).slug())?;
     for (index, node) in summary.statements.iter().enumerate() {
         let verdict = if summary.kept.contains(&index) {
             "kept"

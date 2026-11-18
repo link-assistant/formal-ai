@@ -10,7 +10,8 @@ import { cached, childrenNamed, childValue, parseLino, readText } from '../host.
 export function agentInfo() {
   return cached('agent-info', () => {
     const out = new Map();
-    const root = parseLino(readText('data/seed/agent-info.lino')).children?.[0];
+    const parsed = parseLino(readText('data/seed/agent-info.lino'));
+    const root = parsed.name === 'agent_info' ? parsed : parsed.children?.find(node => node.name === 'agent_info');
     for (const entry of childrenNamed(root, 'field')) {
       if (entry.id) out.set(entry.id, childValue(entry, 'value'));
     }

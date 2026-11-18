@@ -432,7 +432,7 @@ fn token_overlap(left: &str, right: &str) -> usize {
 }
 
 pub fn live_fetch_enabled() -> bool {
-    crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH")
+    crate::solver_config::read_network_allowed()
 }
 
 pub fn procedure_ledger() -> Option<DiscoveredProcedureLedger> {

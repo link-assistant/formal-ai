@@ -175,6 +175,24 @@ pub fn parse_package_json(text: &str) -> Vec<(String, String, usize, Option<Stri
     out
 }
 
+/// Registry identity differs from the installed key for npm aliases. Local
+/// packages have no registry currency, just like Cargo path dependencies.
+pub fn npm_registry_identity<'a>(name: &'a str, declared: &'a str) -> Option<(&'a str, &'a str)> {
+    if ["file:", "link:", "workspace:"]
+        .iter()
+        .any(|prefix| declared.starts_with(prefix))
+    {
+        return None;
+    }
+    if let Some(alias) = declared.strip_prefix("npm:") {
+        return Some(match alias.rsplit_once('@') {
+            Some((package, requirement)) if !package.is_empty() => (package, requirement),
+            _ => (alias, "latest"),
+        });
+    }
+    Some((name, declared))
+}
+
 /// A `"key": value` member on one line, when present.
 pub fn json_member(line: &str) -> Option<(String, &str)> {
     let trimmed = line.trim_start();
@@ -407,6 +425,16 @@ pub fn base_version(range: &str) -> &str {
 
 pub fn without_v(version: &str) -> &str {
     version.strip_prefix('v').unwrap_or(version)
+}
+
+/// `version` without its SemVer build metadata (`0.25.19+spec-1.1.0` ->
+/// `0.25.19`). Build metadata never takes part in precedence (SemVer 2.0.0
+/// §10), so a requirement carrying it means nothing more; Cargo warns that it
+/// "will be ignored" (issue #1571, `toml_edit`).
+pub fn without_build_metadata(version: &str) -> &str {
+    version
+        .split_once('+')
+        .map_or(version, |(release, _)| release)
 }
 
 pub fn minor_of(version: &str) -> String {

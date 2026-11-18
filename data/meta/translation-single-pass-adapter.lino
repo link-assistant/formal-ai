@@ -1,0 +1,6 @@
+# Expose the pinned translator's existing combined result; never alter its algorithm.
+self-translation-combined-adapter
+  upstream "link-foundation/meta-language"
+  commit eb0574d5528babd3b4aadece81590d8e2230b99b
+  source "js/src/self-translation.js"
+  sha256 e1e06d89c75d8f522a977ee680d714f60fc93c559cc8a9985b5a10e1bc9209da

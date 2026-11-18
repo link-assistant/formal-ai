@@ -1,0 +1,84 @@
+{
+ "artifacts": [
+  {
+   "name": "hive-original-codex-evidence",
+   "size_in_bytes": 1471789,
+   "expired": false
+  },
+  {
+   "name": "hive-three-client-acceptance",
+   "size_in_bytes": 673,
+   "expired": false
+  },
+  {
+   "name": "hive-result-release-v0.355.13-agent-5d627ec7eee5c0f626d69a8b6083de174e136d8c3429a282f2a43a22f7281360-1",
+   "size_in_bytes": 2539,
+   "expired": false
+  },
+  {
+   "name": "hive-original-agent-evidence",
+   "size_in_bytes": 5679828,
+   "expired": false
+  },
+  {
+   "name": "hive-result-release-v0.355.13-claude-5d627ec7eee5c0f626d69a8b6083de174e136d8c3429a282f2a43a22f7281360-1",
+   "size_in_bytes": 2544,
+   "expired": false
+  },
+  {
+   "name": "hive-original-claude-evidence",
+   "size_in_bytes": 1923225,
+   "expired": false
+  },
+  {
+   "name": "hive-original-codex-staged-evidence",
+   "size_in_bytes": 1469076,
+   "expired": false
+  },
+  {
+   "name": "hive-result-release-v0.355.13-codex-5d627ec7eee5c0f626d69a8b6083de174e136d8c3429a282f2a43a22f7281360-1",
+   "size_in_bytes": 2542,
+   "expired": false
+  },
+  {
+   "name": "hive-original-agent-staged-evidence",
+   "size_in_bytes": 5676812,
+   "expired": false
+  },
+  {
+   "name": "hive-claim-release-v0.355.13-codex-5d627ec7eee5c0f626d69a8b6083de174e136d8c3429a282f2a43a22f7281360-1",
+   "size_in_bytes": 709,
+   "expired": false
+  },
+  {
+   "name": "hive-released-lifecycle-evidence",
+   "size_in_bytes": 1218,
+   "expired": false
+  },
+  {
+   "name": "hive-claim-release-v0.355.13-claude-5d627ec7eee5c0f626d69a8b6083de174e136d8c3429a282f2a43a22f7281360-1",
+   "size_in_bytes": 710,
+   "expired": false
+  },
+  {
+   "name": "hive-real-effect-owner",
+   "size_in_bytes": 472,
+   "expired": false
+  },
+  {
+   "name": "hive-claim-release-v0.355.13-agent-5d627ec7eee5c0f626d69a8b6083de174e136d8c3429a282f2a43a22f7281360-1",
+   "size_in_bytes": 711,
+   "expired": false
+  },
+  {
+   "name": "hive-original-claude-staged-evidence",
+   "size_in_bytes": 1919039,
+   "expired": false
+  },
+  {
+   "name": "hive-admission-selection",
+   "size_in_bytes": 11884,
+   "expired": false
+  }
+ ]
+}

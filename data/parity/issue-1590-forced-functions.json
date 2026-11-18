@@ -1,0 +1,21 @@
+[
+  {"id":"English review","prompt":"The parcel arrived broken and nobody answers the phone.","expected":{"label":"negative"}},
+  {"id":"required choice","prompt":"The checkout was excellent and I love the new layout.","choice":"required","extra_hosted":true,"extra_function":true,"expected":{"label":"positive"}},
+  {"id":"Spanish review","description":"Clasifica el sentimiento del mensaje","prompt":"El paquete está roto.","expected":{"label":"negative"}},
+  {"id":"Chinese review","description":"提交消息的情感标签","prompt":"这个产品损坏了。","expected":{"label":"negative"}},
+  {"id":"Russian review","description":"Определи тональность сообщения","prompt":"Телефон сломан.","expected":{"label":"negative"}},
+  {"id":"Hindi review","description":"संदेश की भावना बताओ","prompt":"पैकेट टूटा हुआ था।","expected":{"label":"negative"}},
+  {"id":"other function and typed value","name":"record_count","schema":"extraction","prompt":"{\"count\":2}","expected":{"count":2}},
+  {"id":"typed scalar","schema":"extraction","prompt":"2","expected":{"count":2}},
+  {"id":"unknown","prompt":"The parcel tracking number is 6398."},
+  {"id":"mixed sentiment","prompt":"Excellent customer support but the product is unusable and I am disappointed."},
+  {"id":"negated sentiment","prompt":"The parcel is not damaged."},
+  {"id":"contracted negation","prompt":"The parcel wasn't damaged."},
+  {"id":"enum violation","schema":"extraction","prompt":"{\"count\":3}"},
+  {"id":"required violation","schema":"extraction","prompt":"{}"},
+  {"id":"additional property violation","schema":"extraction","prompt":"{\"count\":2,\"extra\":true}"},
+  {"id":"unsupported constraint","schema":"extraction","prompt":"{\"count\":2}","unsupported":"minProperties"},
+  {"id":"shell gate","name":"run_command","prompt":"Run pwd in the shell.","gated":true},
+  {"id":"file gate","name":"read_file","prompt":"Read the file README.md.","gated":true},
+  {"id":"web gate","hosted":"web_search","prompt":"Search the web for a parcel tracker.","gated":true}
+]

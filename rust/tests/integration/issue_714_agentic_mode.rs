@@ -32,17 +32,15 @@ fn chat_completions_routes_report_to_bash_not_websearch() {
     assert_eq!(call["function"]["name"], "bash");
     let arguments: serde_json::Value =
         serde_json::from_str(call["function"]["arguments"].as_str().unwrap()).unwrap();
-    // Issue #839: the context is no longer exported by a separate shell step and
-    // pasted into an argument. `formal-ai report body` exports it and renders the
-    // six-section document around it, and `gh` files that file — so what this test
-    // pins is unchanged: both logs are gathered, and no HTTP client is involved.
-    assert!(arguments["command"].as_str().is_some_and(
-        |command| command.contains("gh issue create")
-            && command.contains("formal-ai report body")
+    // The local CLI renders the complete six-section body and invokes gh once.
+    // The harness sees a plain command with explicit context and repository.
+    // Executable report tests inspect the resulting body handed to gh.
+    assert!(arguments["command"].as_str().is_some_and(|command| {
+        command.contains("formal-ai report create-issue")
             && command.contains("--source both")
-            && command.contains("--body-file")
+            && command.contains("--separate-context-links")
             && !command.contains("curl")
-    ));
+    }));
 }
 
 #[test]
@@ -78,7 +76,7 @@ fn responses_routes_report_to_any_run_capability_alias() {
     assert!(
         call["arguments"]
             .as_str()
-            .is_some_and(|arguments| arguments.contains("gh issue create"))
+            .is_some_and(|arguments| arguments.contains("formal-ai report create-issue"))
     );
 }
 
@@ -113,7 +111,7 @@ fn gemini_routes_localized_report_to_shell_alias() {
     assert!(
         call["args"]["command"]
             .as_str()
-            .is_some_and(|command| command.contains("gh issue create"))
+            .is_some_and(|command| command.contains("formal-ai report create-issue"))
     );
 }
 
@@ -133,7 +131,7 @@ fn gemini_continues_after_the_client_returns_a_function_response() {
                 {"role": "model", "parts": [{"functionCall": {
                     "id": "report_1",
                     "name": "shell",
-                    "args": {"command": "gh issue create --repo link-assistant/formal-ai"}
+                    "args": {"command": "formal-ai report create-issue --repo link-assistant/formal-ai"}
                 }}]},
                 {"role": "user", "parts": [{"functionResponse": {
                     "id": "report_1",

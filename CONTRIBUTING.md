@@ -1,5 +1,42 @@
 # Contributing to formal-ai
 
+## Development through Formal AI
+
+Follow [VISION.md](VISION.md): perform all development task actions through JavaScript Formal AI, including exploration, shell commands, tests and verification as well as edits. Give small natural-language tasks, let it execute actual tools, add focused regressions for observed failures, repair reusable causes and retry unchanged tasks before increasing difficulty.
+Retain requests, runtime and source identities, tool calls, failures, diffs and independent checks.
+Supplied patches, scripts, generators and literal replacements earn zero autonomous-authorship credit. Target at least 5% independently accepted Formal AI reasoning units per development batch: decompose tasks, compare strategies, research trusted public sources and fact-check against fresh evidence. Freeze the substantive unit list before outcomes; report attempted and accepted shares separately, retain failures and count supplied conclusions as zero. Retain complete responses and route traces for scored reasoning attempts. An ambiguity control passes only when the answer identifies what is unresolved or gives a justified conditional answer; an unrelated numeric result is a failure even when it avoids the target verdict. This reporting target does not add a release gate; see the reasoning contract in docs/requirements/doctrine-standing-doctrine-work-delegated-to-formal-ai-2026-10-07.md.
+Report unsupported work and terminal effects honestly; record externally authored bootstraps separately.
+Preserve readable CST, comments and unrelated content; verify JavaScript, TypeScript and Rust parity. Before pushing requirement changes, run the maintained JavaScript assembly, ledger-generation/schema and status-renderer checks: `node scripts/assemble-requirements.mjs`, `node scripts/generate-requirement-status.mjs`, `node scripts/check-requirement-status.mjs`, `node scripts/render-status.mjs --check`, and `node scripts/render-progressive-plan.mjs --check`. Every `.github/workflows/release.yml` change, including non-staged jobs such as Fast Linux, requires `node scripts/generate-staged-release.mjs --check-deployed`; if stale, perform a source-grounded canonical workflow/packet refresh and regenerate projections with the maintained JavaScript generator. Never hand-edit derived outputs or relax assertions. After changing covered crate modules, run the cheap source/projection currency check `node scripts/translate-js-rust.mjs --verify`; run upstream parser/WASM regeneration in hosted CI, with no local Rust execution.
+Use at most three subagents plus the coordinator; batch verified changes, bound retries and prioritize release delivery.
+Run only necessary JavaScript checks locally, sequentially; Rust compilation and tests run exclusively in CI. For HTTP client trials, pin `FORMAL_AI_SOURCE_USAGE_RUST_GRAMMAR=false` in the private server environment; direct host installation alone does not register the HTTP initializer policy.
+
+The [default-branch build policy](docs/ci-cd/default-branch-builds.md) governs
+CI changes: no application, Cargo or Docker builds or deployments on PRs, even
+through branch dispatch or legacy full-PR controls. Run necessary local JS tests
+one at a time; do not build or test Rust locally.
+
+
+For documentation-only changes, heavy push/PR workflows and automatic releases
+are filtered by `scripts/documentation-only-ci-policy.mjs`. Run its `--write` mode after
+adding a heavy workflow, then its targeted JavaScript regression. The policy
+preserves comments, retained job bodies and explicit manual controls. Root
+Markdown, `docs/**`, nested README/CHANGELOG files and changelog fragments are
+documentation; other Markdown may be runtime input. Mixed changes run normal CI.
+See [issue #1455 requirements](docs/requirements/issue-1455-documentation-and-evidence.md).
+
+Before merging during production delivery, follow the
+[release handoff guide](docs/ci-cd/release-handoff.md). Version preparation is not
+publication: freshness is checked again after compilation and before later
+release effects. Keep main stable through the active release and verify its
+consumers before merging routine changes. Draft fixes while CI runs; do not
+weaken a freshness check or rerun a superseded producer to force publication.
+
+Live issue drafting selects current Formal AI and Hive Mind sources once per
+attempt, reuses those exact commits across jobs, and records their runtime
+identities. Never silently fall back to an older runtime. Maintained Hive Mind
+CLI checks use its latest published package. Historical replay pins remain
+historical evidence, not proof of current-version behavior.
+
 Thank you for your interest in contributing! This document provides guidelines and instructions for contributing to this project.
 
 **Read [VISION.md](VISION.md) first**, and the architect's notes it is kept up to date from, in [docs/architect-notes/](docs/architect-notes/). It is the standing guideline, in the architect's
@@ -283,7 +320,7 @@ algorithm.
 
 #### A branch pays for what it changed
 
-The loop is only as fast as the CI bill it pays. One push to a feature branch
+Use [the current CI policy](docs/ci-cd/default-branch-builds.md): link parser regressions run by default and full live-link audits remain main-only opt-ins. A historical push to a feature branch
 cost about 310 job-minutes across 16 workflows, and a day of iterating on one
 branch cost roughly 4,600 — a budget every self-authored draft competes for.
 Two rules keep that down, and both are measured in
@@ -524,7 +561,10 @@ Removal from a public thread is not approval to retain another copy.
    cargo fmt --manifest-path rust/Cargo.toml --check && cargo clippy --manifest-path rust/Cargo.toml --lib --bins --tests --all-features && cargo check --manifest-path rust/Cargo.toml --examples --all-features && rust-script scripts/check-file-size.rs && rust-script scripts/check-hardcoded-language.rs
    ```
 
-4. **Run tests**
+4. **Run tests in CI**
+
+   Rust commands below document CI usage. On the workstation, run only one
+   necessary JavaScript test file at a time; never run Rust builds or tests.
 
    ```bash
    # Run all tests
@@ -543,7 +583,7 @@ Removal from a public thread is not approval to retain another copy.
    npm run test:web
    ```
 
-   CI caps each test-matrix job at 10 minutes. Rust's built-in `cargo test` runner does not provide a portable global per-test timeout, so wrap long-running network, IO, or async tests with explicit test-level deadlines. If a repository adopts `cargo nextest`, configure runner deadlines with options such as `--slow-timeout` and `--leak-timeout`.
+   CI job budgets are explicit and workflow-specific; acquisition and setup must leave room for the unchanged test deadline. Rust's built-in `cargo test` runner does not provide a portable global per-test timeout, so wrap long-running network, IO, or async tests with explicit test-level deadlines. If a repository adopts `cargo nextest`, configure runner deadlines with options such as `--slow-timeout` and `--leak-timeout`.
 
    **Work in bulk; verify selectively.** Draft the whole change set — tests
    and code together — before running anything, then let it fail in its
@@ -580,6 +620,43 @@ Removal from a public thread is not approval to retain another copy.
    - Decide, don't ask (R1023): open technical choices are settled from the
      best available practices (researched online when needed), not put to
      the owner as questions.
+
+   **Use the fast PR / production-main profile (2026-10-28).** Bulk draft related
+   fixes and their tests, requirement updates, vision and guidelines in one PR.
+   Keep essential Linux coding, question-answering and failure-reporting checks
+   on PRs. Retain heavy native, packaging, Docker and integration/E2E jobs rather
+   than deleting them. Production builds, application packaging and Pages deployment
+   run only on main (including its independently authorized release consumers).
+   FORMAL_AI_FULL_PR_CI cannot restore compilation on a PR or branch dispatch.
+   Main still builds and verifies production releases. Full Coding Ladder measurement is main-only opt-in (full-ladder=true or FORMAL_AI_FULL_CODING_LADDER=run); keep its fast consistency gate mandatory and award no deferred measurement credit. Collect complete bounded
+   redacted CI logs, derive small behavioral unit fixtures with negative cases,
+   and fix all available failures before the next push. Never grant execution
+   credit to skipped suites or claim that offline emulation proves a live solve.
+   Real GitHub effects require FORMAL_AI_REAL_GITHUB_E2E=true or explicit dispatch;
+   preserve single-owner custody and trusted outcome-aware cleanup. Run only one
+   necessary JavaScript test locally at a time; no Rust builds or tests locally.
+   Regenerate canonical data mirrors with node scripts/mirror-package-data.mjs
+   --write and commit them; fast lint checks byte equality before merge.
+   Use the ordered runner: Node CLI discovery may sort duration-ranked files alphabetically.
+   Prove execution order with isolated fixtures; retain per-file logs, coverage, concurrency and deadlines.
+   Delivery includes green main CI and verified configured release artifacts.
+   Keep the implementation, regression fixtures, requirements, vision, guidelines
+   and handoff in the same working PR. Verify its exact current head before merge;
+   record the resulting source commit, actual release version and immutable public
+   artifact identities after merge. Earlier releases do not prove this delivery.
+   Reuse the authenticated same-run complete source-history artifact across
+   release consumers; keep the pinned protocol and independent stable-tag and
+   ancestry checks. Explicitly advertise detached source history when negotiating
+   a fetch. Do not retry large redundant downloads or raise their budgets to hide
+   duplication. Missing console evidence after packaging starts remains a failure;
+   record unacquired runners with structured annotations and no execution credit.
+   Exclude private repository source and build outputs from desktop dependencies;
+   verify captured exclusions with the installed packager and audit actual ASAR
+   metadata before installer creation. Preserve required browser/native resources.
+   Refresh governed source witnesses through their reviewed JavaScript generator
+   when referenced files change; run the cheap source-integrity check before push.
+   See [CI speed](docs/ci-cd/speed.md) and the
+   [current requirements](docs/requirements/doctrine-fast-pull-request-production-ci.md).
 
    **The three-root cycle is js-first.** Rust, JavaScript and TypeScript
    are all full implementation roots — client and backend — kept
@@ -1271,6 +1348,48 @@ honest reason if the collision is genuinely semantic. A deferral with a stated
 reason is a decision; an uncovered path is an omission, and CI treats them
 differently.
 
+## The single push gate (issue #1191)
+
+Every push starts the whole pull-request matrix again. A push that fixes only
+some of the previous run's failures pays that cost once per round trip.
+Pull request #1188 needed 100 commits and 11 `CI/CD Pipeline` runs, and none of
+them was green. Human and AI contributors therefore follow one push gate, which
+[AGENTS.md](AGENTS.md) restates for agents:
+
+1. **Drafting sub-agents never push.** They commit locally or hand back a diff.
+2. **One CI/CD agent pushes, once per round.** That agent first collects every
+   actionable failure of the latest run on the current head
+   (`gh run list --branch <branch>`, then `gh run view <id> --log-failed`). It
+   fixes all of them in one batch and pushes once.
+3. **Never push while a run is in progress on the branch.**
+   `gh run list --branch <branch> --status in_progress` and `--status queued`
+   must both be empty, unless you are deliberately superseding an older head.
+   The protected-main and superseded-pull-request concurrency groups stay as
+   they are; this rule keeps them from being used as a retry loop.
+4. **Run the JavaScript checks locally before the push.** Run the test files
+   next to the change one at a time
+   (`timeout 600 node --test --test-concurrency=1 <file>`). Also run the
+   JavaScript twins of the gates the change touches
+   (`node experiments/formal_ai_subagent/local-gates.mjs --only <gate>`). Run
+   the whole set, without `--only`, before a push that changes shared data.
+5. **No full local Rust build unless the change is Rust-only.** CI compiles
+   Rust: the focused `native-type-check` job on pull requests, and the full
+   matrix on main. `rustfmt --check <file>` needs no build.
+6. **When a Rust-only change has to be built locally, keep the build bounded.**
+   - Share one target directory across worktrees and agents
+     (`CARGO_TARGET_DIR=$HOME/.cache/formal-ai-target`).
+   - Turn off the incremental cache (`CARGO_INCREMENTAL=0`).
+   - Limit the jobs (`CARGO_BUILD_JOBS=2`, or `CARGO_TEST_JOBS=2` for
+     `scripts/cargo-test.sh`).
+   - Prune old artifacts afterwards (`scripts/prune-build-cache.sh`). The
+     script follows `CARGO_TARGET_DIR` and caps the tree at 4 GB locally.
+
+When main fails after a green pull request, record the failure in
+[`data/meta/main-only-regressions.lino`](data/meta/main-only-regressions.lino)
+together with the narrowest pre-merge check that now replays it.
+`rust/tests/web/main-only-regression-ledger.test.mjs` keeps each named check in
+the fast pull-request lane.
+
 ## Pull Request Process
 
 1. Run only the tests next to your change locally (`node --test <file>`) and
@@ -1338,59 +1457,8 @@ Fragments are automatically collected into CHANGELOG.md during the release proce
 
 ## Project Structure
 
-```
-.
-├── .github/workflows/    # GitHub Actions CI/CD
-├── analysis/             # Ad-hoc analysis notes
-├── changelog.d/          # Changelog fragments
-│   ├── README.md         # Fragment instructions
-│   └── *.md              # Individual changelog fragments
-├── data/                 # Canonical knowledge surface (Links Notation)
-│   ├── seed/             # Seed data every interface reads (see "Data is the interface")
-│   ├── meta/             # Grounded meta-algorithm recipes and lexicons
-│   ├── benchmarks/       # Benchmark suites and license provenance
-│   ├── cache/            # Precached external sources (Wikidata, …)
-│   └── parity/           # Cross-runtime parity fixtures
-├── desktop/              # Electron desktop shell
-├── docs/                 # Case studies, design notes, diagrams, guides
-│   ├── requirements-traceability.md  # One delivery row per requirement ID
-│   ├── benchmarks.md     # Every benchmark suite, its license, and honest scores
-│   ├── meta-algorithm.md # The grounded meta-algorithm and its procedures
-│   └── architect-notes/  # Dated notes from the architect, indexed in README.md
-├── rust/examples/             # Usage examples
-├── experiments/          # Verification harnesses and one-off experiments
-├── scripts/              # Rust scripts (via rust-script) and installers
-├── rust/src/
-│   ├── lib.rs            # Library entry point
-│   ├── main.rs           # Binary entry point
-│   ├── solver.rs         # UniversalSolver — the 11-step loop
-│   ├── solver_handlers/  # Handler family invoked through the method registry
-│   ├── agentic_coding/   # Agentic-CLI planner, recipes, and driver
-│   ├── proof_engine/     # Decision procedures
-│   ├── summarization/    # Formalize → summarize → deformalize pipeline
-│   ├── translation/      # Formalization and translation through meanings
-│   ├── seed/             # Seed loading, lexicon, and role constants
-│   └── web/              # Browser demo: UI, worker/, and wasm-worker/
-├── rust/tests/                # Unit, integration, source-mirror, and e2e tests
-├── vscode/               # VS Code extension (desktop and web)
-├── .gitignore            # Git ignore patterns
-├── .pre-commit-config.yaml  # Pre-commit hooks
-├── ARCHITECTURE.md       # How the implemented pipeline is wired
-├── build.rs              # Build script
-├── Cargo.toml            # Project configuration
-├── CHANGELOG.md          # Project changelog
-├── compose.yaml          # Docker Compose profiles
-├── CONTRIBUTING.md       # This file
-├── Dockerfile            # Docker-in-Docker Telegram runtime
-├── GOALS.md              # What counts as success
-├── LICENSE               # Unlicense (public domain)
-├── NON-GOALS.md          # What we explicitly do not build
-├── package.json          # Web/desktop/VS Code tooling scripts
-├── README.md             # Project README
-├── REQUIREMENTS.md       # Issue-by-issue requirement matrix
-├── ROADMAP.md            # Requirement-level implementation status
-└── VISION.md             # Standing guideline and long-term direction; read first
-```
+The top-level layout is in
+[docs/development/project-structure.md](docs/development/project-structure.md).
 
 ## Release Process
 
@@ -1420,4 +1488,4 @@ Releases are managed through GitHub releases. To trigger a release:
 
 Thank you for contributing!
 
-Prefer maintained generators, declarative transformations and bulk automation for source and documentation changes. Ask actual Formal AI to perform tasks it can solve. When it cannot, retain the failed ask and record the missing general capability with its independent expected outcome; improve that capability instead of silently substituting a hand-authored per-task answer. Supplied controllers and recipes remain automation with zero autonomous-authorship credit.
+Prefer maintained generators, declarative transformations and bulk automation for source and documentation changes. Ask actual Formal AI to perform tasks it can solve. When it cannot, retain the failed ask and record the missing general capability with its independent expected outcome; improve that capability instead of silently substituting a hand-authored per-task answer. Supplied controllers and recipes remain automation with zero autonomous-authorship credit. Follow the [fast source governance guideline](docs/guidelines/fast-source-governance.md) for seed contracts and PR preflight policy. Follow the [issue planning guideline](docs/guidelines/issue-planning.md) for issue types, native blockers, parent issues and status wording.

@@ -1,0 +1,31 @@
+{
+  "run": 44096924617,
+  "sha": "c8de9bf3c2b404787357986bbefdb46948d21a1d",
+  "artifact": {
+    "id": 14334790793,
+    "node_id": "MDg6QXJ0aWZhY3QxNDMzNDc5MDc5Mw==",
+    "name": "hive-source-event-1",
+    "size_in_bytes": 320,
+    "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14334790793",
+    "archive_download_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/artifacts/14334790793/zip",
+    "expired": false,
+    "digest": "sha256:caa354d3adda31c17cdde1735a3d8fcb7676a4ea5ad317f20f909284bce10c34",
+    "created_at": "2026-11-17T13:51:44Z",
+    "updated_at": "2026-11-17T13:51:44Z",
+    "expires_at": "2027-02-15T13:51:28Z",
+    "workflow_run": {
+      "id": 44096924617,
+      "repository_id": 1236510803,
+      "head_repository_id": 1236510803,
+      "head_branch": "issue-1582-79aa864de807",
+      "head_sha": "c8de9bf3c2b404787357986bbefdb46948d21a1d"
+    }
+  },
+  "sha256": "caa354d3adda31c17cdde1735a3d8fcb7676a4ea5ad317f20f909284bce10c34",
+  "members": [
+    {
+      "path": "source-event.json",
+      "bytes": 247
+    }
+  ]
+}

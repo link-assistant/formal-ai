@@ -1218,3 +1218,177 @@ meanings
     effect "the assistant's availability is explained in Spanish"
     unit "not applicable"
     example "No tengo tiempo libre como una persona."
+  requested-text-sentiment
+    defined-by conversational_act
+    role client-function-sentiment
+    precondition "a function and its enum describe the sentiment of user text"
+    effect "enables lexical sentiment binding for the function"
+    unit "not applicable"
+    example "The function submits the sentiment label of the message."
+    lexeme en
+      surface
+        text "sentiment"
+    lexeme ru
+      surface
+        text "тональность"
+    lexeme hi
+      surface
+        text "भावना"
+    lexeme zh
+      surface
+        text "情感"
+    lexeme es
+      surface
+        text "sentimiento"
+  positive-text-sentiment
+    defined-by requested-text-sentiment
+    role client-function-sentiment-positive
+    precondition "user text contains cues for approval or satisfaction"
+    effect "supports the positive sentiment label"
+    unit "not applicable"
+    example "The checkout was excellent."
+    lexeme en
+      surface
+        text "positive"
+      surface
+        text "excellent"
+      surface
+        text "delighted"
+      surface
+        text "wonderful"
+      surface
+        text "love"
+      surface
+        text "fantastic"
+      surface
+        text "satisfied"
+    lexeme ru
+      surface
+        text "положительный"
+      surface
+        text "отлично"
+    lexeme hi
+      surface
+        text "सकारात्मक"
+      surface
+        text "शानदार"
+    lexeme zh
+      surface
+        text "正面"
+      surface
+        text "满意"
+    lexeme es
+      surface
+        text "positivo"
+      surface
+        text "excelente"
+  negative-text-sentiment
+    defined-by requested-text-sentiment
+    role client-function-sentiment-negative
+    precondition "user text contains cues for damage or dissatisfaction"
+    effect "supports the negative sentiment label"
+    unit "not applicable"
+    example "The parcel arrived broken."
+    lexeme en
+      surface
+        text "negative"
+      surface
+        text "awful"
+      surface
+        text "broken"
+      surface
+        text "damaged"
+      surface
+        text "disappointed"
+      surface
+        text "frustrated"
+      surface
+        text "terrible"
+      surface
+        text "unusable"
+      surface
+        text "unacceptable"
+    lexeme ru
+      surface
+        text "отрицательный"
+      surface
+        text "сломан"
+      surface
+        text "ужасно"
+    lexeme hi
+      surface
+        text "नकारात्मक"
+      surface
+        text "टूटा"
+      surface
+        text "खराब"
+    lexeme zh
+      surface
+        text "负面"
+      surface
+        text "损坏"
+      surface
+        text "糟糕"
+    lexeme es
+      surface
+        text "negativo"
+      surface
+        text "roto"
+      surface
+        text "terrible"
+  negated-text-sentiment
+    defined-by requested-text-sentiment
+    role client-function-sentiment-negation
+    precondition "user text contains a negation cue"
+    effect "prevents lexical sentiment binding without a reliable scope for the negation"
+    unit "not applicable"
+    example "The parcel is not damaged."
+    lexeme en
+      surface
+        text "not"
+      surface
+        text "never"
+    lexeme ru
+      surface
+        text "не"
+      surface
+        text "никогда"
+    lexeme hi
+      surface
+        text "नहीं"
+    lexeme zh
+      surface
+        text "不"
+      surface
+        text "没有"
+    lexeme es
+      surface
+        text "no"
+      surface
+        text "nunca"
+  neutral-text-sentiment
+    defined-by requested-text-sentiment
+    role client-function-sentiment-neutral
+    precondition "user text contains cues for indifference or explicitly neutral sentiment"
+    effect "supports the neutral sentiment label"
+    unit "not applicable"
+    example "I am indifferent."
+    lexeme en
+      surface
+        text "neutral"
+      surface
+        text "indifferent"
+    lexeme ru
+      surface
+        text "нейтральный"
+    lexeme hi
+      surface
+        text "तटस्थ"
+    lexeme zh
+      surface
+        text "中性"
+    lexeme es
+      surface
+        text "neutral"
+      surface
+        text "indiferente"

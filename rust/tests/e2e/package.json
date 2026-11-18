@@ -18,9 +18,12 @@
     "serve": "^14.2.6"
   },
   "dependencies": {
-    "lino-i18n": "0.4.0"
+    "lino-i18n": "0.4.0",
+    "minimatch": "file:../../../packages/minimatch-compat"
   },
   "overrides": {
-    "compression": "^1.8.2"
+    "compression": "^1.8.2",
+    "minimatch": "$minimatch",
+    "glob@>=9": "^14.0.2"
   }
 }

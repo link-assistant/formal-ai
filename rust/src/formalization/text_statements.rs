@@ -36,6 +36,9 @@ pub const FUNCTION_WORD_ROLES: [&str; 2] = ["translation_stop_word", "statement_
 /// The lexicon role whose words deny a statement.
 pub const NEGATION_ROLE: &str = "statement_negation_cue";
 
+/// Grammar lexemes remain available to their owning parser, not the general semantic index.
+pub const SCOPED_GRAMMAR_ROLE: &str = "scoped-grammar-pattern";
+
 /// The most words one lexicon surface may span.
 pub const LONGEST_PHRASE: usize = 4;
 
@@ -365,7 +368,8 @@ fn build_meaning_indexes() -> HashMap<String, HashMap<String, String>> {
         let excluded = FUNCTION_WORD_ROLES
             .iter()
             .any(|role| meaning.has_role(role))
-            || meaning.has_role(NEGATION_ROLE);
+            || meaning.has_role(NEGATION_ROLE)
+            || meaning.has_role(SCOPED_GRAMMAR_ROLE);
         if excluded {
             continue;
         }
@@ -796,12 +800,28 @@ pub fn statement_clauses(sentence: &Segment) -> Vec<Segment> {
 /// A statement's subject carries over to the next clause that points back.
 #[must_use]
 pub fn formalize_sentences(text: &str, language: &str) -> Vec<Sentence> {
+    formalize_sentence_segments(sentences(text), language, false)
+}
+
+/// Formalize preselected sentence segments, optionally keeping each as one statement.
+pub(crate) fn formalize_sentence_segments(
+    segments: Vec<Segment>,
+    language: &str,
+    whole_sentences: bool,
+) -> Vec<Sentence> {
     let mut out = Vec::new();
     let mut previous_subject: Option<Word> = None;
-    for sentence in sentences(text) {
+    for sentence in segments {
         let sentence_dialogue = super::dialogue::formalize_dialogue(&sentence.text, language);
         let mut statements = Vec::new();
-        for (index, clause) in statement_clauses(&sentence).iter().enumerate() {
+        let split;
+        let parts = if whole_sentences {
+            std::slice::from_ref(&sentence)
+        } else {
+            split = statement_clauses(&sentence);
+            &split
+        };
+        for (index, clause) in parts.iter().enumerate() {
             let mut statement = clause_statement(
                 &clause.text,
                 language,
@@ -923,13 +943,28 @@ pub fn known_ids(statement: &Statement) -> Vec<String> {
     ids.into_iter().collect()
 }
 
-/// The formal identity of a statement: its polarity, its subject and the set
-/// of its other terms.
+/// The formal identity of a statement: its polarity, its subject, the set of
+/// its other terms and the proposition structure a set loses (issue #1487).
 ///
 /// Two statements with one identity say the same thing whatever their wording.
 #[must_use]
 pub fn statement_identity(statement: &Statement) -> String {
     super::typed_meaning::statement_identity(statement)
+}
+
+/// The proposition structure the set of terms loses: operand order,
+/// connectives, quantifiers, negation scope and repetition (issue #1487).
+#[must_use]
+pub fn statement_structure(
+    statement: &Statement,
+) -> super::proposition_structure::PropositionStructure {
+    let words = read_words(&statement.text, &statement.language, true);
+    super::proposition_structure::read_proposition_structure(
+        &statement.text,
+        &statement.language,
+        &words,
+        &statement_terms(statement),
+    )
 }
 
 /// Whether a statement has at least two terms, all of them known.

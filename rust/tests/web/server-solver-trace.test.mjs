@@ -104,7 +104,7 @@ test("every promotion names a method the native registry resolves", () => {
 
 test("the curated projection keeps Rust's allowlist and folds the calculator", () => {
   assert.equal(curateThinkingEvent("trace", "x", ""), null);
-  assert.deepEqual(curateThinkingEvent("validation", "accepted_without_extra_constraints", "").detail, "");
+  assert.deepEqual(curateThinkingEvent("validation", "answered(calculation)=true", "").detail, "");
   assert.equal(curateThinkingEvent("tool_fetch", "a", "").step, "invoke_tool");
   assert.equal(curateThinkingEvent("response", "response:x", "final").detail, "final");
   const steps = thinkingStepsFromEvents([

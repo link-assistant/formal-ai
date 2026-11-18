@@ -49,7 +49,14 @@ fn drive_receipt(prompt: &str, source: &str, name: &str, receipt: fn(&str) -> St
         let arguments: serde_json::Value =
             serde_json::from_str(&call.arguments).expect("tool arguments are JSON");
         let result = match call.tool.as_str() {
-            "read" => file.clone(),
+            "read" => {
+                let target = ["path", "filePath", "file_path"]
+                    .iter()
+                    .find_map(|key| arguments[*key].as_str())
+                    .expect("read target");
+                assert_eq!(target, name);
+                formal_ai::agentic_coding::tool_result::complete_owned_source_read_frame(&file)
+            }
             "edit" => {
                 let old = arguments["oldString"].as_str().unwrap_or_default();
                 let new = arguments["newString"].as_str().unwrap_or_default();

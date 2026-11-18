@@ -4,9 +4,26 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
-import {verifyTaskImageOperationalEvidence} from '../../../scripts/build-hive-original-delivery-image.mjs';
+import {verifyTaskImageOperationalEvidence,verifyTaskImageClientPrerequisites} from '../../../scripts/build-hive-original-delivery-image.mjs';
 
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
+test('actual task image must run all clients and the original MCP checks before any task resource',()=>{
+ const calls=[];const result=verifyTaskImageClientPrerequisites((command,args,options)=>calls.push({command,args,options}));
+ assert.equal(result.originalHiveMcpPreflight,'passed');assert.equal(result.containerCleanup,'passed');assert.equal(calls.length,2);
+ assert.equal(calls[0].command,'docker');assert.equal(calls[0].options.timeout,180000);
+ const program=calls[0].args.at(-1);
+ for(const tool of ['claude','codex','agent'])assert(program.includes("'"+tool+"'"));
+ assert.match(program,/ensureSolvePlaywrightMcpReady/u);assert.doesNotMatch(program,/no-playwright-mcp/u);
+ assert.deepEqual(calls[1].args,['rm','--force',calls[0].args[2]]);assert.equal(calls[1].options.timeout,30000);
+});
+test('missing client or failed MCP check propagates once and still removes the owned probe',()=>{
+ const calls=[],failure=Error('codex: No such file or directory');
+ assert.throws(()=>verifyTaskImageClientPrerequisites((command,args)=>{
+  calls.push(args);if(args[0]==='run')throw failure;
+ }),error=>error===failure);
+ assert.equal(calls.length,2);assert.equal(calls[1][0],'rm');
+ assert.throws(()=>verifyTaskImageClientPrerequisites((command,args)=>{if(args[0]==='rm')throw Error('cleanup uncertain');}),/cleanup uncertain/u);
+});
 function fixture() {
   const hive = fs.mkdtempSync(path.join(os.tmpdir(), 'formal-ai-image-operational-control-'));
   fs.mkdirSync(path.join(hive, 'src'));

@@ -39,8 +39,10 @@ export function adaptReplayEntrypoint(source, task, workspace) {
   assert.equal(source.split(original).length, 2, 'unreviewed pinned solve constructor');
   const target = '/home/box/formal-ai-issue-1364-workspace';
   const replacement = [
-    "const replayArgv = buildE2eSolveArgv({issueUrl, tool, model, logDir: '/home/box/logs'});",
-    'replayArgv[0] = ' + JSON.stringify(task.pullRequestUrl) + ';',
+    "const replayArgv = buildE2eSolveArgv({issueUrl, tool, model, "
+      + (task.baseBranch ? 'baseBranch: ' + JSON.stringify(task.baseBranch) + ', ' : '')
+      + "logDir: '/home/box/logs'});",
+    ...(task.pullRequestUrl ? ['replayArgv[0] = ' + JSON.stringify(task.pullRequestUrl) + ';'] : []),
     'replayArgv.push("--working-directory", ' + JSON.stringify(target) + ');',
     // Raw client transcripts stay in the owned evidence directory, not public issue attachments.
     'const attachmentFlag = replayArgv.indexOf("--attach-logs");',
@@ -50,10 +52,24 @@ export function adaptReplayEntrypoint(source, task, workspace) {
     'if (replayArgv.some(value => value === "--attribution" || value.startsWith("--attribution="))) throw Error("pinned attribution policy changed");',
     'replayArgv.push("--attribution", "none");',
     "const dockerArgv = buildDockerArgv({solveArgv:replayArgv, solveCommand:'/opt/hive-e2e/src/solve.mjs', image, hostLogDir,",
-    "  forwardEnv:['GH_TOKEN', ...modelKeys, 'FORMAL_AI_INSTALL_GRANT', 'GITHUB_ACTIONS'],",
+    "  forwardEnv:['GH_TOKEN', ...modelKeys, 'FORMAL_AI_INSTALL_GRANT', 'GITHUB_ACTIONS', 'HIVE_MIND_SOLVE_NO_CHANGES_EXIT_CODE'],",
     '  extraMounts:[' + JSON.stringify(workspace + ':' + target) + ']});',
   ].join('\n');
-  return source.replace(original, () => replacement);
+  let adapted = source.replace(original, () => replacement);
+  if (task.workflowDirectory) {
+    assert.equal(task.workflowDirectory, 'ci/');
+    const workflow = "const workflowDir = !option('--issue') && isolation === 'branch' ? workflowDirectoryForLayer(evidence.layer) : '.github/workflows/';";
+    assert.equal(adapted.split(workflow).length, 2, 'pinned workflow staging selection');
+    assert.equal(adapted.split('let baseBranch;').length, 2, 'pinned isolated base selection');
+    adapted = adapted.replace(workflow, "const workflowDir = 'ci/';")
+      .replace('let baseBranch;', 'let baseBranch = ' + JSON.stringify(task.baseBranch) + ';');
+  }
+  return adapted;
+}
+/** Hive's supported compatibility mode is limited to the verified repeat pass. */
+export function replayPassEnvironment(environment, pass) {
+  assert(pass === 1 || pass === 2, 'only the first delivery and its verified repeat are permitted');
+  return {...environment, HIVE_MIND_SOLVE_NO_CHANGES_EXIT_CODE: pass === 2 ? '0' : '5'};
 }
 export function taskSnapshot(directory, trackedPaths, issueUrl = null) {
   if (issueUrl !== null) {
@@ -112,16 +128,32 @@ export function requireTaskObligations({source, workflow, verifier, programPath}
   assert(verifier.includes('cmp ') && verifier.includes('set -eu'), 'actual verifier must preserve failure and exact bytes');
   return true;
 }
+function capturedArgumentValue(value) {
+  // Custom tools carry literal text; ordinary function tools carry JSON.
+  if (typeof value !== 'string') return value;
+  try { return JSON.parse(value); } catch { return value; }
+}
 export function canonicalCapturedMessages(context) {
   assert(context.metadata.exchange_count > 0 && context.server_logs.length === context.metadata.exchange_count);
   const modelExchanges = context.server_logs.filter(row => row.method === 'POST' && row.request_body);
   assert(modelExchanges.length > 0, 'complete model exchanges required');
-  const families = new Set(modelExchanges.map(row => row.path.endsWith('/chat/completions') ? 'chat'
-    : row.path.endsWith('/messages') ? 'anthropic' : row.path.endsWith('/responses') ? 'responses' : 'unknown'));
+  const families = new Set(modelExchanges.map(row => {
+    // Query parameters select transport features, not a different message protocol.
+    const pathname = new URL(row.path, 'http://capture.invalid').pathname;
+    return pathname.endsWith('/chat/completions') ? 'chat'
+      : pathname.endsWith('/messages') ? 'anthropic' : pathname.endsWith('/responses') ? 'responses' : 'unknown';
+  }));
   assert.equal(families.size, 1, 'mixed or unrecognized protocol capture');
   const family = [...families][0];
   assert.equal(modelExchanges.at(-1).response_tool_calls.length, 0, 'capture ended before a tool receipt');
-  const body = JSON.stringify({model:'formal-ai', messages:context.messages, input:context.messages});
+  // Persisted conversation views merge cumulative client prefixes and can contain
+  // duplicates. The final complete wire request is the authoritative tool history.
+  // Explicit incremental Responses clients still need the recorded accumulated
+  // history; the emitted-call identity comparison below applies to both paths.
+  const last = modelExchanges.at(-1).request_body;
+  const incremental = family === 'responses' && typeof JSON.parse(last).previous_response_id === 'string'
+    && JSON.parse(last).previous_response_id.length > 0;
+  const body = incremental ? JSON.stringify({model:'formal-ai',input:context.messages}) : last;
   let messages;
   if (family === 'chat') messages = parseChatRequest(body).messages;
   else if (family === 'anthropic') messages = anthropicToChatCompletionRequest(parseAnthropicRequest(body)).messages;
@@ -129,9 +161,12 @@ export function canonicalCapturedMessages(context) {
     assert.equal(family, 'responses', 'unrecognized model capture');
     messages = toChatCompletionRequest(parseResponsesRequest(body)).messages;
   }
-  const emitted = modelExchanges.reduce((sum, row) => sum + row.response_tool_calls.length, 0);
-  const captured = messages.reduce((sum, row) => sum + (row.tool_calls?.length ?? 0), 0);
-  assert.equal(captured, emitted, 'tool history is missing, duplicated, or predates this capture');
+  const emitted = modelExchanges.flatMap(row => row.response_tool_calls)
+    .map(call => [call.name, capturedArgumentValue(call.arguments)]);
+  const captured = messages.flatMap(row => row.tool_calls ?? [])
+    .map(call => [call.function.name, capturedArgumentValue(call.function.arguments)]);
+  assert.equal(captured.length, emitted.length, 'tool history is missing, duplicated, or predates this capture');
+  assert.equal(jsonText(captured), jsonText(emitted), 'captured tool identities differ from actual model emissions');
   return messages;
 }
 export function auditCapturedActions(messages, failures = new Map()) {
@@ -150,7 +185,7 @@ export function auditCapturedActions(messages, failures = new Map()) {
       assert(call, 'orphaned or duplicate observed tool receipt'); pending.delete(message.tool_call_id); completed++;
       assert(!message.name || message.name.toLowerCase() === call.function.name.toLowerCase());
       if (failureMessage(plainText(message.content), message.is_error === true || message.isError === true, false) !== null) {
-        const key = jsonText([call.function.name.toLowerCase(), JSON.parse(call.function.arguments)]);
+        const key = jsonText([call.function.name.toLowerCase(), capturedArgumentValue(call.function.arguments)]);
         const count = (failures.get(key) ?? 0) + 1; failures.set(key, count);
         assert(count <= 2, 'more than two identical failed actions');
       }

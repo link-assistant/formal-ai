@@ -121,20 +121,26 @@ pub fn observed_directory(messages: &[ChatMessage]) -> Option<String> {
 /// exists to cover.
 fn declared_directory(text: &str) -> Option<String> {
     const WORKSPACE_LIST: &str = "**Workspace Directories:**";
-    let tagged = text
-        .split("<cwd>")
-        .skip(1)
-        .filter_map(|rest| rest.split("</cwd>").next());
-    let labelled = text
-        .lines()
-        .filter_map(|line| line.split_once("Working directory:").map(|(_, path)| path));
+    let tagged = unquoted_marker_offsets(text, "<cwd>")
+        .into_iter()
+        .filter_map(|start| text[start + "<cwd>".len()..].split("</cwd>").next());
+    let labelled = unquoted_marker_offsets(text, "Working directory:")
+        .into_iter()
+        .map(|start| {
+            text[start + "Working directory:".len()..]
+                .split('\n')
+                .next()
+                .unwrap_or_default()
+        });
     // Gemini's list is read from the marker onwards, and only while the lines
     // are still bullets: an unanchored bullet scan would happily follow any
     // other existing directory the prompt happens to mention.
-    let listed = text
-        .split_once(WORKSPACE_LIST)
+    let listed = unquoted_marker_offsets(text, WORKSPACE_LIST)
         .into_iter()
-        .flat_map(|(_, rest)| {
+        .next()
+        .map(|start| &text[start + WORKSPACE_LIST.len()..])
+        .into_iter()
+        .flat_map(|rest| {
             rest.lines()
                 .skip(1)
                 .take_while(|line| line.trim_start().starts_with("- "))
@@ -255,10 +261,22 @@ fn strip_caller_context_blocks(text: &str) -> String {
         .to_owned()
 }
 
+fn unquoted_marker_offsets(text: &str, marker: &str) -> Vec<usize> {
+    let quoted = crate::normal_markov::quoted_segment_spans(text);
+    text.match_indices(marker)
+        .filter_map(|(start, _)| {
+            (!quoted
+                .iter()
+                .any(|span| start >= span.start && start < span.end))
+            .then_some(start)
+        })
+        .collect()
+}
+
 fn strip_block(text: &str, open: &str, close: &str) -> String {
     let mut remaining = text;
     let mut request = String::new();
-    while let Some(start) = remaining.find(open) {
+    while let Some(start) = unquoted_marker_offsets(remaining, open).into_iter().next() {
         request.push_str(&remaining[..start]);
         let after_open = &remaining[start + open.len()..];
         let Some(end) = after_open.find(close) else {

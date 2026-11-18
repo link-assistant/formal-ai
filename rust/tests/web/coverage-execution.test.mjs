@@ -5,6 +5,29 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { executionBatches, executeBatches } from '../../../scripts/lib/coverage-execution.mjs';
+import { parseTestDurations } from '../../../scripts/lib/ci-speed-durations.mjs';
+import { durationLookup, planShards, partitionProblems } from '../../../scripts/lib/ci-speed-shards.mjs';
+
+test('the recorded cold-research timeout is prioritized alone without losing its batch peers', () => {
+  const observation = JSON.parse(readFileSync(new URL('../fixtures/coverage/cold-research-shard-timeout.json', import.meta.url)));
+  const native = durationLookup(parseTestDurations(readFileSync('data/meta/test-durations.lino', 'utf8')), 0.092);
+  const profile = durationLookup(parseTestDurations(readFileSync('data/meta/coverage-test-weights.lino', 'utf8')), 0.092);
+  const seconds = entry => Math.max(native(entry), profile(entry));
+  for (const row of observation.rows) {
+    assert.ok(seconds('unit\t' + row.name) >= row.lowerBoundSeconds, row.name);
+  }
+  const unfinished = observation.rows.filter(row => row.censored);
+  assert.equal(unfinished.length, 1);
+  assert.equal(unfinished[0].completedAt, null);
+  const name = unfinished[0].name;
+  const listing = observation.batch.names.map(value => 'unit\t' + value);
+  const { shards } = planShards(listing, 32, seconds);
+  assert.deepEqual(Object.values(partitionProblems(listing, shards)).flat(), []);
+  const selected = shards.find(shard => shard.includes('unit\t' + name));
+  const batches = executionBatches(selected, listing, new Map([['unit', 'fixture']]), seconds);
+  assert.deepEqual(batches[0].names, [name]);
+  assert.equal(shards.flat().length, listing.length);
+});
 
 function fakeHarness() {
   const directory = mkdtempSync(join(tmpdir(), 'coverage-queue-contract-'));

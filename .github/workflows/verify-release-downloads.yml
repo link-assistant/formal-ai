@@ -17,22 +17,37 @@ concurrency:
 jobs:
   resolve:
     if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_repository.full_name == github.repository
-    runs-on: ubuntu-latest
-    timeout-minutes: 3
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
     outputs:
+      active: ${{ steps.select.outputs.active }}
       tag: ${{ steps.select.outputs.tag }}
       release_id: ${{ steps.select.outputs.release_id }}
       source_sha: ${{ steps.select.outputs.source_sha }}
       source_tree: ${{ steps.select.outputs.source_tree }}
     steps:
       - uses: actions/checkout@v7
+        timeout-minutes: 2
+        env:
+          GIT_CONFIG_COUNT: 2
+          GIT_CONFIG_KEY_0: http.lowSpeedLimit
+          GIT_CONFIG_VALUE_0: 1024
+          GIT_CONFIG_KEY_1: http.lowSpeedTime
+          GIT_CONFIG_VALUE_1: 20
         with:
           ref: ${{ github.workflow_sha }}
           persist-credentials: false
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /scripts/
+            /package.json
       - uses: actions/setup-node@v7
         with: {node-version: '24', package-manager-cache: false}
       - name: Pin published tag, asset metadata and authenticated source
         id: select
+        timeout-minutes: 3
         env:
           GH_TOKEN: ${{ github.token }}
           PRODUCER_RUN_ID: ${{ github.event.workflow_run.id || '' }}
@@ -41,6 +56,7 @@ jobs:
           RELEASE_DOWNLOAD_DIRECTORY: ${{ runner.temp }}/release-selection
         run: node scripts/verify-public-release-downloads.mjs
       - uses: actions/upload-artifact@v7
+        if: steps.select.outputs.active == 'true'
         with:
           name: public-release-selection
           path: ${{ runner.temp }}/release-selection/selection.json
@@ -48,7 +64,8 @@ jobs:
           retention-days: 14
   all-public-bytes:
     needs: resolve
-    runs-on: ubuntu-latest
+    if: needs.resolve.outputs.active == 'true'
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
@@ -87,11 +104,12 @@ jobs:
           retention-days: 14
   macos-public-packages:
     needs: resolve
+    if: needs.resolve.outputs.active == 'true'
     strategy:
       fail-fast: false
       matrix:
         include:
-          - runner: macos-14
+          - runner: macos-15
             architecture: arm64
           - runner: macos-15-intel
             architecture: x64
@@ -146,7 +164,8 @@ jobs:
           retention-days: 14
   browser-public-package:
     needs: resolve
-    runs-on: ubuntu-latest
+    if: needs.resolve.outputs.active == 'true'
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
@@ -166,7 +185,7 @@ jobs:
       - name: Install browser test harness without build hooks
         run: npm ci --ignore-scripts --no-audit --no-fund --prefix _source/vscode
       - name: Install test browser without compiling the product
-        run: node _source/vscode/node_modules/playwright/cli.js install chromium --with-deps
+        run: bash scripts/with-ubuntu-apt-sources.sh node _source/vscode/node_modules/playwright/cli.js install chromium --with-deps
       - name: Verify original engine bindings and fresh public package in a real Worker
         env:
           GH_TOKEN: ${{ github.token }}
