@@ -2,1418 +2,1418 @@
   "en ace primes": {
     "graphs": 68,
     "failing": {
-      "ace_grammar": 68,
-      "ace_interpretation": 68
+      "ace-grammar": 68,
+      "ace-interpretation": 68
     }
   },
   "en ace top-100": {
     "graphs": 10,
     "failing": {
-      "ace_grammar": 9,
-      "ace_interpretation": 9,
-      "frequency_vocabulary": 1
+      "ace-grammar": 9,
+      "ace-interpretation": 9,
+      "frequency-vocabulary": 1
     }
   },
   "en ace top-1000": {
     "graphs": 6,
     "failing": {
-      "frequency_vocabulary": 6
+      "frequency-vocabulary": 6
     }
   },
   "en ace top-200": {
     "graphs": 6,
     "failing": {
-      "frequency_vocabulary": 5,
-      "ace_grammar": 1,
-      "ace_interpretation": 1
+      "frequency-vocabulary": 5,
+      "ace-grammar": 1,
+      "ace-interpretation": 1
     }
   },
   "en ace top-500": {
     "graphs": 6,
     "failing": {
-      "frequency_vocabulary": 6
+      "frequency-vocabulary": 6
     }
   },
   "en asd-ste100 primes": {
     "graphs": 52,
     "failing": {
-      "nsm_semantics": 48,
-      "nsm_syntax": 28,
-      "ste_writing_rules": 24,
-      "non_prime": 28
+      "nsm-semantics": 48,
+      "nsm-syntax": 28,
+      "ste-writing-rules": 24,
+      "non-prime": 28
     }
   },
   "en asd-ste100 top-100": {
     "graphs": 50,
     "failing": {
-      "ste_writing_rules": 41,
-      "frequency_vocabulary": 21
+      "ste-writing-rules": 41,
+      "frequency-vocabulary": 21
     }
   },
   "en asd-ste100 top-1000": {
     "graphs": 2,
     "failing": {
-      "frequency_vocabulary": 2
+      "frequency-vocabulary": 2
     }
   },
   "en asd-ste100 top-200": {
     "graphs": 42,
     "failing": {
-      "ste_writing_rules": 41,
-      "frequency_vocabulary": 9
+      "ste-writing-rules": 41,
+      "frequency-vocabulary": 9
     }
   },
   "en asd-ste100 top-500": {
     "graphs": 34,
     "failing": {
-      "ste_writing_rules": 28,
-      "frequency_vocabulary": 10,
-      "ste_dictionary": 4
+      "ste-writing-rules": 28,
+      "frequency-vocabulary": 10,
+      "ste-dictionary": 4
     }
   },
   "en basic-english primes": {
     "graphs": 68,
     "failing": {
-      "basic_english_grammar": 68,
-      "basic_english_vocabulary": 68
+      "basic-english-grammar": 68,
+      "basic-english-vocabulary": 68
     }
   },
   "en basic-english top-100": {
     "graphs": 66,
     "failing": {
-      "basic_english_grammar": 65,
-      "basic_english_vocabulary": 65,
-      "frequency_vocabulary": 1
+      "basic-english-grammar": 65,
+      "basic-english-vocabulary": 65,
+      "frequency-vocabulary": 1
     }
   },
   "en basic-english top-1000": {
     "graphs": 18,
     "failing": {
-      "frequency_vocabulary": 10,
-      "basic_english_grammar": 8,
-      "basic_english_vocabulary": 8
+      "frequency-vocabulary": 10,
+      "basic-english-grammar": 8,
+      "basic-english-vocabulary": 8
     }
   },
   "en basic-english top-200": {
     "graphs": 66,
     "failing": {
-      "basic_english_grammar": 56,
-      "basic_english_vocabulary": 56,
-      "frequency_vocabulary": 10
+      "basic-english-grammar": 56,
+      "basic-english-vocabulary": 56,
+      "frequency-vocabulary": 10
     }
   },
   "en basic-english top-500": {
     "graphs": 50,
     "failing": {
-      "basic_english_grammar": 40,
-      "basic_english_vocabulary": 40,
-      "frequency_vocabulary": 10
+      "basic-english-grammar": 40,
+      "basic-english-vocabulary": 40,
+      "frequency-vocabulary": 10
     }
   },
   "en e-prime primes": {
     "graphs": 68,
     "failing": {
-      "non_prime": 65,
-      "nsm_semantics": 66,
-      "nsm_syntax": 66,
-      "e_prime_english": 2
+      "non-prime": 65,
+      "nsm-semantics": 66,
+      "nsm-syntax": 66,
+      "e-prime-english": 2
     }
   },
   "en e-prime top-100": {
     "graphs": 54,
     "failing": {
-      "frequency_vocabulary": 53,
-      "e_prime_english": 1
+      "frequency-vocabulary": 53,
+      "e-prime-english": 1
     }
   },
   "en e-prime top-1000": {
     "graphs": 2,
     "failing": {
-      "frequency_vocabulary": 2
+      "frequency-vocabulary": 2
     }
   },
   "en e-prime top-200": {
     "graphs": 42,
     "failing": {
-      "frequency_vocabulary": 41,
-      "e_prime_english": 1
+      "frequency-vocabulary": 41,
+      "e-prime-english": 1
     }
   },
   "en e-prime top-500": {
     "graphs": 42,
     "failing": {
-      "frequency_vocabulary": 42
+      "frequency-vocabulary": 42
     }
   },
   "en gellish primes": {
     "graphs": 68,
     "failing": {
-      "gellish_dictionary": 68,
-      "gellish_relations": 68
+      "gellish-dictionary": 68,
+      "gellish-relations": 68
     }
   },
   "en gellish top-100": {
     "graphs": 66,
     "failing": {
-      "gellish_dictionary": 65,
-      "gellish_relations": 41,
-      "frequency_vocabulary": 1
+      "gellish-dictionary": 65,
+      "gellish-relations": 41,
+      "frequency-vocabulary": 1
     }
   },
   "en gellish top-1000": {
     "graphs": 42,
     "failing": {
-      "gellish_dictionary": 24,
-      "gellish_relations": 36,
-      "frequency_vocabulary": 2
+      "gellish-dictionary": 24,
+      "gellish-relations": 36,
+      "frequency-vocabulary": 2
     }
   },
   "en gellish top-200": {
     "graphs": 66,
     "failing": {
-      "gellish_dictionary": 65,
-      "gellish_relations": 41,
-      "frequency_vocabulary": 1
+      "gellish-dictionary": 65,
+      "gellish-relations": 41,
+      "frequency-vocabulary": 1
     }
   },
   "en gellish top-500": {
     "graphs": 66,
     "failing": {
-      "gellish_dictionary": 56,
-      "gellish_relations": 40,
-      "frequency_vocabulary": 2
+      "gellish-dictionary": 56,
+      "gellish-relations": 40,
+      "frequency-vocabulary": 2
     }
   },
   "en globish primes": {
     "graphs": 68,
     "failing": {
-      "globish_vocabulary": 68,
-      "globish_grammar": 12
+      "globish-vocabulary": 68,
+      "globish-grammar": 12
     }
   },
   "en globish top-100": {
     "graphs": 66,
     "failing": {
-      "globish_vocabulary": 65,
-      "globish_grammar": 9,
-      "frequency_vocabulary": 1
+      "globish-vocabulary": 65,
+      "globish-grammar": 9,
+      "frequency-vocabulary": 1
     }
   },
   "en globish top-1000": {
     "graphs": 10,
     "failing": {
-      "globish_vocabulary": 8,
-      "frequency_vocabulary": 2
+      "globish-vocabulary": 8,
+      "frequency-vocabulary": 2
     }
   },
   "en globish top-200": {
     "graphs": 66,
     "failing": {
-      "globish_vocabulary": 65,
-      "frequency_vocabulary": 1,
-      "globish_grammar": 1
+      "globish-vocabulary": 65,
+      "frequency-vocabulary": 1,
+      "globish-grammar": 1
     }
   },
   "en globish top-500": {
     "graphs": 50,
     "failing": {
-      "globish_vocabulary": 48,
-      "frequency_vocabulary": 2
+      "globish-vocabulary": 48,
+      "frequency-vocabulary": 2
     }
   },
   "en plain-language primes": {
     "graphs": 12,
     "failing": {
-      "plain_language_rules": 12
+      "plain-language-rules": 12
     }
   },
   "en plain-language top-100": {
     "graphs": 10,
     "failing": {
-      "plain_language_rules": 9,
-      "frequency_vocabulary": 1
+      "plain-language-rules": 9,
+      "frequency-vocabulary": 1
     }
   },
   "en plain-language top-1000": {
     "graphs": 2,
     "failing": {
-      "frequency_vocabulary": 2
+      "frequency-vocabulary": 2
     }
   },
   "en plain-language top-200": {
     "graphs": 2,
     "failing": {
-      "frequency_vocabulary": 1,
-      "plain_language_rules": 1
+      "frequency-vocabulary": 1,
+      "plain-language-rules": 1
     }
   },
   "en plain-language top-500": {
     "graphs": 2,
     "failing": {
-      "frequency_vocabulary": 2
+      "frequency-vocabulary": 2
     }
   },
   "en sbvr primes": {
     "graphs": 68,
     "failing": {
-      "sbvr_rules": 68,
-      "sbvr_vocabulary": 68
+      "sbvr-rules": 68,
+      "sbvr-vocabulary": 68
     }
   },
   "en sbvr top-100": {
     "graphs": 66,
     "failing": {
-      "sbvr_rules": 29,
-      "sbvr_vocabulary": 65,
-      "frequency_vocabulary": 37
+      "sbvr-rules": 29,
+      "sbvr-vocabulary": 65,
+      "frequency-vocabulary": 37
     }
   },
   "en sbvr top-1000": {
     "graphs": 38,
     "failing": {
-      "frequency_vocabulary": 38,
-      "sbvr_vocabulary": 8
+      "frequency-vocabulary": 38,
+      "sbvr-vocabulary": 8
     }
   },
   "en sbvr top-200": {
     "graphs": 66,
     "failing": {
-      "sbvr_rules": 29,
-      "sbvr_vocabulary": 65,
-      "frequency_vocabulary": 37
+      "sbvr-rules": 29,
+      "sbvr-vocabulary": 65,
+      "frequency-vocabulary": 37
     }
   },
   "en sbvr top-500": {
     "graphs": 66,
     "failing": {
-      "sbvr_rules": 28,
-      "sbvr_vocabulary": 56,
-      "frequency_vocabulary": 38
+      "sbvr-rules": 28,
+      "sbvr-vocabulary": 56,
+      "frequency-vocabulary": 38
     }
   },
   "en special-english primes": {
     "graphs": 68,
     "failing": {
-      "special_english_vocabulary": 68
+      "special-english-vocabulary": 68
     }
   },
   "en special-english top-100": {
     "graphs": 66,
     "failing": {
-      "special_english_vocabulary": 65,
-      "frequency_vocabulary": 1
+      "special-english-vocabulary": 65,
+      "frequency-vocabulary": 1
     }
   },
   "en special-english top-1000": {
     "graphs": 26,
     "failing": {
-      "frequency_vocabulary": 18,
-      "special_english_vocabulary": 8
+      "frequency-vocabulary": 18,
+      "special-english-vocabulary": 8
     }
   },
   "en special-english top-200": {
     "graphs": 66,
     "failing": {
-      "special_english_vocabulary": 57,
-      "frequency_vocabulary": 9
+      "special-english-vocabulary": 57,
+      "frequency-vocabulary": 9
     }
   },
   "en special-english top-500": {
     "graphs": 50,
     "failing": {
-      "special_english_vocabulary": 32,
-      "frequency_vocabulary": 18
+      "special-english-vocabulary": 32,
+      "frequency-vocabulary": 18
     }
   },
   "es ace primes": {
     "graphs": 68,
     "failing": {
-      "ace_grammar": 68,
-      "ace_interpretation": 68
+      "ace-grammar": 68,
+      "ace-interpretation": 68
     }
   },
   "es ace top-100": {
     "graphs": 38,
     "failing": {
-      "ace_grammar": 38,
-      "ace_interpretation": 38
+      "ace-grammar": 38,
+      "ace-interpretation": 38
     }
   },
   "es ace top-200": {
     "graphs": 32,
     "failing": {
-      "ace_grammar": 32,
-      "ace_interpretation": 32
+      "ace-grammar": 32,
+      "ace-interpretation": 32
     }
   },
   "es ace top-500": {
     "graphs": 28,
     "failing": {
-      "ace_grammar": 28,
-      "ace_interpretation": 28
+      "ace-grammar": 28,
+      "ace-interpretation": 28
     }
   },
   "es asd-ste100 primes": {
     "graphs": 52,
     "failing": {
-      "nsm_semantics": 48,
-      "nsm_syntax": 24,
-      "ste_writing_rules": 20,
-      "non_prime": 32
+      "nsm-semantics": 48,
+      "nsm-syntax": 24,
+      "ste-writing-rules": 20,
+      "non-prime": 32
     }
   },
   "es asd-ste100 top-100": {
     "graphs": 50,
     "failing": {
-      "ste_writing_rules": 22,
-      "frequency_vocabulary": 28
+      "ste-writing-rules": 22,
+      "frequency-vocabulary": 28
     }
   },
   "es asd-ste100 top-200": {
     "graphs": 42,
     "failing": {
-      "ste_writing_rules": 22,
-      "frequency_vocabulary": 20
+      "ste-writing-rules": 22,
+      "frequency-vocabulary": 20
     }
   },
   "es asd-ste100 top-500": {
     "graphs": 16,
     "failing": {
-      "ste_writing_rules": 4,
-      "frequency_vocabulary": 12
+      "ste-writing-rules": 4,
+      "frequency-vocabulary": 12
     }
   },
   "es basic-english primes": {
     "graphs": 68,
     "failing": {
-      "basic_english_grammar": 68,
-      "basic_english_vocabulary": 68
+      "basic-english-grammar": 68,
+      "basic-english-vocabulary": 68
     }
   },
   "es basic-english top-100": {
     "graphs": 66,
     "failing": {
-      "basic_english_grammar": 66,
-      "basic_english_vocabulary": 66
+      "basic-english-grammar": 66,
+      "basic-english-vocabulary": 66
     }
   },
   "es basic-english top-200": {
     "graphs": 66,
     "failing": {
-      "basic_english_grammar": 66,
-      "basic_english_vocabulary": 66
+      "basic-english-grammar": 66,
+      "basic-english-vocabulary": 66
     }
   },
   "es basic-english top-500": {
     "graphs": 24,
     "failing": {
-      "basic_english_grammar": 24,
-      "basic_english_vocabulary": 24
+      "basic-english-grammar": 24,
+      "basic-english-vocabulary": 24
     }
   },
   "es e-prime primes": {
     "graphs": 68,
     "failing": {
-      "non_prime": 65,
-      "nsm_semantics": 66,
-      "nsm_syntax": 66,
-      "e_prime_english": 2
+      "non-prime": 65,
+      "nsm-semantics": 66,
+      "nsm-syntax": 66,
+      "e-prime-english": 2
     }
   },
   "es e-prime top-100": {
     "graphs": 54,
     "failing": {
-      "frequency_vocabulary": 52,
-      "e_prime_english": 2
+      "frequency-vocabulary": 52,
+      "e-prime-english": 2
     }
   },
   "es e-prime top-200": {
     "graphs": 54,
     "failing": {
-      "frequency_vocabulary": 52,
-      "e_prime_english": 2
+      "frequency-vocabulary": 52,
+      "e-prime-english": 2
     }
   },
   "es e-prime top-500": {
     "graphs": 32,
     "failing": {
-      "frequency_vocabulary": 32
+      "frequency-vocabulary": 32
     }
   },
   "es gellish primes": {
     "graphs": 68,
     "failing": {
-      "gellish_dictionary": 68,
-      "gellish_relations": 68
+      "gellish-dictionary": 68,
+      "gellish-relations": 68
     }
   },
   "es gellish top-100": {
     "graphs": 66,
     "failing": {
-      "gellish_dictionary": 66,
-      "gellish_relations": 42
+      "gellish-dictionary": 66,
+      "gellish-relations": 42
     }
   },
   "es gellish top-1000": {
     "graphs": 36,
     "failing": {
-      "gellish_dictionary": 36,
-      "gellish_relations": 36
+      "gellish-dictionary": 36,
+      "gellish-relations": 36
     }
   },
   "es gellish top-200": {
     "graphs": 66,
     "failing": {
-      "gellish_dictionary": 66,
-      "gellish_relations": 42
+      "gellish-dictionary": 66,
+      "gellish-relations": 42
     }
   },
   "es gellish top-500": {
     "graphs": 48,
     "failing": {
-      "gellish_dictionary": 48,
-      "gellish_relations": 40
+      "gellish-dictionary": 48,
+      "gellish-relations": 40
     }
   },
   "es globish primes": {
     "graphs": 68,
     "failing": {
-      "globish_vocabulary": 68,
-      "globish_grammar": 12
+      "globish-vocabulary": 68,
+      "globish-grammar": 12
     }
   },
   "es globish top-100": {
     "graphs": 66,
     "failing": {
-      "globish_vocabulary": 66,
-      "globish_grammar": 10
+      "globish-vocabulary": 66,
+      "globish-grammar": 10
     }
   },
   "es globish top-200": {
     "graphs": 66,
     "failing": {
-      "globish_vocabulary": 66,
-      "globish_grammar": 2
+      "globish-vocabulary": 66,
+      "globish-grammar": 2
     }
   },
   "es globish top-500": {
     "graphs": 32,
     "failing": {
-      "globish_vocabulary": 32
+      "globish-vocabulary": 32
     }
   },
   "es plain-language primes": {
     "graphs": 12,
     "failing": {
-      "plain_language_rules": 12
+      "plain-language-rules": 12
     }
   },
   "es plain-language top-100": {
     "graphs": 10,
     "failing": {
-      "plain_language_rules": 10
+      "plain-language-rules": 10
     }
   },
   "es plain-language top-200": {
     "graphs": 2,
     "failing": {
-      "plain_language_rules": 2
+      "plain-language-rules": 2
     }
   },
   "es sbvr primes": {
     "graphs": 68,
     "failing": {
-      "sbvr_rules": 68,
-      "sbvr_vocabulary": 68
+      "sbvr-rules": 68,
+      "sbvr-vocabulary": 68
     }
   },
   "es sbvr top-100": {
     "graphs": 66,
     "failing": {
-      "sbvr_rules": 66,
-      "sbvr_vocabulary": 66
+      "sbvr-rules": 66,
+      "sbvr-vocabulary": 66
     }
   },
   "es sbvr top-1000": {
     "graphs": 64,
     "failing": {
-      "sbvr_rules": 64,
-      "sbvr_vocabulary": 64
+      "sbvr-rules": 64,
+      "sbvr-vocabulary": 64
     }
   },
   "es sbvr top-200": {
     "graphs": 66,
     "failing": {
-      "sbvr_rules": 66,
-      "sbvr_vocabulary": 66
+      "sbvr-rules": 66,
+      "sbvr-vocabulary": 66
     }
   },
   "es sbvr top-500": {
     "graphs": 64,
     "failing": {
-      "sbvr_rules": 64,
-      "sbvr_vocabulary": 64
+      "sbvr-rules": 64,
+      "sbvr-vocabulary": 64
     }
   },
   "es special-english primes": {
     "graphs": 68,
     "failing": {
-      "special_english_vocabulary": 68
+      "special-english-vocabulary": 68
     }
   },
   "es special-english top-100": {
     "graphs": 66,
     "failing": {
-      "special_english_vocabulary": 66
+      "special-english-vocabulary": 66
     }
   },
   "es special-english top-200": {
     "graphs": 66,
     "failing": {
-      "special_english_vocabulary": 66
+      "special-english-vocabulary": 66
     }
   },
   "es special-english top-500": {
     "graphs": 24,
     "failing": {
-      "special_english_vocabulary": 24
+      "special-english-vocabulary": 24
     }
   },
   "hi ace primes": {
     "graphs": 68,
     "failing": {
-      "ace_grammar": 68,
-      "ace_interpretation": 68
+      "ace-grammar": 68,
+      "ace-interpretation": 68
     }
   },
   "hi ace top-100": {
     "graphs": 6,
     "failing": {
-      "ace_grammar": 6,
-      "ace_interpretation": 6
+      "ace-grammar": 6,
+      "ace-interpretation": 6
     }
   },
   "hi ace top-200": {
     "graphs": 5,
     "failing": {
-      "ace_grammar": 5,
-      "ace_interpretation": 5
+      "ace-grammar": 5,
+      "ace-interpretation": 5
     }
   },
   "hi ace top-500": {
     "graphs": 4,
     "failing": {
-      "ace_grammar": 4,
-      "ace_interpretation": 4
+      "ace-grammar": 4,
+      "ace-interpretation": 4
     }
   },
   "hi asd-ste100 primes": {
     "graphs": 58,
     "failing": {
-      "nsm_semantics": 54,
-      "nsm_syntax": 24,
-      "ste_writing_rules": 20,
-      "non_prime": 38
+      "nsm-semantics": 54,
+      "nsm-syntax": 24,
+      "ste-writing-rules": 20,
+      "non-prime": 38
     }
   },
   "hi asd-ste100 top-100": {
     "graphs": 52,
     "failing": {
-      "ste_writing_rules": 22,
-      "frequency_vocabulary": 30
+      "ste-writing-rules": 22,
+      "frequency-vocabulary": 30
     }
   },
   "hi asd-ste100 top-200": {
     "graphs": 49,
     "failing": {
-      "ste_writing_rules": 13,
-      "frequency_vocabulary": 30,
-      "ste_dictionary": 6
+      "ste-writing-rules": 13,
+      "frequency-vocabulary": 30,
+      "ste-dictionary": 6
     }
   },
   "hi asd-ste100 top-500": {
     "graphs": 16,
     "failing": {
-      "ste_dictionary": 6,
-      "frequency_vocabulary": 8,
-      "ste_writing_rules": 2
+      "ste-dictionary": 6,
+      "frequency-vocabulary": 8,
+      "ste-writing-rules": 2
     }
   },
   "hi basic-english primes": {
     "graphs": 68,
     "failing": {
-      "basic_english_grammar": 68,
-      "basic_english_vocabulary": 68
+      "basic-english-grammar": 68,
+      "basic-english-vocabulary": 68
     }
   },
   "hi basic-english top-100": {
     "graphs": 66,
     "failing": {
-      "basic_english_grammar": 66,
-      "basic_english_vocabulary": 66
+      "basic-english-grammar": 66,
+      "basic-english-vocabulary": 66
     }
   },
   "hi basic-english top-1000": {
     "graphs": 8,
     "failing": {
-      "basic_english_vocabulary": 8
+      "basic-english-vocabulary": 8
     }
   },
   "hi basic-english top-200": {
     "graphs": 64,
     "failing": {
-      "basic_english_grammar": 64,
-      "basic_english_vocabulary": 64
+      "basic-english-grammar": 64,
+      "basic-english-vocabulary": 64
     }
   },
   "hi basic-english top-500": {
     "graphs": 32,
     "failing": {
-      "basic_english_grammar": 32,
-      "basic_english_vocabulary": 32
+      "basic-english-grammar": 32,
+      "basic-english-vocabulary": 32
     }
   },
   "hi e-prime primes": {
     "graphs": 68,
     "failing": {
-      "non_prime": 67,
-      "nsm_semantics": 68,
-      "nsm_syntax": 68
+      "non-prime": 67,
+      "nsm-semantics": 68,
+      "nsm-syntax": 68
     }
   },
   "hi e-prime top-100": {
     "graphs": 58,
     "failing": {
-      "frequency_vocabulary": 58
+      "frequency-vocabulary": 58
     }
   },
   "hi e-prime top-200": {
     "graphs": 57,
     "failing": {
-      "frequency_vocabulary": 57
+      "frequency-vocabulary": 57
     }
   },
   "hi gellish primes": {
     "graphs": 68,
     "failing": {
-      "gellish_dictionary": 68,
-      "gellish_relations": 68
+      "gellish-dictionary": 68,
+      "gellish-relations": 68
     }
   },
   "hi gellish top-100": {
     "graphs": 66,
     "failing": {
-      "gellish_dictionary": 66,
-      "gellish_relations": 66
+      "gellish-dictionary": 66,
+      "gellish-relations": 66
     }
   },
   "hi gellish top-1000": {
     "graphs": 32,
     "failing": {
-      "gellish_relations": 32
+      "gellish-relations": 32
     }
   },
   "hi gellish top-200": {
     "graphs": 65,
     "failing": {
-      "gellish_dictionary": 64,
-      "gellish_relations": 65
+      "gellish-dictionary": 64,
+      "gellish-relations": 65
     }
   },
   "hi gellish top-500": {
     "graphs": 56,
     "failing": {
-      "gellish_relations": 40,
-      "gellish_dictionary": 32
+      "gellish-relations": 40,
+      "gellish-dictionary": 32
     }
   },
   "hi globish primes": {
     "graphs": 68,
     "failing": {
-      "globish_vocabulary": 68,
-      "globish_grammar": 12
+      "globish-vocabulary": 68,
+      "globish-grammar": 12
     }
   },
   "hi globish top-100": {
     "graphs": 66,
     "failing": {
-      "globish_vocabulary": 66,
-      "globish_grammar": 6
+      "globish-vocabulary": 66,
+      "globish-grammar": 6
     }
   },
   "hi globish top-200": {
     "graphs": 65,
     "failing": {
-      "globish_vocabulary": 64,
-      "globish_grammar": 1
+      "globish-vocabulary": 64,
+      "globish-grammar": 1
     }
   },
   "hi globish top-500": {
     "graphs": 32,
     "failing": {
-      "globish_vocabulary": 32
+      "globish-vocabulary": 32
     }
   },
   "hi plain-language primes": {
     "graphs": 12,
     "failing": {
-      "plain_language_rules": 12
+      "plain-language-rules": 12
     }
   },
   "hi plain-language top-100": {
     "graphs": 6,
     "failing": {
-      "plain_language_rules": 6
+      "plain-language-rules": 6
     }
   },
   "hi sbvr primes": {
     "graphs": 68,
     "failing": {
-      "sbvr_rules": 68,
-      "sbvr_vocabulary": 68
+      "sbvr-rules": 68,
+      "sbvr-vocabulary": 68
     }
   },
   "hi sbvr top-100": {
     "graphs": 66,
     "failing": {
-      "sbvr_rules": 66,
-      "sbvr_vocabulary": 66
+      "sbvr-rules": 66,
+      "sbvr-vocabulary": 66
     }
   },
   "hi sbvr top-200": {
     "graphs": 65,
     "failing": {
-      "sbvr_rules": 65,
-      "sbvr_vocabulary": 65
+      "sbvr-rules": 65,
+      "sbvr-vocabulary": 65
     }
   },
   "hi sbvr top-500": {
     "graphs": 32,
     "failing": {
-      "sbvr_vocabulary": 32,
-      "sbvr_rules": 8
+      "sbvr-vocabulary": 32,
+      "sbvr-rules": 8
     }
   },
   "hi special-english primes": {
     "graphs": 68,
     "failing": {
-      "special_english_vocabulary": 68
+      "special-english-vocabulary": 68
     }
   },
   "hi special-english top-100": {
     "graphs": 66,
     "failing": {
-      "special_english_vocabulary": 66
+      "special-english-vocabulary": 66
     }
   },
   "hi special-english top-200": {
     "graphs": 56,
     "failing": {
-      "special_english_vocabulary": 56
+      "special-english-vocabulary": 56
     }
   },
   "hi special-english top-500": {
     "graphs": 24,
     "failing": {
-      "special_english_vocabulary": 24
+      "special-english-vocabulary": 24
     }
   },
   "ru ace primes": {
     "graphs": 68,
     "failing": {
-      "ace_grammar": 68,
-      "ace_interpretation": 68
+      "ace-grammar": 68,
+      "ace-interpretation": 68
     }
   },
   "ru ace top-100": {
     "graphs": 38,
     "failing": {
-      "ace_grammar": 38,
-      "ace_interpretation": 38
+      "ace-grammar": 38,
+      "ace-interpretation": 38
     }
   },
   "ru ace top-200": {
     "graphs": 10,
     "failing": {
-      "ace_grammar": 10,
-      "ace_interpretation": 10
+      "ace-grammar": 10,
+      "ace-interpretation": 10
     }
   },
   "ru asd-ste100 primes": {
     "graphs": 34,
     "failing": {
-      "nsm_semantics": 30,
-      "nsm_syntax": 18,
-      "ste_writing_rules": 10,
-      "non_prime": 20
+      "nsm-semantics": 30,
+      "nsm-syntax": 18,
+      "ste-writing-rules": 10,
+      "non-prime": 20
     }
   },
   "ru asd-ste100 top-100": {
     "graphs": 24,
     "failing": {
-      "ste_writing_rules": 8,
-      "frequency_vocabulary": 16
+      "ste-writing-rules": 8,
+      "frequency-vocabulary": 16
     }
   },
   "ru asd-ste100 top-1000": {
     "graphs": 6,
     "failing": {
-      "ste_dictionary": 6
+      "ste-dictionary": 6
     }
   },
   "ru asd-ste100 top-200": {
     "graphs": 24,
     "failing": {
-      "ste_writing_rules": 14,
-      "frequency_vocabulary": 10,
-      "ste_dictionary": 6
+      "ste-writing-rules": 14,
+      "frequency-vocabulary": 10,
+      "ste-dictionary": 6
     }
   },
   "ru asd-ste100 top-500": {
     "graphs": 14,
     "failing": {
-      "ste_writing_rules": 6,
-      "frequency_vocabulary": 8,
-      "ste_dictionary": 2
+      "ste-writing-rules": 6,
+      "frequency-vocabulary": 8,
+      "ste-dictionary": 2
     }
   },
   "ru basic-english primes": {
     "graphs": 68,
     "failing": {
-      "basic_english_grammar": 68,
-      "basic_english_vocabulary": 66
+      "basic-english-grammar": 68,
+      "basic-english-vocabulary": 66
     }
   },
   "ru basic-english top-100": {
     "graphs": 66,
     "failing": {
-      "basic_english_grammar": 66,
-      "basic_english_vocabulary": 66
+      "basic-english-grammar": 66,
+      "basic-english-vocabulary": 66
     }
   },
   "ru basic-english top-1000": {
     "graphs": 16,
     "failing": {
-      "basic_english_grammar": 16,
-      "basic_english_vocabulary": 16
+      "basic-english-grammar": 16,
+      "basic-english-vocabulary": 16
     }
   },
   "ru basic-english top-200": {
     "graphs": 66,
     "failing": {
-      "basic_english_grammar": 66,
-      "basic_english_vocabulary": 66
+      "basic-english-grammar": 66,
+      "basic-english-vocabulary": 66
     }
   },
   "ru basic-english top-500": {
     "graphs": 48,
     "failing": {
-      "basic_english_grammar": 48,
-      "basic_english_vocabulary": 48
+      "basic-english-grammar": 48,
+      "basic-english-vocabulary": 48
     }
   },
   "ru e-prime primes": {
     "graphs": 68,
     "failing": {
-      "nsm_semantics": 66,
-      "nsm_syntax": 66,
-      "non_prime": 33,
-      "e_prime_english": 2
+      "nsm-semantics": 66,
+      "nsm-syntax": 66,
+      "non-prime": 33,
+      "e-prime-english": 2
     }
   },
   "ru e-prime top-100": {
     "graphs": 30,
     "failing": {
-      "frequency_vocabulary": 28,
-      "e_prime_english": 2
+      "frequency-vocabulary": 28,
+      "e-prime-english": 2
     }
   },
   "ru e-prime top-200": {
     "graphs": 14,
     "failing": {
-      "frequency_vocabulary": 12,
-      "e_prime_english": 2
+      "frequency-vocabulary": 12,
+      "e-prime-english": 2
     }
   },
   "ru gellish primes": {
     "graphs": 68,
     "failing": {
-      "gellish_dictionary": 68,
-      "gellish_relations": 68
+      "gellish-dictionary": 68,
+      "gellish-relations": 68
     }
   },
   "ru gellish top-100": {
     "graphs": 66,
     "failing": {
-      "gellish_dictionary": 66,
-      "gellish_relations": 42,
-      "frequency_vocabulary": 6
+      "gellish-dictionary": 66,
+      "gellish-relations": 42,
+      "frequency-vocabulary": 6
     }
   },
   "ru gellish top-1000": {
     "graphs": 34,
     "failing": {
-      "frequency_vocabulary": 16,
-      "gellish_dictionary": 24
+      "frequency-vocabulary": 16,
+      "gellish-dictionary": 24
     }
   },
   "ru gellish top-200": {
     "graphs": 66,
     "failing": {
-      "gellish_dictionary": 66,
-      "gellish_relations": 42,
-      "frequency_vocabulary": 6
+      "gellish-dictionary": 66,
+      "gellish-relations": 42,
+      "frequency-vocabulary": 6
     }
   },
   "ru gellish top-500": {
     "graphs": 52,
     "failing": {
-      "gellish_dictionary": 48,
-      "gellish_relations": 32,
-      "frequency_vocabulary": 8
+      "gellish-dictionary": 48,
+      "gellish-relations": 32,
+      "frequency-vocabulary": 8
     }
   },
   "ru globish primes": {
     "graphs": 68,
     "failing": {
-      "globish_vocabulary": 66,
-      "globish_grammar": 12
+      "globish-vocabulary": 66,
+      "globish-grammar": 12
     }
   },
   "ru globish top-100": {
     "graphs": 66,
     "failing": {
-      "globish_vocabulary": 66,
-      "globish_grammar": 6
+      "globish-vocabulary": 66,
+      "globish-grammar": 6
     }
   },
   "ru globish top-1000": {
     "graphs": 24,
     "failing": {
-      "globish_vocabulary": 24
+      "globish-vocabulary": 24
     }
   },
   "ru globish top-200": {
     "graphs": 66,
     "failing": {
-      "globish_vocabulary": 66,
-      "globish_grammar": 6
+      "globish-vocabulary": 66,
+      "globish-grammar": 6
     }
   },
   "ru globish top-500": {
     "graphs": 48,
     "failing": {
-      "globish_vocabulary": 48
+      "globish-vocabulary": 48
     }
   },
   "ru plain-language primes": {
     "graphs": 12,
     "failing": {
-      "plain_language_rules": 12
+      "plain-language-rules": 12
     }
   },
   "ru plain-language top-100": {
     "graphs": 6,
     "failing": {
-      "plain_language_rules": 6
+      "plain-language-rules": 6
     }
   },
   "ru plain-language top-200": {
     "graphs": 2,
     "failing": {
-      "plain_language_rules": 2
+      "plain-language-rules": 2
     }
   },
   "ru sbvr primes": {
     "graphs": 68,
     "failing": {
-      "sbvr_rules": 68,
-      "sbvr_vocabulary": 68
+      "sbvr-rules": 68,
+      "sbvr-vocabulary": 68
     }
   },
   "ru sbvr top-100": {
     "graphs": 66,
     "failing": {
-      "sbvr_rules": 38,
-      "sbvr_vocabulary": 66,
-      "frequency_vocabulary": 14
+      "sbvr-rules": 38,
+      "sbvr-vocabulary": 66,
+      "frequency-vocabulary": 14
     }
   },
   "ru sbvr top-1000": {
     "graphs": 44,
     "failing": {
-      "frequency_vocabulary": 30,
-      "sbvr_vocabulary": 24
+      "frequency-vocabulary": 30,
+      "sbvr-vocabulary": 24
     }
   },
   "ru sbvr top-200": {
     "graphs": 66,
     "failing": {
-      "sbvr_rules": 38,
-      "sbvr_vocabulary": 66,
-      "frequency_vocabulary": 14
+      "sbvr-rules": 38,
+      "sbvr-vocabulary": 66,
+      "frequency-vocabulary": 14
     }
   },
   "ru sbvr top-500": {
     "graphs": 56,
     "failing": {
-      "sbvr_vocabulary": 48,
-      "frequency_vocabulary": 30,
-      "sbvr_rules": 4
+      "sbvr-vocabulary": 48,
+      "frequency-vocabulary": 30,
+      "sbvr-rules": 4
     }
   },
   "ru special-english primes": {
     "graphs": 66,
     "failing": {
-      "special_english_vocabulary": 66
+      "special-english-vocabulary": 66
     }
   },
   "ru special-english top-100": {
     "graphs": 66,
     "failing": {
-      "special_english_vocabulary": 66
+      "special-english-vocabulary": 66
     }
   },
   "ru special-english top-1000": {
     "graphs": 8,
     "failing": {
-      "special_english_vocabulary": 8
+      "special-english-vocabulary": 8
     }
   },
   "ru special-english top-200": {
     "graphs": 66,
     "failing": {
-      "special_english_vocabulary": 66
+      "special-english-vocabulary": 66
     }
   },
   "ru special-english top-500": {
     "graphs": 48,
     "failing": {
-      "special_english_vocabulary": 48
+      "special-english-vocabulary": 48
     }
   },
   "zh ace primes": {
     "graphs": 68,
     "failing": {
-      "ace_grammar": 68,
-      "ace_interpretation": 68
+      "ace-grammar": 68,
+      "ace-interpretation": 68
     }
   },
   "zh ace top-100": {
     "graphs": 38,
     "failing": {
-      "ace_grammar": 38,
-      "ace_interpretation": 38
+      "ace-grammar": 38,
+      "ace-interpretation": 38
     }
   },
   "zh ace top-1000": {
     "graphs": 1,
     "failing": {
-      "frequency_vocabulary": 1
+      "frequency-vocabulary": 1
     }
   },
   "zh ace top-200": {
     "graphs": 38,
     "failing": {
-      "ace_grammar": 38,
-      "ace_interpretation": 38
+      "ace-grammar": 38,
+      "ace-interpretation": 38
     }
   },
   "zh ace top-500": {
     "graphs": 2,
     "failing": {
-      "ace_grammar": 2,
-      "ace_interpretation": 2
+      "ace-grammar": 2,
+      "ace-interpretation": 2
     }
   },
   "zh asd-ste100 primes": {
     "graphs": 58,
     "failing": {
-      "non_prime": 46,
-      "nsm_semantics": 54,
-      "nsm_syntax": 16,
-      "ste_writing_rules": 12
+      "non-prime": 46,
+      "nsm-semantics": 54,
+      "nsm-syntax": 16,
+      "ste-writing-rules": 12
     }
   },
   "zh asd-ste100 top-100": {
     "graphs": 56,
     "failing": {
-      "frequency_vocabulary": 46,
-      "ste_writing_rules": 10
+      "frequency-vocabulary": 46,
+      "ste-writing-rules": 10
     }
   },
   "zh asd-ste100 top-1000": {
     "graphs": 21,
     "failing": {
-      "frequency_vocabulary": 11,
-      "ste_dictionary": 8,
-      "ste_writing_rules": 2
+      "frequency-vocabulary": 11,
+      "ste-dictionary": 8,
+      "ste-writing-rules": 2
     }
   },
   "zh asd-ste100 top-200": {
     "graphs": 48,
     "failing": {
-      "frequency_vocabulary": 36,
-      "ste_writing_rules": 12,
-      "ste_dictionary": 4
+      "frequency-vocabulary": 36,
+      "ste-writing-rules": 12,
+      "ste-dictionary": 4
     }
   },
   "zh asd-ste100 top-500": {
     "graphs": 44,
     "failing": {
-      "frequency_vocabulary": 26,
-      "ste_writing_rules": 10,
-      "ste_dictionary": 8
+      "frequency-vocabulary": 26,
+      "ste-writing-rules": 10,
+      "ste-dictionary": 8
     }
   },
   "zh basic-english primes": {
     "graphs": 68,
     "failing": {
-      "basic_english_grammar": 68,
-      "basic_english_vocabulary": 68
+      "basic-english-grammar": 68,
+      "basic-english-vocabulary": 68
     }
   },
   "zh basic-english top-100": {
     "graphs": 66,
     "failing": {
-      "basic_english_grammar": 66,
-      "basic_english_vocabulary": 66
+      "basic-english-grammar": 66,
+      "basic-english-vocabulary": 66
     }
   },
   "zh basic-english top-1000": {
     "graphs": 25,
     "failing": {
-      "basic_english_grammar": 24,
-      "basic_english_vocabulary": 24,
-      "frequency_vocabulary": 1
+      "basic-english-grammar": 24,
+      "basic-english-vocabulary": 24,
+      "frequency-vocabulary": 1
     }
   },
   "zh basic-english top-200": {
     "graphs": 58,
     "failing": {
-      "basic_english_grammar": 58,
-      "basic_english_vocabulary": 58
+      "basic-english-grammar": 58,
+      "basic-english-vocabulary": 58
     }
   },
   "zh basic-english top-500": {
     "graphs": 49,
     "failing": {
-      "basic_english_grammar": 49,
-      "basic_english_vocabulary": 49
+      "basic-english-grammar": 49,
+      "basic-english-vocabulary": 49
     }
   },
   "zh cnl-default primes": {
     "graphs": 2,
     "failing": {
-      "non_prime": 2,
-      "nsm_semantics": 2
+      "non-prime": 2,
+      "nsm-semantics": 2
     }
   },
   "zh cnl-default top-100": {
     "graphs": 2,
     "failing": {
-      "frequency_vocabulary": 2
+      "frequency-vocabulary": 2
     }
   },
   "zh e-prime primes": {
     "graphs": 68,
     "failing": {
-      "non_prime": 42,
-      "nsm_semantics": 66,
-      "nsm_syntax": 66,
-      "e_prime_english": 2
+      "non-prime": 42,
+      "nsm-semantics": 66,
+      "nsm-syntax": 66,
+      "e-prime-english": 2
     }
   },
   "zh e-prime top-100": {
     "graphs": 42,
     "failing": {
-      "frequency_vocabulary": 40,
-      "e_prime_english": 2
+      "frequency-vocabulary": 40,
+      "e-prime-english": 2
     }
   },
   "zh e-prime top-1000": {
     "graphs": 1,
     "failing": {
-      "frequency_vocabulary": 1
+      "frequency-vocabulary": 1
     }
   },
   "zh e-prime top-200": {
     "graphs": 38,
     "failing": {
-      "frequency_vocabulary": 36,
-      "e_prime_english": 2
+      "frequency-vocabulary": 36,
+      "e-prime-english": 2
     }
   },
   "zh e-prime top-500": {
     "graphs": 1,
     "failing": {
-      "e_prime_english": 1
+      "e-prime-english": 1
     }
   },
   "zh gellish primes": {
     "graphs": 68,
     "failing": {
-      "gellish_dictionary": 68,
-      "gellish_relations": 68
+      "gellish-dictionary": 68,
+      "gellish-relations": 68
     }
   },
   "zh gellish top-100": {
     "graphs": 66,
     "failing": {
-      "gellish_dictionary": 66,
-      "gellish_relations": 66
+      "gellish-dictionary": 66,
+      "gellish-relations": 66
     }
   },
   "zh gellish top-1000": {
     "graphs": 33,
     "failing": {
-      "gellish_dictionary": 32,
-      "frequency_vocabulary": 1
+      "gellish-dictionary": 32,
+      "frequency-vocabulary": 1
     }
   },
   "zh gellish top-200": {
     "graphs": 66,
     "failing": {
-      "gellish_dictionary": 58,
-      "gellish_relations": 30
+      "gellish-dictionary": 58,
+      "gellish-relations": 30
     }
   },
   "zh gellish top-500": {
     "graphs": 58,
     "failing": {
-      "gellish_dictionary": 58,
-      "gellish_relations": 2
+      "gellish-dictionary": 58,
+      "gellish-relations": 2
     }
   },
   "zh globish primes": {
     "graphs": 68,
     "failing": {
-      "globish_vocabulary": 68,
-      "globish_grammar": 12
+      "globish-vocabulary": 68,
+      "globish-grammar": 12
     }
   },
   "zh globish top-100": {
     "graphs": 66,
     "failing": {
-      "globish_vocabulary": 66,
-      "globish_grammar": 10
+      "globish-vocabulary": 66,
+      "globish-grammar": 10
     }
   },
   "zh globish top-1000": {
     "graphs": 33,
     "failing": {
-      "globish_vocabulary": 32,
-      "frequency_vocabulary": 1
+      "globish-vocabulary": 32,
+      "frequency-vocabulary": 1
     }
   },
   "zh globish top-200": {
     "graphs": 58,
     "failing": {
-      "globish_vocabulary": 58,
-      "globish_grammar": 10
+      "globish-vocabulary": 58,
+      "globish-grammar": 10
     }
   },
   "zh globish top-500": {
     "graphs": 58,
     "failing": {
-      "globish_vocabulary": 58,
-      "globish_grammar": 2
+      "globish-vocabulary": 58,
+      "globish-grammar": 2
     }
   },
   "zh plain-language primes": {
     "graphs": 12,
     "failing": {
-      "plain_language_rules": 12
+      "plain-language-rules": 12
     }
   },
   "zh plain-language top-100": {
     "graphs": 10,
     "failing": {
-      "plain_language_rules": 10
+      "plain-language-rules": 10
     }
   },
   "zh plain-language top-1000": {
     "graphs": 1,
     "failing": {
-      "frequency_vocabulary": 1
+      "frequency-vocabulary": 1
     }
   },
   "zh plain-language top-200": {
     "graphs": 2,
     "failing": {
-      "plain_language_rules": 2
+      "plain-language-rules": 2
     }
   },
   "zh plain-language top-500": {
     "graphs": 1,
     "failing": {
-      "plain_language_rules": 1
+      "plain-language-rules": 1
     }
   },
   "zh sbvr primes": {
     "graphs": 68,
     "failing": {
-      "sbvr_rules": 68,
-      "sbvr_vocabulary": 68
+      "sbvr-rules": 68,
+      "sbvr-vocabulary": 68
     }
   },
   "zh sbvr top-100": {
     "graphs": 66,
     "failing": {
-      "sbvr_rules": 38,
-      "sbvr_vocabulary": 66
+      "sbvr-rules": 38,
+      "sbvr-vocabulary": 66
     }
   },
   "zh sbvr top-1000": {
     "graphs": 33,
     "failing": {
-      "sbvr_vocabulary": 32,
-      "frequency_vocabulary": 1
+      "sbvr-vocabulary": 32,
+      "frequency-vocabulary": 1
     }
   },
   "zh sbvr top-200": {
     "graphs": 62,
     "failing": {
-      "sbvr_rules": 38,
-      "sbvr_vocabulary": 62
+      "sbvr-rules": 38,
+      "sbvr-vocabulary": 62
     }
   },
   "zh sbvr top-500": {
     "graphs": 58,
     "failing": {
-      "sbvr_vocabulary": 58,
-      "sbvr_rules": 6
+      "sbvr-vocabulary": 58,
+      "sbvr-rules": 6
     }
   },
   "zh special-english primes": {
     "graphs": 68,
     "failing": {
-      "special_english_vocabulary": 68
+      "special-english-vocabulary": 68
     }
   },
   "zh special-english top-100": {
     "graphs": 66,
     "failing": {
-      "special_english_vocabulary": 66
+      "special-english-vocabulary": 66
     }
   },
   "zh special-english top-1000": {
     "graphs": 17,
     "failing": {
-      "special_english_vocabulary": 16,
-      "frequency_vocabulary": 1
+      "special-english-vocabulary": 16,
+      "frequency-vocabulary": 1
     }
   },
   "zh special-english top-200": {
     "graphs": 58,
     "failing": {
-      "special_english_vocabulary": 58
+      "special-english-vocabulary": 58
     }
   },
   "zh special-english top-500": {
     "graphs": 50,
     "failing": {
-      "special_english_vocabulary": 50
+      "special-english-vocabulary": 50
     }
   }
 }

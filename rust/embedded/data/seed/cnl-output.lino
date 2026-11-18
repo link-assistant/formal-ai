@@ -12,62 +12,62 @@ controlled-output
     aliases "default|controlled natural language"
     styles "ace|plain|ste"
     registers "ste|minimal|forms"
-    density-required "active_voice|explicit_references|unambiguous_vocabulary"
+    density-required "active-voice|explicit-references|unambiguous-vocabulary"
     density-maximum-words 32
     maximum-words 20
-    required "active_voice|explicit_references|unambiguous_vocabulary|ace_grammar|ste_dictionary|plain_language_rules|minimal_english_semantics"
+    required "active-voice|explicit-references|unambiguous-vocabulary|ace-grammar|ste-dictionary|plain-language-rules|minimal-english-semantics"
   profile asd-ste100
     aliases "ASD-STE100|Simplified Technical English|STE"
     styles "ste|plain"
     registers "ste|forms"
     maximum-words 20
-    required "ste_writing_rules|ste_dictionary"
+    required "ste-writing-rules|ste-dictionary"
   profile ace
     aliases "ACE|Attempto Controlled English"
     styles "ace"
     registers "precise|forms"
-    required "ace_grammar|ace_interpretation"
+    required "ace-grammar|ace-interpretation"
   profile gellish
     aliases "Gellish|Formalized English"
     styles "gellish"
     registers "precise|forms"
-    required "gellish_dictionary|gellish_relations"
+    required "gellish-dictionary|gellish-relations"
   profile sbvr
     aliases "SBVR|Structured English"
     styles "sbvr"
     registers "precise|forms"
-    required "sbvr_vocabulary|sbvr_rules"
+    required "sbvr-vocabulary|sbvr-rules"
   profile plain-language
     aliases "Plain Language|Plain English|ISO 24495-1"
     styles "plain"
     registers "forms|precise"
-    required "plain_language_rules"
+    required "plain-language-rules"
   profile minimal-english
     aliases "Minimal English|Minimal Russian|Minimal Hindi|Minimal Chinese|Minimal Spanish"
     styles "plain"
     registers "minimal|forms"
-    required "minimal_english_semantics"
+    required "minimal-english-semantics"
   profile e-prime
     aliases "E-Prime|E Prime"
     styles "eprime|plain"
     registers "precise|forms"
     forbidden "am|is|are|was|were|be|been|being|isn't|aren't|wasn't|weren't|i'm|you're|we're|they're|it's|he's|she's|that's|there's|who's|what's"
-    required "e_prime_english"
+    required "e-prime-english"
   profile basic-english
     aliases "Basic English"
     styles "basic|plain"
     registers "basic|forms"
-    required "basic_english_vocabulary|basic_english_grammar"
+    required "basic-english-vocabulary|basic-english-grammar"
   profile special-english
     aliases "Special English"
     styles "plain"
     registers "special|forms"
-    required "special_english_vocabulary"
+    required "special-english-vocabulary"
   profile globish
     aliases "Globish"
     styles "plain"
     registers "globish|precise|forms"
-    required "globish_vocabulary|globish_grammar"
+    required "globish-vocabulary|globish-grammar"
   language en
     frequency "Explain using top {count} words"
     notice "Maximum precision uses specific words. Look up unfamiliar words in a dictionary to check their exact meaning."
@@ -163,72 +163,72 @@ controlled-output
       mode "cnl-default|plain-language|minimal-english|primes"
     form "Soy omnisciente."
       mode "max-precision"
-  check active_voice
+  check active-voice
     kind grammar
-  check explicit_references
+  check explicit-references
     kind references
-  check unambiguous_vocabulary
+  check unambiguous-vocabulary
     kind ambiguity
-  check ace_grammar
+  check ace-grammar
     kind grammar
     styles "ace"
-  check ace_interpretation
+  check ace-interpretation
     kind interpretation
     styles "ace"
-  check ste_writing_rules
+  check ste-writing-rules
     kind grammar
     styles "ste|plain"
-  check ste_dictionary
+  check ste-dictionary
     kind vocabulary
     lists "ste|primes"
-  check plain_language_rules
+  check plain-language-rules
     kind grammar
     styles "plain|ace|ste|basic"
-  check minimal_english_semantics
+  check minimal-english-semantics
     kind vocabulary
     lists "minimal|primes"
-  check gellish_dictionary
+  check gellish-dictionary
     kind vocabulary
     lists "gellish"
-  check gellish_relations
+  check gellish-relations
     kind grammar
     styles "gellish"
-  check sbvr_vocabulary
+  check sbvr-vocabulary
     kind grammar
     styles "sbvr"
     registers "precise|forms"
-  check sbvr_rules
+  check sbvr-rules
     kind grammar
     styles "sbvr"
-  check e_prime_english
+  check e-prime-english
     kind forbidden
     styles "eprime|plain|ste|ace|gellish|sbvr|dense|basic"
-  check basic_english_vocabulary
+  check basic-english-vocabulary
     kind vocabulary
     lists "basic"
-  check basic_english_grammar
+  check basic-english-grammar
     kind grammar
     styles "basic|plain"
     registers "basic|forms"
-  check special_english_vocabulary
+  check special-english-vocabulary
     kind vocabulary
     lists "special"
-  check globish_vocabulary
+  check globish-vocabulary
     kind vocabulary
     lists "globish"
-  check globish_grammar
+  check globish-grammar
     kind grammar
     styles "plain"
-  check nsm_syntax
+  check nsm-syntax
     kind grammar
     styles "primes"
-  check nsm_semantics
+  check nsm-semantics
     kind grammar
     styles "primes"
     registers "primes"
-  check lexical_minimum
+  check lexical-minimum
     kind minimum
-  check frequency_vocabulary
+  check frequency-vocabulary
     kind frequency
   frame reply
     answer "true"

@@ -51,8 +51,8 @@ export function dialogueGraphs() {
 }
 
 // Checks that belong to the lexical density rather than to the named profile.
-export const DENSITY_CHECKS = new Set(['non_prime', 'nsm_vocabulary', 'nsm_syntax', 'nsm_semantics',
-  'frequency_vocabulary', 'lexical_minimum']);
+export const DENSITY_CHECKS = new Set(['non-prime', 'nsm-vocabulary', 'nsm-syntax', 'nsm-semantics',
+  'frequency-vocabulary', 'lexical-minimum']);
 export const profileViolations = report => report.violations.filter(id => !DENSITY_CHECKS.has(id));
 
 /**

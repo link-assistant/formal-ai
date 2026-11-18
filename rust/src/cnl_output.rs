@@ -1,27 +1,39 @@
 //! Output-only constraints. Accepting text never depends on its grammar.
 //! JavaScript root: `js/agentic/crate/cnl_output.mjs`.
 pub mod configuration;
+mod controlled;
 mod dialogue;
+pub mod grammar;
 mod projection;
+mod validation;
 
 pub use configuration::{
     OutputConfig, OutputDensity, OutputStandard, frequency_tier, output_configuration,
 };
+pub use controlled::{ControlledDialogue, ControlledSolve, controlled_dialogue, controlled_solve};
 pub use dialogue::{OutputDirective, OutputTurn, output_directive, output_source, output_turn};
 pub use projection::{
-    OutputCheckers, OutputDocument, OutputPart, OutputReport, RenderedOutput, formalize_output,
+    OutputDocument, OutputPart, RenderedOutput, formalize_output, output_candidates,
     output_links_notation, output_meaning, output_words, project_output, render_output,
-    validate_output,
 };
+pub use validation::{OutputCheckers, OutputReport, validate_output};
 
 use crate::seed::parser::parse_lino;
-use std::sync::OnceLock;
+use grammar::{CompiledGrammar, SharedPolicy, compile_grammar, parse_language_grammar};
+use std::collections::BTreeMap;
+use std::sync::{Arc, OnceLock};
+
+pub const CNL_POLICY_PATH: &str = "data/seed/cnl-output.lino";
 
 #[derive(Debug, Clone)]
 pub struct Profile {
     pub id: String,
     pub aliases: Vec<String>,
     pub max_words: Option<usize>,
+    pub density_max_words: Option<usize>,
+    pub styles: Vec<String>,
+    pub registers: Vec<String>,
+    pub density_required: Vec<String>,
     pub forbidden: Vec<String>,
     pub required: Vec<String>,
 }
@@ -55,6 +67,26 @@ pub struct OutputPolicy {
     pub profiles: Vec<Profile>,
     pub languages: Vec<OutputLanguage>,
     pub lexemes: Vec<OutputLexeme>,
+    /// Frames, facts and checks shared by every language.
+    pub shared: Arc<SharedPolicy>,
+    /// Compiled grammars of the declared languages whose grammar file exists.
+    pub grammars: BTreeMap<String, Arc<CompiledGrammar>>,
+}
+
+impl OutputPolicy {
+    #[must_use]
+    pub fn grammar(&self, language: &str) -> Option<&Arc<CompiledGrammar>> {
+        self.grammars.get(language)
+    }
+
+    /// Grammars in declared language order (the order prompts are analyzed in).
+    #[must_use]
+    pub fn ordered_grammars(&self) -> Vec<Arc<CompiledGrammar>> {
+        self.languages
+            .iter()
+            .filter_map(|language| self.grammar(&language.id).cloned())
+            .collect()
+    }
 }
 
 fn list(value: &str) -> Vec<String> {
@@ -65,8 +97,22 @@ fn list(value: &str) -> Vec<String> {
         .collect()
 }
 
-/// Parse the same policy the worker reads; no vocabulary is embedded in code.
+/// JavaScript `Number(text) || null` for a positive word count.
+fn positive_count(text: &str) -> Option<usize> {
+    text.trim().parse().ok().filter(|count| *count > 0)
+}
+
+/// Parse the same policy the worker reads, without language grammars.
 pub fn parse_output_policy(text: &str) -> OutputPolicy {
+    parse_output_policy_with(text, |_| None)
+}
+
+/// Parse the policy; `grammar_text(language)` returns that language's grammar
+/// file, or `None` when the language has no grammar yet.
+pub fn parse_output_policy_with(
+    text: &str,
+    grammar_text: impl Fn(&str) -> Option<String>,
+) -> OutputPolicy {
     let root = parse_lino(text);
     let Some(root) = (if root.name == "controlled-output" {
         Some(&root)
@@ -83,7 +129,11 @@ pub fn parse_output_policy(text: &str) -> OutputPolicy {
             "profile" => policy.profiles.push(Profile {
                 id: node.id.clone(),
                 aliases: list(node.find_child_value("aliases")),
-                max_words: node.find_child_value("maximum-words").parse().ok(),
+                max_words: positive_count(node.find_child_value("maximum-words")),
+                density_max_words: positive_count(node.find_child_value("density-maximum-words")),
+                styles: list(node.find_child_value("styles")),
+                registers: list(node.find_child_value("registers")),
+                density_required: list(node.find_child_value("density-required")),
                 forbidden: list(node.find_child_value("forbidden")),
                 required: list(node.find_child_value("required")),
             }),
@@ -122,11 +172,37 @@ pub fn parse_output_policy(text: &str) -> OutputPolicy {
             _ => {}
         }
     }
+    let shared = Arc::new(grammar::parse_grammar_policy(root));
+    for language in &policy.languages {
+        let Some(source) = grammar_text(&language.id).filter(|text| !text.is_empty()) else {
+            continue;
+        };
+        if let Ok(data) = parse_language_grammar(&source) {
+            let compiled = compile_grammar(data, Arc::clone(&shared));
+            policy
+                .grammars
+                .insert(language.id.clone(), Arc::new(compiled));
+        }
+    }
+    policy.shared = shared;
     policy
 }
 
+/// The embedded seed file at `path`, if the registry has one.
+fn seed_text(path: &str) -> Option<String> {
+    crate::seed::seed_files()
+        .into_iter()
+        .find(|(name, _)| *name == path)
+        .map(|(_, text)| text.to_owned())
+}
+
+/// The shared policy plus every declared language whose grammar file is registered.
 pub fn cnl_policy() -> &'static OutputPolicy {
     static POLICY: OnceLock<OutputPolicy> = OnceLock::new();
-    POLICY
-        .get_or_init(|| parse_output_policy(include_str!("../embedded/data/seed/cnl-output.lino")))
+    POLICY.get_or_init(|| {
+        parse_output_policy_with(
+            &seed_text(CNL_POLICY_PATH).unwrap_or_default(),
+            |language| seed_text(&grammar::CNL_LANGUAGE_PATH.replace("{language}", language)),
+        )
+    })
 }

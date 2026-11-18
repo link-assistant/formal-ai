@@ -278,6 +278,7 @@ pub(super) fn client_function_completion(
             total_tokens: prompt_tokens.saturating_add(completion_tokens),
         },
         learning_trace: None,
+        output_projection: None,
     })
 }
 

@@ -90,15 +90,15 @@ test('lexical density cannot introduce a known violation of a named profile', ()
 test('independent evidence cannot be replaced with a profile label or a word list', () => {
   assert.equal(validateOutput('I know everything.', 'en', {output_standard: 'ace'}).compliant, false);
   assert.deepEqual(validateOutput('I know everything.', 'en', {output_standard: 'ace'}).unchecked,
-    ['ace_grammar', 'ace_interpretation']);
+    ['ace-grammar', 'ace-interpretation']);
   const frequency = validateOutput('uncommon word', 'en', {output_standard: 'e-prime', lexical_density: 'top-200'}, policy,
     {frequency: (_text, language, tier) => {assert.equal(language, 'en'); assert.equal(tier, 200); return false;}});
-  assert.deepEqual(frequency.violations, ['frequency_vocabulary']);
+  assert.deepEqual(frequency.violations, ['frequency-vocabulary']);
   assert.equal(frequency.compliant, false);
   const primes = validateOutput('know', 'en', {output_standard: 'e-prime', lexical_density: 'primes'}, policy);
   assert.equal(primes.compliant, false);
-  assert.ok(primes.unchecked.includes('nsm_syntax'));
-  assert.ok(primes.unchecked.includes('nsm_semantics'));
+  assert.ok(primes.unchecked.includes('nsm-syntax'));
+  assert.ok(primes.unchecked.includes('nsm-semantics'));
   assert.equal(validateOutput('I know this.', 'en', {output_standard: 'e-prime'}).compliant, false);
   for (const text of ['It is true.', 'I’m here.', 'They ARE here.', "It isn't ready."]) {
     assert.equal(validateOutput(text, 'en', {output_standard: 'e-prime'}).compliant, false, text);
@@ -147,16 +147,16 @@ test('a finite lexical alternative search does not certify a global minimum', ()
   const report=validateOutput('I know everything.','en',{
     output_standard:'e-prime',lexical_density:'max-precision'},policy);
   assert.equal(report.compliant,false);
-  assert.ok(report.unchecked.includes('lexical_minimum'));
+  assert.ok(report.unchecked.includes('lexical-minimum'));
 });
 
 test('complete E-Prime evidence cannot be inferred from a finite forbidden-word filter', () => {
   for (const text of ["’Tis ready.", "Thou wast here.", "Thou beest wise.", "I know this."]) {
     const report = validateOutput(text, 'en', {output_standard: 'e-prime'});
     assert.equal(report.compliant, false, text);
-    assert.ok(report.unchecked.includes('e_prime_english'), text);
+    assert.ok(report.unchecked.includes('e-prime-english'), text);
   }
   const config = {output_standard: 'e-prime'};
-  assert.equal(validateOutput('I know this.', 'en', config, policy, {e_prime_english: () => true}).compliant, true);
-  assert.equal(validateOutput('Thou wast here.', 'en', config, policy, {e_prime_english: () => false}).compliant, false);
+  assert.equal(validateOutput('I know this.', 'en', config, policy, {'e-prime-english': () => true}).compliant, true);
+  assert.equal(validateOutput('Thou wast here.', 'en', config, policy, {'e-prime-english': () => false}).compliant, false);
 });
