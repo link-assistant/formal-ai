@@ -1,0 +1,79 @@
+{
+  "complete": false,
+  "seconds": 7.994,
+  "records": [
+    {
+      "name": "grammar-parity",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/formalization-native-parity.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 1.969,
+      "bytes": 333,
+      "lines": 10,
+      "sha256": "78dcf98a00e32ae50f2a7f2ef3b9915e76d7bd8773fdcc9efd3b2e8c36c46470"
+    },
+    {
+      "name": "shared-grammar",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/shared-formalization-grammar.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 1.773,
+      "bytes": 615,
+      "lines": 13,
+      "sha256": "9f9b54a2a4aa07da552704631716fa3134611eaade5fdba04f62be94eeff5afb"
+    },
+    {
+      "name": "task-executor",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1550-meta-executor.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 3.822,
+      "bytes": 937,
+      "lines": 17,
+      "sha256": "308f44b050fc8ac249b36074743fec73943a40d7c13893f7369cb2e02bbde8bf"
+    },
+    {
+      "name": "rust-format",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--config",
+        "skip_children=true",
+        "--check",
+        "rust/src/formalization/mod.rs",
+        "rust/tests/source/source_tests/formalization/grammar_native_parity.rs"
+      ],
+      "exitCode": 1,
+      "seconds": 0.378,
+      "bytes": 288,
+      "lines": 12,
+      "sha256": "1c1aef9fe56fd441bb471de751c4be80fbbbde5556faf3da4db512fefbd9b83f"
+    }
+  ],
+  "nodeHeapMiB": 256,
+  "childrenPeakRssKiB": 226744,
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

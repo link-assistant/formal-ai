@@ -386,3 +386,12 @@ All 23 workflows on `a97832237cbb365000dd7296050984e4bdd59ebb` complete successf
   unfinished; supplied work earns zero independent authorship credit.
 
 - [x] Commit quotation repair 13c2763c, verify all original source hashes, review final code and projection diffs, and pass five final release/naming/size gates plus TypeScript and whitespace checks. Fresh feedback remains unchanged and all 23 a9783223 workflows pass. Main is merged; quotation-head hosted CI and broad acceptance remain unfinished.
+
+## Decoded grammar follow-up (2026-11-18)
+
+- [x] Collect all 23 completed 04a468f5 workflows: 21 pass; preserve complete logs for the native assertion and checkout transfer failures. Read the material native failure lines and the complete checkout and pipeline status job logs.
+- [x] Remove the second quote decoding from native structural/vocabulary accessors. Add shared held-out quoted-value vectors and a native assertion for the actual ASCII task quote pairs; JavaScript already preserves the decoded values.
+- [x] Pass 2 + 5 + 9 focused JavaScript cases separately, preserve/correct the initial Rust formatting failure, and pass all ten selected source/release gates and whitespace checks. No shared metadata change, local Rust build or native execution.
+- [x] Refresh every feedback type, required sub-issues and main ancestry; discussion is unchanged, no required sub-issues and no active/queued runs.
+- [ ] Publish the complete repair once and verify all new-head workflows, especially native calendar/currency execution. A checkout retry result does not establish transport causality.
+- [ ] Complete parent-answer coverage, context binding, native quotation fixture execution, the 53 distinct native panic headers, three terminations, full template comparison and every earlier unfinished criterion. Independent reasoning acceptance stays 0/20; PR stays draft and unmerged.

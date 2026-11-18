@@ -127,3 +127,64 @@ feedback refresh finds unchanged issue and PR discussion, no inline comments or
 reviews, and zero required sub-issues. Main 015a6831 remains merged. All 23
 workflows on a9783223 are completed successfully, with empty in-progress and
 queued lists. The quotation publication still needs its own hosted CI results.
+
+## Hosted failure and decoded-value repair
+
+Publication head `04a468f53549f0825999c1dd9e53210476723106` completes
+21 of 23 workflows successfully. CI/CD run 44242408037 fails at 05:14:34 UTC
+on 2026-11-18; Layered CI run 44242407754 fails at 05:17:33 UTC. Both run
+records identify this head and start after its publication. Preserve the full
+workflow logs and each failed job log under
+`experiments/issue-1580/evidence/ci/task-quotation-04a468f5/`.
+
+The native calendar/currency regression reaches task decomposition and panics
+at `rust/src/formalization/mod.rs:38`: `nonempty structural grammar facts`.
+Its failed job log lines 1634–1644 retain the assertion and test failure. The
+seed parser has already decoded the ASCII double-quote pair to two quote
+characters. Both native grammar accessors then trim literal quote characters
+from the decoded value, erasing the pair. The JavaScript accessor preserves the
+decoded value. Retain native values exactly in both structural and vocabulary
+accessors. Shared held-out vectors now include an all-quote value and values
+with literal quotes at either or both edges. Both test implementations consume
+the same expected values. Add an assertion against the actual seeded task
+quote pairs to the native grammar regression. Native execution of the repair
+remains pending CI; local source inspection and JavaScript fixture execution
+cannot establish it.
+
+The Layered CI failure occurs in checkout before any test runs. Failed job
+134593254796 lines 124–126 report curl 28, a transfer below 1024 bytes/second
+for 20 seconds, a bad pack header and failure to fetch a promisor blob. Its
+entire 171-line log is read. This is separate from the native assertion; no
+workflow policy is changed for the single transfer failure. The next complete
+repair push will exercise checkout again.
+
+The bounded semantic projection of all four selected context-candidate cases
+is now read without truncation, excluding nested execution traces. It confirms
+that the arithmetic-only parent reports `calculation`, while the uncovered
+subject and two-passage parents report `prompt_text_gap`. The original meeting
+parent reports both requested time and place. These observations explain the
+candidate rejection; they do not establish a production coverage repair.
+
+Broad acceptance and independent authorship remain unchanged and unfinished.
+
+Local decoded-value validation passes two shared fixture tests, five shared
+grammar tests and nine executor tests in separate bounded runs. Preserve the
+initial formatting failure; the maintained Rust 2024 formatter restores the
+required single-line collection layout, then its check passes. All ten selected
+source, fixture, release, naming and size gates pass in 125.230 seconds; no
+shared `data/meta` input changes in this follow-up, so the complete 138-entry
+inventory is not repeated. Peak child RSS is 1,116,796 KiB. Whitespace checks
+pass. Native execution of this repair remains pending hosted CI.
+
+The 05:31 UTC feedback refresh finds the same issue comment, nine PR
+conversation comments, zero inline comments and zero reviews. The required
+sub-issue endpoint returns an empty list. Main 015a6831 remains merged and both
+branch active/queued lists are empty. The failed 04a468f5 workflow logs remain
+complete as lossless gzip files; only the stated failed-job ranges and the
+complete 171-line checkout and 215-line status logs have been literally read.
+
+Final staged size and naming checks pass. The first staged whitespace check
+stops publication before any push because the saved raw review diff contains
+whitespace-only context lines. Preserve the entire failed publication and
+compress that diff losslessly; do not alter its reviewed contents or production
+code. The corrected publication must pass staged whitespace before pushing.

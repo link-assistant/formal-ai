@@ -1,0 +1,72 @@
+[
+  {
+    "gate": "check-abbreviations",
+    "bytes": 169,
+    "lines": 4,
+    "sha256": "a960a72681e465a2d48dc7a91a990da4927812a326c1dc942383f78d764a480f",
+    "literalDetailedReviewClaimed": false
+  },
+  {
+    "gate": "check-changelog-fragment-js-twin",
+    "bytes": 157,
+    "lines": 2,
+    "sha256": "dcf80a72b0128ad5e68a8f4e4f51de3cd3d4386acde041a0c43079b5de6fdbc7",
+    "literalDetailedReviewClaimed": false
+  },
+  {
+    "gate": "check-file-size",
+    "bytes": 48995,
+    "lines": 380,
+    "sha256": "242d593917e412ded0103edfba40cf0940eea2883442ff92dc72d6201392ac3c",
+    "literalDetailedReviewClaimed": false
+  },
+  {
+    "gate": "check-fragment-release-map",
+    "bytes": 836,
+    "lines": 17,
+    "sha256": "dfd42af7953c2777c8c7b4f8796ccd9bde7172ce09c42a89adf58254f0ddef2c",
+    "literalDetailedReviewClaimed": false
+  },
+  {
+    "gate": "check-hardcoded-language",
+    "bytes": 239,
+    "lines": 8,
+    "sha256": "b24b6565fe954cbc24aed9c42f37e16537339f448d9ccb92acdc107c6f80b4ef",
+    "literalDetailedReviewClaimed": false
+  },
+  {
+    "gate": "check_js_rust_translation",
+    "bytes": 234,
+    "lines": 2,
+    "sha256": "8d81c1d16ab059ad726281633077183e28a90abbcf81f415a221fd5370cc0408",
+    "literalDetailedReviewClaimed": false
+  },
+  {
+    "gate": "check-package-self-containment",
+    "bytes": 126,
+    "lines": 2,
+    "sha256": "091a5fa4b6978f9758fc0224748107b7fd865816524580f24f323c38a6f2c796",
+    "literalDetailedReviewClaimed": false
+  },
+  {
+    "gate": "check-reconstructed-changelog",
+    "bytes": 135,
+    "lines": 2,
+    "sha256": "e80cef669295f0169172d21f0d139b6ee3607c8c0c92d2d368f17544dd2fa9d2",
+    "literalDetailedReviewClaimed": false
+  },
+  {
+    "gate": "check-tests-as-docs",
+    "bytes": 227,
+    "lines": 6,
+    "sha256": "4c41d72c51bbe463871ad0778b35e99b4f75ff10bcbbd0578dc223ffc2b13939",
+    "literalDetailedReviewClaimed": false
+  },
+  {
+    "gate": "check-twin-citations",
+    "bytes": 149,
+    "lines": 2,
+    "sha256": "66a42aeeebaac4bae716a10c2ea341636e9c6ad9eef8e1f8f95332565f3abed5",
+    "literalDetailedReviewClaimed": false
+  }
+]
