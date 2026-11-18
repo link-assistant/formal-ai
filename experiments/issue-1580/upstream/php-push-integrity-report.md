@@ -1,8 +1,10 @@
+Filed as https://github.com/link-foundation/php-ai-driven-development-pipeline-template/issues/28. The exact posted body and fresh source/duplicate checks are retained under `evidence/checks/php-push-integrity/report-publication/`. Reporting does not repair the upstream template.
+
 # Release CLI reports success after a rejected branch or tag push
 
 Observed at template commit `3a034b27a56067971ca74dd4c74c7707056b215d` through the original `scripts/version-and-commit.php` entrypoint, in both `changeset` and `instant` modes.
 
-`Git::push()` and `Git::pushTags()` return `Process::run()` results. Both paths in `VersionReleaser` ignore those results, so a failed Git publication still exits zero and writes `version_committed=true` to `GITHUB_OUTPUT`.
+`Git::push()` and `Git::pushTags()` return `Process::run()` results. The release orchestration in `VersionReleaser` ignores both results, so a failed Git publication still exits zero and writes `version_committed=true` to `GITHUB_OUTPUT`.
 
 Reproduced remote states:
 
@@ -26,7 +28,7 @@ node --max-old-space-size=256 --test --test-concurrency=1 experiments/issue-1580
 
 Requires Node, PHP and Git; no Composer installation, credentials, networked remote or hosted release is needed. This verifies the original release entrypoint and its dependencies with the fixture's minimal namespace autoloader. The original eight source files retain their Git blob and SHA-256 identities in `fixtures/php-template/source.json`.
 
-All **9/9 focused cases** pass: four observations of the defect, four failure-propagation candidate controls and one positive-control test covering both modes before and after the candidate. All **52/52 tests** in the maintained template-observation entrypoint also pass. Full logs and digest receipts are retained in the [immutable evidence directory](https://github.com/link-assistant/formal-ai/tree/@EVIDENCE_COMMIT@/experiments/issue-1580/evidence/checks/php-push-integrity).
+All **9/9 focused cases** pass: four observations of the defect, four failure-propagation candidate controls and one positive-control test covering both modes before and after the candidate. All **52/52 tests** in the maintained template-observation entrypoint also pass. Full logs and digest receipts are retained in the [immutable evidence directory](https://github.com/link-assistant/formal-ai/tree/73da561d993cee3506e9f77dba353255888c4acc/experiments/issue-1580/evidence/checks/php-push-integrity).
 
 ## Suggested correction
 
@@ -34,6 +36,6 @@ Propagate unsuccessful branch and tag publication before emitting success output
 
 The candidate does not make the two pushes atomic: if the branch push succeeds and the tag push fails, the earlier branch update remains visible. That state is explicitly asserted by the regression. No change has been submitted to the template here.
 
-This is distinct from #26 (failed local commit result) and #27 (automatic release guard after failed quality checks). The duplicate/source preflight is recorded with the publication receipt.
+This is distinct from #26 (failed Git comparisons and no-code change classification) and #27 (automatic release guard after failed quality checks). The duplicate/source preflight is recorded with the publication receipt.
 
 Reported while comparing CI/CD template behavior for https://github.com/link-assistant/formal-ai/issues/1580; tracked in https://github.com/link-assistant/formal-ai/pull/1581.

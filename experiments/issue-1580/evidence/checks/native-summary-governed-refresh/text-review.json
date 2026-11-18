@@ -1,0 +1,13 @@
+{
+  "fullTextDiffLiterallyRead": true,
+  "diffRawSha256": "87573cb714fb6332fbd805a84059673db1f6f55ba7626ed1297e0becdffb4ac0",
+  "diffRawLines": 125,
+  "subsequentCorrection": {
+    "file": "experiments/issue-1580/work-plan.md",
+    "before": "- [ ] Verify actual native execution and every workflow on the exact published head 73da561d9; the collector is active and no final hosted outcome is claimed yet.",
+    "after": "- [x] Verify all 23 workflows on 73da561d9: 22 succeed and Layered CI exposes only the two stale source-hash assertions. The native targets pass 1/1 calendar/currency, 8/8 executor, 1/1 forced functions, 12/12 synthesis, and both HTTP cases. Full payloads and literal review ranges are retained below."
+  },
+  "sourceWitnessReviewedByCompleteObjectComparison": true,
+  "allDetailedSuccessfulGatePayloadsLiterallyRead": false,
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,18 @@
+{
+  "payloads": [
+    {
+      "file": "outcome.json.gz",
+      "rawSha256": "65347a59e8107e6d7ad1b4fa093fa33fc9952ac7c3b95672064c75f93991e3d4",
+      "archiveSha256": "024544217d1d2a49e6d08d141fbaa0b59c0edc424bfacebaa6ed23240b06db83",
+      "rawLines": 97
+    },
+    {
+      "file": "worker.log.gz",
+      "rawSha256": "330b92a16ed3c285ced634bb550953fe13ee3fd0043a2aa7451d107b85e669bc",
+      "archiveSha256": "4cacbc1f318816715e48cd912d951bc26932cf96712017e9922c803a18c98e43",
+      "rawLines": 20
+    }
+  ],
+  "fullPayloadsLiterallyRead": false,
+  "independentAuthorshipCredit": 0
+}

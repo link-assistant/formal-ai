@@ -576,7 +576,7 @@ PHP classification correction: the path taxonomy is not a CI boundary. Current t
 - [x] Read all 17 release-related files and reproduce ignored branch/tag push outcomes through the original PHP CLI in both modes. Nine focused and 52 maintained tests pass; six affected gates pass. Preserve remote state and actual output assertions; no package installation or hosted release.
 - [x] Preserve the eight unmodified fixture sources and atomic local source commit.
 - [x] Collect all 23 fda677ef9 workflows: 22 pass; native synthesis exposes one stale exact summary assertion. The new native source-operand/count tests actually pass. Preserve the failed workflow and both failed jobs, review the actual failure and fix it in the next batch.
-- [ ] Publish the reviewed PHP push-result evidence once, then fresh-check/file the distinct upstream report. Full PHP review, wider native/runtime and 0/20 independent reasoning criteria remain open.
+- [x] Publish the reviewed PHP push-result evidence at 73da561d9, then fresh-check/file the distinct upstream report as PHP template #28. Exact posted text and immutable evidence bytes are verified. Full PHP review, wider native/runtime and 0/20 independent reasoning criteria remain open.
 
 ## Native summary assertion follow-through (2026-11-18)
 
@@ -584,5 +584,16 @@ PHP classification correction: the path taxonomy is not a CI boundary. Current t
 - [x] Pass 14 existing text-transform and four routing tests, six affected gates, Rust 2024 formatting and whitespace. Read every local log and hash-verify it. Commit the atomic source correction as e3b50624c.
 - [x] Retain the bounded twelve-case browser audit, including four full-answer differences and one host-dependent case. This is an observation with a nonzero audit exit, not a passing parity claim. Preserve browser executor refusals explicitly.
 - [x] Retain all 94 prior publication command payloads and actual 22/23 workflow outcomes; read the complete downstream Pipeline Status failure. Refresh/read the entire issue and all feedback: 1 issue / 9 PR conversation / 0 inline / 0 review / 0 sub-issues.
-- [ ] Publish the complete PHP/source-assertion batch after staged gates and the single-push gate, then verify actual native execution on that exact head.
-- [ ] Fresh-check and file the separate PHP ignored-push-result report using immutable published evidence. Complete every prior broader requirement; independent reasoning remains 0/20, PR #1581 draft and unmerged.
+- [x] Publish the complete PHP/source-assertion batch at 73da561d9 after six staged gates and the single-push gate; retain all publication payloads with hashes. Both queued/in-progress lists were empty immediately before the push, main was already an ancestor, and the remote head/updated draft PR/clean tree were verified.
+- [x] Verify all 23 workflows on 73da561d9: 22 succeed and Layered CI exposes only the two stale source-hash assertions. The native targets pass 1/1 calendar/currency, 8/8 executor, 1/1 forced functions, 12/12 synthesis, and both HTTP cases. Full payloads and literal review ranges are retained below.
+- [x] Fresh-check and file the separate PHP ignored-push-result report using immutable published evidence as https://github.com/link-foundation/php-ai-driven-development-pipeline-template/issues/28.
+- [ ] Complete every prior broader requirement; independent reasoning remains 0/20, PR #1581 draft and unmerged.
+
+## Governed summary source witness and hosted follow-through (2026-11-18)
+
+- [x] Collect all 23 workflows on 73da561d9: 22 succeed; Layered CI fails only its two stale governed-source identity assertions. Preserve complete failed workflow and job logs with exact hashes.
+- [x] Literally review native log lines 1630–1746: calendar/currency 1/1, executor 8/8, forced functions 1/1, synthesis 12/12 and both HTTP cases pass. Full logs remain retained; this is focused execution, not complete native/main acceptance.
+- [x] Reproduce both stale-hash failures locally and refresh through the maintained explicit reviewed-baseline writer. Require complete object equality after exactly one authoritative source hash update, preserving 221 supported and 964 unsupported records.
+- [x] Both unchanged JavaScript regression files pass (2/2 and 34/34); all 86 executable gates pass with 52 explicit exclusions and zero failures. Verify all 93 retained payload hashes and the exact one-hash complete-object witness comparison. No local Rust build.
+- [x] Commit the independently useful witness correction as `9b9552be9e798dbca5b4a6fd901ff41a778d8f0a`; prepare the complete evidence/publication batch. The publication receipt records actual push execution and fresh single-push checks. Broader issue acceptance remains unfinished.
+- [ ] Collect every next-head hosted result and continue every broader unfinished criterion; PR #1581 stays draft, independent reasoning credit 0/20.

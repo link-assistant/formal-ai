@@ -31,8 +31,14 @@ No Composer installation, network publication, Rust build or PHP package build r
 
 Formal AI's existing `scripts/version-and-commit.rs:920–989` already exits on
 commit, exhausted branch-push and tag-push failures, and creates the tag after the
-branch update. Those behaviors are retained. This new upstream report remains a
-draft until immutable executable evidence is published and duplicates are checked.
+branch update. Those behaviors are retained. The distinct finding is filed as
+[PHP template #28](https://github.com/link-foundation/php-ai-driven-development-pipeline-template/issues/28).
+Immediately before filing, the upstream head and both relevant source hashes matched,
+all 27 issue and eight PR bodies were unchanged from their verified prior readings,
+and GitHub-hosted reproduction/results/log bytes matched the local immutable
+evidence at `035cb62b9` and `73da561d9`. The posted body was read and verified by
+API equality and SHA-256. It distinguishes #26 (Git comparisons/no-code
+classification) and #27 (automatic-release quality guard). No upstream repair is claimed.
 
 The per-file release review records 17 completely read source/workflow/test files,
 with explicit transfer decisions. The full 608-blob PHP semantic review, captured

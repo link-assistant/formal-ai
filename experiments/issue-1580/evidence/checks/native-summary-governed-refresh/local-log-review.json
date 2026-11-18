@@ -1,0 +1,36 @@
+{
+  "records": [
+    {
+      "file": "before-fixture-integrity.log.gz",
+      "sha256": "453d3e82bbf94985ca2580724c79a820eed1ec0ded60871d791264e297c1d62c",
+      "rawLines": 35,
+      "wholeLogLiterallyRead": true
+    },
+    {
+      "file": "before-specification-identifiers.log.gz",
+      "sha256": "8f4a2494c97fe0c74cd5fa090c5327abbdfeedc02a335ddbc70c0cf8438c0217",
+      "rawLines": 124,
+      "wholeLogLiterallyRead": true
+    },
+    {
+      "file": "reviewed-refresh.log.gz",
+      "sha256": "966d9d0ebaadd430ed1e5a3b1808c0fe73703d094943a05e7deeda3f636f9953",
+      "rawLines": 1,
+      "wholeLogLiterallyRead": true
+    },
+    {
+      "file": "after-fixture-integrity.log.gz",
+      "sha256": "fd97de14e49091d8fdbf0acdf6143b37343b0afe94535ebc00a25cc50a98f1a3",
+      "rawLines": 10,
+      "wholeLogLiterallyRead": true
+    },
+    {
+      "file": "after-specification-identifiers.log.gz",
+      "sha256": "560d296eb1968b4430cf56af81cd2a9942a7af4ebfd717a155addf4147bc2845",
+      "rawLines": 42,
+      "wholeLogLiterallyRead": true
+    }
+  ],
+  "reviewedObjectReceiptSha256": "3202b6ece149efc12a03bd4818dacf9a90320215ec15a5c5475e75e15ad06aed",
+  "independentAuthorshipCredit": 0
+}
