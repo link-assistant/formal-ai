@@ -23,6 +23,14 @@ pub mod typed_meaning;
 #[must_use]
 pub fn structural_rule_values(rule: &str, kind: &str) -> Vec<String> {
     let root = grammar_root().expect("shared formalization grammar");
+    structural_rule_values_from(root, rule, kind)
+}
+
+fn structural_rule_values_from(
+    root: &crate::seed::parser::LinoNode,
+    rule: &str,
+    kind: &str,
+) -> Vec<String> {
     let records = root
         .children
         .iter()
@@ -33,7 +41,7 @@ pub fn structural_rule_values(rule: &str, kind: &str) -> Vec<String> {
         .children
         .iter()
         .filter(|node| node.name == kind)
-        .map(|node| node.id.trim_matches('"').to_owned())
+        .map(|node| node.id.clone())
         .collect::<Vec<_>>();
     assert!(
         !values.is_empty() && values.iter().all(|value| !value.is_empty()),
@@ -125,10 +133,7 @@ fn grammar_vocabulary_from(
     } else {
         local
     };
-    values
-        .into_iter()
-        .map(|node| node.id.trim_matches('"').to_owned())
-        .collect()
+    values.into_iter().map(|node| node.id.clone()).collect()
 }
 
 #[cfg(test)]
