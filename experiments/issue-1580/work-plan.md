@@ -309,3 +309,23 @@ The complete logs and unchanged source identities are retained under
 feedback is unchanged, main 015a6831 remains merged, all 23 published-head runs
 pass and both branch active/queued lists are empty. Native behavior and the
 broader acceptance criteria remain unfinished.
+
+## Localized opener and introduced CI metadata failures
+
+- [x] Collect all 23 completed b367d603 workflows and preserve complete logs for both failures; read both primary failure payloads. Pipeline line limits and Layered governed source identity are introduced bookkeeping misses.
+- [x] Lower the 795→793 native handler baseline and 36,519→36,517 core ceiling; regenerate the maintained status projection.
+- [x] Compare all 221 complete supported and 964 unsupported governed objects and every manifest path; refresh through the maintained reviewed command for exactly one changed source hash.
+- [x] Reproduce the original Spanish input's English-opener leak with two failing new JavaScript cases; preserve the fallback pool API while both selectors require a localized pool. Six focused JavaScript cases pass after the fix.
+- [x] Run the full 138-entry JavaScript gate inventory sequentially with a bounded heap. Preserve its five initial failures; resolve both prose-policy entries, stale status and missing ShellCheck, and pass focused reruns of every failure.
+- [x] Pass the two CI-failing JavaScript files separately (2 and 34 cases), six affected policy/core/status gates, Rust formatting, projection verification and whitespace checks. No native build or execution is used.
+- [ ] Verify the next published head in all CI workflows after the coordinated push.
+- [ ] Complete the original native Spanish routing and full unresolved-reasoning contracts; the opener regression is a narrower improvement.
+- [ ] Complete all earlier remaining criteria, including the 53 native panic headers, three budget terminations, eight complete template reviews and 0/20 independent reasoning acceptance. This checkpoint does not authorize a ready transition or merge.
+
+Evidence: `docs/case-studies/issue-1580/localized-opener-and-ci-checkpoint.md`,
+`experiments/issue-1580/evidence/ci/native-b367d603/` and
+`experiments/issue-1580/evidence/checks/localized-unknown-opener/`.
+
+Final publication verification preserves six passing gates and its initial
+naming-policy failure; spelling two evidence filenames in full words restores
+the unchanged ceiling. The focused naming and whitespace rerun passes.

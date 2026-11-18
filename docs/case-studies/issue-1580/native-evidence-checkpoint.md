@@ -86,3 +86,9 @@ The complete logs and unchanged source identities are retained under
 feedback is unchanged, main 015a6831 remains merged, all 23 published-head runs
 pass and both branch active/queued lists are empty. Native behavior and the
 broader acceptance criteria remain unfinished.
+
+The next published head, `b367d603`, has 21 passing workflows and two failures.
+The [localized opener and CI metadata checkpoint](localized-opener-and-ci-checkpoint.md)
+records both complete primary failure payloads, their candidate corrections,
+the reviewed witness refresh and a separate localized opener regression. The
+earlier 23/23 result above applies only to `7e89122c`.

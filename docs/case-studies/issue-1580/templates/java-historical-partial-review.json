@@ -48,7 +48,12 @@
     52,
     53,
     54,
-    55
+    55,
+    56,
+    57,
+    58,
+    59,
+    60
   ],
   "totalHistoricalPages": 254,
   "files": [
@@ -699,7 +704,139 @@
       "readRanges": [
         [
           1,
-          6
+          287
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/final-issue-comments.json",
+      "sha256": "58190636a983119b02bf3bc5d8030d0ef1ddfd090e557d6d4d340fd7450700b5",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/final-main-sha.txt",
+      "sha256": "b623fc0ee24a00b11499bd396a583d8b7608868717d9d15c5733b4b0241f28c8",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/final-pr-conversation-comments.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/final-pr-inline-comments.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/final-pr-reviews.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/final-sub-issues.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/github-actions-checkout.json",
+      "sha256": "05d6ed71fd4a08304a45518d144743971b4be1d8fc1446258675be97b09f1649",
+      "totalLines": 55,
+      "readRanges": [
+        [
+          1,
+          55
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/github-actions-setup-java.json",
+      "sha256": "8954e50a741cafdcd68cd1ff20c3b667212e18785c78597b8ac890f746aa1cc8",
+      "totalLines": 55,
+      "readRanges": [
+        [
+          1,
+          55
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/github-actions-setup-node.json",
+      "sha256": "b9e02f90e78f5a7304215a9f504a3ec07ae858ab492b7844251b4a6f9a1dad93",
+      "totalLines": 55,
+      "readRanges": [
+        [
+          1,
+          55
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/github-actions-upload-artifact.json",
+      "sha256": "5ce00ca5deffdacc1e164aff23395ed1146468a8a9086700fed5099f50f65f04",
+      "totalLines": 55,
+      "readRanges": [
+        [
+          1,
+          55
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/github-codecov-codecov-action.json",
+      "sha256": "ad8ada7e5aca4b70e4a9ba19a5fbdfb7264b38936539dacfa58181944ee81ab7",
+      "totalLines": 43,
+      "readRanges": [
+        [
+          1,
+          33
         ]
       ],
       "completeSourceRead": false
@@ -750,5 +887,15 @@
     "The complete historical dependency-update practices source is read. Its discussion of automatic merges and administrative bypass describes the upstream tool; it does not authorize changing Formal AI branch protection or merging this draft. Current applicability, remaining historical pages and broader issue acceptance stay unfinished."
   ],
   "nextUnreviewedLiteralPage": 39,
-  "nextForwardLiteralPage": 56
+  "nextForwardLiteralPage": 61,
+  "observationsThroughPage58": [
+    "Pages 56–58 are fully read. Together with page 55 they complete the historical Durian SWT changelog. Its Java 17, Kotlin flow and platform notes are third-party historical context, not verification of current Formal AI dependencies.",
+    "The retained final issue conversation, final main SHA, empty pull-request conversation/review/inline-comment lists and empty sub-issue list are fully read. These are historical snapshots rather than fresh GitHub state.",
+    "The complete retained actions/checkout release record and the first six lines of the actions/setup-java record are read. Historical release data is not current action compatibility verification.",
+    "Literal pages 39–47 remain unread. Complete repository semantic review and the issue acceptance criteria remain unfinished."
+  ],
+  "observationsThroughPage60": [
+    "Pages 59–60 complete the retained actions/setup-java, actions/setup-node and actions/upload-artifact release records. Their Maven mirror, Node-version retry, ESM/authentication and rate-limit handling notes are historical dependency context. Current version and workflow compatibility review remain separate acceptance work.",
+    "The first 33 lines of the retained Codecov action release record are read. Literal pages 39–47 and forward pages 61–254 remain unread; complete repository review is not claimed."
+  ]
 }
