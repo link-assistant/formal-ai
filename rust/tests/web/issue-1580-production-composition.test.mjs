@@ -45,3 +45,14 @@ test('concept queries trim terminal punctuation and preserve punctuation inside 
   const query = await host.run('extractConceptQuery("What is foo.bar?")');
   assert.equal(query.term, 'foo.bar');
 });
+
+test('remainder-sale composition recomputes changed source operands', { timeout: 30000 }, async () => {
+  for (const [total, price, expected] of [[24, 3, 36], [30, 4, 72]]) {
+    const prompt = `Marisol's hens lay ${total} eggs per day. She eats five for breakfast every morning and bakes cakes for her neighbors every day with seven. She sells the remainder at the market daily for $${price} per fresh egg. How much in dollars does she make every day at the market?`;
+    const response = await host.solve(prompt);
+    assert.equal(response.intent, 'arithmetic_word_problem', response.content);
+    assert.ok(response.content.endsWith(`gives ${expected}.`), response.content);
+    assert.ok(response.evidence.includes(`composition:remainder:total=${total} consumed=12 remainder=${total - 12} price=${price}`), JSON.stringify(response.evidence));
+    assert.ok(response.evidence.includes(`composition:evaluation:(${total} - 12) * ${price} = ${expected}`), JSON.stringify(response.evidence));
+  }
+});

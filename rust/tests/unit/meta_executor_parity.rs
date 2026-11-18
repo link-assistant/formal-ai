@@ -327,3 +327,74 @@ fn production_algebra_substitution_replays_main_regressions() {
         );
     }
 }
+
+// Replay the main-only synthesis contracts through the real offline solver.
+#[test]
+fn production_remainder_sale_recomputes_source_operands() {
+    let solver = formal_ai::UniversalSolver::new(formal_ai::SolverConfig {
+        offline: true,
+        execution_surface: formal_ai::ExecutionSurface::RustLibrary,
+        temperature: 0.0,
+        ..formal_ai::SolverConfig::default()
+    });
+    for (total, price, expected) in [(24, 3, 36), (30, 4, 72)] {
+        let prompt = format!(
+            "Marisol's hens lay {total} eggs per day. She eats five for breakfast every morning and bakes cakes for her neighbors every day with seven. She sells the remainder at the market daily for ${price} per fresh egg. How much in dollars does she make every day at the market?"
+        );
+        let response = solver.solve(&prompt);
+        assert_eq!(
+            response.intent, "arithmetic_word_problem",
+            "{}",
+            response.answer
+        );
+        assert_eq!(response.answer, expected.to_string(), "{prompt}");
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link.starts_with("composition:remainder:")),
+            "{prompt}"
+        );
+        let evaluation = format!("({total} - 12) * {price} = {expected}");
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link.starts_with("composition:evaluation:")
+                    && link.ends_with(&evaluation)),
+            "{prompt}: {:?}",
+            response.evidence_links
+        );
+        assert!(response.links_notation.contains(&evaluation), "{prompt}");
+    }
+}
+
+#[test]
+fn production_object_count_replays_membership_sources() {
+    let solver = formal_ai::UniversalSolver::new(formal_ai::SolverConfig {
+        offline: true,
+        execution_surface: formal_ai::ExecutionSurface::RustLibrary,
+        temperature: 0.0,
+        ..formal_ai::SolverConfig::default()
+    });
+    let prompt =
+        "I have a clarinet, a violin, and a flute. How many musical instruments do I have?";
+    let response = solver.solve(prompt);
+    assert_eq!(response.intent, "verifiable_task", "{}", response.answer);
+    assert_eq!(response.answer, "3", "{prompt}");
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("verifiable_task:executed:")),
+        "{:?}",
+        response.evidence_links
+    );
+    assert!(
+        response
+            .links_notation
+            .contains("verifiable_task:membership_source"),
+        "{}",
+        response.links_notation
+    );
+}
