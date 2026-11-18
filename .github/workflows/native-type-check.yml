@@ -74,4 +74,4 @@ jobs:
       - name: Replay localized procedures against the native CLI
         env:
           FORMAL_AI_TEST_NATIVE_CLI: ${{ github.workspace }}/rust/target/debug/formal-ai
-        run: node --test --test-name-pattern='native localized procedure' rust/tests/web/procedural-runtime-parity.test.mjs
+        run: node --test rust/tests/web/issue-1396-native.test.mjs
