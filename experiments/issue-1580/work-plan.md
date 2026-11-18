@@ -569,3 +569,20 @@ PHP classification correction: the path taxonomy is not a CI boundary. Current t
   The complete small correction patch was read; edition-2024 rustfmt and whitespace
   pass. The first rustfmt invocation omitted the edition and is retained as a
   caller error. The full gate run is explicitly tied to its preceding source head.
+
+## PHP push-result regression (2026-11-18)
+
+- [x] File the separate automatic-release guard defect as PHP template #27 with immutable five-test evidence at fda677ef9.
+- [x] Read all 17 release-related files and reproduce ignored branch/tag push outcomes through the original PHP CLI in both modes. Nine focused and 52 maintained tests pass; six affected gates pass. Preserve remote state and actual output assertions; no package installation or hosted release.
+- [x] Preserve the eight unmodified fixture sources and atomic local source commit.
+- [x] Collect all 23 fda677ef9 workflows: 22 pass; native synthesis exposes one stale exact summary assertion. The new native source-operand/count tests actually pass. Preserve the failed workflow and both failed jobs, review the actual failure and fix it in the next batch.
+- [ ] Publish the reviewed PHP push-result evidence once, then fresh-check/file the distinct upstream report. Full PHP review, wider native/runtime and 0/20 independent reasoning criteria remain open.
+
+## Native summary assertion follow-through (2026-11-18)
+
+- [x] Trace the sole fda native failure to the dormant synthesis assertion: both current handler specifications already require two complete Halley sentences. Correct exact equality without changing production semantics, shared prompts, budgets or forbidden fragments; add the case ID to diagnostics.
+- [x] Pass 14 existing text-transform and four routing tests, six affected gates, Rust 2024 formatting and whitespace. Read every local log and hash-verify it. Commit the atomic source correction as e3b50624c.
+- [x] Retain the bounded twelve-case browser audit, including four full-answer differences and one host-dependent case. This is an observation with a nonzero audit exit, not a passing parity claim. Preserve browser executor refusals explicitly.
+- [x] Retain all 94 prior publication command payloads and actual 22/23 workflow outcomes; read the complete downstream Pipeline Status failure. Refresh/read the entire issue and all feedback: 1 issue / 9 PR conversation / 0 inline / 0 review / 0 sub-issues.
+- [ ] Publish the complete PHP/source-assertion batch after staged gates and the single-push gate, then verify actual native execution on that exact head.
+- [ ] Fresh-check and file the separate PHP ignored-push-result report using immutable published evidence. Complete every prior broader requirement; independent reasoning remains 0/20, PR #1581 draft and unmerged.

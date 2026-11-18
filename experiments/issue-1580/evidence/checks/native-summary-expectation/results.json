@@ -1,0 +1,79 @@
+{
+  "complete": true,
+  "checks": [
+    {
+      "name": "existing-text-transform-tests",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1174-text-transform-parity.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 9.016,
+      "rawLines": 22,
+      "rawSha256": "9923bddbebf1518b14306b117cecdf849c5ff96f526da2f34dcd7908b63f9838"
+    },
+    {
+      "name": "summary-payload-tests",
+      "command": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/summary-payload-routing.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 6.102,
+      "rawLines": 12,
+      "rawSha256": "0d5d935dff5029d785a6574ea145f245a3081bcf9ad27a2f7e6eba4690ada3b9"
+    },
+    {
+      "name": "rust-format",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/tests/unit/specification/synthesis.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.377,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "affected-gates",
+      "command": [
+        "node",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations,check-file-size-js-twin,check-file-size,check-changelog-fragment-js-twin,check-tests-as-docs,check-tests-as-documentation-javascript-twin"
+      ],
+      "exitCode": 0,
+      "seconds": 36.518,
+      "rawLines": 8,
+      "rawSha256": "c852710f14abe641fd93c81e3e1f4e2fbab7bbe08f1323433102c7fdcab77c46"
+    },
+    {
+      "name": "whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "seconds": 0.325,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "observedAt": "2026-11-18T13:23:00.630091+00:00",
+  "nativeExecutedLocally": false,
+  "independentAuthorshipCredit": 0
+}

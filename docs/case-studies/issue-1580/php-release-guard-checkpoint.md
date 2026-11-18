@@ -36,7 +36,9 @@ The fresh upstream inventory contains 26 issue/PR entries and eight pull request
 The full bodies and feedback of release hardening PR #13 and latest merged PR #24
 were read, including conversation, inline and review endpoints. Existing #26
 reports failed Git observations and is separate. The distinct release-guard
-report remains a draft until immutable executable evidence is published.
+report is filed as [PHP template #27](https://github.com/link-foundation/php-ai-driven-development-pipeline-template/issues/27),
+with immutable executable evidence at `fda677ef9f25692b7b3823556f1349839a71f7a3`.
+Reporting does not establish an upstream repair.
 
 All 608 repository blobs are hash verified. The path taxonomy tags 92 root or
 nonhistorical files (13,759 lines) and 516 historical or experimental files.

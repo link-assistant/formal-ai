@@ -1,0 +1,47 @@
+{
+  "recordedAt": "2026-11-18T13:27:38.273441+00:00",
+  "headWithFailure": "fda677ef9f25692b7b3823556f1349839a71f7a3",
+  "workflowsComplete": 23,
+  "workflowsSuccessful": 22,
+  "allActionableFailures": [
+    {
+      "run": 44309937639,
+      "job": 134821269126,
+      "test": "shared_cross_runtime_synthesis_fixture_matches_rust_solver",
+      "line": 88,
+      "rootCause": "Dormant exact answer predates whole-sentence summary contract",
+      "sourceCorrection": "e3b50624c1c7f694373cb406fbb2293f49cd05a9"
+    }
+  ],
+  "pipelineStatusOnlyFailedPrerequisite": "native-type-check",
+  "nativeLiteralRanges": [
+    [
+      1570,
+      1686
+    ]
+  ],
+  "pipelineStatusLiteralRanges": [
+    [
+      1,
+      215
+    ]
+  ],
+  "fullNativeLogLiterallyRead": false,
+  "fullFailedWorkflowLiterallyRead": false,
+  "localCheckLogsLiterallyRead": [
+    "existing-text-transform-tests",
+    "summary-payload-tests",
+    "rust-format",
+    "affected-gates",
+    "whitespace"
+  ],
+  "allLocalCheckPayloadHashesVerified": true,
+  "browserAuditExactMatches": 7,
+  "browserAuditFullAnswerDifferences": 4,
+  "browserAuditHostDependentNotCompared": 1,
+  "browserAuditPassingParityClaim": false,
+  "nativeCorrectionExecutedLocally": false,
+  "nativeCorrectionHostedVerificationPending": true,
+  "allIssueAcceptanceComplete": false,
+  "independentAuthorshipCredit": 0
+}
