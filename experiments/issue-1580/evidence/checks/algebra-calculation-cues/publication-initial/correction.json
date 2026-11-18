@@ -1,0 +1,130 @@
+{
+  "observedAt": "2026-11-18T11:29:27.264142+00:00",
+  "failedBeforeCommitAndPush": true,
+  "initialAttemptRetained": [
+    {
+      "path": "archive-commands.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "archive-commands.stdout.gz",
+      "rawBytes": 97,
+      "rawSha256": "c2908799703ecb464a7865034302f694e2b399e689f437767ded1dc5da50bb0d",
+      "archiveSha256": "5eecc3974f7fa3062d486b9437c0eb63e8babcc9c58fc132c911980be0bf96fe"
+    },
+    {
+      "path": "archive-supplied.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "archive-supplied.stdout.gz",
+      "rawBytes": 93,
+      "rawSha256": "240cbc1319950d11e5fe37690c909061eedd762cbf1de54c727e46da5aea5b9a",
+      "archiveSha256": "5492ce89096c4a928811d78c8eca610ddd80413fa5c2ffbb969b6f044db103dd"
+    },
+    {
+      "path": "branch.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "branch.stdout.gz",
+      "rawBytes": 24,
+      "rawSha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195",
+      "archiveSha256": "9a7a4f334d2aa7ed14eb057b74cbe67d6ad531d0ca5a45f64d7878ac8d1172d0"
+    },
+    {
+      "path": "initial-head.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "initial-head.stdout.gz",
+      "rawBytes": 41,
+      "rawSha256": "05daf2cd1109166fd08560f3b4e6c6fccc61f7d63c9cd3691a0c5e94dc260581",
+      "archiveSha256": "a1db5963db322d2b0f1cd5a5ae699eea3fcf2be9d363efb18ca2fa6f986c40d8"
+    },
+    {
+      "path": "initial-index.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "initial-index.stdout.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "outcome.json.gz",
+      "rawBytes": 3831,
+      "rawSha256": "d5cb2e22c91d902611469ca3f8671fd02fb3f5472eafdf9118c89a0b03f34e7a",
+      "archiveSha256": "6c114d5fa33984afc988fb9fb92b8cf618925424794bb1bf94d1232acda986e0"
+    },
+    {
+      "path": "process.json.gz",
+      "rawBytes": 17,
+      "rawSha256": "cd8483615e4eb86bb4c7f65fba06f7a12dc19e9fc653a7ecfc42391bb7532d11",
+      "archiveSha256": "9a8ce8c7d742e3d60a77a7065d5ffd9dcda62e28be0cb581dcd335d9572502d5"
+    },
+    {
+      "path": "stage-complete-batch.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "stage-complete-batch.stdout.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "staged-gates.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "staged-gates.stdout.gz",
+      "rawBytes": 260,
+      "rawSha256": "6d58f86a49cb8a561e8674d591c1d666b9c1633bcebfd700599a2a09acf9150f",
+      "archiveSha256": "95eb2e91061ace805dd6254c07d0590f52ab435a3aa7a92bafeaad30f3c43332"
+    },
+    {
+      "path": "staged-names.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "staged-names.stdout.gz",
+      "rawBytes": 38154,
+      "rawSha256": "90a53456e9d6a55763b067a7aab798e7b895b79d7b86b1bf19836cfbeb3e9b5a",
+      "archiveSha256": "1f86a7dbf87f51adbf48d3c6711620367cb0576d1b13b1c6c758f7c82d7df880"
+    },
+    {
+      "path": "worker.log.gz",
+      "rawBytes": 4158,
+      "rawSha256": "9f82801500cc327cd9e8a9d2c85ee7630985e56a9f391393d969acbb9df93286",
+      "archiveSha256": "7571159e09401ee29e811660904a56e88cfad879d9198768c37a788b240b222b"
+    }
+  ],
+  "cause": "New evidence archive filename used docs, increasing the abbreviated filename count from 90 to 91 after staging.",
+  "correction": {
+    "old": "gate-check-tests-as-docs.log.gz",
+    "new": "gate-check-tests-as-documentation.log.gz"
+  },
+  "receiptPathsUpdated": [],
+  "abbreviationCeilingChanged": false,
+  "sourceFilesChangedByCorrection": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

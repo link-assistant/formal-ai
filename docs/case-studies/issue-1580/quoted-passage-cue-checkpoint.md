@@ -30,7 +30,7 @@ before payload, both full passing payloads, the handwritten source diff and all
 477 lines of the new shared fixture. Preserve hashes and complete archived logs.
 Rust 2024 formatting, fixture currency and maintained worker, TypeScript, seed
 and translation generation pass. No local Rust build runs; native cue execution
-remains pending the next published head's hosted CI.
+passes on published head `7152daeb`, as recorded below.
 
 The initial worker writer rejects the existing executor ceiling. Extract a small
 helper; the next writer correctly requires its explicit budget. Register its
@@ -71,3 +71,16 @@ establish complete semantic parent coverage, or validate multi-passage evidence.
 Those requirements and the wider issue remain unfinished. Supplied scripts,
 commands, patches and conclusions receive zero independent authorship credit;
 independent acceptance remains 0/20.
+
+## Hosted cue execution
+
+Published head `7152daeb69796ca0213df51b9dfc6a03460c2e80` passes all 23 workflows.
+The [actual native job](https://github.com/link-assistant/formal-ai/actions/runs/44287034899/job/134743168987)
+passes five executor tests, including all 41 shared cases and complete event
+sequences, plus calendar/currency and forced functions: seven Rust tests and both
+HTTP modes. JavaScript shards pass 1,440 and 1,268 tests, with four and 13 skips,
+zero failures and zero cancellations. Complete downloaded logs, hashes and exact
+literal result ranges remain under `experiments/issue-1580/evidence/ci/quoted-cues-7152daeb/`.
+The fixture hashes match the published head. Full logs are retained; literal
+review covers the recorded result windows, not every log line. This verifies
+cue decomposition and replay, without completing the wider semantic contracts.

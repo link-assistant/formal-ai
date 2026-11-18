@@ -487,8 +487,26 @@ All 23 workflows on `a97832237cbb365000dd7296050984e4bdd59ebb` complete successf
   missing budget for the extracted helper. Add the measured 46-line helper
   budget; all existing module budgets remain unchanged.
 - [x] Complete maintained generation, 25 executor and 15 adjacent factual-QA tests, original fixture byte checks and all 138 local inventory entries. Preserve the third writer failure (untracked new helper), then its successful pinned translation refresh. The full run records 83 passes, 52 exclusions and three stale mirror/status failures. Preserve the stopped correction guard, regenerate both surfaces with maintained writers, and pass all three failed gates plus the adjacent status twin. Preserve the final EOF-whitespace failure, remove only that blank line, refresh projections and pass five affected gates plus whitespace. The exact remeasured new factory ceiling is 46; all existing ceilings remain unchanged. All 86 executable entries pass after correction; projection reports 50 refused modules, including the new helper.
-- [ ] Review and publish the complete batch only after current c8fb9ad1 CI
-  finishes; verify actual native cue fixture execution on the new head.
+- [x] Review all 1,248 incremental patch lines, publish source b000f392 and evidence 7152daeb after the single-push gate, and verify all 23 hosted workflows. The actual native executor target passes five tests and replays all 41 shared cases and complete events; calendar/currency, forced functions and both HTTP modes also pass. JavaScript shards report 1,440/1,268 passes and 4/13 skips, with no failures. Retain complete payloads, fixture identities and literal result ranges.
 - [ ] Complete general passage binding, parent coverage and multi-passage
   provenance. Cue masking alone does not establish any of those contracts.
   Independent reasoning acceptance remains 0/20; keep PR #1581 draft and unmerged.
+
+## Algebra source operands and calculation cues (2026-11-18)
+
+- [x] Read the retained main algebra panic windows and full native baseline;
+  trace both runtime extractors and existing arithmetic parsers.
+- [x] Reproduce the current JavaScript "what is" defect before the change:
+  six controls pass and two bound-assignment questions fail with calculation_error.
+- [x] Reuse existing calculation parsers in both runtimes; pass all eight new
+  WorkerHost cases, 12 calculation-shape cases, 25 executor cases, maintained
+  TypeScript generation, Rust formatting and six affected local gates.
+- [x] Register the JavaScript regression in the fast PR inventory and main-only
+  ledger, and add five real UniversalSolver cases to the existing hosted target.
+- [x] Pass four ledger and 17 fast-profile controls and all 86 executable shared-data gates (52 explicit exclusions, zero failures), retaining all complete payloads and hashes. Strengthen user-visible numeric answer assertions and pass all eight final algebra tests again. Memory events show no OOMs or OOM kills.
+- [ ] Publish after the single-push gate and verify actual hosted execution of
+  the five native algebra cases. Preserve failures separately from corrections.
+- [ ] Complete every earlier unfinished acceptance criterion. Independent
+  acceptance remains 0/20; keep PR #1581 draft and unmerged.
+
+The first publication attempt stopped before commit or push: staging the new `gate-check-tests-as-docs.log.gz` evidence archive raised the abbreviated filename count from 90 to 91. The archive was renamed to `gate-check-tests-as-documentation.log.gz`, its receipt references were updated, and the failed attempt was retained. No abbreviation ceiling or source code was changed by this correction.
