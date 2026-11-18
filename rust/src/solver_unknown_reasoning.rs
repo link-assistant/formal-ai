@@ -159,6 +159,21 @@ fn answer_from_retrieved_senses(
     log: &mut EventLog,
     senses: &[ConceptSense],
 ) -> Option<SymbolicAnswer> {
+    // A word definition cannot answer a sentence whose grammar is unsupported.
+    // Keep the consult evidence, but preserve the whole unresolved request.
+    // A bare term is itself a lookup, so it still accepts attributed senses.
+    let language_supported = seed::supported_languages()
+        .iter()
+        .any(|supported| supported == language.slug());
+    if !language_supported && !is_unresolved_bare_term_prompt(prompt, prompt) {
+        if !senses.is_empty() {
+            log.append(
+                "reasoning:gather_result",
+                "external_source:no_verified_answer".to_owned(),
+            );
+        }
+        return None;
+    }
     let sense = senses
         .iter()
         .enumerate()
@@ -845,3 +860,7 @@ fn normalize_search_surface(value: &str) -> String {
         .collect::<Vec<_>>()
         .join(" ")
 }
+
+#[cfg(test)]
+#[path = "../tests/unit/solver_unknown_reasoning_captured_sources.rs"]
+mod tests;

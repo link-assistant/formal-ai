@@ -148,6 +148,11 @@ path = "tests/unit/meta_executor_parity.rs"
 name = "synthesis_contracts"
 path = "tests/unit/specification/synthesis.rs"
 
+# Execute the unchanged unsupported-language sibling contract in the focused PR lane.
+[[test]]
+name = "any_language"
+path = "tests/unit/issue_706_any_language.rs"
+
 [[test]]
 name = "integration"
 path = "tests/integration/mod.rs"

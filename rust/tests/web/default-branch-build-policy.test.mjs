@@ -67,9 +67,11 @@ test('the focused PR native check limits execution to lint and isolated regressi
   const runs = check.steps.map(step => step.run).filter(Boolean);
   assert.deepEqual(runs.filter(run => !run.startsWith('echo ')), ['bash scripts/ci-clippy-profile.sh --library-and-binaries',
     'cargo test --manifest-path rust/Cargo.toml --locked --test calendar_currency --test openai_forced_functions --test meta_executor_parity --test synthesis_contracts -- --test-threads=1',
+    'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_unknown_reasoning::tests:: -- --test-threads=1\n' +
+    'cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1\n',
     'node --test --test-concurrency=1 rust/tests/web/issue-1590-forced-functions.test.mjs']);
   assert.equal(called.on.workflow_call.inputs['compile-inputs-changed'].default, true);
-  for (const step of check.steps.filter(step => step.uses || ['Type-check and lint the library and binaries', 'Verify isolated native behavior regressions', 'Replay the forced function requests against the native CLI'].includes(step.name)))
+  for (const step of check.steps.filter(step => step.uses || ['Type-check and lint the library and binaries', 'Verify isolated native behavior regressions', 'Verify native unresolved-language source binding', 'Replay the forced function requests against the native CLI'].includes(step.name)))
     assert.equal(step.if, '${{ inputs.compile-inputs-changed }}');
   assert.equal(check.steps[0].if, '${{ !inputs.compile-inputs-changed }}');
   assert.equal(workflow('release.yml').on.pull_request['paths-ignore'], undefined, 'required contexts must report for docs-only PRs');
@@ -130,6 +132,25 @@ test('isolated native regressions select execution for their sources and embedde
       assert.equal(admission([fixture])['native-type-check'], true, fixture);
     }
   }
+});
+test('native unsupported-language regressions execute the captured-source units and unchanged sibling contract', () => {
+  const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps
+    .find(step => step.name === 'Verify native unresolved-language source binding');
+  assert.equal(step.if, '${{ inputs.compile-inputs-changed }}');
+  assert.deepEqual(step.env, {CARGO_BUILD_JOBS: '2', CARGO_PROFILE_TEST_OPT_LEVEL: '0'});
+  assert.deepEqual(step.run.trim().split('\n'), [
+    'cargo test --manifest-path rust/Cargo.toml --locked --lib solver_unknown_reasoning::tests:: -- --test-threads=1',
+    'cargo test --manifest-path rust/Cargo.toml --locked --test any_language a_language_without_localized_openers_reports_a_gap_not_english -- --exact --test-threads=1',
+  ]);
+  const target = read('rust/Cargo.toml').split('[[test]]').find(block => /^name = "any_language"$/mu.test(block));
+  assert.match(target, /^path = "tests\/unit\/issue_706_any_language.rs"$/mu);
+  const source = 'rust/tests/unit/solver_unknown_reasoning_captured_sources.rs';
+  const fixture = relative(process.cwd(), resolve(dirname(source), /include_str!\(\s*"([^"]+)"/u.exec(read(source))[1]));
+  for (const path of [source, 'rust/src/solver_unknown_reasoning.rs', 'rust/tests/unit/issue_706_any_language.rs', fixture]) {
+    assert(readFileSync(path).length > 0, path);
+    assert.equal(admission([path])['native-type-check'], true, path);
+  }
+  assert.equal(admission(['rust/tests/fixtures/issue-1138-b1/unrelated.json'])['native-type-check'], false);
 });
 // The production-only failure this job closes: PR #1497 was green, then main
 // failed with E0308 in rust/src. Its own changed paths must select the check.
