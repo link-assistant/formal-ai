@@ -57,6 +57,7 @@ for (const agentMode of [false, true]) {
   test(`forced OpenAI functions over HTTP (agent mode ${agentMode})`, { timeout: 15000 }, async t => {
     const run = await startCli(t, {
       args: agentMode ? ['--agent-mode'] : [],
+      binary: process.env.FORMAL_AI_TEST_NATIVE_CLI,
       env: { FORMAL_AI_SOURCE_USAGE_RUST_GRAMMAR: 'false' },
     });
     await run.ready();
