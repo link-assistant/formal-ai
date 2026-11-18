@@ -110,22 +110,32 @@ fn a_word_in_an_unparsed_question_is_still_only_a_word_definition() {
 #[test]
 fn supported_definition_keeps_its_attributed_retrieved_answer() {
     let sense = captured_sense("isogram", "en");
-    let mut log = EventLog::new();
-    let answer = answer_unknown_prompt(
-        "What is an isogram?",
-        Language::English,
-        &mut log,
-        offline_config(),
-        std::slice::from_ref(&sense),
-    );
-    assert_eq!(answer.intent, "concept_lookup");
-    assert_eq!(
-        answer.answer,
-        "isogram (isogram): a line drawn on a map connecting points having the same numerical value of some variable\n\nSource: https://en-word.net/api/lemma/isogram (sha256 ae8c98f774fd255a; CC BY 4.0)"
-    );
-    assert!(answer.answer.contains(&sense.gloss));
-    assert!(answer.answer.contains(&sense.source_url));
-    assert!(answer.answer.contains(&sense.sha256[..16]));
+    // Both request forms use the committed capture, independently of runtime cache state.
+    for prompt in ["isogram", "What is an isogram?"] {
+        let mut log = EventLog::new();
+        let answer = answer_unknown_prompt(
+            prompt,
+            Language::English,
+            &mut log,
+            offline_config(),
+            std::slice::from_ref(&sense),
+        );
+        assert_eq!(answer.intent, "concept_lookup", "{prompt}");
+        assert_eq!(
+            answer.answer,
+            "isogram (isogram): a line drawn on a map connecting points having the same numerical value of some variable\n\nSource: https://en-word.net/api/lemma/isogram (sha256 ae8c98f774fd255a; CC BY 4.0)",
+            "{prompt}",
+        );
+        assert!(answer.answer.contains(&sense.gloss));
+        assert!(answer.answer.contains(&sense.source_url));
+        assert!(answer.answer.contains(&sense.sha256[..16]));
+        assert!(
+            !answer
+                .evidence_links
+                .iter()
+                .any(|link| link.starts_with("web_search:request:"))
+        );
+    }
 }
 
 #[test]

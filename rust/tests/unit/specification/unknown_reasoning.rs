@@ -124,19 +124,6 @@ fn seed_backed_bare_terms_still_use_public_knowledge_cache() {
         "known concept terms should not be stolen by bare-term web search: {:?}",
         response.evidence_links,
     );
-
-    // Cursor is captured public knowledge, so it must retain the complete answer
-    // and its attribution rather than being treated as an unresolved term.
-    let captured = answer_offline("cursor");
-    assert_eq!(captured.intent, "concept_lookup");
-    assert_eq!(
-        captured.answer,
-        concat!(
-            "cursor (cursor): (computer science) indicator consisting of a movable spot of light (an icon) on a visual display; moving it allows the user to point to commands or screen positions",
-            "\n\nSource: https://en-word.net/api/lemma/cursor (sha256 7135852a793acb64; CC BY 4.0)",
-        ),
-    );
-    assert!(!has_evidence(&captured, "web_search:request:"));
 }
 
 #[test]
