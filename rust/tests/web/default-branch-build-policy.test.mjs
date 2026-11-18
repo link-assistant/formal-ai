@@ -545,3 +545,12 @@ test('native scheduling regressions select every consumed source', () => {
   for (const path of ['rust/tests/unit/unrelated.rs', 'rust/tests/fixtures/unrelated.json'])
     assert.equal(admission([path])['native-type-check'], false, path);
 });
+
+
+test('localized native replay selects both its test source and consumed fixture', () => {
+  const paths = ['rust/tests/web/issue-1396-native.test.mjs',
+    'rust/tests/fixtures/issue-1396/wiki-how-ru.json'];
+  assert.deepEqual(paths.map(path => admission([path])['native-type-check']), [true, true]);
+  for (const path of ['rust/tests/web/unrelated.test.mjs', 'rust/tests/fixtures/unrelated.json'])
+    assert.equal(admission([path])['native-type-check'], false, path);
+});

@@ -49,6 +49,8 @@ const NATIVE_REGRESSION_INPUTS = new Set([
   'data/parity/cross-runtime-synthesis.json',
   'rust/tests/web/issue-1590-forced-functions.test.mjs',
   'rust/tests/web/issue-1586-structured-output.test.mjs',
+  'rust/tests/web/issue-1396-native.test.mjs',
+  'rust/tests/fixtures/issue-1396/wiki-how-ru.json',
   'rust/tests/web/support/structured-log-fixture.mjs',
   'js/server/structured-log.mjs',
 ]);
