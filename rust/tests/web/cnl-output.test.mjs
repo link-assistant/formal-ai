@@ -75,6 +75,36 @@ test('ambiguous equivalence declarations remain opaque instead of selecting a me
   assert.equal(projectOutput(document, {lexical_density: 'primes'}, custom), document.source);
 });
 
+// Twin of declared_multilingual_meanings_round_trip_without_certifying_unchecked_standards
+// in rust/tests/unit/cnl_output.rs: every projection keeps the meaning, and only the
+// profiles whose checks are all decidable may certify it.
+test('declared multilingual meanings round trip and certify only decidable profiles', () => {
+  const dense = {en: 'I am omniscient.', ru: 'Я всеведущ.', hi: 'मैं सर्वज्ञ हूँ।', zh: '我无所不知。', es: 'Soy omnisciente.'};
+  const certified = [];
+  for (const [language, text] of Object.entries(dense)) {
+    const document = formalizeOutput(text, language, policy);
+    const graph = outputLinksNotation(document, policy);
+    for (const profile of policy.profiles) {
+      for (const density of ['standard', 'primes', 'top-37', 'max-precision']) {
+        const configuration = {output_standard: profile.id, lexical_density: density};
+        const projected = projectOutput(document, configuration, policy);
+        assert.equal(outputLinksNotation(formalizeOutput(projected, language, policy), policy), graph);
+        const report = validateOutput(projected, language, configuration, policy);
+        if (!report.compliant) continue;
+        assert.deepEqual([report.violations, report.unchecked], [[], []]);
+        certified.push(`${language} ${profile.id} ${density}`);
+      }
+    }
+  }
+  assert.deepEqual(certified, [
+    'en minimal-english standard', 'en special-english standard',
+    'ru minimal-english standard', 'ru minimal-english top-37',
+    'hi minimal-english standard', 'hi minimal-english top-37',
+    'zh minimal-english standard',
+    'es minimal-english standard', 'es minimal-english top-37',
+  ]);
+});
+
 test('lexical density cannot introduce a known violation of a named profile', () => {
   for (const density of ['max-precision', 'top-200']) {
     const configuration = {output_standard: 'e-prime', lexical_density: density};

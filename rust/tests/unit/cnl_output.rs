@@ -1,9 +1,25 @@
 //! These tests cover the declared lexical corpus, not general CNL conformance.
 use ::formal_ai::cnl_output::*;
 
+/// The projections of the declared "omniscient" meaning that the JavaScript
+/// reference certifies (`node experiments/issue-1584/round-trip-certificates.mjs`):
+/// only Minimal English and Special English, whose checks are all decidable.
+const CERTIFIED_OMNISCIENT: [&str; 9] = [
+    "en minimal-english standard",
+    "en special-english standard",
+    "ru minimal-english standard",
+    "ru minimal-english top-37",
+    "hi minimal-english standard",
+    "hi minimal-english top-37",
+    "zh minimal-english standard",
+    "es minimal-english standard",
+    "es minimal-english top-37",
+];
+
 #[test]
 fn declared_multilingual_meanings_round_trip_without_certifying_unchecked_standards() {
     let policy = cnl_policy();
+    let mut certified = Vec::new();
     for (language, simple, dense) in [
         ("en", "I know everything.", "I am omniscient."),
         ("ru", "Я знаю всё.", "Я всеведущ."),
@@ -30,11 +46,11 @@ fn declared_multilingual_meanings_round_trip_without_certifying_unchecked_standa
                     output_links_notation(&formalize_output(&projected, language, policy), policy),
                     graph
                 );
-                {
-                    assert!(
-                        !validate_output(&projected, language, configuration, policy, &())
-                            .compliant
-                    );
+                let report = validate_output(&projected, language, configuration, policy, &());
+                if report.compliant {
+                    // A certificate needs every check to pass with evidence.
+                    assert!(report.violations.is_empty() && report.unchecked.is_empty());
+                    certified.push(format!("{language} {} {density}", profile.id));
                 }
             }
         }
@@ -44,6 +60,7 @@ fn declared_multilingual_meanings_round_trip_without_certifying_unchecked_standa
             graph
         );
     }
+    assert_eq!(certified, CERTIFIED_OMNISCIENT);
 }
 
 #[test]

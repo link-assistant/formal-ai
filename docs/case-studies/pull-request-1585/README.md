@@ -191,3 +191,16 @@ found these problems and fixed them:
   `default-branch-build-policy.test.mjs` pins the command, and the governed
   witness was refreshed for the two changed registries (`rust/Cargo.toml` and
   `rust/tests/unit/mod.rs`, eight fixture hashes and nothing else).
+- **A stale native assertion, found by the first native run.** The first PR
+  run of the `cnl_output` target
+  ([job 134846866504](https://github.com/link-assistant/formal-ai/actions/runs/44317281198/job/134846866504))
+  passed 8 of 9 tests. `declared_multilingual_meanings_round_trip_without_certifying_unchecked_standards`
+  failed at `rust/tests/unit/cnl_output.rs:34`. It came from the lexical preview
+  and asserted that no projection of the declared "omniscient" meaning is ever
+  certified. The generalized engine certifies a projection when every check of its
+  standard passes with evidence. Minimal English and Special English have only
+  decidable checks, so the JavaScript reference certifies 9 of the 220 projections
+  (`node experiments/issue-1584/round-trip-certificates.mjs`). The assertion
+  had never run, so this stale expectation went unseen. Both runtimes now pin the
+  exact certified set, and require that a certificate has no violation and no
+  unchecked check. The JavaScript twin is in `cnl-output.test.mjs`.
