@@ -1,0 +1,458 @@
+[
+  {
+    "name": "branch",
+    "argv": [
+      "git",
+      "branch",
+      "--show-current"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "branch.stdout.gz",
+      "rawSha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195",
+      "archiveSha256": "9a7a4f334d2aa7ed14eb057b74cbe67d6ad531d0ca5a45f64d7878ac8d1172d0",
+      "lines": 1
+    },
+    "stderr": {
+      "file": "branch.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  },
+  {
+    "name": "current-head",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "current-head.stdout.gz",
+      "rawSha256": "ae5363f5617b9316286e321a640344ab6f9d1e47fb8c0d6ddb1ea3d4a9a44821",
+      "archiveSha256": "ad1b81d1a0f3cca886da677c9ecb2b30c0c693fb03710161c5be2c850edb69f4",
+      "lines": 1
+    },
+    "stderr": {
+      "file": "current-head.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  },
+  {
+    "name": "initial-index",
+    "argv": [
+      "git",
+      "diff",
+      "--cached",
+      "--name-only"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "initial-index.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    },
+    "stderr": {
+      "file": "initial-index.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  },
+  {
+    "name": "source-names",
+    "argv": [
+      "git",
+      "diff",
+      "--name-only",
+      "--",
+      "data",
+      "js",
+      "rust",
+      "ts"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "source-names.stdout.gz",
+      "rawSha256": "61cfa6207e5ffcf760cf38c0f518ec0419785a0c4ef11280361609edb181a762",
+      "archiveSha256": "c4ea24bc09e965de7708f122604f09c75c5e13aaafe8c71696fb5f5cd3beeb99",
+      "lines": 49
+    },
+    "stderr": {
+      "file": "source-names.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  },
+  {
+    "name": "stage-source",
+    "argv": [
+      "git",
+      "add",
+      "--",
+      "data/meta/function-test-contracts.lino",
+      "data/meta/js-rust-translation.lino",
+      "data/meta/restart-hygiene.lino",
+      "data/meta/translation-blockers.lino",
+      "data/meta/worker-line-budget/formal_ai_worker_facts_and_software_phrases.lino",
+      "data/meta/worker-line-budget/formal_ai_worker_shell_compose.lino",
+      "data/seed/client-integrations.lino",
+      "data/seed/cnl-language-en.lino",
+      "data/seed/cnl-language-es.lino",
+      "data/seed/cnl-language-hi.lino",
+      "data/seed/cnl-language-ru.lino",
+      "data/seed/cnl-language-zh.lino",
+      "data/seed/cnl-output.lino",
+      "data/seed/code-review-rules.lino",
+      "data/seed/meta-reasoning.lino",
+      "data/seed/multilingual-responses-capabilities.lino",
+      "data/seed/multilingual-responses-text-transform.lino",
+      "data/seed/multilingual-responses-web.lino",
+      "data/seed/text-formalization.lino",
+      "data/seed/workspace-discovery-contracts.lino",
+      "js/agentic/crate/cnl_grammar.mjs",
+      "js/agentic/crate/cnl_output.mjs",
+      "js/worker/formal_ai_worker_crate_cnl_grammar.js",
+      "js/worker/formal_ai_worker_crate_cnl_output.js",
+      "rust/embedded/data/meta/function-test-contracts.lino",
+      "rust/embedded/data/meta/restart-hygiene.lino",
+      "rust/embedded/data/seed/client-integrations.lino",
+      "rust/embedded/data/seed/cnl-language-en.lino",
+      "rust/embedded/data/seed/cnl-language-es.lino",
+      "rust/embedded/data/seed/cnl-language-hi.lino",
+      "rust/embedded/data/seed/cnl-language-ru.lino",
+      "rust/embedded/data/seed/cnl-language-zh.lino",
+      "rust/embedded/data/seed/cnl-output.lino",
+      "rust/embedded/data/seed/code-review-rules.lino",
+      "rust/embedded/data/seed/meta-reasoning.lino",
+      "rust/embedded/data/seed/multilingual-responses-capabilities.lino",
+      "rust/embedded/data/seed/multilingual-responses-text-transform.lino",
+      "rust/embedded/data/seed/multilingual-responses-web.lino",
+      "rust/embedded/data/seed/text-formalization.lino",
+      "rust/embedded/data/seed/workspace-discovery-contracts.lino",
+      "rust/src/cnl_output.rs",
+      "rust/src/cnl_output/grammar.rs",
+      "rust/tests/fixtures/js-rust-translation/crate/cnl_grammar.rs",
+      "rust/tests/fixtures/js-rust-translation/crate/cnl_output.rs",
+      "rust/tests/web/cnl-output.test.mjs",
+      "ts/agentic/crate/cnl_grammar.mts",
+      "ts/agentic/crate/cnl_output.mts",
+      "ts/worker/formal_ai_worker_crate_cnl_grammar.ts",
+      "ts/worker/formal_ai_worker_crate_cnl_output.ts",
+      "changelog.d/issue-1580-canonical-cnl-data.md"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "stage-source.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    },
+    "stderr": {
+      "file": "stage-source.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  },
+  {
+    "name": "staged-whitespace",
+    "argv": [
+      "git",
+      "diff",
+      "--cached",
+      "--check"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "staged-whitespace.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    },
+    "stderr": {
+      "file": "staged-whitespace.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  },
+  {
+    "name": "commit-source",
+    "argv": [
+      "git",
+      "-c",
+      "gc.auto=0",
+      "commit",
+      "-m",
+      "Use canonical CNL references and seed quoting"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "commit-source.stdout.gz",
+      "rawSha256": "5f89481c53cdfe43c49f30527735a64e23b6bc83e8a487122c5d3ef421983337",
+      "archiveSha256": "d5158cef408b9e9adc76069b4cce941621c5805961b3ad31eae01d6f57498757",
+      "lines": 3
+    },
+    "stderr": {
+      "file": "commit-source.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  },
+  {
+    "name": "source-head",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "source-head.stdout.gz",
+      "rawSha256": "ac61c5ceafd2aef59d4d6e3dfbafe2f1a86034fe437ef442feb7a818ad378aa0",
+      "archiveSha256": "148eff07883e511e076a2ecc55bc3901f61594c4746b9412eac7383dc704646c",
+      "lines": 1
+    },
+    "stderr": {
+      "file": "source-head.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  },
+  {
+    "name": "stage-main-merge",
+    "argv": [
+      "git",
+      "-c",
+      "gc.auto=0",
+      "merge",
+      "--no-commit",
+      "--no-ff",
+      "origin/main"
+    ],
+    "exitCode": 1,
+    "stdout": {
+      "file": "stage-main-merge.stdout.gz",
+      "rawSha256": "b780297d3707bc12f8b9fb7c44522067c2cfe2e696a6ed39d8cc9e679682ab10",
+      "archiveSha256": "33d9759fcc7631bf227ab359c7c39e825807ced5ed9f81a0552f8b93e1d3fa03",
+      "lines": 12
+    },
+    "stderr": {
+      "file": "stage-main-merge.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  },
+  {
+    "name": "conflicts",
+    "argv": [
+      "git",
+      "diff",
+      "--name-only",
+      "--diff-filter=U"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "conflicts.stdout.gz",
+      "rawSha256": "7421ffb72d265b7574eb85c8a371dfaf58ba639911f208add4a2aad69b88818e",
+      "archiveSha256": "7db8150766fbc6752302643bb9cb98d47d12652266819cd2a1665c46ebf7cb95",
+      "lines": 3
+    },
+    "stderr": {
+      "file": "conflicts.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  },
+  {
+    "name": "resolution-diff",
+    "argv": [
+      "git",
+      "diff",
+      "HEAD",
+      "--",
+      ".github/workflows/native-type-check.yml",
+      "rust/tests/web/default-branch-build-policy.test.mjs",
+      "rust/src/solver_dispatch.rs"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "resolution-diff.stdout.gz",
+      "rawSha256": "80c6c8f610522afa163feea8af79c79872147a7f76d177e19e7525c4be40ed1a",
+      "archiveSha256": "05d48e7a0bea1b13a6e0263fda44ba85998fc52b994d100a8dfc1f31c2c16fb4",
+      "lines": 75
+    },
+    "stderr": {
+      "file": "resolution-diff.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  },
+  {
+    "name": "stage-reviewed-witness",
+    "argv": [
+      "git",
+      "add",
+      "--",
+      "experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "stage-reviewed-witness.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    },
+    "stderr": {
+      "file": "stage-reviewed-witness.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  },
+  {
+    "name": "no-conflicts",
+    "argv": [
+      "git",
+      "diff",
+      "--name-only",
+      "--diff-filter=U"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "no-conflicts.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    },
+    "stderr": {
+      "file": "no-conflicts.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  },
+  {
+    "name": "merged-stat",
+    "argv": [
+      "git",
+      "diff",
+      "--cached",
+      "--stat"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "merged-statistics.stdout.gz",
+      "rawSha256": "dc81e04cf28e2aa5050b54660f57be0f91027303043127d0f7662c0527293cc3",
+      "archiveSha256": "54ab904be96cf26e2507384d4a576d1150969e624f0b1a94c894c2b3944a5aff",
+      "lines": 59
+    },
+    "stderr": {
+      "file": "merged-statistics.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  },
+  {
+    "name": "merged-whitespace",
+    "argv": [
+      "git",
+      "diff",
+      "--cached",
+      "--check"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "merged-whitespace.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    },
+    "stderr": {
+      "file": "merged-whitespace.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  },
+  {
+    "name": "commit-merge",
+    "argv": [
+      "git",
+      "-c",
+      "gc.auto=0",
+      "commit",
+      "-m",
+      "Merge current main and preserve native admission checks"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "commit-merge.stdout.gz",
+      "rawSha256": "2ead92aee521cb341a7cdcec5d88b41905dbd96b3939420152089603730a4ab8",
+      "archiveSha256": "2503ef0aec93bdf578ae66a975aa3ac4ec8235b87844ca91b3b43b84a1fea284",
+      "lines": 1
+    },
+    "stderr": {
+      "file": "commit-merge.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  },
+  {
+    "name": "merged-head",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "merged-head.stdout.gz",
+      "rawSha256": "9fcdb368823c9d79e6c8347d0fe8cce477cb09fe7782277e40fc0a9dd036be08",
+      "archiveSha256": "87cc012a5072a26c4ed62669f12c1f868b2652b1f8eab429ca388fd5edf9b739",
+      "lines": 1
+    },
+    "stderr": {
+      "file": "merged-head.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  },
+  {
+    "name": "main-ancestor",
+    "argv": [
+      "git",
+      "merge-base",
+      "--is-ancestor",
+      "origin/main",
+      "HEAD"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "main-ancestor.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    },
+    "stderr": {
+      "file": "main-ancestor.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  }
+]

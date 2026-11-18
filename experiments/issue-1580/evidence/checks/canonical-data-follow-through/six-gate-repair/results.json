@@ -1,0 +1,51 @@
+[
+  {
+    "name": "locale-quoting-equality",
+    "argv": [
+      "node",
+      "--max-old-space-size=128",
+      "/tmp/issue-1580-research/verify-canonical-locale-quoting.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.773,
+    "file": "locale-quoting-equality.log.gz",
+    "rawSha256": "c60818418fb3c7ad21224ff71ab2bb86bc8706963e45ffc5e180678d81bee8ea",
+    "archiveSha256": "88e5ec0f1be6a0408cc7d367c05d64ed53f5ea54e94b29bf9b278233dd157b8f",
+    "lines": 1
+  },
+  {
+    "name": "typescript",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/translate-es.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "seconds": 2.488,
+    "file": "typescript.log.gz",
+    "rawSha256": "8c5ca89ffd53a144342b8dcf26f33da0d2f5d980b5c357d7d4de7aa14b945351",
+    "archiveSha256": "fb8f9b8b71563b1a659d7deb982da83b2c28ffe2be247ffdae9c48afd973e5af",
+    "lines": 1
+  },
+  {
+    "name": "js-rust",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "scripts/translate-js-rust.mjs",
+      "--write",
+      "--fetch",
+      "--jobs",
+      "1",
+      "js/agentic/crate/cnl_grammar.mjs",
+      "js/agentic/crate/cnl_output.mjs"
+    ],
+    "exitCode": 1,
+    "seconds": 58.458,
+    "file": "js-rust.log.gz",
+    "rawSha256": "64dbabb3acd811b0d9895176c32363d37e0c1b95bd7e142c1d91344a6ab3e4a4",
+    "archiveSha256": "301e8d00df23cc7a805c597ecad4506fd6b5870f8d1302c41c42450fa053e06a",
+    "lines": 14
+  }
+]

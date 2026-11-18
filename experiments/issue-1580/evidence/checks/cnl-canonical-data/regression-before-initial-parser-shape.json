@@ -1,0 +1,10 @@
+{
+  "exitCode": 1,
+  "file": "regression-before-initial-parser-shape.log.gz",
+  "rawSha256": "1bd20df30f9f2adefac65d00e11ce7c0cc00dc84d7458d6708bed186b35eb7f5",
+  "archiveSha256": "c9196f065274a9c77350d3f4e6eb1a61a9bb7b125c169624d595e43b844d390f",
+  "lines": 156,
+  "sourceHead": "ca68d929474b129bc56500ce93cf189ce3fc7023",
+  "independentAuthorshipCredit": 0,
+  "supersededReason": "The added Gemini test initially assumed a container root; the parser returns its sole root directly. Corrected before the valid failing baseline."
+}

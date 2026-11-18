@@ -1,0 +1,50 @@
+{
+  "ancestor": "7b7e189d770c4fbd8786b996d065282422e93b5c",
+  "incoming": "53cbe4430f8b65330f47728401fc83b09977129f",
+  "counts": {
+    "base": [
+      1185,
+      221,
+      964
+    ],
+    "ours": [
+      1185,
+      221,
+      964
+    ],
+    "incoming": [
+      1185,
+      221,
+      964
+    ]
+  },
+  "incomingChanges": [
+    {
+      "path": "inventory/cases/182/program/steps/1/right/value",
+      "before": "Здравствуйте! Чем могу помочь?\n\nПлан поиска процедуры для `подключить mysql к node js` (действие `connect`, объект `mysql к node js`).\n\nЯ не отвечаю на это как на заученный рецепт. Сначала solver проверяет Wikipedia для контекста темы и Wikidata для подсказок сущности, действия и объекта. Затем он пробует CORS-readable MediaWiki parse API wikiHow для кандидата `Подключить-Mysql-К-Node-Js` через `https://www.wikihow.com/api.php?action=parse&page=Подключить-Mysql-К-Node-Js&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`. Если эти источники не дают пригодные шаги, fallback запускает web search по `how to подключить mysql к node js` через duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews и объединяет верхние результаты reciprocal rank fusion (k = 60). Финальная recursive fetch check принимает только страницы с явными упорядоченными или инструкционными шагами для `подключить mysql к node js`.",
+      "after": "Здравствуйте! Чем могу помочь?\n\nПлан поиска процедуры для `подключить mysql к node js` (действие `connect`, объект `mysql к node js`).\n\nЯ не отвечаю на это как на заученный рецепт. Сначала solver проверяет Wikipedia для контекста темы и Wikidata для подсказок сущности, действия и объекта. Затем он пробует CORS-readable MediaWiki parse API wikiHow для кандидата `подключить-mysql-к-node-js` через `https://ru.wikihow.com/api.php?action=parse&page=подключить-mysql-к-node-js&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`. Если эти источники не дают пригодные шаги, fallback запускает web search по `how to подключить mysql к node js` через duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews и объединяет верхние результаты reciprocal rank fusion (k = 60). Финальная recursive fetch check принимает только страницы с явными упорядоченными или инструкционными шагами для `подключить mysql к node js`."
+    },
+    {
+      "path": "inventory/cases/182/program/fixtures/0/sha256",
+      "before": "a57f3186cd1a163913de5f028f125219258e80a8aa22af095431425137fc1b0e",
+      "after": "5b5864c935de9aa87e768f5fa878eccc6c90af176df3cc8b42ebb1f0da18e2e6"
+    },
+    {
+      "path": "inventory/cases/183/program/fixtures/0/sha256",
+      "before": "a57f3186cd1a163913de5f028f125219258e80a8aa22af095431425137fc1b0e",
+      "after": "5b5864c935de9aa87e768f5fa878eccc6c90af176df3cc8b42ebb1f0da18e2e6"
+    },
+    {
+      "path": "inventory/cases/185/program/fixtures/0/sha256",
+      "before": "a57f3186cd1a163913de5f028f125219258e80a8aa22af095431425137fc1b0e",
+      "after": "5b5864c935de9aa87e768f5fa878eccc6c90af176df3cc8b42ebb1f0da18e2e6"
+    },
+    {
+      "path": "sourceManifest/85/sha256",
+      "before": "a57f3186cd1a163913de5f028f125219258e80a8aa22af095431425137fc1b0e",
+      "after": "5b5864c935de9aa87e768f5fa878eccc6c90af176df3cc8b42ebb1f0da18e2e6"
+    }
+  ],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

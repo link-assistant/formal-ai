@@ -1,0 +1,62 @@
+{
+  "records": [
+    {
+      "attempt": "canonical-main-preparation",
+      "file": "canonical-main-preparation/failure.json.gz",
+      "rawSha256": "817e16a93414088200a5fbe214e5b459f4e4ea2c94d76c94e97d7722cf8c779e",
+      "archiveSha256": "4f89ff48641c5e421a86a7b8fb174c6fa85e113d3b0e4a741e9ce0687fae91bb",
+      "lines": 1
+    },
+    {
+      "attempt": "canonical-main-preparation",
+      "file": "canonical-main-preparation/worker.log.gz",
+      "rawSha256": "17e415eec570f488455295912111b4b69ccfadb21f3735ffb747dc81b5333a95",
+      "archiveSha256": "eb22787a4839e1e8a6692d199c0b07dba035dea2d4e5d8b00af42eb46bfbf5d6",
+      "lines": 6
+    },
+    {
+      "attempt": "canonical-main-integration",
+      "file": "canonical-main-integration/failure.json.gz",
+      "rawSha256": "95d9a5dce2385035e4be3602bbc0d3184d335dda3b41741736e396085147ae8b",
+      "archiveSha256": "0aed7152a4b6479ecfc1b9ea77fc2cd3bd776ee6f26cc27beaf4e24e83c55f7f",
+      "lines": 1
+    },
+    {
+      "attempt": "canonical-main-integration",
+      "file": "canonical-main-integration/worker.log.gz",
+      "rawSha256": "b4e8f517a08733e711cf0bf0c6f4c6c057bb0806117b0d90d0bdffad2fca0e94",
+      "archiveSha256": "20362ef9f4b1bdccb8c08f5b193d2bdb4137a893dfa27caf27916f3969bfafaf",
+      "lines": 6
+    },
+    {
+      "attempt": "canonical-six-gate-repair",
+      "file": "canonical-six-gate-repair/failure.json.gz",
+      "rawSha256": "31eff364cd2bbdd760b9ef8ffdab24265d1d0597cafbaa7701bc1c5fc2a4f4d6",
+      "archiveSha256": "749f0f7c01027e7f7db6485640b99f6620407771aff00368827731f7742e3e71",
+      "lines": 1
+    },
+    {
+      "attempt": "canonical-six-gate-repair",
+      "file": "canonical-six-gate-repair/worker.log.gz",
+      "rawSha256": "fa7ce41a1d038b066476fe9988c0c1cd0c858078b31bbb0449453a3ccbceac38",
+      "archiveSha256": "c294396ad1b2188856b8a2d43ef4122bfb61e303ef27093c397485317211cafc",
+      "lines": 11
+    },
+    {
+      "attempt": "canonical-final-preparation",
+      "file": "canonical-final-preparation/cancelled.json.gz",
+      "rawSha256": "b06234985e0b3f308431ca3deb182d6268d23c98546d586205ae5aae0dd7cd80",
+      "archiveSha256": "51341d8f353a3f68a98db2c5ebee8493ac27177ad16dd608eef33c832416e7fd",
+      "lines": 1
+    },
+    {
+      "attempt": "canonical-final-preparation",
+      "file": "canonical-final-preparation/worker.log.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0
+    }
+  ],
+  "supersededBy": "../bounded-generation/outcome.json",
+  "independentAuthorshipCredit": 0
+}

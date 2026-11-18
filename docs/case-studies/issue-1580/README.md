@@ -256,3 +256,14 @@ passes 75 focused tests and 11 affected gates; actual native execution is pendin
 Java historical review reaches 126/254 pages and 8,122 lines. The remaining 44
 original panic contracts, three budget terminations and broader issue criteria
 remain unfinished; the PR remains draft.
+
+
+The [canonical-data and scheduling checkpoint](canonical-data-and-scheduling-checkpoint.md)
+records `0f8c178c` (22/23 workflows pass), repairs both native data failures while
+preserving complete decoded grammar objects, and admits 18 unchanged native
+scheduling cases. Main `53cbe443` is merged. The merged source passes 138 focused
+JavaScript tests, TypeScript runtime qualification and all 87 executable gates;
+52 native/context gates explicitly skip. Current native execution remains
+pending. Java historical review reaches 130/254 pages and 8,240 literal lines.
+The remaining 43 original panics, three budget failures and wider criteria stay
+unfinished; the PR remains draft with zero independent reasoning credit.

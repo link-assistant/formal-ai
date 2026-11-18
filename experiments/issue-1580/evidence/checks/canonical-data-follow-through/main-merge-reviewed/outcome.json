@@ -1,0 +1,14 @@
+{
+  "sourceHead": "a785a99b5b3291eadedc072e9effda51de0b3b75",
+  "incomingMain": "53cbe4430f8b65330f47728401fc83b09977129f",
+  "mergeExitCode": 1,
+  "conflicts": [
+    ".github/workflows/native-type-check.yml",
+    "experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8",
+    "rust/tests/web/default-branch-build-policy.test.mjs"
+  ],
+  "mergeCommitted": false,
+  "pushExecuted": false,
+  "observedAt": "2026-11-18T19:38:32.401350+00:00",
+  "independentAuthorshipCredit": 0
+}
