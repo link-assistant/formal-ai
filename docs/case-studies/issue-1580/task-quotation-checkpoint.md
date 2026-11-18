@@ -188,3 +188,72 @@ stops publication before any push because the saved raw review diff contains
 whitespace-only context lines. Preserve the entire failed publication and
 compress that diff losslessly; do not alter its reviewed contents or production
 code. The corrected publication must pass staged whitespace before pushing.
+
+
+## Decoded-value hosted verification and further coverage studies
+
+Published head `b26f5eebd3393b145c8693e985c8db24248380ad` passes all 23
+hosted workflows after one failed-checkout-job retry. CI/CD run 44245879421
+actually executes the native calendar/currency regression: 1/1 passes in
+91.13 seconds. That run replays the previously observed grammar assertion;
+it does not execute every shared native quotation or held-out grammar fixture.
+The first Layered CI attempt fails during checkout with curl 28 before tests.
+Its entire failed-job log is read and retained. The single retry keeps the
+original checkout, test selection and time budgets. Its final summary records
+1,430 passes, 13 skips and zero failures in 278.883 seconds. Retain the initial
+and retry logs separately under `evidence/ci/decoded-grammar-b26f5eeb/`.
+A successful retry does not identify the cause of the transfer stall.
+
+Three additional finite VM studies retain the earlier rejected candidate:
+parent coverage passes 5/9 qualification controls, initial seeded-cue masking
+passes 6/10, and normalized seeded-cue masking passes 10/10. The last study
+preserves the complete 25-case fixture outputs and event traces, plus two
+non-passage structural controls. Each uses three modes for each request, no
+actual or mocked transport calls, and pinned pre-status-repair source hashes.
+All qualification output is literally read; every nested solver trace is not.
+The concrete-output contract is a supplied mock, not end-to-end code generation.
+The candidate remains outside production: adoption still retains obsolete root
+evidence, and general coverage, aggregated provenance and native parity remain
+unverified. The artifacts and complete supplied sources are under
+`checks/passage-routing-probe/coverage-followup-qualification/`.
+
+## Nonempty unverified drafts
+
+A separate root cause appears in the actual child traces: the reasoner emits
+`meta_reasoned_program_unverified` with nonempty content, while leaf admission
+recognizes only the existing unresolved intents and two suffixes. The generic
+`answered` check therefore accepts an unverified child and can complete its
+all-required parent. The new focused regression fails before the policy repair
+with `answered(meta_reasoned_program_unverified)=true` instead of false.
+
+Add `_unverified` to the canonical unresolved suffix policy and regenerate its
+embedded mirror. Existing answer/observation owners already classify unverified
+program, workspace and plan outcomes as inconclusive or gaps. The emitted-intent
+inventory distinguishes those outcomes from similarly named seed response keys.
+The policy changes test admission; it grants no new root composition permission.
+
+Four new cases exercise unverified derivation, an unverified required child,
+an unverified cached draft and a verified positive control. Their complete traces
+are literally read. The original 25-case fixture remains byte-identical,
+including every event. Put the four cases in a separate shared fixture and load
+both in JavaScript and native readers through the maintained fixture writer.
+This preserves the unchanged 1,500-line limit after the first expanded fixture
+fails both size gates at 1,577 lines. Retain that first failed validation and the
+incorrect factual-QA test-path invocation; neither earns a passing verdict.
+
+After splitting the fixtures, all 10 executor tests and all 15 adjacent
+factual-QA tests pass in separate bounded runs. Both fixture currency checks
+pass. The complete local inventory passes 86 executable gates with 52 explicit
+native/CI-context exclusions and no failures in 648.246 seconds.
+The aggregate is literally read; compressed successful detail logs are preserved
+with hashes, without a claim that each was literally reviewed. Retain the Rust
+format-check failure, then apply the Rust 2024 formatter and pass its check.
+That correction changes whitespace and one optional trailing argument comma; it does
+not change the shared policy or either fixture. No local native build runs.
+Native execution of the new status cases remains unverified.
+
+The complete before/after receipts and failed attempts are under
+`experiments/issue-1580/evidence/checks/unverified-child-status/`.
+All earlier broad unfinished criteria remain open. Supplied scripts, code and
+conclusions receive zero independent authorship credit; independent acceptance
+stays 0/20. The PR stays draft and unmerged.

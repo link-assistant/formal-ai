@@ -1,0 +1,236 @@
+{
+  "observedAt": "2026-11-18T06:03:56.054357+00:00",
+  "head": "b26f5eebd3393b145c8693e985c8db24248380ad",
+  "workflowRun": 44245878901,
+  "runAttempt": 2,
+  "job": 134610199645,
+  "name": "js tier (node --check over js, suite group 2)",
+  "conclusion": "success",
+  "startedAt": "2026-11-18T05:55:33Z",
+  "completedAt": "2026-11-18T06:01:15Z",
+  "steps": [
+    {
+      "name": "Set up job",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 1,
+      "started_at": "2026-11-18T05:55:34Z",
+      "completed_at": "2026-11-18T05:55:35Z"
+    },
+    {
+      "name": "Run actions/checkout@v7",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 2,
+      "started_at": "2026-11-18T05:55:35Z",
+      "completed_at": "2026-11-18T05:56:07Z"
+    },
+    {
+      "name": "Report DRY review and language coverage",
+      "status": "completed",
+      "conclusion": "skipped",
+      "number": 3,
+      "started_at": "2026-11-18T05:56:07Z",
+      "completed_at": "2026-11-18T05:56:07Z"
+    },
+    {
+      "name": "Regenerate canonical seed projection for JavaScript consumers",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 4,
+      "started_at": "2026-11-18T05:56:07Z",
+      "completed_at": "2026-11-18T05:56:09Z"
+    },
+    {
+      "name": "Syntax-check every committed js file",
+      "status": "completed",
+      "conclusion": "skipped",
+      "number": 5,
+      "started_at": "2026-11-18T05:56:09Z",
+      "completed_at": "2026-11-18T05:56:09Z"
+    },
+    {
+      "name": "Native diagnostics use the shared structured logger (R1220)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "number": 6,
+      "started_at": "2026-11-18T05:56:09Z",
+      "completed_at": "2026-11-18T05:56:09Z"
+    },
+    {
+      "name": "Native-only handler rows only fall (R998)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "number": 7,
+      "started_at": "2026-11-18T05:56:09Z",
+      "completed_at": "2026-11-18T05:56:09Z"
+    },
+    {
+      "name": "Syntax-check the JavaScript server and its parity runner (R1013)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "number": 8,
+      "started_at": "2026-11-18T05:56:09Z",
+      "completed_at": "2026-11-18T05:56:09Z"
+    },
+    {
+      "name": "Natural-language literals in the worker and server only fall (R1010, R1013)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "number": 9,
+      "started_at": "2026-11-18T05:56:09Z",
+      "completed_at": "2026-11-18T05:56:09Z"
+    },
+    {
+      "name": "Check out relative-meta-logic for the rml export step (R1186-4)",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 10,
+      "started_at": "2026-11-18T05:56:09Z",
+      "completed_at": "2026-11-18T05:56:10Z"
+    },
+    {
+      "name": "Install rml and name it in RML_BIN (R1186-6)",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 11,
+      "started_at": "2026-11-18T05:56:10Z",
+      "completed_at": "2026-11-18T05:56:12Z"
+    },
+    {
+      "name": "Setup the pinned web dependency installer",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 12,
+      "started_at": "2026-11-18T05:56:12Z",
+      "completed_at": "2026-11-18T05:56:14Z"
+    },
+    {
+      "name": "Install actual locked UI test dependencies",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 13,
+      "started_at": "2026-11-18T05:56:14Z",
+      "completed_at": "2026-11-18T05:56:15Z"
+    },
+    {
+      "name": "Install the isolated patched matcher test dependencies",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 14,
+      "started_at": "2026-11-18T05:56:15Z",
+      "completed_at": "2026-11-18T05:56:15Z"
+    },
+    {
+      "name": "Provision the real agentic search adapter",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 15,
+      "started_at": "2026-11-18T05:56:15Z",
+      "completed_at": "2026-11-18T05:56:27Z"
+    },
+    {
+      "name": "Provision the actual pinned source-model frontend",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 16,
+      "started_at": "2026-11-18T05:56:27Z",
+      "completed_at": "2026-11-18T05:56:32Z"
+    },
+    {
+      "name": "Plan this shard of the JavaScript suites",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 17,
+      "started_at": "2026-11-18T05:56:32Z",
+      "completed_at": "2026-11-18T05:56:32Z"
+    },
+    {
+      "name": "Set up Python for the pinned template observations",
+      "status": "completed",
+      "conclusion": "skipped",
+      "number": 18,
+      "started_at": "2026-11-18T05:56:32Z",
+      "completed_at": "2026-11-18T05:56:32Z"
+    },
+    {
+      "name": "Run the focused tests for the changed components first",
+      "status": "completed",
+      "conclusion": "skipped",
+      "number": 19,
+      "started_at": "2026-11-18T05:56:32Z",
+      "completed_at": "2026-11-18T05:56:32Z"
+    },
+    {
+      "name": "Run this shard of the JavaScript suites",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 20,
+      "started_at": "2026-11-18T05:56:32Z",
+      "completed_at": "2026-11-18T06:01:11Z"
+    },
+    {
+      "name": "Post Provision the actual pinned source-model frontend",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 37,
+      "started_at": "2026-11-18T06:01:11Z",
+      "completed_at": "2026-11-18T06:01:12Z"
+    },
+    {
+      "name": "Post Setup the pinned web dependency installer",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 38,
+      "started_at": "2026-11-18T06:01:12Z",
+      "completed_at": "2026-11-18T06:01:12Z"
+    },
+    {
+      "name": "Post Check out relative-meta-logic for the rml export step (R1186-4)",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 39,
+      "started_at": "2026-11-18T06:01:12Z",
+      "completed_at": "2026-11-18T06:01:12Z"
+    },
+    {
+      "name": "Post Run actions/checkout@v7",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 40,
+      "started_at": "2026-11-18T06:01:12Z",
+      "completed_at": "2026-11-18T06:01:12Z"
+    },
+    {
+      "name": "Complete job",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 41,
+      "started_at": "2026-11-18T06:01:12Z",
+      "completed_at": "2026-11-18T06:01:12Z"
+    }
+  ],
+  "log": {
+    "file": "job.log.gz",
+    "rawBytes": 534582,
+    "rawLines": 2805,
+    "rawSha256": "92c5a349588ace35914fa2654a4443be7776937644d205d984abf72267c739e9",
+    "archivedSha256": "8456733aefdcb1ec5aea1681ff700266c93c6c12de69b616e67231a13df8accd"
+  },
+  "wholeJobLogLiterallyRead": false,
+  "all23CurrentHeadWorkflowsPass": true,
+  "fullIssueComplete": false,
+  "literalReview": {
+    "wholeJobLogLiterallyRead": false,
+    "reviewedRanges": [
+      [
+        2650,
+        2805
+      ]
+    ],
+    "summaryPass": 1430,
+    "summarySkip": 13,
+    "summaryFail": 0,
+    "summaryDurationMilliseconds": 278883.266705
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "sources": [
+    {
+      "path": "js/worker/formal_ai_worker_meta_composite.js",
+      "sha256": "dfda739ac3fa4cd4c5b2f421f182ddf60aa2a9799d0bc4135696d024b1756e50",
+      "matchingLines": [
+        {
+          "line": 94,
+          "text": "    intent: verified ? \"meta_reasoned_program\" : \"meta_reasoned_program_unverified\","
+        }
+      ]
+    },
+    {
+      "path": "js/worker/formal_ai_worker_meta_reasoner.js",
+      "sha256": "7c27b938f20ec4e7650c999e53516b9fa88d27104ed15d85e10bed9c60ea6d07",
+      "matchingLines": [
+        {
+          "line": 1133,
+          "text": "    intent: result.verification ? \"meta_reasoned_program\" : \"meta_reasoned_program_unverified\","
+        }
+      ]
+    },
+    {
+      "path": "js/agentic/crate/engine_answer.mjs",
+      "sha256": "1c9083458140dd10e9f723d55bc01a30addf88da85c87c1cf138cbb11b65bf91",
+      "matchingLines": [
+        {
+          "line": 11,
+          "text": "  return ['unknown', 'ill_formed', 'punctuation_only_prompt', 'concept_lookup_unresolved', 'meta_reasoning_open', 'meta_reasoned_program_unverified'].includes(answer.intent)"
+        }
+      ]
+    },
+    {
+      "path": "js/agentic/evidence_record/record_observation.mjs",
+      "sha256": "f5c4fc906079cc5172425ab81f590332f4172ec2f2cbf1ec3272e1d5f17685c0",
+      "matchingLines": [
+        {
+          "line": 60,
+          "text": "  return resolvedFinalAnswer(renderSeededOutcome('coding_workspace_written_unverified', task, target),"
+        }
+      ]
+    },
+    {
+      "path": "js/agentic/code_task.mjs",
+      "sha256": "ca3c3b62796a42c71b5cefba2aa6f0f24113f026a8a4a8523782ea51da06845c",
+      "matchingLines": [
+        {
+          "line": 55,
+          "text": "    const rendered = renderSeededOutcome('coding_workspace_written_unverified', task, artifact.path);"
+        }
+      ]
+    },
+    {
+      "path": "js/agentic/code_task/target_guard.mjs",
+      "sha256": "d2694a63b4ce971600ed97cdb8e6354e7310355a4e8fc94c373d41de49bf2686",
+      "matchingLines": [
+        {
+          "line": 19,
+          "text": "    return resolvedFinalAnswer(response('general_plan_unverified',[['target',artifact.path],['command','read '+artifact.path]]),FinalDisposition.Gap,'generated_source_preimage_unobserved');"
+        }
+      ]
+    },
+    {
+      "path": "js/agentic/general_execution.mjs",
+      "sha256": "e79bfb0a7ba40906775f3a4e4e8c29f401993818a4f0f7dfde598fd08d59a9a9",
+      "matchingLines": [
+        {
+          "line": 126,
+          "text": "  return run === null ? finish('coding_workspace_written_unverified', FinalDisposition.Gap)"
+        },
+        {
+          "line": 616,
+          "text": "  return (localizedResponse('general_plan_unverified', language) ?? '')"
+        }
+      ]
+    },
+    {
+      "path": "data/seed/text-formalization.lino",
+      "sha256": "7ec3c809005692204ee968d0c6ce34c2b5103c3cad7f0a22356da5da07b9a44a",
+      "matchingLines": [
+        {
+          "line": 109,
+          "text": "    unresolved-suffix \"_unverified\""
+        }
+      ]
+    }
+  ],
+  "scope": "Targeted emitted-intent and existing admission-classification inspection; response-key names alone are not emitted intents.",
+  "independentAuthorshipCredit": 0
+}

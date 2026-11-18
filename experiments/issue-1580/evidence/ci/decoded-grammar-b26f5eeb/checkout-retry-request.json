@@ -1,0 +1,13 @@
+{
+  "requestedAt": "2026-11-18T05:55:26.127217+00:00",
+  "head": "b26f5eebd3393b145c8693e985c8db24248380ad",
+  "run": 44245878901,
+  "failedJobsOnly": true,
+  "attemptBefore": 1,
+  "exitCode": 0,
+  "stdout": "",
+  "stderr": "",
+  "workflowModified": false,
+  "testCoverageReduced": false,
+  "deadlinesIncreased": false
+}

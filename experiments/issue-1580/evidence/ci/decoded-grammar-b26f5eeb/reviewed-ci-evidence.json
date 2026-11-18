@@ -1,0 +1,52 @@
+{
+  "observedAt": "2026-11-18T05:55:22.946004+00:00",
+  "head": "b26f5eebd3393b145c8693e985c8db24248380ad",
+  "literalReview": [
+    {
+      "file": "44245878901-job-134604653318.log.gz",
+      "firstLine": 1,
+      "lastLine": 171,
+      "completeJobLog": true,
+      "sha256": "2bacb1e23f6556cbc60fdc22ed9da9689f9e081c855c524217226f24f0583756"
+    },
+    {
+      "file": "44245879421-job-134604725409.log.gz",
+      "firstLine": 1500,
+      "lastLine": 1670,
+      "completeJobLog": false,
+      "sha256": "ba94bdae350fcd560379d1f55d2a47e76b79ca23152e1908afaf446a8af52675"
+    }
+  ],
+  "checkoutFailure": {
+    "run": 44245878901,
+    "job": 134604653318,
+    "lines": [
+      124,
+      125,
+      126,
+      155
+    ],
+    "classification": "Git transport low-speed abort before tests; precise cause of batch transfer stall remains unknown",
+    "reportedBlob": "9df886c42a1e2082f1471383d986fea4d531f8ac",
+    "reportedBlobPath": ".bun-version",
+    "reportedBlobBytes": 6
+  },
+  "nativeCalendarCurrencyExecution": {
+    "run": 44245879421,
+    "job": 134604725409,
+    "lines": [
+      1633,
+      1634,
+      1636,
+      1637,
+      1639
+    ],
+    "passed": 1,
+    "failed": 0,
+    "seconds": 91.13
+  },
+  "nativeQuotationFixtureExecutionVerified": false,
+  "allWorkflowLogsLiterallyRead": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

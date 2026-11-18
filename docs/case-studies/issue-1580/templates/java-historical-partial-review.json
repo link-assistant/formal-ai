@@ -80,7 +80,21 @@
     75,
     76,
     77,
-    78
+    78,
+    79,
+    80,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87,
+    88,
+    89,
+    90,
+    91,
+    92
   ],
   "totalHistoricalPages": 254,
   "files": [
@@ -931,7 +945,211 @@
       "readRanges": [
         [
           1,
-          18
+          92
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/github-rhysd-actionlint.json",
+      "sha256": "822000e63c37642f95af8f788644e828faf30d9320d78e7baa4220270ef6e7bf",
+      "totalLines": 488,
+      "readRanges": [
+        [
+          1,
+          488
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/google-java-format-release.json",
+      "sha256": "15d6f871b7264a8a496e9995fdcc2c13fd7ca3b35ba947ca3d3505d83e0f5b2f",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/implementation-pipeline.json",
+      "sha256": "8622dd92a3c731ca5432aa2d76cf2c806f364b5a6e3a3feef4e0e6f3fe4a585d",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/implementation-policy.json",
+      "sha256": "b8588ee6f7b296bfc7bc2ea8cfb2e4fe880fad41e43b419c96da1a7bc8979d27",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/implementation-security.json",
+      "sha256": "46eba2f796f21c4559499aa524e8689dbb0d72716f5fd8f2ad9e2bba73045d26",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/initial-main-runs.json",
+      "sha256": "b7700316b95d7f283017bb67c93556162e264d5e7fc527d6353f9d0b80ea191a",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/initial-pr-runs.json",
+      "sha256": "5ca9bbea5f61aded1f74896d82cb5c3a6ef9df8e4d519a25d16de10d39c953ce",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/issue-24.json",
+      "sha256": "6780ba648fb2ec534b4032a1d3cf0ebafcb2583668d66b9330e2ecc10c0429b2",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/issue-comments.json",
+      "sha256": "58190636a983119b02bf3bc5d8030d0ef1ddfd090e557d6d4d340fd7450700b5",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/java27.json",
+      "sha256": "c961f42cabf2f42d47fa0323bba103b85df7b6dc7ae1c0b1d92f0ed5b53871a9",
+      "totalLines": 37,
+      "readRanges": [
+        [
+          1,
+          37
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/json-simple-changelog.txt",
+      "sha256": "1f71509e6c5e5d56d6304f50199b29f62d7caea2e1edd2ad962bdcec2593d585",
+      "totalLines": 137,
+      "readRanges": [
+        [
+          1,
+          137
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/junit6-migration.md",
+      "sha256": "3b40791b085dff0c139337efada0986c7affed5360c5a00f5c41dbb38c265f91",
+      "totalLines": 71,
+      "readRanges": [
+        [
+          1,
+          71
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/main-pipeline.json",
+      "sha256": "f83a69e46fccea082be2a7091a8846962a626b2cec0a9d077c6bdbce3f52471b",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/main-security.json",
+      "sha256": "96b42ccfe1bcb42ddbe7d3f303574b4f27dcb3bed0e1d1d9da3d7ff7b454a89d",
+      "totalLines": 1,
+      "readRanges": [
+        [
+          1,
+          1
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-apache-maven.xml",
+      "sha256": "c353c296e75593b77b942fbb48d9cde72a0ecb4678889fc3cd489b4f2a6af371",
+      "totalLines": 102,
+      "readRanges": [
+        [
+          1,
+          102
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-checkstyle.xml",
+      "sha256": "4079aaac782c0b7e7278882aad23a58021b01bf7a512490a4e4855f86b38b7d0",
+      "totalLines": 207,
+      "readRanges": [
+        [
+          1,
+          207
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/maven-google-java-format.xml",
+      "sha256": "63b763d8069833b3c84c8ffc4225fbc7b9a969a4fc66c98b271f6ba3560455a1",
+      "totalLines": 59,
+      "readRanges": [
+        [
+          1,
+          35
         ]
       ],
       "completeSourceRead": false
@@ -982,7 +1200,7 @@
     "The complete historical dependency-update practices source is read. Its discussion of automatic merges and administrative bypass describes the upstream tool; it does not authorize changing Formal AI branch protection or merging this draft. Current applicability, remaining historical pages and broader issue acceptance stay unfinished."
   ],
   "nextUnreviewedLiteralPage": 39,
-  "nextForwardLiteralPage": 79,
+  "nextForwardLiteralPage": 93,
   "observationsThroughPage58": [
     "Pages 56–58 are fully read. Together with page 55 they complete the historical Durian SWT changelog. Its Java 17, Kotlin flow and platform notes are third-party historical context, not verification of current Formal AI dependencies.",
     "The retained final issue conversation, final main SHA, empty pull-request conversation/review/inline-comment lists and empty sub-issue list are fully read. These are historical snapshots rather than fresh GitHub state.",
@@ -1020,5 +1238,11 @@
     "Pages 73–78 were read in full. They finish the historical Bun v1.4.4 release response, setup-bun v2.2.0, create-pull-request v8.1.3 and pre-commit-hooks v6.0.0; the retained pre-commit response is partially read through line 18.",
     "Bun asset names, digests, dates and download counts are historical response data. The setup-bun notes describe a Node.js 24 action runtime, create-pull-request describes a signed-commit ref check, and pre-commit-hooks describes Python >=3.9 and removal or replacement of two hooks. None establishes that the current repository runs those versions or passes affected paths.",
     "Literal coverage is continuous pages 1–78/254. Pages 79–254 remain unread, and full template semantic applicability remains unfinished."
+  ],
+  "observationsPages79Through92": [
+    "All fourteen pages were literally read without truncation. They complete the retained pre-commit, actionlint and google-java-format release responses; implementation and initial/final pipeline/security records; issue 24 and its comments; Java 27 metadata; json-simple changelog; JUnit 6 migration guidance; and the Maven and Checkstyle version catalogs.",
+    "The retained JUnit migration raises its Java baseline to 17 and Kotlin baseline to 2.1, aligns module versions and replaces deprecated extension-store APIs. These are historical migration context and do not establish current library compatibility or applicability to Formal AI.",
+    "Historical main head 600f3c713ca5b8cec3718a0713c2220fe154118c records successful Java 21 tests on Windows, Linux and macOS, lint and packaging, while release jobs are skipped. This is template history, not execution of the current Formal AI head or a new release.",
+    "Continuous literal coverage is pages 1–92/254. The google-java-format Maven catalog is partly read through line 35; pages 93–254 and full semantic applicability remain unfinished. No download or present runtime verification is claimed from catalog metadata."
   ]
 }

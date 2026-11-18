@@ -1,0 +1,104 @@
+{
+  "observedAt": "2026-11-18T06:24:10.203156+00:00",
+  "head": "b26f5eebd3393b145c8693e985c8db24248380ad",
+  "draft": true,
+  "counts": {
+    "issue-comments": 1,
+    "pull-request-comments": 9,
+    "inline-comments": 0,
+    "reviews": 0
+  },
+  "changes": [],
+  "requiredSubIssues": [],
+  "records": [
+    {
+      "label": "issue-view",
+      "command": [
+        "gh",
+        "issue",
+        "view",
+        "https://github.com/link-assistant/formal-ai/issues/1580",
+        "--json",
+        "title,body,comments"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "7fd7e0bc448e54a777bdecdaf2c2fa441eb570092f3b2624201856ef61637f37"
+    },
+    {
+      "label": "issue-comments",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1580/comments",
+        "--paginate",
+        "--slurp"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "3178261cc3c708d02d40ff1b69be28aeecb8be0ae09a2cac5afd6d3a2c29d7e2"
+    },
+    {
+      "label": "pull-request-comments",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1581/comments",
+        "--paginate",
+        "--slurp"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "5a55505ba72180a44bc3b4c758610cedc55b90b5edda11ee70e7d376d65094fb"
+    },
+    {
+      "label": "inline-comments",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/1581/comments",
+        "--paginate",
+        "--slurp"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05"
+    },
+    {
+      "label": "reviews",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/pulls/1581/reviews",
+        "--paginate",
+        "--slurp"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05"
+    },
+    {
+      "label": "subissues",
+      "command": [
+        "gh",
+        "api",
+        "repos/link-assistant/formal-ai/issues/1580/sub_issues?per_page=100",
+        "--paginate",
+        "--slurp"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "cf1cbb66a638b4860a516671fb74850e6ccf787fe6c4c8d29e9c04efe880bd05"
+    },
+    {
+      "label": "pull-request",
+      "command": [
+        "gh",
+        "pr",
+        "view",
+        "1581",
+        "--repo",
+        "link-assistant/formal-ai",
+        "--json",
+        "title,body,isDraft,headRefOid,baseRefName"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "b7597847f366ba294f7a6a8cdf5f35e0f979df4f521d046cc980b252e5772953"
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}

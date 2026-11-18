@@ -393,5 +393,28 @@ All 23 workflows on `a97832237cbb365000dd7296050984e4bdd59ebb` complete successf
 - [x] Remove the second quote decoding from native structural/vocabulary accessors. Add shared held-out quoted-value vectors and a native assertion for the actual ASCII task quote pairs; JavaScript already preserves the decoded values.
 - [x] Pass 2 + 5 + 9 focused JavaScript cases separately, preserve/correct the initial Rust formatting failure, and pass all ten selected source/release gates and whitespace checks. No shared metadata change, local Rust build or native execution.
 - [x] Refresh every feedback type, required sub-issues and main ancestry; discussion is unchanged, no required sub-issues and no active/queued runs.
-- [ ] Publish the complete repair once and verify all new-head workflows, especially native calendar/currency execution. A checkout retry result does not establish transport causality.
+- [x] Publish the complete decoded-value repair once as b26f5eeb. All 23 exact-head workflows pass after one failed-checkout-job retry. Native calendar/currency actually executes and passes 1/1 in 91.13 seconds; the retried JavaScript shard passes 1,430 cases with 13 skips. The initial checkout failure and its logs remain preserved; the retry does not establish transport causality or native quotation-fixture execution.
 - [ ] Complete parent-answer coverage, context binding, native quotation fixture execution, the 53 distinct native panic headers, three terminations, full template comparison and every earlier unfinished criterion. Independent reasoning acceptance stays 0/20; PR stays draft and unmerged.
+
+
+## Parent coverage qualification and unverified-child status (2026-11-18)
+
+- [x] Preserve the 5/9 parent-coverage candidate, the 6/10 initial seeded-cue
+  candidate, and the corrected 10/10 candidate as separate bounded VM studies.
+  Corrected cue normalization preserves all 25 fixture outputs and complete
+  event traces plus two non-passage structural controls. No production adoption,
+  native execution or general-proof claim follows from those controls.
+- [x] Reproduce the separate status defect where a nonempty
+  `meta_reasoned_program_unverified` child passes the leaf test; inventory all
+  emitted unverified intents and add shared negative/verified controls before
+  correcting the seeded unresolved suffix policy.
+- [x] Preserve the failing-before and passing-after checks; regenerate shared
+  fixtures and maintained projections; run focused adjacent checks and the
+  complete shared-data gate inventory sequentially before publishing.
+- [ ] Complete aggregated composition provenance, native quotation/coverage
+  execution, general parent coverage and every earlier unchecked criterion.
+  Independent acceptance remains 0/20 and the PR stays draft and unmerged.
+
+- [x] Read and preserve Java historical pages 79–92 completely. Coverage is continuous 1–92/254, with 87 complete files, 1 partial file and 5,792 literally reviewed source lines. Pages 93–254 and complete semantic applicability remain unfinished; historical metadata grants no current execution credit.
+
+- [x] Preserve the first two size-gate failures and wrong-path invocation, split the four new status cases into a second shared fixture, then pass 25 focused tests and all 86 executable gates (52 explicit exclusions). Preserve and correct Rust formatting separately; original 25 fixture entries remain byte-identical. Native status execution and general parent coverage stay unfinished.
