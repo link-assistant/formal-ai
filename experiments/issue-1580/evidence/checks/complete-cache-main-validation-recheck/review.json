@@ -1,0 +1,21 @@
+{
+  "complete": true,
+  "allPassed": true,
+  "head": "235fb71c168d9052382d1f4dc473240e14c23495",
+  "sourceUnchangedDuringValidation": true,
+  "checks": 14,
+  "failed": [],
+  "gateLogsArchived": 86,
+  "nativeExecutedLocally": false,
+  "independentAuthorshipCredit": 0,
+  "completedAt": "2026-11-18T17:29:48.026002+00:00",
+  "focusedTests": 104,
+  "gateCounts": {
+    "PASS": 86,
+    "FAIL": 0,
+    "SKIP": 52
+  },
+  "allRetainedLogHashesVerified": true,
+  "aggregateAndFocusedLogsFullyRead": true,
+  "allDetailedGateLogsFullyRead": false
+}

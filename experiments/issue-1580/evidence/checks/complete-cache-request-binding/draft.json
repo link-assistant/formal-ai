@@ -1,0 +1,14 @@
+{
+  "draftComplete": true,
+  "sourceHead": "dc434376bd4405b28e0612d9d427bc288868206a",
+  "beforeSha256": {
+    "rust/src/solver_unknown_reasoning.rs": "a84e6790fc0d81fa8730aeddf761cbc0697ee3733f67b8e53afa73e53683d558",
+    "rust/tests/unit/solver_unknown_reasoning_captured_sources.rs": "c9e8aea5dada5df2cd393eb570f5e04a0e7ff0167fcb188880a2873cfc057dfe",
+    "data/seed/code-task-cues.lino": "d001cf69c1d7c4fbf7d2b87df4a36bc7aaaba09ad602c7fc09eb9d62ef8f0496"
+  },
+  "sourcePatchSha256": "a598875d83507f4f70840ae90e51edd436ec3917c36845e3346303eace82c686",
+  "nativeExecutedLocally": false,
+  "nativeTestsPending": true,
+  "independentAuthorshipCredit": 0,
+  "fullIssueComplete": false
+}

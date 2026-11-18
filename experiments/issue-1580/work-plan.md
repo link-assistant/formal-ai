@@ -636,4 +636,17 @@ The first complete local inventory finishes in 764.618 seconds: 80 executable ga
 - [x] Collect all 23 current-head hosted outcomes and the sole worker census failure before the next publication. Reproduce that failure locally and commit its shared-draft repair as `db869ce7`; all eight unchanged census tests pass. General memory reasoning and multi-passage provenance remain unfinished; frozen reasoning acceptance 0/20.
 
 - [x] Literally read and retain Java historical pages 120–121: 121/254 continuous pages, 7,986 source lines, 111 complete files and one partial Node catalog through line 407/884. Pages 122–254 and semantic applicability remain open.
-- [ ] Publish this source/evidence batch only after the fresh single-push gate; collect every workflow on that head and verify the five added native cases without treating scoped CI as full issue completion.
+- [x] Publish the reviewed batch as `8a74006f` after the single-push gate; collect all 23 workflows. The five added native controls actually pass. Layered CI alone fails three stale TypeScript projections; preserve its complete failure and regenerate through the maintained writer.
+
+
+## Complete request binding and structured-output integration
+
+- [x] Identify the remaining arbitrary `about` tail extraction: a longer operative request could still become a cached definition or unrelated link-memory fact. Preserve complete requested subjects, and strip only authored leading cache instructions. Add four native negative/positive controls; their hosted execution remains pending.
+- [x] Merge main `7b7e189d` without losing either parent's native targets or structured output. Compare complete governed fixture objects against both parents, allowing only authoritative source hash replacements. The original fixture reader is unchanged.
+- [x] Retain the first combined full run: 100 focused JavaScript tests pass; 84 gates pass, two fail and 52 are explicitly excluded. Ground the new cache cue in authored meaning data and use its hyphen spelling; preserve closure ceiling 1035 and lower the measured underscore ceiling through the maintained writer.
+- [x] Reproduce test-only structured-output changes skipping native admission. The existing policy file fails 23/24 before the input repair and passes 24/24 afterward. Preserve exact failing/passing logs.
+- [x] Recheck source commit `235fb71c`: all ten focused JavaScript files pass 104 tests; TypeScript projections check 729 files, Rust formatting and whitespace pass. The complete shared-data inventory passes 86 gates with zero failures and 52 explicit native/context exclusions. Candidate source hashes remain unchanged during validation; no local native build runs.
+- [x] Crosswalk eight original failed contracts to actual successful native lines on published `8a74006f`, requiring unchanged test source bytes. The other 45 original panics and three historical budget terminations remain open; current combined-head execution is still pending.
+- [x] Literally read and preserve Java historical page 122: continuous 122/254 pages, 8,014 source lines, 111 complete files and one partial Node catalog through line 435/884. Pages 123–254 and complete semantic applicability remain unfinished.
+- [ ] Archive and publish this complete batch after the fresh single-push gate; collect every next-head workflow, execute all 13 captured-source controls and retain the original Spanish sibling and merged native/HTTP checks.
+- [ ] Continue every broader unfinished acceptance criterion. Independent accepted reasoning remains 0/20; the standing 5% target is reporting only. Keep PR #1581 draft and unmerged.

@@ -1,0 +1,100 @@
+[
+  {
+    "name": "branch",
+    "argv": [
+      "git",
+      "branch",
+      "--show-current"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "branch.stdout.gz",
+      "rawSha256": "dd6fdfe063821c759676e5a67bd8c817723927f5bd6f3f21348002ca5b89c195"
+    },
+    "stderr": {
+      "file": "branch.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  {
+    "name": "fetch-main",
+    "argv": [
+      "git",
+      "-c",
+      "gc.auto=0",
+      "fetch",
+      "origin",
+      "main"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "fetch-main.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "file": "fetch-main.stderr.gz",
+      "rawSha256": "f694fbaa5fdcdaea1514acbf57d0fe8b435415ef941c8159035a4a9a57d8aed5"
+    }
+  },
+  {
+    "name": "main",
+    "argv": [
+      "git",
+      "rev-parse",
+      "origin/main"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "main.stdout.gz",
+      "rawSha256": "70a679ecf4663fccbf88b427e6b72f5d270c23b521fca51980663885cb8ad024"
+    },
+    "stderr": {
+      "file": "main.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  {
+    "name": "main-ancestor",
+    "argv": [
+      "git",
+      "merge-base",
+      "--is-ancestor",
+      "origin/main",
+      "HEAD"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "main-ancestor.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "file": "main-ancestor.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  {
+    "name": "recent-runs",
+    "argv": [
+      "gh",
+      "run",
+      "list",
+      "--repo",
+      "link-assistant/formal-ai",
+      "--branch",
+      "issue-1580-8d61a32a61e1",
+      "--limit",
+      "100",
+      "--json",
+      "databaseId,workflowName,headSha,status,conclusion,createdAt"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "recent-runs.stdout.gz",
+      "rawSha256": "43f47422d37a96e17ff0a8b7d836c3aedd97e728f8d307a8ff37c129602fc845"
+    },
+    "stderr": {
+      "file": "recent-runs.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+]

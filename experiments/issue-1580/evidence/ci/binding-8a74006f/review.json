@@ -1,0 +1,34 @@
+{
+  "head": "8a74006f69bc60dbbf52e0235ff380103bbbf375",
+  "allWorkflowsCollected": true,
+  "workflowCount": 23,
+  "success": 22,
+  "failures": [
+    {
+      "id": 44347162428,
+      "name": "Layered CI",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44347162428"
+    }
+  ],
+  "payloadsHashVerified": 82,
+  "nativeJobId": 134952852325,
+  "fiveAddedNativeControlsActuallyPassed": [
+    "operative_question_cannot_be_replaced_by_a_retrieved_word_definition",
+    "a_definition_request_cannot_use_a_different_retrieved_term",
+    "a_cached_concept_mention_cannot_replace_an_operative_question",
+    "an_unrelated_higher_tier_sense_cannot_replace_the_requested_definition",
+    "an_explicit_cached_concept_request_keeps_its_complete_attributed_answer"
+  ],
+  "nativeLogSha256": "15a13afa34436fb0891149f54885fcebd912be1c202174d137c2f52ecb29f472",
+  "literalReadScope": "Native original lines 1605-1810 read completely; full payloads are retained and hash-verified. Other native log ranges have not all been literally reviewed.",
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0,
+  "literalNativeLogRanges": [
+    {
+      "start": 1605,
+      "end": 1810,
+      "prefixDisplayOnly": true
+    }
+  ]
+}

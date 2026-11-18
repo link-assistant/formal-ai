@@ -1,0 +1,166 @@
+[
+  {
+    "name": "before-check",
+    "argv": [
+      "node",
+      "scripts/translate-es.mjs",
+      "--check"
+    ],
+    "exitCode": 1,
+    "stdout": {
+      "file": "before-check.stdout.gz",
+      "rawSha256": "7956fcb448774d8ae29d407166e91ea21baa4a386c0245143f178dff3d8873dc",
+      "archiveSha256": "30eccf11065be6a9eda8f2dd3f886093bcd7bb46b3123b36c722121d06ad434f",
+      "lines": 1,
+      "bytes": 145
+    },
+    "stderr": {
+      "file": "before-check.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0,
+      "bytes": 0
+    }
+  },
+  {
+    "name": "maintained-generator",
+    "argv": [
+      "node",
+      "scripts/translate-es.mjs",
+      "--write"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "maintained-generator.stdout.gz",
+      "rawSha256": "a54db658d677a5fc310267718be85b0042d8c3d167665b3ce754c440b2fd83f4",
+      "archiveSha256": "7a9c0e84b0566230ac93ab8334d8f0704983370bdbab34824575113e455f0dcc",
+      "lines": 1,
+      "bytes": 149
+    },
+    "stderr": {
+      "file": "maintained-generator.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0,
+      "bytes": 0
+    }
+  },
+  {
+    "name": "after-check",
+    "argv": [
+      "node",
+      "scripts/translate-es.mjs",
+      "--check"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "after-check.stdout.gz",
+      "rawSha256": "dd908c0068312b03ad8809f91a5c6099b0f1e38db0663c036b4936641bc333ba",
+      "archiveSha256": "ae516958236c6249da15fded8a7cb4ccf55cac151981d5d0728a179b3826ea4b",
+      "lines": 1,
+      "bytes": 28
+    },
+    "stderr": {
+      "file": "after-check.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0,
+      "bytes": 0
+    }
+  },
+  {
+    "name": "diff-ts-server-worker-script-prerequisites.mts",
+    "argv": [
+      "git",
+      "diff",
+      "--",
+      "ts/server/worker-script-prerequisites.mts"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "diff-ts-server-worker-script-prerequisites.mts.stdout.gz",
+      "rawSha256": "2ad9a77d0a8821b0188201cca51021c5b5c748a72f8c47e8205236b1ef4c6b59",
+      "archiveSha256": "990b7bebe29c95b73894a2c2f4be946ad880737443330251cab6d2a36987eb4c",
+      "lines": 13,
+      "bytes": 656
+    },
+    "stderr": {
+      "file": "diff-ts-server-worker-script-prerequisites.mts.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0,
+      "bytes": 0
+    }
+  },
+  {
+    "name": "diff-ts-worker-script-prerequisites.ts",
+    "argv": [
+      "git",
+      "diff",
+      "--",
+      "ts/worker-script-prerequisites.ts"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "diff-ts-worker-script-prerequisites.ts.stdout.gz",
+      "rawSha256": "960e0eb61ee944529d91df5118867d2f8519fc4a491979ce0b66c19f22329450",
+      "archiveSha256": "e1737a5ada59d3340c74643d093e60132179df4d271a8411f432f1fbc9de29d1",
+      "lines": 13,
+      "bytes": 625
+    },
+    "stderr": {
+      "file": "diff-ts-worker-script-prerequisites.ts.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0,
+      "bytes": 0
+    }
+  },
+  {
+    "name": "diff-ts-worker-formal_ai_worker_seed_responses_and_language.ts",
+    "argv": [
+      "git",
+      "diff",
+      "--",
+      "ts/worker/formal_ai_worker_seed_responses_and_language.ts"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "diff-ts-worker-formal_ai_worker_seed_responses_and_language.ts.stdout.gz",
+      "rawSha256": "e9c61d4a55c30d190413a789abbc19650dfc01d2f6f65c6afb3acdb4ee250ab9",
+      "archiveSha256": "1946a3357305a685c3698e97eef1d2039861903fe685a34b1dc3aee1ebce4b11",
+      "lines": 24,
+      "bytes": 1431
+    },
+    "stderr": {
+      "file": "diff-ts-worker-formal_ai_worker_seed_responses_and_language.ts.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0,
+      "bytes": 0
+    }
+  },
+  {
+    "name": "whitespace",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "whitespace.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0,
+      "bytes": 0
+    },
+    "stderr": {
+      "file": "whitespace.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "lines": 0,
+      "bytes": 0
+    }
+  }
+]

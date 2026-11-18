@@ -221,3 +221,16 @@ network input. Focused JavaScript/formatting checks pass; native behavior and
 the strict Google Trends catalog regeneration remain unverified. All wider
 acceptance criteria stay active, the PR remains draft and independent reasoning
 acceptance remains 0/20.
+
+
+The [language source-binding checkpoint](language-source-binding-checkpoint.md)
+now records published `8a74006f`: nine captured-source tests, the original
+Spanish sibling, 33 isolated native cases and both HTTP modes pass; the sole
+workflow failure is three stale TypeScript projections, regenerated locally.
+Main `7b7e189d` is merged. Complete request binding adds four native controls
+awaiting hosted execution, and test-only structured-output changes now select
+native validation. The final combined source passes 104 focused JavaScript
+tests and 86 complete-inventory gates, with 52 explicit native/context exclusions.
+Eight original native failures have published replays; the remaining 45 and
+three historical budget terminations are unfinished. Java historical reading
+reaches 122/254 pages. These are scoped checkpoints; the full issue remains open.

@@ -1,0 +1,88 @@
+[
+  {
+    "name": "before-policy",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 1,
+    "stdout": {
+      "file": "before-policy.stdout.gz",
+      "rawSha256": "d7442ff35970b08f1592f4e9e22043ad16abcb2867657997a3ed844f0fd13270",
+      "lines": 55
+    },
+    "stderr": {
+      "file": "before-policy.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0
+    }
+  },
+  {
+    "name": "after-policy",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "after-policy.stdout.gz",
+      "rawSha256": "082ea37e637ce407db20f1d1b1bf97c8c32e5bb6d5a755d9c5407bf5c6bcaf24",
+      "lines": 32
+    },
+    "stderr": {
+      "file": "after-policy.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0
+    }
+  },
+  {
+    "name": "whitespace",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "whitespace.stdout.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0
+    },
+    "stderr": {
+      "file": "whitespace.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0
+    }
+  },
+  {
+    "name": "source-diff",
+    "argv": [
+      "git",
+      "diff",
+      "--",
+      "scripts/ci-pull-request-admission.mjs",
+      "rust/tests/web/default-branch-build-policy.test.mjs"
+    ],
+    "exitCode": 0,
+    "stdout": {
+      "file": "source-diff.stdout.gz",
+      "rawSha256": "4f41da4b2f14ad1def5dc47081f934fce7f38f4076e32d81c5735204febd0991",
+      "lines": 24
+    },
+    "stderr": {
+      "file": "source-diff.stderr.gz",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0
+    }
+  }
+]

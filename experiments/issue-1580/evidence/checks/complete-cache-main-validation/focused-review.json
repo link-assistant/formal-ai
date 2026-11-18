@@ -1,0 +1,78 @@
+{
+  "head": "0cc2a1bbdf33f7512cb45b5ce63c818e1c88901a",
+  "checks": [
+    {
+      "name": "default-branch-build-policy",
+      "rawSha256": "c4542e77b0ecb15f9010793cbe62239e1a6e41015f986acc4dfcb7812e023298",
+      "fullLiteralRead": true,
+      "lines": 32
+    },
+    {
+      "name": "translate-es",
+      "rawSha256": "c8cd1b0d51580a2f4599d96225bb99a1ba7f7172244956305f68f9719dc510cb",
+      "fullLiteralRead": true,
+      "lines": 20
+    },
+    {
+      "name": "worker-unknown-language",
+      "rawSha256": "2f700ac57ab447624f097c457be6e98cc050a4ac67597bf077116e61c9411f4b",
+      "fullLiteralRead": true,
+      "lines": 18
+    },
+    {
+      "name": "issue-1550-procedure-census",
+      "rawSha256": "ce199f005f944e51c48c9041a8ee63447b7ec371863276acac3940722fe6f02e",
+      "fullLiteralRead": true,
+      "lines": 16
+    },
+    {
+      "name": "rust-specification-unicode-identifiers",
+      "rawSha256": "ffd0bb4f68bb7fc702825dfe8300e1b33f86e2eb834e44c0c27cdc8eaa60a6aa",
+      "fullLiteralRead": true,
+      "lines": 42
+    },
+    {
+      "name": "rust-specification-fixture-integrity",
+      "rawSha256": "b206bcf59f593430480fa03855e7c49e73da318904db905273502866d10b7cf5",
+      "fullLiteralRead": true,
+      "lines": 10
+    },
+    {
+      "name": "issue-1586-structured-output",
+      "rawSha256": "e9569956c75358e4b218caa8bb27e2f31198e15b9584105de4bb463db4818994",
+      "fullLiteralRead": true,
+      "lines": 9
+    },
+    {
+      "name": "issue-0016-seed-mirror",
+      "rawSha256": "2b54f889d36092eb8059f181452eb981b8d83eb77805f4e60ce72f81f7648031",
+      "fullLiteralRead": true,
+      "lines": 11
+    },
+    {
+      "name": "retrieved-concept-grounding",
+      "rawSha256": "6f8e369ccf32dfa9bceebddb2cc2a007c23d422f7a7680d700029c737dd44a59",
+      "fullLiteralRead": true,
+      "lines": 14
+    },
+    {
+      "name": "typescript-projection",
+      "rawSha256": "1580b2bf51099bac3a0c670b8963a461b41f5ca5f09ffc74096d4abc1b19d8fd",
+      "fullLiteralRead": true,
+      "lines": 1
+    },
+    {
+      "name": "rustfmt",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fullLiteralRead": true,
+      "lines": 0
+    },
+    {
+      "name": "whitespace",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fullLiteralRead": true,
+      "lines": 0
+    }
+  ],
+  "independentAuthorshipCredit": 0
+}
