@@ -96,3 +96,30 @@ test('request density aliases preserve the configured named profile', () => {
   const named=requestOutputTurn('hello',[],{output_standard:'e-prime'},{lexical_density:'top-237'});
   assert.deepEqual(named.config,{output_standard:'e-prime',lexical_density:'top-237'});
 });
+
+test('HTTP asks a controlled clarification for an ambiguous question and resolves a numbered reply', {timeout: 60000}, async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), 'formal-ai-cnl-dialogue-'));
+  const env = {...process.env, FORMAL_AI_SOURCE_USAGE_RUST_GRAMMAR: 'false', FORMAL_AI_SILENT: '1',
+    FORMAL_AI_LOG_DIR: directory, FORMAL_AI_MEMORY_PATH: path.join(directory, 'memory.lino')};
+  const {server, url} = await startServer({env, port: 0});
+  const post = async body => (await fetch(url + '/v1/chat/completions', {method: 'POST',
+    headers: {'content-type': 'application/json'}, body: JSON.stringify(body)})).json();
+  try {
+    for (const [question, chosen] of [['Is a mouse an animal?', 'Yes. Every house mouse is an animal.'],
+      ['Мышь — это животное?', 'Да. Каждая домовая мышь — животное.']]) {
+      const asked = await post({messages: [{role: 'user', content: question}]});
+      const clarification = asked.choices[0].message.content;
+      assert.match(clarification, /\n1\) .+\n2\) /u, question);
+      const answered = await post({messages: [{role: 'user', content: question},
+        {role: 'assistant', content: clarification}, {role: 'user', content: '1'}]});
+      assert.equal(answered.choices[0].message.content, chosen);
+      const dense = await post({lexical_density: 'max-precision', messages: [{role: 'user', content: question},
+        {role: 'assistant', content: clarification}, {role: 'user', content: '1'}]});
+      assert.match(dense.output_projection.notice, /./u);
+    }
+  } finally {
+    server.closeAllConnections();
+    await new Promise(resolve => server.close(resolve));
+    await rm(directory, {recursive: true, force: true});
+  }
+});

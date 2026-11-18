@@ -7,10 +7,9 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import path from 'node:path';
 import {createWorkerContext, evaluate, plain} from './support/browser-runtime.mjs';
-const PARITY_PATH = 'data/parity/issue-1584-cnl-parity.json';
+import {fixtureLanguages, parityPath} from '../../../experiments/issue-1584/parity-fixture.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '../../..');
-const fixture = JSON.parse(readFileSync(path.join(ROOT, PARITY_PATH), 'utf8'));
 const worker = createWorkerContext({fetch: async url => {
   const rel = new URL(String(url), 'http://localhost/').pathname.replace(/^\/+/u, '');
   const file = rel.startsWith('seed/') ? path.join(ROOT, 'data', rel) : path.join(ROOT, 'js', rel);
@@ -24,11 +23,12 @@ const worker = createWorkerContext({fetch: async url => {
 await evaluate(worker, 'loadSeed()');
 const solve = async (prompt, history = [], prefs = {}) => plain(await worker.solve(prompt, history, prefs, {}, [], {}));
 
-for (const language of fixture.languages) {
+for (const language of fixtureLanguages()) {
+  const fixture = JSON.parse(readFileSync(path.join(ROOT, parityPath(language)), 'utf8'));
   test(`${language}: the worker answers every controlled dialogue case like the engine`, {timeout: 300_000}, async () => {
     const failures = [];
     const tasks = new Set();
-    for (const item of fixture.dialogue[language]) {
+    for (const item of fixture.dialogue) {
       const expected = item.expected;
       if (Object.keys(item.configuration).length || expected === null) continue;
       // One paraphrase per task shape here (program synthesis is slow); the
@@ -54,9 +54,14 @@ for (const language of fixture.languages) {
 }
 
 test('prompts the solver already understood keep their answers', {timeout: 60_000}, async () => {
-  const sum = await solve('What is 2 plus 2?');
-  assert.match(String(sum.content), /2 plus 2 = 4/u);
-  assert.ok(!(sum.evidence || []).some(item => String(item).startsWith('cnl:task')), 'no CNL fallback for an understood prompt');
+  // Issue #962 word operators in every language (rust/tests/unit/issue_962_word_operator_parity.rs).
+  for (const [prompt, expected] of [['What is 2 plus 2?', '2 plus 2 = 4'], ['Сколько будет 2 плюс 2?', '2 плюс 2 = 4'],
+    ['2 जोड़ 2 कितना होता है?', '2 जोड़ 2 = 4'], ['2 जमा 2 कितना होता है?', '2 जमा 2 = 4'],
+    ['2 加 2 等于多少?', '2 加 2 = 4'], ['¿Cuánto es 2 más 2?', '2 más 2 = 4']]) {
+    const sum = await solve(prompt);
+    assert.ok(String(sum.content).includes(expected), `${prompt} -> ${sum.content}`);
+    assert.ok(!(sum.evidence || []).some(item => String(item).startsWith('cnl:task')), `no CNL fallback for ${prompt}`);
+  }
   const paraphrase = await solve('add 10 and 3');
   assert.match(String(paraphrase.content), /\b13\b/u);
 });
