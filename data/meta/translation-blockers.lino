@@ -17,8 +17,8 @@ translation_blockers
   blockers_per_item 1 830
   blockers_per_item 2 271
   blockers_per_item 3 308
-  blockers_per_item 4 223
-  blockers_per_item 5 220
+  blockers_per_item 4 224
+  blockers_per_item 5 219
   blockers_per_item 6 154
   blockers_per_item 7 119
   blockers_per_item 8 90
@@ -60,7 +60,7 @@ construct "method call .push()" items 314 only 4
 construct "method call .slice()" items 298 only 7
 construct "method call .filter()" items 282 only 0
 construct "arrow callback of .map()" items 273 only 0
-construct "JSDoc type {…}" items 262 only 5
+construct "JSDoc type {…}" items 261 only 5
 construct "regular expression" items 257 only 38
 construct "nullish coalescing" items 236 only 0
 construct "sibling value" items 236 only 17

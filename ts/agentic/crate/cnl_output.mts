@@ -60,11 +60,7 @@ export function parseOutputPolicy(text, parse = parseLino, grammarText = () => n
     return {profiles, languages, lexemes, shared, grammars};
 }
 
-/**
- * A positive integer tier; no floating point, signed or exponential aliases.
- * @param {string} value
- * @returns {number | null}
- */
+/** A positive integer tier; no floating point, signed or exponential aliases. */
 export function frequencyTier(value) {
   if (!/^top-[1-9][0-9]*$/u.test(value)) return null;
   const count = Number(value.slice(4));
@@ -136,23 +132,12 @@ export function outputMeaning(document) {
     ? ['meaning', part.id] : part.kind === 'graph' ? ['graph', graphKey(part.graph)] : ['opaque', part.text]);
 }
 
-/**
- * Whitespace-delimited languages use Unicode words; CJK has no whitespace promise.
- * @param {string} text
- * @param {string} language
- * @returns {Array<string>}
- */
+/** Whitespace-delimited languages use Unicode words; CJK has no whitespace promise. */
 export function outputWords(text, language) {
   return language === 'zh' ? (text.match(/[\p{Script=Han}]|[\p{L}\p{M}\p{N}]+/gu) ?? [])
     : (text.match(/[\p{L}\p{M}\p{N}]+(?:[-’'][\p{L}\p{M}\p{N}]+)*/gu) ?? []);
 }
 
-/**
- * The text with a leading capital when the original surface had one.
- * @param {string} text
- * @param {string} original
- * @returns {string}
- */
 function capitalizedLike(text, original) {
   if (!text || !original || original[0] === original[0].toLowerCase()) return text;
   return text[0].toUpperCase() + text.slice(1);
@@ -256,18 +241,20 @@ const DENSITY_CHECKS = new Set(['non-prime', 'nsm-vocabulary', 'nsm-syntax', 'ns
 
 /** Lexicographic cost: profile violations, then density violations, then unchecked evidence. */
 function outputCost(report) {
-  const profile = report.violations.filter(id => !DENSITY_CHECKS.has(id)).length;
+  const profile = report.violations.filter(check => !DENSITY_CHECKS.has(check)).length;
   return [profile, report.violations.length - profile, report.unchecked.length];
 }
 
 /**
- * Whether one violation cost sorts strictly before another, field by field.
+ * Whether one output cost tuple is lexicographically below another of equal length.
  * @param {Array<number>} left
  * @param {Array<number>} right
  * @returns {boolean}
  */
 function cheaper(left, right) {
-  for (let index = 0; index < left.length; index += 1) if (left[index] !== right[index]) return left[index] < right[index];
+  for (let index = 0; index < left.length; index += 1) {
+    if (left[index] !== right[index]) return left[index] < right[index];
+  }
   return false;
 }
 
@@ -318,8 +305,8 @@ export function validateOutput(text, language, configuration = {}, policy = cnlP
   if (!locale) unchecked.push('language');
   const tokens = outputWords(text, language).map(word => word.toLowerCase());
   const standard = selected.lexical_density === 'standard';
-  const wordLimit = !standard && profile.densityMaxWords ? profile.densityMaxWords : profile.maxWords;
-  if (wordLimit && text.split(/[.!?。！？।]+/u).some(sentence => outputWords(sentence, language).length > wordLimit)) {
+  const maximumWords = !standard && profile.densityMaxWords ? profile.densityMaxWords : profile.maxWords;
+  if (maximumWords && text.split(/[.!?。！？।]+/u).some(sentence => outputWords(sentence, language).length > maximumWords)) {
     violations.push('sentence-length');
   }
   if (selected.output_standard === 'e-prime') {

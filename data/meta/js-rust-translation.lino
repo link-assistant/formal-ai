@@ -190,7 +190,7 @@ module js/worker/formal_ai_worker_meta_composite.js translated 0 workaround 0 in
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inferred 0 carried 42
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 26
 refusal "import of names its module does not translate" 358
-refusal "JSDoc type {…}" 220
+refusal "JSDoc type {…}" 219
 refusal "import from '…'" 214
 refusal "null" 194
 refusal "arrow function" 144
@@ -198,7 +198,7 @@ refusal "type: unknown name (a sibling item or an import)" 125
 refusal "function value …" 113
 refusal "object without a $ tag" 104
 refusal "new expression" 97
-refusal "regular expression" 67
+refusal "regular expression" 68
 refusal "method call .find()" 65
 refusal "method call .map()" 61
 refusal "method call .filter()" 60

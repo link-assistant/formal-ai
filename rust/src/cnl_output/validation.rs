@@ -40,8 +40,8 @@ impl OutputCheckers for () {}
 struct MinimumPass;
 
 impl OutputCheckers for MinimumPass {
-    fn check(&self, id: &str, _: &str, _: &str, _: Option<u64>) -> Option<Option<bool>> {
-        (id == "lexical-minimum").then_some(Some(true))
+    fn check(&self, check_name: &str, _: &str, _: &str, _: Option<u64>) -> Option<Option<bool>> {
+        (check_name == "lexical-minimum").then_some(Some(true))
     }
 }
 
@@ -98,7 +98,7 @@ pub(crate) fn output_cost(report: &OutputReport) -> [usize; 3] {
     let profile = report
         .violations
         .iter()
-        .filter(|id| !DENSITY_CHECKS.contains(&id.as_str()))
+        .filter(|check_name| !DENSITY_CHECKS.contains(&check_name.as_str()))
         .count();
     [
         profile,
@@ -155,14 +155,14 @@ pub fn validate_output(
         .map(|word| word.to_lowercase())
         .collect();
     let standard = configuration.density == OutputDensity::Standard;
-    let word_limit = profile
+    let maximum_words = profile
         .density_max_words
         .filter(|_| !standard)
         .or(profile.max_words);
-    if let Some(word_limit) = word_limit {
+    if let Some(maximum_words) = maximum_words {
         let long = text
             .split(['.', '!', '?', '。', '！', '？', '।'])
-            .any(|sentence| count(sentence) > word_limit);
+            .any(|sentence| count(sentence) > maximum_words);
         if long {
             record("sentence-length", Some(false));
         }
@@ -208,8 +208,8 @@ pub fn validate_output(
             }
             None => record("nsm-vocabulary", None),
         }
-        for id in ["nsm-syntax", "nsm-semantics"] {
-            record(id, evidence(id));
+        for check_name in ["nsm-syntax", "nsm-semantics"] {
+            record(check_name, evidence(check_name));
         }
     }
     if configuration.density == OutputDensity::MaxPrecision {
@@ -217,20 +217,20 @@ pub fn validate_output(
     }
     // Built-in ranks are a declared, project-authored tier table; a corpus checker may replace them.
     if tier.is_some() {
-        let check = "frequency-vocabulary";
+        let check_name = "frequency-vocabulary";
         let result = checkers
             .frequency(text, language, tier)
-            .or_else(|| checkers.check(check, text, language, tier))
-            .unwrap_or_else(|| builtin(check));
-        record(check, result);
+            .or_else(|| checkers.check(check_name, text, language, tier))
+            .unwrap_or_else(|| builtin(check_name));
+        record(check_name, result);
     }
     let required = if !standard && !profile.density_required.is_empty() {
         &profile.density_required
     } else {
         &profile.required
     };
-    for id in required {
-        record(id, evidence(id));
+    for check_name in required {
+        record(check_name, evidence(check_name));
     }
     OutputReport {
         output_standard: configuration.standard.slug().to_owned(),

@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=1059fa079f81732c723052aad8c734cc1238e5c06b382506148fd636d1959949 bytes=26203
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=a8f6e93c0bc0d53c9e8bd27a44063796db227b3affb4f4b805de21ae2769ed14 bytes=25944
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=1
 
@@ -57,8 +57,8 @@ pub const CNL_POLICY_PATH: &str = "data/seed/cnl-output.lino";
 // formal-ai:blockers arrow callback of .map() | arrow function | assignment of a field or element | call of an imported function | field access | global value Boolean | method call .filter() | method call .map() | method call .split() | null | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
-// formal-ai:refusal JSDoc type {…}
-// formal-ai:blockers JSDoc type {…} | method call .slice() | method call .test() | null | regular expression
+// formal-ai:refusal regular expression
+// formal-ai:blockers method call .slice() | method call .test() | null | regular expression
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
@@ -118,13 +118,15 @@ pub const CNL_POLICY_PATH: &str = "data/seed/cnl-output.lino";
 
 // meta-language:translated JavaScript function_declaration items=3 sha256=1a5a4a6e0962aae8e89404e02d93139500f86d7c0a6a4edeeda09feed42e58d0
 // | /**
-// |  * Whether one violation cost sorts strictly before another, field by field.
+// |  * Whether one output cost tuple is lexicographically below another of equal length.
 // |  * @param {Array<number>} left
 // |  * @param {Array<number>} right
 // |  * @returns {boolean}
 // |  */
 // | function cheaper(left, right) {
-// |   for (let index = 0; index < left.length; index += 1) if (left[index] !== right[index]) return left[index] < right[index];
+// |   for (let index = 0; index < left.length; index += 1) {
+// |     if (left[index] !== right[index]) return left[index] < right[index];
+// |   }
 // |   return false;
 // | }
 pub fn cheaper(left: Vec<f64>, right: Vec<f64>) -> bool {
