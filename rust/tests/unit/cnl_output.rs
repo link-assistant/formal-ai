@@ -13,7 +13,7 @@ fn declared_multilingual_meanings_round_trip_without_certifying_unchecked_standa
         ("es", "Yo sé todo.", "Soy omnisciente."),
     ] {
         let document = formalize_output(simple, language, policy);
-        let graph = output_links_notation(&document);
+        let graph = output_links_notation(&document, policy);
         let configuration = output_configuration(None, Some("max-precision"), policy).unwrap();
         let rendered = render_output(&document, configuration, policy, &());
         assert_eq!(rendered.text, dense);
@@ -27,7 +27,7 @@ fn declared_multilingual_meanings_round_trip_without_certifying_unchecked_standa
                     output_configuration(Some(&profile.id), Some(density), policy).unwrap();
                 let projected = project_output(&dense_document, configuration, policy);
                 assert_eq!(
-                    output_links_notation(&formalize_output(&projected, language, policy)),
+                    output_links_notation(&formalize_output(&projected, language, policy), policy),
                     graph
                 );
                 {
@@ -40,7 +40,7 @@ fn declared_multilingual_meanings_round_trip_without_certifying_unchecked_standa
         }
         let simple = project_output(&dense_document, OutputConfig::default(), policy);
         assert_eq!(
-            output_links_notation(&formalize_output(&simple, language, policy)),
+            output_links_notation(&formalize_output(&simple, language, policy), policy),
             graph
         );
     }
@@ -57,7 +57,7 @@ fn lexical_density_preserves_known_named_profile_constraints() {
         assert!(rendered.report.violations.is_empty());
         assert!(!rendered.report.compliant);
         assert_eq!(
-            output_links_notation(&formalize_output(&rendered.text, "en", policy)),
+            output_links_notation(&formalize_output(&rendered.text, "en", policy), policy),
             rendered.links_notation
         );
     }
@@ -147,14 +147,14 @@ fn e_prime_contractions_and_missing_frequency_evidence_do_not_receive_certificat
     }
     let report = validate_output("I know this.", "en", configuration, policy, &());
     assert!(!report.compliant);
-    assert!(report.unchecked.contains(&"e_prime_english".to_owned()));
+    assert!(report.unchecked.contains(&"e-prime-english".to_owned()));
     let configuration = output_configuration(Some("e-prime"), Some("top-1"), policy).unwrap();
     let report = validate_output("Alice sees Bob.", "en", configuration, policy, &());
     assert!(!report.compliant);
     assert!(
         report
             .unchecked
-            .contains(&"frequency_vocabulary".to_owned())
+            .contains(&"frequency-vocabulary".to_owned())
     );
     for invalid in [
         r#"{"output_standard":"unknown"}"#,
@@ -164,4 +164,64 @@ fn e_prime_contractions_and_missing_frequency_evidence_do_not_receive_certificat
             serde_json::from_str::<::formal_ai::protocol::ChatCompletionRequest>(invalid).is_err()
         );
     }
+}
+
+// Issue #1584: the controlled dialogue through the real solver (twin of
+// rust/tests/web/cnl-solver-dialogue.test.mjs).
+#[test]
+fn controlled_dialogue_answers_declared_facts_and_asks_which_reading() {
+    use ::formal_ai::{ConversationTurn, FormalAiEngine, solve_with_history};
+    let cat = FormalAiEngine.answer("Is a cat an animal?");
+    assert_eq!(cat.intent, "cnl_answer");
+    assert_eq!(cat.answer, "Yes. Every cat is an animal.");
+    assert!(cat.evidence_links.contains(&"cnl:en".to_owned()));
+    let question = "Is a mouse an animal?";
+    let clarification = FormalAiEngine.answer(question);
+    assert_eq!(clarification.intent, "cnl_clarification");
+    assert!(clarification.answer.contains("\n1) "));
+    let history = [
+        ConversationTurn::user(question),
+        ConversationTurn::assistant(clarification.answer.as_str()),
+    ];
+    let chosen = solve_with_history("1", &history);
+    assert_eq!(chosen.intent, "cnl_answer");
+    assert!(chosen.evidence_links.contains(&"cnl:en".to_owned()));
+}
+
+#[test]
+fn task_paraphrases_reach_the_solver_and_understood_prompts_keep_their_answers() {
+    use ::formal_ai::FormalAiEngine;
+    let paraphrase = FormalAiEngine.answer("add 10 and 3");
+    assert!(
+        paraphrase
+            .answer
+            .split(|c: char| !c.is_ascii_digit())
+            .any(|word| word == "13"),
+        "{}",
+        paraphrase.answer
+    );
+    // Issue #962: no CNL fallback for a prompt the solver already understood.
+    let sum = FormalAiEngine.answer("What is 2 plus 2?");
+    assert!(sum.answer.contains("2 plus 2 = 4"), "{}", sum.answer);
+    assert!(
+        !sum.evidence_links
+            .iter()
+            .any(|item| item.starts_with("cnl:task"))
+    );
+}
+
+#[test]
+fn an_in_dialog_density_switch_rerenders_the_controlled_answer_deterministically() {
+    use ::formal_ai::{ConversationTurn, FormalAiEngine, solve_with_history};
+    let question = "Is a cat an animal?";
+    let first = FormalAiEngine.answer(question);
+    assert_eq!(first.intent, "cnl_answer");
+    let history = [
+        ConversationTurn::user(question),
+        ConversationTurn::assistant(first.answer.as_str()),
+    ];
+    let switched = solve_with_history("max-precision", &history);
+    let again = solve_with_history("max-precision", &history);
+    assert_eq!(switched.answer, again.answer);
+    assert_ne!(switched.answer, first.answer);
 }

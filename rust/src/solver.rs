@@ -282,7 +282,7 @@ impl UniversalSolver {
         let prompt = output_turn.prompt.as_str();
         let _turn = crate::server::begin_turn(prompt);
         let mut log = EventLog::new();
-        let mut answer = (|| {
+        let mut solve_core = |prompt: &str, log: &mut EventLog| -> SymbolicAnswer {
             // Issue #556: when this solve is a forced-language replay, force
             // detection so every localizable handler renders in the requested
             // language. The guard restores the previous value when this function
@@ -311,7 +311,7 @@ impl UniversalSolver {
             if let Some(text) = &output_turn.rewrite {
                 return finalize_simple(
                     prompt,
-                    &mut log,
+                    log,
                     "cnl_paraphrase",
                     "response:cnl_paraphrase",
                     &crate::cnl_output::output_source(
@@ -326,7 +326,7 @@ impl UniversalSolver {
 
             let language = detect_language(prompt);
             log.append("language", language.slug().to_owned());
-            probability_store.replay_into_event_log(&mut log, self.config.offline);
+            probability_store.replay_into_event_log(log, self.config.offline);
 
             let intent_entry = if let Some(formalization) = intent_cache.get(prompt).cloned() {
                 IntentFormalizationCacheEntry {
@@ -347,13 +347,13 @@ impl UniversalSolver {
                     self.config.offline,
                     self.config.probability_policy,
                 );
-                record_formalization_selection(&mut log, &formalization_selection);
+                record_formalization_selection(log, &formalization_selection);
                 if let FormalizationDecision::Clarify { question, .. } =
                     &formalization_selection.decision
                 {
                     return finalize_simple(
                         prompt,
-                        &mut log,
+                        log,
                         "clarify_interpretation",
                         "response:clarify_interpretation",
                         question,
@@ -361,7 +361,7 @@ impl UniversalSolver {
                     );
                 }
                 if let Some(candidate) = formalization_selection.selected_candidate() {
-                    record_formalization(&mut log, candidate);
+                    record_formalization(log, candidate);
                 }
                 intent_cache.formalize_or_insert(
                     prompt,
@@ -369,7 +369,7 @@ impl UniversalSolver {
                     formalization_selection.selected_candidate(),
                 )
             };
-            record_intent_formalization(&mut log, &intent_entry);
+            record_intent_formalization(log, &intent_entry);
             let intent_formalization = intent_entry.formalization;
 
             // R1012: the general loop runs ahead of the handler table. A
@@ -380,7 +380,7 @@ impl UniversalSolver {
                 prompt,
                 language.slug(),
                 !history.is_empty(),
-                &mut log,
+                log,
             ) {
                 return answer;
             }
@@ -396,7 +396,7 @@ impl UniversalSolver {
                 language,
                 history,
                 self.config.temperature,
-                &mut log,
+                log,
             ) {
                 return answer;
             }
@@ -405,7 +405,7 @@ impl UniversalSolver {
             // methods, and solution evidence (R330–R334). The trace and executable
             // dispatch share the same registry-backed method vocabulary.
             crate::meta_core::record_meta_core(
-                &mut log,
+                log,
                 &intent_formalization,
                 self.config.max_decomposition_depth,
                 self.config.recursion_mode,
@@ -416,16 +416,16 @@ impl UniversalSolver {
             log.append("search:local", prompt.to_owned());
 
             // Bind process operands together before decomposing the clauses.
-            if let Some(answer) = crate::coding::program_contract::answer(prompt, &mut log) {
+            if let Some(answer) = crate::coding::program_contract::answer(prompt, log) {
                 return answer;
             }
 
             let sub_impulses =
-                record_decomposition(&mut log, prompt, self.config.max_decomposition_depth);
+                record_decomposition(log, prompt, self.config.max_decomposition_depth);
             let sub_results =
-                self.solve_sub_impulses(&mut log, &sub_impulses, probability_store, intent_cache);
+                self.solve_sub_impulses(log, &sub_impulses, probability_store, intent_cache);
 
-            if let Some(answer) = try_export_substitution_program(prompt, history, &mut log) {
+            if let Some(answer) = try_export_substitution_program(prompt, history, log) {
                 return answer;
             }
 
@@ -435,15 +435,10 @@ impl UniversalSolver {
             // independent drafts that are tested against the same fixture and
             // compared. At the default `draft_count` of 1 this is a no-op and the
             // sequential path below runs exactly as before.
-            let drafted_rule = try_portfolio_rule(
-                selected_rule,
-                prompt,
-                history,
-                &mut log,
-                self.config.draft_count,
-            );
-            let recalled_rule = try_recall_approved_rule(drafted_rule, prompt, history, &mut log);
-            let rule = try_construct_unknown_rule(recalled_rule, prompt, history, &mut log);
+            let drafted_rule =
+                try_portfolio_rule(selected_rule, prompt, history, log, self.config.draft_count);
+            let recalled_rule = try_recall_approved_rule(drafted_rule, prompt, history, log);
+            let rule = try_construct_unknown_rule(recalled_rule, prompt, history, log);
             let rule = if let Some(rewrite) =
                 rewrite_bare_program_coreference_rule(&rule, prompt, history)
             {
@@ -487,7 +482,7 @@ impl UniversalSolver {
                     &normalized_for_blueprint,
                     language_hint,
                     self.config.blueprint_composition,
-                    &mut log,
+                    log,
                 ) {
                     return answer;
                 }
@@ -517,7 +512,7 @@ impl UniversalSolver {
                     task.as_deref(),
                     program_language.as_deref(),
                     language,
-                    &mut log,
+                    log,
                 ) {
                     return answer;
                 }
@@ -526,7 +521,7 @@ impl UniversalSolver {
                     task.as_deref(),
                     program_language.as_deref(),
                     self.config.blueprint_composition,
-                    &mut log,
+                    log,
                 ) {
                     return answer;
                 }
@@ -549,7 +544,7 @@ impl UniversalSolver {
                 );
             }
 
-            if let Some(answer) = try_synthesize_from_sub_results(prompt, &mut log, &sub_results) {
+            if let Some(answer) = try_synthesize_from_sub_results(prompt, log, &sub_results) {
                 return answer;
             }
 
@@ -572,7 +567,7 @@ impl UniversalSolver {
                     prompt,
                     &intent_formalization,
                     history,
-                    &mut log,
+                    log,
                 )
             {
                 return answer;
@@ -581,7 +576,7 @@ impl UniversalSolver {
             if let Some(answer) = crate::solver_handlers::policy_gates::try_policy_gates(
                 self.config.execution_surface,
                 prompt,
-                &mut log,
+                log,
                 language,
             ) {
                 return answer;
@@ -590,7 +585,7 @@ impl UniversalSolver {
             if let Some(answer) = crate::coding::rosetta_request::try_rosetta_code_request(
                 prompt,
                 &intent_formalization.normalized_text,
-                &mut log,
+                log,
                 self.config.offline,
             ) {
                 return answer;
@@ -619,7 +614,7 @@ impl UniversalSolver {
                     .unwrap_or_default();
                     return finalize_simple(
                         prompt,
-                        &mut log,
+                        log,
                         "ambiguous_modification_clarification",
                         "response:ambiguous_modification_clarification",
                         &body,
@@ -627,11 +622,11 @@ impl UniversalSolver {
                     );
                 }
                 let intent = language_aware_intent_for(&rule, language);
-                if let Some(choice) = record_validation(&mut log, prompt) {
+                if let Some(choice) = record_validation(log, prompt) {
                     let response_link = response_link_for_intent(&rule, &intent);
                     return finalize_simple(
                         prompt,
-                        &mut log,
+                        log,
                         &intent,
                         &response_link,
                         &choice.answer,
@@ -648,7 +643,7 @@ impl UniversalSolver {
                         &prompt.to_lowercase(),
                     )
                     && let Some(answer) =
-                        crate::solver_terminal::try_terminal_command(prompt, language, &mut log)
+                        crate::solver_terminal::try_terminal_command(prompt, language, log)
                 {
                     return answer;
                 }
@@ -658,14 +653,14 @@ impl UniversalSolver {
                 // On budget exhaustion the `search:` evidence stays on the log and
                 // the honest unknown-reasoning reply below takes over.
                 if let Some(answer) =
-                    crate::solver_search::try_budget_search(prompt, &mut log, self.config)
+                    crate::solver_search::try_budget_search(prompt, log, self.config)
                 {
                     return answer;
                 }
                 // R1012: discovery runs before external research, as the
                 // `metaReasonTurn` step does in solveImpl.
                 if let Some(answer) =
-                    crate::meta_reasoner::try_meta_discovery(prompt, language.slug(), &mut log)
+                    crate::meta_reasoner::try_meta_discovery(prompt, language.slug(), log)
                 {
                     return answer;
                 }
@@ -676,7 +671,7 @@ impl UniversalSolver {
                 {
                     crate::solver_search::record_external_search(
                         &self.config,
-                        &mut log,
+                        log,
                         prompt,
                         language,
                     )
@@ -686,7 +681,7 @@ impl UniversalSolver {
                 return answer_unknown_prompt(
                     prompt,
                     language,
-                    &mut log,
+                    log,
                     UnknownReasoningConfig {
                         questioning_rigor: self.config.questioning_rigor,
                         offline: self.config.offline,
@@ -701,7 +696,7 @@ impl UniversalSolver {
 
             if let SelectedRule::WriteProgram(spec) = &rule {
                 if log.first_of("rule_synthesis_candidate").is_none() {
-                    crate::coding::record_algorithm_construction(&mut log);
+                    crate::coding::record_algorithm_construction(log);
                 }
                 // Issue #1165: a documentation-sourced program no recorded run
                 // verified is not run; its environment is the page it came from.
@@ -731,7 +726,7 @@ impl UniversalSolver {
                         crate::intent_formalization::ObligationKind::CiWorkflow,
                     )
                 {
-                    crate::intent_formalization::record_obligation_gaps(prompt, &mut log);
+                    crate::intent_formalization::record_obligation_gaps(prompt, log);
                 }
             }
             // Issue #1165 R1165-1/R1165-2: a verified cache row for this
@@ -774,7 +769,7 @@ impl UniversalSolver {
                             let commands =
                                 crate::discovery_production::catalog_run_commands(spec.language);
                             crate::discovery_production::answer_cache_miss(
-                                &mut log,
+                                log,
                                 spec.language.slug,
                                 spec.task.slug,
                                 &spec.task.output_for_language(spec.language),
@@ -804,8 +799,8 @@ impl UniversalSolver {
                 }
             }
 
-            let validation_choice = record_validation(&mut log, prompt);
-            record_candidates(&mut log, &intent);
+            let validation_choice = record_validation(log, prompt);
+            record_candidates(log, &intent);
             let prior = coding_guidance::history_has_prior_code(history);
             let base_answer = match (&validation_choice, &rule) {
                 (Some(choice), SelectedRule::Unknown) => choice.answer.clone(),
@@ -817,13 +812,13 @@ impl UniversalSolver {
                 }
                 _ => base_answer,
             };
-            record_answer_test(&mut log, &intent, &base_answer);
-            let base_answer = crate::question_necessity::enforce_questions(&base_answer, &mut log);
+            record_answer_test(log, &intent, &base_answer);
+            let base_answer = crate::question_necessity::enforce_questions(&base_answer, log);
 
             let response_link = response_link_for_intent(&rule, &intent);
             log.append("response", response_link.clone());
 
-            record_selection(&mut log, &intent);
+            record_selection(log, &intent);
             let trace_id = log.append("trace", intent.clone());
 
             let evidence_links = build_evidence_links(prompt, &log, &response_link);
@@ -862,7 +857,19 @@ impl UniversalSolver {
                 links_notation,
                 execution_recipe,
             }
-        })();
+        };
+        let solved = crate::cnl_output::controlled_solve(
+            &output_turn,
+            history,
+            crate::cnl_output::cnl_policy(),
+            &mut log,
+            &mut solve_core,
+        );
+        let (prompt, mut answer) = match solved {
+            crate::cnl_output::ControlledSolve::Direct(answer) => return *answer,
+            crate::cnl_output::ControlledSolve::Solved { prompt, answer } => (prompt, answer),
+        };
+        let prompt = prompt.as_str();
         // R1012: a handler that admits an impasse hands the turn to the
         // general loop (`metaResolveImpasse`, js/worker/formal_ai_worker_solve.js).
         if output_turn.rewrite.is_none() {
@@ -901,6 +908,7 @@ impl UniversalSolver {
                 .links_notation
                 .push_str(&crate::cnl_output::output_links_notation(
                     &rendered.document,
+                    crate::cnl_output::cnl_policy(),
                 ));
         }
         answer.answer = rendered.content;
