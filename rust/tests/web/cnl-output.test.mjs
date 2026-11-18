@@ -61,8 +61,9 @@ test('retained meaning round-trips between declared multilingual realizations', 
       assert.equal(outputLinksNotation(document), graph);
     }
     assert.deepEqual(outputMeaning(document), [['meaning', lexeme.id]]);
-    // The original paragraph, including its formatting, remains available.
-    assert.equal(projectOutput(formalizeOutput('  ' + base + '\n', locale.id), {lexical_density: 'primes'}), '  ' + base + '\n');
+    // Surrounding formatting survives while the meaning takes its declared primes form.
+    const primes = lexeme.forms.find(form => form.mode.split('|').includes('primes')).text;
+    assert.equal(projectOutput(formalizeOutput('  ' + base + '\n', locale.id), {lexical_density: 'primes'}), '  ' + primes + '\n');
   }
 });
 
