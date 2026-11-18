@@ -375,7 +375,7 @@ export async function handleGeminiGenerateContent(ctx, request, stream) {
   }
   const chatRequest = geminiToChatCompletionRequest(parsed, model);
   const scope = requestScope({ body: request.body, messages: chatRequest.messages, tools: chatRequest.tools });
-  const completion = await runInRequestScope(scope, () => createChatCompletion(ctx, chatRequest));
+  const completion = await runInRequestScope(scope, () => createChatCompletion(ctx, chatRequest, { forcedClientFunctions: false }));
   const response = geminiResponseFromChatCompletion(completion);
   const answer = response.candidates[0].content.parts
     .filter((part) => typeof part.text === 'string')

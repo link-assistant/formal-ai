@@ -1,0 +1,3 @@
+# Server retention merge verification
+
+Main 851e158638631c746359c6f91522d8a8395af084 (PR #1600, issue #1592) merged cleanly after the previous verified main merge. The calendar/currency sources, fixture, test and native CI target remain intact. All 39 feature checks pass, including fresh-home HTTP answers and derivations. The new server-retention suite and both source-projection checks pass. All 138 local gates were run on this combined tree: 137 pass or skip, with only the previously investigated unpatched picomatch advisory failing. The merge and full verification logs are archived alongside the actual Formal AI receipts. No local Rust build was run.

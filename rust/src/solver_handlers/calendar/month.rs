@@ -232,3 +232,328 @@ pub(super) const fn days_from_civil(year: i64, month: i64, day: i64) -> i64 {
     let day_of_era = year_of_era * 365 + year_of_era / 4 - year_of_era / 100 + day_of_year;
     era * 146_097 + day_of_era - 719_468
 }
+
+/// Calendar duration sums and completed anniversaries over seeded vocabulary.
+pub(crate) mod duration {
+    //! Calendar-month arithmetic, mirrored by the JavaScript duration reader.
+    //! Quantities bind adjacent units. Completed periods compare anniversaries,
+    //! never a fixed average length of a month. Month-only dates have day 1;
+    //! mixed date precision is deliberately unresolved.
+
+    use super::super::{contains_term, date_weekday::stated_date};
+    use super::detect_month;
+    use crate::engine::SymbolicAnswer;
+    use crate::event_log::EventLog;
+    use crate::language::detect;
+    use crate::rule_interpreter::{handler_table_rows, handler_table_value};
+    use crate::seed::{lexicon, localized_response};
+    use crate::solver_handlers::finalize_simple;
+
+    pub(crate) struct DurationRequest {
+        kind: &'static str,
+        result: String,
+        factor: i64,
+        derivation: String,
+    }
+
+    fn words(role: &str) -> Vec<String> {
+        let mut out: Vec<String> = handler_table_rows(role)
+            .iter()
+            .flat_map(|(_, value)| value.split('|').map(str::to_owned))
+            .collect();
+        out.sort_by_key(|word| std::cmp::Reverse(word.len()));
+        out
+    }
+
+    fn starts(text: &str, word: &str) -> bool {
+        text.strip_prefix(word).is_some_and(|tail| {
+            tail.chars()
+                .next()
+                .is_none_or(|c| !c.is_alphanumeric() && c != '_')
+        })
+    }
+
+    fn offsets(text: &str, word: &str) -> Vec<usize> {
+        text.match_indices(word)
+            .filter_map(|(at, _)| {
+                let before = text[..at].chars().next_back();
+                (before.is_none_or(|c| !c.is_alphanumeric() && c != '_')
+                    && starts(&text[at..], word))
+                .then_some(at)
+            })
+            .collect()
+    }
+
+    fn trim(text: &str) -> &str {
+        text.trim().trim_end_matches(['.', '?', '!']).trim()
+    }
+
+    fn unit(text: &str) -> Option<(String, i64)> {
+        let mut units = Vec::new();
+        for (slug, factor) in [("calendar_month", 1), ("calendar_year", 12)] {
+            for word in if slug == "calendar_year" {
+                words("calendar-duration-year")
+            } else {
+                lexicon()
+                    .meaning(slug)?
+                    .words()
+                    .map(str::to_owned)
+                    .collect()
+            } {
+                units.push((word.to_owned(), factor));
+            }
+        }
+        units.sort_by_key(|(word, _)| std::cmp::Reverse(word.len()));
+        units.into_iter().find(|(word, _)| starts(text, word))
+    }
+
+    #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+    struct Date {
+        year: i64,
+        month: i64,
+        day: i64,
+        precision: bool,
+    }
+
+    impl Date {
+        fn iso(self) -> String {
+            format!("{:04}-{:02}-{:02}", self.year, self.month, self.day)
+        }
+    }
+
+    fn date(text: &str) -> Option<Date> {
+        let text = trim(text);
+        let months = lexicon()
+            .meanings_with_role("calendar_month_name")
+            .filter(|meaning| meaning.words().any(|word| contains_term(text, word)))
+            .count();
+        if months > 1 {
+            return None;
+        }
+        let runs: Vec<&str> = text
+            .split(|c: char| !c.is_ascii_digit())
+            .filter(|s| !s.is_empty())
+            .collect();
+        if runs.len() == 1 && runs[0].len() == 4 {
+            let year = runs[0].parse().ok()?;
+            if !(1..=9999).contains(&year) {
+                return None;
+            }
+            return Some(Date {
+                year,
+                month: detect_month(text)?,
+                day: 1,
+                precision: false,
+            });
+        }
+        let (year, month, day) = stated_date(text, text)?;
+        Some(Date {
+            year,
+            month,
+            day,
+            precision: true,
+        })
+    }
+
+    fn gcd(a: i64, b: i64) -> i64 {
+        if b == 0 { a } else { gcd(b, a % b) }
+    }
+
+    pub(crate) fn request(prompt: &str) -> Option<DurationRequest> {
+        let text = prompt.to_lowercase();
+        let text = text.trim();
+        if let Some(cue) = words("calendar-duration-sum")
+            .into_iter()
+            .find(|word| starts(text, word))
+        {
+            let body = text[cue.len()..].trim();
+            for marker in words("calendar-duration-output") {
+                for position in offsets(body, &marker) {
+                    let target_text = trim(&body[position + marker.len()..]);
+                    let Some((surface, factor)) = unit(target_text) else {
+                        continue;
+                    };
+                    if surface != target_text {
+                        continue;
+                    }
+                    let mut rest = trim(&body[..position]);
+                    let mut total: i64 = 0;
+                    let mut terms = Vec::new();
+                    while !rest.is_empty() && terms.len() < 32 {
+                        let Some((number, tail)) = rest.split_once(char::is_whitespace) else {
+                            break;
+                        };
+                        let digits = number.trim_start_matches(['+', '-']);
+                        if digits.is_empty()
+                            || digits.len() > 12
+                            || !digits.bytes().all(|c| c.is_ascii_digit())
+                        {
+                            break;
+                        }
+                        let count: i64 = number.parse().ok()?;
+                        let tail = tail.trim_start();
+                        let Some((surface, source)) = unit(tail) else {
+                            break;
+                        };
+                        total = total.checked_add(count.checked_mul(source)?)?;
+                        terms.push(format!("{count} × {source}"));
+                        rest = tail[surface.len()..].trim();
+                        if rest.is_empty() {
+                            break;
+                        }
+                        let mut separated = false;
+                        if let Some(tail) = rest.strip_prefix(',') {
+                            separated = true;
+                            rest = tail.trim_start();
+                        }
+                        if let Some(join) = words("calendar-duration-join")
+                            .into_iter()
+                            .find(|word| starts(rest, word))
+                        {
+                            separated = true;
+                            rest = rest[join.len()..].trim_start();
+                        }
+                        if !separated || rest.is_empty() {
+                            rest = "!";
+                            break;
+                        }
+                    }
+                    if !rest.is_empty() || terms.len() < 2 {
+                        continue;
+                    }
+                    let common = gcd(total.abs(), factor);
+                    let result = if common == factor {
+                        (total / factor).to_string()
+                    } else {
+                        format!("{}/{}", total / common, factor / common)
+                    };
+                    let derivation = format!(
+                        "{} = {total} months; {total} / {factor} = {result}",
+                        terms.join(" + ")
+                    );
+                    return Some(DurationRequest {
+                        kind: "calendar-duration-sum",
+                        result,
+                        factor,
+                        derivation,
+                    });
+                }
+            }
+            return None;
+        }
+        if !words("calendar-full-query")
+            .iter()
+            .any(|word| starts(text, word))
+        {
+            return None;
+        }
+        let factor = if words("calendar-full-years")
+            .iter()
+            .any(|word| contains_term(text, word))
+        {
+            12
+        } else if words("calendar-full-months")
+            .iter()
+            .any(|word| contains_term(text, word))
+        {
+            1
+        } else {
+            return None;
+        };
+        let mut candidates = Vec::new();
+        for start in words("calendar-interval-start") {
+            for at in offsets(text, &start) {
+                let tail = &text[at + start.len()..];
+                for end in words("calendar-interval-end") {
+                    for split in offsets(tail, &end) {
+                        let (Some(left), Some(right)) =
+                            (date(&tail[..split]), date(&tail[split + end.len()..]))
+                        else {
+                            continue;
+                        };
+                        if left.precision != right.precision {
+                            continue;
+                        }
+                        let (first, last) = if left <= right {
+                            (left, right)
+                        } else {
+                            (right, left)
+                        };
+                        let raw = (last.year - first.year) * 12 + last.month - first.month;
+                        let incomplete = i64::from(last.day < first.day);
+                        let months = raw - incomplete;
+                        let result = (months / factor).to_string();
+                        let derivation = format!(
+                            "{} → {}: {raw} - {incomplete} = {months} months; ⌊{months} / {factor}⌋ = {result}",
+                            first.iso(),
+                            last.iso()
+                        );
+                        candidates.push(DurationRequest {
+                            kind: "calendar-full-periods",
+                            result,
+                            factor,
+                            derivation,
+                        });
+                    }
+                }
+            }
+        }
+        if candidates.len() == 1 {
+            candidates.pop()
+        } else {
+            None
+        }
+    }
+
+    fn label(result: &str, factor: i64, language: &str) -> Option<&'static str> {
+        let number = result.parse::<i64>().ok().map(i64::abs);
+        let class = match number {
+            None => "fraction",
+            Some(n)
+                if if language == "ru" {
+                    n % 10 == 1 && n % 100 != 11
+                } else {
+                    n == 1
+                } =>
+            {
+                "one"
+            }
+            Some(n) if (2..=4).contains(&(n % 10)) && !(12..=14).contains(&(n % 100)) => "few",
+            _ => "other",
+        };
+        let unit = if factor == 12 { "year" } else { "month" };
+        handler_table_value(
+            "calendar-duration-label",
+            &format!("{unit}.{language}.{class}"),
+        )
+        .or_else(|| handler_table_value("calendar-duration-label", &format!("{unit}.en.{class}")))
+    }
+
+    pub(crate) fn duration(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
+        let request = request(prompt)?;
+        let role = if request.kind == "calendar-duration-sum" {
+            "calendar-duration-sum"
+        } else {
+            "calendar-full-query"
+        };
+        let text = prompt.to_lowercase();
+        let language = handler_table_rows(role)
+            .iter()
+            .find(|(_, words)| words.split('|').any(|word| starts(text.trim(), word)))
+            .map_or_else(|| detect(prompt).slug(), |(language, _)| language.as_str());
+        let body = localized_response(request.kind, language)?
+            .replace("{result}", &request.result)
+            .replace("{unit}", label(&request.result, request.factor, language)?)
+            .replace("{derivation}", &request.derivation);
+        log.append("calendar:duration_derivation", request.derivation);
+        log.append("calendar:duration_result", request.result);
+        Some(finalize_simple(
+            prompt,
+            log,
+            request.kind,
+            &format!("response:{}", request.kind),
+            &body,
+            1.0,
+        ))
+    }
+}

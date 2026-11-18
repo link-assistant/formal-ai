@@ -19,6 +19,7 @@ import { renderThinkingSteps } from './thinking.mjs';
 import { requestScope, runInRequestScope } from './standing-scope.mjs';
 import { projectServerAnswer, requestOutputTurn } from './cnl-output.mjs';
 import { formalizeRequest, contextualAnswer, composeRequestAnswer } from './request-context.mjs';
+import { clientFunctionOutput, forcedFunction } from './client-functions.mjs';
 
 /** Seconds since the epoch, never 0 (`response_timestamp`). */
 export function responseTimestamp() {
@@ -81,13 +82,12 @@ export function chatCompletionFromSymbolic(request, prompt, symbolic) {
 /**
  * `create_chat_completion_with_solver_and_memory`.
  *
- * A tool-bearing request without agent mode is refused by policy, exactly as
- * natively; with agent mode on, the deterministic agentic planner port
+ * Agentic requests require agent mode. With agent mode on, the planner port
  * (js/agentic/, through js/server/agentic.mjs) emits the next tool calls.
  * @param {{worker: object, agentMode: boolean}} ctx
  * @param {object} request a parsed `ChatCompletionRequest`
  */
-export async function createChatCompletion(ctx, request) {
+export async function createChatCompletion(ctx, request, options = {}) {
   const original = chatPromptAndHistory(request.messages);
   const turn = requestOutputTurn(original.prompt, original.history, request, ctx.outputConfiguration);
   const selected = {...ctx, outputConfiguration:turn.config};
@@ -111,10 +111,10 @@ export async function createChatCompletion(ctx, request) {
         planningRequest = {...request, messages:request.messages.map((item,index) => index === latest ? {...item,content} : item)};
       }
     }
-    completion = await createUnprojectedChatCompletion(selected, planningRequest);
+    completion = await createUnprojectedChatCompletion(selected, planningRequest, options);
   }
   const choice = completion.choices[0];
-  if (choice?.finish_reason === 'stop' && typeof choice.message.content === 'string') {
+  if (choice?.finish_reason === 'stop' && typeof choice.message.content === 'string' && choice.message.content !== '') {
     const projected = await projectServerAnswer(selected, {answer:choice.message.content,
       output_projection:completion.output_projection}, turn.config, {
       language: context.language,
@@ -129,8 +129,24 @@ export async function createChatCompletion(ctx, request) {
   return completion;
 }
 
-async function createUnprojectedChatCompletion(ctx, request) {
+async function createUnprojectedChatCompletion(ctx, request, { forcedClientFunctions = true } = {}) {
   const { prompt, history } = chatPromptAndHistory(request.messages);
+  const forced = forcedClientFunctions ? await forcedFunction(ctx, request, prompt) : null;
+  if (forced) {
+    const { callId, outputTokens } = clientFunctionOutput(forced, prompt, request.messages.length);
+    const message = { role: 'assistant', content: '' };
+    if (forced.refusal) message.refusal = forced.refusal;
+    else message.tool_calls = [{ id: callId, type: 'function', function: { name: forced.name, arguments: forced.arguments } }];
+    const promptTokens = messageInputTokens(request.messages);
+    return {
+      id: stableId('chatcmpl', prompt),
+      object: 'chat.completion',
+      created: responseTimestamp(),
+      model: resolveModelId(request.model),
+      choices: [{ index: 0, message, finish_reason: callId ? 'tool_calls' : 'stop' }],
+      usage: { prompt_tokens: promptTokens, completion_tokens: outputTokens, total_tokens: promptTokens + outputTokens },
+    };
+  }
   const context = formalizeRequest(request.messages);
   const remembered = await answerFromMemory(ctx, prompt, history);
   if (remembered) {logUnclassifiedTerminal(ctx,'retained_answer');return chatCompletionFromSymbolic(request, prompt, remembered);}
@@ -187,6 +203,7 @@ export function chatCompletionSse(completion, includeUsage) {
     }
     const text = plainText(message.content);
     if (text) body += sseChunk(base, { index: 0, delta: { content: text }, finish_reason: null });
+    if (message.refusal) body += sseChunk(base, { index: 0, delta: { refusal: message.refusal }, finish_reason: null });
     (message.tool_calls || []).forEach((call, index) => {
       body += sseChunk(base, {
         index: 0,

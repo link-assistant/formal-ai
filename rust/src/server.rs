@@ -791,6 +791,14 @@ fn chat_completion_sse_response(
             });
             body.push_str(&sse_chunk(&base, &delta));
         }
+        if let Some(refusal) = &choice.message.refusal {
+            let delta = json!({
+                "index": 0,
+                "delta": { "refusal": refusal },
+                "finish_reason": null,
+            });
+            body.push_str(&sse_chunk(&base, &delta));
+        }
         for (index, call) in choice.message.tool_calls.iter().enumerate() {
             let delta = json!({
                 "index": 0,

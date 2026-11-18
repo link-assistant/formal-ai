@@ -13,6 +13,7 @@
     "rust/tests/web/cnl-output.test.mjs",
     "rust/tests/web/cnl-output-http.test.mjs",
     "rust/tests/web/picomatch-compat.test.mjs",
+    "rust/tests/web/issue-1590-forced-functions.test.mjs",
     "rust/tests/web/issue-1592-server-retention.test.mjs",
     "rust/tests/web/issue-1180-repository-qa.test.mjs",
     "rust/tests/web/question-necessity-authored-seed.test.mjs",
@@ -230,6 +231,7 @@
     "rust/tests/web/issue-1550-procedure-census.test.mjs",
     "rust/tests/web/issue-1550-procedure-documentation.test.mjs",
     "rust/tests/web/issue-1582-defaults.test.mjs",
-    "rust/tests/web/issue-1582-permissions.test.mjs"
+    "rust/tests/web/issue-1582-permissions.test.mjs",
+    "rust/tests/web/issue-1589-calendar-currency.test.mjs"
   ]
 }

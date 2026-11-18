@@ -25,6 +25,7 @@ use crate::solver::UniversalSolver;
 
 mod chat_request;
 pub use chat_request::ChatCompletionRequest;
+mod client_functions;
 mod content;
 pub use content::{
     client_working_directory, latest_user_request, observed_directory, system_prompt_text,
@@ -35,7 +36,9 @@ mod recording;
 mod request_context;
 mod responses_input;
 mod tokens;
+pub(crate) use cnl::create_adapted_chat_completion;
 pub use cnl::create_chat_completion_with_solver_and_memory;
+use output::response_from_symbolic;
 pub use output::*;
 use recording::response_prompt;
 pub use recording::{
@@ -125,6 +128,9 @@ pub struct ChatMessage {
     pub role: String,
     #[serde(default, deserialize_with = "deserialize_null_content")]
     pub content: MessageContent,
+    /// Machine-readable reason a forced client function could not be called.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refusal: Option<String>,
     /// Tool calls an `assistant` turn is requesting (OpenAI `tool_calls`).
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub tool_calls: Vec<ToolCall>,
@@ -399,13 +405,20 @@ pub fn create_chat_completion_with_solver(
     create_chat_completion_with_solver_and_memory(request, solver, &[])
 }
 
-#[must_use]
+/// The unprojected planner path. `protocol::cnl` wraps it so every Chat,
+/// Anthropic and Gemini completion receives the selected output projection.
 fn create_unprojected_chat_completion(
     request: &ChatCompletionRequest,
     solver: &UniversalSolver,
     memory_events: &[MemoryEvent],
+    forced_client_functions: bool,
 ) -> ChatCompletion {
     let (prompt, history) = chat_prompt_and_history(&request.messages);
+    if forced_client_functions
+        && let Some(completion) = client_functions::client_function_completion(request, &prompt)
+    {
+        return completion;
+    }
     let context = request_context::RequestContext::new(&request.messages);
     let solver = &context.solver(solver);
 
@@ -742,9 +755,14 @@ pub fn create_response_with_solver_and_memory(
 ) -> ResponseObject {
     let prompt = response_prompt(request);
     let chat_request = request.to_chat_completion_request();
+    let (memory_prompt, history) = chat_prompt_and_history(&chat_request.messages);
+    if let Some(response) =
+        client_functions::client_function_response(request, &chat_request, &prompt, &memory_prompt)
+    {
+        return response;
+    }
     let context = request_context::RequestContext::new(&chat_request.messages);
     let solver = &context.solver(solver);
-    let (memory_prompt, history) = chat_prompt_and_history(&chat_request.messages);
     let memory_prompt = if memory_prompt.trim().is_empty() {
         prompt.as_str()
     } else {
@@ -813,6 +831,7 @@ fn response_from_plan(
                 content: vec![ResponseOutputContent {
                     kind: String::from("output_text"),
                     text: narration,
+                    refusal: None,
                 }],
                 thinking_steps: Vec::new(),
             }));
@@ -907,6 +926,7 @@ fn response_from_plan(
                 role: String::from("assistant"),
                 content: vec![ResponseOutputContent {
                     kind: String::from("output_text"),
+                    refusal: None,
                     text: answer,
                 }],
                 thinking_steps: steps,
@@ -930,51 +950,5 @@ fn response_from_plan(
         evidence_links,
         derivation_id: None,
         thinking_steps: Vec::new(),
-    }
-}
-
-fn response_from_symbolic(
-    request: &ResponsesRequest,
-    prompt: &str,
-    symbolic_answer: SymbolicAnswer,
-) -> ResponseObject {
-    let symbolic_answer =
-        request_context::RequestContext::new(&request.to_chat_completion_request().messages)
-            .compose(symbolic_answer);
-    let model = resolved_request_model(request.model.as_deref());
-    let input_tokens = responses_input_tokens(request);
-    let output_tokens = estimate_tokens(&symbolic_answer.answer);
-    let derivation_id = symbolic_answer.derivation_id();
-    let answer = symbolic_answer.answer;
-    let thinking_steps = symbolic_answer.thinking_steps;
-    let mut output = vec![ResponseOutputItem::Message(ResponseOutputMessage {
-        id: stable_id("msg", &answer),
-        kind: String::from("message"),
-        role: String::from("assistant"),
-        content: vec![ResponseOutputContent {
-            kind: String::from("output_text"),
-            text: answer,
-        }],
-        thinking_steps: thinking_steps.clone(),
-    })];
-    if let Some(reasoning) = output::response_reasoning_item(prompt, &thinking_steps) {
-        output.push(reasoning);
-    }
-
-    ResponseObject {
-        id: stable_id("resp", prompt),
-        object: String::from("response"),
-        created_at: response_timestamp(),
-        status: String::from("completed"),
-        model,
-        output,
-        usage: ResponseUsage {
-            input_tokens,
-            output_tokens,
-            total_tokens: input_tokens.saturating_add(output_tokens),
-        },
-        evidence_links: symbolic_answer.evidence_links,
-        derivation_id: Some(derivation_id),
-        thinking_steps,
     }
 }

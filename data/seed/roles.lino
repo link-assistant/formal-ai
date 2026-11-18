@@ -173,6 +173,16 @@ roles
     kind meaning
   clause_joiner
     kind meaning
+  client-function-sentiment
+    kind predicate
+  client-function-sentiment-negation
+    kind predicate
+  client-function-sentiment-negative
+    kind predicate
+  client-function-sentiment-neutral
+    kind predicate
+  client-function-sentiment-positive
+    kind predicate
   code-comment-obligation
     kind meaning
   code_example_decomposition_answer
@@ -539,6 +549,8 @@ roles
     kind meaning
   github_repository_traffic_signal
     kind meaning
+  handler-table
+    kind predicate
   hello_world_reference
     kind predicate
   http_fetch
@@ -650,6 +662,8 @@ roles
   local_path_type_request
     kind meaning
   local_shell_request_cue
+    kind predicate
+  localized-response-template
     kind predicate
   localized_response_template
     kind meaning

@@ -27,6 +27,25 @@ pub fn create_chat_completion_with_solver_and_memory(
     solver: &UniversalSolver,
     memory_events: &[MemoryEvent],
 ) -> ChatCompletion {
+    create_projected_chat_completion(request, solver, memory_events, true)
+}
+
+/// Anthropic and Gemini adapters skip forced client functions (issue #1590)
+/// but keep the selected output projection (issue #1584).
+pub(crate) fn create_adapted_chat_completion(
+    request: &ChatCompletionRequest,
+    solver: &UniversalSolver,
+    memory_events: &[MemoryEvent],
+) -> ChatCompletion {
+    create_projected_chat_completion(request, solver, memory_events, false)
+}
+
+fn create_projected_chat_completion(
+    request: &ChatCompletionRequest,
+    solver: &UniversalSolver,
+    memory_events: &[MemoryEvent],
+    forced_client_functions: bool,
+) -> ChatCompletion {
     let mut configuration = solver.config.output;
     if let Some(named) = &request.output_standard {
         if let Ok(selected) = output_configuration(Some(named), None, cnl_policy()) {
@@ -68,13 +87,16 @@ pub fn create_chat_completion_with_solver_and_memory(
                 }
             }
         }
-        create_unprojected_chat_completion(&planning_request, &selected, memory_events)
+        create_unprojected_chat_completion(
+            &planning_request,
+            &selected,
+            memory_events,
+            forced_client_functions,
+        )
     };
-    if let Some(choice) = completion
-        .choices
-        .first_mut()
-        .filter(|choice| choice.finish_reason == "stop")
-    {
+    if let Some(choice) = completion.choices.first_mut().filter(|choice| {
+        choice.finish_reason == "stop" && !choice.message.content.plain_text().is_empty()
+    }) {
         let body = choice.message.content.plain_text();
         let text = context.answer_text(&body);
         let language = selected
