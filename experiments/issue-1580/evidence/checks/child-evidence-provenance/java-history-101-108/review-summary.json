@@ -1,0 +1,71 @@
+{
+  "literalPages": 108,
+  "totalPages": 254,
+  "completeFiles": 111,
+  "partialFiles": 1,
+  "literalLines": 7625,
+  "nextForwardPage": 109,
+  "remainingPages": 146,
+  "completeRepositorySemanticReview": false,
+  "independentAuthorshipCredit": 0,
+  "archives": [
+    {
+      "page": 101,
+      "archive": "page-101.log.gz",
+      "rawSha256": "2d2377e1b7523c47e49bdf0e9f87ae8a62f9ccbc74e08329aa5371eb88a6690b",
+      "archiveSha256": "5cc21734de5389a7fb2858087e0de29318fac7e36be7b27b1b8d21a00f2ad028",
+      "fullLiteralRead": true
+    },
+    {
+      "page": 102,
+      "archive": "page-102.log.gz",
+      "rawSha256": "fa5e5055f7b767ab7408e98c6d49e2cb62431daf77a9b1e4e46dfc639bf2cfe8",
+      "archiveSha256": "b2e2e49c544ae3f95fb6bfd014ef071937b322948191508c9376561be65ae819",
+      "fullLiteralRead": true
+    },
+    {
+      "page": 103,
+      "archive": "page-103.log.gz",
+      "rawSha256": "4c38538fd0ef9601845d8d9f2425ca6cc3f55dc57e98e36258bf70dc054ad6e1",
+      "archiveSha256": "25de558245b7e9989bd2a4ad8e0a1ac8a8b9c1849b17f4091501b9dbf539ab5c",
+      "fullLiteralRead": true
+    },
+    {
+      "page": 104,
+      "archive": "page-104.log.gz",
+      "rawSha256": "2747e7db4a904b2e0b8e9b8f864b98af240c35b5f75ad8f87770dc2b4db87818",
+      "archiveSha256": "c0e4fd4a11463db4bb9eb567313bd7acea5eef1af767f11ea8b3d6e6deb7f1de",
+      "fullLiteralRead": true
+    },
+    {
+      "page": 105,
+      "archive": "page-105.log.gz",
+      "rawSha256": "3c933233a4fbcbcbef921e0f5d4f25112be4292c08c3e916e36530c0eb45ab78",
+      "archiveSha256": "275840eade3c85c9a0afe086309d078eeec3b84b0f293c19a1d20d44c6a9aa9e",
+      "fullLiteralRead": true
+    },
+    {
+      "page": 106,
+      "archive": "page-106.log.gz",
+      "rawSha256": "1c2bd0be602466c48394fe7892d8f1ea12ff8da24099d4be29c5b9f5a55831b6",
+      "archiveSha256": "7de45351e67df3074776cb73da500ca35d979ed24d92f9daa80aea906aeec40c",
+      "fullLiteralRead": true
+    },
+    {
+      "page": 107,
+      "archive": "page-107.log.gz",
+      "rawSha256": "e57573673b7b6346ac2fb9948325ae5ec31ed2572c202e93ff577576c9727d60",
+      "archiveSha256": "c0cc43f5337cb4d975518368275c6ee215e16e9772d0ff31b9d274493917fc60",
+      "fullLiteralRead": true
+    },
+    {
+      "page": 108,
+      "archive": "page-108.log.gz",
+      "rawSha256": "0a9ca4d1dff9a7e3d3bc99b9b35fa57c5f2ed3705706dbf99e7f4c78e77a25c5",
+      "archiveSha256": "4dcf802069433f6bdf1d1ef38847ce0e1968c77d817e1c715a106cd672574419",
+      "fullLiteralRead": true
+    }
+  ],
+  "pageManifestRawSha256": "d3c66b0c830adc0dba41b666af1f5461612bfbcf84a324353512d570a6fbd119",
+  "baseReviewPreserved": true
+}

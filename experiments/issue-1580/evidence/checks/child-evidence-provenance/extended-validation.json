@@ -1,0 +1,60 @@
+{
+  "complete": false,
+  "checks": [
+    {
+      "name": "factual-qa",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1172-factual-qa-subject-gate.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 17.815,
+      "rawLines": 23,
+      "rawSha256": "03d68a1911448cfbbd2d3341df87ef11fb41c2cb21a0005ce8518574d66e0ebb",
+      "archiveSha256": "7e0f3310691b990ca93e86424fc796375456da1e935af820dd2c650332fb688b",
+      "log": "factual-qa.log.gz"
+    },
+    {
+      "name": "specification-fixture-integrity",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.743,
+      "rawLines": 10,
+      "rawSha256": "871cbe3a5ee01b882092db0ffb52c7ce28d18ab1a0cf08caf942935876bd5dda",
+      "archiveSha256": "9a3d2714ea7460a2816eae26736dd4b348c4acbb282ddfa654dbbaa6ed1eb4fe",
+      "log": "specification-fixture-integrity.log.gz"
+    },
+    {
+      "name": "check-abbreviations",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs",
+        "--only",
+        "check-abbreviations"
+      ],
+      "exitCode": 1,
+      "seconds": 10.545,
+      "rawLines": 3,
+      "rawSha256": "07c32736c0b1a55e1d4c978e0c38e6d08c50c8e54e9bcc63b52f3901608776fb",
+      "archiveSha256": "80b3242957b8c7c30c53d11146e36a7e3f3151c4502dcd7e9578766f6f5a46d5",
+      "log": "check-abbreviations.log.gz"
+    }
+  ],
+  "memoryEventsAfter": "low 0\nhigh 0\nmax 148934\noom 0\noom_kill 0\noom_group_kill 0\n",
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

@@ -1,0 +1,19 @@
+{
+  "reason": "Preserve original evidence bytes while avoiding new abbreviated filenames",
+  "renames": [
+    {
+      "originalName": "edit-pr.stdout.gz",
+      "currentName": "edit-pull-request.stdout.gz",
+      "sha256": "f31ada65defe6fa1ca11e5521ba57b5a9dfab58e4bf4d48cfc63e079e0b57b39",
+      "bytesUnchanged": true
+    },
+    {
+      "originalName": "edit-pr.stderr.gz",
+      "currentName": "edit-pull-request.stderr.gz",
+      "sha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "bytesUnchanged": true
+    }
+  ],
+  "originalManifestUnmodified": true,
+  "independentAuthorshipCredit": 0
+}

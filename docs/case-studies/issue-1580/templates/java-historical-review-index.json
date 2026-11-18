@@ -1,0 +1,40 @@
+{
+  "base": {
+    "file": "java-historical-partial-review.json",
+    "sha256": "39b09d830a5943f12270706260c56fb0081790c418a613986bb549bbad594d8c",
+    "pages": [
+      1,
+      100
+    ]
+  },
+  "forwardParts": [
+    {
+      "file": "java-historical-forward-review-001.json",
+      "sha256": "8b56d59477d8eaa52b77794a8a80fb240915f11d89645ccb6292c5be80a9fd9d",
+      "pages": [
+        101,
+        108
+      ]
+    },
+    {
+      "file": "java-historical-forward-review-002.json",
+      "sha256": "1f52afbe69d14ce7076405e7f4f99dbde4b54211181e8c90d960e6b610d56a2c",
+      "pages": [
+        109,
+        109
+      ]
+    }
+  ],
+  "cumulativeSummary": {
+    "literalPages": 109,
+    "totalPages": 254,
+    "completeFiles": 111,
+    "partialFiles": 1,
+    "literalLines": 7655,
+    "nextForwardPage": 110,
+    "remainingPages": 145,
+    "completeRepositorySemanticReview": false,
+    "independentAuthorshipCredit": 0
+  },
+  "baseReviewUnchanged": true
+}

@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "node",
+    "--max-old-space-size=256",
+    "experiments/formal_ai_subagent/local-gates.mjs",
+    "--only",
+    "lint-shell-scripts"
+  ],
+  "exitCode": 0,
+  "seconds": 7.101,
+  "rawSha256": "20477e5e650206af32da75e66a1f62b448bf1e27bd5521984c3984391549d72b",
+  "archiveSha256": "6517f56b262fca90ddcfd762080822319e2df1530e745201e451e0a5628ab25a",
+  "log": "shellcheck-resumed.log.gz",
+  "detailLog": "shellcheck-resumed-detail.log.gz",
+  "detailRawSha256": "024c92fe6b5f22b061e1d57bc038c3b9f6d8933e68a3138c0ba621ac319a8084"
+}

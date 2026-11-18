@@ -424,7 +424,7 @@ All 23 workflows on `a97832237cbb365000dd7296050984e4bdd59ebb` complete successf
 - [x] Preserve the stopped publication attempt, merge current main `19235c49`, review all incoming source changes and resolve workflow/policy conflicts without dropping required-context admission or either native regression target.
 - [x] Add isolated native executor parity CI using the existing four-test module and all 29 shared cases, with complete event comparisons; preserve complete governed-object equality apart from four Cargo fixture identities. Native execution remains pending hosted CI.
 - [x] Pass 84 focused JavaScript tests, both fixture checks, Rust 2024 formatting and whitespace after integration. Preserve the full local run's 85 passes, 52 exclusions and one evidence-filename failure; correct only those two names and pass four affected gates without raising limits.
-- [ ] Publish this combined round once after a fresh main/feedback/run check, then collect and review every current-head CI result, including the new native target.
+- [x] Publish the combined round as 9095abcb after fresh main/feedback/run checks; collect all 23 results and the actual passing native target. Preserve both checkout failure attempts separately.
 
 
 ## JavaScript checkout follow-up after 9095abcb
@@ -433,6 +433,35 @@ All 23 workflows on `a97832237cbb365000dd7296050984e4bdd59ebb` complete successf
 - [x] Verify actual hosted native execution: four executor tests covering all 29 shared cases and full events, calendar/currency, forced functions and two HTTP regressions pass on the current head.
 - [x] Reproduce archive over-selection before the checkout change (16/17), then pass the selection file (17/17) and all 88 tests in eight files against a real temporary selection. Preserve the local wrapper interruption separately, and verify every selected source digest remains unchanged.
 - [x] Pass all eight affected local gates plus the whitespace check; literally review each complete gate log.
-- [ ] Review and commit this complete checkout/evidence batch, then publish only after checking the latest head's failures, feedback, main ancestry and idle workflow state.
-- [ ] Review the new hosted checkout and every workflow result before claiming it passes. Input reduction is verified locally; the transport cause remains unproved.
+- [x] Review and publish the complete checkout/evidence batch as bfe5ac0f after checking failures, feedback, main ancestry and idle workflow state. Preserve both stopped local publication attempts and their corrections.
+- [x] Verify all 23 bfe5ac0f workflows pass without a retry. Both original JavaScript checkouts finish in 19/17 seconds; actual shards report 1,440/1,253 passes and 4/13 skips. Preserve complete logs and explicit literal-review limits. Transport cause remains unproved.
 - [ ] Continue every previously unfinished issue requirement. The PR remains draft and unmerged; independent reasoning acceptance remains 0/20.
+
+
+## Selected-child evidence preservation (2026-11-18)
+
+- [x] Reproduce three failures: composition loses child evidence, adoption retains
+  rejected root evidence, and the answer-to-draft adapter drops direct evidence.
+  Preserve the complete 10-pass/3-failure before run.
+- [x] Carry copied evidence through JavaScript drafts, deduplicate selected child
+  evidence in stable order in both runtimes, and replace adopted answer evidence
+  with that composition's evidence. Unused alternatives and rejected roots supply
+  no evidence to the adopted composition. Regenerate worker and TypeScript mirrors.
+- [x] Pass the initial 13 JavaScript executor cases, 15 adjacent factual-QA cases,
+  both fixture currency checks, specification fixture integrity and Rust 2024
+  formatting. Preserve the metadata-gate failure and the two filename corrections.
+- [x] Refresh the stale JavaScript-to-Rust projection with the maintained pinned
+  translator; pass the final 13 executor tests. The full inventory records 85
+  passes, 52 exclusions and one missing ShellCheck failure; after restoring the
+  digest-verified official tool, the remaining executable gate passes. Preserve
+  the original aggregate and successful correction separately.
+- [ ] Review and publish the complete batch once after fresh feedback/main/CI
+  checks, then verify every hosted result including the fifth native executor test.
+- [ ] Complete parent-answer coverage, passage binding, multi-passage provenance
+  validation and every earlier unfinished issue criterion. Carrying selected
+  evidence alone does not prove those contracts. Independent acceptance remains
+  0/20; keep this PR draft and unmerged.
+
+- [x] Read and preserve Java historical pages 101–108 completely. Coverage is continuous 1–108/254, with 111 complete files, 1 partial file and 7,625 literally reviewed source lines. Preserve the 1–100 manifest unchanged and add a bounded forward part/index. Pages 109–254 and complete semantic applicability remain unfinished.
+
+- [x] Read and preserve Java historical page 109 completely: continuous 1–109/254, 111 complete files, one partial file and 7,655 source lines. The historical Node catalog is read through line 76/884; pages 110–254 and semantic applicability remain unfinished.

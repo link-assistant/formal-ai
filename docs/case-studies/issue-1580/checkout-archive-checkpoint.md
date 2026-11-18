@@ -166,3 +166,32 @@ The final staged gate run catches the newly tracked abbreviated gate-log filenam
 and the failed log. All three corrected staged gates pass. Preserve the literal
 review diff compressed, including its patch-context spaces, before the final
 whitespace check.
+
+
+## Published bfe5ac0f result
+
+All 23 workflows pass on `bfe5ac0f3babe512f1bf0a03935bd1d220f9e40f`.
+[Layered CI 44269762053](https://github.com/link-assistant/formal-ai/actions/runs/44269762053)
+finishes without a retry. The two original source checkouts finish in 19 and
+17 seconds. The complete JavaScript shard totals report 1,440 passes and four
+skips in group one, and 1,253 passes and 13 skips in group two, with no failures
+or cancellations. Focused changed-component checks also execute successfully.
+The original limits and test budgets remain intact. This verifies this hosted
+checkout and these tests; the earlier transport root cause remains unknown.
+
+Complete direct job logs, paginated workflow/job responses, source identities
+and bounded literal-review receipts are retained under
+`experiments/issue-1580/evidence/ci/javascript-checkout-bfe5ac0f/`.
+The logs contain 4,997 and 2,745 lines; only the specifically recorded metadata,
+command headers and test totals are claimed literally read. The first collector
+refuses terminal escape sequences before downloading one log; retain that failure
+and retry with GitHub CLI's explicit escape-sequence flag. No test rerun follows.
+
+All 83 lines of the three published source patches are literally reviewed.
+The full PR diff remains unavailable through `gh pr diff` because GitHub rejects
+more than 300 changed files; individual commit patches and blob identities remain
+reviewable. Preserve the original immutable publication receipts and the later
+review receipt separately. Expand two newly archived abbreviated filenames
+without changing either archive's bytes or the original manifest.
+The broader issue remains unfinished, and independent reasoning acceptance
+remains 0/20.

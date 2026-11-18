@@ -1,0 +1,73 @@
+{
+  "complete": false,
+  "checks": [
+    {
+      "name": "executor",
+      "argv": [
+        "timeout",
+        "600",
+        "node",
+        "--max-old-space-size=256",
+        "--test",
+        "--test-concurrency=1",
+        "rust/tests/web/issue-1550-meta-executor.test.mjs"
+      ],
+      "exitCode": 0,
+      "seconds": 6.426,
+      "rawLines": 21,
+      "rawSha256": "c2e28300ba56ea5b33a9f0cd23b44326eaa7ce89b9a72a1aa66fe06813634e36",
+      "archiveSha256": "e8bc17c8b3f2d6e3f6e8ba151b397efda10f03d204e38850b64ca2ead86699f0",
+      "log": "executor.log.gz"
+    },
+    {
+      "name": "formatting",
+      "argv": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "rust/src/meta_executor.rs",
+        "rust/src/meta_executor/production.rs",
+        "rust/tests/unit/meta_executor_parity.rs"
+      ],
+      "exitCode": 0,
+      "seconds": 0.173,
+      "rawLines": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "log": "formatting.log.gz"
+    },
+    {
+      "name": "translation-verification",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "scripts/translate-js-rust.mjs",
+        "--verify"
+      ],
+      "exitCode": 0,
+      "seconds": 3.27,
+      "rawLines": 1,
+      "rawSha256": "fc3f033428548a4500f1df0ec78e77db7050b95e954089f214ea64b8cb6ed814",
+      "archiveSha256": "6029f6baaa5ab896b69fd627f0de99a00a36e3a2ee201f2d08132270a0c1168e",
+      "log": "translation-verification.log.gz"
+    },
+    {
+      "name": "all-gates",
+      "argv": [
+        "node",
+        "--max-old-space-size=256",
+        "experiments/formal_ai_subagent/local-gates.mjs"
+      ],
+      "exitCode": 1,
+      "seconds": 905.601,
+      "rawLines": 140,
+      "rawSha256": "59990dee6ed517fef149365025a4a0c6938ec417b2826d5f45c051828b244ba7",
+      "archiveSha256": "ab0a3be4ec48b36018091ac54e6d9a86fdcc857b0b287c74083bf97291b8c5de",
+      "log": "all-gates.log.gz"
+    }
+  ],
+  "memoryEventsAfter": "low 0\nhigh 0\nmax 152257\noom 0\noom_kill 0\noom_group_kill 0\n",
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}
