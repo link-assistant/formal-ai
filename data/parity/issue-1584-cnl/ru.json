@@ -3,16 +3,16 @@
   "densities": ["standard","primes","top-100","top-200","top-500","top-1000","max-precision"],
   "projections": {
     "cnl-default": "4226c16c8bf8dce93a3f1eac82fae2b369115405aeb4748185a823c714374077",
-    "asd-ste100": "bb9363ef0caf8081c92dafc6f3770de08254135d4573b6c2e54860e273b5a727",
-    "ace": "15e923b035a125515cb25f35e11d7535584b3306a2242a197e96f42655e97492",
-    "gellish": "5052fbc646e162e873e8f3641546fbc94c4af5ac1c680e6863f1ea33ea8ea393",
-    "sbvr": "075b8313aede845a964c33b10f26e65369f134875207aa757335503d0c556594",
-    "plain-language": "1446696ff5c7ccace296826b29c815a7dca7a1f2e57c9ea734d7fa56e852c287",
+    "asd-ste100": "818ef38c3261b4af127ba743ade8dde543239c1f64d5209f54ba801d1fde9cb6",
+    "ace": "71204c82e9cd7b1079f44c34815439d1d4b379a9323d6b59af66cc289b69fc9c",
+    "gellish": "60d2ee7357a86fa7f2ba33926ad644b353cefc0a2fcc185cd4bed31cdc48b9b9",
+    "sbvr": "402af826a1ef23c3747bab537ddea7c0291c6eb31a859786f4ff6d04fd4043d4",
+    "plain-language": "e2661ee63c4b858a88775a7e73cef29b0a1a4b19bda331070de219d85cea49fa",
     "minimal-english": "59082e111020fcab07cda9eb11de486d819a6f858956fd58edb202ccabfd3834",
-    "e-prime": "e1554372b93b2c36225e5bd851d84f8682747f50159489e6da01e6ca87b8ffa1",
-    "basic-english": "43bc2aa2c5d52f826bc15eff1255f88d2befcbb7c8f1fc96cfbc6f94b17fe723",
-    "special-english": "edae4db42782aa3dd2b952647007d4cebad9d6ee4be6736f62cc6ed6400527b2",
-    "globish": "9b06c0b31f20b17bbeb8cda1ae66488153a1760c0cc8db913db66d51916ecdc6"
+    "e-prime": "75bd346bad16dc2139d0c68bffdfdfa53a45d46ee48f106589d28ddb66f97d7d",
+    "basic-english": "9a6cc5c67070104472116575f26de6a4b12f5582fb5ff0cb0dd30b5a949ff605",
+    "special-english": "f00e2ad3064d0cb625cab1de95b19afb4cb84133409152862611d74759afcc00",
+    "globish": "6055f7be739943de3127e77494297b7481724cb3e27df4da57411272b9bbaaef"
   },
   "dialogue": [
     {"prompt":"Правда ли, что кошка — это вид животных?","history":[],"configuration":{},"expected":{"intent":"cnl_answer","language":"ru","content":"Да. Каждая кошка — животное.","compliant":true}},

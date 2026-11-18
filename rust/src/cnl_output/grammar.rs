@@ -351,7 +351,7 @@ pub(crate) fn raw_tokens(text: &str) -> Vec<String> {
 
 impl CompiledGrammar {
     #[must_use]
-    pub fn id(&self) -> &str {
+    pub fn language(&self) -> &str {
         &self.data.id
     }
 
@@ -422,9 +422,9 @@ impl CompiledGrammar {
     }
 
     #[must_use]
-    pub fn term(&self, id: &str) -> Option<&Term> {
+    pub fn term(&self, concept: &str) -> Option<&Term> {
         self.term_by_id
-            .get(id)
+            .get(concept)
             .map(|index| &self.data.terms[*index])
     }
 }
@@ -674,7 +674,10 @@ impl Matcher<'_> {
                     };
                     let mut concepts: Vec<(String, Vec<String>)> = Vec::new();
                     for entry in entries {
-                        match concepts.iter_mut().find(|(id, _)| *id == entry.concept) {
+                        match concepts
+                            .iter_mut()
+                            .find(|(concept, _)| *concept == entry.concept)
+                        {
                             Some((_, registers)) => {
                                 if !registers.contains(&entry.register) {
                                     registers.push(entry.register.clone());
@@ -743,13 +746,13 @@ pub fn parse_utterance(text: &str, grammar: &CompiledGrammar) -> Arc<Vec<Reading
                         } else {
                             data.mood.as_str()
                         };
-                        let ids = if frame.expands.is_empty() {
+                        let frame_names = if frame.expands.is_empty() {
                             std::slice::from_ref(&frame.id)
                         } else {
                             frame.expands.as_slice()
                         };
-                        for id in ids {
-                            let target = frame_of(id, shared);
+                        for frame_name in frame_names {
+                            let target = frame_of(frame_name, shared);
                             if !slots_typed(&target, &bound) {
                                 continue;
                             }
@@ -771,7 +774,7 @@ pub fn parse_utterance(text: &str, grammar: &CompiledGrammar) -> Arc<Vec<Reading
                             for style in &data.styles {
                                 readings.push(Reading {
                                     graph: Graph {
-                                        frame: id.clone(),
+                                        frame: frame_name.clone(),
                                         slots: slots.clone(),
                                         polarity: polarity.to_owned(),
                                         mood: mood.to_owned(),

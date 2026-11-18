@@ -3,16 +3,16 @@
   "densities": ["standard","primes","top-100","top-200","top-500","top-1000","max-precision"],
   "projections": {
     "cnl-default": "eab25f444b1593e6f7d5a1fa22294eaecc1e4e7e4d564770f6a5389bf565da03",
-    "asd-ste100": "8de7c3ff1da9df2b03aba37279a026ea576ab529a62937a7b629df874ed049e5",
-    "ace": "2cb7a1c7a893768c330751ddf618e82a3dff560c2157e32b3466fd88d2d1af6a",
-    "gellish": "00de2672b9c8d63e991f653dee75c089d3099a26000ae68fdc081b52d8f047a5",
-    "sbvr": "6c19c1941597250322664fbec143b4ece508caea4d0c29f898e75cd0096095ed",
-    "plain-language": "74076e122364fb64f3d9d12cc5ce2853caf648301146ed1eb8c1596c49575fed",
+    "asd-ste100": "48e051628b133b5fbd2433cfd009d045aed10b3d24f863e80aba2f63cd8dd15d",
+    "ace": "003057d0de811232f4a3044dbfb2301bad11e172d4e51675574f13558f51befb",
+    "gellish": "d7038389660159305482387f87ca996780499d647a85674d160425b334969459",
+    "sbvr": "380183c05bd2fde8f6730e4fffe4388cd820931d00a1a816b49353d458b4577f",
+    "plain-language": "1e2d304adc4a617b8bd0745f0207dd61e74ca2859922f47ddd848f28d4f91bc5",
     "minimal-english": "2d8cea943d0925d84391ea5dc2e393bd34413afae8ea7f4b32105897fcaaaba6",
-    "e-prime": "dcc1a8ad4ecfd2c62e8e3038e4ee2eb8acbbbfb0f0b33c987a6c31737c771346",
-    "basic-english": "85e8a80f5e8f0b5ee7ffdec6e5cff8da373bbd633bb4681cb563786876b96934",
-    "special-english": "d5285c3db2100264c79b41596852922e3c74f5e36d6bc7f32fe8e54c9b510c28",
-    "globish": "01a89c5c0e235de243d22b5accbcf61f9ff5cb7a5103bf094317e39911835d19"
+    "e-prime": "4269ddf38c865e46203fb8d393fb513e03b1ad0272f3484f307f1739b254dd75",
+    "basic-english": "4e1195fac4c8066fa8b644efaf9a1c4d6800f969c21218015cc0a8d1a8f8e871",
+    "special-english": "4e3ee9106631772c1f350befcf95d670475d94e561543b123d6f9e134805235b",
+    "globish": "8789229a15180ccae3f6bb7c755dbd8521d91f28ac126d1dad6f8dbcb9d2cc2a"
   },
   "dialogue": [
     {"prompt":"¿Es un gato un tipo de animal?","history":[],"configuration":{},"expected":{"intent":"cnl_answer","language":"es","content":"Sí. Todo gato es un animal.","compliant":true}},

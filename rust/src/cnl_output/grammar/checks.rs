@@ -341,7 +341,7 @@ pub fn prompt_analysis(prompt: &str, grammars: &[Arc<CompiledGrammar>]) -> Optio
     grammars.iter().find_map(|grammar| {
         let graphs = utterance_graphs(prompt, grammar);
         (!graphs.is_empty()).then(|| Analysis {
-            language: grammar.id().to_owned(),
+            language: grammar.language().to_owned(),
             grammar: Arc::clone(grammar),
             graphs,
         })

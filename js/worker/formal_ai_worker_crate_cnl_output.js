@@ -225,11 +225,19 @@ const DENSITY_CHECKS = new Set(['non-prime', 'nsm-vocabulary', 'nsm-syntax', 'ns
   'frequency-vocabulary', 'lexical-minimum']);
 /** Lexicographic cost: profile violations, then density violations, then unchecked evidence. */
 function outputCost(report) {
-  const profile = report.violations.filter(id => !DENSITY_CHECKS.has(id)).length;
+  const profile = report.violations.filter(check => !DENSITY_CHECKS.has(check)).length;
   return [profile, report.violations.length - profile, report.unchecked.length];
 }
+/**
+ * Whether one output cost tuple is lexicographically below another of equal length.
+ * @param {Array<number>} left
+ * @param {Array<number>} right
+ * @returns {boolean}
+ */
 function cheaper(left, right) {
-  for (let index = 0; index < left.length; index += 1) if (left[index] !== right[index]) return left[index] < right[index];
+  for (let index = 0; index < left.length; index += 1) {
+    if (left[index] !== right[index]) return left[index] < right[index];
+  }
   return false;
 }
 /**
@@ -278,8 +286,8 @@ function validateOutput(text, language, configuration = {}, policy = cnlPolicy()
   if (!locale) unchecked.push('language');
   const tokens = outputWords(text, language).map(word => word.toLowerCase());
   const standard = selected.lexical_density === 'standard';
-  const maxWords = !standard && profile.densityMaxWords ? profile.densityMaxWords : profile.maxWords;
-  if (maxWords && text.split(/[.!?。！？।]+/u).some(sentence => outputWords(sentence, language).length > maxWords)) {
+  const maximumWords = !standard && profile.densityMaxWords ? profile.densityMaxWords : profile.maxWords;
+  if (maximumWords && text.split(/[.!?。！？।]+/u).some(sentence => outputWords(sentence, language).length > maximumWords)) {
     violations.push('sentence-length');
   }
   if (selected.output_standard === 'e-prime') {
@@ -303,7 +311,7 @@ function validateOutput(text, language, configuration = {}, policy = cnlPolicy()
   // Built-in ranks are a declared, project-authored tier table; a corpus checker may replace them.
   if (tier !== null) record('frequency-vocabulary', evidence('frequency-vocabulary', checkers.frequency));
   const required = !standard && profile.densityRequired.length ? profile.densityRequired : profile.required;
-  for (const id of required) record(id, evidence(id));
+  for (const check of required) record(check, evidence(check));
   return {...selected, compliant: violations.length === 0 && unchecked.length === 0,
     violations, unchecked};
 }

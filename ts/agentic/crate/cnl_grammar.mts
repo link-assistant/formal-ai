@@ -73,7 +73,7 @@ export function parseLanguageGrammar(text, parse) {
   };
 }
 
-/** Normalize like the parser: lowercase, typographic apostrophes, typos, fillers. */
+/** Normalize like the parser: lowercase, typographic apostrophes, typos, fillers. Mirrors `fn tokens`. */
 export function grammarTokens(text, grammar) {
   const raw = (String(text).toLowerCase().replaceAll('’', "'").match(TOKEN) ?? [])
     .map(token => token === '…' ? '...' : token);
@@ -142,8 +142,8 @@ export function compileGrammar(data, shared) {
   return grammar;
 }
 
-function frameOf(id, shared) {
-  return shared.frames.find(frame => frame.id === id) ?? {id, slots: [], types: [], expands: []};
+function frameOf(frameName, shared) {
+  return shared.frames.find(frame => frame.id === frameName) ?? {id: frameName, slots: [], types: [], expands: []};
 }
 
 /** Canonical identity of a meaning graph, independent of wording. */
@@ -222,14 +222,14 @@ export function parseUtterance(text, grammar) {
           for (const bound of matchParts(parts, tokens, grammar, lenient)) {
             const frame = frameOf(template.frame, grammar.shared);
             const mood = template.mood === 'statement' && question ? 'question' : template.mood;
-            for (const id of frame.expands.length ? frame.expands : [frame.id]) {
-              const target = frameOf(id, grammar.shared);
+            for (const frameName of frame.expands.length ? frame.expands : [frame.id]) {
+              const target = frameOf(frameName, grammar.shared);
               if (!slotsTyped(target, bound)) continue;
               const slots = Object.fromEntries(target.slots.map(slot => [slot, bound[slot].concept ?? bound[slot].number]));
               const registers = Object.fromEntries(target.slots.filter(slot => bound[slot].registers)
                 .map(slot => [slot, bound[slot].registers]));
               for (const style of template.styles) {
-                readings.push({graph: {frame: id, slots, polarity, mood}, style, registers});
+                readings.push({graph: {frame: frameName, slots, polarity, mood}, style, registers});
               }
             }
           }
