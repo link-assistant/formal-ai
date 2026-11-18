@@ -242,6 +242,7 @@
     "rust/tests/web/issue-1580-template-observations.test.mjs",
     "rust/tests/web/javascript-audit-inventory.test.mjs",
     "rust/tests/web/calendar-clock-preservation.test.mjs",
+    "rust/tests/web/calendar-act-paraphrases.test.mjs",
     "rust/tests/web/picomatch-security-backport.test.mjs",
     "rust/tests/web/issue-1580-client-output-constraints.test.mjs",
     "rust/tests/web/issue-1582-defaults.test.mjs",

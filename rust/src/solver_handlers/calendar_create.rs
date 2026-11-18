@@ -18,7 +18,8 @@ use crate::language::detect as detect_language;
 use crate::rule_interpreter::{handler_table_row, handler_table_rows, handler_table_value};
 use crate::seed::{
     ROLE_CALENDAR_DAY_REFERENCE, ROLE_CALENDAR_EVENT, ROLE_CALENDAR_RELATIVE_DATE,
-    ROLE_CALENDAR_TIME, ROLE_CALENDAR_WEEKDAY, lexicon, render_localized_once,
+    ROLE_CALENDAR_TIME, ROLE_CALENDAR_WEEKDAY, ROLE_CAPABILITY_ACT_SCHEDULE,
+    ROLE_CAPABILITY_CLOCK_REFERENCE, lexicon, render_localized_once,
 };
 use crate::solver_handlers::calendar_ics::ScheduledEvent;
 use crate::solver_handlers::finalize_simple;
@@ -41,18 +42,6 @@ pub fn try_calendar_create_event(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    // A software-authoring request (authoring verb plus software artifact)
-    // that mentions a schedule word is a build plan, not an event: "Build a
-    // bot ... that sends weekly notifications" schedules nothing. The claim
-    // declines here so the software-project handler answers it (issue #1138
-    // software-project corpus).
-    if super::software_project_claims(normalized) {
-        return None;
-    }
-    if !mentions_calendar_create_request(prompt) {
-        return None;
-    }
-
     try_routed_calendar_create_event(prompt, normalized, log)
 }
 
@@ -186,40 +175,34 @@ pub fn calendar_claims(normalized: &str) -> bool {
 
 fn has_calendar_anchor(span: &str, normalized: &str) -> bool {
     let lex = lexicon();
-    let has_day_ref = lex
-        .words_for_role(ROLE_CALENDAR_DAY_REFERENCE)
-        .iter()
-        .any(|w| contains_term(normalized, w));
-    let has_clock = lex
-        .words_for_role(ROLE_CALENDAR_TIME)
-        .iter()
-        .any(|w| contains_term(normalized, w))
-        || extract_clock_time(span).is_some()
-        || extract_clock_time(normalized).is_some();
-    let has_relative_date = lex
-        .words_for_role(ROLE_CALENDAR_RELATIVE_DATE)
-        .iter()
-        .any(|w| contains_term(normalized, w));
-    // A named weekday ("on Friday") anchors the event to a day as well.
-    let has_weekday = lex
-        .words_for_role(ROLE_CALENDAR_WEEKDAY)
-        .iter()
-        .any(|w| contains_term(normalized, w));
-    let has_date_signal = has_day_ref || has_clock || has_relative_date || has_weekday;
-    if !has_date_signal {
-        return false;
-    }
-    let has_bound_day = lex
-        .words_for_role(ROLE_CALENDAR_DAY_REFERENCE)
-        .iter()
-        .any(|word| {
-            normalized.find(word).is_some_and(|at| {
-                normalized[..at]
-                    .trim_end()
-                    .ends_with(|ch: char| ch.is_ascii_digit())
+    let has_time = extract_clock_time(span)
+        .or_else(|| extract_clock_time(normalized))
+        .is_some();
+    let has_role = [
+        ROLE_CALENDAR_TIME,
+        ROLE_CALENDAR_RELATIVE_DATE,
+        ROLE_CALENDAR_WEEKDAY,
+        ROLE_CAPABILITY_CLOCK_REFERENCE,
+    ]
+    .iter()
+    .any(|role| {
+        lex.words_for_role(role)
+            .iter()
+            .any(|word| contains_term(normalized, word))
+    });
+    has_time
+        || has_role
+        || lex
+            .words_for_role(ROLE_CALENDAR_DAY_REFERENCE)
+            .iter()
+            .any(|word| {
+                contains_term(normalized, word)
+                    && normalized.find(word).is_some_and(|at| {
+                        normalized[..at]
+                            .trim_end()
+                            .ends_with(|ch: char| ch.is_ascii_digit())
+                    })
             })
-        });
-    has_clock || has_relative_date || has_weekday || has_bound_day
 }
 
 fn calendar_request_span(text: &str) -> Option<&str> {
@@ -245,13 +228,18 @@ fn calendar_request_span(text: &str) -> Option<&str> {
             }
         }
         let date_led = request.starts_with(|c: char| c.is_ascii_digit())
-            || [ROLE_CALENDAR_RELATIVE_DATE, ROLE_CALENDAR_WEEKDAY]
-                .iter()
-                .any(|role| {
-                    lexicon().words_for_role(role).iter().any(|word| {
-                        request.starts_with(word.as_str()) && contains_term(request, word)
-                    })
-                });
+            || [
+                ROLE_CALENDAR_RELATIVE_DATE,
+                ROLE_CALENDAR_WEEKDAY,
+                ROLE_CAPABILITY_CLOCK_REFERENCE,
+            ]
+            .iter()
+            .any(|role| {
+                lexicon()
+                    .words_for_role(role)
+                    .iter()
+                    .any(|word| request.starts_with(word.as_str()) && contains_term(request, word))
+            });
         let action = cues.iter().any(|(word, position)| {
             let starts = request.strip_prefix(word.as_str()).is_some_and(|tail| {
                 contains_term(request, word)
@@ -295,7 +283,19 @@ fn calendar_request_span(text: &str) -> Option<&str> {
                 .is_some()
             && resolve_timezone(&normalized).is_some()
             && extract_participant_title(&normalized).is_some();
-        if action || elliptical {
+        // The shared act lexicon already carries inflected stems. Keep its
+        // evidence within this date-led request or an inflected initial act,
+        // rather than copying another per-language imperative list here.
+        let seeded_act = lexicon()
+            .words_for_role(ROLE_CAPABILITY_ACT_SCHEDULE)
+            .iter()
+            .any(|word| {
+                (date_led && request.contains(word.as_str()))
+                    || request
+                        .strip_prefix(word.as_str())
+                        .is_some_and(|tail| tail.starts_with(is_word_character))
+            });
+        if action || elliptical || seeded_act {
             candidates.push(clause);
         }
     }

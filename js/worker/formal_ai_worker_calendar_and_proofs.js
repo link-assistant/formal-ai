@@ -370,19 +370,16 @@ function calendarCreateRequestSpan(text) {
     const normalized = normalizePrompt(clause);
     // Normalization erases clock punctuation; read the same request span first.
     const clock = extractClockTime(clause) || extractClockTime(normalized);
-    const anchor = wordsForRole(ROLE_CALENDAR_RELATIVE_DATE).some(w => containsCalendarTerm(normalized, w)) ||
-      wordsForRole(ROLE_CALENDAR_WEEKDAY).some(w => containsCalendarTerm(normalized, w)) ||
-      clock !== null ||
-      wordsForRole(ROLE_CALENDAR_TIME).some(w => containsCalendarTerm(normalized, w)) ||
-      wordsForRole(ROLE_CALENDAR_DAY_REFERENCE).some(w => {
-        const at = normalized.indexOf(w);
-        return at >= 0 && /[0-9]+\s*$/u.test(normalized.slice(0, at));
-      });
+    const anchor = clock !== null ||
+      ["capability_clock_reference", ROLE_CALENDAR_RELATIVE_DATE, ROLE_CALENDAR_WEEKDAY, ROLE_CALENDAR_TIME]
+        .some(role => wordsForRole(role).some(w => containsCalendarTerm(normalized, w))) ||
+      wordsForRole(ROLE_CALENDAR_DAY_REFERENCE).some(w => containsCalendarTerm(normalized, w) &&
+        /[0-9]+\s*$/u.test(normalized.slice(0, normalized.indexOf(w))));
     if (!anchor) return false;
     let request = clause;
     const prefix = cues.find(([word, position]) => position === "prefix" && request.startsWith(word) && containsCalendarTerm(request, word));
     if (prefix) request = request.slice(prefix[0].length).replace(/^[,，]\s*/u, "").trimStart();
-    const dateLed = /^[0-9]/u.test(request) || [ROLE_CALENDAR_RELATIVE_DATE, ROLE_CALENDAR_WEEKDAY]
+    const dateLed = /^[0-9]/u.test(request) || [ROLE_CALENDAR_RELATIVE_DATE, ROLE_CALENDAR_WEEKDAY, "capability_clock_reference"]
       .some(role => wordsForRole(role).some(word => request.startsWith(word) && containsCalendarTerm(request, word)));
     const action = cues.some(([word, position]) => {
       const tail = request.slice(word.length).trimStart();
@@ -394,7 +391,10 @@ function calendarCreateRequestSpan(text) {
       return position === "object" ? starts && eventObject : position === "start" ? starts : position === "date" ? starts || (dateLed && containsCalendarTerm(request, word)) :
         position === "end" && request.endsWith(word) && containsCalendarTerm(request, word);
     });
-    return action || (prefix && clock !== null && resolveTimezone(normalized) !== null && extractParticipantTitle(normalized) !== null);
+    const seededAct = wordsForRole("capability_act_schedule").some(word =>
+      (dateLed && request.includes(word)) || (request.startsWith(word) &&
+        isCalendarWordCharacter(Array.from(request.slice(word.length))[0] || "")));
+    return action || seededAct || (prefix && clock !== null && resolveTimezone(normalized) !== null && extractParticipantTitle(normalized) !== null);
   });
   return candidates.length === 1 ? candidates[0] : null;
 }
