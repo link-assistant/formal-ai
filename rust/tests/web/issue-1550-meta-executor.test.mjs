@@ -19,6 +19,11 @@ let executor;
 const fixture = JSON.parse(
   readFileSync(new URL('../fixtures/meta-executor-parity.json', import.meta.url), 'utf8'),
 );
+const statusFixture = JSON.parse(
+  readFileSync(new URL('../fixtures/meta-executor-status-parity.json', import.meta.url), 'utf8'),
+);
+assert.equal(statusFixture.schema, fixture.schema);
+fixture.cases.push(...statusFixture.cases);
 const named = (name) => fixture.cases.find((entry) => entry.name === name);
 const kinds = (events) => events.map((event) => event.split(' ')[0]);
 
@@ -126,5 +131,31 @@ test('ASCII quoted connectives stay in their task while apostrophes and escaped 
     assert.equal(expected.shape, `${relation}(leaf,leaf)`, name);
     assert.deepEqual(expected.leaves, parts, name);
     assert.equal(expected.status, 'resolved', name);
+  }
+});
+
+test('unverified drafts cannot satisfy a leaf test or complete an all-required parent', async () => {
+  for (const name of ['unverified-program-leaf', 'unverified-program-child', 'unverified-program-cache']) {
+    assert.equal(named(name).expected.status, 'unresolved', name);
+    assert.equal(named(name).expected.content, null, name);
+  }
+  assert.equal(named('verified-program-child').expected.status, 'resolved');
+  for (const intent of [
+    'meta_reasoned_program_unverified',
+    'coding_workspace_written_unverified',
+    'general_plan_unverified',
+  ]) {
+    assert.equal(executor.answerValidation(intent, 'A nonempty draft'), `answered(${intent})=false`, intent);
+  }
+  for (const intent of ['meta_reasoned_program_unverified', 'meta_reasoned_program']) {
+    const run = await executor.executeProcedure({ text: 'First task and second task', language: 'en' }, {
+      cached: async () => null,
+      draft: async (text) => text === 'First task'
+        ? { intent, content: 'A nonempty program', confidence: 1 }
+        : text === 'second task'
+          ? { intent: 'answered', content: 'Second result', confidence: 1 }
+          : null,
+    });
+    assert.equal(run.outcome.status, intent.endsWith('_unverified') ? 'unresolved' : 'resolved', intent);
   }
 });

@@ -61,6 +61,52 @@ export const QUOTATION_CASES = [
   ['russian-double-quote', 'Посчитай "соль и перец" и назови размер', 'aggregation', ['Посчитай "соль и перец"', 'назови размер'], 'ru'],
 ];
 
+/** Status controls use a second shared fixture to keep both files bounded. */
+export const STATUS_CASES = [
+  {
+    name: 'unverified-program-leaf',
+    text: 'Produce source',
+    language: 'en',
+    answers: { 'Produce source': { intent: 'meta_reasoned_program_unverified', content: 'A nonempty program', confidence: 1 } },
+    cached: {},
+    withheld: [],
+    bounds: {},
+  },
+  {
+    name: 'unverified-program-child',
+    text: 'First task and second task',
+    language: 'en',
+    answers: {
+      'First task': { intent: 'meta_reasoned_program_unverified', content: 'A nonempty program', confidence: 1 },
+      'second task': answered('Second result'),
+    },
+    cached: {},
+    withheld: [],
+    bounds: {},
+  },
+  {
+    name: 'unverified-program-cache',
+    text: 'Produce source',
+    language: 'en',
+    answers: {},
+    cached: { 'Produce source': { intent: 'meta_reasoned_program_unverified', content: 'A nonempty program', confidence: 1 } },
+    withheld: [],
+    bounds: {},
+  },
+  {
+    name: 'verified-program-child',
+    text: 'First task and second task',
+    language: 'en',
+    answers: {
+      'First task': { intent: 'meta_reasoned_program', content: 'A nonempty program', confidence: 1 },
+      'second task': answered('Second result'),
+    },
+    cached: {},
+    withheld: [],
+    bounds: {},
+  },
+];
+
 /** Every case of the fixture, in order. */
 export const CASES = [
   twoLevel('en'),
@@ -119,6 +165,7 @@ export const CASES = [
     withheld: [],
     bounds: {},
   })),
+  ...STATUS_CASES,
 ];
 
 /** The table host of one case. */

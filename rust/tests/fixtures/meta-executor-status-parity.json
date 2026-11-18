@@ -1,0 +1,158 @@
+{
+  "schema": "meta-executor-parity/v1",
+  "cases": [
+    {
+      "name": "unverified-program-leaf",
+      "text": "Produce source",
+      "language": "en",
+      "answers": {
+        "Produce source": {
+          "intent": "meta_reasoned_program_unverified",
+          "content": "A nonempty program",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "leaf",
+        "leaves": [
+          "Produce source"
+        ],
+        "status": "unresolved",
+        "content": null,
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=- children=0 atomic=no_relation text=Produce source",
+          "meta_exec:test task=t0 checks=answered requires=-",
+          "meta_exec:draft task=t0 method=derivation steps=2 code_units=18 executed=answered passed=false failed=answered",
+          "meta_exec:unresolved task=t0 reason=no_passing_draft",
+          "meta_exec:result task=t0 status=unresolved method=- budget_left=7"
+        ]
+      }
+    },
+    {
+      "name": "unverified-program-child",
+      "text": "First task and second task",
+      "language": "en",
+      "answers": {
+        "First task": {
+          "intent": "meta_reasoned_program_unverified",
+          "content": "A nonempty program",
+          "confidence": 1
+        },
+        "second task": {
+          "intent": "answered",
+          "content": "Second result",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "aggregation(leaf,leaf)",
+        "leaves": [
+          "First task",
+          "second task"
+        ],
+        "status": "unresolved",
+        "content": null,
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=aggregation children=2 atomic=- text=First task and second task",
+          "meta_exec:test task=t0 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=First task",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=18 executed=answered passed=false failed=answered",
+          "meta_exec:unresolved task=t0.1 reason=no_passing_draft",
+          "meta_exec:task id=t0.2 depth=1 relation=- children=0 atomic=no_relation text=second task",
+          "meta_exec:test task=t0.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=13 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2 method=derivation reason=least_action steps=2 code_units=13 passing=1/1",
+          "meta_exec:compose task=t0 relation=aggregation children=t0.1,t0.2 resolved=1/2 built=false",
+          "meta_exec:unresolved task=t0 reason=no_draft",
+          "meta_exec:result task=t0 status=unresolved method=- budget_left=5"
+        ]
+      }
+    },
+    {
+      "name": "unverified-program-cache",
+      "text": "Produce source",
+      "language": "en",
+      "answers": {},
+      "cached": {
+        "Produce source": {
+          "intent": "meta_reasoned_program_unverified",
+          "content": "A nonempty program",
+          "confidence": 1
+        }
+      },
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "leaf",
+        "leaves": [
+          "Produce source"
+        ],
+        "status": "unresolved",
+        "content": null,
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=- children=0 atomic=no_relation text=Produce source",
+          "meta_exec:test task=t0 checks=answered requires=-",
+          "meta_exec:draft task=t0 method=cache steps=1 code_units=18 executed=answered passed=false failed=answered",
+          "meta_exec:unresolved task=t0 reason=no_passing_draft",
+          "meta_exec:result task=t0 status=unresolved method=- budget_left=7"
+        ]
+      }
+    },
+    {
+      "name": "verified-program-child",
+      "text": "First task and second task",
+      "language": "en",
+      "answers": {
+        "First task": {
+          "intent": "meta_reasoned_program",
+          "content": "A nonempty program",
+          "confidence": 1
+        },
+        "second task": {
+          "intent": "answered",
+          "content": "Second result",
+          "confidence": 1
+        }
+      },
+      "cached": {},
+      "withheld": [],
+      "bounds": {},
+      "expected": {
+        "shape": "aggregation(leaf,leaf)",
+        "leaves": [
+          "First task",
+          "second task"
+        ],
+        "status": "resolved",
+        "content": "A nonempty program\n\nSecond result",
+        "events": [
+          "meta_exec:bounds depth=2 breadth=6 budget=8",
+          "meta_exec:task id=t0 depth=0 relation=aggregation children=2 atomic=- text=First task and second task",
+          "meta_exec:test task=t0 checks=answered,children:aggregation requires=all",
+          "meta_exec:task id=t0.1 depth=1 relation=- children=0 atomic=no_relation text=First task",
+          "meta_exec:test task=t0.1 checks=answered requires=-",
+          "meta_exec:draft task=t0.1 method=derivation steps=2 code_units=18 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.1 method=derivation reason=least_action steps=2 code_units=18 passing=1/1",
+          "meta_exec:task id=t0.2 depth=1 relation=- children=0 atomic=no_relation text=second task",
+          "meta_exec:test task=t0.2 checks=answered requires=-",
+          "meta_exec:draft task=t0.2 method=derivation steps=2 code_units=13 executed=answered passed=true failed=-",
+          "meta_exec:select task=t0.2 method=derivation reason=least_action steps=2 code_units=13 passing=1/1",
+          "meta_exec:compose task=t0 relation=aggregation children=t0.1,t0.2 resolved=2/2 built=true",
+          "meta_exec:draft task=t0 method=composition steps=5 code_units=33 executed=answered,children:aggregation passed=true failed=-",
+          "meta_exec:select task=t0 method=composition reason=least_action steps=5 code_units=33 passing=1/1",
+          "meta_exec:result task=t0 status=resolved method=composition budget_left=5"
+        ]
+      }
+    }
+  ]
+}

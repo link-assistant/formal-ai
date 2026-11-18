@@ -16,8 +16,23 @@ use serde_json::Value;
 
 const FIXTURE: &str = include_str!("../fixtures/meta-executor-parity.json");
 
+const STATUS_FIXTURE: &str = include_str!("../fixtures/meta-executor-status-parity.json");
+
 fn fixture() -> Value {
-    serde_json::from_str(FIXTURE).expect("parity fixture is JSON")
+    let mut fixture: Value = serde_json::from_str(FIXTURE).expect("parity fixture is JSON");
+    let status: Value = serde_json::from_str(STATUS_FIXTURE).expect("status fixture is JSON");
+    assert_eq!(status["schema"], fixture["schema"]);
+    fixture["cases"]
+        .as_array_mut()
+        .expect("fixture cases")
+        .extend(
+            status["cases"]
+                .as_array()
+                .expect("status cases")
+                .iter()
+                .cloned(),
+        );
+    fixture
 }
 
 fn field<'a>(entry: &'a Value, name: &str) -> &'a str {

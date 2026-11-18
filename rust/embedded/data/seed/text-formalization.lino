@@ -106,6 +106,7 @@ text-formalization
     unresolved-intent "calculation_error"
     unresolved-suffix "_skill_gap"
     unresolved-suffix "_unspecified"
+    unresolved-suffix "_unverified"
     cache-cost "1"
     derivation-cost "2"
     composition-cost "1"
