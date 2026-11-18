@@ -512,25 +512,25 @@ impl CaptureExtractor for StepExtractor<'_> {
         let mut read = Extracted::default();
         match classify(capture.bytes()) {
             Payload::Parse { title, html } => {
-                let found = if record.id == "wikihow" {
-                    if !matches_task(task, &title) {
-                        read.detail =
-                            Some(trace_record::line("no_relevant_result", &[("url", url)]));
-                        return read;
-                    }
-                    if endpoint.split('?').next() == record.api.split('?').next() {
-                        extract_steps(&html, bounds.max_items)
-                    } else {
-                        extract::wiki_how_steps(&html, bounds.max_items)
-                    }
+                let relevant = record.id != "wikihow" || matches_task(task, &title);
+                let localized = record.id == "wikihow"
+                    && endpoint.split('?').next() != record.api.split('?').next();
+                let found = if !relevant {
+                    read.detail = Some(trace_record::line("no_relevant_result", &[("url", url)]));
+                    Vec::new()
+                } else if localized {
+                    extract::wiki_how_steps(&html, bounds.max_items)
                 } else {
                     extract_steps(&html, bounds.max_items)
                 };
-                if found.is_empty() {
+                if found.is_empty() && depth < bounds.max_depth {
                     for title in wiki_link_titles(&html, bounds.max_pages_per_service) {
                         if matches_task(task, &title) {
                             read.follow.push(parse_url(endpoint, &title));
                         }
+                    }
+                    if !relevant && read.follow.is_empty() {
+                        read.follow.push(search_url(endpoint, task));
                     }
                 }
                 push_steps(record, capture, depth, &found, &mut read.items);
