@@ -455,8 +455,15 @@ All 23 workflows on `a97832237cbb365000dd7296050984e4bdd59ebb` complete successf
   passes, 52 exclusions and one missing ShellCheck failure; after restoring the
   digest-verified official tool, the remaining executable gate passes. Preserve
   the original aggregate and successful correction separately.
-- [ ] Review and publish the complete batch once after fresh feedback/main/CI
-  checks, then verify every hosted result including the fifth native executor test.
+- [x] Review and publish the complete batch once after fresh feedback/main/CI
+  checks. Head ffebedb1 completes 23 workflows: 22 pass, while the native library
+  check fails with two missing `Draft.evidence` initializers in synthesis.
+  Preserve complete logs and read the actual compiler errors and JavaScript totals.
+- [x] Initialize both validation-only synthesis drafts, audit every Rust `Draft`
+  constructor/import, then pass 13 executor tests, six procedure-census tests,
+  five selected gates, Rust 2024 formatting and whitespace checks.
+- [ ] Publish the synthesis constructor correction after the single-push gate,
+  then verify all hosted results and actual execution of the fifth executor test.
 - [ ] Complete parent-answer coverage, passage binding, multi-passage provenance
   validation and every earlier unfinished issue criterion. Carrying selected
   evidence alone does not prove those contracts. Independent acceptance remains

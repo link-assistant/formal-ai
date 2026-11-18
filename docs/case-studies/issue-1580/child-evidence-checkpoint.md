@@ -46,6 +46,29 @@ and failed payload, not all successful individual payloads. Expand abbreviated
 archive filenames without changing their bytes and retain alias receipts. No
 local native build runs; the fifth native executor test still awaits CI.
 
+## Published compile failure and correction
+
+Head `ffebedb1` completes 23 workflows: 22 pass and the CI/CD Pipeline fails.
+The native library check reports E0063 at `solver_synthesis.rs:219` and `:261`:
+two validation-only `Draft` constructors omit the new `evidence` field. Preserve
+the entire 16,099-line failed workflow and complete native job log under
+`experiments/issue-1580/evidence/ci/child-evidence-ffebedb1/`. Literal review of
+the failed workflow covers lines 15,761–15,775; the native job error window is
+also read. The fifth native executor test does not execute on this failed head.
+
+Initialize both temporary validation drafts with empty evidence. Their verdict
+checks consume intent and content; actual synthesized answer evidence continues
+to be assembled by `finalize_composed_candidate` from the event log. Audit all
+Rust `Draft` constructors and imports, including the separate coding type.
+The correction passes 13 executor tests, six procedure-census tests, five relevant
+JavaScript gates, Rust 2024 formatting and whitespace checks. Native compilation
+and the fifth executor regression remain pending the next hosted run.
+
+The passing JavaScript jobs on `ffebedb1` report 1,440 and 1,256 passes, four and
+13 skips, zero failures and zero cancellations. Complete logs and hash checks
+are retained; literal review covers the final totals and named error windows,
+not every successful log line. These results do not establish the wider issue.
+
 ## Limits
 
 This change carries evidence already supplied by selected children. It does not
