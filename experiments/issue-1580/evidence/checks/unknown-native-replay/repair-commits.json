@@ -1,0 +1,36 @@
+[
+  {
+    "head": "ae1a9cb1be1d10d60f515a604f5179d3b9eb2f60",
+    "message": "fix: bound focused selection for large Git diffs",
+    "paths": [
+      "scripts/select-focused-tests.mjs",
+      "rust/tests/web/focused-test-map.test.mjs",
+      "changelog.d/issue-1580-focused-selector-large-diff.md"
+    ]
+  },
+  {
+    "head": "ded70965e7996aba6757631d284422731cbd4c63",
+    "message": "test: replay unknown source contracts in focused native CI",
+    "paths": [
+      ".github/workflows/native-type-check.yml",
+      "rust/Cargo.toml",
+      "rust/tests/unit/specification/unknown_reasoning.rs",
+      "rust/tests/web/default-branch-build-policy.test.mjs",
+      "scripts/ci-pull-request-admission.mjs",
+      "experiments/formal_ai_subagent/evidence/specification-delivery-1188/unicode-identifier-identity/governed-baseline.v8",
+      "changelog.d/issue-1580-unknown-native-replay.md"
+    ]
+  },
+  {
+    "head": "dc618e45c5372edbd742f500105ac5e3a72a9737",
+    "message": "fix: keep cache cue roles and local validation in sync",
+    "paths": [
+      "data/seed/meanings-concept-lookup.lino",
+      "data/seed/roles.lino",
+      "rust/embedded/data/seed/meanings-concept-lookup.lino",
+      "data/meta/ci-gates/check-role-registry.lino",
+      "rust/tests/web/generate-role-registry-js.test.mjs",
+      "changelog.d/issue-1580-cache-prefix-role-registry.md"
+    ]
+  }
+]

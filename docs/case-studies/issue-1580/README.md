@@ -234,3 +234,14 @@ tests and 86 complete-inventory gates, with 52 explicit native/context exclusion
 Eight original native failures have published replays; the remaining 45 and
 three historical budget terminations are unfinished. Java historical reading
 reaches 122/254 pages. These are scoped checkpoints; the full issue remains open.
+
+
+The next [source-binding checkpoint](language-source-binding-checkpoint.md)
+records published `f6ecab59`: all 13 captured-source controls, the Spanish sibling,
+33 isolated native cases and three HTTP replays pass. Its two workflow failures
+are the complete Git-diff buffer and stale generated roles, both reproduced and
+repaired locally. The repaired source passes 85 focused tests with one explicit
+local skip and 87 executable gates with 52 explicit exclusions. Nine original
+unknown-source contracts now have isolated hosted admission; their execution
+is pending. Java historical review reaches 124/254 pages and 8,069 lines.
+The full issue remains unfinished and the PR remains draft.
