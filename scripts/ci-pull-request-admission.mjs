@@ -29,6 +29,7 @@ const NATIVE_REGRESSION_INPUTS = new Set([
   'rust/tests/unit/cnl_parity.rs',
   'rust/tests/unit/meta_executor_parity.rs',
   'rust/tests/unit/specification/synthesis.rs',
+  'rust/tests/unit/specification/unknown_reasoning.rs',
   'rust/tests/unit/issue_706_any_language.rs',
   'rust/tests/unit/solver_unknown_reasoning_captured_sources.rs',
   'rust/tests/fixtures/issue-1138-b1/expected-senses.json',

@@ -161,6 +161,11 @@ path = "tests/unit/cnl_output.rs"
 name = "cnl_parity"
 path = "tests/unit/cnl_parity.rs"
 
+# Replay the existing unknown-source contracts without compiling the whole unit suite.
+[[test]]
+name = "unknown_reasoning"
+path = "tests/unit/specification/unknown_reasoning.rs"
+
 [[test]]
 name = "integration"
 path = "tests/integration/mod.rs"
