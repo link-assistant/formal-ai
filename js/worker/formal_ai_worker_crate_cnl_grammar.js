@@ -80,7 +80,7 @@ function parseLanguageGrammar(text, parse) {
   };
 }
 
-/** Normalize like the parser: lowercase, typographic apostrophes, typos, fillers. */
+/** Normalize like the parser: lowercase, typographic apostrophes, typos, fillers. Mirrors `Grammar::tokens`. */
 function grammarTokens(text, grammar) {
   const raw = (String(text).toLowerCase().replaceAll('’', "'").match(TOKEN) ?? [])
     .map(token => token === '…' ? '...' : token);
@@ -229,14 +229,14 @@ function parseUtterance(text, grammar) {
           for (const bound of matchParts(parts, tokens, grammar, lenient)) {
             const frame = frameOf(template.frame, grammar.shared);
             const mood = template.mood === 'statement' && question ? 'question' : template.mood;
-            for (const id of frame.expands.length ? frame.expands : [frame.id]) {
-              const target = frameOf(id, grammar.shared);
+            for (const expanded of frame.expands.length ? frame.expands : [frame.id]) {
+              const target = frameOf(expanded, grammar.shared);
               if (!slotsTyped(target, bound)) continue;
               const slots = Object.fromEntries(target.slots.map(slot => [slot, bound[slot].concept ?? bound[slot].number]));
               const registers = Object.fromEntries(target.slots.filter(slot => bound[slot].registers)
                 .map(slot => [slot, bound[slot].registers]));
               for (const style of template.styles) {
-                readings.push({graph: {frame: id, slots, polarity, mood}, style, registers});
+                readings.push({graph: {frame: expanded, slots, polarity, mood}, style, registers});
               }
             }
           }

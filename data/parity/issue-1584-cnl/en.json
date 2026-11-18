@@ -3,16 +3,16 @@
   "densities": ["standard","primes","top-100","top-200","top-500","top-1000","max-precision"],
   "projections": {
     "cnl-default": "e00ac7026c51e923050ad547d0587f0a14d127478f499fcb1fd9ea510f150423",
-    "asd-ste100": "a05071346a625b9a7e3da0df7e605205e12f76565b8a53960431338111532a37",
-    "ace": "401d9f8802fbd029e0df744a126bcac4495a22d8f04cc5523b353f0133ae4364",
-    "gellish": "52c287cada139d3bc7698c80f819be6b2b86ad0f52dff5f8edbf4cdebe85ac7f",
-    "sbvr": "fcbca6c4d12cb0a1478ce30d59684179dd1c50148c3e7ce71604417270bcdf69",
-    "plain-language": "dce0761c3a474906cce7f8766c51b248921217dd048450f65933edbf12809595",
+    "asd-ste100": "f693761711859c48ef557c1702df691ba9d7969fc223090f1f6d62838af219db",
+    "ace": "db1e4cd9d140405cd5a57dcd069db3ca08283adf52dc83ebe25edf1d8765d152",
+    "gellish": "5237a09aa4b766938187dea98a8a11e1e913cccd8455b05313310ed411ab1a0e",
+    "sbvr": "c3c1afd56b821cb34435046c7c9fec22ced39422d33e417a7f7f6095908db14b",
+    "plain-language": "07493cace692327571e168e609fb2cae8887417a653b7318bc176d511c3396a5",
     "minimal-english": "41dd7548cd6b6421012deda088cd668dbbbbb9f6430fc3a7f58c075b5bd49546",
-    "e-prime": "06fee0eb28a7555f2b5de12d7aad5473bb2acf305377601b8a1bf2acadd4d2e5",
-    "basic-english": "a9cf40951f97986044c66cab0193026eaa264d5860f6f697e44b94328401aa1a",
-    "special-english": "d9f4cdd9a0fbc164da31ae2129d1f3eb41665b5c5222e8b92726a638dad9388d",
-    "globish": "0160f5e58e4bf8775c8040e1d2bd76db28d0c53c9ad8b89d3e4c08f637b4f67a"
+    "e-prime": "d3bb306c4785125a9ebaa9b3e3e954bbb78cbbecb5b76aa18ead7a5e633f6839",
+    "basic-english": "b459d9ff062ff3cb8cc363c4262a8f85b1860adb2c44e919a1e75bdbc1af6976",
+    "special-english": "c69ff2b543b16128c02da3782736e8b148b0864a0343c85fa3897bab13f672e2",
+    "globish": "b9220e8c6c3df32d3c4a18e04f1bc9490a7ca945f8ce540681897ffbca49a58c"
   },
   "dialogue": [
     {"prompt":"Is a cat a kind of animal?","history":[],"configuration":{},"expected":{"intent":"cnl_answer","language":"en","content":"Yes. Every cat is an animal.","compliant":true}},

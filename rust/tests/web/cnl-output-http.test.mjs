@@ -61,7 +61,7 @@ test('HTTP rewrites bypass planning and settings do not leak between requests', 
     assert.equal(ePrime.status,200);
     assert.equal(ePrime.body.choices[0].message.content,'I know everything.');
     assert.equal(ePrime.body.output_projection.report.compliant,false);
-    assert.ok(ePrime.body.output_projection.report.unchecked.includes('e_prime_english'));
+    assert.ok(ePrime.body.output_projection.report.unchecked.includes('e-prime-english'));
     const structured = await post({lexical_density: 'max-precision', messages: [
       {role: 'system', content: 'Answer in JSON.'}, {role: 'user', content: '2 + 2'},
     ]});

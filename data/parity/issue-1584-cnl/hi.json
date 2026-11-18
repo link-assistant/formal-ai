@@ -3,16 +3,16 @@
   "densities": ["standard","primes","top-100","top-200","top-500","top-1000","max-precision"],
   "projections": {
     "cnl-default": "7ed414256adb9ba05ed5eb4048bb736814021d958cbd9838f57a4bca4a1008ac",
-    "asd-ste100": "6facb353f13fddc23780a456d635d9f57d45401e8e15dbdffeda209a5c66face",
-    "ace": "3765573855dfd8707fb0f3fd9d4a51a0d9d024e80e998eed6f717e4d6334d0d2",
-    "gellish": "2da6a1817659ad857b06d5a04b318d3656bff3ed6726189d08f43c63bc7e4131",
-    "sbvr": "b931796522e9fb7379a35ad10719a4413d4da7a09664490655bf440e91c8127e",
-    "plain-language": "17bf599f2a7db3040901b75e1cac7b9c1ea29647404b078f27044cb3bdcac84a",
+    "asd-ste100": "dc132ae9a471fe8be7c366afac5cb54ad27ea91da2189c8443a35625143dd2e9",
+    "ace": "a46522076488e259b24f18cbe9065e3a75ad1da4f1e4d04654cbfa1df0711b37",
+    "gellish": "b9cf15d196283d967142bf0f50d92beec4f56912d51cb8d871184bdb9f98c111",
+    "sbvr": "f02ffa73b9751a082173c56921c374fb169c97e57df3d120c32c612f34ed415e",
+    "plain-language": "9da464a8bda68bc0fa7b10e1c1927d8d07a47c561a5e8e0790f1c25fc02df3aa",
     "minimal-english": "20aa2fd34f538e11d62993c6750899cb5fe38d9b6312b5d559f172ccc79e0e78",
-    "e-prime": "823a37ab3af396ccc1e5ffb245cb92bf0a487c8ed9dc6f99461bfe751c4436dc",
-    "basic-english": "5b5dd4ae04d014d0ea81aee3e730167e600ee507e5f0de1d8ee3b70a26c592e2",
-    "special-english": "a768593492c19bb2a4fa108dcd8aa8bade243ee6a29504b96d89b54017a05525",
-    "globish": "7e3571716e0aa1f75c043b7386ca56835bd28d08b12de1a9f165fe14308b67af"
+    "e-prime": "140504c8463d87f67e0aaf5a971ad6d45d1f030831cec1dafeefcd5689b070bc",
+    "basic-english": "069dd2e5b4c7df0b88f02d75e6c009edd8edcf3fc0d41315eaddf4f5a03477be",
+    "special-english": "d83c27821be35c7c3459d5149ecd8c436cf974627160bc6b636117a02ba5afef",
+    "globish": "b46fccbdddf2800481be91b78c062b41d5a1f24ccc48fb9356a0388cb5ac7ab7"
   },
   "dialogue": [
     {"prompt":"क्या बिल्ली एक तरह का जानवर है?","history":[],"configuration":{},"expected":{"intent":"cnl_answer","language":"hi","content":"हाँ। हर बिल्ली एक जानवर है।","compliant":true}},

@@ -60,7 +60,11 @@ export function parseOutputPolicy(text, parse = parseLino, grammarText = () => n
     return {profiles, languages, lexemes, shared, grammars};
 }
 
-/** A positive integer tier; no floating point, signed or exponential aliases. */
+/**
+ * A positive integer tier; no floating point, signed or exponential aliases.
+ * @param {string} value
+ * @returns {number | null}
+ */
 export function frequencyTier(value) {
   if (!/^top-[1-9][0-9]*$/u.test(value)) return null;
   const count = Number(value.slice(4));
@@ -132,12 +136,23 @@ export function outputMeaning(document) {
     ? ['meaning', part.id] : part.kind === 'graph' ? ['graph', graphKey(part.graph)] : ['opaque', part.text]);
 }
 
-/** Whitespace-delimited languages use Unicode words; CJK has no whitespace promise. */
+/**
+ * Whitespace-delimited languages use Unicode words; CJK has no whitespace promise.
+ * @param {string} text
+ * @param {string} language
+ * @returns {Array<string>}
+ */
 export function outputWords(text, language) {
   return language === 'zh' ? (text.match(/[\p{Script=Han}]|[\p{L}\p{M}\p{N}]+/gu) ?? [])
     : (text.match(/[\p{L}\p{M}\p{N}]+(?:[-’'][\p{L}\p{M}\p{N}]+)*/gu) ?? []);
 }
 
+/**
+ * The text with a leading capital when the original surface had one.
+ * @param {string} text
+ * @param {string} original
+ * @returns {string}
+ */
 function capitalizedLike(text, original) {
   if (!text || !original || original[0] === original[0].toLowerCase()) return text;
   return text[0].toUpperCase() + text.slice(1);
@@ -226,7 +241,7 @@ function minimumWords(graph, language, selected, policy) {
   if (!grammar.minimumCache.has(key)) {
     let least = null;
     for (const text of outputCandidates(graph, language, selected, policy)) {
-      if (!validateOutput(text, language, selected, policy, {lexical_minimum: () => true}).compliant) continue;
+      if (!validateOutput(text, language, selected, policy, {'lexical-minimum': () => true}).compliant) continue;
       const count = outputWords(text, language).length;
       least = least === null ? count : Math.min(least, count);
     }
@@ -236,8 +251,8 @@ function minimumWords(graph, language, selected, policy) {
 }
 
 // Lexical-density evidence; every other violation belongs to the named profile.
-const DENSITY_CHECKS = new Set(['non_prime', 'nsm_vocabulary', 'nsm_syntax', 'nsm_semantics',
-  'frequency_vocabulary', 'lexical_minimum']);
+const DENSITY_CHECKS = new Set(['non-prime', 'nsm-vocabulary', 'nsm-syntax', 'nsm-semantics',
+  'frequency-vocabulary', 'lexical-minimum']);
 
 /** Lexicographic cost: profile violations, then density violations, then unchecked evidence. */
 function outputCost(report) {
@@ -245,6 +260,12 @@ function outputCost(report) {
   return [profile, report.violations.length - profile, report.unchecked.length];
 }
 
+/**
+ * Whether one violation cost sorts strictly before another, field by field.
+ * @param {Array<number>} left
+ * @param {Array<number>} right
+ * @returns {boolean}
+ */
 function cheaper(left, right) {
   for (let index = 0; index < left.length; index += 1) if (left[index] !== right[index]) return left[index] < right[index];
   return false;
@@ -297,32 +318,32 @@ export function validateOutput(text, language, configuration = {}, policy = cnlP
   if (!locale) unchecked.push('language');
   const tokens = outputWords(text, language).map(word => word.toLowerCase());
   const standard = selected.lexical_density === 'standard';
-  const maxWords = !standard && profile.densityMaxWords ? profile.densityMaxWords : profile.maxWords;
-  if (maxWords && text.split(/[.!?。！？।]+/u).some(sentence => outputWords(sentence, language).length > maxWords)) {
-    violations.push('sentence_length');
+  const wordLimit = !standard && profile.densityMaxWords ? profile.densityMaxWords : profile.maxWords;
+  if (wordLimit && text.split(/[.!?。！？।]+/u).some(sentence => outputWords(sentence, language).length > wordLimit)) {
+    violations.push('sentence-length');
   }
   if (selected.output_standard === 'e-prime') {
     // The profile lists the English forms of "to be"; every other language declares
     // its own copula in its grammar file. A language without one stays unchecked.
     const forbidden = new Set([...(language === 'en' ? profile.forbidden : []), ...(grammar?.copulaWords ?? [])]);
-    if (!forbidden.size) unchecked.push('e_prime_language');
+    if (!forbidden.size) unchecked.push('e-prime-language');
     else {
       const words = tokens.map(word => word.replaceAll('’', "'"));
-      if (words.some(word => forbidden.has(word) || /'(?:m|re)$/u.test(word))) violations.push('forbidden_word');
-      if (words.some(word => word.endsWith("'s") || word === "ain't")) unchecked.push('e_prime_contraction');
+      if (words.some(word => forbidden.has(word) || /'(?:m|re)$/u.test(word))) violations.push('forbidden-word');
+      if (words.some(word => word.endsWith("'s") || word === "ain't")) unchecked.push('e-prime-contraction');
     }
   }
   if (selected.lexical_density === 'primes') {
     if (grammar?.primeWords.size) {
-      if (!builtinCheck({kind: 'primes'}, text, grammar, context) && tokens.length) violations.push('non_prime');
-    } else unchecked.push('nsm_vocabulary');
-    for (const required of ['nsm_syntax', 'nsm_semantics']) record(required, evidence(required));
+      if (!builtinCheck({kind: 'primes'}, text, grammar, context) && tokens.length) violations.push('non-prime');
+    } else unchecked.push('nsm-vocabulary');
+    for (const required of ['nsm-syntax', 'nsm-semantics']) record(required, evidence(required));
   }
-  if (selected.lexical_density === 'max-precision') record('lexical_minimum', evidence('lexical_minimum'));
+  if (selected.lexical_density === 'max-precision') record('lexical-minimum', evidence('lexical-minimum'));
   // Built-in ranks are a declared, project-authored tier table; a corpus checker may replace them.
-  if (tier !== null) record('frequency_vocabulary', evidence('frequency_vocabulary', checkers.frequency));
+  if (tier !== null) record('frequency-vocabulary', evidence('frequency-vocabulary', checkers.frequency));
   const required = !standard && profile.densityRequired.length ? profile.densityRequired : profile.required;
-  for (const id of required) record(id, evidence(id));
+  for (const check of required) record(check, evidence(check));
   return {...selected, compliant: violations.length === 0 && unchecked.length === 0,
     violations, unchecked};
 }
