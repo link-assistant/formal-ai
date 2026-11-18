@@ -329,3 +329,16 @@ Evidence: `docs/case-studies/issue-1580/localized-opener-and-ci-checkpoint.md`,
 Final publication verification preserves six passing gates and its initial
 naming-policy failure; spelling two evidence filenames in full words restores
 the unchanged ceiling. The focused naming and whitespace rerun passes.
+
+## Localized opener native boundary and complete d0b395bb CI failures
+
+- [x] Verify all 23 d0b395bb workflows are completed: 22 pass, one fails. Preserve the complete failed Layered run, paginated jobs and direct job log; read both primary failure payloads.
+- [x] Restore the recorded WASM input byte for byte, preserving the binary and manifest; move the native test into a structurally registered external test module. Keep native localized seed preservation through the existing seed parser.
+- [x] Pass the two CI-failing files and localized worker regression file separately: 5 + 5 + 6 cases. Keep the invalid initial gate-name invocation as failed evidence, and pass the correctly named maintained core boundary gate.
+- [x] Read Java historical pages 61–64 completely: retained Codecov and OSV scanner release records complete; only three lines of the Bun record read. Literal coverage is now 55/254 pages, 65 complete files, two partial files and 3,038 complete lines. Pages 39–47 and 65–254 remain unread.
+- [ ] Verify the next published head in every workflow after the coordinated push.
+- [ ] Execute the external native regressions in permitted CI; finish both original Spanish contracts, the other native failures and all wider issue criteria. The retrieved-sense question-binding hypothesis is not a verified fix.
+
+Evidence: `docs/case-studies/issue-1580/opener-native-boundary-checkpoint.md`.
+
+- [x] Complete all 12 affected policy/release/core/source-budget gates and final Rust formatting, projection and whitespace checks. No shared `data/meta` input changes this round; the full gate inventory is not repeated. Save final source identities and retain zero native behavior/authorship credit.

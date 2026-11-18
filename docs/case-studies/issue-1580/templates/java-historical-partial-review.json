@@ -53,7 +53,11 @@
     57,
     58,
     59,
-    60
+    60,
+    61,
+    62,
+    63,
+    64
   ],
   "totalHistoricalPages": 254,
   "files": [
@@ -836,7 +840,31 @@
       "readRanges": [
         [
           1,
-          33
+          43
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/github-google-osv-scanner.json",
+      "sha256": "55982df2cd024bc19a94d9480b94d3fdb586ee77d46bf3ffde6e9da71d2ffed7",
+      "totalLines": 344,
+      "readRanges": [
+        [
+          1,
+          344
+        ]
+      ],
+      "completeSourceRead": true
+    },
+    {
+      "path": "dev/log/issues/24/pulls/25/sources/github-oven-sh-bun.json",
+      "sha256": "af90404e9d93dee0f8cd22a361c569b70a54a725855f59de2f8a9baf56aa29a5",
+      "totalLines": 1424,
+      "readRanges": [
+        [
+          1,
+          3
         ]
       ],
       "completeSourceRead": false
@@ -887,7 +915,7 @@
     "The complete historical dependency-update practices source is read. Its discussion of automatic merges and administrative bypass describes the upstream tool; it does not authorize changing Formal AI branch protection or merging this draft. Current applicability, remaining historical pages and broader issue acceptance stay unfinished."
   ],
   "nextUnreviewedLiteralPage": 39,
-  "nextForwardLiteralPage": 61,
+  "nextForwardLiteralPage": 65,
   "observationsThroughPage58": [
     "Pages 56–58 are fully read. Together with page 55 they complete the historical Durian SWT changelog. Its Java 17, Kotlin flow and platform notes are third-party historical context, not verification of current Formal AI dependencies.",
     "The retained final issue conversation, final main SHA, empty pull-request conversation/review/inline-comment lists and empty sub-issue list are fully read. These are historical snapshots rather than fresh GitHub state.",
@@ -897,5 +925,10 @@
   "observationsThroughPage60": [
     "Pages 59–60 complete the retained actions/setup-java, actions/setup-node and actions/upload-artifact release records. Their Maven mirror, Node-version retry, ESM/authentication and rate-limit handling notes are historical dependency context. Current version and workflow compatibility review remain separate acceptance work.",
     "The first 33 lines of the retained Codecov action release record are read. Literal pages 39–47 and forward pages 61–254 remain unread; complete repository review is not claimed."
+  ],
+  "observationsThroughPage64": [
+    "Pages 61–64 complete the retained Codecov action and google/osv-scanner v2.7.1 release records, including every release-note fragment and asset record. They remain historical evidence; no asset download or current dependency execution is claimed.",
+    "The OSV record describes deterministic vulnerability sorting, malformed archive-size rejection, confined extraction, lockfile extraction and fix-command argument validation. These are review context rather than evidence that the current Formal AI project exercises those release paths.",
+    "Only the first three lines of the retained oven-sh/bun release record have been read. Pages 39–47 and forward pages 65–254 remain unread; complete repository review is not claimed."
   ]
 }

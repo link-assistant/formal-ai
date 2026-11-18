@@ -89,3 +89,11 @@ evidence filenames added during review. Renaming those files in full words
 restores the unchanged 90-file naming ceiling, and the naming/whitespace rerun
 passes. The initial failed publication log and the correction receipt are both
 retained under `evidence/checks/localized-unknown-opener/publication/`.
+
+## Subsequent published-head correction
+
+The next head `d0b395bb` completed with 22 passing workflows and one failure.
+The [native boundary checkpoint](opener-native-boundary-checkpoint.md) records
+both actual failures, restores the recorded WASM input and moves the native
+test out of production source. Its formatter guard supersedes the shared-core
+selector change described above; the JavaScript selector guard remains in place.
