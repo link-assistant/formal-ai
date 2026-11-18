@@ -34,14 +34,14 @@ async function solve(prompt, history, prefs, userContext = {}, memory = [], opti
     if (diagnostic) return projectControlledAnswer(diagnostic, turn.config, options);
     // Issue #1584: a paraphrase directive re-renders the previous answer; otherwise the crate hook
     // (Rust `controlled_solve`) answers, clarifies or re-solves. Every draft goes through the procedure.
-    const draft = (text) => solveImpl(text, history, prefs, userContext, memory, options);
+    const draft = (text, draftOptions = options) => solveImpl(text, history, prefs, userContext, memory, draftOptions);
     const solved = turn.rewrite === null
       ? await cnl.controlledSolve(turn, history || [], draft)
       : {prompt, answer: {intent: "cnl_paraphrase", content: cnl.outputSource(turn.rewrite, detectLanguage(turn.rewrite)),
         confidence: 1, evidence: ["cnl:paraphrase"], steps: [], events: [], toolCalls: []}};
     prompt = solved.prompt;
     const answer = solved.answer;
-    const subTask = async (text) => metaResolveImpasse(text, await solveImpl(text, history, prefs, userContext, memory, { ...options, metaSubTask: true }), prefs);
+    const subTask = async (text) => metaResolveImpasse(text, await draft(text, { ...options, metaSubTask: true }), prefs);
     return projectControlledAnswer(metaAttachLearned(await metaRunProcedure(prompt, await metaResolveImpasse(prompt, answer, prefs), subTask)), turn.config, options);
   } finally {
     setForcedResponseLanguage(previousForced);
