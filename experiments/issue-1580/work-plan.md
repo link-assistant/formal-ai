@@ -607,7 +607,7 @@ PHP classification correction: the path taxonomy is not a CI boundary. Current t
 - [x] Correct the three local static-check failures (format, exact workflow policy, four Cargo fixture identity references), preserving complete governed objects and all first-attempt logs.
 - [x] Collect every first local inventory result and move the native test module into the existing test tree, resolving the six specialization failures without weakening any gate. Retain all first-attempt evidence.
 - [x] Merge main `30ff2d8a81cf8f21f679c2826851b5b413c34b7a` as `46ea14f01ca21ae6b2f59adbcc6d20677f4e819d`, preserving both branches' isolated targets and generated identities. Complete both-parent witness review and pass the final full local inventory before publication.
-- [ ] Publish atomic source/evidence commits only after the push gate; verify the four new native cases and unchanged Spanish sibling on the actual pushed head. Keep every broader criterion unfinished and independent reasoning credit 0/20.
+- [x] Publish the source/evidence batch as `6a9aa198` after the push gate. Verify the four captured-source units, unchanged Spanish sibling, all six merged isolated targets (33 tests) and both HTTP modes on that exact head. All 23 workflows complete: 22 pass and one unchanged worker census test fails. Broader acceptance remains open; independent reasoning credit 0/20.
 
 Details and reproducible checks: `docs/case-studies/issue-1580/language-source-binding-checkpoint.md`.
 
@@ -626,3 +626,14 @@ The first complete local inventory finishes in 764.618 seconds: 80 executable ga
 - [x] Collect the first merged inventory (81 pass / five fail / 52 exclusions); fix all five failures without relaxing a ceiling, assertion or check. The next complete inventory reports 85 passes, one filename failure and 52 exclusions. Rename four unchanged preflight payloads from abbreviated `pr` to full `pull-request`; the affected gate passes. All 86 executable gates have passing results after their corrections. Verify all 89 full-run payload hashes, the filename retry and unchanged candidate source bytes; no local native build.
 - [x] Literally read and retain Java historical pages 118–119, reaching 119/254 continuous pages and 7,930 source lines. Node catalog lines 1–351/884 are partial; pages 120–254 and semantic applicability remain open.
 - [x] Read the current standing doctrine: the measured 0/20 independently accepted reasoning units remain below its 5% reporting target. R1017-R5 does not add a release percentage gate; all supplied work still earns zero independent credit.
+
+## General retrieved-definition and public-cache binding follow-through
+
+- [x] Inspect the shared definition-query parser and existing cache/memory contracts before changing answer eligibility.
+- [x] Draft exact requested-term binding before retrieved-source ranking; retain attributed matching definitions and bare-term lookup. Native verification of the five additional controls remains pending.
+- [x] Draft complete-focus public-cache binding, preserving explicit cached-public-knowledge and bare-term contracts. Native verification remains pending.
+- [x] Add five native controls with complete responses and trace ownership. Pass all eight focused JavaScript files (60 tests), Rust formatting and all 86 executable local gates with 52 explicit exclusions; no local native build. All retained payload hashes and candidate identities are checked.
+- [x] Collect all 23 current-head hosted outcomes and the sole worker census failure before the next publication. Reproduce that failure locally and commit its shared-draft repair as `db869ce7`; all eight unchanged census tests pass. General memory reasoning and multi-passage provenance remain unfinished; frozen reasoning acceptance 0/20.
+
+- [x] Literally read and retain Java historical pages 120–121: 121/254 continuous pages, 7,986 source lines, 111 complete files and one partial Node catalog through line 407/884. Pages 122–254 and semantic applicability remain open.
+- [ ] Publish this source/evidence batch only after the fresh single-push gate; collect every workflow on that head and verify the five added native cases without treating scoped CI as full issue completion.

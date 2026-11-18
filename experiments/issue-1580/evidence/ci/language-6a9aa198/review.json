@@ -1,0 +1,16 @@
+{
+  "head": "6a9aa1980555825f0b993fa6d2c81a37f33590bc",
+  "payloadsVerified": 74,
+  "readScope": "Complete manifest parsed; every payload hash verified; exact failing Layered CI excerpts and native test-result/source-binding lines reviewed. Full workflow payloads not all literally read.",
+  "independentAuthorshipCredit": 0,
+  "originalManifestSha256": "6f4726e4fa27d1ad211b37438e9d2e63d40c0499cd3fd1fe84c8e38a8edc51e4",
+  "originalManifestFile": "records.pretty.json.gz",
+  "manifestSha256": "5b9a42ef697c06ed6adc2819a7813986a9b90e80ff76ab2c3e778d0b5a3cd110",
+  "nativeLogReadRanges": [
+    {
+      "start": 1600,
+      "end": 1918,
+      "prefixNormalization": "Invariant tab-separated job/step and ISO timestamp prefixes omitted in display; complete raw log retained and hash verified."
+    }
+  ]
+}

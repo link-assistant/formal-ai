@@ -1,0 +1,12 @@
+{
+  "head": "db869ce7cefdf76cfab51d37a7a709dba0ca3080",
+  "files": [
+    "js/worker/formal_ai_worker_solve.js",
+    "ts/worker/formal_ai_worker_solve.ts",
+    "js/server/worker-script-prerequisites.mjs",
+    "js/worker-script-prerequisites.js",
+    "data/meta/runtime-feature-coverage.json"
+  ],
+  "logRawSha256": "e167416cf003725e84dd157237f05de4dba4749ca1d30a03f73410487f08c8e3",
+  "independentAuthorshipCredit": 0
+}
