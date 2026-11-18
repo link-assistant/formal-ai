@@ -1,0 +1,11 @@
+{
+  "acceptedBaseline": true,
+  "tests": 48,
+  "pass": 24,
+  "fail": 24,
+  "completeLogLiterallyRead": true,
+  "productionUnchangedDuringBaseline": true,
+  "invalidDraftBaselinesRetained": true,
+  "nativeExecuted": false,
+  "independentAuthorshipCredit": 0
+}

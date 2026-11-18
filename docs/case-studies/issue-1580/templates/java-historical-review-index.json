@@ -144,16 +144,25 @@
         138,
         139
       ]
+    },
+    {
+      "file": "java-historical-forward-review-018.json",
+      "sha256": "8d5e4138ea98ca689931c24d3501fa029926cfe4dd1720295df4d06a38733f8d",
+      "pages": [
+        140,
+        141,
+        142
+      ]
     }
   ],
   "cumulativeSummary": {
-    "literalPages": 139,
+    "literalPages": 142,
     "totalPages": 254,
     "completeFiles": 123,
     "partialFiles": 1,
     "literalLines": 8766,
-    "nextForwardPage": 140,
-    "remainingPages": 115,
+    "nextForwardPage": 143,
+    "remainingPages": 112,
     "completeRepositorySemanticReview": false,
     "independentAuthorshipCredit": 0
   },

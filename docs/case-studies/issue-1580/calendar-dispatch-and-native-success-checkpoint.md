@@ -80,3 +80,5 @@ contract. The complete two-line response and payload hashes are retained as a
 rejected attempt, with zero accepted reasoning credit.
 Accepted independent reasoning remains 0/20; supplied work earns zero credit.
 The pull request remains draft and unmerged; the full issue is unfinished.
+
+The [calendar clock and native checkout checkpoint](calendar-clock-and-native-checkout-checkpoint.md) records the next published CI failure, shared spelled-hour repair, finite checkout regression and pending native validation.

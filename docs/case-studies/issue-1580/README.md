@@ -271,3 +271,5 @@ unfinished; the PR remains draft with zero independent reasoning credit.
 The [native failure collection and scheduling checkpoint](native-failure-collection-and-scheduling-checkpoint.md) records both `2c9d93c5` failures, 60 native passes, sentence-local scheduling repair, independent failure collection and the remaining acceptance limits.
 
 The [calendar dispatch and native success checkpoint](calendar-dispatch-and-native-success-checkpoint.md) records 23 passing workflows and 96 native Rust cases at `86dcf79d`, the locally verified Russian dispatcher repair, and the pending unchanged operational contracts. Full issue acceptance remains unfinished.
+
+The [calendar clock and native checkout checkpoint](calendar-clock-and-native-checkout-checkpoint.md) records the next published CI failure, shared spelled-hour repair, finite checkout regression and pending native validation.

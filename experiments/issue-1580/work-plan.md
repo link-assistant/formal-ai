@@ -721,9 +721,23 @@ The first complete local inventory finishes in 764.618 seconds: 80 executable ga
 - [x] Pass 123 focused JavaScript tests, formatting, projection and registry currency, and all 87 executable gates with 52 explicit exclusions.
 - [x] Prove the governed refresh changes only four Cargo fixture hashes, preserving all complete objects and the 1,185 / 221 / 964 inventory.
 - [x] Read continuous Java historical pages 135–139, reaching 8,766 complete literal lines, 123 complete files and one partially read registry response; retain zero authorship credit.
-- [ ] Publish this complete batch after fresh branch, main-ancestor and idle-run checks; collect every next-head native result.
+- [x] Publish the complete batch as `58a35f7d` after the push gate. Collect all 23 workflows: 22 succeed and the native job has two missing experiment-input failures; 98 Rust and four HTTP cases pass. Preserve all 76 payload hashes and the original-failure crosswalk without adding credit for a changed test file.
 - [ ] Verify the four operational contracts in hosted native CI.
 - [ ] Correct spelled-hour values; finish all remaining original failures, benchmarks, template comparison, dependency, delivery and semantic criteria from the frozen acceptance inventory.
 - [ ] Raise independently accepted Formal AI reasoning above 0/20; supplied patches, scripts and reading retain zero credit.
 
 The broader issue is unfinished and the pull request remains draft and unmerged.
+
+
+### Shared calendar numerals and native experiment checkout
+
+- [x] Collect every `58a35f7d` workflow result, full failed workflow log and native job log. Verify 76 payload hashes; literally read the recorded failure and HTTP spans. Preserve 98 native passes, two failures and four HTTP passes without calling the failed run green.
+- [x] Compare the newly passing shell-planner contract with the original source. Preserve its actual pass but award zero new strict replay credit because the original complete file changed. Keep 16 qualifying historical passes, 37 without one and three budget failures open.
+- [x] Reproduce the actual checkout failure in a finite Git fixture using the workflow patterns: 29 passes and one failure. Retain nested experiment shell scripts without payloads, then pass all 30 policy tests. Keep both original failing network contracts unchanged.
+- [x] Reproduce clock extraction on the valid 48-case baseline: 24 pass and 24 fail. Preserve invalid and intermediate draft attempts with zero regression credit. Share existing numeral spans and data-driven clock markers across Rust and JavaScript; retain the language filters for existing quantity consumers.
+- [x] Pass all 51 expanded clock tests, including the original five scheduling forms over HTTP, 27 event fixtures, five unchanged admission controls and 18 parser controls. The unchanged native scheduling contract consumes all 27 event fixtures; hosted native execution remains pending.
+- [x] Preserve all seven first-inventory failures (80 pass / 7 fail / 52 exclusions). Merge the duplicate Hindi alias declarations into one existing lexeme and lower the handler baseline and both summed ceilings by three.
+- [x] Pass 192 focused tests across seven files, Rust formatting, official projections and registry currency, 18 lexical closure controls and the full 139-gate inventory plus focused repairs: 87 pass, zero unresolved failures, 52 exclusions. Preserve the raw final 85/2/52 run, spell archived filenames in full, lower JS/Rust abbreviation ceilings and refresh generated status. Retain hashes and exact literal-review limits; run no local Rust build or raised size ratchet.
+- [x] Archive the preceding publication's 32 command receipts and 64 payloads; snapshot all four feedback endpoints with no newer comments. Read Java historical pages 140–142 without truncation, reaching 142/254 pages and the partial registry's piece 24/145. Complete-line and file counts remain 8,766 and 123.
+- [ ] Publish the complete batch only after current main, branch, remote and idle-run checks. Collect every exact-head CI result; verify the expanded native clock fixture and both unchanged network contracts with their restored source inputs. Leave subsequent failures open until repaired and verified.
+- [ ] Continue complete calendar semantics, noise, titles and CLI argument fidelity; all 37 original panics without qualifying replay, three budget failures, benchmark floors, template semantic applicability, dependency migrations, delivery and other frozen acceptance requirements remain open. Keep the PR draft and unmerged, with independent reasoning 0/20.

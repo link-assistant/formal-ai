@@ -1,0 +1,12 @@
+[
+  {
+    "from": "experiments/issue-1580/evidence/checks/spelled-calendar-clock/final-validation/gate-check-tests-as-docs.log.gz",
+    "to": "experiments/issue-1580/evidence/checks/spelled-calendar-clock/final-validation/gate-check-tests-as-documentation.log.gz",
+    "archiveSha256": "4b4edd87795b99b9d73a11eeb5b031911cdd1b3b9661f52ac81122aa3b4491a4"
+  },
+  {
+    "from": "experiments/issue-1580/evidence/checks/spelled-calendar-clock/validation/gate-check-tests-as-docs.log.gz",
+    "to": "experiments/issue-1580/evidence/checks/spelled-calendar-clock/validation/gate-check-tests-as-documentation.log.gz",
+    "archiveSha256": "4b4edd87795b99b9d73a11eeb5b031911cdd1b3b9661f52ac81122aa3b4491a4"
+  }
+]
