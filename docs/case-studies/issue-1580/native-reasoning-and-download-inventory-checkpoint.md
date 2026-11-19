@@ -64,3 +64,44 @@ benchmark floors, source and passage provenance, dependencies, delivery and
 all-template applicability. Supplied commands, code, source reading and reports
 earn zero independent authorship credit: accepted reasoning remains 0/20.
 PR #1581 stays draft and unmerged; the issue is unfinished.
+
+
+## Published execution and governed fixture follow-through
+
+The continuation process publishes `1ee15aea` before the coordinating
+publication helper runs. Its 23 workflows finish with 22 successes. The
+[CI/CD Pipeline](https://github.com/link-assistant/formal-ai/actions/runs/44428448154)
+succeeds: [native execution](https://github.com/link-assistant/formal-ai/actions/runs/44428448154/job/135239553435)
+passes 128 Rust cases and four HTTP cases, including all 28 reasoning contracts
+and all four operational contracts. The original step-six reasoning test passes
+with its entire source file unchanged. The strict original-source replay union
+therefore reaches 17/53; 36 original panic contracts and three budget failures
+still lack that qualification. The maintained offline formalization fixture and
+expanded download inventory pass, with their complete reviewed source changes
+kept separate from unchanged-original-byte credit.
+
+[Layered CI](https://github.com/link-assistant/formal-ai/actions/runs/44428448019)
+is the sole failed workflow. Its failed JavaScript job reports 1,340 passes,
+two failures and eight skips. Both failures identify the same stale Cargo
+fixture hash in the governed witness (job log lines 4509 and 4616).
+All 22 collected payload hashes are verified; the complete failed workflow
+(9,680 lines), failed job (4,684 lines) and native job (2,111 lines) are retained.
+Failure spans 4470–4645 and native spans 1620–2111 are literally read. Full-log
+literal review remains unfinished.
+
+Both unchanged failing files reproduce the stale Cargo hash locally. The
+maintained explicit reviewed-baseline writer changes exactly four Cargo fixture
+hashes from `b5a752a1…` to `bd74b9a6…`. A complete deep comparison preserves
+every other object, all 221 supported and 964 unsupported records, and the
+entire native source manifest. Both files then pass, totaling 36 tests. The complete local
+gate inventory passes 87 checks with 52 explicit native/context exclusions and
+zero failures. All aggregate and 87 detailed payload hashes are verified. Exact
+next-head hosted follow-through remains required.
+
+Java historical pages 146–148 are read fully without truncation, reaching
+148/254 continuous pages and piece 60/145 of the archived registry record.
+Complete-source counts stay at 8,766 lines and 123 files. This 2015–2018 package
+metadata supplies historical context only. Pages 149–254 and wider template
+semantic applicability remain unfinished. No broader acceptance criterion is
+closed by this checkpoint; the PR remains draft and unmerged, and independent
+reasoning acceptance stays 0/20.

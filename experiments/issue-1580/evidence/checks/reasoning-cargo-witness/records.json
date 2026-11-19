@@ -1,0 +1,115 @@
+[
+  {
+    "name": "before-fixture-integrity",
+    "rawLines": 33,
+    "rawSha256": "2c6f2203d990cc9031ae1a283e63b4de9156963cc1ae6c70588d21142828b623",
+    "archiveSha256": "0fdd0c0f401eb6bdb51b19c47ed6c4ae234d1d9174741fadc95f9b2ab20e4469",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
+    ],
+    "exitCode": 1,
+    "seconds": 0.407,
+    "file": "before-fixture-integrity.log.gz"
+  },
+  {
+    "name": "before-specification-identifiers",
+    "rawLines": 151,
+    "rawSha256": "5d6fc76131e22ef851e83717ef81cd7b733e231de09200d1313c57dcfcdee643",
+    "archiveSha256": "5235c56aa8b119d2e9a0ad9fa099ad77df083cf2725d9937883b27a42baf85c9",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/rust-specification-unicode-identifiers.test.mjs"
+    ],
+    "exitCode": 1,
+    "seconds": 9.866,
+    "file": "before-specification-identifiers.log.gz"
+  },
+  {
+    "name": "reviewed-refresh",
+    "rawLines": 1,
+    "rawSha256": "e4f91661ab3ff8cab8df7e0b8ab001f8436501f6c62818dae2edc8e32633303d",
+    "archiveSha256": "23a949ae464d3062c2db05ac498fc8a22b58ea9814221d0ebf8c6aaa6819789c",
+    "argv": [
+      "node",
+      "--max-old-space-size=256",
+      "/tmp/issue-1580-research/refresh-reasoning-cargo-witness.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 8.939,
+    "file": "reviewed-refresh.log.gz"
+  },
+  {
+    "name": "after-fixture-integrity",
+    "rawLines": 10,
+    "rawSha256": "8accc4a24accabf59e084f3faf8fc7cb012adbbe271b6ef3000912db1217926d",
+    "archiveSha256": "b7af3dd4c36e64e2571b0bdc20cf21bbdfcbd64396145d7cf83000af4bd909f0",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/rust-specification-fixture-integrity.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 0.26,
+    "file": "after-fixture-integrity.log.gz"
+  },
+  {
+    "name": "after-specification-identifiers",
+    "rawLines": 42,
+    "rawSha256": "fd94d99e534ed29ef6c891ef4a6b7a09c8eff1d1848391773940538ff762fef7",
+    "archiveSha256": "3a21d0034ae2d663ac64a917ddca13b1fa90f11f85e4854f035585175c388b36",
+    "argv": [
+      "timeout",
+      "600",
+      "node",
+      "--max-old-space-size=256",
+      "--test",
+      "--test-concurrency=1",
+      "rust/tests/web/rust-specification-unicode-identifiers.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 9.377,
+    "file": "after-specification-identifiers.log.gz"
+  },
+  {
+    "name": "all-local-gates",
+    "rawLines": 141,
+    "rawSha256": "66c2a9fee3335fed351fc2bddf95ebebf29c6ce1750e009133befd76cb9ed02e",
+    "archiveSha256": "acbcca4bd95d77e9e519d0975ed1d46635d3c952555946599ae208f97edf4248",
+    "argv": [
+      "node",
+      "experiments/formal_ai_subagent/local-gates.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 736.096,
+    "file": "all-local-gates.log.gz"
+  },
+  {
+    "name": "whitespace",
+    "rawLines": 0,
+    "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archiveSha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+    "argv": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exitCode": 0,
+    "seconds": 0.538,
+    "file": "whitespace.log.gz"
+  }
+]
