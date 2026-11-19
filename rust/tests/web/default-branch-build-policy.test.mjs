@@ -96,7 +96,7 @@ test('the focused PR native check limits execution to lint and isolated regressi
     'cargo build --manifest-path rust/Cargo.toml --locked --example dump_google_trends_catalog\n' +
     'rust/target/debug/examples/dump_google_trends_catalog "$CATALOG_OUTPUT"\n' +
     '{\n' +
-    '  git rev-parse HEAD HEAD^{tree}\n' +
+    "  git rev-parse HEAD 'HEAD^{tree}'\n" +
     '  rustc -vV\n' +
     '  sha256sum rust/target/debug/examples/dump_google_trends_catalog rust/examples/dump_google_trends_catalog.rs rust/src/google_trends_catalog.rs data/seed/google-trends-prompts.lino\n' +
     '} > "$CATALOG_OUTPUT/generation-identity.txt"\n']);
@@ -810,7 +810,7 @@ test('catalog snapshots and native projection inputs select the complete generat
   assert.equal(producer.env.FORMAL_AI_OFFLINE, '1');
   assert.match(producer.run, /cargo build [^\n]*--example dump_google_trends_catalog/u);
   assert.match(producer.run, /rust\/target\/debug\/examples\/dump_google_trends_catalog "\$CATALOG_OUTPUT"/u);
-  assert.match(producer.run, /git rev-parse HEAD HEAD\^\{tree\}/u);
+  assert.match(producer.run, /git rev-parse HEAD 'HEAD\^\{tree\}'/u);
   assert.match(producer.run, /sha256sum rust\/target\/debug\/examples\/dump_google_trends_catalog/u);
   const artifact = steps.find(step => step.name === 'Retain actual Google Trends fixture projections');
   assert.equal(artifact.with.name, 'google-trends-native-fixtures');

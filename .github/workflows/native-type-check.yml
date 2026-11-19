@@ -119,7 +119,7 @@ jobs:
           cargo build --manifest-path rust/Cargo.toml --locked --example dump_google_trends_catalog
           rust/target/debug/examples/dump_google_trends_catalog "$CATALOG_OUTPUT"
           {
-            git rev-parse HEAD HEAD^{tree}
+            git rev-parse HEAD 'HEAD^{tree}'
             rustc -vV
             sha256sum rust/target/debug/examples/dump_google_trends_catalog rust/examples/dump_google_trends_catalog.rs rust/src/google_trends_catalog.rs data/seed/google-trends-prompts.lino
           } > "$CATALOG_OUTPUT/generation-identity.txt"
