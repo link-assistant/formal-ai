@@ -49,3 +49,14 @@ mod issue_1133_hive_mind_three_runs;
 mod observed_plan_tools;
 #[path = "issue_1066_ladder_capability/tool_workspace.rs"]
 mod tool_workspace;
+
+#[path = "hive_delivery_prerequisites.rs"]
+mod hive_delivery_prerequisites;
+#[path = "issue_1157_idempotent_commit.rs"]
+mod issue_1157_idempotent_commit;
+#[path = "issue_1158_pull_request_steps.rs"]
+mod issue_1158_pull_request_steps;
+#[path = "issue_1160_regular_prompt.rs"]
+mod issue_1160_regular_prompt;
+#[path = "../fixtures/hive-mind/offline_delivery.rs"]
+mod offline_delivery;

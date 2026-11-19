@@ -922,3 +922,22 @@ test('Hive workflow replay keeps every consumed fixture in native admission', {t
     assert(source.includes('#[path = "' + path + '"]'), path);
   assert(read('rust/tests/unit/' + modules[0]).includes('mod extended;'));
 });
+
+
+test('full Hive delivery replay admits its harness and requires real toolchains', {timeout:15000}, () => {
+  const modules = ['issue_1157_idempotent_commit.rs', 'issue_1158_pull_request_steps.rs',
+    'issue_1160_regular_prompt.rs', 'hive_delivery_prerequisites.rs'];
+  const fixtures = ['hive-mind/offline_delivery.rs', 'hive-mind/fake-gh.cjs',
+    'hive-mind/formal-ai-prompt.txt', 'hive-mind/regular-prompt.txt',
+    'hive-mind/restart-uncommitted-main-jar.txt', 'issue-1162/hello-world-kotlin-issue.md'];
+  for (const path of [...modules.map(path => 'rust/tests/unit/' + path),
+    ...fixtures.map(path => 'rust/tests/fixtures/' + path)])
+    assert.equal(admission([path])['native-type-check'], true, path);
+  const source = read('rust/tests/unit/reasoning_contracts.rs');
+  for (const path of [...modules, '../fixtures/hive-mind/offline_delivery.rs'])
+    assert(source.includes('#[path = "' + path + '"]'), path);
+  const prerequisites = read('rust/tests/unit/hive_delivery_prerequisites.rs');
+  assert.match(prerequisites, /assert!\([\s\S]*available\(/u);
+  for (const tool of ['git', 'node', 'jq', 'python3', 'rustc', 'timeout', 'kotlinc', 'java'])
+    assert(prerequisites.includes('"' + tool + '"'), tool);
+});
