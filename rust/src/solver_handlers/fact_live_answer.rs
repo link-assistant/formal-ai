@@ -280,13 +280,13 @@ pub fn try_fact_lookup_with_client<T: SourceTransport>(
     log: &mut EventLog,
     client: &CachedSourceClient<T>,
 ) -> Option<SymbolicAnswer> {
-    if let Some(answer) = super::try_fact_lookup(prompt, normalized, log) {
-        return Some(answer);
+    // Conversation references belong to the coreference row.
+    if super::resolves_coreference_request(prompt, log) {
+        return None;
     }
-    if let Some(answer) = try_fact_live_answer(prompt, log, client) {
-        return Some(answer);
-    }
-    explanation_fallback(prompt, log, client)
+    super::try_fact_lookup(prompt, normalized, log)
+        .or_else(|| try_fact_live_answer(prompt, log, client))
+        .or_else(|| explanation_fallback(prompt, log, client))
 }
 
 /// The R8 step of the row.

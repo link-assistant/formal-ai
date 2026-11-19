@@ -1,5 +1,5 @@
-//! Replay candidate validation, interpretation, contextual follow-ups and debug
-//! sessions without compiling the monolithic unit target. Existing test modules
+//! Replay reasoning, contextual follow-ups, debug sessions and sourced web
+//! requests without compiling the monolithic unit target. Existing test modules
 //! are included intact.
 
 #[path = "specification/debug_session.rs"]
@@ -12,3 +12,10 @@ mod formalization;
 mod pronoun_topic_follow_up;
 #[path = "specification/reasoning_loop.rs"]
 mod reasoning_loop;
+
+#[path = "page_formalization_route.rs"]
+mod page_formalization_route;
+mod web_requests;
+
+#[path = "seed/issue_1172_live_fact_answer.rs"]
+mod live_fact_answer;

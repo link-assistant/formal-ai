@@ -718,3 +718,19 @@ test('coreference and debug-session modules remain executable native inputs', {t
     'specification/reasoning_loop.rs', 'specification/formalization.rs', 'specification/event_source_origin.rs'])
     assert(source.includes('#[path = "' + path + '"]'), path);
 });
+
+
+test('web search and fetched-page modules remain executable native inputs', {timeout:15000}, () => {
+  for (const path of ['rust/tests/unit/web_requests.rs', 'rust/tests/unit/web_requests/extended.rs',
+    'rust/tests/unit/page_formalization_route.rs', 'rust/tests/unit/seed/issue_1172_live_fact_answer.rs',
+    'data/benchmarks/web-formalization/en.lino'])
+    assert.equal(admission([path])['native-type-check'], true, path);
+  assert.equal(admission(['rust/tests/unit/unrelated-source.rs'])['native-type-check'], false);
+  const source = read('rust/tests/unit/reasoning_contracts.rs');
+  // Preserve Rust's module directory for web_requests/extended.rs.
+  assert.match(source, /^mod web_requests;/mu);
+  assert(source.includes('#[path = "page_formalization_route.rs"]'));
+  assert(source.includes('#[path = "seed/issue_1172_live_fact_answer.rs"]'));
+  assert.match(read('rust/tests/unit/web_requests.rs'), /mod extended;/u);
+  assert.match(read('rust/tests/unit/page_formalization_route.rs'), /include_str!\("\.\.\/\.\.\/\.\.\/data\/benchmarks\/web-formalization\/en\.lino"\)/u);
+});
