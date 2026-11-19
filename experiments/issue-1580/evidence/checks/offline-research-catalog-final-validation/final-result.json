@@ -1,0 +1,36 @@
+{
+  "complete": true,
+  "baseHead": "7b10f54c15e06c2f624757a2e2350beb7c9b8cc2",
+  "javascriptPassed": 54,
+  "fullGateInventory": 139,
+  "rawFinalInventory": {
+    "PASS": 86,
+    "FAIL": 1,
+    "SKIP": 52
+  },
+  "gatesPassedAfterRecheck": 87,
+  "explicitGateExclusions": 52,
+  "allAggregateAndDetailedPayloadHashesVerified": 187,
+  "sourceHashes": {
+    "data/meta/google-trends-catalog.lino": "a13dd57872f088e0eb34eff712e8dad743cd8901f856c8e1ecf41ee736df3f0e",
+    "data/seed/meanings-how.lino": "ecb71e924471262fee08e6577570aefadf0e1fe6b469740dfc0b1fad0b20f285",
+    "docs/case-studies/issue-498/agent-cli-session-google-trends.json": "4e2b48c6f29e12b4191a9d409806b5838802f932db3a46a3f32fa82f424f4a9d",
+    "rust/embedded/data/seed/meanings-how.lino": "ecb71e924471262fee08e6577570aefadf0e1fe6b469740dfc0b1fad0b20f285",
+    "rust/src/solver_unknown_reasoning.rs": "a51cc2d18cde2168e616842c8a79f00f3a67c3287b484902f0f7fa2155e7f62c",
+    "rust/tests/unit/reasoning_contracts.rs": "f96b66fd571f3c149b65e0b63374e63604e23bf2acd5f9952ee4805262c30950",
+    "rust/tests/web/default-branch-build-policy.test.mjs": "39eb569acfcb6ec565105beb60bc1bdbee1ad9de921950e2bebf6948ed61c6f6",
+    "scripts/ci-pull-request-admission.mjs": "970557c729887c6baede7052a210d4dabc7a2bb4962f2d74b0621904c094ddc6",
+    "scripts/ci-native-regressions.sh": "4c7aa057fcd935fb8a719093debed8eeea0a148c88c7d916a2733d07ab761a7d",
+    "rust/tests/unit/offline_instruction_research.rs": "5d486919a75f6cffc5bbd423eb0e51ed02a844a1cbdda8a7d4ba98bde455b1fe"
+  },
+  "nativeExecuted": false,
+  "nativeFixtureSourceHead": "3c52b7f528b5f477ba04de297eb02bb41c298c78",
+  "freshNativeFixtureReplayPending": true,
+  "abbreviationRecheck": {
+    "file": "abbreviation-recheck.log.gz",
+    "rawSha256": "8bc78f211dc0d4ed6971d94191181146de6076c4a6c567ac49d2f2b3474c5165",
+    "archiveSha256": "634feb81f7f02e79b49aef9b86ec6e5fbbb19564faf8719ffed782aca0a350bf"
+  },
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

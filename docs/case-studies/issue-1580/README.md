@@ -275,3 +275,5 @@ The [calendar dispatch and native success checkpoint](calendar-dispatch-and-nati
 The [calendar clock and native checkout checkpoint](calendar-clock-and-native-checkout-checkpoint.md) records the next published CI failure, shared spelled-hour repair, finite checkout regression and pending native validation.
 
 The [native reasoning and download inventory checkpoint](native-reasoning-and-download-inventory-checkpoint.md) records hosted clock success, the complete shell sweep failure and its local repair, and pending execution of the existing 28 reasoning contracts.
+
+The [offline instruction and catalog checkpoint](offline-research-and-catalog-checkpoint.md) records complete `3c52b7f5` execution (202 native passes, one failure and four HTTP passes), the cache-only instruction repair, actual generated catalog/session adoption and pending fresh native replay. Full issue acceptance remains unfinished.

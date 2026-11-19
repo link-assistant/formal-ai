@@ -1,0 +1,235 @@
+{
+  "baseMain": "53cbe4430f8b65330f47728401fc83b09977129f",
+  "reviewedProductionDiffs": [
+    {
+      "path": "scripts/check-pipeline-status.sh",
+      "sourceSha256": "38293cbdfa6d894e17db8bb3c510d0f6d4c8941e2747bb11a9fc98cdd768f352",
+      "diffSha256": "964fd1fdaa5ff123826393b447c9212c1387921aea3600cf371b617984eefa1d",
+      "diffLines": 30,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "scripts/ci-pull-request-admission.mjs",
+      "sourceSha256": "970557c729887c6baede7052a210d4dabc7a2bb4962f2d74b0621904c094ddc6",
+      "diffSha256": "7f3eb28707d46b216019e2ac23e1fa894dd1b1052dd33ac3f0bd4b243c14e3ad",
+      "diffLines": 84,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "scripts/documentation-only-ci-policy.mjs",
+      "sourceSha256": "ed4b1408269f701c6b5bb6ad3b8d48a2c737034e2cb3cecd02171b01756f0b3b",
+      "diffSha256": "c00645742beef04d7f06415c773a73e841d165424bc87ace4fd5be8aa811a416",
+      "diffLines": 31,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": ".github/workflows/native-type-check.yml",
+      "sourceSha256": "f150d63c4cc143db0cfc7afb262e1ed720c510cddab9a0bd4e8c3d3a4eb4a7f3",
+      "diffSha256": "1d3b4949bec5b5a37d8b274b5672a5009255eedbd09fb60e528c0eb5988b4e8f",
+      "diffLines": 121,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "sourceSha256": "625cc84c5c2a9773e5e04d427590df6b4686d7ce15fb8c9cb5e80ebd61d0b9ad",
+      "diffSha256": "a36358cb38889fc7941d44f11d8d2e8b786192a1e2a576cf6048f870f05219f8",
+      "diffLines": 38,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": ".github/actions/setup-sccache/action.yml",
+      "sourceSha256": "45afd3ed5bbcc3543f40dc04952cec5ffd5023c7dfec1cdb4314c4e3fc2c4310",
+      "diffSha256": "a60d3fad37aed933aa1b85810a1b3ea5cf73dfccc576ef6feaefbe6ff16dd09e",
+      "diffLines": 15,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "scripts/check-sccache-write-health.sh",
+      "sourceSha256": "ac883667363173356e6a924724f321482cd1b2d47b81776cb63fff60d2baeeb7",
+      "diffSha256": "a7c3e490d5d000ff8b5ebb5756ac76a48d38784ce0b03aaea87f5095a7b5924d",
+      "diffLines": 116,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "scripts/check-javascript-dependencies.sh",
+      "sourceSha256": "d20b896c5c2847e6de315707adbf9f86a5ae08c27d4563e9b749a321ccae0124",
+      "diffSha256": "936a5fa55bea0e13cc58a8c9d01ba9e1d3b3726d92b79b687b38bb33c5888b74",
+      "diffLines": 34,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "scripts/collect-job-durations.sh",
+      "sourceSha256": "95e200d2558debfcffcf0c6d2a214b0374590957f8813f8cd90b603d10dc81de",
+      "diffSha256": "e8206d38f2a8e27a98596333050cd406c36a44145d2d2e1cf08524afe6e0a9fa",
+      "diffLines": 138,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "scripts/detect-code-changes.rs",
+      "sourceSha256": "adcd930886c840f188fc18ec15928f0fd6c941b63d7cad82c6490d08e5a04ecf",
+      "diffSha256": "d9d56e48ba9371fb96e26d2cd3f06094cac19880adb320c565f2a007d4e8adce",
+      "diffLines": 303,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": ".github/workflows/layered-ci.yml",
+      "sourceSha256": "f5db838a802edb2a40455f09305fea436566e117e00f68528fe8ac1bdee12d31",
+      "diffSha256": "bffc853318177568cc8435a3a42e3dc7d8b9987bfbe2961619036cb2ea7f12b5",
+      "diffLines": 82,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "scripts/free-disk-if-short.mjs",
+      "sourceSha256": "33d53095b7384d31f4b7c624696864da2de81eed86be222bf070dff13b270076",
+      "diffSha256": "abd470ee87b2862fed1304c131d14200f7c9cd0d0e5963b13c60b423e48b8066",
+      "diffLines": 55,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "scripts/check-generated-files.mjs",
+      "sourceSha256": "618b771d7092d9919c2ca3d2882547d47b073bdbc8181cae69b0bdc6725ec73b",
+      "diffSha256": "88f21396511d6904126f0db734a8caecfa3b159e01147b8513952f3faf33261d",
+      "diffLines": 109,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "scripts/check-fast-governance.mjs",
+      "sourceSha256": "e197f613fc28b24a9fd251d2c24ba27369151d1216342c5e1a10b84ef6b47f73",
+      "diffSha256": "7cfcd4c296f6a095167ef37b32b0f8c615d0b46d4c6c0995e2704b794e7f5e8f",
+      "diffLines": 15,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "scripts/hive-mind-draft-result.mjs",
+      "sourceSha256": "324fa307f267449e216b144b2e7823b13345d88aca19dcbb720bb89e4d2bf6c5",
+      "diffSha256": "080954d4a05885143733aaf66c66bceab262939808e2c5cd61d222936a342dec",
+      "diffLines": 40,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": ".github/workflows/hive-mind-draft.yml",
+      "sourceSha256": "e689bc8b34e4be5ad81dbd826c11c12b69aab52dde706a118e8e26590258e825",
+      "diffSha256": "b1e46efc1a9e90ba6d36b2f41db3f0662d22810b9431b8083e55b0ee43189a81",
+      "diffLines": 71,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "scripts/check-required-status-checks.mjs",
+      "sourceSha256": "13522a9c1c88c37f98a06e21a9ae1fbbee2529e364d2229d342fceed7464e17b",
+      "diffSha256": "7dd44de9fc095add9a880687ea2f411ffc57b8b1a4d2ac57d087b0acfcff3612",
+      "diffLines": 13,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "scripts/ci-native-regressions.sh",
+      "sourceSha256": "4c7aa057fcd935fb8a719093debed8eeea0a148c88c7d916a2733d07ab761a7d",
+      "diffSha256": "bae4b6ea6fbcfeac2780221ff69c6efb64cb855625a1dceef0e2b34a06cde6e8",
+      "diffLines": 33,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": true,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "js/agentic/file_read/source.mjs",
+      "sourceSha256": "211322834becb3ec5c5c1c96bab8fe99e065dd4f0561a1e6f184946ae1c55c81",
+      "diffSha256": "3a768a50a98cbb4440e99321891e82f7ee765f9554f9599cd97dc0c3df67fd93",
+      "diffLines": 18,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "js/agentic/tool_result.mjs",
+      "sourceSha256": "4df86806b4b1e9743c3fa54719ba3557208d17f6147175fb0e6b753345de2c08",
+      "diffSha256": "16a0206bc169c9459a58d883a584c7eaab55e82f584bd3650dd484e34b0cd164",
+      "diffLines": 50,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "rust/src/agentic_coding/file_read/source.rs",
+      "sourceSha256": "37b4812d7413da2c1602f9360155c9cef1cf5a189b350e24495c6182e709b4a4",
+      "diffSha256": "da69e3b31e56c1a736651a3d5bf6c519e70d0285c3d6521eba892001040c199c",
+      "diffLines": 34,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "rust/src/agentic_coding/tool_result/source_observation.rs",
+      "sourceSha256": "4dfede8264e29df8655efccd5ed70ae3bc6a7380414e80a15339ed0012e59448",
+      "diffSha256": "b416ee226ba55901df22f3fdcaa7265d281466fa8d107317aaf110a49e253090",
+      "diffLines": 92,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "js/agentic/crate/meta_executor.mjs",
+      "sourceSha256": "f6a13d9729d021f03f2482b7e9113f139bb3ad3ae3142c16bed54acc2b9e3af6",
+      "diffSha256": "84c5fe29ddbaad61a2c8293c911bda009147941aadc189bb5c03cb1e64e8ffaa",
+      "diffLines": 106,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "rust/src/meta_executor.rs",
+      "sourceSha256": "5fefc18986007dbcd2be3d2dade9c9ff45fdf7e849a66548ad5d76ae2615ded4",
+      "diffSha256": "4025007df4722a03d5a291bf3365a45c7383f8cc18c459118d5bd95ac1acadf0",
+      "diffLines": 125,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    },
+    {
+      "path": "rust/src/meta_executor/production.rs",
+      "sourceSha256": "e44c7c8de9a7a79ff1cc86a5ba6bfeeaa4ffe33fe2f998ab9de09c3b44218671",
+      "diffSha256": "583fd98bda248fc43fefba0cca822bfd8594960577dbaad3341192396d24d788",
+      "diffLines": 87,
+      "completeDiffLiterallyRead": true,
+      "completeSourceLiterallyRead": false,
+      "newDefectEstablished": false
+    }
+  ],
+  "selectedPaths": 104,
+  "wholePullRequestReviewed": false,
+  "allPriorFeaturesProvenPreserved": false,
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}

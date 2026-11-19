@@ -1,0 +1,1381 @@
+{
+  "head": "3c52b7f528b5f477ba04de297eb02bb41c298c78",
+  "workflowCount": 23,
+  "success": 21,
+  "failed": [
+    {
+      "id": 44595510596,
+      "name": "Workflows",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44595510596"
+    },
+    {
+      "id": 44595510266,
+      "name": "CI/CD Pipeline",
+      "conclusion": "failure",
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/44595510266"
+    }
+  ],
+  "verifiedPayloads": 90,
+  "nativeJob": 135813011639,
+  "nativeRust": {
+    "passed": 202,
+    "failed": 1,
+    "summaries": [
+      {
+        "line": 1648,
+        "passed": 1,
+        "failed": 0,
+        "text": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 66.18s"
+      },
+      {
+        "line": 1664,
+        "passed": 9,
+        "failed": 0,
+        "text": "test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.70s"
+      },
+      {
+        "line": 1671,
+        "passed": 2,
+        "failed": 0,
+        "text": "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 64.32s"
+      },
+      {
+        "line": 1699,
+        "passed": 22,
+        "failed": 0,
+        "text": "test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.95s"
+      },
+      {
+        "line": 1713,
+        "passed": 8,
+        "failed": 0,
+        "text": "test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 60.08s"
+      },
+      {
+        "line": 1720,
+        "passed": 1,
+        "failed": 0,
+        "text": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.74s"
+      },
+      {
+        "line": 1730,
+        "passed": 4,
+        "failed": 0,
+        "text": "test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.46s"
+      },
+      {
+        "line": 1842,
+        "passed": 91,
+        "failed": 1,
+        "text": "test result: FAILED. 91 passed; 1 failed; 0 ignored; 0 measured; 11 filtered out; finished in 183.72s"
+      },
+      {
+        "line": 1867,
+        "passed": 18,
+        "failed": 0,
+        "text": "test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 35.12s"
+      },
+      {
+        "line": 1885,
+        "passed": 12,
+        "failed": 0,
+        "text": "test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 138.44s"
+      },
+      {
+        "line": 1900,
+        "passed": 9,
+        "failed": 0,
+        "text": "test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 30.51s"
+      },
+      {
+        "line": 1925,
+        "passed": 11,
+        "failed": 0,
+        "text": "test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 92 filtered out; finished in 709.84s"
+      },
+      {
+        "line": 1970,
+        "passed": 13,
+        "failed": 0,
+        "text": "test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 149 filtered out; finished in 3.05s"
+      },
+      {
+        "line": 1979,
+        "passed": 1,
+        "failed": 0,
+        "text": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 14 filtered out; finished in 8.44s"
+      }
+    ],
+    "failures": [
+      {
+        "line": 1750,
+        "test": "external_search_fallback::unknown_reasoning_fallback_executes_instead_of_describing"
+      }
+    ],
+    "passes": [
+      {
+        "line": 1646,
+        "test": "calendar_and_currency_share_the_worker_acceptance_cases"
+      },
+      {
+        "line": 1653,
+        "test": "an_in_dialog_density_switch_rerenders_the_controlled_answer_deterministically"
+      },
+      {
+        "line": 1654,
+        "test": "controlled_dialogue_answers_declared_facts_and_asks_which_reading"
+      },
+      {
+        "line": 1655,
+        "test": "controlled_dialogue_answers_retain_the_recursive_procedure_trace"
+      },
+      {
+        "line": 1656,
+        "test": "declared_multilingual_meanings_round_trip_without_certifying_unchecked_standards"
+      },
+      {
+        "line": 1657,
+        "test": "e_prime_contractions_and_missing_frequency_evidence_do_not_receive_certificates"
+      },
+      {
+        "line": 1658,
+        "test": "lexical_density_preserves_known_named_profile_constraints"
+      },
+      {
+        "line": 1659,
+        "test": "max_precision_notices_preserve_chat_response_contracts"
+      },
+      {
+        "line": 1660,
+        "test": "opaque_input_and_configuration_limits_are_lossless_on_every_target"
+      },
+      {
+        "line": 1661,
+        "test": "task_paraphrases_reach_the_solver_and_understood_prompts_keep_their_answers"
+      },
+      {
+        "line": 1668,
+        "test": "controlled_dialogue_turns_match_the_javascript_reference"
+      },
+      {
+        "line": 1669,
+        "test": "projection_digests_match_the_javascript_reference"
+      },
+      {
+        "line": 1676,
+        "test": "cache_source_json_is_pretty_printed"
+      },
+      {
+        "line": 1677,
+        "test": "grounded_meaning_coverage_does_not_regress"
+      },
+      {
+        "line": 1678,
+        "test": "lexical_completeness_does_not_regress"
+      },
+      {
+        "line": 1679,
+        "test": "lino_data_files_are_parseable_human_readable_and_bounded"
+      },
+      {
+        "line": 1680,
+        "test": "lino_data_files_avoid_jsonish_and_unresolved_tokens"
+      },
+      {
+        "line": 1681,
+        "test": "meaning_definitions_are_unique"
+      },
+      {
+        "line": 1682,
+        "test": "meaning_seed_uses_id_fact_format"
+      },
+      {
+        "line": 1683,
+        "test": "meaning_slugs_are_globally_unique"
+      },
+      {
+        "line": 1684,
+        "test": "seed_lino_files_have_no_codepoint_byte_dumps"
+      },
+      {
+        "line": 1685,
+        "test": "seed_lino_files_have_no_empty_redefinition_fields"
+      },
+      {
+        "line": 1686,
+        "test": "seed_lino_files_have_no_keyword_restating_comments"
+      },
+      {
+        "line": 1687,
+        "test": "seed_lino_files_have_no_synthetic_surface_ids"
+      },
+      {
+        "line": 1688,
+        "test": "seed_lino_values_never_pipe_pack_multi_values"
+      },
+      {
+        "line": 1689,
+        "test": "technical_scalar::canonical_compound_prefix_patterns_keep_pipe_lists_and_spoofs_refused"
+      },
+      {
+        "line": 1690,
+        "test": "technical_scalar::consumed_request_regex_preserves_pipe_list_and_context_refusals"
+      },
+      {
+        "line": 1691,
+        "test": "technical_scalar::declared_regex_pairs_preserve_nontechnical_pipe_rejection"
+      },
+      {
+        "line": 1692,
+        "test": "technical_scalar::pipe_value_classification_keeps_regex_and_reference_roles_distinct"
+      },
+      {
+        "line": 1693,
+        "test": "technical_scalar::regex_scalar_context_uses_the_actual_parent_and_line"
+      },
+      {
+        "line": 1694,
+        "test": "wikidata_cache_uses_compact_native_lino"
+      },
+      {
+        "line": 1695,
+        "test": "wikidata_lino_cache_rebuilds_full_json_losslessly"
+      },
+      {
+        "line": 1696,
+        "test": "wiktionary_cache_breadth_does_not_regress"
+      },
+      {
+        "line": 1697,
+        "test": "wiktionary_cache_is_pretty_printed_and_rebuilds_full_json"
+      },
+      {
+        "line": 1704,
+        "test": "every_fixture_case_replays_to_the_javascript_event_sequence"
+      },
+      {
+        "line": 1705,
+        "test": "production_algebra_substitution_replays_main_regressions"
+      },
+      {
+        "line": 1706,
+        "test": "production_composition_preserves_concrete_output_obligations"
+      },
+      {
+        "line": 1707,
+        "test": "production_composition_retains_only_selected_child_evidence"
+      },
+      {
+        "line": 1708,
+        "test": "production_composition_still_solves_untyped_independent_tasks"
+      },
+      {
+        "line": 1709,
+        "test": "production_object_count_replays_membership_sources"
+      },
+      {
+        "line": 1710,
+        "test": "production_remainder_sale_recomputes_source_operands"
+      },
+      {
+        "line": 1711,
+        "test": "validated_prime_candidates_keep_their_intent_in_every_response_language"
+      },
+      {
+        "line": 1718,
+        "test": "both_openai_protocols_handle_forced_functions_in_either_agent_mode"
+      },
+      {
+        "line": 1725,
+        "test": "agent_cli_shell::issue_607_agent_cli_shell_docs_are_traceable"
+      },
+      {
+        "line": 1726,
+        "test": "agent_cli_shell::issue_607_shell_planner_and_serve_opt_in_are_traceable"
+      },
+      {
+        "line": 1727,
+        "test": "network_download_retry::every_network_install_survives_a_dropped_connection"
+      },
+      {
+        "line": 1728,
+        "test": "network_download_retry::no_remote_download_is_left_out_of_that_rule"
+      },
+      {
+        "line": 1735,
+        "test": "debug_session::a_disconnect_or_a_release_frees_a_paused_turn"
+      },
+      {
+        "line": 1736,
+        "test": "debug_session::a_served_chat_turn_answers_only_after_its_last_stage"
+      },
+      {
+        "line": 1737,
+        "test": "debug_session::a_turn_begun_before_its_solve_waits_at_its_first_stage_then_resumes"
+      },
+      {
+        "line": 1738,
+        "test": "debug_session::debug_requests_answer_the_twin_errors"
+      },
+      {
+        "line": 1739,
+        "test": "debug_session::each_advance_reveals_exactly_one_stage_and_a_repeat_records_nothing"
+      },
+      {
+        "line": 1740,
+        "test": "debug_session::every_stage_carries_the_recipe_diagram_its_own_emitters_and_the_routed_method"
+      },
+      {
+        "line": 1741,
+        "test": "debug_session::only_loopback_hosts_may_carry_a_debug_session"
+      },
+      {
+        "line": 1742,
+        "test": "debug_session::stepping_off_never_holds_a_turn"
+      },
+      {
+        "line": 1743,
+        "test": "debug_session::the_banner_prints_only_a_generated_token"
+      },
+      {
+        "line": 1744,
+        "test": "event_source_origin::append_origin_preserves_raw_event_and_thinking_identity"
+      },
+      {
+        "line": 1745,
+        "test": "event_source_origin::executed_validation_identifies_answer_and_candidate_appenders"
+      },
+      {
+        "line": 1746,
+        "test": "event_source_origin::legacy_serialized_thinking_steps_keep_origin_optional"
+      },
+      {
+        "line": 1747,
+        "test": "event_source_origin::unknown_origin_does_not_fall_back_to_a_considered_appender"
+      },
+      {
+        "line": 1748,
+        "test": "external_search_fallback::executed_search_answers_from_captured_sources_with_citations"
+      },
+      {
+        "line": 1749,
+        "test": "external_search_fallback::offline_cache_miss_answers_unavailable_not_a_description"
+      },
+      {
+        "line": 1751,
+        "test": "formalization::action_prompt_maps_translation_verb_to_wikidata_property"
+      },
+      {
+        "line": 1752,
+        "test": "formalization::arbitrary_statement_maps_predicate_and_nouns_to_wikidata_ids"
+      },
+      {
+        "line": 1753,
+        "test": "formalization::high_rigor_low_margin_asks_smallest_clarifying_question"
+      },
+      {
+        "line": 1754,
+        "test": "formalization::low_rigor_ambiguous_prompt_guesses_and_records_policy"
+      },
+      {
+        "line": 1755,
+        "test": "formalization::same_prompt_and_config_produce_same_interpretation_choice"
+      },
+      {
+        "line": 1756,
+        "test": "formalization::solver_evidence_exposes_formalization_ids_for_downstream_selection"
+      },
+      {
+        "line": 1757,
+        "test": "formalization::supported_language_prompts_map_local_surfaces_to_same_language_independent_ids"
+      },
+      {
+        "line": 1758,
+        "test": "formalization::temperature_selection_is_deterministic_for_fixed_config"
+      },
+      {
+        "line": 1759,
+        "test": "formalization::temperature_selection_preserves_supported_language_candidates"
+      },
+      {
+        "line": 1760,
+        "test": "formalization::unanchored_unknown_terms_are_flagged_for_later_translation_gaps"
+      },
+      {
+        "line": 1761,
+        "test": "formalization::unmodeled_dictionary_terms_fall_back_to_wiktionary_surfaces"
+      },
+      {
+        "line": 1762,
+        "test": "google_trends::checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages"
+      },
+      {
+        "line": 1763,
+        "test": "google_trends::google_trends_rss_is_converted_to_ranked_topics"
+      },
+      {
+        "line": 1764,
+        "test": "google_trends::prompts_are_generated_from_the_seed_templates"
+      },
+      {
+        "line": 1765,
+        "test": "live_fact_answer::explanation_answers_from_retrieved_statements_with_citations"
+      },
+      {
+        "line": 1766,
+        "test": "live_fact_answer::explanation_concept_follows_the_seeded_cue"
+      },
+      {
+        "line": 1767,
+        "test": "live_fact_answer::live_reproducible_records_are_the_ten_derived_from_captures"
+      },
+      {
+        "line": 1768,
+        "test": "live_fact_answer::offline_cache_miss_falls_through"
+      },
+      {
+        "line": 1769,
+        "test": "live_fact_answer::offline_fact_request_retains_the_external_lookup_boundary"
+      },
+      {
+        "line": 1770,
+        "test": "live_fact_answer::seeded_records_answer_before_the_live_path"
+      },
+      {
+        "line": 1771,
+        "test": "live_fact_answer::unseeded_capital_is_answered_live_with_its_reference"
+      },
+      {
+        "line": 1772,
+        "test": "live_fact_answer::unseeded_question_is_formalized_from_seed_cues"
+      },
+      {
+        "line": 1773,
+        "test": "page_formalization_route::a_refused_fetch_says_so_and_formalizes_nothing"
+      },
+      {
+        "line": 1774,
+        "test": "page_formalization_route::a_request_without_a_url_or_a_formalize_cue_is_not_this_route"
+      },
+      {
+        "line": 1775,
+        "test": "page_formalization_route::formalize_url_answers_the_statements_of_the_fetched_page_in_every_language"
+      },
+      {
+        "line": 1776,
+        "test": "page_formalization_route::offline_a_cached_capture_is_formalized"
+      },
+      {
+        "line": 1777,
+        "test": "page_formalization_route::offline_with_no_cached_capture_the_answer_says_nothing_was_fetched"
+      },
+      {
+        "line": 1778,
+        "test": "page_formalization_route::the_bare_form_formalizes_too"
+      },
+      {
+        "line": 1779,
+        "test": "pronoun_topic_follow_up::coreference_requires_real_user_antecedents_and_command_head_references"
+      },
+      {
+        "line": 1780,
+        "test": "pronoun_topic_follow_up::pronoun_followup_resolves_prior_rust_topic_for_creator_question"
+      },
+      {
+        "line": 1781,
+        "test": "pronoun_topic_follow_up::rust_creator_fact_is_available_across_supported_languages"
+      },
+      {
+        "line": 1782,
+        "test": "pronoun_topic_follow_up::seed_claim_and_handler_share_normalized_bounded_pronoun_contexts"
+      },
+      {
+        "line": 1783,
+        "test": "pronoun_topic_follow_up::seeded_antecedents_reject_embedded_alias_words"
+      },
+      {
+        "line": 1784,
+        "test": "pronoun_topic_follow_up::seeded_coreference_contexts_normalize_terminal_multilingual_surfaces"
+      },
+      {
+        "line": 1785,
+        "test": "pronoun_topic_follow_up::seeded_coreference_contexts_reject_embedded_word_surfaces"
+      },
+      {
+        "line": 1786,
+        "test": "reasoning_loop::answers_are_repeatable_for_the_same_prompt"
+      },
+      {
+        "line": 1787,
+        "test": "reasoning_loop::answers_expose_their_intent_explicitly"
+      },
+      {
+        "line": 1788,
+        "test": "reasoning_loop::confidence_reflects_corroborating_evidence"
+      },
+      {
+        "line": 1789,
+        "test": "reasoning_loop::handler_families_publish_loop_events_as_recursion_leaves"
+      },
+      {
+        "line": 1790,
+        "test": "reasoning_loop::known_prompts_resolve_via_local_knowledge"
+      },
+      {
+        "line": 1791,
+        "test": "reasoning_loop::loop_terminates_on_unsolvable_questions"
+      },
+      {
+        "line": 1792,
+        "test": "reasoning_loop::specialized_handlers_still_publish_loop_events"
+      },
+      {
+        "line": 1793,
+        "test": "reasoning_loop::step_1_prompt_is_recorded_as_impulse"
+      },
+      {
+        "line": 1794,
+        "test": "reasoning_loop::step_2_local_search_runs_before_external_calls"
+      },
+      {
+        "line": 1795,
+        "test": "reasoning_loop::step_3_external_search_kicks_in_when_local_is_insufficient"
+      },
+      {
+        "line": 1796,
+        "test": "reasoning_loop::step_4_complex_requests_get_decomposed"
+      },
+      {
+        "line": 1797,
+        "test": "reasoning_loop::step_5_multiple_candidates_are_generated"
+      },
+      {
+        "line": 1798,
+        "test": "reasoning_loop::step_6_candidates_are_validated_against_constraints"
+      },
+      {
+        "line": 1799,
+        "test": "reasoning_loop::step_7_smallest_sufficient_answer_is_selected"
+      },
+      {
+        "line": 1800,
+        "test": "reasoning_loop::step_8_full_trace_is_stored_and_linked"
+      },
+      {
+        "line": 1801,
+        "test": "reasoning_loop::step_9_reply_is_returned_with_trace_pointer"
+      },
+      {
+        "line": 1802,
+        "test": "reasoning_loop::unknown_prompts_acknowledge_inability_to_answer"
+      },
+      {
+        "line": 1803,
+        "test": "web_requests::current_event_questions_route_to_web_search_handler"
+      },
+      {
+        "line": 1804,
+        "test": "web_requests::event_listing_prompts_route_to_web_search_handler"
+      },
+      {
+        "line": 1805,
+        "test": "web_requests::extended::enumeration_research_request_routes_to_web_search_handler"
+      },
+      {
+        "line": 1806,
+        "test": "web_requests::extended::implicit_research_question_routes_to_web_search_handler"
+      },
+      {
+        "line": 1807,
+        "test": "web_requests::extended::research_comparison_table_change_preserves_supported_language_web_search_routing"
+      },
+      {
+        "line": 1808,
+        "test": "web_requests::extended::research_result_followup_accepts_supported_language_research_contexts"
+      },
+      {
+        "line": 1809,
+        "test": "web_requests::extended::standalone_result_question_does_not_claim_research_followup"
+      },
+      {
+        "line": 1810,
+        "test": "web_requests::extended::term_information_request_preserves_seeded_concept_lookup"
+      },
+      {
+        "line": 1811,
+        "test": "web_requests::extended::term_information_request_routes_to_web_search_when_concept_lookup_misses"
+      },
+      {
+        "line": 1812,
+        "test": "web_requests::generic_navigation_uses_same_frame_policy_path_as_github"
+      },
+      {
+        "line": 1813,
+        "test": "web_requests::information_search_variants_route_to_web_search_handler"
+      },
+      {
+        "line": 1814,
+        "test": "web_requests::interest_topic_prompts_route_to_web_search_handler"
+      },
+      {
+        "line": 1815,
+        "test": "web_requests::issue_507_russian_hackathon_dialog_routes_to_web_search"
+      },
+      {
+        "line": 1816,
+        "test": "web_requests::latest_news_routes_to_wikinews_search_across_supported_languages"
+      },
+      {
+        "line": 1817,
+        "test": "web_requests::navigation_describes_frame_policy_check_before_iframe_preview"
+      },
+      {
+        "line": 1818,
+        "test": "web_requests::research_comparison_table_followup_uses_prior_search_topics"
+      },
+      {
+        "line": 1819,
+        "test": "web_requests::research_result_followup_reports_prior_search_failure_instead_of_defining_result"
+      },
+      {
+        "line": 1820,
+        "test": "web_requests::source_search_prompts_drop_follow_up_instruction_clauses"
+      },
+      {
+        "line": 1821,
+        "test": "web_requests::source_search_prompts_still_cover_supported_languages"
+      },
+      {
+        "line": 1822,
+        "test": "web_requests::web_search_enumeration_research_cases_cover_every_supported_language"
+      },
+      {
+        "line": 1823,
+        "test": "web_requests::web_search_event_listing_cases_cover_every_supported_language"
+      },
+      {
+        "line": 1824,
+        "test": "web_requests::web_search_interest_topic_cases_cover_every_supported_language"
+      },
+      {
+        "line": 1825,
+        "test": "web_requests::web_search_source_marker_cases_cover_every_supported_language"
+      },
+      {
+        "line": 1826,
+        "test": "web_requests::web_search_source_marker_prompts_extract_query_without_source_marker"
+      },
+      {
+        "line": 1848,
+        "test": "meeting_scheduling::georgia_resolves_to_asia_tbilisi_not_a_raw_surface"
+      },
+      {
+        "line": 1849,
+        "test": "meeting_scheduling::reported_meeting_prompt_is_not_the_unknown_fallback"
+      },
+      {
+        "line": 1850,
+        "test": "meeting_scheduling::reported_meeting_prompt_names_participant_time_and_zone"
+      },
+      {
+        "line": 1851,
+        "test": "meeting_scheduling::scheduling_preserves_clock_minutes_from_the_request_span"
+      },
+      {
+        "line": 1852,
+        "test": "meeting_scheduling::the_english_twin_still_routes_to_meeting_creation"
+      },
+      {
+        "line": 1853,
+        "test": "place_timezone::a_berlin_mention_anchors_the_event_in_every_supported_language"
+      },
+      {
+        "line": 1854,
+        "test": "place_timezone::a_create_request_without_a_place_says_it_used_the_default_zone"
+      },
+      {
+        "line": 1855,
+        "test": "place_timezone::a_georgia_mention_resolves_through_the_country_entity"
+      },
+      {
+        "line": 1856,
+        "test": "place_timezone::a_tbilisi_mention_resolves_through_the_city_entity"
+      },
+      {
+        "line": 1857,
+        "test": "self_use_intent_routing::a_local_location_never_becomes_a_web_search"
+      },
+      {
+        "line": 1858,
+        "test": "self_use_intent_routing::a_real_translation_recipe_is_not_preempted_by_language_demonstration"
+      },
+      {
+        "line": 1859,
+        "test": "self_use_intent_routing::a_scheduling_request_reaches_the_calendar_whatever_verb_it_uses"
+      },
+      {
+        "line": 1860,
+        "test": "self_use_intent_routing::a_speak_in_language_request_keeps_the_language_it_names"
+      },
+      {
+        "line": 1861,
+        "test": "self_use_intent_routing::a_statement_of_non_understanding_routes_by_act_not_by_memorized_phrase"
+      },
+      {
+        "line": 1862,
+        "test": "self_use_intent_routing::spanish_routing_variations_reach_their_capability"
+      },
+      {
+        "line": 1863,
+        "test": "self_use_intent_routing::spanish_typed_write_variations_keep_the_table_authoritative"
+      },
+      {
+        "line": 1864,
+        "test": "spoken_hour_scheduling::issue_595_calendar_create_path_keeps_supported_language_coverage"
+      },
+      {
+        "line": 1865,
+        "test": "spoken_hour_scheduling::issue_595_russian_spoken_hour_calendar_prompts_are_scheduled"
+      },
+      {
+        "line": 1872,
+        "test": "benchmark_object_counting_derives_the_count_from_membership_sources"
+      },
+      {
+        "line": 1873,
+        "test": "composition_trace_is_deterministic"
+      },
+      {
+        "line": 1874,
+        "test": "compound_courtesy_and_question_are_answered_in_source_order"
+      },
+      {
+        "line": 1875,
+        "test": "decomposed_sub_results_are_composed_for_algebra"
+      },
+      {
+        "line": 1876,
+        "test": "detects_language_from_mixed_script_definition_prompt"
+      },
+      {
+        "line": 1877,
+        "test": "mixed_script_definition_prompt_survives_meta_frame_formalization"
+      },
+      {
+        "line": 1878,
+        "test": "object_counting_filters_items_by_requested_category"
+      },
+      {
+        "line": 1879,
+        "test": "paraphrased_algebra_prompt_reaches_same_derivation"
+      },
+      {
+        "line": 1880,
+        "test": "renumbered_algebra_substitution_recomputes_closed_value"
+      },
+      {
+        "line": 1881,
+        "test": "renumbered_word_problem_recomputes_from_quantities"
+      },
+      {
+        "line": 1882,
+        "test": "shared_cross_runtime_synthesis_fixture_matches_rust_solver"
+      },
+      {
+        "line": 1883,
+        "test": "synthesis_change_preserves_supported_language_detection_contract"
+      },
+      {
+        "line": 1890,
+        "test": "russian_unknown_reasoning_hint_uses_russian_rule_commands"
+      },
+      {
+        "line": 1891,
+        "test": "seed_backed_bare_terms_still_use_public_knowledge_cache"
+      },
+      {
+        "line": 1892,
+        "test": "unknown_reasoning_answers_from_link_memory"
+      },
+      {
+        "line": 1893,
+        "test": "unknown_reasoning_records_last_resort_fallback"
+      },
+      {
+        "line": 1894,
+        "test": "unknown_reasoning_records_trace_for_every_supported_language"
+      },
+      {
+        "line": 1895,
+        "test": "unknown_reasoning_researches_facts_and_only_asks_for_report_consent"
+      },
+      {
+        "line": 1896,
+        "test": "unknown_reasoning_retries_public_knowledge_cache"
+      },
+      {
+        "line": 1897,
+        "test": "unmatched_prompt_records_unknown_reasoning_trace"
+      },
+      {
+        "line": 1898,
+        "test": "unresolved_bare_term_routes_to_web_search_after_local_sources_miss"
+      },
+      {
+        "line": 1913,
+        "test": "benchmarks::issue_304_benchmark_fixture_parses_with_windows_line_endings"
+      },
+      {
+        "line": 1914,
+        "test": "benchmarks::issue_304_benchmark_research_note_records_provenance"
+      },
+      {
+        "line": 1915,
+        "test": "benchmarks::issue_304_benchmark_suite_reports_pass_fail_counts"
+      },
+      {
+        "line": 1916,
+        "test": "benchmarks::issue_314_numeric_benchmark_cases_compute_with_trace"
+      },
+      {
+        "line": 1917,
+        "test": "benchmarks::issue_315_program_synthesis_accepts_supported_language_wrappers"
+      },
+      {
+        "line": 1918,
+        "test": "benchmarks::issue_315_programming_benchmark_cases_synthesize_and_verify"
+      },
+      {
+        "line": 1919,
+        "test": "benchmarks::issue_315_unseen_python_function_synthesizes_without_seed_hit"
+      },
+      {
+        "line": 1920,
+        "test": "benchmarks::issue_317_benchmark_suite_grows_with_held_out_ratchet"
+      },
+      {
+        "line": 1921,
+        "test": "benchmarks::issue_317_held_out_benchmark_variants_pass_by_derivation"
+      },
+      {
+        "line": 1922,
+        "test": "benchmarks::issue_326_program_synthesis_accepts_native_operation_verbs"
+      },
+      {
+        "line": 1923,
+        "test": "benchmarks::issue_704_portfolio_rescues_the_industry_search_case"
+      },
+      {
+        "line": 1956,
+        "test": "solver_unknown_reasoning::tests::a_bare_cached_concept_keeps_its_complete_attributed_answer"
+      },
+      {
+        "line": 1957,
+        "test": "solver_unknown_reasoning::tests::a_cached_concept_mention_cannot_replace_an_operative_question"
+      },
+      {
+        "line": 1958,
+        "test": "solver_unknown_reasoning::tests::a_definition_request_cannot_use_a_different_retrieved_term"
+      },
+      {
+        "line": 1959,
+        "test": "solver_unknown_reasoning::tests::a_word_in_an_unparsed_question_is_still_only_a_word_definition"
+      },
+      {
+        "line": 1960,
+        "test": "solver_unknown_reasoning::tests::an_about_clause_cannot_replace_a_link_memory_question"
+      },
+      {
+        "line": 1961,
+        "test": "solver_unknown_reasoning::tests::an_about_clause_cannot_replace_the_complete_operative_request"
+      },
+      {
+        "line": 1962,
+        "test": "solver_unknown_reasoning::tests::an_explicit_cached_concept_request_keeps_its_complete_attributed_answer"
+      },
+      {
+        "line": 1963,
+        "test": "solver_unknown_reasoning::tests::an_unrelated_higher_tier_sense_cannot_replace_the_requested_definition"
+      },
+      {
+        "line": 1964,
+        "test": "solver_unknown_reasoning::tests::operative_question_cannot_be_replaced_by_a_retrieved_word_definition"
+      },
+      {
+        "line": 1965,
+        "test": "solver_unknown_reasoning::tests::public_cache_answers_require_the_complete_requested_subject"
+      },
+      {
+        "line": 1966,
+        "test": "solver_unknown_reasoning::tests::supported_definition_keeps_its_attributed_retrieved_answer"
+      },
+      {
+        "line": 1967,
+        "test": "solver_unknown_reasoning::tests::unparsed_spanish_question_keeps_its_full_body_despite_a_retrieved_word"
+      },
+      {
+        "line": 1968,
+        "test": "solver_unknown_reasoning::tests::unsupported_bare_term_keeps_its_attributed_retrieved_answer"
+      },
+      {
+        "line": 1977,
+        "test": "a_language_without_localized_openers_reports_a_gap_not_english"
+      }
+    ]
+  },
+  "javascript": [
+    {
+      "job": "job-135812760378",
+      "tallies": [
+        {
+          "line": 3159,
+          "field": "tests",
+          "value": 1400
+        },
+        {
+          "line": 3161,
+          "field": "pass",
+          "value": 1390
+        },
+        {
+          "line": 3162,
+          "field": "fail",
+          "value": 0
+        },
+        {
+          "line": 3164,
+          "field": "skipped",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "job": "job-135812760431",
+      "tallies": [
+        {
+          "line": 1231,
+          "field": "tests",
+          "value": 6
+        },
+        {
+          "line": 1233,
+          "field": "pass",
+          "value": 6
+        },
+        {
+          "line": 1234,
+          "field": "fail",
+          "value": 0
+        },
+        {
+          "line": 1236,
+          "field": "skipped",
+          "value": 0
+        },
+        {
+          "line": 1320,
+          "field": "tests",
+          "value": 13
+        },
+        {
+          "line": 1322,
+          "field": "pass",
+          "value": 13
+        },
+        {
+          "line": 1323,
+          "field": "fail",
+          "value": 0
+        },
+        {
+          "line": 1325,
+          "field": "skipped",
+          "value": 0
+        },
+        {
+          "line": 1403,
+          "field": "tests",
+          "value": 12
+        },
+        {
+          "line": 1405,
+          "field": "pass",
+          "value": 12
+        },
+        {
+          "line": 1406,
+          "field": "fail",
+          "value": 0
+        },
+        {
+          "line": 1408,
+          "field": "skipped",
+          "value": 0
+        },
+        {
+          "line": 1432,
+          "field": "tests",
+          "value": 3
+        },
+        {
+          "line": 1434,
+          "field": "pass",
+          "value": 3
+        },
+        {
+          "line": 1435,
+          "field": "fail",
+          "value": 0
+        },
+        {
+          "line": 1437,
+          "field": "skipped",
+          "value": 0
+        },
+        {
+          "line": 1456,
+          "field": "tests",
+          "value": 2
+        },
+        {
+          "line": 1458,
+          "field": "pass",
+          "value": 2
+        },
+        {
+          "line": 1459,
+          "field": "fail",
+          "value": 0
+        },
+        {
+          "line": 1461,
+          "field": "skipped",
+          "value": 0
+        },
+        {
+          "line": 1623,
+          "field": "tests",
+          "value": 26
+        },
+        {
+          "line": 1625,
+          "field": "pass",
+          "value": 26
+        },
+        {
+          "line": 1626,
+          "field": "fail",
+          "value": 0
+        },
+        {
+          "line": 1628,
+          "field": "skipped",
+          "value": 0
+        },
+        {
+          "line": 1740,
+          "field": "tests",
+          "value": 13
+        },
+        {
+          "line": 1742,
+          "field": "pass",
+          "value": 13
+        },
+        {
+          "line": 1743,
+          "field": "fail",
+          "value": 0
+        },
+        {
+          "line": 1745,
+          "field": "skipped",
+          "value": 0
+        },
+        {
+          "line": 1787,
+          "field": "tests",
+          "value": 6
+        },
+        {
+          "line": 1789,
+          "field": "pass",
+          "value": 6
+        },
+        {
+          "line": 1790,
+          "field": "fail",
+          "value": 0
+        },
+        {
+          "line": 1792,
+          "field": "skipped",
+          "value": 0
+        },
+        {
+          "line": 1834,
+          "field": "tests",
+          "value": 6
+        },
+        {
+          "line": 1836,
+          "field": "pass",
+          "value": 6
+        },
+        {
+          "line": 1837,
+          "field": "fail",
+          "value": 0
+        },
+        {
+          "line": 1839,
+          "field": "skipped",
+          "value": 0
+        },
+        {
+          "line": 1887,
+          "field": "tests",
+          "value": 7
+        },
+        {
+          "line": 1889,
+          "field": "pass",
+          "value": 7
+        },
+        {
+          "line": 1890,
+          "field": "fail",
+          "value": 0
+        },
+        {
+          "line": 1892,
+          "field": "skipped",
+          "value": 0
+        },
+        {
+          "line": 1928,
+          "field": "tests",
+          "value": 5
+        },
+        {
+          "line": 1930,
+          "field": "pass",
+          "value": 5
+        },
+        {
+          "line": 1931,
+          "field": "fail",
+          "value": 0
+        },
+        {
+          "line": 1933,
+          "field": "skipped",
+          "value": 0
+        },
+        {
+          "line": 1969,
+          "field": "tests",
+          "value": 5
+        },
+        {
+          "line": 1971,
+          "field": "pass",
+          "value": 5
+        },
+        {
+          "line": 1972,
+          "field": "fail",
+          "value": 0
+        },
+        {
+          "line": 1974,
+          "field": "skipped",
+          "value": 0
+        },
+        {
+          "line": 2052,
+          "field": "tests",
+          "value": 12
+        },
+        {
+          "line": 2054,
+          "field": "pass",
+          "value": 12
+        },
+        {
+          "line": 2055,
+          "field": "fail",
+          "value": 0
+        },
+        {
+          "line": 2057,
+          "field": "skipped",
+          "value": 0
+        },
+        {
+          "line": 2111,
+          "field": "tests",
+          "value": 8
+        },
+        {
+          "line": 2113,
+          "field": "pass",
+          "value": 8
+        },
+        {
+          "line": 2114,
+          "field": "fail",
+          "value": 0
+        },
+        {
+          "line": 2116,
+          "field": "skipped",
+          "value": 0
+        },
+        {
+          "line": 2236,
+          "field": "tests",
+          "value": 19
+        },
+        {
+          "line": 2238,
+          "field": "pass",
+          "value": 19
+        },
+        {
+          "line": 2239,
+          "field": "fail",
+          "value": 0
+        },
+        {
+          "line": 2241,
+          "field": "skipped",
+          "value": 0
+        },
+        {
+          "line": 2289,
+          "field": "tests",
+          "value": 7
+        },
+        {
+          "line": 2291,
+          "field": "pass",
+          "value": 7
+        },
+        {
+          "line": 2292,
+          "field": "fail",
+          "value": 0
+        },
+        {
+          "line": 2294,
+          "field": "skipped",
+          "value": 0
+        },
+        {
+          "line": 2354,
+          "field": "tests",
+          "value": 9
+        },
+        {
+          "line": 2356,
+          "field": "pass",
+          "value": 9
+        },
+        {
+          "line": 2357,
+          "field": "fail",
+          "value": 0
+        },
+        {
+          "line": 2359,
+          "field": "skipped",
+          "value": 0
+        },
+        {
+          "line": 2537,
+          "field": "tests",
+          "value": 24
+        },
+        {
+          "line": 2539,
+          "field": "pass",
+          "value": 24
+        },
+        {
+          "line": 2540,
+          "field": "fail",
+          "value": 0
+        },
+        {
+          "line": 2542,
+          "field": "skipped",
+          "value": 0
+        },
+        {
+          "line": 2812,
+          "field": "tests",
+          "value": 44
+        },
+        {
+          "line": 2814,
+          "field": "pass",
+          "value": 44
+        },
+        {
+          "line": 2815,
+          "field": "fail",
+          "value": 0
+        },
+        {
+          "line": 2817,
+          "field": "skipped",
+          "value": 0
+        },
+        {
+          "line": 2871,
+          "field": "tests",
+          "value": 8
+        },
+        {
+          "line": 2873,
+          "field": "pass",
+          "value": 8
+        },
+        {
+          "line": 2874,
+          "field": "fail",
+          "value": 0
+        },
+        {
+          "line": 2876,
+          "field": "skipped",
+          "value": 0
+        },
+        {
+          "line": 4866,
+          "field": "tests",
+          "value": 1516
+        },
+        {
+          "line": 4868,
+          "field": "pass",
+          "value": 1509
+        },
+        {
+          "line": 4869,
+          "field": "fail",
+          "value": 0
+        },
+        {
+          "line": 4871,
+          "field": "skipped",
+          "value": 7
+        }
+      ]
+    }
+  ],
+  "fullIssueComplete": false,
+  "independentAuthorshipCredit": 0
+}
