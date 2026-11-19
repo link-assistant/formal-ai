@@ -751,3 +751,21 @@ test('web search and fetched-page modules remain executable native inputs', {tim
   assert.match(read('rust/tests/unit/web_requests.rs'), /mod extended;/u);
   assert.match(read('rust/tests/unit/page_formalization_route.rs'), /include_str!\("\.\.\/\.\.\/\.\.\/data\/benchmarks\/web-formalization\/en\.lino"\)/u);
 });
+
+
+test('benchmark derivations retain their complete native input closure', {timeout:15000}, () => {
+  for (const path of ['rust/tests/unit/specification/benchmarks.rs',
+    'data/benchmarks/industry-suite.lino', 'data/benchmarks/LICENSES.md',
+    'docs/case-studies/issue-244/raw-data/online-research.md'])
+    assert.equal(admission([path])['native-type-check'], true, path);
+  for (const path of ['rust/tests/unit/specification/unrelated.rs',
+    'docs/case-studies/unrelated.md', 'data/benchmarks/unrelated.md'])
+    assert.equal(admission([path])['native-type-check'], false, path);
+  assert(read('rust/tests/unit/reasoning_contracts.rs')
+    .includes('#[path = "specification/benchmarks.rs"]'));
+  const step = Object.values(workflow('native-type-check.yml').jobs)[0].steps
+    .find(step => step.name === 'Verify isolated native behavior regressions');
+  assert.match(step.run, /--test reasoning_contracts(?: |$)/u);
+  assert.match(step.run, /--no-fail-fast/u);
+  assert.equal(step.env.FORMAL_AI_OFFLINE, '1');
+});

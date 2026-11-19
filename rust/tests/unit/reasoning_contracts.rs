@@ -2,6 +2,8 @@
 //! requests without compiling the monolithic unit target. Existing test modules
 //! are included intact.
 
+#[path = "specification/benchmarks.rs"]
+mod benchmarks;
 #[path = "specification/debug_session.rs"]
 mod debug_session;
 #[path = "specification/event_source_origin.rs"]
